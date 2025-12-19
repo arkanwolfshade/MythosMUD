@@ -42,13 +42,13 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 class TestSecurityHeadersMiddleware:
     """Test the SecurityHeadersMiddleware functionality."""
 
-    def test_middleware_inherits_from_base(self):
+    def test_middleware_inherits_from_base(self) -> None:
         """Test that SecurityHeadersMiddleware inherits from BaseHTTPMiddleware."""
         middleware = SecurityHeadersMiddleware(Mock())
         assert isinstance(middleware, BaseHTTPMiddleware)
 
     @pytest.mark.asyncio
-    async def test_middleware_adds_security_headers(self):
+    async def test_middleware_adds_security_headers(self) -> None:
         """Test that middleware adds all required security headers."""
         # Create a mock app and request
         app = FastAPI()
@@ -77,7 +77,7 @@ class TestSecurityHeadersMiddleware:
         assert "Content-Security-Policy" in response.headers
 
     @pytest.mark.asyncio
-    async def test_security_headers_values(self):
+    async def test_security_headers_values(self) -> None:
         """Test that security headers have correct values."""
         app = FastAPI()
 
@@ -98,7 +98,7 @@ class TestSecurityHeadersMiddleware:
         assert response.headers["Content-Security-Policy"] == "default-src 'self'"
 
     @pytest.mark.asyncio
-    async def test_middleware_works_with_all_endpoints(self):
+    async def test_middleware_works_with_all_endpoints(self) -> None:
         """Test that security headers are added to all endpoint types."""
         app = FastAPI()
 
@@ -144,7 +144,7 @@ class TestSecurityHeadersMiddleware:
             assert response.headers["X-Frame-Options"] == "DENY"
 
     @pytest.mark.asyncio
-    async def test_middleware_preserves_existing_headers(self):
+    async def test_middleware_preserves_existing_headers(self) -> None:
         """Test that middleware preserves existing response headers."""
         app = FastAPI()
 
@@ -165,7 +165,7 @@ class TestSecurityHeadersMiddleware:
         assert "X-Frame-Options" in response.headers
 
     @pytest.mark.asyncio
-    async def test_middleware_handles_errors(self):
+    async def test_middleware_handles_errors(self) -> None:
         """Test that middleware adds security headers even when endpoints return errors."""
         app = FastAPI()
 
@@ -185,7 +185,7 @@ class TestSecurityHeadersMiddleware:
         assert "X-Frame-Options" in response.headers
         assert response.headers["X-Frame-Options"] == "DENY"
 
-    def test_middleware_integration_with_factory(self):
+    def test_middleware_integration_with_factory(self) -> None:
         """Test that middleware can be integrated with the app factory."""
         # This test verifies the middleware can be added to the factory
         # without breaking the app creation process
@@ -209,7 +209,7 @@ class TestSecurityHeadersMiddleware:
 class TestCORSConfiguration:
     """Test CORS configuration improvements."""
 
-    def test_cors_uses_environment_variables(self):
+    def test_cors_uses_environment_variables(self) -> None:
         """Test that CORS configuration uses environment variables."""
         with patch.dict(
             os.environ,
@@ -238,7 +238,7 @@ class TestCORSConfiguration:
 
         reset_config()
 
-    def test_cors_restricts_methods_and_headers(self):
+    def test_cors_restricts_methods_and_headers(self) -> None:
         """Test that CORS configuration restricts methods and headers."""
         app = create_app()
 
@@ -255,7 +255,7 @@ class TestCORSConfiguration:
 class TestMiddlewareConsolidation:
     """Test middleware consolidation functionality."""
 
-    def test_no_duplicate_error_middleware(self):
+    def test_no_duplicate_error_middleware(self) -> None:
         """Test that ErrorLoggingMiddleware is not registered twice."""
         app = create_app()
 
@@ -270,7 +270,7 @@ class TestMiddlewareConsolidation:
             f"Found {error_middleware_count} ErrorLoggingMiddleware instances, expected at most 1"
         )
 
-    def test_middleware_order(self):
+    def test_middleware_order(self) -> None:
         """Test that middleware is added in the correct order."""
         app = create_app()
 
@@ -288,7 +288,7 @@ class TestSecurityHeadersMiddlewareImplementation:
     """Test the actual SecurityHeadersMiddleware implementation."""
 
     @pytest.mark.asyncio
-    async def test_security_headers_middleware_asgi_interface(self):
+    async def test_security_headers_middleware_asgi_interface(self) -> None:
         """Test SecurityHeadersMiddleware ASGI interface."""
         from unittest.mock import AsyncMock
 
@@ -329,7 +329,7 @@ class TestSecurityHeadersMiddlewareImplementation:
         mock_app.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_security_headers_middleware_non_http_scope(self):
+    async def test_security_headers_middleware_non_http_scope(self) -> None:
         """Test SecurityHeadersMiddleware passes through non-HTTP scopes."""
         from unittest.mock import AsyncMock
 
@@ -349,7 +349,7 @@ class TestSecurityHeadersMiddlewareImplementation:
         mock_app.assert_called_once_with(websocket_scope, receive, send)
 
     @pytest.mark.asyncio
-    async def test_security_headers_middleware_dispatch_method(self):
+    async def test_security_headers_middleware_dispatch_method(self) -> None:
         """Test SecurityHeadersMiddleware dispatch method (backward compatibility)."""
         from unittest.mock import AsyncMock, MagicMock
 
@@ -389,7 +389,7 @@ class TestSecurityHeadersMiddlewareImplementation:
         assert "x-frame-options" in header_keys
 
     @pytest.mark.asyncio
-    async def test_security_headers_middleware_dispatch_exception(self):
+    async def test_security_headers_middleware_dispatch_exception(self) -> None:
         """Test SecurityHeadersMiddleware dispatch exception handling."""
         from unittest.mock import AsyncMock, MagicMock
 
@@ -421,7 +421,7 @@ class TestSecurityHeadersMiddlewareImplementation:
             mock_error.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_security_headers_middleware_asgi_exception(self):
+    async def test_security_headers_middleware_asgi_exception(self) -> None:
         """Test SecurityHeadersMiddleware ASGI exception handling."""
         from unittest.mock import AsyncMock
 
@@ -450,7 +450,7 @@ class TestSecurityHeadersMiddlewareImplementation:
             # Verify error was logged
             mock_error.assert_called_once()
 
-    def test_security_headers_middleware_environment_config(self):
+    def test_security_headers_middleware_environment_config(self) -> None:
         """Test SecurityHeadersMiddleware reads environment variables."""
         from unittest.mock import MagicMock
 
@@ -473,7 +473,7 @@ class TestSecurityHeadersMiddlewareImplementation:
             assert middleware.csp_policy == "default-src 'none'"
             assert middleware.referrer_policy == "no-referrer"
 
-    def test_security_headers_middleware_default_config(self):
+    def test_security_headers_middleware_default_config(self) -> None:
         """Test SecurityHeadersMiddleware uses default configuration."""
         from unittest.mock import MagicMock
 
@@ -503,7 +503,7 @@ class TestSecurityHeadersMiddlewareImplementation:
                 if value is not None:
                     os.environ[var] = value
 
-    def test_security_headers_middleware_add_headers_hsts_without_subdomains(self):
+    def test_security_headers_middleware_add_headers_hsts_without_subdomains(self) -> None:
         """Test SecurityHeadersMiddleware HSTS header without includeSubDomains."""
         from unittest.mock import MagicMock
 
@@ -522,7 +522,7 @@ class TestSecurityHeadersMiddlewareImplementation:
             assert "max-age=" in hsts_value
             assert "includeSubDomains" not in hsts_value
 
-    def test_security_headers_middleware_add_headers_to_non_response(self):
+    def test_security_headers_middleware_add_headers_to_non_response(self) -> None:
         """Test SecurityHeadersMiddleware _add_security_headers_to_response with non-Response."""
         from unittest.mock import MagicMock
 
@@ -539,7 +539,7 @@ class TestSecurityHeadersMiddlewareImplementation:
         assert True  # Test passes if no exception raised
 
     @pytest.mark.asyncio
-    async def test_security_headers_middleware_asgi_send_with_headers_non_start_message(self):
+    async def test_security_headers_middleware_asgi_send_with_headers_non_start_message(self) -> None:
         """Test SecurityHeadersMiddleware send_with_headers with non-start message."""
         from unittest.mock import AsyncMock
 
@@ -581,7 +581,7 @@ class TestSecurityHeadersMiddlewareImplementation:
         assert len(send_calls) >= 1
 
     @pytest.mark.asyncio
-    async def test_security_headers_middleware_logger_info_initialization(self):
+    async def test_security_headers_middleware_logger_info_initialization(self) -> None:
         """Test SecurityHeadersMiddleware logs info during initialization."""
         from unittest.mock import MagicMock
 
@@ -595,7 +595,7 @@ class TestSecurityHeadersMiddlewareImplementation:
             call_args = mock_info.call_args
             assert "SecurityHeadersMiddleware initialized" in str(call_args)
 
-    def test_security_headers_middleware_hsts_without_subdomains_condition(self):
+    def test_security_headers_middleware_hsts_without_subdomains_condition(self) -> None:
         """Test SecurityHeadersMiddleware HSTS header condition when includeSubDomains is False."""
         from unittest.mock import MagicMock
 
@@ -615,7 +615,7 @@ class TestSecurityHeadersMiddlewareImplementation:
             assert "includeSubDomains" not in hsts_value
 
     @pytest.mark.asyncio
-    async def test_security_headers_middleware_asgi_exception_logging(self):
+    async def test_security_headers_middleware_asgi_exception_logging(self) -> None:
         """Test SecurityHeadersMiddleware logs error when exception occurs in ASGI call."""
         from unittest.mock import AsyncMock
 
@@ -647,7 +647,7 @@ class TestSecurityHeadersMiddlewareImplementation:
             assert "Error in security headers middleware" in str(call_args)
 
     @pytest.mark.asyncio
-    async def test_security_headers_middleware_dispatch_exception_logging(self):
+    async def test_security_headers_middleware_dispatch_exception_logging(self) -> None:
         """Test SecurityHeadersMiddleware logs error when exception occurs in dispatch."""
         from unittest.mock import AsyncMock, MagicMock
 

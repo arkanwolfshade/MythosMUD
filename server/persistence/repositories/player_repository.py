@@ -11,8 +11,9 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, cast
 
 from sqlalchemy import func, select, update
+from sqlalchemy.exc import SQLAlchemyError
 
-from server.database import get_async_session
+from server.database import get_session_maker
 from server.exceptions import DatabaseError
 from server.logging.enhanced_logging_config import get_logger
 from server.models.player import Player
@@ -74,7 +75,7 @@ class PlayerRepository:
                 player_name=player.name,
                 invalid_room_id=player.current_room_id,
             )
-            player.current_room_id = "arkham_square"  # type: ignore[assignment]
+            player.current_room_id = "arkham_square"
             return True
         return False
 
@@ -100,7 +101,8 @@ class PlayerRepository:
         context.metadata["player_name"] = name
 
         try:
-            async for session in get_async_session():
+            session_maker = get_session_maker()
+            async with session_maker() as session:
                 # Use case-insensitive comparison and exclude deleted characters
                 stmt = (
                     select(Player).where(func.lower(Player.name) == func.lower(name)).where(Player.is_deleted == False)  # noqa: E712
@@ -110,9 +112,7 @@ class PlayerRepository:
                 if player:
                     self.validate_and_fix_player_room(player)
                     return player
-                return None
-            return None
-        except Exception as e:
+        except (DatabaseError, SQLAlchemyError) as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving player by name '{name}': {e}",
@@ -120,6 +120,7 @@ class PlayerRepository:
                 details={"player_name": name, "error": str(e)},
                 user_friendly="Failed to retrieve player information",
             )
+        return None
 
     @retry_with_backoff(max_attempts=3, initial_delay=1.0, max_delay=10.0)
     async def get_player_by_id(self, player_id: uuid.UUID) -> Player | None:
@@ -140,16 +141,15 @@ class PlayerRepository:
         context.metadata["player_id"] = player_id
 
         try:
-            async for session in get_async_session():
+            session_maker = get_session_maker()
+            async with session_maker() as session:
                 stmt = select(Player).where(Player.player_id == player_id)
                 result = await session.execute(stmt)
                 player = result.scalar_one_or_none()
                 if player:
                     self.validate_and_fix_player_room(player)
                     return player
-                return None
-            return None
-        except Exception as e:
+        except (DatabaseError, SQLAlchemyError) as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving player by ID '{player_id}': {e}",
@@ -157,6 +157,7 @@ class PlayerRepository:
                 details={"player_id": player_id, "error": str(e)},
                 user_friendly="Failed to retrieve player information",
             )
+        return None
 
     async def get_players_by_user_id(self, user_id: str) -> list[Player]:
         """
@@ -179,7 +180,8 @@ class PlayerRepository:
         context.metadata["user_id"] = user_id
 
         try:
-            async for session in get_async_session():
+            session_maker = get_session_maker()
+            async with session_maker() as session:
                 stmt = select(Player).where(Player.user_id == user_id)
                 result = await session.execute(stmt)
                 players = list(result.scalars().all())
@@ -187,8 +189,7 @@ class PlayerRepository:
                 for player in players:
                     self.validate_and_fix_player_room(player)
                 return players
-            return []
-        except Exception as e:
+        except (DatabaseError, SQLAlchemyError) as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving players by user ID '{user_id}': {e}",
@@ -217,7 +218,8 @@ class PlayerRepository:
         context.metadata["user_id"] = user_id
 
         try:
-            async for session in get_async_session():
+            session_maker = get_session_maker()
+            async with session_maker() as session:
                 stmt = (
                     select(Player).where(Player.user_id == user_id).where(Player.is_deleted == False)  # noqa: E712
                 )
@@ -227,8 +229,7 @@ class PlayerRepository:
                 for player in players:
                     self.validate_and_fix_player_room(player)
                 return players
-            return []
-        except Exception as e:
+        except (DatabaseError, SQLAlchemyError) as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving active players by user ID '{user_id}': {e}",
@@ -276,16 +277,16 @@ class PlayerRepository:
         try:
             # Ensure is_admin is an integer (PostgreSQL requires integer, not boolean)
             if isinstance(getattr(player, "is_admin", None), bool):
-                player.is_admin = 1 if player.is_admin else 0  # type: ignore[assignment]
+                player.is_admin = 1 if player.is_admin else 0
 
-            async for session in get_async_session():
+            session_maker = get_session_maker()
+            async with session_maker() as session:
                 # Use merge() for upsert behavior - inserts if new, updates if exists
                 await session.merge(player)
                 await session.commit()
                 self._logger.debug("Player saved successfully", player_id=player.player_id)
                 return
-            return
-        except Exception as e:
+        except (DatabaseError, SQLAlchemyError) as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error saving player: {e}",
@@ -308,7 +309,8 @@ class PlayerRepository:
         context.metadata["operation"] = "list_players"
 
         try:
-            async for session in get_async_session():
+            session_maker = get_session_maker()
+            async with session_maker() as session:
                 stmt = select(Player)
                 result = await session.execute(stmt)
                 players = list(result.scalars().all())
@@ -316,8 +318,7 @@ class PlayerRepository:
                 for player in players:
                     self.validate_and_fix_player_room(player)
                 return players
-            return []
-        except Exception as e:
+        except (DatabaseError, SQLAlchemyError) as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error listing players: {e}",
@@ -344,7 +345,8 @@ class PlayerRepository:
         context.metadata["room_id"] = room_id
 
         try:
-            async for session in get_async_session():
+            session_maker = get_session_maker()
+            async with session_maker() as session:
                 stmt = select(Player).where(Player.current_room_id == room_id)
                 result = await session.execute(stmt)
                 players = list(result.scalars().all())
@@ -352,8 +354,7 @@ class PlayerRepository:
                 for player in players:
                     self.validate_and_fix_player_room(player)
                 return players
-            return []
-        except Exception as e:
+        except (DatabaseError, SQLAlchemyError) as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error getting players in room: {e}",
@@ -380,16 +381,16 @@ class PlayerRepository:
             # Ensure is_admin is an integer for all players
             for player in players:
                 if isinstance(getattr(player, "is_admin", None), bool):
-                    player.is_admin = 1 if player.is_admin else 0  # type: ignore[assignment]
+                    player.is_admin = 1 if player.is_admin else 0
 
-            async for session in get_async_session():
+            session_maker = get_session_maker()
+            async with session_maker() as session:
                 for player in players:
                     await session.merge(player)
                 await session.commit()
                 self._logger.debug("Batch saved players", player_count=len(players))
                 return
-            return
-        except Exception as e:
+        except (DatabaseError, SQLAlchemyError) as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error saving players: {e}",
@@ -418,7 +419,8 @@ class PlayerRepository:
         context.metadata["player_id"] = player_id
 
         try:
-            async for session in get_async_session():
+            session_maker = get_session_maker()
+            async with session_maker() as session:
                 # Check if player exists
                 stmt = select(Player).where(Player.player_id == player_id)
                 result = await session.execute(stmt)
@@ -429,14 +431,13 @@ class PlayerRepository:
                     return False
 
                 # Soft delete the player
-                player.is_deleted = True  # type: ignore[assignment]
-                player.deleted_at = datetime.now(UTC).replace(tzinfo=None)  # type: ignore[assignment]
+                player.is_deleted = True
+                player.deleted_at = datetime.now(UTC).replace(tzinfo=None)
                 await session.commit()
                 self._logger.info("Player soft-deleted successfully", player_id=player_id)
 
                 return True
-            return False
-        except Exception as e:
+        except (DatabaseError, SQLAlchemyError) as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error soft-deleting player {player_id}: {e}",
@@ -463,7 +464,8 @@ class PlayerRepository:
         context.metadata["player_id"] = player_id
 
         try:
-            async for session in get_async_session():
+            session_maker = get_session_maker()
+            async with session_maker() as session:
                 # Check if player exists
                 stmt = select(Player).where(Player.player_id == player_id)
                 result = await session.execute(stmt)
@@ -486,8 +488,7 @@ class PlayerRepository:
                 #     self._event_bus.publish(event)
 
                 return True
-            return False
-        except Exception as e:
+        except (DatabaseError, SQLAlchemyError) as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error deleting player {player_id}: {e}",
@@ -526,14 +527,14 @@ class PlayerRepository:
             # This matches the pattern used in the Player model's default value
             last_active_naive = last_active.replace(tzinfo=None)
 
-            async for session in get_async_session():
+            session_maker = get_session_maker()
+            async with session_maker() as session:
                 stmt = update(Player).where(Player.player_id == player_id).values(last_active=last_active_naive)
                 await session.execute(stmt)
                 await session.commit()
                 self._logger.debug("Updated player last_active", player_id=player_id, last_active=last_active_naive)
                 return
-            return
-        except Exception as e:
+        except (DatabaseError, SQLAlchemyError) as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error updating last_active for player '{player_id}': {e}",
@@ -560,7 +561,8 @@ class PlayerRepository:
         context.metadata["player_count"] = len(player_ids)
 
         try:
-            async for session in get_async_session():
+            session_maker = get_session_maker()
+            async with session_maker() as session:
                 stmt = select(Player).where(Player.player_id.in_(player_ids))
                 result = await session.execute(stmt)
                 players = list(result.scalars().all())
@@ -575,8 +577,7 @@ class PlayerRepository:
                     loaded_count=len(players),
                 )
                 return players
-            return []
-        except Exception as e:
+        except (DatabaseError, SQLAlchemyError) as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error batch loading players: {e}",

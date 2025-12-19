@@ -8,6 +8,7 @@ AI Agent: Tests for enhanced error logging covering exception wrapping,
          HTTP error logging, and security event logging with structured context.
 """
 
+
 # pylint: disable=redefined-outer-name
 # Justification: pytest fixtures redefine names
 
@@ -41,29 +42,29 @@ from server.utils.enhanced_error_logging import (
 class TestThirdPartyExceptionMapping:
     """Test third-party exception mapping constant."""
 
-    def test_mapping_exists(self):
+    def test_mapping_exists(self) -> None:
         """Test THIRD_PARTY_EXCEPTION_MAPPING is properly defined."""
         assert isinstance(THIRD_PARTY_EXCEPTION_MAPPING, dict)
         assert len(THIRD_PARTY_EXCEPTION_MAPPING) > 0
 
-    def test_database_exceptions_mapped(self):
+    def test_database_exceptions_mapped(self) -> None:
         """Test database exceptions are mapped to DatabaseError."""
         assert THIRD_PARTY_EXCEPTION_MAPPING["asyncpg.exceptions.PostgresError"] == DatabaseError
         assert THIRD_PARTY_EXCEPTION_MAPPING["sqlalchemy.exc.OperationalError"] == DatabaseError
 
-    def test_auth_exceptions_mapped(self):
+    def test_auth_exceptions_mapped(self) -> None:
         """Test authentication exceptions are mapped to AuthenticationError."""
         assert THIRD_PARTY_EXCEPTION_MAPPING["argon2.exceptions.HashingError"] == AuthenticationError
 
-    def test_network_exceptions_mapped(self):
+    def test_network_exceptions_mapped(self) -> None:
         """Test network exceptions are mapped to NetworkError."""
         assert THIRD_PARTY_EXCEPTION_MAPPING["httpx.RequestError"] == NetworkError
 
-    def test_validation_exceptions_mapped(self):
+    def test_validation_exceptions_mapped(self) -> None:
         """Test validation exceptions are mapped to ValidationError."""
         assert THIRD_PARTY_EXCEPTION_MAPPING["pydantic.ValidationError"] == ValidationError
 
-    def test_config_exceptions_mapped(self):
+    def test_config_exceptions_mapped(self) -> None:
         """Test configuration exceptions are mapped to ConfigurationError."""
         assert THIRD_PARTY_EXCEPTION_MAPPING["yaml.YAMLError"] == ConfigurationError
 
@@ -71,14 +72,14 @@ class TestThirdPartyExceptionMapping:
 class TestLogAndRaiseEnhanced:
     """Test log_and_raise_enhanced function."""
 
-    def test_raises_specified_exception(self):
+    def test_raises_specified_exception(self) -> None:
         """Test function raises the specified exception class."""
         with pytest.raises(ValidationError) as exc_info:
             log_and_raise_enhanced(ValidationError, "Test error")
 
         assert "Test error" in str(exc_info.value)
 
-    def test_raises_with_user_friendly_message(self):
+    def test_raises_with_user_friendly_message(self) -> None:
         """Test exception includes user-friendly message."""
         context = create_error_context()
 
@@ -89,7 +90,7 @@ class TestLogAndRaiseEnhanced:
 
         assert exc_info.value.user_friendly == "Database is unavailable"
 
-    def test_raises_with_details(self):
+    def test_raises_with_details(self) -> None:
         """Test exception includes details."""
         details = {"table": "users", "operation": "INSERT"}
 
@@ -98,7 +99,7 @@ class TestLogAndRaiseEnhanced:
 
         assert exc_info.value.details == details
 
-    def test_creates_context_when_none_provided(self):
+    def test_creates_context_when_none_provided(self) -> None:
         """Test function creates context if not provided."""
         with pytest.raises(MythosMUDError) as exc_info:
             log_and_raise_enhanced(MythosMUDError, "Test error")
@@ -110,7 +111,7 @@ class TestLogAndRaiseEnhanced:
 class TestLogAndRaiseHttpEnhanced:
     """Test log_and_raise_http_enhanced function."""
 
-    def test_raises_http_exception(self):
+    def test_raises_http_exception(self) -> None:
         """Test function raises HTTPException."""
         with pytest.raises(HTTPException) as exc_info:
             log_and_raise_http_enhanced(404, "Not found")
@@ -118,7 +119,7 @@ class TestLogAndRaiseHttpEnhanced:
         assert exc_info.value.status_code == 404
         assert exc_info.value.detail == "Not found"
 
-    def test_raises_http_exception_with_context(self):
+    def test_raises_http_exception_with_context(self) -> None:
         """Test HTTP exception logging includes context."""
         context = create_error_context(user_id="user123")
 
@@ -127,7 +128,7 @@ class TestLogAndRaiseHttpEnhanced:
 
         assert exc_info.value.status_code == 403
 
-    def test_creates_context_when_none_provided(self):
+    def test_creates_context_when_none_provided(self) -> None:
         """Test creates context if not provided."""
         # Should not raise due to missing context
         with pytest.raises(HTTPException):
@@ -216,7 +217,7 @@ class TestWrapThirdPartyException:
 class TestCreateEnhancedErrorContext:
     """Test create_enhanced_error_context function."""
 
-    def test_creates_context_with_request(self):
+    def test_creates_context_with_request(self) -> None:
         """Test creating context with FastAPI request."""
         mock_request = Mock()
         mock_request.url = "http://localhost/api/test"
@@ -231,7 +232,7 @@ class TestCreateEnhancedErrorContext:
         assert "path" in context.metadata
         assert context.metadata["method"] == "GET"
 
-    def test_creates_context_with_websocket(self):
+    def test_creates_context_with_websocket(self) -> None:
         """Test creating context with WebSocket connection."""
         mock_websocket = Mock()
         mock_websocket.url = "ws://localhost/ws"
@@ -244,7 +245,7 @@ class TestCreateEnhancedErrorContext:
         assert context.session_id == "session123"
         assert context.metadata["connection_type"] == "websocket"
 
-    def test_creates_context_without_request_or_websocket(self):
+    def test_creates_context_without_request_or_websocket(self) -> None:
         """Test creating context without request or websocket."""
         context = create_enhanced_error_context(user_id="user123")
 
@@ -252,7 +253,7 @@ class TestCreateEnhancedErrorContext:
         assert context.metadata["path"] == "unknown"
         assert context.metadata["method"] == "unknown"
 
-    def test_includes_additional_kwargs(self):
+    def test_includes_additional_kwargs(self) -> None:
         """Test context includes additional kwargs in metadata."""
         context = create_enhanced_error_context(custom_field="custom_value", another_field=123)
 

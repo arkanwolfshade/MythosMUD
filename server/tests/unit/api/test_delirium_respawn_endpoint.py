@@ -1,11 +1,15 @@
 """Tests for player delirium respawn API endpoint."""
 
+from typing import TYPE_CHECKING
 from unittest.mock import AsyncMock, Mock
 
 import pytest
 
 from server.models.lucidity import PlayerLucidity
 from server.models.player import Player
+
+if TYPE_CHECKING:
+    from unittest.mock import MagicMock
 
 
 @pytest.fixture
@@ -54,7 +58,7 @@ class TestDeliriumRespawnEndpoint:
     """Test suite for /api/players/respawn-delirium endpoint."""
 
     @pytest.mark.asyncio
-    async def test_respawn_delirious_player_success(self, mock_delirious_player, mock_delirious_lucidity):
+    async def test_respawn_delirious_player_success(self, _mock_delirious_player, _mock_delirious_lucidity):
         """Test successful respawn of a delirious player."""
         # Mock services
         mock_player_service = Mock()
@@ -87,15 +91,17 @@ class TestDeliriumRespawnEndpoint:
         assert "Sanitarium" in result["message"]
 
     @pytest.mark.asyncio
-    async def test_respawn_lucid_player_forbidden(self, mock_lucid_player, mock_lucid_lucidity):
+    async def test_respawn_lucid_player_forbidden(
+        self, _mock_lucid_player: "MagicMock", _mock_lucid_lucidity: "MagicMock"
+    ):
         """Test that delirium respawn fails for lucid players."""
         # Simulate endpoint validation
         # Player with lucidity > -10 should not be able to respawn from delirium
-        assert mock_lucid_lucidity.current_lcd > -10
+        assert _mock_lucid_lucidity.current_lcd > -10
         # In the actual endpoint, this would raise HTTPException(403)
 
     @pytest.mark.asyncio
-    async def test_respawn_player_not_found(self):
+    async def test_respawn_player_not_found(self) -> None:
         """Test delirium respawn when player doesn't exist."""
         mock_player_service = Mock()
         mock_player_service.respawn_player_from_delirium_by_user_id = AsyncMock(
@@ -107,7 +113,7 @@ class TestDeliriumRespawnEndpoint:
             await mock_player_service.respawn_player_from_delirium_by_user_id("nonexistent-user", None, None, None)
 
     @pytest.mark.asyncio
-    async def test_respawn_returns_room_data(self, mock_delirious_player):
+    async def test_respawn_returns_room_data(self, _mock_delirious_player):
         """Test that delirium respawn returns complete room data."""
         mock_persistence = Mock()
         mock_room = {
@@ -127,7 +133,9 @@ class TestDeliriumRespawnEndpoint:
         assert "exits" in room_data
 
     @pytest.mark.asyncio
-    async def test_respawn_updates_player_state(self, mock_delirious_player, mock_delirious_lucidity):
+    async def test_respawn_updates_player_state(
+        self, _mock_delirious_player: "MagicMock", _mock_delirious_lucidity: "MagicMock"
+    ):
         """Test that delirium respawn updates player state correctly."""
         # After delirium respawn, player should have:
         # - lucidity = 10
@@ -135,16 +143,16 @@ class TestDeliriumRespawnEndpoint:
         # - posture = standing
 
         # Simulate state update
-        mock_delirious_lucidity.current_lcd = 10
-        mock_delirious_lucidity.current_tier = "lucid"
-        mock_delirious_player.current_room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
-        stats = mock_delirious_player.get_stats()
+        _mock_delirious_lucidity.current_lcd = 10
+        _mock_delirious_lucidity.current_tier = "lucid"
+        _mock_delirious_player.current_room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
+        stats = _mock_delirious_player.get_stats()
         stats["position"] = "standing"
-        mock_delirious_player.set_stats(stats)
+        _mock_delirious_player.set_stats(stats)
 
         # Verify updates
-        assert mock_delirious_lucidity.current_lcd == 10
-        assert mock_delirious_lucidity.current_tier == "lucid"
-        assert mock_delirious_player.current_room_id == "earth_arkhamcity_sanitarium_room_foyer_001"
-        updated_stats = mock_delirious_player.get_stats()
+        assert _mock_delirious_lucidity.current_lcd == 10
+        assert _mock_delirious_lucidity.current_tier == "lucid"
+        assert _mock_delirious_player.current_room_id == "earth_arkhamcity_sanitarium_room_foyer_001"
+        updated_stats = _mock_delirious_player.get_stats()
         assert updated_stats["position"] == "standing"

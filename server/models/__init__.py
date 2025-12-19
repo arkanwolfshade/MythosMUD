@@ -9,18 +9,21 @@ This package contains all database models including:
 """
 
 from .alias import Alias
+from .calendar import HolidayModel, NPCScheduleModel
 from .container import ContainerComponent, ContainerLockState, ContainerSourceType
+from .emote import Emote, EmoteAlias
 from .game import AttributeType, Stats, StatusEffect, StatusEffectType
 from .health import HealthErrorResponse, HealthResponse, HealthStatus
 from .invite import Invite
 from .item import ItemComponentState, ItemInstance, ItemPrototype
 from .lucidity import LucidityAdjustmentLog, LucidityCooldown, LucidityExposureState, PlayerLucidity
-from .npc import NPCDefinition, NPCDefinitionType, NPCSpawnRule
-from .player import Player
+from .npc import NPCDefinition, NPCDefinitionType, NPCRelationship, NPCSpawnRule
+from .player import Player, PlayerExploration, PlayerInventory
 from .player_spells import PlayerSpell
 from .spell import Spell, SpellEffectType, SpellMaterial, SpellRangeType, SpellSchool, SpellTargetType
 from .spell_db import SpellDB
 from .user import User
+from .world import RoomLink, RoomModel, Subzone, Zone, ZoneConfigurationMapping
 
 # ARCHITECTURE FIX Phase 3.1: Removed setup_relationships import
 # Relationships now defined directly in model files using string references
@@ -28,12 +31,18 @@ from .user import User
 __all__ = [
     "User",
     "Player",
+    "PlayerInventory",
+    "PlayerExploration",
+    "HolidayModel",
+    "NPCScheduleModel",
     "PlayerLucidity",
     "LucidityAdjustmentLog",
     "LucidityExposureState",
     "LucidityCooldown",
     "Invite",
     "Alias",
+    "Emote",
+    "EmoteAlias",
     "ItemPrototype",
     "ItemInstance",
     "ItemComponentState",
@@ -47,6 +56,7 @@ __all__ = [
     "NPCDefinition",
     "NPCDefinitionType",
     "NPCSpawnRule",
+    "NPCRelationship",
     "ContainerComponent",
     "ContainerSourceType",
     "ContainerLockState",
@@ -58,4 +68,9 @@ __all__ = [
     "SpellMaterial",
     "PlayerSpell",
     "SpellDB",
+    "Zone",
+    "Subzone",
+    "RoomModel",
+    "RoomLink",
+    "ZoneConfigurationMapping",
 ]

@@ -16,7 +16,7 @@ from server.realtime.player_event_handlers_respawn import PlayerRespawnEventHand
 class TestPlayerRespawnEventHandlerInit:
     """Test PlayerRespawnEventHandler initialization."""
 
-    def test_init(self):
+    def test_init(self) -> None:
         """Test PlayerRespawnEventHandler initialization."""
         mock_connection_manager = MagicMock()
         mock_utils = MagicMock()
@@ -32,7 +32,7 @@ class TestPlayerRespawnEventHandlerInit:
 class TestUpdateConnectionManagerPosition:
     """Test update_connection_manager_position method."""
 
-    def test_update_connection_manager_position_success(self):
+    def test_update_connection_manager_position_success(self) -> None:
         """Test successfully updating connection manager position."""
         mock_connection_manager = MagicMock()
         mock_connection_manager.online_players = {uuid4(): {"position": "standing"}}
@@ -49,7 +49,7 @@ class TestUpdateConnectionManagerPosition:
         assert mock_connection_manager.online_players[player_id]["position"] == "sitting"
         mock_logger.debug.assert_called_once()
 
-    def test_update_connection_manager_position_no_online_players(self):
+    def test_update_connection_manager_position_no_online_players(self) -> None:
         """Test updating position when online_players doesn't exist."""
         mock_connection_manager = MagicMock()
         delattr(mock_connection_manager, "online_players")
@@ -61,7 +61,7 @@ class TestUpdateConnectionManagerPosition:
         # Should not raise error
         handler.update_connection_manager_position(str(uuid4()), "sitting")
 
-    def test_update_connection_manager_position_player_not_online(self):
+    def test_update_connection_manager_position_player_not_online(self) -> None:
         """Test updating position when player is not in online_players."""
         mock_connection_manager = MagicMock()
         mock_connection_manager.online_players = {}
@@ -78,7 +78,7 @@ class TestGetPlayerDataForRespawn:
     """Test get_player_data_for_respawn method."""
 
     @pytest.mark.asyncio
-    async def test_get_player_data_for_respawn_success(self):
+    async def test_get_player_data_for_respawn_success(self) -> None:
         """Test successfully getting player data for respawn."""
         mock_connection_manager = MagicMock()
         mock_async_persistence = AsyncMock()
@@ -116,7 +116,7 @@ class TestGetPlayerDataForRespawn:
             assert position == "sitting"
 
     @pytest.mark.asyncio
-    async def test_get_player_data_for_respawn_no_connection_manager(self):
+    async def test_get_player_data_for_respawn_no_connection_manager(self) -> None:
         """Test getting player data when connection manager is None."""
         mock_utils = MagicMock()
         mock_logger = MagicMock()
@@ -129,7 +129,7 @@ class TestGetPlayerDataForRespawn:
         assert position == "standing"
 
     @pytest.mark.asyncio
-    async def test_get_player_data_for_respawn_no_persistence(self):
+    async def test_get_player_data_for_respawn_no_persistence(self) -> None:
         """Test getting player data when persistence is not available."""
         mock_connection_manager = MagicMock()
         mock_connection_manager.async_persistence = None
@@ -144,7 +144,7 @@ class TestGetPlayerDataForRespawn:
         assert position == "standing"
 
     @pytest.mark.asyncio
-    async def test_get_player_data_for_respawn_player_not_found(self):
+    async def test_get_player_data_for_respawn_player_not_found(self) -> None:
         """Test getting player data when player is not found."""
         mock_connection_manager = MagicMock()
         mock_async_persistence = AsyncMock()
@@ -162,7 +162,7 @@ class TestGetPlayerDataForRespawn:
         assert position == "standing"
 
     @pytest.mark.asyncio
-    async def test_get_player_data_for_respawn_error(self):
+    async def test_get_player_data_for_respawn_error(self) -> None:
         """Test getting player data when an error occurs."""
         mock_connection_manager = MagicMock()
         mock_async_persistence = AsyncMock()
@@ -185,7 +185,7 @@ class TestSendRespawnEventWithRetry:
     """Test send_respawn_event_with_retry method."""
 
     @pytest.mark.asyncio
-    async def test_send_respawn_event_with_retry_success(self):
+    async def test_send_respawn_event_with_retry_success(self) -> None:
         """Test successfully sending respawn event."""
         player_id = uuid4()
         mock_connection_manager = MagicMock()
@@ -206,7 +206,7 @@ class TestSendRespawnEventWithRetry:
         mock_connection_manager.send_personal_message.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_send_respawn_event_with_retry_wait_for_connection(self):
+    async def test_send_respawn_event_with_retry_wait_for_connection(self) -> None:
         """Test sending respawn event when connection becomes available."""
         player_id = uuid4()
         mock_connection_manager = MagicMock()
@@ -242,7 +242,7 @@ class TestHandlePlayerRespawned:
     """Test handle_player_respawned method."""
 
     @pytest.mark.asyncio
-    async def test_handle_player_respawned_success(self):
+    async def test_handle_player_respawned_success(self) -> None:
         """Test successfully handling player respawn event."""
         player_id = uuid4()
         mock_connection_manager = MagicMock()
@@ -287,7 +287,7 @@ class TestGetCurrentLucidity:
     """Test get_current_lucidity method."""
 
     @pytest.mark.asyncio
-    async def test_get_current_lucidity_success(self):
+    async def test_get_current_lucidity_success(self) -> None:
         """Test successfully getting current lucidity."""
         player_id = uuid4()
         mock_connection_manager = MagicMock()
@@ -314,7 +314,7 @@ class TestGetCurrentLucidity:
             assert result == 75
 
     @pytest.mark.asyncio
-    async def test_get_current_lucidity_not_found(self):
+    async def test_get_current_lucidity_not_found(self) -> None:
         """Test getting current lucidity when record not found."""
         player_id = uuid4()
         mock_connection_manager = MagicMock()
@@ -339,7 +339,7 @@ class TestGetPlayerDataForDeliriumRespawn:
     """Test get_player_data_for_delirium_respawn method."""
 
     @pytest.mark.asyncio
-    async def test_get_player_data_for_delirium_respawn_success(self):
+    async def test_get_player_data_for_delirium_respawn_success(self) -> None:
         """Test successfully getting player data for delirium respawn."""
         mock_connection_manager = MagicMock()
         mock_async_persistence = AsyncMock()
@@ -380,7 +380,7 @@ class TestHandlePlayerDeliriumRespawned:
     """Test handle_player_delirium_respawned method."""
 
     @pytest.mark.asyncio
-    async def test_handle_player_delirium_respawned_success(self):
+    async def test_handle_player_delirium_respawned_success(self) -> None:
         """Test successfully handling player delirium respawn event."""
         player_id = uuid4()
         mock_connection_manager = MagicMock()

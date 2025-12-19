@@ -238,7 +238,7 @@ class TestPlayerRespawnService:
         service = PlayerRespawnService(event_bus=mock_event_bus, player_combat_service=mock_player_combat_service)
 
         # Setup player in dead state
-        player_id = str(uuid4())
+        player_id = uuid4()
         stats = {"current_dp": -10, "max_dp": 100}
         mock_player.player_id = player_id
         mock_player.get_stats.return_value = stats
@@ -260,7 +260,7 @@ class TestPlayerRespawnService:
         mock_player_combat_service.clear_player_combat_state.assert_called_once()
         # Verify the correct player UUID was passed
         call_args = mock_player_combat_service.clear_player_combat_state.call_args
-        assert str(call_args[0][0]) == player_id
+        assert call_args[0][0] == player_id
 
     @pytest.mark.asyncio
     async def test_respawn_player_without_combat_service(self, mock_player):

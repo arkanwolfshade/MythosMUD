@@ -100,7 +100,7 @@ def _close_all_logging_handlers():
 class TestEnhancedLoggingConfig:
     """Test enhanced logging configuration functionality."""
 
-    def test_sanitize_sensitive_data(self):
+    def test_sanitize_sensitive_data(self) -> None:
         """Test that sensitive data is properly sanitized."""
         # Test data with sensitive information
         event_dict = {
@@ -111,7 +111,7 @@ class TestEnhancedLoggingConfig:
             "normal_field": "value",
         }
 
-        result = sanitize_sensitive_data(None, None, event_dict)
+        result = sanitize_sensitive_data(None, None, event_dict)  # type: ignore[arg-type]
 
         # Sensitive data should be redacted
         assert result["password"] == "[REDACTED]"
@@ -122,7 +122,7 @@ class TestEnhancedLoggingConfig:
         assert result["user_id"] == "123"
         assert result["normal_field"] == "value"
 
-    def test_sanitize_sensitive_data_case_insensitive(self):
+    def test_sanitize_sensitive_data_case_insensitive(self) -> None:
         """Test that sensitive data sanitization is case insensitive."""
         event_dict = {
             "Password": "secret123",
@@ -130,26 +130,26 @@ class TestEnhancedLoggingConfig:
             "Secret": "hidden",
         }
 
-        result = sanitize_sensitive_data(None, None, event_dict)
+        result = sanitize_sensitive_data(None, None, event_dict)  # type: ignore[arg-type]
 
         assert result["Password"] == "[REDACTED]"
         assert result["API_KEY"] == "[REDACTED]"
         assert result["Secret"] == "[REDACTED]"
 
-    def test_add_correlation_id(self):
+    def test_add_correlation_id(self) -> None:
         """Test that correlation IDs are added correctly."""
         event_dict = {"message": "test"}
 
-        result = add_correlation_id(None, None, event_dict)
+        result = add_correlation_id(None, None, event_dict)  # type: ignore[arg-type]
 
         assert "correlation_id" in result
         assert result["correlation_id"] is not None
 
-    def test_add_request_context(self):
+    def test_add_request_context(self) -> None:
         """Test that request context is added correctly."""
         event_dict = {"message": "test"}
 
-        result = add_request_context(None, None, event_dict)
+        result = add_request_context(None, None, event_dict)  # type: ignore[arg-type]
 
         assert "request_id" in result
         assert result["request_id"] is not None
@@ -179,12 +179,12 @@ class TestEnhancedLoggingConfig:
 
         mock_bind_contextvars.assert_called_once_with(correlation_id=correlation_id, user_id=user_id)
 
-    def test_clear_request_context(self):
+    def test_clear_request_context(self) -> None:
         """Test that request context is cleared correctly."""
         # This should not raise an exception
         clear_request_context()
 
-    def test_get_current_context(self):
+    def test_get_current_context(self) -> None:
         """Test that current context is retrieved correctly."""
         context = get_current_context()
         assert isinstance(context, dict)
@@ -218,7 +218,7 @@ class TestEnhancedLoggingConfig:
         logging_config._logging_state.initialized = False
         logging_config._logging_state.signature = None
 
-    def test_log_exception_once_marks_logged_exceptions(self):
+    def test_log_exception_once_marks_logged_exceptions(self) -> None:
         """Ensure log_exception_once honors logged exception markers."""
         logger = Mock()
         error = LoggedException("ritual failure")
@@ -229,7 +229,7 @@ class TestEnhancedLoggingConfig:
         logger.error.assert_called_once()
         assert error.already_logged is True
 
-    def test_subsystem_log_files_created(self):
+    def test_subsystem_log_files_created(self) -> None:
         """Test that all subsystem log files are created."""
 
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -278,7 +278,7 @@ class TestEnhancedLoggingConfig:
             # Close all handlers to release file handles (Windows requirement)
             _close_all_logging_handlers()
 
-    def test_world_log_not_created(self):
+    def test_world_log_not_created(self) -> None:
         """Test that world.log is NOT created (removed from subsystems)."""
 
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -303,7 +303,7 @@ class TestEnhancedLoggingConfig:
             # Close all handlers to release file handles (Windows requirement)
             _close_all_logging_handlers()
 
-    def test_warnings_aggregator_created(self):
+    def test_warnings_aggregator_created(self) -> None:
         """Test that warnings.log aggregator is created."""
 
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -328,7 +328,7 @@ class TestEnhancedLoggingConfig:
             # Close all handlers to release file handles (Windows requirement)
             _close_all_logging_handlers()
 
-    def test_errors_aggregator_created(self):
+    def test_errors_aggregator_created(self) -> None:
         """Test that errors.log aggregator is created."""
 
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -353,7 +353,7 @@ class TestEnhancedLoggingConfig:
             # Close all handlers to release file handles (Windows requirement)
             _close_all_logging_handlers()
 
-    def test_dual_logging_warnings(self):
+    def test_dual_logging_warnings(self) -> None:
         """Test that warnings appear in both subsystem log and warnings.log."""
         with tempfile.TemporaryDirectory() as tmpdir:
             log_config = {
@@ -396,7 +396,7 @@ class TestEnhancedLoggingConfig:
             # Close all handlers to release file handles (Windows requirement)
             _close_all_logging_handlers()
 
-    def test_errors_not_in_warnings_log(self):
+    def test_errors_not_in_warnings_log(self) -> None:
         """Test that ERROR level logs do NOT appear in warnings.log (only in errors.log)."""
         with tempfile.TemporaryDirectory() as tmpdir:
             log_config = {
@@ -439,7 +439,7 @@ class TestEnhancedLoggingConfig:
             # Close all handlers to release file handles (Windows requirement)
             _close_all_logging_handlers()
 
-    def test_dual_logging_errors(self):
+    def test_dual_logging_errors(self) -> None:
         """Test that errors appear in both subsystem log and errors.log."""
         with tempfile.TemporaryDirectory() as tmpdir:
             log_config = {
@@ -482,7 +482,7 @@ class TestEnhancedLoggingConfig:
             # Close all handlers to release file handles (Windows requirement)
             _close_all_logging_handlers()
 
-    def test_new_subsystem_loggers(self):
+    def test_new_subsystem_loggers(self) -> None:
         """Test that new subsystem loggers (inventory, npc, game, etc.) work correctly."""
         with tempfile.TemporaryDirectory() as tmpdir:
             log_config = {

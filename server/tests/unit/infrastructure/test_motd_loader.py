@@ -15,7 +15,7 @@ from server.utils.motd_loader import load_motd
 class TestLoadMotd:
     """Test MOTD loading functionality."""
 
-    def test_load_motd_file_exists(self):
+    def test_load_motd_file_exists(self) -> None:
         """Test loading MOTD from existing file."""
         with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
             f.write("Welcome to the Mythos!\n\nEnter at your own risk...")
@@ -31,7 +31,7 @@ class TestLoadMotd:
         finally:
             os.unlink(motd_file)
 
-    def test_load_motd_file_not_found(self):
+    def test_load_motd_file_not_found(self) -> None:
         """Test loading MOTD when file doesn't exist."""
         with patch("server.utils.motd_loader.get_config") as mock_config:
             mock_config.return_value = {"motd_file": "./nonexistent/motd.txt"}
@@ -39,7 +39,7 @@ class TestLoadMotd:
 
             assert "Welcome to MythosMUD" in result
 
-    def test_load_motd_config_error(self):
+    def test_load_motd_config_error(self) -> None:
         """Test loading MOTD when config fails."""
         with patch("server.utils.motd_loader.get_config") as mock_config:
             mock_config.side_effect = Exception("Config error")
@@ -47,7 +47,7 @@ class TestLoadMotd:
 
             assert "Welcome to MythosMUD" in result
 
-    def test_load_motd_file_read_error(self):
+    def test_load_motd_file_read_error(self) -> None:
         """Test loading MOTD when file read fails."""
         with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
             f.write("Test MOTD")
@@ -64,7 +64,7 @@ class TestLoadMotd:
 
                 # The file doesn't exist, so it should return the fallback
                 assert "Welcome to MythosMUD - Enter the realm of forbidden knowledge..." in result
-        except Exception:
+        except OSError:
             # Clean up if the file still exists
             if os.path.exists(motd_file):
                 os.chmod(motd_file, 0o644)  # Use secure permissions

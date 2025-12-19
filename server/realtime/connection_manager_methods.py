@@ -552,13 +552,7 @@ async def force_cleanup_impl(manager: Any) -> None:
         manager.connection_cleaner,
         "force_cleanup",
         {},
-        online_players=manager.online_players,
-        last_seen=manager.last_seen,
-        player_websockets=manager.player_websockets,
-        active_websockets=manager.active_websockets,
-        connection_timestamps=manager.connection_timestamps,
         cleanup_stats=manager.cleanup_stats,
-        last_active_update_times=manager.last_active_update_times,
         cleanup_orphaned_data_callback=manager.cleanup_orphaned_data,
         prune_stale_players_callback=manager.prune_stale_players,
     )

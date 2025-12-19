@@ -33,7 +33,7 @@ class TestTwibbleEmoteBug:
     """Test the "twibble" emote bug that was the initial issue."""
 
     @pytest.mark.asyncio
-    async def test_single_word_emote_processing(self):
+    async def test_single_word_emote_processing(self) -> None:
         """Test that single-word emotes like 'twibble' are processed correctly."""
         import uuid
 
@@ -71,7 +71,7 @@ class TestTwibbleEmoteBug:
             assert call_args[0][0] == "emote twibble"
 
     @pytest.mark.asyncio
-    async def test_emote_command_handler_accepts_dict_format(self):
+    async def test_emote_command_handler_accepts_dict_format(self) -> None:
         """Test that emote command handler accepts the new dict format."""
         # Test with dict format (new)
         command_data = {"command_type": CommandType.EMOTE, "action": "twibble"}
@@ -110,7 +110,7 @@ class TestTwibbleEmoteBug:
         assert "twibble" in result["result"] or "Ithaqua" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_emote_command_handler_accepts_list_format(self):
+    async def test_emote_command_handler_accepts_list_format(self) -> None:
         """Test that emote command handler accepts the old list format."""
         # Test with list format (old)
         command_data = {"action": "twibble"}
@@ -153,7 +153,7 @@ class TestEventStormPrevention:
     """Test that prevents the event storm bug from multiple EventBus instances."""
 
     @pytest.mark.asyncio
-    async def test_movement_service_uses_shared_event_bus(self):
+    async def test_movement_service_uses_shared_event_bus(self) -> None:
         """Test that MovementService uses the shared EventBus from PersistenceLayer."""
         # Create a shared EventBus
         shared_event_bus = EventBus()
@@ -196,7 +196,7 @@ class TestEventStormPrevention:
         old_room = Room(old_room_data, shared_event_bus)
         # Manually add player to old room's internal state without triggering events
         # Convert UUID to string for set[str] compatibility
-        old_room._players.add(str(player.player_id))
+        old_room.add_player_silently(player.player_id)
 
         new_room_data = {
             "id": "room_2",
@@ -210,11 +210,11 @@ class TestEventStormPrevention:
         new_room = Room(new_room_data, shared_event_bus)
 
         # Set up mocks directly on persistence
-        movement_service._persistence.get_player_by_id = AsyncMock(return_value=player)
-        movement_service._persistence.get_room_by_id = Mock(
+        movement_service._persistence.get_player_by_id = AsyncMock(return_value=player)  # type: ignore[method-assign] # Mocking method for test
+        movement_service._persistence.get_room_by_id = Mock(  # type: ignore[method-assign] # Mocking method for test
             side_effect=lambda room_id: old_room if room_id == "room_1" else new_room
         )
-        movement_service._persistence.save_player = AsyncMock(return_value=True)
+        movement_service._persistence.save_player = AsyncMock(return_value=True)  # type: ignore[method-assign] # Mocking method for test
 
         # Perform movement
         success = await movement_service.move_player(str(player.player_id), "room_1", "room_2")
@@ -234,7 +234,7 @@ class TestEventStormPrevention:
         assert PlayerEnteredRoom in event_types
 
     @pytest.mark.asyncio
-    async def test_multiple_movement_services_dont_create_duplicate_events(self):
+    async def test_multiple_movement_services_dont_create_duplicate_events(self) -> None:
         """Test that multiple MovementService instances don't create duplicate events."""
         # Create separate EventBus instances
         event_bus_1 = EventBus()
@@ -289,7 +289,7 @@ class TestConnectionTimeoutIntegration:
     """Test connection timeout behavior integration."""
 
     @pytest.mark.asyncio
-    async def test_connection_manager_uses_configured_timeout(self):
+    async def test_connection_manager_uses_configured_timeout(self) -> None:
         """Test that ConnectionManager uses the configured timeout setting."""
         # Test with 5-minute timeout (300 seconds)
         connection_manager = ConnectionManager()
@@ -304,7 +304,7 @@ class TestConnectionTimeoutIntegration:
         assert connection_manager_long.memory_monitor.max_connection_age == 3600
 
     @pytest.mark.asyncio
-    async def test_connection_cleanup_respects_timeout_setting(self):
+    async def test_connection_cleanup_respects_timeout_setting(self) -> None:
         """Test that connection cleanup uses the configured timeout."""
         import time
 
@@ -330,7 +330,7 @@ class TestUUIDSerializationIntegration:
     """Test UUID serialization integration across the system."""
 
     @pytest.mark.asyncio
-    async def test_event_handler_converts_uuids_to_strings(self):
+    async def test_event_handler_converts_uuids_to_strings(self) -> None:
         """Test that EventHandler converts UUIDs to strings in messages."""
         connection_manager = Mock(spec=ConnectionManager)
         event_bus = EventBus()
@@ -353,7 +353,7 @@ class TestUUIDSerializationIntegration:
         player_id = uuid4()
         room_id = uuid4()
 
-        event = PlayerLeftRoom(player_id=player_id, room_id=room_id)
+        event = PlayerLeftRoom(player_id=str(player_id), room_id=str(room_id))
 
         await event_handler._handle_player_left(event)
 
@@ -372,27 +372,28 @@ class TestUUIDSerializationIntegration:
         assert message["room_id"] == str(room_id)  # room_id is at top level
 
     @pytest.mark.asyncio
-    async def test_connection_manager_serializes_uuids_in_messages(self):
+    async def test_connection_manager_serializes_uuids_in_messages(self) -> None:
         """Test that ConnectionManager serializes UUIDs in messages."""
         memory_monitor = MemoryMonitor()
         memory_monitor.max_connection_age = 300
         connection_manager = ConnectionManager()
 
-        player_id = str(uuid4())
+        player_id_uuid = uuid4()
         mock_websocket = Mock()
 
         # Add connection
-        connection_manager.active_websockets[player_id] = mock_websocket
-        connection_manager.send_personal_message = AsyncMock()
+        connection_manager.active_websockets[str(player_id_uuid)] = mock_websocket
+        mock_send = AsyncMock()
+        connection_manager.send_personal_message = mock_send  # type: ignore[method-assign] # Mocking method for test
 
         # Create message with UUID objects
         test_event = {"type": "test", "data": {"player_id": uuid4(), "room_id": uuid4(), "nested": {"uuid": uuid4()}}}
 
         # Send message
-        await connection_manager.send_personal_message(player_id, test_event)
+        await connection_manager.send_personal_message(player_id_uuid, test_event)
 
         # Verify send_personal_message was called
-        connection_manager.send_personal_message.assert_called_once()
+        mock_send.assert_called_once()
 
         # The _convert_uuids_to_strings method should be called internally
         # and the message should be serializable
@@ -402,7 +403,7 @@ class TestEndToEndBugScenarios:
     """Test end-to-end scenarios that would have caught our bugs."""
 
     @pytest.mark.asyncio
-    async def test_player_movement_end_to_end(self):
+    async def test_player_movement_end_to_end(self) -> None:
         """Test the complete player movement flow from command to room events."""
         # Setup EventBus and handlers
         event_bus = EventBus()
@@ -436,11 +437,11 @@ class TestEndToEndBugScenarios:
         new_room.player_entered = Mock()
 
         # Set up mocks directly on persistence
-        movement_service._persistence.get_player_by_id = AsyncMock(return_value=player)
-        movement_service._persistence.get_room_by_id = Mock(
+        movement_service._persistence.get_player_by_id = AsyncMock(return_value=player)  # type: ignore[method-assign] # Mocking method for test
+        movement_service._persistence.get_room_by_id = Mock(  # type: ignore[method-assign] # Mocking method for test
             side_effect=lambda room_id: old_room if room_id == "arkham_001" else new_room
         )
-        movement_service._persistence.save_player = AsyncMock(return_value=True)
+        movement_service._persistence.save_player = AsyncMock(return_value=True)  # type: ignore[method-assign] # Mocking method for test
 
         # Perform movement
         success = await movement_service.move_player(str(player.player_id), "arkham_001", "arkham_002")

@@ -166,7 +166,8 @@ async def container_service(request):
         # Also ensure database manager closes connections
         db_manager = DatabaseManager.get_instance()
         if db_manager and hasattr(db_manager, "engine"):
-            await db_manager.engine.dispose(close=True)
+            if db_manager.engine:
+                await db_manager.engine.dispose(close=True)
     except (RuntimeError, asyncio.CancelledError) as e:
         # Log but don't fail on cleanup errors
         # RuntimeError covers "Event loop is closed" errors

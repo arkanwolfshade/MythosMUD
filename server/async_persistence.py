@@ -16,7 +16,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
 from .database import get_async_session
-from .exceptions import DatabaseError
+from .exceptions import DatabaseError, ValidationError
 from .logging.enhanced_logging_config import get_logger
 from .models.player import Player
 from .models.profession import Profession
@@ -25,6 +25,7 @@ from .persistence.repositories import (
     ContainerRepository,
     ExperienceRepository,
     HealthRepository,
+    ItemRepository,
     PlayerRepository,
     ProfessionRepository,
     RoomRepository,
@@ -86,6 +87,9 @@ class AsyncPersistenceLayer:
         self._experience_repo = ExperienceRepository(event_bus=event_bus)
         self._health_repo = HealthRepository(event_bus=event_bus)
         self._container_repo = ContainerRepository()
+        self._item_repo = ItemRepository(
+            None
+        )  # ItemRepository handles None persistence layer by using sync persistence internally if needed
 
     def _load_room_cache(self) -> None:
         """Load rooms from PostgreSQL database and convert to Room objects."""
@@ -448,7 +452,7 @@ class AsyncPersistenceLayer:
                 user = result.scalar_one_or_none()
                 return user
             return None
-        except Exception as e:
+        except (DatabaseError, ValidationError) as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving user by username '{username}': {e}",
@@ -468,6 +472,15 @@ class AsyncPersistenceLayer:
     def get_room_by_id(self, room_id: str) -> "Room | None":
         """Get a room by ID from the cache. Delegates to RoomRepository."""
         return self._room_repo.get_room_by_id(room_id)
+
+    def list_rooms(self) -> list["Room"]:
+        """
+        List all rooms from the cache. Delegates to RoomRepository.
+
+        Returns:
+            list[Room]: List of all cached rooms
+        """
+        return self._room_repo.list_rooms()
 
     async def async_list_rooms(self) -> list["Room"]:
         """
@@ -632,6 +645,69 @@ class AsyncPersistenceLayer:
     async def delete_container(self, container_id: uuid.UUID) -> bool:
         """Delete a container."""
         return await self._container_repo.delete_container(container_id)
+
+    # Item methods
+    async def create_item_instance(
+        self,
+        item_instance_id: str,
+        prototype_id: str,
+        owner_type: str = "room",
+        owner_id: str | None = None,
+        location_context: str | None = None,
+        quantity: int = 1,
+        condition: int | None = None,
+        flags_override: list[str] | None = None,
+        binding_state: str | None = None,
+        attunement_state: dict[str, Any] | None = None,
+        custom_name: str | None = None,
+        metadata: dict[str, Any] | None = None,
+        origin_source: str | None = None,
+        origin_metadata: dict[str, Any] | None = None,
+    ) -> None:
+        """Create a new item instance. Delegates to ItemRepository."""
+        return await self._item_repo.create_item_instance(
+            item_instance_id,
+            prototype_id,
+            owner_type,
+            owner_id,
+            location_context,
+            quantity,
+            condition,
+            flags_override,
+            binding_state,
+            attunement_state,
+            custom_name,
+            metadata,
+            origin_source,
+            origin_metadata,
+        )
+
+    async def ensure_item_instance(
+        self,
+        item_instance_id: str,
+        prototype_id: str,
+        owner_type: str = "room",
+        owner_id: str | None = None,
+        quantity: int = 1,
+        metadata: dict[str, Any] | None = None,
+        origin_source: str | None = None,
+        origin_metadata: dict[str, Any] | None = None,
+    ) -> None:
+        """Ensure an item instance exists. Delegates to ItemRepository."""
+        return await self._item_repo.ensure_item_instance(
+            item_instance_id,
+            prototype_id,
+            owner_type,
+            owner_id,
+            quantity,
+            metadata,
+            origin_source,
+            origin_metadata,
+        )
+
+    async def item_instance_exists(self, item_instance_id: str) -> bool:
+        """Check if an item instance exists. Delegates to ItemRepository."""
+        return await self._item_repo.item_instance_exists(item_instance_id)
 
 
 # DEPRECATED: Module-level global singleton removed - use ApplicationContainer instead

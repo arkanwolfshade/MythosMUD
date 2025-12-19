@@ -6,6 +6,7 @@ provides services to API endpoints, ensuring proper separation of concerns
 and testable architecture.
 """
 
+from typing import Any, cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -52,8 +53,6 @@ class TestServiceDependencyInjection:
 
             from server.events.event_bus import EventBus
             from server.game.chat_service import ChatService
-            from server.game.player_service import PlayerService
-            from server.game.room_service import RoomService
             from server.realtime.connection_manager import ConnectionManager
             from server.realtime.event_handler import RealTimeEventHandler
             from server.services.user_manager import UserManager
@@ -208,7 +207,7 @@ class TestServiceDependencyInjection:
         assert player_service1 is player_service2
 
         # But different service types are different instances
-        assert player_service1 is not room_service
+        assert cast(Any, player_service1) is not cast(Any, room_service)
 
     def test_api_endpoints_use_dependency_injection(self, client):
         """Test that API endpoints actually use the dependency injection system."""

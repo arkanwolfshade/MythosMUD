@@ -6,6 +6,7 @@ routing, ensuring it correctly handles all message types and maintains
 backward compatibility with existing functionality.
 """
 
+from typing import Any
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -139,7 +140,7 @@ class TestMessageHandlerFactory:
     @pytest.mark.asyncio
     async def test_handle_message_missing_type(self, factory, mock_websocket):
         """Test handling message with missing type."""
-        message = {"data": {}}
+        message: dict[str, Any] = {"data": {}}
 
         await factory.handle_message(mock_websocket, "test_player", message)
 
@@ -186,7 +187,7 @@ class TestMessageHandlers:
     async def test_command_message_handler_missing_data(self, mock_websocket):
         """Test CommandMessageHandler with missing data."""
         handler = CommandMessageHandler()
-        data = {}
+        data: dict[str, Any] = {}
 
         with patch("server.realtime.websocket_handler.handle_game_command") as mock_handler:
             await handler.handle(mock_websocket, "test_player", data)
@@ -208,7 +209,7 @@ class TestMessageHandlers:
     async def test_chat_message_handler_missing_data(self, mock_websocket):
         """Test ChatMessageHandler with missing data."""
         handler = ChatMessageHandler()
-        data = {}
+        data: dict[str, Any] = {}
 
         with patch("server.realtime.websocket_handler.handle_chat_message") as mock_handler:
             await handler.handle(mock_websocket, "test_player", data)
@@ -219,7 +220,7 @@ class TestMessageHandlers:
     async def test_ping_message_handler(self, mock_websocket):
         """Test PingMessageHandler."""
         handler = PingMessageHandler()
-        data = {}
+        data: dict[str, Any] = {}
 
         await handler.handle(mock_websocket, "test_player", data)
 
@@ -243,7 +244,7 @@ class TestGlobalFactory:
         websocket.send_json = AsyncMock()
         return websocket
 
-    def test_global_factory_instance(self):
+    def test_global_factory_instance(self) -> None:
         """Test that global factory is properly initialized."""
         assert isinstance(message_handler_factory, MessageHandlerFactory)
         assert "command" in message_handler_factory._handlers

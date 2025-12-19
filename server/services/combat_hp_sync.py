@@ -365,7 +365,8 @@ class CombatDPSync:
 
             if self._nats_service:
                 if (
-                    hasattr(self._combat_event_publisher, "subject_manager")
+                    self._combat_event_publisher is not None
+                    and hasattr(self._combat_event_publisher, "subject_manager")
                     and self._combat_event_publisher.subject_manager
                 ):
                     subject = self._combat_event_publisher.subject_manager.build_subject(

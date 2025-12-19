@@ -45,14 +45,14 @@ class TestGlobalChannelAccessControl:
         service.user_manager = mock_user_manager
         return service
 
-    def test_global_channel_rate_limit_configuration(self):
+    def test_global_channel_rate_limit_configuration(self) -> None:
         """Test that global channel rate limit is properly configured."""
         config = get_config()
         # Config is now a Pydantic object with attributes (config.chat.rate_limit_global)
         # Test environment sets rate_limit_global to 100 (via env.unit_test.example)
         assert config.chat.rate_limit_global == 100
 
-    def test_global_channel_configuration_structure(self):
+    def test_global_channel_configuration_structure(self) -> None:
         """Test that global channel configuration structure exists."""
         config = get_config()
         # Config is now a Pydantic object with attributes
@@ -248,7 +248,7 @@ class TestGlobalChannelAccessControl:
         assert result["success"] is False
         assert "unavailable" in result["error"].lower()
 
-    def test_global_channel_configuration_validation(self):
+    def test_global_channel_configuration_validation(self) -> None:
         """Test that global channel configuration is properly validated."""
         config = get_config()
 
@@ -258,8 +258,10 @@ class TestGlobalChannelAccessControl:
         assert hasattr(config.chat, "rate_limit_local")
 
         # Test configuration values are valid
-        assert isinstance(config.chat.rate_limit_global, int)
-        assert config.chat.rate_limit_global > 0
+        # Pylint incorrectly infers config.chat as FieldInfo instead of ChatConfig.
+        # This is a false positive - Pydantic models use dynamic attributes that pylint cannot infer.
+        assert isinstance(config.chat.rate_limit_global, int)  # pylint: disable=no-member
+        assert config.chat.rate_limit_global > 0  # pylint: disable=no-member
 
     @pytest.mark.asyncio
     async def test_global_message_rate_limiter_integration(self, chat_service, mock_player_service):

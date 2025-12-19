@@ -24,7 +24,7 @@ from server.models.user import User
 class TestUserManager:
     """Test UserManager functionality."""
 
-    def test_hash_password_uses_argon2(self):
+    def test_hash_password_uses_argon2(self) -> None:
         """Test that UserManager uses Argon2 for password hashing."""
         mock_user_db = Mock()
         manager = UserManager(mock_user_db)
@@ -36,7 +36,7 @@ class TestUserManager:
         assert hashed.startswith("$argon2id$")
         assert len(hashed) > 50  # Argon2 hashes are long
 
-    def test_verify_password_uses_argon2(self):
+    def test_verify_password_uses_argon2(self) -> None:
         """Test that UserManager uses Argon2 for password verification."""
         mock_user_db = Mock()
         manager = UserManager(mock_user_db)
@@ -49,7 +49,7 @@ class TestUserManager:
         assert manager._verify_password("wrong_password", hashed) is False
 
     @pytest.mark.asyncio
-    async def test_on_after_register_logs_info(self):
+    async def test_on_after_register_logs_info(self) -> None:
         """Test on_after_register logs user registration."""
         mock_user_db = Mock()
         manager = UserManager(mock_user_db)
@@ -66,7 +66,7 @@ class TestUserManager:
             assert "User has registered" in str(call_args) or "username" in str(call_args)
 
     @pytest.mark.asyncio
-    async def test_on_after_register_auto_verifies_bogus_email(self):
+    async def test_on_after_register_auto_verifies_bogus_email(self) -> None:
         """Test on_after_register auto-verifies bogus emails."""
         mock_user_db = Mock()
         manager = UserManager(mock_user_db)
@@ -84,7 +84,7 @@ class TestUserManager:
                 assert mock_info.call_count >= 1
 
     @pytest.mark.asyncio
-    async def test_on_after_register_does_not_verify_non_bogus_email(self):
+    async def test_on_after_register_does_not_verify_non_bogus_email(self) -> None:
         """Test on_after_register does not verify non-bogus emails."""
         mock_user_db = Mock()
         manager = UserManager(mock_user_db)
@@ -99,7 +99,7 @@ class TestUserManager:
             assert user.is_verified is False
 
     @pytest.mark.asyncio
-    async def test_on_after_register_handles_none_email(self):
+    async def test_on_after_register_handles_none_email(self) -> None:
         """Test on_after_register handles None email."""
         mock_user_db = Mock()
         manager = UserManager(mock_user_db)
@@ -114,7 +114,7 @@ class TestUserManager:
         assert user.is_verified is False
 
     @pytest.mark.asyncio
-    async def test_on_after_forgot_password_logs_info(self):
+    async def test_on_after_forgot_password_logs_info(self) -> None:
         """Test on_after_forgot_password logs info."""
         mock_user_db = Mock()
         manager = UserManager(mock_user_db)
@@ -130,7 +130,7 @@ class TestUserManager:
             assert "forgot" in str(call_args).lower() or "reset_token" in str(call_args)
 
     @pytest.mark.asyncio
-    async def test_on_after_request_verify_logs_info(self):
+    async def test_on_after_request_verify_logs_info(self) -> None:
         """Test on_after_request_verify logs info."""
         mock_user_db = Mock()
         manager = UserManager(mock_user_db)
@@ -145,7 +145,7 @@ class TestUserManager:
             call_args = mock_info.call_args
             assert "verification" in str(call_args).lower() or "verification_token" in str(call_args)
 
-    def test_parse_id_with_uuid(self):
+    def test_parse_id_with_uuid(self) -> None:
         """Test parse_id with UUID instance."""
         mock_user_db = Mock()
         manager = UserManager(mock_user_db)
@@ -155,7 +155,7 @@ class TestUserManager:
         assert result == test_uuid
         assert isinstance(result, uuid.UUID)
 
-    def test_parse_id_with_string(self):
+    def test_parse_id_with_string(self) -> None:
         """Test parse_id with string UUID."""
         mock_user_db = Mock()
         manager = UserManager(mock_user_db)
@@ -165,7 +165,7 @@ class TestUserManager:
         assert result == test_uuid
         assert isinstance(result, uuid.UUID)
 
-    def test_parse_id_with_invalid_string(self):
+    def test_parse_id_with_invalid_string(self) -> None:
         """Test parse_id raises InvalidID for invalid string."""
         mock_user_db = Mock()
         manager = UserManager(mock_user_db)
@@ -173,7 +173,7 @@ class TestUserManager:
         with pytest.raises(InvalidID):
             manager.parse_id("not-a-valid-uuid")
 
-    def test_parse_id_with_invalid_type(self):
+    def test_parse_id_with_invalid_type(self) -> None:
         """Test parse_id raises InvalidID for invalid type."""
         mock_user_db = Mock()
         manager = UserManager(mock_user_db)
@@ -181,7 +181,7 @@ class TestUserManager:
         with pytest.raises(InvalidID):
             manager.parse_id(12345)  # Integer is not a valid UUID
 
-    def test_parse_id_with_none(self):
+    def test_parse_id_with_none(self) -> None:
         """Test parse_id raises InvalidID for None."""
         mock_user_db = Mock()
         manager = UserManager(mock_user_db)
@@ -193,7 +193,7 @@ class TestUserManager:
 class TestAuthBackend:
     """Test authentication backend configuration."""
 
-    def test_get_auth_backend_returns_backend(self):
+    def test_get_auth_backend_returns_backend(self) -> None:
         """Test get_auth_backend returns AuthenticationBackend."""
         backend = get_auth_backend()
         assert backend is not None
@@ -201,7 +201,7 @@ class TestAuthBackend:
         assert backend.transport is not None
         assert backend.get_strategy is not None
 
-    def test_get_username_auth_backend_returns_backend(self):
+    def test_get_username_auth_backend_returns_backend(self) -> None:
         """Test get_username_auth_backend returns UsernameAuthenticationBackend."""
         backend = get_username_auth_backend()
         assert backend is not None
@@ -213,7 +213,7 @@ class TestGetCurrentUserWithLogging:
     """Test get_current_user_with_logging functionality."""
 
     @pytest.mark.asyncio
-    async def test_get_current_user_with_logging_success(self):
+    async def test_get_current_user_with_logging_success(self) -> None:
         """Test get_current_user_with_logging with successful authentication."""
         mock_user = Mock(spec=User)
         mock_user.username = "testuser"
@@ -240,7 +240,7 @@ class TestGetCurrentUserWithLogging:
                 mock_logger.info.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_get_current_user_with_logging_no_user(self):
+    async def test_get_current_user_with_logging_no_user(self) -> None:
         """Test get_current_user_with_logging when no user is returned."""
         mock_request = Mock(spec=Request)
         mock_request.headers = {"Authorization": "Bearer invalid_token"}
@@ -260,7 +260,7 @@ class TestGetCurrentUserWithLogging:
                 mock_logger.warning.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_get_current_user_with_logging_exception(self):
+    async def test_get_current_user_with_logging_exception(self) -> None:
         """Test get_current_user_with_logging handles exceptions."""
         mock_request = Mock(spec=Request)
         mock_request.headers = {"Authorization": "Bearer token"}
@@ -280,7 +280,7 @@ class TestGetCurrentUserWithLogging:
                 mock_logger.debug.assert_called()
 
     @pytest.mark.asyncio
-    async def test_get_current_user_with_logging_no_request(self):
+    async def test_get_current_user_with_logging_no_request(self) -> None:
         """Test get_current_user_with_logging with None request."""
         mock_logger = Mock()
         mock_logger.debug = Mock()
@@ -296,7 +296,7 @@ class TestGetCurrentUserWithLogging:
                 mock_logger.debug.assert_called()
 
     @pytest.mark.asyncio
-    async def test_get_current_user_with_logging_long_auth_header(self):
+    async def test_get_current_user_with_logging_long_auth_header(self) -> None:
         """Test get_current_user_with_logging truncates long auth headers."""
         mock_request = Mock(spec=Request)
         long_token = "Bearer " + "x" * 100  # Very long token

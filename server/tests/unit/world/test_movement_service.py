@@ -25,7 +25,7 @@ from server.models.room import Room
 class TestMovementService:
     """Test the MovementService class."""
 
-    def test_movement_service_creation(self):
+    def test_movement_service_creation(self) -> None:
         """Test that MovementService can be created successfully."""
         event_bus = Mock(spec=EventBus)
         mock_persistence = Mock()
@@ -37,7 +37,7 @@ class TestMovementService:
         assert hasattr(service, "_persistence")
         assert hasattr(service, "_lock")
 
-    def test_movement_service_creation_without_event_bus(self):
+    def test_movement_service_creation_without_event_bus(self) -> None:
         """Test that MovementService can be created without EventBus."""
         mock_persistence = Mock()
 
@@ -46,7 +46,7 @@ class TestMovementService:
         assert service is not None
         assert service._event_bus is None
 
-    def test_move_player_success(self):
+    def test_move_player_success(self) -> None:
         """Test successful player movement."""
         # Create mock persistence layer
         mock_persistence = Mock()
@@ -62,11 +62,12 @@ class TestMovementService:
         mock_from_room = Mock()
         mock_to_room = Mock()
 
+        def get_room_side_effect(room_id):
+            return mock_from_room if room_id == "room1" else mock_to_room
+
         # Configure mocks
         mock_persistence.get_player_by_id = AsyncMock(return_value=player)
-        mock_persistence.get_room_by_id = Mock(
-            side_effect=lambda room_id: mock_from_room if room_id == "room1" else mock_to_room
-        )
+        mock_persistence.get_room_by_id = Mock(side_effect=get_room_side_effect)
         mock_persistence.save_player = AsyncMock()
         mock_from_room.has_player.return_value = True
         mock_to_room.has_player.return_value = False
@@ -96,7 +97,7 @@ class TestMovementService:
         mock_persistence.save_player.assert_called_once()
         assert player.current_room_id == "room2"
 
-    def test_move_player_empty_player_id(self):
+    def test_move_player_empty_player_id(self) -> None:
         """Test that empty player ID raises ValidationError."""
         mock_persistence = Mock()
 
@@ -105,7 +106,7 @@ class TestMovementService:
         with pytest.raises(ValidationError, match="Player ID cannot be empty"):
             asyncio.run(service.move_player("", "room1", "room2"))
 
-    def test_move_player_empty_from_room_id(self):
+    def test_move_player_empty_from_room_id(self) -> None:
         """Test that empty from room ID raises ValidationError."""
         mock_persistence = Mock()
 
@@ -114,7 +115,7 @@ class TestMovementService:
         with pytest.raises(ValidationError, match="From room ID cannot be empty"):
             asyncio.run(service.move_player("player1", "", "room2"))
 
-    def test_move_player_empty_to_room_id(self):
+    def test_move_player_empty_to_room_id(self) -> None:
         """Test that empty to room ID raises ValidationError."""
         mock_persistence = Mock()
 
@@ -123,7 +124,7 @@ class TestMovementService:
         with pytest.raises(ValidationError, match="To room ID cannot be empty"):
             asyncio.run(service.move_player("player1", "room1", ""))
 
-    def test_move_player_same_room(self):
+    def test_move_player_same_room(self) -> None:
         """Test that moving to the same room returns False."""
         mock_persistence = Mock()
 
@@ -133,7 +134,7 @@ class TestMovementService:
 
         assert result is False
 
-    def test_move_player_from_room_not_found(self):
+    def test_move_player_from_room_not_found(self) -> None:
         """Test that moving from non-existent room raises DatabaseError (wrapped from ValidationError)."""
         import uuid as uuid_module
         from uuid import uuid4
@@ -158,11 +159,13 @@ class TestMovementService:
         # Make get_room_by_id return None for the from_room to trigger the exception
         # Return a valid room for to_room so validation passes
         mock_to_room = Mock(spec=Room)
-        mock_persistence.get_room_by_id = Mock(
-            side_effect=(
-                lambda room_id: None if room_id == "nonexistent" else (mock_to_room if room_id == "room2" else None)
-            )
-        )
+
+        def get_room_side_effect(room_id):
+            if room_id == "nonexistent":
+                return None
+            return mock_to_room if room_id == "room2" else None
+
+        mock_persistence.get_room_by_id = Mock(side_effect=get_room_side_effect)
 
         service = MovementService(async_persistence=mock_persistence)
         # The service should raise DatabaseError when from_room is not found
@@ -176,7 +179,7 @@ class TestMovementService:
             # Exception is also acceptable
             assert "From room" in str(e) or "not found" in str(e)
 
-    def test_move_player_to_room_not_found(self):
+    def test_move_player_to_room_not_found(self) -> None:
         """Test that moving to non-existent room raises DatabaseError (wrapped from ValidationError)."""
         import uuid as uuid_module
         from uuid import uuid4
@@ -198,14 +201,12 @@ class TestMovementService:
         mock_from_room.has_player.return_value = True
         mock_from_room.exits = {"north": "nonexistent"}
         mock_from_room.id = "room1"
-        mock_persistence.get_room_by_id = Mock(
-            side_effect=lambda room_id: mock_from_room if room_id == "room1" else None
-        )
+
+        def get_room_side_effect(room_id):
+            return mock_from_room if room_id == "room1" else None
 
         mock_persistence.get_player_by_id = AsyncMock(side_effect=get_player_side_effect)
-        mock_persistence.get_room_by_id = Mock(
-            side_effect=lambda room_id: mock_from_room if room_id == "room1" else None
-        )
+        mock_persistence.get_room_by_id = Mock(side_effect=get_room_side_effect)
 
         service = MovementService(async_persistence=mock_persistence)
         # The service should raise DatabaseError when to_room is not found
@@ -218,7 +219,7 @@ class TestMovementService:
             # Exception is also acceptable
             assert "To room" in str(e) or "not found" in str(e)
 
-    def test_move_player_not_in_from_room(self):
+    def test_move_player_not_in_from_room(self) -> None:
         """Test that moving player not in from room returns False."""
         from uuid import uuid4
 
@@ -233,9 +234,13 @@ class TestMovementService:
 
         mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
         mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-        mock_persistence.get_room_by_id = Mock(
-            side_effect=lambda room_id: {"room1": mock_from_room, "room2": mock_to_room}.get(room_id)
-        )
+
+        def get_room_by_id(room_id: str) -> Mock | None:
+            """Helper function to return the appropriate mock room based on room_id."""
+            rooms = {"room1": mock_from_room, "room2": mock_to_room}
+            return rooms.get(room_id)
+
+        mock_persistence.get_room_by_id = Mock(side_effect=get_room_by_id)
         mock_from_room.has_player.return_value = False  # Player not in from room
 
         service = MovementService(async_persistence=mock_persistence)
@@ -244,7 +249,7 @@ class TestMovementService:
 
         assert result is False
 
-    def test_move_player_already_in_to_room(self):
+    def test_move_player_already_in_to_room(self) -> None:
         """Test that moving player already in to room returns False."""
         import uuid as uuid_module
         from uuid import uuid4
@@ -265,9 +270,8 @@ class TestMovementService:
         mock_from_room.exits = {"north": "room2"}
         mock_from_room.id = "room1"
         mock_to_room.id = "room2"
-        mock_persistence.get_room_by_id = Mock(
-            side_effect=lambda room_id: {"room1": mock_from_room, "room2": mock_to_room}.get(room_id)
-        )
+        rooms = {"room1": mock_from_room, "room2": mock_to_room}
+        mock_persistence.get_room_by_id = Mock(side_effect=rooms.get)
         # Player is in from_room (for validation to pass)
         mock_from_room.has_player.return_value = True
         # Player is also in to_room (should cause failure)
@@ -279,7 +283,7 @@ class TestMovementService:
 
         assert result is False
 
-    def test_move_player_blocked_during_combat(self):
+    def test_move_player_blocked_during_combat(self) -> None:
         """Test that player cannot move while in combat.
 
         As documented in the Pnakotic Manuscripts, players engaged in mortal
@@ -303,11 +307,12 @@ class TestMovementService:
         mock_from_room = Mock()
         mock_to_room = Mock()
 
+        def get_room_side_effect(room_id):
+            return mock_from_room if room_id == "room1" else mock_to_room
+
         # Configure mocks - player is in combat
         mock_persistence.get_player_by_id = AsyncMock(return_value=player)
-        mock_persistence.get_room_by_id = Mock(
-            side_effect=lambda room_id: mock_from_room if room_id == "room1" else mock_to_room
-        )
+        mock_persistence.get_room_by_id = Mock(side_effect=get_room_side_effect)
         mock_persistence.save_player = AsyncMock()
         mock_from_room.has_player.return_value = True
         mock_to_room.has_player.return_value = False
@@ -333,7 +338,7 @@ class TestMovementService:
         mock_to_room.player_entered.assert_not_called()
         mock_persistence.save_player.assert_not_called()
 
-    def test_move_player_allowed_when_not_in_combat(self):
+    def test_move_player_allowed_when_not_in_combat(self) -> None:
         """Test that player can move when not in combat."""
         from uuid import uuid4
 
@@ -352,11 +357,12 @@ class TestMovementService:
         mock_from_room = Mock()
         mock_to_room = Mock()
 
+        def get_room_side_effect(room_id):
+            return mock_from_room if room_id == "room1" else mock_to_room
+
         # Configure mocks - player is NOT in combat
         mock_persistence.get_player_by_id = AsyncMock(return_value=player)
-        mock_persistence.get_room_by_id = Mock(
-            side_effect=lambda room_id: mock_from_room if room_id == "room1" else mock_to_room
-        )
+        mock_persistence.get_room_by_id = Mock(side_effect=get_room_side_effect)
         mock_persistence.save_player = AsyncMock()
         mock_from_room.has_player.return_value = True
         mock_to_room.has_player.return_value = False
@@ -383,7 +389,7 @@ class TestMovementService:
         mock_persistence.save_player.assert_called_once()
         assert player.current_room_id == "room2"
 
-    def test_move_player_allowed_when_no_combat_service(self):
+    def test_move_player_allowed_when_no_combat_service(self) -> None:
         """Test that player can move when player_combat_service is not provided.
 
         This ensures backward compatibility when the service is not available.
@@ -402,11 +408,12 @@ class TestMovementService:
         mock_from_room = Mock()
         mock_to_room = Mock()
 
+        def get_room_side_effect(room_id):
+            return mock_from_room if room_id == "room1" else mock_to_room
+
         # Configure mocks
         mock_persistence.get_player_by_id = AsyncMock(return_value=player)
-        mock_persistence.get_room_by_id = Mock(
-            side_effect=lambda room_id: mock_from_room if room_id == "room1" else mock_to_room
-        )
+        mock_persistence.get_room_by_id = Mock(side_effect=get_room_side_effect)
         mock_persistence.save_player = AsyncMock()
         mock_from_room.has_player.return_value = True
         mock_to_room.has_player.return_value = False
@@ -430,7 +437,7 @@ class TestMovementService:
         mock_to_room.player_entered.assert_called_once_with(player_id_uuid, force_event=True)
         mock_persistence.save_player.assert_called_once()
 
-    def test_add_player_to_room_success(self):
+    def test_add_player_to_room_success(self) -> None:
         """Test successful addition of player to room."""
         import uuid as uuid_module
         from uuid import uuid4
@@ -467,7 +474,7 @@ class TestMovementService:
         mock_persistence.save_player.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_add_player_to_room_already_in_room(self):
+    async def test_add_player_to_room_already_in_room(self) -> None:
         """Test adding player already in room returns True."""
         mock_persistence = Mock()
         mock_room = Mock(spec=Room)
@@ -483,7 +490,7 @@ class TestMovementService:
         mock_room.player_entered.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_add_player_to_room_room_not_found(self):
+    async def test_add_player_to_room_room_not_found(self) -> None:
         """Test adding player to non-existent room returns False."""
         mock_persistence = Mock()
         mock_persistence.get_room_by_id = Mock(return_value=None)
@@ -495,7 +502,7 @@ class TestMovementService:
         assert result is False
 
     @pytest.mark.asyncio
-    async def test_add_player_to_room_empty_player_id(self):
+    async def test_add_player_to_room_empty_player_id(self) -> None:
         """Test that empty player ID raises ValidationError."""
         mock_persistence = Mock()
 
@@ -505,7 +512,7 @@ class TestMovementService:
             await service.add_player_to_room("", "room1")
 
     @pytest.mark.asyncio
-    async def test_add_player_to_room_empty_room_id(self):
+    async def test_add_player_to_room_empty_room_id(self) -> None:
         """Test that empty room ID raises ValidationError."""
         mock_persistence = Mock()
 
@@ -514,7 +521,7 @@ class TestMovementService:
         with pytest.raises(ValidationError, match="Room ID cannot be empty"):
             await service.add_player_to_room("player1", "")
 
-    def test_remove_player_from_room_success(self):
+    def test_remove_player_from_room_success(self) -> None:
         """Test successful removal of player from room."""
         mock_persistence = Mock()
         mock_room = Mock(spec=Room)
@@ -529,7 +536,7 @@ class TestMovementService:
         assert result is True
         mock_room.player_left.assert_called_once_with("player1")
 
-    def test_remove_player_from_room_not_in_room(self):
+    def test_remove_player_from_room_not_in_room(self) -> None:
         """Test removing player not in room returns True."""
         mock_persistence = Mock()
         mock_room = Mock(spec=Room)
@@ -544,7 +551,7 @@ class TestMovementService:
         assert result is True
         mock_room.player_left.assert_not_called()
 
-    def test_remove_player_from_room_room_not_found(self):
+    def test_remove_player_from_room_room_not_found(self) -> None:
         """Test removing player from non-existent room returns False."""
         mock_persistence = Mock()
         mock_persistence.get_room_by_id = Mock(return_value=None)
@@ -555,7 +562,7 @@ class TestMovementService:
 
         assert result is False
 
-    def test_remove_player_from_room_empty_player_id(self):
+    def test_remove_player_from_room_empty_player_id(self) -> None:
         """Test that empty player ID raises ValidationError."""
         mock_persistence = Mock()
 
@@ -564,7 +571,7 @@ class TestMovementService:
         with pytest.raises(ValidationError, match="Player ID cannot be empty"):
             service.remove_player_from_room("", "room1")
 
-    def test_remove_player_from_room_empty_room_id(self):
+    def test_remove_player_from_room_empty_room_id(self) -> None:
         """Test that empty room ID raises ValidationError."""
         mock_persistence = Mock()
 
@@ -574,9 +581,8 @@ class TestMovementService:
             service.remove_player_from_room("player1", "")
 
     @pytest.mark.asyncio
-    async def test_get_player_room_success(self):
+    async def test_get_player_room_success(self) -> None:
         """Test getting player's current room."""
-        from unittest.mock import AsyncMock
         from uuid import uuid4
 
         mock_persistence = AsyncMock()
@@ -592,10 +598,8 @@ class TestMovementService:
         assert result == "room1"
 
     @pytest.mark.asyncio
-    async def test_get_player_room_player_not_found(self):
+    async def test_get_player_room_player_not_found(self) -> None:
         """Test getting room for non-existent player returns None."""
-        from unittest.mock import AsyncMock
-
         mock_persistence = AsyncMock()
         mock_persistence.get_player_by_id = AsyncMock(return_value=None)
 
@@ -606,10 +610,8 @@ class TestMovementService:
         assert result is None
 
     @pytest.mark.asyncio
-    async def test_get_player_room_empty_player_id(self):
+    async def test_get_player_room_empty_player_id(self) -> None:
         """Test that empty player ID raises ValidationError."""
-        from unittest.mock import AsyncMock
-
         mock_persistence = AsyncMock()
 
         service = MovementService(async_persistence=mock_persistence)
@@ -617,7 +619,7 @@ class TestMovementService:
         with pytest.raises(ValidationError, match="Player ID cannot be empty"):
             await service.get_player_room("")
 
-    def test_get_room_players_success(self):
+    def test_get_room_players_success(self) -> None:
         """Test getting players in a room."""
         mock_persistence = Mock()
         mock_room = Mock(spec=Room)
@@ -631,7 +633,7 @@ class TestMovementService:
 
         assert result == ["player1", "player2"]
 
-    def test_get_room_players_room_not_found(self):
+    def test_get_room_players_room_not_found(self) -> None:
         """Test getting players from non-existent room returns empty list."""
         mock_persistence = Mock()
         mock_persistence.get_room_by_id = Mock(return_value=None)
@@ -642,7 +644,7 @@ class TestMovementService:
 
         assert result == []
 
-    def test_get_room_players_empty_room_id(self):
+    def test_get_room_players_empty_room_id(self) -> None:
         """Test that empty room ID raises ValidationError."""
         mock_persistence = Mock()
 
@@ -651,7 +653,7 @@ class TestMovementService:
         with pytest.raises(ValidationError, match="Room ID cannot be empty"):
             service.get_room_players("")
 
-    def test_validate_player_location_success(self):
+    def test_validate_player_location_success(self) -> None:
         """Test validating player location returns True."""
         mock_persistence = Mock()
         mock_room = Mock(spec=Room)
@@ -665,7 +667,7 @@ class TestMovementService:
 
         assert result is True
 
-    def test_validate_player_location_player_not_in_room(self):
+    def test_validate_player_location_player_not_in_room(self) -> None:
         """Test validating player not in room returns False."""
         mock_persistence = Mock()
         mock_room = Mock(spec=Room)
@@ -679,7 +681,7 @@ class TestMovementService:
 
         assert result is False
 
-    def test_validate_player_location_room_not_found(self):
+    def test_validate_player_location_room_not_found(self) -> None:
         """Test validating player location in non-existent room returns False."""
         mock_persistence = Mock()
         mock_persistence.get_room_by_id = Mock(return_value=None)
@@ -690,7 +692,7 @@ class TestMovementService:
 
         assert result is False
 
-    def test_validate_player_location_empty_player_id(self):
+    def test_validate_player_location_empty_player_id(self) -> None:
         """Test that empty player ID raises ValidationError."""
         mock_persistence = Mock()
 
@@ -699,7 +701,7 @@ class TestMovementService:
         with pytest.raises(ValidationError, match="Player ID cannot be empty"):
             service.validate_player_location("", "room1")
 
-    def test_validate_player_location_empty_room_id(self):
+    def test_validate_player_location_empty_room_id(self) -> None:
         """Test that empty room ID raises ValidationError."""
         mock_persistence = Mock()
 
@@ -708,7 +710,7 @@ class TestMovementService:
         with pytest.raises(ValidationError, match="Room ID cannot be empty"):
             service.validate_player_location("player1", "")
 
-    def test_serial_movements(self):
+    def test_serial_movements(self) -> None:
         """Test that movements are handled correctly in serial execution."""
 
         mock_persistence = Mock()
@@ -717,9 +719,8 @@ class TestMovementService:
         mock_player = Mock()
 
         # Setup mocks
-        mock_persistence.get_room_by_id = Mock(
-            side_effect=lambda room_id: {"room1": mock_from_room, "room2": mock_to_room}.get(room_id)
-        )
+        room_map = {"room1": mock_from_room, "room2": mock_to_room}
+        mock_persistence.get_room_by_id = Mock(side_effect=room_map.get)
         mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
         mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_persistence.save_player = AsyncMock()
@@ -770,7 +771,7 @@ systems is essential for maintaining the integrity of our eldritch architecture.
 class TestComprehensiveMovement:
     """Test complex movement scenarios and edge cases."""
 
-    def test_multi_room_movement_chain(self):
+    def test_multi_room_movement_chain(self) -> None:
         """Test a player moving through multiple rooms in sequence."""
         import uuid as uuid_module
         from uuid import uuid4
@@ -806,16 +807,18 @@ class TestComprehensiveMovement:
                 return player if pid == player_uuid else None
             return player if str(pid) == test_player_id else None
 
-        # Mock persistence
-        mock_persistence = Mock()
-        mock_persistence.get_room_by_id = Mock(
-            side_effect=lambda room_id: {
+        def get_room_side_effect(room_id):
+            rooms = {
                 "room1": room1,
                 "room2": room2,
                 "room3": room3,
                 "room4": room4,
-            }.get(room_id)
-        )
+            }
+            return rooms.get(room_id)
+
+        # Mock persistence
+        mock_persistence = Mock()
+        mock_persistence.get_room_by_id = Mock(side_effect=get_room_side_effect)
         mock_persistence.get_player_by_id = AsyncMock(side_effect=get_player_side_effect)
         mock_persistence.save_player = AsyncMock()
 
@@ -835,7 +838,7 @@ class TestComprehensiveMovement:
         assert player_uuid not in room2.get_players() and test_player_id not in room2.get_players()
         assert player_uuid not in room3.get_players() and test_player_id not in room3.get_players()
 
-    def test_circular_movement(self):
+    def test_circular_movement(self) -> None:
         """Test a player moving in a circle and ending up back where they started."""
         import uuid as uuid_module
         from uuid import uuid4
@@ -869,11 +872,13 @@ class TestComprehensiveMovement:
                 return player if pid == player_uuid else None
             return player if str(pid) == test_player_id else None
 
+        def get_room_side_effect(room_id):
+            rooms = {"room1": room1, "room2": room2, "room3": room3}
+            return rooms.get(room_id)
+
         # Mock persistence
         mock_persistence = Mock()
-        mock_persistence.get_room_by_id = Mock(
-            side_effect=lambda room_id: {"room1": room1, "room2": room2, "room3": room3}.get(room_id)
-        )
+        mock_persistence.get_room_by_id = Mock(side_effect=get_room_side_effect)
         mock_persistence.get_player_by_id = AsyncMock(side_effect=get_player_side_effect)
         mock_persistence.save_player = AsyncMock()
 
@@ -892,7 +897,7 @@ class TestComprehensiveMovement:
         assert player_uuid not in room2.get_players() and test_player_id not in room2.get_players()
         assert player_uuid not in room3.get_players() and test_player_id not in room3.get_players()
 
-    def test_multiple_players_movement(self):
+    def test_multiple_players_movement(self) -> None:
         """Test multiple players moving simultaneously without conflicts."""
         import uuid as uuid_module
         from uuid import uuid4
@@ -933,11 +938,13 @@ class TestComprehensiveMovement:
                 return player3
             return None
 
+        def get_room_side_effect(room_id):
+            rooms = {"room1": room1, "room2": room2}
+            return rooms.get(room_id)
+
         # Mock persistence
         mock_persistence = Mock()
-        mock_persistence.get_room_by_id = Mock(
-            side_effect=lambda room_id: {"room1": room1, "room2": room2}.get(room_id)
-        )
+        mock_persistence.get_room_by_id = Mock(side_effect=get_room_side_effect)
         mock_persistence.get_player_by_id = AsyncMock(side_effect=get_player_side_effect)
         mock_persistence.save_player = AsyncMock()
 
@@ -968,7 +975,7 @@ class TestComprehensiveMovement:
         # Verify room1 is empty
         assert len(room1.get_players()) == 0
 
-    def test_serial_player_movement(self):
+    def test_serial_player_movement(self) -> None:
         """Test multiple players moving in serial execution without race conditions."""
         # Create rooms
         room_data_1 = {"id": "room1", "name": "Room 1", "description": "First room", "exits": {"east": "room2"}}
@@ -977,11 +984,13 @@ class TestComprehensiveMovement:
         room1 = Room(room_data_1)
         room2 = Room(room_data_2)
 
+        def get_room_side_effect(room_id):
+            rooms = {"room1": room1, "room2": room2}
+            return rooms.get(room_id)
+
         # Mock persistence
         mock_persistence = Mock()
-        mock_persistence.get_room_by_id = Mock(
-            side_effect=lambda room_id: {"room1": room1, "room2": room2}.get(room_id)
-        )
+        mock_persistence.get_room_by_id = Mock(side_effect=get_room_side_effect)
 
         # Create multiple players
         mock_players = {}
@@ -997,8 +1006,14 @@ class TestComprehensiveMovement:
             mock_player.current_room_id = "room1"
             mock_players[f"player{i}"] = mock_player
 
-        mock_persistence.get_player_by_id = AsyncMock(side_effect=lambda player_id: mock_players.get(str(player_id)))
-        mock_persistence.get_player_by_name = AsyncMock(side_effect=lambda name: mock_players.get(name))
+        def get_player_by_id_side_effect(player_id):
+            return mock_players.get(str(player_id))
+
+        def get_player_by_name_side_effect(name):
+            return mock_players.get(name)
+
+        mock_persistence.get_player_by_id = AsyncMock(side_effect=get_player_by_id_side_effect)
+        mock_persistence.get_player_by_name = AsyncMock(side_effect=get_player_by_name_side_effect)
         mock_persistence.save_player = AsyncMock()
 
         service = MovementService(async_persistence=mock_persistence)
@@ -1025,7 +1040,7 @@ class TestComprehensiveMovement:
         assert len(intersection) == 0, f"Players found in both rooms: {intersection}"
 
     @pytest.mark.asyncio
-    async def test_event_bus_integration(self):
+    async def test_event_bus_integration(self) -> None:
         """Test that movement events are properly published to the event bus."""
         # Create event bus with proper async setup
         event_bus = EventBus()
@@ -1060,11 +1075,13 @@ class TestComprehensiveMovement:
                 return player if pid == player_uuid else None
             return player if str(pid) == test_player_id else None
 
+        def get_room_side_effect(room_id):
+            rooms = {"room1": room1, "room2": room2}
+            return rooms.get(room_id)
+
         # Mock persistence
         mock_persistence = Mock()
-        mock_persistence.get_room_by_id = Mock(
-            side_effect=lambda room_id: {"room1": room1, "room2": room2}.get(room_id)
-        )
+        mock_persistence.get_room_by_id = Mock(side_effect=get_room_side_effect)
         mock_persistence.get_player_by_id = AsyncMock(side_effect=get_player_side_effect)
         mock_persistence.get_player_by_name = AsyncMock(side_effect=get_player_side_effect)
         mock_persistence.save_player = AsyncMock()
@@ -1089,8 +1106,10 @@ class TestComprehensiveMovement:
         assert PlayerLeftRoom in event_types
         assert PlayerEnteredRoom in event_types
 
-    def test_movement_validation_edge_cases(self):
+    def test_movement_validation_edge_cases(self) -> None:
         """Test edge cases in movement validation."""
+        from server.exceptions import DatabaseError
+
         # Create rooms
         room_data_1 = {"id": "room1", "name": "Room 1", "description": "First room", "exits": {"east": "room2"}}
         room_data_2 = {"id": "room2", "name": "Room 2", "description": "Second room", "exits": {"west": "room1"}}
@@ -1111,11 +1130,13 @@ class TestComprehensiveMovement:
                 return player if pid == player_uuid else None
             return player if str(pid) == test_player_id else None
 
+        def get_room_side_effect(room_id):
+            rooms = {"room1": room1, "room2": room2}
+            return rooms.get(room_id)
+
         # Mock persistence
         mock_persistence = Mock()
-        mock_persistence.get_room_by_id = Mock(
-            side_effect=lambda room_id: {"room1": room1, "room2": room2}.get(room_id)
-        )
+        mock_persistence.get_room_by_id = Mock(side_effect=get_room_side_effect)
         mock_persistence.get_player_by_id = AsyncMock(side_effect=get_player_side_effect)
         mock_persistence.save_player = AsyncMock()
 
@@ -1137,7 +1158,7 @@ class TestComprehensiveMovement:
         try:
             result = asyncio.run(service.move_player(test_player_id, "nonexistent", "room2"))
             assert result is False
-        except Exception:
+        except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError):
             # Exception is also acceptable
             pass
 
@@ -1145,14 +1166,14 @@ class TestComprehensiveMovement:
         try:
             result = asyncio.run(service.move_player(test_player_id, "room1", "nonexistent"))
             assert result is False
-        except Exception:
+        except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError):
             # Exception is also acceptable
             pass
 
         # Test moving to non-existent room (already handled above in try/except)
         # This line was redundant and has been removed
 
-    def test_room_occupant_tracking(self):
+    def test_room_occupant_tracking(self) -> None:
         """Test that room occupant tracking works correctly with multiple operations."""
         # Create room
         room_data = {"id": "room1", "name": "Room 1", "description": "First room", "exits": {}}
@@ -1212,7 +1233,7 @@ class TestComprehensiveMovement:
         assert room.is_empty() is True
         assert room.get_occupant_count() == 0
 
-    def test_movement_with_objects_and_npcs(self):
+    def test_movement_with_objects_and_npcs(self) -> None:
         """Test movement when rooms contain objects and NPCs."""
         # Create rooms with objects and NPCs
         room_data_1 = {"id": "room1", "name": "Room 1", "description": "First room", "exits": {"east": "room2"}}
@@ -1243,11 +1264,13 @@ class TestComprehensiveMovement:
                 return player if pid == player_uuid else None
             return player if str(pid) == test_player_id else None
 
+        def get_room_side_effect(room_id):
+            rooms = {"room1": room1, "room2": room2}
+            return rooms.get(room_id)
+
         # Mock persistence
         mock_persistence = Mock()
-        mock_persistence.get_room_by_id = Mock(
-            side_effect=lambda room_id: {"room1": room1, "room2": room2}.get(room_id)
-        )
+        mock_persistence.get_room_by_id = Mock(side_effect=get_room_side_effect)
         mock_persistence.get_player_by_id = AsyncMock(side_effect=get_player_side_effect)
         mock_persistence.save_player = AsyncMock()
 
@@ -1275,7 +1298,7 @@ class TestComprehensiveMovement:
         assert "beggar" in room2.get_npcs()
         assert room2.get_occupant_count() == 4  # 1 player + 1 object + 2 NPCs
 
-    def test_movement_failure_recovery(self):
+    def test_movement_failure_recovery(self) -> None:
         """Test that the system recovers gracefully from movement failures."""
         # Create rooms
         room_data_1 = {"id": "room1", "name": "Room 1", "description": "First room", "exits": {"east": "room2"}}
@@ -1297,11 +1320,13 @@ class TestComprehensiveMovement:
                 return player if pid == player_uuid else None
             return player if str(pid) == test_player_id else None
 
+        def get_room_side_effect(room_id):
+            rooms = {"room1": room1, "room2": room2}
+            return rooms.get(room_id)
+
         # Mock persistence that fails intermittently
         mock_persistence = Mock()
-        mock_persistence.get_room_by_id = Mock(
-            side_effect=lambda room_id: {"room1": room1, "room2": room2}.get(room_id)
-        )
+        mock_persistence.get_room_by_id = Mock(side_effect=get_room_side_effect)
         mock_persistence.get_player_by_id = AsyncMock(side_effect=get_player_side_effect)
         mock_persistence.save_player = AsyncMock()
 
@@ -1323,7 +1348,7 @@ class TestComprehensiveMovement:
         assert player_uuid not in room1.get_players() and test_player_id not in room1.get_players()
         assert player_uuid in room2.get_players() or test_player_id in room2.get_players()
 
-    def test_movement_with_event_bus_failures(self):
+    def test_movement_with_event_bus_failures(self) -> None:
         """Test that movement works even when event bus fails."""
         # Create event bus that fails
         event_bus = Mock()
@@ -1349,11 +1374,13 @@ class TestComprehensiveMovement:
                 return player if pid == player_uuid else None
             return player if str(pid) == test_player_id else None
 
+        def get_room_side_effect(room_id):
+            rooms = {"room1": room1, "room2": room2}
+            return rooms.get(room_id)
+
         # Mock persistence
         mock_persistence = Mock()
-        mock_persistence.get_room_by_id = Mock(
-            side_effect=lambda room_id: {"room1": room1, "room2": room2}.get(room_id)
-        )
+        mock_persistence.get_room_by_id = Mock(side_effect=get_room_side_effect)
         mock_persistence.get_player_by_id = AsyncMock(side_effect=get_player_side_effect)
         mock_persistence.get_player_by_name = AsyncMock(side_effect=get_player_side_effect)
         mock_persistence.save_player = AsyncMock()

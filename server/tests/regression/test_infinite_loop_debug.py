@@ -29,7 +29,10 @@ async def test_event_bus_creation_and_shutdown():
     from server.events import PlayerLeftRoom
 
     event = PlayerLeftRoom(player_id=str(uuid4()), room_id=str(uuid4()))
-    event.timestamp = None
+    # Fix assignment to datetime field
+    from typing import Any, cast
+
+    cast(Any, event).timestamp = None
     event_bus.publish(event)
 
     print("Waiting for processing...")
@@ -41,7 +44,7 @@ async def test_event_bus_creation_and_shutdown():
 
 
 @pytest.mark.asyncio
-async def test_async_fixture_directly(async_event_bus):
+async def test_async_fixture_directly(_async_event_bus):
     """Test the async_event_bus fixture directly."""
     print("Getting async_event_bus fixture...")
     print("Got EventBus from fixture")

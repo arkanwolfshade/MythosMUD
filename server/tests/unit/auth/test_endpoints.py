@@ -6,6 +6,7 @@ This module tests the registration, login, and authentication endpoints.
 
 import uuid
 from datetime import UTC, datetime
+from typing import Any, cast
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
@@ -30,19 +31,19 @@ from server.models.user import User
 class TestUserCreate:
     """Test UserCreate schema."""
 
-    def test_user_create_valid(self):
+    def test_user_create_valid(self) -> None:
         """Test UserCreate with valid data."""
         user_create = UserCreate(username="testuser", password="password123", email="test@example.com")
         assert user_create.username == "testuser"
         assert user_create.password == "password123"
         assert user_create.email == "test@example.com"
 
-    def test_user_create_password_empty(self):
+    def test_user_create_password_empty(self) -> None:
         """Test UserCreate rejects empty password."""
         with pytest.raises(ValueError, match="Password cannot be empty"):
             UserCreate(username="testuser", password="", email="test@example.com")
 
-    def test_user_create_password_whitespace_only(self):
+    def test_user_create_password_whitespace_only(self) -> None:
         """Test UserCreate rejects whitespace-only password."""
         with pytest.raises(ValueError, match="Password cannot be empty"):
             UserCreate(username="testuser", password="   ", email="test@example.com")
@@ -51,7 +52,7 @@ class TestUserCreate:
 class TestLoginRequest:
     """Test LoginRequest schema."""
 
-    def test_login_request_valid(self):
+    def test_login_request_valid(self) -> None:
         """Test LoginRequest with valid data."""
         login_req = LoginRequest(username="testuser", password="password123")
         assert login_req.username == "testuser"
@@ -62,7 +63,7 @@ class TestRegisterUser:
     """Test register_user endpoint."""
 
     @pytest.mark.asyncio
-    async def test_register_user_success(self):
+    async def test_register_user_success(self) -> None:
         """Test successful user registration."""
         user_create = UserCreate(username="newuser", password="password123", email="test@example.com")
         mock_request = Mock(spec=Request)
@@ -99,7 +100,7 @@ class TestRegisterUser:
                             assert any("JWT token generated" in str(call) for call in mock_debug.call_args_list)
 
     @pytest.mark.asyncio
-    async def test_register_user_with_invite_success(self):
+    async def test_register_user_with_invite_success(self) -> None:
         """Test register_user successfully marks invite as used."""
         user_create = UserCreate(
             username="newuser", password="password123", email="test@example.com", invite_code="INVITE-123"
@@ -132,7 +133,7 @@ class TestRegisterUser:
                         assert any("Invite marked as used" in str(call) for call in mock_info.call_args_list)
 
     @pytest.mark.asyncio
-    async def test_register_user_shutdown_pending(self):
+    async def test_register_user_shutdown_pending(self) -> None:
         """Test register_user raises exception when server is shutting down."""
         user_create = UserCreate(username="newuser", password="password123")
         mock_request = Mock(spec=Request)
@@ -149,7 +150,7 @@ class TestRegisterUser:
                 assert exc_info.value.status_code == 503
 
     @pytest.mark.asyncio
-    async def test_register_user_username_exists(self):
+    async def test_register_user_username_exists(self) -> None:
         """Test register_user raises exception when username already exists."""
         user_create = UserCreate(username="existinguser", password="password123", email="existing@example.com")
         mock_request = Mock(spec=Request)
@@ -170,7 +171,7 @@ class TestRegisterUser:
                 assert "Username already exists" in exc_info.value.detail
 
     @pytest.mark.asyncio
-    async def test_register_user_generates_email(self):
+    async def test_register_user_generates_email(self) -> None:
         """Test register_user generates email when not provided."""
         user_create = UserCreate(username="newuser", password="password123", email="")
         mock_request = Mock(spec=Request)
@@ -199,7 +200,7 @@ class TestRegisterUser:
                         assert any("Generated simple bogus email" in str(call) for call in mock_info.call_args_list)
 
     @pytest.mark.asyncio
-    async def test_register_user_integrity_error_username(self):
+    async def test_register_user_integrity_error_username(self) -> None:
         """Test register_user handles IntegrityError for duplicate username."""
         user_create = UserCreate(username="duplicateuser", password="password123", email="dup@example.com")
         mock_request = Mock(spec=Request)
@@ -210,7 +211,7 @@ class TestRegisterUser:
         mock_result = Mock()
         mock_result.scalar_one_or_none = Mock(return_value=None)  # scalar_one_or_none is synchronous
         mock_session.execute = AsyncMock(return_value=mock_result)
-        mock_session.commit = AsyncMock(side_effect=IntegrityError("statement", "params", "orig"))
+        mock_session.commit = AsyncMock(side_effect=IntegrityError("statement", "params", cast(Any, "orig")))
         mock_session.commit.side_effect.orig = Exception("users_username_key")
 
         with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
@@ -222,7 +223,7 @@ class TestRegisterUser:
                     assert "Username already exists" in exc_info.value.detail
 
     @pytest.mark.asyncio
-    async def test_register_user_integrity_error_email(self):
+    async def test_register_user_integrity_error_email(self) -> None:
         """Test register_user handles IntegrityError for duplicate email."""
         user_create = UserCreate(username="newuser", password="password123", email="duplicate@example.com")
         mock_request = Mock(spec=Request)
@@ -233,7 +234,7 @@ class TestRegisterUser:
         mock_result = Mock()
         mock_result.scalar_one_or_none = Mock(return_value=None)  # scalar_one_or_none is synchronous
         mock_session.execute = AsyncMock(return_value=mock_result)
-        mock_integrity_error = IntegrityError("statement", "params", "orig")
+        mock_integrity_error = IntegrityError("statement", "params", cast(Any, "orig"))
         mock_integrity_error.orig = Exception("users_email_key")
         mock_session.commit = AsyncMock(side_effect=mock_integrity_error)
 
@@ -250,7 +251,7 @@ class TestLoginUser:
     """Test login_user endpoint."""
 
     @pytest.mark.asyncio
-    async def test_login_user_success(self):
+    async def test_login_user_success(self) -> None:
         """Test successful user login."""
         login_req = LoginRequest(username="testuser", password="password123")
         mock_request = Mock(spec=Request)
@@ -287,7 +288,7 @@ class TestLoginUser:
                     assert len(result.characters) == 0  # MULTI-CHARACTER: New users have no characters
 
     @pytest.mark.asyncio
-    async def test_login_user_shutdown_pending(self):
+    async def test_login_user_shutdown_pending(self) -> None:
         """Test login_user raises exception when server is shutting down."""
         login_req = LoginRequest(username="testuser", password="password123")
         mock_request = Mock(spec=Request)
@@ -304,7 +305,7 @@ class TestLoginUser:
                     assert exc_info.value.status_code == 503
 
     @pytest.mark.asyncio
-    async def test_login_user_not_found(self):
+    async def test_login_user_not_found(self) -> None:
         """Test login_user raises exception when user not found."""
         login_req = LoginRequest(username="nonexistent", password="password123")
         mock_request = Mock(spec=Request)
@@ -324,7 +325,7 @@ class TestLoginUser:
                 assert "Invalid credentials" in exc_info.value.detail
 
     @pytest.mark.asyncio
-    async def test_login_user_no_email(self):
+    async def test_login_user_no_email(self) -> None:
         """Test login_user raises exception when user has no email."""
         login_req = LoginRequest(username="testuser", password="password123")
         mock_request = Mock(spec=Request)
@@ -349,7 +350,7 @@ class TestLoginUser:
                 assert "Invalid credentials" in exc_info.value.detail
 
     @pytest.mark.asyncio
-    async def test_login_user_authentication_failed(self):
+    async def test_login_user_authentication_failed(self) -> None:
         """Test login_user raises exception when authentication fails."""
         login_req = LoginRequest(username="testuser", password="wrongpassword")
         mock_request = Mock(spec=Request)
@@ -380,7 +381,7 @@ class TestLoginUser:
                     assert "Invalid credentials" in exc_info.value.detail
 
     @pytest.mark.asyncio
-    async def test_login_user_generic_exception(self):
+    async def test_login_user_generic_exception(self) -> None:
         """Test login_user handles generic exceptions during authentication."""
         login_req = LoginRequest(username="testuser", password="password123")
         mock_request = Mock(spec=Request)
@@ -413,7 +414,7 @@ class TestLoginUser:
                         mock_error.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_login_user_with_character(self):
+    async def test_login_user_with_character(self) -> None:
         """Test login_user returns characters list when player exists."""
         login_req = LoginRequest(username="testuser", password="password123")
         mock_request = Mock(spec=Request)
@@ -463,7 +464,7 @@ class TestLoginUser:
                         assert any("Login successful" in str(call) for call in mock_info.call_args_list)
 
     @pytest.mark.asyncio
-    async def test_login_user_without_character(self):
+    async def test_login_user_without_character(self) -> None:
         """Test login_user returns empty characters list when player doesn't exist."""
         login_req = LoginRequest(username="testuser", password="password123")
         mock_request = Mock(spec=Request)
@@ -504,7 +505,7 @@ class TestGetCurrentUserInfo:
     """Test get_current_user_info endpoint."""
 
     @pytest.mark.asyncio
-    async def test_get_current_user_info_success(self):
+    async def test_get_current_user_info_success(self) -> None:
         """Test get_current_user_info returns user information."""
 
         mock_user = Mock(spec=User)
@@ -525,7 +526,7 @@ class TestListInvites:
     """Test list_invites endpoint."""
 
     @pytest.mark.asyncio
-    async def test_list_invites_success(self):
+    async def test_list_invites_success(self) -> None:
         """Test list_invites returns list of invites."""
 
         mock_user = Mock(spec=User)
@@ -561,7 +562,7 @@ class TestCreateInvite:
     """Test create_invite endpoint."""
 
     @pytest.mark.asyncio
-    async def test_create_invite_success(self):
+    async def test_create_invite_success(self) -> None:
         """Test create_invite creates and returns invite."""
 
         mock_user = Mock(spec=User)

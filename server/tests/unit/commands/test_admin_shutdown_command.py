@@ -8,6 +8,7 @@ As documented in the Necronomicon's appendices, proper termination rituals
 are essential for maintaining the integrity of dimensional boundaries.
 """
 
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -31,7 +32,7 @@ def create_mock_task_registry():
     mock_task.cancel = MagicMock()
     mock_task.done = MagicMock(return_value=False)
 
-    def register_task_side_effect(coro, *args, **kwargs):
+    def register_task_side_effect(coro, *_args, **_kwargs):
         # Close the coroutine to prevent "never awaited" warning
         coro.close()
         return mock_task
@@ -44,7 +45,7 @@ class TestShutdownAdminPermissionValidation:
     """Test admin permission validation for shutdown command."""
 
     @pytest.mark.asyncio
-    async def test_validate_shutdown_admin_permission_success(self):
+    async def test_validate_shutdown_admin_permission_success(self) -> None:
         """Test successful admin permission validation."""
         mock_player = MagicMock()
         mock_player.is_admin = True
@@ -54,7 +55,7 @@ class TestShutdownAdminPermissionValidation:
         assert result is True
 
     @pytest.mark.asyncio
-    async def test_validate_shutdown_admin_permission_failure(self):
+    async def test_validate_shutdown_admin_permission_failure(self) -> None:
         """Test failed admin permission validation - non-admin player."""
         mock_player = MagicMock()
         mock_player.is_admin = False
@@ -64,14 +65,14 @@ class TestShutdownAdminPermissionValidation:
         assert result is False
 
     @pytest.mark.asyncio
-    async def test_validate_shutdown_admin_permission_no_player(self):
+    async def test_validate_shutdown_admin_permission_no_player(self) -> None:
         """Test admin permission validation with no player object."""
         result = await validate_shutdown_admin_permission(None, "test_user")
 
         assert result is False
 
     @pytest.mark.asyncio
-    async def test_validate_shutdown_admin_permission_no_admin_attribute(self):
+    async def test_validate_shutdown_admin_permission_no_admin_attribute(self) -> None:
         """Test admin permission validation when player has no is_admin attribute."""
         mock_player = MagicMock(spec=[])  # Player without is_admin attribute
 
@@ -83,7 +84,7 @@ class TestShutdownAdminPermissionValidation:
 class TestShutdownParameterParsing:
     """Test parameter parsing for shutdown command."""
 
-    def test_parse_shutdown_parameters_with_seconds(self):
+    def test_parse_shutdown_parameters_with_seconds(self) -> None:
         """Test parsing seconds parameter."""
         command_data = {"args": ["30"]}
 
@@ -92,7 +93,7 @@ class TestShutdownParameterParsing:
         assert action == "initiate"
         assert seconds == 30
 
-    def test_parse_shutdown_parameters_with_cancel(self):
+    def test_parse_shutdown_parameters_with_cancel(self) -> None:
         """Test parsing cancel parameter."""
         command_data = {"args": ["cancel"]}
 
@@ -101,25 +102,25 @@ class TestShutdownParameterParsing:
         assert action == "cancel"
         assert seconds is None
 
-    def test_parse_shutdown_parameters_default_seconds(self):
+    def test_parse_shutdown_parameters_default_seconds(self) -> None:
         """Test default seconds when no parameter provided."""
-        command_data = {"args": []}
+        command_data: dict[str, Any] = {"args": []}
 
         action, seconds = parse_shutdown_parameters(command_data)
 
         assert action == "initiate"
         assert seconds == 10  # Default value
 
-    def test_parse_shutdown_parameters_no_args_key(self):
+    def test_parse_shutdown_parameters_no_args_key(self) -> None:
         """Test parsing when args key is missing."""
-        command_data = {}
+        command_data: dict[str, Any] = {}
 
         action, seconds = parse_shutdown_parameters(command_data)
 
         assert action == "initiate"
         assert seconds == 10  # Default value
 
-    def test_parse_shutdown_parameters_invalid_number(self):
+    def test_parse_shutdown_parameters_invalid_number(self) -> None:
         """Test parsing invalid number parameter."""
         command_data = {"args": ["invalid"]}
 
@@ -128,7 +129,7 @@ class TestShutdownParameterParsing:
         assert action == "error"
         assert seconds is None
 
-    def test_parse_shutdown_parameters_negative_number(self):
+    def test_parse_shutdown_parameters_negative_number(self) -> None:
         """Test parsing negative number parameter."""
         command_data = {"args": ["-10"]}
 
@@ -137,7 +138,7 @@ class TestShutdownParameterParsing:
         assert action == "error"
         assert seconds is None
 
-    def test_parse_shutdown_parameters_zero_seconds(self):
+    def test_parse_shutdown_parameters_zero_seconds(self) -> None:
         """Test parsing zero seconds parameter."""
         command_data = {"args": ["0"]}
 
@@ -146,7 +147,7 @@ class TestShutdownParameterParsing:
         assert action == "error"
         assert seconds is None
 
-    def test_parse_shutdown_parameters_large_number(self):
+    def test_parse_shutdown_parameters_large_number(self) -> None:
         """Test parsing large valid number."""
         command_data = {"args": ["3600"]}  # 1 hour
 
@@ -155,7 +156,7 @@ class TestShutdownParameterParsing:
         assert action == "initiate"
         assert seconds == 3600
 
-    def test_parse_shutdown_parameters_case_insensitive_cancel(self):
+    def test_parse_shutdown_parameters_case_insensitive_cancel(self) -> None:
         """Test that cancel is case insensitive."""
         for cancel_variant in ["cancel", "Cancel", "CANCEL", "CaNcEl"]:
             command_data = {"args": [cancel_variant]}
@@ -170,9 +171,9 @@ class TestShutdownCommand:
     """Test shutdown command functionality."""
 
     @pytest.mark.asyncio
-    async def test_handle_shutdown_command_admin_initiate_default(self):
+    async def test_handle_shutdown_command_admin_initiate_default(self) -> None:
         """Test admin initiating shutdown with default countdown."""
-        command_data = {"command_type": "shutdown", "args": []}
+        command_data: dict[str, Any] = {"command_type": "shutdown", "args": []}
         mock_current_user = {"username": "admin_user"}
         mock_request = MagicMock()
         mock_app = MagicMock()
@@ -186,7 +187,7 @@ class TestShutdownCommand:
         mock_app.state.player_service = mock_player_service
 
         # Mock task registry (properly consumes coroutines)
-        mock_task_registry, mock_task = create_mock_task_registry()
+        mock_task_registry, _ = create_mock_task_registry()
         mock_app.state.task_registry = mock_task_registry
 
         # Mock connection manager
@@ -205,7 +206,7 @@ class TestShutdownCommand:
         assert "shutdown" in result["result"].lower()
 
     @pytest.mark.asyncio
-    async def test_handle_shutdown_command_admin_initiate_custom_seconds(self):
+    async def test_handle_shutdown_command_admin_initiate_custom_seconds(self) -> None:
         """Test admin initiating shutdown with custom countdown."""
         command_data = {"command_type": "shutdown", "args": ["60"]}
         mock_current_user = {"username": "admin_user"}
@@ -221,7 +222,7 @@ class TestShutdownCommand:
         mock_app.state.player_service = mock_player_service
 
         # Mock task registry (properly consumes coroutines)
-        mock_task_registry, mock_task = create_mock_task_registry()
+        mock_task_registry, _ = create_mock_task_registry()
         mock_app.state.task_registry = mock_task_registry
 
         # Mock connection manager
@@ -240,7 +241,7 @@ class TestShutdownCommand:
         assert "shutdown" in result["result"].lower()
 
     @pytest.mark.asyncio
-    async def test_handle_shutdown_command_admin_cancel(self):
+    async def test_handle_shutdown_command_admin_cancel(self) -> None:
         """Test admin canceling shutdown."""
         command_data = {"command_type": "shutdown", "args": ["cancel"]}
         mock_current_user = {"username": "admin_user"}
@@ -264,7 +265,7 @@ class TestShutdownCommand:
         assert "no active shutdown" in result["result"].lower() or "not" in result["result"].lower()
 
     @pytest.mark.asyncio
-    async def test_handle_shutdown_command_non_admin_denied(self):
+    async def test_handle_shutdown_command_non_admin_denied(self) -> None:
         """Test non-admin player being denied shutdown command."""
         command_data = {"command_type": "shutdown", "args": []}
         mock_current_user = {"username": "regular_user"}
@@ -288,7 +289,7 @@ class TestShutdownCommand:
         )
 
     @pytest.mark.asyncio
-    async def test_handle_shutdown_command_invalid_parameter(self):
+    async def test_handle_shutdown_command_invalid_parameter(self) -> None:
         """Test shutdown command with invalid parameter."""
         command_data = {"command_type": "shutdown", "args": ["invalid"]}
         mock_current_user = {"username": "admin_user"}
@@ -309,7 +310,7 @@ class TestShutdownCommand:
         assert "invalid" in result["result"].lower() or "error" in result["result"].lower()
 
     @pytest.mark.asyncio
-    async def test_handle_shutdown_command_no_player_service(self):
+    async def test_handle_shutdown_command_no_player_service(self) -> None:
         """Test shutdown command when player service unavailable."""
         command_data = {"command_type": "shutdown", "args": []}
         mock_current_user = {"username": "admin_user"}
@@ -324,7 +325,7 @@ class TestShutdownCommand:
         assert "not available" in result["result"].lower() or "unavailable" in result["result"].lower()
 
     @pytest.mark.asyncio
-    async def test_handle_shutdown_command_player_not_found(self):
+    async def test_handle_shutdown_command_player_not_found(self) -> None:
         """Test shutdown command when player not found."""
         command_data = {"command_type": "shutdown", "args": []}
         mock_current_user = {"username": "admin_user"}
@@ -343,7 +344,7 @@ class TestShutdownCommand:
         assert "not found" in result["result"].lower() or "unavailable" in result["result"].lower()
 
     @pytest.mark.asyncio
-    async def test_handle_shutdown_command_negative_seconds(self):
+    async def test_handle_shutdown_command_negative_seconds(self) -> None:
         """Test shutdown command with negative seconds."""
         command_data = {"command_type": "shutdown", "args": ["-5"]}
         mock_current_user = {"username": "admin_user"}

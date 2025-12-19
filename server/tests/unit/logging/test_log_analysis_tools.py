@@ -18,8 +18,10 @@ from unittest.mock import patch
 # Add the scripts directory to the path (from server/tests/unit/logging -> root/scripts)
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "scripts"))
 
-from analyze_error_logs import LogAnalyzer
-from error_monitoring import ErrorMonitor
+# Static analysis tools cannot resolve these imports due to runtime path manipulation
+# The path is correctly calculated at runtime, so we suppress the import error
+from analyze_error_logs import LogAnalyzer  # pylint: disable=import-error
+from error_monitoring import ErrorMonitor  # pylint: disable=import-error
 
 
 class TestLogAnalyzer(unittest.TestCase):
@@ -36,13 +38,13 @@ class TestLogAnalyzer(unittest.TestCase):
 
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
-    def test_analyzer_initialization(self):
+    def test_analyzer_initialization(self) -> None:
         """Test that the analyzer initializes correctly."""
         self.assertEqual(self.analyzer.log_dir, Path(self.temp_dir))
         self.assertEqual(len(self.analyzer.error_patterns), 0)
         self.assertEqual(len(self.analyzer.error_timeline), 0)
 
-    def test_extract_error_pattern(self):
+    def test_extract_error_pattern(self) -> None:
         """Test error pattern extraction."""
         # Test UUID removal
         message = "Connection failed for user 123e4567-e89b-12d3-a456-426614174000"
@@ -62,7 +64,7 @@ class TestLogAnalyzer(unittest.TestCase):
         self.assertIn("<PATH>", pattern)
         self.assertNotIn("C:\\Users\\test\\file.txt", pattern)
 
-    def test_categorize_error(self):
+    def test_categorize_error(self) -> None:
         """Test error categorization."""
         # Database error
         error = {"message": "Database connection failed", "logger": "db"}
@@ -94,7 +96,7 @@ class TestLogAnalyzer(unittest.TestCase):
         category = self.analyzer._categorize_error(error)
         self.assertEqual(category, "Other")
 
-    def test_parse_log_line_structured(self):
+    def test_parse_log_line_structured(self) -> None:
         """Test parsing of structured log lines."""
         line = "2025-09-06 10:05:09 - server.error_handlers - WARNING - HTTP exception handled"
         error = self.analyzer._parse_log_line(line, "test.log", 1)
@@ -106,7 +108,7 @@ class TestLogAnalyzer(unittest.TestCase):
         self.assertEqual(error["filename"], "test.log")
         self.assertEqual(error["line_number"], 1)
 
-    def test_parse_log_line_unstructured(self):
+    def test_parse_log_line_unstructured(self) -> None:
         """Test parsing of unstructured log lines with error keywords."""
         line = "Error: Something went wrong"
         error = self.analyzer._parse_log_line(line, "test.log", 1)
@@ -115,14 +117,14 @@ class TestLogAnalyzer(unittest.TestCase):
         self.assertEqual(error["level"], "UNKNOWN")
         self.assertEqual(error["message"], "Error: Something went wrong")
 
-    def test_parse_log_line_no_error(self):
+    def test_parse_log_line_no_error(self) -> None:
         """Test parsing of non-error log lines."""
         line = "2025-09-06 10:05:09 - server.main - INFO - Server started"
         error = self.analyzer._parse_log_line(line, "test.log", 1)
 
         self.assertIsNone(error)
 
-    def test_generate_recommendations(self):
+    def test_generate_recommendations(self) -> None:
         """Test recommendation generation."""
         # High error volume
         analysis = {
@@ -146,7 +148,7 @@ class TestLogAnalyzer(unittest.TestCase):
         self.assertEqual(result["total_errors"], 0)
         self.assertEqual(result["unique_error_patterns"], 0)
 
-    def test_generate_error_report(self):
+    def test_generate_error_report(self) -> None:
         """Test error report generation."""
         # Mock the analyze_error_patterns method
         with patch.object(self.analyzer, "analyze_error_patterns") as mock_analyze:
@@ -180,14 +182,14 @@ class TestErrorMonitor(unittest.TestCase):
 
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
-    def test_monitor_initialization(self):
+    def test_monitor_initialization(self) -> None:
         """Test that the monitor initializes correctly."""
         self.assertEqual(self.monitor.log_dir, Path(self.temp_dir))
         self.assertEqual(self.monitor.window_size, 60)
         self.assertEqual(len(self.monitor.error_history), 0)
         self.assertEqual(len(self.monitor.rate_history), 0)
 
-    def test_determine_severity(self):
+    def test_determine_severity(self) -> None:
         """Test error severity determination."""
         # Critical error
         error = {"message": "Fatal system crash", "level": "ERROR"}
@@ -209,7 +211,7 @@ class TestErrorMonitor(unittest.TestCase):
         severity = self.monitor._determine_severity(error)
         self.assertEqual(severity, "info")
 
-    def test_categorize_error(self):
+    def test_categorize_error(self) -> None:
         """Test error categorization in monitor."""
         # Database error
         error = {"message": "SQL query failed", "logger": "database"}
@@ -221,12 +223,12 @@ class TestErrorMonitor(unittest.TestCase):
         category = self.monitor._categorize_error(error)
         self.assertEqual(category, "Authentication")
 
-    def test_detect_error_trends_insufficient_data(self):
+    def test_detect_error_trends_insufficient_data(self) -> None:
         """Test trend detection with insufficient data."""
         result = self.monitor.detect_error_trends(self.temp_dir)
         self.assertEqual(result["trend"], "insufficient_data")
 
-    def test_detect_error_trends_increasing(self):
+    def test_detect_error_trends_increasing(self) -> None:
         """Test trend detection for increasing errors."""
         # Add some rate history (need at least 6 measurements)
         base_time = datetime.now()
@@ -244,7 +246,7 @@ class TestErrorMonitor(unittest.TestCase):
         result = self.monitor.detect_error_trends(self.temp_dir)
         self.assertEqual(result["trend"], "increasing")
 
-    def test_detect_error_trends_decreasing(self):
+    def test_detect_error_trends_decreasing(self) -> None:
         """Test trend detection for decreasing errors."""
         # Add some rate history (need at least 6 measurements)
         base_time = datetime.now()
@@ -262,7 +264,7 @@ class TestErrorMonitor(unittest.TestCase):
         result = self.monitor.detect_error_trends(self.temp_dir)
         self.assertEqual(result["trend"], "decreasing")
 
-    def test_check_alerts_no_alerts(self):
+    def test_check_alerts_no_alerts(self) -> None:
         """Test alert checking with no alert conditions."""
         # Mock calculate_error_rate to return low error rate
         with patch.object(self.monitor, "calculate_error_rate") as mock_calculate:
@@ -271,7 +273,7 @@ class TestErrorMonitor(unittest.TestCase):
             alerts = self.monitor.check_alerts(self.temp_dir)
             self.assertEqual(len(alerts), 0)
 
-    def test_check_alerts_high_error_rate(self):
+    def test_check_alerts_high_error_rate(self) -> None:
         """Test alert checking for high error rate."""
         # Mock calculate_error_rate to return high error rate
         with patch.object(self.monitor, "calculate_error_rate") as mock_calculate:
@@ -282,7 +284,7 @@ class TestErrorMonitor(unittest.TestCase):
             self.assertEqual(alerts[0]["type"], "high_error_rate")
             self.assertEqual(alerts[0]["severity"], "warning")
 
-    def test_check_alerts_error_spike(self):
+    def test_check_alerts_error_spike(self) -> None:
         """Test alert checking for error spike."""
         # Mock calculate_error_rate to return high error count
         with patch.object(self.monitor, "calculate_error_rate") as mock_calculate:
@@ -297,7 +299,7 @@ class TestErrorMonitor(unittest.TestCase):
             self.assertEqual(alerts[0]["type"], "error_spike")
             self.assertEqual(alerts[0]["severity"], "critical")
 
-    def test_check_alerts_critical_errors(self):
+    def test_check_alerts_critical_errors(self) -> None:
         """Test alert checking for critical errors."""
         # Mock calculate_error_rate to return critical errors
         with patch.object(self.monitor, "calculate_error_rate") as mock_calculate:
@@ -354,7 +356,7 @@ class TestLogAnalysisIntegration(unittest.TestCase):
             f.write("2025-09-06 10:05:10 - server.database - ERROR - Query execution failed\n")
             f.write("2025-09-06 10:05:11 - server.game - WARNING - Player movement validation failed\n")
 
-    def test_analyzer_with_real_logs(self):
+    def test_analyzer_with_real_logs(self) -> None:
         """Test analyzer with real log files."""
         analyzer = LogAnalyzer(self.temp_dir)
         result = analyzer.analyze_error_patterns(self.temp_dir)
@@ -365,7 +367,7 @@ class TestLogAnalysisIntegration(unittest.TestCase):
         self.assertIn("Authentication", result["error_categories"])
         self.assertIn("Network", result["error_categories"])
 
-    def test_monitor_with_real_logs(self):
+    def test_monitor_with_real_logs(self) -> None:
         """Test monitor with real log files."""
         monitor = ErrorMonitor(self.temp_dir, window_size=300)
         result = monitor.calculate_error_rate(self.temp_dir)
@@ -374,7 +376,7 @@ class TestLogAnalysisIntegration(unittest.TestCase):
         self.assertGreaterEqual(result["error_count"], 0)
         self.assertGreater(result["files_checked"], 0)
 
-    def test_report_generation(self):
+    def test_report_generation(self) -> None:
         """Test report generation with real log files."""
         analyzer = LogAnalyzer(self.temp_dir)
         report = analyzer.generate_error_report(self.temp_dir)

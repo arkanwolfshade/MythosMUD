@@ -20,7 +20,7 @@ from server.models.container import ContainerComponent, ContainerLockState, Cont
 class TestContainerComponentValidation:
     """Test ContainerComponent validation."""
 
-    def test_create_environment_container(self):
+    def test_create_environment_container(self) -> None:
         """Test creating an environmental container component."""
         container = ContainerComponent(
             container_id=uuid.uuid4(),
@@ -37,7 +37,7 @@ class TestContainerComponentValidation:
         assert container.owner_id is None
         assert container.entity_id is None
 
-    def test_create_corpse_container(self):
+    def test_create_corpse_container(self) -> None:
         """Test creating a corpse container component."""
         owner_id = uuid.uuid4()
         decay_at = datetime.now(UTC) + timedelta(hours=1)
@@ -56,7 +56,7 @@ class TestContainerComponentValidation:
         assert container.decay_at == decay_at
         assert container.capacity_slots == 20
 
-    def test_create_equipment_container(self):
+    def test_create_equipment_container(self) -> None:
         """Test creating a wearable equipment container component."""
         entity_id = uuid.uuid4()
 
@@ -72,7 +72,7 @@ class TestContainerComponentValidation:
         assert container.room_id is None
         assert container.owner_id is None
 
-    def test_container_with_items(self):
+    def test_container_with_items(self) -> None:
         """Test creating a container with initial items."""
         items = [
             {
@@ -105,7 +105,7 @@ class TestContainerComponentValidation:
         assert container.items[0]["item_id"] == "elder_sign"
         assert container.items[1]["item_id"] == "tome_of_forbidden_knowledge"
 
-    def test_container_invalid_capacity_slots(self):
+    def test_container_invalid_capacity_slots(self) -> None:
         """Test that invalid capacity_slots is rejected."""
         # Too high
         with pytest.raises(ValidationError) as exc_info:
@@ -127,7 +127,7 @@ class TestContainerComponentValidation:
             )
         assert "capacity_slots" in str(exc_info.value).lower()
 
-    def test_container_invalid_weight_limit(self):
+    def test_container_invalid_weight_limit(self) -> None:
         """Test that invalid weight_limit is rejected."""
         with pytest.raises(ValidationError) as exc_info:
             ContainerComponent(
@@ -139,11 +139,11 @@ class TestContainerComponentValidation:
             )
         assert "weight_limit" in str(exc_info.value).lower()
 
-    def test_container_required_fields(self):
+    def test_container_required_fields(self) -> None:
         """Test that required fields are enforced."""
         # Missing container_id
         with pytest.raises(ValidationError):
-            ContainerComponent(
+            ContainerComponent(  # type: ignore[call-arg]
                 source_type=ContainerSourceType.ENVIRONMENT,
                 room_id="test_room",
                 capacity_slots=8,
@@ -151,7 +151,7 @@ class TestContainerComponentValidation:
 
         # Missing source_type
         with pytest.raises(ValidationError):
-            ContainerComponent(
+            ContainerComponent(  # type: ignore[call-arg]
                 container_id=uuid.uuid4(),
                 room_id="test_room",
                 capacity_slots=8,
@@ -159,13 +159,13 @@ class TestContainerComponentValidation:
 
         # Missing capacity_slots
         with pytest.raises(ValidationError):
-            ContainerComponent(
+            ContainerComponent(  # type: ignore[call-arg]
                 container_id=uuid.uuid4(),
                 source_type=ContainerSourceType.ENVIRONMENT,
                 room_id="test_room",
             )
 
-    def test_container_defaults(self):
+    def test_container_defaults(self) -> None:
         """Test that default values are applied correctly."""
         container = ContainerComponent(
             container_id=uuid.uuid4(),
@@ -185,7 +185,7 @@ class TestContainerComponentValidation:
 class TestContainerComponentSerialization:
     """Test ContainerComponent serialization."""
 
-    def test_serialize_to_dict(self):
+    def test_serialize_to_dict(self) -> None:
         """Test serializing container to dictionary."""
         container_id = uuid.uuid4()
         owner_id = uuid.uuid4()
@@ -219,7 +219,7 @@ class TestContainerComponentSerialization:
         assert data["allowed_roles"] == ["admin", "moderator"]
         assert data["metadata"] == {"key_item_id": "arkham_library_key"}
 
-    def test_serialize_to_json(self):
+    def test_serialize_to_json(self) -> None:
         """Test serializing container to JSON."""
         container = ContainerComponent(
             container_id=uuid.uuid4(),
@@ -234,7 +234,7 @@ class TestContainerComponentSerialization:
         assert "source_type" in json_str
         assert "environment" in json_str
 
-    def test_deserialize_from_dict(self):
+    def test_deserialize_from_dict(self) -> None:
         """Test deserializing container from dictionary."""
         container_id = uuid.uuid4()
         owner_id = uuid.uuid4()
@@ -258,7 +258,7 @@ class TestContainerComponentSerialization:
         assert container.owner_id == owner_id
         assert container.lock_state == ContainerLockState.LOCKED
 
-    def test_deserialize_from_json(self):
+    def test_deserialize_from_json(self) -> None:
         """Test deserializing container from JSON string."""
         container_id = uuid.uuid4()
 
@@ -285,7 +285,7 @@ class TestContainerComponentSerialization:
 class TestContainerComponentFactoryMethods:
     """Test ContainerComponent factory methods."""
 
-    def test_create_environment_container_factory(self):
+    def test_create_environment_container_factory(self) -> None:
         """Test factory method for environmental containers."""
         container = ContainerComponent.create_environment(
             container_id=uuid.uuid4(),
@@ -299,7 +299,7 @@ class TestContainerComponentFactoryMethods:
         assert container.owner_id is None
         assert container.entity_id is None
 
-    def test_create_corpse_container_factory(self):
+    def test_create_corpse_container_factory(self) -> None:
         """Test factory method for corpse containers."""
         owner_id = uuid.uuid4()
         decay_at = datetime.now(UTC) + timedelta(hours=1)
@@ -316,7 +316,7 @@ class TestContainerComponentFactoryMethods:
         assert container.decay_at == decay_at
         assert container.capacity_slots == 20  # Default for corpses
 
-    def test_create_equipment_container_factory(self):
+    def test_create_equipment_container_factory(self) -> None:
         """Test factory method for equipment containers."""
         entity_id = uuid.uuid4()
 
@@ -331,7 +331,7 @@ class TestContainerComponentFactoryMethods:
         assert container.room_id is None
         assert container.owner_id is None
 
-    def test_factory_methods_with_optional_params(self):
+    def test_factory_methods_with_optional_params(self) -> None:
         """Test factory methods with optional parameters."""
         container_id = uuid.uuid4()
         owner_id = uuid.uuid4()
@@ -366,7 +366,7 @@ class TestContainerComponentFactoryMethods:
             owner_id=owner_id,
             room_id="test_room",
             decay_at=decay_at,
-            items=items,
+            items=items,  # type: ignore[arg-type]
         )
 
         assert len(corpse_container.items) == 1

@@ -20,7 +20,7 @@ class TestWorkingEventSystem:
     """Test the working event system."""
 
     @pytest.mark.asyncio
-    async def test_player_entered_event_flow_working(self):
+    async def test_player_entered_event_flow_working(self) -> None:
         """Test that PlayerEnteredRoom events work correctly with proper broadcasts."""
         # Create EventBus and set the current running loop
         event_bus = EventBus()
@@ -98,7 +98,7 @@ class TestWorkingEventSystem:
             assert second_message["data"]["count"] == 0  # Empty room initially
 
     @pytest.mark.asyncio
-    async def test_player_left_event_flow_working(self):
+    async def test_player_left_event_flow_working(self) -> None:
         """Test that PlayerLeftRoom events work correctly."""
         # Create EventBus and set the current running loop
         event_bus = EventBus()
@@ -173,7 +173,7 @@ class TestWorkingEventSystem:
             assert first_message["data"]["message"] == "TestPlayer leaves the room."
 
     @pytest.mark.asyncio
-    async def test_complete_room_flow_simulation(self):
+    async def test_complete_room_flow_simulation(self) -> None:
         """Test the complete flow simulating real room operations."""
         # Create EventBus and set the current running loop
         event_bus = EventBus()
@@ -265,7 +265,7 @@ class TestWorkingEventSystem:
             first_message = first_call[0][1]
             assert first_message["event_type"] == "player_left"
 
-    def test_event_system_is_working_correctly(self):
+    def test_event_system_is_working_correctly(self) -> None:
         """Test that confirms the event system is working as expected."""
         # This test documents that the event system is working correctly
         # The previous tests prove that:

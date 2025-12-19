@@ -4,6 +4,7 @@ Tests for magic command handlers.
 This module tests the /cast, /spells, /spell, /learn, and /stop commands.
 """
 
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 from uuid import uuid4
 
@@ -22,7 +23,7 @@ from server.commands.magic_commands import (
 class TestMagicCommandHandlerInit:
     """Test MagicCommandHandler initialization."""
 
-    def test_magic_command_handler_init_defaults(self):
+    def test_magic_command_handler_init_defaults(self) -> None:
         """Test initialization with required services only."""
         mock_magic_service = MagicMock()
         mock_spell_registry = MagicMock()
@@ -36,7 +37,7 @@ class TestMagicCommandHandlerInit:
             assert handler.spell_learning_service is None
             assert handler.chat_service is None
 
-    def test_magic_command_handler_init_with_all_services(self):
+    def test_magic_command_handler_init_with_all_services(self) -> None:
         """Test initialization with all optional services."""
         mock_magic_service = MagicMock()
         mock_spell_registry = MagicMock()
@@ -62,7 +63,7 @@ class TestHandleCastCommand:
     """Test handle_cast_command method."""
 
     @pytest.mark.asyncio
-    async def test_handle_cast_command_success(self):
+    async def test_handle_cast_command_success(self) -> None:
         """Test successful spell casting."""
         mock_magic_service = MagicMock()
         mock_spell_registry = MagicMock()
@@ -92,7 +93,7 @@ class TestHandleCastCommand:
         mock_magic_service.cast_spell.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_handle_cast_command_player_not_found(self):
+    async def test_handle_cast_command_player_not_found(self) -> None:
         """Test cast command when player is not found."""
         mock_magic_service = MagicMock()
         mock_spell_registry = MagicMock()
@@ -109,7 +110,7 @@ class TestHandleCastCommand:
         assert "not recognized by the cosmic forces" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_handle_cast_command_no_spell_name(self):
+    async def test_handle_cast_command_no_spell_name(self) -> None:
         """Test cast command with no spell name."""
         mock_magic_service = MagicMock()
         mock_spell_registry = MagicMock()
@@ -123,13 +124,13 @@ class TestHandleCastCommand:
 
         handler = MagicCommandHandler(mock_magic_service, mock_spell_registry)
 
-        command_data = {}
+        command_data: dict[str, Any] = {}
         result = await handler.handle_cast_command(command_data, {}, None, None, "TestPlayer")
 
         assert "Usage: /cast" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_handle_cast_command_uses_spell_key(self):
+    async def test_handle_cast_command_uses_spell_key(self) -> None:
         """Test cast command using 'spell' key instead of 'spell_name'."""
         mock_magic_service = MagicMock()
         mock_spell_registry = MagicMock()
@@ -151,7 +152,7 @@ class TestHandleCastCommand:
         mock_magic_service.cast_spell.assert_called_once_with(mock_player.player_id, "Heal", None)
 
     @pytest.mark.asyncio
-    async def test_handle_cast_command_failure(self):
+    async def test_handle_cast_command_failure(self) -> None:
         """Test cast command when spell casting fails."""
         mock_magic_service = MagicMock()
         mock_spell_registry = MagicMock()
@@ -172,7 +173,7 @@ class TestHandleCastCommand:
         assert "Not enough MP" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_handle_cast_command_with_announcement(self):
+    async def test_handle_cast_command_with_announcement(self) -> None:
         """Test cast command with chat service announcement."""
         mock_magic_service = MagicMock()
         mock_spell_registry = MagicMock()
@@ -202,7 +203,7 @@ class TestHandleSpellsCommand:
     """Test handle_spells_command method."""
 
     @pytest.mark.asyncio
-    async def test_handle_spells_command_success(self):
+    async def test_handle_spells_command_success(self) -> None:
         """Test successful spells listing."""
         mock_magic_service = MagicMock()
         mock_spell_registry = MagicMock()
@@ -233,7 +234,7 @@ class TestHandleSpellsCommand:
         assert "Mastery: 50%" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_handle_spells_command_no_spells(self):
+    async def test_handle_spells_command_no_spells(self) -> None:
         """Test spells command when player has no spells."""
         mock_magic_service = MagicMock()
         mock_spell_registry = MagicMock()
@@ -254,7 +255,7 @@ class TestHandleSpellsCommand:
         assert "not learned any spells" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_handle_spells_command_spell_not_in_registry(self):
+    async def test_handle_spells_command_spell_not_in_registry(self) -> None:
         """Test spells command when spell is not in registry."""
         mock_magic_service = MagicMock()
         mock_spell_registry = MagicMock()
@@ -286,7 +287,7 @@ class TestHandleSpellCommand:
     """Test handle_spell_command method."""
 
     @pytest.mark.asyncio
-    async def test_handle_spell_command_success_learned(self):
+    async def test_handle_spell_command_success_learned(self) -> None:
         """Test successful spell command for learned spell."""
         mock_magic_service = MagicMock()
         mock_spell_registry = MagicMock()
@@ -326,7 +327,7 @@ class TestHandleSpellCommand:
         assert "Your Mastery: 75%" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_handle_spell_command_not_learned(self):
+    async def test_handle_spell_command_not_learned(self) -> None:
         """Test spell command for spell not learned."""
         mock_magic_service = MagicMock()
         mock_spell_registry = MagicMock()
@@ -363,7 +364,7 @@ class TestHandleSpellCommand:
         assert "Status: Not learned" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_handle_spell_command_no_spell_name(self):
+    async def test_handle_spell_command_no_spell_name(self) -> None:
         """Test spell command with no spell name."""
         mock_magic_service = MagicMock()
         mock_spell_registry = MagicMock()
@@ -377,13 +378,13 @@ class TestHandleSpellCommand:
 
         handler = MagicCommandHandler(mock_magic_service, mock_spell_registry)
 
-        command_data = {}
+        command_data: dict[str, Any] = {}
         result = await handler.handle_spell_command(command_data, {}, None, None, "TestPlayer")
 
         assert "Usage: /spell" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_handle_spell_command_spell_not_found(self):
+    async def test_handle_spell_command_spell_not_found(self) -> None:
         """Test spell command when spell is not found."""
         mock_magic_service = MagicMock()
         mock_spell_registry = MagicMock()
@@ -405,7 +406,7 @@ class TestHandleSpellCommand:
         assert "not found" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_handle_spell_command_with_lucidity_cost(self):
+    async def test_handle_spell_command_with_lucidity_cost(self) -> None:
         """Test spell command showing lucidity cost."""
         mock_magic_service = MagicMock()
         mock_spell_registry = MagicMock()
@@ -443,7 +444,7 @@ class TestHandleSpellCommand:
         assert "Lucidity Cost: 10" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_handle_spell_command_with_materials(self):
+    async def test_handle_spell_command_with_materials(self) -> None:
         """Test spell command showing material requirements."""
         mock_magic_service = MagicMock()
         mock_spell_registry = MagicMock()
@@ -490,7 +491,7 @@ class TestHandleLearnCommand:
     """Test handle_learn_command method."""
 
     @pytest.mark.asyncio
-    async def test_handle_learn_command_success(self):
+    async def test_handle_learn_command_success(self) -> None:
         """Test successful spell learning."""
         mock_magic_service = MagicMock()
         mock_spell_registry = MagicMock()
@@ -516,7 +517,7 @@ class TestHandleLearnCommand:
         mock_learning_service.learn_spell.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_handle_learn_command_with_corruption(self):
+    async def test_handle_learn_command_with_corruption(self) -> None:
         """Test spell learning with corruption."""
         mock_magic_service = MagicMock()
         mock_spell_registry = MagicMock()
@@ -544,7 +545,7 @@ class TestHandleLearnCommand:
         assert "corruption" in result["result"].lower()
 
     @pytest.mark.asyncio
-    async def test_handle_learn_command_no_learning_service(self):
+    async def test_handle_learn_command_no_learning_service(self) -> None:
         """Test learn command when learning service is not initialized."""
         mock_magic_service = MagicMock()
         mock_spell_registry = MagicMock()
@@ -557,7 +558,7 @@ class TestHandleLearnCommand:
         assert "Spell learning system not initialized" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_handle_learn_command_failure(self):
+    async def test_handle_learn_command_failure(self) -> None:
         """Test learn command when learning fails."""
         mock_magic_service = MagicMock()
         mock_spell_registry = MagicMock()
@@ -586,7 +587,7 @@ class TestHandleStopCommand:
     """Test handle_stop_command method."""
 
     @pytest.mark.asyncio
-    async def test_handle_stop_command_success(self):
+    async def test_handle_stop_command_success(self) -> None:
         """Test successful casting interruption."""
         mock_magic_service = MagicMock()
         mock_spell_registry = MagicMock()
@@ -609,7 +610,7 @@ class TestHandleStopCommand:
         mock_magic_service.interrupt_casting.assert_called_once_with(mock_player.player_id)
 
     @pytest.mark.asyncio
-    async def test_handle_stop_command_failure(self):
+    async def test_handle_stop_command_failure(self) -> None:
         """Test stop command when interruption fails."""
         mock_magic_service = MagicMock()
         mock_spell_registry = MagicMock()
@@ -633,7 +634,7 @@ class TestWrapperFunctions:
     """Test wrapper functions for command integration."""
 
     @pytest.mark.asyncio
-    async def test_handle_cast_command_wrapper_success(self):
+    async def test_handle_cast_command_wrapper_success(self) -> None:
         """Test handle_cast_command wrapper function."""
         mock_request = MagicMock()
         mock_app = MagicMock()
@@ -658,7 +659,7 @@ class TestWrapperFunctions:
         assert "result" in result
 
     @pytest.mark.asyncio
-    async def test_handle_cast_command_wrapper_no_magic_service(self):
+    async def test_handle_cast_command_wrapper_no_magic_service(self) -> None:
         """Test handle_cast_command wrapper when magic service is not available."""
         mock_request = MagicMock()
         mock_app = MagicMock()
@@ -670,7 +671,7 @@ class TestWrapperFunctions:
         assert "Magic system not initialized" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_handle_spells_command_wrapper_success(self):
+    async def test_handle_spells_command_wrapper_success(self) -> None:
         """Test handle_spells_command wrapper function."""
         mock_request = MagicMock()
         mock_app = MagicMock()
@@ -695,7 +696,7 @@ class TestWrapperFunctions:
         assert "result" in result
 
     @pytest.mark.asyncio
-    async def test_handle_spell_command_wrapper_success(self):
+    async def test_handle_spell_command_wrapper_success(self) -> None:
         """Test handle_spell_command wrapper function."""
         mock_request = MagicMock()
         mock_app = MagicMock()
@@ -737,7 +738,7 @@ class TestWrapperFunctions:
             assert "Spell: Fireball" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_handle_learn_command_wrapper_success(self):
+    async def test_handle_learn_command_wrapper_success(self) -> None:
         """Test handle_learn_command wrapper function."""
         mock_request = MagicMock()
         mock_app = MagicMock()
@@ -765,7 +766,7 @@ class TestWrapperFunctions:
         assert "Learned Fireball!" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_handle_stop_command_wrapper_success(self):
+    async def test_handle_stop_command_wrapper_success(self) -> None:
         """Test handle_stop_command wrapper function."""
         mock_request = MagicMock()
         mock_app = MagicMock()

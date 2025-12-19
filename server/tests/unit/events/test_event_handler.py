@@ -23,7 +23,7 @@ TIMESTAMP_REGEX = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
 class TestEventHandlerTimestamps:
     """Verify that real-time messages carry normalized UTC timestamps."""
 
-    def test_player_entered_message_timestamp(self):
+    def test_player_entered_message_timestamp(self) -> None:
         handler = RealTimeEventHandler()
 
         # Create event with a deterministic timestamp input; handler doesn't use it directly
@@ -34,7 +34,7 @@ class TestEventHandlerTimestamps:
         assert isinstance(message["timestamp"], str)
         assert TIMESTAMP_REGEX.match(message["timestamp"]) is not None
 
-    def test_player_left_message_timestamp(self):
+    def test_player_left_message_timestamp(self) -> None:
         handler = RealTimeEventHandler()
 
         event = PlayerLeftRoom(player_id="p1", room_id="r1")
@@ -44,7 +44,7 @@ class TestEventHandlerTimestamps:
         assert isinstance(message["timestamp"], str)
         assert TIMESTAMP_REGEX.match(message["timestamp"]) is not None
 
-    def test_timestamp_format_consistency(self):
+    def test_timestamp_format_consistency(self) -> None:
         """Test that all timestamp formats are consistent across different message types."""
         handler = RealTimeEventHandler()
 
@@ -260,7 +260,7 @@ class TestEventHandlerBroadcasting:
 
     @pytest.mark.asyncio
     async def test_event_handler_handles_missing_player_gracefully(
-        self, event_bus, event_handler, mock_connection_manager
+        self, event_bus, _event_handler, mock_connection_manager
     ):
         """Test that RealTimeEventHandler handles missing players gracefully."""
         # Setup mock to return None for player lookup
@@ -280,7 +280,7 @@ class TestEventHandlerBroadcasting:
 
     @pytest.mark.asyncio
     async def test_event_handler_handles_missing_room_gracefully(
-        self, event_bus, event_handler, mock_connection_manager
+        self, event_bus, _event_handler, mock_connection_manager
     ):
         """Test that RealTimeEventHandler handles missing rooms gracefully."""
         # Set the main loop for async event handling

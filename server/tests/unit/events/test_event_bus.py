@@ -16,6 +16,7 @@ within async event loops, requiring proper async test coordination.
 
 import asyncio
 from datetime import datetime
+from typing import Any, cast
 
 import pytest
 
@@ -29,13 +30,12 @@ from server.events.event_types import (
     PlayerEnteredRoom,
     PlayerLeftRoom,
 )
-from server.tests.conftest import TestingAsyncMixin
 
 
 class TestEventTypes:
     """Test the event type classes."""
 
-    def test_base_event_creation(self):
+    def test_base_event_creation(self) -> None:
         """Test that BaseEvent can be created with proper defaults."""
         event = BaseEvent()
         event.event_type = "TestEvent"
@@ -44,7 +44,7 @@ class TestEventTypes:
         assert isinstance(event.timestamp, datetime)
         assert event.event_type == "TestEvent"
 
-    def test_player_entered_room_event(self):
+    def test_player_entered_room_event(self) -> None:
         """Test PlayerEnteredRoom event creation."""
         from uuid import uuid4
 
@@ -56,7 +56,7 @@ class TestEventTypes:
         assert event.from_room_id == "room789"
         assert event.event_type == "PlayerEnteredRoom"
 
-    def test_player_left_room_event(self):
+    def test_player_left_room_event(self) -> None:
         """Test PlayerLeftRoom event creation."""
         from uuid import uuid4
 
@@ -68,7 +68,7 @@ class TestEventTypes:
         assert event.to_room_id == "room789"
         assert event.event_type == "PlayerLeftRoom"
 
-    def test_object_added_to_room_event(self):
+    def test_object_added_to_room_event(self) -> None:
         """Test ObjectAddedToRoom event creation."""
         event = ObjectAddedToRoom(object_id="object123", room_id="room456", player_id="player789")
 
@@ -77,7 +77,7 @@ class TestEventTypes:
         assert event.player_id == "player789"
         assert event.event_type == "ObjectAddedToRoom"
 
-    def test_object_removed_from_room_event(self):
+    def test_object_removed_from_room_event(self) -> None:
         """Test ObjectRemovedFromRoom event creation."""
         event = ObjectRemovedFromRoom(object_id="object123", room_id="room456", player_id="player789")
 
@@ -86,7 +86,7 @@ class TestEventTypes:
         assert event.player_id == "player789"
         assert event.event_type == "ObjectRemovedFromRoom"
 
-    def test_npc_entered_room_event(self):
+    def test_npc_entered_room_event(self) -> None:
         """Test NPCEnteredRoom event creation."""
         event = NPCEnteredRoom(npc_id="npc123", room_id="room456", from_room_id="room789")
 
@@ -95,7 +95,7 @@ class TestEventTypes:
         assert event.from_room_id == "room789"
         assert event.event_type == "NPCEnteredRoom"
 
-    def test_npc_left_room_event(self):
+    def test_npc_left_room_event(self) -> None:
         """Test NPCLeftRoom event creation."""
         event = NPCLeftRoom(npc_id="npc123", room_id="room456", to_room_id="room789")
 
@@ -105,11 +105,11 @@ class TestEventTypes:
         assert event.event_type == "NPCLeftRoom"
 
 
-class TestEventBus(TestingAsyncMixin):
+class TestEventBus:
     """Test the EventBus class with async coordination."""
 
     @pytest.mark.asyncio
-    async def test_event_bus_creation(self):
+    async def test_event_bus_creation(self) -> None:
         """Test that EventBus can be created successfully."""
         event_bus = EventBus()
 
@@ -122,7 +122,7 @@ class TestEventBus(TestingAsyncMixin):
         assert hasattr(event_bus, "_running")
 
     @pytest.mark.asyncio
-    async def test_event_bus_shutdown(self):
+    async def test_event_bus_shutdown(self) -> None:
         """Test that EventBus can be shut down properly."""
         event_bus = EventBus()
 
@@ -136,40 +136,40 @@ class TestEventBus(TestingAsyncMixin):
         assert not event_bus._running
 
     @pytest.mark.asyncio
-    async def test_publish_invalid_event(self):
+    async def test_publish_invalid_event(self) -> None:
         """Test that publishing invalid events raises ValueError."""
         event_bus = EventBus()
 
         with pytest.raises(ValueError, match="Event must inherit from BaseEvent"):
-            event_bus.publish("not an event")
+            event_bus.publish(cast(Any, "not an event"))
 
         # Clean up the EventBus properly
         await event_bus.shutdown()
 
     @pytest.mark.asyncio
-    async def test_subscribe_invalid_event_type(self):
+    async def test_subscribe_invalid_event_type(self) -> None:
         """Test that subscribing to invalid event types raises ValueError."""
         event_bus = EventBus()
 
         with pytest.raises(ValueError, match="Event type must inherit from BaseEvent"):
-            event_bus.subscribe(str, lambda x: None)
+            event_bus.subscribe(cast(Any, str), lambda x: None)
 
         # Clean up the EventBus properly
         await event_bus.shutdown()
 
     @pytest.mark.asyncio
-    async def test_subscribe_invalid_handler(self):
+    async def test_subscribe_invalid_handler(self) -> None:
         """Test that subscribing with invalid handler raises ValueError."""
         event_bus = EventBus()
 
         with pytest.raises(ValueError, match="Handler must be callable"):
-            event_bus.subscribe(PlayerEnteredRoom, "not callable")
+            event_bus.subscribe(PlayerEnteredRoom, cast(Any, "not callable"))
 
         # Clean up the EventBus properly
         await event_bus.shutdown()
 
     @pytest.mark.asyncio
-    async def test_subscribe_and_publish(self):
+    async def test_subscribe_and_publish(self) -> None:
         """Test basic subscribe and publish functionality."""
         event_bus = EventBus()
         received_events = []
@@ -194,7 +194,7 @@ class TestEventBus(TestingAsyncMixin):
         await event_bus.shutdown()
 
     @pytest.mark.asyncio
-    async def test_multiple_subscribers(self):
+    async def test_multiple_subscribers(self) -> None:
         """Test that multiple subscribers receive the same event."""
         event_bus = EventBus()
         received_events_1 = []
@@ -226,7 +226,7 @@ class TestEventBus(TestingAsyncMixin):
         await event_bus.shutdown()
 
     @pytest.mark.asyncio
-    async def test_unsubscribe(self):
+    async def test_unsubscribe(self) -> None:
         """Test that unsubscribing removes the handler."""
         event_bus = EventBus()
         received_events = []
@@ -253,11 +253,11 @@ class TestEventBus(TestingAsyncMixin):
         await event_bus.shutdown()
 
     @pytest.mark.asyncio
-    async def test_unsubscribe_nonexistent_handler(self):
+    async def test_unsubscribe_nonexistent_handler(self) -> None:
         """Test that unsubscribing non-existent handler returns False."""
         event_bus = EventBus()
 
-        def handler(event):
+        def handler(_event):
             pass
 
         # Try to unsubscribe without subscribing first
@@ -269,14 +269,14 @@ class TestEventBus(TestingAsyncMixin):
         await event_bus.shutdown()
 
     @pytest.mark.asyncio
-    async def test_get_subscriber_count(self):
+    async def test_get_subscriber_count(self) -> None:
         """Test getting subscriber count for specific event type."""
         event_bus = EventBus()
 
-        def handler1(event):
+        def handler1(_event):
             pass
 
-        def handler2(event):
+        def handler2(_event):
             pass
 
         # Initially no subscribers
@@ -297,11 +297,11 @@ class TestEventBus(TestingAsyncMixin):
         await event_bus.shutdown()
 
     @pytest.mark.asyncio
-    async def test_get_all_subscriber_counts(self):
+    async def test_get_all_subscriber_counts(self) -> None:
         """Test getting subscriber counts for all event types."""
         event_bus = EventBus()
 
-        def handler(event):
+        def handler(_event):
             pass
 
         # Subscribe to multiple event types
@@ -320,12 +320,12 @@ class TestEventBus(TestingAsyncMixin):
         await event_bus.shutdown()
 
     @pytest.mark.asyncio
-    async def test_event_processing_error_handling(self):
+    async def test_event_processing_error_handling(self) -> None:
         """Test that errors in event handlers don't crash the system."""
         event_bus = EventBus()
         received_events = []
 
-        def error_handler(event):
+        def error_handler(_event):
             raise ValueError("Test error")
 
         def good_handler(event):
@@ -350,7 +350,7 @@ class TestEventBus(TestingAsyncMixin):
         await event_bus.shutdown()
 
     @pytest.mark.asyncio
-    async def test_concurrent_operations(self):
+    async def test_concurrent_operations(self) -> None:
         """Test that EventBus handles concurrent operations correctly."""
         event_bus = EventBus()
         received_events = []
@@ -386,7 +386,7 @@ class TestEventBus(TestingAsyncMixin):
         await event_bus.shutdown()
 
     @pytest.mark.asyncio
-    async def test_cleanup_on_destruction(self):
+    async def test_cleanup_on_destruction(self) -> None:
         """Test that EventBus cleans up properly when destroyed."""
         event_bus = EventBus()
 
@@ -413,7 +413,7 @@ class TestEventBus(TestingAsyncMixin):
         await asyncio.sleep(0.1)
 
     @pytest.mark.asyncio
-    async def test_structured_concurrency_multiple_async_subscribers(self):
+    async def test_structured_concurrency_multiple_async_subscribers(self) -> None:
         """
         Test that EventBus uses structured concurrency for multiple async subscribers.
 
@@ -424,17 +424,17 @@ class TestEventBus(TestingAsyncMixin):
         results = []
         errors = []
 
-        async def subscriber1(event):
+        async def subscriber1(_event):
             await asyncio.sleep(0.01)
             results.append("subscriber1")
             return "result1"
 
-        async def subscriber2(event):
+        async def subscriber2(_event):
             await asyncio.sleep(0.01)
             results.append("subscriber2")
             return "result2"
 
-        async def failing_subscriber(event):
+        async def failing_subscriber(_event):
             await asyncio.sleep(0.01)
             errors.append("failing_subscriber")
             raise ValueError("Test error")
@@ -507,7 +507,7 @@ class TestEventBus(TestingAsyncMixin):
                 assert task.done() or task.cancelled(), f"Task {task} is not done or cancelled after shutdown"
 
     @pytest.mark.asyncio
-    async def test_structured_concurrency_task_cleanup(self):
+    async def test_structured_concurrency_task_cleanup(self) -> None:
         """
         Test that EventBus properly cleans up tasks after structured concurrency execution.
 
@@ -516,7 +516,7 @@ class TestEventBus(TestingAsyncMixin):
         """
         event_bus = EventBus()
 
-        async def subscriber(event):
+        async def subscriber(_event):
             await asyncio.sleep(0.05)
             return "done"
 

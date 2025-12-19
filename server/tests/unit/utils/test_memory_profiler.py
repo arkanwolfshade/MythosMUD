@@ -22,14 +22,14 @@ class SimpleTestModel(BaseModel):
 class TestMemoryProfiler:
     """Test MemoryProfiler class."""
 
-    def test_memory_profiler_init(self):
+    def test_memory_profiler_init(self) -> None:
         """Test MemoryProfiler initialization."""
         profiler = MemoryProfiler()
         assert profiler.process is not None
         assert profiler.baseline_memory is None
         assert profiler.measurements == []
 
-    def test_start_profiling(self):
+    def test_start_profiling(self) -> None:
         """Test start_profiling method."""
         profiler = MemoryProfiler()
         with patch("server.utils.memory_profiler.gc.collect") as mock_gc:
@@ -43,14 +43,14 @@ class TestMemoryProfiler:
                     mock_tracemalloc.assert_called_once()
                     assert profiler.baseline_memory == 1000000
 
-    def test_stop_profiling(self):
+    def test_stop_profiling(self) -> None:
         """Test stop_profiling method."""
         profiler = MemoryProfiler()
         with patch("server.utils.memory_profiler.tracemalloc.stop") as mock_tracemalloc:
             profiler.stop_profiling()
             mock_tracemalloc.assert_called_once()
 
-    def test_get_current_memory_usage(self):
+    def test_get_current_memory_usage(self) -> None:
         """Test get_current_memory_usage method."""
         profiler = MemoryProfiler()
         with patch.object(profiler.process, "memory_info") as mock_memory_info:
@@ -58,13 +58,13 @@ class TestMemoryProfiler:
             result = profiler.get_current_memory_usage()
             assert result == 2000000
 
-    def test_get_memory_delta_no_baseline(self):
+    def test_get_memory_delta_no_baseline(self) -> None:
         """Test get_memory_delta when baseline is None."""
         profiler = MemoryProfiler()
         profiler.baseline_memory = None
         assert profiler.get_memory_delta() == 0
 
-    def test_get_memory_delta_with_baseline(self):
+    def test_get_memory_delta_with_baseline(self) -> None:
         """Test get_memory_delta with baseline set."""
         profiler = MemoryProfiler()
         profiler.baseline_memory = 1000000
@@ -73,7 +73,7 @@ class TestMemoryProfiler:
             result = profiler.get_memory_delta()
             assert result == 500000
 
-    def test_measure_model_instantiation(self):
+    def test_measure_model_instantiation(self) -> None:
         """Test measure_model_instantiation method."""
         profiler = MemoryProfiler()
         with patch.object(profiler, "start_profiling"):
@@ -97,7 +97,7 @@ class TestMemoryProfiler:
                                 assert result["peak_memory_bytes"] == 1500000
                                 assert result["current_memory_bytes"] == 500000
 
-    def test_measure_model_instantiation_zero_iterations(self):
+    def test_measure_model_instantiation_zero_iterations(self) -> None:
         """Test measure_model_instantiation with zero iterations."""
         profiler = MemoryProfiler()
         with patch.object(profiler, "start_profiling"):
@@ -114,7 +114,7 @@ class TestMemoryProfiler:
 
                                 assert result["memory_per_instance_bytes"] == 0
 
-    def test_measure_model_instantiation_exception_handling(self):
+    def test_measure_model_instantiation_exception_handling(self) -> None:
         """Test measure_model_instantiation handles exceptions."""
         profiler = MemoryProfiler()
         with patch.object(profiler, "start_profiling"):
@@ -125,7 +125,7 @@ class TestMemoryProfiler:
                     with pytest.raises(ValueError):
                         profiler.measure_model_instantiation(SimpleTestModel, iterations=100, invalid_arg="test")
 
-    def test_measure_model_serialization(self):
+    def test_measure_model_serialization(self) -> None:
         """Test measure_model_serialization method."""
         profiler = MemoryProfiler()
         instances = [SimpleTestModel(name=f"test{i}", value=i) for i in range(10)]
@@ -145,7 +145,7 @@ class TestMemoryProfiler:
                             assert result["memory_delta_bytes"] == 500000
                             assert result["memory_per_serialization_bytes"] == 10000
 
-    def test_measure_model_serialization_zero_iterations(self):
+    def test_measure_model_serialization_zero_iterations(self) -> None:
         """Test measure_model_serialization with zero iterations."""
         profiler = MemoryProfiler()
         instances = [SimpleTestModel(name="test", value=1)]
@@ -161,7 +161,7 @@ class TestMemoryProfiler:
 
                             assert result["memory_per_serialization_bytes"] == 0
 
-    def test_measure_model_deserialization(self):
+    def test_measure_model_deserialization(self) -> None:
         """Test measure_model_deserialization method."""
         profiler = MemoryProfiler()
         serialized_data = [{"name": f"test{i}", "value": i} for i in range(10)]
@@ -184,7 +184,7 @@ class TestMemoryProfiler:
                             assert result["memory_delta_bytes"] == 300000
                             assert result["memory_per_deserialization_bytes"] == 10000
 
-    def test_measure_model_deserialization_zero_iterations(self):
+    def test_measure_model_deserialization_zero_iterations(self) -> None:
         """Test measure_model_deserialization with zero iterations."""
         profiler = MemoryProfiler()
         serialized_data = [{"name": "test", "value": 1}]
@@ -202,7 +202,7 @@ class TestMemoryProfiler:
 
                             assert result["memory_per_deserialization_bytes"] == 0
 
-    def test_compare_models_memory_usage(self):
+    def test_compare_models_memory_usage(self) -> None:
         """Test compare_models_memory_usage method."""
         profiler = MemoryProfiler()
 
@@ -224,7 +224,7 @@ class TestMemoryProfiler:
             assert result["_statistics"]["max_memory_bytes"] == 1000
             assert result["_statistics"]["avg_memory_bytes"] == 1000
 
-    def test_compare_models_memory_usage_with_error(self):
+    def test_compare_models_memory_usage_with_error(self) -> None:
         """Test compare_models_memory_usage handles errors."""
         profiler = MemoryProfiler()
 
@@ -234,7 +234,7 @@ class TestMemoryProfiler:
             assert "SimpleTestModel" in result
             assert "error" in result["SimpleTestModel"]
 
-    def test_compare_models_memory_usage_multiple_models(self):
+    def test_compare_models_memory_usage_multiple_models(self) -> None:
         """Test compare_models_memory_usage with multiple models."""
         profiler = MemoryProfiler()
 
@@ -261,7 +261,7 @@ class TestMemoryProfiler:
             assert result["_statistics"]["max_memory_bytes"] == 1500
             assert result["_statistics"]["avg_memory_bytes"] == 1000
 
-    def test_get_memory_usage_summary(self):
+    def test_get_memory_usage_summary(self) -> None:
         """Test get_memory_usage_summary method."""
         profiler = MemoryProfiler()
         with patch.object(profiler.process, "memory_info") as mock_memory_info:
@@ -280,7 +280,7 @@ class TestMemoryProfiler:
                     assert result["available_mb"] == 8000000 / (1024 * 1024)
                     assert result["total_mb"] == 10000000 / (1024 * 1024)
 
-    def test_print_memory_summary(self):
+    def test_print_memory_summary(self) -> None:
         """Test print_memory_summary method."""
         profiler = MemoryProfiler()
         with patch.object(profiler, "get_memory_usage_summary") as mock_summary:
@@ -299,7 +299,7 @@ class TestMemoryProfiler:
                 assert any("RSS Memory" in str(call) for call in print_calls)
                 assert any("VMS Memory" in str(call) for call in print_calls)
 
-    def test_print_model_memory_usage(self):
+    def test_print_model_memory_usage(self) -> None:
         """Test print_model_memory_usage method."""
         profiler = MemoryProfiler()
         result = {
@@ -319,7 +319,7 @@ class TestMemoryProfiler:
             assert any("TestModel" in str(call) for call in print_calls)
             assert any("Iterations" in str(call) for call in print_calls)
 
-    def test_print_model_memory_usage_with_error(self):
+    def test_print_model_memory_usage_with_error(self) -> None:
         """Test print_model_memory_usage with error result."""
         profiler = MemoryProfiler()
         result = {"error": "Test error", "model_class": "TestModel"}
@@ -331,7 +331,7 @@ class TestMemoryProfiler:
             print_calls = [str(call) for call in mock_print.call_args_list]
             assert any("Error" in str(call) for call in print_calls)
 
-    def test_print_comparison_results(self):
+    def test_print_comparison_results(self) -> None:
         """Test print_comparison_results method."""
         profiler = MemoryProfiler()
         results = {

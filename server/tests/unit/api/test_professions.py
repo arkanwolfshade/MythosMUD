@@ -7,6 +7,7 @@ Following the academic rigor outlined in the Pnakotic Manuscripts of Testing Met
 """
 
 import uuid
+from typing import Any, cast
 from unittest.mock import Mock
 
 import pytest
@@ -25,8 +26,14 @@ def mock_current_user():
     user = Mock()
     user.id = str(uuid.uuid4())
     user.username = "testuser"
+
     # Make the mock support dictionary access for all attributes
-    user.__getitem__ = lambda self, key: getattr(self, key)
+    # Using a function instead of lambda to avoid linter warning
+    # and ensure proper attribute access
+    def get_item(key):
+        return getattr(user, key)
+
+    user.__getitem__ = get_item
     return user
 
 
@@ -120,7 +127,7 @@ class TestProfessionRetrieval:
 
     @pytest.mark.asyncio
     async def test_get_all_professions_success(
-        self, mock_current_user, sample_profession_data, sample_profession_data_2, mock_persistence, mock_request
+        self, mock_current_user, sample_profession_data, sample_profession_data_2, _mock_persistence, mock_request
     ):
         """Test successful retrieval of all available professions."""
         # Setup mocks - use AsyncMock for async persistence methods
@@ -143,7 +150,7 @@ class TestProfessionRetrieval:
             mock_async_persistence.get_professions.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_get_all_professions_empty(self, mock_current_user, mock_persistence, mock_request):
+    async def test_get_all_professions_empty(self, mock_current_user, _mock_persistence, mock_request):
         """Test retrieval of professions when none are available."""
         # Setup mocks - use AsyncMock for async persistence methods
         from unittest.mock import AsyncMock, patch
@@ -159,7 +166,7 @@ class TestProfessionRetrieval:
             mock_async_persistence.get_professions.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_get_all_professions_database_error(self, mock_current_user, mock_persistence, mock_request):
+    async def test_get_all_professions_database_error(self, mock_current_user, _mock_persistence, mock_request):
         """Test retrieval of professions when database error occurs."""
         # Setup mocks - use AsyncMock for async persistence methods
         from unittest.mock import AsyncMock, patch
@@ -172,11 +179,11 @@ class TestProfessionRetrieval:
                 await get_all_professions(mock_request, mock_current_user)
 
             assert exc_info.value.status_code == 500
-            assert "An internal error occurred" in str(exc_info.value.detail)
+            assert "An internal error occurred" in str(cast(Any, exc_info.value).detail)
 
     @pytest.mark.asyncio
     async def test_get_profession_by_id_success(
-        self, mock_current_user, sample_profession_data, mock_persistence, mock_request
+        self, mock_current_user, sample_profession_data, _mock_persistence, mock_request
     ):
         """Test successful retrieval of profession by ID."""
         # Setup mocks - use AsyncMock for async persistence methods
@@ -202,7 +209,7 @@ class TestProfessionRetrieval:
 
     @pytest.mark.asyncio
     async def test_get_profession_by_id_with_requirements(
-        self, mock_current_user, sample_profession_with_requirements, mock_persistence, mock_request
+        self, mock_current_user, sample_profession_with_requirements, _mock_persistence, mock_request
     ):
         """Test successful retrieval of profession with stat requirements."""
         # Setup mocks - use AsyncMock for async persistence methods
@@ -220,7 +227,7 @@ class TestProfessionRetrieval:
             mock_async_persistence.get_profession_by_id.assert_called_once_with(2)
 
     @pytest.mark.asyncio
-    async def test_get_profession_by_id_not_found(self, mock_current_user, mock_persistence, mock_request):
+    async def test_get_profession_by_id_not_found(self, mock_current_user, _mock_persistence, mock_request):
         """Test retrieval of profession when profession not found."""
         # Setup mocks - use AsyncMock for async persistence methods
         from unittest.mock import AsyncMock, patch
@@ -233,11 +240,11 @@ class TestProfessionRetrieval:
                 await get_profession_by_id(999, mock_request, mock_current_user)
 
             assert exc_info.value.status_code == 404
-            assert "Profession not found" in str(exc_info.value.detail)
+            assert "Profession not found" in str(cast(Any, exc_info.value).detail)
             mock_async_persistence.get_profession_by_id.assert_called_once_with(999)
 
     @pytest.mark.asyncio
-    async def test_get_profession_by_id_database_error(self, mock_current_user, mock_persistence, mock_request):
+    async def test_get_profession_by_id_database_error(self, mock_current_user, _mock_persistence, mock_request):
         """Test retrieval of profession when database error occurs."""
         # Setup mocks - use AsyncMock for async persistence methods
         from unittest.mock import AsyncMock, patch
@@ -250,10 +257,10 @@ class TestProfessionRetrieval:
                 await get_profession_by_id(0, mock_request, mock_current_user)
 
             assert exc_info.value.status_code == 500
-            assert "An internal error occurred" in str(exc_info.value.detail)
+            assert "An internal error occurred" in str(cast(Any, exc_info.value).detail)
 
     @pytest.mark.asyncio
-    async def test_get_profession_by_id_invalid_id(self, mock_current_user, mock_persistence, mock_request):
+    async def test_get_profession_by_id_invalid_id(self, mock_current_user, _mock_persistence, mock_request):
         """Test retrieval of profession with invalid ID format."""
         # Setup mocks - use AsyncMock for async persistence methods
         from unittest.mock import AsyncMock, patch
@@ -265,12 +272,12 @@ class TestProfessionRetrieval:
             # FastAPI will validate the type before calling the function, so this will raise a validation error
             # But if it gets through, it will return None and raise 404
             with pytest.raises((LoggedHTTPException, ValueError)) as exc_info:
-                await get_profession_by_id("invalid", mock_request, mock_current_user)
+                await get_profession_by_id(cast(Any, "invalid"), mock_request, mock_current_user)
 
             # Either validation error or 404 is acceptable
             if hasattr(exc_info.value, "status_code"):
                 assert exc_info.value.status_code == 404
-                assert "Profession not found" in str(exc_info.value.detail)
+                assert "Profession not found" in str(cast(Any, exc_info.value).detail)
 
 
 class TestProfessionDataValidation:
@@ -278,7 +285,7 @@ class TestProfessionDataValidation:
 
     @pytest.mark.asyncio
     async def test_profession_response_format(
-        self, mock_current_user, sample_profession_data, mock_persistence, mock_request
+        self, mock_current_user, sample_profession_data, _mock_persistence, mock_request
     ):
         """Test that profession response has correct format."""
         # Setup mocks - use AsyncMock for async persistence methods
@@ -314,7 +321,7 @@ class TestProfessionDataValidation:
 
     @pytest.mark.asyncio
     async def test_profession_stat_requirements_json_parsing(
-        self, mock_current_user, sample_profession_with_requirements, mock_persistence, mock_request
+        self, mock_current_user, sample_profession_with_requirements, _mock_persistence, mock_request
     ):
         """Test that stat requirements JSON is properly parsed."""
         # Setup mocks - use AsyncMock for async persistence methods
@@ -331,7 +338,7 @@ class TestProfessionDataValidation:
 
     @pytest.mark.asyncio
     async def test_profession_mechanical_effects_json_parsing(
-        self, mock_current_user, sample_profession_data, mock_persistence, mock_request
+        self, mock_current_user, sample_profession_data, _mock_persistence, mock_request
     ):
         """Test that mechanical effects JSON is properly parsed."""
         # Setup mocks - use AsyncMock for async persistence methods
@@ -348,7 +355,7 @@ class TestProfessionDataValidation:
 
     @pytest.mark.asyncio
     async def test_profession_list_response_format(
-        self, mock_current_user, sample_profession_data, sample_profession_data_2, mock_persistence, mock_request
+        self, mock_current_user, sample_profession_data, sample_profession_data_2, _mock_persistence, mock_request
     ):
         """Test that profession list response has correct format."""
         # Setup mocks - use AsyncMock for async persistence methods
@@ -395,7 +402,7 @@ class TestProfessionErrorHandling:
                 await get_all_professions(mock_request, mock_current_user)
 
             assert exc_info.value.status_code == 500
-            assert "An internal error occurred" in str(exc_info.value.detail)
+            assert "An internal error occurred" in str(cast(Any, exc_info.value).detail)
 
     @pytest.mark.asyncio
     async def test_get_profession_by_id_persistence_none(self, mock_current_user, mock_request):
@@ -408,25 +415,25 @@ class TestProfessionErrorHandling:
                 await get_profession_by_id(0, mock_request, mock_current_user)
 
             assert exc_info.value.status_code == 500
-            assert "An internal error occurred" in str(exc_info.value.detail)
+            assert "An internal error occurred" in str(cast(Any, exc_info.value).detail)
 
     @pytest.mark.asyncio
     async def test_get_all_professions_authentication_failure(self, mock_request):
         """Test get_all_professions with authentication failure."""
         with pytest.raises(LoggedHTTPException) as exc_info:
-            await get_all_professions(mock_request, None)
+            await get_all_professions(mock_request, cast(Any, None))
 
         assert exc_info.value.status_code == 401
-        assert "Authentication required" in str(exc_info.value.detail)
+        assert "Authentication required" in str(cast(Any, exc_info.value).detail)
 
     @pytest.mark.asyncio
     async def test_get_profession_by_id_authentication_failure(self, mock_request):
         """Test get_profession_by_id with authentication failure."""
         with pytest.raises(LoggedHTTPException) as exc_info:
-            await get_profession_by_id(0, mock_request, None)
+            await get_profession_by_id(0, mock_request, cast(Any, None))
 
         assert exc_info.value.status_code == 401
-        assert "Authentication required" in str(exc_info.value.detail)
+        assert "Authentication required" in str(cast(Any, exc_info.value).detail)
 
 
 class TestStrongmanProfession:
@@ -434,7 +441,7 @@ class TestStrongmanProfession:
 
     @pytest.mark.asyncio
     async def test_get_strongman_profession_by_id_success(
-        self, mock_current_user, sample_strongman_profession, mock_persistence, mock_request
+        self, mock_current_user, sample_strongman_profession, _mock_persistence, mock_request
     ):
         """Test successful retrieval of Strongman profession by ID."""
         # Setup mocks - use AsyncMock for async persistence methods
@@ -460,7 +467,7 @@ class TestStrongmanProfession:
 
     @pytest.mark.asyncio
     async def test_strongman_profession_stat_requirements_format(
-        self, mock_current_user, sample_strongman_profession, mock_persistence, mock_request
+        self, mock_current_user, sample_strongman_profession, _mock_persistence, mock_request
     ):
         """Test that Strongman profession stat requirements are properly formatted."""
         # Setup mocks - use AsyncMock for async persistence methods
@@ -485,7 +492,7 @@ class TestStrongmanProfession:
         sample_profession_data,
         sample_profession_data_2,
         sample_strongman_profession,
-        mock_persistence,
+        _mock_persistence,
         mock_request,
     ):
         """Test that Strongman profession appears in profession list."""

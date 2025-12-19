@@ -24,7 +24,7 @@ class TestWebSocketLoad:
     def connection_manager(self):
         """Create a ConnectionManager instance for testing."""
         cm = ConnectionManager()
-        cm.persistence = None
+        cm.async_persistence = None
         return cm
 
     @pytest.mark.asyncio

@@ -22,7 +22,7 @@ from server.services.nats_subject_manager import (
 class TestNATSSubjectManagerInit:
     """Test NATSSubjectManager initialization and pattern registry."""
 
-    def test_manager_initializes_with_default_patterns(self):
+    def test_manager_initializes_with_default_patterns(self) -> None:
         """Test that manager initializes with all predefined patterns."""
         manager = NATSSubjectManager()
 
@@ -35,7 +35,7 @@ class TestNATSSubjectManagerInit:
         assert "chat_emote_room" in manager.patterns
         assert "chat_pose_room" in manager.patterns
 
-    def test_manager_initializes_with_empty_cache(self):
+    def test_manager_initializes_with_empty_cache(self) -> None:
         """Test that manager initializes with empty validation cache."""
         manager = NATSSubjectManager()
 
@@ -43,7 +43,7 @@ class TestNATSSubjectManagerInit:
         assert hasattr(manager, "_validation_cache")
         assert len(manager._validation_cache) == 0
 
-    def test_manager_singleton_pattern(self):
+    def test_manager_singleton_pattern(self) -> None:
         """Test that manager can be used as singleton if needed."""
         manager1 = NATSSubjectManager()
         manager2 = NATSSubjectManager()
@@ -56,7 +56,7 @@ class TestNATSSubjectManagerInit:
 class TestBuildSubject:
     """Test subject building with pattern parameters."""
 
-    def test_build_subject_with_room_pattern(self):
+    def test_build_subject_with_room_pattern(self) -> None:
         """Test building subject for room-level say messages."""
         manager = NATSSubjectManager()
 
@@ -64,7 +64,7 @@ class TestBuildSubject:
 
         assert subject == "chat.say.room.arkham_1"
 
-    def test_build_subject_with_subzone_pattern(self):
+    def test_build_subject_with_subzone_pattern(self) -> None:
         """Test building subject for subzone-level local messages."""
         manager = NATSSubjectManager()
 
@@ -72,7 +72,7 @@ class TestBuildSubject:
 
         assert subject == "chat.local.subzone.miskatonic_university"
 
-    def test_build_subject_with_global_pattern(self):
+    def test_build_subject_with_global_pattern(self) -> None:
         """Test building subject for global messages (no parameters)."""
         manager = NATSSubjectManager()
 
@@ -80,7 +80,7 @@ class TestBuildSubject:
 
         assert subject == "chat.global"
 
-    def test_build_subject_with_whisper_pattern(self):
+    def test_build_subject_with_whisper_pattern(self) -> None:
         """Test building subject for player whisper messages."""
         manager = NATSSubjectManager()
 
@@ -88,7 +88,7 @@ class TestBuildSubject:
 
         assert subject == "chat.whisper.player.player_123"
 
-    def test_build_subject_with_system_pattern(self):
+    def test_build_subject_with_system_pattern(self) -> None:
         """Test building subject for system messages."""
         manager = NATSSubjectManager()
 
@@ -96,7 +96,7 @@ class TestBuildSubject:
 
         assert subject == "chat.system"
 
-    def test_build_subject_with_emote_pattern(self):
+    def test_build_subject_with_emote_pattern(self) -> None:
         """Test building subject for room-level emote messages."""
         manager = NATSSubjectManager()
 
@@ -104,7 +104,7 @@ class TestBuildSubject:
 
         assert subject == "chat.emote.room.innsmouth_1"
 
-    def test_build_subject_with_pose_pattern(self):
+    def test_build_subject_with_pose_pattern(self) -> None:
         """Test building subject for room-level pose messages."""
         manager = NATSSubjectManager()
 
@@ -112,7 +112,7 @@ class TestBuildSubject:
 
         assert subject == "chat.pose.room.dunwich_1"
 
-    def test_build_subject_with_missing_required_parameter(self):
+    def test_build_subject_with_missing_required_parameter(self) -> None:
         """Test that missing required parameter raises MissingParameterError."""
         manager = NATSSubjectManager()
 
@@ -122,7 +122,7 @@ class TestBuildSubject:
         assert "room_id" in str(exc_info.value)
         assert "chat_say_room" in str(exc_info.value)
 
-    def test_build_subject_with_unknown_pattern(self):
+    def test_build_subject_with_unknown_pattern(self) -> None:
         """Test that unknown pattern name raises PatternNotFoundError."""
         manager = NATSSubjectManager()
 
@@ -131,7 +131,7 @@ class TestBuildSubject:
 
         assert "chat_unknown_pattern" in str(exc_info.value)
 
-    def test_build_subject_with_extra_parameters(self):
+    def test_build_subject_with_extra_parameters(self) -> None:
         """Test that extra parameters are ignored gracefully."""
         manager = NATSSubjectManager()
 
@@ -140,7 +140,7 @@ class TestBuildSubject:
         # Should succeed and ignore extra parameters
         assert subject == "chat.global"
 
-    def test_build_subject_with_special_characters_in_parameters(self):
+    def test_build_subject_with_special_characters_in_parameters(self) -> None:
         """Test parameter validation rejects special characters."""
         manager = NATSSubjectManager()
 
@@ -149,7 +149,7 @@ class TestBuildSubject:
 
         assert "invalid characters" in str(exc_info.value).lower()
 
-    def test_build_subject_with_empty_parameter_value(self):
+    def test_build_subject_with_empty_parameter_value(self) -> None:
         """Test that empty parameter values raise SubjectValidationError."""
         manager = NATSSubjectManager()
 
@@ -162,7 +162,7 @@ class TestBuildSubject:
 class TestValidateSubject:
     """Test subject validation against registered patterns."""
 
-    def test_validate_subject_with_valid_room_subject(self):
+    def test_validate_subject_with_valid_room_subject(self) -> None:
         """Test validation of valid room-level subject."""
         manager = NATSSubjectManager()
 
@@ -170,7 +170,7 @@ class TestValidateSubject:
 
         assert is_valid is True
 
-    def test_validate_subject_with_valid_subzone_subject(self):
+    def test_validate_subject_with_valid_subzone_subject(self) -> None:
         """Test validation of valid subzone-level subject."""
         manager = NATSSubjectManager()
 
@@ -178,7 +178,7 @@ class TestValidateSubject:
 
         assert is_valid is True
 
-    def test_validate_subject_with_valid_global_subject(self):
+    def test_validate_subject_with_valid_global_subject(self) -> None:
         """Test validation of valid global subject."""
         manager = NATSSubjectManager()
 
@@ -186,7 +186,7 @@ class TestValidateSubject:
 
         assert is_valid is True
 
-    def test_validate_subject_with_valid_whisper_subject(self):
+    def test_validate_subject_with_valid_whisper_subject(self) -> None:
         """Test validation of valid whisper subject."""
         manager = NATSSubjectManager()
 
@@ -194,7 +194,7 @@ class TestValidateSubject:
 
         assert is_valid is True
 
-    def test_validate_subject_with_invalid_pattern(self):
+    def test_validate_subject_with_invalid_pattern(self) -> None:
         """Test validation rejects invalid subject patterns."""
         manager = NATSSubjectManager()
 
@@ -202,7 +202,7 @@ class TestValidateSubject:
 
         assert is_valid is False
 
-    def test_validate_subject_with_malformed_structure(self):
+    def test_validate_subject_with_malformed_structure(self) -> None:
         """Test validation rejects malformed subject structure."""
         manager = NATSSubjectManager()
 
@@ -210,7 +210,7 @@ class TestValidateSubject:
 
         assert is_valid is False
 
-    def test_validate_subject_with_empty_string(self):
+    def test_validate_subject_with_empty_string(self) -> None:
         """Test validation rejects empty subject string."""
         manager = NATSSubjectManager()
 
@@ -218,7 +218,7 @@ class TestValidateSubject:
 
         assert is_valid is False
 
-    def test_validate_subject_with_too_long_subject(self):
+    def test_validate_subject_with_too_long_subject(self) -> None:
         """Test validation rejects subjects exceeding maximum length."""
         manager = NATSSubjectManager()
 
@@ -229,7 +229,7 @@ class TestValidateSubject:
 
         assert is_valid is False
 
-    def test_validate_subject_caches_results(self):
+    def test_validate_subject_caches_results(self) -> None:
         """Test that validation results are cached for performance."""
         manager = NATSSubjectManager()
 
@@ -251,7 +251,7 @@ class TestValidateSubject:
 class TestRegisterPattern:
     """Test dynamic pattern registration."""
 
-    def test_register_new_pattern(self):
+    def test_register_new_pattern(self) -> None:
         """Test registering a new subject pattern."""
         manager = NATSSubjectManager()
 
@@ -266,7 +266,7 @@ class TestRegisterPattern:
         subject = manager.build_subject("chat_party_group", party_id="party_123")
         assert subject == "chat.party.group.party_123"
 
-    def test_register_pattern_with_duplicate_name(self):
+    def test_register_pattern_with_duplicate_name(self) -> None:
         """Test that registering duplicate pattern name raises InvalidPatternError."""
         manager = NATSSubjectManager()
 
@@ -279,7 +279,7 @@ class TestRegisterPattern:
 
         assert "already registered" in str(exc_info.value).lower()
 
-    def test_register_pattern_with_invalid_format(self):
+    def test_register_pattern_with_invalid_format(self) -> None:
         """Test that invalid pattern format raises InvalidPatternError."""
         manager = NATSSubjectManager()
 
@@ -292,7 +292,7 @@ class TestRegisterPattern:
 
         assert "invalid pattern format" in str(exc_info.value).lower()
 
-    def test_register_pattern_with_missing_placeholder(self):
+    def test_register_pattern_with_missing_placeholder(self) -> None:
         """Test pattern with required params must have placeholders."""
         manager = NATSSubjectManager()
 
@@ -309,7 +309,7 @@ class TestRegisterPattern:
 class TestGetPatternInfo:
     """Test pattern information retrieval."""
 
-    def test_get_pattern_info_for_existing_pattern(self):
+    def test_get_pattern_info_for_existing_pattern(self) -> None:
         """Test retrieving information for existing pattern."""
         manager = NATSSubjectManager()
 
@@ -320,7 +320,7 @@ class TestGetPatternInfo:
         assert info["required_params"] == ["room_id"]
         assert info["description"] == "Room-level say messages"
 
-    def test_get_pattern_info_for_nonexistent_pattern(self):
+    def test_get_pattern_info_for_nonexistent_pattern(self) -> None:
         """Test that nonexistent pattern raises PatternNotFoundError."""
         manager = NATSSubjectManager()
 
@@ -329,7 +329,7 @@ class TestGetPatternInfo:
 
         assert "chat_nonexistent" in str(exc_info.value)
 
-    def test_get_all_patterns(self):
+    def test_get_all_patterns(self) -> None:
         """Test retrieving all registered patterns."""
         manager = NATSSubjectManager()
 
@@ -343,7 +343,7 @@ class TestGetPatternInfo:
 class TestErrorHandling:
     """Test comprehensive error handling."""
 
-    def test_custom_exception_hierarchy(self):
+    def test_custom_exception_hierarchy(self) -> None:
         """Test that custom exceptions have proper inheritance."""
         # All custom exceptions should inherit from a base exception
         assert issubclass(PatternNotFoundError, Exception)
@@ -351,7 +351,7 @@ class TestErrorHandling:
         assert issubclass(InvalidPatternError, Exception)
         assert issubclass(SubjectValidationError, Exception)
 
-    def test_error_messages_are_descriptive(self):
+    def test_error_messages_are_descriptive(self) -> None:
         """Test that error messages provide useful debugging information."""
         manager = NATSSubjectManager()
 
@@ -367,20 +367,20 @@ class TestErrorHandling:
 class TestPerformanceOptimization:
     """Test performance optimization features."""
 
-    def test_pattern_caching_enabled_by_default(self):
+    def test_pattern_caching_enabled_by_default(self) -> None:
         """Test that pattern caching is enabled by default."""
         manager = NATSSubjectManager()
 
         assert hasattr(manager, "_validation_cache")
         assert manager._cache_enabled is True
 
-    def test_cache_can_be_disabled(self):
+    def test_cache_can_be_disabled(self) -> None:
         """Test that caching can be disabled for testing."""
         manager = NATSSubjectManager(enable_cache=False)
 
         assert manager._cache_enabled is False
 
-    def test_cache_can_be_cleared(self):
+    def test_cache_can_be_cleared(self) -> None:
         """Test that validation cache can be cleared."""
         manager = NATSSubjectManager()
 
@@ -395,7 +395,7 @@ class TestPerformanceOptimization:
 
         assert len(manager._validation_cache) == 0
 
-    def test_build_subject_performance(self):
+    def test_build_subject_performance(self) -> None:
         """Test that subject building is performant."""
         import time
 
@@ -413,7 +413,7 @@ class TestPerformanceOptimization:
 class TestPatternConfiguration:
     """Test pattern configuration and management."""
 
-    def test_max_subject_length_configuration(self):
+    def test_max_subject_length_configuration(self) -> None:
         """Test that maximum subject length can be configured."""
         manager = NATSSubjectManager(max_subject_length=100)
 
@@ -426,7 +426,7 @@ class TestPatternConfiguration:
         with pytest.raises(SubjectValidationError):
             manager.build_subject("chat_say_room", room_id=long_room_id)
 
-    def test_strict_validation_mode(self):
+    def test_strict_validation_mode(self) -> None:
         """Test strict validation mode enforces additional rules."""
         manager = NATSSubjectManager(strict_validation=True)
 
@@ -434,7 +434,7 @@ class TestPatternConfiguration:
         with pytest.raises(SubjectValidationError):
             manager.build_subject("chat_say_room", room_id="room_with_underscore")
 
-    def test_lenient_validation_mode(self):
+    def test_lenient_validation_mode(self) -> None:
         """Test lenient validation mode allows more flexibility."""
         manager = NATSSubjectManager(strict_validation=False)
 
@@ -446,7 +446,7 @@ class TestPatternConfiguration:
 class TestSubscriptionPatterns:
     """Test subscription pattern generation for message handlers."""
 
-    def test_get_subscription_pattern_with_room_pattern(self):
+    def test_get_subscription_pattern_with_room_pattern(self) -> None:
         """Test generating subscription pattern for room-level messages."""
         manager = NATSSubjectManager()
 
@@ -454,7 +454,7 @@ class TestSubscriptionPatterns:
 
         assert pattern == "chat.say.room.*"
 
-    def test_get_subscription_pattern_with_subzone_pattern(self):
+    def test_get_subscription_pattern_with_subzone_pattern(self) -> None:
         """Test generating subscription pattern for subzone-level messages."""
         manager = NATSSubjectManager()
 
@@ -462,7 +462,7 @@ class TestSubscriptionPatterns:
 
         assert pattern == "chat.local.subzone.*"
 
-    def test_get_subscription_pattern_with_no_params(self):
+    def test_get_subscription_pattern_with_no_params(self) -> None:
         """Test generating subscription pattern for patterns with no parameters."""
         manager = NATSSubjectManager()
 
@@ -471,7 +471,7 @@ class TestSubscriptionPatterns:
         # Pattern without parameters should remain unchanged
         assert pattern == "chat.global"
 
-    def test_get_subscription_pattern_with_nonexistent_pattern(self):
+    def test_get_subscription_pattern_with_nonexistent_pattern(self) -> None:
         """Test that nonexistent pattern raises PatternNotFoundError."""
         manager = NATSSubjectManager()
 
@@ -480,7 +480,7 @@ class TestSubscriptionPatterns:
 
         assert "chat_nonexistent" in str(exc_info.value)
 
-    def test_get_chat_subscription_patterns(self):
+    def test_get_chat_subscription_patterns(self) -> None:
         """Test getting all chat subscription patterns."""
         manager = NATSSubjectManager()
 
@@ -498,7 +498,7 @@ class TestSubscriptionPatterns:
         # Should have 7 chat patterns
         assert len(patterns) == 7
 
-    def test_get_event_subscription_patterns(self):
+    def test_get_event_subscription_patterns(self) -> None:
         """Test getting all event subscription patterns."""
         manager = NATSSubjectManager()
 
@@ -527,7 +527,7 @@ class TestSubscriptionPatterns:
         # Should have 16 event/combat patterns (7 event + 9 combat)
         assert len(patterns) == 16
 
-    def test_subscription_patterns_are_valid(self):
+    def test_subscription_patterns_are_valid(self) -> None:
         """Test that generated subscription patterns are valid NATS subjects."""
         manager = NATSSubjectManager()
 
@@ -543,7 +543,7 @@ class TestSubscriptionPatterns:
             assert not pattern.startswith(".")
             assert not pattern.endswith(".")
 
-    def test_subscription_patterns_use_wildcards(self):
+    def test_subscription_patterns_use_wildcards(self) -> None:
         """Test that subscription patterns use wildcards for parameters."""
         manager = NATSSubjectManager()
 
@@ -559,21 +559,21 @@ class TestSubscriptionPatterns:
 class TestPerformanceMetrics:
     """Test performance metrics collection for subject manager operations."""
 
-    def test_metrics_enabled_by_default(self):
+    def test_metrics_enabled_by_default(self) -> None:
         """Test that metrics collection is enabled by default."""
         manager = NATSSubjectManager()
 
         assert manager.metrics is not None
         assert manager._metrics_enabled is True
 
-    def test_metrics_can_be_disabled(self):
+    def test_metrics_can_be_disabled(self) -> None:
         """Test that metrics collection can be disabled."""
         manager = NATSSubjectManager(enable_metrics=False)
 
         assert manager.metrics is None
         assert manager._metrics_enabled is False
 
-    def test_build_metrics_recorded(self):
+    def test_build_metrics_recorded(self) -> None:
         """Test that build operations record metrics."""
         manager = NATSSubjectManager()
 
@@ -592,20 +592,20 @@ class TestPerformanceMetrics:
         assert metrics["build"]["success_rate"] == 1.0
         assert metrics["build"]["avg_time_ms"] >= 0
 
-    def test_build_error_metrics_recorded(self):
+    def test_build_error_metrics_recorded(self) -> None:
         """Test that build errors are recorded in metrics."""
         manager = NATSSubjectManager()
 
         # Attempt build with missing parameters
         try:
             manager.build_subject("chat_say_room")  # Missing room_id
-        except Exception:
+        except (ValueError, KeyError, AttributeError):
             pass
 
         # Attempt build with nonexistent pattern
         try:
             manager.build_subject("nonexistent_pattern")
-        except Exception:
+        except (ValueError, KeyError, AttributeError):
             pass
 
         # Get metrics
@@ -617,7 +617,7 @@ class TestPerformanceMetrics:
         assert metrics["errors"]["missing_parameter"] == 1
         assert metrics["errors"]["pattern_not_found"] == 1
 
-    def test_validation_metrics_recorded(self):
+    def test_validation_metrics_recorded(self) -> None:
         """Test that validation operations record metrics."""
         manager = NATSSubjectManager()
 
@@ -635,7 +635,7 @@ class TestPerformanceMetrics:
         assert metrics["validation"]["failure_count"] == 1
         assert metrics["validation"]["avg_time_ms"] >= 0
 
-    def test_cache_metrics_recorded(self):
+    def test_cache_metrics_recorded(self) -> None:
         """Test that cache hits and misses are recorded."""
         manager = NATSSubjectManager()
 
@@ -658,7 +658,7 @@ class TestPerformanceMetrics:
         assert metrics["cache"]["misses"] == 1
         assert metrics["cache"]["hit_rate"] == 2 / 3
 
-    def test_metrics_percentile_calculation(self):
+    def test_metrics_percentile_calculation(self) -> None:
         """Test that p95 percentile is calculated correctly."""
         manager = NATSSubjectManager()
 
@@ -673,7 +673,7 @@ class TestPerformanceMetrics:
         # P95 should be greater than or equal to average
         assert metrics["build"]["p95_time_ms"] >= metrics["build"]["avg_time_ms"]
 
-    def test_metrics_return_none_when_disabled(self):
+    def test_metrics_return_none_when_disabled(self) -> None:
         """Test that get_performance_metrics returns None when disabled."""
         manager = NATSSubjectManager(enable_metrics=False)
 
@@ -681,7 +681,7 @@ class TestPerformanceMetrics:
 
         assert metrics is None
 
-    def test_metrics_rolling_window(self):
+    def test_metrics_rolling_window(self) -> None:
         """Test that metrics maintain a rolling window of times."""
         manager = NATSSubjectManager()
 
@@ -690,9 +690,10 @@ class TestPerformanceMetrics:
             manager.build_subject("chat_say_room", room_id=f"room_{i}")
 
         # Check that we don't have more than 1000 times stored
+        assert manager.metrics is not None
         assert len(manager.metrics.build_times) <= 1000
 
-    def test_metrics_success_rate_calculation(self):
+    def test_metrics_success_rate_calculation(self) -> None:
         """Test that success rates are calculated correctly."""
         manager = NATSSubjectManager()
 
@@ -703,7 +704,7 @@ class TestPerformanceMetrics:
         for _ in range(3):
             try:
                 manager.build_subject("chat_say_room")  # Missing parameter
-            except Exception:
+            except (ValueError, KeyError, AttributeError):
                 pass
 
         metrics = manager.get_performance_metrics()
@@ -714,7 +715,7 @@ class TestPerformanceMetrics:
         assert metrics["build"]["failure_count"] == 3
         assert metrics["build"]["success_rate"] == 0.7
 
-    def test_metrics_comprehensive_summary(self):
+    def test_metrics_comprehensive_summary(self) -> None:
         """Test that metrics provide comprehensive summary."""
         manager = NATSSubjectManager()
 
@@ -725,12 +726,13 @@ class TestPerformanceMetrics:
 
         try:
             manager.build_subject("nonexistent")
-        except Exception:
+        except (ValueError, KeyError, AttributeError):
             pass
 
         metrics = manager.get_performance_metrics()
 
         # Verify all metric categories are present
+        assert metrics is not None
         assert "validation" in metrics
         assert "cache" in metrics
         assert "build" in metrics

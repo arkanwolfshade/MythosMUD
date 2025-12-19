@@ -4,6 +4,8 @@ Tests for the new command validation system using Pydantic and Click.
 This module tests the secure command parsing and validation functionality.
 """
 
+from typing import Any, cast
+
 import pytest
 from pydantic import ValidationError as PydanticValidationError
 
@@ -46,7 +48,7 @@ from server.utils.command_parser import CommandParser, get_command_help, parse_c
 class TestCommandModels:
     """Test Pydantic command models."""
 
-    def test_look_command_valid(self):
+    def test_look_command_valid(self) -> None:
         """Test valid LookCommand creation."""
         # Look without direction
         cmd = LookCommand()
@@ -58,12 +60,12 @@ class TestCommandModels:
         assert cmd.command_type == CommandType.LOOK
         assert cmd.direction == Direction.NORTH
 
-    def test_look_command_invalid_direction(self):
+    def test_look_command_invalid_direction(self) -> None:
         """Test LookCommand with invalid direction."""
         with pytest.raises(PydanticValidationError):
             LookCommand(direction="invalid")
 
-    def test_look_command_with_target(self):
+    def test_look_command_with_target(self) -> None:
         """Test LookCommand with target field."""
         # Look with target only
         cmd = LookCommand(target="guard")
@@ -83,7 +85,7 @@ class TestCommandModels:
         assert cmd.direction is None
         assert cmd.target == "Dr. Francis Morgan"
 
-    def test_look_command_with_target_type(self):
+    def test_look_command_with_target_type(self) -> None:
         """Test LookCommand with target_type field."""
         # Look with explicit player target type
         cmd = LookCommand(target="Armitage", target_type="player")
@@ -115,7 +117,7 @@ class TestCommandModels:
         cmd = LookCommand(target="something")
         assert cmd.target_type is None
 
-    def test_look_command_with_look_in(self):
+    def test_look_command_with_look_in(self) -> None:
         """Test LookCommand with look_in field."""
         # Look with look_in flag set to True
         cmd = LookCommand(target="backpack", look_in=True)
@@ -130,7 +132,7 @@ class TestCommandModels:
         cmd = LookCommand(target="backpack")
         assert cmd.look_in is False
 
-    def test_look_command_with_instance_number(self):
+    def test_look_command_with_instance_number(self) -> None:
         """Test LookCommand with instance_number field."""
         # Look with instance number
         cmd = LookCommand(target="backpack", instance_number=2)
@@ -145,7 +147,7 @@ class TestCommandModels:
         cmd = LookCommand(target="backpack")
         assert cmd.instance_number is None
 
-    def test_look_command_with_all_new_fields(self):
+    def test_look_command_with_all_new_fields(self) -> None:
         """Test LookCommand with all new fields combined."""
         cmd = LookCommand(
             target="backpack",
@@ -158,12 +160,12 @@ class TestCommandModels:
         assert cmd.look_in is True
         assert cmd.instance_number == 2
 
-    def test_look_command_invalid_target_type(self):
+    def test_look_command_invalid_target_type(self) -> None:
         """Test LookCommand with invalid target_type."""
         with pytest.raises(PydanticValidationError):
             LookCommand(target="something", target_type="invalid")
 
-    def test_look_command_instance_number_validation(self):
+    def test_look_command_instance_number_validation(self) -> None:
         """Test LookCommand instance_number validation."""
         # Instance number must be positive
         with pytest.raises(PydanticValidationError):
@@ -172,35 +174,35 @@ class TestCommandModels:
         with pytest.raises(PydanticValidationError):
             LookCommand(target="backpack", instance_number=-1)
 
-    def test_go_command_valid(self):
+    def test_go_command_valid(self) -> None:
         """Test valid GoCommand creation."""
         cmd = GoCommand(direction=Direction.SOUTH)
         assert cmd.command_type == CommandType.GO
         assert cmd.direction == Direction.SOUTH
 
-    def test_go_command_missing_direction(self):
+    def test_go_command_missing_direction(self) -> None:
         """Test GoCommand without required direction."""
         with pytest.raises(PydanticValidationError):
-            GoCommand()
+            cast(Any, GoCommand)()
 
-    def test_say_command_valid(self):
+    def test_say_command_valid(self) -> None:
         """Test valid SayCommand creation."""
         cmd = SayCommand(message="Hello, world!")
         assert cmd.command_type == CommandType.SAY
         assert cmd.message == "Hello, world!"
 
-    def test_say_command_empty_message(self):
+    def test_say_command_empty_message(self) -> None:
         """Test SayCommand with empty message."""
         with pytest.raises(PydanticValidationError):
             SayCommand(message="")
 
-    def test_say_command_too_long(self):
+    def test_say_command_too_long(self) -> None:
         """Test SayCommand with message too long."""
         long_message = "x" * 501
         with pytest.raises(PydanticValidationError):
             SayCommand(message=long_message)
 
-    def test_say_command_dangerous_characters(self):
+    def test_say_command_dangerous_characters(self) -> None:
         """Test SayCommand with dangerous characters (only HTML tags and injection patterns now)."""
         dangerous_messages = [
             "Hello<script>alert('xss')</script>",  # HTML tags blocked
@@ -212,13 +214,13 @@ class TestCommandModels:
             with pytest.raises(PydanticValidationError):
                 SayCommand(message=message)
 
-    def test_emote_command_valid(self):
+    def test_emote_command_valid(self) -> None:
         """Test valid EmoteCommand creation."""
         cmd = EmoteCommand(action="waves hello")
         assert cmd.command_type == CommandType.EMOTE
         assert cmd.action == "waves hello"
 
-    def test_emote_command_dangerous_characters(self):
+    def test_emote_command_dangerous_characters(self) -> None:
         """Test EmoteCommand with dangerous characters (only HTML tags and injection patterns now)."""
         dangerous_actions = [
             "waves<script>alert('xss')</script>",  # HTML tags blocked
@@ -229,13 +231,13 @@ class TestCommandModels:
             with pytest.raises(PydanticValidationError):
                 EmoteCommand(action=action)
 
-    def test_me_command_valid(self):
+    def test_me_command_valid(self) -> None:
         """Test valid MeCommand creation."""
         cmd = MeCommand(action="smiles warmly")
         assert cmd.command_type == CommandType.ME
         assert cmd.action == "smiles warmly"
 
-    def test_pose_command_valid(self):
+    def test_pose_command_valid(self) -> None:
         """Test valid PoseCommand creation."""
         # Pose without description
         cmd = PoseCommand()
@@ -247,17 +249,17 @@ class TestCommandModels:
         assert cmd.command_type == CommandType.POSE
         assert cmd.pose == "stands tall and proud"
 
-    def test_sit_command_model(self):
+    def test_sit_command_model(self) -> None:
         """Test SitCommand creation."""
         cmd = SitCommand()
         assert cmd.command_type == CommandType.SIT
 
-    def test_stand_command_model(self):
+    def test_stand_command_model(self) -> None:
         """Test StandCommand creation."""
         cmd = StandCommand()
         assert cmd.command_type == CommandType.STAND
 
-    def test_lie_command_model(self):
+    def test_lie_command_model(self) -> None:
         """Test LieCommand creation with optional modifier."""
         cmd = LieCommand()
         assert cmd.command_type == CommandType.LIE
@@ -269,41 +271,41 @@ class TestCommandModels:
         with pytest.raises(PydanticValidationError):
             LieCommand(modifier="sideways")
 
-    def test_status_command_model(self):
+    def test_status_command_model(self) -> None:
         """Test StatusCommand creation."""
         cmd = StatusCommand()
         assert cmd.command_type == CommandType.STATUS
 
-    def test_time_command_model(self):
+    def test_time_command_model(self) -> None:
         """Test TimeCommand creation."""
         cmd = TimeCommand()
         assert cmd.command_type == CommandType.TIME
 
-    def test_whoami_command_model(self):
+    def test_whoami_command_model(self) -> None:
         """Test WhoamiCommand creation."""
         cmd = WhoamiCommand()
         assert cmd.command_type == CommandType.WHOAMI
 
-    def test_pickup_command_model_with_index(self):
+    def test_pickup_command_model_with_index(self) -> None:
         """Test PickupCommand accepts numeric selectors."""
         cmd = PickupCommand(index=3)
         assert cmd.command_type == CommandType.PICKUP
         assert cmd.index == 3
         assert cmd.search_term is None
 
-    def test_pickup_command_model_with_search_term(self):
+    def test_pickup_command_model_with_search_term(self) -> None:
         """Test PickupCommand accepts fuzzy selectors."""
         cmd = PickupCommand(search_term="clockwork crown", quantity=2)
         assert cmd.index is None
         assert cmd.search_term == "clockwork crown"
         assert cmd.quantity == 2
 
-    def test_pickup_command_model_requires_selector(self):
+    def test_pickup_command_model_requires_selector(self) -> None:
         """Test PickupCommand enforces selector validation."""
         with pytest.raises(PydanticValidationError):
             PickupCommand()
 
-    def test_equip_command_model_with_index(self):
+    def test_equip_command_model_with_index(self) -> None:
         """Test EquipCommand accepts numeric selectors."""
         cmd = EquipCommand(index=2, target_slot="head")
         assert cmd.command_type == CommandType.EQUIP
@@ -311,42 +313,42 @@ class TestCommandModels:
         assert cmd.search_term is None
         assert cmd.target_slot == "head"
 
-    def test_equip_command_model_with_search_term(self):
+    def test_equip_command_model_with_search_term(self) -> None:
         """Test EquipCommand accepts fuzzy selectors."""
         cmd = EquipCommand(search_term="clockwork crown")
         assert cmd.index is None
         assert cmd.search_term == "clockwork crown"
         assert cmd.target_slot is None
 
-    def test_equip_command_normalizes_target_slot(self):
+    def test_equip_command_normalizes_target_slot(self) -> None:
         """Test EquipCommand normalizes provided slot names."""
         cmd = EquipCommand(index=1, target_slot="HEAD")
         assert cmd.target_slot == "head"
 
-    def test_equip_command_model_requires_selector(self):
+    def test_equip_command_model_requires_selector(self) -> None:
         """Test EquipCommand enforces selector validation."""
         with pytest.raises(PydanticValidationError):
             EquipCommand()
 
-    def test_unequip_command_model_with_slot(self):
+    def test_unequip_command_model_with_slot(self) -> None:
         """Test UnequipCommand normalizes slot identifiers."""
         cmd = UnequipCommand(slot="HEAD")
         assert cmd.command_type == CommandType.UNEQUIP
         assert cmd.slot == "head"
         assert cmd.search_term is None
 
-    def test_unequip_command_model_with_search_term(self):
+    def test_unequip_command_model_with_search_term(self) -> None:
         """Test UnequipCommand accepts fuzzy selectors."""
         cmd = UnequipCommand(search_term="Clockwork Crown")
         assert cmd.slot is None
         assert cmd.search_term == "Clockwork Crown"
 
-    def test_unequip_command_model_requires_selector(self):
+    def test_unequip_command_model_requires_selector(self) -> None:
         """Test UnequipCommand requires slot or name."""
         with pytest.raises(PydanticValidationError):
             UnequipCommand()
 
-    def test_alias_command_valid(self):
+    def test_alias_command_valid(self) -> None:
         """Test valid AliasCommand creation."""
         # View alias
         cmd = AliasCommand(alias_name="n")
@@ -360,7 +362,7 @@ class TestCommandModels:
         assert cmd.alias_name == "n"
         assert cmd.command == "go north"
 
-    def test_alias_command_invalid_name(self):
+    def test_alias_command_invalid_name(self) -> None:
         """Test AliasCommand with invalid alias name."""
         invalid_names = ["123alias", "alias name", "1alias", "alias@name", "alias.name"]
 
@@ -368,18 +370,18 @@ class TestCommandModels:
             with pytest.raises(PydanticValidationError):
                 AliasCommand(alias_name=name)
 
-    def test_aliases_command_valid(self):
+    def test_aliases_command_valid(self) -> None:
         """Test valid AliasesCommand creation."""
         cmd = AliasesCommand()
         assert cmd.command_type == CommandType.ALIASES
 
-    def test_unalias_command_valid(self):
+    def test_unalias_command_valid(self) -> None:
         """Test valid UnaliasCommand creation."""
         cmd = UnaliasCommand(alias_name="n")
         assert cmd.command_type == CommandType.UNALIAS
         assert cmd.alias_name == "n"
 
-    def test_help_command_valid(self):
+    def test_help_command_valid(self) -> None:
         """Test valid HelpCommand creation."""
         # General help
         cmd = HelpCommand()
@@ -391,7 +393,7 @@ class TestCommandModels:
         assert cmd.command_type == CommandType.HELP
         assert cmd.topic == "look"
 
-    def test_mute_command_valid(self):
+    def test_mute_command_valid(self) -> None:
         """Test valid MuteCommand creation."""
         # Mute without duration/reason
         cmd = MuteCommand(player_name="testuser")
@@ -408,7 +410,7 @@ class TestCommandModels:
         cmd = MuteCommand(player_name="testuser", reason="spam")
         assert cmd.reason == "spam"
 
-    def test_mute_command_invalid_duration(self):
+    def test_mute_command_invalid_duration(self) -> None:
         """Test MuteCommand with invalid duration."""
         with pytest.raises(PydanticValidationError):
             MuteCommand(player_name="testuser", duration_minutes=0)
@@ -416,7 +418,7 @@ class TestCommandModels:
         with pytest.raises(PydanticValidationError):
             MuteCommand(player_name="testuser", duration_minutes=10081)  # > 1 week
 
-    def test_mute_command_invalid_player_name(self):
+    def test_mute_command_invalid_player_name(self) -> None:
         """Test MuteCommand with invalid player name."""
         invalid_names = ["123user", "user name", "1user", "user@name", "user.name"]
 
@@ -424,13 +426,13 @@ class TestCommandModels:
             with pytest.raises(PydanticValidationError):
                 MuteCommand(player_name=name)
 
-    def test_unmute_command_valid(self):
+    def test_unmute_command_valid(self) -> None:
         """Test valid UnmuteCommand creation."""
         cmd = UnmuteCommand(player_name="testuser")
         assert cmd.command_type == CommandType.UNMUTE
         assert cmd.player_name == "testuser"
 
-    def test_mute_global_command_valid(self):
+    def test_mute_global_command_valid(self) -> None:
         """Test valid MuteGlobalCommand creation."""
         cmd = MuteGlobalCommand(player_name="testuser", duration_minutes=60, reason="global spam")
         assert cmd.command_type == CommandType.MUTE_GLOBAL
@@ -438,36 +440,36 @@ class TestCommandModels:
         assert cmd.duration_minutes == 60
         assert cmd.reason == "global spam"
 
-    def test_unmute_global_command_valid(self):
+    def test_unmute_global_command_valid(self) -> None:
         """Test valid UnmuteGlobalCommand creation."""
         cmd = UnmuteGlobalCommand(player_name="testuser")
         assert cmd.command_type == CommandType.UNMUTE_GLOBAL
         assert cmd.player_name == "testuser"
 
-    def test_add_admin_command_valid(self):
+    def test_add_admin_command_valid(self) -> None:
         """Test valid AddAdminCommand creation."""
         cmd = AddAdminCommand(player_name="testuser")
         assert cmd.command_type == CommandType.ADD_ADMIN
         assert cmd.player_name == "testuser"
 
-    def test_mutes_command_valid(self):
+    def test_mutes_command_valid(self) -> None:
         """Test valid MutesCommand creation."""
         cmd = MutesCommand()
         assert cmd.command_type == CommandType.MUTES
 
-    def test_teleport_command_with_direction(self):
+    def test_teleport_command_with_direction(self) -> None:
         """Test TeleportCommand with optional direction."""
         cmd = TeleportCommand(player_name="testuser", direction=Direction.EAST)
         assert cmd.command_type == CommandType.TELEPORT
         assert cmd.player_name == "testuser"
         assert cmd.direction == Direction.EAST
 
-    def test_teleport_command_invalid_direction(self):
+    def test_teleport_command_invalid_direction(self) -> None:
         """Test TeleportCommand rejects invalid directions."""
         with pytest.raises(PydanticValidationError):
             TeleportCommand(player_name="testuser", direction="invalid")
 
-    def test_admin_command_status(self):
+    def test_admin_command_status(self) -> None:
         """Test AdminCommand status subcommand creation."""
         cmd = AdminCommand(subcommand="status")
         assert cmd.command_type == CommandType.ADMIN
@@ -477,7 +479,7 @@ class TestCommandModels:
         with pytest.raises(PydanticValidationError):
             AdminCommand(subcommand="invalid")
 
-    def test_summon_command_defaults(self):
+    def test_summon_command_defaults(self) -> None:
         """Test SummonCommand defaults."""
         cmd = SummonCommand(prototype_id="artifact.miskatonic.codex")
         assert cmd.command_type == CommandType.SUMMON
@@ -485,24 +487,24 @@ class TestCommandModels:
         assert cmd.quantity == 1
         assert cmd.target_type == "item"
 
-    def test_summon_command_with_quantity_and_target(self):
+    def test_summon_command_with_quantity_and_target(self) -> None:
         """Test SummonCommand with explicit quantity and target type."""
         cmd = SummonCommand(prototype_id="weapon.sword.longsword", quantity=3, target_type="npc")
         assert cmd.quantity == 3
         assert cmd.target_type == "npc"
 
     @pytest.mark.parametrize("value", [0, -1, 9])
-    def test_summon_command_invalid_quantity(self, value):
+    def test_summon_command_invalid_quantity(self, value: Any) -> None:
         """Summon quantity must be within allowed bounds."""
         with pytest.raises(PydanticValidationError):
             SummonCommand(prototype_id="artifact.miskatonic.codex", quantity=value)
 
-    def test_summon_command_invalid_target_type(self):
+    def test_summon_command_invalid_target_type(self) -> None:
         """Summon target type must be item or npc."""
         with pytest.raises(PydanticValidationError):
             SummonCommand(prototype_id="artifact.miskatonic.codex", target_type="spirit")
 
-    def test_parse_summon_command_defaults(self):
+    def test_parse_summon_command_defaults(self) -> None:
         """Test parsing summon command with defaults."""
         parser = CommandParser()
         cmd = parser.parse_command("/summon artifact.miskatonic.codex")
@@ -511,7 +513,7 @@ class TestCommandModels:
         assert cmd.quantity == 1
         assert cmd.target_type == "item"
 
-    def test_parse_summon_command_with_quantity(self):
+    def test_parse_summon_command_with_quantity(self) -> None:
         """Test parsing summon command with explicit quantity."""
         parser = CommandParser()
         cmd = parser.parse_command("/summon weapon.sword.longsword 2")
@@ -519,7 +521,7 @@ class TestCommandModels:
         assert cmd.quantity == 2
         assert cmd.target_type == "item"
 
-    def test_parse_summon_command_with_target_type(self):
+    def test_parse_summon_command_with_target_type(self) -> None:
         """Test parsing summon command with target hints."""
         parser = CommandParser()
         cmd = parser.parse_command("/summon npc.waking_terror npc 3")
@@ -528,7 +530,7 @@ class TestCommandModels:
         assert cmd.quantity == 3
         assert cmd.target_type == "npc"
 
-    def test_parse_summon_command_invalid_arguments(self):
+    def test_parse_summon_command_invalid_arguments(self) -> None:
         """Test summon command rejects invalid arguments."""
         parser = CommandParser()
         with pytest.raises(MythosValidationError):
@@ -538,11 +540,15 @@ class TestCommandModels:
 class TestCommandParser:
     """Test CommandParser functionality."""
 
-    def setup_method(self):
+    def __init__(self) -> None:
+        """Initialize test class attributes."""
+        self.parser: CommandParser
+
+    def setup_method(self) -> None:
         """Set up test fixtures."""
         self.parser = CommandParser()
 
-    def test_parse_look_command(self):
+    def test_parse_look_command(self) -> None:
         """Test parsing look command."""
         # Look without direction
         cmd = self.parser.parse_command("look")
@@ -562,7 +568,7 @@ class TestCommandParser:
         assert cmd.direction == Direction.SOUTH
         assert cmd.target == "south"
 
-    def test_parse_look_command_with_target(self):
+    def test_parse_look_command_with_target(self) -> None:
         """Test parsing look command with NPC targets."""
         # Look at NPC
         cmd = self.parser.parse_command("look guard")
@@ -588,7 +594,7 @@ class TestCommandParser:
         assert cmd.direction is None
         assert cmd.target == "northeast"
 
-    def test_parse_look_command_explicit_syntax(self):
+    def test_parse_look_command_explicit_syntax(self) -> None:
         """Test parsing look command with explicit type syntax."""
         # Explicit player target type
         cmd = self.parser.parse_command("look player Armitage")
@@ -626,7 +632,7 @@ class TestCommandParser:
         assert cmd.target == "Dr. Francis Morgan"
         assert cmd.target_type == "player"
 
-    def test_parse_look_command_container_inspection(self):
+    def test_parse_look_command_container_inspection(self) -> None:
         """Test parsing look command with container inspection syntax."""
         # Look in container
         cmd = self.parser.parse_command("look in backpack")
@@ -646,7 +652,7 @@ class TestCommandParser:
         assert cmd.target == "chest"
         assert cmd.look_in is True
 
-    def test_parse_look_command_instance_targeting(self):
+    def test_parse_look_command_instance_targeting(self) -> None:
         """Test parsing look command with instance targeting."""
         # Instance targeting with hyphen syntax
         cmd = self.parser.parse_command("look backpack-2")
@@ -680,7 +686,7 @@ class TestCommandParser:
         assert cmd.target == "sword"
         assert cmd.instance_number == 10
 
-    def test_parse_look_command_diagonal_direction_removal(self):
+    def test_parse_look_command_diagonal_direction_removal(self) -> None:
         """Test that diagonal directions are no longer recognized."""
         # Diagonal directions should be treated as targets, not directions
         cmd = self.parser.parse_command("look northeast")
@@ -715,31 +721,31 @@ class TestCommandParser:
         assert cmd.direction == Direction.SOUTH
         assert cmd.target == "south"
 
-    def test_parse_go_command(self):
+    def test_parse_go_command(self) -> None:
         """Test parsing go command."""
         cmd = self.parser.parse_command("go east")
         assert isinstance(cmd, GoCommand)
         assert cmd.direction == Direction.EAST
 
-    def test_parse_say_command(self):
+    def test_parse_say_command(self) -> None:
         """Test parsing say command."""
         cmd = self.parser.parse_command("say Hello, world!")
         assert isinstance(cmd, SayCommand)
         assert cmd.message == "Hello, world!"
 
-    def test_parse_emote_command(self):
+    def test_parse_emote_command(self) -> None:
         """Test parsing emote command."""
         cmd = self.parser.parse_command("emote waves hello")
         assert isinstance(cmd, EmoteCommand)
         assert cmd.action == "waves hello"
 
-    def test_parse_me_command(self):
+    def test_parse_me_command(self) -> None:
         """Test parsing me command."""
         cmd = self.parser.parse_command("me smiles warmly")
         assert isinstance(cmd, MeCommand)
         assert cmd.action == "smiles warmly"
 
-    def test_parse_pose_command(self):
+    def test_parse_pose_command(self) -> None:
         """Test parsing pose command."""
         # Pose without description
         cmd = self.parser.parse_command("pose")
@@ -751,7 +757,7 @@ class TestCommandParser:
         assert isinstance(cmd, PoseCommand)
         assert cmd.pose == "stands tall"
 
-    def test_parse_status_and_whoami_commands(self):
+    def test_parse_status_and_whoami_commands(self) -> None:
         """Test parsing status and whoami commands."""
         cmd = self.parser.parse_command("status")
         assert isinstance(cmd, StatusCommand)
@@ -771,7 +777,7 @@ class TestCommandParser:
         with pytest.raises(MythosValidationError):
             self.parser.parse_command("time please")
 
-    def test_parse_sit_command(self):
+    def test_parse_sit_command(self) -> None:
         """Test parsing sit command."""
         cmd = self.parser.parse_command("sit")
         assert isinstance(cmd, SitCommand)
@@ -782,7 +788,7 @@ class TestCommandParser:
         with pytest.raises(MythosValidationError):
             self.parser.parse_command("sit now")
 
-    def test_parse_stand_command(self):
+    def test_parse_stand_command(self) -> None:
         """Test parsing stand command."""
         cmd = self.parser.parse_command("stand")
         assert isinstance(cmd, StandCommand)
@@ -793,7 +799,7 @@ class TestCommandParser:
         with pytest.raises(MythosValidationError):
             self.parser.parse_command("stand quickly")
 
-    def test_parse_lie_command(self):
+    def test_parse_lie_command(self) -> None:
         """Test parsing lie command with optional modifier."""
         cmd = self.parser.parse_command("lie")
         assert isinstance(cmd, LieCommand)
@@ -810,7 +816,7 @@ class TestCommandParser:
         with pytest.raises(MythosValidationError):
             self.parser.parse_command("lie sideways")
 
-    def test_parse_alias_command(self):
+    def test_parse_alias_command(self) -> None:
         """Test parsing alias command."""
         # View alias
         cmd = self.parser.parse_command("alias n")
@@ -824,12 +830,12 @@ class TestCommandParser:
         assert cmd.alias_name == "n"
         assert cmd.command == "go north"
 
-    def test_parse_aliases_command(self):
+    def test_parse_aliases_command(self) -> None:
         """Test parsing aliases command."""
         cmd = self.parser.parse_command("aliases")
         assert isinstance(cmd, AliasesCommand)
 
-    def test_parse_pickup_command_by_index(self):
+    def test_parse_pickup_command_by_index(self) -> None:
         """Test parsing pickup command using numeric index."""
         cmd = self.parser.parse_command("pickup 2")
         assert isinstance(cmd, PickupCommand)
@@ -837,14 +843,14 @@ class TestCommandParser:
         assert cmd.search_term is None
         assert cmd.quantity is None
 
-    def test_parse_pickup_command_by_name(self):
+    def test_parse_pickup_command_by_name(self) -> None:
         """Test parsing pickup command using fuzzy selector."""
         cmd = self.parser.parse_command("pickup Clockwork Crown")
         assert isinstance(cmd, PickupCommand)
         assert cmd.index is None
         assert cmd.search_term == "Clockwork Crown"
 
-    def test_parse_pickup_command_by_name_with_quantity(self):
+    def test_parse_pickup_command_by_name_with_quantity(self) -> None:
         """Test parsing pickup command with fuzzy selector and quantity."""
         cmd = self.parser.parse_command("pickup clockwork 3")
         assert isinstance(cmd, PickupCommand)
@@ -852,7 +858,7 @@ class TestCommandParser:
         assert cmd.search_term == "clockwork"
         assert cmd.quantity == 3
 
-    def test_parse_pickup_command_invalid_arguments(self):
+    def test_parse_pickup_command_invalid_arguments(self) -> None:
         """Test pickup command rejects malformed selectors."""
         with pytest.raises(MythosValidationError):
             self.parser.parse_command("pickup")
@@ -860,7 +866,7 @@ class TestCommandParser:
         with pytest.raises(MythosValidationError):
             self.parser.parse_command("pickup 1 telescope")
 
-    def test_parse_equip_command_by_index(self):
+    def test_parse_equip_command_by_index(self) -> None:
         """Test parsing equip command with numeric index."""
         cmd = self.parser.parse_command("equip 2 head")
         assert isinstance(cmd, EquipCommand)
@@ -868,14 +874,14 @@ class TestCommandParser:
         assert cmd.search_term is None
         assert cmd.target_slot == "head"
 
-    def test_parse_equip_command_by_index_uppercase_slot(self):
+    def test_parse_equip_command_by_index_uppercase_slot(self) -> None:
         """Test parsing equip command normalizes uppercase slot names."""
         cmd = self.parser.parse_command("equip 1 HEAD")
         assert isinstance(cmd, EquipCommand)
         assert cmd.index == 1
         assert cmd.target_slot == "head"
 
-    def test_parse_equip_command_by_name(self):
+    def test_parse_equip_command_by_name(self) -> None:
         """Test parsing equip command with fuzzy selector."""
         cmd = self.parser.parse_command("equip Clockwork Crown")
         assert isinstance(cmd, EquipCommand)
@@ -883,7 +889,7 @@ class TestCommandParser:
         assert cmd.search_term == "Clockwork Crown"
         assert cmd.target_slot is None
 
-    def test_parse_equip_command_by_name_with_slot(self):
+    def test_parse_equip_command_by_name_with_slot(self) -> None:
         """Test parsing equip command with fuzzy selector and slot."""
         cmd = self.parser.parse_command("equip Clockwork Crown head")
         assert isinstance(cmd, EquipCommand)
@@ -891,37 +897,37 @@ class TestCommandParser:
         assert cmd.search_term == "Clockwork Crown"
         assert cmd.target_slot == "head"
 
-    def test_parse_equip_command_invalid_arguments(self):
+    def test_parse_equip_command_invalid_arguments(self) -> None:
         """Test equip command rejects malformed selectors."""
         with pytest.raises(MythosValidationError):
             self.parser.parse_command("equip")
 
-    def test_parse_unequip_command_by_slot(self):
+    def test_parse_unequip_command_by_slot(self) -> None:
         """Test parsing unequip command with slot identifier."""
         cmd = self.parser.parse_command("unequip HEAD")
         assert isinstance(cmd, UnequipCommand)
         assert cmd.slot == "head"
         assert cmd.search_term is None
 
-    def test_parse_unequip_command_by_name(self):
+    def test_parse_unequip_command_by_name(self) -> None:
         """Test parsing unequip command with item name."""
         cmd = self.parser.parse_command("unequip Clockwork Crown")
         assert isinstance(cmd, UnequipCommand)
         assert cmd.slot is None
         assert cmd.search_term == "Clockwork Crown"
 
-    def test_parse_unequip_command_invalid(self):
+    def test_parse_unequip_command_invalid(self) -> None:
         """Test unequip command rejects empty arguments."""
         with pytest.raises(MythosValidationError):
             self.parser.parse_command("unequip")
 
-    def test_parse_unalias_command(self):
+    def test_parse_unalias_command(self) -> None:
         """Test parsing unalias command."""
         cmd = self.parser.parse_command("unalias n")
         assert isinstance(cmd, UnaliasCommand)
         assert cmd.alias_name == "n"
 
-    def test_parse_help_command(self):
+    def test_parse_help_command(self) -> None:
         """Test parsing help command."""
         # General help
         cmd = self.parser.parse_command("help")
@@ -933,21 +939,21 @@ class TestCommandParser:
         assert isinstance(cmd, HelpCommand)
         assert cmd.topic == "look"
 
-    def test_parse_admin_status_command(self):
+    def test_parse_admin_status_command(self) -> None:
         """Test parsing admin status command."""
         cmd = self.parser.parse_command("admin status")
         assert isinstance(cmd, AdminCommand)
         assert cmd.subcommand == "status"
         assert cmd.args == []
 
-    def test_parse_teleport_command_with_direction(self):
+    def test_parse_teleport_command_with_direction(self) -> None:
         """Test parsing teleport command with optional direction."""
         cmd = self.parser.parse_command("teleport Ithaqua east")
         assert isinstance(cmd, TeleportCommand)
         assert cmd.player_name == "Ithaqua"
         assert str(cmd.direction) == Direction.EAST.value
 
-    def test_parse_mute_command(self):
+    def test_parse_mute_command(self) -> None:
         """Test parsing mute command."""
         # Basic mute
         cmd = self.parser.parse_command("mute testuser")
@@ -975,13 +981,13 @@ class TestCommandParser:
         assert cmd.duration_minutes == 30
         assert cmd.reason == "spam"
 
-    def test_parse_unmute_command(self):
+    def test_parse_unmute_command(self) -> None:
         """Test parsing unmute command."""
         cmd = self.parser.parse_command("unmute testuser")
         assert isinstance(cmd, UnmuteCommand)
         assert cmd.player_name == "testuser"
 
-    def test_parse_mute_global_command(self):
+    def test_parse_mute_global_command(self) -> None:
         """Test parsing mute_global command."""
         cmd = self.parser.parse_command("mute_global testuser 60 global spam")
         assert isinstance(cmd, MuteGlobalCommand)
@@ -989,24 +995,24 @@ class TestCommandParser:
         assert cmd.duration_minutes == 60
         assert cmd.reason == "global spam"
 
-    def test_parse_unmute_global_command(self):
+    def test_parse_unmute_global_command(self) -> None:
         """Test parsing unmute_global command."""
         cmd = self.parser.parse_command("unmute_global testuser")
         assert isinstance(cmd, UnmuteGlobalCommand)
         assert cmd.player_name == "testuser"
 
-    def test_parse_add_admin_command(self):
+    def test_parse_add_admin_command(self) -> None:
         """Test parsing add_admin command."""
         cmd = self.parser.parse_command("add_admin testuser")
         assert isinstance(cmd, AddAdminCommand)
         assert cmd.player_name == "testuser"
 
-    def test_parse_mutes_command(self):
+    def test_parse_mutes_command(self) -> None:
         """Test parsing mutes command."""
         cmd = self.parser.parse_command("mutes")
         assert isinstance(cmd, MutesCommand)
 
-    def test_parse_empty_command(self):
+    def test_parse_empty_command(self) -> None:
         """Test parsing empty command."""
         with pytest.raises(MythosValidationError, match="Empty command provided"):
             self.parser.parse_command("")
@@ -1014,24 +1020,24 @@ class TestCommandParser:
         with pytest.raises(MythosValidationError, match="Empty command provided"):
             self.parser.parse_command("   ")
 
-    def test_parse_unknown_command(self):
+    def test_parse_unknown_command(self) -> None:
         """Test parsing unknown command."""
         with pytest.raises(MythosValidationError, match="Unknown command"):
             self.parser.parse_command("unknown")
 
-    def test_parse_command_too_long(self):
+    def test_parse_command_too_long(self) -> None:
         """Test parsing command that's too long."""
         long_command = "say " + "x" * 1000
         with pytest.raises(MythosValidationError, match="Command too long"):
             self.parser.parse_command(long_command)
 
-    def test_parse_command_with_extra_whitespace(self):
+    def test_parse_command_with_extra_whitespace(self) -> None:
         """Test parsing command with extra whitespace."""
         cmd = self.parser.parse_command("  look   north  ")
         assert isinstance(cmd, LookCommand)
         assert cmd.direction == Direction.NORTH
 
-    def test_parse_command_case_insensitive(self):
+    def test_parse_command_case_insensitive(self) -> None:
         """Test parsing command with different cases."""
         cmd = self.parser.parse_command("LOOK NORTH")
         assert isinstance(cmd, LookCommand)
@@ -1041,7 +1047,7 @@ class TestCommandParser:
 class TestCommandSafety:
     """Test command safety validation."""
 
-    def test_validate_command_safety_valid(self):
+    def test_validate_command_safety_valid(self) -> None:
         """Test safety validation with valid commands."""
         valid_commands = [
             "look",
@@ -1063,7 +1069,7 @@ class TestCommandSafety:
         for command in valid_commands:
             assert validate_command_safety(command) is True
 
-    def test_validate_command_safety_dangerous(self):
+    def test_validate_command_safety_dangerous(self) -> None:
         """Test safety validation with dangerous commands."""
         dangerous_commands = [
             "say Hello; rm -rf /",
@@ -1084,7 +1090,7 @@ class TestCommandSafety:
 class TestCommandHelp:
     """Test command help functionality."""
 
-    def test_get_command_help_general(self):
+    def test_get_command_help_general(self) -> None:
         """Test getting general help."""
         help_text = get_command_help()
         assert "Available Commands:" in help_text
@@ -1097,7 +1103,7 @@ class TestCommandHelp:
         assert "whoami - Show your personal status (alias of status)" in help_text
         assert "time - Show the current Mythos time" in help_text
 
-    def test_get_command_help_specific(self):
+    def test_get_command_help_specific(self) -> None:
         """Test getting specific command help."""
         help_text = get_command_help("look")
         assert "look [direction] - Look around or in a specific direction" in help_text
@@ -1120,7 +1126,7 @@ class TestCommandHelp:
         help_text = get_command_help("time")
         assert "time - Show the current Mythos time" in help_text
 
-    def test_get_command_help_unknown(self):
+    def test_get_command_help_unknown(self) -> None:
         """Test getting help for unknown command."""
         help_text = get_command_help("unknown")
         assert "Unknown command: unknown" in help_text
@@ -1129,13 +1135,13 @@ class TestCommandHelp:
 class TestIntegration:
     """Integration tests for the command validation system."""
 
-    def test_parse_command_function(self):
+    def test_parse_command_function(self) -> None:
         """Test the global parse_command function."""
         cmd = parse_command("look north")
         assert isinstance(cmd, LookCommand)
         assert cmd.direction == Direction.NORTH
 
-    def test_command_validation_workflow(self):
+    def test_command_validation_workflow(self) -> None:
         """Test the complete command validation workflow."""
         # Valid command
         cmd = parse_command("say Hello, world!")
@@ -1150,7 +1156,7 @@ class TestIntegration:
         with pytest.raises(MythosValidationError, match="Unknown command"):
             parse_command("unknown")
 
-    def test_command_safety_integration(self):
+    def test_command_safety_integration(self) -> None:
         """Test command safety validation integration."""
         # Safe command
         assert validate_command_safety("say Hello, world!")
@@ -1158,7 +1164,7 @@ class TestIntegration:
         # Dangerous command
         assert not validate_command_safety("say Hello; rm -rf /")
 
-    def test_help_integration(self):
+    def test_help_integration(self) -> None:
         """Test help system integration."""
         help_text = get_command_help("look")
         assert "Look around or in a specific direction" in help_text

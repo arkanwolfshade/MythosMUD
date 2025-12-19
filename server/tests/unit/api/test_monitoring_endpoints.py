@@ -495,14 +495,20 @@ eldritch systems.
 class TestMonitoringAPI:
     """Test the monitoring API endpoints."""
 
-    def setup_method(self):
+    def __init__(self) -> None:
+        """Initialize test class attributes."""
+        self.app: FastAPI | None = None
+        self.client: TestClient | None = None
+
+    def setup_method(self) -> None:
         """Set up test environment."""
         self.app = create_app()
         self.client = TestClient(self.app)
         reset_movement_monitor()
 
-    def test_get_movement_metrics(self):
+    def test_get_movement_metrics(self) -> None:
         """Test getting movement metrics."""
+        assert self.client is not None
         response = self.client.get("/monitoring/metrics")
 
         assert response.status_code == 200
@@ -524,11 +530,11 @@ class TestMonitoringAPI:
         assert data["success_rate"] == 1.0  # Default when no movements
         assert data["failure_rate"] == 0.0
 
-    def test_validate_room_integrity(self):
+    def test_validate_room_integrity(self) -> None:
         """Test room integrity validation."""
+        assert self.app is not None
+        assert self.client is not None
         # Ensure persistence is set up for this test
-        from unittest.mock import AsyncMock
-
         if not hasattr(self.app.state, "persistence") or self.app.state.persistence is None:
             mock_persistence = AsyncMock()
             mock_persistence.list_rooms = AsyncMock(return_value=[])
@@ -556,8 +562,9 @@ class TestMonitoringAPI:
         assert isinstance(data["avg_occupancy"], float)
         assert isinstance(data["max_occupancy"], int)
 
-    def test_get_system_alerts(self):
+    def test_get_system_alerts(self) -> None:
         """Test getting system alerts."""
+        assert self.client is not None
         response = self.client.get("/monitoring/alerts")
 
         assert response.status_code == 200
@@ -577,8 +584,9 @@ class TestMonitoringAPI:
         assert data["alert_count"] == 0
         assert len(data["alerts"]) == 0
 
-    def test_reset_metrics(self):
+    def test_reset_metrics(self) -> None:
         """Test resetting metrics."""
+        assert self.client is not None
         response = self.client.post("/monitoring/reset")
 
         assert response.status_code == 200
@@ -587,8 +595,9 @@ class TestMonitoringAPI:
         assert "message" in data
         assert data["message"] == "Metrics reset successfully"
 
-    def test_get_performance_summary(self):
+    def test_get_performance_summary(self) -> None:
         """Test getting performance summary."""
+        assert self.client is not None
         response = self.client.get("/monitoring/performance-summary")
 
         assert response.status_code == 200
@@ -621,8 +630,9 @@ class TestMonitoringAPI:
         assert isinstance(data["alerts"], list)
         assert isinstance(data["timestamp"], str)
 
-    def test_metrics_with_movements(self):
+    def test_metrics_with_movements(self) -> None:
         """Test metrics after recording some movements."""
+        assert self.client is not None
         from server.game.movement_monitor import get_movement_monitor
 
         # Record some movements
@@ -643,8 +653,9 @@ class TestMonitoringAPI:
         assert data["failure_rate"] == 1 / 3
         assert data["avg_movement_time_ms"] == 75.0
 
-    def test_alerts_with_high_failure_rate(self):
+    def test_alerts_with_high_failure_rate(self) -> None:
         """Test alerts when failure rate is high."""
+        assert self.client is not None
         from server.game.movement_monitor import get_movement_monitor
 
         # Record mostly failed movements to trigger alert
@@ -663,8 +674,10 @@ class TestMonitoringAPI:
         assert data["alert_count"] > 0
         assert any("High failure rate" in alert for alert in data["alerts"])
 
-    def test_integrity_with_duplicate_player(self):
+    def test_integrity_with_duplicate_player(self) -> None:
         """Test integrity validation with duplicate player."""
+        assert self.app is not None
+        assert self.client is not None
         from server.models.room import Room
 
         # Create rooms with duplicate player
@@ -690,8 +703,9 @@ class TestMonitoringAPI:
         assert len(data["violations"]) == 1
         assert "Player player1 found in multiple rooms" in data["violations"][0]
 
-    def test_error_handling(self):
+    def test_error_handling(self) -> None:
         """Test error handling in monitoring endpoints."""
+        assert self.client is not None
         # Test with mocked error
         with patch("server.api.monitoring.get_movement_monitor") as mock_get_monitor:
             mock_get_monitor.side_effect = Exception("Test error")
@@ -703,8 +717,9 @@ class TestMonitoringAPI:
             assert "error" in data
             assert "Error retrieving metrics" in data["error"]["message"]
 
-    def test_performance_summary_formatting(self):
+    def test_performance_summary_formatting(self) -> None:
         """Test that performance summary formats values correctly."""
+        assert self.client is not None
         from server.game.movement_monitor import get_movement_monitor
 
         # Record some movements
@@ -727,8 +742,9 @@ class TestMonitoringAPI:
         assert "ms" in summary["avg_movement_time"]
         assert "s" in summary["uptime"]
 
-    def test_api_endpoints_consistency(self):
+    def test_api_endpoints_consistency(self) -> None:
         """Test that all monitoring endpoints return consistent data."""
+        assert self.client is not None
         # Get metrics
         metrics_response = self.client.get("/monitoring/metrics")
         assert metrics_response.status_code == 200

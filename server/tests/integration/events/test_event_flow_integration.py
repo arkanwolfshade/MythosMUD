@@ -399,7 +399,6 @@ class TestRealEventFlow:
         """Set up a proper event loop that EventBus can use."""
         # Use standardized fixtures instead of manual loop creation
         loop = isolated_event_loop
-        event_bus = event_bus
 
         return loop, event_bus
 
@@ -423,7 +422,7 @@ class TestRealEventFlow:
     @pytest.mark.asyncio
     async def test_real_event_flow_with_proper_loop(self, event_loop_setup, mock_connection_manager):
         """Test that events are properly processed with a real event loop."""
-        loop, event_bus = event_loop_setup
+        _, event_bus = event_loop_setup
 
         # Create event handler with connection manager
         event_handler = RealTimeEventHandler(event_bus, connection_manager=mock_connection_manager)
@@ -483,7 +482,7 @@ class TestRealEventFlow:
     @pytest.mark.asyncio
     async def test_websocket_connection_flow_simulation(self, event_loop_setup, mock_connection_manager):
         """Simulate the actual WebSocket connection flow."""
-        loop, event_bus = event_loop_setup
+        _, event_bus = event_loop_setup
 
         # Create event handler with connection manager
         event_handler = RealTimeEventHandler(event_bus, connection_manager=mock_connection_manager)
@@ -551,7 +550,7 @@ class TestRealEventFlow:
         assert message["event_type"] == "player_left"
 
     @pytest.mark.asyncio
-    async def test_event_bus_loop_detection(self):
+    async def test_event_bus_loop_detection(self) -> None:
         """Test that EventBus properly detects running event loops."""
         # Test with no running loop
         bus1 = EventBus()
@@ -562,6 +561,7 @@ class TestRealEventFlow:
         async def _test_with_running_loop():
             bus3 = EventBus()
             bus3.set_main_loop(asyncio.get_running_loop())
+            assert bus3._main_loop is not None
             assert bus3._main_loop.is_running() is True
             return bus3
 

@@ -15,7 +15,7 @@ from server.realtime.monitoring.statistics_aggregator import StatisticsAggregato
 class TestStatisticsAggregatorInit:
     """Test StatisticsAggregator initialization."""
 
-    def test_init(self):
+    def test_init(self) -> None:
         """Test StatisticsAggregator initialization."""
         mock_memory_monitor = MagicMock()
         mock_rate_limiter = MagicMock()
@@ -41,7 +41,7 @@ class TestStatisticsAggregatorInit:
 class TestGetMemoryStats:
     """Test get_memory_stats method."""
 
-    def test_get_memory_stats_success(self):
+    def test_get_memory_stats_success(self) -> None:
         """Test successfully getting memory stats."""
         mock_memory_monitor = MagicMock()
         mock_memory_monitor.get_memory_stats.return_value = {"memory_usage": 100}
@@ -105,7 +105,7 @@ class TestGetMemoryStats:
             assert result["sessions"]["total_sessions"] == 2
             assert result["data_structures"]["online_players"] == 2
 
-    def test_get_memory_stats_empty(self):
+    def test_get_memory_stats_empty(self) -> None:
         """Test getting memory stats with empty data structures."""
         mock_memory_monitor = MagicMock()
         mock_memory_monitor.get_memory_stats.return_value = {}
@@ -153,7 +153,7 @@ class TestGetMemoryStats:
             assert result["connections"]["avg_connections_per_player"] == 0
             assert result["sessions"]["avg_connections_per_session"] == 0
 
-    def test_get_memory_stats_error(self):
+    def test_get_memory_stats_error(self) -> None:
         """Test getting memory stats when error occurs."""
         mock_memory_monitor = MagicMock()
         mock_memory_monitor.get_memory_stats.side_effect = Exception("Error")
@@ -175,7 +175,7 @@ class TestGetMemoryStats:
 class TestGetConnectionStats:
     """Test get_connection_stats method."""
 
-    def test_get_connection_stats_success(self):
+    def test_get_connection_stats_success(self) -> None:
         """Test successfully getting connection stats."""
         aggregator = StatisticsAggregator(
             MagicMock(),
@@ -220,7 +220,7 @@ class TestGetConnectionStats:
             assert result["connection_health"]["unhealthy_connections"] == 1
             assert result["connection_lifecycle"]["connections_older_than_1h"] == 1
 
-    def test_get_connection_stats_empty(self):
+    def test_get_connection_stats_empty(self) -> None:
         """Test getting connection stats with empty data."""
         aggregator = StatisticsAggregator(
             MagicMock(),
@@ -237,7 +237,7 @@ class TestGetConnectionStats:
             assert result["connection_health"]["health_percentage"] == 0
             assert result["session_metrics"]["avg_connections_per_session"] == 0
 
-    def test_get_connection_stats_error(self):
+    def test_get_connection_stats_error(self) -> None:
         """Test getting connection stats when error occurs."""
         aggregator = StatisticsAggregator(
             MagicMock(),
@@ -249,7 +249,7 @@ class TestGetConnectionStats:
 
         with patch("server.realtime.monitoring.statistics_aggregator.logger"):
             # Cause an error by passing invalid data
-            result = aggregator.get_connection_stats(None, {}, {}, {})
+            result = aggregator.get_connection_stats(None, {}, {}, {})  # type: ignore[arg-type]
 
             assert "error" in result
             assert "timestamp" in result
@@ -258,7 +258,7 @@ class TestGetConnectionStats:
 class TestGetConnectionHealthStats:
     """Test get_connection_health_stats method."""
 
-    def test_get_connection_health_stats_success(self):
+    def test_get_connection_health_stats_success(self) -> None:
         """Test successfully getting connection health stats."""
         aggregator = StatisticsAggregator(
             MagicMock(),
@@ -294,7 +294,7 @@ class TestGetConnectionHealthStats:
             assert result["health_trends"]["connections_older_than_1h"] == 2
             assert result["health_trends"]["connections_older_than_24h"] == 1
 
-    def test_get_connection_health_stats_empty(self):
+    def test_get_connection_health_stats_empty(self) -> None:
         """Test getting connection health stats with empty data."""
         aggregator = StatisticsAggregator(
             MagicMock(),
@@ -311,7 +311,7 @@ class TestGetConnectionHealthStats:
             assert result["overall_health"]["health_percentage"] == 0
             assert result["session_health"]["total_sessions"] == 0
 
-    def test_get_connection_health_stats_error(self):
+    def test_get_connection_health_stats_error(self) -> None:
         """Test getting connection health stats when error occurs."""
         aggregator = StatisticsAggregator(
             MagicMock(),
@@ -323,7 +323,7 @@ class TestGetConnectionHealthStats:
 
         with patch("server.realtime.monitoring.statistics_aggregator.logger"):
             # Cause an error by passing invalid data
-            result = aggregator.get_connection_health_stats(None)
+            result = aggregator.get_connection_health_stats(None)  # type: ignore[arg-type]
 
             assert "error" in result
             assert "timestamp" in result
@@ -332,7 +332,7 @@ class TestGetConnectionHealthStats:
 class TestGetMemoryAlerts:
     """Test get_memory_alerts method."""
 
-    def test_get_memory_alerts_success(self):
+    def test_get_memory_alerts_success(self) -> None:
         """Test successfully getting memory alerts."""
         mock_memory_monitor = MagicMock()
         mock_memory_monitor.get_memory_alerts.return_value = ["Alert 1", "Alert 2"]
@@ -365,7 +365,7 @@ class TestGetMemoryAlerts:
             assert len(result) == 2
             mock_memory_monitor.get_memory_alerts.assert_called_once()
 
-    def test_get_memory_alerts_no_stale_connections(self):
+    def test_get_memory_alerts_no_stale_connections(self) -> None:
         """Test getting memory alerts when no stale connections exist."""
         mock_memory_monitor = MagicMock()
         mock_memory_monitor.get_memory_alerts.return_value = []
@@ -397,7 +397,7 @@ class TestGetMemoryAlerts:
             # Should still call get_memory_alerts with stale_connections=0
             mock_memory_monitor.get_memory_alerts.assert_called_once()
 
-    def test_get_memory_alerts_error(self):
+    def test_get_memory_alerts_error(self) -> None:
         """Test getting memory alerts when error occurs."""
         mock_memory_monitor = MagicMock()
         mock_memory_monitor.get_memory_alerts.side_effect = Exception("Error")

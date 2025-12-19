@@ -85,7 +85,7 @@ class TestRespawnEndpoint:
         # In the actual endpoint, this would raise HTTPException(403)
 
     @pytest.mark.asyncio
-    async def test_respawn_player_not_found(self):
+    async def test_respawn_player_not_found(self) -> None:
         """Test respawn when player doesn't exist."""
         mock_player_service = Mock()
         mock_player_service.get_player_by_id = AsyncMock(return_value=None)
@@ -98,15 +98,14 @@ class TestRespawnEndpoint:
         # In the actual endpoint, this would raise HTTPException(404)
 
     @pytest.mark.asyncio
-    async def test_respawn_rate_limiting(self):
+    async def test_respawn_rate_limiting(self) -> None:
         """Test rate limiting for respawn endpoint."""
         # This test verifies the rate limiter integration
         # Actual rate limiting is tested in the rate limiter tests
         # The endpoint should use @rate_limiter.limit decorator
-        pass
 
     @pytest.mark.asyncio
-    async def test_respawn_returns_room_data(self, mock_dead_player):
+    async def test_respawn_returns_room_data(self, _mock_dead_player):
         """Test that respawn returns complete room data."""
         mock_persistence = Mock()
         mock_room = {

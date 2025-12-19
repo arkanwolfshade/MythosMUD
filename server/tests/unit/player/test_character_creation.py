@@ -12,7 +12,7 @@ import pytest
 
 from server.exceptions import ValidationError as CustomValidationError
 from server.game.character_creation_service import CharacterCreationService
-from server.models import Stats
+from server.models import AttributeType, Stats
 
 
 class TestCharacterCreationServiceLayer:
@@ -21,24 +21,24 @@ class TestCharacterCreationServiceLayer:
     mock_player_service: Mock
     character_creation_service: CharacterCreationService
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test fixtures."""
         self.mock_player_service = Mock()
         self.character_creation_service = CharacterCreationService(self.mock_player_service)
 
-    def test_character_creation_service_initialization(self):
+    def test_character_creation_service_initialization(self) -> None:
         """Test that CharacterCreationService initializes correctly."""
         assert self.character_creation_service.player_service == self.mock_player_service
         assert self.character_creation_service.stats_generator is not None
 
-    def test_roll_character_stats_with_profession_success(self):
+    def test_roll_character_stats_with_profession_success(self) -> None:
         """Test successful stats rolling with profession."""
         # Mock stats generator
         mock_stats = Stats(strength=15, dexterity=12, constitution=14, intelligence=13, wisdom=11, charisma=10)
-        self.character_creation_service.stats_generator.roll_stats_with_profession = Mock(
+        self.character_creation_service.stats_generator.roll_stats_with_profession = Mock(  # type: ignore
             return_value=(mock_stats, True)
         )
-        self.character_creation_service.stats_generator.get_stat_summary = Mock(return_value={"total": 75})
+        self.character_creation_service.stats_generator.get_stat_summary = Mock(return_value={"total": 75})  # type: ignore
 
         # Roll stats with profession
         result = self.character_creation_service.roll_character_stats(method="3d6", profession_id=1, max_attempts=10)
@@ -59,14 +59,14 @@ class TestCharacterCreationServiceLayer:
             method="3d6", profession_id=1, max_attempts=10, timeout_seconds=5.0
         )
 
-    def test_roll_character_stats_with_class_success(self):
+    def test_roll_character_stats_with_class_success(self) -> None:
         """Test successful stats rolling with class validation."""
         # Mock stats generator
         mock_stats = Stats(strength=15, dexterity=12, constitution=14, intelligence=13, wisdom=11, charisma=10)
-        self.character_creation_service.stats_generator.roll_stats_with_validation = Mock(
+        self.character_creation_service.stats_generator.roll_stats_with_validation = Mock(  # type: ignore
             return_value=(mock_stats, ["investigator", "detective"])
         )
-        self.character_creation_service.stats_generator.get_stat_summary = Mock(return_value={"total": 75})
+        self.character_creation_service.stats_generator.get_stat_summary = Mock(return_value={"total": 75})  # type: ignore
 
         # Roll stats with class
         result = self.character_creation_service.roll_character_stats(
@@ -89,10 +89,10 @@ class TestCharacterCreationServiceLayer:
             method="3d6", required_class="investigator", max_attempts=10
         )
 
-    def test_roll_character_stats_invalid_profession(self):
+    def test_roll_character_stats_invalid_profession(self) -> None:
         """Test stats rolling with invalid profession ID."""
         # Mock stats generator to raise ValueError
-        self.character_creation_service.stats_generator.roll_stats_with_profession = Mock(
+        self.character_creation_service.stats_generator.roll_stats_with_profession = Mock(  # type: ignore
             side_effect=ValueError("Invalid profession ID")
         )
 
@@ -102,11 +102,11 @@ class TestCharacterCreationServiceLayer:
 
         assert "Invalid profession: Invalid profession ID" in str(exc_info.value)
 
-    def test_validate_character_stats_with_class_success(self):
+    def test_validate_character_stats_with_class_success(self) -> None:
         """Test successful stats validation with class."""
         # Mock stats generator
-        self.character_creation_service.stats_generator.validate_class_prerequisites = Mock(return_value=(True, []))
-        self.character_creation_service.stats_generator.get_available_classes = Mock(
+        self.character_creation_service.stats_generator.validate_class_prerequisites = Mock(return_value=(True, []))  # type: ignore
+        self.character_creation_service.stats_generator.get_available_classes = Mock(  # type: ignore
             return_value=["investigator", "detective"]
         )
 
@@ -132,13 +132,13 @@ class TestCharacterCreationServiceLayer:
         assert result["available_classes"] == ["investigator", "detective"]
         assert result["requested_class"] == "investigator"
 
-    def test_validate_character_stats_without_class_success(self):
+    def test_validate_character_stats_without_class_success(self) -> None:
         """Test successful stats validation without class."""
         # Mock stats generator
-        self.character_creation_service.stats_generator.get_available_classes = Mock(
+        self.character_creation_service.stats_generator.get_available_classes = Mock(  # type: ignore
             return_value=["investigator", "detective"]
         )
-        self.character_creation_service.stats_generator.get_stat_summary = Mock(return_value={"total": 75})
+        self.character_creation_service.stats_generator.get_stat_summary = Mock(return_value={"total": 75})  # type: ignore
 
         # Validate stats without class
         stats_dict = {
@@ -158,10 +158,10 @@ class TestCharacterCreationServiceLayer:
         assert result["available_classes"] == ["investigator", "detective"]
         assert result["stat_summary"] == {"total": 75}
 
-    def test_validate_character_stats_invalid_format(self):
+    def test_validate_character_stats_invalid_format(self) -> None:
         """Test stats validation with invalid stats format."""
         # Mock stats generator to raise ValueError (which is caught)
-        self.character_creation_service.stats_generator.get_available_classes = Mock(
+        self.character_creation_service.stats_generator.get_available_classes = Mock(  # type: ignore
             side_effect=ValueError("Invalid stats format")
         )
 
@@ -171,7 +171,7 @@ class TestCharacterCreationServiceLayer:
 
         assert "Invalid stats format" in str(exc_info.value)
 
-    def test_create_character_with_stats_success(self):
+    def test_create_character_with_stats_success(self) -> None:
         """Test successful character creation with stats."""
         # Mock player service
         mock_player = Mock()
@@ -206,7 +206,7 @@ class TestCharacterCreationServiceLayer:
         # Verify player service calls
         self.mock_player_service.create_player_with_stats.assert_called_once()
 
-    def test_create_character_with_stats_failure(self):
+    def test_create_character_with_stats_failure(self) -> None:
         """Test character creation failure."""
         # Mock player service to raise ValueError (which is caught)
         self.mock_player_service.create_player_with_stats = Mock(side_effect=ValueError("Player creation failed"))
@@ -229,19 +229,19 @@ class TestCharacterCreationServiceLayer:
 
         assert "Character creation failed" in str(exc_info.value)
 
-    def test_get_available_classes_info_success(self):
+    def test_get_available_classes_info_success(self) -> None:
         """Test successful retrieval of available classes information."""
         # Mock the method directly instead of trying to mock the class attributes
         self.character_creation_service.stats_generator.CLASS_PREREQUISITES = {
-            "investigator": {"strength": 12, "intelligence": 13},
-            "detective": {"intelligence": 14, "wisdom": 12},
+            "investigator": {AttributeType.STR: 12, AttributeType.INT: 13},
+            "detective": {AttributeType.INT: 14, AttributeType.POW: 12},
         }
         self.character_creation_service.stats_generator.MIN_STAT = 3
         self.character_creation_service.stats_generator.MAX_STAT = 18
 
         # Mock the _get_class_description method to avoid the AttributeError
         original_method = self.character_creation_service._get_class_description
-        self.character_creation_service._get_class_description = Mock(return_value="Test description")
+        self.character_creation_service._get_class_description = Mock(return_value="Test description")  # type: ignore
 
         try:
             # Get available classes info
@@ -263,19 +263,19 @@ class TestCharacterCreationServiceLayer:
             assert investigator_info["description"] == "Test description"
         finally:
             # Restore the original method
-            self.character_creation_service._get_class_description = original_method
+            self.character_creation_service._get_class_description = original_method  # type: ignore
 
-    def test_get_class_description_known_class(self):
+    def test_get_class_description_known_class(self) -> None:
         """Test getting description for a known class."""
         description = self.character_creation_service._get_class_description("investigator")
         assert "researcher and detective" in description
 
-    def test_get_class_description_unknown_class(self):
+    def test_get_class_description_unknown_class(self) -> None:
         """Test getting description for an unknown class."""
         description = self.character_creation_service._get_class_description("unknown_class")
         assert "mysterious character with unknown capabilities" in description
 
-    def test_get_available_classes_info_with_string_prerequisites(self):
+    def test_get_available_classes_info_with_string_prerequisites(self) -> None:
         """Test getting available classes info when prerequisites use string keys.
 
         AI: Tests the else branch (line 232 in character_creation_service.py) where

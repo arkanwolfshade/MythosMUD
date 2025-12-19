@@ -9,6 +9,8 @@ for maintaining the delicate balance between the mundane and the eldritch forces
 that lurk in the shadows of our world.
 """
 
+from typing import Any
+
 import pytest
 
 from server.events.event_bus import EventBus
@@ -216,7 +218,7 @@ class TestNPCPopulationManagement:
         game_state_low_level = {"time_of_day": "night", "weather": "fog", "player_level_min": 2}
         assert spawn_rule_aggressive_mob.check_spawn_conditions(game_state_low_level) is False
 
-    def test_npc_spawn_rule_range_conditions(self):
+    def test_npc_spawn_rule_range_conditions(self) -> None:
         """Test spawn rules with range-based conditions."""
         # Create a spawn rule with range conditions
         definition = NPCDefinition(
@@ -258,7 +260,7 @@ class TestNPCPopulationManagement:
         game_state_Lucidity_too_low = {"player_level": 10, "lucidity": 49}
         assert rule.check_spawn_conditions(game_state_Lucidity_too_low) is False
 
-    def test_npc_spawn_rule_list_conditions(self):
+    def test_npc_spawn_rule_list_conditions(self) -> None:
         """Test spawn rules with list-based conditions."""
         # Create a spawn rule with list conditions
         definition = NPCDefinition(
@@ -296,7 +298,7 @@ class TestNPCPopulationManagement:
         game_state_invalid_time = {"weather": "clear", "time_of_day": "night"}
         assert rule.check_spawn_conditions(game_state_invalid_time) is False
 
-    def test_npc_spawn_rule_missing_conditions(self):
+    def test_npc_spawn_rule_missing_conditions(self) -> None:
         """Test spawn rules with missing game state conditions."""
         definition = NPCDefinition(
             name="Missing Test NPC",
@@ -324,7 +326,7 @@ class TestNPCPopulationManagement:
         game_state_complete = {"required_condition": "value", "optional_condition": "optional"}
         assert rule.check_spawn_conditions(game_state_complete) is True
 
-    def test_npc_spawn_rule_empty_conditions(self):
+    def test_npc_spawn_rule_empty_conditions(self) -> None:
         """Test spawn rules with empty conditions (should always pass)."""
         definition = NPCDefinition(
             name="Empty Test NPC",
@@ -349,7 +351,7 @@ class TestNPCPopulationManagement:
         assert rule.check_spawn_conditions(game_state_any) is True
 
         # Test with empty game state (should pass)
-        game_state_empty = {}
+        game_state_empty: dict[str, Any] = {}
         assert rule.check_spawn_conditions(game_state_empty) is True
 
     def test_npc_definition_json_serialization(self, shopkeeper_definition):
@@ -403,7 +405,7 @@ class TestNPCPopulationManagement:
         assert retrieved_ai_config["response_delay"] == 2.0
         assert retrieved_ai_config["new_setting"] == "value"
 
-    def test_npc_definition_invalid_json_handling(self):
+    def test_npc_definition_invalid_json_handling(self) -> None:
         """Test that NPC definitions handle invalid JSON gracefully."""
         definition = NPCDefinition(
             name="Invalid JSON Test",
@@ -444,7 +446,7 @@ class TestNPCPopulationManagement:
         assert retrieved_conditions["weather"] == "fog"
         assert retrieved_conditions["special_condition"] is True
 
-    def test_npc_spawn_rule_invalid_json_handling(self):
+    def test_npc_spawn_rule_invalid_json_handling(self) -> None:
         """Test that spawn rules handle invalid JSON gracefully."""
         definition = NPCDefinition(
             name="Invalid Spawn Rule Test",

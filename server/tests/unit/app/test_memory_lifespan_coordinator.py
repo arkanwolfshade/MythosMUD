@@ -9,6 +9,7 @@ ensures the ancient ones remain properly contained within their designated bound
 """
 
 import asyncio
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -22,7 +23,7 @@ from server.app.memory_lifespan_coordinator import (
 class TestPeriodicOrphanAuditorInitialization:
     """Test PeriodicOrphanAuditor initialization."""
 
-    def test_auditor_initialization_default_values(self):
+    def test_auditor_initialization_default_values(self) -> None:
         """Test auditor initializes with default values."""
         auditor = PeriodicOrphanAuditor()
 
@@ -34,7 +35,7 @@ class TestPeriodicOrphanAuditorInitialization:
         assert auditor.total_audit_cycles_completed == 0
         assert auditor.total_orphans_identified == 0
 
-    def test_auditor_initialization_custom_values(self):
+    def test_auditor_initialization_custom_values(self) -> None:
         """Test auditor initializes with custom values."""
         auditor = PeriodicOrphanAuditor(
             check_interval_seconds=30.0, memory_threshold_mb=256.0, auto_cleanup_enabled=False
@@ -64,7 +65,7 @@ class TestPeriodicAuditScheduling:
     async def test_schedule_periodic_auditing_success(self, mock_get_manager):
         """Test successful scheduling of periodic auditing."""
         mock_manager = MagicMock()
-        mock_task = asyncio.Future()
+        mock_task: asyncio.Future[Any] = asyncio.Future()
         mock_task.set_result(None)
         mock_manager.create_tracked_task.return_value = mock_task
         mock_get_manager.return_value = mock_manager
@@ -89,7 +90,7 @@ class TestPeriodicAuditScheduling:
     async def test_schedule_periodic_auditing_already_running(self, mock_get_manager):
         """Test scheduling fails when already running."""
         mock_manager = MagicMock()
-        mock_task = asyncio.Future()
+        mock_task: asyncio.Future[Any] = asyncio.Future()
         mock_task.set_result(None)
         mock_manager.create_tracked_task.return_value = mock_task
         mock_get_manager.return_value = mock_manager
@@ -376,7 +377,7 @@ class TestForceSingleAuditCycle:
 class TestAuditorShutdown:
     """Test auditor shutdown functionality."""
 
-    def test_stop_audit_scheduler_when_not_running(self):
+    def test_stop_audit_scheduler_when_not_running(self) -> None:
         """Test stopping auditor when not running logs warning."""
         auditor = PeriodicOrphanAuditor()
 
@@ -431,7 +432,7 @@ class TestAuditorShutdown:
 class TestFactoryFunction:
     """Test factory function for creating lifespan memory service."""
 
-    def test_create_lifespan_memory_service(self):
+    def test_create_lifespan_memory_service(self) -> None:
         """Test factory creates properly configured auditor."""
         service = create_lifespan_memory_service()
 
@@ -440,7 +441,7 @@ class TestFactoryFunction:
         assert service.auto_cleanup is True
         assert service.memory_monitor is not None
 
-    def test_create_lifespan_memory_service_returns_same_instance(self):
+    def test_create_lifespan_memory_service_returns_same_instance(self) -> None:
         """Test factory returns configured instance."""
         service1 = create_lifespan_memory_service()
         service2 = create_lifespan_memory_service()

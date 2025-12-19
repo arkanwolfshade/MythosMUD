@@ -10,6 +10,7 @@ import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from sqlalchemy.exc import DatabaseError
 
 from server.game.chat_service import ChatService
 from server.game.player_service import PlayerService
@@ -18,7 +19,25 @@ from server.game.player_service import PlayerService
 class TestMuteFilteringMonitoring:
     """Monitoring and alerting tests for mute filtering system."""
 
-    def setup_method(self):
+    def __init__(self) -> None:
+        """Initialize test class attributes."""
+        # Mock services
+        self.mock_persistence: MagicMock
+        self.mock_room_service: MagicMock
+        self.mock_player_service: MagicMock
+
+        # Test data
+        self.muter_id: str
+        self.muter_name: str
+        self.target_id: str
+        self.target_name: str
+        self.room_id: str
+
+        # Mock player objects
+        self.muter_player: MagicMock
+        self.target_player: MagicMock
+
+    def setup_method(self) -> None:
         """Set up test fixtures."""
         # Mock services
         self.mock_persistence = MagicMock()
@@ -71,7 +90,7 @@ class TestMuteFilteringMonitoring:
         mock_nats_service.is_connected.return_value = True
 
         # Make NATS publish async
-        async def mock_publish(*args, **kwargs):
+        async def mock_publish(*_args, **_kwargs):
             return True
 
         mock_nats_service.publish = mock_publish
@@ -145,7 +164,7 @@ class TestMuteFilteringMonitoring:
         mock_nats_service.is_connected.return_value = True
 
         # Make NATS publish async
-        async def mock_publish(*args, **kwargs):
+        async def mock_publish(*_args, **_kwargs):
             return True
 
         mock_nats_service.publish = mock_publish
@@ -265,7 +284,7 @@ class TestMuteFilteringMonitoring:
         mock_nats_service.is_connected.return_value = True
 
         # Make NATS publish async
-        async def mock_publish(*args, **kwargs):
+        async def mock_publish(*_args, **_kwargs):
             return True
 
         mock_nats_service.publish = mock_publish
@@ -386,7 +405,7 @@ class TestMuteFilteringMonitoring:
             mock_user_manager.load_player_mutes.return_value = True
             await chat_service.send_emote_message(self.target_id, "health_check")
             health_status["mute_data_loading"] = True
-        except Exception as e:
+        except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError) as e:
             health_status["mute_data_loading"] = False
             print(f"Mute data loading health check failed: {e}")
 
@@ -395,7 +414,7 @@ class TestMuteFilteringMonitoring:
             mock_user_manager.is_player_muted.return_value = False
             await chat_service.send_emote_message(self.target_id, "health_check")
             health_status["user_manager_consistency"] = True
-        except Exception as e:
+        except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError) as e:
             health_status["user_manager_consistency"] = False
             print(f"UserManager consistency health check failed: {e}")
 
@@ -411,7 +430,7 @@ class TestMuteFilteringMonitoring:
             else:
                 health_status["performance"] = False
                 print(f"Performance health check failed: {processing_time:.4f}s")
-        except Exception as e:
+        except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError) as e:
             health_status["performance"] = False
             print(f"Performance health check failed: {e}")
 
@@ -419,7 +438,7 @@ class TestMuteFilteringMonitoring:
         try:
             await chat_service.send_emote_message("invalid_id", "health_check")
             health_status["error_handling"] = True
-        except Exception as e:
+        except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError) as e:
             health_status["error_handling"] = False
             print(f"Error handling health check failed: {e}")
 

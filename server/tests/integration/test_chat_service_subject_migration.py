@@ -21,7 +21,21 @@ from server.services.nats_subject_manager import NATSSubjectManager
 class TestChatServiceSubjectMigration:
     """Test ChatService integration with NATSSubjectManager."""
 
-    def setup_method(self):
+    mock_persistence: Mock
+    mock_room_service: Mock
+    mock_player_service: AsyncMock
+    mock_nats_service: Mock
+    mock_chat_logger: Mock
+    mock_rate_limiter: Mock
+    mock_user_manager: Mock
+    subject_manager: NATSSubjectManager
+    chat_service: ChatService
+    test_player_id: str
+    test_player_name: str
+    test_room_id: str
+    test_subzone: str
+
+    def setup_method(self) -> None:
         """Set up test fixtures with NATSSubjectManager integration."""
         # Create mock dependencies
         self.mock_persistence = Mock()
@@ -71,7 +85,7 @@ class TestChatServiceSubjectMigration:
         self.test_subzone = "arkham"
 
     @pytest.mark.asyncio
-    async def test_say_message_uses_standardized_subject_pattern(self):
+    async def test_say_message_uses_standardized_subject_pattern(self) -> None:
         """Test that say messages use the chat_say_room pattern."""
         message_content = "Hello, Arkham!"
 
@@ -104,7 +118,7 @@ class TestChatServiceSubjectMigration:
         assert self.subject_manager.validate_subject(published_subject)
 
     @pytest.mark.asyncio
-    async def test_local_message_uses_standardized_subject_pattern(self):
+    async def test_local_message_uses_standardized_subject_pattern(self) -> None:
         """Test that local messages use the chat_local_subzone pattern."""
         message_content = "Anyone here?"
 
@@ -139,7 +153,7 @@ class TestChatServiceSubjectMigration:
             assert self.subject_manager.validate_subject(published_subject)
 
     @pytest.mark.asyncio
-    async def test_global_message_uses_standardized_subject_pattern(self):
+    async def test_global_message_uses_standardized_subject_pattern(self) -> None:
         """Test that global messages use the chat_global pattern."""
         message_content = "Hello, everyone!"
 
@@ -172,7 +186,7 @@ class TestChatServiceSubjectMigration:
         assert self.subject_manager.validate_subject(published_subject)
 
     @pytest.mark.asyncio
-    async def test_whisper_message_uses_standardized_subject_pattern(self):
+    async def test_whisper_message_uses_standardized_subject_pattern(self) -> None:
         """Test that whisper messages use the chat_whisper_player pattern."""
         target_player_id = str(uuid.uuid4())
         target_player_name = "TargetPlayer"
@@ -214,7 +228,7 @@ class TestChatServiceSubjectMigration:
         assert self.subject_manager.validate_subject(published_subject)
 
     @pytest.mark.asyncio
-    async def test_emote_message_uses_standardized_subject_pattern(self):
+    async def test_emote_message_uses_standardized_subject_pattern(self) -> None:
         """Test that emote messages use the chat_emote_room pattern."""
         emote_command = "twibble"
 
@@ -230,8 +244,18 @@ class TestChatServiceSubjectMigration:
 
         self.mock_player_service.get_player_by_id.return_value = mock_player
 
-        # Send emote message
-        await self.chat_service.send_predefined_emote(self.test_player_id, emote_command)
+        # Mock EmoteService to avoid database dependency in test environment
+        with patch("server.game.emote_service.EmoteService") as mock_emote_service_class:
+            mock_emote_service = Mock()
+            mock_emote_service_class.return_value = mock_emote_service
+            mock_emote_service.is_emote_alias.return_value = True
+            mock_emote_service.format_emote_messages.return_value = (
+                "You twibble.",
+                f"{self.test_player_name} twibbles.",
+            )
+
+            # Send emote message
+            await self.chat_service.send_predefined_emote(self.test_player_id, emote_command)
 
         # Verify NATS publish was called
         assert self.mock_nats_service.publish.called
@@ -247,7 +271,7 @@ class TestChatServiceSubjectMigration:
         assert self.subject_manager.validate_subject(published_subject)
 
     @pytest.mark.asyncio
-    async def test_pose_message_uses_standardized_subject_pattern(self):
+    async def test_pose_message_uses_standardized_subject_pattern(self) -> None:
         """Test that pose messages use the chat_pose_room pattern."""
         pose_content = "adjusts spectacles thoughtfully"
 
@@ -280,7 +304,7 @@ class TestChatServiceSubjectMigration:
         assert self.subject_manager.validate_subject(published_subject)
 
     @pytest.mark.asyncio
-    async def test_system_message_uses_standardized_subject_pattern(self):
+    async def test_system_message_uses_standardized_subject_pattern(self) -> None:
         """Test that system messages use the chat_system pattern."""
         message_content = "System maintenance in 5 minutes"
 
@@ -314,7 +338,7 @@ class TestChatServiceSubjectMigration:
         assert self.subject_manager.validate_subject(published_subject)
 
     @pytest.mark.asyncio
-    async def test_subject_manager_integration_without_injection(self):
+    async def test_subject_manager_integration_without_injection(self) -> None:
         """Test that ChatService works without NATSSubjectManager injection (backward compatibility)."""
         # Create ChatService without subject manager injection
         chat_service_no_manager = ChatService(
@@ -355,7 +379,7 @@ class TestChatServiceSubjectMigration:
         assert published_subject == f"chat.say.{self.test_room_id}"
 
     @pytest.mark.asyncio
-    async def test_subject_validation_failure_handling(self):
+    async def test_subject_validation_failure_handling(self) -> None:
         """Test that invalid subjects are handled gracefully."""
         # Create a subject manager with strict validation
         strict_manager = NATSSubjectManager(strict_validation=True)
@@ -384,7 +408,7 @@ class TestChatServiceSubjectMigration:
         assert self.mock_nats_service.publish.called
 
     @pytest.mark.asyncio
-    async def test_message_data_structure_consistency(self):
+    async def test_message_data_structure_consistency(self) -> None:
         """Test that message data structure remains consistent with subject manager integration."""
         message_content = "Test message"
 
@@ -426,7 +450,7 @@ class TestChatServiceSubjectMigration:
         assert message_data["room_id"] == self.test_room_id
 
     @pytest.mark.asyncio
-    async def test_performance_with_subject_manager(self):
+    async def test_performance_with_subject_manager(self) -> None:
         """Test that subject manager integration doesn't significantly impact performance."""
         import time
 
@@ -458,7 +482,7 @@ class TestChatServiceSubjectMigration:
 class TestChatServiceSubjectManagerDependencyInjection:
     """Test NATSSubjectManager dependency injection patterns."""
 
-    def test_chat_service_accepts_subject_manager_injection(self):
+    def test_chat_service_accepts_subject_manager_injection(self) -> None:
         """Test that ChatService can accept NATSSubjectManager via dependency injection."""
         # Create mock dependencies
         mock_persistence = Mock()
@@ -485,7 +509,7 @@ class TestChatServiceSubjectManagerDependencyInjection:
         # Verify injection worked
         assert chat_service.subject_manager is subject_manager
 
-    def test_chat_service_works_without_subject_manager(self):
+    def test_chat_service_works_without_subject_manager(self) -> None:
         """Test that ChatService works without subject manager (backward compatibility)."""
         # Create mock dependencies
         mock_persistence = Mock()
@@ -506,7 +530,7 @@ class TestChatServiceSubjectManagerDependencyInjection:
         # Should not have subject manager initially
         assert not hasattr(chat_service, "subject_manager") or chat_service.subject_manager is None
 
-    def test_subject_manager_can_be_set_after_creation(self):
+    def test_subject_manager_can_be_set_after_creation(self) -> None:
         """Test that subject manager can be set after ChatService creation."""
         # Create mock dependencies
         mock_persistence = Mock()
@@ -531,7 +555,7 @@ class TestChatServiceSubjectManagerDependencyInjection:
         # Verify injection worked
         assert chat_service.subject_manager is subject_manager
 
-    def test_subject_manager_can_be_replaced(self):
+    def test_subject_manager_can_be_replaced(self) -> None:
         """Test that subject manager can be replaced with different configuration."""
         # Create mock dependencies
         mock_persistence = Mock()

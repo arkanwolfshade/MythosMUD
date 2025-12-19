@@ -49,14 +49,14 @@ test_player_data = {
 class TestCommandInputCleaning:
     """Test command input cleaning and normalization."""
 
-    def test_clean_command_input_basic(self):
+    def test_clean_command_input_basic(self) -> None:
         """Test basic command cleaning."""
         assert clean_command_input("look") == "look"
         assert clean_command_input("  look  ") == "look"
         assert clean_command_input("go   north") == "go north"
         assert clean_command_input("say    hello    world") == "say hello world"
 
-    def test_clean_command_input_edge_cases(self):
+    def test_clean_command_input_edge_cases(self) -> None:
         """Test command cleaning with edge cases."""
         test_cases = [
             ("", ""),
@@ -70,14 +70,14 @@ class TestCommandInputCleaning:
             result = clean_command_input(input_cmd)
             assert result == expected, f"Expected '{expected}', got '{result}'"
 
-    def test_normalize_command_basic(self):
+    def test_normalize_command_basic(self) -> None:
         """Test basic command normalization."""
         assert normalize_command("look") == "look"
         assert normalize_command("/look") == "look"
         assert normalize_command("  /look  ") == "look"
         assert normalize_command("/go north") == "go north"
 
-    def test_normalize_command_edge_cases(self):
+    def test_normalize_command_edge_cases(self) -> None:
         """Test command normalization with edge cases."""
         test_cases = [
             ("", ""),
@@ -96,7 +96,7 @@ class TestCommandInputCleaning:
 class TestHelpSystem:
     """Test help system functionality."""
 
-    def test_get_help_content_no_command(self):
+    def test_get_help_content_no_command(self) -> None:
         """Test getting general help content."""
         result = get_help_content()
         assert "MythosMUD Help System" in result
@@ -105,19 +105,19 @@ class TestHelpSystem:
         assert "Communication Commands" in result
         assert "System Commands" in result
 
-    def test_get_help_content_unknown_command(self):
+    def test_get_help_content_unknown_command(self) -> None:
         """Test getting help for unknown command."""
         result = get_help_content("unknown_command")
         assert "Command Not Found" in result
         assert "unknown_command" in result
 
-    def test_get_help_content_specific_command(self):
+    def test_get_help_content_specific_command(self) -> None:
         """Test getting help for specific command."""
         result = get_help_content("look")
         assert "look" in result.lower()
         assert "examine" in result.lower()
 
-    def test_commands_structure(self):
+    def test_commands_structure(self) -> None:
         """Test that help content has proper structure."""
         result = get_help_content()
         assert "Exploration Commands" in result
@@ -130,7 +130,7 @@ class TestCommandProcessing:
     """Test command processing functionality."""
 
     @pytest.mark.asyncio
-    async def test_process_command_look(self):
+    async def test_process_command_look(self) -> None:
         """Test processing look command."""
         mock_request = Mock()
         mock_request.app = Mock()
@@ -180,7 +180,7 @@ class TestCommandProcessing:
         assert "Exits: north" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_process_command_go(self):
+    async def test_process_command_go(self) -> None:
         """Test processing go command."""
         mock_request = Mock()
         mock_request.app.state.persistence = Mock()
@@ -205,7 +205,7 @@ class TestCommandProcessing:
         assert "result" in result
 
     @pytest.mark.asyncio
-    async def test_process_command_help(self):
+    async def test_process_command_help(self) -> None:
         """Test processing help command."""
         mock_request = Mock()
         mock_request.app.state.persistence = Mock()
@@ -220,7 +220,7 @@ class TestCommandProcessing:
         assert "help" in result["result"].lower() or "usage" in result["result"].lower()
 
     @pytest.mark.asyncio
-    async def test_process_command_unknown(self):
+    async def test_process_command_unknown(self) -> None:
         """Test processing unknown command."""
         import uuid
 
@@ -242,7 +242,7 @@ class TestCommandProcessing:
         assert "Unknown command" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_process_command_alias(self):
+    async def test_process_command_alias(self) -> None:
         """Test processing alias command."""
         import uuid
 
@@ -271,13 +271,13 @@ class TestCommandProcessing:
 class TestCommandValidation:
     """Test command validation edge cases."""
 
-    def test_command_length_validation(self):
+    def test_command_length_validation(self) -> None:
         """Test command length validation."""
         # Test various command lengths
         short_cmd = "look"
         assert normalize_command(short_cmd) == "look"
 
-    def test_command_cleaning_edge_cases(self):
+    def test_command_cleaning_edge_cases(self) -> None:
         """Test command cleaning with edge cases."""
         test_cases = [
             ("", ""),
@@ -295,12 +295,12 @@ class TestCommandValidation:
 class TestUtilityFunctions:
     """Test utility functions."""
 
-    def test_get_username_from_user_dict(self):
+    def test_get_username_from_user_dict(self) -> None:
         """Test extracting username from dictionary."""
         user_dict = {"username": "testuser"}
         assert get_username_from_user(user_dict) == "testuser"
 
-    def test_get_username_from_user_object(self):
+    def test_get_username_from_user_object(self) -> None:
         """Test extracting username from object."""
 
         # Create a mock object that only has username attribute, not name
@@ -311,12 +311,12 @@ class TestUtilityFunctions:
         user_obj = UserObject("testuser")
         assert get_username_from_user(user_obj) == "testuser"
 
-    def test_get_username_from_user_name_key(self):
+    def test_get_username_from_user_name_key(self) -> None:
         """Test extracting username using name key."""
         user_dict = {"name": "testuser"}
         assert get_username_from_user(user_dict) == "testuser"
 
-    def test_get_username_from_user_name_attr(self):
+    def test_get_username_from_user_name_attr(self) -> None:
         """Test extracting username using name attribute."""
         user_obj = Mock()
         # Set name attribute directly to ensure it's a string
@@ -325,7 +325,7 @@ class TestUtilityFunctions:
         del user_obj.username
         assert get_username_from_user(user_obj) == "testuser"
 
-    def test_get_username_from_user_invalid(self):
+    def test_get_username_from_user_invalid(self) -> None:
         """Test extracting username from invalid object."""
         user_obj = Mock()
         # Remove username and name attributes
@@ -688,7 +688,7 @@ class TestCommandHandlerV2:
     """Test the unified command handler with Pydantic + Click validation."""
 
     @pytest.mark.asyncio
-    async def test_process_command_unified_basic(self):
+    async def test_process_command_unified_basic(self) -> None:
         """Test basic command processing through unified handler."""
         # Test that the unified command handler can process basic commands
         mock_request = Mock()
@@ -714,20 +714,20 @@ class TestCommandHandlerV2:
         assert "result" in result
 
     @pytest.mark.asyncio
-    async def test_process_command_unified_empty(self):
+    async def test_process_command_unified_empty(self) -> None:
         """Test empty command processing."""
         result = await process_command_unified("", {"username": "testuser"}, Mock(), player_name="testuser")
         assert result["result"] == ""
 
     @pytest.mark.asyncio
-    async def test_process_command_unified_too_long(self):
+    async def test_process_command_unified_too_long(self) -> None:
         """Test command length validation."""
         long_command = "a" * 1001  # Exceeds MAX_COMMAND_LENGTH
         result = await process_command_unified(long_command, {"username": "testuser"}, Mock(), player_name="testuser")
         assert "Command too long" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_process_command_with_validation_success(self):
+    async def test_process_command_with_validation_success(self) -> None:
         """Test command processing with validation success."""
         mock_request = Mock()
         mock_request.app = Mock()
@@ -774,14 +774,14 @@ class TestCommandHandlerV2:
         assert "result" in result
         assert "test room" in result["result"].lower()
 
-    def test_clean_command_input(self):
+    def test_clean_command_input(self) -> None:
         """Test command input cleaning."""
         assert clean_command_input("  look  ") == "look"
         assert clean_command_input("go   north") == "go north"
         assert clean_command_input("say    hello   world") == "say hello world"
         assert clean_command_input("") == ""
 
-    def test_normalize_command(self):
+    def test_normalize_command(self) -> None:
         """Test command normalization."""
         assert normalize_command("look") == "look"
         assert normalize_command("/look") == "look"
@@ -789,7 +789,7 @@ class TestCommandHandlerV2:
         assert normalize_command("/go north") == "go north"
         assert normalize_command("") == ""
 
-    def test_command_request_model(self):
+    def test_command_request_model(self) -> None:
         """Test CommandRequest Pydantic model."""
         request = CommandRequest(command="look")
         assert request.command == "look"
@@ -803,12 +803,12 @@ class TestCommandHandlerV2:
 class TestCommandProcessorIntegration:
     """Test integration with the command processor."""
 
-    def test_get_command_processor(self):
+    def test_get_command_processor(self) -> None:
         """Test getting the command processor instance."""
         processor = get_command_processor()
         assert isinstance(processor, CommandProcessor)
 
-    def test_command_processor_singleton(self):
+    def test_command_processor_singleton(self) -> None:
         """Test that command processor is a singleton."""
         processor1 = get_command_processor()
         processor2 = get_command_processor()

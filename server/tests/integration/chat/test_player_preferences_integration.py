@@ -9,11 +9,10 @@ import uuid
 
 import pytest
 from sqlalchemy import text
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from server.database import get_database_url
-from server.models.base import Base
 from server.models.player import Player, PlayerChannelPreferences
 from server.models.user import User
 from server.services.player_preferences_service import PlayerPreferencesService
@@ -30,10 +29,6 @@ class TestPlayerPreferencesIntegration:
             pytest.skip("DATABASE_URL not set - cannot run integration test")
 
         engine = create_async_engine(database_url, future=True)
-        async with engine.begin() as conn:
-            # Create tables if they don't exist
-            await conn.run_sync(Base.metadata.create_all)
-
         factory = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
         try:
             yield factory
@@ -54,7 +49,7 @@ class TestPlayerPreferencesIntegration:
                     )
                     await cleanup_session.execute(text("DELETE FROM users WHERE email LIKE '%@example.com'"))
                     await cleanup_session.commit()
-                except Exception:
+                except SQLAlchemyError:
                     await cleanup_session.rollback()
             await engine.dispose()
 
@@ -234,7 +229,7 @@ class TestPlayerPreferencesIntegration:
             assert "whisper" in muted_channels
 
     @pytest.mark.asyncio
-    async def test_concurrent_preferences_access(self, async_session_factory, test_player, preferences_service):
+    async def test_concurrent_preferences_access(self, async_session_factory, test_player):
         """Test concurrent access to preferences from multiple service instances."""
         player_id = test_player  # test_player fixture now yields player_id directly
 

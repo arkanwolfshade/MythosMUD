@@ -23,7 +23,7 @@ class TestGetPlayerOccupants:
     """Test get_player_occupants function."""
 
     @pytest.mark.asyncio
-    async def test_get_player_occupants_success(self):
+    async def test_get_player_occupants_success(self) -> None:
         """Test successfully getting player occupants."""
         mock_connection_manager = AsyncMock()
         mock_connection_manager.get_room_occupants = AsyncMock(
@@ -37,7 +37,7 @@ class TestGetPlayerOccupants:
         assert "Player2" in result
 
     @pytest.mark.asyncio
-    async def test_get_player_occupants_empty(self):
+    async def test_get_player_occupants_empty(self) -> None:
         """Test getting player occupants when room is empty."""
         mock_connection_manager = AsyncMock()
         mock_connection_manager.get_room_occupants = AsyncMock(return_value=[])
@@ -47,7 +47,7 @@ class TestGetPlayerOccupants:
         assert result == []
 
     @pytest.mark.asyncio
-    async def test_get_player_occupants_error(self):
+    async def test_get_player_occupants_error(self) -> None:
         """Test getting player occupants when error occurs."""
         mock_connection_manager = AsyncMock()
         mock_connection_manager.get_room_occupants = AsyncMock(side_effect=AttributeError("Error"))
@@ -62,7 +62,7 @@ class TestGetNpcOccupantsFromLifecycleManager:
     """Test get_npc_occupants_from_lifecycle_manager function."""
 
     @pytest.mark.asyncio
-    async def test_get_npc_occupants_success(self):
+    async def test_get_npc_occupants_success(self) -> None:
         """Test successfully getting NPC occupants."""
         room_id = "room-123"
 
@@ -101,7 +101,7 @@ class TestGetNpcOccupantsFromLifecycleManager:
                     assert "NPC2" in result
 
     @pytest.mark.asyncio
-    async def test_get_npc_occupants_filters_dead_npcs(self):
+    async def test_get_npc_occupants_filters_dead_npcs(self) -> None:
         """Test that dead NPCs are filtered out."""
         room_id = "room-123"
 
@@ -131,7 +131,7 @@ class TestGetNpcOccupantsFromLifecycleManager:
                     assert "NPC1" in result
 
     @pytest.mark.asyncio
-    async def test_get_npc_occupants_no_service(self):
+    async def test_get_npc_occupants_no_service(self) -> None:
         """Test getting NPC occupants when service is not available."""
         with patch("server.services.npc_instance_service.get_npc_instance_service", return_value=None):
             with patch("server.realtime.websocket_room_updates.logger"):
@@ -144,7 +144,7 @@ class TestGetNpcOccupantsFallback:
     """Test get_npc_occupants_fallback function."""
 
     @pytest.mark.asyncio
-    async def test_get_npc_occupants_fallback_success(self):
+    async def test_get_npc_occupants_fallback_success(self) -> None:
         """Test successfully getting NPC occupants using fallback."""
         mock_room = MagicMock()
         mock_room.get_npcs.return_value = ["npc-1", "npc-2"]
@@ -177,7 +177,7 @@ class TestGetNpcOccupantsFallback:
                     assert "NPC2" in result
 
     @pytest.mark.asyncio
-    async def test_get_npc_occupants_fallback_filters_dead(self):
+    async def test_get_npc_occupants_fallback_filters_dead(self) -> None:
         """Test that fallback filters out dead NPCs."""
         mock_room = MagicMock()
         mock_room.get_npcs.return_value = ["npc-1", "npc-2"]
@@ -207,7 +207,7 @@ class TestBuildRoomUpdateEvent:
     """Test build_room_update_event function."""
 
     @pytest.mark.asyncio
-    async def test_build_room_update_event_success(self):
+    async def test_build_room_update_event_success(self) -> None:
         """Test successfully building room update event."""
         mock_room = MagicMock()
         mock_room.to_dict.return_value = {"room_id": "room-123", "name": "Test Room"}
@@ -234,7 +234,7 @@ class TestBuildRoomUpdateEvent:
             assert result["data"]["occupant_count"] == 2
 
     @pytest.mark.asyncio
-    async def test_build_room_update_event_with_room_drops(self):
+    async def test_build_room_update_event_with_room_drops(self) -> None:
         """Test building room update event with room drops."""
         mock_room = MagicMock()
         mock_room.to_dict.return_value = {"room_id": "room-123", "name": "Test Room"}
@@ -263,7 +263,7 @@ class TestUpdatePlayerRoomSubscription:
     """Test update_player_room_subscription function."""
 
     @pytest.mark.asyncio
-    async def test_update_player_room_subscription_new_room(self):
+    async def test_update_player_room_subscription_new_room(self) -> None:
         """Test updating subscription when player moves to new room."""
         mock_connection_manager = AsyncMock()
         mock_player = MagicMock()
@@ -280,7 +280,7 @@ class TestUpdatePlayerRoomSubscription:
             assert mock_player.current_room_id == "room-2"
 
     @pytest.mark.asyncio
-    async def test_update_player_room_subscription_same_room(self):
+    async def test_update_player_room_subscription_same_room(self) -> None:
         """Test updating subscription when player stays in same room."""
         mock_connection_manager = AsyncMock()
         mock_player = MagicMock()
@@ -296,7 +296,7 @@ class TestUpdatePlayerRoomSubscription:
             mock_connection_manager.subscribe_to_room.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_update_player_room_subscription_no_player(self):
+    async def test_update_player_room_subscription_no_player(self) -> None:
         """Test updating subscription when player is not found."""
         mock_connection_manager = AsyncMock()
         mock_connection_manager.get_player = AsyncMock(return_value=None)
@@ -310,7 +310,7 @@ class TestBroadcastRoomUpdate:
     """Test broadcast_room_update function."""
 
     @pytest.mark.asyncio
-    async def test_broadcast_room_update_success(self):
+    async def test_broadcast_room_update_success(self) -> None:
         """Test successfully broadcasting room update."""
         mock_connection_manager = AsyncMock()
         mock_connection_manager.get_room_occupants = AsyncMock(return_value=[{"player_name": "Player1"}])
@@ -344,7 +344,7 @@ class TestBroadcastRoomUpdate:
                     mock_connection_manager.broadcast_to_room.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_broadcast_room_update_no_room(self):
+    async def test_broadcast_room_update_no_room(self) -> None:
         """Test broadcasting room update when room is not found."""
         mock_connection_manager = AsyncMock()
 
@@ -358,7 +358,7 @@ class TestBroadcastRoomUpdate:
                 mock_connection_manager.broadcast_to_room.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_broadcast_room_update_npc_fallback(self):
+    async def test_broadcast_room_update_npc_fallback(self) -> None:
         """Test broadcasting room update with NPC fallback."""
         mock_connection_manager = AsyncMock()
         mock_connection_manager.get_room_occupants = AsyncMock(return_value=[])

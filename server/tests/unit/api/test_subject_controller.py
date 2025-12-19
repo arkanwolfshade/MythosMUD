@@ -11,12 +11,18 @@ AI: Tests cover health endpoints, admin endpoints, and error handling.
 """
 
 import uuid
+from types import MethodType
 from unittest.mock import Mock
 
 import pytest
 
 from server.exceptions import LoggedHTTPException
 from server.services.nats_subject_manager import NATSSubjectManager
+
+
+def _mock_getitem(self, key):
+    """Helper function to make mock support dictionary access for all attributes."""
+    return getattr(self, key)
 
 
 @pytest.fixture
@@ -27,7 +33,7 @@ def mock_current_user():
     user.username = "testuser"
     user.is_admin = False
     # Make the mock support dictionary access for all attributes
-    user.__getitem__ = lambda self, key: getattr(self, key)
+    user.__getitem__ = MethodType(_mock_getitem, user)
     return user
 
 
@@ -38,7 +44,7 @@ def mock_admin_user():
     user.id = str(uuid.uuid4())
     user.username = "admin"
     user.is_admin = True
-    user.__getitem__ = lambda self, key: getattr(self, key)
+    user.__getitem__ = MethodType(_mock_getitem, user)
     return user
 
 
@@ -176,7 +182,7 @@ class TestValidateSubjectEndpoint:
         assert "validation_time_ms" in response
 
     @pytest.mark.asyncio
-    async def test_validate_subject_non_admin_forbidden(self, mock_current_user, mock_subject_manager):
+    async def test_validate_subject_non_admin_forbidden(self, mock_current_user, _mock_subject_manager):
         """Test that non-admin users cannot validate subjects via dependency check."""
         # Arrange
         from server.api.admin.subject_controller import require_admin_user
@@ -238,7 +244,7 @@ class TestGetPatternsEndpoint:
         mock_subject_manager.get_all_patterns.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_get_patterns_non_admin_forbidden(self, mock_current_user, mock_subject_manager):
+    async def test_get_patterns_non_admin_forbidden(self, mock_current_user, _mock_subject_manager):
         """Test that non-admin users cannot retrieve patterns via dependency check."""
         # Arrange
         from server.api.admin.subject_controller import require_admin_user
@@ -295,7 +301,7 @@ class TestRegisterPatternEndpoint:
         )
 
     @pytest.mark.asyncio
-    async def test_register_pattern_non_admin_forbidden(self, mock_current_user, mock_subject_manager):
+    async def test_register_pattern_non_admin_forbidden(self, mock_current_user, _mock_subject_manager):
         """Test that non-admin users cannot register patterns via dependency check."""
         # Arrange
         from server.api.admin.subject_controller import require_admin_user
@@ -391,7 +397,7 @@ class TestAdminPermissionValidation:
 class TestRequestModels:
     """Test suite for API request models."""
 
-    def test_validate_subject_request_model(self):
+    def test_validate_subject_request_model(self) -> None:
         """Test ValidateSubjectRequest model validation."""
         from server.api.admin.subject_controller import ValidateSubjectRequest
 
@@ -403,7 +409,7 @@ class TestRequestModels:
         request = ValidateSubjectRequest(subject="")
         assert request.subject == ""
 
-    def test_register_pattern_request_model(self):
+    def test_register_pattern_request_model(self) -> None:
         """Test RegisterPatternRequest model validation."""
         from server.api.admin.subject_controller import RegisterPatternRequest
 
@@ -559,7 +565,7 @@ class TestDependencyInjection:
     """Test suite for dependency injection integration."""
 
     @pytest.mark.asyncio
-    async def test_subject_manager_dependency_injection(self, mock_admin_user):
+    async def test_subject_manager_dependency_injection(self, _mock_admin_user):
         """Test that subject manager can be injected via FastAPI dependency."""
         # This test verifies the dependency function exists and works
         from server.api.admin.subject_controller import get_subject_manager_dependency
@@ -572,7 +578,7 @@ class TestDependencyInjection:
         assert isinstance(manager, NATSSubjectManager)
 
     @pytest.mark.asyncio
-    async def test_admin_user_dependency_injection(self):
+    async def test_admin_user_dependency_injection(self) -> None:
         """Test that admin user validation works via dependency injection."""
         # This test verifies the dependency function exists and enforces admin check
         from server.api.admin.subject_controller import require_admin_user
@@ -588,7 +594,7 @@ class TestDependencyInjection:
         assert result == admin_user
 
     @pytest.mark.asyncio
-    async def test_admin_user_dependency_rejects_non_admin(self):
+    async def test_admin_user_dependency_rejects_non_admin(self) -> None:
         """Test that admin dependency rejects non-admin users."""
         from server.api.admin.subject_controller import require_admin_user
 

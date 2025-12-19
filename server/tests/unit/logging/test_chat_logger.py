@@ -17,7 +17,11 @@ from server.services.chat_logger import ChatLogger
 class TestChatLogger:
     """Test suite for ChatLogger class."""
 
-    def setup_method(self):
+    temp_dir: str
+    log_dir: Path
+    chat_logger: ChatLogger
+
+    def setup_method(self) -> None:
         """Set up test fixtures."""
         # Create a temporary directory for test logs
         self.temp_dir = tempfile.mkdtemp()
@@ -26,14 +30,14 @@ class TestChatLogger:
         # Create ChatLogger instance with test directory
         self.chat_logger = ChatLogger(str(self.log_dir))
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Clean up test fixtures."""
         # Remove temporary directory and all contents
         import shutil
 
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
-    def test_chat_logger_initialization(self):
+    def test_chat_logger_initialization(self) -> None:
         """Test ChatLogger initialization creates required directories."""
         # Verify main log directory was created
         assert self.log_dir.exists()
@@ -41,7 +45,7 @@ class TestChatLogger:
         # Verify attributes are set correctly
         assert self.chat_logger.log_dir == self.log_dir
 
-    def test_get_current_log_file_chat(self):
+    def test_get_current_log_file_chat(self) -> None:
         """Test getting current log file path for chat type."""
         log_file = self.chat_logger._get_current_log_file("chat")
         today = datetime.now(UTC).strftime("%Y-%m-%d")
@@ -49,7 +53,7 @@ class TestChatLogger:
 
         assert log_file == self.log_dir / expected_filename
 
-    def test_get_current_log_file_moderation(self):
+    def test_get_current_log_file_moderation(self) -> None:
         """Test getting current log file path for moderation type."""
         log_file = self.chat_logger._get_current_log_file("moderation")
         today = datetime.now(UTC).strftime("%Y-%m-%d")
@@ -57,7 +61,7 @@ class TestChatLogger:
 
         assert log_file == self.log_dir / expected_filename
 
-    def test_get_current_log_file_system(self):
+    def test_get_current_log_file_system(self) -> None:
         """Test getting current log file path for system type."""
         log_file = self.chat_logger._get_current_log_file("system")
         today = datetime.now(UTC).strftime("%Y-%m-%d")
@@ -65,7 +69,7 @@ class TestChatLogger:
 
         assert log_file == self.log_dir / expected_filename
 
-    def test_get_current_log_file_invalid_type(self):
+    def test_get_current_log_file_invalid_type(self) -> None:
         """Test getting current log file with invalid type creates prefixed filename."""
         log_file = self.chat_logger._get_current_log_file("invalid")
         today = datetime.now(UTC).strftime("%Y-%m-%d")
@@ -73,7 +77,7 @@ class TestChatLogger:
 
         assert log_file == self.log_dir / expected_filename
 
-    def test_write_log_entry_success(self):
+    def test_write_log_entry_success(self) -> None:
         """Test successful log entry writing."""
         entry = {"test": "data", "number": 42}
 
@@ -97,7 +101,7 @@ class TestChatLogger:
             assert logged_entry["number"] == 42
             assert "timestamp" in logged_entry  # Should be added automatically
 
-    def test_write_log_entry_with_existing_timestamp(self):
+    def test_write_log_entry_with_existing_timestamp(self) -> None:
         """Test log entry writing when timestamp already exists."""
         timestamp = "2023-01-01T12:00:00+00:00"
         entry = {"test": "data", "timestamp": timestamp}
@@ -115,7 +119,7 @@ class TestChatLogger:
             logged_entry = json.loads(lines[0].strip())
             assert logged_entry["timestamp"] == timestamp
 
-    def test_write_log_entry_unicode_content(self):
+    def test_write_log_entry_unicode_content(self) -> None:
         """Test log entry writing with Unicode content."""
         entry = {"message": "Hello, 世界! 🌍", "emoji": "😀"}
 
@@ -149,7 +153,7 @@ class TestChatLogger:
             assert call_args[1]["error"] == "Queue error"
             assert call_args[1]["log_type"] == "chat"
 
-    def test_log_chat_message(self):
+    def test_log_chat_message(self) -> None:
         """Test logging a chat message."""
         message_data = {
             "message_id": "msg_123",
@@ -192,7 +196,7 @@ class TestChatLogger:
             assert logged_entry["filtered"] is False
             assert logged_entry["moderation_notes"] is None
 
-    def test_log_chat_message_minimal_data(self):
+    def test_log_chat_message_minimal_data(self) -> None:
         """Test logging a chat message with minimal required data."""
         message_data = {
             "message_id": "msg_123",
@@ -228,7 +232,7 @@ class TestChatLogger:
             assert logged_entry["filtered"] is False
             assert logged_entry["moderation_notes"] is None
 
-    def test_log_moderation_event(self):
+    def test_log_moderation_event(self) -> None:
         """Test logging a moderation event."""
         event_type = "player_warned"
         event_data = {
@@ -256,7 +260,7 @@ class TestChatLogger:
             assert logged_entry["reason"] == "Inappropriate language"
             assert logged_entry["warning_level"] == "first"
 
-    def test_log_message_flagged(self):
+    def test_log_message_flagged(self) -> None:
         """Test logging a flagged message."""
         message_id = "msg_123"
         flag_reason = "profanity"
@@ -284,7 +288,7 @@ class TestChatLogger:
             assert logged_entry["action_taken"] == action_taken
             assert logged_entry["moderator_id"] == "ai_system"
 
-    def test_log_message_flagged_defaults(self):
+    def test_log_message_flagged_defaults(self) -> None:
         """Test logging a flagged message with default values."""
         message_id = "msg_123"
         flag_reason = "spam"
@@ -305,7 +309,7 @@ class TestChatLogger:
             assert logged_entry["ai_model"] == "content_filter_v1"
             assert logged_entry["action_taken"] == "none"
 
-    def test_log_player_muted(self):
+    def test_log_player_muted(self) -> None:
         """Test logging a player mute action."""
         muter_id = "mod_123"
         target_id = "player_456"
@@ -335,7 +339,7 @@ class TestChatLogger:
             assert logged_entry["reason"] == reason
             assert "timestamp" in logged_entry
 
-    def test_log_player_muted_permanent(self):
+    def test_log_player_muted_permanent(self) -> None:
         """Test logging a permanent player mute."""
         muter_id = "mod_123"
         target_id = "player_456"
@@ -357,7 +361,7 @@ class TestChatLogger:
             assert logged_entry["duration_minutes"] is None
             assert logged_entry["reason"] == ""
 
-    def test_log_player_unmuted(self):
+    def test_log_player_unmuted(self) -> None:
         """Test logging a player unmute action."""
         unmuter_id = "mod_123"
         target_id = "player_456"
@@ -383,7 +387,7 @@ class TestChatLogger:
             assert logged_entry["mute_type"] == mute_type
             assert "timestamp" in logged_entry
 
-    def test_log_system_event(self):
+    def test_log_system_event(self) -> None:
         """Test logging a system event."""
         event_type = "server_startup"
         event_data = {"version": "1.0.0", "uptime": 3600, "active_players": 25}
@@ -405,7 +409,7 @@ class TestChatLogger:
             assert logged_entry["uptime"] == 3600
             assert logged_entry["active_players"] == 25
 
-    def test_log_player_joined_room(self):
+    def test_log_player_joined_room(self) -> None:
         """Test logging when a player joins a room."""
         player_id = "player_123"
         player_name = "TestPlayer"
@@ -430,7 +434,7 @@ class TestChatLogger:
             assert logged_entry["room_id"] == room_id
             assert logged_entry["room_name"] == room_name
 
-    def test_log_player_left_room(self):
+    def test_log_player_left_room(self) -> None:
         """Test logging when a player leaves a room."""
         player_id = "player_123"
         player_name = "TestPlayer"
@@ -455,7 +459,7 @@ class TestChatLogger:
             assert logged_entry["room_id"] == room_id
             assert logged_entry["room_name"] == room_name
 
-    def test_log_rate_limit_violation(self):
+    def test_log_rate_limit_violation(self) -> None:
         """Test logging a rate limit violation."""
         player_id = "player_123"
         player_name = "TestPlayer"
@@ -482,7 +486,7 @@ class TestChatLogger:
             assert logged_entry["message_count"] == message_count
             assert logged_entry["limit"] == limit
 
-    def test_get_log_file_paths(self):
+    def test_get_log_file_paths(self) -> None:
         """Test getting current log file paths."""
         paths = self.chat_logger.get_log_file_paths()
 
@@ -496,7 +500,7 @@ class TestChatLogger:
         assert paths["moderation"] == self.log_dir / f"chat_moderation_{today}.log"
         assert paths["system"] == self.log_dir / f"chat_system_{today}.log"
 
-    def test_get_log_stats_empty_files(self):
+    def test_get_log_stats_empty_files(self) -> None:
         """Test getting log stats for empty log files."""
         stats = self.chat_logger.get_log_stats()
 
@@ -510,7 +514,7 @@ class TestChatLogger:
             assert stats[log_type]["last_modified"] is None
             assert "file_path" in stats[log_type]
 
-    def test_get_log_stats_with_data(self):
+    def test_get_log_stats_with_data(self) -> None:
         """Test getting log stats for files with data."""
         # Write some test data
         test_entry = {"test": "data"}
@@ -534,7 +538,7 @@ class TestChatLogger:
         assert stats["system"]["file_size_bytes"] == 0
         assert stats["system"]["last_modified"] is None
 
-    def test_multiple_log_entries_same_file(self):
+    def test_multiple_log_entries_same_file(self) -> None:
         """Test writing multiple entries to the same log file."""
         entries = [
             {"message": "First message", "id": 1},
@@ -560,7 +564,7 @@ class TestChatLogger:
                 assert logged_entry["message"] == entries[i]["message"]
                 assert logged_entry["id"] == entries[i]["id"]
 
-    def test_log_entries_across_different_types(self):
+    def test_log_entries_across_different_types(self) -> None:
         """Test writing entries to different log types."""
         # Write entries to different log types
         self.chat_logger._write_log_entry("chat", {"type": "chat", "id": 1})
@@ -586,7 +590,7 @@ class TestChatLogger:
             entry = json.loads(f.readline().strip())
             assert entry["type"] == "system"
 
-    def test_ensure_log_directories_creates_missing_dirs(self):
+    def test_ensure_log_directories_creates_missing_dirs(self) -> None:
         """Test that _ensure_log_directories creates the main log directory."""
         # Remove main directory
         import shutil
@@ -599,7 +603,7 @@ class TestChatLogger:
         # Verify main directory exists
         assert self.log_dir.exists()
 
-    def test_ensure_log_directories_handles_existing_dirs(self):
+    def test_ensure_log_directories_handles_existing_dirs(self) -> None:
         """Test that _ensure_log_directories handles existing directories gracefully."""
         # Call multiple times - should not raise errors
         self.chat_logger._ensure_log_directories()
@@ -613,7 +617,7 @@ class TestChatLogger:
 class TestChatLoggerGlobalInstance:
     """Test the global chat_logger instance."""
 
-    def test_global_chat_logger_instance(self):
+    def test_global_chat_logger_instance(self) -> None:
         """Test that the global chat_logger instance is created correctly."""
         from server.services.chat_logger import chat_logger
 

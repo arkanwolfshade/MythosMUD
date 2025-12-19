@@ -6,6 +6,7 @@ for incoming WebSocket messages including size limits, JSON depth, and schema va
 """
 
 import json
+from typing import Any
 
 import pytest
 
@@ -19,7 +20,12 @@ from server.realtime.message_validator import (
 class TestMessageValidator:
     """Test cases for MessageValidator class."""
 
-    def setup_method(self):
+    def __init__(self) -> None:
+        """Initialize test class attributes."""
+        self.validator: WebSocketMessageValidator
+        self.player_id: str
+
+    def setup_method(self) -> None:
         """Set up test fixtures."""
         self.validator = WebSocketMessageValidator(
             max_message_size=8192,  # 8KB
@@ -27,7 +33,7 @@ class TestMessageValidator:
         )
         self.player_id = "test_player_123"
 
-    def test_valid_message(self):
+    def test_valid_message(self) -> None:
         """Test validation of a valid message."""
         # Valid message structure: {message: "...", timestamp: ..., csrfToken: ...}
         outer_message = {
@@ -41,7 +47,7 @@ class TestMessageValidator:
 
         assert result == {"type": "chat", "command": "say hello"}
 
-    def test_message_too_large(self):
+    def test_message_too_large(self) -> None:
         """Test validation fails for message exceeding size limit."""
         # Create a message larger than 8KB
         large_content = "x" * 9000
@@ -56,10 +62,10 @@ class TestMessageValidator:
 
         assert exc_info.value.error_type == "size_limit_exceeded"
 
-    def test_json_depth_exceeded(self):
+    def test_json_depth_exceeded(self) -> None:
         """Test validation fails for JSON exceeding depth limit."""
         # Create deeply nested JSON
-        deep_json = {"level": 1}
+        deep_json: dict[str, Any] = {"level": 1}
         current = deep_json
         for i in range(2, 15):  # Exceeds max depth of 10
             current["nested"] = {"level": i}
@@ -76,7 +82,7 @@ class TestMessageValidator:
 
         assert exc_info.value.error_type == "depth_limit_exceeded"
 
-    def test_invalid_outer_json(self):
+    def test_invalid_outer_json(self) -> None:
         """Test validation fails for invalid outer JSON format."""
         invalid_json = "{invalid json}"
 
@@ -85,7 +91,7 @@ class TestMessageValidator:
 
         assert exc_info.value.error_type == "json_parse_error"
 
-    def test_missing_inner_message(self):
+    def test_missing_inner_message(self) -> None:
         """Test validation fails when inner message is missing."""
         outer_message = {
             "timestamp": 1234567890,
@@ -96,7 +102,7 @@ class TestMessageValidator:
         with pytest.raises(MessageValidationError):
             self.validator.parse_and_validate(data, self.player_id)
 
-    def test_plain_text_command(self):
+    def test_plain_text_command(self) -> None:
         """Test validation handles plain text commands (non-JSON inner message)."""
         outer_message = {
             "message": "say hello",  # Plain text, not JSON
@@ -110,7 +116,7 @@ class TestMessageValidator:
         # The actual result depends on implementation
         assert isinstance(result, dict)
 
-    def test_csrf_validation_disabled(self):
+    def test_csrf_validation_disabled(self) -> None:
         """Test CSRF validation when disabled (default)."""
         outer_message = {
             "message": json.dumps({"type": "chat", "command": "say hello"}),
@@ -123,7 +129,7 @@ class TestMessageValidator:
         result = self.validator.parse_and_validate(data, self.player_id, csrf_token=None)
         assert result == {"type": "chat", "command": "say hello"}
 
-    def test_csrf_validation_enabled_missing_token(self):
+    def test_csrf_validation_enabled_missing_token(self) -> None:
         """Test CSRF validation fails when enabled but token missing."""
         validator = WebSocketMessageValidator()
         outer_message = {
@@ -138,7 +144,7 @@ class TestMessageValidator:
 
         assert exc_info.value.error_type == "csrf_token_missing"
 
-    def test_csrf_validation_enabled_invalid_token(self):
+    def test_csrf_validation_enabled_invalid_token(self) -> None:
         """Test CSRF validation fails when token doesn't match."""
         validator = WebSocketMessageValidator()
         outer_message = {
@@ -153,7 +159,7 @@ class TestMessageValidator:
 
         assert exc_info.value.error_type == "csrf_token_invalid"
 
-    def test_csrf_validation_enabled_valid_token(self):
+    def test_csrf_validation_enabled_valid_token(self) -> None:
         """Test CSRF validation passes with valid token."""
         validator = WebSocketMessageValidator()
         expected_token = "valid_token_123"
@@ -167,7 +173,7 @@ class TestMessageValidator:
         result = validator.parse_and_validate(data, self.player_id, csrf_token=expected_token)
         assert result == {"type": "chat", "command": "say hello"}
 
-    def test_schema_validation(self):
+    def test_schema_validation(self) -> None:
         """Test Pydantic schema validation."""
         from server.schemas.websocket_messages import WrappedMessage
 
@@ -181,14 +187,14 @@ class TestMessageValidator:
         result = self.validator.parse_and_validate(data, self.player_id, schema=WrappedMessage)
         assert result == {"type": "chat", "command": "say hello"}
 
-    def test_get_message_validator_singleton(self):
+    def test_get_message_validator_singleton(self) -> None:
         """Test get_message_validator returns singleton instance."""
         validator1 = get_message_validator()
         validator2 = get_message_validator()
 
         assert validator1 is validator2
 
-    def test_custom_size_limit(self):
+    def test_custom_size_limit(self) -> None:
         """Test validator with custom size limit."""
         validator = WebSocketMessageValidator(max_message_size=1024)  # 1KB limit
 

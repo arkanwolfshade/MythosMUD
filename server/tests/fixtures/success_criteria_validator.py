@@ -8,11 +8,13 @@ meets all defined success criteria for functional, performance, and quality requ
 import asyncio
 import statistics
 import time
+import uuid
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any
 
 import structlog
+from sqlalchemy.exc import DatabaseError
 
 from server.realtime.connection_manager import ConnectionManager
 
@@ -106,16 +108,16 @@ class SuccessCriteriaValidator:
         self.logger.info("Validating message delivery to all connections")
 
         start_time = time.time()
-        details = {}
+        details: dict[str, Any] = {}
         recommendations = []
 
         try:
             # Set up multiple players with different connection configurations
-            test_scenarios = [
-                {"player_id": "single_ws_player", "connections": ["websocket"]},
-                {"player_id": "single_sse_player", "connections": ["sse"]},
-                {"player_id": "dual_player", "connections": ["websocket", "sse"]},
-                {"player_id": "multi_player", "connections": ["websocket", "sse", "websocket"]},
+            test_scenarios: list[dict[str, Any]] = [
+                {"player_id": uuid.uuid4(), "connections": ["websocket"]},
+                {"player_id": uuid.uuid4(), "connections": ["sse"]},
+                {"player_id": uuid.uuid4(), "connections": ["websocket", "sse"]},
+                {"player_id": uuid.uuid4(), "connections": ["websocket", "sse", "websocket"]},
             ]
 
             established_players = []
@@ -144,11 +146,11 @@ class SuccessCriteriaValidator:
                     "timestamp": time.time(),
                 }
 
-                result = await self.connection_manager.send_personal_message(player_id, test_message)
-                delivery_results[player_id] = result
+                delivery_result = await self.connection_manager.send_personal_message(player_id, test_message)
+                delivery_results[str(player_id)] = delivery_result
 
                 total_messages_sent += 1
-                if result.get("success", False):
+                if delivery_result.get("success", False):
                     total_messages_delivered += 1
 
             # Calculate delivery statistics
@@ -182,7 +184,7 @@ class SuccessCriteriaValidator:
             for player_id in established_players:
                 await self.connection_manager.force_disconnect_player(player_id)
 
-        except Exception as e:
+        except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError) as e:
             level = SuccessLevel.FAILED
             score = 0.0
             details["exception"] = str(e)
@@ -207,12 +209,12 @@ class SuccessCriteriaValidator:
         self.logger.info("Validating connection persistence")
 
         start_time = time.time()
-        details = {}
+        details: dict[str, Any] = {}
         recommendations = []
 
         try:
             # Test connection persistence over time
-            player_id = "persistence_test_player"
+            player_id = uuid.uuid4()
             session_id = "persistence_test_session"
 
             # Establish WebSocket connection
@@ -222,8 +224,8 @@ class SuccessCriteriaValidator:
             await asyncio.sleep(2)
 
             # Check if connections are still active
-            player_connections = self.connection_manager.get_connections_by_player(player_id)
-            details["connections_after_wait"] = len(player_connections)
+            connection_counts = self.connection_manager.get_connection_count(player_id)
+            details["connections_after_wait"] = sum(connection_counts.values())
 
             # Test connection health
             health_result = await self.connection_manager.check_connection_health(player_id)
@@ -231,14 +233,15 @@ class SuccessCriteriaValidator:
 
             # Test message delivery after persistence period
             test_message = {"type": "persistence_test", "content": "Persistence test message"}
-            delivery_result = await self.connection_manager.send_personal_message(player_id, test_message)
-            details["delivery_after_persistence"] = delivery_result
+            persistence_delivery_result = await self.connection_manager.send_personal_message(player_id, test_message)
+            details["delivery_after_persistence"] = persistence_delivery_result
 
             # Determine success level
-            if len(player_connections) >= 2 and delivery_result.get("success", False):
+            total_active_connections = sum(connection_counts.values())
+            if total_active_connections >= 1 and persistence_delivery_result.get("success", False):
                 level = SuccessLevel.PASSED
                 score = 1.0
-            elif len(player_connections) >= 2:
+            elif total_active_connections >= 1:
                 level = SuccessLevel.PARTIAL
                 score = 0.7
                 recommendations.append("Connections persist but message delivery may be affected")
@@ -250,7 +253,7 @@ class SuccessCriteriaValidator:
             # Cleanup
             await self.connection_manager.force_disconnect_player(player_id)
 
-        except Exception as e:
+        except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError) as e:
             level = SuccessLevel.FAILED
             score = 0.0
             details["exception"] = str(e)
@@ -275,39 +278,42 @@ class SuccessCriteriaValidator:
         self.logger.info("Validating disconnection rules")
 
         start_time = time.time()
-        details = {}
+        details: dict[str, Any] = {}
         recommendations = []
 
         try:
             # Test various disconnection scenarios
-            player_id = "disconnection_test_player"
+            player_id = uuid.uuid4()
             session_id = "disconnection_test_session"
 
             # Establish WebSocket connection
-            ws_conn_id = await self.connection_manager.connect_websocket(self._mock_websocket(), player_id, session_id)
+            success = await self.connection_manager.connect_websocket(self._mock_websocket(), player_id, session_id)
+            assert success
+            ws_conn_id = self.connection_manager.get_player_websocket_connection_id(player_id)
+            assert ws_conn_id is not None
 
             details["initial_connections"] = 1
 
             # Test individual connection disconnection
-            await self.connection_manager.disconnect_websocket_connection(ws_conn_id)
-            remaining_connections = self.connection_manager.get_connections_by_player(player_id)
-            details["connections_after_ws_disconnect"] = len(remaining_connections)
+            await self.connection_manager.disconnect_websocket_connection(player_id, ws_conn_id)
+            remaining_counts = self.connection_manager.get_connection_count(player_id)
+            details["connections_after_ws_disconnect"] = sum(remaining_counts.values())
 
             # Re-establish WebSocket connection
-            ws_conn_id = await self.connection_manager.connect_websocket(self._mock_websocket(), player_id, session_id)
+            await self.connection_manager.connect_websocket(self._mock_websocket(), player_id, session_id)
 
             # Test session-based disconnection
             new_session_id = "new_disconnection_session"
             session_result = await self.connection_manager.handle_new_game_session(player_id, new_session_id)
             details["session_switch_result"] = session_result
 
-            connections_after_session_switch = self.connection_manager.get_connections_by_player(player_id)
-            details["connections_after_session_switch"] = len(connections_after_session_switch)
+            remaining_counts_after_switch = self.connection_manager.get_connection_count(player_id)
+            details["connections_after_session_switch"] = sum(remaining_counts_after_switch.values())
 
             # Test force disconnection
             await self.connection_manager.force_disconnect_player(player_id)
-            final_connections = self.connection_manager.get_connections_by_player(player_id)
-            details["connections_after_force_disconnect"] = len(final_connections)
+            final_counts = self.connection_manager.get_connection_count(player_id)
+            details["connections_after_force_disconnect"] = sum(final_counts.values())
 
             # Determine success level
             if (
@@ -326,7 +332,7 @@ class SuccessCriteriaValidator:
                 score = 0.0
                 recommendations.append("Disconnection rules are not working properly")
 
-        except Exception as e:
+        except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError) as e:
             level = SuccessLevel.FAILED
             score = 0.0
             details["exception"] = str(e)
@@ -367,7 +373,7 @@ class SuccessCriteriaValidator:
         self.logger.info("Validating message delivery performance")
 
         start_time = time.time()
-        details = {}
+        details: dict[str, Any] = {}
         recommendations = []
 
         try:
@@ -378,7 +384,7 @@ class SuccessCriteriaValidator:
             # Establish connections
             test_players = []
             for i in range(player_count):
-                player_id = f"perf_player_{i}"
+                player_id = uuid.uuid4()
                 await self.connection_manager.connect_websocket(self._mock_websocket(), player_id, f"perf_session_{i}")
                 test_players.append(player_id)
 
@@ -396,13 +402,13 @@ class SuccessCriteriaValidator:
                     }
 
                     msg_start = time.time()
-                    result = await self.connection_manager.send_personal_message(player_id, message)
+                    perf_delivery_result = await self.connection_manager.send_personal_message(player_id, message)
                     msg_time = time.time() - msg_start
 
                     delivery_times.append(msg_time)
                     total_messages += 1
 
-                    if result.get("success", False):
+                    if perf_delivery_result.get("success", False):
                         successful_deliveries += 1
 
             # Calculate performance metrics
@@ -442,7 +448,7 @@ class SuccessCriteriaValidator:
             for player_id in test_players:
                 await self.connection_manager.force_disconnect_player(player_id)
 
-        except Exception as e:
+        except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError) as e:
             level = SuccessLevel.FAILED
             score = 0.0
             details["exception"] = str(e)
@@ -467,16 +473,18 @@ class SuccessCriteriaValidator:
         self.logger.info("Validating performance degradation")
 
         start_time = time.time()
-        details = {}
+        details: dict[str, Any] = {}
         recommendations = []
 
         try:
             # Baseline performance test
             baseline_players = 10
             baseline_times = []
+            baseline_player_ids = []
 
             for i in range(baseline_players):
-                player_id = f"baseline_perf_player_{i}"
+                player_id = uuid.uuid4()
+                baseline_player_ids.append(player_id)
                 conn_start = time.time()
                 await self.connection_manager.connect_websocket(
                     self._mock_websocket(), player_id, f"baseline_perf_session_{i}"
@@ -489,9 +497,11 @@ class SuccessCriteriaValidator:
             # Load performance test
             load_players = 50
             load_times = []
+            load_player_ids = []
 
             for i in range(load_players):
-                player_id = f"load_perf_player_{i}"
+                player_id = uuid.uuid4()
+                load_player_ids.append(player_id)
                 conn_start = time.time()
                 await self.connection_manager.connect_websocket(
                     self._mock_websocket(), player_id, f"load_perf_session_{i}"
@@ -528,18 +538,16 @@ class SuccessCriteriaValidator:
                 recommendations.append("Performance degradation is too high")
 
             # Cleanup
-            all_players = [f"baseline_perf_player_{i}" for i in range(baseline_players)] + [
-                f"load_perf_player_{i}" for i in range(load_players)
-            ]
+            all_players = baseline_player_ids + load_player_ids
 
             for player_id in all_players:
                 await self.connection_manager.force_disconnect_player(player_id)
 
-        except Exception as e:
+        except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError) as e:
             level = SuccessLevel.FAILED
             score = 0.0
             details["exception"] = str(e)
-            recommendations.append(f"Exception during degradation test: {str(e)}")
+            recommendations.append(f"Exception during performance test: {str(e)}")
             self.logger.error("Performance degradation validation failed", error=str(e))
 
         details["validation_time"] = time.time() - start_time
@@ -560,7 +568,7 @@ class SuccessCriteriaValidator:
         self.logger.info("Validating system stability under load")
 
         start_time = time.time()
-        details = {}
+        details: dict[str, Any] = {}
         recommendations = []
 
         try:
@@ -573,17 +581,17 @@ class SuccessCriteriaValidator:
                 cycle_players = []
 
                 # Rapid connection establishment
-                for i in range(operations_per_cycle):
-                    player_id = f"stress_player_{cycle}_{i}"
+                for _ in range(operations_per_cycle):
+                    player_id = uuid.uuid4()
                     try:
                         await self.connection_manager.connect_websocket(
                             self._mock_websocket(), player_id, f"stress_session_{cycle}"
                         )
                         cycle_players.append(player_id)
-                    except Exception as e:
+                    except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError) as e:
                         error_count += 1
                         self.logger.error(
-                            "Stress test connection failed", cycle=cycle, player_id=player_id, error=str(e)
+                            "Stress test connection failed", cycle=cycle, player_id=str(player_id), error=str(e)
                         )
 
                 # Rapid message sending
@@ -596,7 +604,7 @@ class SuccessCriteriaValidator:
                                 "timestamp": time.time(),
                             }
                             await self.connection_manager.send_personal_message(player_id, message)
-                        except Exception as e:
+                        except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError) as e:
                             error_count += 1
                             self.logger.error(
                                 "Stress test message failed", player_id=player_id, message_id=j, error=str(e)
@@ -606,7 +614,7 @@ class SuccessCriteriaValidator:
                 for player_id in cycle_players:
                     try:
                         await self.connection_manager.force_disconnect_player(player_id)
-                    except Exception as e:
+                    except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError) as e:
                         error_count += 1
                         self.logger.error("Stress test disconnection failed", player_id=player_id, error=str(e))
 
@@ -642,7 +650,7 @@ class SuccessCriteriaValidator:
                 score = 0.0
                 recommendations.append("System stability issues detected")
 
-        except Exception as e:
+        except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError) as e:
             level = SuccessLevel.FAILED
             score = 0.0
             details["exception"] = str(e)
@@ -667,7 +675,7 @@ class SuccessCriteriaValidator:
         self.logger.info("Validating resource usage limits")
 
         start_time = time.time()
-        details = {}
+        details: dict[str, Any] = {}
         recommendations = []
 
         try:
@@ -678,7 +686,7 @@ class SuccessCriteriaValidator:
             # Establish connections
             test_players = []
             for i in range(max_players):
-                player_id = f"resource_player_{i}"
+                player_id = uuid.uuid4()
                 await self.connection_manager.connect_websocket(
                     self._mock_websocket(), player_id, f"resource_session_{i}"
                 )
@@ -731,7 +739,7 @@ class SuccessCriteriaValidator:
             for player_id in test_players:
                 await self.connection_manager.force_disconnect_player(player_id)
 
-        except Exception as e:
+        except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError) as e:
             level = SuccessLevel.FAILED
             score = 0.0
             details["exception"] = str(e)
@@ -769,7 +777,7 @@ class SuccessCriteriaValidator:
         self.logger.info("Validating test coverage")
 
         start_time = time.time()
-        details = {}
+        details: dict[str, Any] = {}
         recommendations = []
 
         try:
@@ -799,7 +807,7 @@ class SuccessCriteriaValidator:
                 score = 0.0
                 recommendations.append("Test coverage or test results do not meet requirements")
 
-        except Exception as e:
+        except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError) as e:
             level = SuccessLevel.FAILED
             score = 0.0
             details["exception"] = str(e)
@@ -824,7 +832,7 @@ class SuccessCriteriaValidator:
         self.logger.info("Validating no regression")
 
         start_time = time.time()
-        details = {}
+        details: dict[str, Any] = {}
         recommendations = []
 
         try:
@@ -852,7 +860,7 @@ class SuccessCriteriaValidator:
                     else:
                         failed_tests.append(test_name)
 
-                except Exception as e:
+                except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError) as e:
                     failed_tests.append(f"{test_name}: {str(e)}")
 
             details.update(
@@ -878,7 +886,7 @@ class SuccessCriteriaValidator:
                 score = 0.0
                 recommendations.append("Significant regression detected")
 
-        except Exception as e:
+        except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError) as e:
             level = SuccessLevel.FAILED
             score = 0.0
             details["exception"] = str(e)
@@ -903,7 +911,7 @@ class SuccessCriteriaValidator:
         self.logger.info("Validating documentation completeness")
 
         start_time = time.time()
-        details = {}
+        details: dict[str, Any] = {}
         recommendations = []
 
         try:
@@ -921,7 +929,7 @@ class SuccessCriteriaValidator:
             # Simulate documentation check
             # In real implementation, this would check actual files
             existing_docs = required_docs  # Simulated - all docs exist
-            missing_docs = []
+            missing_docs: list[str] = []
 
             details.update(
                 {
@@ -946,7 +954,7 @@ class SuccessCriteriaValidator:
                 score = 0.0
                 recommendations.append("Significant documentation gaps detected")
 
-        except Exception as e:
+        except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError) as e:
             level = SuccessLevel.FAILED
             score = 0.0
             details["exception"] = str(e)
@@ -1016,6 +1024,8 @@ class SuccessCriteriaValidator:
                 self.closed = False
                 self.send_calls = []
                 self.ping_calls = []
+                self.close_code = None
+                self.close_reason = None
 
             async def accept(self):
                 pass
@@ -1029,6 +1039,8 @@ class SuccessCriteriaValidator:
 
             async def close(self, code=None, reason=None):
                 self.closed = True
+                self.close_code = code
+                self.close_reason = reason
 
             def is_closed(self):
                 return self.closed

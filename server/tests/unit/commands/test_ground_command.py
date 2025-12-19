@@ -5,7 +5,7 @@ from __future__ import annotations
 import uuid
 from datetime import datetime
 from types import SimpleNamespace
-from typing import Any
+from typing import Any, cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -213,15 +213,15 @@ async def test_ground_command_emits_rescue_updates(session_factory):
                 return pid
             return uuid.UUID(pid)
 
-        victim_uuid = normalize_id(victim.player_id)
-        rescuer_uuid = normalize_id(rescuer.player_id)
-        channel_targets_normalized = {normalize_id(t) for t in channel_targets}
+        victim_uuid = normalize_id(cast(Any, victim.player_id))
+        rescuer_uuid = normalize_id(cast(Any, rescuer.player_id))
+        channel_targets_normalized = {normalize_id(cast(Any, t)) for t in channel_targets}
         assert channel_targets_normalized == {victim_uuid, rescuer_uuid}
 
         success_targets = [
             _call_target(call) for call in mock_rescue_event.await_args_list if call.kwargs.get("status") == "success"
         ]
-        success_targets_normalized = [normalize_id(t) for t in success_targets]
+        success_targets_normalized = [normalize_id(cast(Any, t)) for t in success_targets]
         assert success_targets_normalized.count(rescuer_uuid) == 1
         assert success_targets_normalized.count(victim_uuid) == 2
 

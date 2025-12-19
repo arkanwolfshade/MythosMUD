@@ -14,7 +14,7 @@ from server.help.help_content import get_command_categories, get_commands_by_cat
 class TestHelpContentUtilities:
     """Test help content utility functions."""
 
-    def test_get_command_categories(self):
+    def test_get_command_categories(self) -> None:
         """Test getting all command categories.
 
         AI: Tests get_command_categories function (lines 478-483).
@@ -29,7 +29,7 @@ class TestHelpContentUtilities:
         assert "System" in categories
         assert "Communication" in categories
 
-    def test_get_commands_by_category_system(self):
+    def test_get_commands_by_category_system(self) -> None:
         """Test getting commands by category - System.
 
         AI: Tests get_commands_by_category function (lines 486-492).
@@ -44,7 +44,7 @@ class TestHelpContentUtilities:
             assert isinstance(cmd_info, dict)
             assert cmd_info["category"] == "System"
 
-    def test_get_commands_by_category_communication(self):
+    def test_get_commands_by_category_communication(self) -> None:
         """Test getting commands by category - Communication.
 
         AI: Tests get_commands_by_category with different category.
@@ -56,7 +56,7 @@ class TestHelpContentUtilities:
         for _cmd_name, cmd_info in commands:
             assert cmd_info["category"] == "Communication"
 
-    def test_get_commands_by_category_empty(self):
+    def test_get_commands_by_category_empty(self) -> None:
         """Test getting commands for nonexistent category.
 
         AI: Tests edge case with category that has no commands.
@@ -66,7 +66,7 @@ class TestHelpContentUtilities:
         assert isinstance(commands, list)
         assert len(commands) == 0
 
-    def test_get_help_content_general(self):
+    def test_get_help_content_general(self) -> None:
         """Test general help content retrieval.
 
         AI: Tests help content with no specific command.
@@ -77,7 +77,7 @@ class TestHelpContentUtilities:
         assert "MythosMUD Help System" in content
         assert "Commands" in content
 
-    def test_get_help_content_specific_command(self):
+    def test_get_help_content_specific_command(self) -> None:
         """Test help content for specific commands.
 
         AI: Tests help content for known commands.
@@ -88,7 +88,7 @@ class TestHelpContentUtilities:
             assert isinstance(content, str)
             assert command.upper() in content.upper()
 
-    def test_get_help_content_unknown_command(self):
+    def test_get_help_content_unknown_command(self) -> None:
         """Test help content for unknown command.
 
         AI: Tests fallback help for unknown commands.
@@ -99,7 +99,7 @@ class TestHelpContentUtilities:
         assert "not found" in content.lower()
         assert "unknowncommand" in content.lower()
 
-    def test_get_help_content_case_insensitive(self):
+    def test_get_help_content_case_insensitive(self) -> None:
         """Test that help content is case-insensitive.
 
         AI: Tests that command lookup is case-insensitive.

@@ -16,11 +16,13 @@ from server.realtime.payload_optimizer import PayloadOptimizer, get_payload_opti
 class TestPayloadOptimizer:
     """Test cases for PayloadOptimizer class."""
 
-    def setup_method(self):
+    optimizer: PayloadOptimizer  # Defined in setup_method per pytest pattern
+
+    def setup_method(self) -> None:
         """Set up test fixtures."""
         self.optimizer = PayloadOptimizer()
 
-    def test_get_payload_size(self):
+    def test_get_payload_size(self) -> None:
         """Test calculating payload size."""
         payload = {"type": "chat", "message": "Hello, world!"}
         size = self.optimizer.get_payload_size(payload)
@@ -30,7 +32,7 @@ class TestPayloadOptimizer:
         json_str = json.dumps(payload, separators=(",", ":"))
         assert size == len(json_str.encode("utf-8"))
 
-    def test_optimize_payload_within_limits(self):
+    def test_optimize_payload_within_limits(self) -> None:
         """Test optimization of payload within size limits."""
         payload = {"type": "chat", "message": "Hello, world!"}
         optimized = self.optimizer.optimize_payload(payload)
@@ -38,7 +40,7 @@ class TestPayloadOptimizer:
         # Small payload should be returned as-is
         assert optimized == payload
 
-    def test_optimize_payload_exceeds_max_size(self):
+    def test_optimize_payload_exceeds_max_size(self) -> None:
         """Test optimization fails for payload exceeding maximum size."""
         # Create payload with uncompressible data that exceeds max even when compressed
         # Use random data that doesn't compress well - needs to be > 50KB compressed
@@ -54,7 +56,7 @@ class TestPayloadOptimizer:
 
         assert "too large" in str(exc_info.value).lower()
 
-    def test_compress_payload_above_threshold(self):
+    def test_compress_payload_above_threshold(self) -> None:
         """Test compression of payload above compression threshold."""
         # Create payload above 10KB threshold
         payload = {"type": "chat", "message": "x" * 15000}
@@ -66,7 +68,7 @@ class TestPayloadOptimizer:
         assert "compressed_size" in compressed
         assert compressed["compressed_size"] < compressed["original_size"]
 
-    def test_compress_payload_below_threshold(self):
+    def test_compress_payload_below_threshold(self) -> None:
         """Test compression is applied even below threshold if forced."""
         payload = {"type": "chat", "message": "Hello"}
         compressed = self.optimizer.compress_payload(payload)
@@ -74,7 +76,7 @@ class TestPayloadOptimizer:
         # Should still compress (compression always works)
         assert compressed["compressed"] is True
 
-    def test_optimize_payload_auto_compresses_large(self):
+    def test_optimize_payload_auto_compresses_large(self) -> None:
         """Test optimization automatically compresses large payloads."""
         # Create payload above compression threshold but below max
         payload = {"type": "chat", "message": "x" * 15000}
@@ -84,7 +86,7 @@ class TestPayloadOptimizer:
         assert optimized["compressed"] is True
         assert optimized["compressed_size"] < optimized["original_size"]
 
-    def test_optimize_payload_skips_compression_if_not_beneficial(self):
+    def test_optimize_payload_skips_compression_if_not_beneficial(self) -> None:
         """Test optimization skips compression if it doesn't reduce size."""
         # Create payload that compresses poorly
         payload = {"type": "chat", "message": "abc" * 1000}  # Repetitive but small
@@ -99,7 +101,7 @@ class TestPayloadOptimizer:
             # May return original if compression doesn't help enough
             assert optimized is not None
 
-    def test_create_incremental_update_no_previous(self):
+    def test_create_incremental_update_no_previous(self) -> None:
         """Test incremental update creation with no previous payload."""
         current = {"type": "room_update", "room_id": "room_1", "occupants": ["player1"]}
         incremental = self.optimizer.create_incremental_update(current, previous_payload=None)
@@ -107,7 +109,7 @@ class TestPayloadOptimizer:
         # Should return full payload when no previous
         assert incremental == current
 
-    def test_create_incremental_update_with_changes(self):
+    def test_create_incremental_update_with_changes(self) -> None:
         """Test incremental update creation with changes."""
         previous = {"type": "room_update", "room_id": "room_1", "occupants": ["player1"]}
         current = {"type": "room_update", "room_id": "room_1", "occupants": ["player1", "player2"]}
@@ -118,7 +120,7 @@ class TestPayloadOptimizer:
         assert "changes" in incremental
         assert "occupants" in incremental["changes"]
 
-    def test_create_incremental_update_no_changes(self):
+    def test_create_incremental_update_no_changes(self) -> None:
         """Test incremental update creation with no changes."""
         payload = {"type": "room_update", "room_id": "room_1", "occupants": ["player1"]}
 
@@ -127,7 +129,7 @@ class TestPayloadOptimizer:
         assert incremental["incremental"] is True
         assert incremental["changes"] == {}
 
-    def test_custom_size_limits(self):
+    def test_custom_size_limits(self) -> None:
         """Test optimizer with custom size limits."""
         optimizer = PayloadOptimizer(
             max_payload_size=50 * 1024,  # 50KB
@@ -150,14 +152,14 @@ class TestPayloadOptimizer:
         with pytest.raises(ValueError):
             optimizer.optimize_payload(large_payload)
 
-    def test_get_payload_optimizer_singleton(self):
+    def test_get_payload_optimizer_singleton(self) -> None:
         """Test get_payload_optimizer returns singleton instance."""
         optimizer1 = get_payload_optimizer()
         optimizer2 = get_payload_optimizer()
 
         assert optimizer1 is optimizer2
 
-    def test_compression_decompression_roundtrip(self):
+    def test_compression_decompression_roundtrip(self) -> None:
         """Test that compressed payload can be decompressed."""
         payload = {"type": "chat", "message": "x" * 15000}
         compressed = self.optimizer.compress_payload(payload)

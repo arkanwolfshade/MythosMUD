@@ -325,7 +325,7 @@ class TestPlayerCombatServiceUnit:
         assert stats["players_in_combat"] == 2
         assert stats["active_combats"] == 1  # Same combat
 
-    def test_player_combat_state_creation(self):
+    def test_player_combat_state_creation(self) -> None:
         """Test PlayerCombatState creation."""
         player_id = uuid4()
         player_name = "TestPlayer"
@@ -346,7 +346,7 @@ class TestPlayerCombatServiceUnit:
         assert state.is_in_combat is True
         assert isinstance(state.last_activity, datetime)
 
-    def test_player_combat_state_defaults(self):
+    def test_player_combat_state_defaults(self) -> None:
         """Test PlayerCombatState default values."""
         state = PlayerCombatState(
             player_id=uuid4(),

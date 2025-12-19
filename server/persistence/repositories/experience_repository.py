@@ -10,7 +10,7 @@ import uuid
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
-from server.database import get_async_session
+from server.database import get_session_maker
 from server.exceptions import DatabaseError
 from server.logging.enhanced_logging_config import get_logger
 from server.models.player import Player
@@ -71,18 +71,18 @@ class ExperienceRepository:
 
         try:
             # Update in-memory player object
-            player.experience_points += amount  # type: ignore[assignment]
+            player.experience_points += amount
 
             # Atomic database update
-            await self.update_player_xp(player.player_id, amount, source)  # type: ignore[arg-type]
+            await self.update_player_xp(player.player_id, amount, source)
 
             self._logger.info(
                 "Player gained experience atomically",
-                player_id=player.player_id,
+                player_id=str(player.player_id),
                 player_name=player.name,
                 amount=amount,
                 source=source,
-                new_total=player.experience_points,
+                new_total=int(player.experience_points),
             )
 
             # Publish event if event bus available
@@ -101,7 +101,7 @@ class ExperienceRepository:
         except Exception as e:
             self._logger.critical(
                 "CRITICAL: Failed to persist player XP",
-                player_id=player.player_id,
+                player_id=str(player.player_id),
                 player_name=player.name,
                 amount=amount,
                 source=source,
@@ -111,12 +111,12 @@ class ExperienceRepository:
             )
             raise
 
-    async def update_player_xp(self, player_id: uuid.UUID, delta: int, reason: str = "") -> None:
+    async def update_player_xp(self, player_id: uuid.UUID | str, delta: int, reason: str = "") -> None:
         """
         Update player experience points atomically.
 
         Args:
-            player_id: Player UUID
+            player_id: Player UUID or string
             delta: XP change amount (must be non-negative)
             reason: Reason for XP change
 
@@ -129,10 +129,11 @@ class ExperienceRepository:
 
         context = create_error_context()
         context.metadata["operation"] = "update_player_xp"
-        context.metadata["player_id"] = player_id
+        context.metadata["player_id"] = str(player_id)
 
         try:
-            async for session in get_async_session():
+            session_maker = get_session_maker()
+            async with session_maker() as session:
                 update_query = text(
                     """
                     UPDATE players
@@ -141,38 +142,37 @@ class ExperienceRepository:
                     """
                 )
 
-                result = await session.execute(update_query, {"player_id": player_id, "delta": delta})
+                result = await session.execute(update_query, {"player_id": str(player_id), "delta": delta})
 
-                if result.rowcount == 0:  # type: ignore[attr-defined]
+                if result.rowcount == 0:
                     raise ValueError(f"Player {player_id} not found")
 
                 await session.commit()
 
                 self._logger.info(
                     "Player XP updated atomically",
-                    player_id=player_id,
+                    player_id=str(player_id),
                     delta=delta,
                     reason=reason,
                 )
                 return
-            return
         except (SQLAlchemyError, OSError, ValueError) as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error updating XP for player '{player_id}': {e}",
                 context=context,
-                details={"player_id": player_id, "delta": delta, "reason": reason, "error": str(e)},
+                details={"player_id": str(player_id), "delta": delta, "reason": reason, "error": str(e)},
                 user_friendly="Failed to update player experience",
             )
 
     async def update_player_stat_field(
-        self, player_id: uuid.UUID, field_name: str, delta: int | float, reason: str = ""
+        self, player_id: uuid.UUID | str, field_name: str, delta: int | float, reason: str = ""
     ) -> None:
         """
         Update a specific numeric field in player stats atomically.
 
         Args:
-            player_id: Player UUID
+            player_id: Player UUID or string
             field_name: Stat field name (must be in FIELD_NAME_TO_ARRAY)
             delta: Amount to change field by
             reason: Reason for update
@@ -192,14 +192,15 @@ class ExperienceRepository:
 
         context = create_error_context()
         context.metadata["operation"] = "update_player_stat_field"
-        context.metadata["player_id"] = player_id
+        context.metadata["player_id"] = str(player_id)
         context.metadata["field_name"] = field_name
 
         try:
             # Get the PostgreSQL array literal from the mapping dictionary
             array_literal = self.FIELD_NAME_TO_ARRAY[field_name]
 
-            async for session in get_async_session():
+            session_maker = get_session_maker()
+            async with session_maker() as session:
                 # Use raw SQL for JSONB path updates (SQLAlchemy ORM doesn't support this easily)
                 update_query = text(
                     f"""
@@ -215,30 +216,29 @@ class ExperienceRepository:
                 )
 
                 result = await session.execute(
-                    update_query, {"field_name": field_name, "delta": delta, "player_id": player_id}
+                    update_query, {"field_name": field_name, "delta": delta, "player_id": str(player_id)}
                 )
 
-                if result.rowcount == 0:  # type: ignore[attr-defined]
+                if result.rowcount == 0:
                     raise ValueError(f"Player {player_id} not found")
 
                 await session.commit()
 
                 self._logger.info(
                     "Player stat field updated atomically",
-                    player_id=player_id,
+                    player_id=str(player_id),
                     field_name=field_name,
                     delta=delta,
                     reason=reason,
                 )
                 return
-            return
-        except (SQLAlchemyError, OSError, TypeError) as e:
+        except (SQLAlchemyError, OSError, TypeError, ValueError) as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error updating stat field: {e}",
                 context=context,
                 details={
-                    "player_id": player_id,
+                    "player_id": str(player_id),
                     "field_name": field_name,
                     "delta": delta,
                     "reason": reason,

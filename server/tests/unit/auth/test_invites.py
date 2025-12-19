@@ -8,6 +8,7 @@ AI Agent: Tests for InviteManager covering invite lifecycle, validation logic,
          and error handling. Created for fresh session execution.
 """
 
+
 # pylint: disable=redefined-outer-name,protected-access
 # Justification: pytest fixtures redefine names, protected access needed for testing internals
 

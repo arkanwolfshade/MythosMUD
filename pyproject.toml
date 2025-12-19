@@ -244,36 +244,26 @@ exclude = [
     "^server/alembic/",
     "^server/test_who_command_direct.py$",
     "^server/tests/scripts/",
+    "^server/tests/data/",
 ]
-
-# Per-module options - Allow imports from server.scripts (excluded from type checking but imports allowed)
-[[tool.mypy.overrides]]
-module = "server.scripts.*"
-ignore_missing_imports = true
 
 # Per-module options - Third-party libraries without stubs or with incomplete stubs
 [[tool.mypy.overrides]]
 module = [
-    "argon2.*",
-    "psutil.*",
-    "ftfy.*",
     "strip_ansi.*",
-    "playwright.*",
-    "networkx.*",
-    "statemachine.*",
-    "jose.*",
-    "dotenv.*",
-    "jsonschema.*",
-    "pwdlib.*",
-    "pytest.*",
-    "prometheus_client.*",
-    "psycopg2.*",
-    "asyncpg.*",
+    "asyncpg",
     "analyze_error_logs",
     "error_monitoring",
-    "server.async_utils.tracked_task_manager",
     "server.tests.windows_logging_fix",
     "server.tests.windows_event_loop_fix",
+    "ftfy.*",
+    "statemachine.*",
+    "prometheus_client.*",
+    "psycopg2.*",
+    "jsonschema.*",
+    "jose.*",
+    "psutil.*",
+    "networkx.*",
 ]
 ignore_missing_imports = true
 
@@ -281,10 +271,11 @@ ignore_missing_imports = true
 # Human reader: Test files have many dynamic imports and mocks that confuse mypy
 # AI reader: Test files use extensive mocking and dynamic imports that mypy can't resolve
 [[tool.mypy.overrides]]
-module = [
-    "server.tests.*",
-]
-ignore_missing_imports = true
+module = "server.tests.*"
+ignore_missing_imports = false
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = true
 
 # Libraries with local stubs - use our enhanced type definitions
 [[tool.mypy.overrides]]
@@ -320,13 +311,6 @@ module = [
 disallow_untyped_defs = false
 check_untyped_defs = false
 
-# Test files
-[[tool.mypy.overrides]]
-module = "server.tests.*"
-disallow_untyped_defs = false
-disallow_incomplete_defs = false
-check_untyped_defs = false
-
 [dependency-groups]
 dev = [
     "ruff>=0.14.4",
@@ -337,4 +321,9 @@ dev = [
     "websocket-client>=1.9.0", # WebSocket client for testing connection termination
     "pytest-xdist>=3.8.0",
     "types-bleach>=6.3.0.20251029",
+    "types-psutil>=7.1.3.20251211",
+    "types-jsonschema>=4.25.1.20251009",
+    "types-psycopg2>=2.9.21.20251012",
+    "types-python-jose>=3.5.0.20250531",
+    "types-networkx>=3.6.1.20251212",
 ]

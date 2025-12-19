@@ -53,8 +53,6 @@ class TestRoomsListEndpoint:
 
     async def test_list_rooms_with_plane_and_zone(self, container_test_client_class):
         """Test listing rooms with required plane and zone parameters."""
-        from unittest.mock import AsyncMock
-
         client = container_test_client_class
         # Ensure room_service is available in container
         if hasattr(client.app.state, "container") and client.app.state.container:
@@ -89,8 +87,6 @@ class TestRoomsListEndpoint:
                 not hasattr(client.app.state.container, "room_service")
                 or client.app.state.container.room_service is None
             ):
-                from unittest.mock import AsyncMock
-
                 from server.game.room_service import RoomService
 
                 mock_persistence = AsyncMock()
@@ -118,8 +114,6 @@ class TestRoomsListEndpoint:
                 not hasattr(client.app.state.container, "room_service")
                 or client.app.state.container.room_service is None
             ):
-                from unittest.mock import AsyncMock
-
                 from server.game.room_service import RoomService
 
                 mock_persistence = AsyncMock()
@@ -144,8 +138,6 @@ class TestRoomsListEndpoint:
                 not hasattr(client.app.state.container, "room_service")
                 or client.app.state.container.room_service is None
             ):
-                from unittest.mock import AsyncMock
-
                 from server.game.room_service import RoomService
 
                 mock_persistence = AsyncMock()
@@ -171,8 +163,6 @@ class TestRoomsListEndpoint:
                 not hasattr(client.app.state.container, "room_service")
                 or client.app.state.container.room_service is None
             ):
-                from unittest.mock import AsyncMock
-
                 from server.game.room_service import RoomService
 
                 mock_persistence = AsyncMock()
@@ -188,7 +178,7 @@ class TestRoomsListEndpoint:
         assert "rooms" in data
         assert isinstance(data["rooms"], list)
 
-    async def test_list_rooms_filter_explored_with_auth_no_explored_rooms(self):
+    async def test_list_rooms_filter_explored_with_auth_no_explored_rooms(self) -> None:
         """Test that filter_explored with auth but no explored rooms returns empty list."""
         test_user_id = uuid.uuid4()
         test_player_id = uuid.uuid4()
@@ -203,50 +193,50 @@ class TestRoomsListEndpoint:
         # Import here to avoid circulars at module import time
         from server.api.rooms import list_rooms
 
-        with patch("server.api.rooms.get_exploration_service") as mock_get_exploration_service:
-            # Mock persistence to return a player for the authenticated user
-            mock_persistence = AsyncMock()
-            mock_persistence.get_player_by_user_id = AsyncMock(return_value=mock_player)
+        # Mock persistence to return a player for the authenticated user
+        mock_persistence = AsyncMock()
+        mock_persistence.get_player_by_user_id = AsyncMock(return_value=mock_player)
 
-            # Mock exploration service to return empty list
-            mock_exploration_service = Mock()
-            mock_exploration_service.get_explored_rooms = AsyncMock(return_value=[])
-            mock_get_exploration_service.return_value = mock_exploration_service
+        # Mock exploration service to return empty list
+        mock_exploration_service = Mock()
+        mock_exploration_service.get_explored_rooms = AsyncMock(return_value=[])
 
-            # Mock session for database queries
-            mock_session = AsyncMock()
+        # Mock session for database queries
+        mock_session = AsyncMock()
 
-            # Mock room service to return some rooms before filtering
-            mock_room_service = Mock()
-            mock_room_service.list_rooms = AsyncMock(
-                return_value=[
-                    {"id": "room_1", "plane": "earth", "zone": "arkhamcity"},
-                    {"id": "room_2", "plane": "earth", "zone": "arkhamcity"},
-                ]
-            )
+        # Mock room service to return some rooms before filtering
+        mock_room_service = Mock()
+        mock_room_service.list_rooms = AsyncMock(
+            return_value=[
+                {"id": "room_1", "plane": "earth", "zone": "arkhamcity"},
+                {"id": "room_2", "plane": "earth", "zone": "arkhamcity"},
+            ]
+        )
 
-            # Create mock request with persistence in app.state
-            mock_request = Mock()
-            mock_request.app = Mock()
-            mock_request.app.state = Mock()
-            mock_request.app.state.persistence = mock_persistence
+        # Create mock request with persistence and container in app.state
+        mock_request = Mock()
+        mock_request.app = Mock()
+        mock_request.app.state = Mock()
+        mock_request.app.state.persistence = mock_persistence
+        mock_request.app.state.container = Mock()
+        mock_request.app.state.container.exploration_service = mock_exploration_service
 
-            # Call the endpoint function directly with injected dependencies
-            result = await list_rooms(
-                request=mock_request,
-                plane="earth",
-                zone="arkhamcity",
-                sub_zone=None,
-                include_exits=True,
-                filter_explored=True,
-                current_user=mock_user,
-                session=mock_session,
-                room_service=mock_room_service,
-            )
+        # Call the endpoint function directly with injected dependencies
+        result = await list_rooms(
+            request=mock_request,
+            plane="earth",
+            zone="arkhamcity",
+            sub_zone=None,
+            include_exits=True,
+            filter_explored=True,
+            current_user=mock_user,
+            session=mock_session,
+            room_service=mock_room_service,
+        )
 
-            # Should return empty list when player has explored no rooms
-            assert result["rooms"] == []
-            assert result["total"] == 0
+        # Should return empty list when player has explored no rooms
+        assert result["rooms"] == []
+        assert result["total"] == 0
 
     async def test_list_rooms_filter_explored_with_auth_and_explored_rooms(self, container_test_client_class):
         """Test that filter_explored with auth and explored rooms returns only explored rooms."""
@@ -263,19 +253,18 @@ class TestRoomsListEndpoint:
         mock_player = Mock()
         mock_player.player_id = test_player_id
 
-        with (
-            patch("server.api.rooms.get_current_user", return_value=mock_user),
-            patch("server.api.rooms.get_exploration_service") as mock_get_exploration_service,
-        ):
+        with patch("server.api.rooms.get_current_user", return_value=mock_user):
             # Mock persistence to return a player
             mock_persistence = AsyncMock()
             mock_persistence.get_player_by_user_id = AsyncMock(return_value=mock_player)
 
             # Mock exploration service to return explored room UUID
-            # get_exploration_service() is called, so we need to mock the return value
             mock_exploration_service = Mock()
             mock_exploration_service.get_explored_rooms = AsyncMock(return_value=[str(explored_room_uuid)])
-            mock_get_exploration_service.return_value = mock_exploration_service
+
+            # Update client app state container
+            client.app.state.container = Mock()
+            client.app.state.container.exploration_service = mock_exploration_service
 
             # Create mock request with persistence in app.state
             mock_request = Mock()
@@ -289,6 +278,16 @@ class TestRoomsListEndpoint:
             mock_result = AsyncMock()
             mock_result.fetchall.return_value = [(explored_stable_id,)]
             mock_session.execute.return_value = mock_result
+
+            # Mock RoomService
+            mock_room_service = AsyncMock()
+            mock_room_service.list_rooms.return_value = [
+                {"id": explored_stable_id, "plane": "earth", "zone": "arkhamcity"}
+            ]
+
+            from server.dependencies import get_room_service
+
+            client.app.dependency_overrides[get_room_service] = lambda: mock_room_service
 
             with patch("server.api.rooms.get_async_session") as mock_get_session:
                 mock_get_session.return_value.__aenter__.return_value = mock_session

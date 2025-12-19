@@ -22,7 +22,7 @@ from server.auth_utils import (
 class TestPasswordHashing:
     """Test password hashing functionality."""
 
-    def test_hash_password(self):
+    def test_hash_password(self) -> None:
         """Test password hashing."""
         password = "test_password"
         hashed = hash_password(password)
@@ -31,28 +31,28 @@ class TestPasswordHashing:
         assert hashed != password
         assert len(hashed) > 20
 
-    def test_verify_password_correct(self):
+    def test_verify_password_correct(self) -> None:
         """Test password verification with correct password."""
         password = "test_password"
         hashed = hash_password(password)
 
         assert verify_password(password, hashed) is True
 
-    def test_verify_password_incorrect(self):
+    def test_verify_password_incorrect(self) -> None:
         """Test password verification with incorrect password."""
         password = "test_password"
         hashed = hash_password(password)
 
         assert verify_password("wrong_password", hashed) is False
 
-    def test_verify_password_empty(self):
+    def test_verify_password_empty(self) -> None:
         """Test password verification with empty password."""
         password = ""
         hashed = hash_password(password)
 
         assert verify_password(password, hashed) is True
 
-    def test_hash_password_special_chars(self):
+    def test_hash_password_special_chars(self) -> None:
         """Test password hashing with special characters."""
         password = "test@#$%^&*()_+{}|:<>?[]\\;'\",./"
         hashed = hash_password(password)
@@ -65,7 +65,7 @@ class TestPasswordHashing:
 class TestJWTTokenCreation:
     """Test JWT token creation functionality."""
 
-    def test_create_access_token_default_expiry(self):
+    def test_create_access_token_default_expiry(self) -> None:
         """Test access token creation with default expiry."""
         data = {"sub": "test_user", "username": "test"}
         token = create_access_token(data)
@@ -73,7 +73,7 @@ class TestJWTTokenCreation:
         assert isinstance(token, str)
         assert len(token) > 50
 
-    def test_create_access_token_custom_expiry(self):
+    def test_create_access_token_custom_expiry(self) -> None:
         """Test access token creation with custom expiry."""
         data = {"sub": "test_user", "username": "test"}
         expires_delta = timedelta(hours=2)
@@ -82,7 +82,7 @@ class TestJWTTokenCreation:
         assert isinstance(token, str)
         assert len(token) > 50
 
-    def test_create_access_token_custom_secret(self):
+    def test_create_access_token_custom_secret(self) -> None:
         """Test access token creation with custom secret key."""
         data = {"sub": "test_user", "username": "test"}
         custom_secret = "custom-secret-key"
@@ -91,7 +91,7 @@ class TestJWTTokenCreation:
         assert isinstance(token, str)
         assert len(token) > 50
 
-    def test_create_access_token_custom_algorithm(self):
+    def test_create_access_token_custom_algorithm(self) -> None:
         """Test access token creation with custom algorithm."""
         data = {"sub": "test_user", "username": "test"}
         token = create_access_token(data, algorithm="HS256")
@@ -99,15 +99,17 @@ class TestJWTTokenCreation:
         assert isinstance(token, str)
         assert len(token) > 50
 
-    def test_create_access_token_empty_data(self):
+    def test_create_access_token_empty_data(self) -> None:
         """Test access token creation with empty data."""
-        data = {}
+        from typing import Any
+
+        data: dict[str, Any] = {}
         token = create_access_token(data)
 
         assert isinstance(token, str)
         assert len(token) > 50
 
-    def test_create_access_token_nested_data(self):
+    def test_create_access_token_nested_data(self) -> None:
         """Test access token creation with nested data."""
         data = {
             "sub": "test_user",
@@ -124,7 +126,7 @@ class TestJWTTokenCreation:
 class TestJWTTokenDecoding:
     """Test JWT token decoding functionality."""
 
-    def test_decode_access_token_valid(self):
+    def test_decode_access_token_valid(self) -> None:
         """Test decoding a valid access token."""
         data = {"sub": "test_user", "username": "test"}
         token = create_access_token(data)
@@ -135,7 +137,7 @@ class TestJWTTokenDecoding:
         assert decoded["username"] == "test"
         assert "exp" in decoded
 
-    def test_decode_access_token_custom_secret(self):
+    def test_decode_access_token_custom_secret(self) -> None:
         """Test decoding with custom secret key."""
         data = {"sub": "test_user", "username": "test"}
         custom_secret = "custom-secret-key"
@@ -145,14 +147,14 @@ class TestJWTTokenDecoding:
         assert decoded is not None
         assert decoded["sub"] == "test_user"
 
-    def test_decode_access_token_invalid_token(self):
+    def test_decode_access_token_invalid_token(self) -> None:
         """Test decoding an invalid token."""
         invalid_token = "invalid.token.here"
         decoded = decode_access_token(invalid_token)
 
         assert decoded is None
 
-    def test_decode_access_token_wrong_secret(self):
+    def test_decode_access_token_wrong_secret(self) -> None:
         """Test decoding with wrong secret key."""
         data = {"sub": "test_user", "username": "test"}
         token = create_access_token(data, secret_key="correct-secret")
@@ -160,13 +162,13 @@ class TestJWTTokenDecoding:
 
         assert decoded is None
 
-    def test_decode_access_token_empty_token(self):
+    def test_decode_access_token_empty_token(self) -> None:
         """Test decoding an empty token."""
         decoded = decode_access_token("")
 
         assert decoded is None
 
-    def test_decode_access_token_none_token(self):
+    def test_decode_access_token_none_token(self) -> None:
         """Test decoding a None token."""
         decoded = decode_access_token(None)
 
@@ -177,7 +179,7 @@ class TestConstants:
     """Test module constants."""
 
     @patch.dict(os.environ, {"MYTHOSMUD_JWT_SECRET": "test-secret-key"})
-    def test_secret_key_default(self):
+    def test_secret_key_default(self) -> None:
         """Test SECRET_KEY default value."""
         # Re-import to get the updated value
         import importlib
@@ -190,16 +192,16 @@ class TestConstants:
         expected_key = "test-secret-key"
         assert server.auth_utils.SECRET_KEY == expected_key
 
-    def test_algorithm_default(self):
+    def test_algorithm_default(self) -> None:
         """Test ALGORITHM default value."""
         assert ALGORITHM == "HS256"
 
-    def test_access_token_expire_minutes_default(self):
+    def test_access_token_expire_minutes_default(self) -> None:
         """Test ACCESS_TOKEN_EXPIRE_MINUTES default value."""
         assert ACCESS_TOKEN_EXPIRE_MINUTES == 60
 
     @patch.dict(os.environ, {"MYTHOSMUD_JWT_SECRET": "test-secret-key"})
-    def test_secret_key_from_env(self):
+    def test_secret_key_from_env(self) -> None:
         """Test SECRET_KEY from environment variable."""
         # Re-import to get the updated value
         import importlib
@@ -214,7 +216,7 @@ class TestConstants:
 class TestTokenExpiry:
     """Test token expiry functionality."""
 
-    def test_token_expiry_default(self):
+    def test_token_expiry_default(self) -> None:
         """Test that tokens expire with default time."""
         data = {"sub": "test_user"}
         token = create_access_token(data)
@@ -223,7 +225,7 @@ class TestTokenExpiry:
         assert decoded is not None
         assert "exp" in decoded
 
-    def test_token_expiry_custom(self):
+    def test_token_expiry_custom(self) -> None:
         """Test that tokens expire with custom time."""
         data = {"sub": "test_user"}
         expires_delta = timedelta(minutes=30)
@@ -233,7 +235,7 @@ class TestTokenExpiry:
         assert decoded is not None
         assert "exp" in decoded
 
-    def test_token_expiry_zero(self):
+    def test_token_expiry_zero(self) -> None:
         """Test that tokens can be created with zero expiry."""
         data = {"sub": "test_user"}
         expires_delta = timedelta(seconds=0)
@@ -247,7 +249,7 @@ class TestTokenExpiry:
 class TestAuthUtilsErrorPaths:
     """Test error paths in auth utilities."""
 
-    def test_hash_password_exception_handling(self):
+    def test_hash_password_exception_handling(self) -> None:
         """Test password hashing exception handling.
 
         AI: Tests lines 45-52 in auth_utils.py where we catch and wrap exceptions
@@ -264,7 +266,7 @@ class TestAuthUtilsErrorPaths:
 
             assert "Password hashing failed" in str(exc_info.value)
 
-    def test_verify_password_exception_returns_false(self):
+    def test_verify_password_exception_returns_false(self) -> None:
         """Test password verification exception handling.
 
         AI: Tests lines 70-72 in auth_utils.py where exceptions during password
@@ -277,7 +279,7 @@ class TestAuthUtilsErrorPaths:
             # Should return False on exception, not raise
             assert result is False
 
-    def test_create_access_token_exception_handling(self):
+    def test_create_access_token_exception_handling(self) -> None:
         """Test access token creation exception handling.
 
         AI: Tests lines 92-99 in auth_utils.py where we catch and wrap exceptions
@@ -294,7 +296,7 @@ class TestAuthUtilsErrorPaths:
 
             assert "Failed to create access token" in str(exc_info.value)
 
-    def test_decode_access_token_unexpected_exception(self):
+    def test_decode_access_token_unexpected_exception(self) -> None:
         """Test decode token handles unexpected exceptions.
 
         AI: Tests lines 115-117 in auth_utils.py where unexpected exceptions
@@ -308,7 +310,7 @@ class TestAuthUtilsErrorPaths:
             # Should return None on unexpected exception, not raise
             assert result is None
 
-    def test_decode_access_token_none_input(self):
+    def test_decode_access_token_none_input(self) -> None:
         """Test decode token with None input.
 
         AI: Tests lines 104-106 in auth_utils.py where None token input

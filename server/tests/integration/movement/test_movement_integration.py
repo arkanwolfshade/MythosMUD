@@ -16,7 +16,7 @@ class TestMovementIntegration:
     """Test movement integration with command handler."""
 
     @pytest.mark.asyncio
-    async def test_command_handler_with_movement_service(self):
+    async def test_command_handler_with_movement_service(self) -> None:
         """Test that command handler uses MovementService correctly."""
         from server.command_handler_unified import process_command
 
@@ -56,7 +56,7 @@ class TestMovementIntegration:
             assert "result" in result
 
     @pytest.mark.asyncio
-    async def test_movement_failure_handling(self):
+    async def test_movement_failure_handling(self) -> None:
         """Test that movement failures are handled gracefully."""
         from server.command_handler_unified import process_command
 

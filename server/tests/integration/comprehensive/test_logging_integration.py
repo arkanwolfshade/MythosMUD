@@ -21,7 +21,15 @@ from server.logging.player_guid_formatter import PlayerGuidFormatter
 class TestLoggingIntegration:
     """Test suite for logging integration with PlayerGuidFormatter."""
 
-    def setup_method(self):
+    def __init__(self) -> None:
+        """Initialize test class attributes."""
+        # Attributes are initialized in setup_method() per pytest conventions
+        self.mock_player_service: Mock
+        self.mock_persistence: Mock
+        self.temp_dir: str
+        self.log_dir: Path
+
+    def setup_method(self) -> None:
         """Set up test fixtures."""
         # Create mock player service
         self.mock_player_service = Mock()
@@ -34,13 +42,13 @@ class TestLoggingIntegration:
         self.temp_dir = tempfile.mkdtemp()
         self.log_dir = Path(self.temp_dir)
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Clean up test fixtures."""
         import shutil
 
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
-    def test_player_guid_formatter_integration(self):
+    def test_player_guid_formatter_integration(self) -> None:
         """Test PlayerGuidFormatter integration with logging."""
         # Create formatter instance
         formatter = PlayerGuidFormatter(
@@ -60,7 +68,7 @@ class TestLoggingIntegration:
         # Verify handler has the formatter
         assert handler.formatter == formatter
 
-    def test_setup_file_logging_with_custom_formatter(self):
+    def test_setup_file_logging_with_custom_formatter(self) -> None:
         """Test _setup_file_logging with custom PlayerGuidFormatter."""
         # Mock player data
         mock_player = Mock()
@@ -89,7 +97,7 @@ class TestLoggingIntegration:
             # Verify formatter was created
             mock_formatter_class.assert_called()
 
-    def test_log_categories_coverage(self):
+    def test_log_categories_coverage(self) -> None:
         """Test that all log categories can use PlayerGuidFormatter."""
         # Expected log categories from logging_config.py
         expected_categories = {
@@ -128,7 +136,7 @@ class TestLoggingIntegration:
                 # Clean up
                 logger.removeHandler(handler)
 
-    def test_formatter_with_real_logging_scenario(self):
+    def test_formatter_with_real_logging_scenario(self) -> None:
         """Test PlayerGuidFormatter with realistic logging scenario."""
         # Mock player data
         mock_player = Mock()
@@ -156,7 +164,7 @@ class TestLoggingIntegration:
         # Verify player service was called
         self.mock_persistence.get_player.assert_called_with(test_guid)
 
-    def test_formatter_with_multiple_log_categories(self):
+    def test_formatter_with_multiple_log_categories(self) -> None:
         """Test PlayerGuidFormatter across multiple log categories."""
         # Mock player data
         mock_player = Mock()
@@ -189,7 +197,7 @@ class TestLoggingIntegration:
         # Verify player service was called for each category
         assert self.mock_persistence.get_player.call_count == len(categories)
 
-    def test_formatter_error_handling_integration(self):
+    def test_formatter_error_handling_integration(self) -> None:
         """Test that formatter error handling works with logging system."""
         # Mock persistence layer to raise exception
         self.mock_persistence.get_player.side_effect = Exception("Database error")
@@ -217,7 +225,7 @@ class TestLoggingIntegration:
         # Verify player service was called despite error
         self.mock_persistence.get_player.assert_called_with(test_guid)
 
-    def test_formatter_with_structlog_integration(self):
+    def test_formatter_with_structlog_integration(self) -> None:
         """Test PlayerGuidFormatter integration with structlog."""
         # Mock player data
         mock_player = Mock()
@@ -248,7 +256,7 @@ class TestLoggingIntegration:
         # Verify player service was called
         self.mock_persistence.get_player.assert_called_with(test_guid)
 
-    def test_formatter_performance_with_logging(self):
+    def test_formatter_performance_with_logging(self) -> None:
         """Test formatter performance in realistic logging scenario."""
         # Mock player data
         mock_player = Mock()
@@ -277,9 +285,7 @@ class TestLoggingIntegration:
         start_time = time.time()
 
         for i in range(num_messages):
-            logger.info(
-                "Message " + str(i) + ": Player 123e4567-e89b-12d3-a456-426614174000 performed action " + str(i)
-            )
+            logger.info("Message %s: Player 123e4567-e89b-12d3-a456-426614174000 performed action %s", i, i)
 
         end_time = time.time()
         duration = end_time - start_time
@@ -293,7 +299,7 @@ class TestLoggingIntegration:
         # Clean up
         logger.removeHandler(handler)
 
-    def test_formatter_with_different_log_levels(self):
+    def test_formatter_with_different_log_levels(self) -> None:
         """Test PlayerGuidFormatter with different log levels."""
         # Mock player data
         mock_player = Mock()
@@ -327,7 +333,7 @@ class TestLoggingIntegration:
         # Clean up
         logger.removeHandler(handler)
 
-    def test_formatter_with_complex_log_messages(self):
+    def test_formatter_with_complex_log_messages(self) -> None:
         """Test PlayerGuidFormatter with complex log messages."""
         # Mock player data
         mock_player = Mock()

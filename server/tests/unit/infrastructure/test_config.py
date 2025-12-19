@@ -33,19 +33,19 @@ from server.config.models import (
 class TestServerConfig:
     """Test ServerConfig validation."""
 
-    def test_valid_server_config(self):
+    def test_valid_server_config(self) -> None:
         """Test valid server configuration."""
         config = ServerConfig(port=8080)
         assert config.host == "127.0.0.1"
         assert config.port == 8080
 
-    def test_invalid_port_too_low(self):
+    def test_invalid_port_too_low(self) -> None:
         """Test port validation rejects values below 1024."""
         with pytest.raises(ValidationError) as exc_info:
             ServerConfig(port=80)
         assert "Port must be between 1024 and 65535" in str(exc_info.value)
 
-    def test_invalid_port_too_high(self):
+    def test_invalid_port_too_high(self) -> None:
         """Test port validation rejects values above 65535."""
         with pytest.raises(ValidationError) as exc_info:
             ServerConfig(port=70000)
@@ -64,20 +64,20 @@ class TestServerConfig:
 class TestDatabaseConfig:
     """Test DatabaseConfig validation."""
 
-    def test_sqlite_url_rejected(self):
+    def test_sqlite_url_rejected(self) -> None:
         """Test that SQLite database URLs are rejected."""
         with pytest.raises(ValidationError) as exc_info:
             DatabaseConfig(url="sqlite+aiosqlite:///data/test.db", npc_url="sqlite+aiosqlite:///data/npcs.db")
         assert "postgresql" in str(exc_info.value).lower() or "unsupported" in str(exc_info.value).lower()
 
-    def test_valid_postgres_url(self):
+    def test_valid_postgres_url(self) -> None:
         """Test valid PostgreSQL database URL."""
         config = DatabaseConfig(
             url="postgresql://user:pass@localhost/db", npc_url="postgresql://user:pass@localhost/npcs"
         )
         assert config.url == "postgresql://user:pass@localhost/db"
 
-    def test_invalid_database_url(self):
+    def test_invalid_database_url(self) -> None:
         """Test invalid database URL is rejected."""
         with pytest.raises(ValidationError) as exc_info:
             DatabaseConfig(url="mysql://localhost/db", npc_url="postgresql://localhost/npcs")
@@ -106,19 +106,19 @@ class TestNATSConfig:
         assert config.url == "nats://localhost:4222"
         assert config.max_payload == 1048576
 
-    def test_invalid_max_payload_too_small(self):
+    def test_invalid_max_payload_too_small(self) -> None:
         """Test max payload validation rejects values below 1KB."""
         with pytest.raises(ValidationError) as exc_info:
             NATSConfig(max_payload=512)
         assert "Max payload must be between 1KB and 10MB" in str(exc_info.value)
 
-    def test_invalid_max_payload_too_large(self):
+    def test_invalid_max_payload_too_large(self) -> None:
         """Test max payload validation rejects values above 10MB."""
         with pytest.raises(ValidationError) as exc_info:
             NATSConfig(max_payload=20000000)
         assert "Max payload must be between 1KB and 10MB" in str(exc_info.value)
 
-    def test_invalid_timeout(self):
+    def test_invalid_timeout(self) -> None:
         """Test timeout validation rejects negative values."""
         with pytest.raises(ValidationError) as exc_info:
             NATSConfig(connect_timeout=-1)
@@ -128,13 +128,13 @@ class TestNATSConfig:
 class TestSecurityConfig:
     """Test SecurityConfig validation."""
 
-    def test_valid_security_config(self):
+    def test_valid_security_config(self) -> None:
         """Test valid security configuration."""
         config = SecurityConfig(admin_password="test_password_123")
         assert config.admin_password == "test_password_123"
         assert config.invite_codes_file == "invites.json"
 
-    def test_weak_password_rejected(self):
+    def test_weak_password_rejected(self) -> None:
         """Test weak admin password is rejected."""
         with pytest.raises(ValidationError) as exc_info:
             SecurityConfig(admin_password="short")
@@ -152,31 +152,31 @@ class TestSecurityConfig:
 class TestLoggingConfig:
     """Test LoggingConfig validation."""
 
-    def test_valid_logging_config(self):
+    def test_valid_logging_config(self) -> None:
         """Test valid logging configuration."""
         config = LoggingConfig(environment="unit_test", level="INFO")
         assert config.environment == "unit_test"
         assert config.level == "INFO"
         assert config.format == "colored"
 
-    def test_invalid_environment(self):
+    def test_invalid_environment(self) -> None:
         """Test invalid environment is rejected."""
         with pytest.raises(ValidationError) as exc_info:
             LoggingConfig(environment="invalid")
         assert "Environment must be one of" in str(exc_info.value)
 
-    def test_invalid_log_level(self):
+    def test_invalid_log_level(self) -> None:
         """Test invalid log level is rejected."""
         with pytest.raises(ValidationError) as exc_info:
             LoggingConfig(environment="unit_test", level="TRACE")
         assert "Log level must be one of" in str(exc_info.value)
 
-    def test_log_level_case_insensitive(self):
+    def test_log_level_case_insensitive(self) -> None:
         """Test log level is converted to uppercase."""
         config = LoggingConfig(environment="unit_test", level="debug")
         assert config.level == "DEBUG"
 
-    def test_invalid_log_format(self):
+    def test_invalid_log_format(self) -> None:
         """Test invalid log format is rejected.
 
         AI: Tests line 140 in config/models.py where invalid log formats are validated.
@@ -186,7 +186,7 @@ class TestLoggingConfig:
             LoggingConfig(environment="unit_test", level="INFO", format="invalid_format")
         assert "Log format must be one of" in str(exc_info.value)
 
-    def test_to_legacy_dict(self):
+    def test_to_legacy_dict(self) -> None:
         """Test conversion to legacy dict format."""
         config = LoggingConfig(environment="unit_test", level="DEBUG")
         legacy = config.to_legacy_dict()
@@ -200,19 +200,19 @@ class TestLoggingConfig:
 class TestGameConfig:
     """Test GameConfig validation."""
 
-    def test_valid_game_config(self):
+    def test_valid_game_config(self) -> None:
         """Test valid game configuration."""
         config = GameConfig(aliases_dir=os.getenv("GAME_ALIASES_DIR"))
         assert config.default_player_room == "earth_arkhamcity_northside_intersection_derby_high"
         assert config.max_connections_per_player == 3
 
-    def test_invalid_max_connections_too_low(self):
+    def test_invalid_max_connections_too_low(self) -> None:
         """Test max connections validation rejects values below 1."""
         with pytest.raises(ValidationError) as exc_info:
             GameConfig(aliases_dir=os.getenv("GAME_ALIASES_DIR"), max_connections_per_player=0)
         assert "Max connections per player must be between 1 and 10" in str(exc_info.value)
 
-    def test_invalid_max_connections_too_high(self):
+    def test_invalid_max_connections_too_high(self) -> None:
         """Test max connections validation rejects values above 10."""
         with pytest.raises(ValidationError) as exc_info:
             GameConfig(aliases_dir=os.getenv("GAME_ALIASES_DIR"), max_connections_per_player=20)
@@ -226,7 +226,7 @@ class TestGameConfig:
         with pytest.raises(ValidationError):
             GameConfig()
 
-    def test_empty_aliases_dir_rejected(self):
+    def test_empty_aliases_dir_rejected(self) -> None:
         """Test that empty aliases_dir is rejected."""
         with pytest.raises(ValidationError) as exc_info:
             GameConfig(aliases_dir="")
@@ -248,13 +248,13 @@ class TestChatConfig:
         assert config.rate_limit_whisper == 5
         assert config.profanity_filter is True
 
-    def test_invalid_rate_limit_too_low(self):
+    def test_invalid_rate_limit_too_low(self) -> None:
         """Test rate limit validation rejects values below 1."""
         with pytest.raises(ValidationError) as exc_info:
             ChatConfig(rate_limit_global=0)
         assert "Rate limit must be between 1 and 1000" in str(exc_info.value)
 
-    def test_invalid_rate_limit_too_high(self):
+    def test_invalid_rate_limit_too_high(self) -> None:
         """Test rate limit validation rejects values above 1000."""
         with pytest.raises(ValidationError) as exc_info:
             ChatConfig(rate_limit_global=2000)
@@ -264,7 +264,7 @@ class TestChatConfig:
 class TestCORSConfig:
     """Test CORSConfig validation and parsing."""
 
-    def test_default_cors_config(self):
+    def test_default_cors_config(self) -> None:
         """Test default CORS configuration values."""
         config = CORSConfig()
 
@@ -297,7 +297,7 @@ class TestCORSConfig:
 
         assert config.allow_origins == ["https://legacy.example.com"]
 
-    def test_empty_origins_rejected(self):
+    def test_empty_origins_rejected(self) -> None:
         """Test that empty origin lists are rejected for security."""
         with pytest.raises(ValidationError):
             CORSConfig(allow_origins=[])
@@ -330,25 +330,25 @@ class TestPlayerStatsConfig:
         assert config.charisma == 50
         assert config.luck == 50
 
-    def test_invalid_stat_too_low(self):
+    def test_invalid_stat_too_low(self) -> None:
         """Test stat validation rejects values below 1."""
         with pytest.raises(ValidationError) as exc_info:
             PlayerStatsConfig(strength=0)
         assert "Stats must be at least 1" in str(exc_info.value)
 
-    def test_invalid_stat_too_high(self):
+    def test_invalid_stat_too_high(self) -> None:
         """Test stat validation - stats no longer have upper limit, only minimum of 1."""
         # Stats can now be above 100 (no hard caps as per validator comment)
         config = PlayerStatsConfig(dexterity=101)
         assert config.dexterity == 101
 
-    def test_invalid_health_too_low(self):
+    def test_invalid_health_too_low(self) -> None:
         """Test derived stats validation rejects negative values."""
         with pytest.raises(ValidationError) as exc_info:
             PlayerStatsConfig(max_dp=-1)
         assert "Derived stats must be non-negative" in str(exc_info.value)
 
-    def test_to_dict_format(self):
+    def test_to_dict_format(self) -> None:
         """Test conversion to dict format."""
         config = PlayerStatsConfig(strength=75, max_dp=150)
         stats_dict = config.to_dict()
@@ -379,26 +379,29 @@ class TestAppConfig:
         # Clean up after test
         reset_config()
 
-    def test_app_config_loads_from_env(self):
+    def test_app_config_loads_from_env(self) -> None:
         """Test that AppConfig loads from environment variables."""
         config = AppConfig()
         # Extract nested configs to avoid type checker FieldInfo issues
         # Pylint sees nested Pydantic fields as FieldInfo instances rather than the actual config objects
         # Pattern: Extract nested config objects before accessing their attributes
-        server_config = config.server
-        database_config = config.database
-        security_config = config.security
-        logging_config = config.logging
-        cors_config = config.cors
+        # Type annotations help, but Pylint still needs suppression due to Pydantic v2 Field descriptor limitations
+        server_config: ServerConfig = config.server  # pylint: disable=no-member
+        database_config: DatabaseConfig = config.database  # pylint: disable=no-member
+        security_config: SecurityConfig = config.security  # pylint: disable=no-member
+        logging_config: LoggingConfig = config.logging  # pylint: disable=no-member
+        cors_config: CORSConfig = config.cors  # pylint: disable=no-member
 
-        assert server_config.port == 54731
-        assert database_config.url == "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
-        assert security_config.admin_password == "test_admin_pass"
-        assert logging_config.environment == "unit_test"
-        assert cors_config.allow_origins == ["http://localhost:5173", "http://127.0.0.1:5173"]
-        assert cors_config.allow_credentials is True
+        # Suppression necessary: Pylint incorrectly infers FieldInfo type for extracted Pydantic nested models
+        # These are actual config instances at runtime, not FieldInfo descriptors
+        assert server_config.port == 54731  # pylint: disable=no-member
+        assert database_config.url == "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"  # pylint: disable=no-member
+        assert security_config.admin_password == "test_admin_pass"  # pylint: disable=no-member
+        assert logging_config.environment == "unit_test"  # pylint: disable=no-member
+        assert cors_config.allow_origins == ["http://localhost:5173", "http://127.0.0.1:5173"]  # pylint: disable=no-member
+        assert cors_config.allow_credentials is True  # pylint: disable=no-member
 
-    def test_app_config_sets_environment_variables(self):
+    def test_app_config_sets_environment_variables(self) -> None:
         """Test that AppConfig sets environment variables for legacy compatibility."""
         # Instantiate config to trigger environment variable setup
         AppConfig()
@@ -431,13 +434,13 @@ class TestAppConfig:
         assert "cors" in legacy
         assert legacy["cors"]["allow_origins"] == ["http://localhost:5173", "http://127.0.0.1:5173"]
 
-    def test_get_config_singleton(self):
+    def test_get_config_singleton(self) -> None:
         """Test that get_config returns singleton instance."""
         config1 = get_config()
         config2 = get_config()
         assert config1 is config2
 
-    def test_reset_config_clears_cache(self):
+    def test_reset_config_clears_cache(self) -> None:
         """Test that reset_config clears the singleton cache."""
         config1 = get_config()
         reset_config()
@@ -564,7 +567,7 @@ class TestLegacyDictConversion:
         assert "default_player_stats" in legacy
         assert isinstance(legacy["default_player_stats"], dict)
 
-    def test_logging_config_to_legacy_dict(self):
+    def test_logging_config_to_legacy_dict(self) -> None:
         """Test LoggingConfig.to_legacy_dict() produces correct structure."""
         # Explicitly set rotation parameters to test conversion
         config = LoggingConfig(
@@ -597,13 +600,13 @@ class TestLegacyDictConversion:
 class TestConfigValidationEdgeCases:
     """Test edge cases and boundary conditions."""
 
-    def test_empty_string_database_url(self):
+    def test_empty_string_database_url(self) -> None:
         """Test that empty string database URL is rejected."""
         with pytest.raises(ValidationError) as exc_info:
             DatabaseConfig(url="", npc_url="postgresql://localhost/test")
         assert "Database URL cannot be empty" in str(exc_info.value)
 
-    def test_boundary_port_values(self):
+    def test_boundary_port_values(self) -> None:
         """Test boundary port values."""
         # Minimum valid port
         config = ServerConfig(port=1024)
@@ -621,7 +624,7 @@ class TestConfigValidationEdgeCases:
         with pytest.raises(ValidationError):
             ServerConfig(port=65536)
 
-    def test_boundary_stat_values(self):
+    def test_boundary_stat_values(self) -> None:
         """Test boundary stat values."""
         # Minimum valid stat
         config = PlayerStatsConfig(strength=1)
@@ -642,7 +645,7 @@ class TestConfigValidationEdgeCases:
 class TestConfigErrorMessages:
     """Test that configuration errors provide clear, actionable messages."""
 
-    def test_port_error_message_clarity(self):
+    def test_port_error_message_clarity(self) -> None:
         """Test that port validation error is clear."""
         with pytest.raises(ValidationError) as exc_info:
             ServerConfig(port=80)
@@ -650,7 +653,7 @@ class TestConfigErrorMessages:
         assert "1024" in error
         assert "65535" in error
 
-    def test_environment_error_message_clarity(self):
+    def test_environment_error_message_clarity(self) -> None:
         """Test that environment validation error is clear."""
         with pytest.raises(ValidationError) as exc_info:
             LoggingConfig(environment="staging")
@@ -658,7 +661,7 @@ class TestConfigErrorMessages:
         # Verify error message mentions environment validation
         assert "environment" in error.lower()
 
-    def test_database_url_error_message_clarity(self):
+    def test_database_url_error_message_clarity(self) -> None:
         """Test that database URL validation error is clear."""
         with pytest.raises(ValidationError) as exc_info:
             DatabaseConfig(url="mongodb://localhost/db", npc_url="postgresql://localhost/test")

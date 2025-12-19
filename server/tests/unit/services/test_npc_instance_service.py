@@ -569,7 +569,7 @@ class TestExtractZoneFromRoomId:
 class TestGlobalServiceManagement:
     """Test global service instance management."""
 
-    def test_get_npc_instance_service_not_initialized(self):
+    def test_get_npc_instance_service_not_initialized(self) -> None:
         """Test getting service before initialization raises error."""
         # Need to temporarily set global storage to None
         import server.services.npc_instance_service as service_module

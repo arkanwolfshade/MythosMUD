@@ -33,7 +33,7 @@ def create_mock_task_registry():
     mock_task.cancel = MagicMock()
     mock_task.done = MagicMock(return_value=False)
 
-    def register_task_side_effect(coro, *args, **kwargs):
+    def register_task_side_effect(coro, *_args, **_kwargs):
         # Close the coroutine to prevent "never awaited" warning
         coro.close()
         return mock_task
@@ -45,49 +45,49 @@ def create_mock_task_registry():
 class TestNotificationTimeCalculation:
     """Test calculation of notification times for countdown."""
 
-    def test_calculate_notification_times_10_seconds(self):
+    def test_calculate_notification_times_10_seconds(self) -> None:
         """Test notification times for 10-second countdown."""
         times = calculate_notification_times(10)
 
         # Should have: 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
         assert times == [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
 
-    def test_calculate_notification_times_30_seconds(self):
+    def test_calculate_notification_times_30_seconds(self) -> None:
         """Test notification times for 30-second countdown."""
         times = calculate_notification_times(30)
 
         # Should have: 30, 20, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
         assert times == [30, 20, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
 
-    def test_calculate_notification_times_45_seconds(self):
+    def test_calculate_notification_times_45_seconds(self) -> None:
         """Test notification times for 45-second countdown."""
         times = calculate_notification_times(45)
 
         # Should have: 45 (rounded to 50), 40, 30, 20, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
         assert times == [40, 30, 20, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
 
-    def test_calculate_notification_times_100_seconds(self):
+    def test_calculate_notification_times_100_seconds(self) -> None:
         """Test notification times for 100-second countdown."""
         times = calculate_notification_times(100)
 
         # Should have: 100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
         assert times == [100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
 
-    def test_calculate_notification_times_5_seconds(self):
+    def test_calculate_notification_times_5_seconds(self) -> None:
         """Test notification times for 5-second countdown (all seconds)."""
         times = calculate_notification_times(5)
 
         # Should have: 5, 4, 3, 2, 1 (all within final 10 seconds)
         assert times == [5, 4, 3, 2, 1]
 
-    def test_calculate_notification_times_1_second(self):
+    def test_calculate_notification_times_1_second(self) -> None:
         """Test notification times for 1-second countdown."""
         times = calculate_notification_times(1)
 
         # Should have: 1
         assert times == [1]
 
-    def test_calculate_notification_times_sorted_descending(self):
+    def test_calculate_notification_times_sorted_descending(self) -> None:
         """Test that notification times are sorted in descending order."""
         times = calculate_notification_times(60)
 
@@ -99,7 +99,7 @@ class TestShutdownNotificationBroadcast:
     """Test broadcasting shutdown notifications."""
 
     @pytest.mark.asyncio
-    async def test_broadcast_shutdown_notification(self):
+    async def test_broadcast_shutdown_notification(self) -> None:
         """Test broadcasting shutdown notification to all players."""
         mock_connection_manager = MagicMock()
         mock_connection_manager.broadcast_global_event = AsyncMock(
@@ -116,7 +116,7 @@ class TestShutdownNotificationBroadcast:
         assert call_args[0][1]["seconds_remaining"] == 30
 
     @pytest.mark.asyncio
-    async def test_broadcast_shutdown_notification_failure(self):
+    async def test_broadcast_shutdown_notification_failure(self) -> None:
         """Test handling broadcast failure."""
         mock_connection_manager = MagicMock()
         mock_connection_manager.broadcast_global_event = AsyncMock(side_effect=Exception("Broadcast failed"))
@@ -126,7 +126,7 @@ class TestShutdownNotificationBroadcast:
         assert result is False
 
     @pytest.mark.asyncio
-    async def test_broadcast_shutdown_notification_message_format(self):
+    async def test_broadcast_shutdown_notification_message_format(self) -> None:
         """Test that notification message is properly formatted."""
         mock_connection_manager = MagicMock()
         mock_connection_manager.broadcast_global_event = AsyncMock(
@@ -141,7 +141,7 @@ class TestShutdownNotificationBroadcast:
         assert "seconds" in call_args["message"]
 
     @pytest.mark.asyncio
-    async def test_broadcast_shutdown_notification_singular_second(self):
+    async def test_broadcast_shutdown_notification_singular_second(self) -> None:
         """Test notification message for 1 second uses singular form."""
         mock_connection_manager = MagicMock()
         mock_connection_manager.broadcast_global_event = AsyncMock(
@@ -160,7 +160,7 @@ class TestShutdownCountdownInitiation:
     """Test shutdown countdown initiation."""
 
     @pytest.mark.asyncio
-    async def test_initiate_shutdown_countdown_basic(self):
+    async def test_initiate_shutdown_countdown_basic(self) -> None:
         """Test basic shutdown countdown initiation."""
         mock_app = MagicMock()
         mock_app.state.connection_manager = MagicMock()
@@ -168,7 +168,7 @@ class TestShutdownCountdownInitiation:
 
         # Create mock for task registry
         # Mock task registry (properly consumes coroutines)
-        mock_task_registry, mock_task = create_mock_task_registry()
+        mock_task_registry, _mock_task = create_mock_task_registry()
         mock_app.state.task_registry = mock_task_registry
 
         await initiate_shutdown_countdown(mock_app, 10, "admin_user")
@@ -185,7 +185,7 @@ class TestShutdownCountdownInitiation:
         mock_task_registry.register_task.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_initiate_shutdown_countdown_superseding(self):
+    async def test_initiate_shutdown_countdown_superseding(self) -> None:
         """Test that new shutdown supersedes previous one."""
         mock_app = MagicMock()
         mock_app.state.connection_manager = MagicMock()
@@ -224,7 +224,7 @@ class TestShutdownCancellation:
     """Test shutdown cancellation functionality."""
 
     @pytest.mark.asyncio
-    async def test_cancel_shutdown_countdown_success(self):
+    async def test_cancel_shutdown_countdown_success(self) -> None:
         """Test successful shutdown cancellation."""
         mock_app = MagicMock()
         mock_app.state.connection_manager = MagicMock()
@@ -257,7 +257,7 @@ class TestShutdownCancellation:
         assert call_args[0] == "shutdown_cancelled"
 
     @pytest.mark.asyncio
-    async def test_cancel_shutdown_countdown_no_active_shutdown(self):
+    async def test_cancel_shutdown_countdown_no_active_shutdown(self) -> None:
         """Test cancellation when no shutdown is active."""
         mock_app = MagicMock()
         mock_app.state.server_shutdown_pending = False
@@ -268,7 +268,7 @@ class TestShutdownCancellation:
         assert result is False
 
     @pytest.mark.asyncio
-    async def test_cancel_shutdown_countdown_already_completed(self):
+    async def test_cancel_shutdown_countdown_already_completed(self) -> None:
         """Test cancellation when shutdown task already completed."""
         mock_app = MagicMock()
         mock_app.state.connection_manager = MagicMock()
@@ -294,7 +294,7 @@ class TestShutdownCancellation:
         assert mock_app.state.server_shutdown_pending is False
 
     @pytest.mark.asyncio
-    async def test_cancel_shutdown_notification_message(self):
+    async def test_cancel_shutdown_notification_message(self) -> None:
         """Test that cancellation notification message is thematic."""
         mock_app = MagicMock()
         mock_app.state.connection_manager = MagicMock()
@@ -325,13 +325,13 @@ class TestCountdownTimingAccuracy:
     """Test countdown timing and notification scheduling."""
 
     @pytest.mark.asyncio
-    async def test_countdown_notification_timing_30_seconds(self):
+    async def test_countdown_notification_timing_30_seconds(self) -> None:
         """Test that notifications are sent at correct times for 30-second countdown."""
         mock_app = MagicMock()
         mock_app.state.connection_manager = MagicMock()
         broadcast_times = []
 
-        async def capture_broadcast_time(event_type, data):
+        async def capture_broadcast_time(_event_type, data):
             broadcast_times.append(data["seconds_remaining"])
             return {"successful_deliveries": 5}
 

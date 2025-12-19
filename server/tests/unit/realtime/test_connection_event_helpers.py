@@ -18,7 +18,7 @@ class TestSubscribeToRoomEventsImpl:
     """Test subscribe_to_room_events_impl function."""
 
     @pytest.mark.asyncio
-    async def test_subscribe_to_room_events_impl_success(self):
+    async def test_subscribe_to_room_events_impl_success(self) -> None:
         """Test successful subscription to room events."""
         mock_manager = MagicMock()
         mock_event_bus = MagicMock()
@@ -36,7 +36,7 @@ class TestSubscribeToRoomEventsImpl:
             mock_logger.error.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_subscribe_to_room_events_impl_no_event_bus(self):
+    async def test_subscribe_to_room_events_impl_no_event_bus(self) -> None:
         """Test subscription when event bus is not available."""
         mock_manager = MagicMock()
         mock_manager._get_event_bus.return_value = None
@@ -49,7 +49,7 @@ class TestSubscribeToRoomEventsImpl:
             mock_logger.error.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_subscribe_to_room_events_impl_database_error(self):
+    async def test_subscribe_to_room_events_impl_database_error(self) -> None:
         """Test subscription when DatabaseError occurs."""
         from server.exceptions import DatabaseError
 
@@ -65,7 +65,7 @@ class TestSubscribeToRoomEventsImpl:
             assert "Error subscribing to room events" in str(mock_logger.error.call_args)
 
     @pytest.mark.asyncio
-    async def test_subscribe_to_room_events_impl_attribute_error(self):
+    async def test_subscribe_to_room_events_impl_attribute_error(self) -> None:
         """Test subscription when AttributeError occurs."""
         mock_manager = MagicMock()
         mock_event_bus = MagicMock()
@@ -79,7 +79,7 @@ class TestSubscribeToRoomEventsImpl:
             assert "Error subscribing to room events" in str(mock_logger.error.call_args)
 
     @pytest.mark.asyncio
-    async def test_subscribe_to_room_events_impl_subscribes_both_events(self):
+    async def test_subscribe_to_room_events_impl_subscribes_both_events(self) -> None:
         """Test that both PlayerEnteredRoom and PlayerLeftRoom are subscribed."""
         from server.events.event_types import PlayerEnteredRoom, PlayerLeftRoom
 
@@ -110,7 +110,7 @@ class TestUnsubscribeFromRoomEventsImpl:
     """Test unsubscribe_from_room_events_impl function."""
 
     @pytest.mark.asyncio
-    async def test_unsubscribe_from_room_events_impl_success(self):
+    async def test_unsubscribe_from_room_events_impl_success(self) -> None:
         """Test successful unsubscription from room events."""
         mock_manager = MagicMock()
         mock_event_bus = MagicMock()
@@ -127,7 +127,7 @@ class TestUnsubscribeFromRoomEventsImpl:
             mock_logger.error.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_unsubscribe_from_room_events_impl_no_event_bus(self):
+    async def test_unsubscribe_from_room_events_impl_no_event_bus(self) -> None:
         """Test unsubscription when event bus is not available."""
         mock_manager = MagicMock()
         mock_manager._get_event_bus.return_value = None
@@ -140,7 +140,7 @@ class TestUnsubscribeFromRoomEventsImpl:
             mock_logger.error.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_unsubscribe_from_room_events_impl_database_error(self):
+    async def test_unsubscribe_from_room_events_impl_database_error(self) -> None:
         """Test unsubscription when DatabaseError occurs."""
         from server.exceptions import DatabaseError
 
@@ -156,7 +156,7 @@ class TestUnsubscribeFromRoomEventsImpl:
             assert "Error unsubscribing from room events" in str(mock_logger.error.call_args)
 
     @pytest.mark.asyncio
-    async def test_unsubscribe_from_room_events_impl_attribute_error(self):
+    async def test_unsubscribe_from_room_events_impl_attribute_error(self) -> None:
         """Test unsubscription when AttributeError occurs."""
         mock_manager = MagicMock()
         mock_event_bus = MagicMock()
@@ -170,7 +170,7 @@ class TestUnsubscribeFromRoomEventsImpl:
             assert "Error unsubscribing from room events" in str(mock_logger.error.call_args)
 
     @pytest.mark.asyncio
-    async def test_unsubscribe_from_room_events_impl_unsubscribes_both_events(self):
+    async def test_unsubscribe_from_room_events_impl_unsubscribes_both_events(self) -> None:
         """Test that both PlayerEnteredRoom and PlayerLeftRoom are unsubscribed."""
         from server.events.event_types import PlayerEnteredRoom, PlayerLeftRoom
 

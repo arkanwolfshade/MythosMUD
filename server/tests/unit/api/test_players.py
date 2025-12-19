@@ -9,6 +9,7 @@ Following the academic rigor outlined in the Pnakotic Manuscripts of Testing Met
 import types
 import uuid
 from datetime import UTC, datetime
+from typing import Any, cast
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
@@ -376,12 +377,11 @@ class TestPlayerEffects:
         mock_player_service_dep.return_value = mock_service
 
         request_data = LucidityLossRequest(amount=10, source="test")
-        result = await apply_lucidity_loss(
-            "test-player-id", request_data, mock_request, mock_current_user, mock_service
-        )
+        test_player_id = uuid.uuid4()
+        result = await apply_lucidity_loss(test_player_id, request_data, mock_request, mock_current_user, mock_service)
 
         assert "Applied 10 lucidity loss to TestPlayer" in result["message"]
-        mock_service.apply_lucidity_loss.assert_called_once_with("test-player-id", 10, "test")
+        mock_service.apply_lucidity_loss.assert_called_once_with(test_player_id, 10, "test")
 
     @patch("server.api.players.PlayerServiceDep")
     @pytest.mark.asyncio
@@ -400,7 +400,7 @@ class TestPlayerEffects:
 
         with pytest.raises(LoggedHTTPException) as exc_info:
             request_data = LucidityLossRequest(amount=10, source="test")
-            await apply_lucidity_loss("nonexistent-id", request_data, mock_request, mock_current_user, mock_service)
+            await apply_lucidity_loss(uuid.uuid4(), request_data, mock_request, mock_current_user, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -421,7 +421,7 @@ class TestPlayerEffects:
         mock_player_service_dep.return_value = mock_service
 
         request_data = FearRequest(amount=5, source="test")
-        result = await apply_fear("test-player-id", request_data, mock_request, mock_current_user, mock_service)
+        result = await apply_fear(uuid.uuid4(), request_data, mock_request, mock_current_user, mock_service)
 
         assert "Applied 5 fear to TestPlayer" in result["message"]
         mock_service.apply_fear.assert_called_once_with("test-player-id", 5, "test")
@@ -443,7 +443,7 @@ class TestPlayerEffects:
 
         with pytest.raises(LoggedHTTPException) as exc_info:
             request_data = FearRequest(amount=5, source="test")
-            await apply_fear("nonexistent-id", request_data, mock_request, mock_current_user, mock_service)
+            await apply_fear(uuid.uuid4(), request_data, mock_request, mock_current_user, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -464,7 +464,7 @@ class TestPlayerEffects:
         mock_player_service_dep.return_value = mock_service
 
         request_data = CorruptionRequest(amount=3, source="test")
-        result = await apply_corruption("test-player-id", request_data, mock_request, mock_current_user, mock_service)
+        result = await apply_corruption(uuid.uuid4(), request_data, mock_request, mock_current_user, mock_service)
 
         assert "Applied 3 corruption to TestPlayer" in result["message"]
         mock_service.apply_corruption.assert_called_once_with("test-player-id", 3, "test")
@@ -486,7 +486,7 @@ class TestPlayerEffects:
 
         with pytest.raises(LoggedHTTPException) as exc_info:
             request_data = CorruptionRequest(amount=3, source="test")
-            await apply_corruption("nonexistent-id", request_data, mock_request, mock_current_user, mock_service)
+            await apply_corruption(uuid.uuid4(), request_data, mock_request, mock_current_user, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -507,9 +507,7 @@ class TestPlayerEffects:
         mock_player_service_dep.return_value = mock_service
 
         request_data = OccultKnowledgeRequest(amount=2, source="test")
-        result = await gain_occult_knowledge(
-            "test-player-id", request_data, mock_request, mock_current_user, mock_service
-        )
+        result = await gain_occult_knowledge(uuid.uuid4(), request_data, mock_request, mock_current_user, mock_service)
 
         assert "Gained 2 occult knowledge for TestPlayer" in result["message"]
         mock_service.gain_occult_knowledge.assert_called_once_with("test-player-id", 2, "test")
@@ -531,7 +529,7 @@ class TestPlayerEffects:
 
         with pytest.raises(LoggedHTTPException) as exc_info:
             request_data = OccultKnowledgeRequest(amount=2, source="test")
-            await gain_occult_knowledge("nonexistent-id", request_data, mock_request, mock_current_user, mock_service)
+            await gain_occult_knowledge(uuid.uuid4(), request_data, mock_request, mock_current_user, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -552,7 +550,7 @@ class TestPlayerEffects:
         mock_player_service_dep.return_value = mock_service
 
         request_data = HealRequest(amount=20)
-        result = await heal_player("test-player-id", request_data, mock_request, mock_current_user, mock_service)
+        result = await heal_player(uuid.uuid4(), request_data, mock_request, mock_current_user, mock_service)
 
         assert "Healed TestPlayer for 20 health" in result["message"]
         mock_service.heal_player.assert_called_once_with("test-player-id", 20)
@@ -574,7 +572,7 @@ class TestPlayerEffects:
 
         with pytest.raises(LoggedHTTPException) as exc_info:
             request_data = HealRequest(amount=20)
-            await heal_player("nonexistent-id", request_data, mock_request, mock_current_user, mock_service)
+            await heal_player(uuid.uuid4(), request_data, mock_request, mock_current_user, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -595,7 +593,7 @@ class TestPlayerEffects:
         mock_player_service_dep.return_value = mock_service
 
         request_data = DamageRequest(amount=15, damage_type="physical")
-        result = await damage_player("test-player-id", request_data, mock_request, mock_current_user, mock_service)
+        result = await damage_player(uuid.uuid4(), request_data, mock_request, mock_current_user, mock_service)
 
         assert "Damaged TestPlayer for 15 physical damage" in result["message"]
         mock_service.damage_player.assert_called_once_with("test-player-id", 15, "physical")
@@ -617,7 +615,7 @@ class TestPlayerEffects:
 
         with pytest.raises(LoggedHTTPException) as exc_info:
             request_data = DamageRequest(amount=15, damage_type="physical")
-            await damage_player("nonexistent-id", request_data, mock_request, mock_current_user, mock_service)
+            await damage_player(uuid.uuid4(), request_data, mock_request, mock_current_user, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -686,7 +684,11 @@ class TestCharacterCreation:
         request_data = RollStatsRequest(method="3d6", required_class=None, timeout_seconds=1.0, profession_id=None)
         with pytest.raises(LoggedHTTPException) as exc_info:
             await roll_character_stats(
-                request_data, mock_request, max_attempts=10, current_user=None, stats_generator=mock_generator
+                request_data,
+                mock_request,
+                max_attempts=10,
+                current_user=cast(Any, None),
+                stats_generator=mock_generator,
             )
 
         assert exc_info.value.status_code == 401
@@ -778,7 +780,7 @@ class TestCharacterCreation:
         request_data.starting_room_id = "earth_arkhamcity_northside_intersection_derby_high"
 
         with pytest.raises(HTTPException) as exc_info:
-            await create_character_with_stats(request_data, mock_request, None)
+            await create_character_with_stats(request_data, mock_request, cast(Any, None))
 
         assert exc_info.value.status_code == 401
         assert "Authentication required" in str(exc_info.value.detail)
@@ -1122,7 +1124,7 @@ class TestStatsValidation:
 class TestClassDescriptions:
     """Test cases for class description functionality."""
 
-    def test_get_class_description_all_classes(self):
+    def test_get_class_description_all_classes(self) -> None:
         """Test getting descriptions for all character classes."""
         classes = ["investigator", "occultist", "survivor", "cultist", "academic", "detective"]
 
@@ -1132,21 +1134,21 @@ class TestClassDescriptions:
             assert len(description) > 0
             assert "mysterious" not in description.lower()  # Should have specific descriptions
 
-    def test_get_class_description_unknown_class(self):
+    def test_get_class_description_unknown_class(self) -> None:
         """Test getting description for unknown class."""
         description = get_class_description("unknown_class")
         assert description is not None
         assert "mysterious" in description.lower()
         assert "unknown capabilities" in description
 
-    def test_get_class_description_investigator(self):
+    def test_get_class_description_investigator(self) -> None:
         """Test investigator class description."""
         description = get_class_description("investigator")
         assert "researcher" in description.lower()
         assert "detective" in description.lower()
         assert "mysteries" in description.lower()
 
-    def test_get_class_description_occultist(self):
+    def test_get_class_description_occultist(self) -> None:
         """Test occultist class description."""
         description = get_class_description("occultist")
         assert "forbidden knowledge" in description.lower()

@@ -22,12 +22,12 @@ from server.services.wearable_container_service import (
 class TestGetEnumValue:
     """Test _get_enum_value helper function."""
 
-    def test_get_enum_value_with_enum(self):
+    def test_get_enum_value_with_enum(self) -> None:
         """Test getting enum value from enum instance."""
         result = _get_enum_value(ContainerSourceType.EQUIPMENT)
         assert result == "equipment"
 
-    def test_get_enum_value_with_string(self):
+    def test_get_enum_value_with_string(self) -> None:
         """Test getting enum value from string."""
         result = _get_enum_value("environment")
         assert result == "environment"
@@ -36,7 +36,7 @@ class TestGetEnumValue:
 class TestFilterContainerData:
     """Test _filter_container_data helper function."""
 
-    def test_filter_container_data_removes_timestamps(self):
+    def test_filter_container_data_removes_timestamps(self) -> None:
         """Test that created_at and updated_at are removed."""
         container_data = {
             "container_id": str(uuid4()),
@@ -51,7 +51,7 @@ class TestFilterContainerData:
         assert "updated_at" not in result
         assert "container_id" in result
 
-    def test_filter_container_data_preserves_other_fields(self):
+    def test_filter_container_data_preserves_other_fields(self) -> None:
         """Test that other fields are preserved."""
         container_data = {
             "container_id": str(uuid4()),
@@ -70,7 +70,7 @@ class TestFilterContainerData:
 class TestWearableContainerServiceInit:
     """Test WearableContainerService initialization."""
 
-    def test_wearable_container_service_init_with_persistence(self):
+    def test_wearable_container_service_init_with_persistence(self) -> None:
         """Test initialization with persistence provided."""
         mock_persistence = MagicMock()
 
@@ -78,7 +78,7 @@ class TestWearableContainerServiceInit:
 
         assert service.persistence == mock_persistence
 
-    def test_wearable_container_service_init_without_persistence(self):
+    def test_wearable_container_service_init_without_persistence(self) -> None:
         """Test initialization without persistence raises error."""
         with pytest.raises(ValueError, match="persistence.*required"):
             WearableContainerService(persistence=None)
@@ -88,7 +88,7 @@ class TestHandleEquipWearableContainer:
     """Test handle_equip_wearable_container method."""
 
     @pytest.mark.asyncio
-    async def test_handle_equip_no_inner_container(self):
+    async def test_handle_equip_no_inner_container(self) -> None:
         """Test equipping item without inner container."""
         mock_persistence = MagicMock()
         service = WearableContainerService(persistence=mock_persistence)
@@ -100,7 +100,7 @@ class TestHandleEquipWearableContainer:
         assert result is None
 
     @pytest.mark.asyncio
-    async def test_handle_equip_capacity_exceeded(self):
+    async def test_handle_equip_capacity_exceeded(self) -> None:
         """Test equipping container with capacity exceeded."""
         mock_persistence = MagicMock()
         service = WearableContainerService(persistence=mock_persistence)
@@ -117,7 +117,7 @@ class TestHandleEquipWearableContainer:
             await service.handle_equip_wearable_container(uuid4(), item_stack)
 
     @pytest.mark.asyncio
-    async def test_handle_equip_existing_container(self):
+    async def test_handle_equip_existing_container(self) -> None:
         """Test equipping item with existing container."""
         mock_persistence = AsyncMock()
         player_id = uuid4()
@@ -144,7 +144,7 @@ class TestHandleEquipWearableContainer:
         assert "container_id" in result
 
     @pytest.mark.asyncio
-    async def test_handle_equip_create_new_container(self):
+    async def test_handle_equip_create_new_container(self) -> None:
         """Test creating new container on equip."""
         mock_persistence = MagicMock()
         player_id = uuid4()
@@ -174,7 +174,7 @@ class TestHandleUnequipWearableContainer:
     """Test handle_unequip_wearable_container method."""
 
     @pytest.mark.asyncio
-    async def test_handle_unequip_no_item_instance_id(self):
+    async def test_handle_unequip_no_item_instance_id(self) -> None:
         """Test unequipping item without item_instance_id."""
         mock_persistence = MagicMock()
         service = WearableContainerService(persistence=mock_persistence)
@@ -186,7 +186,7 @@ class TestHandleUnequipWearableContainer:
         assert result is None
 
     @pytest.mark.asyncio
-    async def test_handle_unequip_container_found(self):
+    async def test_handle_unequip_container_found(self) -> None:
         """Test unequipping item with existing container."""
         mock_persistence = AsyncMock()
         player_id = uuid4()
@@ -219,7 +219,7 @@ class TestHandleUnequipWearableContainer:
             assert result["inner_container"]["capacity_slots"] == 10
 
     @pytest.mark.asyncio
-    async def test_handle_unequip_no_container(self):
+    async def test_handle_unequip_no_container(self) -> None:
         """Test unequipping item with no container."""
         mock_persistence = AsyncMock()
         mock_persistence.get_containers_by_entity_id.return_value = []
@@ -237,7 +237,7 @@ class TestGetWearableContainersForPlayer:
     """Test get_wearable_containers_for_player method."""
 
     @pytest.mark.asyncio
-    async def test_get_wearable_containers_success(self):
+    async def test_get_wearable_containers_success(self) -> None:
         """Test getting wearable containers for player."""
         mock_persistence = AsyncMock()
         player_id = uuid4()
@@ -260,7 +260,7 @@ class TestGetWearableContainersForPlayer:
         assert result[0].source_type == ContainerSourceType.EQUIPMENT
 
     @pytest.mark.asyncio
-    async def test_get_wearable_containers_no_containers(self):
+    async def test_get_wearable_containers_no_containers(self) -> None:
         """Test getting containers when none exist."""
         mock_persistence = AsyncMock()
         mock_persistence.get_containers_by_entity_id.return_value = []
@@ -272,7 +272,7 @@ class TestGetWearableContainersForPlayer:
         assert result == []
 
     @pytest.mark.asyncio
-    async def test_get_wearable_containers_filters_non_equipment(self):
+    async def test_get_wearable_containers_filters_non_equipment(self) -> None:
         """Test that non-equipment containers are filtered out."""
         mock_persistence = AsyncMock()
 
@@ -295,7 +295,7 @@ class TestAddItemsToWearableContainer:
     """Test add_items_to_wearable_container method."""
 
     @pytest.mark.asyncio
-    async def test_add_items_success(self):
+    async def test_add_items_success(self) -> None:
         """Test successfully adding items to container."""
         mock_persistence = AsyncMock()
         player_id = uuid4()
@@ -322,7 +322,7 @@ class TestAddItemsToWearableContainer:
             mock_persistence.update_container.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_add_items_container_not_found(self):
+    async def test_add_items_container_not_found(self) -> None:
         """Test adding items when container doesn't exist."""
         mock_persistence = AsyncMock()
         mock_persistence.get_container.return_value = None
@@ -333,7 +333,7 @@ class TestAddItemsToWearableContainer:
             await service.add_items_to_wearable_container(uuid4(), uuid4(), [])
 
     @pytest.mark.asyncio
-    async def test_add_items_capacity_exceeded(self):
+    async def test_add_items_capacity_exceeded(self) -> None:
         """Test adding items when capacity would be exceeded."""
         mock_persistence = AsyncMock()
         player_id = uuid4()
@@ -360,7 +360,7 @@ class TestUpdateWearableContainerItems:
     """Test update_wearable_container_items method."""
 
     @pytest.mark.asyncio
-    async def test_update_items_success(self):
+    async def test_update_items_success(self) -> None:
         """Test successfully updating container items."""
         mock_persistence = AsyncMock()
         player_id = uuid4()
@@ -387,7 +387,7 @@ class TestUpdateWearableContainerItems:
             mock_persistence.update_container.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_update_items_capacity_exceeded(self):
+    async def test_update_items_capacity_exceeded(self) -> None:
         """Test updating items when capacity would be exceeded."""
         mock_persistence = AsyncMock()
         player_id = uuid4()
@@ -414,7 +414,7 @@ class TestHandleContainerOverflow:
     """Test handle_container_overflow method."""
 
     @pytest.mark.asyncio
-    async def test_handle_overflow_all_to_inventory(self):
+    async def test_handle_overflow_all_to_inventory(self) -> None:
         """Test overflow handling when all items fit in inventory."""
         mock_persistence = AsyncMock()
         player_id = uuid4()
@@ -438,7 +438,7 @@ class TestHandleContainerOverflow:
             mock_persistence.save_player.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_handle_overflow_some_to_ground(self):
+    async def test_handle_overflow_some_to_ground(self) -> None:
         """Test overflow handling when some items go to ground."""
         mock_persistence = MagicMock()
         player_id = uuid4()
@@ -464,7 +464,7 @@ class TestHandleContainerOverflow:
             assert len(result["ground_items"]) == 5
 
     @pytest.mark.asyncio
-    async def test_handle_overflow_player_not_found(self):
+    async def test_handle_overflow_player_not_found(self) -> None:
         """Test overflow handling when player is not found."""
         mock_persistence = AsyncMock()
         mock_persistence.get_player_by_id.return_value = None

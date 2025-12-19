@@ -32,7 +32,7 @@ from server.validators.security_validator import (
 class TestMessageContentValidation:
     """Test centralized message content validation."""
 
-    def test_validate_message_content_valid(self):
+    def test_validate_message_content_valid(self) -> None:
         """Test validation with valid message content."""
         valid_messages = [
             "Hello, world!",
@@ -47,15 +47,15 @@ class TestMessageContentValidation:
             result = validate_message_content(message)
             assert result == message
 
-    def test_validate_message_content_empty(self):
+    def test_validate_message_content_empty(self) -> None:
         """Test validation with empty message."""
         result = validate_message_content("")
         assert result == ""
 
-        result = validate_message_content(None)
+        result = validate_message_content(None)  # type: ignore[arg-type]
         assert result is None
 
-    def test_validate_message_content_dangerous_characters(self):
+    def test_validate_message_content_dangerous_characters(self) -> None:
         """Test validation with dangerous characters (only HTML tags now blocked)."""
         dangerous_messages = [
             "Hello<script>alert('xss')</script>",  # HTML tags still blocked
@@ -67,7 +67,7 @@ class TestMessageContentValidation:
             with pytest.raises(ValueError, match="Message contains"):
                 validate_message_content(message)
 
-    def test_validate_message_content_injection_patterns(self):
+    def test_validate_message_content_injection_patterns(self) -> None:
         """Test validation with injection patterns (still blocks actual code execution)."""
         injection_messages = [
             "Hello; rm -rf /",  # Semicolon still blocked
@@ -87,7 +87,7 @@ class TestMessageContentValidation:
 class TestActionContentValidation:
     """Test centralized action content validation."""
 
-    def test_validate_action_content_valid(self):
+    def test_validate_action_content_valid(self) -> None:
         """Test validation with valid action content."""
         valid_actions = [
             "waves hello",
@@ -101,7 +101,7 @@ class TestActionContentValidation:
             result = validate_action_content(action)
             assert result == action
 
-    def test_validate_action_content_dangerous_characters(self):
+    def test_validate_action_content_dangerous_characters(self) -> None:
         """Test validation with dangerous characters in actions (only HTML tags now)."""
         dangerous_actions = [
             "looks <script>alert('xss')</script>",  # HTML tags still blocked
@@ -112,7 +112,7 @@ class TestActionContentValidation:
             with pytest.raises(ValueError, match="Action contains dangerous characters"):
                 validate_action_content(action)
 
-    def test_validate_action_content_injection_patterns(self):
+    def test_validate_action_content_injection_patterns(self) -> None:
         """Test validation with injection patterns in actions (semicolon and pipe blocked)."""
         injection_actions = [
             "waves; rm -rf /",  # Semicolon blocked
@@ -128,7 +128,7 @@ class TestActionContentValidation:
 class TestPlayerNameValidation:
     """Test centralized player name validation."""
 
-    def test_validate_player_name_valid(self):
+    def test_validate_player_name_valid(self) -> None:
         """Test validation with valid player names."""
         valid_names = [
             "Alice",
@@ -143,7 +143,7 @@ class TestPlayerNameValidation:
             result = validate_player_name(name)
             assert result == name
 
-    def test_validate_player_name_invalid_format(self):
+    def test_validate_player_name_invalid_format(self) -> None:
         """Test validation with invalid player name formats."""
         invalid_names = [
             "123Alice",  # Starts with number
@@ -161,7 +161,7 @@ class TestPlayerNameValidation:
         result = validate_player_name("")
         assert result == ""
 
-    def test_validate_player_name_edge_cases(self):
+    def test_validate_player_name_edge_cases(self) -> None:
         """Test validation with edge cases."""
         # Single letter should be valid
         result = validate_player_name("A")
@@ -176,7 +176,7 @@ class TestPlayerNameValidation:
 class TestAliasNameValidation:
     """Test centralized alias name validation."""
 
-    def test_validate_alias_name_valid(self):
+    def test_validate_alias_name_valid(self) -> None:
         """Test validation with valid alias names."""
         valid_aliases = [
             "look",
@@ -191,7 +191,7 @@ class TestAliasNameValidation:
             result = validate_alias_name(alias)
             assert result == alias
 
-    def test_validate_alias_name_invalid_format(self):
+    def test_validate_alias_name_invalid_format(self) -> None:
         """Test validation with invalid alias name formats."""
         invalid_aliases = [
             "123alias",  # Starts with number
@@ -209,7 +209,7 @@ class TestAliasNameValidation:
 class TestCommandContentValidation:
     """Test centralized command content validation."""
 
-    def test_validate_command_content_valid(self):
+    def test_validate_command_content_valid(self) -> None:
         """Test validation with valid command content."""
         valid_commands = [
             "look north",
@@ -224,7 +224,7 @@ class TestCommandContentValidation:
             result = validate_command_content(command)
             assert result == command
 
-    def test_validate_command_content_injection_patterns(self):
+    def test_validate_command_content_injection_patterns(self) -> None:
         """Test validation with injection patterns in commands (semicolon, pipe, function calls blocked)."""
         injection_commands = [
             "look; rm -rf /",  # Semicolon blocked
@@ -242,7 +242,7 @@ class TestCommandContentValidation:
 class TestReasonContentValidation:
     """Test centralized reason content validation."""
 
-    def test_validate_reason_content_valid(self):
+    def test_validate_reason_content_valid(self) -> None:
         """Test validation with valid reason content."""
         valid_reasons = [
             "Spam",
@@ -256,7 +256,7 @@ class TestReasonContentValidation:
             result = validate_reason_content(reason)
             assert result == reason
 
-    def test_validate_reason_content_dangerous_characters(self):
+    def test_validate_reason_content_dangerous_characters(self) -> None:
         """Test validation with dangerous characters in reasons (only HTML tags now)."""
         dangerous_reasons = [
             "Spam<script>alert('xss')</script>",  # HTML tags still blocked
@@ -271,7 +271,7 @@ class TestReasonContentValidation:
 class TestPoseContentValidation:
     """Test centralized pose content validation."""
 
-    def test_validate_pose_content_valid(self):
+    def test_validate_pose_content_valid(self) -> None:
         """Test validation with valid pose content."""
         valid_poses = [
             "sits quietly",
@@ -285,7 +285,7 @@ class TestPoseContentValidation:
             result = validate_pose_content(pose)
             assert result == pose
 
-    def test_validate_pose_content_dangerous_characters(self):
+    def test_validate_pose_content_dangerous_characters(self) -> None:
         """Test validation with dangerous characters in poses (only HTML tags now)."""
         dangerous_poses = [
             "sits<script>alert('xss')</script>",  # HTML tags still blocked
@@ -300,7 +300,7 @@ class TestPoseContentValidation:
 class TestFilterNameValidation:
     """Test centralized filter name validation."""
 
-    def test_validate_filter_name_valid(self):
+    def test_validate_filter_name_valid(self) -> None:
         """Test validation with valid filter names."""
         valid_filters = [
             "Alice",
@@ -314,7 +314,7 @@ class TestFilterNameValidation:
             result = validate_filter_name(filter_name)
             assert result == filter_name
 
-    def test_validate_filter_name_invalid_format(self):
+    def test_validate_filter_name_invalid_format(self) -> None:
         """Test validation with invalid filter name formats."""
         invalid_filters = [
             "123Alice",  # Starts with number
@@ -330,7 +330,7 @@ class TestFilterNameValidation:
 class TestTargetPlayerValidation:
     """Test centralized target player validation."""
 
-    def test_validate_target_player_valid(self):
+    def test_validate_target_player_valid(self) -> None:
         """Test validation with valid target player names."""
         valid_targets = [
             "Alice",
@@ -343,7 +343,7 @@ class TestTargetPlayerValidation:
             result = validate_target_player(target)
             assert result == target
 
-    def test_validate_target_player_invalid_format(self):
+    def test_validate_target_player_invalid_format(self) -> None:
         """Test validation with invalid target player name formats."""
         invalid_targets = [
             "123Alice",  # Starts with number
@@ -359,7 +359,7 @@ class TestTargetPlayerValidation:
 class TestCombatTargetValidation:
     """Test centralized combat target validation."""
 
-    def test_validate_combat_target_valid(self):
+    def test_validate_combat_target_valid(self) -> None:
         """Test validation with valid combat target names."""
         valid_targets = [
             "Alice",
@@ -375,7 +375,7 @@ class TestCombatTargetValidation:
             result = validate_combat_target(target)
             assert result == target
 
-    def test_validate_combat_target_dangerous_characters(self):
+    def test_validate_combat_target_dangerous_characters(self) -> None:
         """Test validation with dangerous characters in combat targets."""
         dangerous_targets = [
             ("Alice<script>", "<"),
@@ -398,7 +398,7 @@ class TestCombatTargetValidation:
             with pytest.raises(ValueError, match=f"cannot contain '{escaped_char}'"):
                 validate_combat_target(target)
 
-    def test_validate_combat_target_length_limits(self):
+    def test_validate_combat_target_length_limits(self) -> None:
         """Test validation with length limits."""
         # Empty string should return empty
         result = validate_combat_target("")
@@ -409,7 +409,7 @@ class TestCombatTargetValidation:
         with pytest.raises(ValueError, match="must be 50 characters or less"):
             validate_combat_target(long_target)
 
-    def test_validate_combat_target_start_character(self):
+    def test_validate_combat_target_start_character(self) -> None:
         """Test validation requires starting with letter or number."""
         invalid_starts = [
             "@Alice",
@@ -422,7 +422,7 @@ class TestCombatTargetValidation:
             with pytest.raises(ValueError, match="must start with a letter or number"):
                 validate_combat_target(target)
 
-    def test_validate_combat_target_invalid_characters(self):
+    def test_validate_combat_target_invalid_characters(self) -> None:
         """Test validation with invalid characters."""
         invalid_targets = [
             "Alice@Bob",
@@ -438,7 +438,7 @@ class TestCombatTargetValidation:
 class TestComprehensiveValidation:
     """Test comprehensive security validation."""
 
-    def test_validate_security_comprehensive_message_type(self):
+    def test_validate_security_comprehensive_message_type(self) -> None:
         """Test comprehensive validation with message field type."""
         result = validate_security_comprehensive("Hello, world!", "message")
         assert result == "Hello, world!"
@@ -446,7 +446,7 @@ class TestComprehensiveValidation:
         with pytest.raises(ValueError):
             validate_security_comprehensive("Hello<script>alert('xss')</script>", "message")
 
-    def test_validate_security_comprehensive_action_type(self):
+    def test_validate_security_comprehensive_action_type(self) -> None:
         """Test comprehensive validation with action field type."""
         result = validate_security_comprehensive("waves hello", "action")
         assert result == "waves hello"
@@ -454,7 +454,7 @@ class TestComprehensiveValidation:
         with pytest.raises(ValueError):
             validate_security_comprehensive("waves; rm -rf /", "action")
 
-    def test_validate_security_comprehensive_player_name_type(self):
+    def test_validate_security_comprehensive_player_name_type(self) -> None:
         """Test comprehensive validation with player_name field type."""
         result = validate_security_comprehensive("Alice", "player_name")
         assert result == "Alice"
@@ -462,7 +462,7 @@ class TestComprehensiveValidation:
         with pytest.raises(ValueError):
             validate_security_comprehensive("123Alice", "player_name")
 
-    def test_validate_security_comprehensive_combat_target_type(self):
+    def test_validate_security_comprehensive_combat_target_type(self) -> None:
         """Test comprehensive validation with combat_target field type."""
         result = validate_security_comprehensive("Alice", "combat_target")
         assert result == "Alice"
@@ -473,7 +473,7 @@ class TestComprehensiveValidation:
         with pytest.raises(ValueError):
             validate_security_comprehensive("Alice<script>", "combat_target")
 
-    def test_validate_security_comprehensive_reason_type(self):
+    def test_validate_security_comprehensive_reason_type(self) -> None:
         """Test comprehensive validation with reason field type."""
         result = validate_security_comprehensive("Spam", "reason")
         assert result == "Spam"
@@ -481,7 +481,7 @@ class TestComprehensiveValidation:
         with pytest.raises(ValueError):
             validate_security_comprehensive("Spam<script>alert('xss')</script>", "reason")
 
-    def test_validate_security_comprehensive_pose_type(self):
+    def test_validate_security_comprehensive_pose_type(self) -> None:
         """Test comprehensive validation with pose field type."""
         result = validate_security_comprehensive("sits quietly", "pose")
         assert result == "sits quietly"
@@ -489,7 +489,7 @@ class TestComprehensiveValidation:
         with pytest.raises(ValueError):
             validate_security_comprehensive("sits<script>alert('xss')</script>", "pose")
 
-    def test_validate_security_comprehensive_unknown_type(self):
+    def test_validate_security_comprehensive_unknown_type(self) -> None:
         """Test comprehensive validation with unknown field type defaults to message."""
         result = validate_security_comprehensive("Hello, world!", "unknown_type")
         assert result == "Hello, world!"
@@ -497,19 +497,19 @@ class TestComprehensiveValidation:
         with pytest.raises(ValueError):
             validate_security_comprehensive("Hello<script>alert('xss')</script>", "unknown_type")
 
-    def test_validate_security_comprehensive_empty_input(self):
+    def test_validate_security_comprehensive_empty_input(self) -> None:
         """Test comprehensive validation with empty input."""
         result = validate_security_comprehensive("", "message")
         assert result == ""
 
-        result = validate_security_comprehensive(None, "message")
+        result = validate_security_comprehensive(None, "message")  # type: ignore[arg-type]
         assert result is None
 
 
 class TestUtilityFunctions:
     """Test utility functions for centralized validation."""
 
-    def test_get_dangerous_characters(self):
+    def test_get_dangerous_characters(self) -> None:
         """Test getting dangerous characters list (only HTML tags now)."""
         dangerous_chars = get_dangerous_characters()
         assert isinstance(dangerous_chars, list)
@@ -519,7 +519,7 @@ class TestUtilityFunctions:
         # & is no longer considered dangerous
         assert "&" not in dangerous_chars
 
-    def test_get_injection_patterns(self):
+    def test_get_injection_patterns(self) -> None:
         """Test getting injection patterns list."""
         patterns = get_injection_patterns()
         assert isinstance(patterns, list)
@@ -527,7 +527,7 @@ class TestUtilityFunctions:
         # Should be a copy, not the original
         assert patterns is not get_injection_patterns()
 
-    def test_check_dangerous_characters(self):
+    def test_check_dangerous_characters(self) -> None:
         """Test checking for dangerous characters."""
         has_dangerous, found_chars = check_dangerous_characters("Hello, world!")
         assert not has_dangerous
@@ -538,7 +538,7 @@ class TestUtilityFunctions:
         assert "<" in found_chars
         assert ">" in found_chars
 
-    def test_check_injection_patterns(self):
+    def test_check_injection_patterns(self) -> None:
         """Test checking for injection patterns."""
         has_patterns, matched_patterns = check_injection_patterns("Hello, world!")
         assert not has_patterns
@@ -548,13 +548,13 @@ class TestUtilityFunctions:
         assert has_patterns
         assert len(matched_patterns) > 0
 
-    def test_check_functions_with_empty_input(self):
+    def test_check_functions_with_empty_input(self) -> None:
         """Test utility functions with empty input."""
         has_dangerous, found_chars = check_dangerous_characters("")
         assert not has_dangerous
         assert found_chars == []
 
-        has_dangerous, found_chars = check_dangerous_characters(None)
+        has_dangerous, found_chars = check_dangerous_characters(None)  # type: ignore[arg-type]
         assert not has_dangerous
         assert found_chars == []
 
@@ -562,7 +562,7 @@ class TestUtilityFunctions:
         assert not has_patterns
         assert matched_patterns == []
 
-        has_patterns, matched_patterns = check_injection_patterns(None)
+        has_patterns, matched_patterns = check_injection_patterns(None)  # type: ignore[arg-type]
         assert not has_patterns
         assert matched_patterns == []
 
@@ -570,7 +570,7 @@ class TestUtilityFunctions:
 class TestValidationConsistency:
     """Test consistency of validation functions."""
 
-    def test_validation_consistency_across_functions(self):
+    def test_validation_consistency_across_functions(self) -> None:
         """Test that validation functions are consistent."""
         test_input = "Hello<script>alert('xss')</script>"
 
@@ -584,7 +584,7 @@ class TestValidationConsistency:
         with pytest.raises(ValueError, match="contains dangerous characters"):
             validate_pose_content(test_input)
 
-    def test_validation_consistency_with_comprehensive(self):
+    def test_validation_consistency_with_comprehensive(self) -> None:
         """Test that comprehensive validation is consistent with individual functions."""
         test_cases = [
             ("Hello, world!", "message"),
@@ -627,7 +627,7 @@ class TestValidationConsistency:
             comprehensive_result = validate_security_comprehensive(test_input, field_type)
             assert individual_result == comprehensive_result
 
-    def test_validation_performance(self):
+    def test_validation_performance(self) -> None:
         """Test validation performance."""
         import time
 

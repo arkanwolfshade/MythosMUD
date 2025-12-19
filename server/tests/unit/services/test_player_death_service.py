@@ -224,7 +224,7 @@ class TestPlayerDeathService:  # pylint: disable=redefined-outer-name
         mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
 
-        result = await service.process_mortally_wounded_tick("test-player-id", mock_session)
+        result = await service.process_mortally_wounded_tick(uuid4(), mock_session)
 
         assert result is True
         # Verify event was published
@@ -318,7 +318,7 @@ class TestPlayerDeathService:  # pylint: disable=redefined-outer-name
         killer_info = {"killer_id": "npc-123", "killer_name": "Beast"}
 
         # Call handle_player_death
-        result = await service.handle_player_death(player_id, "death-room", killer_info, mock_session)
+        result = await service.handle_player_death(uuid4(), "death-room", killer_info, mock_session)
 
         # Verify death was handled successfully
         assert result is True
@@ -347,7 +347,7 @@ class TestPlayerDeathService:  # pylint: disable=redefined-outer-name
         mock_session.get.return_value = mock_player
 
         # Should not raise exception even without combat service
-        result = await service.handle_player_death("test-player-id", "death-room", None, mock_session)
+        result = await service.handle_player_death(uuid4(), "death-room", None, mock_session)
 
         assert result is True
         mock_session.commit.assert_called_once()

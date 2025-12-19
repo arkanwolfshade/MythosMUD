@@ -6,6 +6,8 @@ handles all types of exceptions and returns consistent error responses
 across all API endpoints.
 """
 
+from typing import Any, cast
+
 import pytest
 from fastapi import HTTPException
 from pydantic import ValidationError
@@ -36,14 +38,14 @@ from server.models.command import SayCommand
 class TestStandardizedErrorResponse:
     """Test StandardizedErrorResponse functionality."""
 
-    def test_standardized_error_response_initialization(self):
+    def test_standardized_error_response_initialization(self) -> None:
         """Test that StandardizedErrorResponse initializes correctly."""
         handler = StandardizedErrorResponse()
         assert handler is not None
         assert handler.context is not None
         assert handler.request is None
 
-    def test_standardized_error_response_with_request(self):
+    def test_standardized_error_response_with_request(self) -> None:
         """Test initialization with FastAPI request."""
 
         # Mock request object
@@ -58,14 +60,14 @@ class TestStandardizedErrorResponse:
                 self.headers = {"user-agent": "test-agent", "content-type": "application/json"}
 
         mock_request = MockRequest()
-        handler = StandardizedErrorResponse(request=mock_request)
+        handler = StandardizedErrorResponse(request=cast(Any, mock_request))
 
         assert handler.request == mock_request
         assert handler.context.user_id == "test_user_id"
         assert handler.context.session_id == "test_session"
         assert handler.context.request_id == "test_request"
 
-    def test_handle_mythos_validation_error(self):
+    def test_handle_mythos_validation_error(self) -> None:
         """Test handling of MythosValidationError."""
         error = MythosValidationError(
             message="Validation failed",
@@ -78,11 +80,11 @@ class TestStandardizedErrorResponse:
         response = handler.handle_exception(error)
 
         assert response.status_code == 422  # Unprocessable Entity
-        content = response.body.decode()
+        content = bytes(response.body).decode()
         assert '"type":"validation_error"' in content
         assert '"user_friendly":"Please check your input"' in content
 
-    def test_handle_authentication_error(self):
+    def test_handle_authentication_error(self) -> None:
         """Test handling of AuthenticationError."""
         error = AuthenticationError(
             message="Authentication failed",
@@ -94,11 +96,11 @@ class TestStandardizedErrorResponse:
         response = handler.handle_exception(error)
 
         assert response.status_code == 401  # Unauthorized
-        content = response.body.decode()
+        content = bytes(response.body).decode()
         assert '"type":"authentication_failed"' in content
         assert '"user_friendly":"Please log in again"' in content
 
-    def test_handle_game_logic_error(self):
+    def test_handle_game_logic_error(self) -> None:
         """Test handling of GameLogicError."""
         error = GameLogicError(
             message="Invalid game action",
@@ -110,11 +112,11 @@ class TestStandardizedErrorResponse:
         response = handler.handle_exception(error)
 
         assert response.status_code == 400  # Bad Request
-        content = response.body.decode()
+        content = bytes(response.body).decode()
         assert '"type":"game_logic_error"' in content
         assert '"user_friendly":"You cannot perform that action"' in content
 
-    def test_handle_database_error(self):
+    def test_handle_database_error(self) -> None:
         """Test handling of DatabaseError."""
         error = DatabaseError(
             message="Database connection failed",
@@ -126,11 +128,11 @@ class TestStandardizedErrorResponse:
         response = handler.handle_exception(error)
 
         assert response.status_code == 503  # Service Unavailable
-        content = response.body.decode()
+        content = bytes(response.body).decode()
         assert '"type":"database_error"' in content
         assert '"user_friendly":"Database temporarily unavailable"' in content
 
-    def test_handle_resource_not_found_error(self):
+    def test_handle_resource_not_found_error(self) -> None:
         """Test handling of ResourceNotFoundError."""
         error = ResourceNotFoundError(
             message="Player not found",
@@ -142,14 +144,14 @@ class TestStandardizedErrorResponse:
         response = handler.handle_exception(error)
 
         assert response.status_code == 404  # Not Found
-        content = response.body.decode()
+        content = bytes(response.body).decode()
         assert '"type":"resource_not_found"' in content
         assert '"user_friendly":"Player does not exist"' in content
 
-    def test_handle_pydantic_validation_error(self):
+    def test_handle_pydantic_validation_error(self) -> None:
         """Test handling of Pydantic ValidationError."""
         with pytest.raises(ValidationError) as exc_info:
-            SayCommand()  # Missing required message field
+            SayCommand()  # type: ignore[call-arg]  # Missing required message field
 
         validation_error = exc_info.value
         handler = StandardizedErrorResponse()
@@ -157,11 +159,11 @@ class TestStandardizedErrorResponse:
         response = handler.handle_exception(validation_error)
 
         assert response.status_code == 422  # Unprocessable Entity
-        content = response.body.decode()
+        content = bytes(response.body).decode()
         assert '"type":"missing_required_field"' in content
         assert '"user_friendly"' in content
 
-    def test_handle_logged_http_exception(self):
+    def test_handle_logged_http_exception(self) -> None:
         """Test handling of LoggedHTTPException."""
         exception = LoggedHTTPException(
             status_code=404, detail="Resource not found", context=create_error_context(user_id="test_user")
@@ -171,11 +173,11 @@ class TestStandardizedErrorResponse:
         response = handler.handle_exception(exception)
 
         assert response.status_code == 404
-        content = response.body.decode()
+        content = bytes(response.body).decode()
         assert '"type":"resource_not_found"' in content
         assert '"message":"Resource not found"' in content
 
-    def test_handle_http_exception(self):
+    def test_handle_http_exception(self) -> None:
         """Test handling of standard HTTPException."""
         exception = HTTPException(status_code=400, detail="Bad request")
 
@@ -183,11 +185,11 @@ class TestStandardizedErrorResponse:
         response = handler.handle_exception(exception)
 
         assert response.status_code == 400
-        content = response.body.decode()
+        content = bytes(response.body).decode()
         assert '"type":"invalid_input"' in content
         assert '"message":"Bad request"' in content
 
-    def test_handle_generic_exception(self):
+    def test_handle_generic_exception(self) -> None:
         """Test handling of generic exceptions."""
         exception = ValueError("Generic error")
 
@@ -195,11 +197,11 @@ class TestStandardizedErrorResponse:
         response = handler.handle_exception(exception)
 
         assert response.status_code == 500  # Internal Server Error
-        content = response.body.decode()
+        content = bytes(response.body).decode()
         assert '"type":"internal_error"' in content
         assert '"user_friendly":"An internal error occurred"' in content
 
-    def test_handle_exception_with_details(self):
+    def test_handle_exception_with_details(self) -> None:
         """Test handling exceptions with detailed information."""
         error = MythosValidationError(
             message="Validation failed",
@@ -212,11 +214,11 @@ class TestStandardizedErrorResponse:
         response = handler.handle_exception(error, include_details=True)
 
         assert response.status_code == 422
-        content = response.body.decode()
+        content = bytes(response.body).decode()
         assert '"field":"message"' in content
         assert '"context"' in content
 
-    def test_handle_exception_websocket_response(self):
+    def test_handle_exception_websocket_response(self) -> None:
         """Test handling exceptions with WebSocket response type."""
         error = MythosValidationError(
             message="Validation failed",
@@ -228,11 +230,11 @@ class TestStandardizedErrorResponse:
         response = handler.handle_exception(error, response_type="websocket")
 
         assert response.status_code == 422
-        content = response.body.decode()
+        content = bytes(response.body).decode()
         assert '"type":"error"' in content
         assert '"error_type":"validation_error"' in content
 
-    def test_handle_exception_sse_response(self):
+    def test_handle_exception_sse_response(self) -> None:
         """Test handling exceptions with SSE response type."""
         error = MythosValidationError(
             message="Validation failed",
@@ -244,11 +246,11 @@ class TestStandardizedErrorResponse:
         response = handler.handle_exception(error, response_type="sse")
 
         assert response.status_code == 422
-        content = response.body.decode()
+        content = bytes(response.body).decode()
         assert '"type":"error"' in content
         assert '"error_type":"validation_error"' in content
 
-    def test_status_code_mappings(self):
+    def test_status_code_mappings(self) -> None:
         """Test that status code mappings are correct."""
         handler = StandardizedErrorResponse()
 
@@ -268,7 +270,7 @@ class TestStandardizedErrorResponse:
         assert handler.STATUS_CODE_MAPPINGS[ErrorType.INTERNAL_ERROR] == 500
         assert handler.STATUS_CODE_MAPPINGS[ErrorType.DATABASE_ERROR] == 503
 
-    def test_user_friendly_message_mappings(self):
+    def test_user_friendly_message_mappings(self) -> None:
         """Test that user-friendly message mappings are correct."""
         handler = StandardizedErrorResponse()
 
@@ -278,7 +280,7 @@ class TestStandardizedErrorResponse:
             assert handler.USER_FRIENDLY_MESSAGES[error_type] is not None
             assert len(handler.USER_FRIENDLY_MESSAGES[error_type]) > 0
 
-    def test_determine_error_type_from_exception(self):
+    def test_determine_error_type_from_exception(self) -> None:
         """Test determination of error type from exception."""
         handler = StandardizedErrorResponse()
 
@@ -310,7 +312,7 @@ class TestStandardizedErrorResponse:
         resource_error = ResourceNotFoundError("Resource not found")
         assert handler._determine_error_type_from_exception(resource_error) == ErrorType.RESOURCE_NOT_FOUND
 
-    def test_map_status_code_to_error_type(self):
+    def test_map_status_code_to_error_type(self) -> None:
         """Test mapping of status codes to error types."""
         handler = StandardizedErrorResponse()
 
@@ -328,7 +330,7 @@ class TestStandardizedErrorResponse:
         # Test unknown status code
         assert handler._map_status_code_to_error_type(999) == ErrorType.INTERNAL_ERROR
 
-    def test_generate_user_friendly_message(self):
+    def test_generate_user_friendly_message(self) -> None:
         """Test generation of user-friendly messages."""
         handler = StandardizedErrorResponse()
 
@@ -343,7 +345,7 @@ class TestStandardizedErrorResponse:
         message = handler._generate_user_friendly_message(ErrorType.VALIDATION_ERROR, error)
         assert message == "Technical message"  # Because user_friendly is set to message
 
-    def test_create_error_details(self):
+    def test_create_error_details(self) -> None:
         """Test creation of error details."""
         handler = StandardizedErrorResponse()
 
@@ -364,7 +366,7 @@ class TestStandardizedErrorResponse:
         assert "context" in details
         assert details["context"]["user_id"] == "test_user"
 
-    def test_create_fallback_response(self):
+    def test_create_fallback_response(self) -> None:
         """Test creation of fallback error response."""
         handler = StandardizedErrorResponse()
 
@@ -373,25 +375,25 @@ class TestStandardizedErrorResponse:
         # Test HTTP fallback
         response = handler._create_fallback_response(exception, "http")
         assert response.status_code == 500
-        content = response.body.decode()
+        content = bytes(response.body).decode()
         assert '"type":"internal_error"' in content
         assert '"fallback":true' in content
 
         # Test WebSocket fallback
         response = handler._create_fallback_response(exception, "websocket")
         assert response.status_code == 500
-        content = response.body.decode()
+        content = bytes(response.body).decode()
         assert '"type":"error"' in content
         assert '"error_type":"internal_error"' in content
 
         # Test SSE fallback
         response = handler._create_fallback_response(exception, "sse")
         assert response.status_code == 500
-        content = response.body.decode()
+        content = bytes(response.body).decode()
         assert '"type":"error"' in content
         assert '"error_type":"internal_error"' in content
 
-    def test_convenience_functions(self):
+    def test_convenience_functions(self) -> None:
         """Test convenience functions for error handling."""
         # Test create_standardized_error_response
         handler = create_standardized_error_response()
@@ -402,10 +404,10 @@ class TestStandardizedErrorResponse:
         response = handle_api_error(exception)
 
         assert response.status_code == 500
-        content = response.body.decode()
+        content = bytes(response.body).decode()
         assert '"type":"internal_error"' in content
 
-    def test_extract_context_from_request(self):
+    def test_extract_context_from_request(self) -> None:
         """Test extraction of context from request."""
 
         # Mock request object
@@ -420,9 +422,9 @@ class TestStandardizedErrorResponse:
                 self.headers = {"user-agent": "test-agent", "content-type": "application/json"}
 
         mock_request = MockRequest()
-        handler = StandardizedErrorResponse(request=mock_request)
+        handler = StandardizedErrorResponse(request=cast(Any, mock_request))
 
-        context = handler._extract_context_from_request(mock_request)
+        context = handler._extract_context_from_request(cast(Any, mock_request))
         assert context.user_id == "test_user_id"
         assert context.session_id == "test_session"
         assert context.request_id == "test_request"
@@ -431,7 +433,7 @@ class TestStandardizedErrorResponse:
         assert context.metadata["user_agent"] == "test-agent"
         assert context.metadata["content_type"] == "application/json"
 
-    def test_extract_context_from_none_request(self):
+    def test_extract_context_from_none_request(self) -> None:
         """Test extraction of context from None request."""
         handler = StandardizedErrorResponse()
         context = handler._extract_context_from_request(None)

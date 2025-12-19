@@ -5,6 +5,7 @@ This module tests container lookup functions including finding containers in roo
 equipped items, formatting container displays, and handling container look requests.
 """
 
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 from uuid import uuid4
 
@@ -27,42 +28,42 @@ from server.commands.look_container import (
 class TestFindContainerInRoom:
     """Test _find_container_in_room function."""
 
-    def test_find_container_in_room_by_name(self):
+    def test_find_container_in_room_by_name(self) -> None:
         """Test finding container by name from metadata."""
         containers = [{"container_id": "cont-1", "metadata": {"name": "backpack"}}]
         result = _find_container_in_room(containers, "backpack")
         assert result == containers[0]
 
-    def test_find_container_in_room_by_container_id(self):
+    def test_find_container_in_room_by_container_id(self) -> None:
         """Test finding container by container_id."""
         containers = [{"container_id": "cont-123", "metadata": {}}]
         result = _find_container_in_room(containers, "cont-123")
         assert result == containers[0]
 
-    def test_find_container_in_room_case_insensitive(self):
+    def test_find_container_in_room_case_insensitive(self) -> None:
         """Test finding container case-insensitively."""
         containers = [{"container_id": "cont-1", "metadata": {"name": "Backpack"}}]
         result = _find_container_in_room(containers, "BACKPACK")
         assert result == containers[0]
 
-    def test_find_container_in_room_partial_match(self):
+    def test_find_container_in_room_partial_match(self) -> None:
         """Test finding container with partial name match."""
         containers = [{"container_id": "cont-1", "metadata": {"name": "leather backpack"}}]
         result = _find_container_in_room(containers, "backpack")
         assert result == containers[0]
 
-    def test_find_container_in_room_not_found(self):
+    def test_find_container_in_room_not_found(self) -> None:
         """Test when container is not found."""
         containers = [{"container_id": "cont-1", "metadata": {"name": "backpack"}}]
         result = _find_container_in_room(containers, "chest")
         assert result is None
 
-    def test_find_container_in_room_empty_list(self):
+    def test_find_container_in_room_empty_list(self) -> None:
         """Test with empty containers list."""
         result = _find_container_in_room([], "backpack")
         assert result is None
 
-    def test_find_container_in_room_with_instance_number(self):
+    def test_find_container_in_room_with_instance_number(self) -> None:
         """Test finding container with instance number."""
         containers = [
             {"container_id": "cont-1", "metadata": {"name": "backpack"}},
@@ -71,13 +72,13 @@ class TestFindContainerInRoom:
         result = _find_container_in_room(containers, "backpack", instance_number=2)
         assert result == containers[1]
 
-    def test_find_container_in_room_instance_number_out_of_range(self):
+    def test_find_container_in_room_instance_number_out_of_range(self) -> None:
         """Test with instance number out of range."""
         containers = [{"container_id": "cont-1", "metadata": {"name": "backpack"}}]
         result = _find_container_in_room(containers, "backpack", instance_number=5)
         assert result is None
 
-    def test_find_container_in_room_multiple_matches(self):
+    def test_find_container_in_room_multiple_matches(self) -> None:
         """Test when multiple containers match (returns None for ambiguity)."""
         containers = [
             {"container_id": "cont-1", "metadata": {"name": "backpack"}},
@@ -86,7 +87,7 @@ class TestFindContainerInRoom:
         result = _find_container_in_room(containers, "backpack")
         assert result is None  # Ambiguous
 
-    def test_find_container_in_room_no_metadata(self):
+    def test_find_container_in_room_no_metadata(self) -> None:
         """Test when container has no metadata."""
         containers = [{"container_id": "cont-123"}]
         result = _find_container_in_room(containers, "cont-123")
@@ -96,31 +97,31 @@ class TestFindContainerInRoom:
 class TestFindContainerWearable:
     """Test _find_container_wearable function."""
 
-    def test_find_container_wearable_by_name(self):
+    def test_find_container_wearable_by_name(self) -> None:
         """Test finding wearable container by name."""
         equipped = {"backpack": {"item_name": "backpack", "inner_container": "cont-1"}}
         result = _find_container_wearable(equipped, "backpack")
         assert result == ("backpack", equipped["backpack"])
 
-    def test_find_container_wearable_by_prototype_id(self):
+    def test_find_container_wearable_by_prototype_id(self) -> None:
         """Test finding wearable container by prototype_id."""
         equipped = {"backpack": {"prototype_id": "proto-123", "inner_container": "cont-1"}}
         result = _find_container_wearable(equipped, "proto-123")
         assert result == ("backpack", equipped["backpack"])
 
-    def test_find_container_wearable_with_inner_container(self):
+    def test_find_container_wearable_with_inner_container(self) -> None:
         """Test finding container with inner_container attribute."""
         equipped = {"backpack": {"item_name": "bag", "inner_container": "cont-1"}}
         result = _find_container_wearable(equipped, "bag")
         assert result == ("backpack", equipped["backpack"])
 
-    def test_find_container_wearable_not_found(self):
+    def test_find_container_wearable_not_found(self) -> None:
         """Test when wearable container is not found."""
         equipped = {"hand": {"item_name": "sword", "item_id": "item-1"}}
         result = _find_container_wearable(equipped, "backpack")
         assert result is None
 
-    def test_find_container_wearable_with_instance_number(self):
+    def test_find_container_wearable_with_instance_number(self) -> None:
         """Test finding wearable container with instance number."""
         equipped = {
             "backpack": {"item_name": "backpack", "inner_container": "cont-1"},
@@ -129,7 +130,7 @@ class TestFindContainerWearable:
         result = _find_container_wearable(equipped, "backpack", instance_number=2)
         assert result == ("belt", equipped["belt"])
 
-    def test_find_container_wearable_multiple_matches(self):
+    def test_find_container_wearable_multiple_matches(self) -> None:
         """Test when multiple wearable containers match (returns None for ambiguity)."""
         equipped = {
             "backpack": {"item_name": "backpack", "inner_container": "cont-1"},
@@ -143,7 +144,7 @@ class TestFindContainerViaInnerContainer:
     """Test _find_container_via_inner_container function."""
 
     @pytest.mark.asyncio
-    async def test_find_container_via_inner_container_success(self):
+    async def test_find_container_via_inner_container_success(self) -> None:
         """Test finding container via inner_container_id."""
         item = {"inner_container": str(uuid4())}
         mock_persistence = AsyncMock()
@@ -156,7 +157,7 @@ class TestFindContainerViaInnerContainer:
         mock_persistence.get_container.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_find_container_via_inner_container_no_inner_container(self):
+    async def test_find_container_via_inner_container_no_inner_container(self) -> None:
         """Test when item has no inner_container."""
         item = {"item_name": "sword"}
         mock_persistence = AsyncMock()
@@ -167,7 +168,7 @@ class TestFindContainerViaInnerContainer:
         mock_persistence.get_container.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_find_container_via_inner_container_invalid_uuid(self):
+    async def test_find_container_via_inner_container_invalid_uuid(self) -> None:
         """Test when inner_container is invalid UUID."""
         item = {"inner_container": "invalid-uuid"}
         mock_persistence = AsyncMock()
@@ -177,7 +178,7 @@ class TestFindContainerViaInnerContainer:
         assert result is None
 
     @pytest.mark.asyncio
-    async def test_find_container_via_inner_container_no_get_container_method(self):
+    async def test_find_container_via_inner_container_no_get_container_method(self) -> None:
         """Test when persistence doesn't have get_container method."""
         item = {"inner_container": str(uuid4())}
         mock_persistence = MagicMock()
@@ -192,7 +193,7 @@ class TestGetContainerDataFromComponent:
     """Test _get_container_data_from_component function."""
 
     @pytest.mark.asyncio
-    async def test_get_container_data_from_component_success(self):
+    async def test_get_container_data_from_component_success(self) -> None:
         """Test getting container data from component."""
         mock_component = MagicMock()
         mock_component.container_id = uuid4()
@@ -206,7 +207,7 @@ class TestGetContainerDataFromComponent:
         mock_persistence.get_container.assert_called_once_with(mock_component.container_id)
 
     @pytest.mark.asyncio
-    async def test_get_container_data_from_component_no_container_id(self):
+    async def test_get_container_data_from_component_no_container_id(self) -> None:
         """Test when component has no container_id."""
         mock_component = MagicMock()
         mock_component.container_id = None
@@ -218,7 +219,7 @@ class TestGetContainerDataFromComponent:
         mock_persistence.get_container.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_get_container_data_from_component_no_get_container_method(self):
+    async def test_get_container_data_from_component_no_get_container_method(self) -> None:
         """Test when persistence doesn't have get_container method."""
         mock_component = MagicMock()
         mock_component.container_id = uuid4()
@@ -233,7 +234,7 @@ class TestGetContainerDataFromComponent:
 class TestFormatContainerContents:
     """Test _format_container_contents function."""
 
-    def test_format_container_contents_with_items(self):
+    def test_format_container_contents_with_items(self) -> None:
         """Test formatting container with items."""
         items = [
             {"item_name": "sword", "quantity": 1},
@@ -245,20 +246,20 @@ class TestFormatContainerContents:
         assert "1. sword" in result[0]
         assert "2. potion x3" in result[1]
 
-    def test_format_container_contents_empty(self):
+    def test_format_container_contents_empty(self) -> None:
         """Test formatting empty container."""
         result = _format_container_contents([])
 
         assert result == ["  (empty)"]
 
-    def test_format_container_contents_uses_name_key(self):
+    def test_format_container_contents_uses_name_key(self) -> None:
         """Test formatting when items use 'name' key instead of 'item_name'."""
         items = [{"name": "sword", "quantity": 1}]
         result = _format_container_contents(items)
 
         assert "sword" in result[0]
 
-    def test_format_container_contents_no_quantity(self):
+    def test_format_container_contents_no_quantity(self) -> None:
         """Test formatting when quantity is missing (defaults to 1)."""
         items = [{"item_name": "sword"}]
         result = _format_container_contents(items)
@@ -270,7 +271,7 @@ class TestFormatContainerContents:
 class TestFormatContainerDisplay:
     """Test _format_container_display function."""
 
-    def test_format_container_display_basic(self):
+    def test_format_container_display_basic(self) -> None:
         """Test basic container display formatting."""
         container_found = {
             "container_id": uuid4(),
@@ -279,14 +280,14 @@ class TestFormatContainerDisplay:
             "capacity_slots": 10,
             "lock_state": "unlocked",
         }
-        command_data = {}
+        command_data: dict[str, Any] = {}
 
         result = _format_container_display(container_found, None, command_data)
 
         assert "Backpack" in result
         assert "Capacity: 0/10 slots" in result
 
-    def test_format_container_display_with_description(self):
+    def test_format_container_display_with_description(self) -> None:
         """Test container display with description."""
         container_found = {
             "container_id": uuid4(),
@@ -295,7 +296,7 @@ class TestFormatContainerDisplay:
             "capacity_slots": 10,
             "lock_state": "unlocked",
         }
-        command_data = {}
+        command_data: dict[str, Any] = {}
         description = "A sturdy leather backpack."
 
         result = _format_container_display(container_found, description, command_data)
@@ -303,7 +304,7 @@ class TestFormatContainerDisplay:
         assert "Backpack" in result
         assert description in result
 
-    def test_format_container_display_locked(self):
+    def test_format_container_display_locked(self) -> None:
         """Test container display when locked."""
         container_found = {
             "container_id": uuid4(),
@@ -312,13 +313,13 @@ class TestFormatContainerDisplay:
             "capacity_slots": 5,
             "lock_state": "locked",
         }
-        command_data = {}
+        command_data: dict[str, Any] = {}
 
         result = _format_container_display(container_found, None, command_data)
 
         assert "Locked" in result
 
-    def test_format_container_display_sealed(self):
+    def test_format_container_display_sealed(self) -> None:
         """Test container display when sealed."""
         container_found = {
             "container_id": uuid4(),
@@ -327,13 +328,13 @@ class TestFormatContainerDisplay:
             "capacity_slots": 5,
             "lock_state": "sealed",
         }
-        command_data = {}
+        command_data: dict[str, Any] = {}
 
         result = _format_container_display(container_found, None, command_data)
 
         assert "Sealed" in result
 
-    def test_format_container_display_with_contents(self):
+    def test_format_container_display_with_contents(self) -> None:
         """Test container display with contents when look_in is True."""
         container_found = {
             "container_id": uuid4(),
@@ -349,7 +350,7 @@ class TestFormatContainerDisplay:
         assert "Contents:" in result
         assert "sword" in result
 
-    def test_format_container_display_with_target_type_container(self):
+    def test_format_container_display_with_target_type_container(self) -> None:
         """Test container display when target_type is container."""
         container_found = {
             "container_id": uuid4(),
@@ -364,7 +365,7 @@ class TestFormatContainerDisplay:
 
         assert "Contents:" in result
 
-    def test_format_container_display_no_name_uses_container_id(self):
+    def test_format_container_display_no_name_uses_container_id(self) -> None:
         """Test container display when name is missing (uses container_id)."""
         container_found = {
             "container_id": uuid4(),
@@ -373,7 +374,7 @@ class TestFormatContainerDisplay:
             "capacity_slots": 10,
             "lock_state": "unlocked",
         }
-        command_data = {}
+        command_data: dict[str, Any] = {}
 
         result = _format_container_display(container_found, None, command_data)
 
@@ -383,7 +384,7 @@ class TestFormatContainerDisplay:
 class TestGetContainerDescription:
     """Test _get_container_description function."""
 
-    def test_get_container_description_from_container_item(self):
+    def test_get_container_description_from_container_item(self) -> None:
         """Test getting description from container_item."""
         container_found = {"container_id": uuid4()}
         container_item = {"prototype_id": "proto-123"}
@@ -396,7 +397,7 @@ class TestGetContainerDescription:
 
         assert result == "A sturdy backpack."
 
-    def test_get_container_description_from_container_metadata(self):
+    def test_get_container_description_from_container_metadata(self) -> None:
         """Test getting description from container metadata."""
         container_found = {"container_id": uuid4(), "metadata": {"prototype_id": "proto-123"}}
         container_item = None
@@ -409,7 +410,7 @@ class TestGetContainerDescription:
 
         assert result == "A sturdy backpack."
 
-    def test_get_container_description_no_registry(self):
+    def test_get_container_description_no_registry(self) -> None:
         """Test when prototype registry is None."""
         container_found = {"container_id": uuid4()}
         container_item = {"prototype_id": "proto-123"}
@@ -418,17 +419,17 @@ class TestGetContainerDescription:
 
         assert result is None
 
-    def test_get_container_description_no_prototype_id(self):
+    def test_get_container_description_no_prototype_id(self) -> None:
         """Test when prototype_id is missing."""
         container_found = {"container_id": uuid4()}
-        container_item = {}
+        container_item: dict[str, Any] = {}
         mock_registry = MagicMock()
 
         result = _get_container_description(container_found, container_item, mock_registry)
 
         assert result is None
 
-    def test_get_container_description_prototype_not_found(self):
+    def test_get_container_description_prototype_not_found(self) -> None:
         """Test when prototype is not found."""
         container_found = {"container_id": uuid4()}
         container_item = {"prototype_id": "proto-123"}
@@ -440,7 +441,7 @@ class TestGetContainerDescription:
 
             assert result is None
 
-    def test_get_container_description_no_long_description(self):
+    def test_get_container_description_no_long_description(self) -> None:
         """Test when prototype has no long_description attribute."""
         container_found = {"container_id": uuid4()}
         container_item = {"prototype_id": "proto-123"}
@@ -459,7 +460,7 @@ class TestFindContainerInRoomOrEquipped:
     """Test _find_container_in_room_or_equipped function."""
 
     @pytest.mark.asyncio
-    async def test_find_container_in_room_or_equipped_in_room(self):
+    async def test_find_container_in_room_or_equipped_in_room(self) -> None:
         """Test finding container in room."""
         mock_room = MagicMock()
         mock_room.get_containers.return_value = [{"container_id": "cont-1", "metadata": {"name": "backpack"}}]
@@ -476,7 +477,7 @@ class TestFindContainerInRoomOrEquipped:
         assert container_item is None
 
     @pytest.mark.asyncio
-    async def test_find_container_in_room_or_equipped_in_equipped_inner_container(self):
+    async def test_find_container_in_room_or_equipped_in_equipped_inner_container(self) -> None:
         """Test finding container via inner_container in equipped item."""
         mock_room = MagicMock()
         mock_room.get_containers.return_value = []
@@ -498,7 +499,7 @@ class TestFindContainerInRoomOrEquipped:
         assert container_item == mock_player.get_equipped_items()["backpack"]
 
     @pytest.mark.asyncio
-    async def test_find_container_in_room_or_equipped_not_found(self):
+    async def test_find_container_in_room_or_equipped_not_found(self) -> None:
         """Test when container is not found."""
         mock_room = MagicMock()
         mock_room.get_containers.return_value = []
@@ -520,7 +521,7 @@ class TestHandleContainerLook:
     """Test _handle_container_look function."""
 
     @pytest.mark.asyncio
-    async def test_handle_container_look_success(self):
+    async def test_handle_container_look_success(self) -> None:
         """Test successful container look."""
         mock_room = MagicMock()
         mock_room.get_containers.return_value = [
@@ -558,11 +559,12 @@ class TestHandleContainerLook:
                     "testuser",
                 )
 
+                assert result is not None
                 assert "Backpack" in result["result"]
                 assert "Capacity:" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_handle_container_look_not_found(self):
+    async def test_handle_container_look_not_found(self) -> None:
         """Test when container is not found."""
         mock_room = MagicMock()
         mock_player = MagicMock()
@@ -585,6 +587,7 @@ class TestHandleContainerLook:
                     "testuser",
                 )
 
+                assert result is not None
                 assert "don't see any 'backpack'" in result["result"]
                 mock_logger.debug.assert_called()
 
@@ -593,7 +596,7 @@ class TestTryLookupContainerImplicit:
     """Test _try_lookup_container_implicit function."""
 
     @pytest.mark.asyncio
-    async def test_try_lookup_container_implicit_in_room(self):
+    async def test_try_lookup_container_implicit_in_room(self) -> None:
         """Test implicit lookup in room."""
         mock_room = MagicMock()
         mock_room.get_containers.return_value = [
@@ -613,11 +616,12 @@ class TestTryLookupContainerImplicit:
                 "backpack", "backpack", None, mock_room, mock_player, mock_persistence, "testuser"
             )
 
+            assert result is not None
             assert "Backpack" in result["result"]
             assert "Capacity:" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_try_lookup_container_implicit_in_equipped(self):
+    async def test_try_lookup_container_implicit_in_equipped(self) -> None:
         """Test implicit lookup in equipped items."""
         mock_room = MagicMock()
         mock_room.get_containers.return_value = []
@@ -639,11 +643,12 @@ class TestTryLookupContainerImplicit:
                 "backpack", "backpack", None, mock_room, mock_player, mock_persistence, "testuser"
             )
 
+            assert result is not None
             assert "Container" in result["result"] or "backpack" in result["result"]
             assert "Capacity:" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_try_lookup_container_implicit_not_found(self):
+    async def test_try_lookup_container_implicit_not_found(self) -> None:
         """Test implicit lookup when container is not found."""
         mock_room = MagicMock()
         mock_room.get_containers.return_value = []

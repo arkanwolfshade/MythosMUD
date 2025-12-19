@@ -19,8 +19,11 @@ from server.game.player_service import PlayerService
 class TestMuteUnmuteWorkflowIntegration:
     """Integration tests for complete mute/unmute workflow with emotes."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test fixtures."""
+        # pylint: disable=attribute-defined-outside-init
+        # In pytest test classes, setup_method is the standard place to initialize
+        # test fixtures. Attributes are properly initialized before each test method.
         # Mock services
         self.mock_persistence = MagicMock()
         self.mock_room_service = MagicMock()
@@ -74,7 +77,7 @@ class TestMuteUnmuteWorkflowIntegration:
         mock_nats_service.is_connected.return_value = True
 
         # Make NATS publish async
-        async def mock_publish(*args, **kwargs):
+        async def mock_publish(*_args, **_kwargs):
             return True
 
         mock_nats_service.publish = mock_publish
@@ -132,7 +135,7 @@ class TestMuteUnmuteWorkflowIntegration:
         mock_nats_service.is_connected.return_value = True
 
         # Make NATS publish async
-        async def mock_publish(*args, **kwargs):
+        async def mock_publish(*_args, **_kwargs):
             return True
 
         mock_nats_service.publish = mock_publish
@@ -195,7 +198,7 @@ class TestMuteUnmuteWorkflowIntegration:
         mock_nats_service.is_connected.return_value = True
 
         # Make NATS publish async
-        async def mock_publish(*args, **kwargs):
+        async def mock_publish(*_args, **_kwargs):
             return True
 
         mock_nats_service.publish = mock_publish
@@ -252,7 +255,7 @@ class TestMuteUnmuteWorkflowIntegration:
         mock_nats_service.is_connected.return_value = True
 
         # Make NATS publish async
-        async def mock_publish(*args, **kwargs):
+        async def mock_publish(*_args, **_kwargs):
             return True
 
         mock_nats_service.publish = mock_publish
@@ -313,7 +316,7 @@ class TestMuteUnmuteWorkflowIntegration:
         mock_nats_service.is_connected.return_value = True
 
         # Make NATS publish async
-        async def mock_publish(*args, **kwargs):
+        async def mock_publish(*_args, **_kwargs):
             return True
 
         mock_nats_service.publish = mock_publish
@@ -367,7 +370,7 @@ class TestMuteUnmuteWorkflowIntegration:
         mock_nats_service.is_connected.return_value = True
 
         # Make NATS publish async
-        async def mock_publish(*args, **kwargs):
+        async def mock_publish(*_args, **_kwargs):
             return True
 
         mock_nats_service.publish = mock_publish
@@ -473,7 +476,7 @@ class TestMuteUnmuteWorkflowIntegration:
         mock_nats_service.is_connected.return_value = True
 
         # Make NATS publish async
-        async def mock_publish(*args, **kwargs):
+        async def mock_publish(*_args, **_kwargs):
             return True
 
         mock_nats_service.publish = mock_publish

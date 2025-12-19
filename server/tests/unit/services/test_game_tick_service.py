@@ -14,7 +14,10 @@ from server.services.game_tick_service import GameTickService
 class TestGameTickService:
     """Test cases for GameTickService."""
 
-    def setup_method(self):
+    # pylint: disable=attribute-defined-outside-init
+    # Attributes are defined in setup_method, which is the pytest pattern for test fixtures.
+    # This is intentional and follows pytest best practices.
+    def setup_method(self) -> None:
         """Set up test fixtures."""
         self.mock_event_publisher = Mock()
         self.mock_event_publisher.publish_game_tick_event = AsyncMock()
@@ -24,7 +27,7 @@ class TestGameTickService:
             tick_interval=0.1,  # Use 0.1 seconds for faster testing
         )
 
-    def test_initialization(self):
+    def test_initialization(self) -> None:
         """Test GameTickService initialization."""
         assert self.game_tick_service.event_publisher == self.mock_event_publisher
         assert self.game_tick_service.tick_interval == 0.1
@@ -32,7 +35,7 @@ class TestGameTickService:
         assert self.game_tick_service.tick_count == 0
 
     @pytest.mark.asyncio
-    async def test_start_stop(self):
+    async def test_start_stop(self) -> None:
         """Test starting and stopping the game tick service."""
         # Test start
         await self.game_tick_service.start()
@@ -46,7 +49,7 @@ class TestGameTickService:
         assert self.game_tick_service.is_running is False
 
     @pytest.mark.asyncio
-    async def test_tick_loop_generates_events(self):
+    async def test_tick_loop_generates_events(self) -> None:
         """Test that the tick loop generates game tick events."""
         await self.game_tick_service.start()
 
@@ -59,7 +62,7 @@ class TestGameTickService:
         await self.game_tick_service.stop()
 
     @pytest.mark.asyncio
-    async def test_tick_count_increments(self):
+    async def test_tick_count_increments(self) -> None:
         """Test that tick count increments with each tick."""
         await self.game_tick_service.start()
 
@@ -72,7 +75,7 @@ class TestGameTickService:
         await self.game_tick_service.stop()
 
     @pytest.mark.asyncio
-    async def test_publish_game_tick_event_called_with_correct_data(self):
+    async def test_publish_game_tick_event_called_with_correct_data(self) -> None:
         """Test that publish_game_tick_event is called with correct data."""
         await self.game_tick_service.start()
 
@@ -96,7 +99,7 @@ class TestGameTickService:
         await self.game_tick_service.stop()
 
     @pytest.mark.asyncio
-    async def test_publish_game_tick_event_failure_handling(self):
+    async def test_publish_game_tick_event_failure_handling(self) -> None:
         """Test that tick loop continues even if event publishing fails."""
         # Make event publisher raise an exception
         self.mock_event_publisher.publish_game_tick_event.side_effect = Exception("Publish failed")
@@ -112,7 +115,7 @@ class TestGameTickService:
         await self.game_tick_service.stop()
 
     @pytest.mark.asyncio
-    async def test_multiple_start_calls_safe(self):
+    async def test_multiple_start_calls_safe(self) -> None:
         """Test that multiple start calls are safe."""
         await self.game_tick_service.start()
         await self.game_tick_service.start()  # Second start should be safe
@@ -122,7 +125,7 @@ class TestGameTickService:
         await self.game_tick_service.stop()
 
     @pytest.mark.asyncio
-    async def test_multiple_stop_calls_safe(self):
+    async def test_multiple_stop_calls_safe(self) -> None:
         """Test that multiple stop calls are safe."""
         await self.game_tick_service.start()
         await self.game_tick_service.stop()
@@ -131,7 +134,7 @@ class TestGameTickService:
         assert self.game_tick_service.is_running is False
 
     @pytest.mark.asyncio
-    async def test_tick_interval_respected(self):
+    async def test_tick_interval_respected(self) -> None:
         """Test that the tick interval is respected."""
         start_time = datetime.now()
 
@@ -148,21 +151,21 @@ class TestGameTickService:
 
         await self.game_tick_service.stop()
 
-    def test_get_tick_count(self):
+    def test_get_tick_count(self) -> None:
         """Test getting the current tick count."""
         assert self.game_tick_service.get_tick_count() == 0
 
         self.game_tick_service.tick_count = 5
         assert self.game_tick_service.get_tick_count() == 5
 
-    def test_reset_tick_count(self):
+    def test_reset_tick_count(self) -> None:
         """Test resetting the tick count."""
         self.game_tick_service.tick_count = 10
         self.game_tick_service.reset_tick_count()
         assert self.game_tick_service.get_tick_count() == 0
 
     @pytest.mark.asyncio
-    async def test_tick_loop_stops_cleanly(self):
+    async def test_tick_loop_stops_cleanly(self) -> None:
         """Test that the tick loop stops cleanly when stopped."""
         await self.game_tick_service.start()
 

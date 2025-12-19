@@ -8,6 +8,7 @@ AI Agent: Tests for ConnectionErrorHandler covering error classification,
          fatal error handling, and error recovery with mocked callbacks.
 """
 
+
 # pylint: disable=redefined-outer-name,protected-access
 # Justification: pytest fixtures redefine names, protected access needed for testing internals
 
@@ -314,13 +315,13 @@ class TestGetErrorStatistics:
 class TestFatalErrorTypeConstants:
     """Test fatal error type constants are properly defined."""
 
-    def test_fatal_error_types_exist(self):
+    def test_fatal_error_types_exist(self) -> None:
         """Test FATAL_ERROR_TYPES constant is defined."""
         assert isinstance(FATAL_ERROR_TYPES, list)
         assert "AUTHENTICATION_FAILURE" in FATAL_ERROR_TYPES
         assert "SECURITY_VIOLATION" in FATAL_ERROR_TYPES
 
-    def test_critical_websocket_errors_exist(self):
+    def test_critical_websocket_errors_exist(self) -> None:
         """Test CRITICAL_WEBSOCKET_ERRORS constant is defined."""
         assert isinstance(CRITICAL_WEBSOCKET_ERRORS, list)
         assert "CONNECTION_CLOSED_UNEXPECTEDLY" in CRITICAL_WEBSOCKET_ERRORS

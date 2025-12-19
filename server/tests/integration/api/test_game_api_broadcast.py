@@ -23,7 +23,7 @@ class TestGameApiBroadcast:
         """Set client as instance variable for backward compatibility."""
         self.client = client
 
-    def test_broadcast_endpoint_requires_superuser(self):
+    def test_broadcast_endpoint_requires_superuser(self) -> None:
         """Test broadcast endpoint with authenticated superuser.
 
         AI: Tests the broadcast message endpoint with proper admin authentication.
@@ -77,7 +77,7 @@ class TestGameApiBroadcast:
         finally:
             self.client.app.dependency_overrides.clear()
 
-    def test_broadcast_endpoint_rejects_non_superuser(self):
+    def test_broadcast_endpoint_rejects_non_superuser(self) -> None:
         """Test broadcast endpoint rejects non-superuser with 403.
 
         AI: Tests that the endpoint correctly rejects non-admin users

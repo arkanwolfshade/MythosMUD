@@ -8,6 +8,7 @@ AI Agent: Tests for real-time API covering connection manager resolution,
          state management, and WebSocket endpoint logic. Created for fresh session execution.
 """
 
+
 # pylint: disable=redefined-outer-name,protected-access
 # Justification: pytest fixtures redefine names, protected access needed for testing internals
 

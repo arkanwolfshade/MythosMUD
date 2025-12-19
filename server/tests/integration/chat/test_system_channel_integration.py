@@ -9,6 +9,7 @@ This module tests the complete system channel flow including:
 """
 
 import uuid
+from typing import Any, cast
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
@@ -20,7 +21,10 @@ from server.game.chat_service import ChatService
 class TestSystemChannelIntegration:
     """Integration tests for system channel functionality."""
 
-    def setup_method(self):
+    # pylint: disable=attribute-defined-outside-init
+    # Attributes are defined in setup_method, which is the pytest pattern for test fixtures.
+    # This is intentional and follows pytest best practices.
+    def setup_method(self) -> None:
         """Set up test fixtures."""
         # Create mock dependencies
         self.mock_persistence = AsyncMock()
@@ -81,7 +85,7 @@ class TestSystemChannelIntegration:
 
         return chat_service
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Clean up test fixtures."""
         # Stop patches
         self.nats_patcher.stop()
@@ -90,7 +94,7 @@ class TestSystemChannelIntegration:
         self.user_manager_patcher.stop()
 
     @pytest.mark.asyncio
-    async def test_system_command_integration_admin_success(self):
+    async def test_system_command_integration_admin_success(self) -> None:
         """Test complete system command flow for admin user."""
         # Create chat service with mocked user manager
         chat_service = self._create_chat_service_with_mocks(
@@ -118,7 +122,7 @@ class TestSystemChannelIntegration:
 
         result = await self.command_service.process_validated_command(
             command_data=command_data,
-            current_user=self.admin_player,
+            current_user=cast(dict[Any, Any], self.admin_player),
             request=mock_request,
             alias_storage=None,
             player_name="AdminUser",
@@ -140,7 +144,7 @@ class TestSystemChannelIntegration:
         self.mock_chat_logger.log_system_channel_message.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_system_command_integration_non_admin_denied(self):
+    async def test_system_command_integration_non_admin_denied(self) -> None:
         """Test system command flow for non-admin user."""
         # Create chat service with mocked user manager
         chat_service = self._create_chat_service_with_mocks(
@@ -164,7 +168,7 @@ class TestSystemChannelIntegration:
 
         result = await self.command_service.process_validated_command(
             command_data=command_data,
-            current_user=self.regular_player,
+            current_user=cast(dict[Any, Any], self.regular_player),
             request=mock_request,
             alias_storage=None,
             player_name="RegularUser",
@@ -180,7 +184,7 @@ class TestSystemChannelIntegration:
         self.mock_chat_logger.log_system_channel_message.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_system_command_integration_empty_message(self):
+    async def test_system_command_integration_empty_message(self) -> None:
         """Test system command with empty message."""
         # Create chat service with mocked user manager
         chat_service = self._create_chat_service_with_mocks(
@@ -204,7 +208,7 @@ class TestSystemChannelIntegration:
 
         result = await self.command_service.process_validated_command(
             command_data=command_data,
-            current_user=self.admin_player,
+            current_user=cast(dict[Any, Any], self.admin_player),
             request=mock_request,
             alias_storage=None,
             player_name="AdminUser",
@@ -220,7 +224,7 @@ class TestSystemChannelIntegration:
         self.mock_chat_logger.log_system_channel_message.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_system_command_integration_nats_failure(self):
+    async def test_system_command_integration_nats_failure(self) -> None:
         """Test system command when NATS publishing fails."""
         # Create chat service with mocked user manager
         chat_service = self._create_chat_service_with_mocks(
@@ -248,7 +252,7 @@ class TestSystemChannelIntegration:
 
         result = await self.command_service.process_validated_command(
             command_data=command_data,
-            current_user=self.admin_player,
+            current_user=cast(dict[Any, Any], self.admin_player),
             request=mock_request,
             alias_storage=None,
             player_name="AdminUser",
@@ -264,7 +268,7 @@ class TestSystemChannelIntegration:
         self.mock_chat_logger.log_system_channel_message.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_system_command_integration_nats_not_connected(self):
+    async def test_system_command_integration_nats_not_connected(self) -> None:
         """Test system command when NATS is not connected."""
         # Create chat service with mocked user manager
         chat_service = self._create_chat_service_with_mocks(
@@ -289,7 +293,7 @@ class TestSystemChannelIntegration:
 
         result = await self.command_service.process_validated_command(
             command_data=command_data,
-            current_user=self.admin_player,
+            current_user=cast(dict[Any, Any], self.admin_player),
             request=mock_request,
             alias_storage=None,
             player_name="AdminUser",
@@ -305,7 +309,7 @@ class TestSystemChannelIntegration:
         self.mock_chat_logger.log_system_channel_message.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_system_command_integration_message_structure(self):
+    async def test_system_command_integration_message_structure(self) -> None:
         """Test that system messages have correct structure."""
         # Create chat service with mocked user manager
         chat_service = self._create_chat_service_with_mocks(
@@ -331,7 +335,7 @@ class TestSystemChannelIntegration:
 
         result = await self.command_service.process_validated_command(
             command_data=command_data,
-            current_user=self.admin_player,
+            current_user=cast(dict[Any, Any], self.admin_player),
             request=mock_request,
             alias_storage=None,
             player_name="AdminUser",
@@ -368,7 +372,7 @@ class TestSystemChannelIntegration:
         assert log_data["content"] == test_message
 
     @pytest.mark.asyncio
-    async def test_system_command_integration_rate_limiting(self):
+    async def test_system_command_integration_rate_limiting(self) -> None:
         """Test that system commands respect rate limiting."""
         # Create chat service with mocked user manager
         chat_service = self._create_chat_service_with_mocks(
@@ -393,7 +397,7 @@ class TestSystemChannelIntegration:
 
         result = await self.command_service.process_validated_command(
             command_data=command_data,
-            current_user=self.admin_player,
+            current_user=cast(dict[Any, Any], self.admin_player),
             request=mock_request,
             alias_storage=None,
             player_name="AdminUser",

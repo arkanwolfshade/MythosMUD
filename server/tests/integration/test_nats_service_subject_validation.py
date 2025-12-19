@@ -19,7 +19,16 @@ from server.services.nats_subject_manager import NATSSubjectManager
 class TestNATSServiceSubjectValidation:
     """Test NATSService integration with NATSSubjectManager for subject validation."""
 
-    def setup_method(self):
+    # Type annotations for attributes initialized in setup_method
+    # These are defined here to satisfy linters while maintaining pytest's setup_method pattern
+    test_config: NATSConfig
+    nats_service: NATSService
+    subject_manager: NATSSubjectManager
+    mock_nc: AsyncMock
+    test_subject: str
+    test_message_data: dict[str, str]
+
+    def setup_method(self) -> None:
         """Set up test fixtures."""
         # Create test configuration
         self.test_config = NATSConfig(
@@ -63,7 +72,7 @@ class TestNATSServiceSubjectValidation:
         await self.nats_service.available_connections.put(self.mock_nc)
 
     @pytest.mark.asyncio
-    async def test_publish_with_valid_subject_passes_validation(self):
+    async def test_publish_with_valid_subject_passes_validation(self) -> None:
         """Test that publishing with a valid subject passes validation."""
         # Initialize connection pool
         await self._init_connection_pool()
@@ -81,7 +90,7 @@ class TestNATSServiceSubjectValidation:
         self.mock_nc.publish.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_publish_with_invalid_subject_fails_validation(self):
+    async def test_publish_with_invalid_subject_fails_validation(self) -> None:
         """Test that publishing with an invalid subject fails validation."""
         # Initialize connection pool
         await self._init_connection_pool()
@@ -103,7 +112,7 @@ class TestNATSServiceSubjectValidation:
         self.mock_nc.publish.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_publish_without_subject_manager_works_normally(self):
+    async def test_publish_without_subject_manager_works_normally(self) -> None:
         """Test that publishing without subject manager works normally (backward compatibility)."""
         # Initialize connection pool
         await self._init_connection_pool()
@@ -121,7 +130,7 @@ class TestNATSServiceSubjectValidation:
         self.mock_nc.publish.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_publish_with_validation_error_logs_appropriately(self):
+    async def test_publish_with_validation_error_logs_appropriately(self) -> None:
         """Test that validation errors are logged with proper context."""
         # Initialize connection pool
         await self._init_connection_pool()
@@ -147,7 +156,7 @@ class TestNATSServiceSubjectValidation:
             assert "subject validation failed" in error_call[0][0] or "validation" in str(error_call)
 
     @pytest.mark.asyncio
-    async def test_publish_with_correlation_id_tracking(self):
+    async def test_publish_with_correlation_id_tracking(self) -> None:
         """Test that validation failures include correlation ID tracking."""
         # Initialize connection pool
         await self._init_connection_pool()
@@ -169,7 +178,7 @@ class TestNATSServiceSubjectValidation:
         self.mock_nc.publish.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_publish_with_pool_includes_subject_validation(self):
+    async def test_publish_with_pool_includes_subject_validation(self) -> None:
         """Test that publish_with_pool method includes subject validation."""
         # Initialize connection pool
         await self._init_connection_pool()
@@ -184,7 +193,7 @@ class TestNATSServiceSubjectValidation:
         self.mock_nc.publish.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_publish_batch_includes_subject_validation(self):
+    async def test_publish_batch_includes_subject_validation(self) -> None:
         """Test that publish_batch method includes subject validation."""
         # Initialize connection pool
         await self._init_connection_pool()
@@ -207,7 +216,7 @@ class TestNATSServiceSubjectValidation:
             mock_flush.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_subject_manager_can_be_injected_after_creation(self):
+    async def test_subject_manager_can_be_injected_after_creation(self) -> None:
         """Test that subject manager can be injected after NATSService creation."""
         # Create service without explicit subject manager (but it will be auto-created)
         assert self.nats_service.subject_manager is not None
@@ -226,7 +235,7 @@ class TestNATSServiceSubjectValidation:
         self.mock_nc.publish.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_subject_manager_can_be_replaced(self):
+    async def test_subject_manager_can_be_replaced(self) -> None:
         """Test that subject manager can be replaced."""
         # Inject initial subject manager
         initial_manager = NATSSubjectManager()
@@ -241,7 +250,7 @@ class TestNATSServiceSubjectValidation:
         assert self.nats_service.subject_manager is not initial_manager
 
     @pytest.mark.asyncio
-    async def test_validation_performance_impact_is_minimal(self):
+    async def test_validation_performance_impact_is_minimal(self) -> None:
         """Test that subject validation has minimal performance impact."""
         import time
 
@@ -268,7 +277,7 @@ class TestNATSServiceSubjectValidation:
         assert total_time < 1.0  # Should complete 100 publishes in under 1 second
 
     @pytest.mark.asyncio
-    async def test_validation_with_different_subject_patterns(self):
+    async def test_validation_with_different_subject_patterns(self) -> None:
         """Test validation with different subject patterns."""
         # Inject subject manager
         self.nats_service.subject_manager = self.subject_manager
@@ -297,7 +306,7 @@ class TestNATSServiceSubjectValidation:
         assert self.mock_nc.publish.call_count == len(valid_subjects)
 
     @pytest.mark.asyncio
-    async def test_validation_with_invalid_subject_patterns(self):
+    async def test_validation_with_invalid_subject_patterns(self) -> None:
         """Test validation with invalid subject patterns."""
         # Initialize connection pool
         await self._init_connection_pool()
@@ -325,7 +334,7 @@ class TestNATSServiceSubjectValidation:
         self.mock_nc.publish.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_subject_validation_can_be_disabled_via_config(self):
+    async def test_subject_validation_can_be_disabled_via_config(self) -> None:
         """Test that subject validation can be disabled via configuration."""
         # Create NATSService with validation disabled
         config = NATSConfig(enable_subject_validation=False)
@@ -350,7 +359,7 @@ class TestNATSServiceSubjectValidation:
         mock_nc.publish.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_strict_validation_configuration(self):
+    async def test_strict_validation_configuration(self) -> None:
         """Test that strict validation configuration is respected."""
         # Create NATSService with strict validation enabled
         config = NATSConfig(strict_subject_validation=True)
@@ -376,7 +385,7 @@ class TestNATSServiceSubjectValidation:
         mock_nc.publish.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_subject_manager_created_with_config(self):
+    async def test_subject_manager_created_with_config(self) -> None:
         """Test that subject manager is created with correct configuration."""
         # Create NATSService with strict validation enabled
         config = NATSConfig(strict_subject_validation=True)
@@ -387,7 +396,7 @@ class TestNATSServiceSubjectValidation:
         assert nats_service.subject_manager._strict_validation is True
 
     @pytest.mark.asyncio
-    async def test_subject_manager_not_created_when_disabled(self):
+    async def test_subject_manager_not_created_when_disabled(self) -> None:
         """Test that subject manager is not created when validation is disabled."""
         # Create NATSService with validation disabled
         config = NATSConfig(enable_subject_validation=False)
@@ -398,12 +407,17 @@ class TestNATSServiceSubjectValidation:
 
 
 class TestNATSServiceSubjectManagerDependencyInjection:
-    def setup_method(self):
+    # Type annotations for attributes initialized in setup_method
+    # These are defined here to satisfy linters while maintaining pytest's setup_method pattern
+    test_config: NATSConfig
+    subject_manager: NATSSubjectManager
+
+    def setup_method(self) -> None:
         """Set up test fixtures."""
         self.test_config = NATSConfig()
         self.subject_manager = NATSSubjectManager()
 
-    def test_nats_service_accepts_subject_manager_injection(self):
+    def test_nats_service_accepts_subject_manager_injection(self) -> None:
         """Test that NATSService accepts subject manager injection."""
         # Create NATSService with subject manager
         nats_service = NATSService(self.test_config, subject_manager=self.subject_manager)
@@ -411,7 +425,7 @@ class TestNATSServiceSubjectManagerDependencyInjection:
         # Verify injection worked
         assert nats_service.subject_manager is self.subject_manager
 
-    def test_nats_service_works_without_subject_manager(self):
+    def test_nats_service_works_without_subject_manager(self) -> None:
         """Test that NATSService works without explicit subject manager (backward compatibility)."""
         # Create NATSService without explicit subject manager
         nats_service = NATSService(self.test_config)
@@ -419,7 +433,7 @@ class TestNATSServiceSubjectManagerDependencyInjection:
         # Verify subject manager was auto-created (new behavior)
         assert nats_service.subject_manager is not None
 
-    def test_subject_manager_can_be_set_after_creation(self):
+    def test_subject_manager_can_be_set_after_creation(self) -> None:
         """Test that subject manager can be set after NATSService creation."""
         # Create NATSService without explicit subject manager
         nats_service = NATSService(self.test_config)
@@ -433,7 +447,7 @@ class TestNATSServiceSubjectManagerDependencyInjection:
         # Verify injection worked
         assert nats_service.subject_manager is new_manager
 
-    def test_subject_manager_can_be_replaced(self):
+    def test_subject_manager_can_be_replaced(self) -> None:
         """Test that subject manager can be replaced."""
         # Create NATSService with initial subject manager
         initial_manager = NATSSubjectManager()

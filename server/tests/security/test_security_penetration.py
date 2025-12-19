@@ -31,7 +31,7 @@ from server.validators.security_validator import validate_security_comprehensive
 class TestCommandInjectionAttacks:
     """Test command injection attack vectors."""
 
-    def test_say_command_sql_injection_attempts(self):
+    def test_say_command_sql_injection_attempts(self) -> None:
         """Test SQL injection attempts in say command (only patterns with assignment operators)."""
         injection_attempts = [
             "admin' OR 1=1 --",  # OR with = assignment
@@ -43,7 +43,7 @@ class TestCommandInjectionAttacks:
             with pytest.raises(ValidationError):
                 SayCommand(message=attempt)
 
-    def test_say_command_script_injection_attempts(self):
+    def test_say_command_script_injection_attempts(self) -> None:
         """Test script injection attempts in say command."""
         script_attempts = [
             "<script>alert('XSS')</script>",
@@ -64,7 +64,7 @@ class TestCommandInjectionAttacks:
             with pytest.raises(ValidationError):
                 SayCommand(message=attempt)
 
-    def test_say_command_command_injection_attempts(self):
+    def test_say_command_command_injection_attempts(self) -> None:
         """Test command injection attempts in say command (semicolon and pipe still blocked)."""
         command_attempts = [
             "; rm -rf /",  # Semicolon still blocked
@@ -78,7 +78,7 @@ class TestCommandInjectionAttacks:
             with pytest.raises(ValidationError):
                 SayCommand(message=attempt)
 
-    def test_local_command_injection_attempts(self):
+    def test_local_command_injection_attempts(self) -> None:
         """Test injection attempts in local command (HTML tags and command chaining still blocked)."""
         injection_attempts = [
             "<script>alert('XSS')</script>",  # HTML tags still blocked
@@ -91,7 +91,7 @@ class TestCommandInjectionAttacks:
             with pytest.raises(ValidationError):
                 LocalCommand(message=attempt)
 
-    def test_system_command_injection_attempts(self):
+    def test_system_command_injection_attempts(self) -> None:
         """Test injection attempts in system command."""
         injection_attempts = [
             "<script>alert('XSS')</script>",
@@ -103,7 +103,7 @@ class TestCommandInjectionAttacks:
             with pytest.raises(ValidationError):
                 SystemCommand(message=attempt)
 
-    def test_emote_command_injection_attempts(self):
+    def test_emote_command_injection_attempts(self) -> None:
         """Test injection attempts in emote command."""
         injection_attempts = [
             "<script>alert('XSS')</script>",
@@ -115,7 +115,7 @@ class TestCommandInjectionAttacks:
             with pytest.raises(ValidationError):
                 EmoteCommand(action=attempt)
 
-    def test_me_command_injection_attempts(self):
+    def test_me_command_injection_attempts(self) -> None:
         """Test injection attempts in me command."""
         injection_attempts = [
             "<script>alert('XSS')</script>",
@@ -127,7 +127,7 @@ class TestCommandInjectionAttacks:
             with pytest.raises(ValidationError):
                 MeCommand(action=attempt)
 
-    def test_pose_command_injection_attempts(self):
+    def test_pose_command_injection_attempts(self) -> None:
         """Test injection attempts in pose command."""
         injection_attempts = [
             "<script>alert('XSS')</script>",
@@ -139,7 +139,7 @@ class TestCommandInjectionAttacks:
             with pytest.raises(ValidationError):
                 PoseCommand(pose=attempt)
 
-    def test_whisper_command_injection_attempts(self):
+    def test_whisper_command_injection_attempts(self) -> None:
         """Test injection attempts in whisper command."""
         injection_attempts = [
             "<script>alert('XSS')</script>",
@@ -151,7 +151,7 @@ class TestCommandInjectionAttacks:
             with pytest.raises(ValidationError):
                 WhisperCommand(target="admin", message=attempt)
 
-    def test_reply_command_injection_attempts(self):
+    def test_reply_command_injection_attempts(self) -> None:
         """Test injection attempts in reply command."""
         injection_attempts = [
             "<script>alert('XSS')</script>",
@@ -163,7 +163,7 @@ class TestCommandInjectionAttacks:
             with pytest.raises(ValidationError):
                 ReplyCommand(message=attempt)
 
-    def test_alias_command_injection_attempts(self):
+    def test_alias_command_injection_attempts(self) -> None:
         """Test injection attempts in alias command."""
         injection_attempts = [
             "<script>alert('XSS')</script>",
@@ -175,7 +175,7 @@ class TestCommandInjectionAttacks:
             with pytest.raises(ValidationError):
                 AliasCommand(alias_name="hack", command=attempt)
 
-    def test_unalias_command_injection_attempts(self):
+    def test_unalias_command_injection_attempts(self) -> None:
         """Test injection attempts in unalias command."""
         injection_attempts = [
             "<script>alert('XSS')</script>",
@@ -187,7 +187,7 @@ class TestCommandInjectionAttacks:
             with pytest.raises(ValidationError):
                 UnaliasCommand(alias_name=attempt)
 
-    def test_help_command_injection_attempts(self):
+    def test_help_command_injection_attempts(self) -> None:
         """Test injection attempts in help command."""
         injection_attempts = [
             "<script>alert('XSS')</script>",
@@ -199,7 +199,7 @@ class TestCommandInjectionAttacks:
             with pytest.raises(ValidationError):
                 HelpCommand(topic=attempt)
 
-    def test_who_command_injection_attempts(self):
+    def test_who_command_injection_attempts(self) -> None:
         """Test injection attempts in who command."""
         injection_attempts = [
             "<script>alert('XSS')</script>",
@@ -211,7 +211,7 @@ class TestCommandInjectionAttacks:
             with pytest.raises(ValidationError):
                 WhoCommand(filter_name=attempt)
 
-    def test_mute_command_injection_attempts(self):
+    def test_mute_command_injection_attempts(self) -> None:
         """Test injection attempts in mute command."""
         injection_attempts = [
             "<script>alert('XSS')</script>",
@@ -223,7 +223,7 @@ class TestCommandInjectionAttacks:
             with pytest.raises(ValidationError):
                 MuteCommand(player_name=attempt)
 
-    def test_unmute_command_injection_attempts(self):
+    def test_unmute_command_injection_attempts(self) -> None:
         """Test injection attempts in unmute command."""
         injection_attempts = [
             "<script>alert('XSS')</script>",
@@ -239,7 +239,7 @@ class TestCommandInjectionAttacks:
 class TestXSSAttackVectors:
     """Test XSS attack vectors."""
 
-    def test_xss_script_tags(self):
+    def test_xss_script_tags(self) -> None:
         """Test various script tag XSS attempts."""
         xss_attempts = [
             "<script>alert('XSS')</script>",
@@ -258,7 +258,7 @@ class TestXSSAttackVectors:
             with pytest.raises(ValidationError):
                 SayCommand(message=attempt)
 
-    def test_xss_event_handlers(self):
+    def test_xss_event_handlers(self) -> None:
         """Test XSS via event handlers."""
         xss_attempts = [
             "<img src=x onerror=alert('XSS')>",
@@ -280,7 +280,7 @@ class TestXSSAttackVectors:
             with pytest.raises(ValidationError):
                 SayCommand(message=attempt)
 
-    def test_xss_javascript_protocols(self):
+    def test_xss_javascript_protocols(self) -> None:
         """Test XSS via JavaScript protocols."""
         xss_attempts = [
             "javascript:alert('XSS')",
@@ -299,7 +299,7 @@ class TestXSSAttackVectors:
             with pytest.raises(ValidationError):
                 SayCommand(message=attempt)
 
-    def test_xss_data_protocols(self):
+    def test_xss_data_protocols(self) -> None:
         """Test XSS via data protocols."""
         xss_attempts = [
             "data:text/html,<script>alert('XSS')</script>",
@@ -318,7 +318,7 @@ class TestXSSAttackVectors:
             with pytest.raises(ValidationError):
                 SayCommand(message=attempt)
 
-    def test_xss_svg_vectors(self):
+    def test_xss_svg_vectors(self) -> None:
         """Test XSS via SVG vectors."""
         xss_attempts = [
             "<svg onload=alert('XSS')>",
@@ -337,7 +337,7 @@ class TestXSSAttackVectors:
             with pytest.raises(ValidationError):
                 SayCommand(message=attempt)
 
-    def test_xss_iframe_vectors(self):
+    def test_xss_iframe_vectors(self) -> None:
         """Test XSS via iframe vectors."""
         xss_attempts = [
             "<iframe src='javascript:alert(\"XSS\")'></iframe>",
@@ -360,7 +360,7 @@ class TestXSSAttackVectors:
 class TestCommandInjectionVectors:
     """Test command injection attack vectors."""
 
-    def test_sql_injection_patterns(self):
+    def test_sql_injection_patterns(self) -> None:
         """Test SQL injection patterns (only patterns with = assignment operators)."""
         sql_patterns = [
             "admin' OR 1=1 --",  # OR with = assignment
@@ -372,7 +372,7 @@ class TestCommandInjectionVectors:
             with pytest.raises(ValidationError):
                 SayCommand(message=pattern)
 
-    def test_command_injection_patterns(self):
+    def test_command_injection_patterns(self) -> None:
         """Test command injection patterns (semicolon and pipe still blocked)."""
         cmd_patterns = [
             "; rm -rf /",  # Semicolon blocked
@@ -388,7 +388,7 @@ class TestCommandInjectionVectors:
             with pytest.raises(ValidationError):
                 SayCommand(message=pattern)
 
-    def test_path_traversal_attempts(self):
+    def test_path_traversal_attempts(self) -> None:
         """Test path traversal attempts."""
         path_traversal = [
             "../../../etc/passwd",
@@ -407,7 +407,7 @@ class TestCommandInjectionVectors:
             with pytest.raises(ValidationError):
                 SayCommand(message=attempt)
 
-    def test_ldap_injection_attempts(self):
+    def test_ldap_injection_attempts(self) -> None:
         """Test LDAP injection attempts (only patterns caught by current validators)."""
         ldap_attempts = [
             # LDAP patterns without actual dangerous metacharacters are now allowed
@@ -419,7 +419,7 @@ class TestCommandInjectionVectors:
             with pytest.raises(ValidationError):
                 SayCommand(message=attempt)
 
-    def test_xpath_injection_attempts(self):
+    def test_xpath_injection_attempts(self) -> None:
         """Test XPath injection attempts (only patterns with assignment operators)."""
         xpath_attempts = [
             "admin' or 1=1 or ''='",  # OR with = assignment
@@ -434,7 +434,7 @@ class TestCommandInjectionVectors:
 class TestSecurityValidationComprehensive:
     """Test comprehensive security validation."""
 
-    def test_comprehensive_security_validation(self):
+    def test_comprehensive_security_validation(self) -> None:
         """Test comprehensive security validation function."""
         malicious_inputs = [
             "<script>alert('XSS')</script>",
@@ -451,7 +451,7 @@ class TestSecurityValidationComprehensive:
             with pytest.raises(ValueError):
                 validate_security_comprehensive(malicious_input)
 
-    def test_comprehensive_security_validation_safe_inputs(self):
+    def test_comprehensive_security_validation_safe_inputs(self) -> None:
         """Test comprehensive security validation with safe inputs."""
         safe_inputs = [
             "Hello world!",
@@ -470,7 +470,7 @@ class TestSecurityValidationComprehensive:
             result = validate_security_comprehensive(safe_input)
             assert result == safe_input
 
-    def test_comprehensive_security_validation_edge_cases(self):
+    def test_comprehensive_security_validation_edge_cases(self) -> None:
         """Test comprehensive security validation with edge cases."""
         edge_cases = [
             "",  # Empty string
@@ -497,7 +497,7 @@ class TestSecurityValidationComprehensive:
 class TestSecurityValidationPerformance:
     """Test security validation performance."""
 
-    def test_security_validation_performance(self):
+    def test_security_validation_performance(self) -> None:
         """Test that security validation is performant."""
         import time
 
@@ -527,7 +527,7 @@ class TestSecurityValidationPerformance:
         # Should complete within reasonable time (less than 1 second)
         assert elapsed_time < 1.0, f"Security validation took too long: {elapsed_time}s"
 
-    def test_security_validation_memory_usage(self):
+    def test_security_validation_memory_usage(self) -> None:
         """Test that security validation doesn't use excessive memory."""
         import os
 

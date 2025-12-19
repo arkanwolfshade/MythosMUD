@@ -19,7 +19,7 @@ from server.services.combat_hp_sync import CombatDPSync
 class TestCombatDPSyncInit:
     """Test CombatDPSync initialization."""
 
-    def test_init_with_nats_service(self):
+    def test_init_with_nats_service(self) -> None:
         """Test initialization with NATS service."""
         mock_combat_service = MagicMock()
         mock_combat_service._nats_service = MagicMock()
@@ -31,7 +31,7 @@ class TestCombatDPSyncInit:
         assert sync._nats_service == mock_combat_service._nats_service
         assert sync._combat_event_publisher == mock_combat_service._combat_event_publisher
 
-    def test_init_without_nats_service(self):
+    def test_init_without_nats_service(self) -> None:
         """Test initialization without NATS service."""
         mock_combat_service = MagicMock()
         # Use hasattr to check, then delete if it exists
@@ -50,7 +50,7 @@ class TestCombatDPSyncInit:
 class TestGetPersistence:
     """Test _get_persistence method."""
 
-    def test_get_persistence_success(self):
+    def test_get_persistence_success(self) -> None:
         """Test successful retrieval of persistence."""
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)
@@ -66,7 +66,7 @@ class TestGetPersistence:
 
                 assert result == mock_container.async_persistence
 
-    def test_get_persistence_no_container(self):
+    def test_get_persistence_no_container(self) -> None:
         """Test when container is None."""
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)
@@ -78,7 +78,7 @@ class TestGetPersistence:
 
                 assert result is None
 
-    def test_get_persistence_import_error(self):
+    def test_get_persistence_import_error(self) -> None:
         """Test when ImportError occurs."""
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)
@@ -92,7 +92,7 @@ class TestGetPersistence:
                 assert result is None
                 mock_logger.warning.assert_called_once()
 
-    def test_get_persistence_attribute_error(self):
+    def test_get_persistence_attribute_error(self) -> None:
         """Test when AttributeError occurs."""
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)
@@ -110,7 +110,7 @@ class TestGetPersistence:
 class TestUpdatePlayerPosition:
     """Test _update_player_position method."""
 
-    def test_update_player_position_to_lying(self):
+    def test_update_player_position_to_lying(self) -> None:
         """Test updating position to lying when DP drops to 0."""
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)
@@ -128,7 +128,7 @@ class TestUpdatePlayerPosition:
             mock_logger.info.assert_called_once()
             assert "lying" in str(mock_logger.info.call_args).lower()
 
-    def test_update_player_position_already_lying(self):
+    def test_update_player_position_already_lying(self) -> None:
         """Test updating position when already lying."""
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)
@@ -144,7 +144,7 @@ class TestUpdatePlayerPosition:
 
             assert stats["position"] == PositionState.LYING
 
-    def test_update_player_position_no_change(self):
+    def test_update_player_position_no_change(self) -> None:
         """Test when position doesn't need to change."""
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)
@@ -160,7 +160,7 @@ class TestUpdatePlayerPosition:
 
             assert stats["position"] == PositionState.STANDING
 
-    def test_update_player_position_negative_to_negative(self):
+    def test_update_player_position_negative_to_negative(self) -> None:
         """Test updating position when DP goes from negative to more negative."""
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)
@@ -181,7 +181,7 @@ class TestVerifyPlayerSave:
     """Test _verify_player_save method."""
 
     @pytest.mark.asyncio
-    async def test_verify_player_save_success(self):
+    async def test_verify_player_save_success(self) -> None:
         """Test successful verification of player save."""
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)
@@ -202,7 +202,7 @@ class TestVerifyPlayerSave:
             assert "VERIFICATION" in str(mock_logger.info.call_args)
 
     @pytest.mark.asyncio
-    async def test_verify_player_save_player_not_found(self):
+    async def test_verify_player_save_player_not_found(self) -> None:
         """Test verification when player is not found."""
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)
@@ -221,7 +221,7 @@ class TestVerifyPlayerSave:
             assert "not found" in str(mock_logger.error.call_args).lower()
 
     @pytest.mark.asyncio
-    async def test_verify_player_save_mismatch(self):
+    async def test_verify_player_save_mismatch(self) -> None:
         """Test verification when DP doesn't match."""
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)
@@ -246,7 +246,7 @@ class TestVerifyPlayerSave:
 class TestLogDeathThresholdEvents:
     """Test _log_death_threshold_events method."""
 
-    def test_log_death_threshold_events_death_threshold(self):
+    def test_log_death_threshold_events_death_threshold(self) -> None:
         """Test logging when death threshold is reached."""
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)
@@ -263,7 +263,7 @@ class TestLogDeathThresholdEvents:
             call_args_str = str(mock_logger.info.call_args_list)
             assert "death threshold" in call_args_str.lower()
 
-    def test_log_death_threshold_events_mortally_wounded(self):
+    def test_log_death_threshold_events_mortally_wounded(self) -> None:
         """Test logging when player becomes mortally wounded."""
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)
@@ -279,7 +279,7 @@ class TestLogDeathThresholdEvents:
             call_args_str = str(mock_logger.info.call_args)
             assert "mortally wounded" in call_args_str.lower()
 
-    def test_log_death_threshold_events_no_change(self):
+    def test_log_death_threshold_events_no_change(self) -> None:
         """Test when no death threshold events occur."""
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)
@@ -299,7 +299,7 @@ class TestUpdateAndSavePlayerDp:
     """Test _update_and_save_player_dp method."""
 
     @pytest.mark.asyncio
-    async def test_update_and_save_player_dp_success(self):
+    async def test_update_and_save_player_dp_success(self) -> None:
         """Test successful update and save."""
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)
@@ -324,7 +324,7 @@ class TestUpdateAndSavePlayerDp:
             mock_persistence.save_player.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_update_and_save_player_dp_player_not_found(self):
+    async def test_update_and_save_player_dp_player_not_found(self) -> None:
         """Test when player is not found."""
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)
@@ -344,7 +344,7 @@ class TestPersistPlayerDpSync:
     """Test _persist_player_dp_sync method."""
 
     @pytest.mark.asyncio
-    async def test_persist_player_dp_sync_success(self):
+    async def test_persist_player_dp_sync_success(self) -> None:
         """Test successful persistence."""
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)
@@ -370,7 +370,7 @@ class TestPersistPlayerDpSync:
                             mock_log_death.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_persist_player_dp_sync_no_persistence(self):
+    async def test_persist_player_dp_sync_no_persistence(self) -> None:
         """Test when persistence is not available."""
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)
@@ -383,7 +383,7 @@ class TestPersistPlayerDpSync:
                 mock_logger.warning.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_persist_player_dp_sync_database_error(self):
+    async def test_persist_player_dp_sync_database_error(self) -> None:
         """Test when DatabaseError occurs."""
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)
@@ -401,7 +401,7 @@ class TestPublishPlayerDpUpdateEvent:
     """Test _publish_player_dp_update_event method."""
 
     @pytest.mark.asyncio
-    async def test_publish_player_dp_update_event_success(self):
+    async def test_publish_player_dp_update_event_success(self) -> None:
         """Test successful event publishing."""
         mock_combat_service = MagicMock()
         mock_nats_service = AsyncMock()
@@ -423,7 +423,7 @@ class TestPublishPlayerDpUpdateEvent:
                 assert isinstance(mock_event_bus.publish.call_args[0][0], PlayerDPUpdated)
 
     @pytest.mark.asyncio
-    async def test_publish_player_dp_update_event_with_nats(self):
+    async def test_publish_player_dp_update_event_with_nats(self) -> None:
         """Test event publishing with NATS service."""
         mock_combat_service = MagicMock()
         mock_nats_service = AsyncMock()
@@ -451,7 +451,7 @@ class TestPublishPlayerDpUpdateEvent:
                 assert "event_type" in call_args[0][1]
 
     @pytest.mark.asyncio
-    async def test_publish_player_dp_update_event_nats_legacy_subject(self):
+    async def test_publish_player_dp_update_event_nats_legacy_subject(self) -> None:
         """Test event publishing with NATS using legacy subject construction."""
         mock_combat_service = MagicMock()
         mock_nats_service = AsyncMock()
@@ -478,7 +478,7 @@ class TestPublishPlayerDpUpdateEvent:
                 assert "legacy" in str(mock_logger.warning.call_args).lower()
 
     @pytest.mark.asyncio
-    async def test_publish_player_dp_update_event_event_bus_error(self):
+    async def test_publish_player_dp_update_event_event_bus_error(self) -> None:
         """Test when event bus publish fails."""
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)
@@ -500,7 +500,7 @@ class TestPublishPlayerDpUpdateEvent:
                 assert any("Failed to publish" in call or "Error publishing" in call for call in error_calls)
 
     @pytest.mark.asyncio
-    async def test_publish_player_dp_update_event_no_event_bus(self):
+    async def test_publish_player_dp_update_event_no_event_bus(self) -> None:
         """Test when event bus is None."""
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)
@@ -522,7 +522,7 @@ class TestPublishPlayerDpCorrectionEvent:
     """Test _publish_player_dp_correction_event method."""
 
     @pytest.mark.asyncio
-    async def test_publish_player_dp_correction_event_success(self):
+    async def test_publish_player_dp_correction_event_success(self) -> None:
         """Test successful correction event publishing."""
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)
@@ -544,7 +544,7 @@ class TestPublishPlayerDpCorrectionEvent:
                 assert event.damage_taken == 0
 
     @pytest.mark.asyncio
-    async def test_publish_player_dp_correction_event_error(self):
+    async def test_publish_player_dp_correction_event_error(self) -> None:
         """Test when event bus publish fails."""
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)
@@ -566,7 +566,7 @@ class TestPublishPlayerDpCorrectionEvent:
 class TestPersistPlayerDpBackground:
     """Test _persist_player_dp_background method."""
 
-    def test_persist_player_dp_background_success(self):
+    def test_persist_player_dp_background_success(self) -> None:
         """Test successful background persistence."""
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)
@@ -579,7 +579,7 @@ class TestPersistPlayerDpBackground:
 
                     mock_create_task.assert_called_once()
 
-    def test_persist_player_dp_background_no_event_loop(self):
+    def test_persist_player_dp_background_no_event_loop(self) -> None:
         """Test when no event loop is available."""
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)
@@ -593,7 +593,7 @@ class TestPersistPlayerDpBackground:
                 assert "no event loop" in str(mock_logger.error.call_args).lower()
 
     @pytest.mark.asyncio
-    async def test_persist_player_dp_background_persistence_failure(self):
+    async def test_persist_player_dp_background_persistence_failure(self) -> None:
         """Test when persistence fails and correction event is sent."""
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)
@@ -614,7 +614,7 @@ class TestPersistPlayerDpBackground:
                     mock_publish.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_persist_player_dp_background_correction_event_failure(self):
+    async def test_persist_player_dp_background_correction_event_failure(self) -> None:
         """Test when correction event also fails."""
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)

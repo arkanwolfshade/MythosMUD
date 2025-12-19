@@ -112,7 +112,7 @@ class ErrorLoggingTestMixin:
 class TestErrorLoggingUtilities:
     """Test cases for error logging utility functions."""
 
-    def test_create_error_context_basic(self):
+    def test_create_error_context_basic(self) -> None:
         """Test basic error context creation."""
         context = create_error_context()
 
@@ -123,21 +123,21 @@ class TestErrorLoggingUtilities:
         assert context.user_id is None  # Default when no user provided
         assert isinstance(context.metadata, dict)
 
-    def test_create_error_context_with_user(self):
+    def test_create_error_context_with_user(self) -> None:
         """Test error context creation with user information."""
         user_id = "test-user-123"
         context = create_error_context(user_id=user_id)
 
         assert context.user_id == user_id
 
-    def test_create_error_context_with_metadata(self):
+    def test_create_error_context_with_metadata(self) -> None:
         """Test error context creation with metadata."""
         metadata = {"operation": "test", "value": 42}
         context = create_error_context(metadata=metadata)
 
         assert context.metadata == metadata
 
-    def test_log_and_raise_basic(self):
+    def test_log_and_raise_basic(self) -> None:
         """Test basic log_and_raise functionality."""
         test_mixin = ErrorLoggingTestMixin()
         log_file = test_mixin.create_temp_log_file()
@@ -158,7 +158,7 @@ class TestErrorLoggingUtilities:
         finally:
             test_mixin.cleanup_temp_files(log_file)
 
-    def test_log_and_raise_with_context(self):
+    def test_log_and_raise_with_context(self) -> None:
         """Test log_and_raise with error context."""
         test_mixin = ErrorLoggingTestMixin()
         log_file = test_mixin.create_temp_log_file()
@@ -186,7 +186,7 @@ class TestErrorLoggingUtilities:
         finally:
             test_mixin.cleanup_temp_files(log_file)
 
-    def test_log_and_raise_custom_exception(self):
+    def test_log_and_raise_custom_exception(self) -> None:
         """Test log_and_raise with custom exception class."""
         test_mixin = ErrorLoggingTestMixin()
         log_file = test_mixin.create_temp_log_file()
@@ -221,7 +221,7 @@ class TestErrorLoggingUtilities:
 class TestErrorContextValidation:
     """Test cases for ErrorContext validation and structure."""
 
-    def test_error_context_required_fields(self):
+    def test_error_context_required_fields(self) -> None:
         """Test that ErrorContext has all required fields."""
         context = create_error_context()
 
@@ -236,7 +236,7 @@ class TestErrorContextValidation:
         assert hasattr(context, "request_id")
         assert isinstance(context.metadata, dict)
 
-    def test_error_context_serialization(self):
+    def test_error_context_serialization(self) -> None:
         """Test ErrorContext serialization to dictionary."""
         context = create_error_context(user_id="test-user", metadata={"test_key": "test_value"})
 
@@ -250,7 +250,7 @@ class TestErrorContextValidation:
         assert context_dict["user_id"] == "test-user"
         assert context_dict["metadata"]["test_key"] == "test_value"
 
-    def test_error_context_timestamp_format(self):
+    def test_error_context_timestamp_format(self) -> None:
         """Test that ErrorContext timestamp is in correct format."""
         context = create_error_context()
 
@@ -259,7 +259,7 @@ class TestErrorContextValidation:
         assert "T" in iso_timestamp  # ISO format should contain 'T'
         assert iso_timestamp.endswith("+00:00") or "+" in iso_timestamp  # Should have timezone info
 
-    def test_error_context_metadata_immutability(self):
+    def test_error_context_metadata_immutability(self) -> None:
         """Test that ErrorContext metadata can be updated safely."""
         context = create_error_context()
 
@@ -278,7 +278,7 @@ class TestErrorContextValidation:
 class TestErrorLoggingSecurity:
     """Test cases for error logging security and data protection."""
 
-    def test_no_password_in_logs(self):
+    def test_no_password_in_logs(self) -> None:
         """Test that passwords are not logged in error messages."""
         test_mixin = ErrorLoggingTestMixin()
         log_file = test_mixin.create_temp_log_file()
@@ -308,7 +308,7 @@ class TestErrorLoggingSecurity:
         finally:
             test_mixin.cleanup_temp_files(log_file)
 
-    def test_error_context_no_sensitive_data(self):
+    def test_error_context_no_sensitive_data(self) -> None:
         """Test that ErrorContext doesn't accidentally include sensitive data."""
         context = create_error_context(
             metadata={
@@ -328,7 +328,7 @@ class TestErrorLoggingSecurity:
         assert "token" in context_dict["metadata"]
         assert context_dict["metadata"]["username"] == "testuser"
 
-    def test_log_and_raise_filters_sensitive_data(self):
+    def test_log_and_raise_filters_sensitive_data(self) -> None:
         """Test that log_and_raise filters sensitive data from details."""
         test_mixin = ErrorLoggingTestMixin()
         log_file = test_mixin.create_temp_log_file()
@@ -362,7 +362,7 @@ class TestErrorLoggingSecurity:
 class TestErrorLoggingPerformance:
     """Test cases for error logging performance characteristics."""
 
-    def test_error_context_creation_performance(self):
+    def test_error_context_creation_performance(self) -> None:
         """Test that error context creation is fast."""
         start_time = time.time()
 
@@ -378,7 +378,7 @@ class TestErrorLoggingPerformance:
         assert duration < 1.0, f"Error context creation too slow: {duration:.3f}s for 1000 contexts"
         assert len(contexts) == 1000
 
-    def test_log_and_raise_performance(self):
+    def test_log_and_raise_performance(self) -> None:
         """Test that log_and_raise has minimal performance impact."""
         test_mixin = ErrorLoggingTestMixin()
         log_file = test_mixin.create_temp_log_file()
@@ -403,7 +403,7 @@ class TestErrorLoggingPerformance:
         finally:
             test_mixin.cleanup_temp_files(log_file)
 
-    def test_error_context_memory_usage(self):
+    def test_error_context_memory_usage(self) -> None:
         """Test that ErrorContext doesn't cause memory leaks."""
         import gc
 
@@ -424,7 +424,7 @@ class TestErrorLoggingPerformance:
 class TestErrorLoggingIntegration:
     """Integration tests for error logging with other components."""
 
-    def test_error_logging_with_fastapi_request(self):
+    def test_error_logging_with_fastapi_request(self) -> None:
         """Test error logging integration with FastAPI request context."""
         from fastapi import Request
 
@@ -456,7 +456,7 @@ class TestErrorLoggingIntegration:
             # The actual error message is in error_message keyword arg
             assert call_args[1]["error_message"] == "Request context test"
 
-    def test_error_logging_with_database_operations(self):
+    def test_error_logging_with_database_operations(self) -> None:
         """Test error logging integration with database operations."""
         # Mock database error scenario
         db_error_details = {
@@ -483,7 +483,7 @@ class TestErrorLoggingIntegration:
             assert call_args[1]["details"] == db_error_details
             assert call_args[1]["user_friendly"] == "Unable to retrieve player data"
 
-    def test_error_logging_chain_handling(self):
+    def test_error_logging_chain_handling(self) -> None:
         """Test that error logging handles exception chains correctly."""
         try:
             try:
@@ -509,7 +509,7 @@ class TestErrorLoggingIntegration:
 class TestLogAndRaiseHTTP:
     """Test cases for log_and_raise_http function."""
 
-    def test_log_and_raise_http_basic(self):
+    def test_log_and_raise_http_basic(self) -> None:
         """Test basic log_and_raise_http functionality."""
         from server.utils.error_logging import log_and_raise_http
 
@@ -529,7 +529,7 @@ class TestLogAndRaiseHTTP:
             assert call_args[1]["status_code"] == 404
             assert call_args[1]["detail"] == "Resource not found"
 
-    def test_log_and_raise_http_with_context(self):
+    def test_log_and_raise_http_with_context(self) -> None:
         """Test log_and_raise_http with custom error context."""
         from server.utils.error_logging import log_and_raise_http
 
@@ -550,7 +550,7 @@ class TestLogAndRaiseHTTP:
             assert context_dict["user_id"] == "test-user-456"
             assert context_dict["session_id"] == "session-789"
 
-    def test_log_and_raise_http_custom_logger(self):
+    def test_log_and_raise_http_custom_logger(self) -> None:
         """Test log_and_raise_http with custom logger name."""
         from server.utils.error_logging import log_and_raise_http
 
@@ -569,7 +569,7 @@ class TestLogAndRaiseHTTP:
 class TestCreateContextFromRequest:
     """Test cases for create_context_from_request function."""
 
-    def test_create_context_from_request_basic(self):
+    def test_create_context_from_request_basic(self) -> None:
         """Test creating error context from FastAPI request."""
         from fastapi import Request
 
@@ -597,7 +597,7 @@ class TestCreateContextFromRequest:
         assert context.metadata["content_type"] == "application/json"
         assert context.metadata["remote_addr"] == "192.168.1.100"
 
-    def test_create_context_from_request_with_user_state(self):
+    def test_create_context_from_request_with_user_state(self) -> None:
         """Test creating error context from request with user state."""
         from fastapi import Request
 
@@ -618,7 +618,7 @@ class TestCreateContextFromRequest:
         assert context.user_id == "user-123"
         assert context.session_id == "session-456"
 
-    def test_create_context_from_request_missing_headers(self):
+    def test_create_context_from_request_missing_headers(self) -> None:
         """Test creating error context when headers are missing."""
         from fastapi import Request
 
@@ -642,7 +642,7 @@ class TestCreateContextFromRequest:
 class TestCreateContextFromWebSocket:
     """Test cases for create_context_from_websocket function."""
 
-    def test_create_context_from_websocket_basic(self):
+    def test_create_context_from_websocket_basic(self) -> None:
         """Test creating error context from WebSocket."""
         from fastapi.websockets import WebSocket
 
@@ -666,7 +666,7 @@ class TestCreateContextFromWebSocket:
         assert context.metadata["user_agent"] == "websocket-client/1.0"
         assert context.metadata["remote_addr"] == "192.168.1.200"
 
-    def test_create_context_from_websocket_with_state(self):
+    def test_create_context_from_websocket_with_state(self) -> None:
         """Test creating error context from WebSocket with user state."""
         from fastapi.websockets import WebSocket
 
@@ -688,7 +688,7 @@ class TestCreateContextFromWebSocket:
         assert context.user_id == "ws-user-789"
         assert context.session_id == "ws-session-012"
 
-    def test_create_context_from_websocket_no_client(self):
+    def test_create_context_from_websocket_no_client(self) -> None:
         """Test creating error context when WebSocket has no client info."""
         from fastapi.websockets import WebSocket
 
@@ -711,14 +711,14 @@ class TestCreateContextFromWebSocket:
 class TestWrapThirdPartyException:
     """Test cases for wrap_third_party_exception function."""
 
-    def test_wrap_known_database_exception(self):
+    def test_wrap_known_database_exception(self) -> None:
         """Test wrapping a known PostgreSQL exception."""
         from sqlalchemy.exc import OperationalError
 
         from server.utils.error_logging import wrap_third_party_exception
 
         try:
-            raise OperationalError("connection failed", None, None)
+            raise OperationalError("connection failed", None, None)  # type: ignore[arg-type]
         except OperationalError as exc:
             wrapped = wrap_third_party_exception(exc)
 
@@ -727,7 +727,7 @@ class TestWrapThirdPartyException:
             assert wrapped.details["original_type"] == "sqlalchemy.exc.OperationalError"
             assert wrapped.user_friendly == "An internal error occurred. Please try again."
 
-    def test_wrap_unmapped_exception(self):
+    def test_wrap_unmapped_exception(self) -> None:
         """Test wrapping an unmapped third-party exception."""
         from server.utils.error_logging import wrap_third_party_exception
 
@@ -746,7 +746,7 @@ class TestWrapThirdPartyException:
                 call_args = mock_logger.warning.call_args
                 assert "Unmapped third-party exception" in call_args[0][0]
 
-    def test_wrap_exception_with_context(self):
+    def test_wrap_exception_with_context(self) -> None:
         """Test wrapping exception with custom error context."""
         from sqlalchemy.exc import IntegrityError
 
@@ -755,14 +755,14 @@ class TestWrapThirdPartyException:
         context = create_error_context(user_id="wrap-user-123")
 
         try:
-            raise IntegrityError("UNIQUE constraint failed", None, None)
+            raise IntegrityError("UNIQUE constraint failed", None, None)  # type: ignore[arg-type]
         except IntegrityError as exc:
             wrapped = wrap_third_party_exception(exc, context=context)
 
             assert wrapped.context == context
             assert wrapped.context.user_id == "wrap-user-123"
 
-    def test_wrap_exception_custom_logger(self):
+    def test_wrap_exception_custom_logger(self) -> None:
         """Test wrapping exception with custom logger."""
         from sqlalchemy.exc import DatabaseError as SQLAlchemyDatabaseError
 
@@ -773,7 +773,7 @@ class TestWrapThirdPartyException:
             mock_get_logger.return_value = mock_custom_logger
 
             try:
-                raise SQLAlchemyDatabaseError("database error", None, None)
+                raise SQLAlchemyDatabaseError("database error", None, None)  # type: ignore[arg-type]
             except SQLAlchemyDatabaseError as exc:
                 wrapped = wrap_third_party_exception(exc, logger_name="custom.wrapper.logger")
 
@@ -788,7 +788,7 @@ class TestWrapThirdPartyException:
 class TestLogErrorWithContext:
     """Test cases for log_error_with_context function."""
 
-    def test_log_error_with_context_default_level(self):
+    def test_log_error_with_context_default_level(self) -> None:
         """Test logging error with default level (error)."""
         from server.utils.error_logging import log_error_with_context
 
@@ -804,7 +804,7 @@ class TestLogErrorWithContext:
             assert call_args[1]["error_type"] == "ValueError"
             assert call_args[1]["error_message"] == "Test value error"
 
-    def test_log_error_with_context_warning_level(self):
+    def test_log_error_with_context_warning_level(self) -> None:
         """Test logging error with warning level."""
         from server.utils.error_logging import log_error_with_context
 
@@ -818,7 +818,7 @@ class TestLogErrorWithContext:
             call_args = mock_logger.warning.call_args
             assert "Error logged with context" in call_args[0][0]
 
-    def test_log_error_with_context_info_level(self):
+    def test_log_error_with_context_info_level(self) -> None:
         """Test logging error with info level."""
         from server.utils.error_logging import log_error_with_context
 
@@ -830,7 +830,7 @@ class TestLogErrorWithContext:
             # Should log at info level
             mock_logger.info.assert_called_once()
 
-    def test_log_error_with_context_custom_context(self):
+    def test_log_error_with_context_custom_context(self) -> None:
         """Test logging error with custom context."""
         from server.utils.error_logging import log_error_with_context
 
@@ -845,7 +845,7 @@ class TestLogErrorWithContext:
             assert call_args[1]["context"]["user_id"] == "context-user-999"
             assert call_args[1]["context"]["metadata"]["action"] == "test"
 
-    def test_log_error_with_context_custom_logger(self):
+    def test_log_error_with_context_custom_logger(self) -> None:
         """Test logging error with custom logger name."""
         from server.utils.error_logging import log_error_with_context
 
@@ -865,7 +865,7 @@ class TestLogErrorWithContext:
 class TestCreateLoggedHTTPException:
     """Test cases for create_logged_http_exception function."""
 
-    def test_create_logged_http_exception_basic(self):
+    def test_create_logged_http_exception_basic(self) -> None:
         """Test creating logged HTTP exception."""
         from server.utils.error_logging import create_logged_http_exception
 
@@ -884,7 +884,7 @@ class TestCreateLoggedHTTPException:
             assert call_args[1]["status_code"] == 401
             assert call_args[1]["detail"] == "Unauthorized access"
 
-    def test_create_logged_http_exception_with_context(self):
+    def test_create_logged_http_exception_with_context(self) -> None:
         """Test creating logged HTTP exception with custom context."""
         from server.utils.error_logging import create_logged_http_exception
 
@@ -900,7 +900,7 @@ class TestCreateLoggedHTTPException:
             call_args = mock_logger.warning.call_args
             assert call_args[1]["context"]["user_id"] == "exc-user-321"
 
-    def test_create_logged_http_exception_custom_logger(self):
+    def test_create_logged_http_exception_custom_logger(self) -> None:
         """Test creating logged HTTP exception with custom logger."""
         from server.utils.error_logging import create_logged_http_exception
 

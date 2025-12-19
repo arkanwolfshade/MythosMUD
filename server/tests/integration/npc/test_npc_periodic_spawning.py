@@ -14,6 +14,7 @@ AI Agent: Integration tests for Issue #257 - NPC periodic spawning and respawnin
 
 import asyncio
 import time
+from typing import Any, cast
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -95,7 +96,7 @@ def optional_npc_definition():
         behavior_config='{"wander_probability": 0.2}',
         ai_integration_stub="{}",
     )
-    definition.id = 100
+    definition.id = cast(Any, 100)
     return definition
 
 
@@ -115,7 +116,7 @@ def required_npc_definition():
         behavior_config="{}",
         ai_integration_stub="{}",
     )
-    definition.id = 200
+    definition.id = cast(Any, 200)
     return definition
 
 
@@ -372,7 +373,7 @@ class TestNPCRespawning:
 class TestGameTickIntegration:
     """Test integration with game tick loop."""
 
-    def test_maintenance_config_should_run_maintenance(self):
+    def test_maintenance_config_should_run_maintenance(self) -> None:
         """Test maintenance interval configuration."""
         # Should run on multiples of 600 (current config: 600 ticks = 1 minute)
         assert NPCMaintenanceConfig.should_run_maintenance(600) is True
@@ -384,7 +385,7 @@ class TestGameTickIntegration:
         assert NPCMaintenanceConfig.should_run_maintenance(601) is False
         assert NPCMaintenanceConfig.should_run_maintenance(1199) is False
 
-    def test_maintenance_config_get_respawn_delay(self):
+    def test_maintenance_config_get_respawn_delay(self) -> None:
         """Test getting respawn delay for different NPC types."""
         # Test configured types (values in seconds - corrected from 10x scaling bug)
         assert NPCMaintenanceConfig.get_respawn_delay("quest_giver") == 600.0
@@ -395,7 +396,7 @@ class TestGameTickIntegration:
         # Test default for unknown type
         assert NPCMaintenanceConfig.get_respawn_delay("unknown_type") == 300.0
 
-    def test_maintenance_config_summary(self):
+    def test_maintenance_config_summary(self) -> None:
         """Test configuration summary."""
         summary = NPCMaintenanceConfig.get_config_summary()
 
@@ -545,7 +546,7 @@ class TestMultipleNPCTypes:
             behavior_config="{}",
             ai_integration_stub="{}",
         )
-        npc1.id = 101
+        npc1.id = cast(Any, 101)
 
         npc2 = NPCDefinition(
             name="Cultist B",
@@ -560,7 +561,7 @@ class TestMultipleNPCTypes:
             behavior_config="{}",
             ai_integration_stub="{}",
         )
-        npc2.id = 102
+        npc2.id = cast(Any, 102)
 
         # Add both to population controller
         population_controller.npc_definitions[101] = npc1
@@ -632,7 +633,7 @@ class TestEdgeCases:
             behavior_config="{}",
             ai_integration_stub="{}",
         )
-        npc_no_room.id = 103
+        npc_no_room.id = cast(Any, 103)
 
         population_controller.npc_definitions[103] = npc_no_room
 

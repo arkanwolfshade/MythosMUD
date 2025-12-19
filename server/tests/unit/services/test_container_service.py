@@ -26,17 +26,17 @@ from server.services.container_service import (
 class TestGetEnumValue:
     """Test _get_enum_value helper function."""
 
-    def test_get_enum_value_with_enum(self):
+    def test_get_enum_value_with_enum(self) -> None:
         """Test getting enum value from enum instance."""
         result = _get_enum_value(ContainerLockState.LOCKED)
         assert result == "locked"
 
-    def test_get_enum_value_with_string(self):
+    def test_get_enum_value_with_string(self) -> None:
         """Test getting enum value from string."""
         result = _get_enum_value("unlocked")
         assert result == "unlocked"
 
-    def test_get_enum_value_with_none(self):
+    def test_get_enum_value_with_none(self) -> None:
         """Test getting enum value from None."""
         result = _get_enum_value(None)
         assert result == "None"
@@ -45,7 +45,7 @@ class TestGetEnumValue:
 class TestFilterContainerData:
     """Test _filter_container_data helper function."""
 
-    def test_filter_container_data_removes_timestamps(self):
+    def test_filter_container_data_removes_timestamps(self) -> None:
         """Test that created_at and updated_at are removed."""
         container_data = {
             "container_id": str(uuid4()),
@@ -60,7 +60,7 @@ class TestFilterContainerData:
         assert "updated_at" not in result
         assert "container_id" in result
 
-    def test_filter_container_data_converts_items_json(self):
+    def test_filter_container_data_converts_items_json(self) -> None:
         """Test that items_json is converted to items."""
         container_data = {
             "container_id": str(uuid4()),
@@ -74,7 +74,7 @@ class TestFilterContainerData:
         assert "items" in result
         assert result["items"] == [{"item_id": "item-1"}]
 
-    def test_filter_container_data_converts_metadata_json(self):
+    def test_filter_container_data_converts_metadata_json(self) -> None:
         """Test that metadata_json is converted to metadata."""
         container_data = {
             "container_id": str(uuid4()),
@@ -88,7 +88,7 @@ class TestFilterContainerData:
         assert "metadata" in result
         assert result["metadata"] == {"name": "Chest"}
 
-    def test_filter_container_data_preserves_other_fields(self):
+    def test_filter_container_data_preserves_other_fields(self) -> None:
         """Test that other fields are preserved."""
         container_data = {
             "container_id": str(uuid4()),
@@ -107,7 +107,7 @@ class TestFilterContainerData:
 class TestContainerServiceInit:
     """Test ContainerService initialization."""
 
-    def test_container_service_init_defaults(self):
+    def test_container_service_init_defaults(self) -> None:
         """Test ContainerService initialization with defaults."""
         mock_persistence = MagicMock()
 
@@ -118,7 +118,7 @@ class TestContainerServiceInit:
         assert service.mutation_guard is not None
         assert service._open_containers == {}
 
-    def test_container_service_init_custom_services(self):
+    def test_container_service_init_custom_services(self) -> None:
         """Test ContainerService initialization with custom services."""
         from server.services.inventory_mutation_guard import InventoryMutationGuard
         from server.services.inventory_service import InventoryService
@@ -138,7 +138,7 @@ class TestContainerServiceInit:
 class TestGetContainerToken:
     """Test get_container_token method."""
 
-    def test_get_container_token_when_open(self):
+    def test_get_container_token_when_open(self) -> None:
         """Test getting token when container is open."""
         service = ContainerService(persistence=MagicMock())
         container_id = uuid4()
@@ -151,7 +151,7 @@ class TestGetContainerToken:
 
         assert result == token
 
-    def test_get_container_token_when_not_open(self):
+    def test_get_container_token_when_not_open(self) -> None:
         """Test getting token when container is not open."""
         service = ContainerService(persistence=MagicMock())
         container_id = uuid4()
@@ -161,7 +161,7 @@ class TestGetContainerToken:
 
         assert result is None
 
-    def test_get_container_token_when_open_by_different_player(self):
+    def test_get_container_token_when_open_by_different_player(self) -> None:
         """Test getting token when container is open by different player."""
         service = ContainerService(persistence=MagicMock())
         container_id = uuid4()
@@ -179,7 +179,7 @@ class TestGetContainerToken:
 class TestRemoveContainerFromOpenList:
     """Test _remove_container_from_open_list method."""
 
-    def test_remove_container_from_open_list_single_player(self):
+    def test_remove_container_from_open_list_single_player(self) -> None:
         """Test removing container when only one player has it open."""
         service = ContainerService(persistence=MagicMock())
         container_id = uuid4()
@@ -191,7 +191,7 @@ class TestRemoveContainerFromOpenList:
 
         assert container_id not in service._open_containers
 
-    def test_remove_container_from_open_list_multiple_players(self):
+    def test_remove_container_from_open_list_multiple_players(self) -> None:
         """Test removing container when multiple players have it open."""
         service = ContainerService(persistence=MagicMock())
         container_id = uuid4()
@@ -210,7 +210,7 @@ class TestRemoveContainerFromOpenList:
 class TestValidateContainerClose:
     """Test _validate_container_close method."""
 
-    def test_validate_container_close_success(self):
+    def test_validate_container_close_success(self) -> None:
         """Test validation when container is properly open."""
         service = ContainerService(persistence=MagicMock())
         container_id = uuid4()
@@ -223,7 +223,7 @@ class TestValidateContainerClose:
         # Should not raise
         service._validate_container_close(container_id, player_id, token, context)
 
-    def test_validate_container_close_not_open(self):
+    def test_validate_container_close_not_open(self) -> None:
         """Test validation when container is not open."""
         service = ContainerService(persistence=MagicMock())
         container_id = uuid4()
@@ -234,7 +234,7 @@ class TestValidateContainerClose:
         with pytest.raises(ContainerServiceError, match="Container not open"):
             service._validate_container_close(container_id, player_id, token, context)
 
-    def test_validate_container_close_wrong_player(self):
+    def test_validate_container_close_wrong_player(self) -> None:
         """Test validation when container is open by different player."""
         service = ContainerService(persistence=MagicMock())
         container_id = uuid4()
@@ -248,7 +248,7 @@ class TestValidateContainerClose:
         with pytest.raises(ContainerServiceError, match="Container not open by player"):
             service._validate_container_close(container_id, player_id2, token, context)
 
-    def test_validate_container_close_invalid_token(self):
+    def test_validate_container_close_invalid_token(self) -> None:
         """Test validation when mutation token is invalid."""
         service = ContainerService(persistence=MagicMock())
         container_id = uuid4()
@@ -267,7 +267,7 @@ class TestOpenContainer:
     """Test open_container method."""
 
     @pytest.mark.asyncio
-    async def test_open_container_success(self):
+    async def test_open_container_success(self) -> None:
         """Test successfully opening a container."""
         mock_persistence = AsyncMock()
         container_id = uuid4()
@@ -302,7 +302,7 @@ class TestOpenContainer:
             assert player_id in service._open_containers[container_id]
 
     @pytest.mark.asyncio
-    async def test_open_container_not_found(self):
+    async def test_open_container_not_found(self) -> None:
         """Test opening a container that doesn't exist."""
         mock_persistence = AsyncMock()
         container_id = uuid4()
@@ -316,7 +316,7 @@ class TestOpenContainer:
             await service.open_container(container_id, player_id)
 
     @pytest.mark.asyncio
-    async def test_open_container_player_not_found(self):
+    async def test_open_container_player_not_found(self) -> None:
         """Test opening a container when player doesn't exist."""
         mock_persistence = AsyncMock()
         container_id = uuid4()
@@ -339,7 +339,7 @@ class TestOpenContainer:
             await service.open_container(container_id, player_id)
 
     @pytest.mark.asyncio
-    async def test_open_container_locked(self):
+    async def test_open_container_locked(self) -> None:
         """Test opening a locked container."""
         mock_persistence = AsyncMock()
         container_id = uuid4()
@@ -368,7 +368,7 @@ class TestOpenContainer:
             await service.open_container(container_id, player_id)
 
     @pytest.mark.asyncio
-    async def test_open_container_sealed(self):
+    async def test_open_container_sealed(self) -> None:
         """Test opening a sealed container."""
         mock_persistence = AsyncMock()
         container_id = uuid4()
@@ -397,7 +397,7 @@ class TestOpenContainer:
             await service.open_container(container_id, player_id)
 
     @pytest.mark.asyncio
-    async def test_open_container_already_open(self):
+    async def test_open_container_already_open(self) -> None:
         """Test opening a container that's already open."""
         mock_persistence = AsyncMock()
         container_id = uuid4()
@@ -431,7 +431,7 @@ class TestCloseContainer:
     """Test close_container method."""
 
     @pytest.mark.asyncio
-    async def test_close_container_success(self):
+    async def test_close_container_success(self) -> None:
         """Test successfully closing a container."""
         mock_persistence = AsyncMock()
         container_id = uuid4()
@@ -461,7 +461,7 @@ class TestCloseContainer:
             assert container_id not in service._open_containers
 
     @pytest.mark.asyncio
-    async def test_close_container_not_open(self):
+    async def test_close_container_not_open(self) -> None:
         """Test closing a container that's not open."""
         mock_persistence = AsyncMock()
         container_id = uuid4()
@@ -474,7 +474,7 @@ class TestCloseContainer:
             await service.close_container(container_id, player_id, token)
 
     @pytest.mark.asyncio
-    async def test_close_container_invalid_token(self):
+    async def test_close_container_invalid_token(self) -> None:
         """Test closing a container with invalid token."""
         mock_persistence = AsyncMock()
         container_id = uuid4()
@@ -492,7 +492,7 @@ class TestCloseContainer:
 class TestVerifyContainerOpen:
     """Test _verify_container_open method."""
 
-    def test_verify_container_open_success(self):
+    def test_verify_container_open_success(self) -> None:
         """Test verification when container is properly open."""
         service = ContainerService(persistence=MagicMock())
         container_id = uuid4()
@@ -504,7 +504,7 @@ class TestVerifyContainerOpen:
         # Should not raise
         service._verify_container_open(container_id, player_id, token)
 
-    def test_verify_container_open_not_open(self):
+    def test_verify_container_open_not_open(self) -> None:
         """Test verification when container is not open."""
         service = ContainerService(persistence=MagicMock())
         container_id = uuid4()
@@ -514,7 +514,7 @@ class TestVerifyContainerOpen:
         with pytest.raises(ContainerServiceError, match="Container not open"):
             service._verify_container_open(container_id, player_id, token)
 
-    def test_verify_container_open_invalid_token(self):
+    def test_verify_container_open_invalid_token(self) -> None:
         """Test verification when token is invalid."""
         service = ContainerService(persistence=MagicMock())
         container_id = uuid4()

@@ -8,9 +8,11 @@ AI Agent: Tests for utility command functions covering player filtering,
          location formatting, and player entry formatting with various inputs.
 """
 
+
 # pylint: disable=redefined-outer-name
 # Justification: pytest fixtures redefine names
 
+from typing import Any, cast
 from unittest.mock import Mock
 
 import pytest
@@ -99,7 +101,7 @@ class TestFilterPlayersByName:
 class TestFormatPlayerLocation:
     """Test player location formatting."""
 
-    def test_format_standard_room_id(self):
+    def test_format_standard_room_id(self) -> None:
         """Test formatting standard hierarchical room ID."""
         room_id = "earth_arkhamcity_northside_intersection_derby_high"
         result = format_player_location(room_id)
@@ -109,7 +111,7 @@ class TestFormatPlayerLocation:
         assert "Intersection Derby High" in result
         assert ":" in result
 
-    def test_format_room_with_underscores_in_name(self):
+    def test_format_room_with_underscores_in_name(self) -> None:
         """Test formatting room ID with underscores in room name."""
         room_id = "earth_miskatonic_campus_library_forbidden_section"
         result = format_player_location(room_id)
@@ -118,7 +120,7 @@ class TestFormatPlayerLocation:
         assert "Campus" in result
         assert "Library Forbidden Section" in result
 
-    def test_format_short_room_id_fallback(self):
+    def test_format_short_room_id_fallback(self) -> None:
         """Test formatting short room ID uses fallback."""
         room_id = "earth_zone"
         result = format_player_location(room_id)
@@ -126,21 +128,21 @@ class TestFormatPlayerLocation:
         # Should return formatted version of the ID
         assert "Earth Zone" in result
 
-    def test_format_invalid_room_id_returns_unknown(self):
+    def test_format_invalid_room_id_returns_unknown(self) -> None:
         """Test formatting invalid room ID returns Unknown Location."""
         result = format_player_location("")
 
         assert result == "Unknown Location"
 
-    def test_format_none_room_id_returns_unknown(self):
+    def test_format_none_room_id_returns_unknown(self) -> None:
         """Test formatting None room ID returns Unknown Location."""
-        result = format_player_location(None)
+        result = format_player_location(cast(Any, None))
 
         assert result == "Unknown Location"
 
-    def test_format_non_string_room_id_returns_unknown(self):
+    def test_format_non_string_room_id_returns_unknown(self) -> None:
         """Test formatting non-string room ID returns Unknown Location."""
-        result = format_player_location(12345)
+        result = format_player_location(cast(Any, 12345))
 
         assert result == "Unknown Location"
 
@@ -165,7 +167,7 @@ class TestFormatPlayerEntry:
         assert "[10]" in result
         assert "[ADMIN]" in result
 
-    def test_format_player_with_error_uses_fallback(self):
+    def test_format_player_with_error_uses_fallback(self) -> None:
         """Test formatting player with error uses fallback formatting."""
         player = Mock()
         player.name = "ErrorPlayer"

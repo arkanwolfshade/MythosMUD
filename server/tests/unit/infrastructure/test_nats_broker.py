@@ -9,6 +9,7 @@ AI Agent: Tests for NATSMessageBroker covering initialization, connection manage
          error handling, and basic protocol operations with mocked NATS client.
 """
 
+
 # pylint: disable=redefined-outer-name,protected-access
 # Justification: pytest fixtures redefine names, protected access needed for testing internals
 

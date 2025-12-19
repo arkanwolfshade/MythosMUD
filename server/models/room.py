@@ -125,6 +125,27 @@ class Room:
             self._players.add(player_id_str)
             self._logger.debug("Player added to room silently", player_id=player_id, room_id=self.id)
 
+    def remove_player_silently(self, player_id: uuid.UUID | str) -> None:
+        """
+        Remove a player from the room without triggering an event.
+
+        This method is used during connection cleanup or initial setup
+        where we want to update the player's presence without triggering
+        PlayerLeftRoom events.
+
+        Args:
+            player_id: The ID of the player to remove (UUID or string)
+        """
+        if not player_id:
+            raise ValueError("Player ID cannot be empty")
+
+        # Convert to string for internal storage (Room uses set[str] for _players)
+        player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
+
+        if player_id_str in self._players:
+            self._players.remove(player_id_str)
+            self._logger.debug("Player removed from room silently", player_id=player_id, room_id=self.id)
+
     def player_left(self, player_id: uuid.UUID | str) -> None:
         """
         Remove a player from the room and trigger event.

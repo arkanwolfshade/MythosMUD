@@ -19,7 +19,7 @@ class TestPlayerLookFunctionality:
     """Test player look functionality in handle_look_command."""
 
     @pytest.mark.asyncio
-    async def test_look_player_explicit_syntax(self):
+    async def test_look_player_explicit_syntax(self) -> None:
         """Test looking at player with explicit syntax."""
         persistence = MagicMock()
         connection_manager = MagicMock()
@@ -63,7 +63,7 @@ class TestPlayerLookFunctionality:
         assert "healthy" in result["result"] or "lucid" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_look_player_health_states(self):
+    async def test_look_player_health_states(self) -> None:
         """Test player look with various health states."""
         persistence = MagicMock()
         connection_manager = MagicMock()
@@ -124,7 +124,7 @@ class TestPlayerLookFunctionality:
         assert "critical" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_look_player_lucidity_states(self):
+    async def test_look_player_lucidity_states(self) -> None:
         """Test player look with various lucidity states."""
         persistence = MagicMock()
         connection_manager = MagicMock()
@@ -164,7 +164,7 @@ class TestPlayerLookFunctionality:
         assert "disturbed" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_look_player_visible_equipment(self):
+    async def test_look_player_visible_equipment(self) -> None:
         """Test player look displays visible equipment."""
         persistence = MagicMock()
         connection_manager = MagicMock()
@@ -208,7 +208,7 @@ class TestPlayerLookFunctionality:
         assert "Hat" in result["result"] or "Coat" in result["result"] or "Sword" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_look_player_not_found(self):
+    async def test_look_player_not_found(self) -> None:
         """Test player look when player not found."""
         persistence = MagicMock()
         connection_manager = MagicMock()
@@ -235,7 +235,7 @@ class TestPlayerLookFunctionality:
         assert "don't see anyone" in result["result"].lower()
 
     @pytest.mark.asyncio
-    async def test_look_player_multiple_matches(self):
+    async def test_look_player_multiple_matches(self) -> None:
         """Test player look with multiple matching players."""
         persistence = MagicMock()
         connection_manager = MagicMock()
@@ -280,7 +280,7 @@ class TestPlayerLookFunctionality:
         assert "multiple" in result["result"].lower() or "see multiple" in result["result"].lower()
 
     @pytest.mark.asyncio
-    async def test_look_player_instance_targeting(self):
+    async def test_look_player_instance_targeting(self) -> None:
         """Test player look with instance targeting."""
         persistence = MagicMock()
         connection_manager = MagicMock()

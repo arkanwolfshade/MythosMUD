@@ -19,7 +19,7 @@ from server.persistence.container_persistence import ContainerData
 class TestContainerSecurityValidation:
     """Test container security validation."""
 
-    def test_container_persistence_uses_postgresql_no_file_paths(self):
+    def test_container_persistence_uses_postgresql_no_file_paths(self) -> None:
         """Test that container persistence uses PostgreSQL, not file paths."""
         # Container persistence operations use PostgreSQL connections
         # No file path operations should be present
@@ -42,7 +42,7 @@ class TestContainerSecurityValidation:
         assert hasattr(container_data, "container_instance_id")
         assert hasattr(container_data, "room_id")
 
-    def test_container_metadata_validator_rejects_personal_data(self):
+    def test_container_metadata_validator_rejects_personal_data(self) -> None:
         """Test that container metadata validator rejects personal data."""
         # Attempt to create container with personal data in metadata
         with pytest.raises(ValueError, match="personal information"):
@@ -57,7 +57,7 @@ class TestContainerSecurityValidation:
                 },
             )
 
-    def test_container_metadata_validator_allows_game_data(self):
+    def test_container_metadata_validator_allows_game_data(self) -> None:
         """Test that container metadata validator allows game-related data."""
         # Create container with valid game data in metadata
         container = ContainerComponent(
@@ -77,7 +77,7 @@ class TestContainerSecurityValidation:
         assert container.metadata["key_item_id"] == "key_001"
         assert container.metadata["description"] == "A locked chest"
 
-    def test_container_metadata_validator_case_insensitive(self):
+    def test_container_metadata_validator_case_insensitive(self) -> None:
         """Test that container metadata validator is case-insensitive for personal data."""
         # Attempt to create container with personal data in different cases
         with pytest.raises(ValueError, match="personal information"):

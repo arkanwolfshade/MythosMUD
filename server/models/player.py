@@ -41,23 +41,23 @@ class Player(Base):
     __table_args__ = {"extend_existing": True}
 
     # Primary key - UUID (matches user_id type for consistency)
-    player_id = Column(UUID(as_uuid=False), primary_key=True)
+    player_id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True)
 
     # Foreign key to users table - use UUID to match users.id (UUID type in PostgreSQL)
     # MULTI-CHARACTER: Removed unique=True to allow multiple characters per user
     # Explicit index=True for efficient queries
-    user_id = Column(UUID(as_uuid=False), ForeignKey("users.id"), nullable=False, index=True)
+    user_id: Mapped[str] = mapped_column(UUID(as_uuid=False), ForeignKey("users.id"), nullable=False, index=True)
 
     # Player information
     # MULTI-CHARACTER: Removed unique=True - uniqueness enforced by case-insensitive partial unique index
     # in database (idx_players_name_lower_unique_active) for active characters only
-    name = Column(String(length=50), nullable=False, index=True)
+    name: Mapped[str] = mapped_column(String(length=50), nullable=False, index=True)
 
     # Game data stored as JSONB (migrated from TEXT in migration 006)
     # BUGFIX: Use MutableDict to track in-place mutations for proper persistence
     # As documented in "Persistence and Mutation Tracking" - Dr. Armitage, 1930
     # JSONB columns require mutation tracking to detect in-place changes
-    stats = Column(
+    stats: Mapped[dict[str, Any]] = mapped_column(
         MutableDict.as_mutable(JSONB),
         nullable=False,
         default=lambda: {
@@ -78,21 +78,23 @@ class Player(Base):
             "position": "standing",
         },
     )
-    inventory = Column(Text(), nullable=False, default="[]")
-    status_effects = Column(Text(), nullable=False, default="[]")
+    inventory: Mapped[str] = mapped_column(Text(), nullable=False, default="[]")
+    status_effects: Mapped[str] = mapped_column(Text(), nullable=False, default="[]")
 
     # Location and progression
     # CRITICAL FIX: Increased from 50 to 255 to accommodate hierarchical room IDs
     # Room IDs like "earth_arkhamcity_sanitarium_room_foyer_entrance_001" are 54 characters
-    current_room_id = Column(String(length=255), nullable=False, default="earth_arkhamcity_sanitarium_room_foyer_001")
-    respawn_room_id = Column(
+    current_room_id: Mapped[str] = mapped_column(
+        String(length=255), nullable=False, default="earth_arkhamcity_sanitarium_room_foyer_001"
+    )
+    respawn_room_id: Mapped[str | None] = mapped_column(
         String(length=100), nullable=True, default="earth_arkhamcity_sanitarium_room_foyer_001"
     )  # Player's respawn location (NULL = use default)
-    experience_points = Column(Integer(), default=0, nullable=False)
-    level = Column(Integer(), default=1, nullable=False)
+    experience_points: Mapped[int] = mapped_column(Integer(), default=0, nullable=False)
+    level: Mapped[int] = mapped_column(Integer(), default=1, nullable=False)
 
     # Admin status
-    is_admin = Column(Integer(), default=0, nullable=False)
+    is_admin: Mapped[int] = mapped_column(Integer(), default=0, nullable=False)
 
     # ARCHITECTURE FIX Phase 3.1: Relationships defined directly in model (no circular imports)
     # MULTI-CHARACTER: Changed to one-to-many relationship (uselist=True)
@@ -103,15 +105,19 @@ class Player(Base):
     )
 
     # Profession - add index for queries filtering by profession
-    profession_id = Column(Integer(), default=0, nullable=False, index=True)
+    profession_id: Mapped[int] = mapped_column(Integer(), default=0, nullable=False, index=True)
 
     # MULTI-CHARACTER: Soft deletion support
-    is_deleted = Column(Boolean, default=False, nullable=False, index=True)
-    deleted_at = Column(DateTime(), nullable=True)
+    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, index=True)
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(), nullable=True)
 
     # Timestamps (persist naive UTC)
-    created_at = Column(DateTime(), default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False)
-    last_active = Column(DateTime(), default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(), default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False
+    )
+    last_active: Mapped[datetime] = mapped_column(
+        DateTime(), default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False
+    )
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Initialize Player instance."""
@@ -132,12 +138,12 @@ class Player(Base):
         # With JSONB + MutableDict, SQLAlchemy returns MutableDict (dict subclass)
         # Note: mypy sees self.stats as Column[Any], but at runtime SQLAlchemy returns the actual value
         try:
-            if isinstance(self.stats, dict):  # type: ignore[unreachable]
+            if isinstance(self.stats, dict):
                 # JSONB column returns dict directly
-                stats = cast(dict[str, Any], self.stats)  # type: ignore[unreachable]
+                stats = self.stats
             elif isinstance(self.stats, str):  # type: ignore[unreachable]
                 # Fallback for TEXT column (backward compatibility during migration)
-                stats = cast(dict[str, Any], json.loads(self.stats))  # type: ignore[unreachable]
+                stats = json.loads(self.stats)
             else:
                 # Handle None or other types
                 raise TypeError(f"Unexpected stats type: {type(self.stats)}")
@@ -161,7 +167,7 @@ class Player(Base):
             }
             return stats
 
-        if "position" not in stats:  # type: ignore[unreachable]
+        if "position" not in stats:
             stats["position"] = "standing"
             try:
                 self.set_stats(stats)
@@ -178,7 +184,7 @@ class Player(Base):
         SQLAlchemy automatically converts plain dicts to MutableDict.
         """
         # With MutableDict.as_mutable(JSONB), SQLAlchemy automatically handles conversion
-        self.stats = stats  # type: ignore[assignment]
+        self.stats = stats
 
     def get_inventory(self) -> list[dict[str, Any]]:
         """Get player inventory as list.
@@ -204,18 +210,18 @@ class Player(Base):
 
     def set_inventory(self, inventory: list[dict[str, Any]]) -> None:
         """Set player inventory from list."""
-        self.inventory = json.dumps(inventory)  # type: ignore[assignment]
+        self.inventory = json.dumps(inventory)
 
     def get_status_effects(self) -> list[dict[str, Any]]:
         """Get player status effects as list."""
         try:
-            return cast(list[dict[str, Any]], json.loads(cast(str, self.status_effects)))
+            return cast(list[dict[str, Any]], json.loads(self.status_effects))
         except (json.JSONDecodeError, TypeError):
             return []
 
     def set_status_effects(self, status_effects: list[dict[str, Any]]) -> None:
         """Set player status effects from list."""
-        self.status_effects = json.dumps(status_effects)  # type: ignore[assignment]
+        self.status_effects = json.dumps(status_effects)
 
     def get_equipped_items(self) -> dict[str, Any]:
         """Return equipped items mapping."""
@@ -237,9 +243,9 @@ class Player(Base):
 
     def add_experience(self, amount: int) -> None:
         """Add experience points to the player."""
-        self.experience_points += amount  # type: ignore[assignment]
+        self.experience_points += amount
         # Simple level calculation (can be enhanced)
-        self.level = (self.experience_points // 100) + 1  # type: ignore[assignment]
+        self.level = (self.experience_points // 100) + 1
 
     def is_alive(self) -> bool:
         """Check if player is alive (DP > 0)."""
@@ -293,7 +299,7 @@ class Player(Base):
 
     def set_admin_status(self, admin_status: bool) -> None:
         """Set player's admin status."""
-        self.is_admin = 1 if admin_status else 0  # type: ignore[assignment]
+        self.is_admin = 1 if admin_status else 0
 
     def get_health_percentage(self) -> float:
         """Get player determination points (DP) as percentage."""
@@ -342,6 +348,20 @@ class Player(Base):
         single_parent=True,
     )
 
+    inventory_record: Mapped["PlayerInventory | None"] = relationship(
+        "PlayerInventory",
+        back_populates="player",
+        uselist=False,
+        cascade="all, delete-orphan",
+        single_parent=True,
+    )
+
+    exploration_records: Mapped[list["PlayerExploration"]] = relationship(
+        "PlayerExploration",
+        back_populates="player",
+        cascade="all, delete-orphan",
+    )
+
 
 class PlayerChannelPreferences(Base):
     """
@@ -381,11 +401,56 @@ class PlayerChannelPreferences(Base):
     player: Mapped["Player"] = relationship("Player", back_populates="channel_preferences")
 
 
+class PlayerInventory(Base):
+    """
+    Player inventory model for persistent storage of items.
+
+    This matches the player_inventories table in PostgreSQL.
+    """
+
+    __tablename__ = "player_inventories"
+
+    player_id: Mapped[str] = mapped_column(
+        UUID(as_uuid=False),
+        ForeignKey("players.player_id", ondelete="CASCADE"),
+        primary_key=True,
+    )
+    inventory_json: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
+    equipped_json: Mapped[str] = mapped_column(Text, nullable=False, default="{}")
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(UTC),
+        server_default=text("CURRENT_TIMESTAMP"),
+    )
+
+    player: Mapped["Player"] = relationship("Player", back_populates="inventory_record")
+
+
+class PlayerExploration(Base):
+    """
+    Junction table tracking which rooms each player has explored.
+    """
+
+    __tablename__ = "player_exploration"
+
+    id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True, server_default=text("gen_random_uuid()"))
+    player_id: Mapped[str] = mapped_column(
+        UUID(as_uuid=False), ForeignKey("players.player_id", ondelete="CASCADE"), nullable=False
+    )
+    room_id: Mapped[str] = mapped_column(
+        UUID(as_uuid=False), ForeignKey("rooms.id", ondelete="CASCADE"), nullable=False
+    )
+    explored_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, server_default=text("now()"))
+
+    player: Mapped["Player"] = relationship("Player", back_populates="exploration_records")
+
+
 # Event listener to handle legacy string stats in database
 # Converts JSON strings to dicts before MutableDict coercion
 # As documented in "Legacy Data Migration Patterns" - Dr. Armitage, 1931
 @event.listens_for(Player, "load")
-def _convert_legacy_stats_string(target: Player, context: Any) -> None:
+def _convert_legacy_stats_string(target: Player, _context: Any) -> None:
     """
     Convert legacy string stats to dict during SQLAlchemy load event.
 
@@ -395,7 +460,7 @@ def _convert_legacy_stats_string(target: Player, context: Any) -> None:
 
     Args:
         target: The Player instance being loaded
-        context: SQLAlchemy query context (unused but required by event signature)
+        _context: SQLAlchemy query context (unused but required by event signature)
     """
     if isinstance(target.stats, str):  # type: ignore[unreachable]
         try:  # type: ignore[unreachable]

@@ -24,54 +24,54 @@ from server.postgres_adapter import (
 class TestPostgresRow:
     """Test PostgresRow class."""
 
-    def test_postgres_row_init(self):
+    def test_postgres_row_init(self) -> None:
         """Test PostgresRow initialization."""
         row_dict = {"id": 1, "name": "test"}
         row = PostgresRow(row_dict)
         assert row._row_dict == row_dict
 
-    def test_postgres_row_getitem_string_key(self):
+    def test_postgres_row_getitem_string_key(self) -> None:
         """Test PostgresRow __getitem__ with string key."""
         row_dict = {"id": 1, "name": "test"}
         row = PostgresRow(row_dict)
         assert row["id"] == 1
         assert row["name"] == "test"
 
-    def test_postgres_row_getitem_int_key(self):
+    def test_postgres_row_getitem_int_key(self) -> None:
         """Test PostgresRow __getitem__ with integer key."""
         row_dict = {"id": 1, "name": "test"}
         row = PostgresRow(row_dict)
         assert row[0] == 1
         assert row[1] == "test"
 
-    def test_postgres_row_getitem_int_key_out_of_range(self):
+    def test_postgres_row_getitem_int_key_out_of_range(self) -> None:
         """Test PostgresRow __getitem__ with out-of-range integer key."""
         row_dict = {"id": 1, "name": "test"}
         row = PostgresRow(row_dict)
         with pytest.raises(IndexError, match="Column index 2 out of range"):
             _ = row[2]
 
-    def test_postgres_row_getitem_int_key_negative(self):
+    def test_postgres_row_getitem_int_key_negative(self) -> None:
         """Test PostgresRow __getitem__ with negative integer key."""
         row_dict = {"id": 1, "name": "test"}
         row = PostgresRow(row_dict)
         with pytest.raises(IndexError, match="Column index -1 out of range"):
             _ = row[-1]
 
-    def test_postgres_row_iter(self):
+    def test_postgres_row_iter(self) -> None:
         """Test PostgresRow iteration."""
         row_dict = {"id": 1, "name": "test"}
         row = PostgresRow(row_dict)
         values = list(row)
         assert values == [1, "test"]
 
-    def test_postgres_row_keys(self):
+    def test_postgres_row_keys(self) -> None:
         """Test PostgresRow keys method."""
         row_dict = {"id": 1, "name": "test"}
         row = PostgresRow(row_dict)
         assert list(row.keys()) == ["id", "name"]
 
-    def test_postgres_row_contains(self):
+    def test_postgres_row_contains(self) -> None:
         """Test PostgresRow __contains__ method."""
         row_dict = {"id": 1, "name": "test"}
         row = PostgresRow(row_dict)
@@ -79,13 +79,13 @@ class TestPostgresRow:
         assert "name" in row
         assert "missing" not in row
 
-    def test_postgres_row_len(self):
+    def test_postgres_row_len(self) -> None:
         """Test PostgresRow __len__ method."""
         row_dict = {"id": 1, "name": "test"}
         row = PostgresRow(row_dict)
         assert len(row) == 2
 
-    def test_postgres_row_repr(self):
+    def test_postgres_row_repr(self) -> None:
         """Test PostgresRow __repr__ method."""
         row_dict = {"id": 1, "name": "test"}
         row = PostgresRow(row_dict)
@@ -97,7 +97,7 @@ class TestPostgresRow:
 class TestPostgresConnection:
     """Test PostgresConnection class."""
 
-    def test_postgres_connection_init(self):
+    def test_postgres_connection_init(self) -> None:
         """Test PostgresConnection initialization."""
         mock_conn = MagicMock()
         mock_conn.autocommit = True
@@ -105,7 +105,7 @@ class TestPostgresConnection:
         assert conn._conn == mock_conn
         assert mock_conn.autocommit is False
 
-    def test_postgres_connection_execute(self):
+    def test_postgres_connection_execute(self) -> None:
         """Test PostgresConnection execute method."""
         mock_conn = MagicMock()
         mock_conn.autocommit = True
@@ -119,7 +119,7 @@ class TestPostgresConnection:
         mock_conn.cursor.assert_called_once_with(cursor_factory=RealDictCursor)
         mock_cursor.execute.assert_called_once_with("SELECT * FROM test", ("param",))
 
-    def test_postgres_connection_execute_no_params(self):
+    def test_postgres_connection_execute_no_params(self) -> None:
         """Test PostgresConnection execute method without params."""
         mock_conn = MagicMock()
         mock_conn.autocommit = True
@@ -132,7 +132,7 @@ class TestPostgresConnection:
         assert isinstance(result, PostgresCursor)
         mock_cursor.execute.assert_called_once_with("SELECT * FROM test", None)
 
-    def test_postgres_connection_cursor_default(self):
+    def test_postgres_connection_cursor_default(self) -> None:
         """Test PostgresConnection cursor method with default factory."""
         mock_conn = MagicMock()
         mock_conn.autocommit = True
@@ -145,7 +145,7 @@ class TestPostgresConnection:
         assert result == mock_cursor
         mock_conn.cursor.assert_called_once_with(cursor_factory=RealDictCursor)
 
-    def test_postgres_connection_cursor_custom_factory(self):
+    def test_postgres_connection_cursor_custom_factory(self) -> None:
         """Test PostgresConnection cursor method with custom factory."""
         mock_conn = MagicMock()
         mock_conn.autocommit = True
@@ -159,7 +159,7 @@ class TestPostgresConnection:
         assert result == mock_cursor
         mock_conn.cursor.assert_called_once_with(cursor_factory=custom_factory)
 
-    def test_postgres_connection_commit(self):
+    def test_postgres_connection_commit(self) -> None:
         """Test PostgresConnection commit method."""
         mock_conn = MagicMock()
         mock_conn.autocommit = True
@@ -167,7 +167,7 @@ class TestPostgresConnection:
         conn.commit()
         mock_conn.commit.assert_called_once()
 
-    def test_postgres_connection_rollback(self):
+    def test_postgres_connection_rollback(self) -> None:
         """Test PostgresConnection rollback method."""
         mock_conn = MagicMock()
         mock_conn.autocommit = True
@@ -175,7 +175,7 @@ class TestPostgresConnection:
         conn.rollback()
         mock_conn.rollback.assert_called_once()
 
-    def test_postgres_connection_close(self):
+    def test_postgres_connection_close(self) -> None:
         """Test PostgresConnection close method."""
         mock_conn = MagicMock()
         mock_conn.autocommit = True
@@ -183,7 +183,7 @@ class TestPostgresConnection:
         conn.close()
         mock_conn.close.assert_called_once()
 
-    def test_postgres_connection_context_manager_success(self):
+    def test_postgres_connection_context_manager_success(self) -> None:
         """Test PostgresConnection context manager on success."""
         mock_conn = MagicMock()
         mock_conn.autocommit = True
@@ -196,7 +196,7 @@ class TestPostgresConnection:
         mock_conn.close.assert_called_once()
         mock_conn.rollback.assert_not_called()
 
-    def test_postgres_connection_context_manager_exception(self):
+    def test_postgres_connection_context_manager_exception(self) -> None:
         """Test PostgresConnection context manager on exception."""
         mock_conn = MagicMock()
         mock_conn.autocommit = True
@@ -214,13 +214,13 @@ class TestPostgresConnection:
 class TestPostgresCursor:
     """Test PostgresCursor class."""
 
-    def test_postgres_cursor_init(self):
+    def test_postgres_cursor_init(self) -> None:
         """Test PostgresCursor initialization."""
         mock_cursor = MagicMock()
         cursor = PostgresCursor(mock_cursor)
         assert cursor._cursor == mock_cursor
 
-    def test_postgres_cursor_fetchone_with_row(self):
+    def test_postgres_cursor_fetchone_with_row(self) -> None:
         """Test PostgresCursor fetchone with a row."""
         mock_cursor = MagicMock()
         mock_row = {"id": 1, "name": "test"}
@@ -234,7 +234,7 @@ class TestPostgresCursor:
         assert result["name"] == "test"
         mock_cursor.fetchone.assert_called_once()
 
-    def test_postgres_cursor_fetchone_none(self):
+    def test_postgres_cursor_fetchone_none(self) -> None:
         """Test PostgresCursor fetchone with no rows."""
         mock_cursor = MagicMock()
         mock_cursor.fetchone.return_value = None
@@ -245,7 +245,7 @@ class TestPostgresCursor:
         assert result is None
         mock_cursor.fetchone.assert_called_once()
 
-    def test_postgres_cursor_fetchall_with_rows(self):
+    def test_postgres_cursor_fetchall_with_rows(self) -> None:
         """Test PostgresCursor fetchall with rows."""
         mock_cursor = MagicMock()
         mock_rows = [{"id": 1, "name": "test1"}, {"id": 2, "name": "test2"}]
@@ -260,7 +260,7 @@ class TestPostgresCursor:
         assert result[1]["id"] == 2
         mock_cursor.fetchall.assert_called_once()
 
-    def test_postgres_cursor_fetchall_empty(self):
+    def test_postgres_cursor_fetchall_empty(self) -> None:
         """Test PostgresCursor fetchall with no rows."""
         mock_cursor = MagicMock()
         mock_cursor.fetchall.return_value = []
@@ -271,7 +271,7 @@ class TestPostgresCursor:
         assert result == []
         mock_cursor.fetchall.assert_called_once()
 
-    def test_postgres_cursor_rowcount(self):
+    def test_postgres_cursor_rowcount(self) -> None:
         """Test PostgresCursor rowcount method."""
         mock_cursor = MagicMock()
         mock_cursor.rowcount = 5
@@ -285,7 +285,7 @@ class TestPostgresCursor:
 class TestPostgresConnectionPool:
     """Test PostgresConnectionPool class."""
 
-    def test_get_pool_creates_new_pool(self):
+    def test_get_pool_creates_new_pool(self) -> None:
         """Test get_pool creates a new pool for a new URL."""
         database_url = "postgresql://user:pass@localhost/db"
         with patch("server.postgres_adapter.ThreadedConnectionPool") as mock_pool_class:
@@ -300,7 +300,7 @@ class TestPostgresConnectionPool:
                 mock_pool_class.assert_called_once_with(1, 10, dsn=database_url)
                 mock_logger.info.assert_called_once()
 
-    def test_get_pool_returns_existing_pool(self):
+    def test_get_pool_returns_existing_pool(self) -> None:
         """Test get_pool returns existing pool for same URL."""
         database_url = "postgresql://user:pass@localhost/db"
         with patch("server.postgres_adapter.ThreadedConnectionPool") as mock_pool_class:
@@ -316,7 +316,7 @@ class TestPostgresConnectionPool:
             # Should only be called once
             assert mock_pool_class.call_count == 1
 
-    def test_get_pool_normalizes_psycopg2_url(self):
+    def test_get_pool_normalizes_psycopg2_url(self) -> None:
         """Test get_pool normalizes postgresql+psycopg2:// URLs."""
         database_url = "postgresql+psycopg2://user:pass@localhost/db"
         normalized_url = "postgresql://user:pass@localhost/db"
@@ -328,7 +328,7 @@ class TestPostgresConnectionPool:
 
             mock_pool_class.assert_called_once_with(1, 10, dsn=normalized_url)
 
-    def test_get_pool_normalizes_asyncpg_url(self):
+    def test_get_pool_normalizes_asyncpg_url(self) -> None:
         """Test get_pool normalizes postgresql+asyncpg:// URLs."""
         database_url = "postgresql+asyncpg://user:pass@localhost/db"
         normalized_url = "postgresql://user:pass@localhost/db"
@@ -340,7 +340,7 @@ class TestPostgresConnectionPool:
 
             mock_pool_class.assert_called_once_with(1, 10, dsn=normalized_url)
 
-    def test_get_connection_context_manager(self):
+    def test_get_connection_context_manager(self) -> None:
         """Test get_connection context manager."""
         database_url = "postgresql://user:pass@localhost/db"
         with patch("server.postgres_adapter.ThreadedConnectionPool") as mock_pool_class:
@@ -357,7 +357,7 @@ class TestPostgresConnectionPool:
             mock_pool.getconn.assert_called_once()
             mock_pool.putconn.assert_called_once_with(mock_conn)
 
-    def test_get_connection_context_manager_exception(self):
+    def test_get_connection_context_manager_exception(self) -> None:
         """Test get_connection context manager handles exceptions."""
         database_url = "postgresql://user:pass@localhost/db"
         with patch("server.postgres_adapter.ThreadedConnectionPool") as mock_pool_class:
@@ -378,27 +378,27 @@ class TestPostgresConnectionPool:
 class TestUtilityFunctions:
     """Test utility functions."""
 
-    def test_is_postgres_url_postgresql(self):
+    def test_is_postgres_url_postgresql(self) -> None:
         """Test is_postgres_url with postgresql:// URL."""
         assert is_postgres_url("postgresql://user:pass@localhost/db") is True
 
-    def test_is_postgres_url_postgresql_psycopg2(self):
+    def test_is_postgres_url_postgresql_psycopg2(self) -> None:
         """Test is_postgres_url with postgresql+psycopg2:// URL."""
         assert is_postgres_url("postgresql+psycopg2://user:pass@localhost/db") is True
 
-    def test_is_postgres_url_postgresql_asyncpg(self):
+    def test_is_postgres_url_postgresql_asyncpg(self) -> None:
         """Test is_postgres_url with postgresql+asyncpg:// URL."""
         assert is_postgres_url("postgresql+asyncpg://user:pass@localhost/db") is True
 
-    def test_is_postgres_url_sqlite(self):
+    def test_is_postgres_url_sqlite(self) -> None:
         """Test is_postgres_url with SQLite URL."""
         assert is_postgres_url("sqlite:///path/to/db") is False
 
-    def test_is_postgres_url_mysql(self):
+    def test_is_postgres_url_mysql(self) -> None:
         """Test is_postgres_url with MySQL URL."""
         assert is_postgres_url("mysql://user:pass@localhost/db") is False
 
-    def test_connect_postgres(self):
+    def test_connect_postgres(self) -> None:
         """Test connect_postgres function."""
         database_url = "postgresql://user:pass@localhost/db"
         with patch("server.postgres_adapter.psycopg2.connect") as mock_connect:
@@ -410,7 +410,7 @@ class TestUtilityFunctions:
             assert result._conn == mock_conn
             mock_connect.assert_called_once_with(database_url)
 
-    def test_connect_postgres_normalizes_psycopg2_url(self):
+    def test_connect_postgres_normalizes_psycopg2_url(self) -> None:
         """Test connect_postgres normalizes postgresql+psycopg2:// URL."""
         database_url = "postgresql+psycopg2://user:pass@localhost/db"
         normalized_url = "postgresql://user:pass@localhost/db"
@@ -421,7 +421,7 @@ class TestUtilityFunctions:
 
             mock_connect.assert_called_once_with(normalized_url)
 
-    def test_connect_postgres_normalizes_asyncpg_url(self):
+    def test_connect_postgres_normalizes_asyncpg_url(self) -> None:
         """Test connect_postgres normalizes postgresql+asyncpg:// URL."""
         database_url = "postgresql+asyncpg://user:pass@localhost/db"
         normalized_url = "postgresql://user:pass@localhost/db"
@@ -432,19 +432,19 @@ class TestUtilityFunctions:
 
             mock_connect.assert_called_once_with(normalized_url)
 
-    def test_convert_sqlite_to_postgres_query_placeholders(self):
+    def test_convert_sqlite_to_postgres_query_placeholders(self) -> None:
         """Test convert_sqlite_to_postgres_query converts ? to %s."""
         sqlite_query = "SELECT * FROM test WHERE id = ? AND name = ?"
         postgres_query = convert_sqlite_to_postgres_query(sqlite_query)
         assert postgres_query == "SELECT * FROM test WHERE id = %s AND name = %s"
 
-    def test_convert_sqlite_to_postgres_query_no_placeholders(self):
+    def test_convert_sqlite_to_postgres_query_no_placeholders(self) -> None:
         """Test convert_sqlite_to_postgres_query with no placeholders."""
         query = "SELECT * FROM test"
         result = convert_sqlite_to_postgres_query(query)
         assert result == "SELECT * FROM test"
 
-    def test_convert_sqlite_to_postgres_query_insert_replace(self):
+    def test_convert_sqlite_to_postgres_query_insert_replace(self) -> None:
         """Test convert_sqlite_to_postgres_query with INSERT OR REPLACE."""
         query = "INSERT OR REPLACE INTO test (id, name) VALUES (?, ?)"
         result = convert_sqlite_to_postgres_query(query)

@@ -6,6 +6,7 @@ consolidation of access, error, and request logging functionality.
 """
 
 import time
+from typing import Any, cast
 from unittest.mock import Mock
 
 import pytest
@@ -55,29 +56,26 @@ class ComprehensiveLoggingMiddleware(BaseHTTPMiddleware):
     def _log_request_start(self, request: Request):
         """Log request start information."""
         # This would use the actual logger in the real implementation
-        pass
 
     def _log_request_success(self, request: Request, response: Response, process_time: float):
         """Log successful request completion."""
         # This would use the actual logger in the real implementation
-        pass
 
     def _log_request_error(self, request: Request, error: Exception, process_time: float):
         """Log request error."""
         # This would use the actual logger in the real implementation
-        pass
 
 
 class TestComprehensiveLoggingMiddleware:
     """Test the ComprehensiveLoggingMiddleware functionality."""
 
-    def test_middleware_inherits_from_base(self):
+    def test_middleware_inherits_from_base(self) -> None:
         """Test that ComprehensiveLoggingMiddleware inherits from BaseHTTPMiddleware."""
         middleware = ComprehensiveLoggingMiddleware(Mock())
         assert isinstance(middleware, BaseHTTPMiddleware)
 
     @pytest.mark.asyncio
-    async def test_middleware_logs_successful_requests(self):
+    async def test_middleware_logs_successful_requests(self) -> None:
         """Test that middleware logs successful requests."""
         app = FastAPI()
 
@@ -86,7 +84,7 @@ class TestComprehensiveLoggingMiddleware:
             return {"message": "test"}
 
         # Add the middleware
-        app.add_middleware(ComprehensiveLoggingMiddleware)
+        app.add_middleware(cast(Any, ComprehensiveLoggingMiddleware))
 
         # Create test client
         client = TestClient(app)
@@ -98,7 +96,7 @@ class TestComprehensiveLoggingMiddleware:
         assert response.status_code == 200
 
     @pytest.mark.asyncio
-    async def test_middleware_logs_errors(self):
+    async def test_middleware_logs_errors(self) -> None:
         """Test that middleware logs errors and re-raises them."""
         app = FastAPI()
 
@@ -106,7 +104,7 @@ class TestComprehensiveLoggingMiddleware:
         async def error_endpoint():
             raise HTTPException(status_code=500, detail="Internal server error")
 
-        app.add_middleware(ComprehensiveLoggingMiddleware)
+        app.add_middleware(cast(Any, ComprehensiveLoggingMiddleware))
         client = TestClient(app)
 
         # Make a request that will cause an error
@@ -116,7 +114,7 @@ class TestComprehensiveLoggingMiddleware:
         assert response.status_code == 500
 
     @pytest.mark.asyncio
-    async def test_middleware_measures_processing_time(self):
+    async def test_middleware_measures_processing_time(self) -> None:
         """Test that middleware measures and logs processing time."""
         app = FastAPI()
 
@@ -125,7 +123,7 @@ class TestComprehensiveLoggingMiddleware:
             time.sleep(0.1)  # Simulate slow processing
             return {"message": "slow response"}
 
-        app.add_middleware(ComprehensiveLoggingMiddleware)
+        app.add_middleware(cast(Any, ComprehensiveLoggingMiddleware))
         client = TestClient(app)
 
         # Make a request
@@ -135,7 +133,7 @@ class TestComprehensiveLoggingMiddleware:
         assert response.status_code == 200
 
     @pytest.mark.asyncio
-    async def test_middleware_preserves_response_headers(self):
+    async def test_middleware_preserves_response_headers(self) -> None:
         """Test that middleware preserves response headers."""
         app = FastAPI()
 
@@ -145,7 +143,7 @@ class TestComprehensiveLoggingMiddleware:
             response.headers["Custom-Header"] = "custom-value"
             return response
 
-        app.add_middleware(ComprehensiveLoggingMiddleware)
+        app.add_middleware(cast(Any, ComprehensiveLoggingMiddleware))
         client = TestClient(app)
 
         response = client.get("/test")
@@ -153,7 +151,7 @@ class TestComprehensiveLoggingMiddleware:
         # Verify custom header is preserved
         assert response.headers["Custom-Header"] == "custom-value"
 
-    def test_middleware_integration_with_factory(self):
+    def test_middleware_integration_with_factory(self) -> None:
         """Test that middleware can be integrated with the app factory."""
         # This test verifies the middleware can be added to the factory
         # without breaking the app creation process
@@ -172,7 +170,7 @@ class TestComprehensiveLoggingMiddleware:
 class TestLoggingMiddlewareConsolidation:
     """Test logging middleware consolidation functionality."""
 
-    def test_no_duplicate_logging_middleware(self):
+    def test_no_duplicate_logging_middleware(self) -> None:
         """Test that logging middleware is not duplicated."""
         app = create_app()
 
@@ -191,7 +189,7 @@ class TestLoggingMiddlewareConsolidation:
             f"Found {logging_middleware_count} logging middleware instances, expected at most 3"
         )
 
-    def test_middleware_order_preserved(self):
+    def test_middleware_order_preserved(self) -> None:
         """Test that middleware order is preserved after consolidation."""
         app = create_app()
 
@@ -204,7 +202,7 @@ class TestLoggingMiddlewareConsolidation:
         # CORS should be present
         assert any("CORSMiddleware" in cls for cls in middleware_classes)
 
-    def test_comprehensive_middleware_replaces_individual_middleware(self):
+    def test_comprehensive_middleware_replaces_individual_middleware(self) -> None:
         """Test that comprehensive middleware replaces individual middleware components."""
         # This test verifies that ComprehensiveLoggingMiddleware is present
         # and the individual AccessLoggingMiddleware, RequestLoggingMiddleware, and
@@ -237,7 +235,7 @@ class TestLoggingPerformance:
     """Test logging middleware performance characteristics."""
 
     @pytest.mark.asyncio
-    async def test_middleware_minimal_overhead(self):
+    async def test_middleware_minimal_overhead(self) -> None:
         """Test that middleware adds minimal overhead to requests."""
         app = FastAPI()
 
@@ -245,7 +243,7 @@ class TestLoggingPerformance:
         async def performance_endpoint():
             return {"message": "performance test"}
 
-        app.add_middleware(ComprehensiveLoggingMiddleware)
+        app.add_middleware(cast(Any, ComprehensiveLoggingMiddleware))
         client = TestClient(app)
 
         # Measure time for multiple requests
@@ -260,7 +258,7 @@ class TestLoggingPerformance:
         assert total_time < 1.0, f"Middleware added too much overhead: {total_time}s for 10 requests"
 
     @pytest.mark.asyncio
-    async def test_middleware_handles_high_volume(self):
+    async def test_middleware_handles_high_volume(self) -> None:
         """Test that middleware handles high volume of requests."""
         app = FastAPI()
 
@@ -268,7 +266,7 @@ class TestLoggingPerformance:
         async def volume_endpoint():
             return {"message": "volume test"}
 
-        app.add_middleware(ComprehensiveLoggingMiddleware)
+        app.add_middleware(cast(Any, ComprehensiveLoggingMiddleware))
         client = TestClient(app)
 
         # Make many requests to test volume handling

@@ -10,14 +10,20 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from server.models.health import HealthStatus
+from server.models.health import (
+    ConnectionsComponent,
+    DatabaseComponent,
+    HealthComponents,
+    HealthStatus,
+    ServerComponent,
+)
 from server.services.health_service import HealthService, get_health_service
 
 
 class TestHealthServiceInitialization:
     """Test health service initialization."""
 
-    def test_health_service_initialization(self):
+    def test_health_service_initialization(self) -> None:
         """Test that health service initializes correctly."""
         service = HealthService()
 
@@ -29,7 +35,7 @@ class TestHealthServiceInitialization:
         assert service.database_timeout_ms == 1000
         assert service.connection_threshold_percent == 80.0
 
-    def test_get_health_service_singleton(self):
+    def test_get_health_service_singleton(self) -> None:
         """Test that get_health_service returns a singleton instance."""
         service1 = get_health_service()
         service2 = get_health_service()
@@ -40,7 +46,7 @@ class TestHealthServiceInitialization:
 class TestServerMetrics:
     """Test server metrics collection."""
 
-    def test_get_server_uptime(self):
+    def test_get_server_uptime(self) -> None:
         """Test server uptime calculation."""
         import time
 
@@ -119,18 +125,11 @@ class TestDatabaseHealth:
     @patch("server.container.ApplicationContainer.get_instance")
     def test_check_database_health_degraded(self, mock_get_instance):
         """Test database health check when degraded (slow response)."""
-        import time
-
         # Mock container with room service that simulates slow response
         mock_container = MagicMock()
         mock_room_service = MagicMock()
         mock_container.room_service = mock_room_service
         mock_get_instance.return_value = mock_container
-
-        # Simulate slow service initialization
-        def slow_init():
-            time.sleep(0.2)  # 200ms delay
-            return None
 
         # The health check doesn't actually call list_rooms, it just checks if service exists
         # So we'll test the timeout mechanism differently
@@ -328,10 +327,8 @@ class TestComponentHealth:
 class TestAlertGeneration:
     """Test alert generation based on component health."""
 
-    def test_generate_alerts_all_healthy(self):
+    def test_generate_alerts_all_healthy(self) -> None:
         """Test alert generation when all components healthy."""
-        from server.models.health import ConnectionsComponent, DatabaseComponent, HealthComponents, ServerComponent
-
         components = HealthComponents(
             server=ServerComponent(
                 status=HealthStatus.HEALTHY, uptime_seconds=3600, memory_usage_mb=500.0, cpu_usage_percent=50.0
@@ -347,10 +344,8 @@ class TestAlertGeneration:
 
         assert len(alerts) == 0
 
-    def test_generate_alerts_server_degraded(self):
+    def test_generate_alerts_server_degraded(self) -> None:
         """Test alert generation when server is degraded."""
-        from server.models.health import ConnectionsComponent, DatabaseComponent, HealthComponents, ServerComponent
-
         components = HealthComponents(
             server=ServerComponent(
                 status=HealthStatus.DEGRADED, uptime_seconds=3600, memory_usage_mb=500.0, cpu_usage_percent=50.0
@@ -367,10 +362,8 @@ class TestAlertGeneration:
         assert len(alerts) == 1
         assert "Server performance degraded" in alerts
 
-    def test_generate_alerts_server_unhealthy(self):
+    def test_generate_alerts_server_unhealthy(self) -> None:
         """Test alert generation when server is unhealthy."""
-        from server.models.health import ConnectionsComponent, DatabaseComponent, HealthComponents, ServerComponent
-
         components = HealthComponents(
             server=ServerComponent(
                 status=HealthStatus.UNHEALTHY, uptime_seconds=3600, memory_usage_mb=500.0, cpu_usage_percent=50.0
@@ -386,10 +379,8 @@ class TestAlertGeneration:
 
         assert "Server performance critical" in alerts
 
-    def test_generate_alerts_high_memory(self):
+    def test_generate_alerts_high_memory(self) -> None:
         """Test alert generation for high memory usage."""
-        from server.models.health import ConnectionsComponent, DatabaseComponent, HealthComponents, ServerComponent
-
         components = HealthComponents(
             server=ServerComponent(
                 status=HealthStatus.DEGRADED, uptime_seconds=3600, memory_usage_mb=1500.0, cpu_usage_percent=50.0
@@ -405,10 +396,8 @@ class TestAlertGeneration:
 
         assert any("High memory usage" in alert for alert in alerts)
 
-    def test_generate_alerts_high_cpu(self):
+    def test_generate_alerts_high_cpu(self) -> None:
         """Test alert generation for high CPU usage."""
-        from server.models.health import ConnectionsComponent, DatabaseComponent, HealthComponents, ServerComponent
-
         components = HealthComponents(
             server=ServerComponent(
                 status=HealthStatus.DEGRADED, uptime_seconds=3600, memory_usage_mb=500.0, cpu_usage_percent=95.0
@@ -424,10 +413,8 @@ class TestAlertGeneration:
 
         assert any("High CPU usage" in alert for alert in alerts)
 
-    def test_generate_alerts_database_degraded(self):
+    def test_generate_alerts_database_degraded(self) -> None:
         """Test alert generation when database is degraded."""
-        from server.models.health import ConnectionsComponent, DatabaseComponent, HealthComponents, ServerComponent
-
         components = HealthComponents(
             server=ServerComponent(
                 status=HealthStatus.HEALTHY, uptime_seconds=3600, memory_usage_mb=500.0, cpu_usage_percent=50.0
@@ -443,10 +430,8 @@ class TestAlertGeneration:
 
         assert "Database response time elevated" in alerts
 
-    def test_generate_alerts_database_unhealthy(self):
+    def test_generate_alerts_database_unhealthy(self) -> None:
         """Test alert generation when database is unhealthy."""
-        from server.models.health import ConnectionsComponent, DatabaseComponent, HealthComponents, ServerComponent
-
         components = HealthComponents(
             server=ServerComponent(
                 status=HealthStatus.HEALTHY, uptime_seconds=3600, memory_usage_mb=500.0, cpu_usage_percent=50.0
@@ -462,10 +447,8 @@ class TestAlertGeneration:
 
         assert "Database connection issues detected" in alerts
 
-    def test_generate_alerts_connections_degraded(self):
+    def test_generate_alerts_connections_degraded(self) -> None:
         """Test alert generation when connections are degraded."""
-        from server.models.health import ConnectionsComponent, DatabaseComponent, HealthComponents, ServerComponent
-
         components = HealthComponents(
             server=ServerComponent(
                 status=HealthStatus.HEALTHY, uptime_seconds=3600, memory_usage_mb=500.0, cpu_usage_percent=50.0
@@ -484,10 +467,8 @@ class TestAlertGeneration:
 
         assert "Connection pool utilization high" in alerts
 
-    def test_generate_alerts_connections_unhealthy(self):
+    def test_generate_alerts_connections_unhealthy(self) -> None:
         """Test alert generation when connections are unhealthy."""
-        from server.models.health import ConnectionsComponent, DatabaseComponent, HealthComponents, ServerComponent
-
         components = HealthComponents(
             server=ServerComponent(
                 status=HealthStatus.HEALTHY, uptime_seconds=3600, memory_usage_mb=500.0, cpu_usage_percent=50.0
@@ -510,10 +491,8 @@ class TestAlertGeneration:
 class TestOverallHealthDetermination:
     """Test overall health status determination."""
 
-    def test_determine_overall_status_all_healthy(self):
+    def test_determine_overall_status_all_healthy(self) -> None:
         """Test overall status when all components are healthy."""
-        from server.models.health import ConnectionsComponent, DatabaseComponent, HealthComponents, ServerComponent
-
         components = HealthComponents(
             server=ServerComponent(
                 status=HealthStatus.HEALTHY, uptime_seconds=3600, memory_usage_mb=500.0, cpu_usage_percent=50.0
@@ -529,10 +508,8 @@ class TestOverallHealthDetermination:
 
         assert status == HealthStatus.HEALTHY
 
-    def test_determine_overall_status_one_degraded(self):
+    def test_determine_overall_status_one_degraded(self) -> None:
         """Test overall status when one component is degraded."""
-        from server.models.health import ConnectionsComponent, DatabaseComponent, HealthComponents, ServerComponent
-
         components = HealthComponents(
             server=ServerComponent(
                 status=HealthStatus.DEGRADED, uptime_seconds=3600, memory_usage_mb=500.0, cpu_usage_percent=50.0
@@ -548,10 +525,8 @@ class TestOverallHealthDetermination:
 
         assert status == HealthStatus.DEGRADED
 
-    def test_determine_overall_status_one_unhealthy(self):
+    def test_determine_overall_status_one_unhealthy(self) -> None:
         """Test overall status when one component is unhealthy."""
-        from server.models.health import ConnectionsComponent, DatabaseComponent, HealthComponents, ServerComponent
-
         components = HealthComponents(
             server=ServerComponent(
                 status=HealthStatus.HEALTHY, uptime_seconds=3600, memory_usage_mb=500.0, cpu_usage_percent=50.0
@@ -577,8 +552,6 @@ class TestHealthStatusEndpoint:
     @patch("importlib.metadata.version")
     def test_get_health_status_success(self, mock_version, mock_conn_health, mock_db_health, mock_server_health):
         """Test successful health status generation."""
-        from server.models.health import ConnectionsComponent, DatabaseComponent, ServerComponent
-
         mock_version.return_value = "1.0.0"
         mock_server_health.return_value = ServerComponent(
             status=HealthStatus.HEALTHY, uptime_seconds=3600, memory_usage_mb=500.0, cpu_usage_percent=50.0
@@ -595,9 +568,20 @@ class TestHealthStatusEndpoint:
 
         assert health_response.status == HealthStatus.HEALTHY
         assert health_response.version == "1.0.0"
-        assert health_response.components.server.status == HealthStatus.HEALTHY
-        assert health_response.components.database.status == HealthStatus.HEALTHY
-        assert health_response.components.connections.status == HealthStatus.HEALTHY
+        # Type checker workaround: Pydantic v2's type system incorrectly infers FieldInfo
+        # instead of the actual model instance when accessing nested attributes.
+        # Pylint sees nested Pydantic fields as FieldInfo instances rather than the actual model objects.
+        # Pattern: Extract nested model objects with type annotations before accessing their attributes.
+        components: HealthComponents = health_response.components  # pylint: disable=no-member
+        assert isinstance(components, HealthComponents), "components must be HealthComponents instance"
+        # Suppression necessary: Pylint incorrectly infers FieldInfo type for extracted Pydantic nested models.
+        # These are actual component instances at runtime, not FieldInfo descriptors.
+        server_component: ServerComponent = components.server  # pylint: disable=no-member
+        database_component: DatabaseComponent = components.database  # pylint: disable=no-member
+        connections_component: ConnectionsComponent = components.connections  # pylint: disable=no-member
+        assert server_component.status == HealthStatus.HEALTHY
+        assert database_component.status == HealthStatus.HEALTHY
+        assert connections_component.status == HealthStatus.HEALTHY
         assert len(health_response.alerts) == 0
         assert service.health_check_count == 1
         assert service.last_health_check is not None
@@ -611,8 +595,6 @@ class TestHealthStatusEndpoint:
     ):
         """Test health status uses fallback version when package not found."""
         import importlib.metadata
-
-        from server.models.health import ConnectionsComponent, DatabaseComponent, ServerComponent
 
         mock_version.side_effect = importlib.metadata.PackageNotFoundError("mythosmud")
         mock_server_health.return_value = ServerComponent(

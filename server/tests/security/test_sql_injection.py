@@ -9,8 +9,9 @@ import asyncio
 import json
 import os
 import uuid
+from collections.abc import AsyncGenerator
 from datetime import datetime
-from typing import cast
+from typing import Any, cast
 
 import pytest
 from sqlalchemy.exc import SQLAlchemyError
@@ -36,27 +37,24 @@ class TestSQLInjectionPrevention:
         return False
 
     @pytest.fixture(autouse=True)
-    async def cleanup_players(self, persistence):
+    async def cleanup_players(self, persistence: AsyncPersistenceLayer) -> AsyncGenerator[None, None]:
         """Clean up test players after each test."""
         # Clean up any existing player for test_user_id before test runs
         # This prevents unique constraint violations on user_id
-        try:
-            test_user_id = getattr(persistence, "_test_user_id", None)
-            if test_user_id:
-                # Use async persistence methods
-                from uuid import UUID
+        from uuid import UUID
 
+        try:
+            test_user_id_raw = getattr(persistence, "_test_user_id", None)
+            if test_user_id_raw:
+                test_user_id = cast(str, test_user_id_raw)
+                # Use async persistence methods
                 try:
                     # Get player by user_id (async)
-                    existing_player = await persistence.get_player_by_user_id(test_user_id)
+                    existing_player = await persistence.get_player_by_user_id(str(UUID(test_user_id)))
                     if existing_player:
                         # Delete the player using async persistence
-                        player_id = (
-                            UUID(str(existing_player.player_id))
-                            if isinstance(existing_player.player_id, str)
-                            else existing_player.player_id
-                        )
-                        await persistence.delete_player(player_id)
+                        player_id = existing_player.player_id
+                        await persistence.delete_player(cast(Any, player_id))
                 except (DatabaseError, ValidationError):
                     pass  # Ignore cleanup errors - player might not exist
         except (DatabaseError, ValidationError):
@@ -66,29 +64,24 @@ class TestSQLInjectionPrevention:
 
         # Clean up test players after test completes
         try:
-            test_user_id = getattr(persistence, "_test_user_id", None)
-            if test_user_id:
+            test_user_id_raw = getattr(persistence, "_test_user_id", None)
+            if test_user_id_raw:
+                test_user_id = cast(str, test_user_id_raw)
                 # Use async persistence methods
-                from uuid import UUID
-
                 try:
                     # Get player by user_id (async)
-                    existing_player = await persistence.get_player_by_user_id(test_user_id)
+                    existing_player = await persistence.get_player_by_user_id(str(UUID(test_user_id)))
                     if existing_player:
                         # Delete the player using async persistence
-                        player_id = (
-                            UUID(str(existing_player.player_id))
-                            if isinstance(existing_player.player_id, str)
-                            else existing_player.player_id
-                        )
-                        await persistence.delete_player(player_id)
+                        player_id = existing_player.player_id
+                        await persistence.delete_player(cast(Any, player_id))
                 except (DatabaseError, ValidationError):
-                    pass  # Ignore cleanup errors
+                    pass  # Ignore cleanup errors - player might not exist
         except (DatabaseError, ValidationError):
-            pass  # Ignore cleanup errors
+            pass  # Ignore cleanup errors - test will handle it
 
     @pytest.fixture
-    async def persistence(self):
+    async def persistence(self) -> AsyncGenerator[AsyncPersistenceLayer, None]:
         """Create an async persistence layer instance for testing."""
         # Use PostgreSQL from environment - SQLite is no longer supported
         database_url = os.getenv("DATABASE_URL")
@@ -98,10 +91,10 @@ class TestSQLInjectionPrevention:
         # CRITICAL: Dispose database engine before test to prevent event loop mismatch errors
         # This ensures the engine is recreated in the current event loop (the test's loop)
         # rather than using an engine created in a different loop
-        from server.database import get_database_manager
+        from server.database import DatabaseManager
 
         try:
-            db_manager = get_database_manager()
+            db_manager = DatabaseManager.get_instance()
             if db_manager and db_manager.engine:
                 await db_manager.engine.dispose()
                 # Reset initialization state to force recreation in current loop
@@ -119,7 +112,7 @@ class TestSQLInjectionPrevention:
         event_bus = EventBus()
         persistence_instance = AsyncPersistenceLayer(event_bus=event_bus)
         # Store event_bus reference for cleanup
-        persistence_instance._test_event_bus = event_bus
+        persistence_instance._test_event_bus = event_bus  # type: ignore[attr-defined] # Test-only attribute for cleanup
 
         # Create a test user in the database to satisfy foreign key constraints
         # This is needed because players table has a foreign key to users table
@@ -226,7 +219,7 @@ class TestSQLInjectionPrevention:
                             result = await verify_session.execute(verify_stmt, {"user_id": final_user_id})
                             verified = result.fetchone()
                             if verified:
-                                persistence_instance._test_user_id = final_user_id
+                                persistence_instance._test_user_id = final_user_id  # type: ignore[attr-defined] # Test-only attribute for tracking test user
                                 return  # Success - exit the function
                             else:
                                 # User doesn't exist, try to create it again or use existing user
@@ -271,10 +264,10 @@ class TestSQLInjectionPrevention:
         yield persistence_instance
 
         # Cleanup: shutdown event bus and dispose database connections
-        # Use stored reference to avoid accessing _event_bus which might not exist
         try:
-            event_bus = getattr(persistence_instance, "_test_event_bus", None)
-            if event_bus:
+            event_bus_raw = getattr(persistence_instance, "_test_event_bus", None)
+            if event_bus_raw:
+                event_bus = cast(EventBus, event_bus_raw)
                 # Shutdown EventBus before event loop closes
                 # This must happen while the event loop is still running
                 try:
@@ -316,9 +309,7 @@ class TestSQLInjectionPrevention:
         # CRITICAL: Dispose database engine after test to prevent event loop closure issues
         # This ensures connections are closed before the event loop closes
         try:
-            from server.database import get_database_manager
-
-            db_manager = get_database_manager()
+            db_manager = DatabaseManager.get_instance()
             if db_manager and db_manager.engine:
                 await db_manager.engine.dispose()
         except (DatabaseError, ValidationError):
@@ -417,9 +408,10 @@ class TestSQLInjectionPrevention:
         """Test that update_player_stat_field uses parameterized queries."""
         # Create a test player with required fields
         # Use test user ID from persistence fixture
-        test_user_id = getattr(persistence, "_test_user_id", None)
-        if not test_user_id:
+        test_user_id_raw = getattr(persistence, "_test_user_id", None)
+        if not test_user_id_raw:
             pytest.skip("Test user ID not available from persistence fixture")
+        test_user_id = cast(str, test_user_id_raw)
         # Verify user exists before creating player (prevents foreign key violations in parallel tests)
         if not await self._verify_user_exists(test_user_id):
             pytest.skip(
@@ -465,9 +457,10 @@ class TestSQLInjectionPrevention:
         """Test that get_player_by_name uses parameterized queries."""
         # Create a test player with required fields
         # Use test user ID from persistence fixture (has corresponding user in database)
-        test_user_id = getattr(persistence, "_test_user_id", None)
-        if not test_user_id:
+        test_user_id_raw = getattr(persistence, "_test_user_id", None)
+        if not test_user_id_raw:
             pytest.skip("Test user ID not available from persistence fixture")
+        test_user_id = cast(str, test_user_id_raw)
         # Verify user exists before creating player (prevents foreign key violations in parallel tests)
         if not await self._verify_user_exists(test_user_id):
             pytest.skip(
@@ -513,9 +506,10 @@ class TestSQLInjectionPrevention:
         """Test that get_player uses parameterized queries."""
         # Create a test player with required fields
         # Use test user ID from persistence fixture
-        test_user_id = getattr(persistence, "_test_user_id", None)
-        if not test_user_id:
+        test_user_id_raw = getattr(persistence, "_test_user_id", None)
+        if not test_user_id_raw:
             pytest.skip("Test user ID not available from persistence fixture")
+        test_user_id = cast(str, test_user_id_raw)
 
         # Verify user exists before creating player
         user_exists = await self._verify_user_exists(test_user_id)
@@ -574,7 +568,7 @@ class TestSQLInjectionPrevention:
         assert result is not None
         assert str(result.player_id) == test_player_id
 
-    def test_f_string_sql_uses_constants_only(self):
+    def test_f_string_sql_uses_constants_only(self) -> None:
         """Test that f-string SQL construction only uses compile-time constants."""
         # This test verifies that PLAYER_COLUMNS and PROFESSION_COLUMNS
         # are compile-time constants, not user input
@@ -610,9 +604,10 @@ class TestSQLInjectionPrevention:
             # Should fail validation or be sanitized
             # The exact behavior depends on validation rules
             # Use test user ID from persistence fixture (has corresponding user in database)
-            test_user_id = getattr(persistence, "_test_user_id", None)
-            if not test_user_id:
+            test_user_id_raw = getattr(persistence, "_test_user_id", None)
+            if not test_user_id_raw:
                 pytest.skip("Test user ID not available from persistence fixture")
+            test_user_id = cast(str, test_user_id_raw)
             # Verify user exists before creating player (prevents foreign key violations in parallel tests)
             if not await self._verify_user_exists(test_user_id):
                 pytest.skip(

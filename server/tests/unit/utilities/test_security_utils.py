@@ -24,7 +24,7 @@ from server.security_utils import (
 class TestValidateSecurePath:
     """Test secure path validation functionality."""
 
-    def test_validate_secure_path_valid(self):
+    def test_validate_secure_path_valid(self) -> None:
         """Test validation of a valid path."""
         base_path = "/tmp/test"
         user_path = "subdir/file.txt"
@@ -34,7 +34,7 @@ class TestValidateSecurePath:
         expected = os.path.join(os.path.abspath(base_path), user_path)
         assert Path(result).as_posix() == Path(expected).as_posix()
 
-    def test_validate_secure_path_with_leading_slash(self):
+    def test_validate_secure_path_with_leading_slash(self) -> None:
         """Test validation of path with leading slash."""
         base_path = "/tmp/test"
         user_path = "/subdir/file.txt"
@@ -44,7 +44,7 @@ class TestValidateSecurePath:
         expected = os.path.join(os.path.abspath(base_path), "subdir/file.txt")
         assert Path(result).as_posix() == Path(expected).as_posix()
 
-    def test_validate_secure_path_with_backslash(self):
+    def test_validate_secure_path_with_backslash(self) -> None:
         """Test validation of path with backslash."""
         base_path = "/tmp/test"
         user_path = "\\subdir\\file.txt"
@@ -56,7 +56,7 @@ class TestValidateSecurePath:
         expected = Path(os.path.join(os.path.abspath(base_path), "subdir/file.txt"))
         assert Path(result).as_posix() == expected.as_posix()
 
-    def test_validate_secure_path_path_traversal_dotdot(self):
+    def test_validate_secure_path_path_traversal_dotdot(self) -> None:
         """Test rejection of path traversal with .."""
         base_path = "/tmp/test"
         user_path = "../etc/passwd"
@@ -67,7 +67,7 @@ class TestValidateSecurePath:
         assert exc_info.value.status_code == 400
         assert exc_info.value.detail == "Invalid path"
 
-    def test_validate_secure_path_path_traversal_tilde(self):
+    def test_validate_secure_path_path_traversal_tilde(self) -> None:
         """Test rejection of path traversal with ~"""
         base_path = "/tmp/test"
         user_path = "~/secret/file.txt"
@@ -78,7 +78,7 @@ class TestValidateSecurePath:
         assert exc_info.value.status_code == 400
         assert exc_info.value.detail == "Invalid path"
 
-    def test_validate_secure_path_empty_user_path(self):
+    def test_validate_secure_path_empty_user_path(self) -> None:
         """Test validation of empty user path."""
         base_path = "/tmp/test"
         user_path = ""
@@ -88,7 +88,7 @@ class TestValidateSecurePath:
         expected = os.path.abspath(base_path)
         assert result == expected
 
-    def test_validate_secure_path_nested_directories(self):
+    def test_validate_secure_path_nested_directories(self) -> None:
         """Test validation of nested directory paths."""
         base_path = "/tmp/test"
         user_path = "level1/level2/level3/file.txt"
@@ -98,7 +98,7 @@ class TestValidateSecurePath:
         expected = os.path.join(os.path.abspath(base_path), user_path)
         assert Path(result).as_posix() == Path(expected).as_posix()
 
-    def test_validate_secure_path_with_spaces(self):
+    def test_validate_secure_path_with_spaces(self) -> None:
         """Test validation of path with spaces."""
         base_path = "/tmp/test"
         user_path = "my file.txt"
@@ -112,7 +112,7 @@ class TestValidateSecurePath:
 class TestGetSecureFilePath:
     """Test secure file path generation."""
 
-    def test_get_secure_file_path_valid(self):
+    def test_get_secure_file_path_valid(self) -> None:
         """Test getting secure file path with valid filename."""
         filename = "test_file.txt"
         base_dir = "/tmp/test"
@@ -122,7 +122,7 @@ class TestGetSecureFilePath:
         expected = os.path.join(os.path.abspath(base_dir), filename)
         assert result == expected
 
-    def test_get_secure_file_path_with_underscores(self):
+    def test_get_secure_file_path_with_underscores(self) -> None:
         """Test getting secure file path with underscores."""
         filename = "test_file_name.txt"
         base_dir = "/tmp/test"
@@ -132,7 +132,7 @@ class TestGetSecureFilePath:
         expected = os.path.join(os.path.abspath(base_dir), filename)
         assert result == expected
 
-    def test_get_secure_file_path_with_dots(self):
+    def test_get_secure_file_path_with_dots(self) -> None:
         """Test getting secure file path with dots."""
         filename = "test.file.txt"
         base_dir = "/tmp/test"
@@ -142,7 +142,7 @@ class TestGetSecureFilePath:
         expected = os.path.join(os.path.abspath(base_dir), filename)
         assert result == expected
 
-    def test_get_secure_file_path_with_hyphens(self):
+    def test_get_secure_file_path_with_hyphens(self) -> None:
         """Test getting secure file path with hyphens."""
         filename = "test-file.txt"
         base_dir = "/tmp/test"
@@ -152,7 +152,7 @@ class TestGetSecureFilePath:
         expected = os.path.join(os.path.abspath(base_dir), filename)
         assert result == expected
 
-    def test_get_secure_file_path_invalid_characters(self):
+    def test_get_secure_file_path_invalid_characters(self) -> None:
         """Test rejection of filename with invalid characters."""
         filename = "test@file.txt"
         base_dir = "/tmp/test"
@@ -163,7 +163,7 @@ class TestGetSecureFilePath:
         assert exc_info.value.status_code == 400
         assert exc_info.value.detail == "Invalid filename"
 
-    def test_get_secure_file_path_with_spaces(self):
+    def test_get_secure_file_path_with_spaces(self) -> None:
         """Test rejection of filename with spaces."""
         filename = "test file.txt"
         base_dir = "/tmp/test"
@@ -174,7 +174,7 @@ class TestGetSecureFilePath:
         assert exc_info.value.status_code == 400
         assert exc_info.value.detail == "Invalid filename"
 
-    def test_get_secure_file_path_with_special_chars(self):
+    def test_get_secure_file_path_with_special_chars(self) -> None:
         """Test rejection of filename with special characters."""
         filename = "test!file.txt"
         base_dir = "/tmp/test"
@@ -185,7 +185,7 @@ class TestGetSecureFilePath:
         assert exc_info.value.status_code == 400
         assert exc_info.value.detail == "Invalid filename"
 
-    def test_get_secure_file_path_creates_base_dir(self):
+    def test_get_secure_file_path_creates_base_dir(self) -> None:
         """Test that base directory is created if it doesn't exist."""
         filename = "test.txt"
         base_dir = "/tmp/nonexistent_dir"
@@ -207,7 +207,7 @@ class TestGetSecureFilePath:
 class TestEnsureDirectoryExists:
     """Test directory existence and creation functionality."""
 
-    def test_ensure_directory_exists_existing(self):
+    def test_ensure_directory_exists_existing(self) -> None:
         """Test ensuring directory exists when it already exists."""
         with tempfile.TemporaryDirectory() as temp_dir:
             result = ensure_directory_exists(temp_dir)
@@ -215,7 +215,7 @@ class TestEnsureDirectoryExists:
             assert result == os.path.abspath(temp_dir)
             assert os.path.exists(temp_dir)
 
-    def test_ensure_directory_exists_nonexistent(self):
+    def test_ensure_directory_exists_nonexistent(self) -> None:
         """Test ensuring directory exists when it doesn't exist."""
         temp_dir = tempfile.mkdtemp()
         new_dir = os.path.join(temp_dir, "new_subdir")
@@ -230,7 +230,7 @@ class TestEnsureDirectoryExists:
             os.rmdir(new_dir)
             os.rmdir(temp_dir)
 
-    def test_ensure_directory_exists_nested(self):
+    def test_ensure_directory_exists_nested(self) -> None:
         """Test ensuring nested directory exists."""
         with tempfile.TemporaryDirectory() as temp_dir:
             nested_dir = os.path.join(temp_dir, "level1", "level2", "level3")
@@ -240,7 +240,7 @@ class TestEnsureDirectoryExists:
             assert result == os.path.abspath(nested_dir)
             assert os.path.exists(nested_dir)
 
-    def test_ensure_directory_exists_relative_path(self):
+    def test_ensure_directory_exists_relative_path(self) -> None:
         """Test ensuring directory exists with relative path."""
         with tempfile.TemporaryDirectory() as temp_dir:
             # Create a relative path within the temp directory
@@ -255,79 +255,79 @@ class TestEnsureDirectoryExists:
 class TestIsSafeFilename:
     """Test filename safety checking."""
 
-    def test_is_safe_filename_valid(self):
+    def test_is_safe_filename_valid(self) -> None:
         """Test safe filename validation."""
         filename = "test_file.txt"
 
         assert is_safe_filename(filename) is True
 
-    def test_is_safe_filename_with_underscores(self):
+    def test_is_safe_filename_with_underscores(self) -> None:
         """Test filename with underscores."""
         filename = "test_file_name.txt"
 
         assert is_safe_filename(filename) is True
 
-    def test_is_safe_filename_with_dots(self):
+    def test_is_safe_filename_with_dots(self) -> None:
         """Test filename with dots."""
         filename = "test.file.txt"
 
         assert is_safe_filename(filename) is True
 
-    def test_is_safe_filename_with_hyphens(self):
+    def test_is_safe_filename_with_hyphens(self) -> None:
         """Test filename with hyphens."""
         filename = "test-file.txt"
 
         assert is_safe_filename(filename) is True
 
-    def test_is_safe_filename_with_numbers(self):
+    def test_is_safe_filename_with_numbers(self) -> None:
         """Test filename with numbers."""
         filename = "test123.txt"
 
         assert is_safe_filename(filename) is True
 
-    def test_is_safe_filename_path_traversal_dotdot(self):
+    def test_is_safe_filename_path_traversal_dotdot(self) -> None:
         """Test rejection of filename with path traversal."""
         filename = "../secret.txt"
 
         assert is_safe_filename(filename) is False
 
-    def test_is_safe_filename_path_traversal_slash(self):
+    def test_is_safe_filename_path_traversal_slash(self) -> None:
         """Test rejection of filename with forward slash."""
         filename = "dir/file.txt"
 
         assert is_safe_filename(filename) is False
 
-    def test_is_safe_filename_path_traversal_backslash(self):
+    def test_is_safe_filename_path_traversal_backslash(self) -> None:
         """Test rejection of filename with backslash."""
         filename = "dir\\file.txt"
 
         assert is_safe_filename(filename) is False
 
-    def test_is_safe_filename_special_characters(self):
+    def test_is_safe_filename_special_characters(self) -> None:
         """Test rejection of filename with special characters."""
         filename = "test@file.txt"
 
         assert is_safe_filename(filename) is False
 
-    def test_is_safe_filename_spaces(self):
+    def test_is_safe_filename_spaces(self) -> None:
         """Test rejection of filename with spaces."""
         filename = "test file.txt"
 
         assert is_safe_filename(filename) is False
 
-    def test_is_safe_filename_empty(self):
+    def test_is_safe_filename_empty(self) -> None:
         """Test empty filename."""
         filename = ""
 
         assert is_safe_filename(filename) is True
 
-    def test_is_safe_filename_only_extension(self):
+    def test_is_safe_filename_only_extension(self) -> None:
         """Test filename with only extension."""
         filename = ".txt"
 
         assert is_safe_filename(filename) is True
 
-    def test_is_safe_filename_unicode(self):
+    def test_is_safe_filename_unicode(self) -> None:
         """Test filename with unicode characters."""
         filename = "testéfile.txt"
 
@@ -337,7 +337,7 @@ class TestIsSafeFilename:
 class TestEdgeCases:
     """Test edge cases and boundary conditions."""
 
-    def test_validate_secure_path_different_drives_windows(self):
+    def test_validate_secure_path_different_drives_windows(self) -> None:
         """Test path validation with different drives (Windows scenario)."""
         base_path = "C:\\temp"
         user_path = "D:\\file.txt"
@@ -348,7 +348,7 @@ class TestEdgeCases:
         # Should return the normalized path
         assert isinstance(result, str)
 
-    def test_get_secure_file_path_very_long_filename(self):
+    def test_get_secure_file_path_very_long_filename(self) -> None:
         """Test secure file path with very long filename."""
         filename = "a" * 255 + ".txt"  # Maximum filename length
         base_dir = "/tmp/test"
@@ -358,13 +358,13 @@ class TestEdgeCases:
         expected = os.path.join(os.path.abspath(base_dir), filename)
         assert result == expected
 
-    def test_is_safe_filename_very_long(self):
+    def test_is_safe_filename_very_long(self) -> None:
         """Test safe filename with very long name."""
         filename = "a" * 255 + ".txt"
 
         assert is_safe_filename(filename) is True
 
-    def test_ensure_directory_exists_empty_string(self):
+    def test_ensure_directory_exists_empty_string(self) -> None:
         """Test ensuring directory exists with empty string."""
         result = ensure_directory_exists("")
 
@@ -373,7 +373,7 @@ class TestEdgeCases:
         assert isinstance(result, str)
         assert len(result) > 0
 
-    def test_validate_secure_path_path_traversal_commonpath_check(self):
+    def test_validate_secure_path_path_traversal_commonpath_check(self) -> None:
         """Test path traversal detection using commonpath check."""
         # Create a scenario where path appears valid but escapes base directory
         base_path = "/tmp/test"
@@ -387,7 +387,7 @@ class TestEdgeCases:
 
         assert exc_info.value.status_code == 400
 
-    def test_validate_secure_path_cross_drive_windows(self):
+    def test_validate_secure_path_cross_drive_windows(self) -> None:
         """Test path validation handles ValueError for cross-drive paths (Windows)."""
         # Simulate Windows cross-drive scenario
         # This tests the ValueError exception handling at lines 70-74
@@ -398,7 +398,7 @@ class TestEdgeCases:
         result = validate_secure_path(base_path, user_path)
         assert isinstance(result, str)
 
-    def test_validate_secure_path_escapes_base_after_normalization(self):
+    def test_validate_secure_path_escapes_base_after_normalization(self) -> None:
         """Test path that escapes base directory after normalization."""
         with tempfile.TemporaryDirectory() as temp_dir:
             base_path = temp_dir
@@ -412,7 +412,7 @@ class TestEdgeCases:
             with pytest.raises(HTTPException):
                 validate_secure_path(base_path, user_path)
 
-    def test_validate_secure_path_commonpath_failure(self):
+    def test_validate_secure_path_commonpath_failure(self) -> None:
         """Test path traversal detection via commonpath check (lines 59-66)."""
         # Test the case where commonpath != base_path
         # This tests the logger.warning and HTTPException at lines 59-66
@@ -430,7 +430,7 @@ class TestEdgeCases:
             assert exc_info.value.status_code == 400
             assert exc_info.value.detail == "Path traversal attempt detected"
 
-    def test_validate_secure_path_valueerror_exception(self):
+    def test_validate_secure_path_valueerror_exception(self) -> None:
         """Test ValueError exception handling for cross-drive paths (lines 70-74)."""
         # Test the ValueError exception path which occurs on Windows
         # when paths are on different drives

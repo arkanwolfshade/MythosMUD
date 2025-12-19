@@ -29,20 +29,20 @@ class FakeClock:
 class TestCommandRateLimiter:
     """Test suite for command rate limiting."""
 
-    def test_initialization(self):
+    def test_initialization(self) -> None:
         """Rate limiter initializes with correct settings."""
         limiter = CommandRateLimiter(max_commands=10, window_seconds=60)
 
         assert limiter.max_commands == 10
         assert limiter.window.total_seconds() == 60
 
-    def test_first_command_allowed(self):
+    def test_first_command_allowed(self) -> None:
         """First command is always allowed."""
         limiter = CommandRateLimiter(max_commands=5, window_seconds=60)
 
         assert limiter.is_allowed("player1") is True
 
-    def test_commands_within_limit_allowed(self):
+    def test_commands_within_limit_allowed(self) -> None:
         """Commands within rate limit are allowed."""
         limiter = CommandRateLimiter(max_commands=5, window_seconds=60)
 
@@ -50,7 +50,7 @@ class TestCommandRateLimiter:
         for _ in range(5):
             assert limiter.is_allowed("player1") is True
 
-    def test_commands_exceeding_limit_blocked(self):
+    def test_commands_exceeding_limit_blocked(self) -> None:
         """Commands exceeding rate limit are blocked."""
         limiter = CommandRateLimiter(max_commands=3, window_seconds=60)
 
@@ -61,7 +61,7 @@ class TestCommandRateLimiter:
         # 4th command should be blocked
         assert limiter.is_allowed("player1") is False
 
-    def test_get_wait_time(self):
+    def test_get_wait_time(self) -> None:
         """Get wait time returns correct value when rate limited."""
         limiter = CommandRateLimiter(max_commands=2, window_seconds=10)
 
@@ -73,7 +73,7 @@ class TestCommandRateLimiter:
         wait_time = limiter.get_wait_time("player1")
         assert 0 < wait_time <= 10
 
-    def test_wait_time_zero_when_not_limited(self):
+    def test_wait_time_zero_when_not_limited(self) -> None:
         """Wait time is minimal when not rate limited."""
         limiter = CommandRateLimiter(max_commands=5, window_seconds=60)
 
@@ -84,7 +84,7 @@ class TestCommandRateLimiter:
         # Since we just issued a command, it should be close to window_seconds
         assert wait_time > 0  # Not zero, but should be small since we're not limited
 
-    def test_rate_limit_resets_after_window(self):
+    def test_rate_limit_resets_after_window(self) -> None:
         """Rate limit resets after time window passes."""
         clock = FakeClock()
         limiter = CommandRateLimiter(max_commands=2, window_seconds=1, now_provider=clock.now)
@@ -100,7 +100,7 @@ class TestCommandRateLimiter:
         # Should be allowed again
         assert limiter.is_allowed("player1") is True
 
-    def test_multiple_players_independent(self):
+    def test_multiple_players_independent(self) -> None:
         """Rate limits for different players are independent."""
         limiter = CommandRateLimiter(max_commands=2, window_seconds=60)
 
@@ -113,7 +113,7 @@ class TestCommandRateLimiter:
         assert limiter.is_allowed("player2") is True
         assert limiter.is_allowed("player2") is True
 
-    def test_get_remaining_commands(self):
+    def test_get_remaining_commands(self) -> None:
         """Get remaining commands returns correct count."""
         limiter = CommandRateLimiter(max_commands=5, window_seconds=60)
 
@@ -126,7 +126,7 @@ class TestCommandRateLimiter:
         limiter.is_allowed("player1")
         assert limiter.get_remaining_commands("player1") == 2
 
-    def test_reset_player_rate_limit(self):
+    def test_reset_player_rate_limit(self) -> None:
         """Resetting player rate limit clears their history."""
         limiter = CommandRateLimiter(max_commands=2, window_seconds=60)
 
@@ -141,7 +141,7 @@ class TestCommandRateLimiter:
         # Should be allowed again
         assert limiter.is_allowed("player1") is True
 
-    def test_get_player_stats(self):
+    def test_get_player_stats(self) -> None:
         """Get player stats returns usage data."""
         limiter = CommandRateLimiter(max_commands=10, window_seconds=60)
 
@@ -152,7 +152,7 @@ class TestCommandRateLimiter:
 
         assert remaining == 8  # 10 max - 2 used
 
-    def test_cleanup_old_entries(self):
+    def test_cleanup_old_entries(self) -> None:
         """Old entries are cleaned up automatically."""
         clock = FakeClock()
         limiter = CommandRateLimiter(max_commands=5, window_seconds=1, now_provider=clock.now)
@@ -164,7 +164,7 @@ class TestCommandRateLimiter:
         # Old entry should be cleaned up
         assert limiter.get_remaining_commands("player1") == 4  # Only 1 command in window
 
-    def test_sliding_window_accuracy(self):
+    def test_sliding_window_accuracy(self) -> None:
         """Sliding window accurately tracks commands over time."""
         clock = FakeClock()
         limiter = CommandRateLimiter(max_commands=3, window_seconds=2, now_provider=clock.now)
@@ -189,15 +189,15 @@ class TestCommandRateLimiter:
         # Now should be allowed (old commands outside window)
         assert limiter.is_allowed("player1") is True
 
-    def test_zero_max_commands_always_blocks(self):
+    def test_zero_max_commands_always_blocks(self) -> None:
         """Zero max commands blocks all requests."""
         limiter = CommandRateLimiter(max_commands=0, window_seconds=60)
 
         assert limiter.is_allowed("player1") is False
 
-    def test_very_short_window(self):
+    def test_very_short_window(self) -> None:
         """Very short time window works correctly."""
-        limiter = CommandRateLimiter(max_commands=2, window_seconds=0.5)
+        limiter = CommandRateLimiter(max_commands=2, window_seconds=0.5)  # type: ignore[arg-type]
 
         limiter.is_allowed("player1")
         limiter.is_allowed("player1")

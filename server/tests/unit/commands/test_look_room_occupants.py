@@ -19,7 +19,7 @@ class TestLookCommandRoomOccupants:
     """Test look command with room occupants and objects."""
 
     @pytest.mark.asyncio
-    async def test_look_command_with_players_in_room(self):
+    async def test_look_command_with_players_in_room(self) -> None:
         """Test look command displays other players in room."""
         persistence = MagicMock()
         connection_manager = MagicMock()
@@ -81,7 +81,7 @@ class TestLookCommandRoomOccupants:
         assert "CurrentPlayer" not in text  # Current player should not be listed
 
     @pytest.mark.asyncio
-    async def test_look_command_with_npcs_in_room(self):
+    async def test_look_command_with_npcs_in_room(self) -> None:
         """Test look command displays NPCs in room."""
         persistence = MagicMock()
         connection_manager = MagicMock()
@@ -134,7 +134,7 @@ class TestLookCommandRoomOccupants:
         assert "Also here: Guard" in text
 
     @pytest.mark.asyncio
-    async def test_look_npc_as_admin_shows_stats(self):
+    async def test_look_npc_as_admin_shows_stats(self) -> None:
         """Test that admins see NPC stats when looking at an NPC."""
         persistence = MagicMock()
         connection_manager = MagicMock()
@@ -219,7 +219,7 @@ class TestLookCommandRoomOccupants:
         assert "aggressive_mob" in text or "Type" in text
 
     @pytest.mark.asyncio
-    async def test_look_npc_as_non_admin_no_stats(self):
+    async def test_look_npc_as_non_admin_no_stats(self) -> None:
         """Test that non-admins don't see NPC stats when looking at an NPC."""
         persistence = MagicMock()
         connection_manager = MagicMock()
@@ -286,7 +286,7 @@ class TestLookCommandRoomOccupants:
         assert "Admin Stats" not in text
 
     @pytest.mark.asyncio
-    async def test_look_command_with_containers_in_room(self):
+    async def test_look_command_with_containers_in_room(self) -> None:
         """Test look command displays containers in room."""
         persistence = MagicMock()
         connection_manager = MagicMock()
@@ -344,7 +344,7 @@ class TestLookCommandRoomOccupants:
         assert "You see: Wooden Chest, Barrel" in text or "You see: Barrel, Wooden Chest" in text
 
     @pytest.mark.asyncio
-    async def test_look_command_with_corpses_in_room(self):
+    async def test_look_command_with_corpses_in_room(self) -> None:
         """Test look command displays corpses in room."""
         persistence = MagicMock()
         connection_manager = MagicMock()
@@ -397,7 +397,7 @@ class TestLookCommandRoomOccupants:
         assert "the corpse of DeadPlayer" in text
 
     @pytest.mark.asyncio
-    async def test_look_command_with_all_entities(self):
+    async def test_look_command_with_all_entities(self) -> None:
         """Test look command displays all entities when present."""
         persistence = MagicMock()
         connection_manager = MagicMock()
@@ -478,7 +478,7 @@ class TestLookCommandRoomOccupants:
         assert "the corpse of DeadPlayer" in text
 
     @pytest.mark.asyncio
-    async def test_look_command_filters_dead_npcs(self):
+    async def test_look_command_filters_dead_npcs(self) -> None:
         """Test look command filters out dead NPCs."""
         persistence = MagicMock()
         connection_manager = MagicMock()
@@ -536,7 +536,7 @@ class TestLookCommandRoomOccupants:
         assert "DeadGuard" not in text
 
     @pytest.mark.asyncio
-    async def test_look_command_empty_room(self):
+    async def test_look_command_empty_room(self) -> None:
         """Test look command with no additional entities."""
         persistence = MagicMock()
         connection_manager = MagicMock()

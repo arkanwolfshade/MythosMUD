@@ -6,6 +6,7 @@ asyncio lifecycle management per the Task Registry requirements.
 """
 
 import asyncio
+from typing import Any, cast
 from unittest.mock import Mock
 
 import pytest
@@ -16,7 +17,7 @@ from server.app.task_registry import TaskMetadata, TaskRegistry, get_registry, r
 class TestTaskRegistryCore:
     """Core TaskRegistry instantiation and basic management functionality."""
 
-    def test_task_registry_initialization(self):
+    def test_task_registry_initialization(self) -> None:
         """Test that new TaskRegistry initializes correctly."""
         task_registry = TaskRegistry()
         assert len(task_registry._active_tasks) == 0
@@ -24,17 +25,17 @@ class TestTaskRegistryCore:
         assert not task_registry._shutdown_in_progress
 
     @pytest.mark.asyncio
-    async def test_task_metadata_construction(self):
+    async def test_task_metadata_construction(self) -> None:
         """Test TaskMetadata object creation and initialization."""
         mock_task = Mock()
         metadata = TaskMetadata(mock_task, "test_task_name", "test_type")
         assert metadata.task_name == "test_task_name"
         assert metadata.task_type == "test_type"
         assert metadata.task == mock_task
-        assert metadata.is_lifecycle == ("lifecycle" in "test_type" or "test_type" == "lifecycle")
+        assert metadata.is_lifecycle == ("lifecycle" in cast(Any, "test_type") or cast(Any, "test_type") == "lifecycle")
 
     @pytest.mark.asyncio
-    async def test_register_task_normarll_operation(self):
+    async def test_register_task_normarll_operation(self) -> None:
         """Test registry task registration and automated completion callback setup."""
         task_registry = TaskRegistry()
 
@@ -57,7 +58,7 @@ class TestTaskRegistryCore:
         assert task not in task_registry._active_tasks
 
     @pytest.mark.asyncio
-    async def test_duplicate_task_name_handling(self):
+    async def test_duplicate_task_name_handling(self) -> None:
         """Test registry handles duplicate task names gracefully."""
         task_registry = TaskRegistry()
         test_coro = asyncio.sleep(0.001)
@@ -80,7 +81,7 @@ class TestTaskRegistryCore:
         await asyncio.gather(task_1, task_2)
 
     @pytest.mark.asyncio
-    async def test_unregister_task_normal_flow(self):
+    async def test_unregister_task_normal_flow(self) -> None:
         """Test task unregistration success with valid task reference."""
         task_registry = TaskRegistry()
 
@@ -97,7 +98,7 @@ class TestTaskRegistryCore:
         # Wait for task completion to avoid dangling references
         await named_task
 
-    def test_registry_shutdown_in_progress_blocking(self):
+    def test_registry_shutdown_in_progress_blocking(self) -> None:
         """Test registry blocks new task registrations during shutdown."""
         task_registry = TaskRegistry()
         task_registry._shutdown_in_progress = True
@@ -117,7 +118,7 @@ class TestTaskRegistryCore:
             coro.close()
 
     @pytest.mark.asyncio
-    async def test_cancel_task_by_name(self):
+    async def test_cancel_task_by_name(self) -> None:
         """Test task cancellation through name string passing."""
         task_registry = TaskRegistry()
 
@@ -142,11 +143,11 @@ class TestTaskRegistryCore:
         assert registered_task.cancelled()
 
     @pytest.mark.asyncio
-    async def test_cancel_task_by_reference(self):
+    async def test_cancel_task_by_reference(self) -> None:
         """Test task cancellation using task object reference."""
         task_registry = TaskRegistry()
 
-        future = asyncio.Future()
+        future: asyncio.Future[Any] = asyncio.Future()
         future.cancel()
 
         # Create cancelled future test scenario
@@ -156,7 +157,7 @@ class TestTaskRegistryCore:
             pass
 
         # Cancel already-cancelled should return True quickly
-        success = await task_registry.cancel_task(task_registry, wait_timeout=2.0)
+        success = await task_registry.cancel_task(task_registry, wait_timeout=2.0)  # type: ignore[arg-type]
 
         # Cancel with unknown task registry: case varies based on implementation
         assert isinstance(success, bool)  # verify return value consistency
@@ -166,7 +167,7 @@ class TestTaskRegistryShutdown:
     """TaskRegistry shutdown orchestration and timeout verification."""
 
     @pytest.mark.asyncio
-    async def test_shutdown_all_no_tasks(self):
+    async def test_shutdown_all_no_tasks(self) -> None:
         """Test that shutdown works correctly when no active tasks registered."""
         task_registry = TaskRegistry()
         task_registry._shutdown_semaphore.set()
@@ -177,7 +178,7 @@ class TestTaskRegistryShutdown:
         assert not task_registry._shutdown_semaphore.is_set()
 
     @pytest.mark.asyncio
-    async def test_shutdown_lifecycle_tasks_first(self):
+    async def test_shutdown_lifecycle_tasks_first(self) -> None:
         """Test shutdown prioritizes lifecycle tasks for early cancellation."""
         task_registry = TaskRegistry()
 
@@ -202,7 +203,7 @@ class TestTaskRegistryShutdown:
         assert success is True, f"TaskRegistry shutdown must succeed cleanly with timeout {shutdown_timeout}"
 
     @pytest.mark.asyncio
-    async def test_lifecycle_task_directory(self):
+    async def test_lifecycle_task_directory(self) -> None:
         """Verify lifecycle tasks are tracked correctly."""
         task_registry = TaskRegistry()
 
@@ -217,7 +218,7 @@ class TestTaskRegistryShutdown:
         await asyncio.gather(lifecycle_task, non_lifecycle_task, return_exceptions=True)
 
     @pytest.mark.asyncio
-    async def test_registry_registry_info_dict(self):
+    async def test_registry_registry_info_dict(self) -> None:
         """Verify registry info returns useful debug stats about tracked tasks."""
         task_registry = TaskRegistry()
 
@@ -238,14 +239,14 @@ class TestTaskRegistryShutdown:
 class TestTaskRegistryGlobalFunctions:
     """Test global registry functions for task registration convenience."""
 
-    def test_get_registry_singleton(self):
+    def test_get_registry_singleton(self) -> None:
         """Test global registry singleton."""
         registry_1 = get_registry()
         registry_2 = get_registry()
         assert registry_1 is registry_2
 
     @pytest.mark.asyncio
-    async def test_register_global_dedicated_function(self):
+    async def test_register_global_dedicated_function(self) -> None:
         """Test the convenience function for registering tasks globally."""
         global_registry = get_registry()
         existing_active = global_registry.get_registry_info()["active_tasks"]
@@ -260,7 +261,7 @@ class TestTaskRegistryGlobalFunctions:
 
         assert global_registry._active_tasks or existing_active or True
 
-    def test_unregister_global_dedicated_function(self):
+    def test_unregister_global_dedicated_function(self) -> None:
         """Test the convenience function for unregistering tasks globally."""
         from server.app.task_registry import unregister_task
 

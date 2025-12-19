@@ -15,6 +15,7 @@ from typing import Any
 
 import pytest
 import structlog
+from sqlalchemy.exc import DatabaseError
 
 from server.config import get_config, reset_config
 from server.database import close_db, init_db
@@ -29,6 +30,7 @@ class Environment:
         # AI Agent: Explicit type annotations for attributes initialized as None
         self.temp_dir: str | None = None
         self.database_path: str | None = None
+        self.npc_database_path: str | None = None
         self.connection_manager: ConnectionManager | None = None
         self.config: dict[str, Any] | None = None
         self.logger = structlog.get_logger(f"test_env_{test_name}")
@@ -96,61 +98,50 @@ class Environment:
         try:
             # Recreate database engine with new URL using the new getter-based API
 
-            import server.database
-
             # Dispose existing engine if it exists
             try:
-                existing_engine = server.database.get_engine() if server.database._engine else None
-                if existing_engine:
-                    await existing_engine.dispose()
+                from server.database import DatabaseManager, reset_database
+
+                db_manager = DatabaseManager.get_instance()
+                if db_manager.engine:
+                    await db_manager.close()
                     self.logger.info("Disposed existing main database engine")
-            except Exception:
+            except Exception:  # pylint: disable=broad-exception-caught
                 pass  # Engine might not be initialized yet
 
             # Reset global state to force re-initialization with new environment variables
-            server.database._engine = None
-            server.database._async_session_maker = None
-            server.database._database_url = None
+            reset_database()
 
             # Initialize main database (will read from DATABASE_URL environment variable)
             await init_db()
-            if self.database_path:
-                self.logger.info("Database setup complete", db_path=self.database_path)
-            else:
-                self.logger.info(
-                    "Database setup complete",
-                    database_url=existing_db_url[:50] + "..." if len(existing_db_url) > 50 else existing_db_url,
-                )
+            self.logger.info(
+                "Database setup complete",
+                database_url=existing_db_url[:50] + "..." if len(existing_db_url) > 50 else existing_db_url,
+            )
 
             # Recreate NPC database engine with new URL using the new getter-based API
-            import server.npc_database
+            from server.npc_database import close_npc_db, reset_npc_database
 
             # Dispose existing NPC engine if it exists
             try:
-                existing_npc_engine = server.npc_database.get_npc_engine() if server.npc_database._npc_engine else None
-                if existing_npc_engine:
-                    await existing_npc_engine.dispose()
-                    self.logger.info("Disposed existing NPC database engine")
-            except Exception:
+                # We can use close_npc_db safely as it handles None engine
+                await close_npc_db()
+                self.logger.info("Disposed existing NPC database engine")
+            except Exception:  # pylint: disable=broad-exception-caught
                 pass  # NPC engine might not be initialized yet
 
             # Reset global NPC database state to force re-initialization
-            server.npc_database._npc_engine = None
-            server.npc_database._npc_async_session_maker = None
-            server.npc_database._npc_database_url = None
+            reset_npc_database()
 
             # Initialize NPC database (will read from NPC_DATABASE_URL environment variable)
             from server.npc_database import init_npc_db
 
             await init_npc_db()
-            if self.npc_database_path:
-                self.logger.info("NPC Database setup complete", npc_db_path=self.npc_database_path)
-            else:
-                npc_url = os.getenv("DATABASE_NPC_URL", existing_db_url)
-                self.logger.info(
-                    "NPC Database setup complete", database_url=npc_url[:50] + "..." if len(npc_url) > 50 else npc_url
-                )
-        except Exception as e:
+            npc_url = os.getenv("DATABASE_NPC_URL", existing_db_url)
+            self.logger.info(
+                "NPC Database setup complete", database_url=npc_url[:50] + "..." if len(npc_url) > 50 else npc_url
+            )
+        except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError) as e:
             self.logger.error("Database setup failed", error=str(e))
             # For tests, we can continue without a real database
             # The tests will use mocked persistence
@@ -204,40 +195,37 @@ class Environment:
             from server.database import get_engine
 
             engine = get_engine()
-            await engine.dispose()  # Properly dispose of main database engine connections
-            self.logger.info("Disposed main database engine")
-        except Exception as e:
+            if engine is not None:
+                await engine.dispose()  # Properly dispose of main database engine connections
+                self.logger.info("Disposed main database engine")
+        except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError) as e:
             self.logger.warning("Error disposing main database engine", error=str(e))
 
         try:
             from server.npc_database import get_npc_engine
 
             npc_engine = get_npc_engine()
-            await npc_engine.dispose()  # Properly dispose of NPC database engine connections
-            self.logger.info("Disposed NPC database engine")
-        except Exception as e:
+            if npc_engine is not None:
+                await npc_engine.dispose()  # Properly dispose of NPC database engine connections
+                self.logger.info("Disposed NPC database engine")
+        except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError) as e:
             self.logger.warning("Error disposing NPC database engine", error=str(e))
 
         try:
             await close_db()
-        except Exception as e:
+        except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError) as e:
             self.logger.warning("Error closing database connections", error=str(e))
 
         # Reset global state after cleanup to prevent pollution
         try:
-            import server.database
-            import server.npc_database
+            from server.database import reset_database
+            from server.npc_database import reset_npc_database
 
-            server.database._engine = None
-            server.database._async_session_maker = None
-            server.database._database_url = None
-
-            server.npc_database._npc_engine = None
-            server.npc_database._npc_async_session_maker = None
-            server.npc_database._npc_database_url = None
+            reset_database()
+            reset_npc_database()
 
             self.logger.info("Reset database global state")
-        except Exception as e:
+        except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError) as e:
             self.logger.warning("Error resetting database global state", error=str(e))
 
     def _merge_config(self, base_config: dict[str, Any], override_config: dict[str, Any]):
@@ -390,8 +378,6 @@ async def create_test_environment_context(test_name: str, config_override: dict[
 @asynccontextmanager
 async def isolated_test_environment(config_override: dict[str, Any] | None = None):
     """Context manager for isolated test environment"""
-    import uuid
-
     test_name = f"isolated_{uuid.uuid4().hex[:8]}"
 
     async with create_test_environment_context(test_name, config_override) as env:
@@ -550,7 +536,6 @@ class TestCleanup:
         """Clean up old sessions"""
         # This would typically clean up sessions older than specified hours
         # Implementation depends on session cleanup logic
-        pass
 
 
 # Export utilities

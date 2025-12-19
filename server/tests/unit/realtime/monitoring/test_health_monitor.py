@@ -8,6 +8,7 @@ token validation, and proactive cleanup of stale connections.
 
 import asyncio
 import time
+from typing import Any, cast
 from unittest.mock import AsyncMock, MagicMock, PropertyMock, patch
 from uuid import uuid4
 
@@ -19,7 +20,7 @@ from server.realtime.monitoring.health_monitor import HealthMonitor
 class TestHealthMonitorInit:
     """Test HealthMonitor initialization."""
 
-    def test_init(self):
+    def test_init(self) -> None:
         """Test HealthMonitor initialization."""
         mock_is_websocket_open = MagicMock(return_value=True)
         mock_validate_token = AsyncMock(return_value=True)
@@ -50,7 +51,7 @@ class TestCheckPlayerConnectionHealth:
     """Test check_player_connection_health method."""
 
     @pytest.mark.asyncio
-    async def test_check_player_connection_health_healthy(self):
+    async def test_check_player_connection_health_healthy(self) -> None:
         """Test checking health when all connections are healthy."""
         mock_is_websocket_open = MagicMock(return_value=True)
         mock_validate_token = AsyncMock(return_value=True)
@@ -78,7 +79,9 @@ class TestCheckPlayerConnectionHealth:
         active_websockets = {connection_id1: mock_websocket1, connection_id2: mock_websocket2}
 
         with patch("server.realtime.monitoring.health_monitor.logger"):
-            result = await monitor.check_player_connection_health(player_id, player_websockets, active_websockets)
+            result = await monitor.check_player_connection_health(
+                player_id, cast(Any, player_websockets), cast(Any, active_websockets)
+            )
 
             assert result["player_id"] == player_id
             assert result["websocket_healthy"] == 2
@@ -86,7 +89,7 @@ class TestCheckPlayerConnectionHealth:
             assert result["overall_health"] == "healthy"
 
     @pytest.mark.asyncio
-    async def test_check_player_connection_health_unhealthy(self):
+    async def test_check_player_connection_health_unhealthy(self) -> None:
         """Test checking health when connections are unhealthy."""
         mock_is_websocket_open = MagicMock(return_value=True)
         mock_validate_token = AsyncMock(return_value=True)
@@ -111,7 +114,9 @@ class TestCheckPlayerConnectionHealth:
         active_websockets = {connection_id: mock_websocket}
 
         with patch("server.realtime.monitoring.health_monitor.logger"):
-            result = await monitor.check_player_connection_health(player_id, player_websockets, active_websockets)
+            result = await monitor.check_player_connection_health(
+                player_id, cast(Any, player_websockets), cast(Any, active_websockets)
+            )
 
             assert result["websocket_healthy"] == 0
             assert result["websocket_unhealthy"] == 1
@@ -119,7 +124,7 @@ class TestCheckPlayerConnectionHealth:
             mock_cleanup_dead_websocket.assert_called_once_with(player_id, connection_id)
 
     @pytest.mark.asyncio
-    async def test_check_player_connection_health_degraded(self):
+    async def test_check_player_connection_health_degraded(self) -> None:
         """Test checking health when some connections are unhealthy."""
         mock_is_websocket_open = MagicMock(return_value=True)
         mock_validate_token = AsyncMock(return_value=True)
@@ -148,14 +153,16 @@ class TestCheckPlayerConnectionHealth:
         active_websockets = {connection_id1: mock_websocket1, connection_id2: mock_websocket2}
 
         with patch("server.realtime.monitoring.health_monitor.logger"):
-            result = await monitor.check_player_connection_health(player_id, player_websockets, active_websockets)
+            result = await monitor.check_player_connection_health(
+                player_id, cast(Any, player_websockets), cast(Any, active_websockets)
+            )
 
             assert result["websocket_healthy"] == 1
             assert result["websocket_unhealthy"] == 1
             assert result["overall_health"] == "degraded"
 
     @pytest.mark.asyncio
-    async def test_check_player_connection_health_no_connections(self):
+    async def test_check_player_connection_health_no_connections(self) -> None:
         """Test checking health when player has no connections."""
         mock_is_websocket_open = MagicMock(return_value=True)
         mock_validate_token = AsyncMock(return_value=True)
@@ -170,18 +177,20 @@ class TestCheckPlayerConnectionHealth:
         )
 
         player_id = uuid4()
-        player_websockets = {}
-        active_websockets = {}
+        player_websockets: dict[str, Any] = {}
+        active_websockets: dict[str, Any] = {}
 
         with patch("server.realtime.monitoring.health_monitor.logger"):
-            result = await monitor.check_player_connection_health(player_id, player_websockets, active_websockets)
+            result = await monitor.check_player_connection_health(
+                player_id, cast(Any, player_websockets), cast(Any, active_websockets)
+            )
 
             assert result["websocket_healthy"] == 0
             assert result["websocket_unhealthy"] == 0
             assert result["overall_health"] == "no_connections"
 
     @pytest.mark.asyncio
-    async def test_check_player_connection_health_error(self):
+    async def test_check_player_connection_health_error(self) -> None:
         """Test checking health when an error occurs."""
         mock_is_websocket_open = MagicMock(return_value=True)
         mock_validate_token = AsyncMock(return_value=True)
@@ -201,7 +210,9 @@ class TestCheckPlayerConnectionHealth:
         active_websockets = None
 
         with patch("server.realtime.monitoring.health_monitor.logger"):
-            result = await monitor.check_player_connection_health(player_id, player_websockets, active_websockets)
+            result = await monitor.check_player_connection_health(
+                player_id, cast(Any, player_websockets), cast(Any, active_websockets)
+            )
 
             assert result["overall_health"] == "error"
 
@@ -210,7 +221,7 @@ class TestCheckAllConnectionsHealth:
     """Test check_all_connections_health method."""
 
     @pytest.mark.asyncio
-    async def test_check_all_connections_health_healthy(self):
+    async def test_check_all_connections_health_healthy(self) -> None:
         """Test checking all connections when they are healthy."""
         mock_is_websocket_open = MagicMock(return_value=True)
         mock_validate_token = AsyncMock(return_value=True)
@@ -245,13 +256,15 @@ class TestCheckAllConnectionsHealth:
         player_websockets = {player_id: [connection_id]}
 
         with patch("server.realtime.monitoring.health_monitor.logger"):
-            await monitor.check_all_connections_health(active_websockets, connection_metadata, player_websockets)
+            await monitor.check_all_connections_health(
+                cast(Any, active_websockets), cast(Any, connection_metadata), cast(Any, player_websockets)
+            )
 
             assert mock_metadata.is_healthy is True
             mock_performance_tracker.record_health_check.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_check_all_connections_health_stale(self):
+    async def test_check_all_connections_health_stale(self) -> None:
         """Test checking all connections when some are stale."""
         mock_is_websocket_open = MagicMock(return_value=True)
         mock_validate_token = AsyncMock(return_value=True)
@@ -287,13 +300,15 @@ class TestCheckAllConnectionsHealth:
         player_websockets = {player_id: [connection_id]}
 
         with patch("server.realtime.monitoring.health_monitor.logger"):
-            await monitor.check_all_connections_health(active_websockets, connection_metadata, player_websockets)
+            await monitor.check_all_connections_health(
+                cast(Any, active_websockets), cast(Any, connection_metadata), cast(Any, player_websockets)
+            )
 
             assert mock_metadata.is_healthy is False
             mock_cleanup_dead_websocket.assert_called_once_with(player_id, connection_id)
 
     @pytest.mark.asyncio
-    async def test_check_all_connections_health_token_revalidation(self):
+    async def test_check_all_connections_health_token_revalidation(self) -> None:
         """Test checking all connections with token revalidation."""
         mock_is_websocket_open = MagicMock(return_value=True)
         mock_validate_token = AsyncMock(return_value=True)
@@ -329,14 +344,16 @@ class TestCheckAllConnectionsHealth:
         player_websockets = {player_id: [connection_id]}
 
         with patch("server.realtime.monitoring.health_monitor.logger"):
-            await monitor.check_all_connections_health(active_websockets, connection_metadata, player_websockets)
+            await monitor.check_all_connections_health(
+                cast(Any, active_websockets), cast(Any, connection_metadata), cast(Any, player_websockets)
+            )
 
             mock_validate_token.assert_called_once_with("test-token", player_id)
             assert mock_metadata.is_healthy is True
             assert mock_metadata.last_token_validation > time.time() - 1.0  # Updated recently
 
     @pytest.mark.asyncio
-    async def test_check_all_connections_health_token_validation_failed(self):
+    async def test_check_all_connections_health_token_validation_failed(self) -> None:
         """Test checking all connections when token validation fails."""
         mock_is_websocket_open = MagicMock(return_value=True)
         mock_validate_token = AsyncMock(return_value=False)  # Token invalid
@@ -372,13 +389,15 @@ class TestCheckAllConnectionsHealth:
         player_websockets = {player_id: [connection_id]}
 
         with patch("server.realtime.monitoring.health_monitor.logger"):
-            await monitor.check_all_connections_health(active_websockets, connection_metadata, player_websockets)
+            await monitor.check_all_connections_health(
+                cast(Any, active_websockets), cast(Any, connection_metadata), cast(Any, player_websockets)
+            )
 
             assert mock_metadata.is_healthy is False
             mock_cleanup_dead_websocket.assert_called_once_with(player_id, connection_id)
 
     @pytest.mark.asyncio
-    async def test_check_all_connections_health_missing_metadata(self):
+    async def test_check_all_connections_health_missing_metadata(self) -> None:
         """Test checking all connections when metadata is missing."""
         mock_is_websocket_open = MagicMock(return_value=True)
         mock_validate_token = AsyncMock(return_value=True)
@@ -399,17 +418,19 @@ class TestCheckAllConnectionsHealth:
         mock_websocket = MagicMock()
 
         active_websockets = {connection_id: mock_websocket}
-        connection_metadata = {}  # Missing metadata
+        connection_metadata: dict[str, Any] = {}  # Missing metadata
         player_websockets = {player_id: [connection_id]}
 
         with patch("server.realtime.monitoring.health_monitor.logger"):
-            await monitor.check_all_connections_health(active_websockets, connection_metadata, player_websockets)
+            await monitor.check_all_connections_health(
+                cast(Any, active_websockets), cast(Any, connection_metadata), cast(Any, player_websockets)
+            )
 
             # Should attempt cleanup for missing metadata
             mock_cleanup_dead_websocket.assert_called_once_with(player_id, connection_id)
 
     @pytest.mark.asyncio
-    async def test_check_all_connections_health_websocket_not_open(self):
+    async def test_check_all_connections_health_websocket_not_open(self) -> None:
         """Test checking all connections when WebSocket is not open."""
         mock_is_websocket_open = MagicMock(return_value=False)  # Not open
         mock_validate_token = AsyncMock(return_value=True)
@@ -444,7 +465,9 @@ class TestCheckAllConnectionsHealth:
         player_websockets = {player_id: [connection_id]}
 
         with patch("server.realtime.monitoring.health_monitor.logger"):
-            await monitor.check_all_connections_health(active_websockets, connection_metadata, player_websockets)
+            await monitor.check_all_connections_health(
+                cast(Any, active_websockets), cast(Any, connection_metadata), cast(Any, player_websockets)
+            )
 
             assert mock_metadata.is_healthy is False
             mock_cleanup_dead_websocket.assert_called_once_with(player_id, connection_id)
@@ -454,7 +477,7 @@ class TestPeriodicHealthCheckTask:
     """Test periodic_health_check_task method."""
 
     @pytest.mark.asyncio
-    async def test_periodic_health_check_task_runs(self):
+    async def test_periodic_health_check_task_runs(self) -> None:
         """Test that periodic health check task runs."""
         mock_is_websocket_open = MagicMock(return_value=True)
         mock_validate_token = AsyncMock(return_value=True)
@@ -469,14 +492,16 @@ class TestPeriodicHealthCheckTask:
             health_check_interval=0.1,  # Short interval for testing
         )
 
-        active_websockets = {}
-        connection_metadata = {}
-        player_websockets = {}
+        active_websockets: dict[str, Any] = {}
+        connection_metadata: dict[str, Any] = {}
+        player_websockets: dict[str, Any] = {}
 
         with patch("server.realtime.monitoring.health_monitor.logger"):
             # Start the task
             task = asyncio.create_task(
-                monitor.periodic_health_check_task(active_websockets, connection_metadata, player_websockets)
+                monitor.periodic_health_check_task(
+                    cast(Any, active_websockets), cast(Any, connection_metadata), cast(Any, player_websockets)
+                )
             )
 
             # Wait a bit for it to run
@@ -495,7 +520,7 @@ class TestPeriodicHealthCheckTask:
 class TestStartPeriodicChecks:
     """Test start_periodic_checks method."""
 
-    def test_start_periodic_checks_success(self):
+    def test_start_periodic_checks_success(self) -> None:
         """Test successfully starting periodic checks."""
         mock_is_websocket_open = MagicMock(return_value=True)
         mock_validate_token = AsyncMock(return_value=True)
@@ -513,18 +538,20 @@ class TestStartPeriodicChecks:
         mock_task = MagicMock()
         mock_tracked_manager.create_tracked_task.return_value = mock_task
 
-        active_websockets = {}
-        connection_metadata = {}
-        player_websockets = {}
+        active_websockets: dict[str, Any] = {}
+        connection_metadata: dict[str, Any] = {}
+        player_websockets: dict[str, Any] = {}
 
         with patch("server.app.tracked_task_manager.get_global_tracked_manager", return_value=mock_tracked_manager):
             with patch("server.realtime.monitoring.health_monitor.logger"):
-                monitor.start_periodic_checks(active_websockets, connection_metadata, player_websockets)
+                monitor.start_periodic_checks(
+                    cast(Any, active_websockets), cast(Any, connection_metadata), cast(Any, player_websockets)
+                )
 
                 assert monitor._health_check_task == mock_task
                 mock_tracked_manager.create_tracked_task.assert_called_once()
 
-    def test_start_periodic_checks_already_running(self):
+    def test_start_periodic_checks_already_running(self) -> None:
         """Test starting periodic checks when already running."""
         mock_is_websocket_open = MagicMock(return_value=True)
         mock_validate_token = AsyncMock(return_value=True)
@@ -552,7 +579,7 @@ class TestStartPeriodicChecks:
 class TestStopPeriodicChecks:
     """Test stop_periodic_checks method."""
 
-    def test_stop_periodic_checks_success(self):
+    def test_stop_periodic_checks_success(self) -> None:
         """Test successfully stopping periodic checks."""
         mock_is_websocket_open = MagicMock(return_value=True)
         mock_validate_token = AsyncMock(return_value=True)
@@ -579,7 +606,7 @@ class TestStopPeriodicChecks:
                     mock_task.cancel.assert_called_once()
                     assert monitor._health_check_task is None
 
-    def test_stop_periodic_checks_no_task(self):
+    def test_stop_periodic_checks_no_task(self) -> None:
         """Test stopping periodic checks when no task exists."""
         mock_is_websocket_open = MagicMock(return_value=True)
         mock_validate_token = AsyncMock(return_value=True)
@@ -600,7 +627,7 @@ class TestStopPeriodicChecks:
 
             # Should not raise error
 
-    def test_stop_periodic_checks_task_done(self):
+    def test_stop_periodic_checks_task_done(self) -> None:
         """Test stopping periodic checks when task is already done."""
         mock_is_websocket_open = MagicMock(return_value=True)
         mock_validate_token = AsyncMock(return_value=True)
@@ -629,7 +656,7 @@ class TestWaitForTaskCancellation:
     """Test _wait_for_task_cancellation method."""
 
     @pytest.mark.asyncio
-    async def test_wait_for_task_cancellation_success(self):
+    async def test_wait_for_task_cancellation_success(self) -> None:
         """Test successfully waiting for task cancellation."""
         mock_is_websocket_open = MagicMock(return_value=True)
         mock_validate_token = AsyncMock(return_value=True)
@@ -652,7 +679,7 @@ class TestWaitForTaskCancellation:
             # Should complete without error
 
     @pytest.mark.asyncio
-    async def test_wait_for_task_cancellation_timeout(self):
+    async def test_wait_for_task_cancellation_timeout(self) -> None:
         """Test waiting for task cancellation with timeout."""
         mock_is_websocket_open = MagicMock(return_value=True)
         mock_validate_token = AsyncMock(return_value=True)

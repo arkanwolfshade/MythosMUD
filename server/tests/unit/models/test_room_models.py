@@ -20,7 +20,7 @@ from server.models.room import Room
 class TestRoomModel:
     """Test the Room model class."""
 
-    def test_room_with_event_bus(self):
+    def test_room_with_event_bus(self) -> None:
         """Test that Room can be created with EventBus."""
         room_data = {"id": "test_room"}
         event_bus = Mock(spec=EventBus)
@@ -29,7 +29,7 @@ class TestRoomModel:
 
         assert room._event_bus == event_bus
 
-    def test_player_entered(self):
+    def test_player_entered(self) -> None:
         """Test adding a player to the room."""
         room_data = {"id": "test_room"}
         event_bus = Mock(spec=EventBus)
@@ -41,7 +41,7 @@ class TestRoomModel:
         assert room.has_player("player123")
         event_bus.publish.assert_called_once()
 
-    def test_player_entered_duplicate(self):
+    def test_player_entered_duplicate(self) -> None:
         """Test that adding the same player twice is handled gracefully."""
         room_data = {"id": "test_room"}
         event_bus = Mock(spec=EventBus)
@@ -53,7 +53,7 @@ class TestRoomModel:
         assert len(room.get_players()) == 1
         assert "player123" in room.get_players()
 
-    def test_player_entered_empty_id(self):
+    def test_player_entered_empty_id(self) -> None:
         """Test that empty player ID raises ValueError."""
         room_data = {"id": "test_room"}
         room = Room(room_data)
@@ -61,7 +61,7 @@ class TestRoomModel:
         with pytest.raises(ValueError, match="Player ID cannot be empty"):
             room.player_entered("")
 
-    def test_player_left(self):
+    def test_player_left(self) -> None:
         """Test removing a player from the room."""
         room_data = {"id": "test_room"}
         event_bus = Mock(spec=EventBus)
@@ -74,7 +74,7 @@ class TestRoomModel:
         assert not room.has_player("player123")
         assert event_bus.publish.call_count == 2  # Enter + Leave
 
-    def test_player_left_nonexistent(self):
+    def test_player_left_nonexistent(self) -> None:
         """Test that removing non-existent player is handled gracefully."""
         room_data = {"id": "test_room"}
         event_bus = Mock(spec=EventBus)
@@ -86,7 +86,7 @@ class TestRoomModel:
         # Should not publish event for non-existent player
         assert event_bus.publish.call_count == 0
 
-    def test_player_left_empty_id(self):
+    def test_player_left_empty_id(self) -> None:
         """Test that empty player ID raises ValueError."""
         room_data = {"id": "test_room"}
         room = Room(room_data)
@@ -94,7 +94,7 @@ class TestRoomModel:
         with pytest.raises(ValueError, match="Player ID cannot be empty"):
             room.player_left("")
 
-    def test_object_added(self):
+    def test_object_added(self) -> None:
         """Test adding an object to the room."""
         room_data = {"id": "test_room"}
         event_bus = Mock(spec=EventBus)
@@ -106,7 +106,7 @@ class TestRoomModel:
         assert room.has_object("object123")
         event_bus.publish.assert_called_once()
 
-    def test_object_added_duplicate(self):
+    def test_object_added_duplicate(self) -> None:
         """Test that adding the same object twice is handled gracefully."""
         room_data = {"id": "test_room"}
         event_bus = Mock(spec=EventBus)
@@ -118,7 +118,7 @@ class TestRoomModel:
         assert len(room.get_objects()) == 1
         assert "object123" in room.get_objects()
 
-    def test_object_added_empty_id(self):
+    def test_object_added_empty_id(self) -> None:
         """Test that empty object ID raises ValueError."""
         room_data = {"id": "test_room"}
         room = Room(room_data)
@@ -126,7 +126,7 @@ class TestRoomModel:
         with pytest.raises(ValueError, match="Object ID cannot be empty"):
             room.object_added("")
 
-    def test_object_removed(self):
+    def test_object_removed(self) -> None:
         """Test removing an object from the room."""
         room_data = {"id": "test_room"}
         event_bus = Mock(spec=EventBus)
@@ -139,7 +139,7 @@ class TestRoomModel:
         assert not room.has_object("object123")
         assert event_bus.publish.call_count == 2  # Add + Remove
 
-    def test_object_removed_nonexistent(self):
+    def test_object_removed_nonexistent(self) -> None:
         """Test that removing non-existent object is handled gracefully."""
         room_data = {"id": "test_room"}
         event_bus = Mock(spec=EventBus)
@@ -151,7 +151,7 @@ class TestRoomModel:
         # Should not publish event for non-existent object
         assert event_bus.publish.call_count == 0
 
-    def test_object_removed_empty_id(self):
+    def test_object_removed_empty_id(self) -> None:
         """Test that empty object ID raises ValueError."""
         room_data = {"id": "test_room"}
         room = Room(room_data)
@@ -159,7 +159,7 @@ class TestRoomModel:
         with pytest.raises(ValueError, match="Object ID cannot be empty"):
             room.object_removed("")
 
-    def test_npc_entered(self):
+    def test_npc_entered(self) -> None:
         """Test adding an NPC to the room."""
         room_data = {"id": "test_room"}
         event_bus = Mock(spec=EventBus)
@@ -171,7 +171,7 @@ class TestRoomModel:
         assert room.has_npc("npc123")
         event_bus.publish.assert_called_once()
 
-    def test_npc_entered_duplicate(self):
+    def test_npc_entered_duplicate(self) -> None:
         """Test that adding the same NPC twice is handled gracefully."""
         room_data = {"id": "test_room"}
         event_bus = Mock(spec=EventBus)
@@ -183,7 +183,7 @@ class TestRoomModel:
         assert len(room.get_npcs()) == 1
         assert "npc123" in room.get_npcs()
 
-    def test_npc_entered_empty_id(self):
+    def test_npc_entered_empty_id(self) -> None:
         """Test that empty NPC ID raises ValueError."""
         room_data = {"id": "test_room"}
         room = Room(room_data)
@@ -191,7 +191,7 @@ class TestRoomModel:
         with pytest.raises(ValueError, match="NPC ID cannot be empty"):
             room.npc_entered("")
 
-    def test_npc_left(self):
+    def test_npc_left(self) -> None:
         """Test removing an NPC from the room."""
         room_data = {"id": "test_room"}
         event_bus = Mock(spec=EventBus)
@@ -204,7 +204,7 @@ class TestRoomModel:
         assert not room.has_npc("npc123")
         assert event_bus.publish.call_count == 2  # Enter + Leave
 
-    def test_npc_left_nonexistent(self):
+    def test_npc_left_nonexistent(self) -> None:
         """Test that removing non-existent NPC is handled gracefully."""
         room_data = {"id": "test_room"}
         event_bus = Mock(spec=EventBus)
@@ -216,7 +216,7 @@ class TestRoomModel:
         # Should not publish event for non-existent NPC
         assert event_bus.publish.call_count == 0
 
-    def test_npc_left_empty_id(self):
+    def test_npc_left_empty_id(self) -> None:
         """Test that empty NPC ID raises ValueError."""
         room_data = {"id": "test_room"}
         room = Room(room_data)
@@ -224,7 +224,7 @@ class TestRoomModel:
         with pytest.raises(ValueError, match="NPC ID cannot be empty"):
             room.npc_left("")
 
-    def test_get_occupant_count(self):
+    def test_get_occupant_count(self) -> None:
         """Test getting total occupant count."""
         room_data = {"id": "test_room"}
         room = Room(room_data)
@@ -240,7 +240,7 @@ class TestRoomModel:
         room.npc_entered("npc1")
         assert room.get_occupant_count() == 3
 
-    def test_is_empty(self):
+    def test_is_empty(self) -> None:
         """Test checking if room is empty."""
         room_data = {"id": "test_room"}
         room = Room(room_data)
@@ -253,7 +253,7 @@ class TestRoomModel:
         room.player_left("player1")
         assert room.is_empty() is True
 
-    def test_to_dict(self):
+    def test_to_dict(self) -> None:
         """Test converting room to dictionary."""
         room_data = {
             "id": "test_room_001",
@@ -286,14 +286,14 @@ class TestRoomModel:
         assert result["npcs"] == ["npc1"]
         assert result["occupant_count"] == 3
 
-    def test_str_representation(self):
+    def test_str_representation(self) -> None:
         """Test string representation of room."""
         room_data = {"id": "test_room", "name": "Test Room"}
         room = Room(room_data)
 
         assert str(room) == "Room(test_room: Test Room)"
 
-    def test_repr_representation(self):
+    def test_repr_representation(self) -> None:
         """Test detailed string representation of room."""
         room_data = {"id": "test_room", "name": "Test Room"}
         room = Room(room_data)
@@ -304,7 +304,7 @@ class TestRoomModel:
         expected = "Room(id='test_room', name='Test Room', players=1, objects=1, npcs=0)"
         assert repr(room) == expected
 
-    def test_event_publishing_without_event_bus(self):
+    def test_event_publishing_without_event_bus(self) -> None:
         """Test that events are not published when no event bus is provided."""
         room_data = {"id": "test_room"}
         room = Room(room_data)  # No event bus
@@ -318,7 +318,7 @@ class TestRoomModel:
         assert "object1" in room.get_objects()
         assert "npc1" in room.get_npcs()
 
-    def test_multiple_occupants(self):
+    def test_multiple_occupants(self) -> None:
         """Test room with multiple occupants of each type."""
         room_data = {"id": "test_room"}
         room = Room(room_data)

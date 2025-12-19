@@ -6,11 +6,15 @@ for the profession system feature.
 """
 
 import json
+import os
+import time
+import uuid
+from collections.abc import Generator
 
 import pytest
-from sqlalchemy import create_engine, text
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import Engine, create_engine, text
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from sqlalchemy.orm import Session, sessionmaker
 
 # Import the profession model (will be created)
 from server.models.profession import Profession
@@ -20,10 +24,8 @@ class TestProfessionModel:
     """Test the Profession SQLAlchemy model."""
 
     @pytest.fixture
-    def db_session(self):
+    def db_session(self) -> Generator[Session, None, None]:
         """Create a PostgreSQL database session for testing."""
-        import os
-
         database_url = os.getenv("DATABASE_URL")
         if not database_url or not database_url.startswith("postgresql"):
             raise ValueError("DATABASE_URL must be set to a PostgreSQL URL. SQLite is no longer supported.")
@@ -82,8 +84,8 @@ class TestProfessionModel:
             conn.execute(text("CREATE INDEX IF NOT EXISTS idx_professions_available ON professions(is_available)"))
             conn.commit()
 
-        Session = sessionmaker(bind=engine)
-        session = Session()
+        SessionClass = sessionmaker(bind=engine)
+        session = SessionClass()
         try:
             # Clean up any existing test data before test
             session.execute(text("DELETE FROM professions WHERE id >= 0"))
@@ -93,7 +95,7 @@ class TestProfessionModel:
             # Rollback first in case of any pending transaction issues
             try:
                 session.rollback()
-            except Exception:
+            except SQLAlchemyError:
                 pass  # Ignore rollback errors
             session.execute(text("DELETE FROM professions WHERE id >= 0"))
             session.commit()
@@ -101,16 +103,16 @@ class TestProfessionModel:
             # Rollback on any exception before cleanup
             try:
                 session.rollback()
-            except Exception:
+            except SQLAlchemyError:
                 pass  # Ignore rollback errors
             raise
         finally:
             try:
                 session.close()
-            except Exception:
+            except SQLAlchemyError:
                 pass  # Ignore close errors
 
-    def test_profession_creation(self, db_session):
+    def test_profession_creation(self, db_session: Session) -> None:
         """Test creating a profession with all required fields."""
         # Clean up any existing profession with this ID to prevent conflicts in parallel execution
         db_session.execute(text("DELETE FROM professions WHERE id = 0"))
@@ -142,7 +144,7 @@ class TestProfessionModel:
         assert saved_profession.mechanical_effects == "{}"
         assert saved_profession.is_available is True
 
-    def test_profession_with_stat_requirements(self, db_session):
+    def test_profession_with_stat_requirements(self, db_session: Session) -> None:
         """Test creating a profession with stat requirements."""
         # Clean up any existing profession with this ID to prevent conflicts in parallel execution
         db_session.execute(text("DELETE FROM professions WHERE id = 1"))
@@ -167,11 +169,11 @@ class TestProfessionModel:
         assert saved_profession.stat_requirements == stat_reqs
 
         # Test parsing the JSON
-        requirements = json.loads(saved_profession.stat_requirements)
+        requirements = json.loads(str(saved_profession.stat_requirements))
         assert requirements["strength"] == 12
         assert requirements["intelligence"] == 10
 
-    def test_profession_with_mechanical_effects(self, db_session):
+    def test_profession_with_mechanical_effects(self, db_session: Session) -> None:
         """Test creating a profession with mechanical effects."""
         # Clean up any existing profession with this ID or name to prevent conflicts in parallel execution
         db_session.execute(text("DELETE FROM professions WHERE id = 2 OR name = 'Warrior'"))
@@ -196,11 +198,11 @@ class TestProfessionModel:
         assert saved_profession.mechanical_effects == effects
 
         # Test parsing the JSON
-        mechanical_effects = json.loads(saved_profession.mechanical_effects)
+        mechanical_effects = json.loads(str(saved_profession.mechanical_effects))
         assert mechanical_effects["combat_bonus"] == 2
         assert mechanical_effects["social_bonus"] == 1
 
-    def test_profession_unique_name_constraint(self, db_session):
+    def test_profession_unique_name_constraint(self, db_session: Session) -> None:
         """Test that profession names must be unique."""
         profession1 = Profession(
             id=0,
@@ -230,7 +232,7 @@ class TestProfessionModel:
         with pytest.raises(IntegrityError):
             db_session.commit()
 
-    def test_profession_default_values(self, db_session):
+    def test_profession_default_values(self, db_session: Session) -> None:
         """Test that profession has correct default values."""
         profession = Profession(
             id=0,
@@ -246,9 +248,10 @@ class TestProfessionModel:
         db_session.commit()
 
         saved_profession = db_session.query(Profession).filter_by(id=0).first()
+        assert saved_profession is not None
         assert saved_profession.is_available is True
 
-    def test_profession_availability_filtering(self, db_session):
+    def test_profession_availability_filtering(self, db_session: Session) -> None:
         """Test filtering professions by availability."""
         # Create available profession
         available_profession = Profession(
@@ -284,7 +287,7 @@ class TestProfessionModel:
         assert len(unavailable_professions) == 1
         assert unavailable_professions[0].name == "Unavailable"
 
-    def test_profession_string_representation(self, db_session):
+    def test_profession_string_representation(self, db_session: Session) -> None:
         """Test the string representation of a profession."""
         profession = Profession(
             id=0,
@@ -308,10 +311,8 @@ class TestProfessionDatabaseSchema:
     """Test the profession database schema and constraints."""
 
     @pytest.fixture
-    def db_engine(self):
+    def db_engine(self) -> Engine:
         """Create a PostgreSQL database connection for schema testing."""
-        import os
-
         database_url = os.getenv("DATABASE_URL")
         if not database_url or not database_url.startswith("postgresql"):
             raise ValueError("DATABASE_URL must be set to a PostgreSQL URL. SQLite is no longer supported.")
@@ -372,7 +373,7 @@ class TestProfessionDatabaseSchema:
 
         return engine
 
-    def test_professions_table_creation(self, db_engine):
+    def test_professions_table_creation(self, db_engine: Engine) -> None:
         """Test that the professions table is created with correct schema."""
         with db_engine.connect() as conn:
             # Check that the table exists (PostgreSQL)
@@ -411,7 +412,7 @@ class TestProfessionDatabaseSchema:
             for expected_col in expected_columns:
                 assert expected_col in column_names
 
-    def test_professions_index_creation(self, db_engine):
+    def test_professions_index_creation(self, db_engine: Engine) -> None:
         """Test that the availability index is created."""
         with db_engine.connect() as conn:
             result = conn.execute(
@@ -426,7 +427,7 @@ class TestProfessionDatabaseSchema:
             index_exists = result.fetchone() is not None
             assert index_exists
 
-    def test_professions_table_constraints(self, db_engine):
+    def test_professions_table_constraints(self, db_engine: Engine) -> None:
         """Test that table constraints work correctly."""
         # Use unique IDs that are unlikely to conflict (high numbers)
         test_id_1 = 99999
@@ -485,7 +486,7 @@ class TestProfessionDatabaseSchema:
             conn.execute(text("DELETE FROM professions WHERE id IN (:id1, :id2)"), {"id1": test_id_2, "id2": test_id_3})
             conn.commit()
 
-    def test_professions_default_values(self, db_engine):
+    def test_professions_default_values(self, db_engine: Engine) -> None:
         """Test that default values work correctly."""
         test_id = 99996
         with db_engine.connect() as conn:
@@ -496,12 +497,8 @@ class TestProfessionDatabaseSchema:
             # Test that SQLAlchemy model default works (not database default)
             # Since we're using SQLAlchemy defaults, we need to use the ORM or include the value
             # For this test, we'll verify the model's default by using the ORM
-            from sqlalchemy.orm import sessionmaker
-
-            from server.models.profession import Profession
-
-            Session = sessionmaker(bind=db_engine)
-            session = Session()
+            SessionClass = sessionmaker(bind=db_engine)
+            session = SessionClass()
             try:
                 profession = Profession(
                     id=test_id,
@@ -531,10 +528,8 @@ class TestPlayerProfessionIntegration:
     """Test the integration between Player and Profession models."""
 
     @pytest.fixture
-    def db_session_with_professions(self):
+    def db_session_with_professions(self) -> Generator[Session, None, None]:
         """Create a PostgreSQL database session with professions and players tables."""
-        import os
-
         database_url = os.getenv("DATABASE_URL")
         if not database_url or not database_url.startswith("postgresql"):
             raise ValueError("DATABASE_URL must be set to a PostgreSQL URL. SQLite is no longer supported.")
@@ -617,8 +612,8 @@ class TestPlayerProfessionIntegration:
                 )
                 conn.commit()
 
-        Session = sessionmaker(bind=engine)
-        session = Session()
+        SessionClass = sessionmaker(bind=engine)
+        session = SessionClass()
         try:
             yield session
         finally:
@@ -628,14 +623,12 @@ class TestPlayerProfessionIntegration:
                 session.execute(text("DELETE FROM players WHERE player_id LIKE 'test_%' OR player_id LIKE 'player_%'"))
                 session.execute(text("DELETE FROM users WHERE username LIKE 'test_%' OR username LIKE 'player_%'"))
                 session.commit()
-            except Exception:
+            except SQLAlchemyError:
                 pass
             session.close()
 
-    def test_player_with_profession_id(self, db_session_with_professions):
+    def test_player_with_profession_id(self, db_session_with_professions: Session) -> None:
         """Test that a player can have a profession_id."""
-        import uuid
-
         # Create a test user first (required for foreign key constraint)
         test_user_id = str(uuid.uuid4())
         # Use unique email and username to avoid conflicts
@@ -659,16 +652,14 @@ class TestPlayerProfessionIntegration:
         # Insert a test player with profession_id (use proper UUID for user_id)
         # Include all required NOT NULL columns
         # Generate proper UUID for player_id (PostgreSQL requires valid UUID format)
-        import uuid as uuid_module
-
-        test_player_id = str(uuid_module.uuid4())
+        test_player_id = str(uuid.uuid4())
 
         # Use unique player name to avoid unique constraint violation
         unique_player_name = f"TestPlayer_{test_player_id[:8]}"
         db_session_with_professions.execute(
             text("""
-            INSERT INTO players (player_id, user_id, name, profession_id, stats, inventory, status_effects, current_room_id, experience_points, level, is_admin, created_at, last_active)
-            VALUES (:player_id, :user_id, :player_name, 1, '{}', '[]', '[]', 'earth_arkhamcity_sanitarium_room_foyer_001', 0, 1, 0, NOW(), NOW())
+            INSERT INTO players (player_id, user_id, name, profession_id, stats, inventory, status_effects, current_room_id, experience_points, level, is_admin, is_deleted, created_at, last_active)
+            VALUES (:player_id, :user_id, :player_name, 1, '{}', '[]', '[]', 'earth_arkhamcity_sanitarium_room_foyer_001', 0, 1, 0, false, NOW(), NOW())
         """),
             {"player_id": test_player_id, "user_id": test_user_id, "player_name": unique_player_name},
         )
@@ -681,13 +672,13 @@ class TestPlayerProfessionIntegration:
         """),
             {"player_id": test_player_id},
         )
-        profession_id = result.fetchone()[0]
+        row = result.fetchone()
+        assert row is not None
+        profession_id = row[0]
         assert profession_id == 1
 
-    def test_player_default_profession_id(self, db_session_with_professions):
+    def test_player_default_profession_id(self, db_session_with_professions: Session) -> None:
         """Test that a player defaults to profession_id 0."""
-        import uuid
-
         # Create a test user first (required for foreign key constraint)
         test_user_id = str(uuid.uuid4())
         # Use unique email and username to avoid conflicts
@@ -717,8 +708,8 @@ class TestPlayerProfessionIntegration:
         unique_name = f"TestPlayer2_{test_player_id[:8]}"
         db_session_with_professions.execute(
             text("""
-            INSERT INTO players (player_id, user_id, name, profession_id, stats, inventory, status_effects, current_room_id, experience_points, level, is_admin, created_at, last_active)
-            VALUES (:player_id, :user_id, :name, 0, '{}', '[]', '[]', 'earth_arkhamcity_sanitarium_room_foyer_001', 0, 1, 0, NOW(), NOW())
+            INSERT INTO players (player_id, user_id, name, profession_id, stats, inventory, status_effects, current_room_id, experience_points, level, is_admin, is_deleted, created_at, last_active)
+            VALUES (:player_id, :user_id, :name, 0, '{}', '[]', '[]', 'earth_arkhamcity_sanitarium_room_foyer_001', 0, 1, 0, false, NOW(), NOW())
         """),
             {"player_id": test_player_id, "user_id": test_user_id, "name": unique_name},
         )
@@ -731,13 +722,13 @@ class TestPlayerProfessionIntegration:
         """),
             {"player_id": test_player_id},
         )
-        profession_id = result.fetchone()[0]
+        row = result.fetchone()
+        assert row is not None
+        profession_id = row[0]
         assert profession_id == 0
 
-    def test_profession_player_relationship(self, db_session_with_professions):
+    def test_profession_player_relationship(self, db_session_with_professions: Session) -> None:
         """Test the relationship between professions and players."""
-        import uuid
-
         # Create test users first (required for foreign key constraint)
         user_id_1 = str(uuid.uuid4())
         user_id_2 = str(uuid.uuid4())
@@ -778,10 +769,10 @@ class TestPlayerProfessionIntegration:
         # Include all required NOT NULL columns and use proper UUIDs
         db_session_with_professions.execute(
             text("""
-            INSERT INTO players (player_id, user_id, name, profession_id, stats, inventory, status_effects, current_room_id, experience_points, level, is_admin, created_at, last_active)
+            INSERT INTO players (player_id, user_id, name, profession_id, stats, inventory, status_effects, current_room_id, experience_points, level, is_admin, is_deleted, created_at, last_active)
             VALUES
-            (:player_id_1, :user_id_1, :player_name_1, 0, '{}', '[]', '[]', 'earth_arkhamcity_sanitarium_room_foyer_001', 0, 1, 0, NOW(), NOW()),
-            (:player_id_2, :user_id_2, :player_name_2, 1, '{}', '[]', '[]', 'earth_arkhamcity_sanitarium_room_foyer_001', 0, 1, 0, NOW(), NOW())
+            (:player_id_1, :user_id_1, :player_name_1, 0, '{}', '[]', '[]', 'earth_arkhamcity_sanitarium_room_foyer_001', 0, 1, 0, false, NOW(), NOW()),
+            (:player_id_2, :user_id_2, :player_name_2, 1, '{}', '[]', '[]', 'earth_arkhamcity_sanitarium_room_foyer_001', 0, 1, 0, false, NOW(), NOW())
         """),
             {
                 "player_id_1": player_id_1,
@@ -828,10 +819,8 @@ class TestProfessionHelperMethods:
     """Test Profession model helper methods."""
 
     @pytest.fixture
-    def db_session(self):
+    def db_session(self) -> Generator[Session, None, None]:
         """Create a PostgreSQL database session for testing."""
-        import os
-
         database_url = os.getenv("DATABASE_URL")
         if not database_url or not database_url.startswith("postgresql"):
             raise ValueError("DATABASE_URL must be set to a PostgreSQL URL. SQLite is no longer supported.")
@@ -890,8 +879,8 @@ class TestProfessionHelperMethods:
             conn.execute(text("CREATE INDEX IF NOT EXISTS idx_professions_available ON professions(is_available)"))
             conn.commit()
 
-        Session = sessionmaker(bind=engine)
-        session = Session()
+        SessionClass = sessionmaker(bind=engine)
+        session = SessionClass()
         try:
             yield session
         finally:
@@ -899,11 +888,11 @@ class TestProfessionHelperMethods:
             try:
                 session.execute(text("DELETE FROM professions WHERE id >= 0"))
                 session.commit()
-            except Exception:
+            except SQLAlchemyError:
                 pass
             session.close()
 
-    def test_get_stat_requirements_valid_json(self, db_session):
+    def test_get_stat_requirements_valid_json(self, db_session: Session) -> None:
         """Test get_stat_requirements with valid JSON."""
         # Arrange - use unique ID to avoid conflicts
         requirements = {"strength": 12, "intelligence": 10}
@@ -923,7 +912,7 @@ class TestProfessionHelperMethods:
         try:
             db_session.delete(profession)
             db_session.commit()
-        except Exception:
+        except SQLAlchemyError:
             pass
 
         # Act
@@ -932,7 +921,7 @@ class TestProfessionHelperMethods:
         # Assert
         assert result == requirements
 
-    def test_get_stat_requirements_invalid_json(self, db_session):
+    def test_get_stat_requirements_invalid_json(self, db_session: Session) -> None:
         """Test get_stat_requirements with invalid JSON returns empty dict."""
         # Arrange
         profession = Profession(
@@ -952,7 +941,7 @@ class TestProfessionHelperMethods:
         # Assert
         assert result == {}
 
-    def test_get_stat_requirements_none_value(self, db_session):
+    def test_get_stat_requirements_none_value(self) -> None:
         """Test get_stat_requirements with None value returns empty dict."""
         # Arrange
         profession = Profession(
@@ -963,7 +952,7 @@ class TestProfessionHelperMethods:
             mechanical_effects="{}",
         )
         # Manually set to None to simulate edge case
-        profession.stat_requirements = None
+        profession.stat_requirements = None  # type: ignore[assignment]
 
         # Act
         result = profession.get_stat_requirements()
@@ -971,7 +960,7 @@ class TestProfessionHelperMethods:
         # Assert
         assert result == {}
 
-    def test_set_stat_requirements(self, db_session):
+    def test_set_stat_requirements(self, db_session: Session) -> None:
         """Test set_stat_requirements stores requirements as JSON."""
         # Arrange
         profession = Profession(
@@ -994,7 +983,7 @@ class TestProfessionHelperMethods:
         assert profession.stat_requirements == json.dumps(new_requirements)
         assert profession.get_stat_requirements() == new_requirements
 
-    def test_get_mechanical_effects_valid_json(self, db_session):
+    def test_get_mechanical_effects_valid_json(self, db_session: Session) -> None:
         """Test get_mechanical_effects with valid JSON."""
         # Arrange
         effects = {"combat_bonus": 2, "magic_bonus": 1}
@@ -1015,11 +1004,8 @@ class TestProfessionHelperMethods:
         # Assert
         assert result == effects
 
-    def test_get_mechanical_effects_invalid_json(self, db_session):
+    def test_get_mechanical_effects_invalid_json(self, db_session: Session) -> None:
         """Test get_mechanical_effects with invalid JSON returns empty dict."""
-        import time
-        import uuid
-
         # Arrange - Use timestamp + random to ensure uniqueness even in parallel tests
         unique_id = int(time.time() * 1000) % 1000000 + int(str(uuid.uuid4().int)[:6])
         profession = Profession(
@@ -1039,11 +1025,8 @@ class TestProfessionHelperMethods:
         # Assert
         assert result == {}
 
-    def test_set_mechanical_effects(self, db_session):
+    def test_set_mechanical_effects(self, db_session: Session) -> None:
         """Test set_mechanical_effects stores effects as JSON."""
-        import time
-        import uuid
-
         # Arrange - Use timestamp + random to ensure uniqueness even in parallel tests
         unique_id = int(time.time() * 1000) % 1000000 + int(str(uuid.uuid4().int)[:6])
         profession = Profession(
@@ -1066,11 +1049,8 @@ class TestProfessionHelperMethods:
         assert profession.mechanical_effects == json.dumps(new_effects)
         assert profession.get_mechanical_effects() == new_effects
 
-    def test_meets_stat_requirements_all_met(self, db_session):
+    def test_meets_stat_requirements_all_met(self, db_session: Session) -> None:
         """Test meets_stat_requirements when all requirements are met."""
-        import time
-        import uuid
-
         # Arrange - Use timestamp + random to ensure uniqueness even in parallel tests
         unique_id = int(time.time() * 1000) % 1000000 + int(str(uuid.uuid4().int)[:6])
         requirements = {"strength": 12, "intelligence": 10}
@@ -1093,11 +1073,8 @@ class TestProfessionHelperMethods:
         # Assert
         assert result is True
 
-    def test_meets_stat_requirements_not_met(self, db_session):
+    def test_meets_stat_requirements_not_met(self, db_session: Session) -> None:
         """Test meets_stat_requirements when requirements are not met."""
-        import time
-        import uuid
-
         # Arrange - Use timestamp + random to ensure uniqueness even in parallel tests
         unique_id = int(time.time() * 1000) % 1000000 + int(str(uuid.uuid4().int)[:6])
         requirements = {"strength": 12, "intelligence": 10}
@@ -1120,11 +1097,8 @@ class TestProfessionHelperMethods:
         # Assert
         assert result is False
 
-    def test_meets_stat_requirements_exact_match(self, db_session):
+    def test_meets_stat_requirements_exact_match(self, db_session: Session) -> None:
         """Test meets_stat_requirements with exact stat match."""
-        import time
-        import uuid
-
         # Arrange - Use timestamp + random to ensure uniqueness even in parallel tests
         unique_id = int(time.time() * 1000) % 1000000 + int(str(uuid.uuid4().int)[:6])
         requirements = {"strength": 12, "intelligence": 10}
@@ -1147,11 +1121,8 @@ class TestProfessionHelperMethods:
         # Assert
         assert result is True
 
-    def test_meets_stat_requirements_missing_stat_defaults_to_zero(self, db_session):
+    def test_meets_stat_requirements_missing_stat_defaults_to_zero(self, db_session: Session) -> None:
         """Test meets_stat_requirements when player missing a required stat."""
-        import time
-        import uuid
-
         # Arrange - Use timestamp + random to ensure uniqueness even in parallel tests
         unique_id = int(time.time() * 1000) % 1000000 + int(str(uuid.uuid4().int)[:6])
         requirements = {"strength": 12}
@@ -1174,11 +1145,8 @@ class TestProfessionHelperMethods:
         # Assert
         assert result is False  # 0 < 12
 
-    def test_meets_stat_requirements_no_requirements(self, db_session):
+    def test_meets_stat_requirements_no_requirements(self, db_session: Session) -> None:
         """Test meets_stat_requirements with no requirements."""
-        import time
-        import uuid
-
         # Arrange - Use timestamp + random to ensure uniqueness even in parallel tests
         unique_id = int(time.time() * 1000) % 1000000 + int(str(uuid.uuid4().int)[:6])
         profession = Profession(
@@ -1200,11 +1168,8 @@ class TestProfessionHelperMethods:
         # Assert
         assert result is True  # No requirements means always passes
 
-    def test_is_available_for_selection_true(self, db_session):
+    def test_is_available_for_selection_true(self, db_session: Session) -> None:
         """Test is_available_for_selection when available."""
-        import time
-        import uuid
-
         # Arrange - Use timestamp + random to ensure uniqueness even in parallel tests
         unique_id = int(time.time() * 1000) % 1000000 + int(str(uuid.uuid4().int)[:6])
         profession = Profession(
@@ -1225,11 +1190,8 @@ class TestProfessionHelperMethods:
         # Assert
         assert result is True
 
-    def test_is_available_for_selection_false(self, db_session):
+    def test_is_available_for_selection_false(self, db_session: Session) -> None:
         """Test is_available_for_selection when not available."""
-        import time
-        import uuid
-
         # Arrange - Use timestamp + random to ensure uniqueness even in parallel tests
         unique_id = int(time.time() * 1000) % 1000000 + int(str(uuid.uuid4().int)[:6])
         profession = Profession(
@@ -1250,11 +1212,8 @@ class TestProfessionHelperMethods:
         # Assert
         assert result is False
 
-    def test_get_requirement_display_text_no_requirements(self, db_session):
+    def test_get_requirement_display_text_no_requirements(self, db_session: Session) -> None:
         """Test get_requirement_display_text with no requirements."""
-        import time
-        import uuid
-
         # Arrange - Use timestamp + random to ensure uniqueness even in parallel tests
         unique_id = int(time.time() * 1000) % 1000000 + int(str(uuid.uuid4().int)[:6])
         unique_name = f"Tramp_{unique_id}"  # Make name unique to avoid conflicts
@@ -1275,11 +1234,8 @@ class TestProfessionHelperMethods:
         # Assert
         assert result == "No requirements"
 
-    def test_get_requirement_display_text_single_requirement(self, db_session):
+    def test_get_requirement_display_text_single_requirement(self, db_session: Session) -> None:
         """Test get_requirement_display_text with single requirement."""
-        import time
-        import uuid
-
         # Arrange - Use timestamp + random to ensure uniqueness even in parallel tests
         unique_id = int(time.time() * 1000) % 1000000 + int(str(uuid.uuid4().int)[:6])
         requirements = {"strength": 12}
@@ -1300,11 +1256,8 @@ class TestProfessionHelperMethods:
         # Assert
         assert result == "Minimum: Strength 12"
 
-    def test_get_requirement_display_text_multiple_requirements(self, db_session):
+    def test_get_requirement_display_text_multiple_requirements(self, db_session: Session) -> None:
         """Test get_requirement_display_text with multiple requirements."""
-        import time
-        import uuid
-
         # Arrange - Use timestamp + random to ensure uniqueness even in parallel tests
         unique_id = int(time.time() * 1000) % 1000000 + int(str(uuid.uuid4().int)[:6])
         requirements = {"strength": 12, "intelligence": 10, "wisdom": 8}
@@ -1328,11 +1281,8 @@ class TestProfessionHelperMethods:
         assert "Intelligence 10" in result
         assert "Wisdom 8" in result
 
-    def test_get_requirement_display_text_capitalization(self, db_session):
+    def test_get_requirement_display_text_capitalization(self, db_session: Session) -> None:
         """Test that stat names are properly capitalized in display text."""
-        import time
-        import uuid
-
         # Arrange - Use timestamp + random to ensure uniqueness even in parallel tests
         unique_id = int(time.time() * 1000) % 1000000 + int(str(uuid.uuid4().int)[:6])
         requirements = {"occult_knowledge": 15}

@@ -7,6 +7,7 @@ ensuring that the mute filtering works correctly for all muting players.
 
 import uuid
 from datetime import UTC, datetime
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock, call, patch
 
 import pytest
@@ -18,20 +19,22 @@ from server.services.nats_service import NATSService
 class TestMultiplePlayersMuting:
     """Test multiple players muting the same person."""
 
+    mock_nats_service: Any
+    mock_connection_manager: Any
+    mock_async_persistence: Any
+    handler: Any
+    room_id: str
+    sender_id: str
+    sender_name: str
+    muted_receivers: list[str]
+    unmuted_receivers: list[str]
+    all_players: list[str]
+
     def __init__(self):
         """Initialize test class attributes."""
-        self.mock_nats_service = None
-        self.mock_connection_manager = None
-        self.mock_async_persistence = None
-        self.handler = None
-        self.room_id = None
-        self.sender_id = None
-        self.sender_name = None
-        self.muted_receivers = None
-        self.unmuted_receivers = None
-        self.all_players = None
+        # Attributes are initialized in setup_method
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test fixtures."""
         self.mock_nats_service = MagicMock(spec=NATSService)
         # AI Agent: Inject mock connection_manager via constructor (no longer a global)
@@ -72,7 +75,7 @@ class TestMultiplePlayersMuting:
         }
 
     @pytest.mark.asyncio
-    async def test_multiple_players_muting_same_sender_say(self):
+    async def test_multiple_players_muting_same_sender_say(self) -> None:
         """Say channel should ignore personal mutes so everyone in the room hears the message."""
         chat_event = self.create_chat_event("say", "Hello everyone!")
 
@@ -91,7 +94,7 @@ class TestMultiplePlayersMuting:
         assert self.mock_connection_manager.send_personal_message.await_count == len(self.all_players)
 
     @pytest.mark.asyncio
-    async def test_multiple_players_muting_same_sender_emote(self):
+    async def test_multiple_players_muting_same_sender_emote(self) -> None:
         """Test that multiple players muting the same sender works for emote messages."""
         chat_event = self.create_chat_event("emote", "dance")
 
@@ -104,7 +107,7 @@ class TestMultiplePlayersMuting:
         with patch.object(self.handler._filtering_helper, "is_player_in_room", return_value=True):
             # Mock mute check - muted receivers have muted sender, unmuted receivers haven't
             # Patch _is_player_muted_by_receiver (not _with_user_manager) as the code checks this first
-            def mock_mute_check(receiver_id, sender_id):
+            def mock_mute_check(receiver_id, _sender_id):
                 return receiver_id in self.muted_receivers
 
             with patch.object(self.handler, "_is_player_muted_by_receiver", side_effect=mock_mute_check):
@@ -126,7 +129,7 @@ class TestMultiplePlayersMuting:
                 assert len(muted_calls) == 0
 
     @pytest.mark.asyncio
-    async def test_multiple_players_muting_same_sender_local(self):
+    async def test_multiple_players_muting_same_sender_local(self) -> None:
         """Test that multiple players muting the same sender works for local messages."""
         chat_event = self.create_chat_event("local", "Anyone in the area?")
 
@@ -139,7 +142,7 @@ class TestMultiplePlayersMuting:
         with patch.object(self.handler._filtering_helper, "is_player_in_room", return_value=True):
             # Mock mute check - muted receivers have muted sender, unmuted receivers haven't
             # Patch _is_player_muted_by_receiver (not _with_user_manager) as the code checks this first
-            def mock_mute_check(receiver_id, sender_id):
+            def mock_mute_check(receiver_id, _sender_id):
                 return receiver_id in self.muted_receivers
 
             with patch.object(self.handler, "_is_player_muted_by_receiver", side_effect=mock_mute_check):
@@ -161,7 +164,7 @@ class TestMultiplePlayersMuting:
                 assert len(muted_calls) == 0
 
     @pytest.mark.asyncio
-    async def test_multiple_players_muting_same_sender_pose(self):
+    async def test_multiple_players_muting_same_sender_pose(self) -> None:
         """Test that multiple players muting the same sender works for pose messages."""
         chat_event = self.create_chat_event("pose", "looks around nervously")
 
@@ -174,7 +177,7 @@ class TestMultiplePlayersMuting:
         with patch.object(self.handler._filtering_helper, "is_player_in_room", return_value=True):
             # Mock mute check - muted receivers have muted sender, unmuted receivers haven't
             # Patch _is_player_muted_by_receiver (not _with_user_manager) as the code checks this first
-            def mock_mute_check(receiver_id, sender_id):
+            def mock_mute_check(receiver_id, _sender_id):
                 return receiver_id in self.muted_receivers
 
             with patch.object(self.handler, "_is_player_muted_by_receiver", side_effect=mock_mute_check):
@@ -196,7 +199,7 @@ class TestMultiplePlayersMuting:
                 assert len(muted_calls) == 0
 
     @pytest.mark.asyncio
-    async def test_all_players_muting_same_sender(self):
+    async def test_all_players_muting_same_sender(self) -> None:
         """Test scenario where all players have muted the same sender."""
         chat_event = self.create_chat_event("local", "Hello everyone!")
 
@@ -210,7 +213,7 @@ class TestMultiplePlayersMuting:
             # Mock mute check - all receivers have muted sender
             # Patch _is_player_muted_by_receiver (not _with_user_manager) as the code checks this first
             # The method signature is (receiver_id, sender_id), not (user_manager, receiver_id, sender_id)
-            def mock_mute_check(receiver_id, sender_id):
+            def mock_mute_check(receiver_id, _sender_id):
                 return receiver_id != self.sender_id  # All receivers except sender have muted
 
             with patch.object(self.handler, "_is_player_muted_by_receiver", side_effect=mock_mute_check):
@@ -224,7 +227,7 @@ class TestMultiplePlayersMuting:
                 )
 
     @pytest.mark.asyncio
-    async def test_partial_muting_with_mixed_room_status(self):
+    async def test_partial_muting_with_mixed_room_status(self) -> None:
         """Test partial muting where some players are not in the room."""
         chat_event = self.create_chat_event("local", "Hello everyone!")
 
@@ -240,12 +243,12 @@ class TestMultiplePlayersMuting:
         self.mock_connection_manager.send_personal_message = AsyncMock()
 
         # Mock player in room check - some players are in room, some are not
-        def mock_in_room_check(player_id, room_id):
+        def mock_in_room_check(player_id, _room_id):
             return player_id in players_in_room
 
         with patch.object(self.handler._filtering_helper, "is_player_in_room", side_effect=mock_in_room_check):
             # Mock mute check - muted receivers have muted sender
-            def mock_mute_check(user_manager, receiver_id, sender_id):
+            def mock_mute_check(_user_manager, receiver_id, _sender_id):
                 return receiver_id in self.muted_receivers
 
             with patch.object(
@@ -278,7 +281,7 @@ class TestMultiplePlayersMuting:
                 assert len(not_in_room_calls) == 0
 
     @pytest.mark.asyncio
-    async def test_user_manager_efficiency_with_multiple_mutes(self):
+    async def test_user_manager_efficiency_with_multiple_mutes(self) -> None:
         """Test that UserManager is used efficiently when multiple players have muted the same sender."""
         chat_event = self.create_chat_event("local", "Hello everyone!")
 

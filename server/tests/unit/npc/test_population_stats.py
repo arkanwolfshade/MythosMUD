@@ -15,7 +15,7 @@ from server.npc.population_control import PopulationStats
 class TestPopulationStats:
     """Test population statistics tracking."""
 
-    def test_population_stats_creation(self):
+    def test_population_stats_creation(self) -> None:
         """Test creating population statistics."""
         stats = PopulationStats("arkhamcity", "downtown")
 
@@ -27,7 +27,7 @@ class TestPopulationStats:
         assert stats.required_npcs == 0
         assert stats.optional_npcs == 0
 
-    def test_add_npc_to_stats(self):
+    def test_add_npc_to_stats(self) -> None:
         """Test adding NPCs to population statistics."""
         stats = PopulationStats("arkhamcity", "downtown")
 
@@ -55,7 +55,7 @@ class TestPopulationStats:
         assert stats.required_npcs == 2
         assert stats.optional_npcs == 1
 
-    def test_remove_npc_from_stats(self):
+    def test_remove_npc_from_stats(self) -> None:
         """Test removing NPCs from population statistics."""
         stats = PopulationStats("arkhamcity", "downtown")
 
@@ -80,7 +80,7 @@ class TestPopulationStats:
         assert stats.required_npcs == 1
         assert stats.optional_npcs == 0
 
-    def test_population_stats_negative_protection(self):
+    def test_population_stats_negative_protection(self) -> None:
         """Test that population stats don't go negative."""
         stats = PopulationStats("arkhamcity", "downtown")
 
@@ -92,7 +92,7 @@ class TestPopulationStats:
         assert stats.required_npcs == 0
         assert stats.optional_npcs == 0
 
-    def test_population_stats_to_dict(self):
+    def test_population_stats_to_dict(self) -> None:
         """Test converting population stats to dictionary."""
         stats = PopulationStats("arkhamcity", "downtown")
         stats.add_npc("shopkeeper", "room_001", True)

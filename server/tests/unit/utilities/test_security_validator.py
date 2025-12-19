@@ -18,7 +18,7 @@ from server.validators.security_validator import (
 class TestUnicodeSanitization:
     """Test Unicode input sanitization using ftfy."""
 
-    def test_mojibake_fix(self):
+    def test_mojibake_fix(self) -> None:
         """Test fixing double-encoded text (mojibake)."""
         # Test with a simpler mojibake example that ftfy can actually fix
         # "café" with encoding issues
@@ -27,33 +27,33 @@ class TestUnicodeSanitization:
         # ftfy should detect and fix this
         assert result != mojibake_text
 
-    def test_combining_characters(self):
+    def test_combining_characters(self) -> None:
         """Test fixing combining characters."""
         # Text with combining characters that should be precomposed
         combining_text = "e\u0301"  # e + combining acute accent
         result = sanitize_unicode_input(combining_text)
         assert result == "é"  # Should be precomposed
 
-    def test_invisible_characters(self):
+    def test_invisible_characters(self) -> None:
         """Test removal of invisible Unicode characters."""
         # Text with zero-width space and other invisible characters
         invisible_text = "hello\u200bworld\u200c"  # zero-width space and zero-width non-joiner
         result = comprehensive_sanitize_input(invisible_text)
         assert result == "helloworld"  # Invisible characters should be removed
 
-    def test_curly_quotes(self):
+    def test_curly_quotes(self) -> None:
         """Test fixing curly quotes."""
         curly_text = "â€œHelloâ€"  # Common encoding of curly quotes
         result = sanitize_unicode_input(curly_text)
         # Should be converted to straight quotes or at least cleaned
         assert result != curly_text  # Should be different from original
 
-    def test_empty_input(self):
+    def test_empty_input(self) -> None:
         """Test handling of empty input."""
         assert sanitize_unicode_input("") == ""
-        assert sanitize_unicode_input(None) is None
+        assert sanitize_unicode_input(None) is None  # type: ignore[arg-type]
 
-    def test_legitimate_unicode_preserved(self):
+    def test_legitimate_unicode_preserved(self) -> None:
         """Test that legitimate Unicode text is preserved."""
         # Test various legitimate Unicode characters
         legitimate_texts = [
@@ -76,19 +76,19 @@ class TestUnicodeSanitization:
 class TestAnsiCodeRemoval:
     """Test ANSI escape code removal."""
 
-    def test_basic_ansi_codes(self):
+    def test_basic_ansi_codes(self) -> None:
         """Test removal of basic ANSI color codes."""
         ansi_text = "\033[31mRed text\033[0m"
         result = strip_ansi_codes(ansi_text)
         assert result == "Red text"
 
-    def test_complex_ansi_codes(self):
+    def test_complex_ansi_codes(self) -> None:
         """Test removal of complex ANSI sequences."""
         ansi_text = "\033[1;33;44mBold yellow on blue\033[0m"
         result = strip_ansi_codes(ansi_text)
         assert result == "Bold yellow on blue"
 
-    def test_cursor_movement_codes(self):
+    def test_cursor_movement_codes(self) -> None:
         """Test removal of cursor movement codes."""
         ansi_text = "Hello\033[2K\033[1GWorld"  # Clear line and move cursor
         result = strip_ansi_codes(ansi_text)
@@ -99,24 +99,24 @@ class TestAnsiCodeRemoval:
         assert "Hello" in result
         assert "World" in result
 
-    def test_mixed_content(self):
+    def test_mixed_content(self) -> None:
         """Test ANSI removal with mixed normal and ANSI content."""
         ansi_text = "Normal \033[32mgreen\033[0m text"
         result = strip_ansi_codes(ansi_text)
         assert result == "Normal green text"
 
-    def test_no_ansi_codes(self):
+    def test_no_ansi_codes(self) -> None:
         """Test text without ANSI codes."""
         normal_text = "Just normal text"
         result = strip_ansi_codes(normal_text)
         assert result == normal_text
 
-    def test_empty_input(self):
+    def test_empty_input(self) -> None:
         """Test handling of empty input."""
         assert strip_ansi_codes("") == ""
-        assert strip_ansi_codes(None) is None
+        assert strip_ansi_codes(None) is None  # type: ignore[arg-type]
 
-    def test_legitimate_text_preserved(self):
+    def test_legitimate_text_preserved(self) -> None:
         """Test that legitimate text is preserved."""
         legitimate_texts = [
             "Hello World",
@@ -134,7 +134,7 @@ class TestAnsiCodeRemoval:
 class TestComprehensiveSanitization:
     """Test the comprehensive sanitization function."""
 
-    def test_unicode_and_ansi_combined(self):
+    def test_unicode_and_ansi_combined(self) -> None:
         """Test sanitization of text with both Unicode and ANSI issues."""
         problematic_text = "\033[31mããã«ã¡ã¯\033[0m"  # ANSI + mojibake
         result = comprehensive_sanitize_input(problematic_text)
@@ -142,19 +142,19 @@ class TestComprehensiveSanitization:
         assert "\033" not in result
         assert result != problematic_text
 
-    def test_control_characters(self):
+    def test_control_characters(self) -> None:
         """Test removal of control characters."""
         control_text = "Hello\x00\x01\x02World\x7f"  # Null bytes and DEL
         result = comprehensive_sanitize_input(control_text)
         assert result == "HelloWorld"
 
-    def test_preserve_newlines_and_tabs(self):
+    def test_preserve_newlines_and_tabs(self) -> None:
         """Test that newlines and tabs are preserved."""
         text_with_whitespace = "Hello\n\tWorld"
         result = comprehensive_sanitize_input(text_with_whitespace)
         assert result == "Hello\n\tWorld"
 
-    def test_complex_malicious_input(self):
+    def test_complex_malicious_input(self) -> None:
         """Test sanitization of complex potentially malicious input."""
         malicious_text = (
             "\033[31m"  # ANSI color
@@ -166,12 +166,12 @@ class TestComprehensiveSanitization:
         result = comprehensive_sanitize_input(malicious_text)
         assert result == "HelloWorld"
 
-    def test_empty_input(self):
+    def test_empty_input(self) -> None:
         """Test handling of empty input."""
         assert comprehensive_sanitize_input("") == ""
-        assert comprehensive_sanitize_input(None) is None
+        assert comprehensive_sanitize_input(None) is None  # type: ignore[arg-type]
 
-    def test_user_expression_preserved(self):
+    def test_user_expression_preserved(self) -> None:
         """Test that legitimate user expression is preserved."""
         user_expressions = [
             "Hello, how are you today?",
@@ -195,22 +195,22 @@ class TestComprehensiveSanitization:
 class TestInjectionPatterns:
     """Test that injection patterns are still properly defined."""
 
-    def test_injection_patterns_exist(self):
+    def test_injection_patterns_exist(self) -> None:
         """Test that injection patterns are defined."""
         assert len(INJECTION_PATTERNS) > 0
         assert all(isinstance(pattern, str) for pattern in INJECTION_PATTERNS)
 
-    def test_shell_metacharacters_pattern(self):
+    def test_shell_metacharacters_pattern(self) -> None:
         """Test that shell metacharacters pattern is present (& removed as safe)."""
         shell_pattern = r"[;|]"  # & removed as it's safe in messages
         assert shell_pattern in INJECTION_PATTERNS
 
-    def test_sql_injection_pattern(self):
+    def test_sql_injection_pattern(self) -> None:
         """Test that SQL injection pattern is present (flexible spacing with .*)."""
         sql_pattern = r"\b(or|and)\b.*="  # Updated to match actual pattern
         assert sql_pattern in INJECTION_PATTERNS
 
-    def test_python_injection_pattern(self):
+    def test_python_injection_pattern(self) -> None:
         """Test that Python injection pattern is present (function calls, not keywords)."""
         # Now more specific - detects function calls, not just keywords
         python_pattern = r"(__import__|eval|exec)\s*\(|os\.system\s*\(|os\.popen\s*\("
@@ -220,7 +220,7 @@ class TestInjectionPatterns:
 class TestSanitizationVsValidation:
     """Test that we're focusing on sanitization rather than validation."""
 
-    def test_creative_text_not_rejected(self):
+    def test_creative_text_not_rejected(self) -> None:
         """Test that creative user text is not rejected."""
         creative_texts = [
             "I'm writing a story about Cthulhu!",
@@ -239,7 +239,7 @@ class TestSanitizationVsValidation:
             # Should preserve the creative content
             assert any(word in result.lower() for word in text.lower().split()[:3])
 
-    def test_roleplay_content_preserved(self):
+    def test_roleplay_content_preserved(self) -> None:
         """Test that roleplay content is preserved."""
         roleplay_texts = [
             "*adjusts spectacles nervously*",
@@ -255,7 +255,7 @@ class TestSanitizationVsValidation:
             assert len(result) > 0
             assert "*" in result or "..." in result or "!" in result
 
-    def test_false_positive_prevention(self):
+    def test_false_positive_prevention(self) -> None:
         """Test that normal user behavior isn't flagged as suspicious."""
         normal_behaviors = [
             "Hello everyone!",
@@ -282,7 +282,7 @@ class TestSanitizationVsValidation:
 class TestPerformanceAndEdgeCases:
     """Test performance and edge cases."""
 
-    def test_large_input_handling(self):
+    def test_large_input_handling(self) -> None:
         """Test handling of large input text."""
         large_text = "Hello " * 1000 + "World"
         result = comprehensive_sanitize_input(large_text)
@@ -290,7 +290,7 @@ class TestPerformanceAndEdgeCases:
         assert "Hello" in result
         assert "World" in result
 
-    def test_special_characters_handling(self):
+    def test_special_characters_handling(self) -> None:
         """Test handling of special characters."""
         special_chars = "!@#$%^&*()_+-=[]{}|;':\",./<>?"
         result = comprehensive_sanitize_input(special_chars)
@@ -298,13 +298,13 @@ class TestPerformanceAndEdgeCases:
         assert len(result) > 0
         assert result != ""
 
-    def test_mixed_encoding_issues(self):
+    def test_mixed_encoding_issues(self) -> None:
         """Test handling of mixed encoding issues."""
         mixed_text = "Hello\x00\033[31mWorld\u200b"  # Control + ANSI + Unicode
         result = comprehensive_sanitize_input(mixed_text)
         assert result == "HelloWorld"
 
-    def test_unicode_normalization_consistency(self):
+    def test_unicode_normalization_consistency(self) -> None:
         """Test that Unicode normalization is consistent."""
         # Test that the same input always produces the same output
         test_input = "café\u0301"  # cafe with combining acute accent

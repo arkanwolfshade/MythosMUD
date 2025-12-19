@@ -123,7 +123,7 @@ async def test_inventory_command_renders_inventory_and_equipped(command_context)
         }
     )
     persistence.get_player_by_name.return_value = player
-    player_name = cast(str, player.name)
+    player_name = player.name
 
     result = await handle_inventory_command({}, {"username": player_name}, request, alias_storage, player_name)
 
@@ -145,8 +145,8 @@ async def test_pickup_command_transfers_room_item(command_context):
 
     player = make_player()
     persistence.get_player_by_name.return_value = player
-    player_name = cast(str, player.name)
-    player_room_id = cast(str, player.current_room_id)
+    player_name = player.name
+    player_room_id = player.current_room_id
 
     drop_stack = {
         "item_instance_id": "instance-eldritch_relic",
@@ -185,8 +185,8 @@ async def test_pickup_command_supports_fuzzy_name_lookup(command_context):
 
     player = make_player()
     persistence.get_player_by_name.return_value = player
-    player_name = cast(str, player.name)
-    player_room_id = cast(str, player.current_room_id)
+    player_name = player.name
+    player_room_id = player.current_room_id
 
     room_manager.add_room_drop(
         player_room_id,
@@ -234,8 +234,8 @@ async def test_pickup_command_reports_missing_fuzzy_match(command_context):
 
     player = make_player()
     persistence.get_player_by_name.return_value = player
-    player_name = cast(str, player.name)
-    player_room_id = cast(str, player.current_room_id)
+    player_name = player.name
+    player_room_id = player.current_room_id
 
     room_manager.add_room_drop(
         player_room_id,
@@ -280,8 +280,8 @@ async def test_drop_command_moves_item_to_room(command_context):
         ]
     )
     persistence.get_player_by_name.return_value = player
-    player_name = cast(str, player.name)
-    player_room_id = cast(str, player.current_room_id)
+    player_name = player.name
+    player_room_id = player.current_room_id
 
     result = await handle_drop_command(
         {"index": 1, "quantity": 2},
@@ -326,9 +326,9 @@ async def test_drop_command_logs_structured_success(
         ]
     )
     persistence.get_player_by_name.return_value = player
-    player_name = cast(str, player.name)
-    player_id = cast(str, player.player_id)
-    player_room_id = cast(str, player.current_room_id)
+    player_name = player.name
+    player_id = player.player_id
+    player_room_id = player.current_room_id
 
     capsys.readouterr()
 
@@ -370,9 +370,9 @@ async def test_pickup_command_logs_capacity_failure(
 
     player = make_player()
     persistence.get_player_by_name.return_value = player
-    player_name = cast(str, player.name)
-    player_id = cast(str, player.player_id)
-    player_room_id = cast(str, player.current_room_id)
+    player_name = player.name
+    player_id = player.player_id
+    player_room_id = player.current_room_id
 
     drop_stack = {
         "item_instance_id": "instance-obsidian_amulet",
@@ -435,7 +435,7 @@ async def test_equip_command_moves_item_to_equipped(command_context):
         ]
     )
     persistence.get_player_by_name.return_value = player
-    player_name = cast(str, player.name)
+    player_name = player.name
 
     result = await handle_equip_command(
         {"index": 1, "target_slot": None},
@@ -472,7 +472,7 @@ async def test_equip_command_accepts_fuzzy_name(command_context):
         ]
     )
     persistence.get_player_by_name.return_value = player
-    player_name = cast(str, player.name)
+    player_name = player.name
 
     result = await handle_equip_command(
         {"index": None, "search_term": "lantern", "target_slot": None},
@@ -506,7 +506,7 @@ async def test_equip_command_normalizes_slot_type(command_context):
         ]
     )
     persistence.get_player_by_name.return_value = player
-    player_name = cast(str, player.name)
+    player_name = player.name
 
     persistence.save_player.reset_mock()
 
@@ -544,7 +544,7 @@ async def test_equip_command_reports_missing_fuzzy_match(command_context):
         ]
     )
     persistence.get_player_by_name.return_value = player
-    player_name = cast(str, player.name)
+    player_name = player.name
 
     result = await handle_equip_command(
         {"index": None, "search_term": "lantern", "target_slot": None},
@@ -577,7 +577,7 @@ async def test_equip_command_duplicate_token_suppresses_second_attempt(command_c
     ]
     player.set_inventory(deepcopy(starting_inventory))
     persistence.get_player_by_name.return_value = player
-    player_name = cast(str, player.name)
+    player_name = player.name
 
     command = {"index": 1, "target_slot": None, "mutation_token": "token-equip-1"}
 
@@ -612,7 +612,7 @@ async def test_unequip_command_returns_item_to_inventory(command_context):
         }
     )
     persistence.get_player_by_name.return_value = player
-    player_name = cast(str, player.name)
+    player_name = player.name
 
     result = await handle_unequip_command(
         {"slot": "HEAD"},
@@ -647,7 +647,7 @@ async def test_unequip_command_duplicate_token_suppresses_second_attempt(command
     player.set_inventory([])
     player.set_equipped_items({"head": equipped_payload})
     persistence.get_player_by_name.return_value = player
-    player_name = cast(str, player.name)
+    player_name = player.name
 
     command = {"slot": "head", "mutation_token": "token-unequip-1"}
 
@@ -684,7 +684,7 @@ async def test_unequip_command_accepts_fuzzy_name(command_context):
         }
     )
     persistence.get_player_by_name.return_value = player
-    player_name = cast(str, player.name)
+    player_name = player.name
 
     result = await handle_unequip_command(
         {"slot": None, "search_term": "Crown"},
@@ -719,7 +719,7 @@ async def test_unequip_command_reports_missing_fuzzy_match(command_context):
         }
     )
     persistence.get_player_by_name.return_value = player
-    player_name = cast(str, player.name)
+    player_name = player.name
 
     result = await handle_unequip_command(
         {"slot": None, "search_term": "amulet"},

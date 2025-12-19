@@ -23,7 +23,7 @@ from server.realtime.connection_session_management import (
 class TestIsWebSocketConnected:
     """Test _is_websocket_connected function."""
 
-    def test_is_websocket_connected_true(self):
+    def test_is_websocket_connected_true(self) -> None:
         """Test when WebSocket is connected."""
         mock_websocket = MagicMock()
         mock_websocket.client_state.name = "CONNECTED"
@@ -32,7 +32,7 @@ class TestIsWebSocketConnected:
 
         assert result is True
 
-    def test_is_websocket_connected_false(self):
+    def test_is_websocket_connected_false(self) -> None:
         """Test when WebSocket is not connected."""
         mock_websocket = MagicMock()
         mock_websocket.client_state.name = "DISCONNECTED"
@@ -41,7 +41,7 @@ class TestIsWebSocketConnected:
 
         assert result is False
 
-    def test_is_websocket_connected_error(self):
+    def test_is_websocket_connected_error(self) -> None:
         """Test when WebSocket raises an error."""
         mock_websocket = MagicMock()
         mock_websocket.client_state = None
@@ -55,7 +55,7 @@ class TestDisconnectConnectionForSession:
     """Test _disconnect_connection_for_session function."""
 
     @pytest.mark.asyncio
-    async def test_disconnect_connection_for_session_success(self):
+    async def test_disconnect_connection_for_session_success(self) -> None:
         """Test successfully disconnecting a connection."""
         connection_id = "conn-123"
         player_id = uuid4()
@@ -74,7 +74,7 @@ class TestDisconnectConnectionForSession:
             assert connection_id not in mock_manager.active_websockets
 
     @pytest.mark.asyncio
-    async def test_disconnect_connection_for_session_not_in_active(self):
+    async def test_disconnect_connection_for_session_not_in_active(self) -> None:
         """Test disconnecting a connection that's not in active_websockets."""
         connection_id = "conn-123"
         player_id = uuid4()
@@ -86,7 +86,7 @@ class TestDisconnectConnectionForSession:
         assert result is False
 
     @pytest.mark.asyncio
-    async def test_disconnect_connection_for_session_not_connected(self):
+    async def test_disconnect_connection_for_session_not_connected(self) -> None:
         """Test disconnecting a connection that's not connected."""
         connection_id = "conn-123"
         player_id = uuid4()
@@ -103,7 +103,7 @@ class TestDisconnectConnectionForSession:
             assert connection_id not in mock_manager.active_websockets
 
     @pytest.mark.asyncio
-    async def test_disconnect_connection_for_session_error(self):
+    async def test_disconnect_connection_for_session_error(self) -> None:
         """Test disconnecting when an error occurs."""
         connection_id = "conn-123"
         player_id = uuid4()
@@ -125,7 +125,7 @@ class TestDisconnectAllConnectionsForSession:
     """Test _disconnect_all_connections_for_session function."""
 
     @pytest.mark.asyncio
-    async def test_disconnect_all_connections_for_session_success(self):
+    async def test_disconnect_all_connections_for_session_success(self) -> None:
         """Test successfully disconnecting all connections."""
         player_id = uuid4()
         connection_id1 = "conn-1"
@@ -163,7 +163,7 @@ class TestDisconnectAllConnectionsForSession:
             assert player_id not in mock_manager.player_websockets
 
     @pytest.mark.asyncio
-    async def test_disconnect_all_connections_for_session_partial(self):
+    async def test_disconnect_all_connections_for_session_partial(self) -> None:
         """Test disconnecting when some connections don't exist."""
         player_id = uuid4()
         connection_id1 = "conn-1"
@@ -190,7 +190,7 @@ class TestDisconnectAllConnectionsForSession:
 class TestCleanupOldSessionTracking:
     """Test _cleanup_old_session_tracking function."""
 
-    def test_cleanup_old_session_tracking_success(self):
+    def test_cleanup_old_session_tracking_success(self) -> None:
         """Test successfully cleaning up old session tracking."""
         player_id = uuid4()
         old_session_id = "session-123"
@@ -203,7 +203,7 @@ class TestCleanupOldSessionTracking:
 
         assert old_session_id not in mock_manager.session_connections
 
-    def test_cleanup_old_session_tracking_no_player(self):
+    def test_cleanup_old_session_tracking_no_player(self) -> None:
         """Test cleanup when player has no session."""
         player_id = uuid4()
         mock_manager = MagicMock()
@@ -213,7 +213,7 @@ class TestCleanupOldSessionTracking:
 
         # Should return early without error
 
-    def test_cleanup_old_session_tracking_no_session_connection(self):
+    def test_cleanup_old_session_tracking_no_session_connection(self) -> None:
         """Test cleanup when session connection doesn't exist."""
         player_id = uuid4()
         old_session_id = "session-123"
@@ -230,7 +230,7 @@ class TestCleanupOldSessionTracking:
 class TestCleanupPlayerDataForSession:
     """Test _cleanup_player_data_for_session function."""
 
-    def test_cleanup_player_data_for_session_success(self):
+    def test_cleanup_player_data_for_session_success(self) -> None:
         """Test successfully cleaning up player data."""
         player_id = uuid4()
 
@@ -257,7 +257,7 @@ class TestCleanupPlayerDataForSession:
         assert player_id not in mock_manager.last_seen
         mock_room_manager.remove_player_from_all_rooms.assert_called_once_with(str(player_id))
 
-    def test_cleanup_player_data_for_session_no_last_seen(self):
+    def test_cleanup_player_data_for_session_no_last_seen(self) -> None:
         """Test cleanup when player has no last_seen entry."""
         player_id = uuid4()
 
@@ -281,7 +281,7 @@ class TestHandleNewGameSessionImpl:
     """Test handle_new_game_session_impl function."""
 
     @pytest.mark.asyncio
-    async def test_handle_new_game_session_impl_success(self):
+    async def test_handle_new_game_session_impl_success(self) -> None:
         """Test successfully handling a new game session."""
         player_id = uuid4()
         new_session_id = "session-new"
@@ -338,7 +338,7 @@ class TestHandleNewGameSessionImpl:
             assert mock_manager.session_connections[new_session_id] == []
 
     @pytest.mark.asyncio
-    async def test_handle_new_game_session_impl_no_existing_connections(self):
+    async def test_handle_new_game_session_impl_no_existing_connections(self) -> None:
         """Test handling new session when player has no existing connections."""
         player_id = uuid4()
         new_session_id = "session-new"
@@ -368,7 +368,7 @@ class TestHandleNewGameSessionImpl:
             assert result["previous_session_id"] is None
 
     @pytest.mark.asyncio
-    async def test_handle_new_game_session_impl_error(self):
+    async def test_handle_new_game_session_impl_error(self) -> None:
         """Test handling new session when an error occurs."""
         player_id = uuid4()
         new_session_id = "session-new"

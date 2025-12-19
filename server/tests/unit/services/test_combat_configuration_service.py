@@ -25,17 +25,17 @@ from server.services.combat_configuration_service import (
 @pytest.fixture
 def mock_config():
     """Mock configuration for testing."""
-    mock_config = MagicMock()
-    mock_config.game.combat_enabled = True
-    mock_config.game.combat_logging_enabled = True
-    mock_config.game.combat_monitoring_enabled = True
-    mock_config.game.combat_tick_interval = 6
-    mock_config.game.combat_timeout_seconds = 180
-    mock_config.game.combat_xp_multiplier = 1.0
-    mock_config.game.combat_alert_threshold = 5
-    mock_config.game.combat_performance_threshold = 1000
-    mock_config.game.combat_error_threshold = 3
-    return mock_config
+    config_mock = MagicMock()
+    config_mock.game.combat_enabled = True
+    config_mock.game.combat_logging_enabled = True
+    config_mock.game.combat_monitoring_enabled = True
+    config_mock.game.combat_tick_interval = 6
+    config_mock.game.combat_timeout_seconds = 180
+    config_mock.game.combat_xp_multiplier = 1.0
+    config_mock.game.combat_alert_threshold = 5
+    config_mock.game.combat_performance_threshold = 1000
+    config_mock.game.combat_error_threshold = 3
+    return config_mock
 
 
 @pytest.fixture
@@ -52,7 +52,7 @@ def mock_feature_flags():
 class TestCombatConfiguration:
     """Test CombatConfiguration data class."""
 
-    def test_combat_configuration_defaults(self):
+    def test_combat_configuration_defaults(self) -> None:
         """Test default combat configuration values."""
         config = CombatConfiguration()
 
@@ -69,7 +69,7 @@ class TestCombatConfiguration:
         assert config.combat_auto_cleanup_interval == 300
         assert config.combat_event_retention_hours == 24
 
-    def test_combat_configuration_custom_values(self):
+    def test_combat_configuration_custom_values(self) -> None:
         """Test custom combat configuration values."""
         config = CombatConfiguration(
             combat_enabled=False, combat_tick_interval=10, combat_timeout_seconds=300, combat_xp_multiplier=2.0
@@ -80,7 +80,7 @@ class TestCombatConfiguration:
         assert config.combat_timeout_seconds == 300
         assert config.combat_xp_multiplier == 2.0
 
-    def test_combat_configuration_to_dict(self):
+    def test_combat_configuration_to_dict(self) -> None:
         """Test converting configuration to dictionary."""
         config = CombatConfiguration(combat_enabled=False, combat_tick_interval=10)
         config_dict = config.to_dict()
@@ -89,7 +89,7 @@ class TestCombatConfiguration:
         assert config_dict["combat_tick_interval"] == 10
         assert "combat_timeout_seconds" in config_dict
 
-    def test_combat_configuration_from_dict(self):
+    def test_combat_configuration_from_dict(self) -> None:
         """Test creating configuration from dictionary."""
         config_dict = {
             "combat_enabled": False,
@@ -113,14 +113,14 @@ class TestCombatConfiguration:
         assert config.combat_timeout_seconds == 300
         assert config.combat_xp_multiplier == 2.0
 
-    def test_combat_configuration_validation_valid(self):
+    def test_combat_configuration_validation_valid(self) -> None:
         """Test configuration validation with valid values."""
         config = CombatConfiguration()
         errors = config.validate()
 
         assert errors == []
 
-    def test_combat_configuration_validation_invalid_tick_interval(self):
+    def test_combat_configuration_validation_invalid_tick_interval(self) -> None:
         """Test configuration validation with invalid tick interval."""
         config = CombatConfiguration(combat_tick_interval=0)
         errors = config.validate()
@@ -128,7 +128,7 @@ class TestCombatConfiguration:
         assert len(errors) == 1
         assert "Combat tick interval must be between 1 and 60 seconds" in errors[0]
 
-    def test_combat_configuration_validation_invalid_timeout(self):
+    def test_combat_configuration_validation_invalid_timeout(self) -> None:
         """Test configuration validation with invalid timeout."""
         config = CombatConfiguration(combat_timeout_seconds=30)
         errors = config.validate()
@@ -136,7 +136,7 @@ class TestCombatConfiguration:
         assert len(errors) == 1
         assert "Combat timeout must be between 60 and 1800 seconds" in errors[0]
 
-    def test_combat_configuration_validation_invalid_xp_multiplier(self):
+    def test_combat_configuration_validation_invalid_xp_multiplier(self) -> None:
         """Test configuration validation with invalid XP multiplier."""
         config = CombatConfiguration(combat_xp_multiplier=0.5)
         errors = config.validate()
@@ -144,7 +144,7 @@ class TestCombatConfiguration:
         assert len(errors) == 1
         assert "XP multiplier must be between 1.0 and 5.0" in errors[0]
 
-    def test_combat_configuration_validation_multiple_errors(self):
+    def test_combat_configuration_validation_multiple_errors(self) -> None:
         """Test configuration validation with multiple errors."""
         config = CombatConfiguration(combat_tick_interval=0, combat_timeout_seconds=30, combat_xp_multiplier=0.5)
         errors = config.validate()
@@ -160,21 +160,21 @@ class TestCombatConfigurationService:
 
     @patch("server.services.combat_configuration_service.get_config")
     @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_service_initialization(self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags):
+    def test_service_initialization(self, mock_get_feature_flags, mock_get_config, config_mock, feature_flags_mock):
         """Test service initialization."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
+        mock_get_config.return_value = config_mock
+        mock_get_feature_flags.return_value = feature_flags_mock
 
         service = CombatConfigurationService()
-        assert service._config == mock_config
-        assert service._feature_flags == mock_feature_flags
+        assert service._config == config_mock
+        assert service._feature_flags == feature_flags_mock
 
     @patch("server.services.combat_configuration_service.get_config")
     @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_get_combat_configuration(self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags):
+    def test_get_combat_configuration(self, mock_get_feature_flags, mock_get_config, config_mock, feature_flags_mock):
         """Test getting combat configuration."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
+        mock_get_config.return_value = config_mock
+        mock_get_feature_flags.return_value = feature_flags_mock
 
         service = CombatConfigurationService()
         config = service.get_combat_configuration()
@@ -187,11 +187,11 @@ class TestCombatConfigurationService:
     @patch("server.services.combat_configuration_service.get_config")
     @patch("server.services.combat_configuration_service.get_feature_flags")
     def test_get_combat_configuration_for_scope_global(
-        self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags
+        self, mock_get_feature_flags, mock_get_config, config_mock, feature_flags_mock
     ):
         """Test getting configuration for global scope."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
+        mock_get_config.return_value = config_mock
+        mock_get_feature_flags.return_value = feature_flags_mock
 
         service = CombatConfigurationService()
         config = service.get_combat_configuration_for_scope(CombatConfigurationScope.GLOBAL)
@@ -202,11 +202,11 @@ class TestCombatConfigurationService:
     @patch("server.services.combat_configuration_service.get_config")
     @patch("server.services.combat_configuration_service.get_feature_flags")
     def test_get_combat_configuration_for_scope_with_override(
-        self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags
+        self, mock_get_feature_flags, mock_get_config, config_mock, feature_flags_mock
     ):
         """Test getting configuration for scope with override."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
+        mock_get_config.return_value = config_mock
+        mock_get_feature_flags.return_value = feature_flags_mock
 
         service = CombatConfigurationService()
 
@@ -223,11 +223,11 @@ class TestCombatConfigurationService:
     @patch("server.services.combat_configuration_service.get_config")
     @patch("server.services.combat_configuration_service.get_feature_flags")
     def test_update_combat_configuration_room_scope(
-        self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags
+        self, mock_get_feature_flags, mock_get_config, config_mock, feature_flags_mock
     ):
         """Test updating configuration for room scope."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
+        mock_get_config.return_value = config_mock
+        mock_get_feature_flags.return_value = feature_flags_mock
 
         service = CombatConfigurationService()
 
@@ -243,11 +243,11 @@ class TestCombatConfigurationService:
     @patch("server.services.combat_configuration_service.get_config")
     @patch("server.services.combat_configuration_service.get_feature_flags")
     def test_update_combat_configuration_invalid(
-        self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags
+        self, mock_get_feature_flags, mock_get_config, config_mock, feature_flags_mock
     ):
         """Test updating configuration with invalid values."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
+        mock_get_config.return_value = config_mock
+        mock_get_feature_flags.return_value = feature_flags_mock
 
         service = CombatConfigurationService()
 
@@ -261,11 +261,11 @@ class TestCombatConfigurationService:
     @patch("server.services.combat_configuration_service.get_config")
     @patch("server.services.combat_configuration_service.get_feature_flags")
     def test_update_combat_configuration_global_scope(
-        self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags
+        self, mock_get_feature_flags, mock_get_config, config_mock, feature_flags_mock
     ):
         """Test updating configuration for global scope."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
+        mock_get_config.return_value = config_mock
+        mock_get_feature_flags.return_value = feature_flags_mock
 
         service = CombatConfigurationService()
 
@@ -278,10 +278,10 @@ class TestCombatConfigurationService:
 
     @patch("server.services.combat_configuration_service.get_config")
     @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_clear_scope_override(self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags):
+    def test_clear_scope_override(self, mock_get_feature_flags, mock_get_config, config_mock, feature_flags_mock):
         """Test clearing scope override."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
+        mock_get_config.return_value = config_mock
+        mock_get_feature_flags.return_value = feature_flags_mock
 
         service = CombatConfigurationService()
 
@@ -297,10 +297,10 @@ class TestCombatConfigurationService:
 
     @patch("server.services.combat_configuration_service.get_config")
     @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_clear_all_overrides(self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags):
+    def test_clear_all_overrides(self, mock_get_feature_flags, mock_get_config, config_mock, feature_flags_mock):
         """Test clearing all overrides."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
+        mock_get_config.return_value = config_mock
+        mock_get_feature_flags.return_value = feature_flags_mock
 
         service = CombatConfigurationService()
 
@@ -316,10 +316,10 @@ class TestCombatConfigurationService:
 
     @patch("server.services.combat_configuration_service.get_config")
     @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_get_active_overrides(self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags):
+    def test_get_active_overrides(self, mock_get_feature_flags, mock_get_config, config_mock, feature_flags_mock):
         """Test getting active overrides."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
+        mock_get_config.return_value = config_mock
+        mock_get_feature_flags.return_value = feature_flags_mock
 
         service = CombatConfigurationService()
 
@@ -336,10 +336,10 @@ class TestCombatConfigurationService:
 
     @patch("server.services.combat_configuration_service.get_config")
     @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_validate_configuration(self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags):
+    def test_validate_configuration(self, mock_get_feature_flags, mock_get_config, config_mock, feature_flags_mock):
         """Test configuration validation."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
+        mock_get_config.return_value = config_mock
+        mock_get_feature_flags.return_value = feature_flags_mock
 
         service = CombatConfigurationService()
 
@@ -356,11 +356,11 @@ class TestCombatConfigurationService:
     @patch("server.services.combat_configuration_service.get_config")
     @patch("server.services.combat_configuration_service.get_feature_flags")
     def test_is_combat_available_enabled(
-        self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags
+        self, mock_get_feature_flags, mock_get_config, config_mock, feature_flags_mock
     ):
         """Test combat availability when enabled."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
+        mock_get_config.return_value = config_mock
+        mock_get_feature_flags.return_value = feature_flags_mock
 
         service = CombatConfigurationService()
 
@@ -371,12 +371,12 @@ class TestCombatConfigurationService:
     @patch("server.services.combat_configuration_service.get_config")
     @patch("server.services.combat_configuration_service.get_feature_flags")
     def test_is_combat_available_disabled_feature_flag(
-        self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags
+        self, mock_get_feature_flags, mock_get_config, config_mock, feature_flags_mock
     ):
         """Test combat availability when feature flag is disabled."""
-        mock_get_config.return_value = mock_config
-        mock_feature_flags.is_combat_enabled.return_value = False
-        mock_get_feature_flags.return_value = mock_feature_flags
+        mock_get_config.return_value = config_mock
+        feature_flags_mock.is_combat_enabled.return_value = False
+        mock_get_feature_flags.return_value = feature_flags_mock
 
         service = CombatConfigurationService()
 
@@ -385,11 +385,11 @@ class TestCombatConfigurationService:
     @patch("server.services.combat_configuration_service.get_config")
     @patch("server.services.combat_configuration_service.get_feature_flags")
     def test_is_combat_available_disabled_scope_config(
-        self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags
+        self, mock_get_feature_flags, mock_get_config, config_mock, feature_flags_mock
     ):
         """Test combat availability when scope configuration is disabled."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
+        mock_get_config.return_value = config_mock
+        mock_get_feature_flags.return_value = feature_flags_mock
 
         service = CombatConfigurationService()
 
@@ -402,11 +402,11 @@ class TestCombatConfigurationService:
     @patch("server.services.combat_configuration_service.get_config")
     @patch("server.services.combat_configuration_service.get_feature_flags")
     def test_get_combat_settings_summary(
-        self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags
+        self, mock_get_feature_flags, mock_get_config, config_mock, feature_flags_mock
     ):
         """Test getting combat settings summary."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
+        mock_get_config.return_value = config_mock
+        mock_get_feature_flags.return_value = feature_flags_mock
 
         service = CombatConfigurationService()
 
@@ -423,10 +423,10 @@ class TestCombatConfigurationService:
 
     @patch("server.services.combat_configuration_service.get_config")
     @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_refresh_configuration(self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags):
+    def test_refresh_configuration(self, mock_get_feature_flags, mock_get_config, config_mock, feature_flags_mock):
         """Test refreshing configuration."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
+        mock_get_config.return_value = config_mock
+        mock_get_feature_flags.return_value = feature_flags_mock
 
         service = CombatConfigurationService()
 
@@ -438,10 +438,10 @@ class TestCombatConfigurationService:
 
     @patch("server.services.combat_configuration_service.get_config")
     @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_clear_cache(self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags):
+    def test_clear_cache(self, mock_get_feature_flags, mock_get_config, config_mock, feature_flags_mock):
         """Test clearing cache."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
+        mock_get_config.return_value = config_mock
+        mock_get_feature_flags.return_value = feature_flags_mock
 
         service = CombatConfigurationService()
 
@@ -459,34 +459,34 @@ class TestGlobalCombatConfigurationFunctions:
     """Test global combat configuration functions."""
 
     @patch("server.services.combat_configuration_service.combat_config")
-    def test_get_combat_config(self, mock_config):
+    def test_get_combat_config(self, config_mock):
         """Test getting global combat configuration service."""
         result = get_combat_config()
-        assert result == mock_config
+        assert result == config_mock
 
     @patch("server.services.combat_configuration_service.combat_config")
-    def test_refresh_combat_configuration(self, mock_config):
+    def test_refresh_combat_configuration(self, config_mock):
         """Test refreshing combat configuration."""
         refresh_combat_configuration()
-        mock_config.refresh_configuration.assert_called_once()
+        config_mock.refresh_configuration.assert_called_once()
 
     @patch("server.services.combat_configuration_service.combat_config")
-    def test_get_combat_configuration_convenience(self, mock_config):
+    def test_get_combat_configuration_convenience(self, config_mock):
         """Test convenience function for getting combat configuration."""
-        mock_config.get_combat_configuration.return_value = CombatConfiguration()
+        config_mock.get_combat_configuration.return_value = CombatConfiguration()
 
         result = get_combat_configuration()
         assert isinstance(result, CombatConfiguration)
-        mock_config.get_combat_configuration.assert_called_once()
+        config_mock.get_combat_configuration.assert_called_once()
 
     @patch("server.services.combat_configuration_service.combat_config")
-    def test_is_combat_available_convenience(self, mock_config):
+    def test_is_combat_available_convenience(self, config_mock):
         """Test convenience function for checking combat availability."""
-        mock_config.is_combat_available.return_value = True
+        config_mock.is_combat_available.return_value = True
 
         result = is_combat_available("player123", "room456")
         assert result is True
-        mock_config.is_combat_available.assert_called_once_with("player123", "room456")
+        config_mock.is_combat_available.assert_called_once_with("player123", "room456")
 
 
 class TestCombatConfigurationServiceIntegration:
@@ -494,10 +494,10 @@ class TestCombatConfigurationServiceIntegration:
 
     @patch("server.services.combat_configuration_service.get_config")
     @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_configuration_caching(self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags):
+    def test_configuration_caching(self, mock_get_feature_flags, mock_get_config, config_mock, feature_flags_mock):
         """Test that configuration is properly cached."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
+        mock_get_config.return_value = config_mock
+        mock_get_feature_flags.return_value = feature_flags_mock
 
         service = CombatConfigurationService()
 
@@ -514,10 +514,10 @@ class TestCombatConfigurationServiceIntegration:
 
     @patch("server.services.combat_configuration_service.get_config")
     @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_scope_override_priority(self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags):
+    def test_scope_override_priority(self, mock_get_feature_flags, mock_get_config, config_mock, feature_flags_mock):
         """Test that scope overrides take priority over base configuration."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
+        mock_get_config.return_value = config_mock
+        mock_get_feature_flags.return_value = feature_flags_mock
 
         service = CombatConfigurationService()
 
@@ -537,10 +537,10 @@ class TestCombatConfigurationServiceIntegration:
 
     @patch("server.services.combat_configuration_service.get_config")
     @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_configuration_update_flow(self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags):
+    def test_configuration_update_flow(self, mock_get_feature_flags, mock_get_config, config_mock, feature_flags_mock):
         """Test complete configuration update flow."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
+        mock_get_config.return_value = config_mock
+        mock_get_feature_flags.return_value = feature_flags_mock
 
         service = CombatConfigurationService()
 
@@ -575,11 +575,11 @@ class TestCombatConfigurationServiceErrorHandling:
     @patch("server.services.combat_configuration_service.get_config")
     @patch("server.services.combat_configuration_service.get_feature_flags")
     def test_invalid_configuration_update(
-        self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags
+        self, mock_get_feature_flags, mock_get_config, config_mock, feature_flags_mock
     ):
         """Test handling of invalid configuration updates."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
+        mock_get_config.return_value = config_mock
+        mock_get_feature_flags.return_value = feature_flags_mock
 
         service = CombatConfigurationService()
 
@@ -596,11 +596,11 @@ class TestCombatConfigurationServiceErrorHandling:
     @patch("server.services.combat_configuration_service.get_config")
     @patch("server.services.combat_configuration_service.get_feature_flags")
     def test_clear_global_scope_override(
-        self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags
+        self, mock_get_feature_flags, mock_get_config, config_mock, feature_flags_mock
     ):
         """Test error when trying to clear global scope override."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
+        mock_get_config.return_value = config_mock
+        mock_get_feature_flags.return_value = feature_flags_mock
 
         service = CombatConfigurationService()
 

@@ -11,6 +11,7 @@ sufficient context for future scholars to understand what went wrong."
 
 import json
 from datetime import UTC, datetime
+from typing import Any, cast
 from unittest.mock import AsyncMock, MagicMock, Mock, patch
 from uuid import uuid4
 
@@ -40,7 +41,7 @@ from server.tests.fixtures.test_error_logging import ErrorLoggingTestMixin
 class TestErrorContextLogging:
     """Test error context creation and logging."""
 
-    def test_error_context_creation_with_all_fields(self):
+    def test_error_context_creation_with_all_fields(self) -> None:
         """Test creating error context with all fields populated."""
         timestamp = datetime.now(UTC)
         context = ErrorContext(
@@ -64,7 +65,7 @@ class TestErrorContextLogging:
         assert context_dict["metadata"]["ip_address"] == "127.0.0.1"
         assert context_dict["metadata"]["user_agent"] == "TestClient/1.0"
 
-    def test_error_context_minimal_creation(self):
+    def test_error_context_minimal_creation(self) -> None:
         """Test creating error context with minimal fields."""
         context = create_error_context(user_id="user123")
 
@@ -74,7 +75,7 @@ class TestErrorContextLogging:
         assert isinstance(context.timestamp, datetime)
         assert isinstance(context.metadata, dict)
 
-    def test_error_context_serialization(self):
+    def test_error_context_serialization(self) -> None:
         """Test error context can be serialized to JSON."""
         context = create_error_context(user_id="user123", room_id="room456", metadata={"test": "value"})
 
@@ -256,14 +257,14 @@ class TestPydanticErrorHandlerLogging:
         age: int
 
     @patch("server.error_handlers.pydantic_error_handler.logger")
-    def test_pydantic_error_handler_logs_error_info(self, mock_logger):
+    def test_pydantic_error_handler_logs_error_info(self, _mock_logger):
         """Test PydanticErrorHandler logs detailed error information."""
         context = create_error_context(user_id="user123")
         handler = PydanticErrorHandler(context=context)
 
         try:
             # Trigger validation error
-            self.SampleModel()
+            cast(Any, self.SampleModel)()
         except ValidationError as e:
             response = handler.handle_validation_error(e, self.SampleModel)
 
@@ -287,7 +288,7 @@ class TestPydanticErrorHandlerLogging:
         # Mock error during normal processing
         with patch.object(handler, "_extract_error_info", side_effect=Exception("Test error")):
             try:
-                self.SampleModel()
+                cast(Any, self.SampleModel)()
             except ValidationError as e:
                 response = handler.handle_validation_error(e)
 
@@ -321,7 +322,7 @@ class TestStandardizedResponseLogging:
         assert "Unhandled exception" in call_args[0][0]
 
     @patch("server.error_handlers.standardized_responses.logger")
-    def test_standardized_response_logs_with_request_context(self, mock_logger):
+    def test_standardized_response_logs_with_request_context(self, _mock_logger):
         """Test StandardizedErrorResponse extracts and logs request context."""
         # Test using a pre-configured context instead of trying to extract from mock
         # This tests the actual functionality more directly
@@ -340,7 +341,7 @@ class TestStandardizedResponseLogging:
         response = handler.handle_exception(error, include_details=True)
 
         # Verify response includes full context
-        response_data = json.loads(response.body.decode())
+        response_data = json.loads(bytes(response.body).decode())
         assert "error" in response_data
         error_obj = response_data["error"]
         assert "details" in error_obj
@@ -369,7 +370,7 @@ class TestStandardizedResponseLogging:
 class TestContextPropagation:
     """Test error context propagation across error handling layers."""
 
-    def test_context_propagation_through_pydantic_handler(self):
+    def test_context_propagation_through_pydantic_handler(self) -> None:
         """Test context is properly propagated through PydanticErrorHandler."""
         context = create_error_context(
             user_id="user123",
@@ -383,7 +384,7 @@ class TestContextPropagation:
             name: str
 
         try:
-            TestModel()
+            cast(Any, TestModel)()
         except ValidationError as e:
             mythos_error = handler.convert_to_mythos_error(e, TestModel)
 
@@ -393,7 +394,7 @@ class TestContextPropagation:
             assert mythos_error.context.request_id == "request789"
             assert mythos_error.context.metadata["source"] == "test"
 
-    def test_context_propagation_through_standardized_response(self):
+    def test_context_propagation_through_standardized_response(self) -> None:
         """Test context is properly propagated through StandardizedErrorResponse."""
         # Create context directly for testing
         context = create_error_context(
@@ -413,7 +414,7 @@ class TestContextPropagation:
         response = handler.handle_exception(error, include_details=True)
 
         # Verify response includes context
-        response_data = json.loads(response.body.decode())
+        response_data = json.loads(bytes(response.body).decode())
         # The response structure uses "error" wrapper from create_standard_error_response
         assert "error" in response_data
         error_obj = response_data["error"]
@@ -482,7 +483,7 @@ class TestSecurityErrorLogging:
 class TestErrorLoggingPerformance:
     """Test error logging performance and efficiency."""
 
-    def test_error_logging_does_not_block(self):
+    def test_error_logging_does_not_block(self) -> None:
         """Test that error logging is non-blocking."""
         import time
 
@@ -499,7 +500,7 @@ class TestErrorLoggingPerformance:
         # Error creation should be fast (< 10ms)
         assert elapsed_time < 0.01
 
-    def test_context_serialization_performance(self):
+    def test_context_serialization_performance(self) -> None:
         """Test error context serialization is efficient."""
         import time
 
@@ -543,7 +544,7 @@ class TestAPIErrorLoggingIntegration:
             yield mock_nats_instance
 
     @pytest.fixture
-    def test_mixin(self):
+    def test_mixin(self) -> ErrorLoggingTestMixin:
         """Provide error logging test mixin."""
         return ErrorLoggingTestMixin()
 
@@ -566,7 +567,7 @@ class TestAPIErrorLoggingIntegration:
         user.username = "testuser"
         return user
 
-    def test_api_player_creation_error_logging(self, test_mixin, container_test_client):
+    def test_api_player_creation_error_logging(self, _test_mixin, container_test_client):
         """
         Test error logging in player creation API endpoint.
 
@@ -595,7 +596,7 @@ class TestAPIErrorLoggingIntegration:
                     assert response.status_code == 400
                     assert "Invalid input" in response.json()["error"]["message"]
 
-    def test_api_player_deletion_error_logging(self, test_mixin, container_test_client):
+    def test_api_player_deletion_error_logging(self, _test_mixin, container_test_client):
         """Test error logging in player deletion API endpoint."""
         # Use a valid UUID format for the path parameter
         nonexistent_player_id = str(uuid4())
@@ -618,7 +619,7 @@ class TestAPIErrorLoggingIntegration:
                     assert response.status_code == 404
                     assert "Player not found" in response.json()["error"]["message"]
 
-    def test_api_player_retrieval_error_logging(self, test_mixin, container_test_client):
+    def test_api_player_retrieval_error_logging(self, _test_mixin, container_test_client):
         """Test error logging in player retrieval API endpoint."""
         # Use a valid UUID format for the path parameter
         nonexistent_player_id = str(uuid4())
@@ -646,7 +647,7 @@ class TestCommandHandlerErrorLoggingIntegration:
     """Integration tests for command handler error logging."""
 
     @pytest.fixture
-    def test_mixin(self):
+    def test_mixin(self) -> ErrorLoggingTestMixin:
         """Provide error logging test mixin."""
         return ErrorLoggingTestMixin()
 
@@ -675,7 +676,7 @@ class TestCommandHandlerErrorLoggingIntegration:
 
     @pytest.mark.asyncio
     async def test_command_validation_error_logging(
-        self, test_mixin, mock_request, mock_alias_storage, mock_current_user
+        self, _test_mixin, mock_request, mock_alias_storage, mock_current_user
     ):
         """Test error logging in command validation."""
         with patch("server.command_handler_unified.logger") as mock_logger:
@@ -694,7 +695,7 @@ class TestCommandHandlerErrorLoggingIntegration:
 
     @pytest.mark.asyncio
     async def test_command_processing_error_logging(
-        self, test_mixin, mock_request, mock_alias_storage, mock_current_user
+        self, _test_mixin, mock_request, mock_alias_storage, mock_current_user
     ):
         """Test error logging in command processing."""
         with patch("server.command_handler_unified.logger") as mock_logger:
@@ -716,11 +717,11 @@ class TestDatabaseErrorLoggingIntegration:
     """Integration tests for database error logging."""
 
     @pytest.fixture
-    def test_mixin(self):
+    def test_mixin(self) -> ErrorLoggingTestMixin:
         """Provide error logging test mixin."""
         return ErrorLoggingTestMixin()
 
-    def test_database_connection_error_logging(self, test_mixin):
+    def test_database_connection_error_logging(self, _test_mixin):
         """Test error logging for database connection failures."""
         # Test that DatabaseError can be raised and caught
         with pytest.raises(DatabaseError) as exc_info:
@@ -729,7 +730,7 @@ class TestDatabaseErrorLoggingIntegration:
         # Verify the error message
         assert "Database connection failed" in str(exc_info.value)
 
-    def test_database_session_error_logging(self, test_mixin):
+    def test_database_session_error_logging(self, _test_mixin):
         """Test error logging for database session errors."""
         # Test that DatabaseError can be raised for session errors
         with pytest.raises(DatabaseError) as exc_info:
@@ -743,11 +744,11 @@ class TestPersistenceErrorLoggingIntegration:
     """Integration tests for persistence layer error logging."""
 
     @pytest.fixture
-    def test_mixin(self):
+    def test_mixin(self) -> ErrorLoggingTestMixin:
         """Provide error logging test mixin."""
         return ErrorLoggingTestMixin()
 
-    def test_persistence_save_error_logging(self, test_mixin):
+    def test_persistence_save_error_logging(self, _test_mixin):
         """Test error logging for persistence save operations."""
         # Test that DatabaseError can be raised for save operations
         with pytest.raises(DatabaseError) as exc_info:
@@ -756,7 +757,7 @@ class TestPersistenceErrorLoggingIntegration:
         # Verify the error message
         assert "Save operation failed" in str(exc_info.value)
 
-    def test_persistence_load_error_logging(self, test_mixin):
+    def test_persistence_load_error_logging(self, _test_mixin):
         """Test error logging for persistence load operations."""
         # Test that DatabaseError can be raised for load operations
         with pytest.raises(DatabaseError) as exc_info:
@@ -770,7 +771,7 @@ class TestWebSocketErrorLoggingIntegration:
     """Integration tests for WebSocket error logging."""
 
     @pytest.fixture
-    def test_mixin(self):
+    def test_mixin(self) -> ErrorLoggingTestMixin:
         """Provide error logging test mixin."""
         return ErrorLoggingTestMixin()
 
@@ -783,7 +784,7 @@ class TestWebSocketErrorLoggingIntegration:
         websocket.client.port = 8080
         return websocket
 
-    def test_websocket_connection_error_logging(self, test_mixin, mock_websocket):
+    def test_websocket_connection_error_logging(self, _test_mixin, _mock_websocket):
         """Test error logging for WebSocket connection errors."""
         # Test that ConnectionError can be raised for WebSocket connection errors
         with pytest.raises(ConnectionError) as exc_info:
@@ -792,7 +793,7 @@ class TestWebSocketErrorLoggingIntegration:
         # Verify the error message
         assert "WebSocket connection failed" in str(exc_info.value)
 
-    def test_websocket_message_error_logging(self, test_mixin, mock_websocket):
+    def test_websocket_message_error_logging(self, _test_mixin, _mock_websocket):
         """Test error logging for WebSocket message processing errors."""
         # Test that ValueError can be raised for WebSocket message errors
         with pytest.raises(ValueError) as exc_info:
@@ -806,11 +807,11 @@ class TestAuthenticationErrorLoggingIntegration:
     """Integration tests for authentication error logging."""
 
     @pytest.fixture
-    def test_mixin(self):
+    def test_mixin(self) -> ErrorLoggingTestMixin:
         """Provide error logging test mixin."""
         return ErrorLoggingTestMixin()
 
-    def test_authentication_failure_logging(self, test_mixin):
+    def test_authentication_failure_logging(self, _test_mixin):
         """Test error logging for authentication failures."""
         # Test that AuthenticationError can be raised for authentication failures
         with pytest.raises(AuthenticationError) as exc_info:
@@ -819,7 +820,7 @@ class TestAuthenticationErrorLoggingIntegration:
         # Verify the error message
         assert "Invalid credentials" in str(exc_info.value)
 
-    def test_authorization_failure_logging(self, test_mixin):
+    def test_authorization_failure_logging(self, _test_mixin):
         """Test error logging for authorization failures."""
         # Test that AuthenticationError can be raised for authorization failures
         # (authorization is part of authentication/access control)
@@ -834,11 +835,11 @@ class TestErrorLoggingEndToEnd:
     """End-to-end integration tests for error logging."""
 
     @pytest.fixture
-    def test_mixin(self):
+    def test_mixin(self) -> ErrorLoggingTestMixin:
         """Provide error logging test mixin."""
         return ErrorLoggingTestMixin()
 
-    def test_error_logging_flow_complete(self, test_mixin):
+    def test_error_logging_flow_complete(self, _test_mixin):
         """Test complete error logging flow from API to persistence."""
         # Test that different error types can be raised and caught
         error_types = []
@@ -857,7 +858,7 @@ class TestErrorLoggingEndToEnd:
         assert "MythosValidationError" in error_types, "MythosValidationError should be tested"
         assert "DatabaseError" in error_types, "DatabaseError should be tested"
 
-    def test_error_logging_context_preservation(self, test_mixin):
+    def test_error_logging_context_preservation(self, _test_mixin):
         """Test that error context is preserved through the error chain."""
         # Create initial context
         initial_context = create_error_context(
@@ -869,7 +870,7 @@ class TestErrorLoggingEndToEnd:
         assert initial_context.metadata["operation"] == "test", "Metadata should be preserved"
         assert initial_context.metadata["step"] == "initial", "Step should be preserved"
 
-    def test_error_logging_performance_under_load(self, test_mixin):
+    def test_error_logging_performance_under_load(self, _test_mixin):
         """Test error logging performance under simulated load."""
         import time
 

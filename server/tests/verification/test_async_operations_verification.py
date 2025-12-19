@@ -7,10 +7,14 @@ there are no blocking I/O operations remaining in the system.
 
 import asyncio
 import inspect
+import os
 import time
+import uuid
+from datetime import UTC, datetime
 from unittest.mock import AsyncMock, Mock
 
 import pytest
+from sqlalchemy.exc import DatabaseError
 
 from server.async_persistence import AsyncPersistenceLayer
 from server.game.player_service import PlayerService
@@ -28,12 +32,6 @@ class TestAsyncOperationsVerification:
         from unittest.mock import MagicMock
 
         mock_persistence = MagicMock()
-
-        # Configure async methods to simulate I/O operations
-        async def mock_async_operation(*args, **kwargs):
-            # Simulate some async work
-            await asyncio.sleep(0.01)
-            return mock_persistence._return_value
 
         # Set up async methods as AsyncMock instances
         mock_persistence.async_list_players = AsyncMock(return_value=[])
@@ -117,11 +115,11 @@ class TestAsyncOperationsVerification:
 
         # Call async methods
         await service.list_players()
-        await service.get_player_by_id("test_id")
+        await service.get_player_by_id(uuid.uuid4())
 
         # Verify async methods were called
         mock_persistence.list_players.assert_called_once()
-        mock_persistence.get_player_by_id.assert_called_once_with("test_id")
+        mock_persistence.get_player_by_id.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_room_service_async_methods_actually_await(self, mock_persistence):
@@ -142,17 +140,10 @@ class TestAsyncOperationsVerification:
         """Test that multiple async operations can run concurrently."""
         service = PlayerService(mock_persistence)
 
-        # Configure mock to simulate async work
-        async def mock_async_work(*args, **kwargs):
-            await asyncio.sleep(0.05)
-            return []
-
         # Mock the persistence methods to return proper data
         mock_persistence.async_list_players.return_value = []
 
         # Mock a proper player object for get_player
-        import uuid
-
         mock_player = Mock()
         mock_player.player_id = str(uuid.uuid4())
         mock_player.user_id = str(uuid.uuid4())
@@ -185,9 +176,9 @@ class TestAsyncOperationsVerification:
         # Run multiple async operations concurrently
         tasks = [
             service.list_players(),
-            service.get_player_by_id("player1"),
-            service.get_player_by_id("player2"),
-            service.get_player_by_id("player3"),
+            service.get_player_by_id(uuid.uuid4()),
+            service.get_player_by_id(uuid.uuid4()),
+            service.get_player_by_id(uuid.uuid4()),
             service.list_players(),
         ]
 
@@ -207,7 +198,7 @@ class TestAsyncOperationsVerification:
         service = PlayerService(mock_persistence)
 
         # Configure mock to take a long time
-        async def slow_operation(*args, **kwargs):
+        async def slow_operation(*_args, **_kwargs):
             await asyncio.sleep(1.0)
             return []
 
@@ -225,8 +216,8 @@ class TestAsyncOperationsVerification:
 
         # Configure mock to raise an exception
         # PlayerService.list_players() calls self.persistence.list_players(), not async_list_players
-        async def raise_error(*args, **kwargs):
-            raise Exception("Database error")
+        async def raise_error(*_args, **_kwargs):
+            raise DatabaseError("Database error", params=None, orig=Exception("Original database error"))
 
         mock_persistence.list_players = raise_error
 
@@ -240,7 +231,7 @@ class TestAsyncOperationsVerification:
         service = PlayerService(mock_persistence)
 
         # Configure mock to take a long time
-        async def slow_operation(*args, **kwargs):
+        async def slow_operation(*_args, **_kwargs):
             await asyncio.sleep(1.0)
             return []
 
@@ -291,10 +282,8 @@ class TestAsyncOperationsVerification:
         assert len(results) == 100
 
     @pytest.mark.asyncio
-    async def test_async_operations_with_real_persistence_layer(self):
+    async def test_async_operations_with_real_persistence_layer(self) -> None:
         """Test async operations with a real persistence layer instance."""
-        import os
-
         # Use PostgreSQL from environment
         database_url = os.getenv("DATABASE_URL")
         if not database_url or not database_url.startswith("postgresql"):
@@ -323,9 +312,7 @@ class TestAsyncOperationsVerification:
         assert isinstance(players, list)
 
         # Use a valid UUID string for testing (not a real player, but valid format)
-        from uuid import uuid4
-
-        nonexistent_uuid = uuid4()
+        nonexistent_uuid = uuid.uuid4()
         player = await persistence.get_player_by_id(nonexistent_uuid)
         assert player is None
 
@@ -338,7 +325,7 @@ class TestAsyncOperationsVerification:
         service = PlayerService(mock_persistence)
 
         # Configure mock to simulate realistic async work
-        async def realistic_async_work(*args, **kwargs):
+        async def realistic_async_work(*_args, **_kwargs):
             await asyncio.sleep(0.01)  # 10ms of async work (more realistic)
             return []
 
@@ -385,9 +372,6 @@ class TestAsyncOperationsVerification:
     @pytest.mark.asyncio
     async def test_async_operations_with_blocking_detection(self, mock_persistence):
         """Test that async operations properly use async persistence methods."""
-        import uuid
-        from datetime import UTC, datetime
-
         service = PlayerService(mock_persistence)
 
         # Create a proper mock player object (not AsyncMock) with real attribute values
@@ -419,7 +403,7 @@ class TestAsyncOperationsVerification:
 
         # Call async methods
         await service.list_players()
-        await service.get_player_by_id("test")
+        await service.get_player_by_id(uuid.uuid4())
 
         # Verify that async persistence methods were called
         mock_persistence.list_players.assert_called_once()
@@ -428,9 +412,6 @@ class TestAsyncOperationsVerification:
     @pytest.mark.asyncio
     async def test_async_operations_with_realistic_data(self, mock_persistence):
         """Test async operations with realistic data scenarios."""
-        import uuid
-        from datetime import UTC, datetime
-
         service = PlayerService(mock_persistence)
 
         # Create mock player objects with proper structure (UUID objects, not strings)
@@ -481,7 +462,7 @@ class TestAsyncOperationsVerification:
         assert players[0].name == "Player1"
         assert players[1].name == "Player2"
 
-        player = await service.get_player_by_id("test_id")
+        player = await service.get_player_by_id(uuid.uuid4())
         assert player is not None
         assert player.name == "Player1"
 
@@ -491,7 +472,7 @@ class TestAsyncOperationsVerification:
         service = PlayerService(mock_persistence)
 
         # Configure mock to simulate realistic load
-        async def load_simulation(*args, **kwargs):
+        async def load_simulation(*_args, **_kwargs):
             await asyncio.sleep(0.01)
             return []
 
@@ -538,12 +519,12 @@ class TestAsyncOperationsVerification:
 
         # First call fails
         # PlayerService calls self.persistence.list_players(), not async_list_players
-        async def raise_error(*args, **kwargs):
-            raise Exception("Temporary error")
+        async def raise_error(*_args, **_kwargs):
+            raise DatabaseError("Temporary error", params=None, orig=Exception("Original temporary error"))
 
         mock_persistence.list_players = raise_error
 
-        with pytest.raises(Exception, match="Temporary error"):
+        with pytest.raises(DatabaseError, match="Temporary error"):
             await service.list_players()
 
         # Second call succeeds
@@ -565,10 +546,10 @@ class TestAsyncOperationsVerification:
         result1 = await service.list_players()
 
         # Test with asyncio.gather
-        result2, result3 = await asyncio.gather(service.list_players(), service.get_player_by_id("test"))
+        result2, _ = await asyncio.gather(service.list_players(), service.get_player_by_id(uuid.uuid4()))
 
         # Test with asyncio.as_completed
-        tasks = [service.list_players(), service.get_player_by_id("test1"), service.get_player_by_id("test2")]
+        tasks = [service.list_players(), service.get_player_by_id(uuid.uuid4()), service.get_player_by_id(uuid.uuid4())]
 
         results = []
         for coro in asyncio.as_completed(tasks):

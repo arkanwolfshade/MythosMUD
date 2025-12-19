@@ -246,4 +246,33 @@ class NPCSpawnRule(Base):
         return True
 
 
-# NPC relationship model removed to eliminate circular reference issues
+class NPCRelationship(Base):
+    """
+    NPC relationship model.
+
+    Defines relationships between different NPC types.
+    """
+
+    __tablename__ = "npc_relationships"
+    __table_args__ = (
+        UniqueConstraint("npc_id_1", "npc_id_2", name="npc_relationships_npc_id_1_npc_id_2_key"),
+        CheckConstraint(
+            "relationship_type IN ('ally', 'enemy', 'neutral', 'follower')",
+            name="npc_relationships_relationship_type_check",
+        ),
+    )
+
+    # Primary key
+    id = Column(Integer, primary_key=True, autoincrement=True)
+
+    # Foreign keys to NPC definitions
+    npc_id_1 = Column(Integer, ForeignKey("npc_definitions.id", ondelete="CASCADE"), nullable=False)
+    npc_id_2 = Column(Integer, ForeignKey("npc_definitions.id", ondelete="CASCADE"), nullable=False)
+
+    # Relationship information
+    relationship_type = Column(String(20), nullable=False)
+    relationship_strength = Column(Float, default=0.5)
+
+    def __repr__(self) -> str:
+        """String representation of the NPC relationship."""
+        return f"<NPCRelationship(id={self.id}, npc1={self.npc_id_1}, npc2={self.npc_id_2}, type={self.relationship_type})>"

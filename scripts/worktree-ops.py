@@ -45,7 +45,7 @@ def run_command(cmd, cwd=None, check=True):
     if cwd is None:
         cwd = get_project_root()
 
-    print(f"🔄 Running: {' '.join(cmd)} (from {os.path.basename(cwd)})")
+    print(f"Running: {' '.join(cmd)} (from {os.path.basename(cwd)})")
 
     try:
         result = subprocess.run(cmd, cwd=cwd, check=check, capture_output=True, text=True)
@@ -53,7 +53,7 @@ def run_command(cmd, cwd=None, check=True):
             print(result.stdout)
         return result
     except subprocess.CalledProcessError as e:
-        print(f"❌ Command failed: {' '.join(cmd)}")
+        print(f"[ERROR] Command failed: {' '.join(cmd)}")
         if e.stderr:
             print(f"Error: {e.stderr}")
         if check:
@@ -66,16 +66,16 @@ def install_dependencies():
     project_root = get_project_root()
     current_worktree = get_current_worktree()
 
-    print(f"📦 Installing dependencies from {current_worktree} worktree...")
+    print(f"Installing dependencies from {current_worktree} worktree...")
 
     # Run the install script from project root
     install_script = os.path.join(project_root, "scripts", "install.py")
-    result = subprocess.run([sys.executable, install_script], cwd=project_root)
+    result = subprocess.run([sys.executable, install_script], cwd=project_root, check=False)
 
     if result.returncode == 0:
-        print("✅ Dependencies installed successfully!")
+        print("[OK] Dependencies installed successfully!")
     else:
-        print("❌ Installation failed!")
+        print("[ERROR] Installation failed!")
         sys.exit(result.returncode)
 
 
@@ -84,24 +84,24 @@ def run_tests():
     project_root = get_project_root()
     current_worktree = get_current_worktree()
 
-    print(f"🧪 Running tests from {current_worktree} worktree...")
+    print(f"Running tests from {current_worktree} worktree...")
 
     if current_worktree == "client":
         # Run client tests
         client_path = os.path.join(project_root, "client")
-        result = subprocess.run(["npm", "test"], cwd=client_path)
+        result = subprocess.run(["npm", "test"], cwd=client_path, check=False)
     elif current_worktree == "server":
         # Run server tests
-        result = subprocess.run(["python", "-m", "pytest"], cwd=project_root)
+        result = subprocess.run(["python", "-m", "pytest"], cwd=project_root, check=False)
     else:
         # Run all tests
         test_script = os.path.join(project_root, "scripts", "test.py")
-        result = subprocess.run([sys.executable, test_script], cwd=project_root)
+        result = subprocess.run([sys.executable, test_script], cwd=project_root, check=False)
 
     if result.returncode == 0:
-        print("✅ Tests completed successfully!")
+        print("[OK] Tests completed successfully!")
     else:
-        print("❌ Tests failed!")
+        print("[ERROR] Tests failed!")
         sys.exit(result.returncode)
 
 
@@ -110,24 +110,24 @@ def run_lint():
     project_root = get_project_root()
     current_worktree = get_current_worktree()
 
-    print(f"🔍 Running lint from {current_worktree} worktree...")
+    print(f"Running lint from {current_worktree} worktree...")
 
     if current_worktree == "client":
         # Run client lint
         client_path = os.path.join(project_root, "client")
-        result = subprocess.run(["npm", "run", "lint"], cwd=client_path)
+        result = subprocess.run(["npm", "run", "lint"], cwd=client_path, check=False)
     elif current_worktree == "server":
         # Run server lint
-        result = subprocess.run(["ruff", "check", "server"], cwd=project_root)
+        result = subprocess.run(["ruff", "check", "server"], cwd=project_root, check=False)
     else:
         # Run all lint
         lint_script = os.path.join(project_root, "scripts", "lint.py")
-        result = subprocess.run([sys.executable, lint_script], cwd=project_root)
+        result = subprocess.run([sys.executable, lint_script], cwd=project_root, check=False)
 
     if result.returncode == 0:
-        print("✅ Lint completed successfully!")
+        print("[OK] Lint completed successfully!")
     else:
-        print("❌ Lint failed!")
+        print("[ERROR] Lint failed!")
         sys.exit(result.returncode)
 
 
@@ -136,24 +136,24 @@ def run_format():
     project_root = get_project_root()
     current_worktree = get_current_worktree()
 
-    print(f"🎨 Running format from {current_worktree} worktree...")
+    print(f"Running format from {current_worktree} worktree...")
 
     if current_worktree == "client":
         # Run client format
         client_path = os.path.join(project_root, "client")
-        result = subprocess.run(["npm", "run", "format"], cwd=client_path)
+        result = subprocess.run(["npm", "run", "format"], cwd=client_path, check=False)
     elif current_worktree == "server":
         # Run server format
-        result = subprocess.run(["ruff", "format", "server"], cwd=project_root)
+        result = subprocess.run(["ruff", "format", "server"], cwd=project_root, check=False)
     else:
         # Run all format
         format_script = os.path.join(project_root, "scripts", "format.py")
-        result = subprocess.run([sys.executable, format_script], cwd=project_root)
+        result = subprocess.run([sys.executable, format_script], cwd=project_root, check=False)
 
     if result.returncode == 0:
-        print("✅ Format completed successfully!")
+        print("[OK] Format completed successfully!")
     else:
-        print("❌ Format failed!")
+        print("[ERROR] Format failed!")
         sys.exit(result.returncode)
 
 
@@ -163,21 +163,23 @@ def show_status():
     current_worktree = get_current_worktree()
     current_dir = os.getcwd()
 
-    print("📊 Worktree Status:")
+    print("Worktree Status:")
     print(f"   Current worktree: {current_worktree}")
     print(f"   Current directory: {current_dir}")
     print(f"   Project root: {project_root}")
 
     # Show git status
-    print("\n🔍 Git Status:")
-    result = subprocess.run(["git", "status", "--short"], cwd=current_dir, capture_output=True, text=True)
+    print("\nGit Status:")
+    result = subprocess.run(["git", "status", "--short"], cwd=current_dir, capture_output=True, text=True, check=False)
     if result.stdout.strip():
         print(result.stdout)
     else:
         print("   Working directory clean")
 
     # Show branch info
-    result = subprocess.run(["git", "branch", "--show-current"], cwd=current_dir, capture_output=True, text=True)
+    result = subprocess.run(
+        ["git", "branch", "--show-current"], cwd=current_dir, capture_output=True, text=True, check=False
+    )
     if result.returncode == 0:
         branch = result.stdout.strip()
         print(f"   Current branch: {branch}")

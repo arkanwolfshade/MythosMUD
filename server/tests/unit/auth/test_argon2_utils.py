@@ -6,6 +6,7 @@ as documented in the restricted archives of Miskatonic University.
 """
 
 import time
+from typing import Any, cast
 
 import pytest
 
@@ -27,22 +28,22 @@ from server.exceptions import AuthenticationError
 class TestArgon2Configuration:
     """Test Argon2 configuration constants."""
 
-    def test_time_cost_default(self):
+    def test_time_cost_default(self) -> None:
         """Test that time cost is set to a reasonable default."""
         assert TIME_COST == 3
         assert TIME_COST > 0
 
-    def test_memory_cost_default(self):
+    def test_memory_cost_default(self) -> None:
         """Test that memory cost is set to a reasonable default."""
         assert MEMORY_COST == 65536  # 64MB
         assert MEMORY_COST > 0
 
-    def test_parallelism_default(self):
+    def test_parallelism_default(self) -> None:
         """Test that parallelism is set to a reasonable default."""
         assert PARALLELISM == 1
         assert PARALLELISM > 0
 
-    def test_hash_length_default(self):
+    def test_hash_length_default(self) -> None:
         """Test that hash length is set to a reasonable default."""
         assert HASH_LENGTH == 32
         assert HASH_LENGTH > 0
@@ -51,7 +52,7 @@ class TestArgon2Configuration:
 class TestArgon2HashGeneration:
     """Test Argon2 hash generation functionality."""
 
-    def test_hash_password_basic(self):
+    def test_hash_password_basic(self) -> None:
         """Test basic password hashing."""
         from unittest.mock import patch
 
@@ -66,34 +67,34 @@ class TestArgon2HashGeneration:
             assert any("Hashing password" in str(call) for call in mock_debug.call_args_list)
             assert any("Password hashed successfully" in str(call) for call in mock_debug.call_args_list)
 
-    def test_hash_password_empty(self):
+    def test_hash_password_empty(self) -> None:
         """Test hashing empty password."""
         hashed = hash_password("")
         assert isinstance(hashed, str)
         assert hashed.startswith("$argon2")
 
-    def test_hash_password_special_chars(self):
+    def test_hash_password_special_chars(self) -> None:
         """Test hashing password with special characters."""
         password = "!@#$%^&*()_+-=[]{}|;':\",./<>?"
         hashed = hash_password(password)
         assert isinstance(hashed, str)
         assert hashed.startswith("$argon2")
 
-    def test_hash_password_unicode(self):
+    def test_hash_password_unicode(self) -> None:
         """Test hashing password with unicode characters."""
         password = "测试密码🎭"
         hashed = hash_password(password)
         assert isinstance(hashed, str)
         assert hashed.startswith("$argon2")
 
-    def test_hash_password_very_long(self):
+    def test_hash_password_very_long(self) -> None:
         """Test hashing very long password."""
         password = "a" * 1000
         hashed = hash_password(password)
         assert isinstance(hashed, str)
         assert hashed.startswith("$argon2")
 
-    def test_hash_password_deterministic_salt(self):
+    def test_hash_password_deterministic_salt(self) -> None:
         """Test that same password produces different hashes (due to salt)."""
         password = "test_password"
         hash1 = hash_password(password)
@@ -105,7 +106,7 @@ class TestArgon2HashGeneration:
 class TestArgon2PasswordVerification:
     """Test Argon2 password verification functionality."""
 
-    def test_verify_password_correct(self):
+    def test_verify_password_correct(self) -> None:
         """Test verifying correct password."""
         from unittest.mock import patch
 
@@ -118,42 +119,42 @@ class TestArgon2PasswordVerification:
             assert any("Verifying password" in str(call) for call in mock_debug.call_args_list)
             assert any("Password verification successful" in str(call) for call in mock_debug.call_args_list)
 
-    def test_verify_password_incorrect(self):
+    def test_verify_password_incorrect(self) -> None:
         """Test verifying incorrect password."""
         password = "test_password"
         hashed = hash_password(password)
         assert verify_password("wrong_password", hashed) is False
 
-    def test_verify_password_empty(self):
+    def test_verify_password_empty(self) -> None:
         """Test verifying empty password."""
         hashed = hash_password("")
         assert verify_password("", hashed) is True
         assert verify_password("not_empty", hashed) is False
 
-    def test_verify_password_special_chars(self):
+    def test_verify_password_special_chars(self) -> None:
         """Test verifying password with special characters."""
         password = "!@#$%^&*()_+-=[]{}|;':\",./<>?"
         hashed = hash_password(password)
         assert verify_password(password, hashed) is True
 
-    def test_verify_password_unicode(self):
+    def test_verify_password_unicode(self) -> None:
         """Test verifying password with unicode characters."""
         password = "测试密码🎭"
         hashed = hash_password(password)
         assert verify_password(password, hashed) is True
 
-    def test_verify_password_case_sensitive(self):
+    def test_verify_password_case_sensitive(self) -> None:
         """Test that password verification is case sensitive."""
         password = "TestPassword"
         hashed = hash_password(password)
         assert verify_password("testpassword", hashed) is False
         assert verify_password("TestPassword", hashed) is True
 
-    def test_verify_password_invalid_hash(self):
+    def test_verify_password_invalid_hash(self) -> None:
         """Test verification with invalid hash."""
         assert verify_password("test", "invalid_hash") is False
 
-    def test_verify_password_empty_hash(self):
+    def test_verify_password_empty_hash(self) -> None:
         """Test verification with empty hash."""
         assert verify_password("test", "") is False
 
@@ -161,26 +162,26 @@ class TestArgon2PasswordVerification:
 class TestArgon2HashDetection:
     """Test Argon2 hash detection functionality."""
 
-    def test_is_argon2_hash_valid(self):
+    def test_is_argon2_hash_valid(self) -> None:
         """Test detection of valid Argon2 hash."""
         password = "test_password"
         hashed = hash_password(password)
         assert is_argon2_hash(hashed) is True
 
-    def test_is_argon2_hash_bcrypt(self):
+    def test_is_argon2_hash_bcrypt(self) -> None:
         """Test detection of bcrypt hash (should be False)."""
         bcrypt_hash = "$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj3bp.gSJm2"
         assert is_argon2_hash(bcrypt_hash) is False
 
-    def test_is_argon2_hash_empty(self):
+    def test_is_argon2_hash_empty(self) -> None:
         """Test detection of empty string."""
         assert is_argon2_hash("") is False
 
-    def test_is_argon2_hash_none(self):
+    def test_is_argon2_hash_none(self) -> None:
         """Test detection of None."""
         assert is_argon2_hash(None) is False
 
-    def test_is_argon2_hash_random_string(self):
+    def test_is_argon2_hash_random_string(self) -> None:
         """Test detection of random string."""
         assert is_argon2_hash("random_string") is False
 
@@ -188,17 +189,17 @@ class TestArgon2HashDetection:
 class TestArgon2RehashChecking:
     """Test Argon2 rehash checking functionality."""
 
-    def test_needs_rehash_fresh_hash(self):
+    def test_needs_rehash_fresh_hash(self) -> None:
         """Test that fresh hash doesn't need rehashing."""
         password = "test_password"
         hashed = hash_password(password)
         assert needs_rehash(hashed) is False
 
-    def test_needs_rehash_invalid_hash(self):
+    def test_needs_rehash_invalid_hash(self) -> None:
         """Test that invalid hash needs rehashing."""
         assert needs_rehash("invalid_hash") is True
 
-    def test_needs_rehash_empty_hash(self):
+    def test_needs_rehash_empty_hash(self) -> None:
         """Test that empty hash needs rehashing."""
         assert needs_rehash("") is True
 
@@ -206,7 +207,7 @@ class TestArgon2RehashChecking:
 class TestArgon2HashInfo:
     """Test Argon2 hash info extraction."""
 
-    def test_get_hash_info_valid(self):
+    def test_get_hash_info_valid(self) -> None:
         """Test extracting info from valid Argon2 hash."""
         password = "test_password"
         hashed = hash_password(password)
@@ -217,20 +218,20 @@ class TestArgon2HashInfo:
         assert "t" in info  # time cost
         assert "p" in info  # parallelism
 
-    def test_get_hash_info_bcrypt(self):
+    def test_get_hash_info_bcrypt(self) -> None:
         """Test extracting info from bcrypt hash."""
         bcrypt_hash = "$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj3bp.gSJm2"
         assert get_hash_info(bcrypt_hash) is None
 
-    def test_get_hash_info_empty(self):
+    def test_get_hash_info_empty(self) -> None:
         """Test extracting info from empty string."""
         assert get_hash_info("") is None
 
-    def test_get_hash_info_none(self):
+    def test_get_hash_info_none(self) -> None:
         """Test extracting info from None."""
         assert get_hash_info(None) is None
 
-    def test_get_hash_info_invalid_format(self):
+    def test_get_hash_info_invalid_format(self) -> None:
         """Test extracting info from invalid format."""
         assert get_hash_info("$argon2id$invalid") is None
 
@@ -238,7 +239,7 @@ class TestArgon2HashInfo:
 class TestArgon2CustomHasher:
     """Test custom Argon2 hasher creation."""
 
-    def test_create_hasher_with_params(self):
+    def test_create_hasher_with_params(self) -> None:
         """Test creating hasher with custom parameters."""
         from unittest.mock import patch
 
@@ -253,7 +254,7 @@ class TestArgon2CustomHasher:
             # Should log debug message
             mock_debug.assert_called_once()
 
-    def test_create_hasher_default_params(self):
+    def test_create_hasher_default_params(self) -> None:
         """Test creating hasher with default parameters."""
         from unittest.mock import patch
 
@@ -267,62 +268,62 @@ class TestArgon2CustomHasher:
 class TestArgon2ErrorHandling:
     """Test Argon2 error handling."""
 
-    def test_hash_password_invalid_type_int(self):
+    def test_hash_password_invalid_type_int(self) -> None:
         """Test hashing with invalid password type (int)."""
         with pytest.raises(AuthenticationError):
-            hash_password(123)
+            hash_password(cast(Any, 123))
 
-    def test_hash_password_invalid_type_none(self):
+    def test_hash_password_invalid_type_none(self) -> None:
         """Test hashing with invalid password type (None)."""
         with pytest.raises(AuthenticationError):
-            hash_password(None)
+            hash_password(cast(Any, None))
 
-    def test_hash_password_invalid_type_list(self):
+    def test_hash_password_invalid_type_list(self) -> None:
         """Test hashing with invalid password type (list)."""
         with pytest.raises(AuthenticationError):
-            hash_password(["password"])
+            hash_password(cast(Any, ["password"]))
 
-    def test_verify_password_invalid_password_type_int(self):
+    def test_verify_password_invalid_password_type_int(self) -> None:
         """Test verification with invalid password type (int)."""
         hashed = hash_password("test")
-        assert verify_password(123, hashed) is False
+        assert verify_password(cast(Any, 123), hashed) is False
 
-    def test_verify_password_invalid_password_type_none(self):
+    def test_verify_password_invalid_password_type_none(self) -> None:
         """Test verification with invalid password type (None)."""
         hashed = hash_password("test")
-        assert verify_password(None, hashed) is False
+        assert verify_password(cast(Any, None), hashed) is False
 
-    def test_verify_password_invalid_hash_type_int(self):
+    def test_verify_password_invalid_hash_type_int(self) -> None:
         """Test verification with invalid hash type (int)."""
         from unittest.mock import patch
 
         with patch("server.auth.argon2_utils.logger.warning") as mock_warning:
-            result = verify_password("password", 123)
+            result = verify_password("password", cast(Any, 123))
             assert result is False
             # Should log warning for hash not a string
             assert any("hash not a string" in str(call) for call in mock_warning.call_args_list)
 
-    def test_verify_password_invalid_hash_type_none(self):
+    def test_verify_password_invalid_hash_type_none(self) -> None:
         """Test verification with invalid hash type (None)."""
         from unittest.mock import patch
 
         with patch("server.auth.argon2_utils.logger.warning") as mock_warning:
-            result = verify_password("password", None)
+            result = verify_password("password", cast(Any, None))
             assert result is False
             # Should log warning for hash not a string
             assert any("hash not a string" in str(call) for call in mock_warning.call_args_list)
 
-    def test_verify_password_invalid_hash_type_list(self):
+    def test_verify_password_invalid_hash_type_list(self) -> None:
         """Test verification with invalid hash type (list)."""
         from unittest.mock import patch
 
         with patch("server.auth.argon2_utils.logger.warning") as mock_warning:
-            result = verify_password("password", [123])
+            result = verify_password("password", cast(Any, [123]))
             assert result is False
             # Should log warning for hash not a string
             assert any("hash not a string" in str(call) for call in mock_warning.call_args_list)
 
-    def test_verify_password_empty_hash_string(self):
+    def test_verify_password_empty_hash_string(self) -> None:
         """Test verification with empty hash string."""
         from unittest.mock import patch
 
@@ -336,7 +337,7 @@ class TestArgon2ErrorHandling:
 class TestArgon2Security:
     """Test Argon2 security properties."""
 
-    def test_hash_uniqueness(self):
+    def test_hash_uniqueness(self) -> None:
         """Test that same password produces different hashes."""
         password = "test_password"
         hashes = set()
@@ -346,7 +347,7 @@ class TestArgon2Security:
 
         assert len(hashes) == 10  # All hashes should be unique
 
-    def test_hash_length_consistency(self):
+    def test_hash_length_consistency(self) -> None:
         """Test that hash length is consistent."""
         password = "test_password"
         hashed = hash_password(password)
@@ -358,7 +359,7 @@ class TestArgon2Security:
         assert len(hash_part) >= 40  # Base64 encoding of 32 bytes should be at least 40 chars
         assert len(hash_part) <= 50  # And not more than 50 chars
 
-    def test_verification_timing_consistency(self):
+    def test_verification_timing_consistency(self) -> None:
         """Test that verification timing is consistent (no timing attacks)."""
         password = "test_password"
         hashed = hash_password(password)
@@ -399,7 +400,7 @@ class TestArgon2Security:
 class TestArgon2NonArgon2HashHandling:
     """Test handling of non-Argon2 hashes."""
 
-    def test_verify_password_with_bcrypt_hash(self):
+    def test_verify_password_with_bcrypt_hash(self) -> None:
         """Test verification with non-Argon2 hash (bcrypt)."""
         bcrypt_hash = "$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj3bp.gSJm2"
 
@@ -407,7 +408,7 @@ class TestArgon2NonArgon2HashHandling:
         result = verify_password("anypassword", bcrypt_hash)
         assert result is False
 
-    def test_needs_rehash_with_exception(self):
+    def test_needs_rehash_with_exception(self) -> None:
         """Test needs_rehash handles exceptions gracefully."""
         # Create an Argon2-like hash but malformed
         malformed_hash = "$argon2id$malformed"
@@ -416,7 +417,7 @@ class TestArgon2NonArgon2HashHandling:
         result = needs_rehash(malformed_hash)
         assert result is True
 
-    def test_get_hash_info_with_malformed_parts(self):
+    def test_get_hash_info_with_malformed_parts(self) -> None:
         """Test get_hash_info with malformed hash parts."""
         # Valid Argon2 prefix but too few parts
         malformed_hash = "$argon2id$v=19"
@@ -424,7 +425,7 @@ class TestArgon2NonArgon2HashHandling:
         result = get_hash_info(malformed_hash)
         assert result is None
 
-    def test_get_hash_info_with_non_numeric_params(self):
+    def test_get_hash_info_with_non_numeric_params(self) -> None:
         """Test get_hash_info with non-numeric parameter values."""
         # Hash with non-numeric parameter
         # This may not be a realistic hash, but tests the exception handling
@@ -438,52 +439,52 @@ class TestArgon2NonArgon2HashHandling:
 class TestArgon2ParameterValidation:
     """Test Argon2 parameter validation."""
 
-    def test_create_hasher_time_cost_too_low(self):
+    def test_create_hasher_time_cost_too_low(self) -> None:
         """Test creating hasher with time_cost too low."""
         with pytest.raises(ValueError, match="time_cost must be between 1 and 10"):
             create_hasher_with_params(time_cost=0)
 
-    def test_create_hasher_time_cost_too_high(self):
+    def test_create_hasher_time_cost_too_high(self) -> None:
         """Test creating hasher with time_cost too high."""
         with pytest.raises(ValueError, match="time_cost must be between 1 and 10"):
             create_hasher_with_params(time_cost=11)
 
-    def test_create_hasher_time_cost_negative(self):
+    def test_create_hasher_time_cost_negative(self) -> None:
         """Test creating hasher with negative time_cost."""
         with pytest.raises(ValueError, match="time_cost must be between 1 and 10"):
             create_hasher_with_params(time_cost=-1)
 
-    def test_create_hasher_memory_cost_too_low(self):
+    def test_create_hasher_memory_cost_too_low(self) -> None:
         """Test creating hasher with memory_cost too low."""
         with pytest.raises(ValueError, match="memory_cost must be between 1024 and 1048576"):
             create_hasher_with_params(memory_cost=1023)
 
-    def test_create_hasher_memory_cost_too_high(self):
+    def test_create_hasher_memory_cost_too_high(self) -> None:
         """Test creating hasher with memory_cost too high."""
         with pytest.raises(ValueError, match="memory_cost must be between 1024 and 1048576"):
             create_hasher_with_params(memory_cost=1048577)
 
-    def test_create_hasher_parallelism_too_low(self):
+    def test_create_hasher_parallelism_too_low(self) -> None:
         """Test creating hasher with parallelism too low."""
         with pytest.raises(ValueError, match="parallelism must be between 1 and 16"):
             create_hasher_with_params(parallelism=0)
 
-    def test_create_hasher_parallelism_too_high(self):
+    def test_create_hasher_parallelism_too_high(self) -> None:
         """Test creating hasher with parallelism too high."""
         with pytest.raises(ValueError, match="parallelism must be between 1 and 16"):
             create_hasher_with_params(parallelism=17)
 
-    def test_create_hasher_hash_len_too_low(self):
+    def test_create_hasher_hash_len_too_low(self) -> None:
         """Test creating hasher with hash_len too low."""
         with pytest.raises(ValueError, match="hash_len must be between 16 and 64"):
             create_hasher_with_params(hash_len=15)
 
-    def test_create_hasher_hash_len_too_high(self):
+    def test_create_hasher_hash_len_too_high(self) -> None:
         """Test creating hasher with hash_len too high."""
         with pytest.raises(ValueError, match="hash_len must be between 16 and 64"):
             create_hasher_with_params(hash_len=65)
 
-    def test_create_hasher_valid_boundary_values(self):
+    def test_create_hasher_valid_boundary_values(self) -> None:
         """Test creating hasher with valid boundary values."""
         # Test minimum values
         hasher_min = create_hasher_with_params(time_cost=1, memory_cost=1024, parallelism=1, hash_len=16)
@@ -579,7 +580,7 @@ class TestArgon2EnvironmentVariables:
 class TestArgon2ExceptionHandling:
     """Test exception handling in Argon2 utilities."""
 
-    def test_create_hasher_warning_low_time_cost(self):
+    def test_create_hasher_warning_low_time_cost(self) -> None:
         """Test create_hasher_with_params logs warning for low time_cost."""
         from unittest.mock import patch
 
@@ -590,7 +591,7 @@ class TestArgon2ExceptionHandling:
                 # Verify debug log is also called
                 mock_debug.assert_called_once()
 
-    def test_create_hasher_warning_low_memory_cost(self):
+    def test_create_hasher_warning_low_memory_cost(self) -> None:
         """Test create_hasher_with_params logs warning for low memory_cost."""
         from unittest.mock import patch
 
@@ -601,18 +602,18 @@ class TestArgon2ExceptionHandling:
                 # Verify debug log is also called
                 mock_debug.assert_called_once()
 
-    def test_is_argon2_hash_with_non_string_types(self):
+    def test_is_argon2_hash_with_non_string_types(self) -> None:
         """Test is_argon2_hash handles non-string types."""
         # Test with None (already tested, but ensure logger.debug is called)
         assert is_argon2_hash(None) is False
 
         # Test with integer
-        assert is_argon2_hash(123) is False
+        assert is_argon2_hash(cast(Any, 123)) is False
 
         # Test with list
-        assert is_argon2_hash(["hash"]) is False
+        assert is_argon2_hash(cast(Any, ["hash"])) is False
 
-    def test_get_hash_info_with_malformed_hash_parts(self):
+    def test_get_hash_info_with_malformed_hash_parts(self) -> None:
         """Test get_hash_info handles hash with non-numeric parameter values."""
         # Hash with non-numeric parameter that causes ValueError in int conversion
         # This tests the ValueError exception path in get_hash_info
@@ -627,7 +628,7 @@ class TestArgon2ExceptionHandling:
         assert result["t"] == 3  # Valid int
         assert result["p"] == 1  # Valid int
 
-    def test_get_hash_info_with_hash_containing_string_params(self):
+    def test_get_hash_info_with_hash_containing_string_params(self) -> None:
         """Test get_hash_info handles hash with string parameter values."""
         # Create a hash-like string that has non-numeric values
         # This tests the ValueError path when trying to convert to int
@@ -641,7 +642,7 @@ class TestArgon2ExceptionHandling:
         assert result["t"] == 3
         assert result["p"] == 1
 
-    def test_get_hash_info_with_too_few_parts(self):
+    def test_get_hash_info_with_too_few_parts(self) -> None:
         """Test get_hash_info handles hash with too few parts."""
         # Hash with fewer than 5 parts (after splitting by $)
         short_hash = "$argon2id$v=19$m=65536"
@@ -650,7 +651,7 @@ class TestArgon2ExceptionHandling:
         # Should return None when parts < 5
         assert result is None
 
-    def test_needs_rehash_with_exception_handling(self):
+    def test_needs_rehash_with_exception_handling(self) -> None:
         """Test needs_rehash handles exceptions in check_needs_rehash."""
         from unittest.mock import MagicMock, patch
 
@@ -671,7 +672,7 @@ class TestArgon2ExceptionHandling:
                 # Should log error
                 mock_error.assert_called_once()
 
-    def test_needs_rehash_with_value_error_exception(self):
+    def test_needs_rehash_with_value_error_exception(self) -> None:
         """Test needs_rehash handles ValueError exception."""
         from unittest.mock import MagicMock, patch
 
@@ -692,7 +693,7 @@ class TestArgon2ExceptionHandling:
                 # Should log error
                 mock_error.assert_called_once()
 
-    def test_needs_rehash_with_type_error_exception(self):
+    def test_needs_rehash_with_type_error_exception(self) -> None:
         """Test needs_rehash handles TypeError exception."""
         from unittest.mock import MagicMock, patch
 
@@ -713,7 +714,7 @@ class TestArgon2ExceptionHandling:
                 # Should log error
                 mock_error.assert_called_once()
 
-    def test_get_hash_info_exception_handling(self):
+    def test_get_hash_info_exception_handling(self) -> None:
         """Test get_hash_info handles exceptions during parsing."""
         # Test with invalid hash format (doesn't pass is_argon2_hash check)
         invalid_hash = "not_a_valid_argon2_hash_format"
@@ -731,7 +732,7 @@ class TestArgon2ExceptionHandling:
         # Should return None when parts are insufficient
         assert result is None
 
-    def test_get_hash_info_exception_handling_logs_error(self):
+    def test_get_hash_info_exception_handling_logs_error(self) -> None:
         """Test get_hash_info logs error when exception occurs during parsing."""
         from unittest.mock import MagicMock, patch
 
@@ -748,29 +749,29 @@ class TestArgon2ExceptionHandling:
                 # Should log error
                 mock_error.assert_called_once()
 
-    def test_is_argon2_hash_with_dict_type(self):
+    def test_is_argon2_hash_with_dict_type(self) -> None:
         """Test is_argon2_hash handles dict type input."""
         from unittest.mock import patch
 
         # Test with dict (should return False and log debug)
         with patch("server.auth.argon2_utils.logger.debug") as mock_debug:
-            result = is_argon2_hash({"hash": "value"})
+            result = is_argon2_hash(cast(Any, {"hash": "value"}))
             assert result is False
             # Should log debug message
             mock_debug.assert_called_once()
 
-    def test_is_argon2_hash_with_tuple_type(self):
+    def test_is_argon2_hash_with_tuple_type(self) -> None:
         """Test is_argon2_hash handles tuple type input."""
         from unittest.mock import patch
 
         # Test with tuple (should return False and log debug)
         with patch("server.auth.argon2_utils.logger.debug") as mock_debug:
-            result = is_argon2_hash(("hash", "value"))
+            result = is_argon2_hash(cast(Any, ("hash", "value")))
             assert result is False
             # Should log debug message
             mock_debug.assert_called_once()
 
-    def test_is_argon2_hash_logs_debug_for_valid_hash(self):
+    def test_is_argon2_hash_logs_debug_for_valid_hash(self) -> None:
         """Test is_argon2_hash logs debug message for valid Argon2 hash."""
         from unittest.mock import patch
 
@@ -789,7 +790,7 @@ class TestArgon2ExceptionHandling:
             assert call_args is not None
             assert "is_argon2" in call_args.kwargs or any("is_argon2" in str(arg) for arg in call_args)
 
-    def test_is_argon2_hash_logs_debug_for_non_argon2_string(self):
+    def test_is_argon2_hash_logs_debug_for_non_argon2_string(self) -> None:
         """Test is_argon2_hash logs debug message for non-Argon2 string."""
         from unittest.mock import patch
 

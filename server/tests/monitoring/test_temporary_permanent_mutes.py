@@ -20,7 +20,10 @@ from server.game.player_service import PlayerService
 class TestTemporaryPermanentMutes:
     """Tests for temporary vs permanent mutes with emote filtering."""
 
-    def setup_method(self):
+    # pylint: disable=attribute-defined-outside-init
+    # Attributes are defined in setup_method, which is the pytest pattern for test fixtures.
+    # This is intentional and follows pytest best practices.
+    def setup_method(self) -> None:
         """Set up test fixtures."""
         # Mock services
         self.mock_persistence = MagicMock()
@@ -71,7 +74,7 @@ class TestTemporaryPermanentMutes:
         mock_nats_service.publish = MagicMock(return_value=True)
         # Make it async
 
-        async def mock_publish(*args, **kwargs):
+        async def mock_publish(*_args, **_kwargs):
             return True
 
         mock_nats_service.publish = mock_publish
@@ -137,7 +140,7 @@ class TestTemporaryPermanentMutes:
         mock_nats_service.publish = MagicMock(return_value=True)
         # Make it async
 
-        async def mock_publish(*args, **kwargs):
+        async def mock_publish(*_args, **_kwargs):
             return True
 
         mock_nats_service.publish = mock_publish
@@ -202,7 +205,7 @@ class TestTemporaryPermanentMutes:
         mock_nats_service.publish = MagicMock(return_value=True)
         # Make it async
 
-        async def mock_publish(*args, **kwargs):
+        async def mock_publish(*_args, **_kwargs):
             return True
 
         mock_nats_service.publish = mock_publish
@@ -278,7 +281,7 @@ class TestTemporaryPermanentMutes:
         mock_nats_service.publish = MagicMock(return_value=True)
         # Make it async
 
-        async def mock_publish(*args, **kwargs):
+        async def mock_publish(*_args, **_kwargs):
             return True
 
         mock_nats_service.publish = mock_publish
@@ -348,7 +351,7 @@ class TestTemporaryPermanentMutes:
         mock_nats_service.publish = MagicMock(return_value=True)
         # Make it async
 
-        async def mock_publish(*args, **kwargs):
+        async def mock_publish(*_args, **_kwargs):
             return True
 
         mock_nats_service.publish = mock_publish
@@ -411,7 +414,7 @@ class TestTemporaryPermanentMutes:
         mock_nats_service.publish = MagicMock(return_value=True)
         # Make it async
 
-        async def mock_publish(*args, **kwargs):
+        async def mock_publish(*_args, **_kwargs):
             return True
 
         mock_nats_service.publish = mock_publish
@@ -479,7 +482,7 @@ class TestTemporaryPermanentMutes:
         mock_nats_service.publish = MagicMock(return_value=True)
         # Make it async
 
-        async def mock_publish(*args, **kwargs):
+        async def mock_publish(*_args, **_kwargs):
             return True
 
         mock_nats_service.publish = mock_publish
@@ -537,7 +540,7 @@ class TestTemporaryPermanentMutes:
         mock_nats_service.publish = MagicMock(return_value=True)
         # Make it async
 
-        async def mock_publish(*args, **kwargs):
+        async def mock_publish(*_args, **_kwargs):
             return True
 
         mock_nats_service.publish = mock_publish
@@ -598,7 +601,7 @@ class TestTemporaryPermanentMutes:
         mock_nats_service.publish = MagicMock(return_value=True)
         # Make it async
 
-        async def mock_publish(*args, **kwargs):
+        async def mock_publish(*_args, **_kwargs):
             return True
 
         mock_nats_service.publish = mock_publish

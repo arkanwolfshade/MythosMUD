@@ -31,7 +31,7 @@ from server.npc.spawning_service import NPCSpawningService
 class TestNPCLifecycleRecord:
     """Test NPC lifecycle record functionality."""
 
-    def test_lifecycle_record_creation(self):
+    def test_lifecycle_record_creation(self) -> None:
         """Test creating a lifecycle record."""
         definition = MagicMock(spec=NPCDefinition)
         definition.name = "Test NPC"
@@ -51,7 +51,7 @@ class TestNPCLifecycleRecord:
         assert record.error_count == 0
         assert record.last_error is None
 
-    def test_add_event(self):
+    def test_add_event(self) -> None:
         """Test adding events to lifecycle record."""
         definition = MagicMock(spec=NPCDefinition)
         record = NPCLifecycleRecord("npc_001", definition)
@@ -65,7 +65,7 @@ class TestNPCLifecycleRecord:
         assert event["timestamp"] > 0
         assert record.spawn_count == 1
 
-    def test_change_state(self):
+    def test_change_state(self) -> None:
         """Test changing lifecycle state."""
         definition = MagicMock(spec=NPCDefinition)
         record = NPCLifecycleRecord("npc_001", definition)
@@ -79,7 +79,7 @@ class TestNPCLifecycleRecord:
         assert event["details"]["new_state"] == NPCLifecycleState.ACTIVE
         assert event["details"]["reason"] == "entered room"
 
-    def test_get_statistics(self):
+    def test_get_statistics(self) -> None:
         """Test getting lifecycle statistics."""
         definition = MagicMock(spec=NPCDefinition)
         definition.name = "Test NPC"
@@ -159,7 +159,7 @@ class TestNPCLifecycleManager:
             behavior_config='{"greeting_message": "Welcome!"}',
             ai_integration_stub='{"ai_enabled": false}',
         )
-        definition.id = 1
+        definition.id = 1  # type: ignore[assignment]  # type: ignore[assignment]
         return definition
 
     def test_lifecycle_manager_initialization(self, lifecycle_manager):
@@ -465,7 +465,7 @@ class TestNPCLifecycleManager:
             behavior_config="{}",
             ai_integration_stub="{}",
         )
-        optional_npc.id = 2
+        optional_npc.id = 2  # type: ignore[assignment]
 
         # Add the definition to population controller
         lifecycle_manager.population_controller.npc_definitions[2] = optional_npc
@@ -522,7 +522,7 @@ class TestNPCLifecycleManager:
             behavior_config="{}",
             ai_integration_stub="{}",
         )
-        optional_npc.id = 2
+        optional_npc.id = 2  # type: ignore[assignment]
 
         # Add definition to population controller
         lifecycle_manager.population_controller.npc_definitions[2] = optional_npc
@@ -576,7 +576,7 @@ class TestNPCLifecycleManager:
             behavior_config="{}",
             ai_integration_stub="{}",
         )
-        optional_npc.id = 2
+        optional_npc.id = 2  # type: ignore[assignment]
 
         lifecycle_manager.population_controller.npc_definitions[2] = optional_npc
 
@@ -625,7 +625,7 @@ class TestNPCLifecycleManager:
             behavior_config="{}",
             ai_integration_stub="{}",
         )
-        optional_npc.id = 2
+        optional_npc.id = 2  # type: ignore[assignment]
 
         lifecycle_manager.population_controller.npc_definitions[2] = optional_npc
 
@@ -664,7 +664,7 @@ class TestNPCLifecycleManager:
             behavior_config="{}",
             ai_integration_stub="{}",
         )
-        definition.id = 1
+        definition.id = 1  # type: ignore[assignment]
 
         # Add a spawn rule so the method can find zone info
         from server.models.npc import NPCSpawnRule
@@ -701,13 +701,13 @@ class TestNPCLifecycleManager:
             behavior_config="{}",
             ai_integration_stub="{}",
         )
-        definition.id = 1
+        definition.id = 1  # type: ignore[assignment]
 
         room_id = lifecycle_manager._get_spawn_room_for_definition(definition)
         assert room_id == "earth_arkhamcity_downtown_001"
 
         # Test without room_id
-        definition.room_id = None
+        definition.room_id = None  # type: ignore[assignment]
         room_id = lifecycle_manager._get_spawn_room_for_definition(definition)
         assert room_id is None
 
@@ -768,7 +768,7 @@ class TestNPCLifecycleManager:
             behavior_config="{}",
             ai_integration_stub="{}",
         )
-        required_definition.id = 999
+        required_definition.id = 999  # type: ignore[assignment]
 
         # Mock persistence to return a room
         with patch.object(lifecycle_manager, "_can_spawn_npc", return_value=True):

@@ -355,7 +355,7 @@ This test suite focuses on the core event publishing mechanism without complex a
 class TestSimpleConnectionEvents:
     """Simple tests for connection event firing."""
 
-    def test_room_player_entered_publishes_event(self):
+    def test_room_player_entered_publishes_event(self) -> None:
         """Test that Room.player_entered publishes PlayerEnteredRoom event."""
         # Create mock event bus
         mock_event_bus = Mock()
@@ -378,7 +378,7 @@ class TestSimpleConnectionEvents:
         assert published_event.player_id == str(player_id)
         assert published_event.room_id == "test_room_001"
 
-    def test_room_player_left_publishes_event(self):
+    def test_room_player_left_publishes_event(self) -> None:
         """Test that Room.player_left publishes PlayerLeftRoom event."""
         # Create mock event bus
         mock_event_bus = Mock()
@@ -405,7 +405,7 @@ class TestSimpleConnectionEvents:
         assert published_event.player_id == str(player_id)
         assert published_event.room_id == "test_room_001"
 
-    def test_room_without_event_bus_handles_gracefully(self):
+    def test_room_without_event_bus_handles_gracefully(self) -> None:
         """Test that Room works without event bus (should not crash)."""
         # Use UUID for player_id
         player_id = uuid4()
@@ -420,7 +420,7 @@ class TestSimpleConnectionEvents:
         # Verify player was added and removed
         assert not room.has_player(str(player_id))
 
-    def test_event_types_have_correct_attributes(self):
+    def test_event_types_have_correct_attributes(self) -> None:
         """Test that event types have the correct attributes."""
         # Use UUID for player_id
         player_id = uuid4()

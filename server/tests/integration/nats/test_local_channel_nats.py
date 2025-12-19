@@ -179,7 +179,7 @@ class TestLocalChannelSubZoneSubscriptionManagement:
         )
 
     @pytest.mark.asyncio
-    async def test_subzone_subscription_creation(self, nats_handler, mock_nats_service):
+    async def test_subzone_subscription_creation(self, nats_handler, _mock_nats_service: MagicMock):
         """Test creating sub-zone subscriptions for local channels."""
         room_id = "earth_arkhamcity_northside_intersection_derby_high"
         subzone = extract_subzone_from_room_id(room_id)
@@ -195,7 +195,7 @@ class TestLocalChannelSubZoneSubscriptionManagement:
         assert subzone_subject == "chat.local.subzone.northside"
 
     @pytest.mark.asyncio
-    async def test_subzone_unsubscription(self, nats_handler, mock_nats_service):
+    async def test_subzone_unsubscription(self, nats_handler, _mock_nats_service: MagicMock):
         """Test unsubscribing from sub-zone subscriptions."""
         room_id = "earth_arkhamcity_northside_intersection_derby_high"
         subzone = extract_subzone_from_room_id(room_id)
@@ -208,7 +208,7 @@ class TestLocalChannelSubZoneSubscriptionManagement:
         nats_handler.unsubscribe_from_subzone.assert_called_once_with(subzone)
 
     @pytest.mark.asyncio
-    async def test_player_movement_subzone_change(self, nats_handler, mock_nats_service):
+    async def test_player_movement_subzone_change(self, nats_handler, _mock_nats_service: MagicMock):
         """Test handling player movement between sub-zones."""
         # AI Agent: Inject mock connection_manager via instance variable (no longer a global)
         mock_connection_manager = MagicMock()
@@ -260,7 +260,7 @@ class TestLocalChannelSubZoneSubscriptionManagement:
         nats_handler.track_player_subzone_subscription.assert_called_once_with(player_id, subzone)
 
     @pytest.mark.asyncio
-    async def test_multiple_players_same_subzone(self, nats_handler, mock_nats_service):
+    async def test_multiple_players_same_subzone(self, nats_handler, _mock_nats_service: MagicMock):
         """Test multiple players in the same sub-zone sharing subscription."""
         # AI Agent: Inject mock connection_manager via instance variable (no longer a global)
         mock_connection_manager = MagicMock()
@@ -291,7 +291,7 @@ class TestLocalChannelSubZoneSubscriptionManagement:
         assert subzone == "northside"  # Use the variable to avoid linting warning
 
     @pytest.mark.asyncio
-    async def test_subzone_subscription_cleanup(self, nats_handler, mock_nats_service):
+    async def test_subzone_subscription_cleanup(self, nats_handler, _mock_nats_service: MagicMock):
         """Test cleanup of sub-zone subscriptions when no players remain."""
         # AI Agent: Inject mock connection_manager via instance variable (no longer a global)
         mock_connection_manager = MagicMock()
@@ -325,7 +325,7 @@ class TestLocalChannelSubZoneSubscriptionManagement:
 class TestLocalChannelNATSSubjectPatterns:
     """Test NATS subject patterns for local channels."""
 
-    def test_local_channel_subject_patterns(self):
+    def test_local_channel_subject_patterns(self) -> None:
         """Test that local channel subjects follow the correct patterns."""
         room_id = "earth_arkhamcity_northside_intersection_derby_high"
         subzone = extract_subzone_from_room_id(room_id)
@@ -342,7 +342,7 @@ class TestLocalChannelNATSSubjectPatterns:
         assert room_subject != subzone_subject
         assert subzone == "northside"  # Use the variable to avoid linting warning
 
-    def test_local_channel_subject_validation(self):
+    def test_local_channel_subject_validation(self) -> None:
         """Test validation of local channel subject patterns."""
         valid_room_id = "earth_arkhamcity_northside_intersection_derby_high"
         invalid_room_id = "invalid_room_id"
@@ -352,13 +352,14 @@ class TestLocalChannelNATSSubjectPatterns:
         subzone_subject = get_subzone_local_channel_subject(valid_room_id)
 
         assert room_subject.startswith("chat.local.")
+        assert subzone_subject is not None
         assert subzone_subject.startswith("chat.local.subzone.")
 
         # Invalid room ID should return None for sub-zone subject
         invalid_subzone_subject = get_subzone_local_channel_subject(invalid_room_id)
         assert invalid_subzone_subject is None
 
-    def test_local_channel_subject_consistency(self):
+    def test_local_channel_subject_consistency(self) -> None:
         """Test consistency of local channel subjects across different rooms in same sub-zone."""
         room1 = "earth_arkhamcity_northside_intersection_derby_high"
         room2 = "earth_arkhamcity_northside_room_high_ln_001"

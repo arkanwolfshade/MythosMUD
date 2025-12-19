@@ -175,7 +175,7 @@ class TestLifespanStartup:
     """Test application startup procedures."""
 
     @pytest.mark.asyncio
-    async def test_lifespan_startup_basic(self):
+    async def test_lifespan_startup_basic(self) -> None:
         """
         Test basic lifespan startup sequence with ApplicationContainer.
 
@@ -230,7 +230,7 @@ class TestGameTickLoopLegacy:
     """Test game tick loop functionality."""
 
     @pytest.mark.asyncio
-    async def test_game_tick_loop_broadcasts_events(self):
+    async def test_game_tick_loop_broadcasts_events(self) -> None:
         """Test that game tick loop broadcasts tick events.
 
         AI: Tests that tick data is broadcast to connected players.
@@ -264,7 +264,7 @@ class TestGameTickLoopLegacy:
             assert "tick_number" in call_args[0][1]
 
     @pytest.mark.asyncio
-    async def test_game_tick_loop_handles_cancellation(self):
+    async def test_game_tick_loop_handles_cancellation(self) -> None:
         """Test that game tick loop handles cancellation gracefully.
 
         AI: Tests proper cancellation handling in game tick loop.
@@ -293,7 +293,7 @@ class TestGameTickLoopLegacy:
                 pass  # Expected
 
     @pytest.mark.asyncio
-    async def test_game_tick_loop_handles_errors(self):
+    async def test_game_tick_loop_handles_errors(self) -> None:
         """Test that game tick loop handles errors and continues.
 
         AI: Tests error recovery in game tick loop.
@@ -343,7 +343,7 @@ class TestGameTickLoopLegacy:
             assert call_count >= 2
 
     @pytest.mark.asyncio
-    async def test_game_tick_loop_includes_active_player_count(self):
+    async def test_game_tick_loop_includes_active_player_count(self) -> None:
         """Test that tick data includes active player count.
 
         AI: Tests that broadcast includes connection manager player count.

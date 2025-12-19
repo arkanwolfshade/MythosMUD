@@ -15,8 +15,10 @@ from server.services.nats_service import NATSService
 class TestMuteDataConsistency:
     """Test mute data loading consistency across message processing pipeline."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test fixtures."""
+        # Pytest uses setup_method for test fixture initialization before each test method
+        # pylint: disable=attribute-defined-outside-init
         self.mock_nats_service = MagicMock(spec=NATSService)
         self.mock_connection_manager = MagicMock()
         self.handler = NATSMessageHandler(self.mock_nats_service)

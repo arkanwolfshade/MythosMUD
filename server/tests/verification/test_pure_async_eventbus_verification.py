@@ -18,7 +18,7 @@ from server.events.event_types import PlayerEnteredRoom
 class TestEventBusHybridThreadingElimination:
     """Comprehensive verification classes for EventBus removal of hybrid patterns."""
 
-    def test_no_threading_imports_detected(self):
+    def test_no_threading_imports_detected(self) -> None:
         """Confirm removal of threading module imports - pure asyncio migration success."""
         event_source = inspect.getsource(EventBus)
 
@@ -27,7 +27,7 @@ class TestEventBusHybridThreadingElimination:
         for pattern in banned_patterns:
             assert pattern not in event_source, f"Found dangerous threading pattern: {pattern}"
 
-    def test_pure_asyncio_queue_replacement(self):
+    def test_pure_asyncio_queue_replacement(self) -> None:
         """Verification that asyncio.Queue replaces threading.Queue successfully."""
         event_bus_instance = EventBus()
 
@@ -37,12 +37,13 @@ class TestEventBusHybridThreadingElimination:
         assert isinstance(queue, asyncio.Queue), "Event queue must be asyncio implementation"
 
     @pytest.mark.asyncio
-    async def test_async_handlers_execute_within_loop(self):
+    async def test_async_handlers_execute_within_loop(self) -> None:
         """Verify async event handlers execute within event loop coordination."""
         event_bus_instance = EventBus()
         processing_results = []
 
-        async def test_async_handler(event):
+        async def test_async_handler(_event):
+            # Event parameter required by handler signature but not used in this verification test
             processing_results.append("async_processed")
             await asyncio.sleep(0.05)
 
@@ -56,7 +57,7 @@ class TestEventBusHybridThreadingElimination:
         assert processing_results[0] == "async_processed"
 
     @pytest.mark.asyncio
-    async def test_grace_shutdown_without_threading_coordination(self):
+    async def test_grace_shutdown_without_threading_coordination(self) -> None:
         """Monitor shutdown process without threading library dependencies reliant coordination."""
         event_bus_instance = EventBus()
 
@@ -65,7 +66,7 @@ class TestEventBusHybridThreadingElimination:
         # Shutdown process assert() completion gives pure asyncio event synchronization
         assert not getattr(event_bus_instance, "_running", False)
 
-    def test_lock_coordination_mechanism_elimination(self):
+    def test_lock_coordination_mechanism_elimination(self) -> None:
         """Validate that event transactions no longer depend on threading.RLock."""
         event_bus_instance = EventBus()
 
@@ -73,7 +74,7 @@ class TestEventBusHybridThreadingElimination:
         assert not hasattr(event_bus_instance, "_lock")
         assert not hasattr(event_bus_instance, "processing_thread")
 
-    def test_event_task_reference_cleanup_works(self):
+    def test_event_task_reference_cleanup_works(self) -> None:
         """Verify event handling uses proper asyncio task reference management."""
         event_bus_instance = EventBus()
 

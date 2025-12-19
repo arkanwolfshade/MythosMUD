@@ -131,7 +131,9 @@ def test_unequip_moves_item_to_inventory(partial_inventory):
     assert "head" not in new_equipped
     restored = [item for item in new_inventory if item["prototype_id"] == "obsidian_helm"]
     assert restored and restored[0]["metadata"]["ward"] == "shadows"
-    assert equipped["head"]["metadata"]["ward"] == "shadows"
+    from typing import Any, cast
+
+    assert cast(Any, equipped)["head"]["metadata"]["ward"] == "shadows"
 
 
 def test_unequip_requires_present_item(partial_inventory):

@@ -17,31 +17,34 @@ from server.logging.admin_actions_logger import AdminActionsLogger, get_admin_ac
 class TestAdminActionsLogger:
     """Test admin actions logger functionality."""
 
-    def setup_method(self):
+    temp_dir: str
+    logger: AdminActionsLogger
+
+    def setup_method(self) -> None:
         """Set up test environment."""
         # Create a temporary directory for test logs
         self.temp_dir = tempfile.mkdtemp()
         self.logger = AdminActionsLogger(log_directory=self.temp_dir)
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Clean up test environment."""
         # Remove temporary directory and files
         import shutil
 
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
-    def test_logger_initialization(self):
+    def test_logger_initialization(self) -> None:
         """Test logger initialization."""
         assert self.logger.log_directory == Path(self.temp_dir)
         assert self.logger.log_directory.exists()
 
-    def test_get_log_file_path(self):
+    def test_get_log_file_path(self) -> None:
         """Test log file path generation."""
         today = datetime.now().strftime("%Y-%m-%d")
         expected_path = Path(self.temp_dir) / f"admin_actions_{today}.log"
         assert self.logger._get_log_file_path() == expected_path
 
-    def test_ensure_log_file_exists(self):
+    def test_ensure_log_file_exists(self) -> None:
         """Test log file creation."""
         log_file = self.logger._get_log_file_path()
 
@@ -60,7 +63,7 @@ class TestAdminActionsLogger:
             assert "# MythosMUD Admin Actions Log" in content
             assert "# Format: JSON lines" in content
 
-    def test_log_teleport_action_success(self):
+    def test_log_teleport_action_success(self) -> None:
         """Test logging successful teleport action."""
         self.logger.log_teleport_action(
             admin_name="TestAdmin",
@@ -95,7 +98,7 @@ class TestAdminActionsLogger:
         assert entry["additional_data"]["test"] == "data"
         assert "timestamp" in entry
 
-    def test_log_teleport_action_failure(self):
+    def test_log_teleport_action_failure(self) -> None:
         """Test logging failed teleport action."""
         self.logger.log_teleport_action(
             admin_name="TestAdmin",
@@ -120,7 +123,7 @@ class TestAdminActionsLogger:
         assert entry["error_message"] == "Player not found"
         assert entry["additional_data"]["error_code"] == 404
 
-    def test_log_admin_command(self):
+    def test_log_admin_command(self) -> None:
         """Test logging admin command."""
         self.logger.log_admin_command(
             admin_name="TestAdmin",
@@ -143,7 +146,7 @@ class TestAdminActionsLogger:
         assert entry["success"] is True
         assert entry["additional_data"]["duration"] == "1h"
 
-    def test_log_permission_check(self):
+    def test_log_permission_check(self) -> None:
         """Test logging permission check."""
         self.logger.log_permission_check(
             player_name="TestPlayer",
@@ -164,7 +167,7 @@ class TestAdminActionsLogger:
         assert entry["has_permission"] is False
         assert entry["additional_data"]["reason"] == "Not admin"
 
-    def test_log_entry_error_handling(self):
+    def test_log_entry_error_handling(self) -> None:
         """Test error handling in log entry writing."""
         # Mock file operations to raise an exception
         with patch("builtins.open", side_effect=Exception("File error")):
@@ -178,7 +181,7 @@ class TestAdminActionsLogger:
                 success=True,
             )
 
-    def test_get_recent_actions(self):
+    def test_get_recent_actions(self) -> None:
         """Test retrieving recent actions."""
         # Create some test log entries
         self.logger.log_teleport_action(
@@ -212,7 +215,7 @@ class TestAdminActionsLogger:
         assert len(admin1_actions) == 1
         assert admin1_actions[0]["admin_name"] == "Admin1"
 
-    def test_get_teleport_statistics(self):
+    def test_get_teleport_statistics(self) -> None:
         """Test teleport statistics generation."""
         # Create test data
         self.logger.log_teleport_action(
@@ -256,7 +259,7 @@ class TestAdminActionsLogger:
         assert stats["target_players"]["Player2"] == 1
         assert stats["target_players"]["Player3"] == 1
 
-    def test_log_file_rotation(self):
+    def test_log_file_rotation(self) -> None:
         """Test log file rotation to new day."""
         # Create two loggers with different dates to simulate rotation
         with patch("server.logging.admin_actions_logger.datetime") as mock_datetime:
@@ -298,7 +301,7 @@ class TestAdminActionsLogger:
 class TestGlobalAdminActionsLogger:
     """Test global admin actions logger instance."""
 
-    def test_get_admin_actions_logger_singleton(self):
+    def test_get_admin_actions_logger_singleton(self) -> None:
         """Test that get_admin_actions_logger returns a singleton."""
         logger1 = get_admin_actions_logger()
         logger2 = get_admin_actions_logger()
@@ -306,7 +309,7 @@ class TestGlobalAdminActionsLogger:
         assert logger1 is logger2
         assert isinstance(logger1, AdminActionsLogger)
 
-    def test_global_logger_functionality(self):
+    def test_global_logger_functionality(self) -> None:
         """Test global logger functionality."""
         logger = get_admin_actions_logger()
 
@@ -330,7 +333,7 @@ class TestGlobalAdminActionsLogger:
 class TestAdminActionsLoggerIntegration:
     """Integration tests for admin actions logger."""
 
-    def test_full_logging_workflow(self):
+    def test_full_logging_workflow(self) -> None:
         """Test complete logging workflow."""
         with tempfile.TemporaryDirectory() as temp_dir:
             logger = AdminActionsLogger(log_directory=temp_dir)
@@ -364,7 +367,7 @@ class TestAdminActionsLoggerIntegration:
             assert "Admin1" in admin_names
             assert "Admin2" in admin_names
 
-    def test_error_recovery(self):
+    def test_error_recovery(self) -> None:
         """Test logger recovery from errors."""
         with tempfile.TemporaryDirectory() as temp_dir:
             logger = AdminActionsLogger(log_directory=temp_dir)

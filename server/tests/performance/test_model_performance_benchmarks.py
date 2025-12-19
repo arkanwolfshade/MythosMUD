@@ -14,7 +14,7 @@ between speed and accuracy in our digital realm.
 import time
 from typing import Any
 
-from pydantic import ValidationError
+from pydantic import BaseModel, ValidationError
 
 from server.models.alias import Alias
 from server.models.command import LookCommand, SayCommand
@@ -205,7 +205,7 @@ class TestModelPerformanceBenchmarks:
         "timestamp": "2025-01-01T00:00:00Z",
     }
 
-    def test_alias_model_instantiation_performance(self):
+    def test_alias_model_instantiation_performance(self) -> None:
         """Benchmark Alias model instantiation performance."""
         avg_time = ModelPerformanceBenchmarks.benchmark_model_instantiation(
             Alias, self.ALIAS_TEST_DATA, iterations=1000
@@ -217,7 +217,7 @@ class TestModelPerformanceBenchmarks:
         # Reasonable performance expectation: < 0.001s per instance
         assert avg_time < 0.001, f"Alias instantiation too slow: {avg_time:.6f}s per instance"
 
-    def test_alias_model_validation_performance(self):
+    def test_alias_model_validation_performance(self) -> None:
         """Benchmark Alias model validation performance."""
         avg_time = ModelPerformanceBenchmarks.benchmark_model_validation(Alias, self.ALIAS_TEST_DATA, iterations=1000)
 
@@ -226,7 +226,7 @@ class TestModelPerformanceBenchmarks:
         # Reasonable performance expectation: < 0.001s per validation
         assert avg_time < 0.001, f"Alias validation too slow: {avg_time:.6f}s per validation"
 
-    def test_alias_model_serialization_performance(self):
+    def test_alias_model_serialization_performance(self) -> None:
         """Benchmark Alias model serialization performance."""
         alias = Alias(**self.ALIAS_TEST_DATA)
         avg_time = ModelPerformanceBenchmarks.benchmark_model_serialization(alias, iterations=1000)
@@ -236,7 +236,7 @@ class TestModelPerformanceBenchmarks:
         # Reasonable performance expectation: < 0.001s per serialization
         assert avg_time < 0.001, f"Alias serialization too slow: {avg_time:.6f}s per serialization"
 
-    def test_stats_model_instantiation_performance(self):
+    def test_stats_model_instantiation_performance(self) -> None:
         """Benchmark Stats model instantiation performance."""
         avg_time = ModelPerformanceBenchmarks.benchmark_model_instantiation(
             Stats, self.STATS_TEST_DATA, iterations=1000
@@ -247,7 +247,7 @@ class TestModelPerformanceBenchmarks:
         # Reasonable performance expectation: < 0.002s per instance (includes random generation)
         assert avg_time < 0.002, f"Stats instantiation too slow: {avg_time:.6f}s per instance"
 
-    def test_stats_model_validation_performance(self):
+    def test_stats_model_validation_performance(self) -> None:
         """Benchmark Stats model validation performance."""
         avg_time = ModelPerformanceBenchmarks.benchmark_model_validation(Stats, self.STATS_TEST_DATA, iterations=1000)
 
@@ -256,7 +256,7 @@ class TestModelPerformanceBenchmarks:
         # Reasonable performance expectation: < 0.002s per validation
         assert avg_time < 0.002, f"Stats validation too slow: {avg_time:.6f}s per validation"
 
-    def test_stats_model_serialization_performance(self):
+    def test_stats_model_serialization_performance(self) -> None:
         """Benchmark Stats model serialization performance."""
         stats = Stats(**self.STATS_TEST_DATA)
         avg_time = ModelPerformanceBenchmarks.benchmark_model_serialization(stats, iterations=1000)
@@ -266,7 +266,7 @@ class TestModelPerformanceBenchmarks:
         # Reasonable performance expectation: < 0.001s per serialization
         assert avg_time < 0.001, f"Stats serialization too slow: {avg_time:.6f}s per serialization"
 
-    def test_status_effect_model_instantiation_performance(self):
+    def test_status_effect_model_instantiation_performance(self) -> None:
         """Benchmark StatusEffect model instantiation performance."""
         avg_time = ModelPerformanceBenchmarks.benchmark_model_instantiation(
             StatusEffect, self.STATUS_EFFECT_TEST_DATA, iterations=1000
@@ -277,7 +277,7 @@ class TestModelPerformanceBenchmarks:
         # Reasonable performance expectation: < 0.001s per instance
         assert avg_time < 0.001, f"StatusEffect instantiation too slow: {avg_time:.6f}s per instance"
 
-    def test_look_command_model_instantiation_performance(self):
+    def test_look_command_model_instantiation_performance(self) -> None:
         """Benchmark LookCommand model instantiation performance."""
         avg_time = ModelPerformanceBenchmarks.benchmark_model_instantiation(
             LookCommand, self.LOOK_COMMAND_TEST_DATA, iterations=1000
@@ -288,7 +288,7 @@ class TestModelPerformanceBenchmarks:
         # Reasonable performance expectation: < 0.001s per instance
         assert avg_time < 0.001, f"LookCommand instantiation too slow: {avg_time:.6f}s per instance"
 
-    def test_say_command_model_instantiation_performance(self):
+    def test_say_command_model_instantiation_performance(self) -> None:
         """Benchmark SayCommand model instantiation performance."""
         avg_time = ModelPerformanceBenchmarks.benchmark_model_instantiation(
             SayCommand, self.SAY_COMMAND_TEST_DATA, iterations=1000
@@ -299,7 +299,7 @@ class TestModelPerformanceBenchmarks:
         # Reasonable performance expectation: < 0.001s per instance
         assert avg_time < 0.001, f"SayCommand instantiation too slow: {avg_time:.6f}s per instance"
 
-    def test_server_component_model_instantiation_performance(self):
+    def test_server_component_model_instantiation_performance(self) -> None:
         """Benchmark ServerComponent model instantiation performance."""
         avg_time = ModelPerformanceBenchmarks.benchmark_model_instantiation(
             ServerComponent, self.SERVER_COMPONENT_TEST_DATA, iterations=1000
@@ -310,7 +310,7 @@ class TestModelPerformanceBenchmarks:
         # Reasonable performance expectation: < 0.001s per instance
         assert avg_time < 0.001, f"ServerComponent instantiation too slow: {avg_time:.6f}s per instance"
 
-    def test_database_component_model_instantiation_performance(self):
+    def test_database_component_model_instantiation_performance(self) -> None:
         """Benchmark DatabaseComponent model instantiation performance."""
         avg_time = ModelPerformanceBenchmarks.benchmark_model_instantiation(
             DatabaseComponent, self.DATABASE_COMPONENT_TEST_DATA, iterations=1000
@@ -321,7 +321,7 @@ class TestModelPerformanceBenchmarks:
         # Reasonable performance expectation: < 0.001s per instance
         assert avg_time < 0.001, f"DatabaseComponent instantiation too slow: {avg_time:.6f}s per instance"
 
-    def test_connections_component_model_instantiation_performance(self):
+    def test_connections_component_model_instantiation_performance(self) -> None:
         """Benchmark ConnectionsComponent model instantiation performance."""
         avg_time = ModelPerformanceBenchmarks.benchmark_model_instantiation(
             ConnectionsComponent, self.CONNECTIONS_COMPONENT_TEST_DATA, iterations=1000
@@ -332,7 +332,7 @@ class TestModelPerformanceBenchmarks:
         # Reasonable performance expectation: < 0.001s per instance
         assert avg_time < 0.001, f"ConnectionsComponent instantiation too slow: {avg_time:.6f}s per instance"
 
-    def test_health_components_model_instantiation_performance(self):
+    def test_health_components_model_instantiation_performance(self) -> None:
         """Benchmark HealthComponents model instantiation performance."""
         avg_time = ModelPerformanceBenchmarks.benchmark_model_instantiation(
             HealthComponents, self.HEALTH_COMPONENTS_TEST_DATA, iterations=1000
@@ -343,7 +343,7 @@ class TestModelPerformanceBenchmarks:
         # Reasonable performance expectation: < 0.002s per instance (nested models)
         assert avg_time < 0.002, f"HealthComponents instantiation too slow: {avg_time:.6f}s per instance"
 
-    def test_health_response_model_instantiation_performance(self):
+    def test_health_response_model_instantiation_performance(self) -> None:
         """Benchmark HealthResponse model instantiation performance."""
         avg_time = ModelPerformanceBenchmarks.benchmark_model_instantiation(
             HealthResponse, self.HEALTH_RESPONSE_TEST_DATA, iterations=1000
@@ -354,7 +354,7 @@ class TestModelPerformanceBenchmarks:
         # Reasonable performance expectation: < 0.002s per instance (nested models)
         assert avg_time < 0.002, f"HealthResponse instantiation too slow: {avg_time:.6f}s per instance"
 
-    def test_health_error_response_model_instantiation_performance(self):
+    def test_health_error_response_model_instantiation_performance(self) -> None:
         """Benchmark HealthErrorResponse model instantiation performance."""
         avg_time = ModelPerformanceBenchmarks.benchmark_model_instantiation(
             HealthErrorResponse, self.HEALTH_ERROR_RESPONSE_TEST_DATA, iterations=1000
@@ -365,9 +365,9 @@ class TestModelPerformanceBenchmarks:
         # Reasonable performance expectation: < 0.001s per instance
         assert avg_time < 0.001, f"HealthErrorResponse instantiation too slow: {avg_time:.6f}s per instance"
 
-    def test_comprehensive_model_performance_comparison(self):
+    def test_comprehensive_model_performance_comparison(self) -> None:
         """Compare performance across all models to identify bottlenecks."""
-        models_to_benchmark = [
+        models_to_benchmark: list[tuple[type[BaseModel], dict[str, Any], str]] = [
             (Alias, self.ALIAS_TEST_DATA, "Alias"),
             (Stats, self.STATS_TEST_DATA, "Stats"),
             (StatusEffect, self.STATUS_EFFECT_TEST_DATA, "StatusEffect"),
@@ -381,7 +381,7 @@ class TestModelPerformanceBenchmarks:
             (HealthErrorResponse, self.HEALTH_ERROR_RESPONSE_TEST_DATA, "HealthErrorResponse"),
         ]
 
-        results = {}
+        results: dict[str, float] = {}
 
         for model_class, test_data, model_name in models_to_benchmark:
             avg_time = ModelPerformanceBenchmarks.benchmark_model_instantiation(
@@ -405,12 +405,12 @@ class TestModelPerformanceBenchmarks:
             # Allow up to 0.003s for complex models with nested structures
             assert avg_time < 0.003, f"{model_name} is too slow: {avg_time:.6f}s per instance"
 
-    def test_memory_usage_benchmark(self):
+    def test_memory_usage_benchmark(self) -> None:
         """Benchmark memory usage for model instantiation."""
         import sys
 
         # Create instances and measure memory usage
-        instances = []
+        instances: list[Any] = []
 
         # Measure memory before
         memory_before = sys.getsizeof(instances)
@@ -436,7 +436,7 @@ class TestModelPerformanceBenchmarks:
         # Reasonable memory usage expectation: < 500 bytes per instance
         assert memory_per_instance < 500, f"Memory usage too high: {memory_per_instance:.2f} bytes per instance"
 
-    def test_validation_error_performance(self):
+    def test_validation_error_performance(self) -> None:
         """Benchmark performance of validation with errors."""
         invalid_data = {"invalid_field": "invalid_value"}
 

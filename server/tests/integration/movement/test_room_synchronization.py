@@ -42,7 +42,7 @@ class TestEventProcessingOrder:
         room.get_occupant_count.return_value = 0
         return room
 
-    def test_event_processing_order_preserves_chronology(self, room_sync_service, mock_room):
+    def test_event_processing_order_preserves_chronology(self, room_sync_service, _mock_room):
         """Test that events are processed in chronological order."""
         # Create events with different timestamps
         events = []
@@ -77,7 +77,7 @@ class TestEventProcessingOrder:
         for i, event in enumerate(processed_events):
             assert event.sequence_number == i + 1
 
-    def test_state_merging_logic_handles_conflicts(self, room_sync_service, mock_room):
+    def test_state_merging_logic_handles_conflicts(self, room_sync_service, _mock_room):
         """Test that state merging logic handles conflicting updates."""
         # Create conflicting room updates
         old_room_data = {
@@ -149,7 +149,7 @@ class TestEventProcessingOrder:
         final_update = max(processed_updates, key=lambda x: x.get("timestamp", 0))
         assert final_update["name"] == "Room Update 9"
 
-    def test_state_validation_checks_prevent_inconsistencies(self, room_sync_service, mock_room):
+    def test_state_validation_checks_prevent_inconsistencies(self, room_sync_service, _mock_room):
         """Test that state validation checks prevent data inconsistencies."""
         # Test room data with missing required fields
         incomplete_data = {
@@ -213,7 +213,7 @@ class TestEventProcessingOrder:
         import queue
 
         # Create a queue to collect processed events
-        processed_events = queue.Queue()
+        processed_events: queue.Queue = queue.Queue()
 
         def process_events_batch(event_batch):
             """Process a batch of events serially."""

@@ -21,7 +21,7 @@ from server.validators.security_validator import (
 class TestSecurityValidationConstants:
     """Test security validation constants and patterns."""
 
-    def test_injection_patterns_defined(self):
+    def test_injection_patterns_defined(self) -> None:
         """Test that injection patterns are properly defined."""
         assert INJECTION_PATTERNS is not None
         assert isinstance(INJECTION_PATTERNS, list)
@@ -35,7 +35,7 @@ class TestSecurityValidationConstants:
             compiled = re.compile(pattern)
             assert compiled is not None
 
-    def test_injection_patterns_coverage(self):
+    def test_injection_patterns_coverage(self) -> None:
         """Test that injection patterns cover common attack vectors."""
 
         # Test shell metacharacters - should match [;|] pattern (& removed as safe in messages)
@@ -54,7 +54,7 @@ class TestSecurityValidationConstants:
         format_pattern = r"%\d*[sdxXfFgGeEcCbrpP]"
         assert any(pattern == format_pattern for pattern in INJECTION_PATTERNS)
 
-    def test_slash_commands_defined(self):
+    def test_slash_commands_defined(self) -> None:
         """Test that slash commands are properly defined."""
         assert SLASH_COMMANDS is not None
         assert isinstance(SLASH_COMMANDS, set)
@@ -64,7 +64,7 @@ class TestSecurityValidationConstants:
         expected_commands = {"help", "who", "quit", "look", "go", "say", "me", "pose"}
         assert expected_commands.issubset(SLASH_COMMANDS)
 
-    def test_slash_commands_immutable(self):
+    def test_slash_commands_immutable(self) -> None:
         """Test that slash commands set is immutable-like."""
         # Should be a set, which is mutable but we expect it to be stable
         assert isinstance(SLASH_COMMANDS, set)
@@ -78,7 +78,7 @@ class TestSecurityValidationConstants:
 class TestUnicodeSanitization:
     """Test Unicode input sanitization functions."""
 
-    def test_sanitize_unicode_input_basic(self):
+    def test_sanitize_unicode_input_basic(self) -> None:
         """Test basic Unicode sanitization."""
         # Test normal text
         normal_text = "Hello, world!"
@@ -91,10 +91,10 @@ class TestUnicodeSanitization:
         assert result == empty_text
 
         # Test None (should handle gracefully)
-        result = sanitize_unicode_input(None)
+        result = sanitize_unicode_input(None)  # type: ignore[arg-type]
         assert result is None
 
-    def test_sanitize_unicode_input_mojibake(self):
+    def test_sanitize_unicode_input_mojibake(self) -> None:
         """Test Unicode sanitization with mojibake (double-encoded text)."""
         # Test mojibake - this is a common Unicode issue
         # Note: ftfy handles this automatically, so we test that it doesn't break
@@ -102,7 +102,7 @@ class TestUnicodeSanitization:
         result = sanitize_unicode_input(mojibake_text)
         assert result == mojibake_text
 
-    def test_sanitize_unicode_input_control_chars(self):
+    def test_sanitize_unicode_input_control_chars(self) -> None:
         """Test Unicode sanitization with control characters."""
         # Test with control characters (these should be handled by comprehensive_sanitize_input)
         text_with_control = "Hello\x00World"
@@ -110,7 +110,7 @@ class TestUnicodeSanitization:
         # ftfy should not remove control chars, that's handled elsewhere
         assert isinstance(result, str)
 
-    def test_sanitize_unicode_input_performance(self):
+    def test_sanitize_unicode_input_performance(self) -> None:
         """Test Unicode sanitization performance with various inputs."""
         import time
 
@@ -136,7 +136,7 @@ class TestUnicodeSanitization:
 class TestANSICodeStripping:
     """Test ANSI code stripping functions."""
 
-    def test_strip_ansi_codes_basic(self):
+    def test_strip_ansi_codes_basic(self) -> None:
         """Test basic ANSI code stripping."""
         # Test normal text
         normal_text = "Hello, world!"
@@ -149,10 +149,10 @@ class TestANSICodeStripping:
         assert result == empty_text
 
         # Test None
-        result = strip_ansi_codes(None)
+        result = strip_ansi_codes(None)  # type: ignore[arg-type]
         assert result is None
 
-    def test_strip_ansi_codes_color_codes(self):
+    def test_strip_ansi_codes_color_codes(self) -> None:
         """Test ANSI color code stripping."""
         # Test with color codes
         colored_text = "\x1b[31mRed text\x1b[0m"
@@ -164,7 +164,7 @@ class TestANSICodeStripping:
         result = strip_ansi_codes(multi_colored)
         assert result == "RedGreen"
 
-    def test_strip_ansi_codes_formatting_codes(self):
+    def test_strip_ansi_codes_formatting_codes(self) -> None:
         """Test ANSI formatting code stripping."""
         # Test with formatting codes
         formatted_text = "\x1b[1mBold\x1b[0m"
@@ -176,7 +176,7 @@ class TestANSICodeStripping:
         result = strip_ansi_codes(complex_formatted)
         assert result == "Bold red on green"
 
-    def test_strip_ansi_codes_cursor_movement(self):
+    def test_strip_ansi_codes_cursor_movement(self) -> None:
         """Test ANSI cursor movement code stripping."""
         # Test cursor movement codes
         cursor_text = "Hello\x1b[2J\x1b[HWorld"
@@ -188,7 +188,7 @@ class TestANSICodeStripping:
         result = strip_ansi_codes(multi_cursor)
         assert result == "Text"
 
-    def test_strip_ansi_codes_malicious_hiding(self):
+    def test_strip_ansi_codes_malicious_hiding(self) -> None:
         """Test that ANSI codes can't hide malicious content."""
         # Test that ANSI codes don't hide dangerous content
         hidden_text = "\x1b[31m<script>\x1b[0m"
@@ -206,7 +206,7 @@ class TestANSICodeStripping:
 class TestComprehensiveSanitization:
     """Test comprehensive input sanitization."""
 
-    def test_comprehensive_sanitize_input_basic(self):
+    def test_comprehensive_sanitize_input_basic(self) -> None:
         """Test basic comprehensive sanitization."""
         # Test normal text
         normal_text = "Hello, world!"
@@ -219,10 +219,10 @@ class TestComprehensiveSanitization:
         assert result == empty_text
 
         # Test None
-        result = comprehensive_sanitize_input(None)
+        result = comprehensive_sanitize_input(None)  # type: ignore[arg-type]
         assert result is None
 
-    def test_comprehensive_sanitize_input_unicode_and_ansi(self):
+    def test_comprehensive_sanitize_input_unicode_and_ansi(self) -> None:
         """Test comprehensive sanitization with both Unicode and ANSI issues."""
         # Test with both Unicode and ANSI codes
         complex_text = "\x1b[31mHello\x1b[0m, café!"
@@ -232,7 +232,7 @@ class TestComprehensiveSanitization:
         assert "Hello" in result
         assert "café" in result
 
-    def test_comprehensive_sanitize_input_control_chars(self):
+    def test_comprehensive_sanitize_input_control_chars(self) -> None:
         """Test comprehensive sanitization removes control characters."""
         # Test with null bytes and control characters
         control_text = "Hello\x00World\x01Test"
@@ -241,7 +241,7 @@ class TestComprehensiveSanitization:
         assert "\x00" not in result
         assert "\x01" not in result
 
-    def test_comprehensive_sanitize_input_invisible_unicode(self):
+    def test_comprehensive_sanitize_input_invisible_unicode(self) -> None:
         """Test comprehensive sanitization removes invisible Unicode characters."""
         # Test with zero-width characters
         invisible_text = "Hello\u200bWorld\ufeffTest"
@@ -250,7 +250,7 @@ class TestComprehensiveSanitization:
         assert "\u200b" not in result
         assert "\ufeff" not in result
 
-    def test_comprehensive_sanitize_input_preserves_newlines_tabs(self):
+    def test_comprehensive_sanitize_input_preserves_newlines_tabs(self) -> None:
         """Test that comprehensive sanitization preserves newlines and tabs."""
         # Test that newlines and tabs are preserved
         text_with_whitespace = "Line 1\nLine 2\tTabbed"
@@ -259,7 +259,7 @@ class TestComprehensiveSanitization:
         assert "\n" in result
         assert "\t" in result
 
-    def test_comprehensive_sanitize_input_security_vectors(self):
+    def test_comprehensive_sanitize_input_security_vectors(self) -> None:
         """Test that comprehensive sanitization handles security attack vectors."""
         # Test various attack vectors
         attack_vectors = [
@@ -278,7 +278,7 @@ class TestComprehensiveSanitization:
             # Should preserve the basic text but remove dangerous control chars
             assert "Hello" in result
 
-    def test_comprehensive_sanitize_input_performance(self):
+    def test_comprehensive_sanitize_input_performance(self) -> None:
         """Test comprehensive sanitization performance."""
         import time
 
@@ -305,7 +305,7 @@ class TestComprehensiveSanitization:
 class TestCentralizedSecurityValidation:
     """Test centralized security validation patterns."""
 
-    def test_dangerous_character_detection(self):
+    def test_dangerous_character_detection(self) -> None:
         """Test detection of dangerous characters."""
         # These should be detected as dangerous by command validators
         dangerous_chars = ["<", ">", "&", '"', "'", ";", "|", "`", "$", "(", ")"]
@@ -316,7 +316,7 @@ class TestCentralizedSecurityValidation:
             # This will be implemented in the centralized validator
             assert char in test_text
 
-    def test_injection_pattern_detection(self):
+    def test_injection_pattern_detection(self) -> None:
         """Test detection of injection patterns."""
         import re
 
@@ -337,7 +337,7 @@ class TestCentralizedSecurityValidation:
             matches = any(re.search(pattern, test_case, re.IGNORECASE) for pattern in INJECTION_PATTERNS)
             assert matches, f"No injection pattern matched: {test_case}"
 
-    def test_safe_input_validation(self):
+    def test_safe_input_validation(self) -> None:
         """Test that safe input passes validation."""
         # These should be considered safe
         safe_inputs = [
@@ -356,7 +356,7 @@ class TestCentralizedSecurityValidation:
             matches = any(re.search(pattern, safe_input, re.IGNORECASE) for pattern in INJECTION_PATTERNS)
             assert not matches, f"Safe input incorrectly flagged: {safe_input}"
 
-    def test_edge_case_handling(self):
+    def test_edge_case_handling(self) -> None:
         """Test edge cases in security validation."""
         # Test edge cases
         edge_cases = [
@@ -373,7 +373,7 @@ class TestCentralizedSecurityValidation:
             result = comprehensive_sanitize_input(edge_case)
             assert isinstance(result, str)
 
-    def test_unicode_edge_cases(self):
+    def test_unicode_edge_cases(self) -> None:
         """Test Unicode edge cases in security validation."""
         # Test Unicode edge cases
         unicode_cases = [
@@ -395,7 +395,7 @@ class TestCentralizedSecurityValidation:
 class TestSecurityValidationIntegration:
     """Test integration of security validation with command models."""
 
-    def test_validation_consistency(self):
+    def test_validation_consistency(self) -> None:
         """Test that validation is consistent across different contexts."""
         # Test that the same input produces consistent results
         test_input = "Hello<script>alert('xss')</script>"
@@ -413,7 +413,7 @@ class TestSecurityValidationIntegration:
         # Comprehensive should be most restrictive
         assert len(comprehensive_result) <= len(test_input)
 
-    def test_validation_performance_under_load(self):
+    def test_validation_performance_under_load(self) -> None:
         """Test validation performance under simulated load."""
         import concurrent.futures
         import time
@@ -443,7 +443,7 @@ class TestSecurityValidationIntegration:
         for result in results:
             assert isinstance(result, str)
 
-    def test_validation_memory_usage(self):
+    def test_validation_memory_usage(self) -> None:
         """Test that validation doesn't cause memory leaks."""
         import gc
 
@@ -467,7 +467,7 @@ class TestSecurityValidationIntegration:
 class TestSecurityValidationErrorHandling:
     """Test error handling in security validation."""
 
-    def test_validation_with_invalid_input_types(self):
+    def test_validation_with_invalid_input_types(self) -> None:
         """Test validation with invalid input types."""
         # Test with various invalid types
         invalid_inputs = [
@@ -482,7 +482,7 @@ class TestSecurityValidationErrorHandling:
         for invalid_input in invalid_inputs:
             # Should handle gracefully without crashing
             try:
-                result = comprehensive_sanitize_input(invalid_input)
+                result = comprehensive_sanitize_input(invalid_input)  # type: ignore[arg-type]
                 # Should return the input unchanged for non-string types
                 assert result == invalid_input
             except (TypeError, AttributeError):
@@ -490,7 +490,7 @@ class TestSecurityValidationErrorHandling:
                 # This is acceptable as long as it's handled gracefully
                 pass
 
-    def test_validation_with_very_long_input(self):
+    def test_validation_with_very_long_input(self) -> None:
         """Test validation with very long input."""
         # Test with extremely long input
         very_long_input = "a" * 1000000  # 1MB string
@@ -500,7 +500,7 @@ class TestSecurityValidationErrorHandling:
         assert isinstance(result, str)
         assert len(result) <= len(very_long_input)
 
-    def test_validation_with_malformed_unicode(self):
+    def test_validation_with_malformed_unicode(self) -> None:
         """Test validation with malformed Unicode."""
         # Test with malformed Unicode sequences
         malformed_unicode = [

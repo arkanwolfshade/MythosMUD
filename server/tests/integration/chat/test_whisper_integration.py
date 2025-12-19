@@ -15,7 +15,7 @@ from server.utils.command_parser import parse_command
 class TestWhisperCommandIntegration:
     """Test whisper command integration."""
 
-    def test_whisper_command_parsing(self):
+    def test_whisper_command_parsing(self) -> None:
         """Test that whisper commands are parsed correctly."""
         # Test basic whisper command
         command = parse_command("whisper TestPlayer Hello there!")
@@ -38,7 +38,7 @@ class TestWhisperCommandIntegration:
         assert command.target == "TestPlayer"
         assert command.message == "This is a longer message with multiple words!"
 
-    def test_reply_command_parsing(self):
+    def test_reply_command_parsing(self) -> None:
         """Test that reply commands are parsed correctly."""
         # Test basic reply command
         command = parse_command("reply Hello back!")
@@ -52,7 +52,7 @@ class TestWhisperCommandIntegration:
         assert command.command_type == CommandType.REPLY
         assert command.message == "Hello back!"
 
-    def test_whisper_command_validation(self):
+    def test_whisper_command_validation(self) -> None:
         """Test whisper command validation."""
         # Test valid whisper command
         command = WhisperCommand(target="TestPlayer", message="Hello!")
@@ -72,7 +72,7 @@ class TestWhisperCommandIntegration:
         with pytest.raises(Exception, match="String should have at most 2000 characters"):
             WhisperCommand(target="TestPlayer", message=long_message)
 
-    def test_reply_command_validation(self):
+    def test_reply_command_validation(self) -> None:
         """Test reply command validation."""
         # Test valid reply command
         command = ReplyCommand(message="Hello back!")
@@ -87,7 +87,7 @@ class TestWhisperCommandIntegration:
         with pytest.raises(Exception, match="String should have at most 2000 characters"):
             ReplyCommand(message=long_message)
 
-    def test_whisper_command_injection_prevention(self):
+    def test_whisper_command_injection_prevention(self) -> None:
         """Test that whisper commands prevent injection attempts."""
         # Test dangerous characters
         with pytest.raises(ValueError, match="Message contains dangerous characters"):
@@ -98,7 +98,7 @@ class TestWhisperCommandIntegration:
         with pytest.raises(Exception, match="potentially dangerous pattern"):
             WhisperCommand(target="TestPlayer", message="Hello; say something")
 
-    def test_reply_command_injection_prevention(self):
+    def test_reply_command_injection_prevention(self) -> None:
         """Test that reply commands prevent injection attempts."""
         # Test dangerous characters
         with pytest.raises(ValueError, match="Message contains dangerous characters"):
@@ -109,7 +109,7 @@ class TestWhisperCommandIntegration:
         with pytest.raises(Exception, match="potentially dangerous pattern"):
             ReplyCommand(message="Hello; say something")
 
-    def test_whisper_command_error_handling(self):
+    def test_whisper_command_error_handling(self) -> None:
         """Test whisper command error handling."""
         # Test missing target
         # Error messages no longer wrapped with "Failed to create command:"
@@ -125,7 +125,7 @@ class TestWhisperCommandIntegration:
         with pytest.raises(MythosValidationError, match="You must provide a message to whisper"):
             parse_command("whisper TestPlayer    ")
 
-    def test_reply_command_error_handling(self):
+    def test_reply_command_error_handling(self) -> None:
         """Test reply command error handling."""
         # Test missing message
         # Error messages no longer wrapped with "Failed to create command:"
@@ -141,7 +141,7 @@ class TestWhisperCommandIntegration:
 class TestWhisperCommandHelp:
     """Test whisper command help integration."""
 
-    def test_whisper_command_help_included(self):
+    def test_whisper_command_help_included(self) -> None:
         """Test that whisper command help is included in general help."""
         from server.utils.command_parser import get_command_help
 
@@ -149,14 +149,14 @@ class TestWhisperCommandHelp:
         assert "whisper <player> <message> - Send private message to player" in help_text
         assert "reply <message> - Reply to last whisper received" in help_text
 
-    def test_whisper_command_specific_help(self):
+    def test_whisper_command_specific_help(self) -> None:
         """Test specific help for whisper command."""
         from server.utils.command_parser import get_command_help
 
         help_text = get_command_help("whisper")
         assert "whisper <player> <message> - Send private message to player" in help_text
 
-    def test_reply_command_specific_help(self):
+    def test_reply_command_specific_help(self) -> None:
         """Test specific help for reply command."""
         from server.utils.command_parser import get_command_help
 

@@ -5,6 +5,7 @@ This module tests that the get_player_service and get_room_service functions
 work correctly and return the expected service instances.
 """
 
+from typing import Any, cast
 from unittest.mock import AsyncMock, Mock
 
 import pytest
@@ -92,7 +93,7 @@ class TestDependencyInjectionFunctions:
             # If container has mock persistence, service should also have persistence (may be different instance)
             assert service.persistence is not None
 
-    def test_get_player_service_for_testing_function(self):
+    def test_get_player_service_for_testing_function(self) -> None:
         """Test that get_player_service_for_testing function works correctly."""
         service = get_player_service_for_testing()
 
@@ -121,7 +122,7 @@ class TestDependencyInjectionFunctions:
         # ARCHITECTURE FIX: Container uses singleton pattern
         assert player_service1 is player_service2  # Same instance
         assert room_service1 is room_service2  # Same instance
-        assert player_service1 is not room_service1  # Different services
+        assert cast(Any, player_service1) is not cast(Any, room_service1)  # Different services
 
     def test_dependency_functions_with_container_persistence(self, container_test_client):
         """
@@ -149,7 +150,7 @@ class TestDependencyInjectionFunctions:
         # Both services should share the SAME persistence instance (real or mock)
         assert player_service.persistence is room_service.persistence
 
-    def test_dependency_function_error_handling(self):
+    def test_dependency_function_error_handling(self) -> None:
         """
         Test that dependency functions handle missing container gracefully.
 
@@ -165,7 +166,7 @@ class TestDependencyInjectionFunctions:
         with pytest.raises((AttributeError, RuntimeError)):
             get_player_service(bad_request)
 
-    def test_dependency_function_type_annotations(self):
+    def test_dependency_function_type_annotations(self) -> None:
         """Test that dependency functions have correct type annotations."""
         import inspect
 
@@ -236,7 +237,7 @@ class TestDependencyInjectionFunctions:
         assert len(errors) == 0, f"Thread safety errors: {errors}"
         assert len(results) == 10, "Not all workers completed successfully"
 
-    def test_dependency_functions_require_container(self):
+    def test_dependency_functions_require_container(self) -> None:
         """
         Test dependency functions require ApplicationContainer.
 
@@ -314,12 +315,12 @@ class TestDependencyInjectionFunctions:
         assert not isinstance(player_service, RoomService)
         assert not isinstance(room_service, PlayerService)
 
-    def test_dependency_functions_request_parameter_validation(self):
+    def test_dependency_functions_request_parameter_validation(self) -> None:
         """Test that dependency functions validate request parameters correctly."""
         # Test with None request
         with pytest.raises((TypeError, AttributeError)):
-            get_player_service(None)
+            get_player_service(cast(Any, None))
 
         # Test with invalid request object
         with pytest.raises(AttributeError):
-            get_player_service("invalid_request")
+            get_player_service(cast(Any, "invalid_request"))

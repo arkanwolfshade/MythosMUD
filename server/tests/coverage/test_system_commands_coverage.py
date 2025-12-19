@@ -19,7 +19,7 @@ class TestHelpCommand:
     """Test help command functionality."""
 
     @pytest.mark.asyncio
-    async def test_help_command_no_args(self):
+    async def test_help_command_no_args(self) -> None:
         """Test help command with no arguments.
 
         AI: Tests help command to get general help content.
@@ -38,7 +38,7 @@ class TestHelpCommand:
             mock_help.assert_called_once_with(None)
 
     @pytest.mark.asyncio
-    async def test_help_command_with_specific_command(self):
+    async def test_help_command_with_specific_command(self) -> None:
         """Test help command with specific command argument.
 
         AI: Tests help command to get help for a specific command.
@@ -57,7 +57,7 @@ class TestHelpCommand:
             mock_help.assert_called_once_with("say")
 
     @pytest.mark.asyncio
-    async def test_help_command_too_many_arguments(self):
+    async def test_help_command_too_many_arguments(self) -> None:
         """Test help command with too many arguments.
 
         AI: Tests error handling when help command has too many arguments.
@@ -75,7 +75,7 @@ class TestHelpCommand:
         assert "Usage: help [command]" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_help_command_with_various_commands(self):
+    async def test_help_command_with_various_commands(self) -> None:
         """Test help command with various command names.
 
         AI: Tests help command with different command names.

@@ -11,7 +11,7 @@ from datetime import UTC, datetime
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
-from server.database import get_async_session
+from server.database import get_session_maker
 from server.exceptions import DatabaseError
 from server.logging.enhanced_logging_config import get_logger
 from server.models.player_spells import PlayerSpell
@@ -49,13 +49,13 @@ class PlayerSpellRepository:
         context.metadata["player_id"] = str(player_id)
 
         try:
-            async for session in get_async_session():
+            session_maker = get_session_maker()
+            async with session_maker() as session:
                 stmt = select(PlayerSpell).where(PlayerSpell.player_id == str(player_id))
                 result = await session.execute(stmt)
                 player_spells = list(result.scalars().all())
                 self._logger.debug("Loaded player spells", player_id=str(player_id), count=len(player_spells))
                 return player_spells
-            return []
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,
@@ -65,7 +65,7 @@ class PlayerSpellRepository:
                 user_friendly="Failed to retrieve learned spells",
             )
 
-    async def get_player_spell(self, player_id: uuid.UUID, spell_id: str) -> PlayerSpell | None:  # type: ignore[return]
+    async def get_player_spell(self, player_id: uuid.UUID, spell_id: str) -> PlayerSpell | None:
         """
         Get a specific player spell.
 
@@ -85,7 +85,8 @@ class PlayerSpellRepository:
         context.metadata["spell_id"] = spell_id
 
         try:
-            async for session in get_async_session():
+            session_maker = get_session_maker()
+            async with session_maker() as session:
                 stmt = select(PlayerSpell).where(
                     PlayerSpell.player_id == str(player_id), PlayerSpell.spell_id == spell_id
                 )
@@ -100,7 +101,7 @@ class PlayerSpellRepository:
                 user_friendly="Failed to retrieve spell",
             )
 
-    async def learn_spell(self, player_id: uuid.UUID, spell_id: str, initial_mastery: int = 0) -> PlayerSpell:  # type: ignore[return]
+    async def learn_spell(self, player_id: uuid.UUID, spell_id: str, initial_mastery: int = 0) -> PlayerSpell:
         """
         Learn a new spell for a player.
 
@@ -121,9 +122,16 @@ class PlayerSpellRepository:
         context.metadata["spell_id"] = spell_id
 
         try:
-            async for session in get_async_session():
+            session_maker = get_session_maker()
+            async with session_maker() as session:
                 # Check if already learned
-                existing = await self.get_player_spell(player_id, spell_id)
+                # Use sub-query or direct check in this session to be safe
+                stmt = select(PlayerSpell).where(
+                    PlayerSpell.player_id == str(player_id), PlayerSpell.spell_id == spell_id
+                )
+                result = await session.execute(stmt)
+                existing = result.scalar_one_or_none()
+
                 if existing:
                     self._logger.warning("Player already knows spell", player_id=str(player_id), spell_id=spell_id)
                     return existing
@@ -149,8 +157,10 @@ class PlayerSpellRepository:
                 details={"player_id": str(player_id), "spell_id": spell_id, "error": str(e)},
                 user_friendly="Failed to learn spell",
             )
+        # Should never reach here due to log_and_raise
+        raise DatabaseError("Failed to learn spell")
 
-    async def update_mastery(self, player_id: uuid.UUID, spell_id: str, new_mastery: int) -> PlayerSpell | None:  # type: ignore[return]
+    async def update_mastery(self, player_id: uuid.UUID, spell_id: str, new_mastery: int) -> PlayerSpell | None:
         """
         Update mastery level for a player spell.
 
@@ -172,7 +182,8 @@ class PlayerSpellRepository:
         context.metadata["new_mastery"] = new_mastery
 
         try:
-            async for session in get_async_session():
+            session_maker = get_session_maker()
+            async with session_maker() as session:
                 # Load PlayerSpell within the same session context to avoid session management errors
                 stmt = select(PlayerSpell).where(
                     PlayerSpell.player_id == str(player_id), PlayerSpell.spell_id == spell_id
@@ -185,7 +196,8 @@ class PlayerSpellRepository:
                 # SQLAlchemy allows assigning Python values to Column attributes
                 # Clamp mastery to 0-100 range
                 clamped_mastery = min(100, max(0, new_mastery))
-                player_spell.mastery = clamped_mastery  # type: ignore[assignment]
+                # Use setattr or type: ignore for mypy assignment issues with Column
+                player_spell.mastery = clamped_mastery
                 await session.commit()
                 await session.refresh(player_spell)
                 self._logger.debug(
@@ -201,7 +213,7 @@ class PlayerSpellRepository:
                 user_friendly="Failed to update spell mastery",
             )
 
-    async def record_spell_cast(self, player_id: uuid.UUID, spell_id: str) -> PlayerSpell | None:  # type: ignore[return]
+    async def record_spell_cast(self, player_id: uuid.UUID, spell_id: str) -> PlayerSpell | None:
         """
         Record that a player cast a spell (increment times_cast, update last_cast_at).
 
@@ -221,7 +233,8 @@ class PlayerSpellRepository:
         context.metadata["spell_id"] = spell_id
 
         try:
-            async for session in get_async_session():
+            session_maker = get_session_maker()
+            async with session_maker() as session:
                 # Load PlayerSpell within the same session context to avoid session management errors
                 stmt = select(PlayerSpell).where(
                     PlayerSpell.player_id == str(player_id), PlayerSpell.spell_id == spell_id
@@ -232,8 +245,8 @@ class PlayerSpellRepository:
                     return None
 
                 # SQLAlchemy allows assigning Python values to Column attributes
-                player_spell.times_cast += 1  # type: ignore[assignment]
-                player_spell.last_cast_at = datetime.now(UTC).replace(tzinfo=None)  # type: ignore[assignment]
+                player_spell.times_cast += 1
+                player_spell.last_cast_at = datetime.now(UTC).replace(tzinfo=None)
                 await session.commit()
                 await session.refresh(player_spell)
                 self._logger.debug("Recorded spell cast", player_id=str(player_id), spell_id=spell_id)

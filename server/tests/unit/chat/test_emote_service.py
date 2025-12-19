@@ -22,7 +22,14 @@ from server.game.emote_service import EmoteService
 class TestEmoteService:
     """Test EmoteService functionality."""
 
-    def setup_method(self):
+    def __init__(self) -> None:
+        """Initialize test class attributes."""
+        # Attributes initialized in setup_method, but declared here for linter compliance
+        self.temp_dir: str | None = None
+        self.emote_file: Path | None = None
+        self.emote_data: dict | None = None
+
+    def setup_method(self) -> None:
         """Set up test fixtures."""
         # Create a temporary emote file
         self.temp_dir = tempfile.mkdtemp()
@@ -79,13 +86,14 @@ class TestEmoteService:
 
         return mock_async_load
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Clean up test fixtures."""
         import shutil
 
-        shutil.rmtree(self.temp_dir, ignore_errors=True)
+        if self.temp_dir is not None:
+            shutil.rmtree(self.temp_dir, ignore_errors=True)
 
-    def test_emote_service_initialization(self):
+    def test_emote_service_initialization(self) -> None:
         """Test EmoteService initialization with explicit path."""
         # Mock the async database loading to return test data
         with patch.object(EmoteService, "_async_load_emotes", side_effect=self._mock_async_load_emotes()):
@@ -96,7 +104,7 @@ class TestEmoteService:
             assert "twibble" in service.emotes
             assert "dance" in service.emotes
 
-    def test_emote_service_loads_aliases(self):
+    def test_emote_service_loads_aliases(self) -> None:
         """Test that aliases are properly loaded and mapped."""
         with patch.object(EmoteService, "_async_load_emotes", side_effect=self._mock_async_load_emotes()):
             service = EmoteService(emote_file_path=str(self.emote_file))
@@ -109,11 +117,12 @@ class TestEmoteService:
             assert "twib" in service.alias_to_emote
             assert service.alias_to_emote["twib"] == "twibble"
 
-    def test_emote_service_missing_file_warning(self):
+    def test_emote_service_missing_file_warning(self) -> None:
         """Test EmoteService handles empty emotes gracefully.
 
         AI: Tests that when database returns no emotes, service handles it gracefully.
         """
+        assert self.temp_dir is not None, "temp_dir should be set by setup_method"
         nonexistent_path = Path(self.temp_dir) / "nonexistent.json"
         # Mock empty emotes from database
         with patch.object(
@@ -127,7 +136,7 @@ class TestEmoteService:
             assert len(service.emotes) == 0
             assert len(service.alias_to_emote) == 0
 
-    def test_emote_service_duplicate_alias_warning(self):
+    def test_emote_service_duplicate_alias_warning(self) -> None:
         """Test that duplicate aliases trigger a warning.
 
         AI: Tests line 82 in emote_service.py where we log a warning about
@@ -149,6 +158,7 @@ class TestEmoteService:
             "emote2": ["shared"],  # Duplicate alias!
         }
 
+        assert self.temp_dir is not None, "temp_dir should be set by setup_method"
         duplicate_file = Path(self.temp_dir) / "duplicate.json"
         with patch.object(
             EmoteService,
@@ -163,7 +173,7 @@ class TestEmoteService:
             # Both emotes should be loaded
             assert len(service.emotes) == 2
 
-    def test_emote_service_malformed_json_raises_error(self):
+    def test_emote_service_malformed_json_raises_error(self) -> None:
         """Test that database loading errors are handled gracefully.
 
         AI: The service now logs a warning and continues with empty emotes
@@ -171,6 +181,7 @@ class TestEmoteService:
         even when the database table doesn't exist. This tests the graceful
         degradation path.
         """
+        assert self.temp_dir is not None, "temp_dir should be set by setup_method"
         malformed_file = Path(self.temp_dir) / "malformed.json"
         # Mock database error
         db_error = Exception("Database connection failed")
@@ -182,11 +193,12 @@ class TestEmoteService:
             assert len(service.emotes) == 0
             assert len(service.alias_to_emote) == 0
 
-    def test_emote_service_schema_validation_failure(self):
+    def test_emote_service_schema_validation_failure(self) -> None:
         """Schema validation is handled by database constraints, not in service."""
         # Since emotes are now loaded from database, schema validation happens at DB level
         # This test is no longer applicable - schema validation would happen during insert
         # For now, we'll skip this test or mark it as testing a deprecated path
+        assert self.temp_dir is not None, "temp_dir should be set by setup_method"
         invalid_file = Path(self.temp_dir) / "invalid_schema.json"
         # Mock successful load - schema validation happens at database level, not service level
         with patch.object(EmoteService, "_async_load_emotes", side_effect=self._mock_async_load_emotes()):
@@ -194,7 +206,7 @@ class TestEmoteService:
             # Service loads successfully - schema validation is database concern
             assert service is not None
 
-    def test_is_emote_alias(self):
+    def test_is_emote_alias(self) -> None:
         """Test checking if a command is an emote alias."""
         with patch.object(EmoteService, "_async_load_emotes", side_effect=self._mock_async_load_emotes()):
             service = EmoteService(emote_file_path=str(self.emote_file))
@@ -204,7 +216,7 @@ class TestEmoteService:
             assert service.is_emote_alias("dance") is True
             assert service.is_emote_alias("unknown") is False
 
-    def test_get_emote_definition_success(self):
+    def test_get_emote_definition_success(self) -> None:
         """Test getting emote definition by name or alias."""
         with patch.object(EmoteService, "_async_load_emotes", side_effect=self._mock_async_load_emotes()):
             service = EmoteService(emote_file_path=str(self.emote_file))
@@ -220,7 +232,7 @@ class TestEmoteService:
             assert emote_def is not None
             assert "twibble" in emote_def["self_message"].lower()
 
-    def test_get_emote_definition_not_found(self):
+    def test_get_emote_definition_not_found(self) -> None:
         """Test getting emote definition for unknown command.
 
         AI: Tests line 126 in emote_service.py where we return None for
@@ -232,7 +244,7 @@ class TestEmoteService:
             emote_def = service.get_emote_definition("unknown_emote")
             assert emote_def is None
 
-    def test_format_emote_messages_success(self):
+    def test_format_emote_messages_success(self) -> None:
         """Test formatting emote messages."""
         with patch.object(EmoteService, "_async_load_emotes", side_effect=self._mock_async_load_emotes()):
             service = EmoteService(emote_file_path=str(self.emote_file))
@@ -243,7 +255,7 @@ class TestEmoteService:
             assert "Eldritch" in other_msg
             assert "twibble" in other_msg.lower()
 
-    def test_format_emote_messages_unknown_raises_error(self):
+    def test_format_emote_messages_unknown_raises_error(self) -> None:
         """Test formatting messages for unknown emote raises ValidationError.
 
         AI: Tests lines 144-154 in emote_service.py where we raise ValidationError
@@ -257,7 +269,7 @@ class TestEmoteService:
 
             assert "Unknown emote" in str(exc_info.value)
 
-    def test_list_available_emotes(self):
+    def test_list_available_emotes(self) -> None:
         """Test listing all available emotes and their aliases.
 
         AI: Tests lines 168-172 in emote_service.py where we build a dict
@@ -275,7 +287,7 @@ class TestEmoteService:
             # Dance has no extra aliases, just itself
             assert emotes_list["dance"] == ["dance"]
 
-    def test_reload_emotes(self):
+    def test_reload_emotes(self) -> None:
         """Test reloading emote definitions from database.
 
         AI: Tests lines 176-177 in emote_service.py where we reload emotes
@@ -309,7 +321,7 @@ class TestEmoteService:
             assert "twibble" not in service.emotes
             assert "cackle" in service.alias_to_emote
 
-    def test_environment_detection_from_legacy_config_unit_test(self):
+    def test_environment_detection_from_legacy_config_unit_test(self) -> None:
         """Test environment detection from legacy MYTHOSMUD_CONFIG_PATH.
 
         AI: Tests lines 40-43 in emote_service.py where we fallback to extracting
@@ -326,7 +338,7 @@ class TestEmoteService:
             # Just verify it initialized without crashing
             assert service is not None
 
-    def test_environment_detection_from_legacy_config_e2e_test(self):
+    def test_environment_detection_from_legacy_config_e2e_test(self) -> None:
         """Test environment detection from legacy config for e2e_test.
 
         AI: Tests lines 42-43 in emote_service.py where we extract e2e_test
@@ -338,13 +350,14 @@ class TestEmoteService:
             service = EmoteService()
             assert service is not None
 
-    def test_environment_specific_file_exists(self):
+    def test_environment_specific_file_exists(self) -> None:
         """Test using environment-specific emote file when it exists.
 
         AI: Tests the path where environment-specific emote file exists
         (not covered in basic tests). This ensures environment isolation works.
         """
         # Create environment-specific structure
+        assert self.temp_dir is not None, "temp_dir should be set by setup_method"
         env_dir = Path(self.temp_dir) / "data" / "test_env"
         env_dir.mkdir(parents=True, exist_ok=True)
         env_emote_file = env_dir / "emotes.json"

@@ -18,7 +18,7 @@ from server.auth.email_utils import (
 class TestEmailUtils:
     """Test email utility functions."""
 
-    def test_is_bogus_email(self):
+    def test_is_bogus_email(self) -> None:
         """Test bogus email detection."""
         # Valid bogus emails
         assert is_bogus_email("testuser@wolfshade.org")
@@ -32,7 +32,7 @@ class TestEmailUtils:
         assert not is_bogus_email("testuser@wolfshade.com")
         assert not is_bogus_email("testuser@wolfshade.org.uk")
 
-    def test_validate_bogus_email_format(self):
+    def test_validate_bogus_email_format(self) -> None:
         """Test bogus email format validation."""
         # Valid formats
         assert validate_bogus_email_format("testuser@wolfshade.org")
@@ -51,7 +51,7 @@ class TestEmailUtils:
         assert not validate_bogus_email_format(" testuser@wolfshade.org")  # Leading space
 
     @pytest.mark.asyncio
-    async def test_generate_unique_bogus_email_new_user(self):
+    async def test_generate_unique_bogus_email_new_user(self) -> None:
         """Test bogus email generation for new user."""
         # Mock session and query result
         mock_session = AsyncMock()
@@ -66,7 +66,7 @@ class TestEmailUtils:
         assert validate_bogus_email_format(email)
 
     @pytest.mark.asyncio
-    async def test_generate_unique_bogus_email_existing_user(self):
+    async def test_generate_unique_bogus_email_existing_user(self) -> None:
         """Test bogus email generation when base email exists."""
         # Mock session and query results
         mock_session = AsyncMock()
@@ -85,7 +85,7 @@ class TestEmailUtils:
         assert validate_bogus_email_format(email)
 
     @pytest.mark.asyncio
-    async def test_generate_unique_bogus_email_username_cleaning(self):
+    async def test_generate_unique_bogus_email_username_cleaning(self) -> None:
         """Test that usernames are properly cleaned for email generation."""
         mock_session = AsyncMock()
         mock_result = MagicMock()
@@ -111,7 +111,7 @@ class TestEmailUtils:
             assert validate_bogus_email_format(email)
 
     @pytest.mark.asyncio
-    async def test_generate_unique_bogus_email_collision_handling(self):
+    async def test_generate_unique_bogus_email_collision_handling(self) -> None:
         """Test handling of extremely unlikely email collisions."""
         # Mock session where both base and suffix emails exist
         mock_session = AsyncMock()

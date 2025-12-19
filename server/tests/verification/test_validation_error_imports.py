@@ -8,6 +8,8 @@ As noted in the Pnakotic Manuscripts, proper error handling is essential
 for maintaining the delicate balance between order and chaos in our digital realm.
 """
 
+from typing import Any, cast
+
 import pytest
 from pydantic import ValidationError as PydanticValidationError
 
@@ -20,35 +22,35 @@ from server.utils.command_processor import CommandProcessor
 class TestValidationErrorImports:
     """Test ValidationError import handling and namespace resolution."""
 
-    def test_pydantic_validation_error_import(self):
+    def test_pydantic_validation_error_import(self) -> None:
         """Test that Pydantic ValidationError can be imported without conflicts."""
         # This test ensures we can import Pydantic's ValidationError
         # without namespace collisions
-        from pydantic import ValidationError as PydanticValidationError
+        # Note: PydanticValidationError is already imported at module level (line 14)
 
         # Verify it's the correct type
         assert PydanticValidationError is not None
         assert issubclass(PydanticValidationError, Exception)
 
-    def test_mythos_validation_error_import(self):
+    def test_mythos_validation_error_import(self) -> None:
         """Test that custom ValidationError can be imported without conflicts."""
         # This test ensures we can import our custom ValidationError
         # without namespace collisions
-        from server.exceptions import ValidationError as MythosValidationError
+        # Note: MythosValidationError is already imported at module level (line 16)
 
         # Verify it's the correct type
         assert MythosValidationError is not None
         assert issubclass(MythosValidationError, Exception)
 
-    def test_both_validation_errors_distinct(self):
+    def test_both_validation_errors_distinct(self) -> None:
         """Test that both ValidationError types are distinct and can coexist."""
         # Verify they are different classes
-        assert PydanticValidationError is not MythosValidationError
+        assert cast(Any, PydanticValidationError) is not MythosValidationError
 
         # Verify they have different inheritance hierarchies
         assert PydanticValidationError.__module__ != MythosValidationError.__module__
 
-    def test_pydantic_validation_error_creation(self):
+    def test_pydantic_validation_error_creation(self) -> None:
         """Test that Pydantic ValidationError can be created and raised."""
         # Test creating a Pydantic ValidationError
         with pytest.raises(PydanticValidationError) as exc_info:
@@ -59,14 +61,14 @@ class TestValidationErrorImports:
         assert isinstance(exc_info.value, PydanticValidationError)
         assert not isinstance(exc_info.value, MythosValidationError)
 
-    def test_mythos_validation_error_creation(self):
+    def test_mythos_validation_error_creation(self) -> None:
         """Test that custom ValidationError can be created and raised."""
         # Test creating a custom ValidationError
         with pytest.raises(MythosValidationError):
             # This should raise our custom ValidationError
             raise MythosValidationError("Test error message")
 
-    def test_command_processor_error_handling(self):
+    def test_command_processor_error_handling(self) -> None:
         """Test that CommandProcessor handles both error types correctly."""
         processor = CommandProcessor()
 
@@ -90,7 +92,7 @@ class TestValidationErrorImports:
         assert error_message is not None
         assert command_type is None
 
-    def test_command_parser_error_handling(self):
+    def test_command_parser_error_handling(self) -> None:
         """Test that CommandParser handles both error types correctly."""
         parser = CommandParser()
 
@@ -102,7 +104,7 @@ class TestValidationErrorImports:
         with pytest.raises(MythosValidationError):
             parser.parse_command("invalid_command")
 
-    def test_error_propagation_chain(self):
+    def test_error_propagation_chain(self) -> None:
         """Test that errors propagate correctly through the command processing chain."""
         processor = CommandProcessor()
 
@@ -116,19 +118,18 @@ class TestValidationErrorImports:
         assert len(error_message) > 0
         assert command_type is None
 
-    def test_import_resolution_consistency(self):
+    def test_import_resolution_consistency(self) -> None:
         """Test that imports resolve consistently across modules."""
         # Test that all modules can import both error types without conflicts
-        from server.exceptions import ValidationError as MythosValidationError
-        from server.utils.command_parser import CommandParser
-        from server.utils.command_processor import CommandProcessor
+        # Note: MythosValidationError, CommandParser, and CommandProcessor are already
+        # imported at module level (lines 16, 18, 19)
 
         # Verify imports work without raising ImportError
         assert CommandProcessor is not None
         assert CommandParser is not None
         assert MythosValidationError is not None
 
-    def test_error_type_checking(self):
+    def test_error_type_checking(self) -> None:
         """Test that error type checking works correctly with both error types."""
         # Test isinstance checks work correctly - create errors properly
         try:
@@ -143,7 +144,7 @@ class TestValidationErrorImports:
         assert isinstance(mythos_error, MythosValidationError)
         assert not isinstance(mythos_error, PydanticValidationError)
 
-    def test_error_attributes_access(self):
+    def test_error_attributes_access(self) -> None:
         """Test that error attributes can be accessed correctly for both types."""
         # Test PydanticValidationError attributes
         try:
@@ -164,27 +165,28 @@ class TestValidationErrorImports:
 class TestValidationErrorNamespaceCollision:
     """Test scenarios that could cause namespace collisions."""
 
-    def test_import_order_independence(self):
+    def test_import_order_independence(self) -> None:
         """Test that import order doesn't affect namespace resolution."""
         # Test importing in different orders
-        from pydantic import ValidationError as PydanticValidationError
-
-        from server.exceptions import ValidationError as MythosValidationError
-
         # Verify both are available and distinct
-        assert PydanticValidationError is not MythosValidationError
+        # Note: Any, cast, PydanticValidationError, and MythosValidationError are
+        # already imported at module level (lines 11, 14, 16)
+        assert cast(Any, PydanticValidationError) is not MythosValidationError
 
         # Test reverse order
+        # pylint: disable=reimported
+        # These reimports are intentional to test import order independence.
+        # The test verifies that imports work correctly regardless of order.
         from pydantic import ValidationError as PydanticValidationError2
 
         from server.exceptions import ValidationError as MythosValidationError2
 
         # Verify they're still distinct
-        assert PydanticValidationError2 is not MythosValidationError2
+        assert cast(Any, PydanticValidationError2) is not MythosValidationError2
         assert PydanticValidationError2 is PydanticValidationError
         assert MythosValidationError2 is MythosValidationError
 
-    def test_module_reload_safety(self):
+    def test_module_reload_safety(self) -> None:
         """Test that module reloading doesn't cause namespace issues."""
         import importlib
 
@@ -195,15 +197,21 @@ class TestValidationErrorNamespaceCollision:
         importlib.reload(command_parser)
 
         # Verify imports still work after reload
+        # pylint: disable=reimported
+        # These reimports are intentional to test that imports work correctly
+        # after module reloading, which is the purpose of this test.
         from pydantic import ValidationError as PydanticValidationError
 
         from server.exceptions import ValidationError as MythosValidationError
 
-        assert PydanticValidationError is not MythosValidationError
+        assert cast(Any, PydanticValidationError) is not MythosValidationError
 
-    def test_circular_import_handling(self):
+    def test_circular_import_handling(self) -> None:
         """Test that circular imports don't cause namespace conflicts."""
         # Test importing modules that might have circular dependencies
+        # pylint: disable=reimported
+        # This reimport is intentional to test circular import handling,
+        # which is the purpose of this test.
         from server.exceptions import ValidationError as MythosValidationError
         from server.utils.command_parser import CommandParser
         from server.utils.command_processor import CommandProcessor
@@ -217,7 +225,7 @@ class TestValidationErrorNamespaceCollision:
 class TestValidationErrorErrorHandling:
     """Test error handling patterns with both ValidationError types."""
 
-    def test_exception_handling_patterns(self):
+    def test_exception_handling_patterns(self) -> None:
         """Test common exception handling patterns work with both error types."""
         # Test try-except with both error types
         try:
@@ -239,7 +247,7 @@ class TestValidationErrorErrorHandling:
             # Should not catch custom errors
             pytest.fail("PydanticValidationError should not catch MythosValidationError")
 
-    def test_error_message_consistency(self):
+    def test_error_message_consistency(self) -> None:
         """Test that error messages are consistent and informative."""
         # Test Pydantic error message
         try:
@@ -255,7 +263,7 @@ class TestValidationErrorErrorHandling:
         custom_error = MythosValidationError("Custom validation failed")
         assert str(custom_error) == "Custom validation failed"
 
-    def test_error_context_preservation(self):
+    def test_error_context_preservation(self) -> None:
         """Test that error context is preserved correctly."""
         # Test Pydantic error context
         try:

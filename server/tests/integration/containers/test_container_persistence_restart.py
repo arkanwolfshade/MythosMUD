@@ -18,6 +18,7 @@ from typing import cast
 from uuid import UUID, uuid4
 
 import pytest
+from sqlalchemy.exc import DatabaseError
 
 from server.models.container import ContainerComponent, ContainerLockState
 from server.models.player import Player
@@ -147,7 +148,7 @@ def ensure_containers_table():
 
 
 @pytest.fixture
-async def persistence(ensure_containers_table):
+async def persistence(_ensure_containers_table):
     """Create an AsyncPersistenceLayer instance for testing with proper cleanup."""
     from server.async_persistence import AsyncPersistenceLayer
     from server.database import DatabaseManager
@@ -165,12 +166,13 @@ async def persistence(ensure_containers_table):
         # Also ensure database manager closes connections
         db_manager = DatabaseManager.get_instance()
         if db_manager and hasattr(db_manager, "engine"):
-            await db_manager.engine.dispose(close=True)
-    except Exception as e:
+            if db_manager.engine:
+                await db_manager.engine.dispose(close=True)
+    except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError) as e:
         # Log but don't fail on cleanup errors
         import logging
 
-        logging.getLogger(__name__).warning(f"Error during persistence cleanup: {e}")
+        logging.getLogger(__name__).warning("Error during persistence cleanup: %s", e)
 
 
 @pytest.fixture
@@ -203,9 +205,6 @@ async def _create_test_player(
     )
 
     # Use direct database insert for user (persistence doesn't have user methods)
-    import os
-    from datetime import datetime as dt
-
     database_url = os.getenv("DATABASE_URL")
     if not database_url or not database_url.startswith("postgresql"):
         raise ValueError("DATABASE_URL must be set to a PostgreSQL URL")
@@ -217,7 +216,7 @@ async def _create_test_player(
     conn.autocommit = True  # Enable autocommit for user creation
     cursor = conn.cursor()
     try:
-        now = dt.now(UTC).replace(tzinfo=None)
+        now = datetime.now(UTC).replace(tzinfo=None)
         cursor.execute(
             """
             INSERT INTO users (id, email, username, display_name, hashed_password, is_active, is_superuser, is_verified, created_at, updated_at)
@@ -397,7 +396,7 @@ class TestContainerPersistenceRestart:
         )
         assert found_container_id_uuid == container_id
 
-    async def test_corpse_container_persistence(self, persistence, ensure_test_item_prototypes) -> None:
+    async def test_corpse_container_persistence(self, persistence, _ensure_test_item_prototypes) -> None:
         """Test that corpse containers persist across server restarts."""
         # Use a real room ID that exists in the database
         room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
@@ -504,7 +503,7 @@ class TestContainerPersistenceRestart:
         assert persisted_container.metadata["lock_type"] == "key"
 
     async def test_container_updates_persist(
-        self, persistence, container_service: ContainerService, ensure_test_item_prototypes
+        self, persistence, container_service: ContainerService, _ensure_test_item_prototypes
     ) -> None:
         """Test that container updates persist across restarts."""
         # Use a real room ID that exists in the database

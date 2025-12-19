@@ -19,7 +19,7 @@ class TestCombatDatabaseSchema:
     """Test combat database schema extensions."""
 
     @pytest.mark.asyncio
-    async def test_npc_definition_combat_fields_exist(self):
+    async def test_npc_definition_combat_fields_exist(self) -> None:
         """Test that NPC definition table has required combat fields."""
         # Initialize database first
         await init_npc_db()
@@ -40,7 +40,7 @@ class TestCombatDatabaseSchema:
             assert "behavior_config" in columns
 
     @pytest.mark.asyncio
-    async def test_base_stats_json_structure(self):
+    async def test_base_stats_json_structure(self) -> None:
         """Test base_stats JSON field structure for combat data."""
         # Initialize database first
         await init_npc_db()
@@ -68,7 +68,7 @@ class TestCombatDatabaseSchema:
             assert stats["dexterity"] == 12
 
     @pytest.mark.asyncio
-    async def test_behavior_config_combat_messages(self):
+    async def test_behavior_config_combat_messages(self) -> None:
         """Test behavior_config JSON field for combat messages."""
         # Initialize database first
         await init_npc_db()
@@ -102,7 +102,7 @@ class TestCombatDatabaseSchema:
             assert config["combat_messages"]["death_message"] == combat_messages["death_message"]
 
     @pytest.mark.asyncio
-    async def test_combat_data_validation(self):
+    async def test_combat_data_validation(self) -> None:
         """Test validation of combat data in JSON fields."""
         # Initialize database first
         await init_npc_db()
@@ -140,7 +140,7 @@ class TestCombatDatabaseSchema:
             assert 1 <= stats["constitution"] <= 100  # Constitution 1-100
 
     @pytest.mark.asyncio
-    async def test_invalid_combat_data_handling(self):
+    async def test_invalid_combat_data_handling(self) -> None:
         """Test handling of invalid combat data."""
         # Initialize database first
         await init_npc_db()
@@ -165,7 +165,7 @@ class TestCombatDatabaseSchema:
             assert stats == {}
 
     @pytest.mark.asyncio
-    async def test_combat_message_template_validation(self):
+    async def test_combat_message_template_validation(self) -> None:
         """Test validation of combat message templates."""
         # Initialize database first
         await init_npc_db()
@@ -208,7 +208,7 @@ class TestCombatDataMigration:
     """Test combat data migration scripts."""
 
     @pytest.mark.asyncio
-    async def test_migration_adds_default_combat_data(self):
+    async def test_migration_adds_default_combat_data(self) -> None:
         """Test that migration adds default combat data to existing NPCs."""
         # Initialize database first
         await init_npc_db()
@@ -265,7 +265,7 @@ class TestCombatDataMigration:
             assert "attack_attacker" in final_config["combat_messages"]
 
     @pytest.mark.asyncio
-    async def test_migration_preserves_existing_data(self):
+    async def test_migration_preserves_existing_data(self) -> None:
         """Test that migration preserves existing NPC data."""
         # Initialize database first
         await init_npc_db()
@@ -322,7 +322,7 @@ class TestCombatDataMigration:
             assert "combat_messages" in final_config  # New combat data added
 
     @pytest.mark.asyncio
-    async def test_migration_handles_missing_fields_gracefully(self):
+    async def test_migration_handles_missing_fields_gracefully(self) -> None:
         """Test that migration handles missing JSON fields gracefully."""
         # Initialize database first
         await init_npc_db()

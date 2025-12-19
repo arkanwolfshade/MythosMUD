@@ -15,7 +15,7 @@ from server.events.event_types import (
 class TestPlayerMortallyWoundedEvent:
     """Test suite for PlayerMortallyWoundedEvent."""
 
-    def test_event_creation_basic(self):
+    def test_event_creation_basic(self) -> None:
         """Test basic event creation."""
         event = PlayerMortallyWoundedEvent(
             player_id="player-123",
@@ -31,7 +31,7 @@ class TestPlayerMortallyWoundedEvent:
         assert event.attacker_id is None
         assert event.attacker_name is None
 
-    def test_event_creation_with_attacker(self):
+    def test_event_creation_with_attacker(self) -> None:
         """Test event creation with attacker info."""
         event = PlayerMortallyWoundedEvent(
             player_id="player-123",
@@ -51,7 +51,7 @@ class TestPlayerMortallyWoundedEvent:
 class TestPlayerHPDecayEvent:
     """Test suite for PlayerDPDecayEvent."""
 
-    def test_event_creation_basic(self):
+    def test_event_creation_basic(self) -> None:
         """Test basic DP decay event creation."""
         test_player_id = uuid4()
         event = PlayerDPDecayEvent(
@@ -67,7 +67,7 @@ class TestPlayerHPDecayEvent:
         assert event.decay_amount == 1
         assert event.event_type == "PlayerDPDecayEvent"
 
-    def test_event_creation_with_room(self):
+    def test_event_creation_with_room(self) -> None:
         """Test event creation with room info."""
         test_player_id = uuid4()
         event = PlayerDPDecayEvent(
@@ -85,7 +85,7 @@ class TestPlayerHPDecayEvent:
 class TestPlayerDiedEvent:
     """Test suite for PlayerDiedEvent."""
 
-    def test_event_creation_basic(self):
+    def test_event_creation_basic(self) -> None:
         """Test basic death event creation."""
         test_player_id = uuid4()
         event = PlayerDiedEvent(
@@ -102,7 +102,7 @@ class TestPlayerDiedEvent:
         assert event.killer_id is None
         assert event.killer_name is None
 
-    def test_event_creation_with_killer(self):
+    def test_event_creation_with_killer(self) -> None:
         """Test event creation with killer info."""
         test_player_id = uuid4()
         event = PlayerDiedEvent(
@@ -125,7 +125,7 @@ class TestPlayerDiedEvent:
 class TestPlayerRespawnedEvent:
     """Test suite for PlayerRespawnedEvent."""
 
-    def test_event_creation_basic(self):
+    def test_event_creation_basic(self) -> None:
         """Test basic respawn event creation."""
         test_player_id = uuid4()
         event = PlayerRespawnedEvent(
@@ -144,7 +144,7 @@ class TestPlayerRespawnedEvent:
         assert event.new_dp == 100
         assert event.event_type == "PlayerRespawnedEvent"
 
-    def test_event_creation_with_death_room(self):
+    def test_event_creation_with_death_room(self) -> None:
         """Test event creation with death room info."""
         test_player_id = uuid4()
         event = PlayerRespawnedEvent(
@@ -163,7 +163,7 @@ class TestPlayerRespawnedEvent:
 class TestPlayerDeliriumRespawnedEvent:
     """Test suite for PlayerDeliriumRespawnedEvent."""
 
-    def test_event_creation_basic(self):
+    def test_event_creation_basic(self) -> None:
         """Test basic delirium respawn event creation."""
         test_player_id = uuid4()
         event = PlayerDeliriumRespawnedEvent(
@@ -182,7 +182,7 @@ class TestPlayerDeliriumRespawnedEvent:
         assert event.new_lucidity == 10
         assert event.event_type == "PlayerDeliriumRespawnedEvent"
 
-    def test_event_creation_with_delirium_location(self):
+    def test_event_creation_with_delirium_location(self) -> None:
         """Test event creation with delirium location info."""
         test_player_id = uuid4()
         event = PlayerDeliriumRespawnedEvent(

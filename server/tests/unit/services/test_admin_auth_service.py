@@ -23,28 +23,28 @@ from server.services.admin_auth_service import (
 class TestAdminRole:
     """Test AdminRole enum."""
 
-    def test_admin_role_values(self):
+    def test_admin_role_values(self) -> None:
         """Test AdminRole enum values."""
-        assert AdminRole.SUPERUSER == "superuser"
-        assert AdminRole.ADMIN == "admin"
-        assert AdminRole.MODERATOR == "moderator"
-        assert AdminRole.VIEWER == "viewer"
+        assert AdminRole.SUPERUSER.value == "superuser"
+        assert AdminRole.ADMIN.value == "admin"
+        assert AdminRole.MODERATOR.value == "moderator"
+        assert AdminRole.VIEWER.value == "viewer"
 
 
 class TestAdminAction:
     """Test AdminAction enum."""
 
-    def test_admin_action_values(self):
+    def test_admin_action_values(self) -> None:
         """Test AdminAction enum values."""
-        assert AdminAction.CREATE_NPC_DEFINITION == "create_npc_definition"
-        assert AdminAction.LIST_NPC_DEFINITIONS == "list_npc_definitions"
-        assert AdminAction.SPAWN_NPC == "spawn_npc"
+        assert AdminAction.CREATE_NPC_DEFINITION.value == "create_npc_definition"
+        assert AdminAction.LIST_NPC_DEFINITIONS.value == "list_npc_definitions"
+        assert AdminAction.SPAWN_NPC.value == "spawn_npc"
 
 
 class TestAdminSession:
     """Test AdminSession class."""
 
-    def test_admin_session_initialization(self):
+    def test_admin_session_initialization(self) -> None:
         """Test AdminSession initialization."""
         session = AdminSession("user-123", "testuser", AdminRole.ADMIN, "127.0.0.1")
         assert session.user_id == "user-123"
@@ -58,14 +58,14 @@ class TestAdminSession:
 class TestAdminAuthServiceGetUserRole:
     """Test AdminAuthService.get_user_role."""
 
-    def test_get_user_role_with_none(self):
+    def test_get_user_role_with_none(self) -> None:
         """Test get_user_role raises exception with None user."""
         service = AdminAuthService()
         with pytest.raises(HTTPException) as exc_info:
             service.get_user_role(None)
         assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
 
-    def test_get_user_role_with_superuser(self):
+    def test_get_user_role_with_superuser(self) -> None:
         """Test get_user_role returns SUPERUSER for superuser."""
         service = AdminAuthService()
         mock_user = Mock()
@@ -74,7 +74,7 @@ class TestAdminAuthServiceGetUserRole:
         role = service.get_user_role(mock_user)
         assert role == AdminRole.SUPERUSER
 
-    def test_get_user_role_with_admin_dict(self):
+    def test_get_user_role_with_admin_dict(self) -> None:
         """Test get_user_role returns ADMIN for dict with is_admin."""
         service = AdminAuthService()
         mock_user = Mock()
@@ -84,7 +84,7 @@ class TestAdminAuthServiceGetUserRole:
         role = service.get_user_role(mock_user)
         assert role == AdminRole.ADMIN
 
-    def test_get_user_role_with_admin_attribute(self):
+    def test_get_user_role_with_admin_attribute(self) -> None:
         """Test get_user_role returns ADMIN for user with is_admin attribute."""
         service = AdminAuthService()
         mock_user = Mock()
@@ -94,7 +94,7 @@ class TestAdminAuthServiceGetUserRole:
         role = service.get_user_role(mock_user)
         assert role == AdminRole.ADMIN
 
-    def test_get_user_role_defaults_to_viewer(self):
+    def test_get_user_role_defaults_to_viewer(self) -> None:
         """Test get_user_role defaults to VIEWER for regular user."""
         service = AdminAuthService()
         mock_user = Mock()
@@ -110,7 +110,7 @@ class TestAdminAuthServiceGetUserRole:
 class TestAdminAuthServiceGetUsername:
     """Test AdminAuthService.get_username."""
 
-    def test_get_username_with_user_object(self):
+    def test_get_username_with_user_object(self) -> None:
         """Test get_username from User object."""
         service = AdminAuthService()
         mock_user = Mock()
@@ -119,7 +119,7 @@ class TestAdminAuthServiceGetUsername:
         username = service.get_username(mock_user)
         assert username == "testuser"
 
-    def test_get_username_with_dict(self):
+    def test_get_username_with_dict(self) -> None:
         """Test get_username from dict."""
         service = AdminAuthService()
         mock_user = Mock()
@@ -130,13 +130,13 @@ class TestAdminAuthServiceGetUsername:
         username = service.get_username(mock_user)
         assert username == "dictuser"
 
-    def test_get_username_with_none(self):
+    def test_get_username_with_none(self) -> None:
         """Test get_username returns 'unknown' for None."""
         service = AdminAuthService()
         username = service.get_username(None)
         assert username == "unknown"
 
-    def test_get_username_with_no_username(self):
+    def test_get_username_with_no_username(self) -> None:
         """Test get_username returns 'unknown' when username not found."""
         service = AdminAuthService()
         mock_user = Mock()
@@ -152,7 +152,7 @@ class TestAdminAuthServiceGetUsername:
 class TestAdminAuthServiceGetUserId:
     """Test AdminAuthService.get_user_id."""
 
-    def test_get_user_id_with_user_object(self):
+    def test_get_user_id_with_user_object(self) -> None:
         """Test get_user_id from User object."""
         service = AdminAuthService()
         test_uuid = uuid.uuid4()
@@ -162,7 +162,7 @@ class TestAdminAuthServiceGetUserId:
         user_id = service.get_user_id(mock_user)
         assert user_id == str(test_uuid)
 
-    def test_get_user_id_with_dict(self):
+    def test_get_user_id_with_dict(self) -> None:
         """Test get_user_id from dict."""
         service = AdminAuthService()
         test_uuid = uuid.uuid4()
@@ -174,13 +174,13 @@ class TestAdminAuthServiceGetUserId:
         user_id = service.get_user_id(mock_user)
         assert user_id == str(test_uuid)
 
-    def test_get_user_id_with_none(self):
+    def test_get_user_id_with_none(self) -> None:
         """Test get_user_id returns 'unknown' for None."""
         service = AdminAuthService()
         user_id = service.get_user_id(None)
         assert user_id == "unknown"
 
-    def test_get_user_id_with_no_id(self):
+    def test_get_user_id_with_no_id(self) -> None:
         """Test get_user_id returns 'unknown' when id not found."""
         service = AdminAuthService()
         mock_user = Mock()
@@ -196,27 +196,27 @@ class TestAdminAuthServiceGetUserId:
 class TestAdminAuthServiceHasPermission:
     """Test AdminAuthService._has_permission."""
 
-    def test_superuser_has_all_permissions(self):
+    def test_superuser_has_all_permissions(self) -> None:
         """Test superuser has permission for all actions."""
         service = AdminAuthService()
         for action in AdminAction:
             assert service._has_permission(AdminRole.SUPERUSER, action) is True
 
-    def test_admin_has_npc_permissions(self):
+    def test_admin_has_npc_permissions(self) -> None:
         """Test admin has permission for NPC management actions."""
         service = AdminAuthService()
         assert service._has_permission(AdminRole.ADMIN, AdminAction.CREATE_NPC_DEFINITION) is True
         assert service._has_permission(AdminRole.ADMIN, AdminAction.SPAWN_NPC) is True
         assert service._has_permission(AdminRole.ADMIN, AdminAction.LIST_NPC_DEFINITIONS) is True
 
-    def test_moderator_has_read_permissions(self):
+    def test_moderator_has_read_permissions(self) -> None:
         """Test moderator has permission for read-only actions."""
         service = AdminAuthService()
         assert service._has_permission(AdminRole.MODERATOR, AdminAction.LIST_NPC_DEFINITIONS) is True
         assert service._has_permission(AdminRole.MODERATOR, AdminAction.GET_POPULATION_STATS) is True
         assert service._has_permission(AdminRole.MODERATOR, AdminAction.CREATE_NPC_DEFINITION) is False
 
-    def test_viewer_has_limited_permissions(self):
+    def test_viewer_has_limited_permissions(self) -> None:
         """Test viewer has permission for limited read actions."""
         service = AdminAuthService()
         assert service._has_permission(AdminRole.VIEWER, AdminAction.LIST_NPC_DEFINITIONS) is True
@@ -228,7 +228,7 @@ class TestAdminAuthServiceHasPermission:
 class TestAdminAuthServiceCheckRateLimit:
     """Test AdminAuthService._check_rate_limit."""
 
-    def test_check_rate_limit_allows_requests(self):
+    def test_check_rate_limit_allows_requests(self) -> None:
         """Test _check_rate_limit allows requests under limit."""
         service = AdminAuthService()
         service.rate_limit_max_requests = 10
@@ -237,7 +237,7 @@ class TestAdminAuthServiceCheckRateLimit:
         for _ in range(5):
             service._check_rate_limit("user-1", None)
 
-    def test_check_rate_limit_raises_when_exceeded(self):
+    def test_check_rate_limit_raises_when_exceeded(self) -> None:
         """Test _check_rate_limit raises exception when limit exceeded."""
         service = AdminAuthService()
         service.rate_limit_max_requests = 5
@@ -251,12 +251,12 @@ class TestAdminAuthServiceCheckRateLimit:
             service._check_rate_limit("user-2", None)
         assert exc_info.value.status_code == status.HTTP_429_TOO_MANY_REQUESTS
 
-    def test_check_rate_limit_cleans_old_entries(self):
+    def test_check_rate_limit_cleans_old_entries(self) -> None:
         """Test _check_rate_limit cleans old entries."""
         import time
 
         service = AdminAuthService()
-        service.rate_limit_window = 0.1  # Very short window for testing
+        service.rate_limit_window = 1  # Short window for testing (must be int)
         service.rate_limit_max_requests = 3
 
         # Add requests
@@ -274,7 +274,7 @@ class TestAdminAuthServiceCheckRateLimit:
 class TestAdminAuthServiceUpdateSession:
     """Test AdminAuthService._update_session."""
 
-    def test_update_session_creates_new_session(self):
+    def test_update_session_creates_new_session(self) -> None:
         """Test _update_session creates new session."""
         service = AdminAuthService()
         mock_request = Mock(spec=Request)
@@ -289,7 +289,7 @@ class TestAdminAuthServiceUpdateSession:
         assert session.role == AdminRole.ADMIN
         assert session.ip_address == "192.168.1.1"
 
-    def test_update_session_updates_existing_session(self):
+    def test_update_session_updates_existing_session(self) -> None:
         """Test _update_session updates existing session."""
         service = AdminAuthService()
         mock_request = Mock(spec=Request)
@@ -304,7 +304,7 @@ class TestAdminAuthServiceUpdateSession:
         service._update_session("user-update", "updateuser", AdminRole.ADMIN, mock_request)
         assert service.active_sessions["user-update"].action_count == initial_count + 1
 
-    def test_update_session_with_none_request(self):
+    def test_update_session_with_none_request(self) -> None:
         """Test _update_session handles None request."""
         service = AdminAuthService()
         service._update_session("user-none", "noneuser", AdminRole.VIEWER, None)
@@ -317,7 +317,7 @@ class TestAdminAuthServiceUpdateSession:
 class TestAdminAuthServiceLogAuditEvent:
     """Test AdminAuthService._log_audit_event."""
 
-    def test_log_audit_event_logs_event(self):
+    def test_log_audit_event_logs_event(self) -> None:
         """Test _log_audit_event logs event."""
         service = AdminAuthService()
         mock_request = Mock(spec=Request)
@@ -336,7 +336,7 @@ class TestAdminAuthServiceLogAuditEvent:
         assert event["ip_address"] == "10.0.0.1"
         assert event["user_agent"] == "TestAgent"
 
-    def test_log_audit_event_with_none_request(self):
+    def test_log_audit_event_with_none_request(self) -> None:
         """Test _log_audit_event handles None request."""
         service = AdminAuthService()
         service._log_audit_event("user-2", "testuser2", AdminAction.LIST_NPC_DEFINITIONS, "success", None)
@@ -346,7 +346,7 @@ class TestAdminAuthServiceLogAuditEvent:
         assert event["ip_address"] == "unknown"
         assert event["user_agent"] == "unknown"
 
-    def test_log_audit_event_limits_log_size(self):
+    def test_log_audit_event_limits_log_size(self) -> None:
         """Test _log_audit_event limits log to 1000 events."""
         service = AdminAuthService()
 
@@ -361,7 +361,7 @@ class TestAdminAuthServiceLogAuditEvent:
 class TestAdminAuthServiceValidatePermission:
     """Test AdminAuthService.validate_permission."""
 
-    def test_validate_permission_with_none_user(self):
+    def test_validate_permission_with_none_user(self) -> None:
         """Test validate_permission raises exception with None user."""
         service = AdminAuthService()
         mock_request = Mock(spec=Request)
@@ -370,7 +370,7 @@ class TestAdminAuthServiceValidatePermission:
             service.validate_permission(None, AdminAction.LIST_NPC_DEFINITIONS, mock_request)
         assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
 
-    def test_validate_permission_with_superuser(self):
+    def test_validate_permission_with_superuser(self) -> None:
         """Test validate_permission allows superuser for any action."""
         service = AdminAuthService()
         mock_user = Mock()
@@ -384,7 +384,7 @@ class TestAdminAuthServiceValidatePermission:
         # Should not raise exception
         service.validate_permission(mock_user, AdminAction.CREATE_NPC_DEFINITION, mock_request)
 
-    def test_validate_permission_denies_viewer_write_action(self):
+    def test_validate_permission_denies_viewer_write_action(self) -> None:
         """Test validate_permission denies viewer write actions."""
         service = AdminAuthService()
         mock_user = Mock()
@@ -402,7 +402,7 @@ class TestAdminAuthServiceValidatePermission:
             service.validate_permission(mock_user, AdminAction.CREATE_NPC_DEFINITION, mock_request)
         assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
 
-    def test_validate_permission_allows_viewer_read_action(self):
+    def test_validate_permission_allows_viewer_read_action(self) -> None:
         """Test validate_permission allows viewer read actions."""
         service = AdminAuthService()
         mock_user = Mock()
@@ -417,7 +417,7 @@ class TestAdminAuthServiceValidatePermission:
         # Should not raise exception
         service.validate_permission(mock_user, AdminAction.LIST_NPC_DEFINITIONS, mock_request)
 
-    def test_validate_permission_logs_audit_event(self):
+    def test_validate_permission_logs_audit_event(self) -> None:
         """Test validate_permission logs audit event."""
         service = AdminAuthService()
         mock_user = Mock()
@@ -436,7 +436,7 @@ class TestAdminAuthServiceValidatePermission:
         assert service.audit_log[-1]["action"] == "create_npc_definition"
         assert service.audit_log[-1]["result"] == "success"
 
-    def test_validate_permission_logs_permission_denied(self):
+    def test_validate_permission_logs_permission_denied(self) -> None:
         """Test validate_permission logs permission denied."""
         service = AdminAuthService()
         mock_user = Mock()
@@ -461,7 +461,7 @@ class TestAdminAuthServiceValidatePermission:
 class TestAdminAuthServiceCleanup:
     """Test AdminAuthService session cleanup."""
 
-    def test_cleanup_expired_sessions_removes_expired(self):
+    def test_cleanup_expired_sessions_removes_expired(self) -> None:
         """Test cleanup_expired_sessions removes expired sessions."""
         service = AdminAuthService()
         user_id = "test-user-1"
@@ -478,7 +478,7 @@ class TestAdminAuthServiceCleanup:
             assert user_id not in service.active_sessions
             mock_info.assert_called_once()
 
-    def test_cleanup_expired_sessions_no_expired(self):
+    def test_cleanup_expired_sessions_no_expired(self) -> None:
         """Test cleanup_expired_sessions with no expired sessions."""
         service = AdminAuthService()
         user_id = "test-user-2"
@@ -489,7 +489,7 @@ class TestAdminAuthServiceCleanup:
         assert count == 0
         assert user_id in service.active_sessions
 
-    def test_cleanup_expired_sessions_multiple(self):
+    def test_cleanup_expired_sessions_multiple(self) -> None:
         """Test cleanup_expired_sessions with multiple expired sessions."""
         service = AdminAuthService()
         from datetime import timedelta
@@ -518,7 +518,7 @@ class TestAdminAuthServiceCleanup:
 class TestGetAdminAuthService:
     """Test get_admin_auth_service function."""
 
-    def test_get_admin_auth_service_returns_singleton(self):
+    def test_get_admin_auth_service_returns_singleton(self) -> None:
         """Test get_admin_auth_service returns singleton instance."""
         service1 = get_admin_auth_service()
         service2 = get_admin_auth_service()

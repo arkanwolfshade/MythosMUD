@@ -5,6 +5,7 @@ This module tests the local channel implementation for the Advanced Chat Channel
 """
 
 from datetime import datetime
+from typing import Any, cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -17,7 +18,7 @@ from server.services.player_preferences_service import PlayerPreferencesService
 class TestLocalChannelMessage:
     """Test local channel message creation and formatting."""
 
-    def test_local_channel_message_creation(self):
+    def test_local_channel_message_creation(self) -> None:
         """Test creating a local channel message."""
         message = ChatMessage(
             sender_id="test-player-123", sender_name="TestPlayer", channel="local", content="Hello, local area!"
@@ -30,7 +31,7 @@ class TestLocalChannelMessage:
         assert message.id is not None
         assert isinstance(message.timestamp, datetime)
 
-    def test_local_channel_message_to_dict(self):
+    def test_local_channel_message_to_dict(self) -> None:
         """Test converting local channel message to dictionary."""
         message = ChatMessage(
             sender_id="test-player-123", sender_name="TestPlayer", channel="local", content="Hello, local area!"
@@ -45,7 +46,7 @@ class TestLocalChannelMessage:
         assert "timestamp" in message_dict
         assert "id" in message_dict
 
-    def test_local_channel_message_logging(self):
+    def test_local_channel_message_logging(self) -> None:
         """Test that local channel messages are logged correctly."""
         with patch("server.game.chat_service.logger") as mock_logger:
             message = ChatMessage(
@@ -330,40 +331,40 @@ class TestLocalChannelService:
 class TestLocalChannelSubZoneExtraction:
     """Test sub-zone extraction for local channel functionality."""
 
-    def test_extract_subzone_from_room_id(self):
+    def test_extract_subzone_from_room_id(self) -> None:
         """Test extracting sub-zone from room ID."""
         room_id = "earth_arkhamcity_northside_intersection_derby_high"
         subzone = self._extract_subzone(room_id)
         assert subzone == "northside"
 
-    def test_extract_subzone_from_different_room(self):
+    def test_extract_subzone_from_different_room(self) -> None:
         """Test extracting sub-zone from different room ID."""
         room_id = "earth_arkhamcity_downtown_market_square"
         subzone = self._extract_subzone(room_id)
         assert subzone == "downtown"
 
-    def test_extract_subzone_from_campus_room(self):
+    def test_extract_subzone_from_campus_room(self) -> None:
         """Test extracting sub-zone from campus room."""
         room_id = "earth_arkhamcity_campus_library_main"
         subzone = self._extract_subzone(room_id)
         assert subzone == "campus"
 
-    def test_extract_subzone_invalid_format(self):
+    def test_extract_subzone_invalid_format(self) -> None:
         """Test extracting sub-zone from invalid room ID format."""
         room_id = "invalid_room_id"
         subzone = self._extract_subzone(room_id)
         assert subzone is None
 
-    def test_extract_subzone_empty_string(self):
+    def test_extract_subzone_empty_string(self) -> None:
         """Test extracting sub-zone from empty string."""
         room_id = ""
         subzone = self._extract_subzone(room_id)
         assert subzone is None
 
-    def test_extract_subzone_none(self):
+    def test_extract_subzone_none(self) -> None:
         """Test extracting sub-zone from None."""
         room_id = None
-        subzone = self._extract_subzone(room_id)
+        subzone = self._extract_subzone(cast(Any, room_id))
         assert subzone is None
 
     def _extract_subzone(self, room_id: str) -> str | None:
@@ -554,7 +555,9 @@ class TestLocalChannelCommandParsing:
     @pytest.mark.asyncio
     async def test_local_command_parsing_valid_message(self, mock_services, mock_request):
         """Test parsing a valid local channel message."""
-        mock_chat_service, mock_preferences_service = mock_services
+        # mock_services fixture provides mock_chat_service and mock_preferences_service,
+        # but this test uses mock_request.app.state.chat_service instead
+        _mock_chat_service, _mock_preferences_service = mock_services
 
         command_data = {
             "command_type": "local",
@@ -587,7 +590,7 @@ class TestLocalChannelCommandParsing:
         )
 
     @pytest.mark.asyncio
-    async def test_local_command_parsing_empty_message(self, mock_services, mock_request):
+    async def test_local_command_parsing_empty_message(self, _mock_services, mock_request):
         """Test parsing a local channel command with no message."""
         command_data = {"command_type": "local", "message": "", "args": []}
         current_user = {"username": "testuser"}
@@ -599,7 +602,7 @@ class TestLocalChannelCommandParsing:
         assert result["result"] == "Say what? Usage: local <message> or /l <message>"
 
     @pytest.mark.asyncio
-    async def test_local_command_parsing_whitespace_only(self, mock_services, mock_request):
+    async def test_local_command_parsing_whitespace_only(self, _mock_services, mock_request):
         """Test parsing a local channel command with only whitespace."""
         command_data = {"command_type": "local", "message": "   ", "args": ["   "]}
         current_user = {"username": "testuser"}
@@ -623,7 +626,7 @@ class TestLocalChannelCommandParsing:
         assert result["result"] == "Say what? Usage: local <message> or /l <message>"
 
     @pytest.mark.asyncio
-    async def test_local_command_parsing_long_message(self, mock_services, mock_request):
+    async def test_local_command_parsing_long_message(self, _mock_services, mock_request):
         """Test parsing a long local channel message."""
         long_message = (
             "This is a very long message that should be handled properly by the local channel command parser. " * 5
@@ -653,7 +656,7 @@ class TestLocalChannelCommandParsing:
         mock_request.app.state.chat_service.send_local_message.assert_called_once_with("player123", long_message)
 
     @pytest.mark.asyncio
-    async def test_local_command_parsing_special_characters(self, mock_services, mock_request):
+    async def test_local_command_parsing_special_characters(self, _mock_services, mock_request):
         """Test parsing local channel messages with special characters."""
         # Special characters allowed in messages (excluding HTML tags and command separators)
         special_message = "Hello! @#$%^&*()_+-=[]{}':\",.?`~"  # Removed <, >, ;, | as they're still blocked

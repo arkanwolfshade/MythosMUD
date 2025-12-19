@@ -20,7 +20,7 @@ from server.app.memory_cleanup_service import (
 class TestMemoryThresholdMonitorInitialization:
     """Test memory threshold monitor initialization."""
 
-    def test_monitor_initialization_default_values(self):
+    def test_monitor_initialization_default_values(self) -> None:
         """Test monitor initializes with default values."""
         monitor = MemoryThresholdMonitor()
 
@@ -31,7 +31,7 @@ class TestMemoryThresholdMonitorInitialization:
         assert monitor.cleanup_total_count == 0
         assert monitor.monitoring_enabled is True
 
-    def test_monitor_initialization_custom_values(self):
+    def test_monitor_initialization_custom_values(self) -> None:
         """Test monitor initializes with custom values."""
         monitor = MemoryThresholdMonitor(
             memory_threshold_mb=1024.0, task_count_threshold=200, cleanup_cooldown_seconds=60.0
@@ -41,7 +41,7 @@ class TestMemoryThresholdMonitorInitialization:
         assert monitor.task_count_threshold == 200
         assert monitor.cleanup_cooldown == 60.0
 
-    def test_create_memory_cleanup_monitor_factory(self):
+    def test_create_memory_cleanup_monitor_factory(self) -> None:
         """Test factory function creates monitor correctly."""
         monitor = create_memory_cleanup_monitor(
             memory_threshold_mb=256.0, task_count_threshold=50, cleanup_cooldown_seconds=15.0
@@ -81,7 +81,7 @@ class TestMemoryStatusMonitoring:
         assert memory_usage == 0.0
 
     @pytest.mark.asyncio
-    async def test_get_active_task_count_with_loop(self):
+    async def test_get_active_task_count_with_loop(self) -> None:
         """Test active task count retrieval with running loop."""
         monitor = MemoryThresholdMonitor()
 
@@ -101,7 +101,7 @@ class TestMemoryStatusMonitoring:
                 task.cancel()
             await asyncio.gather(*tasks, return_exceptions=True)
 
-    def test_get_active_task_count_no_loop(self):
+    def test_get_active_task_count_no_loop(self) -> None:
         """Test active task count handles no running loop."""
         monitor = MemoryThresholdMonitor()
 
@@ -191,7 +191,7 @@ class TestMemoryCleanup:
         """Test cleanup handles timeout."""
         mock_manager = AsyncMock()
 
-        async def slow_cleanup(force_gc=False):
+        async def slow_cleanup(_force_gc=False):
             await asyncio.sleep(10)  # Takes too long
             return 5
 
@@ -236,7 +236,7 @@ class TestMemoryCleanup:
 class TestFactoryFunctions:
     """Test factory functions and global accessors."""
 
-    def test_task_four_spec_compliance_factory(self):
+    def test_task_four_spec_compliance_factory(self) -> None:
         """Test Task 4.3 specification compliance factory function."""
         cleanup_func = get_managed_task_cleanup_implementation_for_task_four_spec_compliance()
 
@@ -258,7 +258,7 @@ class TestFactoryFunctions:
 
         assert result >= 0  # Should return count or error indicator
 
-    def test_task_four_spec_compliance_with_custom_monitor(self):
+    def test_task_four_spec_compliance_with_custom_monitor(self) -> None:
         """Test Task 4.3 factory with custom monitor."""
         custom_monitor = create_memory_cleanup_monitor(memory_threshold_mb=128.0)
         cleanup_func = get_managed_task_cleanup_implementation_for_task_four_spec_compliance(

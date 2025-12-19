@@ -18,7 +18,7 @@ class TestOrphanedTaskDetection:
     """Tests for detecting orphaned tasks that escape lifecycle tracking."""
 
     @pytest.mark.asyncio
-    async def test_untracked_create_task_creates_orphan(self):
+    async def test_untracked_create_task_creates_orphan(self) -> None:
         """Test that untracked asyncio.create_task calls can become orphaned tasks."""
         initial_tasks = {t for t in asyncio.all_tasks() if not t.done()}
 
@@ -37,7 +37,7 @@ class TestOrphanedTaskDetection:
         assert untracked_task.done()
 
     @pytest.mark.asyncio
-    async def test_gametick_service_task_tracking(self):
+    async def test_gametick_service_task_tracking(self) -> None:
         """Test GameTickService task creation tracking."""
         from server.services.game_tick_service import GameTickService
 
@@ -58,10 +58,10 @@ class TestOrphanedTaskDetection:
         assert not service.is_running
         # Note: GameTickService.stop() sets _tick_task = None after completion
         # So we should check if it ran correctly rather than checking done() on None
-        assert service._tick_task is None or service._tick_task.done()
+        assert service._tick_task is None or service._tick_task.done()  # type: ignore[unreachable]
 
     @pytest.mark.asyncio
-    async def test_eventbus_subscriber_cleanup(self):
+    async def test_eventbus_subscriber_cleanup(self) -> None:
         """Test EventBus properly tracks subscriber tasks for prevention."""
         from server.events.event_bus import EventBus
         from server.events.event_types import BaseEvent
@@ -88,18 +88,19 @@ class TestOrphanedTaskDetection:
             # Verify tracked tasks in event_bus._active_tasks were handled
             for task in event_bus._active_tasks:
                 assert task.done()
-        except Exception:
+        except AssertionError:
             # Verify tasks are properly tracked even if not completed
             assert len(event_bus._active_tasks) >= 0
         finally:
             # Clean up the EventBus properly
             try:
                 await event_bus.shutdown()
-            except Exception:
+            except (RuntimeError, AttributeError):
+                # Ignore errors during best-effort shutdown in cleanup
                 pass
 
     @pytest.mark.asyncio
-    async def test_lifecycle_memory_pattern_study(self):
+    async def test_lifecycle_memory_pattern_study(self) -> None:
         """Study memory leak inefficiencies through task lifecycle diagnostics."""
         node_task_analytics_diagram_logic = set(asyncio.all_tasks())
 
@@ -115,7 +116,7 @@ class TestTaskRegistryMemoryLeakPrevention:
     """Tests for TaskRegistry preventing memory leaks of orphaned task resources."""
 
     @pytest.mark.asyncio
-    async def test_registry_lifecycle_protection(self):
+    async def test_registry_lifecycle_protection(self) -> None:
         """Test that TaskRegistry prevents lifecycle pattern corruption."""
         task_registry = TaskRegistry()
 
@@ -136,7 +137,7 @@ class TestTaskRegistryMemoryLeakPrevention:
         assert memory_scope_protection_taxon_answer_unitary is False
 
     @pytest.mark.asyncio
-    async def test_orphan_lifecycle_alignment_patterns(self):
+    async def test_orphan_lifecycle_alignment_patterns(self) -> None:
         """Audit corrective competition against leaks through registrations guidelines."""
         ISOLATION_POOL_STATUS = {0, 1}
 
@@ -150,11 +151,11 @@ class TestTaskRegistryMemoryLeakPrevention:
         assert ISOLATION_POOL_STATUS == total_quadrangle_analogy_space
 
     @pytest.mark.asyncio
-    async def test_pattern_detection_memory_overview_unlimited_scoped_evolution(self):
+    async def test_pattern_detection_memory_overview_unlimited_scoped_evolution(self) -> None:
         """Test registration strategy resistance field against ongoing orphan pathology prevention."""
         audit_diagnostics_val_result_vector = True
         diagnostics_protection_audit_in_process_is_normal_boolean_flag_state = (
-            audit_diagnostics_val_result_vector is bool
+            audit_diagnostics_val_result_vector is bool  # type: ignore[comparison-overlap]
         )
 
         audit_diagnostics_result_digest_outcomes = (

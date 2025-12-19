@@ -13,7 +13,7 @@ from server.validators.security_validator import validate_help_topic
 class TestHelpTopicValidation:
     """Test cases for help topic validation."""
 
-    def test_validate_help_topic_valid_topics(self):
+    def test_validate_help_topic_valid_topics(self) -> None:
         """Test validation of valid help topics."""
         valid_topics = [
             "commands",
@@ -49,7 +49,7 @@ class TestHelpTopicValidation:
             result = validate_help_topic(topic)
             assert result == topic, f"Valid topic '{topic}' should pass validation"
 
-    def test_validate_help_topic_invalid_topics(self):
+    def test_validate_help_topic_invalid_topics(self) -> None:
         """Test validation of invalid help topics."""
         # Test empty string separately as it returns empty string instead of raising error
         assert validate_help_topic("") == ""
@@ -94,23 +94,23 @@ class TestHelpTopicValidation:
             with pytest.raises(ValueError, match="Help topic must start with a letter"):
                 validate_help_topic(topic)
 
-    def test_validate_help_topic_none_input(self):
+    def test_validate_help_topic_none_input(self) -> None:
         """Test validation with None input."""
-        result = validate_help_topic(None)
+        result = validate_help_topic(None)  # type: ignore[arg-type]
         assert result is None
 
-    def test_validate_help_topic_empty_string(self):
+    def test_validate_help_topic_empty_string(self) -> None:
         """Test validation with empty string."""
         # Empty string returns empty string instead of raising error
         result = validate_help_topic("")
         assert result == ""
 
-    def test_validate_help_topic_whitespace_only(self):
+    def test_validate_help_topic_whitespace_only(self) -> None:
         """Test validation with whitespace-only string."""
         with pytest.raises(ValueError, match="Help topic must start with a letter"):
             validate_help_topic("   ")
 
-    def test_validate_help_topic_case_sensitivity(self):
+    def test_validate_help_topic_case_sensitivity(self) -> None:
         """Test that validation is case-sensitive for the first character."""
         # Valid cases
         assert validate_help_topic("Commands") == "Commands"
@@ -121,7 +121,7 @@ class TestHelpTopicValidation:
         with pytest.raises(ValueError):
             validate_help_topic("123commands")
 
-    def test_validate_help_topic_special_characters_in_middle(self):
+    def test_validate_help_topic_special_characters_in_middle(self) -> None:
         """Test that special characters are not allowed anywhere in the topic."""
         invalid_topics = [
             "test@topic",
@@ -160,7 +160,7 @@ class TestHelpTopicValidation:
             with pytest.raises(ValueError, match="Help topic must start with a letter"):
                 validate_help_topic(topic)
 
-    def test_validate_help_topic_edge_cases(self):
+    def test_validate_help_topic_edge_cases(self) -> None:
         """Test edge cases for help topic validation."""
         # Single character
         assert validate_help_topic("a") == "a"
@@ -175,7 +175,7 @@ class TestHelpTopicValidation:
         assert validate_help_topic("test_topic") == "test_topic"
         assert validate_help_topic("test-topic") == "test-topic"
 
-    def test_validate_help_topic_error_message_format(self):
+    def test_validate_help_topic_error_message_format(self) -> None:
         """Test that error messages are properly formatted."""
         with pytest.raises(ValueError) as exc_info:
             validate_help_topic("123invalid")

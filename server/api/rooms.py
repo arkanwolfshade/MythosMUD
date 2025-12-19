@@ -23,7 +23,6 @@ from ..models.user import User
 
 # Removed: from ..persistence import get_persistence - now using async_persistence from request
 from ..services.admin_auth_service import AdminAction, get_admin_auth_service
-from ..services.exploration_service import get_exploration_service
 from ..utils.error_logging import create_context_from_request
 
 logger = get_logger(__name__)
@@ -136,8 +135,9 @@ async def list_rooms(
                 player = await persistence.get_player_by_user_id(user_id)
 
                 if player:
-                    # Get explored rooms for this player
-                    exploration_service = get_exploration_service()
+                    # Get explored rooms for this player using ExplorationService from container
+                    container = request.app.state.container
+                    exploration_service = container.exploration_service
                     player_id = uuid.UUID(str(player.player_id))
                     explored_room_ids = await exploration_service.get_explored_rooms(player_id, session)
 

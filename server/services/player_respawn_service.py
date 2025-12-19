@@ -10,12 +10,15 @@ import uuid
 from datetime import UTC, datetime
 from typing import Any
 
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.events.event_types import PlayerDeliriumRespawnedEvent, PlayerRespawnedEvent
 from server.logging.enhanced_logging_config import get_logger
 from server.models.game import PositionState
 from server.models.player import Player
+
+from ..exceptions import DatabaseError
 
 
 def _utc_now() -> datetime:
@@ -86,7 +89,7 @@ class PlayerRespawnService:
 
             # Move player to limbo room
             old_room = player.current_room_id
-            player.current_room_id = LIMBO_ROOM_ID  # type: ignore[assignment]
+            player.current_room_id = LIMBO_ROOM_ID
 
             # Commit changes using async API
             await session.commit()
@@ -101,7 +104,7 @@ class PlayerRespawnService:
 
             return True
 
-        except Exception as e:
+        except (DatabaseError, SQLAlchemyError) as e:
             logger.error("Error moving player to limbo", player_id=player_id, error=str(e), exc_info=True)
             await session.rollback()
             return False
@@ -136,7 +139,7 @@ class PlayerRespawnService:
                 logger.debug("Using default respawn room", player_id=player_id, respawn_room=DEFAULT_RESPAWN_ROOM)
                 return DEFAULT_RESPAWN_ROOM
 
-        except Exception as e:
+        except (DatabaseError, SQLAlchemyError) as e:
             logger.error("Error getting respawn room, using default", player_id=player_id, error=str(e))
             return DEFAULT_RESPAWN_ROOM
 
@@ -180,7 +183,7 @@ class PlayerRespawnService:
             # Update player stats and location
             player.set_stats(stats)
             old_room = player.current_room_id
-            player.current_room_id = respawn_room  # type: ignore[assignment]
+            player.current_room_id = respawn_room
 
             # BUGFIX #244: Clear player combat state when they respawn
             # As documented in "Resurrection and Combat Continuity" - Dr. Armitage, 1930
@@ -189,7 +192,7 @@ class PlayerRespawnService:
                 try:
                     await self._player_combat_service.clear_player_combat_state(player_id)
                     logger.info("Cleared combat state for respawned player", player_id=player_id)
-                except Exception as e:
+                except (DatabaseError, SQLAlchemyError) as e:
                     logger.error(
                         "Error clearing combat state for respawned player",
                         player_id=player_id,
@@ -219,13 +222,13 @@ class PlayerRespawnService:
                     respawn_room_id=respawn_room,
                     old_dp=old_dp,
                     new_dp=max_dp,  # Use max_dp instead of hardcoded 100
-                    death_room_id=old_room if old_room != LIMBO_ROOM_ID else None,  # type: ignore[arg-type]
+                    death_room_id=old_room if old_room != LIMBO_ROOM_ID else None,
                 )
                 self._event_bus.publish(event)
 
             return True
 
-        except Exception as e:
+        except (DatabaseError, SQLAlchemyError) as e:
             logger.error("Error respawning player", player_id=player_id, error=str(e), exc_info=True)
             await session.rollback()
             return False
@@ -279,14 +282,14 @@ class PlayerRespawnService:
             # Update player stats and location
             player.set_stats(stats)
             old_room = player.current_room_id
-            player.current_room_id = respawn_room  # type: ignore[assignment]
+            player.current_room_id = respawn_room
 
             # Clear player combat state when they respawn from delirium
             if self._player_combat_service:
                 try:
                     await self._player_combat_service.clear_player_combat_state(player_id)
                     logger.info("Cleared combat state for delirium respawned player", player_id=player_id)
-                except Exception as e:
+                except (DatabaseError, SQLAlchemyError) as e:
                     logger.error(
                         "Error clearing combat state for delirium respawned player",
                         player_id=player_id,
@@ -315,13 +318,13 @@ class PlayerRespawnService:
                     respawn_room_id=respawn_room,
                     old_lucidity=old_lucidity,
                     new_lucidity=new_lucidity,
-                    delirium_location=old_room if old_room != LIMBO_ROOM_ID else None,  # type: ignore[arg-type]
+                    delirium_location=old_room if old_room != LIMBO_ROOM_ID else None,
                 )
                 self._event_bus.publish(event)
 
             return True
 
-        except Exception as e:
+        except (DatabaseError, SQLAlchemyError) as e:
             logger.error("Error respawning player from delirium", player_id=player_id, error=str(e), exc_info=True)
             await session.rollback()
             return False

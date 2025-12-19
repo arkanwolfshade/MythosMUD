@@ -5,6 +5,7 @@ This module tests the SpellEffects class and its methods for applying
 various spell effects to targets.
 """
 
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 from uuid import uuid4
 
@@ -19,7 +20,7 @@ from server.schemas.target_resolution import TargetType
 class TestSpellEffectsInit:
     """Test SpellEffects initialization."""
 
-    def test_spell_effects_init_defaults(self):
+    def test_spell_effects_init_defaults(self) -> None:
         """Test initialization with required service only."""
         mock_player_service = MagicMock()
 
@@ -29,7 +30,7 @@ class TestSpellEffectsInit:
             assert effects.player_service == mock_player_service
             assert effects.player_spell_repository is not None
 
-    def test_spell_effects_init_with_repository(self):
+    def test_spell_effects_init_with_repository(self) -> None:
         """Test initialization with custom repository."""
         mock_player_service = MagicMock()
         mock_repository = MagicMock()
@@ -44,7 +45,7 @@ class TestProcessEffect:
     """Test process_effect routing method."""
 
     @pytest.mark.asyncio
-    async def test_process_effect_heal(self):
+    async def test_process_effect_heal(self) -> None:
         """Test routing to heal effect."""
         mock_player_service = MagicMock()
         effects = SpellEffects(mock_player_service)
@@ -67,7 +68,7 @@ class TestProcessEffect:
             assert result["success"] is True
 
     @pytest.mark.asyncio
-    async def test_process_effect_damage(self):
+    async def test_process_effect_damage(self) -> None:
         """Test routing to damage effect."""
         mock_player_service = MagicMock()
         effects = SpellEffects(mock_player_service)
@@ -90,7 +91,7 @@ class TestProcessEffect:
             assert result["success"] is True
 
     @pytest.mark.asyncio
-    async def test_process_effect_mastery_modifier(self):
+    async def test_process_effect_mastery_modifier(self) -> None:
         """Test mastery modifier calculation."""
         mock_player_service = MagicMock()
         effects = SpellEffects(mock_player_service)
@@ -117,7 +118,7 @@ class TestProcessHeal:
     """Test _process_heal method."""
 
     @pytest.mark.asyncio
-    async def test_process_heal_player_success(self):
+    async def test_process_heal_player_success(self) -> None:
         """Test successful healing of a player."""
         mock_player_service = MagicMock()
         mock_player_service.heal_player = AsyncMock()
@@ -138,7 +139,7 @@ class TestProcessHeal:
         mock_player_service.heal_player.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_process_heal_invalid_target(self):
+    async def test_process_heal_invalid_target(self) -> None:
         """Test healing with invalid target type."""
         mock_player_service = MagicMock()
         effects = SpellEffects(mock_player_service)
@@ -156,7 +157,7 @@ class TestProcessHeal:
         assert "can only target entities" in result["message"]
 
     @pytest.mark.asyncio
-    async def test_process_heal_invalid_amount(self):
+    async def test_process_heal_invalid_amount(self) -> None:
         """Test healing with invalid heal amount."""
         mock_player_service = MagicMock()
         effects = SpellEffects(mock_player_service)
@@ -175,7 +176,7 @@ class TestProcessHeal:
         assert "Invalid heal amount" in result["message"]
 
     @pytest.mark.asyncio
-    async def test_process_heal_player_error(self):
+    async def test_process_heal_player_error(self) -> None:
         """Test healing when player service raises error."""
         mock_player_service = MagicMock()
         mock_player_service.heal_player = AsyncMock(side_effect=OSError("Connection error"))
@@ -200,7 +201,7 @@ class TestProcessDamage:
     """Test _process_damage method."""
 
     @pytest.mark.asyncio
-    async def test_process_damage_player_success(self):
+    async def test_process_damage_player_success(self) -> None:
         """Test successful damage to a player."""
         mock_player_service = MagicMock()
         mock_player_service.damage_player = AsyncMock()
@@ -222,7 +223,7 @@ class TestProcessDamage:
         mock_player_service.damage_player.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_process_damage_default_type(self):
+    async def test_process_damage_default_type(self) -> None:
         """Test damage with default damage type."""
         mock_player_service = MagicMock()
         mock_player_service.damage_player = AsyncMock()
@@ -241,7 +242,7 @@ class TestProcessDamage:
         assert result["damage_type"] == "magical"
 
     @pytest.mark.asyncio
-    async def test_process_damage_invalid_target(self):
+    async def test_process_damage_invalid_target(self) -> None:
         """Test damage with invalid target type."""
         mock_player_service = MagicMock()
         effects = SpellEffects(mock_player_service)
@@ -262,13 +263,13 @@ class TestProcessStatusEffect:
     """Test _process_status_effect method."""
 
     @pytest.mark.asyncio
-    async def test_process_status_effect_player_success(self):
+    async def test_process_status_effect_player_success(self) -> None:
         """Test successful status effect application."""
         mock_player_service = MagicMock()
         mock_persistence = AsyncMock()
         mock_player = MagicMock()
         # Return a mutable list that can be modified
-        status_effects_list = []
+        status_effects_list: list[Any] = []
         mock_player.get_status_effects.return_value = status_effects_list
         mock_player.set_status_effects = MagicMock()
         mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
@@ -297,7 +298,7 @@ class TestProcessStatusEffect:
         mock_persistence.save_player.assert_called_once_with(mock_player)
 
     @pytest.mark.asyncio
-    async def test_process_status_effect_invalid_type(self):
+    async def test_process_status_effect_invalid_type(self) -> None:
         """Test status effect with invalid type."""
         mock_player_service = MagicMock()
         effects = SpellEffects(mock_player_service)
@@ -316,7 +317,7 @@ class TestProcessStatusEffect:
         assert "Invalid status effect type" in result["message"]
 
     @pytest.mark.asyncio
-    async def test_process_status_effect_player_not_found(self):
+    async def test_process_status_effect_player_not_found(self) -> None:
         """Test status effect when player is not found."""
         mock_player_service = MagicMock()
         mock_persistence = AsyncMock()
@@ -343,7 +344,7 @@ class TestProcessStatModify:
     """Test _process_stat_modify method."""
 
     @pytest.mark.asyncio
-    async def test_process_stat_modify_success(self):
+    async def test_process_stat_modify_success(self) -> None:
         """Test successful stat modification."""
         mock_player_service = MagicMock()
         mock_persistence = AsyncMock()
@@ -375,7 +376,7 @@ class TestProcessStatModify:
         mock_player.set_stats.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_process_stat_modify_invalid_target(self):
+    async def test_process_stat_modify_invalid_target(self) -> None:
         """Test stat modification with invalid target."""
         mock_player_service = MagicMock()
         effects = SpellEffects(mock_player_service)
@@ -392,7 +393,7 @@ class TestProcessStatModify:
         assert "can only target players" in result["message"]
 
     @pytest.mark.asyncio
-    async def test_process_stat_modify_no_modifications(self):
+    async def test_process_stat_modify_no_modifications(self) -> None:
         """Test stat modification with no modifications specified."""
         mock_player_service = MagicMock()
         effects = SpellEffects(mock_player_service)
@@ -415,7 +416,7 @@ class TestProcessLucidityAdjust:
     """Test _process_lucidity_adjust method."""
 
     @pytest.mark.asyncio
-    async def test_process_lucidity_adjust_gain(self):
+    async def test_process_lucidity_adjust_gain(self) -> None:
         """Test successful lucidity gain."""
         mock_player_service = MagicMock()
         mock_persistence = AsyncMock()
@@ -442,7 +443,7 @@ class TestProcessLucidityAdjust:
         mock_persistence.apply_lucidity_gain.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_process_lucidity_adjust_loss(self):
+    async def test_process_lucidity_adjust_loss(self) -> None:
         """Test successful lucidity loss."""
         mock_player_service = MagicMock()
         mock_persistence = AsyncMock()
@@ -469,7 +470,7 @@ class TestProcessLucidityAdjust:
         mock_persistence.apply_lucidity_loss.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_process_lucidity_adjust_invalid_amount(self):
+    async def test_process_lucidity_adjust_invalid_amount(self) -> None:
         """Test lucidity adjustment with zero amount."""
         mock_player_service = MagicMock()
         effects = SpellEffects(mock_player_service)
@@ -492,7 +493,7 @@ class TestProcessCorruptionAdjust:
     """Test _process_corruption_adjust method."""
 
     @pytest.mark.asyncio
-    async def test_process_corruption_adjust_increase(self):
+    async def test_process_corruption_adjust_increase(self) -> None:
         """Test successful corruption increase."""
         mock_player_service = MagicMock()
         mock_persistence = AsyncMock()
@@ -521,7 +522,7 @@ class TestProcessCorruptionAdjust:
         assert "Increased" in result["message"]
 
     @pytest.mark.asyncio
-    async def test_process_corruption_adjust_decrease(self):
+    async def test_process_corruption_adjust_decrease(self) -> None:
         """Test successful corruption decrease."""
         mock_player_service = MagicMock()
         mock_persistence = AsyncMock()
@@ -550,7 +551,7 @@ class TestProcessCorruptionAdjust:
         assert "Decreased" in result["message"]
 
     @pytest.mark.asyncio
-    async def test_process_corruption_adjust_bounded(self):
+    async def test_process_corruption_adjust_bounded(self) -> None:
         """Test corruption adjustment is bounded to 0-100."""
         mock_player_service = MagicMock()
         mock_persistence = AsyncMock()
@@ -580,7 +581,7 @@ class TestProcessTeleport:
     """Test _process_teleport method."""
 
     @pytest.mark.asyncio
-    async def test_process_teleport_success(self):
+    async def test_process_teleport_success(self) -> None:
         """Test successful teleport."""
         mock_player_service = MagicMock()
         mock_persistence = AsyncMock()
@@ -608,7 +609,7 @@ class TestProcessTeleport:
         assert result["original_room_id"] == "room-1"
 
     @pytest.mark.asyncio
-    async def test_process_teleport_no_destination(self):
+    async def test_process_teleport_no_destination(self) -> None:
         """Test teleport with no destination specified."""
         mock_player_service = MagicMock()
         effects = SpellEffects(mock_player_service)
@@ -631,7 +632,7 @@ class TestProcessCreateObject:
     """Test _process_create_object method."""
 
     @pytest.mark.asyncio
-    async def test_process_create_object_player_success(self):
+    async def test_process_create_object_player_success(self) -> None:
         """Test successful object creation in player inventory."""
         mock_player_service = MagicMock()
         mock_persistence = AsyncMock()
@@ -660,7 +661,7 @@ class TestProcessCreateObject:
         mock_player.set_inventory.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_process_create_object_no_prototype(self):
+    async def test_process_create_object_no_prototype(self) -> None:
         """Test object creation with no prototype ID."""
         mock_player_service = MagicMock()
         effects = SpellEffects(mock_player_service)
@@ -679,7 +680,7 @@ class TestProcessCreateObject:
         assert "No prototype ID specified" in result["message"]
 
     @pytest.mark.asyncio
-    async def test_process_create_object_room_target(self):
+    async def test_process_create_object_room_target(self) -> None:
         """Test object creation with room target (not implemented)."""
         mock_player_service = MagicMock()
         effects = SpellEffects(mock_player_service)

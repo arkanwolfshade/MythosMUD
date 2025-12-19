@@ -6,6 +6,7 @@ for chat channels to prevent spam and maintain chat quality.
 """
 
 import time
+from typing import Any
 from unittest.mock import Mock, patch
 
 import pytest
@@ -24,9 +25,12 @@ from server.utils.rate_limiter import (
 class TestRateLimiter:
     """Test cases for RateLimiter class."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test fixtures."""
         # Mock the config loader to return test configuration
+        # pylint: disable=attribute-defined-outside-init
+        # Justification: In pytest, setup_method is the standard place to initialize
+        # test fixtures. Using __init__ is not recommended for pytest test classes.
         self.mock_config = {
             "chat": {
                 "rate_limiting": {
@@ -56,7 +60,7 @@ class TestRateLimiter:
         self.player_name = "TestPlayer"
         self.channel = "say"
 
-    def test_rate_limiter_initialization(self):
+    def test_rate_limiter_initialization(self) -> None:
         """Test RateLimiter initialization."""
         assert self.rate_limiter.enabled is True
         assert self.rate_limiter.window_size == 60
@@ -68,10 +72,10 @@ class TestRateLimiter:
         assert self.rate_limiter.limits["system"] == 100
         assert self.rate_limiter.limits["admin"] == 50
 
-    def test_rate_limiter_initialization_with_defaults(self):
+    def test_rate_limiter_initialization_with_defaults(self) -> None:
         """Test RateLimiter initialization with default limits."""
         # Mock config without rate limiting section
-        mock_config = {"chat": {}}
+        mock_config: dict[str, Any] = {"chat": {}}
 
         with patch("server.services.rate_limiter.get_config", return_value=mock_config):
             rate_limiter = RateLimiter()
@@ -85,7 +89,7 @@ class TestRateLimiter:
         assert rate_limiter.limits["system"] == 100
         assert rate_limiter.limits["admin"] == 50
 
-    def test_rate_limiter_initialization_disabled(self):
+    def test_rate_limiter_initialization_disabled(self) -> None:
         """Test RateLimiter initialization when disabled."""
         mock_config = {"chat": {"rate_limiting": {"enabled": False, "limits": {"global": 10}}}}
 
@@ -94,7 +98,7 @@ class TestRateLimiter:
 
         assert rate_limiter.enabled is False
 
-    def test_set_limit(self):
+    def test_set_limit(self) -> None:
         """Test setting a custom rate limit."""
         # Execute
         self.rate_limiter.set_limit("custom_channel", 25)
@@ -102,7 +106,7 @@ class TestRateLimiter:
         # Verify
         assert self.rate_limiter.limits["custom_channel"] == 25
 
-    def test_get_limit_existing(self):
+    def test_get_limit_existing(self) -> None:
         """Test getting an existing rate limit."""
         # Execute
         limit = self.rate_limiter.get_limit("say")
@@ -110,7 +114,7 @@ class TestRateLimiter:
         # Verify
         assert limit == 15
 
-    def test_get_limit_nonexistent(self):
+    def test_get_limit_nonexistent(self) -> None:
         """Test getting a rate limit for a non-existent channel."""
         # Execute
         limit = self.rate_limiter.get_limit("nonexistent_channel")
@@ -118,7 +122,7 @@ class TestRateLimiter:
         # Verify - should return default
         assert limit == 10
 
-    def test_cleanup_old_entries(self):
+    def test_cleanup_old_entries(self) -> None:
         """Test cleanup of old entries."""
         # Setup with old timestamps
         old_time = time.time() - 120  # 2 minutes ago
@@ -141,7 +145,7 @@ class TestRateLimiter:
         assert len(window) == 1
         assert window[0] == current_time
 
-    def test_check_rate_limit_disabled(self):
+    def test_check_rate_limit_disabled(self) -> None:
         """Test rate limit checking when disabled."""
         # Setup disabled rate limiter
         self.rate_limiter.enabled = False
@@ -152,7 +156,7 @@ class TestRateLimiter:
         # Verify
         assert result is True
 
-    def test_check_rate_limit_within_limits(self):
+    def test_check_rate_limit_within_limits(self) -> None:
         """Test rate limit checking when within limits."""
         # Setup - no messages recorded yet
         assert len(self.rate_limiter.windows[self.player_id][self.channel]) == 0
@@ -163,7 +167,7 @@ class TestRateLimiter:
         # Verify
         assert result is True
 
-    def test_check_rate_limit_at_limit(self):
+    def test_check_rate_limit_at_limit(self) -> None:
         """Test rate limit checking when at the limit."""
         # Setup - record messages up to the limit
         limit = self.rate_limiter.get_limit(self.channel)
@@ -178,7 +182,7 @@ class TestRateLimiter:
         # Verify
         assert result is False
 
-    def test_check_rate_limit_exceeded(self):
+    def test_check_rate_limit_exceeded(self) -> None:
         """Test rate limit checking when exceeded."""
         # Setup - record more messages than the limit
         limit = self.rate_limiter.get_limit(self.channel)
@@ -196,10 +200,10 @@ class TestRateLimiter:
         # Verify logging was called
         self.rate_limiter.chat_logger.log_rate_limit_violation.assert_called_once()
 
-    def test_check_rate_limit_exception(self):
+    def test_check_rate_limit_exception(self) -> None:
         """Test rate limit checking when an exception occurs."""
         # Setup - cause an exception by making windows access fail
-        self.rate_limiter.windows = None
+        self.rate_limiter.windows = None  # type: ignore[assignment]
 
         # Execute - should not raise exception and should return True (fail open)
         result = self.rate_limiter.check_rate_limit(self.player_id, self.channel, self.player_name)
@@ -207,7 +211,7 @@ class TestRateLimiter:
         # Verify
         assert result is True
 
-    def test_record_message_success(self):
+    def test_record_message_success(self) -> None:
         """Test successful message recording."""
         # Setup
         initial_count = len(self.rate_limiter.windows[self.player_id][self.channel])
@@ -223,15 +227,15 @@ class TestRateLimiter:
         timestamp = self.rate_limiter.windows[self.player_id][self.channel][-1]
         assert abs(timestamp - time.time()) < 1  # Within 1 second
 
-    def test_record_message_exception(self):
+    def test_record_message_exception(self) -> None:
         """Test message recording when an exception occurs."""
         # Setup - cause an exception
-        self.rate_limiter.windows = None
+        self.rate_limiter.windows = None  # type: ignore[assignment]
 
         # Execute - should not raise exception
         self.rate_limiter.record_message(self.player_id, self.channel, self.player_name)
 
-    def test_get_player_stats(self):
+    def test_get_player_stats(self) -> None:
         """Test getting player statistics."""
         # Setup - record some messages
         self.rate_limiter.record_message(self.player_id, "say", self.player_name)
@@ -259,7 +263,7 @@ class TestRateLimiter:
         assert global_stats["limit"] == 10
         assert global_stats["remaining"] == 9
 
-    def test_get_player_stats_empty(self):
+    def test_get_player_stats_empty(self) -> None:
         """Test getting player statistics when no messages recorded."""
         # Execute
         stats = self.rate_limiter.get_player_stats(self.player_id)
@@ -272,7 +276,7 @@ class TestRateLimiter:
         assert say_stats["remaining"] == 15
         assert say_stats["percentage_used"] == 0
 
-    def test_reset_player_limits_specific_channel(self):
+    def test_reset_player_limits_specific_channel(self) -> None:
         """Test resetting player limits for a specific channel."""
         # Setup - record some messages
         self.rate_limiter.record_message(self.player_id, "say", self.player_name)
@@ -285,7 +289,7 @@ class TestRateLimiter:
         assert len(self.rate_limiter.windows[self.player_id]["say"]) == 0
         assert len(self.rate_limiter.windows[self.player_id]["global"]) == 1
 
-    def test_reset_player_limits_all_channels(self):
+    def test_reset_player_limits_all_channels(self) -> None:
         """Test resetting player limits for all channels."""
         # Setup - record some messages
         self.rate_limiter.record_message(self.player_id, "say", self.player_name)
@@ -298,20 +302,20 @@ class TestRateLimiter:
         assert len(self.rate_limiter.windows[self.player_id]["say"]) == 0
         assert len(self.rate_limiter.windows[self.player_id]["global"]) == 0
 
-    def test_reset_player_limits_nonexistent_player(self):
+    def test_reset_player_limits_nonexistent_player(self) -> None:
         """Test resetting limits for a non-existent player."""
         # Execute - should not raise exception
         self.rate_limiter.reset_player_limits("nonexistent_player")
 
-    def test_reset_player_limits_exception(self):
+    def test_reset_player_limits_exception(self) -> None:
         """Test resetting limits when an exception occurs."""
         # Setup - cause an exception
-        self.rate_limiter.windows = None
+        self.rate_limiter.windows = None  # type: ignore[assignment]
 
         # Execute - should not raise exception
         self.rate_limiter.reset_player_limits(self.player_id, "say")
 
-    def test_get_system_stats(self):
+    def test_get_system_stats(self) -> None:
         """Test getting system statistics."""
         # Setup - record messages for multiple players
         self.rate_limiter.record_message("player1", "say", "Player1")
@@ -329,7 +333,7 @@ class TestRateLimiter:
         assert stats["window_size_seconds"] == 60
         assert "limits" in stats
 
-    def test_get_system_stats_empty(self):
+    def test_get_system_stats_empty(self) -> None:
         """Test getting system statistics when no activity."""
         # Execute
         stats = self.rate_limiter.get_system_stats()
@@ -340,7 +344,7 @@ class TestRateLimiter:
         assert stats["total_channels"] == 7
         assert stats["total_messages_in_window"] == 0
 
-    def test_get_system_stats_with_old_entries(self):
+    def test_get_system_stats_with_old_entries(self) -> None:
         """Test getting system statistics with old entries that should be cleaned up."""
         # Setup - add old timestamps
         old_time = time.time() - 120  # 2 minutes ago
@@ -359,10 +363,10 @@ class TestRateLimiter:
         assert stats["active_players"] == 1  # Only player1 has recent activity
         assert stats["total_messages_in_window"] == 1  # Only current_time entry
 
-    def test_get_system_stats_exception(self):
+    def test_get_system_stats_exception(self) -> None:
         """Test getting system statistics when an exception occurs."""
         # Setup - cause an exception
-        self.rate_limiter.windows = None
+        self.rate_limiter.windows = None  # type: ignore[assignment]
 
         # Execute
         stats = self.rate_limiter.get_system_stats()
@@ -370,7 +374,7 @@ class TestRateLimiter:
         # Verify - should return empty dict
         assert stats == {}
 
-    def test_is_player_rate_limited_true(self):
+    def test_is_player_rate_limited_true(self) -> None:
         """Test checking if player is rate limited (true case)."""
         # Setup - exceed the limit
         limit = self.rate_limiter.get_limit(self.channel)
@@ -385,7 +389,7 @@ class TestRateLimiter:
         # Verify
         assert result is True
 
-    def test_is_player_rate_limited_false(self):
+    def test_is_player_rate_limited_false(self) -> None:
         """Test checking if player is rate limited (false case)."""
         # Setup - within limits
         self.rate_limiter.record_message(self.player_id, self.channel, self.player_name)
@@ -396,7 +400,7 @@ class TestRateLimiter:
         # Verify
         assert result is False
 
-    def test_get_remaining_messages(self):
+    def test_get_remaining_messages(self) -> None:
         """Test getting remaining messages count."""
         # Setup - record some messages
         self.rate_limiter.record_message(self.player_id, self.channel, self.player_name)
@@ -409,7 +413,7 @@ class TestRateLimiter:
         limit = self.rate_limiter.get_limit(self.channel)
         assert remaining == limit - 2
 
-    def test_get_remaining_messages_zero(self):
+    def test_get_remaining_messages_zero(self) -> None:
         """Test getting remaining messages when at limit."""
         # Setup - reach the limit
         limit = self.rate_limiter.get_limit(self.channel)
@@ -424,10 +428,10 @@ class TestRateLimiter:
         # Verify
         assert remaining == 0
 
-    def test_get_remaining_messages_exception(self):
+    def test_get_remaining_messages_exception(self) -> None:
         """Test getting remaining messages when an exception occurs."""
         # Setup - cause an exception
-        self.rate_limiter.windows = None
+        self.rate_limiter.windows = None  # type: ignore[assignment]
 
         # Execute
         remaining = self.rate_limiter.get_remaining_messages(self.player_id, self.channel)
@@ -435,7 +439,7 @@ class TestRateLimiter:
         # Verify - should return 0 on error
         assert remaining == 0
 
-    def test_sliding_window_behavior(self):
+    def test_sliding_window_behavior(self) -> None:
         """Test sliding window behavior over time."""
         # Setup - record messages at different times
         base_time = time.time()
@@ -462,7 +466,7 @@ class TestRateLimiter:
             window = self.rate_limiter.windows[self.player_id][self.channel]
             assert len(window) == 0
 
-    def test_multiple_channels_independence(self):
+    def test_multiple_channels_independence(self) -> None:
         """Test that rate limits are independent across channels."""
         # Setup - exceed limit on one channel
         limit = self.rate_limiter.get_limit("say")
@@ -479,7 +483,7 @@ class TestRateLimiter:
         assert say_limited is False
         assert global_allowed is True
 
-    def test_multiple_players_independence(self):
+    def test_multiple_players_independence(self) -> None:
         """Test that rate limits are independent across players."""
         # Setup - exceed limit for one player
         limit = self.rate_limiter.get_limit(self.channel)
@@ -496,7 +500,7 @@ class TestRateLimiter:
         assert player1_limited is False
         assert player2_allowed is True
 
-    def test_edge_case_zero_limit(self):
+    def test_edge_case_zero_limit(self) -> None:
         """Test behavior with zero limit."""
         # Setup - set limit to zero
         self.rate_limiter.set_limit("zero_channel", 0)
@@ -507,7 +511,7 @@ class TestRateLimiter:
         # Verify - should be rate limited
         assert result is False
 
-    def test_edge_case_negative_limit(self):
+    def test_edge_case_negative_limit(self) -> None:
         """Test behavior with negative limit."""
         # Setup - set limit to negative
         self.rate_limiter.set_limit("negative_channel", -5)
@@ -518,7 +522,7 @@ class TestRateLimiter:
         # Verify - should be rate limited
         assert result is False
 
-    def test_percentage_used_calculation(self):
+    def test_percentage_used_calculation(self) -> None:
         """Test percentage used calculation in player stats."""
         # Setup - use exactly half the limit
         limit = self.rate_limiter.get_limit(self.channel)
@@ -535,7 +539,7 @@ class TestRateLimiter:
         expected_percentage = (limit // 2) / limit * 100
         assert channel_stats["percentage_used"] == expected_percentage
 
-    def test_percentage_used_zero_limit(self):
+    def test_percentage_used_zero_limit(self) -> None:
         """Test percentage used calculation with zero limit."""
         # Setup - set limit to zero
         self.rate_limiter.set_limit("zero_channel", 0)
@@ -551,7 +555,7 @@ class TestRateLimiter:
 class TestGlobalRateLimiter:
     """Test cases for the global rate limiter instance."""
 
-    def test_global_rate_limiter_instance(self):
+    def test_global_rate_limiter_instance(self) -> None:
         """Test that the global rate limiter instance exists."""
         assert isinstance(rate_limiter, RateLimiter)
         assert hasattr(rate_limiter, "enabled")
@@ -576,7 +580,7 @@ stats rolling and character creation.
 class TestRateLimiterInitialization:
     """Test rate limiter initialization."""
 
-    def test_default_initialization(self):
+    def test_default_initialization(self) -> None:
         """Test rate limiter initializes with default values."""
         limiter = UtilsRateLimiter()
 
@@ -584,7 +588,7 @@ class TestRateLimiterInitialization:
         assert limiter.window_seconds == 60
         assert isinstance(limiter.requests, dict)
 
-    def test_custom_initialization(self):
+    def test_custom_initialization(self) -> None:
         """Test rate limiter initializes with custom values."""
         limiter = UtilsRateLimiter(max_requests=5, window_seconds=30)
 
@@ -595,7 +599,7 @@ class TestRateLimiterInitialization:
 class TestRateLimitChecking:
     """Test rate limit checking functionality."""
 
-    def test_check_rate_limit_first_request(self):
+    def test_check_rate_limit_first_request(self) -> None:
         """Test first request is always allowed."""
         limiter = UtilsRateLimiter(max_requests=5)
 
@@ -604,7 +608,7 @@ class TestRateLimitChecking:
         assert result is True
         assert len(limiter.requests["user1"]) == 1
 
-    def test_check_rate_limit_within_limit(self):
+    def test_check_rate_limit_within_limit(self) -> None:
         """Test requests within limit are allowed."""
         limiter = UtilsRateLimiter(max_requests=3)
 
@@ -615,7 +619,7 @@ class TestRateLimitChecking:
 
         assert len(limiter.requests["user1"]) == 3
 
-    def test_check_rate_limit_at_limit(self):
+    def test_check_rate_limit_at_limit(self) -> None:
         """Test request at exactly the limit is denied."""
         limiter = UtilsRateLimiter(max_requests=3)
 
@@ -626,7 +630,7 @@ class TestRateLimitChecking:
         # 4th request should fail
         assert limiter.check_rate_limit("user1") is False
 
-    def test_check_rate_limit_old_requests_cleaned(self):
+    def test_check_rate_limit_old_requests_cleaned(self) -> None:
         """Test old requests are cleaned up from the window."""
         limiter = UtilsRateLimiter(max_requests=2, window_seconds=1)
 
@@ -641,7 +645,7 @@ class TestRateLimitChecking:
         # The cleanup happens inside check_rate_limit, so this should work
         assert limiter.check_rate_limit("user1") is True
 
-    def test_check_rate_limit_multiple_users_independent(self):
+    def test_check_rate_limit_multiple_users_independent(self) -> None:
         """Test rate limits are independent per user."""
         limiter = UtilsRateLimiter(max_requests=2)
 
@@ -659,7 +663,7 @@ class TestRateLimitChecking:
 class TestGetRateLimitInfo:
     """Test rate limit information retrieval."""
 
-    def test_get_rate_limit_info_no_requests(self):
+    def test_get_rate_limit_info_no_requests(self) -> None:
         """Test getting info when no requests made."""
         limiter = UtilsRateLimiter(max_requests=10, window_seconds=60)
 
@@ -672,7 +676,7 @@ class TestGetRateLimitInfo:
         assert info["reset_time"] == 0
         assert info["retry_after"] == 0
 
-    def test_get_rate_limit_info_with_requests(self):
+    def test_get_rate_limit_info_with_requests(self) -> None:
         """Test getting info with active requests."""
         limiter = UtilsRateLimiter(max_requests=10, window_seconds=60)
 
@@ -688,7 +692,7 @@ class TestGetRateLimitInfo:
         assert info["attempts_remaining"] == 7
         assert info["reset_time"] > 0
 
-    def test_get_rate_limit_info_retry_after(self):
+    def test_get_rate_limit_info_retry_after(self) -> None:
         """Test retry_after calculation."""
         limiter = UtilsRateLimiter(max_requests=2, window_seconds=10)
 
@@ -705,14 +709,14 @@ class TestGetRateLimitInfo:
 class TestEnforceRateLimit:
     """Test rate limit enforcement."""
 
-    def test_enforce_rate_limit_allows_request(self):
+    def test_enforce_rate_limit_allows_request(self) -> None:
         """Test enforce allows request when within limit."""
         limiter = UtilsRateLimiter(max_requests=5)
 
         # Should not raise exception
         limiter.enforce_rate_limit("user1")
 
-    def test_enforce_rate_limit_raises_on_exceed(self):
+    def test_enforce_rate_limit_raises_on_exceed(self) -> None:
         """Test enforce raises RateLimitError when limit exceeded."""
         limiter = UtilsRateLimiter(max_requests=2)
 
@@ -727,18 +731,19 @@ class TestEnforceRateLimit:
         error = exc_info.value
         assert "Rate limit exceeded" in str(error)
         assert error.limit_type == "api_endpoint"
+        assert error.retry_after is not None
         assert error.retry_after >= 0
 
 
 class TestGlobalLimiters:
     """Test global limiter instances."""
 
-    def test_stats_roll_limiter_exists(self):
+    def test_stats_roll_limiter_exists(self) -> None:
         """Test stats_roll_limiter is configured correctly."""
         assert stats_roll_limiter.max_requests == 10
         assert stats_roll_limiter.window_seconds == 60
 
-    def test_character_creation_limiter_exists(self):
+    def test_character_creation_limiter_exists(self) -> None:
         """Test character_creation_limiter is configured correctly."""
         assert character_creation_limiter.max_requests == 5
         assert character_creation_limiter.window_seconds == 300

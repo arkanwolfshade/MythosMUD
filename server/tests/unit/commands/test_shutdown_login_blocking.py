@@ -17,14 +17,14 @@ from unittest.mock import MagicMock
 class TestLoginBlockingDuringShutdown:
     """Test login blocking when shutdown is pending."""
 
-    def test_shutdown_check_helper_function_exists(self):
+    def test_shutdown_check_helper_function_exists(self) -> None:
         """Test that shutdown check helper function exists."""
         from server.commands.admin_shutdown_command import is_shutdown_pending
 
         # Function should exist and be callable
         assert callable(is_shutdown_pending)
 
-    def test_is_shutdown_pending_true(self):
+    def test_is_shutdown_pending_true(self) -> None:
         """Test shutdown check returns True when shutdown is pending."""
         from server.commands.admin_shutdown_command import is_shutdown_pending
 
@@ -35,7 +35,7 @@ class TestLoginBlockingDuringShutdown:
 
         assert result is True
 
-    def test_is_shutdown_pending_false(self):
+    def test_is_shutdown_pending_false(self) -> None:
         """Test shutdown check returns False when no shutdown."""
         from server.commands.admin_shutdown_command import is_shutdown_pending
 
@@ -46,7 +46,7 @@ class TestLoginBlockingDuringShutdown:
 
         assert result is False
 
-    def test_is_shutdown_pending_missing_attribute(self):
+    def test_is_shutdown_pending_missing_attribute(self) -> None:
         """Test shutdown check handles missing attribute gracefully."""
         from server.commands.admin_shutdown_command import is_shutdown_pending
 
@@ -61,7 +61,7 @@ class TestLoginBlockingDuringShutdown:
 class TestCharacterCreationBlockingDuringShutdown:
     """Test character creation blocking when shutdown is pending."""
 
-    def test_character_creation_blocked_message(self):
+    def test_character_creation_blocked_message(self) -> None:
         """Test that appropriate message is returned when creation blocked."""
         from server.commands.admin_shutdown_command import get_shutdown_blocking_message
 
@@ -70,7 +70,7 @@ class TestCharacterCreationBlockingDuringShutdown:
         assert "shutting" in message.lower() or "shutdown" in message.lower()
         assert "character" in message.lower() or "creation" in message.lower()
 
-    def test_stats_rolling_blocked_message(self):
+    def test_stats_rolling_blocked_message(self) -> None:
         """Test that appropriate message is returned when stats rolling blocked."""
         from server.commands.admin_shutdown_command import get_shutdown_blocking_message
 
@@ -82,7 +82,7 @@ class TestCharacterCreationBlockingDuringShutdown:
 class TestMOTDProgressionBlockingDuringShutdown:
     """Test MOTD progression blocking when shutdown is pending."""
 
-    def test_motd_progression_blocked_message(self):
+    def test_motd_progression_blocked_message(self) -> None:
         """Test that appropriate message is returned when MOTD progression blocked."""
         from server.commands.admin_shutdown_command import get_shutdown_blocking_message
 
@@ -95,7 +95,7 @@ class TestMOTDProgressionBlockingDuringShutdown:
 class TestShutdownBlockingIntegration:
     """Test integration of shutdown blocking across multiple endpoints."""
 
-    def test_get_shutdown_blocking_message_various_contexts(self):
+    def test_get_shutdown_blocking_message_various_contexts(self) -> None:
         """Test shutdown blocking messages for different contexts."""
         from server.commands.admin_shutdown_command import get_shutdown_blocking_message
 
