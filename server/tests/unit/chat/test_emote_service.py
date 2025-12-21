@@ -22,12 +22,11 @@ from server.game.emote_service import EmoteService
 class TestEmoteService:
     """Test EmoteService functionality."""
 
-    def __init__(self) -> None:
-        """Initialize test class attributes."""
-        # Attributes initialized in setup_method, but declared here for linter compliance
-        self.temp_dir: str | None = None
-        self.emote_file: Path | None = None
-        self.emote_data: dict | None = None
+    # Type annotations for instance attributes (satisfies linter without requiring __init__)
+    # Attributes are initialized in setup_method() per pytest best practices
+    temp_dir: str | None
+    emote_file: Path | None
+    emote_data: dict | None
 
     def setup_method(self) -> None:
         """Set up test fixtures."""

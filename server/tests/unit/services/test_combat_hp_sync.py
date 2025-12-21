@@ -609,9 +609,16 @@ class TestPersistPlayerDpBackground:
         with patch.object(sync, "_persist_player_dp_sync", side_effect=DatabaseError("Database error")):
             with patch.object(sync, "_publish_player_dp_correction_event", new_callable=AsyncMock) as mock_publish:
                 with patch("server.services.combat_hp_sync.logger"):
-                    await _persist_and_handle_errors()
+                    # Patch asyncio.create_task to consume the coroutine
+                    def create_task_side_effect(coro):
+                        # Close the coroutine to prevent "never awaited" warning
+                        coro.close()
+                        return MagicMock()
 
-                    mock_publish.assert_called_once()
+                    with patch("asyncio.create_task", side_effect=create_task_side_effect):
+                        await _persist_and_handle_errors()
+
+                        mock_publish.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_persist_player_dp_background_correction_event_failure(self) -> None:

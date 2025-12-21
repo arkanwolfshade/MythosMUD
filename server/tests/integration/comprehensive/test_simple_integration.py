@@ -35,6 +35,8 @@ class TestSimpleIntegration:
         cm.subscribe_to_room = AsyncMock()
         cm.unsubscribe_from_room = AsyncMock()
         cm.send_personal_message = AsyncMock()
+        # convert_room_players_uuids_to_names is async and returns a dict (not AsyncMock)
+        cm.convert_room_players_uuids_to_names = AsyncMock(return_value={})
         return cm
 
     @pytest.mark.asyncio
@@ -314,6 +316,10 @@ class TestSimpleIntegration:
         mock_connection_manager.async_persistence.get_room_by_id = Mock(return_value=mock_room)
         # Mock _canonical_room_id to return the room_id directly (not a coroutine)
         mock_connection_manager._canonical_room_id = Mock(return_value="test_room_001")
+        # convert_room_players_uuids_to_names is async and returns a dict (not AsyncMock)
+        mock_connection_manager.convert_room_players_uuids_to_names = AsyncMock(
+            return_value={"id": "test_room_001", "name": "Test Room"}
+        )
 
         # Create room with event bus
         room_data = {"id": "test_room_001", "name": "Test Room"}

@@ -8,7 +8,6 @@ processing, especially with the UserManager optimization.
 
 import time
 import uuid
-from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -20,20 +19,18 @@ from server.game.player_service import PlayerService
 class TestMuteFilteringPerformance:
     """Performance tests for mute filtering system."""
 
-    mock_persistence: Any
-    mock_room_service: Any
-    mock_player_service: Any
+    # Type annotations for instance attributes (satisfies linter without requiring __init__)
+    # Attributes are initialized in setup_method() per pytest best practices
+    mock_persistence: MagicMock
+    mock_room_service: MagicMock
+    mock_player_service: MagicMock
     muter_id: str
     muter_name: str
     target_id: str
     target_name: str
     room_id: str
-    muter_player: Any
-    target_player: Any
-
-    def __init__(self):
-        """Initialize test class attributes."""
-        # Attributes are initialized in setup_method
+    muter_player: MagicMock
+    target_player: MagicMock
 
     def setup_method(self) -> None:
         """Set up test fixtures."""

@@ -308,8 +308,11 @@ class TestAddItemsToWearableContainer:
             "capacity_slots": 10,
             "items": [{"item_id": "item-1"}],
         }
-        mock_persistence.get_container.return_value = container_data
-        mock_persistence.update_container.return_value = {"container_id": str(container_id), "items": []}
+        # get_container is async, update_container is sync
+        mock_persistence.get_container = AsyncMock(return_value=container_data)
+        from unittest.mock import Mock
+
+        mock_persistence.update_container = Mock(return_value={"container_id": str(container_id), "items": []})
 
         service = WearableContainerService(persistence=mock_persistence)
 
@@ -373,8 +376,11 @@ class TestUpdateWearableContainerItems:
             "capacity_slots": 10,
             "items": [],
         }
-        mock_persistence.get_container.return_value = container_data
-        mock_persistence.update_container.return_value = {"container_id": str(container_id), "items": []}
+        # get_container is async, update_container is sync
+        mock_persistence.get_container = AsyncMock(return_value=container_data)
+        from unittest.mock import Mock
+
+        mock_persistence.update_container = Mock(return_value={"container_id": str(container_id), "items": []})
 
         service = WearableContainerService(persistence=mock_persistence)
 

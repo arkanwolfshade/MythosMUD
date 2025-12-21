@@ -14,6 +14,7 @@ from uuid import uuid4
 import pytest
 
 from server.commands.admin_shutdown_command import execute_shutdown_sequence
+from server.exceptions import DatabaseError
 
 
 class TestGracefulShutdownSequence:
@@ -52,7 +53,8 @@ class TestGracefulShutdownSequence:
 
         # Mock persistence
         mock_persistence = MagicMock()
-        mock_persistence.save_player = MagicMock()
+        # save_player is async, so use AsyncMock
+        mock_persistence.save_player = AsyncMock()
         # Mock get_player to return Player objects
         mock_player1 = MagicMock()
         mock_player1.player_id = player_id1
@@ -191,7 +193,7 @@ class TestGracefulShutdownSequence:
         mock_persistence = MagicMock()
         mock_persistence.save_player = AsyncMock(
             side_effect=[
-                Exception("Database error"),
+                DatabaseError("Database error"),
                 None,  # Second save succeeds
             ]
         )
@@ -260,7 +262,7 @@ class TestGracefulShutdownSequence:
         }
         mock_npc_lifecycle_manager.despawn_npc = MagicMock(
             side_effect=[
-                Exception("Despawn error"),
+                OSError("Despawn error"),
                 True,  # Second despawn succeeds
             ]
         )
@@ -377,11 +379,12 @@ class TestGracefulShutdownSequence:
             mock_player.player_id = player_id
             return mock_player
 
-        def record_save_player(player_obj):
+        async def record_save_player(player_obj):
             execution_order.append(f"save_player_{player_obj.player_id}")
 
         mock_persistence.get_player = MagicMock(side_effect=record_get_player)
-        mock_persistence.save_player = MagicMock(side_effect=record_save_player)
+        # save_player is async, so use AsyncMock
+        mock_persistence.save_player = AsyncMock(side_effect=record_save_player)
         mock_app.state.persistence = mock_persistence
 
         # Mock NPC services
@@ -417,12 +420,19 @@ class TestGracefulShutdownSequence:
 
         # Mock task registry
         mock_task_registry = MagicMock()
+        mock_task = MagicMock()
+
+        def register_task_side_effect(coro, *_args, **_kwargs):
+            # Close the coroutine to prevent "never awaited" warning
+            coro.close()
+            return mock_task
 
         async def record_shutdown_tasks(*args, **kwargs):  # pylint: disable=unused-argument
             # Accept any arguments to match actual method signature (timeout may be passed as kwarg)
             execution_order.append("shutdown_tasks")
             return True
 
+        mock_task_registry.register_task.side_effect = register_task_side_effect
         mock_task_registry.shutdown_all = AsyncMock(side_effect=record_shutdown_tasks)
         mock_app.state.task_registry = mock_task_registry
 

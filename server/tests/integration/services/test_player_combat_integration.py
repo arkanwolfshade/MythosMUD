@@ -6,7 +6,7 @@ and integration with the existing player service for XP persistence.
 """
 
 from datetime import UTC, datetime, timedelta
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, Mock
 from uuid import uuid4
 
 import pytest
@@ -23,7 +23,9 @@ class TestPlayerCombatState:
     def player_combat_service(self):
         """Create a player combat service instance for testing."""
         mock_persistence = AsyncMock()
-        mock_event_bus = AsyncMock()
+        # EventBus.publish() is sync, not async
+        mock_event_bus = Mock()
+        mock_event_bus.publish = Mock(return_value=None)
         return PlayerCombatService(mock_persistence, mock_event_bus)
 
     @pytest.fixture
@@ -167,7 +169,9 @@ class TestPlayerXPIntegration:
     def player_combat_service(self):
         """Create a player combat service instance for testing."""
         mock_persistence = AsyncMock()
-        mock_event_bus = AsyncMock()
+        # EventBus.publish() is sync, not async
+        mock_event_bus = Mock()
+        mock_event_bus.publish = Mock(return_value=None)
         return PlayerCombatService(mock_persistence, mock_event_bus)
 
     @pytest.fixture
@@ -312,7 +316,9 @@ class TestPlayerCombatIntegration:
     def player_combat_service(self):
         """Create a player combat service instance for testing."""
         mock_persistence = AsyncMock()
-        mock_event_bus = AsyncMock()
+        # EventBus.publish() is sync, not async
+        mock_event_bus = Mock()
+        mock_event_bus.publish = Mock(return_value=None)
         return PlayerCombatService(mock_persistence, mock_event_bus)
 
     @pytest.fixture

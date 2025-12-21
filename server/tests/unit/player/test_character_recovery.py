@@ -106,6 +106,8 @@ class TestCharacterRecoveryFlow:
     pytestmark = [pytest.mark.asyncio, pytest.mark.serial]
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Mark as serial to prevent database and singleton conflicts in parallel execution
+    @pytest.mark.xdist_group(name="serial_character_recovery_tests")  # Force serial execution with pytest-xdist
     async def test_registration_returns_no_character(self, async_test_client):
         """Test that registration always returns has_character=False."""
         # Ensure app state has required mocks to prevent NoneType errors

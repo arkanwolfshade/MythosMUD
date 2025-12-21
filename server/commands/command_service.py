@@ -393,14 +393,26 @@ class CommandService:
 
         # Exclude Pydantic internal attributes that trigger deprecation warnings
         # These should be accessed from the class, not the instance (Pydantic V2.11+)
-        pydantic_internal_attrs = {"model_computed_fields", "model_fields", "model_config"}
-        all_attrs = {
-            key: getattr(parsed_command, key, "<NOT FOUND>")
+        # Access model_computed_fields and model_fields from the class, not instance
+        command_class = type(parsed_command)
+        # Type annotation: Pydantic model_fields and model_computed_fields are dicts, but default to set() if not present
+        model_computed_fields: dict[str, Any] | set[Any] = getattr(command_class, "model_computed_fields", set())
+        model_fields: dict[str, Any] | set[Any] = getattr(command_class, "model_fields", set())
+        # Build set of all Pydantic internal attribute names to exclude
+        pydantic_internal_attrs = {"model_config"}
+        if model_computed_fields:
+            pydantic_internal_attrs.add("model_computed_fields")
+        if model_fields:
+            pydantic_internal_attrs.add("model_fields")
+        # Get all attribute names first, then access them to avoid accessing deprecated attributes
+        all_attr_names = [
+            key
             for key in dir(parsed_command)
             if not key.startswith("_")
             and not callable(getattr(parsed_command, key, None))
             and key not in pydantic_internal_attrs
-        }
+        ]
+        all_attrs = {key: getattr(parsed_command, key, "<NOT FOUND>") for key in all_attr_names}
         logger.debug(
             "Parsed command all attributes",
             player=player_name,

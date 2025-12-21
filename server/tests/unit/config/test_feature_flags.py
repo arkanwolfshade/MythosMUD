@@ -145,8 +145,12 @@ class TestCombatConfigurationManagement:
 
     def test_feature_flag_deployment_scenario(self, monkeypatch):
         """Test feature flag deployment scenario - gradual rollout."""
+        # Ensure clean state before starting
+        reset_config()
+
         # Start with combat disabled
         monkeypatch.setenv("GAME_COMBAT_ENABLED", "false")
+        reset_config()  # Force config reload after setting env var
         config1: AppConfig = get_config()
         game_config1: GameConfig = cast(GameConfig, config1.game)
         # Pylint limitation: doesn't recognize cast() for Pydantic nested models
@@ -162,10 +166,14 @@ class TestCombatConfigurationManagement:
 
     def test_combat_configuration_hot_reload(self, monkeypatch):
         """Test that combat configuration can be hot-reloaded."""
+        # Ensure clean state before starting
+        reset_config()
+
         # Initial configuration
         monkeypatch.setenv("GAME_COMBAT_TICK_INTERVAL", "6")
         monkeypatch.setenv("GAME_COMBAT_TIMEOUT_SECONDS", "180")
 
+        reset_config()  # Force config reload after setting env vars
         config1: AppConfig = get_config()
         game_config1: GameConfig = cast(GameConfig, config1.game)
         # Pylint limitation: doesn't recognize cast() for Pydantic nested models
@@ -185,10 +193,14 @@ class TestCombatConfigurationManagement:
 
     def test_combat_configuration_rollback(self, monkeypatch):
         """Test combat configuration rollback scenario."""
+        # Ensure clean state before starting
+        reset_config()
+
         # Deploy new configuration
         monkeypatch.setenv("GAME_COMBAT_ENABLED", "true")
         monkeypatch.setenv("GAME_COMBAT_XP_MULTIPLIER", "2.0")
 
+        reset_config()  # Force config reload after setting env vars
         config1: AppConfig = get_config()
         game_config1: GameConfig = cast(GameConfig, config1.game)
         # Pylint limitation: doesn't recognize cast() for Pydantic nested models
@@ -208,11 +220,15 @@ class TestCombatConfigurationManagement:
 
     def test_environment_specific_combat_configuration(self, monkeypatch):
         """Test environment-specific combat configuration."""
+        # Ensure clean state before starting
+        reset_config()
+
         # Production environment
         monkeypatch.setenv("LOGGING_ENVIRONMENT", "production")
         monkeypatch.setenv("GAME_COMBAT_ENABLED", "true")
         monkeypatch.setenv("GAME_COMBAT_LOGGING_ENABLED", "true")
 
+        reset_config()  # Force config reload after setting env vars
         config: AppConfig = get_config()
         game_config: GameConfig = cast(GameConfig, config.game)
         # Pylint limitation: doesn't recognize cast() for Pydantic nested models
@@ -333,6 +349,8 @@ class TestCombatConfigurationIntegration:
 
     def test_combat_config_in_app_config(self) -> None:
         """Test that combat configuration is properly integrated in AppConfig."""
+        # Ensure config cache is cleared before creating new instance
+        reset_config()
         config = AppConfig()
 
         # Verify combat settings are accessible
@@ -380,6 +398,9 @@ class TestCombatConfigurationIntegration:
 
     def test_combat_config_validation_integration(self) -> None:
         """Test that combat configuration validation integrates with existing validation."""
+        # Ensure clean state before starting
+        reset_config()
+
         # This should pass - all valid values
         config: AppConfig = AppConfig()
         # Remove redundant cast - mypy recognizes config.game as GameConfig
@@ -518,27 +539,37 @@ class TestCombatConfigurationEdgeCases:
         config = GameConfig(aliases_dir="data/aliases", combat_enabled=0)
         assert config.combat_enabled is False
 
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_config_tests")
     def test_configuration_precedence(self, monkeypatch):
         """Test configuration precedence (explicit > environment > default)."""
-        # Set environment variable
-        monkeypatch.setenv("GAME_COMBAT_TICK_INTERVAL", "8")
-
-        # Explicit value should override environment variable
-        game_config = GameConfig(aliases_dir="data/aliases", combat_tick_interval=10)
-        assert game_config.combat_tick_interval == 10
-
-        # Environment variable should override default
+        # Ensure clean state before starting
         reset_config()
 
-        app_config: AppConfig = get_config()
-        game_config: GameConfig = cast(GameConfig, app_config.game)
-        # Pylint limitation: doesn't recognize cast() for Pydantic nested models
-        assert game_config.combat_tick_interval == 8  # pylint: disable=no-member
+        try:
+            # Set environment variable
+            monkeypatch.setenv("GAME_COMBAT_TICK_INTERVAL", "8")
 
-        # Default should be used when neither is set
-        monkeypatch.delenv("GAME_COMBAT_TICK_INTERVAL", raising=False)
-        reset_config()
-        app_config = get_config()
-        game_config = cast(GameConfig, app_config.game)
-        # Pylint limitation: doesn't recognize cast() for Pydantic nested models
-        assert game_config.combat_tick_interval == 6  # pylint: disable=no-member  # Default value
+            # Explicit value should override environment variable
+            game_config = GameConfig(aliases_dir="data/aliases", combat_tick_interval=10)
+            assert game_config.combat_tick_interval == 10
+
+            # Environment variable should override default
+            reset_config()  # Force config reload after setting env var
+
+            app_config: AppConfig = get_config()
+            game_config: GameConfig = cast(GameConfig, app_config.game)
+            # Pylint limitation: doesn't recognize cast() for Pydantic nested models
+            assert game_config.combat_tick_interval == 8  # pylint: disable=no-member
+
+            # Default should be used when neither is set
+            monkeypatch.delenv("GAME_COMBAT_TICK_INTERVAL", raising=False)
+            reset_config()  # Force config reload after deleting env var
+            app_config = get_config()
+            game_config = cast(GameConfig, app_config.game)
+            # Pylint limitation: doesn't recognize cast() for Pydantic nested models
+            assert game_config.combat_tick_interval == 6  # pylint: disable=no-member  # Default value
+        finally:
+            # Ensure cleanup
+            monkeypatch.delenv("GAME_COMBAT_TICK_INTERVAL", raising=False)
+            reset_config()

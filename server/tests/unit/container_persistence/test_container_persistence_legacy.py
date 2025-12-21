@@ -30,34 +30,46 @@ from server.exceptions import DatabaseError, ValidationError
 class TestParseJsonbColumn:
     """Test _parse_jsonb_column helper function."""
 
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_jsonb_tests")
     def test_parse_jsonb_column_with_none(self) -> None:
         """Test _parse_jsonb_column returns default for None."""
         result = _parse_jsonb_column(None, {})
         assert result == {}
 
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_jsonb_tests")
     def test_parse_jsonb_column_with_string(self) -> None:
         """Test _parse_jsonb_column parses JSON string."""
         json_str = '{"key": "value"}'
         result = _parse_jsonb_column(json_str, {})
         assert result == {"key": "value"}
 
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_jsonb_tests")
     def test_parse_jsonb_column_with_empty_string(self) -> None:
         """Test _parse_jsonb_column returns default for empty string."""
         result = _parse_jsonb_column("", {})
         assert result == {}
 
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_jsonb_tests")
     def test_parse_jsonb_column_with_dict(self) -> None:
         """Test _parse_jsonb_column returns dict as-is."""
         data = {"key": "value"}
         result = _parse_jsonb_column(data, {})
         assert result == data
 
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_jsonb_tests")
     def test_parse_jsonb_column_with_list(self) -> None:
         """Test _parse_jsonb_column returns list as-is."""
         data = [1, 2, 3]
         result = _parse_jsonb_column(data, [])
         assert result == data
 
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_jsonb_tests")
     def test_parse_jsonb_column_with_empty_dict(self) -> None:
         """Test _parse_jsonb_column returns default for empty dict (falsy value)."""
         # Empty dict {} is falsy, so function returns default

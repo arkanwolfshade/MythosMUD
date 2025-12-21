@@ -540,9 +540,9 @@ class TestCommandModels:
 class TestCommandParser:
     """Test CommandParser functionality."""
 
-    def __init__(self) -> None:
-        """Initialize test class attributes."""
-        self.parser: CommandParser
+    # Type annotation for instance attribute (satisfies linter without requiring __init__)
+    # Attribute is initialized in setup_method() per pytest best practices
+    parser: CommandParser
 
     def setup_method(self) -> None:
         """Set up test fixtures."""

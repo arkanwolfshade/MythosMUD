@@ -56,49 +56,60 @@ def create_user_and_player(session: Session, player_id: str, username: str) -> P
     return player
 
 
+@pytest.mark.serial  # Mark as serial to prevent database table creation conflicts in parallel execution
+@pytest.mark.xdist_group(name="serial_lucidity_tests")  # Force serial execution with pytest-xdist
 def test_player_lucidity_defaults_and_constraints():
     engine = build_engine()
     Base.metadata.create_all(engine)
 
-    # Generate unique identifiers to avoid constraint violations on repeated test runs
-    player_id = str(uuid.uuid4())  # Use proper UUID format for PostgreSQL
-    unique_suffix = str(uuid.uuid4())[:8]
-    username = f"arkhamite-{unique_suffix}"
+    try:
+        # Generate unique identifiers to avoid constraint violations on repeated test runs
+        player_id = str(uuid.uuid4())  # Use proper UUID format for PostgreSQL
+        unique_suffix = str(uuid.uuid4())[:8]
+        username = f"arkhamite-{unique_suffix}"
 
-    with Session(engine) as session:
-        player = create_user_and_player(session, player_id, username)
+        with Session(engine) as session:
+            player = create_user_and_player(session, player_id, username)
 
-        player_lucidity = PlayerLucidity()
-        player.lucidity = player_lucidity
-        session.commit()
+            player_lucidity = PlayerLucidity()
+            player.lucidity = player_lucidity
+            session.commit()
 
-        persisted = session.get(PlayerLucidity, player_id)
-        assert persisted is not None
-        assert persisted.current_lcd == 100
-        assert persisted.current_tier == "lucid"
-        assert persisted.liabilities == "[]"
+            persisted = session.get(PlayerLucidity, player_id)
+            assert persisted is not None
+            assert persisted.current_lcd == 100
+            assert persisted.current_tier == "lucid"
+            assert persisted.liabilities == "[]"
 
-        persisted.current_lcd = -25
-        persisted.current_tier = "uneasy"
-        session.commit()
+            persisted.current_lcd = -25
+            persisted.current_tier = "uneasy"
+            session.commit()
 
-        persisted.current_lcd = 120
-        with pytest.raises(IntegrityError):
-            session.flush()
-        session.rollback()
+            persisted.current_lcd = 120
+            with pytest.raises(IntegrityError):
+                session.flush()
+            session.rollback()
 
-        persisted.current_tier = "eldritch"
-        with pytest.raises(IntegrityError):
-            session.flush()
-        session.rollback()
+            persisted.current_tier = "eldritch"
+            with pytest.raises(IntegrityError):
+                session.flush()
+            session.rollback()
 
-        # Use a valid UUID format that doesn't exist in the database (for foreign key constraint test)
-        nonexistent_player_id = str(uuid.uuid4())
-        rogue_lucidity = PlayerLucidity(player_id=nonexistent_player_id)
-        session.add(rogue_lucidity)
-        with pytest.raises(IntegrityError):
-            session.flush()
-        session.rollback()
+            # Use a valid UUID format that doesn't exist in the database (for foreign key constraint test)
+            nonexistent_player_id = str(uuid.uuid4())
+            rogue_lucidity = PlayerLucidity(player_id=nonexistent_player_id)
+            session.add(rogue_lucidity)
+            with pytest.raises(IntegrityError):
+                session.flush()
+            session.rollback()
+    finally:
+        # Clean up tables
+        try:
+            Base.metadata.drop_all(engine)
+        except Exception:  # pylint: disable=broad-except
+            # Ignore cleanup errors - tables may already be dropped or in use
+            pass
+        engine.dispose()
 
 
 def test_lucidity_relationships_cascade():

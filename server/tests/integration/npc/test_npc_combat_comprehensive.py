@@ -517,14 +517,12 @@ class TestNPCCombatIntegrationComprehensive:
 class TestNPCCombatIntegrationEdgeCases:
     """Test edge cases for NPC Combat Integration."""
 
-    def __init__(self) -> None:
-        """Initialize test class attributes."""
-        # Initialize attributes to satisfy linter (attributes-defined-outside-init)
-        # These are set up properly in setup_method per pytest conventions
-        self.event_bus: Mock | None = None
-        self.persistence: Mock | None = None
-        self.game_mechanics: Mock | None = None
-        self.integration: NPCCombatIntegration | None = None
+    # Type annotations for instance attributes (satisfies linter without requiring __init__)
+    # Attributes are initialized in setup_method() per pytest best practices
+    event_bus: Mock
+    persistence: Mock
+    game_mechanics: Mock
+    integration: NPCCombatIntegration
 
     def setup_method(self) -> None:
         """Set up test environment."""

@@ -137,6 +137,8 @@ class TestPlayerPreferencesIntegration:
             assert prefs["success"] is False
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Mark as serial to prevent database transaction conflicts in parallel execution
+    @pytest.mark.xdist_group(name="serial_integration_tests")  # Force serial execution with pytest-xdist
     async def test_multiple_players_preferences(self, async_session_factory, preferences_service):
         """Test managing preferences for multiple players."""
         async with async_session_factory() as session:

@@ -495,10 +495,10 @@ eldritch systems.
 class TestMonitoringAPI:
     """Test the monitoring API endpoints."""
 
-    def __init__(self) -> None:
-        """Initialize test class attributes."""
-        self.app: FastAPI | None = None
-        self.client: TestClient | None = None
+    # Type annotations for instance attributes (satisfies linter without requiring __init__)
+    # Attributes are initialized in setup_method() per pytest best practices
+    app: FastAPI
+    client: TestClient
 
     def setup_method(self) -> None:
         """Set up test environment."""

@@ -17,19 +17,17 @@ from server.services.npc_combat_integration_service import NPCCombatIntegrationS
 class TestNPCCombatIntegrationService:
     """Test cases for NPC Combat Integration Service."""
 
-    event_bus: Any
-    persistence: Any
-    combat_service: Any
-    messaging_integration: Any
-    event_publisher: Any
-    mock_npc_instance_service: Any
+    # Type annotations for instance attributes (satisfies linter without requiring __init__)
+    # Attributes are initialized in setup_method() per pytest best practices
+    event_bus: Mock
+    persistence: Mock
+    combat_service: AsyncMock
+    messaging_integration: Mock
+    event_publisher: Mock
+    mock_npc_instance_service: Mock
     npc_service_patcher: Any
-    mock_get_service: Any
-    service: Any
-
-    def __init__(self):
-        """Initialize test attributes."""
-        # Attributes are initialized in setup_method
+    mock_get_service: Mock
+    service: NPCCombatIntegrationService
 
     def setup_method(self) -> None:
         """Set up test environment."""
@@ -110,8 +108,9 @@ class TestNPCCombatIntegrationService:
         # Set up NPC instance in mock service's active_npcs
         self.mock_npc_instance_service.lifecycle_manager.active_npcs[npc_id] = npc_instance
 
-        self.service._get_player_name = AsyncMock(return_value="TestPlayer")
-        self.service._get_player_room_id = AsyncMock(return_value=room_id)
+        # Type ignore: Dynamic attribute assignment for testing purposes
+        self.service._get_player_name = AsyncMock(return_value="TestPlayer")  # type: ignore[attr-defined]
+        self.service._get_player_room_id = AsyncMock(return_value=room_id)  # type: ignore[attr-defined]
 
         # Execute
         result = await self.service.handle_player_attack_on_npc(
@@ -210,14 +209,15 @@ class TestNPCCombatIntegrationService:
         async def mock_get_npc_definition(_npc_id):
             return npc_definition
 
-        self.service._data_provider.get_npc_definition = mock_get_npc_definition
+        # Type ignore: Method assignment for testing purposes (mocking internal methods)
+        self.service._data_provider.get_npc_definition = mock_get_npc_definition  # type: ignore[method-assign]
 
         # Mock rewards handler to return XP reward
-        self.service._rewards.calculate_xp_reward = AsyncMock(return_value=5)
-        self.service._rewards.award_xp_to_killer = AsyncMock(return_value=True)
+        self.service._rewards.calculate_xp_reward = AsyncMock(return_value=5)  # type: ignore[method-assign]
+        self.service._rewards.award_xp_to_killer = AsyncMock(return_value=True)  # type: ignore[method-assign]
 
         # Mock lifecycle handler
-        self.service._lifecycle.despawn_npc_safely = AsyncMock(return_value=True)
+        self.service._lifecycle.despawn_npc_safely = AsyncMock(return_value=True)  # type: ignore[method-assign]
 
         # Execute
         result = await self.service.handle_npc_death(

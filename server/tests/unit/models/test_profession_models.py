@@ -902,12 +902,16 @@ class TestProfessionHelperMethods:
         # Assert
         assert result == requirements
 
+    @pytest.mark.serial  # Mark as serial to prevent database table conflicts in parallel execution
+    @pytest.mark.xdist_group(name="serial_profession_tests")  # Force serial execution with pytest-xdist
     def test_get_stat_requirements_invalid_json(self, db_session: Session) -> None:
         """Test get_stat_requirements with invalid JSON returns empty dict."""
         # Arrange
+        # Use unique ID to avoid conflicts in parallel execution
+        unique_id = int(time.time() * 1000) % 1000000
         profession = Profession(
-            id=0,
-            name="Scholar",
+            id=unique_id,
+            name=f"Scholar-{unique_id}",
             description="A learned individual",
             flavor_text="Knowledge",
             stat_requirements="invalid json{",

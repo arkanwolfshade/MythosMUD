@@ -19,17 +19,17 @@ from server.services.nats_service import NATSService
 class TestRoomBasedMuteFiltering:
     """Test mute filtering across all room-based message types."""
 
-    def __init__(self) -> None:
-        """Initialize test class attributes."""
-        self.mock_nats_service: MagicMock | None = None
-        self.room_id: str = ""
-        self.sender_id: str = ""
-        self.receiver_id: str = ""
-        self.sender_name: str = ""
-        self.receiver_name: str = ""
-        self.mock_connection_manager: MagicMock | None = None
-        self.mock_async_persistence: AsyncMock | None = None
-        self.handler: NATSMessageHandler | None = None
+    # Type annotations for instance attributes (satisfies linter without requiring __init__)
+    # Attributes are initialized in setup_method() per pytest best practices
+    mock_nats_service: MagicMock
+    room_id: str
+    sender_id: str
+    receiver_id: str
+    sender_name: str
+    receiver_name: str
+    mock_connection_manager: MagicMock
+    mock_async_persistence: AsyncMock
+    handler: NATSMessageHandler
 
     def setup_method(self) -> None:
         """Set up shared fixtures for each test."""

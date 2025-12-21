@@ -417,6 +417,8 @@ class TestRealEventFlow:
         cm.subscribe_to_room = AsyncMock()
         cm.unsubscribe_from_room = AsyncMock()
         cm.send_personal_message = AsyncMock()
+        # convert_room_players_uuids_to_names is async and returns a dict
+        cm.convert_room_players_uuids_to_names = AsyncMock(return_value={})
         return cm
 
     @pytest.mark.asyncio
@@ -458,6 +460,10 @@ class TestRealEventFlow:
         if not hasattr(mock_connection_manager, "async_persistence"):
             mock_connection_manager.async_persistence = Mock()
         mock_connection_manager.async_persistence.get_room_by_id = Mock(return_value=mock_room)
+        # convert_room_players_uuids_to_names is async and returns a dict (not AsyncMock)
+        mock_connection_manager.convert_room_players_uuids_to_names = AsyncMock(
+            return_value={"id": "test_room_001", "name": "Test Room"}
+        )
 
         # Create event with proper UUID
         event = PlayerEnteredRoom(player_id=str(test_player_id), room_id="test_room_001")
@@ -510,6 +516,10 @@ class TestRealEventFlow:
         if not hasattr(mock_connection_manager, "async_persistence"):
             mock_connection_manager.async_persistence = Mock()
         mock_connection_manager.async_persistence.get_room_by_id = Mock(return_value=room)
+        # convert_room_players_uuids_to_names is async and returns a dict (not AsyncMock)
+        mock_connection_manager.convert_room_players_uuids_to_names = AsyncMock(
+            return_value={"id": "test_room_001", "name": "Test Room"}
+        )
 
         # Mock NPC instance service to avoid initialization errors
         import server.services.npc_instance_service as npc_service_module

@@ -67,7 +67,14 @@ class TestPeriodicAuditScheduling:
         mock_manager = MagicMock()
         mock_task: asyncio.Future[Any] = asyncio.Future()
         mock_task.set_result(None)
-        mock_manager.create_tracked_task.return_value = mock_task
+
+        # create_tracked_task consumes the coroutine by creating a task from it
+        def create_task_side_effect(coro, *_args, **_kwargs):
+            # Close the coroutine to prevent "never awaited" warning
+            coro.close()
+            return mock_task
+
+        mock_manager.create_tracked_task.side_effect = create_task_side_effect
         mock_get_manager.return_value = mock_manager
 
         auditor = PeriodicOrphanAuditor(check_interval_seconds=1.0)
@@ -92,7 +99,14 @@ class TestPeriodicAuditScheduling:
         mock_manager = MagicMock()
         mock_task: asyncio.Future[Any] = asyncio.Future()
         mock_task.set_result(None)
-        mock_manager.create_tracked_task.return_value = mock_task
+
+        # create_tracked_task consumes the coroutine by creating a task from it
+        def create_task_side_effect(coro, *_args, **_kwargs):
+            # Close the coroutine to prevent "never awaited" warning
+            coro.close()
+            return mock_task
+
+        mock_manager.create_tracked_task.side_effect = create_task_side_effect
         mock_get_manager.return_value = mock_manager
 
         auditor = PeriodicOrphanAuditor(check_interval_seconds=1.0)
@@ -394,7 +408,14 @@ class TestAuditorShutdown:
         mock_task = MagicMock()  # Use MagicMock instead of AsyncMock for task
         mock_task.done.return_value = False
         mock_task.cancel = MagicMock()
-        mock_manager.create_tracked_task.return_value = mock_task
+
+        # create_tracked_task consumes the coroutine by creating a task from it
+        def create_task_side_effect(coro, *_args, **_kwargs):
+            # Close the coroutine to prevent "never awaited" warning
+            coro.close()
+            return mock_task
+
+        mock_manager.create_tracked_task.side_effect = create_task_side_effect
         mock_get_manager.return_value = mock_manager
 
         auditor = PeriodicOrphanAuditor(check_interval_seconds=1.0)
@@ -416,7 +437,14 @@ class TestAuditorShutdown:
         mock_task = MagicMock()
         mock_task.done.return_value = False
         mock_task.cancel.side_effect = Exception("Cancel failed")
-        mock_manager.create_tracked_task.return_value = mock_task
+
+        # create_tracked_task consumes the coroutine by creating a task from it
+        def create_task_side_effect(coro, *_args, **_kwargs):
+            # Close the coroutine to prevent "never awaited" warning
+            coro.close()
+            return mock_task
+
+        mock_manager.create_tracked_task.side_effect = create_task_side_effect
         mock_get_manager.return_value = mock_manager
 
         auditor = PeriodicOrphanAuditor()

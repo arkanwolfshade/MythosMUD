@@ -536,7 +536,14 @@ class TestStartPeriodicChecks:
 
         mock_tracked_manager = MagicMock()
         mock_task = MagicMock()
-        mock_tracked_manager.create_tracked_task.return_value = mock_task
+
+        # create_tracked_task consumes the coroutine by creating a task from it
+        def create_task_side_effect(coro, *_args, **_kwargs):
+            # Close the coroutine to prevent "never awaited" warning
+            coro.close()
+            return mock_task
+
+        mock_tracked_manager.create_tracked_task.side_effect = create_task_side_effect
 
         active_websockets: dict[str, Any] = {}
         connection_metadata: dict[str, Any] = {}
@@ -600,7 +607,13 @@ class TestStopPeriodicChecks:
 
         with patch("server.realtime.monitoring.health_monitor.logger"):
             with patch("asyncio.get_running_loop", return_value=MagicMock()):
-                with patch("asyncio.create_task"):
+
+                def create_task_side_effect(coro):
+                    # Close the coroutine to prevent "never awaited" warning
+                    coro.close()
+                    return MagicMock()
+
+                with patch("asyncio.create_task", side_effect=create_task_side_effect):
                     monitor.stop_periodic_checks()
 
                     mock_task.cancel.assert_called_once()
@@ -623,9 +636,11 @@ class TestStopPeriodicChecks:
         monitor._health_check_task = None
 
         with patch("server.realtime.monitoring.health_monitor.logger"):
-            monitor.stop_periodic_checks()
+            # Patch asyncio.get_running_loop to return None to avoid creating task
+            with patch("asyncio.get_running_loop", side_effect=RuntimeError("No running loop")):
+                monitor.stop_periodic_checks()
 
-            # Should not raise error
+                # Should not raise error
 
     def test_stop_periodic_checks_task_done(self) -> None:
         """Test stopping periodic checks when task is already done."""
@@ -701,11 +716,22 @@ class TestWaitForTaskCancellation:
         task = asyncio.create_task(never_complete())
 
         with patch("server.realtime.monitoring.health_monitor.logger"):
-            await monitor._wait_for_task_cancellation(task)
+            # Patch asyncio.wait_for to simulate timeout
+            async def wait_for_side_effect(_coro, _timeout):
+                # Simulate timeout by raising TimeoutError immediately
+                raise TimeoutError("Timeout")
 
-            # Should handle timeout gracefully
-            task.cancel()
-            try:
-                await task
-            except asyncio.CancelledError:
-                pass
+            with patch("asyncio.wait_for", side_effect=wait_for_side_effect):
+                # Should handle timeout gracefully without raising
+                await monitor._wait_for_task_cancellation(task)
+
+                # Clean up the task since it's still running
+                if not task.done():
+                    task.cancel()
+                    try:
+                        await task
+                    except asyncio.CancelledError:
+                        pass
+
+                # Verify the function completed without raising (test passes if we get here)
+                assert True

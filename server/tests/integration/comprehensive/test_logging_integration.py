@@ -21,13 +21,12 @@ from server.logging.player_guid_formatter import PlayerGuidFormatter
 class TestLoggingIntegration:
     """Test suite for logging integration with PlayerGuidFormatter."""
 
-    def __init__(self) -> None:
-        """Initialize test class attributes."""
-        # Attributes are initialized in setup_method() per pytest conventions
-        self.mock_player_service: Mock
-        self.mock_persistence: Mock
-        self.temp_dir: str
-        self.log_dir: Path
+    # Type annotations for instance attributes (satisfies linter without requiring __init__)
+    # Attributes are initialized in setup_method() per pytest best practices
+    mock_player_service: Mock
+    mock_persistence: Mock
+    temp_dir: str
+    log_dir: Path
 
     def setup_method(self) -> None:
         """Set up test fixtures."""

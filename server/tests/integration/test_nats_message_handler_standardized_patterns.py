@@ -18,14 +18,12 @@ from server.services.nats_subject_manager import NATSSubjectManager
 class TestNATSMessageHandlerStandardizedPatterns:
     """Test NATSMessageHandler integration with NATSSubjectManager for standardized subscription patterns."""
 
-    def __init__(self) -> None:
-        """Initialize test class attributes."""
-        # Initialize attributes to satisfy pylint (attributes defined outside __init__)
-        # These will be properly set in setup_method, which is the pytest standard pattern
-        self.test_config: NATSConfig | None = None
-        self.nats_service: NATSService | None = None
-        self.subject_manager: NATSSubjectManager | None = None
-        self.mock_nc: AsyncMock | None = None
+    # Type annotations for instance attributes (satisfies linter without requiring __init__)
+    # Attributes are initialized in setup_method() per pytest best practices
+    test_config: NATSConfig
+    nats_service: NATSService
+    subject_manager: NATSSubjectManager
+    mock_nc: AsyncMock
 
     def setup_method(self) -> None:
         """Set up test fixtures."""

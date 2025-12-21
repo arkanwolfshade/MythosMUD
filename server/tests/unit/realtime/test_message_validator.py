@@ -20,10 +20,10 @@ from server.realtime.message_validator import (
 class TestMessageValidator:
     """Test cases for MessageValidator class."""
 
-    def __init__(self) -> None:
-        """Initialize test class attributes."""
-        self.validator: WebSocketMessageValidator
-        self.player_id: str
+    # Type annotations for instance attributes (satisfies linter without requiring __init__)
+    # Attributes are initialized in setup_method() per pytest best practices
+    validator: WebSocketMessageValidator
+    player_id: str
 
     def setup_method(self) -> None:
         """Set up test fixtures."""

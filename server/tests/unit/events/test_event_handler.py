@@ -116,6 +116,8 @@ class TestEventHandlerBroadcasting:
         cm.subscribe_to_room = AsyncMock()
         cm.unsubscribe_from_room = AsyncMock()
         cm.send_personal_message = AsyncMock()
+        # convert_room_players_uuids_to_names is async and returns a dict
+        cm.convert_room_players_uuids_to_names = AsyncMock(return_value={})
         return cm
 
     @pytest.fixture
@@ -262,7 +264,7 @@ class TestEventHandlerBroadcasting:
     async def test_event_handler_handles_missing_player_gracefully(
         self,
         event_bus,
-        event_handler,
+        event_handler,  # pylint: disable=unused-argument
         mock_connection_manager,  # pylint: disable=unused-argument
     ):
         """Test that RealTimeEventHandler handles missing players gracefully."""
@@ -285,7 +287,7 @@ class TestEventHandlerBroadcasting:
     async def test_event_handler_handles_missing_room_gracefully(
         self,
         event_bus,
-        event_handler,
+        event_handler,  # pylint: disable=unused-argument
         mock_connection_manager,  # pylint: disable=unused-argument
     ):
         """Test that RealTimeEventHandler handles missing rooms gracefully."""

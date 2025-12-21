@@ -7,7 +7,6 @@ ensuring that the mute filtering works correctly for all muting players.
 
 import uuid
 from datetime import UTC, datetime
-from typing import Any
 from unittest.mock import AsyncMock, MagicMock, call, patch
 
 import pytest
@@ -19,20 +18,18 @@ from server.services.nats_service import NATSService
 class TestMultiplePlayersMuting:
     """Test multiple players muting the same person."""
 
-    mock_nats_service: Any
-    mock_connection_manager: Any
-    mock_async_persistence: Any
-    handler: Any
+    # Type annotations for instance attributes (satisfies linter without requiring __init__)
+    # Attributes are initialized in setup_method() per pytest best practices
+    mock_nats_service: MagicMock
+    mock_connection_manager: MagicMock
+    mock_async_persistence: MagicMock
+    handler: NATSMessageHandler
     room_id: str
     sender_id: str
     sender_name: str
     muted_receivers: list[str]
     unmuted_receivers: list[str]
     all_players: list[str]
-
-    def __init__(self):
-        """Initialize test class attributes."""
-        # Attributes are initialized in setup_method
 
     def setup_method(self) -> None:
         """Set up test fixtures."""

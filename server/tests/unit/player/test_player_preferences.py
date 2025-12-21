@@ -209,6 +209,8 @@ class TestPlayerChannelPreferencesTable:
             )
             session.add(preferences1)
             await session.commit()
+            # Expunge the instance to avoid identity key conflicts
+            session.expunge(preferences1)
 
             # Try to create duplicate - should fail
             with pytest.raises(IntegrityError):

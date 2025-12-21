@@ -353,6 +353,7 @@ class TestEventBus:
     async def test_concurrent_operations(self) -> None:
         """Test that EventBus handles concurrent operations correctly."""
         event_bus = EventBus()
+        event_bus.set_main_loop(asyncio.get_running_loop())
         received_events = []
 
         def handler(event):

@@ -12,6 +12,7 @@ Usage:
     logger.info("Database configuration", url=config.database.url)
 """
 
+import threading
 from functools import lru_cache
 from os import environ, getenv
 
@@ -21,6 +22,7 @@ __all__ = ["get_config", "reset_config", "AppConfig"]
 
 # Module-level config cache
 _config_instance = None
+_config_lock = threading.Lock()
 
 
 @lru_cache(maxsize=1)
@@ -41,12 +43,18 @@ def get_config() -> AppConfig:
         config = get_config()
         logger.info("Server configuration", host=config.server.host, port=config.server.port)
     """
-    global _config_instance
+    global _config_instance  # pylint: disable=global-statement
+    # JUSTIFICATION: Global statement required for thread-safe singleton pattern with double-checked locking.
+    # The _config_instance must be accessible across function calls to maintain singleton behavior.
 
+    # Double-checked locking pattern for thread safety
     if _config_instance is None:
-        # PostgreSQL-only: No fallback to SQLite
-        # Environment variables must be set before calling get_config()
-        _config_instance = AppConfig()
+        with _config_lock:
+            # Check again after acquiring lock (another thread might have created it)
+            if _config_instance is None:
+                # PostgreSQL-only: No fallback to SQLite
+                # Environment variables must be set before calling get_config()
+                _config_instance = AppConfig()
 
     return _config_instance
 
@@ -58,7 +66,10 @@ def reset_config() -> None:
     This is primarily used for testing to force configuration reload.
     Should not be called in production code.
     """
-    global _config_instance
+    global _config_instance  # pylint: disable=global-statement
+    # JUSTIFICATION: Global statement required for thread-safe singleton pattern.
+    # The _config_instance must be reset across function calls for test isolation.
 
-    _config_instance = None
-    get_config.cache_clear()
+    with _config_lock:
+        _config_instance = None
+        get_config.cache_clear()

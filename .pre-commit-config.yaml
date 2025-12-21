@@ -37,7 +37,7 @@ repos:
           - prometheus-client
           - psutil
           - psycopg2-binary
-        args: [--config-file=pyproject.toml, --no-incremental]
+        args: [--config-file=pyproject.toml, --no-incremental, --show-error-codes, --pretty]
         # Align exclude patterns with pyproject.toml
         # --no-incremental: Disable incremental mode to avoid SQLite cache locking issues in pre-commit hooks
         # Exclude persistence/__init__.py to avoid duplicate module conflict with persistence.py

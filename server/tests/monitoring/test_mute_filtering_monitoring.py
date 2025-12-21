@@ -19,23 +19,18 @@ from server.game.player_service import PlayerService
 class TestMuteFilteringMonitoring:
     """Monitoring and alerting tests for mute filtering system."""
 
-    def __init__(self) -> None:
-        """Initialize test class attributes."""
-        # Mock services
-        self.mock_persistence: MagicMock
-        self.mock_room_service: MagicMock
-        self.mock_player_service: MagicMock
-
-        # Test data
-        self.muter_id: str
-        self.muter_name: str
-        self.target_id: str
-        self.target_name: str
-        self.room_id: str
-
-        # Mock player objects
-        self.muter_player: MagicMock
-        self.target_player: MagicMock
+    # Type annotations for instance attributes (satisfies linter without requiring __init__)
+    # Attributes are initialized in setup_method() per pytest best practices
+    mock_persistence: MagicMock
+    mock_room_service: MagicMock
+    mock_player_service: MagicMock
+    muter_id: str
+    muter_name: str
+    target_id: str
+    target_name: str
+    room_id: str
+    muter_player: MagicMock
+    target_player: MagicMock
 
     def setup_method(self) -> None:
         """Set up test fixtures."""

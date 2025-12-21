@@ -6,27 +6,32 @@ player_entered, player_left, and game_tick events to NATS subjects.
 """
 
 from datetime import datetime
-from unittest.mock import AsyncMock, Mock
+from typing import Any
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
+from server.container import ApplicationContainer
 from server.realtime.event_publisher import EventPublisher
 
 
 class TestEventPublisher:
     """Test cases for EventPublisher class."""
 
-    def __init__(self) -> None:
-        """Initialize test class attributes."""
-        # Attributes are set in setup_method, but declared here for pylint
-        self.mock_nats_service: Mock
-        self.event_publisher: EventPublisher
-        self.test_player_id: str
-        self.test_room_id: str
-        self.test_timestamp: str
+    # Type annotations for instance attributes (satisfies linter without requiring __init__)
+    # Attributes are initialized in setup_method() per pytest best practices
+    mock_nats_service: Mock
+    event_publisher: EventPublisher
+    test_player_id: str
+    test_room_id: str
+    test_timestamp: str
+    _persistence_patcher: Any
 
     def setup_method(self) -> None:
         """Set up test fixtures."""
+        # Reset ApplicationContainer singleton to prevent interference between parallel tests
+        ApplicationContainer.reset_instance()
+
         # Create a mock NATS service
         self.mock_nats_service = Mock()
         self.mock_nats_service.publish = AsyncMock()
@@ -34,11 +39,24 @@ class TestEventPublisher:
 
         # Create the EventPublisher instance
         self.event_publisher = EventPublisher(self.mock_nats_service)
+        # Ensure EventPublisher doesn't try to access ApplicationContainer singleton
+        # by patching _get_async_persistence to return None
+        self._persistence_patcher = patch.object(self.event_publisher, "_get_async_persistence", return_value=None)
+        self._persistence_patcher.start()
 
         # Test data
         self.test_player_id = "test_player_123"
         self.test_room_id = "arkham_1"
         self.test_timestamp = datetime.now().isoformat()
+
+    def teardown_method(self) -> None:
+        """Clean up after each test."""
+        # Stop the patch if it was started
+        if self._persistence_patcher:
+            self._persistence_patcher.stop()
+            self._persistence_patcher = None
+        # Reset ApplicationContainer singleton to prevent interference between parallel tests
+        ApplicationContainer.reset_instance()
 
     def test_event_publisher_initialization(self) -> None:
         """Test EventPublisher initialization."""

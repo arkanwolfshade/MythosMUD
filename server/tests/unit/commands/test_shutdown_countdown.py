@@ -119,7 +119,7 @@ class TestShutdownNotificationBroadcast:
     async def test_broadcast_shutdown_notification_failure(self) -> None:
         """Test handling broadcast failure."""
         mock_connection_manager = MagicMock()
-        mock_connection_manager.broadcast_global_event = AsyncMock(side_effect=Exception("Broadcast failed"))
+        mock_connection_manager.broadcast_global_event = AsyncMock(side_effect=OSError("Broadcast failed"))
 
         result = await broadcast_shutdown_notification(mock_connection_manager, 30)
 

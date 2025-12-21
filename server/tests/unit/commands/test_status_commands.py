@@ -526,7 +526,18 @@ class TestHandleStatusCommand:
 
         mock_player = MagicMock()
         mock_player.get_stats.side_effect = AttributeError("Error")
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_player.current_room_id = "test_room_001"
+        # get_player_by_name is async, so use AsyncMock
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+        # get_profession_by_id is async
+        mock_persistence.get_profession_by_id = AsyncMock(return_value=None)
+        # get_room_by_id is sync (uses cache)
+        mock_persistence.get_room_by_id = MagicMock(return_value=MagicMock(name="Test Room"))
+
+        # Mock combat_service
+        mock_combat_service = AsyncMock()
+        mock_combat_service.get_combat_by_participant = AsyncMock(return_value=None)
+        mock_app.state.combat_service = mock_combat_service
 
         mock_app.state.persistence = mock_persistence
         mock_request.app = mock_app
