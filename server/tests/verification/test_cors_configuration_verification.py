@@ -271,7 +271,11 @@ class TestCORSConfigurationVerification:
         for origin in allowed_origins:
             response = client.get("/api/players/", headers={"Origin": origin})
 
-            assert "access-control-allow-origin" in response.headers
+            # CORS headers should be present even on error responses
+            # The endpoint may return 401/500 due to missing auth, but CORS should still work
+            assert "access-control-allow-origin" in response.headers, (
+                f"Missing CORS header in {response.status_code} response"
+            )
             assert response.headers["access-control-allow-origin"] == origin
 
     def test_cors_error_responses(self, client):
@@ -287,7 +291,11 @@ class TestCORSConfigurationVerification:
         for _i in range(5):
             response = client.get("/api/players/", headers={"Origin": "http://localhost:5173"})
 
-            assert "access-control-allow-origin" in response.headers
+            # CORS headers should be present even on error responses
+            # The endpoint may return 401/500 due to missing auth, but CORS should still work
+            assert "access-control-allow-origin" in response.headers, (
+                f"Missing CORS header in {response.status_code} response"
+            )
             assert response.headers["access-control-allow-origin"] == "http://localhost:5173"
             assert "access-control-allow-credentials" in response.headers
             assert response.headers["access-control-allow-credentials"] == "true"

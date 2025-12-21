@@ -164,7 +164,22 @@ def event_loop() -> Generator[asyncio.AbstractEventLoop, None, None]:
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     yield loop
-    loop.close()
+    # CRITICAL: On Windows with ProactorEventLoop, ensure all pending operations
+    # complete before closing the loop to prevent "Event loop is closed" errors
+    try:
+        # Cancel all pending tasks
+        pending = asyncio.all_tasks(loop)
+        for task in pending:
+            task.cancel()
+        # Run until all tasks are cancelled
+        if pending:
+            loop.run_until_complete(asyncio.gather(*pending, return_exceptions=True))
+    except Exception:  # pylint: disable=broad-except
+        # JUSTIFICATION: Silently handle any errors during cleanup to prevent
+        # test failures from cleanup issues. Some tasks might already be cancelled.
+        pass
+    finally:
+        loop.close()
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -192,7 +207,7 @@ def _mock_application_container_fixture() -> Any:
 
 
 @pytest.fixture
-def test_client(_mock_application_container: Any) -> Any:
+def test_client(mock_application_container: Any) -> Any:  # pylint: disable=unused-argument
     from fastapi.testclient import TestClient
 
     from ..main import app
@@ -201,7 +216,7 @@ def test_client(_mock_application_container: Any) -> Any:
 
 
 @pytest.fixture
-async def async_test_client(_mock_application_container: Any) -> AsyncGenerator[AsyncClient, None]:
+async def async_test_client(mock_application_container: Any) -> AsyncGenerator[AsyncClient, None]:  # pylint: disable=unused-argument
     from ..main import app
 
     transport = ASGITransport(app=app)

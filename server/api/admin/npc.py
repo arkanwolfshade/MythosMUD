@@ -14,7 +14,7 @@ import json
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
 # from ...auth.dependencies import get_current_superuser  # Not used yet
@@ -122,6 +122,8 @@ class NPCMoveRequest(BaseModel):
 
 class NPCSpawnRuleCreate(BaseModel):
     """Model for creating NPC spawn rules."""
+
+    model_config = ConfigDict(extra="forbid")  # Reject unknown fields
 
     npc_definition_id: int = Field(..., gt=0)
     sub_zone_id: str = Field(..., min_length=1, max_length=50)

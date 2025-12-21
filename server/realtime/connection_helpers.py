@@ -104,6 +104,9 @@ async def _send_to_websockets(
 
         had_connection_attempts = True
         websocket = manager.active_websockets[connection_id]
+        # Guard against None websocket (can happen during cleanup)
+        if websocket is None:
+            continue
         try:
             await websocket.send_json(serializable_event)
             delivery_status["websocket_delivered"] += 1

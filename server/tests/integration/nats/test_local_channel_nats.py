@@ -179,7 +179,7 @@ class TestLocalChannelSubZoneSubscriptionManagement:
         )
 
     @pytest.mark.asyncio
-    async def test_subzone_subscription_creation(self, nats_handler, _mock_nats_service: MagicMock):
+    async def test_subzone_subscription_creation(self, nats_handler, mock_nats_service: MagicMock):  # pylint: disable=unused-argument
         """Test creating sub-zone subscriptions for local channels."""
         room_id = "earth_arkhamcity_northside_intersection_derby_high"
         subzone = extract_subzone_from_room_id(room_id)
@@ -195,7 +195,7 @@ class TestLocalChannelSubZoneSubscriptionManagement:
         assert subzone_subject == "chat.local.subzone.northside"
 
     @pytest.mark.asyncio
-    async def test_subzone_unsubscription(self, nats_handler, _mock_nats_service: MagicMock):
+    async def test_subzone_unsubscription(self, nats_handler, mock_nats_service: MagicMock):  # pylint: disable=unused-argument
         """Test unsubscribing from sub-zone subscriptions."""
         room_id = "earth_arkhamcity_northside_intersection_derby_high"
         subzone = extract_subzone_from_room_id(room_id)
@@ -208,7 +208,7 @@ class TestLocalChannelSubZoneSubscriptionManagement:
         nats_handler.unsubscribe_from_subzone.assert_called_once_with(subzone)
 
     @pytest.mark.asyncio
-    async def test_player_movement_subzone_change(self, nats_handler, _mock_nats_service: MagicMock):
+    async def test_player_movement_subzone_change(self, nats_handler, mock_nats_service: MagicMock):  # pylint: disable=unused-argument
         """Test handling player movement between sub-zones."""
         # AI Agent: Inject mock connection_manager via instance variable (no longer a global)
         mock_connection_manager = MagicMock()
@@ -260,7 +260,7 @@ class TestLocalChannelSubZoneSubscriptionManagement:
         nats_handler.track_player_subzone_subscription.assert_called_once_with(player_id, subzone)
 
     @pytest.mark.asyncio
-    async def test_multiple_players_same_subzone(self, nats_handler, _mock_nats_service: MagicMock):
+    async def test_multiple_players_same_subzone(self, nats_handler, mock_nats_service: MagicMock):  # pylint: disable=unused-argument
         """Test multiple players in the same sub-zone sharing subscription."""
         # AI Agent: Inject mock connection_manager via instance variable (no longer a global)
         mock_connection_manager = MagicMock()
@@ -291,7 +291,7 @@ class TestLocalChannelSubZoneSubscriptionManagement:
         assert subzone == "northside"  # Use the variable to avoid linting warning
 
     @pytest.mark.asyncio
-    async def test_subzone_subscription_cleanup(self, nats_handler, _mock_nats_service: MagicMock):
+    async def test_subzone_subscription_cleanup(self, nats_handler, mock_nats_service: MagicMock):  # pylint: disable=unused-argument
         """Test cleanup of sub-zone subscriptions when no players remain."""
         # AI Agent: Inject mock connection_manager via instance variable (no longer a global)
         mock_connection_manager = MagicMock()

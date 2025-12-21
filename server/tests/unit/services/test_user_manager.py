@@ -378,29 +378,14 @@ class TestMuteGlobal:
             muter_id = uuid4()
             target_id = uuid4()
 
-            # mute_global calls is_admin which is async, but doesn't await it
-            # This means it gets a coroutine object which is truthy
-            # So the check will always think the player is admin
-            # We need to patch is_admin to return a coroutine that evaluates to False
-            # But since coroutines are truthy, we need a different approach
-            # Actually, the code has a bug - it should use is_admin_sync or await is_admin
-            # For testing, let's patch is_admin to return False directly (which won't work)
-            # Or we can test the actual buggy behavior
-            # Let's use is_admin_sync which is what should be used
+            # mute_global now uses is_admin_sync (fixed in code)
             with patch.object(manager, "is_admin_sync", return_value=False):
                 with patch.object(manager, "save_player_mutes", return_value=True):
                     with patch("server.services.user_manager.logger"):
-                        # Patch is_admin to return False synchronously (mocking the intended behavior)
-                        # But since the code doesn't await, we need to make it return False
-                        # The actual code bug means is_admin() returns a coroutine (truthy)
-                        # So we'll patch it to return False directly
-                        with patch.object(manager, "is_admin", return_value=False):
-                            result = manager.mute_global(
-                                muter_id, "Muter", target_id, "Target", duration_minutes=60, reason="Test"
-                            )
+                        result = manager.mute_global(
+                            muter_id, "Muter", target_id, "Target", duration_minutes=60, reason="Test"
+                        )
 
-                        # Note: The actual code has a bug where is_admin is async but not awaited
-                        # This test patches it to return False directly to test the intended behavior
                         assert result is True
                         assert target_id in manager._global_mutes
 
@@ -412,7 +397,7 @@ class TestMuteGlobal:
             muter_id = uuid4()
             target_id = uuid4()
 
-            with patch.object(manager, "is_admin", new_callable=AsyncMock, return_value=True):
+            with patch.object(manager, "is_admin_sync", return_value=True):
                 with patch("server.services.user_manager.logger"):
                     result = manager.mute_global(muter_id, "Muter", target_id, "Target")
 

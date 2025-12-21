@@ -13,7 +13,6 @@ restarted, including:
 from __future__ import annotations
 
 import os
-from pathlib import Path
 from typing import cast
 from uuid import UUID, uuid4
 
@@ -36,7 +35,7 @@ def ensure_test_item_prototypes():
 
     database_url = os.getenv("DATABASE_URL")
     if not database_url or not database_url.startswith("postgresql"):
-        pytest.skip("DATABASE_URL must be set to a PostgreSQL URL")
+        raise ValueError("DATABASE_URL must be set to a PostgreSQL URL")
 
     url = database_url.replace("postgresql+psycopg2://", "postgresql://").replace(
         "postgresql+asyncpg://", "postgresql://"
@@ -111,14 +110,7 @@ def ensure_containers_table():
     # Get database URL from environment
     database_url = os.getenv("DATABASE_URL")
     if not database_url or not database_url.startswith("postgresql"):
-        pytest.skip("DATABASE_URL must be set to a PostgreSQL URL")
-
-    # Read the migration SQL file
-    project_root = Path(__file__).parent.parent.parent.parent.parent
-    migration_file = project_root / "db" / "migrations" / "012_create_containers_table.sql"
-
-    if not migration_file.exists():
-        pytest.skip(f"Migration file not found: {migration_file}")
+        raise ValueError("DATABASE_URL must be set to a PostgreSQL URL")
 
     # Execute the migration SQL
     import psycopg2
@@ -134,10 +126,50 @@ def ensure_containers_table():
     cursor = conn.cursor()
 
     try:
-        # Read and execute the migration SQL
-        with open(migration_file, encoding="utf-8") as f:
-            migration_sql = f.read()
-        cursor.execute(migration_sql)
+        # Check if containers table exists
+        cursor.execute(
+            """
+            SELECT EXISTS (
+                SELECT FROM information_schema.tables
+                WHERE table_schema = 'public'
+                AND table_name = 'containers'
+            );
+            """
+        )
+        result = cursor.fetchone()
+        table_exists = result[0] if result is not None else False
+
+        if not table_exists:
+            # Create containers table if it doesn't exist (using schema from authoritative_schema.sql)
+            cursor.execute(
+                """
+                CREATE TABLE public.containers (
+                    container_instance_id uuid DEFAULT gen_random_uuid() NOT NULL,
+                    source_type text NOT NULL,
+                    owner_id uuid,
+                    room_id character varying(255),
+                    entity_id uuid,
+                    lock_state text DEFAULT 'unlocked'::text NOT NULL,
+                    capacity_slots integer NOT NULL,
+                    weight_limit integer,
+                    decay_at timestamp with time zone,
+                    allowed_roles jsonb,
+                    metadata_json jsonb,
+                    created_at timestamp with time zone DEFAULT now() NOT NULL,
+                    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+                    container_item_instance_id character varying(64),
+                    items_json jsonb DEFAULT '[]'::jsonb NOT NULL,
+                    CONSTRAINT containers_capacity_slots_check CHECK (((capacity_slots > 0) AND (capacity_slots <= 20))),
+                    CONSTRAINT containers_lock_state_check CHECK ((lock_state = ANY (ARRAY['unlocked'::text, 'locked'::text, 'sealed'::text]))),
+                    CONSTRAINT containers_source_type_check CHECK ((source_type = ANY (ARRAY['environment'::text, 'equipment'::text, 'corpse'::text]))),
+                    CONSTRAINT containers_weight_limit_check CHECK (((weight_limit IS NULL) OR (weight_limit > 0))),
+                    PRIMARY KEY (container_instance_id)
+                );
+                CREATE INDEX IF NOT EXISTS idx_containers_room ON containers(room_id);
+                CREATE INDEX IF NOT EXISTS idx_containers_entity ON containers(entity_id);
+                CREATE INDEX IF NOT EXISTS idx_containers_owner ON containers(owner_id);
+                """
+            )
     finally:
         cursor.close()
         conn.close()
@@ -148,7 +180,7 @@ def ensure_containers_table():
 
 
 @pytest.fixture
-async def persistence(_ensure_containers_table):
+async def persistence(ensure_containers_table):  # pylint: disable=redefined-outer-name,unused-argument,unused-variable
     """Create an AsyncPersistenceLayer instance for testing with proper cleanup."""
     from server.async_persistence import AsyncPersistenceLayer
     from server.database import DatabaseManager
@@ -179,6 +211,26 @@ async def persistence(_ensure_containers_table):
 async def container_service(persistence):
     """Create a ContainerService instance for testing."""
     return ContainerService(persistence=persistence)
+
+
+def _ensure_room_in_cache(persistence, room_id: str) -> None:
+    """Ensure a room exists in the persistence layer's room cache."""
+    from server.models.room import Room
+
+    # The room cache is shared between persistence and player_repo
+    # Add to persistence cache which is used by player_repo
+    if room_id not in persistence._room_cache:
+        room_data = {
+            "id": room_id,
+            "name": "Test Room",
+            "description": "Test room for container tests",
+        }
+        persistence._room_cache[room_id] = Room(room_data)
+
+    # Also ensure it's in the player_repo's cache (same reference, but being explicit)
+    if hasattr(persistence, "_player_repo") and hasattr(persistence._player_repo, "_room_cache"):
+        if room_id not in persistence._player_repo._room_cache:
+            persistence._player_repo._room_cache[room_id] = persistence._room_cache[room_id]
 
 
 async def _create_test_player(
@@ -219,8 +271,8 @@ async def _create_test_player(
         now = datetime.now(UTC).replace(tzinfo=None)
         cursor.execute(
             """
-            INSERT INTO users (id, email, username, display_name, hashed_password, is_active, is_superuser, is_verified, created_at, updated_at)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO users (id, email, username, display_name, hashed_password, is_active, is_superuser, is_verified, is_admin, created_at, updated_at)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             ON CONFLICT (id) DO NOTHING
             """,
             (
@@ -232,6 +284,7 @@ async def _create_test_player(
                 user.is_active,
                 user.is_superuser,
                 user.is_verified,
+                False,  # is_admin
                 now,
                 now,
             ),
@@ -396,11 +449,14 @@ class TestContainerPersistenceRestart:
         )
         assert found_container_id_uuid == container_id
 
-    async def test_corpse_container_persistence(self, persistence, _ensure_test_item_prototypes) -> None:
+    async def test_corpse_container_persistence(self, persistence, ensure_test_item_prototypes) -> None:  # pylint: disable=unused-argument
         """Test that corpse containers persist across server restarts."""
         # Use a real room ID that exists in the database
         room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
         owner_id = uuid4()
+
+        # Ensure room exists in cache
+        _ensure_room_in_cache(persistence, room_id)
 
         # Create test player (owner)
         await _create_test_player(persistence, owner_id, f"TestPlayer_{owner_id.hex[:8]}", room_id)
@@ -503,11 +559,18 @@ class TestContainerPersistenceRestart:
         assert persisted_container.metadata["lock_type"] == "key"
 
     async def test_container_updates_persist(
-        self, persistence, container_service: ContainerService, _ensure_test_item_prototypes
+        self,
+        persistence,
+        container_service: ContainerService,
+        ensure_test_item_prototypes,  # pylint: disable=unused-argument
     ) -> None:
         """Test that container updates persist across restarts."""
         # Use a real room ID that exists in the database
         room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
+
+        # Ensure room exists in cache to prevent validate_and_fix_player_room from changing player room
+        _ensure_room_in_cache(persistence, room_id)
+
         player_id = uuid4()
 
         # Create test player

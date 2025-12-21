@@ -567,7 +567,7 @@ class TestAPIErrorLoggingIntegration:
         user.username = "testuser"
         return user
 
-    def test_api_player_creation_error_logging(self, _test_mixin, container_test_client):
+    def test_api_player_creation_error_logging(self, test_mixin, container_test_client):  # pylint: disable=unused-argument
         """
         Test error logging in player creation API endpoint.
 
@@ -596,7 +596,7 @@ class TestAPIErrorLoggingIntegration:
                     assert response.status_code == 400
                     assert "Invalid input" in response.json()["error"]["message"]
 
-    def test_api_player_deletion_error_logging(self, _test_mixin, container_test_client):
+    def test_api_player_deletion_error_logging(self, test_mixin, container_test_client):  # pylint: disable=unused-argument
         """Test error logging in player deletion API endpoint."""
         # Use a valid UUID format for the path parameter
         nonexistent_player_id = str(uuid4())
@@ -619,7 +619,7 @@ class TestAPIErrorLoggingIntegration:
                     assert response.status_code == 404
                     assert "Player not found" in response.json()["error"]["message"]
 
-    def test_api_player_retrieval_error_logging(self, _test_mixin, container_test_client):
+    def test_api_player_retrieval_error_logging(self, test_mixin, container_test_client):  # pylint: disable=unused-argument
         """Test error logging in player retrieval API endpoint."""
         # Use a valid UUID format for the path parameter
         nonexistent_player_id = str(uuid4())
@@ -676,7 +676,11 @@ class TestCommandHandlerErrorLoggingIntegration:
 
     @pytest.mark.asyncio
     async def test_command_validation_error_logging(
-        self, _test_mixin, mock_request, mock_alias_storage, mock_current_user
+        self,
+        test_mixin,  # pylint: disable=unused-argument
+        mock_request,
+        mock_alias_storage,
+        mock_current_user,
     ):
         """Test error logging in command validation."""
         with patch("server.command_handler_unified.logger") as mock_logger:
@@ -695,7 +699,11 @@ class TestCommandHandlerErrorLoggingIntegration:
 
     @pytest.mark.asyncio
     async def test_command_processing_error_logging(
-        self, _test_mixin, mock_request, mock_alias_storage, mock_current_user
+        self,
+        test_mixin,  # pylint: disable=unused-argument
+        mock_request,
+        mock_alias_storage,
+        mock_current_user,
     ):
         """Test error logging in command processing."""
         with patch("server.command_handler_unified.logger") as mock_logger:
@@ -721,7 +729,7 @@ class TestDatabaseErrorLoggingIntegration:
         """Provide error logging test mixin."""
         return ErrorLoggingTestMixin()
 
-    def test_database_connection_error_logging(self, _test_mixin):
+    def test_database_connection_error_logging(self, test_mixin):  # pylint: disable=unused-argument
         """Test error logging for database connection failures."""
         # Test that DatabaseError can be raised and caught
         with pytest.raises(DatabaseError) as exc_info:
@@ -730,7 +738,7 @@ class TestDatabaseErrorLoggingIntegration:
         # Verify the error message
         assert "Database connection failed" in str(exc_info.value)
 
-    def test_database_session_error_logging(self, _test_mixin):
+    def test_database_session_error_logging(self, test_mixin):  # pylint: disable=unused-argument
         """Test error logging for database session errors."""
         # Test that DatabaseError can be raised for session errors
         with pytest.raises(DatabaseError) as exc_info:
@@ -748,7 +756,7 @@ class TestPersistenceErrorLoggingIntegration:
         """Provide error logging test mixin."""
         return ErrorLoggingTestMixin()
 
-    def test_persistence_save_error_logging(self, _test_mixin):
+    def test_persistence_save_error_logging(self, test_mixin):  # pylint: disable=unused-argument
         """Test error logging for persistence save operations."""
         # Test that DatabaseError can be raised for save operations
         with pytest.raises(DatabaseError) as exc_info:
@@ -757,7 +765,7 @@ class TestPersistenceErrorLoggingIntegration:
         # Verify the error message
         assert "Save operation failed" in str(exc_info.value)
 
-    def test_persistence_load_error_logging(self, _test_mixin):
+    def test_persistence_load_error_logging(self, test_mixin):  # pylint: disable=unused-argument
         """Test error logging for persistence load operations."""
         # Test that DatabaseError can be raised for load operations
         with pytest.raises(DatabaseError) as exc_info:
@@ -784,7 +792,7 @@ class TestWebSocketErrorLoggingIntegration:
         websocket.client.port = 8080
         return websocket
 
-    def test_websocket_connection_error_logging(self, _test_mixin, _mock_websocket):
+    def test_websocket_connection_error_logging(self, test_mixin, mock_websocket):  # pylint: disable=unused-argument
         """Test error logging for WebSocket connection errors."""
         # Test that ConnectionError can be raised for WebSocket connection errors
         with pytest.raises(ConnectionError) as exc_info:
@@ -793,7 +801,7 @@ class TestWebSocketErrorLoggingIntegration:
         # Verify the error message
         assert "WebSocket connection failed" in str(exc_info.value)
 
-    def test_websocket_message_error_logging(self, _test_mixin, _mock_websocket):
+    def test_websocket_message_error_logging(self, test_mixin, mock_websocket):  # pylint: disable=unused-argument
         """Test error logging for WebSocket message processing errors."""
         # Test that ValueError can be raised for WebSocket message errors
         with pytest.raises(ValueError) as exc_info:
@@ -811,7 +819,7 @@ class TestAuthenticationErrorLoggingIntegration:
         """Provide error logging test mixin."""
         return ErrorLoggingTestMixin()
 
-    def test_authentication_failure_logging(self, _test_mixin):
+    def test_authentication_failure_logging(self, test_mixin):  # pylint: disable=unused-argument
         """Test error logging for authentication failures."""
         # Test that AuthenticationError can be raised for authentication failures
         with pytest.raises(AuthenticationError) as exc_info:
@@ -820,7 +828,7 @@ class TestAuthenticationErrorLoggingIntegration:
         # Verify the error message
         assert "Invalid credentials" in str(exc_info.value)
 
-    def test_authorization_failure_logging(self, _test_mixin):
+    def test_authorization_failure_logging(self, test_mixin):  # pylint: disable=unused-argument
         """Test error logging for authorization failures."""
         # Test that AuthenticationError can be raised for authorization failures
         # (authorization is part of authentication/access control)
@@ -839,7 +847,7 @@ class TestErrorLoggingEndToEnd:
         """Provide error logging test mixin."""
         return ErrorLoggingTestMixin()
 
-    def test_error_logging_flow_complete(self, _test_mixin):
+    def test_error_logging_flow_complete(self, test_mixin):  # pylint: disable=unused-argument
         """Test complete error logging flow from API to persistence."""
         # Test that different error types can be raised and caught
         error_types = []
@@ -858,7 +866,7 @@ class TestErrorLoggingEndToEnd:
         assert "MythosValidationError" in error_types, "MythosValidationError should be tested"
         assert "DatabaseError" in error_types, "DatabaseError should be tested"
 
-    def test_error_logging_context_preservation(self, _test_mixin):
+    def test_error_logging_context_preservation(self, test_mixin):  # pylint: disable=unused-argument
         """Test that error context is preserved through the error chain."""
         # Create initial context
         initial_context = create_error_context(
@@ -870,7 +878,7 @@ class TestErrorLoggingEndToEnd:
         assert initial_context.metadata["operation"] == "test", "Metadata should be preserved"
         assert initial_context.metadata["step"] == "initial", "Step should be preserved"
 
-    def test_error_logging_performance_under_load(self, _test_mixin):
+    def test_error_logging_performance_under_load(self, test_mixin):  # pylint: disable=unused-argument
         """Test error logging performance under simulated load."""
         import time
 

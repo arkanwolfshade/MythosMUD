@@ -79,6 +79,7 @@ class TestPostgresRow:
         assert "name" in row
         assert "missing" not in row
 
+    @pytest.mark.xdist_group(name="serial_postgres_tests")  # Force serial execution with pytest-xdist
     def test_postgres_row_len(self) -> None:
         """Test PostgresRow __len__ method."""
         row_dict = {"id": 1, "name": "test"}

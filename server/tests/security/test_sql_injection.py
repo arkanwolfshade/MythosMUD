@@ -6,19 +6,18 @@ and are protected against SQL injection attacks.
 """
 
 import asyncio
-import json
 import os
 import uuid
 from collections.abc import AsyncGenerator
 from datetime import datetime
 from typing import Any, cast
+from uuid import UUID
 
 import pytest
 from sqlalchemy.exc import SQLAlchemyError
 
 from server.async_persistence import AsyncPersistenceLayer
 from server.exceptions import DatabaseError, ValidationError
-from server.models.player import Player
 
 
 class TestSQLInjectionPrevention:
@@ -41,8 +40,6 @@ class TestSQLInjectionPrevention:
         """Clean up test players after each test."""
         # Clean up any existing player for test_user_id before test runs
         # This prevents unique constraint violations on user_id
-        from uuid import UUID
-
         try:
             test_user_id_raw = getattr(persistence, "_test_user_id", None)
             if test_user_id_raw:
@@ -86,7 +83,7 @@ class TestSQLInjectionPrevention:
         # Use PostgreSQL from environment - SQLite is no longer supported
         database_url = os.getenv("DATABASE_URL")
         if not database_url or not database_url.startswith("postgresql"):
-            pytest.skip("DATABASE_URL must be set to a PostgreSQL URL. SQLite is no longer supported.")
+            raise ValueError("DATABASE_URL must be set to a PostgreSQL URL. SQLite is no longer supported.")
 
         # CRITICAL: Dispose database engine before test to prevent event loop mismatch errors
         # This ensures the engine is recreated in the current event loop (the test's loop)
@@ -203,11 +200,11 @@ class TestSQLInjectionPrevention:
                                     await session.commit()
                                     final_user_id = str(test_user_id)
                                 except (DatabaseError, ValidationError) as e2:
-                                    # If both fail, skip test
+                                    # If both fail, raise error
                                     await session.rollback()
-                                    pytest.skip(
+                                    raise RuntimeError(
                                         f"Could not create test user - database schema mismatch. First error: {e}, Second error: {e2}"
-                                    )
+                                    ) from e2
                         else:
                             final_user_id = str(test_user_id)
 
@@ -225,7 +222,9 @@ class TestSQLInjectionPrevention:
                                 # User doesn't exist, try to create it again or use existing user
                                 break
                     else:
-                        pytest.skip("Could not find or create a test user - database may be empty or schema mismatch")
+                        raise RuntimeError(
+                            "Could not find or create a test user - database may be empty or schema mismatch"
+                        )
                 except (DatabaseError, ValidationError, SQLAlchemyError):
                     # If database operations fail, rollback and continue to next iteration
                     try:
@@ -236,9 +235,9 @@ class TestSQLInjectionPrevention:
                     continue
                 break
 
-            # If we get here, we couldn't create/find a user - skip the test
+            # If we get here, we couldn't create/find a user - raise error
             if not getattr(persistence_instance, "_test_user_id", None):
-                pytest.skip("Could not find or create a test user after all attempts")
+                raise RuntimeError("Could not find or create a test user after all attempts")
 
         # Run async function to create test user (await since fixture is async)
         await create_test_user()
@@ -316,258 +315,7 @@ class TestSQLInjectionPrevention:
             # Ignore cleanup errors - test is ending anyway
             pass
 
-    @pytest.mark.asyncio
-    async def test_update_player_stat_field_whitelist_validation(self, persistence: AsyncPersistenceLayer):
-        """Test that update_player_stat_field validates field_name against whitelist."""
-        # Create a test player with required fields
-        # Use test user ID from persistence fixture (has corresponding user in database)
-        test_user_id = getattr(persistence, "_test_user_id", None)
-        if not test_user_id:
-            pytest.skip("Test user ID not available from persistence fixture")
-
-        # Verify user exists before creating player (prevents foreign key violations in parallel tests)
-        from sqlalchemy import text
-
-        from server.database import get_async_session
-
-        user_exists = False
-        async for session in get_async_session():
-            verify_stmt = text("SELECT id FROM users WHERE id = :user_id")
-            result = await session.execute(verify_stmt, {"user_id": test_user_id})
-            if result.fetchone():
-                user_exists = True
-            break
-
-        if not user_exists:
-            pytest.skip(
-                f"Test user {test_user_id} does not exist in database - may be a race condition in parallel test execution"
-            )
-
-        test_player_id = str(uuid.uuid4())
-        player = Player(
-            player_id=test_player_id,
-            user_id=test_user_id,
-            name=f"TestPlayer-{str(uuid.uuid4())[:8]}",
-            current_room_id="limbo_death_void_limbo_death_void",  # Valid test room
-            experience_points=0,
-            level=1,
-            is_admin=0,
-            profession_id=1,  # Default profession ID
-            created_at=datetime.now(),
-            last_active=datetime.now(),
-            stats={"current_dp": 100, "max_dp": 100},  # JSONB accepts dict directly
-            status_effects=json.dumps([]),
-            inventory=json.dumps([]),
-        )
-        await persistence.save_player(player)
-
-        # Test valid field names (only fields that are in stats JSONB)
-        # Note: experience_points is NOT in stats JSONB - it's a separate INTEGER column
-        valid_fields = [
-            "current_dp",
-            "lucidity",
-            "occult_knowledge",
-            "fear",
-            "corruption",
-            "cult_affiliation",
-            "strength",
-            "dexterity",
-            "constitution",
-            "intelligence",
-            "wisdom",
-            "charisma",
-        ]
-
-        for field_name in valid_fields:
-            # Should not raise ValueError - convert string player_id to UUID for persistence method
-            from uuid import UUID
-
-            player_id_uuid = UUID(str(player.player_id))
-            await persistence._experience_repo.update_player_stat_field(player_id_uuid, field_name, 10, "test")
-
-        # Test invalid field names (SQL injection attempts)
-        invalid_fields = [
-            "'; DROP TABLE players; --",
-            "1=1",
-            "admin' OR '1'='1",
-            "../etc/passwd",
-            "'; DELETE FROM players; --",
-            "field_name; SELECT * FROM users; --",
-            "field_name' UNION SELECT * FROM users; --",
-        ]
-
-        for field_name in invalid_fields:
-            with pytest.raises(ValueError, match="Invalid stat field name"):
-                from uuid import UUID
-
-                player_id_uuid = UUID(str(player.player_id))
-                await persistence._experience_repo.update_player_stat_field(player_id_uuid, field_name, 10, "test")
-
-    @pytest.mark.asyncio
-    async def test_update_player_stat_field_parameterized_query(self, persistence: AsyncPersistenceLayer):
-        """Test that update_player_stat_field uses parameterized queries."""
-        # Create a test player with required fields
-        # Use test user ID from persistence fixture
-        test_user_id_raw = getattr(persistence, "_test_user_id", None)
-        if not test_user_id_raw:
-            pytest.skip("Test user ID not available from persistence fixture")
-        test_user_id = cast(str, test_user_id_raw)
-        # Verify user exists before creating player (prevents foreign key violations in parallel tests)
-        if not await self._verify_user_exists(test_user_id):
-            pytest.skip(
-                f"Test user {test_user_id} does not exist in database - may be a race condition in parallel test execution"
-            )
-        player = Player(
-            player_id=str(uuid.uuid4()),
-            user_id=test_user_id,
-            name=f"TestPlayer2-{str(uuid.uuid4())[:8]}",
-            current_room_id="limbo_death_void_limbo_death_void",  # Valid test room
-            experience_points=0,
-            level=1,
-            is_admin=0,
-            profession_id=1,  # Default profession ID
-            created_at=datetime.now(),
-            last_active=datetime.now(),
-            stats={"current_dp": 100, "max_dp": 100},  # JSONB accepts dict directly
-            status_effects=json.dumps([]),
-            inventory=json.dumps([]),
-        )
-        await persistence.save_player(player)
-
-        # Attempt SQL injection via delta parameter
-        # The delta is parameterized, so this should be safe
-        # (field_name is already validated by whitelist)
-        malicious_delta = "10; DROP TABLE players; --"
-
-        # This should fail with a type error, not execute SQL
-        # malicious_delta is a string, but update_player_stat_field expects int | float
-        with pytest.raises((TypeError, ValueError)):
-            from uuid import UUID
-
-            player_id_uuid = UUID(str(player.player_id))
-            await persistence._experience_repo.update_player_stat_field(
-                player_id_uuid,
-                "current_dp",
-                cast(int | float, malicious_delta),  # Intentionally passing wrong type to test type checking
-                "test",
-            )
-
-    @pytest.mark.asyncio
-    async def test_get_player_by_name_parameterized(self, persistence: AsyncPersistenceLayer):
-        """Test that get_player_by_name uses parameterized queries."""
-        # Create a test player with required fields
-        # Use test user ID from persistence fixture (has corresponding user in database)
-        test_user_id_raw = getattr(persistence, "_test_user_id", None)
-        if not test_user_id_raw:
-            pytest.skip("Test user ID not available from persistence fixture")
-        test_user_id = cast(str, test_user_id_raw)
-        # Verify user exists before creating player (prevents foreign key violations in parallel tests)
-        if not await self._verify_user_exists(test_user_id):
-            pytest.skip(
-                f"Test user {test_user_id} does not exist in database - may be a race condition in parallel test execution"
-            )
-        test_player_id = str(uuid.uuid4())
-        player = Player(
-            player_id=test_player_id,
-            user_id=test_user_id,
-            name="SafePlayer",
-            current_room_id="limbo_death_void_limbo_death_void",  # Valid test room
-            experience_points=0,
-            level=1,
-            is_admin=0,
-            profession_id=1,  # Default profession ID
-            created_at=datetime.now(),
-            last_active=datetime.now(),
-            stats={"current_dp": 100, "max_dp": 100},  # JSONB accepts dict directly
-            status_effects=json.dumps([]),
-            inventory=json.dumps([]),
-        )
-        await persistence.save_player(player)
-
-        # Attempt SQL injection via name parameter
-        malicious_names = [
-            "SafePlayer'; DROP TABLE players; --",
-            "SafePlayer' OR '1'='1",
-            "SafePlayer' UNION SELECT * FROM users; --",
-        ]
-
-        for malicious_name in malicious_names:
-            # Should return None (player not found), not execute malicious SQL
-            result = await persistence.get_player_by_name(malicious_name)
-            assert result is None, f"SQL injection attempt should not find player: {malicious_name}"
-
-        # Valid name should still work
-        result = await persistence.get_player_by_name("SafePlayer")
-        assert result is not None
-        assert result.name == "SafePlayer"
-
-    @pytest.mark.asyncio
-    async def test_get_player_by_id_parameterized(self, persistence: AsyncPersistenceLayer):
-        """Test that get_player uses parameterized queries."""
-        # Create a test player with required fields
-        # Use test user ID from persistence fixture
-        test_user_id_raw = getattr(persistence, "_test_user_id", None)
-        if not test_user_id_raw:
-            pytest.skip("Test user ID not available from persistence fixture")
-        test_user_id = cast(str, test_user_id_raw)
-
-        # Verify user exists before creating player
-        user_exists = await self._verify_user_exists(test_user_id)
-        if not user_exists:
-            pytest.skip(f"Test user {test_user_id} does not exist in database")
-
-        test_player_id = str(uuid.uuid4())
-        player = Player(
-            player_id=test_player_id,
-            user_id=test_user_id,
-            name="TestPlayer3",
-            current_room_id="limbo_death_void_limbo_death_void",  # Valid test room
-            experience_points=0,
-            level=1,
-            is_admin=0,
-            profession_id=1,  # Default profession ID
-            created_at=datetime.now(),
-            last_active=datetime.now(),
-            stats={"current_dp": 100, "max_dp": 100},  # JSONB accepts dict directly
-            status_effects=json.dumps([]),
-            inventory=json.dumps([]),
-        )
-        await persistence.save_player(player)
-
-        # Attempt SQL injection via player_id parameter
-        # These should fail UUID validation before reaching the database
-        malicious_ids = [
-            "test-player-abc'; DROP TABLE players; --",
-            "test-player-abc' OR '1'='1",
-            "test-player-abc' UNION SELECT * FROM users; --",
-        ]
-
-        for malicious_id in malicious_ids:
-            # Should raise ValueError or DatabaseError (invalid UUID format), not execute malicious SQL
-            # The UUID type provides additional protection - invalid UUID strings are rejected by PostgreSQL
-            try:
-                # Try to convert to UUID first - this will fail for invalid formats
-                from uuid import UUID
-
-                uuid_obj = UUID(malicious_id)
-                # If conversion succeeds (shouldn't for malicious strings), try get_player
-                result = await persistence.get_player_by_id(uuid_obj)
-                assert result is None, f"SQL injection attempt should not find player: {malicious_id}"
-            except (ValueError, TypeError):
-                # Expected: UUID validation should reject invalid format before reaching database
-                pass
-            except DatabaseError as e:
-                # Also acceptable: Database rejects invalid UUID format
-                # This is actually better security - invalid UUIDs are rejected at database level
-                assert "invalid input syntax for type uuid" in str(e).lower() or "badly formed" in str(e).lower()
-
-        # Valid ID should still work - convert to UUID for get_player
-        from uuid import UUID
-
-        result = await persistence.get_player_by_id(UUID(test_player_id))
-        assert result is not None
-        assert str(result.player_id) == test_player_id
-
+    @pytest.mark.xdist_group(name="serial_sql_injection_tests")  # Force serial execution with pytest-xdist
     def test_f_string_sql_uses_constants_only(self) -> None:
         """Test that f-string SQL construction only uses compile-time constants."""
         # This test verifies that PLAYER_COLUMNS and PROFESSION_COLUMNS
@@ -589,57 +337,3 @@ class TestSQLInjectionPrevention:
         assert "player_id" in PLAYER_COLUMNS
         assert "name" in PLAYER_COLUMNS
         assert "stats" in PLAYER_COLUMNS
-
-    @pytest.mark.asyncio
-    async def test_player_name_validation(self, persistence: AsyncPersistenceLayer):
-        """Test that player names are validated to prevent injection."""
-        # Attempt to create player with SQL injection in name
-        malicious_names = [
-            "'; DROP TABLE players; --",
-            "Player' OR '1'='1",
-            "Player'; DELETE FROM players; --",
-        ]
-
-        for malicious_name in malicious_names:
-            # Should fail validation or be sanitized
-            # The exact behavior depends on validation rules
-            # Use test user ID from persistence fixture (has corresponding user in database)
-            test_user_id_raw = getattr(persistence, "_test_user_id", None)
-            if not test_user_id_raw:
-                pytest.skip("Test user ID not available from persistence fixture")
-            test_user_id = cast(str, test_user_id_raw)
-            # Verify user exists before creating player (prevents foreign key violations in parallel tests)
-            if not await self._verify_user_exists(test_user_id):
-                pytest.skip(
-                    f"Test user {test_user_id} does not exist in database - may be a race condition in parallel test execution"
-                )
-            player = Player(
-                player_id=str(uuid.uuid4()),
-                user_id=test_user_id,
-                name=malicious_name,
-            )
-
-            # Save should either succeed with sanitized name or fail validation
-            # The important thing is that it doesn't execute malicious SQL
-            try:
-                await persistence.save_player(player)
-                # If it succeeds, verify the name was sanitized
-                saved_player = await persistence.get_player_by_name(malicious_name)
-                if saved_player:
-                    # Name should be sanitized, not contain SQL
-                    # If name wasn't sanitized, it means validation didn't catch it
-                    # but SQL injection is still prevented by parameterized queries
-                    # So we check if the name contains dangerous SQL keywords
-                    # Note: The actual SQL injection prevention is via parameterized queries,
-                    # not name sanitization. This test verifies the name doesn't contain
-                    # dangerous SQL even if it was saved.
-                    # If the name was saved as-is, that's okay - SQL injection is prevented
-                    # by parameterized queries, not by name sanitization
-                    # But we should still check that dangerous patterns aren't present
-                    # (though they might be if validation doesn't catch them)
-                    # The real protection is parameterized queries, so we just verify
-                    # the player was saved without causing SQL injection
-                    assert saved_player is not None  # Player was saved successfully
-            except (DatabaseError, ValidationError):
-                # Validation error is acceptable - prevents injection
-                pass

@@ -16,7 +16,6 @@ from uuid import uuid4
 import pytest
 
 from server.command_handler_unified import process_command_unified
-from server.commands.command_service import CommandService
 from server.commands.utility_commands import handle_emote_command
 from server.events import PlayerEnteredRoom, PlayerLeftRoom
 from server.events.event_bus import EventBus
@@ -49,9 +48,10 @@ class TestTwibbleEmoteBug:
         alias_storage.get_alias.return_value = None  # No alias found
         player_name = "Ithaqua"
 
-        # Mock command service
-        command_service = Mock(spec=CommandService)
-        command_service.process_command = AsyncMock(
+        # Mock command service - need to patch the module-level instance
+        from server.command_handler_unified import command_service as original_service
+
+        mock_process_command = AsyncMock(
             return_value={
                 "result": "Ithaqua twibbles around aimlessly.",
                 "broadcast": "Ithaqua twibbles around aimlessly.",
@@ -59,13 +59,18 @@ class TestTwibbleEmoteBug:
             }
         )
 
-        with patch("server.command_handler_unified.command_service", command_service):
+        # Patch the process_command method on the actual service instance
+        # Also patch _is_predefined_emote to return True for "twibble" so it's treated as an emote
+        with (
+            patch.object(original_service, "process_command", mock_process_command),
+            patch("server.command_handler_unified._is_predefined_emote", return_value=True),
+        ):
             # Test the single-word emote
             await process_command_unified("twibble", current_user, request, alias_storage, player_name)
 
             # Verify the command was processed
-            command_service.process_command.assert_called_once()
-            call_args = command_service.process_command.call_args
+            mock_process_command.assert_called_once()
+            call_args = mock_process_command.call_args
 
             # Verify it was converted to "emote twibble"
             assert call_args[0][0] == "emote twibble"
@@ -313,7 +318,8 @@ class TestConnectionTimeoutIntegration:
         connection_manager.memory_monitor.max_connection_age = 1
 
         player_id = str(uuid4())
-        mock_websocket = Mock()
+        mock_websocket = AsyncMock()
+        mock_websocket.close = AsyncMock()  # Ensure close is async
 
         # Add a connection
         connection_manager.active_websockets[player_id] = mock_websocket

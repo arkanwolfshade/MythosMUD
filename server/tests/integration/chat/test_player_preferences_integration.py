@@ -26,7 +26,7 @@ class TestPlayerPreferencesIntegration:
         """Create an async session factory for testing."""
         database_url = get_database_url()
         if not database_url:
-            pytest.skip("DATABASE_URL not set - cannot run integration test")
+            raise ValueError("DATABASE_URL must be set for this integration test")
 
         engine = create_async_engine(database_url, future=True)
         factory = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)

@@ -157,33 +157,33 @@ class TestMuteUnmuteWorkflowIntegration:
         self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
         self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
-        # Mock EmoteService
-        with patch("server.game.emote_service.EmoteService") as mock_emote_service_class:
-            mock_emote_service = MagicMock()
-            mock_emote_service_class.return_value = mock_emote_service
-            mock_emote_service.is_emote_alias.return_value = True
-            mock_emote_service.format_emote_messages.return_value = ("You twibble.", f"{self.target_name} twibbles.")
-
         # Step 1: Apply global mute to the target player
         global_mute_result = await chat_service.mute_global(
             muter_id=self.muter_id, target_player_name=self.target_name, duration_minutes=60, reason="Test mute"
         )
         assert global_mute_result is True
 
-        # Step 2: Target player tries to send predefined emote (should be blocked by global mute)
-        mock_user_manager.is_globally_muted.return_value = True  # Player is globally muted
-        emote_result = await chat_service.send_predefined_emote(self.target_id, "twibble")
-        assert emote_result["success"] is False
-        assert "globally muted" in emote_result["error"].lower()
+        # Mock EmoteService - patch where it's imported in chat_service (inside send_predefined_emote)
+        with patch("server.game.emote_service.EmoteService") as mock_emote_service_class:
+            mock_emote_service = MagicMock()
+            mock_emote_service_class.return_value = mock_emote_service
+            mock_emote_service.is_emote_alias.return_value = True
+            mock_emote_service.format_emote_messages.return_value = ("You dance.", f"{self.target_name} dances.")
 
-        # Step 3: Remove global mute
-        mock_user_manager.is_globally_muted.return_value = False  # Global mute removed
+            # Step 2: Target player tries to send predefined emote (should be blocked by global mute)
+            mock_user_manager.is_globally_muted.return_value = True  # Player is globally muted
+            emote_result = await chat_service.send_predefined_emote(self.target_id, "dance")
+            assert emote_result["success"] is False
+            assert "globally muted" in emote_result["error"].lower()
 
-        # Step 4: Target player tries to send predefined emote again (should be allowed)
-        emote_result = await chat_service.send_predefined_emote(self.target_id, "twibble")
+            # Step 3: Remove global mute
+            mock_user_manager.is_globally_muted.return_value = False  # Global mute removed
+
+            # Step 4: Target player tries to send predefined emote again (should be allowed)
+            emote_result = await chat_service.send_predefined_emote(self.target_id, "dance")
         assert emote_result["success"] is True
         assert emote_result["message"]["channel"] == "emote"
-        assert "twibbles" in emote_result["message"]["content"]
+        assert "dances" in emote_result["message"]["content"]
 
     @pytest.mark.asyncio
     @patch("server.services.nats_service.nats_service")

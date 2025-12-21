@@ -287,7 +287,7 @@ class TestAsyncOperationsVerification:
         # Use PostgreSQL from environment
         database_url = os.getenv("DATABASE_URL")
         if not database_url or not database_url.startswith("postgresql"):
-            pytest.skip("DATABASE_URL must be set to a PostgreSQL URL for this test.")
+            raise ValueError("DATABASE_URL must be set to a PostgreSQL URL for this test.")
 
         # CRITICAL: Reset database manager and async persistence to ensure
         # they're initialized in the current event loop (pytest's event loop)

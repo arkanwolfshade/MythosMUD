@@ -129,7 +129,12 @@ class TestGetProfessionInfo:
         mock_player.profession_id = 1
 
         mock_persistence = AsyncMock()
-        mock_persistence.get_profession_by_id.side_effect = TypeError("Error")
+
+        # Use a coroutine that raises TypeError when awaited
+        async def raise_type_error(*args, **kwargs):
+            raise TypeError("Error")
+
+        mock_persistence.get_profession_by_id = raise_type_error
 
         with patch("server.commands.status_commands.logger"):
             result = await _get_profession_info(mock_player, mock_persistence)

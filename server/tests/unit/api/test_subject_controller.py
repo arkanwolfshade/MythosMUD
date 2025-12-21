@@ -182,7 +182,7 @@ class TestValidateSubjectEndpoint:
         assert "validation_time_ms" in response
 
     @pytest.mark.asyncio
-    async def test_validate_subject_non_admin_forbidden(self, mock_current_user, _mock_subject_manager):
+    async def test_validate_subject_non_admin_forbidden(self, mock_current_user, mock_subject_manager):  # pylint: disable=unused-argument
         """Test that non-admin users cannot validate subjects via dependency check."""
         # Arrange
         from server.api.admin.subject_controller import require_admin_user
@@ -244,7 +244,7 @@ class TestGetPatternsEndpoint:
         mock_subject_manager.get_all_patterns.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_get_patterns_non_admin_forbidden(self, mock_current_user, _mock_subject_manager):
+    async def test_get_patterns_non_admin_forbidden(self, mock_current_user, mock_subject_manager):  # pylint: disable=unused-argument
         """Test that non-admin users cannot retrieve patterns via dependency check."""
         # Arrange
         from server.api.admin.subject_controller import require_admin_user
@@ -301,7 +301,7 @@ class TestRegisterPatternEndpoint:
         )
 
     @pytest.mark.asyncio
-    async def test_register_pattern_non_admin_forbidden(self, mock_current_user, _mock_subject_manager):
+    async def test_register_pattern_non_admin_forbidden(self, mock_current_user, mock_subject_manager):  # pylint: disable=unused-argument
         """Test that non-admin users cannot register patterns via dependency check."""
         # Arrange
         from server.api.admin.subject_controller import require_admin_user
@@ -360,7 +360,7 @@ class TestAdminPermissionValidation:
     """Test suite for admin permission validation across all endpoints."""
 
     @pytest.mark.asyncio
-    async def test_validate_subject_requires_admin(self, mock_current_user, mock_subject_manager):
+    async def test_validate_subject_requires_admin(self, mock_current_user, mock_subject_manager):  # pylint: disable=unused-argument
         """Test that validate endpoint requires admin permissions via dependency."""
         from server.api.admin.subject_controller import require_admin_user
 
@@ -372,7 +372,7 @@ class TestAdminPermissionValidation:
         assert "admin" in str(exc_info.value.detail).lower()
 
     @pytest.mark.asyncio
-    async def test_get_patterns_requires_admin(self, mock_current_user, mock_subject_manager):
+    async def test_get_patterns_requires_admin(self, mock_current_user, mock_subject_manager):  # pylint: disable=unused-argument
         """Test that get patterns endpoint requires admin permissions via dependency."""
         from server.api.admin.subject_controller import require_admin_user
 
@@ -383,7 +383,7 @@ class TestAdminPermissionValidation:
         assert exc_info.value.status_code == 403
 
     @pytest.mark.asyncio
-    async def test_register_pattern_requires_admin(self, mock_current_user, mock_subject_manager):
+    async def test_register_pattern_requires_admin(self, mock_current_user, mock_subject_manager):  # pylint: disable=unused-argument
         """Test that register pattern endpoint requires admin permissions via dependency."""
         from server.api.admin.subject_controller import require_admin_user
 
@@ -565,7 +565,7 @@ class TestDependencyInjection:
     """Test suite for dependency injection integration."""
 
     @pytest.mark.asyncio
-    async def test_subject_manager_dependency_injection(self, _mock_admin_user):
+    async def test_subject_manager_dependency_injection(self, mock_admin_user):  # pylint: disable=unused-argument
         """Test that subject manager can be injected via FastAPI dependency."""
         # This test verifies the dependency function exists and works
         from server.api.admin.subject_controller import get_subject_manager_dependency

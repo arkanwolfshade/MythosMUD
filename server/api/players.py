@@ -56,10 +56,15 @@ async def create_player(
 @player_router.get("/", response_model=list[PlayerRead])
 async def list_players(
     _request: FastAPIRequest,
-    _current_user: User = Depends(get_current_user),
+    _current_user: User | None = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
 ) -> list[dict[str, Any]]:
     """Get a list of all players."""
+    # Note: _current_user is optional for CORS testing, but endpoint requires auth for actual use
+    if _current_user is None:
+        from fastapi import HTTPException
+
+        raise HTTPException(status_code=401, detail="Authentication required")
     result = await player_service.list_players()
     if not isinstance(result, list):
         raise RuntimeError(f"Expected list from player_service.list_players(), got {type(result).__name__}")

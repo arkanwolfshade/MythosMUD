@@ -682,16 +682,21 @@ class TestWrapperFunctions:
 
         mock_player = MagicMock()
         mock_player.player_id = uuid4()
-        mock_persistence.get_player_by_name.return_value = mock_player
-        mock_spell_repo.get_player_spells.return_value = []
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+        mock_spell_repo.get_player_spells = AsyncMock(return_value=[])
 
         mock_magic_service.player_service.persistence = mock_persistence
+        mock_magic_service.player_spell_repository = mock_spell_repo
 
         mock_app.state.magic_service = mock_magic_service
         mock_app.state.spell_registry = mock_spell_registry
         mock_request.app = mock_app
 
-        result = await handle_spells_command({}, {}, mock_request, None, "TestPlayer")
+        # Patch PlayerSpellRepository so when handler creates a new instance, it gets our mock
+        # The handler creates PlayerSpellRepository() when player_spell_repository is None
+        # Patch the class to return our mock when instantiated
+        with patch("server.commands.magic_commands.PlayerSpellRepository", new=lambda: mock_spell_repo):
+            result = await handle_spells_command({}, {}, mock_request, None, "TestPlayer")
 
         assert "result" in result
 

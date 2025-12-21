@@ -37,6 +37,10 @@ def _find_dead_connections(player_id: uuid.UUID, manager: Any) -> list[str]:
             continue
 
         existing_websocket = manager.active_websockets[conn_id]
+        # Guard against None websocket (can happen during cleanup)
+        if existing_websocket is None:
+            del manager.active_websockets[conn_id]
+            raise ConnectionError("WebSocket is None")
         try:
             if existing_websocket.client_state.name != "CONNECTED":
                 raise ConnectionError("WebSocket not connected")

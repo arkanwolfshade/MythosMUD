@@ -52,7 +52,7 @@ class TestEventLoopChangeDetection:
             assert engine2 is not None, "Engine should be recreated after loop change"
 
     @pytest.mark.asyncio
-    async def test_no_running_loop_handling(self, _db_manager):
+    async def test_no_running_loop_handling(self, db_manager):  # pylint: disable=unused-argument
         """Test that DatabaseManager handles no running loop gracefully."""
         # This test verifies the RuntimeError handling when no loop is running
         # The get_engine() method should handle this gracefully
@@ -63,17 +63,17 @@ class TestEventLoopChangeDetection:
             pass
 
     @pytest.mark.asyncio
-    async def test_engine_recreation_on_loop_change(self, _db_manager):
+    async def test_engine_recreation_on_loop_change(self, db_manager):
         """Test that engine is properly recreated when event loop changes."""
         # Get initial engine to ensure it exists
-        _ = _db_manager.get_engine()
+        _ = db_manager.get_engine()
 
         # Simulate loop change
-        _db_manager._creation_loop_id = None  # Reset to force detection
-        _db_manager.engine = None  # Clear engine
+        db_manager._creation_loop_id = None  # Reset to force detection
+        db_manager.engine = None  # Clear engine
 
         # Get engine again - should create new one
-        engine2 = _db_manager.get_engine()
+        engine2 = db_manager.get_engine()
         assert engine2 is not None
         # Should be a different engine instance (or same if singleton pattern)
         # The key is that initialization was called
@@ -93,7 +93,7 @@ class TestAsyncOperationScheduling:
         return handler
 
     @pytest.mark.asyncio
-    async def test_get_running_loop_usage(self, _event_handler):
+    async def test_get_running_loop_usage(self, event_handler):  # pylint: disable=unused-argument
         """Test that get_running_loop() is used instead of deprecated get_event_loop()."""
         # Verify the code uses get_running_loop() by checking the actual implementation
         # This is more of a verification test than a functional test
@@ -145,11 +145,11 @@ class TestAsyncOperationScheduling:
                 pass
 
     @pytest.mark.asyncio
-    async def test_task_scheduling_with_running_loop(self, _event_handler):
+    async def test_task_scheduling_with_running_loop(self, event_handler):
         """Test that tasks are properly scheduled when a loop is running."""
         # Mock the task registry
         mock_task = AsyncMock()
-        _event_handler.task_registry.register_task = Mock(return_value=mock_task)
+        event_handler.task_registry.register_task = Mock(return_value=mock_task)
 
         # Simulate an event that triggers async scheduling
         # The actual implementation should use get_running_loop() and schedule tasks

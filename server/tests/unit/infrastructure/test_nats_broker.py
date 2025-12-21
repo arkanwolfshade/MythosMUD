@@ -180,6 +180,7 @@ class TestNATSMessageBrokerSubscribe:
     """Test NATS subscription management."""
 
     @pytest.mark.asyncio
+    @pytest.mark.xdist_group(name="serial_nats_tests")  # Force serial execution with pytest-xdist
     async def test_subscribe_when_not_connected_raises_error(self, nats_broker):
         """Test subscribe raises SubscribeError when not connected."""
         handler = AsyncMock()
@@ -207,6 +208,7 @@ class TestNATSMessageBrokerRequest:
     """Test NATS request-reply pattern."""
 
     @pytest.mark.asyncio
+    @pytest.mark.xdist_group(name="serial_nats_tests")  # Force serial execution with pytest-xdist
     async def test_request_when_not_connected_raises_error(self, nats_broker):
         """Test request raises RequestError when not connected."""
         with pytest.raises(RequestError) as exc_info:

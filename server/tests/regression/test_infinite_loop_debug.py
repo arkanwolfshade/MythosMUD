@@ -44,7 +44,7 @@ async def test_event_bus_creation_and_shutdown():
 
 
 @pytest.mark.asyncio
-async def test_async_fixture_directly(_async_event_bus):
+async def test_async_fixture_directly(async_event_bus):  # pylint: disable=unused-argument
     """Test the async_event_bus fixture directly."""
     print("Getting async_event_bus fixture...")
     print("Got EventBus from fixture")

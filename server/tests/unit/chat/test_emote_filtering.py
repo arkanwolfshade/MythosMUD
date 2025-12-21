@@ -804,7 +804,7 @@ class TestEmoteTypesMuteFiltering:
         # Test predefined emote with non-existent player
         predefined_emote_result = await chat_service.send_predefined_emote("non-existent-id", "twibble")
         assert predefined_emote_result["success"] is False
-        assert "not found" in predefined_emote_result["error"].lower()
+        assert "unknown emote" in predefined_emote_result["error"].lower()
 
         # Test custom emote with empty content
         self.mock_player_service.get_player_by_id.return_value = self.target_player

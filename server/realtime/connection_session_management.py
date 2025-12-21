@@ -47,6 +47,10 @@ async def _disconnect_connection_for_session(connection_id: str, player_id: uuid
         return False
 
     websocket = manager.active_websockets[connection_id]
+    # Guard against None websocket (can happen during cleanup)
+    if websocket is None:
+        del manager.active_websockets[connection_id]
+        return False
     disconnected = False
 
     try:

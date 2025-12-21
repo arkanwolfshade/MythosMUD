@@ -191,7 +191,7 @@ class TestMemoryCleanup:
         """Test cleanup handles timeout."""
         mock_manager = AsyncMock()
 
-        async def slow_cleanup(_force_gc=False):
+        async def slow_cleanup(force_gc=False):  # pylint: disable=unused-argument
             await asyncio.sleep(10)  # Takes too long
             return 5
 

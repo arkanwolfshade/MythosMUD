@@ -22,16 +22,73 @@ from server.services.player_preferences_service import PlayerPreferencesService
 @pytest.fixture(name="session_factory")
 async def _session_factory() -> AsyncGenerator[async_sessionmaker[AsyncSession], None]:
     """Create an async session factory for testing."""
+    from server.models.base import Base
+
     database_url = get_database_url()
     if not database_url or not database_url.startswith("postgresql"):
-        pytest.skip("DATABASE_URL must be set to a PostgreSQL URL for this test.")
+        raise ValueError("DATABASE_URL must be set to a PostgreSQL URL for this test.")
 
     engine = create_async_engine(database_url, future=True)
+    # Create all tables before tests
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
     factory = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
     try:
         yield factory
     finally:
-        await engine.dispose()
+        # Clean up tables after tests
+        # Handle foreign key dependencies by dropping with CASCADE
+        try:
+            async with engine.begin() as conn:
+                from sqlalchemy import text
+
+                try:
+                    # Try normal drop_all first
+                    await conn.run_sync(Base.metadata.drop_all)
+                except (SQLAlchemyError, OSError, RuntimeError, ConnectionError, TimeoutError) as e:
+                    # Catch specific database and connection errors
+                    # If that fails due to foreign key constraints, use CASCADE
+                    error_msg = str(e).lower()
+                    if "dependent" not in error_msg and "constraint" not in error_msg:
+                        # Re-raise if it's not a foreign key constraint issue
+                        raise
+                    # Fall through to CASCADE drop logic for foreign key constraint errors
+                except Exception:  # pylint: disable=broad-exception-caught
+                    # Catch any other unexpected exceptions (e.g., asyncpg.exceptions.DependentObjectsStillExistError)
+                    # This is necessary for test teardown to handle all possible database errors gracefully
+                    # Get all table names and drop them with CASCADE
+                    result = await conn.execute(
+                        text(
+                            """
+                        SELECT tablename FROM pg_tables
+                        WHERE schemaname = 'public'
+                        """
+                        )
+                    )
+                    tables = [row[0] for row in result.fetchall()]
+                    for table in tables:
+                        try:
+                            await conn.execute(text(f'DROP TABLE IF EXISTS "{table}" CASCADE'))
+                        except (SQLAlchemyError, OSError, RuntimeError, ConnectionError, TimeoutError):
+                            # Catch specific database and connection errors
+                            # Ignore errors for tables that don't exist or are already dropped
+                            pass
+                        except Exception:  # pylint: disable=broad-exception-caught
+                            # Catch any other unexpected exceptions during individual table drops
+                            # This is necessary for test teardown robustness - tables may not exist or be in inconsistent state
+                            pass
+        except (SQLAlchemyError, OSError, RuntimeError, ConnectionError, TimeoutError):
+            # Catch specific database and connection errors during teardown
+            # Ignore teardown errors - test database may be in inconsistent state
+            pass
+        except Exception:  # pylint: disable=broad-exception-caught
+            # Catch any other unexpected exceptions during teardown
+            # This is necessary for test teardown to handle all possible errors gracefully
+            # Test database may be in inconsistent state, so we ignore all teardown errors
+            pass
+        finally:
+            await engine.dispose()
 
 
 @pytest.fixture(autouse=True)

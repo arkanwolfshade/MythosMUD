@@ -421,10 +421,11 @@ class TestPlayerEffects:
         mock_player_service_dep.return_value = mock_service
 
         request_data = FearRequest(amount=5, source="test")
-        result = await apply_fear(uuid.uuid4(), request_data, mock_request, mock_current_user, mock_service)
+        player_id = uuid.uuid4()
+        result = await apply_fear(player_id, request_data, mock_request, mock_current_user, mock_service)
 
         assert "Applied 5 fear to TestPlayer" in result["message"]
-        mock_service.apply_fear.assert_called_once_with("test-player-id", 5, "test")
+        mock_service.apply_fear.assert_called_once_with(player_id, 5, "test")
 
     @patch("server.api.players.PlayerServiceDep")
     @pytest.mark.asyncio
@@ -464,10 +465,11 @@ class TestPlayerEffects:
         mock_player_service_dep.return_value = mock_service
 
         request_data = CorruptionRequest(amount=3, source="test")
-        result = await apply_corruption(uuid.uuid4(), request_data, mock_request, mock_current_user, mock_service)
+        player_id = uuid.uuid4()
+        result = await apply_corruption(player_id, request_data, mock_request, mock_current_user, mock_service)
 
         assert "Applied 3 corruption to TestPlayer" in result["message"]
-        mock_service.apply_corruption.assert_called_once_with("test-player-id", 3, "test")
+        mock_service.apply_corruption.assert_called_once_with(player_id, 3, "test")
 
     @patch("server.api.players.PlayerServiceDep")
     @pytest.mark.asyncio
@@ -507,10 +509,11 @@ class TestPlayerEffects:
         mock_player_service_dep.return_value = mock_service
 
         request_data = OccultKnowledgeRequest(amount=2, source="test")
-        result = await gain_occult_knowledge(uuid.uuid4(), request_data, mock_request, mock_current_user, mock_service)
+        player_id = uuid.uuid4()
+        result = await gain_occult_knowledge(player_id, request_data, mock_request, mock_current_user, mock_service)
 
         assert "Gained 2 occult knowledge for TestPlayer" in result["message"]
-        mock_service.gain_occult_knowledge.assert_called_once_with("test-player-id", 2, "test")
+        mock_service.gain_occult_knowledge.assert_called_once_with(player_id, 2, "test")
 
     @patch("server.api.players.PlayerServiceDep")
     @pytest.mark.asyncio
@@ -550,10 +553,11 @@ class TestPlayerEffects:
         mock_player_service_dep.return_value = mock_service
 
         request_data = HealRequest(amount=20)
-        result = await heal_player(uuid.uuid4(), request_data, mock_request, mock_current_user, mock_service)
+        player_id = uuid.uuid4()
+        result = await heal_player(player_id, request_data, mock_request, mock_current_user, mock_service)
 
         assert "Healed TestPlayer for 20 health" in result["message"]
-        mock_service.heal_player.assert_called_once_with("test-player-id", 20)
+        mock_service.heal_player.assert_called_once_with(player_id, 20)
 
     @patch("server.api.players.PlayerServiceDep")
     @pytest.mark.asyncio
@@ -593,10 +597,11 @@ class TestPlayerEffects:
         mock_player_service_dep.return_value = mock_service
 
         request_data = DamageRequest(amount=15, damage_type="physical")
-        result = await damage_player(uuid.uuid4(), request_data, mock_request, mock_current_user, mock_service)
+        player_id = uuid.uuid4()
+        result = await damage_player(player_id, request_data, mock_request, mock_current_user, mock_service)
 
         assert "Damaged TestPlayer for 15 physical damage" in result["message"]
-        mock_service.damage_player.assert_called_once_with("test-player-id", 15, "physical")
+        mock_service.damage_player.assert_called_once_with(player_id, 15, "physical")
 
     @patch("server.api.players.PlayerServiceDep")
     @pytest.mark.asyncio

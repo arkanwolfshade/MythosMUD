@@ -8,7 +8,7 @@ from collections.abc import Generator
 
 import pytest
 from sqlalchemy import create_engine, text
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, PendingRollbackError, SQLAlchemyError
 from sqlalchemy.orm import Session, sessionmaker
 
 from server.models.profession import Profession
@@ -32,10 +32,28 @@ class TestProfessionModel:
             session.execute(text("DELETE FROM professions WHERE id >= 0"))
             session.commit()
             yield session
-            session.execute(text("DELETE FROM professions WHERE id >= 0"))
-            session.commit()
+        except (SQLAlchemyError, PendingRollbackError):
+            # Rollback on database exceptions before cleanup
+            session.rollback()
+            raise
+        except Exception:  # pylint: disable=broad-exception-caught
+            # Rollback on any other unexpected exception before cleanup
+            # This ensures database state is clean even for unexpected errors
+            session.rollback()
+            raise
         finally:
-            session.close()
+            try:
+                session.execute(text("DELETE FROM professions WHERE id >= 0"))
+                session.commit()
+            except (SQLAlchemyError, PendingRollbackError):
+                # Rollback if cleanup fails due to database errors
+                session.rollback()
+            except Exception:  # pylint: disable=broad-exception-caught
+                # Rollback if cleanup fails for any other reason
+                # This ensures we always attempt cleanup even for unexpected errors
+                session.rollback()
+            finally:
+                session.close()
 
     def test_profession_creation(self, db_session: Session) -> None:
         """Test creating a profession with all required fields."""

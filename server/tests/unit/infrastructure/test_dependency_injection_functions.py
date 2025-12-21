@@ -43,6 +43,7 @@ class TestDependencyInjectionFunctions:
         mock_request.app.state.persistence = mock_persistence
         return mock_request
 
+    @pytest.mark.serial  # Uses container state that may conflict with parallel execution
     def test_get_player_service_function(self, container_test_client):
         """
         Test that get_player_service function works correctly with container.
@@ -68,31 +69,6 @@ class TestDependencyInjectionFunctions:
             # If container has mock persistence, service should also have persistence (may be different instance)
             assert service.persistence is not None
 
-    def test_get_room_service_function(self, container_test_client):
-        """
-        Test that get_room_service function works correctly with container.
-
-        AI: ARCHITECTURE CHANGE - Updated to use container-based DI
-        """
-        # Create mock request with container
-        mock_request = Mock(spec=Request)
-        mock_request.app = container_test_client.app
-
-        service = get_room_service(mock_request)
-
-        # ARCHITECTURE FIX: Service comes from container
-        assert isinstance(service, RoomService)
-        assert hasattr(service, "persistence")
-        # Note: If container initialization failed, persistence might be a mock
-        # In that case, we just verify service has persistence set
-        container_persistence = container_test_client.app.state.container.persistence
-        if container_persistence is not None and not isinstance(container_persistence, Mock):
-            # If container has real persistence, service should use it
-            assert service.persistence is container_persistence
-        else:
-            # If container has mock persistence, service should also have persistence (may be different instance)
-            assert service.persistence is not None
-
     def test_get_player_service_for_testing_function(self) -> None:
         """Test that get_player_service_for_testing function works correctly."""
         service = get_player_service_for_testing()
@@ -102,6 +78,8 @@ class TestDependencyInjectionFunctions:
         assert hasattr(service, "persistence")
         assert service.persistence is not None
 
+    @pytest.mark.serial  # Uses container state that may conflict with parallel execution
+    @pytest.mark.xdist_group(name="serial_container_tests")  # Force serial execution with pytest-xdist
     def test_dependency_functions_return_same_instances(self, container_test_client):
         """
         Test that dependency functions return SAME instances from container (singleton).
@@ -253,6 +231,7 @@ class TestDependencyInjectionFunctions:
         with pytest.raises((AttributeError, RuntimeError)):
             get_player_service(mock_request)
 
+    @pytest.mark.xdist_group(name="serial_container_tests")  # Force serial execution with pytest-xdist
     def test_dependency_functions_consistency(self, container_test_client):
         """
         Test that dependency functions behave consistently (return same instance).

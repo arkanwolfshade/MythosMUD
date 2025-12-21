@@ -599,13 +599,13 @@ class TestPerformanceMetrics:
         # Attempt build with missing parameters
         try:
             manager.build_subject("chat_say_room")  # Missing room_id
-        except (ValueError, KeyError, AttributeError):
+        except (ValueError, KeyError, AttributeError, MissingParameterError):
             pass
 
         # Attempt build with nonexistent pattern
         try:
             manager.build_subject("nonexistent_pattern")
-        except (ValueError, KeyError, AttributeError):
+        except (ValueError, KeyError, AttributeError, PatternNotFoundError):
             pass
 
         # Get metrics
@@ -704,7 +704,7 @@ class TestPerformanceMetrics:
         for _ in range(3):
             try:
                 manager.build_subject("chat_say_room")  # Missing parameter
-            except (ValueError, KeyError, AttributeError):
+            except (ValueError, KeyError, AttributeError, MissingParameterError):
                 pass
 
         metrics = manager.get_performance_metrics()
@@ -726,7 +726,7 @@ class TestPerformanceMetrics:
 
         try:
             manager.build_subject("nonexistent")
-        except (ValueError, KeyError, AttributeError):
+        except (ValueError, KeyError, AttributeError, PatternNotFoundError):
             pass
 
         metrics = manager.get_performance_metrics()

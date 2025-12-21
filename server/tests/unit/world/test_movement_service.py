@@ -456,8 +456,16 @@ class TestMovementService:
         mock_persistence.get_player_by_id = AsyncMock(side_effect=get_player_side_effect)
         mock_persistence.save_player = AsyncMock()
 
-        # Configure the mock room to have a _players set
+        # Configure the mock room to have a _players set (Room stores strings)
         mock_room._players = set()
+
+        # Mock add_player_silently to actually add player to _players set (as string)
+        def add_player_silently_side_effect(pid):
+            # Room stores player IDs as strings
+            pid_str = str(pid) if not isinstance(pid, str) else pid
+            mock_room._players.add(pid_str)
+
+        mock_room.add_player_silently = Mock(side_effect=add_player_silently_side_effect)
         mock_persistence.get_room_by_id = Mock(return_value=mock_room)
         mock_room.has_player.return_value = False
 
@@ -466,10 +474,8 @@ class TestMovementService:
         result = asyncio.run(service.add_player_to_room(test_player_id, "room1"))
 
         assert result is True
-        # Verify player was added to room (service uses UUID objects internally)
-        # add_player_to_room does direct assignment to _players, not through player_entered
-        player_id_uuid = uuid_module.UUID(test_player_id)
-        assert player_id_uuid in mock_room._players or test_player_id in mock_room._players
+        # Verify player was added to room (Room stores player IDs as strings)
+        assert test_player_id in mock_room._players
         assert player.current_room_id == "room1"
         mock_persistence.save_player.assert_called_once()
 

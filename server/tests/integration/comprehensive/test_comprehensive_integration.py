@@ -67,7 +67,11 @@ class TestComprehensiveIntegration:
 
         return mock_persistence
 
-    def test_security_headers_integration(self, container_test_client_class, mock_persistence_comprehensive):
+    def test_security_headers_integration(
+        self,
+        container_test_client_class,
+        mock_persistence_comprehensive,  # noqa: ARG002  # pylint: disable=unused-argument  # pylint: disable=unused-argument
+    ):
         """Test that security headers are applied to all endpoints."""
         # Test various endpoints to ensure security headers are present
         endpoints = ["/", "/api/players/", "/rooms/test-room-id", "/docs", "/openapi.json"]
@@ -88,7 +92,11 @@ class TestComprehensiveIntegration:
             assert response.headers["x-frame-options"] == "DENY"
             assert response.headers["x-xss-protection"] == "1; mode=block"
 
-    def test_cors_configuration_integration(self, container_test_client_class, mock_persistence_comprehensive):
+    def test_cors_configuration_integration(
+        self,
+        container_test_client_class,
+        mock_persistence_comprehensive,  # noqa: ARG002  # pylint: disable=unused-argument
+    ):
         """Test that CORS configuration works with environment variables."""
         # Test preflight request with allowed origin
         response = container_test_client_class.options(
@@ -110,7 +118,11 @@ class TestComprehensiveIntegration:
 
         assert "access-control-allow-origin" in response.headers
 
-    def test_logging_middleware_integration(self, container_test_client_class, mock_persistence_comprehensive):
+    def test_logging_middleware_integration(
+        self,
+        container_test_client_class,
+        mock_persistence_comprehensive,  # noqa: ARG002  # pylint: disable=unused-argument
+    ):
         """Test that comprehensive logging middleware works correctly."""
         # Make requests to various endpoints to test logging
         endpoints = ["/api/players/", "/rooms/test-room-id", "/docs"]
@@ -119,13 +131,16 @@ class TestComprehensiveIntegration:
             response = container_test_client_class.get(endpoint)
 
             # Verify response is successful (logging shouldn't break functionality)
-            assert response.status_code in [200, 404, 422]  # Valid responses
+            # 401 is valid for unauthenticated requests to protected endpoints
+            assert response.status_code in [200, 401, 404, 422]  # Valid responses
 
             # Check that logging headers are present (if implemented)
             # This tests that the logging middleware doesn't interfere with responses
 
     def test_service_layer_dependency_injection_integration(
-        self, container_test_client_class, mock_persistence_comprehensive
+        self,
+        container_test_client_class,
+        mock_persistence_comprehensive,  # noqa: ARG002  # pylint: disable=unused-argument
     ):
         """Test that service layer dependency injection works correctly."""
         # Test that endpoints use the service layer properly
@@ -139,7 +154,11 @@ class TestComprehensiveIntegration:
             data = response.json()
             assert isinstance(data, list)
 
-    def test_async_operations_integration(self, container_test_client_class, mock_persistence_comprehensive):
+    def test_async_operations_integration(
+        self,
+        container_test_client_class,
+        mock_persistence_comprehensive,  # noqa: ARG002  # pylint: disable=unused-argument
+    ):
         """Test that async operations work correctly throughout the stack."""
         # Test async route handlers
         response = container_test_client_class.get("/api/players/")
@@ -150,7 +169,11 @@ class TestComprehensiveIntegration:
         # Test that async service layer integration works
         # This is verified by the fact that the request completes successfully
 
-    def test_middleware_stack_integration(self, container_test_client_class, mock_persistence_comprehensive):
+    def test_middleware_stack_integration(
+        self,
+        container_test_client_class,
+        mock_persistence_comprehensive,  # noqa: ARG002  # pylint: disable=unused-argument
+    ):
         """Test that all middleware work together correctly."""
         # Make a request that goes through the entire middleware stack
         response = container_test_client_class.get("/api/players/")
@@ -168,7 +191,11 @@ class TestComprehensiveIntegration:
         )
         assert "access-control-allow-origin" in response_with_origin.headers
 
-    def test_error_handling_integration(self, container_test_client_class, mock_persistence_comprehensive):
+    def test_error_handling_integration(
+        self,
+        container_test_client_class,
+        mock_persistence_comprehensive,  # noqa: ARG002  # pylint: disable=unused-argument
+    ):
         """Test that error handling works correctly across all layers."""
         # Test 404 error
         response = container_test_client_class.get("/nonexistent-endpoint")
@@ -181,7 +208,11 @@ class TestComprehensiveIntegration:
         # Verify error responses still have security headers
         assert "x-content-type-options" in response.headers
 
-    def test_concurrent_requests_integration(self, container_test_client_class, mock_persistence_comprehensive):
+    def test_concurrent_requests_integration(
+        self,
+        container_test_client_class,
+        mock_persistence_comprehensive,  # noqa: ARG002  # pylint: disable=unused-argument
+    ):
         """Test that the application handles concurrent requests correctly."""
         import threading
         import time
@@ -227,7 +258,11 @@ class TestComprehensiveIntegration:
             assert result["has_security_headers"] is True
             assert result["response_time"] < 5.0  # Should be fast
 
-    def test_database_operations_integration(self, container_test_client_class, mock_persistence_comprehensive):
+    def test_database_operations_integration(
+        self,
+        container_test_client_class,
+        mock_persistence_comprehensive,  # noqa: ARG002  # pylint: disable=unused-argument
+    ):
         """Test that database operations work correctly with async patterns."""
         # Test that async database operations don't cause issues
         response = container_test_client_class.get("/api/players/")
@@ -239,7 +274,11 @@ class TestComprehensiveIntegration:
         response = container_test_client_class.get("/rooms/test-room-id")
         assert response.status_code in [200, 404, 401]
 
-    def test_authentication_integration(self, container_test_client_class, mock_persistence_comprehensive):
+    def test_authentication_integration(
+        self,
+        container_test_client_class,
+        mock_persistence_comprehensive,  # noqa: ARG002  # pylint: disable=unused-argument
+    ):
         """Test that authentication works correctly with all improvements."""
         # Test unauthenticated request
         response = container_test_client_class.get("/api/players/")
@@ -248,7 +287,11 @@ class TestComprehensiveIntegration:
         # Verify security headers are still present for unauthenticated requests
         assert "x-content-type-options" in response.headers
 
-    def test_documentation_integration(self, container_test_client_class, mock_persistence_comprehensive):
+    def test_documentation_integration(
+        self,
+        container_test_client_class,
+        mock_persistence_comprehensive,  # noqa: ARG002  # pylint: disable=unused-argument
+    ):
         """Test that API documentation works correctly with all improvements."""
         # Test OpenAPI schema
         response = container_test_client_class.get("/openapi.json")
@@ -261,7 +304,11 @@ class TestComprehensiveIntegration:
         # Verify documentation endpoints have security headers
         assert "x-content-type-options" in response.headers
 
-    def test_performance_integration(self, container_test_client_class, mock_persistence_comprehensive):
+    def test_performance_integration(
+        self,
+        container_test_client_class,
+        mock_persistence_comprehensive,  # noqa: ARG002  # pylint: disable=unused-argument
+    ):
         """Test that all improvements don't significantly impact performance."""
         import time
 
@@ -279,7 +326,11 @@ class TestComprehensiveIntegration:
         avg_response_time = sum(response_times) / len(response_times)
         assert avg_response_time < 1.0  # Should be fast
 
-    def test_health_check_integration(self, container_test_client_class, mock_persistence_comprehensive):
+    def test_health_check_integration(
+        self,
+        container_test_client_class,
+        mock_persistence_comprehensive,  # noqa: ARG002  # pylint: disable=unused-argument
+    ):
         """Test that health check endpoints work correctly."""
         # Test root endpoint (returns 404 as expected - no root route defined)
         response = container_test_client_class.get("/")
@@ -294,7 +345,11 @@ class TestComprehensiveIntegration:
         assert "x-content-type-options" in response.headers
 
     @pytest.mark.asyncio
-    async def test_async_service_layer_integration(self, container_test_client_class, mock_persistence_comprehensive):
+    async def test_async_service_layer_integration(
+        self,
+        container_test_client_class,
+        mock_persistence_comprehensive,  # noqa: ARG002  # pylint: disable=unused-argument
+    ):
         """Test async service layer integration specifically."""
         # Test that async service methods work correctly
         response = container_test_client_class.get("/api/players/")
@@ -305,7 +360,11 @@ class TestComprehensiveIntegration:
         # Test that async patterns don't cause issues
         # This is verified by the successful completion of the request
 
-    def test_error_logging_integration(self, container_test_client_class, mock_persistence_comprehensive):
+    def test_error_logging_integration(
+        self,
+        container_test_client_class,
+        mock_persistence_comprehensive,  # noqa: ARG002  # pylint: disable=unused-argument
+    ):
         """Test that error logging works correctly with all improvements."""
         # Make a request that should generate an error
         response = container_test_client_class.get("/api/players/invalid-uuid")
@@ -316,7 +375,11 @@ class TestComprehensiveIntegration:
         # Verify error responses still have proper headers
         assert "x-content-type-options" in response.headers
 
-    def test_comprehensive_workflow_integration(self, container_test_client_class, mock_persistence_comprehensive):
+    def test_comprehensive_workflow_integration(
+        self,
+        container_test_client_class,
+        mock_persistence_comprehensive,  # noqa: ARG002  # pylint: disable=unused-argument
+    ):
         """Test a comprehensive workflow that uses all improvements."""
         # 1. Test security headers on all requests
         response = container_test_client_class.get("/api/players/")

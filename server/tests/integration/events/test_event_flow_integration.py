@@ -395,10 +395,10 @@ class TestRealEventFlow:
         return EventBus()
 
     @pytest.fixture
-    def event_loop_setup(self, isolated_event_loop, event_bus):
+    def event_loop_setup(self, event_loop, event_bus):
         """Set up a proper event loop that EventBus can use."""
         # Use standardized fixtures instead of manual loop creation
-        loop = isolated_event_loop
+        loop = event_loop
 
         return loop, event_bus
 

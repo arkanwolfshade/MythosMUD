@@ -418,7 +418,8 @@ class TestGracefulShutdownSequence:
         # Mock task registry
         mock_task_registry = MagicMock()
 
-        async def record_shutdown_tasks(_timeout):
+        async def record_shutdown_tasks(*args, **kwargs):  # pylint: disable=unused-argument
+            # Accept any arguments to match actual method signature (timeout may be passed as kwarg)
             execution_order.append("shutdown_tasks")
             return True
 

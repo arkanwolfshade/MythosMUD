@@ -805,9 +805,7 @@ class TestSpawnRulesEndpoints:
 
         mock_npc_service.create_spawn_rule = AsyncMock(return_value=sample_rule)
 
-        spawn_rule_data = NPCSpawnRuleCreate(
-            npc_definition_id=1, sub_zone_id="default", spawn_probability=0.5, max_population=5
-        )
+        spawn_rule_data = NPCSpawnRuleCreate(npc_definition_id=1, sub_zone_id="default", max_population=5)
 
         result = await create_npc_spawn_rule(
             spawn_rule_data=spawn_rule_data,
@@ -926,7 +924,11 @@ class TestPydanticModelValidation:
 
     def test_npc_spawn_rule_create_validates_probability(self) -> None:
         """Test NPCSpawnRuleCreate validates spawn probability range."""
-        with pytest.raises(ValueError):
-            NPCSpawnRuleCreate(
+        # Note: spawn_probability is not a field on NPCSpawnRuleCreate (it's on NPCDefinition)
+        # This test verifies that Pydantic raises ValidationError for unknown fields
+        from pydantic import ValidationError
+
+        with pytest.raises(ValidationError):
+            NPCSpawnRuleCreate(  # type: ignore[call-arg]  # Intentionally passing invalid field to test Pydantic validation
                 npc_definition_id=1, sub_zone_id="test_zone", spawn_probability=1.5, max_population=5
-            )  # Above 1.0
+            )  # spawn_probability is not a valid field

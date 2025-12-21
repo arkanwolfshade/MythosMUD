@@ -25,7 +25,7 @@ class TestZoneConfigurationDatabaseSchema:
 
         database_url_raw = os.getenv("DATABASE_URL")
         if not database_url_raw:
-            pytest.skip("DATABASE_URL not set")
+            raise ValueError("DATABASE_URL must be set for this test.")
         database_url = (
             database_url_raw.replace("postgresql+asyncpg://", "postgresql://", 1)
             if database_url_raw.startswith("postgresql+asyncpg://")
@@ -88,7 +88,7 @@ class TestZoneConfigurationDatabaseSchema:
 
         database_url_raw = os.getenv("DATABASE_URL")
         if not database_url_raw:
-            pytest.skip("DATABASE_URL not set")
+            raise ValueError("DATABASE_URL must be set for this test.")
         database_url = (
             database_url_raw.replace("postgresql+asyncpg://", "postgresql://", 1)
             if database_url_raw.startswith("postgresql+asyncpg://")
@@ -124,7 +124,7 @@ class TestZoneConfigurationDatabaseSchema:
 
         database_url_raw = os.getenv("DATABASE_URL")
         if not database_url_raw:
-            pytest.skip("DATABASE_URL not set")
+            raise ValueError("DATABASE_URL must be set for this test.")
         database_url = (
             database_url_raw.replace("postgresql+asyncpg://", "postgresql://", 1)
             if database_url_raw.startswith("postgresql+asyncpg://")
@@ -162,7 +162,7 @@ class TestSubzonesDatabaseSchema:
 
         database_url_raw = os.getenv("DATABASE_URL")
         if not database_url_raw:
-            pytest.skip("DATABASE_URL not set")
+            raise ValueError("DATABASE_URL must be set for this test.")
         database_url = (
             database_url_raw.replace("postgresql+asyncpg://", "postgresql://", 1)
             if database_url_raw.startswith("postgresql+asyncpg://")
@@ -212,7 +212,7 @@ class TestSubzonesDatabaseSchema:
 
         database_url_raw = os.getenv("DATABASE_URL")
         if not database_url_raw:
-            pytest.skip("DATABASE_URL not set")
+            raise ValueError("DATABASE_URL must be set for this test.")
         database_url = (
             database_url_raw.replace("postgresql+asyncpg://", "postgresql://", 1)
             if database_url_raw.startswith("postgresql+asyncpg://")
@@ -249,7 +249,7 @@ class TestSubzonesDatabaseSchema:
 
         database_url_raw = os.getenv("DATABASE_URL")
         if not database_url_raw:
-            pytest.skip("DATABASE_URL not set")
+            raise ValueError("DATABASE_URL must be set for this test.")
         database_url = (
             database_url_raw.replace("postgresql+asyncpg://", "postgresql://", 1)
             if database_url_raw.startswith("postgresql+asyncpg://")
@@ -269,13 +269,17 @@ class TestSubzonesDatabaseSchema:
             """
             row = await conn.fetchrow(query)
 
+            # Skip test if no subzones are found in database (test data not loaded)
+            if row["total"] == 0:
+                pytest.skip("No subzones found in database - test data must be loaded for this test")
+
             # All subzones should have special_rules (default is '{}')
             assert row["has_special_rules"] == row["total"], "All subzones must have special_rules"
 
             # Most subzones should have environment and description from config files
             # Allow some flexibility for subzones without config files
-            assert row["has_environment"] > 0, "At least some subzones must have environment"
-            assert row["has_description"] > 0, "At least some subzones must have description"
+            assert row["has_environment"] > 0, "No subzones have environment data - config files must be loaded"
+            assert row["has_description"] > 0, "No subzones have description data - config files must be loaded"
         finally:
             await conn.close()
 
@@ -292,7 +296,7 @@ class TestZoneConfigurationDataLoading:
 
         database_url_raw = os.getenv("DATABASE_URL")
         if not database_url_raw:
-            pytest.skip("DATABASE_URL not set")
+            raise ValueError("DATABASE_URL must be set for this test.")
         database_url = (
             database_url_raw.replace("postgresql+asyncpg://", "postgresql://", 1)
             if database_url_raw.startswith("postgresql+asyncpg://")
@@ -314,8 +318,9 @@ class TestZoneConfigurationDataLoading:
             """
             row = await conn.fetchrow(query)
 
+            # Skip test if no zones found in database (test data not loaded)
             if row is None:
-                pytest.skip("No zones in database")
+                pytest.skip("No zones found in database - test data must be loaded for this test")
 
             # Convert asyncpg results to dict format
             # asyncpg returns JSONB as strings, so we need to parse them
@@ -365,7 +370,7 @@ class TestZoneConfigurationDataLoading:
 
         database_url_raw = os.getenv("DATABASE_URL")
         if not database_url_raw:
-            pytest.skip("DATABASE_URL not set")
+            raise ValueError("DATABASE_URL must be set for this test.")
         database_url = (
             database_url_raw.replace("postgresql+asyncpg://", "postgresql://", 1)
             if database_url_raw.startswith("postgresql+asyncpg://")
@@ -388,8 +393,9 @@ class TestZoneConfigurationDataLoading:
             """
             row = await conn.fetchrow(query)
 
+            # Skip test if no subzones found in database (test data not loaded)
             if row is None:
-                pytest.skip("No subzones in database")
+                pytest.skip("No subzones found in database - test data must be loaded for this test")
 
             # Convert asyncpg results to dict format
             # asyncpg returns JSONB as strings, so we need to parse them

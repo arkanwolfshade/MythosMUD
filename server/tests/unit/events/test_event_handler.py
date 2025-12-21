@@ -260,7 +260,10 @@ class TestEventHandlerBroadcasting:
 
     @pytest.mark.asyncio
     async def test_event_handler_handles_missing_player_gracefully(
-        self, event_bus, _event_handler, mock_connection_manager
+        self,
+        event_bus,
+        event_handler,
+        mock_connection_manager,  # pylint: disable=unused-argument
     ):
         """Test that RealTimeEventHandler handles missing players gracefully."""
         # Setup mock to return None for player lookup
@@ -280,7 +283,10 @@ class TestEventHandlerBroadcasting:
 
     @pytest.mark.asyncio
     async def test_event_handler_handles_missing_room_gracefully(
-        self, event_bus, _event_handler, mock_connection_manager
+        self,
+        event_bus,
+        event_handler,
+        mock_connection_manager,  # pylint: disable=unused-argument
     ):
         """Test that RealTimeEventHandler handles missing rooms gracefully."""
         # Set the main loop for async event handling

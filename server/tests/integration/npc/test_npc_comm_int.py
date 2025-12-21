@@ -104,7 +104,7 @@ class TestNPCEventReactionSystem:
         assert len(event_reaction_system._npc_reactions["test_npc"]) == 1
 
     @pytest.mark.asyncio
-    async def test_npc_reaction_to_player_entered_room(self, event_bus, _shopkeeper_npc_with_reactions) -> None:
+    async def test_npc_reaction_to_player_entered_room(self, event_bus, shopkeeper_npc_with_reactions) -> None:  # pylint: disable=unused-argument
         """Test that NPCs react when players enter their room."""
         events_received = []
 

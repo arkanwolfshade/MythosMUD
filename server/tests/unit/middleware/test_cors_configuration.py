@@ -31,7 +31,7 @@ class TestCORSConfigurationVerification:
         mock_persistence.async_save_player.return_value = None
         mock_persistence.async_delete_player.return_value = True
         # Also mock synchronous methods for backward compatibility
-        mock_persistence.list_players.return_value = []
+        mock_persistence.list_players = AsyncMock(return_value=[])
         mock_persistence.get_player.return_value = None
         mock_persistence.get_room.return_value = None
         mock_persistence.save_player.return_value = None
@@ -47,6 +47,20 @@ class TestCORSConfigurationVerification:
         app.state.player_service = mock_application_container.player_service
         app.state.room_service = mock_application_container.room_service
         app.state.event_bus = mock_application_container.event_bus
+
+        # Mock PlayerService to return empty list for list_players
+        mock_player_service = AsyncMock()
+        mock_player_service.list_players = AsyncMock(return_value=[])
+        mock_application_container.player_service = mock_player_service
+        app.state.player_service = mock_player_service
+
+        # Override PlayerServiceDep dependency
+        from server.dependencies import PlayerServiceDep
+
+        async def mock_player_service_dep():
+            return mock_player_service
+
+        app.dependency_overrides[PlayerServiceDep] = mock_player_service_dep
 
         # Mock get_current_user dependency to avoid authentication failures
         import uuid

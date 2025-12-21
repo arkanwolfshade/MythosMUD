@@ -11,7 +11,6 @@ from uuid import uuid4
 
 import pytest
 
-from server.exceptions import DatabaseError
 from server.game.movement_service import MovementService
 from server.models.player import Player
 from server.models.room import Room
@@ -172,8 +171,10 @@ class TestMovementPersistence:
         # Add player to room_1
         room_1.player_entered("unknown-player")
 
-        # Try to move player - should raise DatabaseError (async)
-        with pytest.raises(DatabaseError, match="Error moving player unknown-player"):
+        # Try to move player - should raise ValidationError when player not found
+        from server.exceptions import ValidationError
+
+        with pytest.raises(ValidationError, match="Player not found: unknown-player"):
             asyncio.run(movement_service.move_player("unknown-player", "room_1", "room_2"))
 
         # Verify save_player was not called

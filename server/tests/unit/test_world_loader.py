@@ -15,10 +15,7 @@ AI Agent: Tests for world loader utility functions covering room ID generation,
 from typing import Any
 from unittest.mock import Mock, patch
 
-import pytest
-
 from server.world_loader import (
-    SCHEMA_VALIDATION_AVAILABLE,
     generate_room_id,
     get_room_environment,
     validate_room_data,
@@ -115,11 +112,9 @@ class TestGetRoomEnvironment:
 class TestValidateRoomData:
     """Test room data validation."""
 
+    @patch("server.world_loader.SCHEMA_VALIDATION_AVAILABLE", False)
     def test_validation_returns_empty_when_not_available(self) -> None:
         """Test validation returns empty list when schema validation not available."""
-        if SCHEMA_VALIDATION_AVAILABLE:
-            pytest.skip("Schema validation is available, skipping this test")
-
         room_data = {"name": "Test Room"}
         errors = validate_room_data(room_data, "test_room.json")
 
@@ -133,10 +128,14 @@ class TestValidateRoomData:
 
         assert not errors
 
-    def test_validation_with_none_validator_attempts_creation(self) -> None:
+    @patch("server.world_loader.SCHEMA_VALIDATION_AVAILABLE", True)
+    @patch("server.world_loader.create_validator")
+    def test_validation_with_none_validator_attempts_creation(self, mock_create_validator) -> None:
         """Test validation attempts to create validator when None."""
-        if not SCHEMA_VALIDATION_AVAILABLE:
-            pytest.skip("Schema validation not available")
+        # Mock validator creation to return a validator
+        mock_validator = Mock()
+        mock_validator.validate_room.return_value = []
+        mock_create_validator.return_value = mock_validator
 
         room_data = {"name": "Test Room"}
 
@@ -144,6 +143,7 @@ class TestValidateRoomData:
         errors = validate_room_data(room_data, "test_room.json", validator=None)
 
         assert isinstance(errors, list)
+        mock_create_validator.assert_called_once()
 
     @patch("server.world_loader.SCHEMA_VALIDATION_AVAILABLE", True)
     @patch("server.world_loader.create_validator")

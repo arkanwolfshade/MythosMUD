@@ -259,14 +259,14 @@ class TestAdminAuthServiceCheckRateLimit:
         service.rate_limit_window = 1  # Short window for testing (must be int)
         service.rate_limit_max_requests = 3
 
-        # Add requests
+        # Add requests (2 requests, limit is 3)
         service._check_rate_limit("user-3", None)
         service._check_rate_limit("user-3", None)
 
-        # Wait for window to expire
-        time.sleep(0.2)
+        # Wait for window to expire (need to wait at least 1 second for entries to be cleaned)
+        time.sleep(1.1)
 
-        # Should be able to add more requests
+        # Should be able to add more requests (old entries should be cleaned)
         service._check_rate_limit("user-3", None)
         service._check_rate_limit("user-3", None)
 

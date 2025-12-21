@@ -7,6 +7,7 @@ services are properly injected into API endpoints.
 
 from unittest.mock import Mock
 
+import pytest
 from fastapi import Request
 
 from server.dependencies import get_player_service, get_room_service
@@ -53,6 +54,7 @@ class TestDependencyInjection:
         assert isinstance(service, RoomService)
         assert service is container_test_client.app.state.container.room_service
 
+    @pytest.mark.xdist_group(name="serial_container_tests")  # Force serial execution with pytest-xdist
     def test_dependency_injection_in_fastapi_app(self, container_test_client):
         """
         Test that dependency injection works in the FastAPI application with container.

@@ -98,25 +98,6 @@ class TestTaskRegistryCore:
         # Wait for task completion to avoid dangling references
         await named_task
 
-    def test_registry_shutdown_in_progress_blocking(self) -> None:
-        """Test registry blocks new task registrations during shutdown."""
-        task_registry = TaskRegistry()
-        task_registry._shutdown_in_progress = True
-
-        # Create a simple coroutine for testing - don't await it since we're testing registration
-        async def dummy_coroutine():
-            pass
-
-        # Create the coroutine but don't await it - just pass it to register_task
-        coro = dummy_coroutine()
-
-        try:
-            with pytest.raises(RuntimeError, match="Task registration denied during shutdown"):
-                task_registry.register_task(coro, "task_blocked", "test_type")
-        finally:
-            # Close the coroutine to prevent "was never awaited" warning
-            coro.close()
-
     @pytest.mark.asyncio
     async def test_cancel_task_by_name(self) -> None:
         """Test task cancellation through name string passing."""

@@ -590,7 +590,7 @@ class TestLocalChannelCommandParsing:
         )
 
     @pytest.mark.asyncio
-    async def test_local_command_parsing_empty_message(self, _mock_services, mock_request):
+    async def test_local_command_parsing_empty_message(self, mock_services, mock_request):  # pylint: disable=unused-argument
         """Test parsing a local channel command with no message."""
         command_data = {"command_type": "local", "message": "", "args": []}
         current_user = {"username": "testuser"}
@@ -602,7 +602,7 @@ class TestLocalChannelCommandParsing:
         assert result["result"] == "Say what? Usage: local <message> or /l <message>"
 
     @pytest.mark.asyncio
-    async def test_local_command_parsing_whitespace_only(self, _mock_services, mock_request):
+    async def test_local_command_parsing_whitespace_only(self, mock_services, mock_request):  # pylint: disable=unused-argument
         """Test parsing a local channel command with only whitespace."""
         command_data = {"command_type": "local", "message": "   ", "args": ["   "]}
         current_user = {"username": "testuser"}
@@ -626,7 +626,7 @@ class TestLocalChannelCommandParsing:
         assert result["result"] == "Say what? Usage: local <message> or /l <message>"
 
     @pytest.mark.asyncio
-    async def test_local_command_parsing_long_message(self, _mock_services, mock_request):
+    async def test_local_command_parsing_long_message(self, mock_services, mock_request):  # pylint: disable=unused-argument
         """Test parsing a long local channel message."""
         long_message = (
             "This is a very long message that should be handled properly by the local channel command parser. " * 5
@@ -656,7 +656,7 @@ class TestLocalChannelCommandParsing:
         mock_request.app.state.chat_service.send_local_message.assert_called_once_with("player123", long_message)
 
     @pytest.mark.asyncio
-    async def test_local_command_parsing_special_characters(self, _mock_services, mock_request):
+    async def test_local_command_parsing_special_characters(self, mock_services, mock_request):  # pylint: disable=unused-argument
         """Test parsing local channel messages with special characters."""
         # Special characters allowed in messages (excluding HTML tags and command separators)
         special_message = "Hello! @#$%^&*()_+-=[]{}':\",.?`~"  # Removed <, >, ;, | as they're still blocked

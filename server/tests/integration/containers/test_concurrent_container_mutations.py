@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import asyncio
 import os
-from pathlib import Path
 from typing import Any, cast
 from uuid import UUID, uuid4
 
@@ -31,7 +30,7 @@ def ensure_test_item_prototypes():
 
     database_url = os.getenv("DATABASE_URL")
     if not database_url or not database_url.startswith("postgresql"):
-        pytest.skip("DATABASE_URL must be set to a PostgreSQL URL")
+        raise ValueError("DATABASE_URL must be set to a PostgreSQL URL")
 
     url = database_url.replace("postgresql+psycopg2://", "postgresql://").replace(
         "postgresql+asyncpg://", "postgresql://"
@@ -42,6 +41,28 @@ def ensure_test_item_prototypes():
     cursor = conn.cursor()
 
     try:
+        # Ensure item_prototypes table exists
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS item_prototypes (
+                prototype_id varchar(120) PRIMARY KEY,
+                name varchar(120) NOT NULL,
+                short_description varchar(255) NOT NULL,
+                long_description text NOT NULL,
+                item_type varchar(32) NOT NULL,
+                weight double precision NOT NULL DEFAULT 0.0,
+                base_value integer NOT NULL DEFAULT 0,
+                durability integer,
+                flags jsonb NOT NULL DEFAULT '[]'::jsonb,
+                wear_slots jsonb NOT NULL DEFAULT '[]'::jsonb,
+                stacking_rules jsonb NOT NULL DEFAULT '{}'::jsonb,
+                usage_restrictions jsonb NOT NULL DEFAULT '{}'::jsonb,
+                effect_components jsonb NOT NULL DEFAULT '[]'::jsonb,
+                metadata jsonb NOT NULL DEFAULT '{}'::jsonb,
+                tags jsonb NOT NULL DEFAULT '[]'::jsonb,
+                created_at timestamptz NOT NULL DEFAULT now()
+            )
+        """)
+
         # Create test item prototypes if they don't exist
         test_prototypes = [
             ("item_1", "Test Item 1", "A test item for container testing"),
@@ -106,14 +127,7 @@ def ensure_containers_table():
     # Get database URL from environment
     database_url = os.getenv("DATABASE_URL")
     if not database_url or not database_url.startswith("postgresql"):
-        pytest.skip("DATABASE_URL must be set to a PostgreSQL URL")
-
-    # Read the migration SQL file
-    project_root = Path(__file__).parent.parent.parent.parent.parent
-    migration_file = project_root / "db" / "migrations" / "012_create_containers_table.sql"
-
-    if not migration_file.exists():
-        pytest.skip(f"Migration file not found: {migration_file}")
+        raise ValueError("DATABASE_URL must be set to a PostgreSQL URL")
 
     # Execute the migration SQL
     import psycopg2
@@ -129,10 +143,50 @@ def ensure_containers_table():
     cursor = conn.cursor()
 
     try:
-        # Read and execute the migration SQL
-        with open(migration_file, encoding="utf-8") as f:
-            migration_sql = f.read()
-        cursor.execute(migration_sql)
+        # Check if containers table exists
+        cursor.execute(
+            """
+            SELECT EXISTS (
+                SELECT FROM information_schema.tables
+                WHERE table_schema = 'public'
+                AND table_name = 'containers'
+            );
+            """
+        )
+        result = cursor.fetchone()
+        table_exists = result[0] if result is not None else False
+
+        if not table_exists:
+            # Create containers table if it doesn't exist (using schema from authoritative_schema.sql)
+            cursor.execute(
+                """
+                CREATE TABLE public.containers (
+                    container_instance_id uuid DEFAULT gen_random_uuid() NOT NULL,
+                    source_type text NOT NULL,
+                    owner_id uuid,
+                    room_id character varying(255),
+                    entity_id uuid,
+                    lock_state text DEFAULT 'unlocked'::text NOT NULL,
+                    capacity_slots integer NOT NULL,
+                    weight_limit integer,
+                    decay_at timestamp with time zone,
+                    allowed_roles jsonb,
+                    metadata_json jsonb,
+                    created_at timestamp with time zone DEFAULT now() NOT NULL,
+                    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+                    container_item_instance_id character varying(64),
+                    items_json jsonb DEFAULT '[]'::jsonb NOT NULL,
+                    CONSTRAINT containers_capacity_slots_check CHECK (((capacity_slots > 0) AND (capacity_slots <= 20))),
+                    CONSTRAINT containers_lock_state_check CHECK ((lock_state = ANY (ARRAY['unlocked'::text, 'locked'::text, 'sealed'::text]))),
+                    CONSTRAINT containers_source_type_check CHECK ((source_type = ANY (ARRAY['environment'::text, 'equipment'::text, 'corpse'::text]))),
+                    CONSTRAINT containers_weight_limit_check CHECK (((weight_limit IS NULL) OR (weight_limit > 0))),
+                    PRIMARY KEY (container_instance_id)
+                );
+                CREATE INDEX IF NOT EXISTS idx_containers_room ON containers(room_id);
+                CREATE INDEX IF NOT EXISTS idx_containers_entity ON containers(entity_id);
+                CREATE INDEX IF NOT EXISTS idx_containers_owner ON containers(owner_id);
+                """
+            )
     finally:
         cursor.close()
         conn.close()
@@ -177,6 +231,26 @@ async def container_service(request):
         logging.getLogger(__name__).warning("Error during persistence cleanup: %s", e)
 
 
+def _ensure_room_in_cache(persistence, room_id: str) -> None:
+    """Ensure a room exists in the persistence layer's room cache."""
+    from server.models.room import Room
+
+    # The room cache is shared between persistence and player_repo
+    # Add to persistence cache which is used by player_repo
+    if room_id not in persistence._room_cache:
+        room_data = {
+            "id": room_id,
+            "name": "Test Room",
+            "description": "Test room for container tests",
+        }
+        persistence._room_cache[room_id] = Room(room_data)
+
+    # Also ensure it's in the player_repo's cache (same reference, but being explicit)
+    if hasattr(persistence, "_player_repo") and hasattr(persistence._player_repo, "_room_cache"):
+        if room_id not in persistence._player_repo._room_cache:
+            persistence._player_repo._room_cache[room_id] = persistence._room_cache[room_id]
+
+
 async def _create_test_player(persistence, player_id: UUID, name: str, room_id: str = "test_room_001") -> Player:
     """Helper function to create a test player in the database."""
     from datetime import UTC, datetime
@@ -212,8 +286,8 @@ async def _create_test_player(persistence, player_id: UUID, name: str, room_id: 
         now = datetime.now(UTC).replace(tzinfo=None)
         cursor.execute(
             """
-            INSERT INTO users (id, email, username, display_name, hashed_password, is_active, is_superuser, is_verified, created_at, updated_at)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO users (id, email, username, display_name, hashed_password, is_active, is_superuser, is_verified, is_admin, created_at, updated_at)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             ON CONFLICT (id) DO NOTHING
             """,
             (
@@ -225,6 +299,7 @@ async def _create_test_player(persistence, player_id: UUID, name: str, room_id: 
                 user.is_active,
                 user.is_superuser,
                 user.is_verified,
+                False,  # is_admin
                 now,
                 now,
             ),
@@ -263,6 +338,10 @@ class TestConcurrentContainerMutations:
             # Create test container
             # Use a real room ID that exists in the database
             room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
+
+            # Ensure room exists in cache to prevent validate_and_fix_player_room from changing player room
+            _ensure_room_in_cache(container_service.persistence, room_id)
+
             player1_id = uuid4()
             player2_id = uuid4()
 
@@ -307,20 +386,20 @@ class TestConcurrentContainerMutations:
             token2 = results[1]["mutation_token"]
             assert token1 != token2, "Each player should get a unique mutation token"
         except TimeoutError as e:
-            # If the operation times out, skip the test instead of failing
-            # This allows the test suite to continue running
-            skip_reason = str(e) if e else "Test timed out after 25 seconds"
-            pytest.skip(skip_reason)
+            # If the operation times out, raise an error
+            # Timeout indicates a real problem that should be investigated
+            raise RuntimeError(f"Test timed out: {str(e) if e else 'Test timed out after 25 seconds'}") from e
 
     @pytest.mark.timeout(60)
     async def test_concurrent_transfer_operations(
         self,
         container_service: ContainerService,
-        ensure_test_item_prototypes,  # noqa: ARG002
+        ensure_test_item_prototypes,  # pylint: disable=unused-argument
     ) -> None:
         """Test that concurrent transfers are handled correctly with mutation tokens."""
         # Create test container
         room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
+        _ensure_room_in_cache(container_service.persistence, room_id)
         player_id = uuid4()
 
         # Create test player in database
@@ -403,11 +482,14 @@ class TestConcurrentContainerMutations:
         assert failure_count == 1, "One transfer should fail due to token invalidation"
 
     async def test_concurrent_transfer_different_tokens(
-        self, container_service: ContainerService, ensure_test_item_prototypes
+        self,
+        container_service: ContainerService,
+        ensure_test_item_prototypes,  # pylint: disable=unused-argument
     ) -> None:
         """Test that transfers with different mutation tokens work correctly."""
         # Create test container
         room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
+        _ensure_room_in_cache(container_service.persistence, room_id)
         player1_id = uuid4()
         player2_id = uuid4()
 
@@ -488,6 +570,7 @@ class TestConcurrentContainerMutations:
         """Test that concurrent close operations are handled correctly."""
         # Create test container
         room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
+        _ensure_room_in_cache(container_service.persistence, room_id)
         player_id = uuid4()
 
         # Create test player in database
@@ -540,6 +623,7 @@ class TestConcurrentContainerMutations:
         """Test that open/close race conditions are handled correctly."""
         # Create test container
         room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
+        _ensure_room_in_cache(container_service.persistence, room_id)
         player_id = uuid4()
 
         # Create test player in database
@@ -599,11 +683,14 @@ class TestConcurrentContainerMutations:
         assert isinstance(results[1], dict) and "mutation_token" in results[1]
 
     async def test_concurrent_capacity_validation(
-        self, container_service: ContainerService, ensure_test_item_prototypes
+        self,
+        container_service: ContainerService,
+        ensure_test_item_prototypes,  # pylint: disable=unused-argument
     ) -> None:
         """Test that capacity validation works correctly under concurrent load."""
         # Create test container with limited capacity
         room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
+        _ensure_room_in_cache(container_service.persistence, room_id)
         player_id = uuid4()
 
         # Create test player in database

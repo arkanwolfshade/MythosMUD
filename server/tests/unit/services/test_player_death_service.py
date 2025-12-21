@@ -304,8 +304,8 @@ class TestPlayerDeathService:  # pylint: disable=redefined-outer-name
         service = PlayerDeathService(event_bus=mock_event_bus, player_combat_service=mock_player_combat_service)
 
         # Setup player
-        player_id = str(uuid4())
-        mock_player.player_id = player_id
+        player_id = uuid4()
+        mock_player.player_id = str(player_id)
         mock_player.name = "TestPlayer"
         mock_player.current_room_id = "death-room"
         # get_stats() must return a mutable dict, not a Mock
@@ -317,8 +317,8 @@ class TestPlayerDeathService:  # pylint: disable=redefined-outer-name
 
         killer_info = {"killer_id": "npc-123", "killer_name": "Beast"}
 
-        # Call handle_player_death
-        result = await service.handle_player_death(uuid4(), "death-room", killer_info, mock_session)
+        # Call handle_player_death with the same player_id
+        result = await service.handle_player_death(player_id, "death-room", killer_info, mock_session)
 
         # Verify death was handled successfully
         assert result is True
@@ -328,7 +328,7 @@ class TestPlayerDeathService:  # pylint: disable=redefined-outer-name
         mock_player_combat_service.clear_player_combat_state.assert_called_once()
         # Verify the correct player UUID was passed
         call_args = mock_player_combat_service.clear_player_combat_state.call_args
-        assert str(call_args[0][0]) == player_id
+        assert call_args[0][0] == player_id
 
     @pytest.mark.asyncio
     async def test_handle_player_death_without_combat_service(self, mock_player):

@@ -127,7 +127,12 @@ class TestProfessionRetrieval:
 
     @pytest.mark.asyncio
     async def test_get_all_professions_success(
-        self, mock_current_user, sample_profession_data, sample_profession_data_2, _mock_persistence, mock_request
+        self,
+        mock_current_user,
+        sample_profession_data,
+        sample_profession_data_2,
+        mock_persistence,  # pylint: disable=unused-argument
+        mock_request,
     ):
         """Test successful retrieval of all available professions."""
         # Setup mocks - use AsyncMock for async persistence methods
@@ -150,7 +155,7 @@ class TestProfessionRetrieval:
             mock_async_persistence.get_professions.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_get_all_professions_empty(self, mock_current_user, _mock_persistence, mock_request):
+    async def test_get_all_professions_empty(self, mock_current_user, mock_persistence, mock_request):  # pylint: disable=unused-argument
         """Test retrieval of professions when none are available."""
         # Setup mocks - use AsyncMock for async persistence methods
         from unittest.mock import AsyncMock, patch
@@ -166,7 +171,7 @@ class TestProfessionRetrieval:
             mock_async_persistence.get_professions.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_get_all_professions_database_error(self, mock_current_user, _mock_persistence, mock_request):
+    async def test_get_all_professions_database_error(self, mock_current_user, mock_persistence, mock_request):  # pylint: disable=unused-argument
         """Test retrieval of professions when database error occurs."""
         # Setup mocks - use AsyncMock for async persistence methods
         from unittest.mock import AsyncMock, patch
@@ -183,7 +188,11 @@ class TestProfessionRetrieval:
 
     @pytest.mark.asyncio
     async def test_get_profession_by_id_success(
-        self, mock_current_user, sample_profession_data, _mock_persistence, mock_request
+        self,
+        mock_current_user,
+        sample_profession_data,
+        mock_persistence,  # pylint: disable=unused-argument
+        mock_request,
     ):
         """Test successful retrieval of profession by ID."""
         # Setup mocks - use AsyncMock for async persistence methods
@@ -209,7 +218,11 @@ class TestProfessionRetrieval:
 
     @pytest.mark.asyncio
     async def test_get_profession_by_id_with_requirements(
-        self, mock_current_user, sample_profession_with_requirements, _mock_persistence, mock_request
+        self,
+        mock_current_user,
+        sample_profession_with_requirements,
+        mock_persistence,  # pylint: disable=unused-argument
+        mock_request,
     ):
         """Test successful retrieval of profession with stat requirements."""
         # Setup mocks - use AsyncMock for async persistence methods
@@ -227,7 +240,7 @@ class TestProfessionRetrieval:
             mock_async_persistence.get_profession_by_id.assert_called_once_with(2)
 
     @pytest.mark.asyncio
-    async def test_get_profession_by_id_not_found(self, mock_current_user, _mock_persistence, mock_request):
+    async def test_get_profession_by_id_not_found(self, mock_current_user, mock_persistence, mock_request):  # pylint: disable=unused-argument
         """Test retrieval of profession when profession not found."""
         # Setup mocks - use AsyncMock for async persistence methods
         from unittest.mock import AsyncMock, patch
@@ -244,7 +257,7 @@ class TestProfessionRetrieval:
             mock_async_persistence.get_profession_by_id.assert_called_once_with(999)
 
     @pytest.mark.asyncio
-    async def test_get_profession_by_id_database_error(self, mock_current_user, _mock_persistence, mock_request):
+    async def test_get_profession_by_id_database_error(self, mock_current_user, mock_persistence, mock_request):  # pylint: disable=unused-argument
         """Test retrieval of profession when database error occurs."""
         # Setup mocks - use AsyncMock for async persistence methods
         from unittest.mock import AsyncMock, patch
@@ -260,7 +273,7 @@ class TestProfessionRetrieval:
             assert "An internal error occurred" in str(cast(Any, exc_info.value).detail)
 
     @pytest.mark.asyncio
-    async def test_get_profession_by_id_invalid_id(self, mock_current_user, _mock_persistence, mock_request):
+    async def test_get_profession_by_id_invalid_id(self, mock_current_user, mock_persistence, mock_request):  # pylint: disable=unused-argument
         """Test retrieval of profession with invalid ID format."""
         # Setup mocks - use AsyncMock for async persistence methods
         from unittest.mock import AsyncMock, patch
@@ -285,7 +298,11 @@ class TestProfessionDataValidation:
 
     @pytest.mark.asyncio
     async def test_profession_response_format(
-        self, mock_current_user, sample_profession_data, _mock_persistence, mock_request
+        self,
+        mock_current_user,
+        sample_profession_data,
+        mock_persistence,  # pylint: disable=unused-argument
+        mock_request,
     ):
         """Test that profession response has correct format."""
         # Setup mocks - use AsyncMock for async persistence methods
@@ -321,7 +338,11 @@ class TestProfessionDataValidation:
 
     @pytest.mark.asyncio
     async def test_profession_stat_requirements_json_parsing(
-        self, mock_current_user, sample_profession_with_requirements, _mock_persistence, mock_request
+        self,
+        mock_current_user,
+        sample_profession_with_requirements,
+        mock_persistence,  # pylint: disable=unused-argument
+        mock_request,
     ):
         """Test that stat requirements JSON is properly parsed."""
         # Setup mocks - use AsyncMock for async persistence methods
@@ -338,7 +359,11 @@ class TestProfessionDataValidation:
 
     @pytest.mark.asyncio
     async def test_profession_mechanical_effects_json_parsing(
-        self, mock_current_user, sample_profession_data, _mock_persistence, mock_request
+        self,
+        mock_current_user,
+        sample_profession_data,
+        mock_persistence,  # pylint: disable=unused-argument
+        mock_request,
     ):
         """Test that mechanical effects JSON is properly parsed."""
         # Setup mocks - use AsyncMock for async persistence methods
@@ -355,7 +380,12 @@ class TestProfessionDataValidation:
 
     @pytest.mark.asyncio
     async def test_profession_list_response_format(
-        self, mock_current_user, sample_profession_data, sample_profession_data_2, _mock_persistence, mock_request
+        self,
+        mock_current_user,
+        sample_profession_data,
+        sample_profession_data_2,
+        mock_persistence,  # pylint: disable=unused-argument
+        mock_request,
     ):
         """Test that profession list response has correct format."""
         # Setup mocks - use AsyncMock for async persistence methods
@@ -441,7 +471,11 @@ class TestStrongmanProfession:
 
     @pytest.mark.asyncio
     async def test_get_strongman_profession_by_id_success(
-        self, mock_current_user, sample_strongman_profession, _mock_persistence, mock_request
+        self,
+        mock_current_user,
+        sample_strongman_profession,
+        mock_persistence,  # pylint: disable=unused-argument
+        mock_request,
     ):
         """Test successful retrieval of Strongman profession by ID."""
         # Setup mocks - use AsyncMock for async persistence methods
@@ -467,7 +501,11 @@ class TestStrongmanProfession:
 
     @pytest.mark.asyncio
     async def test_strongman_profession_stat_requirements_format(
-        self, mock_current_user, sample_strongman_profession, _mock_persistence, mock_request
+        self,
+        mock_current_user,
+        sample_strongman_profession,
+        mock_persistence,  # pylint: disable=unused-argument
+        mock_request,
     ):
         """Test that Strongman profession stat requirements are properly formatted."""
         # Setup mocks - use AsyncMock for async persistence methods
@@ -492,7 +530,7 @@ class TestStrongmanProfession:
         sample_profession_data,
         sample_profession_data_2,
         sample_strongman_profession,
-        _mock_persistence,
+        mock_persistence,  # pylint: disable=unused-argument
         mock_request,
     ):
         """Test that Strongman profession appears in profession list."""

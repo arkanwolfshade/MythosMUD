@@ -105,7 +105,7 @@ class TestRespawnEndpoint:
         # The endpoint should use @rate_limiter.limit decorator
 
     @pytest.mark.asyncio
-    async def test_respawn_returns_room_data(self, _mock_dead_player):
+    async def test_respawn_returns_room_data(self, mock_dead_player):  # pylint: disable=unused-argument
         """Test that respawn returns complete room data."""
         mock_persistence = Mock()
         mock_room = {
