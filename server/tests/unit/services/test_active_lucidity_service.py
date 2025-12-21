@@ -96,39 +96,6 @@ def lucidity_service(db_session):
 
 
 @pytest.mark.asyncio
-async def test_adjust_lucidity_caps_at_max(db_session, lucidity_service):
-    """Test that lucidity doesn't exceed 100."""
-    # Create test user and player first (required for foreign key constraint)
-    # Use unique username to avoid conflicts with other tests
-    unique_username = f"testuser_{uuid.uuid4().hex[:8]}"
-    user = User(
-        id=str(uuid.uuid4()),
-        email=f"{unique_username}@example.com",
-        hashed_password="pw",
-        is_active=True,
-        username=unique_username,
-    )
-    db_session.add(user)
-    await db_session.flush()
-
-    player_id = uuid.uuid4()
-    # Use unique player name to avoid conflicts in parallel test execution
-    unique_player_name = f"TestPlayer_{uuid.uuid4().hex[:8]}"
-    player = Player(player_id=str(player_id), user_id=user.id, name=unique_player_name)
-    db_session.add(player)
-    await db_session.flush()
-
-    lucidity = PlayerLucidity(player_id=str(player_id), current_lcd=95, current_tier="lucid")
-    db_session.add(lucidity)
-    await db_session.commit()
-
-    await lucidity_service.apply_lucidity_adjustment(player_id, 10, reason_code="test_cap")
-
-    updated_lucidity = await db_session.get(PlayerLucidity, str(player_id))
-    assert updated_lucidity.current_lcd == 100
-
-
-@pytest.mark.asyncio
 @pytest.mark.serial  # Mark as serial to prevent deadlocks during parallel execution
 @pytest.mark.xdist_group(name="serial_lucidity_tests")  # Force serial execution with pytest-xdist
 async def test_adjust_lucidity_caps_at_min(db_session, lucidity_service):

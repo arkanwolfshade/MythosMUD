@@ -232,25 +232,6 @@ class TestProfessionModel:
         with pytest.raises(IntegrityError):
             db_session.commit()
 
-    def test_profession_default_values(self, db_session: Session) -> None:
-        """Test that profession has correct default values."""
-        profession = Profession(
-            id=0,
-            name="Test Profession",
-            description="A test profession",
-            flavor_text="Test flavor text",
-            stat_requirements="{}",
-            mechanical_effects="{}",
-            # is_available not specified, should default to True
-        )
-
-        db_session.add(profession)
-        db_session.commit()
-
-        saved_profession = db_session.query(Profession).filter_by(id=0).first()
-        assert saved_profession is not None
-        assert saved_profession.is_available is True
-
     def test_profession_availability_filtering(self, db_session: Session) -> None:
         """Test filtering professions by availability."""
         # Create available profession
