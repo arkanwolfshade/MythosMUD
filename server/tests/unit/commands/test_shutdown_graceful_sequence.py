@@ -8,7 +8,7 @@ As noted in the Cultes des Goules, proper closure of dimensional portals
 requires a specific sequence of rituals.
 """
 
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 from uuid import uuid4
 
 import pytest
@@ -96,8 +96,28 @@ class TestGracefulShutdownSequence:
         mock_task_registry.shutdown_all = AsyncMock(return_value=True)
         mock_app.state.task_registry = mock_task_registry
 
-        # Execute shutdown sequence
-        await execute_shutdown_sequence(mock_app)
+        # Ensure shutdown_data doesn't contain a coroutine that would cause warnings
+        # If shutdown_data exists, ensure the task is properly mocked
+        if hasattr(mock_app.state, "shutdown_data") and mock_app.state.shutdown_data:
+            shutdown_data = mock_app.state.shutdown_data
+            if "task" in shutdown_data:
+                # Ensure the task is a Mock, not a coroutine
+                mock_task = MagicMock()
+                mock_task.done = MagicMock(return_value=True)
+                shutdown_data["task"] = mock_task
+
+        # Patch asyncio.create_task to prevent background task warnings from countdown_loop
+        # The countdown_loop warning comes from app.state.shutdown_data containing a task
+        # We ensure shutdown_data is properly mocked before execution
+        def create_task_side_effect(coro):
+            # Close the coroutine to prevent "never awaited" warning
+            if hasattr(coro, "close"):
+                coro.close()
+            return MagicMock()
+
+        with patch("asyncio.create_task", side_effect=create_task_side_effect):
+            # Execute shutdown sequence
+            await execute_shutdown_sequence(mock_app)
 
         # Verify Phase 1: Player persistence
         assert mock_persistence.save_player.call_count == 3

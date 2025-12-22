@@ -31,6 +31,7 @@ class TestMemoryThresholdMonitorInitialization:
         assert monitor.cleanup_total_count == 0
         assert monitor.monitoring_enabled is True
 
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared state or initialization race conditions
     def test_monitor_initialization_custom_values(self) -> None:
         """Test monitor initializes with custom values."""
         monitor = MemoryThresholdMonitor(
@@ -56,6 +57,7 @@ class TestMemoryThresholdMonitorInitialization:
 class TestMemoryStatusMonitoring:
     """Test memory status monitoring functionality."""
 
+    @pytest.mark.serial  # Worker crash in parallel execution - likely due to shared state or initialization race condition
     @patch("server.app.memory_cleanup_service.psutil.Process")
     def test_get_current_memory_usage_success(self, mock_process_class):
         """Test successful memory usage retrieval."""

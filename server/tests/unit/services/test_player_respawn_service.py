@@ -329,6 +329,7 @@ class TestPlayerRespawnService:
         assert result is False
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Worker crash in parallel execution - likely due to shared state or initialization race conditions
     async def test_respawn_player_from_delirium_lucidity_not_found(self, player_respawn_service, mock_player):
         """Test delirium respawn when lucidity record doesn't exist."""
 

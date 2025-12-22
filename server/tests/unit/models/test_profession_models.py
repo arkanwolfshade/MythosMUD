@@ -708,6 +708,8 @@ class TestPlayerProfessionIntegration:
         profession_id = row[0]
         assert profession_id == 0
 
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_profession_tests")
     def test_profession_player_relationship(self, db_session_with_professions: Session) -> None:
         """Test the relationship between professions and players."""
         # Create test users first (required for foreign key constraint)

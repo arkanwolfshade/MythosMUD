@@ -83,7 +83,9 @@ class TestAddAdmin:
         mock_player = MagicMock()
         mock_player.set_admin_status = MagicMock()
 
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
         mock_persistence.save_player = AsyncMock()
 
@@ -117,7 +119,9 @@ class TestAddAdmin:
         manager = UserManager()
         player_id = uuid4()
 
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_persistence.get_player_by_id = AsyncMock(return_value=None)
 
         mock_container = MagicMock()
@@ -146,7 +150,9 @@ class TestRemoveAdmin:
         mock_player = MagicMock()
         mock_player.set_admin_status = MagicMock()
 
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
         mock_persistence.save_player = AsyncMock()
 
@@ -208,7 +214,9 @@ class TestIsAdmin:
         mock_player = MagicMock()
         mock_player.is_admin_user.return_value = True
 
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
 
         mock_container = MagicMock()
@@ -227,7 +235,9 @@ class TestIsAdmin:
         manager = UserManager()
         player_id = uuid4()
 
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_persistence.get_player_by_id = AsyncMock(return_value=None)
 
         mock_container = MagicMock()

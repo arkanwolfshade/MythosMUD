@@ -266,7 +266,9 @@ class TestProcessStatusEffect:
     async def test_process_status_effect_player_success(self) -> None:
         """Test successful status effect application."""
         mock_player_service = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         # Return a mutable list that can be modified
         status_effects_list: list[Any] = []
@@ -320,7 +322,9 @@ class TestProcessStatusEffect:
     async def test_process_status_effect_player_not_found(self) -> None:
         """Test status effect when player is not found."""
         mock_player_service = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_persistence.get_player_by_id = AsyncMock(return_value=None)
         mock_player_service.persistence = mock_persistence
 
@@ -347,7 +351,9 @@ class TestProcessStatModify:
     async def test_process_stat_modify_success(self) -> None:
         """Test successful stat modification."""
         mock_player_service = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.get_stats.return_value = {"strength": 50, "intelligence": 50}
         mock_player.get_status_effects.return_value = []
@@ -419,7 +425,9 @@ class TestProcessLucidityAdjust:
     async def test_process_lucidity_adjust_gain(self) -> None:
         """Test successful lucidity gain."""
         mock_player_service = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
         mock_persistence.apply_lucidity_gain = AsyncMock()
@@ -446,7 +454,9 @@ class TestProcessLucidityAdjust:
     async def test_process_lucidity_adjust_loss(self) -> None:
         """Test successful lucidity loss."""
         mock_player_service = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
         mock_persistence.apply_lucidity_loss = AsyncMock()
@@ -496,7 +506,9 @@ class TestProcessCorruptionAdjust:
     async def test_process_corruption_adjust_increase(self) -> None:
         """Test successful corruption increase."""
         mock_player_service = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.get_stats.return_value = {"corruption": 10}
         mock_player.set_stats = MagicMock()
@@ -525,7 +537,9 @@ class TestProcessCorruptionAdjust:
     async def test_process_corruption_adjust_decrease(self) -> None:
         """Test successful corruption decrease."""
         mock_player_service = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.get_stats.return_value = {"corruption": 20}
         mock_player.set_stats = MagicMock()
@@ -554,7 +568,9 @@ class TestProcessCorruptionAdjust:
     async def test_process_corruption_adjust_bounded(self) -> None:
         """Test corruption adjustment is bounded to 0-100."""
         mock_player_service = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.get_stats.return_value = {"corruption": 95}
         mock_player.set_stats = MagicMock()
@@ -584,7 +600,9 @@ class TestProcessTeleport:
     async def test_process_teleport_success(self) -> None:
         """Test successful teleport."""
         mock_player_service = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.current_room_id = "room-1"
         mock_player.name = "TestPlayer"
@@ -635,7 +653,9 @@ class TestProcessCreateObject:
     async def test_process_create_object_player_success(self) -> None:
         """Test successful object creation in player inventory."""
         mock_player_service = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.get_inventory.return_value = []
         mock_player.set_inventory = MagicMock()

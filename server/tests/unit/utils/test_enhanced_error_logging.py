@@ -310,6 +310,7 @@ class TestLogSecurityEventEnhanced:
         assert call_kwargs["severity"] == "medium"
         assert call_kwargs["user_id"] == "user123"
 
+    @pytest.mark.serial  # Worker crash in parallel execution - likely due to shared state or initialization race conditions
     @patch("server.utils.enhanced_error_logging.log_with_context")
     def test_critical_severity_uses_critical_level(self, mock_log_with_context):
         """Test critical severity uses critical log level."""

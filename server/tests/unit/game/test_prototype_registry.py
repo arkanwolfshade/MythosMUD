@@ -77,6 +77,7 @@ def test_registry_loads_valid_prototypes(tmp_path: Path, valid_payload: dict):
     assert result.name == "Codex of Whispered Secrets"
 
 
+@pytest.mark.timeout(10)  # Add timeout to prevent worker crashes
 def test_registry_skips_invalid_prototypes_and_logs_warning(tmp_path: Path, caplog):
     valid = {
         "prototype_id": "weapon.eldritch.dagger",
@@ -106,6 +107,7 @@ def test_registry_skips_invalid_prototypes_and_logs_warning(tmp_path: Path, capl
     assert registry.invalid_entries()[0]["prototype_id"] == "invalid_dagger"
 
 
+@pytest.mark.timeout(10)  # Add timeout to prevent worker crashes
 def test_registry_get_raises_for_missing_prototype(tmp_path: Path, valid_payload: dict):
     write_prototype(tmp_path, "artifact_codex", valid_payload)
     registry = PrototypeRegistry.load_from_path(tmp_path)

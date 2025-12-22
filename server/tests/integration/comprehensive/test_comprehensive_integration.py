@@ -38,7 +38,11 @@ class TestComprehensiveIntegration:
         AI: Following pytest best practices - reuse container_test_client_class
         """
         app = container_test_client_class.app
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        from unittest.mock import MagicMock
+
+        mock_persistence = MagicMock()
 
         # Configure async methods
         mock_persistence.async_list_players = AsyncMock(return_value=[])

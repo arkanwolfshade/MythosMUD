@@ -39,6 +39,7 @@ class TestParseJsonbColumn:
 
     @pytest.mark.serial
     @pytest.mark.xdist_group(name="serial_jsonb_tests")
+    @pytest.mark.timeout(10)  # Add timeout to prevent worker crashes
     def test_parse_jsonb_column_with_string(self) -> None:
         """Test _parse_jsonb_column parses JSON string."""
         json_str = '{"key": "value"}'
@@ -80,6 +81,8 @@ class TestParseJsonbColumn:
 class TestFetchContainerItems:
     """Test _fetch_container_items helper function."""
 
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_container_tests")
     def test_fetch_container_items_empty(self) -> None:
         """Test _fetch_container_items returns empty list when no items."""
         mock_conn = Mock()
@@ -92,6 +95,8 @@ class TestFetchContainerItems:
         result = _fetch_container_items(mock_conn, container_id)
         assert result == []
 
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_container_tests")
     def test_fetch_container_items_with_items(self) -> None:
         """Test _fetch_container_items returns items list."""
         mock_conn = Mock()
@@ -116,6 +121,8 @@ class TestFetchContainerItems:
         assert result[0]["item_instance_id"] == mock_row["item_instance_id"]
         assert result[0]["item_name"] == "Test Item"
 
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_container_tests")
     def test_fetch_container_items_skips_non_dict_row(self) -> None:
         """Test _fetch_container_items skips non-dictionary rows."""
         mock_conn = Mock()
@@ -132,6 +139,8 @@ class TestFetchContainerItems:
             assert result == []
             mock_warning.assert_called_once()
 
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_container_tests")
     def test_fetch_container_items_skips_missing_item_instance_id(self) -> None:
         """Test _fetch_container_items skips rows without item_instance_id."""
         mock_conn = Mock()
@@ -152,6 +161,8 @@ class TestFetchContainerItems:
             assert result == []
             mock_warning.assert_called_once()
 
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_container_tests")
     def test_fetch_container_items_parses_string_metadata(self) -> None:
         """Test _fetch_container_items parses string metadata."""
         mock_conn = Mock()
@@ -174,6 +185,8 @@ class TestFetchContainerItems:
         result = _fetch_container_items(mock_conn, container_id)
         assert result[0]["metadata"] == {"key": "value"}
 
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_container_tests")
     def test_fetch_container_items_handles_invalid_json_metadata(self) -> None:
         """Test _fetch_container_items handles invalid JSON metadata."""
         mock_conn = Mock()
@@ -196,6 +209,8 @@ class TestFetchContainerItems:
         result = _fetch_container_items(mock_conn, container_id)
         assert result[0]["metadata"] == {}  # Should default to empty dict
 
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_container_tests")
     def test_fetch_container_items_handles_none_quantity_and_condition(self) -> None:
         """Test _fetch_container_items handles None quantity and condition."""
         mock_conn = Mock()
@@ -221,6 +236,8 @@ class TestFetchContainerItems:
         assert result[0]["position"] == 0  # Should default to 0
         assert result[0]["metadata"] == {}  # Should default to empty dict
 
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_container_tests")
     def test_fetch_container_items_handles_none_item_name(self) -> None:
         """Test _fetch_container_items handles None item_name."""
         mock_conn = Mock()
@@ -243,6 +260,8 @@ class TestFetchContainerItems:
         result = _fetch_container_items(mock_conn, container_id)
         assert result[0]["item_name"] == "Unknown Item"  # Should default to Unknown Item
 
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_container_tests")
     def test_fetch_container_items_handles_none_metadata(self) -> None:
         """Test _fetch_container_items handles None metadata."""
         mock_conn = Mock()
@@ -265,6 +284,8 @@ class TestFetchContainerItems:
         result = _fetch_container_items(mock_conn, container_id)
         assert result[0]["metadata"] == {}
 
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_container_tests")
     def test_fetch_container_items_handles_non_dict_metadata(self) -> None:
         """Test _fetch_container_items handles non-dict metadata."""
         mock_conn = Mock()

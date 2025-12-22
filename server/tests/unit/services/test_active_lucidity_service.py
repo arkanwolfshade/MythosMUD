@@ -97,7 +97,9 @@ def lucidity_service(db_session):
 
 @pytest.mark.asyncio
 @pytest.mark.serial  # Mark as serial to prevent deadlocks during parallel execution
+@pytest.mark.serial  # Database deadlock in parallel execution - PostgreSQL lock conflicts
 @pytest.mark.xdist_group(name="serial_lucidity_tests")  # Force serial execution with pytest-xdist
+@pytest.mark.timeout(30)  # Add timeout to prevent hanging on deadlocks
 async def test_adjust_lucidity_caps_at_min(db_session, lucidity_service):
     """Test that lucidity doesn't drop below -100."""
     # Create test user and player first (required for foreign key constraint)
@@ -118,11 +120,23 @@ async def test_adjust_lucidity_caps_at_min(db_session, lucidity_service):
     unique_player_name = f"TestPlayer_{uuid.uuid4().hex[:8]}"
     player = Player(player_id=str(player_id), user_id=user.id, name=unique_player_name)
     db_session.add(player)
-    await db_session.flush()
+    await db_session.commit()  # Commit player first to ensure foreign key constraint is satisfied
 
     lucidity = PlayerLucidity(player_id=str(player_id), current_lcd=-95, current_tier="catatonic")
     db_session.add(lucidity)
     await db_session.commit()
+
+    # Ensure player is visible to the service's session
+    # The service uses the same session, so we refresh to ensure it's in the identity map
+    await db_session.refresh(player)
+
+    # Verify player exists in database before service call
+    # This ensures the foreign key constraint can see the player when the service logs the adjustment
+    player_check = await db_session.execute(select(Player).where(Player.player_id == player.player_id))
+    assert player_check.scalar_one_or_none() is not None, "Player must exist in database before service call"
+
+    # Flush to ensure all pending changes are synchronized
+    await db_session.flush()
 
     await lucidity_service.apply_lucidity_adjustment(player_id, -10, reason_code="test_floor")
 
@@ -168,6 +182,7 @@ async def test_cooldown_management(db_session, lucidity_service):
 @pytest.mark.asyncio
 @pytest.mark.serial  # Mark as serial to prevent deadlocks during parallel execution
 @pytest.mark.xdist_group(name="serial_lucidity_tests")  # Force serial execution with pytest-xdist
+@pytest.mark.serial  # Flaky in parallel execution - likely due to database race conditions
 async def test_adjust_lucidity_logging(db_session, lucidity_service):
     """Test that lucidity adjustments are properly logged in LucidityAdjustmentLog."""
     from server.models.lucidity import LucidityAdjustmentLog

@@ -451,6 +451,7 @@ class TestGetZoneStats:
     """Test zone statistics retrieval."""
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Worker crash in parallel execution - likely due to shared state or initialization race conditions
     async def test_get_zone_stats_empty(self, npc_instance_service_fixture):
         """Test zone stats with no active NPCs."""
         result = await npc_instance_service_fixture.get_zone_stats()

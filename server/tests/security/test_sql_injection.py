@@ -316,6 +316,7 @@ class TestSQLInjectionPrevention:
             pass
 
     @pytest.mark.xdist_group(name="serial_sql_injection_tests")  # Force serial execution with pytest-xdist
+    @pytest.mark.serial  # Fixture race condition when running in parallel - persistence fixture fails to create test user
     def test_f_string_sql_uses_constants_only(self) -> None:
         """Test that f-string SQL construction only uses compile-time constants."""
         # This test verifies that PLAYER_COLUMNS and PROFESSION_COLUMNS

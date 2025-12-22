@@ -317,7 +317,10 @@ coverage/
 .nyc_output/
 *.lcov
 coverage-final.json
-
+server/tests/coverage/__pycache__/
+server/tests/coverage/__pycache__/**
+server\tests\coverage\__pycache__\
+server\tests\coverage\__pycache__\**
 
 #Ignore cursor AI rules
 .cursor\rules\codacy.mdc

@@ -77,8 +77,10 @@ class TestReadCommand:
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
-        mock_persistence.get_player_by_name.return_value = None
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
+        mock_persistence.get_player_by_name = AsyncMock(return_value=None)
         mock_app.state.persistence = mock_persistence
         mock_app.state.spell_learning_service = AsyncMock()
         mock_request.app = mock_app
@@ -96,9 +98,11 @@ class TestReadCommand:
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
         mock_app.state.spell_learning_service = AsyncMock()
         mock_request.app = mock_app
@@ -116,10 +120,12 @@ class TestReadCommand:
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.inventory = "[]"
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
         mock_app.state.spell_learning_service = AsyncMock()
         mock_request.app = mock_app
@@ -137,10 +143,12 @@ class TestReadCommand:
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.inventory = '[{"name": "regular_item", "metadata": {}}]'
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
         mock_app.state.spell_learning_service = AsyncMock()
         mock_request.app = mock_app
@@ -158,10 +166,12 @@ class TestReadCommand:
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.inventory = '[{"name": "empty_book", "metadata": {"spellbook": true, "spells": []}}]'
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
         mock_app.state.spell_learning_service = AsyncMock()
         mock_request.app = mock_app
@@ -179,13 +189,15 @@ class TestReadCommand:
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.player_id = uuid4()
         mock_player.inventory = (
             '[{"name": "spellbook", "id": "book-123", "metadata": {"spellbook": true, "spells": ["spell-1"]}}]'
         )
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
 
         mock_spell_learning_service = AsyncMock()
@@ -215,13 +227,15 @@ class TestReadCommand:
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.player_id = uuid4()
         mock_player.inventory = (
             '[{"name": "spellbook", "id": "book-123", "metadata": {"spellbook": true, "spells": ["spell-1"]}}]'
         )
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
 
         mock_spell_learning_service = AsyncMock()
@@ -255,10 +269,12 @@ class TestReadCommand:
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.inventory = '[{"name": "spellbook", "metadata": {"spellbook": true, "spells": ["spell-1"]}}]'
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
 
         mock_spell_registry = MagicMock()
@@ -284,10 +300,12 @@ class TestReadCommand:
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.inventory = '[{"name": "spellbook", "metadata": {"spellbook": true, "spells": ["spell-1"]}}]'
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
 
         mock_spell_registry = MagicMock()
@@ -310,10 +328,12 @@ class TestReadCommand:
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.inventory = '[{"name": "spellbook", "metadata": {"spellbook": true, "spells": ["spell-1"]}}]'
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
         delattr(mock_app.state, "spell_registry")
         mock_app.state.spell_learning_service = AsyncMock()
@@ -333,13 +353,15 @@ class TestReadCommand:
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.player_id = uuid4()
         mock_player.inventory = (
             '[{"name": "spellbook", "id": "book-123", "metadata": {"spellbook": true, "spells": ["spell-1"]}}]'
         )
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
 
         mock_spell_learning_service = AsyncMock()
@@ -368,13 +390,15 @@ class TestReadCommand:
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.player_id = uuid4()
         mock_player.inventory = (
             '[{"name": "spellbook", "id": "book-123", "metadata": {"spellbook": true, "spells": ["spell-1"]}}]'
         )
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
 
         mock_spell_learning_service = AsyncMock()
@@ -397,12 +421,14 @@ class TestReadCommand:
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.inventory = (
             '[{"name": "spellbook", "metadata": {"spellbook": true, "spells": ["spell-1", "spell-2"]}}]'
         )
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
         mock_app.state.spell_learning_service = AsyncMock()
 
@@ -432,12 +458,14 @@ class TestReadCommand:
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.inventory = (
             '[{"name": "spellbook", "metadata": {"spellbook": true, "spells": ["spell-1", "spell-2"]}}]'
         )
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
         mock_app.state.spell_learning_service = AsyncMock()
 
@@ -463,13 +491,15 @@ class TestReadCommand:
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.player_id = uuid4()
         mock_player.inventory = (
             '[{"name": "spellbook", "id": "book-123", "metadata": {"spellbook": true, "spells": ["spell-1"]}}]'
         )
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
 
         mock_spell_learning_service = AsyncMock()
@@ -498,10 +528,12 @@ class TestReadCommand:
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.inventory = "invalid json"
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
         mock_app.state.spell_learning_service = AsyncMock()
 
@@ -522,10 +554,12 @@ class TestReadCommand:
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.inventory = [{"name": "spellbook", "metadata": {"spellbook": True, "spells": ["spell-1"]}}]
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
 
         mock_spell_learning_service = AsyncMock()

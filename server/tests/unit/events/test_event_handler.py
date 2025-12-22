@@ -105,7 +105,11 @@ class TestEventHandlerBroadcasting:
     @pytest.fixture
     def mock_connection_manager(self):
         """Create a mock connection manager."""
-        cm = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        from unittest.mock import MagicMock
+
+        cm = MagicMock()
         cm.get_player = AsyncMock()
         cm._get_player = AsyncMock()  # Keep for backward compatibility
         cm.persistence = Mock()

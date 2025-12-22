@@ -34,13 +34,18 @@ class TestServiceDependencyInjection:
             mock_nats.disconnect.return_value = True
 
             # Configure persistence mock (no longer using get_persistence)
-            mock_persistence = AsyncMock()
-            mock_persistence.async_list_players.return_value = []
-            mock_persistence.async_get_player.return_value = None
-            mock_persistence.async_get_room.return_value = None
-            mock_persistence.async_save_player.return_value = None
-            mock_persistence.async_delete_player.return_value = True
-            mock_persistence.list_players.return_value = []
+            # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+            from unittest.mock import MagicMock
+
+            mock_persistence = MagicMock()
+            # Only set actual async methods as AsyncMock
+            mock_persistence.async_list_players = AsyncMock(return_value=[])
+            mock_persistence.async_get_player = AsyncMock(return_value=None)
+            mock_persistence.async_get_room = AsyncMock(return_value=None)
+            mock_persistence.async_save_player = AsyncMock(return_value=None)
+            mock_persistence.async_delete_player = AsyncMock(return_value=True)
+            # list_players is called with await in player_service.py, so it must be AsyncMock
+            mock_persistence.list_players = AsyncMock(return_value=[])
             mock_persistence.get_player.return_value = None
             mock_persistence.get_room.return_value = None
             mock_persistence.save_player.return_value = None
@@ -131,7 +136,15 @@ class TestServiceDependencyInjection:
 
     def test_room_service_dependency_injection_via_endpoint(self, client):
         """Test that RoomService is correctly injected via API endpoint."""
-        response = client.get("/rooms/test_room")
+        # Ensure room_service is properly set up in container to prevent AsyncMock warnings
+        from unittest.mock import AsyncMock, MagicMock
+
+        mock_room_service = MagicMock()
+        mock_room_service.get_room = AsyncMock(return_value=None)
+        client.app.state.container.room_service = mock_room_service
+        client.app.state.room_service = mock_room_service
+
+        response = client.get("/api/rooms/test_room")
         assert response.status_code in [404, 401]
 
         app = client.app
@@ -221,14 +234,18 @@ class TestServiceDependencyInjectionSimple:
     @pytest.fixture
     def mock_persistence(self):
         """Create mock persistence layer."""
-        mock_persistence = AsyncMock()
-        mock_persistence.async_list_players.return_value = []
-        mock_persistence.async_get_player.return_value = None
-        mock_persistence.async_get_room.return_value = None
-        mock_persistence.async_save_player.return_value = None
-        mock_persistence.async_delete_player.return_value = True
-        # Also mock synchronous methods for backward compatibility
-        mock_persistence.list_players.return_value = []
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        from unittest.mock import MagicMock
+
+        mock_persistence = MagicMock()
+        # Only set actual async methods as AsyncMock
+        mock_persistence.async_list_players = AsyncMock(return_value=[])
+        mock_persistence.async_get_player = AsyncMock(return_value=None)
+        mock_persistence.async_get_room = AsyncMock(return_value=None)
+        mock_persistence.async_save_player = AsyncMock(return_value=None)
+        mock_persistence.async_delete_player = AsyncMock(return_value=True)
+        # list_players is called with await in player_service.py, so it must be AsyncMock
+        mock_persistence.list_players = AsyncMock(return_value=[])
         mock_persistence.get_player.return_value = None
         mock_persistence.get_room.return_value = None
         mock_persistence.save_player.return_value = None

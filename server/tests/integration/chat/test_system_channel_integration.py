@@ -27,9 +27,13 @@ class TestSystemChannelIntegration:
     def setup_method(self) -> None:
         """Set up test fixtures."""
         # Create mock dependencies
-        self.mock_persistence = AsyncMock()
-        self.mock_room_service = AsyncMock()
-        self.mock_player_service = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        from unittest.mock import MagicMock
+
+        self.mock_persistence = MagicMock()
+        self.mock_room_service = MagicMock()
+        self.mock_player_service = MagicMock()
 
         # Create mock services
         self.mock_nats_service = Mock()
@@ -233,6 +237,7 @@ class TestSystemChannelIntegration:
 
         # Setup mocks
         self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.admin_player)
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.admin_player)
         self.mock_user_manager.is_admin.return_value = True
         # NATS publish raises NATSPublishError on failure, not returns False
         from server.services.nats_exceptions import NATSPublishError
@@ -277,6 +282,7 @@ class TestSystemChannelIntegration:
 
         # Setup mocks
         self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.admin_player)
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.admin_player)
         self.mock_user_manager.is_admin.return_value = True
         self.mock_nats_service.is_connected.return_value = False
 
@@ -381,6 +387,7 @@ class TestSystemChannelIntegration:
 
         # Setup mocks
         self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.admin_player)
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.admin_player)
         self.mock_user_manager.is_admin.return_value = True
         self.mock_rate_limiter.check_rate_limit.return_value = False  # Rate limited
 

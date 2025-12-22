@@ -7,7 +7,7 @@ through event publishing, processing, and broadcasting.
 
 import asyncio
 import json
-from unittest.mock import AsyncMock, Mock
+from unittest.mock import AsyncMock, MagicMock, Mock
 from uuid import uuid4
 
 import pytest
@@ -24,8 +24,11 @@ class TestSimpleIntegration:
     @pytest.fixture
     def mock_connection_manager(self):
         """Create a mock connection manager with realistic behavior."""
-        cm = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        cm = MagicMock()
         cm._get_player = AsyncMock()
+        cm.get_player = AsyncMock()
         cm.persistence = Mock()
         cm.persistence.get_room = AsyncMock()
         # async_persistence.get_room_by_id is a sync method (uses cache)

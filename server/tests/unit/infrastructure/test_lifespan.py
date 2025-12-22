@@ -399,8 +399,13 @@ class TestGameTickLoopLegacy:
             mock_conn_mgr = MagicMock()
             mock_conn_mgr.player_websockets = {"player1": Mock(), "player2": Mock()}
 
+            # Mock persistence with async methods for corpse cleanup
+            mock_persistence = MagicMock()
+            mock_persistence.get_decayed_containers = AsyncMock(return_value=[])
+
             app.state.container = MagicMock()
             app.state.container.connection_manager = mock_conn_mgr
+            app.state.container.persistence = mock_persistence
 
             task = asyncio.create_task(game_tick_loop(app))
 

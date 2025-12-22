@@ -119,7 +119,9 @@ class TestHandleEquipWearableContainer:
     @pytest.mark.asyncio
     async def test_handle_equip_existing_container(self) -> None:
         """Test equipping item with existing container."""
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         player_id = uuid4()
         item_instance_id = str(uuid4())
 
@@ -128,7 +130,7 @@ class TestHandleEquipWearableContainer:
             "source_type": "equipment",
             "metadata": {"item_instance_id": item_instance_id},
         }
-        mock_persistence.get_containers_by_entity_id.return_value = [existing_container]
+        mock_persistence.get_containers_by_entity_id = AsyncMock(return_value=[existing_container])
 
         service = WearableContainerService(persistence=mock_persistence)
 
@@ -188,7 +190,9 @@ class TestHandleUnequipWearableContainer:
     @pytest.mark.asyncio
     async def test_handle_unequip_container_found(self) -> None:
         """Test unequipping item with existing container."""
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         player_id = uuid4()
         item_instance_id = str(uuid4())
         container_id = uuid4()
@@ -205,7 +209,7 @@ class TestHandleUnequipWearableContainer:
             "owner_id": None,
             "metadata": {"item_instance_id": item_instance_id},
         }
-        mock_persistence.get_containers_by_entity_id.return_value = [existing_container]
+        mock_persistence.get_containers_by_entity_id = AsyncMock(return_value=[existing_container])
 
         service = WearableContainerService(persistence=mock_persistence)
 
@@ -221,8 +225,10 @@ class TestHandleUnequipWearableContainer:
     @pytest.mark.asyncio
     async def test_handle_unequip_no_container(self) -> None:
         """Test unequipping item with no container."""
-        mock_persistence = AsyncMock()
-        mock_persistence.get_containers_by_entity_id.return_value = []
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
+        mock_persistence.get_containers_by_entity_id = AsyncMock(return_value=[])
 
         service = WearableContainerService(persistence=mock_persistence)
 
@@ -239,7 +245,9 @@ class TestGetWearableContainersForPlayer:
     @pytest.mark.asyncio
     async def test_get_wearable_containers_success(self) -> None:
         """Test getting wearable containers for player."""
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         player_id = uuid4()
 
         container_data = {
@@ -250,7 +258,7 @@ class TestGetWearableContainersForPlayer:
             "items": [],
             "lock_state": "unlocked",
         }
-        mock_persistence.get_containers_by_entity_id.return_value = [container_data]
+        mock_persistence.get_containers_by_entity_id = AsyncMock(return_value=[container_data])
 
         service = WearableContainerService(persistence=mock_persistence)
 
@@ -262,8 +270,10 @@ class TestGetWearableContainersForPlayer:
     @pytest.mark.asyncio
     async def test_get_wearable_containers_no_containers(self) -> None:
         """Test getting containers when none exist."""
-        mock_persistence = AsyncMock()
-        mock_persistence.get_containers_by_entity_id.return_value = []
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
+        mock_persistence.get_containers_by_entity_id = AsyncMock(return_value=[])
 
         service = WearableContainerService(persistence=mock_persistence)
 
@@ -274,7 +284,9 @@ class TestGetWearableContainersForPlayer:
     @pytest.mark.asyncio
     async def test_get_wearable_containers_filters_non_equipment(self) -> None:
         """Test that non-equipment containers are filtered out."""
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
 
         container_data = {
             "container_id": str(uuid4()),
@@ -282,7 +294,7 @@ class TestGetWearableContainersForPlayer:
             "capacity_slots": 10,
             "items": [],
         }
-        mock_persistence.get_containers_by_entity_id.return_value = [container_data]
+        mock_persistence.get_containers_by_entity_id = AsyncMock(return_value=[container_data])
 
         service = WearableContainerService(persistence=mock_persistence)
 
@@ -297,7 +309,9 @@ class TestAddItemsToWearableContainer:
     @pytest.mark.asyncio
     async def test_add_items_success(self) -> None:
         """Test successfully adding items to container."""
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         player_id = uuid4()
         container_id = uuid4()
 
@@ -327,8 +341,10 @@ class TestAddItemsToWearableContainer:
     @pytest.mark.asyncio
     async def test_add_items_container_not_found(self) -> None:
         """Test adding items when container doesn't exist."""
-        mock_persistence = AsyncMock()
-        mock_persistence.get_container.return_value = None
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
+        mock_persistence.get_container = AsyncMock(return_value=None)
 
         service = WearableContainerService(persistence=mock_persistence)
 
@@ -338,7 +354,9 @@ class TestAddItemsToWearableContainer:
     @pytest.mark.asyncio
     async def test_add_items_capacity_exceeded(self) -> None:
         """Test adding items when capacity would be exceeded."""
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         player_id = uuid4()
         container_id = uuid4()
 
@@ -349,7 +367,7 @@ class TestAddItemsToWearableContainer:
             "capacity_slots": 5,
             "items": [{"item_id": f"item-{i}"} for i in range(5)],  # Already full
         }
-        mock_persistence.get_container.return_value = container_data
+        mock_persistence.get_container = AsyncMock(return_value=container_data)
 
         service = WearableContainerService(persistence=mock_persistence)
 
@@ -365,7 +383,9 @@ class TestUpdateWearableContainerItems:
     @pytest.mark.asyncio
     async def test_update_items_success(self) -> None:
         """Test successfully updating container items."""
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         player_id = uuid4()
         container_id = uuid4()
 
@@ -395,7 +415,9 @@ class TestUpdateWearableContainerItems:
     @pytest.mark.asyncio
     async def test_update_items_capacity_exceeded(self) -> None:
         """Test updating items when capacity would be exceeded."""
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         player_id = uuid4()
         container_id = uuid4()
 
@@ -406,7 +428,7 @@ class TestUpdateWearableContainerItems:
             "capacity_slots": 5,
             "items": [],
         }
-        mock_persistence.get_container.return_value = container_data
+        mock_persistence.get_container = AsyncMock(return_value=container_data)
 
         service = WearableContainerService(persistence=mock_persistence)
 
@@ -422,7 +444,9 @@ class TestHandleContainerOverflow:
     @pytest.mark.asyncio
     async def test_handle_overflow_all_to_inventory(self) -> None:
         """Test overflow handling when all items fit in inventory."""
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         player_id = uuid4()
         container_id = uuid4()
 
@@ -472,8 +496,10 @@ class TestHandleContainerOverflow:
     @pytest.mark.asyncio
     async def test_handle_overflow_player_not_found(self) -> None:
         """Test overflow handling when player is not found."""
-        mock_persistence = AsyncMock()
-        mock_persistence.get_player_by_id.return_value = None
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
+        mock_persistence.get_player_by_id = AsyncMock(return_value=None)
 
         service = WearableContainerService(persistence=mock_persistence)
 

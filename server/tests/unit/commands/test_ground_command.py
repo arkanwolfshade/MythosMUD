@@ -92,6 +92,8 @@ def build_request(persistence: MagicMock) -> SimpleNamespace:
 
 
 @pytest.mark.asyncio
+@pytest.mark.serial
+@pytest.mark.xdist_group(name="serial_ground_command_tests")
 async def test_ground_command_revives_catatonic_player(session_factory):
     """Rescuing a catatonic ally should restore them to 1 LCD."""
 
@@ -144,6 +146,9 @@ async def test_ground_command_revives_catatonic_player(session_factory):
 
 
 @pytest.mark.asyncio
+@pytest.mark.asyncio
+@pytest.mark.serial
+@pytest.mark.xdist_group(name="serial_ground_command_tests")
 async def test_ground_command_emits_rescue_updates(session_factory):
     """Ensure both participants receive rescue_update events throughout the ritual."""
 
@@ -227,6 +232,9 @@ async def test_ground_command_emits_rescue_updates(session_factory):
 
 
 @pytest.mark.asyncio
+@pytest.mark.asyncio
+@pytest.mark.serial
+@pytest.mark.xdist_group(name="serial_ground_command_tests")
 async def test_ground_command_requires_catatonic_target(session_factory):
     """Rescue attempts should fail gracefully if the target is not catatonic."""
 

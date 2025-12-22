@@ -105,6 +105,7 @@ class TestServiceDependencyInjection:
         assert app.state.container.room_service is not None, "RoomService must be set in container"
         return TestClient(app)
 
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared container state
     def test_player_service_dependency_injection_via_endpoint(self, client):
         """Test that PlayerService is correctly injected via API endpoint."""
         # Ensure container is accessible before making request

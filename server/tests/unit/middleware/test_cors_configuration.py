@@ -22,14 +22,16 @@ class TestCORSConfigurationVerification:
         app = create_app()
 
         # Mock the persistence layer with async methods
-        from unittest.mock import AsyncMock
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        from unittest.mock import AsyncMock, MagicMock
 
-        mock_persistence = AsyncMock()
-        mock_persistence.async_list_players.return_value = []
-        mock_persistence.async_get_player.return_value = None
-        mock_persistence.async_get_room.return_value = None
-        mock_persistence.async_save_player.return_value = None
-        mock_persistence.async_delete_player.return_value = True
+        mock_persistence = MagicMock()
+        # Only set actual async methods as AsyncMock
+        mock_persistence.async_list_players = AsyncMock(return_value=[])
+        mock_persistence.async_get_player = AsyncMock(return_value=None)
+        mock_persistence.async_get_room = AsyncMock(return_value=None)
+        mock_persistence.async_save_player = AsyncMock(return_value=None)
+        mock_persistence.async_delete_player = AsyncMock(return_value=True)
         # Also mock synchronous methods for backward compatibility
         mock_persistence.list_players = AsyncMock(return_value=[])
         mock_persistence.get_player.return_value = None

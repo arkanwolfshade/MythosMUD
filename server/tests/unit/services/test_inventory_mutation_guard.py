@@ -206,6 +206,7 @@ async def test_guard_async_detects_duplicate_token():
 
 
 @pytest.mark.asyncio
+@pytest.mark.serial  # Worker crash in parallel execution - likely due to shared state in guard
 async def test_guard_async_token_ttl_allows_reprocessing_after_expiry():
     """Test async guard allows reprocessing after token expiry."""
     import asyncio

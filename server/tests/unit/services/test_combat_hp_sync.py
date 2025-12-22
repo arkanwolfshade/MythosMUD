@@ -5,7 +5,7 @@ This module tests the CombatDPSync class which handles player DP persistence
 and event publishing for combat operations.
 """
 
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, Mock, patch
 from uuid import uuid4
 
 import pytest
@@ -190,10 +190,12 @@ class TestVerifyPlayerSave:
         old_dp = 50
         current_dp = 40
 
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.get_stats.return_value = {"current_dp": current_dp}
-        mock_persistence.get_player_by_id.return_value = mock_player
+        mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
 
         with patch("server.services.combat_hp_sync.logger") as mock_logger:
             await sync._verify_player_save(mock_persistence, player_id, player_name, old_dp, current_dp)
@@ -211,8 +213,10 @@ class TestVerifyPlayerSave:
         old_dp = 50
         current_dp = 40
 
-        mock_persistence = AsyncMock()
-        mock_persistence.get_player_by_id.return_value = None
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
+        mock_persistence.get_player_by_id = AsyncMock(return_value=None)
 
         with patch("server.services.combat_hp_sync.logger") as mock_logger:
             await sync._verify_player_save(mock_persistence, player_id, player_name, old_dp, current_dp)
@@ -230,10 +234,12 @@ class TestVerifyPlayerSave:
         old_dp = 50
         current_dp = 40
 
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.get_stats.return_value = {"current_dp": 35}  # Different from current_dp
-        mock_persistence.get_player_by_id.return_value = mock_player
+        mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
 
         with patch("server.services.combat_hp_sync.logger") as mock_logger:
             await sync._verify_player_save(mock_persistence, player_id, player_name, old_dp, current_dp)
@@ -305,13 +311,15 @@ class TestUpdateAndSavePlayerDp:
         sync = CombatDPSync(mock_combat_service)
         player_id = uuid4()
 
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.name = "TestPlayer"
         mock_player.stats = '{"current_dp": 50}'
         mock_player.get_stats.return_value = {"current_dp": 50, "position": PositionState.STANDING}
         mock_player.set_stats = MagicMock()
-        mock_persistence.get_player_by_id.return_value = mock_player
+        mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
         mock_persistence.save_player = AsyncMock()
 
         with patch("server.services.combat_hp_sync.logger"):
@@ -330,8 +338,10 @@ class TestUpdateAndSavePlayerDp:
         sync = CombatDPSync(mock_combat_service)
         player_id = uuid4()
 
-        mock_persistence = AsyncMock()
-        mock_persistence.get_player_by_id.return_value = None
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
+        mock_persistence.get_player_by_id = AsyncMock(return_value=None)
 
         with patch("server.services.combat_hp_sync.logger") as mock_logger:
             result = await sync._update_and_save_player_dp(mock_persistence, player_id, 40)
@@ -531,7 +541,9 @@ class TestPublishPlayerDpCorrectionEvent:
         correct_dp = 50
         max_dp = 100
 
+        # EventBus.publish() is synchronous, so use Mock, not AsyncMock
         mock_event_bus = MagicMock()
+        mock_event_bus.publish = Mock()  # Explicitly set as synchronous Mock
         with patch("server.services.combat_hp_sync.EventBus", return_value=mock_event_bus):
             with patch("server.services.combat_hp_sync.logger"):
                 await sync._publish_player_dp_correction_event(player_id, correct_dp, max_dp)
@@ -572,7 +584,12 @@ class TestPersistPlayerDpBackground:
         sync = CombatDPSync(mock_combat_service)
         player_id = uuid4()
 
-        with patch("asyncio.create_task") as mock_create_task:
+        def create_task_side_effect(coro):
+            # Close the coroutine to prevent "never awaited" warning
+            coro.close()
+            return MagicMock()
+
+        with patch("asyncio.create_task", side_effect=create_task_side_effect) as mock_create_task:
             with patch.object(sync, "_persist_player_dp_sync", new_callable=AsyncMock):
                 with patch("server.services.combat_hp_sync.logger"):
                     sync._persist_player_dp_background(player_id, 40, 50, 100)
@@ -595,28 +612,39 @@ class TestPersistPlayerDpBackground:
     @pytest.mark.asyncio
     async def test_persist_player_dp_background_persistence_failure(self) -> None:
         """Test when persistence fails and correction event is sent."""
+        import asyncio
+
         mock_combat_service = MagicMock()
         sync = CombatDPSync(mock_combat_service)
         player_id = uuid4()
 
-        async def _persist_and_handle_errors():
-            """Simulate the background task."""
-            try:
-                await sync._persist_player_dp_sync(player_id, 40)
-            except DatabaseError:
-                await sync._publish_player_dp_correction_event(player_id, 50, 100, None, None, "Test error")
+        # Track created coroutines to await them
+        created_coros = []
+
+        def create_task_side_effect(coro):
+            """Track and properly handle created tasks."""
+            created_coros.append(coro)
+            # Return a mock task that won't cause issues
+            task = MagicMock()
+            task.done.return_value = False
+            return task
 
         with patch.object(sync, "_persist_player_dp_sync", side_effect=DatabaseError("Database error")):
             with patch.object(sync, "_publish_player_dp_correction_event", new_callable=AsyncMock) as mock_publish:
                 with patch("server.services.combat_hp_sync.logger"):
-                    # Patch asyncio.create_task to consume the coroutine
-                    def create_task_side_effect(coro):
-                        # Close the coroutine to prevent "never awaited" warning
-                        coro.close()
-                        return MagicMock()
-
                     with patch("asyncio.create_task", side_effect=create_task_side_effect):
-                        await _persist_and_handle_errors()
+                        # Call the actual method that creates the background task
+                        sync._persist_player_dp_background(player_id, 40, 50, 100, None, None)
+
+                        # Wait a bit for the task to be created
+                        await asyncio.sleep(0.1)
+
+                        # Await all created coroutines to prevent warnings
+                        for coro in created_coros:
+                            try:
+                                await coro
+                            except DatabaseError:
+                                pass  # Expected
 
                         mock_publish.assert_called_once()
 

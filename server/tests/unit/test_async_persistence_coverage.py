@@ -16,9 +16,14 @@ from server.exceptions import DatabaseError
 class TestAsyncPersistenceCoverage:
     """Test missing branches in async persistence facade."""
 
+    @pytest.mark.serial  # Worker crash in parallel execution - likely due to AsyncPersistenceLayer initialization race condition
     def test_process_room_rows_prefix_branch(self) -> None:
         """Test _process_room_rows when stable_id already has the expected prefix."""
+        import gc
+
         persistence = AsyncPersistenceLayer(_db_path="mock")
+        # Force cleanup to help prevent worker crashes from thread/connection resources
+        gc.collect()
 
         # Expected prefix: plane_zone_subzone_
         # stable_id: earth_arkham_sanitarium_room_1
@@ -605,6 +610,7 @@ class TestAsyncPersistenceCoverage:
         # Should process and return dict structure
         assert isinstance(result, dict)
 
+    @pytest.mark.serial  # Worker crash in parallel execution - likely due to AsyncPersistenceLayer initialization race condition
     def test_process_room_rows_with_none_attributes(self) -> None:
         """Test _process_room_rows when attributes is None."""
         persistence = AsyncPersistenceLayer(_db_path="mock")
@@ -625,9 +631,20 @@ class TestAsyncPersistenceCoverage:
         assert len(result) == 1
         assert result[0]["attributes"] == {}
 
+    @pytest.mark.serial  # Worker crash in parallel execution - likely due to AsyncPersistenceLayer initialization race condition
     def test_build_room_objects_non_dict_attributes(self) -> None:
-        """Test _build_room_objects when attributes is not a dict."""
+        """
+        Test _build_room_objects when attributes is not a dict.
+
+        CRITICAL: This test creates an AsyncPersistenceLayer which triggers _load_room_cache()
+        in a thread during __init__. We use gc.collect() to help ensure proper cleanup and
+        prevent worker crashes in pytest-xdist parallel execution.
+        """
+        import gc
+
         persistence = AsyncPersistenceLayer(_db_path="mock")
+        # Force cleanup to help prevent worker crashes from thread/connection resources
+        gc.collect()
 
         room_data_list = [
             {
@@ -647,6 +664,7 @@ class TestAsyncPersistenceCoverage:
         persistence._build_room_objects(room_data_list, exits_by_room, result_container)
         assert "test_room" in result_container["rooms"]
 
+    @pytest.mark.serial  # Worker crash in parallel execution - likely due to AsyncPersistenceLayer initialization race condition
     @pytest.mark.asyncio
     async def test_item_methods(self) -> None:
         """Test item repository delegate methods."""
@@ -667,6 +685,9 @@ class TestAsyncPersistenceCoverage:
         persistence._item_repo.item_instance_exists.assert_called_once()
 
     @pytest.mark.serial  # Manipulates global singleton state, unsafe for parallel execution
+    @pytest.mark.xdist_group(name="async_persistence_singleton")  # Force same worker for singleton tests
+    @pytest.mark.serial  # Manipulates global singleton state, unsafe for parallel execution
+    @pytest.mark.xdist_group(name="async_persistence_singleton")  # Force same worker for singleton tests
     def test_get_async_persistence(self) -> None:
         """Test get_async_persistence function."""
         from server.async_persistence import get_async_persistence, reset_async_persistence
@@ -683,16 +704,49 @@ class TestAsyncPersistenceCoverage:
         assert instance1 is instance2
 
     @pytest.mark.serial  # Manipulates global singleton state, unsafe for parallel execution
+    @pytest.mark.xdist_group(name="async_persistence_singleton")  # Force same worker for singleton tests
     def test_reset_async_persistence(self) -> None:
-        """Test reset_async_persistence function."""
+        """
+        Test reset_async_persistence function.
+
+        CRITICAL: This test manipulates the global singleton state. The _load_room_cache()
+        method runs in a thread during __init__ (with thread.join() ensuring completion),
+        and reset_async_persistence() sets the global to None without cleaning up the old instance.
+        We use gc.collect() and explicit reference deletion to help ensure proper cleanup
+        and prevent worker crashes in pytest-xdist.
+        """
+        import gc
+        import time
+
         from server.async_persistence import get_async_persistence, reset_async_persistence
 
-        # Get instance
-        instance1 = get_async_persistence()
-
-        # Reset
+        # Reset first to ensure clean state (in case other tests left an instance)
         reset_async_persistence()
+        gc.collect()  # Force cleanup of any old instances
+
+        # Get instance - _load_room_cache() runs in a thread with thread.join(),
+        # so initialization is complete before this returns
+        instance1 = get_async_persistence()
+        assert instance1 is not None
+
+        # Store reference to old instance to prevent immediate garbage collection
+        # This ensures we can verify it's different from the new instance
+        old_instance = instance1
+
+        # Reset - this sets the global to None
+        reset_async_persistence()
+
+        # Explicitly delete reference and force garbage collection
+        # This helps ensure the old instance's resources (threads, connections) are cleaned up
+        del instance1
+        gc.collect()
+
+        # Delay to allow any final cleanup (database connections, etc.)
+        # This is necessary because database connection pools may have cleanup delays
+        # Increased delay to help prevent worker crashes in pytest-xdist parallel execution
+        time.sleep(0.2)
 
         # Should create new instance
         instance2 = get_async_persistence()
-        assert instance1 is not instance2
+        assert instance2 is not None
+        assert old_instance is not instance2

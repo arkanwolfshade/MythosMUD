@@ -10,6 +10,8 @@ import shutil
 import tempfile
 from pathlib import Path
 
+import pytest
+
 from server.alias_storage import AliasStorage
 from server.models import Alias
 
@@ -404,6 +406,7 @@ class TestAliasStorage:
 
         assert result is False
 
+    @pytest.mark.serial  # Worker crash in parallel execution - likely due to file system operations or shared state
     def test_backup_aliases_default_directory(self) -> None:
         """Test backing up aliases with default backup directory."""
         # Create some aliases

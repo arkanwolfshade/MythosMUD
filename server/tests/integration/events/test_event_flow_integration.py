@@ -7,7 +7,7 @@ through event publishing, processing, and broadcasting to other clients.
 
 import asyncio
 import json
-from unittest.mock import AsyncMock, Mock
+from unittest.mock import AsyncMock, MagicMock, Mock
 from uuid import uuid4
 
 import pytest
@@ -24,7 +24,9 @@ class TestCompleteEventFlowIntegration:
     @pytest.fixture
     def mock_connection_manager(self):
         """Create a mock connection manager with realistic behavior."""
-        cm = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        cm = MagicMock()
         cm.get_player = AsyncMock()
         cm._get_player = AsyncMock()  # Keep for backward compatibility
         cm.persistence = Mock()
@@ -405,7 +407,9 @@ class TestRealEventFlow:
     @pytest.fixture
     def mock_connection_manager(self):
         """Create a mock connection manager."""
-        cm = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        cm = MagicMock()
         cm.get_player = AsyncMock()
         cm._get_player = AsyncMock()  # Keep for backward compatibility
         cm.persistence = Mock()

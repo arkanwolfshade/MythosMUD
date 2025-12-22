@@ -147,9 +147,11 @@ class TestFindContainerViaInnerContainer:
     async def test_find_container_via_inner_container_success(self) -> None:
         """Test finding container via inner_container_id."""
         item = {"inner_container": str(uuid4())}
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_container = {"container_id": item["inner_container"], "items": []}
-        mock_persistence.get_container.return_value = mock_container
+        mock_persistence.get_container = AsyncMock(return_value=mock_container)
 
         result = await _find_container_via_inner_container(item, mock_persistence)
 
@@ -160,7 +162,9 @@ class TestFindContainerViaInnerContainer:
     async def test_find_container_via_inner_container_no_inner_container(self) -> None:
         """Test when item has no inner_container."""
         item = {"item_name": "sword"}
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
 
         result = await _find_container_via_inner_container(item, mock_persistence)
 
@@ -171,7 +175,9 @@ class TestFindContainerViaInnerContainer:
     async def test_find_container_via_inner_container_invalid_uuid(self) -> None:
         """Test when inner_container is invalid UUID."""
         item = {"inner_container": "invalid-uuid"}
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
 
         result = await _find_container_via_inner_container(item, mock_persistence)
 
@@ -197,9 +203,11 @@ class TestGetContainerDataFromComponent:
         """Test getting container data from component."""
         mock_component = MagicMock()
         mock_component.container_id = uuid4()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_container = {"container_id": mock_component.container_id, "items": []}
-        mock_persistence.get_container.return_value = mock_container
+        mock_persistence.get_container = AsyncMock(return_value=mock_container)
 
         result = await _get_container_data_from_component(mock_component, mock_persistence)
 
@@ -211,7 +219,9 @@ class TestGetContainerDataFromComponent:
         """Test when component has no container_id."""
         mock_component = MagicMock()
         mock_component.container_id = None
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
 
         result = await _get_container_data_from_component(mock_component, mock_persistence)
 
@@ -465,7 +475,9 @@ class TestFindContainerInRoomOrEquipped:
         mock_room = MagicMock()
         mock_room.get_containers.return_value = [{"container_id": "cont-1", "metadata": {"name": "backpack"}}]
         mock_player = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_request = MagicMock()
 
         result = await _find_container_in_room_or_equipped(
@@ -485,9 +497,11 @@ class TestFindContainerInRoomOrEquipped:
         mock_player.get_equipped_items.return_value = {
             "backpack": {"item_name": "backpack", "inner_container": str(uuid4())}
         }
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_container = {"container_id": mock_player.get_equipped_items()["backpack"]["inner_container"]}
-        mock_persistence.get_container.return_value = mock_container
+        mock_persistence.get_container = AsyncMock(return_value=mock_container)
         mock_request = MagicMock()
 
         result = await _find_container_in_room_or_equipped(
@@ -505,7 +519,9 @@ class TestFindContainerInRoomOrEquipped:
         mock_room.get_containers.return_value = []
         mock_player = MagicMock()
         mock_player.get_equipped_items.return_value = {}
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_request = MagicMock()
 
         result = await _find_container_in_room_or_equipped(
@@ -534,7 +550,9 @@ class TestHandleContainerLook:
             }
         ]
         mock_player = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_registry = MagicMock()
         mock_request = MagicMock()
 
@@ -568,7 +586,9 @@ class TestHandleContainerLook:
         """Test when container is not found."""
         mock_room = MagicMock()
         mock_player = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_registry = MagicMock()
         mock_request = MagicMock()
 
@@ -609,7 +629,9 @@ class TestTryLookupContainerImplicit:
             }
         ]
         mock_player = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
 
         with patch("server.commands.look_container.logger"):
             result = await _try_lookup_container_implicit(
@@ -629,14 +651,16 @@ class TestTryLookupContainerImplicit:
         mock_player.get_equipped_items.return_value = {
             "backpack": {"item_name": "backpack", "inner_container": str(uuid4())}
         }
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_container = {
             "container_id": mock_player.get_equipped_items()["backpack"]["inner_container"],
             "items": [],
             "capacity_slots": 10,
             "lock_state": "unlocked",
         }
-        mock_persistence.get_container.return_value = mock_container
+        mock_persistence.get_container = AsyncMock(return_value=mock_container)
 
         with patch("server.commands.look_container.logger"):
             result = await _try_lookup_container_implicit(
@@ -654,7 +678,9 @@ class TestTryLookupContainerImplicit:
         mock_room.get_containers.return_value = []
         mock_player = MagicMock()
         mock_player.get_equipped_items.return_value = {}
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
 
         result = await _try_lookup_container_implicit(
             "backpack", "backpack", None, mock_room, mock_player, mock_persistence, "testuser"

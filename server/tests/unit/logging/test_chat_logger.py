@@ -140,6 +140,11 @@ class TestChatLogger:
     @patch("server.services.chat_logger.logger")
     def test_write_log_entry_exception_handling(self, mock_logger):
         """Test log entry writing handles exceptions gracefully."""
+        # Ensure logger methods are regular Mocks, not AsyncMocks
+        from unittest.mock import Mock
+
+        # Explicitly set error as a synchronous Mock to prevent AsyncMock warnings
+        mock_logger.error = Mock()
         # Mock the queue to raise an exception
         with patch.object(self.chat_logger._log_queue, "put", side_effect=Exception("Queue error")):
             entry = {"test": "data"}

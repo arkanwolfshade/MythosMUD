@@ -269,7 +269,9 @@ class TestOpenContainer:
     @pytest.mark.asyncio
     async def test_open_container_success(self) -> None:
         """Test successfully opening a container."""
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         container_id = uuid4()
         player_id = uuid4()
 
@@ -281,14 +283,14 @@ class TestOpenContainer:
             "source_type": "environment",
             "room_id": "room-123",
         }
-        mock_persistence.get_container.return_value = container_data
+        mock_persistence.get_container = AsyncMock(return_value=container_data)
 
         mock_player = MagicMock()
         mock_player.player_id = player_id
         mock_player.name = "TestPlayer"
         mock_player.current_room_id = "room-123"
         mock_player.is_admin = False
-        mock_persistence.get_player_by_id.return_value = mock_player
+        mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
 
         service = ContainerService(persistence=mock_persistence)
 
@@ -304,11 +306,13 @@ class TestOpenContainer:
     @pytest.mark.asyncio
     async def test_open_container_not_found(self) -> None:
         """Test opening a container that doesn't exist."""
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         container_id = uuid4()
         player_id = uuid4()
 
-        mock_persistence.get_container.return_value = None
+        mock_persistence.get_container = AsyncMock(return_value=None)
 
         service = ContainerService(persistence=mock_persistence)
 
@@ -318,7 +322,9 @@ class TestOpenContainer:
     @pytest.mark.asyncio
     async def test_open_container_player_not_found(self) -> None:
         """Test opening a container when player doesn't exist."""
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         container_id = uuid4()
         player_id = uuid4()
 
@@ -330,8 +336,8 @@ class TestOpenContainer:
             "source_type": "environment",
             "room_id": "room-123",
         }
-        mock_persistence.get_container.return_value = container_data
-        mock_persistence.get_player_by_id.return_value = None
+        mock_persistence.get_container = AsyncMock(return_value=container_data)
+        mock_persistence.get_player_by_id = AsyncMock(return_value=None)
 
         service = ContainerService(persistence=mock_persistence)
 
@@ -341,7 +347,9 @@ class TestOpenContainer:
     @pytest.mark.asyncio
     async def test_open_container_locked(self) -> None:
         """Test opening a locked container."""
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         container_id = uuid4()
         player_id = uuid4()
 
@@ -353,14 +361,14 @@ class TestOpenContainer:
             "source_type": "environment",
             "room_id": "room-123",
         }
-        mock_persistence.get_container.return_value = container_data
+        mock_persistence.get_container = AsyncMock(return_value=container_data)
 
         mock_player = MagicMock()
         mock_player.player_id = player_id
         mock_player.name = "TestPlayer"
         mock_player.current_room_id = "room-123"
         mock_player.is_admin = False
-        mock_persistence.get_player_by_id.return_value = mock_player
+        mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
 
         service = ContainerService(persistence=mock_persistence)
 
@@ -370,7 +378,9 @@ class TestOpenContainer:
     @pytest.mark.asyncio
     async def test_open_container_sealed(self) -> None:
         """Test opening a sealed container."""
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         container_id = uuid4()
         player_id = uuid4()
 
@@ -382,14 +392,14 @@ class TestOpenContainer:
             "source_type": "environment",
             "room_id": "room-123",
         }
-        mock_persistence.get_container.return_value = container_data
+        mock_persistence.get_container = AsyncMock(return_value=container_data)
 
         mock_player = MagicMock()
         mock_player.player_id = player_id
         mock_player.name = "TestPlayer"
         mock_player.current_room_id = "room-123"
         mock_player.is_admin = False
-        mock_persistence.get_player_by_id.return_value = mock_player
+        mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
 
         service = ContainerService(persistence=mock_persistence)
 
@@ -399,7 +409,9 @@ class TestOpenContainer:
     @pytest.mark.asyncio
     async def test_open_container_already_open(self) -> None:
         """Test opening a container that's already open."""
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         container_id = uuid4()
         player_id = uuid4()
 
@@ -411,14 +423,14 @@ class TestOpenContainer:
             "source_type": "environment",
             "room_id": "room-123",
         }
-        mock_persistence.get_container.return_value = container_data
+        mock_persistence.get_container = AsyncMock(return_value=container_data)
 
         mock_player = MagicMock()
         mock_player.player_id = player_id
         mock_player.name = "TestPlayer"
         mock_player.current_room_id = "room-123"
         mock_player.is_admin = False
-        mock_persistence.get_player_by_id.return_value = mock_player
+        mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
 
         service = ContainerService(persistence=mock_persistence)
         service._open_containers[container_id] = {player_id: "existing-token"}
@@ -433,7 +445,9 @@ class TestCloseContainer:
     @pytest.mark.asyncio
     async def test_close_container_success(self) -> None:
         """Test successfully closing a container."""
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         container_id = uuid4()
         player_id = uuid4()
         token = "test-token"
@@ -449,11 +463,11 @@ class TestCloseContainer:
             "source_type": "environment",
             "room_id": "room-123",
         }
-        mock_persistence.get_container.return_value = container_data
+        mock_persistence.get_container = AsyncMock(return_value=container_data)
 
         mock_player = MagicMock()
         mock_player.name = "TestPlayer"
-        mock_persistence.get_player_by_id.return_value = mock_player
+        mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
 
         with patch("server.services.container_service.audit_logger"):
             await service.close_container(container_id, player_id, token)
@@ -463,7 +477,9 @@ class TestCloseContainer:
     @pytest.mark.asyncio
     async def test_close_container_not_open(self) -> None:
         """Test closing a container that's not open."""
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         container_id = uuid4()
         player_id = uuid4()
         token = "test-token"
@@ -476,7 +492,9 @@ class TestCloseContainer:
     @pytest.mark.asyncio
     async def test_close_container_invalid_token(self) -> None:
         """Test closing a container with invalid token."""
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         container_id = uuid4()
         player_id = uuid4()
         correct_token = "correct-token"

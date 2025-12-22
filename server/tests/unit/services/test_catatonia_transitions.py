@@ -6,6 +6,7 @@ import uuid
 from datetime import UTC, datetime
 
 import pytest
+from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
@@ -106,6 +107,11 @@ async def test_lucidity_drop_to_zero_triggers_catatonia(db_session, lucidity_ser
     await db_session.refresh(player)
     await db_session.refresh(lucidity)
 
+    # Verify player exists in database before service call
+    # This ensures the foreign key constraint can see the player when the service logs the adjustment
+    player_check = await db_session.execute(select(Player).where(Player.player_id == player.player_id))
+    assert player_check.scalar_one_or_none() is not None, "Player must exist in database before service call"
+
     # Adjust lucidity to zero
     # Use the UUID object directly to ensure type consistency
     player_id_uuid = uuid.UUID(player.player_id)
@@ -119,6 +125,8 @@ async def test_lucidity_drop_to_zero_triggers_catatonia(db_session, lucidity_ser
 
 
 @pytest.mark.asyncio
+@pytest.mark.serial  # Mark as serial to prevent deadlocks during parallel execution
+@pytest.mark.xdist_group(name="serial_lucidity_tests")  # Force serial execution with pytest-xdist
 async def test_lucidity_recovery_clears_catatonia(db_session, lucidity_service):
     """Test that recovering lucidity from zero clears the catatonic flag."""
     # Create test user and player
@@ -143,6 +151,11 @@ async def test_lucidity_recovery_clears_catatonia(db_session, lucidity_service):
     )
     db_session.add(lucidity)
     await db_session.commit()
+
+    # Verify player exists in database before service call
+    # This ensures the foreign key constraint can see the player when the service logs the adjustment
+    player_check = await db_session.execute(select(Player).where(Player.player_id == player.player_id))
+    assert player_check.scalar_one_or_none() is not None, "Player must exist in database before service call"
 
     # Adjust lucidity upwards
     await lucidity_service.apply_lucidity_adjustment(uuid.UUID(player.player_id), 1, reason_code="recovery")

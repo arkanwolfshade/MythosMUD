@@ -85,11 +85,16 @@ def test_player_lucidity_defaults_and_constraints():
             persisted.current_tier = "uneasy"
             session.commit()
 
+            # Refresh the object after commit to ensure it's still tracked by the session
+            # This prevents StaleDataError when modifying after commit
+            session.refresh(persisted)
             persisted.current_lcd = 120
             with pytest.raises(IntegrityError):
                 session.flush()
             session.rollback()
 
+            # Refresh again after rollback to ensure object is tracked
+            session.refresh(persisted)
             persisted.current_tier = "eldritch"
             with pytest.raises(IntegrityError):
                 session.flush()
@@ -112,6 +117,9 @@ def test_player_lucidity_defaults_and_constraints():
         engine.dispose()
 
 
+@pytest.mark.serial  # Mark as serial to prevent deadlocks in parallel execution
+@pytest.mark.xdist_group(name="serial_lucidity_tests")  # Force serial execution with pytest-xdist
+@pytest.mark.timeout(30)  # Add timeout to prevent worker crashes
 def test_lucidity_relationships_cascade():
     engine = build_engine()
     Base.metadata.create_all(engine)

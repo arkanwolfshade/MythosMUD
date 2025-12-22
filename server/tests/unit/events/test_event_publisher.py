@@ -253,6 +253,8 @@ class TestEventPublisher:
         self.mock_nats_service.publish.assert_called_once()
 
     @pytest.mark.asyncio
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_event_publisher_tests")
     async def test_sequence_number_increment(self) -> None:
         """Test that sequence numbers increment correctly across multiple events."""
         # Mock successful NATS publish
@@ -326,6 +328,8 @@ class TestEventPublisher:
         assert "room_name" in message_data["data"]
 
     @pytest.mark.asyncio
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_event_publisher_tests")
     async def test_player_left_event_data_structure(self) -> None:
         """Test that player_left event has correct data structure."""
         # Mock successful NATS publish
@@ -345,6 +349,8 @@ class TestEventPublisher:
         assert "room_name" in message_data["data"]
 
     @pytest.mark.asyncio
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_event_publisher_tests")
     async def test_game_tick_event_data_structure(self) -> None:
         """Test that game_tick event has correct data structure."""
         # Mock successful NATS publish
@@ -364,6 +370,8 @@ class TestEventPublisher:
         assert isinstance(message_data["data"]["server_time"], str)
 
     @pytest.mark.asyncio
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_event_publisher_tests")
     async def test_nats_service_not_connected(self) -> None:
         """Test behavior when NATS service is not connected."""
         # Mock NATS service not connected
@@ -400,6 +408,9 @@ class TestEventPublisher:
         assert self.event_publisher.get_next_sequence_number() == 1
 
     @pytest.mark.asyncio
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_event_publisher_tests")
+    @pytest.mark.timeout(30)  # Increased timeout to prevent worker crashes
     async def test_publish_with_custom_timestamp(self) -> None:
         """Test publishing events with custom timestamp."""
         # Mock successful NATS publish
@@ -421,6 +432,8 @@ class TestEventPublisher:
         assert message_data["timestamp"] == custom_timestamp
 
     @pytest.mark.asyncio
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_event_publisher_tests")
     async def test_publish_with_additional_metadata(self) -> None:
         """Test publishing events with additional metadata."""
         # Mock successful NATS publish

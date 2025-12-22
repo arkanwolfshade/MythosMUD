@@ -160,10 +160,18 @@ class TestCombatMonitoringService:
         mock_get_feature_flags.return_value = mock_feature_flags
         mock_get_combat_config.return_value = mock_combat_config
 
-        service = CombatMonitoringService()
-        assert service._config == mock_game_config
-        assert service._feature_flags == mock_feature_flags
-        assert service._combat_config == mock_combat_config
+        # Patch asyncio.create_task to prevent background task warnings from other services
+        def create_task_side_effect(coro):
+            # Close the coroutine to prevent "never awaited" warning
+            if hasattr(coro, "close"):
+                coro.close()
+            return MagicMock()
+
+        with patch("asyncio.create_task", side_effect=create_task_side_effect):
+            service = CombatMonitoringService()
+            assert service._config == mock_game_config
+            assert service._feature_flags == mock_feature_flags
+            assert service._combat_config == mock_combat_config
 
     @patch("server.services.combat_monitoring_service.get_config")
     @patch("server.services.combat_monitoring_service.get_feature_flags")
@@ -182,13 +190,24 @@ class TestCombatMonitoringService:
         mock_get_feature_flags.return_value = mock_feature_flags
         mock_get_combat_config.return_value = mock_combat_config
 
-        service = CombatMonitoringService()
+        # Patch asyncio.create_task to prevent background task warnings from other services
+        def create_task_side_effect(coro):
+            # Close the coroutine to prevent "never awaited" warning
+            if hasattr(coro, "close"):
+                coro.close()
+            return MagicMock()
 
-        service.start_combat_monitoring("combat_123")
+        with patch("asyncio.create_task", side_effect=create_task_side_effect):
+            service = CombatMonitoringService()
 
-        assert service._metrics.total_combats == 1
-        assert service._metrics.active_combats == 1
-        assert "combat_123" in service._combat_start_times
+            service.start_combat_monitoring("combat_123")
+
+            assert service._metrics.total_combats == 1
+            assert service._metrics.active_combats == 1
+            assert "combat_123" in service._combat_start_times
+
+            # Clean up to prevent background tasks from causing warnings
+            service.end_combat_monitoring("combat_123", success=True)
 
     @patch("server.services.combat_monitoring_service.get_config")
     @patch("server.services.combat_monitoring_service.get_feature_flags")
@@ -207,19 +226,27 @@ class TestCombatMonitoringService:
         mock_get_feature_flags.return_value = mock_feature_flags
         mock_get_combat_config.return_value = mock_combat_config
 
-        service = CombatMonitoringService()
+        # Patch asyncio.create_task to prevent background task warnings from _persist_player_dp_background
+        def create_task_side_effect(coro):
+            # Close the coroutine to prevent "never awaited" warning
+            if hasattr(coro, "close"):
+                coro.close()
+            return MagicMock()
 
-        # Start combat
-        service.start_combat_monitoring("combat_123")
-        time.sleep(0.01)  # Small delay to ensure duration > 0
+        with patch("asyncio.create_task", side_effect=create_task_side_effect):
+            service = CombatMonitoringService()
 
-        # End combat
-        service.end_combat_monitoring("combat_123", success=True)
+            # Start combat
+            service.start_combat_monitoring("combat_123")
+            time.sleep(0.01)  # Small delay to ensure duration > 0
 
-        assert service._metrics.active_combats == 0
-        assert service._metrics.completed_combats == 1
-        assert service._metrics.failed_combats == 0
-        assert "combat_123" not in service._combat_start_times
+            # End combat
+            service.end_combat_monitoring("combat_123", success=True)
+
+            assert service._metrics.active_combats == 0
+            assert service._metrics.completed_combats == 1
+            assert service._metrics.failed_combats == 0
+            assert "combat_123" not in service._combat_start_times
 
     @patch("server.services.combat_monitoring_service.get_config")
     @patch("server.services.combat_monitoring_service.get_feature_flags")
@@ -238,17 +265,25 @@ class TestCombatMonitoringService:
         mock_get_feature_flags.return_value = mock_feature_flags
         mock_get_combat_config.return_value = mock_combat_config
 
-        service = CombatMonitoringService()
+        # Patch asyncio.create_task to prevent background task warnings from _persist_player_dp_background
+        def create_task_side_effect(coro):
+            # Close the coroutine to prevent "never awaited" warning
+            if hasattr(coro, "close"):
+                coro.close()
+            return MagicMock()
 
-        # Start combat
-        service.start_combat_monitoring("combat_123")
+        with patch("asyncio.create_task", side_effect=create_task_side_effect):
+            service = CombatMonitoringService()
 
-        # End combat with failure
-        service.end_combat_monitoring("combat_123", success=False)
+            # Start combat
+            service.start_combat_monitoring("combat_123")
 
-        assert service._metrics.active_combats == 0
-        assert service._metrics.completed_combats == 0
-        assert service._metrics.failed_combats == 1
+            # End combat with failure
+            service.end_combat_monitoring("combat_123", success=False)
+
+            assert service._metrics.active_combats == 0
+            assert service._metrics.completed_combats == 0
+            assert service._metrics.failed_combats == 1
 
     @patch("server.services.combat_monitoring_service.get_config")
     @patch("server.services.combat_monitoring_service.get_feature_flags")
@@ -267,14 +302,22 @@ class TestCombatMonitoringService:
         mock_get_feature_flags.return_value = mock_feature_flags
         mock_get_combat_config.return_value = mock_combat_config
 
-        service = CombatMonitoringService()
+        # Patch asyncio.create_task to prevent background task warnings from _persist_player_dp_background
+        def create_task_side_effect(coro):
+            # Close the coroutine to prevent "never awaited" warning
+            if hasattr(coro, "close"):
+                coro.close()
+            return MagicMock()
 
-        # Start and end turn
-        service.start_turn_monitoring("combat_123")
-        time.sleep(0.01)  # Small delay
-        service.end_turn_monitoring("combat_123")
+        with patch("asyncio.create_task", side_effect=create_task_side_effect):
+            service = CombatMonitoringService()
 
-        assert "combat_123" not in service._turn_start_times
+            # Start and end turn
+            service.start_turn_monitoring("combat_123")
+            time.sleep(0.01)  # Small delay
+            service.end_turn_monitoring("combat_123")
+
+            assert "combat_123" not in service._turn_start_times
 
     @patch("server.services.combat_monitoring_service.get_config")
     @patch("server.services.combat_monitoring_service.get_feature_flags")
@@ -293,7 +336,15 @@ class TestCombatMonitoringService:
         mock_get_feature_flags.return_value = mock_feature_flags
         mock_get_combat_config.return_value = mock_combat_config
 
-        service = CombatMonitoringService()
+        # Patch asyncio.create_task to prevent background task warnings from other services
+        def create_task_side_effect(coro):
+            # Close the coroutine to prevent "never awaited" warning
+            if hasattr(coro, "close"):
+                coro.close()
+            return MagicMock()
+
+        with patch("asyncio.create_task", side_effect=create_task_side_effect):
+            service = CombatMonitoringService()
 
         # Record different types of errors
         service.record_combat_error("validation", "combat_123")
@@ -693,7 +744,7 @@ class TestCombatMonitoringServiceErrorHandling:
 
         # Add callback that raises exception
         def error_callback(alert):
-            raise Exception("Callback error")
+            raise RuntimeError("Callback error")
 
         service.add_alert_callback(error_callback)
 

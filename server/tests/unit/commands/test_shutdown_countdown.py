@@ -9,7 +9,7 @@ are essential before sealing dimensional boundaries.
 """
 
 import time
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -243,7 +243,11 @@ class TestShutdownCancellation:
             "task": mock_task,
         }
 
-        result = await cancel_shutdown_countdown(mock_app, "cancelling_admin")
+        # Ensure asyncio.iscoroutine and asyncio.isfuture return False for the mock task
+        # This prevents countdown_loop coroutine warnings
+        with patch("asyncio.iscoroutine", return_value=False):
+            with patch("asyncio.isfuture", return_value=False):
+                result = await cancel_shutdown_countdown(mock_app, "cancelling_admin")
 
         assert result is True
         # Verify task was cancelled
@@ -274,24 +278,27 @@ class TestShutdownCancellation:
         mock_app.state.connection_manager = MagicMock()
         mock_app.state.connection_manager.broadcast_global_event = AsyncMock(return_value={"successful_deliveries": 5})
 
-        # Set up completed task
+        # Set up completed task - ensure it's not a coroutine to prevent warnings
         mock_task = MagicMock()
         mock_task.cancel = MagicMock()
         mock_task.done = MagicMock(return_value=True)
-        mock_app.state.server_shutdown_pending = True
-        mock_app.state.shutdown_data = {
-            "countdown_seconds": 1,
-            "admin_username": "admin_user",
-            "start_time": time.time(),
-            "end_time": time.time() + 1,
-            "task": mock_task,
-        }
+        # Ensure asyncio.iscoroutine returns False for the mock task
+        with patch("asyncio.iscoroutine", return_value=False):
+            with patch("asyncio.isfuture", return_value=False):
+                mock_app.state.server_shutdown_pending = True
+                mock_app.state.shutdown_data = {
+                    "countdown_seconds": 1,
+                    "admin_username": "admin_user",
+                    "start_time": time.time(),
+                    "end_time": time.time() + 1,
+                    "task": mock_task,
+                }
 
-        result = await cancel_shutdown_countdown(mock_app, "cancelling_admin")
+                result = await cancel_shutdown_countdown(mock_app, "cancelling_admin")
 
-        # Should still succeed and clean up state
-        assert result is True
-        assert mock_app.state.server_shutdown_pending is False
+                # Should still succeed and clean up state
+                assert result is True
+                assert mock_app.state.server_shutdown_pending is False
 
     @pytest.mark.asyncio
     async def test_cancel_shutdown_notification_message(self) -> None:
@@ -300,20 +307,23 @@ class TestShutdownCancellation:
         mock_app.state.connection_manager = MagicMock()
         mock_app.state.connection_manager.broadcast_global_event = AsyncMock(return_value={"successful_deliveries": 5})
 
-        # Set up existing shutdown
+        # Set up existing shutdown - ensure it's not a coroutine to prevent warnings
         mock_task = MagicMock()
         mock_task.cancel = MagicMock()
         mock_task.done = MagicMock(return_value=False)
-        mock_app.state.server_shutdown_pending = True
-        mock_app.state.shutdown_data = {
-            "countdown_seconds": 30,
-            "admin_username": "admin_user",
-            "start_time": time.time(),
-            "end_time": time.time() + 30,
-            "task": mock_task,
-        }
+        # Ensure asyncio.iscoroutine returns False for the mock task
+        with patch("asyncio.iscoroutine", return_value=False):
+            with patch("asyncio.isfuture", return_value=False):
+                mock_app.state.server_shutdown_pending = True
+                mock_app.state.shutdown_data = {
+                    "countdown_seconds": 30,
+                    "admin_username": "admin_user",
+                    "start_time": time.time(),
+                    "end_time": time.time() + 30,
+                    "task": mock_task,
+                }
 
-        await cancel_shutdown_countdown(mock_app, "cancelling_admin")
+                await cancel_shutdown_countdown(mock_app, "cancelling_admin")
 
         call_args = mock_app.state.connection_manager.broadcast_global_event.call_args[0][1]
         message = call_args["message"]

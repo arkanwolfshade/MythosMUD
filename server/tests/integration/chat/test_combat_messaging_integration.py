@@ -32,7 +32,11 @@ class TestCombatMessagingIntegration:
         """Set up test fixtures."""
         # AI Agent: Inject mock connection_manager via constructor (no longer a global)
         #           Post-migration: CombatMessagingIntegration requires connection_manager
-        self.mock_connection_manager = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        from unittest.mock import MagicMock
+
+        self.mock_connection_manager = MagicMock()
         self.integration = CombatMessagingIntegration(connection_manager=self.mock_connection_manager)
         self.room_id = "test_room_001"
         self.combat_id = "combat_123"

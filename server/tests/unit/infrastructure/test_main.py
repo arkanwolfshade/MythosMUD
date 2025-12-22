@@ -47,7 +47,9 @@ class TestEndpoints:
         """Create a test client with initialized app state."""
         # Initialize the app state with persistence
         # Use AsyncPersistenceLayer directly (PersistenceLayer removed)
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
 
         # Mock profession data to return proper string values
         mock_profession = Mock()
@@ -122,26 +124,29 @@ class TestEndpoints:
 
     def test_get_room_not_found(self, client):
         """Test getting a non-existent room."""
-        with patch.object(
-            cast(FastAPI, client.app).state.room_service, "get_room", new_callable=AsyncMock
-        ) as mock_get_room:
-            mock_get_room.return_value = None
+        # Use MagicMock as base, then explicitly set get_room as AsyncMock to prevent AsyncMock warnings
+        mock_room_service = MagicMock()
+        mock_room_service.get_room = AsyncMock(return_value=None)
 
-            # Room router is mounted at /api/rooms (see server/app/factory.py line 177)
-            response = client.get("/api/rooms/nonexistent")
+        # Set the room_service in the container (which is used by the dependency)
+        cast(FastAPI, client.app).state.container.room_service = mock_room_service
+        cast(FastAPI, client.app).state.room_service = mock_room_service
 
-            assert response.status_code == 404
-            # StandardizedErrorResponse uses {"error": {"message": ...}} format
-            response_data = response.json()
-            # Check for standardized error format
-            if "error" in response_data and "message" in response_data["error"]:
-                assert "Room not found" in response_data["error"]["message"]
-            elif "detail" in response_data:
-                # Fallback to FastAPI's standard format
-                assert "Room not found" in response_data["detail"]
-            else:
-                # Check if it's in a nested structure
-                assert "Room not found" in str(response_data)
+        # Room router is mounted at /api/rooms (see server/app/factory.py line 177)
+        response = client.get("/api/rooms/nonexistent")
+
+        assert response.status_code == 404
+        # StandardizedErrorResponse uses {"error": {"message": ...}} format
+        response_data = response.json()
+        # Check for standardized error format
+        if "error" in response_data and "message" in response_data["error"]:
+            assert "Room not found" in response_data["error"]["message"]
+        elif "detail" in response_data:
+            # Fallback to FastAPI's standard format
+            assert "Room not found" in response_data["detail"]
+        else:
+            # Check if it's in a nested structure
+            assert "Room not found" in str(response_data)
 
     def test_create_player_success(self, client):
         """Test creating a new player."""
@@ -219,9 +224,20 @@ class TestEndpoints:
 
     def test_create_player_already_exists(self, client):
         """Test creating a player that already exists."""
-        with patch.object(
-            cast(FastAPI, client.app).state.persistence, "async_get_player_by_name", new_callable=AsyncMock
-        ) as mock_get_player:
+
+        # Patch asyncio.create_task to prevent background task warnings
+        def create_task_side_effect(coro):
+            # Close the coroutine to prevent "never awaited" warning
+            if hasattr(coro, "close"):
+                coro.close()
+            return MagicMock()
+
+        with (
+            patch("asyncio.create_task", side_effect=create_task_side_effect),
+            patch.object(
+                cast(FastAPI, client.app).state.persistence, "get_player_by_name", new_callable=AsyncMock
+            ) as mock_get_player,
+        ):
             mock_get_player.return_value = Mock(name="testplayer")  # Player exists
 
             response = client.post("/api/players?name=testplayer")

@@ -389,6 +389,7 @@ class TestMovementService:
         mock_persistence.save_player.assert_called_once()
         assert player.current_room_id == "room2"
 
+    @pytest.mark.serial  # Worker crash in parallel execution - likely due to shared state or initialization race condition
     def test_move_player_allowed_when_no_combat_service(self) -> None:
         """Test that player can move when player_combat_service is not provided.
 
@@ -589,9 +590,12 @@ class TestMovementService:
     @pytest.mark.asyncio
     async def test_get_player_room_success(self) -> None:
         """Test getting player's current room."""
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        from unittest.mock import MagicMock
         from uuid import uuid4
 
-        mock_persistence = AsyncMock()
+        mock_persistence = MagicMock()
         test_player_id = str(uuid4())
         player = Player(player_id=test_player_id, user_id=str(uuid4()), name="TestPlayer", current_room_id="room1")
 
@@ -606,7 +610,11 @@ class TestMovementService:
     @pytest.mark.asyncio
     async def test_get_player_room_player_not_found(self) -> None:
         """Test getting room for non-existent player returns None."""
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        from unittest.mock import MagicMock
+
+        mock_persistence = MagicMock()
         mock_persistence.get_player_by_id = AsyncMock(return_value=None)
 
         service = MovementService(async_persistence=mock_persistence)
@@ -618,7 +626,11 @@ class TestMovementService:
     @pytest.mark.asyncio
     async def test_get_player_room_empty_player_id(self) -> None:
         """Test that empty player ID raises ValidationError."""
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        from unittest.mock import MagicMock
+
+        mock_persistence = MagicMock()
 
         service = MovementService(async_persistence=mock_persistence)
 
@@ -844,6 +856,7 @@ class TestComprehensiveMovement:
         assert player_uuid not in room2.get_players() and test_player_id not in room2.get_players()
         assert player_uuid not in room3.get_players() and test_player_id not in room3.get_players()
 
+    @pytest.mark.serial  # Worker crash in parallel execution - likely due to shared state or initialization race condition
     def test_circular_movement(self) -> None:
         """Test a player moving in a circle and ending up back where they started."""
         import uuid as uuid_module

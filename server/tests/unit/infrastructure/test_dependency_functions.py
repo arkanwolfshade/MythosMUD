@@ -6,7 +6,6 @@ work correctly and return the expected service instances.
 """
 
 from typing import Any, cast
-from unittest.mock import AsyncMock
 
 import pytest
 
@@ -20,7 +19,11 @@ class TestDependencyFunctions:
     @pytest.fixture
     def mock_persistence(self):
         """Create mock persistence layer."""
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        from unittest.mock import MagicMock
+
+        mock_persistence = MagicMock()
         mock_persistence.async_list_players.return_value = []
         mock_persistence.async_get_player.return_value = None
         mock_persistence.async_get_room.return_value = None

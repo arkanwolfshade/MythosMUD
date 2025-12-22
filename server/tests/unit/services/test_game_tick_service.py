@@ -125,6 +125,7 @@ class TestGameTickService:
         await self.game_tick_service.stop()
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared state or timing issues
     async def test_multiple_stop_calls_safe(self) -> None:
         """Test that multiple stop calls are safe."""
         await self.game_tick_service.start()

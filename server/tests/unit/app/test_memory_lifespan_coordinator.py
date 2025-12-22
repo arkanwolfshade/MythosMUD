@@ -148,18 +148,31 @@ class TestBackgroundAuditCycle:
         # Create a task to run the cycle
         cycle_task = asyncio.create_task(auditor._background_audit_cycle())
 
-        # Let it run a couple cycles
-        await asyncio.sleep(0.3)
-
-        # Cancel the cycle
-        cycle_task.cancel()
         try:
-            await cycle_task
-        except asyncio.CancelledError:
-            pass
+            # Let it run a couple cycles
+            await asyncio.sleep(0.3)
 
-        # Should have called audit at least twice
-        assert mock_audit.call_count >= 2
+            # Should have called audit at least twice
+            assert mock_audit.call_count >= 2
+        finally:
+            # Cancel the cycle and ensure it's properly awaited
+            cycle_task.cancel()
+            try:
+                await asyncio.wait_for(cycle_task, timeout=0.1)
+            except (asyncio.CancelledError, TimeoutError):
+                pass
+            # Ensure task is done before test ends
+            if not cycle_task.done():
+                cycle_task.cancel()
+                try:
+                    await cycle_task
+                except asyncio.CancelledError:
+                    pass
+            # Force garbage collection to ensure no orphaned coroutines
+            import gc
+
+            gc.collect()
+            await asyncio.sleep(0.01)  # Give GC time to process
 
     @pytest.mark.asyncio
     @patch.object(PeriodicOrphanAuditor, "_do_full_cleanup_audit")

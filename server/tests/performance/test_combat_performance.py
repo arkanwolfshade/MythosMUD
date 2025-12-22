@@ -23,7 +23,22 @@ class TestCombatPerformance:
     @pytest.fixture
     def mock_persistence(self):
         """Create a mock persistence layer."""
-        return AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        from unittest.mock import MagicMock
+
+        mock_persistence = MagicMock()
+        # Configure async methods explicitly
+        mock_persistence.get_player_by_id = AsyncMock()
+        mock_persistence.save_player = AsyncMock()
+
+        # Create a mock player object with synchronous add_experience method
+        # This prevents AsyncMock warnings when player.add_experience is called
+        mock_player = MagicMock()
+        mock_player.add_experience = Mock()  # Synchronous method
+        mock_persistence.get_player_by_id.return_value = mock_player
+
+        return mock_persistence
 
     @pytest.fixture
     def mock_event_bus(self):
@@ -441,13 +456,19 @@ class TestCombatPerformance:
         num_awards = 100
         start_time = time.time()
 
-        # Mock player data
-        mock_player = Mock()
+        # Mock player data - use spec to prevent AsyncMock from making sync methods async
+        from server.models.player import Player
+
+        mock_player = Mock(spec=Player)
         mock_player.experience_points = 100
         mock_player.level = 5
-        mock_player.add_experience = Mock()
-        mock_persistence.async_get_player.return_value = mock_player
-        mock_persistence.async_save_player = AsyncMock()
+        # Explicitly set add_experience as a sync method (not async) to prevent coroutine creation
+        mock_player.add_experience = Mock(
+            side_effect=lambda amount: setattr(mock_player, "experience_points", mock_player.experience_points + amount)
+        )
+        # Use get_player_by_id (the actual method name) - return_value is a Mock, not AsyncMock
+        mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
+        mock_persistence.save_player = AsyncMock()
 
         # Award XP multiple times
         tasks = []

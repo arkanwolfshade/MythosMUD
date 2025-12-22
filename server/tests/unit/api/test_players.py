@@ -10,7 +10,7 @@ import types
 import uuid
 from datetime import UTC, datetime
 from typing import Any, cast
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
 import pytest
 from fastapi import HTTPException
@@ -194,8 +194,10 @@ class TestPlayerCRUD:
     ):
         """Test successful player creation."""
         # Setup mocks
-        mock_service = AsyncMock()
-        mock_service.create_player.return_value = sample_player_data
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.create_player = AsyncMock(return_value=sample_player_data)
         mock_player_service_class.return_value = mock_service
 
         result = await create_player(
@@ -218,7 +220,9 @@ class TestPlayerCRUD:
     async def test_create_player_validation_error(self, mock_player_service_class, mock_current_user, mock_request):
         """Test player creation with validation error."""
         # Setup mocks
-        mock_service = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
         mock_service.create_player.side_effect = ValidationError("Invalid player name")
         mock_player_service_class.return_value = mock_service
 
@@ -239,8 +243,10 @@ class TestPlayerCRUD:
     async def test_list_players_empty(self, mock_player_service_class, mock_current_user, mock_request):
         """Test listing players when no players exist."""
         # Setup mocks
-        mock_service = AsyncMock()
-        mock_service.list_players.return_value = []
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.list_players = AsyncMock(return_value=[])
         mock_player_service_class.return_value = mock_service
 
         result = await list_players(mock_current_user, mock_request, mock_service)
@@ -254,8 +260,10 @@ class TestPlayerCRUD:
     ):
         """Test listing players when players exist."""
         # Setup mocks
-        mock_service = AsyncMock()
-        mock_service.list_players.return_value = [sample_player_data]
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.list_players = AsyncMock(return_value=[sample_player_data])
         mock_player_service_class.return_value = mock_service
 
         result = await list_players(mock_current_user, mock_request, mock_service)
@@ -269,8 +277,10 @@ class TestPlayerCRUD:
     ):
         """Test successful player retrieval by ID."""
         # Setup mocks
-        mock_service = AsyncMock()
-        mock_service.get_player_by_id.return_value = sample_player_data
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.get_player_by_id = AsyncMock(return_value=sample_player_data)
         mock_player_service_class.return_value = mock_service
 
         player_id = uuid.uuid4()
@@ -284,8 +294,10 @@ class TestPlayerCRUD:
     async def test_get_player_not_found(self, mock_player_service_class, mock_current_user, mock_request):
         """Test player retrieval when player not found."""
         # Setup mocks
-        mock_service = AsyncMock()
-        mock_service.get_player_by_id.return_value = None
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.get_player_by_id = AsyncMock(return_value=None)
         mock_player_service_class.return_value = mock_service
 
         player_id = uuid.uuid4()
@@ -302,8 +314,10 @@ class TestPlayerCRUD:
     ):
         """Test successful player retrieval by name."""
         # Setup mocks
-        mock_service = AsyncMock()
-        mock_service.get_player_by_name.return_value = sample_player_data
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.get_player_by_name = AsyncMock(return_value=sample_player_data)
         mock_player_service_class.return_value = mock_service
 
         result = await get_player_by_name("TestPlayer", mock_current_user, mock_request, mock_service)
@@ -316,8 +330,10 @@ class TestPlayerCRUD:
     async def test_get_player_by_name_not_found(self, mock_player_service_class, mock_current_user, mock_request):
         """Test player retrieval by name when player not found."""
         # Setup mocks
-        mock_service = AsyncMock()
-        mock_service.get_player_by_name.return_value = None
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.get_player_by_name = AsyncMock(return_value=None)
         mock_player_service_class.return_value = mock_service
 
         with pytest.raises(HTTPException) as exc_info:
@@ -331,8 +347,10 @@ class TestPlayerCRUD:
     async def test_delete_player_success(self, mock_player_service_class, mock_current_user, mock_request):
         """Test successful player deletion."""
         # Setup mocks
-        mock_service = AsyncMock()
-        mock_service.delete_player.return_value = (True, "Player deleted successfully")
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.delete_player = AsyncMock(return_value=(True, "Player deleted successfully"))
         mock_player_service_class.return_value = mock_service
 
         player_id = uuid.uuid4()
@@ -346,8 +364,10 @@ class TestPlayerCRUD:
     async def test_delete_player_not_found(self, mock_player_service_class, mock_current_user, mock_request):
         """Test player deletion when player not found."""
         # Setup mocks
-        mock_service = AsyncMock()
-        mock_service.delete_player.return_value = (False, "Player not found")
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.delete_player = AsyncMock(return_value=(False, "Player not found"))
         mock_player_service_class.return_value = mock_service
 
         player_id = uuid.uuid4()
@@ -372,8 +392,10 @@ class TestPlayerEffects:
         mock_persistence.get_player.return_value = sample_player_data
 
         # Mock the PlayerService dependency
-        mock_service = AsyncMock()
-        mock_service.apply_lucidity_loss.return_value = {"message": "Applied 10 lucidity loss to TestPlayer"}
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.apply_lucidity_loss = AsyncMock(return_value={"message": "Applied 10 lucidity loss to TestPlayer"})
         mock_player_service_dep.return_value = mock_service
 
         request_data = LucidityLossRequest(amount=10, source="test")
@@ -394,7 +416,9 @@ class TestPlayerEffects:
         mock_persistence.get_player.return_value = None
 
         # Mock the PlayerService dependency
-        mock_service = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
         mock_service.apply_lucidity_loss.side_effect = ValidationError("Player not found")
         mock_player_service_dep.return_value = mock_service
 
@@ -416,8 +440,10 @@ class TestPlayerEffects:
         mock_persistence.get_player.return_value = sample_player_data
 
         # Mock the PlayerService dependency
-        mock_service = AsyncMock()
-        mock_service.apply_fear.return_value = {"message": "Applied 5 fear to TestPlayer"}
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.apply_fear = AsyncMock(return_value={"message": "Applied 5 fear to TestPlayer"})
         mock_player_service_dep.return_value = mock_service
 
         request_data = FearRequest(amount=5, source="test")
@@ -438,7 +464,9 @@ class TestPlayerEffects:
         mock_persistence.get_player.return_value = None
 
         # Mock the PlayerService dependency
-        mock_service = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
         mock_service.apply_fear.side_effect = ValidationError("Player not found")
         mock_player_service_dep.return_value = mock_service
 
@@ -460,8 +488,10 @@ class TestPlayerEffects:
         mock_persistence.get_player.return_value = sample_player_data
 
         # Mock the PlayerService dependency
-        mock_service = AsyncMock()
-        mock_service.apply_corruption.return_value = {"message": "Applied 3 corruption to TestPlayer"}
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.apply_corruption = AsyncMock(return_value={"message": "Applied 3 corruption to TestPlayer"})
         mock_player_service_dep.return_value = mock_service
 
         request_data = CorruptionRequest(amount=3, source="test")
@@ -482,7 +512,9 @@ class TestPlayerEffects:
         mock_persistence.get_player.return_value = None
 
         # Mock the PlayerService dependency
-        mock_service = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
         mock_service.apply_corruption.side_effect = ValidationError("Player not found")
         mock_player_service_dep.return_value = mock_service
 
@@ -504,8 +536,12 @@ class TestPlayerEffects:
         mock_persistence.get_player.return_value = sample_player_data
 
         # Mock the PlayerService dependency
-        mock_service = AsyncMock()
-        mock_service.gain_occult_knowledge.return_value = {"message": "Gained 2 occult knowledge for TestPlayer"}
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.gain_occult_knowledge = AsyncMock(
+            return_value={"message": "Gained 2 occult knowledge for TestPlayer"}
+        )
         mock_player_service_dep.return_value = mock_service
 
         request_data = OccultKnowledgeRequest(amount=2, source="test")
@@ -526,7 +562,9 @@ class TestPlayerEffects:
         mock_persistence.get_player.return_value = None
 
         # Mock the PlayerService dependency
-        mock_service = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
         mock_service.gain_occult_knowledge.side_effect = ValidationError("Player not found")
         mock_player_service_dep.return_value = mock_service
 
@@ -548,8 +586,10 @@ class TestPlayerEffects:
         mock_persistence.get_player.return_value = sample_player_data
 
         # Mock the PlayerService dependency
-        mock_service = AsyncMock()
-        mock_service.heal_player.return_value = {"message": "Healed TestPlayer for 20 health"}
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.heal_player = AsyncMock(return_value={"message": "Healed TestPlayer for 20 health"})
         mock_player_service_dep.return_value = mock_service
 
         request_data = HealRequest(amount=20)
@@ -570,7 +610,9 @@ class TestPlayerEffects:
         mock_persistence.get_player.return_value = None
 
         # Mock the PlayerService dependency
-        mock_service = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
         mock_service.heal_player.side_effect = ValidationError("Player not found")
         mock_player_service_dep.return_value = mock_service
 
@@ -592,8 +634,10 @@ class TestPlayerEffects:
         mock_persistence.get_player.return_value = sample_player_data
 
         # Mock the PlayerService dependency
-        mock_service = AsyncMock()
-        mock_service.damage_player.return_value = {"message": "Damaged TestPlayer for 15 physical damage"}
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.damage_player = AsyncMock(return_value={"message": "Damaged TestPlayer for 15 physical damage"})
         mock_player_service_dep.return_value = mock_service
 
         request_data = DamageRequest(amount=15, damage_type="physical")
@@ -614,7 +658,9 @@ class TestPlayerEffects:
         mock_persistence.get_player.return_value = None
 
         # Mock the PlayerService dependency
-        mock_service = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
         mock_service.damage_player.side_effect = ValidationError("Player not found")
         mock_player_service_dep.return_value = mock_service
 
@@ -740,8 +786,10 @@ class TestCharacterCreation:
         """Test successful character creation."""
         # Setup mocks
         mock_limiter.enforce_rate_limit.return_value = None
-        mock_service = AsyncMock()
-        mock_service.create_player_with_stats.return_value = sample_player_data
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.create_player_with_stats = AsyncMock(return_value=sample_player_data)
         mock_player_service_dep.return_value = mock_service
 
         request_data = Mock()
