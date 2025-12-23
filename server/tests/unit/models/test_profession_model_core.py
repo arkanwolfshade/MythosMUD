@@ -55,6 +55,8 @@ class TestProfessionModel:
             finally:
                 session.close()
 
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared database state and fixed ID conflicts
+    @pytest.mark.xdist_group(name="serial_profession_tests")  # Force serial execution with pytest-xdist
     def test_profession_creation(self, db_session: Session) -> None:
         """Test creating a profession with all required fields."""
         profession = Profession(

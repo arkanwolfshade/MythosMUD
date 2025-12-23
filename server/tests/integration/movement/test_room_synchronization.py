@@ -117,7 +117,8 @@ class TestEventProcessingOrder:
         no_timestamp_data = {"id": "test_room_1"}
         assert not room_sync_service._room_data_cache.is_room_data_fresh(no_timestamp_data, current_time)
 
-    def test_event_processing_handles_race_conditions(self, room_sync_service):
+    @pytest.mark.asyncio
+    async def test_event_processing_handles_race_conditions(self, room_sync_service):
         """Test that event processing handles race conditions properly."""
         # Simulate rapid room updates that could cause race conditions
         room_updates = []
@@ -133,15 +134,10 @@ class TestEventProcessingOrder:
             room_updates.append(update)
 
         # Process updates concurrently to simulate race conditions
-        async def process_updates():
-            processed_updates = []
-            for update in room_updates:
-                result = await room_sync_service._process_room_update_with_validation(update)
-                processed_updates.append(result)
-            return processed_updates
-
-        # Run async processing
-        processed_updates = asyncio.run(process_updates())
+        processed_updates = []
+        for update in room_updates:
+            result = await room_sync_service._process_room_update_with_validation(update)
+            processed_updates.append(result)
 
         # Verify that the final state is consistent
         assert len(processed_updates) == 10
@@ -305,13 +301,14 @@ class TestRoomDataConsistency:
             stale_data = {"id": "test_room_1", "timestamp": current_time - (threshold + 1)}
             assert not room_sync_service._room_data_cache.is_room_data_fresh(stale_data, current_time, threshold)
 
-    def test_fallback_logic_for_stale_data(self, room_sync_service):
+    @pytest.mark.asyncio
+    async def test_fallback_logic_for_stale_data(self, room_sync_service):
         """Test fallback logic when stale room data is detected."""
         # Create stale room data
         stale_data = {"id": "test_room_1", "name": "Stale Room Name", "timestamp": time.time() - 10}
 
         # Test fallback logic (async method)
-        fallback_result = asyncio.run(room_sync_service._handle_stale_room_data(stale_data))
+        fallback_result = await room_sync_service._handle_stale_room_data(stale_data)
 
         # When room service is not available, it returns "room_service_not_available"
         # When room service is available, it would return "request_fresh_data" with "stale_data_detected"
@@ -319,7 +316,8 @@ class TestRoomDataConsistency:
         assert fallback_result["reason"] in ["stale_data_detected", "room_service_not_available"]
         assert fallback_result["room_id"] == "test_room_1"
 
-    def test_comprehensive_logging_for_debugging(self, room_sync_service, caplog):
+    @pytest.mark.asyncio
+    async def test_comprehensive_logging_for_debugging(self, room_sync_service, caplog):
         """Test comprehensive logging for debugging room data synchronization issues."""
         import logging
 
@@ -330,13 +328,10 @@ class TestRoomDataConsistency:
         room_data = {"id": "test_room_1", "name": "Test Room", "timestamp": time.time()}
 
         # Process room data (should trigger logging)
-        async def process_room_data():
-            await room_sync_service._process_room_update_with_validation(room_data)
-            # Verify that the method executed successfully by checking the returned data
-            # The method should return processed room data with fixes applied
-            return await room_sync_service._process_room_update_with_validation(room_data.copy())
-
-        processed_data = asyncio.run(process_room_data())
+        await room_sync_service._process_room_update_with_validation(room_data)
+        # Verify that the method executed successfully by checking the returned data
+        # The method should return processed room data with fixes applied
+        processed_data = await room_sync_service._process_room_update_with_validation(room_data.copy())
 
         # Check that the processed data has the required fields (fixes applied)
         assert "description" in processed_data  # The fix should have added description

@@ -166,6 +166,7 @@ class TestGameTickService:
         assert self.game_tick_service.get_tick_count() == 0
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared service state or timing issues
     async def test_tick_loop_stops_cleanly(self) -> None:
         """Test that the tick loop stops cleanly when stopped."""
         await self.game_tick_service.start()

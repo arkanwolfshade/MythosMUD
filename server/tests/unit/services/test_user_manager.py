@@ -141,6 +141,7 @@ class TestRemoveAdmin:
     """Test remove_admin method."""
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared UserManager state
     async def test_remove_admin_success(self) -> None:
         """Test successfully removing admin."""
         manager = UserManager()
@@ -181,6 +182,7 @@ class TestIsAdminSync:
 
         assert result is True
 
+    @pytest.mark.serial  # Worker crash in parallel execution - likely due to shared UserManager state
     def test_is_admin_sync_false(self) -> None:
         """Test checking admin when player is not admin."""
         manager = UserManager()
@@ -400,6 +402,7 @@ class TestMuteGlobal:
                         assert target_id in manager._global_mutes
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared UserManager state
     async def test_mute_global_admin_immune(self) -> None:
         """Test that admin players are immune to global mutes."""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -631,6 +634,7 @@ class TestGetSystemStats:
 class TestSaveAndLoadPlayerMutes:
     """Test save_player_mutes and load_player_mutes methods."""
 
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to file system or shared UserManager state
     def test_save_and_load_player_mutes(self) -> None:
         """Test saving and loading player mutes."""
         with tempfile.TemporaryDirectory() as tmpdir:

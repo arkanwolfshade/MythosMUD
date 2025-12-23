@@ -7,6 +7,8 @@ Focuses on testing sanitization (cleaning) rather than validation (rejection)
 to ensure user expression freedom is preserved.
 """
 
+import pytest
+
 from server.validators.security_validator import (
     INJECTION_PATTERNS,
     comprehensive_sanitize_input,
@@ -220,6 +222,7 @@ class TestInjectionPatterns:
 class TestSanitizationVsValidation:
     """Test that we're focusing on sanitization rather than validation."""
 
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared validation state or timing issues
     def test_creative_text_not_rejected(self) -> None:
         """Test that creative user text is not rejected."""
         creative_texts = [

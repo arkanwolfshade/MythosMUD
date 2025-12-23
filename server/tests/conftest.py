@@ -311,6 +311,40 @@ def mock_command_string() -> Callable[[str], Any]:
     return _create
 
 
+@pytest.fixture(autouse=True)
+def reset_async_persistence_singleton() -> Generator[None, None, None]:
+    """
+    Reset AsyncPersistenceLayer global singleton before and after each test.
+
+    This prevents test isolation issues when tests manipulate the global singleton state.
+    Without this, parallel test execution causes race conditions and shared state issues.
+    """
+    from ..async_persistence import reset_async_persistence
+
+    # Reset before test
+    reset_async_persistence()
+    yield
+    # Reset after test
+    reset_async_persistence()
+
+
+@pytest.fixture(autouse=True)
+def reset_application_container_singleton() -> Generator[None, None, None]:
+    """
+    Reset ApplicationContainer global singleton before and after each test.
+
+    This prevents test isolation issues when tests manipulate the global container state.
+    Without this, parallel test execution causes race conditions and shared state issues.
+    """
+    from ..container import ApplicationContainer
+
+    # Reset before test
+    ApplicationContainer.reset_instance()
+    yield
+    # Reset after test
+    ApplicationContainer.reset_instance()
+
+
 def pytest_runtest_makereport(item: Any, call: Any) -> Any:
     # pylint: disable=unused-argument
     return None

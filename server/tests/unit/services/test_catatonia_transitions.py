@@ -68,8 +68,18 @@ async def _session_factory():
 
 @pytest.fixture(name="db_session")
 async def _db_session(session_factory):
+    """
+    Create an isolated database session for each test.
+
+    Each test gets its own session with proper rollback to ensure isolation
+    and prevent deadlocks in parallel execution.
+    """
     async with session_factory() as session:
-        yield session
+        try:
+            yield session
+        finally:
+            # Rollback any uncommitted changes to ensure test isolation
+            await session.rollback()
 
 
 @pytest.fixture(name="lucidity_service")
@@ -79,7 +89,6 @@ def _lucidity_service(db_session):
 
 @pytest.mark.asyncio
 @pytest.mark.serial  # Mark as serial to prevent deadlocks during parallel execution
-@pytest.mark.xdist_group(name="serial_lucidity_tests")  # Force serial execution with pytest-xdist
 async def test_lucidity_drop_to_zero_triggers_catatonia(db_session, lucidity_service):
     """Test that dropping lucidity to zero sets the catatonic tier and timestamp."""
     # Create test user and player
@@ -101,8 +110,8 @@ async def test_lucidity_drop_to_zero_triggers_catatonia(db_session, lucidity_ser
     # This ensures the foreign key constraint can see the player
     lucidity = PlayerLucidity(player_id=player.player_id, current_lcd=5, current_tier="deranged")
     db_session.add(lucidity)
-    # Commit both player and lucidity together to ensure they're both visible
-    await db_session.commit()
+    # Flush to make both player and lucidity visible within transaction
+    await db_session.flush()
     # Refresh to ensure both records are properly loaded
     await db_session.refresh(player)
     await db_session.refresh(lucidity)
@@ -126,7 +135,6 @@ async def test_lucidity_drop_to_zero_triggers_catatonia(db_session, lucidity_ser
 
 @pytest.mark.asyncio
 @pytest.mark.serial  # Mark as serial to prevent deadlocks during parallel execution
-@pytest.mark.xdist_group(name="serial_lucidity_tests")  # Force serial execution with pytest-xdist
 async def test_lucidity_recovery_clears_catatonia(db_session, lucidity_service):
     """Test that recovering lucidity from zero clears the catatonic flag."""
     # Create test user and player
@@ -150,7 +158,7 @@ async def test_lucidity_recovery_clears_catatonia(db_session, lucidity_service):
         player_id=player.player_id, current_lcd=0, current_tier="catatonic", catatonia_entered_at=entered_at
     )
     db_session.add(lucidity)
-    await db_session.commit()
+    await db_session.flush()  # Flush to make lucidity visible within transaction
 
     # Verify player exists in database before service call
     # This ensures the foreign key constraint can see the player when the service logs the adjustment

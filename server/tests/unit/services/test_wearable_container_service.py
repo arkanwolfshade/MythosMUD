@@ -70,6 +70,7 @@ class TestFilterContainerData:
 class TestWearableContainerServiceInit:
     """Test WearableContainerService initialization."""
 
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared service state
     def test_wearable_container_service_init_with_persistence(self) -> None:
         """Test initialization with persistence provided."""
         mock_persistence = MagicMock()
@@ -352,6 +353,7 @@ class TestAddItemsToWearableContainer:
             await service.add_items_to_wearable_container(uuid4(), uuid4(), [])
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared service state or persistence mocking
     async def test_add_items_capacity_exceeded(self) -> None:
         """Test adding items when capacity would be exceeded."""
         # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
@@ -381,6 +383,7 @@ class TestUpdateWearableContainerItems:
     """Test update_wearable_container_items method."""
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared service state or persistence mocking
     async def test_update_items_success(self) -> None:
         """Test successfully updating container items."""
         # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
@@ -494,6 +497,7 @@ class TestHandleContainerOverflow:
             assert len(result["ground_items"]) == 5
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared service state or persistence mocking
     async def test_handle_overflow_player_not_found(self) -> None:
         """Test overflow handling when player is not found."""
         # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes

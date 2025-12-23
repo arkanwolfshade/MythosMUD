@@ -255,6 +255,7 @@ async def _create_test_player(persistence, player_id: UUID, name: str, room_id: 
     """Helper function to create a test player in the database."""
     from datetime import UTC, datetime
 
+    from server.database import get_async_session
     from server.models.user import User
 
     # Create user first (required foreign key)
@@ -269,44 +270,6 @@ async def _create_test_player(persistence, player_id: UUID, name: str, room_id: 
         is_superuser=False,
         is_verified=True,
     )
-    # Use direct database insert for user (persistence doesn't have user methods)
-    import psycopg2
-
-    database_url = os.getenv("DATABASE_URL")
-    if not database_url or not database_url.startswith("postgresql"):
-        raise ValueError("DATABASE_URL must be set to a PostgreSQL URL")
-
-    url = database_url.replace("postgresql+psycopg2://", "postgresql://").replace(
-        "postgresql+asyncpg://", "postgresql://"
-    )
-    conn = psycopg2.connect(url)
-    conn.autocommit = True  # Enable autocommit for user creation
-    cursor = conn.cursor()
-    try:
-        now = datetime.now(UTC).replace(tzinfo=None)
-        cursor.execute(
-            """
-            INSERT INTO users (id, email, username, display_name, hashed_password, is_active, is_superuser, is_verified, is_admin, created_at, updated_at)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            ON CONFLICT (id) DO NOTHING
-            """,
-            (
-                str(user_id),
-                user.email,
-                user.username,
-                user.display_name,
-                user.hashed_password,
-                user.is_active,
-                user.is_superuser,
-                user.is_verified,
-                False,  # is_admin
-                now,
-                now,
-            ),
-        )
-    finally:
-        cursor.close()
-        conn.close()
 
     # Create player
     now = datetime.now(UTC).replace(tzinfo=None)
@@ -323,7 +286,35 @@ async def _create_test_player(persistence, player_id: UUID, name: str, room_id: 
         created_at=now,
         last_active=now,
     )
-    await persistence.save_player(player)
+
+    # Use async session to create both user and player in same transaction
+    # CRITICAL: Properly use the context manager to ensure commit visibility
+    async for session in get_async_session():
+        try:
+            session.add(user)
+            await session.flush()  # Flush to make user visible to FK constraint
+            session.add(player)
+            await session.commit()  # Commit both user and player together
+
+            # Verify player was actually created by querying it back in the same session
+            from sqlalchemy import select
+
+            verify_stmt = select(Player).where(Player.player_id == player_id)
+            verify_result = await session.execute(verify_stmt)
+            verified_player = verify_result.scalar_one_or_none()
+            if verified_player is None:
+                raise RuntimeError(f"Player {player_id} was not found after creation commit")
+        except Exception:
+            await session.rollback()
+            raise
+        # Session will be closed automatically when exiting the context manager
+        break  # Exit generator after first iteration
+
+    # Small delay to ensure commit is visible to other database connections
+    # This is necessary in parallel execution where different connections might not
+    # immediately see committed data due to PostgreSQL transaction isolation
+    await asyncio.sleep(0.1)  # 100ms delay to ensure commit propagation
+
     return player
 
 
@@ -332,6 +323,8 @@ async def _create_test_player(persistence, player_id: UUID, name: str, room_id: 
 class TestConcurrentContainerMutations:
     """Test concurrent container mutation operations."""
 
+    @pytest.mark.serial  # Flaky in parallel execution - race conditions in concurrent database operations
+    @pytest.mark.xdist_group(name="serial_container_mutations_tests")  # Force serial execution with pytest-xdist
     async def test_concurrent_open_operations(self, container_service: ContainerService) -> None:
         """Test that multiple players can open the same container concurrently."""
         try:
@@ -351,6 +344,24 @@ class TestConcurrentContainerMutations:
             )
             await _create_test_player(
                 container_service.persistence, player2_id, f"TestPlayer2_{player2_id.hex[:8]}", room_id
+            )
+
+            # Verify players are visible in persistence before proceeding
+            # This ensures the transaction is committed and visible to other sessions
+            # Use retry mechanism to handle transaction isolation delays in parallel execution
+            max_retries = 20
+            for attempt in range(max_retries):
+                player1_check = await container_service.persistence.get_player_by_id(player1_id)
+                player2_check = await container_service.persistence.get_player_by_id(player2_id)
+                if player1_check is not None and player2_check is not None:
+                    break
+                if attempt < max_retries - 1:
+                    await asyncio.sleep(0.05)  # 50ms delay between retries
+            assert player1_check is not None, (
+                f"Player1 {player1_id} should be visible after creation (attempt {attempt + 1}/{max_retries})"
+            )
+            assert player2_check is not None, (
+                f"Player2 {player2_id} should be visible after creation (attempt {attempt + 1}/{max_retries})"
             )
 
             # Create container in persistence
@@ -391,6 +402,8 @@ class TestConcurrentContainerMutations:
             raise RuntimeError(f"Test timed out: {str(e) if e else 'Test timed out after 25 seconds'}") from e
 
     @pytest.mark.timeout(60)
+    @pytest.mark.serial  # Flaky in parallel execution - race conditions in concurrent database operations
+    @pytest.mark.xdist_group(name="serial_container_mutations_tests")  # Force serial execution with pytest-xdist
     async def test_concurrent_transfer_operations(
         self,
         container_service: ContainerService,
@@ -404,6 +417,20 @@ class TestConcurrentContainerMutations:
 
         # Create test player in database
         await _create_test_player(container_service.persistence, player_id, f"TestPlayer_{player_id.hex[:8]}", room_id)
+
+        # Verify player is visible in persistence before proceeding
+        # Use retry mechanism to handle transaction isolation delays in parallel execution
+        max_retries = 20
+        player_check = None
+        for attempt in range(max_retries):
+            player_check = await container_service.persistence.get_player_by_id(player_id)
+            if player_check is not None:
+                break
+            if attempt < max_retries - 1:
+                await asyncio.sleep(0.05)  # 50ms delay between retries
+        assert player_check is not None, (
+            f"Player {player_id} should be visible after creation (attempt {attempt + 1}/{max_retries})"
+        )
 
         # Create container with items
         container_result = await container_service.persistence.create_container(
@@ -481,6 +508,8 @@ class TestConcurrentContainerMutations:
         assert success_count == 1, "One transfer should succeed"
         assert failure_count == 1, "One transfer should fail due to token invalidation"
 
+    @pytest.mark.serial  # Flaky in parallel execution - race conditions in concurrent database operations
+    @pytest.mark.xdist_group(name="serial_container_mutations_tests")  # Force serial execution with pytest-xdist
     async def test_concurrent_transfer_different_tokens(
         self,
         container_service: ContainerService,
@@ -499,6 +528,23 @@ class TestConcurrentContainerMutations:
         )
         await _create_test_player(
             container_service.persistence, player2_id, f"TestPlayer2_{player2_id.hex[:8]}", room_id
+        )
+
+        # Verify players are visible in persistence before proceeding
+        # Use retry mechanism to handle transaction isolation delays in parallel execution
+        max_retries = 20
+        for attempt in range(max_retries):
+            player1_check = await container_service.persistence.get_player_by_id(player1_id)
+            player2_check = await container_service.persistence.get_player_by_id(player2_id)
+            if player1_check is not None and player2_check is not None:
+                break
+            if attempt < max_retries - 1:
+                await asyncio.sleep(0.05)  # 50ms delay between retries
+        assert player1_check is not None, (
+            f"Player1 {player1_id} should be visible after creation (attempt {attempt + 1}/{max_retries})"
+        )
+        assert player2_check is not None, (
+            f"Player2 {player2_id} should be visible after creation (attempt {attempt + 1}/{max_retries})"
         )
 
         # Create container
@@ -566,6 +612,8 @@ class TestConcurrentContainerMutations:
         )
         assert all(isinstance(r, dict) and "container" in r for r in results if not isinstance(r, Exception))
 
+    @pytest.mark.serial  # Flaky in parallel execution - race conditions in concurrent database operations
+    @pytest.mark.xdist_group(name="serial_container_mutations_tests")  # Force serial execution with pytest-xdist
     async def test_concurrent_close_operations(self, container_service: ContainerService) -> None:
         """Test that concurrent close operations are handled correctly."""
         # Create test container
@@ -575,6 +623,20 @@ class TestConcurrentContainerMutations:
 
         # Create test player in database
         await _create_test_player(container_service.persistence, player_id, f"TestPlayer_{player_id.hex[:8]}", room_id)
+
+        # Verify player is visible in persistence before proceeding
+        # Use retry mechanism to handle transaction isolation delays in parallel execution
+        max_retries = 20
+        player_check = None
+        for attempt in range(max_retries):
+            player_check = await container_service.persistence.get_player_by_id(player_id)
+            if player_check is not None:
+                break
+            if attempt < max_retries - 1:
+                await asyncio.sleep(0.05)  # 50ms delay between retries
+        assert player_check is not None, (
+            f"Player {player_id} should be visible after creation (attempt {attempt + 1}/{max_retries})"
+        )
 
         # Create container
         container_result = await container_service.persistence.create_container(
@@ -619,6 +681,8 @@ class TestConcurrentContainerMutations:
         assert success_count == 1, "One close should succeed"
         assert failure_count == 1, "One close should fail due to token invalidation"
 
+    @pytest.mark.serial  # Flaky in parallel execution - race conditions in concurrent database operations
+    @pytest.mark.xdist_group(name="serial_container_mutations_tests")  # Force serial execution with pytest-xdist
     async def test_concurrent_open_close_race_condition(self, container_service: ContainerService) -> None:
         """Test that open/close race conditions are handled correctly."""
         # Create test container
@@ -682,6 +746,8 @@ class TestConcurrentContainerMutations:
         assert not isinstance(results[1], Exception)
         assert isinstance(results[1], dict) and "mutation_token" in results[1]
 
+    @pytest.mark.serial  # Flaky in parallel execution - race conditions in concurrent database operations
+    @pytest.mark.xdist_group(name="serial_container_mutations_tests")  # Force serial execution with pytest-xdist
     async def test_concurrent_capacity_validation(
         self,
         container_service: ContainerService,

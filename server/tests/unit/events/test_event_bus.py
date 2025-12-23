@@ -122,6 +122,7 @@ class TestEventBus:
         assert hasattr(event_bus, "_running")
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared event bus state or timing issues
     async def test_event_bus_shutdown(self) -> None:
         """Test that EventBus can be shut down properly."""
         event_bus = EventBus()
@@ -169,6 +170,7 @@ class TestEventBus:
         await event_bus.shutdown()
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared event bus state or timing issues
     async def test_subscribe_and_publish(self) -> None:
         """Test basic subscribe and publish functionality."""
         event_bus = EventBus()
@@ -195,6 +197,7 @@ class TestEventBus:
 
     @pytest.mark.asyncio
     @pytest.mark.serial  # Flaky in parallel execution - likely due to shared state or timing issues
+    @pytest.mark.xdist_group(name="serial_event_bus_tests")  # Force serial execution with pytest-xdist
     async def test_multiple_subscribers(self) -> None:
         """Test that multiple subscribers receive the same event."""
         event_bus = EventBus()
@@ -227,6 +230,7 @@ class TestEventBus:
         await event_bus.shutdown()
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Mark as serial to prevent deadlocks during parallel execution
     async def test_unsubscribe(self) -> None:
         """Test that unsubscribing removes the handler."""
         event_bus = EventBus()

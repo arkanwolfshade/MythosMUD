@@ -187,12 +187,14 @@ class TestNATSRetryHandler:
         await handler.retry_async(mock_func, message)
         assert message.attempt == 3
 
-    def test_zero_max_retries_never_retries(self) -> None:
+    @pytest.mark.asyncio
+    async def test_zero_max_retries_never_retries(self) -> None:
         """Zero max retries means no retries allowed."""
         handler = NATSRetryHandler(max_retries=0)
 
         message = RetryableMessage("test", {}, 0, datetime.now())
 
         # Even first attempt should not be retryable
-        asyncio.run(handler.should_retry(message, Exception("test")))
+        result = await handler.should_retry(message, Exception("test"))
         # Should return False immediately
+        assert result is False

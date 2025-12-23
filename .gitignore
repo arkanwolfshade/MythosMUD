@@ -234,7 +234,7 @@ server/tests/logs/
 
 # Database files (CRITICAL: Never commit database files)
 server/tests/data/players/unit_test_players.db
-server\tests\data\players\unit_test_players.db
+server/tests/data/players/unit_test_players.db
 data/players/local_players.db
 
 # TypeScript build artifacts
@@ -319,8 +319,6 @@ coverage/
 coverage-final.json
 server/tests/coverage/__pycache__/
 server/tests/coverage/__pycache__/**
-server\tests\coverage\__pycache__\
-server\tests\coverage\__pycache__\**
-
-#Ignore cursor AI rules
-.cursor\rules\codacy.mdc
+server/tests/coverage/__pycache__/
+server/tests/coverage/__pycache__/**
+server/tests/coverage/__pycache__/test_error_logging_coverage.cpython-312-pytest-9.0.1.pyc

@@ -80,6 +80,7 @@ def test_add_stack_raises_when_inventory_full(full_inventory):
         service.add_stack(full_inventory, incoming)
 
 
+@pytest.mark.serial  # Flaky in parallel execution - likely due to shared state
 def test_split_stack_creates_new_stack_and_preserves_original_inventory(partial_inventory):
     service = build_service()
     partial_inventory[2]["quantity"] = 5

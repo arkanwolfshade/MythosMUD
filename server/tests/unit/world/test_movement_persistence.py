@@ -5,7 +5,6 @@ This test verifies that when a player moves between rooms,
 their location is properly saved to the database.
 """
 
-import asyncio
 from unittest.mock import AsyncMock, Mock
 from uuid import uuid4
 
@@ -19,7 +18,8 @@ from server.models.room import Room
 class TestMovementPersistence:
     """Test that player movement is properly persisted to database."""
 
-    def test_move_player_persists_to_database(self) -> None:
+    @pytest.mark.asyncio
+    async def test_move_player_persists_to_database(self) -> None:
         """Test that move_player saves the player's new location to database."""
         # Create mock persistence layer
         mock_persistence = Mock()
@@ -45,7 +45,7 @@ class TestMovementPersistence:
         room_1.player_entered(test_player_id)
 
         # Move player from room_1 to room_2 (async)
-        success = asyncio.run(movement_service.move_player(test_player_id, "room_1", "room_2"))
+        success = await movement_service.move_player(test_player_id, "room_1", "room_2")
 
         # Verify movement was successful
         assert success is True
@@ -65,7 +65,8 @@ class TestMovementPersistence:
         assert saved_player.current_room_id == "room_2"
         assert saved_player.player_id == test_player_id
 
-    def test_move_player_updates_player_current_room_id(self) -> None:
+    @pytest.mark.asyncio
+    async def test_move_player_updates_player_current_room_id(self) -> None:
         """Test that the player's current_room_id is updated during movement."""
         # Create mock persistence layer
         mock_persistence = Mock()
@@ -102,7 +103,7 @@ class TestMovementPersistence:
         assert player.current_room_id == "start_room"
 
         # Move player (async)
-        success = asyncio.run(movement_service.move_player(test_player_id, "start_room", "end_room"))
+        success = await movement_service.move_player(test_player_id, "start_room", "end_room")
 
         # Verify movement was successful
         assert success is True
@@ -113,7 +114,8 @@ class TestMovementPersistence:
         # Verify save_player was called
         mock_persistence.save_player.assert_called_once()
 
-    def test_move_player_handles_player_not_found_by_id(self) -> None:
+    @pytest.mark.asyncio
+    async def test_move_player_handles_player_not_found_by_id(self) -> None:
         """Test that move_player handles case where player is not found by ID but found by name."""
         # Create mock persistence layer
         mock_persistence = Mock()
@@ -140,7 +142,7 @@ class TestMovementPersistence:
         room_a.player_entered("test-player-789")
 
         # Move player (using player name as ID) (async)
-        success = asyncio.run(movement_service.move_player("TestPlayer3", "room_a", "room_b"))
+        success = await movement_service.move_player("TestPlayer3", "room_a", "room_b")
 
         # Verify movement was successful
         assert success is True
@@ -150,7 +152,8 @@ class TestMovementPersistence:
         saved_player = mock_persistence.save_player.call_args[0][0]
         assert saved_player.current_room_id == "room_b"
 
-    def test_move_player_fails_when_player_not_found(self) -> None:
+    @pytest.mark.asyncio
+    async def test_move_player_fails_when_player_not_found(self) -> None:
         """Test that move_player fails when player cannot be found."""
         # Create mock persistence layer
         mock_persistence = Mock()
@@ -175,7 +178,7 @@ class TestMovementPersistence:
         from server.exceptions import ValidationError
 
         with pytest.raises(ValidationError, match="Player not found: unknown-player"):
-            asyncio.run(movement_service.move_player("unknown-player", "room_1", "room_2"))
+            await movement_service.move_player("unknown-player", "room_1", "room_2")
 
         # Verify save_player was not called
         mock_persistence.save_player.assert_not_called()

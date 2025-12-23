@@ -5,6 +5,7 @@ This module tests the ComprehensiveLoggingMiddleware to ensure proper
 consolidation of access, error, and request logging functionality.
 """
 
+import asyncio
 import time
 from typing import Any, cast
 from unittest.mock import Mock
@@ -120,7 +121,7 @@ class TestComprehensiveLoggingMiddleware:
 
         @app.get("/slow-test")
         async def slow_endpoint():
-            time.sleep(0.1)  # Simulate slow processing
+            await asyncio.sleep(0.1)  # Simulate slow processing
             return {"message": "slow response"}
 
         app.add_middleware(cast(Any, ComprehensiveLoggingMiddleware))

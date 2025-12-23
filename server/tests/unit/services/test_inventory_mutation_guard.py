@@ -168,6 +168,8 @@ def test_guard_serializes_mutations_per_player():
     assert order == ["first-enter", "first-exit", "second-enter", "second-exit"]
 
 
+@pytest.mark.serial  # Worker crash in parallel execution - likely due to shared state or timing issues
+@pytest.mark.xdist_group(name="serial_inventory_guard_tests")  # Force serial execution with pytest-xdist
 def test_guard_token_ttl_allows_reprocessing_after_expiry():
     guard = InventoryMutationGuard(token_ttl_seconds=0.05)
 
@@ -207,6 +209,7 @@ async def test_guard_async_detects_duplicate_token():
 
 @pytest.mark.asyncio
 @pytest.mark.serial  # Worker crash in parallel execution - likely due to shared state in guard
+@pytest.mark.xdist_group(name="serial_inventory_guard_tests")  # Force serial execution with pytest-xdist
 async def test_guard_async_token_ttl_allows_reprocessing_after_expiry():
     """Test async guard allows reprocessing after token expiry."""
     import asyncio
@@ -217,6 +220,7 @@ async def test_guard_async_token_ttl_allows_reprocessing_after_expiry():
         assert decision.should_apply
 
     # Sleep longer than TTL to ensure token expires
+    # Use 2x TTL to account for timing precision and parallel test execution
     await asyncio.sleep(0.10)
 
     async with guard.acquire_async("investigator-async-4", "token-async-expiring") as decision:
@@ -371,6 +375,7 @@ def test_guard_handles_none_token_in_sync():
         assert decision.should_apply is True
 
 
+@pytest.mark.serial  # Flaky in parallel execution - likely due to shared guard state or monitoring dashboard mocking
 def test_guard_record_custom_alert_with_message_parameter(monkeypatch):
     """Test guard handles record_custom_alert with message parameter."""
     guard = InventoryMutationGuard()

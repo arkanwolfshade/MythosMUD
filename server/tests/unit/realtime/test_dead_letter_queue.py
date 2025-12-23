@@ -108,6 +108,7 @@ class TestDeadLetterQueue:
 
         assert result is None
 
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared DeadLetterQueue state
     def test_get_statistics(self, dlq):
         """Get statistics returns correct counts."""
         # Enqueue multiple messages

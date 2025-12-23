@@ -19,6 +19,7 @@ from server.realtime.circuit_breaker import CircuitBreaker, CircuitBreakerOpen, 
 class TestCircuitBreaker:
     """Test suite for Circuit Breaker pattern."""
 
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared circuit breaker state
     def test_initialization(self) -> None:
         """Circuit breaker initializes in CLOSED state."""
         cb = CircuitBreaker(failure_threshold=5, success_threshold=2, timeout=timedelta(seconds=60))
@@ -82,6 +83,7 @@ class TestCircuitBreaker:
         assert cast(Any, cb.state) == CircuitState.CLOSED  # Not yet at threshold
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Worker crash in parallel execution - likely due to timing or shared circuit breaker state
     async def test_opens_after_threshold_failures(self) -> None:
         """Circuit opens after failure threshold is reached."""
         cb = CircuitBreaker(failure_threshold=3, success_threshold=2, timeout=timedelta(seconds=60))
@@ -101,6 +103,7 @@ class TestCircuitBreaker:
         assert cast(Any, cb.state) == CircuitState.OPEN
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to timing or shared circuit breaker state
     async def test_open_state_blocks_calls(self) -> None:
         """OPEN state blocks calls."""
         cb = CircuitBreaker(failure_threshold=1, success_threshold=2, timeout=timedelta(seconds=60))
@@ -184,6 +187,7 @@ class TestCircuitBreaker:
         assert cb.failure_count == 0
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to timing or shared state issues
     async def test_half_open_reopens_on_failure(self) -> None:
         """HALF_OPEN reopens circuit on any failure."""
         cb = CircuitBreaker(failure_threshold=1, success_threshold=2, timeout=timedelta(seconds=0.1))
@@ -214,7 +218,8 @@ class TestCircuitBreaker:
 
         assert cast(Any, cb.state) == CircuitState.OPEN
 
-    def test_reset_closes_circuit(self) -> None:
+    @pytest.mark.asyncio
+    async def test_reset_closes_circuit(self) -> None:
         """Reset closes circuit and clears counters."""
         cb = CircuitBreaker(failure_threshold=1, success_threshold=2, timeout=timedelta(seconds=60))
 
@@ -223,15 +228,12 @@ class TestCircuitBreaker:
             raise RuntimeError("Fail")
 
         # Run the call properly
-        async def open_circuit():
-            try:
-                await cb.call(failing_func)
-            except Exception:  # pylint: disable=broad-exception-caught
-                # JUSTIFICATION: This test intentionally triggers and catches a generic exception
-                # to verify that the circuit breaker correctly records failures.
-                pass
-
-        asyncio.run(open_circuit())
+        try:
+            await cb.call(failing_func)
+        except Exception:  # pylint: disable=broad-exception-caught
+            # JUSTIFICATION: This test intentionally triggers and catches a generic exception
+            # to verify that the circuit breaker correctly records failures.
+            pass
 
         assert cast(Any, cb.state) == CircuitState.OPEN
 

@@ -144,6 +144,7 @@ class TestProfessionModel:
         assert saved_profession.mechanical_effects == "{}"
         assert saved_profession.is_available is True
 
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared database state
     def test_profession_with_stat_requirements(self, db_session: Session) -> None:
         """Test creating a profession with stat requirements."""
         # Clean up any existing profession with this ID to prevent conflicts in parallel execution

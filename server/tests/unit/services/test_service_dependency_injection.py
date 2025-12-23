@@ -120,6 +120,7 @@ class TestServiceDependencyInjection:
         assert hasattr(app.state, "player_service")
         assert isinstance(app.state.player_service, PlayerService)
 
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared container state
     def test_room_service_dependency_injection_via_endpoint(self, client):
         """Test that RoomService is correctly injected via API endpoint."""
         response = client.get("/rooms/test_room")
@@ -128,6 +129,7 @@ class TestServiceDependencyInjection:
         app = client.app
         assert hasattr(app.state, "persistence")
 
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared container state
     def test_dependency_functions_create_correct_instances(self, client):
         """Test that dependency functions create the correct service instances."""
         app = client.app
@@ -155,6 +157,7 @@ class TestServiceDependencyInjection:
         assert isinstance(player_service, PlayerService)
         assert hasattr(player_service, "persistence")
 
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared container state
     def test_fastapi_depends_mechanism(self, client):
         """Test that FastAPI's Depends() mechanism works correctly."""
         app = client.app
@@ -172,6 +175,7 @@ class TestServiceDependencyInjection:
         assert isinstance(player_service, PlayerService)
         assert isinstance(room_service, RoomService)
 
+    @pytest.mark.serial  # Worker crash in parallel execution - likely due to shared container state
     def test_service_instances_are_properly_configured(self, client):
         """Test that service instances have proper configuration."""
         app = client.app
@@ -183,6 +187,7 @@ class TestServiceDependencyInjection:
         assert hasattr(persistence, "async_list_players")
         assert hasattr(persistence, "async_get_player")
 
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared container state
     def test_dependency_injection_independence(self, client):
         """Test that different services can be injected independently.
 
@@ -210,6 +215,7 @@ class TestServiceDependencyInjection:
         # But different service types are different instances
         assert cast(Any, player_service1) is not cast(Any, room_service)
 
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared container state
     def test_api_endpoints_use_dependency_injection(self, client):
         """Test that API endpoints actually use the dependency injection system."""
         # Ensure container is accessible before making requests
@@ -252,6 +258,7 @@ class TestServiceDependencyInjection:
         room_service = get_room_service(mock_request)
         assert hasattr(room_service, "persistence")
 
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared container state
     def test_app_state_consistency(self, client):
         """Test that app state is consistent across the application."""
         app = client.app

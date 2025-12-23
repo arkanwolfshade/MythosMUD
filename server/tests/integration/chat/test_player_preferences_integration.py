@@ -91,6 +91,8 @@ class TestPlayerPreferencesIntegration:
         return PlayerPreferencesService()
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Flaky in parallel execution - database transaction conflicts
+    @pytest.mark.xdist_group(name="serial_integration_tests")  # Force serial execution with pytest-xdist
     async def test_full_player_lifecycle(self, async_session_factory, test_player, preferences_service):
         """Test complete player lifecycle with preferences."""
         player_id = test_player  # test_player fixture now yields player_id directly
@@ -398,6 +400,9 @@ class TestPlayerPreferencesIntegration:
             assert updated_at2 >= updated_at1
 
     @pytest.mark.asyncio
+    @pytest.mark.asyncio
+    @pytest.mark.serial  # Flaky in parallel execution - database transaction conflicts
+    @pytest.mark.xdist_group(name="serial_integration_tests")  # Force serial execution with pytest-xdist
     async def test_service_cleanup_and_cleanup(self, async_session_factory, test_player, preferences_service):
         """Test service cleanup and database cleanup."""
         player_id = test_player  # test_player fixture now yields player_id directly

@@ -239,14 +239,13 @@ async def _create_test_player(
     """Helper function to create a test player in the database."""
     from datetime import UTC, datetime
 
-    import psycopg2
-
+    from server.database import get_async_session
     from server.models.user import User
 
-    # Create user first (required foreign key)
+    # Create user and player in same async transaction to avoid FK violations
     user_id = uuid4()
     user = User(
-        id=user_id,
+        id=str(user_id),  # User.id expects string UUID
         email=f"test-{name}@example.com",
         username=name,
         display_name=name,
@@ -256,48 +255,10 @@ async def _create_test_player(
         is_verified=True,
     )
 
-    # Use direct database insert for user (persistence doesn't have user methods)
-    database_url = os.getenv("DATABASE_URL")
-    if not database_url or not database_url.startswith("postgresql"):
-        raise ValueError("DATABASE_URL must be set to a PostgreSQL URL")
-
-    url = database_url.replace("postgresql+psycopg2://", "postgresql://").replace(
-        "postgresql+asyncpg://", "postgresql://"
-    )
-    conn = psycopg2.connect(url)
-    conn.autocommit = True  # Enable autocommit for user creation
-    cursor = conn.cursor()
-    try:
-        now = datetime.now(UTC).replace(tzinfo=None)
-        cursor.execute(
-            """
-            INSERT INTO users (id, email, username, display_name, hashed_password, is_active, is_superuser, is_verified, is_admin, created_at, updated_at)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            ON CONFLICT (id) DO NOTHING
-            """,
-            (
-                str(user_id),
-                user.email,
-                user.username,
-                user.display_name,
-                user.hashed_password,
-                user.is_active,
-                user.is_superuser,
-                user.is_verified,
-                False,  # is_admin
-                now,
-                now,
-            ),
-        )
-    finally:
-        cursor.close()
-        conn.close()
-
-    # Create player
     now = datetime.now(UTC).replace(tzinfo=None)
     player = Player(
-        player_id=player_id,
-        user_id=user_id,
+        player_id=str(player_id),  # Player.player_id expects string UUID
+        user_id=str(user_id),  # Player.user_id expects string UUID
         name=name,
         current_room_id=room_id,
         level=1,
@@ -308,7 +269,19 @@ async def _create_test_player(
         created_at=now,
         last_active=now,
     )
-    await persistence.save_player(player)
+
+    # Use async session to create both user and player in same transaction
+    async for session in get_async_session():
+        try:
+            session.add(user)
+            await session.flush()  # Flush to make user visible to FK constraint
+            session.add(player)
+            await session.commit()  # Commit both user and player together
+        except Exception:
+            await session.rollback()
+            raise
+        break  # Exit generator after first iteration (session cleanup handled by generator)
+
     return player
 
 
@@ -316,6 +289,9 @@ async def _create_test_player(
 class TestContainerPersistenceRestart:
     """Test container persistence across server restarts."""
 
+    @pytest.mark.serial  # Flaky in parallel execution - database transaction conflicts
+    @pytest.mark.xdist_group(name="serial_container_persistence_tests")  # Force serial execution with pytest-xdist
+    @pytest.mark.asyncio
     async def test_environmental_container_persistence(self, persistence) -> None:
         """Test that environmental containers persist across server restarts."""
         # Use a real room ID that exists in the database
@@ -387,6 +363,8 @@ class TestContainerPersistenceRestart:
         assert persisted_container.metadata["type"] == "chest"
         assert persisted_container.metadata["description"] == "A wooden chest"
 
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to database transaction conflicts or shared state
+    @pytest.mark.xdist_group(name="serial_container_persistence_tests")  # Force serial execution with pytest-xdist
     async def test_wearable_container_persistence(self, persistence) -> None:
         """Test that wearable containers persist across server restarts."""
         # Create test player first (entity_id must reference a real player)
@@ -449,6 +427,8 @@ class TestContainerPersistenceRestart:
         )
         assert found_container_id_uuid == container_id
 
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to database transaction conflicts or shared state
+    @pytest.mark.xdist_group(name="serial_container_persistence_tests")  # Force serial execution with pytest-xdist
     async def test_corpse_container_persistence(self, persistence, ensure_test_item_prototypes) -> None:  # pylint: disable=unused-argument
         """Test that corpse containers persist across server restarts."""
         # Use a real room ID that exists in the database
@@ -558,6 +538,8 @@ class TestContainerPersistenceRestart:
         assert persisted_container.metadata["key_id"] == "key_123"
         assert persisted_container.metadata["lock_type"] == "key"
 
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to database transaction conflicts or shared state
+    @pytest.mark.xdist_group(name="serial_container_persistence_tests")  # Force serial execution with pytest-xdist
     async def test_container_updates_persist(
         self,
         persistence,

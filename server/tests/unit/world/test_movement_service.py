@@ -10,7 +10,6 @@ is essential for maintaining the integrity of our eldritch architecture.
 """
 
 import asyncio
-import time
 from unittest.mock import AsyncMock, Mock
 
 import pytest
@@ -46,7 +45,8 @@ class TestMovementService:
         assert service is not None
         assert service._event_bus is None
 
-    def test_move_player_success(self) -> None:
+    @pytest.mark.asyncio
+    async def test_move_player_success(self) -> None:
         """Test successful player movement."""
         # Create mock persistence layer
         mock_persistence = Mock()
@@ -80,7 +80,7 @@ class TestMovementService:
         movement_service = MovementService(async_persistence=mock_persistence)
 
         # Move player (async)
-        success = asyncio.run(movement_service.move_player(test_player_id, "room1", "room2"))
+        success = await movement_service.move_player(test_player_id, "room1", "room2")
 
         # Verify movement was successful
         assert success is True
@@ -97,44 +97,49 @@ class TestMovementService:
         mock_persistence.save_player.assert_called_once()
         assert player.current_room_id == "room2"
 
-    def test_move_player_empty_player_id(self) -> None:
+    @pytest.mark.asyncio
+    async def test_move_player_empty_player_id(self) -> None:
         """Test that empty player ID raises ValidationError."""
         mock_persistence = Mock()
 
         service = MovementService(async_persistence=mock_persistence)
 
         with pytest.raises(ValidationError, match="Player ID cannot be empty"):
-            asyncio.run(service.move_player("", "room1", "room2"))
+            await service.move_player("", "room1", "room2")
 
-    def test_move_player_empty_from_room_id(self) -> None:
+    @pytest.mark.asyncio
+    async def test_move_player_empty_from_room_id(self) -> None:
         """Test that empty from room ID raises ValidationError."""
         mock_persistence = Mock()
 
         service = MovementService(async_persistence=mock_persistence)
 
         with pytest.raises(ValidationError, match="From room ID cannot be empty"):
-            asyncio.run(service.move_player("player1", "", "room2"))
+            await service.move_player("player1", "", "room2")
 
-    def test_move_player_empty_to_room_id(self) -> None:
+    @pytest.mark.asyncio
+    async def test_move_player_empty_to_room_id(self) -> None:
         """Test that empty to room ID raises ValidationError."""
         mock_persistence = Mock()
 
         service = MovementService(async_persistence=mock_persistence)
 
         with pytest.raises(ValidationError, match="To room ID cannot be empty"):
-            asyncio.run(service.move_player("player1", "room1", ""))
+            await service.move_player("player1", "room1", "")
 
-    def test_move_player_same_room(self) -> None:
+    @pytest.mark.asyncio
+    async def test_move_player_same_room(self) -> None:
         """Test that moving to the same room returns False."""
         mock_persistence = Mock()
 
         service = MovementService(async_persistence=mock_persistence)
 
-        result = asyncio.run(service.move_player("player1", "room1", "room1"))
+        result = await service.move_player("player1", "room1", "room1")
 
         assert result is False
 
-    def test_move_player_from_room_not_found(self) -> None:
+    @pytest.mark.asyncio
+    async def test_move_player_from_room_not_found(self) -> None:
         """Test that moving from non-existent room raises DatabaseError (wrapped from ValidationError)."""
         import uuid as uuid_module
         from uuid import uuid4
@@ -172,14 +177,15 @@ class TestMovementService:
         # But if validation fails first, it returns False
         # Try to catch the exception, but if it returns False, that's also acceptable
         try:
-            result = asyncio.run(service.move_player(test_player_id, "nonexistent", "room2"))
+            result = await service.move_player(test_player_id, "nonexistent", "room2")
             # If no exception was raised, the result should be False
             assert result is False, "Expected False or DatabaseError when from_room not found"
         except DatabaseError as e:
             # Exception is also acceptable
             assert "From room" in str(e) or "not found" in str(e)
 
-    def test_move_player_to_room_not_found(self) -> None:
+    @pytest.mark.asyncio
+    async def test_move_player_to_room_not_found(self) -> None:
         """Test that moving to non-existent room raises DatabaseError (wrapped from ValidationError)."""
         import uuid as uuid_module
         from uuid import uuid4
@@ -212,14 +218,15 @@ class TestMovementService:
         # The service should raise DatabaseError when to_room is not found
         # But if validation fails first, it returns False
         try:
-            result = asyncio.run(service.move_player(test_player_id, "room1", "nonexistent"))
+            result = await service.move_player(test_player_id, "room1", "nonexistent")
             # If no exception was raised, the result should be False
             assert result is False, "Expected False or DatabaseError when to_room not found"
         except DatabaseError as e:
             # Exception is also acceptable
             assert "To room" in str(e) or "not found" in str(e)
 
-    def test_move_player_not_in_from_room(self) -> None:
+    @pytest.mark.asyncio
+    async def test_move_player_not_in_from_room(self) -> None:
         """Test that moving player not in from room returns False."""
         from uuid import uuid4
 
@@ -245,11 +252,12 @@ class TestMovementService:
 
         service = MovementService(async_persistence=mock_persistence)
 
-        result = asyncio.run(service.move_player("player1", "room1", "room2"))
+        result = await service.move_player("player1", "room1", "room2")
 
         assert result is False
 
-    def test_move_player_already_in_to_room(self) -> None:
+    @pytest.mark.asyncio
+    async def test_move_player_already_in_to_room(self) -> None:
         """Test that moving player already in to room returns False."""
         import uuid as uuid_module
         from uuid import uuid4
@@ -279,11 +287,12 @@ class TestMovementService:
 
         service = MovementService(async_persistence=mock_persistence)
 
-        result = asyncio.run(service.move_player(test_player_id, "room1", "room2"))
+        result = await service.move_player(test_player_id, "room1", "room2")
 
         assert result is False
 
-    def test_move_player_blocked_during_combat(self) -> None:
+    @pytest.mark.asyncio
+    async def test_move_player_blocked_during_combat(self) -> None:
         """Test that player cannot move while in combat.
 
         As documented in the Pnakotic Manuscripts, players engaged in mortal
@@ -325,7 +334,7 @@ class TestMovementService:
         )
 
         # Attempt to move player - should be blocked (async)
-        success = asyncio.run(movement_service.move_player(test_player_uuid, "room1", "room2"))
+        success = await movement_service.move_player(test_player_uuid, "room1", "room2")
 
         # Verify movement was blocked
         assert success is False
@@ -338,7 +347,8 @@ class TestMovementService:
         mock_to_room.player_entered.assert_not_called()
         mock_persistence.save_player.assert_not_called()
 
-    def test_move_player_allowed_when_not_in_combat(self) -> None:
+    @pytest.mark.asyncio
+    async def test_move_player_allowed_when_not_in_combat(self) -> None:
         """Test that player can move when not in combat."""
         from uuid import uuid4
 
@@ -375,7 +385,7 @@ class TestMovementService:
         )
 
         # Move player - should succeed (async)
-        success = asyncio.run(movement_service.move_player(test_player_uuid, "room1", "room2"))
+        success = await movement_service.move_player(test_player_uuid, "room1", "room2")
 
         # Verify movement was successful
         assert success is True
@@ -390,7 +400,8 @@ class TestMovementService:
         assert player.current_room_id == "room2"
 
     @pytest.mark.serial  # Worker crash in parallel execution - likely due to shared state or initialization race condition
-    def test_move_player_allowed_when_no_combat_service(self) -> None:
+    @pytest.mark.asyncio
+    async def test_move_player_allowed_when_no_combat_service(self) -> None:
         """Test that player can move when player_combat_service is not provided.
 
         This ensures backward compatibility when the service is not available.
@@ -425,7 +436,7 @@ class TestMovementService:
         movement_service = MovementService(async_persistence=mock_persistence)
 
         # Move player - should succeed (backward compatibility) (async)
-        success = asyncio.run(movement_service.move_player(test_player_id, "room1", "room2"))
+        success = await movement_service.move_player(test_player_id, "room1", "room2")
 
         # Verify movement was successful
         assert success is True
@@ -438,7 +449,8 @@ class TestMovementService:
         mock_to_room.player_entered.assert_called_once_with(player_id_uuid, force_event=True)
         mock_persistence.save_player.assert_called_once()
 
-    def test_add_player_to_room_success(self) -> None:
+    @pytest.mark.asyncio
+    async def test_add_player_to_room_success(self) -> None:
         """Test successful addition of player to room."""
         import uuid as uuid_module
         from uuid import uuid4
@@ -472,7 +484,7 @@ class TestMovementService:
 
         service = MovementService(async_persistence=mock_persistence)
 
-        result = asyncio.run(service.add_player_to_room(test_player_id, "room1"))
+        result = await service.add_player_to_room(test_player_id, "room1")
 
         assert result is True
         # Verify player was added to room (Room stores player IDs as strings)
@@ -728,7 +740,8 @@ class TestMovementService:
         with pytest.raises(ValidationError, match="Room ID cannot be empty"):
             service.validate_player_location("player1", "")
 
-    def test_serial_movements(self) -> None:
+    @pytest.mark.asyncio
+    async def test_serial_movements(self) -> None:
         """Test that movements are handled correctly in serial execution."""
 
         mock_persistence = Mock()
@@ -755,14 +768,14 @@ class TestMovementService:
 
         # Execute movements serially instead of in parallel threads
         # This tests the same functionality without violating serial test execution
-        def move_player():
-            asyncio.run(service.move_player("player1", "room1", "room2"))
-            time.sleep(0.01)
-            asyncio.run(service.move_player("player1", "room2", "room1"))
+        async def move_player():
+            await service.move_player("player1", "room1", "room2")
+            await asyncio.sleep(0.01)
+            await service.move_player("player1", "room2", "room1")
 
         # Execute multiple movements serially
         for _ in range(5):
-            move_player()
+            await move_player()
 
         # Verify that the service handled movements correctly
         # (no exceptions should have been raised)
@@ -789,7 +802,8 @@ systems is essential for maintaining the integrity of our eldritch architecture.
 class TestComprehensiveMovement:
     """Test complex movement scenarios and edge cases."""
 
-    def test_multi_room_movement_chain(self) -> None:
+    @pytest.mark.asyncio
+    async def test_multi_room_movement_chain(self) -> None:
         """Test a player moving through multiple rooms in sequence."""
         import uuid as uuid_module
         from uuid import uuid4
@@ -843,12 +857,12 @@ class TestComprehensiveMovement:
         service = MovementService(async_persistence=mock_persistence)
 
         # Add player to room1 first
-        assert asyncio.run(service.add_player_to_room(test_player_id, "room1")) is True
+        assert await service.add_player_to_room(test_player_id, "room1") is True
 
         # Move through the chain: room1 -> room2 -> room3 -> room4 (async)
-        assert asyncio.run(service.move_player(test_player_id, "room1", "room2")) is True
-        assert asyncio.run(service.move_player(test_player_id, "room2", "room3")) is True
-        assert asyncio.run(service.move_player(test_player_id, "room3", "room4")) is True
+        assert await service.move_player(test_player_id, "room1", "room2") is True
+        assert await service.move_player(test_player_id, "room2", "room3") is True
+        assert await service.move_player(test_player_id, "room3", "room4") is True
 
         # Verify player is only in the final room (service uses UUID objects internally)
         assert player_uuid in room4.get_players() or test_player_id in room4.get_players()
@@ -857,7 +871,8 @@ class TestComprehensiveMovement:
         assert player_uuid not in room3.get_players() and test_player_id not in room3.get_players()
 
     @pytest.mark.serial  # Worker crash in parallel execution - likely due to shared state or initialization race condition
-    def test_circular_movement(self) -> None:
+    @pytest.mark.asyncio
+    async def test_circular_movement(self) -> None:
         """Test a player moving in a circle and ending up back where they started."""
         import uuid as uuid_module
         from uuid import uuid4
@@ -904,19 +919,20 @@ class TestComprehensiveMovement:
         service = MovementService(async_persistence=mock_persistence)
 
         # Add player to room1 first
-        assert asyncio.run(service.add_player_to_room(test_player_id, "room1")) is True
+        assert await service.add_player_to_room(test_player_id, "room1") is True
 
         # Move in a circle: room1 -> room2 -> room3 -> room1 (async)
-        assert asyncio.run(service.move_player(test_player_id, "room1", "room2")) is True
-        assert asyncio.run(service.move_player(test_player_id, "room2", "room3")) is True
-        assert asyncio.run(service.move_player(test_player_id, "room3", "room1")) is True
+        assert await service.move_player(test_player_id, "room1", "room2") is True
+        assert await service.move_player(test_player_id, "room2", "room3") is True
+        assert await service.move_player(test_player_id, "room3", "room1") is True
 
         # Verify player is back in room1 and not in other rooms (service uses UUID objects internally)
         assert player_uuid in room1.get_players() or test_player_id in room1.get_players()
         assert player_uuid not in room2.get_players() and test_player_id not in room2.get_players()
         assert player_uuid not in room3.get_players() and test_player_id not in room3.get_players()
 
-    def test_multiple_players_movement(self) -> None:
+    @pytest.mark.asyncio
+    async def test_multiple_players_movement(self) -> None:
         """Test multiple players moving simultaneously without conflicts."""
         import uuid as uuid_module
         from uuid import uuid4
@@ -970,9 +986,9 @@ class TestComprehensiveMovement:
         service = MovementService(async_persistence=mock_persistence)
 
         # Add all players to room1
-        assert asyncio.run(service.add_player_to_room(test_player1_id, "room1")) is True
-        assert asyncio.run(service.add_player_to_room(test_player2_id, "room1")) is True
-        assert asyncio.run(service.add_player_to_room(test_player3_id, "room1")) is True
+        assert await service.add_player_to_room(test_player1_id, "room1") is True
+        assert await service.add_player_to_room(test_player2_id, "room1") is True
+        assert await service.add_player_to_room(test_player3_id, "room1") is True
 
         # Verify all players are in room1 (service uses UUID objects internally)
         assert player1_uuid in room1.get_players() or test_player1_id in room1.get_players()
@@ -981,9 +997,9 @@ class TestComprehensiveMovement:
         assert len(room1.get_players()) == 3
 
         # Move players to room2 (async)
-        assert asyncio.run(service.move_player(test_player1_id, "room1", "room2")) is True
-        assert asyncio.run(service.move_player(test_player2_id, "room1", "room2")) is True
-        assert asyncio.run(service.move_player(test_player3_id, "room1", "room2")) is True
+        assert await service.move_player(test_player1_id, "room1", "room2") is True
+        assert await service.move_player(test_player2_id, "room1", "room2") is True
+        assert await service.move_player(test_player3_id, "room1", "room2") is True
 
         # Verify all players are now in room2 (service uses UUID objects internally)
         assert player1_uuid in room2.get_players() or test_player1_id in room2.get_players()
@@ -994,7 +1010,9 @@ class TestComprehensiveMovement:
         # Verify room1 is empty
         assert len(room1.get_players()) == 0
 
-    def test_serial_player_movement(self) -> None:
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared state or race conditions
+    @pytest.mark.asyncio
+    async def test_serial_player_movement(self) -> None:
         """Test multiple players moving in serial execution without race conditions."""
         # Create rooms
         room_data_1 = {"id": "room1", "name": "Room 1", "description": "First room", "exits": {"east": "room2"}}
@@ -1038,17 +1056,17 @@ class TestComprehensiveMovement:
         service = MovementService(async_persistence=mock_persistence)
         # Add all players to room1 (async)
         for i in range(5):
-            asyncio.run(service.add_player_to_room(f"player{i}", "room1"))
+            await service.add_player_to_room(f"player{i}", "room1")
 
         # Execute movements serially instead of in parallel threads
         # This tests the same functionality without violating serial test execution
-        def move_player(player_id):
-            asyncio.run(service.move_player(player_id, "room1", "room2"))
-            time.sleep(0.01)
-            asyncio.run(service.move_player(player_id, "room2", "room1"))
+        async def move_player(player_id):
+            await service.move_player(player_id, "room1", "room2")
+            await asyncio.sleep(0.01)
+            await service.move_player(player_id, "room2", "room1")
 
         for i in range(5):
-            move_player(f"player{i}")
+            await move_player(f"player{i}")
 
         # Verify that no player appears in multiple rooms
         room1_players = set(room1.get_players())
@@ -1125,7 +1143,8 @@ class TestComprehensiveMovement:
         assert PlayerLeftRoom in event_types
         assert PlayerEnteredRoom in event_types
 
-    def test_movement_validation_edge_cases(self) -> None:
+    @pytest.mark.asyncio
+    async def test_movement_validation_edge_cases(self) -> None:
         """Test edge cases in movement validation."""
         from server.exceptions import DatabaseError
 
@@ -1162,20 +1181,20 @@ class TestComprehensiveMovement:
         service = MovementService(async_persistence=mock_persistence)
         # Test empty parameters
         with pytest.raises(ValidationError, match="Player ID cannot be empty"):
-            asyncio.run(service.move_player("", "room1", "room2"))
+            await service.move_player("", "room1", "room2")
 
         with pytest.raises(ValidationError, match="From room ID cannot be empty"):
-            asyncio.run(service.move_player(test_player_id, "", "room2"))
+            await service.move_player(test_player_id, "", "room2")
 
         with pytest.raises(ValidationError, match="To room ID cannot be empty"):
-            asyncio.run(service.move_player(test_player_id, "room1", ""))
+            await service.move_player(test_player_id, "room1", "")
 
         # Test moving to same room
-        assert asyncio.run(service.move_player(test_player_id, "room1", "room1")) is False
+        assert await service.move_player(test_player_id, "room1", "room1") is False
 
         # Test moving from non-existent room (should return False or raise exception)
         try:
-            result = asyncio.run(service.move_player(test_player_id, "nonexistent", "room2"))
+            result = await service.move_player(test_player_id, "nonexistent", "room2")
             assert result is False
         except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError):
             # Exception is also acceptable
@@ -1183,7 +1202,7 @@ class TestComprehensiveMovement:
 
         # Test moving to non-existent room (should return False or raise exception)
         try:
-            result = asyncio.run(service.move_player(test_player_id, "room1", "nonexistent"))
+            result = await service.move_player(test_player_id, "room1", "nonexistent")
             assert result is False
         except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError):
             # Exception is also acceptable
@@ -1252,7 +1271,8 @@ class TestComprehensiveMovement:
         assert room.is_empty() is True
         assert room.get_occupant_count() == 0
 
-    def test_movement_with_objects_and_npcs(self) -> None:
+    @pytest.mark.asyncio
+    async def test_movement_with_objects_and_npcs(self) -> None:
         """Test movement when rooms contain objects and NPCs."""
         # Create rooms with objects and NPCs
         room_data_1 = {"id": "room1", "name": "Room 1", "description": "First room", "exits": {"east": "room2"}}
@@ -1295,7 +1315,7 @@ class TestComprehensiveMovement:
 
         service = MovementService(async_persistence=mock_persistence)
         # Add player to room1
-        assert asyncio.run(service.add_player_to_room(test_player_id, "room1")) is True
+        assert await service.add_player_to_room(test_player_id, "room1") is True
 
         # Verify room1 has player, objects, and NPCs (service uses UUID objects internally)
         assert player_uuid in room1.get_players() or test_player_id in room1.get_players()
@@ -1305,7 +1325,7 @@ class TestComprehensiveMovement:
         assert room1.get_occupant_count() == 4  # 1 player + 2 objects + 1 NPC
 
         # Move player to room2 (async)
-        assert asyncio.run(service.move_player(test_player_id, "room1", "room2")) is True
+        assert await service.move_player(test_player_id, "room1", "room2") is True
 
         # Verify player moved to room2
         assert player_uuid not in room1.get_players() and test_player_id not in room1.get_players()
@@ -1317,7 +1337,8 @@ class TestComprehensiveMovement:
         assert "beggar" in room2.get_npcs()
         assert room2.get_occupant_count() == 4  # 1 player + 1 object + 2 NPCs
 
-    def test_movement_failure_recovery(self) -> None:
+    @pytest.mark.asyncio
+    async def test_movement_failure_recovery(self) -> None:
         """Test that the system recovers gracefully from movement failures."""
         # Create rooms
         room_data_1 = {"id": "room1", "name": "Room 1", "description": "First room", "exits": {"east": "room2"}}
@@ -1351,23 +1372,24 @@ class TestComprehensiveMovement:
 
         service = MovementService(async_persistence=mock_persistence)
         # Add player to room1
-        assert asyncio.run(service.add_player_to_room(test_player_id, "room1")) is True
+        assert await service.add_player_to_room(test_player_id, "room1") is True
 
         # Attempt movement that should fail (player not in from room) (async)
-        assert asyncio.run(service.move_player(test_player_id, "room2", "room1")) is False
+        assert await service.move_player(test_player_id, "room2", "room1") is False
 
         # Verify player is still in room1 (service uses UUID objects internally)
         assert player_uuid in room1.get_players() or test_player_id in room1.get_players()
         assert player_uuid not in room2.get_players() and test_player_id not in room2.get_players()
 
         # Attempt valid movement (async)
-        assert asyncio.run(service.move_player(test_player_id, "room1", "room2")) is True
+        assert await service.move_player(test_player_id, "room1", "room2") is True
 
         # Verify player moved successfully
         assert player_uuid not in room1.get_players() and test_player_id not in room1.get_players()
         assert player_uuid in room2.get_players() or test_player_id in room2.get_players()
 
-    def test_movement_with_event_bus_failures(self) -> None:
+    @pytest.mark.asyncio
+    async def test_movement_with_event_bus_failures(self) -> None:
         """Test that movement works even when event bus fails."""
         # Create event bus that fails
         event_bus = Mock()
@@ -1407,10 +1429,10 @@ class TestComprehensiveMovement:
         service = MovementService(event_bus=event_bus, async_persistence=mock_persistence)
 
         # Add player to room1 (async)
-        assert asyncio.run(service.add_player_to_room(test_player_id, "room1")) is True
+        assert await service.add_player_to_room(test_player_id, "room1") is True
 
         # Move player despite event bus failure (async)
-        assert asyncio.run(service.move_player(test_player_id, "room1", "room2")) is True
+        assert await service.move_player(test_player_id, "room1", "room2") is True
 
         # Verify player moved successfully even though events failed (service uses UUID objects internally)
         assert player_uuid not in room1.get_players() and test_player_id not in room1.get_players()

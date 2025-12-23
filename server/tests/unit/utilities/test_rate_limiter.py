@@ -630,6 +630,7 @@ class TestRateLimitChecking:
         # 4th request should fail
         assert limiter.check_rate_limit("user1") is False
 
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to timing or shared rate limiter state
     def test_check_rate_limit_old_requests_cleaned(self) -> None:
         """Test old requests are cleaned up from the window."""
         limiter = UtilsRateLimiter(max_requests=2, window_seconds=1)

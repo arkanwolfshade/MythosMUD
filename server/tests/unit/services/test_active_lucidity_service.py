@@ -86,8 +86,18 @@ async def session_factory():
 
 @pytest.fixture
 async def db_session(session_factory):
+    """
+    Create an isolated database session for each test.
+
+    Each test gets its own session with proper rollback to ensure isolation
+    and prevent deadlocks in parallel execution.
+    """
     async with session_factory() as session:
-        yield session
+        try:
+            yield session
+        finally:
+            # Rollback any uncommitted changes to ensure test isolation
+            await session.rollback()
 
 
 @pytest.fixture
@@ -97,7 +107,6 @@ def lucidity_service(db_session):
 
 @pytest.mark.asyncio
 @pytest.mark.serial  # Mark as serial to prevent deadlocks during parallel execution
-@pytest.mark.serial  # Database deadlock in parallel execution - PostgreSQL lock conflicts
 @pytest.mark.xdist_group(name="serial_lucidity_tests")  # Force serial execution with pytest-xdist
 @pytest.mark.timeout(30)  # Add timeout to prevent hanging on deadlocks
 async def test_adjust_lucidity_caps_at_min(db_session, lucidity_service):
@@ -120,11 +129,11 @@ async def test_adjust_lucidity_caps_at_min(db_session, lucidity_service):
     unique_player_name = f"TestPlayer_{uuid.uuid4().hex[:8]}"
     player = Player(player_id=str(player_id), user_id=user.id, name=unique_player_name)
     db_session.add(player)
-    await db_session.commit()  # Commit player first to ensure foreign key constraint is satisfied
+    await db_session.flush()  # Flush to make player visible for foreign key constraint
 
     lucidity = PlayerLucidity(player_id=str(player_id), current_lcd=-95, current_tier="catatonic")
     db_session.add(lucidity)
-    await db_session.commit()
+    await db_session.flush()  # Flush to make lucidity visible within transaction
 
     # Ensure player is visible to the service's session
     # The service uses the same session, so we refresh to ensure it's in the identity map
@@ -170,7 +179,7 @@ async def test_cooldown_management(db_session, lucidity_service):
     # Set a future cooldown - use naive datetime for PostgreSQL compatibility
     expiry = datetime.now(UTC).replace(tzinfo=None) + timedelta(minutes=5)
     await lucidity_service.set_cooldown(player_id, "test_action", expiry)
-    await db_session.commit()
+    await db_session.flush()  # Flush to make cooldown visible within transaction
 
     # Retrieve cooldown
     cooldown = await lucidity_service.get_cooldown(player_id, "test_action")
@@ -180,7 +189,6 @@ async def test_cooldown_management(db_session, lucidity_service):
 
 
 @pytest.mark.asyncio
-@pytest.mark.serial  # Mark as serial to prevent deadlocks during parallel execution
 @pytest.mark.xdist_group(name="serial_lucidity_tests")  # Force serial execution with pytest-xdist
 @pytest.mark.serial  # Flaky in parallel execution - likely due to database race conditions
 async def test_adjust_lucidity_logging(db_session, lucidity_service):
@@ -209,7 +217,7 @@ async def test_adjust_lucidity_logging(db_session, lucidity_service):
 
     lucidity = PlayerLucidity(player_id=str(player_id), current_lcd=50, current_tier="uneasy")
     db_session.add(lucidity)
-    await db_session.commit()
+    await db_session.flush()  # Flush to make lucidity visible within transaction
 
     reason = "test_logging"
     await lucidity_service.apply_lucidity_adjustment(player_id, 15, reason_code=reason)

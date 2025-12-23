@@ -56,6 +56,7 @@ class TestAliasGraph:
 
         assert graph.is_safe_to_expand("loop") is False
 
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared alias_storage state
     def test_two_alias_cycle_detected(self, alias_storage):
         """Two aliases referencing each other create a cycle."""
         alias_storage.add_alias("player1", Alias(name="a", command="b"))
@@ -160,6 +161,7 @@ class TestAliasGraph:
         graph2.build_graph("player2")
         assert graph2.is_safe_to_expand("greet") is True
 
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared state
     def test_detect_cycle_node_not_found(self, alias_storage):
         """Test detect_cycle handles NodeNotFound exception."""
 

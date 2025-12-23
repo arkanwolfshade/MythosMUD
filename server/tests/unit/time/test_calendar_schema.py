@@ -5,6 +5,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 from server.schemas.calendar import HolidayCollection
 from server.utils.project_paths import get_environment_data_dir, get_project_root
 
@@ -26,6 +28,8 @@ def test_document_ids_are_represented() -> None:
     assert not missing, f"Holiday JSON missing entries: {sorted(missing)}"
 
 
+@pytest.mark.serial  # Flaky in parallel execution - subprocess may have resource conflicts or timing issues
+@pytest.mark.xdist_group(name="calendar_cli_tests")  # Force same worker for subprocess tests
 def test_cli_validation() -> None:
     cmd = [
         sys.executable,

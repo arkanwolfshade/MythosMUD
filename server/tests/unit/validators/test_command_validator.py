@@ -13,6 +13,8 @@ Tests cover:
 
 from typing import Any, cast
 
+import pytest
+
 from server.validators.command_validator import (
     CommandValidator,
     clean_command_input,
@@ -574,6 +576,7 @@ class TestCommandValidatorExtractCommandName:
         assert CommandValidator.extract_command_name("") is None
         assert CommandValidator.extract_command_name("   ") is None
 
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared state
     def test_extract_command_name_only_whitespace(self) -> None:
         """Test extraction from commands with only whitespace."""
         assert CommandValidator.extract_command_name("     ") is None

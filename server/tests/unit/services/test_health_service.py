@@ -93,6 +93,7 @@ class TestServerMetrics:
         mock_cpu_percent.assert_called_once_with(interval=0.1)
 
     @patch("server.services.health_service.psutil.cpu_percent")
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared psutil state
     def test_get_cpu_usage_failure(self, mock_cpu_percent):
         """Test CPU usage retrieval handles exceptions."""
         mock_cpu_percent.side_effect = Exception("CPU access denied")

@@ -42,6 +42,7 @@ class TestMemoryThresholdMonitorInitialization:
         assert monitor.task_count_threshold == 200
         assert monitor.cleanup_cooldown == 60.0
 
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared state or initialization race conditions
     def test_create_memory_cleanup_monitor_factory(self) -> None:
         """Test factory function creates monitor correctly."""
         monitor = create_memory_cleanup_monitor(

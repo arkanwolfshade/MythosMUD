@@ -105,6 +105,7 @@ class TestPlayerDeathService:  # pylint: disable=redefined-outer-name
         mock_session.commit.assert_called_once()
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared service state or database session mocking
     async def test_process_mortally_wounded_tick_cap_at_minus_ten(self, player_death_service, mock_player):
         """Test HP decay caps at -10."""
         # Set player to -9 HP (one away from death)

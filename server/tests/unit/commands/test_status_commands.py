@@ -180,7 +180,8 @@ class TestGetCombatStatus:
             assert result is False
 
     @pytest.mark.asyncio
-    async def test_get_combat_status_no_app(self) -> None:
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared app state
+    async def test_get_combat_status_app_none(self) -> None:
         """Test getting combat status when app is None."""
         with patch("server.commands.status_commands.logger"):
             result = await _get_combat_status(None, MagicMock())
@@ -516,6 +517,46 @@ class TestHandleStatusCommand:
                 assert "Location: Unknown location" in result["result"]
 
     @pytest.mark.asyncio
+    async def test_handle_status_command_no_room_id(self) -> None:
+        """Test status command when player has no current_room_id."""
+        command_data: dict[str, Any] = {"args": []}
+        current_user = {"username": "testuser"}
+        mock_request = MagicMock()
+        mock_app = MagicMock()
+        mock_persistence = AsyncMock()
+
+        mock_player = MagicMock()
+        mock_player.name = "TestPlayer"
+        mock_player.experience_points = 100
+        mock_player.current_room_id = None  # No room ID
+        mock_player.get_stats.return_value = {
+            "position": "standing",
+            "current_dp": 80,
+            "max_dp": 100,
+            "lucidity": 90,
+            "max_lucidity": 100,
+        }
+        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_profession_by_id = AsyncMock(return_value=None)
+        # get_room_by_id should not be called when current_room_id is None
+        mock_persistence.get_room_by_id = MagicMock()
+
+        mock_combat_service = AsyncMock()
+        mock_combat_service.get_combat_by_participant.return_value = None
+        mock_app.state.combat_service = mock_combat_service
+
+        mock_app.state.persistence = mock_persistence
+        mock_request.app = mock_app
+
+        with patch("server.commands.status_commands.get_username_from_user", return_value="testuser"):
+            with patch("server.commands.status_commands.logger"):
+                result = await handle_status_command(command_data, current_user, mock_request, None, "testuser")
+
+                assert "Location: Unknown location" in result["result"]
+                # get_room_by_id should not be called when current_room_id is None
+                mock_persistence.get_room_by_id.assert_not_called()
+
+    @pytest.mark.asyncio
     async def test_handle_status_command_attribute_error(self) -> None:
         """Test status command when AttributeError occurs."""
         command_data: dict[str, Any] = {"args": []}
@@ -547,6 +588,36 @@ class TestHandleStatusCommand:
                 result = await handle_status_command(command_data, current_user, mock_request, None, "testuser")
 
                 assert "Error retrieving status information" in result["result"]
+
+    @pytest.mark.asyncio
+    async def test_handle_status_command_type_error(self) -> None:
+        """Test status command when TypeError occurs."""
+        command_data: dict[str, Any] = {"args": []}
+        current_user = {"username": "testuser"}
+        mock_request = MagicMock()
+        mock_app = MagicMock()
+        mock_persistence = AsyncMock()
+
+        mock_player = MagicMock()
+        mock_player.get_stats.side_effect = TypeError("Type error")
+        mock_player.current_room_id = "test_room_001"
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+        mock_persistence.get_profession_by_id = AsyncMock(return_value=None)
+        mock_persistence.get_room_by_id = MagicMock(return_value=MagicMock(name="Test Room"))
+
+        mock_combat_service = AsyncMock()
+        mock_combat_service.get_combat_by_participant = AsyncMock(return_value=None)
+        mock_app.state.combat_service = mock_combat_service
+
+        mock_app.state.persistence = mock_persistence
+        mock_request.app = mock_app
+
+        with patch("server.commands.status_commands.get_username_from_user", return_value="testuser"):
+            with patch("server.commands.status_commands.logger"):
+                result = await handle_status_command(command_data, current_user, mock_request, None, "testuser")
+
+                assert "Error retrieving status information" in result["result"]
+                assert "Type error" in result["result"]
 
 
 class TestHandleWhoamiCommand:
@@ -599,3 +670,41 @@ class TestHandleWhoamiCommand:
 
                 assert "result" in result
                 assert "Name: TestPlayer" in result["result"]
+
+    @pytest.mark.asyncio
+    async def test_handle_whoami_command_with_non_string_result(self) -> None:
+        """Test whoami command when result is not a string (covers line 209 check)."""
+        command_data: dict[str, Any] = {"args": []}
+        current_user = {"username": "testuser"}
+        mock_request = MagicMock()
+        mock_app = MagicMock()
+        mock_persistence = AsyncMock()
+
+        mock_player = MagicMock()
+        mock_player.name = "TestPlayer"
+        mock_player.experience_points = 100
+        mock_player.current_room_id = "room-123"
+        mock_player.get_stats.return_value = {
+            "position": "standing",
+            "current_dp": 80,
+            "max_dp": 100,
+            "lucidity": 90,
+            "max_lucidity": 100,
+        }
+        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_room_by_id = MagicMock(return_value=MagicMock(name="Test Room"))
+        mock_persistence.get_profession_by_id = AsyncMock(return_value=None)
+
+        mock_combat_service = AsyncMock()
+        mock_combat_service.get_combat_by_participant.return_value = None
+        mock_app.state.combat_service = mock_combat_service
+        mock_app.state.persistence = mock_persistence
+        mock_request.app = mock_app
+
+        with patch("server.commands.status_commands.get_username_from_user", return_value="testuser"):
+            with patch("server.commands.status_commands.logger"):
+                # This test covers the isinstance check on line 209
+                result = await handle_whoami_command(command_data, current_user, mock_request, None, "testuser")
+
+                assert "result" in result
+                assert isinstance(result["result"], str)

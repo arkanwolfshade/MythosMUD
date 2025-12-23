@@ -345,6 +345,7 @@ class TestBenchmarkValidationPerformance:
     """Test benchmark_validation_performance function."""
 
     @pytest.mark.timeout(60)  # Add timeout for benchmark (may take longer)
+    @pytest.mark.serial  # Flaky in parallel execution - performance benchmark sensitive to system load
     def test_benchmark_validation_performance(self) -> None:
         """Test benchmark_validation_performance runs successfully."""
         result = benchmark_validation_performance()

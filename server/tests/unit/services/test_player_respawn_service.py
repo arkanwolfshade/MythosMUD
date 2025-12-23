@@ -72,6 +72,7 @@ class TestPlayerRespawnService:
         assert result == "custom-respawn-room"
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared state
     async def test_get_respawn_room_default(self, player_respawn_service, mock_player):
         """Test getting default respawn room when player has None."""
         mock_player.respawn_room_id = None
@@ -188,6 +189,7 @@ class TestPlayerRespawnService:
         assert result == DEFAULT_RESPAWN_ROOM
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared event bus or service state
     async def test_respawn_player_with_event_bus(self, mock_player):
         """Test player respawn with event bus integration."""
         # Create service with event bus

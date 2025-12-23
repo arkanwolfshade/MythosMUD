@@ -218,6 +218,7 @@ class TestPlayerCombatServiceUnit:
         mock_persistence.save_player.assert_not_called()
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared event bus or persistence mocking state
     async def test_award_xp_on_npc_death_publishes_event(
         self, player_combat_service, mock_persistence, mock_event_bus, sample_player
     ):

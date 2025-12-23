@@ -60,7 +60,9 @@ class AsyncPersistenceLayer:
     Uses SQLAlchemy ORM with async sessions for type-safe, maintainable queries.
     """
 
-    def __init__(self, _db_path: str | None = None, _log_path: str | None = None, event_bus=None):
+    def __init__(
+        self, _db_path: str | None = None, _log_path: str | None = None, event_bus=None, _skip_room_cache: bool = False
+    ):
         """
         Initialize the async persistence layer.
 
@@ -70,6 +72,8 @@ class AsyncPersistenceLayer:
             _db_path: Deprecated - kept for backward compatibility only
             _log_path: Deprecated - kept for backward compatibility only
             event_bus: Optional event bus for publishing events
+            _skip_room_cache: If True, skip loading room cache during initialization.
+                             Used in tests to avoid thread-based initialization race conditions.
         """
         # Parameters prefixed with _ are kept for backward compatibility but not used
         # Database connection is managed by SQLAlchemy via get_async_session()
@@ -78,7 +82,8 @@ class AsyncPersistenceLayer:
         self._logger = get_logger(__name__)
         self._room_cache: dict[str, Room] = {}
         self._room_mappings: dict[str, Any] = {}
-        self._load_room_cache()
+        if not _skip_room_cache:
+            self._load_room_cache()
 
         # Initialize repositories (facade pattern)
         self._room_repo = RoomRepository(self._room_cache)
