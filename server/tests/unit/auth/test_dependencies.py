@@ -45,6 +45,19 @@ class TestGetCurrentSuperuser:
         assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
         assert "privileges" in exc_info.value.detail.lower()
 
+    @pytest.mark.asyncio
+    async def test_get_current_superuser_exception_details(self) -> None:
+        """Test get_current_superuser exception contains correct details."""
+        mock_user = Mock(spec=User)
+        mock_user.is_superuser = False
+
+        with pytest.raises(LoggedHTTPException) as exc_info:
+            await get_current_superuser(current_user=mock_user)
+
+        exception = exc_info.value
+        assert exception.status_code == status.HTTP_403_FORBIDDEN
+        assert exception.detail == "The user doesn't have enough privileges"
+
 
 class TestGetCurrentVerifiedUser:
     """Test get_current_verified_user dependency."""
@@ -69,6 +82,19 @@ class TestGetCurrentVerifiedUser:
 
         assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
         assert "not verified" in exc_info.value.detail.lower()
+
+    @pytest.mark.asyncio
+    async def test_get_current_verified_user_exception_details(self) -> None:
+        """Test get_current_verified_user exception contains correct details."""
+        mock_user = Mock(spec=User)
+        mock_user.is_verified = False
+
+        with pytest.raises(LoggedHTTPException) as exc_info:
+            await get_current_verified_user(current_user=mock_user)
+
+        exception = exc_info.value
+        assert exception.status_code == status.HTTP_403_FORBIDDEN
+        assert exception.detail == "The user is not verified"
 
 
 class TestRequireInviteCode:
@@ -100,6 +126,8 @@ class TestRequireInviteCode:
 
         assert exc_info.value == logged_exception
         assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+        # Verify the exception is re-raised, not wrapped
+        assert exc_info.value.detail == "Invalid invite code"
 
     @pytest.mark.asyncio
     async def test_require_invite_code_with_generic_exception(self) -> None:
@@ -115,6 +143,33 @@ class TestRequireInviteCode:
         assert "Invalid or expired invite code" in exc_info.value.detail
         assert exc_info.value.__cause__ == generic_exception
 
+    @pytest.mark.asyncio
+    async def test_require_invite_code_with_different_exception_types(self) -> None:
+        """Test require_invite_code handles various exception types."""
+        exception_types = [RuntimeError("Runtime error"), KeyError("key"), TypeError("type error")]
+        for exception_type in exception_types:
+            mock_invite_manager = Mock()
+            mock_invite_manager.validate_invite = AsyncMock(side_effect=exception_type)
+
+            with pytest.raises(LoggedHTTPException) as exc_info:
+                await require_invite_code("test-code", invite_manager=mock_invite_manager)
+
+            assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+            assert "Invalid or expired invite code" in exc_info.value.detail
+            assert exc_info.value.__cause__ == exception_type
+
+    @pytest.mark.asyncio
+    async def test_require_invite_code_with_empty_string(self) -> None:
+        """Test require_invite_code with empty invite code string."""
+        mock_invite_manager = Mock()
+        mock_invite_manager.validate_invite = AsyncMock(side_effect=ValueError("Invalid code"))
+
+        with pytest.raises(LoggedHTTPException) as exc_info:
+            await require_invite_code("", invite_manager=mock_invite_manager)
+
+        assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+        mock_invite_manager.validate_invite.assert_called_once_with("")
+
 
 class TestGetOptionalCurrentUser:
     """Test get_optional_current_user dependency."""
@@ -124,12 +179,32 @@ class TestGetOptionalCurrentUser:
         """Test get_optional_current_user returns user when authenticated."""
         mock_user = Mock(spec=User)
         mock_user.id = uuid.uuid4()
+        mock_user.username = "testuser"
 
         result = await get_optional_current_user(current_user=mock_user)
         assert result == mock_user
+        assert result is not None
+        assert result.id == mock_user.id
 
     @pytest.mark.asyncio
     async def test_get_optional_current_user_with_none(self) -> None:
         """Test get_optional_current_user returns None when not authenticated."""
         result = await get_optional_current_user(current_user=None)
         assert result is None
+
+    @pytest.mark.asyncio
+    async def test_get_optional_current_user_preserves_user_attributes(self) -> None:
+        """Test get_optional_current_user preserves all user attributes."""
+        mock_user = Mock(spec=User)
+        mock_user.id = uuid.uuid4()
+        mock_user.username = "testuser"
+        mock_user.email = "test@example.com"
+        mock_user.is_superuser = True
+        mock_user.is_verified = True
+
+        result = await get_optional_current_user(current_user=mock_user)
+        assert result == mock_user
+        assert result.username == "testuser"
+        assert result.email == "test@example.com"
+        assert result.is_superuser is True
+        assert result.is_verified is True
