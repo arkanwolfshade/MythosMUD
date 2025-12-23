@@ -87,6 +87,7 @@ class TestRespawnPlayerFromDelirium:
             # get_async_session() returns an async generator, so we need to mock it properly
             async def mock_async_gen():
                 yield mock_async_session
+
             mock_get_session.return_value = mock_async_gen()
             result = await player_respawn_module.respawn_player_from_delirium(
                 request=mock_request, current_user=mock_current_user, player_service=mock_player_service
@@ -108,6 +109,7 @@ class TestRespawnPlayerFromDelirium:
             # get_async_session() returns an async generator, so we need to mock it properly
             async def mock_async_gen():
                 yield mock_async_session
+
             mock_get_session.return_value = mock_async_gen()
             with pytest.raises(LoggedHTTPException) as exc_info:
                 await player_respawn_module.respawn_player_from_delirium(
@@ -129,6 +131,7 @@ class TestRespawnPlayerFromDelirium:
             # get_async_session() returns an async generator, so we need to mock it properly
             async def mock_async_gen():
                 yield mock_async_session
+
             mock_get_session.return_value = mock_async_gen()
             with pytest.raises(LoggedHTTPException) as exc_info:
                 await player_respawn_module.respawn_player_from_delirium(
@@ -151,6 +154,7 @@ class TestRespawnPlayerFromDelirium:
             # get_async_session() returns an async generator, so we need to mock it properly
             async def mock_async_gen():
                 yield mock_async_session
+
             mock_get_session.return_value = mock_async_gen()
             with pytest.raises(LoggedHTTPException) as exc_info:
                 await player_respawn_module.respawn_player_from_delirium(
@@ -164,12 +168,15 @@ class TestRespawnPlayerFromDelirium:
         self, player_respawn_module, mock_current_user, mock_request, mock_player_service, mock_async_session
     ):
         """Test respawn handles unexpected exceptions."""
-        mock_player_service.respawn_player_from_delirium_by_user_id = AsyncMock(side_effect=Exception("Unexpected error"))
+        mock_player_service.respawn_player_from_delirium_by_user_id = AsyncMock(
+            side_effect=Exception("Unexpected error")
+        )
 
         with patch("server.database.get_async_session") as mock_get_session:
             # get_async_session() returns an async generator, so we need to mock it properly
             async def mock_async_gen():
                 yield mock_async_session
+
             mock_get_session.return_value = mock_async_gen()
             with pytest.raises(LoggedHTTPException) as exc_info:
                 await player_respawn_module.respawn_player_from_delirium(
@@ -197,6 +204,7 @@ class TestRespawnPlayer:
             # get_async_session() returns an async generator, so we need to mock it properly
             async def mock_async_gen():
                 yield mock_async_session
+
             mock_get_session.return_value = mock_async_gen()
             result = await player_respawn_module.respawn_player(
                 request=mock_request, current_user=mock_current_user, player_service=mock_player_service
@@ -216,6 +224,7 @@ class TestRespawnPlayer:
             # get_async_session() returns an async generator, so we need to mock it properly
             async def mock_async_gen():
                 yield mock_async_session
+
             mock_get_session.return_value = mock_async_gen()
             with pytest.raises(LoggedHTTPException) as exc_info:
                 await player_respawn_module.respawn_player(
@@ -235,6 +244,7 @@ class TestRespawnPlayer:
             # get_async_session() returns an async generator, so we need to mock it properly
             async def mock_async_gen():
                 yield mock_async_session
+
             mock_get_session.return_value = mock_async_gen()
             with pytest.raises(LoggedHTTPException) as exc_info:
                 await player_respawn_module.respawn_player(
@@ -255,6 +265,7 @@ class TestRespawnPlayer:
             # get_async_session() returns an async generator, so we need to mock it properly
             async def mock_async_gen():
                 yield mock_async_session
+
             mock_get_session.return_value = mock_async_gen()
             with pytest.raises(LoggedHTTPException) as exc_info:
                 await player_respawn_module.respawn_player(
@@ -274,6 +285,7 @@ class TestRespawnPlayer:
             # get_async_session() returns an async generator, so we need to mock it properly
             async def mock_async_gen():
                 yield mock_async_session
+
             mock_get_session.return_value = mock_async_gen()
             with pytest.raises(LoggedHTTPException) as exc_info:
                 await player_respawn_module.respawn_player(

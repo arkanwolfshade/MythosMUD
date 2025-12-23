@@ -110,6 +110,8 @@ class TestEventBus:
     """Test the EventBus class with async coordination."""
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # EventBus tests need serial execution to prevent worker crashes
+    @pytest.mark.xdist_group(name="serial_event_bus_tests")
     async def test_event_bus_creation(self) -> None:
         """Test that EventBus can be created successfully."""
         event_bus = EventBus()
@@ -139,6 +141,8 @@ class TestEventBus:
         assert not event_bus._running
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # EventBus tests need serial execution to prevent worker crashes
+    @pytest.mark.xdist_group(name="serial_event_bus_tests")
     async def test_publish_invalid_event(self) -> None:
         """Test that publishing invalid events raises ValueError."""
         event_bus = EventBus()
@@ -150,6 +154,8 @@ class TestEventBus:
         await event_bus.shutdown()
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # EventBus tests need serial execution to prevent worker crashes
+    @pytest.mark.xdist_group(name="serial_event_bus_tests")
     async def test_subscribe_invalid_event_type(self) -> None:
         """Test that subscribing to invalid event types raises ValueError."""
         event_bus = EventBus()
@@ -161,6 +167,8 @@ class TestEventBus:
         await event_bus.shutdown()
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # EventBus tests need serial execution to prevent worker crashes
+    @pytest.mark.xdist_group(name="serial_event_bus_tests")
     async def test_subscribe_invalid_handler(self) -> None:
         """Test that subscribing with invalid handler raises ValueError."""
         event_bus = EventBus()
@@ -268,6 +276,8 @@ class TestEventBus:
         await event_bus.shutdown()
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # EventBus tests need serial execution to prevent worker crashes
+    @pytest.mark.xdist_group(name="serial_event_bus_tests")
     async def test_unsubscribe_nonexistent_handler(self) -> None:
         """Test that unsubscribing non-existent handler returns False."""
         event_bus = EventBus()
@@ -284,6 +294,8 @@ class TestEventBus:
         await event_bus.shutdown()
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # EventBus tests need serial execution to prevent worker crashes
+    @pytest.mark.xdist_group(name="serial_event_bus_tests")
     async def test_get_subscriber_count(self) -> None:
         """Test getting subscriber count for specific event type."""
         event_bus = EventBus()
@@ -337,6 +349,8 @@ class TestEventBus:
         await event_bus.shutdown()
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # EventBus tests need serial execution to prevent worker crashes
+    @pytest.mark.xdist_group(name="serial_event_bus_tests")
     async def test_event_processing_error_handling(self) -> None:
         """Test that errors in event handlers don't crash the system."""
         event_bus = EventBus()
@@ -458,6 +472,8 @@ class TestEventBus:
                 await event_bus.shutdown()
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # EventBus tests need serial execution to prevent worker crashes
+    @pytest.mark.xdist_group(name="serial_event_bus_tests")
     async def test_structured_concurrency_multiple_async_subscribers(self) -> None:
         """
         Test that EventBus uses structured concurrency for multiple async subscribers.
@@ -552,6 +568,8 @@ class TestEventBus:
                 assert task.done() or task.cancelled(), f"Task {task} is not done or cancelled after shutdown"
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # EventBus tests need serial execution to prevent worker crashes
+    @pytest.mark.xdist_group(name="serial_event_bus_tests")
     async def test_structured_concurrency_task_cleanup(self) -> None:
         """
         Test that EventBus properly cleans up tasks after structured concurrency execution.

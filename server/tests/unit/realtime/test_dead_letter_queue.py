@@ -128,6 +128,7 @@ class TestDeadLetterQueue:
         assert stats["total_messages"] == 0
         assert stats["oldest_message_age"] is None
 
+    @pytest.mark.serial  # Flaky in parallel execution - shared DeadLetterQueue state
     def test_list_messages(self, dlq):
         """List messages returns all messages in queue."""
         messages = [DeadLetterMessage(f"test{i}", {"id": i}, f"error{i}", datetime.now(), i) for i in range(3)]

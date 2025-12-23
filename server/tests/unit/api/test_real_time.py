@@ -277,9 +277,7 @@ class TestGetConnectionStatistics:
     """Test get_connection_statistics endpoint."""
 
     @pytest.mark.asyncio
-    async def test_get_connection_statistics_success(
-        self, real_time_module, mock_request, mock_connection_manager
-    ):
+    async def test_get_connection_statistics_success(self, real_time_module, mock_request, mock_connection_manager):
         """Test successful retrieval of connection statistics."""
         mock_request.app.state.container = Mock()
         mock_request.app.state.container.connection_manager = mock_connection_manager

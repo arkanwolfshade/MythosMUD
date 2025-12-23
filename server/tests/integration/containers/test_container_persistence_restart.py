@@ -292,18 +292,20 @@ async def _create_test_player(
     # CRITICAL: Wait for commit to propagate across database connections
     # PostgreSQL transaction isolation can cause delays in high-load scenarios
     # The test's own retry logic will handle final verification
-    await asyncio.sleep(0.1)
+    # Increased delay to allow more time for commit propagation in parallel execution
+    await asyncio.sleep(0.2)
 
     return player
 
 
 async def _get_player_directly_from_db(player_id: UUID) -> Player | None:
     """
-    Get player directly from database using direct SQL query.
+    Get player directly from database using a FRESH connection.
 
-    This bypasses the persistence layer's session management and connection pooling,
-    ensuring we can retrieve players immediately after they're committed, even if
-    there are transaction isolation delays in the persistence layer.
+    Creates a completely new database connection/engine that bypasses
+    SQLAlchemy's connection pooling to ensure we see the latest committed data.
+    This is critical for parallel test execution where connection pool reuse
+    can cause transaction isolation visibility delays.
 
     Args:
         player_id: The player's UUID
@@ -311,33 +313,63 @@ async def _get_player_directly_from_db(player_id: UUID) -> Player | None:
     Returns:
         Player object if found, None otherwise
 
-    AI: Direct SQL queries bypass SQLAlchemy session management and connection pooling,
-    allowing immediate visibility of committed data across different database connections.
-    This is critical for integration tests where transaction isolation can cause delays.
+    AI: Direct SQL queries with a fresh connection bypass SQLAlchemy session
+    management and connection pooling, allowing immediate visibility of committed
+    data across different database connections. This is critical for integration
+    tests where transaction isolation can cause delays.
     """
-    from sqlalchemy import select
+    import os
 
-    from server.database import get_async_session
+    from sqlalchemy import text
+    from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
-    async for session in get_async_session():
-        try:
-            stmt = select(Player).where(Player.player_id == str(player_id))
-            result = await session.execute(stmt)
-            player = result.scalar_one_or_none()
-            if player:
-                # Ensure room validation (same as persistence layer does)
-                if hasattr(player, "current_room_id") and player.current_room_id:
-                    # Room validation would go here if needed, but for tests we skip it
-                    pass
-                return player
-        except Exception as e:
-            # Log error but don't fail - return None to allow fallback
-            import sys
+    from server.models.player import Player
 
-            print(f"DEBUG: Direct DB query error for player {player_id}: {e}", file=sys.stderr)
-        finally:
-            await session.close()
-        break
+    player_id_str = str(player_id)
+    database_url = os.getenv("DATABASE_URL", "")
+    if not database_url:
+        return None
+
+    # Convert to async URL if needed
+    if database_url.startswith("postgresql://"):
+        database_url = database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+    elif database_url.startswith("postgres://"):
+        database_url = database_url.replace("postgres://", "postgresql+asyncpg://", 1)
+
+    try:
+        # Create a fresh engine with pooling disabled to ensure fresh connection
+        fresh_engine = create_async_engine(
+            database_url,
+            echo=False,
+            pool_size=1,
+            max_overflow=0,
+            pool_pre_ping=True,  # Verify connection is alive
+        )
+
+        async with AsyncSession(fresh_engine) as session:
+            # Use raw SQL to bypass any ORM caching layers
+            stmt = text("SELECT player_id FROM players WHERE player_id = :player_id")
+            result = await session.execute(stmt, {"player_id": player_id_str})
+            row = result.fetchone()
+
+            if row is not None:
+                # Player exists - now fetch the full object
+                from sqlalchemy import select
+
+                full_stmt = select(Player).where(Player.player_id == player_id_str)
+                full_result = await session.execute(full_stmt)
+                player = full_result.scalar_one_or_none()
+                if player:
+                    return player
+
+        # Dispose engine to close all connections
+        await fresh_engine.dispose()
+
+    except Exception as e:
+        # Log error but don't fail - return None to allow fallback
+        import sys
+
+        print(f"DEBUG: Fresh DB query error for player {player_id}: {e}", file=sys.stderr)
 
     return None
 
@@ -476,7 +508,7 @@ class TestContainerPersistenceRestart:
         # Verify player exists before creating container (transaction isolation in parallel execution)
         import asyncio
 
-        max_retries = 20  # Increased retries for parallel execution
+        max_retries = 30  # Increased retries for parallel execution
         player = None
         for attempt in range(max_retries):
             player = await persistence.get_player_by_id(entity_id)
@@ -484,17 +516,38 @@ class TestContainerPersistenceRestart:
                 break
             if attempt < max_retries - 1:
                 await asyncio.sleep(0.1)
-        if player is None:
-            # Fallback: use direct DB query if persistence layer has visibility issues
-            player = await _get_player_directly_from_db(entity_id)
-            if player is None:
-                raise RuntimeError(
-                    f"Player {entity_id} not visible after creation - cannot create container with entity_id"
-                )
 
-        # Additional delay to ensure commit is fully propagated before container creation
+        # Fallback: use direct DB query with retries if persistence layer has visibility issues
+        if player is None:
+            direct_db_retries = 10
+            for attempt in range(direct_db_retries):
+                player = await _get_player_directly_from_db(entity_id)
+                if player is not None:
+                    break
+                if attempt < direct_db_retries - 1:
+                    await asyncio.sleep(0.15)  # Longer sleep for direct DB query
+
+        if player is None:
+            raise RuntimeError(
+                f"Player {entity_id} not visible after {max_retries} persistence attempts and {direct_db_retries} direct DB attempts - cannot create container with entity_id"
+            )
+
+        # Additional verification and delay to ensure commit is fully propagated before container creation
         # This is critical in parallel execution where transaction isolation can cause delays
-        await asyncio.sleep(0.2)
+        # Verify player one more time via direct DB query right before container creation
+        final_verification_retries = 5
+        for attempt in range(final_verification_retries):
+            final_player = await _get_player_directly_from_db(entity_id)
+            if final_player is not None:
+                break
+            if attempt < final_verification_retries - 1:
+                await asyncio.sleep(0.2)  # Longer sleep before final verification
+        else:
+            # If final verification failed, still try container creation (might be timing issue)
+            pass  # Continue anyway - the container creation will fail with a clear error if player isn't visible
+
+        # Final delay to ensure commit is fully propagated across all database connections
+        await asyncio.sleep(0.3)
 
         # Create wearable container
         container_result = await persistence.create_container(
@@ -569,7 +622,7 @@ class TestContainerPersistenceRestart:
         # Verify player exists before creating container (transaction isolation in parallel execution)
         import asyncio
 
-        max_retries = 20  # Increased retries for parallel execution
+        max_retries = 30  # Increased retries for parallel execution
         player = None
         for attempt in range(max_retries):
             player = await persistence.get_player_by_id(owner_id)
@@ -577,17 +630,38 @@ class TestContainerPersistenceRestart:
                 break
             if attempt < max_retries - 1:
                 await asyncio.sleep(0.1)
-        if player is None:
-            # Fallback: use direct DB query if persistence layer has visibility issues
-            player = await _get_player_directly_from_db(owner_id)
-            if player is None:
-                raise RuntimeError(
-                    f"Player {owner_id} not visible after creation - cannot create container with owner_id"
-                )
 
-        # Additional delay to ensure commit is fully propagated before container creation
+        # Fallback: use direct DB query with retries if persistence layer has visibility issues
+        if player is None:
+            direct_db_retries = 10
+            for attempt in range(direct_db_retries):
+                player = await _get_player_directly_from_db(owner_id)
+                if player is not None:
+                    break
+                if attempt < direct_db_retries - 1:
+                    await asyncio.sleep(0.15)  # Longer sleep for direct DB query
+
+        if player is None:
+            raise RuntimeError(
+                f"Player {owner_id} not visible after {max_retries} persistence attempts and {direct_db_retries} direct DB attempts - cannot create container with owner_id"
+            )
+
+        # Additional verification and delay to ensure commit is fully propagated before container creation
         # This is critical in parallel execution where transaction isolation can cause delays
-        await asyncio.sleep(0.2)
+        # Verify player one more time via direct DB query right before container creation
+        final_verification_retries = 5
+        for attempt in range(final_verification_retries):
+            final_player = await _get_player_directly_from_db(owner_id)
+            if final_player is not None:
+                break
+            if attempt < final_verification_retries - 1:
+                await asyncio.sleep(0.2)  # Longer sleep before final verification
+        else:
+            # If final verification failed, still try container creation (might be timing issue)
+            pass  # Continue anyway - the container creation will fail with a clear error if player isn't visible
+
+        # Final delay to ensure commit is fully propagated across all database connections
+        await asyncio.sleep(0.3)
 
         # Create corpse container
         from datetime import UTC, datetime, timedelta
@@ -648,6 +722,8 @@ class TestContainerPersistenceRestart:
         assert len(persisted_container.items) == 1
         assert persisted_container.items[0]["item_id"] == "item_1"
 
+    @pytest.mark.serial  # Flaky in parallel execution - database transaction conflicts
+    @pytest.mark.xdist_group(name="serial_container_persistence_tests")
     async def test_container_state_persistence(self, persistence) -> None:
         """Test that container state (locked, capacity, etc.) persists."""
         # Use a real room ID that exists in the database
@@ -709,7 +785,7 @@ class TestContainerPersistenceRestart:
         # Verify player exists before creating container (transaction isolation in parallel execution)
         import asyncio
 
-        max_retries = 20  # Increased retries for parallel execution
+        max_retries = 30  # Increased retries for parallel execution
         player = None
         for attempt in range(max_retries):
             player = await persistence.get_player_by_id(player_id)
@@ -717,15 +793,38 @@ class TestContainerPersistenceRestart:
                 break
             if attempt < max_retries - 1:
                 await asyncio.sleep(0.1)
-        if player is None:
-            # Fallback: use direct DB query if persistence layer has visibility issues
-            player = await _get_player_directly_from_db(player_id)
-            if player is None:
-                raise RuntimeError(f"Player {player_id} not visible after creation")
 
-        # Additional delay to ensure commit is fully propagated before container creation
+        # Fallback: use direct DB query with retries if persistence layer has visibility issues
+        if player is None:
+            direct_db_retries = 10
+            for attempt in range(direct_db_retries):
+                player = await _get_player_directly_from_db(player_id)
+                if player is not None:
+                    break
+                if attempt < direct_db_retries - 1:
+                    await asyncio.sleep(0.15)  # Longer sleep for direct DB query
+
+        if player is None:
+            raise RuntimeError(
+                f"Player {player_id} not visible after {max_retries} persistence attempts and {direct_db_retries} direct DB attempts"
+            )
+
+        # Additional verification and delay to ensure commit is fully propagated before container creation
         # This is critical in parallel execution where transaction isolation can cause delays
-        await asyncio.sleep(0.2)
+        # Verify player one more time via direct DB query right before container creation
+        final_verification_retries = 5
+        for attempt in range(final_verification_retries):
+            final_player = await _get_player_directly_from_db(player_id)
+            if final_player is not None:
+                break
+            if attempt < final_verification_retries - 1:
+                await asyncio.sleep(0.2)  # Longer sleep before final verification
+        else:
+            # If final verification failed, still try container creation (might be timing issue)
+            pass  # Continue anyway - the container creation will fail with a clear error if player isn't visible
+
+        # Final delay to ensure commit is fully propagated across all database connections
+        await asyncio.sleep(0.3)
 
         # Create container
         container_result = await persistence.create_container(
@@ -782,6 +881,8 @@ class TestContainerPersistenceRestart:
         assert container_after.items[0]["item_id"] == "item_1"
         assert container_after.items[0]["quantity"] == 5
 
+    @pytest.mark.serial  # Flaky in parallel execution - database transaction conflicts
+    @pytest.mark.xdist_group(name="serial_container_persistence_tests")
     async def test_multiple_containers_persist(self, persistence) -> None:
         """Test that multiple containers persist correctly."""
         # Use a real room ID that exists in the database
@@ -831,6 +932,8 @@ class TestContainerPersistenceRestart:
             assert len(persisted_container.items) == 1
             assert persisted_container.items[0]["item_id"] == f"item_{i + 1}"
 
+    @pytest.mark.serial  # Flaky in parallel execution - database transaction conflicts
+    @pytest.mark.xdist_group(name="serial_container_persistence_tests")
     async def test_container_room_relationship_persistence(self, persistence) -> None:
         """Test that container-room relationships persist."""
         # Use real room IDs that exist in the database
