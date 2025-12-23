@@ -92,6 +92,8 @@ class TestProfessionModel:
         assert saved is not None
         assert saved.stat_requirements == stat_reqs
 
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared database state and fixed ID conflicts
+    @pytest.mark.xdist_group(name="serial_profession_tests")  # Force serial execution with pytest-xdist
     def test_profession_unique_name_constraint(self, db_session: Session) -> None:
         """Test that profession names must be unique."""
         p1 = Profession(

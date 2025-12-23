@@ -143,6 +143,9 @@ class PlayerRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
+                # SQLAlchemy's UUID type (even with as_uuid=False) handles UUID object comparisons automatically.
+                # The database column is UUID type, and SQLAlchemy converts UUID objects appropriately for comparison.
+                # The as_uuid=False parameter only affects the Python return type (string vs UUID), not comparison behavior.
                 stmt = select(Player).where(Player.player_id == player_id)
                 result = await session.execute(stmt)
                 player = result.scalar_one_or_none()

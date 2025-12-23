@@ -77,6 +77,7 @@ class TestEventTypes:
         assert event.player_id == "player789"
         assert event.event_type == "ObjectAddedToRoom"
 
+    @pytest.mark.xdist_group(name="serial_event_bus_tests")  # Prevent worker crashes in parallel execution
     def test_object_removed_from_room_event(self) -> None:
         """Test ObjectRemovedFromRoom event creation."""
         event = ObjectRemovedFromRoom(object_id="object123", room_id="room456", player_id="player789")
@@ -123,6 +124,7 @@ class TestEventBus:
 
     @pytest.mark.asyncio
     @pytest.mark.serial  # Flaky in parallel execution - likely due to shared event bus state or timing issues
+    @pytest.mark.xdist_group(name="serial_event_bus_tests")  # Force serial execution with pytest-xdist
     async def test_event_bus_shutdown(self) -> None:
         """Test that EventBus can be shut down properly."""
         event_bus = EventBus()
@@ -171,6 +173,7 @@ class TestEventBus:
 
     @pytest.mark.asyncio
     @pytest.mark.serial  # Flaky in parallel execution - likely due to shared event bus state or timing issues
+    @pytest.mark.xdist_group(name="serial_event_bus_tests")  # Force serial execution with pytest-xdist
     async def test_subscribe_and_publish(self) -> None:
         """Test basic subscribe and publish functionality."""
         event_bus = EventBus()
@@ -186,10 +189,16 @@ class TestEventBus:
         event = PlayerEnteredRoom(player_id="player123", room_id="room456")
         event_bus.publish(event)
 
-        # Give the async processing time to process
-        await asyncio.sleep(0.1)
+        # Give the async processing time to process - use retry mechanism for parallel execution
+        max_wait_attempts = 10
+        for _ in range(max_wait_attempts):
+            if len(received_events) >= 1:
+                break
+            await asyncio.sleep(0.05)  # Shorter sleep with retry is more reliable
 
-        assert len(received_events) == 1
+        assert len(received_events) == 1, (
+            f"Expected 1 event but got {len(received_events)} after {max_wait_attempts} attempts"
+        )
         assert received_events[0] == event
 
         # Clean up the EventBus properly
@@ -231,6 +240,7 @@ class TestEventBus:
 
     @pytest.mark.asyncio
     @pytest.mark.serial  # Mark as serial to prevent deadlocks during parallel execution
+    @pytest.mark.xdist_group(name="serial_event_bus_tests")  # Force serial execution with pytest-xdist
     async def test_unsubscribe(self) -> None:
         """Test that unsubscribing removes the handler."""
         event_bus = EventBus()
@@ -302,6 +312,8 @@ class TestEventBus:
         await event_bus.shutdown()
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared event bus state or timing issues
+    @pytest.mark.xdist_group(name="serial_event_bus_tests")  # Force serial execution with pytest-xdist
     async def test_get_all_subscriber_counts(self) -> None:
         """Test getting subscriber counts for all event types."""
         event_bus = EventBus()

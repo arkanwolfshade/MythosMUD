@@ -28,7 +28,7 @@ vi.mock('./components/StatsRollingScreen', () => ({
     onError,
   }: {
     characterName: string;
-    onStatsAccepted: (stats: Record<string, unknown>) => void;
+    onStatsAccepted: (stats: Record<string, unknown>, characterName: string) => void;
     onError: (error: string) => void;
     _baseUrl: string;
     _authToken: string;
@@ -48,7 +48,7 @@ vi.mock('./components/StatsRollingScreen', () => ({
         {error && <div className="error-message">{error}</div>}
         <button
           onClick={() => {
-            onStatsAccepted({ strength: 10 });
+            onStatsAccepted({ strength: 10 }, characterName || 'TestCharacter');
           }}
         >
           Accept Stats & Create Character

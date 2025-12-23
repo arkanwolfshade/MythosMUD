@@ -299,18 +299,34 @@ function App() {
           })
         );
         setCharacters(mappedCharacters);
+
+        // Reset character creation state
+        setSelectedProfession(undefined);
+        setShowProfessionSelection(false);
+        // Show character selection screen after creation
+        setShowCharacterSelection(true);
+      } else {
+        // Response was not OK - handle as error
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage =
+          errorData.detail?.message || errorData.detail || 'Character created, but failed to refresh character list';
+        console.error('Failed to refresh characters list:', errorMessage);
+        setError('Character created, but failed to refresh character list. Please refresh the page.');
+        // Reset character creation state to allow retry
+        setSelectedProfession(undefined);
+        setShowProfessionSelection(true);
+        setShowCharacterSelection(false);
       }
     } catch (error) {
-      // If refresh fails, we'll still show character selection
-      // The character was created, so we can proceed
+      // If refresh fails, log error and show error message
+      // Don't proceed to character selection if we can't verify characters were created
       console.error('Failed to refresh characters list:', error);
+      setError('Character created, but failed to refresh character list. Please refresh the page.');
+      // Reset character creation state to allow retry
+      setSelectedProfession(undefined);
+      setShowProfessionSelection(true);
+      setShowCharacterSelection(false);
     }
-
-    // Reset character creation state
-    setSelectedProfession(undefined);
-    setShowProfessionSelection(false);
-    // Show character selection screen after creation
-    setShowCharacterSelection(true);
   };
 
   const handleStatsError = (error: string) => {
@@ -394,6 +410,22 @@ function App() {
           })
         );
         setCharacters(mappedCharacters);
+
+        // If last character was deleted, show profession selection screen for character creation
+        if (mappedCharacters.length === 0) {
+          setShowCharacterSelection(false);
+          setShowProfessionSelection(true);
+          setSelectedProfession(undefined);
+        }
+      } else {
+        // Character was deleted but refresh failed - log error and show message
+        const errorData = await charactersResponse.json().catch(() => ({}));
+        const errorMessage =
+          errorData.detail?.message || errorData.detail || 'Character deleted, but failed to refresh character list';
+        console.error('Failed to refresh characters list after deletion:', errorMessage);
+        setError(errorMessage);
+        // Still throw to indicate partial failure
+        throw new Error(errorMessage);
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to delete character';
