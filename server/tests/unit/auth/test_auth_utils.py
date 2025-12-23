@@ -319,6 +319,27 @@ class TestAuthUtilsErrorPaths:
         result = decode_access_token(None)
         assert result is None
 
+    def test_create_access_token_with_none_secret_key(self) -> None:
+        """Test create_access_token raises AuthenticationError when secret_key is None.
+
+        AI: Tests line 91 in auth_utils.py where secret_key=None raises AuthenticationError.
+        """
+        import pytest
+
+        from server.exceptions import AuthenticationError
+
+        with pytest.raises(AuthenticationError, match="JWT secret key is not configured"):
+            create_access_token({"sub": "test_user"}, secret_key=None)
+
+    def test_decode_access_token_with_none_secret_key(self) -> None:
+        """Test decode_access_token returns None when secret_key is None.
+
+        AI: Tests lines 117-118 in auth_utils.py where secret_key=None causes
+        error logging and returns None.
+        """
+        result = decode_access_token("some_token", secret_key=None)
+        assert result is None
+
 
 class TestAuthUtilsSecretKeyHandling:
     """Test SECRET_KEY environment variable handling."""

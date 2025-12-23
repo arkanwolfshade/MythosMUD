@@ -208,3 +208,39 @@ class TestGetOptionalCurrentUser:
         assert result.email == "test@example.com"
         assert result.is_superuser is True
         assert result.is_verified is True
+
+
+class TestDependenciesModule:
+    """Test module-level functionality and imports."""
+
+    def test_module_exports_all(self) -> None:
+        """Test that __all__ is properly defined."""
+        from server.auth import dependencies
+
+        assert hasattr(dependencies, "__all__")
+        assert isinstance(dependencies.__all__, list)
+        expected_exports = [
+            "get_current_user",
+            "get_current_active_user",
+            "get_current_superuser",
+            "get_current_verified_user",
+            "require_invite_code",
+            "get_optional_current_user",
+            "get_invite_manager",
+        ]
+        assert set(dependencies.__all__) == set(expected_exports)
+
+    def test_module_imports_work(self) -> None:
+        """Test that all imports in dependencies module work correctly."""
+        from server.auth.dependencies import (
+            get_current_superuser,
+            get_current_verified_user,
+            get_optional_current_user,
+            require_invite_code,
+        )
+
+        # Just verify the imports work - these should all be callable
+        assert callable(get_current_superuser)
+        assert callable(get_current_verified_user)
+        assert callable(get_optional_current_user)
+        assert callable(require_invite_code)

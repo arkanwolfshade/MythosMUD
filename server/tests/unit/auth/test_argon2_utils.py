@@ -333,6 +333,185 @@ class TestArgon2ErrorHandling:
             # Should log warning for empty hash
             assert any("empty hash" in str(call) for call in mock_warning.call_args_list)
 
+    def test_hash_password_with_hashing_error(self) -> None:
+        """Test hash_password handles HashingError exception."""
+        from unittest.mock import MagicMock, patch
+
+        from argon2.exceptions import HashingError
+
+        password = "test_password"
+        hashing_error = HashingError("Argon2 hashing failed")
+
+        mock_hasher = MagicMock()
+        mock_hasher.hash = MagicMock(side_effect=hashing_error)
+
+        with patch("server.auth.argon2_utils._default_hasher", mock_hasher):
+            with patch("server.auth.argon2_utils.logger.error") as mock_error:
+                with pytest.raises(AuthenticationError, match="Failed to hash password"):
+                    hash_password(password)
+                mock_error.assert_called_once()
+
+    def test_hash_password_with_type_error(self) -> None:
+        """Test hash_password handles TypeError exception."""
+        from unittest.mock import MagicMock, patch
+
+        password = "test_password"
+        type_error = TypeError("Type error during hashing")
+
+        mock_hasher = MagicMock()
+        mock_hasher.hash = MagicMock(side_effect=type_error)
+
+        with patch("server.auth.argon2_utils._default_hasher", mock_hasher):
+            with patch("server.auth.argon2_utils.logger.error") as mock_error:
+                with pytest.raises(AuthenticationError, match="Failed to hash password"):
+                    hash_password(password)
+                mock_error.assert_called_once()
+
+    def test_hash_password_with_value_error(self) -> None:
+        """Test hash_password handles ValueError exception."""
+        from unittest.mock import MagicMock, patch
+
+        password = "test_password"
+        value_error = ValueError("Value error during hashing")
+
+        mock_hasher = MagicMock()
+        mock_hasher.hash = MagicMock(side_effect=value_error)
+
+        with patch("server.auth.argon2_utils._default_hasher", mock_hasher):
+            with patch("server.auth.argon2_utils.logger.error") as mock_error:
+                with pytest.raises(AuthenticationError, match="Failed to hash password"):
+                    hash_password(password)
+                mock_error.assert_called_once()
+
+    def test_hash_password_with_memory_error(self) -> None:
+        """Test hash_password handles MemoryError exception."""
+        from unittest.mock import MagicMock, patch
+
+        password = "test_password"
+        memory_error = MemoryError("Memory error during hashing")
+
+        mock_hasher = MagicMock()
+        mock_hasher.hash = MagicMock(side_effect=memory_error)
+
+        with patch("server.auth.argon2_utils._default_hasher", mock_hasher):
+            with patch("server.auth.argon2_utils.logger.error") as mock_error:
+                with pytest.raises(AuthenticationError, match="Failed to hash password"):
+                    hash_password(password)
+                mock_error.assert_called_once()
+
+    def test_verify_password_with_non_string_password(self) -> None:
+        """Test verify_password handles non-string password."""
+        from typing import Any, cast
+        from unittest.mock import patch
+
+        hashed = hash_password("test_password")
+
+        with patch("server.auth.argon2_utils.logger.warning") as mock_warning:
+            result = verify_password(cast(Any, 12345), hashed)
+            assert result is False
+            mock_warning.assert_called_once()
+
+    def test_verify_password_with_non_string_hash(self) -> None:
+        """Test verify_password handles non-string hash."""
+        from typing import Any, cast
+        from unittest.mock import patch
+
+        password = "test_password"
+
+        with patch("server.auth.argon2_utils.logger.warning") as mock_warning:
+            result = verify_password(password, cast(Any, 12345))
+            assert result is False
+            mock_warning.assert_called_once()
+
+    def test_verify_password_with_verification_error(self) -> None:
+        """Test verify_password handles VerificationError exception."""
+        from unittest.mock import MagicMock, patch
+
+        from argon2.exceptions import VerificationError
+
+        password = "test_password"
+        hashed = hash_password("different_password")
+        verification_error = VerificationError("Password verification failed")
+
+        mock_hasher = MagicMock()
+        mock_hasher.verify = MagicMock(side_effect=verification_error)
+
+        with patch("server.auth.argon2_utils._default_hasher", mock_hasher):
+            with patch("server.auth.argon2_utils.logger.warning") as mock_warning:
+                result = verify_password(password, hashed)
+                assert result is False
+                mock_warning.assert_called_once()
+
+    def test_verify_password_with_invalid_hash_exception(self) -> None:
+        """Test verify_password handles InvalidHash exception."""
+        from unittest.mock import MagicMock, patch
+
+        from argon2.exceptions import InvalidHash
+
+        password = "test_password"
+        hashed = hash_password(password)
+        invalid_hash_error = InvalidHash("Invalid hash format")
+
+        mock_hasher = MagicMock()
+        mock_hasher.verify = MagicMock(side_effect=invalid_hash_error)
+
+        with patch("server.auth.argon2_utils._default_hasher", mock_hasher):
+            with patch("server.auth.argon2_utils.logger.warning") as mock_warning:
+                result = verify_password(password, hashed)
+                assert result is False
+                mock_warning.assert_called_once()
+
+    def test_verify_password_with_type_error(self) -> None:
+        """Test verify_password handles TypeError exception."""
+        from unittest.mock import MagicMock, patch
+
+        password = "test_password"
+        hashed = hash_password(password)
+        type_error = TypeError("Type error during verification")
+
+        mock_hasher = MagicMock()
+        mock_hasher.verify = MagicMock(side_effect=type_error)
+
+        with patch("server.auth.argon2_utils._default_hasher", mock_hasher):
+            with patch("server.auth.argon2_utils.logger.error") as mock_error:
+                result = verify_password(password, hashed)
+                assert result is False
+                mock_error.assert_called_once()
+
+    def test_verify_password_with_value_error(self) -> None:
+        """Test verify_password handles ValueError exception."""
+        from unittest.mock import MagicMock, patch
+
+        password = "test_password"
+        hashed = hash_password(password)
+        value_error = ValueError("Value error during verification")
+
+        mock_hasher = MagicMock()
+        mock_hasher.verify = MagicMock(side_effect=value_error)
+
+        with patch("server.auth.argon2_utils._default_hasher", mock_hasher):
+            with patch("server.auth.argon2_utils.logger.error") as mock_error:
+                result = verify_password(password, hashed)
+                assert result is False
+                mock_error.assert_called_once()
+
+    def test_verify_password_with_memory_error(self) -> None:
+        """Test verify_password handles MemoryError exception."""
+        from unittest.mock import MagicMock, patch
+
+        password = "test_password"
+        hashed = hash_password(password)
+        memory_error = MemoryError("Memory error during verification")
+
+        mock_hasher = MagicMock()
+        mock_hasher.verify = MagicMock(side_effect=memory_error)
+
+        with patch("server.auth.argon2_utils._default_hasher", mock_hasher):
+            with patch("server.auth.argon2_utils.logger.error") as mock_error:
+                result = verify_password(password, hashed)
+                assert result is False
+                mock_error.assert_called_once()
+
 
 class TestArgon2Security:
     """Test Argon2 security properties."""
@@ -557,6 +736,26 @@ class TestArgon2EnvironmentVariables:
         import server.auth.argon2_utils
 
         with pytest.raises(ValueError, match="ARGON2_MEMORY_COST must be between 1024 and 1048576"):
+            importlib.reload(server.auth.argon2_utils)
+
+    def test_env_var_invalid_parallelism_raises_value_error(self, monkeypatch):
+        """Test that invalid ARGON2_PARALLELISM raises ValueError."""
+        monkeypatch.setenv("ARGON2_PARALLELISM", "20")
+        import importlib
+
+        import server.auth.argon2_utils
+
+        with pytest.raises(ValueError, match="ARGON2_PARALLELISM must be between 1 and 16"):
+            importlib.reload(server.auth.argon2_utils)
+
+    def test_env_var_invalid_hash_length_raises_value_error(self, monkeypatch):
+        """Test that invalid ARGON2_HASH_LENGTH raises ValueError."""
+        monkeypatch.setenv("ARGON2_HASH_LENGTH", "100")
+        import importlib
+
+        import server.auth.argon2_utils
+
+        with pytest.raises(ValueError, match="ARGON2_HASH_LENGTH must be between 16 and 64"):
             importlib.reload(server.auth.argon2_utils)
 
     def test_env_var_missing_uses_defaults(self, monkeypatch):

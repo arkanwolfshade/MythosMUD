@@ -236,3 +236,75 @@ class TestAuthEndpointsCoverage:
 
                 assert exc_info.value.status_code == 400
                 assert "Email already exists" in exc_info.value.detail
+
+    @pytest.mark.asyncio
+    async def test_register_user_http_exception_re_raise(self) -> None:
+        """Test register_user re-raises HTTPException."""
+        from fastapi import HTTPException
+
+        user_create = UserCreate(username="user", password="password123")
+        mock_request = Mock(spec=Request)
+        mock_request.app = Mock()
+        mock_request.app.state = Mock()
+
+        mock_session = AsyncMock(spec=AsyncSession)
+        mock_result = Mock()
+        mock_result.scalar_one_or_none = Mock(return_value=None)
+        mock_session.execute = AsyncMock(return_value=mock_result)
+        # Raise HTTPException during commit
+        mock_session.commit = AsyncMock(side_effect=HTTPException(status_code=400, detail="HTTP error"))
+
+        with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
+            with patch("server.auth.argon2_utils.hash_password", return_value="hashed"):
+                with pytest.raises(HTTPException) as exc_info:
+                    await register_user(user_create, mock_request, Mock(), mock_session)
+
+                assert exc_info.value.status_code == 400
+                assert "HTTP error" in exc_info.value.detail
+
+    @pytest.mark.asyncio
+    async def test_login_user_profession_lookup_success(self) -> None:
+        """Test login_user successfully retrieves profession name."""
+        login_req = LoginRequest(username="user", password="password")
+        mock_request = Mock(spec=Request)
+        mock_request.app = Mock()
+        mock_request.app.state = Mock()
+
+        mock_user = Mock(spec=User)
+        mock_user.id = uuid.uuid4()
+        mock_user.email = "user@example.com"
+
+        mock_session = AsyncMock(spec=AsyncSession)
+        mock_result = Mock()
+        mock_result.scalar_one_or_none = Mock(return_value=mock_user)
+        mock_session.execute = AsyncMock(return_value=mock_result)
+
+        mock_user_manager = Mock()
+        mock_user_manager.authenticate = AsyncMock(return_value=mock_user)
+
+        from datetime import UTC, datetime
+
+        mock_player = Mock()
+        mock_player.player_id = uuid.uuid4()
+        mock_player.name = "TestChar"
+        mock_player.profession_id = 1
+        mock_player.level = 1
+        mock_player.created_at = datetime.now(UTC).replace(tzinfo=None)
+        mock_player.last_active = datetime.now(UTC).replace(tzinfo=None)
+
+        mock_profession = Mock()
+        mock_profession.name = "Warrior"
+
+        mock_persistence = Mock()
+        mock_persistence.get_active_players_by_user_id = AsyncMock(return_value=[mock_player])
+        # Profession lookup succeeds
+        mock_persistence.get_profession_by_id = AsyncMock(return_value=mock_profession)
+
+        with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
+            with patch("fastapi_users.jwt.generate_jwt", return_value="token"):
+                with patch("server.async_persistence.get_async_persistence", return_value=mock_persistence):
+                    result = await login_user(login_req, mock_request, mock_user_manager, mock_session)
+
+                    assert result.access_token == "token"
+                    assert len(result.characters) == 1
+                    assert result.characters[0]["profession_name"] == "Warrior"
