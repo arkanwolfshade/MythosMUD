@@ -60,13 +60,11 @@ async def webhook(request: Request):
 
     except (DatabaseError, SQLAlchemyError) as e:
         logger.error("Error processing webhook", error=str(e), exc_info=True)
-        # Human reader: sanitize error message to prevent stack trace exposure.
-        # AI reader: never expose stack traces in API responses, only in logs.
-        error_msg = str(e).split("\n")[0].strip()  # Get first line only
-        # Remove file paths and line numbers
-        if any(pattern in error_msg.lower() for pattern in ['file "', "line ", "traceback"]):
-            error_msg = "An error occurred processing the webhook"
-        return JSONResponse(status_code=500, content={"error": error_msg})
+        # Return only a generic error message to avoid exposing internal details.
+        return JSONResponse(
+            status_code=500,
+            content={"error": "An error occurred processing the webhook"},
+        )
 
 
 @app.get("/health")
