@@ -15,6 +15,8 @@ from server.npc.behaviors import PassiveMobNPC, ShopkeeperNPC
 
 logger = get_logger(__name__)
 
+pytestmark = pytest.mark.integration
+
 
 @pytest.fixture
 def event_bus():

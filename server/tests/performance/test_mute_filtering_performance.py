@@ -15,6 +15,8 @@ import pytest
 from server.game.chat_service import ChatService
 from server.game.player_service import PlayerService
 
+pytestmark = pytest.mark.slow
+
 
 class TestMuteFilteringPerformance:
     """Performance tests for mute filtering system."""

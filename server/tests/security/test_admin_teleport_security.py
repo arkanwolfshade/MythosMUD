@@ -17,6 +17,8 @@ from server.commands.admin_commands import (
     validate_admin_permission,
 )
 
+pytestmark = pytest.mark.security
+
 
 @pytest.fixture(autouse=True)
 def patch_async_helpers(monkeypatch):

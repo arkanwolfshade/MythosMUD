@@ -54,6 +54,11 @@ from server.exceptions import (
 )
 from server.tests.fixtures.test_error_logging import ErrorLoggingTestMixin
 
+pytestmark = [
+    pytest.mark.serial,  # Patches logger and global error handlers; isolate to one worker
+    pytest.mark.xdist_group(name="serial_error_logging_tests"),
+]
+
 
 class TestErrorContextLogging:
     """Test error context creation and logging."""

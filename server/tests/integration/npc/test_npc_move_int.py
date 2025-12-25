@@ -12,6 +12,8 @@ from server.game.movement_service import MovementService
 from server.models.npc import NPCDefinitionType
 from server.npc.behaviors import PassiveMobNPC
 
+pytestmark = pytest.mark.integration
+
 
 @pytest.fixture
 def event_bus():

@@ -11,6 +11,8 @@ import pytest
 
 from server.models.room import Room
 
+pytestmark = pytest.mark.integration
+
 
 class TestMovementIntegration:
     """Test movement integration with command handler."""

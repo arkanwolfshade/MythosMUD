@@ -15,6 +15,8 @@ from server.models.combat import CombatInstance, CombatParticipant, CombatPartic
 from server.models.player import Player
 from server.services.player_combat_service import PlayerCombatService
 
+pytestmark = pytest.mark.integration
+
 
 class TestPlayerCombatState:
     """Test player combat state tracking and management."""

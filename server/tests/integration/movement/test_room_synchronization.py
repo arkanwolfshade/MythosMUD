@@ -20,6 +20,8 @@ from server.events.event_types import PlayerEnteredRoom
 from server.models.room import Room
 from server.services.room_sync_service import RoomSyncService
 
+pytestmark = pytest.mark.integration
+
 
 class TestEventProcessingOrder:
     """Test cases for event processing order and state merging logic."""

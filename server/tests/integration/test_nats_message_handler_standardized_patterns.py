@@ -14,6 +14,8 @@ from server.realtime.nats_message_handler import NATSMessageHandler
 from server.services.nats_service import NATSService
 from server.services.nats_subject_manager import NATSSubjectManager
 
+pytestmark = pytest.mark.integration
+
 
 class TestNATSMessageHandlerStandardizedPatterns:
     """Test NATSMessageHandler integration with NATSSubjectManager for standardized subscription patterns."""

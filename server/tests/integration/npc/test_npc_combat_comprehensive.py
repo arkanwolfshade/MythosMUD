@@ -15,6 +15,8 @@ from server.events.event_types import NPCAttacked
 from server.exceptions import DatabaseError
 from server.npc.combat_integration import NPCCombatIntegration
 
+pytestmark = pytest.mark.integration
+
 
 class TestNPCCombatIntegrationComprehensive:
     """Comprehensive test cases for NPC Combat Integration."""

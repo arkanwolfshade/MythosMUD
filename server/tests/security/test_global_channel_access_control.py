@@ -15,6 +15,8 @@ from server.game.player_service import PlayerService
 from server.services.rate_limiter import RateLimiter
 from server.services.user_manager import UserManager
 
+pytestmark = pytest.mark.security
+
 
 class TestGlobalChannelAccessControl:
     """Test global channel access control functionality."""

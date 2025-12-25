@@ -11,6 +11,8 @@ from server.exceptions import ValidationError as MythosValidationError
 from server.models.command import CommandType, ReplyCommand, WhisperCommand
 from server.utils.command_parser import parse_command
 
+pytestmark = pytest.mark.integration
+
 
 class TestWhisperCommandIntegration:
     """Test whisper command integration."""

@@ -16,6 +16,8 @@ from server.models.room import Room
 from server.npc.lifecycle_manager import NPCLifecycleManager
 from server.npc.spawning_service import NPCSpawningService
 
+pytestmark = pytest.mark.integration
+
 
 class _FakePersistence:
     def __init__(self, room: Room):

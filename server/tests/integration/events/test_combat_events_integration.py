@@ -24,6 +24,8 @@ from server.events.combat_events import (
 from server.events.event_types import NPCAttacked, NPCDied, NPCTookDamage
 from server.services.combat_event_publisher import CombatEventPublisher
 
+pytestmark = pytest.mark.integration
+
 
 class TestCombatEventPublisher:
     """Test combat event publisher integration with NATS."""

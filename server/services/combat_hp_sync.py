@@ -101,18 +101,34 @@ class CombatDPSync:
                         exc_info=True,
                     )
 
+        task_coro = _persist_and_handle_errors()
         try:
-            asyncio.create_task(_persist_and_handle_errors())
+            task = asyncio.create_task(task_coro)
             logger.debug(
                 "Created background task for DP persistence",
                 player_id=player_id,
                 current_dp=current_dp,
             )
+            # If a test double returns something other than an asyncio.Task, close the coroutine to avoid leaks.
+            # Type checker thinks this is unreachable (asyncio.create_task always returns Task),
+            # but test doubles may return non-Task objects, so we keep the check for test safety
+            if not isinstance(task, asyncio.Task):
+                task_coro.close()  # type: ignore[unreachable]
         except RuntimeError as e:
+            task_coro.close()
             logger.error(
                 "Cannot create background task - no event loop available",
                 player_id=player_id,
                 error=str(e),
+            )
+        except Exception as e:  # pragma: no cover - defensive path for unexpected test doubles
+            task_coro.close()
+            logger.error(
+                "Failed to create background task for DP persistence",
+                player_id=player_id,
+                current_dp=current_dp,
+                error=str(e),
+                error_type=type(e).__name__,
             )
 
     def _get_persistence(self, player_id: UUID):

@@ -14,6 +14,8 @@ from server.realtime.nats_message_handler import NATSMessageHandler
 from server.services.nats_subject_manager import NATSSubjectManager
 from server.utils.room_utils import extract_subzone_from_room_id, get_subzone_local_channel_subject
 
+pytestmark = pytest.mark.integration
+
 
 class TestLocalChannelNATSIntegration:
     """Test local channel NATS integration functionality."""

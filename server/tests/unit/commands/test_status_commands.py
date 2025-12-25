@@ -661,6 +661,12 @@ class TestHandleWhoamiCommand:
         mock_combat_service.get_combat_by_participant.return_value = None
         mock_app.state.combat_service = mock_combat_service
 
+        # Initialize shutdown_data to None to prevent coroutine warnings from shared state
+        # This prevents MagicMock from dynamically creating shutdown_data with a coroutine value
+        # that might leak from other tests (e.g., test_shutdown_countdown.py)
+        mock_app.state.server_shutdown_pending = False
+        mock_app.state.shutdown_data = None
+
         mock_app.state.persistence = mock_persistence
         mock_request.app = mock_app
 

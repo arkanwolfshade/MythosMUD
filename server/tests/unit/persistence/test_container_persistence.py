@@ -26,6 +26,11 @@ from server.persistence.container_persistence import (
     update_container,
 )
 
+pytestmark = [
+    pytest.mark.serial,  # Container DB helpers mutate shared state; keep to one worker
+    pytest.mark.xdist_group(name="serial_container_mutations_tests"),
+]
+
 
 class TestParseJsonbColumn:
     """Test _parse_jsonb_column helper function."""

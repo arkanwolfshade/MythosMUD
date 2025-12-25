@@ -1,7 +1,11 @@
 import json
 from pathlib import Path
 
+import pytest
+
 from server.game.items.prototype_registry import PrototypeRegistry
+
+pytestmark = pytest.mark.integration
 
 
 def write_payload(directory: Path, name: str, payload: dict):

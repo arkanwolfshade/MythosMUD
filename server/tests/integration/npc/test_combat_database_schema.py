@@ -14,6 +14,8 @@ from sqlalchemy import text
 from server.models.npc import NPCDefinition
 from server.npc_database import get_npc_session, init_npc_db
 
+pytestmark = pytest.mark.integration
+
 
 class TestCombatDatabaseSchema:
     """Test combat database schema extensions."""

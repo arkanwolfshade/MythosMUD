@@ -10,6 +10,8 @@ import pytest
 from server.models.npc import NPCDefinitionType
 from server.npc.behaviors import AggressiveMobNPC
 
+pytestmark = pytest.mark.integration
+
 
 @pytest.fixture
 def event_bus():

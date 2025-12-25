@@ -434,4 +434,5 @@ class TestWorkingEventSystem:
         # In the real application, this is provided by FastAPI's lifespan manager
         # which sets the main event loop on the EventBus
 
-        assert True  # This test passes if we get here, confirming the system works
+        # The test implicitly passes if we get here, confirming the system works
+        # pytest will fail on any uncaught exception, so no explicit assertion needed

@@ -778,8 +778,8 @@ class TestMovementService:
             await move_player()
 
         # Verify that the service handled movements correctly
-        # (no exceptions should have been raised)
-        assert True  # If we get here, no exceptions were raised
+        # The test implicitly passes if no exception was raised during execution
+        # pytest will fail on any uncaught exception, so no explicit assertion needed
 
 
 # ============================================================================

@@ -10,6 +10,8 @@ import pytest
 
 from server.commands.npc_admin_commands import handle_npc_command
 
+pytestmark = pytest.mark.integration
+
 
 class TestNPCMainCommand:
     """Test class for main NPC command routing."""

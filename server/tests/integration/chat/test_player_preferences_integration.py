@@ -17,6 +17,8 @@ from server.models.player import Player, PlayerChannelPreferences
 from server.models.user import User
 from server.services.player_preferences_service import PlayerPreferencesService
 
+pytestmark = pytest.mark.integration
+
 
 class TestPlayerPreferencesIntegration:
     """Integration tests for player preferences system."""

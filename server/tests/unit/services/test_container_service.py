@@ -1,17 +1,12 @@
-"""
-Tests for container service.
-
-This module tests the ContainerService class and its methods for managing
-container operations including open/close, transfers, and access control.
-"""
-
+import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 from uuid import uuid4
 
 import pytest
 
 from server.exceptions import ValidationError
-from server.models.container import ContainerLockState
+from server.models.container import ContainerLockState, ContainerSourceType
 from server.services.container_service import (
     ContainerAccessDeniedError,
     ContainerLockedError,
@@ -21,6 +16,133 @@ from server.services.container_service import (
     _filter_container_data,
     _get_enum_value,
 )
+from server.services.inventory_service import InventoryStack
+
+
+class _FakePlayer:
+    def __init__(self, player_id: uuid.UUID, room_id: str, is_admin: bool = False, inventory=None, name="Tester"):
+        self.player_id = player_id
+        self.current_room_id = room_id
+        self.is_admin = is_admin
+        self.inventory = inventory or []
+        self.name = name
+
+
+class _FakePersistence:
+    def __init__(self, container_data: dict, player: _FakePlayer):
+        self.container_data = container_data
+        self.player = player
+        self.updated_items = None
+
+    async def get_container(self, container_id):
+        return self.container_data
+
+    async def get_player_by_id(self, player_id):
+        return self.player
+
+    async def update_container(self, container_id, items_json=None, **kwargs):
+        self.updated_items = items_json
+        return True
+
+
+def _make_container(
+    lock_state: ContainerLockState = ContainerLockState.UNLOCKED,
+    metadata: dict | None = None,
+    items=None,
+) -> dict:
+    return {
+        "container_id": uuid.uuid4(),
+        "source_type": ContainerSourceType.ENVIRONMENT,
+        "room_id": "room-1",
+        "capacity_slots": 5,
+        "lock_state": lock_state,
+        "items": items or [],
+        "metadata": metadata or {},
+    }
+
+
+@pytest.mark.asyncio
+async def test_open_container_unlocked_allows_access() -> None:
+    container_data = _make_container()
+    player_id = uuid.uuid4()
+    player = _FakePlayer(player_id, room_id="room-1", is_admin=True)
+    persistence = _FakePersistence(container_data, player)
+
+    service = ContainerService(persistence=persistence)
+    result = await service.open_container(container_data["container_id"], player_id)
+
+    assert "mutation_token" in result
+    assert service.get_container_token(container_data["container_id"], player_id) == result["mutation_token"]
+
+
+@pytest.mark.asyncio
+async def test_open_container_locked_requires_key_or_admin() -> None:
+    container_data = _make_container(lock_state=ContainerLockState.LOCKED)
+    player_id = uuid.uuid4()
+    player = _FakePlayer(player_id, room_id="room-1", is_admin=False)
+    persistence = _FakePersistence(container_data, player)
+    service = ContainerService(persistence=persistence)
+
+    with pytest.raises(ContainerLockedError):
+        await service.open_container(container_data["container_id"], player_id)
+
+
+@pytest.mark.asyncio
+async def test_open_container_locked_with_key_succeeds() -> None:
+    container_data = _make_container(
+        lock_state=ContainerLockState.LOCKED,
+        metadata={"key_item_id": "skeleton-key"},
+    )
+    player_id = uuid.uuid4()
+    player = _FakePlayer(
+        player_id,
+        room_id="room-1",
+        is_admin=False,
+        inventory=[{"item_id": "skeleton-key"}],
+    )
+    persistence = _FakePersistence(container_data, player)
+    service = ContainerService(persistence=persistence)
+
+    result = await service.open_container(container_data["container_id"], player_id)
+    assert "mutation_token" in result
+
+
+@pytest.mark.asyncio
+async def test_transfer_to_container_updates_persistence() -> None:
+    container_data = _make_container(items=[])
+    player_id = uuid.uuid4()
+    player = _FakePlayer(player_id, room_id="room-1", is_admin=True)
+    persistence = _FakePersistence(container_data, player)
+    service = ContainerService(persistence=persistence)
+
+    open_result = await service.open_container(container_data["container_id"], player_id)
+    mutation_token = open_result["mutation_token"]
+
+    item_stack_dict = {
+        "item_instance_id": "inst-1",
+        "prototype_id": "proto-1",
+        "item_id": "artifact-1",
+        "item_name": "Elder Sign",
+        "slot_type": "bag",
+        "quantity": 1,
+    }
+    # Cast dict to InventoryStack TypedDict for type checker
+    item_stack = cast(InventoryStack, item_stack_dict)
+
+    transfer_result = await service.transfer_to_container(
+        container_id=container_data["container_id"],
+        player_id=player_id,
+        mutation_token=mutation_token,
+        item=item_stack,
+        quantity=1,
+    )
+
+    assert persistence.updated_items is not None
+    # Mypy incorrectly thinks this is unreachable - false positive due to type narrowing
+    assert len(persistence.updated_items) == 1  # type: ignore[unreachable]
+    # InventoryService normalizes item_id to prototype_id
+    assert transfer_result["container"]["items"][0]["item_id"] == "proto-1"
+    assert transfer_result["container"]["items"][0]["quantity"] == 1
 
 
 class TestGetEnumValue:

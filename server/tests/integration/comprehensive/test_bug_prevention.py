@@ -25,6 +25,8 @@ from server.models.room import Room
 from server.realtime.connection_manager import ConnectionManager, MemoryMonitor
 from server.realtime.event_handler import RealTimeEventHandler
 
+pytestmark = pytest.mark.integration
+
 # WebSocketHandler doesn't exist - the module exports handle_websocket_connection function
 
 

@@ -118,14 +118,19 @@ class TestGetPlayerForLogout:
         mock_persistence = AsyncMock()
         mock_persistence.get_player_by_name = AsyncMock(return_value=None)
 
-        with patch("server.commands.logout_commands.get_cached_player", return_value=fake_coroutine()):
-            with patch("server.commands.logout_commands.logger") as mock_logger:
-                with patch("server.commands.logout_commands._clear_corrupted_cache_entry") as mock_clear:
-                    result = await _get_player_for_logout(request, mock_persistence, "testplayer")
+        coro = fake_coroutine()
+        try:
+            with patch("server.commands.logout_commands.get_cached_player", return_value=coro):
+                with patch("server.commands.logout_commands.logger") as mock_logger:
+                    with patch("server.commands.logout_commands._clear_corrupted_cache_entry") as mock_clear:
+                        result = await _get_player_for_logout(request, mock_persistence, "testplayer")
 
-                    assert result is None
-                    mock_clear.assert_called_once()
-                    mock_logger.warning.assert_called_once()
+                        assert result is None
+                        mock_clear.assert_called_once()
+                        mock_logger.warning.assert_called_once()
+        finally:
+            # Close coroutine to prevent "never awaited" warning
+            coro.close()
 
     @pytest.mark.asyncio
     async def test_get_player_for_logout_persistence_returns_coroutine(self) -> None:
@@ -138,15 +143,20 @@ class TestGetPlayerForLogout:
         request.state = SimpleNamespace()
         request.state._command_player_cache = {}
 
+        coro = fake_coroutine()
         mock_persistence = AsyncMock()
-        mock_persistence.get_player_by_name = AsyncMock(return_value=fake_coroutine())
+        mock_persistence.get_player_by_name = AsyncMock(return_value=coro)
 
-        with patch("server.commands.logout_commands.get_cached_player", return_value=None):
-            with patch("server.commands.logout_commands.logger") as mock_logger:
-                result = await _get_player_for_logout(request, mock_persistence, "testplayer")
+        try:
+            with patch("server.commands.logout_commands.get_cached_player", return_value=None):
+                with patch("server.commands.logout_commands.logger") as mock_logger:
+                    result = await _get_player_for_logout(request, mock_persistence, "testplayer")
 
-                assert result is None
-                mock_logger.error.assert_called_once()
+                    assert result is None
+                    mock_logger.error.assert_called_once()
+        finally:
+            # Close coroutine to prevent "never awaited" warning
+            coro.close()
 
     @pytest.mark.asyncio
     async def test_get_player_for_logout_persistence_error(self) -> None:

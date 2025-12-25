@@ -618,15 +618,15 @@ class TestPersistPlayerDpBackground:
         sync = CombatDPSync(mock_combat_service)
         player_id = uuid4()
 
-        # Track created coroutines to await them
-        created_coros = []
+        # Create real tasks so the background coroutine is awaited and closed.
+        # (Per Armitage's notes: leave no dangling rituals running in the dark.)
+        created_tasks: list[asyncio.Task] = []
 
-        def create_task_side_effect(coro):
-            """Track and properly handle created tasks."""
-            created_coros.append(coro)
-            # Return a mock task that won't cause issues
-            task = MagicMock()
-            task.done.return_value = False
+        original_create_task = asyncio.create_task
+
+        def create_task_side_effect(coro) -> asyncio.Task:
+            task = original_create_task(coro)
+            created_tasks.append(task)
             return task
 
         with patch.object(sync, "_persist_player_dp_sync", side_effect=DatabaseError("Database error")):
@@ -636,16 +636,8 @@ class TestPersistPlayerDpBackground:
                         # Call the actual method that creates the background task
                         sync._persist_player_dp_background(player_id, 40, 50, 100, None, None)
 
-                        # Wait a bit for the task to be created
-                        await asyncio.sleep(0.1)
-
-                        # Await all created coroutines to prevent warnings
-                        for coro in created_coros:
-                            try:
-                                await coro
-                            except DatabaseError:
-                                pass  # Expected
-
+                        # Await all created tasks to avoid "never awaited" warnings.
+                        await asyncio.gather(*created_tasks, return_exceptions=True)
                         mock_publish.assert_called_once()
 
     @pytest.mark.asyncio

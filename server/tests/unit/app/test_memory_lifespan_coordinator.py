@@ -139,7 +139,7 @@ class TestBackgroundAuditCycle:
     """Test background audit cycle execution."""
 
     @pytest.mark.asyncio
-    @patch.object(PeriodicOrphanAuditor, "_do_full_cleanup_audit")
+    @patch.object(PeriodicOrphanAuditor, "_do_full_cleanup_audit", new_callable=AsyncMock)
     async def test_background_audit_cycle_executes(self, mock_audit):
         """Test background audit cycle executes audits."""
         mock_audit.return_value = None
@@ -175,7 +175,7 @@ class TestBackgroundAuditCycle:
             await asyncio.sleep(0.01)  # Give GC time to process
 
     @pytest.mark.asyncio
-    @patch.object(PeriodicOrphanAuditor, "_do_full_cleanup_audit")
+    @patch.object(PeriodicOrphanAuditor, "_do_full_cleanup_audit", new_callable=AsyncMock)
     async def test_background_audit_cycle_handles_cancellation(self, mock_audit):
         """Test background cycle handles cancellation gracefully."""
         mock_audit.return_value = None
@@ -199,7 +199,7 @@ class TestBackgroundAuditCycle:
         assert auditor.audit_running is False
 
     @pytest.mark.asyncio
-    @patch.object(PeriodicOrphanAuditor, "_do_full_cleanup_audit")
+    @patch.object(PeriodicOrphanAuditor, "_do_full_cleanup_audit", new_callable=AsyncMock)
     async def test_background_audit_cycle_handles_exceptions(self, mock_audit):
         """Test background cycle handles audit exceptions."""
         mock_audit.side_effect = Exception("Audit failed")

@@ -4,7 +4,11 @@ Tests for NPC admin command permission validation.
 This module tests permission validation for NPC admin commands.
 """
 
+import pytest
+
 from server.commands.npc_admin_commands import validate_npc_admin_permission
+
+pytestmark = pytest.mark.integration
 
 
 class TestNPCAdminPermissions:

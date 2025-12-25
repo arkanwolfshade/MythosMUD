@@ -16,6 +16,8 @@ import pytest
 
 from server.realtime.connection_manager import ConnectionManager
 
+pytestmark = pytest.mark.slow
+
 
 class TestWebSocketLoad:
     """Load tests for WebSocket system."""

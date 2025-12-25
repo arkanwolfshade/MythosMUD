@@ -9,6 +9,8 @@ As noted in the Pnakotic Manuscripts: "Security must be consistent across all
 gateways, lest the ancient ones find a way through the cracks in our defenses."
 """
 
+import pytest
+
 from server.validators.security_validator import (
     INJECTION_PATTERNS,
     SLASH_COMMANDS,
@@ -16,6 +18,8 @@ from server.validators.security_validator import (
     sanitize_unicode_input,
     strip_ansi_codes,
 )
+
+pytestmark = pytest.mark.security
 
 
 class TestSecurityValidationConstants:

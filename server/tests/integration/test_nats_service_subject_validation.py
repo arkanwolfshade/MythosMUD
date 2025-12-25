@@ -15,6 +15,8 @@ from server.config.models import NATSConfig
 from server.services.nats_service import NATSService
 from server.services.nats_subject_manager import NATSSubjectManager
 
+pytestmark = pytest.mark.integration
+
 
 class TestNATSServiceSubjectValidation:
     """Test NATSService integration with NATSSubjectManager for subject validation."""

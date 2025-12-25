@@ -64,6 +64,8 @@ class TestFilterPlayersByName:
         assert len(result) == 1
         assert result[0] == mock_player
 
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared state
+    @pytest.mark.xdist_group(name="serial_utility_command_tests")
     def test_filter_with_partial_match_case_insensitive(self, mock_player):
         """Test filtering with partial case-insensitive match."""
         players = [mock_player]

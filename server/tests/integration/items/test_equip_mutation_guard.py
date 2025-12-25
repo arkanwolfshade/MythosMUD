@@ -1,9 +1,13 @@
 from copy import deepcopy
 from typing import Any
 
+import pytest
+
 from server.services.equipment_service import EquipmentService
 from server.services.inventory_mutation_guard import InventoryMutationGuard
 from server.services.inventory_service import InventoryService
+
+pytestmark = pytest.mark.integration
 
 
 def build_inventory_stack() -> dict[str, object]:

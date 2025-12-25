@@ -733,5 +733,5 @@ class TestWaitForTaskCancellation:
                     except asyncio.CancelledError:
                         pass
 
-                # Verify the function completed without raising (test passes if we get here)
-                assert True
+                # The function completed without raising an exception
+                # The test implicitly passes if we get here - pytest will fail on uncaught exceptions

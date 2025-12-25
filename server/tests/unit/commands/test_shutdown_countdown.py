@@ -204,10 +204,8 @@ class TestShutdownCountdownInitiation:
             "task": existing_task,
         }
 
-        # Create mock for task registry
-        mock_task_registry = MagicMock()
-        mock_new_task = AsyncMock()
-        mock_task_registry.register_task = MagicMock(return_value=mock_new_task)
+        # Create mock for task registry that properly consumes coroutines
+        mock_task_registry, mock_new_task = create_mock_task_registry()
         mock_app.state.task_registry = mock_task_registry
 
         await initiate_shutdown_countdown(mock_app, 10, "new_admin")

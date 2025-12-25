@@ -11,11 +11,15 @@ import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
 
+import pytest
+
 from server.logging.enhanced_logging_config import (
     _setup_enhanced_file_logging,
     configure_enhanced_structlog,
 )
 from server.logging.player_guid_formatter import PlayerGuidFormatter
+
+pytestmark = pytest.mark.integration
 
 
 class TestLoggingIntegration:

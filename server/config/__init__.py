@@ -71,5 +71,10 @@ def reset_config() -> None:
     # The _config_instance must be reset across function calls for test isolation.
 
     with _config_lock:
+        # Clear LRU cache first to prevent stale cached values
+        get_config.cache_clear()
+        # Then reset the global instance
         _config_instance = None
+        # Force cache clear again after reset to ensure consistency
+        # This handles edge cases where cache might be repopulated between clears
         get_config.cache_clear()

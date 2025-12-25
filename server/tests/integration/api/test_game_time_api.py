@@ -8,14 +8,16 @@ import pytest
 
 from server.api import game
 
+pytestmark = pytest.mark.integration
+
 
 class TestGameTimeApi:
     """Integration coverage for the /game/time endpoint."""
 
-    @pytest.fixture(scope="class")
-    def client(self, container_test_client_class):
-        """Class-scoped client fixture."""
-        return container_test_client_class
+    @pytest.fixture
+    def client(self, container_test_client):
+        """Function-scoped client fixture to avoid class-scope cleanup artifacts."""
+        return container_test_client
 
     @pytest.fixture(autouse=True)
     def _setup_client(self, client):
@@ -62,11 +64,15 @@ class TestGameTimeApi:
             get_upcoming_summary=lambda count=3: ["01/06 - Feast of Yig"],
         )
 
-        response = self.client.get("/game/time")
-        assert response.status_code == 200
-        payload = response.json()
+        try:
+            response = self.client.get("/game/time")
+            assert response.status_code == 200
+            payload = response.json()
 
-        assert payload["mythos_clock"] == "14:00 Mythos"
-        assert payload["daypart"] == "afternoon"
-        assert payload["active_holidays"][0]["id"] == "feast_of_yig"
-        assert payload["upcoming_holidays"][0]["name"] == "Feast of Yig"
+            assert payload["mythos_clock"] == "14:00 Mythos"
+            assert payload["daypart"] == "afternoon"
+            assert payload["active_holidays"][0]["id"] == "feast_of_yig"
+            assert payload["upcoming_holidays"][0]["name"] == "Feast of Yig"
+        finally:
+            # Ensure client resources are cleaned to avoid dangling async connections.
+            self.client.close()

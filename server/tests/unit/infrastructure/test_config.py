@@ -379,6 +379,8 @@ class TestAppConfig:
         # Clean up after test
         reset_config()
 
+    @pytest.mark.serial  # Class uses autouse fixture that modifies global config state
+    @pytest.mark.xdist_group(name="serial_config_tests")  # Force serial execution with pytest-xdist
     def test_app_config_loads_from_env(self) -> None:
         """Test that AppConfig loads from environment variables."""
         config = AppConfig()
@@ -401,6 +403,8 @@ class TestAppConfig:
         assert cors_config.allow_origins == ["http://localhost:5173", "http://127.0.0.1:5173"]  # pylint: disable=no-member
         assert cors_config.allow_credentials is True  # pylint: disable=no-member
 
+    @pytest.mark.serial  # Class uses autouse fixture that modifies global config state
+    @pytest.mark.xdist_group(name="serial_config_tests")  # Force serial execution with pytest-xdist
     def test_app_config_sets_environment_variables(self) -> None:
         """Test that AppConfig sets environment variables for legacy compatibility."""
         # Instantiate config to trigger environment variable setup
@@ -410,6 +414,8 @@ class TestAppConfig:
         assert os.environ.get("NPC_DATABASE_URL") == "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
         assert os.environ.get("ALIASES_DIR") == os.environ.get("GAME_ALIASES_DIR")
 
+    @pytest.mark.serial  # Class uses autouse fixture that modifies global config state
+    @pytest.mark.xdist_group(name="serial_config_tests")  # Force serial execution with pytest-xdist
     def test_to_legacy_dict_format(self, monkeypatch):
         """Test conversion to legacy dict format."""
         # Enable NATS for this test (it's disabled by default in test environment)
@@ -434,12 +440,16 @@ class TestAppConfig:
         assert "cors" in legacy
         assert legacy["cors"]["allow_origins"] == ["http://localhost:5173", "http://127.0.0.1:5173"]
 
+    @pytest.mark.serial  # Class uses autouse fixture that modifies global config state
+    @pytest.mark.xdist_group(name="serial_config_tests")  # Force serial execution with pytest-xdist
     def test_get_config_singleton(self) -> None:
         """Test that get_config returns singleton instance."""
         config1 = get_config()
         config2 = get_config()
         assert config1 is config2
 
+    @pytest.mark.serial  # Class uses autouse fixture that modifies global config state
+    @pytest.mark.xdist_group(name="serial_config_tests")  # Force serial execution with pytest-xdist
     def test_reset_config_clears_cache(self) -> None:
         """Test that reset_config clears the singleton cache."""
         config1 = get_config()

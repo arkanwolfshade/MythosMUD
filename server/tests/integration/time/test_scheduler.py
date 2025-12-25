@@ -13,6 +13,8 @@ from server.events.event_types import MythosHourTickEvent
 from server.time.tick_scheduler import MythosTickScheduler
 from server.time.time_service import MythosChronicle
 
+pytestmark = pytest.mark.integration
+
 
 @pytest.mark.asyncio
 async def test_scheduler_emits_hourly_events(tmp_path: Path) -> None:

@@ -19,6 +19,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from server.async_persistence import AsyncPersistenceLayer
 from server.exceptions import DatabaseError, ValidationError
 
+pytestmark = pytest.mark.security
+
 
 class TestSQLInjectionPrevention:
     """Test SQL injection prevention in database operations."""

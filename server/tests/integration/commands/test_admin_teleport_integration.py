@@ -18,6 +18,8 @@ from server.commands.admin_commands import (
     validate_admin_permission,
 )
 
+pytestmark = pytest.mark.integration
+
 
 @pytest.fixture(autouse=True)
 def patch_broadcast_room_update(monkeypatch):

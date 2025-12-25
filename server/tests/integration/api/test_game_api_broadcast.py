@@ -9,6 +9,8 @@ from unittest.mock import Mock
 
 import pytest
 
+pytestmark = pytest.mark.integration
+
 
 class TestGameApiBroadcast:
     """Test game API broadcast endpoint."""

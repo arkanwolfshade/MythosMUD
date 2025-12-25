@@ -535,8 +535,8 @@ class TestSecurityHeadersMiddlewareImplementation:
         non_response = MagicMock()
         middleware._add_security_headers_to_response(non_response)
 
-        # Should not raise error, just skip
-        assert True  # Test passes if no exception raised
+        # The test implicitly passes if no exception was raised
+        # pytest will fail on any uncaught exception, so no explicit assertion needed
 
     @pytest.mark.asyncio
     async def test_security_headers_middleware_asgi_send_with_headers_non_start_message(self) -> None:

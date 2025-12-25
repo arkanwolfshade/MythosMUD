@@ -22,7 +22,7 @@ from server.command_handler_unified import (
 from server.exceptions import ValidationError
 from server.models.room import Room
 from server.realtime.request_context import create_websocket_request_context
-from server.utils.command_processor import CommandProcessor, get_command_processor
+from server.utils.command_processor import get_command_processor
 
 # Import models from the modular structure
 
@@ -806,7 +806,9 @@ class TestCommandProcessorIntegration:
     def test_get_command_processor(self) -> None:
         """Test getting the command processor instance."""
         processor = get_command_processor()
-        assert isinstance(processor, CommandProcessor)
+        # Use type name check to avoid module reload issues in parallel execution
+        assert type(processor).__name__ == "CommandProcessor"
+        assert hasattr(processor, "process_command_string")
 
     def test_command_processor_singleton(self) -> None:
         """Test that command processor is a singleton."""

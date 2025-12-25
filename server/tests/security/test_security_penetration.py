@@ -27,6 +27,8 @@ from server.models.command import (
 )
 from server.validators.security_validator import validate_security_comprehensive
 
+pytestmark = pytest.mark.security
+
 
 class TestCommandInjectionAttacks:
     """Test command injection attack vectors."""

@@ -14,9 +14,16 @@ from pydantic import ValidationError
 from server.config import get_config, reset_config
 from server.config.models import AppConfig, GameConfig
 
+# Apply serial markers to entire module to prevent worker crashes in full suite
+# All test classes modify global config state via autouse fixtures
+pytestmark = [pytest.mark.serial, pytest.mark.xdist_group("serial_config_tests")]
+
 
 class TestFeatureFlagSystem:
     """Test feature flag system for combat enable/disable."""
+
+    # Apply serial markers to entire class to prevent worker crashes in full suite
+    pytestmark = [pytest.mark.serial, pytest.mark.xdist_group("serial_config_tests")]
 
     @pytest.fixture(autouse=True)
     def setup_test_env(self, monkeypatch):
@@ -37,16 +44,22 @@ class TestFeatureFlagSystem:
         # Clean up after test
         reset_config()
 
+    @pytest.mark.serial  # Class uses autouse fixture that modifies global config state
+    @pytest.mark.xdist_group(name="serial_config_tests")  # Force serial execution with pytest-xdist
     def test_combat_feature_flag_enabled_by_default(self) -> None:
         """Test that combat is enabled by default."""
         config = GameConfig(aliases_dir=os.getenv("GAME_ALIASES_DIR") or "data/aliases" or "data/aliases")
         assert config.combat_enabled is True
 
+    @pytest.mark.serial  # Class uses autouse fixture that modifies global config state
+    @pytest.mark.xdist_group(name="serial_config_tests")  # Force serial execution with pytest-xdist
     def test_combat_feature_flag_can_be_disabled(self) -> None:
         """Test that combat can be disabled via configuration."""
         config = GameConfig(aliases_dir=os.getenv("GAME_ALIASES_DIR") or "data/aliases", combat_enabled=False)
         assert config.combat_enabled is False
 
+    @pytest.mark.serial  # Class uses autouse fixture that modifies global config state
+    @pytest.mark.xdist_group(name="serial_config_tests")  # Force serial execution with pytest-xdist
     def test_combat_feature_flag_from_environment(self, monkeypatch):
         """Test that combat feature flag can be set via environment variable."""
         monkeypatch.setenv("GAME_COMBAT_ENABLED", "false")
@@ -54,6 +67,8 @@ class TestFeatureFlagSystem:
         config = GameConfig(aliases_dir=os.getenv("GAME_ALIASES_DIR") or "data/aliases")
         assert config.combat_enabled is False
 
+    @pytest.mark.serial  # Class uses autouse fixture that modifies global config state
+    @pytest.mark.xdist_group(name="serial_config_tests")  # Force serial execution with pytest-xdist
     def test_combat_feature_flag_environment_override(self, monkeypatch):
         """Test that environment variable overrides default value."""
         monkeypatch.setenv("GAME_COMBAT_ENABLED", "true")
@@ -62,6 +77,8 @@ class TestFeatureFlagSystem:
         config = GameConfig(aliases_dir=os.getenv("GAME_ALIASES_DIR") or "data/aliases")
         assert config.combat_enabled is True
 
+    @pytest.mark.serial  # Class uses autouse fixture that modifies global config state
+    @pytest.mark.xdist_group(name="serial_config_tests")  # Force serial execution with pytest-xdist
     def test_combat_configuration_settings(self) -> None:
         """Test combat-specific configuration settings."""
         config = GameConfig(
@@ -79,6 +96,8 @@ class TestFeatureFlagSystem:
         assert config.combat_xp_multiplier == 1.5
         assert config.combat_logging_enabled is True
 
+    @pytest.mark.serial  # Class uses autouse fixture that modifies global config state
+    @pytest.mark.xdist_group(name="serial_config_tests")  # Force serial execution with pytest-xdist
     def test_combat_configuration_defaults(self) -> None:
         """Test combat configuration default values."""
         config = GameConfig(aliases_dir=os.getenv("GAME_ALIASES_DIR") or "data/aliases")
@@ -89,6 +108,8 @@ class TestFeatureFlagSystem:
         assert config.combat_xp_multiplier == 1.0
         assert config.combat_logging_enabled is True
 
+    @pytest.mark.serial  # Class uses autouse fixture that modifies global config state
+    @pytest.mark.xdist_group(name="serial_config_tests")  # Force serial execution with pytest-xdist
     def test_combat_configuration_validation(self) -> None:
         """Test combat configuration validation."""
         # Valid values should pass
@@ -102,18 +123,24 @@ class TestFeatureFlagSystem:
         assert config.combat_timeout_seconds == 120
         assert config.combat_xp_multiplier == 2.0
 
+    @pytest.mark.serial  # Class uses autouse fixture that modifies global config state
+    @pytest.mark.xdist_group(name="serial_config_tests")  # Force serial execution with pytest-xdist
     def test_combat_configuration_invalid_tick_interval(self) -> None:
         """Test invalid combat tick interval is rejected."""
         with pytest.raises(ValidationError) as exc_info:
             GameConfig(aliases_dir=os.getenv("GAME_ALIASES_DIR") or "data/aliases", combat_tick_interval=0)
         assert "Combat tick interval must be between 1 and 60 seconds" in str(exc_info.value)
 
+    @pytest.mark.serial  # Class uses autouse fixture that modifies global config state
+    @pytest.mark.xdist_group(name="serial_config_tests")  # Force serial execution with pytest-xdist
     def test_combat_configuration_invalid_timeout(self) -> None:
         """Test invalid combat timeout is rejected."""
         with pytest.raises(ValidationError) as exc_info:
             GameConfig(aliases_dir=os.getenv("GAME_ALIASES_DIR") or "data/aliases", combat_timeout_seconds=30)
         assert "Combat timeout must be between 60 and 1800 seconds" in str(exc_info.value)
 
+    @pytest.mark.serial  # Class uses autouse fixture that modifies global config state
+    @pytest.mark.xdist_group(name="serial_config_tests")  # Force serial execution with pytest-xdist
     def test_combat_configuration_invalid_xp_multiplier(self) -> None:
         """Test invalid XP multiplier is rejected."""
         with pytest.raises(ValidationError) as exc_info:
@@ -123,6 +150,9 @@ class TestFeatureFlagSystem:
 
 class TestCombatConfigurationManagement:
     """Test combat configuration management and deployment."""
+
+    # Apply serial markers to entire class to prevent worker crashes in full suite
+    pytestmark = [pytest.mark.serial, pytest.mark.xdist_group("serial_config_tests")]
 
     @pytest.fixture(autouse=True)
     def setup_test_env(self, monkeypatch):
@@ -172,6 +202,9 @@ class TestCombatConfigurationManagement:
         """Test that combat configuration can be hot-reloaded."""
         # Ensure clean state before starting
         reset_config()
+        # Verify cache is cleared by getting a fresh config
+        _ = get_config()  # Force cache population, then reset again
+        reset_config()
 
         try:
             # Initial configuration
@@ -179,7 +212,10 @@ class TestCombatConfigurationManagement:
             monkeypatch.setenv("GAME_COMBAT_TIMEOUT_SECONDS", "180")
 
             reset_config()  # Force config reload after setting env vars
+            # Get config twice to ensure cache is working and reading new values
             config1: AppConfig = get_config()
+            config1_verify: AppConfig = get_config()  # Should return cached instance
+            assert config1 is config1_verify  # Verify cache is working
             game_config1: GameConfig = cast(GameConfig, config1.game)
             # Pylint limitation: doesn't recognize cast() for Pydantic nested models
             assert game_config1.combat_tick_interval == 6  # pylint: disable=no-member
@@ -195,6 +231,8 @@ class TestCombatConfigurationManagement:
             # Pylint limitation: doesn't recognize cast() for Pydantic nested models
             assert game_config2.combat_tick_interval == 10  # pylint: disable=no-member
             assert game_config2.combat_timeout_seconds == 300  # pylint: disable=no-member
+            # Verify we got a new instance (cache was cleared)
+            assert config1 is not config2  # Should be different instances after reset
         finally:
             # Ensure cleanup
             monkeypatch.delenv("GAME_COMBAT_TICK_INTERVAL", raising=False)
@@ -236,8 +274,8 @@ class TestCombatConfigurationManagement:
             monkeypatch.delenv("GAME_COMBAT_XP_MULTIPLIER", raising=False)
             reset_config()
 
-    @pytest.mark.serial
-    @pytest.mark.xdist_group(name="serial_config_tests")
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared config state
+    @pytest.mark.xdist_group(name="serial_config_tests")  # Force serial execution with pytest-xdist
     def test_environment_specific_combat_configuration(self, monkeypatch):
         """Test environment-specific combat configuration."""
         # Ensure clean state before starting
@@ -274,6 +312,9 @@ class TestCombatConfigurationManagement:
 
 class TestCombatMonitoringConfiguration:
     """Test combat monitoring and alerting configuration."""
+
+    # Apply serial markers to entire class to prevent worker crashes in full suite
+    pytestmark = [pytest.mark.serial, pytest.mark.xdist_group("serial_config_tests")]
 
     @pytest.fixture(autouse=True)
     def setup_test_env(self, monkeypatch):
@@ -322,6 +363,8 @@ class TestCombatMonitoringConfiguration:
         assert config.combat_performance_threshold == 1000
         assert config.combat_error_threshold == 3
 
+    @pytest.mark.serial  # Class uses autouse fixture that modifies global config state
+    @pytest.mark.xdist_group(name="serial_config_tests")  # Force serial execution with pytest-xdist
     def test_combat_monitoring_validation(self) -> None:
         """Test combat monitoring configuration validation."""
         # Valid values should pass
@@ -335,6 +378,8 @@ class TestCombatMonitoringConfiguration:
         assert config.combat_performance_threshold == 750
         assert config.combat_error_threshold == 8
 
+    @pytest.mark.serial  # Class uses autouse fixture that modifies global config state
+    @pytest.mark.xdist_group(name="serial_config_tests")  # Force serial execution with pytest-xdist
     def test_combat_monitoring_invalid_thresholds(self) -> None:
         """Test invalid monitoring thresholds are rejected."""
         # Alert threshold too low
@@ -356,6 +401,9 @@ class TestCombatMonitoringConfiguration:
 class TestCombatConfigurationIntegration:
     """Test combat configuration integration with existing systems."""
 
+    # Apply serial markers to entire class to prevent worker crashes in full suite
+    pytestmark = [pytest.mark.serial, pytest.mark.xdist_group("serial_config_tests")]
+
     @pytest.fixture(autouse=True)
     def setup_test_env(self, monkeypatch):
         """Set up test environment variables."""
@@ -375,6 +423,8 @@ class TestCombatConfigurationIntegration:
         # Clean up after test
         reset_config()
 
+    @pytest.mark.serial  # Class uses autouse fixture that modifies global config state
+    @pytest.mark.xdist_group(name="serial_config_tests")  # Force serial execution with pytest-xdist
     def test_combat_config_in_app_config(self) -> None:
         """Test that combat configuration is properly integrated in AppConfig."""
         # Ensure config cache is cleared before creating new instance
@@ -390,6 +440,7 @@ class TestCombatConfigurationIntegration:
         assert hasattr(config.game, "combat_monitoring_enabled")
 
     @pytest.mark.serial  # Flaky in parallel execution - likely due to shared config state
+    @pytest.mark.xdist_group(name="serial_config_tests")  # Force serial execution with pytest-xdist
     def test_combat_config_legacy_dict_conversion(self) -> None:
         """Test that combat configuration is included in legacy dict conversion."""
         config = AppConfig()
@@ -403,6 +454,8 @@ class TestCombatConfigurationIntegration:
         assert "combat_logging_enabled" in legacy
         assert "combat_monitoring_enabled" in legacy
 
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared config state
+    @pytest.mark.xdist_group(name="serial_config_tests")  # Force serial execution with pytest-xdist
     def test_combat_config_environment_variable_integration(self, monkeypatch):
         """Test that combat configuration integrates with environment variables."""
         # Set combat-specific environment variables
@@ -425,6 +478,8 @@ class TestCombatConfigurationIntegration:
         assert game_config.combat_logging_enabled is False  # pylint: disable=no-member
         assert game_config.combat_monitoring_enabled is False  # pylint: disable=no-member
 
+    @pytest.mark.serial  # Class uses autouse fixture that modifies global config state
+    @pytest.mark.xdist_group(name="serial_config_tests")  # Force serial execution with pytest-xdist
     def test_combat_config_validation_integration(self) -> None:
         """Test that combat configuration validation integrates with existing validation."""
         # Ensure clean state before starting
@@ -449,6 +504,8 @@ class TestCombatConfigurationIntegration:
                 combat_xp_multiplier=0.5,  # Invalid
             )
 
+    @pytest.mark.serial  # Class uses autouse fixture that modifies global config state
+    @pytest.mark.xdist_group(name="serial_config_tests")  # Force serial execution with pytest-xdist
     def test_combat_config_feature_flag_integration(self, monkeypatch):
         """Test that combat feature flag integrates with existing feature system."""
         # Test with combat disabled
@@ -477,6 +534,9 @@ class TestCombatConfigurationIntegration:
 class TestCombatConfigurationEdgeCases:
     """Test edge cases and boundary conditions for combat configuration."""
 
+    # Apply serial markers to entire class to prevent worker crashes in full suite
+    pytestmark = [pytest.mark.serial, pytest.mark.xdist_group("serial_config_tests")]
+
     @pytest.fixture(autouse=True)
     def setup_test_env(self, monkeypatch):
         """Set up test environment variables."""
@@ -496,6 +556,8 @@ class TestCombatConfigurationEdgeCases:
         # Clean up after test
         reset_config()
 
+    @pytest.mark.serial  # Class uses autouse fixture that modifies global config state
+    @pytest.mark.xdist_group(name="serial_config_tests")  # Force serial execution with pytest-xdist
     def test_boundary_combat_tick_interval(self) -> None:
         """Test boundary values for combat tick interval."""
         # Minimum valid value
@@ -534,6 +596,8 @@ class TestCombatConfigurationEdgeCases:
         with pytest.raises(ValidationError):
             GameConfig(aliases_dir="data/aliases", combat_timeout_seconds=1801)
 
+    @pytest.mark.serial  # Class uses autouse fixture that modifies global config state
+    @pytest.mark.xdist_group(name="serial_config_tests")  # Force serial execution with pytest-xdist
     def test_boundary_xp_multiplier(self) -> None:
         """Test boundary values for XP multiplier."""
         # Minimum valid value
@@ -552,6 +616,8 @@ class TestCombatConfigurationEdgeCases:
         with pytest.raises(ValidationError):
             GameConfig(aliases_dir="data/aliases", combat_xp_multiplier=5.1)
 
+    @pytest.mark.serial  # Class uses autouse fixture that modifies global config state
+    @pytest.mark.xdist_group(name="serial_config_tests")  # Force serial execution with pytest-xdist
     def test_boolean_feature_flags(self) -> None:
         """Test boolean feature flags handle various input types."""
         # Test with string "true" - Pydantic will coerce string to bool

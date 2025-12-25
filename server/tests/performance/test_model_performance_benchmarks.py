@@ -14,6 +14,7 @@ between speed and accuracy in our digital realm.
 import time
 from typing import Any
 
+import pytest
 from pydantic import BaseModel, ValidationError
 
 from server.models.alias import Alias
@@ -28,6 +29,8 @@ from server.models.health import (
     HealthStatus,
     ServerComponent,
 )
+
+pytestmark = pytest.mark.slow
 
 
 class ModelPerformanceBenchmarks:

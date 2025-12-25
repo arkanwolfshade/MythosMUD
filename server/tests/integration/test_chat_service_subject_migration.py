@@ -17,6 +17,8 @@ import pytest
 from server.game.chat_service import ChatService
 from server.services.nats_subject_manager import NATSSubjectManager
 
+pytestmark = pytest.mark.integration
+
 
 class TestChatServiceSubjectMigration:
     """Test ChatService integration with NATSSubjectManager."""

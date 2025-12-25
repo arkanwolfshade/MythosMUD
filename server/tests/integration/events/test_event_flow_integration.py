@@ -17,6 +17,8 @@ from server.events.event_types import PlayerEnteredRoom
 from server.models.room import Room
 from server.realtime.event_handler import RealTimeEventHandler
 
+pytestmark = pytest.mark.integration
+
 
 class TestCompleteEventFlowIntegration:
     """Test complete event flow integration."""

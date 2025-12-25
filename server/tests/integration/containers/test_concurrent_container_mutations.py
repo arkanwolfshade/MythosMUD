@@ -21,6 +21,12 @@ from server.models.player import Player
 from server.services.container_service import ContainerService, ContainerServiceError, _filter_container_data
 from server.services.inventory_service import InventoryStack
 
+pytestmark = [
+    pytest.mark.integration,
+    pytest.mark.serial,  # Keep container DB ops isolated from xdist workers
+    pytest.mark.xdist_group(name="serial_container_mutations_tests"),  # Run on a single worker across suite
+]
+
 
 @pytest.fixture(scope="module")
 def ensure_test_item_prototypes():

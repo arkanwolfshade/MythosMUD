@@ -24,6 +24,11 @@ from server.validators.command_validator import (
     validate_command_length,
 )
 
+pytestmark = [
+    pytest.mark.serial,  # Validator tests mutate global patterns/normalization tables; keep single worker
+    pytest.mark.xdist_group(name="serial_validator_tests"),
+]
+
 # ============================================================================
 # LEGACY VALIDATION FUNCTIONS TESTS
 # ============================================================================
@@ -548,6 +553,9 @@ class TestCommandValidatorSanitizeForLogging:
 
 class TestCommandValidatorExtractCommandName:
     """Test suite for CommandValidator.extract_command_name()."""
+
+    # Apply serial markers to entire class to prevent worker crashes in full suite
+    pytestmark = [pytest.mark.serial, pytest.mark.xdist_group("serial_validator_tests")]
 
     def test_extract_command_name_simple(self) -> None:
         """Test extraction from simple commands."""

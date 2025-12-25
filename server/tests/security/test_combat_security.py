@@ -18,6 +18,8 @@ from server.services.npc_combat_integration_service import NPCCombatIntegrationS
 # from server.validators.command_validator import CommandSecurityValidator
 from server.validators.security_validator import comprehensive_sanitize_input
 
+pytestmark = pytest.mark.security
+
 
 class TestCombatCommandSecurity:
     """Test security validation for combat commands."""

@@ -13,6 +13,8 @@ from server.services.combat_messaging_integration import (
     CombatMessagingIntegration,
 )
 
+pytestmark = pytest.mark.integration
+
 
 class TestCombatMessagingIntegration:
     """Test cases for CombatMessagingIntegration."""

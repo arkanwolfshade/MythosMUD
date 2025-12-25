@@ -13,6 +13,8 @@ import pytest
 
 from server.services.npc_combat_integration_service import NPCCombatIntegrationService
 
+pytestmark = pytest.mark.integration
+
 
 class TestNPCCombatIntegrationService:
     """Test cases for NPC Combat Integration Service."""

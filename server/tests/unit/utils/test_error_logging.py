@@ -338,8 +338,8 @@ class TestErrorLoggingPerformance:
         # Force garbage collection
         gc.collect()
 
-        # If we get here without memory issues, the test passes
-        assert True
+        # The test implicitly passes if no memory issues occurred
+        # pytest will fail on any uncaught exception, so no explicit assertion needed
 
 
 class TestErrorLoggingIntegration:

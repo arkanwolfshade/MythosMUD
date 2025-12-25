@@ -28,6 +28,9 @@ from server.commands.who_commands import (
 class TestFilterPlayersByName:
     """Test filter_players_by_name function."""
 
+    # Apply serial markers to entire class to prevent flaky failures in parallel execution
+    pytestmark = [pytest.mark.serial, pytest.mark.xdist_group("serial_who_command_tests")]
+
     def test_filter_players_by_name_exact_match(self):
         """Test filtering players with exact name match."""
         alice = Mock()
@@ -110,6 +113,9 @@ class TestFilterPlayersByName:
 
 class TestFormatPlayerLocation:
     """Test format_player_location function."""
+
+    # Apply serial markers to entire class to prevent flaky failures in parallel execution
+    pytestmark = [pytest.mark.serial, pytest.mark.xdist_group("serial_who_command_tests")]
 
     def test_format_player_location_standard_format(self):
         """Test formatting location with standard room ID format."""
@@ -204,6 +210,9 @@ class TestFormatPlayerEntry:
 
 class TestParseLastActiveDatetime:
     """Test parse_last_active_datetime function."""
+
+    # Apply serial markers to entire class to prevent flaky failures in parallel execution
+    pytestmark = [pytest.mark.serial, pytest.mark.xdist_group("serial_who_command_tests")]
 
     def test_parse_last_active_datetime_string_with_z(self):
         """Test parsing datetime string ending with Z."""
@@ -471,6 +480,8 @@ class TestHandleWhoCommand:
                     assert "Online Players" in result["result"]
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Flaky in parallel execution - worker crash when running in full suite
+    @pytest.mark.xdist_group(name="serial_who_command_tests")  # Force serial execution with pytest-xdist
     async def test_handle_who_command_no_request(self):
         """Test who command when request is None."""
         command_data = {"target_player": ""}

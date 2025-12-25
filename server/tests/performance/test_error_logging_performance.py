@@ -20,6 +20,8 @@ import pytest
 from server.exceptions import DatabaseError, ErrorContext, create_error_context
 from server.utils.error_logging import log_and_raise
 
+pytestmark = pytest.mark.slow
+
 
 class PerformanceTestMixin:
     """Mixin class providing performance testing utilities."""

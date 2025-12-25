@@ -14,6 +14,8 @@ import pytest
 from server.commands.combat import CombatCommandHandler
 from server.commands.command_service import CommandService
 
+pytestmark = pytest.mark.integration
+
 
 class TestCombatCommandIntegration:
     """Test combat command integration with command system."""

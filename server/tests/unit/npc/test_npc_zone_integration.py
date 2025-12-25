@@ -17,17 +17,39 @@ from server.events.event_bus import EventBus
 from server.events.event_types import NPCEnteredRoom, NPCLeftRoom
 from server.models.room import Room
 
+pytestmark = [
+    pytest.mark.serial,  # EventBus/async sleeps are flaky under xdist; keep single worker
+    pytest.mark.xdist_group(name="serial_npc_zone_tests"),
+]
+
 
 class TestNPCZoneIntegration:
     """Test NPC integration with zone and sub-zone systems."""
 
     @pytest.fixture
-    def event_bus(self):
-        """Create an event bus for testing."""
-        return EventBus()
+    async def event_bus(self):
+        """Create an event bus for testing with proper cleanup."""
+        bus = EventBus()
+        yield bus
+        # Clean up EventBus to prevent worker crashes in parallel execution
+        # Check if event loop is still running before attempting shutdown
+        try:
+            loop = asyncio.get_running_loop()
+            if loop and not loop.is_closed():
+                await bus.shutdown()
+            else:
+                # Event loop is closed - just mark EventBus as not running
+                bus._running = False
+        except RuntimeError:
+            # No running event loop - EventBus will clean up in __del__
+            bus._running = False
+        except Exception:
+            # EventBus.shutdown() should handle all exceptions, but catch any that leak through
+            # This is a safety net to prevent worker crashes during test teardown
+            pass
 
     @pytest.fixture
-    def arkham_downtown_room(self, event_bus):
+    async def arkham_downtown_room(self, event_bus):
         """Create a room in Arkham downtown."""
         room_data = {
             "id": "earth_arkhamcity_downtown_001",
@@ -42,7 +64,7 @@ class TestNPCZoneIntegration:
         return Room(room_data, event_bus)
 
     @pytest.fixture
-    def innsmouth_waterfront_room(self, event_bus):
+    async def innsmouth_waterfront_room(self, event_bus):
         """Create a room in Innsmouth waterfront."""
         room_data = {
             "id": "earth_innsmouth_waterfront_001",

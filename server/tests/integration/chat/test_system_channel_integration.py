@@ -17,6 +17,8 @@ import pytest
 from server.commands.command_service import CommandService
 from server.game.chat_service import ChatService
 
+pytestmark = pytest.mark.integration
+
 
 class TestSystemChannelIntegration:
     """Integration tests for system channel functionality."""

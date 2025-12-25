@@ -6,6 +6,7 @@ user management including muting, permissions, and user state tracking.
 """
 
 import tempfile
+import uuid
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -14,6 +15,72 @@ from uuid import uuid4
 import pytest
 
 from server.services.user_manager import UserManager
+
+
+class _FakeChatLogger:
+    def __init__(self) -> None:
+        self.muted_calls: list[dict] = []
+        self.unmuted_calls: list[dict] = []
+
+    def log_player_muted(self, **kwargs) -> None:
+        self.muted_calls.append(kwargs)
+
+    def log_player_unmuted(self, **kwargs) -> None:
+        self.unmuted_calls.append(kwargs)
+
+
+def test_normalize_to_uuid_accepts_uuid_and_str(tmp_path: Path) -> None:
+    manager = UserManager(data_dir=tmp_path)
+    pid = uuid.uuid4()
+
+    assert manager._normalize_to_uuid(pid) == pid  # pylint: disable=protected-access
+    assert manager._normalize_to_uuid(str(pid)) == pid  # pylint: disable=protected-access
+
+
+def test_normalize_to_uuid_rejects_invalid(tmp_path: Path) -> None:
+    manager = UserManager(data_dir=tmp_path)
+    with pytest.raises(ValueError):
+        manager._normalize_to_uuid("not-a-uuid")  # pylint: disable=protected-access
+
+
+def test_mute_and_unmute_channel_persists_state(tmp_path: Path) -> None:
+    manager = UserManager(data_dir=tmp_path)
+    manager.chat_logger = _FakeChatLogger()  # type: ignore[assignment]
+
+    player_id = uuid.uuid4()
+    channel = "local"
+
+    assert manager.mute_channel(player_id, "TestUser", channel, duration_minutes=5, reason="spam")
+
+    # Channel entry created and persisted
+    assert player_id in manager._channel_mutes  # pylint: disable=protected-access
+    assert channel in manager._channel_mutes[player_id]  # pylint: disable=protected-access
+    mute_file = tmp_path / f"mutes_{player_id}.json"
+    assert mute_file.exists()
+
+    # Unmute removes entry and cleans cache
+    assert manager.unmute_channel(player_id, "TestUser", channel)
+    assert player_id not in manager._channel_mutes  # pylint: disable=protected-access
+
+
+def test_global_mute_respects_admin_immunity(tmp_path: Path) -> None:
+    manager = UserManager(data_dir=tmp_path)
+    manager.chat_logger = _FakeChatLogger()  # type: ignore[assignment]
+
+    target_id = uuid.uuid4()
+    manager._admin_players.add(target_id)  # pylint: disable=protected-access
+
+    result = manager.mute_global(
+        muter_id=uuid.uuid4(),
+        muter_name="Mod",
+        target_id=target_id,
+        target_name="AdminPlayer",
+        duration_minutes=10,
+        reason="test",
+    )
+
+    assert result is False
+    assert target_id not in manager._global_mutes  # pylint: disable=protected-access
 
 
 class TestUserManagerInit:
