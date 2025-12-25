@@ -29,17 +29,17 @@ from server.realtime.websocket_handler import (
 class TestIsWebSocketDisconnected:
     """Test _is_websocket_disconnected helper function."""
 
-    def test_is_websocket_disconnected_with_disconnected_message(self):
+    def test_is_websocket_disconnected_with_disconnected_message(self) -> None:
         """Test detecting WebSocket disconnected message."""
         assert _is_websocket_disconnected("WebSocket is not connected")
         assert _is_websocket_disconnected("WebSocket is not connected to client")
 
-    def test_is_websocket_disconnected_with_accept_message(self):
+    def test_is_websocket_disconnected_with_accept_message(self) -> None:
         """Test detecting WebSocket accept message."""
         assert _is_websocket_disconnected('Need to call "accept" first')
         assert _is_websocket_disconnected('Need to call "accept" first before sending')
 
-    def test_is_websocket_disconnected_with_other_error(self):
+    def test_is_websocket_disconnected_with_other_error(self) -> None:
         """Test with other error messages."""
         assert not _is_websocket_disconnected("Some other error")
         assert not _is_websocket_disconnected("")
@@ -49,7 +49,7 @@ class TestCheckRateLimit:
     """Test _check_rate_limit function."""
 
     @pytest.mark.asyncio
-    async def test_check_rate_limit_no_connection_id(self):
+    async def test_check_rate_limit_no_connection_id(self) -> None:
         """Test rate limit check when connection_id is None."""
         mock_websocket = MagicMock()
         mock_connection_manager = MagicMock()
@@ -60,7 +60,7 @@ class TestCheckRateLimit:
         mock_connection_manager.rate_limiter.check_message_rate_limit.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_check_rate_limit_passed(self):
+    async def test_check_rate_limit_passed(self) -> None:
         """Test rate limit check when limit is not exceeded."""
         mock_websocket = MagicMock()
         mock_connection_manager = MagicMock()
@@ -72,7 +72,7 @@ class TestCheckRateLimit:
         mock_websocket.send_json.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_check_rate_limit_exceeded(self):
+    async def test_check_rate_limit_exceeded(self) -> None:
         """Test rate limit check when limit is exceeded."""
         import time
 
@@ -95,7 +95,7 @@ class TestValidateMessage:
     """Test _validate_message function."""
 
     @pytest.mark.asyncio
-    async def test_validate_message_success(self):
+    async def test_validate_message_success(self) -> None:
         """Test successful message validation."""
         mock_websocket = AsyncMock()
         mock_validator = MagicMock()
@@ -107,14 +107,14 @@ class TestValidateMessage:
         mock_websocket.send_json.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_validate_message_validation_error(self):
+    async def test_validate_message_validation_error(self) -> None:
         """Test message validation when validation fails."""
         from server.realtime.message_validator import MessageValidationError
 
         mock_websocket = AsyncMock()
         mock_validator = MagicMock()
         mock_validator.parse_and_validate.side_effect = MessageValidationError(
-            error_type=ErrorType.INVALID_FORMAT, message="Invalid message format"
+            error_type=ErrorType.INVALID_FORMAT.value, message="Invalid message format"
         )
 
         with patch("server.realtime.websocket_handler.logger"):
@@ -128,7 +128,7 @@ class TestSendErrorResponse:
     """Test _send_error_response function."""
 
     @pytest.mark.asyncio
-    async def test_send_error_response_success(self):
+    async def test_send_error_response_success(self) -> None:
         """Test successfully sending error response."""
         mock_websocket = AsyncMock()
 
@@ -140,7 +140,7 @@ class TestSendErrorResponse:
         mock_websocket.send_json.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_send_error_response_websocket_disconnect(self):
+    async def test_send_error_response_websocket_disconnect(self) -> None:
         """Test sending error response when WebSocket is disconnected."""
         mock_websocket = AsyncMock()
         # The function checks if the error message contains disconnection indicators
@@ -155,7 +155,7 @@ class TestSendErrorResponse:
             assert result is False
 
     @pytest.mark.asyncio
-    async def test_send_error_response_runtime_error_disconnected(self):
+    async def test_send_error_response_runtime_error_disconnected(self) -> None:
         """Test sending error response with RuntimeError indicating disconnection."""
         mock_websocket = AsyncMock()
         mock_websocket.send_json.side_effect = RuntimeError("WebSocket is not connected")
@@ -168,7 +168,7 @@ class TestSendErrorResponse:
             assert result is False
 
     @pytest.mark.asyncio
-    async def test_send_error_response_runtime_error_other(self):
+    async def test_send_error_response_runtime_error_other(self) -> None:
         """Test sending error response with other RuntimeError."""
         mock_websocket = AsyncMock()
         mock_websocket.send_json.side_effect = RuntimeError("Some other error")
@@ -185,7 +185,7 @@ class TestHandleJsonDecodeError:
     """Test _handle_json_decode_error function."""
 
     @pytest.mark.asyncio
-    async def test_handle_json_decode_error(self):
+    async def test_handle_json_decode_error(self) -> None:
         """Test handling JSON decode error."""
         mock_websocket = AsyncMock()
         player_id = uuid4()
@@ -203,7 +203,7 @@ class TestHandleJsonDecodeError:
 class TestHandleWebSocketDisconnect:
     """Test _handle_websocket_disconnect function."""
 
-    def test_handle_websocket_disconnect(self):
+    def test_handle_websocket_disconnect(self) -> None:
         """Test handling WebSocket disconnect."""
         with patch("server.realtime.websocket_handler.logger"):
             result = _handle_websocket_disconnect("player-123", "conn-123")
@@ -214,21 +214,21 @@ class TestHandleWebSocketDisconnect:
 class TestGetHelpContent:
     """Test get_help_content function."""
 
-    def test_get_help_content_specific_command(self):
+    def test_get_help_content_specific_command(self) -> None:
         """Test getting help for a specific command."""
         result = get_help_content("look")
 
         assert isinstance(result, str)
         assert len(result) > 0
 
-    def test_get_help_content_no_command(self):
+    def test_get_help_content_no_command(self) -> None:
         """Test getting general help."""
         result = get_help_content(None)
 
         assert isinstance(result, str)
         assert len(result) > 0
 
-    def test_get_help_content_empty_string(self):
+    def test_get_help_content_empty_string(self) -> None:
         """Test getting help with empty string."""
         result = get_help_content("")
 
@@ -239,7 +239,7 @@ class TestSendSystemMessage:
     """Test send_system_message function."""
 
     @pytest.mark.asyncio
-    async def test_send_system_message_success(self):
+    async def test_send_system_message_success(self) -> None:
         """Test successfully sending system message."""
         mock_websocket = AsyncMock()
 
@@ -253,7 +253,7 @@ class TestSendSystemMessage:
         assert call_args["data"]["message_type"] == "info"
 
     @pytest.mark.asyncio
-    async def test_send_system_message_default_type(self):
+    async def test_send_system_message_default_type(self) -> None:
         """Test sending system message with default type."""
         mock_websocket = AsyncMock()
 
@@ -263,7 +263,7 @@ class TestSendSystemMessage:
         assert call_args["data"]["message_type"] == "info"
 
     @pytest.mark.asyncio
-    async def test_send_system_message_different_types(self):
+    async def test_send_system_message_different_types(self) -> None:
         """Test sending system message with different types."""
         for msg_type in ["info", "warning", "error", "success"]:
             mock_websocket = AsyncMock()
@@ -284,7 +284,7 @@ class TestProcessWebSocketCommand:
     """Test process_websocket_command function."""
 
     @pytest.mark.asyncio
-    async def test_process_websocket_command_player_not_found(self):
+    async def test_process_websocket_command_player_not_found(self) -> None:
         """Test processing command when player is not found."""
         mock_connection_manager = MagicMock()
         mock_connection_manager.get_player = AsyncMock(return_value=None)
@@ -299,7 +299,7 @@ class TestHandleGameCommand:
     """Test handle_game_command function."""
 
     @pytest.mark.asyncio
-    async def test_handle_game_command_empty_command(self):
+    async def test_handle_game_command_empty_command(self) -> None:
         """Test handling empty command."""
         mock_websocket = AsyncMock()
         mock_connection_manager = MagicMock()
@@ -325,7 +325,7 @@ class TestHandleChatMessage:
     """Test handle_chat_message function."""
 
     @pytest.mark.asyncio
-    async def test_handle_chat_message_success(self):
+    async def test_handle_chat_message_success(self) -> None:
         """Test successfully handling a chat message."""
         mock_websocket = AsyncMock()
         mock_connection_manager = MagicMock()
@@ -341,7 +341,7 @@ class TestHandleChatMessage:
             mock_websocket.send_json.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_handle_chat_message_player_not_found(self):
+    async def test_handle_chat_message_player_not_found(self) -> None:
         """Test handling chat message when player is not found."""
         mock_websocket = AsyncMock()
         mock_connection_manager = MagicMock()

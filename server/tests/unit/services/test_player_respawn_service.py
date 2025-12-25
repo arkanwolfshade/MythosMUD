@@ -72,6 +72,7 @@ class TestPlayerRespawnService:
         assert result == "custom-respawn-room"
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared state
     async def test_get_respawn_room_default(self, player_respawn_service, mock_player):
         """Test getting default respawn room when player has None."""
         mock_player.respawn_room_id = None
@@ -188,6 +189,7 @@ class TestPlayerRespawnService:
         assert result == DEFAULT_RESPAWN_ROOM
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared event bus or service state
     async def test_respawn_player_with_event_bus(self, mock_player):
         """Test player respawn with event bus integration."""
         # Create service with event bus
@@ -238,7 +240,7 @@ class TestPlayerRespawnService:
         service = PlayerRespawnService(event_bus=mock_event_bus, player_combat_service=mock_player_combat_service)
 
         # Setup player in dead state
-        player_id = str(uuid4())
+        player_id = uuid4()
         stats = {"current_dp": -10, "max_dp": 100}
         mock_player.player_id = player_id
         mock_player.get_stats.return_value = stats
@@ -260,7 +262,7 @@ class TestPlayerRespawnService:
         mock_player_combat_service.clear_player_combat_state.assert_called_once()
         # Verify the correct player UUID was passed
         call_args = mock_player_combat_service.clear_player_combat_state.call_args
-        assert str(call_args[0][0]) == player_id
+        assert call_args[0][0] == player_id
 
     @pytest.mark.asyncio
     async def test_respawn_player_without_combat_service(self, mock_player):
@@ -329,6 +331,7 @@ class TestPlayerRespawnService:
         assert result is False
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Worker crash in parallel execution - likely due to shared state or initialization race conditions
     async def test_respawn_player_from_delirium_lucidity_not_found(self, player_respawn_service, mock_player):
         """Test delirium respawn when lucidity record doesn't exist."""
 

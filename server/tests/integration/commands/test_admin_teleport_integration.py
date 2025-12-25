@@ -18,6 +18,8 @@ from server.commands.admin_commands import (
     validate_admin_permission,
 )
 
+pytestmark = pytest.mark.integration
+
 
 @pytest.fixture(autouse=True)
 def patch_broadcast_room_update(monkeypatch):
@@ -530,7 +532,7 @@ class TestAdminTeleportPerformance:
     """Performance tests for admin teleport system."""
 
     @pytest.mark.asyncio
-    async def test_teleport_performance_with_many_online_players(self):
+    async def test_teleport_performance_with_many_online_players(self) -> None:
         """Test teleport performance with many online players."""
         # Setup mock with many online players
         connection_manager = MagicMock()

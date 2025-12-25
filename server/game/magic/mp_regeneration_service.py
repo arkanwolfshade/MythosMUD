@@ -126,7 +126,7 @@ class MPRegenerationService:
                             },
                         },
                     )
-                except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError) as e:
+                except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError, RuntimeError) as e:
                     logger.warning("Failed to send MP regeneration update event", player_id=player_id, error=str(e))
 
             return {"mp_restored": mp_restored, "current_mp": new_mp, "max_mp": max_mp}

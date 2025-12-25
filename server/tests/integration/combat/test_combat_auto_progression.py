@@ -16,6 +16,8 @@ import pytest
 from server.models.combat import CombatParticipantType, CombatStatus
 from server.services.combat_service import CombatParticipantData, CombatService
 
+pytestmark = pytest.mark.integration
+
 
 class TestAutoProgressionIntegration:
     """Test the complete auto-progression combat system integration."""

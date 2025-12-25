@@ -820,6 +820,13 @@ def mock_container():
 
     # Mock real-time communication
     container.connection_manager = MagicMock()
+    # Ensure connection_manager has async methods properly mocked
+    container.connection_manager.send = AsyncMock()
+    container.connection_manager.send_personal_message = AsyncMock()
+    container.connection_manager.broadcast_to_room = AsyncMock()
+    container.connection_manager.broadcast_global = AsyncMock()
+    container.connection_manager.send_json = AsyncMock()
+    container.connection_manager.player_websockets = {}
     container.nats_service = MagicMock()
     container.nats_service.is_connected.return_value = False  # Default: not connected
 

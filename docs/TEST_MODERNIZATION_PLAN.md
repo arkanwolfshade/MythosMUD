@@ -362,9 +362,9 @@ def test_player_service(mock_container):
 
 ```python
 def test_database_connection():
-    from server.database import get_database_manager
+    from server.database import DatabaseManager
 
-    db = get_database_manager()
+    db = DatabaseManager.get_instance()
     assert db.engine is not None
 ```
 

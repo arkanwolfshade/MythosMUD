@@ -9,15 +9,9 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     exclude: ['tests/**/*', '**/*.spec.ts', '**/*.spec.tsx', 'node_modules/**/*'],
     pool: 'threads',
-    maxConcurrency: 1,
-    // @ts-expect-error - poolOptions is valid but types are incomplete in vitest 4.0.15
-    poolOptions: {
-      threads: {
-        singleThread: true,
-        maxThreads: 1,
-        minThreads: 1,
-      },
-    },
+    // Tests run in parallel using Vitest's default behavior (CPU_COUNT - 1 workers)
+    // This significantly speeds up test execution while maintaining test isolation
+    // Note: E2E tests (Playwright) still run serially to avoid race conditions with shared player accounts
     coverage: {
       provider: 'v8',
       enabled: true,

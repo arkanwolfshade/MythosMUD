@@ -6,6 +6,7 @@ provides services to API endpoints, ensuring proper separation of concerns
 and testable architecture.
 """
 
+from typing import Any, cast
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -33,13 +34,18 @@ class TestServiceDependencyInjection:
             mock_nats.disconnect.return_value = True
 
             # Configure persistence mock (no longer using get_persistence)
-            mock_persistence = AsyncMock()
-            mock_persistence.async_list_players.return_value = []
-            mock_persistence.async_get_player.return_value = None
-            mock_persistence.async_get_room.return_value = None
-            mock_persistence.async_save_player.return_value = None
-            mock_persistence.async_delete_player.return_value = True
-            mock_persistence.list_players.return_value = []
+            # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+            from unittest.mock import MagicMock
+
+            mock_persistence = MagicMock()
+            # Only set actual async methods as AsyncMock
+            mock_persistence.async_list_players = AsyncMock(return_value=[])
+            mock_persistence.async_get_player = AsyncMock(return_value=None)
+            mock_persistence.async_get_room = AsyncMock(return_value=None)
+            mock_persistence.async_save_player = AsyncMock(return_value=None)
+            mock_persistence.async_delete_player = AsyncMock(return_value=True)
+            # list_players is called with await in player_service.py, so it must be AsyncMock
+            mock_persistence.list_players = AsyncMock(return_value=[])
             mock_persistence.get_player.return_value = None
             mock_persistence.get_room.return_value = None
             mock_persistence.save_player.return_value = None
@@ -56,8 +62,6 @@ class TestServiceDependencyInjection:
 
             from server.events.event_bus import EventBus
             from server.game.chat_service import ChatService
-            from server.game.player_service import PlayerService
-            from server.game.room_service import RoomService
             from server.realtime.connection_manager import ConnectionManager
             from server.realtime.event_handler import RealTimeEventHandler
             from server.services.user_manager import UserManager
@@ -132,7 +136,15 @@ class TestServiceDependencyInjection:
 
     def test_room_service_dependency_injection_via_endpoint(self, client):
         """Test that RoomService is correctly injected via API endpoint."""
-        response = client.get("/rooms/test_room")
+        # Ensure room_service is properly set up in container to prevent AsyncMock warnings
+        from unittest.mock import AsyncMock, MagicMock
+
+        mock_room_service = MagicMock()
+        mock_room_service.get_room = AsyncMock(return_value=None)
+        client.app.state.container.room_service = mock_room_service
+        client.app.state.room_service = mock_room_service
+
+        response = client.get("/api/rooms/test_room")
         assert response.status_code in [404, 401]
 
         app = client.app
@@ -179,7 +191,7 @@ class TestServiceDependencyInjection:
         assert player_service1 is player_service2
 
         # But different service types are different instances
-        assert player_service1 is not room_service
+        assert cast(Any, player_service1) is not cast(Any, room_service)
 
     def test_api_endpoints_use_dependency_injection(self, client):
         """Test that API endpoints actually use the dependency injection system."""
@@ -222,14 +234,18 @@ class TestServiceDependencyInjectionSimple:
     @pytest.fixture
     def mock_persistence(self):
         """Create mock persistence layer."""
-        mock_persistence = AsyncMock()
-        mock_persistence.async_list_players.return_value = []
-        mock_persistence.async_get_player.return_value = None
-        mock_persistence.async_get_room.return_value = None
-        mock_persistence.async_save_player.return_value = None
-        mock_persistence.async_delete_player.return_value = True
-        # Also mock synchronous methods for backward compatibility
-        mock_persistence.list_players.return_value = []
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        from unittest.mock import MagicMock
+
+        mock_persistence = MagicMock()
+        # Only set actual async methods as AsyncMock
+        mock_persistence.async_list_players = AsyncMock(return_value=[])
+        mock_persistence.async_get_player = AsyncMock(return_value=None)
+        mock_persistence.async_get_room = AsyncMock(return_value=None)
+        mock_persistence.async_save_player = AsyncMock(return_value=None)
+        mock_persistence.async_delete_player = AsyncMock(return_value=True)
+        # list_players is called with await in player_service.py, so it must be AsyncMock
+        mock_persistence.list_players = AsyncMock(return_value=[])
         mock_persistence.get_player.return_value = None
         mock_persistence.get_room.return_value = None
         mock_persistence.save_player.return_value = None
@@ -326,8 +342,8 @@ class TestServiceDependencyInjectionSimple:
 
         # Verify they are different instances
         assert player_service1 is not player_service2
-        assert player_service1 is not room_service
-        assert player_service2 is not room_service
+        assert cast(Any, player_service1) is not cast(Any, room_service)
+        assert cast(Any, player_service2) is not cast(Any, room_service)
 
         # But they share the same persistence layer
         assert player_service1.persistence == mock_persistence
@@ -351,7 +367,7 @@ class TestServiceDependencyInjectionSimple:
         assert hasattr(mock_persistence, "async_get_room")
         assert hasattr(mock_persistence, "async_save_player")
 
-    def test_service_initialization_with_different_persistence(self):
+    def test_service_initialization_with_different_persistence(self) -> None:
         """Test that services can be initialized with different persistence layers."""
         persistence1 = AsyncMock()
         persistence2 = AsyncMock()
@@ -433,7 +449,8 @@ class TestServiceDependencyInjectionSimple:
                 # Simulate concurrent access
                 service = PlayerService(persistence=mock_persistence)
                 results.append(service)
-            except Exception as e:
+            except (ValueError, KeyError, AttributeError, RuntimeError) as e:
+                # We catch expected functional errors to record failures for assertion.
                 errors.append(e)
 
         # Create multiple threads

@@ -35,7 +35,7 @@ class AliasGraph:
             alias_storage: Storage backend containing player aliases
         """
         self.alias_storage = alias_storage
-        self.graph = nx.DiGraph()
+        self.graph: nx.DiGraph = nx.DiGraph()
         logger.debug("AliasGraph initialized")
 
     def build_graph(self, player_name: str) -> None:
@@ -176,7 +176,7 @@ class AliasGraph:
 
             return max_depth
 
-        except Exception as e:
+        except (nx.NetworkXException, KeyError, ValueError) as e:
             logger.error("Error calculating expansion depth", alias=alias_name, error=str(e))
             return 0
 

@@ -30,6 +30,52 @@
   font-weight: bold;
 }
 
+/* MULTI-CHARACTER: Character name input styling */
+.character-name-input-container {
+  margin: 1rem 0;
+  text-align: left;
+}
+
+.character-name-label {
+  display: block;
+  color: #87ceeb;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.character-name-input {
+  width: 100%;
+  padding: 0.75rem;
+  background: #2a2a2a;
+  border: 2px solid #4a4a4a;
+  border-radius: 4px;
+  color: #e0e0e0;
+  font-size: 1rem;
+  font-family: 'Courier New', monospace;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.character-name-input:focus {
+  outline: none;
+  border-color: #87ceeb;
+  box-shadow: 0 0 8px rgba(135, 206, 235, 0.3);
+}
+
+.character-name-input:disabled {
+  background: #1a1a1a;
+  color: #6a6a6a;
+  cursor: not-allowed;
+}
+
+.character-name-preview {
+  color: #a0a0a0;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
 .profession-display {
   margin-top: 1rem;
   padding: 1rem;

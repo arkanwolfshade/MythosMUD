@@ -124,9 +124,14 @@ async def _execute_movement(
         player_combat_service = getattr(app.state, "player_combat_service", None) if app else None
         event_bus = getattr(app.state, "event_bus", None) if app else None
 
-        movement_service = MovementService(
-            event_bus, player_combat_service=player_combat_service, async_persistence=persistence
-        )
+        # Get MovementService from container
+        if app and hasattr(app.state, "container"):
+            movement_service = app.state.container.movement_service
+        else:
+            # Fallback for tests or other environments where container might not be fully initialized
+            movement_service = MovementService(
+                event_bus, player_combat_service=player_combat_service, async_persistence=persistence
+            )
         success = await movement_service.move_player(player.player_id, room_id, target_room_id)
 
         if success:

@@ -17,13 +17,13 @@ from server.realtime.message_queue import MessageQueue
 class TestMessageQueueInitialization:
     """Test initialization of MessageQueue."""
 
-    def test_init_default_max_messages(self):
+    def test_init_default_max_messages(self) -> None:
         """Test initialization with default max_messages_per_player."""
         queue = MessageQueue()
         assert queue.max_messages_per_player == 1000
         assert queue.pending_messages == {}
 
-    def test_init_custom_max_messages(self):
+    def test_init_custom_max_messages(self) -> None:
         """Test initialization with custom max_messages_per_player."""
         queue = MessageQueue(max_messages_per_player=500)
         assert queue.max_messages_per_player == 500
@@ -33,7 +33,7 @@ class TestMessageQueueInitialization:
 class TestAddMessage:
     """Test message addition to the queue."""
 
-    def test_add_message_creates_player_queue(self):
+    def test_add_message_creates_player_queue(self) -> None:
         """Test that add_message creates a new queue for a new player."""
         queue = MessageQueue()
         message = {"type": "chat", "content": "Hello from the void"}
@@ -45,7 +45,7 @@ class TestAddMessage:
         assert len(queue.pending_messages["player1"]) == 1
         assert "timestamp" in queue.pending_messages["player1"][0]
 
-    def test_add_message_with_existing_timestamp(self):
+    def test_add_message_with_existing_timestamp(self) -> None:
         """Test that add_message preserves existing timestamp."""
         queue = MessageQueue()
         custom_timestamp = time.time() - 100
@@ -55,7 +55,7 @@ class TestAddMessage:
 
         assert queue.pending_messages["player1"][0]["timestamp"] == custom_timestamp
 
-    def test_add_message_without_timestamp(self):
+    def test_add_message_without_timestamp(self) -> None:
         """Test that add_message adds timestamp if not present."""
         queue = MessageQueue()
         message = {"type": "chat", "content": "Message without timestamp"}
@@ -67,7 +67,7 @@ class TestAddMessage:
         timestamp = queue.pending_messages["player1"][0]["timestamp"]
         assert before <= timestamp <= after
 
-    def test_add_multiple_messages_to_same_player(self):
+    def test_add_multiple_messages_to_same_player(self) -> None:
         """Test adding multiple messages to the same player."""
         queue = MessageQueue()
 
@@ -77,7 +77,7 @@ class TestAddMessage:
 
         assert len(queue.pending_messages["player1"]) == 3
 
-    def test_add_message_exceeds_limit(self):
+    def test_add_message_exceeds_limit(self) -> None:
         """Test that exceeding max_messages_per_player drops oldest messages."""
         queue = MessageQueue(max_messages_per_player=3)
 
@@ -91,7 +91,7 @@ class TestAddMessage:
         assert messages[1]["content"] == "Message 3"
         assert messages[2]["content"] == "Message 4"
 
-    def test_add_message_logs_warning_on_limit(self):
+    def test_add_message_logs_warning_on_limit(self) -> None:
         """Test that add_message logs warning when limit is reached."""
         queue = MessageQueue(max_messages_per_player=2)
 
@@ -103,7 +103,7 @@ class TestAddMessage:
             queue.add_message("player1", {"content": "Message 3"})
             mock_logger.warning.assert_called_once()
 
-    def test_add_message_exception_handling(self):
+    def test_add_message_exception_handling(self) -> None:
         """Test error handling when add_message encounters an exception."""
         queue = MessageQueue()
 
@@ -115,7 +115,7 @@ class TestAddMessage:
 
             assert result is False
 
-    def test_add_message_logs_debug_on_success(self):
+    def test_add_message_logs_debug_on_success(self) -> None:
         """Test that add_message logs debug message on success."""
         queue = MessageQueue()
 
@@ -127,7 +127,7 @@ class TestAddMessage:
 class TestGetMessages:
     """Test retrieving messages from the queue."""
 
-    def test_get_messages_returns_all_messages(self):
+    def test_get_messages_returns_all_messages(self) -> None:
         """Test that get_messages returns all pending messages for a player."""
         queue = MessageQueue()
 
@@ -140,7 +140,7 @@ class TestGetMessages:
         assert messages[0]["content"] == "Message 1"
         assert messages[1]["content"] == "Message 2"
 
-    def test_get_messages_clears_queue(self):
+    def test_get_messages_clears_queue(self) -> None:
         """Test that get_messages clears the player's queue."""
         queue = MessageQueue()
 
@@ -149,7 +149,7 @@ class TestGetMessages:
 
         assert "player1" not in queue.pending_messages
 
-    def test_get_messages_for_nonexistent_player(self):
+    def test_get_messages_for_nonexistent_player(self) -> None:
         """Test that get_messages returns empty list for nonexistent player."""
         queue = MessageQueue()
 
@@ -157,7 +157,7 @@ class TestGetMessages:
 
         assert messages == []
 
-    def test_get_messages_logs_debug_on_retrieval(self):
+    def test_get_messages_logs_debug_on_retrieval(self) -> None:
         """Test that get_messages logs debug message when retrieving messages."""
         queue = MessageQueue()
         queue.add_message("player1", {"content": "Test"})
@@ -166,7 +166,7 @@ class TestGetMessages:
             queue.get_messages("player1")
             mock_logger.debug.assert_called_with("Retrieved and cleared messages", message_count=1, player_id="player1")
 
-    def test_get_messages_exception_handling(self):
+    def test_get_messages_exception_handling(self) -> None:
         """Test error handling when get_messages encounters an exception."""
         queue = MessageQueue()
         queue.add_message("player1", {"content": "Test"})
@@ -188,20 +188,20 @@ class TestGetMessages:
 class TestHasMessages:
     """Test checking if a player has pending messages."""
 
-    def test_has_messages_true(self):
+    def test_has_messages_true(self) -> None:
         """Test has_messages returns True when player has messages."""
         queue = MessageQueue()
         queue.add_message("player1", {"content": "Test"})
 
         assert queue.has_messages("player1") is True
 
-    def test_has_messages_false_nonexistent_player(self):
+    def test_has_messages_false_nonexistent_player(self) -> None:
         """Test has_messages returns False for nonexistent player."""
         queue = MessageQueue()
 
         assert queue.has_messages("nonexistent") is False
 
-    def test_has_messages_false_empty_queue(self):
+    def test_has_messages_false_empty_queue(self) -> None:
         """Test has_messages returns False when queue is empty."""
         queue = MessageQueue()
         queue.pending_messages["player1"] = []
@@ -212,13 +212,13 @@ class TestHasMessages:
 class TestGetMessageCount:
     """Test getting the count of pending messages."""
 
-    def test_get_message_count_zero(self):
+    def test_get_message_count_zero(self) -> None:
         """Test get_message_count returns 0 for nonexistent player."""
         queue = MessageQueue()
 
         assert queue.get_message_count("nonexistent") == 0
 
-    def test_get_message_count_multiple(self):
+    def test_get_message_count_multiple(self) -> None:
         """Test get_message_count returns correct count."""
         queue = MessageQueue()
 
@@ -232,7 +232,7 @@ class TestGetMessageCount:
 class TestRemovePlayerMessages:
     """Test removing all messages for a specific player."""
 
-    def test_remove_player_messages_success(self):
+    def test_remove_player_messages_success(self) -> None:
         """Test that remove_player_messages deletes all player messages."""
         queue = MessageQueue()
 
@@ -243,14 +243,14 @@ class TestRemovePlayerMessages:
 
         assert "player1" not in queue.pending_messages
 
-    def test_remove_player_messages_nonexistent_player(self):
+    def test_remove_player_messages_nonexistent_player(self) -> None:
         """Test remove_player_messages handles nonexistent player gracefully."""
         queue = MessageQueue()
 
         # Should not raise an exception
         queue.remove_player_messages("nonexistent")
 
-    def test_remove_player_messages_logs_debug(self):
+    def test_remove_player_messages_logs_debug(self) -> None:
         """Test that remove_player_messages logs debug message."""
         queue = MessageQueue()
         queue.add_message("player1", {"content": "Test"})
@@ -259,7 +259,7 @@ class TestRemovePlayerMessages:
             queue.remove_player_messages("player1")
             mock_logger.debug.assert_called_with("Removed all pending messages", player_id="player1")
 
-    def test_remove_player_messages_exception_handling(self):
+    def test_remove_player_messages_exception_handling(self) -> None:
         """Test error handling when remove_player_messages encounters an exception."""
         queue = MessageQueue()
         queue.add_message("player1", {"content": "Test"})
@@ -281,7 +281,7 @@ class TestRemovePlayerMessages:
 class TestCleanupOldMessages:
     """Test cleanup of old messages."""
 
-    def test_cleanup_old_messages_removes_old(self):
+    def test_cleanup_old_messages_removes_old(self) -> None:
         """Test that cleanup_old_messages removes messages older than max_age."""
         queue = MessageQueue()
 
@@ -297,7 +297,7 @@ class TestCleanupOldMessages:
         assert len(messages) == 1
         assert messages[0]["content"] == "Recent message"
 
-    def test_cleanup_old_messages_removes_empty_queues(self):
+    def test_cleanup_old_messages_removes_empty_queues(self) -> None:
         """Test that cleanup_old_messages removes empty player queues."""
         queue = MessageQueue()
 
@@ -308,7 +308,7 @@ class TestCleanupOldMessages:
 
         assert "player1" not in queue.pending_messages
 
-    def test_cleanup_old_messages_logs_info(self):
+    def test_cleanup_old_messages_logs_info(self) -> None:
         """Test that cleanup_old_messages logs info when cleaning up."""
         queue = MessageQueue()
 
@@ -319,7 +319,7 @@ class TestCleanupOldMessages:
             queue.cleanup_old_messages(max_age_seconds=3600)
             mock_logger.info.assert_called_once()
 
-    def test_cleanup_old_messages_no_changes(self):
+    def test_cleanup_old_messages_no_changes(self) -> None:
         """Test that cleanup_old_messages handles case with no changes."""
         queue = MessageQueue()
 
@@ -331,7 +331,7 @@ class TestCleanupOldMessages:
             # Should not log info if nothing was removed
             mock_logger.info.assert_not_called()
 
-    def test_cleanup_old_messages_exception_handling(self):
+    def test_cleanup_old_messages_exception_handling(self) -> None:
         """Test error handling when cleanup_old_messages encounters an exception."""
         queue = MessageQueue()
         queue.add_message("player1", {"content": "Test"})
@@ -352,7 +352,7 @@ class TestCleanupOldMessages:
 class TestCleanupLargeStructures:
     """Test cleanup of large data structures."""
 
-    def test_cleanup_large_structures_trims_excess(self):
+    def test_cleanup_large_structures_trims_excess(self) -> None:
         """Test that cleanup_large_structures trims queues exceeding max_entries."""
         queue = MessageQueue()
 
@@ -368,7 +368,7 @@ class TestCleanupLargeStructures:
         assert messages[0]["content"] == "Message 50"
         assert messages[-1]["content"] == "Message 149"
 
-    def test_cleanup_large_structures_no_change_under_limit(self):
+    def test_cleanup_large_structures_no_change_under_limit(self) -> None:
         """Test that cleanup_large_structures doesn't change queues under limit."""
         queue = MessageQueue()
 
@@ -379,7 +379,7 @@ class TestCleanupLargeStructures:
 
         assert len(queue.pending_messages["player1"]) == 50
 
-    def test_cleanup_large_structures_logs_debug(self):
+    def test_cleanup_large_structures_logs_debug(self) -> None:
         """Test that cleanup_large_structures logs debug message when trimming."""
         queue = MessageQueue()
 
@@ -390,7 +390,7 @@ class TestCleanupLargeStructures:
             queue.cleanup_large_structures(max_entries=100)
             mock_logger.debug.assert_called_once()
 
-    def test_cleanup_large_structures_exception_handling(self):
+    def test_cleanup_large_structures_exception_handling(self) -> None:
         """Test error handling when cleanup_large_structures encounters an exception."""
         queue = MessageQueue()
         queue.add_message("player1", {"content": "Test"})
@@ -411,7 +411,7 @@ class TestCleanupLargeStructures:
 class TestIsMessageRecent:
     """Test timestamp validation for messages."""
 
-    def test_is_message_recent_with_float_timestamp(self):
+    def test_is_message_recent_with_float_timestamp(self) -> None:
         """Test _is_message_recent with float timestamp."""
         queue = MessageQueue()
 
@@ -420,7 +420,7 @@ class TestIsMessageRecent:
 
         assert queue._is_message_recent(msg, current_time, 3600) is True
 
-    def test_is_message_recent_with_int_timestamp(self):
+    def test_is_message_recent_with_int_timestamp(self) -> None:
         """Test _is_message_recent with int timestamp."""
         queue = MessageQueue()
 
@@ -429,7 +429,7 @@ class TestIsMessageRecent:
 
         assert queue._is_message_recent(msg, current_time, 3600) is True
 
-    def test_is_message_recent_with_iso_timestamp(self):
+    def test_is_message_recent_with_iso_timestamp(self) -> None:
         """Test _is_message_recent with ISO format timestamp."""
         queue = MessageQueue()
 
@@ -441,7 +441,7 @@ class TestIsMessageRecent:
 
         assert queue._is_message_recent(msg, current_time, 3600) is True
 
-    def test_is_message_recent_with_iso_timestamp_z_suffix(self):
+    def test_is_message_recent_with_iso_timestamp_z_suffix(self) -> None:
         """Test _is_message_recent with ISO format timestamp ending in Z."""
         queue = MessageQueue()
 
@@ -453,7 +453,7 @@ class TestIsMessageRecent:
 
         assert queue._is_message_recent(msg, current_time, 3600) is True
 
-    def test_is_message_recent_old_message(self):
+    def test_is_message_recent_old_message(self) -> None:
         """Test _is_message_recent returns False for old message."""
         queue = MessageQueue()
 
@@ -462,7 +462,7 @@ class TestIsMessageRecent:
 
         assert queue._is_message_recent(msg, current_time, 3600) is False
 
-    def test_is_message_recent_no_timestamp(self):
+    def test_is_message_recent_no_timestamp(self) -> None:
         """Test _is_message_recent returns False when no timestamp present."""
         queue = MessageQueue()
 
@@ -471,7 +471,7 @@ class TestIsMessageRecent:
 
         assert queue._is_message_recent(msg, current_time, 3600) is False
 
-    def test_is_message_recent_invalid_string_timestamp(self):
+    def test_is_message_recent_invalid_string_timestamp(self) -> None:
         """Test _is_message_recent returns False for invalid string timestamp."""
         queue = MessageQueue()
 
@@ -480,7 +480,7 @@ class TestIsMessageRecent:
 
         assert queue._is_message_recent(msg, current_time, 3600) is False
 
-    def test_is_message_recent_invalid_type_timestamp(self):
+    def test_is_message_recent_invalid_type_timestamp(self) -> None:
         """Test _is_message_recent returns False for invalid timestamp type."""
         queue = MessageQueue()
 
@@ -489,7 +489,7 @@ class TestIsMessageRecent:
 
         assert queue._is_message_recent(msg, current_time, 3600) is False
 
-    def test_is_message_recent_exception_handling(self):
+    def test_is_message_recent_exception_handling(self) -> None:
         """Test _is_message_recent returns False on exception."""
         queue = MessageQueue()
 
@@ -503,7 +503,7 @@ class TestIsMessageRecent:
 class TestGetStats:
     """Test getting statistics about the message queue."""
 
-    def test_get_stats_empty_queue(self):
+    def test_get_stats_empty_queue(self) -> None:
         """Test get_stats with empty queue."""
         queue = MessageQueue()
 
@@ -514,7 +514,7 @@ class TestGetStats:
         assert stats["average_queue_size"] == 0
         assert stats["largest_queues"] == []
 
-    def test_get_stats_single_player(self):
+    def test_get_stats_single_player(self) -> None:
         """Test get_stats with single player."""
         queue = MessageQueue()
 
@@ -528,7 +528,7 @@ class TestGetStats:
         assert stats["average_queue_size"] == 2
         assert stats["largest_queues"] == [("player1", 2)]
 
-    def test_get_stats_multiple_players(self):
+    def test_get_stats_multiple_players(self) -> None:
         """Test get_stats with multiple players."""
         queue = MessageQueue()
 
@@ -552,7 +552,7 @@ class TestGetStats:
         assert stats["largest_queues"][1] == ("player2", 3)
         assert stats["largest_queues"][2] == ("player3", 1)
 
-    def test_get_stats_max_messages_per_player(self):
+    def test_get_stats_max_messages_per_player(self) -> None:
         """Test that get_stats includes max_messages_per_player."""
         queue = MessageQueue(max_messages_per_player=500)
 
@@ -560,7 +560,7 @@ class TestGetStats:
 
         assert stats["max_messages_per_player"] == 500
 
-    def test_get_stats_top_5_largest(self):
+    def test_get_stats_top_5_largest(self) -> None:
         """Test that get_stats returns only top 5 largest queues."""
         queue = MessageQueue()
 
@@ -575,7 +575,7 @@ class TestGetStats:
         # Should be the 5 players with most messages (player5-player9)
         assert stats["largest_queues"][0][0] == "player9"
 
-    def test_get_stats_exception_handling(self):
+    def test_get_stats_exception_handling(self) -> None:
         """Test error handling when get_stats encounters an exception."""
         queue = MessageQueue()
         queue.add_message("player1", {"content": "Test"})
@@ -596,7 +596,7 @@ class TestGetStats:
 class TestMessageQueueIntegration:
     """Integration tests for MessageQueue operations."""
 
-    def test_full_message_lifecycle(self):
+    def test_full_message_lifecycle(self) -> None:
         """Test complete lifecycle: add, check, retrieve, verify empty."""
         queue = MessageQueue()
 
@@ -616,7 +616,7 @@ class TestMessageQueueIntegration:
         assert queue.has_messages("player1") is False
         assert queue.get_message_count("player1") == 0
 
-    def test_multiple_players_independence(self):
+    def test_multiple_players_independence(self) -> None:
         """Test that multiple players' queues are independent."""
         queue = MessageQueue()
 
@@ -633,7 +633,7 @@ class TestMessageQueueIntegration:
         assert queue.has_messages("player2") is True
         assert queue.get_message_count("player2") == 1
 
-    def test_cleanup_workflows(self):
+    def test_cleanup_workflows(self) -> None:
         """Test that cleanup methods work together."""
         queue = MessageQueue()
 
@@ -659,7 +659,7 @@ class TestMessageQueueIntegration:
         # Should be trimmed to 100
         assert queue.get_message_count("player2") == 100
 
-    def test_stats_after_operations(self):
+    def test_stats_after_operations(self) -> None:
         """Test that stats reflect the current state after various operations."""
         queue = MessageQueue()
 

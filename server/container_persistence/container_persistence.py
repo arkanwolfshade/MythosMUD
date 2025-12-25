@@ -175,7 +175,6 @@ class ContainerData:
 
     def to_dict(self) -> dict[str, Any]:
         """Convert container data to dictionary for ContainerComponent."""
-        from uuid import UUID
 
         # Map database field names to ContainerComponent field names
         result = {

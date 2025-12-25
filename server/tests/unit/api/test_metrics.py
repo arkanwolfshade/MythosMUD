@@ -8,6 +8,7 @@ AI Agent: Tests for admin-only metrics endpoints covering authentication,
          authorization, and basic metric retrieval with mocked dependencies.
 """
 
+
 # pylint: disable=redefined-outer-name,protected-access
 # Justification: pytest fixtures redefine names, protected access needed for testing internals
 

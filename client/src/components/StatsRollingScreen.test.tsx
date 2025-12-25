@@ -57,7 +57,7 @@ describe('StatsRollingScreen', () => {
 
       await waitFor(() => {
         expect(screen.getByText('Character Creation')).toBeInTheDocument();
-        expect(screen.getByText('Character: TestCharacter')).toBeInTheDocument();
+        expect(screen.getByText('Preview: TestCharacter')).toBeInTheDocument();
       });
     });
 
@@ -326,17 +326,20 @@ describe('StatsRollingScreen', () => {
       });
 
       await waitFor(() => {
-        expect(defaultProps.onStatsAccepted).toHaveBeenCalledWith({
-          strength: 60,
-          dexterity: 70,
-          constitution: 50,
-          size: 55,
-          intelligence: 80,
-          power: 65,
-          education: 40,
-          charisma: 65,
-          luck: 50,
-        });
+        expect(defaultProps.onStatsAccepted).toHaveBeenCalledWith(
+          {
+            strength: 60,
+            dexterity: 70,
+            constitution: 50,
+            size: 55,
+            intelligence: 80,
+            power: 65,
+            education: 40,
+            charisma: 65,
+            luck: 50,
+          },
+          'TestCharacter'
+        );
       });
     });
   });

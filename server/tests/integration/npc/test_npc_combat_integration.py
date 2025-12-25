@@ -5,6 +5,7 @@ This module tests the integration between NPCs and the combat system,
 including combat memory, damage handling, and event publishing.
 """
 
+from typing import Any
 from unittest.mock import AsyncMock, Mock, patch
 from uuid import uuid4
 
@@ -12,23 +13,25 @@ import pytest
 
 from server.services.npc_combat_integration_service import NPCCombatIntegrationService
 
+pytestmark = pytest.mark.integration
+
 
 class TestNPCCombatIntegrationService:
     """Test cases for NPC Combat Integration Service."""
 
-    def __init__(self):
-        """Initialize test attributes."""
-        self.event_bus = None
-        self.persistence = None
-        self.combat_service = None
-        self.messaging_integration = None
-        self.event_publisher = None
-        self.mock_npc_instance_service = None
-        self.npc_service_patcher = None
-        self.mock_get_service = None
-        self.service = None
+    # Type annotations for instance attributes (satisfies linter without requiring __init__)
+    # Attributes are initialized in setup_method() per pytest best practices
+    event_bus: Mock
+    persistence: Mock
+    combat_service: AsyncMock
+    messaging_integration: Mock
+    event_publisher: Mock
+    mock_npc_instance_service: Mock
+    npc_service_patcher: Any
+    mock_get_service: Mock
+    service: NPCCombatIntegrationService
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test environment."""
         self.event_bus = Mock()
         self.persistence = Mock()
@@ -72,13 +75,13 @@ class TestNPCCombatIntegrationService:
                 async_persistence=self.persistence,
             )
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Clean up test environment."""
         if hasattr(self, "npc_service_patcher"):
             self.npc_service_patcher.stop()
 
     @pytest.mark.asyncio
-    async def test_handle_player_attack_on_npc_success(self):
+    async def test_handle_player_attack_on_npc_success(self) -> None:
         """Test successful player attack on NPC."""
         # Setup
         player_id = str(uuid4())
@@ -107,8 +110,9 @@ class TestNPCCombatIntegrationService:
         # Set up NPC instance in mock service's active_npcs
         self.mock_npc_instance_service.lifecycle_manager.active_npcs[npc_id] = npc_instance
 
-        self.service._get_player_name = AsyncMock(return_value="TestPlayer")
-        self.service._get_player_room_id = AsyncMock(return_value=room_id)
+        # Type ignore: Dynamic attribute assignment for testing purposes
+        self.service._get_player_name = AsyncMock(return_value="TestPlayer")  # type: ignore[attr-defined]
+        self.service._get_player_room_id = AsyncMock(return_value=room_id)  # type: ignore[attr-defined]
 
         # Execute
         result = await self.service.handle_player_attack_on_npc(
@@ -128,7 +132,7 @@ class TestNPCCombatIntegrationService:
         self.messaging_integration.broadcast_combat_attack.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_handle_player_attack_on_dead_npc(self):
+    async def test_handle_player_attack_on_dead_npc(self) -> None:
         """Test player attack on dead NPC."""
         # Setup
         player_id = str(uuid4())
@@ -154,7 +158,7 @@ class TestNPCCombatIntegrationService:
         self.event_publisher.publish_player_attacked.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_handle_player_attack_on_nonexistent_npc(self):
+    async def test_handle_player_attack_on_nonexistent_npc(self) -> None:
         """Test player attack on non-existent NPC."""
         # Setup
         player_id = str(uuid4())
@@ -175,7 +179,7 @@ class TestNPCCombatIntegrationService:
         self.event_publisher.publish_player_attacked.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_handle_npc_death_success(self):
+    async def test_handle_npc_death_success(self) -> None:
         """Test successful NPC death handling."""
         # Setup
         npc_id = str(uuid4())
@@ -204,17 +208,18 @@ class TestNPCCombatIntegrationService:
         self.mock_npc_instance_service.lifecycle_manager.active_npcs[npc_id] = npc_instance
 
         # Mock NPC definition lookup through data provider
-        async def mock_get_npc_definition(npc_id):
+        async def mock_get_npc_definition(_npc_id):
             return npc_definition
 
-        self.service._data_provider.get_npc_definition = mock_get_npc_definition
+        # Type ignore: Method assignment for testing purposes (mocking internal methods)
+        self.service._data_provider.get_npc_definition = mock_get_npc_definition  # type: ignore[method-assign]
 
         # Mock rewards handler to return XP reward
-        self.service._rewards.calculate_xp_reward = AsyncMock(return_value=5)
-        self.service._rewards.award_xp_to_killer = AsyncMock(return_value=True)
+        self.service._rewards.calculate_xp_reward = AsyncMock(return_value=5)  # type: ignore[method-assign]
+        self.service._rewards.award_xp_to_killer = AsyncMock(return_value=True)  # type: ignore[method-assign]
 
         # Mock lifecycle handler
-        self.service._lifecycle.despawn_npc_safely = AsyncMock(return_value=True)
+        self.service._lifecycle.despawn_npc_safely = AsyncMock(return_value=True)  # type: ignore[method-assign]
 
         # Execute
         result = await self.service.handle_npc_death(
@@ -228,7 +233,7 @@ class TestNPCCombatIntegrationService:
         assert result is True
         # Note: publish_npc_died and broadcast_combat_death are handled by CombatService, not in handle_npc_death
 
-    def test_get_npc_combat_memory(self):
+    def test_get_npc_combat_memory(self) -> None:
         """Test getting NPC combat memory."""
         # Setup
         npc_id = str(uuid4())
@@ -241,7 +246,7 @@ class TestNPCCombatIntegrationService:
         # Verify
         assert result == attacker_id
 
-    def test_get_npc_combat_memory_not_found(self):
+    def test_get_npc_combat_memory_not_found(self) -> None:
         """Test getting NPC combat memory when not found."""
         # Setup
         npc_id = str(uuid4())
@@ -252,7 +257,7 @@ class TestNPCCombatIntegrationService:
         # Verify
         assert result is None
 
-    def test_clear_npc_combat_memory(self):
+    def test_clear_npc_combat_memory(self) -> None:
         """Test clearing NPC combat memory."""
         # Setup
         npc_id = str(uuid4())
@@ -266,7 +271,7 @@ class TestNPCCombatIntegrationService:
         assert result is True
         assert self.service.get_npc_combat_memory(npc_id) is None
 
-    def test_clear_npc_combat_memory_not_found(self):
+    def test_clear_npc_combat_memory_not_found(self) -> None:
         """Test clearing NPC combat memory when not found."""
         # Setup
         npc_id = str(uuid4())
@@ -277,7 +282,7 @@ class TestNPCCombatIntegrationService:
         # Verify
         assert result is False
 
-    def test_handle_npc_death_clears_memory(self):
+    def test_handle_npc_death_clears_memory(self) -> None:
         """Test that NPC death clears combat memory."""
         # Setup
         npc_id = str(uuid4())
@@ -296,7 +301,7 @@ class TestNPCCombatIntegrationService:
         assert self.service.get_npc_combat_memory(npc_id) is None
 
     @pytest.mark.asyncio
-    async def test_handle_player_attack_error_handling(self):
+    async def test_handle_player_attack_error_handling(self) -> None:
         """Test error handling in player attack."""
         # Setup
         player_id = str(uuid4())
@@ -323,7 +328,7 @@ class TestNPCCombatIntegrationService:
         assert result is False
 
     @pytest.mark.asyncio
-    async def test_handle_npc_death_error_handling(self):
+    async def test_handle_npc_death_error_handling(self) -> None:
         """Test error handling in NPC death."""
         # Setup
         npc_id = str(uuid4())

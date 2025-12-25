@@ -6,6 +6,7 @@ user management including muting, permissions, and user state tracking.
 """
 
 import tempfile
+import uuid
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -16,10 +17,76 @@ import pytest
 from server.services.user_manager import UserManager
 
 
+class _FakeChatLogger:
+    def __init__(self) -> None:
+        self.muted_calls: list[dict] = []
+        self.unmuted_calls: list[dict] = []
+
+    def log_player_muted(self, **kwargs) -> None:
+        self.muted_calls.append(kwargs)
+
+    def log_player_unmuted(self, **kwargs) -> None:
+        self.unmuted_calls.append(kwargs)
+
+
+def test_normalize_to_uuid_accepts_uuid_and_str(tmp_path: Path) -> None:
+    manager = UserManager(data_dir=tmp_path)
+    pid = uuid.uuid4()
+
+    assert manager._normalize_to_uuid(pid) == pid  # pylint: disable=protected-access
+    assert manager._normalize_to_uuid(str(pid)) == pid  # pylint: disable=protected-access
+
+
+def test_normalize_to_uuid_rejects_invalid(tmp_path: Path) -> None:
+    manager = UserManager(data_dir=tmp_path)
+    with pytest.raises(ValueError):
+        manager._normalize_to_uuid("not-a-uuid")  # pylint: disable=protected-access
+
+
+def test_mute_and_unmute_channel_persists_state(tmp_path: Path) -> None:
+    manager = UserManager(data_dir=tmp_path)
+    manager.chat_logger = _FakeChatLogger()  # type: ignore[assignment]
+
+    player_id = uuid.uuid4()
+    channel = "local"
+
+    assert manager.mute_channel(player_id, "TestUser", channel, duration_minutes=5, reason="spam")
+
+    # Channel entry created and persisted
+    assert player_id in manager._channel_mutes  # pylint: disable=protected-access
+    assert channel in manager._channel_mutes[player_id]  # pylint: disable=protected-access
+    mute_file = tmp_path / f"mutes_{player_id}.json"
+    assert mute_file.exists()
+
+    # Unmute removes entry and cleans cache
+    assert manager.unmute_channel(player_id, "TestUser", channel)
+    assert player_id not in manager._channel_mutes  # pylint: disable=protected-access
+
+
+def test_global_mute_respects_admin_immunity(tmp_path: Path) -> None:
+    manager = UserManager(data_dir=tmp_path)
+    manager.chat_logger = _FakeChatLogger()  # type: ignore[assignment]
+
+    target_id = uuid.uuid4()
+    manager._admin_players.add(target_id)  # pylint: disable=protected-access
+
+    result = manager.mute_global(
+        muter_id=uuid.uuid4(),
+        muter_name="Mod",
+        target_id=target_id,
+        target_name="AdminPlayer",
+        duration_minutes=10,
+        reason="test",
+    )
+
+    assert result is False
+    assert target_id not in manager._global_mutes  # pylint: disable=protected-access
+
+
 class TestUserManagerInit:
     """Test UserManager initialization."""
 
-    def test_init_default(self):
+    def test_init_default(self) -> None:
         """Test UserManager initialization with default parameters."""
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = UserManager(data_dir=Path(tmpdir))
@@ -31,7 +98,7 @@ class TestUserManagerInit:
             assert manager.data_dir == Path(tmpdir)
             assert manager._mute_cache_ttl == timedelta(seconds=300)
 
-    def test_init_custom_cache_ttl(self):
+    def test_init_custom_cache_ttl(self) -> None:
         """Test UserManager initialization with custom cache TTL."""
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = UserManager(data_dir=Path(tmpdir), mute_cache_ttl=600)
@@ -42,7 +109,7 @@ class TestUserManagerInit:
 class TestNormalizeToUuid:
     """Test _normalize_to_uuid method."""
 
-    def test_normalize_to_uuid_uuid_object(self):
+    def test_normalize_to_uuid_uuid_object(self) -> None:
         """Test normalizing UUID object."""
         manager = UserManager()
         player_id = uuid4()
@@ -52,7 +119,7 @@ class TestNormalizeToUuid:
         assert result == player_id
         assert isinstance(result, type(player_id))
 
-    def test_normalize_to_uuid_string(self):
+    def test_normalize_to_uuid_string(self) -> None:
         """Test normalizing UUID string."""
         manager = UserManager()
         player_id = uuid4()
@@ -63,7 +130,7 @@ class TestNormalizeToUuid:
         assert result == player_id
         assert isinstance(result, type(player_id))
 
-    def test_normalize_to_uuid_invalid(self):
+    def test_normalize_to_uuid_invalid(self) -> None:
         """Test normalizing invalid UUID."""
         manager = UserManager()
 
@@ -75,7 +142,7 @@ class TestAddAdmin:
     """Test add_admin method."""
 
     @pytest.mark.asyncio
-    async def test_add_admin_success(self):
+    async def test_add_admin_success(self) -> None:
         """Test successfully adding admin."""
         manager = UserManager()
         player_id = uuid4()
@@ -83,7 +150,9 @@ class TestAddAdmin:
         mock_player = MagicMock()
         mock_player.set_admin_status = MagicMock()
 
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
         mock_persistence.save_player = AsyncMock()
 
@@ -100,7 +169,7 @@ class TestAddAdmin:
                 mock_persistence.save_player.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_add_admin_no_container(self):
+    async def test_add_admin_no_container(self) -> None:
         """Test adding admin when container is not available."""
         manager = UserManager()
         player_id = uuid4()
@@ -112,12 +181,14 @@ class TestAddAdmin:
                 assert result is False
 
     @pytest.mark.asyncio
-    async def test_add_admin_player_not_found(self):
+    async def test_add_admin_player_not_found(self) -> None:
         """Test adding admin when player is not found."""
         manager = UserManager()
         player_id = uuid4()
 
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_persistence.get_player_by_id = AsyncMock(return_value=None)
 
         mock_container = MagicMock()
@@ -137,7 +208,8 @@ class TestRemoveAdmin:
     """Test remove_admin method."""
 
     @pytest.mark.asyncio
-    async def test_remove_admin_success(self):
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared UserManager state
+    async def test_remove_admin_success(self) -> None:
         """Test successfully removing admin."""
         manager = UserManager()
         player_id = uuid4()
@@ -146,7 +218,9 @@ class TestRemoveAdmin:
         mock_player = MagicMock()
         mock_player.set_admin_status = MagicMock()
 
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
         mock_persistence.save_player = AsyncMock()
 
@@ -165,7 +239,7 @@ class TestRemoveAdmin:
 class TestIsAdminSync:
     """Test is_admin_sync method."""
 
-    def test_is_admin_sync_true(self):
+    def test_is_admin_sync_true(self) -> None:
         """Test checking admin when player is admin."""
         manager = UserManager()
         player_id = uuid4()
@@ -175,7 +249,8 @@ class TestIsAdminSync:
 
         assert result is True
 
-    def test_is_admin_sync_false(self):
+    @pytest.mark.serial  # Worker crash in parallel execution - likely due to shared UserManager state
+    def test_is_admin_sync_false(self) -> None:
         """Test checking admin when player is not admin."""
         manager = UserManager()
         player_id = uuid4()
@@ -189,7 +264,7 @@ class TestIsAdmin:
     """Test is_admin method."""
 
     @pytest.mark.asyncio
-    async def test_is_admin_in_cache(self):
+    async def test_is_admin_in_cache(self) -> None:
         """Test checking admin when player is in cache."""
         manager = UserManager()
         player_id = uuid4()
@@ -200,7 +275,7 @@ class TestIsAdmin:
         assert result is True
 
     @pytest.mark.asyncio
-    async def test_is_admin_in_database(self):
+    async def test_is_admin_in_database(self) -> None:
         """Test checking admin when player is in database."""
         manager = UserManager()
         player_id = uuid4()
@@ -208,7 +283,9 @@ class TestIsAdmin:
         mock_player = MagicMock()
         mock_player.is_admin_user.return_value = True
 
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
 
         mock_container = MagicMock()
@@ -222,12 +299,14 @@ class TestIsAdmin:
                 assert player_id in manager._admin_players
 
     @pytest.mark.asyncio
-    async def test_is_admin_not_found(self):
+    async def test_is_admin_not_found(self) -> None:
         """Test checking admin when player is not found."""
         manager = UserManager()
         player_id = uuid4()
 
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_persistence.get_player_by_id = AsyncMock(return_value=None)
 
         mock_container = MagicMock()
@@ -243,7 +322,7 @@ class TestIsAdmin:
 class TestMutePlayer:
     """Test mute_player method."""
 
-    def test_mute_player_success(self):
+    def test_mute_player_success(self) -> None:
         """Test successfully muting a player."""
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = UserManager(data_dir=Path(tmpdir))
@@ -261,7 +340,7 @@ class TestMutePlayer:
                         assert muter_id in manager._player_mutes
                         assert target_id in manager._player_mutes[muter_id]
 
-    def test_mute_player_admin_immune(self):
+    def test_mute_player_admin_immune(self) -> None:
         """Test that admin players are immune to mutes."""
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = UserManager(data_dir=Path(tmpdir))
@@ -279,7 +358,7 @@ class TestMutePlayer:
 class TestUnmutePlayer:
     """Test unmute_player method."""
 
-    def test_unmute_player_success(self):
+    def test_unmute_player_success(self) -> None:
         """Test successfully unmuting a player."""
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = UserManager(data_dir=Path(tmpdir))
@@ -308,7 +387,7 @@ class TestUnmutePlayer:
                         assert result is True
                         assert unmuter_id not in manager._player_mutes
 
-    def test_unmute_player_not_muted(self):
+    def test_unmute_player_not_muted(self) -> None:
         """Test unmuting a player that is not muted."""
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = UserManager(data_dir=Path(tmpdir))
@@ -325,7 +404,7 @@ class TestUnmutePlayer:
 class TestMuteChannel:
     """Test mute_channel method."""
 
-    def test_mute_channel_success(self):
+    def test_mute_channel_success(self) -> None:
         """Test successfully muting a channel."""
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = UserManager(data_dir=Path(tmpdir))
@@ -343,7 +422,7 @@ class TestMuteChannel:
 class TestUnmuteChannel:
     """Test unmute_channel method."""
 
-    def test_unmute_channel_success(self):
+    def test_unmute_channel_success(self) -> None:
         """Test successfully unmuting a channel."""
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = UserManager(data_dir=Path(tmpdir))
@@ -371,48 +450,34 @@ class TestUnmuteChannel:
 class TestMuteGlobal:
     """Test mute_global method."""
 
-    def test_mute_global_success(self):
+    def test_mute_global_success(self) -> None:
         """Test successfully applying global mute."""
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = UserManager(data_dir=Path(tmpdir))
             muter_id = uuid4()
             target_id = uuid4()
 
-            # mute_global calls is_admin which is async, but doesn't await it
-            # This means it gets a coroutine object which is truthy
-            # So the check will always think the player is admin
-            # We need to patch is_admin to return a coroutine that evaluates to False
-            # But since coroutines are truthy, we need a different approach
-            # Actually, the code has a bug - it should use is_admin_sync or await is_admin
-            # For testing, let's patch is_admin to return False directly (which won't work)
-            # Or we can test the actual buggy behavior
-            # Let's use is_admin_sync which is what should be used
+            # mute_global now uses is_admin_sync (fixed in code)
             with patch.object(manager, "is_admin_sync", return_value=False):
                 with patch.object(manager, "save_player_mutes", return_value=True):
                     with patch("server.services.user_manager.logger"):
-                        # Patch is_admin to return False synchronously (mocking the intended behavior)
-                        # But since the code doesn't await, we need to make it return False
-                        # The actual code bug means is_admin() returns a coroutine (truthy)
-                        # So we'll patch it to return False directly
-                        manager.is_admin = MagicMock(return_value=False)
                         result = manager.mute_global(
                             muter_id, "Muter", target_id, "Target", duration_minutes=60, reason="Test"
                         )
 
-                        # Note: The actual code has a bug where is_admin is async but not awaited
-                        # This test patches it to return False directly to test the intended behavior
                         assert result is True
                         assert target_id in manager._global_mutes
 
     @pytest.mark.asyncio
-    async def test_mute_global_admin_immune(self):
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared UserManager state
+    async def test_mute_global_admin_immune(self) -> None:
         """Test that admin players are immune to global mutes."""
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = UserManager(data_dir=Path(tmpdir))
             muter_id = uuid4()
             target_id = uuid4()
 
-            with patch.object(manager, "is_admin", new_callable=AsyncMock, return_value=True):
+            with patch.object(manager, "is_admin_sync", return_value=True):
                 with patch("server.services.user_manager.logger"):
                     result = manager.mute_global(muter_id, "Muter", target_id, "Target")
 
@@ -423,7 +488,7 @@ class TestMuteGlobal:
 class TestIsPlayerMuted:
     """Test is_player_muted method."""
 
-    def test_is_player_muted_true(self):
+    def test_is_player_muted_true(self) -> None:
         """Test checking if player is muted when muted."""
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = UserManager(data_dir=Path(tmpdir))
@@ -450,7 +515,7 @@ class TestIsPlayerMuted:
 
                     assert result is True
 
-    def test_is_player_muted_expired(self):
+    def test_is_player_muted_expired(self) -> None:
         """Test checking if player is muted when mute is expired."""
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = UserManager(data_dir=Path(tmpdir))
@@ -482,7 +547,7 @@ class TestIsPlayerMuted:
 class TestIsChannelMuted:
     """Test is_channel_muted method."""
 
-    def test_is_channel_muted_true(self):
+    def test_is_channel_muted_true(self) -> None:
         """Test checking if channel is muted when muted."""
         manager = UserManager()
         player_id = uuid4()
@@ -502,7 +567,7 @@ class TestIsChannelMuted:
 
         assert result is True
 
-    def test_is_channel_muted_expired(self):
+    def test_is_channel_muted_expired(self) -> None:
         """Test checking if channel is muted when mute is expired."""
         manager = UserManager()
         player_id = uuid4()
@@ -527,7 +592,7 @@ class TestIsChannelMuted:
 class TestIsGloballyMuted:
     """Test is_globally_muted method."""
 
-    def test_is_globally_muted_true(self):
+    def test_is_globally_muted_true(self) -> None:
         """Test checking if player is globally muted when muted."""
         manager = UserManager()
         player_id = uuid4()
@@ -548,7 +613,7 @@ class TestIsGloballyMuted:
 
         assert result is True
 
-    def test_is_globally_muted_expired(self):
+    def test_is_globally_muted_expired(self) -> None:
         """Test checking if player is globally muted when mute is expired."""
         manager = UserManager()
         player_id = uuid4()
@@ -574,7 +639,7 @@ class TestIsGloballyMuted:
 class TestCanSendMessage:
     """Test can_send_message method."""
 
-    def test_can_send_message_admin(self):
+    def test_can_send_message_admin(self) -> None:
         """Test that admins can always send messages."""
         manager = UserManager()
         player_id = uuid4()
@@ -584,7 +649,7 @@ class TestCanSendMessage:
 
             assert result is True
 
-    def test_can_send_message_globally_muted(self):
+    def test_can_send_message_globally_muted(self) -> None:
         """Test that globally muted players cannot send messages."""
         manager = UserManager()
         player_id = uuid4()
@@ -595,7 +660,7 @@ class TestCanSendMessage:
 
                 assert result is False
 
-    def test_can_send_message_channel_muted(self):
+    def test_can_send_message_channel_muted(self) -> None:
         """Test that channel muted players cannot send to that channel."""
         manager = UserManager()
         player_id = uuid4()
@@ -611,7 +676,7 @@ class TestCanSendMessage:
 class TestGetSystemStats:
     """Test get_system_stats method."""
 
-    def test_get_system_stats(self):
+    def test_get_system_stats(self) -> None:
         """Test getting system statistics."""
         manager = UserManager()
         player_id1 = uuid4()
@@ -636,7 +701,8 @@ class TestGetSystemStats:
 class TestSaveAndLoadPlayerMutes:
     """Test save_player_mutes and load_player_mutes methods."""
 
-    def test_save_and_load_player_mutes(self):
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to file system or shared UserManager state
+    def test_save_and_load_player_mutes(self) -> None:
         """Test saving and loading player mutes."""
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = UserManager(data_dir=Path(tmpdir))

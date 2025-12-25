@@ -2,6 +2,8 @@
 Shared fixtures for NPC population controller tests.
 """
 
+# pylint: disable=protected-access
+
 import json
 import tempfile
 from pathlib import Path
@@ -83,7 +85,7 @@ def population_controller(request):
     # Create a counter to generate unique NPC IDs
     npc_id_counter = [0]
 
-    def create_mock_npc_instance(*args, **kwargs):
+    def create_mock_npc_instance(*_args, **_kwargs):
         npc_id_counter[0] += 1
         mock_npc_instance = Mock()
         mock_npc_instance.success = True
@@ -173,7 +175,7 @@ def shopkeeper_definition():
         behavior_config='{"greeting_message": "Welcome!"}',
         ai_integration_stub='{"ai_enabled": false}',
     )
-    definition.id = 1  # Set explicit ID for testing
+    definition.id = 1  # type: ignore[assignment]
     return definition
 
 
@@ -192,7 +194,7 @@ def passive_mob_definition():
         behavior_config='{"wandering_behavior": true}',
         ai_integration_stub='{"ai_enabled": false}',
     )
-    definition.id = 2  # Set explicit ID for testing
+    definition.id = 2  # type: ignore[assignment]
     return definition
 
 

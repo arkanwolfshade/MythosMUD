@@ -25,6 +25,10 @@ async def _disconnect_all_websockets(connection_ids: list[str], player_id: uuid.
     for connection_id in connection_ids:
         if connection_id in manager.active_websockets:
             websocket = manager.active_websockets[connection_id]
+            # Guard against None websocket (can happen during cleanup)
+            if websocket is None:
+                del manager.active_websockets[connection_id]
+                return
             logger.info("DEBUG: Closing WebSocket", connection_id=connection_id, player_id=player_id)
             await manager._safe_close_websocket(websocket, code=1000, reason="Connection closed")  # pylint: disable=protected-access
             logger.info("Successfully closed WebSocket", connection_id=connection_id, player_id=player_id)
@@ -184,6 +188,10 @@ async def disconnect_connection_by_id_impl(
         if connection_type == "websocket":
             if connection_id in manager.active_websockets:
                 websocket = manager.active_websockets[connection_id]
+                # Guard against None websocket (can happen during cleanup)
+                if websocket is None:
+                    del manager.active_websockets[connection_id]
+                    return False
                 logger.info("DEBUG: Closing WebSocket by connection ID", connection_id=connection_id)
                 await manager._safe_close_websocket(websocket, code=1000, reason="Connection closed")  # pylint: disable=protected-access
                 logger.info("DEBUG: Successfully closed WebSocket by connection ID", connection_id=connection_id)

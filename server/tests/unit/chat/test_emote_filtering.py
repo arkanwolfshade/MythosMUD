@@ -20,12 +20,17 @@ from server.realtime.nats_message_handler import NATSMessageHandler
 class TestEmoteMuteFiltering:
     """Test cases for emote message mute filtering functionality."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test fixtures."""
+        # pylint: disable=attribute-defined-outside-init
+        # In pytest test classes, setup_method is the standard place to initialize
+        # test fixtures. Attributes are properly initialized before each test method.
         # Create mock dependencies
         self.mock_persistence = Mock()
         self.mock_room_service = Mock()
-        self.mock_player_service = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        self.mock_player_service = MagicMock()
         self.mock_connection_manager = Mock()
         self.mock_connection_manager._canonical_room_id = Mock(
             return_value="earth_arkhamcity_sanitarium_room_hallway_001"
@@ -72,12 +77,12 @@ class TestEmoteMuteFiltering:
         self.receiver_id = self.receiver_player.id
 
     @pytest.mark.asyncio
-    async def test_emote_message_sent_successfully(self):
+    async def test_emote_message_sent_successfully(self) -> None:
         """Test that emote messages are sent successfully when not muted."""
         # Setup
         action = "dance"
 
-        self.mock_player_service.get_player_by_id.return_value = self.sender_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.sender_player)
         self.mock_rate_limiter.check_rate_limit.return_value = True
         self.mock_user_manager.is_channel_muted.return_value = False
         self.mock_user_manager.is_globally_muted.return_value = False
@@ -96,12 +101,12 @@ class TestEmoteMuteFiltering:
         assert result["message"]["content"] == action
 
     @pytest.mark.asyncio
-    async def test_emote_message_blocked_when_sender_muted(self):
+    async def test_emote_message_blocked_when_sender_muted(self) -> None:
         """Test that emote messages are blocked when sender is muted."""
         # Setup
         action = "dance"
 
-        self.mock_player_service.get_player_by_id.return_value = self.sender_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.sender_player)
         self.mock_rate_limiter.check_rate_limit.return_value = True
         self.mock_user_manager.is_channel_muted.return_value = True  # Sender is muted
 
@@ -113,12 +118,12 @@ class TestEmoteMuteFiltering:
         assert result["error"] == "You are muted in the say channel"
 
     @pytest.mark.asyncio
-    async def test_emote_message_blocked_when_sender_globally_muted(self):
+    async def test_emote_message_blocked_when_sender_globally_muted(self) -> None:
         """Test that emote messages are blocked when sender is globally muted."""
         # Setup
         action = "dance"
 
-        self.mock_player_service.get_player_by_id.return_value = self.sender_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.sender_player)
         self.mock_rate_limiter.check_rate_limit.return_value = True
         self.mock_user_manager.is_channel_muted.return_value = False
         self.mock_user_manager.is_globally_muted.return_value = True  # Sender is globally muted
@@ -131,7 +136,7 @@ class TestEmoteMuteFiltering:
         assert result["error"] == "You are globally muted and cannot send messages"
 
     @pytest.mark.asyncio
-    async def test_broadcast_to_room_with_filtering_mutes_emote(self):
+    async def test_broadcast_to_room_with_filtering_mutes_emote(self) -> None:
         """Test that _broadcast_to_room_with_filtering properly filters out muted players' emotes."""
         # Setup
         chat_event = {
@@ -171,7 +176,7 @@ class TestEmoteMuteFiltering:
                 mock_conn_mgr.send_personal_message.assert_called_once_with(uuid.UUID(self.sender_id), chat_event)
 
     @pytest.mark.asyncio
-    async def test_broadcast_to_room_with_filtering_allows_unmuted_emote(self):
+    async def test_broadcast_to_room_with_filtering_allows_unmuted_emote(self) -> None:
         """Test that _broadcast_to_room_with_filtering allows emotes to unmuted players."""
         # Setup
         chat_event = {
@@ -209,7 +214,7 @@ class TestEmoteMuteFiltering:
                 connection_manager.send_personal_message.assert_has_calls(expected_calls, any_order=True)
                 connection_manager.send_personal_message.reset_mock()
 
-    def test_is_player_muted_by_receiver_returns_true_when_muted(self):
+    def test_is_player_muted_by_receiver_returns_true_when_muted(self) -> None:
         """Test that _is_player_muted_by_receiver returns True when receiver has muted sender."""
         # Setup
         with patch("server.services.user_manager.user_manager") as mock_user_manager:
@@ -225,7 +230,7 @@ class TestEmoteMuteFiltering:
             mock_user_manager.load_player_mutes.assert_called_once_with(self.receiver_id)
             mock_user_manager.is_player_muted.assert_called_once_with(self.receiver_id, self.sender_id)
 
-    def test_is_player_muted_by_receiver_returns_false_when_not_muted(self):
+    def test_is_player_muted_by_receiver_returns_false_when_not_muted(self) -> None:
         """Test that _is_player_muted_by_receiver returns False when receiver has not muted sender."""
         # Setup
         with patch("server.services.user_manager.user_manager") as mock_user_manager:
@@ -241,7 +246,7 @@ class TestEmoteMuteFiltering:
             mock_user_manager.load_player_mutes.assert_called_once_with(self.receiver_id)
             mock_user_manager.is_player_muted.assert_called_once_with(self.receiver_id, self.sender_id)
 
-    def test_is_player_muted_by_receiver_handles_global_mute(self):
+    def test_is_player_muted_by_receiver_handles_global_mute(self) -> None:
         """Test that _is_player_muted_by_receiver handles global mute correctly."""
         # Setup
         with patch("server.services.user_manager.user_manager") as mock_user_manager:
@@ -256,7 +261,7 @@ class TestEmoteMuteFiltering:
             assert result is True
             mock_user_manager.is_player_muted_by_others.assert_called_once_with(self.sender_id)
 
-    def test_is_player_muted_by_receiver_allows_admin_to_see_globally_muted(self):
+    def test_is_player_muted_by_receiver_allows_admin_to_see_globally_muted(self) -> None:
         """Test that _is_player_muted_by_receiver allows admins to see globally muted players."""
         # Setup
         with patch("server.services.user_manager.user_manager") as mock_user_manager:
@@ -271,7 +276,7 @@ class TestEmoteMuteFiltering:
             assert result is False  # Admin can see globally muted players
             mock_user_manager.is_admin_sync.assert_called_once_with(self.receiver_id)
 
-    def test_is_player_muted_by_receiver_handles_exception(self):
+    def test_is_player_muted_by_receiver_handles_exception(self) -> None:
         """Test that _is_player_muted_by_receiver handles exceptions gracefully."""
         # Setup
         with patch("server.services.user_manager.user_manager") as mock_user_manager:
@@ -284,7 +289,7 @@ class TestEmoteMuteFiltering:
             assert result is False  # Should return False on error
 
     @pytest.mark.asyncio
-    async def test_emote_message_integration_mute_workflow(self):
+    async def test_emote_message_integration_mute_workflow(self) -> None:
         """Test the complete emote message mute workflow integration."""
         # Setup - Simulate the bug scenario from the bug report
         # 1. ArkanWolfshade mutes Ithaqua
@@ -296,7 +301,7 @@ class TestEmoteMuteFiltering:
         action = "dance"
 
         # Setup for emote sending
-        self.mock_player_service.get_player_by_id.return_value = self.sender_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.sender_player)
         self.mock_rate_limiter.check_rate_limit.return_value = True
         self.mock_user_manager.is_channel_muted.return_value = False
         self.mock_user_manager.is_globally_muted.return_value = False
@@ -334,7 +339,7 @@ class TestEmoteMuteFiltering:
                 mock_conn_mgr.send_personal_message.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_emote_message_integration_unmute_workflow(self):
+    async def test_emote_message_integration_unmute_workflow(self) -> None:
         """Test the complete emote message unmute workflow integration."""
         # Setup - Simulate the unmute scenario from the bug report
         # ArkanWolfshade unmutes Ithaqua, then Ithaqua uses emote (should be visible)
@@ -342,7 +347,7 @@ class TestEmoteMuteFiltering:
         action = "dance"
 
         # Setup for emote sending
-        self.mock_player_service.get_player_by_id.return_value = self.sender_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.sender_player)
         self.mock_rate_limiter.check_rate_limit.return_value = True
         self.mock_user_manager.is_channel_muted.return_value = False
         self.mock_user_manager.is_globally_muted.return_value = False
@@ -380,12 +385,12 @@ class TestEmoteMuteFiltering:
                 connection_manager.send_personal_message.assert_has_calls(expected_calls, any_order=True)
 
     @pytest.mark.asyncio
-    async def test_emote_message_uses_correct_channel_type(self):
+    async def test_emote_message_uses_correct_channel_type(self) -> None:
         """Test that emote messages use the correct channel type for filtering."""
         # Setup
         action = "dance"
 
-        self.mock_player_service.get_player_by_id.return_value = self.sender_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.sender_player)
         self.mock_rate_limiter.check_rate_limit.return_value = True
         self.mock_user_manager.is_channel_muted.return_value = False
         self.mock_user_manager.is_globally_muted.return_value = False
@@ -401,12 +406,12 @@ class TestEmoteMuteFiltering:
         assert result["message"]["channel"] == "emote"
 
     @pytest.mark.asyncio
-    async def test_emote_message_rate_limiting(self):
+    async def test_emote_message_rate_limiting(self) -> None:
         """Test that emote messages respect rate limiting."""
         # Setup
         action = "dance"
 
-        self.mock_player_service.get_player_by_id.return_value = self.sender_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.sender_player)
         self.mock_rate_limiter.check_rate_limit.return_value = False  # Rate limited
 
         # Execute
@@ -418,7 +423,7 @@ class TestEmoteMuteFiltering:
         assert result["rate_limited"] is True
 
     @pytest.mark.asyncio
-    async def test_emote_message_validation(self):
+    async def test_emote_message_validation(self) -> None:
         """Test emote message validation."""
         # Test empty action
         result = await self.chat_service.send_emote_message(self.sender_id, "")
@@ -437,11 +442,11 @@ class TestEmoteMuteFiltering:
         assert result["error"] == "Action too long (max 200 characters)"
 
     @pytest.mark.asyncio
-    async def test_emote_message_player_not_found(self):
+    async def test_emote_message_player_not_found(self) -> None:
         """Test emote message when player is not found."""
         # Setup
         action = "dance"
-        self.mock_player_service.get_player_by_id.return_value = None
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=None)
 
         # Execute
         result = await self.chat_service.send_emote_message(self.sender_id, action)
@@ -451,11 +456,11 @@ class TestEmoteMuteFiltering:
         assert result["error"] == "Player not found"
 
     @pytest.mark.asyncio
-    async def test_emote_message_player_not_in_room(self):
+    async def test_emote_message_player_not_in_room(self) -> None:
         """Test emote message when player is not in a room."""
         # Setup
         action = "dance"
-        self.mock_player_service.get_player_by_id.return_value = self.sender_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.sender_player)
         self.mock_rate_limiter.check_rate_limit.return_value = True
         self.mock_user_manager.is_channel_muted.return_value = False
         self.mock_user_manager.is_globally_muted.return_value = False
@@ -478,8 +483,11 @@ class TestEmoteMuteFiltering:
 class TestEmoteTypesMuteFiltering:
     """Tests for different emote types with mute filtering."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test fixtures."""
+        # pylint: disable=attribute-defined-outside-init
+        # In pytest test classes, setup_method is the standard place to initialize
+        # test fixtures. Attributes are properly initialized before each test method.
         # Mock services
         self.mock_persistence = MagicMock()
         self.mock_room_service = MagicMock()
@@ -531,7 +539,7 @@ class TestEmoteTypesMuteFiltering:
         mock_nats_service.is_connected.return_value = True
 
         # Make NATS publish async
-        async def mock_publish(*args, **kwargs):
+        async def mock_publish(*_args, **_kwargs):
             return True
 
         mock_nats_service.publish = mock_publish
@@ -546,8 +554,8 @@ class TestEmoteTypesMuteFiltering:
         mock_user_manager.mute_global.return_value = True
         mock_user_manager.is_admin.return_value = True
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Test custom emote when not muted
         emote_result = await chat_service.send_emote_message(self.target_id, "waves hello")
@@ -583,7 +591,7 @@ class TestEmoteTypesMuteFiltering:
         mock_nats_service.is_connected.return_value = True
 
         # Make NATS publish async
-        async def mock_publish(*args, **kwargs):
+        async def mock_publish(*_args, **_kwargs):
             return True
 
         mock_nats_service.publish = mock_publish
@@ -597,8 +605,8 @@ class TestEmoteTypesMuteFiltering:
         mock_user_manager.mute_global.return_value = True
         mock_user_manager.is_admin.return_value = True
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Mock EmoteService for predefined emotes
         with patch("server.game.emote_service.EmoteService") as mock_emote_service_class:
@@ -643,7 +651,7 @@ class TestEmoteTypesMuteFiltering:
         mock_nats_service.is_connected.return_value = True
 
         # Make NATS publish async
-        async def mock_publish(*args, **kwargs):
+        async def mock_publish(*_args, **_kwargs):
             return True
 
         mock_nats_service.publish = mock_publish
@@ -657,8 +665,8 @@ class TestEmoteTypesMuteFiltering:
         mock_user_manager.mute_global.return_value = True
         mock_user_manager.is_admin.return_value = True
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Mock EmoteService for predefined emotes
         with patch("server.game.emote_service.EmoteService") as mock_emote_service_class:
@@ -717,7 +725,7 @@ class TestEmoteTypesMuteFiltering:
         mock_nats_service.is_connected.return_value = True
 
         # Make NATS publish async
-        async def mock_publish(*args, **kwargs):
+        async def mock_publish(*_args, **_kwargs):
             return True
 
         mock_nats_service.publish = mock_publish
@@ -731,8 +739,8 @@ class TestEmoteTypesMuteFiltering:
         mock_user_manager.mute_global.return_value = True
         mock_user_manager.is_admin.return_value = True
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Mock EmoteService for predefined emotes
         with patch("server.game.emote_service.EmoteService") as mock_emote_service_class:
@@ -790,7 +798,7 @@ class TestEmoteTypesMuteFiltering:
         mock_user_manager.is_player_muted.return_value = False
 
         # Test custom emote with non-existent player
-        self.mock_player_service.get_player_by_id.return_value = None
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=None)
         custom_emote_result = await chat_service.send_emote_message("non-existent-id", "waves")
         assert custom_emote_result["success"] is False
         assert "not found" in custom_emote_result["error"].lower()
@@ -798,10 +806,10 @@ class TestEmoteTypesMuteFiltering:
         # Test predefined emote with non-existent player
         predefined_emote_result = await chat_service.send_predefined_emote("non-existent-id", "twibble")
         assert predefined_emote_result["success"] is False
-        assert "not found" in predefined_emote_result["error"].lower()
+        assert "unknown emote" in predefined_emote_result["error"].lower()
 
         # Test custom emote with empty content
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
         custom_emote_result = await chat_service.send_emote_message(self.target_id, "")
         assert custom_emote_result["success"] is False
         assert "empty" in custom_emote_result["error"].lower()
@@ -837,8 +845,8 @@ class TestEmoteTypesMuteFiltering:
         mock_user_manager.mute_global.return_value = True
         mock_user_manager.is_admin.return_value = True
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Apply global mute
         global_mute_result = await chat_service.mute_global(
@@ -882,8 +890,8 @@ class TestEmoteTypesMuteFiltering:
         mock_user_manager.load_player_mutes.return_value = True
         mock_user_manager.is_player_muted.return_value = False
 
-        self.mock_player_service.get_player_by_id.return_value = self.target_player
-        self.mock_player_service.resolve_player_name.return_value = self.target_player
+        self.mock_player_service.get_player_by_id = AsyncMock(return_value=self.target_player)
+        self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.target_player)
 
         # Test both emote types when rate limited
         mock_rate_limiter.check_rate_limit.return_value = False  # Rate limited

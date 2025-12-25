@@ -6,14 +6,42 @@ creation, retrieval, listing, deletion, and effects application.
 Following the academic rigor outlined in the Pnakotic Manuscripts of Testing Methodology.
 """
 
+import types
 import uuid
-from datetime import datetime
-from unittest.mock import AsyncMock, Mock, patch
+from datetime import UTC, datetime
+from typing import Any, cast
+from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
 import pytest
 from fastapi import HTTPException
 
+from server.api.character_creation import (
+    create_character_with_stats,
+    roll_character_stats,
+    validate_character_stats,
+)
+from server.api.player_effects import (
+    apply_corruption,
+    apply_fear,
+    apply_lucidity_loss,
+    damage_player,
+    gain_occult_knowledge,
+    heal_player,
+)
 from server.api.players import (
+    create_player,
+    delete_player,
+    get_available_classes,
+    get_class_description,
+    get_player,
+    get_player_by_name,
+    list_players,
+)
+from server.exceptions import LoggedHTTPException, RateLimitError, ValidationError, create_error_context
+from server.game.stats_generator import StatsGenerator
+from server.models import AttributeType, Stats
+from server.schemas.player import PlayerRead
+from server.schemas.player_requests import (
     CorruptionRequest,
     CreateCharacterRequest,
     DamageRequest,
@@ -22,30 +50,16 @@ from server.api.players import (
     LucidityLossRequest,
     OccultKnowledgeRequest,
     RollStatsRequest,
-    apply_corruption,
-    apply_fear,
-    apply_lucidity_loss,
-    create_character_with_stats,
-    create_player,
-    damage_player,
-    delete_player,
-    gain_occult_knowledge,
-    get_available_classes,
-    get_class_description,
-    get_player,
-    get_player_by_name,
-    heal_player,
-    list_players,
-    roll_character_stats,
-    validate_character_stats,
 )
-from server.exceptions import LoggedHTTPException, RateLimitError, ValidationError, create_error_context
-from server.game.stats_generator import StatsGenerator
-from server.models import AttributeType, Stats
 
 # pylint: disable=redefined-outer-name
 # Pytest fixtures are commonly used as function parameters, which triggers
 # redefined-outer-name warnings. This is expected behavior in pytest tests.
+
+
+def _mock_getitem(self, key):
+    """Helper function to support dictionary-style access on mock objects."""
+    return getattr(self, key)
 
 
 @pytest.fixture
@@ -55,7 +69,7 @@ def mock_current_user():
     user.id = str(uuid.uuid4())
     user.username = "testuser"
     # Make the mock support dictionary access for all attributes
-    user.__getitem__ = lambda self, key: getattr(self, key)
+    user.__getitem__ = types.MethodType(_mock_getitem, user)
     return user
 
 
@@ -180,8 +194,10 @@ class TestPlayerCRUD:
     ):
         """Test successful player creation."""
         # Setup mocks
-        mock_service = AsyncMock()
-        mock_service.create_player.return_value = sample_player_data
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.create_player = AsyncMock(return_value=sample_player_data)
         mock_player_service_class.return_value = mock_service
 
         result = await create_player(
@@ -204,7 +220,9 @@ class TestPlayerCRUD:
     async def test_create_player_validation_error(self, mock_player_service_class, mock_current_user, mock_request):
         """Test player creation with validation error."""
         # Setup mocks
-        mock_service = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
         mock_service.create_player.side_effect = ValidationError("Invalid player name")
         mock_player_service_class.return_value = mock_service
 
@@ -225,8 +243,10 @@ class TestPlayerCRUD:
     async def test_list_players_empty(self, mock_player_service_class, mock_current_user, mock_request):
         """Test listing players when no players exist."""
         # Setup mocks
-        mock_service = AsyncMock()
-        mock_service.list_players.return_value = []
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.list_players = AsyncMock(return_value=[])
         mock_player_service_class.return_value = mock_service
 
         result = await list_players(mock_current_user, mock_request, mock_service)
@@ -240,8 +260,10 @@ class TestPlayerCRUD:
     ):
         """Test listing players when players exist."""
         # Setup mocks
-        mock_service = AsyncMock()
-        mock_service.list_players.return_value = [sample_player_data]
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.list_players = AsyncMock(return_value=[sample_player_data])
         mock_player_service_class.return_value = mock_service
 
         result = await list_players(mock_current_user, mock_request, mock_service)
@@ -255,8 +277,10 @@ class TestPlayerCRUD:
     ):
         """Test successful player retrieval by ID."""
         # Setup mocks
-        mock_service = AsyncMock()
-        mock_service.get_player_by_id.return_value = sample_player_data
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.get_player_by_id = AsyncMock(return_value=sample_player_data)
         mock_player_service_class.return_value = mock_service
 
         player_id = uuid.uuid4()
@@ -270,8 +294,10 @@ class TestPlayerCRUD:
     async def test_get_player_not_found(self, mock_player_service_class, mock_current_user, mock_request):
         """Test player retrieval when player not found."""
         # Setup mocks
-        mock_service = AsyncMock()
-        mock_service.get_player_by_id.return_value = None
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.get_player_by_id = AsyncMock(return_value=None)
         mock_player_service_class.return_value = mock_service
 
         player_id = uuid.uuid4()
@@ -288,8 +314,10 @@ class TestPlayerCRUD:
     ):
         """Test successful player retrieval by name."""
         # Setup mocks
-        mock_service = AsyncMock()
-        mock_service.get_player_by_name.return_value = sample_player_data
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.get_player_by_name = AsyncMock(return_value=sample_player_data)
         mock_player_service_class.return_value = mock_service
 
         result = await get_player_by_name("TestPlayer", mock_current_user, mock_request, mock_service)
@@ -302,8 +330,10 @@ class TestPlayerCRUD:
     async def test_get_player_by_name_not_found(self, mock_player_service_class, mock_current_user, mock_request):
         """Test player retrieval by name when player not found."""
         # Setup mocks
-        mock_service = AsyncMock()
-        mock_service.get_player_by_name.return_value = None
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.get_player_by_name = AsyncMock(return_value=None)
         mock_player_service_class.return_value = mock_service
 
         with pytest.raises(HTTPException) as exc_info:
@@ -317,8 +347,10 @@ class TestPlayerCRUD:
     async def test_delete_player_success(self, mock_player_service_class, mock_current_user, mock_request):
         """Test successful player deletion."""
         # Setup mocks
-        mock_service = AsyncMock()
-        mock_service.delete_player.return_value = (True, "Player deleted successfully")
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.delete_player = AsyncMock(return_value=(True, "Player deleted successfully"))
         mock_player_service_class.return_value = mock_service
 
         player_id = uuid.uuid4()
@@ -332,8 +364,10 @@ class TestPlayerCRUD:
     async def test_delete_player_not_found(self, mock_player_service_class, mock_current_user, mock_request):
         """Test player deletion when player not found."""
         # Setup mocks
-        mock_service = AsyncMock()
-        mock_service.delete_player.return_value = (False, "Player not found")
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.delete_player = AsyncMock(return_value=(False, "Player not found"))
         mock_player_service_class.return_value = mock_service
 
         player_id = uuid.uuid4()
@@ -358,17 +392,18 @@ class TestPlayerEffects:
         mock_persistence.get_player.return_value = sample_player_data
 
         # Mock the PlayerService dependency
-        mock_service = AsyncMock()
-        mock_service.apply_lucidity_loss.return_value = {"message": "Applied 10 lucidity loss to TestPlayer"}
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.apply_lucidity_loss = AsyncMock(return_value={"message": "Applied 10 lucidity loss to TestPlayer"})
         mock_player_service_dep.return_value = mock_service
 
         request_data = LucidityLossRequest(amount=10, source="test")
-        result = await apply_lucidity_loss(
-            "test-player-id", request_data, mock_request, mock_current_user, mock_service
-        )
+        test_player_id = uuid.uuid4()
+        result = await apply_lucidity_loss(test_player_id, request_data, mock_request, mock_current_user, mock_service)
 
         assert "Applied 10 lucidity loss to TestPlayer" in result["message"]
-        mock_service.apply_lucidity_loss.assert_called_once_with("test-player-id", 10, "test")
+        mock_service.apply_lucidity_loss.assert_called_once_with(test_player_id, 10, "test")
 
     @patch("server.api.players.PlayerServiceDep")
     @pytest.mark.asyncio
@@ -381,13 +416,15 @@ class TestPlayerEffects:
         mock_persistence.get_player.return_value = None
 
         # Mock the PlayerService dependency
-        mock_service = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
         mock_service.apply_lucidity_loss.side_effect = ValidationError("Player not found")
         mock_player_service_dep.return_value = mock_service
 
         with pytest.raises(LoggedHTTPException) as exc_info:
             request_data = LucidityLossRequest(amount=10, source="test")
-            await apply_lucidity_loss("nonexistent-id", request_data, mock_request, mock_current_user, mock_service)
+            await apply_lucidity_loss(uuid.uuid4(), request_data, mock_request, mock_current_user, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -403,15 +440,18 @@ class TestPlayerEffects:
         mock_persistence.get_player.return_value = sample_player_data
 
         # Mock the PlayerService dependency
-        mock_service = AsyncMock()
-        mock_service.apply_fear.return_value = {"message": "Applied 5 fear to TestPlayer"}
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.apply_fear = AsyncMock(return_value={"message": "Applied 5 fear to TestPlayer"})
         mock_player_service_dep.return_value = mock_service
 
         request_data = FearRequest(amount=5, source="test")
-        result = await apply_fear("test-player-id", request_data, mock_request, mock_current_user, mock_service)
+        player_id = uuid.uuid4()
+        result = await apply_fear(player_id, request_data, mock_request, mock_current_user, mock_service)
 
         assert "Applied 5 fear to TestPlayer" in result["message"]
-        mock_service.apply_fear.assert_called_once_with("test-player-id", 5, "test")
+        mock_service.apply_fear.assert_called_once_with(player_id, 5, "test")
 
     @patch("server.api.players.PlayerServiceDep")
     @pytest.mark.asyncio
@@ -424,13 +464,15 @@ class TestPlayerEffects:
         mock_persistence.get_player.return_value = None
 
         # Mock the PlayerService dependency
-        mock_service = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
         mock_service.apply_fear.side_effect = ValidationError("Player not found")
         mock_player_service_dep.return_value = mock_service
 
         with pytest.raises(LoggedHTTPException) as exc_info:
             request_data = FearRequest(amount=5, source="test")
-            await apply_fear("nonexistent-id", request_data, mock_request, mock_current_user, mock_service)
+            await apply_fear(uuid.uuid4(), request_data, mock_request, mock_current_user, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -446,15 +488,18 @@ class TestPlayerEffects:
         mock_persistence.get_player.return_value = sample_player_data
 
         # Mock the PlayerService dependency
-        mock_service = AsyncMock()
-        mock_service.apply_corruption.return_value = {"message": "Applied 3 corruption to TestPlayer"}
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.apply_corruption = AsyncMock(return_value={"message": "Applied 3 corruption to TestPlayer"})
         mock_player_service_dep.return_value = mock_service
 
         request_data = CorruptionRequest(amount=3, source="test")
-        result = await apply_corruption("test-player-id", request_data, mock_request, mock_current_user, mock_service)
+        player_id = uuid.uuid4()
+        result = await apply_corruption(player_id, request_data, mock_request, mock_current_user, mock_service)
 
         assert "Applied 3 corruption to TestPlayer" in result["message"]
-        mock_service.apply_corruption.assert_called_once_with("test-player-id", 3, "test")
+        mock_service.apply_corruption.assert_called_once_with(player_id, 3, "test")
 
     @patch("server.api.players.PlayerServiceDep")
     @pytest.mark.asyncio
@@ -467,13 +512,15 @@ class TestPlayerEffects:
         mock_persistence.get_player.return_value = None
 
         # Mock the PlayerService dependency
-        mock_service = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
         mock_service.apply_corruption.side_effect = ValidationError("Player not found")
         mock_player_service_dep.return_value = mock_service
 
         with pytest.raises(LoggedHTTPException) as exc_info:
             request_data = CorruptionRequest(amount=3, source="test")
-            await apply_corruption("nonexistent-id", request_data, mock_request, mock_current_user, mock_service)
+            await apply_corruption(uuid.uuid4(), request_data, mock_request, mock_current_user, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -489,17 +536,20 @@ class TestPlayerEffects:
         mock_persistence.get_player.return_value = sample_player_data
 
         # Mock the PlayerService dependency
-        mock_service = AsyncMock()
-        mock_service.gain_occult_knowledge.return_value = {"message": "Gained 2 occult knowledge for TestPlayer"}
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.gain_occult_knowledge = AsyncMock(
+            return_value={"message": "Gained 2 occult knowledge for TestPlayer"}
+        )
         mock_player_service_dep.return_value = mock_service
 
         request_data = OccultKnowledgeRequest(amount=2, source="test")
-        result = await gain_occult_knowledge(
-            "test-player-id", request_data, mock_request, mock_current_user, mock_service
-        )
+        player_id = uuid.uuid4()
+        result = await gain_occult_knowledge(player_id, request_data, mock_request, mock_current_user, mock_service)
 
         assert "Gained 2 occult knowledge for TestPlayer" in result["message"]
-        mock_service.gain_occult_knowledge.assert_called_once_with("test-player-id", 2, "test")
+        mock_service.gain_occult_knowledge.assert_called_once_with(player_id, 2, "test")
 
     @patch("server.api.players.PlayerServiceDep")
     @pytest.mark.asyncio
@@ -512,13 +562,15 @@ class TestPlayerEffects:
         mock_persistence.get_player.return_value = None
 
         # Mock the PlayerService dependency
-        mock_service = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
         mock_service.gain_occult_knowledge.side_effect = ValidationError("Player not found")
         mock_player_service_dep.return_value = mock_service
 
         with pytest.raises(LoggedHTTPException) as exc_info:
             request_data = OccultKnowledgeRequest(amount=2, source="test")
-            await gain_occult_knowledge("nonexistent-id", request_data, mock_request, mock_current_user, mock_service)
+            await gain_occult_knowledge(uuid.uuid4(), request_data, mock_request, mock_current_user, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -534,15 +586,18 @@ class TestPlayerEffects:
         mock_persistence.get_player.return_value = sample_player_data
 
         # Mock the PlayerService dependency
-        mock_service = AsyncMock()
-        mock_service.heal_player.return_value = {"message": "Healed TestPlayer for 20 health"}
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.heal_player = AsyncMock(return_value={"message": "Healed TestPlayer for 20 health"})
         mock_player_service_dep.return_value = mock_service
 
         request_data = HealRequest(amount=20)
-        result = await heal_player("test-player-id", request_data, mock_request, mock_current_user, mock_service)
+        player_id = uuid.uuid4()
+        result = await heal_player(player_id, request_data, mock_request, mock_current_user, mock_service)
 
         assert "Healed TestPlayer for 20 health" in result["message"]
-        mock_service.heal_player.assert_called_once_with("test-player-id", 20)
+        mock_service.heal_player.assert_called_once_with(player_id, 20)
 
     @patch("server.api.players.PlayerServiceDep")
     @pytest.mark.asyncio
@@ -555,13 +610,15 @@ class TestPlayerEffects:
         mock_persistence.get_player.return_value = None
 
         # Mock the PlayerService dependency
-        mock_service = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
         mock_service.heal_player.side_effect = ValidationError("Player not found")
         mock_player_service_dep.return_value = mock_service
 
         with pytest.raises(LoggedHTTPException) as exc_info:
             request_data = HealRequest(amount=20)
-            await heal_player("nonexistent-id", request_data, mock_request, mock_current_user, mock_service)
+            await heal_player(uuid.uuid4(), request_data, mock_request, mock_current_user, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -577,15 +634,18 @@ class TestPlayerEffects:
         mock_persistence.get_player.return_value = sample_player_data
 
         # Mock the PlayerService dependency
-        mock_service = AsyncMock()
-        mock_service.damage_player.return_value = {"message": "Damaged TestPlayer for 15 physical damage"}
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.damage_player = AsyncMock(return_value={"message": "Damaged TestPlayer for 15 physical damage"})
         mock_player_service_dep.return_value = mock_service
 
         request_data = DamageRequest(amount=15, damage_type="physical")
-        result = await damage_player("test-player-id", request_data, mock_request, mock_current_user, mock_service)
+        player_id = uuid.uuid4()
+        result = await damage_player(player_id, request_data, mock_request, mock_current_user, mock_service)
 
         assert "Damaged TestPlayer for 15 physical damage" in result["message"]
-        mock_service.damage_player.assert_called_once_with("test-player-id", 15, "physical")
+        mock_service.damage_player.assert_called_once_with(player_id, 15, "physical")
 
     @patch("server.api.players.PlayerServiceDep")
     @pytest.mark.asyncio
@@ -598,13 +658,15 @@ class TestPlayerEffects:
         mock_persistence.get_player.return_value = None
 
         # Mock the PlayerService dependency
-        mock_service = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
         mock_service.damage_player.side_effect = ValidationError("Player not found")
         mock_player_service_dep.return_value = mock_service
 
         with pytest.raises(LoggedHTTPException) as exc_info:
             request_data = DamageRequest(amount=15, damage_type="physical")
-            await damage_player("nonexistent-id", request_data, mock_request, mock_current_user, mock_service)
+            await damage_player(uuid.uuid4(), request_data, mock_request, mock_current_user, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -614,7 +676,7 @@ class TestCharacterCreation:
     """Test cases for character creation and stats generation."""
 
     @patch("server.api.players.StatsGenerator")
-    @patch("server.api.players.stats_roll_limiter")
+    @patch("server.api.character_creation.stats_roll_limiter")
     @pytest.mark.asyncio
     async def test_roll_stats_success(
         self, mock_limiter, mock_stats_generator_class, mock_current_user, sample_stats_data, mock_request
@@ -641,7 +703,7 @@ class TestCharacterCreation:
         assert "available_classes" in result
         assert result["method_used"] == "3d6"
 
-    @patch("server.api.players.stats_roll_limiter")
+    @patch("server.api.character_creation.stats_roll_limiter")
     @pytest.mark.asyncio
     async def test_roll_stats_rate_limited(self, mock_limiter, mock_current_user, mock_request):
         """Test stats rolling when rate limited."""
@@ -673,14 +735,18 @@ class TestCharacterCreation:
         request_data = RollStatsRequest(method="3d6", required_class=None, timeout_seconds=1.0, profession_id=None)
         with pytest.raises(LoggedHTTPException) as exc_info:
             await roll_character_stats(
-                request_data, mock_request, max_attempts=10, current_user=None, stats_generator=mock_generator
+                request_data,
+                mock_request,
+                max_attempts=10,
+                current_user=cast(Any, None),
+                stats_generator=mock_generator,
             )
 
         assert exc_info.value.status_code == 401
         assert "Authentication required" in str(exc_info.value.detail)
 
     @patch("server.api.players.StatsGenerator")
-    @patch("server.api.players.stats_roll_limiter")
+    @patch("server.api.character_creation.stats_roll_limiter")
     @pytest.mark.asyncio
     async def test_roll_stats_validation_error(
         self, mock_limiter, mock_stats_generator_class, mock_current_user, mock_request
@@ -707,7 +773,7 @@ class TestCharacterCreation:
 
     @pytest.mark.asyncio
     @patch("server.api.players.PlayerServiceDep")
-    @patch("server.api.players.character_creation_limiter")
+    @patch("server.api.character_creation.character_creation_limiter")
     async def test_create_character_success(
         self,
         mock_limiter,
@@ -720,8 +786,10 @@ class TestCharacterCreation:
         """Test successful character creation."""
         # Setup mocks
         mock_limiter.enforce_rate_limit.return_value = None
-        mock_service = AsyncMock()
-        mock_service.create_player_with_stats.return_value = sample_player_data
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_service = MagicMock()
+        mock_service.create_player_with_stats = AsyncMock(return_value=sample_player_data)
         mock_player_service_dep.return_value = mock_service
 
         request_data = Mock()
@@ -737,7 +805,7 @@ class TestCharacterCreation:
         mock_service.create_player_with_stats.assert_called_once()
 
     @pytest.mark.asyncio
-    @patch("server.api.players.character_creation_limiter")
+    @patch("server.api.character_creation.character_creation_limiter")
     async def test_create_character_rate_limited(self, mock_limiter, mock_current_user, mock_request):
         """Test character creation when rate limited."""
         # Setup mocks
@@ -765,29 +833,50 @@ class TestCharacterCreation:
         request_data.starting_room_id = "earth_arkhamcity_northside_intersection_derby_high"
 
         with pytest.raises(HTTPException) as exc_info:
-            await create_character_with_stats(request_data, mock_request, None)
+            await create_character_with_stats(request_data, mock_request, cast(Any, None))
 
         assert exc_info.value.status_code == 401
         assert "Authentication required" in str(exc_info.value.detail)
 
     @pytest.mark.asyncio
-    @patch("server.api.players.PlayerService")
-    @patch("server.api.players.character_creation_limiter")
+    @patch("server.api.character_creation.PlayerServiceDep")
+    @patch("server.api.character_creation.character_creation_limiter")
     async def test_create_character_name_mismatch(
-        self, mock_limiter, mock_player_service_class, mock_current_user, mock_request
+        self, mock_limiter, mock_player_service_dep, mock_current_user, mock_request
     ):
-        """Test character creation with name mismatch."""
+        """Test character creation with name different from username (MULTI-CHARACTER: allowed)."""
         # Setup mocks
         mock_limiter.enforce_rate_limit.return_value = None
-        mock_request.app.state.persistence = Mock()
 
         # Mock PlayerService instance
         mock_player_service = Mock()
-        mock_player_service_class.return_value = mock_player_service
+        mock_player_service.create_player_with_stats = AsyncMock(
+            return_value=PlayerRead(
+                id=uuid.uuid4(),
+                user_id=mock_current_user.id,
+                name="different_name",
+                profession_id=0,
+                level=1,
+                stats={
+                    "strength": 10,
+                    "dexterity": 10,
+                    "constitution": 10,
+                    "intelligence": 10,
+                    "wisdom": 10,
+                    "charisma": 10,
+                },
+                inventory=[],
+                status_effects=[],
+                created_at=datetime.now(UTC).replace(tzinfo=None),
+                last_active=datetime.now(UTC).replace(tzinfo=None),
+            )
+        )
+        mock_player_service_dep.return_value = mock_player_service
 
         # Test data - use proper CreateCharacterRequest object
+        # MULTI-CHARACTER: Character names are independent of usernames
         request_data = CreateCharacterRequest(
-            name="different_name",  # Different from current_user.username
+            name="different_name",  # Different from current_user.username - this is now allowed
             stats={
                 "strength": 10,
                 "dexterity": 10,
@@ -799,15 +888,19 @@ class TestCharacterCreation:
             starting_room_id="arkhamcity_downtown_001",
         )
 
-        with pytest.raises(HTTPException) as exc_info:
-            await create_character_with_stats(request_data, mock_request, mock_current_user)
+        # MULTI-CHARACTER: Character creation should succeed with different name
+        result = await create_character_with_stats(request_data, mock_request, mock_current_user, mock_player_service)
 
-        assert exc_info.value.status_code == 400
-        assert "Invalid input" in str(exc_info.value.detail)
+        # Result is a dict (from model_dump())
+        assert isinstance(result, dict)
+        assert result["name"] == "different_name"
+        # user_id comparison: result has UUID, mock_current_user.id might be string or UUID
+        assert str(result["user_id"]) == str(mock_current_user.id)
+        mock_player_service.create_player_with_stats.assert_called_once()
 
     @pytest.mark.asyncio
     @patch("server.api.players.PlayerServiceDep")
-    @patch("server.api.players.character_creation_limiter")
+    @patch("server.api.character_creation.character_creation_limiter")
     async def test_create_character_validation_error(
         self, mock_limiter, mock_player_service_dep, mock_current_user, mock_request
     ):
@@ -830,7 +923,7 @@ class TestCharacterCreation:
         assert "Invalid input" in str(exc_info.value.detail)
 
     @patch("server.api.players.StatsGenerator")
-    @patch("server.api.players.stats_roll_limiter")
+    @patch("server.api.character_creation.stats_roll_limiter")
     @patch("server.async_persistence.get_async_persistence")
     @pytest.mark.asyncio
     async def test_roll_stats_with_profession_success(
@@ -881,7 +974,7 @@ class TestCharacterCreation:
         assert result["meets_requirements"] is True
 
     @patch("server.api.players.StatsGenerator")
-    @patch("server.api.players.stats_roll_limiter")
+    @patch("server.api.character_creation.stats_roll_limiter")
     @pytest.mark.asyncio
     async def test_roll_stats_with_profession_requirements_not_met(
         self, mock_limiter, mock_stats_generator_class, mock_current_user, mock_request, sample_stats_data
@@ -927,7 +1020,7 @@ class TestCharacterCreation:
         assert result["meets_requirements"] is False
 
     @patch("server.api.players.StatsGenerator")
-    @patch("server.api.players.stats_roll_limiter")
+    @patch("server.api.character_creation.stats_roll_limiter")
     @pytest.mark.asyncio
     async def test_roll_stats_with_invalid_profession(
         self, mock_limiter, mock_stats_generator_class, mock_current_user, mock_request
@@ -963,7 +1056,7 @@ class TestCharacterCreation:
             assert "not found" in str(exc_info.value.detail).lower()
 
     @patch("server.api.players.StatsGenerator")
-    @patch("server.api.players.stats_roll_limiter")
+    @patch("server.api.character_creation.stats_roll_limiter")
     @patch("server.async_persistence.get_async_persistence")
     @pytest.mark.asyncio
     async def test_roll_stats_with_profession_validation_error(
@@ -1084,7 +1177,7 @@ class TestStatsValidation:
 class TestClassDescriptions:
     """Test cases for class description functionality."""
 
-    def test_get_class_description_all_classes(self):
+    def test_get_class_description_all_classes(self) -> None:
         """Test getting descriptions for all character classes."""
         classes = ["investigator", "occultist", "survivor", "cultist", "academic", "detective"]
 
@@ -1094,21 +1187,21 @@ class TestClassDescriptions:
             assert len(description) > 0
             assert "mysterious" not in description.lower()  # Should have specific descriptions
 
-    def test_get_class_description_unknown_class(self):
+    def test_get_class_description_unknown_class(self) -> None:
         """Test getting description for unknown class."""
         description = get_class_description("unknown_class")
         assert description is not None
         assert "mysterious" in description.lower()
         assert "unknown capabilities" in description
 
-    def test_get_class_description_investigator(self):
+    def test_get_class_description_investigator(self) -> None:
         """Test investigator class description."""
         description = get_class_description("investigator")
         assert "researcher" in description.lower()
         assert "detective" in description.lower()
         assert "mysteries" in description.lower()
 
-    def test_get_class_description_occultist(self):
+    def test_get_class_description_occultist(self) -> None:
         """Test occultist class description."""
         description = get_class_description("occultist")
         assert "forbidden knowledge" in description.lower()

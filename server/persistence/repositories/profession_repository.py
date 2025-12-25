@@ -8,7 +8,7 @@ using SQLAlchemy ORM with PostgreSQL.
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
-from server.database import get_async_session
+from server.database import get_session_maker
 from server.exceptions import DatabaseError
 from server.logging.enhanced_logging_config import get_logger
 from server.models.profession import Profession
@@ -42,13 +42,13 @@ class ProfessionRepository:
         context.metadata["operation"] = "get_all_professions"
 
         try:
-            async for session in get_async_session():
+            session_maker = get_session_maker()
+            async with session_maker() as session:
                 stmt = select(Profession)
                 result = await session.execute(stmt)
                 professions = list(result.scalars().all())
                 self._logger.debug("Loaded professions", profession_count=len(professions))
                 return professions
-            return []
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,
@@ -76,12 +76,12 @@ class ProfessionRepository:
         context.metadata["profession_id"] = profession_id
 
         try:
-            async for session in get_async_session():
+            session_maker = get_session_maker()
+            async with session_maker() as session:
                 stmt = select(Profession).where(Profession.id == profession_id)
                 result = await session.execute(stmt)
                 profession = result.scalar_one_or_none()
                 return profession
-            return None
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,

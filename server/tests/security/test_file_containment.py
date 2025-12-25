@@ -8,6 +8,10 @@ designated directories during test execution.
 
 from pathlib import Path
 
+import pytest
+
+pytestmark = pytest.mark.security
+
 
 def test_no_database_files_outside_approved_locations():
     """

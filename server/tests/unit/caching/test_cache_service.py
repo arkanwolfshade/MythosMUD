@@ -8,6 +8,7 @@ AI Agent: Tests for cache services covering initialization, cache operations,
          and invalidation with mocked persistence and NPC service dependencies.
 """
 
+
 # pylint: disable=redefined-outer-name,protected-access
 # Justification: pytest fixtures redefine names, protected access needed for testing internals
 

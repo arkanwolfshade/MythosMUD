@@ -22,7 +22,7 @@ from server.realtime.connection_statistics import (
 class TestGetPlayerPresenceInfoImpl:
     """Test get_player_presence_info_impl function."""
 
-    def test_get_player_presence_info_offline(self):
+    def test_get_player_presence_info_offline(self) -> None:
         """Test getting presence info for offline player."""
         player_id = uuid4()
         mock_manager = MagicMock()
@@ -39,7 +39,7 @@ class TestGetPlayerPresenceInfoImpl:
         assert result["connected_at"] is None
         assert result["last_seen"] is None
 
-    def test_get_player_presence_info_online(self):
+    def test_get_player_presence_info_online(self) -> None:
         """Test getting presence info for online player."""
         player_id = uuid4()
         mock_manager = MagicMock()
@@ -69,7 +69,7 @@ class TestGetPlayerPresenceInfoImpl:
         assert result["current_room_id"] == "room-123"
         assert result["level"] == 5
 
-    def test_get_player_presence_info_no_websockets(self):
+    def test_get_player_presence_info_no_websockets(self) -> None:
         """Test getting presence info when player has no websocket connections."""
         player_id = uuid4()
         mock_manager = MagicMock()
@@ -91,7 +91,7 @@ class TestGetPlayerPresenceInfoImpl:
 class TestValidatePlayerPresenceImpl:
     """Test validate_player_presence_impl function."""
 
-    def test_validate_player_presence_consistent(self):
+    def test_validate_player_presence_consistent(self) -> None:
         """Test validation when player presence is consistent."""
         player_id = uuid4()
         mock_manager = MagicMock()
@@ -105,7 +105,7 @@ class TestValidatePlayerPresenceImpl:
         assert len(result["issues_found"]) == 0
         assert len(result["actions_taken"]) == 0
 
-    def test_validate_player_presence_online_no_connections(self):
+    def test_validate_player_presence_online_no_connections(self) -> None:
         """Test validation when player is marked online but has no connections."""
         player_id = uuid4()
         # Use a dict that can be modified - the function will delete from it
@@ -122,7 +122,7 @@ class TestValidatePlayerPresenceImpl:
         with pytest.raises(KeyError):
             validate_player_presence_impl(player_id, mock_manager)
 
-    def test_validate_player_presence_offline_has_connections(self):
+    def test_validate_player_presence_offline_has_connections(self) -> None:
         """Test validation when player has connections but not marked online."""
         player_id = uuid4()
         mock_manager = MagicMock()
@@ -136,7 +136,7 @@ class TestValidatePlayerPresenceImpl:
         assert "Player has connections but not marked as online" in result["issues_found"]
         assert "Logged inconsistency" in result["actions_taken"][0]
 
-    def test_validate_player_presence_connection_count_mismatch(self):
+    def test_validate_player_presence_connection_count_mismatch(self) -> None:
         """Test validation when connection count is mismatched."""
         player_id = uuid4()
         mock_manager = MagicMock()
@@ -151,7 +151,7 @@ class TestValidatePlayerPresenceImpl:
         assert "Updated connection count" in result["actions_taken"]
         assert mock_manager.online_players[player_id]["total_connections"] == 2
 
-    def test_validate_player_presence_error_handling(self):
+    def test_validate_player_presence_error_handling(self) -> None:
         """Test validation error handling."""
         player_id = uuid4()
         mock_manager = MagicMock()
@@ -168,7 +168,7 @@ class TestValidatePlayerPresenceImpl:
 class TestGetPresenceStatisticsImpl:
     """Test get_presence_statistics_impl function."""
 
-    def test_get_presence_statistics_empty(self):
+    def test_get_presence_statistics_empty(self) -> None:
         """Test getting statistics when no players are online."""
         mock_manager = MagicMock()
         mock_manager.online_players = {}
@@ -183,7 +183,7 @@ class TestGetPresenceStatisticsImpl:
         assert result["connection_distribution"]["websocket_only"] == 0
         assert result["average_connections_per_player"] == 0
 
-    def test_get_presence_statistics_with_players(self):
+    def test_get_presence_statistics_with_players(self) -> None:
         """Test getting statistics with online players."""
         player_id1 = uuid4()
         player_id2 = uuid4()
@@ -212,7 +212,7 @@ class TestGetPresenceStatisticsImpl:
 class TestGetOnlinePlayerByDisplayNameImpl:
     """Test get_online_player_by_display_name_impl function."""
 
-    def test_get_online_player_by_display_name_found(self):
+    def test_get_online_player_by_display_name_found(self) -> None:
         """Test finding online player by display name."""
         player_id = uuid4()
         mock_manager = MagicMock()
@@ -225,7 +225,7 @@ class TestGetOnlinePlayerByDisplayNameImpl:
             assert result["player_name"] == "TestPlayer"
             assert result["level"] == 5
 
-    def test_get_online_player_by_display_name_case_insensitive(self):
+    def test_get_online_player_by_display_name_case_insensitive(self) -> None:
         """Test finding player with case-insensitive matching."""
         player_id = uuid4()
         mock_manager = MagicMock()
@@ -237,7 +237,7 @@ class TestGetOnlinePlayerByDisplayNameImpl:
             assert result is not None
             assert result["player_name"] == "TestPlayer"
 
-    def test_get_online_player_by_display_name_not_found(self):
+    def test_get_online_player_by_display_name_not_found(self) -> None:
         """Test when player is not found."""
         mock_manager = MagicMock()
         mock_manager.online_players = {uuid4(): {"player_name": "OtherPlayer"}}
@@ -247,7 +247,7 @@ class TestGetOnlinePlayerByDisplayNameImpl:
 
             assert result is None
 
-    def test_get_online_player_by_display_name_empty(self):
+    def test_get_online_player_by_display_name_empty(self) -> None:
         """Test when no players are online."""
         mock_manager = MagicMock()
         mock_manager.online_players = {}
@@ -261,7 +261,7 @@ class TestGetOnlinePlayerByDisplayNameImpl:
 class TestGetSessionStatsImpl:
     """Test get_session_stats_impl function."""
 
-    def test_get_session_stats_empty(self):
+    def test_get_session_stats_empty(self) -> None:
         """Test getting session stats when no sessions exist."""
         mock_manager = MagicMock()
         mock_manager.session_connections = {}
@@ -274,7 +274,7 @@ class TestGetSessionStatsImpl:
         assert result["sessions_with_connections"] == 0
         assert result["average_connections_per_session"] == 0
 
-    def test_get_session_stats_with_sessions(self):
+    def test_get_session_stats_with_sessions(self) -> None:
         """Test getting session stats with active sessions."""
         session_id1 = "session-1"
         session_id2 = "session-2"
@@ -298,7 +298,7 @@ class TestGetSessionStatsImpl:
         assert result["sessions_with_connections"] == 2
         assert result["average_connections_per_session"] == 1.5
 
-    def test_get_session_stats_with_empty_sessions(self):
+    def test_get_session_stats_with_empty_sessions(self) -> None:
         """Test getting session stats with some empty sessions."""
         session_id1 = "session-1"
         session_id2 = "session-2"

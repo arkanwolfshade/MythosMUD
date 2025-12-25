@@ -8,6 +8,7 @@ AI Agent: Tests for NPCSpawningService covering spawn request handling,
          NPC instantiation, and spawn rule evaluation with mocked dependencies.
 """
 
+
 # pylint: disable=redefined-outer-name,protected-access
 # Justification: pytest fixtures redefine names, protected access needed for testing internals
 
@@ -65,7 +66,7 @@ class TestSimpleNPCDefinition:
 class TestNPCSpawnRequest:
     """Test NPCSpawnRequest class."""
 
-    def test_spawn_request_initialization_without_rule(self):
+    def test_spawn_request_initialization_without_rule(self) -> None:
         """Test spawn request initializes without spawn rule."""
         mock_definition = Mock()
         mock_definition.id = 1
@@ -77,7 +78,7 @@ class TestNPCSpawnRequest:
         assert request.room_id == "room1"
         assert request.spawn_rule is None
 
-    def test_spawn_request_initialization_with_rule(self):
+    def test_spawn_request_initialization_with_rule(self) -> None:
         """Test spawn request initializes with spawn rule."""
         mock_definition = Mock()
         mock_definition.id = 1
@@ -91,7 +92,7 @@ class TestNPCSpawnRequest:
         assert request.room_id == "room2"
         assert request.spawn_rule == mock_spawn_rule
 
-    def test_spawn_request_stores_definition(self):
+    def test_spawn_request_stores_definition(self) -> None:
         """Test spawn request properly stores NPC definition reference."""
         mock_definition = Mock()
         mock_definition.name = "Shopkeeper"

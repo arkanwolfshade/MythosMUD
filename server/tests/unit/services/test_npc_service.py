@@ -67,12 +67,12 @@ def sample_spawn_rule():
 class TestNPCServiceInitialization:
     """Test NPCService initialization."""
 
-    def test_service_initialization(self):
+    def test_service_initialization(self) -> None:
         """Test service initializes correctly."""
         service = NPCService()
         assert service is not None
 
-    def test_global_service_instance_exists(self):
+    def test_global_service_instance_exists(self) -> None:
         """Test global npc_service instance exists."""
         assert npc_service is not None
         assert isinstance(npc_service, NPCService)
@@ -561,7 +561,7 @@ class TestGetSystemStatistics:
 
         call_count = [0]
 
-        async def mock_execute(*args, **kwargs):
+        async def mock_execute(*_args, **_kwargs):
             call_count[0] += 1
             if call_count[0] == 1:
                 return mock_result1

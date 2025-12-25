@@ -6,6 +6,7 @@ including lucidity, fear, corruption, healing, and damage mechanics.
 """
 
 import uuid
+from typing import Any, cast
 from unittest.mock import AsyncMock, Mock
 
 import pytest
@@ -17,7 +18,7 @@ from server.game.mechanics import GameMechanicsService
 class TestGameMechanicsService:
     """Test cases for GameMechanicsService."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test fixtures."""
         # Create a mock persistence object with the required methods
         # pylint: disable=attribute-defined-outside-init
@@ -40,7 +41,7 @@ class TestGameMechanicsService:
         self.mock_player.player_id = uuid.uuid4()
 
     @pytest.mark.asyncio
-    async def test_apply_Lucidity_loss_success(self):
+    async def test_apply_Lucidity_loss_success(self) -> None:
         """Test successful lucidity loss application."""
         # Setup
         player_id = uuid.uuid4()
@@ -50,7 +51,7 @@ class TestGameMechanicsService:
         self.mock_persistence.get_player_by_id.return_value = self.mock_player
 
         # Execute
-        success, message = await self.mechanics_service.apply_lucidity_loss(player_id, amount, source)
+        success, message = await self.mechanics_service.apply_lucidity_loss(str(player_id), amount, source)
 
         # Verify
         assert success is True
@@ -59,7 +60,7 @@ class TestGameMechanicsService:
         self.mock_persistence.apply_lucidity_loss.assert_called_once_with(self.mock_player, amount, source)
 
     @pytest.mark.asyncio
-    async def test_apply_Lucidity_loss_player_not_found(self):
+    async def test_apply_Lucidity_loss_player_not_found(self) -> None:
         """Test lucidity loss application when player is not found."""
         # Setup
         player_id = uuid.uuid4()
@@ -70,12 +71,12 @@ class TestGameMechanicsService:
 
         # Execute & Verify
         with pytest.raises(ValidationError, match="Player not found for lucidity loss"):
-            await self.mechanics_service.apply_lucidity_loss(player_id, amount, source)
+            await self.mechanics_service.apply_lucidity_loss(str(player_id), amount, source)
         self.mock_persistence.get_player_by_id.assert_called_once()
         self.mock_persistence.apply_lucidity_loss.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_apply_Lucidity_loss_default_source(self):
+    async def test_apply_Lucidity_loss_default_source(self) -> None:
         """Test lucidity loss application with default source."""
         # Setup
         player_id = uuid.uuid4()
@@ -84,14 +85,14 @@ class TestGameMechanicsService:
         self.mock_persistence.get_player_by_id.return_value = self.mock_player
 
         # Execute
-        success, _message = await self.mechanics_service.apply_lucidity_loss(player_id, amount)
+        success, _message = await self.mechanics_service.apply_lucidity_loss(str(player_id), amount)
 
         # Verify
         assert success is True
         self.mock_persistence.apply_lucidity_loss.assert_called_once_with(self.mock_player, amount, "unknown")
 
     @pytest.mark.asyncio
-    async def test_apply_fear_success(self):
+    async def test_apply_fear_success(self) -> None:
         """Test successful fear application."""
         # Setup
         player_id = uuid.uuid4()
@@ -101,7 +102,7 @@ class TestGameMechanicsService:
         self.mock_persistence.get_player_by_id.return_value = self.mock_player
 
         # Execute
-        success, message = await self.mechanics_service.apply_fear(player_id, amount, source)
+        success, message = await self.mechanics_service.apply_fear(str(player_id), amount, source)
 
         # Verify
         assert success is True
@@ -110,7 +111,7 @@ class TestGameMechanicsService:
         self.mock_persistence.apply_fear.assert_called_once_with(self.mock_player, amount, source)
 
     @pytest.mark.asyncio
-    async def test_apply_fear_player_not_found(self):
+    async def test_apply_fear_player_not_found(self) -> None:
         """Test fear application when player is not found."""
         # Setup
         player_id = uuid.uuid4()
@@ -121,12 +122,12 @@ class TestGameMechanicsService:
 
         # Execute & Verify
         with pytest.raises(ValidationError, match="Player not found for fear application"):
-            await self.mechanics_service.apply_fear(player_id, amount, source)
+            await self.mechanics_service.apply_fear(str(player_id), amount, source)
         self.mock_persistence.get_player_by_id.assert_called_once()
         self.mock_persistence.apply_fear.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_apply_corruption_success(self):
+    async def test_apply_corruption_success(self) -> None:
         """Test successful corruption application."""
         # Setup
         player_id = uuid.uuid4()
@@ -136,7 +137,7 @@ class TestGameMechanicsService:
         self.mock_persistence.get_player_by_id.return_value = self.mock_player
 
         # Execute
-        success, message = await self.mechanics_service.apply_corruption(player_id, amount, source)
+        success, message = await self.mechanics_service.apply_corruption(str(player_id), amount, source)
 
         # Verify
         assert success is True
@@ -145,7 +146,7 @@ class TestGameMechanicsService:
         self.mock_persistence.apply_corruption.assert_called_once_with(self.mock_player, amount, source)
 
     @pytest.mark.asyncio
-    async def test_apply_corruption_player_not_found(self):
+    async def test_apply_corruption_player_not_found(self) -> None:
         """Test corruption application when player is not found."""
         # Setup
         player_id = uuid.uuid4()
@@ -156,12 +157,12 @@ class TestGameMechanicsService:
 
         # Execute & Verify
         with pytest.raises(ValidationError, match="Player not found for corruption application"):
-            await self.mechanics_service.apply_corruption(player_id, amount, source)
+            await self.mechanics_service.apply_corruption(str(player_id), amount, source)
         self.mock_persistence.get_player_by_id.assert_called_once()
         self.mock_persistence.apply_corruption.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_gain_occult_knowledge_success(self):
+    async def test_gain_occult_knowledge_success(self) -> None:
         """Test successful occult knowledge gain."""
         from unittest.mock import patch
 
@@ -181,7 +182,7 @@ class TestGameMechanicsService:
             mock_experience_repo.return_value = mock_experience_instance
 
             # Execute
-            success, message = await self.mechanics_service.gain_occult_knowledge(player_id, amount, source)
+            success, message = await self.mechanics_service.gain_occult_knowledge(str(player_id), amount, source)
 
             # Verify
             assert success is True
@@ -191,7 +192,7 @@ class TestGameMechanicsService:
             mock_experience_instance.update_player_stat_field.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_gain_occult_knowledge_player_not_found(self):
+    async def test_gain_occult_knowledge_player_not_found(self) -> None:
         """Test occult knowledge gain when player is not found."""
         # Setup
         player_id = uuid.uuid4()
@@ -202,12 +203,12 @@ class TestGameMechanicsService:
 
         # Execute & Verify
         with pytest.raises(ValidationError, match="Player not found for occult knowledge gain"):
-            await self.mechanics_service.gain_occult_knowledge(player_id, amount, source)
+            await self.mechanics_service.gain_occult_knowledge(str(player_id), amount, source)
         self.mock_persistence.get_player_by_id.assert_called_once()
         self.mock_persistence.apply_lucidity_loss.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_heal_player_success(self):
+    async def test_heal_player_success(self) -> None:
         """Test successful player healing."""
         # Setup
         player_id = uuid.uuid4()
@@ -216,7 +217,7 @@ class TestGameMechanicsService:
         self.mock_persistence.get_player_by_id.return_value = self.mock_player
 
         # Execute
-        success, message = await self.mechanics_service.heal_player(player_id, amount)
+        success, message = await self.mechanics_service.heal_player(str(player_id), amount)
 
         # Verify
         assert success is True
@@ -225,7 +226,7 @@ class TestGameMechanicsService:
         self.mock_persistence.heal_player.assert_called_once_with(self.mock_player, amount)
 
     @pytest.mark.asyncio
-    async def test_heal_player_not_found(self):
+    async def test_heal_player_not_found(self) -> None:
         """Test healing when player is not found."""
         # Setup
         player_id = uuid.uuid4()
@@ -235,12 +236,12 @@ class TestGameMechanicsService:
 
         # Execute & Verify
         with pytest.raises(ValidationError, match="Player not found for healing"):
-            await self.mechanics_service.heal_player(player_id, amount)
+            await self.mechanics_service.heal_player(str(player_id), amount)
         self.mock_persistence.get_player_by_id.assert_called_once()
         self.mock_persistence.heal_player.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_damage_player_success(self):
+    async def test_damage_player_success(self) -> None:
         """Test successful player damage."""
         # Setup
         player_id = uuid.uuid4()
@@ -250,7 +251,7 @@ class TestGameMechanicsService:
         self.mock_persistence.get_player_by_id.return_value = self.mock_player
 
         # Execute
-        success, message = await self.mechanics_service.damage_player(player_id, amount, damage_type)
+        success, message = await self.mechanics_service.damage_player(str(player_id), amount, damage_type)
 
         # Verify
         assert success is True
@@ -259,7 +260,7 @@ class TestGameMechanicsService:
         self.mock_persistence.damage_player.assert_called_once_with(self.mock_player, amount, damage_type)
 
     @pytest.mark.asyncio
-    async def test_damage_player_default_type(self):
+    async def test_damage_player_default_type(self) -> None:
         """Test player damage with default damage type."""
         # Setup
         player_id = uuid.uuid4()
@@ -268,7 +269,7 @@ class TestGameMechanicsService:
         self.mock_persistence.get_player_by_id.return_value = self.mock_player
 
         # Execute
-        success, message = await self.mechanics_service.damage_player(player_id, amount)
+        success, message = await self.mechanics_service.damage_player(str(player_id), amount)
 
         # Verify
         assert success is True
@@ -276,7 +277,7 @@ class TestGameMechanicsService:
         self.mock_persistence.damage_player.assert_called_once_with(self.mock_player, amount, "physical")
 
     @pytest.mark.asyncio
-    async def test_damage_player_not_found(self):
+    async def test_damage_player_not_found(self) -> None:
         """Test damage when player is not found."""
         # Setup
         player_id = uuid.uuid4()
@@ -287,12 +288,12 @@ class TestGameMechanicsService:
 
         # Execute & Verify
         with pytest.raises(ValidationError, match="Player not found for damage"):
-            await self.mechanics_service.damage_player(player_id, amount, damage_type)
+            await self.mechanics_service.damage_player(str(player_id), amount, damage_type)
         self.mock_persistence.get_player_by_id.assert_called_once()
         self.mock_persistence.damage_player.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_zero_amount_operations(self):
+    async def test_zero_amount_operations(self) -> None:
         """Test operations with zero amounts."""
         from unittest.mock import patch
 
@@ -319,7 +320,7 @@ class TestGameMechanicsService:
             ]
 
             for operation, amount, *args in operations:
-                method = getattr(self.mechanics_service, operation)
+                method = getattr(self.mechanics_service, str(operation))
                 if operation == "heal_player":
                     success, message = await method(player_id, amount)
                 else:
@@ -329,7 +330,7 @@ class TestGameMechanicsService:
                 assert str(amount) in message
 
     @pytest.mark.asyncio
-    async def test_negative_amount_operations(self):
+    async def test_negative_amount_operations(self) -> None:
         """Test operations with negative amounts."""
         from unittest.mock import patch
 
@@ -356,7 +357,7 @@ class TestGameMechanicsService:
             ]
 
             for operation, amount, *args in operations:
-                method = getattr(self.mechanics_service, operation)
+                method = getattr(self.mechanics_service, str(operation))
                 if operation == "heal_player":
                     success, message = await method(player_id, amount)
                 else:
@@ -366,7 +367,7 @@ class TestGameMechanicsService:
                 assert str(amount) in message
 
     @pytest.mark.asyncio
-    async def test_large_amount_operations(self):
+    async def test_large_amount_operations(self) -> None:
         """Test operations with large amounts."""
         from unittest.mock import patch
 
@@ -393,7 +394,7 @@ class TestGameMechanicsService:
             ]
 
             for operation, amount, *args in operations:
-                method = getattr(self.mechanics_service, operation)
+                method = getattr(self.mechanics_service, str(operation))
                 if operation == "heal_player":
                     success, message = await method(player_id, amount)
                 else:
@@ -402,7 +403,7 @@ class TestGameMechanicsService:
                 assert success is True
                 assert str(amount) in message
 
-    def test_service_initialization(self):
+    def test_service_initialization(self) -> None:
         """Test GameMechanicsService initialization."""
         # Test that the service is properly initialized
         assert self.mechanics_service.persistence == self.mock_persistence
@@ -414,7 +415,7 @@ class TestGameMechanicsService:
         assert hasattr(self.mechanics_service, "damage_player")
 
     @pytest.mark.asyncio
-    async def test_persistence_method_calls(self):
+    async def test_persistence_method_calls(self) -> None:
         """Test that all persistence methods are called correctly."""
         from unittest.mock import patch
 
@@ -431,7 +432,7 @@ class TestGameMechanicsService:
             mock_experience_repo.return_value = mock_experience_instance
 
             # Test all methods to ensure persistence calls are made
-            test_cases = [
+            test_cases: list[tuple[str, list[Any], str]] = [
                 ("apply_lucidity_loss", [10, "test"], "apply_lucidity_loss"),
                 ("apply_fear", [15, "test"], "apply_fear"),
                 ("apply_corruption", [5, "test"], "apply_corruption"),
@@ -460,4 +461,4 @@ class TestGameMechanicsService:
             # Verify the call arguments
             call_args = persistence_method_obj.call_args[0]
             assert call_args[0] == self.mock_player  # First arg should be the player
-            assert call_args[1] == args[0]  # Second arg should be the amount
+            assert cast(Any, call_args)[1] == args[0]  # Second arg should be the amount

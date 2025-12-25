@@ -56,6 +56,10 @@ async def cleanup_dead_websocket_impl(
     try:
         if connection_id in manager.active_websockets:
             websocket = manager.active_websockets[connection_id]
+            # Guard against None websocket (can happen during cleanup)
+            if websocket is None:
+                del manager.active_websockets[connection_id]
+                return
             logger.info("Closing dead WebSocket", connection_id=connection_id, player_id=player_id)
             try:
                 import asyncio

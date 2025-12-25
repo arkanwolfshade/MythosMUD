@@ -12,7 +12,7 @@ from server.models.npc import NPCSpawnRule
 class TestNPCSpawnFix:
     """Test the NPC spawn condition fix."""
 
-    def test_spawn_conditions_with_any_values(self):
+    def test_spawn_conditions_with_any_values(self) -> None:
         """Test that spawn conditions with 'any' values work correctly."""
         # Create a spawn rule with "any" conditions
         spawn_rule = NPCSpawnRule(
@@ -40,7 +40,7 @@ class TestNPCSpawnFix:
         # Should return True since conditions are "any" (this was failing before the fix)
         assert spawn_rule.check_spawn_conditions(game_state_missing_keys)
 
-    def test_spawn_conditions_with_specific_values(self):
+    def test_spawn_conditions_with_specific_values(self) -> None:
         """Test that spawn conditions with specific values still work correctly."""
         # Create a spawn rule with specific conditions
         spawn_rule = NPCSpawnRule(
@@ -67,7 +67,7 @@ class TestNPCSpawnFix:
 
         assert not spawn_rule.check_spawn_conditions(missing_keys_game_state)
 
-    def test_spawn_conditions_with_empty_list(self):
+    def test_spawn_conditions_with_empty_list(self) -> None:
         """Test that spawn conditions with empty lists work correctly."""
         # Create a spawn rule with empty list condition
         spawn_rule = NPCSpawnRule(
@@ -89,7 +89,7 @@ class TestNPCSpawnFix:
 
         assert spawn_rule.check_spawn_conditions(game_state_missing_key)
 
-    def test_spawn_conditions_mixed_any_and_specific(self):
+    def test_spawn_conditions_mixed_any_and_specific(self) -> None:
         """Test spawn conditions with mixed 'any' and specific values."""
         spawn_rule = NPCSpawnRule(
             id=4,

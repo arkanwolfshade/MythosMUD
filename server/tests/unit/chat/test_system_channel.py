@@ -16,7 +16,10 @@ from server.game.chat_service import ChatService
 class TestSystemChannelStrategy:
     """Test cases for SystemChannelStrategy."""
 
-    def setup_method(self):
+    # pylint: disable=attribute-defined-outside-init
+    # Attributes are defined in setup_method, which is the pytest pattern for test fixtures.
+    # This is intentional and follows pytest best practices.
+    def setup_method(self) -> None:
         """Set up test fixtures."""
         # Create mock dependencies
         self.mock_persistence = Mock()
@@ -54,7 +57,7 @@ class TestSystemChannelStrategy:
         self.regular_player.level = 1  # Regular player level
 
     @pytest.mark.asyncio
-    async def test_send_system_message_admin_access(self):
+    async def test_send_system_message_admin_access(self) -> None:
         """Test that admin can send system messages."""
         # Setup mocks
         self.mock_player_service.get_player_by_id.return_value = self.admin_player
@@ -75,7 +78,7 @@ class TestSystemChannelStrategy:
         self.mock_nats_service.publish.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_send_system_message_non_admin_denied(self):
+    async def test_send_system_message_non_admin_denied(self) -> None:
         """Test that non-admin players cannot send system messages."""
         # Setup mocks
         self.mock_player_service.get_player_by_id.return_value = self.regular_player
@@ -92,7 +95,7 @@ class TestSystemChannelStrategy:
         self.mock_nats_service.publish.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_send_system_message_empty_content(self):
+    async def test_send_system_message_empty_content(self) -> None:
         """Test that empty system messages are rejected."""
         # Setup mocks
         self.mock_player_service.get_player_by_id.return_value = self.admin_player
@@ -106,7 +109,7 @@ class TestSystemChannelStrategy:
         assert "empty" in result["error"].lower()
 
     @pytest.mark.asyncio
-    async def test_send_system_message_too_long(self):
+    async def test_send_system_message_too_long(self) -> None:
         """Test that overly long system messages are rejected."""
         # Setup mocks
         self.mock_player_service.get_player_by_id.return_value = self.admin_player
@@ -121,7 +124,7 @@ class TestSystemChannelStrategy:
         assert "long" in result["error"].lower()
 
     @pytest.mark.asyncio
-    async def test_send_system_message_player_not_found(self):
+    async def test_send_system_message_player_not_found(self) -> None:
         """Test that system messages fail when player is not found."""
         # Setup mocks
         self.mock_player_service.get_player_by_id.return_value = None
@@ -134,7 +137,7 @@ class TestSystemChannelStrategy:
         assert "not found" in result["error"].lower()
 
     @pytest.mark.asyncio
-    async def test_send_system_message_nats_failure(self):
+    async def test_send_system_message_nats_failure(self) -> None:
         """Test that system messages handle NATS failures gracefully."""
         from server.services.nats_exceptions import NATSPublishError
 
@@ -153,7 +156,7 @@ class TestSystemChannelStrategy:
         assert "unavailable" in result["error"].lower()
 
     @pytest.mark.asyncio
-    async def test_send_system_message_nats_not_connected(self):
+    async def test_send_system_message_nats_not_connected(self) -> None:
         """Test that system messages fail when NATS is not connected."""
         # Setup mocks
         self.mock_player_service.get_player_by_id.return_value = self.admin_player
@@ -168,7 +171,7 @@ class TestSystemChannelStrategy:
         assert "unavailable" in result["error"].lower()
 
     @pytest.mark.asyncio
-    async def test_send_system_message_logging(self):
+    async def test_send_system_message_logging(self) -> None:
         """Test that system messages are properly logged."""
         # Setup mocks
         self.mock_player_service.get_player_by_id.return_value = self.admin_player
@@ -190,7 +193,7 @@ class TestSystemChannelStrategy:
         assert log_call["sender_name"] == "AdminPlayer"
 
     @pytest.mark.asyncio
-    async def test_send_system_message_rate_limiting(self):
+    async def test_send_system_message_rate_limiting(self) -> None:
         """Test that system messages are subject to rate limiting."""
         # Setup mocks
         self.mock_player_service.get_player_by_id.return_value = self.admin_player
@@ -209,7 +212,7 @@ class TestSystemChannelStrategy:
         self.mock_rate_limiter.check_rate_limit.assert_called_once_with(self.admin_player.id, "system", "AdminPlayer")
 
     @pytest.mark.asyncio
-    async def test_send_system_message_globally_muted_admin(self):
+    async def test_send_system_message_globally_muted_admin(self) -> None:
         """Test that globally muted admins can still send system messages."""
         # Setup mocks
         self.mock_player_service.get_player_by_id.return_value = self.admin_player
@@ -224,7 +227,7 @@ class TestSystemChannelStrategy:
         assert result["success"] is True
 
     @pytest.mark.asyncio
-    async def test_send_system_message_nats_subject(self):
+    async def test_send_system_message_nats_subject(self) -> None:
         """Test that system messages use correct NATS subject."""
         # Setup mocks
         self.mock_player_service.get_player_by_id.return_value = self.admin_player
@@ -240,7 +243,7 @@ class TestSystemChannelStrategy:
         assert nats_call[0][0] == "chat.system"  # Correct subject for system channel
 
     @pytest.mark.asyncio
-    async def test_send_system_message_message_structure(self):
+    async def test_send_system_message_message_structure(self) -> None:
         """Test that system messages have correct structure."""
         # Setup mocks
         self.mock_player_service.get_player_by_id.return_value = self.admin_player
@@ -260,7 +263,7 @@ class TestSystemChannelStrategy:
         assert "timestamp" in message
 
     @pytest.mark.asyncio
-    async def test_send_system_message_whitespace_handling(self):
+    async def test_send_system_message_whitespace_handling(self) -> None:
         """Test that system messages handle whitespace correctly."""
         # Setup mocks
         self.mock_player_service.get_player_by_id.return_value = self.admin_player

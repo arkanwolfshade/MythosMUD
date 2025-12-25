@@ -5,6 +5,7 @@ Tests the FastAPI application, endpoints, logging setup, and game tick functiona
 """
 
 import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
 import pytest
@@ -19,21 +20,21 @@ from server.main import app
 class TestFastAPIApp:
     """Test FastAPI application setup."""
 
-    def test_app_creation(self):
+    def test_app_creation(self) -> None:
         """Test that the FastAPI app is created correctly."""
         assert isinstance(app, FastAPI)
         assert app.title == "MythosMUD API"
         assert app.version == "0.1.0"
 
-    def test_app_has_cors_middleware(self):
+    def test_app_has_cors_middleware(self) -> None:
         """Test that CORS middleware is added."""
         # Check that CORS middleware is in the app's middleware stack
         assert any("CORSMiddleware" in str(middleware.cls) for middleware in app.user_middleware)
 
-    def test_app_includes_routers(self):
+    def test_app_includes_routers(self) -> None:
         """Test that required routers are included."""
         # Check that auth and command routers are included
-        route_paths = [route.path for route in app.routes]
+        route_paths = [getattr(route, "path", "") for route in app.routes]
         assert any("/auth" in path for path in route_paths)
         assert any("/command" in path for path in route_paths)
 
@@ -46,7 +47,9 @@ class TestEndpoints:
         """Create a test client with initialized app state."""
         # Initialize the app state with persistence
         # Use AsyncPersistenceLayer directly (PersistenceLayer removed)
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
 
         # Mock profession data to return proper string values
         mock_profession = Mock()
@@ -72,10 +75,10 @@ class TestEndpoints:
         mock_application_container.player_service = player_service
 
         # Set container and services in app state
-        test_client.app.state.container = mock_application_container
-        test_client.app.state.persistence = mock_persistence
-        test_client.app.state.player_service = player_service
-        test_client.app.state.room_service = mock_application_container.room_service
+        cast(FastAPI, test_client.app).state.container = mock_application_container
+        cast(FastAPI, test_client.app).state.persistence = mock_persistence
+        cast(FastAPI, test_client.app).state.player_service = player_service
+        cast(FastAPI, test_client.app).state.room_service = mock_application_container.room_service
 
         # Mock get_current_user dependency to avoid authentication failures
         # This is needed because all player endpoints require authentication
@@ -107,7 +110,9 @@ class TestEndpoints:
 
     def test_get_room_existing(self, client):
         """Test getting an existing room."""
-        with patch.object(client.app.state.room_service, "get_room", new_callable=AsyncMock) as mock_get_room:
+        with patch.object(
+            cast(FastAPI, client.app).state.room_service, "get_room", new_callable=AsyncMock
+        ) as mock_get_room:
             mock_room = {"id": "test_room", "name": "Test Room"}
             mock_get_room.return_value = mock_room
 
@@ -119,24 +124,29 @@ class TestEndpoints:
 
     def test_get_room_not_found(self, client):
         """Test getting a non-existent room."""
-        with patch.object(client.app.state.room_service, "get_room", new_callable=AsyncMock) as mock_get_room:
-            mock_get_room.return_value = None
+        # Use MagicMock as base, then explicitly set get_room as AsyncMock to prevent AsyncMock warnings
+        mock_room_service = MagicMock()
+        mock_room_service.get_room = AsyncMock(return_value=None)
 
-            # Room router is mounted at /api/rooms (see server/app/factory.py line 177)
-            response = client.get("/api/rooms/nonexistent")
+        # Set the room_service in the container (which is used by the dependency)
+        cast(FastAPI, client.app).state.container.room_service = mock_room_service
+        cast(FastAPI, client.app).state.room_service = mock_room_service
 
-            assert response.status_code == 404
-            # StandardizedErrorResponse uses {"error": {"message": ...}} format
-            response_data = response.json()
-            # Check for standardized error format
-            if "error" in response_data and "message" in response_data["error"]:
-                assert "Room not found" in response_data["error"]["message"]
-            elif "detail" in response_data:
-                # Fallback to FastAPI's standard format
-                assert "Room not found" in response_data["detail"]
-            else:
-                # Check if it's in a nested structure
-                assert "Room not found" in str(response_data)
+        # Room router is mounted at /api/rooms (see server/app/factory.py line 177)
+        response = client.get("/api/rooms/nonexistent")
+
+        assert response.status_code == 404
+        # StandardizedErrorResponse uses {"error": {"message": ...}} format
+        response_data = response.json()
+        # Check for standardized error format
+        if "error" in response_data and "message" in response_data["error"]:
+            assert "Room not found" in response_data["error"]["message"]
+        elif "detail" in response_data:
+            # Fallback to FastAPI's standard format
+            assert "Room not found" in response_data["detail"]
+        else:
+            # Check if it's in a nested structure
+            assert "Room not found" in str(response_data)
 
     def test_create_player_success(self, client):
         """Test creating a new player."""
@@ -193,7 +203,6 @@ class TestEndpoints:
         # Override the app dependencies
         import server.dependencies
         from server.api.players import get_current_user
-        from server.main import app
 
         # Mock the authentication dependency - get_current_user is async
         async def mock_get_current_user():
@@ -215,9 +224,20 @@ class TestEndpoints:
 
     def test_create_player_already_exists(self, client):
         """Test creating a player that already exists."""
-        with patch.object(
-            client.app.state.persistence, "async_get_player_by_name", new_callable=AsyncMock
-        ) as mock_get_player:
+
+        # Patch asyncio.create_task to prevent background task warnings
+        def create_task_side_effect(coro):
+            # Close the coroutine to prevent "never awaited" warning
+            if hasattr(coro, "close"):
+                coro.close()
+            return MagicMock()
+
+        with (
+            patch("asyncio.create_task", side_effect=create_task_side_effect),
+            patch.object(
+                cast(FastAPI, client.app).state.persistence, "get_player_by_name", new_callable=AsyncMock
+            ) as mock_get_player,
+        ):
             mock_get_player.return_value = Mock(name="testplayer")  # Player exists
 
             response = client.post("/api/players?name=testplayer")
@@ -287,7 +307,9 @@ class TestEndpoints:
             player_data["id"] = player_data.pop("player_id")
             player_objects.append(PlayerRead(**player_data))
 
-        with patch.object(client.app.state.player_service, "list_players", new_callable=AsyncMock) as mock_list_players:
+        with patch.object(
+            cast(FastAPI, client.app).state.player_service, "list_players", new_callable=AsyncMock
+        ) as mock_list_players:
             mock_list_players.return_value = player_objects
 
             response = client.get("/api/players")
@@ -328,7 +350,7 @@ class TestEndpoints:
             "profession_flavor_text": "Knowledge is power",
         }
         with patch.object(
-            client.app.state.player_service, "get_player_by_id", new_callable=AsyncMock
+            cast(FastAPI, client.app).state.player_service, "get_player_by_id", new_callable=AsyncMock
         ) as mock_get_player:
             from server.schemas.player import PlayerRead
 
@@ -350,7 +372,7 @@ class TestEndpoints:
         """Test getting a non-existent player by ID."""
         test_uuid = str(uuid.uuid4())
         with patch.object(
-            client.app.state.player_service, "get_player_by_id", new_callable=AsyncMock
+            cast(FastAPI, client.app).state.player_service, "get_player_by_id", new_callable=AsyncMock
         ) as mock_get_player:
             mock_get_player.return_value = None
 
@@ -381,7 +403,7 @@ class TestEndpoints:
             "position": "standing",
         }
         with patch.object(
-            client.app.state.player_service, "get_player_by_name", new_callable=AsyncMock
+            cast(FastAPI, client.app).state.player_service, "get_player_by_name", new_callable=AsyncMock
         ) as mock_get_player:
             from server.schemas.player import PlayerRead
 
@@ -412,7 +434,7 @@ class TestEndpoints:
     def test_get_player_by_name_not_found(self, client):
         """Test getting a non-existent player by name."""
         with patch.object(
-            client.app.state.player_service, "get_player_by_name", new_callable=AsyncMock
+            cast(FastAPI, client.app).state.player_service, "get_player_by_name", new_callable=AsyncMock
         ) as mock_get_player:
             mock_get_player.return_value = None
 
@@ -482,7 +504,7 @@ class TestWebSocketEndpoints:
     """Test WebSocket endpoints."""
 
     @pytest.mark.asyncio
-    async def test_websocket_endpoint_route_no_token(self):
+    async def test_websocket_endpoint_route_no_token(self) -> None:
         """Test WebSocket endpoint without token."""
         test_player_id = str(uuid.uuid4())
         mock_websocket = AsyncMock(spec=WebSocket)
@@ -503,15 +525,13 @@ class TestWebSocketEndpoints:
 
             await websocket_endpoint_route(mock_websocket, test_player_id)
             # The endpoint converts the string player_id to UUID
-            import uuid as uuid_module
-
-            expected_uuid = uuid_module.UUID(test_player_id)
+            expected_uuid = uuid.UUID(test_player_id)
             mock_handler.assert_called_once_with(
                 mock_websocket, expected_uuid, None, connection_manager=mock_resolve.return_value
             )
 
     @pytest.mark.asyncio
-    async def test_websocket_endpoint_route_invalid_token(self):
+    async def test_websocket_endpoint_route_invalid_token(self) -> None:
         """Test WebSocket endpoint with invalid token."""
         test_player_id = str(uuid.uuid4())
         mock_websocket = AsyncMock(spec=WebSocket)
@@ -532,15 +552,13 @@ class TestWebSocketEndpoints:
 
             await websocket_endpoint_route(mock_websocket, test_player_id)
             # The endpoint converts the string player_id to UUID
-            import uuid as uuid_module
-
-            expected_uuid = uuid_module.UUID(test_player_id)
+            expected_uuid = uuid.UUID(test_player_id)
             mock_handler.assert_called_once_with(
                 mock_websocket, expected_uuid, None, connection_manager=mock_resolve.return_value
             )
 
     @pytest.mark.asyncio
-    async def test_websocket_endpoint_route_token_mismatch(self):
+    async def test_websocket_endpoint_route_token_mismatch(self) -> None:
         """Test WebSocket endpoint with token mismatch."""
         test_player_id = str(uuid.uuid4())
         mock_websocket = AsyncMock(spec=WebSocket)
@@ -561,9 +579,7 @@ class TestWebSocketEndpoints:
 
             await websocket_endpoint_route(mock_websocket, test_player_id)
             # The endpoint converts the string player_id to UUID
-            import uuid as uuid_module
-
-            expected_uuid = uuid_module.UUID(test_player_id)
+            expected_uuid = uuid.UUID(test_player_id)
             mock_handler.assert_called_once_with(
                 mock_websocket, expected_uuid, None, connection_manager=mock_resolve.return_value
             )

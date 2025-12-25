@@ -43,7 +43,7 @@ def hash_password(password: str) -> str:
         logger.debug("Password hashed successfully")
         assert isinstance(hashed, str)
         return hashed
-    except Exception as e:
+    except (AuthenticationError, ValueError, TypeError, RuntimeError) as e:
         logger.error("Password hashing failed", error=str(e))
         log_and_raise(
             AuthenticationError,
@@ -69,7 +69,7 @@ def verify_password(password: str, password_hash: str) -> bool:
             logger.debug("Password verification failed")
         assert isinstance(result, bool)
         return result
-    except Exception as e:
+    except (ValueError, TypeError, AttributeError, RuntimeError) as e:
         logger.error("Password verification error", error=str(e))
         return False
 
@@ -87,12 +87,15 @@ def create_access_token(
     expire = datetime.now(UTC) + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
     to_encode.update({"exp": expire})
 
+    if secret_key is None:
+        raise AuthenticationError("JWT secret key is not configured")
+
     try:
         token = jwt.encode(to_encode, secret_key, algorithm=algorithm)
         logger.debug("Access token created successfully")
         assert isinstance(token, str)
         return token
-    except Exception as e:
+    except (JWTError, ValueError, TypeError, AttributeError, RuntimeError) as e:
         logger.error("Failed to create access token", error=str(e))
         log_and_raise(
             AuthenticationError,
@@ -110,6 +113,10 @@ def decode_access_token(
         logger.debug("No token provided for decoding")
         return None
 
+    if secret_key is None:
+        logger.error("JWT secret key is not configured for decoding")
+        return None
+
     try:
         payload = jwt.decode(token, secret_key, algorithms=[algorithm], audience="fastapi-users:auth")
         logger.debug("Access token decoded successfully")
@@ -118,6 +125,6 @@ def decode_access_token(
     except JWTError as e:
         logger.warning("JWT decode error", error=str(e))
         return None
-    except Exception as e:
+    except (ValueError, TypeError, AttributeError, RuntimeError) as e:
         logger.error("Unexpected error decoding token", error=str(e))
         return None

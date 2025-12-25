@@ -6,7 +6,7 @@ with the persistence layer in isolation from other systems.
 """
 
 from datetime import UTC, datetime, timedelta
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, Mock
 from uuid import uuid4
 
 import pytest
@@ -23,7 +23,15 @@ class TestPlayerCombatServiceUnit:
     @pytest.fixture
     def mock_persistence(self):
         """Create a mock persistence layer."""
-        return AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        from unittest.mock import MagicMock
+
+        mock_persistence = MagicMock()
+        # Configure async methods explicitly
+        mock_persistence.get_player_by_id = AsyncMock()
+        mock_persistence.save_player = AsyncMock()
+        return mock_persistence
 
     @pytest.fixture
     def mock_event_bus(self):
@@ -31,8 +39,7 @@ class TestPlayerCombatServiceUnit:
 
         Note: EventBus.publish() is synchronous, so use Mock() not AsyncMock().
         """
-        from unittest.mock import Mock
-
+        # Mock is already imported at module level (line 9)
         mock_bus = Mock()
         mock_bus.publish = Mock(return_value=None)
         return mock_bus
@@ -170,8 +177,8 @@ class TestPlayerCombatServiceUnit:
         npc_id = uuid4()
         xp_amount = 10
 
-        # Mock persistence to return sample player
-        mock_persistence.get_player_by_id.return_value = sample_player
+        # Mock persistence to return sample player - use AsyncMock with return_value to ensure proper return
+        mock_persistence.get_player_by_id = AsyncMock(return_value=sample_player)
         mock_persistence.save_player = AsyncMock()
 
         # Award XP
@@ -211,6 +218,7 @@ class TestPlayerCombatServiceUnit:
         mock_persistence.save_player.assert_not_called()
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared event bus or persistence mocking state
     async def test_award_xp_on_npc_death_publishes_event(
         self, player_combat_service, mock_persistence, mock_event_bus, sample_player
     ):
@@ -219,8 +227,8 @@ class TestPlayerCombatServiceUnit:
         npc_id = uuid4()
         xp_amount = 10
 
-        # Mock persistence to return sample player
-        mock_persistence.get_player_by_id.return_value = sample_player
+        # Mock persistence to return sample player - use AsyncMock with return_value to ensure proper return
+        mock_persistence.get_player_by_id = AsyncMock(return_value=sample_player)
         mock_persistence.save_player = AsyncMock()
 
         # Award XP
@@ -242,9 +250,13 @@ class TestPlayerCombatServiceUnit:
         npc_id = uuid4()
 
         # Mock lifecycle manager with empty records to trigger fallback
-        mock_lifecycle_manager = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        from unittest.mock import MagicMock
+
+        mock_lifecycle_manager = MagicMock()
         mock_lifecycle_manager.lifecycle_records = {}
-        player_combat_service._persistence.get_npc_lifecycle_manager = AsyncMock(return_value=mock_lifecycle_manager)
+        # get_npc_lifecycle_manager is called via asyncio.to_thread, so it must be a synchronous Mock, not AsyncMock
+        player_combat_service._persistence.get_npc_lifecycle_manager = Mock(return_value=mock_lifecycle_manager)
 
         xp_reward = await player_combat_service.calculate_xp_reward(npc_id)
 
@@ -325,7 +337,7 @@ class TestPlayerCombatServiceUnit:
         assert stats["players_in_combat"] == 2
         assert stats["active_combats"] == 1  # Same combat
 
-    def test_player_combat_state_creation(self):
+    def test_player_combat_state_creation(self) -> None:
         """Test PlayerCombatState creation."""
         player_id = uuid4()
         player_name = "TestPlayer"
@@ -346,7 +358,7 @@ class TestPlayerCombatServiceUnit:
         assert state.is_in_combat is True
         assert isinstance(state.last_activity, datetime)
 
-    def test_player_combat_state_defaults(self):
+    def test_player_combat_state_defaults(self) -> None:
         """Test PlayerCombatState default values."""
         state = PlayerCombatState(
             player_id=uuid4(),
@@ -374,8 +386,8 @@ class TestPlayerCombatServiceUnit:
         npc_id = uuid4()
         xp_amount = 10
 
-        # Mock persistence
-        mock_persistence.get_player_by_id.return_value = sample_player
+        # Mock persistence - ensure get_player_by_id returns the actual player object
+        mock_persistence.get_player_by_id = AsyncMock(return_value=sample_player)
         mock_persistence.save_player = AsyncMock()
 
         # Call handle_npc_death

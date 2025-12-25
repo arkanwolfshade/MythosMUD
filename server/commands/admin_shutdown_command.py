@@ -17,6 +17,7 @@ import time
 from typing import Any
 
 from ..alias_storage import AliasStorage
+from ..exceptions import DatabaseError
 from ..logging.admin_actions_logger import AdminActionsLogger
 from ..logging.enhanced_logging_config import get_logger
 
@@ -91,7 +92,7 @@ def _schedule_process_termination(delay_seconds: float = 0.3) -> None:
                     except psutil.NoSuchProcess:
                         logger.warning("Child process already terminated", pid=child.pid)
 
-                gone, alive = psutil.wait_procs(children, timeout=2)
+                _gone, alive = psutil.wait_procs(children, timeout=2)
                 for p in alive:
                     logger.warning("Child process did not terminate, killing", pid=p.pid, name=p.name())
                     try:
@@ -105,35 +106,35 @@ def _schedule_process_termination(delay_seconds: float = 0.3) -> None:
                 try:
                     logger.info("ProcessTerminator sending SIGINT to child")
                     os.kill(pid, signal.SIGINT)
-                except Exception as e:
+                except OSError as e:
                     logger.warning("ProcessTerminator SIGINT(child) failed", error=str(e))
 
                 try:
                     if ppid and ppid != 1:
                         logger.info("ProcessTerminator sending SIGINT to parent")
                         os.kill(ppid, signal.SIGINT)
-                except Exception as e:
+                except OSError as e:
                     logger.warning("ProcessTerminator SIGINT(parent) failed", error=str(e))
 
                 time.sleep(0.1)
                 try:
                     logger.info("ProcessTerminator sending SIGTERM to child")
                     os.kill(pid, signal.SIGTERM)
-                except Exception as e:
+                except OSError as e:
                     logger.warning("ProcessTerminator SIGTERM(child) failed", error=str(e))
 
                 try:
                     if ppid and ppid != 1:
                         logger.info("ProcessTerminator sending SIGTERM to parent")
                         os.kill(ppid, signal.SIGTERM)
-                except Exception as e:
+                except OSError as e:
                     logger.warning("ProcessTerminator SIGTERM(parent) failed", error=str(e))
 
             # As a last resort, force exit to avoid hanging processes
             time.sleep(0.2)
             logger.info("ProcessTerminator forcing exit with os._exit(0)")
             os._exit(0)
-        except Exception as e:
+        except OSError as e:
             logger.error("ProcessTerminator error", error=str(e))
             # Final fallback - force exit
             logger.info("ProcessTerminator final fallback - os._exit(0)")
@@ -158,7 +159,7 @@ def is_shutdown_pending(app: Any) -> bool:
     """
     try:
         return getattr(app.state, "server_shutdown_pending", False)
-    except (AttributeError, Exception):
+    except (AttributeError, OSError):
         return False
 
 
@@ -209,7 +210,7 @@ async def validate_shutdown_admin_permission(player: Any, player_name: str) -> b
         logger.debug("Shutdown permission check passed", player_name=player_name)
         return True
 
-    except Exception as e:
+    except OSError as e:
         logger.error("Error checking shutdown admin permission", player_name=player_name, error=str(e))
         return False
 
@@ -275,7 +276,7 @@ async def broadcast_shutdown_notification(connection_manager: Any, seconds_remai
         logger.info("Shutdown notification broadcast", seconds_remaining=seconds_remaining)
         return True
 
-    except Exception as e:
+    except OSError as e:
         logger.error("Error broadcasting shutdown notification", error=str(e))
         return False
 
@@ -317,15 +318,16 @@ async def execute_shutdown_sequence(app: Any) -> None:
                         # Get the player object first, then save it
                         player_obj = persistence.get_player(player_id)
                         if player_obj:
-                            persistence.save_player(player_obj)
+                            # save_player is async, so await it
+                            await persistence.save_player(player_obj)
                             logger.debug("Persisted player", player_id=player_id)
                         else:
                             logger.warning("Player object not found for ID, skipping persistence", player_id=player_id)
-                    except Exception as e:
+                    except DatabaseError as e:
                         logger.error("Failed to persist player", player_id=player_id, error=str(e))
 
                 logger.info("Phase 1 complete: All player data persisted")
-            except Exception as e:
+            except DatabaseError as e:
                 logger.error("Error during player persistence phase", error=str(e), exc_info=True)
         else:
             logger.warning("No connection manager found, skipping player persistence")
@@ -345,13 +347,13 @@ async def execute_shutdown_sequence(app: Any) -> None:
                             # despawn_npc is synchronous (returns bool)
                             _ = npc_lifecycle_manager.despawn_npc(npc_id, reason="server_shutdown")
                             logger.debug("Despawned NPC", npc_id=npc_id)
-                        except Exception as e:
+                        except OSError as e:
                             logger.error("Failed to despawn NPC", npc_id=npc_id, error=str(e))
 
                     logger.info("Phase 2 complete: All NPCs despawned")
                 else:
                     logger.warning("No NPC lifecycle manager found, skipping NPC despawn")
-            except Exception as e:
+            except OSError as e:
                 logger.error("Error during NPC despawn phase", error=str(e), exc_info=True)
         else:
             logger.warning("No NPC spawning service found, skipping NPC despawn")
@@ -376,11 +378,11 @@ async def execute_shutdown_sequence(app: Any) -> None:
                         player_id_uuid = uuid_module.UUID(player_id) if isinstance(player_id, str) else player_id
                         await app.state.connection_manager.force_disconnect_player(player_id_uuid)
                         logger.debug("Disconnected player", player_id=player_id_uuid)
-                    except Exception as e:
+                    except OSError as e:
                         logger.error("Failed to disconnect player", player_id=player_id, error=str(e))
 
                 logger.info("Phase 3 complete: All players disconnected")
-            except Exception as e:
+            except OSError as e:
                 logger.error("Error during player disconnection phase", error=str(e), exc_info=True)
         else:
             logger.warning("No connection manager found, skipping player disconnection")
@@ -391,7 +393,7 @@ async def execute_shutdown_sequence(app: Any) -> None:
             try:
                 await app.state.nats_message_handler.stop()
                 logger.info("Phase 4 complete: NATS message handler stopped")
-            except Exception as e:
+            except OSError as e:
                 logger.error("Error stopping NATS message handler", error=str(e), exc_info=True)
         else:
             logger.warning("No NATS message handler found, skipping")
@@ -402,7 +404,7 @@ async def execute_shutdown_sequence(app: Any) -> None:
             try:
                 await app.state.nats_service.disconnect()
                 logger.info("Phase 5 complete: NATS service disconnected")
-            except Exception as e:
+            except OSError as e:
                 logger.error("Error disconnecting NATS service", error=str(e), exc_info=True)
         else:
             logger.warning("No NATS service found, skipping")
@@ -413,7 +415,7 @@ async def execute_shutdown_sequence(app: Any) -> None:
             try:
                 await app.state.connection_manager.force_cleanup()
                 logger.info("Phase 6 complete: Connection manager cleaned up")
-            except Exception as e:
+            except OSError as e:
                 logger.error("Error cleaning up connection manager", error=str(e), exc_info=True)
         else:
             logger.warning("No connection manager found, skipping cleanup")
@@ -440,7 +442,7 @@ async def execute_shutdown_sequence(app: Any) -> None:
                     logger.info("Phase 7 complete: All background tasks cancelled gracefully")
                 else:
                     logger.warning("Phase 7: TaskRegistry shutdown reached timeout")
-            except Exception as e:
+            except OSError as e:
                 logger.error("Error during task registry shutdown", error=str(e), exc_info=True)
         else:
             logger.warning("No task registry found, skipping task cancellation")
@@ -451,7 +453,7 @@ async def execute_shutdown_sequence(app: Any) -> None:
         logger.info("Scheduling process termination after graceful shutdown completion")
         _schedule_process_termination(0.3)
 
-    except Exception as e:
+    except OSError as e:
         logger.error("Critical error during shutdown sequence", error=str(e), exc_info=True)
         raise
 
@@ -512,7 +514,7 @@ async def countdown_loop(app: Any, countdown_seconds: int, admin_username: str) 
     except asyncio.CancelledError:
         logger.info("Shutdown countdown cancelled by request")
         raise
-    except Exception as e:
+    except OSError as e:
         logger.error("Error in shutdown countdown loop", error=str(e), exc_info=True)
 
 
@@ -582,7 +584,7 @@ async def initiate_shutdown_countdown(app: Any, countdown_seconds: int, admin_us
 
         return True
 
-    except Exception as e:
+    except OSError as e:
         logger.error("Error initiating shutdown countdown", error=str(e), exc_info=True)
         # Clean up on failure
         app.state.server_shutdown_pending = False
@@ -625,7 +627,6 @@ async def cancel_shutdown_countdown(app: Any, admin_username: str) -> bool:
                 is_done = countdown_task.done() if hasattr(countdown_task, "done") else False
             except (AttributeError, RuntimeError) as e:
                 logger.error("Error checking countdown task status", error=str(e), error_type=type(e).__name__)
-                pass
 
             if not is_done:
                 countdown_task.cancel()
@@ -665,7 +666,7 @@ async def cancel_shutdown_countdown(app: Any, admin_username: str) -> bool:
 
         return True
 
-    except Exception as e:
+    except OSError as e:
         logger.error("Error cancelling shutdown", error=str(e), exc_info=True)
         return False
 
@@ -708,7 +709,7 @@ def parse_shutdown_parameters(command_data: dict) -> tuple[str, int | None]:
             logger.warning("Invalid shutdown parameter (not a number or 'cancel')", param=param)
             return ("error", None)
 
-    except Exception as e:
+    except OSError as e:
         logger.error("Error parsing shutdown parameters", error=str(e))
         return ("error", None)
 
@@ -717,16 +718,16 @@ def parse_shutdown_parameters(command_data: dict) -> tuple[str, int | None]:
 
 
 async def handle_shutdown_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the /shutdown command for administrators.
 
     Args:
         command_data: Command data dictionary containing validated command information
-        current_user: Current user information
+        _current_user: Current user information (unused)
         request: FastAPI request object
-        alias_storage: Alias storage instance (unused)
+        _alias_storage: Alias storage instance (unused)
         player_name: Player name for logging
 
     Returns:

@@ -26,8 +26,8 @@ interface Profession {
 }
 
 interface StatsRollingScreenProps {
-  characterName: string;
-  onStatsAccepted: (stats: Stats) => void;
+  characterName?: string; // MULTI-CHARACTER: Made optional - character name is now entered by user
+  onStatsAccepted: (stats: Stats, characterName: string) => void;
   onError: (error: string) => void;
   onBack?: () => void;
   baseUrl: string;
@@ -37,7 +37,7 @@ interface StatsRollingScreenProps {
 }
 
 export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
-  characterName,
+  characterName: initialCharacterName,
   onStatsAccepted,
   onError,
   onBack,
@@ -52,6 +52,8 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
   const [rerollCooldown, setRerollCooldown] = useState(0);
   const [error, setError] = useState('');
   const [timeoutMessage, setTimeoutMessage] = useState('');
+  // MULTI-CHARACTER: Character name is now entered by user
+  const [characterName, setCharacterName] = useState(initialCharacterName || '');
 
   // Roll initial stats when component mounts and authToken is available
   // AI: useCallback ensures rollStats has stable reference and proper dependency tracking
@@ -118,7 +120,7 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
     if (authToken) {
       void rollStats();
     }
-  }, [authToken, rollStats]);
+  }, [authToken, rollStats, professionId]);
 
   // Handle reroll cooldown
   useEffect(() => {
@@ -187,6 +189,13 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
       return;
     }
 
+    // Validate character name
+    const trimmedName = characterName.trim();
+    if (!trimmedName) {
+      setError('Please enter a character name');
+      return;
+    }
+
     // Note: Even if stats do not meet profession requirements, allow acceptance
     // Tests expect flow to continue to game while UI indicates requirement status
 
@@ -201,7 +210,7 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
           Authorization: `Bearer ${authToken}`,
         },
         body: JSON.stringify({
-          name: characterName, // This is the username from registration
+          name: trimmedName,
           stats: currentStats,
           profession_id: professionId || 0, // Include profession_id, default to 0 (Tramp)
         }),
@@ -210,10 +219,10 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
       if (response.ok) {
         const data = await response.json();
         logger.info('StatsRollingScreen', 'Character created successfully', {
-          characterName,
-          playerId: data.player?.id,
+          characterName: trimmedName,
+          playerId: data.id || data.player_id,
         });
-        onStatsAccepted(currentStats);
+        onStatsAccepted(currentStats, trimmedName);
       } else {
         const errorData = await response.json();
         let errorMessage = 'Failed to create character';
@@ -268,6 +277,7 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
       <div className="stats-rolling-screen" data-testid="stats-rolling-screen">
         <div className="error-container">
           <p>Failed to load stats. Please try again.</p>
+          {error && <p className="error-message">{error}</p>}
           <button onClick={rollStats} className="retry-button">
             Retry
           </button>
@@ -280,7 +290,24 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
     <div className="stats-rolling-screen" data-testid="stats-rolling-screen">
       <div className="stats-header">
         <h2>Character Creation</h2>
-        <p className="character-name">Character: {characterName}</p>
+        {/* MULTI-CHARACTER: Character name input field */}
+        <div className="character-name-input-container">
+          <label htmlFor="character-name-input" className="character-name-label">
+            Character Name:
+          </label>
+          <input
+            id="character-name-input"
+            type="text"
+            value={characterName}
+            onChange={e => setCharacterName(e.target.value)}
+            placeholder="Enter your character's name"
+            maxLength={50}
+            minLength={1}
+            className="character-name-input"
+            disabled={isLoading}
+          />
+          {characterName.trim() && <p className="character-name-preview">Preview: {characterName.trim()}</p>}
+        </div>
         {profession && (
           <div className="profession-display">
             <p className="profession-name">Profession: {profession.name}</p>

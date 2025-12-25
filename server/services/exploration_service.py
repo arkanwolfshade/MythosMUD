@@ -19,7 +19,6 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..database import get_database_manager
 from ..exceptions import DatabaseError
 from ..logging.enhanced_logging_config import get_logger
 
@@ -35,8 +34,17 @@ class ExplorationService:
     the map viewer to show only explored rooms to players.
     """
 
-    def __init__(self):
-        """Initialize the exploration service."""
+    def __init__(self, database_manager: Any = None):
+        """
+        Initialize the exploration service.
+
+        Args:
+            database_manager: Database manager instance for database operations.
+                             If not provided, uses DatabaseManager.get_instance().
+        """
+        from ..database import DatabaseManager
+
+        self._database_manager = database_manager or DatabaseManager.get_instance()
         logger.info("ExplorationService initialized")
 
     async def mark_room_as_explored(self, player_id: UUID, room_id: str, session: AsyncSession | None = None) -> bool:
@@ -72,8 +80,7 @@ class ExplorationService:
                 return await self._mark_explored_in_session(session, player_id, room_uuid)
             else:
                 # Create a new session
-                db_manager = get_database_manager()
-                async_session_maker = db_manager.get_session_maker()
+                async_session_maker = self._database_manager.get_session_maker()
                 async with async_session_maker() as new_session:
                     result = await self._mark_explored_in_session(new_session, player_id, room_uuid)
                     await new_session.commit()
@@ -88,7 +95,9 @@ class ExplorationService:
                 error_type=type(e).__name__,
             )
             raise DatabaseError(f"Failed to mark room as explored: {e}") from e
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except
+            # Unforeseen dimensional ripples must be logged before being
+            # allowed to propagate further into the local reality.
             logger.error(
                 "Unexpected error marking room as explored",
                 player_id=player_id,
@@ -131,8 +140,7 @@ class ExplorationService:
                 return None
             else:
                 # Create a new session
-                db_manager = get_database_manager()
-                async_session_maker = db_manager.get_session_maker()
+                async_session_maker = self._database_manager.get_session_maker()
                 async with async_session_maker() as new_session:
                     query = text("SELECT id FROM rooms WHERE stable_id = :stable_id")
                     result = await new_session.execute(query, {"stable_id": stable_id})
@@ -160,7 +168,8 @@ class ExplorationService:
                 error_type=type(e).__name__,
             )
             raise DatabaseError(f"Failed to look up room UUID: {e}") from e
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except
+            # Dimensional instability during room lookup must be recorded.
             logger.error(
                 "Unexpected error looking up room UUID",
                 stable_id=stable_id,
@@ -267,7 +276,8 @@ class ExplorationService:
                 error_type=type(e).__name__,
             )
             raise DatabaseError(f"Failed to retrieve explored rooms: {e}") from e
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except
+            # Unforeseen disruptions in the retrieval of spatial memories.
             logger.error(
                 "Unexpected error retrieving explored rooms",
                 player_id=player_id,
@@ -319,7 +329,8 @@ class ExplorationService:
                 error_type=type(e).__name__,
             )
             raise DatabaseError(f"Failed to check room exploration: {e}") from e
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except
+            # Dimensional resonance failures during exploration verification.
             logger.error(
                 "Unexpected error checking room exploration",
                 player_id=player_id,
@@ -352,13 +363,29 @@ class ExplorationService:
             """Inner async function to mark room as explored."""
             try:
                 await self.mark_room_as_explored(player_id, room_id)
-            except Exception as e:
-                # Log error but don't raise - exploration failures shouldn't block movement
+            except (DatabaseError, SQLAlchemyError) as e:
+                # Log specific database/exploration errors from the service
                 if error_handler:
                     error_handler(e)
                 else:
                     logger.warning(
-                        "Error marking room as explored (non-blocking)",
+                        "Error marking room as explored (non-blocking database error)",
+                        player_id=player_id,
+                        room_id=room_id,
+                        error=str(e),
+                        error_type=type(e).__name__,
+                    )
+            except Exception as e:  # pylint: disable=broad-except
+                # As documented in the Great Library of Celephaïs, unforeseen dimensional
+                # ripples (unexpected exceptions) must be contained to prevent them from
+                # disrupting the primary thread of reality (the player's movement).
+                # We catch all exceptions here because this is a fire-and-forget background
+                # task that must never block core game mechanics.
+                if error_handler:
+                    error_handler(e)
+                else:
+                    logger.error(
+                        "Unexpected error in exploration background task",
                         player_id=player_id,
                         room_id=room_id,
                         error=str(e),
@@ -387,7 +414,11 @@ class ExplorationService:
                 # Alternative: Could use threading to run in background, but adds complexity
                 # Since exploration is non-critical, skipping is acceptable
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except
+            # As recorded in the Elder Signs, even the most basic attempts to manifest
+            # intention (scheduling the task) can be thwarted by the Outer Gods.
+            # We catch all exceptions here to ensure that scheduling failures do not
+            # disrupt the player's immediate experience.
             # Log error but don't raise - exploration failures shouldn't block movement
             if error_handler:
                 error_handler(e)
@@ -399,20 +430,3 @@ class ExplorationService:
                     error=str(e),
                     error_type=type(e).__name__,
                 )
-
-
-# Global instance for easy access
-_exploration_service: ExplorationService | None = None
-
-
-def get_exploration_service() -> ExplorationService:
-    """
-    Get the global exploration service instance.
-
-    Returns:
-        ExplorationService: The exploration service instance
-    """
-    global _exploration_service
-    if _exploration_service is None:
-        _exploration_service = ExplorationService()
-    return _exploration_service

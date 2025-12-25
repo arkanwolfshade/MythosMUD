@@ -8,7 +8,7 @@ SQLAlchemy models.
 
 import pytest
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError, OperationalError
+from sqlalchemy.exc import DatabaseError, IntegrityError, SQLAlchemyError
 
 from server.models.npc import (
     NPCDefinition,
@@ -29,7 +29,7 @@ def test_client():
 class TestNPCDefinition:
     """Test the NPCDefinition model."""
 
-    def test_npc_definition_creation(self):
+    def test_npc_definition_creation(self) -> None:
         """Test creating an NPC definition with required fields using mocked persistence."""
         # Test creating an NPC definition object (without database persistence)
         npc_def = NPCDefinition(
@@ -53,7 +53,7 @@ class TestNPCDefinition:
         assert npc_def.npc_type == NPCDefinitionType.SHOPKEEPER
         assert npc_def.sub_zone_id == "arkham_northside"
         assert npc_def.room_id == "arkham_001"
-        assert npc_def.required_npc is True
+        assert bool(npc_def.required_npc) is True
         assert npc_def.max_population == 1
         assert npc_def.spawn_probability == 1.0
         assert npc_def.get_base_stats() == {"hp": 100, "mp": 50, "str": 12, "dex": 10}
@@ -61,7 +61,7 @@ class TestNPCDefinition:
         # Note: created_at and updated_at are set by the database, not the model constructor
         # This test verifies the object structure without database persistence
 
-    def test_npc_definition_default_values(self):
+    def test_npc_definition_default_values(self) -> None:
         """Test NPC definition with default values using mocked persistence."""
         # Test creating an NPC definition with minimal required fields
         # Note: Default values are set at the database level, not in the Python constructor
@@ -82,7 +82,7 @@ class TestNPCDefinition:
         # Note: required_npc, max_population, spawn_probability defaults are set by the database
         # This test verifies the object structure without database persistence
 
-    def test_npc_definition_type_validation(self):
+    def test_npc_definition_type_validation(self) -> None:
         """Test that only valid NPC types are accepted using mocked persistence."""
         # Test valid types by creating NPC definition objects
         valid_types = [
@@ -98,7 +98,7 @@ class TestNPCDefinition:
             assert npc_def.npc_type == npc_type
             assert npc_def.name == f"Test {npc_type.value}"
 
-    def test_npc_definition_unique_constraints(self):
+    def test_npc_definition_unique_constraints(self) -> None:
         """Test that NPC names must be unique within zones using mocked persistence."""
         # This test verifies the model structure supports unique constraints
         # The actual constraint enforcement is handled by the database schema
@@ -119,7 +119,7 @@ class TestNPCDefinition:
         assert npc1.sub_zone_id == npc2.sub_zone_id
         assert npc1.npc_type != npc2.npc_type
 
-    def test_npc_definition_json_fields(self):
+    def test_npc_definition_json_fields(self) -> None:
         """Test JSON field serialization and deserialization using mocked persistence."""
         complex_stats = {
             "hp": 150,
@@ -337,6 +337,7 @@ class TestNPCSpawnRule:
 
             # Verify complex conditions are stored correctly
             retrieved = await session.get(NPCSpawnRule, spawn_rule.id)
+            assert retrieved is not None
             result = retrieved.get_spawn_conditions()
 
             assert result == complex_conditions
@@ -348,12 +349,12 @@ class TestNPCSpawnRule:
 class TestNPCModelEnums:
     """Test the NPC model enums."""
 
-    def test_npc_definition_type_enum(self):
+    def test_npc_definition_type_enum(self) -> None:
         """Test NPCDefinitionType enum values."""
-        assert NPCDefinitionType.SHOPKEEPER == "shopkeeper"
-        assert NPCDefinitionType.QUEST_GIVER == "quest_giver"
-        assert NPCDefinitionType.PASSIVE_MOB == "passive_mob"
-        assert NPCDefinitionType.AGGRESSIVE_MOB == "aggressive_mob"
+        assert NPCDefinitionType.SHOPKEEPER.value == "shopkeeper"
+        assert NPCDefinitionType.QUEST_GIVER.value == "quest_giver"
+        assert NPCDefinitionType.PASSIVE_MOB.value == "passive_mob"
+        assert NPCDefinitionType.AGGRESSIVE_MOB.value == "aggressive_mob"
 
 
 class TestNPCDatabaseConstraints:
@@ -408,9 +409,7 @@ class TestNPCDatabaseConstraints:
 
             try:
                 await session.execute(text("DELETE FROM npc_relationships"))
-            except OperationalError:
-                # For mortal scholars: legacy schemas may omit optional relationship tables.
-                # For computational sentinels: tolerate absent tables so cross-environment runs remain stable.
+            except (DatabaseError, SQLAlchemyError):
                 await session.rollback()
             await session.execute(text("DELETE FROM npc_spawn_rules"))
             await session.execute(text("DELETE FROM npc_definitions"))

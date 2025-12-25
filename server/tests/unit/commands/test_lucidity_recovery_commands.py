@@ -59,13 +59,16 @@ async def _create_player(session: AsyncSession, *, player_name: str, room_id: st
         current_room_id=room_id,
     )
     session.add_all([user, player])
-    session.add(
-        PlayerLucidity(
-            player_id=player.player_id,
-            current_lcd=LCD,
-            current_tier="lucid" if LCD >= 70 else "uneasy",
-        )
+    await session.flush()  # Flush to get player_id available for foreign key
+    # Create PlayerLucidity - player_id is stored as string UUID in DB (UUID(as_uuid=False))
+    # The service queries using uuid.UUID object, and SQLAlchemy handles the string/UUID conversion
+    # Ensure we use the player_id string directly (it's already a string from uuid.uuid4())
+    player_lucidity = PlayerLucidity(
+        player_id=player.player_id,  # String UUID - SQLAlchemy will convert when querying
+        current_lcd=LCD,
+        current_tier="lucid" if LCD >= 70 else "uneasy",
     )
+    session.add(player_lucidity)
     await session.commit()
     return player
 
@@ -87,6 +90,7 @@ def _build_request(persistence) -> SimpleNamespace:
 
 
 @pytest.mark.asyncio
+@pytest.mark.serial  # Worker crash in parallel execution - likely due to database session isolation issues
 async def test_pray_command_success(session_factory, monkeypatch):
     async with session_factory() as session:
         player = await _create_player(

@@ -183,6 +183,7 @@ def init_database_schema(database_url: str, database_name: str, populate_seed: b
 
         # Extract NPC-related schema (from "-- NPC Definitions" to end of NPC section)
         import re
+
         npc_schema_match = re.search(
             r"-- NPC Definitions.*?(?=--|\Z)",
             schema_content,
@@ -230,6 +231,7 @@ def init_database_schema(database_url: str, database_name: str, populate_seed: b
     except Exception as e:
         print(f"[ERROR] Error initializing {database_name} database: {e}")
         import traceback
+
         traceback.print_exc()
         return False
 

@@ -9,6 +9,7 @@ ensures the ancient ones remain properly contained within their designated bound
 """
 
 import asyncio
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -22,7 +23,7 @@ from server.app.memory_lifespan_coordinator import (
 class TestPeriodicOrphanAuditorInitialization:
     """Test PeriodicOrphanAuditor initialization."""
 
-    def test_auditor_initialization_default_values(self):
+    def test_auditor_initialization_default_values(self) -> None:
         """Test auditor initializes with default values."""
         auditor = PeriodicOrphanAuditor()
 
@@ -34,7 +35,7 @@ class TestPeriodicOrphanAuditorInitialization:
         assert auditor.total_audit_cycles_completed == 0
         assert auditor.total_orphans_identified == 0
 
-    def test_auditor_initialization_custom_values(self):
+    def test_auditor_initialization_custom_values(self) -> None:
         """Test auditor initializes with custom values."""
         auditor = PeriodicOrphanAuditor(
             check_interval_seconds=30.0, memory_threshold_mb=256.0, auto_cleanup_enabled=False
@@ -64,9 +65,16 @@ class TestPeriodicAuditScheduling:
     async def test_schedule_periodic_auditing_success(self, mock_get_manager):
         """Test successful scheduling of periodic auditing."""
         mock_manager = MagicMock()
-        mock_task = asyncio.Future()
+        mock_task: asyncio.Future[Any] = asyncio.Future()
         mock_task.set_result(None)
-        mock_manager.create_tracked_task.return_value = mock_task
+
+        # create_tracked_task consumes the coroutine by creating a task from it
+        def create_task_side_effect(coro, *_args, **_kwargs):
+            # Close the coroutine to prevent "never awaited" warning
+            coro.close()
+            return mock_task
+
+        mock_manager.create_tracked_task.side_effect = create_task_side_effect
         mock_get_manager.return_value = mock_manager
 
         auditor = PeriodicOrphanAuditor(check_interval_seconds=1.0)
@@ -89,9 +97,16 @@ class TestPeriodicAuditScheduling:
     async def test_schedule_periodic_auditing_already_running(self, mock_get_manager):
         """Test scheduling fails when already running."""
         mock_manager = MagicMock()
-        mock_task = asyncio.Future()
+        mock_task: asyncio.Future[Any] = asyncio.Future()
         mock_task.set_result(None)
-        mock_manager.create_tracked_task.return_value = mock_task
+
+        # create_tracked_task consumes the coroutine by creating a task from it
+        def create_task_side_effect(coro, *_args, **_kwargs):
+            # Close the coroutine to prevent "never awaited" warning
+            coro.close()
+            return mock_task
+
+        mock_manager.create_tracked_task.side_effect = create_task_side_effect
         mock_get_manager.return_value = mock_manager
 
         auditor = PeriodicOrphanAuditor(check_interval_seconds=1.0)
@@ -124,7 +139,7 @@ class TestBackgroundAuditCycle:
     """Test background audit cycle execution."""
 
     @pytest.mark.asyncio
-    @patch.object(PeriodicOrphanAuditor, "_do_full_cleanup_audit")
+    @patch.object(PeriodicOrphanAuditor, "_do_full_cleanup_audit", new_callable=AsyncMock)
     async def test_background_audit_cycle_executes(self, mock_audit):
         """Test background audit cycle executes audits."""
         mock_audit.return_value = None
@@ -133,21 +148,34 @@ class TestBackgroundAuditCycle:
         # Create a task to run the cycle
         cycle_task = asyncio.create_task(auditor._background_audit_cycle())
 
-        # Let it run a couple cycles
-        await asyncio.sleep(0.3)
-
-        # Cancel the cycle
-        cycle_task.cancel()
         try:
-            await cycle_task
-        except asyncio.CancelledError:
-            pass
+            # Let it run a couple cycles
+            await asyncio.sleep(0.3)
 
-        # Should have called audit at least twice
-        assert mock_audit.call_count >= 2
+            # Should have called audit at least twice
+            assert mock_audit.call_count >= 2
+        finally:
+            # Cancel the cycle and ensure it's properly awaited
+            cycle_task.cancel()
+            try:
+                await asyncio.wait_for(cycle_task, timeout=0.1)
+            except (asyncio.CancelledError, TimeoutError):
+                pass
+            # Ensure task is done before test ends
+            if not cycle_task.done():
+                cycle_task.cancel()
+                try:
+                    await cycle_task
+                except asyncio.CancelledError:
+                    pass
+            # Force garbage collection to ensure no orphaned coroutines
+            import gc
+
+            gc.collect()
+            await asyncio.sleep(0.01)  # Give GC time to process
 
     @pytest.mark.asyncio
-    @patch.object(PeriodicOrphanAuditor, "_do_full_cleanup_audit")
+    @patch.object(PeriodicOrphanAuditor, "_do_full_cleanup_audit", new_callable=AsyncMock)
     async def test_background_audit_cycle_handles_cancellation(self, mock_audit):
         """Test background cycle handles cancellation gracefully."""
         mock_audit.return_value = None
@@ -171,7 +199,7 @@ class TestBackgroundAuditCycle:
         assert auditor.audit_running is False
 
     @pytest.mark.asyncio
-    @patch.object(PeriodicOrphanAuditor, "_do_full_cleanup_audit")
+    @patch.object(PeriodicOrphanAuditor, "_do_full_cleanup_audit", new_callable=AsyncMock)
     async def test_background_audit_cycle_handles_exceptions(self, mock_audit):
         """Test background cycle handles audit exceptions."""
         mock_audit.side_effect = Exception("Audit failed")
@@ -376,7 +404,7 @@ class TestForceSingleAuditCycle:
 class TestAuditorShutdown:
     """Test auditor shutdown functionality."""
 
-    def test_stop_audit_scheduler_when_not_running(self):
+    def test_stop_audit_scheduler_when_not_running(self) -> None:
         """Test stopping auditor when not running logs warning."""
         auditor = PeriodicOrphanAuditor()
 
@@ -393,7 +421,14 @@ class TestAuditorShutdown:
         mock_task = MagicMock()  # Use MagicMock instead of AsyncMock for task
         mock_task.done.return_value = False
         mock_task.cancel = MagicMock()
-        mock_manager.create_tracked_task.return_value = mock_task
+
+        # create_tracked_task consumes the coroutine by creating a task from it
+        def create_task_side_effect(coro, *_args, **_kwargs):
+            # Close the coroutine to prevent "never awaited" warning
+            coro.close()
+            return mock_task
+
+        mock_manager.create_tracked_task.side_effect = create_task_side_effect
         mock_get_manager.return_value = mock_manager
 
         auditor = PeriodicOrphanAuditor(check_interval_seconds=1.0)
@@ -415,7 +450,14 @@ class TestAuditorShutdown:
         mock_task = MagicMock()
         mock_task.done.return_value = False
         mock_task.cancel.side_effect = Exception("Cancel failed")
-        mock_manager.create_tracked_task.return_value = mock_task
+
+        # create_tracked_task consumes the coroutine by creating a task from it
+        def create_task_side_effect(coro, *_args, **_kwargs):
+            # Close the coroutine to prevent "never awaited" warning
+            coro.close()
+            return mock_task
+
+        mock_manager.create_tracked_task.side_effect = create_task_side_effect
         mock_get_manager.return_value = mock_manager
 
         auditor = PeriodicOrphanAuditor()
@@ -431,7 +473,7 @@ class TestAuditorShutdown:
 class TestFactoryFunction:
     """Test factory function for creating lifespan memory service."""
 
-    def test_create_lifespan_memory_service(self):
+    def test_create_lifespan_memory_service(self) -> None:
         """Test factory creates properly configured auditor."""
         service = create_lifespan_memory_service()
 
@@ -440,7 +482,7 @@ class TestFactoryFunction:
         assert service.auto_cleanup is True
         assert service.memory_monitor is not None
 
-    def test_create_lifespan_memory_service_returns_same_instance(self):
+    def test_create_lifespan_memory_service_returns_same_instance(self) -> None:
         """Test factory returns configured instance."""
         service1 = create_lifespan_memory_service()
         service2 = create_lifespan_memory_service()

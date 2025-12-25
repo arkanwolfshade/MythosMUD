@@ -181,6 +181,8 @@ class TestLogoutIntegration:
         assert "connections_closed" in result
 
     @pytest.mark.asyncio
+    @pytest.mark.serial
+    @pytest.mark.xdist_group("logout")
     async def test_logout_command_case_insensitive(self, mock_current_user, mock_request):
         """Test logout command is case insensitive."""
         import uuid
@@ -198,6 +200,9 @@ class TestLogoutIntegration:
         mock_connection_manager.force_disconnect_player = AsyncMock()
         mock_request.app.state.connection_manager = mock_connection_manager
 
+        # Ensure request.state exists and is empty for player caching
+        mock_request.state._command_player_cache = {}  # pylint: disable=protected-access
+
         # Test various case combinations
         test_cases = ["LOGOUT", "Logout", "lOgOuT", "logout"]
 
@@ -205,6 +210,8 @@ class TestLogoutIntegration:
             # Reset mocks
             mock_connection_manager.reset_mock()
             mock_request.app.state.persistence.reset_mock()
+            # Clear cache between iterations
+            mock_request.state._command_player_cache = {}  # pylint: disable=protected-access
 
             # Process logout command
             result = await process_command_unified(

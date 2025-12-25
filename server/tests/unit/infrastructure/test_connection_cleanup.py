@@ -6,12 +6,13 @@ in all shutdown scenarios, including normal shutdown and error conditions.
 """
 
 import asyncio
+import uuid
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
 from server.async_persistence import AsyncPersistenceLayer
-from server.database import DatabaseManager, close_db, get_database_manager
+from server.database import DatabaseManager, close_db
 
 
 class TestAsyncPersistenceCleanup:
@@ -74,7 +75,7 @@ class TestDatabaseManagerCleanup:
         DatabaseManager._instance = None
 
     @pytest.mark.asyncio
-    async def test_close_db_function(self):
+    async def test_close_db_function(self) -> None:
         """Test that close_db() function properly cleans up resources."""
         # Initialize database first
         from server.database import init_db
@@ -120,7 +121,7 @@ class TestDatabaseManagerCleanup:
         with patch.object(db_manager, "_initialize_database", side_effect=Exception("Init error")):
             try:
                 db_manager.get_engine()
-            except Exception:
+            except Exception:  # pylint: disable=broad-exception-caught
                 # Initialization failed, but no resources should be leaked
                 pass
 
@@ -134,15 +135,15 @@ class TestConnectionPoolErrorScenarios:
     """Test connection pool cleanup in error scenarios."""
 
     @pytest.mark.asyncio
-    async def test_cleanup_on_connection_error(self):
+    async def test_cleanup_on_connection_error(self) -> None:
         """Test cleanup when connection errors occur."""
         async_persistence = AsyncPersistenceLayer()
 
         # Simulate a connection error
         with patch("server.database.get_async_session", side_effect=Exception("Connection error")):
             try:
-                await async_persistence.get_player_by_id("test-id")
-            except Exception:
+                await async_persistence.get_player_by_id(uuid.uuid4())
+            except Exception:  # pylint: disable=broad-exception-caught
                 # Error occurred, but cleanup should still happen
                 pass
 
@@ -150,7 +151,7 @@ class TestConnectionPoolErrorScenarios:
         # (In real scenario, sessions are managed by context managers)
 
     @pytest.mark.asyncio
-    async def test_cleanup_on_transaction_error(self):
+    async def test_cleanup_on_transaction_error(self) -> None:
         """Test cleanup when transaction errors occur."""
         async_persistence = AsyncPersistenceLayer()
 
@@ -173,7 +174,7 @@ class TestConnectionPoolErrorScenarios:
         with patch("server.database.get_async_session", return_value=mock_session_generator()):
             try:
                 await async_persistence.save_player(mock_player)
-            except Exception:
+            except Exception:  # pylint: disable=broad-exception-caught
                 # Transaction error occurred - get_async_session() handles cleanup via try/finally
                 pass
 
@@ -181,7 +182,7 @@ class TestConnectionPoolErrorScenarios:
             # The async generator's finally block ensures cleanup happens
 
     @pytest.mark.asyncio
-    async def test_cleanup_on_timeout(self):
+    async def test_cleanup_on_timeout(self) -> None:
         """Test cleanup when operations timeout."""
 
         # Simulate a timeout scenario
@@ -204,10 +205,10 @@ class TestShutdownPathCleanup:
     """Test cleanup in various shutdown paths."""
 
     @pytest.mark.asyncio
-    async def test_normal_shutdown_cleanup(self):
+    async def test_normal_shutdown_cleanup(self) -> None:
         """Test cleanup during normal application shutdown."""
         # Simulate normal shutdown sequence
-        db_manager = get_database_manager()
+        db_manager = DatabaseManager.get_instance()
 
         # Initialize
         engine = db_manager.get_engine()
@@ -223,10 +224,10 @@ class TestShutdownPathCleanup:
         # Should complete without errors
 
     @pytest.mark.asyncio
-    async def test_emergency_shutdown_cleanup(self):
+    async def test_emergency_shutdown_cleanup(self) -> None:
         """Test cleanup during emergency shutdown (SIGTERM, etc.)."""
         # Simulate emergency shutdown where not all operations complete
-        db_manager = get_database_manager()
+        db_manager = DatabaseManager.get_instance()
 
         # Simulate interrupted operation (session_maker() returns a context manager, not an async generator)
         async def interrupted_operation():
@@ -244,9 +245,9 @@ class TestShutdownPathCleanup:
         await close_db()
 
     @pytest.mark.asyncio
-    async def test_cleanup_with_multiple_sessions(self):
+    async def test_cleanup_with_multiple_sessions(self) -> None:
         """Test cleanup when multiple sessions are active."""
-        db_manager = get_database_manager()
+        db_manager = DatabaseManager.get_instance()
         session_maker = db_manager.get_session_maker()
 
         # Create multiple sessions (session_maker() returns a context manager, not an async generator)
@@ -263,7 +264,7 @@ class TestShutdownPathCleanup:
         await close_db()
 
     @pytest.mark.asyncio
-    async def test_cleanup_on_application_error(self):
+    async def test_cleanup_on_application_error(self) -> None:
         """Test cleanup when application-level errors occur."""
         async_persistence = AsyncPersistenceLayer()
 

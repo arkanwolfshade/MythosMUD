@@ -18,7 +18,7 @@ from server.models.container import ContainerComponent, ContainerSourceType
 class TestContainerCOPPACompliance:
     """Test that container metadata does not contain personal information."""
 
-    def test_container_metadata_no_personal_data(self):
+    def test_container_metadata_no_personal_data(self) -> None:
         """Test that container metadata does not contain personal information."""
         # Create container with metadata
         container = ContainerComponent(
@@ -52,7 +52,7 @@ class TestContainerCOPPACompliance:
         for field in personal_data_fields:
             assert field not in metadata, f"Container metadata should not contain {field}"
 
-    def test_corpse_metadata_no_personal_data(self):
+    def test_corpse_metadata_no_personal_data(self) -> None:
         """Test that corpse container metadata does not contain personal information."""
         owner_id = uuid.uuid4()
 
@@ -93,7 +93,7 @@ class TestContainerCOPPACompliance:
         # Verify owner_id is UUID, not personal information
         assert isinstance(container.owner_id, uuid.UUID), "owner_id should be UUID, not personal information"
 
-    def test_wearable_container_metadata_no_personal_data(self):
+    def test_wearable_container_metadata_no_personal_data(self) -> None:
         """Test that wearable container metadata does not contain personal information."""
         entity_id = uuid.uuid4()
 
@@ -133,7 +133,7 @@ class TestContainerCOPPACompliance:
         # Verify entity_id is UUID, not personal information
         assert isinstance(container.entity_id, uuid.UUID), "entity_id should be UUID, not personal information"
 
-    def test_container_metadata_validation_rejects_personal_data(self):
+    def test_container_metadata_validation_rejects_personal_data(self) -> None:
         """Test that container metadata validation rejects personal data fields."""
         # Attempt to create container with personal data in metadata
         with pytest.raises(ValidationError):
@@ -148,7 +148,7 @@ class TestContainerCOPPACompliance:
                 },
             )
 
-    def test_container_items_no_personal_data(self):
+    def test_container_items_no_personal_data(self) -> None:
         """Test that container items do not contain personal information."""
         # Create container with items
         container = ContainerComponent(

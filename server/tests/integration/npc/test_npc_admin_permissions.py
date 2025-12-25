@@ -4,7 +4,11 @@ Tests for NPC admin command permission validation.
 This module tests permission validation for NPC admin commands.
 """
 
+import pytest
+
 from server.commands.npc_admin_commands import validate_npc_admin_permission
+
+pytestmark = pytest.mark.integration
 
 
 class TestNPCAdminPermissions:
@@ -20,12 +24,12 @@ class TestNPCAdminPermissions:
         result = validate_npc_admin_permission(mock_regular_player, "regular_player")
         assert result is False
 
-    def test_validate_npc_admin_permission_no_player(self):
+    def test_validate_npc_admin_permission_no_player(self) -> None:
         """Test that None player returns False."""
         result = validate_npc_admin_permission(None, "nonexistent_player")
         assert result is False
 
-    def test_validate_npc_admin_permission_no_admin_attr(self):
+    def test_validate_npc_admin_permission_no_admin_attr(self) -> None:
         """Test that player without is_admin attribute returns False."""
 
         class MockPlayer:

@@ -17,7 +17,10 @@ from server.logging.player_guid_formatter import PlayerGuidFormatter
 class TestPlayerGuidFormatter:
     """Test suite for PlayerGuidFormatter class."""
 
-    def setup_method(self):
+    # pylint: disable=attribute-defined-outside-init
+    # Attributes are defined in setup_method, which is the pytest pattern for test fixtures.
+    # This is intentional and follows pytest best practices.
+    def setup_method(self) -> None:
         """Set up test fixtures."""
         # Create mock player service
         self.mock_player_service = Mock()
@@ -33,7 +36,7 @@ class TestPlayerGuidFormatter:
             datefmt="%Y-%m-%d %H:%M:%S",
         )
 
-    def test_formatter_initialization(self):
+    def test_formatter_initialization(self) -> None:
         """Test PlayerGuidFormatter initialization."""
         assert self.formatter.player_service == self.mock_player_service
         assert hasattr(self.formatter, "uuid_pattern")
@@ -43,7 +46,7 @@ class TestPlayerGuidFormatter:
         test_uuid = "123e4567-e89b-12d3-a456-426614174000"
         assert self.formatter.uuid_pattern.search(test_uuid) is not None
 
-    def test_uuid_pattern_matching(self):
+    def test_uuid_pattern_matching(self) -> None:
         """Test UUID pattern matching with various formats."""
         # Valid UUIDs should match
         valid_uuids = [
@@ -58,7 +61,7 @@ class TestPlayerGuidFormatter:
             # Test case insensitive
             assert self.formatter.uuid_pattern.search(uuid_str.upper()) is not None
 
-    def test_uuid_pattern_non_matching(self):
+    def test_uuid_pattern_non_matching(self) -> None:
         """Test UUID pattern doesn't match invalid formats."""
         invalid_strings = [
             "123e4567-e89b-12d3-a456",  # Too short
@@ -72,7 +75,7 @@ class TestPlayerGuidFormatter:
         for invalid_str in invalid_strings:
             assert self.formatter.uuid_pattern.search(invalid_str) is None
 
-    def test_get_player_name_success(self):
+    def test_get_player_name_success(self) -> None:
         """Test successful player name lookup."""
         # Mock player data
         mock_player = Mock()
@@ -89,7 +92,7 @@ class TestPlayerGuidFormatter:
         assert result == "ProfessorWolfshade"
         mock_persistence.get_player.assert_called_once_with(guid)
 
-    def test_get_player_name_not_found(self):
+    def test_get_player_name_not_found(self) -> None:
         """Test player name lookup when player not found."""
         # Mock persistence layer
         mock_persistence = Mock()
@@ -102,7 +105,7 @@ class TestPlayerGuidFormatter:
         assert result is None
         mock_persistence.get_player.assert_called_once_with(guid)
 
-    def test_get_player_name_exception(self):
+    def test_get_player_name_exception(self) -> None:
         """Test player name lookup when exception occurs."""
         # Mock persistence layer
         mock_persistence = Mock()
@@ -114,7 +117,7 @@ class TestPlayerGuidFormatter:
 
         assert result is None
 
-    def test_log_lookup_failure(self):
+    def test_log_lookup_failure(self) -> None:
         """Test logging of lookup failures."""
         with patch("sys.stderr") as mock_stderr:
             guid = "123e4567-e89b-12d3-a456-426614174000"
@@ -126,7 +129,7 @@ class TestPlayerGuidFormatter:
             assert f"Failed to resolve player name for GUID: {guid}" in call_args
             assert "errors - WARNING" in call_args
 
-    def test_convert_player_guids_success(self):
+    def test_convert_player_guids_success(self) -> None:
         """Test successful GUID conversion in message."""
         # Mock player data
         mock_player = Mock()
@@ -139,7 +142,7 @@ class TestPlayerGuidFormatter:
         expected = "Player <ProfessorWolfshade>: 123e4567-e89b-12d3-a456-426614174000 connected"
         assert result == expected
 
-    def test_convert_player_guids_not_found(self):
+    def test_convert_player_guids_not_found(self) -> None:
         """Test GUID conversion when player not found."""
         self.mock_persistence.get_player.return_value = None
 
@@ -151,7 +154,7 @@ class TestPlayerGuidFormatter:
             assert result == expected
             mock_log_failure.assert_called_once_with("123e4567-e89b-12d3-a456-426614174000")
 
-    def test_convert_player_guids_multiple_guids(self):
+    def test_convert_player_guids_multiple_guids(self) -> None:
         """Test conversion of multiple GUIDs in same message."""
 
         # Mock different players for different GUIDs
@@ -174,7 +177,7 @@ class TestPlayerGuidFormatter:
         expected = "Players <ProfessorWolfshade>: 123e4567-e89b-12d3-a456-426614174000 and <TestPlayer>: 550e8400-e29b-41d4-a716-446655440000 are online"
         assert result == expected
 
-    def test_convert_player_guids_mixed_success_failure(self):
+    def test_convert_player_guids_mixed_success_failure(self) -> None:
         """Test conversion with some successful and some failed lookups."""
 
         def mock_get_player(guid):
@@ -196,14 +199,14 @@ class TestPlayerGuidFormatter:
             assert result == expected
             mock_log_failure.assert_called_once_with("550e8400-e29b-41d4-a716-446655440000")
 
-    def test_convert_player_guids_no_guids(self):
+    def test_convert_player_guids_no_guids(self) -> None:
         """Test message with no GUIDs remains unchanged."""
         message = "This is a regular log message with no GUIDs"
         result = self.formatter._convert_player_guids(message)
 
         assert result == message
 
-    def test_format_method_integration(self):
+    def test_format_method_integration(self) -> None:
         """Test the complete format method integration."""
         # Mock player data
         mock_player = Mock()
@@ -228,7 +231,7 @@ class TestPlayerGuidFormatter:
         assert "Player" in result
         assert "connected" in result
 
-    def test_format_method_no_guids(self):
+    def test_format_method_no_guids(self) -> None:
         """Test format method with message containing no GUIDs."""
         record = logging.LogRecord(
             name="test.logger",
@@ -247,7 +250,7 @@ class TestPlayerGuidFormatter:
         # Should not contain any GUID conversion markers
         assert "<" not in result or ">" not in result
 
-    def test_serial_guid_conversion(self):
+    def test_serial_guid_conversion(self) -> None:
         """Test GUID conversion in serial execution."""
         # Mock player data
         mock_player = Mock()
@@ -262,7 +265,8 @@ class TestPlayerGuidFormatter:
                 message = f"Player {guid} connected"
                 result = self.formatter._convert_player_guids(message)
                 results.append(result)
-            except Exception as e:
+            except (ValueError, KeyError, AttributeError, RuntimeError) as e:
+                # We catch expected functional errors to record failures for assertion.
                 errors.append(e)
 
         # Execute conversions serially instead of in parallel threads
@@ -280,7 +284,7 @@ class TestPlayerGuidFormatter:
         assert len(results) == 10
         assert all(result == expected for result in results)
 
-    def test_performance_with_large_message(self):
+    def test_performance_with_large_message(self) -> None:
         """Test performance with large message containing many GUIDs."""
         # Mock player data
         mock_player = Mock()
@@ -308,17 +312,17 @@ class TestPlayerGuidFormatter:
         actual_count = result.count("<ProfessorWolfshade>:")
         assert actual_count == expected_count
 
-    def test_edge_case_empty_message(self):
+    def test_edge_case_empty_message(self) -> None:
         """Test edge case with empty message."""
         result = self.formatter._convert_player_guids("")
         assert result == ""
 
-    def test_edge_case_none_message(self):
+    def test_edge_case_none_message(self) -> None:
         """Test edge case with None message."""
         result = self.formatter._convert_player_guids(None)
         assert result == ""
 
-    def test_case_insensitive_guid_matching(self):
+    def test_case_insensitive_guid_matching(self) -> None:
         """Test that GUID matching is case insensitive."""
         # Mock player data
         mock_player = Mock()
@@ -332,7 +336,7 @@ class TestPlayerGuidFormatter:
         expected = "Player <ProfessorWolfshade>: 123E4567-E89B-12D3-A456-426614174000 connected"
         assert result == expected
 
-    def test_recursive_error_logging_prevention(self):
+    def test_recursive_error_logging_prevention(self) -> None:
         """Test that error logging doesn't create infinite loops with formatted GUIDs."""
         # Mock player service to return None (player not found)
         self.mock_persistence.get_player.return_value = None
@@ -358,7 +362,7 @@ class TestPlayerGuidFormatter:
             # Ensure the error message doesn't contain the formatted GUID
             assert "<UNKNOWN>:" not in call_args
 
-    def test_context_aware_guid_processing(self):
+    def test_context_aware_guid_processing(self) -> None:
         """Test that the formatter only processes GUIDs in appropriate contexts."""
         # Mock player data
         mock_player = Mock()
@@ -385,7 +389,7 @@ class TestPlayerGuidFormatter:
         # Should call persistence layer for player GUIDs
         self.mock_persistence.get_player.assert_called_once_with("123e4567-e89b-12d3-a456-426614174000")
 
-    def test_context_detection_methods(self):
+    def test_context_detection_methods(self) -> None:
         """Test the context detection methods work correctly."""
         # Test non-player contexts
         assert not self.formatter._is_likely_player_id(

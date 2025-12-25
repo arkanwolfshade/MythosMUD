@@ -164,41 +164,48 @@ Automated tests use a separate test database:
 
 ### Baseline Test Players
 
-The test database is seeded with three baseline players:
+The test database is seeded with three baseline players. **MULTI-CHARACTER**: Each player can have multiple characters (up to 3 active characters per user).
 
 1. **ArkanWolfshade** (Admin)
    - Username: `ArkanWolfshade`
    - Password: `Cthulhu1`
    - Admin: Yes
-   - Starting Room: Main Foyer
+   - Characters: Each user can have up to 3 active characters
+   - Starting Room: Main Foyer (per character)
 
 2. **Ithaqua** (Regular Player)
    - Username: `Ithaqua`
    - Password: `Cthulhu1`
    - Admin: No
-   - Starting Room: Main Foyer
+   - Characters: Each user can have up to 3 active characters
+   - Starting Room: Main Foyer (per character)
 
 3. **TestAdmin** (Superuser)
    - Username: `TestAdmin`
    - Password: `Cthulhu1`
    - Admin: Yes, Superuser: Yes
-   - Starting Room: Main Foyer
+   - Characters: Each user can have up to 3 active characters
+   - Starting Room: Main Foyer (per character)
+
+**Note**: Character names are case-insensitive unique among active characters. Deleted character names can be reused.
 
 ### Database Lifecycle
 
 1. **Global Setup** (before all tests):
    - Backs up existing `unit_test_players.db` if present
    - Creates fresh database with schema
-   - Seeds baseline test players
+   - Seeds baseline test players (each with their initial character)
 
 2. **Between Tests**:
-   - Player positions reset to starting rooms
+   - Player positions reset to starting rooms (per character)
    - Test-created data cleaned up
-   - Baseline players preserved
+   - Baseline players and their characters preserved
+   - Soft-deleted characters remain in database but are hidden
 
 3. **Global Teardown** (after all tests):
    - Final cleanup performed
    - Test database remains for debugging
+   - All characters (active and deleted) are preserved for analysis
 
 ### Manual Database Management
 
@@ -210,6 +217,31 @@ npx ts-node tests/e2e/runtime/fixtures/database.ts
 # Remove test database completely
 rm data/players/unit_test_players.db
 ```
+
+## Multi-Character Testing
+
+**MULTI-CHARACTER SUPPORT**: The system now supports multiple characters per user (up to 3 active characters).
+
+### Character Selection Flow
+
+When logging in:
+
+1. If user has characters → Character Selection Screen appears
+2. If user has no characters → Character Creation Flow appears
+3. User selects character → Game connects with selected character
+
+**Single Character Login**: Users can only be logged in with one character at a time. If a user selects a different character while already logged in with another character, the existing connection will be automatically disconnected before the new character connects.
+
+### Testing Multi-Character Scenarios
+
+- **Character Selection**: Test that users with multiple characters see the selection screen
+- **Character Creation**: Test creating up to 3 characters per user
+- **Character Limit**: Test that 4th character creation is rejected
+- **Character Deletion**: Test soft deletion and name reuse
+- **Case-Insensitive Names**: Test that "Ithaqua" and "ithaqua" are mutually exclusive
+- **Character Switching**: Test selecting different characters in the same session
+
+See `e2e-tests/scenarios/scenario-XX-character-selection.md` and related multi-character scenarios for detailed test procedures.
 
 ## Adding New Automated Tests
 
@@ -262,7 +294,10 @@ test.describe('My Feature Error Handling', () => {
 
 Available fixtures:
 
-- `loginAsPlayer(page, username, password)` - Complete login flow
+- `loginAsPlayer(page, username, password, characterName?)` - Complete login flow with optional character selection
+  - **MULTI-CHARACTER**: If user has multiple characters, `characterName` parameter selects which character to use
+  - If `characterName` is not provided and user has multiple characters, selects the first available character
+  - If user has no characters, navigates to character creation flow
 - `logout(page)` - Logout flow
 - `sendCommand(page, command)` - Send game command
 - `waitForMessage(page, text, timeout?)` - Wait for specific message
@@ -270,6 +305,9 @@ Available fixtures:
 - `hasMessage(page, text)` - Check if message exists
 - `getPlayerLocation(page)` - Get current room
 - `clearMessages(page)` - Clear chat history
+- `selectCharacter(page, characterName)` - Select a character from character selection screen (MULTI-CHARACTER)
+- `createCharacter(page, characterName, professionId, stats)` - Create a new character (MULTI-CHARACTER)
+- `deleteCharacter(page, characterName)` - Soft delete a character (MULTI-CHARACTER)
 
 ### Step 4: Run Your Tests
 
@@ -432,7 +470,13 @@ On test failure, the following artifacts are uploaded:
 import { TEST_PLAYERS, ERROR_MESSAGES, SUCCESS_MESSAGES } from '../fixtures/test-data';
 
 // Login as test player
-await loginAsPlayer(page, TEST_PLAYERS.ARKAN_WOLFSHADE.username, TEST_PLAYERS.ARKAN_WOLFSHADE.password);
+// MULTI-CHARACTER: Login with optional character selection
+await loginAsPlayer(
+  page,
+  TEST_PLAYERS.ARKAN_WOLFSHADE.username,
+  TEST_PLAYERS.ARKAN_WOLFSHADE.password,
+  'CharacterName' // Optional: specify character name if user has multiple characters
+);
 
 // Verify error message
 await waitForMessage(page, ERROR_MESSAGES.LOCAL_EMPTY_MESSAGE);

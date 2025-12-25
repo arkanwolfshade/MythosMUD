@@ -1,11 +1,15 @@
 """Tests for player delirium respawn API endpoint."""
 
+from typing import TYPE_CHECKING
 from unittest.mock import AsyncMock, Mock
 
 import pytest
 
 from server.models.lucidity import PlayerLucidity
 from server.models.player import Player
+
+if TYPE_CHECKING:
+    from unittest.mock import MagicMock
 
 
 @pytest.fixture
@@ -54,7 +58,11 @@ class TestDeliriumRespawnEndpoint:
     """Test suite for /api/players/respawn-delirium endpoint."""
 
     @pytest.mark.asyncio
-    async def test_respawn_delirious_player_success(self, mock_delirious_player, mock_delirious_lucidity):
+    async def test_respawn_delirious_player_success(
+        self,
+        mock_delirious_player: "MagicMock",  # pylint: disable=unused-argument
+        mock_delirious_lucidity: "MagicMock",  # pylint: disable=unused-argument
+    ):
         """Test successful respawn of a delirious player."""
         # Mock services
         mock_player_service = Mock()
@@ -87,7 +95,11 @@ class TestDeliriumRespawnEndpoint:
         assert "Sanitarium" in result["message"]
 
     @pytest.mark.asyncio
-    async def test_respawn_lucid_player_forbidden(self, mock_lucid_player, mock_lucid_lucidity):
+    async def test_respawn_lucid_player_forbidden(
+        self,
+        mock_lucid_player: "MagicMock",  # pylint: disable=unused-argument
+        mock_lucid_lucidity: "MagicMock",
+    ):
         """Test that delirium respawn fails for lucid players."""
         # Simulate endpoint validation
         # Player with lucidity > -10 should not be able to respawn from delirium
@@ -95,7 +107,7 @@ class TestDeliriumRespawnEndpoint:
         # In the actual endpoint, this would raise HTTPException(403)
 
     @pytest.mark.asyncio
-    async def test_respawn_player_not_found(self):
+    async def test_respawn_player_not_found(self) -> None:
         """Test delirium respawn when player doesn't exist."""
         mock_player_service = Mock()
         mock_player_service.respawn_player_from_delirium_by_user_id = AsyncMock(
@@ -107,7 +119,7 @@ class TestDeliriumRespawnEndpoint:
             await mock_player_service.respawn_player_from_delirium_by_user_id("nonexistent-user", None, None, None)
 
     @pytest.mark.asyncio
-    async def test_respawn_returns_room_data(self, mock_delirious_player):
+    async def test_respawn_returns_room_data(self, mock_delirious_player):  # pylint: disable=unused-argument
         """Test that delirium respawn returns complete room data."""
         mock_persistence = Mock()
         mock_room = {
@@ -127,7 +139,11 @@ class TestDeliriumRespawnEndpoint:
         assert "exits" in room_data
 
     @pytest.mark.asyncio
-    async def test_respawn_updates_player_state(self, mock_delirious_player, mock_delirious_lucidity):
+    async def test_respawn_updates_player_state(
+        self,
+        mock_delirious_player: "MagicMock",
+        mock_delirious_lucidity: "MagicMock",
+    ):
         """Test that delirium respawn updates player state correctly."""
         # After delirium respawn, player should have:
         # - lucidity = 10

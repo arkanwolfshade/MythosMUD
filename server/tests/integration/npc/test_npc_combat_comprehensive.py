@@ -5,6 +5,7 @@ This module provides additional test coverage for the NPC combat integration
 module to improve coverage from 55% to 80%+.
 """
 
+from typing import Any
 from unittest.mock import Mock, patch
 from uuid import uuid4
 
@@ -14,11 +15,16 @@ from server.events.event_types import NPCAttacked
 from server.exceptions import DatabaseError
 from server.npc.combat_integration import NPCCombatIntegration
 
+pytestmark = pytest.mark.integration
+
 
 class TestNPCCombatIntegrationComprehensive:
     """Comprehensive test cases for NPC Combat Integration."""
 
-    def setup_method(self):
+    # pylint: disable=attribute-defined-outside-init
+    # Attributes are defined in setup_method, which is the pytest pattern for test fixtures.
+    # This is intentional and follows pytest best practices.
+    def setup_method(self) -> None:
         """Set up test environment."""
         self.event_bus = Mock()
         self.persistence = Mock()
@@ -31,7 +37,7 @@ class TestNPCCombatIntegrationComprehensive:
 
             self.integration = NPCCombatIntegration(self.event_bus, async_persistence=self.persistence)
 
-    def test_calculate_damage_physical_attack(self):
+    def test_calculate_damage_physical_attack(self) -> None:
         """Test damage calculation for physical attacks."""
         attacker_stats = {"strength": 75}
         target_stats = {"constitution": 50}
@@ -43,7 +49,7 @@ class TestNPCCombatIntegrationComprehensive:
         # Expected: 5 (base) + 12 (strength) - 0 (constitution) = 17
         assert damage == 17
 
-    def test_calculate_damage_high_strength_attacker(self):
+    def test_calculate_damage_high_strength_attacker(self) -> None:
         """Test damage calculation with high strength attacker."""
         attacker_stats = {"strength": 90}
         target_stats = {"constitution": 50}
@@ -55,7 +61,7 @@ class TestNPCCombatIntegrationComprehensive:
         # Expected: 3 (base) + 20 (strength) - 0 (constitution) = 23
         assert damage == 23
 
-    def test_calculate_damage_high_constitution_target(self):
+    def test_calculate_damage_high_constitution_target(self) -> None:
         """Test damage calculation against high constitution target."""
         attacker_stats = {"strength": 60}
         target_stats = {"constitution": 90}
@@ -67,7 +73,7 @@ class TestNPCCombatIntegrationComprehensive:
         # Expected: 8 (base) + 5 (strength) - 10 (constitution) = 3
         assert damage == 3
 
-    def test_calculate_damage_non_physical_attack(self):
+    def test_calculate_damage_non_physical_attack(self) -> None:
         """Test damage calculation for non-physical attacks."""
         attacker_stats = {"strength": 15}
         target_stats = {"constitution": 10}
@@ -79,7 +85,7 @@ class TestNPCCombatIntegrationComprehensive:
         # Expected: 5 (base) - 0 (constitution) = 5
         assert damage == 5
 
-    def test_calculate_damage_minimum_damage(self):
+    def test_calculate_damage_minimum_damage(self) -> None:
         """Test that damage is always at least 1."""
         attacker_stats = {"strength": 8}  # Low strength
         target_stats = {"constitution": 20}  # Very high constitution
@@ -90,7 +96,7 @@ class TestNPCCombatIntegrationComprehensive:
         # Should be minimum 1 damage
         assert damage == 1
 
-    def test_calculate_damage_exception_handling(self):
+    def test_calculate_damage_exception_handling(self) -> None:
         """Test damage calculation handles exceptions gracefully."""
         attacker_stats = {"strength": "invalid"}  # Invalid strength
         target_stats = {"constitution": 10}
@@ -102,7 +108,7 @@ class TestNPCCombatIntegrationComprehensive:
         assert damage == 1
 
     @pytest.mark.asyncio
-    async def test_apply_combat_effects_player_success(self):
+    async def test_apply_combat_effects_player_success(self) -> None:
         """Test applying combat effects to a player successfully."""
         target_id = str(uuid4())
         damage = 10
@@ -122,7 +128,7 @@ class TestNPCCombatIntegrationComprehensive:
         self.game_mechanics.damage_player.assert_called_once_with(target_id, damage, damage_type)
 
     @pytest.mark.asyncio
-    async def test_apply_combat_effects_player_with_Lucidity_loss(self):
+    async def test_apply_combat_effects_player_with_Lucidity_loss(self) -> None:
         """Test applying combat effects with lucidity loss for mental damage."""
         target_id = str(uuid4())
         damage = 10
@@ -145,7 +151,7 @@ class TestNPCCombatIntegrationComprehensive:
         self.game_mechanics.apply_lucidity_loss.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_apply_combat_effects_player_with_fear_gain(self):
+    async def test_apply_combat_effects_player_with_fear_gain(self) -> None:
         """Test applying combat effects with fear gain for occult damage."""
         target_id = str(uuid4())
         damage = 15
@@ -172,7 +178,7 @@ class TestNPCCombatIntegrationComprehensive:
         self.game_mechanics.apply_fear.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_apply_combat_effects_player_with_eldritch_damage(self):
+    async def test_apply_combat_effects_player_with_eldritch_damage(self) -> None:
         """Test applying combat effects with fear gain for eldritch damage."""
         target_id = str(uuid4())
         damage = 20
@@ -195,7 +201,7 @@ class TestNPCCombatIntegrationComprehensive:
         self.game_mechanics.apply_fear.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_apply_combat_effects_non_player(self):
+    async def test_apply_combat_effects_non_player(self) -> None:
         """Test applying combat effects to non-player entity."""
         target_id = str(uuid4())
         damage = 10
@@ -214,7 +220,7 @@ class TestNPCCombatIntegrationComprehensive:
             self.game_mechanics.damage_player.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_apply_combat_effects_exception_handling(self):
+    async def test_apply_combat_effects_exception_handling(self) -> None:
         """Test applying combat effects re-raises exceptions (CRITICAL FIX)."""
         target_id = str(uuid4())
         damage = 10
@@ -232,7 +238,7 @@ class TestNPCCombatIntegrationComprehensive:
             await self.integration.apply_combat_effects(target_id, damage, damage_type, source_id)
 
     @pytest.mark.asyncio
-    async def test_handle_npc_attack_with_player_target(self):
+    async def test_handle_npc_attack_with_player_target(self) -> None:
         """Test handling NPC attack on player target."""
         npc_id = str(uuid4())
         target_id = str(uuid4())
@@ -267,7 +273,7 @@ class TestNPCCombatIntegrationComprehensive:
         assert published_event.room_id == room_id
 
     @pytest.mark.asyncio
-    async def test_handle_npc_attack_with_npc_target(self):
+    async def test_handle_npc_attack_with_npc_target(self) -> None:
         """Test handling NPC attack on NPC target."""
         npc_id = str(uuid4())
         target_id = str(uuid4())
@@ -292,7 +298,7 @@ class TestNPCCombatIntegrationComprehensive:
         mock_apply.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_handle_npc_attack_with_default_stats(self):
+    async def test_handle_npc_attack_with_default_stats(self) -> None:
         """Test handling NPC attack with default stats."""
         npc_id = str(uuid4())
         target_id = str(uuid4())
@@ -316,7 +322,7 @@ class TestNPCCombatIntegrationComprehensive:
         mock_apply.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_handle_npc_attack_exception_handling(self):
+    async def test_handle_npc_attack_exception_handling(self) -> None:
         """Test handling NPC attack with exception."""
         npc_id = str(uuid4())
         target_id = str(uuid4())
@@ -334,7 +340,7 @@ class TestNPCCombatIntegrationComprehensive:
         assert result is False
 
     @pytest.mark.asyncio
-    async def test_handle_npc_death_with_player_killer(self):
+    async def test_handle_npc_death_with_player_killer(self) -> None:
         """Test handling NPC death with player killer."""
         npc_id = str(uuid4())
         room_id = "test_room_001"
@@ -364,7 +370,7 @@ class TestNPCCombatIntegrationComprehensive:
         # Note: NPCDied event is now published by CombatService via NATS, not by this integration service
 
     @pytest.mark.asyncio
-    async def test_handle_npc_death_without_killer(self):
+    async def test_handle_npc_death_without_killer(self) -> None:
         """Test handling NPC death without killer."""
         npc_id = str(uuid4())
         room_id = "test_room_001"
@@ -380,7 +386,7 @@ class TestNPCCombatIntegrationComprehensive:
         # Note: NPCDied event is now published by CombatService via NATS, not by this integration service
 
     @pytest.mark.asyncio
-    async def test_handle_npc_death_with_non_player_killer(self):
+    async def test_handle_npc_death_with_non_player_killer(self) -> None:
         """Test handling NPC death with non-player killer."""
         npc_id = str(uuid4())
         room_id = "test_room_001"
@@ -402,7 +408,7 @@ class TestNPCCombatIntegrationComprehensive:
         # Note: NPCDied event is now published by CombatService via NATS, not by this integration service
 
     @pytest.mark.asyncio
-    async def test_handle_npc_death_exception_handling(self):
+    async def test_handle_npc_death_exception_handling(self) -> None:
         """Test handling NPC death with exception."""
         npc_id = str(uuid4())
         room_id = "test_room_001"
@@ -420,7 +426,7 @@ class TestNPCCombatIntegrationComprehensive:
 
         assert result is False
 
-    def test_get_combat_stats_player(self):
+    def test_get_combat_stats_player(self) -> None:
         """Test getting combat stats for player."""
         entity_id = str(uuid4())
 
@@ -447,7 +453,7 @@ class TestNPCCombatIntegrationComprehensive:
         assert result["fear"] == 20
         assert result["corruption"] == 5
 
-    def test_get_combat_stats_npc_with_stats(self):
+    def test_get_combat_stats_npc_with_stats(self) -> None:
         """Test getting combat stats for NPC with provided stats."""
         entity_id = str(uuid4())
         npc_stats = {
@@ -464,7 +470,7 @@ class TestNPCCombatIntegrationComprehensive:
 
         assert result == npc_stats
 
-    def test_get_combat_stats_npc_without_stats(self):
+    def test_get_combat_stats_npc_without_stats(self) -> None:
         """Test getting combat stats for NPC without stats."""
         entity_id = str(uuid4())
 
@@ -475,7 +481,7 @@ class TestNPCCombatIntegrationComprehensive:
 
         assert result == {}
 
-    def test_get_combat_stats_database_error_with_npc_stats(self):
+    def test_get_combat_stats_database_error_with_npc_stats(self) -> None:
         """Test getting combat stats with database error but NPC stats provided."""
         entity_id = str(uuid4())
         npc_stats = {"hp": 50, "max_hp": 50}
@@ -487,7 +493,7 @@ class TestNPCCombatIntegrationComprehensive:
 
         assert result == npc_stats
 
-    def test_get_combat_stats_database_error_without_npc_stats(self):
+    def test_get_combat_stats_database_error_without_npc_stats(self) -> None:
         """Test getting combat stats with database error and no NPC stats."""
         entity_id = str(uuid4())
 
@@ -498,7 +504,7 @@ class TestNPCCombatIntegrationComprehensive:
 
         assert result == {}
 
-    def test_get_combat_stats_entity_not_found(self):
+    def test_get_combat_stats_entity_not_found(self) -> None:
         """Test getting combat stats for entity not found."""
         entity_id = str(uuid4())
 
@@ -513,7 +519,14 @@ class TestNPCCombatIntegrationComprehensive:
 class TestNPCCombatIntegrationEdgeCases:
     """Test edge cases for NPC Combat Integration."""
 
-    def setup_method(self):
+    # Type annotations for instance attributes (satisfies linter without requiring __init__)
+    # Attributes are initialized in setup_method() per pytest best practices
+    event_bus: Mock
+    persistence: Mock
+    game_mechanics: Mock
+    integration: NPCCombatIntegration
+
+    def setup_method(self) -> None:
         """Set up test environment."""
         self.event_bus = Mock()
         self.persistence = Mock()
@@ -526,8 +539,9 @@ class TestNPCCombatIntegrationEdgeCases:
 
             self.integration = NPCCombatIntegration(self.event_bus, async_persistence=self.persistence)
 
-    def test_calculate_damage_extreme_values(self):
+    def test_calculate_damage_extreme_values(self) -> None:
         """Test damage calculation with extreme values."""
+        assert self.integration is not None
         attacker_stats = {"strength": 1}  # Minimum strength
         target_stats = {"constitution": 20}  # Maximum constitution
         weapon_damage = 0  # No weapon damage
@@ -537,10 +551,11 @@ class TestNPCCombatIntegrationEdgeCases:
         # Should still return minimum 1 damage
         assert damage == 1
 
-    def test_calculate_damage_missing_stats(self):
+    def test_calculate_damage_missing_stats(self) -> None:
         """Test damage calculation with missing stats."""
-        attacker_stats = {}  # No stats
-        target_stats = {}  # No stats
+        assert self.integration is not None
+        attacker_stats: dict[str, Any] = {}  # No stats
+        target_stats: dict[str, Any] = {}  # No stats
         weapon_damage = 5
 
         damage = self.integration.calculate_damage(attacker_stats, target_stats, weapon_damage, "physical")
@@ -549,8 +564,11 @@ class TestNPCCombatIntegrationEdgeCases:
         assert damage == 5
 
     @pytest.mark.asyncio
-    async def test_apply_combat_effects_capped_Lucidity_loss(self):
+    async def test_apply_combat_effects_capped_Lucidity_loss(self) -> None:
         """Test that lucidity loss is capped appropriately."""
+        assert self.integration is not None
+        assert self.persistence is not None
+        assert self.game_mechanics is not None
         target_id = str(uuid4())
         damage = 50  # High damage
         damage_type = "mental"
@@ -571,8 +589,11 @@ class TestNPCCombatIntegrationEdgeCases:
         assert call_args[0][1] <= 10  # lucidity loss should be capped
 
     @pytest.mark.asyncio
-    async def test_apply_combat_effects_capped_fear_gain(self):
+    async def test_apply_combat_effects_capped_fear_gain(self) -> None:
         """Test that fear gain is capped appropriately."""
+        assert self.integration is not None
+        assert self.persistence is not None
+        assert self.game_mechanics is not None
         target_id = str(uuid4())
         damage = 50  # High damage
         damage_type = "occult"

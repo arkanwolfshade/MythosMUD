@@ -170,7 +170,8 @@
     "codacy.enabled": true,
     "files.readonlyInclude": {
       ".codacy/codacy.yaml": true
-    }
+    },
+    "makefile.makefilePath": "E:\\projects\\GitHub\\MythosMUD\\Makefile"
   },
   "extensions": {
     "recommendations": [

@@ -10,7 +10,7 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-from server.database import DatabaseManager, get_database_manager
+from server.database import DatabaseManager
 from server.realtime.event_handler import RealTimeEventHandler
 
 
@@ -52,7 +52,7 @@ class TestEventLoopChangeDetection:
             assert engine2 is not None, "Engine should be recreated after loop change"
 
     @pytest.mark.asyncio
-    async def test_no_running_loop_handling(self, db_manager):
+    async def test_no_running_loop_handling(self, db_manager):  # pylint: disable=unused-argument
         """Test that DatabaseManager handles no running loop gracefully."""
         # This test verifies the RuntimeError handling when no loop is running
         # The get_engine() method should handle this gracefully
@@ -93,7 +93,7 @@ class TestAsyncOperationScheduling:
         return handler
 
     @pytest.mark.asyncio
-    async def test_get_running_loop_usage(self, event_handler):
+    async def test_get_running_loop_usage(self, event_handler):  # pylint: disable=unused-argument
         """Test that get_running_loop() is used instead of deprecated get_event_loop()."""
         # Verify the code uses get_running_loop() by checking the actual implementation
         # This is more of a verification test than a functional test
@@ -132,7 +132,7 @@ class TestAsyncOperationScheduling:
         )
 
     @pytest.mark.asyncio
-    async def test_runtime_error_handling_no_loop(self):
+    async def test_runtime_error_handling_no_loop(self) -> None:
         """Test that RuntimeError is handled when no loop is running."""
         # This tests the error handling path when get_running_loop() raises RuntimeError
         with patch("asyncio.get_running_loop", side_effect=RuntimeError("No running loop")):
@@ -169,9 +169,9 @@ class TestConnectionPoolBehavior:
     """Test connection pool behavior with event loop changes."""
 
     @pytest.mark.asyncio
-    async def test_connection_pool_initialization(self):
+    async def test_connection_pool_initialization(self) -> None:
         """Test that connection pool is properly initialized."""
-        db_manager = get_database_manager()
+        db_manager = DatabaseManager.get_instance()
         engine = db_manager.get_engine()
 
         assert engine is not None
@@ -181,9 +181,9 @@ class TestConnectionPoolBehavior:
         assert isinstance(engine, AsyncEngine)
 
     @pytest.mark.asyncio
-    async def test_session_maker_consistency(self):
+    async def test_session_maker_consistency(self) -> None:
         """Test that session maker remains consistent across operations."""
-        db_manager = get_database_manager()
+        db_manager = DatabaseManager.get_instance()
         session_maker1 = db_manager.get_session_maker()
         session_maker2 = db_manager.get_session_maker()
 
@@ -191,9 +191,9 @@ class TestConnectionPoolBehavior:
         assert session_maker1 is session_maker2
 
     @pytest.mark.asyncio
-    async def test_multiple_engine_access(self):
+    async def test_multiple_engine_access(self) -> None:
         """Test that multiple calls to get_engine() return consistent results."""
-        db_manager = get_database_manager()
+        db_manager = DatabaseManager.get_instance()
         engine1 = db_manager.get_engine()
         engine2 = db_manager.get_engine()
 

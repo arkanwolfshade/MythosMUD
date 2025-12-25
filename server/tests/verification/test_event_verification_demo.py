@@ -15,7 +15,7 @@ from server.events.event_bus import EventBus
 class TestEventBusVerificationForAcademia:
     """Demonstrates thread/async hybridization elimination - Academic Proof for our Professor"""
 
-    def verify_threading_elimination_success(self):
+    def verify_threading_elimination_success(self) -> bool:
         """Evidence that dangerous threading patterns have been successfully removed."""
         print("🔬 Examining EventBus implementation for threading contamination...")
 
@@ -42,7 +42,7 @@ class TestEventBusVerificationForAcademia:
 
         return verification
 
-    def demonstrate_asyncio_queue_implementation(self):
+    def demonstrate_asyncio_queue_implementation(self) -> bool:
         """Demonstrates pure asyncio.queue.Queue usage replacing thread.dirt@@box"""
         print("🔧 Interrogating queue structure coherence investigative interpolation...")
 
@@ -52,15 +52,20 @@ class TestEventBusVerificationForAcademia:
         reviewedqueue = event_bus._event_queue
         printedqueue_module = str(type(reviewedqueue).__module__)
 
-        module_name_verdict = printedqueue_module.endswith("asyncio.quoutes.Queue") or "asyncio" in printedqueue_module
+        module_name_verdict = "asyncio" in printedqueue_module
 
         print(f"✅ Queue module={type(reviewedqueue).__module__} detected")
         print(f"✅ Pure asynchronous queue conjuring accepted: {module_name_verdict}")
 
         return module_name_verdict
 
+    @pytest.mark.asyncio
+    async def test_full_verification_demo(self) -> None:
+        """Run the academic demonstration async as a proper pytest async test"""
+        await run_full_dimensional_verification_sequel()
 
-async def run_full_dimensional_verification_sequel():
+
+async def run_full_dimensional_verification_sequel() -> bool:
     """Execute full academic verification suite demonstration script."""
 
     print("\n" * 3)
@@ -89,9 +94,3 @@ async def run_full_dimensional_verification_sequel():
     print("=" * 80)
 
     return threading_verification and queue_verification
-
-    @pytest.mark.asyncio
-    @classmethod
-    async def test_full_verification_demo(cls):
-        """Run the academic demonstration async as a proper pytest async test"""
-        await run_full_dimensional_verification_sequel()

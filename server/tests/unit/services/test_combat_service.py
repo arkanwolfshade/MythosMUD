@@ -436,7 +436,7 @@ class TestCombatServiceUnit:
         assert xp_reward == expected_xp
         mock_player_combat_service.calculate_xp_reward.assert_called_once_with(npc_id)
 
-    def test_combat_service_initialization(self):
+    def test_combat_service_initialization(self) -> None:
         """Test combat service initialization."""
         service = CombatService()
 

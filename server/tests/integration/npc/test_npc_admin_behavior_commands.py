@@ -14,6 +14,8 @@ from server.commands.npc_admin_commands import (
     handle_npc_stop_command,
 )
 
+pytestmark = pytest.mark.integration
+
 
 class TestNPCBehaviorCommands:
     """Test class for NPC behavior control commands."""

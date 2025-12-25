@@ -14,19 +14,22 @@ from server.realtime.rate_limiter import RateLimiter
 class TestMessageRateLimiting:
     """Test cases for message rate limiting."""
 
-    def setup_method(self):
+    rate_limiter: RateLimiter
+    connection_id: str
+
+    def setup_method(self) -> None:
         """Set up test fixtures."""
         self.rate_limiter = RateLimiter()
         self.connection_id = "test_connection_123"
 
-    def test_message_rate_limit_allows_under_limit(self):
+    def test_message_rate_limit_allows_under_limit(self) -> None:
         """Test message rate limit allows messages under the limit."""
         # Send messages up to the limit
         for _ in range(50):  # Well under 100 messages/minute limit
             result = self.rate_limiter.check_message_rate_limit(self.connection_id)
             assert result is True
 
-    def test_message_rate_limit_blocks_over_limit(self):
+    def test_message_rate_limit_blocks_over_limit(self) -> None:
         """Test message rate limit blocks messages over the limit."""
         # Send exactly the limit
         for _ in range(100):
@@ -37,7 +40,7 @@ class TestMessageRateLimiting:
         result = self.rate_limiter.check_message_rate_limit(self.connection_id)
         assert result is False
 
-    def test_message_rate_limit_resets_after_window(self):
+    def test_message_rate_limit_resets_after_window(self) -> None:
         """Test message rate limit resets after time window."""
         # Capture current time before patching
         base_time = time.time()
@@ -58,7 +61,7 @@ class TestMessageRateLimiting:
             result = self.rate_limiter.check_message_rate_limit(self.connection_id)
             assert result is True
 
-    def test_message_rate_limit_info(self):
+    def test_message_rate_limit_info(self) -> None:
         """Test getting message rate limit information."""
         # Send some messages
         for _ in range(50):
@@ -72,7 +75,7 @@ class TestMessageRateLimiting:
         assert info["max_attempts"] == 100
         assert info["current_attempts"] == 50
 
-    def test_message_rate_limit_info_after_limit_exceeded(self):
+    def test_message_rate_limit_info_after_limit_exceeded(self) -> None:
         """Test rate limit info when limit is exceeded."""
         # Send messages up to and over limit
         for _ in range(101):
@@ -83,7 +86,7 @@ class TestMessageRateLimiting:
         assert info["current_attempts"] >= 100
         assert info["max_attempts"] == 100
 
-    def test_remove_connection_message_data(self):
+    def test_remove_connection_message_data(self) -> None:
         """Test removing message rate limit data for a connection."""
         # Send some messages
         for _ in range(50):
@@ -100,7 +103,7 @@ class TestMessageRateLimiting:
         info = self.rate_limiter.get_message_rate_limit_info(self.connection_id)
         assert info["current_attempts"] == 0
 
-    def test_multiple_connections_independent_limits(self):
+    def test_multiple_connections_independent_limits(self) -> None:
         """Test that different connections have independent rate limits."""
         connection1 = "connection_1"
         connection2 = "connection_2"
@@ -115,7 +118,7 @@ class TestMessageRateLimiting:
         # connection2 should still be allowed
         assert self.rate_limiter.check_message_rate_limit(connection2) is True
 
-    def test_cleanup_old_message_attempts(self):
+    def test_cleanup_old_message_attempts(self) -> None:
         """Test cleanup of old message attempts."""
         # Capture current time before patching
         base_time = time.time()
@@ -135,7 +138,7 @@ class TestMessageRateLimiting:
             info = self.rate_limiter.get_message_rate_limit_info(self.connection_id)
             assert info["current_attempts"] == 0
 
-    def test_message_rate_limit_with_custom_limits(self):
+    def test_message_rate_limit_with_custom_limits(self) -> None:
         """Test message rate limiting with custom limits."""
         rate_limiter = RateLimiter(max_messages_per_minute=10, message_window=60)
 

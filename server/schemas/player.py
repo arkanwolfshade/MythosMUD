@@ -96,6 +96,25 @@ class PlayerRead(PlayerBase):
     )
 
 
+class CharacterInfo(BaseModel):
+    """Schema for character information in login response.
+
+    MULTI-CHARACTER: Lightweight character info for character selection screen.
+    """
+
+    __slots__ = ()  # Performance optimization
+
+    player_id: str = Field(..., description="Character ID (player_id)")
+    name: str = Field(..., description="Character name")
+    profession_id: int = Field(default=0, description="Profession ID")
+    profession_name: str | None = Field(default=None, description="Profession name")
+    level: int = Field(default=1, description="Character level")
+    created_at: datetime = Field(..., description="Character creation timestamp")
+    last_active: datetime = Field(..., description="Character last active timestamp")
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class PlayerUpdate(BaseModel):
     """Schema for updating player data."""
 

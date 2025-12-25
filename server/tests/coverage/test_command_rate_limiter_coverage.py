@@ -16,7 +16,7 @@ from server.middleware.command_rate_limiter import CommandRateLimiter
 class TestCommandRateLimiterStats:
     """Test command rate limiter statistics functions."""
 
-    def test_get_stats_no_activity(self):
+    def test_get_stats_no_activity(self) -> None:
         """Test get_stats with no player activity.
 
         AI: Tests get_stats function (lines 171-186) with empty state.
@@ -31,7 +31,7 @@ class TestCommandRateLimiterStats:
         assert stats["max_commands_per_window"] == 5
         assert stats["window_seconds"] == 1.0
 
-    def test_get_stats_with_active_players(self):
+    def test_get_stats_with_active_players(self) -> None:
         """Test get_stats with active players.
 
         AI: Tests stats collection with players having issued commands.
@@ -48,7 +48,7 @@ class TestCommandRateLimiterStats:
         assert stats["active_players"] == 2
         assert stats["total_recent_commands"] == 3
 
-    def test_get_stats_with_rate_limited_players(self):
+    def test_get_stats_with_rate_limited_players(self) -> None:
         """Test get_stats with rate-limited players.
 
         AI: Tests detection of rate-limited players in stats.
@@ -68,7 +68,7 @@ class TestCommandRateLimiterStats:
         assert stats["rate_limited_players"] == 1  # Only player1 is at limit
         assert stats["total_recent_commands"] == 4
 
-    def test_cleanup_inactive_players_no_activity(self):
+    def test_cleanup_inactive_players_no_activity(self) -> None:
         """Test cleanup with no inactive players.
 
         AI: Tests cleanup_inactive_players function (lines 208-223) with no data.
@@ -79,7 +79,7 @@ class TestCommandRateLimiterStats:
 
         assert cleaned == 0
 
-    def test_cleanup_inactive_players_with_active_players(self):
+    def test_cleanup_inactive_players_with_active_players(self) -> None:
         """Test cleanup doesn't remove active players.
 
         AI: Tests that recent player activity prevents cleanup.
@@ -94,7 +94,7 @@ class TestCommandRateLimiterStats:
         assert cleaned == 0
         assert "active_player" in limiter.player_timestamps
 
-    def test_cleanup_inactive_players_removes_old_data(self):
+    def test_cleanup_inactive_players_removes_old_data(self) -> None:
         """Test cleanup removes old player data.
 
         AI: Tests removal of truly inactive players.
@@ -114,7 +114,7 @@ class TestCommandRateLimiterStats:
         assert "old_player" not in limiter.player_timestamps
         assert "active_player" in limiter.player_timestamps
 
-    def test_cleanup_inactive_players_with_empty_lists(self):
+    def test_cleanup_inactive_players_with_empty_lists(self) -> None:
         """Test cleanup removes players with empty timestamp lists.
 
         AI: Tests cleanup of players with empty timestamp lists.
@@ -129,7 +129,7 @@ class TestCommandRateLimiterStats:
         assert cleaned == 1
         assert "empty_player" not in limiter.player_timestamps
 
-    def test_get_wait_time_no_timestamps(self):
+    def test_get_wait_time_no_timestamps(self) -> None:
         """Test get_wait_time with no timestamps.
 
         AI: Tests early return in get_wait_time (line 104).
@@ -140,7 +140,7 @@ class TestCommandRateLimiterStats:
 
         assert wait_time == 0.0
 
-    def test_get_wait_time_with_available_commands(self):
+    def test_get_wait_time_with_available_commands(self) -> None:
         """Test get_wait_time when commands are available.
 
         AI: Tests wait time calculation when player can issue commands.
@@ -155,7 +155,7 @@ class TestCommandRateLimiterStats:
 
         assert wait_time >= 0.0
 
-    def test_get_stats_with_mixed_activity(self):
+    def test_get_stats_with_mixed_activity(self) -> None:
         """Test get_stats with varied player activity.
 
         AI: Tests comprehensive stats with diverse player states.
@@ -177,7 +177,7 @@ class TestCommandRateLimiterStats:
         assert stats["rate_limited_players"] == 1
         assert stats["total_recent_commands"] == 3
 
-    def test_cleanup_inactive_players_custom_threshold(self):
+    def test_cleanup_inactive_players_custom_threshold(self) -> None:
         """Test cleanup with custom inactivity threshold.
 
         AI: Tests cleanup with different threshold values.

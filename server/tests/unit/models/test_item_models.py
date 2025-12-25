@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from sqlalchemy import create_engine, select
+from sqlalchemy import Engine, create_engine, select
 from sqlalchemy.orm import Session
 
 from server.models.base import Base
 from server.models.item import ItemComponentState, ItemInstance, ItemPrototype
 
 
-def build_engine():
+def build_engine() -> Engine:
     import os
 
     database_url = os.getenv("DATABASE_URL")
@@ -20,7 +20,7 @@ def build_engine():
     return engine
 
 
-def test_item_models_persist_and_cascade():
+def test_item_models_persist_and_cascade() -> None:
     engine = build_engine()
     Base.metadata.create_all(engine)
 

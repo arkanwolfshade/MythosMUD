@@ -7,7 +7,7 @@ through event publishing, processing, and broadcasting.
 
 import asyncio
 import json
-from unittest.mock import AsyncMock, Mock
+from unittest.mock import AsyncMock, MagicMock, Mock
 from uuid import uuid4
 
 import pytest
@@ -17,6 +17,8 @@ from server.events.event_types import PlayerEnteredRoom, PlayerLeftRoom
 from server.models.room import Room
 from server.realtime.event_handler import RealTimeEventHandler
 
+pytestmark = pytest.mark.integration
+
 
 class TestSimpleIntegration:
     """Test simple integration scenarios."""
@@ -24,8 +26,11 @@ class TestSimpleIntegration:
     @pytest.fixture
     def mock_connection_manager(self):
         """Create a mock connection manager with realistic behavior."""
-        cm = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        cm = MagicMock()
         cm._get_player = AsyncMock()
+        cm.get_player = AsyncMock()
         cm.persistence = Mock()
         cm.persistence.get_room = AsyncMock()
         # async_persistence.get_room_by_id is a sync method (uses cache)
@@ -35,6 +40,8 @@ class TestSimpleIntegration:
         cm.subscribe_to_room = AsyncMock()
         cm.unsubscribe_from_room = AsyncMock()
         cm.send_personal_message = AsyncMock()
+        # convert_room_players_uuids_to_names is async and returns a dict (not AsyncMock)
+        cm.convert_room_players_uuids_to_names = AsyncMock(return_value={})
         return cm
 
     @pytest.mark.asyncio
@@ -314,6 +321,10 @@ class TestSimpleIntegration:
         mock_connection_manager.async_persistence.get_room_by_id = Mock(return_value=mock_room)
         # Mock _canonical_room_id to return the room_id directly (not a coroutine)
         mock_connection_manager._canonical_room_id = Mock(return_value="test_room_001")
+        # convert_room_players_uuids_to_names is async and returns a dict (not AsyncMock)
+        mock_connection_manager.convert_room_players_uuids_to_names = AsyncMock(
+            return_value={"id": "test_room_001", "name": "Test Room"}
+        )
 
         # Create room with event bus
         room_data = {"id": "test_room_001", "name": "Test Room"}
@@ -355,7 +366,7 @@ This test suite focuses on the core event publishing mechanism without complex a
 class TestSimpleConnectionEvents:
     """Simple tests for connection event firing."""
 
-    def test_room_player_entered_publishes_event(self):
+    def test_room_player_entered_publishes_event(self) -> None:
         """Test that Room.player_entered publishes PlayerEnteredRoom event."""
         # Create mock event bus
         mock_event_bus = Mock()
@@ -378,7 +389,7 @@ class TestSimpleConnectionEvents:
         assert published_event.player_id == str(player_id)
         assert published_event.room_id == "test_room_001"
 
-    def test_room_player_left_publishes_event(self):
+    def test_room_player_left_publishes_event(self) -> None:
         """Test that Room.player_left publishes PlayerLeftRoom event."""
         # Create mock event bus
         mock_event_bus = Mock()
@@ -405,7 +416,7 @@ class TestSimpleConnectionEvents:
         assert published_event.player_id == str(player_id)
         assert published_event.room_id == "test_room_001"
 
-    def test_room_without_event_bus_handles_gracefully(self):
+    def test_room_without_event_bus_handles_gracefully(self) -> None:
         """Test that Room works without event bus (should not crash)."""
         # Use UUID for player_id
         player_id = uuid4()
@@ -420,7 +431,7 @@ class TestSimpleConnectionEvents:
         # Verify player was added and removed
         assert not room.has_player(str(player_id))
 
-    def test_event_types_have_correct_attributes(self):
+    def test_event_types_have_correct_attributes(self) -> None:
         """Test that event types have the correct attributes."""
         # Use UUID for player_id
         player_id = uuid4()

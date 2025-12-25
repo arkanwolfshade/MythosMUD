@@ -21,7 +21,7 @@ from server.models.health import (
 class TestHealthModels:
     """Test cases for health models."""
 
-    def test_health_response_model_creation(self):
+    def test_health_response_model_creation(self) -> None:
         """Test that HealthResponse model can be created with valid data."""
         # Create component data
         server_component = ServerComponent(
@@ -66,7 +66,7 @@ class TestHealthModels:
         assert health_response.version == "0.1.0"
         assert health_response.alerts == []
 
-    def test_health_response_model_serialization(self):
+    def test_health_response_model_serialization(self) -> None:
         """Test that HealthResponse model serializes correctly."""
         # Create minimal valid health response
         server_component = ServerComponent(
@@ -121,7 +121,7 @@ class TestHealthModels:
         assert data["version"] == "0.1.0"
         assert data["alerts"] == []
 
-    def test_health_response_model_json_schema(self):
+    def test_health_response_model_json_schema(self) -> None:
         """Test that HealthResponse model has proper JSON schema configuration."""
         # Verify that the model has json_schema_extra configuration
         schema = HealthResponse.model_json_schema()
@@ -145,7 +145,7 @@ class TestHealthModels:
         assert example["version"] == "0.1.0"
         assert example["alerts"] == []
 
-    def test_health_response_model_validation(self):
+    def test_health_response_model_validation(self) -> None:
         """Test that HealthResponse model validates input correctly."""
         # Test with invalid status
         with pytest.raises(PydanticValidationError):
@@ -175,7 +175,7 @@ class TestHealthModels:
                 ),
             )
 
-    def test_health_response_model_default_alerts(self):
+    def test_health_response_model_default_alerts(self) -> None:
         """Test that HealthResponse model has default empty alerts list."""
         # Create health response without specifying alerts
         server_component = ServerComponent(

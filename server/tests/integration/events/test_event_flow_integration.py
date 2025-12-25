@@ -7,7 +7,7 @@ through event publishing, processing, and broadcasting to other clients.
 
 import asyncio
 import json
-from unittest.mock import AsyncMock, Mock
+from unittest.mock import AsyncMock, MagicMock, Mock
 from uuid import uuid4
 
 import pytest
@@ -17,6 +17,8 @@ from server.events.event_types import PlayerEnteredRoom
 from server.models.room import Room
 from server.realtime.event_handler import RealTimeEventHandler
 
+pytestmark = pytest.mark.integration
+
 
 class TestCompleteEventFlowIntegration:
     """Test complete event flow integration."""
@@ -24,7 +26,9 @@ class TestCompleteEventFlowIntegration:
     @pytest.fixture
     def mock_connection_manager(self):
         """Create a mock connection manager with realistic behavior."""
-        cm = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        cm = MagicMock()
         cm.get_player = AsyncMock()
         cm._get_player = AsyncMock()  # Keep for backward compatibility
         cm.persistence = Mock()
@@ -395,18 +399,19 @@ class TestRealEventFlow:
         return EventBus()
 
     @pytest.fixture
-    def event_loop_setup(self, isolated_event_loop, event_bus):
+    def event_loop_setup(self, event_loop, event_bus):
         """Set up a proper event loop that EventBus can use."""
         # Use standardized fixtures instead of manual loop creation
-        loop = isolated_event_loop
-        event_bus = event_bus
+        loop = event_loop
 
         return loop, event_bus
 
     @pytest.fixture
     def mock_connection_manager(self):
         """Create a mock connection manager."""
-        cm = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        cm = MagicMock()
         cm.get_player = AsyncMock()
         cm._get_player = AsyncMock()  # Keep for backward compatibility
         cm.persistence = Mock()
@@ -418,12 +423,14 @@ class TestRealEventFlow:
         cm.subscribe_to_room = AsyncMock()
         cm.unsubscribe_from_room = AsyncMock()
         cm.send_personal_message = AsyncMock()
+        # convert_room_players_uuids_to_names is async and returns a dict
+        cm.convert_room_players_uuids_to_names = AsyncMock(return_value={})
         return cm
 
     @pytest.mark.asyncio
     async def test_real_event_flow_with_proper_loop(self, event_loop_setup, mock_connection_manager):
         """Test that events are properly processed with a real event loop."""
-        loop, event_bus = event_loop_setup
+        _, event_bus = event_loop_setup
 
         # Create event handler with connection manager
         event_handler = RealTimeEventHandler(event_bus, connection_manager=mock_connection_manager)
@@ -459,6 +466,10 @@ class TestRealEventFlow:
         if not hasattr(mock_connection_manager, "async_persistence"):
             mock_connection_manager.async_persistence = Mock()
         mock_connection_manager.async_persistence.get_room_by_id = Mock(return_value=mock_room)
+        # convert_room_players_uuids_to_names is async and returns a dict (not AsyncMock)
+        mock_connection_manager.convert_room_players_uuids_to_names = AsyncMock(
+            return_value={"id": "test_room_001", "name": "Test Room"}
+        )
 
         # Create event with proper UUID
         event = PlayerEnteredRoom(player_id=str(test_player_id), room_id="test_room_001")
@@ -483,7 +494,7 @@ class TestRealEventFlow:
     @pytest.mark.asyncio
     async def test_websocket_connection_flow_simulation(self, event_loop_setup, mock_connection_manager):
         """Simulate the actual WebSocket connection flow."""
-        loop, event_bus = event_loop_setup
+        _, event_bus = event_loop_setup
 
         # Create event handler with connection manager
         event_handler = RealTimeEventHandler(event_bus, connection_manager=mock_connection_manager)
@@ -511,6 +522,10 @@ class TestRealEventFlow:
         if not hasattr(mock_connection_manager, "async_persistence"):
             mock_connection_manager.async_persistence = Mock()
         mock_connection_manager.async_persistence.get_room_by_id = Mock(return_value=room)
+        # convert_room_players_uuids_to_names is async and returns a dict (not AsyncMock)
+        mock_connection_manager.convert_room_players_uuids_to_names = AsyncMock(
+            return_value={"id": "test_room_001", "name": "Test Room"}
+        )
 
         # Mock NPC instance service to avoid initialization errors
         import server.services.npc_instance_service as npc_service_module
@@ -551,7 +566,7 @@ class TestRealEventFlow:
         assert message["event_type"] == "player_left"
 
     @pytest.mark.asyncio
-    async def test_event_bus_loop_detection(self):
+    async def test_event_bus_loop_detection(self) -> None:
         """Test that EventBus properly detects running event loops."""
         # Test with no running loop
         bus1 = EventBus()
@@ -562,6 +577,7 @@ class TestRealEventFlow:
         async def _test_with_running_loop():
             bus3 = EventBus()
             bus3.set_main_loop(asyncio.get_running_loop())
+            assert bus3._main_loop is not None
             assert bus3._main_loop.is_running() is True
             return bus3
 

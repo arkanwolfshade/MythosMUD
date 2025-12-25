@@ -4,6 +4,7 @@ Tests for read command handler.
 This module tests the /read command for reading spellbooks and learning spells.
 """
 
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 from uuid import uuid4
 
@@ -16,7 +17,7 @@ class TestReadCommand:
     """Test handle_read_command function."""
 
     @pytest.mark.asyncio
-    async def test_read_command_no_request(self):
+    async def test_read_command_no_request(self) -> None:
         """Test read command when request is None."""
         command_data = {"args": ["spellbook"]}
         current_user = {"username": "testuser"}
@@ -25,7 +26,7 @@ class TestReadCommand:
         assert "System error: application not available" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_read_command_no_app(self):
+    async def test_read_command_no_app(self) -> None:
         """Test read command when app is not available."""
         command_data = {"args": ["spellbook"]}
         current_user = {"username": "testuser"}
@@ -37,7 +38,7 @@ class TestReadCommand:
         assert "System error: application not available" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_read_command_no_persistence(self):
+    async def test_read_command_no_persistence(self) -> None:
         """Test read command when persistence is not available."""
         command_data = {"args": ["spellbook"]}
         current_user = {"username": "testuser"}
@@ -52,7 +53,7 @@ class TestReadCommand:
         assert "System error: persistence layer not available" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_read_command_no_spell_learning_service(self):
+    async def test_read_command_no_spell_learning_service(self) -> None:
         """Test read command when spell learning service is not available."""
         command_data = {"args": ["spellbook"]}
         current_user = {"username": "testuser"}
@@ -69,15 +70,17 @@ class TestReadCommand:
             assert "Spell learning system not initialized" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_read_command_player_not_found(self):
+    async def test_read_command_player_not_found(self) -> None:
         """Test read command when player is not found."""
         command_data = {"args": ["spellbook"]}
         current_user = {"username": "testuser"}
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
-        mock_persistence.get_player_by_name.return_value = None
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
+        mock_persistence.get_player_by_name = AsyncMock(return_value=None)
         mock_app.state.persistence = mock_persistence
         mock_app.state.spell_learning_service = AsyncMock()
         mock_request.app = mock_app
@@ -88,16 +91,18 @@ class TestReadCommand:
             assert "not recognized by the cosmic forces" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_read_command_no_args(self):
+    async def test_read_command_no_args(self) -> None:
         """Test read command with no arguments."""
-        command_data = {"args": []}
+        command_data: dict[str, Any] = {"args": []}
         current_user = {"username": "testuser"}
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
         mock_app.state.spell_learning_service = AsyncMock()
         mock_request.app = mock_app
@@ -108,17 +113,19 @@ class TestReadCommand:
             assert "Usage: /read" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_read_command_item_not_found(self):
+    async def test_read_command_item_not_found(self) -> None:
         """Test read command when item is not found."""
         command_data = {"args": ["nonexistent"]}
         current_user = {"username": "testuser"}
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.inventory = "[]"
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
         mock_app.state.spell_learning_service = AsyncMock()
         mock_request.app = mock_app
@@ -129,17 +136,19 @@ class TestReadCommand:
             assert "not found in your inventory" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_read_command_item_not_spellbook(self):
+    async def test_read_command_item_not_spellbook(self) -> None:
         """Test read command when item is not a spellbook."""
         command_data = {"args": ["regular_item"]}
         current_user = {"username": "testuser"}
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.inventory = '[{"name": "regular_item", "metadata": {}}]'
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
         mock_app.state.spell_learning_service = AsyncMock()
         mock_request.app = mock_app
@@ -150,17 +159,19 @@ class TestReadCommand:
             assert "is not a spellbook" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_read_command_empty_spellbook(self):
+    async def test_read_command_empty_spellbook(self) -> None:
         """Test read command when spellbook is empty."""
         command_data = {"args": ["empty_book"]}
         current_user = {"username": "testuser"}
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.inventory = '[{"name": "empty_book", "metadata": {"spellbook": true, "spells": []}}]'
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
         mock_app.state.spell_learning_service = AsyncMock()
         mock_request.app = mock_app
@@ -171,20 +182,22 @@ class TestReadCommand:
             assert "empty or corrupted" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_read_command_specific_spell_success(self):
+    async def test_read_command_specific_spell_success(self) -> None:
         """Test read command learning a specific spell."""
         command_data = {"args": ["spellbook", "Fireball"]}
         current_user = {"username": "testuser"}
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.player_id = uuid4()
         mock_player.inventory = (
             '[{"name": "spellbook", "id": "book-123", "metadata": {"spellbook": true, "spells": ["spell-1"]}}]'
         )
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
 
         mock_spell_learning_service = AsyncMock()
@@ -207,20 +220,22 @@ class TestReadCommand:
             mock_spell_learning_service.learn_spell.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_read_command_specific_spell_with_corruption(self):
+    async def test_read_command_specific_spell_with_corruption(self) -> None:
         """Test read command learning a spell with corruption."""
         command_data = {"args": ["spellbook", "DarkSpell"]}
         current_user = {"username": "testuser"}
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.player_id = uuid4()
         mock_player.inventory = (
             '[{"name": "spellbook", "id": "book-123", "metadata": {"spellbook": true, "spells": ["spell-1"]}}]'
         )
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
 
         mock_spell_learning_service = AsyncMock()
@@ -247,17 +262,19 @@ class TestReadCommand:
             assert "corruption" in result["result"].lower()
 
     @pytest.mark.asyncio
-    async def test_read_command_specific_spell_not_in_book(self):
+    async def test_read_command_specific_spell_not_in_book(self) -> None:
         """Test read command when specified spell is not in the book."""
         command_data = {"args": ["spellbook", "WrongSpell"]}
         current_user = {"username": "testuser"}
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.inventory = '[{"name": "spellbook", "metadata": {"spellbook": true, "spells": ["spell-1"]}}]'
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
 
         mock_spell_registry = MagicMock()
@@ -276,17 +293,19 @@ class TestReadCommand:
             assert "not in this spellbook" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_read_command_specific_spell_not_found_in_registry(self):
+    async def test_read_command_specific_spell_not_found_in_registry(self) -> None:
         """Test read command when spell is not found in registry."""
         command_data = {"args": ["spellbook", "UnknownSpell"]}
         current_user = {"username": "testuser"}
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.inventory = '[{"name": "spellbook", "metadata": {"spellbook": true, "spells": ["spell-1"]}}]'
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
 
         mock_spell_registry = MagicMock()
@@ -302,17 +321,19 @@ class TestReadCommand:
             assert "not found in the spellbook" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_read_command_specific_spell_no_registry(self):
+    async def test_read_command_specific_spell_no_registry(self) -> None:
         """Test read command when spell registry is not available."""
         command_data = {"args": ["spellbook", "Fireball"]}
         current_user = {"username": "testuser"}
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.inventory = '[{"name": "spellbook", "metadata": {"spellbook": true, "spells": ["spell-1"]}}]'
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
         delattr(mock_app.state, "spell_registry")
         mock_app.state.spell_learning_service = AsyncMock()
@@ -325,20 +346,22 @@ class TestReadCommand:
             assert "Spell registry not available" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_read_command_single_spell_auto_learn(self):
+    async def test_read_command_single_spell_auto_learn(self) -> None:
         """Test read command auto-learning when book has only one spell."""
         command_data = {"args": ["spellbook"]}
         current_user = {"username": "testuser"}
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.player_id = uuid4()
         mock_player.inventory = (
             '[{"name": "spellbook", "id": "book-123", "metadata": {"spellbook": true, "spells": ["spell-1"]}}]'
         )
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
 
         mock_spell_learning_service = AsyncMock()
@@ -360,20 +383,22 @@ class TestReadCommand:
             mock_spell_learning_service.learn_spell.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_read_command_single_spell_no_registry(self):
+    async def test_read_command_single_spell_no_registry(self) -> None:
         """Test read command auto-learning when registry is not available."""
         command_data = {"args": ["spellbook"]}
         current_user = {"username": "testuser"}
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.player_id = uuid4()
         mock_player.inventory = (
             '[{"name": "spellbook", "id": "book-123", "metadata": {"spellbook": true, "spells": ["spell-1"]}}]'
         )
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
 
         mock_spell_learning_service = AsyncMock()
@@ -389,19 +414,21 @@ class TestReadCommand:
             assert "Learned spell-1!" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_read_command_multiple_spells_list(self):
+    async def test_read_command_multiple_spells_list(self) -> None:
         """Test read command listing multiple spells."""
         command_data = {"args": ["spellbook"]}
         current_user = {"username": "testuser"}
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.inventory = (
             '[{"name": "spellbook", "metadata": {"spellbook": true, "spells": ["spell-1", "spell-2"]}}]'
         )
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
         mock_app.state.spell_learning_service = AsyncMock()
 
@@ -424,19 +451,21 @@ class TestReadCommand:
             assert "Use '/read" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_read_command_multiple_spells_some_missing_in_registry(self):
+    async def test_read_command_multiple_spells_some_missing_in_registry(self) -> None:
         """Test read command when some spells are missing in registry."""
         command_data = {"args": ["spellbook"]}
         current_user = {"username": "testuser"}
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.inventory = (
             '[{"name": "spellbook", "metadata": {"spellbook": true, "spells": ["spell-1", "spell-2"]}}]'
         )
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
         mock_app.state.spell_learning_service = AsyncMock()
 
@@ -455,20 +484,22 @@ class TestReadCommand:
             assert "spell-2" in result["result"]  # Should show spell ID when not found
 
     @pytest.mark.asyncio
-    async def test_read_command_learn_spell_failure(self):
+    async def test_read_command_learn_spell_failure(self) -> None:
         """Test read command when learning spell fails."""
         command_data = {"args": ["spellbook", "Fireball"]}
         current_user = {"username": "testuser"}
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.player_id = uuid4()
         mock_player.inventory = (
             '[{"name": "spellbook", "id": "book-123", "metadata": {"spellbook": true, "spells": ["spell-1"]}}]'
         )
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
 
         mock_spell_learning_service = AsyncMock()
@@ -490,17 +521,19 @@ class TestReadCommand:
             assert "Cannot learn spell" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_read_command_inventory_json_error(self):
+    async def test_read_command_inventory_json_error(self) -> None:
         """Test read command when inventory JSON parsing fails."""
         command_data = {"args": ["spellbook"]}
         current_user = {"username": "testuser"}
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.inventory = "invalid json"
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
         mock_app.state.spell_learning_service = AsyncMock()
 
@@ -514,17 +547,19 @@ class TestReadCommand:
                 mock_logger.error.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_read_command_inventory_list_format(self):
+    async def test_read_command_inventory_list_format(self) -> None:
         """Test read command with inventory as list (not JSON string)."""
         command_data = {"args": ["spellbook"]}
         current_user = {"username": "testuser"}
         mock_request = MagicMock()
         mock_app = MagicMock()
         mock_app.state = MagicMock()
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.inventory = [{"name": "spellbook", "metadata": {"spellbook": True, "spells": ["spell-1"]}}]
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_app.state.persistence = mock_persistence
 
         mock_spell_learning_service = AsyncMock()

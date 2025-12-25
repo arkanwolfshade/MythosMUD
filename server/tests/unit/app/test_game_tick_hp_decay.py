@@ -1,5 +1,6 @@
 """Tests for HP decay processing in game tick loop."""
 
+import uuid
 from unittest.mock import AsyncMock, Mock
 
 import pytest
@@ -56,13 +57,12 @@ class TestGameTickHPDecay:
         """Test that HP decay broadcasts messages to affected players."""
         # This will be verified through integration testing
         # The service publishes events which are handled by NATS
-        pass
 
     @pytest.mark.asyncio
-    async def test_hp_decay_stops_at_minus_ten(self):
+    async def test_hp_decay_stops_at_minus_ten(self) -> None:
         """Test that HP decay stops processing when player reaches -10 HP."""
         player = Mock(spec=Player)
-        player.player_id = "test-player"
+        player.player_id = uuid.uuid4()
         player.get_stats.return_value = {"current_health": -10}
         player.is_dead.return_value = True
 
@@ -71,7 +71,7 @@ class TestGameTickHPDecay:
         mock_session.get.return_value = player
 
         # Try to process decay on dead player
-        result = await service.process_mortally_wounded_tick("test-player", mock_session)
+        result = await service.process_mortally_wounded_tick(player.player_id, mock_session)
 
         # Should not process decay for dead player
         assert result is False
@@ -80,13 +80,13 @@ class TestGameTickHPDecay:
     async def test_hp_decay_handles_multiple_players(self, mock_player_death_service):
         """Test that HP decay processes multiple mortally wounded players."""
         player1 = Mock(spec=Player)
-        player1.player_id = "player-1"
+        player1.player_id = uuid.uuid4()
 
         player2 = Mock(spec=Player)
-        player2.player_id = "player-2"
+        player2.player_id = uuid.uuid4()
 
         player3 = Mock(spec=Player)
-        player3.player_id = "player-3"
+        player3.player_id = uuid.uuid4()
 
         mock_player_death_service.get_mortally_wounded_players.return_value = [player1, player2, player3]
 

@@ -91,12 +91,12 @@ test-client-coverage:
 # Server tests (no coverage)
 test-server: setup-test-env
 	@echo "Running server tests (no coverage)..."
-	cd $(PROJECT_ROOT) && uv run pytest server/tests/ -n auto --maxfail=10 --tb=short
+	cd $(PROJECT_ROOT) && uv run pytest server/tests/ -n 4 --maxfail=10 --tb=short
 
 # Server tests (with coverage)
 test-server-coverage: setup-test-env
 	@echo "Running server tests with coverage..."
-	cd $(PROJECT_ROOT) && uv run pytest server/tests/ --cov=server --cov-report=html --cov-report=term-missing --cov-report=xml -n auto --maxfail=10 --tb=short
+	cd $(PROJECT_ROOT) && uv run pytest server/tests/ --cov=server --cov-report=html --cov-report=term-missing --cov-report=xml -n 4 --maxfail=10 --tb=short
 
 # All tests (client + server, no coverage)
 test: test-client test-server

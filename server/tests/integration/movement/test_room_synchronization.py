@@ -20,6 +20,8 @@ from server.events.event_types import PlayerEnteredRoom
 from server.models.room import Room
 from server.services.room_sync_service import RoomSyncService
 
+pytestmark = pytest.mark.integration
+
 
 class TestEventProcessingOrder:
     """Test cases for event processing order and state merging logic."""
@@ -42,7 +44,7 @@ class TestEventProcessingOrder:
         room.get_occupant_count.return_value = 0
         return room
 
-    def test_event_processing_order_preserves_chronology(self, room_sync_service, mock_room):
+    def test_event_processing_order_preserves_chronology(self, room_sync_service, mock_room):  # pylint: disable=unused-argument
         """Test that events are processed in chronological order."""
         # Create events with different timestamps
         events = []
@@ -77,7 +79,7 @@ class TestEventProcessingOrder:
         for i, event in enumerate(processed_events):
             assert event.sequence_number == i + 1
 
-    def test_state_merging_logic_handles_conflicts(self, room_sync_service, mock_room):
+    def test_state_merging_logic_handles_conflicts(self, room_sync_service, mock_room):  # pylint: disable=unused-argument
         """Test that state merging logic handles conflicting updates."""
         # Create conflicting room updates
         old_room_data = {
@@ -117,7 +119,8 @@ class TestEventProcessingOrder:
         no_timestamp_data = {"id": "test_room_1"}
         assert not room_sync_service._room_data_cache.is_room_data_fresh(no_timestamp_data, current_time)
 
-    def test_event_processing_handles_race_conditions(self, room_sync_service):
+    @pytest.mark.asyncio
+    async def test_event_processing_handles_race_conditions(self, room_sync_service):
         """Test that event processing handles race conditions properly."""
         # Simulate rapid room updates that could cause race conditions
         room_updates = []
@@ -133,15 +136,10 @@ class TestEventProcessingOrder:
             room_updates.append(update)
 
         # Process updates concurrently to simulate race conditions
-        async def process_updates():
-            processed_updates = []
-            for update in room_updates:
-                result = await room_sync_service._process_room_update_with_validation(update)
-                processed_updates.append(result)
-            return processed_updates
-
-        # Run async processing
-        processed_updates = asyncio.run(process_updates())
+        processed_updates = []
+        for update in room_updates:
+            result = await room_sync_service._process_room_update_with_validation(update)
+            processed_updates.append(result)
 
         # Verify that the final state is consistent
         assert len(processed_updates) == 10
@@ -149,7 +147,7 @@ class TestEventProcessingOrder:
         final_update = max(processed_updates, key=lambda x: x.get("timestamp", 0))
         assert final_update["name"] == "Room Update 9"
 
-    def test_state_validation_checks_prevent_inconsistencies(self, room_sync_service, mock_room):
+    def test_state_validation_checks_prevent_inconsistencies(self, room_sync_service, mock_room):  # pylint: disable=unused-argument
         """Test that state validation checks prevent data inconsistencies."""
         # Test room data with missing required fields
         incomplete_data = {
@@ -213,7 +211,7 @@ class TestEventProcessingOrder:
         import queue
 
         # Create a queue to collect processed events
-        processed_events = queue.Queue()
+        processed_events: queue.Queue = queue.Queue()
 
         def process_events_batch(event_batch):
             """Process a batch of events serially."""
@@ -305,13 +303,14 @@ class TestRoomDataConsistency:
             stale_data = {"id": "test_room_1", "timestamp": current_time - (threshold + 1)}
             assert not room_sync_service._room_data_cache.is_room_data_fresh(stale_data, current_time, threshold)
 
-    def test_fallback_logic_for_stale_data(self, room_sync_service):
+    @pytest.mark.asyncio
+    async def test_fallback_logic_for_stale_data(self, room_sync_service):
         """Test fallback logic when stale room data is detected."""
         # Create stale room data
         stale_data = {"id": "test_room_1", "name": "Stale Room Name", "timestamp": time.time() - 10}
 
         # Test fallback logic (async method)
-        fallback_result = asyncio.run(room_sync_service._handle_stale_room_data(stale_data))
+        fallback_result = await room_sync_service._handle_stale_room_data(stale_data)
 
         # When room service is not available, it returns "room_service_not_available"
         # When room service is available, it would return "request_fresh_data" with "stale_data_detected"
@@ -319,7 +318,8 @@ class TestRoomDataConsistency:
         assert fallback_result["reason"] in ["stale_data_detected", "room_service_not_available"]
         assert fallback_result["room_id"] == "test_room_1"
 
-    def test_comprehensive_logging_for_debugging(self, room_sync_service, caplog):
+    @pytest.mark.asyncio
+    async def test_comprehensive_logging_for_debugging(self, room_sync_service, caplog):
         """Test comprehensive logging for debugging room data synchronization issues."""
         import logging
 
@@ -330,13 +330,10 @@ class TestRoomDataConsistency:
         room_data = {"id": "test_room_1", "name": "Test Room", "timestamp": time.time()}
 
         # Process room data (should trigger logging)
-        async def process_room_data():
-            await room_sync_service._process_room_update_with_validation(room_data)
-            # Verify that the method executed successfully by checking the returned data
-            # The method should return processed room data with fixes applied
-            return await room_sync_service._process_room_update_with_validation(room_data.copy())
-
-        processed_data = asyncio.run(process_room_data())
+        await room_sync_service._process_room_update_with_validation(room_data)
+        # Verify that the method executed successfully by checking the returned data
+        # The method should return processed room data with fixes applied
+        processed_data = await room_sync_service._process_room_update_with_validation(room_data.copy())
 
         # Check that the processed data has the required fields (fixes applied)
         assert "description" in processed_data  # The fix should have added description

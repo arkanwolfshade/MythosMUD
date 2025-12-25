@@ -6,7 +6,7 @@ and integration with the existing player service for XP persistence.
 """
 
 from datetime import UTC, datetime, timedelta
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, Mock
 from uuid import uuid4
 
 import pytest
@@ -15,6 +15,8 @@ from server.models.combat import CombatInstance, CombatParticipant, CombatPartic
 from server.models.player import Player
 from server.services.player_combat_service import PlayerCombatService
 
+pytestmark = pytest.mark.integration
+
 
 class TestPlayerCombatState:
     """Test player combat state tracking and management."""
@@ -22,8 +24,17 @@ class TestPlayerCombatState:
     @pytest.fixture
     def player_combat_service(self):
         """Create a player combat service instance for testing."""
-        mock_persistence = AsyncMock()
-        mock_event_bus = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        from unittest.mock import MagicMock
+
+        mock_persistence = MagicMock()
+        # Configure async methods explicitly
+        mock_persistence.get_player_by_id = AsyncMock()
+        mock_persistence.save_player = AsyncMock()
+        # EventBus.publish() is sync, not async
+        mock_event_bus = Mock()
+        mock_event_bus.publish = Mock(return_value=None)
         return PlayerCombatService(mock_persistence, mock_event_bus)
 
     @pytest.fixture
@@ -166,8 +177,17 @@ class TestPlayerXPIntegration:
     @pytest.fixture
     def player_combat_service(self):
         """Create a player combat service instance for testing."""
-        mock_persistence = AsyncMock()
-        mock_event_bus = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        from unittest.mock import MagicMock
+
+        mock_persistence = MagicMock()
+        # Configure async methods explicitly
+        mock_persistence.get_player_by_id = AsyncMock()
+        mock_persistence.save_player = AsyncMock()
+        # EventBus.publish() is sync, not async
+        mock_event_bus = Mock()
+        mock_event_bus.publish = Mock(return_value=None)
         return PlayerCombatService(mock_persistence, mock_event_bus)
 
     @pytest.fixture
@@ -234,9 +254,13 @@ class TestPlayerXPIntegration:
         player_combat_service._persistence.async_get_npc_by_id = AsyncMock(return_value=npc_data)
 
         # Mock lifecycle manager properly (not as async)
-        mock_lifecycle_manager = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        from unittest.mock import MagicMock
+
+        mock_lifecycle_manager = MagicMock()
         mock_lifecycle_manager.lifecycle_records = {}  # Empty records to trigger fallback
-        player_combat_service._persistence.get_npc_lifecycle_manager = AsyncMock(return_value=mock_lifecycle_manager)
+        # get_npc_lifecycle_manager is called via asyncio.to_thread, so it must be a synchronous Mock, not AsyncMock
+        player_combat_service._persistence.get_npc_lifecycle_manager = Mock(return_value=mock_lifecycle_manager)
 
         # Calculate XP reward
         xp_reward = await player_combat_service.calculate_xp_reward(npc_id)
@@ -254,9 +278,14 @@ class TestPlayerXPIntegration:
         player_combat_service._persistence.async_get_npc_by_id = AsyncMock(return_value=None)
 
         # Mock lifecycle manager with empty records to trigger fallback
-        mock_lifecycle_manager = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        from unittest.mock import MagicMock
+
+        mock_lifecycle_manager = MagicMock()
         mock_lifecycle_manager.lifecycle_records = {}
-        player_combat_service._persistence.get_npc_lifecycle_manager = AsyncMock(return_value=mock_lifecycle_manager)
+        # get_npc_lifecycle_manager is called via asyncio.to_thread, so it must be a synchronous Mock, not AsyncMock
+        # Mock is already imported at module level (line 9)
+        player_combat_service._persistence.get_npc_lifecycle_manager = Mock(return_value=mock_lifecycle_manager)
 
         # Calculate XP reward
         xp_reward = await player_combat_service.calculate_xp_reward(npc_id)
@@ -311,8 +340,17 @@ class TestPlayerCombatIntegration:
     @pytest.fixture
     def player_combat_service(self):
         """Create a player combat service instance for testing."""
-        mock_persistence = AsyncMock()
-        mock_event_bus = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        from unittest.mock import MagicMock
+
+        mock_persistence = MagicMock()
+        # Configure async methods explicitly
+        mock_persistence.get_player_by_id = AsyncMock()
+        mock_persistence.save_player = AsyncMock()
+        # EventBus.publish() is sync, not async
+        mock_event_bus = Mock()
+        mock_event_bus.publish = Mock(return_value=None)
         return PlayerCombatService(mock_persistence, mock_event_bus)
 
     @pytest.fixture

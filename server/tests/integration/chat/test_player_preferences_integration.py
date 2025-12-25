@@ -9,14 +9,15 @@ import uuid
 
 import pytest
 from sqlalchemy import text
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from server.database import get_database_url
-from server.models.base import Base
 from server.models.player import Player, PlayerChannelPreferences
 from server.models.user import User
 from server.services.player_preferences_service import PlayerPreferencesService
+
+pytestmark = pytest.mark.integration
 
 
 class TestPlayerPreferencesIntegration:
@@ -27,13 +28,9 @@ class TestPlayerPreferencesIntegration:
         """Create an async session factory for testing."""
         database_url = get_database_url()
         if not database_url:
-            pytest.skip("DATABASE_URL not set - cannot run integration test")
+            raise ValueError("DATABASE_URL must be set for this integration test")
 
         engine = create_async_engine(database_url, future=True)
-        async with engine.begin() as conn:
-            # Create tables if they don't exist
-            await conn.run_sync(Base.metadata.create_all)
-
         factory = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
         try:
             yield factory
@@ -54,7 +51,7 @@ class TestPlayerPreferencesIntegration:
                     )
                     await cleanup_session.execute(text("DELETE FROM users WHERE email LIKE '%@example.com'"))
                     await cleanup_session.commit()
-                except Exception:
+                except SQLAlchemyError:
                     await cleanup_session.rollback()
             await engine.dispose()
 
@@ -96,6 +93,8 @@ class TestPlayerPreferencesIntegration:
         return PlayerPreferencesService()
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Flaky in parallel execution - database transaction conflicts
+    @pytest.mark.xdist_group(name="serial_integration_tests")  # Force serial execution with pytest-xdist
     async def test_full_player_lifecycle(self, async_session_factory, test_player, preferences_service):
         """Test complete player lifecycle with preferences."""
         player_id = test_player  # test_player fixture now yields player_id directly
@@ -142,6 +141,8 @@ class TestPlayerPreferencesIntegration:
             assert prefs["success"] is False
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Mark as serial to prevent database transaction conflicts in parallel execution
+    @pytest.mark.xdist_group(name="serial_integration_tests")  # Force serial execution with pytest-xdist
     async def test_multiple_players_preferences(self, async_session_factory, preferences_service):
         """Test managing preferences for multiple players."""
         async with async_session_factory() as session:
@@ -234,7 +235,7 @@ class TestPlayerPreferencesIntegration:
             assert "whisper" in muted_channels
 
     @pytest.mark.asyncio
-    async def test_concurrent_preferences_access(self, async_session_factory, test_player, preferences_service):
+    async def test_concurrent_preferences_access(self, async_session_factory, test_player):
         """Test concurrent access to preferences from multiple service instances."""
         player_id = test_player  # test_player fixture now yields player_id directly
 
@@ -401,6 +402,9 @@ class TestPlayerPreferencesIntegration:
             assert updated_at2 >= updated_at1
 
     @pytest.mark.asyncio
+    @pytest.mark.asyncio
+    @pytest.mark.serial  # Flaky in parallel execution - database transaction conflicts
+    @pytest.mark.xdist_group(name="serial_integration_tests")  # Force serial execution with pytest-xdist
     async def test_service_cleanup_and_cleanup(self, async_session_factory, test_player, preferences_service):
         """Test service cleanup and database cleanup."""
         player_id = test_player  # test_player fixture now yields player_id directly

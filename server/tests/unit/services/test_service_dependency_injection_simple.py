@@ -122,9 +122,11 @@ class TestServiceDependencyInjectionSimple:
         room_service = RoomService(persistence=mock_persistence)
 
         # Verify they are different instances
+        from typing import Any, cast
+
         assert player_service1 is not player_service2
-        assert player_service1 is not room_service
-        assert player_service2 is not room_service
+        assert cast(Any, player_service1) is not room_service
+        assert cast(Any, player_service2) is not room_service
 
         # But they share the same persistence layer
         assert player_service1.persistence == mock_persistence
@@ -148,7 +150,7 @@ class TestServiceDependencyInjectionSimple:
         assert hasattr(mock_persistence, "async_get_room")
         assert hasattr(mock_persistence, "async_save_player")
 
-    def test_service_initialization_with_different_persistence(self):
+    def test_service_initialization_with_different_persistence(self) -> None:
         """Test that services can be initialized with different persistence layers."""
         persistence1 = AsyncMock()
         persistence2 = AsyncMock()
@@ -230,7 +232,8 @@ class TestServiceDependencyInjectionSimple:
                 # Simulate concurrent access
                 service = PlayerService(persistence=mock_persistence)
                 results.append(service)
-            except Exception as e:
+            except (ValueError, KeyError, AttributeError, RuntimeError) as e:
+                # We catch expected functional errors to record failures for assertion.
                 errors.append(e)
 
         # Create multiple threads

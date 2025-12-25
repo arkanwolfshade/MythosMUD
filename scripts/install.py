@@ -7,9 +7,9 @@ is_windows = sys.platform.startswith("win")
 # Check if uv is available
 try:
     subprocess.run(["uv", "--version"], check=True, capture_output=True)
-    print("✓ uv is available")
+    print("[OK] uv is available")
 except (subprocess.CalledProcessError, FileNotFoundError):
-    print("❌ uv is not available. Please install uv first:")
+    print("[ERROR] uv is not available. Please install uv first:")
     print("  curl -LsSf https://astral.sh/uv/install.sh | sh")
     print("  # or on Windows:")
     print('  powershell -c "irm https://astral.sh/uv/install.ps1 | iex"')
@@ -39,12 +39,12 @@ def get_project_root():
 
 
 project_root = get_project_root()
-print(f"📁 Project root: {project_root}")
+print(f"Project root: {project_root}")
 
 # Determine if we're in a worktree context
 is_worktree = project_root != os.getcwd()
 if is_worktree:
-    print(f"🔄 Worktree context detected: {os.path.basename(os.getcwd())}")
+    print(f"Worktree context detected: {os.path.basename(os.getcwd())}")
 
 steps = [
     ["uv", "sync", "--project", "server"],
@@ -62,23 +62,23 @@ for i, step in enumerate(steps):
     if i == 3:  # npm install in client
         # Always run npm install from the main project's client directory
         client_path = os.path.join(project_root, "client")
-        result = subprocess.run(step, cwd=client_path)
+        result = subprocess.run(step, cwd=client_path, check=False)
     else:
         # For other steps, run from the project root
-        result = subprocess.run(step, cwd=project_root)
+        result = subprocess.run(step, cwd=project_root, check=False)
 
     if result.returncode != 0:
-        print(f"❌ Step failed: {' '.join(str(s) for s in step)}")
+        print(f"[ERROR] Step failed: {' '.join(str(s) for s in step)}")
         sys.exit(result.returncode)
     else:
-        print(f"✓ Step completed: {' '.join(str(s) for s in step)}")
+        print(f"[OK] Step completed: {' '.join(str(s) for s in step)}")
 
-print("✅ Installation completed successfully!")
+print("[SUCCESS] Installation completed successfully!")
 print("\nNext steps:")
 print("1. Start the server: scripts/start_server.ps1")
 print("2. Start the client: cd client && npm start")
 
 if is_worktree:
     worktree_name = os.path.basename(os.getcwd())
-    print(f"\n💡 Note: You're currently in the {worktree_name} worktree.")
+    print(f"\nNote: You're currently in the {worktree_name} worktree.")
     print("   Consider switching to the main worktree for integration tasks.")

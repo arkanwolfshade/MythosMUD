@@ -11,6 +11,7 @@ processing systems.
 
 import asyncio
 import time
+from typing import Any, cast
 from unittest.mock import MagicMock
 
 import pytest
@@ -103,7 +104,9 @@ class TestNPCMessageQueue:
                     message = {"type": "test", "id": i}
                     result = mock_npc_message_queue.add_message(npc_id, message)
                     results.append(result)
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught
+                # JUSTIFICATION: Catching any exception during concurrent operation simulation
+                # to verify system stability and record failures for assertion.
                 errors.append(e)
 
         def get_messages():
@@ -111,7 +114,9 @@ class TestNPCMessageQueue:
                 for _ in range(100):
                     messages = mock_npc_message_queue.get_messages(npc_id)
                     results.append(len(messages))
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught
+                # JUSTIFICATION: Catching any exception during concurrent operation simulation
+                # to verify system stability and record failures for assertion.
                 errors.append(e)
 
         # Execute operations serially instead of in parallel threads
@@ -239,7 +244,7 @@ class TestNPCThreadManager:
 class TestNPCActionMessageTypes:
     """Test NPC action message types and serialization."""
 
-    def test_move_action_message(self):
+    def test_move_action_message(self) -> None:
         """Test move action message creation and serialization."""
         from server.npc.threading import NPCActionMessage, NPCActionType
 
@@ -263,7 +268,7 @@ class TestNPCActionMessageTypes:
         assert deserialized.npc_id == "test_npc_1"
         assert deserialized.target_room == "earth_arkhamcity_downtown_room_derby_st_001"
 
-    def test_attack_action_message(self):
+    def test_attack_action_message(self) -> None:
         """Test attack action message creation and serialization."""
         from server.npc.threading import NPCActionMessage, NPCActionType
 
@@ -285,7 +290,7 @@ class TestNPCActionMessageTypes:
         assert deserialized.target_player == "player_1"
         assert deserialized.damage == 25
 
-    def test_speak_action_message(self):
+    def test_speak_action_message(self) -> None:
         """Test speak action message creation and serialization."""
         from server.npc.threading import NPCActionMessage, NPCActionType
 
@@ -307,7 +312,7 @@ class TestNPCActionMessageTypes:
         assert deserialized.message == "Hello, traveler!"
         assert deserialized.channel == "local"
 
-    def test_json_serialization(self):
+    def test_json_serialization(self) -> None:
         """Test JSON serialization and deserialization of action messages."""
         from server.npc.threading import NPCActionMessage, NPCActionType
 
@@ -380,7 +385,9 @@ class TestNPCThreadSafeCommunication:
                     message = {"type": "test", "id": i}
                     result = await mock_communication_bridge.send_message_to_npc(f"npc_{i % 5}", message)
                     results.append(result)
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught
+                # JUSTIFICATION: Catching any exception during concurrent operation simulation
+                # to verify system stability and record failures for assertion.
                 errors.append(e)
 
         async def receive_messages():
@@ -388,7 +395,9 @@ class TestNPCThreadSafeCommunication:
                 for i in range(50):
                     message = {"type": "response", "id": i}
                     await mock_communication_bridge.receive_message_from_npc(f"npc_{i % 5}", message)
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught
+                # JUSTIFICATION: Catching any exception during concurrent operation simulation
+                # to verify system stability and record failures for assertion.
                 errors.append(e)
 
         # Run concurrent operations
@@ -416,7 +425,7 @@ class TestNPCThreadLifecycleManagement:
         The authoritative NPCLifecycleManager is in lifecycle_manager.py with different method signatures.
         This fixture provides a mock that matches the interface expected by these threading tests.
         """
-        from unittest.mock import AsyncMock, MagicMock
+        from unittest.mock import AsyncMock
 
         # Create a mock that matches the old duplicate class interface for these threading tests
         manager = MagicMock()
@@ -531,7 +540,7 @@ class TestNPCThreadingIntegration:
     """Integration tests for NPC threading system."""
 
     @pytest.mark.asyncio
-    async def test_full_npc_threading_workflow(self):
+    async def test_full_npc_threading_workflow(self) -> None:
         """Test complete NPC threading workflow."""
         from server.npc.threading import (
             NPCActionMessage,
@@ -589,7 +598,7 @@ class TestNPCThreadingIntegration:
         assert not thread_manager.is_running
 
     @pytest.mark.asyncio
-    async def test_npc_threading_error_handling(self):
+    async def test_npc_threading_error_handling(self) -> None:
         """Test error handling in NPC threading system."""
         from server.npc.threading import NPCThreadManager
 
@@ -597,7 +606,7 @@ class TestNPCThreadingIntegration:
 
         # Test starting thread with invalid NPC definition
         invalid_npc = None
-        result = await thread_manager.start_npc_thread("invalid_npc", invalid_npc)
+        result = await thread_manager.start_npc_thread("invalid_npc", cast(Any, invalid_npc))
         assert result is False
 
         # Test stopping non-existent thread
@@ -605,11 +614,11 @@ class TestNPCThreadingIntegration:
         assert result is True  # Should return True for non-existent threads (no-op)
 
         # Test restarting non-existent thread
-        result = await thread_manager.restart_npc_thread("non_existent_npc", invalid_npc)
+        result = await thread_manager.restart_npc_thread("non_existent_npc", cast(Any, invalid_npc))
         assert result is False
 
     @pytest.mark.asyncio
-    async def test_npc_threading_performance(self):
+    async def test_npc_threading_performance(self) -> None:
         """Test NPC threading system performance."""
         from server.npc.threading import NPCMessageQueue, NPCThreadManager
 

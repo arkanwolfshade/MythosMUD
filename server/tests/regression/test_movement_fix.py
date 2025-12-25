@@ -5,12 +5,13 @@ This module tests the specific issues that were identified in the movement syste
 and ensures that the fixes are working correctly.
 """
 
-from unittest.mock import AsyncMock
+from typing import Any, cast
+from unittest.mock import AsyncMock, MagicMock
 from uuid import uuid4
 
 import pytest
+from sqlalchemy.exc import DatabaseError
 
-# Removed: from server.persistence import PersistenceLayer - now using AsyncPersistenceLayer
 from server.async_persistence import AsyncPersistenceLayer
 from server.events import EventBus
 from server.game.movement_service import MovementService
@@ -21,11 +22,18 @@ from server.models.room import Room
 class TestMovementFixes:
     """Test the movement system fixes."""
 
-    def setup_method(self):
+    mock_persistence: MagicMock
+    event_bus: EventBus
+    movement_service: MovementService
+    test_player: Player
+    from_room: Room
+    to_room: Room
+
+    def setup_method(self) -> None:
         """Set up test fixtures."""
         self.event_bus = EventBus()
         # Mock persistence layer (now AsyncPersistenceLayer) - use AsyncMock for async methods
-        self.mock_persistence = AsyncMock(spec=AsyncPersistenceLayer)
+        self.mock_persistence: MagicMock = AsyncMock(spec=AsyncPersistenceLayer)
         self.movement_service = MovementService(self.event_bus, async_persistence=self.mock_persistence)
 
         # Create test player (use proper UUIDs)
@@ -57,49 +65,51 @@ class TestMovementFixes:
             self.event_bus,
         )
 
+    def _get_room_by_id(self, room_id: str) -> Room | None:
+        """Helper method to get room by ID for mock side_effect."""
+        room_map = {
+            "earth_arkhamcity_northside_Derby_St_013": self.from_room,
+            "earth_arkhamcity_northside_Derby_St_014": self.to_room,
+        }
+        return room_map.get(room_id)
+
     @pytest.mark.asyncio
-    async def test_player_resolution_by_id(self):
+    async def test_player_resolution_by_id(self) -> None:
         """Test that player resolution works correctly by ID."""
         # Mock persistence to return our test player
         self.mock_persistence.get_player_by_id.return_value = self.test_player
         self.mock_persistence.get_player_by_name.return_value = None
 
         # Mock room retrieval
-        self.mock_persistence.get_room_by_id.side_effect = lambda room_id: {
-            "earth_arkhamcity_northside_Derby_St_013": self.from_room,
-            "earth_arkhamcity_northside_Derby_St_014": self.to_room,
-        }.get(room_id)
+        self.mock_persistence.get_room_by_id.side_effect = self._get_room_by_id
 
         # Add player to from_room
-        self.from_room.player_entered(self.test_player.player_id)
+        self.from_room.player_entered(cast(Any, self.test_player.player_id))
 
         # Test movement
         result = await self.movement_service.move_player(
-            self.test_player.player_id,
+            cast(Any, self.test_player.player_id),
             "earth_arkhamcity_northside_Derby_St_013",
             "earth_arkhamcity_northside_Derby_St_014",
         )
 
         assert result is True
         assert self.test_player.current_room_id == "earth_arkhamcity_northside_Derby_St_014"
-        assert self.from_room.has_player(self.test_player.player_id) is False
-        assert self.to_room.has_player(self.test_player.player_id) is True
+        assert self.from_room.has_player(cast(Any, self.test_player.player_id)) is False
+        assert self.to_room.has_player(cast(Any, self.test_player.player_id)) is True
 
     @pytest.mark.asyncio
-    async def test_player_resolution_by_name(self):
+    async def test_player_resolution_by_name(self) -> None:
         """Test that player resolution works correctly by name."""
         # Mock persistence to return our test player by name
         self.mock_persistence.get_player_by_id.return_value = None
         self.mock_persistence.get_player_by_name.return_value = self.test_player
 
         # Mock room retrieval
-        self.mock_persistence.get_room_by_id.side_effect = lambda room_id: {
-            "earth_arkhamcity_northside_Derby_St_013": self.from_room,
-            "earth_arkhamcity_northside_Derby_St_014": self.to_room,
-        }.get(room_id)
+        self.mock_persistence.get_room_by_id.side_effect = self._get_room_by_id
 
         # Add player to from_room
-        self.from_room.player_entered(self.test_player.player_id)
+        self.from_room.player_entered(cast(Any, self.test_player.player_id))
 
         # Test movement using player name
         result = await self.movement_service.move_player(
@@ -112,24 +122,21 @@ class TestMovementFixes:
         assert self.test_player.current_room_id == "earth_arkhamcity_northside_Derby_St_014"
 
     @pytest.mark.asyncio
-    async def test_player_not_in_room_auto_add(self):
+    async def test_player_not_in_room_auto_add(self) -> None:
         """Test that player is automatically added to room when current_room_id matches."""
         # Mock persistence to return our test player
         self.mock_persistence.get_player_by_id.return_value = self.test_player
         self.mock_persistence.get_player_by_name.return_value = None
 
         # Mock room retrieval
-        self.mock_persistence.get_room_by_id.side_effect = lambda room_id: {
-            "earth_arkhamcity_northside_Derby_St_013": self.from_room,
-            "earth_arkhamcity_northside_Derby_St_014": self.to_room,
-        }.get(room_id)
+        self.mock_persistence.get_room_by_id.side_effect = self._get_room_by_id
 
         # Don't add player to from_room initially - this should trigger auto-add
-        assert self.from_room.has_player(self.test_player.player_id) is False
+        assert self.from_room.has_player(cast(Any, self.test_player.player_id)) is False
 
         # Test movement - should succeed because player is auto-added to from_room
         result = await self.movement_service.move_player(
-            self.test_player.player_id,
+            cast(Any, self.test_player.player_id),
             "earth_arkhamcity_northside_Derby_St_013",
             "earth_arkhamcity_northside_Derby_St_014",
         )
@@ -138,25 +145,22 @@ class TestMovementFixes:
         # Player should be moved to target room
         assert self.test_player.current_room_id == "earth_arkhamcity_northside_Derby_St_014"
         # Player should be in target room
-        assert self.to_room.has_player(self.test_player.player_id) is True
+        assert self.to_room.has_player(cast(Any, self.test_player.player_id)) is True
         # Player should no longer be in from_room
-        assert self.from_room.has_player(self.test_player.player_id) is False
+        assert self.from_room.has_player(cast(Any, self.test_player.player_id)) is False
 
     @pytest.mark.asyncio
-    async def test_event_bus_integration(self):
+    async def test_event_bus_integration(self) -> None:
         """Test that movement properly integrates with the event bus."""
         # Mock persistence to return our test player
         self.mock_persistence.get_player_by_id.return_value = self.test_player
         self.mock_persistence.get_player_by_name.return_value = None
 
         # Mock room retrieval
-        self.mock_persistence.get_room_by_id.side_effect = lambda room_id: {
-            "earth_arkhamcity_northside_Derby_St_013": self.from_room,
-            "earth_arkhamcity_northside_Derby_St_014": self.to_room,
-        }.get(room_id)
+        self.mock_persistence.get_room_by_id.side_effect = self._get_room_by_id
 
         # Add player to from_room
-        self.from_room.player_entered(self.test_player.player_id)
+        self.from_room.player_entered(cast(Any, self.test_player.player_id))
 
         # Track events
         events_published = []
@@ -166,14 +170,15 @@ class TestMovementFixes:
             events_published.append(event)
             return original_publish(event)
 
-        self.event_bus.publish = mock_publish
+        from unittest.mock import patch
 
-        # Test movement
-        result = await self.movement_service.move_player(
-            self.test_player.player_id,
-            "earth_arkhamcity_northside_Derby_St_013",
-            "earth_arkhamcity_northside_Derby_St_014",
-        )
+        with patch.object(self.event_bus, "publish", side_effect=mock_publish):
+            # Test movement
+            result = await self.movement_service.move_player(
+                cast(Any, self.test_player.player_id),
+                "earth_arkhamcity_northside_Derby_St_013",
+                "earth_arkhamcity_northside_Derby_St_014",
+            )
 
         assert result is True
 
@@ -186,7 +191,7 @@ class TestMovementFixes:
         assert "PlayerEnteredRoom" in event_types
 
     @pytest.mark.asyncio
-    async def test_movement_validation(self):
+    async def test_movement_validation(self) -> None:
         """Test that movement validation works correctly."""
         # Mock persistence to return our test player
         self.mock_persistence.get_player_by_id.return_value = self.test_player
@@ -197,26 +202,23 @@ class TestMovementFixes:
 
         # Test movement to invalid room
         result = await self.movement_service.move_player(
-            self.test_player.player_id, "earth_arkhamcity_northside_Derby_St_013", "invalid_room_id"
+            cast(Any, self.test_player.player_id), "earth_arkhamcity_northside_Derby_St_013", "invalid_room_id"
         )
 
         assert result is False
 
     @pytest.mark.asyncio
-    async def test_serial_movement_safety(self):
+    async def test_serial_movement_safety(self) -> None:
         """Test that movement works correctly in serial execution."""
         # Mock persistence to return our test player
         self.mock_persistence.get_player_by_id.return_value = self.test_player
         self.mock_persistence.get_player_by_name.return_value = None
 
         # Mock room retrieval
-        self.mock_persistence.get_room_by_id.side_effect = lambda room_id: {
-            "earth_arkhamcity_northside_Derby_St_013": self.from_room,
-            "earth_arkhamcity_northside_Derby_St_014": self.to_room,
-        }.get(room_id)
+        self.mock_persistence.get_room_by_id.side_effect = self._get_room_by_id
 
         # Add player to from_room
-        self.from_room.player_entered(self.test_player.player_id)
+        self.from_room.player_entered(cast(Any, self.test_player.player_id))
 
         # Track results
         results = []
@@ -224,12 +226,12 @@ class TestMovementFixes:
         async def move_player():
             try:
                 result = await self.movement_service.move_player(
-                    self.test_player.player_id,
+                    cast(Any, self.test_player.player_id),
                     "earth_arkhamcity_northside_Derby_St_013",
                     "earth_arkhamcity_northside_Derby_St_014",
                 )
                 results.append(result)
-            except Exception:
+            except (ValueError, KeyError, AttributeError, RuntimeError, DatabaseError):
                 results.append(False)
 
         # Execute movements serially instead of in parallel threads

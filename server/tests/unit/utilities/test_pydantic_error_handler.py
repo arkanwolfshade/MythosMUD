@@ -23,17 +23,17 @@ from server.models.command import SayCommand
 class TestPydanticErrorHandler:
     """Test PydanticErrorHandler functionality."""
 
-    def test_pydantic_error_handler_initialization(self):
+    def test_pydantic_error_handler_initialization(self) -> None:
         """Test that PydanticErrorHandler initializes correctly."""
         handler = PydanticErrorHandler()
         assert handler is not None
         assert handler.context is not None
 
-    def test_handle_validation_error_missing_field(self):
+    def test_handle_validation_error_missing_field(self) -> None:
         """Test handling of ValidationError with missing required field."""
         # Create a ValidationError for missing required field
         with pytest.raises(ValidationError) as exc_info:
-            SayCommand()  # Missing required message field
+            SayCommand()  # type: ignore[call-arg]  # Missing required message field
 
         validation_error = exc_info.value
         handler = PydanticErrorHandler()
@@ -46,7 +46,7 @@ class TestPydanticErrorHandler:
         assert "Please provide message" in error["user_friendly"]
         assert error["severity"] == "medium"
 
-    def test_handle_validation_error_invalid_type(self):
+    def test_handle_validation_error_invalid_type(self) -> None:
         """Test handling of ValidationError with invalid data type."""
         # Create a ValidationError for invalid data type
         with pytest.raises(ValidationError) as exc_info:
@@ -63,10 +63,10 @@ class TestPydanticErrorHandler:
         # With multiple errors, it should show a general message
         assert "Please check" in error["user_friendly"]
 
-    def test_handle_validation_error_websocket_response(self):
+    def test_handle_validation_error_websocket_response(self) -> None:
         """Test handling of ValidationError with WebSocket response type."""
         with pytest.raises(ValidationError) as exc_info:
-            SayCommand()
+            SayCommand()  # type: ignore[call-arg]
 
         validation_error = exc_info.value
         handler = PydanticErrorHandler()
@@ -77,10 +77,10 @@ class TestPydanticErrorHandler:
         assert response["error_type"] == "missing_required_field"
         assert "Please provide message" in response["user_friendly"]
 
-    def test_handle_validation_error_sse_response(self):
+    def test_handle_validation_error_sse_response(self) -> None:
         """Test handling of ValidationError with SSE response type."""
         with pytest.raises(ValidationError) as exc_info:
-            SayCommand()
+            SayCommand()  # type: ignore[call-arg]
 
         validation_error = exc_info.value
         handler = PydanticErrorHandler()
@@ -91,10 +91,10 @@ class TestPydanticErrorHandler:
         assert response["error_type"] == "missing_required_field"
         assert "Please provide message" in response["user_friendly"]
 
-    def test_convert_to_mythos_error(self):
+    def test_convert_to_mythos_error(self) -> None:
         """Test conversion of ValidationError to MythosValidationError."""
         with pytest.raises(ValidationError) as exc_info:
-            SayCommand()
+            SayCommand()  # type: ignore[call-arg]
 
         validation_error = exc_info.value
         handler = PydanticErrorHandler()
@@ -106,10 +106,10 @@ class TestPydanticErrorHandler:
         assert "Please provide message" in mythos_error.user_friendly
         assert mythos_error.context is not None
 
-    def test_extract_error_info(self):
+    def test_extract_error_info(self) -> None:
         """Test extraction of error information from ValidationError."""
         with pytest.raises(ValidationError) as exc_info:
-            SayCommand()
+            SayCommand()  # type: ignore[call-arg]
 
         validation_error = exc_info.value
         handler = PydanticErrorHandler()
@@ -122,7 +122,7 @@ class TestPydanticErrorHandler:
         assert len(error_info["errors"]) > 0
         assert len(error_info["fields_with_errors"]) > 0
 
-    def test_get_field_path(self):
+    def test_get_field_path(self) -> None:
         """Test conversion of Pydantic error location to field path."""
         handler = PydanticErrorHandler()
 
@@ -138,7 +138,7 @@ class TestPydanticErrorHandler:
         # Test empty location
         assert handler._get_field_path([]) == ""
 
-    def test_determine_error_type(self):
+    def test_determine_error_type(self) -> None:
         """Test determination of ErrorType from error information."""
         handler = PydanticErrorHandler()
 
@@ -158,7 +158,7 @@ class TestPydanticErrorHandler:
         error_info = {"errors": [{"error_type": "unknown_error", "field": "message"}]}
         assert handler._determine_error_type(error_info) == ErrorType.VALIDATION_ERROR
 
-    def test_determine_severity(self):
+    def test_determine_severity(self) -> None:
         """Test determination of ErrorSeverity from error information."""
         handler = PydanticErrorHandler()
 
@@ -170,7 +170,7 @@ class TestPydanticErrorHandler:
         error_info = {"errors": [{"error_type": "missing", "field": "message"}]}
         assert handler._determine_severity(error_info) == ErrorSeverity.MEDIUM
 
-    def test_generate_user_friendly_message_single_error(self):
+    def test_generate_user_friendly_message_single_error(self) -> None:
         """Test generation of user-friendly message for single error."""
         handler = PydanticErrorHandler()
 
@@ -201,7 +201,7 @@ class TestPydanticErrorHandler:
         message = handler._generate_user_friendly_message(error_info)
         assert "Invalid format for message" in message
 
-    def test_generate_user_friendly_message_multiple_errors(self):
+    def test_generate_user_friendly_message_multiple_errors(self) -> None:
         """Test generation of user-friendly message for multiple errors."""
         handler = PydanticErrorHandler()
 
@@ -226,7 +226,7 @@ class TestPydanticErrorHandler:
         message = handler._generate_user_friendly_message(error_info)
         assert "Please check message" in message
 
-    def test_get_display_field_name(self):
+    def test_get_display_field_name(self) -> None:
         """Test conversion of field names to display names."""
         handler = PydanticErrorHandler()
 
@@ -242,10 +242,10 @@ class TestPydanticErrorHandler:
         # Test empty field
         assert handler._get_display_field_name("") == "input"
 
-    def test_create_error_details(self):
+    def test_create_error_details(self) -> None:
         """Test creation of error details for debugging."""
         with pytest.raises(ValidationError) as exc_info:
-            SayCommand()
+            SayCommand()  # type: ignore[call-arg]
 
         validation_error = exc_info.value
         handler = PydanticErrorHandler()
@@ -262,10 +262,10 @@ class TestPydanticErrorHandler:
         assert details["model_class"] == "SayCommand"
         assert len(details["validation_errors"]) > 0
 
-    def test_create_fallback_error_response(self):
+    def test_create_fallback_error_response(self) -> None:
         """Test creation of fallback error response."""
         with pytest.raises(ValidationError) as exc_info:
-            SayCommand()
+            SayCommand()  # type: ignore[call-arg]
 
         validation_error = exc_info.value
         handler = PydanticErrorHandler()
@@ -289,17 +289,17 @@ class TestPydanticErrorHandler:
         assert response["error_type"] == "validation_error"
         assert response["details"]["fallback"] is True
 
-    def test_create_handler_with_context(self):
+    def test_create_handler_with_context(self) -> None:
         """Test creation of handler with specific context."""
         handler = PydanticErrorHandler.create_handler(user_id="test_user", session_id="test_session")
 
         assert handler.context.user_id == "test_user"
         assert handler.context.session_id == "test_session"
 
-    def test_convenience_functions(self):
+    def test_convenience_functions(self) -> None:
         """Test convenience functions for error handling."""
         with pytest.raises(ValidationError) as exc_info:
-            SayCommand()
+            SayCommand()  # type: ignore[call-arg]
 
         validation_error = exc_info.value
 
@@ -317,7 +317,7 @@ class TestPydanticErrorHandler:
         assert isinstance(mythos_error, MythosValidationError)
         assert mythos_error.context.user_id == "test_user"
 
-    def test_field_name_mappings(self):
+    def test_field_name_mappings(self) -> None:
         """Test that field name mappings are properly defined."""
         handler = PydanticErrorHandler()
 
@@ -339,7 +339,7 @@ class TestPydanticErrorHandler:
             assert field_name in handler.FIELD_NAME_MAPPINGS
             assert handler.FIELD_NAME_MAPPINGS[field_name] is not None
 
-    def test_error_type_mappings(self):
+    def test_error_type_mappings(self) -> None:
         """Test that error type mappings are properly defined."""
         handler = PydanticErrorHandler()
 

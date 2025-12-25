@@ -13,6 +13,7 @@ import { inputSanitizer } from '../utils/security';
 
 export interface WebSocketConnectionOptions {
   authToken: string;
+  characterId?: string; // MULTI-CHARACTER: Selected character ID for WebSocket connection
   sessionId: string | null;
   onConnected?: () => void;
   onMessage?: (event: MessageEvent) => void;
@@ -39,7 +40,7 @@ export interface WebSocketConnectionResult {
  * AI: WebSocket requires session ID for authentication and connection tracking.
  */
 export function useWebSocketConnection(options: WebSocketConnectionOptions): WebSocketConnectionResult {
-  const { authToken, sessionId, onConnected, onMessage, onError, onDisconnect } = options;
+  const { authToken, characterId, sessionId, onConnected, onMessage, onError, onDisconnect } = options;
 
   const resourceManager = useResourceCleanup();
   const websocketRef = useRef<WebSocket | null>(null);
@@ -181,7 +182,11 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
       // CRITICAL FIX: Pass JWT via query parameter, not subprotocol
       // JWT tokens contain characters (dots, etc.) that are invalid in WebSocket subprotocols
       // This causes the browser to reject the handshake
-      const wsUrl = `/api/ws?session_id=${encodeURIComponent(sessionId)}&token=${encodeURIComponent(authToken)}`;
+      // MULTI-CHARACTER: Include character_id if provided to connect as the selected character
+      let wsUrl = `/api/ws?session_id=${encodeURIComponent(sessionId)}&token=${encodeURIComponent(authToken)}`;
+      if (characterId) {
+        wsUrl += `&character_id=${encodeURIComponent(characterId)}`;
+      }
 
       logger.info('WebSocketConnection', 'Connecting to WebSocket', { url: wsUrl });
 
@@ -261,7 +266,7 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
       setLastError(error instanceof Error ? error.message : 'Unknown WebSocket error');
       onErrorRef.current?.(error as Event);
     }
-  }, [authToken, sessionId, resourceManager, disconnect]);
+  }, [authToken, characterId, sessionId, resourceManager, disconnect]);
 
   useEffect(() => {
     connectRef.current = connect;

@@ -28,6 +28,7 @@ import type { GameState } from './utils/stateUpdateUtils';
 interface GameClientV2ContainerProps {
   playerName: string;
   authToken: string;
+  characterId?: string; // MULTI-CHARACTER: Selected character ID for WebSocket connection
   onLogout?: () => void;
   isLoggingOut?: boolean;
   onDisconnect?: (disconnectFn: () => void) => void;
@@ -38,6 +39,7 @@ interface GameClientV2ContainerProps {
 export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   playerName,
   authToken,
+  characterId,
   onLogout,
   isLoggingOut = false,
   onDisconnect: _onDisconnect,
@@ -72,18 +74,26 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   const { detector } = useMemoryMonitor('GameClientV2Container');
 
   // Container store hooks - kept for future use
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const _openContainer = useContainerStore(state => state.openContainer);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const _closeContainer = useContainerStore(state => state.closeContainer);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const _updateContainer = useContainerStore(state => state.updateContainer);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const _handleContainerDecayed = useContainerStore(state => state.handleContainerDecayed);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const _getContainer = useContainerStore(state => state.getContainer);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const _isContainerOpen = useContainerStore(state => state.isContainerOpen);
+
+  // Mark as intentionally used to satisfy TypeScript (kept for future use)
+  void _openContainer;
+  void _closeContainer;
+  void _updateContainer;
+  void _handleContainerDecayed;
+  void _getContainer;
+  void _isContainerOpen;
 
   useEffect(() => {
     detector.start();
@@ -168,6 +178,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   const { isConnected, isConnecting, error, reconnectAttempts, sendCommand, disconnect } = useGameConnectionManagement({
     authToken,
     playerName,
+    characterId,
     onLogout,
     onGameEvent: handleGameEvent,
     setGameState,

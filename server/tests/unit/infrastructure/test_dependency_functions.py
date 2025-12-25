@@ -5,7 +5,7 @@ This module tests that the PlayerServiceDep and RoomServiceDep functions
 work correctly and return the expected service instances.
 """
 
-from unittest.mock import AsyncMock
+from typing import Any, cast
 
 import pytest
 
@@ -19,7 +19,11 @@ class TestDependencyFunctions:
     @pytest.fixture
     def mock_persistence(self):
         """Create mock persistence layer."""
-        mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        from unittest.mock import MagicMock
+
+        mock_persistence = MagicMock()
         mock_persistence.async_list_players.return_value = []
         mock_persistence.async_get_player.return_value = None
         mock_persistence.async_get_room.return_value = None
@@ -110,8 +114,8 @@ class TestDependencyFunctions:
         assert player_service1 is player_service2  # Same instance from container
         assert room_service1 is room_service2  # Same instance from container
         # Different service types are still different instances
-        assert player_service1 is not room_service1
-        assert player_service2 is not room_service2
+        assert cast(Any, player_service1) is not cast(Any, room_service1)
+        assert cast(Any, player_service2) is not cast(Any, room_service2)
 
     def test_dependency_functions_with_container_persistence(self, container_test_client):
         """
@@ -148,7 +152,7 @@ class TestDependencyFunctions:
             assert player_service.persistence is container_persistence
             assert room_service.persistence is container_persistence
 
-    def test_dependency_function_error_handling(self):
+    def test_dependency_function_error_handling(self) -> None:
         """Test that dependency functions handle errors gracefully."""
         from unittest.mock import Mock
 
@@ -233,7 +237,7 @@ class TestDependencyFunctions:
         assert len(errors) == 0, f"Thread safety errors: {errors}"
         assert len(results) == 10, "Not all workers completed successfully"
 
-    def test_dependency_functions_require_container(self):
+    def test_dependency_functions_require_container(self) -> None:
         """
         Test dependency functions require ApplicationContainer to be initialized.
 

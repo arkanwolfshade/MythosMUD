@@ -516,7 +516,7 @@ class TestChannelBroadcastingStrategiesLegacy:
 class TestChannelBroadcastingStrategyFactory:
     """Test suite for channel broadcasting strategy factory."""
 
-    def test_get_strategy_for_known_channels(self):
+    def test_get_strategy_for_known_channels(self) -> None:
         """Test getting strategies for known channel types."""
         factory = ChannelBroadcastingStrategyFactory()
 
@@ -533,7 +533,7 @@ class TestChannelBroadcastingStrategyFactory:
         assert isinstance(factory.get_strategy("system"), SystemAdminChannelStrategy)
         assert isinstance(factory.get_strategy("admin"), SystemAdminChannelStrategy)
 
-    def test_get_strategy_for_unknown_channel(self):
+    def test_get_strategy_for_unknown_channel(self) -> None:
         """Test getting strategy for unknown channel type."""
         factory = ChannelBroadcastingStrategyFactory()
 
@@ -541,7 +541,7 @@ class TestChannelBroadcastingStrategyFactory:
         assert isinstance(strategy, UnknownChannelStrategy)
         assert strategy.channel_type == "unknown_channel"
 
-    def test_register_new_strategy(self):
+    def test_register_new_strategy(self) -> None:
         """Test registering a new strategy."""
         factory = ChannelBroadcastingStrategyFactory()
 
@@ -559,7 +559,7 @@ class TestChannelBroadcastingStrategyFactory:
         retrieved_strategy = factory.get_strategy("custom")
         assert retrieved_strategy is custom_strategy
 
-    def test_global_factory_instance(self):
+    def test_global_factory_instance(self) -> None:
         """Test that the global factory instance works correctly."""
         # Test that the global factory has all expected strategies
         assert isinstance(channel_strategy_factory.get_strategy("say"), RoomBasedChannelStrategy)
@@ -569,30 +569,34 @@ class TestChannelBroadcastingStrategyFactory:
         assert isinstance(channel_strategy_factory.get_strategy("system"), SystemAdminChannelStrategy)
         assert isinstance(channel_strategy_factory.get_strategy("admin"), SystemAdminChannelStrategy)
 
-    def test_strategy_channel_types(self):
+    def test_strategy_channel_types(self) -> None:
         """Test that strategies have correct channel types."""
+        from typing import Any, cast
+
         factory = ChannelBroadcastingStrategyFactory()
 
         # Test room-based strategies
         say_strategy = factory.get_strategy("say")
-        assert say_strategy.channel_type == "say"
+        assert cast(Any, say_strategy).channel_type == "say"
 
         local_strategy = factory.get_strategy("local")
-        assert local_strategy.channel_type == "local"
+        assert cast(Any, local_strategy).channel_type == "local"
 
         # Test system/admin strategies
         system_strategy = factory.get_strategy("system")
-        assert system_strategy.channel_type == "system"
+        assert cast(Any, system_strategy).channel_type == "system"
 
         admin_strategy = factory.get_strategy("admin")
-        assert admin_strategy.channel_type == "admin"
+        assert cast(Any, admin_strategy).channel_type == "admin"
 
-    def test_unknown_strategy_channel_type(self):
+    def test_unknown_strategy_channel_type(self) -> None:
         """Test that unknown strategy has correct channel type."""
+        from typing import Any, cast
+
         factory = ChannelBroadcastingStrategyFactory()
 
         strategy = factory.get_strategy("unknown_channel")
-        assert strategy.channel_type == "unknown_channel"
+        assert cast(Any, strategy).channel_type == "unknown_channel"
 
 
 class TestStrategyIntegration:
@@ -618,19 +622,16 @@ class TestStrategyIntegration:
         nats_handler = NATSMessageHandler(mock_nats_service)
 
         # Mock the room filtering method
-        nats_handler._broadcast_to_room_with_filtering = AsyncMock()
+        with patch.object(nats_handler, "_broadcast_to_room_with_filtering", new_callable=AsyncMock) as mock_broadcast:
+            # Test room-based channel
+            chat_event = {"type": "chat", "data": {"message": "Hello"}}
+            nats_handler.connection_manager = mock_connection_manager
 
-        # Test room-based channel
-        chat_event = {"type": "chat", "data": {"message": "Hello"}}
-        nats_handler.connection_manager = mock_connection_manager
+            await nats_handler._broadcast_by_channel_type("say", chat_event, "test_room", "", None, self.SENDER_1)
 
-        await nats_handler._broadcast_by_channel_type("say", chat_event, "test_room", "", None, self.SENDER_1)
-
-        # Should call the room filtering method
-        # _broadcast_to_room_with_filtering expects string sender_id, so assert against string
-        nats_handler._broadcast_to_room_with_filtering.assert_called_once_with(
-            "test_room", chat_event, str(self.SENDER_1), "say"
-        )
+            # Should call the room filtering method
+            # _broadcast_to_room_with_filtering expects string sender_id, so assert against string
+            mock_broadcast.assert_called_once_with("test_room", chat_event, str(self.SENDER_1), "say")
 
     @pytest.mark.asyncio
     async def test_strategy_integration_global_channel(self, mock_connection_manager):

@@ -37,5 +37,22 @@
     "env.example": "properties",
     "env.production.example": "properties"
   },
-  "makefile.configureOnOpen": true
+  "makefile.configureOnOpen": true,
+  "editor.fontFamily": "HackNerd, Consolas, 'Courier New', monospace",
+  "editor.cursorStyle": "block",
+  "editor.wordWrap": "wordWrapColumn",
+  "editor.accessibilitySupport": "off",
+  "editor.experimentalGpuAcceleration": "on",
+  "editor.foldingImportsByDefault": false,
+  "editor.guides.bracketPairs": "active",
+  "editor.lightbulb.enabled": "onCode",
+  "editor.renderLineHighlightOnlyWhenFocus": true,
+  "editor.smoothScrolling": true,
+  "editor.wordWrapColumn": 120,
+  "git.alwaysSignOff": true,
+  "git.detectSubmodules": true,
+  "git.diagnosticsCommitHook.Enabled": true,
+  "git.enableCommitSigning": true,
+  "git.pruneOnFetch": false,
+  "git.pullBeforeCheckout": true
 }

@@ -14,6 +14,8 @@ from server.commands.npc_admin_commands import (
     handle_npc_spawn_command,
 )
 
+pytestmark = pytest.mark.integration
+
 
 class TestNPCInstanceCommands:
     """Test class for NPC instance management commands."""

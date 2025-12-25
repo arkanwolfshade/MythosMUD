@@ -5,6 +5,8 @@ This module tests the JSON schema validation for combat data stored in
 NPC definition JSON fields (base_stats and behavior_config).
 """
 
+from typing import Any
+
 import pytest
 
 from server.schemas.combat_schema import (
@@ -26,7 +28,7 @@ from server.schemas.combat_schema import (
 class TestCombatSchemaValidation:
     """Test cases for combat schema validation functions."""
 
-    def test_validate_base_stats_combat_data_valid(self):
+    def test_validate_base_stats_combat_data_valid(self) -> None:
         """Test validation of valid base stats combat data."""
         valid_data = {
             "determination_points": 50,
@@ -40,7 +42,7 @@ class TestCombatSchemaValidation:
         # Should not raise any exception
         validate_base_stats_combat_data(valid_data)
 
-    def test_validate_base_stats_combat_data_missing_required(self):
+    def test_validate_base_stats_combat_data_missing_required(self) -> None:
         """Test validation fails when required fields are missing."""
         invalid_data = {
             "determination_points": 50,
@@ -52,7 +54,7 @@ class TestCombatSchemaValidation:
 
         assert "Base stats combat data validation failed" in str(exc_info.value)
 
-    def test_validate_base_stats_combat_data_invalid_hp(self):
+    def test_validate_base_stats_combat_data_invalid_hp(self) -> None:
         """Test validation fails with invalid DP values."""
         invalid_data = {
             "determination_points": -10,  # Negative DP
@@ -63,7 +65,7 @@ class TestCombatSchemaValidation:
         with pytest.raises(CombatSchemaValidationError):
             validate_base_stats_combat_data(invalid_data)
 
-    def test_validate_base_stats_combat_data_invalid_max_hp(self):
+    def test_validate_base_stats_combat_data_invalid_max_hp(self) -> None:
         """Test validation fails with invalid max DP values."""
         invalid_data = {
             "determination_points": 50,
@@ -74,7 +76,7 @@ class TestCombatSchemaValidation:
         with pytest.raises(CombatSchemaValidationError):
             validate_base_stats_combat_data(invalid_data)
 
-    def test_validate_base_stats_combat_data_invalid_xp_value(self):
+    def test_validate_base_stats_combat_data_invalid_xp_value(self) -> None:
         """Test validation fails with negative XP value."""
         invalid_data = {
             "determination_points": 50,
@@ -85,7 +87,7 @@ class TestCombatSchemaValidation:
         with pytest.raises(CombatSchemaValidationError):
             validate_base_stats_combat_data(invalid_data)
 
-    def test_validate_base_stats_combat_data_invalid_dexterity(self):
+    def test_validate_base_stats_combat_data_invalid_dexterity(self) -> None:
         """Test validation fails with invalid dexterity values."""
         invalid_data = {
             "determination_points": 50,
@@ -97,7 +99,7 @@ class TestCombatSchemaValidation:
         with pytest.raises(CombatSchemaValidationError):
             validate_base_stats_combat_data(invalid_data)
 
-    def test_validate_base_stats_combat_data_invalid_strength(self):
+    def test_validate_base_stats_combat_data_invalid_strength(self) -> None:
         """Test validation fails with invalid strength values."""
         invalid_data = {
             "determination_points": 50,
@@ -109,7 +111,7 @@ class TestCombatSchemaValidation:
         with pytest.raises(CombatSchemaValidationError):
             validate_base_stats_combat_data(invalid_data)
 
-    def test_validate_base_stats_combat_data_invalid_constitution(self):
+    def test_validate_base_stats_combat_data_invalid_constitution(self) -> None:
         """Test validation fails with invalid constitution values."""
         invalid_data = {
             "determination_points": 50,
@@ -121,7 +123,7 @@ class TestCombatSchemaValidation:
         with pytest.raises(CombatSchemaValidationError):
             validate_base_stats_combat_data(invalid_data)
 
-    def test_validate_behavior_config_combat_data_valid(self):
+    def test_validate_behavior_config_combat_data_valid(self) -> None:
         """Test validation of valid behavior config combat data."""
         valid_data = {
             "combat_messages": {
@@ -140,7 +142,7 @@ class TestCombatSchemaValidation:
         # Should not raise any exception
         validate_behavior_config_combat_data(valid_data)
 
-    def test_validate_behavior_config_combat_data_missing_combat_messages(self):
+    def test_validate_behavior_config_combat_data_missing_combat_messages(self) -> None:
         """Test validation fails when combat messages are missing required fields."""
         invalid_data = {
             "combat_messages": {
@@ -152,7 +154,7 @@ class TestCombatSchemaValidation:
         with pytest.raises(CombatSchemaValidationError):
             validate_behavior_config_combat_data(invalid_data)
 
-    def test_validate_behavior_config_combat_data_invalid_aggression_level(self):
+    def test_validate_behavior_config_combat_data_invalid_aggression_level(self) -> None:
         """Test validation fails with invalid aggression level."""
         invalid_data = {
             "combat_behavior": {
@@ -165,7 +167,7 @@ class TestCombatSchemaValidation:
         with pytest.raises(CombatSchemaValidationError):
             validate_behavior_config_combat_data(invalid_data)
 
-    def test_validate_behavior_config_combat_data_invalid_retreat_threshold(self):
+    def test_validate_behavior_config_combat_data_invalid_retreat_threshold(self) -> None:
         """Test validation fails with invalid retreat threshold."""
         invalid_data = {
             "combat_behavior": {
@@ -178,7 +180,7 @@ class TestCombatSchemaValidation:
         with pytest.raises(CombatSchemaValidationError):
             validate_behavior_config_combat_data(invalid_data)
 
-    def test_validate_behavior_config_combat_data_invalid_combat_timeout(self):
+    def test_validate_behavior_config_combat_data_invalid_combat_timeout(self) -> None:
         """Test validation fails with invalid combat timeout."""
         invalid_data = {
             "combat_behavior": {
@@ -191,7 +193,7 @@ class TestCombatSchemaValidation:
         with pytest.raises(CombatSchemaValidationError):
             validate_behavior_config_combat_data(invalid_data)
 
-    def test_validate_combat_messages_valid(self):
+    def test_validate_combat_messages_valid(self) -> None:
         """Test validation of valid combat messages."""
         valid_messages = {
             "attack_attacker": "You attack {target_name} for {damage} damage",
@@ -203,7 +205,7 @@ class TestCombatSchemaValidation:
         # Should not raise any exception
         validate_combat_messages(valid_messages)
 
-    def test_validate_combat_messages_missing_required(self):
+    def test_validate_combat_messages_missing_required(self) -> None:
         """Test validation fails when required messages are missing."""
         invalid_messages = {
             "attack_attacker": "You attack {target_name} for {damage} damage",
@@ -213,7 +215,7 @@ class TestCombatSchemaValidation:
         with pytest.raises(CombatSchemaValidationError):
             validate_combat_messages(invalid_messages)
 
-    def test_validate_combat_messages_empty_string(self):
+    def test_validate_combat_messages_empty_string(self) -> None:
         """Test validation fails with empty message strings."""
         invalid_messages = {
             "attack_attacker": "",  # Empty string
@@ -225,7 +227,7 @@ class TestCombatSchemaValidation:
         with pytest.raises(CombatSchemaValidationError):
             validate_combat_messages(invalid_messages)
 
-    def test_validate_message_template_variables_valid(self):
+    def test_validate_message_template_variables_valid(self) -> None:
         """Test validation of message template variables."""
         valid_messages = {
             "attack_attacker": "You attack {target_name} for {damage} damage",
@@ -237,7 +239,7 @@ class TestCombatSchemaValidation:
         # Should not raise any exception
         validate_message_template_variables(valid_messages)
 
-    def test_validate_message_template_variables_missing_target_name(self):
+    def test_validate_message_template_variables_missing_target_name(self) -> None:
         """Test validation fails when required variables are missing."""
         invalid_messages = {
             "attack_attacker": "You attack for {damage} damage",  # Missing {target_name}
@@ -251,7 +253,7 @@ class TestCombatSchemaValidation:
 
         assert "missing required variable '{target_name}'" in str(exc_info.value)
 
-    def test_validate_message_template_variables_missing_damage(self):
+    def test_validate_message_template_variables_missing_damage(self) -> None:
         """Test validation fails when damage variable is missing."""
         invalid_messages = {
             "attack_attacker": "You attack {target_name}",  # Missing {damage}
@@ -265,7 +267,7 @@ class TestCombatSchemaValidation:
 
         assert "missing required variable '{damage}'" in str(exc_info.value)
 
-    def test_validate_message_template_variables_missing_attacker_name(self):
+    def test_validate_message_template_variables_missing_attacker_name(self) -> None:
         """Test validation fails when attacker_name variable is missing."""
         invalid_messages = {
             "attack_attacker": "You attack {target_name} for {damage} damage",
@@ -279,7 +281,7 @@ class TestCombatSchemaValidation:
 
         assert "missing required variable '{attacker_name}'" in str(exc_info.value)
 
-    def test_validate_message_template_variables_missing_npc_name(self):
+    def test_validate_message_template_variables_missing_npc_name(self) -> None:
         """Test validation fails when npc_name variable is missing."""
         invalid_messages = {
             "attack_attacker": "You attack {target_name} for {damage} damage",
@@ -293,7 +295,7 @@ class TestCombatSchemaValidation:
 
         assert "missing required variable '{npc_name}'" in str(exc_info.value)
 
-    def test_validate_message_template_variables_skips_missing_message_types(self):
+    def test_validate_message_template_variables_skips_missing_message_types(self) -> None:
         """Test validation skips missing message types."""
         partial_messages = {
             "attack_attacker": "You attack {target_name} for {damage} damage",
@@ -307,7 +309,7 @@ class TestCombatSchemaValidation:
 class TestCombatDataDefaults:
     """Test cases for default combat data functions."""
 
-    def test_add_default_combat_data_to_stats_complete(self):
+    def test_add_default_combat_data_to_stats_complete(self) -> None:
         """Test adding default combat data to complete stats."""
         stats = {
             "determination_points": 75,
@@ -330,7 +332,7 @@ class TestCombatDataDefaults:
         assert result["constitution"] == 8
         assert result["custom_field"] == "custom_value"
 
-    def test_add_default_combat_data_to_stats_partial(self):
+    def test_add_default_combat_data_to_stats_partial(self) -> None:
         """Test adding default combat data to partial stats."""
         stats = {
             "determination_points": 50,
@@ -348,16 +350,16 @@ class TestCombatDataDefaults:
         assert result["constitution"] == DEFAULT_COMBAT_STATS["constitution"]
         assert result["custom_field"] == "custom_value"
 
-    def test_add_default_combat_data_to_stats_empty(self):
+    def test_add_default_combat_data_to_stats_empty(self) -> None:
         """Test adding default combat data to empty stats."""
-        stats = {}
+        stats: dict[str, Any] = {}
 
         result = add_default_combat_data_to_stats(stats)
 
         # Should add all defaults
         assert result == DEFAULT_COMBAT_STATS
 
-    def test_add_default_combat_data_to_config_complete(self):
+    def test_add_default_combat_data_to_config_complete(self) -> None:
         """Test adding default combat data to complete config."""
         config = {
             "combat_messages": {
@@ -381,7 +383,7 @@ class TestCombatDataDefaults:
         assert result["combat_behavior"]["aggression_level"] == "aggressive"
         assert result["custom_field"] == "custom_value"
 
-    def test_add_default_combat_data_to_config_partial(self):
+    def test_add_default_combat_data_to_config_partial(self) -> None:
         """Test adding default combat data to partial config."""
         config = {
             "combat_messages": {
@@ -397,9 +399,9 @@ class TestCombatDataDefaults:
         assert result["combat_behavior"] == DEFAULT_COMBAT_BEHAVIOR
         assert result["custom_field"] == "custom_value"
 
-    def test_add_default_combat_data_to_config_empty(self):
+    def test_add_default_combat_data_to_config_empty(self) -> None:
         """Test adding default combat data to empty config."""
-        config = {}
+        config: dict[str, Any] = {}
 
         result = add_default_combat_data_to_config(config)
 
@@ -411,12 +413,12 @@ class TestCombatDataDefaults:
 class TestNPCCombatDataValidation:
     """Test cases for NPC combat data validation."""
 
-    def test_validate_npc_combat_data_valid(self):
+    def test_validate_npc_combat_data_valid(self) -> None:
         """Test validation of valid NPC combat data."""
         # Mock NPC definition
-        npc_definition = Mock()
-        npc_definition.name = "Test NPC"
-        npc_definition.get_base_stats = lambda: {
+        npc_definition = Mock(name="Test NPC")
+        # Dynamic attribute assignment required for test mocking
+        npc_definition.get_base_stats = lambda: {  # type: ignore[attr-defined]  # pylint: disable=attribute-defined-outside-init
             "determination_points": 50,
             "max_dp": 100,
             "xp_value": 10,
@@ -424,7 +426,7 @@ class TestNPCCombatDataValidation:
             "strength": 15,
             "constitution": 8,
         }
-        npc_definition.get_behavior_config = lambda: {
+        npc_definition.get_behavior_config = lambda: {  # type: ignore[attr-defined]  # pylint: disable=attribute-defined-outside-init
             "combat_messages": {
                 "attack_attacker": "You attack {target_name} for {damage} damage",
                 "attack_defender": "{attacker_name} attacks you for {damage} damage",
@@ -441,34 +443,32 @@ class TestNPCCombatDataValidation:
         # Should not raise any exception
         validate_npc_combat_data(npc_definition)
 
-    def test_validate_npc_combat_data_invalid_base_stats(self):
+    def test_validate_npc_combat_data_invalid_base_stats(self) -> None:
         """Test validation fails with invalid base stats."""
         # Mock NPC definition with invalid base stats
-        npc_definition = Mock()
-        npc_definition.name = "Test NPC"
-        npc_definition.get_base_stats = lambda: {
+        npc_definition = Mock(name="Test NPC")
+        npc_definition.get_base_stats = lambda: {  # type: ignore[attr-defined]  # pylint: disable=attribute-defined-outside-init
             "determination_points": -10,  # Invalid DP
             "max_dp": 100,
             "xp_value": 10,
         }
-        npc_definition.get_behavior_config = lambda: {}
+        npc_definition.get_behavior_config = lambda: {}  # type: ignore[attr-defined]  # pylint: disable=attribute-defined-outside-init
 
         with pytest.raises(CombatSchemaValidationError) as exc_info:
             validate_npc_combat_data(npc_definition)
 
         assert "NPC Test NPC base stats validation failed" in str(exc_info.value)
 
-    def test_validate_npc_combat_data_invalid_behavior_config(self):
+    def test_validate_npc_combat_data_invalid_behavior_config(self) -> None:
         """Test validation fails with invalid behavior config."""
         # Mock NPC definition with invalid behavior config
-        npc_definition = Mock()
-        npc_definition.name = "Test NPC"
-        npc_definition.get_base_stats = lambda: {
+        npc_definition = Mock(name="Test NPC")
+        npc_definition.get_base_stats = lambda: {  # type: ignore[attr-defined]  # pylint: disable=attribute-defined-outside-init
             "determination_points": 50,
             "max_dp": 100,
             "xp_value": 10,
         }
-        npc_definition.get_behavior_config = lambda: {
+        npc_definition.get_behavior_config = lambda: {  # type: ignore[attr-defined]  # pylint: disable=attribute-defined-outside-init
             "combat_behavior": {
                 "aggression_level": "invalid_level",  # Invalid aggression level
             },
@@ -479,17 +479,16 @@ class TestNPCCombatDataValidation:
 
         assert "NPC Test NPC behavior config validation failed" in str(exc_info.value)
 
-    def test_validate_npc_combat_data_invalid_combat_messages(self):
+    def test_validate_npc_combat_data_invalid_combat_messages(self) -> None:
         """Test validation fails with invalid combat messages."""
         # Mock NPC definition with invalid combat messages
-        npc_definition = Mock()
-        npc_definition.name = "Test NPC"
-        npc_definition.get_base_stats = lambda: {
+        npc_definition = Mock(name="Test NPC")
+        npc_definition.get_base_stats = lambda: {  # type: ignore[attr-defined]  # pylint: disable=attribute-defined-outside-init
             "determination_points": 50,
             "max_dp": 100,
             "xp_value": 10,
         }
-        npc_definition.get_behavior_config = lambda: {
+        npc_definition.get_behavior_config = lambda: {  # type: ignore[attr-defined]  # pylint: disable=attribute-defined-outside-init
             "combat_messages": {
                 "attack_attacker": "You attack {target_name}",  # Missing {damage}
             },
@@ -504,13 +503,11 @@ class TestNPCCombatDataValidation:
 class TestCombatStatsSummary:
     """Test cases for combat stats summary function."""
 
-    def test_get_combat_stats_summary_complete(self):
+    def test_get_combat_stats_summary_complete(self) -> None:
         """Test getting combat stats summary with complete data."""
         # Mock NPC definition
-        npc_definition = Mock()
-        npc_definition.name = "Test NPC"
-        npc_definition.npc_type = "aggressive_mob"
-        npc_definition.get_base_stats = lambda: {
+        npc_definition = Mock(name="Test NPC", npc_type="aggressive_mob")
+        npc_definition.get_base_stats = lambda: {  # type: ignore[attr-defined]  # pylint: disable=attribute-defined-outside-init
             "determination_points": 75,
             "max_dp": 100,
             "xp_value": 15,
@@ -518,7 +515,7 @@ class TestCombatStatsSummary:
             "strength": 15,
             "constitution": 8,
         }
-        npc_definition.get_behavior_config = lambda: {
+        npc_definition.get_behavior_config = lambda: {  # type: ignore[attr-defined]  # pylint: disable=attribute-defined-outside-init
             "combat_messages": {"attack_attacker": "You attack {target_name} for {damage} damage"},
             "combat_behavior": {"aggression_level": "aggressive"},
         }
@@ -536,18 +533,16 @@ class TestCombatStatsSummary:
         assert result["has_combat_messages"] is True
         assert result["has_combat_behavior"] is True
 
-    def test_get_combat_stats_summary_partial(self):
+    def test_get_combat_stats_summary_partial(self) -> None:
         """Test getting combat stats summary with partial data."""
         # Mock NPC definition with partial data
-        npc_definition = Mock()
-        npc_definition.name = "Test NPC"
-        npc_definition.npc_type = "passive_mob"
-        npc_definition.get_base_stats = lambda: {
+        npc_definition = Mock(name="Test NPC", npc_type="passive_mob")
+        npc_definition.get_base_stats = lambda: {  # type: ignore[attr-defined]  # pylint: disable=attribute-defined-outside-init
             "determination_points": 50,
             "max_dp": 50,
             "xp_value": 5,
         }
-        npc_definition.get_behavior_config = lambda: {}
+        npc_definition.get_behavior_config = lambda: {}  # type: ignore[attr-defined]  # pylint: disable=attribute-defined-outside-init
 
         result = get_combat_stats_summary(npc_definition)
 
@@ -562,14 +557,12 @@ class TestCombatStatsSummary:
         assert result["has_combat_messages"] is False
         assert result["has_combat_behavior"] is False
 
-    def test_get_combat_stats_summary_empty(self):
+    def test_get_combat_stats_summary_empty(self) -> None:
         """Test getting combat stats summary with empty data."""
         # Mock NPC definition with empty data
-        npc_definition = Mock()
-        npc_definition.name = "Test NPC"
-        npc_definition.npc_type = "neutral_mob"
-        npc_definition.get_base_stats = lambda: {}
-        npc_definition.get_behavior_config = lambda: {}
+        npc_definition = Mock(name="Test NPC", npc_type="neutral_mob")
+        npc_definition.get_base_stats = lambda: {}  # type: ignore[attr-defined]  # pylint: disable=attribute-defined-outside-init
+        npc_definition.get_behavior_config = lambda: {}  # type: ignore[attr-defined]  # pylint: disable=attribute-defined-outside-init
 
         result = get_combat_stats_summary(npc_definition)
 

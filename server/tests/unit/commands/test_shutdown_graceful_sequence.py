@@ -8,19 +8,20 @@ As noted in the Cultes des Goules, proper closure of dimensional portals
 requires a specific sequence of rituals.
 """
 
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 from uuid import uuid4
 
 import pytest
 
 from server.commands.admin_shutdown_command import execute_shutdown_sequence
+from server.exceptions import DatabaseError
 
 
 class TestGracefulShutdownSequence:
     """Test the complete graceful shutdown sequence."""
 
     @pytest.mark.asyncio
-    async def test_execute_shutdown_sequence_complete(self):
+    async def test_execute_shutdown_sequence_complete(self) -> None:
         """Test complete shutdown sequence with all services present."""
         # Create mock app with all services
         mock_app = MagicMock()
@@ -52,7 +53,8 @@ class TestGracefulShutdownSequence:
 
         # Mock persistence
         mock_persistence = MagicMock()
-        mock_persistence.save_player = MagicMock()
+        # save_player is async, so use AsyncMock
+        mock_persistence.save_player = AsyncMock()
         # Mock get_player to return Player objects
         mock_player1 = MagicMock()
         mock_player1.player_id = player_id1
@@ -60,13 +62,12 @@ class TestGracefulShutdownSequence:
         mock_player2.player_id = player_id2
         mock_player3 = MagicMock()
         mock_player3.player_id = player_id3
-        mock_persistence.get_player = MagicMock(
-            side_effect=lambda player_id: {
-                player_id1: mock_player1,
-                player_id2: mock_player2,
-                player_id3: mock_player3,
-            }.get(player_id)
-        )
+        player_map = {
+            player_id1: mock_player1,
+            player_id2: mock_player2,
+            player_id3: mock_player3,
+        }
+        mock_persistence.get_player = MagicMock(side_effect=player_map.get)
         mock_app.state.persistence = mock_persistence
 
         # Mock NPC services
@@ -95,8 +96,28 @@ class TestGracefulShutdownSequence:
         mock_task_registry.shutdown_all = AsyncMock(return_value=True)
         mock_app.state.task_registry = mock_task_registry
 
-        # Execute shutdown sequence
-        await execute_shutdown_sequence(mock_app)
+        # Ensure shutdown_data doesn't contain a coroutine that would cause warnings
+        # If shutdown_data exists, ensure the task is properly mocked
+        if hasattr(mock_app.state, "shutdown_data") and mock_app.state.shutdown_data:
+            shutdown_data = mock_app.state.shutdown_data
+            if "task" in shutdown_data:
+                # Ensure the task is a Mock, not a coroutine
+                mock_task = MagicMock()
+                mock_task.done = MagicMock(return_value=True)
+                shutdown_data["task"] = mock_task
+
+        # Patch asyncio.create_task to prevent background task warnings from countdown_loop
+        # The countdown_loop warning comes from app.state.shutdown_data containing a task
+        # We ensure shutdown_data is properly mocked before execution
+        def create_task_side_effect(coro):
+            # Close the coroutine to prevent "never awaited" warning
+            if hasattr(coro, "close"):
+                coro.close()
+            return MagicMock()
+
+        with patch("asyncio.create_task", side_effect=create_task_side_effect):
+            # Execute shutdown sequence
+            await execute_shutdown_sequence(mock_app)
 
         # Verify Phase 1: Player persistence
         assert mock_persistence.save_player.call_count == 3
@@ -128,7 +149,7 @@ class TestGracefulShutdownSequence:
         mock_task_registry.shutdown_all.assert_called_once_with(timeout=5.0)
 
     @pytest.mark.asyncio
-    async def test_execute_shutdown_sequence_no_players(self):
+    async def test_execute_shutdown_sequence_no_players(self) -> None:
         """Test shutdown sequence with no connected players."""
         mock_app = MagicMock()
 
@@ -168,7 +189,7 @@ class TestGracefulShutdownSequence:
         mock_task_registry.shutdown_all.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_execute_shutdown_sequence_player_persistence_error(self):
+    async def test_execute_shutdown_sequence_player_persistence_error(self) -> None:
         """Test shutdown sequence continues even if player persistence fails."""
         mock_app = MagicMock()
 
@@ -192,7 +213,7 @@ class TestGracefulShutdownSequence:
         mock_persistence = MagicMock()
         mock_persistence.save_player = AsyncMock(
             side_effect=[
-                Exception("Database error"),
+                DatabaseError("Database error"),
                 None,  # Second save succeeds
             ]
         )
@@ -201,12 +222,11 @@ class TestGracefulShutdownSequence:
         mock_player1.player_id = player_id1
         mock_player2 = MagicMock()
         mock_player2.player_id = player_id2
-        mock_persistence.get_player = MagicMock(
-            side_effect=lambda player_id: {
-                player_id1: mock_player1,
-                player_id2: mock_player2,
-            }.get(player_id)
-        )
+        player_map = {
+            player_id1: mock_player1,
+            player_id2: mock_player2,
+        }
+        mock_persistence.get_player = MagicMock(side_effect=player_map.get)
         mock_app.state.persistence = mock_persistence
 
         # No NPC services
@@ -238,7 +258,7 @@ class TestGracefulShutdownSequence:
         mock_task_registry.shutdown_all.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_execute_shutdown_sequence_npc_despawn_error(self):
+    async def test_execute_shutdown_sequence_npc_despawn_error(self) -> None:
         """Test shutdown sequence continues even if NPC despawn fails."""
         mock_app = MagicMock()
 
@@ -262,7 +282,7 @@ class TestGracefulShutdownSequence:
         }
         mock_npc_lifecycle_manager.despawn_npc = MagicMock(
             side_effect=[
-                Exception("Despawn error"),
+                OSError("Despawn error"),
                 True,  # Second despawn succeeds
             ]
         )
@@ -293,7 +313,7 @@ class TestGracefulShutdownSequence:
         mock_task_registry.shutdown_all.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_execute_shutdown_sequence_task_registry_timeout(self):
+    async def test_execute_shutdown_sequence_task_registry_timeout(self) -> None:
         """Test shutdown sequence handles task registry timeout gracefully."""
         mock_app = MagicMock()
 
@@ -323,7 +343,7 @@ class TestGracefulShutdownSequence:
         mock_task_registry.shutdown_all.assert_called_once_with(timeout=5.0)
 
     @pytest.mark.asyncio
-    async def test_execute_shutdown_sequence_missing_services(self):
+    async def test_execute_shutdown_sequence_missing_services(self) -> None:
         """Test shutdown sequence handles missing services gracefully."""
         mock_app = MagicMock()
 
@@ -342,7 +362,7 @@ class TestGracefulShutdownSequence:
         # Test should complete without errors
 
     @pytest.mark.asyncio
-    async def test_execute_shutdown_sequence_phase_ordering(self):
+    async def test_execute_shutdown_sequence_phase_ordering(self) -> None:
         """Test that shutdown phases execute in the correct order."""
         mock_app = MagicMock()
         execution_order = []
@@ -359,7 +379,7 @@ class TestGracefulShutdownSequence:
 
         mock_connection_manager.get_online_players = MagicMock(side_effect=record_get_players_call)
 
-        async def record_force_disconnect(*args, **kwargs):
+        async def record_force_disconnect(*_args, **_kwargs):
             execution_order.append("disconnect_player")
 
         mock_connection_manager.force_disconnect_player = AsyncMock(side_effect=record_force_disconnect)
@@ -379,11 +399,12 @@ class TestGracefulShutdownSequence:
             mock_player.player_id = player_id
             return mock_player
 
-        def record_save_player(player_obj):
+        async def record_save_player(player_obj):
             execution_order.append(f"save_player_{player_obj.player_id}")
 
         mock_persistence.get_player = MagicMock(side_effect=record_get_player)
-        mock_persistence.save_player = MagicMock(side_effect=record_save_player)
+        # save_player is async, so use AsyncMock
+        mock_persistence.save_player = AsyncMock(side_effect=record_save_player)
         mock_app.state.persistence = mock_persistence
 
         # Mock NPC services
@@ -393,7 +414,7 @@ class TestGracefulShutdownSequence:
         mock_npc_lifecycle_manager = MagicMock()
         mock_npc_lifecycle_manager.active_npcs = {"npc1": MagicMock()}
 
-        def record_despawn_npc(npc_id, **kwargs):
+        def record_despawn_npc(npc_id, **_kwargs):
             execution_order.append(f"despawn_npc_{npc_id}")
             return True
 
@@ -419,11 +440,19 @@ class TestGracefulShutdownSequence:
 
         # Mock task registry
         mock_task_registry = MagicMock()
+        mock_task = MagicMock()
 
-        async def record_shutdown_tasks(timeout):
+        def register_task_side_effect(coro, *_args, **_kwargs):
+            # Close the coroutine to prevent "never awaited" warning
+            coro.close()
+            return mock_task
+
+        async def record_shutdown_tasks(*args, **kwargs):  # pylint: disable=unused-argument
+            # Accept any arguments to match actual method signature (timeout may be passed as kwarg)
             execution_order.append("shutdown_tasks")
             return True
 
+        mock_task_registry.register_task.side_effect = register_task_side_effect
         mock_task_registry.shutdown_all = AsyncMock(side_effect=record_shutdown_tasks)
         mock_app.state.task_registry = mock_task_registry
 

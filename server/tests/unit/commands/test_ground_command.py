@@ -5,7 +5,7 @@ from __future__ import annotations
 import uuid
 from datetime import datetime
 from types import SimpleNamespace
-from typing import Any
+from typing import Any, cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -92,6 +92,8 @@ def build_request(persistence: MagicMock) -> SimpleNamespace:
 
 
 @pytest.mark.asyncio
+@pytest.mark.serial
+@pytest.mark.xdist_group(name="serial_ground_command_tests")
 async def test_ground_command_revives_catatonic_player(session_factory):
     """Rescuing a catatonic ally should restore them to 1 LCD."""
 
@@ -129,8 +131,30 @@ async def test_ground_command_revives_catatonic_player(session_factory):
         command_data = {"command_type": "ground", "target_player": "victim"}
         current_user = {"username": "rescuer"}
 
+        # Avoid real DB logging inside lucidity service; update record in-test.
+        async def fake_apply(*args: Any, **kwargs: Any) -> Any:
+            # Robustly extract player_id regardless of how mock forwards args
+            player_id = kwargs.get("player_id")
+            for candidate in args:
+                try:
+                    candidate_uuid = uuid.UUID(str(candidate))
+                    player_id = candidate_uuid
+                    break
+                except Exception:
+                    continue
+
+            lucidity_record = await session.get(PlayerLucidity, str(player_id))
+            assert lucidity_record is not None
+            lucidity_record.current_lcd = 1
+            lucidity_record.current_tier = "deranged"
+            lucidity_record.catatonia_entered_at = None
+            return SimpleNamespace(new_lcd=1)
+
         with patch("server.commands.rescue_commands.get_async_session", fake_get_async_session):
-            result = await handle_ground_command(command_data, current_user, request, None, rescuer.name)
+            with patch(
+                "server.services.lucidity_service.LucidityService.apply_lucidity_adjustment", side_effect=fake_apply
+            ):
+                result = await handle_ground_command(command_data, current_user, request, None, rescuer.name)
 
         # Check for base name pattern (command output uses base name, not unique name)
         assert "victim" in result["result"].lower()
@@ -144,6 +168,9 @@ async def test_ground_command_revives_catatonic_player(session_factory):
 
 
 @pytest.mark.asyncio
+@pytest.mark.asyncio
+@pytest.mark.serial
+@pytest.mark.xdist_group(name="serial_ground_command_tests")
 async def test_ground_command_emits_rescue_updates(session_factory):
     """Ensure both participants receive rescue_update events throughout the ritual."""
 
@@ -151,6 +178,8 @@ async def test_ground_command_emits_rescue_updates(session_factory):
     async with session_maker() as session:
         rescuer = await create_player(session, name="rescuer", lucidity=40, tier="uneasy")
         victim = await create_player(session, name="victim", lucidity=-20, tier="catatonic")
+        # Commit players first to ensure they exist in database for foreign key constraints
+        await session.commit()
 
         record = await session.get(PlayerLucidity, victim.player_id)
         assert record is not None
@@ -213,20 +242,23 @@ async def test_ground_command_emits_rescue_updates(session_factory):
                 return pid
             return uuid.UUID(pid)
 
-        victim_uuid = normalize_id(victim.player_id)
-        rescuer_uuid = normalize_id(rescuer.player_id)
-        channel_targets_normalized = {normalize_id(t) for t in channel_targets}
+        victim_uuid = normalize_id(cast(Any, victim.player_id))
+        rescuer_uuid = normalize_id(cast(Any, rescuer.player_id))
+        channel_targets_normalized = {normalize_id(cast(Any, t)) for t in channel_targets}
         assert channel_targets_normalized == {victim_uuid, rescuer_uuid}
 
         success_targets = [
             _call_target(call) for call in mock_rescue_event.await_args_list if call.kwargs.get("status") == "success"
         ]
-        success_targets_normalized = [normalize_id(t) for t in success_targets]
+        success_targets_normalized = [normalize_id(cast(Any, t)) for t in success_targets]
         assert success_targets_normalized.count(rescuer_uuid) == 1
         assert success_targets_normalized.count(victim_uuid) == 2
 
 
 @pytest.mark.asyncio
+@pytest.mark.asyncio
+@pytest.mark.serial
+@pytest.mark.xdist_group(name="serial_ground_command_tests")
 async def test_ground_command_requires_catatonic_target(session_factory):
     """Rescue attempts should fail gracefully if the target is not catatonic."""
 

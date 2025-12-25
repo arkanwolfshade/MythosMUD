@@ -17,18 +17,18 @@ from server.models import Alias
 class TestAliasModel:
     """Test suite for the Alias model."""
 
-    def test_alias_required_fields(self):
+    def test_alias_required_fields(self) -> None:
         """Test that required fields are enforced."""
         with pytest.raises(PydanticValidationError):
-            Alias()  # Missing required fields
+            Alias()  # type: ignore[call-arg]  # Missing required fields
 
         with pytest.raises(PydanticValidationError):
-            Alias(name="test")  # Missing command
+            Alias(name="test")  # type: ignore[call-arg]  # Missing command
 
         with pytest.raises(PydanticValidationError):
-            Alias(command="look")  # Missing name
+            Alias(command="look")  # type: ignore[call-arg]  # Missing name
 
-    def test_alias_empty_strings(self):
+    def test_alias_empty_strings(self) -> None:
         """Test that empty strings are handled properly."""
         # Empty name should be allowed by Pydantic
         alias = Alias(name="", command="look")
@@ -38,7 +38,7 @@ class TestAliasModel:
         alias = Alias(name="test", command="")
         assert alias.command == ""
 
-    def test_alias_whitespace_handling(self):
+    def test_alias_whitespace_handling(self) -> None:
         """Test that whitespace is handled properly."""
         alias = Alias(name="  test  ", command="  look  ")
 
@@ -46,7 +46,7 @@ class TestAliasModel:
         assert alias.name == "  test  "
         assert alias.command == "  look  "
 
-    def test_alias_equality(self):
+    def test_alias_equality(self) -> None:
         """Test alias equality comparison."""
         # Create aliases with same ID and timestamps for equality test
         custom_id = str(uuid.uuid4())
@@ -63,7 +63,7 @@ class TestAliasModel:
         assert alias1 == alias2
         assert alias1 != alias3
 
-    def test_alias_serialization(self):
+    def test_alias_serialization(self) -> None:
         """Test that alias can be serialized to JSON."""
         alias = Alias(name="test", command="look")
 
@@ -78,7 +78,7 @@ class TestAliasModel:
         assert json_data["command"] == "look"
         assert json_data["id"] == alias.id
 
-    def test_alias_deserialization(self):
+    def test_alias_deserialization(self) -> None:
         """Test that alias can be deserialized from JSON."""
         custom_id = str(uuid.uuid4())
         json_data = {
@@ -95,7 +95,7 @@ class TestAliasModel:
         assert alias.name == "test"
         assert alias.command == "look"
 
-    def test_alias_repr(self):
+    def test_alias_repr(self) -> None:
         """Test the string representation of alias."""
         alias = Alias(name="test", command="look")
         repr_str = repr(alias)
@@ -105,7 +105,7 @@ class TestAliasModel:
         assert "look" in repr_str
         assert alias.id in repr_str
 
-    def test_alias_model_dump_method(self):
+    def test_alias_model_dump_method(self) -> None:
         """Test the custom model_dump method."""
         alias = Alias(name="test", command="look")
         dump_data = alias.model_dump()
@@ -116,21 +116,21 @@ class TestAliasModel:
         assert dump_data["created_at"].endswith("Z")
         assert dump_data["updated_at"].endswith("Z")
 
-    def test_alias_with_special_characters(self):
+    def test_alias_with_special_characters(self) -> None:
         """Test alias with special characters in command."""
         special_command = "say 'Hello, world! How are you?'"
         alias = Alias(name="greet", command=special_command)
 
         assert alias.command == special_command
 
-    def test_alias_maximum_length_validation(self):
+    def test_alias_maximum_length_validation(self) -> None:
         """Test that very long commands are handled."""
         long_command = "a" * 200  # 200 character command
         alias = Alias(name="long", command=long_command)
 
         assert alias.command == long_command
 
-    def test_alias_case_insensitive_name(self):
+    def test_alias_case_insensitive_name(self) -> None:
         """Test that alias names preserve case as entered."""
         alias1 = Alias(name="Look", command="look")
         alias2 = Alias(name="look", command="look")
@@ -140,14 +140,14 @@ class TestAliasModel:
         assert alias2.name == "look"
         assert alias1.name != alias2.name
 
-    def test_alias_command_preservation(self):
+    def test_alias_command_preservation(self) -> None:
         """Test that command text is preserved exactly."""
         complex_command = "go north; look; say 'Hello there!'"
         alias = Alias(name="complex", command=complex_command)
 
         assert alias.command == complex_command
 
-    def test_alias_uuid_generation(self):
+    def test_alias_uuid_generation(self) -> None:
         """Test that UUIDs are properly generated."""
         alias1 = Alias(name="test1", command="look")
         alias2 = Alias(name="test2", command="help")
@@ -164,7 +164,7 @@ class TestAliasModel:
         except ValueError:
             pytest.fail("Generated IDs are not valid UUIDs")
 
-    def test_alias_timestamp_format(self):
+    def test_alias_timestamp_format(self) -> None:
         """Test that timestamps are in the correct format."""
         alias = Alias(name="test", command="look")
         dump_data = alias.model_dump()
@@ -174,8 +174,6 @@ class TestAliasModel:
         assert dump_data["updated_at"].endswith("Z")
 
         # Check that timestamps are valid ISO format
-        from datetime import datetime
-
         datetime.fromisoformat(dump_data["created_at"].replace("Z", "+00:00"))
         datetime.fromisoformat(dump_data["updated_at"].replace("Z", "+00:00"))
 
@@ -183,7 +181,7 @@ class TestAliasModel:
 class TestAliasIntegration:
     """Integration tests for alias functionality."""
 
-    def test_alias_with_command_processing(self):
+    def test_alias_with_command_processing(self) -> None:
         """Test alias integration with command processing."""
         alias = Alias(name="l", command="look")
 
@@ -193,7 +191,7 @@ class TestAliasIntegration:
             expanded_command = alias.command
             assert expanded_command == "look"
 
-    def test_multiple_aliases(self):
+    def test_multiple_aliases(self) -> None:
         """Test handling multiple aliases."""
         aliases = [
             Alias(name="l", command="look"),
@@ -211,7 +209,7 @@ class TestAliasIntegration:
         assert alias_map["l"].command == "look"
         assert alias_map["n"].command == "go north"
 
-    def test_alias_conflicts(self):
+    def test_alias_conflicts(self) -> None:
         """Test handling of alias name conflicts."""
         alias1 = Alias(name="test", command="look")
         alias2 = Alias(name="test", command="help")
@@ -225,7 +223,7 @@ class TestAliasIntegration:
         # In a real system, only one would be stored per player
         # This test ensures both can exist in memory
 
-    def test_alias_performance(self):
+    def test_alias_performance(self) -> None:
         """Test alias lookup performance."""
         import time
 
@@ -248,7 +246,7 @@ class TestAliasIntegration:
         # Should be very fast (less than 1 second for 1000 lookups)
         assert lookup_time < 1.0
 
-    def test_alias_serialization_performance(self):
+    def test_alias_serialization_performance(self) -> None:
         """Test alias serialization performance."""
         import time
 
@@ -265,7 +263,7 @@ class TestAliasIntegration:
         # Should be very fast (less than 1 second for 100 serializations)
         assert serialization_time < 1.0
 
-    def test_alias_field_access(self):
+    def test_alias_field_access(self) -> None:
         """Test that all alias fields are accessible."""
         alias = Alias(name="test", command="look")
 

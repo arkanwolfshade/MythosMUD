@@ -9,13 +9,15 @@ for maintaining the delicate balance between the mundane and the eldritch forces
 that lurk in the shadows of our world.
 """
 
+from typing import Any
+
 from server.npc.population_control import ZoneConfiguration
 
 
 class TestZoneConfiguration:
     """Test zone configuration loading and management."""
 
-    def test_zone_configuration_creation(self):
+    def test_zone_configuration_creation(self) -> None:
         """Test creating a zone configuration from data."""
         config_data = {
             "environment": "outdoors",
@@ -41,9 +43,9 @@ class TestZoneConfiguration:
         assert config.exploration_bonus == 0.5
         assert config.access_requirements == ["stealth", "local_knowledge"]
 
-    def test_zone_configuration_defaults(self):
+    def test_zone_configuration_defaults(self) -> None:
         """Test zone configuration with default values."""
-        config_data = {}
+        config_data: dict[str, Any] = {}
         config = ZoneConfiguration(config_data)
 
         assert config.environment == "outdoors"
@@ -55,7 +57,7 @@ class TestZoneConfiguration:
         assert config.exploration_bonus == 0.0
         assert config.access_requirements == []
 
-    def test_effective_spawn_probability_calculation(self):
+    def test_effective_spawn_probability_calculation(self) -> None:
         """Test effective spawn probability calculation with zone modifiers."""
         config_data = {"special_rules": {"npc_spawn_modifier": 1.5}}
         config = ZoneConfiguration(config_data)
@@ -71,7 +73,7 @@ class TestZoneConfiguration:
         config = ZoneConfiguration(config_data)
         assert config.get_effective_spawn_probability(0.8) == 0.4
 
-    def test_zone_access_requirements(self):
+    def test_zone_access_requirements(self) -> None:
         """Test zone access requirement checking."""
         config_data = {"special_rules": {"access_requirements": ["stealth", "local_knowledge"]}}
         config = ZoneConfiguration(config_data)

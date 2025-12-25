@@ -13,7 +13,7 @@ from server.realtime.connection_manager import _get_npc_name_from_instance
 class TestNPCNameRetrieval:
     """Test the NPC name retrieval function."""
 
-    def test_get_npc_name_from_instance_not_found(self):
+    def test_get_npc_name_from_instance_not_found(self) -> None:
         """Test getting NPC name from instance when instance is not found."""
         # Mock the NPC instance service to return a service with empty active_npcs
         mock_npc_instance_service = Mock()
@@ -27,7 +27,7 @@ class TestNPCNameRetrieval:
             result = _get_npc_name_from_instance("nonexistent_npc_id")
             assert result is None
 
-    def test_get_npc_name_preserves_database_case(self):
+    def test_get_npc_name_preserves_database_case(self) -> None:
         """Test that NPC names preserve the exact case from the database."""
         # Mock the NPC instance service to return a service with empty active_npcs
         mock_npc_instance_service = Mock()
@@ -41,7 +41,7 @@ class TestNPCNameRetrieval:
             result = _get_npc_name_from_instance("dr._francis_morgan_test_id")
             assert result is None  # Should return None when instance not found
 
-    def test_real_npc_scenario(self):
+    def test_real_npc_scenario(self) -> None:
         """Test the actual Dr. Francis Morgan scenario from the bug report."""
         # Mock the NPC instance service to return a service with empty active_npcs
         mock_npc_instance_service = Mock()

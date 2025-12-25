@@ -18,6 +18,8 @@ from server.services.npc_combat_integration_service import NPCCombatIntegrationS
 # from server.validators.command_validator import CommandSecurityValidator
 from server.validators.security_validator import comprehensive_sanitize_input
 
+pytestmark = pytest.mark.security
+
 
 class TestCombatCommandSecurity:
     """Test security validation for combat commands."""
@@ -409,7 +411,7 @@ class TestCombatAuditLogging:
 class TestCombatInputSanitization:
     """Test input sanitization for combat commands."""
 
-    def test_combat_command_sanitization(self):
+    def test_combat_command_sanitization(self) -> None:
         """Test that combat commands are properly sanitized."""
         # Test various input sanitization scenarios
         test_cases = [
@@ -428,7 +430,7 @@ class TestCombatInputSanitization:
             # Note: comprehensive_sanitize_input focuses on Unicode/ANSI sanitization,
             # not command injection prevention - that's handled by validation layers
 
-    def test_combat_command_unicode_sanitization(self):
+    def test_combat_command_unicode_sanitization(self) -> None:
         """Test that Unicode input is properly sanitized."""
         unicode_inputs = [
             "attack 🐀",
@@ -443,7 +445,7 @@ class TestCombatInputSanitization:
             # Should not raise exceptions
             assert len(sanitized) >= 0
 
-    def test_combat_command_length_sanitization(self):
+    def test_combat_command_length_sanitization(self) -> None:
         """Test that extremely long input is handled properly."""
         long_input = "attack " + "a" * 10000
         sanitized = comprehensive_sanitize_input(long_input)

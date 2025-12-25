@@ -16,6 +16,8 @@ import pytest
 
 from server.realtime.connection_manager import ConnectionManager
 
+pytestmark = pytest.mark.slow
+
 
 class TestWebSocketLoad:
     """Load tests for WebSocket system."""
@@ -24,7 +26,7 @@ class TestWebSocketLoad:
     def connection_manager(self):
         """Create a ConnectionManager instance for testing."""
         cm = ConnectionManager()
-        cm.persistence = None
+        cm.async_persistence = None
         return cm
 
     @pytest.mark.asyncio

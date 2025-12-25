@@ -6,18 +6,32 @@ player_entered, player_left, and game_tick events to NATS subjects.
 """
 
 from datetime import datetime
-from unittest.mock import AsyncMock, Mock
+from typing import Any
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
+from server.container import ApplicationContainer
 from server.realtime.event_publisher import EventPublisher
 
 
 class TestEventPublisher:
     """Test cases for EventPublisher class."""
 
-    def setup_method(self):
+    # Type annotations for instance attributes (satisfies linter without requiring __init__)
+    # Attributes are initialized in setup_method() per pytest best practices
+    mock_nats_service: Mock
+    event_publisher: EventPublisher
+    test_player_id: str
+    test_room_id: str
+    test_timestamp: str
+    _persistence_patcher: Any
+
+    def setup_method(self) -> None:
         """Set up test fixtures."""
+        # Reset ApplicationContainer singleton to prevent interference between parallel tests
+        ApplicationContainer.reset_instance()
+
         # Create a mock NATS service
         self.mock_nats_service = Mock()
         self.mock_nats_service.publish = AsyncMock()
@@ -25,24 +39,37 @@ class TestEventPublisher:
 
         # Create the EventPublisher instance
         self.event_publisher = EventPublisher(self.mock_nats_service)
+        # Ensure EventPublisher doesn't try to access ApplicationContainer singleton
+        # by patching _get_async_persistence to return None
+        self._persistence_patcher = patch.object(self.event_publisher, "_get_async_persistence", return_value=None)
+        self._persistence_patcher.start()
 
         # Test data
         self.test_player_id = "test_player_123"
         self.test_room_id = "arkham_1"
         self.test_timestamp = datetime.now().isoformat()
 
-    def test_event_publisher_initialization(self):
+    def teardown_method(self) -> None:
+        """Clean up after each test."""
+        # Stop the patch if it was started
+        if self._persistence_patcher:
+            self._persistence_patcher.stop()
+            self._persistence_patcher = None
+        # Reset ApplicationContainer singleton to prevent interference between parallel tests
+        ApplicationContainer.reset_instance()
+
+    def test_event_publisher_initialization(self) -> None:
         """Test EventPublisher initialization."""
         assert self.event_publisher.nats_service == self.mock_nats_service
         assert self.event_publisher.sequence_number == 0
 
-    def test_event_publisher_initialization_with_sequence(self):
+    def test_event_publisher_initialization_with_sequence(self) -> None:
         """Test EventPublisher initialization with custom sequence number."""
         event_publisher = EventPublisher(self.mock_nats_service, initial_sequence=100)
         assert event_publisher.sequence_number == 100
 
     @pytest.mark.asyncio
-    async def test_publish_player_entered_event_success(self):
+    async def test_publish_player_entered_event_success(self) -> None:
         """Test successful publishing of player_entered event."""
         # Mock successful NATS publish
         self.mock_nats_service.publish.return_value = True
@@ -72,7 +99,7 @@ class TestEventPublisher:
         assert message_data["sequence_number"] == 1
 
     @pytest.mark.asyncio
-    async def test_publish_player_left_event_success(self):
+    async def test_publish_player_left_event_success(self) -> None:
         """Test successful publishing of player_left event."""
         # Mock successful NATS publish
         self.mock_nats_service.publish.return_value = True
@@ -102,7 +129,7 @@ class TestEventPublisher:
         assert message_data["sequence_number"] == 1
 
     @pytest.mark.asyncio
-    async def test_publish_game_tick_event_success(self):
+    async def test_publish_game_tick_event_success(self) -> None:
         """Test successful publishing of game_tick event."""
         # Mock successful NATS publish
         self.mock_nats_service.publish.return_value = True
@@ -128,7 +155,7 @@ class TestEventPublisher:
         assert message_data["sequence_number"] == 1
 
     @pytest.mark.asyncio
-    async def test_publish_player_entered_event_nats_failure(self):
+    async def test_publish_player_entered_event_nats_failure(self) -> None:
         """Test handling of NATS publish failure for player_entered event."""
         # Mock NATS publish failure
         self.mock_nats_service.publish.return_value = False
@@ -145,7 +172,7 @@ class TestEventPublisher:
         self.mock_nats_service.publish.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_publish_player_left_event_nats_failure(self):
+    async def test_publish_player_left_event_nats_failure(self) -> None:
         """Test handling of NATS publish failure for player_left event."""
         # Mock NATS publish failure
         self.mock_nats_service.publish.return_value = False
@@ -162,7 +189,7 @@ class TestEventPublisher:
         self.mock_nats_service.publish.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_publish_game_tick_event_nats_failure(self):
+    async def test_publish_game_tick_event_nats_failure(self) -> None:
         """Test handling of NATS publish failure for game_tick event."""
         # Mock NATS publish failure
         self.mock_nats_service.publish.return_value = False
@@ -177,7 +204,7 @@ class TestEventPublisher:
         self.mock_nats_service.publish.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_publish_player_entered_event_nats_exception(self):
+    async def test_publish_player_entered_event_nats_exception(self) -> None:
         """Test handling of NATS publish exception for player_entered event."""
         # Mock NATS publish exception
         self.mock_nats_service.publish.side_effect = Exception("NATS connection error")
@@ -194,7 +221,7 @@ class TestEventPublisher:
         self.mock_nats_service.publish.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_publish_player_left_event_nats_exception(self):
+    async def test_publish_player_left_event_nats_exception(self) -> None:
         """Test handling of NATS publish exception for player_left event."""
         # Mock NATS publish exception
         self.mock_nats_service.publish.side_effect = Exception("NATS connection error")
@@ -211,7 +238,7 @@ class TestEventPublisher:
         self.mock_nats_service.publish.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_publish_game_tick_event_nats_exception(self):
+    async def test_publish_game_tick_event_nats_exception(self) -> None:
         """Test handling of NATS publish exception for game_tick event."""
         # Mock NATS publish exception
         self.mock_nats_service.publish.side_effect = Exception("NATS connection error")
@@ -226,7 +253,9 @@ class TestEventPublisher:
         self.mock_nats_service.publish.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_sequence_number_increment(self):
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_event_publisher_tests")
+    async def test_sequence_number_increment(self) -> None:
         """Test that sequence numbers increment correctly across multiple events."""
         # Mock successful NATS publish
         self.mock_nats_service.publish.return_value = True
@@ -245,7 +274,7 @@ class TestEventPublisher:
         assert calls[2][0][1]["sequence_number"] == 3
 
     @pytest.mark.asyncio
-    async def test_message_format_consistency(self):
+    async def test_message_format_consistency(self) -> None:
         """Test that all event messages have consistent format."""
         # Mock successful NATS publish
         self.mock_nats_service.publish.return_value = True
@@ -278,7 +307,7 @@ class TestEventPublisher:
             assert isinstance(message_data["metadata"], dict)
 
     @pytest.mark.asyncio
-    async def test_player_entered_event_data_structure(self):
+    async def test_player_entered_event_data_structure(self) -> None:
         """Test that player_entered event has correct data structure."""
         # Mock successful NATS publish
         self.mock_nats_service.publish.return_value = True
@@ -299,7 +328,9 @@ class TestEventPublisher:
         assert "room_name" in message_data["data"]
 
     @pytest.mark.asyncio
-    async def test_player_left_event_data_structure(self):
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_event_publisher_tests")
+    async def test_player_left_event_data_structure(self) -> None:
         """Test that player_left event has correct data structure."""
         # Mock successful NATS publish
         self.mock_nats_service.publish.return_value = True
@@ -318,7 +349,9 @@ class TestEventPublisher:
         assert "room_name" in message_data["data"]
 
     @pytest.mark.asyncio
-    async def test_game_tick_event_data_structure(self):
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_event_publisher_tests")
+    async def test_game_tick_event_data_structure(self) -> None:
         """Test that game_tick event has correct data structure."""
         # Mock successful NATS publish
         self.mock_nats_service.publish.return_value = True
@@ -337,7 +370,9 @@ class TestEventPublisher:
         assert isinstance(message_data["data"]["server_time"], str)
 
     @pytest.mark.asyncio
-    async def test_nats_service_not_connected(self):
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_event_publisher_tests")
+    async def test_nats_service_not_connected(self) -> None:
         """Test behavior when NATS service is not connected."""
         # Mock NATS service not connected
         self.mock_nats_service.is_connected.return_value = False
@@ -353,14 +388,14 @@ class TestEventPublisher:
         # Verify NATS service publish was not called
         self.mock_nats_service.publish.assert_not_called()
 
-    def test_get_next_sequence_number(self):
+    def test_get_next_sequence_number(self) -> None:
         """Test sequence number generation."""
         # Test initial sequence number
         assert self.event_publisher.get_next_sequence_number() == 1
         assert self.event_publisher.get_next_sequence_number() == 2
         assert self.event_publisher.get_next_sequence_number() == 3
 
-    def test_reset_sequence_number(self):
+    def test_reset_sequence_number(self) -> None:
         """Test sequence number reset."""
         # Increment sequence number
         self.event_publisher.get_next_sequence_number()
@@ -373,7 +408,10 @@ class TestEventPublisher:
         assert self.event_publisher.get_next_sequence_number() == 1
 
     @pytest.mark.asyncio
-    async def test_publish_with_custom_timestamp(self):
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_event_publisher_tests")
+    @pytest.mark.timeout(30)  # Increased timeout to prevent worker crashes
+    async def test_publish_with_custom_timestamp(self) -> None:
         """Test publishing events with custom timestamp."""
         # Mock successful NATS publish
         self.mock_nats_service.publish.return_value = True
@@ -394,7 +432,9 @@ class TestEventPublisher:
         assert message_data["timestamp"] == custom_timestamp
 
     @pytest.mark.asyncio
-    async def test_publish_with_additional_metadata(self):
+    @pytest.mark.serial
+    @pytest.mark.xdist_group(name="serial_event_publisher_tests")
+    async def test_publish_with_additional_metadata(self) -> None:
         """Test publishing events with additional metadata."""
         # Mock successful NATS publish
         self.mock_nats_service.publish.return_value = True

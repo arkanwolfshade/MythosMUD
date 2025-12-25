@@ -5,8 +5,9 @@ This module tests the integration of combat events with the NATS
 messaging system for real-time distribution.
 """
 
+from typing import Any
 from unittest.mock import AsyncMock, Mock
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 import pytest
 
@@ -23,20 +24,20 @@ from server.events.combat_events import (
 from server.events.event_types import NPCAttacked, NPCDied, NPCTookDamage
 from server.services.combat_event_publisher import CombatEventPublisher
 
+pytestmark = pytest.mark.integration
+
 
 class TestCombatEventPublisher:
     """Test combat event publisher integration with NATS."""
 
-    def __init__(self):
-        """Initialize test class attributes."""
-        self.mock_nats_service = None
-        self.publisher = None
-        self.test_combat_id = None
-        self.test_room_id = None
-        self.test_player_id = None
-        self.test_npc_id = None
+    mock_nats_service: Any
+    publisher: CombatEventPublisher
+    test_combat_id: UUID
+    test_room_id: str
+    test_player_id: UUID
+    test_npc_id: UUID
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test fixtures."""
         # Create mock NATS service
         self.mock_nats_service = Mock()
@@ -53,7 +54,7 @@ class TestCombatEventPublisher:
         self.test_npc_id = uuid4()
 
     @pytest.mark.asyncio
-    async def test_publish_combat_started_success(self):
+    async def test_publish_combat_started_success(self) -> None:
         """Test successful combat started event publishing."""
         # Create combat started event
         event = CombatStartedEvent(
@@ -85,7 +86,7 @@ class TestCombatEventPublisher:
         assert message_data["event_data"]["turn_order"] == ["player1"]
 
     @pytest.mark.asyncio
-    async def test_publish_combat_ended_success(self):
+    async def test_publish_combat_ended_success(self) -> None:
         """Test successful combat ended event publishing."""
         # Create combat ended event
         event = CombatEndedEvent(
@@ -116,7 +117,7 @@ class TestCombatEventPublisher:
         assert message_data["event_data"]["duration_seconds"] == 30
 
     @pytest.mark.asyncio
-    async def test_publish_player_attacked_success(self):
+    async def test_publish_player_attacked_success(self) -> None:
         """Test successful player attacked event publishing."""
         # Create player attacked event
         event = PlayerAttackedEvent(
@@ -155,7 +156,7 @@ class TestCombatEventPublisher:
         assert message_data["event_data"]["action_type"] == "punch"
 
     @pytest.mark.asyncio
-    async def test_publish_npc_attacked_success(self):
+    async def test_publish_npc_attacked_success(self) -> None:
         """Test successful NPC attacked event publishing."""
         # Create NPC attacked event
         event = NPCAttackedEvent(
@@ -194,7 +195,7 @@ class TestCombatEventPublisher:
         assert message_data["event_data"]["action_type"] == "kick"
 
     @pytest.mark.asyncio
-    async def test_publish_npc_took_damage_success(self):
+    async def test_publish_npc_took_damage_success(self) -> None:
         """Test successful NPC took damage event publishing."""
         # Create NPC took damage event
         event = NPCTookDamageEvent(
@@ -229,7 +230,7 @@ class TestCombatEventPublisher:
         assert message_data["event_data"]["max_dp"] == 15
 
     @pytest.mark.asyncio
-    async def test_publish_npc_died_success(self):
+    async def test_publish_npc_died_success(self) -> None:
         """Test successful NPC died event publishing."""
         # Create NPC died event
         event = NPCDiedEvent(
@@ -260,7 +261,7 @@ class TestCombatEventPublisher:
         assert message_data["event_data"]["xp_reward"] == 10
 
     @pytest.mark.asyncio
-    async def test_publish_combat_turn_advanced_success(self):
+    async def test_publish_combat_turn_advanced_success(self) -> None:
         """Test successful combat turn advanced event publishing."""
         # Create combat turn advanced event
         event = CombatTurnAdvancedEvent(
@@ -292,14 +293,16 @@ class TestCombatEventPublisher:
         assert message_data["event_data"]["next_participant"] == "player1"
 
     @pytest.mark.asyncio
-    async def test_publish_combat_timeout_success(self):
+    async def test_publish_combat_timeout_success(self) -> None:
         """Test successful combat timeout event publishing."""
+        from datetime import UTC, datetime
+
         # Create combat timeout event
         event = CombatTimeoutEvent(
             combat_id=self.test_combat_id,
             room_id=self.test_room_id,
             timeout_minutes=5,
-            last_activity=None,
+            last_activity=datetime.now(UTC),
         )
 
         # Execute
@@ -321,7 +324,7 @@ class TestCombatEventPublisher:
         assert message_data["event_data"]["timeout_minutes"] == 5
 
     @pytest.mark.asyncio
-    async def test_publish_nats_not_connected(self):
+    async def test_publish_nats_not_connected(self) -> None:
         """Test publishing when NATS is not connected."""
         # Setup NATS service as not connected
         self.mock_nats_service.is_connected.return_value = False
@@ -342,7 +345,7 @@ class TestCombatEventPublisher:
         self.mock_nats_service.publish.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_publish_nats_service_none(self):
+    async def test_publish_nats_service_none(self) -> None:
         """Test publishing when NATS service is None."""
         # Create publisher with None NATS service
         publisher = CombatEventPublisher(nats_service=None)
@@ -362,7 +365,7 @@ class TestCombatEventPublisher:
         assert result is False
 
     @pytest.mark.asyncio
-    async def test_publish_nats_publish_fails(self):
+    async def test_publish_nats_publish_fails(self) -> None:
         """Test publishing when NATS publish fails."""
         # Setup NATS service to raise exception (publish now raises instead of returning False)
         from server.services.nats_exceptions import NATSPublishError
@@ -385,7 +388,7 @@ class TestCombatEventPublisher:
         self.mock_nats_service.publish.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_publish_nats_exception(self):
+    async def test_publish_nats_exception(self) -> None:
         """Test publishing when NATS raises an exception."""
         # Setup NATS service to raise an exception (generic exception, not NATSPublishError)
         self.mock_nats_service.publish.side_effect = Exception("NATS error")
@@ -409,7 +412,7 @@ class TestCombatEventPublisher:
 class TestExtendedEventTypes:
     """Test extended event types with combat data."""
 
-    def test_npc_attacked_event_with_combat_data(self):
+    def test_npc_attacked_event_with_combat_data(self) -> None:
         """Test NPCAttacked event with combat data."""
         event = NPCAttacked(
             npc_id="npc_001",
@@ -431,7 +434,7 @@ class TestExtendedEventTypes:
         assert event.npc_name == "Goblin"
         assert event.target_name == "TestPlayer"
 
-    def test_npc_took_damage_event_with_combat_data(self):
+    def test_npc_took_damage_event_with_combat_data(self) -> None:
         """Test NPCTookDamage event with combat data."""
         event = NPCTookDamage(
             npc_id="npc_001",
@@ -455,7 +458,7 @@ class TestExtendedEventTypes:
         assert event.current_dp == 10
         assert event.max_dp == 15
 
-    def test_npc_died_event_with_combat_data(self):
+    def test_npc_died_event_with_combat_data(self) -> None:
         """Test NPCDied event with combat data."""
         event = NPCDied(
             npc_id="npc_001",

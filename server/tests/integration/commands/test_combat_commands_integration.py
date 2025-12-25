@@ -5,6 +5,7 @@ This module tests the integration of combat commands with the existing
 command validation and routing system.
 """
 
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock, Mock
 from uuid import uuid4
 
@@ -12,6 +13,8 @@ import pytest
 
 from server.commands.combat import CombatCommandHandler
 from server.commands.command_service import CommandService
+
+pytestmark = pytest.mark.integration
 
 
 class TestCombatCommandIntegration:
@@ -36,7 +39,7 @@ class TestCombatCommandIntegration:
 
         mock_service = Mock()
 
-        async def mock_resolve_target(player_id, target_name):
+        async def mock_resolve_target(_player_id, target_name):
             return TargetResolutionResult(
                 success=False,
                 error_message=f"No target named '{target_name}' found",
@@ -47,7 +50,7 @@ class TestCombatCommandIntegration:
         mock_service.resolve_target.side_effect = mock_resolve_target
         return mock_service
 
-    def test_combat_commands_registered(self):
+    def test_combat_commands_registered(self) -> None:
         """Test that combat commands are registered in command service."""
         command_service = CommandService()
 
@@ -62,7 +65,7 @@ class TestCombatCommandIntegration:
         """Test attack command with no target specified."""
         handler = CombatCommandHandler(async_persistence=mock_persistence)
 
-        command_data = {
+        command_data: dict[str, Any] = {
             "command_type": "attack",
             "args": [],
             "target_player": None,

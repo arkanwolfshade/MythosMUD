@@ -17,17 +17,20 @@ class TestZoneConfigurationDatabaseSchema:
     """Test the zone_configurations table schema - now a mapping table only."""
 
     @pytest.mark.asyncio
-    async def test_zone_configurations_table_columns(self):
+    async def test_zone_configurations_table_columns(self) -> None:
         """Test that zone_configurations table is a mapping table with only id, zone_id, subzone_id."""
         import os
 
         import asyncpg
 
-        database_url = os.getenv("DATABASE_URL")
-        # DATABASE_URL is guaranteed by conftest.py, but we still need to convert format
-        # Convert SQLAlchemy-style URL to asyncpg-compatible format
-        if database_url.startswith("postgresql+asyncpg://"):
-            database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
+        database_url_raw = os.getenv("DATABASE_URL")
+        if not database_url_raw:
+            raise ValueError("DATABASE_URL must be set for this test.")
+        database_url = (
+            database_url_raw.replace("postgresql+asyncpg://", "postgresql://", 1)
+            if database_url_raw.startswith("postgresql+asyncpg://")
+            else database_url_raw
+        )
 
         conn = await asyncpg.connect(database_url)
         try:
@@ -77,17 +80,20 @@ class TestZoneConfigurationDatabaseSchema:
             await conn.close()
 
     @pytest.mark.asyncio
-    async def test_zone_configurations_mapping_constraint(self):
+    async def test_zone_configurations_mapping_constraint(self) -> None:
         """Test that zone_configurations has unique constraint on (zone_id, subzone_id)."""
         import os
 
         import asyncpg
 
-        database_url = os.getenv("DATABASE_URL")
-        # DATABASE_URL is guaranteed by conftest.py, but we still need to convert format
-        # Convert SQLAlchemy-style URL to asyncpg-compatible format
-        if database_url.startswith("postgresql+asyncpg://"):
-            database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
+        database_url_raw = os.getenv("DATABASE_URL")
+        if not database_url_raw:
+            raise ValueError("DATABASE_URL must be set for this test.")
+        database_url = (
+            database_url_raw.replace("postgresql+asyncpg://", "postgresql://", 1)
+            if database_url_raw.startswith("postgresql+asyncpg://")
+            else database_url_raw
+        )
 
         conn = await asyncpg.connect(database_url)
         try:
@@ -110,17 +116,20 @@ class TestZoneConfigurationDatabaseSchema:
             await conn.close()
 
     @pytest.mark.asyncio
-    async def test_zone_configurations_only_mappings(self):
+    async def test_zone_configurations_only_mappings(self) -> None:
         """Test that zone_configurations only contains zone-to-subzone mappings (no NULL subzone_id)."""
         import os
 
         import asyncpg
 
-        database_url = os.getenv("DATABASE_URL")
-        # DATABASE_URL is guaranteed by conftest.py, but we still need to convert format
-        # Convert SQLAlchemy-style URL to asyncpg-compatible format
-        if database_url.startswith("postgresql+asyncpg://"):
-            database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
+        database_url_raw = os.getenv("DATABASE_URL")
+        if not database_url_raw:
+            raise ValueError("DATABASE_URL must be set for this test.")
+        database_url = (
+            database_url_raw.replace("postgresql+asyncpg://", "postgresql://", 1)
+            if database_url_raw.startswith("postgresql+asyncpg://")
+            else database_url_raw
+        )
 
         conn = await asyncpg.connect(database_url)
         try:
@@ -145,17 +154,20 @@ class TestSubzonesDatabaseSchema:
     """Test the subzones table schema."""
 
     @pytest.mark.asyncio
-    async def test_subzones_table_columns(self):
+    async def test_subzones_table_columns(self) -> None:
         """Test that subzones table has all required columns."""
         import os
 
         import asyncpg
 
-        database_url = os.getenv("DATABASE_URL")
-        # DATABASE_URL is guaranteed by conftest.py, but we still need to convert format
-        # Convert SQLAlchemy-style URL to asyncpg-compatible format
-        if database_url.startswith("postgresql+asyncpg://"):
-            database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
+        database_url_raw = os.getenv("DATABASE_URL")
+        if not database_url_raw:
+            raise ValueError("DATABASE_URL must be set for this test.")
+        database_url = (
+            database_url_raw.replace("postgresql+asyncpg://", "postgresql://", 1)
+            if database_url_raw.startswith("postgresql+asyncpg://")
+            else database_url_raw
+        )
 
         conn = await asyncpg.connect(database_url)
         try:
@@ -192,17 +204,20 @@ class TestSubzonesDatabaseSchema:
             await conn.close()
 
     @pytest.mark.asyncio
-    async def test_subzones_environment_constraint(self):
+    async def test_subzones_environment_constraint(self) -> None:
         """Test that subzones environment constraint allows valid values."""
         import os
 
         import asyncpg
 
-        database_url = os.getenv("DATABASE_URL")
-        # DATABASE_URL is guaranteed by conftest.py, but we still need to convert format
-        # Convert SQLAlchemy-style URL to asyncpg-compatible format
-        if database_url.startswith("postgresql+asyncpg://"):
-            database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
+        database_url_raw = os.getenv("DATABASE_URL")
+        if not database_url_raw:
+            raise ValueError("DATABASE_URL must be set for this test.")
+        database_url = (
+            database_url_raw.replace("postgresql+asyncpg://", "postgresql://", 1)
+            if database_url_raw.startswith("postgresql+asyncpg://")
+            else database_url_raw
+        )
 
         conn = await asyncpg.connect(database_url)
         try:
@@ -226,17 +241,20 @@ class TestSubzonesDatabaseSchema:
             await conn.close()
 
     @pytest.mark.asyncio
-    async def test_subzones_data_populated(self):
+    async def test_subzones_data_populated(self) -> None:
         """Test that subzones have environment, description, and special_rules populated."""
         import os
 
         import asyncpg
 
-        database_url = os.getenv("DATABASE_URL")
-        # DATABASE_URL is guaranteed by conftest.py, but we still need to convert format
-        # Convert SQLAlchemy-style URL to asyncpg-compatible format
-        if database_url.startswith("postgresql+asyncpg://"):
-            database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
+        database_url_raw = os.getenv("DATABASE_URL")
+        if not database_url_raw:
+            raise ValueError("DATABASE_URL must be set for this test.")
+        database_url = (
+            database_url_raw.replace("postgresql+asyncpg://", "postgresql://", 1)
+            if database_url_raw.startswith("postgresql+asyncpg://")
+            else database_url_raw
+        )
 
         conn = await asyncpg.connect(database_url)
         try:
@@ -251,13 +269,17 @@ class TestSubzonesDatabaseSchema:
             """
             row = await conn.fetchrow(query)
 
+            # Skip test if no subzones are found in database (test data not loaded)
+            if row["total"] == 0:
+                pytest.skip("No subzones found in database - test data must be loaded for this test")
+
             # All subzones should have special_rules (default is '{}')
             assert row["has_special_rules"] == row["total"], "All subzones must have special_rules"
 
             # Most subzones should have environment and description from config files
             # Allow some flexibility for subzones without config files
-            assert row["has_environment"] > 0, "At least some subzones must have environment"
-            assert row["has_description"] > 0, "At least some subzones must have description"
+            assert row["has_environment"] > 0, "No subzones have environment data - config files must be loaded"
+            assert row["has_description"] > 0, "No subzones have description data - config files must be loaded"
         finally:
             await conn.close()
 
@@ -266,17 +288,20 @@ class TestZoneConfigurationDataLoading:
     """Test that ZoneConfiguration objects are correctly populated from database data."""
 
     @pytest.mark.asyncio
-    async def test_zone_configuration_loads_all_fields(self):
+    async def test_zone_configuration_loads_all_fields(self) -> None:
         """Test that ZoneConfiguration loads all fields from database."""
         import os
 
         import asyncpg
 
-        database_url = os.getenv("DATABASE_URL")
-        # DATABASE_URL is guaranteed by conftest.py, but we still need to convert format
-        # Convert SQLAlchemy-style URL to asyncpg-compatible format
-        if database_url.startswith("postgresql+asyncpg://"):
-            database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
+        database_url_raw = os.getenv("DATABASE_URL")
+        if not database_url_raw:
+            raise ValueError("DATABASE_URL must be set for this test.")
+        database_url = (
+            database_url_raw.replace("postgresql+asyncpg://", "postgresql://", 1)
+            if database_url_raw.startswith("postgresql+asyncpg://")
+            else database_url_raw
+        )
 
         conn = await asyncpg.connect(database_url)
         try:
@@ -293,8 +318,9 @@ class TestZoneConfigurationDataLoading:
             """
             row = await conn.fetchrow(query)
 
+            # Skip test if no zones found in database (test data not loaded)
             if row is None:
-                pytest.skip("No zones in database")
+                pytest.skip("No zones found in database - test data must be loaded for this test")
 
             # Convert asyncpg results to dict format
             # asyncpg returns JSONB as strings, so we need to parse them
@@ -336,17 +362,20 @@ class TestZoneConfigurationDataLoading:
             await conn.close()
 
     @pytest.mark.asyncio
-    async def test_subzone_configuration_loads_all_fields(self):
+    async def test_subzone_configuration_loads_all_fields(self) -> None:
         """Test that subzone ZoneConfiguration loads all fields from database."""
         import os
 
         import asyncpg
 
-        database_url = os.getenv("DATABASE_URL")
-        # DATABASE_URL is guaranteed by conftest.py, but we still need to convert format
-        # Convert SQLAlchemy-style URL to asyncpg-compatible format
-        if database_url.startswith("postgresql+asyncpg://"):
-            database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
+        database_url_raw = os.getenv("DATABASE_URL")
+        if not database_url_raw:
+            raise ValueError("DATABASE_URL must be set for this test.")
+        database_url = (
+            database_url_raw.replace("postgresql+asyncpg://", "postgresql://", 1)
+            if database_url_raw.startswith("postgresql+asyncpg://")
+            else database_url_raw
+        )
 
         conn = await asyncpg.connect(database_url)
         try:
@@ -364,8 +393,9 @@ class TestZoneConfigurationDataLoading:
             """
             row = await conn.fetchrow(query)
 
+            # Skip test if no subzones found in database (test data not loaded)
             if row is None:
-                pytest.skip("No subzones in database")
+                pytest.skip("No subzones found in database - test data must be loaded for this test")
 
             # Convert asyncpg results to dict format
             # asyncpg returns JSONB as strings, so we need to parse them

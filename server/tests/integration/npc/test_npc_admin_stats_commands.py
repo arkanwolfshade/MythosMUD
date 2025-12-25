@@ -15,6 +15,8 @@ from server.commands.npc_admin_commands import (
     handle_npc_zone_command,
 )
 
+pytestmark = pytest.mark.integration
+
 
 class TestNPCStatsCommands:
     """Test class for NPC stats and monitoring commands."""

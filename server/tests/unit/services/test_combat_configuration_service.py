@@ -52,7 +52,7 @@ def mock_feature_flags():
 class TestCombatConfiguration:
     """Test CombatConfiguration data class."""
 
-    def test_combat_configuration_defaults(self):
+    def test_combat_configuration_defaults(self) -> None:
         """Test default combat configuration values."""
         config = CombatConfiguration()
 
@@ -69,7 +69,7 @@ class TestCombatConfiguration:
         assert config.combat_auto_cleanup_interval == 300
         assert config.combat_event_retention_hours == 24
 
-    def test_combat_configuration_custom_values(self):
+    def test_combat_configuration_custom_values(self) -> None:
         """Test custom combat configuration values."""
         config = CombatConfiguration(
             combat_enabled=False, combat_tick_interval=10, combat_timeout_seconds=300, combat_xp_multiplier=2.0
@@ -80,7 +80,7 @@ class TestCombatConfiguration:
         assert config.combat_timeout_seconds == 300
         assert config.combat_xp_multiplier == 2.0
 
-    def test_combat_configuration_to_dict(self):
+    def test_combat_configuration_to_dict(self) -> None:
         """Test converting configuration to dictionary."""
         config = CombatConfiguration(combat_enabled=False, combat_tick_interval=10)
         config_dict = config.to_dict()
@@ -89,7 +89,7 @@ class TestCombatConfiguration:
         assert config_dict["combat_tick_interval"] == 10
         assert "combat_timeout_seconds" in config_dict
 
-    def test_combat_configuration_from_dict(self):
+    def test_combat_configuration_from_dict(self) -> None:
         """Test creating configuration from dictionary."""
         config_dict = {
             "combat_enabled": False,
@@ -113,14 +113,14 @@ class TestCombatConfiguration:
         assert config.combat_timeout_seconds == 300
         assert config.combat_xp_multiplier == 2.0
 
-    def test_combat_configuration_validation_valid(self):
+    def test_combat_configuration_validation_valid(self) -> None:
         """Test configuration validation with valid values."""
         config = CombatConfiguration()
         errors = config.validate()
 
         assert errors == []
 
-    def test_combat_configuration_validation_invalid_tick_interval(self):
+    def test_combat_configuration_validation_invalid_tick_interval(self) -> None:
         """Test configuration validation with invalid tick interval."""
         config = CombatConfiguration(combat_tick_interval=0)
         errors = config.validate()
@@ -128,7 +128,7 @@ class TestCombatConfiguration:
         assert len(errors) == 1
         assert "Combat tick interval must be between 1 and 60 seconds" in errors[0]
 
-    def test_combat_configuration_validation_invalid_timeout(self):
+    def test_combat_configuration_validation_invalid_timeout(self) -> None:
         """Test configuration validation with invalid timeout."""
         config = CombatConfiguration(combat_timeout_seconds=30)
         errors = config.validate()
@@ -136,7 +136,7 @@ class TestCombatConfiguration:
         assert len(errors) == 1
         assert "Combat timeout must be between 60 and 1800 seconds" in errors[0]
 
-    def test_combat_configuration_validation_invalid_xp_multiplier(self):
+    def test_combat_configuration_validation_invalid_xp_multiplier(self) -> None:
         """Test configuration validation with invalid XP multiplier."""
         config = CombatConfiguration(combat_xp_multiplier=0.5)
         errors = config.validate()
@@ -144,7 +144,7 @@ class TestCombatConfiguration:
         assert len(errors) == 1
         assert "XP multiplier must be between 1.0 and 5.0" in errors[0]
 
-    def test_combat_configuration_validation_multiple_errors(self):
+    def test_combat_configuration_validation_multiple_errors(self) -> None:
         """Test configuration validation with multiple errors."""
         config = CombatConfiguration(combat_tick_interval=0, combat_timeout_seconds=30, combat_xp_multiplier=0.5)
         errors = config.validate()

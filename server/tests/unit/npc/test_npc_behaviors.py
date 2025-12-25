@@ -310,7 +310,7 @@ class TestBehaviorEngine:
         # Mock action handler
         action_executed = False
 
-        def test_action_handler(context):
+        def test_action_handler(_context):
             nonlocal action_executed
             action_executed = True
             return True
@@ -318,7 +318,9 @@ class TestBehaviorEngine:
         mock_behavior_engine.register_action_handler("test_action", test_action_handler)
 
         # Execute the action
-        context = {}
+        from typing import Any
+
+        context: dict[str, Any] = {}
         result = mock_behavior_engine.execute_action("test_action", context)
         assert result is True
         assert action_executed is True
@@ -347,11 +349,11 @@ class TestBehaviorEngine:
         # Register action handlers
         actions_executed = []
 
-        def action_1_handler(context):
+        def action_1_handler(_context):
             actions_executed.append("action_1")
             return True
 
-        def action_2_handler(context):
+        def action_2_handler(_context):
             actions_executed.append("action_2")
             return True
 
@@ -668,7 +670,7 @@ class TestNPCBehaviorIntegration:
     """Integration tests for NPC behavior system."""
 
     @pytest.mark.asyncio
-    async def test_npc_behavior_workflow(self):
+    async def test_npc_behavior_workflow(self) -> None:
         """Test complete NPC behavior workflow."""
         from server.npc.behaviors import ShopkeeperNPC
 
@@ -702,7 +704,7 @@ class TestNPCBehaviorIntegration:
         assert result is True
 
     @pytest.mark.asyncio
-    async def test_npc_behavior_performance(self):
+    async def test_npc_behavior_performance(self) -> None:
         """Test NPC behavior system performance."""
         from server.npc.behaviors import PassiveMobNPC
 
@@ -737,7 +739,7 @@ class TestNPCBehaviorIntegration:
         logger.info("NPC behavior execution time", execution_time=execution_time, npc_count=npc_count)
 
     @pytest.mark.asyncio
-    async def test_npc_behavior_error_handling(self):
+    async def test_npc_behavior_error_handling(self) -> None:
         """Test NPC behavior system error handling."""
 
         # Create NPC with invalid configuration
@@ -756,7 +758,9 @@ class TestNPCBehaviorIntegration:
         assert npc is not None
 
         # Test behavior execution with invalid context
-        result = await npc.execute_behavior(None)
+        from typing import Any, cast
+
+        result = await npc.execute_behavior(cast(Any, None))
         assert result is False  # Should return False for invalid context
 
         # Test with empty context

@@ -21,7 +21,7 @@ class TestComprehensiveLoggingMiddleware:
     """Test comprehensive logging middleware."""
 
     @pytest.mark.asyncio
-    async def test_middleware_logs_successful_request(self):
+    async def test_middleware_logs_successful_request(self) -> None:
         """Test that middleware logs successful requests.
 
         AI: Tests the success path with logging.
@@ -44,7 +44,7 @@ class TestComprehensiveLoggingMiddleware:
         mock_response.status_code = 200
 
         # Mock call_next
-        async def mock_call_next(request):
+        async def mock_call_next(_request: Request) -> Response:
             return mock_response
 
         # Execute
@@ -53,7 +53,7 @@ class TestComprehensiveLoggingMiddleware:
         assert result == mock_response
 
     @pytest.mark.asyncio
-    async def test_middleware_logs_request_error(self):
+    async def test_middleware_logs_request_error(self) -> None:
         """Test that middleware logs request errors.
 
         AI: Tests the error path (lines 54-58, 107) to improve coverage.
@@ -74,7 +74,7 @@ class TestComprehensiveLoggingMiddleware:
         # Mock call_next to raise an exception
         test_error = ValueError("Test error")
 
-        async def mock_call_next_with_error(request):
+        async def mock_call_next_with_error(_request):
             raise test_error
 
         # Execute and verify exception is re-raised
@@ -84,7 +84,7 @@ class TestComprehensiveLoggingMiddleware:
         assert exc_info.value == test_error
 
     @pytest.mark.asyncio
-    async def test_middleware_handles_missing_client_info(self):
+    async def test_middleware_handles_missing_client_info(self) -> None:
         """Test that middleware handles requests with no client info.
 
         AI: Tests handling of requests without client information.
@@ -104,7 +104,7 @@ class TestComprehensiveLoggingMiddleware:
         mock_response = Mock(spec=Response)
         mock_response.status_code = 200
 
-        async def mock_call_next(request):
+        async def mock_call_next(_request: Request) -> Response:
             return mock_response
 
         result = await middleware.dispatch(mock_request, mock_call_next)
@@ -112,7 +112,7 @@ class TestComprehensiveLoggingMiddleware:
         assert result == mock_response
 
     @pytest.mark.asyncio
-    async def test_middleware_logs_long_authorization_header(self):
+    async def test_middleware_logs_long_authorization_header(self) -> None:
         """Test that middleware truncates long authorization headers.
 
         AI: Tests authorization header preview functionality.
@@ -134,7 +134,7 @@ class TestComprehensiveLoggingMiddleware:
         mock_response = Mock(spec=Response)
         mock_response.status_code = 200
 
-        async def mock_call_next(request):
+        async def mock_call_next(_request: Request) -> Response:
             return mock_response
 
         result = await middleware.dispatch(mock_request, mock_call_next)

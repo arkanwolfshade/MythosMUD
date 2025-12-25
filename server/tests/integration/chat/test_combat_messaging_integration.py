@@ -13,15 +13,32 @@ from server.services.combat_messaging_integration import (
     CombatMessagingIntegration,
 )
 
+pytestmark = pytest.mark.integration
+
 
 class TestCombatMessagingIntegration:
     """Test cases for CombatMessagingIntegration."""
 
-    def setup_method(self):
+    mock_connection_manager: AsyncMock
+    integration: CombatMessagingIntegration
+    room_id: str
+    combat_id: str
+    attacker_id: str
+    attacker_name: str
+    target_name: str
+    damage: int
+    action_type: str
+    xp_reward: int
+
+    def setup_method(self) -> None:
         """Set up test fixtures."""
         # AI Agent: Inject mock connection_manager via constructor (no longer a global)
         #           Post-migration: CombatMessagingIntegration requires connection_manager
-        self.mock_connection_manager = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        from unittest.mock import MagicMock
+
+        self.mock_connection_manager = MagicMock()
         self.integration = CombatMessagingIntegration(connection_manager=self.mock_connection_manager)
         self.room_id = "test_room_001"
         self.combat_id = "combat_123"
@@ -33,7 +50,7 @@ class TestCombatMessagingIntegration:
         self.xp_reward = 5
 
     @pytest.mark.asyncio
-    async def test_broadcast_combat_start(self):
+    async def test_broadcast_combat_start(self) -> None:
         """Test broadcasting combat start messages."""
         # AI Agent: Use mock from setup_method (injected via constructor)
         self.mock_connection_manager.broadcast_to_room = AsyncMock(return_value={"successful_deliveries": 2})
@@ -59,7 +76,7 @@ class TestCombatMessagingIntegration:
         assert result == {"successful_deliveries": 2}
 
     @pytest.mark.asyncio
-    async def test_broadcast_combat_attack(self):
+    async def test_broadcast_combat_attack(self) -> None:
         """Test broadcasting combat attack messages."""
         # AI Agent: Use mock from setup_method (injected via constructor)
         self.mock_connection_manager.broadcast_to_room = AsyncMock(return_value={"successful_deliveries": 2})
@@ -98,7 +115,7 @@ class TestCombatMessagingIntegration:
         assert result == {"successful_deliveries": 2}
 
     @pytest.mark.asyncio
-    async def test_broadcast_combat_death(self):
+    async def test_broadcast_combat_death(self) -> None:
         """Test broadcasting combat death messages."""
         # AI Agent: Use mock from setup_method (injected via constructor)
         self.mock_connection_manager.broadcast_to_room = AsyncMock(return_value={"successful_deliveries": 2})
@@ -124,7 +141,7 @@ class TestCombatMessagingIntegration:
         assert result == {"successful_deliveries": 2}
 
     @pytest.mark.asyncio
-    async def test_broadcast_combat_end(self):
+    async def test_broadcast_combat_end(self) -> None:
         """Test broadcasting combat end messages."""
         # AI Agent: Use mock from setup_method (injected via constructor)
         self.mock_connection_manager.broadcast_to_room = AsyncMock(return_value={"successful_deliveries": 2})
@@ -148,7 +165,7 @@ class TestCombatMessagingIntegration:
         assert result == {"successful_deliveries": 2}
 
     @pytest.mark.asyncio
-    async def test_broadcast_combat_error(self):
+    async def test_broadcast_combat_error(self) -> None:
         """Test broadcasting combat error messages."""
         error_message = "You can't attack that target."
 
@@ -172,7 +189,7 @@ class TestCombatMessagingIntegration:
         assert result == {"success": True}
 
     @pytest.mark.asyncio
-    async def test_broadcast_combat_attack_no_personal_message(self):
+    async def test_broadcast_combat_attack_no_personal_message(self) -> None:
         """Test that attack broadcast works even if personal message fails."""
         # AI Agent: Use mock from setup_method (injected via constructor)
         self.mock_connection_manager.broadcast_to_room = AsyncMock(return_value={"successful_deliveries": 2})
@@ -194,7 +211,7 @@ class TestCombatMessagingIntegration:
         assert result == {"successful_deliveries": 2}
 
     @pytest.mark.asyncio
-    async def test_broadcast_combat_start_with_messaging_service_error(self):
+    async def test_broadcast_combat_start_with_messaging_service_error(self) -> None:
         """Test that combat start works even if messaging service fails."""
         # AI Agent: Use mock from setup_method (injected via constructor)
         self.mock_connection_manager.broadcast_to_room = AsyncMock(return_value={"successful_deliveries": 2})

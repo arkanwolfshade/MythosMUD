@@ -2,16 +2,17 @@
 // Extracted from GameClientV2Container to reduce complexity
 
 import { useCallback, useEffect, useRef } from 'react';
-import { logger } from '../../../utils/logger';
 import { useGameConnection } from '../../../hooks/useGameConnectionRefactored';
+import { logger } from '../../../utils/logger';
 import type { GameEvent } from '../eventHandlers/types';
-import { sanitizeChatMessageForState } from '../utils/messageUtils';
 import type { ChatMessage } from '../types';
+import { sanitizeChatMessageForState } from '../utils/messageUtils';
 import type { GameState } from '../utils/stateUpdateUtils';
 
 interface UseGameConnectionManagementParams {
   authToken: string;
   playerName: string;
+  characterId?: string; // MULTI-CHARACTER: Selected character ID for WebSocket connection
   onLogout?: () => void;
   onGameEvent: (event: GameEvent) => void;
   setGameState: React.Dispatch<React.SetStateAction<GameState>>;
@@ -20,6 +21,7 @@ interface UseGameConnectionManagementParams {
 export const useGameConnectionManagement = ({
   authToken,
   playerName,
+  characterId,
   onLogout,
   onGameEvent,
   setGameState,
@@ -69,6 +71,7 @@ export const useGameConnectionManagement = ({
     sendCommand,
   } = useGameConnection({
     authToken,
+    characterId,
     onEvent: onGameEvent,
     onConnect: handleConnect,
     onDisconnect: handleDisconnect,

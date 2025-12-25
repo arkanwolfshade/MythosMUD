@@ -27,7 +27,7 @@ class TestPrepareRoomDataWithOccupants:
     """Test prepare_room_data_with_occupants function."""
 
     @pytest.mark.asyncio
-    async def test_prepare_room_data_with_occupants_success(self):
+    async def test_prepare_room_data_with_occupants_success(self) -> None:
         """Test successfully preparing room data with occupants."""
         mock_room = MagicMock()
         mock_room.to_dict.return_value = {"room_id": "room-123", "name": "Test Room"}
@@ -56,7 +56,7 @@ class TestSendGameStateEventSafely:
     """Test send_game_state_event_safely function."""
 
     @pytest.mark.asyncio
-    async def test_send_game_state_event_safely_success(self):
+    async def test_send_game_state_event_safely_success(self) -> None:
         """Test successfully sending game state event."""
         mock_websocket = AsyncMock()
         mock_websocket.application_state = WebSocketState.CONNECTED
@@ -68,7 +68,7 @@ class TestSendGameStateEventSafely:
         mock_websocket.send_json.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_send_game_state_event_safely_disconnected(self):
+    async def test_send_game_state_event_safely_disconnected(self) -> None:
         """Test sending when WebSocket is already disconnected."""
         mock_websocket = AsyncMock()
         mock_websocket.application_state = WebSocketState.DISCONNECTED
@@ -81,7 +81,7 @@ class TestSendGameStateEventSafely:
             mock_websocket.send_json.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_send_game_state_event_safely_close_message(self):
+    async def test_send_game_state_event_safely_close_message(self) -> None:
         """Test sending when close message has been sent."""
         mock_websocket = AsyncMock()
         mock_websocket.application_state = WebSocketState.CONNECTED
@@ -98,7 +98,7 @@ class TestSendInitialGameState:
     """Test send_initial_game_state function."""
 
     @pytest.mark.asyncio
-    async def test_send_initial_game_state_success(self):
+    async def test_send_initial_game_state_success(self) -> None:
         """Test successfully sending initial game state."""
         mock_websocket = AsyncMock()
         mock_websocket.application_state = WebSocketState.CONNECTED
@@ -137,7 +137,7 @@ class TestSendInitialGameState:
                         assert should_exit is False
 
     @pytest.mark.asyncio
-    async def test_send_initial_game_state_no_player(self):
+    async def test_send_initial_game_state_no_player(self) -> None:
         """Test sending initial game state when player is not found."""
         mock_websocket = AsyncMock()
         player_id = uuid4()
@@ -160,7 +160,7 @@ class TestCheckAndSendDeathNotification:
     """Test check_and_send_death_notification function."""
 
     @pytest.mark.asyncio
-    async def test_check_and_send_death_notification_dead_player(self):
+    async def test_check_and_send_death_notification_dead_player(self) -> None:
         """Test sending death notification for dead player."""
         mock_websocket = AsyncMock()
         player_id = uuid4()
@@ -186,7 +186,7 @@ class TestCheckAndSendDeathNotification:
                     mock_websocket.send_json.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_check_and_send_death_notification_alive_player(self):
+    async def test_check_and_send_death_notification_alive_player(self) -> None:
         """Test not sending death notification for alive player."""
         mock_websocket = AsyncMock()
         player_id = uuid4()
@@ -208,7 +208,7 @@ class TestCheckAndSendDeathNotification:
             mock_websocket.send_json.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_check_and_send_death_notification_limbo(self):
+    async def test_check_and_send_death_notification_limbo(self) -> None:
         """Test sending death notification for player in limbo."""
         mock_websocket = AsyncMock()
         player_id = uuid4()
@@ -245,7 +245,7 @@ class TestAddNpcOccupantsToList:
     """Test add_npc_occupants_to_list function."""
 
     @pytest.mark.asyncio
-    async def test_add_npc_occupants_to_list_success(self):
+    async def test_add_npc_occupants_to_list_success(self) -> None:
         """Test successfully adding NPC occupants."""
         mock_room = MagicMock()
         mock_room.get_npcs.return_value = ["npc-1", "npc-2"]
@@ -273,7 +273,7 @@ class TestAddNpcOccupantsToList:
             assert "NPC2" in occupant_names
 
     @pytest.mark.asyncio
-    async def test_add_npc_occupants_to_list_no_app(self):
+    async def test_add_npc_occupants_to_list_no_app(self) -> None:
         """Test adding NPC occupants when app is not available."""
         mock_room = MagicMock()
         occupant_names = ["Player1"]
@@ -290,7 +290,7 @@ class TestPrepareInitialRoomData:
     """Test prepare_initial_room_data function."""
 
     @pytest.mark.asyncio
-    async def test_prepare_initial_room_data_success(self):
+    async def test_prepare_initial_room_data_success(self) -> None:
         """Test successfully preparing initial room data."""
         mock_room = MagicMock()
         mock_room.to_dict.return_value = {"room_id": "room-123", "name": "Test Room"}
@@ -309,7 +309,7 @@ class TestPrepareInitialRoomData:
 class TestGetEventHandlerForInitialState:
     """Test get_event_handler_for_initial_state function."""
 
-    def test_get_event_handler_from_connection_manager(self):
+    def test_get_event_handler_from_connection_manager(self) -> None:
         """Test getting event handler from connection manager."""
         mock_event_handler = MagicMock()
         mock_app = MagicMock()
@@ -324,7 +324,7 @@ class TestGetEventHandlerForInitialState:
 
         assert result == mock_event_handler
 
-    def test_get_event_handler_from_websocket(self):
+    def test_get_event_handler_from_websocket(self) -> None:
         """Test getting event handler from websocket app state."""
         mock_event_handler = MagicMock()
         mock_app = MagicMock()
@@ -340,7 +340,7 @@ class TestGetEventHandlerForInitialState:
 
         assert result == mock_event_handler
 
-    def test_get_event_handler_not_found(self):
+    def test_get_event_handler_not_found(self) -> None:
         """Test when event handler is not found."""
         mock_connection_manager = MagicMock()
         delattr(mock_connection_manager, "app")
@@ -357,7 +357,7 @@ class TestSendOccupantsSnapshotIfNeeded:
     """Test send_occupants_snapshot_if_needed function."""
 
     @pytest.mark.asyncio
-    async def test_send_occupants_snapshot_success(self):
+    async def test_send_occupants_snapshot_success(self) -> None:
         """Test successfully sending occupants snapshot."""
         mock_event_handler = MagicMock()
         mock_player_handler = MagicMock()
@@ -379,7 +379,7 @@ class TestSendOccupantsSnapshotIfNeeded:
             mock_player_handler.send_occupants_snapshot_to_player.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_send_occupants_snapshot_no_event_handler(self):
+    async def test_send_occupants_snapshot_no_event_handler(self) -> None:
         """Test not sending snapshot when event handler is None."""
         mock_room = MagicMock()
 
@@ -388,7 +388,7 @@ class TestSendOccupantsSnapshotIfNeeded:
         # Should not raise or call anything
 
     @pytest.mark.asyncio
-    async def test_send_occupants_snapshot_player_not_in_room(self):
+    async def test_send_occupants_snapshot_player_not_in_room(self) -> None:
         """Test not sending snapshot when player is not in room."""
         mock_event_handler = MagicMock()
         mock_player_handler = MagicMock()
@@ -406,7 +406,7 @@ class TestSendInitialRoomState:
     """Test send_initial_room_state function."""
 
     @pytest.mark.asyncio
-    async def test_send_initial_room_state_success(self):
+    async def test_send_initial_room_state_success(self) -> None:
         """Test successfully sending initial room state."""
         mock_websocket = AsyncMock()
         player_id = uuid4()
@@ -444,10 +444,9 @@ class TestSendInitialRoomState:
 
                             # The function may catch exceptions, so we just verify it doesn't raise
                             # send_json may not be called if an exception occurs in the try block
-                            pass
 
     @pytest.mark.asyncio
-    async def test_send_initial_room_state_no_room(self):
+    async def test_send_initial_room_state_no_room(self) -> None:
         """Test sending initial room state when room is not found."""
         mock_websocket = AsyncMock()
         player_id = uuid4()

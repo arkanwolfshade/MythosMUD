@@ -64,7 +64,7 @@ class TestDeadLetterQueue:
 
         filepath = dlq.enqueue(message)
 
-        with open(filepath) as f:
+        with open(filepath, encoding="utf-8") as f:
             stored_data = json.load(f)
 
         assert stored_data["subject"] == "game.events"
@@ -108,6 +108,7 @@ class TestDeadLetterQueue:
 
         assert result is None
 
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared DeadLetterQueue state
     def test_get_statistics(self, dlq):
         """Get statistics returns correct counts."""
         # Enqueue multiple messages
@@ -127,6 +128,7 @@ class TestDeadLetterQueue:
         assert stats["total_messages"] == 0
         assert stats["oldest_message_age"] is None
 
+    @pytest.mark.serial  # Flaky in parallel execution - shared DeadLetterQueue state
     def test_list_messages(self, dlq):
         """List messages returns all messages in queue."""
         messages = [DeadLetterMessage(f"test{i}", {"id": i}, f"error{i}", datetime.now(), i) for i in range(3)]
@@ -193,7 +195,7 @@ class TestDeadLetterQueue:
         assert not old_file.exists()
         assert recent_file.exists()
 
-    def test_dead_letter_message_to_dict(self):
+    def test_dead_letter_message_to_dict(self) -> None:
         """DeadLetterMessage converts to dict correctly."""
         now = datetime.now()
         message = DeadLetterMessage(
@@ -213,7 +215,7 @@ class TestDeadLetterQueue:
         assert data["retry_count"] == 5
         assert data["original_headers"] == {"content-type": "application/json"}
 
-    def test_dead_letter_message_from_dict(self):
+    def test_dead_letter_message_from_dict(self) -> None:
         """DeadLetterMessage can be reconstructed from dict."""
         original = DeadLetterMessage(
             subject="test", data={"test": "data"}, error="error", timestamp=datetime.now(), retry_count=3

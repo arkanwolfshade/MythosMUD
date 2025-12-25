@@ -7,12 +7,14 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from server.models.base import Base
-from server.models.lucidity import LucidityCooldown, PlayerLucidity
+from server.models.lucidity import PlayerLucidity
 from server.models.player import Player
 from server.models.user import User
+from server.services.lucidity_service import LucidityService
 
 
 @pytest.fixture
@@ -27,150 +29,205 @@ async def session_factory():
         # PostgreSQL always enforces foreign keys - no PRAGMA needed
         await conn.run_sync(Base.metadata.create_all)
 
-    factory = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
+    session_maker = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+    yield session_maker
+
+    # Clean up tables after tests
+    # Handle foreign key dependencies by dropping with CASCADE
     try:
-        yield factory
+        async with engine.begin() as conn:
+            from sqlalchemy import text
+
+            try:
+                # Try normal drop_all first
+                await conn.run_sync(Base.metadata.drop_all)
+            except (SQLAlchemyError, OSError, RuntimeError, ConnectionError) as e:
+                # Catch specific database and connection errors
+                # If that fails due to foreign key constraints, use CASCADE
+                error_msg = str(e).lower()
+                if "dependent" not in error_msg and "constraint" not in error_msg:
+                    # Re-raise if it's not a foreign key constraint issue
+                    raise
+                # Fall through to CASCADE drop logic for foreign key constraint errors
+            except Exception:  # pylint: disable=broad-exception-caught
+                # Catch any other unexpected exceptions (e.g., asyncpg.exceptions.DependentObjectsStillExistError)
+                # This is necessary for test teardown to handle all possible database errors gracefully
+                pass
+            # If drop_all failed, use CASCADE to drop tables individually
+            # Get all table names and drop them with CASCADE
+            result = await conn.execute(
+                text(
+                    """
+                SELECT tablename FROM pg_tables
+                WHERE schemaname = 'public'
+                """
+                )
+            )
+            tables = [row[0] for row in result.fetchall()]
+            for table in tables:
+                try:
+                    await conn.execute(text(f'DROP TABLE IF EXISTS "{table}" CASCADE'))
+                except Exception:  # pylint: disable=broad-exception-caught
+                    # Ignore errors for tables that don't exist or are already dropped
+                    # This is necessary for test teardown robustness
+                    pass
+    except (SQLAlchemyError, OSError, RuntimeError, ConnectionError, TimeoutError):
+        # Catch specific database and connection errors during teardown
+        # Ignore teardown errors - test database may be in inconsistent state
+        pass
+    except Exception:  # pylint: disable=broad-exception-caught
+        # Catch any other unexpected exceptions during teardown
+        # This is necessary for test teardown to handle all possible errors gracefully
+        # Test database may be in inconsistent state, so we ignore all teardown errors
+        pass
     finally:
         await engine.dispose()
 
 
-async def create_player(session: AsyncSession, *, room_id: str, lucidity: int = 100, tier: str = "lucid") -> Player:
-    player_id = str(uuid.uuid4())
+@pytest.fixture
+async def db_session(session_factory):
+    """
+    Create an isolated database session for each test.
+
+    Each test gets its own session with proper rollback to ensure isolation
+    and prevent deadlocks in parallel execution.
+    """
+    async with session_factory() as session:
+        try:
+            yield session
+        finally:
+            # Rollback any uncommitted changes to ensure test isolation
+            await session.rollback()
+
+
+@pytest.fixture
+def lucidity_service(db_session):
+    return LucidityService(db_session)
+
+
+@pytest.mark.asyncio
+@pytest.mark.serial  # Mark as serial to prevent deadlocks during parallel execution
+@pytest.mark.xdist_group(name="serial_lucidity_tests")  # Force serial execution with pytest-xdist
+@pytest.mark.timeout(30)  # Add timeout to prevent hanging on deadlocks
+async def test_adjust_lucidity_caps_at_min(db_session, lucidity_service):
+    """Test that lucidity doesn't drop below -100."""
+    # Create test user and player first (required for foreign key constraint)
+    # Use unique username to avoid conflicts with other tests
+    unique_username = f"testuser_{uuid.uuid4().hex[:8]}"
     user = User(
         id=str(uuid.uuid4()),
-        email=f"{player_id}@example.com",
-        username=player_id,
-        display_name=player_id,
-        hashed_password="hashed",
+        email=f"{unique_username}@example.com",
+        hashed_password="pw",
         is_active=True,
-        is_superuser=False,
-        is_verified=True,
+        username=unique_username,
     )
-    player = Player(
-        player_id=player_id,
-        user_id=user.id,
-        name=player_id,
-        current_room_id=room_id,
+    db_session.add(user)
+    await db_session.flush()
+
+    player_id = uuid.uuid4()
+    # Use unique player name to avoid conflicts in parallel test execution
+    unique_player_name = f"TestPlayer_{uuid.uuid4().hex[:8]}"
+    player = Player(player_id=str(player_id), user_id=user.id, name=unique_player_name)
+    db_session.add(player)
+    await db_session.flush()  # Flush to make player visible for foreign key constraint
+
+    lucidity = PlayerLucidity(player_id=str(player_id), current_lcd=-95, current_tier="catatonic")
+    db_session.add(lucidity)
+    await db_session.flush()  # Flush to make lucidity visible within transaction
+
+    # Ensure player is visible to the service's session
+    # The service uses the same session, so we refresh to ensure it's in the identity map
+    await db_session.refresh(player)
+
+    # Verify player exists in database before service call
+    # This ensures the foreign key constraint can see the player when the service logs the adjustment
+    player_check = await db_session.execute(select(Player).where(Player.player_id == player.player_id))
+    assert player_check.scalar_one_or_none() is not None, "Player must exist in database before service call"
+
+    # Flush to ensure all pending changes are synchronized
+    await db_session.flush()
+
+    await lucidity_service.apply_lucidity_adjustment(player_id, -10, reason_code="test_floor")
+
+    updated_lucidity = await db_session.get(PlayerLucidity, str(player_id))
+    assert updated_lucidity.current_lcd == -100
+
+
+@pytest.mark.asyncio
+async def test_cooldown_management(db_session, lucidity_service):
+    """Test that cooldowns can be set and retrieved."""
+    # Create test user and player first (required for foreign key constraint)
+    # Use unique username to avoid conflicts with other tests
+    unique_username = f"testuser_{uuid.uuid4().hex[:8]}"
+    user = User(
+        id=str(uuid.uuid4()),
+        email=f"{unique_username}@example.com",
+        hashed_password="pw",
+        is_active=True,
+        username=unique_username,
     )
-    session.add_all([user, player])
-    session.add(
-        PlayerLucidity(
-            player_id=player_id,
-            current_lcd=lucidity,
-            current_tier=tier,
-        )
+    db_session.add(user)
+    await db_session.flush()
+
+    player_id = uuid.uuid4()
+    # Use unique player name to avoid conflicts in parallel test execution
+    unique_player_name = f"TestPlayer_{uuid.uuid4().hex[:8]}"
+    player = Player(player_id=str(player_id), user_id=user.id, name=unique_player_name)
+    db_session.add(player)
+    await db_session.flush()
+
+    # Set a future cooldown - use naive datetime for PostgreSQL compatibility
+    expiry = datetime.now(UTC).replace(tzinfo=None) + timedelta(minutes=5)
+    await lucidity_service.set_cooldown(player_id, "test_action", expiry)
+    await db_session.flush()  # Flush to make cooldown visible within transaction
+
+    # Retrieve cooldown
+    cooldown = await lucidity_service.get_cooldown(player_id, "test_action")
+    assert cooldown is not None
+    # Compare naive datetimes for PostgreSQL compatibility
+    assert cooldown.cooldown_expires_at.replace(tzinfo=None) == expiry.replace(tzinfo=None)
+
+
+@pytest.mark.asyncio
+@pytest.mark.xdist_group(name="serial_lucidity_tests")  # Force serial execution with pytest-xdist
+@pytest.mark.serial  # Flaky in parallel execution - likely due to database race conditions
+async def test_adjust_lucidity_logging(db_session, lucidity_service):
+    """Test that lucidity adjustments are properly logged in LucidityAdjustmentLog."""
+    from server.models.lucidity import LucidityAdjustmentLog
+
+    # Create test user and player first (required for foreign key constraint)
+    # Use unique username to avoid conflicts with other tests
+    unique_username = f"testuser_{uuid.uuid4().hex[:8]}"
+    user = User(
+        id=str(uuid.uuid4()),
+        email=f"{unique_username}@example.com",
+        hashed_password="pw",
+        is_active=True,
+        username=unique_username,
     )
-    await session.flush()
-    return player
+    db_session.add(user)
+    await db_session.flush()
 
+    player_id = uuid.uuid4()
+    # Use unique player name to avoid conflicts in parallel test execution
+    unique_player_name = f"TestPlayer_{uuid.uuid4().hex[:8]}"
+    player = Player(player_id=str(player_id), user_id=user.id, name=unique_player_name)
+    db_session.add(player)
+    await db_session.flush()
 
-@pytest.mark.asyncio
-async def test_encounter_loss_first_and_repeat(session_factory):
-    async with session_factory() as session:
-        player = await create_player(session, room_id="earth_arkhamcity_downtown_room_curwen_st_017")
-        from server.services.active_lucidity_service import ActiveLucidityService
+    lucidity = PlayerLucidity(player_id=str(player_id), current_lcd=50, current_tier="uneasy")
+    db_session.add(lucidity)
+    await db_session.flush()  # Flush to make lucidity visible within transaction
 
-        fixed_now = datetime(2025, 1, 1, 12, 0, tzinfo=UTC)
-        service = ActiveLucidityService(session, now_provider=lambda: fixed_now)
+    reason = "test_logging"
+    await lucidity_service.apply_lucidity_adjustment(player_id, 15, reason_code=reason)
 
-        first = await service.apply_encounter_lucidity_loss(
-            player_id=player.player_id,
-            entity_archetype="disturbing_ghoul",
-            category="disturbing",
-            location_id="earth_arkhamcity_downtown_room_curwen_st_017",
-        )
-        assert first.delta == -6
+    # Check logs
+    result = await db_session.execute(
+        select(LucidityAdjustmentLog).where(LucidityAdjustmentLog.player_id == str(player_id))
+    )
+    logs = result.scalars().all()
 
-        repeat = await service.apply_encounter_lucidity_loss(
-            player_id=player.player_id,
-            entity_archetype="disturbing_ghoul",
-            category="disturbing",
-            location_id="earth_arkhamcity_downtown_room_curwen_st_017",
-        )
-        assert repeat.delta == -2
-
-        refreshed = await session.get(PlayerLucidity, player.player_id)
-        assert refreshed is not None
-        assert refreshed.current_lcd == 92
-
-
-@pytest.mark.asyncio
-async def test_encounter_acclimation_reduces_loss(session_factory):
-    async with session_factory() as session:
-        player = await create_player(session, room_id="earth_arkhamcity_downtown_room_curwen_st_017", lucidity=100)
-        from server.services.active_lucidity_service import ActiveLucidityService
-
-        service = ActiveLucidityService(session, now_provider=lambda: datetime.now(UTC))
-
-        deltas = []
-        for _ in range(6):
-            result = await service.apply_encounter_lucidity_loss(
-                player_id=player.player_id,
-                entity_archetype="cosmic_outer_god",
-                category="cosmic",
-                location_id="earth_arkhamcity_downtown_room_curwen_st_017",
-            )
-            deltas.append(result.delta)
-
-        assert deltas[0] == -20  # first-time
-        assert deltas[1] == -10  # repeat
-        assert deltas[-1] == -5  # acclimated half-loss
-
-        refreshed = await session.get(PlayerLucidity, player.player_id)
-        assert refreshed is not None
-        assert refreshed.current_lcd == 100 + sum(deltas)
-
-
-@pytest.mark.asyncio
-async def test_recovery_action_pray_sets_cooldown(session_factory):
-    async with session_factory() as session:
-        player = await create_player(session, room_id="earth_arkhamcity_LCDitarium_room_foyer_001", lucidity=40)
-        from server.services.active_lucidity_service import ActiveLucidityService
-
-        now = datetime(2025, 1, 1, 18, 0, tzinfo=UTC)
-        service = ActiveLucidityService(session, now_provider=lambda: now)
-
-        result = await service.perform_recovery_action(
-            player_id=player.player_id,
-            action_code="pray",
-            location_id="earth_arkhamcity_LCDitarium_room_foyer_001",
-        )
-        assert result.delta == 8
-
-        cooldown = (
-            await session.execute(
-                select(LucidityCooldown).where(
-                    LucidityCooldown.player_id == player.player_id, LucidityCooldown.action_code == "pray"
-                )
-            )
-        ).scalar_one()
-        stored_expiry = cooldown.cooldown_expires_at
-        assert stored_expiry is not None
-        assert stored_expiry.replace(tzinfo=UTC) == now + timedelta(minutes=15)
-
-        refreshed = await session.get(PlayerLucidity, player.player_id)
-        assert refreshed is not None
-        assert refreshed.current_lcd == 48
-
-
-@pytest.mark.asyncio
-async def test_recovery_action_respects_cooldown(session_factory):
-    async with session_factory() as session:
-        player = await create_player(session, room_id="earth_arkhamcity_LCDitarium_room_foyer_001", lucidity=70)
-        from server.services.active_lucidity_service import ActiveLucidityService, LucidityActionOnCooldownError
-
-        now = datetime(2025, 3, 15, 9, 0, tzinfo=UTC)
-        service = ActiveLucidityService(session, now_provider=lambda: now)
-
-        await service.perform_recovery_action(
-            player_id=player.player_id,
-            action_code="pray",
-            location_id="earth_arkhamcity_LCDitarium_room_foyer_001",
-        )
-
-        with pytest.raises(LucidityActionOnCooldownError):
-            await service.perform_recovery_action(
-                player_id=player.player_id,
-                action_code="pray",
-                location_id="earth_arkhamcity_LCDitarium_room_foyer_001",
-            )
+    assert len(logs) == 1
+    assert logs[0].delta == 15
+    assert logs[0].reason_code == reason

@@ -16,7 +16,10 @@ from server.game.chat_service import ChatService
 class TestWhisperChannelStrategy:
     """Test cases for WhisperChannelStrategy."""
 
-    def setup_method(self):
+    # pylint: disable=attribute-defined-outside-init
+    # Attributes are defined in setup_method, which is the pytest pattern for test fixtures.
+    # This is intentional and follows pytest best practices.
+    def setup_method(self) -> None:
         """Set up test fixtures."""
         # Create mock dependencies
         self.mock_persistence = Mock()
@@ -69,7 +72,7 @@ class TestWhisperChannelStrategy:
         self.rate_limiter_patcher.start()
         self.user_manager_patcher.start()
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Clean up test fixtures."""
         # Stop patches
         self.nats_patcher.stop()
@@ -77,14 +80,26 @@ class TestWhisperChannelStrategy:
         self.rate_limiter_patcher.stop()
         self.user_manager_patcher.stop()
 
-    @pytest.mark.asyncio
-    async def test_send_whisper_message_success(self):
-        """Test that whisper messages are sent successfully."""
-        # Setup mocks
-        self.mock_player_service.get_player_by_id.side_effect = lambda pid: {
+    def _get_player_by_id(self, player_id: str):
+        """Helper method to get player by ID for mock side_effect."""
+        player_map = {
             self.sender_player.id: self.sender_player,
             self.target_player.id: self.target_player,
-        }.get(pid)
+        }
+        return player_map.get(player_id)
+
+    def _get_sender_player_only(self, player_id: str):
+        """Helper method to get only sender player for testing target not found scenarios."""
+        player_map = {
+            self.sender_player.id: self.sender_player,
+        }
+        return player_map.get(player_id)
+
+    @pytest.mark.asyncio
+    async def test_send_whisper_message_success(self) -> None:
+        """Test that whisper messages are sent successfully."""
+        # Setup mocks
+        self.mock_player_service.get_player_by_id.side_effect = self._get_player_by_id
         self.mock_user_manager.is_player_muted.return_value = False
         self.mock_rate_limiter.check_rate_limit.return_value = True
 
@@ -108,7 +123,7 @@ class TestWhisperChannelStrategy:
         self.mock_chat_logger.log_whisper_channel_message.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_send_whisper_message_sender_not_found(self):
+    async def test_send_whisper_message_sender_not_found(self) -> None:
         """Test that whisper fails when sender is not found."""
         # Setup mocks
         self.mock_player_service.get_player_by_id.return_value = None
@@ -126,12 +141,10 @@ class TestWhisperChannelStrategy:
         self.mock_nats_service.publish.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_send_whisper_message_target_not_found(self):
+    async def test_send_whisper_message_target_not_found(self) -> None:
         """Test that whisper fails when target is not found."""
         # Setup mocks
-        self.mock_player_service.get_player_by_id.side_effect = lambda pid: {
-            self.sender_player.id: self.sender_player,
-        }.get(pid)
+        self.mock_player_service.get_player_by_id.side_effect = self._get_sender_player_only
 
         # Test whisper message
         result = await self.chat_service.send_whisper_message(
@@ -146,13 +159,10 @@ class TestWhisperChannelStrategy:
         self.mock_nats_service.publish.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_send_whisper_message_empty_content(self):
+    async def test_send_whisper_message_empty_content(self) -> None:
         """Test that whisper fails with empty content."""
         # Setup mocks
-        self.mock_player_service.get_player_by_id.side_effect = lambda pid: {
-            self.sender_player.id: self.sender_player,
-            self.target_player.id: self.target_player,
-        }.get(pid)
+        self.mock_player_service.get_player_by_id.side_effect = self._get_player_by_id
 
         # Test whisper message with empty content
         result = await self.chat_service.send_whisper_message(self.sender_player.id, self.target_player.id, "")
@@ -165,13 +175,10 @@ class TestWhisperChannelStrategy:
         self.mock_nats_service.publish.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_send_whisper_message_too_long(self):
+    async def test_send_whisper_message_too_long(self) -> None:
         """Test that whisper fails with message too long."""
         # Setup mocks
-        self.mock_player_service.get_player_by_id.side_effect = lambda pid: {
-            self.sender_player.id: self.sender_player,
-            self.target_player.id: self.target_player,
-        }.get(pid)
+        self.mock_player_service.get_player_by_id.side_effect = self._get_player_by_id
 
         # Test whisper message that's too long
         long_message = "x" * 2001  # Over 2000 character limit
@@ -187,15 +194,12 @@ class TestWhisperChannelStrategy:
         self.mock_nats_service.publish.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_send_whisper_message_nats_failure(self):
+    async def test_send_whisper_message_nats_failure(self) -> None:
         """Test that whisper fails when NATS publishing fails."""
         from server.services.nats_exceptions import NATSPublishError
 
         # Setup mocks
-        self.mock_player_service.get_player_by_id.side_effect = lambda pid: {
-            self.sender_player.id: self.sender_player,
-            self.target_player.id: self.target_player,
-        }.get(pid)
+        self.mock_player_service.get_player_by_id.side_effect = self._get_player_by_id
         self.mock_user_manager.is_player_muted.return_value = False
         self.mock_rate_limiter.check_rate_limit.return_value = True
         # NATS publish raises NATSPublishError on failure, doesn't return False
@@ -214,13 +218,10 @@ class TestWhisperChannelStrategy:
         self.mock_nats_service.publish.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_send_whisper_message_nats_not_connected(self):
+    async def test_send_whisper_message_nats_not_connected(self) -> None:
         """Test that whisper fails when NATS is not connected."""
         # Setup mocks
-        self.mock_player_service.get_player_by_id.side_effect = lambda pid: {
-            self.sender_player.id: self.sender_player,
-            self.target_player.id: self.target_player,
-        }.get(pid)
+        self.mock_player_service.get_player_by_id.side_effect = self._get_player_by_id
         self.mock_user_manager.is_player_muted.return_value = False
         self.mock_rate_limiter.check_rate_limit.return_value = True
         self.mock_nats_service.is_connected.return_value = False
@@ -238,13 +239,10 @@ class TestWhisperChannelStrategy:
         self.mock_nats_service.publish.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_send_whisper_message_logging(self):
+    async def test_send_whisper_message_logging(self) -> None:
         """Test that whisper messages are logged correctly."""
         # Setup mocks
-        self.mock_player_service.get_player_by_id.side_effect = lambda pid: {
-            self.sender_player.id: self.sender_player,
-            self.target_player.id: self.target_player,
-        }.get(pid)
+        self.mock_player_service.get_player_by_id.side_effect = self._get_player_by_id
         self.mock_user_manager.is_player_muted.return_value = False
         self.mock_rate_limiter.check_rate_limit.return_value = True
 
@@ -262,13 +260,10 @@ class TestWhisperChannelStrategy:
         assert logged_data["channel"] == "whisper"
 
     @pytest.mark.asyncio
-    async def test_send_whisper_message_rate_limiting(self):
+    async def test_send_whisper_message_rate_limiting(self) -> None:
         """Test that whisper messages are rate limited."""
         # Setup mocks
-        self.mock_player_service.get_player_by_id.side_effect = lambda pid: {
-            self.sender_player.id: self.sender_player,
-            self.target_player.id: self.target_player,
-        }.get(pid)
+        self.mock_player_service.get_player_by_id.side_effect = self._get_player_by_id
         self.mock_user_manager.is_player_muted.return_value = False
         self.mock_rate_limiter.check_rate_limit.return_value = False
 
@@ -294,13 +289,10 @@ class TestWhisperChannelStrategy:
         )
 
     @pytest.mark.asyncio
-    async def test_send_whisper_message_nats_subject(self):
+    async def test_send_whisper_message_nats_subject(self) -> None:
         """Test that whisper messages use correct NATS subject."""
         # Setup mocks
-        self.mock_player_service.get_player_by_id.side_effect = lambda pid: {
-            self.sender_player.id: self.sender_player,
-            self.target_player.id: self.target_player,
-        }.get(pid)
+        self.mock_player_service.get_player_by_id.side_effect = self._get_player_by_id
         self.mock_user_manager.is_player_muted.return_value = False
         self.mock_rate_limiter.check_rate_limit.return_value = True
         self.mock_nats_service.is_connected.return_value = True
@@ -315,13 +307,10 @@ class TestWhisperChannelStrategy:
         # The exact subject format will depend on the implementation
 
     @pytest.mark.asyncio
-    async def test_send_whisper_message_message_structure(self):
+    async def test_send_whisper_message_message_structure(self) -> None:
         """Test that whisper messages have correct structure."""
         # Setup mocks
-        self.mock_player_service.get_player_by_id.side_effect = lambda pid: {
-            self.sender_player.id: self.sender_player,
-            self.target_player.id: self.target_player,
-        }.get(pid)
+        self.mock_player_service.get_player_by_id.side_effect = self._get_player_by_id
         self.mock_user_manager.is_player_muted.return_value = False
         self.mock_rate_limiter.check_rate_limit.return_value = True
 
@@ -341,13 +330,10 @@ class TestWhisperChannelStrategy:
         assert message["timestamp"] is not None
 
     @pytest.mark.asyncio
-    async def test_send_whisper_message_whitespace_handling(self):
+    async def test_send_whisper_message_whitespace_handling(self) -> None:
         """Test that whisper messages handle whitespace correctly."""
         # Setup mocks
-        self.mock_player_service.get_player_by_id.side_effect = lambda pid: {
-            self.sender_player.id: self.sender_player,
-            self.target_player.id: self.target_player,
-        }.get(pid)
+        self.mock_player_service.get_player_by_id.side_effect = self._get_player_by_id
         self.mock_user_manager.is_player_muted.return_value = False
         self.mock_rate_limiter.check_rate_limit.return_value = True
 
@@ -361,7 +347,7 @@ class TestWhisperChannelStrategy:
         assert result["message"]["content"] == "Test message"
 
     @pytest.mark.asyncio
-    async def test_send_whisper_message_to_self(self):
+    async def test_send_whisper_message_to_self(self) -> None:
         """Test that whispering to yourself is allowed."""
         # Setup mocks
         self.mock_player_service.get_player_by_id.return_value = self.sender_player

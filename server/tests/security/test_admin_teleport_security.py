@@ -6,6 +6,7 @@ access controls, input validation, and vulnerability prevention.
 """
 
 import asyncio
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -15,6 +16,8 @@ from server.commands.admin_commands import (
     handle_teleport_command,
     validate_admin_permission,
 )
+
+pytestmark = pytest.mark.security
 
 
 @pytest.fixture(autouse=True)
@@ -62,7 +65,7 @@ class TestAdminTeleportSecurity:
         return app_state
 
     @pytest.mark.asyncio
-    async def test_admin_permission_bypass_attempts(self, mock_app_state):
+    async def test_admin_permission_bypass_attempts(self):
         """Test various attempts to bypass admin permission checks."""
         # Test with None player
         result = await validate_admin_permission(None, "Attacker")
@@ -123,7 +126,7 @@ class TestAdminTeleportSecurity:
         assert "not found" in result["result"].lower() or "not online" in result["result"].lower()
 
     @pytest.mark.asyncio
-    async def test_xss_prevention_in_teleport_messages(self, mock_app_state):
+    async def test_xss_prevention_in_teleport_messages(self):
         """Test XSS prevention in teleport effect messages."""
         from server.commands.admin_commands import create_teleport_effect_message
 
@@ -336,7 +339,7 @@ class TestAdminTeleportSecurity:
         mock_alias_storage = MagicMock()
 
         # Test with different user contexts
-        test_cases = [
+        test_cases: list[dict[str, Any]] = [
             {"current_user": {"username": "AdminUser"}, "expected_success": True},
             {"current_user": {"username": "RegularUser"}, "expected_success": False},
             {"current_user": {"username": "HackerUser"}, "expected_success": False},

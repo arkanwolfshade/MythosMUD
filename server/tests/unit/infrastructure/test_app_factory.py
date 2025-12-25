@@ -9,13 +9,13 @@ import pytest
 class TestAppFactory:
     """Test the app factory functionality."""
 
-    def test_factory_file_exists(self):
+    def test_factory_file_exists(self) -> None:
         """Test that the factory file exists."""
         # Get the actual server app factory path (not in tests directory)
         factory_path = Path(__file__).parent.parent.parent.parent / "app" / "factory.py"
         assert factory_path.exists()
 
-    def test_factory_file_content(self):
+    def test_factory_file_content(self) -> None:
         """Test that the factory file contains expected content."""
         factory_path = Path(__file__).parent.parent.parent.parent / "app" / "factory.py"
         content = factory_path.read_text(encoding="utf-8")
@@ -28,7 +28,7 @@ class TestAppFactory:
         assert "description=" in content
         assert "version=" in content
 
-    def test_factory_imports_available(self):
+    def test_factory_imports_available(self) -> None:
         """Test that all necessary imports are available."""
         try:
             from fastapi import FastAPI
@@ -39,7 +39,7 @@ class TestAppFactory:
         except ImportError as e:
             pytest.fail(f"Import failed: {e}")
 
-    def test_factory_function_signature(self):
+    def test_factory_function_signature(self) -> None:
         """Test that create_app function has the correct signature."""
         factory_path = Path(__file__).parent.parent.parent.parent / "app" / "factory.py"
         content = factory_path.read_text(encoding="utf-8")
@@ -48,7 +48,7 @@ class TestAppFactory:
         assert "def create_app()" in content
         assert "-> FastAPI:" in content
 
-    def test_factory_docstring(self):
+    def test_factory_docstring(self) -> None:
         """Test that create_app has proper documentation."""
         factory_path = Path(__file__).parent.parent.parent.parent / "app" / "factory.py"
         content = factory_path.read_text(encoding="utf-8")
@@ -58,7 +58,7 @@ class TestAppFactory:
         assert "Create and configure" in content
         assert "FastAPI" in content
 
-    def test_factory_structure(self):
+    def test_factory_structure(self) -> None:
         """Test the structure of the factory file."""
         factory_path = Path(__file__).parent.parent.parent.parent / "app" / "factory.py"
         content = factory_path.read_text(encoding="utf-8")
@@ -71,7 +71,7 @@ class TestAppFactory:
         assert "app.include_router(" in content
         assert "return app" in content
 
-    def test_factory_configuration(self):
+    def test_factory_configuration(self) -> None:
         """Test that the factory has proper configuration."""
         factory_path = Path(__file__).parent.parent.parent.parent / "app" / "factory.py"
         content = factory_path.read_text(encoding="utf-8")
@@ -82,7 +82,7 @@ class TestAppFactory:
         assert "http://localhost:5173" in content
         assert "http://127.0.0.1:5173" in content
 
-    def test_factory_middleware_configuration(self):
+    def test_factory_middleware_configuration(self) -> None:
         """Test that CORS middleware is properly configured."""
         factory_path = Path(__file__).parent.parent.parent.parent / "app" / "factory.py"
         content = factory_path.read_text(encoding="utf-8")
@@ -94,7 +94,7 @@ class TestAppFactory:
         assert "allow_methods=" in content
         assert "allow_headers=" in content
 
-    def test_factory_router_inclusion(self):
+    def test_factory_router_inclusion(self) -> None:
         """Test that routers are included."""
         factory_path = Path(__file__).parent.parent.parent.parent / "app" / "factory.py"
         content = factory_path.read_text(encoding="utf-8")
@@ -108,7 +108,7 @@ class TestAppFactory:
         assert "realtime_router" in content
         assert "room_router" in content
 
-    def test_factory_lifespan_configuration(self):
+    def test_factory_lifespan_configuration(self) -> None:
         """Test that lifespan is configured."""
         factory_path = Path(__file__).parent.parent.parent.parent / "app" / "factory.py"
         content = factory_path.read_text(encoding="utf-8")
@@ -116,7 +116,7 @@ class TestAppFactory:
         # Check for lifespan configuration
         assert "lifespan=lifespan" in content
 
-    def test_factory_imports_structure(self):
+    def test_factory_imports_structure(self) -> None:
         """Test that imports are properly structured."""
         factory_path = Path(__file__).parent.parent.parent.parent / "app" / "factory.py"
         content = factory_path.read_text(encoding="utf-8")
@@ -132,7 +132,7 @@ class TestAppFactory:
         assert any("from fastapi import FastAPI" in line for line in import_lines)
         assert any("from fastapi.middleware.cors import CORSMiddleware" in line for line in import_lines)
 
-    def test_factory_function_structure(self):
+    def test_factory_function_structure(self) -> None:
         """Test that the create_app function has proper structure."""
         factory_path = Path(__file__).parent.parent.parent.parent / "app" / "factory.py"
         content = factory_path.read_text(encoding="utf-8")
@@ -158,7 +158,7 @@ class TestAppFactory:
 
         assert return_found
 
-    def test_factory_no_syntax_errors(self):
+    def test_factory_no_syntax_errors(self) -> None:
         """Test that the factory file has no syntax errors."""
         factory_path = Path(__file__).parent.parent.parent.parent / "app" / "factory.py"
 
@@ -168,14 +168,14 @@ class TestAppFactory:
         except SyntaxError as e:
             raise AssertionError(f"Syntax error in factory.py: {e}") from e
 
-    def test_factory_file_permissions(self):
+    def test_factory_file_permissions(self) -> None:
         """Test that the factory file has proper permissions."""
         factory_path = Path(__file__).parent.parent.parent.parent / "app" / "factory.py"
 
         # Check that file is readable
         assert os.access(factory_path, os.R_OK)
 
-    def test_factory_file_size(self):
+    def test_factory_file_size(self) -> None:
         """Test that the factory file has reasonable size."""
         factory_path = Path(__file__).parent.parent.parent.parent / "app" / "factory.py"
 
@@ -184,7 +184,7 @@ class TestAppFactory:
         assert size > 100  # Should be more than 100 bytes
         assert size < 10000  # Should be less than 10KB
 
-    def test_factory_encoding(self):
+    def test_factory_encoding(self) -> None:
         """Test that the factory file uses proper encoding."""
         factory_path = Path(__file__).parent.parent.parent.parent / "app" / "factory.py"
 
@@ -195,7 +195,7 @@ class TestAppFactory:
         except UnicodeDecodeError:
             raise AssertionError("Factory file should be UTF-8 encoded") from None
 
-    def test_factory_line_count(self):
+    def test_factory_line_count(self) -> None:
         """Test that the factory file has reasonable line count."""
         factory_path = Path(__file__).parent.parent.parent.parent / "app" / "factory.py"
         content = factory_path.read_text(encoding="utf-8")
@@ -205,7 +205,7 @@ class TestAppFactory:
         assert len(lines) > 10  # More than 10 lines
         assert len(lines) < 200  # Less than 200 lines
 
-    def test_factory_comment_quality(self):
+    def test_factory_comment_quality(self) -> None:
         """Test that the factory file has good comments."""
         factory_path = Path(__file__).parent.parent.parent.parent / "app" / "factory.py"
         content = factory_path.read_text(encoding="utf-8")
@@ -232,7 +232,7 @@ class TestAppFactory:
                     break
             assert docstring_found, "create_app function should have a docstring"
 
-    def test_factory_variable_names(self):
+    def test_factory_variable_names(self) -> None:
         """Test that variable names are properly named."""
         factory_path = Path(__file__).parent.parent.parent.parent / "app" / "factory.py"
         content = factory_path.read_text(encoding="utf-8")
@@ -242,7 +242,7 @@ class TestAppFactory:
         assert "app.add_middleware(" in content
         assert "app.include_router(" in content
 
-    def test_factory_return_statement(self):
+    def test_factory_return_statement(self) -> None:
         """Test that the function returns the app."""
         factory_path = Path(__file__).parent.parent.parent.parent / "app" / "factory.py"
         content = factory_path.read_text(encoding="utf-8")
@@ -250,7 +250,7 @@ class TestAppFactory:
         # Check for return statement
         assert "return app" in content
 
-    def test_factory_no_hardcoded_secrets(self):
+    def test_factory_no_hardcoded_secrets(self) -> None:
         """Test that no hardcoded secrets are present."""
         factory_path = Path(__file__).parent.parent.parent.parent / "app" / "factory.py"
         content = factory_path.read_text(encoding="utf-8")
@@ -261,7 +261,7 @@ class TestAppFactory:
         assert "key" not in content.lower()
         assert "token" not in content.lower()
 
-    def test_factory_consistent_indentation(self):
+    def test_factory_consistent_indentation(self) -> None:
         """Test that indentation is consistent."""
         factory_path = Path(__file__).parent.parent.parent.parent / "app" / "factory.py"
         content = factory_path.read_text(encoding="utf-8")

@@ -14,6 +14,7 @@ AI Agent: Integration tests for Issue #257 - NPC periodic spawning and respawnin
 
 import asyncio
 import time
+from typing import Any, cast
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -24,6 +25,8 @@ from server.models.npc import NPCDefinition, NPCDefinitionType
 from server.npc.lifecycle_manager import NPCLifecycleManager
 from server.npc.population_control import NPCPopulationController, PopulationStats
 from server.npc.spawning_service import NPCSpawningService
+
+pytestmark = pytest.mark.integration
 
 
 @pytest.fixture
@@ -95,7 +98,7 @@ def optional_npc_definition():
         behavior_config='{"wander_probability": 0.2}',
         ai_integration_stub="{}",
     )
-    definition.id = 100
+    definition.id = cast(Any, 100)
     return definition
 
 
@@ -115,7 +118,7 @@ def required_npc_definition():
         behavior_config="{}",
         ai_integration_stub="{}",
     )
-    definition.id = 200
+    definition.id = cast(Any, 200)
     return definition
 
 
@@ -372,7 +375,7 @@ class TestNPCRespawning:
 class TestGameTickIntegration:
     """Test integration with game tick loop."""
 
-    def test_maintenance_config_should_run_maintenance(self):
+    def test_maintenance_config_should_run_maintenance(self) -> None:
         """Test maintenance interval configuration."""
         # Should run on multiples of 600 (current config: 600 ticks = 1 minute)
         assert NPCMaintenanceConfig.should_run_maintenance(600) is True
@@ -384,7 +387,7 @@ class TestGameTickIntegration:
         assert NPCMaintenanceConfig.should_run_maintenance(601) is False
         assert NPCMaintenanceConfig.should_run_maintenance(1199) is False
 
-    def test_maintenance_config_get_respawn_delay(self):
+    def test_maintenance_config_get_respawn_delay(self) -> None:
         """Test getting respawn delay for different NPC types."""
         # Test configured types (values in seconds - corrected from 10x scaling bug)
         assert NPCMaintenanceConfig.get_respawn_delay("quest_giver") == 600.0
@@ -395,7 +398,7 @@ class TestGameTickIntegration:
         # Test default for unknown type
         assert NPCMaintenanceConfig.get_respawn_delay("unknown_type") == 300.0
 
-    def test_maintenance_config_summary(self):
+    def test_maintenance_config_summary(self) -> None:
         """Test configuration summary."""
         summary = NPCMaintenanceConfig.get_config_summary()
 
@@ -407,6 +410,7 @@ class TestGameTickIntegration:
         assert summary["spawn_reroll_interval"] == 600.0
 
 
+@pytest.mark.filterwarnings("ignore:coroutine 'Connection._cancel' was never awaited")
 class TestCompleteLifecycle:
     """Test complete NPC lifecycle with periodic spawning."""
 
@@ -450,43 +454,67 @@ class TestCompleteLifecycle:
                 # Set persistence directly on the lifecycle_manager instance
                 lifecycle_manager.persistence = mock_persistence
 
-                # Step 1: Spawn NPC
-                npc_id = lifecycle_manager.spawn_npc(
-                    optional_npc_definition,
-                    "earth_arkhamcity_downtown_001",
-                    "test",
-                )
-                assert npc_id is not None
-                assert npc_id in lifecycle_manager.active_npcs
-                assert npc_id in fake_room.npcs
+                # Track created tasks so we can await/close them to avoid dangling coroutines
+                created_tasks: list[asyncio.Task] = []
+                original_create_task = asyncio.create_task
 
-                # Step 2: Despawn NPC (simulate death)
-                result = lifecycle_manager.despawn_npc(npc_id, "death")
-                assert result is True
-                assert npc_id not in lifecycle_manager.active_npcs
-                assert npc_id not in fake_room.npcs  # Should be removed now
+                def create_task_side_effect(coro):
+                    task = original_create_task(coro)
+                    created_tasks.append(task)
+                    return task
 
-                # Step 3: Record death and schedule respawn
-                lifecycle_manager.record_npc_death(npc_id)
-                # Patch death suppression duration to a small value for testing (0.5 seconds instead of 300)
-                with patch.object(lifecycle_manager, "death_suppression_duration", 0.5):
-                    # Wait for death suppression to expire
-                    await asyncio.sleep(lifecycle_manager.death_suppression_duration + 0.1)
+                with patch("asyncio.create_task", side_effect=create_task_side_effect):
+                    # Step 1: Spawn NPC
+                    npc_id = lifecycle_manager.spawn_npc(
+                        optional_npc_definition,
+                        "earth_arkhamcity_downtown_001",
+                        "test",
+                    )
+                    assert npc_id is not None
+                    assert npc_id in lifecycle_manager.active_npcs
+                    assert npc_id in fake_room.npcs
 
-                    result = lifecycle_manager.respawn_npc(npc_id, delay=0.1, reason="death")
+                    # Step 2: Despawn NPC (simulate death)
+                    result = lifecycle_manager.despawn_npc(npc_id, "death")
                     assert result is True
-                    assert npc_id in lifecycle_manager.respawn_queue
+                    assert npc_id not in lifecycle_manager.active_npcs
+                    assert npc_id not in fake_room.npcs  # Should be removed now
 
-                    # Step 4: Wait for respawn delay
-                    await asyncio.sleep(0.15)
+                    # Step 3: Record death and schedule respawn
+                    lifecycle_manager.record_npc_death(npc_id)
+                    # Patch death suppression duration to a small value for testing (0.5 seconds instead of 300)
+                    with patch.object(lifecycle_manager, "death_suppression_duration", 0.5):
+                        # Wait for death suppression to expire
+                        await asyncio.sleep(lifecycle_manager.death_suppression_duration + 0.1)
 
-                # Step 5: Process respawn queue
-                respawned_count = lifecycle_manager.process_respawn_queue()
+                        result = lifecycle_manager.respawn_npc(npc_id, delay=0.1, reason="death")
+                        assert result is True
+                        assert npc_id in lifecycle_manager.respawn_queue
 
-                # Should have respawned
-                assert respawned_count >= 0
+                        # Step 4: Wait for respawn delay
+                        await asyncio.sleep(0.15)
 
-    def test_periodic_spawn_checks_honor_probability(
+                    # Step 5: Process respawn queue
+                    respawned_count = lifecycle_manager.process_respawn_queue()
+
+                    # Should have respawned
+                    assert respawned_count >= 0
+
+                # Ensure any created tasks are settled to avoid unawaited coroutine warnings
+                if created_tasks:
+                    await asyncio.gather(*created_tasks, return_exceptions=True)
+
+                # Final safety: cancel/await any other pending tasks in this loop
+                pending = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
+                if pending:
+                    for task in pending:
+                        task.cancel()
+                    await asyncio.gather(*pending, return_exceptions=True)
+                loop = asyncio.get_running_loop()
+                await loop.shutdown_asyncgens()
+
+    @pytest.mark.asyncio
+    async def test_periodic_spawn_checks_honor_probability(
         self,
         lifecycle_manager,  # noqa: F811
         population_controller,  # noqa: F811
@@ -521,6 +549,13 @@ class TestCompleteLifecycle:
                 # Should check but not spawn due to 0% probability
                 assert results["spawned_count"] == 0
 
+        # Drain any lingering tasks to avoid unawaited coroutine warnings in teardown
+        pending = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
+        if pending:
+            for task in pending:
+                task.cancel()
+            await asyncio.gather(*pending, return_exceptions=True)
+
 
 class TestMultipleNPCTypes:
     """Test periodic spawning with multiple NPC types."""
@@ -545,7 +580,7 @@ class TestMultipleNPCTypes:
             behavior_config="{}",
             ai_integration_stub="{}",
         )
-        npc1.id = 101
+        npc1.id = cast(Any, 101)
 
         npc2 = NPCDefinition(
             name="Cultist B",
@@ -560,7 +595,7 @@ class TestMultipleNPCTypes:
             behavior_config="{}",
             ai_integration_stub="{}",
         )
-        npc2.id = 102
+        npc2.id = cast(Any, 102)
 
         # Add both to population controller
         population_controller.npc_definitions[101] = npc1
@@ -632,7 +667,7 @@ class TestEdgeCases:
             behavior_config="{}",
             ai_integration_stub="{}",
         )
-        npc_no_room.id = 103
+        npc_no_room.id = cast(Any, 103)
 
         population_controller.npc_definitions[103] = npc_no_room
 

@@ -24,7 +24,7 @@ from server.services.combat_service import CombatParticipantData, CombatService
 class TestCombatModels:
     """Test combat model classes."""
 
-    def test_combat_participant_creation(self):
+    def test_combat_participant_creation(self) -> None:
         """Test creating a combat participant."""
         participant = CombatParticipant(
             participant_id=uuid4(),
@@ -41,7 +41,7 @@ class TestCombatModels:
         assert participant.dexterity == 15
         assert participant.is_alive() is True
 
-    def test_combat_participant_death(self):
+    def test_combat_participant_death(self) -> None:
         """Test combat participant death state for players and NPCs."""
         # Players die at -10 HP (mortally wounded at 0 HP)
         player_mortally_wounded = CombatParticipant(
@@ -75,7 +75,7 @@ class TestCombatModels:
         )
         assert npc_dead.is_alive() is False  # NPCs die at 0 HP
 
-    def test_combat_instance_creation(self):
+    def test_combat_instance_creation(self) -> None:
         """Test creating a combat instance."""
         combat = CombatInstance(room_id="test_room")
 
@@ -86,7 +86,7 @@ class TestCombatModels:
         assert len(combat.participants) == 0
         assert len(combat.turn_order) == 0
 
-    def test_combat_turn_management(self):
+    def test_combat_turn_management(self) -> None:
         """Test combat turn management."""
         combat = CombatInstance(room_id="test_room")
 
@@ -129,7 +129,7 @@ class TestCombatModels:
         assert combat.current_turn == 0
         assert combat.combat_round == 1
 
-    def test_combat_end_conditions(self):
+    def test_combat_end_conditions(self) -> None:
         """Test combat end conditions."""
         combat = CombatInstance(room_id="test_room")
 
@@ -584,7 +584,7 @@ class TestCombatMessagingService:
 class TestCombatEvents:
     """Test combat event classes."""
 
-    def test_combat_started_event(self):
+    def test_combat_started_event(self) -> None:
         """Test creating a combat started event."""
         event = CombatStartedEvent(
             combat_id=uuid4(),
@@ -597,7 +597,7 @@ class TestCombatEvents:
         assert len(event.participants) == 2
         assert len(event.turn_order) == 2
 
-    def test_combat_ended_event(self):
+    def test_combat_ended_event(self) -> None:
         """Test creating a combat ended event."""
         event = CombatEndedEvent(
             combat_id=uuid4(),
@@ -611,7 +611,7 @@ class TestCombatEvents:
         assert event.reason == "Target defeated"
         assert event.duration_seconds == 30
 
-    def test_player_attacked_event(self):
+    def test_player_attacked_event(self) -> None:
         """Test creating a player attacked event."""
         event = PlayerAttackedEvent(
             combat_id=uuid4(),

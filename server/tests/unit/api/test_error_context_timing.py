@@ -10,16 +10,17 @@ from unittest.mock import Mock, patch
 import pytest
 from fastapi import Request
 
-from server.api.players import _create_error_context
+from server.api.player_helpers import create_error_context
+from server.exceptions import create_error_context as create_error_context_from_exceptions
 from server.models.user import User
-from server.utils.error_logging import ErrorContext, create_error_context
+from server.utils.error_logging import ErrorContext
 
 
 class TestErrorContextCreation:
     """Test error context creation before logging."""
 
-    def test_create_error_context_helper(self):
-        """Test the _create_error_context helper function."""
+    def test_create_error_context_helper(self) -> None:
+        """Test the create_error_context helper function."""
         mock_request = Mock(spec=Request)
         mock_request.url = Mock()
         mock_request.url.__str__ = Mock(return_value="http://test.com/api/test")
@@ -29,14 +30,14 @@ class TestErrorContextCreation:
         mock_user = Mock(spec=User)
         mock_user.id = "user-123"
 
-        context = _create_error_context(mock_request, mock_user, operation="test_operation")
+        context = create_error_context(mock_request, mock_user, operation="test_operation")
 
         assert isinstance(context, ErrorContext)
         assert context.user_id == "user-123"
         assert "operation" in context.metadata
         assert context.metadata["operation"] == "test_operation"
 
-    def test_create_error_context_without_user(self):
+    def test_create_error_context_without_user(self) -> None:
         """Test error context creation when user is None."""
         mock_request = Mock(spec=Request)
         mock_request.url = Mock()
@@ -52,14 +53,14 @@ class TestErrorContextCreation:
         mock_request.state = StateWithoutUser()
         mock_request.client = None
 
-        context = _create_error_context(mock_request, None, test_key="test_value")
+        context = create_error_context(mock_request, None, test_key="test_value")
 
         assert isinstance(context, ErrorContext)
         assert context.user_id is None
         assert "test_key" in context.metadata
         assert context.metadata["test_key"] == "test_value"
 
-    def test_error_context_includes_request_info(self):
+    def test_error_context_includes_request_info(self) -> None:
         """Test that error context includes request information."""
         mock_request = Mock(spec=Request)
         mock_request.url = Mock()
@@ -74,7 +75,7 @@ class TestErrorContextCreation:
         mock_request.state = StateWithoutUser()
         mock_request.client = None
 
-        context = _create_error_context(mock_request, None)
+        context = create_error_context(mock_request, None)
 
         # create_context_from_request puts 'path' in metadata, not 'url' or 'request'
         assert "path" in context.metadata
@@ -84,7 +85,7 @@ class TestErrorContextBeforeLogging:
     """Test that error context is created before logging in exception handlers."""
 
     @pytest.mark.asyncio
-    async def test_error_context_created_before_logging(self):
+    async def test_error_context_created_before_logging(self) -> None:
         """Test that error context is created before any logging occurs."""
         # This test verifies the pattern: create context first, then log
         mock_request = Mock(spec=Request)
@@ -93,7 +94,7 @@ class TestErrorContextBeforeLogging:
         mock_request.method = "GET"
 
         # Create context first (as it should be done in exception handlers)
-        context = _create_error_context(mock_request, None, operation="test")
+        context = create_error_context(mock_request, None, operation="test")
 
         # Now log (simulating exception handler pattern)
         with patch("server.utils.error_logging.logger") as mock_logger:
@@ -117,7 +118,7 @@ class TestErrorContextBeforeLogging:
             assert "error_type" in call_args.kwargs or "error_message" in call_args.kwargs
 
     @pytest.mark.asyncio
-    async def test_exception_handler_pattern(self):
+    async def test_exception_handler_pattern(self) -> None:
         """Test the correct exception handler pattern: context before logging."""
         # Simulate the pattern used in players.py exception handlers
         mock_request = Mock(spec=Request)
@@ -129,7 +130,7 @@ class TestErrorContextBeforeLogging:
         mock_user.id = "user-456"
 
         # Step 1: Create context FIRST (correct pattern)
-        context = _create_error_context(mock_request, mock_user, operation="test_operation")
+        context = create_error_context(mock_request, mock_user, operation="test_operation")
 
         # Step 2: Then log and raise (correct pattern)
         with patch("server.utils.error_logging.logger") as mock_logger:
@@ -157,9 +158,9 @@ class TestErrorContextInAllPaths:
     """Test that error context is included in all exception paths."""
 
     @pytest.mark.asyncio
-    async def test_error_context_in_database_errors(self):
+    async def test_error_context_in_database_errors(self) -> None:
         """Test that database errors include error context."""
-        context = create_error_context(user_id="user-789", metadata={"operation": "database_operation"})
+        context = create_error_context_from_exceptions(user_id="user-789", metadata={"operation": "database_operation"})
 
         with patch("server.utils.error_logging.logger") as mock_logger:
             from server.exceptions import DatabaseError
@@ -183,9 +184,9 @@ class TestErrorContextInAllPaths:
             assert mock_logger.error.called
 
     @pytest.mark.asyncio
-    async def test_error_context_in_validation_errors(self):
+    async def test_error_context_in_validation_errors(self) -> None:
         """Test that validation errors include error context."""
-        context = create_error_context(user_id="user-101", metadata={"operation": "validation"})
+        context = create_error_context_from_exceptions(user_id="user-101", metadata={"operation": "validation"})
 
         with patch("server.utils.error_logging.logger") as mock_logger:
             from server.exceptions import ValidationError
@@ -207,9 +208,9 @@ class TestErrorContextInAllPaths:
             # Verify logging included context
             assert mock_logger.error.called
 
-    def test_error_context_metadata_preservation(self):
+    def test_error_context_metadata_preservation(self) -> None:
         """Test that error context metadata is preserved through exception handling."""
-        context = create_error_context(
+        context = create_error_context_from_exceptions(
             user_id="user-202",
             metadata={"operation": "test_operation", "custom_key": "custom_value", "nested": {"data": "value"}},
         )
@@ -228,16 +229,16 @@ class TestErrorContextInAllPaths:
 class TestErrorContextTimingVerification:
     """Verify that error context timing is correct (created before logging)."""
 
-    def test_context_creation_order(self):
+    def test_context_creation_order(self) -> None:
         """Test that context is created before it's used in logging."""
         # This test verifies the correct order of operations
         operations = []
 
         def mock_create_context(*args, **kwargs):
             operations.append("create_context")
-            return create_error_context(*args, **kwargs)
+            return create_error_context_from_exceptions(*args, **kwargs)
 
-        def mock_log(*args, **kwargs):
+        def mock_log(*_args, **_kwargs):
             operations.append("log")
 
         with patch("server.utils.error_logging.create_error_context", side_effect=mock_create_context):
@@ -245,7 +246,7 @@ class TestErrorContextTimingVerification:
                 from server.exceptions import DatabaseError
                 from server.utils.error_logging import log_and_raise
 
-                context = create_error_context(metadata={"operation": "test"})
+                context = create_error_context_from_exceptions(metadata={"operation": "test"})
                 with pytest.raises(DatabaseError):
                     log_and_raise(DatabaseError, "Test", context=context)
 

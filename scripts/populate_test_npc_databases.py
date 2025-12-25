@@ -16,6 +16,9 @@ import os
 import sys
 
 from sqlalchemy import create_engine, text
+from sqlalchemy.exc import SQLAlchemyError
+
+from server.exceptions import DatabaseError
 
 
 def get_npc_database_url(environment: str = "default") -> str | None:
@@ -99,9 +102,10 @@ def get_npc_data_from_source(source_url: str):
 
         return (npc_definitions, def_column_names), (npc_spawn_rules, spawn_column_names)
 
-    except Exception as e:
+    except (DatabaseError, SQLAlchemyError) as e:
         print(f"[ERROR] Failed to read data from source database: {e}")
         import traceback
+
         traceback.print_exc()
         return None, None
 
@@ -188,18 +192,17 @@ def populate_database(target_url: str, database_name: str, npc_definitions_data,
                 trans.rollback()
                 raise
 
-    except Exception as e:
+    except (DatabaseError, SQLAlchemyError) as e:
         print(f"  [ERROR] Failed to populate {database_name} database: {e}")
         import traceback
+
         traceback.print_exc()
         return False
 
 
 def main():
     """Main function to populate test NPC databases."""
-    parser = argparse.ArgumentParser(
-        description="Populate test NPC databases from source PostgreSQL database"
-    )
+    parser = argparse.ArgumentParser(description="Populate test NPC databases from source PostgreSQL database")
     parser.add_argument(
         "--source-env",
         choices=["prod", "local", "default"],

@@ -23,7 +23,7 @@ TIMESTAMP_REGEX = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
 class TestEventHandlerTimestamps:
     """Verify that real-time messages carry normalized UTC timestamps."""
 
-    def test_player_entered_message_timestamp(self):
+    def test_player_entered_message_timestamp(self) -> None:
         handler = RealTimeEventHandler()
 
         # Create event with a deterministic timestamp input; handler doesn't use it directly
@@ -34,7 +34,7 @@ class TestEventHandlerTimestamps:
         assert isinstance(message["timestamp"], str)
         assert TIMESTAMP_REGEX.match(message["timestamp"]) is not None
 
-    def test_player_left_message_timestamp(self):
+    def test_player_left_message_timestamp(self) -> None:
         handler = RealTimeEventHandler()
 
         event = PlayerLeftRoom(player_id="p1", room_id="r1")
@@ -44,7 +44,7 @@ class TestEventHandlerTimestamps:
         assert isinstance(message["timestamp"], str)
         assert TIMESTAMP_REGEX.match(message["timestamp"]) is not None
 
-    def test_timestamp_format_consistency(self):
+    def test_timestamp_format_consistency(self) -> None:
         """Test that all timestamp formats are consistent across different message types."""
         handler = RealTimeEventHandler()
 
@@ -105,7 +105,11 @@ class TestEventHandlerBroadcasting:
     @pytest.fixture
     def mock_connection_manager(self):
         """Create a mock connection manager."""
-        cm = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        from unittest.mock import MagicMock
+
+        cm = MagicMock()
         cm.get_player = AsyncMock()
         cm._get_player = AsyncMock()  # Keep for backward compatibility
         cm.persistence = Mock()
@@ -116,6 +120,8 @@ class TestEventHandlerBroadcasting:
         cm.subscribe_to_room = AsyncMock()
         cm.unsubscribe_from_room = AsyncMock()
         cm.send_personal_message = AsyncMock()
+        # convert_room_players_uuids_to_names is async and returns a dict
+        cm.convert_room_players_uuids_to_names = AsyncMock(return_value={})
         return cm
 
     @pytest.fixture
@@ -260,7 +266,10 @@ class TestEventHandlerBroadcasting:
 
     @pytest.mark.asyncio
     async def test_event_handler_handles_missing_player_gracefully(
-        self, event_bus, event_handler, mock_connection_manager
+        self,
+        event_bus,
+        event_handler,  # pylint: disable=unused-argument
+        mock_connection_manager,  # pylint: disable=unused-argument
     ):
         """Test that RealTimeEventHandler handles missing players gracefully."""
         # Setup mock to return None for player lookup
@@ -280,7 +289,10 @@ class TestEventHandlerBroadcasting:
 
     @pytest.mark.asyncio
     async def test_event_handler_handles_missing_room_gracefully(
-        self, event_bus, event_handler, mock_connection_manager
+        self,
+        event_bus,
+        event_handler,  # pylint: disable=unused-argument
+        mock_connection_manager,  # pylint: disable=unused-argument
     ):
         """Test that RealTimeEventHandler handles missing rooms gracefully."""
         # Set the main loop for async event handling

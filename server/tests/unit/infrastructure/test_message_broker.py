@@ -31,7 +31,7 @@ from server.infrastructure.message_broker import (
 class TestMessageBrokerExceptions:
     """Test MessageBroker exception classes."""
 
-    def test_message_broker_error_base_exception(self):
+    def test_message_broker_error_base_exception(self) -> None:
         """Test MessageBrokerError can be instantiated and raised."""
         error = MessageBrokerError("Test error message")
         assert str(error) == "Test error message"
@@ -41,7 +41,7 @@ class TestMessageBrokerExceptions:
             raise MessageBrokerError("Base error")
         assert str(exc_info.value) == "Base error"
 
-    def test_connection_error_inherits_from_base(self):
+    def test_connection_error_inherits_from_base(self) -> None:
         """Test ConnectionError inherits from MessageBrokerError."""
         error = BrokerConnectionError("Connection failed")
         assert str(error) == "Connection failed"
@@ -51,7 +51,7 @@ class TestMessageBrokerExceptions:
         with pytest.raises(MessageBrokerError):
             raise BrokerConnectionError("Test connection error")
 
-    def test_publish_error_inherits_from_base(self):
+    def test_publish_error_inherits_from_base(self) -> None:
         """Test PublishError inherits from MessageBrokerError."""
         error = PublishError("Publish failed")
         assert str(error) == "Publish failed"
@@ -61,7 +61,7 @@ class TestMessageBrokerExceptions:
         with pytest.raises(MessageBrokerError):
             raise PublishError("Test publish error")
 
-    def test_subscribe_error_inherits_from_base(self):
+    def test_subscribe_error_inherits_from_base(self) -> None:
         """Test SubscribeError inherits from MessageBrokerError."""
         error = SubscribeError("Subscribe failed")
         assert str(error) == "Subscribe failed"
@@ -71,7 +71,7 @@ class TestMessageBrokerExceptions:
         with pytest.raises(MessageBrokerError):
             raise SubscribeError("Test subscribe error")
 
-    def test_unsubscribe_error_inherits_from_base(self):
+    def test_unsubscribe_error_inherits_from_base(self) -> None:
         """Test UnsubscribeError inherits from MessageBrokerError."""
         error = UnsubscribeError("Unsubscribe failed")
         assert str(error) == "Unsubscribe failed"
@@ -81,7 +81,7 @@ class TestMessageBrokerExceptions:
         with pytest.raises(MessageBrokerError):
             raise UnsubscribeError("Test unsubscribe error")
 
-    def test_request_error_inherits_from_base(self):
+    def test_request_error_inherits_from_base(self) -> None:
         """Test RequestError inherits from MessageBrokerError."""
         error = RequestError("Request failed")
         assert str(error) == "Request failed"
@@ -91,7 +91,7 @@ class TestMessageBrokerExceptions:
         with pytest.raises(MessageBrokerError):
             raise RequestError("Test request error")
 
-    def test_exception_hierarchy_catching(self):
+    def test_exception_hierarchy_catching(self) -> None:
         """Test that all broker exceptions can be caught as MessageBrokerError."""
         exceptions = [
             BrokerConnectionError("conn"),
@@ -105,7 +105,7 @@ class TestMessageBrokerExceptions:
             with pytest.raises(MessageBrokerError):
                 raise exc
 
-    def test_exception_with_no_message(self):
+    def test_exception_with_no_message(self) -> None:
         """Test exceptions can be raised without message."""
         error = MessageBrokerError()
         assert isinstance(error, Exception)
@@ -117,7 +117,7 @@ class TestMessageBrokerExceptions:
 class TestMessageBrokerProtocol:
     """Test MessageBroker Protocol conformance."""
 
-    def test_message_handler_type_alias(self):
+    def test_message_handler_type_alias(self) -> None:
         """Test MessageHandler type alias is properly defined."""
 
         # MessageHandler should be a callable that takes dict[str, Any] and returns Any
@@ -135,7 +135,7 @@ class TestMessageBrokerProtocol:
         assert handler1({"test": "data"}) == "handled"
         assert callable(handler2)
 
-    def test_protocol_defines_required_methods(self):
+    def test_protocol_defines_required_methods(self) -> None:
         """Test that Protocol defines all required methods."""
         # Verify Protocol has all required method names
         assert hasattr(MessageBroker, "connect")
@@ -147,7 +147,7 @@ class TestMessageBrokerProtocol:
         assert hasattr(MessageBroker, "request")
 
     @pytest.mark.asyncio
-    async def test_mock_implementation_conforms_to_protocol(self):
+    async def test_mock_implementation_conforms_to_protocol(self) -> None:
         """Test that a mock implementation can conform to MessageBroker Protocol."""
 
         class MockMessageBroker:
@@ -222,7 +222,7 @@ class TestMessageBrokerProtocol:
         assert not broker.is_connected()
 
     @pytest.mark.asyncio
-    async def test_protocol_requires_connection_before_operations(self):
+    async def test_protocol_requires_connection_before_operations(self) -> None:
         """Test that implementations should check connection state."""
 
         class StrictMockBroker:
@@ -284,27 +284,27 @@ class TestMessageBrokerProtocol:
         await broker.unsubscribe(sub_id)
         await broker.request("test", {})
 
-    def test_exception_class_specific_catching(self):
+    def test_exception_class_specific_catching(self) -> None:
         """Test that specific exception types can be caught individually."""
         # Test ConnectionError specifically
-        with pytest.raises(BrokerConnectionError) as exc_info:
+        with pytest.raises(BrokerConnectionError) as conn_exc_info:
             raise BrokerConnectionError("Connection lost")
-        assert not isinstance(exc_info.value, PublishError)
-        assert isinstance(exc_info.value, MessageBrokerError)
+        assert not isinstance(conn_exc_info.value, PublishError)
+        assert isinstance(conn_exc_info.value, MessageBrokerError)
 
         # Test PublishError specifically
-        with pytest.raises(PublishError) as exc_info:
+        with pytest.raises(PublishError) as pub_exc_info:
             raise PublishError("Publish failed")
-        assert not isinstance(exc_info.value, BrokerConnectionError)
-        assert isinstance(exc_info.value, MessageBrokerError)
+        assert not isinstance(pub_exc_info.value, BrokerConnectionError)
+        assert isinstance(pub_exc_info.value, MessageBrokerError)
 
         # Test SubscribeError specifically
-        with pytest.raises(SubscribeError) as exc_info:
+        with pytest.raises(SubscribeError) as sub_exc_info:
             raise SubscribeError("Subscribe failed")
-        assert not isinstance(exc_info.value, PublishError)
-        assert isinstance(exc_info.value, MessageBrokerError)
+        assert not isinstance(sub_exc_info.value, PublishError)
+        assert isinstance(sub_exc_info.value, MessageBrokerError)
 
-    def test_exception_chaining(self):
+    def test_exception_chaining(self) -> None:
         """Test exception chaining preserves context."""
         original_error = ValueError("Original issue")
 
@@ -318,7 +318,7 @@ class TestMessageBrokerProtocol:
             assert isinstance(broker_error, MessageBrokerError)
 
     @pytest.mark.asyncio
-    async def test_message_handler_with_different_return_types(self):
+    async def test_message_handler_with_different_return_types(self) -> None:
         """Test MessageHandler can handle different return types."""
 
         # Handler returning None
@@ -342,7 +342,7 @@ class TestMessageBrokerProtocol:
             assert result is None or isinstance(result, dict | str)
 
     @pytest.mark.asyncio
-    async def test_protocol_method_signatures(self):
+    async def test_protocol_method_signatures(self) -> None:
         """Test that Protocol method signatures are correctly defined."""
 
         class SignatureTestBroker:
@@ -388,7 +388,7 @@ class TestMessageBrokerProtocol:
         reply = await broker.request("request.subject", {"query": "test"}, timeout=5.0)
         assert isinstance(reply, dict)
 
-    def test_exception_repr_and_str(self):
+    def test_exception_repr_and_str(self) -> None:
         """Test exception string representations."""
         errors = [
             MessageBrokerError("base error"),
@@ -404,16 +404,16 @@ class TestMessageBrokerProtocol:
             assert len(error_str) > 0
             assert "error" in error_str.lower()
 
-    def test_exception_attributes(self):
+    def test_exception_attributes(self) -> None:
         """Test that exceptions preserve attributes."""
         error = MessageBrokerError("Error with context")
-        error.custom_attr = "custom_value"
+        error.custom_attr = "custom_value"  # type: ignore[attr-defined] # Test specifically verifies dynamic attribute assignment
 
         assert hasattr(error, "custom_attr")
         assert error.custom_attr == "custom_value"
 
     @pytest.mark.asyncio
-    async def test_subscribe_with_queue_group_parameter(self):
+    async def test_subscribe_with_queue_group_parameter(self) -> None:
         """Test subscribe method handles optional queue_group parameter."""
 
         class QueueGroupBroker:
@@ -463,7 +463,7 @@ class TestMessageBrokerProtocol:
         assert broker.get_queue_group(sub_id2) == "workers"
 
     @pytest.mark.asyncio
-    async def test_request_timeout_parameter(self):
+    async def test_request_timeout_parameter(self) -> None:
         """Test request method handles timeout parameter."""
 
         class TimeoutBroker:
@@ -509,7 +509,7 @@ class TestMessageBrokerProtocol:
         assert broker.get_last_timeout() == 10.0
         assert result["timeout_used"] == 10.0
 
-    def test_all_exception_classes_exist(self):
+    def test_all_exception_classes_exist(self) -> None:
         """Test that all documented exception classes are defined."""
         # Verify all exception classes can be imported and instantiated
         exceptions = [

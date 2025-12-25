@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-from typing import Any, cast
+from typing import Any
 
 from ..alias_storage import AliasStorage
 from ..commands.admin_commands import validate_admin_permission
 from ..commands.inventory_commands import _broadcast_room_event, _resolve_player, _resolve_state
+from ..exceptions import DatabaseError, ValidationError
 from ..game.items.item_factory import ItemFactoryError
 from ..logging.admin_actions_logger import get_admin_actions_logger
 from ..logging.enhanced_logging_config import get_logger
@@ -20,7 +21,7 @@ async def handle_summon_command(
     command_data: dict,
     current_user: dict,
     request: Any,
-    alias_storage: AliasStorage | None,
+    _alias_storage: AliasStorage | None,
     player_name: str,
 ) -> dict[str, str]:
     """Handle the `/summon` administrative command."""
@@ -45,7 +46,7 @@ async def handle_summon_command(
     admin_logger = get_admin_actions_logger()
     dashboard = get_monitoring_dashboard()
 
-    player_name_value = cast(str, player.name)
+    player_name_value = player.name
 
     if not item_factory or not prototype_registry:
         logger.warning("Summon command unavailable - item services missing")
@@ -161,7 +162,7 @@ async def handle_summon_command(
             prototype_id=item_instance.prototype_id,
             room_id=room_id,
         )
-    except Exception as e:
+    except (DatabaseError, ValidationError) as e:
         logger.error(
             "Failed to persist item instance for summoned item",
             item_instance_id=item_instance.item_instance_id,

@@ -15,24 +15,26 @@ import pytest
 from server.game.chat_service import ChatService
 from server.game.player_service import PlayerService
 
+pytestmark = pytest.mark.slow
+
 
 class TestMuteFilteringPerformance:
     """Performance tests for mute filtering system."""
 
-    def __init__(self):
-        """Initialize test class attributes."""
-        self.mock_persistence = None
-        self.mock_room_service = None
-        self.mock_player_service = None
-        self.muter_id = None
-        self.muter_name = None
-        self.target_id = None
-        self.target_name = None
-        self.room_id = None
-        self.muter_player = None
-        self.target_player = None
+    # Type annotations for instance attributes (satisfies linter without requiring __init__)
+    # Attributes are initialized in setup_method() per pytest best practices
+    mock_persistence: MagicMock
+    mock_room_service: MagicMock
+    mock_player_service: MagicMock
+    muter_id: str
+    muter_name: str
+    target_id: str
+    target_name: str
+    room_id: str
+    muter_player: MagicMock
+    target_player: MagicMock
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test fixtures."""
         # Mock services
         self.mock_persistence = MagicMock()

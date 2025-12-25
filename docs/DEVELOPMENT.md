@@ -1,4 +1,4 @@
-# =ƒ¢án+Å MythosMUD GÇô Development Environment Setup
+# =ï¿½ï¿½ï¿½n+ï¿½ MythosMUD Gï¿½ï¿½ Development Environment Setup
 
 *"The proper setup of one's laboratory is as crucial to the pursuit of forbidden knowledge as the knowledge itself. Let us ensure our tools are both powerful and safe."*
 
@@ -6,9 +6,10 @@ This guide will help you bootstrap your workspace for developing MythosMUD, with
 
 ---
 
-## =ƒöÆ Security & Privacy First
+## =ï¿½ï¿½ï¿½ Security & Privacy First
 
 ### Critical Requirements
+
 - **COPPA Compliance**: This project serves minors and must comply with Children's Online Privacy Protection Rule
 - **Security-First Mindset**: All development decisions prioritize security over convenience
 - **Privacy by Design**: Privacy considerations built into every feature
@@ -16,6 +17,7 @@ This guide will help you bootstrap your workspace for developing MythosMUD, with
 - **No Personal Information**: Never collect personal information from minors
 
 ### Development Security Checklist
+
 - [ ] All secrets stored in environment variables (never hardcoded)
 - [ ] Input validation implemented for all user inputs
 - [ ] Secure path validation for all file operations
@@ -129,11 +131,11 @@ LOG_LEVEL=INFO
 DEBUG=false
 ```
 
-**GÜán+Å Security Note**: Never commit the `.env` file to version control. Use `.env.example` for templates.
+**Gï¿½ï¿½n+ï¿½ Security Note**: Never commit the `.env` file to version control. Use `.env.example` for templates.
 
 ### e. Run the Server
 
-**GÜán+Å CRITICAL**: Always use the provided scripts for server management:
+**Gï¿½ï¿½n+ï¿½ CRITICAL**: Always use the provided scripts for server management:
 
 ```powershell
 # Stop any running server first
@@ -205,6 +207,7 @@ python scripts/format.py
 MythosMUD uses an enterprise-grade enhanced logging system with MDC, correlation IDs, and security sanitization.
 
 **Quick Start:**
+
 ```python
 # ? CORRECT - Enhanced logging import
 from server.logging.enhanced_logging_config import get_logger
@@ -215,6 +218,7 @@ logger.info("User action completed", user_id=user.id, action="login", success=Tr
 ```
 
 **? NEVER USE:**
+
 ```python
 # ? FORBIDDEN - Will cause failures
 import logging
@@ -225,6 +229,44 @@ logger.info("message", context={"key": "value"})
 ```
 
 See [LOGGING_BEST_PRACTICES.md](docs/LOGGING_BEST_PRACTICES.md) for complete guidelines and [LOGGING_QUICK_REFERENCE.md](docs/LOGGING_QUICK_REFERENCE.md) for quick reference.
+
+### **Multi-Character Support:**
+
+MythosMUD supports multiple characters per user (up to 3 active characters).
+
+**Registration and Login Flow:**
+
+1. User registers ? Account created with no characters
+2. User logs in ? If no characters, shown character creation flow; if characters exist, shown character selection screen
+3. User selects character ? Game connects with selected character
+
+**Character Management:**
+
+- Character names are case-insensitive unique (e.g., "Ithaqua" and "ithaqua" are mutually exclusive)
+- Character names are stored with original case but checked case-insensitively
+- Deleted character names can be reused (uniqueness only applies to active characters)
+- Maximum 3 active characters per user
+- Characters are soft-deleted (hidden but data preserved)
+- **Single Character Login**: Users can only be logged into the game with one character at a time. Selecting a different character will automatically disconnect any existing connections for other characters owned by that user.
+
+**Code Examples:**
+
+```python
+# Get all active characters for a user
+characters = await persistence.get_active_players_by_user_id(str(user.id))
+
+# Create a new character (with limit check)
+player = await player_service.create_player_with_stats(
+    name="CharacterName",  # Explicit name required
+    stats=stats,
+    user_id=user.id,
+)
+
+# Soft delete a character
+success, message = await player_service.soft_delete_character(character_id, user.id)
+```
+
+See the multi-character implementation plan for complete details.
 
 ---
 
@@ -278,9 +320,10 @@ npm run build
 
 ---
 
-## 7. =ƒñû AI Agent Development Guidelines
+## 7. =ï¿½ï¿½ï¿½ AI Agent Development Guidelines
 
 ### **Development Workflow**
+
 1. **Start Session**: Review current tasks in `TASKS.local.md`
 2. **Select Task**: Choose highest priority task from pending list
 3. **Write Tests**: Create tests before implementing feature
@@ -290,29 +333,31 @@ npm run build
 7. **Commit**: Commit changes with descriptive messages
 
 ### **Task Prioritization Framework**
+
 When multiple tasks are pending, prioritize in this order:
 
-1. **=ƒö¦ Critical Security Issues** (Fix immediately)
+1. **=ï¿½ï¿½ï¿½ Critical Security Issues** (Fix immediately)
    - Security vulnerabilities
    - Privacy compliance issues
    - Data protection problems
 
-2. **=ƒƒí High Priority** (Complete within current session)
+2. **=ï¿½ï¿½ï¿½ High Priority** (Complete within current session)
    - Core functionality bugs
    - Authentication/authorization issues
    - Critical user experience problems
 
-3. **=ƒƒó Medium Priority** (Plan for next session)
+3. **=ï¿½ï¿½ï¿½ Medium Priority** (Plan for next session)
    - Feature enhancements
    - Performance improvements
    - Code quality improvements
 
-4. **=ƒö¦ Low Priority** (Nice to have)
+4. **=ï¿½ï¿½ï¿½ Low Priority** (Nice to have)
    - UI/UX polish
    - Documentation improvements
    - Advanced features
 
 ### **Critical Rules for AI Agents**
+
 - **Server Management**: ALWAYS use `./scripts/start_local.ps1` and `./scripts/stop_server.ps1`
 - **Database Placement**:
   - Production: `/data/players/` ONLY
@@ -325,11 +370,11 @@ When multiple tasks are pending, prioritize in this order:
 
 ## 8. Why uv?
 
-- **=ƒÜÇ Faster**: 10-100x faster than pip/poetry
-- **=ƒöÆ Reliable**: Deterministic dependency resolution
-- **=ƒ¢án+Å Modern**: Built-in virtual environment management
-- **=ƒôª Compatible**: Works with existing pyproject.toml
-- **=ƒöä Simple**: Single tool for all Python operations
+- **=ï¿½ï¿½ï¿½ Faster**: 10-100x faster than pip/poetry
+- **=ï¿½ï¿½ï¿½ Reliable**: Deterministic dependency resolution
+- **=ï¿½ï¿½ï¿½n+ï¿½ Modern**: Built-in virtual environment management
+- **=ï¿½ï¿½ï¿½ Compatible**: Works with existing pyproject.toml
+- **=ï¿½ï¿½ï¿½ Simple**: Single tool for all Python operations
 
 ---
 

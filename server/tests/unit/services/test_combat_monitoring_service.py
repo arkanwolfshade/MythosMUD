@@ -26,13 +26,13 @@ from server.services.combat_monitoring_service import (
 
 
 @pytest.fixture
-def mock_config():
+def mock_game_config():
     """Mock configuration for testing."""
-    mock_config = MagicMock()
-    mock_config.game.combat_performance_threshold = 1000
-    mock_config.game.combat_error_threshold = 3
-    mock_config.game.combat_alert_threshold = 5
-    return mock_config
+    config = MagicMock()
+    config.game.combat_performance_threshold = 1000
+    config.game.combat_error_threshold = 3
+    config.game.combat_alert_threshold = 5
+    return config
 
 
 @pytest.fixture
@@ -46,14 +46,14 @@ def mock_feature_flags():
 @pytest.fixture
 def mock_combat_config():
     """Mock combat configuration for testing."""
-    mock_config = MagicMock()
-    return mock_config
+    config = MagicMock()
+    return config
 
 
 class TestCombatMetrics:
     """Test CombatMetrics data class."""
 
-    def test_combat_metrics_defaults(self):
+    def test_combat_metrics_defaults(self) -> None:
         """Test default combat metrics values."""
         metrics = CombatMetrics()
 
@@ -73,7 +73,7 @@ class TestCombatMetrics:
         assert metrics.combats_per_minute == 0.0
         assert metrics.errors_per_minute == 0.0
 
-    def test_combat_metrics_custom_values(self):
+    def test_combat_metrics_custom_values(self) -> None:
         """Test custom combat metrics values."""
         metrics = CombatMetrics(
             total_combats=10, active_combats=2, completed_combats=8, total_errors=1, average_combat_duration=5.5
@@ -85,7 +85,7 @@ class TestCombatMetrics:
         assert metrics.total_errors == 1
         assert metrics.average_combat_duration == 5.5
 
-    def test_combat_metrics_to_dict(self):
+    def test_combat_metrics_to_dict(self) -> None:
         """Test converting metrics to dictionary."""
         metrics = CombatMetrics(total_combats=5, active_combats=1)
         metrics_dict = metrics.to_dict()
@@ -98,7 +98,7 @@ class TestCombatMetrics:
 class TestAlert:
     """Test Alert data class."""
 
-    def test_alert_creation(self):
+    def test_alert_creation(self) -> None:
         """Test alert creation."""
         alert = Alert(
             alert_id="test_alert_1",
@@ -117,7 +117,7 @@ class TestAlert:
         assert alert.resolved is False
         assert alert.resolved_timestamp is None
 
-    def test_alert_to_dict(self):
+    def test_alert_to_dict(self) -> None:
         """Test converting alert to dictionary."""
         alert = Alert(
             alert_id="test_alert_1",
@@ -151,19 +151,27 @@ class TestCombatMonitoringService:
         mock_get_combat_config,
         mock_get_feature_flags,
         mock_get_config,
-        mock_config,
+        mock_game_config,  # noqa: F811  # pytest fixture injection by name - shadowing is intentional
         mock_feature_flags,
         mock_combat_config,
     ):
         """Test service initialization."""
-        mock_get_config.return_value = mock_config
+        mock_get_config.return_value = mock_game_config
         mock_get_feature_flags.return_value = mock_feature_flags
         mock_get_combat_config.return_value = mock_combat_config
 
-        service = CombatMonitoringService()
-        assert service._config == mock_config
-        assert service._feature_flags == mock_feature_flags
-        assert service._combat_config == mock_combat_config
+        # Patch asyncio.create_task to prevent background task warnings from other services
+        def create_task_side_effect(coro):
+            # Close the coroutine to prevent "never awaited" warning
+            if hasattr(coro, "close"):
+                coro.close()
+            return MagicMock()
+
+        with patch("asyncio.create_task", side_effect=create_task_side_effect):
+            service = CombatMonitoringService()
+            assert service._config == mock_game_config
+            assert service._feature_flags == mock_feature_flags
+            assert service._combat_config == mock_combat_config
 
     @patch("server.services.combat_monitoring_service.get_config")
     @patch("server.services.combat_monitoring_service.get_feature_flags")
@@ -173,22 +181,33 @@ class TestCombatMonitoringService:
         mock_get_combat_config,
         mock_get_feature_flags,
         mock_get_config,
-        mock_config,
+        mock_game_config,
         mock_feature_flags,
         mock_combat_config,
     ):
         """Test starting combat monitoring."""
-        mock_get_config.return_value = mock_config
+        mock_get_config.return_value = mock_game_config
         mock_get_feature_flags.return_value = mock_feature_flags
         mock_get_combat_config.return_value = mock_combat_config
 
-        service = CombatMonitoringService()
+        # Patch asyncio.create_task to prevent background task warnings from other services
+        def create_task_side_effect(coro):
+            # Close the coroutine to prevent "never awaited" warning
+            if hasattr(coro, "close"):
+                coro.close()
+            return MagicMock()
 
-        service.start_combat_monitoring("combat_123")
+        with patch("asyncio.create_task", side_effect=create_task_side_effect):
+            service = CombatMonitoringService()
 
-        assert service._metrics.total_combats == 1
-        assert service._metrics.active_combats == 1
-        assert "combat_123" in service._combat_start_times
+            service.start_combat_monitoring("combat_123")
+
+            assert service._metrics.total_combats == 1
+            assert service._metrics.active_combats == 1
+            assert "combat_123" in service._combat_start_times
+
+            # Clean up to prevent background tasks from causing warnings
+            service.end_combat_monitoring("combat_123", success=True)
 
     @patch("server.services.combat_monitoring_service.get_config")
     @patch("server.services.combat_monitoring_service.get_feature_flags")
@@ -198,28 +217,36 @@ class TestCombatMonitoringService:
         mock_get_combat_config,
         mock_get_feature_flags,
         mock_get_config,
-        mock_config,
+        mock_game_config,
         mock_feature_flags,
         mock_combat_config,
     ):
         """Test ending combat monitoring with success."""
-        mock_get_config.return_value = mock_config
+        mock_get_config.return_value = mock_game_config
         mock_get_feature_flags.return_value = mock_feature_flags
         mock_get_combat_config.return_value = mock_combat_config
 
-        service = CombatMonitoringService()
+        # Patch asyncio.create_task to prevent background task warnings from _persist_player_dp_background
+        def create_task_side_effect(coro):
+            # Close the coroutine to prevent "never awaited" warning
+            if hasattr(coro, "close"):
+                coro.close()
+            return MagicMock()
 
-        # Start combat
-        service.start_combat_monitoring("combat_123")
-        time.sleep(0.01)  # Small delay to ensure duration > 0
+        with patch("asyncio.create_task", side_effect=create_task_side_effect):
+            service = CombatMonitoringService()
 
-        # End combat
-        service.end_combat_monitoring("combat_123", success=True)
+            # Start combat
+            service.start_combat_monitoring("combat_123")
+            time.sleep(0.01)  # Small delay to ensure duration > 0
 
-        assert service._metrics.active_combats == 0
-        assert service._metrics.completed_combats == 1
-        assert service._metrics.failed_combats == 0
-        assert "combat_123" not in service._combat_start_times
+            # End combat
+            service.end_combat_monitoring("combat_123", success=True)
+
+            assert service._metrics.active_combats == 0
+            assert service._metrics.completed_combats == 1
+            assert service._metrics.failed_combats == 0
+            assert "combat_123" not in service._combat_start_times
 
     @patch("server.services.combat_monitoring_service.get_config")
     @patch("server.services.combat_monitoring_service.get_feature_flags")
@@ -229,26 +256,34 @@ class TestCombatMonitoringService:
         mock_get_combat_config,
         mock_get_feature_flags,
         mock_get_config,
-        mock_config,
+        mock_game_config,
         mock_feature_flags,
         mock_combat_config,
     ):
         """Test ending combat monitoring with failure."""
-        mock_get_config.return_value = mock_config
+        mock_get_config.return_value = mock_game_config
         mock_get_feature_flags.return_value = mock_feature_flags
         mock_get_combat_config.return_value = mock_combat_config
 
-        service = CombatMonitoringService()
+        # Patch asyncio.create_task to prevent background task warnings from _persist_player_dp_background
+        def create_task_side_effect(coro):
+            # Close the coroutine to prevent "never awaited" warning
+            if hasattr(coro, "close"):
+                coro.close()
+            return MagicMock()
 
-        # Start combat
-        service.start_combat_monitoring("combat_123")
+        with patch("asyncio.create_task", side_effect=create_task_side_effect):
+            service = CombatMonitoringService()
 
-        # End combat with failure
-        service.end_combat_monitoring("combat_123", success=False)
+            # Start combat
+            service.start_combat_monitoring("combat_123")
 
-        assert service._metrics.active_combats == 0
-        assert service._metrics.completed_combats == 0
-        assert service._metrics.failed_combats == 1
+            # End combat with failure
+            service.end_combat_monitoring("combat_123", success=False)
+
+            assert service._metrics.active_combats == 0
+            assert service._metrics.completed_combats == 0
+            assert service._metrics.failed_combats == 1
 
     @patch("server.services.combat_monitoring_service.get_config")
     @patch("server.services.combat_monitoring_service.get_feature_flags")
@@ -258,23 +293,31 @@ class TestCombatMonitoringService:
         mock_get_combat_config,
         mock_get_feature_flags,
         mock_get_config,
-        mock_config,
+        mock_game_config,
         mock_feature_flags,
         mock_combat_config,
     ):
         """Test turn monitoring."""
-        mock_get_config.return_value = mock_config
+        mock_get_config.return_value = mock_game_config
         mock_get_feature_flags.return_value = mock_feature_flags
         mock_get_combat_config.return_value = mock_combat_config
 
-        service = CombatMonitoringService()
+        # Patch asyncio.create_task to prevent background task warnings from _persist_player_dp_background
+        def create_task_side_effect(coro):
+            # Close the coroutine to prevent "never awaited" warning
+            if hasattr(coro, "close"):
+                coro.close()
+            return MagicMock()
 
-        # Start and end turn
-        service.start_turn_monitoring("combat_123")
-        time.sleep(0.01)  # Small delay
-        service.end_turn_monitoring("combat_123")
+        with patch("asyncio.create_task", side_effect=create_task_side_effect):
+            service = CombatMonitoringService()
 
-        assert "combat_123" not in service._turn_start_times
+            # Start and end turn
+            service.start_turn_monitoring("combat_123")
+            time.sleep(0.01)  # Small delay
+            service.end_turn_monitoring("combat_123")
+
+            assert "combat_123" not in service._turn_start_times
 
     @patch("server.services.combat_monitoring_service.get_config")
     @patch("server.services.combat_monitoring_service.get_feature_flags")
@@ -284,16 +327,24 @@ class TestCombatMonitoringService:
         mock_get_combat_config,
         mock_get_feature_flags,
         mock_get_config,
-        mock_config,
+        mock_game_config,
         mock_feature_flags,
         mock_combat_config,
     ):
         """Test recording combat errors."""
-        mock_get_config.return_value = mock_config
+        mock_get_config.return_value = mock_game_config
         mock_get_feature_flags.return_value = mock_feature_flags
         mock_get_combat_config.return_value = mock_combat_config
 
-        service = CombatMonitoringService()
+        # Patch asyncio.create_task to prevent background task warnings from other services
+        def create_task_side_effect(coro):
+            # Close the coroutine to prevent "never awaited" warning
+            if hasattr(coro, "close"):
+                coro.close()
+            return MagicMock()
+
+        with patch("asyncio.create_task", side_effect=create_task_side_effect):
+            service = CombatMonitoringService()
 
         # Record different types of errors
         service.record_combat_error("validation", "combat_123")
@@ -313,12 +364,12 @@ class TestCombatMonitoringService:
         mock_get_combat_config,
         mock_get_feature_flags,
         mock_get_config,
-        mock_config,
+        mock_game_config,
         mock_feature_flags,
         mock_combat_config,
     ):
         """Test updating resource metrics."""
-        mock_get_config.return_value = mock_config
+        mock_get_config.return_value = mock_game_config
         mock_get_feature_flags.return_value = mock_feature_flags
         mock_get_combat_config.return_value = mock_combat_config
 
@@ -337,12 +388,12 @@ class TestCombatMonitoringService:
         mock_get_combat_config,
         mock_get_feature_flags,
         mock_get_config,
-        mock_config,
+        mock_game_config,
         mock_feature_flags,
         mock_combat_config,
     ):
         """Test getting current metrics."""
-        mock_get_config.return_value = mock_config
+        mock_get_config.return_value = mock_game_config
         mock_get_feature_flags.return_value = mock_feature_flags
         mock_get_combat_config.return_value = mock_combat_config
 
@@ -359,12 +410,12 @@ class TestCombatMonitoringService:
         mock_get_combat_config,
         mock_get_feature_flags,
         mock_get_config,
-        mock_config,
+        mock_game_config,
         mock_feature_flags,
         mock_combat_config,
     ):
         """Test alert callback functionality."""
-        mock_get_config.return_value = mock_config
+        mock_get_config.return_value = mock_game_config
         mock_get_feature_flags.return_value = mock_feature_flags
         mock_get_combat_config.return_value = mock_combat_config
 
@@ -394,12 +445,12 @@ class TestCombatMonitoringService:
         mock_get_combat_config,
         mock_get_feature_flags,
         mock_get_config,
-        mock_config,
+        mock_game_config,
         mock_feature_flags,
         mock_combat_config,
     ):
         """Test resolving alerts."""
-        mock_get_config.return_value = mock_config
+        mock_get_config.return_value = mock_game_config
         mock_get_feature_flags.return_value = mock_feature_flags
         mock_get_combat_config.return_value = mock_combat_config
 
@@ -431,12 +482,12 @@ class TestCombatMonitoringService:
         mock_get_combat_config,
         mock_get_feature_flags,
         mock_get_config,
-        mock_config,
+        mock_game_config,
         mock_feature_flags,
         mock_combat_config,
     ):
         """Test clearing resolved alerts."""
-        mock_get_config.return_value = mock_config
+        mock_get_config.return_value = mock_game_config
         mock_get_feature_flags.return_value = mock_feature_flags
         mock_get_combat_config.return_value = mock_combat_config
 
@@ -467,12 +518,12 @@ class TestCombatMonitoringService:
         mock_get_combat_config,
         mock_get_feature_flags,
         mock_get_config,
-        mock_config,
+        mock_game_config,
         mock_feature_flags,
         mock_combat_config,
     ):
         """Test getting monitoring summary."""
-        mock_get_config.return_value = mock_config
+        mock_get_config.return_value = mock_game_config
         mock_get_feature_flags.return_value = mock_feature_flags
         mock_get_combat_config.return_value = mock_combat_config
 
@@ -495,12 +546,12 @@ class TestCombatMonitoringService:
         mock_get_combat_config,
         mock_get_feature_flags,
         mock_get_config,
-        mock_config,
+        mock_game_config,
         mock_feature_flags,
         mock_combat_config,
     ):
         """Test behavior when monitoring is disabled."""
-        mock_get_config.return_value = mock_config
+        mock_get_config.return_value = mock_game_config
         mock_feature_flags.is_combat_monitoring_enabled.return_value = False
         mock_get_feature_flags.return_value = mock_feature_flags
         mock_get_combat_config.return_value = mock_combat_config
@@ -563,12 +614,12 @@ class TestCombatMonitoringServiceIntegration:
         mock_get_combat_config,
         mock_get_feature_flags,
         mock_get_config,
-        mock_config,
+        mock_game_config,
         mock_feature_flags,
         mock_combat_config,
     ):
         """Test complete combat lifecycle monitoring."""
-        mock_get_config.return_value = mock_config
+        mock_get_config.return_value = mock_game_config
         mock_get_feature_flags.return_value = mock_feature_flags
         mock_get_combat_config.return_value = mock_combat_config
 
@@ -608,12 +659,12 @@ class TestCombatMonitoringServiceIntegration:
         mock_get_combat_config,
         mock_get_feature_flags,
         mock_get_config,
-        mock_config,
+        mock_game_config,
         mock_feature_flags,
         mock_combat_config,
     ):
         """Test alert generation when thresholds are exceeded."""
-        mock_get_config.return_value = mock_config
+        mock_get_config.return_value = mock_game_config
         mock_get_feature_flags.return_value = mock_feature_flags
         mock_get_combat_config.return_value = mock_combat_config
 
@@ -639,12 +690,12 @@ class TestCombatMonitoringServiceIntegration:
         mock_get_combat_config,
         mock_get_feature_flags,
         mock_get_config,
-        mock_config,
+        mock_game_config,
         mock_feature_flags,
         mock_combat_config,
     ):
         """Test resource threshold alert generation."""
-        mock_get_config.return_value = mock_config
+        mock_get_config.return_value = mock_game_config
         mock_get_feature_flags.return_value = mock_feature_flags
         mock_get_combat_config.return_value = mock_combat_config
 
@@ -680,12 +731,12 @@ class TestCombatMonitoringServiceErrorHandling:
         mock_get_combat_config,
         mock_get_feature_flags,
         mock_get_config,
-        mock_config,
+        mock_game_config,
         mock_feature_flags,
         mock_combat_config,
     ):
         """Test error handling in alert callbacks."""
-        mock_get_config.return_value = mock_config
+        mock_get_config.return_value = mock_game_config
         mock_get_feature_flags.return_value = mock_feature_flags
         mock_get_combat_config.return_value = mock_combat_config
 
@@ -693,7 +744,7 @@ class TestCombatMonitoringServiceErrorHandling:
 
         # Add callback that raises exception
         def error_callback(alert):
-            raise Exception("Callback error")
+            raise RuntimeError("Callback error")
 
         service.add_alert_callback(error_callback)
 
@@ -713,12 +764,12 @@ class TestCombatMonitoringServiceErrorHandling:
         mock_get_combat_config,
         mock_get_feature_flags,
         mock_get_config,
-        mock_config,
+        mock_game_config,
         mock_feature_flags,
         mock_combat_config,
     ):
         """Test resolving nonexistent alert."""
-        mock_get_config.return_value = mock_config
+        mock_get_config.return_value = mock_game_config
         mock_get_feature_flags.return_value = mock_feature_flags
         mock_get_combat_config.return_value = mock_combat_config
 
@@ -736,12 +787,12 @@ class TestCombatMonitoringServiceErrorHandling:
         mock_get_combat_config,
         mock_get_feature_flags,
         mock_get_config,
-        mock_config,
+        mock_game_config,
         mock_feature_flags,
         mock_combat_config,
     ):
         """Test ending monitoring for nonexistent combat."""
-        mock_get_config.return_value = mock_config
+        mock_get_config.return_value = mock_game_config
         mock_get_feature_flags.return_value = mock_feature_flags
         mock_get_combat_config.return_value = mock_combat_config
 

@@ -17,11 +17,11 @@ from server.models.room import Room
 class TestMovementMonitor:
     """Test the MovementMonitor class."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Reset the monitor before each test."""
         reset_movement_monitor()
 
-    def test_monitor_creation(self):
+    def test_monitor_creation(self) -> None:
         """Test that the monitor can be created."""
         monitor = MovementMonitor()
         assert monitor is not None
@@ -29,7 +29,7 @@ class TestMovementMonitor:
         assert metrics["total_movements"] == 0
         assert metrics["failed_movements"] == 0
 
-    def test_record_movement_attempt_success(self):
+    def test_record_movement_attempt_success(self) -> None:
         """Test recording a successful movement attempt."""
         monitor = MovementMonitor()
 
@@ -42,7 +42,7 @@ class TestMovementMonitor:
         assert metrics["success_rate"] == 1.0
         assert metrics["avg_movement_time_ms"] == 50.0
 
-    def test_record_movement_attempt_failure(self):
+    def test_record_movement_attempt_failure(self) -> None:
         """Test recording a failed movement attempt."""
         monitor = MovementMonitor()
 
@@ -55,7 +55,7 @@ class TestMovementMonitor:
         assert metrics["success_rate"] == 0.0
         assert metrics["failure_rate"] == 1.0
 
-    def test_record_multiple_movements(self):
+    def test_record_multiple_movements(self) -> None:
         """Test recording multiple movement attempts."""
         monitor = MovementMonitor()
 
@@ -72,7 +72,7 @@ class TestMovementMonitor:
         assert metrics["failure_rate"] == 1 / 3
         assert metrics["avg_movement_time_ms"] == 75.0
 
-    def test_record_concurrent_movement(self):
+    def test_record_concurrent_movement(self) -> None:
         """Test recording concurrent movement count."""
         monitor = MovementMonitor()
 
@@ -84,7 +84,7 @@ class TestMovementMonitor:
         assert metrics["current_concurrent_movements"] == 3
         assert metrics["max_concurrent_movements"] == 10
 
-    def test_record_integrity_check(self):
+    def test_record_integrity_check(self) -> None:
         """Test recording integrity check results."""
         monitor = MovementMonitor()
 
@@ -97,7 +97,7 @@ class TestMovementMonitor:
         assert metrics["integrity_violations"] == 1
         assert metrics["integrity_rate"] == 2 / 3
 
-    def test_validate_room_integrity_valid(self):
+    def test_validate_room_integrity_valid(self) -> None:
         """Test room integrity validation with valid data."""
         monitor = MovementMonitor()
 
@@ -120,7 +120,7 @@ class TestMovementMonitor:
         assert result["avg_occupancy"] == 1.0
         assert result["max_occupancy"] == 1
 
-    def test_validate_room_integrity_duplicate_player(self):
+    def test_validate_room_integrity_duplicate_player(self) -> None:
         """Test room integrity validation with duplicate player."""
         monitor = MovementMonitor()
 
@@ -142,7 +142,7 @@ class TestMovementMonitor:
         assert result["total_rooms"] == 2
         assert result["total_players"] == 2
 
-    def test_validate_room_integrity_empty_rooms(self):
+    def test_validate_room_integrity_empty_rooms(self) -> None:
         """Test room integrity validation with empty rooms."""
         monitor = MovementMonitor()
 
@@ -160,7 +160,7 @@ class TestMovementMonitor:
         assert result["avg_occupancy"] == 0.0
         assert result["max_occupancy"] == 0
 
-    def test_get_alerts_no_alerts(self):
+    def test_get_alerts_no_alerts(self) -> None:
         """Test getting alerts when no thresholds are exceeded."""
         monitor = MovementMonitor()
 
@@ -171,7 +171,7 @@ class TestMovementMonitor:
         alerts = monitor.get_alerts()
         assert len(alerts) == 0
 
-    def test_get_alerts_high_failure_rate(self):
+    def test_get_alerts_high_failure_rate(self) -> None:
         """Test getting alerts when failure rate is high."""
         monitor = MovementMonitor()
 
@@ -186,7 +186,7 @@ class TestMovementMonitor:
         assert len(alerts) > 0
         assert any("High failure rate" in alert for alert in alerts)
 
-    def test_get_alerts_high_concurrent_movements(self):
+    def test_get_alerts_high_concurrent_movements(self) -> None:
         """Test getting alerts when concurrent movements are high."""
         monitor = MovementMonitor()
 
@@ -197,7 +197,7 @@ class TestMovementMonitor:
         assert len(alerts) > 0
         assert any("High concurrent movements" in alert for alert in alerts)
 
-    def test_reset_metrics(self):
+    def test_reset_metrics(self) -> None:
         """Test resetting all metrics."""
         monitor = MovementMonitor()
 
@@ -218,7 +218,7 @@ class TestMovementMonitor:
         assert metrics["integrity_checks"] == 0
         assert metrics["integrity_violations"] == 0
 
-    def test_log_performance_summary(self):
+    def test_log_performance_summary(self) -> None:
         """Test logging performance summary."""
         monitor = MovementMonitor()
 
@@ -231,14 +231,14 @@ class TestMovementMonitor:
         # This should not raise an exception
         monitor.log_performance_summary()
 
-    def test_global_monitor_singleton(self):
+    def test_global_monitor_singleton(self) -> None:
         """Test that get_movement_monitor returns the same instance."""
         monitor1 = get_movement_monitor()
         monitor2 = get_movement_monitor()
 
         assert monitor1 is monitor2
 
-    def test_reset_global_monitor(self):
+    def test_reset_global_monitor(self) -> None:
         """Test resetting the global monitor."""
         monitor1 = get_movement_monitor()
         monitor1.record_movement_attempt("player1", "room1", "room2", True, 50.0)
@@ -250,7 +250,7 @@ class TestMovementMonitor:
         metrics = monitor2.get_metrics()
         assert metrics["total_movements"] == 0
 
-    def test_metrics_calculation_edge_cases(self):
+    def test_metrics_calculation_edge_cases(self) -> None:
         """Test metrics calculation with edge cases."""
         monitor = MovementMonitor()
 
@@ -262,7 +262,7 @@ class TestMovementMonitor:
         assert metrics["movements_per_second"] == 0
         assert metrics["integrity_rate"] == 1.0  # Default when no checks
 
-    def test_room_occupancy_tracking(self):
+    def test_room_occupancy_tracking(self) -> None:
         """Test that room occupancy is tracked correctly."""
         monitor = MovementMonitor()
 
@@ -279,7 +279,7 @@ class TestMovementMonitor:
         assert "room2" in room_occupancy
         assert "room3" in room_occupancy
 
-    def test_player_movement_counts(self):
+    def test_player_movement_counts(self) -> None:
         """Test that player movement counts are tracked."""
         monitor = MovementMonitor()
 
@@ -294,7 +294,7 @@ class TestMovementMonitor:
         assert player_movements["player1"] == 2
         assert player_movements["player2"] == 1
 
-    def test_movement_time_tracking(self):
+    def test_movement_time_tracking(self) -> None:
         """Test that movement times are tracked correctly."""
         monitor = MovementMonitor()
 
@@ -308,7 +308,7 @@ class TestMovementMonitor:
         assert metrics["max_movement_time_ms"] == 150.0
         assert metrics["min_movement_time_ms"] == 25.0
 
-    def test_get_alerts_high_integrity_violation_rate(self):
+    def test_get_alerts_high_integrity_violation_rate(self) -> None:
         """Test alert when integrity violation rate is high.
 
         AI: Tests line 219 in movement_monitor.py where high integrity violation
@@ -329,7 +329,7 @@ class TestMovementMonitor:
         # One of the alerts should be about integrity violations
         assert any("integrity" in alert.lower() for alert in alerts)
 
-    def test_get_alerts_slow_average_movement_time(self):
+    def test_get_alerts_slow_average_movement_time(self) -> None:
         """Test alert when average movement time exceeds threshold.
 
         AI: Tests line 222 in movement_monitor.py where slow average movement
@@ -345,14 +345,14 @@ class TestMovementMonitor:
         assert len(alerts) > 0
         assert any("Slow average movement time" in alert for alert in alerts)
 
-    def test_reset_movement_monitor_creates_new_monitor(self):
+    def test_reset_movement_monitor_creates_new_monitor(self) -> None:
         """Test reset_movement_monitor when no monitor exists.
 
         AI: Tests line 295 in movement_monitor.py where a new MovementMonitor
         is created if none exists. Covers the initialization path in reset function.
         """
         # This test uses the module-level reset function
-        from server.game.movement_monitor import reset_movement_monitor
+        # reset_movement_monitor is already imported at the top of the file
 
         # Call reset which should ensure a monitor exists
         reset_movement_monitor()

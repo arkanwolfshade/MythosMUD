@@ -37,7 +37,7 @@ from server.legacy_error_handlers import (
 class TestErrorContext:
     """Test cases for ErrorContext class."""
 
-    def test_error_context_creation(self):
+    def test_error_context_creation(self) -> None:
         """Test creating ErrorContext with various parameters."""
         context = ErrorContext(user_id="testuser", room_id="test_room", command="look", session_id="session123")
 
@@ -48,7 +48,7 @@ class TestErrorContext:
         assert isinstance(context.timestamp, datetime)
         assert context.metadata == {}
 
-    def test_error_context_to_dict(self):
+    def test_error_context_to_dict(self) -> None:
         """Test converting ErrorContext to dictionary."""
         context = ErrorContext(user_id="testuser", room_id="test_room", metadata={"test_key": "test_value"})
 
@@ -59,7 +59,7 @@ class TestErrorContext:
         assert context_dict["metadata"]["test_key"] == "test_value"
         assert "timestamp" in context_dict
 
-    def test_create_error_context_helper(self):
+    def test_create_error_context_helper(self) -> None:
         """Test the create_error_context helper function."""
         context = create_error_context(user_id="testuser", room_id="test_room", command="look")
 
@@ -92,7 +92,7 @@ class TestMythosMUDError:
         # Verify logging was called
         mock_logger.error.assert_called_once()
 
-    def test_mythos_error_to_dict(self):
+    def test_mythos_error_to_dict(self) -> None:
         """Test converting MythosMUDError to dictionary."""
         context = create_error_context(user_id="testuser")
         error = MythosMUDError(message="Test error", context=context, details={"detail": "value"})
@@ -109,7 +109,7 @@ class TestMythosMUDError:
 class TestSpecificErrors:
     """Test cases for specific error types."""
 
-    def test_authentication_error(self):
+    def test_authentication_error(self) -> None:
         """Test AuthenticationError creation and properties."""
         context = create_error_context(user_id="testuser")
         error = AuthenticationError(message="Invalid credentials", context=context, auth_type="jwt")
@@ -118,7 +118,7 @@ class TestSpecificErrors:
         assert error.details["auth_type"] == "jwt"
         assert isinstance(error, MythosMUDError)
 
-    def test_database_error(self):
+    def test_database_error(self) -> None:
         """Test DatabaseError creation and properties."""
         context = create_error_context(user_id="testuser")
         error = DatabaseError(message="Connection failed", context=context, operation="SELECT", table="players")
@@ -128,7 +128,7 @@ class TestSpecificErrors:
         assert error.details["operation"] == "SELECT"
         assert error.details["table"] == "players"
 
-    def test_validation_error(self):
+    def test_validation_error(self) -> None:
         """Test ValidationError creation and properties."""
         context = create_error_context(user_id="testuser")
         error = ValidationError(message="Invalid field", context=context, field="username", value="invalid@user")
@@ -138,7 +138,7 @@ class TestSpecificErrors:
         assert error.details["field"] == "username"
         assert error.details["value"] == "invalid@user"
 
-    def test_game_logic_error(self):
+    def test_game_logic_error(self) -> None:
         """Test GameLogicError creation and properties."""
         context = create_error_context(user_id="testuser")
         error = GameLogicError(message="Invalid move", context=context, game_action="move")
@@ -146,7 +146,7 @@ class TestSpecificErrors:
         assert error.game_action == "move"
         assert error.details["game_action"] == "move"
 
-    def test_resource_not_found_error(self):
+    def test_resource_not_found_error(self) -> None:
         """Test ResourceNotFoundError creation and properties."""
         context = create_error_context(user_id="testuser")
         error = ResourceNotFoundError(
@@ -158,7 +158,7 @@ class TestSpecificErrors:
         assert error.details["resource_type"] == "room"
         assert error.details["resource_id"] == "nonexistent_room"
 
-    def test_rate_limit_error(self):
+    def test_rate_limit_error(self) -> None:
         """Test RateLimitError creation and properties."""
         context = create_error_context(user_id="testuser")
         error = RateLimitError(message="Too many requests", context=context, limit_type="api", retry_after=60)
@@ -172,14 +172,14 @@ class TestSpecificErrors:
 class TestExceptionHandling:
     """Test cases for exception handling utilities."""
 
-    def test_handle_exception_mythos_error(self):
+    def test_handle_exception_mythos_error(self) -> None:
         """Test handling of existing MythosMUDError."""
         original_error = AuthenticationError("Test auth error")
         handled_error = handle_exception(original_error)
 
         assert handled_error is original_error
 
-    def test_handle_exception_value_error(self):
+    def test_handle_exception_value_error(self) -> None:
         """Test converting ValueError to ValidationError."""
         context = create_error_context(user_id="testuser")
         original_error = ValueError("Invalid value")
@@ -190,7 +190,7 @@ class TestExceptionHandling:
         assert handled_error.context.user_id == "testuser"
         assert handled_error.details["original_type"] == "ValueError"
 
-    def test_handle_exception_file_not_found(self):
+    def test_handle_exception_file_not_found(self) -> None:
         """Test converting FileNotFoundError to ResourceNotFoundError."""
         context = create_error_context(user_id="testuser")
         original_error = FileNotFoundError("File not found")
@@ -200,7 +200,7 @@ class TestExceptionHandling:
         assert handled_error.message == "File not found"
         assert handled_error.details["original_type"] == "FileNotFoundError"
 
-    def test_handle_exception_connection_error(self):
+    def test_handle_exception_connection_error(self) -> None:
         """Test converting ConnectionError to NetworkError."""
         context = create_error_context(user_id="testuser")
         original_error = ConnectionError("Connection failed")
@@ -210,7 +210,7 @@ class TestExceptionHandling:
         assert handled_error.message == "Connection failed"
         assert handled_error.details["original_type"] == "ConnectionError"
 
-    def test_handle_exception_os_error(self):
+    def test_handle_exception_os_error(self) -> None:
         """Test converting OSError to ResourceNotFoundError.
 
         AI: Tests line 304 in exceptions.py where OSError (parent of FileNotFoundError)
@@ -226,7 +226,7 @@ class TestExceptionHandling:
         assert handled_error.message == "Permission denied"
         assert handled_error.details["original_type"] == "OSError"
 
-    def test_handle_exception_generic(self):
+    def test_handle_exception_generic(self) -> None:
         """Test converting generic exception to MythosMUDError."""
         context = create_error_context(user_id="testuser")
         original_error = Exception("Generic error")
@@ -240,23 +240,25 @@ class TestExceptionHandling:
 class TestErrorResponse:
     """Test cases for ErrorResponse class."""
 
-    def test_error_response_creation(self):
+    def test_error_response_creation(self) -> None:
         """Test creating ErrorResponse with various parameters."""
+        from typing import Any, cast
+
         response = ErrorResponse(
-            error_type="TestError",
+            error_type=cast(Any, "TestError"),
             message="Test message",
             details={"detail": "value"},
             user_friendly="User message",
             status_code=400,
         )
 
-        assert response.error_type == "TestError"
+        assert cast(Any, response.error_type) == "TestError"
         assert response.message == "Test message"
         assert response.details["detail"] == "value"
         assert response.user_friendly == "User message"
         assert response.status_code == 400
 
-    def test_error_response_to_dict(self):
+    def test_error_response_to_dict(self) -> None:
         """Test converting ErrorResponse to dictionary."""
         from server.error_types import ErrorType
 
@@ -270,7 +272,7 @@ class TestErrorResponse:
         assert response_dict["error"]["message"] == "Test message"
         assert response_dict["error"]["details"]["detail"] == "value"
 
-    def test_error_response_to_response(self):
+    def test_error_response_to_response(self) -> None:
         """Test converting ErrorResponse to FastAPI JSONResponse."""
         from server.error_types import ErrorType
 
@@ -279,7 +281,7 @@ class TestErrorResponse:
         json_response = response.to_response()
 
         assert json_response.status_code == 400
-        response_body = json_response.body.decode()
+        response_body = bytes(json_response.body).decode()
         assert '"error"' in response_body
         assert '"type":"internal_error"' in response_body
         assert '"message":"Test message"' in response_body
@@ -292,7 +294,7 @@ class TestErrorResponse:
 class TestErrorResponseCreation:
     """Test cases for error response creation utilities."""
 
-    def test_create_error_response_basic(self):
+    def test_create_error_response_basic(self) -> None:
         """Test creating error response from MythosMUDError."""
         context = create_error_context(user_id="testuser")
         error = AuthenticationError("Auth failed", context)
@@ -303,7 +305,7 @@ class TestErrorResponseCreation:
         assert response.message == "Auth failed"
         assert response.status_code == 401
 
-    def test_create_error_response_with_details(self):
+    def test_create_error_response_with_details(self) -> None:
         """Test creating error response with detailed information."""
         context = create_error_context(user_id="testuser")
         error = ValidationError("Invalid input", context, field="username")
@@ -314,7 +316,7 @@ class TestErrorResponseCreation:
         assert response.status_code == 400
         assert "context" in response.details
 
-    def test_get_status_code_for_error(self):
+    def test_get_status_code_for_error(self) -> None:
         """Test status code mapping for different error types."""
         context = create_error_context()
 
@@ -337,7 +339,7 @@ class TestErrorResponseCreation:
 class TestGracefulDegradation:
     """Test cases for graceful degradation utilities."""
 
-    def test_graceful_degradation_success(self):
+    def test_graceful_degradation_success(self) -> None:
         """Test graceful degradation when operation succeeds."""
 
         def successful_operation():
@@ -347,7 +349,7 @@ class TestGracefulDegradation:
             result = successful_operation()
             assert result == "success"
 
-    def test_graceful_degradation_failure(self):
+    def test_graceful_degradation_failure(self) -> None:
         """Test graceful degradation when operation fails."""
 
         def failing_operation():
@@ -365,7 +367,7 @@ class TestGracefulDegradation:
 class TestCircuitBreaker:
     """Test cases for CircuitBreaker pattern."""
 
-    def test_circuit_breaker_initial_state(self):
+    def test_circuit_breaker_initial_state(self) -> None:
         """Test circuit breaker initial state."""
         breaker = CircuitBreaker()
 
@@ -373,7 +375,7 @@ class TestCircuitBreaker:
         assert breaker.failure_count == 0
         assert breaker.last_failure_time is None
 
-    def test_circuit_breaker_successful_calls(self):
+    def test_circuit_breaker_successful_calls(self) -> None:
         """Test circuit breaker with successful calls."""
         breaker = CircuitBreaker(failure_threshold=3)
 
@@ -387,7 +389,7 @@ class TestCircuitBreaker:
             assert breaker.state == "CLOSED"
             assert breaker.failure_count == 0
 
-    def test_circuit_breaker_failure_threshold(self):
+    def test_circuit_breaker_failure_threshold(self) -> None:
         """Test circuit breaker opening after failure threshold."""
         breaker = CircuitBreaker(failure_threshold=2)
 
@@ -406,7 +408,7 @@ class TestCircuitBreaker:
         assert breaker.state == "OPEN"
         assert breaker.failure_count == 2
 
-    def test_circuit_breaker_open_state(self):
+    def test_circuit_breaker_open_state(self) -> None:
         """Test circuit breaker behavior when open."""
         breaker = CircuitBreaker(failure_threshold=1, timeout=1)
 
@@ -423,9 +425,9 @@ class TestCircuitBreaker:
         with pytest.raises(NetworkError):
             breaker.call(failing_func)
 
-    def test_circuit_breaker_reset_after_timeout(self):
+    def test_circuit_breaker_reset_after_timeout(self) -> None:
         """Test circuit breaker reset after timeout period."""
-        breaker = CircuitBreaker(failure_threshold=1, timeout=0.1)
+        breaker = CircuitBreaker(failure_threshold=1, timeout=0.1)  # type: ignore[arg-type]
 
         def failing_func():
             raise ValueError("Test failure")

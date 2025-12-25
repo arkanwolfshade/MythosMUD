@@ -24,7 +24,7 @@ class SubjectManagerMetrics:
     AI: Helps identify bottlenecks and optimize validation operations.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize metrics collection."""
         # Validation metrics
         self.validation_count = 0
@@ -47,7 +47,7 @@ class SubjectManagerMetrics:
         self.missing_parameter_errors = 0
         self.validation_errors = 0
 
-    def record_validation(self, duration: float, success: bool, cache_hit: bool):
+    def record_validation(self, duration: float, success: bool, cache_hit: bool) -> None:
         """
         Record a validation operation.
 
@@ -69,7 +69,7 @@ class SubjectManagerMetrics:
 
         self.validation_times.append(duration)
 
-    def record_build(self, duration: float, success: bool):
+    def record_build(self, duration: float, success: bool) -> None:
         """
         Record a build operation.
 
@@ -85,7 +85,7 @@ class SubjectManagerMetrics:
 
         self.build_times.append(duration)
 
-    def record_error(self, error_type: str):
+    def record_error(self, error_type: str) -> None:
         """
         Record an error occurrence.
 

@@ -1,0 +1,11 @@
+[MAIN]
+extends = "../../.pylintrc"
+
+[MESSAGES CONTROL]
+# In tests, we frequently need to access protected members for verification and mocking.
+# We also inherit the global disable for line-too-long.
+# We disable unused-argument for fixtures and pytest hooks.
+# We disable broad-exception-caught for test setup where general exceptions are acceptable.
+disable =
+    protected-access,
+    unused-argument

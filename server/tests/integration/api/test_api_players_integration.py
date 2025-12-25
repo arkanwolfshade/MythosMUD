@@ -23,6 +23,8 @@ from server.models.player import Player
 
 logger = get_logger(__name__)
 
+pytestmark = pytest.mark.integration
+
 
 class TestPlayerAPIIntegration:
     """

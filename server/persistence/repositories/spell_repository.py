@@ -8,7 +8,7 @@ using SQLAlchemy ORM with PostgreSQL.
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
-from server.database import get_async_session
+from server.database import get_session_maker
 from server.exceptions import DatabaseError
 from server.logging.enhanced_logging_config import get_logger
 from server.models.spell_db import SpellDB
@@ -42,7 +42,8 @@ class SpellRepository:
         context.metadata["operation"] = "get_all_spells"
 
         try:
-            async for session in get_async_session():
+            session_maker = get_session_maker()
+            async with session_maker() as session:
                 stmt = select(SpellDB)
                 result = await session.execute(stmt)
                 spell_objs = list(result.scalars().all())
@@ -68,7 +69,6 @@ class SpellRepository:
                     spells.append(spell_dict)
                 self._logger.debug("Loaded spells", spell_count=len(spells))
                 return spells
-            return []
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,
@@ -78,7 +78,7 @@ class SpellRepository:
                 user_friendly="Failed to retrieve spell list",
             )
 
-    async def get_spell_by_id(self, spell_id: str) -> dict | None:  # type: ignore[return]
+    async def get_spell_by_id(self, spell_id: str) -> dict | None:
         """
         Get a spell by ID.
 
@@ -96,7 +96,8 @@ class SpellRepository:
         context.metadata["spell_id"] = spell_id
 
         try:
-            async for session in get_async_session():
+            session_maker = get_session_maker()
+            async with session_maker() as session:
                 stmt = select(SpellDB).where(SpellDB.spell_id == spell_id)
                 result = await session.execute(stmt)
                 spell_obj = result.scalar_one_or_none()

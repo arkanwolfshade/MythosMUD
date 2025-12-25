@@ -105,6 +105,7 @@ class TestPlayerDeathService:  # pylint: disable=redefined-outer-name
         mock_session.commit.assert_called_once()
 
     @pytest.mark.asyncio
+    @pytest.mark.serial  # Flaky in parallel execution - likely due to shared service state or database session mocking
     async def test_process_mortally_wounded_tick_cap_at_minus_ten(self, player_death_service, mock_player):
         """Test HP decay caps at -10."""
         # Set player to -9 HP (one away from death)
@@ -224,7 +225,7 @@ class TestPlayerDeathService:  # pylint: disable=redefined-outer-name
         mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
 
-        result = await service.process_mortally_wounded_tick("test-player-id", mock_session)
+        result = await service.process_mortally_wounded_tick(uuid4(), mock_session)
 
         assert result is True
         # Verify event was published
@@ -304,8 +305,8 @@ class TestPlayerDeathService:  # pylint: disable=redefined-outer-name
         service = PlayerDeathService(event_bus=mock_event_bus, player_combat_service=mock_player_combat_service)
 
         # Setup player
-        player_id = str(uuid4())
-        mock_player.player_id = player_id
+        player_id = uuid4()
+        mock_player.player_id = str(player_id)
         mock_player.name = "TestPlayer"
         mock_player.current_room_id = "death-room"
         # get_stats() must return a mutable dict, not a Mock
@@ -317,7 +318,7 @@ class TestPlayerDeathService:  # pylint: disable=redefined-outer-name
 
         killer_info = {"killer_id": "npc-123", "killer_name": "Beast"}
 
-        # Call handle_player_death
+        # Call handle_player_death with the same player_id
         result = await service.handle_player_death(player_id, "death-room", killer_info, mock_session)
 
         # Verify death was handled successfully
@@ -328,7 +329,7 @@ class TestPlayerDeathService:  # pylint: disable=redefined-outer-name
         mock_player_combat_service.clear_player_combat_state.assert_called_once()
         # Verify the correct player UUID was passed
         call_args = mock_player_combat_service.clear_player_combat_state.call_args
-        assert str(call_args[0][0]) == player_id
+        assert call_args[0][0] == player_id
 
     @pytest.mark.asyncio
     async def test_handle_player_death_without_combat_service(self, mock_player):
@@ -347,7 +348,7 @@ class TestPlayerDeathService:  # pylint: disable=redefined-outer-name
         mock_session.get.return_value = mock_player
 
         # Should not raise exception even without combat service
-        result = await service.handle_player_death("test-player-id", "death-room", None, mock_session)
+        result = await service.handle_player_death(uuid4(), "death-room", None, mock_session)
 
         assert result is True
         mock_session.commit.assert_called_once()

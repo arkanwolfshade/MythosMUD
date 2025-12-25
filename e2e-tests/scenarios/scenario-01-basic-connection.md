@@ -66,6 +66,8 @@ await mcp_playwright_browser_wait_for({time: 10});
 
 **Purpose**: First player connects and enters the game world
 
+**MULTI-CHARACTER NOTE**: If the user has multiple characters, a character selection screen will appear after login. Select the appropriate character before proceeding.
+
 **Commands**:
 
 ```javascript
@@ -80,6 +82,18 @@ await mcp_playwright_browser_click({element: "Login button", ref: "e11"});
 // Wait for login processing
 await mcp_playwright_browser_wait_for({time: 15});
 
+// MULTI-CHARACTER: Check if character selection screen appears
+// If user has multiple characters, select one; if no characters, proceed to creation
+const snapshot = await mcp_playwright_browser_snapshot();
+if (snapshot.includes("Select Your Character") || snapshot.includes("character-selection")) {
+  // User has multiple characters - select the first one or specified character
+  // Wait for character selection screen
+  await mcp_playwright_browser_wait_for({text: "Select Character", time: 30});
+  // Click first "Select Character" button (adjust ref as needed)
+  await mcp_playwright_browser_click({element: "Select Character button", ref: "eXX"});
+  await mcp_playwright_browser_wait_for({time: 5});
+}
+
 // Wait for MOTD screen and click Continue to enter game (current continue ref: e59)
 await mcp_playwright_browser_wait_for({text: "Continue", time: 30});
 await mcp_playwright_browser_click({element: "Continue button", ref: "e59"});
@@ -91,7 +105,7 @@ await mcp_playwright_browser_wait_for({text: "Chat", time: 30});
 await mcp_playwright_browser_wait_for({time: 10});
 ```
 
-**Expected Result**: AW successfully logs in and enters the game world
+**Expected Result**: AW successfully logs in, selects character (if multiple exist), and enters the game world
 
 ### Step 3: Open Second Browser Tab for Ithaqua
 

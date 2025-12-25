@@ -5,7 +5,7 @@ This module tests the RoomService to ensure proper business logic
 separation and service layer functionality.
 """
 
-from unittest.mock import AsyncMock, Mock
+from unittest.mock import AsyncMock, MagicMock, Mock
 
 import pytest
 
@@ -15,18 +15,23 @@ from server.game.room_service import RoomService
 class TestRoomServiceLayer:
     """Test the RoomService layer functionality."""
 
-    def setup_method(self):
+    mock_persistence: AsyncMock
+    room_service: RoomService
+
+    def setup_method(self) -> None:
         """Set up test fixtures."""
-        self.mock_persistence = AsyncMock()
+        # Use MagicMock as base to prevent automatic AsyncMock creation for all attributes
+        # Only specific async methods will be AsyncMock instances
+        self.mock_persistence = MagicMock()
         self.room_service = RoomService(self.mock_persistence)
 
-    def test_room_service_initialization(self):
+    def test_room_service_initialization(self) -> None:
         """Test that RoomService initializes correctly."""
         assert self.room_service.persistence == self.mock_persistence
 
     @pytest.mark.asyncio
     @pytest.mark.asyncio
-    async def test_get_room_success(self):
+    async def test_get_room_success(self) -> None:
         """Test successful room retrieval by ID."""
         # Mock room data
         mock_room = Mock()
@@ -37,7 +42,7 @@ class TestRoomServiceLayer:
             "exits": {"north": "test_room_2", "south": "test_room_3"},
         }
 
-        self.mock_persistence.async_get_room.return_value = mock_room
+        self.mock_persistence.async_get_room = AsyncMock(return_value=mock_room)
 
         # Get room
         result = await self.room_service.get_room("test_room_1")
@@ -53,7 +58,7 @@ class TestRoomServiceLayer:
 
     @pytest.mark.asyncio
     @pytest.mark.asyncio
-    async def test_get_room_with_dict_response(self):
+    async def test_get_room_with_dict_response(self) -> None:
         """Test room retrieval when persistence returns a dictionary."""
         # Mock room data as dictionary
         mock_room_dict = {
@@ -63,7 +68,7 @@ class TestRoomServiceLayer:
             "exits": {"north": "test_room_2", "south": "test_room_3"},
         }
 
-        self.mock_persistence.async_get_room.return_value = mock_room_dict
+        self.mock_persistence.async_get_room = AsyncMock(return_value=mock_room_dict)
 
         # Get room
         result = await self.room_service.get_room("test_room_1")
@@ -77,9 +82,9 @@ class TestRoomServiceLayer:
         self.mock_persistence.async_get_room.assert_called_once_with("test_room_1")
 
     @pytest.mark.asyncio
-    async def test_get_room_not_found(self):
+    async def test_get_room_not_found(self) -> None:
         """Test room retrieval when room doesn't exist."""
-        self.mock_persistence.async_get_room.return_value = None
+        self.mock_persistence.async_get_room = AsyncMock(return_value=None)
 
         # Get non-existent room
         result = await self.room_service.get_room("nonexistent_room")
@@ -88,15 +93,18 @@ class TestRoomServiceLayer:
         assert result is None
         self.mock_persistence.async_get_room.assert_called_once_with("nonexistent_room")
 
-    def test_get_room_by_name_not_implemented(self):
+    def test_get_room_by_name_not_implemented(self) -> None:
         """Test room retrieval by name (not implemented)."""
         # Get room by name
+        # pylint: disable=assignment-from-none
+        # Suppressed: Method returns dict[str, Any] | None, but current implementation always returns None.
+        # This test intentionally verifies the not-implemented behavior returns None.
         result = self.room_service.get_room_by_name("Test Room")
 
         # Verify result
         assert result is None
 
-    def test_list_rooms_in_zone_not_implemented(self):
+    def test_list_rooms_in_zone_not_implemented(self) -> None:
         """Test listing rooms in zone (not implemented)."""
         # List rooms in zone
         result = self.room_service.list_rooms_in_zone("test_zone")
@@ -106,7 +114,7 @@ class TestRoomServiceLayer:
         assert len(result) == 0
 
     @pytest.mark.asyncio
-    async def test_get_adjacent_rooms_success(self):
+    async def test_get_adjacent_rooms_success(self) -> None:
         """Test successful adjacent rooms retrieval."""
         # Mock source room
         mock_source_room = {
@@ -139,7 +147,7 @@ class TestRoomServiceLayer:
                 return mock_room_4
             return None
 
-        self.mock_persistence.async_get_room.side_effect = mock_get_room
+        self.mock_persistence.async_get_room = AsyncMock(side_effect=mock_get_room)
 
         # Get adjacent rooms
         result = await self.room_service.get_adjacent_rooms("test_room_1")
@@ -164,9 +172,9 @@ class TestRoomServiceLayer:
         assert self.mock_persistence.async_get_room.call_count == 4  # source + 3 adjacent
 
     @pytest.mark.asyncio
-    async def test_get_adjacent_rooms_source_not_found(self):
+    async def test_get_adjacent_rooms_source_not_found(self) -> None:
         """Test adjacent rooms retrieval when source room doesn't exist."""
-        self.mock_persistence.async_get_room.return_value = None
+        self.mock_persistence.async_get_room = AsyncMock(return_value=None)
 
         # Get adjacent rooms for non-existent room
         result = await self.room_service.get_adjacent_rooms("nonexistent_room")
@@ -177,7 +185,7 @@ class TestRoomServiceLayer:
         self.mock_persistence.async_get_room.assert_called_once_with("nonexistent_room")
 
     @pytest.mark.asyncio
-    async def test_get_adjacent_rooms_missing_adjacent_room(self):
+    async def test_get_adjacent_rooms_missing_adjacent_room(self) -> None:
         """Test adjacent rooms retrieval when some adjacent rooms don't exist."""
         # Mock source room
         mock_source_room = {
@@ -197,7 +205,7 @@ class TestRoomServiceLayer:
                 return mock_room_2
             return None  # nonexistent_room returns None
 
-        self.mock_persistence.async_get_room.side_effect = mock_get_room
+        self.mock_persistence.async_get_room = AsyncMock(side_effect=mock_get_room)
 
         # Get adjacent rooms
         result = await self.room_service.get_adjacent_rooms("test_room_1")
@@ -214,7 +222,7 @@ class TestRoomServiceLayer:
         assert self.mock_persistence.async_get_room.call_count == 3  # source + 2 adjacent
 
     @pytest.mark.asyncio
-    async def test_get_local_chat_scope_success(self):
+    async def test_get_local_chat_scope_success(self) -> None:
         """Test successful local chat scope retrieval."""
         # Mock source room
         mock_source_room = {
@@ -238,7 +246,7 @@ class TestRoomServiceLayer:
                 return mock_room_3
             return None
 
-        self.mock_persistence.async_get_room.side_effect = mock_get_room
+        self.mock_persistence.async_get_room = AsyncMock(side_effect=mock_get_room)
 
         # Get local chat scope
         result = await self.room_service.get_local_chat_scope("test_room_1")
@@ -254,9 +262,9 @@ class TestRoomServiceLayer:
         assert self.mock_persistence.async_get_room.call_count == 4  # source + source (for adjacent) + 2 adjacent
 
     @pytest.mark.asyncio
-    async def test_get_local_chat_scope_source_not_found(self):
+    async def test_get_local_chat_scope_source_not_found(self) -> None:
         """Test local chat scope retrieval when source room doesn't exist."""
-        self.mock_persistence.async_get_room.return_value = None
+        self.mock_persistence.async_get_room = AsyncMock(return_value=None)
 
         # Get local chat scope for non-existent room
         result = await self.room_service.get_local_chat_scope("nonexistent_room")
@@ -267,12 +275,12 @@ class TestRoomServiceLayer:
         self.mock_persistence.async_get_room.assert_called_once_with("nonexistent_room")
 
     @pytest.mark.asyncio
-    async def test_get_local_chat_scope_no_exits(self):
+    async def test_get_local_chat_scope_no_exits(self) -> None:
         """Test local chat scope retrieval for room with no exits."""
         # Mock source room with no exits
         mock_source_room = {"id": "test_room_1", "name": "Test Room", "exits": {}}
 
-        self.mock_persistence.async_get_room.return_value = mock_source_room
+        self.mock_persistence.async_get_room = AsyncMock(return_value=mock_source_room)
 
         # Get local chat scope
         result = await self.room_service.get_local_chat_scope("test_room_1")
@@ -286,7 +294,7 @@ class TestRoomServiceLayer:
         assert self.mock_persistence.async_get_room.call_count == 2  # source + source (for adjacent)
 
     @pytest.mark.asyncio
-    async def test_get_local_chat_scope_with_none_exits(self):
+    async def test_get_local_chat_scope_with_none_exits(self) -> None:
         """Test local chat scope retrieval for room with None exits."""
         # Mock source room with None exits
         mock_source_room = {
@@ -310,7 +318,7 @@ class TestRoomServiceLayer:
                 return mock_room_3
             return None
 
-        self.mock_persistence.async_get_room.side_effect = mock_get_room
+        self.mock_persistence.async_get_room = AsyncMock(side_effect=mock_get_room)
 
         # Get local chat scope
         result = await self.room_service.get_local_chat_scope("test_room_1")
@@ -326,11 +334,11 @@ class TestRoomServiceLayer:
         assert self.mock_persistence.async_get_room.call_count == 4  # source + source (for adjacent) + 2 valid adjacent
 
     @pytest.mark.asyncio
-    async def test_validate_room_exists_success(self):
+    async def test_validate_room_exists_success(self) -> None:
         """Test successful room existence validation."""
         # Mock room data
         mock_room = Mock()
-        self.mock_persistence.async_get_room.return_value = mock_room
+        self.mock_persistence.async_get_room = AsyncMock(return_value=mock_room)
 
         # Validate room exists
         result = await self.room_service.validate_room_exists("test_room")
@@ -340,9 +348,9 @@ class TestRoomServiceLayer:
         self.mock_persistence.async_get_room.assert_called_once_with("test_room")
 
     @pytest.mark.asyncio
-    async def test_validate_room_exists_not_found(self):
+    async def test_validate_room_exists_not_found(self) -> None:
         """Test room existence validation when room doesn't exist."""
-        self.mock_persistence.async_get_room.return_value = None
+        self.mock_persistence.async_get_room = AsyncMock(return_value=None)
 
         # Validate room exists
         result = await self.room_service.validate_room_exists("nonexistent_room")
@@ -352,7 +360,7 @@ class TestRoomServiceLayer:
         self.mock_persistence.async_get_room.assert_called_once_with("nonexistent_room")
 
     @pytest.mark.asyncio
-    async def test_validate_exit_exists_success(self):
+    async def test_validate_exit_exists_success(self) -> None:
         """Test successful exit validation."""
         # Mock room data
         mock_room = {
@@ -360,7 +368,7 @@ class TestRoomServiceLayer:
             "name": "Test Room",
             "exits": {"north": "test_room_2", "south": "test_room_3"},
         }
-        self.mock_persistence.async_get_room.return_value = mock_room
+        self.mock_persistence.async_get_room = AsyncMock(return_value=mock_room)
 
         # Validate exit exists
         result = await self.room_service.validate_exit_exists("test_room_1", "test_room_2")
@@ -370,7 +378,7 @@ class TestRoomServiceLayer:
         self.mock_persistence.async_get_room.assert_called_once_with("test_room_1")
 
     @pytest.mark.asyncio
-    async def test_validate_exit_exists_no_exit(self):
+    async def test_validate_exit_exists_no_exit(self) -> None:
         """Test exit validation when exit doesn't exist."""
         # Mock room data
         mock_room = {
@@ -378,7 +386,7 @@ class TestRoomServiceLayer:
             "name": "Test Room",
             "exits": {"north": "test_room_2", "south": "test_room_3"},
         }
-        self.mock_persistence.async_get_room.return_value = mock_room
+        self.mock_persistence.async_get_room = AsyncMock(return_value=mock_room)
 
         # Validate exit exists
         result = await self.room_service.validate_exit_exists("test_room_1", "test_room_4")
@@ -388,9 +396,9 @@ class TestRoomServiceLayer:
         self.mock_persistence.async_get_room.assert_called_once_with("test_room_1")
 
     @pytest.mark.asyncio
-    async def test_validate_exit_exists_room_not_found(self):
+    async def test_validate_exit_exists_room_not_found(self) -> None:
         """Test exit validation when source room doesn't exist."""
-        self.mock_persistence.async_get_room.return_value = None
+        self.mock_persistence.async_get_room = AsyncMock(return_value=None)
 
         # Validate exit exists
         result = await self.room_service.validate_exit_exists("nonexistent_room", "test_room_2")
@@ -400,13 +408,13 @@ class TestRoomServiceLayer:
         self.mock_persistence.async_get_room.assert_called_once_with("nonexistent_room")
 
     @pytest.mark.asyncio
-    async def test_get_room_occupants_success(self):
+    async def test_get_room_occupants_success(self) -> None:
         """Test successful room occupants retrieval (players + NPCs)."""
         # Mock room data with Room object
         mock_room = Mock()
         mock_room.get_players.return_value = ["player1", "player2"]
         mock_room.get_npcs.return_value = ["npc1"]  # AI Agent: Mock get_npcs() to return list, not Mock
-        self.mock_persistence.async_get_room.return_value = mock_room
+        self.mock_persistence.async_get_room = AsyncMock(return_value=mock_room)
 
         # Get room occupants
         result = await self.room_service.get_room_occupants("test_room")
@@ -418,11 +426,11 @@ class TestRoomServiceLayer:
         mock_room.get_npcs.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_get_room_occupants_dict_response(self):
+    async def test_get_room_occupants_dict_response(self) -> None:
         """Test room occupants retrieval with dictionary response."""
         # Mock room data as dictionary
         mock_room = {"id": "test_room", "occupants": ["player1", "player2"]}
-        self.mock_persistence.async_get_room.return_value = mock_room
+        self.mock_persistence.async_get_room = AsyncMock(return_value=mock_room)
 
         # Get room occupants
         result = await self.room_service.get_room_occupants("test_room")
@@ -432,9 +440,9 @@ class TestRoomServiceLayer:
         self.mock_persistence.async_get_room.assert_called_once_with("test_room")
 
     @pytest.mark.asyncio
-    async def test_get_room_occupants_room_not_found(self):
+    async def test_get_room_occupants_room_not_found(self) -> None:
         """Test room occupants retrieval when room doesn't exist."""
-        self.mock_persistence.async_get_room.return_value = None
+        self.mock_persistence.async_get_room = AsyncMock(return_value=None)
 
         # Get room occupants
         result = await self.room_service.get_room_occupants("nonexistent_room")
@@ -444,12 +452,12 @@ class TestRoomServiceLayer:
         self.mock_persistence.async_get_room.assert_called_once_with("nonexistent_room")
 
     @pytest.mark.asyncio
-    async def test_validate_player_in_room_success(self):
+    async def test_validate_player_in_room_success(self) -> None:
         """Test successful player room validation."""
         # Mock room data with Room object
         mock_room = Mock()
         mock_room.has_player.return_value = True
-        self.mock_persistence.async_get_room.return_value = mock_room
+        self.mock_persistence.async_get_room = AsyncMock(return_value=mock_room)
 
         # Validate player in room
         result = await self.room_service.validate_player_in_room("player1", "test_room")
@@ -460,11 +468,11 @@ class TestRoomServiceLayer:
         mock_room.has_player.assert_called_once_with("player1")
 
     @pytest.mark.asyncio
-    async def test_validate_player_in_room_dict_response(self):
+    async def test_validate_player_in_room_dict_response(self) -> None:
         """Test player room validation with dictionary response."""
         # Mock room data as dictionary
         mock_room = {"id": "test_room", "occupants": ["player1", "player2"]}
-        self.mock_persistence.async_get_room.return_value = mock_room
+        self.mock_persistence.async_get_room = AsyncMock(return_value=mock_room)
 
         # Validate player in room
         result = await self.room_service.validate_player_in_room("player1", "test_room")
@@ -474,9 +482,9 @@ class TestRoomServiceLayer:
         self.mock_persistence.async_get_room.assert_called_once_with("test_room")
 
     @pytest.mark.asyncio
-    async def test_validate_player_in_room_not_found(self):
+    async def test_validate_player_in_room_not_found(self) -> None:
         """Test player room validation when room doesn't exist."""
-        self.mock_persistence.async_get_room.return_value = None
+        self.mock_persistence.async_get_room = AsyncMock(return_value=None)
 
         # Validate player in room
         result = await self.room_service.validate_player_in_room("player1", "nonexistent_room")
@@ -486,7 +494,7 @@ class TestRoomServiceLayer:
         self.mock_persistence.async_get_room.assert_called_once_with("nonexistent_room")
 
     @pytest.mark.asyncio
-    async def test_get_room_exits_success(self):
+    async def test_get_room_exits_success(self) -> None:
         """Test successful room exits retrieval."""
         # Mock room data
         mock_room = {
@@ -494,7 +502,7 @@ class TestRoomServiceLayer:
             "name": "Test Room",
             "exits": {"north": "test_room_2", "south": "test_room_3"},
         }
-        self.mock_persistence.async_get_room.return_value = mock_room
+        self.mock_persistence.async_get_room = AsyncMock(return_value=mock_room)
 
         # Get room exits
         result = await self.room_service.get_room_exits("test_room")
@@ -504,9 +512,9 @@ class TestRoomServiceLayer:
         self.mock_persistence.async_get_room.assert_called_once_with("test_room")
 
     @pytest.mark.asyncio
-    async def test_get_room_exits_room_not_found(self):
+    async def test_get_room_exits_room_not_found(self) -> None:
         """Test room exits retrieval when room doesn't exist."""
-        self.mock_persistence.async_get_room.return_value = None
+        self.mock_persistence.async_get_room = AsyncMock(return_value=None)
 
         # Get room exits
         result = await self.room_service.get_room_exits("nonexistent_room")
@@ -516,7 +524,7 @@ class TestRoomServiceLayer:
         self.mock_persistence.async_get_room.assert_called_once_with("nonexistent_room")
 
     @pytest.mark.asyncio
-    async def test_get_room_info_success(self):
+    async def test_get_room_info_success(self) -> None:
         """Test successful comprehensive room info retrieval."""
         # Mock room data
         mock_room = {
@@ -540,7 +548,7 @@ class TestRoomServiceLayer:
                 return mock_room_3
             return None
 
-        self.mock_persistence.async_get_room.side_effect = mock_get_room
+        self.mock_persistence.async_get_room = AsyncMock(side_effect=mock_get_room)
 
         # Get comprehensive room info
         result = await self.room_service.get_room_info("test_room")
@@ -557,9 +565,9 @@ class TestRoomServiceLayer:
         assert result["exit_count"] == 2
 
     @pytest.mark.asyncio
-    async def test_get_room_info_room_not_found(self):
+    async def test_get_room_info_room_not_found(self) -> None:
         """Test comprehensive room info retrieval when room doesn't exist."""
-        self.mock_persistence.async_get_room.return_value = None
+        self.mock_persistence.async_get_room = AsyncMock(return_value=None)
 
         # Get comprehensive room info
         result = await self.room_service.get_room_info("nonexistent_room")
@@ -568,7 +576,7 @@ class TestRoomServiceLayer:
         assert result is None
         self.mock_persistence.async_get_room.assert_called_once_with("nonexistent_room")
 
-    def test_search_rooms_by_name_empty_term(self):
+    def test_search_rooms_by_name_empty_term(self) -> None:
         """Test room search with empty search term."""
         # Search with empty term
         result = self.room_service.search_rooms_by_name("")
@@ -577,7 +585,7 @@ class TestRoomServiceLayer:
         assert isinstance(result, list)
         assert len(result) == 0
 
-    def test_search_rooms_by_name_short_term(self):
+    def test_search_rooms_by_name_short_term(self) -> None:
         """Test room search with short search term."""
         # Search with short term
         result = self.room_service.search_rooms_by_name("A")
@@ -586,7 +594,7 @@ class TestRoomServiceLayer:
         assert isinstance(result, list)
         assert len(result) == 0
 
-    def test_search_rooms_by_name_not_implemented(self):
+    def test_search_rooms_by_name_not_implemented(self) -> None:
         """Test room search by name (not implemented)."""
         # Search with valid term
         result = self.room_service.search_rooms_by_name("Test")
@@ -595,7 +603,7 @@ class TestRoomServiceLayer:
         assert isinstance(result, list)
         assert len(result) == 0
 
-    def test_get_rooms_in_zone_not_implemented(self):
+    def test_get_rooms_in_zone_not_implemented(self) -> None:
         """Test getting rooms in zone (not implemented)."""
         # Get rooms in zone
         result = self.room_service.get_rooms_in_zone("test_zone")

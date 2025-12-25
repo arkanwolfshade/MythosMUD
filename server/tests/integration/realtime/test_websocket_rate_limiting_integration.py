@@ -13,6 +13,8 @@ import pytest
 
 from server.realtime.connection_manager import ConnectionManager
 
+pytestmark = pytest.mark.integration
+
 
 class TestWebSocketRateLimitingIntegration:
     """Test WebSocket rate limiting in integration scenarios."""

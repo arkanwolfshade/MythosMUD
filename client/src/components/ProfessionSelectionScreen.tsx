@@ -3,7 +3,7 @@ import { logger } from '../utils/logger';
 import { Profession, ProfessionCard } from './ProfessionCard';
 
 interface ProfessionSelectionScreenProps {
-  characterName: string;
+  characterName?: string; // MULTI-CHARACTER: Made optional - character name is now entered later
   onProfessionSelected: (profession: Profession) => void;
   onError: (error: string) => void;
   onBack: () => void;
@@ -128,7 +128,7 @@ export const ProfessionSelectionScreen: React.FC<ProfessionSelectionScreenProps>
       <div className="profession-selection-container">
         <header className="profession-selection-header">
           <h1>Choose Your Profession</h1>
-          <p className="character-welcome">Welcome, {characterName}</p>
+          {characterName && <p className="character-welcome">Welcome, {characterName}</p>}
           <p className="profession-instructions">
             Select a profession that defines your character's background and abilities. Each profession has different
             stat requirements and will influence your character's development.
