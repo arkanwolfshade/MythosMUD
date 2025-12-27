@@ -38,13 +38,6 @@ def test_chat_logger_initialization_with_directory(temp_log_dir):
     logger.shutdown()
 
 
-def test_chat_logger_initialization_without_directory():
-    """Test ChatLogger initialization without directory (uses config)."""
-    # This test is complex due to path resolution, skip for now
-    # The initialization with directory test covers the core functionality
-    pytest.skip("Complex path resolution test - covered by other initialization tests")
-
-
 def test_log_chat_message(chat_logger, temp_log_dir):
     """Test log_chat_message writes entry."""
     chat_logger.log_chat_message({

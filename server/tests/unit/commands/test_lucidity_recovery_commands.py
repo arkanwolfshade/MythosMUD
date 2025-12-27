@@ -97,13 +97,12 @@ async def test_handle_pray_command_no_room(mock_request, mock_persistence, mock_
 
 
 @pytest.mark.asyncio
-@pytest.mark.skip(reason="Mock configuration issue with mp_regeneration_service - needs fix")
 async def test_handle_pray_command_success(mock_request, mock_persistence, mock_player):
     """Test handle_pray_command successful execution."""
     mock_persistence.get_player_by_name.return_value = mock_player
     mock_request.app.state.persistence = mock_persistence
-    # Configure mock to return None for mp_regeneration_service
-    type(mock_request.app.state).mp_regeneration_service = None
+    # Explicitly set mp_regeneration_service to None (MagicMock returns MagicMock for any attribute)
+    mock_request.app.state.mp_regeneration_service = None
     
     mock_result = MagicMock()
     mock_result.delta = 5
@@ -111,6 +110,7 @@ async def test_handle_pray_command_success(mock_request, mock_persistence, mock_
     
     async def async_gen():
         mock_session = AsyncMock()
+        mock_session.commit = AsyncMock()
         yield mock_session
     
     with patch("server.commands.lucidity_recovery_commands.get_async_session", return_value=async_gen()):
@@ -232,13 +232,12 @@ async def test_handle_pray_command_with_mp_restoration(mock_request, mock_persis
 
 
 @pytest.mark.asyncio
-@pytest.mark.skip(reason="Mock configuration issue with mp_regeneration_service - needs fix")
 async def test_handle_meditate_command_delegates(mock_request, mock_persistence, mock_player):
     """Test handle_meditate_command delegates to _perform_recovery_action."""
     mock_persistence.get_player_by_name.return_value = mock_player
     mock_request.app.state.persistence = mock_persistence
-    # Configure mock to return None for mp_regeneration_service
-    type(mock_request.app.state).mp_regeneration_service = None
+    # Explicitly set mp_regeneration_service to None (MagicMock returns MagicMock for any attribute)
+    mock_request.app.state.mp_regeneration_service = None
     
     mock_result = MagicMock()
     mock_result.delta = 5
@@ -246,6 +245,7 @@ async def test_handle_meditate_command_delegates(mock_request, mock_persistence,
     
     async def async_gen():
         mock_session = AsyncMock()
+        mock_session.commit = AsyncMock()
         yield mock_session
     
     with patch("server.commands.lucidity_recovery_commands.get_async_session", return_value=async_gen()):
@@ -262,7 +262,7 @@ async def test_handle_meditate_command_delegates(mock_request, mock_persistence,
                 player_name="TestPlayer",
             )
             
-            assert "meditation rite" in result["result"]
+            assert "meditate rite" in result["result"]
 
 
 @pytest.mark.asyncio

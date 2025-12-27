@@ -5,7 +5,7 @@ Tests the TargetResolutionService class for resolving player and NPC targets.
 """
 
 import uuid
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -251,16 +251,11 @@ async def test_get_npc_instance_not_found(target_resolution_service):
     assert npc_instance is None
 
 
-@pytest.mark.asyncio
-async def test_get_npc_instance_error_handling(target_resolution_service):
+def test_get_npc_instance_error_handling(target_resolution_service):
     """Test _get_npc_instance handles errors gracefully."""
     # Mock get_npc_instance_service to raise an exception
-    with pytest.MonkeyPatch().context() as mp:
-        mp.setattr(
-            "server.services.target_resolution_service.get_npc_instance_service",
-            MagicMock(side_effect=Exception("Service error")),
-        )
-        
+    # Since it's imported inside the method, we need to patch it at the source
+    with patch("server.services.npc_instance_service.get_npc_instance_service", side_effect=Exception("Service error")):
         npc_instance = target_resolution_service._get_npc_instance("npc1")
         
         assert npc_instance is None

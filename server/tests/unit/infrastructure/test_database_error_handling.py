@@ -46,15 +46,6 @@ def test_initialize_database_skips_if_already_initialized():
         mock_init.assert_called_once()
 
 
-@pytest.mark.skip(reason="ImportError during 'from .config import get_config' is hard to test - import happens at module load time")
-def test_initialize_database_import_error():
-    """Test _initialize_database handles ImportError from config."""
-    # This test is skipped because testing import-time errors requires
-    # more complex mocking that may interfere with other tests.
-    # The error handling code is tested indirectly through other error paths.
-    pass
-
-
 def test_initialize_database_config_validation_error():
     """Test _initialize_database handles PydanticValidationError."""
     DatabaseManager.reset_instance()
