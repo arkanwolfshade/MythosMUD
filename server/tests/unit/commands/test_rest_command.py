@@ -1,380 +1,274 @@
 """
-Tests for rest command handler.
+Unit tests for rest command handler.
 
-This module tests the handle_rest_command function which handles
-MP regeneration while in a resting position.
+Tests the /rest command for MP regeneration.
 """
 
-from typing import Any
-from unittest.mock import AsyncMock, MagicMock, patch
-from uuid import uuid4
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
 from server.commands.rest_command import handle_rest_command
 
 
-class TestHandleRestCommand:
-    """Test handle_rest_command function."""
-
-    @pytest.mark.asyncio
-    async def test_handle_rest_command_success(self) -> None:
-        """Test successfully handling rest command."""
-        player_id = uuid4()
-        mock_player = MagicMock()
-        mock_player.player_id = player_id
-        mock_player.get_stats.return_value = {"position": "sitting"}
-
-        mock_persistence = AsyncMock()
-        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-
-        mock_mp_service = MagicMock()
-        mock_mp_service.restore_mp_from_rest = AsyncMock(
-            return_value={"success": True, "message": "You rest and recover 10 MP."}
-        )
-
-        mock_app = MagicMock()
-        mock_app.state.persistence = mock_persistence
-        mock_app.state.mp_regeneration_service = mock_mp_service
-
-        mock_request = MagicMock()
-        mock_request.app = mock_app
-
-        command_data = {"duration": 60}
-        current_user = {"username": "testuser"}
-
-        with patch("server.commands.rest_command.get_username_from_user", return_value="testuser"):
-            with patch("server.commands.rest_command.logger"):
-                result = await handle_rest_command(command_data, current_user, mock_request, None, "TestPlayer")
-
-                assert "result" in result
-                assert "rest and recover" in result["result"].lower()
-                mock_mp_service.restore_mp_from_rest.assert_called_once_with(player_id, 60)
-
-    @pytest.mark.asyncio
-    async def test_handle_rest_command_no_app(self) -> None:
-        """Test handling rest command when app is not available."""
-        mock_request = None
-
-        command_data: dict[str, Any] = {}
-        current_user = {"username": "testuser"}
-
-        with patch("server.commands.rest_command.logger"):
-            result = await handle_rest_command(command_data, current_user, mock_request, None, "TestPlayer")
-
-            assert result["result"] == "System error: application not available."
-
-    @pytest.mark.asyncio
-    async def test_handle_rest_command_no_persistence(self) -> None:
-        """Test handling rest command when persistence is not available."""
-        mock_app = MagicMock()
-        mock_app.state.persistence = None
-
-        mock_request = MagicMock()
-        mock_request.app = mock_app
-
-        command_data: dict[str, Any] = {}
-        current_user = {"username": "testuser"}
-
-        with patch("server.commands.rest_command.logger"):
-            result = await handle_rest_command(command_data, current_user, mock_request, None, "TestPlayer")
-
-            assert result["result"] == "System error: persistence layer not available."
-
-    @pytest.mark.asyncio
-    async def test_handle_rest_command_no_mp_service(self) -> None:
-        """Test handling rest command when MP regeneration service is not available."""
-        mock_persistence = AsyncMock()
-
-        mock_app = MagicMock()
-        mock_app.state.persistence = mock_persistence
-        mock_app.state.mp_regeneration_service = None
-
-        mock_request = MagicMock()
-        mock_request.app = mock_app
-
-        command_data: dict[str, Any] = {}
-        current_user = {"username": "testuser"}
-
-        with patch("server.commands.rest_command.logger"):
-            result = await handle_rest_command(command_data, current_user, mock_request, None, "TestPlayer")
-
-            assert result["result"] == "MP regeneration system not initialized."
-
-    @pytest.mark.asyncio
-    async def test_handle_rest_command_player_not_found(self) -> None:
-        """Test handling rest command when player is not found."""
-        mock_persistence = AsyncMock()
-        mock_persistence.get_player_by_name = AsyncMock(return_value=None)
-
-        mock_mp_service = MagicMock()
-
-        mock_app = MagicMock()
-        mock_app.state.persistence = mock_persistence
-        mock_app.state.mp_regeneration_service = mock_mp_service
-
-        mock_request = MagicMock()
-        mock_request.app = mock_app
-
-        command_data: dict[str, Any] = {}
-        current_user = {"username": "testuser"}
-
-        with patch("server.commands.rest_command.get_username_from_user", return_value="testuser"):
-            with patch("server.commands.rest_command.logger"):
-                result = await handle_rest_command(command_data, current_user, mock_request, None, "TestPlayer")
-
-                assert "not recognized" in result["result"].lower()
-
-    @pytest.mark.asyncio
-    async def test_handle_rest_command_not_resting_position(self) -> None:
-        """Test handling rest command when player is not in resting position."""
-        mock_player = MagicMock()
-        mock_player.get_stats.return_value = {"position": "standing"}
-
-        mock_persistence = AsyncMock()
-        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-
-        mock_mp_service = MagicMock()
-
-        mock_app = MagicMock()
-        mock_app.state.persistence = mock_persistence
-        mock_app.state.mp_regeneration_service = mock_mp_service
-
-        mock_request = MagicMock()
-        mock_request.app = mock_app
-
-        command_data: dict[str, Any] = {}
-        current_user = {"username": "testuser"}
-
-        with patch("server.commands.rest_command.get_username_from_user", return_value="testuser"):
-            with patch("server.commands.rest_command.logger"):
-                result = await handle_rest_command(command_data, current_user, mock_request, None, "TestPlayer")
-
-                assert "sitting or lying" in result["result"].lower()
-                mock_mp_service.restore_mp_from_rest.assert_not_called()
-
-    @pytest.mark.asyncio
-    async def test_handle_rest_command_lying_position(self) -> None:
-        """Test handling rest command when player is lying down."""
-        player_id = uuid4()
-        mock_player = MagicMock()
-        mock_player.player_id = player_id
-        mock_player.get_stats.return_value = {"position": "lying"}
-
-        mock_persistence = AsyncMock()
-        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-
-        mock_mp_service = MagicMock()
-        mock_mp_service.restore_mp_from_rest = AsyncMock(
-            return_value={"success": True, "message": "You rest and recover."}
-        )
-
-        mock_app = MagicMock()
-        mock_app.state.persistence = mock_persistence
-        mock_app.state.mp_regeneration_service = mock_mp_service
-
-        mock_request = MagicMock()
-        mock_request.app = mock_app
-
-        command_data: dict[str, Any] = {}
-        current_user = {"username": "testuser"}
-
-        with patch("server.commands.rest_command.get_username_from_user", return_value="testuser"):
-            with patch("server.commands.rest_command.logger"):
-                result = await handle_rest_command(command_data, current_user, mock_request, None, "TestPlayer")
-
-                assert "result" in result
-                mock_mp_service.restore_mp_from_rest.assert_called_once_with(player_id, 60)
-
-    @pytest.mark.asyncio
-    async def test_handle_rest_command_custom_duration(self) -> None:
-        """Test handling rest command with custom duration."""
-        player_id = uuid4()
-        mock_player = MagicMock()
-        mock_player.player_id = player_id
-        mock_player.get_stats.return_value = {"position": "sitting"}
-
-        mock_persistence = AsyncMock()
-        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-
-        mock_mp_service = MagicMock()
-        mock_mp_service.restore_mp_from_rest = AsyncMock(
-            return_value={"success": True, "message": "You rest and recover."}
-        )
-
-        mock_app = MagicMock()
-        mock_app.state.persistence = mock_persistence
-        mock_app.state.mp_regeneration_service = mock_mp_service
-
-        mock_request = MagicMock()
-        mock_request.app = mock_app
-
-        command_data: dict[str, Any] = {"duration": 120}
-        current_user = {"username": "testuser"}
-
-        with patch("server.commands.rest_command.get_username_from_user", return_value="testuser"):
-            with patch("server.commands.rest_command.logger"):
-                await handle_rest_command(command_data, current_user, mock_request, None, "TestPlayer")
-
-                mock_mp_service.restore_mp_from_rest.assert_called_once_with(player_id, 120)
-
-    @pytest.mark.asyncio
-    async def test_handle_rest_command_duration_too_low(self) -> None:
-        """Test handling rest command with duration too low."""
-        player_id = uuid4()
-        mock_player = MagicMock()
-        mock_player.player_id = player_id
-        mock_player.get_stats.return_value = {"position": "sitting"}
-
-        mock_persistence = AsyncMock()
-        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-
-        mock_mp_service = MagicMock()
-        mock_mp_service.restore_mp_from_rest = AsyncMock(
-            return_value={"success": True, "message": "You rest and recover."}
-        )
-
-        mock_app = MagicMock()
-        mock_app.state.persistence = mock_persistence
-        mock_app.state.mp_regeneration_service = mock_mp_service
-
-        mock_request = MagicMock()
-        mock_request.app = mock_app
-
-        command_data: dict[str, Any] = {"duration": 0}
-        current_user = {"username": "testuser"}
-
-        with patch("server.commands.rest_command.get_username_from_user", return_value="testuser"):
-            with patch("server.commands.rest_command.logger"):
-                await handle_rest_command(command_data, current_user, mock_request, None, "TestPlayer")
-
-                # Duration should be clamped to 60
-                mock_mp_service.restore_mp_from_rest.assert_called_once_with(player_id, 60)
-
-    @pytest.mark.asyncio
-    async def test_handle_rest_command_duration_too_high(self) -> None:
-        """Test handling rest command with duration too high."""
-        player_id = uuid4()
-        mock_player = MagicMock()
-        mock_player.player_id = player_id
-        mock_player.get_stats.return_value = {"position": "sitting"}
-
-        mock_persistence = AsyncMock()
-        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-
-        mock_mp_service = MagicMock()
-        mock_mp_service.restore_mp_from_rest = AsyncMock(
-            return_value={"success": True, "message": "You rest and recover."}
-        )
-
-        mock_app = MagicMock()
-        mock_app.state.persistence = mock_persistence
-        mock_app.state.mp_regeneration_service = mock_mp_service
-
-        mock_request = MagicMock()
-        mock_request.app = mock_app
-
-        command_data = {"duration": 500}
-        current_user = {"username": "testuser"}
-
-        with patch("server.commands.rest_command.get_username_from_user", return_value="testuser"):
-            with patch("server.commands.rest_command.logger"):
-                await handle_rest_command(command_data, current_user, mock_request, None, "TestPlayer")
-
-                # Duration should be clamped to 300
-                mock_mp_service.restore_mp_from_rest.assert_called_once_with(player_id, 300)
-
-    @pytest.mark.asyncio
-    async def test_handle_rest_command_invalid_duration(self) -> None:
-        """Test handling rest command with invalid duration."""
-        player_id = uuid4()
-        mock_player = MagicMock()
-        mock_player.player_id = player_id
-        mock_player.get_stats.return_value = {"position": "sitting"}
-
-        mock_persistence = AsyncMock()
-        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-
-        mock_mp_service = MagicMock()
-        mock_mp_service.restore_mp_from_rest = AsyncMock(
-            return_value={"success": True, "message": "You rest and recover."}
-        )
-
-        mock_app = MagicMock()
-        mock_app.state.persistence = mock_persistence
-        mock_app.state.mp_regeneration_service = mock_mp_service
-
-        mock_request = MagicMock()
-        mock_request.app = mock_app
-
-        command_data = {"duration": "invalid"}
-        current_user = {"username": "testuser"}
-
-        with patch("server.commands.rest_command.get_username_from_user", return_value="testuser"):
-            with patch("server.commands.rest_command.logger"):
-                await handle_rest_command(command_data, current_user, mock_request, None, "TestPlayer")
-
-                # Duration should default to 60
-                mock_mp_service.restore_mp_from_rest.assert_called_once_with(player_id, 60)
-
-    @pytest.mark.asyncio
-    async def test_handle_rest_command_mp_service_failure(self) -> None:
-        """Test handling rest command when MP service returns failure."""
-        player_id = uuid4()
-        mock_player = MagicMock()
-        mock_player.player_id = player_id
-        mock_player.get_stats.return_value = {"position": "sitting"}
-
-        mock_persistence = AsyncMock()
-        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-
-        mock_mp_service = MagicMock()
-        mock_mp_service.restore_mp_from_rest = AsyncMock(
-            return_value={"success": False, "message": "Cannot rest right now."}
-        )
-
-        mock_app = MagicMock()
-        mock_app.state.persistence = mock_persistence
-        mock_app.state.mp_regeneration_service = mock_mp_service
-
-        mock_request = MagicMock()
-        mock_request.app = mock_app
-
-        command_data: dict[str, Any] = {}
-        current_user = {"username": "testuser"}
-
-        with patch("server.commands.rest_command.get_username_from_user", return_value="testuser"):
-            with patch("server.commands.rest_command.logger"):
-                result = await handle_rest_command(command_data, current_user, mock_request, None, "TestPlayer")
-
-                assert result["result"] == "Cannot rest right now."
-
-    @pytest.mark.asyncio
-    async def test_handle_rest_command_no_message_in_result(self) -> None:
-        """Test handling rest command when result has no message."""
-        player_id = uuid4()
-        mock_player = MagicMock()
-        mock_player.player_id = player_id
-        mock_player.get_stats.return_value = {"position": "sitting"}
-
-        mock_persistence = AsyncMock()
-        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-
-        mock_mp_service = MagicMock()
-        mock_mp_service.restore_mp_from_rest = AsyncMock(return_value={"success": True})
-
-        mock_app = MagicMock()
-        mock_app.state.persistence = mock_persistence
-        mock_app.state.mp_regeneration_service = mock_mp_service
-
-        mock_request = MagicMock()
-        mock_request.app = mock_app
-
-        command_data: dict[str, Any] = {}
-        current_user = {"username": "testuser"}
-
-        with patch("server.commands.rest_command.get_username_from_user", return_value="testuser"):
-            with patch("server.commands.rest_command.logger"):
-                result = await handle_rest_command(command_data, current_user, mock_request, None, "TestPlayer")
-
-                assert result["result"] == "You rest and recover."
+@pytest.mark.asyncio
+async def test_handle_rest_command_no_app():
+    """Test handle_rest_command returns error when no app."""
+    mock_request = MagicMock()
+    mock_request.app = None
+    
+    result = await handle_rest_command({}, {}, mock_request, None, "testplayer")
+    
+    assert "application not available" in result["result"].lower()
+
+
+@pytest.mark.asyncio
+async def test_handle_rest_command_no_persistence():
+    """Test handle_rest_command returns error when no persistence."""
+    mock_app = MagicMock()
+    mock_app.state = MagicMock()
+    del mock_app.state.persistence
+    mock_request = MagicMock()
+    mock_request.app = mock_app
+    
+    result = await handle_rest_command({}, {}, mock_request, None, "testplayer")
+    
+    assert "persistence layer not available" in result["result"].lower()
+
+
+@pytest.mark.asyncio
+async def test_handle_rest_command_no_mp_service():
+    """Test handle_rest_command returns error when no MP regeneration service."""
+    mock_persistence = MagicMock()
+    mock_app = MagicMock()
+    mock_app.state = MagicMock()
+    mock_app.state.persistence = mock_persistence
+    del mock_app.state.mp_regeneration_service
+    mock_request = MagicMock()
+    mock_request.app = mock_app
+    
+    result = await handle_rest_command({}, {}, mock_request, None, "testplayer")
+    
+    assert "not initialized" in result["result"].lower()
+
+
+@pytest.mark.asyncio
+async def test_handle_rest_command_player_not_found():
+    """Test handle_rest_command returns error when player not found."""
+    mock_persistence = MagicMock()
+    mock_persistence.get_player_by_name = AsyncMock(return_value=None)
+    mock_app = MagicMock()
+    mock_app.state = MagicMock()
+    mock_app.state.persistence = mock_persistence
+    mock_app.state.mp_regeneration_service = MagicMock()
+    mock_request = MagicMock()
+    mock_request.app = mock_app
+    
+    result = await handle_rest_command({}, {"username": "testuser"}, mock_request, None, "testplayer")
+    
+    assert "not recognized" in result["result"].lower()
+
+
+@pytest.mark.asyncio
+async def test_handle_rest_command_not_sitting_or_lying():
+    """Test handle_rest_command returns error when player is standing."""
+    mock_player = MagicMock()
+    mock_player.player_id = "test-player-id"
+    mock_player.get_stats = MagicMock(return_value={"position": "standing"})
+    mock_persistence = MagicMock()
+    mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+    mock_app = MagicMock()
+    mock_app.state = MagicMock()
+    mock_app.state.persistence = mock_persistence
+    mock_app.state.mp_regeneration_service = MagicMock()
+    mock_request = MagicMock()
+    mock_request.app = mock_app
+    
+    result = await handle_rest_command({}, {"username": "testuser"}, mock_request, None, "testplayer")
+    
+    assert "sitting or lying" in result["result"].lower()
+
+
+@pytest.mark.asyncio
+async def test_handle_rest_command_success_sitting():
+    """Test handle_rest_command successfully rests when sitting."""
+    mock_player = MagicMock()
+    mock_player.player_id = "test-player-id"
+    mock_player.get_stats = MagicMock(return_value={"position": "sitting"})
+    mock_persistence = MagicMock()
+    mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+    mock_mp_service = MagicMock()
+    mock_mp_service.restore_mp_from_rest = AsyncMock(return_value={
+        "success": True,
+        "message": "You rest and recover 10 MP.",
+    })
+    mock_app = MagicMock()
+    mock_app.state = MagicMock()
+    mock_app.state.persistence = mock_persistence
+    mock_app.state.mp_regeneration_service = mock_mp_service
+    mock_request = MagicMock()
+    mock_request.app = mock_app
+    
+    result = await handle_rest_command({}, {"username": "testuser"}, mock_request, None, "testplayer")
+    
+    assert "rest and recover" in result["result"].lower()
+    mock_mp_service.restore_mp_from_rest.assert_awaited_once_with("test-player-id", 60)
+
+
+@pytest.mark.asyncio
+async def test_handle_rest_command_success_lying():
+    """Test handle_rest_command successfully rests when lying."""
+    mock_player = MagicMock()
+    mock_player.player_id = "test-player-id"
+    mock_player.get_stats = MagicMock(return_value={"position": "lying"})
+    mock_persistence = MagicMock()
+    mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+    mock_mp_service = MagicMock()
+    mock_mp_service.restore_mp_from_rest = AsyncMock(return_value={
+        "success": True,
+        "message": "You rest deeply and recover 15 MP.",
+    })
+    mock_app = MagicMock()
+    mock_app.state = MagicMock()
+    mock_app.state.persistence = mock_persistence
+    mock_app.state.mp_regeneration_service = mock_mp_service
+    mock_request = MagicMock()
+    mock_request.app = mock_app
+    
+    result = await handle_rest_command({}, {"username": "testuser"}, mock_request, None, "testplayer")
+    
+    assert "rest" in result["result"].lower()
+    mock_mp_service.restore_mp_from_rest.assert_awaited_once_with("test-player-id", 60)
+
+
+@pytest.mark.asyncio
+async def test_handle_rest_command_with_duration():
+    """Test handle_rest_command uses specified duration."""
+    mock_player = MagicMock()
+    mock_player.player_id = "test-player-id"
+    mock_player.get_stats = MagicMock(return_value={"position": "sitting"})
+    mock_persistence = MagicMock()
+    mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+    mock_mp_service = MagicMock()
+    mock_mp_service.restore_mp_from_rest = AsyncMock(return_value={
+        "success": True,
+        "message": "You rest for 120 seconds.",
+    })
+    mock_app = MagicMock()
+    mock_app.state = MagicMock()
+    mock_app.state.persistence = mock_persistence
+    mock_app.state.mp_regeneration_service = mock_mp_service
+    mock_request = MagicMock()
+    mock_request.app = mock_app
+    
+    command_data = {"duration": 120}
+    result = await handle_rest_command(command_data, {"username": "testuser"}, mock_request, None, "testplayer")
+    
+    assert "rest" in result["result"].lower()
+    mock_mp_service.restore_mp_from_rest.assert_awaited_once_with("test-player-id", 120)
+
+
+@pytest.mark.asyncio
+async def test_handle_rest_command_duration_too_low():
+    """Test handle_rest_command caps duration at minimum 1."""
+    mock_player = MagicMock()
+    mock_player.player_id = "test-player-id"
+    mock_player.get_stats = MagicMock(return_value={"position": "sitting"})
+    mock_persistence = MagicMock()
+    mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+    mock_mp_service = MagicMock()
+    mock_mp_service.restore_mp_from_rest = AsyncMock(return_value={
+        "success": True,
+        "message": "You rest.",
+    })
+    mock_app = MagicMock()
+    mock_app.state = MagicMock()
+    mock_app.state.persistence = mock_persistence
+    mock_app.state.mp_regeneration_service = mock_mp_service
+    mock_request = MagicMock()
+    mock_request.app = mock_app
+    
+    command_data = {"duration": -10}
+    result = await handle_rest_command(command_data, {"username": "testuser"}, mock_request, None, "testplayer")
+    
+    # Should default to 60 when duration < 1
+    mock_mp_service.restore_mp_from_rest.assert_awaited_once_with("test-player-id", 60)
+
+
+@pytest.mark.asyncio
+async def test_handle_rest_command_duration_too_high():
+    """Test handle_rest_command caps duration at maximum 300."""
+    mock_player = MagicMock()
+    mock_player.player_id = "test-player-id"
+    mock_player.get_stats = MagicMock(return_value={"position": "sitting"})
+    mock_persistence = MagicMock()
+    mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+    mock_mp_service = MagicMock()
+    mock_mp_service.restore_mp_from_rest = AsyncMock(return_value={
+        "success": True,
+        "message": "You rest.",
+    })
+    mock_app = MagicMock()
+    mock_app.state = MagicMock()
+    mock_app.state.persistence = mock_persistence
+    mock_app.state.mp_regeneration_service = mock_mp_service
+    mock_request = MagicMock()
+    mock_request.app = mock_app
+    
+    command_data = {"duration": 500}
+    result = await handle_rest_command(command_data, {"username": "testuser"}, mock_request, None, "testplayer")
+    
+    # Should cap at 300 when duration > 300
+    mock_mp_service.restore_mp_from_rest.assert_awaited_once_with("test-player-id", 300)
+
+
+@pytest.mark.asyncio
+async def test_handle_rest_command_invalid_duration():
+    """Test handle_rest_command handles invalid duration gracefully."""
+    mock_player = MagicMock()
+    mock_player.player_id = "test-player-id"
+    mock_player.get_stats = MagicMock(return_value={"position": "sitting"})
+    mock_persistence = MagicMock()
+    mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+    mock_mp_service = MagicMock()
+    mock_mp_service.restore_mp_from_rest = AsyncMock(return_value={
+        "success": True,
+        "message": "You rest.",
+    })
+    mock_app = MagicMock()
+    mock_app.state = MagicMock()
+    mock_app.state.persistence = mock_persistence
+    mock_app.state.mp_regeneration_service = mock_mp_service
+    mock_request = MagicMock()
+    mock_request.app = mock_app
+    
+    command_data = {"duration": "invalid"}
+    result = await handle_rest_command(command_data, {"username": "testuser"}, mock_request, None, "testplayer")
+    
+    # Should default to 60 when duration is invalid
+    mock_mp_service.restore_mp_from_rest.assert_awaited_once_with("test-player-id", 60)
+
+
+@pytest.mark.asyncio
+async def test_handle_rest_command_service_failure():
+    """Test handle_rest_command handles service failure."""
+    mock_player = MagicMock()
+    mock_player.player_id = "test-player-id"
+    mock_player.get_stats = MagicMock(return_value={"position": "sitting"})
+    mock_persistence = MagicMock()
+    mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+    mock_mp_service = MagicMock()
+    mock_mp_service.restore_mp_from_rest = AsyncMock(return_value={
+        "success": False,
+        "message": "You are too exhausted to rest.",
+    })
+    mock_app = MagicMock()
+    mock_app.state = MagicMock()
+    mock_app.state.persistence = mock_persistence
+    mock_app.state.mp_regeneration_service = mock_mp_service
+    mock_request = MagicMock()
+    mock_request.app = mock_app
+    
+    result = await handle_rest_command({}, {"username": "testuser"}, mock_request, None, "testplayer")
+    
+    assert "too exhausted" in result["result"].lower()

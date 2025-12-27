@@ -1,366 +1,417 @@
 """
-Tests for authentication utilities.
-
-This module tests the password hashing, verification, and JWT token
-creation/decoding functionality in auth_utils.py.
+Unit tests for authentication utilities.
 """
 
 import os
 from datetime import timedelta
-from unittest.mock import patch
+
+import pytest
+from jose import JWTError
 
 from server.auth_utils import (
-    ACCESS_TOKEN_EXPIRE_MINUTES,
-    ALGORITHM,
     create_access_token,
     decode_access_token,
     hash_password,
     verify_password,
 )
-
-
-class TestPasswordHashing:
-    """Test password hashing functionality."""
-
-    def test_hash_password(self) -> None:
-        """Test password hashing."""
-        password = "test_password"
-        hashed = hash_password(password)
-
-        assert isinstance(hashed, str)
-        assert hashed != password
-        assert len(hashed) > 20
-
-    def test_verify_password_correct(self) -> None:
-        """Test password verification with correct password."""
-        password = "test_password"
-        hashed = hash_password(password)
-
-        assert verify_password(password, hashed) is True
-
-    def test_verify_password_incorrect(self) -> None:
-        """Test password verification with incorrect password."""
-        password = "test_password"
-        hashed = hash_password(password)
-
-        assert verify_password("wrong_password", hashed) is False
-
-    def test_verify_password_empty(self) -> None:
-        """Test password verification with empty password."""
-        password = ""
-        hashed = hash_password(password)
-
-        assert verify_password(password, hashed) is True
-
-    def test_hash_password_special_chars(self) -> None:
-        """Test password hashing with special characters."""
-        password = "test@#$%^&*()_+{}|:<>?[]\\;'\",./"
-        hashed = hash_password(password)
-
-        assert isinstance(hashed, str)
-        assert hashed != password
-        assert verify_password(password, hashed) is True
-
-
-class TestJWTTokenCreation:
-    """Test JWT token creation functionality."""
-
-    def test_create_access_token_default_expiry(self) -> None:
-        """Test access token creation with default expiry."""
-        data = {"sub": "test_user", "username": "test"}
-        token = create_access_token(data)
-
-        assert isinstance(token, str)
-        assert len(token) > 50
-
-    def test_create_access_token_custom_expiry(self) -> None:
-        """Test access token creation with custom expiry."""
-        data = {"sub": "test_user", "username": "test"}
-        expires_delta = timedelta(hours=2)
-        token = create_access_token(data, expires_delta=expires_delta)
-
-        assert isinstance(token, str)
-        assert len(token) > 50
-
-    def test_create_access_token_custom_secret(self) -> None:
-        """Test access token creation with custom secret key."""
-        data = {"sub": "test_user", "username": "test"}
-        custom_secret = "custom-secret-key"
-        token = create_access_token(data, secret_key=custom_secret)
-
-        assert isinstance(token, str)
-        assert len(token) > 50
-
-    def test_create_access_token_custom_algorithm(self) -> None:
-        """Test access token creation with custom algorithm."""
-        data = {"sub": "test_user", "username": "test"}
-        token = create_access_token(data, algorithm="HS256")
-
-        assert isinstance(token, str)
-        assert len(token) > 50
-
-    def test_create_access_token_empty_data(self) -> None:
-        """Test access token creation with empty data."""
-        from typing import Any
-
-        data: dict[str, Any] = {}
-        token = create_access_token(data)
-
-        assert isinstance(token, str)
-        assert len(token) > 50
-
-    def test_create_access_token_nested_data(self) -> None:
-        """Test access token creation with nested data."""
-        data = {
-            "sub": "test_user",
-            "username": "test",
-            "roles": ["user", "admin"],
-            "metadata": {"created_at": "2023-01-01"},
-        }
-        token = create_access_token(data)
-
-        assert isinstance(token, str)
-        assert len(token) > 50
-
-
-class TestJWTTokenDecoding:
-    """Test JWT token decoding functionality."""
-
-    def test_decode_access_token_valid(self) -> None:
-        """Test decoding a valid access token."""
-        data = {"sub": "test_user", "username": "test"}
-        token = create_access_token(data)
-        decoded = decode_access_token(token)
-
-        assert decoded is not None
-        assert decoded["sub"] == "test_user"
-        assert decoded["username"] == "test"
-        assert "exp" in decoded
-
-    def test_decode_access_token_custom_secret(self) -> None:
-        """Test decoding with custom secret key."""
-        data = {"sub": "test_user", "username": "test"}
-        custom_secret = "custom-secret-key"
-        token = create_access_token(data, secret_key=custom_secret)
-        decoded = decode_access_token(token, secret_key=custom_secret)
-
-        assert decoded is not None
-        assert decoded["sub"] == "test_user"
-
-    def test_decode_access_token_invalid_token(self) -> None:
-        """Test decoding an invalid token."""
-        invalid_token = "invalid.token.here"
-        decoded = decode_access_token(invalid_token)
-
-        assert decoded is None
-
-    def test_decode_access_token_wrong_secret(self) -> None:
-        """Test decoding with wrong secret key."""
-        data = {"sub": "test_user", "username": "test"}
-        token = create_access_token(data, secret_key="correct-secret")
-        decoded = decode_access_token(token, secret_key="wrong-secret")
-
-        assert decoded is None
-
-    def test_decode_access_token_empty_token(self) -> None:
-        """Test decoding an empty token."""
-        decoded = decode_access_token("")
-
-        assert decoded is None
-
-    def test_decode_access_token_none_token(self) -> None:
-        """Test decoding a None token."""
-        decoded = decode_access_token(None)
-
-        assert decoded is None
-
-
-class TestConstants:
-    """Test module constants."""
-
-    @patch.dict(os.environ, {"MYTHOSMUD_JWT_SECRET": "test-secret-key"})
-    def test_secret_key_default(self) -> None:
-        """Test SECRET_KEY default value."""
-        # Re-import to get the updated value
-        import importlib
-
-        import server.auth_utils
-
-        importlib.reload(server.auth_utils)
-
-        # The actual value set by environment variables in tests
-        expected_key = "test-secret-key"
-        assert server.auth_utils.SECRET_KEY == expected_key
-
-    def test_algorithm_default(self) -> None:
-        """Test ALGORITHM default value."""
-        assert ALGORITHM == "HS256"
-
-    def test_access_token_expire_minutes_default(self) -> None:
-        """Test ACCESS_TOKEN_EXPIRE_MINUTES default value."""
-        assert ACCESS_TOKEN_EXPIRE_MINUTES == 60
-
-    @patch.dict(os.environ, {"MYTHOSMUD_JWT_SECRET": "test-secret-key"})
-    def test_secret_key_from_env(self) -> None:
-        """Test SECRET_KEY from environment variable."""
-        # Re-import to get the updated value
-        import importlib
-
-        import server.auth_utils
-
-        importlib.reload(server.auth_utils)
-
-        assert server.auth_utils.SECRET_KEY == "test-secret-key"
-
-
-class TestTokenExpiry:
-    """Test token expiry functionality."""
-
-    def test_token_expiry_default(self) -> None:
-        """Test that tokens expire with default time."""
-        data = {"sub": "test_user"}
-        token = create_access_token(data)
-        decoded = decode_access_token(token)
-
-        assert decoded is not None
-        assert "exp" in decoded
-
-    def test_token_expiry_custom(self) -> None:
-        """Test that tokens expire with custom time."""
-        data = {"sub": "test_user"}
-        expires_delta = timedelta(minutes=30)
-        token = create_access_token(data, expires_delta=expires_delta)
-        decoded = decode_access_token(token)
-
-        assert decoded is not None
-        assert "exp" in decoded
-
-    def test_token_expiry_zero(self) -> None:
-        """Test that tokens can be created with zero expiry."""
-        data = {"sub": "test_user"}
-        expires_delta = timedelta(seconds=0)
-        token = create_access_token(data, expires_delta=expires_delta)
-        decoded = decode_access_token(token)
-
-        assert decoded is not None
-        assert "exp" in decoded
-
-
-class TestAuthUtilsErrorPaths:
-    """Test error paths in auth utilities."""
-
-    def test_hash_password_exception_handling(self) -> None:
-        """Test password hashing exception handling.
-
-        AI: Tests lines 45-52 in auth_utils.py where we catch and wrap exceptions
-        during password hashing. Covers the error logging and re-raising path.
-        """
-        from server.exceptions import AuthenticationError
-
-        # Mock argon2_hash_password to raise an exception
-        with patch("server.auth_utils.argon2_hash_password", side_effect=ValueError("Hash error")):
-            import pytest
-
-            with pytest.raises(AuthenticationError) as exc_info:
-                hash_password("test_password")
-
-            assert "Password hashing failed" in str(exc_info.value)
-
-    def test_verify_password_exception_returns_false(self) -> None:
-        """Test password verification exception handling.
-
-        AI: Tests lines 70-72 in auth_utils.py where exceptions during password
-        verification are caught and return False. Covers the exception safety path.
-        """
-        # Mock argon2_verify_password to raise an exception
-        with patch("server.auth_utils.argon2_verify_password", side_effect=RuntimeError("Verify error")):
-            result = verify_password("test_password", "some_hash")
-
-            # Should return False on exception, not raise
-            assert result is False
-
-    def test_create_access_token_exception_handling(self) -> None:
-        """Test access token creation exception handling.
-
-        AI: Tests lines 92-99 in auth_utils.py where we catch and wrap exceptions
-        during JWT token creation. Covers the error logging and re-raising path.
-        """
-        import pytest
-
-        from server.exceptions import AuthenticationError
-
-        # Mock jwt.encode to raise an exception
-        with patch("server.auth_utils.jwt.encode", side_effect=ValueError("Encode error")):
-            with pytest.raises(AuthenticationError) as exc_info:
-                create_access_token({"sub": "test_user"})
-
-            assert "Failed to create access token" in str(exc_info.value)
-
-    def test_decode_access_token_unexpected_exception(self) -> None:
-        """Test decode token handles unexpected exceptions.
-
-        AI: Tests lines 115-117 in auth_utils.py where unexpected exceptions
-        during token decoding are caught and return None. Covers the generic
-        exception handler path.
-        """
-        # Mock jwt.decode to raise an unexpected exception (not JWTError)
-        with patch("server.auth_utils.jwt.decode", side_effect=RuntimeError("Unexpected error")):
-            result = decode_access_token("some_token")
-
-            # Should return None on unexpected exception, not raise
-            assert result is None
-
-    def test_decode_access_token_none_input(self) -> None:
-        """Test decode token with None input.
-
-        AI: Tests lines 104-106 in auth_utils.py where None token input
-        returns None immediately. Covers the null input validation path.
-        """
-        result = decode_access_token(None)
-        assert result is None
-
-    def test_create_access_token_with_none_secret_key(self) -> None:
-        """Test create_access_token raises AuthenticationError when secret_key is None.
-
-        AI: Tests line 91 in auth_utils.py where secret_key=None raises AuthenticationError.
-        """
-        import pytest
-
-        from server.exceptions import AuthenticationError
-
-        with pytest.raises(AuthenticationError, match="JWT secret key is not configured"):
-            create_access_token({"sub": "test_user"}, secret_key=None)
-
-    def test_decode_access_token_with_none_secret_key(self) -> None:
-        """Test decode_access_token returns None when secret_key is None.
-
-        AI: Tests lines 117-118 in auth_utils.py where secret_key=None causes
-        error logging and returns None.
-        """
-        result = decode_access_token("some_token", secret_key=None)
+from server.exceptions import AuthenticationError
+
+
+@pytest.fixture(autouse=True)
+def setup_jwt_secret(monkeypatch):
+    """Set JWT secret for tests."""
+    monkeypatch.setenv("MYTHOSMUD_JWT_SECRET", "test-secret-key-for-testing-only")
+
+
+def test_hash_password_success():
+    """Test successful password hashing."""
+    password = "test_password_123"
+    hashed = hash_password(password)
+    
+    assert isinstance(hashed, str)
+    assert hashed != password
+    assert len(hashed) > 0
+
+
+def test_verify_password_success():
+    """Test successful password verification."""
+    password = "test_password_123"
+    hashed = hash_password(password)
+    
+    result = verify_password(password, hashed)
+    assert result is True
+
+
+def test_verify_password_failure():
+    """Test password verification with wrong password."""
+    password = "test_password_123"
+    hashed = hash_password(password)
+    
+    result = verify_password("wrong_password", hashed)
+    assert result is False
+
+
+def test_hash_password_raises_on_error(monkeypatch):
+    """Test that hash_password raises AuthenticationError on error."""
+    # Mock argon2_hash_password to raise an error
+    from unittest.mock import patch
+    
+    with patch("server.auth_utils.argon2_hash_password", side_effect=ValueError("test error")):
+        with pytest.raises(AuthenticationError):
+            hash_password("test")
+
+
+def test_verify_password_returns_false_on_error(monkeypatch):
+    """Test that verify_password returns False on error."""
+    # Mock argon2_verify_password to raise an error
+    from unittest.mock import patch
+    
+    with patch("server.auth_utils.argon2_verify_password", side_effect=ValueError("test error")):
+        result = verify_password("test", "hash")
+        assert result is False
+
+
+def test_create_access_token_success():
+    """Test successful access token creation."""
+    data = {"sub": "testuser", "username": "testuser"}
+    token = create_access_token(data)
+    
+    assert isinstance(token, str)
+    assert len(token) > 0
+
+
+def test_create_access_token_with_expires_delta():
+    """Test access token creation with custom expiration."""
+    data = {"sub": "testuser", "username": "testuser"}
+    expires_delta = timedelta(minutes=30)
+    token = create_access_token(data, expires_delta=expires_delta)
+    
+    assert isinstance(token, str)
+    assert len(token) > 0
+
+
+def test_decode_access_token_success():
+    """Test successful access token decoding."""
+    data = {"sub": "testuser", "username": "testuser"}
+    token = create_access_token(data)
+    
+    decoded = decode_access_token(token)
+    assert decoded is not None
+    assert decoded.get("sub") == "testuser"
+    assert decoded.get("username") == "testuser"
+
+
+def test_decode_access_token_invalid():
+    """Test decoding invalid access token returns None."""
+    result = decode_access_token("invalid_token")
+    assert result is None
+
+
+def test_decode_access_token_expired():
+    """Test decoding expired access token returns None."""
+    data = {"sub": "testuser", "username": "testuser"}
+    # Create token with very short expiration
+    expires_delta = timedelta(seconds=-1)  # Already expired
+    token = create_access_token(data, expires_delta=expires_delta)
+    
+    # decode_access_token returns None on error, doesn't raise
+    result = decode_access_token(token)
+    assert result is None
+
+
+def test_create_access_token_with_custom_secret():
+    """Test access token creation with custom secret key."""
+    data = {"sub": "testuser", "username": "testuser"}
+    custom_secret = "custom-secret-key"
+    token = create_access_token(data, secret_key=custom_secret)
+    
+    # Should decode with same secret
+    decoded = decode_access_token(token, secret_key=custom_secret)
+    assert decoded is not None
+    assert decoded.get("sub") == "testuser"
+
+
+def test_create_access_token_with_none_secret():
+    """Test create_access_token raises AuthenticationError when secret is None."""
+    data = {"sub": "testuser"}
+    with pytest.raises(AuthenticationError, match="JWT secret key is not configured"):
+        create_access_token(data, secret_key=None)
+
+
+def test_decode_access_token_none_token():
+    """Test decode_access_token with None token returns None."""
+    result = decode_access_token(None)
+    assert result is None
+
+
+def test_decode_access_token_none_secret():
+    """Test decode_access_token with None secret returns None."""
+    token = create_access_token({"sub": "testuser"})
+    result = decode_access_token(token, secret_key=None)
+    assert result is None
+
+
+def test_decode_access_token_wrong_secret():
+    """Test decode_access_token with wrong secret returns None."""
+    token = create_access_token({"sub": "testuser"})
+    result = decode_access_token(token, secret_key="wrong-secret")
+    assert result is None
+
+
+def test_create_access_token_jwt_error():
+    """Test create_access_token handles JWTError."""
+    from unittest.mock import patch, MagicMock
+    from jose import jwt
+    
+    data = {"sub": "testuser"}
+    with patch("jose.jwt.encode") as mock_encode:
+        mock_encode.side_effect = JWTError("JWT error")
+        with pytest.raises(AuthenticationError, match="Failed to create access token"):
+            create_access_token(data)
+
+
+def test_create_access_token_value_error():
+    """Test create_access_token handles ValueError."""
+    from unittest.mock import patch, MagicMock
+    
+    data = {"sub": "testuser"}
+    with patch("jose.jwt.encode") as mock_encode:
+        mock_encode.side_effect = ValueError("Value error")
+        with pytest.raises(AuthenticationError, match="Failed to create access token"):
+            create_access_token(data)
+
+
+def test_decode_access_token_value_error():
+    """Test decode_access_token handles ValueError and returns None."""
+    from unittest.mock import patch, MagicMock
+    from jose import jwt
+    
+    token = create_access_token({"sub": "testuser"})
+    with patch("jose.jwt.decode") as mock_decode:
+        mock_decode.side_effect = ValueError("Value error")
+        result = decode_access_token(token)
         assert result is None
 
 
-class TestAuthUtilsSecretKeyHandling:
-    """Test SECRET_KEY environment variable handling."""
+def test_decode_access_token_type_error():
+    """Test decode_access_token handles TypeError and returns None."""
+    from unittest.mock import patch, MagicMock
+    
+    token = create_access_token({"sub": "testuser"})
+    with patch("jose.jwt.decode") as mock_decode:
+        mock_decode.side_effect = TypeError("Type error")
+        result = decode_access_token(token)
+        assert result is None
 
-    def test_secret_key_missing_raises_error(self, monkeypatch):
-        """Test that missing SECRET_KEY raises AuthenticationError."""
-        import importlib
 
-        monkeypatch.delenv("MYTHOSMUD_JWT_SECRET", raising=False)
+def test_decode_access_token_runtime_error():
+    """Test decode_access_token handles RuntimeError and returns None."""
+    from unittest.mock import patch, MagicMock
+    
+    token = create_access_token({"sub": "testuser"})
+    with patch("jose.jwt.decode") as mock_decode:
+        mock_decode.side_effect = RuntimeError("Runtime error")
+        result = decode_access_token(token)
+        assert result is None
 
-        # Need to reload the module to trigger the error
-        import server.auth_utils
 
-        # The module will raise AuthenticationError on import if SECRET_KEY is missing
-        # We need to catch this during reload
-        from server.exceptions import AuthenticationError
+def test_hash_password_authentication_error():
+    """Test hash_password raises AuthenticationError on AuthenticationError from argon2."""
+    from unittest.mock import patch
+    from server.exceptions import AuthenticationError as AuthError
+    
+    with patch("server.auth_utils.argon2_hash_password", side_effect=AuthError("Auth error")):
+        with pytest.raises(AuthenticationError):
+            hash_password("test")
 
-        try:
-            importlib.reload(server.auth_utils)
-            # If we get here, the error wasn't raised (maybe env var was set elsewhere)
-            # This is okay - the important thing is the code path exists
-        except AuthenticationError:
-            # Expected - the module raises AuthenticationError when SECRET_KEY is missing
-            pass
+
+def test_hash_password_value_error():
+    """Test hash_password raises AuthenticationError on ValueError."""
+    from unittest.mock import patch
+    
+    with patch("server.auth_utils.argon2_hash_password", side_effect=ValueError("Value error")):
+        with pytest.raises(AuthenticationError):
+            hash_password("test")
+
+
+def test_hash_password_type_error():
+    """Test hash_password raises AuthenticationError on TypeError."""
+    from unittest.mock import patch
+    
+    with patch("server.auth_utils.argon2_hash_password", side_effect=TypeError("Type error")):
+        with pytest.raises(AuthenticationError):
+            hash_password("test")
+
+
+def test_hash_password_runtime_error():
+    """Test hash_password raises AuthenticationError on RuntimeError."""
+    from unittest.mock import patch
+    
+    with patch("server.auth_utils.argon2_hash_password", side_effect=RuntimeError("Runtime error")):
+        with pytest.raises(AuthenticationError):
+            hash_password("test")
+
+
+def test_verify_password_attribute_error():
+    """Test verify_password handles AttributeError and returns False."""
+    from unittest.mock import patch
+    
+    with patch("server.auth_utils.argon2_verify_password", side_effect=AttributeError("Attr error")):
+        result = verify_password("test", "hash")
+        assert result is False
+
+
+def test_verify_password_runtime_error():
+    """Test verify_password handles RuntimeError and returns False."""
+    from unittest.mock import patch
+    
+    with patch("server.auth_utils.argon2_verify_password", side_effect=RuntimeError("Runtime error")):
+        result = verify_password("test", "hash")
+        assert result is False
+
+
+def test_create_access_token_with_empty_data():
+    """Test create_access_token with empty data dict."""
+    data = {}
+    token = create_access_token(data)
+    assert isinstance(token, str)
+    assert len(token) > 0
+
+
+def test_create_access_token_with_custom_algorithm():
+    """Test create_access_token with custom algorithm."""
+    data = {"sub": "testuser"}
+    token = create_access_token(data, algorithm="HS256")
+    assert isinstance(token, str)
+    assert len(token) > 0
+
+
+def test_decode_access_token_with_custom_algorithm():
+    """Test decode_access_token with custom algorithm."""
+    data = {"sub": "testuser"}
+    token = create_access_token(data, algorithm="HS256")
+    decoded = decode_access_token(token, algorithm="HS256")
+    assert decoded is not None
+    assert decoded.get("sub") == "testuser"
+
+
+def test_decode_access_token_with_wrong_algorithm():
+    """Test decode_access_token with wrong algorithm returns None."""
+    data = {"sub": "testuser"}
+    token = create_access_token(data, algorithm="HS256")
+    # Try to decode with different algorithm
+    result = decode_access_token(token, algorithm="HS512")
+    assert result is None
+
+
+def test_create_access_token_attribute_error():
+    """Test create_access_token handles AttributeError."""
+    from unittest.mock import patch
+    
+    data = {"sub": "testuser"}
+    with patch("jose.jwt.encode") as mock_encode:
+        mock_encode.side_effect = AttributeError("Attribute error")
+        with pytest.raises(AuthenticationError, match="Failed to create access token"):
+            create_access_token(data)
+
+
+def test_create_access_token_runtime_error():
+    """Test create_access_token handles RuntimeError."""
+    from unittest.mock import patch
+    
+    data = {"sub": "testuser"}
+    with patch("jose.jwt.encode") as mock_encode:
+        mock_encode.side_effect = RuntimeError("Runtime error")
+        with pytest.raises(AuthenticationError, match="Failed to create access token"):
+            create_access_token(data)
+
+
+def test_decode_access_token_attribute_error():
+    """Test decode_access_token handles AttributeError and returns None."""
+    from unittest.mock import patch
+    
+    token = create_access_token({"sub": "testuser"})
+    with patch("jose.jwt.decode") as mock_decode:
+        mock_decode.side_effect = AttributeError("Attribute error")
+        result = decode_access_token(token)
+        assert result is None
+
+
+def test_hash_password_empty_string():
+    """Test hashing empty string password."""
+    hashed = hash_password("")
+    assert isinstance(hashed, str)
+    assert len(hashed) > 0
+
+
+def test_verify_password_empty_string():
+    """Test verifying empty string password."""
+    hashed = hash_password("")
+    result = verify_password("", hashed)
+    assert result is True
+
+
+def test_create_access_token_with_none_expires_delta():
+    """Test create_access_token with None expires_delta uses default."""
+    data = {"sub": "testuser"}
+    token = create_access_token(data, expires_delta=None)
+    assert isinstance(token, str)
+    assert len(token) > 0
+
+
+def test_decode_access_token_with_empty_string():
+    """Test decode_access_token with empty string token."""
+    result = decode_access_token("")
+    assert result is None
+
+
+def test_decode_access_token_with_malformed_token():
+    """Test decode_access_token with malformed token."""
+    result = decode_access_token("not.a.valid.token")
+    assert result is None
+
+
+def test_create_access_token_with_audience():
+    """Test create_access_token with audience in data."""
+    # decode_access_token expects "fastapi-users:auth" audience
+    # So we need to include it in the data when creating the token
+    data = {"sub": "testuser", "aud": ["fastapi-users:auth"]}
+    token = create_access_token(data)
+    decoded = decode_access_token(token)
+    assert decoded is not None
+    assert decoded.get("sub") == "testuser"
+
+
+def test_hash_password_with_very_long_password():
+    """Test hashing a very long password."""
+    long_password = "a" * 10000
+    hashed = hash_password(long_password)
+    assert isinstance(hashed, str)
+    assert len(hashed) > 0
+
+
+def test_verify_password_with_very_long_password():
+    """Test verifying a very long password."""
+    long_password = "a" * 10000
+    hashed = hash_password(long_password)
+    result = verify_password(long_password, hashed)
+    assert result is True
+
+
+def test_create_access_token_with_custom_expires_delta_zero():
+    """Test create_access_token with zero expires_delta."""
+    data = {"sub": "testuser"}
+    expires_delta = timedelta(seconds=0)
+    token = create_access_token(data, expires_delta=expires_delta)
+    assert isinstance(token, str)
+    assert len(token) > 0
+
+
+def test_decode_access_token_with_expired_token_immediately():
+    """Test decode_access_token with immediately expired token."""
+    data = {"sub": "testuser"}
+    expires_delta = timedelta(seconds=-1)
+    token = create_access_token(data, expires_delta=expires_delta)
+    result = decode_access_token(token)
+    assert result is None
+

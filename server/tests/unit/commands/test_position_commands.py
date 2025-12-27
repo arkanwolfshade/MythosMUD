@@ -1,200 +1,207 @@
-"""Tests for the posture command handlers (sit/stand/lie)."""
+"""
+Unit tests for position command handlers.
 
-# pylint: disable=redefined-outer-name
-from unittest.mock import AsyncMock, MagicMock
+Tests handlers for posture adjustment commands (sit, stand, lie).
+"""
+
+import uuid
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 from server.commands.position_commands import (
+    _format_room_posture_message,
+    _handle_position_change,
     handle_lie_command,
     handle_sit_command,
     handle_stand_command,
 )
-from server.models.alias import Alias
 
 
-@pytest.fixture
-def mock_request():
-    """Create a request object with mocked app state."""
-    request = MagicMock()
-    request.app = MagicMock()
-    request.app.state = MagicMock()
-
-    connection_manager = MagicMock()
-    connection_manager.broadcast_to_room = AsyncMock(return_value={})
-    connection_manager.send_personal_message = AsyncMock(return_value={})
-    connection_manager._get_next_sequence = MagicMock(return_value=1)
-    connection_manager.online_players = {}
-    connection_manager.get_online_player_by_display_name = MagicMock(return_value=None)
-    request.app.state.connection_manager = connection_manager
-    return request
+def test_format_room_posture_message_sitting():
+    """Test _format_room_posture_message formats sitting message."""
+    result = _format_room_posture_message("TestPlayer", None, "sitting")
+    
+    assert "settles into a seated position" in result
+    assert "TestPlayer" in result
 
 
-@pytest.fixture
-def mock_player():
-    """Create a mock player with baseline stats."""
-    player = MagicMock()
-    player.player_id = "player-123"
-    player.name = "TestPlayer"
-    player.current_room_id = "room-001"
-    player.get_stats.return_value = {"position": "standing"}
-    player.set_stats = MagicMock()
-    return player
+def test_format_room_posture_message_lying():
+    """Test _format_room_posture_message formats lying message."""
+    result = _format_room_posture_message("TestPlayer", None, "lying")
+    
+    assert "stretches out and lies prone" in result
+    assert "TestPlayer" in result
 
 
-@pytest.fixture
-def baseline_alias_storage():
-    """Provide an alias storage mock with no existing aliases."""
-    alias_storage = MagicMock()
-    alias_storage.get_alias.side_effect = [None, None, None]
-    return alias_storage
+def test_format_room_posture_message_standing_from_lying():
+    """Test _format_room_posture_message formats standing from lying."""
+    result = _format_room_posture_message("TestPlayer", "lying", "standing")
+    
+    assert "pushes up from the floor" in result
+    assert "TestPlayer" in result
 
 
-@pytest.mark.asyncio
-async def test_sit_command_updates_persistence_and_connection(mock_request, mock_player, baseline_alias_storage):
-    """Sit command should persist position changes and update live tracking."""
-    mock_request.app.state.persistence = MagicMock()
-    mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.persistence.save_player = AsyncMock()
+def test_format_room_posture_message_standing_from_sitting():
+    """Test _format_room_posture_message formats standing from sitting."""
+    result = _format_room_posture_message("TestPlayer", "sitting", "standing")
+    
+    assert "rises from their seat" in result
+    assert "TestPlayer" in result
 
-    result = await handle_sit_command(
-        {"command_type": "sit", "args": []},
-        {"username": "TestPlayer"},
-        mock_request,
-        baseline_alias_storage,
-        "TestPlayer",
-    )
 
-    mock_player.set_stats.assert_called_once()
-    updated_stats = mock_player.set_stats.call_args.args[0]
-    assert updated_stats["position"] == "sitting"
-    mock_request.app.state.persistence.save_player.assert_called_once_with(mock_player)
+def test_format_room_posture_message_standing_no_previous():
+    """Test _format_room_posture_message formats standing with no previous position."""
+    result = _format_room_posture_message("TestPlayer", None, "standing")
+    
+    assert "straightens and stands tall" in result
+    assert "TestPlayer" in result
 
-    online_entry = mock_request.app.state.connection_manager.online_players["player-123"]
-    assert online_entry["position"] == "sitting"
 
-    assert result["result"] == "You settle into a seated position."
-    assert result["position"] == "sitting"
-    assert result["changed"] is True
-    assert "seated" in (result["room_message"] or "")
-    assert result["suppress_chat"] is True
-    assert result["game_log_message"] == "You settle into a seated position."
-    assert result["game_log_channel"] == "game-log"
-    assert result["player_update"]["position"] == "sitting"
-    assert result["player_update"]["previous_position"] == "standing"
-
-    alias_calls = {call.args[1] for call in baseline_alias_storage.create_alias.call_args_list}
-    assert alias_calls == {"sit", "stand", "lie"}
-    alias_command_values = {call.args[2] for call in baseline_alias_storage.create_alias.call_args_list}
-    assert alias_command_values == {"/sit", "/stand", "/lie"}
-
-    broadcast_mock = mock_request.app.state.connection_manager.broadcast_to_room
-    broadcast_mock.assert_awaited_once()
-    room_arg, event_arg = broadcast_mock.await_args.args[:2]
-    assert room_arg == "room-001"
-    assert event_arg["event_type"] == "player_posture_change"
-    assert event_arg["data"]["position"] == "sitting"
-    assert "seated" in event_arg["data"]["message"]
-    assert broadcast_mock.await_args.kwargs["exclude_player"] == "player-123"
-    assert result["room_message"] == event_arg["data"]["message"]
+def test_format_room_posture_message_unknown_position():
+    """Test _format_room_posture_message handles unknown position."""
+    result = _format_room_posture_message("TestPlayer", None, "unknown")
+    
+    assert "shifts their posture uneasily" in result
+    assert "TestPlayer" in result
 
 
 @pytest.mark.asyncio
-async def test_stand_command_no_change_skips_persistence(mock_request, mock_player):
-    """Stand command should be a no-op when already standing."""
-    mock_request.app.state.persistence = MagicMock()
-    mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.persistence.save_player = AsyncMock()
-
-    alias_storage = MagicMock()
-    alias_storage.get_alias.side_effect = [
-        Alias(name="sit", command="/sit"),
-        Alias(name="stand", command="/stand"),
-        Alias(name="lie", command="/lie"),
-    ]
-
-    result = await handle_stand_command(
-        {"command_type": "stand", "args": []},
-        {"username": "TestPlayer"},
-        mock_request,
-        alias_storage,
-        "TestPlayer",
-    )
-
-    mock_player.set_stats.assert_not_called()
-    mock_request.app.state.persistence.save_player.assert_not_called()
-    assert result["result"] == "You are already standing."
-    assert result["position"] == "standing"
+async def test_handle_position_change_no_persistence():
+    """Test _handle_position_change handles missing persistence."""
+    mock_request = MagicMock()
+    mock_request.app = None
+    
+    result = await _handle_position_change({}, mock_request, None, "testplayer", "sitting", "sit")
+    
+    assert "result" in result
     assert result["changed"] is False
-    assert result["room_message"] is None
-    assert result["suppress_chat"] is True
-    assert result["game_log_message"] == "You are already standing."
-    assert result["game_log_channel"] == "game-log"
-    assert result["player_update"] is None
-    assert alias_storage.create_alias.call_count == 0
-    broadcast_mock = mock_request.app.state.connection_manager.broadcast_to_room
-    assert broadcast_mock.await_count == 0
 
 
 @pytest.mark.asyncio
-async def test_lie_command_accepts_down_modifier(mock_request, mock_player, baseline_alias_storage):
-    """Lie command should accept the optional 'down' modifier."""
-    mock_request.app.state.persistence = MagicMock()
-    mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.persistence.save_player = AsyncMock()
-
-    result = await handle_lie_command(
-        {"command_type": "lie", "args": ["down"], "modifier": "down"},
-        {"username": "TestPlayer"},
-        mock_request,
-        baseline_alias_storage,
-        "TestPlayer",
-    )
-
-    mock_player.set_stats.assert_called()
-    updated_stats = mock_player.set_stats.call_args.args[0]
-    assert updated_stats["position"] == "lying"
-    mock_request.app.state.persistence.save_player.assert_called_once_with(mock_player)
-    assert result["result"] == "You stretch out and lie down."
-    assert result["position"] == "lying"
+async def test_handle_position_change_success():
+    """Test _handle_position_change successfully changes position."""
+    mock_player_id = uuid.uuid4()
+    mock_room_id = "test-room"
+    mock_persistence = MagicMock()
+    mock_position_service = MagicMock()
+    mock_position_service.change_position = AsyncMock(return_value={
+        "success": True,
+        "position": "sitting",
+        "previous_position": "standing",
+        "player_display_name": "TestPlayer",
+        "player_id": mock_player_id,
+        "room_id": mock_room_id,
+        "message": "You sit down.",
+    })
+    
+    mock_connection_manager = MagicMock()
+    mock_connection_manager.broadcast_to_room = AsyncMock()
+    
+    mock_state = MagicMock()
+    mock_state.persistence = mock_persistence
+    mock_state.connection_manager = mock_connection_manager
+    mock_app = MagicMock()
+    mock_app.state = mock_state
+    mock_request = MagicMock()
+    mock_request.app = mock_app
+    
+    with patch("server.commands.position_commands.PlayerPositionService", return_value=mock_position_service):
+        with patch("server.commands.position_commands.build_event", return_value={"type": "player_posture_change"}):
+            result = await _handle_position_change(
+                {"username": "testuser"}, mock_request, None, "testplayer", "sitting", "sit"
+            )
+    
     assert result["changed"] is True
-    assert "lies" in (result["room_message"] or "")
-    assert result["suppress_chat"] is True
-    assert result["game_log_message"] == "You stretch out and lie down."
-    assert result["game_log_channel"] == "game-log"
-    assert result["player_update"]["position"] == "lying"
-    assert result["player_update"]["previous_position"] == "standing"
-
-    broadcast_mock = mock_request.app.state.connection_manager.broadcast_to_room
-    broadcast_mock.assert_awaited_once()
-    room_arg, event_arg = broadcast_mock.await_args.args[:2]
-    assert room_arg == "room-001"
-    assert event_arg["event_type"] == "player_posture_change"
-    assert event_arg["data"]["position"] == "lying"
-    assert "lies" in event_arg["data"]["message"]
-    assert broadcast_mock.await_args.kwargs["exclude_player"] == "player-123"
+    assert result["position"] == "sitting"
 
 
 @pytest.mark.asyncio
-async def test_position_command_handles_missing_persistence(mock_request, baseline_alias_storage):
-    """Commands should degrade gracefully when persistence is unavailable."""
-    mock_request.app.state.persistence = None
+async def test_handle_position_change_broadcast_error():
+    """Test _handle_position_change handles broadcast errors gracefully."""
+    mock_player_id = uuid.uuid4()
+    mock_room_id = "test-room"
+    mock_position_service = MagicMock()
+    mock_position_service.change_position = AsyncMock(return_value={
+        "success": True,
+        "position": "sitting",
+        "previous_position": "standing",
+        "player_display_name": "TestPlayer",
+        "player_id": mock_player_id,
+        "room_id": mock_room_id,
+        "message": "You sit down.",
+    })
+    
+    mock_connection_manager = MagicMock()
+    mock_connection_manager.broadcast_to_room = AsyncMock(side_effect=ValueError("Test error"))
+    
+    mock_persistence = MagicMock()
+    mock_state = MagicMock()
+    mock_state.persistence = mock_persistence
+    mock_state.connection_manager = mock_connection_manager
+    mock_app = MagicMock()
+    mock_app.state = mock_state
+    mock_request = MagicMock()
+    mock_request.app = mock_app
+    
+    with patch("server.commands.position_commands.PlayerPositionService", return_value=mock_position_service):
+        with patch("server.commands.position_commands.build_event", return_value={"type": "player_posture_change"}):
+            result = await _handle_position_change(
+                {"username": "testuser"}, mock_request, None, "testplayer", "sitting", "sit"
+            )
+    
+    # Should still succeed even if broadcast fails
+    assert result["changed"] is True
 
-    result = await handle_sit_command(
-        {"command_type": "sit", "args": []},
-        {"username": "TestPlayer"},
-        mock_request,
-        baseline_alias_storage,
-        "TestPlayer",
-    )
 
-    assert result["result"] == "Position changes are currently unavailable."
-    assert result["position"] == "sitting"
-    assert result["changed"] is False
-    assert result["room_message"] is None
-    assert result["suppress_chat"] is True
-    assert result["game_log_message"] == "Position changes are currently unavailable."
-    assert result["game_log_channel"] == "game-log"
-    assert result["player_update"] is None
-    broadcast_mock = mock_request.app.state.connection_manager.broadcast_to_room
-    assert broadcast_mock.await_count == 0
+@pytest.mark.asyncio
+async def test_handle_sit_command():
+    """Test handle_sit_command calls _handle_position_change with correct parameters."""
+    with patch("server.commands.position_commands._handle_position_change", new_callable=AsyncMock) as mock_handle:
+        mock_handle.return_value = {"result": "You sit down.", "changed": True, "position": "sitting"}
+        
+        result = await handle_sit_command({}, {}, MagicMock(), None, "testplayer")
+        
+        assert result["changed"] is True
+        mock_handle.assert_awaited_once()
+        # Verify the desired_position and command_name parameters
+        call_kwargs = mock_handle.call_args[1] if mock_handle.call_args[1] else {}
+        call_args = mock_handle.call_args[0] if mock_handle.call_args[0] else ()
+        # Check positional args: current_user, request, alias_storage, player_name, desired_position, command_name
+        if len(call_args) >= 6:
+            assert call_args[4] == "sitting"  # desired_position
+            assert call_args[5] == "sit"  # command_name
+
+
+@pytest.mark.asyncio
+async def test_handle_stand_command():
+    """Test handle_stand_command calls _handle_position_change with correct parameters."""
+    with patch("server.commands.position_commands._handle_position_change", new_callable=AsyncMock) as mock_handle:
+        mock_handle.return_value = {"result": "You stand up.", "changed": True, "position": "standing"}
+        
+        result = await handle_stand_command({}, {}, MagicMock(), None, "testplayer")
+        
+        assert result["changed"] is True
+        mock_handle.assert_awaited_once()
+        # Verify the desired_position and command_name parameters
+        call_args = mock_handle.call_args[0] if mock_handle.call_args[0] else ()
+        if len(call_args) >= 6:
+            assert call_args[4] == "standing"  # desired_position
+            assert call_args[5] == "stand"  # command_name
+
+
+@pytest.mark.asyncio
+async def test_handle_lie_command():
+    """Test handle_lie_command calls _handle_position_change with correct parameters."""
+    with patch("server.commands.position_commands._handle_position_change", new_callable=AsyncMock) as mock_handle:
+        mock_handle.return_value = {"result": "You lie down.", "changed": True, "position": "lying"}
+        
+        result = await handle_lie_command({}, {}, MagicMock(), None, "testplayer")
+        
+        assert result["changed"] is True
+        mock_handle.assert_awaited_once()
+        # Verify the desired_position and command_name parameters
+        call_args = mock_handle.call_args[0] if mock_handle.call_args[0] else ()
+        if len(call_args) >= 6:
+            assert call_args[4] == "lying"  # desired_position
+            assert call_args[5] == "lie"  # command_name

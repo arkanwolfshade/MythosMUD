@@ -27,6 +27,7 @@ dependencies = [
     "pre-commit>=4.4.0",
     "pytest>=8.4.2",
     "pytest-cov>=7.0.0",
+    "pytest-mock>=3.14.0",
     "psycopg2-binary>=2.9.9",
     "asyncpg>=0.29.0",
     "pytest-asyncio>=1.2.0",

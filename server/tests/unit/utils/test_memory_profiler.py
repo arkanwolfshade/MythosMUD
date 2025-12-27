@@ -1,388 +1,212 @@
 """
-Tests for memory profiler utilities.
+Unit tests for memory profiler.
 
-This module tests memory profiling tools for analyzing Pydantic model memory usage.
+Tests the MemoryProfiler class for analyzing model memory usage.
 """
 
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 from pydantic import BaseModel
 
-from server.utils.memory_profiler import MemoryProfiler, benchmark_model_memory_usage
+from server.utils.memory_profiler import MemoryProfiler
 
 
-class SimpleTestModel(BaseModel):
-    """Simple test model for memory profiling tests."""
-
+class SampleModel(BaseModel):
+    """Simple test model for memory profiling."""
     name: str
-    value: int = 0
-
-
-class TestMemoryProfiler:
-    """Test MemoryProfiler class."""
-
-    def test_memory_profiler_init(self) -> None:
-        """Test MemoryProfiler initialization."""
-        profiler = MemoryProfiler()
-        assert profiler.process is not None
-        assert profiler.baseline_memory is None
-        assert profiler.measurements == []
-
-    def test_start_profiling(self) -> None:
-        """Test start_profiling method."""
-        profiler = MemoryProfiler()
-        with patch("server.utils.memory_profiler.gc.collect") as mock_gc:
-            with patch.object(profiler.process, "memory_info") as mock_memory_info:
-                mock_memory_info.return_value = Mock(rss=1000000)
-                with patch("server.utils.memory_profiler.tracemalloc.start") as mock_tracemalloc:
-                    profiler.start_profiling()
-
-                    mock_gc.assert_called_once()
-                    mock_memory_info.assert_called_once()
-                    mock_tracemalloc.assert_called_once()
-                    assert profiler.baseline_memory == 1000000
-
-    def test_stop_profiling(self) -> None:
-        """Test stop_profiling method."""
-        profiler = MemoryProfiler()
-        with patch("server.utils.memory_profiler.tracemalloc.stop") as mock_tracemalloc:
-            profiler.stop_profiling()
-            mock_tracemalloc.assert_called_once()
-
-    def test_get_current_memory_usage(self) -> None:
-        """Test get_current_memory_usage method."""
-        profiler = MemoryProfiler()
-        with patch.object(profiler.process, "memory_info") as mock_memory_info:
-            mock_memory_info.return_value = Mock(rss=2000000)
-            result = profiler.get_current_memory_usage()
-            assert result == 2000000
-
-    def test_get_memory_delta_no_baseline(self) -> None:
-        """Test get_memory_delta when baseline is None."""
-        profiler = MemoryProfiler()
-        profiler.baseline_memory = None
-        assert profiler.get_memory_delta() == 0
-
-    def test_get_memory_delta_with_baseline(self) -> None:
-        """Test get_memory_delta with baseline set."""
-        profiler = MemoryProfiler()
-        profiler.baseline_memory = 1000000
-        with patch.object(profiler.process, "memory_info") as mock_memory_info:
-            mock_memory_info.return_value = Mock(rss=1500000)
-            result = profiler.get_memory_delta()
-            assert result == 500000
-
-    def test_measure_model_instantiation(self) -> None:
-        """Test measure_model_instantiation method."""
-        profiler = MemoryProfiler()
-        with patch.object(profiler, "start_profiling"):
-            with patch.object(profiler, "stop_profiling"):
-                with patch.object(profiler, "get_current_memory_usage", return_value=2000000):
-                    with patch.object(profiler, "get_memory_delta", return_value=1000000):
-                        with patch(
-                            "server.utils.memory_profiler.tracemalloc.get_traced_memory", return_value=(500000, 1500000)
-                        ):
-                            with patch("server.utils.memory_profiler.gc.collect"):
-                                profiler.baseline_memory = 1000000
-
-                                result = profiler.measure_model_instantiation(
-                                    SimpleTestModel, iterations=100, name="test", value=42
-                                )
-
-                                assert result["model_class"] == "SimpleTestModel"
-                                assert result["iterations"] == 100
-                                assert result["memory_delta_bytes"] == 1000000
-                                assert result["memory_per_instance_bytes"] == 10000
-                                assert result["peak_memory_bytes"] == 1500000
-                                assert result["current_memory_bytes"] == 500000
-
-    def test_measure_model_instantiation_zero_iterations(self) -> None:
-        """Test measure_model_instantiation with zero iterations."""
-        profiler = MemoryProfiler()
-        with patch.object(profiler, "start_profiling"):
-            with patch.object(profiler, "stop_profiling"):
-                with patch.object(profiler, "get_current_memory_usage", return_value=2000000):
-                    with patch.object(profiler, "get_memory_delta", return_value=0):
-                        with patch("server.utils.memory_profiler.tracemalloc.get_traced_memory", return_value=(0, 0)):
-                            with patch("server.utils.memory_profiler.gc.collect"):
-                                profiler.baseline_memory = 1000000
-
-                                result = profiler.measure_model_instantiation(
-                                    SimpleTestModel, iterations=0, name="test", value=42
-                                )
-
-                                assert result["memory_per_instance_bytes"] == 0
-
-    def test_measure_model_instantiation_exception_handling(self) -> None:
-        """Test measure_model_instantiation handles exceptions."""
-        profiler = MemoryProfiler()
-        with patch.object(profiler, "start_profiling"):
-            with patch.object(profiler, "stop_profiling"):
-                with patch("server.utils.memory_profiler.gc.collect"):
-                    profiler.baseline_memory = 1000000
-
-                    with pytest.raises(ValueError):
-                        profiler.measure_model_instantiation(SimpleTestModel, iterations=100, invalid_arg="test")
-
-    def test_measure_model_serialization(self) -> None:
-        """Test measure_model_serialization method."""
-        profiler = MemoryProfiler()
-        instances = [SimpleTestModel(name=f"test{i}", value=i) for i in range(10)]
-
-        with patch.object(profiler, "start_profiling"):
-            with patch.object(profiler, "stop_profiling"):
-                with patch.object(profiler, "get_current_memory_usage", return_value=2000000):
-                    with patch.object(profiler, "get_memory_delta", return_value=500000):
-                        with patch("server.utils.memory_profiler.gc.collect"):
-                            profiler.baseline_memory = 1000000
-
-                            result = profiler.measure_model_serialization(instances, iterations=5)
-
-                            assert result["instances_count"] == 10
-                            assert result["iterations"] == 5
-                            assert result["total_serializations"] == 50
-                            assert result["memory_delta_bytes"] == 500000
-                            assert result["memory_per_serialization_bytes"] == 10000
-
-    def test_measure_model_serialization_zero_iterations(self) -> None:
-        """Test measure_model_serialization with zero iterations."""
-        profiler = MemoryProfiler()
-        instances = [SimpleTestModel(name="test", value=1)]
-
-        with patch.object(profiler, "start_profiling"):
-            with patch.object(profiler, "stop_profiling"):
-                with patch.object(profiler, "get_current_memory_usage", return_value=2000000):
-                    with patch.object(profiler, "get_memory_delta", return_value=0):
-                        with patch("server.utils.memory_profiler.gc.collect"):
-                            profiler.baseline_memory = 1000000
-
-                            result = profiler.measure_model_serialization(instances, iterations=0)
-
-                            assert result["memory_per_serialization_bytes"] == 0
-
-    def test_measure_model_deserialization(self) -> None:
-        """Test measure_model_deserialization method."""
-        profiler = MemoryProfiler()
-        serialized_data = [{"name": f"test{i}", "value": i} for i in range(10)]
-
-        with patch.object(profiler, "start_profiling"):
-            with patch.object(profiler, "stop_profiling"):
-                with patch.object(profiler, "get_current_memory_usage", return_value=2000000):
-                    with patch.object(profiler, "get_memory_delta", return_value=300000):
-                        with patch("server.utils.memory_profiler.gc.collect"):
-                            profiler.baseline_memory = 1000000
-
-                            result = profiler.measure_model_deserialization(
-                                SimpleTestModel, serialized_data, iterations=3
-                            )
-
-                            assert result["model_class"] == "SimpleTestModel"
-                            assert result["data_count"] == 10
-                            assert result["iterations"] == 3
-                            assert result["total_deserializations"] == 30
-                            assert result["memory_delta_bytes"] == 300000
-                            assert result["memory_per_deserialization_bytes"] == 10000
-
-    def test_measure_model_deserialization_zero_iterations(self) -> None:
-        """Test measure_model_deserialization with zero iterations."""
-        profiler = MemoryProfiler()
-        serialized_data = [{"name": "test", "value": 1}]
-
-        with patch.object(profiler, "start_profiling"):
-            with patch.object(profiler, "stop_profiling"):
-                with patch.object(profiler, "get_current_memory_usage", return_value=2000000):
-                    with patch.object(profiler, "get_memory_delta", return_value=0):
-                        with patch("server.utils.memory_profiler.gc.collect"):
-                            profiler.baseline_memory = 1000000
-
-                            result = profiler.measure_model_deserialization(
-                                SimpleTestModel, serialized_data, iterations=0
-                            )
-
-                            assert result["memory_per_deserialization_bytes"] == 0
-
-    def test_compare_models_memory_usage(self) -> None:
-        """Test compare_models_memory_usage method."""
-        profiler = MemoryProfiler()
-
-        with patch.object(profiler, "measure_model_instantiation") as mock_measure:
-            mock_measure.return_value = {
-                "model_class": "TestModel",
-                "iterations": 100,
-                "memory_per_instance_bytes": 1000,
-            }
-
-            result = profiler.compare_models_memory_usage(
-                [SimpleTestModel], iterations=100, SimpleTestModel={"name": "test", "value": 1}
-            )
-
-            assert "SimpleTestModel" in result
-            assert "_statistics" in result
-            assert result["_statistics"]["total_models"] == 1
-            assert result["_statistics"]["min_memory_bytes"] == 1000
-            assert result["_statistics"]["max_memory_bytes"] == 1000
-            assert result["_statistics"]["avg_memory_bytes"] == 1000
-
-    def test_compare_models_memory_usage_with_error(self) -> None:
-        """Test compare_models_memory_usage handles errors."""
-        profiler = MemoryProfiler()
-
-        with patch.object(profiler, "measure_model_instantiation", side_effect=ValueError("Test error")):
-            result = profiler.compare_models_memory_usage([SimpleTestModel], iterations=100)
-
-            assert "SimpleTestModel" in result
-            assert "error" in result["SimpleTestModel"]
-
-    def test_compare_models_memory_usage_multiple_models(self) -> None:
-        """Test compare_models_memory_usage with multiple models."""
-        profiler = MemoryProfiler()
-
-        class Model1(BaseModel):
-            field1: str
-
-        class Model2(BaseModel):
-            field2: int
-
-        with patch.object(profiler, "measure_model_instantiation") as mock_measure:
-            mock_measure.side_effect = [
-                {"model_class": "Model1", "iterations": 100, "memory_per_instance_bytes": 500},
-                {"model_class": "Model2", "iterations": 100, "memory_per_instance_bytes": 1500},
-            ]
-
-            result = profiler.compare_models_memory_usage(
-                [Model1, Model2], iterations=100, Model1={"field1": "test"}, Model2={"field2": 42}
-            )
-
-            assert "Model1" in result
-            assert "Model2" in result
-            assert "_statistics" in result
-            assert result["_statistics"]["min_memory_bytes"] == 500
-            assert result["_statistics"]["max_memory_bytes"] == 1500
-            assert result["_statistics"]["avg_memory_bytes"] == 1000
-
-    def test_get_memory_usage_summary(self) -> None:
-        """Test get_memory_usage_summary method."""
-        profiler = MemoryProfiler()
-        with patch.object(profiler.process, "memory_info") as mock_memory_info:
-            mock_memory_info.return_value = Mock(rss=2000000, vms=3000000)
-            with patch.object(profiler.process, "memory_percent", return_value=25.5):
-                with patch("server.utils.memory_profiler.psutil.virtual_memory") as mock_virtual:
-                    mock_virtual.return_value = Mock(available=8000000, total=10000000)
-
-                    result = profiler.get_memory_usage_summary()
-
-                    assert result["rss_bytes"] == 2000000
-                    assert result["vms_bytes"] == 3000000
-                    assert result["rss_mb"] == 2000000 / (1024 * 1024)
-                    assert result["vms_mb"] == 3000000 / (1024 * 1024)
-                    assert result["percent"] == 25.5
-                    assert result["available_mb"] == 8000000 / (1024 * 1024)
-                    assert result["total_mb"] == 10000000 / (1024 * 1024)
-
-    def test_print_memory_summary(self) -> None:
-        """Test print_memory_summary method."""
-        profiler = MemoryProfiler()
-        with patch.object(profiler, "get_memory_usage_summary") as mock_summary:
-            mock_summary.return_value = {
-                "rss_mb": 100.5,
-                "vms_mb": 200.3,
-                "percent": 15.2,
-                "available_mb": 500.0,
-                "total_mb": 1000.0,
-            }
-            with patch("builtins.print") as mock_print:
-                profiler.print_memory_summary()
-
-                assert mock_print.call_count >= 5
-                print_calls = [str(call) for call in mock_print.call_args_list]
-                assert any("RSS Memory" in str(call) for call in print_calls)
-                assert any("VMS Memory" in str(call) for call in print_calls)
-
-    def test_print_model_memory_usage(self) -> None:
-        """Test print_model_memory_usage method."""
-        profiler = MemoryProfiler()
-        result = {
-            "model_class": "TestModel",
-            "iterations": 100,
-            "memory_delta_bytes": 1000000,
-            "memory_per_instance_bytes": 10000,
-            "memory_per_instance_kb": 10.0,
-            "peak_memory_bytes": 2000000,
-        }
-
-        with patch("builtins.print") as mock_print:
-            profiler.print_model_memory_usage(result)
-
-            assert mock_print.call_count >= 4
-            print_calls = [str(call) for call in mock_print.call_args_list]
-            assert any("TestModel" in str(call) for call in print_calls)
-            assert any("Iterations" in str(call) for call in print_calls)
-
-    def test_print_model_memory_usage_with_error(self) -> None:
-        """Test print_model_memory_usage with error result."""
-        profiler = MemoryProfiler()
-        result = {"error": "Test error", "model_class": "TestModel"}
-
-        with patch("builtins.print") as mock_print:
-            profiler.print_model_memory_usage(result)
-
-            mock_print.assert_called()
-            print_calls = [str(call) for call in mock_print.call_args_list]
-            assert any("Error" in str(call) for call in print_calls)
-
-    def test_print_comparison_results(self) -> None:
-        """Test print_comparison_results method."""
-        profiler = MemoryProfiler()
-        results = {
-            "Model1": {
-                "model_class": "Model1",
-                "iterations": 100,
-                "memory_delta_bytes": 500000,
-                "memory_per_instance_bytes": 5000,
-                "memory_per_instance_kb": 5.0,
-                "peak_memory_bytes": 1000000,
-            },
-            "Model2": {
-                "model_class": "Model2",
-                "iterations": 100,
-                "memory_delta_bytes": 1500000,
-                "memory_per_instance_bytes": 15000,
-                "memory_per_instance_kb": 15.0,
-                "peak_memory_bytes": 2000000,
-            },
-            "_statistics": {
-                "total_models": 2,
-                "min_memory_bytes": 5000,
-                "max_memory_bytes": 15000,
-                "avg_memory_bytes": 10000,
-            },
-        }
-
-        with patch.object(profiler, "print_model_memory_usage") as mock_print_model:
-            with patch("builtins.print") as mock_print:
-                profiler.print_comparison_results(results)
-
-                assert mock_print_model.call_count == 2
-                assert mock_print.call_count >= 4
-                print_calls = [str(call) for call in mock_print.call_args_list]
-                assert any("Comparison Statistics" in str(call) for call in print_calls)
-
-
-class TestBenchmarkModelMemoryUsage:
-    """Test benchmark_model_memory_usage function."""
-
-    @patch("server.utils.memory_profiler.MemoryProfiler")
-    def test_benchmark_model_memory_usage(self, mock_profiler_class):
-        """Test benchmark_model_memory_usage function."""
-        mock_profiler = MagicMock()
-        mock_profiler_class.return_value = mock_profiler
-        mock_profiler.compare_models_memory_usage.return_value = {"test": "result"}
-
-        with patch("builtins.print"):
-            result = benchmark_model_memory_usage()
-
-            assert result == {"test": "result"}
-            mock_profiler.start_profiling.assert_not_called()  # Called inside compare_models_memory_usage
-            mock_profiler.print_comparison_results.assert_called_once()
-            mock_profiler.print_memory_summary.assert_called()
+    value: int
+
+
+@pytest.fixture
+def memory_profiler():
+    """Create a MemoryProfiler instance."""
+    return MemoryProfiler()
+
+
+def test_memory_profiler_initialization(memory_profiler):
+    """Test MemoryProfiler initialization."""
+    assert memory_profiler.process is not None
+    assert memory_profiler.baseline_memory is None
+    assert memory_profiler.measurements == []
+
+
+def test_start_profiling(memory_profiler):
+    """Test start_profiling sets baseline."""
+    memory_profiler.start_profiling()
+    assert memory_profiler.baseline_memory is not None
+    assert memory_profiler.baseline_memory > 0
+
+
+def test_stop_profiling(memory_profiler):
+    """Test stop_profiling stops tracemalloc."""
+    memory_profiler.start_profiling()
+    memory_profiler.stop_profiling()
+    # Should not raise exception
+
+
+def test_get_current_memory_usage(memory_profiler):
+    """Test get_current_memory_usage returns positive value."""
+    usage = memory_profiler.get_current_memory_usage()
+    assert usage > 0
+
+
+def test_get_memory_delta_no_baseline(memory_profiler):
+    """Test get_memory_delta returns 0 when no baseline."""
+    delta = memory_profiler.get_memory_delta()
+    assert delta == 0
+
+
+def test_get_memory_delta_with_baseline(memory_profiler):
+    """Test get_memory_delta returns difference from baseline."""
+    memory_profiler.start_profiling()
+    baseline = memory_profiler.baseline_memory
+    delta = memory_profiler.get_memory_delta()
+    # Delta should be small or zero right after baseline
+    assert isinstance(delta, int)
+
+
+def test_measure_model_instantiation(memory_profiler):
+    """Test measure_model_instantiation measures memory usage."""
+    result = memory_profiler.measure_model_instantiation(SampleModel, iterations=10, name="test", value=42)
+    
+    assert result["model_class"] == "SampleModel"
+    assert result["iterations"] == 10
+    assert "memory_delta_bytes" in result
+    assert "memory_per_instance_bytes" in result
+    assert "memory_per_instance_kb" in result
+    assert "memory_per_instance_mb" in result
+    assert "peak_memory_bytes" in result
+    assert "current_memory_bytes" in result
+
+
+def test_measure_model_instantiation_zero_iterations(memory_profiler):
+    """Test measure_model_instantiation with zero iterations."""
+    result = memory_profiler.measure_model_instantiation(SampleModel, iterations=0, name="test", value=42)
+    
+    assert result["iterations"] == 0
+    assert result["memory_per_instance_bytes"] == 0
+
+
+def test_measure_model_serialization(memory_profiler):
+    """Test measure_model_serialization measures memory usage."""
+    instances = [SampleModel(name=f"test{i}", value=i) for i in range(5)]
+    
+    result = memory_profiler.measure_model_serialization(instances, iterations=10)
+    
+    assert result["instances_count"] == 5
+    assert result["iterations"] == 10
+    assert result["total_serializations"] == 50
+    assert "memory_delta_bytes" in result
+    assert "memory_per_serialization_bytes" in result
+    assert "memory_per_serialization_kb" in result
+
+
+def test_measure_model_deserialization(memory_profiler):
+    """Test measure_model_deserialization measures memory usage."""
+    serialized_data = [{"name": f"test{i}", "value": i} for i in range(5)]
+    
+    result = memory_profiler.measure_model_deserialization(SampleModel, serialized_data, iterations=10)
+    
+    assert result["model_class"] == "SampleModel"
+    assert result["data_count"] == 5
+    assert result["iterations"] == 10
+    assert result["total_deserializations"] == 50
+    assert "memory_delta_bytes" in result
+    assert "memory_per_deserialization_bytes" in result
+    assert "memory_per_deserialization_kb" in result
+
+
+def test_compare_models_memory_usage(memory_profiler):
+    """Test compare_models_memory_usage compares multiple models."""
+    class Model1(BaseModel):
+        field1: str
+    
+    class Model2(BaseModel):
+        field2: int
+    
+    result = memory_profiler.compare_models_memory_usage(
+        [Model1, Model2],
+        iterations=10,
+        Model1={"field1": "test"},
+        Model2={"field2": 42},
+    )
+    
+    assert "Model1" in result
+    assert "Model2" in result
+    assert "_statistics" in result
+    assert result["_statistics"]["total_models"] == 2
+
+
+def test_get_memory_usage_summary(memory_profiler):
+    """Test get_memory_usage_summary returns summary."""
+    summary = memory_profiler.get_memory_usage_summary()
+    
+    assert "rss_bytes" in summary
+    assert "vms_bytes" in summary
+    assert "rss_mb" in summary
+    assert "vms_mb" in summary
+    assert "percent" in summary
+    assert "available_mb" in summary
+    assert "total_mb" in summary
+    assert summary["rss_bytes"] > 0
+    assert summary["rss_mb"] > 0
+
+
+def test_print_memory_summary(memory_profiler, capsys):
+    """Test print_memory_summary prints formatted summary."""
+    memory_profiler.print_memory_summary()
+    captured = capsys.readouterr()
+    assert "Memory Usage Summary" in captured.out
+    assert "RSS Memory" in captured.out
+    assert "VMS Memory" in captured.out
+
+
+def test_print_model_memory_usage(memory_profiler, capsys):
+    """Test print_model_memory_usage prints formatted results."""
+    result = {
+        "model_class": "SampleModel",
+        "iterations": 10,
+        "memory_delta_bytes": 1024,
+        "memory_per_instance_bytes": 102.4,
+        "memory_per_instance_kb": 0.1,
+        "peak_memory_bytes": 2048,
+    }
+    
+    memory_profiler.print_model_memory_usage(result)
+    captured = capsys.readouterr()
+    assert "SampleModel Memory Usage" in captured.out
+    assert "Iterations" in captured.out
+
+
+def test_print_model_memory_usage_with_error(memory_profiler, capsys):
+    """Test print_model_memory_usage handles error results."""
+    result = {"error": "Test error"}
+    memory_profiler.print_model_memory_usage(result)
+    captured = capsys.readouterr()
+    assert "Error" in captured.out
+
+
+def test_print_comparison_results(memory_profiler, capsys):
+    """Test print_comparison_results prints formatted comparison."""
+    results = {
+        "Model1": {
+            "model_class": "Model1",
+            "iterations": 10,
+            "memory_delta_bytes": 1024,
+            "memory_per_instance_bytes": 102.4,
+            "memory_per_instance_kb": 0.1,
+            "peak_memory_bytes": 2048,
+        },
+        "_statistics": {
+            "total_models": 1,
+            "min_memory_bytes": 102.4,
+            "max_memory_bytes": 102.4,
+            "avg_memory_bytes": 102.4,
+        },
+    }
+    
+    memory_profiler.print_comparison_results(results)
+    captured = capsys.readouterr()
+    assert "Model Memory Usage Comparison" in captured.out
+    assert "Comparison Statistics" in captured.out

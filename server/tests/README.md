@@ -1,125 +1,120 @@
 # MythosMUD Test Suite
 
-This directory contains the test suite for MythosMUD, including test data and database setup.
+This is the greenfield test suite for MythosMUD server code.
 
-## 📋 Test Suite Refactoring
+## Structure
 
-**Important:** The test suite is undergoing a major reorganization to improve maintainability and discoverability.
-
-### Documentation
-- 📖 [Test Refactoring Summary](../../docs/TEST_REFACTORING_SUMMARY.md) - Executive overview
-- 🗺️ [Test Suite Refactoring Plan](../../docs/TEST_SUITE_REFACTORING_PLAN.md) - Complete strategy
-- 📍 [Test Migration Mapping](../../docs/TEST_MIGRATION_MAPPING.md) - File-by-file mapping
-- 🧭 [Test Organization Guide](./TEST_ORGANIZATION_GUIDE.md) - Quick reference for developers
-
-### Tools
-- 📊 [Migration Tracking Script](./scripts/track_migration.py) - Track refactoring progress
-
-```bash
-# Show migration summary
-python server/tests/scripts/track_migration.py
-
-# Show detailed status
-python server/tests/scripts/track_migration.py --detailed
-
-# Validate migration
-python server/tests/scripts/track_migration.py --validate
-```
-
-### Quick Reference
-
-**Where should I put a new test?** See the [Test Organization Guide](./TEST_ORGANIZATION_GUIDE.md)
-
-**Current Status:** ✅ **MIGRATION & CONSOLIDATION COMPLETE!** All 210 files migrated and 28 legacy files consolidated into 181 optimized test files. See [Final Summary](../../docs/TEST_REFACTORING_FINAL_SUMMARY.md)
-
-## Test Database
-
-### Setup
-
-The test database is located at `data/unit_test/players/unit_test_players.db` and contains:
-
-- **Schema**: Same as production database (players and rooms tables)
-- **Test Data**: Pre-populated with test player data
-- **Purpose**: Provides consistent test data for all tests
-
-### Initialization
-
-To initialize the test database:
-
-```bash
-cd server/tests
-python init_test_db.py
-```
-
-This script will:
-1. Create the test database with proper schema
-2. Load test player data from JSON (if available)
-3. Verify the database was created successfully
-
-### Verification
-
-To verify the test database:
-
-```bash
-cd server/tests
-python verify_test_db.py
-```
-
-This will show:
-- Database location and size
-- Tables present
-- Test players loaded
-- Schema information
-
-### Test Data
-
-The test database contains:
-
-- **Test Player**: `cmduser` in room `arkham_001`
-- **Stats**: Pre-configured character attributes
-- **Schema**: Full database schema matching production
-
-### Usage in Tests
-
-Tests automatically use the test database through the `patch_persistence_layer` fixture in `test_command_handler_unified.py`. This ensures:
-
-- Consistent test data across all tests
-- Isolation from production data
-- Fast test execution (no database creation per test)
-
-### Maintenance
-
-If you need to update test data:
-
-1. Modify the JSON data (if recreating from JSON)
-2. Run `init_test_db.py` to recreate the database
-3. Run tests to verify everything works
-
-### File Structure
-
-```
-server/tests/
-├── data/
-│   ├── unit_test_players.db      # Test database
-│   └── test_persistence.log # Test log file
-├── init_test_db.py          # Database initialization script
-├── verify_test_db.py        # Database verification script
-├── test_command_handler_unified.py  # Unified command handler tests
-└── README.md               # This file
-```
+- `unit/` - Unit tests with mocks/fakes, no real I/O
+- `integration/` - Integration tests with real PostgreSQL database
+- `e2e/` - End-to-end tests (placeholder for now)
+- `fixtures/` - Shared test fixtures organized by tier
 
 ## Running Tests
 
+### All Tests
 ```bash
-cd server
-python -m pytest tests/ -v
+# From repo root
+make test-server
 ```
 
-## Test Configuration
+### By Tier
+```bash
+# Unit tests only
+pytest -m unit server/tests
 
-Tests use the following configuration:
+# Integration tests only
+pytest -m integration server/tests
 
-- **Database**: `data/unit_test/players/unit_test_players.db`
-- **Log Directory**: `logs/unit_test/` (project root logs for unit tests)
-- **Config File**: `.env.unit_test` (template: `.env.unit_test.example`)
-- **Isolation**: Each test uses the same database but with proper cleanup
+# E2E tests only
+pytest -m e2e server/tests
+```
+
+### With Coverage
+```bash
+make test-server-coverage
+```
+
+## Test Markers
+
+Tests are automatically marked based on their directory:
+- Tests in `unit/` → `@pytest.mark.unit`
+- Tests in `integration/` → `@pytest.mark.integration`
+- Tests in `e2e/` → `@pytest.mark.e2e`
+
+Additional markers:
+- `@pytest.mark.slow` - Slow running tests
+- `@pytest.mark.serial` - Must run sequentially (not in parallel)
+- `@pytest.mark.xdist_group(name="...")` - Group tests for xdist worker assignment
+
+## Coverage Policy
+
+- **Critical paths**: 90% minimum coverage
+  - Auth (`server/auth/**`, `server/auth_utils.py`)
+  - Commands (`server/commands/**`, `server/validators/**`)
+  - Services (`server/services/**`)
+  - Persistence (`server/persistence/**`, `server/async_persistence.py`)
+  - Config (`server/config/__init__.py`, `server/config/models.py`)
+  - Events/Realtime (`server/events/**`, `server/realtime/**`)
+  - API (`server/api/**`, `server/routes/**`)
+  - Security (`server/security_utils.py`, `server/exceptions.py`)
+
+- **All other code**: 70% minimum coverage (global floor)
+
+## Adding New Tests
+
+### Unit Tests
+- Place in `server/tests/unit/`
+- Use `strict_mocker` fixture for mocking (autospec enabled by default)
+- Use `dummy_request` fixture for request objects
+- No real database, network, or filesystem access
+
+### Integration Tests
+- Place in `server/tests/integration/`
+- Use `session_factory` fixture for database sessions
+- Use `db_cleanup` fixture for test isolation
+- Real PostgreSQL database required
+
+### E2E Tests
+- Place in `server/tests/e2e/`
+- Full system tests with running server/client
+- Use Playwright MCP for browser automation
+
+## Fixtures
+
+### Shared Fixtures (`fixtures/shared/`)
+- `make_user_dict()` - Create user dictionaries
+- `make_player_dict()` - Create player dictionaries
+- `fake_clock` - Monotonic time counter
+- `stub_persistence` - Stub persistence layer
+
+### Unit Fixtures (`fixtures/unit/`)
+- `strict_mocker` - Mock helper with autospec=True
+- `dummy_request` - Minimal request object
+- `fakerandom` - Deterministic random seed
+
+### Integration Fixtures (`fixtures/integration/`)
+- `integration_db_url` - Database URL for tests
+- `integration_engine` - SQLAlchemy async engine
+- `session_factory` - Async session factory
+- `db_cleanup` - Automatic table truncation after tests
+
+## Parallel Execution
+
+Tests run in parallel by default using `pytest-xdist`. To prevent race conditions:
+
+1. Use `@pytest.mark.serial` for tests that modify global state
+2. Use `@pytest.mark.xdist_group(name="...")` to group related tests
+3. Ensure proper test isolation (no shared mutable state)
+
+## Environment Variables
+
+Required for tests:
+- `DATABASE_URL` - PostgreSQL connection string
+- `DATABASE_NPC_URL` - NPC database connection string
+- `MYTHOSMUD_ADMIN_PASSWORD` - Admin password
+- `SERVER_PORT` - Server port (default: 54731)
+- `LOGGING_ENVIRONMENT` - Logging environment (default: unit_test)
+- `GAME_ALIASES_DIR` - Aliases directory path
+
+These are set automatically by `conftest.py` fixtures.
+
