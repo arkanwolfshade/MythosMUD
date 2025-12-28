@@ -1,4 +1,4 @@
-"""Recovery rituals that steady a mind frayed by eldritch exposure."""
+﻿"""Recovery rituals that steady a mind frayed by eldritch exposure."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ from typing import Any
 
 from ..alias_storage import AliasStorage
 from ..database import get_async_session
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..services.active_lucidity_service import (
     ActiveLucidityService,
     LucidityActionOnCooldownError,

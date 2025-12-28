@@ -1,69 +1,49 @@
 """
 Unit tests for system command handlers.
 
-Tests handlers for system-level commands like help.
+Tests the system command functionality.
 """
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from server.commands.system_commands import handle_help_command
+from server.commands.system_commands import handle_system_command
 
 
 @pytest.mark.asyncio
-async def test_handle_help_command_no_args():
-    """Test handle_help_command returns general help when no arguments."""
+async def test_handle_system_command():
+    """Test handle_system_command() broadcasts system message."""
     mock_request = MagicMock()
-    
-    with patch("server.commands.system_commands.get_help_content", return_value="General help content"):
-        result = await handle_help_command({}, {}, mock_request, None, "testplayer")
-    
-    assert result["result"] == "General help content"
+    mock_app = MagicMock()
+    mock_state = MagicMock()
+    mock_chat_service = AsyncMock()
+    mock_chat_service.send_system_message = AsyncMock(return_value={"success": True})
+    mock_state.chat_service = mock_chat_service
+    mock_app.state = mock_state
+    mock_request.app = mock_app
+
+    result = await handle_system_command({"message": "System announcement"}, {}, mock_request, None, "TestPlayer")
+
+    assert "result" in result
+    mock_chat_service.send_system_message.assert_awaited_once()
 
 
 @pytest.mark.asyncio
-async def test_handle_help_command_with_command_name():
-    """Test handle_help_command returns help for specific command."""
-    command_data = {"args": ["look"]}
-    mock_request = MagicMock()
-    
-    with patch("server.commands.system_commands.get_help_content", return_value="Look command help"):
-        result = await handle_help_command(command_data, {}, mock_request, None, "testplayer")
-    
-    assert result["result"] == "Look command help"
+async def test_handle_system_command_no_message():
+    """Test handle_system_command() handles missing message."""
+    result = await handle_system_command({}, {}, MagicMock(), None, "TestPlayer")
+    assert "result" in result
+    assert "message" in result["result"].lower() or "usage" in result["result"].lower()
 
 
 @pytest.mark.asyncio
-async def test_handle_help_command_too_many_args():
-    """Test handle_help_command returns usage error when too many arguments."""
-    command_data = {"args": ["look", "north", "extra"]}
+async def test_handle_system_command_no_chat_service():
+    """Test handle_system_command() handles missing chat service."""
     mock_request = MagicMock()
-    
-    result = await handle_help_command(command_data, {}, mock_request, None, "testplayer")
-    
-    assert "Usage: help" in result["result"]
+    mock_request.app = None
 
+    result = await handle_system_command({"message": "Test"}, {}, mock_request, None, "TestPlayer")
 
-@pytest.mark.asyncio
-async def test_handle_help_command_empty_args():
-    """Test handle_help_command handles empty args list."""
-    command_data = {"args": []}
-    mock_request = MagicMock()
-    
-    with patch("server.commands.system_commands.get_help_content", return_value="General help"):
-        result = await handle_help_command(command_data, {}, mock_request, None, "testplayer")
-    
-    assert result["result"] == "General help"
-
-
-@pytest.mark.asyncio
-async def test_handle_help_command_missing_args_key():
-    """Test handle_help_command handles missing args key."""
-    command_data = {}
-    mock_request = MagicMock()
-    
-    with patch("server.commands.system_commands.get_help_content", return_value="General help"):
-        result = await handle_help_command(command_data, {}, mock_request, None, "testplayer")
-    
-    assert result["result"] == "General help"
+    assert "result" in result
+    assert "not available" in result["result"].lower() or "error" in result["result"].lower()

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Zone Configuration Loader Module.
 
 This module handles loading zone and sub-zone configurations from the PostgreSQL
@@ -13,7 +13,7 @@ from typing import Any
 
 import asyncpg
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .zone_configuration import ZoneConfiguration
 
 logger = get_logger(__name__)

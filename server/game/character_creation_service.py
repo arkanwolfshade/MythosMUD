@@ -1,4 +1,4 @@
-"""
+﻿"""
 Character creation service for MythosMUD server.
 
 This module handles all character creation-related business logic including
@@ -12,7 +12,7 @@ from pydantic import ValidationError as PydanticValidationError
 
 from ..exceptions import ValidationError
 from ..game.stats_generator import StatsGenerator
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models import Stats
 from ..utils.error_logging import create_error_context, log_and_raise
 

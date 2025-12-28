@@ -1,4 +1,4 @@
-"""
+﻿"""
 Movement monitoring and validation system for MythosMUD.
 
 This module provides comprehensive monitoring, validation, and logging
@@ -14,7 +14,7 @@ from collections import defaultdict
 from datetime import UTC, datetime
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 
 class MovementMonitor:

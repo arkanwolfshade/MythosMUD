@@ -1,4 +1,4 @@
-"""
+﻿"""
 Player service for MythosMUD server.
 
 This module handles all player-related business logic including
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from ..services.player_respawn_service import PlayerRespawnService
 from ..config import get_config
 from ..exceptions import DatabaseError, ValidationError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models import Stats
 from ..models.game import PositionState
 from ..models.player import Player

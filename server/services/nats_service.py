@@ -1,4 +1,4 @@
-"""
+﻿"""
 NATS service for MythosMUD chat system.
 
 This module provides NATS pub/sub functionality for real-time chat messaging,
@@ -17,7 +17,7 @@ from typing import Any
 import nats
 
 from ..config.models import NATSConfig
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..realtime.connection_state_machine import NATSConnectionStateMachine
 from .nats_exceptions import (
     NATSPublishError,

@@ -1,4 +1,4 @@
-"""
+﻿"""
 User management service for MythosMUD chat system.
 
 This module provides comprehensive user management including muting,
@@ -12,7 +12,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .chat_logger import chat_logger
 
 logger = get_logger("communications.user_manager")

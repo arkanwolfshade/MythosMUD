@@ -1,4 +1,4 @@
-"""
+﻿"""
 Room and subscription utility helpers for connection manager.
 
 This module provides helper functions for room-related operations
@@ -8,7 +8,7 @@ and subscription management.
 from typing import Any
 
 from ..exceptions import DatabaseError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

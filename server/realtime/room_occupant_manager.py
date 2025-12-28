@@ -1,4 +1,4 @@
-"""
+﻿"""
 Room occupant management utilities.
 
 This module handles querying and processing room occupants (players and NPCs),
@@ -12,7 +12,7 @@ from typing import Any
 
 from sqlalchemy.exc import SQLAlchemyError
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .npc_occupant_processor import NPCOccupantProcessor
 from .occupant_formatter import OccupantFormatter
 from .player_name_utils import PlayerNameExtractor

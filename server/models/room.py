@@ -1,4 +1,4 @@
-"""
+﻿"""
 Room model for MythosMUD.
 
 This module provides the Room class that represents a room in the game world.
@@ -21,7 +21,7 @@ from ..events.event_types import (
     PlayerEnteredRoom,
     PlayerLeftRoom,
 )
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 
 class Room:

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Container service for unified container system operations.
 
 As documented in the restricted archives of Miskatonic University, container
@@ -19,7 +19,7 @@ from typing import Any
 from uuid import UUID
 
 from ..exceptions import MythosMUDError, ValidationError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.container import ContainerComponent, ContainerLockState, ContainerSourceType
 from ..utils.audit_logger import audit_logger
 from ..utils.error_logging import create_error_context, log_and_raise

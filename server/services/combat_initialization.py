@@ -4,7 +4,7 @@ Combat initialization logic.
 Handles creation and setup of combat instances.
 """
 
-from server.logging.enhanced_logging_config import get_logger
+from server.structured_logging.enhanced_logging_config import get_logger
 from server.models.combat import CombatInstance, CombatParticipant
 from server.services.combat_types import CombatParticipantData
 

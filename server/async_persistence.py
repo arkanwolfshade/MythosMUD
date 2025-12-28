@@ -1,4 +1,4 @@
-"""
+﻿"""
 Async persistence layer for MythosMUD.
 
 This module provides an async version of the persistence layer using SQLAlchemy ORM
@@ -17,7 +17,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from .database import get_async_session
 from .exceptions import DatabaseError, ValidationError
-from .logging.enhanced_logging_config import get_logger
+from .structured_logging.enhanced_logging_config import get_logger
 from .models.player import Player
 from .models.profession import Profession
 from .models.user import User

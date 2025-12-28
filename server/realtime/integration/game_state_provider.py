@@ -1,4 +1,4 @@
-"""
+﻿"""
 Game state provision for connection management.
 
 This module provides comprehensive game state generation for newly connected
@@ -12,7 +12,7 @@ import uuid
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
-from ...logging.enhanced_logging_config import get_logger
+from ...structured_logging.enhanced_logging_config import get_logger
 from ...models import Player
 
 if TYPE_CHECKING:

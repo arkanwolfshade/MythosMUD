@@ -1,4 +1,4 @@
-"""
+﻿"""
 Room look functionality for MythosMUD.
 
 This module handles looking at rooms, including formatting room descriptions,
@@ -7,7 +7,7 @@ listing items, NPCs, players, and exits in the room.
 
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.room_renderer import format_room_drop_lines
 from .look_npc import _get_npcs_in_room
 from .look_player import _get_players_in_room

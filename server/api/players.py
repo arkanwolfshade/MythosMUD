@@ -1,4 +1,4 @@
-"""
+﻿"""
 Player management API endpoints for MythosMUD server.
 
 This module handles basic player CRUD operations and multi-character management.
@@ -16,7 +16,7 @@ from ..error_types import ErrorMessages
 from ..exceptions import DatabaseError, LoggedHTTPException, ValidationError
 from ..game.player_service import PlayerService
 from ..game.stats_generator import StatsGenerator
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.user import User
 from ..schemas.player import PlayerRead
 from ..schemas.player_requests import SelectCharacterRequest

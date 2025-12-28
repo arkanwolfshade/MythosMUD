@@ -1,4 +1,4 @@
-"""
+﻿"""
 Room data cache and freshness management for MythosMUD.
 
 This module provides caching and freshness validation for room data,
@@ -8,7 +8,7 @@ ensuring that stale data is detected and refreshed appropriately.
 import time
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

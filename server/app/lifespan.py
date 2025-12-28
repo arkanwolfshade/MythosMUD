@@ -1,4 +1,4 @@
-"""Application lifecycle management for MythosMUD server.
+﻿"""Application lifecycle management for MythosMUD server.
 
 This module handles application startup and shutdown orchestration,
 using ApplicationContainer for dependency injection and service lifecycle management.
@@ -16,7 +16,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from ..container import ApplicationContainer
-from ..logging.enhanced_logging_config import get_logger, update_logging_with_player_service
+from ..structured_logging.enhanced_logging_config import get_logger, update_logging_with_player_service
 from ..time.time_service import get_mythos_chronicle
 from .game_tick_processing import game_tick_loop, get_current_tick, reset_current_tick
 from .lifespan_shutdown import shutdown_services

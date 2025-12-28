@@ -1,4 +1,4 @@
-"""
+﻿"""
 Event bus for MythosMUD.
 
 This module provides the EventBus class that implements an in-memory
@@ -21,7 +21,7 @@ from collections import defaultdict
 from collections.abc import Callable
 from typing import Any, TypeVar
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .event_types import BaseEvent
 
 # Type variable for generic event handling

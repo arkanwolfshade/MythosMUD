@@ -1,4 +1,4 @@
-"""
+﻿"""
 WebSocket handler for MythosMUD real-time communication.
 
 This module handles WebSocket message processing, command handling,
@@ -13,7 +13,7 @@ from typing import Any
 from fastapi import WebSocket, WebSocketDisconnect
 
 from ..error_types import ErrorMessages, ErrorType, create_websocket_error_response
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .envelope import build_event
 from .websocket_helpers import check_shutdown_and_reject, load_player_mute_data
 from .websocket_initial_state import (

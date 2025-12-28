@@ -1,4 +1,4 @@
-"""
+﻿"""
 Command Processor - Integration layer for Pydantic + Click command validation.
 
 This module provides a bridge between the existing command handler infrastructure
@@ -13,7 +13,7 @@ from typing import Any
 from pydantic import ValidationError as PydanticValidationError
 
 from ..exceptions import ValidationError as MythosValidationError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.command import CommandType
 from .command_parser import CommandParser, parse_command
 from .error_logging import create_error_context

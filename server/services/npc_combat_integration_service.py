@@ -1,4 +1,4 @@
-"""
+﻿"""
 NPC Combat Integration Service for MythosMUD.
 
 This service provides integration between NPCs and the combat system,
@@ -19,7 +19,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from ..events.event_bus import EventBus
 from ..game.mechanics import GameMechanicsService
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .combat_event_publisher import CombatEventPublisher
 from .combat_messaging_integration import CombatMessagingIntegration
 from .combat_service import CombatService

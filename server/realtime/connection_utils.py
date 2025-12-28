@@ -1,11 +1,11 @@
-"""
+﻿"""
 Utility functions for connection management.
 
 This module provides helper functions used by the connection manager
 for various utility operations.
 """
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

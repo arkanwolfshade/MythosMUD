@@ -1,4 +1,4 @@
-"""
+﻿"""
 FastAPI application factory for MythosMUD server.
 
 This module handles FastAPI app creation, middleware configuration,
@@ -26,7 +26,7 @@ from ..auth.endpoints import UserCreate, UserRead, UserUpdate, auth_router
 from ..auth.users import auth_backend, fastapi_users
 from ..command_handler_unified import router as command_router
 from ..config import get_config
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 # ARCHITECTURE FIX Phase 2.1: Removed AllowedCORSMiddleware import (duplicate functionality)
 # from ..middleware.allowed_cors import AllowedCORSMiddleware

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Rate limiting for MythosMUD connections.
 
 This module provides rate limiting functionality for connection attempts,
@@ -8,7 +8,7 @@ message sending, and other operations that need throttling.
 import time
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

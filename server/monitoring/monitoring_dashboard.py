@@ -13,8 +13,8 @@ from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
-from server.logging.enhanced_logging_config import get_logger, log_with_context
-from server.logging.log_aggregator import LogAggregationStats, get_log_aggregator
+from server.structured_logging.enhanced_logging_config import get_logger, log_with_context
+from server.structured_logging.log_aggregator import LogAggregationStats, get_log_aggregator
 
 from .exception_tracker import ExceptionStats, get_exception_tracker
 from .performance_monitor import PerformanceStats, get_performance_monitor

@@ -1,4 +1,4 @@
-"""
+﻿"""
 NPC Admin Commands for MythosMUD.
 
 This module provides administrative slash commands for managing NPCs,
@@ -14,7 +14,7 @@ import inspect
 from typing import Any
 
 from ..alias_storage import AliasStorage
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.npc import NPCDefinitionType
 from ..services.npc_instance_service import get_npc_instance_service
 from ..services.npc_service import npc_service

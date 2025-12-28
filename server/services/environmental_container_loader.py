@@ -1,4 +1,4 @@
-"""
+﻿"""
 Environmental container loader for unified container system.
 
 As documented in the restricted archives of Miskatonic University, environmental
@@ -13,7 +13,7 @@ from typing import Any
 from uuid import UUID
 
 from ..exceptions import ValidationError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.container import ContainerComponent, ContainerLockState, ContainerSourceType
 
 # Removed: from ..persistence import get_persistence - now using async_persistence parameter

@@ -1,4 +1,4 @@
-"""
+﻿"""
 NPC Combat Event Handlers.
 
 This module handles combat result processing and NPC death handling,
@@ -10,7 +10,7 @@ from uuid import UUID, uuid4
 
 from sqlalchemy.exc import SQLAlchemyError
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .npc_combat_data_provider import NPCCombatDataProvider
 from .npc_combat_lifecycle import NPCCombatLifecycle
 from .npc_combat_memory import NPCCombatMemory

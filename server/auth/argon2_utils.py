@@ -1,4 +1,4 @@
-"""
+﻿"""
 Argon2 password hashing utilities for MythosMUD.
 
 This module implements the gold standard for password hashing using Argon2id,
@@ -11,7 +11,7 @@ from argon2 import PasswordHasher, Type, exceptions
 from argon2.exceptions import VerificationError
 
 from ..exceptions import AuthenticationError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)

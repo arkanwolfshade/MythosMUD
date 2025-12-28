@@ -4,7 +4,7 @@ Combat death handling logic.
 Handles player death, NPC death, mortally wounded states, and related events.
 """
 
-from server.logging.enhanced_logging_config import get_logger
+from server.structured_logging.enhanced_logging_config import get_logger
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType
 from server.services.nats_exceptions import NATSError
 

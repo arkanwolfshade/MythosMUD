@@ -1,4 +1,4 @@
-"""
+﻿"""
 Game mechanics API endpoints for MythosMUD server.
 
 This module handles all game mechanics-related API operations including
@@ -11,7 +11,7 @@ from typing import Any
 from fastapi import APIRouter, Depends, Request
 
 from ..auth.dependencies import get_current_superuser
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..time.time_service import get_mythos_chronicle
 
 logger = get_logger(__name__)

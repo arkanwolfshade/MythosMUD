@@ -1,4 +1,4 @@
-"""
+﻿"""
 Optimized security validation functions for MythosMUD.
 
 This module provides performance-optimized versions of the security validation
@@ -15,7 +15,7 @@ from functools import lru_cache
 import ftfy
 import strip_ansi
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Dependency injection providers for MythosMUD server.
 
 This module provides dependency injection functions for services using the
@@ -21,7 +21,7 @@ from .container import ApplicationContainer
 from .game.player_service import PlayerService
 from .game.room_service import RoomService
 from .game.stats_generator import StatsGenerator
-from .logging.enhanced_logging_config import get_logger
+from .structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

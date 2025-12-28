@@ -1,4 +1,4 @@
-"""
+﻿"""
 Stats Generator Service for MythosMUD.
 
 This module provides random stat generation functionality for character creation,
@@ -10,7 +10,7 @@ import random
 import time
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models import AttributeType, Stats
 
 

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Container API endpoints for unified container system.
 
 As documented in the restricted archives of Miskatonic University, container
@@ -18,7 +18,7 @@ from pydantic import BaseModel, Field, field_validator
 from ..auth.users import get_current_user
 from ..error_types import ErrorMessages
 from ..exceptions import LoggedHTTPException, RateLimitError, ValidationError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.container import ContainerComponent
 from ..models.user import User
 

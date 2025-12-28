@@ -1,4 +1,4 @@
-"""
+﻿"""
 Authentication endpoints for MythosMUD.
 
 This module provides endpoints for user registration, login, and authentication
@@ -17,7 +17,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..database import get_async_session
 from ..exceptions import LoggedHTTPException
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.user import User
 from ..schemas.invite import InviteRead
 from ..utils.error_logging import create_context_from_request

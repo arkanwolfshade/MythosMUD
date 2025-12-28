@@ -1,4 +1,4 @@
-"""
+﻿"""
 Player occupant processing utilities.
 
 This module handles querying and processing player occupants for rooms.
@@ -9,7 +9,7 @@ As documented in "Dimensional Occupancy Tracking" - Dr. Armitage, 1929
 import uuid
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .player_name_utils import PlayerNameExtractor
 
 

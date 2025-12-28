@@ -1,4 +1,4 @@
-"""
+﻿"""
 Metrics API endpoint for monitoring NATS message delivery.
 
 Provides metrics about message processing, failures, retries,
@@ -12,7 +12,7 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from ..auth.users import get_current_user
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..middleware.metrics_collector import metrics_collector
 from ..models.user import User
 

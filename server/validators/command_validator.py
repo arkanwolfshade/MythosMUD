@@ -1,4 +1,4 @@
-"""
+﻿"""
 Command input validation utilities for MythosMUD.
 
 This module provides functions for validating, cleaning, and normalizing
@@ -11,7 +11,7 @@ AI: Multiple layers of validation prevent command injection and other attacks.
 
 import re
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .security_validator import INJECTION_PATTERNS, comprehensive_sanitize_input
 
 logger = get_logger(__name__)

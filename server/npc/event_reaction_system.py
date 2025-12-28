@@ -1,4 +1,4 @@
-"""
+﻿"""
 NPC Event Subscription and Reaction System.
 
 This module provides a system for NPCs to subscribe to game events and
@@ -28,7 +28,7 @@ from ..events.event_types import (
     PlayerEnteredRoom,
     PlayerLeftRoom,
 )
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

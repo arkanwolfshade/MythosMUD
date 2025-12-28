@@ -1,4 +1,4 @@
-"""
+﻿"""
 Item look functionality for MythosMUD.
 
 This module handles looking at items, including finding items in various locations
@@ -7,7 +7,7 @@ This module handles looking at items, including finding items in various locatio
 
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

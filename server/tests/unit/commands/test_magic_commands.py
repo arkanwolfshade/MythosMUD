@@ -377,7 +377,9 @@ async def test_handle_spells_command_wrapper_no_spell_registry():
 
 
 @pytest.mark.asyncio
-async def test_handle_spell_command_wrapper_success(mock_magic_service, mock_spell_registry, mock_player):
+async def test_handle_spell_command_wrapper_success(
+    mock_magic_service, mock_spell_registry, mock_player, mock_player_spell_repository
+):
     """Test handle_spell_command wrapper success."""
     mock_request = MagicMock()
     mock_request.app = MagicMock()
@@ -385,12 +387,16 @@ async def test_handle_spell_command_wrapper_success(mock_magic_service, mock_spe
     mock_request.app.state.magic_service = mock_magic_service
     mock_request.app.state.spell_registry = mock_spell_registry
     mock_magic_service.player_service.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    result = await handle_spell_command({"spell_name": "Test Spell"}, {}, mock_request, None, "TestPlayer")
+    # Mock PlayerSpellRepository to avoid creating real database connections
+    with patch("server.commands.magic_commands.PlayerSpellRepository", return_value=mock_player_spell_repository):
+        result = await handle_spell_command({"spell_name": "Test Spell"}, {}, mock_request, None, "TestPlayer")
     assert "Spell: Test Spell" in result["result"]
 
 
 @pytest.mark.asyncio
-async def test_handle_learn_command_wrapper_success(mock_magic_service, mock_spell_registry, mock_player, mock_spell_learning_service):
+async def test_handle_learn_command_wrapper_success(
+    mock_magic_service, mock_spell_registry, mock_player, mock_spell_learning_service
+):
     """Test handle_learn_command wrapper success."""
     mock_request = MagicMock()
     mock_request.app = MagicMock()

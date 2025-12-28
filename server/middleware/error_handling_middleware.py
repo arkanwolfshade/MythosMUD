@@ -1,4 +1,4 @@
-"""
+﻿"""
 Error handling middleware for FastAPI integration.
 
 This module provides middleware to automatically handle exceptions across
@@ -24,7 +24,7 @@ from ..exceptions import (
     LoggedHTTPException,
     MythosMUDError,
 )
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

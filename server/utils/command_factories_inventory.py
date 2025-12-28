@@ -1,4 +1,4 @@
-"""
+﻿"""
 Inventory command factory methods.
 
 This module contains factory methods for inventory and item management commands:
@@ -6,7 +6,7 @@ pickup, drop, put, get, equip, unequip, inventory.
 """
 
 from ..exceptions import ValidationError as MythosValidationError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.command import (
     DropCommand,
     EquipCommand,

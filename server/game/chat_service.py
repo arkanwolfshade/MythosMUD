@@ -1,4 +1,4 @@
-"""
+﻿"""
 Chat service for MythosMUD.
 
 This module provides chat functionality including message handling,
@@ -9,7 +9,7 @@ import uuid
 from datetime import UTC, datetime
 from typing import Any, cast
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..services.chat_logger import chat_logger
 from ..services.nats_exceptions import NATSPublishError
 from ..services.nats_subject_manager import SubjectValidationError

@@ -9,7 +9,7 @@ import uuid
 from typing import Any, assert_never
 
 from server.game.player_service import PlayerService
-from server.logging.enhanced_logging_config import get_logger
+from server.structured_logging.enhanced_logging_config import get_logger
 from server.models.game import StatusEffect, StatusEffectType
 from server.models.spell import Spell, SpellEffectType
 from server.persistence.repositories.player_spell_repository import PlayerSpellRepository

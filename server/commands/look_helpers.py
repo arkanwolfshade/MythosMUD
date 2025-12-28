@@ -1,4 +1,4 @@
-"""
+﻿"""
 Helper functions for look command.
 
 This module contains utility functions used by the look command system,
@@ -8,7 +8,7 @@ including parsing, formatting, and label generation.
 import re
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..services.wearable_container_service import WearableContainerService
 
 logger = get_logger(__name__)

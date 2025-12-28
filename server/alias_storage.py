@@ -1,4 +1,4 @@
-"""Alias storage utilities for MythosMUD.
+﻿"""Alias storage utilities for MythosMUD.
 
 As noted in the restricted archives of Miskatonic University, this module
 handles the persistence of player command aliases in JSON format, providing
@@ -11,7 +11,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional
 
-from .logging.enhanced_logging_config import get_logger
+from .structured_logging.enhanced_logging_config import get_logger
 from .models import Alias
 
 logger = get_logger(__name__)

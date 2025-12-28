@@ -1,4 +1,4 @@
-"""
+﻿"""
 Exploration command factory methods.
 
 This module contains factory methods for movement and exploration commands:
@@ -8,7 +8,7 @@ look, go, sit, stand, lie, ground.
 from typing import Literal, cast
 
 from ..exceptions import ValidationError as MythosValidationError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.command import (
     Direction,
     GoCommand,

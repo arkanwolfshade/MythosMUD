@@ -1,4 +1,4 @@
-"""Inventory and equipment command handlers for MythosMUD."""
+﻿"""Inventory and equipment command handlers for MythosMUD."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from uuid import UUID
 
 from ..alias_storage import AliasStorage
 from ..exceptions import ValidationError as MythosValidationError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.player import Player
 from ..realtime.envelope import build_event
 from ..schemas.inventory_schema import InventorySchemaValidationError

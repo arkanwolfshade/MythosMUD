@@ -1,4 +1,4 @@
-"""
+﻿"""
 Enhanced error logging utilities with structured logging and context management.
 
 This module provides enhanced error logging functions that use proper structured
@@ -25,7 +25,7 @@ from ..exceptions import (
     ValidationError,
     create_error_context,
 )
-from ..logging.enhanced_logging_config import get_logger, log_with_context
+from ..structured_logging.enhanced_logging_config import get_logger, log_with_context
 
 logger = get_logger(__name__)
 

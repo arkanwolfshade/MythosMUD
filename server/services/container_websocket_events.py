@@ -1,4 +1,4 @@
-"""
+﻿"""
 Container WebSocket event emission for unified container system.
 
 As documented in the restricted archives of Miskatonic University, container
@@ -13,7 +13,7 @@ from datetime import datetime
 from typing import Any
 from uuid import UUID
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.container import ContainerComponent
 from ..realtime.envelope import build_event
 

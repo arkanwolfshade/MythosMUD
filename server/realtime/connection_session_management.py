@@ -1,4 +1,4 @@
-"""
+﻿"""
 Connection session management for connection manager.
 
 This module handles WebSocket connection session management operations.
@@ -10,7 +10,7 @@ from typing import Any
 from fastapi import WebSocket
 
 from ..exceptions import DatabaseError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

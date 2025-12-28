@@ -1,4 +1,4 @@
-"""
+﻿"""
 Player event handlers for real-time communication.
 
 This module handles all player-related events (entered, left, XP, DP, death, respawn).
@@ -9,7 +9,7 @@ As documented in "Player Event Propagation Protocols" - Dr. Armitage, 1928
 from typing import Any
 
 from ..events.event_types import PlayerDPUpdated, PlayerEnteredRoom, PlayerLeftRoom
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..services.player_combat_service import PlayerXPAwardEvent
 from .message_builders import MessageBuilder
 from .player_event_handlers_respawn import PlayerRespawnEventHandler

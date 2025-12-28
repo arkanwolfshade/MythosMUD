@@ -8,7 +8,7 @@ for various operations like UUID conversion, sequence numbers, and deprecated me
 from typing import Any
 
 from ..exceptions import DatabaseError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -236,7 +236,7 @@ async def handle_new_login_impl(player_id: Any, manager: Any) -> None:
 
         login_log_entry = {
             "timestamp": datetime.now().isoformat(),
-            "player_id": player_id,
+            "player_id": str(player_id),
             "event_type": "NEW_LOGIN",
             "connections_before": {
                 "websocket": player_id in manager.player_websockets,

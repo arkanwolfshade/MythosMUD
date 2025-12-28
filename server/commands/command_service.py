@@ -1,4 +1,4 @@
-"""
+﻿"""
 Command service for MythosMUD.
 
 This module provides the main command processing service that orchestrates
@@ -11,7 +11,7 @@ from typing import Any
 
 from ..alias_storage import AliasStorage
 from ..exceptions import ValidationError as MythosValidationError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import parse_command
 from ..validators.security_validator import strip_ansi_codes
 from .admin_commands import (

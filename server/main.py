@@ -1,4 +1,4 @@
-"""
+﻿"""
 MythosMUD Server - Main Application Entry Point
 
 This module serves as the primary entry point for the MythosMUD server,
@@ -23,8 +23,8 @@ from fastapi.security import HTTPBearer
 from .app.factory import create_app
 from .auth.users import get_current_user
 from .config import get_config
-from .logging.enhanced_logging_config import get_logger, log_exception_once, setup_enhanced_logging
-from .logging.log_aggregator import get_log_aggregator
+from .structured_logging.enhanced_logging_config import get_logger, log_exception_once, setup_enhanced_logging
+from .structured_logging.log_aggregator import get_log_aggregator
 from .middleware.correlation_middleware import CorrelationMiddleware
 from .monitoring.exception_tracker import get_exception_tracker
 from .monitoring.monitoring_dashboard import get_monitoring_dashboard

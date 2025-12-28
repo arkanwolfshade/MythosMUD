@@ -1,4 +1,4 @@
-"""
+﻿"""
 Alias circular dependency detection using graph analysis.
 
 This module provides graph-based detection of circular dependencies in alias expansions,
@@ -12,7 +12,7 @@ import re
 import networkx as nx
 
 from ..alias_storage import AliasStorage
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Corpse lifecycle service for unified container system.
 
 As documented in the restricted archives of Miskatonic University, corpse
@@ -14,7 +14,7 @@ from typing import Any, cast
 from uuid import UUID
 
 from ..exceptions import MythosMUDError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.container import ContainerComponent, ContainerLockState, ContainerSourceType
 
 # Removed: from ..persistence import get_persistence - now using async_persistence parameter

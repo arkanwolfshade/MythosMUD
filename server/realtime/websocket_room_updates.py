@@ -1,4 +1,4 @@
-"""
+﻿"""
 WebSocket room update and broadcast functions for MythosMUD real-time communication.
 
 This module handles room updates and broadcasting to players.
@@ -6,7 +6,7 @@ This module handles room updates and broadcasting to players.
 
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.room_renderer import build_room_drop_summary, clone_room_drops
 from .envelope import build_event
 from .websocket_helpers import convert_uuids_to_strings, get_npc_name_from_instance

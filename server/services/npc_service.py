@@ -1,4 +1,4 @@
-"""
+﻿"""
 NPC management service for MythosMUD.
 
 This module provides comprehensive NPC management including CRUD operations
@@ -14,7 +14,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..exceptions import DatabaseError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.npc import NPCDefinition, NPCDefinitionType, NPCSpawnRule
 
 logger = get_logger("services.npc_service")

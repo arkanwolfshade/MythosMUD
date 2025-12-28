@@ -1,4 +1,4 @@
-"""
+﻿"""
 NPC Startup Service for MythosMUD.
 
 This module provides automatic NPC spawning during server startup to populate
@@ -16,7 +16,7 @@ import asyncio
 import random
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..npc_database import get_npc_session
 from ..services.npc_instance_service import get_npc_instance_service
 from ..services.npc_service import npc_service

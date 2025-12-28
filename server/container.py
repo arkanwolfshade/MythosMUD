@@ -1,4 +1,4 @@
-"""
+﻿"""
 Dependency Injection Container for MythosMUD.
 
 This module implements the Application Container pattern to manage all service
@@ -53,7 +53,7 @@ if TYPE_CHECKING:
     from .game.movement_service import MovementService
     from .game.player_service import PlayerService
     from .game.room_service import RoomService
-    from .logging.log_aggregator import LogAggregator
+    from .structured_logging.log_aggregator import LogAggregator
     from .monitoring.exception_tracker import ExceptionTracker
     from .monitoring.monitoring_dashboard import MonitoringDashboard
     from .monitoring.performance_monitor import PerformanceMonitor
@@ -68,7 +68,7 @@ if TYPE_CHECKING:
     from .services.user_manager import UserManager
     from .time.tick_scheduler import MythosTickScheduler
 
-from .logging.enhanced_logging_config import get_logger
+from .structured_logging.enhanced_logging_config import get_logger
 from .utils.project_paths import (
     get_calendar_paths_for_environment,
     get_environment_data_dir,
@@ -459,7 +459,7 @@ class ApplicationContainer:
 
                 # Phase 9: Monitoring and observability
                 logger.debug("Initializing monitoring services...")
-                from .logging.log_aggregator import LogAggregator
+                from .structured_logging.log_aggregator import LogAggregator
                 from .monitoring.exception_tracker import ExceptionTracker
                 from .monitoring.monitoring_dashboard import MonitoringDashboard
                 from .monitoring.performance_monitor import PerformanceMonitor

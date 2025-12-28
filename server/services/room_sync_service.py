@@ -1,4 +1,4 @@
-"""
+﻿"""
 Room synchronization service for MythosMUD.
 
 This module provides enhanced room synchronization capabilities including
@@ -15,7 +15,7 @@ from collections import defaultdict
 from typing import Any, TypeAlias, TypeVar
 
 from ..events.event_types import BaseEvent
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .room_data_cache import RoomDataCache
 from .room_data_fixer import RoomDataFixer
 from .room_data_validator import RoomDataValidator

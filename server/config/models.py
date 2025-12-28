@@ -1,4 +1,4 @@
-"""
+﻿"""
 Pydantic-based configuration models for MythosMUD server.
 
 This module replaces the legacy config_loader.py with type-safe,
@@ -16,7 +16,7 @@ from typing import Any
 from pydantic import AliasChoices, Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsError
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

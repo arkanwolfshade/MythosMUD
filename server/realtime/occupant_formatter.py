@@ -1,4 +1,4 @@
-"""
+﻿"""
 Occupant formatting utilities.
 
 This module handles formatting and separating occupants by type.
@@ -8,7 +8,7 @@ As documented in "Dimensional Occupancy Tracking" - Dr. Armitage, 1929
 
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 
 class OccupantFormatter:

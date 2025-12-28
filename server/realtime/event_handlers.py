@@ -1,4 +1,4 @@
-"""
+﻿"""
 Event handlers for NATS message handler.
 
 This module handles all event-type messages from NATS and broadcasts them
@@ -9,7 +9,7 @@ import uuid
 from collections.abc import Callable
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..realtime.envelope import build_event
 from ..services.nats_exceptions import NATSError
 

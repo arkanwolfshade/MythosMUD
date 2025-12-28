@@ -1,4 +1,4 @@
-"""
+﻿"""
 NPC Instance Management Service for MythosMUD.
 
 This module provides high-level operations for managing NPC instances,
@@ -18,7 +18,7 @@ from server.npc.spawning_service import NPCSpawningService
 from server.npc_database import get_npc_session
 from server.services.npc_service import npc_service
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

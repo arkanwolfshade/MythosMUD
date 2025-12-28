@@ -6,7 +6,7 @@ Handles combat cleanup, tracking, and end-of-combat operations.
 
 from datetime import UTC, datetime, timedelta
 
-from server.logging.enhanced_logging_config import get_logger
+from server.structured_logging.enhanced_logging_config import get_logger
 from server.models.combat import CombatInstance
 from server.services.nats_exceptions import NATSError
 

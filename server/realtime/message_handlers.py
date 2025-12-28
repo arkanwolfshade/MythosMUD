@@ -1,4 +1,4 @@
-"""
+﻿"""
 Message handler implementations for WebSocket message routing.
 
 This module contains the actual implementations of message handlers,
@@ -9,7 +9,7 @@ from typing import Any
 
 from fastapi import WebSocket
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

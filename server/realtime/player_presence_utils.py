@@ -1,4 +1,4 @@
-"""
+﻿"""
 Utility functions for player presence tracking.
 
 This module provides helper functions for extracting player information,
@@ -9,7 +9,7 @@ import uuid
 from typing import Any
 
 from ..exceptions import DatabaseError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models import Player
 
 logger = get_logger(__name__)

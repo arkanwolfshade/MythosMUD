@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Any
 from server.alias_storage import AliasStorage
 from server.game.magic.magic_service import MagicService
 from server.game.magic.spell_registry import SpellRegistry
-from server.logging.enhanced_logging_config import get_logger
+from server.structured_logging.enhanced_logging_config import get_logger
 from server.persistence.repositories.player_spell_repository import PlayerSpellRepository
 
 if TYPE_CHECKING:

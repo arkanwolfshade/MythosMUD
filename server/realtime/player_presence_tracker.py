@@ -1,4 +1,4 @@
-"""
+﻿"""
 Player presence tracking helper for connection manager.
 
 This module provides helper functions for tracking player connections
@@ -9,7 +9,7 @@ import uuid
 from typing import Any
 
 from ..exceptions import DatabaseError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .player_connection_setup import handle_new_connection_setup
 from .player_disconnect_handlers import (
     _cleanup_player_references,

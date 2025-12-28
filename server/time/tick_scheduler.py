@@ -7,7 +7,7 @@ from datetime import UTC, datetime, timedelta
 from server.app.task_registry import TaskRegistry
 from server.events.event_bus import EventBus
 from server.events.event_types import MythosHourTickEvent
-from server.logging.enhanced_logging_config import get_logger
+from server.structured_logging.enhanced_logging_config import get_logger
 
 from .time_service import MythosChronicle
 

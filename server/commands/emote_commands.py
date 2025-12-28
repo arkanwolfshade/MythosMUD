@@ -1,4 +1,4 @@
-"""
+﻿"""
 Emote command handlers for MythosMUD.
 
 This module contains handlers for the emote command.
@@ -7,7 +7,7 @@ This module contains handlers for the emote command.
 from typing import Any
 
 from ..alias_storage import AliasStorage
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

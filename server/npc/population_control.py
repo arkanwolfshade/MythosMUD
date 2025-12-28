@@ -1,4 +1,4 @@
-"""
+﻿"""
 NPC Population Control System.
 
 This module implements sub-zone-based NPC population management, including
@@ -23,7 +23,7 @@ from server.events.event_types import (
 )
 from server.models.npc import NPCDefinition, NPCSpawnRule
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .npc_utils import (
     extract_definition_id_from_npc,
     extract_npc_metadata,

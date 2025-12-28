@@ -9,7 +9,7 @@ from uuid import UUID
 
 from server.app.lifespan import get_current_tick
 from server.events.combat_events import CombatStartedEvent
-from server.logging.enhanced_logging_config import get_logger
+from server.structured_logging.enhanced_logging_config import get_logger
 from server.models.combat import (
     CombatInstance,
     CombatParticipant,

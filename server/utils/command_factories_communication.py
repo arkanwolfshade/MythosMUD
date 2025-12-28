@@ -1,4 +1,4 @@
-"""
+﻿"""
 Communication command factory methods.
 
 This module contains factory methods for communication-related commands:
@@ -6,7 +6,7 @@ say, local, system, emote, me, pose, whisper, reply.
 """
 
 from ..exceptions import ValidationError as MythosValidationError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.command import (
     EmoteCommand,
     LocalCommand,

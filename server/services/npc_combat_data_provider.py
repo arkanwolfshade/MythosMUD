@@ -1,4 +1,4 @@
-"""
+﻿"""
 NPC Combat Data Provider.
 
 This module provides data retrieval and preparation for NPC combat,
@@ -10,7 +10,7 @@ from uuid import UUID
 
 from sqlalchemy.exc import SQLAlchemyError
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.combat import CombatParticipantType
 from .combat_types import CombatParticipantData
 

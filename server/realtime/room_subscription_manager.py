@@ -1,4 +1,4 @@
-"""
+﻿"""
 Room subscription management for MythosMUD.
 
 This module provides room subscription functionality for tracking
@@ -11,7 +11,7 @@ from collections.abc import Mapping
 from copy import deepcopy
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

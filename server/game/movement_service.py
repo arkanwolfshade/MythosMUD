@@ -1,4 +1,4 @@
-"""
+﻿"""
 Movement service for MythosMUD.
 
 This module provides the MovementService class that handles atomic movement
@@ -19,7 +19,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from ..events import EventBus
 from ..exceptions import DatabaseError, ValidationError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.room import Room
 from ..utils.error_logging import create_error_context, log_and_raise
 from .movement_monitor import get_movement_monitor

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Health monitoring service for MythosMUD.
 
 This module provides comprehensive system health monitoring including
@@ -15,7 +15,7 @@ from typing import Any
 
 import psutil
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.health import (
     ConnectionsComponent,
     DatabaseComponent,

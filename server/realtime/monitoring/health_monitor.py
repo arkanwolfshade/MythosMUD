@@ -1,4 +1,4 @@
-"""
+﻿"""
 Health monitoring for connection management.
 
 This module provides comprehensive connection health checking including
@@ -15,7 +15,7 @@ import uuid
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
-from ...logging.enhanced_logging_config import get_logger
+from ...structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable

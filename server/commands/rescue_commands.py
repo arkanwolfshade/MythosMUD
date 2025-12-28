@@ -8,13 +8,42 @@ from typing import Any
 
 from ..alias_storage import AliasStorage
 from ..database import get_async_session
-from ..logging.enhanced_logging_config import get_logger
 from ..models.lucidity import PlayerLucidity
 from ..services.lucidity_event_dispatcher import send_rescue_update_event
 from ..services.lucidity_service import LucidityService
+from ..services.rescue_service import RescueService
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
 
 logger = get_logger(__name__)
+
+
+async def handle_rescue_command(
+    command_data: dict,
+    current_user: dict,
+    request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
+) -> dict[str, str]:
+    """
+    Delegate rescue handling to the RescueService for testable, real logic.
+    """
+    app = getattr(request, "app", None)
+    state = getattr(app, "state", None) if app else None
+    persistence = getattr(state, "persistence", None) if state else None
+    registry = getattr(state, "catatonia_registry", None) if state else None
+
+    target_name = command_data.get("target") or command_data.get("target_player")
+    if not target_name:
+        return {"result": "Specify a target to rescue."}
+
+    service = RescueService(
+        persistence=persistence,
+        session_factory=get_async_session,
+        catatonia_registry=registry,
+    )
+
+    return await service.rescue(target_name, current_user, player_name)
 
 
 async def handle_ground_command(
@@ -171,4 +200,4 @@ async def handle_ground_command(
     return {"result": narrative}
 
 
-__all__ = ["handle_ground_command"]
+__all__ = ["handle_rescue_command", "handle_ground_command"]

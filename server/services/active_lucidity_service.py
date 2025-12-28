@@ -1,4 +1,4 @@
-"""Active LCD adjustment helpers for encounters and recovery rituals."""
+﻿"""Active LCD adjustment helpers for encounters and recovery rituals."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from datetime import UTC, datetime, timedelta
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.lucidity import LucidityExposureState
 from .lucidity_service import CatatoniaObserverProtocol, LucidityService
 

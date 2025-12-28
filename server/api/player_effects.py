@@ -1,4 +1,4 @@
-"""
+﻿"""
 Player effects API endpoints.
 
 This module handles endpoints for applying various effects to players,
@@ -15,7 +15,7 @@ from ..dependencies import PlayerServiceDep
 from ..error_types import ErrorMessages
 from ..exceptions import LoggedHTTPException, ValidationError
 from ..game.player_service import PlayerService
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.user import User
 from ..schemas.player_requests import (
     CorruptionRequest,

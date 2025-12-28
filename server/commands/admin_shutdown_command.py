@@ -1,4 +1,4 @@
-"""
+﻿"""
 Admin shutdown command for MythosMUD.
 
 This module provides the /shutdown command for administrators to gracefully
@@ -18,8 +18,8 @@ from typing import Any
 
 from ..alias_storage import AliasStorage
 from ..exceptions import DatabaseError
-from ..logging.admin_actions_logger import AdminActionsLogger
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.admin_actions_logger import AdminActionsLogger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

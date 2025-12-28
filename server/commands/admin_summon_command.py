@@ -1,4 +1,4 @@
-"""Administrative summon command implementation."""
+﻿"""Administrative summon command implementation."""
 
 from __future__ import annotations
 
@@ -9,8 +9,8 @@ from ..commands.admin_commands import validate_admin_permission
 from ..commands.inventory_commands import _broadcast_room_event, _resolve_player, _resolve_state
 from ..exceptions import DatabaseError, ValidationError
 from ..game.items.item_factory import ItemFactoryError
-from ..logging.admin_actions_logger import get_admin_actions_logger
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.admin_actions_logger import get_admin_actions_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..monitoring.monitoring_dashboard import get_monitoring_dashboard
 from ..realtime.envelope import build_event
 

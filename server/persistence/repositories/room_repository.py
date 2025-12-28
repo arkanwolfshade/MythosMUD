@@ -7,7 +7,7 @@ using SQLAlchemy ORM with PostgreSQL.
 
 from typing import TYPE_CHECKING
 
-from server.logging.enhanced_logging_config import get_logger
+from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
     from server.models.room import Room

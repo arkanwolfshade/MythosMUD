@@ -1,4 +1,4 @@
-"""
+﻿"""
 NPC occupant processing utilities.
 
 This module handles querying and processing NPC occupants for rooms.
@@ -10,7 +10,7 @@ from typing import Any
 
 from sqlalchemy.exc import SQLAlchemyError
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .room_id_utils import RoomIDUtils
 
 

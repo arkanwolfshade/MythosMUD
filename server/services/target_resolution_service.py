@@ -1,4 +1,4 @@
-"""
+﻿"""
 Target resolution service for MythosMUD.
 
 This service provides unified target resolution for both players and NPCs,
@@ -10,7 +10,7 @@ import re
 import uuid
 from typing import Any, Protocol
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..npc.behaviors import NPCBase
 from ..schemas.target_resolution import TargetMatch, TargetResolutionResult, TargetType
 

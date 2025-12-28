@@ -1,4 +1,4 @@
-"""
+﻿"""
 Aggressive mob NPC type for MythosMUD.
 
 This module provides the AggressiveMobNPC class with hunting and territorial behaviors.
@@ -6,7 +6,7 @@ This module provides the AggressiveMobNPC class with hunting and territorial beh
 
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .npc_base import NPCBase
 
 logger = get_logger(__name__)

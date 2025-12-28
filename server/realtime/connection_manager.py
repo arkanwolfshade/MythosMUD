@@ -1,4 +1,4 @@
-"""
+﻿"""
 Refactored Connection Manager for MythosMUD real-time communication.
 
 This module provides a clean, modular connection management system that
@@ -14,7 +14,7 @@ from typing import Any
 
 from fastapi import WebSocket
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models import Player
 from .connection_compatibility import attach_compatibility_properties
 from .connection_delegates import cleanup_dead_websocket_impl, validate_token_impl

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Invite management system for MythosMUD.
 
 This module handles the invite-only registration system,
@@ -14,7 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..database import get_async_session
 from ..exceptions import LoggedHTTPException
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.invite import Invite
 from ..utils.error_logging import create_context_from_request
 

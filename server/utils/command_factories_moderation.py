@@ -1,4 +1,4 @@
-"""
+﻿"""
 Moderation command factory methods.
 
 This module contains factory methods for admin and moderation commands:
@@ -6,7 +6,7 @@ mute, unmute, mute_global, unmute_global, add_admin, admin, mutes.
 """
 
 from ..exceptions import ValidationError as MythosValidationError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.command import (
     AddAdminCommand,
     AdminCommand,

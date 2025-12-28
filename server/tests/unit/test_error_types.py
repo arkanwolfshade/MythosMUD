@@ -6,8 +6,6 @@ Tests the error type enums and error response creation functions.
 
 from datetime import UTC, datetime
 
-import pytest
-
 from server.error_types import (
     ErrorMessages,
     ErrorSeverity,
@@ -38,10 +36,8 @@ def test_error_severity_enum_values():
 
 def test_create_standard_error_response_basic():
     """Test create_standard_error_response with basic parameters."""
-    response = create_standard_error_response(
-        ErrorType.VALIDATION_ERROR, "Test error message"
-    )
-    
+    response = create_standard_error_response(ErrorType.VALIDATION_ERROR, "Test error message")
+
     assert "error" in response
     error = response["error"]
     assert error["type"] == "validation_error"
@@ -55,11 +51,9 @@ def test_create_standard_error_response_basic():
 def test_create_standard_error_response_with_user_friendly():
     """Test create_standard_error_response with user-friendly message."""
     response = create_standard_error_response(
-        ErrorType.AUTHENTICATION_FAILED,
-        "Technical error",
-        user_friendly="Please log in again"
+        ErrorType.AUTHENTICATION_FAILED, "Technical error", user_friendly="Please log in again"
     )
-    
+
     error = response["error"]
     assert error["message"] == "Technical error"
     assert error["user_friendly"] == "Please log in again"
@@ -68,24 +62,16 @@ def test_create_standard_error_response_with_user_friendly():
 def test_create_standard_error_response_with_details():
     """Test create_standard_error_response with additional details."""
     details = {"field": "username", "reason": "too short"}
-    response = create_standard_error_response(
-        ErrorType.INVALID_INPUT,
-        "Validation failed",
-        details=details
-    )
-    
+    response = create_standard_error_response(ErrorType.INVALID_INPUT, "Validation failed", details=details)
+
     error = response["error"]
     assert error["details"] == details
 
 
 def test_create_standard_error_response_with_severity():
     """Test create_standard_error_response with custom severity."""
-    response = create_standard_error_response(
-        ErrorType.SYSTEM_ERROR,
-        "Critical error",
-        severity=ErrorSeverity.CRITICAL
-    )
-    
+    response = create_standard_error_response(ErrorType.SYSTEM_ERROR, "Critical error", severity=ErrorSeverity.CRITICAL)
+
     error = response["error"]
     assert error["severity"] == "critical"
 
@@ -95,20 +81,17 @@ def test_create_standard_error_response_timestamp():
     before = datetime.now(UTC)
     response = create_standard_error_response(ErrorType.INTERNAL_ERROR, "Error")
     after = datetime.now(UTC)
-    
+
     timestamp_str = response["error"]["timestamp"]
     timestamp = datetime.fromisoformat(timestamp_str.replace("Z", "+00:00"))
-    
+
     assert before <= timestamp <= after
 
 
 def test_create_websocket_error_response_basic():
     """Test create_websocket_error_response with basic parameters."""
-    response = create_websocket_error_response(
-        ErrorType.WEBSOCKET_ERROR,
-        "Connection failed"
-    )
-    
+    response = create_websocket_error_response(ErrorType.WEBSOCKET_ERROR, "Connection failed")
+
     assert response["type"] == "error"
     assert response["error_type"] == "websocket_error"
     assert response["message"] == "Connection failed"
@@ -119,11 +102,9 @@ def test_create_websocket_error_response_basic():
 def test_create_websocket_error_response_with_user_friendly():
     """Test create_websocket_error_response with user-friendly message."""
     response = create_websocket_error_response(
-        ErrorType.CONNECTION_ERROR,
-        "Technical message",
-        user_friendly="Unable to connect"
+        ErrorType.CONNECTION_ERROR, "Technical message", user_friendly="Unable to connect"
     )
-    
+
     assert response["message"] == "Technical message"
     assert response["user_friendly"] == "Unable to connect"
 
@@ -131,22 +112,15 @@ def test_create_websocket_error_response_with_user_friendly():
 def test_create_websocket_error_response_with_details():
     """Test create_websocket_error_response with additional details."""
     details = {"code": 1006, "reason": "abnormal closure"}
-    response = create_websocket_error_response(
-        ErrorType.WEBSOCKET_ERROR,
-        "Connection closed",
-        details=details
-    )
-    
+    response = create_websocket_error_response(ErrorType.WEBSOCKET_ERROR, "Connection closed", details=details)
+
     assert response["details"] == details
 
 
 def test_create_sse_error_response_basic():
     """Test create_sse_error_response with basic parameters."""
-    response = create_sse_error_response(
-        ErrorType.SSE_ERROR,
-        "SSE connection failed"
-    )
-    
+    response = create_sse_error_response(ErrorType.SSE_ERROR, "SSE connection failed")
+
     assert response["type"] == "error"
     assert response["error_type"] == "sse_error"
     assert response["message"] == "SSE connection failed"
@@ -156,15 +130,9 @@ def test_create_sse_error_response_basic():
 
 def test_create_sse_error_response_same_format_as_websocket():
     """Test that SSE error response has same format as WebSocket."""
-    ws_response = create_websocket_error_response(
-        ErrorType.WEBSOCKET_ERROR,
-        "Test message"
-    )
-    sse_response = create_sse_error_response(
-        ErrorType.SSE_ERROR,
-        "Test message"
-    )
-    
+    ws_response = create_websocket_error_response(ErrorType.WEBSOCKET_ERROR, "Test message")
+    sse_response = create_sse_error_response(ErrorType.SSE_ERROR, "Test message")
+
     # Should have same structure (except error_type value)
     assert set(ws_response.keys()) == set(sse_response.keys())
     assert ws_response["type"] == sse_response["type"]

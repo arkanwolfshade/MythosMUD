@@ -1,4 +1,4 @@
-"""Application shutdown logic.
+﻿"""Application shutdown logic.
 
 This module handles graceful shutdown of all services in the MythosMUD server.
 """
@@ -6,7 +6,7 @@ This module handles graceful shutdown of all services in the MythosMUD server.
 from fastapi import FastAPI
 
 from ..container import ApplicationContainer
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..time.time_service import get_mythos_chronicle
 
 logger = get_logger("server.lifespan.shutdown")

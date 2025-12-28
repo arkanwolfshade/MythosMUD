@@ -8,7 +8,7 @@ of combat targets and validation of target types.
 import uuid
 from typing import Any
 
-from server.logging.enhanced_logging_config import get_logger
+from server.structured_logging.enhanced_logging_config import get_logger
 from server.models.spell import Spell, SpellTargetType
 from server.schemas.target_resolution import TargetMatch, TargetType
 from server.services.combat_service import CombatService

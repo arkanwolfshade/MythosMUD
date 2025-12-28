@@ -1,4 +1,4 @@
-"""
+﻿"""
 Combat event publisher for MythosMUD.
 
 This module provides a service for publishing combat events to NATS
@@ -18,7 +18,7 @@ from ..events.combat_events import (
     NPCTookDamageEvent,
     PlayerAttackedEvent,
 )
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .nats_exceptions import NATSPublishError
 from .nats_subject_manager import NATSSubjectManager
 

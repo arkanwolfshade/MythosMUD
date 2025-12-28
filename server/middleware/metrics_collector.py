@@ -1,4 +1,4 @@
-"""
+﻿"""
 Metrics collection for NATS message delivery.
 
 Collects and exposes metrics for monitoring message delivery,
@@ -12,7 +12,7 @@ from datetime import UTC, datetime
 from threading import Lock
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

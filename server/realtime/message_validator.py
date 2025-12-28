@@ -1,4 +1,4 @@
-"""
+﻿"""
 WebSocket message validation for MythosMUD.
 
 This module provides comprehensive validation for incoming WebSocket messages,
@@ -10,7 +10,7 @@ from typing import Any
 
 from pydantic import BaseModel, ValidationError
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

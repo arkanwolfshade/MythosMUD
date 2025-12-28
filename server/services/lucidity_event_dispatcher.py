@@ -1,4 +1,4 @@
-"""Helpers for broadcasting lucidity-related SSE events."""
+﻿"""Helpers for broadcasting lucidity-related SSE events."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ import uuid
 from collections.abc import Iterable
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

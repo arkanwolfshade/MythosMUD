@@ -1,4 +1,4 @@
-"""
+﻿"""
 Command parser for MythosMUD using Click for parsing and Pydantic for validation.
 
 This module provides secure command parsing and validation to prevent command
@@ -10,7 +10,7 @@ import re
 from pydantic import ValidationError as PydanticValidationError
 
 from ..exceptions import ValidationError as MythosValidationError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.command import (
     Command,
     CommandType,

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Statistics aggregation for connection management.
 
 This module aggregates statistics from various connection management components
@@ -11,7 +11,7 @@ import time
 import uuid
 from typing import TYPE_CHECKING, Any
 
-from ...logging.enhanced_logging_config import get_logger
+from ...structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
     from ..memory_monitor import MemoryMonitor

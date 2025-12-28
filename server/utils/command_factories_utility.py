@@ -1,4 +1,4 @@
-"""
+﻿"""
 Utility command factory methods.
 
 This module contains factory methods for utility commands:
@@ -8,7 +8,7 @@ alias, aliases, unalias, help, npc, summon, teleport, goto, shutdown, learn.
 from typing import Literal, cast
 
 from ..exceptions import ValidationError as MythosValidationError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.command import (
     AliasCommand,
     AliasesCommand,

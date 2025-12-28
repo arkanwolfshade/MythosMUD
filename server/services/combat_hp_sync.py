@@ -1,4 +1,4 @@
-"""
+﻿"""
 DP synchronization module for combat service.
 
 This module handles player DP persistence and event publishing for combat operations.
@@ -13,7 +13,7 @@ from uuid import UUID
 from ..events.event_bus import EventBus
 from ..events.event_types import PlayerDPUpdated
 from ..exceptions import DatabaseError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.game import PositionState
 
 logger = get_logger(__name__)

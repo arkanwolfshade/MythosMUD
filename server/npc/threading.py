@@ -1,4 +1,4 @@
-"""
+﻿"""
 NPC threading and message queue infrastructure for MythosMUD.
 
 This module provides the core threading infrastructure for NPCs, including
@@ -19,7 +19,7 @@ from dataclasses import asdict, dataclass
 from enum import Enum
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.npc import NPCDefinition
 
 logger = get_logger(__name__)

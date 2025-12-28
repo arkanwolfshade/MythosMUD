@@ -1,4 +1,4 @@
-"""
+﻿"""
 Go command for MythosMUD.
 
 This module handles the go command for player movement.
@@ -9,7 +9,7 @@ from typing import Any
 from ..alias_storage import AliasStorage
 from ..exceptions import DatabaseError, ValidationError
 from ..game.movement_service import MovementService
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
 
 logger = get_logger(__name__)

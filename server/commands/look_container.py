@@ -1,4 +1,4 @@
-"""
+﻿"""
 Container look functionality for MythosMUD.
 
 This module handles looking at containers, including finding containers in rooms
@@ -8,7 +8,7 @@ or equipped items, formatting container displays, and handling container look re
 from typing import Any
 from uuid import UUID
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .look_helpers import _get_wearable_container_service
 
 logger = get_logger(__name__)

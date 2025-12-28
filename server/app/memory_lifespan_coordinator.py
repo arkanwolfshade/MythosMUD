@@ -1,4 +1,4 @@
-"""
+﻿"""
 Memory Lifespan Coordinator - Centralized Periodic Auditing for Orphaned Task Prevention.
 
 This module provides automated periodic audits during operation to prevent orphan
@@ -12,7 +12,7 @@ proper periodic investigation prevents computational entropy accumulating beyond
 import asyncio
 from datetime import UTC, datetime
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .memory_cleanup_service import create_memory_cleanup_monitor
 from .tracked_task_manager import get_global_tracked_manager
 

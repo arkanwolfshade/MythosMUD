@@ -1,4 +1,4 @@
-"""
+﻿"""
 Unified Command Handler for MythosMUD.
 
 This module provides a single, unified command processing system that
@@ -24,7 +24,7 @@ from .commands.command_service import CommandService
 from .config import get_config
 from .database import get_async_session
 from .exceptions import ValidationError
-from .logging.enhanced_logging_config import get_logger
+from .structured_logging.enhanced_logging_config import get_logger
 from .middleware.command_rate_limiter import command_rate_limiter
 from .models.lucidity import PlayerLucidity
 from .utils.alias_graph import AliasGraph

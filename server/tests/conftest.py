@@ -4,6 +4,12 @@ Test configuration and fixtures for MythosMUD greenfield test suite.
 This module provides core fixtures and test isolation for the new test suite.
 """
 
+"""
+Test configuration and fixtures for MythosMUD greenfield test suite.
+
+This module provides core fixtures and test isolation for the new test suite.
+"""
+
 import asyncio
 import os
 import random
@@ -24,7 +30,7 @@ os.environ.setdefault("DATABASE_NPC_URL", "postgresql+asyncpg://postgres:Cthulhu
 os.environ.setdefault("GAME_ALIASES_DIR", "data/unit_test/players/aliases")
 
 from server.config import reset_config
-from server.logging.enhanced_logging_config import get_logger
+from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -65,7 +71,7 @@ def deterministic_random_seed() -> Generator[None, None, None]:
 def configure_event_loop_policy() -> Generator[None, None, None]:
     """
     Configure event loop policy suitable for Windows/asyncio.
-    
+
     CRITICAL: On Windows, we MUST use WindowsSelectorEventLoopPolicy for asyncpg compatibility.
     ProactorEventLoop causes "Event loop is closed" errors with asyncpg connections.
     """
@@ -76,10 +82,11 @@ def configure_event_loop_policy() -> Generator[None, None, None]:
     else:
         try:
             import uvloop
+
             policy = uvloop.EventLoopPolicy()
         except ImportError:
             policy = asyncio.DefaultEventLoopPolicy()
-    
+
     # Set the policy before any async operations
     asyncio.set_event_loop_policy(policy)
     yield

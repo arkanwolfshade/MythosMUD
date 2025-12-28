@@ -17,7 +17,7 @@ from enum import Enum
 from typing import Any
 
 from server.config import get_config
-from server.logging.enhanced_logging_config import get_logger
+from server.structured_logging.enhanced_logging_config import get_logger
 from server.services.combat_configuration_service import get_combat_config
 from server.services.feature_flag_service import get_feature_flags
 

@@ -6,7 +6,7 @@ Handles attack validation, damage application, and attack event publishing.
 
 from uuid import UUID
 
-from server.logging.enhanced_logging_config import get_logger
+from server.structured_logging.enhanced_logging_config import get_logger
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType, CombatStatus
 
 logger = get_logger(__name__)

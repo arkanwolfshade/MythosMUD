@@ -1,4 +1,4 @@
-"""
+﻿"""
 Email utilities for MythosMUD authentication.
 
 This module provides utilities for generating bogus email addresses
@@ -10,7 +10,7 @@ import uuid
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.user import User
 
 logger = get_logger(__name__)

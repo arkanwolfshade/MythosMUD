@@ -1,4 +1,4 @@
-"""
+﻿"""
 Room service for MythosMUD server.
 
 This module handles all room-related business logic including
@@ -8,7 +8,7 @@ room information retrieval and room state management.
 from collections.abc import Sequence
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

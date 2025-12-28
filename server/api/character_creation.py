@@ -1,4 +1,4 @@
-"""
+﻿"""
 Character creation and stats generation API endpoints.
 
 This module handles endpoints for rolling stats, creating characters,
@@ -15,7 +15,7 @@ from ..error_types import ErrorMessages
 from ..exceptions import LoggedHTTPException, RateLimitError, create_error_context
 from ..game.player_service import PlayerService
 from ..game.stats_generator import StatsGenerator
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models import Stats
 from ..models.user import User
 from ..schemas.player_requests import CreateCharacterRequest, RollStatsRequest

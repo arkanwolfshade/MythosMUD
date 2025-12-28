@@ -1,8 +1,8 @@
-from pathlib import Path
+﻿from pathlib import Path
 from typing import Any
 
 from .exceptions import ValidationError
-from .logging.enhanced_logging_config import get_logger
+from .structured_logging.enhanced_logging_config import get_logger
 from .utils.enhanced_error_logging import create_error_context, log_and_raise_enhanced
 
 logger = get_logger(__name__)

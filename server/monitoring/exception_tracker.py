@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import Any
 
-from server.logging.enhanced_logging_config import get_logger, log_with_context
+from server.structured_logging.enhanced_logging_config import get_logger, log_with_context
 from server.utils.enhanced_error_logging import create_enhanced_error_context
 
 logger = get_logger(__name__)

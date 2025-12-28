@@ -1,4 +1,4 @@
-"""Player posture coordination service for MythosMUD.
+﻿"""Player posture coordination service for MythosMUD.
 
 As noted in the Pnakotic Manuscripts, a practitioner's stance shapes the arcane
 energies they can wield. This service synchronizes that stance across
@@ -12,7 +12,7 @@ from typing import Any, cast
 
 from ..alias_storage import AliasStorage
 from ..exceptions import DatabaseError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

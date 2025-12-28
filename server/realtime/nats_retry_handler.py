@@ -1,4 +1,4 @@
-"""
+﻿"""
 NATS message retry handler with exponential backoff.
 
 Implements resilient message delivery with configurable retry logic
@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

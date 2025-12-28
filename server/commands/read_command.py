@@ -7,7 +7,7 @@ This module handles the /read command for learning spells from spellbooks.
 from typing import Any
 
 from server.alias_storage import AliasStorage
-from server.logging.enhanced_logging_config import get_logger
+from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.command_parser import get_username_from_user
 
 logger = get_logger(__name__)

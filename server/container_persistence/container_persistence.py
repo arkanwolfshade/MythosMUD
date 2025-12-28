@@ -1,4 +1,4 @@
-"""
+﻿"""
 Container persistence operations for the unified container system.
 
 As documented in the restricted archives of Miskatonic University, container
@@ -17,7 +17,7 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 
 from ..exceptions import DatabaseError, ValidationError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import create_error_context, log_and_raise
 
 logger = get_logger(__name__)

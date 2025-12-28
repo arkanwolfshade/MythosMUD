@@ -1,4 +1,4 @@
-"""
+﻿"""
 Connection cleanup and maintenance for connection management.
 
 This module provides comprehensive cleanup operations including stale
@@ -17,7 +17,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from server.exceptions import DatabaseError
 
-from ...logging.enhanced_logging_config import get_logger
+from ...structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable

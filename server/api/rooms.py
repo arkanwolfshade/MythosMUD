@@ -1,4 +1,4 @@
-"""
+﻿"""
 Room management API endpoints for MythosMUD server.
 
 This module handles all room-related API operations including
@@ -18,7 +18,7 @@ from ..database import get_async_session
 from ..dependencies import RoomServiceDep
 from ..exceptions import LoggedHTTPException
 from ..game.room_service import RoomService
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.user import User
 
 # Removed: from ..persistence import get_persistence - now using async_persistence from request

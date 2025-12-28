@@ -1,4 +1,4 @@
-"""
+﻿"""
 NPC Admin API endpoints for MythosMUD server.
 
 This module provides administrative API endpoints for managing NPCs,
@@ -21,7 +21,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ...auth.users import get_current_user
 from ...database import get_async_session
 from ...exceptions import LoggedHTTPException
-from ...logging.enhanced_logging_config import get_logger
+from ...structured_logging.enhanced_logging_config import get_logger
 from ...models.npc import NPCDefinition, NPCDefinitionType, NPCSpawnRule
 from ...models.user import User
 from ...npc_database import get_npc_session

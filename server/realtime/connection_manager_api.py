@@ -1,4 +1,4 @@
-"""
+﻿"""
 Public API utility functions for connection manager.
 
 This module provides convenient wrapper functions for sending events
@@ -9,7 +9,7 @@ ConnectionManager instance.
 import uuid
 
 from ..exceptions import DatabaseError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .connection_manager import resolve_connection_manager
 
 logger = get_logger(__name__)

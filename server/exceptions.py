@@ -1,4 +1,4 @@
-"""
+﻿"""
 Comprehensive exception handling for MythosMUD server.
 
 This module defines the exception hierarchy and error handling utilities
@@ -14,7 +14,7 @@ from typing import Any
 
 from fastapi import HTTPException
 
-from .logging.enhanced_logging_config import get_logger
+from .structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

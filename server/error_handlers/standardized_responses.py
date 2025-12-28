@@ -1,4 +1,4 @@
-"""
+﻿"""
 Standardized error response formats for all API endpoints.
 
 This module provides comprehensive error response standardization to ensure
@@ -40,7 +40,7 @@ from ..exceptions import (
 from ..exceptions import (
     ValidationError as MythosValidationError,
 )
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .pydantic_error_handler import PydanticErrorHandler
 
 logger = get_logger(__name__)

@@ -1,4 +1,4 @@
-"""
+﻿"""
 NATS message handler for MythosMUD chat system.
 
 This module handles incoming NATS messages and broadcasts them to WebSocket clients.
@@ -11,7 +11,7 @@ from datetime import UTC, datetime
 from types import SimpleNamespace
 from typing import TYPE_CHECKING, Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..middleware.metrics_collector import metrics_collector
 from ..realtime.circuit_breaker import CircuitBreaker, CircuitBreakerOpen
 from ..realtime.dead_letter_queue import DeadLetterMessage, DeadLetterQueue

@@ -1,4 +1,4 @@
-"""
+﻿"""
 EventPublisher service for MythosMUD real-time events.
 
 This module provides a service class for publishing player_entered, player_left,
@@ -9,7 +9,7 @@ import uuid
 from datetime import datetime
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..services.nats_subject_manager import NATSSubjectManager
 
 logger = get_logger("realtime.event_publisher")

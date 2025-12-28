@@ -1,4 +1,4 @@
-"""
+﻿"""
 MOTD (Message of the Day) loading utilities for MythosMUD.
 
 This module provides functionality for loading and displaying the Message of the Day
@@ -8,7 +8,7 @@ from configured files, with fallback handling for missing or corrupted files.
 import os
 
 from ..config import get_config
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .error_logging import create_error_context
 
 logger = get_logger(__name__)

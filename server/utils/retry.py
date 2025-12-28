@@ -1,4 +1,4 @@
-"""
+﻿"""
 Retry utilities for transient database errors.
 
 This module provides retry decorators and helpers for handling transient
@@ -11,7 +11,7 @@ from collections.abc import Callable
 from functools import wraps
 from typing import Any, TypeVar
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

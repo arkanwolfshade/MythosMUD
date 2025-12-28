@@ -1,4 +1,4 @@
-"""
+﻿"""
 Chat logging service for MythosMUD.
 
 This module provides structured logging for chat messages, moderation events,
@@ -12,7 +12,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger("communications.chat_logger")
 
@@ -35,7 +35,7 @@ class ChatLogger:
         if log_dir is None:
             # Use environment-based configuration like the rest of the system
             from ..config import get_config
-            from ..logging.enhanced_logging_config import _resolve_log_base
+            from ..structured_logging.enhanced_logging_config import _resolve_log_base
 
             config = get_config()
             log_base = config.logging.log_base

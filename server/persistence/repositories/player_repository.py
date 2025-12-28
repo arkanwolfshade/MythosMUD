@@ -15,7 +15,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from server.database import get_session_maker
 from server.exceptions import DatabaseError
-from server.logging.enhanced_logging_config import get_logger
+from server.structured_logging.enhanced_logging_config import get_logger
 from server.models.player import Player
 from server.schemas.inventory_schema import InventorySchemaValidationError, validate_inventory_payload
 from server.utils.error_logging import create_error_context, log_and_raise

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Admin Authentication and Authorization Service for MythosMUD.
 
 This module provides enhanced authentication and authorization features
@@ -17,7 +17,7 @@ from typing import Any
 
 from fastapi import HTTPException, Request, status
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Room event handling for connection management.
 
 This module provides integration with the EventBus for room movement events,
@@ -13,7 +13,7 @@ from collections.abc import Callable
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any
 
-from ...logging.enhanced_logging_config import get_logger
+from ...structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable

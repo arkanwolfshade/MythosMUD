@@ -1,4 +1,4 @@
-"""
+﻿"""
 NPC Combat Lucidity Effects.
 
 This module handles lucidity (sanity) effects when players encounter NPCs,
@@ -10,7 +10,7 @@ from typing import Any
 from sqlalchemy.exc import SQLAlchemyError
 
 from ..database import get_async_session
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .active_lucidity_service import ActiveLucidityService, UnknownEncounterCategoryError
 
 logger = get_logger(__name__)

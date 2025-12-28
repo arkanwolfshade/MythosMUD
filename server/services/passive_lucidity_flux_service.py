@@ -1,4 +1,4 @@
-"""Passive LCD flux scheduler guided by the Pnakotic curricula."""
+﻿"""Passive LCD flux scheduler guided by the Pnakotic curricula."""
 
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ from sqlalchemy.exc import DatabaseError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..async_persistence import AsyncPersistenceLayer
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.lucidity import PlayerLucidity
 from ..models.player import Player
 from ..services.lucidity_service import CatatoniaObserverProtocol, LucidityService, LucidityUpdateResult

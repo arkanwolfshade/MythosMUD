@@ -1,4 +1,4 @@
-"""
+﻿"""
 Extracted methods from ConnectionManager for better code organization.
 
 This module contains methods that were extracted from ConnectionManager
@@ -10,7 +10,7 @@ from uuid import UUID
 
 from fastapi import WebSocket
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .connection_statistics import (
     get_online_player_by_display_name_impl,
     get_player_presence_info_impl,

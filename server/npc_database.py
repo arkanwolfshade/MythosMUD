@@ -1,4 +1,4 @@
-"""
+﻿"""
 NPC Database configuration for MythosMUD.
 
 This module provides database connection, session management,
@@ -24,7 +24,7 @@ from sqlalchemy.ext.asyncio import (
 from sqlalchemy.pool import NullPool
 
 from .exceptions import ValidationError
-from .logging.enhanced_logging_config import get_logger
+from .structured_logging.enhanced_logging_config import get_logger
 from .utils.error_logging import create_error_context, log_and_raise
 
 logger = get_logger(__name__)

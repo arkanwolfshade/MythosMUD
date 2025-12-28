@@ -1,4 +1,4 @@
-"""
+﻿"""
 Real-time communication API endpoints for MythosMUD server.
 
 This module handles WebSocket connections for real-time game communication.
@@ -189,7 +189,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
     WebSocket endpoint for interactive commands and chat.
     Supports session tracking for dual connection management.
     """
-    from ..logging.enhanced_logging_config import get_logger
+    from ..structured_logging.enhanced_logging_config import get_logger
 
     logger = get_logger(__name__)
 
@@ -221,7 +221,7 @@ async def get_player_connections(player_id: uuid.UUID, request: Request) -> dict
     Get connection information for a player.
     Returns detailed connection metadata including session information.
     """
-    from ..logging.enhanced_logging_config import get_logger
+    from ..structured_logging.enhanced_logging_config import get_logger
 
     logger = get_logger(__name__)
 
@@ -261,7 +261,7 @@ async def handle_new_game_session(player_id: uuid.UUID, request: Request) -> dic
     """
     import json
 
-    from ..logging.enhanced_logging_config import get_logger
+    from ..structured_logging.enhanced_logging_config import get_logger
 
     logger = get_logger(__name__)
 
@@ -304,7 +304,7 @@ async def get_connection_statistics(request: Request) -> dict[str, Any]:
     Get comprehensive connection statistics.
     Returns detailed statistics about all connections, sessions, and presence.
     """
-    from ..logging.enhanced_logging_config import get_logger
+    from ..structured_logging.enhanced_logging_config import get_logger
 
     logger = get_logger(__name__)
 
@@ -333,7 +333,7 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None
     prefers JWT token identity when provided.
     Supports session tracking for dual connection management.
     """
-    from ..logging.enhanced_logging_config import get_logger
+    from ..structured_logging.enhanced_logging_config import get_logger
 
     logger = get_logger(__name__)
 

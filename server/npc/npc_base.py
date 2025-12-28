@@ -1,4 +1,4 @@
-"""
+﻿"""
 Base NPC class for MythosMUD.
 
 This module provides the base NPC class with common functionality including
@@ -10,7 +10,7 @@ import time
 from abc import ABC, abstractmethod
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.npc import NPCDefinition
 from .behavior_engine import BehaviorEngine
 

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Player connection setup functions.
 
 This module handles the setup tasks when a player connects,
@@ -9,7 +9,7 @@ import uuid
 from typing import Any
 
 from ..exceptions import DatabaseError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..models import Player
 from .player_presence_utils import extract_player_name
 

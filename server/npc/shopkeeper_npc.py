@@ -1,4 +1,4 @@
-"""
+﻿"""
 Shopkeeper NPC type for MythosMUD.
 
 This module provides the ShopkeeperNPC class with buy/sell functionality.
@@ -6,7 +6,7 @@ This module provides the ShopkeeperNPC class with buy/sell functionality.
 
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .npc_base import NPCBase
 
 logger = get_logger(__name__)
