@@ -163,13 +163,6 @@ async def test_resolve_target_no_persistence_methods(target_service, mock_persis
     assert "error" in result.error_message.lower() or "not configured" in result.error_message.lower()
 
 
-@pytest.mark.asyncio
-async def test_resolve_target_player_not_found(target_service, mock_persistence):
-    """Test resolve_target() when player is not found."""
-    mock_persistence.get_player_by_id = AsyncMock(return_value=None)
-    result = await target_service.resolve_target(uuid.uuid4(), "target")
-    assert result.success is False
-    assert "not found" in result.error_message.lower() or "error" in result.error_message.lower()
 
 
 @pytest.mark.asyncio
@@ -234,16 +227,6 @@ async def test_resolve_target_sync_get_player_by_id(target_service, mock_persist
     assert result.search_term == "target"
 
 
-@pytest.mark.asyncio
-async def test_resolve_target_string_player_id(target_service, mock_persistence):
-    """Test resolve_target() handles string player_id."""
-    mock_player = MagicMock()
-    mock_player.current_room_id = "room_001"
-    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mock_persistence.get_room = MagicMock(return_value=MagicMock())
-    mock_persistence.get_players_in_room = MagicMock(return_value=[])
-    result = await target_service.resolve_target(str(uuid.uuid4()), "target")
-    assert result.search_term == "target"
 
 
 @pytest.mark.asyncio

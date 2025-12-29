@@ -1,4 +1,4 @@
-﻿"""
+"""
 Logging utilities for directory management, path resolution, and environment detection.
 
 This module provides thread-safe directory creation, log path resolution,
@@ -139,7 +139,7 @@ def rotate_log_files(env_log_dir: Path) -> None:
 
     # Get all log files in the directory and subdirectories
     # Include .log, .jsonl, and other common log file extensions
-    log_files = []
+    log_files: list[Path] = []
     log_files.extend(env_log_dir.glob("*.log"))
     log_files.extend(env_log_dir.glob("*.jsonl"))
     log_files.extend(env_log_dir.rglob("*.log"))  # Recursive search

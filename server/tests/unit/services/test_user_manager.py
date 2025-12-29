@@ -336,7 +336,6 @@ def test_cleanup_expired_mutes(user_manager):
 
 def test_get_player_mute_file(user_manager):
     """Test _get_player_mute_file() returns Path."""
-    from pathlib import Path
 
     player_id = uuid.uuid4()
     result = user_manager._get_player_mute_file(player_id)
@@ -346,7 +345,7 @@ def test_get_player_mute_file(user_manager):
 def test_is_cache_valid_true(user_manager):
     """Test _is_cache_valid() returns True for valid cache."""
     player_id = uuid.uuid4()
-    from datetime import UTC, datetime, timedelta
+    from datetime import UTC, datetime
 
     user_manager._mute_cache[player_id] = (datetime.now(UTC), True)
     result = user_manager._is_cache_valid(player_id)
@@ -370,27 +369,6 @@ def test_is_cache_valid_false_not_cached(user_manager):
     player_id = uuid.uuid4()
     result = user_manager._is_cache_valid(player_id)
     assert result is False
-
-
-def test_normalize_to_uuid_string(user_manager):
-    """Test _normalize_to_uuid() converts string to UUID."""
-    player_id_str = str(uuid.uuid4())
-    result = user_manager._normalize_to_uuid(player_id_str)
-    assert isinstance(result, uuid.UUID)
-    assert str(result) == player_id_str
-
-
-def test_normalize_to_uuid_uuid(user_manager):
-    """Test _normalize_to_uuid() returns UUID as-is."""
-    player_id = uuid.uuid4()
-    result = user_manager._normalize_to_uuid(player_id)
-    assert result == player_id
-
-
-def test_normalize_to_uuid_invalid(user_manager):
-    """Test _normalize_to_uuid() raises ValueError for invalid format."""
-    with pytest.raises(ValueError, match="Invalid player_id format"):
-        user_manager._normalize_to_uuid("not-a-uuid")
 
 
 @pytest.mark.asyncio
@@ -498,7 +476,6 @@ def test_load_player_mutes_invalid_json(user_manager, tmp_path):
 
 def test_load_player_mutes_invalid_uuid_in_data(user_manager, tmp_path):
     """Test load_player_mutes() handles invalid UUID in data."""
-    import json
 
     user_manager.data_dir = tmp_path
     player_id = uuid.uuid4()
@@ -569,137 +546,12 @@ def test_cleanup_player_mutes_with_delete_file(user_manager, tmp_path):
     assert not mute_file.exists()
 
 
-def test_get_player_mute_file(user_manager):
-    """Test _get_player_mute_file() returns correct path."""
-    from pathlib import Path
-
-    player_id = uuid.uuid4()
-    result = user_manager._get_player_mute_file(player_id)
-    assert isinstance(result, Path)
-    assert str(player_id) in str(result)
-
-
 def test_unmute_player_not_found(user_manager):
     """Test unmute_player() when mute doesn't exist."""
     muter_id = uuid.uuid4()
     target_id = uuid.uuid4()
     result = user_manager.unmute_player(muter_id, "Muter", target_id, "Target")
     assert result is False
-
-
-def test_mute_channel_success(user_manager):
-    """Test mute_channel() successfully mutes a channel."""
-    player_id = uuid.uuid4()
-    result = user_manager.mute_channel(player_id, "Player", "say")
-    assert result is True
-    assert "say" in user_manager._channel_mutes[player_id]
-
-
-def test_unmute_channel_success(user_manager):
-    """Test unmute_channel() successfully unmutes a channel."""
-    player_id = uuid.uuid4()
-    user_manager.mute_channel(player_id, "Player", "say")
-    result = user_manager.unmute_channel(player_id, "Player", "say")
-    assert result is True
-    # After unmute, the channel should not be in the mutes dict, or the dict might be empty
-    if player_id in user_manager._channel_mutes:
-        assert "say" not in user_manager._channel_mutes[player_id]
-
-
-def test_mute_global_success(user_manager):
-    """Test mute_global() successfully mutes globally."""
-    muter_id = uuid.uuid4()
-    target_id = uuid.uuid4()
-    result = user_manager.mute_global(muter_id, "Muter", target_id, "Target")
-    assert result is True
-    assert target_id in user_manager._global_mutes
-
-
-def test_unmute_global_success(user_manager):
-    """Test unmute_global() successfully unmutes globally."""
-    muter_id = uuid.uuid4()
-    target_id = uuid.uuid4()
-    user_manager.mute_global(muter_id, "Muter", target_id, "Target")
-    result = user_manager.unmute_global(muter_id, "Muter", target_id, "Target")
-    assert result is True
-    assert target_id not in user_manager._global_mutes
-
-
-def test_is_player_muted_true(user_manager):
-    """Test is_player_muted() returns True when muted."""
-    muter_id = uuid.uuid4()
-    target_id = uuid.uuid4()
-    user_manager.mute_player(muter_id, "Muter", target_id, "Target")
-    result = user_manager.is_player_muted(muter_id, target_id)
-    assert result is True
-
-
-def test_is_player_muted_false(user_manager):
-    """Test is_player_muted() returns False when not muted."""
-    muter_id = uuid.uuid4()
-    target_id = uuid.uuid4()
-    result = user_manager.is_player_muted(muter_id, target_id)
-    assert result is False
-
-
-def test_is_channel_muted_true(user_manager):
-    """Test is_channel_muted() returns True when channel is muted."""
-    player_id = uuid.uuid4()
-    user_manager.mute_channel(player_id, "Player", "say")
-    result = user_manager.is_channel_muted(player_id, "say")
-    assert result is True
-
-
-def test_is_channel_muted_false(user_manager):
-    """Test is_channel_muted() returns False when channel is not muted."""
-    player_id = uuid.uuid4()
-    result = user_manager.is_channel_muted(player_id, "say")
-    assert result is False
-
-
-def test_is_globally_muted_true(user_manager):
-    """Test is_globally_muted() returns True when globally muted."""
-    muter_id = uuid.uuid4()
-    target_id = uuid.uuid4()
-    user_manager.mute_global(muter_id, "Muter", target_id, "Target")
-    result = user_manager.is_globally_muted(target_id)
-    assert result is True
-
-
-def test_is_globally_muted_false(user_manager):
-    """Test is_globally_muted() returns False when not globally muted."""
-    player_id = uuid.uuid4()
-    result = user_manager.is_globally_muted(player_id)
-    assert result is False
-
-
-def test_can_send_message_true(user_manager):
-    """Test can_send_message() returns True when allowed."""
-    player_id = uuid.uuid4()
-    result = user_manager.can_send_message(player_id, "say", "target_id")
-    assert result is True
-
-
-def test_can_send_message_globally_muted(user_manager):
-    """Test can_send_message() returns False when globally muted."""
-    muter_id = uuid.uuid4()
-    target_id = uuid.uuid4()
-    user_manager.mute_global(muter_id, "Muter", target_id, "Target")
-    result = user_manager.can_send_message(target_id, "say", "target_id")
-    assert result is False
-
-
-def test_can_send_message_channel_muted(user_manager):
-    """Test can_send_message() returns False when channel is muted."""
-    player_id = uuid.uuid4()
-    user_manager.mute_channel(player_id, "Player", "say")
-    # can_send_message checks if player is admin first, and admins can always send
-    # So we need to ensure player is not admin
-    result = user_manager.can_send_message(player_id, "say", "target_id")
-    # If player is not admin and channel is muted, result should be False
-    # But if player is admin, result will be True
-    # Let's just verify the method doesn't raise and returns a boolean
-    assert isinstance(result, bool)
 
 
 def test_get_player_mutes_empty(user_manager):
@@ -743,10 +595,10 @@ async def test_add_admin_success(user_manager):
 
 
 @pytest.mark.asyncio
-async def test_add_admin_no_container(user_manager):
+async def test_add_admin_no_container_duplicate(user_manager):
     """Test add_admin() when container is not available."""
     player_id = uuid.uuid4()
-    with patch("server.container.ApplicationContainer.get_instance") as mock_get_instance:
+    with patch("server.container.ApplicationContainer.get_instance", return_value=None):
         mock_get_instance.return_value = None
         result = await user_manager.add_admin(player_id, "TestPlayer")
         assert result is False

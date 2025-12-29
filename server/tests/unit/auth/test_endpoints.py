@@ -36,17 +36,6 @@ def mock_session():
     return session
 
 
-@pytest.fixture
-def mock_session():
-    """Create a mock async session."""
-    session = MagicMock()
-    session.execute = AsyncMock()
-    session.add = MagicMock()
-    session.commit = AsyncMock()
-    session.refresh = AsyncMock()
-    return session
-
-
 @pytest.mark.asyncio
 async def test_register_user_shutdown_pending(mock_request, mock_session):
     """Test registration when server is shutting down."""

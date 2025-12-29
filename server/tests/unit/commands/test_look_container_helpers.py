@@ -335,16 +335,3 @@ def test_format_container_display_with_target_type_container():
     assert "Potion" in result
 
 
-def test_format_container_display_with_target_type_container():
-    """Test _format_container_display() with target_type container."""
-    container = {
-        "container_id": uuid.uuid4(),
-        "metadata": {"name": "Chest"},
-        "items": [{"item_name": "Potion", "quantity": 1}],
-        "capacity_slots": 10,
-        "lock_state": "unlocked",
-    }
-    command_data = {"target_type": "container"}
-    result = _format_container_display(container, None, command_data)
-    assert "Contents:" in result
-    assert "Potion" in result

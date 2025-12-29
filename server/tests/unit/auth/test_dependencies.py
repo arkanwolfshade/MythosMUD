@@ -178,7 +178,7 @@ async def test_require_invite_code_none():
     mock_invite_manager.validate_invite = AsyncMock(side_effect=ValueError("Invalid code"))
     
     with pytest.raises(LoggedHTTPException) as exc_info:
-        await require_invite_code(None, invite_manager=mock_invite_manager)  # type: ignore[arg-type]
+        await require_invite_code(None, invite_manager=mock_invite_manager)
     
     assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
 

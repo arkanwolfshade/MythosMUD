@@ -9,7 +9,7 @@ from collections.abc import Callable
 from typing import Any
 
 import pytest
-from pytest_mock import MockerFixture  # type: ignore[import-untyped]
+from pytest_mock import MockerFixture  # type: ignore[import-not-found]  # pytest-mock doesn't have type stubs
 
 
 @pytest.fixture
@@ -34,4 +34,3 @@ def strict_patch(mocker: MockerFixture, target: str, **kwargs: Any):
     """
     kwargs.setdefault("autospec", True)
     return mocker.patch(target, **kwargs)
-

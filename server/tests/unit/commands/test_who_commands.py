@@ -96,7 +96,7 @@ def test_format_player_location_invalid():
 
 def test_format_player_location_none():
     """Test formatting None location."""
-    result = format_player_location(None)  # type: ignore[arg-type]
+    result = format_player_location(None)
     assert result == "Unknown Location"
 
 
@@ -456,7 +456,7 @@ def test_format_player_location_short_format():
 
 def test_format_player_location_non_string():
     """Test format_player_location() with non-string input."""
-    result = format_player_location(123)  # type: ignore[arg-type]
+    result = format_player_location(123)
     assert result == "Unknown Location"
 
 

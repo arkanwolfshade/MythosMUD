@@ -78,10 +78,10 @@ def configure_event_loop_policy() -> Generator[None, None, None]:
     if os.name == "nt":  # Windows
         # WindowsSelectorEventLoopPolicy is required for asyncpg on Windows
         # ProactorEventLoop has known issues with asyncpg's connection handling
-        policy = asyncio.WindowsSelectorEventLoopPolicy()
+        policy: asyncio.AbstractEventLoopPolicy = asyncio.WindowsSelectorEventLoopPolicy()
     else:
         try:
-            import uvloop
+            import uvloop  # type: ignore[import-not-found]  # uvloop is optional and may not have type stubs
 
             policy = uvloop.EventLoopPolicy()
         except ImportError:

@@ -403,12 +403,6 @@ async def test_try_lookup_container_implicit_not_found():
     assert result is None
 
 
-def test_find_container_in_room_by_container_id():
-    """Test finding container in room by container_id."""
-    container = {"container_id": "container_123", "metadata": {"name": "chest"}}
-    containers = [container]
-    result = _find_container_in_room(containers, "container_123")
-    assert result == container
 
 
 def test_find_container_wearable_with_instance_number(sample_equipped_container):

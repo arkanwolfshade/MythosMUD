@@ -216,7 +216,7 @@ def test_user_manager_parse_id_non_string_non_uuid():
     
     # Test with a value that can't be converted to UUID
     with pytest.raises(InvalidID):
-        manager.parse_id(12345)  # type: ignore[arg-type]
+        manager.parse_id(12345)
 
 
 def test_user_manager_parse_id_non_string_convertible():
@@ -238,7 +238,7 @@ def test_user_manager_parse_id_none():
     manager = UserManager(user_db)
     
     with pytest.raises(InvalidID):
-        manager.parse_id(None)  # type: ignore[arg-type]
+        manager.parse_id(None)
 
 
 def test_user_manager_parse_id_empty_string():

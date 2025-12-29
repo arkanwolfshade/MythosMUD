@@ -140,7 +140,8 @@ class RescueService:
             except Exception:  # pragma: no cover - notifications are best-effort
                 logger.warning("Rescue event dispatch failed", rescuer=rescuer_name, target=target_name)
 
+        new_lcd: str | None = getattr(result, "new_lcd", None)
         return {
             "result": f"{rescuer_name} rushes to rescue {target_name}, restoring their lucidity.",
-            "new_lcd": getattr(result, "new_lcd", None),
+            "new_lcd": str(new_lcd) if new_lcd is not None else "",  # Convert None to empty string for type consistency
         }
