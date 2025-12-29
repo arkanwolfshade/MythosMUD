@@ -1,4 +1,4 @@
-﻿"""
+"""
 Admin shutdown command for MythosMUD.
 
 This module provides the /shutdown command for administrators to gracefully
@@ -549,12 +549,24 @@ async def initiate_shutdown_countdown(app: Any, countdown_seconds: int, admin_us
         # Set shutdown pending flag
         app.state.server_shutdown_pending = True
 
-        # Create countdown task
-        countdown_task = app.state.task_registry.register_task(
-            countdown_loop(app, countdown_seconds, admin_username),
-            "shutdown_countdown",
-            "system",
-        )
+        # Create countdown coroutine
+        countdown_coro = countdown_loop(app, countdown_seconds, admin_username)
+        
+        # Create countdown task - ensure coroutine is always turned into a task
+        # to avoid "coroutine was never awaited" warnings
+        try:
+            if hasattr(app.state, "task_registry") and app.state.task_registry:
+                countdown_task = app.state.task_registry.register_task(
+                    countdown_coro,
+                    "shutdown_countdown",
+                    "system",
+                )
+            else:
+                # Fallback: create task directly if task_registry is not available
+                countdown_task = asyncio.create_task(countdown_coro)
+        except (AttributeError, RuntimeError):
+            # Fallback: create task directly if register_task fails
+            countdown_task = asyncio.create_task(countdown_coro)
 
         # Store shutdown data
         app.state.shutdown_data = {
