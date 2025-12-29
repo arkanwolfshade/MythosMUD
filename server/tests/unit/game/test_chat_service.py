@@ -213,3 +213,179 @@ async def test_get_last_whisper_sender_none():
     service = ChatService(mock_persistence, mock_room_service, mock_player_service)
     result = service.get_last_whisper_sender("TestPlayer")
     assert result is None
+
+
+def test_chat_message_log_message():
+    """Test ChatMessage.log_message() logs message."""
+    player_id = uuid.uuid4()
+    message = ChatMessage(player_id, "TestPlayer", "say", "Hello world")
+    # Should not raise
+    message.log_message()
+
+
+def test_chat_message_to_dict_with_echo_sent():
+    """Test ChatMessage.to_dict() includes echo_sent flag."""
+    player_id = uuid.uuid4()
+    message = ChatMessage(player_id, "TestPlayer", "say", "Hello world")
+    message.echo_sent = True
+    result = message.to_dict()
+    assert result["echo_sent"] is True
+
+
+def test_chat_service_normalize_player_id():
+    """Test ChatService._normalize_player_id() converts UUID to string."""
+    mock_persistence = MagicMock()
+    mock_room_service = MagicMock()
+    mock_player_service = MagicMock()
+    service = ChatService(mock_persistence, mock_room_service, mock_player_service)
+    player_id = uuid.uuid4()
+    result = service._normalize_player_id(player_id)
+    assert isinstance(result, str)
+    assert result == str(player_id)
+
+
+def test_chat_service_normalize_player_id_string():
+    """Test ChatService._normalize_player_id() handles string IDs."""
+    mock_persistence = MagicMock()
+    mock_room_service = MagicMock()
+    mock_player_service = MagicMock()
+    service = ChatService(mock_persistence, mock_room_service, mock_player_service)
+    result = service._normalize_player_id("player_001")
+    assert result == "player_001"
+
+
+@pytest.mark.asyncio
+async def test_send_say_message_muted():
+    """Test send_say_message() when player is muted."""
+    mock_persistence = MagicMock()
+    mock_room_service = MagicMock()
+    mock_player_service = AsyncMock()
+    mock_player = MagicMock()
+    mock_player.name = "TestPlayer"
+    mock_player.current_room_id = "room_001"
+    mock_player_service.get_player_by_id = AsyncMock(return_value=mock_player)
+    service = ChatService(mock_persistence, mock_room_service, mock_player_service)
+    service.rate_limiter.check_rate_limit = MagicMock(return_value=True)
+    service.user_manager.is_channel_muted = MagicMock(return_value=True)
+    result = await service.send_say_message(uuid.uuid4(), "Hello")
+    assert result["success"] is False
+    assert "muted" in result["error"].lower()
+
+
+@pytest.mark.asyncio
+async def test_send_say_message_globally_muted():
+    """Test send_say_message() when player is globally muted."""
+    mock_persistence = MagicMock()
+    mock_room_service = MagicMock()
+    mock_player_service = AsyncMock()
+    mock_player = MagicMock()
+    mock_player.name = "TestPlayer"
+    mock_player.current_room_id = "room_001"
+    mock_player_service.get_player_by_id = AsyncMock(return_value=mock_player)
+    service = ChatService(mock_persistence, mock_room_service, mock_player_service)
+    service.rate_limiter.check_rate_limit = MagicMock(return_value=True)
+    service.user_manager.is_channel_muted = MagicMock(return_value=False)
+    service.user_manager.is_globally_muted = MagicMock(return_value=True)
+    result = await service.send_say_message(uuid.uuid4(), "Hello")
+    assert result["success"] is False
+    assert "globally muted" in result["error"].lower()
+
+
+@pytest.mark.asyncio
+async def test_send_say_message_cannot_send():
+    """Test send_say_message() when player cannot send messages."""
+    mock_persistence = MagicMock()
+    mock_room_service = MagicMock()
+    mock_player_service = AsyncMock()
+    mock_player = MagicMock()
+    mock_player.name = "TestPlayer"
+    mock_player.current_room_id = "room_001"
+    mock_player_service.get_player_by_id = AsyncMock(return_value=mock_player)
+    service = ChatService(mock_persistence, mock_room_service, mock_player_service)
+    service.rate_limiter.check_rate_limit = MagicMock(return_value=True)
+    service.user_manager.is_channel_muted = MagicMock(return_value=False)
+    service.user_manager.is_globally_muted = MagicMock(return_value=False)
+    service.user_manager.can_send_message = MagicMock(return_value=False)
+    result = await service.send_say_message(uuid.uuid4(), "Hello")
+    assert result["success"] is False
+    assert "cannot send" in result["error"].lower()
+
+
+def test_get_room_messages():
+    """Test get_room_messages() returns room message history."""
+    mock_persistence = MagicMock()
+    mock_room_service = MagicMock()
+    mock_player_service = MagicMock()
+    service = ChatService(mock_persistence, mock_room_service, mock_player_service)
+    player_id = uuid.uuid4()
+    message = ChatMessage(player_id, "TestPlayer", "say", "Hello")
+    service._room_messages["room_001"] = [message]
+    result = service.get_room_messages("room_001")
+    assert len(result) == 1
+    assert result[0]["content"] == "Hello"
+
+
+def test_get_room_messages_empty():
+    """Test get_room_messages() returns empty list for room with no messages."""
+    mock_persistence = MagicMock()
+    mock_room_service = MagicMock()
+    mock_player_service = MagicMock()
+    service = ChatService(mock_persistence, mock_room_service, mock_player_service)
+    result = service.get_room_messages("room_001")
+    assert result == []
+
+
+def test_clear_last_whisper_sender():
+    """Test clear_last_whisper_sender() removes sender."""
+    mock_persistence = MagicMock()
+    mock_room_service = MagicMock()
+    mock_player_service = MagicMock()
+    service = ChatService(mock_persistence, mock_room_service, mock_player_service)
+    service._last_whisper_senders["TestPlayer"] = "OtherPlayer"
+    service.clear_last_whisper_sender("TestPlayer")
+    assert "TestPlayer" not in service._last_whisper_senders
+
+
+def test_store_last_whisper_sender():
+    """Test store_last_whisper_sender() stores sender."""
+    mock_persistence = MagicMock()
+    mock_room_service = MagicMock()
+    mock_player_service = MagicMock()
+    service = ChatService(mock_persistence, mock_room_service, mock_player_service)
+    service.store_last_whisper_sender("TestPlayer", "OtherPlayer")
+    assert service._last_whisper_senders["TestPlayer"] == "OtherPlayer"
+
+
+def test_get_player_pose():
+    """Test get_player_pose() returns player pose."""
+    mock_persistence = MagicMock()
+    mock_room_service = MagicMock()
+    mock_player_service = MagicMock()
+    service = ChatService(mock_persistence, mock_room_service, mock_player_service)
+    player_id = uuid.uuid4()
+    service._player_poses[str(player_id)] = "standing tall"
+    result = service.get_player_pose(player_id)
+    assert result == "standing tall"
+
+
+def test_get_player_pose_none():
+    """Test get_player_pose() returns None when no pose."""
+    mock_persistence = MagicMock()
+    mock_room_service = MagicMock()
+    mock_player_service = MagicMock()
+    service = ChatService(mock_persistence, mock_room_service, mock_player_service)
+    result = service.get_player_pose(uuid.uuid4())
+    assert result is None
+
+
+def test_clear_player_pose():
+    """Test clear_player_pose() removes player pose."""
+    mock_persistence = MagicMock()
+    mock_room_service = MagicMock()
+    mock_player_service = MagicMock()
+    service = ChatService(mock_persistence, mock_room_service, mock_player_service)
+    player_id = uuid.uuid4()
+    service._player_poses[str(player_id)] = "standing tall"
+    result = service.clear_player_pose(player_id)
+    assert result is True
+    assert str(player_id) not in service._player_poses

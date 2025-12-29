@@ -426,3 +426,157 @@ async def test_handle_goto_command_no_target():
 
     assert "result" in result
     assert "Usage" in result["result"]
+
+
+@pytest.mark.asyncio
+async def test_handle_mute_command_no_player_service():
+    """Test handle_mute_command() when player service is not available."""
+    mock_request = MagicMock()
+    mock_app = MagicMock()
+    mock_state = MagicMock()
+    mock_state.user_manager = MagicMock()
+    mock_state.player_service = None
+    mock_app.state = mock_state
+    mock_request.app = mock_app
+
+    result = await handle_mute_command(
+        {"target_player": "OtherPlayer"}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer"
+    )
+    assert "result" in result
+    assert "not available" in result["result"]
+
+
+@pytest.mark.asyncio
+async def test_handle_mute_command_current_player_not_found():
+    """Test handle_mute_command() when current player is not found."""
+    mock_request = MagicMock()
+    mock_app = MagicMock()
+    mock_state = MagicMock()
+    mock_user_manager = MagicMock()
+    mock_player_service = AsyncMock()
+    mock_player_service.resolve_player_name = AsyncMock(return_value=None)
+    mock_state.user_manager = mock_user_manager
+    mock_state.player_service = mock_player_service
+    mock_app.state = mock_state
+    mock_request.app = mock_app
+
+    result = await handle_mute_command(
+        {"target_player": "OtherPlayer"}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer"
+    )
+    assert "result" in result
+    assert "not found" in result["result"]
+
+
+@pytest.mark.asyncio
+async def test_handle_mute_command_target_player_not_found():
+    """Test handle_mute_command() when target player is not found."""
+    mock_request = MagicMock()
+    mock_app = MagicMock()
+    mock_state = MagicMock()
+    mock_user_manager = MagicMock()
+    mock_player_service = AsyncMock()
+    mock_current_player = MagicMock()
+    mock_current_player.id = uuid.uuid4()
+    mock_player_service.resolve_player_name = AsyncMock(side_effect=[mock_current_player, None])
+    mock_state.user_manager = mock_user_manager
+    mock_state.player_service = mock_player_service
+    mock_app.state = mock_state
+    mock_request.app = mock_app
+
+    result = await handle_mute_command(
+        {"target_player": "OtherPlayer"}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer"
+    )
+    assert "result" in result
+    assert "not found" in result["result"]
+
+
+@pytest.mark.asyncio
+async def test_handle_mute_command_mute_failure():
+    """Test handle_mute_command() when mute operation fails."""
+    mock_request = MagicMock()
+    mock_app = MagicMock()
+    mock_state = MagicMock()
+    mock_user_manager = MagicMock()
+    mock_user_manager.mute_player = MagicMock(return_value=False)
+    mock_player_service = AsyncMock()
+    mock_current_player = MagicMock()
+    mock_current_player.id = uuid.uuid4()
+    mock_target_player = MagicMock()
+    mock_target_player.id = uuid.uuid4()
+    mock_player_service.resolve_player_name = AsyncMock(side_effect=[mock_current_player, mock_target_player])
+    mock_state.user_manager = mock_user_manager
+    mock_state.player_service = mock_player_service
+    mock_app.state = mock_state
+    mock_request.app = mock_app
+
+    result = await handle_mute_command(
+        {"target_player": "OtherPlayer"}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer"
+    )
+    assert "result" in result
+    assert "failed" in result["result"].lower()
+
+
+@pytest.mark.asyncio
+async def test_handle_mute_command_exception():
+    """Test handle_mute_command() handles exceptions."""
+    mock_request = MagicMock()
+    mock_app = MagicMock()
+    mock_state = MagicMock()
+    mock_user_manager = MagicMock()
+    mock_player_service = AsyncMock()
+    mock_player_service.resolve_player_name = AsyncMock(side_effect=Exception("Database error"))
+    mock_state.user_manager = mock_user_manager
+    mock_state.player_service = mock_player_service
+    mock_app.state = mock_state
+    mock_request.app = mock_app
+
+    result = await handle_mute_command(
+        {"target_player": "OtherPlayer"}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer"
+    )
+    assert "result" in result
+    assert "error" in result["result"].lower()
+
+
+@pytest.mark.asyncio
+async def test_handle_unmute_command_target_not_found():
+    """Test handle_unmute_command() when target player is not found."""
+    mock_request = MagicMock()
+    mock_app = MagicMock()
+    mock_state = MagicMock()
+    mock_user_manager = MagicMock()
+    mock_player_service = AsyncMock()
+    mock_current_player = MagicMock()
+    mock_current_player.id = uuid.uuid4()
+    mock_player_service.resolve_player_name = AsyncMock(side_effect=[mock_current_player, None])
+    mock_state.user_manager = mock_user_manager
+    mock_state.player_service = mock_player_service
+    mock_app.state = mock_state
+    mock_request.app = mock_app
+
+    result = await handle_unmute_command(
+        {"target_player": "OtherPlayer"}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer"
+    )
+    assert "result" in result
+    assert "not found" in result["result"]
+
+
+@pytest.mark.asyncio
+async def test_handle_mutes_command_with_mutes():
+    """Test handle_mutes_command() when player has active mutes."""
+    mock_request = MagicMock()
+    mock_app = MagicMock()
+    mock_state = MagicMock()
+    mock_user_manager = MagicMock()
+    from datetime import UTC, datetime, timedelta
+    mock_mutes = [
+        {"target_player": "Player1", "expires_at": (datetime.now(UTC) + timedelta(hours=1)).isoformat(), "reason": "Spam"},
+        {"target_player": "Player2", "expires_at": None, "reason": "Harassment"},
+    ]
+    mock_user_manager.get_player_mutes = MagicMock(return_value=mock_mutes)
+    mock_state.user_manager = mock_user_manager
+    mock_app.state = mock_state
+    mock_request.app = mock_app
+
+    result = await handle_mutes_command({}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
+    assert "result" in result
+    assert "Player1" in result["result"] or "Player2" in result["result"] or "mute" in result["result"].lower()

@@ -4,7 +4,7 @@ Unit tests for container look functionality.
 Tests the helper functions for looking at containers in rooms and equipped items.
 """
 
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 from uuid import UUID, uuid4
 
 import pytest
@@ -289,7 +289,9 @@ async def test_find_container_in_room_or_equipped_in_equipped(sample_equipped_co
     player = MagicMock()
     player.get_equipped_items.return_value = {"back": sample_equipped_container}
     mock_persistence = MagicMock()
-    mock_persistence.get_container = AsyncMock(return_value={"container_id": sample_equipped_container["inner_container"]})
+    mock_persistence.get_container = AsyncMock(
+        return_value={"container_id": sample_equipped_container["inner_container"]}
+    )
     mock_request = MagicMock()
 
     container_found, container_item = await _find_container_in_room_or_equipped(
@@ -328,7 +330,16 @@ async def test_handle_container_look_success(sample_container, mock_prototype_re
     command_data = {}
 
     result = await _handle_container_look(
-        "backpack", "backpack", None, room, player, mock_persistence, mock_prototype_registry, command_data, mock_request, "TestPlayer"
+        "backpack",
+        "backpack",
+        None,
+        room,
+        player,
+        mock_persistence,
+        mock_prototype_registry,
+        command_data,
+        mock_request,
+        "TestPlayer",
     )
     assert result is not None
     assert "result" in result
@@ -347,7 +358,16 @@ async def test_handle_container_look_not_found(mock_prototype_registry):
     command_data = {}
 
     result = await _handle_container_look(
-        "chest", "chest", None, room, player, mock_persistence, mock_prototype_registry, command_data, mock_request, "TestPlayer"
+        "chest",
+        "chest",
+        None,
+        room,
+        player,
+        mock_persistence,
+        mock_prototype_registry,
+        command_data,
+        mock_request,
+        "TestPlayer",
     )
     assert result is not None
     assert "don't see" in result["result"].lower()
@@ -363,7 +383,9 @@ async def test_try_lookup_container_implicit_success(sample_container):
     mock_persistence = MagicMock()
     mock_persistence.get_container = AsyncMock(return_value=None)
 
-    result = await _try_lookup_container_implicit("backpack", "backpack", None, room, player, mock_persistence, "TestPlayer")
+    result = await _try_lookup_container_implicit(
+        "backpack", "backpack", None, room, player, mock_persistence, "TestPlayer"
+    )
     assert result is not None
     assert "backpack" in result["result"]
 
@@ -379,3 +401,122 @@ async def test_try_lookup_container_implicit_not_found():
 
     result = await _try_lookup_container_implicit("chest", "chest", None, room, player, mock_persistence, "TestPlayer")
     assert result is None
+
+
+def test_find_container_in_room_by_container_id():
+    """Test finding container in room by container_id."""
+    container = {"container_id": "container_123", "metadata": {"name": "chest"}}
+    containers = [container]
+    result = _find_container_in_room(containers, "container_123")
+    assert result == container
+
+
+def test_find_container_wearable_with_instance_number(sample_equipped_container):
+    """Test finding wearable container with instance number."""
+    equipped = {"back": sample_equipped_container, "belt": {**sample_equipped_container, "item_id": "backpack_002"}}
+    result = _find_container_wearable(equipped, "backpack", instance_number=2)
+    assert result is not None
+    assert result[0] == "belt"
+
+
+def test_find_container_wearable_instance_number_out_of_range(sample_equipped_container):
+    """Test finding wearable container with invalid instance number."""
+    equipped = {"back": sample_equipped_container}
+    result = _find_container_wearable(equipped, "backpack", instance_number=2)
+    assert result is None
+
+
+def test_format_container_contents_with_quantity():
+    """Test formatting container contents with quantity > 1."""
+    items = [{"item_name": "potion", "quantity": 5}]
+    result = _format_container_contents(items)
+    assert "potion x5" in result[0]
+
+
+def test_format_container_display_with_metadata_name():
+    """Test formatting container display uses metadata name."""
+    container = {
+        "container_id": str(uuid4()),
+        "metadata": {"name": "Custom Backpack"},
+        "items": [],
+        "capacity_slots": 10,
+        "lock_state": "unlocked",
+    }
+    command_data = {}
+    result = _format_container_display(container, None, command_data)
+    assert "Custom Backpack" in result
+
+
+def test_format_container_display_fallback_name():
+    """Test formatting container display uses fallback when no metadata name."""
+    container = {
+        "container_id": str(uuid4()),
+        "metadata": {},
+        "items": [],
+        "capacity_slots": 10,
+        "lock_state": "unlocked",
+    }
+    command_data = {}
+    result = _format_container_display(container, None, command_data)
+    assert "Container" in result
+
+
+def test_get_container_description_prototype_error(mock_prototype_registry):
+    """Test getting container description handles prototype errors."""
+    container = {
+        "container_id": str(uuid4()),
+        "metadata": {"prototype_id": "container_backpack_001"},
+        "items": [],
+    }
+    # Make prototype access raise an exception
+    mock_prototype_registry.get.return_value = None
+    result = _get_container_description(container, None, mock_prototype_registry)
+    assert result is None
+
+
+@pytest.mark.asyncio
+async def test_find_container_via_inner_container_no_get_container_method():
+    """Test finding container via inner_container when persistence has no get_container."""
+    item = {"inner_container": str(uuid4())}
+    mock_persistence = MagicMock()
+    # Remove get_container method
+    if hasattr(mock_persistence, "get_container"):
+        delattr(mock_persistence, "get_container")
+    result = await _find_container_via_inner_container(item, mock_persistence)
+    assert result is None
+
+
+@pytest.mark.asyncio
+async def test_find_container_in_room_or_equipped_no_get_containers():
+    """Test finding container when room has no get_containers method."""
+    room = MagicMock()
+    # Remove get_containers method
+    if hasattr(room, "get_containers"):
+        delattr(room, "get_containers")
+    player = MagicMock()
+    player.get_equipped_items.return_value = {}
+    mock_persistence = MagicMock()
+    mock_request = MagicMock()
+    container_found, container_item = await _find_container_in_room_or_equipped(
+        "backpack", None, room, player, mock_persistence, mock_request, "TestPlayer"
+    )
+    # Should try equipped items
+    assert container_found is None or container_item is None
+
+
+@pytest.mark.asyncio
+async def test_find_container_in_room_or_equipped_no_get_equipped_items():
+    """Test finding container when player has no get_equipped_items method."""
+    room = MagicMock()
+    room.get_containers.return_value = []
+    player = MagicMock()
+    # Remove get_equipped_items method
+    if hasattr(player, "get_equipped_items"):
+        delattr(player, "get_equipped_items")
+    mock_persistence = MagicMock()
+    mock_request = MagicMock()
+    container_found, container_item = await _find_container_in_room_or_equipped(
+        "backpack", None, room, player, mock_persistence, mock_request, "TestPlayer"
+    )
+    assert container_found is None
+    assert container_item is None

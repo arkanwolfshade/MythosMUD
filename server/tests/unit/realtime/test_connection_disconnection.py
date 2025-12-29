@@ -99,3 +99,82 @@ def test_cleanup_player_data_has_connection(mock_manager):
     mock_manager.has_websocket_connection = MagicMock(return_value=True)
     _cleanup_player_data(player_id, mock_manager)
     mock_manager.rate_limiter.remove_player_data.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_disconnect_all_websockets(mock_manager):
+    """Test _disconnect_all_websockets() disconnects all websockets."""
+    from server.realtime.connection_disconnection import _disconnect_all_websockets
+
+    player_id = uuid.uuid4()
+    connection_ids = ["conn_001", "conn_002"]
+    mock_websocket = MagicMock()
+    mock_websocket.close = AsyncMock()
+    mock_manager.active_websockets = {"conn_001": mock_websocket, "conn_002": mock_websocket}
+    mock_manager._safe_close_websocket = AsyncMock()
+    mock_manager.connection_metadata = {"conn_001": {}, "conn_002": {}}
+    await _disconnect_all_websockets(connection_ids, player_id, mock_manager)
+    assert mock_manager._safe_close_websocket.await_count == 2
+
+
+@pytest.mark.asyncio
+async def test_disconnect_all_websockets_none_websocket(mock_manager):
+    """Test _disconnect_all_websockets() handles None websocket."""
+    from server.realtime.connection_disconnection import _disconnect_all_websockets
+
+    player_id = uuid.uuid4()
+    connection_ids = ["conn_001"]
+    mock_manager.active_websockets = {"conn_001": None}
+    mock_manager.connection_metadata = {}
+    await _disconnect_all_websockets(connection_ids, player_id, mock_manager)
+    assert "conn_001" not in mock_manager.active_websockets
+
+
+@pytest.mark.asyncio
+async def test_track_disconnect_if_needed_has_connection(mock_manager):
+    """Test _track_disconnect_if_needed() when player has connection."""
+    player_id = uuid.uuid4()
+    mock_manager.has_websocket_connection = MagicMock(return_value=True)
+    result = await _track_disconnect_if_needed(player_id, mock_manager, False)
+    assert result is False
+
+
+@pytest.mark.asyncio
+async def test_cleanup_websocket_disconnect(mock_manager):
+    """Test cleanup_websocket_disconnect() cleans up connection."""
+    from server.realtime.connection_disconnection import cleanup_websocket_disconnect
+    import asyncio
+
+    player_id = uuid.uuid4()
+    connection_id = "conn_001"
+    mock_manager.player_websockets = {player_id: {connection_id}}
+    mock_manager.active_websockets = {connection_id: MagicMock()}
+    # disconnect_lock needs to be an asyncio.Lock
+    mock_manager.disconnect_lock = asyncio.Lock()
+    mock_manager.has_websocket_connection = MagicMock(return_value=False)
+    mock_manager._safe_close_websocket = AsyncMock()
+    # cleanup_websocket_disconnect takes (player_id, manager, is_force_disconnect)
+    result = await cleanup_websocket_disconnect(player_id, mock_manager, False)
+    # Should return bool indicating if should track disconnect
+    assert isinstance(result, bool)
+
+
+@pytest.mark.asyncio
+async def test_disconnect_connection_by_id_impl(mock_manager):
+    """Test disconnect_connection_by_id_impl() disconnects connection."""
+    from server.realtime.connection_disconnection import disconnect_connection_by_id_impl
+
+    connection_id = "conn_001"
+    player_id = uuid.uuid4()
+    # disconnect_connection_by_id_impl needs connection_metadata with player_id
+    mock_metadata = MagicMock()
+    mock_metadata.player_id = player_id
+    mock_metadata.connection_type = "websocket"
+    mock_manager.connection_metadata = {connection_id: mock_metadata}
+    mock_manager.player_websockets = {player_id: {connection_id}}
+    mock_manager.active_websockets = {connection_id: MagicMock()}
+    mock_manager._safe_close_websocket = AsyncMock()
+    # disconnect_connection_by_id_impl takes (connection_id, manager)
+    result = await disconnect_connection_by_id_impl(connection_id, mock_manager)
+    # Should return True if connection found and disconnected
+    assert isinstance(result, bool)

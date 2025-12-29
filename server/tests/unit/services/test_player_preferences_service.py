@@ -9,8 +9,8 @@ from datetime import UTC, datetime
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
-from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.engine import Result
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from server.models.player import PlayerChannelPreferences
 from server.services.player_preferences_service import PlayerPreferencesService
@@ -137,7 +137,9 @@ async def test_create_player_preferences_with_string_id(preferences_service, moc
 
 
 @pytest.mark.asyncio
-async def test_create_player_preferences_already_exists(preferences_service, mock_session, sample_player_id, sample_preferences):
+async def test_create_player_preferences_already_exists(
+    preferences_service, mock_session, sample_player_id, sample_preferences
+):
     """Test creating player preferences when they already exist."""
     result_mock = MagicMock(spec=Result)
     result_mock.scalar_one_or_none = MagicMock(return_value=sample_preferences)
@@ -379,7 +381,9 @@ async def test_is_channel_muted_invalid_channel(preferences_service, mock_sessio
 
 
 @pytest.mark.asyncio
-async def test_delete_player_preferences_success(preferences_service, mock_session, sample_player_id, sample_preferences):
+async def test_delete_player_preferences_success(
+    preferences_service, mock_session, sample_player_id, sample_preferences
+):
     """Test deleting player preferences successfully."""
     result_mock = MagicMock(spec=Result)
     result_mock.scalar_one_or_none = MagicMock(return_value=sample_preferences)
@@ -407,7 +411,9 @@ async def test_delete_player_preferences_not_found(preferences_service, mock_ses
 
 
 @pytest.mark.asyncio
-async def test_delete_player_preferences_database_error(preferences_service, mock_session, sample_player_id, sample_preferences):
+async def test_delete_player_preferences_database_error(
+    preferences_service, mock_session, sample_player_id, sample_preferences
+):
     """Test deleting player preferences with database error."""
     result_mock = MagicMock(spec=Result)
     result_mock.scalar_one_or_none = MagicMock(return_value=sample_preferences)
@@ -419,3 +425,193 @@ async def test_delete_player_preferences_database_error(preferences_service, moc
     assert result["success"] is False
     assert "Database error" in result["error"]
     mock_session.rollback.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_update_default_channel_database_error(
+    preferences_service, mock_session, sample_player_id, sample_preferences
+):
+    """Test updating default channel with database error."""
+    result_mock = MagicMock(spec=Result)
+    result_mock.scalar_one_or_none = MagicMock(return_value=sample_preferences)
+    mock_session.execute.return_value = result_mock
+    mock_session.commit.side_effect = SQLAlchemyError("Database error", None, None)
+
+    result = await preferences_service.update_default_channel(mock_session, sample_player_id, "global")
+
+    assert result["success"] is False
+    assert "Database error" in result["error"]
+    mock_session.rollback.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_mute_channel_not_found(preferences_service, mock_session, sample_player_id):
+    """Test muting channel when preferences not found."""
+    result_mock = MagicMock(spec=Result)
+    result_mock.scalar_one_or_none = MagicMock(return_value=None)
+    mock_session.execute.return_value = result_mock
+
+    result = await preferences_service.mute_channel(mock_session, sample_player_id, "global")
+
+    assert result["success"] is False
+    assert "not found" in result["error"]
+
+
+@pytest.mark.asyncio
+async def test_mute_channel_invalid_channel(preferences_service, mock_session, sample_player_id):
+    """Test muting channel with invalid channel name."""
+    result = await preferences_service.mute_channel(mock_session, sample_player_id, "invalid")
+
+    assert result["success"] is False
+    assert "Invalid channel name" in result["error"]
+
+
+@pytest.mark.asyncio
+async def test_unmute_channel_not_found(preferences_service, mock_session, sample_player_id):
+    """Test unmuting channel when preferences not found."""
+    result_mock = MagicMock(spec=Result)
+    result_mock.scalar_one_or_none = MagicMock(return_value=None)
+    mock_session.execute.return_value = result_mock
+
+    result = await preferences_service.unmute_channel(mock_session, sample_player_id, "global")
+
+    assert result["success"] is False
+    assert "not found" in result["error"]
+
+
+@pytest.mark.asyncio
+async def test_unmute_channel_invalid_channel(preferences_service, mock_session, sample_player_id):
+    """Test unmuting channel with invalid channel name."""
+    result = await preferences_service.unmute_channel(mock_session, sample_player_id, "invalid")
+
+    assert result["success"] is False
+    assert "Invalid channel name" in result["error"]
+
+
+@pytest.mark.asyncio
+async def test_unmute_channel_database_error(preferences_service, mock_session, sample_player_id, sample_preferences):
+    """Test unmuting channel with database error."""
+    sample_preferences.muted_channels = ["global"]
+    result_mock = MagicMock(spec=Result)
+    result_mock.scalar_one_or_none = MagicMock(return_value=sample_preferences)
+    mock_session.execute.return_value = result_mock
+    mock_session.commit.side_effect = SQLAlchemyError("Database error", None, None)
+
+    result = await preferences_service.unmute_channel(mock_session, sample_player_id, "global")
+
+    assert result["success"] is False
+    assert "Database error" in result["error"]
+    mock_session.rollback.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_mute_channel_database_error(preferences_service, mock_session, sample_player_id, sample_preferences):
+    """Test muting channel with database error."""
+    result_mock = MagicMock(spec=Result)
+    result_mock.scalar_one_or_none = MagicMock(return_value=sample_preferences)
+    mock_session.execute.return_value = result_mock
+    mock_session.commit.side_effect = SQLAlchemyError("Database error", None, None)
+
+    result = await preferences_service.mute_channel(mock_session, sample_player_id, "global")
+
+    assert result["success"] is False
+    assert "Database error" in result["error"]
+    mock_session.rollback.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_get_player_preferences_invalid_id(preferences_service, mock_session):
+    """Test getting player preferences with invalid ID."""
+    result = await preferences_service.get_player_preferences(mock_session, "invalid-id")
+
+    assert result["success"] is False
+    assert "Invalid player ID" in result["error"]
+
+
+@pytest.mark.asyncio
+async def test_update_default_channel_invalid_id(preferences_service, mock_session):
+    """Test updating default channel with invalid ID."""
+    result = await preferences_service.update_default_channel(mock_session, "invalid-id", "global")
+
+    assert result["success"] is False
+    assert "Invalid player ID" in result["error"]
+
+
+@pytest.mark.asyncio
+async def test_mute_channel_invalid_id(preferences_service, mock_session):
+    """Test muting channel with invalid ID."""
+    result = await preferences_service.mute_channel(mock_session, "invalid-id", "global")
+
+    assert result["success"] is False
+    assert "Invalid player ID" in result["error"]
+
+
+@pytest.mark.asyncio
+async def test_unmute_channel_invalid_id(preferences_service, mock_session):
+    """Test unmuting channel with invalid ID."""
+    result = await preferences_service.unmute_channel(mock_session, "invalid-id", "global")
+
+    assert result["success"] is False
+    assert "Invalid player ID" in result["error"]
+
+
+@pytest.mark.asyncio
+async def test_get_muted_channels_invalid_id(preferences_service, mock_session):
+    """Test getting muted channels with invalid ID."""
+    result = await preferences_service.get_muted_channels(mock_session, "invalid-id")
+
+    assert result["success"] is False
+    assert "Invalid player ID" in result["error"]
+
+
+@pytest.mark.asyncio
+async def test_is_channel_muted_invalid_id(preferences_service, mock_session):
+    """Test checking if channel is muted with invalid ID."""
+    result = await preferences_service.is_channel_muted(mock_session, "invalid-id", "global")
+
+    assert result["success"] is False
+    assert "Invalid player ID" in result["error"]
+
+
+@pytest.mark.asyncio
+async def test_delete_player_preferences_invalid_id(preferences_service, mock_session):
+    """Test deleting player preferences with invalid ID."""
+    result = await preferences_service.delete_player_preferences(mock_session, "invalid-id")
+
+    assert result["success"] is False
+    assert "Invalid player ID" in result["error"]
+
+
+@pytest.mark.asyncio
+async def test_is_channel_muted_not_found(preferences_service, mock_session, sample_player_id):
+    """Test checking if channel is muted when preferences not found."""
+    result_mock = MagicMock(spec=Result)
+    result_mock.scalar_one_or_none = MagicMock(return_value=None)
+    mock_session.execute.return_value = result_mock
+
+    result = await preferences_service.is_channel_muted(mock_session, sample_player_id, "global")
+
+    assert result["success"] is False
+    assert "not found" in result["error"]
+
+
+@pytest.mark.asyncio
+async def test_get_muted_channels_database_error(preferences_service, mock_session, sample_player_id):
+    """Test getting muted channels with database error."""
+    mock_session.execute.side_effect = SQLAlchemyError("Database error", None, None)
+
+    result = await preferences_service.get_muted_channels(mock_session, sample_player_id)
+
+    assert result["success"] is False
+    assert "Database error" in result["error"]
+
+
+@pytest.mark.asyncio
+async def test_is_channel_muted_database_error(preferences_service, mock_session, sample_player_id):
+    """Test checking if channel is muted with database error."""
+    mock_session.execute.side_effect = SQLAlchemyError("Database error", None, None)
+
+    result = await preferences_service.is_channel_muted(mock_session, sample_player_id, "global")
+
+    assert result["success"] is False
+    assert "Database error" in result["error"]

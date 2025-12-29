@@ -148,3 +148,133 @@ def test_mark_player_seen_impl(mock_manager):
     mock_manager.connection_metadata = {"conn_001": MagicMock()}
     mark_player_seen_impl(player_id, mock_manager)
     assert player_id in mock_manager.last_seen
+
+
+def test_convert_uuids_to_strings_dict():
+    """Test convert_uuids_to_strings() converts UUIDs in dict."""
+    from server.realtime.connection_helpers import convert_uuids_to_strings
+
+    test_uuid = uuid.uuid4()
+    obj = {"player_id": test_uuid, "name": "Test"}
+    result = convert_uuids_to_strings(obj)
+    assert result["player_id"] == str(test_uuid)
+    assert result["name"] == "Test"
+
+
+def test_convert_uuids_to_strings_list():
+    """Test convert_uuids_to_strings() converts UUIDs in list."""
+    from server.realtime.connection_helpers import convert_uuids_to_strings
+
+    test_uuid = uuid.uuid4()
+    obj = [test_uuid, "string"]
+    result = convert_uuids_to_strings(obj)
+    assert result[0] == str(test_uuid)
+    assert result[1] == "string"
+
+
+def test_convert_uuids_to_strings_uuid():
+    """Test convert_uuids_to_strings() converts UUID object."""
+    from server.realtime.connection_helpers import convert_uuids_to_strings
+
+    test_uuid = uuid.uuid4()
+    result = convert_uuids_to_strings(test_uuid)
+    assert result == str(test_uuid)
+
+
+def test_convert_uuids_to_strings_nested():
+    """Test convert_uuids_to_strings() converts UUIDs in nested structures."""
+    from server.realtime.connection_helpers import convert_uuids_to_strings
+
+    test_uuid = uuid.uuid4()
+    obj = {"data": [{"id": test_uuid}]}
+    result = convert_uuids_to_strings(obj)
+    assert result["data"][0]["id"] == str(test_uuid)
+
+
+@pytest.mark.asyncio
+async def test_send_to_websockets_websocket_error(mock_manager):
+    """Test _send_to_websockets() handles websocket errors."""
+    player_id = uuid.uuid4()
+    mock_manager.player_websockets = {player_id: {"conn_001"}}
+    mock_websocket = MagicMock()
+    mock_websocket.send_json = AsyncMock(side_effect=AttributeError("test error"))
+    mock_manager.active_websockets = {"conn_001": mock_websocket}
+    delivery_status = {"websocket_delivered": 0, "websocket_failed": 0, "active_connections": 0}
+    event = {"event_type": "test"}
+    result = await _send_to_websockets(player_id, event, mock_manager, delivery_status)
+    assert result is True
+    assert delivery_status["websocket_failed"] == 1
+    mock_manager._cleanup_dead_websocket.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_send_to_websockets_none_websocket(mock_manager):
+    """Test _send_to_websockets() handles None websocket."""
+    player_id = uuid.uuid4()
+    mock_manager.player_websockets = {player_id: {"conn_001"}}
+    mock_manager.active_websockets = {"conn_001": None}
+    delivery_status = {"websocket_delivered": 0, "websocket_failed": 0, "active_connections": 0}
+    event = {"event_type": "test"}
+    result = await _send_to_websockets(player_id, event, mock_manager, delivery_status)
+    assert result is True
+    assert delivery_status["websocket_delivered"] == 0
+
+
+@pytest.mark.asyncio
+async def test_send_to_websockets_inactive_connection(mock_manager):
+    """Test _send_to_websockets() skips inactive connections."""
+    player_id = uuid.uuid4()
+    mock_manager.player_websockets = {player_id: {"conn_001"}}
+    mock_manager.active_websockets = {}  # Connection not in active_websockets
+    delivery_status = {"websocket_delivered": 0, "websocket_failed": 0, "active_connections": 0}
+    event = {"event_type": "test"}
+    result = await _send_to_websockets(player_id, event, mock_manager, delivery_status)
+    # Returns False because had_connection_attempts is only True when connection is in active_websockets
+    # Since connection is not in active_websockets, we continue and never set had_connection_attempts
+    assert result is False
+    assert delivery_status["websocket_delivered"] == 0
+
+
+def test_update_delivery_status_no_attempts(mock_manager):
+    """Test _update_delivery_status() when no connection attempts."""
+    delivery_status = {"websocket_delivered": 0, "active_connections": 0}
+    _update_delivery_status(delivery_status, False)
+    assert delivery_status["success"] is True
+
+
+def test_optimize_payload_too_large(mock_manager):
+    """Test _optimize_payload() handles payload too large."""
+    event = {"event_type": "test", "data": "x" * 10000}
+    # get_payload_optimizer is imported inside the function from .payload_optimizer
+    with patch("server.realtime.payload_optimizer.get_payload_optimizer") as mock_get_optimizer:
+        mock_optimizer = MagicMock()
+        mock_optimizer.max_payload_size = 1000
+        mock_optimizer.optimize_payload = MagicMock(side_effect=ValueError("Payload too large"))
+        mock_get_optimizer.return_value = mock_optimizer
+        result = _optimize_payload(event, "player_001")
+        assert "error" in result or "error_type" in result
+        assert "payload_too_large" in result.get("error_type", "")
+
+
+def test_optimize_payload_optimization_failure(mock_manager):
+    """Test _optimize_payload() handles optimization failure."""
+    event = {"event_type": "test"}
+    # get_payload_optimizer is imported inside the function from .payload_optimizer
+    with patch("server.realtime.payload_optimizer.get_payload_optimizer") as mock_get_optimizer:
+        mock_optimizer = MagicMock()
+        mock_optimizer.optimize_payload = MagicMock(side_effect=AttributeError("test error"))
+        mock_get_optimizer.return_value = mock_optimizer
+        result = _optimize_payload(event, "player_001")
+        # Should return original event on optimization failure
+        assert "event_type" in result
+
+
+@pytest.mark.asyncio
+async def test_send_personal_message_old_impl_no_connections(mock_manager):
+    """Test send_personal_message_old_impl() when no connections."""
+    player_id = uuid.uuid4()
+    event = {"event_type": "test"}
+    with patch("server.realtime.connection_helpers._optimize_payload", return_value=event):
+        result = await send_personal_message_old_impl(player_id, event, mock_manager)
+        assert "success" in result
+        assert result["success"] is True  # Success when no connections to fail

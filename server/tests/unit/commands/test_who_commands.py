@@ -28,7 +28,7 @@ def test_filter_players_by_name_no_filter():
     charlie = MagicMock()
     charlie.name = "Charlie"
     players = [alice, bob, charlie]
-    
+
     result = filter_players_by_name(players, "")
     assert result == players
 
@@ -42,7 +42,7 @@ def test_filter_players_by_name_exact_match():
     charlie = MagicMock()
     charlie.name = "Charlie"
     players = [alice, bob, charlie]
-    
+
     result = filter_players_by_name(players, "Alice")
     assert len(result) == 1
     assert result[0].name == "Alice"
@@ -57,7 +57,7 @@ def test_filter_players_by_name_partial_match():
     charlie = MagicMock()
     charlie.name = "Charlie"
     players = [alice, bob, charlie]
-    
+
     result = filter_players_by_name(players, "Al")
     assert len(result) == 1
     assert result[0].name == "Alice"
@@ -72,7 +72,7 @@ def test_filter_players_by_name_case_insensitive():
     charlie = MagicMock()
     charlie.name = "Charlie"
     players = [alice, bob, charlie]
-    
+
     result = filter_players_by_name(players, "al")
     assert len(result) == 1
     assert result[0].name == "Alice"
@@ -82,7 +82,7 @@ def test_format_player_location_valid():
     """Test formatting valid player location."""
     room_id = "earth_arkhamcity_northside_intersection_derby_high"
     result = format_player_location(room_id)
-    
+
     assert "Arkhamcity" in result
     assert "Northside" in result
     assert "Intersection Derby High" in result
@@ -107,9 +107,9 @@ def test_format_player_entry_basic():
     player.level = 5
     player.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
     player.is_admin = False
-    
+
     result = format_player_entry(player)
-    
+
     assert "TestPlayer" in result
     assert "[5]" in result
     assert "Arkhamcity" in result
@@ -122,9 +122,9 @@ def test_format_player_entry_admin():
     player.level = 10
     player.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
     player.is_admin = True
-    
+
     result = format_player_entry(player)
-    
+
     assert "AdminPlayer" in result
     assert "[ADMIN]" in result
 
@@ -137,9 +137,9 @@ def test_format_player_entry_missing_attributes():
     player.name = "TestPlayer"
     player.level = 5
     player.is_admin = False
-    
+
     result = format_player_entry(player)
-    
+
     # Should still format with fallback
     assert "TestPlayer" in result
 
@@ -207,9 +207,9 @@ async def test_filter_online_players_all_online():
     player2 = MagicMock()
     player2.name = "Player2"
     player2.last_active = datetime.now(UTC).isoformat()
-    
+
     result = await filter_online_players([player1, player2], threshold)
-    
+
     assert len(result) == 2
 
 
@@ -223,9 +223,9 @@ async def test_filter_online_players_some_offline():
     player2 = MagicMock()
     player2.name = "Player2"
     player2.last_active = (datetime.now(UTC) - timedelta(minutes=10)).isoformat()
-    
+
     result = await filter_online_players([player1, player2], threshold)
-    
+
     assert len(result) == 1
     assert result[0].name == "Player1"
 
@@ -240,9 +240,9 @@ async def test_filter_online_players_no_last_active():
     player2 = MagicMock()
     player2.name = "Player2"
     player2.last_active = datetime.now(UTC).isoformat()
-    
+
     result = await filter_online_players([player1, player2], threshold)
-    
+
     assert len(result) == 1
     assert result[0].name == "Player2"
 
@@ -272,9 +272,9 @@ def test_format_who_result_with_players():
     player2.level = 10
     player2.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
     player2.is_admin = False
-    
+
     result = format_who_result([player1, player2])
-    
+
     assert "Online Players (2)" in result
     assert "Alice" in result
     assert "Bob" in result
@@ -287,9 +287,9 @@ def test_format_who_result_with_players_and_filter():
     player1.level = 5
     player1.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
     player1.is_admin = False
-    
+
     result = format_who_result([player1], filter_term="al")
-    
+
     assert "Players matching 'al' (1)" in result
     assert "Alice" in result
 
@@ -298,7 +298,7 @@ def test_get_players_for_who_no_filter():
     """Test get_players_for_who without filter."""
     players = [MagicMock(name="Alice"), MagicMock(name="Bob")]
     result_players, filter_term = get_players_for_who(players, "")
-    
+
     assert result_players == players
     assert filter_term is None
 
@@ -310,9 +310,9 @@ def test_get_players_for_who_with_filter():
     bob = MagicMock()
     bob.name = "Bob"
     players = [alice, bob]
-    
+
     result_players, filter_term = get_players_for_who(players, "al")
-    
+
     assert len(result_players) == 1
     assert result_players[0].name == "Alice"
     assert filter_term == "al"
@@ -323,7 +323,7 @@ async def test_handle_who_command_no_persistence():
     """Test handle_who_command when persistence is not available."""
     mock_request = MagicMock()
     mock_request.app = None
-    
+
     result = await handle_who_command(
         command_data={},
         _current_user={},
@@ -331,7 +331,7 @@ async def test_handle_who_command_no_persistence():
         _alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "not available" in result["result"]
 
 
@@ -344,7 +344,7 @@ async def test_handle_who_command_no_players():
     mock_persistence = AsyncMock()
     mock_persistence.list_players = AsyncMock(return_value=[])
     mock_request.app.state.persistence = mock_persistence
-    
+
     result = await handle_who_command(
         command_data={},
         _current_user={},
@@ -352,7 +352,7 @@ async def test_handle_who_command_no_players():
         _alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "No players found" in result["result"]
 
 
@@ -363,7 +363,7 @@ async def test_handle_who_command_success():
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
     mock_persistence = AsyncMock()
-    
+
     # Create mock players with recent last_active
     player1 = MagicMock()
     player1.name = "Alice"
@@ -371,10 +371,10 @@ async def test_handle_who_command_success():
     player1.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
     player1.is_admin = False
     player1.last_active = datetime.now(UTC).isoformat()
-    
+
     mock_persistence.list_players = AsyncMock(return_value=[player1])
     mock_request.app.state.persistence = mock_persistence
-    
+
     result = await handle_who_command(
         command_data={},
         _current_user={},
@@ -382,7 +382,7 @@ async def test_handle_who_command_success():
         _alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "Online Players" in result["result"]
     assert "Alice" in result["result"]
 
@@ -394,24 +394,24 @@ async def test_handle_who_command_with_filter():
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
     mock_persistence = AsyncMock()
-    
+
     player1 = MagicMock()
     player1.name = "Alice"
     player1.level = 5
     player1.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
     player1.is_admin = False
     player1.last_active = datetime.now(UTC).isoformat()
-    
+
     player2 = MagicMock()
     player2.name = "Bob"
     player2.level = 10
     player2.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
     player2.is_admin = False
     player2.last_active = datetime.now(UTC).isoformat()
-    
+
     mock_persistence.list_players = AsyncMock(return_value=[player1, player2])
     mock_request.app.state.persistence = mock_persistence
-    
+
     result = await handle_who_command(
         command_data={"target_player": "al"},
         _current_user={},
@@ -419,7 +419,7 @@ async def test_handle_who_command_with_filter():
         _alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "Players matching 'al'" in result["result"]
     assert "Alice" in result["result"]
 
@@ -433,7 +433,7 @@ async def test_handle_who_command_error_handling():
     mock_persistence = AsyncMock()
     mock_persistence.list_players = AsyncMock(side_effect=ValueError("Test error"))
     mock_request.app.state.persistence = mock_persistence
-    
+
     result = await handle_who_command(
         command_data={},
         _current_user={},
@@ -441,7 +441,56 @@ async def test_handle_who_command_error_handling():
         _alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "Error retrieving player list" in result["result"]
     assert "Test error" in result["result"]
 
+
+def test_format_player_location_short_format():
+    """Test format_player_location() with short room ID format."""
+    room_id = "earth_zone_room"
+    result = format_player_location(room_id)
+    # Should use fallback formatting
+    assert "Zone Room" in result or "Unknown" in result
+
+
+def test_format_player_location_non_string():
+    """Test format_player_location() with non-string input."""
+    result = format_player_location(123)  # type: ignore[arg-type]
+    assert result == "Unknown Location"
+
+
+def test_format_player_entry_error_handling():
+    """Test format_player_entry() handles errors gracefully."""
+    player = MagicMock()
+    # Make accessing attributes raise errors
+    player.name = "TestPlayer"
+    player.level = 5
+    # Make current_room_id raise AttributeError
+    type(player).current_room_id = property(lambda self: (_ for _ in ()).throw(AttributeError("test")))
+    player.is_admin = False
+    result = format_player_entry(player)
+    # Should still return a formatted string
+    assert "TestPlayer" in result or "Unknown Player" in result
+
+
+@pytest.mark.asyncio
+async def test_filter_online_players_invalid_last_active():
+    """Test filter_online_players() handles invalid last_active."""
+    threshold = datetime.now(UTC) - timedelta(minutes=5)
+    player1 = MagicMock()
+    player1.name = "Player1"
+    player1.last_active = "invalid_datetime"
+    player2 = MagicMock()
+    player2.name = "Player2"
+    player2.last_active = datetime.now(UTC).isoformat()
+    result = await filter_online_players([player1, player2], threshold)
+    # Player1 should be skipped due to invalid last_active
+    assert len(result) == 1
+    assert result[0].name == "Player2"
+
+
+def test_parse_last_active_datetime_invalid_format():
+    """Test parse_last_active_datetime() with invalid format."""
+    result = parse_last_active_datetime("not-a-date")
+    assert result is None

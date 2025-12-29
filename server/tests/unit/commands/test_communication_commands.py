@@ -31,7 +31,7 @@ async def test_handle_say_command_no_message():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "Say what?" in result["result"]
 
 
@@ -40,7 +40,7 @@ async def test_handle_say_command_no_services():
     """Test handle_say_command when services are not available."""
     mock_request = MagicMock()
     mock_request.app = None
-    
+
     result = await handle_say_command(
         command_data={"message": "Hello"},
         current_user={},
@@ -48,7 +48,7 @@ async def test_handle_say_command_no_services():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "not available" in result["result"]
 
 
@@ -62,7 +62,7 @@ async def test_handle_say_command_player_not_found():
     mock_player_service.resolve_player_name = AsyncMock(return_value=None)
     mock_request.app.state.player_service = mock_player_service
     mock_request.app.state.chat_service = AsyncMock()
-    
+
     result = await handle_say_command(
         command_data={"message": "Hello"},
         current_user={},
@@ -70,7 +70,7 @@ async def test_handle_say_command_player_not_found():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "Player not found" in result["result"]
 
 
@@ -89,7 +89,7 @@ async def test_handle_say_command_success():
     mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
     mock_request.app.state.chat_service = mock_chat_service
     mock_request.app.state.player_service = mock_player_service
-    
+
     result = await handle_say_command(
         command_data={"message": "Hello"},
         current_user={},
@@ -97,7 +97,7 @@ async def test_handle_say_command_success():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "You say: Hello" in result["result"]
     mock_chat_service.send_say_message.assert_awaited_once()
 
@@ -112,7 +112,7 @@ async def test_handle_me_command_no_action():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "Do what?" in result["result"]
 
 
@@ -126,7 +126,7 @@ async def test_handle_me_command_success():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "TestPlayer waves hello" in result["result"]
 
 
@@ -135,7 +135,7 @@ async def test_handle_pose_command_no_persistence():
     """Test handle_pose_command when persistence is not available."""
     mock_request = MagicMock()
     mock_request.app = None
-    
+
     result = await handle_pose_command(
         command_data={"pose": "standing tall"},
         current_user={},
@@ -143,7 +143,7 @@ async def test_handle_pose_command_no_persistence():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "cannot set your pose" in result["result"]
 
 
@@ -156,7 +156,7 @@ async def test_handle_pose_command_player_not_found():
     mock_persistence = AsyncMock()
     mock_persistence.get_player_by_name = AsyncMock(return_value=None)
     mock_request.app.state.persistence = mock_persistence
-    
+
     result = await handle_pose_command(
         command_data={"pose": "standing tall"},
         current_user={"username": "TestPlayer"},
@@ -164,7 +164,7 @@ async def test_handle_pose_command_player_not_found():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "cannot set your pose" in result["result"]
 
 
@@ -180,7 +180,7 @@ async def test_handle_pose_command_clear_pose():
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_persistence.save_player = AsyncMock()
     mock_request.app.state.persistence = mock_persistence
-    
+
     result = await handle_pose_command(
         command_data={},
         current_user={"username": "TestPlayer"},
@@ -188,7 +188,7 @@ async def test_handle_pose_command_clear_pose():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "pose has been cleared" in result["result"]
     assert mock_player.pose is None
     mock_persistence.save_player.assert_awaited_once()
@@ -205,7 +205,7 @@ async def test_handle_pose_command_set_pose():
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_persistence.save_player = AsyncMock()
     mock_request.app.state.persistence = mock_persistence
-    
+
     result = await handle_pose_command(
         command_data={"pose": "standing tall"},
         current_user={"username": "TestPlayer"},
@@ -213,7 +213,7 @@ async def test_handle_pose_command_set_pose():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "Your pose is now: standing tall" in result["result"]
     assert mock_player.pose == "standing tall"
     mock_persistence.save_player.assert_awaited_once()
@@ -229,7 +229,7 @@ async def test_handle_local_command_no_message():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "Say what?" in result["result"]
 
 
@@ -238,7 +238,7 @@ async def test_handle_local_command_no_services():
     """Test handle_local_command when services are not available."""
     mock_request = MagicMock()
     mock_request.app = None
-    
+
     result = await handle_local_command(
         command_data={"message": "Hello"},
         current_user={},
@@ -246,7 +246,7 @@ async def test_handle_local_command_no_services():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "not available" in result["result"]
 
 
@@ -265,7 +265,7 @@ async def test_handle_local_command_success():
     mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
     mock_request.app.state.chat_service = mock_chat_service
     mock_request.app.state.player_service = mock_player_service
-    
+
     result = await handle_local_command(
         command_data={"message": "Hello"},
         current_user={},
@@ -273,7 +273,7 @@ async def test_handle_local_command_success():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "You say locally: Hello" in result["result"]
     mock_chat_service.send_local_message.assert_awaited_once()
 
@@ -288,7 +288,7 @@ async def test_handle_global_command_no_message():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "Say what?" in result["result"]
 
 
@@ -297,7 +297,7 @@ async def test_handle_global_command_no_services():
     """Test handle_global_command when services are not available."""
     mock_request = MagicMock()
     mock_request.app = None
-    
+
     result = await handle_global_command(
         command_data={"message": "Hello"},
         current_user={},
@@ -305,7 +305,7 @@ async def test_handle_global_command_no_services():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "not available" in result["result"]
 
 
@@ -321,7 +321,7 @@ async def test_handle_global_command_level_too_low():
     mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
     mock_request.app.state.player_service = mock_player_service
     mock_request.app.state.chat_service = AsyncMock()
-    
+
     result = await handle_global_command(
         command_data={"message": "Hello"},
         current_user={},
@@ -329,7 +329,7 @@ async def test_handle_global_command_level_too_low():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "must be at least level 1" in result["result"]
 
 
@@ -348,7 +348,7 @@ async def test_handle_global_command_success():
     mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
     mock_request.app.state.chat_service = mock_chat_service
     mock_request.app.state.player_service = mock_player_service
-    
+
     result = await handle_global_command(
         command_data={"message": "Hello"},
         current_user={},
@@ -356,7 +356,7 @@ async def test_handle_global_command_success():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "You say (global): Hello" in result["result"]
     mock_chat_service.send_global_message.assert_awaited_once()
 
@@ -371,7 +371,7 @@ async def test_handle_system_command_no_message():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "System what?" in result["result"]
 
 
@@ -380,7 +380,7 @@ async def test_handle_system_command_no_services():
     """Test handle_system_command when services are not available."""
     mock_request = MagicMock()
     mock_request.app = None
-    
+
     result = await handle_system_command(
         command_data={"message": "Hello"},
         current_user={},
@@ -388,7 +388,7 @@ async def test_handle_system_command_no_services():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "not available" in result["result"]
 
 
@@ -408,7 +408,7 @@ async def test_handle_system_command_not_admin():
     mock_request.app.state.player_service = mock_player_service
     mock_request.app.state.chat_service = AsyncMock()
     mock_request.app.state.user_manager = mock_user_manager
-    
+
     result = await handle_system_command(
         command_data={"message": "Hello"},
         current_user={},
@@ -416,7 +416,7 @@ async def test_handle_system_command_not_admin():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "must be an admin" in result["result"]
 
 
@@ -438,7 +438,7 @@ async def test_handle_system_command_success():
     mock_request.app.state.chat_service = mock_chat_service
     mock_request.app.state.player_service = mock_player_service
     mock_request.app.state.user_manager = mock_user_manager
-    
+
     result = await handle_system_command(
         command_data={"message": "Hello"},
         current_user={},
@@ -446,7 +446,7 @@ async def test_handle_system_command_success():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "You system: Hello" in result["result"]
     mock_chat_service.send_system_message.assert_awaited_once()
     mock_user_manager.is_admin.assert_called_once_with(player_id)
@@ -462,7 +462,7 @@ async def test_handle_whisper_command_no_target():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "Say what?" in result["result"]
 
 
@@ -476,7 +476,7 @@ async def test_handle_whisper_command_no_message():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "Say what?" in result["result"]
 
 
@@ -485,7 +485,7 @@ async def test_handle_whisper_command_no_services():
     """Test handle_whisper_command when services are not available."""
     mock_request = MagicMock()
     mock_request.app = None
-    
+
     result = await handle_whisper_command(
         command_data={"target": "OtherPlayer", "message": "Hello"},
         current_user={},
@@ -493,7 +493,7 @@ async def test_handle_whisper_command_no_services():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "not available" in result["result"]
 
 
@@ -509,7 +509,7 @@ async def test_handle_whisper_command_target_not_found():
     mock_player_service.resolve_player_name = AsyncMock(side_effect=[mock_sender, None])
     mock_request.app.state.player_service = mock_player_service
     mock_request.app.state.chat_service = AsyncMock()
-    
+
     result = await handle_whisper_command(
         command_data={"target": "OtherPlayer", "message": "Hello"},
         current_user={},
@@ -517,7 +517,7 @@ async def test_handle_whisper_command_target_not_found():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "not found" in result["result"]
 
 
@@ -534,7 +534,7 @@ async def test_handle_whisper_command_whisper_to_self():
     mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
     mock_request.app.state.player_service = mock_player_service
     mock_request.app.state.chat_service = AsyncMock()
-    
+
     result = await handle_whisper_command(
         command_data={"target": "TestPlayer", "message": "Hello"},
         current_user={},
@@ -542,7 +542,7 @@ async def test_handle_whisper_command_whisper_to_self():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "cannot whisper to yourself" in result["result"]
 
 
@@ -562,7 +562,7 @@ async def test_handle_whisper_command_success():
     mock_player_service.resolve_player_name = AsyncMock(side_effect=[mock_sender, mock_target])
     mock_request.app.state.chat_service = mock_chat_service
     mock_request.app.state.player_service = mock_player_service
-    
+
     result = await handle_whisper_command(
         command_data={"target": "OtherPlayer", "message": "Hello"},
         current_user={},
@@ -570,7 +570,7 @@ async def test_handle_whisper_command_success():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "You whisper to OtherPlayer: Hello" in result["result"]
     mock_chat_service.send_whisper_message.assert_awaited_once()
 
@@ -585,7 +585,7 @@ async def test_handle_reply_command_no_message():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "Say what?" in result["result"]
 
 
@@ -594,7 +594,7 @@ async def test_handle_reply_command_no_services():
     """Test handle_reply_command when services are not available."""
     mock_request = MagicMock()
     mock_request.app = None
-    
+
     result = await handle_reply_command(
         command_data={"message": "Hello"},
         current_user={},
@@ -602,7 +602,7 @@ async def test_handle_reply_command_no_services():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "not available" in result["result"]
 
 
@@ -620,7 +620,7 @@ async def test_handle_reply_command_no_last_whisper_sender():
     mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
     mock_request.app.state.chat_service = mock_chat_service
     mock_request.app.state.player_service = mock_player_service
-    
+
     result = await handle_reply_command(
         command_data={"message": "Hello"},
         current_user={},
@@ -628,7 +628,7 @@ async def test_handle_reply_command_no_last_whisper_sender():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "No one has whispered to you recently" in result["result"]
 
 
@@ -649,7 +649,7 @@ async def test_handle_reply_command_success():
     mock_player_service.resolve_player_name = AsyncMock(side_effect=[mock_sender, mock_target])
     mock_request.app.state.chat_service = mock_chat_service
     mock_request.app.state.player_service = mock_player_service
-    
+
     result = await handle_reply_command(
         command_data={"message": "Hello"},
         current_user={},
@@ -657,6 +657,181 @@ async def test_handle_reply_command_success():
         alias_storage=None,
         player_name="TestPlayer",
     )
-    
+
     assert "You whisper to OtherPlayer: Hello" in result["result"]
     mock_chat_service.send_whisper_message.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_handle_say_command_no_room():
+    """Test handle_say_command when player has no current room."""
+    mock_request = MagicMock()
+    mock_request.app = MagicMock()
+    mock_request.app.state = MagicMock()
+    mock_player_service = AsyncMock()
+    mock_player = MagicMock()
+    mock_player.current_room_id = None
+    mock_player.id = uuid.uuid4()
+    mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
+    mock_request.app.state.player_service = mock_player_service
+    mock_request.app.state.chat_service = AsyncMock()
+
+    result = await handle_say_command(
+        command_data={"message": "Hello"},
+        current_user={},
+        request=mock_request,
+        alias_storage=None,
+        player_name="TestPlayer",
+    )
+
+    assert "not in a room" in result["result"]
+
+
+@pytest.mark.asyncio
+async def test_handle_say_command_no_player_id():
+    """Test handle_say_command when player has no ID."""
+    mock_request = MagicMock()
+    mock_request.app = MagicMock()
+    mock_request.app.state = MagicMock()
+    mock_player_service = AsyncMock()
+    mock_player = MagicMock()
+    mock_player.current_room_id = "test_room"
+    mock_player.id = None
+    mock_player.player_id = None
+    mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
+    mock_request.app.state.player_service = mock_player_service
+    mock_request.app.state.chat_service = AsyncMock()
+
+    result = await handle_say_command(
+        command_data={"message": "Hello"},
+        current_user={},
+        request=mock_request,
+        alias_storage=None,
+        player_name="TestPlayer",
+    )
+
+    assert "Player ID not found" in result["result"]
+
+
+@pytest.mark.asyncio
+async def test_handle_say_command_chat_service_failure():
+    """Test handle_say_command when chat service returns failure."""
+    mock_request = MagicMock()
+    mock_request.app = MagicMock()
+    mock_request.app.state = MagicMock()
+    mock_chat_service = AsyncMock()
+    mock_chat_service.send_say_message = AsyncMock(return_value={"success": False, "error": "Service unavailable"})
+    mock_player_service = AsyncMock()
+    mock_player = MagicMock()
+    mock_player.current_room_id = "test_room"
+    mock_player.id = uuid.uuid4()
+    mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
+    mock_request.app.state.chat_service = mock_chat_service
+    mock_request.app.state.player_service = mock_player_service
+
+    result = await handle_say_command(
+        command_data={"message": "Hello"},
+        current_user={},
+        request=mock_request,
+        alias_storage=None,
+        player_name="TestPlayer",
+    )
+
+    assert "Error" in result["result"] or "error" in result["result"].lower()
+
+
+@pytest.mark.asyncio
+async def test_handle_say_command_exception():
+    """Test handle_say_command handles exceptions."""
+    mock_request = MagicMock()
+    mock_request.app = MagicMock()
+    mock_request.app.state = MagicMock()
+    mock_player_service = AsyncMock()
+    mock_player_service.resolve_player_name = AsyncMock(side_effect=Exception("Database error"))
+    mock_request.app.state.player_service = mock_player_service
+    mock_request.app.state.chat_service = AsyncMock()
+
+    result = await handle_say_command(
+        command_data={"message": "Hello"},
+        current_user={},
+        request=mock_request,
+        alias_storage=None,
+        player_name="TestPlayer",
+    )
+
+    assert "Error" in result["result"] or "error" in result["result"].lower()
+
+
+@pytest.mark.asyncio
+async def test_handle_local_command_no_room():
+    """Test handle_local_command when player has no current room."""
+    mock_request = MagicMock()
+    mock_request.app = MagicMock()
+    mock_request.app.state = MagicMock()
+    mock_player_service = AsyncMock()
+    mock_player = MagicMock()
+    mock_player.current_room_id = None
+    mock_player.id = uuid.uuid4()
+    mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
+    mock_request.app.state.player_service = mock_player_service
+    mock_request.app.state.chat_service = AsyncMock()
+
+    result = await handle_local_command(
+        command_data={"message": "Hello"},
+        current_user={},
+        request=mock_request,
+        alias_storage=None,
+        player_name="TestPlayer",
+    )
+
+    assert "not in a room" in result["result"]
+
+
+@pytest.mark.asyncio
+async def test_handle_global_command_player_not_found():
+    """Test handle_global_command when player is not found."""
+    mock_request = MagicMock()
+    mock_request.app = MagicMock()
+    mock_request.app.state = MagicMock()
+    mock_player_service = AsyncMock()
+    mock_player_service.resolve_player_name = AsyncMock(return_value=None)
+    mock_request.app.state.player_service = mock_player_service
+    mock_request.app.state.chat_service = AsyncMock()
+
+    result = await handle_global_command(
+        command_data={"message": "Hello"},
+        current_user={},
+        request=mock_request,
+        alias_storage=None,
+        player_name="TestPlayer",
+    )
+
+    assert "Player not found" in result["result"]
+
+
+@pytest.mark.asyncio
+async def test_handle_whisper_command_chat_service_failure():
+    """Test handle_whisper_command when chat service returns failure."""
+    mock_request = MagicMock()
+    mock_request.app = MagicMock()
+    mock_request.app.state = MagicMock()
+    mock_chat_service = AsyncMock()
+    mock_chat_service.send_whisper_message = AsyncMock(return_value={"success": False, "error": "Target offline"})
+    mock_player_service = AsyncMock()
+    mock_sender = MagicMock()
+    mock_sender.id = uuid.uuid4()
+    mock_target = MagicMock()
+    mock_target.id = uuid.uuid4()
+    mock_player_service.resolve_player_name = AsyncMock(side_effect=[mock_sender, mock_target])
+    mock_request.app.state.chat_service = mock_chat_service
+    mock_request.app.state.player_service = mock_player_service
+
+    result = await handle_whisper_command(
+        command_data={"target": "OtherPlayer", "message": "Hello"},
+        current_user={},
+        request=mock_request,
+        alias_storage=None,
+        player_name="TestPlayer",
+    )
+
+    assert "Error" in result["result"] or "error" in result["result"].lower()

@@ -247,7 +247,9 @@ async def test_handle_item_look_in_inventory(mock_prototype_registry, sample_inv
     player.get_inventory.return_value = [sample_inventory_item]
     player.get_equipped_items.return_value = {}
     command_data = {}
-    result = await _handle_item_look("potion", "potion", None, [], player, mock_prototype_registry, command_data, "TestPlayer")
+    result = await _handle_item_look(
+        "potion", "potion", None, [], player, mock_prototype_registry, command_data, "TestPlayer"
+    )
     assert result is not None
     assert "result" in result
     assert "potion" in result["result"].lower()
@@ -260,7 +262,9 @@ async def test_handle_item_look_in_equipped(mock_prototype_registry, sample_equi
     player.get_inventory.return_value = []
     player.get_equipped_items.return_value = {"chest": sample_equipped_item}
     command_data = {}
-    result = await _handle_item_look("armor", "armor", None, [], player, mock_prototype_registry, command_data, "TestPlayer")
+    result = await _handle_item_look(
+        "armor", "armor", None, [], player, mock_prototype_registry, command_data, "TestPlayer"
+    )
     assert result is not None
     assert "result" in result
     assert "armor" in result["result"].lower()
@@ -273,7 +277,9 @@ async def test_handle_item_look_not_found(mock_prototype_registry):
     player.get_inventory.return_value = []
     player.get_equipped_items.return_value = {}
     command_data = {}
-    result = await _handle_item_look("sword", "sword", None, [], player, mock_prototype_registry, command_data, "TestPlayer")
+    result = await _handle_item_look(
+        "sword", "sword", None, [], player, mock_prototype_registry, command_data, "TestPlayer"
+    )
     assert result is not None
     assert "don't see" in result["result"].lower()
 
@@ -285,7 +291,9 @@ async def test_handle_item_look_look_in_skips_equipped(mock_prototype_registry, 
     player.get_inventory.return_value = []
     player.get_equipped_items.return_value = {"chest": sample_equipped_item}
     command_data = {"look_in": True}
-    result = await _handle_item_look("armor", "armor", None, [], player, mock_prototype_registry, command_data, "TestPlayer")
+    result = await _handle_item_look(
+        "armor", "armor", None, [], player, mock_prototype_registry, command_data, "TestPlayer"
+    )
     assert result is not None
     assert "don't see" in result["result"].lower()
 
@@ -307,5 +315,137 @@ async def test_try_lookup_item_implicit_not_found(mock_prototype_registry):
     player = MagicMock()
     player.get_inventory.return_value = []
     player.get_equipped_items.return_value = {}
+    result = await _try_lookup_item_implicit("sword", None, [], player, mock_prototype_registry)
+    assert result is None
+
+
+def test_find_item_in_room_drops_by_item_id(sample_room_drop):
+    """Test finding item in room drops by item_id."""
+    room_drops = [sample_room_drop]
+    result = _find_item_in_room_drops(room_drops, "weapon_sword_001")
+    assert result == sample_room_drop
+
+
+def test_find_item_in_inventory_by_item_id(sample_inventory_item):
+    """Test finding item in inventory by item_id."""
+    inventory = [sample_inventory_item]
+    result = _find_item_in_inventory(inventory, "consumable_potion_001")
+    assert result == sample_inventory_item
+
+
+def test_find_item_in_inventory_with_name_field():
+    """Test finding item in inventory using 'name' field."""
+    inventory = [{"name": "scroll", "item_id": "item_002"}]
+    result = _find_item_in_inventory(inventory, "scroll")
+    assert result is not None
+    assert result["name"] == "scroll"
+
+
+def test_find_item_in_equipped_by_prototype_id(sample_equipped_item):
+    """Test finding item in equipped by prototype_id."""
+    equipped = {"chest": sample_equipped_item}
+    result = _find_item_in_equipped(equipped, "armor_plate_001")
+    assert result == ("chest", sample_equipped_item)
+
+
+def test_get_item_description_from_prototype_with_item_id():
+    """Test getting item description using item_id when prototype_id missing."""
+    item = {"item_id": "weapon_sword_001", "item_name": "Sword"}
+    registry = MagicMock()
+    prototype = MagicMock()
+    prototype.name = "Test Item"
+    prototype.long_description = "A test item description."
+    registry.get.return_value = prototype
+    result = _get_item_description_from_prototype(item, registry)
+    assert result is not None
+    assert "Sword" in result
+
+
+def test_get_item_description_from_prototype_exception_handling():
+    """Test getting item description handles exceptions."""
+    item = {"prototype_id": "weapon_sword_001", "item_name": "Sword"}
+    registry = MagicMock()
+    # Make registry.get raise an exception
+    registry.get.side_effect = KeyError("test")
+    result = _get_item_description_from_prototype(item, registry)
+    assert result is not None
+    assert "Sword" in result
+    assert "nothing remarkable" in result
+
+
+def test_check_item_in_location_fallback_name():
+    """Test checking item in location uses fallback when no prototype."""
+    item = {"item_name": "Unknown Item"}
+    registry = MagicMock()
+    registry.get.return_value = None
+    result = _check_item_in_location(item, registry)
+    assert result is not None
+    assert "Unknown Item" in result["result"]
+
+
+def test_check_equipped_item_no_get_equipped_items_method(mock_prototype_registry):
+    """Test checking equipped item when player has no get_equipped_items method."""
+    player = MagicMock()
+    # Remove get_equipped_items method
+    del player.get_equipped_items
+    result = _check_equipped_item(player, "armor", None, mock_prototype_registry)
+    assert result is None
+
+
+@pytest.mark.asyncio
+async def test_handle_item_look_with_instance_number(mock_prototype_registry, sample_room_drop):
+    """Test handling item look with instance number."""
+    player = MagicMock()
+    player.get_inventory.return_value = []
+    player.get_equipped_items.return_value = {}
+    command_data = {}
+    # Add duplicate items
+    room_drops = [sample_room_drop, {**sample_room_drop, "item_id": "weapon_sword_002"}]
+    result = await _handle_item_look(
+        "sword", "sword", 1, room_drops, player, mock_prototype_registry, command_data, "TestPlayer"
+    )
+    assert result is not None
+    assert "result" in result
+
+
+@pytest.mark.asyncio
+async def test_try_lookup_item_implicit_in_equipped(mock_prototype_registry, sample_equipped_item):
+    """Test trying implicit lookup when item is equipped."""
+    player = MagicMock()
+    player.get_inventory.return_value = []
+    player.get_equipped_items.return_value = {"chest": sample_equipped_item}
+    result = await _try_lookup_item_implicit("armor", None, [], player, mock_prototype_registry)
+    assert result is not None
+    assert "armor" in result["result"].lower() or "equipped" in result["result"].lower()
+
+
+@pytest.mark.asyncio
+async def test_handle_item_look_player_no_get_inventory(mock_prototype_registry, sample_room_drop):
+    """Test _handle_item_look() when player has no get_inventory method."""
+    player = MagicMock()
+    del player.get_inventory
+    command_data = {}
+    result = await _handle_item_look(
+        "sword", "sword", None, [sample_room_drop], player, mock_prototype_registry, command_data, "TestPlayer"
+    )
+    assert result is not None
+    assert "result" in result
+
+
+@pytest.mark.asyncio
+async def test_try_lookup_item_implicit_player_no_get_inventory(mock_prototype_registry):
+    """Test _try_lookup_item_implicit() when player has no get_inventory method."""
+    player = MagicMock()
+    del player.get_inventory
+    result = await _try_lookup_item_implicit("sword", None, [], player, mock_prototype_registry)
+    assert result is None
+
+
+@pytest.mark.asyncio
+async def test_try_lookup_item_implicit_player_no_get_equipped_items(mock_prototype_registry):
+    """Test _try_lookup_item_implicit() when player has no get_equipped_items method."""
+    player = MagicMock()
+    player.get_inventory.return_value = []
+    del player.get_equipped_items
     result = await _try_lookup_item_implicit("sword", None, [], player, mock_prototype_registry)
     assert result is None
