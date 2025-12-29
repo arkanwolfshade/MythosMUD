@@ -5,9 +5,7 @@ Tests the connection_room_utils module functions.
 """
 
 import uuid
-from unittest.mock import AsyncMock, MagicMock, patch
-
-import pytest
+from unittest.mock import MagicMock
 
 from server.realtime.connection_room_utils import (
     canonical_room_id_impl,

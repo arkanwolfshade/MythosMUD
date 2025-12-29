@@ -14,8 +14,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.lucidity import LucidityAdjustmentLog, LucidityCooldown, LucidityExposureState, PlayerLucidity
+from ..structured_logging.enhanced_logging_config import get_logger
 from .lucidity_event_dispatcher import (
     send_catatonia_event,
     send_lucidity_change_event,

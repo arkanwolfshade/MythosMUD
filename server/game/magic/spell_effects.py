@@ -9,11 +9,11 @@ import uuid
 from typing import Any, assert_never
 
 from server.game.player_service import PlayerService
-from server.structured_logging.enhanced_logging_config import get_logger
 from server.models.game import StatusEffect, StatusEffectType
 from server.models.spell import Spell, SpellEffectType
 from server.persistence.repositories.player_spell_repository import PlayerSpellRepository
 from server.schemas.target_resolution import TargetMatch, TargetType
+from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

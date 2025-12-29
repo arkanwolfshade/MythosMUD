@@ -11,7 +11,6 @@ from uuid import UUID
 
 from ..alias_storage import AliasStorage
 from ..exceptions import ValidationError as MythosValidationError
-from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.player import Player
 from ..realtime.envelope import build_event
 from ..schemas.inventory_schema import InventorySchemaValidationError
@@ -23,6 +22,7 @@ from ..services.inventory_service import (
     InventoryValidationError,
 )
 from ..services.wearable_container_service import WearableContainerService
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
 
 logger = get_logger(__name__)

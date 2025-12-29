@@ -66,7 +66,7 @@ def test_alias_storage_init_without_env_var():
 def test_alias_storage_creates_directory(temp_storage_dir):
     """Test that AliasStorage creates the storage directory if it doesn't exist."""
     new_dir = temp_storage_dir / "new_dir"
-    storage = AliasStorage(storage_dir=str(new_dir))
+    AliasStorage(storage_dir=str(new_dir))
     assert new_dir.exists()
 
 

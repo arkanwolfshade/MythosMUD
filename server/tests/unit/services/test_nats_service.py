@@ -166,7 +166,7 @@ def test_nats_metrics_message_processing_times_maxlen():
     """Test NATSMetrics message_processing_times deque has maxlen."""
     metrics = NATSMetrics()
     # Fill beyond maxlen (1000)
-    for i in range(1500):
+    for _i in range(1500):
         metrics.record_publish(success=True, processing_time=0.1)
     # Should only keep last 1000
     assert len(metrics.message_processing_times) == 1000
@@ -246,7 +246,9 @@ async def test_connect_state_machine_blocked(nats_service):
     # Force state machine to block connection by opening circuit first
     nats_service.state_machine.max_reconnect_attempts = 1
     # Trigger a connection failure to get into reconnecting state
-    with patch("server.services.nats_service.nats.connect", new_callable=AsyncMock, side_effect=Exception("Connection failed")):
+    with patch(
+        "server.services.nats_service.nats.connect", new_callable=AsyncMock, side_effect=Exception("Connection failed")
+    ):
         await nats_service.connect()  # This will open circuit
     # Now try to connect again - should be blocked
     result = await nats_service.connect()
@@ -256,7 +258,9 @@ async def test_connect_state_machine_blocked(nats_service):
 @pytest.mark.asyncio
 async def test_connect_failure(nats_service):
     """Test connect() handles connection failure."""
-    with patch("server.services.nats_service.nats.connect", new_callable=AsyncMock, side_effect=Exception("Connection failed")):
+    with patch(
+        "server.services.nats_service.nats.connect", new_callable=AsyncMock, side_effect=Exception("Connection failed")
+    ):
         result = await nats_service.connect()
         assert result is False
         assert nats_service._connection_retries == 1
@@ -267,7 +271,9 @@ async def test_connect_circuit_breaker_opens(nats_service):
     """Test connect() opens circuit breaker after max retries."""
     nats_service._max_retries = 1
     nats_service.state_machine.max_reconnect_attempts = 1
-    with patch("server.services.nats_service.nats.connect", new_callable=AsyncMock, side_effect=Exception("Connection failed")):
+    with patch(
+        "server.services.nats_service.nats.connect", new_callable=AsyncMock, side_effect=Exception("Connection failed")
+    ):
         # First failure - should open circuit
         result = await nats_service.connect()
         assert result is False
@@ -462,7 +468,7 @@ async def test_request_timeout(nats_service):
     """Test request() handles timeout."""
     mock_client = MagicMock()
     mock_client.is_connected = True
-    mock_client.request = AsyncMock(side_effect=asyncio.TimeoutError())
+    mock_client.request = AsyncMock(side_effect=TimeoutError())
     nats_service.nc = mock_client
     reply = await nats_service.request("test.subject", {"request": "data"}, timeout=0.1)
     assert reply is None
@@ -526,7 +532,7 @@ async def test_perform_health_check_no_client(nats_service):
 async def test_perform_health_check_timeout(nats_service):
     """Test _perform_health_check() returns False on timeout."""
     mock_client = MagicMock()
-    mock_client.flush = AsyncMock(side_effect=asyncio.TimeoutError())
+    mock_client.flush = AsyncMock(side_effect=TimeoutError())
     nats_service.nc = mock_client
     result = await nats_service._perform_health_check()
     assert result is False
@@ -565,9 +571,11 @@ async def test_cancel_background_tasks_empty(nats_service):
 @pytest.mark.asyncio
 async def test_stop_health_monitoring(nats_service):
     """Test _stop_health_monitoring() stops health check task."""
+
     # Create a real task that can be cancelled
     async def dummy_task():
         await asyncio.sleep(10)
+
     task = asyncio.create_task(dummy_task())
     nats_service._health_check_task = task
     await nats_service._stop_health_monitoring()

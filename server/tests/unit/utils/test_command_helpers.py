@@ -59,7 +59,7 @@ def test_validate_command_safety_xss_attempts():
 def test_get_command_help_no_command():
     """Test get_command_help with no command (general help)."""
     result = get_command_help()
-    
+
     assert "Available Commands:" in result
     assert "look" in result
     assert "go" in result
@@ -78,7 +78,7 @@ def test_get_command_help_specific_commands():
 def test_get_command_help_unknown_command():
     """Test get_command_help with unknown command."""
     result = get_command_help("unknown_command")
-    
+
     assert "Unknown command: unknown_command" == result
 
 
@@ -86,7 +86,7 @@ def test_get_command_help_case_insensitive():
     """Test get_command_help is case insensitive."""
     result_upper = get_command_help("LOOK")
     result_lower = get_command_help("look")
-    
+
     assert result_upper == result_lower
 
 
@@ -96,7 +96,7 @@ def test_get_username_from_user_player_object():
         def __init__(self):
             self.name = "TestPlayer"
             self.player_id = "123"
-    
+
     player = MockPlayer()
     assert get_username_from_user(player) == "TestPlayer"
 
@@ -106,7 +106,7 @@ def test_get_username_from_user_username_attribute():
     class MockUser:
         def __init__(self):
             self.username = "testuser"
-    
+
     user = MockUser()
     assert get_username_from_user(user) == "testuser"
 
@@ -116,7 +116,7 @@ def test_get_username_from_user_name_attribute():
     class MockUser:
         def __init__(self):
             self.name = "TestUser"
-    
+
     user = MockUser()
     assert get_username_from_user(user) == "TestUser"
 
@@ -158,7 +158,7 @@ def test_get_username_from_user_priority_player_over_username():
             self.name = "TestPlayer"
             self.player_id = "123"
             self.username = "testuser"
-    
+
     player = MockPlayer()
     # Should return name, not username, because it has player_id
     assert get_username_from_user(player) == "TestPlayer"

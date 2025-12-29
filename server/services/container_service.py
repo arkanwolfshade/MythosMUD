@@ -19,8 +19,8 @@ from typing import Any
 from uuid import UUID
 
 from ..exceptions import MythosMUDError, ValidationError
-from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.container import ContainerComponent, ContainerLockState, ContainerSourceType
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.audit_logger import audit_logger
 from ..utils.error_logging import create_error_context, log_and_raise
 from .inventory_mutation_guard import InventoryMutationGuard

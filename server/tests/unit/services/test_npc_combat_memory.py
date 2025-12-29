@@ -4,7 +4,6 @@ Unit tests for NPC combat memory.
 Tests the NPCCombatMemory class for tracking NPC attackers.
 """
 
-import pytest
 
 from server.services.npc_combat_memory import NPCCombatMemory
 

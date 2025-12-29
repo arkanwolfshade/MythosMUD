@@ -12,8 +12,8 @@ import uuid
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
-from ...structured_logging.enhanced_logging_config import get_logger
 from ...models import Player
+from ...structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable

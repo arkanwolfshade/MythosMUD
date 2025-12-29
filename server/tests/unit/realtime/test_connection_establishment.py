@@ -6,7 +6,7 @@ Tests the connection_establishment module functions.
 
 import asyncio
 import uuid
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 from fastapi import WebSocket
@@ -421,7 +421,6 @@ def test_cleanup_failed_connection_success():
 
 def test_cleanup_failed_connection_error():
     """Test _cleanup_failed_connection() handles errors during cleanup."""
-    from server.exceptions import DatabaseError
 
     connection_id = "conn_123"
     player_id = uuid.uuid4()

@@ -16,10 +16,10 @@ from ..error_types import ErrorMessages
 from ..exceptions import DatabaseError, LoggedHTTPException, ValidationError
 from ..game.player_service import PlayerService
 from ..game.stats_generator import StatsGenerator
-from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.user import User
 from ..schemas.player import PlayerRead
 from ..schemas.player_requests import SelectCharacterRequest
+from ..structured_logging.enhanced_logging_config import get_logger
 from .player_helpers import create_error_context
 
 logger = get_logger(__name__)

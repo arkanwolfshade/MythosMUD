@@ -11,7 +11,7 @@ import pytest
 from sqlalchemy.exc import SQLAlchemyError
 
 from server.exceptions import DatabaseError
-from server.models.npc import NPCDefinition, NPCDefinitionType, NPCSpawnRule
+from server.models.npc import NPCDefinition, NPCSpawnRule
 from server.services.npc_service import NPCService
 
 
@@ -135,7 +135,7 @@ async def test_get_npc_definition_error(mock_session, npc_service):
     """Test get_npc_definition() handles errors."""
     mock_session.execute.side_effect = Exception("Unexpected error")
 
-    with pytest.raises(Exception):
+    with pytest.raises(Exception, match="Unexpected error"):
         await npc_service.get_npc_definition(mock_session, 1)
 
 

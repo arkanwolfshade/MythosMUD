@@ -15,7 +15,6 @@ from typing import Any
 
 import psutil
 
-from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.health import (
     ConnectionsComponent,
     DatabaseComponent,
@@ -25,6 +24,7 @@ from ..models.health import (
     ServerComponent,
 )
 from ..realtime.connection_manager import resolve_connection_manager
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

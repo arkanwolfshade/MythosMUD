@@ -5,13 +5,13 @@ This module contains factory methods for combat-related commands:
 attack, punch, kick, strike.
 """
 
-from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.command import (
     AttackCommand,
     KickCommand,
     PunchCommand,
     StrikeCommand,
 )
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

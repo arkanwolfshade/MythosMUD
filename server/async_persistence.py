@@ -17,7 +17,6 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from .database import get_async_session
 from .exceptions import DatabaseError, ValidationError
-from .structured_logging.enhanced_logging_config import get_logger
 from .models.player import Player
 from .models.profession import Profession
 from .models.user import User
@@ -31,6 +30,7 @@ from .persistence.repositories import (
     RoomRepository,
 )
 from .persistence.repositories.container_repository import ContainerCreateParams
+from .structured_logging.enhanced_logging_config import get_logger
 from .utils.error_logging import create_error_context, log_and_raise
 
 if TYPE_CHECKING:

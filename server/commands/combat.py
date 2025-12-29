@@ -9,7 +9,6 @@ from typing import TYPE_CHECKING, Any
 
 from server.alias_storage import AliasStorage
 from server.config import get_config
-from server.structured_logging.enhanced_logging_config import get_logger
 
 # Removed: from server.persistence import get_persistence - now using async_persistence parameter
 from server.schemas.target_resolution import TargetType
@@ -17,6 +16,7 @@ from server.services.npc_combat_integration_service import (
     NPCCombatIntegrationService,
 )
 from server.services.target_resolution_service import TargetResolutionService
+from server.structured_logging.enhanced_logging_config import get_logger
 from server.validators.combat_validator import CombatValidator
 
 if TYPE_CHECKING:

@@ -11,7 +11,6 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from server.realtime.circuit_breaker import CircuitBreakerOpen
-from server.realtime.dead_letter_queue import DeadLetterMessage
 from server.realtime.nats_message_handler import NATSMessageHandler
 from server.realtime.nats_retry_handler import NATSRetryHandler
 from server.services.nats_exceptions import NATSError, NATSSubscribeError

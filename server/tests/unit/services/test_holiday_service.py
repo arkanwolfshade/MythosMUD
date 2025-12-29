@@ -94,9 +94,7 @@ class TestHolidayService:
             ]
             collection = HolidayCollection(holidays=sample_holidays)
             mock_load.return_value = collection
-            service = HolidayService(
-                chronicle=mock_chronicle, async_persistence=mock_persistence, environment="test"
-            )
+            service = HolidayService(chronicle=mock_chronicle, async_persistence=mock_persistence, environment="test")
             assert len(service._collection.holidays) == 1
             assert service._collection.holidays[0].id == "test_holiday"
 
@@ -210,7 +208,6 @@ class TestHolidayService:
         collection = HolidayCollection(holidays=sample_holidays)
         service = HolidayService(chronicle=mock_chronicle, collection=collection, environment="test")
 
-        current_dt = datetime(2024, 1, 10, 12, 0, 0, tzinfo=UTC)
         summary = service.get_upcoming_summary(count=1)
 
         assert len(summary) == 1

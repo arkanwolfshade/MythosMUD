@@ -7,8 +7,6 @@ Tests the rate_limiter module classes and functions.
 import time
 from unittest.mock import patch
 
-import pytest
-
 from server.realtime.rate_limiter import RateLimiter
 
 
@@ -52,7 +50,7 @@ def test_rate_limiter_check_rate_limit_within_limit():
     limiter = RateLimiter(max_connection_attempts=5, connection_window=60)
     player_id = "player_123"
 
-    for i in range(4):
+    for _i in range(4):
         result = limiter.check_rate_limit(player_id)
         assert result is True
 

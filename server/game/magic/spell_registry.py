@@ -7,9 +7,9 @@ with methods for lookup, filtering, and searching.
 
 from sqlalchemy.exc import SQLAlchemyError
 
-from server.structured_logging.enhanced_logging_config import get_logger
 from server.models.spell import Spell, SpellSchool
 from server.persistence.repositories.spell_repository import SpellRepository
+from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

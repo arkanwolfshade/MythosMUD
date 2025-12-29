@@ -6,12 +6,11 @@ Tests container persistence functions beyond _parse_jsonb_column.
 
 import json
 import uuid
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from unittest.mock import MagicMock, patch
 
-import pytest
 import psycopg2
-from psycopg2.extras import RealDictCursor
+import pytest
 
 from server.exceptions import DatabaseError
 from server.persistence.container_persistence import (
@@ -111,9 +110,9 @@ def test_fetch_container_items_success():
     }
     mock_cursor.fetchall.return_value = [mock_row1, mock_row2]
     mock_conn.cursor.return_value = mock_cursor
-    
+
     result = _fetch_container_items(mock_conn, container_id)
-    
+
     assert len(result) == 2
     assert result[0]["item_instance_id"] == str(mock_row1["item_instance_id"])
     assert result[0]["item_name"] == "Test Item"
@@ -128,9 +127,9 @@ def test_fetch_container_items_empty():
     mock_cursor = MagicMock()
     mock_cursor.fetchall.return_value = []
     mock_conn.cursor.return_value = mock_cursor
-    
+
     result = _fetch_container_items(mock_conn, container_id)
-    
+
     assert result == []
 
 
@@ -146,9 +145,9 @@ def test_fetch_container_items_missing_item_instance_id():
     }
     mock_cursor.fetchall.return_value = [mock_row]
     mock_conn.cursor.return_value = mock_cursor
-    
+
     result = _fetch_container_items(mock_conn, container_id)
-    
+
     assert result == []
 
 
@@ -159,9 +158,9 @@ def test_fetch_container_items_non_dict_row():
     mock_cursor = MagicMock()
     mock_cursor.fetchall.return_value = ["not a dict", {"item_instance_id": str(uuid.uuid4()), "item_id": "test"}]
     mock_conn.cursor.return_value = mock_cursor
-    
+
     result = _fetch_container_items(mock_conn, container_id)
-    
+
     # Should skip non-dict row, keep dict row
     assert len(result) == 1
 
@@ -182,9 +181,9 @@ def test_fetch_container_items_string_metadata():
     }
     mock_cursor.fetchall.return_value = [mock_row]
     mock_conn.cursor.return_value = mock_cursor
-    
+
     result = _fetch_container_items(mock_conn, container_id)
-    
+
     assert result[0]["metadata"] == {"key": "value"}
 
 
@@ -204,9 +203,9 @@ def test_fetch_container_items_invalid_json_metadata():
     }
     mock_cursor.fetchall.return_value = [mock_row]
     mock_conn.cursor.return_value = mock_cursor
-    
+
     result = _fetch_container_items(mock_conn, container_id)
-    
+
     # Should default to {} on JSON parse error
     assert result[0]["metadata"] == {}
 
@@ -227,9 +226,9 @@ def test_fetch_container_items_non_dict_metadata():
     }
     mock_cursor.fetchall.return_value = [mock_row]
     mock_conn.cursor.return_value = mock_cursor
-    
+
     result = _fetch_container_items(mock_conn, container_id)
-    
+
     # Should default to {} for non-dict metadata
     assert result[0]["metadata"] == {}
 
@@ -245,9 +244,9 @@ def test_fetch_container_items_missing_fields():
     }
     mock_cursor.fetchall.return_value = [mock_row]
     mock_conn.cursor.return_value = mock_cursor
-    
+
     result = _fetch_container_items(mock_conn, container_id)
-    
+
     assert len(result) == 1
     assert result[0]["item_id"] is None
     assert result[0]["item_name"] == "Unknown Item"
@@ -265,7 +264,7 @@ def test_container_data_init():
         owner_id=uuid.uuid4(),
         room_id="test_room",
     )
-    
+
     assert container.container_instance_id == container_id
     assert container.source_type == "environment"
     assert container.room_id == "test_room"
@@ -282,7 +281,7 @@ def test_container_data_to_dict():
     created_at = datetime.now(UTC)
     updated_at = datetime.now(UTC)
     decay_at = datetime.now(UTC)
-    
+
     container = ContainerData(
         container_instance_id=container_id,
         source_type="equipment",
@@ -298,9 +297,9 @@ def test_container_data_to_dict():
         created_at=created_at,
         updated_at=updated_at,
     )
-    
+
     result = container.to_dict()
-    
+
     assert result["container_id"] == str(container_id)
     assert result["source_type"] == "equipment"
     assert result["owner_id"] == str(owner_id)
@@ -328,9 +327,9 @@ def test_container_data_to_dict_none_values():
         created_at=None,
         updated_at=None,
     )
-    
+
     result = container.to_dict()
-    
+
     assert result["owner_id"] is None
     assert result["entity_id"] is None
     assert result["decay_at"] is None
@@ -360,13 +359,13 @@ def test_create_container_success():
         "container_item_instance_id": None,
     }
     mock_conn.cursor.return_value = mock_cursor
-    
+
     result = create_container(
         mock_conn,
         source_type="environment",
         room_id="test_room",
     )
-    
+
     assert isinstance(result, ContainerData)
     assert result.source_type == "environment"
     assert result.room_id == "test_room"
@@ -377,7 +376,7 @@ def test_create_container_database_error():
     """Test create_container handles database errors."""
     mock_conn = MagicMock()
     mock_conn.cursor.side_effect = psycopg2.Error("Database error")
-    
+
     with pytest.raises(DatabaseError, match="Database error creating container"):
         create_container(mock_conn, source_type="environment")
 
@@ -405,11 +404,11 @@ def test_get_container_success():
     }
     mock_cursor.fetchone.return_value = mock_row
     mock_conn.cursor.return_value = mock_cursor
-    
+
     # Mock _fetch_container_items
     with patch("server.persistence.container_persistence._fetch_container_items", return_value=[]):
         result = get_container(mock_conn, container_id)
-    
+
     assert isinstance(result, ContainerData)
     assert result.container_instance_id == container_id
     assert result.source_type == "environment"
@@ -422,9 +421,9 @@ def test_get_container_not_found():
     mock_cursor = MagicMock()
     mock_cursor.fetchone.return_value = None
     mock_conn.cursor.return_value = mock_cursor
-    
+
     result = get_container(mock_conn, container_id)
-    
+
     assert result is None
 
 
@@ -433,7 +432,7 @@ def test_get_container_database_error():
     container_id = uuid.uuid4()
     mock_conn = MagicMock()
     mock_conn.cursor.side_effect = psycopg2.Error("Database error")
-    
+
     with pytest.raises(DatabaseError, match="Database error retrieving container"):
         get_container(mock_conn, container_id)
 
@@ -461,11 +460,11 @@ def test_get_containers_by_room_id_success():
     }
     mock_cursor.fetchall.return_value = [mock_row]
     mock_conn.cursor.return_value = mock_cursor
-    
+
     # Mock _fetch_container_items
     with patch("server.persistence.container_persistence._fetch_container_items", return_value=[]):
         result = get_containers_by_room_id(mock_conn, "test_room")
-    
+
     assert len(result) == 1
     assert isinstance(result[0], ContainerData)
     assert result[0].container_instance_id == container_id
@@ -477,9 +476,9 @@ def test_get_containers_by_room_id_empty():
     mock_cursor = MagicMock()
     mock_cursor.fetchall.return_value = []
     mock_conn.cursor.return_value = mock_cursor
-    
+
     result = get_containers_by_room_id(mock_conn, "test_room")
-    
+
     assert result == []
 
 
@@ -487,7 +486,7 @@ def test_get_containers_by_room_id_database_error():
     """Test get_containers_by_room_id handles database errors."""
     mock_conn = MagicMock()
     mock_conn.cursor.side_effect = psycopg2.Error("Database error")
-    
+
     with pytest.raises(DatabaseError, match="Database error retrieving containers"):
         get_containers_by_room_id(mock_conn, "test_room")
 
@@ -516,11 +515,11 @@ def test_get_containers_by_entity_id_success():
     }
     mock_cursor.fetchall.return_value = [mock_row]
     mock_conn.cursor.return_value = mock_cursor
-    
+
     # Mock _fetch_container_items
     with patch("server.persistence.container_persistence._fetch_container_items", return_value=[]):
         result = get_containers_by_entity_id(mock_conn, entity_id)
-    
+
     assert len(result) == 1
     assert isinstance(result[0], ContainerData)
     assert result[0].entity_id == entity_id
@@ -531,7 +530,7 @@ def test_get_containers_by_entity_id_database_error():
     entity_id = uuid.uuid4()
     mock_conn = MagicMock()
     mock_conn.cursor.side_effect = psycopg2.Error("Database error")
-    
+
     with pytest.raises(DatabaseError, match="Database error retrieving containers"):
         get_containers_by_entity_id(mock_conn, entity_id)
 
@@ -558,10 +557,10 @@ def test_update_container_success():
         "container_item_instance_id": None,
     }
     mock_conn.cursor.return_value = mock_cursor
-    
+
     # Mock _fetch_container_items and ensure_item_instance (which may call commit)
     with patch("server.persistence.container_persistence._fetch_container_items", return_value=[]):
-        with patch("server.persistence.item_instance_persistence.ensure_item_instance") as mock_ensure:
+        with patch("server.persistence.item_instance_persistence.ensure_item_instance"):
             # ensure_item_instance may call commit, so we need to account for that
             result = update_container(
                 mock_conn,
@@ -570,7 +569,7 @@ def test_update_container_success():
                 lock_state="locked",
                 metadata_json={"updated": True},
             )
-    
+
     assert isinstance(result, ContainerData)
     assert result.lock_state == "locked"
     # commit is called at least once (by update_container), and possibly by ensure_item_instance
@@ -584,9 +583,9 @@ def test_update_container_not_found():
     mock_cursor = MagicMock()
     mock_cursor.fetchone.return_value = None
     mock_conn.cursor.return_value = mock_cursor
-    
+
     result = update_container(mock_conn, container_id, lock_state="locked")
-    
+
     assert result is None
 
 
@@ -595,7 +594,7 @@ def test_update_container_database_error():
     container_id = uuid.uuid4()
     mock_conn = MagicMock()
     mock_conn.cursor.side_effect = psycopg2.Error("Database error")
-    
+
     with pytest.raises(DatabaseError, match="Database error updating container"):
         update_container(mock_conn, container_id, lock_state="locked")
 
@@ -624,11 +623,11 @@ def test_get_decayed_containers_success():
     }
     mock_cursor.fetchall.return_value = [mock_row]
     mock_conn.cursor.return_value = mock_cursor
-    
+
     # Mock _fetch_container_items
     with patch("server.persistence.container_persistence._fetch_container_items", return_value=[]):
         result = get_decayed_containers(mock_conn, current_time)
-    
+
     assert len(result) == 1
     assert isinstance(result[0], ContainerData)
 
@@ -639,9 +638,9 @@ def test_get_decayed_containers_none_time():
     mock_cursor = MagicMock()
     mock_cursor.fetchall.return_value = []
     mock_conn.cursor.return_value = mock_cursor
-    
+
     result = get_decayed_containers(mock_conn, None)
-    
+
     assert result == []
     # Verify query was executed (cursor.execute was called)
     assert mock_cursor.execute.called
@@ -651,7 +650,7 @@ def test_get_decayed_containers_database_error():
     """Test get_decayed_containers handles database errors."""
     mock_conn = MagicMock()
     mock_conn.cursor.side_effect = psycopg2.Error("Database error")
-    
+
     with pytest.raises(DatabaseError, match="Database error retrieving decayed containers"):
         get_decayed_containers(mock_conn, datetime.now(UTC))
 
@@ -663,9 +662,9 @@ def test_delete_container_success():
     mock_cursor = MagicMock()
     mock_cursor.rowcount = 1
     mock_conn.cursor.return_value = mock_cursor
-    
+
     result = delete_container(mock_conn, container_id)
-    
+
     assert result is True
     mock_conn.commit.assert_called_once()
 
@@ -677,9 +676,9 @@ def test_delete_container_not_found():
     mock_cursor = MagicMock()
     mock_cursor.fetchone.return_value = None  # No row returned = container not found
     mock_conn.cursor.return_value = mock_cursor
-    
+
     result = delete_container(mock_conn, container_id)
-    
+
     assert result is False
 
 
@@ -688,7 +687,6 @@ def test_delete_container_database_error():
     container_id = uuid.uuid4()
     mock_conn = MagicMock()
     mock_conn.cursor.side_effect = psycopg2.Error("Database error")
-    
+
     with pytest.raises(DatabaseError, match="Database error deleting container"):
         delete_container(mock_conn, container_id)
-

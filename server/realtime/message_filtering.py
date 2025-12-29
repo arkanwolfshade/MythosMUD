@@ -9,8 +9,8 @@ import uuid
 from typing import TYPE_CHECKING, Any, cast
 from unittest.mock import Mock
 
-from ..structured_logging.enhanced_logging_config import get_logger
 from ..services.nats_exceptions import NATSError
+from ..structured_logging.enhanced_logging_config import get_logger
 
 # Constants shared with nats_message_handler
 MUTE_SENSITIVE_CHANNELS = frozenset({"say", "local", "emote", "pose", "whisper", "global", "system", "admin"})

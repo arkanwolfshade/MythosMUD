@@ -10,11 +10,11 @@ import re
 from pydantic import ValidationError as PydanticValidationError
 
 from ..exceptions import ValidationError as MythosValidationError
-from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.command import (
     Command,
     CommandType,
 )
+from ..structured_logging.enhanced_logging_config import get_logger
 from .command_factories import CommandFactory
 from .command_helpers import get_command_help, get_username_from_user, validate_command_safety  # noqa: F401
 from .enhanced_error_logging import create_error_context, log_and_raise_enhanced

@@ -12,11 +12,10 @@ from typing import Any
 from sqlalchemy.exc import SQLAlchemyError
 
 from ..alias_storage import AliasStorage
-from ..structured_logging.enhanced_logging_config import get_logger
 from ..realtime.envelope import build_event
 from ..services.player_position_service import PlayerPositionService
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
-from .rescue_commands import handle_ground_command  # Backward compatibility
 
 logger = get_logger(__name__)
 

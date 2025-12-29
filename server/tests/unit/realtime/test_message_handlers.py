@@ -4,7 +4,7 @@ Unit tests for message handlers.
 Tests the message_handlers module functions.
 """
 
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, patch
 
 import pytest
 from fastapi import WebSocket

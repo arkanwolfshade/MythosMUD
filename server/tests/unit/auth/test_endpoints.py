@@ -1159,7 +1159,9 @@ async def test_register_user_generic_constraint_violation(mock_request, mock_ses
 async def test_register_user_password_validation_empty(mock_request, mock_session):
     """Test registration with empty password (should be rejected by Pydantic)."""
     # This should be caught by Pydantic validation before reaching the endpoint
-    with pytest.raises(Exception):  # Pydantic validation error
+    from pydantic import ValidationError
+
+    with pytest.raises(ValidationError):  # Pydantic validation error
         UserCreate(
             username="newuser",
             password="",  # Empty password
@@ -1170,7 +1172,9 @@ async def test_register_user_password_validation_empty(mock_request, mock_sessio
 async def test_register_user_password_validation_whitespace(mock_request, mock_session):
     """Test registration with whitespace-only password (should be rejected by Pydantic)."""
     # This should be caught by Pydantic validation before reaching the endpoint
-    with pytest.raises(Exception):  # Pydantic validation error
+    from pydantic import ValidationError
+
+    with pytest.raises(ValidationError):  # Pydantic validation error
         UserCreate(
             username="newuser",
             password="   ",  # Whitespace-only password

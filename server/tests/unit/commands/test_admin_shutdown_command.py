@@ -4,7 +4,6 @@ Unit tests for admin shutdown command handler.
 Tests the shutdown command functionality.
 """
 
-import os
 import time
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -14,7 +13,6 @@ from server.commands.admin_shutdown_command import (
     broadcast_shutdown_notification,
     calculate_notification_times,
     cancel_shutdown_countdown,
-    execute_shutdown_sequence,
     get_shutdown_blocking_message,
     handle_shutdown_command,
     initiate_shutdown_countdown,

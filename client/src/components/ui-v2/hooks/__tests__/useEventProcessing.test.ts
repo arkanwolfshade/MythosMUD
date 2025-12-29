@@ -400,7 +400,6 @@ describe('useEventProcessing', () => {
 
   it('should handle appendMessage callback correctly', async () => {
     const eventHandlers = await import('../../eventHandlers');
-    const appendMessageCallback = vi.fn();
 
     vi.mocked(eventHandlers.processGameEvent).mockImplementationOnce((event, context, appendMessage) => {
       appendMessage({

@@ -6,8 +6,6 @@ Tests the request_context module classes and functions.
 
 from unittest.mock import MagicMock
 
-import pytest
-
 from server.realtime.request_context import WebSocketRequestContext, create_websocket_request_context
 
 

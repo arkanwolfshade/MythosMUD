@@ -4,9 +4,7 @@ Unit tests for combat command factories.
 Tests the CombatCommandFactory class methods.
 """
 
-import pytest
 
-from server.exceptions import ValidationError
 from server.utils.command_factories_combat import CombatCommandFactory
 
 

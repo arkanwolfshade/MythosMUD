@@ -4,10 +4,7 @@ Unit tests for room data cache.
 Tests the RoomDataCache class for caching and freshness management.
 """
 
-import time
 from unittest.mock import patch
-
-import pytest
 
 from server.services.room_data_cache import RoomDataCache
 

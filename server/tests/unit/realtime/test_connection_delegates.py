@@ -4,7 +4,6 @@ Unit tests for connection delegates.
 Tests the connection_delegates module functions.
 """
 
-import asyncio
 import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -14,6 +13,7 @@ from server.realtime.connection_delegates import (
     cleanup_dead_websocket_impl,
     delegate_connection_cleaner,
     delegate_connection_cleaner_sync,
+    delegate_error_handler,
     delegate_game_state_provider,
     delegate_game_state_provider_sync,
     delegate_health_monitor,
@@ -22,7 +22,6 @@ from server.realtime.connection_delegates import (
     delegate_personal_message_sender,
     delegate_personal_message_sender_sync,
     delegate_room_event_handler,
-    delegate_error_handler,
     validate_token_impl,
 )
 
@@ -121,7 +120,7 @@ async def test_cleanup_dead_websocket_impl_close_timeout():
     connection_id = "conn_123"
     mock_manager = MagicMock()
     mock_websocket = AsyncMock()
-    mock_websocket.close = AsyncMock(side_effect=asyncio.TimeoutError())
+    mock_websocket.close = AsyncMock(side_effect=TimeoutError())
     mock_manager.active_websockets = {connection_id: mock_websocket}
     mock_manager.player_websockets = {}
     mock_manager.connection_metadata = {}

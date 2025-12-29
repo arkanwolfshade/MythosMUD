@@ -111,11 +111,13 @@ def test_verify_password_non_string_password():
     """Test verifying password with non-string password returns False."""
     hashed = hash_password("test_password")
     result = verify_password(123, hashed)
+    assert result is False
 
 
 def test_verify_password_non_string_hash():
     """Test verifying password with non-string hash returns False."""
     result = verify_password("password", 123)
+    assert result is False
 
 
 def test_verify_password_empty_hash():

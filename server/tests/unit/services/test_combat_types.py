@@ -6,8 +6,6 @@ Tests the CombatParticipantData dataclass used across combat services.
 
 import uuid
 
-import pytest
-
 from server.models.combat import CombatParticipantType
 from server.services.combat_types import CombatParticipantData
 

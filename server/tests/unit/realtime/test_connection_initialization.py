@@ -6,8 +6,6 @@ Tests the connection_initialization module functions.
 
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 from server.realtime.connection_initialization import (
     initialize_connection_cleaner,
     initialize_error_handler,

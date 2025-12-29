@@ -599,7 +599,6 @@ async def test_add_admin_no_container_duplicate(user_manager):
     """Test add_admin() when container is not available."""
     player_id = uuid.uuid4()
     with patch("server.container.ApplicationContainer.get_instance", return_value=None):
-        mock_get_instance.return_value = None
         result = await user_manager.add_admin(player_id, "TestPlayer")
         assert result is False
 

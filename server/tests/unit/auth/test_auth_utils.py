@@ -2,7 +2,6 @@
 Unit tests for authentication utilities.
 """
 
-import os
 from datetime import timedelta
 
 import pytest
@@ -27,7 +26,7 @@ def test_hash_password_success():
     """Test successful password hashing."""
     password = "test_password_123"
     hashed = hash_password(password)
-    
+
     assert isinstance(hashed, str)
     assert hashed != password
     assert len(hashed) > 0
@@ -37,7 +36,7 @@ def test_verify_password_success():
     """Test successful password verification."""
     password = "test_password_123"
     hashed = hash_password(password)
-    
+
     result = verify_password(password, hashed)
     assert result is True
 
@@ -46,7 +45,7 @@ def test_verify_password_failure():
     """Test password verification with wrong password."""
     password = "test_password_123"
     hashed = hash_password(password)
-    
+
     result = verify_password("wrong_password", hashed)
     assert result is False
 
@@ -55,7 +54,7 @@ def test_hash_password_raises_on_error(monkeypatch):
     """Test that hash_password raises AuthenticationError on error."""
     # Mock argon2_hash_password to raise an error
     from unittest.mock import patch
-    
+
     with patch("server.auth_utils.argon2_hash_password", side_effect=ValueError("test error")):
         with pytest.raises(AuthenticationError):
             hash_password("test")
@@ -65,7 +64,7 @@ def test_verify_password_returns_false_on_error(monkeypatch):
     """Test that verify_password returns False on error."""
     # Mock argon2_verify_password to raise an error
     from unittest.mock import patch
-    
+
     with patch("server.auth_utils.argon2_verify_password", side_effect=ValueError("test error")):
         result = verify_password("test", "hash")
         assert result is False
@@ -75,7 +74,7 @@ def test_create_access_token_success():
     """Test successful access token creation."""
     data = {"sub": "testuser", "username": "testuser"}
     token = create_access_token(data)
-    
+
     assert isinstance(token, str)
     assert len(token) > 0
 
@@ -85,7 +84,7 @@ def test_create_access_token_with_expires_delta():
     data = {"sub": "testuser", "username": "testuser"}
     expires_delta = timedelta(minutes=30)
     token = create_access_token(data, expires_delta=expires_delta)
-    
+
     assert isinstance(token, str)
     assert len(token) > 0
 
@@ -94,7 +93,7 @@ def test_decode_access_token_success():
     """Test successful access token decoding."""
     data = {"sub": "testuser", "username": "testuser"}
     token = create_access_token(data)
-    
+
     decoded = decode_access_token(token)
     assert decoded is not None
     assert decoded.get("sub") == "testuser"
@@ -113,7 +112,7 @@ def test_decode_access_token_expired():
     # Create token with very short expiration
     expires_delta = timedelta(seconds=-1)  # Already expired
     token = create_access_token(data, expires_delta=expires_delta)
-    
+
     # decode_access_token returns None on error, doesn't raise
     result = decode_access_token(token)
     assert result is None
@@ -124,7 +123,7 @@ def test_create_access_token_with_custom_secret():
     data = {"sub": "testuser", "username": "testuser"}
     custom_secret = "custom-secret-key"
     token = create_access_token(data, secret_key=custom_secret)
-    
+
     # Should decode with same secret
     decoded = decode_access_token(token, secret_key=custom_secret)
     assert decoded is not None
@@ -160,9 +159,9 @@ def test_decode_access_token_wrong_secret():
 
 def test_create_access_token_jwt_error():
     """Test create_access_token handles JWTError."""
-    from unittest.mock import patch, MagicMock
-    from jose import jwt
-    
+    from unittest.mock import patch
+
+
     data = {"sub": "testuser"}
     with patch("jose.jwt.encode") as mock_encode:
         mock_encode.side_effect = JWTError("JWT error")
@@ -172,8 +171,8 @@ def test_create_access_token_jwt_error():
 
 def test_create_access_token_value_error():
     """Test create_access_token handles ValueError."""
-    from unittest.mock import patch, MagicMock
-    
+    from unittest.mock import patch
+
     data = {"sub": "testuser"}
     with patch("jose.jwt.encode") as mock_encode:
         mock_encode.side_effect = ValueError("Value error")
@@ -183,9 +182,9 @@ def test_create_access_token_value_error():
 
 def test_decode_access_token_value_error():
     """Test decode_access_token handles ValueError and returns None."""
-    from unittest.mock import patch, MagicMock
-    from jose import jwt
-    
+    from unittest.mock import patch
+
+
     token = create_access_token({"sub": "testuser"})
     with patch("jose.jwt.decode") as mock_decode:
         mock_decode.side_effect = ValueError("Value error")
@@ -195,8 +194,8 @@ def test_decode_access_token_value_error():
 
 def test_decode_access_token_type_error():
     """Test decode_access_token handles TypeError and returns None."""
-    from unittest.mock import patch, MagicMock
-    
+    from unittest.mock import patch
+
     token = create_access_token({"sub": "testuser"})
     with patch("jose.jwt.decode") as mock_decode:
         mock_decode.side_effect = TypeError("Type error")
@@ -206,8 +205,8 @@ def test_decode_access_token_type_error():
 
 def test_decode_access_token_runtime_error():
     """Test decode_access_token handles RuntimeError and returns None."""
-    from unittest.mock import patch, MagicMock
-    
+    from unittest.mock import patch
+
     token = create_access_token({"sub": "testuser"})
     with patch("jose.jwt.decode") as mock_decode:
         mock_decode.side_effect = RuntimeError("Runtime error")
@@ -218,8 +217,9 @@ def test_decode_access_token_runtime_error():
 def test_hash_password_authentication_error():
     """Test hash_password raises AuthenticationError on AuthenticationError from argon2."""
     from unittest.mock import patch
+
     from server.exceptions import AuthenticationError as AuthError
-    
+
     with patch("server.auth_utils.argon2_hash_password", side_effect=AuthError("Auth error")):
         with pytest.raises(AuthenticationError):
             hash_password("test")
@@ -228,7 +228,7 @@ def test_hash_password_authentication_error():
 def test_hash_password_value_error():
     """Test hash_password raises AuthenticationError on ValueError."""
     from unittest.mock import patch
-    
+
     with patch("server.auth_utils.argon2_hash_password", side_effect=ValueError("Value error")):
         with pytest.raises(AuthenticationError):
             hash_password("test")
@@ -237,7 +237,7 @@ def test_hash_password_value_error():
 def test_hash_password_type_error():
     """Test hash_password raises AuthenticationError on TypeError."""
     from unittest.mock import patch
-    
+
     with patch("server.auth_utils.argon2_hash_password", side_effect=TypeError("Type error")):
         with pytest.raises(AuthenticationError):
             hash_password("test")
@@ -246,7 +246,7 @@ def test_hash_password_type_error():
 def test_hash_password_runtime_error():
     """Test hash_password raises AuthenticationError on RuntimeError."""
     from unittest.mock import patch
-    
+
     with patch("server.auth_utils.argon2_hash_password", side_effect=RuntimeError("Runtime error")):
         with pytest.raises(AuthenticationError):
             hash_password("test")
@@ -255,7 +255,7 @@ def test_hash_password_runtime_error():
 def test_verify_password_attribute_error():
     """Test verify_password handles AttributeError and returns False."""
     from unittest.mock import patch
-    
+
     with patch("server.auth_utils.argon2_verify_password", side_effect=AttributeError("Attr error")):
         result = verify_password("test", "hash")
         assert result is False
@@ -264,7 +264,7 @@ def test_verify_password_attribute_error():
 def test_verify_password_runtime_error():
     """Test verify_password handles RuntimeError and returns False."""
     from unittest.mock import patch
-    
+
     with patch("server.auth_utils.argon2_verify_password", side_effect=RuntimeError("Runtime error")):
         result = verify_password("test", "hash")
         assert result is False
@@ -307,7 +307,7 @@ def test_decode_access_token_with_wrong_algorithm():
 def test_create_access_token_attribute_error():
     """Test create_access_token handles AttributeError."""
     from unittest.mock import patch
-    
+
     data = {"sub": "testuser"}
     with patch("jose.jwt.encode") as mock_encode:
         mock_encode.side_effect = AttributeError("Attribute error")
@@ -318,7 +318,7 @@ def test_create_access_token_attribute_error():
 def test_create_access_token_runtime_error():
     """Test create_access_token handles RuntimeError."""
     from unittest.mock import patch
-    
+
     data = {"sub": "testuser"}
     with patch("jose.jwt.encode") as mock_encode:
         mock_encode.side_effect = RuntimeError("Runtime error")
@@ -329,7 +329,7 @@ def test_create_access_token_runtime_error():
 def test_decode_access_token_attribute_error():
     """Test decode_access_token handles AttributeError and returns None."""
     from unittest.mock import patch
-    
+
     token = create_access_token({"sub": "testuser"})
     with patch("jose.jwt.decode") as mock_decode:
         mock_decode.side_effect = AttributeError("Attribute error")

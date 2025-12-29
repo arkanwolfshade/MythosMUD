@@ -4,7 +4,6 @@ Unit tests for zone configuration.
 Tests the ZoneConfiguration class.
 """
 
-import pytest
 
 from server.npc.zone_configuration import ZoneConfiguration
 

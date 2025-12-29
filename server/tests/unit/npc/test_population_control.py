@@ -277,7 +277,6 @@ def test_subscribe_to_events(population_controller, mock_event_bus):
 
 def test_update_player_count(population_controller):
     """Test _update_player_count() updates player count."""
-    initial_count = population_controller.current_game_state["player_count"]
     population_controller._update_player_count()
     # Should update to placeholder value
     assert population_controller.current_game_state["player_count"] == 1
@@ -454,7 +453,9 @@ def test_despawn_npc_success(population_controller, mock_lifecycle_manager):
     population_controller.population_stats["arkhamcity/downtown"] = stats
     with patch("server.npc.population_control.extract_definition_id_from_npc", return_value=1):
         with patch("server.npc.population_control.extract_npc_metadata", return_value=("aggressive_mob", False)):
-            with patch("server.npc.population_control.extract_room_id_from_npc", return_value="earth_arkhamcity_downtown_001"):
+            with patch(
+                "server.npc.population_control.extract_room_id_from_npc", return_value="earth_arkhamcity_downtown_001"
+            ):
                 result = population_controller.despawn_npc("npc-123")
                 assert result is True
                 # Should update population stats

@@ -146,7 +146,6 @@ def test_get_player_room_from_online_players_not_found(message_filtering_helper,
 async def test_get_player_room_from_persistence(message_filtering_helper, mock_connection_manager):
     """Test get_player_room_from_persistence() returns player room."""
     # The method checks if player is Mock and returns None, so use a simple object
-    from unittest.mock import Mock
 
     mock_persistence = MagicMock()
     # Create a simple object that's not a Mock instance

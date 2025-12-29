@@ -246,7 +246,7 @@ async def test_subscribe_with_queue_group(nats_broker):
     mock_client.subscribe = AsyncMock(return_value=mock_subscription)
     nats_broker._client = mock_client
     handler = AsyncMock()
-    subscription_id = await nats_broker.subscribe("test.subject", handler, queue_group="workers")
+    await nats_broker.subscribe("test.subject", handler, queue_group="workers")
     call_args = mock_client.subscribe.call_args
     assert call_args[1]["queue"] == "workers"
 

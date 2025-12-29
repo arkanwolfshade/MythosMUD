@@ -77,7 +77,6 @@ def test_player_lucidity_repr():
 
 def test_player_lucidity_tiers():
     """Test PlayerLucidity can have different tiers."""
-    player_id = uuid4()
     tiers = ["lucid", "uneasy", "fractured", "deranged", "catatonic"]
 
     for tier in tiers:

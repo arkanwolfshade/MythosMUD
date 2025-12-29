@@ -19,8 +19,8 @@ from dataclasses import asdict, dataclass
 from enum import Enum
 from typing import Any
 
-from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.npc import NPCDefinition
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

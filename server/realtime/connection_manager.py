@@ -14,8 +14,8 @@ from typing import Any
 
 from fastapi import WebSocket
 
-from ..structured_logging.enhanced_logging_config import get_logger
 from ..models import Player
+from ..structured_logging.enhanced_logging_config import get_logger
 from .connection_compatibility import attach_compatibility_properties
 from .connection_delegates import cleanup_dead_websocket_impl, validate_token_impl
 from .connection_disconnection import (

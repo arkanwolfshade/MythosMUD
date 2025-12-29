@@ -33,9 +33,9 @@ def test_add_stack_new_item(inventory_service):
         "slot_type": "weapon",
         "quantity": 1,
     }
-    
+
     result = inventory_service.add_stack(inventory, new_stack)
-    
+
     assert len(result) == 1
     assert result[0]["item_name"] == "sword"
 
@@ -60,9 +60,9 @@ def test_add_stack_merges_existing(inventory_service):
         "slot_type": "consumable",
         "quantity": 2,
     }
-    
+
     result = inventory_service.add_stack(inventory, new_stack)
-    
+
     assert len(result) == 1
     assert result[0]["quantity"] == 5
 
@@ -89,7 +89,7 @@ def test_add_stack_capacity_error(inventory_service):
         "slot_type": "inventory",
         "quantity": 1,
     }
-    
+
     with pytest.raises(InventoryCapacityError, match="cannot exceed"):
         inventory_service.add_stack(inventory, new_stack)
 
@@ -101,7 +101,7 @@ def test_add_stack_validation_error_missing_field(inventory_service):
         "item_name": "sword",
         # Missing required fields
     }
-    
+
     with pytest.raises(InventoryValidationError, match="Missing required"):
         inventory_service.add_stack(inventory, new_stack)
 
@@ -117,7 +117,7 @@ def test_add_stack_validation_error_invalid_quantity(inventory_service):
         "slot_type": "weapon",
         "quantity": 0,  # Invalid quantity
     }
-    
+
     with pytest.raises(InventoryValidationError, match="positive integer"):
         inventory_service.add_stack(inventory, new_stack)
 
@@ -134,9 +134,9 @@ def test_split_stack_success(inventory_service):
             "quantity": 10,
         }
     ]
-    
+
     result = inventory_service.split_stack(inventory, slot_index=0, split_quantity=3)
-    
+
     assert len(result) == 2
     assert result[0]["quantity"] == 7
     assert result[1]["quantity"] == 3
@@ -146,7 +146,7 @@ def test_split_stack_success(inventory_service):
 def test_split_stack_invalid_index(inventory_service):
     """Test split_stack with invalid slot index."""
     inventory = [{"item_name": "potion", "quantity": 10}]
-    
+
     with pytest.raises(InventorySplitError, match="outside"):
         inventory_service.split_stack(inventory, slot_index=10, split_quantity=3)
 
@@ -163,7 +163,7 @@ def test_split_stack_invalid_quantity_zero(inventory_service):
             "quantity": 10,
         }
     ]
-    
+
     with pytest.raises(InventorySplitError, match="positive integer"):
         inventory_service.split_stack(inventory, slot_index=0, split_quantity=0)
 
@@ -180,7 +180,7 @@ def test_split_stack_invalid_quantity_negative(inventory_service):
             "quantity": 10,
         }
     ]
-    
+
     with pytest.raises(InventorySplitError, match="positive integer"):
         inventory_service.split_stack(inventory, slot_index=0, split_quantity=-1)
 
@@ -197,7 +197,7 @@ def test_split_stack_quantity_too_large(inventory_service):
             "quantity": 10,
         }
     ]
-    
+
     with pytest.raises(InventorySplitError, match="less than"):
         inventory_service.split_stack(inventory, slot_index=0, split_quantity=10)
 
@@ -216,7 +216,7 @@ def test_split_stack_capacity_error(inventory_service):
         }
         for i in range(20)
     ]
-    
+
     with pytest.raises(InventoryCapacityError, match="already occupies"):
         inventory_service.split_stack(inventory, slot_index=0, split_quantity=1)
 
@@ -224,9 +224,9 @@ def test_split_stack_capacity_error(inventory_service):
 def test_begin_mutation_success(inventory_service):
     """Test begin_mutation returns context manager."""
     player_id = uuid.uuid4()
-    
+
     context = inventory_service.begin_mutation(player_id, "token123")
-    
+
     assert context is not None
     # Test that it can be used as context manager
     with context as decision:
@@ -236,9 +236,9 @@ def test_begin_mutation_success(inventory_service):
 def test_begin_mutation_with_string_id(inventory_service):
     """Test begin_mutation accepts string player_id."""
     player_id = "player123"
-    
+
     context = inventory_service.begin_mutation(player_id, "token123")
-    
+
     assert context is not None
     with context as decision:
         assert hasattr(decision, "should_apply")

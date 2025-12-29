@@ -4,7 +4,6 @@ Unit tests for inventory command helper functions.
 Tests helper functions used by inventory commands.
 """
 
-import pytest
 
 from server.commands.inventory_commands import (
     _format_metadata,
@@ -189,10 +188,10 @@ def test_format_metadata_complex():
 def test_resolve_state_no_app():
     """Test _resolve_state when request has no app."""
     from unittest.mock import MagicMock
-    
+
     request = MagicMock()
     del request.app
-    
+
     persistence, connection_manager = _resolve_state(request)
     assert persistence is None
     assert connection_manager is None
@@ -201,11 +200,11 @@ def test_resolve_state_no_app():
 def test_resolve_state_no_state():
     """Test _resolve_state when app has no state."""
     from unittest.mock import MagicMock
-    
+
     request = MagicMock()
     request.app = MagicMock()
     del request.app.state
-    
+
     persistence, connection_manager = _resolve_state(request)
     assert persistence is None
     assert connection_manager is None
@@ -214,13 +213,13 @@ def test_resolve_state_no_state():
 def test_resolve_state_success():
     """Test _resolve_state successful resolution."""
     from unittest.mock import MagicMock
-    
+
     request = MagicMock()
     request.app = MagicMock()
     request.app.state = MagicMock()
     request.app.state.persistence = MagicMock()
     request.app.state.connection_manager = MagicMock()
-    
+
     persistence, connection_manager = _resolve_state(request)
     assert persistence is not None
     assert connection_manager is not None

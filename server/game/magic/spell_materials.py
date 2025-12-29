@@ -8,8 +8,8 @@ import uuid
 from typing import Any
 
 from server.game.player_service import PlayerService
-from server.structured_logging.enhanced_logging_config import get_logger
 from server.models.spell import Spell
+from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

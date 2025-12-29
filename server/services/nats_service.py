@@ -17,8 +17,8 @@ from typing import Any
 import nats
 
 from ..config.models import NATSConfig
-from ..structured_logging.enhanced_logging_config import get_logger
 from ..realtime.connection_state_machine import NATSConnectionStateMachine
+from ..structured_logging.enhanced_logging_config import get_logger
 from .nats_exceptions import (
     NATSPublishError,
     NATSSubscribeError,

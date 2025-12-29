@@ -9,8 +9,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from server.realtime.websocket_room_updates import (
-    build_room_update_event,
     broadcast_room_update,
+    build_room_update_event,
     get_npc_occupants_fallback,
     get_npc_occupants_from_lifecycle_manager,
     get_player_occupants,

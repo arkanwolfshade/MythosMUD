@@ -12,9 +12,9 @@ from dataclasses import dataclass, field
 from time import monotonic
 from typing import cast
 
-from server.structured_logging.enhanced_logging_config import get_logger
 from server.middleware.metrics_collector import metrics_collector
 from server.monitoring.monitoring_dashboard import get_monitoring_dashboard
+from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

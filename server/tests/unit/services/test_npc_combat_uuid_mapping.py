@@ -4,10 +4,7 @@ Unit tests for NPC combat UUID mapping.
 Tests the NPCCombatUUIDMapping class for managing UUID-to-string ID and UUID-to-XP mappings.
 """
 
-import uuid
 from uuid import UUID, uuid4
-
-import pytest
 
 from server.services.npc_combat_uuid_mapping import NPCCombatUUIDMapping
 

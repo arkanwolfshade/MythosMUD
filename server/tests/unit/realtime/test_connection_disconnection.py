@@ -142,8 +142,9 @@ async def test_track_disconnect_if_needed_has_connection(mock_manager):
 @pytest.mark.asyncio
 async def test_cleanup_websocket_disconnect(mock_manager):
     """Test cleanup_websocket_disconnect() cleans up connection."""
-    from server.realtime.connection_disconnection import cleanup_websocket_disconnect
     import asyncio
+
+    from server.realtime.connection_disconnection import cleanup_websocket_disconnect
 
     player_id = uuid.uuid4()
     connection_id = "conn_001"

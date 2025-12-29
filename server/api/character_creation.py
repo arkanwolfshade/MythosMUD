@@ -15,10 +15,10 @@ from ..error_types import ErrorMessages
 from ..exceptions import LoggedHTTPException, RateLimitError, create_error_context
 from ..game.player_service import PlayerService
 from ..game.stats_generator import StatsGenerator
-from ..structured_logging.enhanced_logging_config import get_logger
 from ..models import Stats
 from ..models.user import User
 from ..schemas.player_requests import CreateCharacterRequest, RollStatsRequest
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.rate_limiter import character_creation_limiter, stats_roll_limiter
 from .player_helpers import create_error_context as create_error_context_helper
 from .players import player_router

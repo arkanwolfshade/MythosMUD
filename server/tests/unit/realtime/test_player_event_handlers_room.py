@@ -5,18 +5,14 @@ Tests the PlayerRoomEventHandler class.
 """
 
 import uuid
-from datetime import UTC, datetime
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from sqlalchemy.exc import SQLAlchemyError
 
 from server.events.event_types import PlayerEnteredRoom, PlayerLeftRoom
-from server.realtime.message_builders import MessageBuilder
 from server.realtime.player_event_handlers_room import PlayerRoomEventHandler
 from server.realtime.player_event_handlers_utils import PlayerEventHandlerUtils
-from server.realtime.player_name_utils import PlayerNameExtractor
-from server.realtime.room_occupant_manager import RoomOccupantManager
 
 
 @pytest.fixture

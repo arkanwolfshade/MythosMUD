@@ -163,11 +163,10 @@ def test_message_handler_factory_game_command_alias():
     assert isinstance(handler1, CommandMessageHandler)
     assert isinstance(handler2, CommandMessageHandler)
     # They should have the same type
-    assert type(handler1) == type(handler2)
+    assert type(handler1) is type(handler2)
 
 
 def test_global_message_handler_factory():
     """Test global message_handler_factory instance exists."""
-    from server.realtime.message_handler_factory import message_handler_factory
 
     assert isinstance(message_handler_factory, MessageHandlerFactory)

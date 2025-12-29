@@ -12,8 +12,8 @@ from pydantic import ValidationError as PydanticValidationError
 
 from ..exceptions import ValidationError
 from ..game.stats_generator import StatsGenerator
-from ..structured_logging.enhanced_logging_config import get_logger
 from ..models import Stats
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import create_error_context, log_and_raise
 
 logger = get_logger(__name__)

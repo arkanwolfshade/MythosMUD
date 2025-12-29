@@ -82,7 +82,7 @@ def test_process_event_with_ordering_increments_counter(room_sync_service, sampl
 
 def test_process_event_with_ordering_tracks_last_processed(room_sync_service, sample_event):
     """Test process_event_with_ordering() tracks last processed events."""
-    result = room_sync_service.process_event_with_ordering(sample_event)
+    room_sync_service.process_event_with_ordering(sample_event)
     event_key = f"{sample_event.room_id}_{sample_event.player_id}"
     assert room_sync_service._last_processed_events[event_key] == 1
 

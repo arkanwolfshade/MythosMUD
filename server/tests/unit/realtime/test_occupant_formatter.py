@@ -4,9 +4,7 @@ Unit tests for occupant formatter.
 Tests the occupant_formatter module classes and functions.
 """
 
-from unittest.mock import MagicMock, patch
-
-import pytest
+from unittest.mock import patch
 
 from server.realtime.occupant_formatter import OccupantFormatter
 

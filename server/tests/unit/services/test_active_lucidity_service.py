@@ -49,7 +49,10 @@ async def test_active_lucidity_service_init(mock_session):
 async def test_active_lucidity_service_init_with_now_provider(mock_session):
     """Test ActiveLucidityService initialization with custom now_provider."""
     custom_now = datetime(2024, 1, 1, tzinfo=UTC)
-    now_provider = lambda: custom_now
+
+    def now_provider():
+        return custom_now
+
     service = ActiveLucidityService(mock_session, now_provider=now_provider)
     assert service._now_provider() == custom_now
 
@@ -306,7 +309,7 @@ async def test_perform_recovery_action_all_actions(active_lucidity_service, samp
     actions = ["pray", "meditate", "group_solace", "therapy", "folk_tonic"]
     expected_deltas = [8, 6, 4, 15, 3]
 
-    for action, expected_delta in zip(actions, expected_deltas):
+    for action, expected_delta in zip(actions, expected_deltas, strict=True):
         mock_result = MagicMock()
         active_lucidity_service._lucidity_service.get_cooldown = AsyncMock(return_value=None)
         active_lucidity_service._lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)

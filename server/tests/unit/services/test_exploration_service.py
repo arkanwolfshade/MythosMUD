@@ -6,7 +6,6 @@ Tests the ExplorationService class.
 
 import asyncio
 import uuid
-from datetime import UTC, datetime
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -294,7 +293,10 @@ def test_mark_room_as_explored_sync_with_error_handler(exploration_service):
     with patch("asyncio.get_running_loop", return_value=mock_loop):
         # Make mark_room_as_explored raise an error
         with patch.object(
-            exploration_service, "mark_room_as_explored", new_callable=AsyncMock, side_effect=DatabaseError("Test error")
+            exploration_service,
+            "mark_room_as_explored",
+            new_callable=AsyncMock,
+            side_effect=DatabaseError("Test error"),
         ):
             # Wait for the task to complete
             async def wait_for_task():
@@ -310,12 +312,12 @@ def test_mark_room_as_explored_sync_with_error_handler(exploration_service):
 async def test_get_room_uuid_by_stable_id_asyncpg_uuid(exploration_service):
     """Test _get_room_uuid_by_stable_id() handles asyncpg UUID objects."""
     mock_session = AsyncMock()
+
     # Create a mock asyncpg UUID-like object
     class MockAsyncpgUUID:
         def __str__(self):
             return str(uuid.uuid4())
 
-    room_uuid_str = str(uuid.uuid4())
     mock_asyncpg_uuid = MockAsyncpgUUID()
     mock_result = MagicMock()
     mock_result.scalar_one_or_none.return_value = mock_asyncpg_uuid
@@ -361,6 +363,7 @@ async def test_get_explored_rooms_async_fetchall(exploration_service):
     room_uuid1 = uuid.uuid4()
     room_uuid2 = uuid.uuid4()
     mock_rows = [(room_uuid1,), (room_uuid2,)]
+
     # Create a mock result with async fetchall
     async def async_fetchall():
         return mock_rows

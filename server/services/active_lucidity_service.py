@@ -10,8 +10,8 @@ from datetime import UTC, datetime, timedelta
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.lucidity import LucidityExposureState
+from ..structured_logging.enhanced_logging_config import get_logger
 from .lucidity_service import CatatoniaObserverProtocol, LucidityService
 
 logger = get_logger(__name__)

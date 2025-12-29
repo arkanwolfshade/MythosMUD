@@ -5,7 +5,7 @@ Tests the helper functions in look_container.py.
 """
 
 import uuid
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -17,7 +17,6 @@ from server.commands.look_container import (
     _format_container_contents,
     _format_container_display,
     _get_container_data_from_component,
-    _get_container_description,
     _matches_item_instance_id,
     _matches_name_or_slot,
 )

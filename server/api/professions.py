@@ -12,8 +12,8 @@ from fastapi import APIRouter, Depends, Request
 from ..auth.users import get_current_user
 from ..error_types import ErrorMessages
 from ..exceptions import LoggedHTTPException
-from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.user import User
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import create_context_from_request
 
 logger = get_logger(__name__)

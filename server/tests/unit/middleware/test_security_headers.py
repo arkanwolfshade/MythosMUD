@@ -11,7 +11,6 @@ import pytest
 from starlette.datastructures import MutableHeaders
 from starlette.requests import Request
 from starlette.responses import Response
-from starlette.types import Scope
 
 from server.middleware.security_headers import SecurityHeadersMiddleware
 
@@ -31,7 +30,7 @@ def middleware(mock_app):
 def test_security_headers_middleware_init(mock_app):
     """Test SecurityHeadersMiddleware initialization."""
     middleware = SecurityHeadersMiddleware(mock_app)
-    
+
     assert middleware.app == mock_app
     assert isinstance(middleware.hsts_max_age, int)
     assert isinstance(middleware.hsts_include_subdomains, bool)
@@ -48,7 +47,7 @@ def test_security_headers_middleware_init_with_env_vars(mock_app):
         "REFERRER_POLICY": "no-referrer",
     }):
         middleware = SecurityHeadersMiddleware(mock_app)
-        
+
         assert middleware.hsts_max_age == 63072000
         assert middleware.hsts_include_subdomains is False
         assert middleware.csp_policy == "default-src 'none'"
@@ -61,9 +60,9 @@ async def test_security_headers_middleware_non_http_scope(middleware, mock_app):
     scope = {"type": "websocket"}
     receive = AsyncMock()
     send = AsyncMock()
-    
+
     await middleware(scope, receive, send)
-    
+
     mock_app.assert_awaited_once_with(scope, receive, send)
 
 
@@ -78,14 +77,14 @@ async def test_security_headers_middleware_adds_headers(middleware, mock_app):
     }
     receive = AsyncMock()
     send = AsyncMock()
-    
+
     # Mock the response start message
     response_start = {
         "type": "http.response.start",
         "status": 200,
         "headers": [],
     }
-    
+
     async def mock_send(message):
         if message["type"] == "http.response.start":
             # Verify headers were added
@@ -97,18 +96,18 @@ async def test_security_headers_middleware_adds_headers(middleware, mock_app):
             assert "Content-Security-Policy" in headers
             assert "X-XSS-Protection" in headers
             assert "Permissions-Policy" in headers
-    
+
     send.side_effect = mock_send
-    
+
     # Mock app to call send
     async def mock_app_call(scope, receive, send_func):
         await send_func(response_start)
         await send_func({"type": "http.response.body", "body": b"test"})
-    
+
     mock_app.side_effect = mock_app_call
-    
+
     await middleware(scope, receive, send)
-    
+
     mock_app.assert_awaited_once()
 
 
@@ -123,10 +122,10 @@ async def test_security_headers_middleware_error_handling(middleware, mock_app):
     }
     receive = AsyncMock()
     send = AsyncMock()
-    
+
     # Mock app to raise an error
     mock_app.side_effect = ValueError("Test error")
-    
+
     with pytest.raises(ValueError, match="Test error"):
         await middleware(scope, receive, send)
 
@@ -134,9 +133,9 @@ async def test_security_headers_middleware_error_handling(middleware, mock_app):
 def test_add_security_headers_to_response(middleware):
     """Test _add_security_headers_to_response adds headers to Response."""
     response = Response(content="test", status_code=200)
-    
+
     middleware._add_security_headers_to_response(response)
-    
+
     assert "Strict-Transport-Security" in response.headers
     assert "X-Frame-Options" in response.headers
     assert response.headers["X-Frame-Options"] == "DENY"
@@ -147,9 +146,9 @@ def test_add_security_headers_to_response_hsts_with_subdomains(middleware):
     """Test _add_security_headers_to_response includes subdomains in HSTS."""
     middleware.hsts_include_subdomains = True
     response = Response(content="test", status_code=200)
-    
+
     middleware._add_security_headers_to_response(response)
-    
+
     hsts_value = response.headers["Strict-Transport-Security"]
     assert "includeSubDomains" in hsts_value
 
@@ -158,9 +157,9 @@ def test_add_security_headers_to_response_hsts_without_subdomains(middleware):
     """Test _add_security_headers_to_response without subdomains in HSTS."""
     middleware.hsts_include_subdomains = False
     response = Response(content="test", status_code=200)
-    
+
     middleware._add_security_headers_to_response(response)
-    
+
     hsts_value = response.headers["Strict-Transport-Security"]
     assert "includeSubDomains" not in hsts_value
 
@@ -168,9 +167,9 @@ def test_add_security_headers_to_response_hsts_without_subdomains(middleware):
 def test_add_security_headers(middleware):
     """Test _add_security_headers adds all security headers."""
     headers = MutableHeaders()
-    
+
     middleware._add_security_headers(headers)
-    
+
     assert "Strict-Transport-Security" in headers
     assert "X-Frame-Options" in headers
     assert "X-Content-Type-Options" in headers
@@ -185,9 +184,9 @@ def test_add_security_headers_hsts_value(middleware):
     middleware.hsts_max_age = 31536000
     middleware.hsts_include_subdomains = True
     headers = MutableHeaders()
-    
+
     middleware._add_security_headers(headers)
-    
+
     hsts_value = headers["Strict-Transport-Security"]
     assert "max-age=31536000" in hsts_value
     assert "includeSubDomains" in hsts_value
@@ -201,12 +200,12 @@ async def test_dispatch_method(middleware):
     request.url = MagicMock()
     request.url.__str__ = MagicMock(return_value="http://test.com/test")
     request.headers = {"User-Agent": "test-agent"}
-    
+
     mock_response = Response(content="test", status_code=200)
     call_next = AsyncMock(return_value=mock_response)
-    
+
     result = await middleware.dispatch(request, call_next)
-    
+
     assert result == mock_response
     call_next.assert_awaited_once_with(request)
     # Verify headers were added
@@ -221,9 +220,9 @@ async def test_dispatch_method_error_handling(middleware):
     request.url = MagicMock()
     request.url.__str__ = MagicMock(return_value="http://test.com/test")
     request.headers = {"User-Agent": "test-agent"}
-    
+
     call_next = AsyncMock(side_effect=ValueError("Test error"))
-    
+
     with pytest.raises(ValueError, match="Test error"):
         await middleware.dispatch(request, call_next)
 
@@ -231,9 +230,9 @@ async def test_dispatch_method_error_handling(middleware):
 def test_add_security_headers_permissions_policy(middleware):
     """Test _add_security_headers includes Permissions-Policy."""
     headers = MutableHeaders()
-    
+
     middleware._add_security_headers(headers)
-    
+
     permissions_policy = headers["Permissions-Policy"]
     assert "geolocation=()" in permissions_policy
     assert "microphone=()" in permissions_policy
@@ -244,9 +243,9 @@ def test_add_security_headers_csp_policy(middleware):
     """Test _add_security_headers uses configured CSP policy."""
     middleware.csp_policy = "default-src 'self'; script-src 'none'"
     headers = MutableHeaders()
-    
+
     middleware._add_security_headers(headers)
-    
+
     assert headers["Content-Security-Policy"] == "default-src 'self'; script-src 'none'"
 
 
@@ -254,7 +253,7 @@ def test_add_security_headers_referrer_policy(middleware):
     """Test _add_security_headers uses configured referrer policy."""
     middleware.referrer_policy = "no-referrer"
     headers = MutableHeaders()
-    
+
     middleware._add_security_headers(headers)
-    
+
     assert headers["Referrer-Policy"] == "no-referrer"

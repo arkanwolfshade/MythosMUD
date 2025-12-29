@@ -10,8 +10,8 @@ import random
 import time
 from typing import Any
 
-from ..structured_logging.enhanced_logging_config import get_logger
 from ..models import AttributeType, Stats
+from ..structured_logging.enhanced_logging_config import get_logger
 
 
 def generate_random_stats(seed: int | None = None) -> Stats:

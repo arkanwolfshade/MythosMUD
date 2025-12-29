@@ -366,7 +366,9 @@ def test_on_enter_state_logs():
 
 def test_invalid_transition_raises_error():
     """Test invalid state transitions raise errors."""
+    from statemachine.exceptions import TransitionNotAllowed
+
     fsm = NATSConnectionStateMachine(connection_id="test-connection")
     # Cannot open circuit from disconnected state
-    with pytest.raises(Exception):  # StateMachine raises TransitionNotAllowed
+    with pytest.raises(TransitionNotAllowed):  # StateMachine raises TransitionNotAllowed
         fsm.open_circuit()

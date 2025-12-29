@@ -18,11 +18,11 @@ if TYPE_CHECKING:
     from ..services.player_respawn_service import PlayerRespawnService
 from ..config import get_config
 from ..exceptions import DatabaseError, ValidationError
-from ..structured_logging.enhanced_logging_config import get_logger
 from ..models import Stats
 from ..models.game import PositionState
 from ..models.player import Player
 from ..schemas.player import PlayerRead
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.enhanced_error_logging import create_error_context, log_and_raise_enhanced
 
 logger = get_logger(__name__)

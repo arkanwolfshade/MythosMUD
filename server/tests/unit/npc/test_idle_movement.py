@@ -127,7 +127,6 @@ def test_is_npc_in_combat_no_attribute(idle_movement_handler):
 
 def test_get_valid_exits_empty_room(idle_movement_handler):
     """Test get_valid_exits() with room having no exits."""
-    npc_instance = MagicMock()
     npc_definition = MagicMock()
     npc_definition.sub_zone_id = "subzone_001"
     behavior_config = {}
@@ -140,7 +139,6 @@ def test_get_valid_exits_empty_room(idle_movement_handler):
 
 def test_get_valid_exits_no_subzone(idle_movement_handler):
     """Test get_valid_exits() when NPC definition has no sub_zone_id."""
-    npc_instance = MagicMock()
     npc_definition = MagicMock()
     npc_definition.sub_zone_id = None
     behavior_config = {}

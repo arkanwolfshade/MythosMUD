@@ -128,7 +128,7 @@ def test_get_visible_equipment_no_equipment():
     """Test _get_visible_equipment with no equipment."""
     player = MagicMock()
     player.get_equipped_items = MagicMock(return_value={})
-    
+
     result = _get_visible_equipment(player)
     assert result == {}
 
@@ -140,7 +140,7 @@ def test_get_visible_equipment_with_equipment():
         "head": {"name": "Hat"},
         "ring": {"name": "Ring"},  # Hidden slot
     })
-    
+
     result = _get_visible_equipment(player)
     assert "head" in result
     assert "ring" not in result  # Ring is a hidden slot
@@ -178,11 +178,11 @@ def test_get_wearable_container_service_initializes():
     mock_app.state.container = MagicMock()
     mock_app.state.container.async_persistence = MagicMock()
     mock_request.app = mock_app
-    
+
     # Clear cached instance
     if hasattr(_get_wearable_container_service, "cached_instance"):
         _get_wearable_container_service.cached_instance = None
-    
+
     service = _get_wearable_container_service(mock_request)
     assert service is not None
 
@@ -194,10 +194,10 @@ def test_get_wearable_container_service_no_persistence():
     mock_app.state = MagicMock()
     mock_app.state.container = None
     mock_request.app = mock_app
-    
+
     # Clear cached instance
     if hasattr(_get_wearable_container_service, "cached_instance"):
         _get_wearable_container_service.cached_instance = None
-    
+
     with pytest.raises(ValueError, match="async_persistence is required"):
         _get_wearable_container_service(mock_request)

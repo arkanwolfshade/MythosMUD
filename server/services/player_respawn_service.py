@@ -14,9 +14,9 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.events.event_types import PlayerDeliriumRespawnedEvent, PlayerRespawnedEvent
-from server.structured_logging.enhanced_logging_config import get_logger
 from server.models.game import PositionState
 from server.models.player import Player
+from server.structured_logging.enhanced_logging_config import get_logger
 
 from ..exceptions import DatabaseError
 

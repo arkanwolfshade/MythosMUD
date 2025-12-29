@@ -66,7 +66,7 @@ async def test_lucidity_adjustment_round_trip(session_factory):
             current_lcd=50,
             current_tier="uneasy",
         )
-        
+
         # Add all entities and flush to make them visible within the same transaction
         # This ensures get_or_create_player_lucidity will find the existing record
         session.add_all([user, player, lucidity_record])

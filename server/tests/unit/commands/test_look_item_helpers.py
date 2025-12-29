@@ -4,7 +4,6 @@ Unit tests for look item helper functions.
 Tests the helper functions in look_item.py.
 """
 
-import pytest
 
 from server.commands.look_item import _find_item_in_equipped, _find_item_in_inventory, _find_item_in_room_drops
 

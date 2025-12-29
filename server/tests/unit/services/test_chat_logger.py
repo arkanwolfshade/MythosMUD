@@ -4,10 +4,8 @@ Unit tests for chat logger service.
 Tests the ChatLogger class for structured chat message logging.
 """
 
-import json
 import tempfile
 from pathlib import Path
-from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -47,10 +45,10 @@ def test_log_chat_message(chat_logger, temp_log_dir):
         "content": "Hello world",
         "room_id": "test_room",
     })
-    
+
     # Give writer thread time to process
     chat_logger.wait_for_queue_processing(timeout=1.0)
-    
+
     # Check that log file was created
     log_files = list(Path(temp_log_dir).glob("chat_chat_*.log"))
     assert len(log_files) > 0
@@ -67,10 +65,10 @@ def test_log_moderation_event(chat_logger, temp_log_dir):
             "duration_minutes": 60,
         },
     )
-    
+
     # Give writer thread time to process
     chat_logger.wait_for_queue_processing(timeout=1.0)
-    
+
     # Check that log file was created
     log_files = list(Path(temp_log_dir).glob("chat_moderation_*.log"))
     assert len(log_files) > 0
@@ -85,10 +83,10 @@ def test_log_system_event(chat_logger, temp_log_dir):
             "room_id": "test_room",
         },
     )
-    
+
     # Give writer thread time to process
     chat_logger.wait_for_queue_processing(timeout=1.0)
-    
+
     # Check that log file was created
     log_files = list(Path(temp_log_dir).glob("chat_system_*.log"))
     assert len(log_files) > 0
@@ -98,13 +96,13 @@ def test_shutdown(chat_logger):
     """Test shutdown stops writer thread."""
     assert chat_logger._writer_thread is not None
     assert chat_logger._writer_thread.is_alive()
-    
+
     chat_logger.shutdown()
-    
+
     # Give thread time to stop
     import time
     time.sleep(0.1)
-    
+
     # Thread should be stopped (or stopping)
     assert not chat_logger._shutdown_event.is_set() or not chat_logger._writer_thread.is_alive()
 
@@ -119,10 +117,10 @@ def test_log_player_muted(chat_logger, temp_log_dir):
         duration_minutes=60,
         reason="Spam",
     )
-    
+
     # Give writer thread time to process
     chat_logger.wait_for_queue_processing(timeout=1.0)
-    
+
     # Check that log file was created
     log_files = list(Path(temp_log_dir).glob("chat_moderation_*.log"))
     assert len(log_files) > 0
@@ -136,10 +134,10 @@ def test_log_player_unmuted(chat_logger, temp_log_dir):
         target_name="TestPlayer",
         mute_type="local",
     )
-    
+
     # Give writer thread time to process
     chat_logger.wait_for_queue_processing(timeout=1.0)
-    
+
     # Check that log file was created
     log_files = list(Path(temp_log_dir).glob("chat_moderation_*.log"))
     assert len(log_files) > 0
@@ -153,10 +151,10 @@ def test_log_player_joined_room(chat_logger, temp_log_dir):
         room_id="test_room",
         room_name="Test Room",
     )
-    
+
     # Give writer thread time to process
     chat_logger.wait_for_queue_processing(timeout=1.0)
-    
+
     # Check that log file was created
     log_files = list(Path(temp_log_dir).glob("chat_system_*.log"))
     assert len(log_files) > 0
@@ -171,10 +169,10 @@ def test_log_rate_limit_violation(chat_logger, temp_log_dir):
         message_count=10,
         limit=5,
     )
-    
+
     # Give writer thread time to process
     chat_logger.wait_for_queue_processing(timeout=1.0)
-    
+
     # Check that log file was created
     log_files = list(Path(temp_log_dir).glob("chat_moderation_*.log"))
     assert len(log_files) > 0
@@ -183,7 +181,7 @@ def test_log_rate_limit_violation(chat_logger, temp_log_dir):
 def test_get_log_file_paths(chat_logger):
     """Test get_log_file_paths returns correct paths."""
     paths = chat_logger.get_log_file_paths()
-    
+
     assert "chat" in paths
     assert "moderation" in paths
     assert "system" in paths
@@ -193,7 +191,7 @@ def test_get_log_file_paths(chat_logger):
 def test_get_log_stats(chat_logger):
     """Test get_log_stats returns statistics."""
     stats = chat_logger.get_log_stats()
-    
+
     assert "chat" in stats
     assert "moderation" in stats
     assert "system" in stats

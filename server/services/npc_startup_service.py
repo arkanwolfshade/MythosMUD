@@ -16,10 +16,10 @@ import asyncio
 import random
 from typing import Any
 
-from ..structured_logging.enhanced_logging_config import get_logger
 from ..npc_database import get_npc_session
 from ..services.npc_instance_service import get_npc_instance_service
 from ..services.npc_service import npc_service
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

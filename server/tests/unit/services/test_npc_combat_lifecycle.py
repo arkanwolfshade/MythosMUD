@@ -4,7 +4,7 @@ Unit tests for NPC combat lifecycle.
 Tests the NPCCombatLifecycle class for managing NPC despawning during combat.
 """
 
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 

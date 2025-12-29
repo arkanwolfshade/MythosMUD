@@ -3,8 +3,6 @@ Unit tests for container persistence.
 """
 
 import json
-import uuid
-from unittest.mock import MagicMock
 
 import pytest
 

@@ -6,8 +6,8 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
-from server.structured_logging.enhanced_logging_config import get_logger
 from server.schemas.calendar import HolidayCollection, HolidayEntry
+from server.structured_logging.enhanced_logging_config import get_logger
 from server.time.time_service import ChronicleLike
 from server.utils.project_paths import get_calendar_paths_for_environment, normalize_environment
 

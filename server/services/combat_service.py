@@ -9,7 +9,6 @@ from uuid import UUID
 
 from server.app.lifespan import get_current_tick
 from server.events.combat_events import CombatStartedEvent
-from server.structured_logging.enhanced_logging_config import get_logger
 from server.models.combat import (
     CombatInstance,
     CombatParticipant,
@@ -28,6 +27,7 @@ from server.services.combat_turn_processor import CombatTurnProcessor
 from server.services.combat_types import CombatParticipantData
 from server.services.nats_exceptions import NATSError
 from server.services.player_combat_service import PlayerCombatService
+from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

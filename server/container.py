@@ -53,7 +53,6 @@ if TYPE_CHECKING:
     from .game.movement_service import MovementService
     from .game.player_service import PlayerService
     from .game.room_service import RoomService
-    from .structured_logging.log_aggregator import LogAggregator
     from .monitoring.exception_tracker import ExceptionTracker
     from .monitoring.monitoring_dashboard import MonitoringDashboard
     from .monitoring.performance_monitor import PerformanceMonitor
@@ -66,6 +65,7 @@ if TYPE_CHECKING:
     from .services.nats_service import NATSService
     from .services.schedule_service import ScheduleService
     from .services.user_manager import UserManager
+    from .structured_logging.log_aggregator import LogAggregator
     from .time.tick_scheduler import MythosTickScheduler
 
 from .structured_logging.enhanced_logging_config import get_logger
@@ -459,10 +459,10 @@ class ApplicationContainer:
 
                 # Phase 9: Monitoring and observability
                 logger.debug("Initializing monitoring services...")
-                from .structured_logging.log_aggregator import LogAggregator
                 from .monitoring.exception_tracker import ExceptionTracker
                 from .monitoring.monitoring_dashboard import MonitoringDashboard
                 from .monitoring.performance_monitor import PerformanceMonitor
+                from .structured_logging.log_aggregator import LogAggregator
 
                 # Initialize monitoring services directly (no singleton pattern)
                 self.performance_monitor = PerformanceMonitor()

@@ -196,7 +196,6 @@ async def test_send_respawn_event_with_retry_timeout(player_respawn_event_handle
 async def test_handle_player_respawned_success(player_respawn_event_handler, mock_connection_manager):
     """Test handle_player_respawned() successfully handles event."""
     player_id = uuid.uuid4()
-    player_id_str = str(player_id)
     event = MagicMock()
     event.player_id = player_id
     event.player_name = "TestPlayer"
@@ -335,7 +334,6 @@ async def test_get_player_data_for_delirium_respawn_error_handling(
 async def test_handle_player_delirium_respawned_success(player_respawn_event_handler, mock_connection_manager):
     """Test handle_player_delirium_respawned() successfully handles event."""
     player_id = uuid.uuid4()
-    player_id_str = str(player_id)
     event = MagicMock()
     event.player_id = player_id
     event.player_name = "TestPlayer"

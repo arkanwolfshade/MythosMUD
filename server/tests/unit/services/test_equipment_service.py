@@ -11,7 +11,7 @@ from server.services.equipment_service import (
     EquipmentService,
     SlotValidationError,
 )
-from server.services.inventory_service import InventoryCapacityError, InventoryService
+from server.services.inventory_service import InventoryService
 
 
 @pytest.fixture
@@ -39,9 +39,9 @@ def test_equip_from_inventory_success(equipment_service):
         }
     ]
     equipped = {}
-    
+
     new_inventory, new_equipped = equipment_service.equip_from_inventory(inventory, equipped, slot_index=0)
-    
+
     assert len(new_inventory) == 0
     assert "main_hand" in new_equipped
     assert new_equipped["main_hand"]["item_name"] == "sword"
@@ -51,7 +51,7 @@ def test_equip_from_inventory_invalid_slot_index(equipment_service):
     """Test equip_from_inventory with invalid slot index."""
     inventory = [{"item_name": "sword", "slot_type": "main_hand", "quantity": 1}]
     equipped = {}
-    
+
     with pytest.raises(SlotValidationError, match="invalid"):
         equipment_service.equip_from_inventory(inventory, equipped, slot_index=10)
 
@@ -60,7 +60,7 @@ def test_equip_from_inventory_no_slot_type(equipment_service):
     """Test equip_from_inventory with item missing slot_type."""
     inventory = [{"item_name": "sword", "quantity": 1}]
     equipped = {}
-    
+
     with pytest.raises(SlotValidationError, match="slot_type"):
         equipment_service.equip_from_inventory(inventory, equipped, slot_index=0)
 
@@ -78,7 +78,7 @@ def test_equip_from_inventory_slot_mismatch(equipment_service):
         }
     ]
     equipped = {}
-    
+
     with pytest.raises(SlotValidationError, match="does not match"):
         equipment_service.equip_from_inventory(inventory, equipped, slot_index=0, target_slot="off_hand")
 
@@ -96,9 +96,9 @@ def test_equip_from_inventory_quantity_split(equipment_service):
         }
     ]
     equipped = {}
-    
+
     new_inventory, new_equipped = equipment_service.equip_from_inventory(inventory, equipped, slot_index=0)
-    
+
     assert len(new_inventory) == 1
     assert new_inventory[0]["quantity"] == 4
     assert new_equipped["consumable"]["quantity"] == 1
@@ -126,9 +126,9 @@ def test_equip_from_inventory_swap_item(equipment_service):
             "quantity": 1,
         }
     }
-    
+
     new_inventory, new_equipped = equipment_service.equip_from_inventory(inventory, equipped, slot_index=0)
-    
+
     assert len(new_inventory) == 1
     assert new_inventory[0]["item_name"] == "sword"
     assert new_equipped["main_hand"]["item_name"] == "better_sword"
@@ -168,7 +168,7 @@ def test_equip_from_inventory_capacity_error(equipment_service):
             "quantity": 1,
         }
     )
-    
+
     with pytest.raises(EquipmentCapacityError, match="capacity reached"):
         equipment_service.equip_from_inventory(inventory, equipped, slot_index=20)
 
@@ -186,9 +186,9 @@ def test_unequip_to_inventory_success(equipment_service):
             "quantity": 1,
         }
     }
-    
+
     new_inventory, new_equipped = equipment_service.unequip_to_inventory(inventory, equipped, slot_type="main_hand")
-    
+
     assert len(new_inventory) == 1
     assert new_inventory[0]["item_name"] == "sword"
     assert "main_hand" not in new_equipped
@@ -198,7 +198,7 @@ def test_unequip_to_inventory_empty_slot(equipment_service):
     """Test unequip_to_inventory with empty slot."""
     inventory = []
     equipped = {}
-    
+
     with pytest.raises(SlotValidationError, match="No equipped item"):
         equipment_service.unequip_to_inventory(inventory, equipped, slot_type="main_hand")
 
@@ -207,7 +207,7 @@ def test_unequip_to_inventory_no_slot_type(equipment_service):
     """Test unequip_to_inventory with no slot type."""
     inventory = []
     equipped = {}
-    
+
     with pytest.raises(SlotValidationError, match="must be provided"):
         equipment_service.unequip_to_inventory(inventory, equipped, slot_type="")
 
@@ -236,6 +236,6 @@ def test_unequip_to_inventory_capacity_error(equipment_service):
             "quantity": 1,
         }
     }
-    
+
     with pytest.raises(EquipmentCapacityError, match="capacity reached"):
         equipment_service.unequip_to_inventory(inventory, equipped, slot_type="main_hand")

@@ -6,7 +6,7 @@ Tests the ScheduleService class for managing NPC and environmental schedules.
 
 from datetime import datetime
 from pathlib import Path
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 

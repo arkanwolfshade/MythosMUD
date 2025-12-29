@@ -4,7 +4,7 @@ Unit tests for motd_loader utilities.
 Tests the MOTD loading functions.
 """
 
-from unittest.mock import MagicMock, mock_open, patch
+from unittest.mock import mock_open, patch
 
 from server.utils.motd_loader import load_motd
 

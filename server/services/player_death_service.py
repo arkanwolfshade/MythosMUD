@@ -17,9 +17,9 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.events.event_types import PlayerDiedEvent, PlayerDPDecayEvent
-from server.structured_logging.enhanced_logging_config import get_logger, log_exception_once
 from server.models.game import PositionState
 from server.models.player import Player
+from server.structured_logging.enhanced_logging_config import get_logger, log_exception_once
 
 logger = get_logger(__name__)
 

@@ -6,8 +6,6 @@ Tests the connection_utils module functions.
 
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 from server.realtime.connection_utils import get_npc_name_from_instance
 
 

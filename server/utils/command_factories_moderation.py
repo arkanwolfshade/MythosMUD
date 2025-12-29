@@ -6,7 +6,6 @@ mute, unmute, mute_global, unmute_global, add_admin, admin, mutes.
 """
 
 from ..exceptions import ValidationError as MythosValidationError
-from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.command import (
     AddAdminCommand,
     AdminCommand,
@@ -16,6 +15,7 @@ from ..models.command import (
     UnmuteCommand,
     UnmuteGlobalCommand,
 )
+from ..structured_logging.enhanced_logging_config import get_logger
 from .enhanced_error_logging import create_error_context, log_and_raise_enhanced
 
 logger = get_logger(__name__)

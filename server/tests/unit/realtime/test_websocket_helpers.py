@@ -4,7 +4,6 @@ Unit tests for WebSocket helpers.
 Tests the websocket_helpers module functions.
 """
 
-import json
 import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 

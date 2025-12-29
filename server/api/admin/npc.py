@@ -21,13 +21,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ...auth.users import get_current_user
 from ...database import get_async_session
 from ...exceptions import LoggedHTTPException
-from ...structured_logging.enhanced_logging_config import get_logger
 from ...models.npc import NPCDefinition, NPCDefinitionType, NPCSpawnRule
 from ...models.user import User
 from ...npc_database import get_npc_session
 from ...services.admin_auth_service import AdminAction, get_admin_auth_service
 from ...services.npc_instance_service import get_npc_instance_service
 from ...services.npc_service import npc_service
+from ...structured_logging.enhanced_logging_config import get_logger
 from ...utils.error_logging import create_context_from_request
 
 logger = get_logger(__name__)

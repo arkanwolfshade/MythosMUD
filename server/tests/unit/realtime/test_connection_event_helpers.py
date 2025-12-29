@@ -4,7 +4,7 @@ Unit tests for connection event helpers.
 Tests the connection_event_helpers module functions.
 """
 
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 

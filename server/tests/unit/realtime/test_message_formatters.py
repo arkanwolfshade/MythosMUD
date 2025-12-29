@@ -6,8 +6,6 @@ Tests the message_formatters module functions.
 
 from unittest.mock import patch
 
-import pytest
-
 from server.realtime.message_formatters import format_message_content
 from server.services.nats_exceptions import NATSError
 
@@ -77,7 +75,7 @@ def test_format_message_content_unknown_channel():
 
 def test_format_message_content_nats_error():
     """Test format_message_content() handles NATSError."""
-    with patch("server.realtime.message_formatters.logger") as mock_logger:
+    with patch("server.realtime.message_formatters.logger"):
         with patch("server.realtime.message_formatters.format_message_content", side_effect=NATSError("Error")):
             # The function should catch NATSError and return original content
             # But since we're patching the function itself, let's test the actual implementation

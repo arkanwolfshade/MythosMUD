@@ -4,12 +4,6 @@ Test configuration and fixtures for MythosMUD greenfield test suite.
 This module provides core fixtures and test isolation for the new test suite.
 """
 
-"""
-Test configuration and fixtures for MythosMUD greenfield test suite.
-
-This module provides core fixtures and test isolation for the new test suite.
-"""
-
 import asyncio
 import os
 import random
@@ -29,8 +23,9 @@ os.environ.setdefault("DATABASE_URL", "postgresql+asyncpg://postgres:Cthulhu1@lo
 os.environ.setdefault("DATABASE_NPC_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
 os.environ.setdefault("GAME_ALIASES_DIR", "data/unit_test/players/aliases")
 
-from server.config import reset_config
-from server.structured_logging.enhanced_logging_config import get_logger
+# Imports must come after environment variables to prevent config loading failures
+from server.config import reset_config  # noqa: E402
+from server.structured_logging.enhanced_logging_config import get_logger  # noqa: E402
 
 logger = get_logger(__name__)
 

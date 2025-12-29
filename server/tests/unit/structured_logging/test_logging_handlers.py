@@ -197,9 +197,7 @@ def test_create_aggregator_handler_windows_platform(temp_log_dir):
     """Test create_aggregator_handler() uses Windows-safe handler on Windows."""
     log_path = Path(temp_log_dir) / "warnings.log"
     with patch("sys.platform", "win32"):
-        with patch(
-            "server.structured_logging.windows_safe_rotation.WindowsSafeRotatingFileHandler"
-        ) as mock_win_handler:
+        with patch("server.structured_logging.windows_safe_rotation.WindowsSafeRotatingFileHandler"):
             handler = create_aggregator_handler(log_path, logging.WARNING, max_bytes=1024, backup_count=3)
             # Should use Windows-safe handler
             assert handler is not None

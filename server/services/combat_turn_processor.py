@@ -6,9 +6,9 @@ for automatic combat progression.
 """
 
 from server.config import get_config
-from server.structured_logging.enhanced_logging_config import get_logger
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType, CombatStatus
 from server.services.nats_exceptions import NATSError
+from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

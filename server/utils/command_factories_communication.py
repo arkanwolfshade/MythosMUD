@@ -6,7 +6,6 @@ say, local, system, emote, me, pose, whisper, reply.
 """
 
 from ..exceptions import ValidationError as MythosValidationError
-from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.command import (
     EmoteCommand,
     LocalCommand,
@@ -17,6 +16,7 @@ from ..models.command import (
     SystemCommand,
     WhisperCommand,
 )
+from ..structured_logging.enhanced_logging_config import get_logger
 from .enhanced_error_logging import create_error_context, log_and_raise_enhanced
 
 logger = get_logger(__name__)

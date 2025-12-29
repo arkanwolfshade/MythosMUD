@@ -252,7 +252,6 @@ def test_time_until_retry_returns_zero_after_timeout():
 def test_transition_to_updates_state():
     """Test _transition_to() updates state."""
     cb = CircuitBreaker()
-    old_state = cb.state
     old_time = cb.last_state_change
     cb._transition_to(CircuitState.OPEN)
     assert cb.state == CircuitState.OPEN

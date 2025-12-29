@@ -4,7 +4,6 @@ Unit tests for inventory command helper functions.
 Tests the helper functions in inventory_commands.py.
 """
 
-import pytest
 
 from server.commands.inventory_commands import (
     _match_equipped_item_by_name,

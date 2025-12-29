@@ -127,7 +127,6 @@ def test_roll_character_stats_value_error(character_creation_service):
 
 def test_validate_character_stats_with_class(character_creation_service, sample_stats):
     """Test validate_character_stats() with class_name."""
-    mock_stats = Stats(**sample_stats)
     character_creation_service.stats_generator.validate_class_prerequisites = MagicMock(return_value=(True, []))
     character_creation_service.stats_generator.get_available_classes = MagicMock(
         return_value=["investigator", "detective"]

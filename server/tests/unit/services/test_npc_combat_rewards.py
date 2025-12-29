@@ -4,7 +4,7 @@ Unit tests for NPC combat rewards.
 Tests the NPCCombatRewards class for XP calculation and rewards.
 """
 
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 

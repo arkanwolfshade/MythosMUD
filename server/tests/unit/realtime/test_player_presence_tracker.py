@@ -205,7 +205,6 @@ async def test_track_player_connected_impl_no_room_id():
 @pytest.mark.asyncio
 async def test_track_player_connected_impl_error():
     """Test track_player_connected_impl() handles errors."""
-    from server.exceptions import DatabaseError
 
     player_id = uuid.uuid4()
     mock_player = MagicMock()
@@ -383,7 +382,9 @@ async def test_track_player_disconnected_impl_success():
         with patch("server.realtime.player_presence_tracker.handle_player_disconnect_broadcast") as mock_broadcast:
             with patch("server.realtime.player_presence_tracker._remove_player_from_online_tracking") as mock_remove:
                 with patch("server.realtime.player_presence_tracker._cleanup_player_references") as mock_cleanup:
-                    with patch("server.realtime.player_presence_tracker.extract_player_name", return_value="TestPlayer"):
+                    with patch(
+                        "server.realtime.player_presence_tracker.extract_player_name", return_value="TestPlayer"
+                    ):
                         with patch("server.realtime.player_presence_tracker.logger") as mock_logger:
                             await track_player_disconnected_impl(player_id, mock_manager, "websocket")
 
@@ -441,9 +442,11 @@ async def test_track_player_disconnected_impl_no_player():
 
     with patch("server.realtime.player_presence_tracker._collect_disconnect_keys", return_value=([], [])):
         with patch("server.realtime.player_presence_tracker.handle_player_disconnect_broadcast") as mock_broadcast:
-            with patch("server.realtime.player_presence_tracker._remove_player_from_online_tracking") as mock_remove:
-                with patch("server.realtime.player_presence_tracker._cleanup_player_references") as mock_cleanup:
-                    with patch("server.realtime.player_presence_tracker.extract_player_name", return_value="Unknown Player"):
+            with patch("server.realtime.player_presence_tracker._remove_player_from_online_tracking"):
+                with patch("server.realtime.player_presence_tracker._cleanup_player_references"):
+                    with patch(
+                        "server.realtime.player_presence_tracker.extract_player_name", return_value="Unknown Player"
+                    ):
                         await track_player_disconnected_impl(player_id, mock_manager, "websocket")
 
                         # Should still process disconnect even without player

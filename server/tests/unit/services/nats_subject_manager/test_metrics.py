@@ -223,7 +223,7 @@ def test_reset(metrics):
 def test_validation_times_maxlen(metrics):
     """Test validation_times deque respects maxlen."""
     # Add more than 1000 times
-    for i in range(1500):
+    for _i in range(1500):
         metrics.record_validation(0.001, success=True, cache_hit=False)
 
     assert len(metrics.validation_times) == 1000
@@ -232,7 +232,7 @@ def test_validation_times_maxlen(metrics):
 def test_build_times_maxlen(metrics):
     """Test build_times deque respects maxlen."""
     # Add more than 1000 times
-    for i in range(1500):
+    for _i in range(1500):
         metrics.record_build(0.001, success=True)
 
     assert len(metrics.build_times) == 1000

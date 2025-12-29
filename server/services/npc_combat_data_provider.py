@@ -10,8 +10,8 @@ from uuid import UUID
 
 from sqlalchemy.exc import SQLAlchemyError
 
-from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.combat import CombatParticipantType
+from ..structured_logging.enhanced_logging_config import get_logger
 from .combat_types import CombatParticipantData
 
 logger = get_logger(__name__)

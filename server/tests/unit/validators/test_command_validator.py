@@ -2,7 +2,6 @@
 Unit tests for command validator.
 """
 
-import pytest
 
 from server.validators.command_validator import (
     CommandValidator,
@@ -46,7 +45,7 @@ def test_is_suspicious_input_safe():
         "look at the door",
         "pickup sword",
     ]
-    
+
     for cmd in safe_commands:
         assert is_suspicious_input(cmd) is False
 
@@ -57,7 +56,7 @@ def test_is_suspicious_input_sql_injection():
         "'; DROP TABLE users; --",  # Contains semicolon
         "1' OR '1'='1",  # Contains OR with equals
     ]
-    
+
     for cmd in suspicious_commands:
         assert is_suspicious_input(cmd) is True
 
@@ -68,7 +67,7 @@ def test_is_suspicious_input_xss():
         "<script>alert('xss')</script>",
         "javascript:alert('xss')",
     ]
-    
+
     for cmd in suspicious_commands:
         assert is_suspicious_input(cmd) is True
 
@@ -177,7 +176,7 @@ def test_command_validator_validate_command_content_dangerous_pattern():
         "__import__('os')",
         "subprocess.call",
     ]
-    
+
     for cmd in dangerous_commands:
         is_valid, error = CommandValidator.validate_command_content(cmd)
         assert is_valid is False, f"Should detect danger in: {cmd}"
@@ -201,7 +200,7 @@ def test_command_validator_validate_command_content_non_printable():
         "go\x03north",  # ETX
         "go\x1fnorth",  # Unit separator
     ]
-    
+
     for cmd in non_printable_commands:
         is_valid, error = CommandValidator.validate_command_content(cmd)
         assert is_valid is False, f"Should detect non-printable in: {repr(cmd)}"
@@ -216,7 +215,7 @@ def test_command_validator_validate_command_content_allows_newline_tab_space():
         "go north",   # Space
         "go\n\tnorth",  # Multiple allowed
     ]
-    
+
     for cmd in valid_commands:
         is_valid, error = CommandValidator.validate_command_content(cmd)
         assert is_valid is True, f"Should allow newline/tab/space in: {repr(cmd)}"

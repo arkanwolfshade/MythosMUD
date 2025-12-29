@@ -4,10 +4,7 @@ Unit tests for room data fixer.
 Tests the RoomDataFixer class for applying automatic fixes to room data.
 """
 
-import time
 from unittest.mock import patch
-
-import pytest
 
 from server.services.room_data_fixer import RoomDataFixer
 

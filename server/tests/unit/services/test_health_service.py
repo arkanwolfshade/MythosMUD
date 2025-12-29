@@ -5,7 +5,6 @@ Tests the health monitoring service for system health checks.
 """
 
 import time
-from datetime import UTC, datetime
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -271,7 +270,7 @@ def test_get_connections_component_health(health_service, mock_connection_manage
 
 def test_generate_alerts_no_alerts(health_service):
     """Test generate_alerts returns empty list when all healthy."""
-    from server.models.health import HealthComponents, ServerComponent, DatabaseComponent, ConnectionsComponent
+    from server.models.health import ConnectionsComponent, DatabaseComponent, HealthComponents, ServerComponent
 
     components = HealthComponents(
         server=ServerComponent(
@@ -288,7 +287,7 @@ def test_generate_alerts_no_alerts(health_service):
 
 def test_generate_alerts_with_alerts(health_service):
     """Test generate_alerts returns alerts when components are unhealthy."""
-    from server.models.health import HealthComponents, ServerComponent, DatabaseComponent, ConnectionsComponent
+    from server.models.health import ConnectionsComponent, DatabaseComponent, HealthComponents, ServerComponent
 
     components = HealthComponents(
         server=ServerComponent(
@@ -308,7 +307,7 @@ def test_generate_alerts_with_alerts(health_service):
 
 def test_determine_overall_status_healthy(health_service):
     """Test determine_overall_status returns healthy when all components healthy."""
-    from server.models.health import HealthComponents, ServerComponent, DatabaseComponent, ConnectionsComponent
+    from server.models.health import ConnectionsComponent, DatabaseComponent, HealthComponents, ServerComponent
 
     components = HealthComponents(
         server=ServerComponent(
@@ -325,7 +324,7 @@ def test_determine_overall_status_healthy(health_service):
 
 def test_determine_overall_status_degraded(health_service):
     """Test determine_overall_status returns degraded when any component degraded."""
-    from server.models.health import HealthComponents, ServerComponent, DatabaseComponent, ConnectionsComponent
+    from server.models.health import ConnectionsComponent, DatabaseComponent, HealthComponents, ServerComponent
 
     components = HealthComponents(
         server=ServerComponent(
@@ -342,7 +341,7 @@ def test_determine_overall_status_degraded(health_service):
 
 def test_determine_overall_status_unhealthy(health_service):
     """Test determine_overall_status returns unhealthy when any component unhealthy."""
-    from server.models.health import HealthComponents, ServerComponent, DatabaseComponent, ConnectionsComponent
+    from server.models.health import ConnectionsComponent, DatabaseComponent, HealthComponents, ServerComponent
 
     components = HealthComponents(
         server=ServerComponent(
@@ -402,7 +401,7 @@ def test_get_health_status_version_fallback(mock_version, health_service):
 
     mock_version.side_effect = PackageNotFoundError("Package not found")
     with patch.object(health_service, "get_server_component_health") as mock_server:
-        from server.models.health import ServerComponent, DatabaseComponent, ConnectionsComponent, HealthComponents
+        from server.models.health import ConnectionsComponent, DatabaseComponent, ServerComponent
 
         mock_server.return_value = ServerComponent(
             status=HealthStatus.HEALTHY, uptime_seconds=100, memory_usage_mb=500, cpu_usage_percent=50

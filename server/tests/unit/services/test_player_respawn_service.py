@@ -5,8 +5,8 @@ Tests the PlayerRespawnService for managing player resurrection and limbo state.
 """
 
 import uuid
-from datetime import UTC, datetime
-from unittest.mock import AsyncMock, MagicMock, patch
+from datetime import datetime
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 from sqlalchemy.exc import SQLAlchemyError
@@ -97,7 +97,6 @@ def test_respawn_service_initialization_no_deps(respawn_service_no_deps):
 async def test_move_player_to_limbo_success(respawn_service, mock_session, sample_player):
     """Test moving player to limbo successfully."""
     mock_session.get.return_value = sample_player
-    old_room = sample_player.current_room_id
 
     result = await respawn_service.move_player_to_limbo(sample_player.player_id, "death_room", mock_session)
 
@@ -228,7 +227,9 @@ async def test_respawn_player_with_custom_respawn_room(respawn_service, mock_ses
 
 
 @pytest.mark.asyncio
-async def test_respawn_player_clears_combat_state(respawn_service, mock_session, sample_player, mock_player_combat_service):
+async def test_respawn_player_clears_combat_state(
+    respawn_service, mock_session, sample_player, mock_player_combat_service
+):
     """Test respawning player clears combat state."""
     sample_player.current_room_id = LIMBO_ROOM_ID
     sample_player.get_stats.return_value = {"current_dp": 0, "max_dp": 100, "position": PositionState.LYING}
@@ -254,7 +255,9 @@ async def test_respawn_player_no_combat_service(respawn_service_no_deps, mock_se
 
 
 @pytest.mark.asyncio
-async def test_respawn_player_combat_clear_error(respawn_service, mock_session, sample_player, mock_player_combat_service):
+async def test_respawn_player_combat_clear_error(
+    respawn_service, mock_session, sample_player, mock_player_combat_service
+):
     """Test respawning player when combat clear fails."""
     sample_player.current_room_id = LIMBO_ROOM_ID
     sample_player.get_stats.return_value = {"current_dp": 0, "max_dp": 100, "position": PositionState.LYING}
@@ -318,7 +321,9 @@ async def test_respawn_player_from_delirium_success(respawn_service, mock_sessio
 
 
 @pytest.mark.asyncio
-async def test_respawn_player_from_delirium_clears_combat_state(respawn_service, mock_session, sample_player, mock_player_combat_service):
+async def test_respawn_player_from_delirium_clears_combat_state(
+    respawn_service, mock_session, sample_player, mock_player_combat_service
+):
     """Test respawning player from delirium clears combat state."""
     sample_player.current_room_id = LIMBO_ROOM_ID
     sample_player.get_stats.return_value = {"position": PositionState.LYING}
@@ -389,7 +394,9 @@ async def test_respawn_player_from_delirium_database_error(respawn_service, mock
 
 
 @pytest.mark.asyncio
-async def test_respawn_player_from_delirium_combat_clear_error(respawn_service, mock_session, sample_player, mock_player_combat_service):
+async def test_respawn_player_from_delirium_combat_clear_error(
+    respawn_service, mock_session, sample_player, mock_player_combat_service
+):
     """Test respawning player from delirium when combat clear fails."""
     sample_player.current_room_id = LIMBO_ROOM_ID
     sample_player.get_stats.return_value = {"position": PositionState.LYING}

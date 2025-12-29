@@ -7,8 +7,6 @@ Tests the connection_models module classes.
 import time
 import uuid
 
-import pytest
-
 from server.realtime.connection_models import ConnectionMetadata
 
 

@@ -18,11 +18,11 @@ from ..database import get_async_session
 from ..dependencies import RoomServiceDep
 from ..exceptions import LoggedHTTPException
 from ..game.room_service import RoomService
-from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.user import User
 
 # Removed: from ..persistence import get_persistence - now using async_persistence from request
 from ..services.admin_auth_service import AdminAction, get_admin_auth_service
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import create_context_from_request
 
 logger = get_logger(__name__)

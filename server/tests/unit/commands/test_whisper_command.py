@@ -55,7 +55,7 @@ async def test_whisper_command_missing_target(mock_request):
         alias_storage=None,
         player_name="sender",
     )
-    
+
     assert "say what" in result["result"].lower() or "usage" in result["result"].lower()
 
 
@@ -69,7 +69,7 @@ async def test_whisper_command_missing_message(mock_request):
         alias_storage=None,
         player_name="sender",
     )
-    
+
     assert "say what" in result["result"].lower() or "usage" in result["result"].lower()
 
 
@@ -77,7 +77,7 @@ async def test_whisper_command_missing_message(mock_request):
 async def test_whisper_command_no_player_service(mock_request):
     """Test whisper command when player service is unavailable."""
     mock_request.app.state.player_service = None
-    
+
     result = await handle_whisper_command(
         command_data={"target": "target", "message": "hello"},
         current_user={},
@@ -85,7 +85,7 @@ async def test_whisper_command_no_player_service(mock_request):
         alias_storage=None,
         player_name="sender",
     )
-    
+
     assert "not available" in result["result"].lower()
 
 
@@ -93,7 +93,7 @@ async def test_whisper_command_no_player_service(mock_request):
 async def test_whisper_command_sender_not_found(mock_request):
     """Test whisper command when sender not found."""
     mock_request.app.state.player_service.resolve_player_name = AsyncMock(return_value=None)
-    
+
     result = await handle_whisper_command(
         command_data={"target": "target", "message": "hello"},
         current_user={},
@@ -101,7 +101,7 @@ async def test_whisper_command_sender_not_found(mock_request):
         alias_storage=None,
         player_name="sender",
     )
-    
+
     assert "player not found" in result["result"].lower()
 
 
@@ -109,7 +109,7 @@ async def test_whisper_command_sender_not_found(mock_request):
 async def test_whisper_command_target_not_found(mock_request, mock_sender):
     """Test whisper command when target not found."""
     mock_request.app.state.player_service.resolve_player_name = AsyncMock(side_effect=[mock_sender, None])
-    
+
     result = await handle_whisper_command(
         command_data={"target": "nonexistent", "message": "hello"},
         current_user={},
@@ -117,7 +117,7 @@ async def test_whisper_command_target_not_found(mock_request, mock_sender):
         alias_storage=None,
         player_name="sender",
     )
-    
+
     assert "not found" in result["result"].lower()
 
 
@@ -125,7 +125,7 @@ async def test_whisper_command_target_not_found(mock_request, mock_sender):
 async def test_whisper_command_whisper_to_self(mock_request, mock_sender):
     """Test whisper command when trying to whisper to self."""
     mock_request.app.state.player_service.resolve_player_name = AsyncMock(return_value=mock_sender)
-    
+
     result = await handle_whisper_command(
         command_data={"target": "sender", "message": "hello"},
         current_user={},
@@ -133,7 +133,7 @@ async def test_whisper_command_whisper_to_self(mock_request, mock_sender):
         alias_storage=None,
         player_name="sender",
     )
-    
+
     assert "cannot whisper to yourself" in result["result"].lower()
 
 
@@ -144,7 +144,7 @@ async def test_whisper_command_success(mock_request, mock_sender, mock_target):
     mock_request.app.state.chat_service.send_whisper_message = AsyncMock(
         return_value={"success": True, "message": {"id": "msg123"}}
     )
-    
+
     result = await handle_whisper_command(
         command_data={"target": "target", "message": "hello"},
         current_user={},
@@ -152,7 +152,7 @@ async def test_whisper_command_success(mock_request, mock_sender, mock_target):
         alias_storage=None,
         player_name="sender",
     )
-    
+
     assert "you whisper to target" in result["result"].lower()
     assert "hello" in result["result"]
 

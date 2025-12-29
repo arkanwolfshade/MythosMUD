@@ -7,8 +7,6 @@ for managing feature flags with caching and validation.
 
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 from server.services.feature_flag_service import (
     FeatureFlagService,
     get_feature_flags,
@@ -78,7 +76,7 @@ class TestFeatureFlagService:
             assert result1 is True
             assert result2 is True  # Should still be True due to caching
             # Verify config was only accessed once
-            assert mock_config.game.combat_enabled == False  # Config changed but cache used
+            assert not mock_config.game.combat_enabled  # Config changed but cache used
 
     def test_is_combat_logging_enabled_true(self):
         """Test is_combat_logging_enabled returns True when enabled."""

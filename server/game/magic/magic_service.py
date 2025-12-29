@@ -19,10 +19,10 @@ from server.game.magic.spell_materials import SpellMaterialsService
 from server.game.magic.spell_registry import SpellRegistry
 from server.game.magic.spell_targeting import SpellTargetingService
 from server.game.player_service import PlayerService
-from server.structured_logging.enhanced_logging_config import get_logger
 from server.models.spell import Spell
 from server.persistence.repositories.player_spell_repository import PlayerSpellRepository
 from server.schemas.target_resolution import TargetMatch
+from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

@@ -6,8 +6,6 @@ Tests path validation and file security functions to prevent path traversal atta
 
 import os
 import tempfile
-from pathlib import Path
-from unittest.mock import patch
 
 import pytest
 from fastapi import HTTPException
@@ -24,7 +22,7 @@ def test_validate_secure_path_valid():
     """Test validate_secure_path with valid path."""
     with tempfile.TemporaryDirectory() as tmpdir:
         result = validate_secure_path(tmpdir, "subdir/file.txt")
-        
+
         assert isinstance(result, str)
         assert os.path.exists(result) or not os.path.exists(result)  # Path may or may not exist
         assert tmpdir in result or os.path.commonpath([tmpdir, result]) == tmpdir
@@ -48,7 +46,7 @@ def test_validate_secure_path_with_leading_slash():
     """Test validate_secure_path handles leading slashes."""
     with tempfile.TemporaryDirectory() as tmpdir:
         result = validate_secure_path(tmpdir, "/subdir/file.txt")
-        
+
         # Leading slash should be stripped
         assert isinstance(result, str)
         assert "subdir" in result or "file.txt" in result
@@ -58,7 +56,7 @@ def test_validate_secure_path_with_backslash():
     """Test validate_secure_path normalizes backslashes."""
     with tempfile.TemporaryDirectory() as tmpdir:
         result = validate_secure_path(tmpdir, "subdir\\file.txt")
-        
+
         # Backslashes should be normalized to forward slashes
         assert isinstance(result, str)
         assert "subdir" in result or "file.txt" in result
@@ -70,7 +68,7 @@ def test_validate_secure_path_path_traversal_commonpath():
         # Create a sibling directory to test commonpath detection
         parent_dir = os.path.dirname(tmpdir)
         sibling_dir = os.path.join(parent_dir, "sibling_dir")
-        
+
         # Try to access sibling directory (should be caught by commonpath check)
         # We need to construct a path that would escape but doesn't use ..
         # Since .. is caught first, we'll test with an absolute path that's outside
@@ -88,12 +86,12 @@ def test_validate_secure_path_different_drives_windows():
     """Test validate_secure_path handles different drives on Windows."""
     if os.name != "nt":
         pytest.skip("Windows-specific test")
-    
+
     # On Windows, paths on different drives cause ValueError in commonpath
     # The code should handle this gracefully
     base_path = "C:\\temp"
     user_path = "D:\\file.txt"
-    
+
     # This should not raise due to ValueError handling
     try:
         result = validate_secure_path(base_path, user_path)
@@ -108,7 +106,7 @@ def test_get_secure_file_path_valid():
     """Test get_secure_file_path with valid filename."""
     with tempfile.TemporaryDirectory() as tmpdir:
         result = get_secure_file_path("test_file.txt", tmpdir)
-        
+
         assert isinstance(result, str)
         assert os.path.dirname(result) == os.path.abspath(tmpdir)
         assert os.path.basename(result) == "test_file.txt"
@@ -133,7 +131,7 @@ def test_get_secure_file_path_creates_directory():
     with tempfile.TemporaryDirectory() as tmpdir:
         new_dir = os.path.join(tmpdir, "new_dir")
         result = get_secure_file_path("test.txt", new_dir)
-        
+
         assert os.path.isdir(new_dir)
         assert isinstance(result, str)
 
@@ -142,7 +140,7 @@ def test_get_secure_file_path_with_underscores():
     """Test get_secure_file_path accepts filenames with underscores."""
     with tempfile.TemporaryDirectory() as tmpdir:
         result = get_secure_file_path("test_file_name.txt", tmpdir)
-        
+
         assert isinstance(result, str)
         assert "test_file_name.txt" in result
 
@@ -151,7 +149,7 @@ def test_get_secure_file_path_with_dots():
     """Test get_secure_file_path accepts filenames with dots."""
     with tempfile.TemporaryDirectory() as tmpdir:
         result = get_secure_file_path("file.name.with.dots.txt", tmpdir)
-        
+
         assert isinstance(result, str)
         assert "file.name.with.dots.txt" in result
 
@@ -160,7 +158,7 @@ def test_get_secure_file_path_with_hyphens():
     """Test get_secure_file_path accepts filenames with hyphens."""
     with tempfile.TemporaryDirectory() as tmpdir:
         result = get_secure_file_path("test-file-name.txt", tmpdir)
-        
+
         assert isinstance(result, str)
         assert "test-file-name.txt" in result
 
@@ -169,7 +167,7 @@ def test_ensure_directory_exists_existing():
     """Test ensure_directory_exists with existing directory."""
     with tempfile.TemporaryDirectory() as tmpdir:
         result = ensure_directory_exists(tmpdir)
-        
+
         assert isinstance(result, str)
         assert os.path.isdir(result)
         assert os.path.abspath(tmpdir) == result
@@ -180,7 +178,7 @@ def test_ensure_directory_exists_creates():
     with tempfile.TemporaryDirectory() as tmpdir:
         new_dir = os.path.join(tmpdir, "new_subdir")
         result = ensure_directory_exists(new_dir)
-        
+
         assert os.path.isdir(new_dir)
         assert os.path.abspath(new_dir) == result
 
@@ -191,7 +189,7 @@ def test_ensure_directory_exists_relative_path():
         os.chdir(tmpdir)
         try:
             result = ensure_directory_exists("relative_dir")
-            
+
             assert isinstance(result, str)
             assert os.path.isabs(result)  # Should be absolute
             assert os.path.isdir(result)
@@ -266,7 +264,7 @@ def test_validate_secure_path_nested_path():
     """Test validate_secure_path with nested valid path."""
     with tempfile.TemporaryDirectory() as tmpdir:
         result = validate_secure_path(tmpdir, "level1/level2/level3/file.txt")
-        
+
         assert isinstance(result, str)
         assert "level1" in result or "level2" in result or "level3" in result or "file.txt" in result
 
@@ -275,7 +273,7 @@ def test_validate_secure_path_empty_user_path():
     """Test validate_secure_path with empty user path."""
     with tempfile.TemporaryDirectory() as tmpdir:
         result = validate_secure_path(tmpdir, "")
-        
+
         assert isinstance(result, str)
         assert result == os.path.abspath(tmpdir) or result.startswith(tmpdir)
 
@@ -289,7 +287,7 @@ def test_validate_secure_path_absolute_base():
             # Only test if relative path is actually different from absolute
             if relative_base != tmpdir:
                 result = validate_secure_path(relative_base, "file.txt")
-                
+
                 # Base should be normalized to absolute
                 assert isinstance(result, str)
                 assert os.path.isabs(os.path.dirname(result))
@@ -304,7 +302,7 @@ def test_get_secure_file_path_numeric_filename():
     """Test get_secure_file_path with numeric filename."""
     with tempfile.TemporaryDirectory() as tmpdir:
         result = get_secure_file_path("123.txt", tmpdir)
-        
+
         assert isinstance(result, str)
         assert "123.txt" in result
 
@@ -313,7 +311,7 @@ def test_get_secure_file_path_mixed_case():
     """Test get_secure_file_path with mixed case filename."""
     with tempfile.TemporaryDirectory() as tmpdir:
         result = get_secure_file_path("TestFile.TXT", tmpdir)
-        
+
         assert isinstance(result, str)
         assert "TestFile.TXT" in result or "testfile.txt" in result.lower()
 
@@ -322,7 +320,7 @@ def test_validate_secure_path_with_spaces():
     """Test validate_secure_path with path containing spaces."""
     with tempfile.TemporaryDirectory() as tmpdir:
         result = validate_secure_path(tmpdir, "sub dir/file name.txt")
-        
+
         assert isinstance(result, str)
         # Spaces are allowed in paths (though not in filenames per is_safe_filename)
 

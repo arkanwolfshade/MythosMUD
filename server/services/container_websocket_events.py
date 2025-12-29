@@ -13,9 +13,9 @@ from datetime import datetime
 from typing import Any
 from uuid import UUID
 
-from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.container import ContainerComponent
 from ..realtime.envelope import build_event
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

@@ -4,7 +4,6 @@ Unit tests for NPC look functionality.
 Tests the helper functions for looking at NPCs in rooms.
 """
 
-import json
 from datetime import datetime
 from unittest.mock import AsyncMock, MagicMock, patch
 

@@ -8,8 +8,8 @@ including parsing, formatting, and label generation.
 import re
 from typing import Any
 
-from ..structured_logging.enhanced_logging_config import get_logger
 from ..services.wearable_container_service import WearableContainerService
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

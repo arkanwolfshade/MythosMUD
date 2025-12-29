@@ -4,7 +4,7 @@ Unit tests for NATS Subject Manager.
 Tests the NATSSubjectManager class.
 """
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 

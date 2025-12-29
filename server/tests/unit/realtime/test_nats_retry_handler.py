@@ -6,11 +6,11 @@ Tests the NATSRetryHandler class and related retry logic.
 
 import asyncio
 from datetime import UTC, datetime
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock
 
 import pytest
 
-from server.realtime.nats_retry_handler import NATSRetryHandler, RetryConfig, RetryableMessage
+from server.realtime.nats_retry_handler import NATSRetryHandler, RetryableMessage, RetryConfig
 
 
 def test_retry_config_calculate_delay_base():

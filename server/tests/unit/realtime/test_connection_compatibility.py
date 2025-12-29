@@ -6,8 +6,6 @@ Tests the connection_compatibility module functions.
 
 from unittest.mock import MagicMock
 
-import pytest
-
 from server.realtime.connection_compatibility import attach_compatibility_properties
 
 

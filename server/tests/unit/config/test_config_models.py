@@ -3,14 +3,15 @@ Unit tests for configuration models.
 """
 
 import os
-import pytest
 from unittest.mock import patch
 
+import pytest
+
 from server.config.models import (
-    ServerConfig,
     DatabaseConfig,
-    _parse_env_list,
+    ServerConfig,
     _default_cors_origins,
+    _parse_env_list,
 )
 
 

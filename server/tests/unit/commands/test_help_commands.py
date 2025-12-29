@@ -7,6 +7,7 @@ Tests the help command functionality.
 from unittest.mock import MagicMock
 
 import pytest
+
 from server.commands.help_commands import handle_help_command
 
 

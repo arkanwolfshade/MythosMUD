@@ -7,12 +7,12 @@ from typing import Any
 
 from ..alias_storage import AliasStorage
 from ..database import get_async_session
-from ..structured_logging.enhanced_logging_config import get_logger
 from ..services.active_lucidity_service import (
     ActiveLucidityService,
     LucidityActionOnCooldownError,
     UnknownLucidityActionError,
 )
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
 
 logger = get_logger(__name__)

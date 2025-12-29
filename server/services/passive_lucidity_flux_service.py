@@ -15,10 +15,10 @@ from sqlalchemy.exc import DatabaseError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..async_persistence import AsyncPersistenceLayer
-from ..structured_logging.enhanced_logging_config import get_logger
 from ..models.lucidity import PlayerLucidity
 from ..models.player import Player
 from ..services.lucidity_service import CatatoniaObserverProtocol, LucidityService, LucidityUpdateResult
+from ..structured_logging.enhanced_logging_config import get_logger
 
 try:
     from server.monitoring.performance_monitor import PerformanceMonitor

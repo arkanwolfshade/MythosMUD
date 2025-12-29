@@ -49,9 +49,10 @@ def mock_task_registry():
 @pytest.fixture
 def event_handler(mock_event_bus, mock_connection_manager, mock_task_registry):
     """Create a RealTimeEventHandler instance."""
-    with patch("server.realtime.event_handler.get_room_sync_service") as mock_sync, patch(
-        "server.realtime.event_handler.chat_logger"
-    ) as mock_chat_logger:
+    with (
+        patch("server.realtime.event_handler.get_room_sync_service") as mock_sync,
+        patch("server.realtime.event_handler.chat_logger"),
+    ):
         mock_sync.return_value = MagicMock()
         handler = RealTimeEventHandler(
             event_bus=mock_event_bus, task_registry=mock_task_registry, connection_manager=mock_connection_manager
@@ -61,9 +62,10 @@ def event_handler(mock_event_bus, mock_connection_manager, mock_task_registry):
 
 def test_event_handler_init(mock_event_bus, mock_connection_manager, mock_task_registry):
     """Test RealTimeEventHandler.__init__() initializes correctly."""
-    with patch("server.realtime.event_handler.get_room_sync_service") as mock_sync, patch(
-        "server.realtime.event_handler.chat_logger"
-    ) as mock_chat_logger:
+    with (
+        patch("server.realtime.event_handler.get_room_sync_service") as mock_sync,
+        patch("server.realtime.event_handler.chat_logger"),
+    ):
         mock_sync.return_value = MagicMock()
         handler = RealTimeEventHandler(
             event_bus=mock_event_bus, task_registry=mock_task_registry, connection_manager=mock_connection_manager
@@ -82,9 +84,11 @@ def test_event_handler_init(mock_event_bus, mock_connection_manager, mock_task_r
 
 def test_event_handler_init_no_event_bus(mock_connection_manager, mock_task_registry):
     """Test RealTimeEventHandler.__init__() creates EventBus when None."""
-    with patch("server.realtime.event_handler.EventBus") as mock_event_bus_class, patch(
-        "server.realtime.event_handler.get_room_sync_service"
-    ) as mock_sync, patch("server.realtime.event_handler.chat_logger") as mock_chat_logger:
+    with (
+        patch("server.realtime.event_handler.EventBus") as mock_event_bus_class,
+        patch("server.realtime.event_handler.get_room_sync_service") as mock_sync,
+        patch("server.realtime.event_handler.chat_logger"),
+    ):
         mock_event_bus_instance = MagicMock()
         mock_event_bus_class.return_value = mock_event_bus_instance
         mock_sync.return_value = MagicMock()
@@ -257,9 +261,11 @@ async def test_event_handler_send_room_occupants_update_internal_success(event_h
     room_id = "room_123"
     exclude_player = "player_123"
 
-    with patch.object(event_handler.occupant_manager, "get_room_occupants") as mock_get_occupants, patch.object(
-        event_handler.occupant_manager, "separate_occupants_by_type"
-    ) as mock_separate, patch.object(event_handler.message_builder, "build_occupants_update_message") as mock_build:
+    with (
+        patch.object(event_handler.occupant_manager, "get_room_occupants") as mock_get_occupants,
+        patch.object(event_handler.occupant_manager, "separate_occupants_by_type") as mock_separate,
+        patch.object(event_handler.message_builder, "build_occupants_update_message") as mock_build,
+    ):
         mock_get_occupants.return_value = [{"name": "Player1"}, {"name": "NPC1"}]
         mock_separate.return_value = (["Player1"], ["NPC1"], [{"name": "Player1"}, {"name": "NPC1"}])
         mock_build.return_value = {"type": "room_occupants", "players": ["Player1"], "npcs": ["NPC1"]}
