@@ -36,7 +36,9 @@ def player_event_handler_utils(mock_connection_manager, mock_name_extractor, moc
     return PlayerEventHandlerUtils(mock_connection_manager, mock_name_extractor, mock_logger)
 
 
-def test_player_event_handler_utils_init(player_event_handler_utils, mock_connection_manager, mock_name_extractor, mock_logger):
+def test_player_event_handler_utils_init(
+    player_event_handler_utils, mock_connection_manager, mock_name_extractor, mock_logger
+):
     """Test PlayerEventHandlerUtils initialization."""
     assert player_event_handler_utils.connection_manager == mock_connection_manager
     assert player_event_handler_utils.name_extractor == mock_name_extractor

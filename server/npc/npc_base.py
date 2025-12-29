@@ -1,4 +1,4 @@
-﻿"""
+"""
 Base NPC class for MythosMUD.
 
 This module provides the base NPC class with common functionality including

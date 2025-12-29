@@ -285,7 +285,7 @@ describe('stateUpdateUtils', () => {
     });
 
     it('should call setGameState with merged updates', () => {
-      const setGameState = vi.fn((updater) => {
+      const setGameState = vi.fn(updater => {
         const prevState: GameState = {
           player: null,
           room: null,
@@ -308,7 +308,7 @@ describe('stateUpdateUtils', () => {
     });
 
     it('should merge room state when room update is present', () => {
-      const setGameState = vi.fn((updater) => {
+      const setGameState = vi.fn(updater => {
         const prevState: GameState = {
           player: null,
           room: { id: 'room1', name: 'Old Room', description: 'Old', exits: {} },
@@ -332,7 +332,7 @@ describe('stateUpdateUtils', () => {
 
     it('should preserve previous player when update has no player', () => {
       const prevPlayer = { id: 'player1', name: 'Player' } as Player;
-      const setGameState = vi.fn((updater) => {
+      const setGameState = vi.fn(updater => {
         const prevState: GameState = {
           player: prevPlayer,
           room: null,
@@ -353,7 +353,10 @@ describe('stateUpdateUtils', () => {
 
       expect(setGameState).toHaveBeenCalled();
       const callArg = setGameState.mock.calls[0][0];
-      const result = typeof callArg === 'function' ? callArg({ player: prevPlayer, room: null, messages: [], commandHistory: [] } as GameState) : callArg;
+      const result =
+        typeof callArg === 'function'
+          ? callArg({ player: prevPlayer, room: null, messages: [], commandHistory: [] } as GameState)
+          : callArg;
       expect(result.player).toEqual(prevPlayer);
     });
   });

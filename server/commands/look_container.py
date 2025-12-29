@@ -1,4 +1,4 @@
-﻿"""
+"""
 Container look functionality for MythosMUD.
 
 This module handles looking at containers, including finding containers in rooms

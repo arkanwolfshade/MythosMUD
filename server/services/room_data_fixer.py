@@ -1,4 +1,4 @@
-﻿"""
+"""
 Room data fixing utilities for MythosMUD.
 
 This module provides automatic fixing logic for room data structures,

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Real-time event handler for MythosMUD.
 
 This module provides the RealTimeEventHandler class that bridges EventBus events

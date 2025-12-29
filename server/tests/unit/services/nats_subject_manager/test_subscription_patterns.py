@@ -4,7 +4,6 @@ Unit tests for NATS Subscription Patterns.
 Tests the subscription pattern utility functions.
 """
 
-
 from server.services.nats_subject_manager.subscription_patterns import (
     get_chat_subscription_patterns,
     get_event_subscription_patterns,

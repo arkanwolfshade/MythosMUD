@@ -1,4 +1,4 @@
-﻿"""
+"""
 Message formatting utilities for NATS message handler.
 """
 

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Health monitoring service for MythosMUD.
 
 This module provides comprehensive system health monitoring including

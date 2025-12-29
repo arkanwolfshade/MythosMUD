@@ -1,4 +1,4 @@
-﻿"""Application startup initialization functions.
+"""Application startup initialization functions.
 
 This module handles all startup logic for the MythosMUD server,
 including container initialization, service setup, and dependency wiring.

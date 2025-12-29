@@ -1,4 +1,4 @@
-﻿"""
+"""
 Player presence tracking helper for connection manager.
 
 This module provides helper functions for tracking player connections

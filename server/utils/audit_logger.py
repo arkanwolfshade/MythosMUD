@@ -1,4 +1,4 @@
-﻿"""
+"""
 Audit logging for security-sensitive commands.
 
 Provides comprehensive audit trails for security-critical operations

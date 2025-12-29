@@ -1,4 +1,4 @@
-﻿"""
+"""
 Centralized error handling for MythosMUD FastAPI application.
 
 This module provides consistent error response handling and graceful

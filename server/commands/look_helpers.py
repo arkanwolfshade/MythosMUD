@@ -1,4 +1,4 @@
-﻿"""
+"""
 Helper functions for look command.
 
 This module contains utility functions used by the look command system,

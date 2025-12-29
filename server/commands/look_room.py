@@ -1,4 +1,4 @@
-﻿"""
+"""
 Room look functionality for MythosMUD.
 
 This module handles looking at rooms, including formatting room descriptions,

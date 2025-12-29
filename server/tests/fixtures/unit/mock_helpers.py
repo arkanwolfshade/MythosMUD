@@ -9,7 +9,7 @@ from collections.abc import Callable
 from typing import Any
 
 import pytest
-from pytest_mock import MockerFixture  # type: ignore[import-not-found]  # pytest-mock doesn't have type stubs
+from pytest_mock import MockerFixture
 
 
 @pytest.fixture

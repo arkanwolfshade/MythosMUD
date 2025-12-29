@@ -1,4 +1,4 @@
-﻿"""
+"""
 Retry utilities for transient database errors.
 
 This module provides retry decorators and helpers for handling transient

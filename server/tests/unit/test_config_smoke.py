@@ -2,7 +2,6 @@
 Smoke test for configuration system.
 """
 
-
 from server.config import get_config
 
 
@@ -18,4 +17,3 @@ def test_get_config_returns_app_config():
     # Verify game config has some default fields
     assert config.game is not None
     assert hasattr(config.game, "aliases_dir")
-

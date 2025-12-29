@@ -97,9 +97,10 @@ async def test_get_npc_occupants_from_lifecycle_manager_success():
     mock_npc2.current_room_id = "room_123"
     mock_npc2.current_room = None
 
-    with patch("server.services.npc_instance_service.get_npc_instance_service") as mock_get_service, patch(
-        "server.realtime.websocket_room_updates.get_npc_name_from_instance"
-    ) as mock_get_name:
+    with (
+        patch("server.services.npc_instance_service.get_npc_instance_service") as mock_get_service,
+        patch("server.realtime.websocket_room_updates.get_npc_name_from_instance") as mock_get_name,
+    ):
         mock_service = MagicMock()
         mock_service.lifecycle_manager.active_npcs = {"npc_1": mock_npc1, "npc_2": mock_npc2}
         mock_get_service.return_value = mock_service
@@ -128,9 +129,10 @@ async def test_get_npc_occupants_from_lifecycle_manager_filters_dead():
     mock_npc_dead.current_room_id = "room_123"
     mock_npc_dead.current_room = None
 
-    with patch("server.services.npc_instance_service.get_npc_instance_service") as mock_get_service, patch(
-        "server.realtime.websocket_room_updates.get_npc_name_from_instance"
-    ) as mock_get_name:
+    with (
+        patch("server.services.npc_instance_service.get_npc_instance_service") as mock_get_service,
+        patch("server.realtime.websocket_room_updates.get_npc_name_from_instance") as mock_get_name,
+    ):
         mock_service = MagicMock()
         mock_service.lifecycle_manager.active_npcs = {"npc_alive": mock_npc_alive, "npc_dead": mock_npc_dead}
         mock_get_service.return_value = mock_service
@@ -340,13 +342,12 @@ async def test_broadcast_room_update_success(mock_connection_manager):
     mock_player.current_room_id = room_id
     mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
 
-    with patch("server.async_persistence.get_async_persistence") as mock_get_persistence, patch(
-        "server.realtime.websocket_room_updates.get_player_occupants"
-    ) as mock_get_players, patch(
-        "server.realtime.websocket_room_updates.get_npc_occupants_from_lifecycle_manager"
-    ) as mock_get_npcs, patch(
-        "server.realtime.websocket_room_updates.build_room_update_event"
-    ) as mock_build_event:
+    with (
+        patch("server.async_persistence.get_async_persistence") as mock_get_persistence,
+        patch("server.realtime.websocket_room_updates.get_player_occupants") as mock_get_players,
+        patch("server.realtime.websocket_room_updates.get_npc_occupants_from_lifecycle_manager") as mock_get_npcs,
+        patch("server.realtime.websocket_room_updates.build_room_update_event") as mock_build_event,
+    ):
         mock_persistence = MagicMock()
         mock_persistence.get_room_by_id.return_value = mock_room
         mock_get_persistence.return_value = mock_persistence
@@ -382,17 +383,14 @@ async def test_broadcast_room_update_no_connection_manager():
     mock_connection_manager.room_manager = MagicMock()
     mock_connection_manager.room_manager.list_room_drops.return_value = []
 
-    with patch("server.main.app") as mock_app, patch(
-        "server.async_persistence.get_async_persistence"
-    ) as mock_get_persistence, patch(
-        "server.realtime.websocket_room_updates.get_player_occupants"
-    ) as mock_get_players, patch(
-        "server.realtime.websocket_room_updates.get_npc_occupants_fallback"
-    ) as mock_get_npcs, patch(
-        "server.realtime.websocket_room_updates.build_room_update_event"
-    ) as mock_build_event, patch(
-        "server.services.npc_instance_service.get_npc_instance_service"
-    ) as mock_get_npc_service:
+    with (
+        patch("server.main.app") as mock_app,
+        patch("server.async_persistence.get_async_persistence") as mock_get_persistence,
+        patch("server.realtime.websocket_room_updates.get_player_occupants") as mock_get_players,
+        patch("server.realtime.websocket_room_updates.get_npc_occupants_fallback") as mock_get_npcs,
+        patch("server.realtime.websocket_room_updates.build_room_update_event") as mock_build_event,
+        patch("server.services.npc_instance_service.get_npc_instance_service") as mock_get_npc_service,
+    ):
         # Mock the app import from ..main
         mock_container = MagicMock()
         mock_container.connection_manager = mock_connection_manager
@@ -459,15 +457,13 @@ async def test_broadcast_room_update_fallback_npc_method(mock_connection_manager
     mock_player.current_room_id = room_id
     mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
 
-    with patch("server.async_persistence.get_async_persistence") as mock_get_persistence, patch(
-        "server.realtime.websocket_room_updates.get_player_occupants"
-    ) as mock_get_players, patch(
-        "server.realtime.websocket_room_updates.get_npc_occupants_from_lifecycle_manager"
-    ) as mock_get_npcs, patch(
-        "server.realtime.websocket_room_updates.get_npc_occupants_fallback"
-    ) as mock_get_npcs_fallback, patch(
-        "server.realtime.websocket_room_updates.build_room_update_event"
-    ) as mock_build_event:
+    with (
+        patch("server.async_persistence.get_async_persistence") as mock_get_persistence,
+        patch("server.realtime.websocket_room_updates.get_player_occupants") as mock_get_players,
+        patch("server.realtime.websocket_room_updates.get_npc_occupants_from_lifecycle_manager") as mock_get_npcs,
+        patch("server.realtime.websocket_room_updates.get_npc_occupants_fallback") as mock_get_npcs_fallback,
+        patch("server.realtime.websocket_room_updates.build_room_update_event") as mock_build_event,
+    ):
         mock_persistence = MagicMock()
         mock_persistence.get_room_by_id.return_value = mock_room
         mock_get_persistence.return_value = mock_persistence

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Async persistence layer for MythosMUD.
 
 This module provides an async version of the persistence layer using SQLAlchemy ORM

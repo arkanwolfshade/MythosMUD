@@ -1,4 +1,4 @@
-﻿"""
+"""
 Go command for MythosMUD.
 
 This module handles the go command for player movement.

@@ -104,7 +104,9 @@ async def test_check_all_connections_health(health_monitor, mock_is_websocket_op
     assert True  # If we get here, it succeeded
 
 
-def test_health_monitor_init_custom_intervals(mock_is_websocket_open, mock_validate_token, mock_cleanup_dead_websocket, mock_performance_tracker):
+def test_health_monitor_init_custom_intervals(
+    mock_is_websocket_open, mock_validate_token, mock_cleanup_dead_websocket, mock_performance_tracker
+):
     """Test HealthMonitor initialization with custom intervals."""
     monitor = HealthMonitor(
         is_websocket_open_callback=mock_is_websocket_open,
@@ -135,8 +137,10 @@ async def test_stop_periodic_checks(health_monitor):
     """Test stop_periodic_checks() stops periodic checks."""
     # Create a mock task in async context
     import asyncio
+
     async def dummy_task():
         await asyncio.sleep(0.1)
+
     health_monitor._health_check_task = asyncio.create_task(dummy_task())
     health_monitor.stop_periodic_checks()
     # Task should be cancelled or None

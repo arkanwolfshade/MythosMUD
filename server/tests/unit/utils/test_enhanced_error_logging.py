@@ -24,6 +24,7 @@ def test_create_error_context():
 def test_log_and_raise_enhanced():
     """Test log_and_raise_enhanced() logs and raises exception."""
     from server.exceptions import ValidationError
+
     with patch("server.utils.enhanced_error_logging.log_with_context") as mock_log:
         with pytest.raises(ValidationError):
             log_and_raise_enhanced(ValidationError, "Test error", context=create_error_context(), logger_name=__name__)
@@ -33,6 +34,7 @@ def test_log_and_raise_enhanced():
 def test_log_and_raise_enhanced_with_metadata():
     """Test log_and_raise_enhanced() includes metadata in log."""
     from server.exceptions import ValidationError
+
     with patch("server.utils.enhanced_error_logging.log_with_context") as mock_log:
         context = create_error_context()
         context.metadata = {"key": "value"}

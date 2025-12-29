@@ -1,4 +1,4 @@
-﻿"""
+"""
 Command input validation utilities for MythosMUD.
 
 This module provides functions for validating, cleaning, and normalizing

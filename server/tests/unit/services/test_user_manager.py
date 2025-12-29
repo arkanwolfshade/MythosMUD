@@ -145,10 +145,11 @@ def test_unmute_channel_not_muted(user_manager):
 
 def test_mute_global_success(user_manager):
     """Test mute_global() successfully globally mutes a player."""
-    player_id = uuid.uuid4()
-    result = user_manager.mute_global(player_id, "Player")
+    muter_id = uuid.uuid4()
+    target_id = uuid.uuid4()
+    result = user_manager.mute_global(muter_id, "Muter", target_id, "Target")
     assert result is True
-    assert player_id in user_manager._global_mutes
+    assert target_id in user_manager._global_mutes
 
 
 def test_mute_global_admin_immune(user_manager):
@@ -162,11 +163,12 @@ def test_mute_global_admin_immune(user_manager):
 
 def test_unmute_global_success(user_manager):
     """Test unmute_global() successfully unmutes a player."""
-    player_id = uuid.uuid4()
-    user_manager.mute_global(player_id, "Player")
-    result = user_manager.unmute_global(player_id, "Player")
+    muter_id = uuid.uuid4()
+    target_id = uuid.uuid4()
+    user_manager.mute_global(muter_id, "Muter", target_id, "Target")
+    result = user_manager.unmute_global(muter_id, "Muter", target_id, "Target")
     assert result is True
-    assert player_id not in user_manager._global_mutes
+    assert target_id not in user_manager._global_mutes
 
 
 def test_unmute_global_not_muted(user_manager):
@@ -230,9 +232,10 @@ def test_is_channel_muted_false(user_manager):
 
 def test_is_globally_muted_true(user_manager):
     """Test is_globally_muted() returns True when player is globally muted."""
-    player_id = uuid.uuid4()
-    user_manager.mute_global(player_id, "Player")
-    result = user_manager.is_globally_muted(player_id)
+    muter_id = uuid.uuid4()
+    target_id = uuid.uuid4()
+    user_manager.mute_global(muter_id, "Muter", target_id, "Target")
+    result = user_manager.is_globally_muted(target_id)
     assert result is True
 
 
@@ -274,9 +277,10 @@ def test_can_send_message_channel_muted(user_manager):
 
 def test_can_send_message_globally_muted(user_manager):
     """Test can_send_message() returns False when player is globally muted."""
+    muter_id = uuid.uuid4()
     player_id = uuid.uuid4()
     target_id = uuid.uuid4()
-    user_manager.mute_global(player_id, "Player")
+    user_manager.mute_global(muter_id, "Muter", player_id, "Player")
     result = user_manager.can_send_message(player_id, target_id, "global")
     assert result is False
 

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Refactored Connection Manager for MythosMUD real-time communication.
 
 This module provides a clean, modular connection management system that

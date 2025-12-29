@@ -120,9 +120,10 @@ async def test_npc_instance_service_init(
 @pytest.mark.asyncio
 async def test_spawn_npc_instance_success(npc_instance_service, sample_npc_definition):
     """Test spawn_npc_instance() successfully spawns NPC."""
-    with patch("server.services.npc_instance_service.get_npc_session") as mock_get_session, patch(
-        "server.services.npc_instance_service.npc_service"
-    ) as mock_npc_service:
+    with (
+        patch("server.services.npc_instance_service.get_npc_session") as mock_get_session,
+        patch("server.services.npc_instance_service.npc_service") as mock_npc_service,
+    ):
         # Mock async iterator (async for session in get_npc_session())
         mock_session = AsyncMock()
         mock_get_session.return_value.__aiter__ = lambda self: self
@@ -149,9 +150,10 @@ async def test_spawn_npc_instance_success(npc_instance_service, sample_npc_defin
 @pytest.mark.asyncio
 async def test_spawn_npc_instance_definition_not_found(npc_instance_service):
     """Test spawn_npc_instance() raises ValueError when definition not found."""
-    with patch("server.services.npc_instance_service.get_npc_session") as mock_get_session, patch(
-        "server.services.npc_instance_service.npc_service"
-    ) as mock_npc_service:
+    with (
+        patch("server.services.npc_instance_service.get_npc_session") as mock_get_session,
+        patch("server.services.npc_instance_service.npc_service") as mock_npc_service,
+    ):
         # Mock async iterator
         mock_session = AsyncMock()
         mock_get_session.return_value.__aiter__ = lambda self: self
@@ -166,9 +168,10 @@ async def test_spawn_npc_instance_definition_not_found(npc_instance_service):
 @pytest.mark.asyncio
 async def test_spawn_npc_instance_spawn_fails(npc_instance_service, sample_npc_definition):
     """Test spawn_npc_instance() raises RuntimeError when spawn fails."""
-    with patch("server.services.npc_instance_service.get_npc_session") as mock_get_session, patch(
-        "server.services.npc_instance_service.npc_service"
-    ) as mock_npc_service:
+    with (
+        patch("server.services.npc_instance_service.get_npc_session") as mock_get_session,
+        patch("server.services.npc_instance_service.npc_service") as mock_npc_service,
+    ):
         # Mock async iterator
         mock_session = AsyncMock()
         mock_get_session.return_value.__aiter__ = lambda self: self

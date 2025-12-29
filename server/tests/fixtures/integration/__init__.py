@@ -46,6 +46,7 @@ def integration_engine(integration_db_url: str) -> Generator[AsyncEngine, None, 
     import os
 
     from sqlalchemy.pool import NullPool
+
     pool_class = NullPool if os.name == "nt" else None
 
     # Create engine with connection pool settings optimized for tests
@@ -54,7 +55,7 @@ def integration_engine(integration_db_url: str) -> Generator[AsyncEngine, None, 
         future=True,
         echo=False,
         poolclass=pool_class,  # NullPool on Windows prevents cross-loop connection reuse
-        pool_pre_ping=True,    # Verify connections before using (if using a pool)
+        pool_pre_ping=True,  # Verify connections before using (if using a pool)
     )
     yield engine
     # Cleanup: properly dispose engine and close all connections
@@ -64,6 +65,7 @@ def integration_engine(integration_db_url: str) -> Generator[AsyncEngine, None, 
 
 # Track if tables have been created to avoid concurrent creation
 _tables_created = False
+
 
 @pytest.fixture(scope="function")
 async def session_factory(integration_engine: AsyncEngine) -> AsyncGenerator[async_sessionmaker[AsyncSession], None]:
@@ -123,6 +125,7 @@ async def db_cleanup(session_factory: async_sessionmaker[AsyncSession]) -> Async
     try:
         # Check if we have a valid event loop before attempting cleanup
         import asyncio
+
         try:
             loop = asyncio.get_running_loop()
             if loop.is_closed():
@@ -148,5 +151,5 @@ async def db_cleanup(session_factory: async_sessionmaker[AsyncSession]) -> Async
     except Exception as e:
         # Other exceptions should be logged but not fail the test
         import logging
-        logging.getLogger(__name__).debug(f"Database cleanup warning: {e}")
 
+        logging.getLogger(__name__).debug(f"Database cleanup warning: {e}")

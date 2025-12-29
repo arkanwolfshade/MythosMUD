@@ -332,5 +332,3 @@ def test_format_container_display_with_target_type_container():
     result = _format_container_display(container, None, command_data)
     assert "Contents:" in result
     assert "Potion" in result
-
-

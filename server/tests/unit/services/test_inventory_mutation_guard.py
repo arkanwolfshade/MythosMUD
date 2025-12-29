@@ -174,6 +174,7 @@ def test_acquire_token_expiry(guard):
 
     # Wait for token to expire
     import time
+
     time.sleep(0.2)
 
     # Token should be expired, so reuse should be allowed
@@ -228,6 +229,7 @@ def test_acquire_cleanup_empty_state(guard):
     # Wait for token to expire
     guard._token_ttl = 0.1
     import time
+
     time.sleep(0.2)
 
     # Acquire again (should prune expired token)
@@ -445,3 +447,225 @@ async def test_cleanup_async_state_empty(guard):
     # State should be removed (if lock is available)
     # Note: This may not always work if lock is held, which is expected behavior
 
+
+@pytest.mark.asyncio
+async def test_prune_tokens_async(guard):
+    """Test _prune_tokens_async removes expired tokens."""
+    player_id = str(uuid.uuid4())
+    state = await guard._get_async_state(player_id)
+
+    now = monotonic()
+    # Add expired token
+    state.recent_tokens["expired_token"] = now - 400
+    # Add valid token
+    state.recent_tokens["valid_token"] = now - 50
+
+    guard._prune_tokens_async(state, now)
+
+    assert "expired_token" not in state.recent_tokens
+    assert "valid_token" in state.recent_tokens
+
+
+@pytest.mark.asyncio
+async def test_prune_tokens_async_ttl_zero(guard):
+    """Test _prune_tokens_async with token_ttl=0 doesn't prune."""
+    guard._token_ttl = 0
+    player_id = str(uuid.uuid4())
+    state = await guard._get_async_state(player_id)
+
+    now = monotonic()
+    state.recent_tokens["token"] = now - 1000
+
+    guard._prune_tokens_async(state, now)
+
+    # Token should not be pruned when TTL is 0
+    assert "token" in state.recent_tokens
+
+
+@pytest.mark.asyncio
+async def test_enforce_limit_async(guard):
+    """Test _enforce_limit_async removes oldest tokens when limit exceeded."""
+    guard._max_tokens = 3
+    player_id = str(uuid.uuid4())
+    state = await guard._get_async_state(player_id)
+
+    # Add tokens beyond limit
+    for i in range(5):
+        state.recent_tokens[f"token_{i}"] = monotonic()
+
+    guard._enforce_limit_async(state)
+
+    # Should only keep max_tokens
+    assert len(state.recent_tokens) == guard._max_tokens
+
+
+@pytest.mark.asyncio
+async def test_cleanup_async_state_lock_attribute_error(guard):
+    """Test _cleanup_async_state handles AttributeError from lock.locked()."""
+    player_id = str(uuid.uuid4())
+    state = await guard._get_async_state(player_id)
+
+    # Create a mock lock that raises AttributeError when locked() is called
+    class MockLock:
+        def __init__(self):
+            self._locked = False
+
+        async def acquire(self):
+            self._locked = True
+
+        def release(self):
+            self._locked = False
+
+        def locked(self):
+            raise AttributeError("locked() not available")
+
+    mock_lock = MockLock()
+    state.lock = mock_lock
+
+    # Should handle AttributeError gracefully and skip cleanup
+    await guard._cleanup_async_state(player_id)
+    # State should still exist (cleanup skipped due to error)
+    assert player_id in guard._async_states
+
+
+@pytest.mark.asyncio
+async def test_cleanup_async_state_lock_runtime_error(guard):
+    """Test _cleanup_async_state handles RuntimeError from lock.locked()."""
+    player_id = str(uuid.uuid4())
+    state = await guard._get_async_state(player_id)
+
+    # Create a mock lock that raises RuntimeError when locked() is called
+    class MockLock:
+        def __init__(self):
+            self._locked = False
+
+        async def acquire(self):
+            self._locked = True
+
+        def release(self):
+            self._locked = False
+
+        def locked(self):
+            raise RuntimeError("Lock in inconsistent state")
+
+    mock_lock = MockLock()
+    state.lock = mock_lock
+
+    # Should handle RuntimeError gracefully and skip cleanup
+    await guard._cleanup_async_state(player_id)
+    # State should still exist (cleanup skipped due to error)
+    assert player_id in guard._async_states
+
+
+def test_acquire_record_custom_alert_with_message_param(guard):
+    """Test acquire handles record_custom_alert with message parameter."""
+    from unittest.mock import MagicMock, patch
+
+    player_id = str(uuid.uuid4())
+    token = "duplicate_token"
+
+    # First acquisition
+    with guard.acquire(player_id, token):
+        pass
+
+    # Mock dashboard with record_custom_alert that has 'message' parameter
+    mock_dashboard = MagicMock()
+
+    def record_with_message(alert_type, *, severity=None, message=None, metadata=None):
+        pass
+
+    mock_dashboard.record_custom_alert = record_with_message
+
+    with patch("server.services.inventory_mutation_guard.get_monitoring_dashboard", return_value=mock_dashboard):
+        with patch("server.services.inventory_mutation_guard.metrics_collector") as mock_metrics:
+            # Second acquisition should trigger duplicate detection
+            with guard.acquire(player_id, token) as decision:
+                assert decision.should_apply is False
+                assert decision.duplicate is True
+                mock_metrics.record_message_failed.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_acquire_async_record_custom_alert_with_message_param(guard):
+    """Test acquire_async handles record_custom_alert with message parameter."""
+    from unittest.mock import MagicMock, patch
+
+    player_id = str(uuid.uuid4())
+    token = "duplicate_token_async"
+
+    # First acquisition
+    async with guard.acquire_async(player_id, token):
+        pass
+
+    # Mock dashboard with record_custom_alert that has 'message' parameter
+    mock_dashboard = MagicMock()
+
+    def record_with_message(alert_type, *, severity=None, message=None, metadata=None):
+        pass
+
+    mock_dashboard.record_custom_alert = record_with_message
+
+    with patch("server.services.inventory_mutation_guard.get_monitoring_dashboard", return_value=mock_dashboard):
+        with patch("server.services.inventory_mutation_guard.metrics_collector") as mock_metrics:
+            # Second acquisition should trigger duplicate detection
+            async with guard.acquire_async(player_id, token) as decision:
+                assert decision.should_apply is False
+                assert decision.duplicate is True
+                mock_metrics.record_message_failed.assert_called_once()
+
+
+def test_acquire_record_custom_alert_type_error_fallback(guard):
+    """Test acquire handles TypeError from record_custom_alert and uses fallback."""
+    from unittest.mock import MagicMock, patch
+
+    player_id = str(uuid.uuid4())
+    token = "duplicate_token"
+
+    # First acquisition
+    with guard.acquire(player_id, token):
+        pass
+
+    # Mock dashboard with record_custom_alert that raises TypeError
+    mock_dashboard = MagicMock()
+
+    def record_raises_typeerror(alert_type, *, severity=None, metadata=None):
+        raise TypeError("Invalid arguments")
+
+    mock_dashboard.record_custom_alert = record_raises_typeerror
+
+    with patch("server.services.inventory_mutation_guard.get_monitoring_dashboard", return_value=mock_dashboard):
+        with patch("server.services.inventory_mutation_guard.metrics_collector") as mock_metrics:
+            # Should handle TypeError gracefully
+            with guard.acquire(player_id, token) as decision:
+                assert decision.should_apply is False
+                assert decision.duplicate is True
+                mock_metrics.record_message_failed.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_acquire_async_record_custom_alert_type_error_fallback(guard):
+    """Test acquire_async handles TypeError from record_custom_alert and uses fallback."""
+    from unittest.mock import MagicMock, patch
+
+    player_id = str(uuid.uuid4())
+    token = "duplicate_token_async"
+
+    # First acquisition
+    async with guard.acquire_async(player_id, token):
+        pass
+
+    # Mock dashboard with record_custom_alert that raises TypeError
+    mock_dashboard = MagicMock()
+
+    def record_raises_typeerror(alert_type, *, severity=None, metadata=None):
+        raise TypeError("Invalid arguments")
+
+    mock_dashboard.record_custom_alert = record_raises_typeerror
+
+    with patch("server.services.inventory_mutation_guard.get_monitoring_dashboard", return_value=mock_dashboard):
+        with patch("server.services.inventory_mutation_guard.metrics_collector") as mock_metrics:
+            # Should handle TypeError gracefully
+            async with guard.acquire_async(player_id, token) as decision:
+                assert decision.should_apply is False
+                assert decision.duplicate is True
+                mock_metrics.record_message_failed.assert_called_once()

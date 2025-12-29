@@ -256,7 +256,17 @@ def test_create_command_object_pydantic_validation_error(command_parser):
 
     # Create a function that raises PydanticValidationError
     def raise_pydantic_error(args):
-        raise PydanticValidationError.from_exception_data("TestError", [{"type": "int_parsing", "loc": ("field",), "msg": "Input should be a valid integer", "input": "not_an_int"}])
+        raise PydanticValidationError.from_exception_data(
+            "TestError",
+            [
+                {
+                    "type": "int_parsing",
+                    "loc": ("field",),
+                    "msg": "Input should be a valid integer",
+                    "input": "not_an_int",
+                }
+            ],
+        )
 
     # Replace the factory method in the mapping
     original_method = command_parser._command_factory.get("look")
@@ -275,8 +285,10 @@ def test_create_command_object_value_error(command_parser):
     """Test _create_command_object handles ValueError."""
     # Replace the factory method in the mapping
     original_method = command_parser._command_factory.get("look")
+
     def raise_value_error(args):
         raise ValueError("Value error")
+
     command_parser._command_factory["look"] = raise_value_error
 
     with pytest.raises(MythosValidationError) as exc_info:
@@ -292,8 +304,10 @@ def test_create_command_object_type_error(command_parser):
     """Test _create_command_object handles TypeError."""
     # Replace the factory method in the mapping
     original_method = command_parser._command_factory.get("look")
+
     def raise_type_error(args):
         raise TypeError("Type error")
+
     command_parser._command_factory["look"] = raise_type_error
 
     with pytest.raises(MythosValidationError) as exc_info:
@@ -309,8 +323,10 @@ def test_create_command_object_attribute_error(command_parser):
     """Test _create_command_object handles AttributeError."""
     # Replace the factory method in the mapping
     original_method = command_parser._command_factory.get("look")
+
     def raise_attribute_error(args):
         raise AttributeError("Attr error")
+
     command_parser._command_factory["look"] = raise_attribute_error
 
     with pytest.raises(MythosValidationError) as exc_info:
@@ -326,8 +342,10 @@ def test_create_command_object_key_error(command_parser):
     """Test _create_command_object handles KeyError."""
     # Replace the factory method in the mapping
     original_method = command_parser._command_factory.get("look")
+
     def raise_key_error(args):
         raise KeyError("Key error")
+
     command_parser._command_factory["look"] = raise_key_error
 
     with pytest.raises(MythosValidationError) as exc_info:
@@ -343,8 +361,10 @@ def test_create_command_object_runtime_error(command_parser):
     """Test _create_command_object handles RuntimeError."""
     # Replace the factory method in the mapping
     original_method = command_parser._command_factory.get("look")
+
     def raise_runtime_error(args):
         raise RuntimeError("Runtime error")
+
     command_parser._command_factory["look"] = raise_runtime_error
 
     with pytest.raises(MythosValidationError) as exc_info:
@@ -362,8 +382,10 @@ def test_create_command_object_re_raises_mythos_validation_error(command_parser)
 
     # Replace the factory method in the mapping
     original_method = command_parser._command_factory.get("look")
+
     def raise_mythos_error(args):
         raise original_error
+
     command_parser._command_factory["look"] = raise_mythos_error
 
     # The code should re-raise MythosValidationError without wrapping

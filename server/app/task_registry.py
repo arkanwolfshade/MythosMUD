@@ -1,4 +1,4 @@
-﻿"""
+"""
 Centralized TaskRegistry for MythosMUD server task lifecycle management.
 
 This module provides a comprehensive task tracking system that manages

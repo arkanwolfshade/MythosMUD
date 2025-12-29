@@ -1,4 +1,4 @@
-﻿"""
+"""
 LRU Cache implementation for MythosMUD server.
 
 This module provides thread-safe LRU (Least Recently Used) caching functionality

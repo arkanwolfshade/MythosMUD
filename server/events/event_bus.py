@@ -1,4 +1,4 @@
-﻿"""
+"""
 Event bus for MythosMUD.
 
 This module provides the EventBus class that implements an in-memory

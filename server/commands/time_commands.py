@@ -1,4 +1,4 @@
-﻿"""
+"""
 Time command handlers for MythosMUD.
 
 This module contains handlers for the time command.

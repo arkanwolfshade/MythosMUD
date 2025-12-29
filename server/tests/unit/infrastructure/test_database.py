@@ -2,7 +2,6 @@
 Unit tests for database initialization.
 """
 
-
 import pytest
 
 from server.database import DatabaseManager
@@ -47,4 +46,3 @@ def test_database_manager_initial_state():
     assert manager.session_maker is None
     assert manager.database_url is None
     assert manager._initialized is False
-

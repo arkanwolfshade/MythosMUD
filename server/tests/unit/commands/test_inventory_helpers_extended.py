@@ -77,7 +77,9 @@ async def test_broadcast_room_event_with_exclude():
 
     await _broadcast_room_event(connection_manager, "test_room", {"event": "test"}, exclude_player="Player1")
 
-    connection_manager.broadcast_to_room.assert_called_once_with("test_room", {"event": "test"}, exclude_player="Player1")
+    connection_manager.broadcast_to_room.assert_called_once_with(
+        "test_room", {"event": "test"}, exclude_player="Player1"
+    )
 
 
 @pytest.mark.asyncio
@@ -170,7 +172,9 @@ def test_render_inventory_with_containers():
     container_contents = {"backpack": [{"item_name": "scroll", "quantity": 1}]}
     container_capacities = {"backpack": 20}
 
-    result = _render_inventory(inventory, equipped, container_contents=container_contents, container_capacities=container_capacities)
+    result = _render_inventory(
+        inventory, equipped, container_contents=container_contents, container_capacities=container_capacities
+    )
 
     assert "Backpack" in result
     assert "scroll" in result
@@ -193,7 +197,10 @@ async def test_resolve_player_username_error():
 
     # Test the error path - function catches the exception internally
     from unittest.mock import patch
-    with patch("server.commands.inventory_commands.get_username_from_user", side_effect=MythosValidationError("Invalid user")):
+
+    with patch(
+        "server.commands.inventory_commands.get_username_from_user", side_effect=MythosValidationError("Invalid user")
+    ):
         result = await _resolve_player(persistence, {}, "TestPlayer")
         assert result[0] is None
         assert result[1] is not None
@@ -207,6 +214,7 @@ async def test_resolve_player_not_found():
     persistence.get_player_by_name = AsyncMock(return_value=None)
 
     from unittest.mock import patch
+
     with patch("server.commands.inventory_commands.get_username_from_user", return_value="TestPlayer"):
         result = await _resolve_player(persistence, {"username": "TestPlayer"}, "TestPlayer")
         assert result[0] is None
@@ -222,6 +230,7 @@ async def test_resolve_player_success():
     persistence.get_player_by_name = AsyncMock(return_value=mock_player)
 
     from unittest.mock import patch
+
     with patch("server.commands.inventory_commands.get_username_from_user", return_value="TestPlayer"):
         result = await _resolve_player(persistence, {"username": "TestPlayer"}, "TestPlayer")
         assert result[0] == mock_player
@@ -235,6 +244,7 @@ async def test_resolve_player_persistence_error():
     persistence.get_player_by_name = AsyncMock(side_effect=Exception("Database error"))
 
     from unittest.mock import patch
+
     with patch("server.commands.inventory_commands.get_username_from_user", return_value="TestPlayer"):
         result = await _resolve_player(persistence, {"username": "TestPlayer"}, "TestPlayer")
         assert result[0] is None

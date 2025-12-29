@@ -1,4 +1,4 @@
-﻿"""
+"""
 WebSocket handler for MythosMUD real-time communication.
 
 This module handles WebSocket message processing, command handling,

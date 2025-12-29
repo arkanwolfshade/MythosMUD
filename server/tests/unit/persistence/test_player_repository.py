@@ -542,4 +542,3 @@ async def test_get_players_batch_success(player_repository):
         result = await player_repository.get_players_batch(player_ids)
 
         assert len(result) == 2
-

@@ -1,4 +1,4 @@
-﻿"""
+"""
 NPC Communication Integration for MythosMUD.
 
 This module provides integration between NPCs and the existing chat/whisper

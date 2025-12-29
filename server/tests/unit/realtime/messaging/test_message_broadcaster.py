@@ -106,7 +106,9 @@ async def test_broadcast_global_exclude_player(message_broadcaster, mock_send_pe
     player_id1 = uuid.uuid4()
     player_id2 = uuid.uuid4()
     player_websockets = {player_id1: ["ws_001"], player_id2: ["ws_002"]}
-    result = await message_broadcaster.broadcast_global(event, exclude_player=player_id1, player_websockets=player_websockets)
+    result = await message_broadcaster.broadcast_global(
+        event, exclude_player=player_id1, player_websockets=player_websockets
+    )
     assert "total_players" in result or "total_targets" in result
     assert result.get("excluded_players", 0) >= 0
 

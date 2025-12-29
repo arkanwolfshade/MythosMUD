@@ -1,4 +1,4 @@
-﻿"""
+"""
 Personal message delivery for connection management.
 
 This module provides direct message delivery to individual players,

@@ -1,4 +1,4 @@
-﻿"""
+"""
 WebSocket room update and broadcast functions for MythosMUD real-time communication.
 
 This module handles room updates and broadcasting to players.

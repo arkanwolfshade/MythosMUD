@@ -236,4 +236,3 @@ async def test_get_current_verified_user_with_none_user():
         await get_current_verified_user(current_user=user)
 
     assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
-

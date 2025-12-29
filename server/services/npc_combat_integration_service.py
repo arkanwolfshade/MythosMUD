@@ -1,4 +1,4 @@
-﻿"""
+"""
 NPC Combat Integration Service for MythosMUD.
 
 This service provides integration between NPCs and the combat system,

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Dead Letter Queue for failed NATS messages.
 
 Stores messages that fail after all retry attempts for later

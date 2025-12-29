@@ -78,4 +78,3 @@ class StubPersistence:
 def stub_persistence() -> StubPersistence:
     """Provide a stub persistence layer."""
     return StubPersistence()
-

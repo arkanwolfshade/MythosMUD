@@ -1,4 +1,4 @@
-﻿"""
+"""
 Room management API endpoints for MythosMUD server.
 
 This module handles all room-related API operations including

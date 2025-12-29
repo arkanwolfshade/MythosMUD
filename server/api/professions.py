@@ -1,4 +1,4 @@
-﻿"""
+"""
 Profession management API endpoints for MythosMUD server.
 
 This module handles all profession-related API operations including

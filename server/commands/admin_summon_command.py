@@ -1,4 +1,4 @@
-﻿"""Administrative summon command implementation."""
+"""Administrative summon command implementation."""
 
 from __future__ import annotations
 

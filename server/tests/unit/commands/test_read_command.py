@@ -195,7 +195,9 @@ async def test_handle_read_command_single_spell_learn():
     mock_persistence = AsyncMock()
     mock_player = MagicMock()
     mock_player.player_id = "player_001"
-    mock_player.inventory = json.dumps([{"name": "book", "id": "book_001", "metadata": {"spellbook": True, "spells": ["spell1"]}}])
+    mock_player.inventory = json.dumps(
+        [{"name": "book", "id": "book_001", "metadata": {"spellbook": True, "spells": ["spell1"]}}]
+    )
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_state.persistence = mock_persistence
     mock_spell_learning_service = AsyncMock()
@@ -259,9 +261,7 @@ async def test_handle_read_command_spell_not_in_book():
     mock_state = MagicMock()
     mock_persistence = AsyncMock()
     mock_player = MagicMock()
-    mock_player.inventory = json.dumps(
-        [{"name": "book", "metadata": {"spellbook": True, "spells": ["spell1"]}}]
-    )
+    mock_player.inventory = json.dumps([{"name": "book", "metadata": {"spellbook": True, "spells": ["spell1"]}}])
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_state.persistence = mock_persistence
     mock_state.spell_learning_service = AsyncMock()
@@ -289,9 +289,7 @@ async def test_handle_read_command_spell_registry_not_available():
     mock_state = MagicMock()
     mock_persistence = AsyncMock()
     mock_player = MagicMock()
-    mock_player.inventory = json.dumps(
-        [{"name": "book", "metadata": {"spellbook": True, "spells": ["spell1"]}}]
-    )
+    mock_player.inventory = json.dumps([{"name": "book", "metadata": {"spellbook": True, "spells": ["spell1"]}}])
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_state.persistence = mock_persistence
     mock_state.spell_learning_service = AsyncMock()
@@ -315,7 +313,9 @@ async def test_handle_read_command_learn_failure():
     mock_persistence = AsyncMock()
     mock_player = MagicMock()
     mock_player.player_id = "player_001"
-    mock_player.inventory = json.dumps([{"name": "book", "id": "book_001", "metadata": {"spellbook": True, "spells": ["spell1"]}}])
+    mock_player.inventory = json.dumps(
+        [{"name": "book", "id": "book_001", "metadata": {"spellbook": True, "spells": ["spell1"]}}]
+    )
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_state.persistence = mock_persistence
     mock_spell_learning_service = AsyncMock()

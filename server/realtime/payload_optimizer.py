@@ -1,4 +1,4 @@
-﻿"""
+"""
 Payload optimization for WebSocket messages.
 
 This module provides utilities for optimizing payload sizes including:

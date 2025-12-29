@@ -1,4 +1,4 @@
-﻿"""
+"""
 Player connection setup functions.
 
 This module handles the setup tasks when a player connects,

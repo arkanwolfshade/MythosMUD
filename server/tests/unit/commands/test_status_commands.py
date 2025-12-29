@@ -299,13 +299,15 @@ async def test_handle_status_command_success():
     mock_player.name = "TestPlayer"
     mock_player.current_room_id = "test_room"
     mock_player.experience_points = 100
-    mock_player.get_stats = MagicMock(return_value={
-        "position": "standing",
-        "current_dp": 100,
-        "max_dp": 100,
-        "lucidity": 100,
-        "max_lucidity": 100,
-    })
+    mock_player.get_stats = MagicMock(
+        return_value={
+            "position": "standing",
+            "current_dp": 100,
+            "max_dp": 100,
+            "lucidity": 100,
+            "max_lucidity": 100,
+        }
+    )
     mock_room = MagicMock()
     mock_room.name = "Test Room"
     mock_persistence = MagicMock()

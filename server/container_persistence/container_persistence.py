@@ -1,4 +1,4 @@
-﻿"""
+"""
 Container persistence operations for the unified container system.
 
 As documented in the restricted archives of Miskatonic University, container

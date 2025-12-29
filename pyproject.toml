@@ -243,9 +243,12 @@ exclude = [
     "^tools/",
     "^monitoring/",
     "^server/alembic/",
+    "^alembic/",  # Also exclude root-level alembic if it exists
     "^server/test_who_command_direct.py$",
     "^server/tests/scripts/",
     "^server/tests/data/",
+    "^server/time/",  # Exclude server/time to avoid conflict with stdlib time module
+    ".*[\\\\/]time[\\\\/]__init__\\.py$",  # Also exclude time/__init__.py specifically (Windows and Unix paths)
 ]
 
 # Per-module options - Third-party libraries without stubs or with incomplete stubs
@@ -267,6 +270,12 @@ module = [
     "networkx.*",
 ]
 ignore_missing_imports = true
+
+# Exclude server.time module to avoid conflict with stdlib time module
+# Use follow_imports=skip to prevent mypy from processing this module
+[[tool.mypy.overrides]]
+module = ["server.time", "server.time.*"]
+follow_imports = "skip"
 
 # Test files - ignore missing imports to focus on production code
 # Human reader: Test files have many dynamic imports and mocks that confuse mypy
@@ -311,6 +320,11 @@ module = [
 ]
 disallow_untyped_defs = false
 check_untyped_defs = false
+
+# pytest-mock type annotations not found by mypy in pre-commit environment despite being available in pytest-mock 3.15.1+
+[[tool.mypy.overrides]]
+module = ["pytest_mock.*"]
+ignore_missing_imports = true
 
 [dependency-groups]
 dev = [

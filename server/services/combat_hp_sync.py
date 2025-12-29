@@ -1,4 +1,4 @@
-﻿"""
+"""
 DP synchronization module for combat service.
 
 This module handles player DP persistence and event publishing for combat operations.

@@ -1,4 +1,4 @@
-﻿"""
+"""
 NPC Combat Memory Management.
 
 This module handles NPC combat memory - tracking which players have attacked

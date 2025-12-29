@@ -1,4 +1,4 @@
-﻿"""
+"""
 WebSocket helper utilities for MythosMUD real-time communication.
 
 This module contains utility functions used by the WebSocket handler.

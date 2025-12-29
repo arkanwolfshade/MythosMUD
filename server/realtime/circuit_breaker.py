@@ -1,4 +1,4 @@
-﻿"""
+"""
 Circuit breaker pattern for NATS message processing.
 
 Implements three-state circuit breaker (CLOSED/OPEN/HALF_OPEN) to prevent

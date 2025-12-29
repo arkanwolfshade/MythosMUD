@@ -1,4 +1,4 @@
-﻿"""
+"""
 Administrative commands for MythosMUD.
 
 This module contains handlers for administrative commands including:

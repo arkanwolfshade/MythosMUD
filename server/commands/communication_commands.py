@@ -1,4 +1,4 @@
-﻿"""
+"""
 Communication commands for MythosMUD.
 
 This module contains handlers for communication-related commands like say, me, and pose.

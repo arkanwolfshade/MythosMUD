@@ -1,4 +1,4 @@
-﻿"""
+"""
 Combat event publisher for MythosMUD.
 
 This module provides a service for publishing combat events to NATS

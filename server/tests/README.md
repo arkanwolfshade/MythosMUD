@@ -12,12 +12,14 @@ This is the greenfield test suite for MythosMUD server code.
 ## Running Tests
 
 ### All Tests
+
 ```bash
 # From repo root
 make test-server
 ```
 
 ### By Tier
+
 ```bash
 # Unit tests only
 pytest -m unit server/tests
@@ -30,6 +32,7 @@ pytest -m e2e server/tests
 ```
 
 ### With Coverage
+
 ```bash
 make test-server-coverage
 ```
@@ -37,11 +40,13 @@ make test-server-coverage
 ## Test Markers
 
 Tests are automatically marked based on their directory:
+
 - Tests in `unit/` → `@pytest.mark.unit`
 - Tests in `integration/` → `@pytest.mark.integration`
 - Tests in `e2e/` → `@pytest.mark.e2e`
 
 Additional markers:
+
 - `@pytest.mark.slow` - Slow running tests
 - `@pytest.mark.serial` - Must run sequentially (not in parallel)
 - `@pytest.mark.xdist_group(name="...")` - Group tests for xdist worker assignment
@@ -63,18 +68,21 @@ Additional markers:
 ## Adding New Tests
 
 ### Unit Tests
+
 - Place in `server/tests/unit/`
 - Use `strict_mocker` fixture for mocking (autospec enabled by default)
 - Use `dummy_request` fixture for request objects
 - No real database, network, or filesystem access
 
 ### Integration Tests
+
 - Place in `server/tests/integration/`
 - Use `session_factory` fixture for database sessions
 - Use `db_cleanup` fixture for test isolation
 - Real PostgreSQL database required
 
 ### E2E Tests
+
 - Place in `server/tests/e2e/`
 - Full system tests with running server/client
 - Use Playwright MCP for browser automation
@@ -82,17 +90,20 @@ Additional markers:
 ## Fixtures
 
 ### Shared Fixtures (`fixtures/shared/`)
+
 - `make_user_dict()` - Create user dictionaries
 - `make_player_dict()` - Create player dictionaries
 - `fake_clock` - Monotonic time counter
 - `stub_persistence` - Stub persistence layer
 
 ### Unit Fixtures (`fixtures/unit/`)
+
 - `strict_mocker` - Mock helper with autospec=True
 - `dummy_request` - Minimal request object
 - `fakerandom` - Deterministic random seed
 
 ### Integration Fixtures (`fixtures/integration/`)
+
 - `integration_db_url` - Database URL for tests
 - `integration_engine` - SQLAlchemy async engine
 - `session_factory` - Async session factory
@@ -109,6 +120,7 @@ Tests run in parallel by default using `pytest-xdist`. To prevent race condition
 ## Environment Variables
 
 Required for tests:
+
 - `DATABASE_URL` - PostgreSQL connection string
 - `DATABASE_NPC_URL` - NPC database connection string
 - `MYTHOSMUD_ADMIN_PASSWORD` - Admin password
@@ -117,4 +129,3 @@ Required for tests:
 - `GAME_ALIASES_DIR` - Aliases directory path
 
 These are set automatically by `conftest.py` fixtures.
-

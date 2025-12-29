@@ -1,4 +1,4 @@
-﻿"""
+"""
 Error handling for connection management.
 
 This module provides comprehensive error detection, logging, and recovery

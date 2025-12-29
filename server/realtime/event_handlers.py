@@ -1,4 +1,4 @@
-﻿"""
+"""
 Event handlers for NATS message handler.
 
 This module handles all event-type messages from NATS and broadcasts them

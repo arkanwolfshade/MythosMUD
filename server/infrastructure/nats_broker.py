@@ -1,4 +1,4 @@
-﻿"""
+"""
 NATS implementation of MessageBroker protocol.
 
 This module provides a concrete implementation of the MessageBroker protocol

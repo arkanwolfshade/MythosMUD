@@ -1,4 +1,4 @@
-﻿"""
+"""
 Helper functions for command parsing and validation.
 
 This module contains utility functions that were previously in command_parser.py,

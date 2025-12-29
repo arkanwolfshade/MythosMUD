@@ -48,4 +48,3 @@ async def test_lucidity_service_apply_adjustment():
     assert result.previous_lcd == 50
     assert result.new_lcd == 40  # 50 - 10
     assert isinstance(result.liabilities_added, list)
-

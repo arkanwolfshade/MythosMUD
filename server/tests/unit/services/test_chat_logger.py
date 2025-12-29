@@ -38,13 +38,15 @@ def test_chat_logger_initialization_with_directory(temp_log_dir):
 
 def test_log_chat_message(chat_logger, temp_log_dir):
     """Test log_chat_message writes entry."""
-    chat_logger.log_chat_message({
-        "message_id": "msg123",
-        "channel": "local",
-        "sender_name": "TestPlayer",
-        "content": "Hello world",
-        "room_id": "test_room",
-    })
+    chat_logger.log_chat_message(
+        {
+            "message_id": "msg123",
+            "channel": "local",
+            "sender_name": "TestPlayer",
+            "content": "Hello world",
+            "room_id": "test_room",
+        }
+    )
 
     # Give writer thread time to process
     chat_logger.wait_for_queue_processing(timeout=1.0)
@@ -101,6 +103,7 @@ def test_shutdown(chat_logger):
 
     # Give thread time to stop
     import time
+
     time.sleep(0.1)
 
     # Thread should be stopped (or stopping)

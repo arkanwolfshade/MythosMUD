@@ -82,7 +82,9 @@ def test_get_npc_name_from_instance_runtime_error():
     """Test get_npc_name_from_instance() handles RuntimeError."""
     npc_id = "npc_123"
 
-    with patch("server.services.npc_instance_service.get_npc_instance_service", side_effect=RuntimeError("Not initialized")):
+    with patch(
+        "server.services.npc_instance_service.get_npc_instance_service", side_effect=RuntimeError("Not initialized")
+    ):
         result = get_npc_name_from_instance(npc_id)
         assert result is None
 
@@ -105,8 +107,11 @@ async def test_check_shutdown_and_reject_shutting_down():
     mock_websocket.app = MagicMock()
     player_id = uuid.uuid4()
 
-    with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=True), patch(
-        "server.commands.admin_shutdown_command.get_shutdown_blocking_message", return_value="Server shutting down"
+    with (
+        patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=True),
+        patch(
+            "server.commands.admin_shutdown_command.get_shutdown_blocking_message", return_value="Server shutting down"
+        ),
     ):
         result = await check_shutdown_and_reject(mock_websocket, player_id)
         assert result is True
@@ -124,8 +129,11 @@ async def test_check_shutdown_and_reject_websocket_disconnect():
     mock_websocket.close.side_effect = WebSocketDisconnect()
     player_id = uuid.uuid4()
 
-    with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=True), patch(
-        "server.commands.admin_shutdown_command.get_shutdown_blocking_message", return_value="Server shutting down"
+    with (
+        patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=True),
+        patch(
+            "server.commands.admin_shutdown_command.get_shutdown_blocking_message", return_value="Server shutting down"
+        ),
     ):
         # The function catches WebSocketDisconnect and returns False (not True)
         # because the exception is caught in the except block and the function returns False

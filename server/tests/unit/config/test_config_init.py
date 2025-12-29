@@ -2,7 +2,6 @@
 Unit tests for config module initialization.
 """
 
-
 from server.config import get_config, reset_config
 
 
@@ -61,4 +60,3 @@ def test_get_config_has_game_config():
 
     assert config.game is not None
     assert hasattr(config.game, "aliases_dir")
-

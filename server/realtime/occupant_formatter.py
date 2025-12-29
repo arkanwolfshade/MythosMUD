@@ -1,4 +1,4 @@
-﻿"""
+"""
 Occupant formatting utilities.
 
 This module handles formatting and separating occupants by type.

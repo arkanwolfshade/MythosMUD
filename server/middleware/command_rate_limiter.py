@@ -1,4 +1,4 @@
-﻿"""
+"""
 Per-player command rate limiting.
 
 Prevents command flooding and denial-of-service attacks by limiting

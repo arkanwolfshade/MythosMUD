@@ -1,4 +1,4 @@
-﻿"""
+"""
 Managed Task Cleanup Service - Runtime Detection for Memory Threshold Monitoring.
 
 This module provides runtime detection functions for memory threshold violations

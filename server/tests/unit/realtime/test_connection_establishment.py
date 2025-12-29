@@ -459,7 +459,9 @@ async def test_establish_websocket_connection_success():
     mock_manager._get_player = AsyncMock(return_value=mock_player)
     mock_manager._track_player_connected = AsyncMock()
 
-    success, connection_id = await establish_websocket_connection(mock_websocket, player_id, mock_manager, session_id, token)
+    success, connection_id = await establish_websocket_connection(
+        mock_websocket, player_id, mock_manager, session_id, token
+    )
 
     assert success is True
     assert connection_id is not None

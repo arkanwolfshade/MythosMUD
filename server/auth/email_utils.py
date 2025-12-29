@@ -1,4 +1,4 @@
-﻿"""
+"""
 Email utilities for MythosMUD authentication.
 
 This module provides utilities for generating bogus email addresses

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Comprehensive exception handling for MythosMUD server.
 
 This module defines the exception hierarchy and error handling utilities

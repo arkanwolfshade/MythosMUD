@@ -1,4 +1,4 @@
-﻿"""
+"""
 Command Processor - Integration layer for Pydantic + Click command validation.
 
 This module provides a bridge between the existing command handler infrastructure

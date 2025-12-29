@@ -1,4 +1,4 @@
-﻿"""
+"""
 Dependency injection providers for MythosMUD server.
 
 This module provides dependency injection functions for services using the

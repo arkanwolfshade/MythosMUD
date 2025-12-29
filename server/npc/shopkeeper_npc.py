@@ -1,4 +1,4 @@
-﻿"""
+"""
 Shopkeeper NPC type for MythosMUD.
 
 This module provides the ShopkeeperNPC class with buy/sell functionality.

@@ -1,5 +1,8 @@
 """
-Unit tests for container persistence.
+Unit tests for persistence.container_persistence module.
+
+This module tests the container persistence functions from
+server.persistence.container_persistence.
 """
 
 import json
@@ -48,4 +51,3 @@ def test_parse_jsonb_column_invalid_json():
     # This tests the current behavior
     with pytest.raises(json.JSONDecodeError):
         _parse_jsonb_column("{invalid json}", {})
-

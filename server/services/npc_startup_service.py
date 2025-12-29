@@ -1,4 +1,4 @@
-﻿"""
+"""
 NPC Startup Service for MythosMUD.
 
 This module provides automatic NPC spawning during server startup to populate

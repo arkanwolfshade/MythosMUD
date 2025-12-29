@@ -52,4 +52,8 @@ async def test_handle_emote_command_no_chat_service():
     result = await handle_emote_command({"action": "smiles"}, {}, mock_request, None, "TestPlayer")
 
     assert "result" in result
-    assert "not available" in result["result"].lower() or "error" in result["result"].lower() or "functionality" in result["result"].lower()
+    assert (
+        "not available" in result["result"].lower()
+        or "error" in result["result"].lower()
+        or "functionality" in result["result"].lower()
+    )

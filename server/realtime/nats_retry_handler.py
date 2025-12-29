@@ -1,4 +1,4 @@
-﻿"""
+"""
 NATS message retry handler with exponential backoff.
 
 Implements resilient message delivery with configurable retry logic

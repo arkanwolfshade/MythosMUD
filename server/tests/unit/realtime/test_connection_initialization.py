@@ -96,9 +96,10 @@ def test_initialize_messaging():
     mock_manager.room_manager = MagicMock()
     mock_manager.send_personal_message = MagicMock()
 
-    with patch("server.realtime.connection_initialization.PersonalMessageSender") as mock_sender, patch(
-        "server.realtime.connection_initialization.MessageBroadcaster"
-    ) as mock_broadcaster:
+    with (
+        patch("server.realtime.connection_initialization.PersonalMessageSender") as mock_sender,
+        patch("server.realtime.connection_initialization.MessageBroadcaster") as mock_broadcaster,
+    ):
         initialize_messaging(mock_manager)
 
         mock_sender.assert_called_once()

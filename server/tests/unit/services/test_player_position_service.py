@@ -338,8 +338,8 @@ async def test_change_position_all_positions():
     """Test change_position works for all valid positions."""
     test_cases = [
         ("standing", "sitting"),  # Change from sitting to standing
-        ("sitting", "lying"),     # Change from lying to sitting
-        ("lying", "standing"),    # Change from standing to lying
+        ("sitting", "lying"),  # Change from lying to sitting
+        ("lying", "standing"),  # Change from standing to lying
     ]
 
     for initial_position, target_position in test_cases:

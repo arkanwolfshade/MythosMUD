@@ -1,4 +1,4 @@
-﻿"""
+"""
 Public API utility functions for connection manager.
 
 This module provides convenient wrapper functions for sending events

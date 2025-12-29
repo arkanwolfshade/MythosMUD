@@ -1,4 +1,4 @@
-﻿"""
+"""
 Pydantic-based configuration models for MythosMUD server.
 
 This module replaces the legacy config_loader.py with type-safe,

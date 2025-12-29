@@ -303,6 +303,7 @@ async def test_handle_npc_stats_command():
 async def test_validate_npc_admin_permission_exception():
     """Test validate_npc_admin_permission() handles exceptions."""
     mock_player = MagicMock()
+
     # Make getattr raise an exception when checking is_admin
     def side_effect(*args, **kwargs):
         if args[0] == "is_admin":

@@ -1,4 +1,4 @@
-﻿"""
+"""
 NPC Population Control System.
 
 This module implements sub-zone-based NPC population management, including

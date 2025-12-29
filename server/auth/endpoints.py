@@ -1,4 +1,4 @@
-﻿"""
+"""
 Authentication endpoints for MythosMUD.
 
 This module provides endpoints for user registration, login, and authentication

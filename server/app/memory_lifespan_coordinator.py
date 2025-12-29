@@ -1,4 +1,4 @@
-﻿"""
+"""
 Memory Lifespan Coordinator - Centralized Periodic Auditing for Orphaned Task Prevention.
 
 This module provides automated periodic audits during operation to prevent orphan

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Pydantic error handler for consistent error processing.
 
 This module provides a comprehensive error handler specifically designed

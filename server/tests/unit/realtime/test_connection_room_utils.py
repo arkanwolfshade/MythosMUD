@@ -82,6 +82,7 @@ def test_canonical_room_id_impl_no_room_found():
 def test_canonical_room_id_impl_room_no_id_attribute():
     """Test canonical_room_id_impl() returns original room_id when room has no id."""
     room_id = "room_123"
+
     # Create a real room object that doesn't have an id attribute
     # The source code uses getattr(room, "id", None), so we need a room without id
     class RoomWithoutId:
@@ -91,6 +92,7 @@ def test_canonical_room_id_impl_room_no_id_attribute():
     # Ensure it doesn't have id attribute
     assert not hasattr(room_without_id, "id")
     assert getattr(room_without_id, "id", None) is None
+
     # Create a real persistence object (not MagicMock) to avoid auto-attribute creation
     class MockPersistence:
         def get_room_by_id(self, room_id):

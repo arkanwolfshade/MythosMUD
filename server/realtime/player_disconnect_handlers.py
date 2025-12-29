@@ -1,4 +1,4 @@
-﻿"""
+"""
 Player disconnect handling functions.
 
 This module handles broadcasting disconnect events and managing

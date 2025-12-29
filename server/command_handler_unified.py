@@ -1,4 +1,4 @@
-﻿"""
+"""
 Unified Command Handler for MythosMUD.
 
 This module provides a single, unified command processing system that

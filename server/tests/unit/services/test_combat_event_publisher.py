@@ -154,7 +154,9 @@ async def test_publish_combat_ended_success(combat_event_publisher, mock_nats_se
     from server.events.combat_events import CombatEndedEvent
 
     combat_id = uuid.uuid4()
-    event = CombatEndedEvent(combat_id=combat_id, room_id="room_001", reason="victory", duration_seconds=60, participants=[])
+    event = CombatEndedEvent(
+        combat_id=combat_id, room_id="room_001", reason="victory", duration_seconds=60, participants=[]
+    )
     result = await combat_event_publisher.publish_combat_ended(event)
     assert result is True
     mock_nats_service.publish.assert_awaited_once()
@@ -166,7 +168,9 @@ async def test_publish_combat_ended_not_connected(combat_event_publisher, mock_n
     from server.events.combat_events import CombatEndedEvent
 
     combat_id = uuid.uuid4()
-    event = CombatEndedEvent(combat_id=combat_id, room_id="room_001", reason="victory", duration_seconds=60, participants=[])
+    event = CombatEndedEvent(
+        combat_id=combat_id, room_id="room_001", reason="victory", duration_seconds=60, participants=[]
+    )
     mock_nats_service.is_connected = MagicMock(return_value=False)
     result = await combat_event_publisher.publish_combat_ended(event)
     assert result is False
@@ -283,7 +287,9 @@ async def test_publish_combat_ended_no_nats_service():
 
     publisher = CombatEventPublisher(nats_service=None)
     combat_id = uuid.uuid4()
-    event = CombatEndedEvent(combat_id=combat_id, room_id="room_001", reason="victory", duration_seconds=60, participants=[])
+    event = CombatEndedEvent(
+        combat_id=combat_id, room_id="room_001", reason="victory", duration_seconds=60, participants=[]
+    )
     result = await publisher.publish_combat_ended(event)
     assert result is False
 

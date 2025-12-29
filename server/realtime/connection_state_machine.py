@@ -1,4 +1,4 @@
-﻿"""
+"""
 Connection state machine for NATS messaging.
 
 Implements a robust state machine for managing NATS connection lifecycle

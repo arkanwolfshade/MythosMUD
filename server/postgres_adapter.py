@@ -1,4 +1,4 @@
-﻿"""
+"""
 PostgreSQL adapter for persistence layer.
 
 Provides a PostgreSQL connection interface for the persistence layer,

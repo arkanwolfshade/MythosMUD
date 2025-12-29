@@ -1,4 +1,4 @@
-﻿"""Alias storage utilities for MythosMUD.
+"""Alias storage utilities for MythosMUD.
 
 As noted in the restricted archives of Miskatonic University, this module
 handles the persistence of player command aliases in JSON format, providing

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Emote Service for handling predefined emote actions and their messages.
 
 This service manages a collection of predefined emotes that players can use

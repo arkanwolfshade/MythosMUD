@@ -1,4 +1,4 @@
-﻿"""
+"""
 FastAPI application factory for MythosMUD server.
 
 This module handles FastAPI app creation, middleware configuration,

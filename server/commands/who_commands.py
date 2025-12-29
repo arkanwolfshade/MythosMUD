@@ -1,4 +1,4 @@
-﻿"""
+"""
 Who command handlers and utilities for MythosMUD.
 
 This module contains the who command handler and related helper functions.

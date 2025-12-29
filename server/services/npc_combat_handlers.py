@@ -1,4 +1,4 @@
-﻿"""
+"""
 NPC Combat Event Handlers.
 
 This module handles combat result processing and NPC death handling,

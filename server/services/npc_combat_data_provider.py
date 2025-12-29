@@ -1,4 +1,4 @@
-﻿"""
+"""
 NPC Combat Data Provider.
 
 This module provides data retrieval and preparation for NPC combat,

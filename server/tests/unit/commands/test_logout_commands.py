@@ -361,7 +361,9 @@ async def test_handle_logout_command_error_handling(mock_request, mock_persisten
 
 
 @pytest.mark.asyncio
-async def test_handle_logout_command_syncs_position(mock_request, mock_persistence, mock_connection_manager, mock_player):
+async def test_handle_logout_command_syncs_position(
+    mock_request, mock_persistence, mock_connection_manager, mock_player
+):
     """Test handle_logout_command syncs player position from connection manager."""
     mock_request.app.state.persistence = mock_persistence
     mock_request.app.state.connection_manager = mock_connection_manager
@@ -377,4 +379,3 @@ async def test_handle_logout_command_syncs_position(mock_request, mock_persisten
     call_args = mock_sync.call_args[0]
     assert call_args[0] == mock_player
     assert call_args[1] == "lying"
-

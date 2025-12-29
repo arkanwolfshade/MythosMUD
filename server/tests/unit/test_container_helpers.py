@@ -153,7 +153,9 @@ def test_application_container_normalize_path_from_url():
     """Test ApplicationContainer._normalize_path_from_url_or_path() handles URL."""
     container = ApplicationContainer()
     container._project_root = Path("E:/projects/GitHub/MythosMUD")
-    result = container._normalize_path_from_url_or_path("file:///E:/projects/GitHub/MythosMUD/data/file.json", container._project_root)
+    result = container._normalize_path_from_url_or_path(
+        "file:///E:/projects/GitHub/MythosMUD/data/file.json", container._project_root
+    )
     assert result is not None
     assert isinstance(result, Path)
 

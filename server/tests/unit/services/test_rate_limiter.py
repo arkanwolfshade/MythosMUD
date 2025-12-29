@@ -437,4 +437,3 @@ def test_check_rate_limit_logs_violation(rate_limiter):
         assert call_kwargs["channel"] == channel
         assert call_kwargs["message_count"] == 11
         assert call_kwargs["limit"] == 10
-

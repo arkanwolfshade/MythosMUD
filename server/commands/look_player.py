@@ -1,4 +1,4 @@
-﻿"""
+"""
 Player look functionality for MythosMUD.
 
 This module handles looking at players, including finding matching players,

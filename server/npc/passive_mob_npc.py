@@ -1,4 +1,4 @@
-﻿"""
+"""
 Passive mob NPC type for MythosMUD.
 
 This module provides the PassiveMobNPC class with wandering and response behaviors.

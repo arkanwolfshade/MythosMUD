@@ -1,4 +1,4 @@
-﻿"""
+"""
 Help content and command documentation for MythosMUD.
 
 This module contains the comprehensive command documentation and

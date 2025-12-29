@@ -1,4 +1,4 @@
-﻿"""
+"""
 Player respawn API endpoints.
 
 This module handles endpoints for respawning players after death or delirium.

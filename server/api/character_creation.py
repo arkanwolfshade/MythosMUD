@@ -1,4 +1,4 @@
-﻿"""
+"""
 Character creation and stats generation API endpoints.
 
 This module handles endpoints for rolling stats, creating characters,

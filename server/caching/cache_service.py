@@ -1,4 +1,4 @@
-﻿"""
+"""
 Cache service for MythosMUD server.
 
 This module provides caching services that integrate with the existing

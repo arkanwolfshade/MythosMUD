@@ -58,10 +58,12 @@ async def test_format_containers_section_no_persistence():
 async def test_format_containers_section_with_containers():
     """Test _format_containers_section with containers."""
     mock_persistence = AsyncMock()
-    mock_persistence.get_containers_by_room_id = AsyncMock(return_value=[
-        {"source_type": "environment", "metadata": {"name": "Chest"}},
-        {"source_type": "corpse", "metadata": {"player_name": "DeadPlayer"}},
-    ])
+    mock_persistence.get_containers_by_room_id = AsyncMock(
+        return_value=[
+            {"source_type": "environment", "metadata": {"name": "Chest"}},
+            {"source_type": "corpse", "metadata": {"player_name": "DeadPlayer"}},
+        ]
+    )
 
     result = await _format_containers_section("test_room", mock_persistence)
 

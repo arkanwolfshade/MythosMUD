@@ -1,4 +1,4 @@
-﻿"""
+"""
 Moderation command factory methods.
 
 This module contains factory methods for admin and moderation commands:

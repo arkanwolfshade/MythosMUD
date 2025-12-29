@@ -1,4 +1,4 @@
-﻿"""
+"""
 Global TrackedTaskManager for Memory Leak Prevention Infrastructure.
 
 This module provides a centralized task creation and cleanup management system

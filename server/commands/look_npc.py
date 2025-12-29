@@ -1,4 +1,4 @@
-﻿"""
+"""
 NPC look functionality for MythosMUD.
 
 This module handles looking at NPCs, including finding matching NPCs,

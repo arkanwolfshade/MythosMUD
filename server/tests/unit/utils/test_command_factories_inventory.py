@@ -288,7 +288,24 @@ def test_create_unequip_command_multi_word():
 
 def test_create_unequip_command_all_slots():
     """Test create_unequip_command() handles all known slots."""
-    known_slots = ["head", "torso", "legs", "feet", "hands", "left_hand", "right_hand", "main_hand", "off_hand", "accessory", "ring", "amulet", "belt", "backpack", "waist", "neck"]
+    known_slots = [
+        "head",
+        "torso",
+        "legs",
+        "feet",
+        "hands",
+        "left_hand",
+        "right_hand",
+        "main_hand",
+        "off_hand",
+        "accessory",
+        "ring",
+        "amulet",
+        "belt",
+        "backpack",
+        "waist",
+        "neck",
+    ]
     for slot in known_slots:
         result = InventoryCommandFactory.create_unequip_command([slot])
         assert result.slot == slot

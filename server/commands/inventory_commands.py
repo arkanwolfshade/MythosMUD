@@ -1,4 +1,4 @@
-﻿"""Inventory and equipment command handlers for MythosMUD."""
+"""Inventory and equipment command handlers for MythosMUD."""
 
 from __future__ import annotations
 

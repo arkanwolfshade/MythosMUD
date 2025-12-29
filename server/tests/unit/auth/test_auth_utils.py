@@ -161,7 +161,6 @@ def test_create_access_token_jwt_error():
     """Test create_access_token handles JWTError."""
     from unittest.mock import patch
 
-
     data = {"sub": "testuser"}
     with patch("jose.jwt.encode") as mock_encode:
         mock_encode.side_effect = JWTError("JWT error")
@@ -183,7 +182,6 @@ def test_create_access_token_value_error():
 def test_decode_access_token_value_error():
     """Test decode_access_token handles ValueError and returns None."""
     from unittest.mock import patch
-
 
     token = create_access_token({"sub": "testuser"})
     with patch("jose.jwt.decode") as mock_decode:
@@ -414,4 +412,3 @@ def test_decode_access_token_with_expired_token_immediately():
     token = create_access_token(data, expires_delta=expires_delta)
     result = decode_access_token(token)
     assert result is None
-

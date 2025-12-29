@@ -1,4 +1,4 @@
-﻿"""
+"""
 Message filtering utilities for NATS message handler.
 
 This module handles room filtering, mute checking, and player location validation

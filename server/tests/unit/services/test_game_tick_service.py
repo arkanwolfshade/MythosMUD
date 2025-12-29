@@ -74,10 +74,12 @@ class TestGameTickService:
         event_publisher = MagicMock()
         service = GameTickService(event_publisher)
         service.is_running = True
+
         # Create a real asyncio task that can be cancelled
         async def dummy_task():
             while True:
                 await asyncio.sleep(0.1)
+
         real_task = asyncio.create_task(dummy_task())
         service._tick_task = real_task
 

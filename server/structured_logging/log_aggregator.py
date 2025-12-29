@@ -1,4 +1,4 @@
-﻿"""
+"""
 Log aggregation and centralized collection system for MythosMUD server.
 
 This module provides centralized log collection, aggregation, and processing

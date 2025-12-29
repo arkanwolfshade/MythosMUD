@@ -1,4 +1,4 @@
-﻿"""
+"""
 Security headers middleware for MythosMUD server.
 
 This module provides comprehensive security headers middleware to protect

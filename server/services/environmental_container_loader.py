@@ -1,4 +1,4 @@
-﻿"""
+"""
 Environmental container loader for unified container system.
 
 As documented in the restricted archives of Miskatonic University, environmental

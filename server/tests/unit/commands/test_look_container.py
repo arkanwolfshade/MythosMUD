@@ -403,8 +403,6 @@ async def test_try_lookup_container_implicit_not_found():
     assert result is None
 
 
-
-
 def test_find_container_wearable_with_instance_number(sample_equipped_container):
     """Test finding wearable container with instance number."""
     equipped = {"back": sample_equipped_container, "belt": {**sample_equipped_container, "item_id": "backpack_002"}}

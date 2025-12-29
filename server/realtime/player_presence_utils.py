@@ -1,4 +1,4 @@
-﻿"""
+"""
 Utility functions for player presence tracking.
 
 This module provides helper functions for extracting player information,

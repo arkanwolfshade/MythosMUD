@@ -105,7 +105,9 @@ def test_get_connection_stats(statistics_aggregator):
     session_connections = {}
     player_sessions = {uuid.uuid4(): "session_001"}
     # get_connection_stats takes (player_websockets, connection_metadata, session_connections, player_sessions)
-    result = statistics_aggregator.get_connection_stats(player_websockets, connection_metadata, session_connections, player_sessions)
+    result = statistics_aggregator.get_connection_stats(
+        player_websockets, connection_metadata, session_connections, player_sessions
+    )
     assert isinstance(result, dict)
     assert "total_connections" in result or "total_players" in result or "error" in result
 

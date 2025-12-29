@@ -148,6 +148,7 @@ async def test_get_player_room_from_persistence(message_filtering_helper, mock_c
     # The method checks if player is Mock and returns None, so use a simple object
 
     mock_persistence = MagicMock()
+
     # Create a simple object that's not a Mock instance
     class SimplePlayer:
         def __init__(self):
@@ -187,6 +188,7 @@ async def test_is_player_in_room_false(message_filtering_helper, mock_connection
     # is_player_in_room uses get_player_room_from_online_players first, then persistence
     # canonical_room_id is called for both player_room_id and room_id
     mock_connection_manager.online_players = {"player_001": {"current_room_id": "room_002"}}
+
     # Make canonical_room_id return different values for different inputs
     def canonical_side_effect(room_id):
         if room_id == "room_002":

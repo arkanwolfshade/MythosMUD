@@ -1,4 +1,4 @@
-﻿"""
+"""
 Performance tracking for connection management.
 
 This module provides comprehensive performance metric collection and analysis

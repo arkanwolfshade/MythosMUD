@@ -1,4 +1,4 @@
-﻿"""
+"""
 MOTD (Message of the Day) loading utilities for MythosMUD.
 
 This module provides functionality for loading and displaying the Message of the Day

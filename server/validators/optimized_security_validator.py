@@ -1,4 +1,4 @@
-﻿"""
+"""
 Optimized security validation functions for MythosMUD.
 
 This module provides performance-optimized versions of the security validation

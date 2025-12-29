@@ -394,7 +394,9 @@ async def test_handle_go_command_success():
     mock_target_room = MagicMock()
     mock_persistence = MagicMock()
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_persistence.get_room_by_id = MagicMock(side_effect=lambda rid: mock_target_room if rid == "north_room" else mock_room)
+    mock_persistence.get_room_by_id = MagicMock(
+        side_effect=lambda rid: mock_target_room if rid == "north_room" else mock_room
+    )
 
     mock_movement_service = MagicMock()
     mock_movement_service.move_player = AsyncMock(return_value=True)

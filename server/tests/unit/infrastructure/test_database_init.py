@@ -76,7 +76,15 @@ def test_initialize_database_config_validation_error():
         # This is a workaround since PydanticValidationError is complex to construct
         raise PydanticValidationError.from_exception_data(
             "AppConfig",
-            [{"type": "value_error", "loc": ("database", "url"), "msg": "Field required", "input": {}, "ctx": {"error": "Field required"}}]
+            [
+                {
+                    "type": "value_error",
+                    "loc": ("database", "url"),
+                    "msg": "Field required",
+                    "input": {},
+                    "ctx": {"error": "Field required"},
+                }
+            ],
         )
     except PydanticValidationError as e:
         pydantic_error = e
@@ -174,6 +182,7 @@ def test_initialize_database_uses_nullpool_for_test():
 
         with patch("server.database.create_async_engine") as mock_create:
             from sqlalchemy.pool import NullPool
+
             mock_engine = MagicMock()
             mock_create.return_value = mock_engine
 
@@ -338,6 +347,7 @@ def test_get_engine_reinitializes_if_none():
     manager.engine = None
 
     with patch.object(manager, "_initialize_database") as mock_init:
+
         def set_engine():
             manager.engine = MagicMock()
             manager._initialized = True
@@ -414,6 +424,7 @@ def test_get_database_path_module_level_none():
 
     with pytest.raises(ValidationError, match="Database URL is None"):
         from server.database import get_database_path
+
         get_database_path()
 
 
@@ -425,6 +436,7 @@ def test_get_database_path_module_level_postgresql():
     db_module._database_url = "postgresql+asyncpg://test"
 
     from server.database import get_database_path
+
     result = get_database_path()
 
     assert result is None
@@ -439,6 +451,7 @@ def test_get_database_path_module_level_unsupported():
 
     with pytest.raises(ValidationError, match="Unsupported database URL"):
         from server.database import get_database_path
+
         get_database_path()
 
 
@@ -459,4 +472,3 @@ def test_reset_database_resets_singleton():
     instance2 = DatabaseManager.get_instance()
 
     assert instance1 is not instance2
-

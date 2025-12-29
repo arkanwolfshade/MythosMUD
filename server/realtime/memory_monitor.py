@@ -1,4 +1,4 @@
-﻿"""
+"""
 Memory monitoring and cleanup management for MythosMUD.
 
 This module provides memory usage monitoring, cleanup scheduling,

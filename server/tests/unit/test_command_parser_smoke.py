@@ -2,7 +2,6 @@
 Smoke test for command parser.
 """
 
-
 from server.models.command_base import CommandType
 from server.utils.command_parser import parse_command
 
@@ -31,4 +30,3 @@ def test_parse_command_with_pipes():
 
     # The parser should extract the main command (look)
     assert result.command_type == CommandType.LOOK
-

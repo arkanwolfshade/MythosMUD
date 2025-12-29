@@ -1,4 +1,4 @@
-﻿"""
+"""
 Alias circular dependency detection using graph analysis.
 
 This module provides graph-based detection of circular dependencies in alias expansions,

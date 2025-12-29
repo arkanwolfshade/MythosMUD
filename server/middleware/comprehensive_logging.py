@@ -1,4 +1,4 @@
-﻿"""
+"""
 Comprehensive logging middleware for MythosMUD server.
 
 This module provides a unified logging middleware that consolidates access,

@@ -1,4 +1,4 @@
-﻿"""Active LCD adjustment helpers for encounters and recovery rituals."""
+"""Active LCD adjustment helpers for encounters and recovery rituals."""
 
 from __future__ import annotations
 

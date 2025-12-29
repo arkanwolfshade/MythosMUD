@@ -1,4 +1,4 @@
-﻿"""
+"""
 Item instance persistence operations.
 
 As documented in the restricted archives, item instances must be persisted

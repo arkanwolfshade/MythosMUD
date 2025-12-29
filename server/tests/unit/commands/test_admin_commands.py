@@ -568,8 +568,13 @@ async def test_handle_mutes_command_with_mutes():
     mock_state = MagicMock()
     mock_user_manager = MagicMock()
     from datetime import UTC, datetime, timedelta
+
     mock_mutes = [
-        {"target_player": "Player1", "expires_at": (datetime.now(UTC) + timedelta(hours=1)).isoformat(), "reason": "Spam"},
+        {
+            "target_player": "Player1",
+            "expires_at": (datetime.now(UTC) + timedelta(hours=1)).isoformat(),
+            "reason": "Spam",
+        },
         {"target_player": "Player2", "expires_at": None, "reason": "Harassment"},
     ]
     mock_user_manager.get_player_mutes = MagicMock(return_value=mock_mutes)

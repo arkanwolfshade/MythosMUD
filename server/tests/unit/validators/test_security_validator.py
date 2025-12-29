@@ -136,9 +136,9 @@ def test_comprehensive_sanitize_input_preserves_tabs():
 
 def test_comprehensive_sanitize_input_removes_zero_width_chars():
     """Test that comprehensive sanitization removes zero-width characters."""
-    text = "Hello\u200Bworld"  # Zero-width space
+    text = "Hello\u200bworld"  # Zero-width space
     result = comprehensive_sanitize_input(text)
-    assert "\u200B" not in result
+    assert "\u200b" not in result
 
 
 def test_validate_message_content_empty():
@@ -530,4 +530,3 @@ def test_slash_commands_defined():
     assert len(SLASH_COMMANDS) > 0
     assert "help" in SLASH_COMMANDS
     assert "who" in SLASH_COMMANDS
-

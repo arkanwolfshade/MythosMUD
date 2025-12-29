@@ -1,4 +1,4 @@
-﻿"""
+"""
 Standardized error response formats for all API endpoints.
 
 This module provides comprehensive error response standardization to ensure

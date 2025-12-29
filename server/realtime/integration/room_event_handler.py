@@ -1,4 +1,4 @@
-﻿"""
+"""
 Room event handling for connection management.
 
 This module provides integration with the EventBus for room movement events,

@@ -1,4 +1,4 @@
-﻿"""Application lifecycle management for MythosMUD server.
+"""Application lifecycle management for MythosMUD server.
 
 This module handles application startup and shutdown orchestration,
 using ApplicationContainer for dependency injection and service lifecycle management.

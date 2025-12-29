@@ -1,4 +1,4 @@
-﻿"""Game tick processing functions.
+"""Game tick processing functions.
 
 This module handles all game tick processing logic, including status effects,
 combat, death processing, and periodic maintenance tasks.

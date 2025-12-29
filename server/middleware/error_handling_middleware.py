@@ -1,4 +1,4 @@
-﻿"""
+"""
 Error handling middleware for FastAPI integration.
 
 This module provides middleware to automatically handle exceptions across

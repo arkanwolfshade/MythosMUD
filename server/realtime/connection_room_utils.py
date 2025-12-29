@@ -1,4 +1,4 @@
-﻿"""
+"""
 Room and subscription utility helpers for connection manager.
 
 This module provides helper functions for room-related operations

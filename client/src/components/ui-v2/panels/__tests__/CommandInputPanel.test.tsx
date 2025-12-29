@@ -55,7 +55,7 @@ describe('CommandInputPanel', () => {
 
     const input = screen.getByPlaceholderText(/Enter game command/i);
     expect(input).toBeDisabled();
-    
+
     fireEvent.change(input, { target: { value: 'look' } });
     fireEvent.submit(input.closest('form')!);
 
@@ -64,13 +64,7 @@ describe('CommandInputPanel', () => {
   });
 
   it('should use custom placeholder when provided', () => {
-    render(
-      <CommandInputPanel
-        onSendCommand={mockOnSendCommand}
-        placeholder="Custom placeholder"
-        isConnected={true}
-      />
-    );
+    render(<CommandInputPanel onSendCommand={mockOnSendCommand} placeholder="Custom placeholder" isConnected={true} />);
     expect(screen.getByPlaceholderText('Custom placeholder')).toBeInTheDocument();
   });
 

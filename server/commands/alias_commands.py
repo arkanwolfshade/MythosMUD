@@ -1,4 +1,4 @@
-﻿"""
+"""
 Alias management commands for MythosMUD.
 
 This module contains handlers for alias-related commands.

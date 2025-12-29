@@ -1,4 +1,4 @@
-﻿"""
+"""
 NPC Idle Movement Handler for MythosMUD.
 
 This module provides idle movement functionality for NPCs, allowing them to

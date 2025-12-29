@@ -1,4 +1,4 @@
-﻿"""
+"""
 NPC Event Subscription and Reaction System.
 
 This module provides a system for NPCs to subscribe to game events and

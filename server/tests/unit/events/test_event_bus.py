@@ -145,6 +145,7 @@ def test_event_bus_get_all_subscriber_counts_empty(event_bus):
 
 def test_event_bus_get_all_subscriber_counts_multiple_types(event_bus):
     """Test EventBus.get_all_subscriber_counts() with multiple event types."""
+
     class MockEventClass2(BaseEvent):
         pass
 
@@ -244,6 +245,7 @@ async def test_handle_event_async_no_subscribers(event_bus):
 @pytest.mark.asyncio
 async def test_handle_event_async_sync_subscriber_error(event_bus):
     """Test _handle_event_async() handles sync subscriber errors."""
+
     def error_handler(event):
         raise ValueError("Test error")
 
@@ -256,6 +258,7 @@ async def test_handle_event_async_sync_subscriber_error(event_bus):
 @pytest.mark.asyncio
 async def test_handle_event_async_async_subscriber_error(event_bus):
     """Test _handle_event_async() handles async subscriber errors."""
+
     async def error_handler(event):
         raise ValueError("Test error")
 
@@ -268,6 +271,7 @@ async def test_handle_event_async_async_subscriber_error(event_bus):
 @pytest.mark.asyncio
 async def test_handle_task_result_async_no_error(event_bus):
     """Test _handle_task_result_async() with successful task."""
+
     async def success_handler(event):
         return "success"
 
@@ -281,6 +285,7 @@ async def test_handle_task_result_async_no_error(event_bus):
 @pytest.mark.asyncio
 async def test_handle_task_result_async_with_error(event_bus):
     """Test _handle_task_result_async() with task that raises error."""
+
     async def error_handler(event):
         raise ValueError("Test error")
 

@@ -2,7 +2,6 @@
 Unit tests for command validator.
 """
 
-
 from server.validators.command_validator import (
     CommandValidator,
     clean_command_input,
@@ -212,7 +211,7 @@ def test_command_validator_validate_command_content_allows_newline_tab_space():
     valid_commands = [
         "go\nnorth",  # Newline
         "go\tnorth",  # Tab
-        "go north",   # Space
+        "go north",  # Space
         "go\n\tnorth",  # Multiple allowed
     ]
 

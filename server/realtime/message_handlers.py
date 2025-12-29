@@ -1,4 +1,4 @@
-﻿"""
+"""
 Message handler implementations for WebSocket message routing.
 
 This module contains the actual implementations of message handlers,

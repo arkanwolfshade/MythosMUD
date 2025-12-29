@@ -1,4 +1,4 @@
-﻿"""Passive LCD flux scheduler guided by the Pnakotic curricula."""
+"""Passive LCD flux scheduler guided by the Pnakotic curricula."""
 
 from __future__ import annotations
 

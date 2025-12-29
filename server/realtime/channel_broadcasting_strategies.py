@@ -1,4 +1,4 @@
-﻿"""
+"""
 Channel Broadcasting Strategies for NATS Message Handler.
 
 This module implements the Strategy pattern for handling different channel types

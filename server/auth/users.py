@@ -1,4 +1,4 @@
-﻿"""
+"""
 FastAPI Users configuration for MythosMUD.
 
 This module configures FastAPI Users with SQLAlchemy backend

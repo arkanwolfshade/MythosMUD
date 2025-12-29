@@ -1,4 +1,4 @@
-﻿"""
+"""
 Rate limiting for MythosMUD connections.
 
 This module provides rate limiting functionality for connection attempts,

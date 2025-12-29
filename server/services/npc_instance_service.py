@@ -1,4 +1,4 @@
-﻿"""
+"""
 NPC Instance Management Service for MythosMUD.
 
 This module provides high-level operations for managing NPC instances,

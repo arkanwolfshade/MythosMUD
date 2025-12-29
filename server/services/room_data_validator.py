@@ -1,4 +1,4 @@
-﻿"""
+"""
 Room data validation utilities for MythosMUD.
 
 This module provides validation logic for room data structures,

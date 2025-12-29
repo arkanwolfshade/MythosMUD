@@ -75,7 +75,9 @@ async def test_handle_player_xp_awarded_no_connection_manager(player_state_event
 
 
 @pytest.mark.asyncio
-async def test_handle_player_xp_awarded_player_not_found(player_state_event_handler, mock_connection_manager, mock_logger):
+async def test_handle_player_xp_awarded_player_not_found(
+    player_state_event_handler, mock_connection_manager, mock_logger
+):
     """Test handle_player_xp_awarded() handles player not found."""
     player_id = uuid.uuid4()
     mock_connection_manager.get_player = AsyncMock(return_value=None)
@@ -85,7 +87,9 @@ async def test_handle_player_xp_awarded_player_not_found(player_state_event_hand
 
 
 @pytest.mark.asyncio
-async def test_handle_player_xp_awarded_error_handling(player_state_event_handler, mock_connection_manager, mock_logger):
+async def test_handle_player_xp_awarded_error_handling(
+    player_state_event_handler, mock_connection_manager, mock_logger
+):
     """Test handle_player_xp_awarded() handles errors."""
     player_id = uuid.uuid4()
     mock_connection_manager.get_player = AsyncMock(side_effect=ValueError("Database error"))
@@ -171,7 +175,9 @@ async def test_handle_player_dp_updated_player_no_get_stats(player_state_event_h
 
 
 @pytest.mark.asyncio
-async def test_handle_player_dp_updated_error_handling(player_state_event_handler, mock_connection_manager, mock_logger):
+async def test_handle_player_dp_updated_error_handling(
+    player_state_event_handler, mock_connection_manager, mock_logger
+):
     """Test handle_player_dp_updated() handles errors."""
     player_id = uuid.uuid4()
     mock_connection_manager.get_player = AsyncMock(side_effect=SQLAlchemyError("Database error"))
@@ -297,7 +303,9 @@ async def test_handle_player_dp_decay_error_handling(player_state_event_handler,
 
 
 @pytest.mark.asyncio
-async def test_handle_player_dp_decay_no_player_id_attr(player_state_event_handler, mock_connection_manager, mock_logger):
+async def test_handle_player_dp_decay_no_player_id_attr(
+    player_state_event_handler, mock_connection_manager, mock_logger
+):
     """Test handle_player_dp_decay() handles missing player_id attribute."""
     event = MagicMock()
     del event.player_id  # Remove player_id attribute

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Request context factory for WebSocket command processing.
 
 This module provides utilities to create FastAPI Request-like objects

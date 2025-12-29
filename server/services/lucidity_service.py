@@ -1,4 +1,4 @@
-﻿"""Lucidity repository and service for eldritch stability management."""
+"""Lucidity repository and service for eldritch stability management."""
 
 from __future__ import annotations
 

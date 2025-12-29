@@ -1,4 +1,4 @@
-﻿"""
+"""
 Container service for unified container system operations.
 
 As documented in the restricted archives of Miskatonic University, container

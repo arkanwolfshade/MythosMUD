@@ -1,4 +1,4 @@
-﻿"""
+"""
 Argon2 password hashing utilities for MythosMUD.
 
 This module implements the gold standard for password hashing using Argon2id,

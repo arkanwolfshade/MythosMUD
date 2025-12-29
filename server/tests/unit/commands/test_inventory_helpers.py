@@ -4,7 +4,6 @@ Unit tests for inventory command helper functions.
 Tests helper functions used by inventory commands.
 """
 
-
 from server.commands.inventory_commands import (
     _format_metadata,
     _match_equipped_item_by_name,

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Target resolution service for MythosMUD.
 
 This service provides unified target resolution for both players and NPCs,

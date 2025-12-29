@@ -1,4 +1,4 @@
-﻿"""
+"""
 Wearable container service for unified container system.
 
 As documented in the restricted archives of Miskatonic University, wearable

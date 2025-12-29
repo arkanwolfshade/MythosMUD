@@ -412,7 +412,10 @@ def test_get_health_status_version_fallback(mock_version, health_service):
             )
             with patch.object(health_service, "get_connections_component_health") as mock_conn:
                 mock_conn.return_value = ConnectionsComponent(
-                    status=HealthStatus.HEALTHY, active_connections=10, max_connections=100, connection_rate_per_minute=2.0
+                    status=HealthStatus.HEALTHY,
+                    active_connections=10,
+                    max_connections=100,
+                    connection_rate_per_minute=2.0,
                 )
                 response = health_service.get_health_status()
                 assert response.version == "0.1.0"  # Fallback version

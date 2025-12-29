@@ -1,4 +1,4 @@
-﻿"""
+"""
 Player effects API endpoints.
 
 This module handles endpoints for applying various effects to players,

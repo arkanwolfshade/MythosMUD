@@ -128,9 +128,7 @@ async def test_send_lucidity_change_event_with_liabilities(mock_send_game_event)
     player_id = uuid.uuid4()
     liabilities = [{"code": "nightmare", "stacks": 2}, {"code": "hallucination", "stacks": 1}]
     with patch("server.realtime.connection_manager_api.send_game_event", mock_send_game_event):
-        await send_lucidity_change_event(
-            player_id, current_lcd=30, delta=-10, tier="unstable", liabilities=liabilities
-        )
+        await send_lucidity_change_event(player_id, current_lcd=30, delta=-10, tier="unstable", liabilities=liabilities)
         call_args = mock_send_game_event.call_args
         payload = call_args[0][2]
         assert "liabilities" in payload
@@ -163,9 +161,7 @@ async def test_send_lucidity_change_event_with_metadata(mock_send_game_event):
     player_id = uuid.uuid4()
     metadata = {"spell_id": "spell_001", "caster": "TestPlayer"}
     with patch("server.realtime.connection_manager_api.send_game_event", mock_send_game_event):
-        await send_lucidity_change_event(
-            player_id, current_lcd=35, delta=-8, tier="unstable", metadata=metadata
-        )
+        await send_lucidity_change_event(player_id, current_lcd=35, delta=-8, tier="unstable", metadata=metadata)
         call_args = mock_send_game_event.call_args
         payload = call_args[0][2]
         assert payload["metadata"] == metadata
@@ -233,9 +229,7 @@ async def test_send_catatonia_event_with_rescuer_and_target(mock_send_game_event
     """Test send_catatonia_event with rescuer and target names."""
     player_id = uuid.uuid4()
     with patch("server.realtime.connection_manager_api.send_game_event", mock_send_game_event):
-        await send_catatonia_event(
-            player_id, status="channeling", rescuer_name="Rescuer", target_name="Target"
-        )
+        await send_catatonia_event(player_id, status="channeling", rescuer_name="Rescuer", target_name="Target")
         call_args = mock_send_game_event.call_args
         payload = call_args[0][2]
         assert payload["rescuer_name"] == "Rescuer"

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Room occupant management utilities.
 
 This module handles querying and processing room occupants (players and NPCs),

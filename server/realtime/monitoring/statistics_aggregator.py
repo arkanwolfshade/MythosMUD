@@ -1,4 +1,4 @@
-﻿"""
+"""
 Statistics aggregation for connection management.
 
 This module aggregates statistics from various connection management components

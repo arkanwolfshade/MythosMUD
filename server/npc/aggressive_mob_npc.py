@@ -1,4 +1,4 @@
-﻿"""
+"""
 Aggressive mob NPC type for MythosMUD.
 
 This module provides the AggressiveMobNPC class with hunting and territorial behaviors.

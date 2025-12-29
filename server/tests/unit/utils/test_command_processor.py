@@ -134,6 +134,7 @@ def test_extract_attributes_basic(command_processor):
 
 def test_extract_attributes_missing_attribute(command_processor):
     """Test _extract_attributes handles missing attributes."""
+
     # Use a simple object instead of MagicMock to avoid auto-attribute creation
     class MockCommand:
         direction = "north"
@@ -200,6 +201,7 @@ def test_extract_command_data_with_target(command_processor):
 
 def test_extract_command_data_combat_target(command_processor):
     """Test extract_command_data sets target_player for combat commands."""
+
     # Create a simple object instead of MagicMock to avoid auto-attributes
     class MockCombatCommand:
         # command_type needs to be the enum itself, not the value, for _is_combat_command to work
@@ -325,4 +327,3 @@ def test_get_command_processor():
     assert isinstance(processor, CommandProcessor)
     # Should return the same instance
     assert get_command_processor() is processor
-

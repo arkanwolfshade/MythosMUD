@@ -1,4 +1,4 @@
-﻿"""
+"""
 Player name extraction and validation utilities.
 
 This module provides utilities for safely extracting and validating player names

@@ -1,4 +1,4 @@
-﻿"""
+"""
 GameTickService for MythosMUD.
 Handles the game tick system that runs at regular intervals.
 """

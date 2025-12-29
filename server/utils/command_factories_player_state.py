@@ -1,4 +1,4 @@
-﻿"""
+"""
 Player state command factory methods.
 
 This module contains factory methods for player state and information commands:

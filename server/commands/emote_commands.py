@@ -1,4 +1,4 @@
-﻿"""
+"""
 Emote command handlers for MythosMUD.
 
 This module contains handlers for the emote command.

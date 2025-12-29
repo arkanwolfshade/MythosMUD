@@ -1,4 +1,4 @@
-﻿"""
+"""
 User management service for MythosMUD chat system.
 
 This module provides comprehensive user management including muting,

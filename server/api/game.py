@@ -1,4 +1,4 @@
-﻿"""
+"""
 Game mechanics API endpoints for MythosMUD server.
 
 This module handles all game mechanics-related API operations including

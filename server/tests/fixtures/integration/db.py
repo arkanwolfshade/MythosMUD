@@ -20,4 +20,3 @@ __all__ = [
     "session_factory",
     "db_cleanup",
 ]
-

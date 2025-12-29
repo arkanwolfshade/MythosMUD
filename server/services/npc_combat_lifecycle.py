@@ -1,4 +1,4 @@
-﻿"""
+"""
 NPC Combat Lifecycle Management.
 
 This module handles NPC despawning and lifecycle operations during combat,

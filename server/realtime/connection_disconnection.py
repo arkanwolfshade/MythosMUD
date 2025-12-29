@@ -1,4 +1,4 @@
-﻿"""
+"""
 Connection disconnection management for connection manager.
 
 This module handles WebSocket connection disconnection operations.

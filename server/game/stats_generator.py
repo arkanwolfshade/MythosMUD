@@ -1,4 +1,4 @@
-﻿"""
+"""
 Stats Generator Service for MythosMUD.
 
 This module provides random stat generation functionality for character creation,

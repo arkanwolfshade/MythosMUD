@@ -2,7 +2,6 @@
 Unit tests for configuration system.
 """
 
-
 from server.config import get_config, reset_config
 
 
@@ -58,4 +57,3 @@ def test_get_config_has_game_config():
 
     assert hasattr(config.game, "aliases_dir")
     assert isinstance(config.game.aliases_dir, str)
-

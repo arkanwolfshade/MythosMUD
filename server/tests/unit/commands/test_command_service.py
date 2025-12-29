@@ -40,9 +40,7 @@ async def test_process_validated_command_success(command_service, mock_request, 
     command_service.command_handlers["test_command"] = mock_handler
 
     command_data = {"command_type": "test_command", "args": []}
-    result = await command_service.process_validated_command(
-        command_data, mock_user, mock_request, None, "TestPlayer"
-    )
+    result = await command_service.process_validated_command(command_data, mock_user, mock_request, None, "TestPlayer")
 
     assert result == {"result": "Command executed"}
     mock_handler.assert_awaited_once_with(command_data, mock_user, mock_request, None, "TestPlayer")
@@ -52,9 +50,7 @@ async def test_process_validated_command_success(command_service, mock_request, 
 async def test_process_validated_command_no_command_type(command_service, mock_request, mock_user):
     """Test process_validated_command handles missing command_type."""
     command_data = {}
-    result = await command_service.process_validated_command(
-        command_data, mock_user, mock_request, None, "TestPlayer"
-    )
+    result = await command_service.process_validated_command(command_data, mock_user, mock_request, None, "TestPlayer")
 
     assert result == {"result": "Invalid command format"}
 
@@ -63,9 +59,7 @@ async def test_process_validated_command_no_command_type(command_service, mock_r
 async def test_process_validated_command_unknown_command(command_service, mock_request, mock_user):
     """Test process_validated_command handles unknown command type."""
     command_data = {"command_type": "unknown_command"}
-    result = await command_service.process_validated_command(
-        command_data, mock_user, mock_request, None, "TestPlayer"
-    )
+    result = await command_service.process_validated_command(command_data, mock_user, mock_request, None, "TestPlayer")
 
     assert result == {"result": "Unknown command: unknown_command"}
 
@@ -77,9 +71,7 @@ async def test_process_validated_command_handler_error(command_service, mock_req
     command_service.command_handlers["test_command"] = mock_handler
 
     command_data = {"command_type": "test_command"}
-    result = await command_service.process_validated_command(
-        command_data, mock_user, mock_request, None, "TestPlayer"
-    )
+    result = await command_service.process_validated_command(command_data, mock_user, mock_request, None, "TestPlayer")
 
     assert "Error processing test_command command" in result["result"]
 
@@ -91,9 +83,7 @@ async def test_process_validated_command_validation_error(command_service, mock_
     command_service.command_handlers["test_command"] = mock_handler
 
     command_data = {"command_type": "test_command"}
-    result = await command_service.process_validated_command(
-        command_data, mock_user, mock_request, None, "TestPlayer"
-    )
+    result = await command_service.process_validated_command(command_data, mock_user, mock_request, None, "TestPlayer")
 
     assert "Error processing test_command command" in result["result"]
 
@@ -366,4 +356,3 @@ async def test_execute_command_handler_returns_non_dict(command_service, mock_re
         await command_service._execute_command_handler(
             mock_handler, command_data, mock_parsed, mock_user, mock_request, None, "TestPlayer", "test"
         )
-

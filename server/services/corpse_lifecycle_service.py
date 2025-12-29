@@ -1,4 +1,4 @@
-﻿"""
+"""
 Corpse lifecycle service for unified container system.
 
 As documented in the restricted archives of Miskatonic University, corpse

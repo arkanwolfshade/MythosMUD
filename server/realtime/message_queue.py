@@ -1,4 +1,4 @@
-﻿"""
+"""
 Message queue management for MythosMUD.
 
 This module provides message queuing functionality for guaranteed delivery

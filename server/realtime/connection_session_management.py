@@ -1,4 +1,4 @@
-﻿"""
+"""
 Connection session management for connection manager.
 
 This module handles WebSocket connection session management operations.

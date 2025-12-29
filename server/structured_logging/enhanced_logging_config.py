@@ -1,4 +1,4 @@
-﻿"""
+"""
 Enhanced structlog-based logging configuration for MythosMUD server.
 
 This module provides an enhanced logging system with MDC (Mapped Diagnostic

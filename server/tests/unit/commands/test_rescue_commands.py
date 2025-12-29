@@ -122,7 +122,9 @@ async def test_handle_ground_command_rescuer_not_found():
     mock_request.app.state = MagicMock(persistence=MagicMock())
     mock_persistence = mock_request.app.state.persistence
     mock_persistence.get_player_by_name = MagicMock(return_value=None)  # Not async
-    result = await handle_ground_command({"target": "OtherPlayer"}, {"username": "TestPlayer"}, mock_request, None, "TestPlayer")
+    result = await handle_ground_command(
+        {"target": "OtherPlayer"}, {"username": "TestPlayer"}, mock_request, None, "TestPlayer"
+    )
     assert "result" in result
     assert "identity drifts" in result["result"].lower() or "bearings" in result["result"].lower()
 
@@ -137,7 +139,9 @@ async def test_handle_ground_command_target_not_found():
     mock_rescuer = MagicMock()
     mock_rescuer.current_room_id = uuid.uuid4()
     mock_persistence.get_player_by_name = MagicMock(side_effect=[mock_rescuer, None])  # Not async
-    result = await handle_ground_command({"target": "OtherPlayer"}, {"username": "TestPlayer"}, mock_request, None, "TestPlayer")
+    result = await handle_ground_command(
+        {"target": "OtherPlayer"}, {"username": "TestPlayer"}, mock_request, None, "TestPlayer"
+    )
     assert "result" in result
     assert "echoes" in result["result"].lower() or "not found" in result["result"].lower()
 
@@ -154,7 +158,9 @@ async def test_handle_ground_command_different_rooms():
     mock_target = MagicMock()
     mock_target.current_room_id = uuid.uuid4()  # Different room
     mock_persistence.get_player_by_name = MagicMock(side_effect=[mock_rescuer, mock_target])  # Not async
-    result = await handle_ground_command({"target": "OtherPlayer"}, {"username": "TestPlayer"}, mock_request, None, "TestPlayer")
+    result = await handle_ground_command(
+        {"target": "OtherPlayer"}, {"username": "TestPlayer"}, mock_request, None, "TestPlayer"
+    )
     assert "result" in result
     assert "not within reach" in result["result"].lower()
 
@@ -171,7 +177,9 @@ async def test_handle_ground_command_no_rescuer_room():
     mock_target = MagicMock()
     mock_target.current_room_id = uuid.uuid4()
     mock_persistence.get_player_by_name = MagicMock(side_effect=[mock_rescuer, mock_target])  # Not async
-    result = await handle_ground_command({"target": "OtherPlayer"}, {"username": "TestPlayer"}, mock_request, None, "TestPlayer")
+    result = await handle_ground_command(
+        {"target": "OtherPlayer"}, {"username": "TestPlayer"}, mock_request, None, "TestPlayer"
+    )
     assert "result" in result
     assert "not within reach" in result["result"].lower()
 
@@ -193,10 +201,14 @@ async def test_handle_ground_command_lucidity_record_not_found():
     mock_session = MagicMock()
     mock_session.get = AsyncMock(return_value=None)
     with patch("server.commands.rescue_commands.get_async_session") as mock_session_factory:
+
         async def session_gen():
             yield mock_session
+
         mock_session_factory.return_value = session_gen()
-        result = await handle_ground_command({"target": "OtherPlayer"}, {"username": "TestPlayer"}, mock_request, None, "TestPlayer")
+        result = await handle_ground_command(
+            {"target": "OtherPlayer"}, {"username": "TestPlayer"}, mock_request, None, "TestPlayer"
+        )
         assert "result" in result
         assert "aura cannot be located" in result["result"].lower() or "lucidity" in result["result"].lower()
 
@@ -220,10 +232,14 @@ async def test_handle_ground_command_not_catatonic():
     mock_session = MagicMock()
     mock_session.get = AsyncMock(return_value=mock_lucidity_record)
     with patch("server.commands.rescue_commands.get_async_session") as mock_session_factory:
+
         async def session_gen():
             yield mock_session
+
         mock_session_factory.return_value = session_gen()
-        result = await handle_ground_command({"target": "OtherPlayer"}, {"username": "TestPlayer"}, mock_request, None, "TestPlayer")
+        result = await handle_ground_command(
+            {"target": "OtherPlayer"}, {"username": "TestPlayer"}, mock_request, None, "TestPlayer"
+        )
         assert "result" in result
         assert "isn't catatonic" in result["result"].lower()
 
@@ -255,10 +271,14 @@ async def test_handle_ground_command_success():
     with patch("server.commands.rescue_commands.get_async_session") as mock_session_factory:
         with patch("server.commands.rescue_commands.LucidityService", return_value=mock_lucidity_service):
             with patch("server.commands.rescue_commands.send_rescue_update_event", new_callable=AsyncMock):
+
                 async def session_gen():
                     yield mock_session
+
                 mock_session_factory.return_value = session_gen()
-                result = await handle_ground_command({"target": "OtherPlayer"}, {"username": "TestPlayer"}, mock_request, None, "TestPlayer")
+                result = await handle_ground_command(
+                    {"target": "OtherPlayer"}, {"username": "TestPlayer"}, mock_request, None, "TestPlayer"
+                )
                 assert "result" in result
                 assert "kneel" in result["result"].lower() or "anchor" in result["result"].lower()
 
@@ -290,10 +310,14 @@ async def test_handle_ground_command_target_player_key():
     with patch("server.commands.rescue_commands.get_async_session") as mock_session_factory:
         with patch("server.commands.rescue_commands.LucidityService", return_value=mock_lucidity_service):
             with patch("server.commands.rescue_commands.send_rescue_update_event", new_callable=AsyncMock):
+
                 async def session_gen():
                     yield mock_session
+
                 mock_session_factory.return_value = session_gen()
-                result = await handle_ground_command({"target_player": "OtherPlayer"}, {"username": "TestPlayer"}, mock_request, None, "TestPlayer")
+                result = await handle_ground_command(
+                    {"target_player": "OtherPlayer"}, {"username": "TestPlayer"}, mock_request, None, "TestPlayer"
+                )
                 assert "result" in result
                 mock_persistence.get_player_by_name.assert_any_call("OtherPlayer")
 
@@ -324,11 +348,14 @@ async def test_handle_ground_command_apply_lucidity_error():
     with patch("server.commands.rescue_commands.get_async_session") as mock_session_factory:
         with patch("server.commands.rescue_commands.LucidityService", return_value=mock_lucidity_service):
             with patch("server.commands.rescue_commands.send_rescue_update_event", new_callable=AsyncMock):
+
                 async def session_gen():
                     yield mock_session
+
                 mock_session_factory.return_value = session_gen()
-                result = await handle_ground_command({"target": "OtherPlayer"}, {"username": "TestPlayer"}, mock_request, None, "TestPlayer")
+                result = await handle_ground_command(
+                    {"target": "OtherPlayer"}, {"username": "TestPlayer"}, mock_request, None, "TestPlayer"
+                )
                 assert "result" in result
                 assert "interference" in result["result"].lower() or "fails" in result["result"].lower()
                 mock_session.rollback.assert_awaited_once()
-

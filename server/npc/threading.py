@@ -1,4 +1,4 @@
-﻿"""
+"""
 NPC threading and message queue infrastructure for MythosMUD.
 
 This module provides the core threading infrastructure for NPCs, including

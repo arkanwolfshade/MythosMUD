@@ -1,4 +1,4 @@
-﻿"""
+"""
 Game mechanics service for MythosMUD server.
 
 This module handles all game mechanics-related business logic including

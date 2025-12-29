@@ -1,4 +1,4 @@
-﻿"""
+"""
 WebSocket message validation for MythosMUD.
 
 This module provides comprehensive validation for incoming WebSocket messages,

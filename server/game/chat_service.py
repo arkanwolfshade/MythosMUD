@@ -1,4 +1,4 @@
-﻿"""
+"""
 Chat service for MythosMUD.
 
 This module provides chat functionality including message handling,

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Exploration service for MythosMUD.
 
 This module provides the ExplorationService class that handles tracking

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Chat logging service for MythosMUD.
 
 This module provides structured logging for chat messages, moderation events,

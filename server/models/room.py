@@ -1,4 +1,4 @@
-﻿"""
+"""
 Room model for MythosMUD.
 
 This module provides the Room class that represents a room in the game world.

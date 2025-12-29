@@ -1,4 +1,4 @@
-﻿"""Equipment service providing equip/unequip helpers built atop inventory logic."""
+"""Equipment service providing equip/unequip helpers built atop inventory logic."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Movement service for MythosMUD.
 
 This module provides the MovementService class that handles atomic movement

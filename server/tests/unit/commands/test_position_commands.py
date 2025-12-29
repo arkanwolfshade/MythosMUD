@@ -9,11 +9,11 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 
 from server.commands.position_commands import (
-    handle_ground_command,
     handle_lie_command,
     handle_sit_command,
     handle_stand_command,
 )
+from server.commands.rescue_commands import handle_ground_command
 
 
 @pytest.mark.asyncio

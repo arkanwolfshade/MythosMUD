@@ -32,4 +32,3 @@ def fakerandom() -> Any:
     random.seed(42)
     yield
     random.seed()
-

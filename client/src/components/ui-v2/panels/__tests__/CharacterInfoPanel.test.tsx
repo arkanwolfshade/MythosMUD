@@ -63,9 +63,7 @@ describe('CharacterInfoPanel', () => {
       },
     };
 
-    render(
-      <CharacterInfoPanel player={player} healthStatus={mockHealthStatus} lucidityStatus={mockLucidityStatus} />
-    );
+    render(<CharacterInfoPanel player={player} healthStatus={mockHealthStatus} lucidityStatus={mockLucidityStatus} />);
     expect(screen.getByText('TestPlayer')).toBeInTheDocument();
   });
 
@@ -81,9 +79,7 @@ describe('CharacterInfoPanel', () => {
       },
     };
 
-    render(
-      <CharacterInfoPanel player={player} healthStatus={mockHealthStatus} lucidityStatus={mockLucidityStatus} />
-    );
+    render(<CharacterInfoPanel player={player} healthStatus={mockHealthStatus} lucidityStatus={mockLucidityStatus} />);
     expect(screen.getByText('Professor')).toBeInTheDocument();
   });
 
@@ -99,9 +95,7 @@ describe('CharacterInfoPanel', () => {
       },
     };
 
-    render(
-      <CharacterInfoPanel player={player} healthStatus={mockHealthStatus} lucidityStatus={mockLucidityStatus} />
-    );
+    render(<CharacterInfoPanel player={player} healthStatus={mockHealthStatus} lucidityStatus={mockLucidityStatus} />);
     expect(screen.getByText('5')).toBeInTheDocument();
   });
 
@@ -118,9 +112,7 @@ describe('CharacterInfoPanel', () => {
       },
     };
 
-    render(
-      <CharacterInfoPanel player={player} healthStatus={mockHealthStatus} lucidityStatus={mockLucidityStatus} />
-    );
+    render(<CharacterInfoPanel player={player} healthStatus={mockHealthStatus} lucidityStatus={mockLucidityStatus} />);
     // Magic points meter should be rendered
     expect(screen.getByText(/Magic Points/i)).toBeInTheDocument();
   });
@@ -136,9 +128,7 @@ describe('CharacterInfoPanel', () => {
       },
     };
 
-    render(
-      <CharacterInfoPanel player={player} healthStatus={mockHealthStatus} lucidityStatus={mockLucidityStatus} />
-    );
+    render(<CharacterInfoPanel player={player} healthStatus={mockHealthStatus} lucidityStatus={mockLucidityStatus} />);
     // Magic points meter should not be rendered
     expect(screen.queryByText(/Magic Points/i)).not.toBeInTheDocument();
   });

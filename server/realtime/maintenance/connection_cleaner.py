@@ -1,4 +1,4 @@
-﻿"""
+"""
 Connection cleanup and maintenance for connection management.
 
 This module provides comprehensive cleanup operations including stale

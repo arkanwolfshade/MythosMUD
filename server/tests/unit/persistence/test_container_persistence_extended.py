@@ -690,3 +690,178 @@ def test_delete_container_database_error():
 
     with pytest.raises(DatabaseError, match="Database error deleting container"):
         delete_container(mock_conn, container_id)
+
+
+def test_update_container_no_updates():
+    """Test update_container with no updates provided (all None)."""
+    container_id = uuid.uuid4()
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+    mock_cursor.fetchone.return_value = None  # No row returned when no updates
+    mock_conn.cursor.return_value = mock_cursor
+
+    # Call with all None (no updates)
+    result = update_container(mock_conn, container_id, items_json=None, lock_state=None, metadata_json=None)
+
+    # Should return None when no updates are provided
+    assert result is None
+    # Should not execute UPDATE query when updates list is empty
+    # The cursor.execute for UPDATE should not be called
+    update_calls = [call for call in mock_cursor.execute.call_args_list if "UPDATE" in str(call)]
+    assert len(update_calls) == 0
+
+
+def test_update_container_uuid_string_conversion():
+    """Test update_container handles UUID to string conversion."""
+    container_id = uuid.uuid4()
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+    mock_cursor.fetchone.return_value = (container_id,)
+    mock_conn.cursor.return_value = mock_cursor
+
+    with patch("server.persistence.container_persistence._fetch_container_items", return_value=[]):
+        with patch("server.persistence.container_persistence.get_container") as mock_get:
+            mock_get.return_value = ContainerData(
+                container_instance_id=container_id,
+                source_type="environment",
+            )
+            update_container(mock_conn, container_id, lock_state="locked")
+
+    # Verify UUID was converted to string in the query
+    assert mock_cursor.execute.called
+    # Check that container_id was converted to string in the query
+    call_args = str(mock_cursor.execute.call_args)
+    assert str(container_id) in call_args
+
+
+def test_delete_container_uuid_string_conversion():
+    """Test delete_container handles UUID to string conversion."""
+    container_id = uuid.uuid4()
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+    mock_cursor.fetchone.return_value = (container_id,)
+    mock_conn.cursor.return_value = mock_cursor
+
+    result = delete_container(mock_conn, container_id)
+
+    assert result is True
+    # Verify UUID was converted to string in the query
+    call_args = str(mock_cursor.execute.call_args)
+    assert str(container_id) in call_args
+
+
+def test_fetch_container_items_uuid_string_conversion():
+    """Test _fetch_container_items handles UUID to string conversion."""
+    container_id = uuid.uuid4()
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+    mock_cursor.fetchall.return_value = []
+    mock_conn.cursor.return_value = mock_cursor
+
+    _fetch_container_items(mock_conn, container_id)
+
+    # Verify UUID was converted to string in the query
+    call_args = str(mock_cursor.execute.call_args)
+    assert str(container_id) in call_args
+
+
+def test_update_container_items_missing_item_instance_id():
+    """Test update_container skips items without item_instance_id or prototype_id."""
+    container_id = uuid.uuid4()
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+    mock_cursor.fetchone.return_value = (container_id,)
+    mock_conn.cursor.return_value = mock_cursor
+
+    # Items without both item_instance_id and prototype_id should be skipped
+    items_json = [
+        {"item_id": "prototype_1"},  # Missing item_instance_id
+        {"item_instance_id": str(uuid.uuid4())},  # Missing prototype_id/item_id
+        {"item_instance_id": str(uuid.uuid4()), "item_id": "prototype_2"},  # Valid
+    ]
+
+    with patch("server.persistence.container_persistence._fetch_container_items", return_value=[]):
+        with patch("server.persistence.container_persistence.get_container") as mock_get:
+            with patch("server.persistence.item_instance_persistence.ensure_item_instance") as mock_ensure:
+                mock_get.return_value = ContainerData(
+                    container_instance_id=container_id,
+                    source_type="environment",
+                )
+                update_container(mock_conn, container_id, items_json=items_json)
+
+    # Only the valid item should trigger ensure_item_instance
+    # The first two should be skipped (missing required fields)
+    assert mock_ensure.call_count == 1  # Only one valid item
+
+
+def test_update_container_items_only_prototype_id():
+    """Test update_container handles items with only prototype_id (no item_instance_id)."""
+    container_id = uuid.uuid4()
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+    mock_cursor.fetchone.return_value = (container_id,)
+    mock_conn.cursor.return_value = mock_cursor
+
+    # Item with only prototype_id (no item_instance_id) should be skipped
+    items_json = [{"prototype_id": "prototype_1"}]  # Missing item_instance_id
+
+    with patch("server.persistence.container_persistence._fetch_container_items", return_value=[]):
+        with patch("server.persistence.container_persistence.get_container") as mock_get:
+            with patch("server.persistence.item_instance_persistence.ensure_item_instance") as mock_ensure:
+                mock_get.return_value = ContainerData(
+                    container_instance_id=container_id,
+                    source_type="environment",
+                )
+                update_container(mock_conn, container_id, items_json=items_json)
+
+    # Item should be skipped (missing item_instance_id)
+    assert mock_ensure.call_count == 0
+
+
+def test_create_container_uuid_string_conversion():
+    """Test create_container handles UUID to string conversion for container_id."""
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+    container_id = uuid.uuid4()
+    mock_cursor.fetchone.return_value = {
+        "container_instance_id": container_id,
+        "source_type": "environment",
+        "owner_id": None,
+        "room_id": "test_room",
+        "entity_id": None,
+        "lock_state": "unlocked",
+        "capacity_slots": 20,
+        "weight_limit": None,
+        "decay_at": None,
+        "allowed_roles": [],
+        "metadata_json": {},
+        "created_at": datetime.now(UTC),
+        "updated_at": datetime.now(UTC),
+        "container_item_instance_id": None,
+    }
+    mock_conn.cursor.return_value = mock_cursor
+
+    # Test with items_json that have item_instance_id as UUID
+    item_id = uuid.uuid4()
+    items_json = [{"item_instance_id": item_id}]
+
+    with patch("server.persistence.container_persistence.get_container") as mock_get:
+        mock_get.return_value = ContainerData(
+            container_instance_id=container_id,
+            source_type="environment",
+            room_id="test_room",
+        )
+        result = create_container(
+            mock_conn,
+            source_type="environment",
+            room_id="test_room",
+            items_json=items_json,
+        )
+
+    # Verify UUIDs were handled correctly
+    assert isinstance(result, ContainerData)
+    # Check that UUID was converted to string in stored procedure calls
+    stored_proc_calls = [call for call in mock_cursor.execute.call_args_list if "add_item_to_container" in str(call)]
+    if stored_proc_calls:
+        call_str = str(stored_proc_calls[0])
+        assert str(item_id) in call_str or item_id in call_str

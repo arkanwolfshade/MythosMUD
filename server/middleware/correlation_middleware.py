@@ -1,4 +1,4 @@
-﻿"""
+"""
 Correlation middleware for request tracing and logging context.
 
 This middleware ensures that all requests have proper correlation IDs and

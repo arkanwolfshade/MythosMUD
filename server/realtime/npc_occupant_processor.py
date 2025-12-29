@@ -1,4 +1,4 @@
-﻿"""
+"""
 NPC occupant processing utilities.
 
 This module handles querying and processing NPC occupants for rooms.

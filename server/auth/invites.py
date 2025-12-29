@@ -1,4 +1,4 @@
-﻿"""
+"""
 Invite management system for MythosMUD.
 
 This module handles the invite-only registration system,

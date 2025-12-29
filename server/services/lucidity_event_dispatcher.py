@@ -1,4 +1,4 @@
-﻿"""Helpers for broadcasting lucidity-related SSE events."""
+"""Helpers for broadcasting lucidity-related SSE events."""
 
 from __future__ import annotations
 

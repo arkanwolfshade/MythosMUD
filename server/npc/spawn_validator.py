@@ -1,4 +1,4 @@
-﻿"""
+"""
 Spawn Validator Module.
 
 This module provides logic for validating whether NPCs should spawn based on

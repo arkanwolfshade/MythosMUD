@@ -1,4 +1,4 @@
-﻿"""
+"""
 Player management API endpoints for MythosMUD server.
 
 This module handles basic player CRUD operations and multi-character management.

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Look command for MythosMUD.
 
 This module handles the look command for examining surroundings.

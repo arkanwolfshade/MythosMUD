@@ -1,4 +1,4 @@
-﻿"""
+"""
 Room subscription management for MythosMUD.
 
 This module provides room subscription functionality for tracking

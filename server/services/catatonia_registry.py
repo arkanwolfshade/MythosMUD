@@ -1,4 +1,4 @@
-﻿"""In-memory registry tracking catatonic investigators."""
+"""In-memory registry tracking catatonic investigators."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-﻿"""
+"""
 NATS Subject Management API Controller for MythosMUD.
 
 This module provides REST API endpoints for managing and monitoring NATS subject patterns.

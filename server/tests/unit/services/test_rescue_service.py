@@ -190,7 +190,7 @@ async def test_rescue_success(
     mock_lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
     result = await rescue_service.rescue("target", {"username": "rescuer"})
     assert "rushes to rescue" in result["result"]
-    assert result["new_lcd"] == 1.0
+    assert float(result["new_lcd"]) == 1.0
     mock_lucidity_service.apply_lucidity_adjustment.assert_awaited_once()
     mock_event_dispatcher.assert_awaited()
 

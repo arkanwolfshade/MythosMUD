@@ -156,6 +156,4 @@ class TestNPCCombatRewards:
 
         await rewards_service.award_xp_to_killer(killer_id, npc_id, xp_reward)
 
-        rewards_service._game_mechanics.gain_experience.assert_called_once_with(
-            killer_id, 0, f"killed_{npc_id}"
-        )
+        rewards_service._game_mechanics.gain_experience.assert_called_once_with(killer_id, 0, f"killed_{npc_id}")

@@ -1,4 +1,4 @@
-﻿"""
+"""
 NPC Combat Rewards Management.
 
 This module handles XP calculation and rewards for NPC combat,

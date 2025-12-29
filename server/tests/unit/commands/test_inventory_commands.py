@@ -266,7 +266,17 @@ async def test_handle_pickup_command_inventory_capacity_error():
     mock_player.player_id = uuid.uuid4()
     mock_player.current_room_id = "room_001"
     # Fill inventory to capacity to trigger capacity error
-    full_inventory = [{"item_name": f"item_{i}", "item_id": f"item_{i}", "item_instance_id": str(uuid.uuid4()), "prototype_id": f"proto_{i}", "slot_type": "inventory", "quantity": 1} for i in range(20)]
+    full_inventory = [
+        {
+            "item_name": f"item_{i}",
+            "item_id": f"item_{i}",
+            "item_instance_id": str(uuid.uuid4()),
+            "prototype_id": f"proto_{i}",
+            "slot_type": "inventory",
+            "quantity": 1,
+        }
+        for i in range(20)
+    ]
     mock_player.get_inventory = MagicMock(return_value=full_inventory)
     mock_player.set_inventory = MagicMock()
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
@@ -283,11 +293,13 @@ async def test_handle_pickup_command_inventory_capacity_error():
 
         mock_inventory_service = InventoryService()
         mock_get_services.return_value = (mock_inventory_service, MagicMock(), MagicMock())
-        result = await handle_pickup_command(
-            {"index": 1}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer"
-        )
+        result = await handle_pickup_command({"index": 1}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
         assert "result" in result
-        assert "cannot pick" in result["result"].lower() or "full" in result["result"].lower() or "capacity" in result["result"].lower()
+        assert (
+            "cannot pick" in result["result"].lower()
+            or "full" in result["result"].lower()
+            or "capacity" in result["result"].lower()
+        )
         mock_room_manager.add_room_drop.assert_called_once()
 
 

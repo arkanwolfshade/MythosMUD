@@ -1,4 +1,4 @@
-﻿"""
+"""
 NPC Combat UUID Mapping Management.
 
 This module handles UUID-to-string ID and UUID-to-XP mappings for NPC combat,

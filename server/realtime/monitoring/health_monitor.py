@@ -1,4 +1,4 @@
-﻿"""
+"""
 Health monitoring for connection management.
 
 This module provides comprehensive connection health checking including

@@ -1,4 +1,4 @@
-﻿"""
+"""
 WebSocket initial state preparation for MythosMUD real-time communication.
 
 This module handles sending initial game state to connecting players.

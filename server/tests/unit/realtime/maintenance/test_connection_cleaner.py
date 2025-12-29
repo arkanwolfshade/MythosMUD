@@ -175,11 +175,14 @@ def test_cleanup_ghost_players(connection_cleaner, mock_room_manager):
 async def test_force_cleanup(connection_cleaner):
     """Test force_cleanup() performs forced cleanup."""
     cleanup_stats = {"cleanups_performed": 0}
+
     # force_cleanup takes (cleanup_stats, cleanup_orphaned_data_callback, prune_stale_players_callback)
     async def cleanup_orphaned_callback():
         pass
+
     def prune_callback(max_age):
         pass
+
     await connection_cleaner.force_cleanup(cleanup_stats, cleanup_orphaned_callback, prune_callback)
     # Should not raise
     assert True  # If we get here, it succeeded
@@ -199,7 +202,13 @@ async def test_check_and_cleanup(connection_cleaner):
     connection_cleaner.memory_monitor.max_connection_age = 300.0
     # check_and_cleanup takes (online_players, last_seen, player_websockets, active_websockets, connection_timestamps, cleanup_stats, last_active_update_times)
     await connection_cleaner.check_and_cleanup(
-        online_players, last_seen, player_websockets, active_websockets, connection_timestamps, cleanup_stats, last_active_update_times
+        online_players,
+        last_seen,
+        player_websockets,
+        active_websockets,
+        connection_timestamps,
+        cleanup_stats,
+        last_active_update_times,
     )
     # Should not raise
     assert True  # If we get here, it succeeded

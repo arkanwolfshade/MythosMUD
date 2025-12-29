@@ -274,6 +274,7 @@ def test_initialize_database_uses_module_level_url():
 
     # Set module-level URL
     import server.database as db_module
+
     db_module._database_url = "postgresql+asyncpg://test:test@localhost/test"
 
     try:
@@ -477,6 +478,7 @@ async def test_close_handles_no_running_loop():
                 # Mock wait_for to call the dispose function
                 async def mock_wait_for(coro, timeout):
                     await coro
+
                 mock_wait.side_effect = mock_wait_for
 
                 await manager.close()
@@ -528,8 +530,10 @@ async def test_close_handles_runtime_error_during_dispose():
     with patch("asyncio.get_running_loop", return_value=mock_loop):
         with patch("asyncio.sleep", new_callable=AsyncMock):
             with patch("asyncio.wait_for", new_callable=AsyncMock) as mock_wait:
+
                 async def mock_wait_for(coro, timeout):
                     await coro
+
                 mock_wait.side_effect = mock_wait_for
 
                 # Should not raise, just log and reset state
@@ -556,8 +560,10 @@ async def test_close_handles_attribute_error_during_dispose():
     with patch("asyncio.get_running_loop", return_value=mock_loop):
         with patch("asyncio.sleep", new_callable=AsyncMock):
             with patch("asyncio.wait_for", new_callable=AsyncMock) as mock_wait:
+
                 async def mock_wait_for(coro, timeout):
                     await coro
+
                 mock_wait.side_effect = mock_wait_for
 
                 # Should not raise, just log and reset state
@@ -584,8 +590,10 @@ async def test_close_handles_generic_exception_during_dispose():
     with patch("asyncio.get_running_loop", return_value=mock_loop):
         with patch("asyncio.sleep", new_callable=AsyncMock):
             with patch("asyncio.wait_for", new_callable=AsyncMock) as mock_wait:
+
                 async def mock_wait_for(coro, timeout):
                     await coro
+
                 mock_wait.side_effect = mock_wait_for
 
                 # Should not raise, just log and reset state
@@ -609,9 +617,9 @@ def test_reset_database_resets_singleton():
 def test_reset_database_resets_module_url():
     """Test reset_database resets module-level _database_url."""
     import server.database as db_module
+
     db_module._database_url = "test_url"
 
     reset_database()
 
     assert db_module._database_url is None
-

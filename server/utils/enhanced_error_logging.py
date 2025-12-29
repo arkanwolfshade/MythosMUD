@@ -1,4 +1,4 @@
-﻿"""
+"""
 Enhanced error logging utilities with structured logging and context management.
 
 This module provides enhanced error logging functions that use proper structured

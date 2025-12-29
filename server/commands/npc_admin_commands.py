@@ -1,4 +1,4 @@
-﻿"""
+"""
 NPC Admin Commands for MythosMUD.
 
 This module provides administrative slash commands for managing NPCs,

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Command parser for MythosMUD using Click for parsing and Pydantic for validation.
 
 This module provides secure command parsing and validation to prevent command

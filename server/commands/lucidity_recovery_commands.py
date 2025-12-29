@@ -1,4 +1,4 @@
-﻿"""Recovery rituals that steady a mind frayed by eldritch exposure."""
+"""Recovery rituals that steady a mind frayed by eldritch exposure."""
 
 from __future__ import annotations
 

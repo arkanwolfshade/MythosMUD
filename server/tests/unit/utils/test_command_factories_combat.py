@@ -4,7 +4,6 @@ Unit tests for combat command factories.
 Tests the CombatCommandFactory class methods.
 """
 
-
 from server.utils.command_factories_combat import CombatCommandFactory
 
 

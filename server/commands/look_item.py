@@ -1,4 +1,4 @@
-﻿"""
+"""
 Item look functionality for MythosMUD.
 
 This module handles looking at items, including finding items in various locations

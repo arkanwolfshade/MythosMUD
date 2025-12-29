@@ -1,4 +1,4 @@
-﻿"""
+"""
 Logout and quit command handlers for MythosMUD.
 
 This module contains handlers for quit and logout commands.

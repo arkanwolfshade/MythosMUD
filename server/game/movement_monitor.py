@@ -1,4 +1,4 @@
-﻿"""
+"""
 Movement monitoring and validation system for MythosMUD.
 
 This module provides comprehensive monitoring, validation, and logging

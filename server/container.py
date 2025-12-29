@@ -1,4 +1,4 @@
-﻿"""
+"""
 Dependency Injection Container for MythosMUD.
 
 This module implements the Application Container pattern to manage all service

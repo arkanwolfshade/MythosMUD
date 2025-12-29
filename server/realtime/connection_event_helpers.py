@@ -1,4 +1,4 @@
-﻿"""
+"""
 Event subscription helpers for connection manager.
 
 This module provides helper functions for event subscription operations.

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Player service for MythosMUD server.
 
 This module handles all player-related business logic including

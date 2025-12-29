@@ -1,4 +1,4 @@
-﻿"""Application shutdown logic.
+"""Application shutdown logic.
 
 This module handles graceful shutdown of all services in the MythosMUD server.
 """

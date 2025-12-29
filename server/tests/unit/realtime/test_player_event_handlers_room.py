@@ -167,7 +167,9 @@ async def test_broadcast_player_entered_message(player_room_event_handler, mock_
     exclude_player_id = "player_001"
     mock_connection_manager.broadcast_to_room = AsyncMock()
     await player_room_event_handler.broadcast_player_entered_message(message, room_id_str, exclude_player_id)
-    mock_connection_manager.broadcast_to_room.assert_awaited_once_with(room_id_str, message, exclude_player=exclude_player_id)
+    mock_connection_manager.broadcast_to_room.assert_awaited_once_with(
+        room_id_str, message, exclude_player=exclude_player_id
+    )
 
 
 @pytest.mark.asyncio
@@ -226,7 +228,9 @@ async def test_prepare_room_data_with_to_dict(player_room_event_handler, mock_co
     """Test _prepare_room_data() prepares room data with to_dict."""
     mock_room = MagicMock()
     mock_room.to_dict.return_value = {"id": "room_001", "name": "Test Room", "players": ["player1"]}
-    mock_connection_manager.convert_room_players_uuids_to_names = AsyncMock(return_value={"id": "room_001", "name": "Test Room"})
+    mock_connection_manager.convert_room_players_uuids_to_names = AsyncMock(
+        return_value={"id": "room_001", "name": "Test Room"}
+    )
     result = await player_room_event_handler._prepare_room_data(mock_room, "room_001")
     assert "players" not in result
     assert "npcs" not in result
@@ -237,13 +241,17 @@ async def test_prepare_room_data_with_to_dict(player_room_event_handler, mock_co
 async def test_prepare_room_data_without_to_dict(player_room_event_handler, mock_connection_manager):
     """Test _prepare_room_data() handles room without to_dict method."""
     mock_room = {"id": "room_001", "name": "Test Room", "players": ["player1"]}
-    mock_connection_manager.convert_room_players_uuids_to_names = AsyncMock(return_value={"id": "room_001", "name": "Test Room"})
+    mock_connection_manager.convert_room_players_uuids_to_names = AsyncMock(
+        return_value={"id": "room_001", "name": "Test Room"}
+    )
     result = await player_room_event_handler._prepare_room_data(mock_room, "room_001")
     assert "players" not in result
 
 
 @pytest.mark.asyncio
-async def test_send_room_update_to_player_success(player_room_event_handler, mock_connection_manager, mock_occupant_manager):
+async def test_send_room_update_to_player_success(
+    player_room_event_handler, mock_connection_manager, mock_occupant_manager
+):
     """Test send_room_update_to_player() successfully sends room update."""
     player_id = uuid.uuid4()
     room_id = "room_001"
@@ -252,11 +260,15 @@ async def test_send_room_update_to_player_success(player_room_event_handler, moc
     mock_room.to_dict.return_value = {"id": room_id, "name": "Test Room"}
     mock_connection_manager.async_persistence = MagicMock()
     mock_connection_manager.async_persistence.get_room_by_id = MagicMock(return_value=mock_room)
-    mock_connection_manager.convert_room_players_uuids_to_names = AsyncMock(return_value={"id": room_id, "name": "Test Room"})
+    mock_connection_manager.convert_room_players_uuids_to_names = AsyncMock(
+        return_value={"id": room_id, "name": "Test Room"}
+    )
     mock_connection_manager.send_personal_message = AsyncMock()
     mock_occupant_manager.get_room_occupants = AsyncMock(return_value=[])
     with patch.object(player_room_event_handler.utils, "extract_occupant_names", return_value=[]):
-        player_room_event_handler.message_builder.build_room_update_message = MagicMock(return_value={"type": "room_update"})
+        player_room_event_handler.message_builder.build_room_update_message = MagicMock(
+            return_value={"type": "room_update"}
+        )
         await player_room_event_handler.send_room_update_to_player(player_id, room_id)
         mock_connection_manager.send_personal_message.assert_awaited()
 
@@ -282,7 +294,9 @@ async def test_send_room_update_to_player_room_not_found(player_room_event_handl
 
 
 @pytest.mark.asyncio
-async def test_send_room_update_to_player_error_handling(player_room_event_handler, mock_connection_manager, mock_logger):
+async def test_send_room_update_to_player_error_handling(
+    player_room_event_handler, mock_connection_manager, mock_logger
+):
     """Test send_room_update_to_player() handles errors."""
     player_id = uuid.uuid4()
     room_id = "room_001"
@@ -319,27 +333,39 @@ async def test_query_room_occupants_snapshot(player_room_event_handler, mock_occ
 
 
 @pytest.mark.asyncio
-async def test_send_occupants_snapshot_to_player_success(player_room_event_handler, mock_connection_manager, mock_occupant_manager):
+async def test_send_occupants_snapshot_to_player_success(
+    player_room_event_handler, mock_connection_manager, mock_occupant_manager
+):
     """Test send_occupants_snapshot_to_player() successfully sends snapshot."""
     player_id = uuid.uuid4()
     room_id = "room_001"
     mock_occupants = [{"player_name": "Player1"}]
     mock_occupant_manager.get_room_occupants = AsyncMock(return_value=mock_occupants)
     mock_connection_manager.send_personal_message = AsyncMock()
-    with patch.object(player_room_event_handler.utils, "build_occupants_snapshot_data", return_value={"players": ["Player1"], "npcs": [], "occupants": ["Player1"], "count": 1}):
+    with patch.object(
+        player_room_event_handler.utils,
+        "build_occupants_snapshot_data",
+        return_value={"players": ["Player1"], "npcs": [], "occupants": ["Player1"], "count": 1},
+    ):
         await player_room_event_handler.send_occupants_snapshot_to_player(player_id, room_id)
         mock_connection_manager.send_personal_message.assert_awaited_once()
 
 
 @pytest.mark.asyncio
-async def test_send_occupants_snapshot_to_player_string_id(player_room_event_handler, mock_connection_manager, mock_occupant_manager):
+async def test_send_occupants_snapshot_to_player_string_id(
+    player_room_event_handler, mock_connection_manager, mock_occupant_manager
+):
     """Test send_occupants_snapshot_to_player() handles string player_id."""
     player_id_str = str(uuid.uuid4())
     room_id = "room_001"
     mock_occupants = []
     mock_occupant_manager.get_room_occupants = AsyncMock(return_value=mock_occupants)
     mock_connection_manager.send_personal_message = AsyncMock()
-    with patch.object(player_room_event_handler.utils, "build_occupants_snapshot_data", return_value={"players": [], "npcs": [], "occupants": [], "count": 0}):
+    with patch.object(
+        player_room_event_handler.utils,
+        "build_occupants_snapshot_data",
+        return_value={"players": [], "npcs": [], "occupants": [], "count": 0},
+    ):
         await player_room_event_handler.send_occupants_snapshot_to_player(player_id_str, room_id)
         mock_connection_manager.send_personal_message.assert_awaited_once()
 
@@ -353,7 +379,9 @@ async def test_send_occupants_snapshot_to_player_no_connection_manager(player_ro
 
 
 @pytest.mark.asyncio
-async def test_send_occupants_snapshot_to_player_error_handling(player_room_event_handler, mock_connection_manager, mock_occupant_manager, mock_logger):
+async def test_send_occupants_snapshot_to_player_error_handling(
+    player_room_event_handler, mock_connection_manager, mock_occupant_manager, mock_logger
+):
     """Test send_occupants_snapshot_to_player() handles errors."""
     player_id = uuid.uuid4()
     room_id = "room_001"
@@ -411,8 +439,15 @@ async def test_process_player_entered_event_success(player_room_event_handler):
     room_id = "room_001"
     event = PlayerEnteredRoom(player_id=str(player_id), room_id=room_id)
     mock_player = MagicMock()
-    with patch.object(player_room_event_handler.utils, "get_player_info", new_callable=AsyncMock, return_value=(mock_player, "TestPlayer")):
-        with patch.object(player_room_event_handler.utils, "normalize_event_ids", return_value=(str(player_id), room_id)):
+    with patch.object(
+        player_room_event_handler.utils,
+        "get_player_info",
+        new_callable=AsyncMock,
+        return_value=(mock_player, "TestPlayer"),
+    ):
+        with patch.object(
+            player_room_event_handler.utils, "normalize_event_ids", return_value=(str(player_id), room_id)
+        ):
             result = await player_room_event_handler._process_player_entered_event(event)
             assert result is not None
             player_name, exclude_player_id, room_id_str = result
@@ -436,7 +471,12 @@ async def test_process_player_entered_event_no_room_id(player_room_event_handler
     player_id = uuid.uuid4()
     event = PlayerEnteredRoom(player_id=str(player_id), room_id="room_001")
     mock_player = MagicMock()
-    with patch.object(player_room_event_handler.utils, "get_player_info", new_callable=AsyncMock, return_value=(mock_player, "TestPlayer")):
+    with patch.object(
+        player_room_event_handler.utils,
+        "get_player_info",
+        new_callable=AsyncMock,
+        return_value=(mock_player, "TestPlayer"),
+    ):
         with patch.object(player_room_event_handler.utils, "normalize_event_ids", return_value=(str(player_id), None)):
             result = await player_room_event_handler._process_player_entered_event(event)
             assert result is None
@@ -444,7 +484,9 @@ async def test_process_player_entered_event_no_room_id(player_room_event_handler
 
 
 @pytest.mark.asyncio
-async def test_handle_player_entered_success(player_room_event_handler, mock_connection_manager, mock_room_sync_service):
+async def test_handle_player_entered_success(
+    player_room_event_handler, mock_connection_manager, mock_room_sync_service
+):
     """Test handle_player_entered() successfully handles event."""
     player_id = uuid.uuid4()
     room_id = "room_001"
@@ -453,13 +495,22 @@ async def test_handle_player_entered_success(player_room_event_handler, mock_con
     mock_room_sync_service.process_event_with_ordering.return_value = processed_event
     mock_player = MagicMock()
     player_room_event_handler.log_player_movement = AsyncMock()
-    player_room_event_handler.message_builder.create_player_entered_message = MagicMock(return_value={"type": "player_entered"})
+    player_room_event_handler.message_builder.create_player_entered_message = MagicMock(
+        return_value={"type": "player_entered"}
+    )
     player_room_event_handler.broadcast_player_entered_message = AsyncMock()
     player_room_event_handler.subscribe_player_to_room = AsyncMock()
     player_room_event_handler.send_room_updates_to_entering_player = AsyncMock()
     send_occupants_update = AsyncMock()
-    with patch.object(player_room_event_handler.utils, "get_player_info", new_callable=AsyncMock, return_value=(mock_player, "TestPlayer")):
-        with patch.object(player_room_event_handler.utils, "normalize_event_ids", return_value=(str(player_id), room_id)):
+    with patch.object(
+        player_room_event_handler.utils,
+        "get_player_info",
+        new_callable=AsyncMock,
+        return_value=(mock_player, "TestPlayer"),
+    ):
+        with patch.object(
+            player_room_event_handler.utils, "normalize_event_ids", return_value=(str(player_id), room_id)
+        ):
             await player_room_event_handler.handle_player_entered(event, send_occupants_update)
             player_room_event_handler.broadcast_player_entered_message.assert_awaited_once()
             player_room_event_handler.subscribe_player_to_room.assert_awaited_once()
@@ -476,7 +527,9 @@ async def test_handle_player_entered_no_connection_manager(player_room_event_han
 
 
 @pytest.mark.asyncio
-async def test_handle_player_entered_no_player_info(player_room_event_handler, mock_connection_manager, mock_room_sync_service):
+async def test_handle_player_entered_no_player_info(
+    player_room_event_handler, mock_connection_manager, mock_room_sync_service
+):
     """Test handle_player_entered() handles player not found."""
     event = PlayerEnteredRoom(player_id=str(uuid.uuid4()), room_id="room_001")
     processed_event = PlayerEnteredRoom(player_id=str(uuid.uuid4()), room_id="room_001")
@@ -488,7 +541,9 @@ async def test_handle_player_entered_no_player_info(player_room_event_handler, m
 
 
 @pytest.mark.asyncio
-async def test_handle_player_entered_error_handling(player_room_event_handler, mock_connection_manager, mock_room_sync_service, mock_logger):
+async def test_handle_player_entered_error_handling(
+    player_room_event_handler, mock_connection_manager, mock_room_sync_service, mock_logger
+):
     """Test handle_player_entered() handles errors."""
     event = PlayerEnteredRoom(player_id=str(uuid.uuid4()), room_id="room_001")
     mock_room_sync_service.process_event_with_ordering.side_effect = ValueError("Error")
@@ -530,8 +585,12 @@ async def test_broadcast_player_left_message_not_disconnecting(player_room_event
     room_id_str = "room_001"
     exclude_player_id = "player_001"
     mock_connection_manager.broadcast_to_room = AsyncMock()
-    await player_room_event_handler.broadcast_player_left_message(message, room_id_str, exclude_player_id, is_disconnecting=False)
-    mock_connection_manager.broadcast_to_room.assert_awaited_once_with(room_id_str, message, exclude_player=exclude_player_id)
+    await player_room_event_handler.broadcast_player_left_message(
+        message, room_id_str, exclude_player_id, is_disconnecting=False
+    )
+    mock_connection_manager.broadcast_to_room.assert_awaited_once_with(
+        room_id_str, message, exclude_player=exclude_player_id
+    )
 
 
 @pytest.mark.asyncio
@@ -541,7 +600,9 @@ async def test_broadcast_player_left_message_disconnecting(player_room_event_han
     room_id_str = "room_001"
     exclude_player_id = "player_001"
     mock_connection_manager.broadcast_to_room = AsyncMock()
-    await player_room_event_handler.broadcast_player_left_message(message, room_id_str, exclude_player_id, is_disconnecting=True)
+    await player_room_event_handler.broadcast_player_left_message(
+        message, room_id_str, exclude_player_id, is_disconnecting=True
+    )
     mock_connection_manager.broadcast_to_room.assert_not_called()
 
 
@@ -564,11 +625,18 @@ async def test_handle_player_left_success(player_room_event_handler, mock_connec
     mock_room_sync_service.process_event_with_ordering.return_value = processed_event
     mock_player = MagicMock()
     player_room_event_handler.log_player_movement = AsyncMock()
-    player_room_event_handler.message_builder.create_player_left_message = MagicMock(return_value={"type": "player_left"})
+    player_room_event_handler.message_builder.create_player_left_message = MagicMock(
+        return_value={"type": "player_left"}
+    )
     player_room_event_handler.broadcast_player_left_message = AsyncMock()
     player_room_event_handler.unsubscribe_player_from_room = AsyncMock()
     send_occupants_update = AsyncMock()
-    with patch.object(player_room_event_handler.utils, "get_player_info", new_callable=AsyncMock, return_value=(mock_player, "TestPlayer")):
+    with patch.object(
+        player_room_event_handler.utils,
+        "get_player_info",
+        new_callable=AsyncMock,
+        return_value=(mock_player, "TestPlayer"),
+    ):
         with patch.object(player_room_event_handler.utils, "is_player_disconnecting", return_value=False):
             await player_room_event_handler.handle_player_left(event, send_occupants_update)
             player_room_event_handler.broadcast_player_left_message.assert_awaited_once()
@@ -587,7 +655,9 @@ async def test_handle_player_left_no_connection_manager(player_room_event_handle
 
 
 @pytest.mark.asyncio
-async def test_handle_player_left_no_player_info(player_room_event_handler, mock_connection_manager, mock_room_sync_service):
+async def test_handle_player_left_no_player_info(
+    player_room_event_handler, mock_connection_manager, mock_room_sync_service
+):
     """Test handle_player_left() handles player not found."""
     event = PlayerLeftRoom(player_id=str(uuid.uuid4()), room_id="room_001")
     processed_event = PlayerLeftRoom(player_id=str(uuid.uuid4()), room_id="room_001")
@@ -600,7 +670,9 @@ async def test_handle_player_left_no_player_info(player_room_event_handler, mock
 
 
 @pytest.mark.asyncio
-async def test_handle_player_left_disconnecting(player_room_event_handler, mock_connection_manager, mock_room_sync_service):
+async def test_handle_player_left_disconnecting(
+    player_room_event_handler, mock_connection_manager, mock_room_sync_service
+):
     """Test handle_player_left() skips broadcast when player is disconnecting."""
     player_id = uuid.uuid4()
     room_id = "room_001"
@@ -609,11 +681,18 @@ async def test_handle_player_left_disconnecting(player_room_event_handler, mock_
     mock_room_sync_service.process_event_with_ordering.return_value = processed_event
     mock_player = MagicMock()
     player_room_event_handler.log_player_movement = AsyncMock()
-    player_room_event_handler.message_builder.create_player_left_message = MagicMock(return_value={"type": "player_left"})
+    player_room_event_handler.message_builder.create_player_left_message = MagicMock(
+        return_value={"type": "player_left"}
+    )
     player_room_event_handler.broadcast_player_left_message = AsyncMock()
     player_room_event_handler.unsubscribe_player_from_room = AsyncMock()
     send_occupants_update = AsyncMock()
-    with patch.object(player_room_event_handler.utils, "get_player_info", new_callable=AsyncMock, return_value=(mock_player, "TestPlayer")):
+    with patch.object(
+        player_room_event_handler.utils,
+        "get_player_info",
+        new_callable=AsyncMock,
+        return_value=(mock_player, "TestPlayer"),
+    ):
         with patch.object(player_room_event_handler.utils, "is_player_disconnecting", return_value=True):
             await player_room_event_handler.handle_player_left(event, send_occupants_update)
             # Should still call broadcast_player_left_message, but with is_disconnecting=True
@@ -622,7 +701,9 @@ async def test_handle_player_left_disconnecting(player_room_event_handler, mock_
 
 
 @pytest.mark.asyncio
-async def test_handle_player_left_error_handling(player_room_event_handler, mock_connection_manager, mock_room_sync_service, mock_logger):
+async def test_handle_player_left_error_handling(
+    player_room_event_handler, mock_connection_manager, mock_room_sync_service, mock_logger
+):
     """Test handle_player_left() handles errors."""
     event = PlayerLeftRoom(player_id=str(uuid.uuid4()), room_id="room_001")
     mock_room_sync_service.process_event_with_ordering.side_effect = SQLAlchemyError("Database error")

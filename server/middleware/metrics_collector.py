@@ -1,4 +1,4 @@
-﻿"""
+"""
 Metrics collection for NATS message delivery.
 
 Collects and exposes metrics for monitoring message delivery,

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Inventory command factory methods.
 
 This module contains factory methods for inventory and item management commands:

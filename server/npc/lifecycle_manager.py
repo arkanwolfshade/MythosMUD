@@ -1,4 +1,4 @@
-﻿"""
+"""
 NPC Lifecycle Management System for MythosMUD.
 
 This module implements comprehensive NPC lifecycle management including

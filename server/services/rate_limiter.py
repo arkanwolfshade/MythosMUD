@@ -1,4 +1,4 @@
-﻿"""
+"""
 Rate limiting service for MythosMUD chat system.
 
 This module provides sliding window rate limiting for chat channels,

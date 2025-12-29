@@ -1,4 +1,4 @@
-﻿"""
+"""
 Base API router and common dependencies for MythosMUD server.
 
 This module provides the base router and common dependencies

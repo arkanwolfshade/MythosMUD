@@ -40,12 +40,15 @@ def test_security_headers_middleware_init(mock_app):
 
 def test_security_headers_middleware_init_with_env_vars(mock_app):
     """Test SecurityHeadersMiddleware initialization with environment variables."""
-    with patch.dict(os.environ, {
-        "HSTS_MAX_AGE": "63072000",
-        "HSTS_INCLUDE_SUBDOMAINS": "false",
-        "CSP_POLICY": "default-src 'none'",
-        "REFERRER_POLICY": "no-referrer",
-    }):
+    with patch.dict(
+        os.environ,
+        {
+            "HSTS_MAX_AGE": "63072000",
+            "HSTS_INCLUDE_SUBDOMAINS": "false",
+            "CSP_POLICY": "default-src 'none'",
+            "REFERRER_POLICY": "no-referrer",
+        },
+    ):
         middleware = SecurityHeadersMiddleware(mock_app)
 
         assert middleware.hsts_max_age == 63072000

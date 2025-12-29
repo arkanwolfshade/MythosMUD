@@ -1,4 +1,4 @@
-﻿"""
+"""
 Delegation helpers for connection manager.
 
 This module provides helper functions that delegate to specialized

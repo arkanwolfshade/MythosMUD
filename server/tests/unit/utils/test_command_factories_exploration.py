@@ -26,6 +26,7 @@ def test_create_go_command_no_args():
 def test_create_go_command_invalid_direction():
     """Test create_go_command() raises error with invalid direction."""
     from pydantic import ValidationError as PydanticValidationError
+
     # Pydantic raises its own ValidationError for enum validation
     with pytest.raises(PydanticValidationError):
         ExplorationCommandFactory.create_go_command(["invalid"])

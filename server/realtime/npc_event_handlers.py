@@ -1,4 +1,4 @@
-﻿"""
+"""
 NPC event handlers for real-time communication.
 
 This module handles all NPC-related events (entered, left).

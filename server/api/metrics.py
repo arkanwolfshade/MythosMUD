@@ -1,4 +1,4 @@
-﻿"""
+"""
 Metrics API endpoint for monitoring NATS message delivery.
 
 Provides metrics about message processing, failures, retries,

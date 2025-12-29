@@ -1,4 +1,4 @@
-﻿"""
+"""
 Behavior engine for NPCs.
 
 This module provides the deterministic behavior engine that evaluates rules

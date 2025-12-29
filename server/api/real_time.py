@@ -1,4 +1,4 @@
-﻿"""
+"""
 Real-time communication API endpoints for MythosMUD server.
 
 This module handles WebSocket connections for real-time game communication.

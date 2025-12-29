@@ -1,4 +1,4 @@
-﻿"""
+"""
 Statistics and reporting helpers for connection manager.
 
 This module provides helper functions for retrieving statistics

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Combat command factory methods.
 
 This module contains factory methods for combat-related commands:

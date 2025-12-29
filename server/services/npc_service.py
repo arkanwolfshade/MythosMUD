@@ -1,4 +1,4 @@
-﻿"""
+"""
 NPC management service for MythosMUD.
 
 This module provides comprehensive NPC management including CRUD operations

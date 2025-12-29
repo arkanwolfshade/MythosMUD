@@ -243,10 +243,14 @@ async def test_delegate_health_monitor_success():
     connection_metadata = {}
     player_websockets = {}
 
-    await delegate_health_monitor(mock_monitor, "check_health", active_websockets, connection_metadata, player_websockets)
+    await delegate_health_monitor(
+        mock_monitor, "check_health", active_websockets, connection_metadata, player_websockets
+    )
 
     mock_method.assert_called_once_with(
-        active_websockets=active_websockets, connection_metadata=connection_metadata, player_websockets=player_websockets
+        active_websockets=active_websockets,
+        connection_metadata=connection_metadata,
+        player_websockets=player_websockets,
     )
 
 
@@ -270,7 +274,9 @@ def test_delegate_health_monitor_sync_success():
     delegate_health_monitor_sync(mock_monitor, "get_stats", active_websockets, connection_metadata, player_websockets)
 
     mock_method.assert_called_once_with(
-        active_websockets=active_websockets, connection_metadata=connection_metadata, player_websockets=player_websockets
+        active_websockets=active_websockets,
+        connection_metadata=connection_metadata,
+        player_websockets=player_websockets,
     )
 
 
@@ -378,7 +384,9 @@ async def test_delegate_message_broadcaster_success():
     default_return = {"error": "default"}
     player_websockets = {}
 
-    result = await delegate_message_broadcaster(mock_broadcaster, "broadcast", default_return, player_websockets, "arg1", key="value")
+    result = await delegate_message_broadcaster(
+        mock_broadcaster, "broadcast", default_return, player_websockets, "arg1", key="value"
+    )
 
     assert result == {"sent": True}
     mock_method.assert_called_once_with(player_websockets, "arg1", key="value")
@@ -501,7 +509,9 @@ def test_delegate_personal_message_sender_sync_success():
     default_return = {"error": "default"}
     player_websockets = {}
 
-    result = delegate_personal_message_sender_sync(mock_sender, "send_sync", default_return, player_websockets, "arg1", key="value")
+    result = delegate_personal_message_sender_sync(
+        mock_sender, "send_sync", default_return, player_websockets, "arg1", key="value"
+    )
 
     assert result == {"sent": True}
     mock_method.assert_called_once_with(player_websockets, "arg1", key="value")

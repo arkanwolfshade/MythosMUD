@@ -1,4 +1,4 @@
-﻿"""
+"""
 Room service for MythosMUD server.
 
 This module handles all room-related business logic including

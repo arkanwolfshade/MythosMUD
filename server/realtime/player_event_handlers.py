@@ -1,4 +1,4 @@
-﻿"""
+"""
 Player event handlers for real-time communication.
 
 This module handles all player-related events (entered, left, XP, DP, death, respawn).

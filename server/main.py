@@ -1,4 +1,4 @@
-﻿"""
+"""
 MythosMUD Server - Main Application Entry Point
 
 This module serves as the primary entry point for the MythosMUD server,

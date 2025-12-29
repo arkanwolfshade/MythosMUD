@@ -1,4 +1,4 @@
-﻿"""
+"""
 Extracted methods from ConnectionManager for better code organization.
 
 This module contains methods that were extracted from ConnectionManager

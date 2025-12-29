@@ -1,4 +1,4 @@
-﻿"""
+"""
 Character creation service for MythosMUD server.
 
 This module handles all character creation-related business logic including

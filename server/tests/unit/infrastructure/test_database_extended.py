@@ -82,6 +82,7 @@ def test_reset_database():
 
     # Set module-level URL
     import server.database as db_module
+
     db_module._database_url = "test_url"
 
     reset_database()
@@ -322,7 +323,9 @@ async def test_init_db_success():
     mock_engine = MagicMock(spec=AsyncEngine)
     mock_conn = AsyncMock()
     mock_conn.execute = AsyncMock()
-    mock_engine.begin = MagicMock(return_value=AsyncMock(__aenter__=AsyncMock(return_value=mock_conn), __aexit__=AsyncMock(return_value=None)))
+    mock_engine.begin = MagicMock(
+        return_value=AsyncMock(__aenter__=AsyncMock(return_value=mock_conn), __aexit__=AsyncMock(return_value=None))
+    )
 
     with patch("server.database.get_engine", return_value=mock_engine):
         with patch("sqlalchemy.orm.configure_mappers"):
@@ -379,6 +382,7 @@ async def test_close_db_error():
 def test_get_database_path_postgresql():
     """Test get_database_path returns None for PostgreSQL."""
     import server.database as db_module
+
     db_module._database_url = "postgresql+asyncpg://test"
 
     result = get_database_path()
@@ -388,6 +392,7 @@ def test_get_database_path_postgresql():
 def test_get_database_path_unsupported():
     """Test get_database_path raises for unsupported URL."""
     import server.database as db_module
+
     db_module._database_url = "sqlite://test.db"
 
     with pytest.raises(ValidationError, match="Unsupported database URL"):
@@ -397,6 +402,7 @@ def test_get_database_path_unsupported():
 def test_get_database_path_none_url():
     """Test get_database_path raises for None URL."""
     import server.database as db_module
+
     db_module._database_url = None
 
     # Should use DatabaseManager which will raise if not initialized
@@ -460,4 +466,3 @@ def test_database_manager_get_engine_no_running_loop():
         # Should not raise
         result = manager.get_engine()
         assert result is not None
-

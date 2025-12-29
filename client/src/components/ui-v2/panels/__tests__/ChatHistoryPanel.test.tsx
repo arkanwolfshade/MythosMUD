@@ -36,16 +36,12 @@ describe('ChatHistoryPanel', () => {
   });
 
   it('should render chat history panel', () => {
-    render(
-      <ChatHistoryPanel messages={mockMessages} onSendChatMessage={mockOnSendChatMessage} isConnected={true} />
-    );
+    render(<ChatHistoryPanel messages={mockMessages} onSendChatMessage={mockOnSendChatMessage} isConnected={true} />);
     expect(screen.getByText('Hello world')).toBeInTheDocument();
   });
 
   it('should filter out system messages by default', () => {
-    render(
-      <ChatHistoryPanel messages={mockMessages} onSendChatMessage={mockOnSendChatMessage} isConnected={true} />
-    );
+    render(<ChatHistoryPanel messages={mockMessages} onSendChatMessage={mockOnSendChatMessage} isConnected={true} />);
     expect(screen.getByText('Hello world')).toBeInTheDocument();
     expect(screen.queryByText('System message')).not.toBeInTheDocument();
   });
@@ -63,11 +59,7 @@ describe('ChatHistoryPanel', () => {
     ];
 
     render(
-      <ChatHistoryPanel
-        messages={messagesWithGameLog}
-        onSendChatMessage={mockOnSendChatMessage}
-        isConnected={true}
-      />
+      <ChatHistoryPanel messages={messagesWithGameLog} onSendChatMessage={mockOnSendChatMessage} isConnected={true} />
     );
     expect(screen.queryByText('Game log message')).not.toBeInTheDocument();
   });
@@ -85,11 +77,7 @@ describe('ChatHistoryPanel', () => {
     ];
 
     render(
-      <ChatHistoryPanel
-        messages={messagesWithCombat}
-        onSendChatMessage={mockOnSendChatMessage}
-        isConnected={true}
-      />
+      <ChatHistoryPanel messages={messagesWithCombat} onSendChatMessage={mockOnSendChatMessage} isConnected={true} />
     );
     expect(screen.queryByText('Combat message')).not.toBeInTheDocument();
   });
@@ -112,7 +100,7 @@ describe('ChatHistoryPanel', () => {
       const parent = btn.closest('div');
       return parent && parent.className.includes('justify-between');
     });
-    
+
     if (clearButton && mockOnClearMessages) {
       fireEvent.click(clearButton);
       expect(mockOnClearMessages).toHaveBeenCalled();
@@ -140,7 +128,7 @@ describe('ChatHistoryPanel', () => {
       const parent = btn.closest('div');
       return parent && parent.className.includes('justify-between');
     });
-    
+
     if (downloadButton && mockOnDownloadLogs) {
       fireEvent.click(downloadButton);
       expect(mockOnDownloadLogs).toHaveBeenCalled();
@@ -164,9 +152,7 @@ describe('ChatHistoryPanel', () => {
   });
 
   it('should handle empty messages array', () => {
-    render(
-      <ChatHistoryPanel messages={[]} onSendChatMessage={mockOnSendChatMessage} isConnected={true} />
-    );
+    render(<ChatHistoryPanel messages={[]} onSendChatMessage={mockOnSendChatMessage} isConnected={true} />);
     // Should render without errors
     expect(screen.queryByText('Hello world')).not.toBeInTheDocument();
   });

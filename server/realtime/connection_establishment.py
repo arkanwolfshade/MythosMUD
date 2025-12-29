@@ -1,4 +1,4 @@
-﻿"""
+"""
 Connection establishment management for connection manager.
 
 This module handles WebSocket connection establishment operations.

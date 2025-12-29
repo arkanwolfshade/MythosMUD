@@ -1,4 +1,4 @@
-﻿"""
+"""
 Status command handlers for MythosMUD.
 
 This module contains handlers for status and whoami commands.

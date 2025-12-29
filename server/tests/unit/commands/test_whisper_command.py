@@ -155,4 +155,3 @@ async def test_whisper_command_success(mock_request, mock_sender, mock_target):
 
     assert "you whisper to target" in result["result"].lower()
     assert "hello" in result["result"]
-

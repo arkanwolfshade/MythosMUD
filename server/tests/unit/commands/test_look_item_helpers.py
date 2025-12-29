@@ -4,7 +4,6 @@ Unit tests for look item helper functions.
 Tests the helper functions in look_item.py.
 """
 
-
 from server.commands.look_item import _find_item_in_equipped, _find_item_in_inventory, _find_item_in_room_drops
 
 
@@ -51,7 +50,10 @@ def test_find_item_in_inventory_not_found():
 
 def test_find_item_in_equipped_found():
     """Test _find_item_in_equipped() finds item by name."""
-    equipped = {"weapon": {"item_name": "sword", "item_id": "item_001"}, "armor": {"item_name": "plate", "item_id": "item_002"}}
+    equipped = {
+        "weapon": {"item_name": "sword", "item_id": "item_001"},
+        "armor": {"item_name": "plate", "item_id": "item_002"},
+    }
     result = _find_item_in_equipped(equipped, "sword")
     assert result is not None
     assert result[0] == "weapon"

@@ -1,4 +1,4 @@
-﻿"""
+"""
 NPC Combat Lucidity Effects.
 
 This module handles lucidity (sanity) effects when players encounter NPCs,

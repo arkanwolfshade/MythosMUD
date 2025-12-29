@@ -1,4 +1,4 @@
-﻿"""
+"""
 Message Handler Factory for WebSocket message routing.
 
 This module implements a factory pattern for handling different types of

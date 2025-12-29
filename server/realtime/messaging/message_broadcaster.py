@@ -1,4 +1,4 @@
-﻿"""
+"""
 Message broadcasting for connection management.
 
 This module provides room and global message broadcasting with concurrent

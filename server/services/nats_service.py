@@ -1,4 +1,4 @@
-﻿"""
+"""
 NATS service for MythosMUD chat system.
 
 This module provides NATS pub/sub functionality for real-time chat messaging,

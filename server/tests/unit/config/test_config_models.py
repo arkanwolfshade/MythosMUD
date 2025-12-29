@@ -131,4 +131,3 @@ def test_database_config_validate_pool_config_invalid():
     ):
         with pytest.raises(ValueError, match="Pool configuration values must be at least 1"):
             DatabaseConfig()
-

@@ -1,4 +1,4 @@
-﻿"""
+"""
 NPC movement integration with existing game systems.
 
 This module provides integration between NPCs and the existing movement system,

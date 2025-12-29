@@ -1,4 +1,4 @@
-﻿"""
+"""
 NPC Spawning Service for MythosMUD.
 
 This module implements the core NPC spawning logic that integrates with the

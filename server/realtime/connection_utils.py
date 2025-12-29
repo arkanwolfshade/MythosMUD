@@ -1,4 +1,4 @@
-﻿"""
+"""
 Utility functions for connection management.
 
 This module provides helper functions used by the connection manager

@@ -58,7 +58,9 @@ async def test_prepare_room_data_with_occupants(mock_connection_manager, mock_ro
         {"name": "Player2"},
     ]
 
-    room_data, occupant_names = await prepare_room_data_with_occupants(mock_room, canonical_room_id, mock_connection_manager)
+    room_data, occupant_names = await prepare_room_data_with_occupants(
+        mock_room, canonical_room_id, mock_connection_manager
+    )
 
     assert isinstance(room_data, dict)
     assert "Player1" in occupant_names
@@ -121,9 +123,10 @@ async def test_send_initial_game_state_success(mock_websocket, mock_connection_m
     mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
     mock_connection_manager.get_room_occupants = AsyncMock(return_value=[])
 
-    with patch("server.realtime.websocket_initial_state.get_player_and_room") as mock_get_player_room, patch(
-        "server.realtime.websocket_initial_state.prepare_player_data"
-    ) as mock_prepare_player:
+    with (
+        patch("server.realtime.websocket_initial_state.get_player_and_room") as mock_get_player_room,
+        patch("server.realtime.websocket_initial_state.prepare_player_data") as mock_prepare_player,
+    ):
         mock_get_player_room.return_value = (mock_player, mock_room, room_id)
         mock_prepare_player.return_value = {"name": "TestPlayer", "stats": {"hp": 100}}
 
@@ -422,18 +425,20 @@ async def test_send_initial_room_state_success(mock_websocket, mock_connection_m
 
     mock_connection_manager.get_room_occupants = AsyncMock(return_value=[])
 
-    with patch("server.async_persistence.get_async_persistence") as mock_get_persistence, patch(
-        "server.realtime.websocket_initial_state.add_npc_occupants_to_list"
-    ) as mock_add_npcs, patch(
-        "server.realtime.websocket_initial_state.get_event_handler_for_initial_state"
-    ) as mock_get_handler:
+    with (
+        patch("server.async_persistence.get_async_persistence") as mock_get_persistence,
+        patch("server.realtime.websocket_initial_state.add_npc_occupants_to_list") as mock_add_npcs,
+        patch("server.realtime.websocket_initial_state.get_event_handler_for_initial_state") as mock_get_handler,
+    ):
         mock_persistence = MagicMock()
         mock_persistence.get_room_by_id.return_value = mock_room
         mock_get_persistence.return_value = mock_persistence
         mock_add_npcs.return_value = None
         mock_get_handler.return_value = None
 
-        await send_initial_room_state(mock_websocket, player_id, player_id_str, canonical_room_id, mock_connection_manager)
+        await send_initial_room_state(
+            mock_websocket, player_id, player_id_str, canonical_room_id, mock_connection_manager
+        )
 
         mock_websocket.send_json.assert_called_once()
         call_args = mock_websocket.send_json.call_args[0][0]
@@ -452,7 +457,9 @@ async def test_send_initial_room_state_room_not_found(mock_websocket, mock_conne
         mock_persistence.get_room_by_id.return_value = None
         mock_get_persistence.return_value = mock_persistence
 
-        await send_initial_room_state(mock_websocket, player_id, player_id_str, canonical_room_id, mock_connection_manager)
+        await send_initial_room_state(
+            mock_websocket, player_id, player_id_str, canonical_room_id, mock_connection_manager
+        )
 
         mock_websocket.send_json.assert_not_called()
 
@@ -466,4 +473,6 @@ async def test_send_initial_room_state_handles_exception(mock_websocket, mock_co
 
     with patch("server.async_persistence.get_async_persistence", side_effect=ValueError("Error")):
         # Should not raise
-        await send_initial_room_state(mock_websocket, player_id, player_id_str, canonical_room_id, mock_connection_manager)
+        await send_initial_room_state(
+            mock_websocket, player_id, player_id_str, canonical_room_id, mock_connection_manager
+        )

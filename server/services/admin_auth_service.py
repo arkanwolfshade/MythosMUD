@@ -1,4 +1,4 @@
-﻿"""
+"""
 Admin Authentication and Authorization Service for MythosMUD.
 
 This module provides enhanced authentication and authorization features

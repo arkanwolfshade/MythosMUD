@@ -1,4 +1,4 @@
-﻿"""
+"""
 Game state provision for connection management.
 
 This module provides comprehensive game state generation for newly connected

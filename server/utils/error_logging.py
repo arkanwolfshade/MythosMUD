@@ -1,4 +1,4 @@
-﻿"""
+"""
 Enhanced error logging utilities for MythosMUD server.
 
 This module provides standardized error logging functions that ensure consistent

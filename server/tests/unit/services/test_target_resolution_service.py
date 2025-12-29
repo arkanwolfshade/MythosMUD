@@ -163,8 +163,6 @@ async def test_resolve_target_no_persistence_methods(target_service, mock_persis
     assert "error" in result.error_message.lower() or "not configured" in result.error_message.lower()
 
 
-
-
 @pytest.mark.asyncio
 async def test_resolve_target_no_room(target_service, mock_persistence):
     """Test resolve_target() when player has no room."""
@@ -225,8 +223,6 @@ async def test_resolve_target_sync_get_player_by_id(target_service, mock_persist
     mock_persistence.get_players_in_room = MagicMock(return_value=[])
     result = await target_service.resolve_target(uuid.uuid4(), "target")
     assert result.search_term == "target"
-
-
 
 
 @pytest.mark.asyncio

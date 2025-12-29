@@ -1,4 +1,4 @@
-﻿"""
+"""
 Player occupant processing utilities.
 
 This module handles querying and processing player occupants for rooms.

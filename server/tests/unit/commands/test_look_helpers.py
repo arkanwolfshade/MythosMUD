@@ -136,10 +136,12 @@ def test_get_visible_equipment_no_equipment():
 def test_get_visible_equipment_with_equipment():
     """Test _get_visible_equipment with equipment."""
     player = MagicMock()
-    player.get_equipped_items = MagicMock(return_value={
-        "head": {"name": "Hat"},
-        "ring": {"name": "Ring"},  # Hidden slot
-    })
+    player.get_equipped_items = MagicMock(
+        return_value={
+            "head": {"name": "Hat"},
+            "ring": {"name": "Ring"},  # Hidden slot
+        }
+    )
 
     result = _get_visible_equipment(player)
     assert "head" in result

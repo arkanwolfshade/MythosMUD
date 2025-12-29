@@ -1,4 +1,4 @@
-﻿"""
+"""
 EventPublisher service for MythosMUD real-time events.
 
 This module provides a service class for publishing player_entered, player_left,

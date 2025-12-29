@@ -1,4 +1,4 @@
-﻿"""
+"""
 NPC Database configuration for MythosMUD.
 
 This module provides database connection, session management,

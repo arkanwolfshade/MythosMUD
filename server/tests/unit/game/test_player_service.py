@@ -243,7 +243,17 @@ async def test_create_player_with_stats_success(player_service, mock_persistence
     mock_player.player_id = uuid.uuid4()
     mock_player.name = "TestPlayer"
     mock_player.user_id = uuid.uuid4()
-    mock_player.get_stats = MagicMock(return_value={"lucidity": 100, "current_dp": 0, "position": "standing", "constitution": 60, "size": 50, "power": 55, "education": 45})
+    mock_player.get_stats = MagicMock(
+        return_value={
+            "lucidity": 100,
+            "current_dp": 0,
+            "position": "standing",
+            "constitution": 60,
+            "size": 50,
+            "power": 55,
+            "education": 45,
+        }
+    )
     mock_player.get_inventory = MagicMock(return_value=[])
     mock_player.get_status_effects = MagicMock(return_value=[])
     mock_player.profession_id = 0
@@ -297,7 +307,17 @@ async def test_validate_player_name_valid(player_service, mock_persistence):
     mock_player.player_id = uuid.uuid4()
     mock_player.name = "ValidName"
     mock_player.user_id = uuid.uuid4()
-    mock_player.get_stats = MagicMock(return_value={"lucidity": 100, "current_dp": 0, "position": "standing", "constitution": 50, "size": 50, "power": 50, "education": 50})
+    mock_player.get_stats = MagicMock(
+        return_value={
+            "lucidity": 100,
+            "current_dp": 0,
+            "position": "standing",
+            "constitution": 50,
+            "size": 50,
+            "power": 50,
+            "education": 50,
+        }
+    )
     mock_player.get_inventory = MagicMock(return_value=[])
     mock_player.get_status_effects = MagicMock(return_value=[])
     mock_player.profession_id = 0
@@ -347,7 +367,17 @@ async def test_validate_player_name_exists(player_service, mock_persistence):
     mock_player.player_id = uuid.uuid4()
     mock_player.name = "ExistingName"
     mock_player.user_id = uuid.uuid4()
-    mock_player.get_stats = MagicMock(return_value={"lucidity": 100, "current_dp": 0, "position": "standing", "constitution": 50, "size": 50, "power": 50, "education": 50})
+    mock_player.get_stats = MagicMock(
+        return_value={
+            "lucidity": 100,
+            "current_dp": 0,
+            "position": "standing",
+            "constitution": 50,
+            "size": 50,
+            "power": 50,
+            "education": 50,
+        }
+    )
     mock_player.get_inventory = MagicMock(return_value=[])
     mock_player.get_status_effects = MagicMock(return_value=[])
     mock_player.profession_id = 0
@@ -375,7 +405,17 @@ async def test_search_players_by_name(player_service, mock_persistence):
     mock_player.player_id = uuid.uuid4()
     mock_player.name = "TestPlayer"
     mock_player.user_id = uuid.uuid4()
-    mock_player.get_stats = MagicMock(return_value={"lucidity": 100, "current_dp": 0, "position": "standing", "constitution": 50, "size": 50, "power": 50, "education": 50})
+    mock_player.get_stats = MagicMock(
+        return_value={
+            "lucidity": 100,
+            "current_dp": 0,
+            "position": "standing",
+            "constitution": 50,
+            "size": 50,
+            "power": 50,
+            "education": 50,
+        }
+    )
     mock_player.get_inventory = MagicMock(return_value=[])
     mock_player.get_status_effects = MagicMock(return_value=[])
     mock_player.profession_id = 0
@@ -405,7 +445,17 @@ async def test_get_online_players(player_service, mock_persistence):
     mock_player.player_id = uuid.uuid4()
     mock_player.name = "TestPlayer"
     mock_player.user_id = uuid.uuid4()
-    mock_player.get_stats = MagicMock(return_value={"lucidity": 100, "current_dp": 0, "position": "standing", "constitution": 50, "size": 50, "power": 50, "education": 50})
+    mock_player.get_stats = MagicMock(
+        return_value={
+            "lucidity": 100,
+            "current_dp": 0,
+            "position": "standing",
+            "constitution": 50,
+            "size": 50,
+            "power": 50,
+            "education": 50,
+        }
+    )
     mock_player.get_inventory = MagicMock(return_value=[])
     mock_player.get_status_effects = MagicMock(return_value=[])
     mock_player.profession_id = 0
@@ -562,8 +612,28 @@ async def test_get_user_characters(player_service, mock_persistence):
     mock_player.player_id = uuid.uuid4()
     mock_player.name = "TestPlayer"
     mock_player.user_id = user_id
-    mock_player.get_stats = MagicMock(return_value={"lucidity": 100, "current_dp": 0, "position": "standing", "constitution": 50, "size": 50, "power": 50, "education": 50})
-    mock_player.get_stats = MagicMock(return_value={"lucidity": 100, "current_dp": 0, "position": "standing", "constitution": 50, "size": 50, "power": 50, "education": 50})
+    mock_player.get_stats = MagicMock(
+        return_value={
+            "lucidity": 100,
+            "current_dp": 0,
+            "position": "standing",
+            "constitution": 50,
+            "size": 50,
+            "power": 50,
+            "education": 50,
+        }
+    )
+    mock_player.get_stats = MagicMock(
+        return_value={
+            "lucidity": 100,
+            "current_dp": 0,
+            "position": "standing",
+            "constitution": 50,
+            "size": 50,
+            "power": 50,
+            "education": 50,
+        }
+    )
     mock_player.get_inventory = MagicMock(return_value=[])
     mock_player.get_status_effects = MagicMock(return_value=[])
     mock_player.profession_id = 0

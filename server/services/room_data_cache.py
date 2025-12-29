@@ -1,4 +1,4 @@
-﻿"""
+"""
 Room data cache and freshness management for MythosMUD.
 
 This module provides caching and freshness validation for room data,

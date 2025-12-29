@@ -1,4 +1,4 @@
-﻿"""
+"""
 NPC Admin API endpoints for MythosMUD server.
 
 This module provides administrative API endpoints for managing NPCs,

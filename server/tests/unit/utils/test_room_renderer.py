@@ -195,6 +195,7 @@ def test_clone_room_drops_nested_structure():
 
 def test_clone_room_drops_converts_to_dict():
     """Test clone_room_drops converts mappings to dict."""
+
     # Use a custom mapping-like object
     class CustomMapping(Mapping):
         def __init__(self, data):

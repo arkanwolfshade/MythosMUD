@@ -1,4 +1,4 @@
-﻿"""
+"""
 Security utilities for MythosMUD server.
 Implements secure path validation and file operations to prevent path
 traversal attacks.

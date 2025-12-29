@@ -92,6 +92,7 @@ def test_get_command_help_case_insensitive():
 
 def test_get_username_from_user_player_object():
     """Test get_username_from_user with Player object."""
+
     class MockPlayer:
         def __init__(self):
             self.name = "TestPlayer"
@@ -103,6 +104,7 @@ def test_get_username_from_user_player_object():
 
 def test_get_username_from_user_username_attribute():
     """Test get_username_from_user with username attribute."""
+
     class MockUser:
         def __init__(self):
             self.username = "testuser"
@@ -113,6 +115,7 @@ def test_get_username_from_user_username_attribute():
 
 def test_get_username_from_user_name_attribute():
     """Test get_username_from_user with name attribute."""
+
     class MockUser:
         def __init__(self):
             self.name = "TestUser"
@@ -153,6 +156,7 @@ def test_get_username_from_user_none():
 
 def test_get_username_from_user_priority_player_over_username():
     """Test get_username_from_user prioritizes player name over username."""
+
     class MockPlayer:
         def __init__(self):
             self.name = "TestPlayer"

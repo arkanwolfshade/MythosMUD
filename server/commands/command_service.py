@@ -1,4 +1,4 @@
-﻿"""
+"""
 Command service for MythosMUD.
 
 This module provides the main command processing service that orchestrates

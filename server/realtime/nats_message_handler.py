@@ -1,4 +1,4 @@
-﻿"""
+"""
 NATS message handler for MythosMUD chat system.
 
 This module handles incoming NATS messages and broadcasts them to WebSocket clients.
