@@ -81,9 +81,7 @@ async def test_create_corpse_on_death_success(corpse_service, mock_persistence):
     mock_player.get_inventory.return_value = [{"item_id": "item_001", "quantity": 1}]
     mock_player.name = "TestPlayer"
     mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mock_persistence.create_container = AsyncMock(
-        return_value={"container_id": str(uuid.uuid4()), "room_id": room_id}
-    )
+    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4()), "room_id": room_id})
     result = await corpse_service.create_corpse_on_death(player_id, room_id)
     assert isinstance(result, ContainerComponent)
     assert result.source_type == ContainerSourceType.CORPSE
@@ -349,6 +347,7 @@ async def test_cleanup_decayed_corpse_not_corpse(corpse_service, mock_persistenc
     container_id = uuid.uuid4()
     # Use a valid source_type that's not CORPSE
     from server.models.container import ContainerSourceType
+
     container_data = {
         "container_id": str(container_id),
         "source_type": ContainerSourceType.ENVIRONMENT.value,
@@ -430,3 +429,236 @@ async def test_cleanup_all_decayed_corpses(corpse_service, mock_persistence):
     result = await corpse_service.cleanup_all_decayed_corpses()
     assert result == 1
     mock_persistence.delete_container.assert_awaited_once()
+
+
+def test_can_access_corpse_no_grace_period_start(corpse_service):
+    """Test can_access_corpse() allows access when grace_period_start is missing."""
+    owner_id = uuid.uuid4()
+    other_id = uuid.uuid4()
+    corpse = ContainerComponent(
+        container_id=uuid.uuid4(),
+        source_type=ContainerSourceType.CORPSE,
+        owner_id=owner_id,
+        room_id="room_001",
+        capacity_slots=20,
+        lock_state=ContainerLockState.UNLOCKED,
+        metadata={"grace_period_seconds": 300},  # No grace_period_start
+    )
+    result = corpse_service.can_access_corpse(corpse, other_id, is_admin=False)
+    assert result is True
+
+
+def test_can_access_corpse_grace_period_type_error(corpse_service):
+    """Test can_access_corpse() handles TypeError in grace period parsing."""
+    corpse = ContainerComponent(
+        container_id=uuid.uuid4(),
+        source_type=ContainerSourceType.CORPSE,
+        owner_id=uuid.uuid4(),
+        room_id="room_001",
+        capacity_slots=20,
+        lock_state=ContainerLockState.UNLOCKED,
+        metadata={"grace_period_start": None},  # None causes TypeError
+    )
+    # Should fail open and allow access
+    result = corpse_service.can_access_corpse(corpse, uuid.uuid4(), is_admin=False)
+    assert result is True
+
+
+@pytest.mark.asyncio
+async def test_get_decayed_corpses_in_room_validation_error(corpse_service, mock_persistence):
+    """Test get_decayed_corpses_in_room() handles validation errors gracefully."""
+    invalid_container_data = {"invalid": "data"}
+    mock_persistence.get_containers_by_room_id = AsyncMock(return_value=[invalid_container_data])
+    result = await corpse_service.get_decayed_corpses_in_room("room_001")
+    # Should return empty list, not raise
+    assert result == []
+
+
+@pytest.mark.asyncio
+async def test_get_decayed_corpses_in_room_non_corpse(corpse_service, mock_persistence):
+    """Test get_decayed_corpses_in_room() filters out non-corpse containers."""
+    from server.models.container import ContainerSourceType
+
+    container_data = {
+        "container_id": str(uuid.uuid4()),
+        "source_type": ContainerSourceType.ENVIRONMENT.value,
+        "owner_id": str(uuid.uuid4()),
+        "room_id": "room_001",
+        "capacity_slots": 20,
+        "lock_state": "unlocked",
+        "decay_at": datetime.now(UTC) - timedelta(hours=1),
+        "items": [],
+        "metadata": {},
+    }
+    mock_persistence.get_containers_by_room_id = AsyncMock(return_value=[container_data])
+    result = await corpse_service.get_decayed_corpses_in_room("room_001")
+    # Should return empty list (not a corpse)
+    assert result == []
+
+
+@pytest.mark.asyncio
+async def test_cleanup_decayed_corpse_delete_error(corpse_service, mock_persistence):
+    """Test cleanup_decayed_corpse() raises error when delete fails."""
+    container_id = uuid.uuid4()
+    past_time = datetime.now(UTC) - timedelta(hours=1)
+    container_data = {
+        "container_id": str(container_id),
+        "source_type": "corpse",
+        "owner_id": str(uuid.uuid4()),
+        "room_id": "room_001",
+        "capacity_slots": 20,
+        "lock_state": "unlocked",
+        "decay_at": past_time,
+        "items": [],
+        "metadata": {},
+    }
+    mock_persistence.get_container = AsyncMock(return_value=container_data)
+    mock_persistence.delete_container = AsyncMock(side_effect=Exception("Delete error"))
+    with pytest.raises(CorpseServiceError, match="Failed to delete decayed corpse"):
+        await corpse_service.cleanup_decayed_corpse(container_id)
+
+
+@pytest.mark.asyncio
+async def test_cleanup_decayed_corpses_in_room_handles_errors(corpse_service, mock_persistence):
+    """Test cleanup_decayed_corpses_in_room() handles individual cleanup errors."""
+    past_time = datetime.now(UTC) - timedelta(hours=1)
+    container_data = {
+        "container_id": str(uuid.uuid4()),
+        "source_type": "corpse",
+        "owner_id": str(uuid.uuid4()),
+        "room_id": "room_001",
+        "capacity_slots": 20,
+        "lock_state": "unlocked",
+        "decay_at": past_time,
+        "items": [],
+        "metadata": {},
+    }
+    mock_persistence.get_containers_by_room_id = AsyncMock(return_value=[container_data])
+    # First call succeeds, second call fails
+    mock_persistence.get_container = AsyncMock(return_value=container_data)
+    mock_persistence.delete_container = AsyncMock(side_effect=[None, Exception("Error")])
+    # Should still return count of successful cleanups
+    result = await corpse_service.cleanup_decayed_corpses_in_room("room_001")
+    # Should handle error gracefully and continue
+    assert result >= 0
+
+
+@pytest.mark.asyncio
+async def test_get_all_decayed_corpses_empty(corpse_service, mock_persistence):
+    """Test get_all_decayed_corpses() returns empty list when no decayed containers."""
+    mock_persistence.get_decayed_containers = AsyncMock(return_value=[])
+    result = await corpse_service.get_all_decayed_corpses()
+    assert result == []
+
+
+@pytest.mark.asyncio
+async def test_get_all_decayed_corpses_with_time_service(corpse_service, mock_persistence):
+    """Test get_all_decayed_corpses() uses time service when available."""
+    mock_time_service = MagicMock()
+    mock_time_service.get_current_mythos_datetime.return_value = datetime.now(UTC)
+    corpse_service.time_service = mock_time_service
+    past_time = datetime.now(UTC) - timedelta(hours=1)
+    container_data = {
+        "container_id": str(uuid.uuid4()),
+        "source_type": "corpse",
+        "owner_id": str(uuid.uuid4()),
+        "room_id": "room_001",
+        "capacity_slots": 20,
+        "lock_state": "unlocked",
+        "decay_at": past_time,
+        "items": [],
+        "metadata": {},
+    }
+    mock_persistence.get_decayed_containers = AsyncMock(return_value=[container_data])
+    result = await corpse_service.get_all_decayed_corpses()
+    assert len(result) == 1
+    mock_time_service.get_current_mythos_datetime.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_get_all_decayed_corpses_validation_error(corpse_service, mock_persistence):
+    """Test get_all_decayed_corpses() handles validation errors gracefully."""
+    invalid_container_data = {"invalid": "data"}
+    mock_persistence.get_decayed_containers = AsyncMock(return_value=[invalid_container_data])
+    result = await corpse_service.get_all_decayed_corpses()
+    # Should return empty list, not raise
+    assert result == []
+
+
+@pytest.mark.asyncio
+async def test_get_all_decayed_corpses_non_corpse(corpse_service, mock_persistence):
+    """Test get_all_decayed_corpses() filters out non-corpse containers."""
+    from server.models.container import ContainerSourceType
+
+    container_data = {
+        "container_id": str(uuid.uuid4()),
+        "source_type": ContainerSourceType.ENVIRONMENT.value,
+        "owner_id": str(uuid.uuid4()),
+        "room_id": "room_001",
+        "capacity_slots": 20,
+        "lock_state": "unlocked",
+        "decay_at": datetime.now(UTC) - timedelta(hours=1),
+        "items": [],
+        "metadata": {},
+    }
+    mock_persistence.get_decayed_containers = AsyncMock(return_value=[container_data])
+    result = await corpse_service.get_all_decayed_corpses()
+    # Should return empty list (not a corpse)
+    assert result == []
+
+
+@pytest.mark.asyncio
+async def test_cleanup_all_decayed_corpses_handles_errors(corpse_service, mock_persistence):
+    """Test cleanup_all_decayed_corpses() handles individual cleanup errors."""
+    past_time = datetime.now(UTC) - timedelta(hours=1)
+    container_data = {
+        "container_id": str(uuid.uuid4()),
+        "source_type": "corpse",
+        "owner_id": str(uuid.uuid4()),
+        "room_id": "room_001",
+        "capacity_slots": 20,
+        "lock_state": "unlocked",
+        "decay_at": past_time,
+        "items": [],
+        "metadata": {},
+    }
+    mock_persistence.get_decayed_containers = AsyncMock(return_value=[container_data])
+    mock_persistence.get_container = AsyncMock(return_value=container_data)
+    mock_persistence.delete_container = AsyncMock(side_effect=Exception("Error"))
+    # Should handle error gracefully and return count of successful cleanups
+    result = await corpse_service.cleanup_all_decayed_corpses()
+    # Should handle error gracefully
+    assert result >= 0
+
+
+@pytest.mark.asyncio
+async def test_create_corpse_on_death_player_no_name(corpse_service, mock_persistence):
+    """Test create_corpse_on_death() handles player without name attribute."""
+    player_id = uuid.uuid4()
+    room_id = "room_001"
+    mock_player = MagicMock()
+    mock_player.get_inventory.return_value = []
+    # Player has no name attribute
+    del mock_player.name
+    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
+    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4()), "room_id": room_id})
+    result = await corpse_service.create_corpse_on_death(player_id, room_id)
+    assert isinstance(result, ContainerComponent)
+    # Should use "Unknown" as default name
+    assert result.metadata.get("player_name") == "Unknown"
+
+
+@pytest.mark.asyncio
+async def test_create_corpse_on_death_custom_grace_period(corpse_service, mock_persistence):
+    """Test create_corpse_on_death() uses custom grace period."""
+    player_id = uuid.uuid4()
+    room_id = "room_001"
+    mock_player = MagicMock()
+    mock_player.get_inventory.return_value = []
+    mock_player.name = "TestPlayer"
+    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
+    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4()), "room_id": room_id})
+    result = await corpse_service.create_corpse_on_death(player_id, room_id, grace_period_seconds=600, decay_hours=2)
+    assert isinstance(result, ContainerComponent)
+    assert result.metadata.get("grace_period_seconds") == 600
+    assert result.decay_at is not None

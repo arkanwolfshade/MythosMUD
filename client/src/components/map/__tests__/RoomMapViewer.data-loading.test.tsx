@@ -119,4 +119,79 @@ describe('RoomMapViewer - Data Loading', () => {
 
     expect(refetch).toHaveBeenCalled();
   });
+
+  it('should handle empty rooms array', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useRoomMapData as any).mockReturnValue({
+      rooms: [],
+      isLoading: false,
+      error: null,
+      refetch: vi.fn(),
+      total: 0,
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (roomsToNodes as any).mockReturnValue([]);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useMapLayout as any).mockReturnValue({
+      layoutNodes: [],
+    });
+
+    render(<RoomMapViewer plane="earth" zone="arkhamcity" />);
+
+    // When rooms array is empty, component shows "No rooms available" message
+    expect(screen.getByText(/No rooms available/i)).toBeInTheDocument();
+  });
+
+  it('should handle loading state', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useRoomMapData as any).mockReturnValue({
+      rooms: [],
+      isLoading: true,
+      error: null,
+      refetch: vi.fn(),
+      total: 0,
+    });
+
+    render(<RoomMapViewer plane="earth" zone="arkhamcity" />);
+
+    expect(screen.getByText('Loading map...')).toBeInTheDocument();
+  });
+
+  it('should handle error state with retry button', () => {
+    const refetch = vi.fn();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useRoomMapData as any).mockReturnValue({
+      rooms: [],
+      isLoading: false,
+      error: 'Network error',
+      refetch,
+      total: 0,
+    });
+
+    render(<RoomMapViewer plane="earth" zone="arkhamcity" />);
+
+    expect(screen.getByText(/Error:/)).toBeInTheDocument();
+    expect(screen.getByText('Retry')).toBeInTheDocument();
+  });
+
+  it('should handle baseUrl prop', () => {
+    render(<RoomMapViewer plane="earth" zone="arkhamcity" baseUrl="http://custom-url.com" />);
+
+    expect(useRoomMapData).toHaveBeenCalledWith(
+      expect.objectContaining({
+        baseUrl: 'http://custom-url.com',
+      })
+    );
+  });
+
+  it('should handle subZone changes', () => {
+    render(<RoomMapViewer plane="earth" zone="arkhamcity" subZone="campus" />);
+
+    expect(useRoomMapData).toHaveBeenCalledWith(
+      expect.objectContaining({
+        subZone: 'campus',
+      })
+    );
+  });
 });

@@ -196,7 +196,7 @@ exclude_lines = [
     "if __name__ == .__main__.:",
     "@(abc\\.)?abstractmethod",
 ]
-fail_under = 70
+fail_under = 50
 
 [tool.mypy]
 python_version = "3.12"

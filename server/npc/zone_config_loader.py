@@ -1,4 +1,4 @@
-﻿"""
+"""
 Zone Configuration Loader Module.
 
 This module handles loading zone and sub-zone configurations from the PostgreSQL
@@ -183,6 +183,11 @@ def load_zone_configurations() -> dict[str, ZoneConfiguration]:
         asyncio.set_event_loop(new_loop)
         try:
             new_loop.run_until_complete(async_load_zone_configurations(result_container))
+        except Exception as e:
+            # Store exception in result_container if not already stored
+            # (async_load_zone_configurations may have already stored it)
+            if result_container.get("error") is None:
+                result_container["error"] = e
         finally:
             new_loop.close()
 

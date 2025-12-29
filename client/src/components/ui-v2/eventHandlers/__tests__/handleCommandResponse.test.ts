@@ -210,4 +210,184 @@ describe('handleCommandResponse', () => {
       })
     );
   });
+
+  it('should handle status parsing errors gracefully', () => {
+    // The error is caught and logged, but processing continues
+    // This test verifies that malformed status data doesn't crash the handler
+    const event = {
+      event_type: 'command_response',
+      timestamp: new Date().toISOString(),
+      sequence_number: 11,
+      data: {
+        result: 'Name: Player\nHealth: invalid\nLucidity: 50/50',
+        is_html: false,
+      },
+    };
+
+    // Should not throw, should handle error gracefully
+    expect(() => {
+      handleCommandResponse(event, mockContext, mockAppendMessage);
+    }).not.toThrow();
+    expect(mockAppendMessage).toHaveBeenCalled();
+  });
+
+  it('should not filter room name when message contains newlines', () => {
+    const contextWithRoom = createMockContext({
+      currentRoomRef: {
+        current: {
+          id: 'room1',
+          name: 'Room Name',
+          description: 'A room',
+          exits: {},
+        },
+      },
+    });
+
+    const event = {
+      event_type: 'command_response',
+      timestamp: new Date().toISOString(),
+      sequence_number: 12,
+      data: {
+        result: 'Room Name\nWith newline',
+        is_html: false,
+      },
+    };
+
+    handleCommandResponse(event, contextWithRoom, mockAppendMessage);
+
+    expect(mockAppendMessage).toHaveBeenCalled();
+  });
+
+  it('should not filter room name when message contains Exits:', () => {
+    const contextWithRoom = createMockContext({
+      currentRoomRef: {
+        current: {
+          id: 'room1',
+          name: 'Room Name',
+          description: 'A room',
+          exits: {},
+        },
+      },
+    });
+
+    const event = {
+      event_type: 'command_response',
+      timestamp: new Date().toISOString(),
+      sequence_number: 13,
+      data: {
+        result: 'Room Name\nExits: north',
+        is_html: false,
+      },
+    };
+
+    handleCommandResponse(event, contextWithRoom, mockAppendMessage);
+
+    expect(mockAppendMessage).toHaveBeenCalled();
+  });
+
+  it('should not filter room name when message contains Description:', () => {
+    const contextWithRoom = createMockContext({
+      currentRoomRef: {
+        current: {
+          id: 'room1',
+          name: 'Room Name',
+          description: 'A room',
+          exits: {},
+        },
+      },
+    });
+
+    const event = {
+      event_type: 'command_response',
+      timestamp: new Date().toISOString(),
+      sequence_number: 14,
+      data: {
+        result: 'Room Name\nDescription: A room',
+        is_html: false,
+      },
+    };
+
+    handleCommandResponse(event, contextWithRoom, mockAppendMessage);
+
+    expect(mockAppendMessage).toHaveBeenCalled();
+  });
+
+  it('should not filter room name when message is too long', () => {
+    const contextWithRoom = createMockContext({
+      currentRoomRef: {
+        current: {
+          id: 'room1',
+          name: 'Room Name',
+          description: 'A room',
+          exits: {},
+        },
+      },
+    });
+
+    const longMessage = 'Room Name' + 'x'.repeat(100);
+    const event = {
+      event_type: 'command_response',
+      timestamp: new Date().toISOString(),
+      sequence_number: 15,
+      data: {
+        result: longMessage,
+        is_html: false,
+      },
+    };
+
+    handleCommandResponse(event, contextWithRoom, mockAppendMessage);
+
+    expect(mockAppendMessage).toHaveBeenCalled();
+  });
+
+  it('should handle player_update when currentPlayerRef has no stats', () => {
+    const contextWithPlayerNoStats = createMockContext({
+      currentPlayerRef: {
+        current: {
+          name: 'Player',
+          // No stats property
+        } as import('../../types').Player,
+      },
+    });
+
+    const event = {
+      event_type: 'command_response',
+      timestamp: new Date().toISOString(),
+      sequence_number: 16,
+      data: {
+        result: 'Test',
+        player_update: {
+          position: 'sitting',
+        },
+        is_html: false,
+      },
+    };
+
+    const result = handleCommandResponse(event, contextWithPlayerNoStats, mockAppendMessage);
+
+    // Should not throw, but may not update player
+    expect(result).toBeDefined();
+  });
+
+  it('should handle empty game_log_message string', () => {
+    const event = {
+      event_type: 'command_response',
+      timestamp: new Date().toISOString(),
+      sequence_number: 17,
+      data: {
+        result: 'Test',
+        suppress_chat: true,
+        game_log_message: '',
+        is_html: false,
+      },
+    };
+
+    handleCommandResponse(event, mockContext, mockAppendMessage);
+
+    expect(mockAppendMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        text: 'Test',
+      })
+    );
+  });
 });

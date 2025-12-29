@@ -551,22 +551,45 @@ async def initiate_shutdown_countdown(app: Any, countdown_seconds: int, admin_us
 
         # Create countdown coroutine
         countdown_coro = countdown_loop(app, countdown_seconds, admin_username)
-        
+
         # Create countdown task - ensure coroutine is always turned into a task
         # to avoid "coroutine was never awaited" warnings
+        # We must always create a task from the coroutine, even if register_task fails
+        # This is critical to prevent RuntimeWarnings during garbage collection
         try:
+            # Try to get the running event loop first
+            loop = asyncio.get_running_loop()
+
+            # Try to register with task_registry if available
             if hasattr(app.state, "task_registry") and app.state.task_registry:
-                countdown_task = app.state.task_registry.register_task(
-                    countdown_coro,
-                    "shutdown_countdown",
-                    "system",
-                )
+                try:
+                    countdown_task = app.state.task_registry.register_task(
+                        countdown_coro,
+                        "shutdown_countdown",
+                        "system",
+                    )
+                    # Verify that register_task actually returned a task
+                    if not isinstance(countdown_task, asyncio.Task):
+                        # If register_task didn't create a task (e.g., it's a mock), create one
+                        countdown_task = loop.create_task(countdown_coro)
+                except (AttributeError, RuntimeError, TypeError):
+                    # register_task failed or is a mock that doesn't handle coroutines
+                    countdown_task = loop.create_task(countdown_coro)
             else:
-                # Fallback: create task directly if task_registry is not available
+                # No task_registry available, create task directly
+                countdown_task = loop.create_task(countdown_coro)
+        except RuntimeError:
+            # No running event loop - this shouldn't happen in normal operation
+            # but can occur in tests. Create task when loop becomes available.
+            # Note: asyncio.create_task requires a running loop, so this will raise
+            # but at least we tried. The coroutine will be garbage collected with a warning.
+            try:
                 countdown_task = asyncio.create_task(countdown_coro)
-        except (AttributeError, RuntimeError):
-            # Fallback: create task directly if register_task fails
-            countdown_task = asyncio.create_task(countdown_coro)
+            except RuntimeError:
+                # Still no loop - log warning and store coroutine
+                # The caller should ensure there's a running loop
+                logger.error("Cannot create countdown task: no running event loop")
+                raise RuntimeError("Cannot create countdown task: no running event loop") from None
 
         # Store shutdown data
         app.state.shutdown_data = {

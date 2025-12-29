@@ -4,7 +4,14 @@
 
 import { describe, expect, it, vi } from 'vitest';
 import type { ChatMessage } from '../../types';
-import { handleCombatStarted, handleNpcAttacked, handlePlayerAttacked } from '../combatHandlers';
+import {
+  handleCombatEnded,
+  handleCombatStarted,
+  handleCombatDeath,
+  handleNpcAttacked,
+  handleNpcDied,
+  handlePlayerAttacked,
+} from '../combatHandlers';
 import type { EventHandlerContext } from '../types';
 
 // Mock messageUtils
@@ -258,6 +265,208 @@ describe('combatHandlers', () => {
       const result = handleCombatStarted(event, mockContext, mockAppendMessage);
 
       expect(result).toBeUndefined();
+    });
+  });
+
+  describe('handleCombatEnded', () => {
+    it('should return updates when player exists', () => {
+      const contextWithPlayer: EventHandlerContext = {
+        currentPlayerRef: {
+          current: {
+            id: 'player1',
+            name: 'Player',
+            stats: {
+              current_dp: 100,
+              lucidity: 50,
+              position: 'standing',
+            },
+            in_combat: true,
+          } as import('../../types').Player,
+        },
+        currentRoomRef: { current: null },
+        currentMessagesRef: { current: [] },
+        healthStatusRef: { current: null },
+        lucidityStatusRef: { current: null },
+        lastDaypartRef: { current: null },
+        lastHourRef: { current: null },
+        lastHolidayIdsRef: { current: [] },
+        lastRoomUpdateTime: { current: 0 },
+        setDpStatus: vi.fn(),
+        setLucidityStatus: vi.fn(),
+        setMythosTime: vi.fn(),
+        setIsDead: vi.fn(),
+        setIsMortallyWounded: vi.fn(),
+        setIsRespawning: vi.fn(),
+        setIsDelirious: vi.fn(),
+        setIsDeliriumRespawning: vi.fn(),
+        setDeathLocation: vi.fn(),
+        setDeliriumLocation: vi.fn(),
+        setRescueState: vi.fn(),
+      };
+
+      const event = {
+        event_type: 'combat_ended',
+        timestamp: new Date().toISOString(),
+        sequence_number: 12,
+        data: {},
+      };
+
+      const result = handleCombatEnded(event, contextWithPlayer, mockAppendMessage);
+
+      expect(result).toBeDefined();
+      expect(result?.player?.in_combat).toBe(false);
+    });
+
+    it('should return undefined when player does not exist', () => {
+      const event = {
+        event_type: 'combat_ended',
+        timestamp: new Date().toISOString(),
+        sequence_number: 13,
+        data: {},
+      };
+
+      const result = handleCombatEnded(event, mockContext, mockAppendMessage);
+
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe('handleNpcDied', () => {
+    it('should append death message when npc_name is present', () => {
+      const event = {
+        event_type: 'npc_died',
+        timestamp: new Date().toISOString(),
+        sequence_number: 14,
+        data: {
+          npc_name: 'Goblin',
+        },
+      };
+
+      handleNpcDied(event, mockContext, mockAppendMessage);
+
+      expect(mockAppendMessage).toHaveBeenCalled();
+      const callArg = mockAppendMessage.mock.calls[0][0];
+      expect(callArg.text).toContain('Goblin dies.');
+    });
+
+    it('should append XP reward message when xp_reward is positive', () => {
+      const event = {
+        event_type: 'npc_died',
+        timestamp: new Date().toISOString(),
+        sequence_number: 15,
+        data: {
+          npc_name: 'Goblin',
+          xp_reward: 100,
+        },
+      };
+
+      handleNpcDied(event, mockContext, mockAppendMessage);
+
+      expect(mockAppendMessage).toHaveBeenCalledTimes(2);
+      const xpCall = mockAppendMessage.mock.calls.find(call => call[0].text.includes('experience points'));
+      expect(xpCall).toBeDefined();
+    });
+
+    it('should not append XP message when xp_reward is zero', () => {
+      const event = {
+        event_type: 'npc_died',
+        timestamp: new Date().toISOString(),
+        sequence_number: 16,
+        data: {
+          npc_name: 'Goblin',
+          xp_reward: 0,
+        },
+      };
+
+      handleNpcDied(event, mockContext, mockAppendMessage);
+
+      expect(mockAppendMessage).toHaveBeenCalledTimes(1);
+      const xpCall = mockAppendMessage.mock.calls.find(call => call[0].text.includes('experience points'));
+      expect(xpCall).toBeUndefined();
+    });
+
+    it('should not append message when npc_name is missing', () => {
+      const event = {
+        event_type: 'npc_died',
+        timestamp: new Date().toISOString(),
+        sequence_number: 17,
+        data: {},
+      };
+
+      handleNpcDied(event, mockContext, mockAppendMessage);
+
+      expect(mockAppendMessage).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('handleCombatDeath', () => {
+    it('should append death message when present', () => {
+      const event = {
+        event_type: 'combat_death',
+        timestamp: new Date().toISOString(),
+        sequence_number: 18,
+        data: {
+          messages: {
+            death_message: 'You have been slain!',
+          },
+        },
+      };
+
+      handleCombatDeath(event, mockContext, mockAppendMessage);
+
+      expect(mockAppendMessage).toHaveBeenCalled();
+      const callArg = mockAppendMessage.mock.calls[0][0];
+      expect(callArg.text).toBe('You have been slain!');
+    });
+
+    it('should append XP reward message when present', () => {
+      const event = {
+        event_type: 'combat_death',
+        timestamp: new Date().toISOString(),
+        sequence_number: 19,
+        data: {
+          messages: {
+            xp_reward: 'You gain 50 experience points.',
+          },
+        },
+      };
+
+      handleCombatDeath(event, mockContext, mockAppendMessage);
+
+      expect(mockAppendMessage).toHaveBeenCalled();
+      const callArg = mockAppendMessage.mock.calls[0][0];
+      expect(callArg.text).toBe('You gain 50 experience points.');
+    });
+
+    it('should append both messages when both are present', () => {
+      const event = {
+        event_type: 'combat_death',
+        timestamp: new Date().toISOString(),
+        sequence_number: 20,
+        data: {
+          messages: {
+            death_message: 'You have been slain!',
+            xp_reward: 'You gain 50 experience points.',
+          },
+        },
+      };
+
+      handleCombatDeath(event, mockContext, mockAppendMessage);
+
+      expect(mockAppendMessage).toHaveBeenCalledTimes(2);
+    });
+
+    it('should not append message when messages object is missing', () => {
+      const event = {
+        event_type: 'combat_death',
+        timestamp: new Date().toISOString(),
+        sequence_number: 21,
+        data: {},
+      };
+
+      handleCombatDeath(event, mockContext, mockAppendMessage);
+
+      expect(mockAppendMessage).not.toHaveBeenCalled();
     });
   });
 });

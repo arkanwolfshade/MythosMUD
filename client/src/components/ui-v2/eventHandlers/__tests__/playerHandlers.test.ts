@@ -290,6 +290,42 @@ describe('playerHandlers', () => {
       expect(mockContext.setIsDead).toHaveBeenCalledWith(false);
       expect(result).toEqual({});
     });
+
+    it('should handle respawn with player data but missing current_dp in stats', () => {
+      const mockPlayer = {
+        id: 'player1',
+        name: 'TestPlayer',
+        stats: { max_dp: 100, position: 'standing' }, // Missing current_dp
+        in_combat: false,
+      };
+      const event = {
+        event_type: 'player_respawned',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { player: mockPlayer },
+      };
+      const result = handlePlayerRespawned(event, mockContext, mockAppendMessage);
+      expect(mockContext.setIsDead).toHaveBeenCalledWith(false);
+      expect(result?.player).toBeDefined();
+      expect(mockContext.setDpStatus).not.toHaveBeenCalled();
+    });
+
+    it('should handle respawn with message field', () => {
+      const mockPlayer = {
+        id: 'player1',
+        name: 'TestPlayer',
+        stats: { current_dp: 100, max_dp: 100, position: 'standing' },
+        in_combat: false,
+      };
+      const event = {
+        event_type: 'player_respawned',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { player: mockPlayer, message: 'You have respawned.' },
+      };
+      const result = handlePlayerRespawned(event, mockContext, mockAppendMessage);
+      expect(result?.player).toBeDefined();
+    });
   });
 
   describe('handlePlayerDeliriumRespawned', () => {
@@ -426,6 +462,144 @@ describe('playerHandlers', () => {
       const result = handlePlayerDpUpdated(event, mockContext, mockAppendMessage);
       expect(mockContext.setDpStatus).toHaveBeenCalled();
       expect(result).toBeUndefined();
+    });
+  });
+
+  describe('handlePlayerEnteredGame edge cases', () => {
+    it('should not append message when player_name is not a string', () => {
+      const event = {
+        event_type: 'player_entered_game',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { player_name: 123 },
+      };
+      handlePlayerEnteredGame(event, mockContext, mockAppendMessage);
+      expect(mockAppendMessage).not.toHaveBeenCalled();
+    });
+
+    it('should not append message when player_name is null', () => {
+      const event = {
+        event_type: 'player_entered_game',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { player_name: null },
+      };
+      handlePlayerEnteredGame(event, mockContext, mockAppendMessage);
+      expect(mockAppendMessage).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('handlePlayerUpdate edge cases', () => {
+    it('should handle update when stats are missing', () => {
+      const mockPlayer = {
+        id: 'player1',
+        name: 'TestPlayer',
+        stats: { current_dp: 50, max_dp: 100, lucidity: 75 },
+        in_combat: false,
+      };
+      mockContext.currentPlayerRef.current = mockPlayer as unknown as Player;
+      const event = {
+        event_type: 'player_update',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { in_combat: true },
+      };
+      const result = handlePlayerUpdate(event, mockContext, mockAppendMessage);
+      expect(result?.player).toBeDefined();
+      expect(result?.player?.in_combat).toBe(true);
+    });
+
+    it('should handle update when existing stats are missing', () => {
+      const mockPlayer = {
+        id: 'player1',
+        name: 'TestPlayer',
+        // No stats property
+        in_combat: false,
+      };
+      mockContext.currentPlayerRef.current = mockPlayer as unknown as Player;
+      const event = {
+        event_type: 'player_update',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { stats: { magic_points: 50 } },
+      };
+      const result = handlePlayerUpdate(event, mockContext, mockAppendMessage);
+      expect(result?.player).toBeDefined();
+    });
+
+    it('should handle update when in_combat is undefined', () => {
+      const mockPlayer = {
+        id: 'player1',
+        name: 'TestPlayer',
+        stats: { current_dp: 50, max_dp: 100, lucidity: 75 },
+        in_combat: false,
+      };
+      mockContext.currentPlayerRef.current = mockPlayer as unknown as Player;
+      const event = {
+        event_type: 'player_update',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { stats: { magic_points: 50 } }, // in_combat not provided
+      };
+      const result = handlePlayerUpdate(event, mockContext, mockAppendMessage);
+      expect(result?.player).toBeDefined();
+      expect(result?.player?.in_combat).toBe(false); // Should preserve existing value
+    });
+
+    it('should handle update when stats is undefined', () => {
+      const mockPlayer = {
+        id: 'player1',
+        name: 'TestPlayer',
+        stats: { current_dp: 50, max_dp: 100, lucidity: 75 },
+        in_combat: false,
+      };
+      mockContext.currentPlayerRef.current = mockPlayer as unknown as Player;
+      const event = {
+        event_type: 'player_update',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { in_combat: true }, // stats not provided
+      };
+      const result = handlePlayerUpdate(event, mockContext, mockAppendMessage);
+      expect(result?.player).toBeDefined();
+      expect(result?.player?.in_combat).toBe(true);
+      expect(result?.player?.stats).toBeDefined(); // Should preserve existing stats
+    });
+  });
+
+  describe('handlePlayerDeliriumRespawned edge cases', () => {
+    it('should handle respawn without player stats', () => {
+      const mockPlayer = {
+        id: 'player1',
+        name: 'TestPlayer',
+        // No stats property
+      };
+      mockContext.lucidityStatusRef.current = { current: 0, max: 100, tier: 'lucid', liabilities: [] };
+      const event = {
+        event_type: 'player_delirium_respawned',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { player: mockPlayer },
+      };
+      const result = handlePlayerDeliriumRespawned(event, mockContext, mockAppendMessage);
+      expect(result?.player).toBeDefined();
+    });
+
+    it('should handle respawn without lucidity in stats', () => {
+      const mockPlayer = {
+        id: 'player1',
+        name: 'TestPlayer',
+        stats: { current_dp: 50 },
+      };
+      mockContext.lucidityStatusRef.current = { current: 0, max: 100, tier: 'lucid', liabilities: [] };
+      const event = {
+        event_type: 'player_delirium_respawned',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { player: mockPlayer },
+      };
+      const result = handlePlayerDeliriumRespawned(event, mockContext, mockAppendMessage);
+      expect(result?.player).toBeDefined();
     });
   });
 });

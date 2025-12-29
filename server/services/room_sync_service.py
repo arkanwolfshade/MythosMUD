@@ -1,4 +1,4 @@
-﻿"""
+"""
 Room synchronization service for MythosMUD.
 
 This module provides enhanced room synchronization capabilities including
@@ -334,7 +334,9 @@ class RoomSyncService:
 
         except (AttributeError, TypeError) as e:
             logger.error("Error processing room transition", error=str(e), exc_info=True)
-            return {"success": False, "errors": [str(e)], "player_id": transition_data.get("player_id")}
+            # Safely get player_id, or default to None if transition_data is None
+            player_id_for_log = transition_data.get("player_id") if isinstance(transition_data, dict) else None
+            return {"success": False, "errors": [str(e)], "player_id": player_id_for_log}
 
     def get_room_data_cache_stats(self) -> dict[str, Any]:
         """
