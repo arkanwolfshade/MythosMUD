@@ -1,5 +1,8 @@
 """
 Integration test for lucidity service round-trip.
+
+Tests that LucidityService can find or create a lucidity record,
+apply adjustments, and persist changes correctly.
 """
 
 import uuid
@@ -18,12 +21,14 @@ async def test_lucidity_adjustment_round_trip(session_factory):
     """
     Test that LucidityService can adjust lucidity and persist changes.
 
-    CRITICAL: This test is marked as serial to ensure it runs sequentially
-    and avoids Windows event loop issues with asyncpg.
+    This test verifies the full round-trip:
+    1. Create prerequisites (user, player)
+    2. Create initial lucidity record
+    3. Service finds and adjusts the record
+    4. Changes are persisted
     """
     async with session_factory() as session:
-        # Create user and player - keep player_id as UUID throughout
-        # Only convert to string when Player model requires it
+        # Create user and player - prerequisites for lucidity record
         user_id = uuid.uuid4()
         player_id = uuid.uuid4()
 
@@ -45,41 +50,43 @@ async def test_lucidity_adjustment_round_trip(session_factory):
             current_room_id="earth_arkhamcity_intersection_derby_high",
         )
 
-        # Create and commit user and player first to satisfy foreign key constraints
-        # This ensures they're persisted and visible to subsequent operations
+        # Create user and player first, commit to satisfy foreign key constraints
         session.add_all([user, player])
         await session.commit()
 
-        # Create lucidity record with initial value of 50
+        # Create lucidity record with known initial state
         # PlayerLucidity model expects player_id as UUID (Mapped[uuid.UUID])
+        initial_lcd = 50
         lucidity_record = PlayerLucidity(
             player_id=player_id,
-            current_lcd=50,
+            current_lcd=initial_lcd,
             current_tier="uneasy",
         )
         session.add(lucidity_record)
-        await session.commit()  # Commit so service can find it via database query
+        await session.commit()
 
-        # Apply adjustment - service expects UUID
+        # Now use the service to adjust the lucidity
         # The service will query for the record and should find the committed one
         service = LucidityService(session)
+        delta = -10
+        expected_new_lcd = initial_lcd + delta
+
         result = await service.apply_lucidity_adjustment(
             player_id=player_id,
-            delta=-10,
+            delta=delta,
             reason_code="test_adjustment",
         )
 
         # Verify the service result
-        assert result.previous_lcd == 50
-        assert result.new_lcd == 40
+        assert result.previous_lcd == initial_lcd
+        assert result.new_lcd == expected_new_lcd
 
         # Commit the service's modifications
         await session.commit()
 
-        # Verify persistence: the service should have modified the record it found
-        # Since we committed the lucidity_record before the service call, and the service
-        # queries for it, it should find and modify the same record
-        # We can verify by checking the service result and that commit succeeded
-        assert result.previous_lcd == 50
-        assert result.new_lcd == 40
-        assert result.new_tier in ("lucid", "uneasy", "fractured", "deranged", "catatonic")
+        # Verify persistence by reading the record back from the database
+        # Use a fresh query to ensure we're reading committed data
+        fetched = await session.get(PlayerLucidity, player_id)
+        assert fetched is not None
+        assert fetched.current_lcd == expected_new_lcd
+        assert fetched.current_tier == result.new_tier
