@@ -292,9 +292,10 @@ def test_message_queue_cleanup_old_messages_string_timestamp():
     player_id = "player_123"
 
     # Add message with ISO string timestamp
-    from datetime import datetime
+    from datetime import datetime, timedelta
 
-    old_dt = datetime.now(UTC).replace(hour=0, minute=0, second=0, microsecond=0)
+    # Create an old timestamp (at least 2 hours ago to ensure it's older than max_age_seconds=3600)
+    old_dt = datetime.now(UTC) - timedelta(hours=2)
     old_iso = old_dt.isoformat()
     recent_time = time.time() - 30
 
