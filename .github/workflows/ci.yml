@@ -60,6 +60,7 @@ jobs:
           source .venv-ci/bin/activate
           uv pip install -e .
           uv pip install -e ".[dev]"
+          uv pip install pytest-mock>=3.14.0
       - name: Install Playwright browsers
         run: |
           source .venv-ci/bin/activate

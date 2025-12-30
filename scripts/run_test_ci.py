@@ -172,7 +172,9 @@ else:
         "cd /workspace/client && npm run test:coverage && "
         "cd /workspace/client && npm run test && "
         # Use .venv from Docker volume (preserved from build, not overwritten by mount)
+        # Ensure pytest-mock is installed in the venv before running tests
         "cd /workspace && source .venv/bin/activate && "
+        "uv pip install pytest-mock>=3.14.0 && "
         "PYTHONUNBUFFERED=1 pytest server/tests/ --cov=server --cov-report=xml --cov-report=html "
         "--cov-config=.coveragerc -v --tb=short && "
         "uv run python scripts/check_coverage_thresholds.py"
