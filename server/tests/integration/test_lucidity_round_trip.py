@@ -71,8 +71,11 @@ async def test_lucidity_adjustment_round_trip(session_factory):
         assert result.previous_lcd == 50
         assert result.new_lcd == 40
 
+        # Expire the lucidity_record object to force SQLAlchemy to reload from database
+        # This ensures we're reading the committed changes, not a cached version
+        session.expire(lucidity_record)
+
         # Re-read from database - PlayerLucidity uses UUID as primary key
-        refreshed = await session.get(PlayerLucidity, player_id)
-        assert refreshed is not None
-        assert refreshed.current_lcd == 40
-        assert refreshed.current_tier == result.new_tier
+        # After expiring, accessing the attribute will trigger a fresh query
+        assert lucidity_record.current_lcd == 40
+        assert lucidity_record.current_tier == result.new_tier
