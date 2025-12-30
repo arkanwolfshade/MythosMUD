@@ -36,25 +36,25 @@ def integration_engine(integration_db_url: str) -> Generator[AsyncEngine, None, 
     Provide a SQLAlchemy async engine bound to the integration DB URL.
 
     CRITICAL: This fixture is session-scoped and creates the engine once.
-    On Windows, we use NullPool to avoid connection reuse across event loops.
-    This prevents "Event loop is closed" errors when connections from one test's
-    event loop are reused in another test's event loop.
+    We use NullPool on all platforms to avoid connection reuse across event loops.
+    This prevents "Event loop is closed" and "Future attached to different loop"
+    errors when connections from one test's event loop are reused in another test's
+    event loop, especially with pytest-xdist parallel execution.
     """
-    # Use NullPool on Windows to avoid connection reuse across event loops
+    # Use NullPool on all platforms to avoid connection reuse across event loops
     # This ensures each test gets a fresh connection tied to its own event loop
-    # On other platforms, we can use the default pool
-    import os
-
+    # This is critical for pytest-xdist parallel execution where each worker
+    # has its own event loop but may share the engine
     from sqlalchemy.pool import NullPool
 
-    pool_class = NullPool if os.name == "nt" else None
+    pool_class = NullPool
 
     # Create engine with connection pool settings optimized for tests
     engine = create_async_engine(
         integration_db_url,
         future=True,
         echo=False,
-        poolclass=pool_class,  # NullPool on Windows prevents cross-loop connection reuse
+        poolclass=pool_class,  # NullPool prevents cross-loop connection reuse on all platforms
         pool_pre_ping=True,  # Verify connections before using (if using a pool)
     )
     yield engine
@@ -75,7 +75,7 @@ async def session_factory(integration_engine: AsyncEngine) -> AsyncGenerator[asy
     CRITICAL: This fixture is function-scoped to ensure each test gets a fresh session factory.
     Tables are created on first use and persist across tests (cleaned by db_cleanup).
 
-    On Windows with NullPool, each test gets a fresh connection tied to its event loop.
+    With NullPool, each test gets a fresh connection tied to its event loop.
     """
     global _tables_created
 
