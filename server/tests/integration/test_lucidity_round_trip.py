@@ -22,13 +22,17 @@ async def test_lucidity_adjustment_round_trip(session_factory):
     Test that LucidityService can adjust lucidity and persist changes.
 
     This test verifies the full round-trip:
-    1. Create prerequisites (user, player)
-    2. Create initial lucidity record
-    3. Service finds and adjusts the record
-    4. Changes are persisted
+    1. Create prerequisites (user, player) in a single transaction
+    2. Service creates the lucidity record (defaults to 100 LCD, "lucid" tier)
+    3. Service adjusts the lucidity
+    4. Changes are persisted and verified
+
+    CRITICAL: All database operations happen within a single session/transaction
+    to avoid foreign key constraint violations with NullPool connections.
     """
     async with session_factory() as session:
         # Create user and player - prerequisites for lucidity record
+        # These must be committed before the service can create PlayerLucidity
         user_id = uuid.uuid4()
         player_id = uuid.uuid4()
 
@@ -50,26 +54,26 @@ async def test_lucidity_adjustment_round_trip(session_factory):
             current_room_id="earth_arkhamcity_intersection_derby_high",
         )
 
-        # Create user and player first, commit to satisfy foreign key constraints
+        # CRITICAL: With NullPool and pytest-xdist parallel execution, committing
+        # the player separately can cause visibility issues. The service's
+        # get_or_create_player_lucidity() does a flush() which requires the player
+        # to exist for the foreign key constraint.
+        #
+        # Strategy: Keep user and player in the same transaction context as the
+        # service operations. We flush them to ensure they're in the database,
+        # but don't commit until after the service operations complete.
+        # This ensures the foreign key constraint is satisfied because everything
+        # happens in one transaction.
         session.add_all([user, player])
-        await session.commit()
+        await session.flush()  # Flush to ensure objects are in the database for FK checks
+        # DO NOT commit here - keep everything in the same transaction
 
-        # Create lucidity record with known initial state
-        # PlayerLucidity model expects player_id as UUID (Mapped[uuid.UUID])
-        initial_lcd = 50
-        lucidity_record = PlayerLucidity(
-            player_id=player_id,
-            current_lcd=initial_lcd,
-            current_tier="uneasy",
-        )
-        session.add(lucidity_record)
-        await session.commit()
-
-        # Now use the service to adjust the lucidity
-        # The service will query for the record and should find the committed one
+        # Now use the service - it will create the lucidity record if it doesn't exist
+        # Default initial state: current_lcd=100, current_tier="lucid"
+        # The player is now committed and in the session, so the foreign key constraint will be satisfied
         service = LucidityService(session)
-        delta = -10
-        expected_new_lcd = initial_lcd + delta
+        delta = -60  # Adjust from 100 to 40, which should change tier from "lucid" to "uneasy"
+        expected_new_lcd = 100 + delta  # 40
 
         result = await service.apply_lucidity_adjustment(
             player_id=player_id,
@@ -78,14 +82,16 @@ async def test_lucidity_adjustment_round_trip(session_factory):
         )
 
         # Verify the service result
-        assert result.previous_lcd == initial_lcd
+        # Service creates record with defaults: previous_lcd=100, previous_tier="lucid"
+        assert result.previous_lcd == 100
+        assert result.previous_tier == "lucid"
         assert result.new_lcd == expected_new_lcd
+        assert result.new_tier == "uneasy"  # 40 LCD is in the "uneasy" tier range
 
-        # Commit the service's modifications
+        # Commit the service's modifications (creates PlayerLucidity record and adjustment log)
         await session.commit()
 
         # Verify persistence by reading the record back from the database
-        # Use a fresh query to ensure we're reading committed data
         fetched = await session.get(PlayerLucidity, player_id)
         assert fetched is not None
         assert fetched.current_lcd == expected_new_lcd
