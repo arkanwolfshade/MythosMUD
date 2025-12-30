@@ -23,44 +23,28 @@ async def test_lucidity_adjustment_round_trip(session_factory):
     """
     async with session_factory() as session:
         # Create user and player
-        user_id = str(uuid.uuid4())
-        player_id = str(uuid.uuid4())
+        # Keep player_id as UUID throughout - only convert to string when Player model requires it
+        user_id = uuid.uuid4()
+        player_id = uuid.uuid4()
 
         user = User(
-            id=user_id,
+            id=str(user_id),
             email=f"test_{user_id}@example.com",
-            username=f"testuser_{user_id[:8]}",
-            display_name=f"Test User {user_id[:8]}",
+            username=f"testuser_{str(user_id)[:8]}",
+            display_name=f"Test User {str(user_id)[:8]}",
             hashed_password="hashed",
             is_active=True,
             is_superuser=False,
             is_verified=True,
         )
+        # Player model expects player_id as string (Mapped[str]) even though DB stores UUID
         player = Player(
-            player_id=player_id,
-            user_id=user_id,
-            name=f"testplayer_{player_id[:8]}",
+            player_id=str(player_id),
+            user_id=str(user_id),
+            name=f"testplayer_{str(player_id)[:8]}",
             current_room_id="earth_arkhamcity_intersection_derby_high",
         )
-
-        # Create all entities in the same transaction to ensure foreign key constraints
-        # are satisfied and all records are visible to queries within the same session
-        user = User(
-            id=user_id,
-            email=f"test_{user_id}@example.com",
-            username=f"testuser_{user_id[:8]}",
-            display_name=f"Test User {user_id[:8]}",
-            hashed_password="hashed",
-            is_active=True,
-            is_superuser=False,
-            is_verified=True,
-        )
-        player = Player(
-            player_id=player_id,
-            user_id=user_id,
-            name=f"testplayer_{player_id[:8]}",
-            current_room_id="earth_arkhamcity_intersection_derby_high",
-        )
+        # PlayerLucidity model expects player_id as UUID (Mapped[uuid.UUID])
         lucidity_record = PlayerLucidity(
             player_id=player_id,
             current_lcd=50,
@@ -72,10 +56,10 @@ async def test_lucidity_adjustment_round_trip(session_factory):
         session.add_all([user, player, lucidity_record])
         await session.flush()  # Flush to make records visible to queries in same session
 
-        # Apply adjustment
+        # Apply adjustment - service expects UUID
         service = LucidityService(session)
         result = await service.apply_lucidity_adjustment(
-            player_id=uuid.UUID(player_id),
+            player_id=player_id,
             delta=-10,
             reason_code="test_adjustment",
         )
@@ -86,7 +70,7 @@ async def test_lucidity_adjustment_round_trip(session_factory):
         assert result.previous_lcd == 50
         assert result.new_lcd == 40
 
-        # Re-read from database
+        # Re-read from database - PlayerLucidity uses UUID as primary key
         refreshed = await session.get(PlayerLucidity, player_id)
         assert refreshed is not None
         assert refreshed.current_lcd == 40
