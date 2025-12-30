@@ -44,6 +44,8 @@ async def test_lucidity_adjustment_round_trip(session_factory):
             name=f"testplayer_{str(player_id)[:8]}",
             current_room_id="earth_arkhamcity_intersection_derby_high",
         )
+
+        # Create lucidity record with initial value of 50
         # PlayerLucidity model expects player_id as UUID (Mapped[uuid.UUID])
         lucidity_record = PlayerLucidity(
             player_id=player_id,
@@ -51,13 +53,16 @@ async def test_lucidity_adjustment_round_trip(session_factory):
             current_tier="uneasy",
         )
 
-        # Add all entities and flush to make them visible within the same transaction
-        # This ensures foreign key constraints are satisfied and all records are visible
-        # to queries within the same session. With NullPool, this avoids event loop issues.
+        # Add all entities in the same transaction to ensure foreign key constraints are satisfied
+        # With NullPool, we need to ensure all related entities are in the same transaction
+        # We flush but don't commit yet - this makes records visible within the transaction
+        # so the service can find the lucidity_record when it queries
         session.add_all([user, player, lucidity_record])
         await session.flush()  # Flush to make records visible to queries in same session
 
         # Apply adjustment - service expects UUID
+        # The service should find the existing record via flush (visible in same transaction)
+        # The lucidity_record is in the session's identity map, so the service will find it
         service = LucidityService(session)
         result = await service.apply_lucidity_adjustment(
             player_id=player_id,
@@ -65,17 +70,20 @@ async def test_lucidity_adjustment_round_trip(session_factory):
             reason_code="test_adjustment",
         )
 
-        await session.commit()
-
-        # Verify result
+        # Verify the service result
         assert result.previous_lcd == 50
         assert result.new_lcd == 40
 
-        # Expire the lucidity_record object to force SQLAlchemy to reload from database
-        # This ensures we're reading the committed changes, not a cached version
-        session.expire(lucidity_record)
+        # Commit all changes together (initial entities + service modifications)
+        await session.commit()
 
-        # Re-read from database - PlayerLucidity uses UUID as primary key
-        # After expiring, accessing the attribute will trigger a fresh query
-        assert lucidity_record.current_lcd == 40
-        assert lucidity_record.current_tier == result.new_tier
+        # Re-read from database to verify persistence - PlayerLucidity uses UUID as primary key
+        # Use a fresh query to ensure we're reading committed changes from the database
+        from sqlalchemy import select
+
+        stmt = select(PlayerLucidity).where(PlayerLucidity.player_id == player_id)
+        result_query = await session.execute(stmt)
+        refreshed = result_query.scalar_one()
+        assert refreshed is not None
+        assert refreshed.current_lcd == 40
+        assert refreshed.current_tier == result.new_tier
