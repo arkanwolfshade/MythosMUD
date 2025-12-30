@@ -257,18 +257,28 @@ async def test_perform_recovery_action_cooldown_expired(active_lucidity_service,
 
 
 @pytest.mark.asyncio
-async def test_perform_recovery_action_naive_datetime_cooldown(active_lucidity_service, sample_player_id):
+async def test_perform_recovery_action_naive_datetime_cooldown(mock_session, sample_player_id):
     """Test perform_recovery_action() handles naive datetime in cooldown."""
+    # Use a fixed time to avoid timezone and timing issues
+    fixed_now = datetime(2024, 1, 15, 12, 0, 0, tzinfo=UTC)
+
+    def now_provider():
+        return fixed_now
+
+    service = ActiveLucidityService(mock_session, now_provider=now_provider)
+
     mock_result = MagicMock()
     mock_cooldown = MagicMock()
-    # Naive datetime (no timezone)
-    mock_cooldown.cooldown_expires_at = datetime.now() + timedelta(minutes=5)
-    active_lucidity_service._lucidity_service.get_cooldown = AsyncMock(return_value=mock_cooldown)
-    active_lucidity_service._lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
-    active_lucidity_service._lucidity_service.set_cooldown = AsyncMock()
+    # Naive datetime (no timezone) - set to expired cooldown (1 minute ago in naive time)
+    # The code converts naive datetime to UTC-aware using .replace(tzinfo=UTC)
+    # which treats the naive time as if it were already UTC
+    mock_cooldown.cooldown_expires_at = datetime(2024, 1, 15, 11, 59, 0)  # 1 minute before fixed_now
+    service._lucidity_service.get_cooldown = AsyncMock(return_value=mock_cooldown)
+    service._lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
+    service._lucidity_service.set_cooldown = AsyncMock()
 
-    # Should convert naive datetime to UTC-aware
-    result = await active_lucidity_service.perform_recovery_action(sample_player_id, action_code="pray")
+    # Should convert naive datetime to UTC-aware and allow action since cooldown is expired
+    result = await service.perform_recovery_action(sample_player_id, action_code="pray")
     assert result == mock_result
 
 
