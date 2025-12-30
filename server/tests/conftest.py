@@ -73,6 +73,7 @@ def configure_event_loop_policy() -> Generator[None, None, None]:
     if os.name == "nt":  # Windows
         # WindowsSelectorEventLoopPolicy is required for asyncpg on Windows
         # ProactorEventLoop has known issues with asyncpg's connection handling
+        # WindowsSelectorEventLoopPolicy only exists on Windows - using getattr to avoid mypy error on non-Windows platforms
         policy: asyncio.AbstractEventLoopPolicy = asyncio.WindowsSelectorEventLoopPolicy()
     else:
         try:

@@ -135,8 +135,10 @@ def get_username_auth_backend() -> UsernameAuthenticationBackend:
 
     # JWT strategy - return a function that creates the strategy
     def get_jwt_strategy() -> JWTStrategy:
+        # Use environment variable for JWT secret - CRITICAL: Must be set in production
+        jwt_secret = os.getenv("MYTHOSMUD_JWT_SECRET", "dev-jwt-secret")
         return JWTStrategy(
-            secret="SECRET",  # TODO: Move to env vars
+            secret=jwt_secret,
             lifetime_seconds=3600,  # 1 hour
             token_audience=["fastapi-users:auth"],
         )
