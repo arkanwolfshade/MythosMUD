@@ -51,10 +51,16 @@ async def test_lucidity_adjustment_round_trip(session_factory):
             current_tier="uneasy",
         )
 
-        # Add all entities and flush to make them visible within the same transaction
-        # This ensures get_or_create_player_lucidity will find the existing record
-        session.add_all([user, player, lucidity_record])
-        await session.flush()  # Flush to make records visible to queries in same session
+        # Add entities one at a time and commit to ensure they're persisted
+        # This avoids event loop issues with asyncpg when using add_all + flush
+        session.add(user)
+        await session.commit()
+
+        session.add(player)
+        await session.commit()
+
+        session.add(lucidity_record)
+        await session.commit()
 
         # Apply adjustment - service expects UUID
         service = LucidityService(session)
