@@ -1,4 +1,6 @@
+import json
 import os
+import time
 from datetime import UTC, datetime, timedelta
 
 from jose import JWTError, jwt
@@ -14,6 +16,37 @@ logger = get_logger(__name__)
 
 # Use environment variable for secret key - CRITICAL: Must be set in production
 # Use MYTHOSMUD_JWT_SECRET for consistency with FastAPI Users system
+# #region agent log
+log_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), ".cursor", "debug.log")
+try:
+    jwt_secret_env = os.environ.get("MYTHOSMUD_JWT_SECRET", "NOT_SET_AT_AUTH_UTILS_IMPORT")
+    with open(log_path, "a", encoding="utf-8") as f:
+        f.write(
+            json.dumps(
+                {
+                    "id": f"log_{int(time.time())}_auth_utils_import_jwt",
+                    "timestamp": int(time.time() * 1000),
+                    "location": "server/auth_utils.py:17",
+                    "message": "MYTHOSMUD_JWT_SECRET at auth_utils import time",
+                    "data": {
+                        "env_var_exists": "MYTHOSMUD_JWT_SECRET" in os.environ,
+                        "env_var_value": jwt_secret_env[:3] + "..."
+                        if len(jwt_secret_env) > 3 and jwt_secret_env != "NOT_SET_AT_AUTH_UTILS_IMPORT"
+                        else jwt_secret_env,
+                        "env_var_length": len(jwt_secret_env) if jwt_secret_env != "NOT_SET_AT_AUTH_UTILS_IMPORT" else 0,
+                        "is_empty_string": jwt_secret_env == "",
+                        "python_path": os.environ.get("PYTHONPATH", "NOT_SET"),
+                    },
+                    "sessionId": "debug-session",
+                    "runId": "ci-debug",
+                    "hypothesisId": "H1_H2_H3",
+                }
+            )
+            + "\n"
+        )
+except Exception:
+    pass  # Ignore logging errors
+# #endregion
 SECRET_KEY = os.getenv("MYTHOSMUD_JWT_SECRET")
 if not SECRET_KEY:
     logger.error("MYTHOSMUD_JWT_SECRET environment variable not set")

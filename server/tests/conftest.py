@@ -49,7 +49,9 @@ except Exception:
 # Use explicit assignment if empty, not setdefault (which only sets if key doesn't exist)
 if not os.environ.get("MYTHOSMUD_ADMIN_PASSWORD"):
     os.environ["MYTHOSMUD_ADMIN_PASSWORD"] = "test-admin-password-for-development"
-os.environ.setdefault("MYTHOSMUD_JWT_SECRET", "test-jwt-secret-key-for-testing-only")
+# Fix MYTHOSMUD_JWT_SECRET: handle empty strings (setdefault only sets if key doesn't exist)
+if not os.environ.get("MYTHOSMUD_JWT_SECRET"):
+    os.environ["MYTHOSMUD_JWT_SECRET"] = "test-jwt-secret-key-for-testing-only"
 os.environ.setdefault("SERVER_PORT", "54731")
 os.environ.setdefault("SERVER_HOST", "127.0.0.1")
 os.environ.setdefault("LOGGING_ENVIRONMENT", "unit_test")
