@@ -414,4 +414,3 @@ sqlite3 data/players/local_players.db "SELECT * FROM players;"
 **Remember**: This command activates the unified debugging and investigation system. Always follow the methodology from both rule files and generate comprehensive reports. Do not attempt to fix any issues discovered during investigation - only investigate, document, and analyze.
 
 **AI INSTRUCTION**: When this command is invoked, activate both `MYTHOSMUD_DEBUGGING_AGENT.mdc` and `GAME_BUG_INVESTIGATION_PLAYBOOK.mdc` rule files and follow their methodologies exactly. Generate a comprehensive investigation report with all findings, evidence, and analysis. If a root cause is identified, generate a remediation prompt for fixing the issue.
-

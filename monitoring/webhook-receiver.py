@@ -8,9 +8,8 @@ from sqlite3 import DatabaseError
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-from sqlalchemy.exc import SQLAlchemyError
-
 from server.logging.enhanced_logging_config import get_logger
+from sqlalchemy.exc import SQLAlchemyError
 
 logger = get_logger(__name__)
 

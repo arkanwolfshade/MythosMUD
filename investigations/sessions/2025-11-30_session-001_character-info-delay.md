@@ -1,8 +1,8 @@
 # BUG INVESTIGATION REPORT: Character Info Panel Real-Time Update Delay
 
-**Investigation Date:** 2025-11-30  
-**Investigator:** AI Assistant (GPT-4)  
-**Session ID:** 2025-11-30_session-001_character-info-delay  
+**Investigation Date:** 2025-11-30
+**Investigator:** AI Assistant (GPT-4)
+**Session ID:** 2025-11-30_session-001_character-info-delay
 **Bug Report:** Damage being done to me in combat is not reflected on the Character Info panel in real-time, there is a significant delay
 
 ---
@@ -291,7 +291,6 @@ This investigation may be related to:
 
 ---
 
-**Investigation Status:** COMPLETE  
-**Root Cause Identified:** YES  
+**Investigation Status:** COMPLETE
+**Root Cause Identified:** YES
 **Remediation Prompt Generated:** YES
-
