@@ -51,10 +51,9 @@ def test_default_cors_origins_with_env():
     """Test default CORS origins with env var set."""
     with patch.dict(os.environ, {"CORS_ALLOW_ORIGINS": '["http://example.com"]'}, clear=False):
         result = _default_cors_origins()
-        # Use explicit list membership check instead of substring matching to avoid CodeQL alert
+        # Use exact equality check instead of 'in' operator to avoid CodeQL alert
+        # This ensures we're checking for exact list match, not substring matching
         assert isinstance(result, list)
-        assert "http://example.com" in result
-        # Verify it's an exact match, not a substring
         assert result == ["http://example.com"]
 
 
