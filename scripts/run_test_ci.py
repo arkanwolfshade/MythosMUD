@@ -30,43 +30,9 @@ IN_CI = bool(CI or GITHUB_ACTIONS)
 
 if IN_CI:
     print("Running CI test suite directly (already in CI environment)...")
+    print("NOTE: Frontend tests are run in the 'React Client' CI job, not here.")
+    print("This job only runs backend Python tests.")
 
-    # Check if Node.js and npm are available, and install client dependencies if needed
-    client_dir = os.path.join(PROJECT_ROOT, "client")
-    node_modules_dir = os.path.join(client_dir, "node_modules")
-
-    # Check if Node.js is available
-    try:
-        subprocess.run(["node", "--version"], capture_output=True, check=True)
-        subprocess.run(["npm", "--version"], capture_output=True, check=True)
-        print("Node.js and npm are available")
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        print("WARNING: Node.js/npm not found. Skipping client tests.")
-        print("Client tests should be run in the frontend CI job instead.")
-    else:
-        # Install client dependencies if node_modules doesn't exist
-        if not os.path.exists(node_modules_dir):
-            print(f"Installing client dependencies in {client_dir}...")
-            subprocess.run(
-                ["npm", "ci"],
-                cwd=client_dir,
-                check=True,
-            )
-        else:
-            print("Client dependencies already installed")
-
-        # Client tests with coverage
-        subprocess.run(
-            ["npm", "run", "test:coverage"],
-            cwd=client_dir,
-            check=True,
-        )
-        # Client E2E tests
-        subprocess.run(
-            ["npm", "run", "test"],
-            cwd=client_dir,
-            check=True,
-        )
     # Server tests with coverage
     # Use Python from .venv-ci to run pytest as a module (cross-platform)
     if sys.platform == "win32":

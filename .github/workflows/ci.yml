@@ -237,5 +237,9 @@ jobs:
       - name: Lint with ESLint
         run: |
           npx eslint .
+      - name: Run unit tests with coverage
+        run: npm run test:coverage
+      - name: Run E2E tests
+        run: npm run test
       - name: Build React app
         run: npm run build

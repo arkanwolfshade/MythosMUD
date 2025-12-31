@@ -14,14 +14,18 @@ export function buildMythosTimeState(payload: MythosTimePayload): MythosTimeStat
   // Build date string without day of week - format: "September 21"
   let formattedDate = `${payload.month_name} ${payload.day_of_month}`;
 
+  // Ensure active_holidays is always an array (defensive coding for test mocks or incomplete API responses)
+  const activeHolidays = Array.isArray(payload.active_holidays) ? payload.active_holidays : [];
+
   // Append active holidays if any
-  if (payload.active_holidays && payload.active_holidays.length > 0) {
-    const holidayNames = payload.active_holidays.map(h => h.name).join(', ');
+  if (activeHolidays.length > 0) {
+    const holidayNames = activeHolidays.map(h => h.name).join(', ');
     formattedDate = `${formattedDate} - ${holidayNames}`;
   }
 
   return {
     ...payload,
+    active_holidays: activeHolidays,
     formatted_date: formattedDate,
   };
 }

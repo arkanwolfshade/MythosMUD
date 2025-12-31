@@ -43,7 +43,8 @@ export const useMythosTimeBootstrap = ({
         const nextState = buildMythosTimeState(payload);
         setMythosTime(nextState);
         lastDaypartRef.current = nextState.daypart;
-        lastHolidayIdsRef.current = nextState.active_holidays.map(h => h.id);
+        // Ensure active_holidays is always an array before calling .map() (defensive coding)
+        lastHolidayIdsRef.current = (nextState.active_holidays ?? []).map(h => h.id);
       } catch (error) {
         logger.warn('GameClientV2Container', 'Failed to bootstrap Mythos time', { error: String(error) });
       }
