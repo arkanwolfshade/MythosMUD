@@ -252,14 +252,12 @@ exclude = [
 ]
 
 # Per-module options - Third-party libraries without stubs or with incomplete stubs
+# NOTE: analyze_error_logs and error_monitoring are in scripts/ which is excluded from mypy
+# NOTE: prometheus_client is used in server.time which is excluded, so this override is unused but kept for future use
 [[tool.mypy.overrides]]
 module = [
     "strip_ansi.*",
     "asyncpg",
-    "analyze_error_logs",
-    "error_monitoring",
-    "server.tests.windows_logging_fix",
-    "server.tests.windows_event_loop_fix",
     "ftfy.*",
     "statemachine.*",
     "prometheus_client.*",
@@ -273,19 +271,21 @@ ignore_missing_imports = true
 
 # Exclude server.time module to avoid conflict with stdlib time module
 # Use follow_imports=skip to prevent mypy from processing this module
-[[tool.mypy.overrides]]
-module = ["server.time", "server.time.*"]
-follow_imports = "skip"
+# NOTE: This override is unused because server.time is in the exclude list, but kept for documentation
+# [[tool.mypy.overrides]]
+# module = ["server.time", "server.time.*"]
+# follow_imports = "skip"
 
-# Test files - ignore missing imports to focus on production code
+# Test files - use default settings (override removed as it matches defaults)
 # Human reader: Test files have many dynamic imports and mocks that confuse mypy
 # AI reader: Test files use extensive mocking and dynamic imports that mypy can't resolve
-[[tool.mypy.overrides]]
-module = "server.tests.*"
-ignore_missing_imports = false
-disallow_untyped_defs = false
-disallow_incomplete_defs = false
-check_untyped_defs = true
+# NOTE: Override removed because it matches default settings, making it unused
+# [[tool.mypy.overrides]]
+# module = "server.tests.*"
+# ignore_missing_imports = false
+# disallow_untyped_defs = false
+# disallow_incomplete_defs = false
+# check_untyped_defs = true
 
 # Libraries with local stubs - use our enhanced type definitions
 [[tool.mypy.overrides]]
@@ -304,9 +304,10 @@ ignore_missing_imports = false
 warn_return_any = false
 
 # Logging module - use targeted error code disabling instead of blanket ignore_errors
+# NOTE: Module is actually server.structured_logging, not server.logging
 [[tool.mypy.overrides]]
 module = [
-    "server.logging.*",
+    "server.structured_logging.*",
 ]
 # Disable specific error codes instead of ignore_errors = true
 disable_error_code = ["var-annotated", "no-untyped-def", "no-untyped-call"]
@@ -316,7 +317,7 @@ check_untyped_defs = false
 # Player GUID formatter relies on dynamic logging context; allow untyped for now
 [[tool.mypy.overrides]]
 module = [
-    "server.logging.player_guid_formatter",
+    "server.structured_logging.player_guid_formatter",
 ]
 disallow_untyped_defs = false
 check_untyped_defs = false
