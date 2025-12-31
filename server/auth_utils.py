@@ -33,7 +33,9 @@ try:
                         "env_var_value": jwt_secret_env[:3] + "..."
                         if len(jwt_secret_env) > 3 and jwt_secret_env != "NOT_SET_AT_AUTH_UTILS_IMPORT"
                         else jwt_secret_env,
-                        "env_var_length": len(jwt_secret_env) if jwt_secret_env != "NOT_SET_AT_AUTH_UTILS_IMPORT" else 0,
+                        "env_var_length": len(jwt_secret_env)
+                        if jwt_secret_env != "NOT_SET_AT_AUTH_UTILS_IMPORT"
+                        else 0,
                         "is_empty_string": jwt_secret_env == "",
                         "python_path": os.environ.get("PYTHONPATH", "NOT_SET"),
                     },
