@@ -299,7 +299,9 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
             id="character-name-input"
             type="text"
             value={characterName}
-            onChange={e => setCharacterName(e.target.value)}
+            onChange={e => {
+              setCharacterName(e.target.value);
+            }}
             placeholder="Enter your character's name"
             maxLength={50}
             minLength={1}

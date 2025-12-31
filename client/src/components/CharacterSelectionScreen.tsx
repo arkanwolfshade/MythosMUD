@@ -171,7 +171,9 @@ export const CharacterSelectionScreen: React.FC<CharacterSelectionScreenProps> =
                       Select Character
                     </button>
                     <button
-                      onClick={() => handleDeleteClick(character.player_id)}
+                      onClick={() => {
+                        handleDeleteClick(character.player_id);
+                      }}
                       className="delete-character-button"
                       disabled={isDeleting === character.player_id}
                       type="button"

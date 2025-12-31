@@ -163,7 +163,7 @@ describe.skip('App.tsx Logout State Management', () => {
 
       // Complete logout by resolving the promise
       expect(resolveLogout).toBeDefined();
-      resolveLogout!();
+      resolveLogout?.();
 
       await waitFor(() => {
         expect(screen.getByPlaceholderText('Username')).toBeInTheDocument();
@@ -212,7 +212,7 @@ describe.skip('App.tsx Logout State Management', () => {
 
       // Complete logout by resolving the promise
       expect(resolveLogout).toBeDefined();
-      resolveLogout!();
+      resolveLogout?.();
       await waitFor(() => {
         expect(screen.getByPlaceholderText('Username')).toBeInTheDocument();
       });
