@@ -18,7 +18,6 @@ from pydantic import BaseModel, Field, field_validator
 from ..auth.users import get_current_user
 from ..error_types import ErrorMessages
 from ..exceptions import LoggedHTTPException, RateLimitError, ValidationError
-from ..logging.enhanced_logging_config import get_logger
 from ..models.container import ContainerComponent
 from ..models.user import User
 
@@ -38,6 +37,7 @@ from ..services.container_websocket_events import (
     emit_container_updated,
 )
 from ..services.inventory_service import InventoryStack
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.audit_logger import audit_logger
 from ..utils.error_logging import create_context_from_request
 from ..utils.rate_limiter import RateLimiter

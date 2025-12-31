@@ -114,11 +114,44 @@ async def _resolve_player_id_from_token(websocket: WebSocket, payload: dict[str,
     """
     Resolve player ID from JWT token payload.
     Validates that the user has a player record before returning.
+
+    MULTI-CHARACTER: If character_id is provided in query params, use that character.
+    Otherwise, fall back to first active character (backward compatibility).
     """
     user_id = str(payload["sub"]).strip()
     from ..async_persistence import get_async_persistence
 
     async_persistence = get_async_persistence()
+
+    # MULTI-CHARACTER: Check if character_id is provided in query params
+    character_id_str = websocket.query_params.get("character_id")
+    if character_id_str:
+        try:
+            character_uuid = uuid.UUID(character_id_str)
+            # Validate the character belongs to the user
+            player = await async_persistence.get_player_by_id(character_uuid)
+            if not player:
+                context = create_context_from_websocket(websocket)
+                context.user_id = user_id
+                raise LoggedHTTPException(status_code=404, detail="Character not found", context=context)
+            # Validate character belongs to user
+            if str(player.user_id) != user_id:
+                context = create_context_from_websocket(websocket)
+                context.user_id = user_id
+                raise LoggedHTTPException(status_code=403, detail="Character does not belong to user", context=context)
+            # Validate character is not deleted
+            if player.is_deleted:
+                context = create_context_from_websocket(websocket)
+                context.user_id = user_id
+                raise LoggedHTTPException(status_code=404, detail="Character has been deleted", context=context)
+            # Use the specified character
+            player_id_value = cast(uuid.UUID | str, player.player_id)
+            return uuid.UUID(str(player_id_value))
+        except ValueError:
+            # Invalid UUID format, fall through to default behavior
+            pass
+
+    # Fallback: Get first active character (backward compatibility)
     player = await async_persistence.get_player_by_user_id(user_id)
 
     if not player:
@@ -156,7 +189,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
     WebSocket endpoint for interactive commands and chat.
     Supports session tracking for dual connection management.
     """
-    from ..logging.enhanced_logging_config import get_logger
+    from ..structured_logging.enhanced_logging_config import get_logger
 
     logger = get_logger(__name__)
 
@@ -188,7 +221,7 @@ async def get_player_connections(player_id: uuid.UUID, request: Request) -> dict
     Get connection information for a player.
     Returns detailed connection metadata including session information.
     """
-    from ..logging.enhanced_logging_config import get_logger
+    from ..structured_logging.enhanced_logging_config import get_logger
 
     logger = get_logger(__name__)
 
@@ -228,7 +261,7 @@ async def handle_new_game_session(player_id: uuid.UUID, request: Request) -> dic
     """
     import json
 
-    from ..logging.enhanced_logging_config import get_logger
+    from ..structured_logging.enhanced_logging_config import get_logger
 
     logger = get_logger(__name__)
 
@@ -271,7 +304,7 @@ async def get_connection_statistics(request: Request) -> dict[str, Any]:
     Get comprehensive connection statistics.
     Returns detailed statistics about all connections, sessions, and presence.
     """
-    from ..logging.enhanced_logging_config import get_logger
+    from ..structured_logging.enhanced_logging_config import get_logger
 
     logger = get_logger(__name__)
 
@@ -300,7 +333,7 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None
     prefers JWT token identity when provided.
     Supports session tracking for dual connection management.
     """
-    from ..logging.enhanced_logging_config import get_logger
+    from ..structured_logging.enhanced_logging_config import get_logger
 
     logger = get_logger(__name__)
 

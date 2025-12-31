@@ -7,9 +7,9 @@ This module handles the /teach command for NPCs to teach spells to players.
 from typing import Any
 
 from server.alias_storage import AliasStorage
-from server.logging.enhanced_logging_config import get_logger
 from server.schemas.target_resolution import TargetType
 from server.services.target_resolution_service import TargetResolutionService
+from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.command_parser import get_username_from_user
 
 logger = get_logger(__name__)

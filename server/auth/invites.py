@@ -14,8 +14,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..database import get_async_session
 from ..exceptions import LoggedHTTPException
-from ..logging.enhanced_logging_config import get_logger
 from ..models.invite import Invite
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import create_context_from_request
 
 logger = get_logger(__name__)

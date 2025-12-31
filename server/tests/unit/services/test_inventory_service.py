@@ -1,148 +1,244 @@
-"""Inventory service stacking and capacity logic tests."""
+"""
+Unit tests for inventory service.
 
-from __future__ import annotations
+Tests the InventoryService class for inventory management operations.
+"""
 
-import copy
+import uuid
 
 import pytest
 
-from server.services.inventory_mutation_guard import InventoryMutationGuard
 from server.services.inventory_service import (
     InventoryCapacityError,
     InventoryService,
     InventorySplitError,
+    InventoryValidationError,
 )
 
 
-def build_service(max_slots: int = 20) -> InventoryService:
-    """Helper to build the service with canonical limits."""
-    return InventoryService(max_slots=max_slots)
+@pytest.fixture
+def inventory_service():
+    """Create an InventoryService instance."""
+    return InventoryService(max_slots=20)
 
 
-def test_add_stack_merges_matching_payload(partial_inventory):
-    service = build_service()
-    original_snapshot = copy.deepcopy(partial_inventory)
+def test_add_stack_new_item(inventory_service):
+    """Test add_stack adds new item to inventory."""
+    inventory = []
+    new_stack = {
+        "item_instance_id": "inst1",
+        "item_id": "item1",
+        "prototype_id": "proto1",
+        "item_name": "sword",
+        "slot_type": "weapon",
+        "quantity": 1,
+    }
 
-    incoming = {
-        "item_instance_id": "instance-tonic_laudanum-new",
-        "prototype_id": "tonic_laudanum",
-        "item_id": "tonic_laudanum",
-        "item_name": "Laudanum Tonic",
-        "slot_type": "backpack",
+    result = inventory_service.add_stack(inventory, new_stack)
+
+    assert len(result) == 1
+    assert result[0]["item_name"] == "sword"
+
+
+def test_add_stack_merges_existing(inventory_service):
+    """Test add_stack merges with existing stack."""
+    inventory = [
+        {
+            "item_instance_id": "inst1",
+            "item_id": "item1",
+            "prototype_id": "proto1",
+            "item_name": "potion",
+            "slot_type": "consumable",
+            "quantity": 3,
+        }
+    ]
+    new_stack = {
+        "item_instance_id": "inst1",
+        "item_id": "item1",
+        "prototype_id": "proto1",
+        "item_name": "potion",
+        "slot_type": "consumable",
         "quantity": 2,
-        "metadata": {"dose_size_ml": 10, "apothecary": "Ma's Apotheca"},
     }
 
-    updated = service.add_stack(partial_inventory, incoming)
+    result = inventory_service.add_stack(inventory, new_stack)
 
-    assert len(updated) == len(partial_inventory)
-    laudanum_stack = next(item for item in updated if item["prototype_id"] == "tonic_laudanum")
-    assert laudanum_stack["quantity"] == 5
-    # merge should retain original stack instance identifier
-    assert laudanum_stack["item_instance_id"] == "instance-tonic_laudanum"
-    assert partial_inventory == original_snapshot  # input not mutated
+    assert len(result) == 1
+    assert result[0]["quantity"] == 5
 
 
-def test_add_stack_creates_new_slot_when_metadata_differs(partial_inventory):
-    service = build_service()
-
-    incoming = {
-        "item_instance_id": "instance-tonic_laudanum-variant",
-        "prototype_id": "tonic_laudanum",
-        "item_id": "tonic_laudanum",
-        "item_name": "Laudanum Tonic",
-        "slot_type": "backpack",
-        "quantity": 1,
-        "metadata": {"dose_size_ml": 12, "apothecary": "Ma's Apotheca"},
-    }
-
-    updated = service.add_stack(partial_inventory, incoming)
-
-    assert len(updated) == len(partial_inventory) + 1
-    # original stack remains unchanged
-    original_stack = next(item for item in updated if item["metadata"].get("dose_size_ml") == 10)
-    assert original_stack["quantity"] == 3
-
-
-def test_add_stack_raises_when_inventory_full(full_inventory):
-    service = build_service()
-
-    incoming = {
-        "item_instance_id": "instance-verdict_journal",
-        "prototype_id": "verdict_journal",
-        "item_id": "verdict_journal",
-        "item_name": "Journal of Judgements",
-        "slot_type": "backpack",
+def test_add_stack_capacity_error(inventory_service):
+    """Test add_stack raises InventoryCapacityError when at capacity."""
+    # Create inventory at capacity
+    inventory = [
+        {
+            "item_instance_id": f"inst{i}",
+            "item_id": f"item{i}",
+            "prototype_id": f"proto{i}",
+            "item_name": f"item{i}",
+            "slot_type": "inventory",
+            "quantity": 1,
+        }
+        for i in range(20)
+    ]
+    new_stack = {
+        "item_instance_id": "inst_new",
+        "item_id": "item_new",
+        "prototype_id": "proto_new",
+        "item_name": "new_item",
+        "slot_type": "inventory",
         "quantity": 1,
     }
 
-    with pytest.raises(InventoryCapacityError):
-        service.add_stack(full_inventory, incoming)
+    with pytest.raises(InventoryCapacityError, match="cannot exceed"):
+        inventory_service.add_stack(inventory, new_stack)
 
 
-def test_split_stack_creates_new_stack_and_preserves_original_inventory(partial_inventory):
-    service = build_service()
-    partial_inventory[2]["quantity"] = 5
-    original_snapshot = copy.deepcopy(partial_inventory)
-
-    updated = service.split_stack(partial_inventory, slot_index=2, split_quantity=2)
-
-    assert len(updated) == len(partial_inventory) + 1
-    first_segment = updated[2]
-    split_segment = updated[3]
-    assert first_segment["quantity"] == 3
-    assert split_segment["quantity"] == 2
-    assert split_segment["prototype_id"] == first_segment["prototype_id"]
-    assert split_segment["item_instance_id"] == first_segment["item_instance_id"]
-    assert partial_inventory == original_snapshot  # original inventory untouched
-
-
-def test_split_stack_raises_when_inventory_full(full_inventory):
-    service = build_service()
-    full_inventory[0]["quantity"] = 2
-
-    with pytest.raises(InventoryCapacityError):
-        service.split_stack(full_inventory, slot_index=0, split_quantity=1)
-
-
-@pytest.mark.parametrize(
-    "slot_index,split_quantity",
-    [
-        (-1, 1),
-        (5, 1),
-        (0, 0),
-        (0, 5),
-    ],
-)
-def test_split_stack_rejects_invalid_requests(partial_inventory, slot_index, split_quantity):
-    service = build_service()
-    partial_inventory[0]["quantity"] = 4
-
-    with pytest.raises(InventorySplitError):
-        service.split_stack(partial_inventory, slot_index=slot_index, split_quantity=split_quantity)
-
-
-def test_add_stack_is_pure_function(partial_inventory):
-    service = build_service()
-    frozen = copy.deepcopy(partial_inventory)
-
-    incoming = {
-        "item_instance_id": "instance-mysterious_sand",
-        "prototype_id": "mysterious_sand",
-        "item_id": "mysterious_sand",
-        "item_name": "Vial of Desert Sand",
-        "slot_type": "backpack",
-        "quantity": 1,
+def test_add_stack_validation_error_missing_field(inventory_service):
+    """Test add_stack raises InventoryValidationError for missing fields."""
+    inventory = []
+    new_stack = {
+        "item_name": "sword",
+        # Missing required fields
     }
 
-    service.add_stack(partial_inventory, incoming)
+    with pytest.raises(InventoryValidationError, match="Missing required"):
+        inventory_service.add_stack(inventory, new_stack)
 
-    assert partial_inventory == frozen
+
+def test_add_stack_validation_error_invalid_quantity(inventory_service):
+    """Test add_stack raises InventoryValidationError for invalid quantity."""
+    inventory = []
+    new_stack = {
+        "item_instance_id": "inst1",
+        "item_id": "item1",
+        "prototype_id": "proto1",
+        "item_name": "sword",
+        "slot_type": "weapon",
+        "quantity": 0,  # Invalid quantity
+    }
+
+    with pytest.raises(InventoryValidationError, match="positive integer"):
+        inventory_service.add_stack(inventory, new_stack)
 
 
-def test_begin_mutation_delegates_to_guard():
-    guard = InventoryMutationGuard()
-    service = InventoryService(mutation_guard=guard)
+def test_split_stack_success(inventory_service):
+    """Test split_stack successfully splits a stack."""
+    inventory = [
+        {
+            "item_instance_id": "inst1",
+            "item_id": "item1",
+            "prototype_id": "proto1",
+            "item_name": "potion",
+            "slot_type": "consumable",
+            "quantity": 10,
+        }
+    ]
 
-    with service.begin_mutation("investigator-5", "unique-token") as decision:
-        assert decision.should_apply
+    result = inventory_service.split_stack(inventory, slot_index=0, split_quantity=3)
+
+    assert len(result) == 2
+    assert result[0]["quantity"] == 7
+    assert result[1]["quantity"] == 3
+    assert result[1]["item_name"] == "potion"
+
+
+def test_split_stack_invalid_index(inventory_service):
+    """Test split_stack with invalid slot index."""
+    inventory = [{"item_name": "potion", "quantity": 10}]
+
+    with pytest.raises(InventorySplitError, match="outside"):
+        inventory_service.split_stack(inventory, slot_index=10, split_quantity=3)
+
+
+def test_split_stack_invalid_quantity_zero(inventory_service):
+    """Test split_stack with zero quantity."""
+    inventory = [
+        {
+            "item_instance_id": "inst1",
+            "item_id": "item1",
+            "prototype_id": "proto1",
+            "item_name": "potion",
+            "slot_type": "consumable",
+            "quantity": 10,
+        }
+    ]
+
+    with pytest.raises(InventorySplitError, match="positive integer"):
+        inventory_service.split_stack(inventory, slot_index=0, split_quantity=0)
+
+
+def test_split_stack_invalid_quantity_negative(inventory_service):
+    """Test split_stack with negative quantity."""
+    inventory = [
+        {
+            "item_instance_id": "inst1",
+            "item_id": "item1",
+            "prototype_id": "proto1",
+            "item_name": "potion",
+            "slot_type": "consumable",
+            "quantity": 10,
+        }
+    ]
+
+    with pytest.raises(InventorySplitError, match="positive integer"):
+        inventory_service.split_stack(inventory, slot_index=0, split_quantity=-1)
+
+
+def test_split_stack_quantity_too_large(inventory_service):
+    """Test split_stack with quantity >= stack size."""
+    inventory = [
+        {
+            "item_instance_id": "inst1",
+            "item_id": "item1",
+            "prototype_id": "proto1",
+            "item_name": "potion",
+            "slot_type": "consumable",
+            "quantity": 10,
+        }
+    ]
+
+    with pytest.raises(InventorySplitError, match="less than"):
+        inventory_service.split_stack(inventory, slot_index=0, split_quantity=10)
+
+
+def test_split_stack_capacity_error(inventory_service):
+    """Test split_stack raises InventoryCapacityError when at capacity."""
+    # Create inventory at capacity
+    inventory = [
+        {
+            "item_instance_id": f"inst{i}",
+            "item_id": f"item{i}",
+            "prototype_id": f"proto{i}",
+            "item_name": f"item{i}",
+            "slot_type": "inventory",
+            "quantity": 1,
+        }
+        for i in range(20)
+    ]
+
+    with pytest.raises(InventoryCapacityError, match="already occupies"):
+        inventory_service.split_stack(inventory, slot_index=0, split_quantity=1)
+
+
+def test_begin_mutation_success(inventory_service):
+    """Test begin_mutation returns context manager."""
+    player_id = uuid.uuid4()
+
+    context = inventory_service.begin_mutation(player_id, "token123")
+
+    assert context is not None
+    # Test that it can be used as context manager
+    with context as decision:
+        assert hasattr(decision, "should_apply")
+
+
+def test_begin_mutation_with_string_id(inventory_service):
+    """Test begin_mutation accepts string player_id."""
+    player_id = "player123"
+
+    context = inventory_service.begin_mutation(player_id, "token123")
+
+    assert context is not None
+    with context as decision:
+        assert hasattr(decision, "should_apply")

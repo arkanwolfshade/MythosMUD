@@ -7,7 +7,7 @@ This module contains handlers for communication-related commands like say, me, a
 from typing import Any
 
 from ..alias_storage import AliasStorage
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
 
 logger = get_logger(__name__)

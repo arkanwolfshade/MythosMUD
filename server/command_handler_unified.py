@@ -24,9 +24,9 @@ from .commands.command_service import CommandService
 from .config import get_config
 from .database import get_async_session
 from .exceptions import ValidationError
-from .logging.enhanced_logging_config import get_logger
 from .middleware.command_rate_limiter import command_rate_limiter
 from .models.lucidity import PlayerLucidity
+from .structured_logging.enhanced_logging_config import get_logger
 from .utils.alias_graph import AliasGraph
 from .utils.audit_logger import audit_logger
 from .utils.command_parser import get_username_from_user

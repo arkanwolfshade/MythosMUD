@@ -17,7 +17,7 @@ from ..events import EventBus
 from ..events.event_types import NPCAttacked
 from ..exceptions import DatabaseError, ValidationError
 from ..game.mechanics import GameMechanicsService
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 # Removed: from ..persistence import get_persistence - now using async_persistence
 

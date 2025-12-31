@@ -8,7 +8,7 @@ import inspect
 from typing import Any
 
 from ..alias_storage import AliasStorage
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
 from ..utils.player_cache import cache_player, get_cached_player
 

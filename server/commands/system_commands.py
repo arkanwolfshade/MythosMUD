@@ -8,9 +8,30 @@ from typing import Any
 
 from ..alias_storage import AliasStorage
 from ..help.help_content import get_help_content
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
+
+
+async def handle_system_command(
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+) -> dict[str, str]:
+    """
+    Broadcast a system-level message via the chat service if available.
+    """
+    message = command_data.get("message")
+    if not message:
+        return {"result": "Usage: system <message>"}
+
+    app = getattr(request, "app", None) if request else None
+    state = getattr(app, "state", None) if app else None
+    chat_service = getattr(state, "chat_service", None) if state else None
+
+    if not chat_service or not hasattr(chat_service, "send_system_message"):
+        return {"result": "System messaging is not available."}
+
+    await chat_service.send_system_message(message)
+    return {"result": f"System message sent: {message}"}
 
 
 async def handle_help_command(

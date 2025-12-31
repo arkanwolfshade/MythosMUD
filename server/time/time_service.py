@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING, Protocol
 from prometheus_client import Counter
 
 from server.config import get_config
-from server.logging.enhanced_logging_config import get_logger
+from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:  # pragma: no cover - only used for type hints
     from server.config.models import TimeConfig

@@ -13,15 +13,14 @@ that dimensional shifts are properly recorded.
 import threading
 import time
 import uuid
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
+
+from sqlalchemy.exc import SQLAlchemyError
 
 from ..events import EventBus
 from ..exceptions import DatabaseError, ValidationError
-from ..logging.enhanced_logging_config import get_logger
 from ..models.room import Room
-
-# Removed: from ..persistence import get_persistence - now using async_persistence parameter
-from ..services.exploration_service import get_exploration_service
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import create_error_context, log_and_raise
 from .movement_monitor import get_movement_monitor
 
@@ -47,6 +46,7 @@ class MovementService:
         event_bus: EventBus | None = None,
         player_combat_service=None,
         async_persistence: "AsyncPersistenceLayer | None" = None,
+        exploration_service: Any = None,
     ):
         """
         Initialize the movement service.
@@ -55,6 +55,7 @@ class MovementService:
             event_bus: Optional EventBus instance for movement events
             player_combat_service: Optional PlayerCombatService for combat state checking
             async_persistence: Optional AsyncPersistenceLayer instance (required for persistence operations)
+            exploration_service: Optional ExplorationService for tracking room exploration
         """
         self._event_bus = event_bus
         if async_persistence is None:
@@ -63,8 +64,13 @@ class MovementService:
         self._lock = threading.RLock()
         self._logger = get_logger("MovementService")
         self._player_combat_service = player_combat_service
+        self._exploration_service = exploration_service
 
-        self._logger.info("MovementService initialized", has_combat_service=bool(player_combat_service))
+        self._logger.info(
+            "MovementService initialized",
+            has_combat_service=bool(player_combat_service),
+            has_exploration_service=bool(exploration_service),
+        )
 
     async def move_player(self, player_id: uuid.UUID | str, from_room_id: str, to_room_id: str) -> bool:
         """
@@ -326,16 +332,17 @@ class MovementService:
                 # As documented in the Pnakotic Manuscripts, exploration tracking is essential
                 # for maintaining awareness of dimensional territories traversed
                 try:
-                    exploration_service = get_exploration_service()
-                    # Use sync wrapper - exploration failures should not block movement
-                    # Ensure player_id is UUID (mark_room_as_explored_sync expects UUID)
-                    player_uuid = (
-                        resolved_player_id
-                        if isinstance(resolved_player_id, uuid.UUID)
-                        else uuid.UUID(resolved_player_id)
-                    )
-                    exploration_service.mark_room_as_explored_sync(player_uuid, to_room_id)
-                except Exception as e:
+                    exploration_service = self._exploration_service
+                    if exploration_service:
+                        # Use sync wrapper - exploration failures should not block movement
+                        # Ensure player_id is UUID (mark_room_as_explored_sync expects UUID)
+                        player_uuid = (
+                            resolved_player_id
+                            if isinstance(resolved_player_id, uuid.UUID)
+                            else uuid.UUID(resolved_player_id)
+                        )
+                        exploration_service.mark_room_as_explored_sync(player_uuid, to_room_id)
+                except (DatabaseError, SQLAlchemyError) as e:
                     # Log but don't raise - exploration tracking is non-critical
                     self._logger.warning(
                         "Failed to mark room as explored (non-blocking)",
@@ -348,7 +355,7 @@ class MovementService:
                 self._logger.info("Successfully moved player", player_id=resolved_player_id, room_id=to_room_id)
                 return True
 
-            except Exception as e:
+            except (DatabaseError, SQLAlchemyError) as e:
                 duration_ms = (time.time() - start_time) * 1000
                 timing_breakdown["total_ms"] = duration_ms
 
@@ -427,7 +434,7 @@ class MovementService:
                 )
                 return False
             return True
-        except Exception as e:
+        except (DatabaseError, SQLAlchemyError) as e:
             self._logger.warning(
                 "COMBAT CHECK: Exception during combat check, allowing movement",
                 player_id=player_id,
@@ -446,7 +453,7 @@ class MovementService:
                     stats = {}
                 posture_value = stats.get("position", "standing")
                 posture = posture_value.lower() if isinstance(posture_value, str) else "standing"
-            except Exception as exc:
+            except (DatabaseError, SQLAlchemyError) as exc:
                 self._logger.warning(
                     "POSITION CHECK: Failed to load player stats",
                     player_id=player_id,
@@ -481,7 +488,7 @@ class MovementService:
                         player_id=player_id,
                         room_id=from_room_id,
                     )
-                    from_room._players.add(str(player_id))
+                    from_room.add_player_silently(player_id)
                     return True
                 else:
                     self._logger.error(
@@ -494,7 +501,7 @@ class MovementService:
             else:
                 self._logger.error("Player not found in database", player_id=player_id)
                 return False
-        except Exception as e:
+        except (DatabaseError, SQLAlchemyError) as e:
             self._logger.warning(
                 "Failed to verify player room from database",
                 player_id=player_id,
@@ -650,9 +657,7 @@ class MovementService:
                     return True  # Consider this a success
 
                 # Add player to room (direct addition to avoid triggering movement events during initial setup)
-                # Room._players is set[str], so convert UUID to string for internal storage
-                player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
-                room._players.add(player_id_str)
+                room.add_player_silently(player_id)
 
                 # Update player's room in persistence
                 # Convert to UUID for get_player if needed
@@ -678,7 +683,7 @@ class MovementService:
                 self._logger.info("Added player to room", player_id=player_id, room_id=room_id)
                 return True
 
-            except Exception as e:
+            except (DatabaseError, SQLAlchemyError) as e:
                 self._logger.error("Error adding player to room", player_id=player_id, room_id=room_id, error=str(e))
                 context = create_error_context()
                 context.metadata["player_id"] = player_id
@@ -748,7 +753,7 @@ class MovementService:
                 self._logger.info("Removed player from room", player_id=player_id, room_id=room_id)
                 return True
 
-            except Exception as e:
+            except (DatabaseError, SQLAlchemyError) as e:
                 self._logger.error(
                     "Error removing player from room", player_id=player_id, room_id=room_id, error=str(e)
                 )
@@ -796,7 +801,7 @@ class MovementService:
             player = await self._persistence.get_player_by_id(player_id_uuid)
             if player and hasattr(player, "current_room_id") and player.current_room_id:
                 return str(player.current_room_id)
-        except Exception as e:
+        except (DatabaseError, SQLAlchemyError) as e:
             self._logger.debug("Failed to get player room", player_id=player_id_uuid, error=str(e))
 
         return None

@@ -3,8 +3,34 @@
  */
 
 import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { GameClientV2Container } from '../GameClientV2Container';
+
+// Mock WebSocket globally to prevent connection errors in test environment
+global.WebSocket = vi.fn().mockImplementation(() => ({
+  send: vi.fn(),
+  close: vi.fn(),
+  addEventListener: vi.fn(),
+  removeEventListener: vi.fn(),
+  readyState: WebSocket.CONNECTING,
+})) as unknown as typeof WebSocket;
+
+// Mock URL constructor to handle relative URLs in tests
+const originalURL = global.URL;
+global.URL = vi.fn().mockImplementation((url: string, base?: string) => {
+  // If url is relative and no base is provided, use a default base
+  if (url.startsWith('/') && !base) {
+    return new originalURL(url, 'http://localhost');
+  }
+  return new originalURL(url, base);
+}) as unknown as typeof URL;
+
+// Mock fetch for API calls
+global.fetch = vi.fn().mockResolvedValue({
+  ok: true,
+  json: async () => ({}),
+  text: async () => '',
+}) as unknown as typeof fetch;
 
 // Mock all dependencies
 vi.mock('../GameClientV2', () => ({

@@ -119,5 +119,55 @@ describe('messageUtils', () => {
       const result = sanitizeChatMessageForState(message);
       expect(result.messageType).toBe('error');
     });
+
+    it('should handle message with all fields missing', () => {
+      const message = {
+        text: 'Test',
+        timestamp: new Date().toISOString(),
+        isHtml: false,
+      } as ChatMessage;
+
+      const result = sanitizeChatMessageForState(message);
+      expect(result.type).toBe('system');
+      expect(result.channel).toBe('system');
+      expect(result.messageType).toBe('system');
+    });
+
+    it('should handle message with empty string type', () => {
+      const message: ChatMessage = {
+        text: 'Test',
+        timestamp: new Date().toISOString(),
+        isHtml: false,
+        type: '',
+      };
+
+      const result = sanitizeChatMessageForState(message);
+      expect(result.type).toBe('');
+    });
+
+    it('should handle message with null type', () => {
+      const message = {
+        text: 'Test',
+        timestamp: new Date().toISOString(),
+        isHtml: false,
+        type: null,
+      } as unknown as ChatMessage;
+
+      const result = sanitizeChatMessageForState(message);
+      expect(result.type).toBe('system');
+    });
+
+    it('should handle message with empty rawText', () => {
+      const message: ChatMessage = {
+        text: 'Original',
+        timestamp: new Date().toISOString(),
+        isHtml: false,
+        rawText: '',
+      };
+
+      const result = sanitizeChatMessageForState(message);
+      expect(result.rawText).toBe('');
+      expect(result.text).toBe('');
+    });
   });
 });

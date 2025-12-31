@@ -12,7 +12,7 @@ from typing import Any, cast
 
 from ..app.tracked_task_manager import get_global_tracked_manager
 from ..events.event_types import NPCEnteredRoom, NPCLeftRoom
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .message_builders import MessageBuilder
 
 

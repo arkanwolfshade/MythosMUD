@@ -8,7 +8,7 @@ by both the room validator tool and the server for validating room data.
 import json
 import re
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 try:
     from jsonschema import ValidationError, validate
@@ -16,7 +16,10 @@ try:
     JSONSCHEMA_AVAILABLE = True
 except ImportError:
     JSONSCHEMA_AVAILABLE = False
-    ValidationError = Exception
+    # JUSTIFICATION: This is a fallback definition for ValidationError when the
+    # jsonschema library is unavailable. We catch ImportError explicitly above,
+    # but must provide a base Exception class for the subsequent try/except block.
+    ValidationError = Exception  # type: ignore[misc, assignment] # pylint: disable=broad-exception-caught
 
 
 class SchemaValidator:
@@ -72,11 +75,14 @@ class SchemaValidator:
         if not JSONSCHEMA_AVAILABLE:
             return [f"{file_path}: Schema validation not available (jsonschema not installed)"]
 
-        errors = []
+        errors: list[str] = []
 
         try:
-            validate(instance=data, schema=self.schema)
-        except ValidationError as e:
+            validate(instance=data, schema=cast(Any, self.schema))
+        except ValidationError as e:  # pylint: disable=broad-exception-caught
+            # JUSTIFICATION: If the 'jsonschema' library is not installed, ValidationError is
+            # aliased to 'Exception' as a fallback. We must catch it here to handle any
+            # unexpected validation errors gracefully without crashing the application.
             # Format validation error for better readability
             path = " -> ".join(str(p) for p in e.path) if e.path else "root"
             error_msg = f"Schema validation failed at {path}: {e.message}"
@@ -117,7 +123,7 @@ class SchemaValidator:
 
         except json.JSONDecodeError as e:
             return [f"{file_path}: Invalid JSON: {e}"]
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
             return [f"{file_path}: Error reading file: {e}"]
 
     def validate_room_database(self, room_database: dict[str, dict[str, Any]]) -> dict[str, list[str]]:

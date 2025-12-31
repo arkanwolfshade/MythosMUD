@@ -30,6 +30,7 @@ interface GameEvent {
 
 export interface UseGameConnectionOptions {
   authToken: string;
+  characterId?: string; // MULTI-CHARACTER: Selected character ID for WebSocket connection
   sessionId?: string;
   onEvent?: (event: GameEvent) => void;
   onConnect?: () => void;
@@ -71,6 +72,7 @@ const generateSecureSessionId = (): string => {
 export function useGameConnection(options: UseGameConnectionOptions) {
   const {
     authToken,
+    characterId,
     sessionId: initialSessionId,
     onEvent,
     onConnect,
@@ -175,6 +177,7 @@ export function useGameConnection(options: UseGameConnectionOptions) {
   // WebSocket connection
   const wsConnection = useWebSocketConnection({
     authToken,
+    characterId,
     sessionId,
     onConnected: () => {
       logger.info('GameConnection', 'WebSocket connected');

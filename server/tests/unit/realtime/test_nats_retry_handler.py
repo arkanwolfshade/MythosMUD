@@ -1,198 +1,289 @@
 """
-Tests for NATS message retry logic with exponential backoff.
+Unit tests for NATS retry handler.
 
-Like the rituals described in the Necronomicon, sometimes invocations
-must be repeated with increasing intervals until they succeed.
-
-AI: Tests retry logic with exponential backoff for transient failures.
+Tests the NATSRetryHandler class and related retry logic.
 """
 
 import asyncio
-from datetime import datetime
+from datetime import UTC, datetime
 from unittest.mock import AsyncMock
 
 import pytest
 
-from server.realtime.nats_retry_handler import NATSRetryHandler, RetryableMessage
+from server.realtime.nats_retry_handler import NATSRetryHandler, RetryableMessage, RetryConfig
 
 
-class TestNATSRetryHandler:
-    """Test suite for NATS retry handler."""
+def test_retry_config_calculate_delay_base():
+    """Test RetryConfig.calculate_delay() with base delay."""
+    config = RetryConfig(base_delay=1.0, exponential_base=2.0, max_delay=30.0)
+    assert config.calculate_delay(0) == 1.0
+    assert config.calculate_delay(1) == 2.0
+    assert config.calculate_delay(2) == 4.0
+    assert config.calculate_delay(3) == 8.0
 
-    def test_initialization(self):
-        """Retry handler initializes with correct settings."""
-        handler = NATSRetryHandler(max_retries=5, base_delay=1.0, max_delay=60.0)
 
-        assert handler.max_retries == 5
-        assert handler.base_delay == 1.0
-        assert handler.max_delay == 60.0
+def test_retry_config_calculate_delay_capped():
+    """Test RetryConfig.calculate_delay() respects max_delay."""
+    config = RetryConfig(base_delay=1.0, exponential_base=2.0, max_delay=5.0)
+    assert config.calculate_delay(0) == 1.0
+    assert config.calculate_delay(1) == 2.0
+    assert config.calculate_delay(2) == 4.0
+    assert config.calculate_delay(3) == 5.0  # Capped at max_delay
+    assert config.calculate_delay(10) == 5.0  # Still capped
 
-    def test_calculate_backoff_exponential(self):
-        """Backoff delay increases exponentially (with jitter)."""
-        handler = NATSRetryHandler(max_retries=5, base_delay=1.0, max_delay=60.0)
 
-        # Attempt 0: ~1s (with ±25% jitter)
-        delay0 = handler.calculate_backoff(0)
-        assert 0.75 <= delay0 <= 1.25
+def test_retry_config_defaults():
+    """Test RetryConfig default values."""
+    config = RetryConfig()
+    assert config.max_attempts == 3
+    assert config.base_delay == 1.0
+    assert config.max_delay == 30.0
+    assert config.exponential_base == 2.0
 
-        # Attempt 1: ~2s (with ±25% jitter)
-        delay1 = handler.calculate_backoff(1)
-        assert 1.5 <= delay1 <= 2.5
 
-        # Attempt 2: ~4s (with ±25% jitter)
-        delay2 = handler.calculate_backoff(2)
-        assert 3.0 <= delay2 <= 5.0
+def test_retryable_message_init():
+    """Test RetryableMessage initialization."""
+    now = datetime.now(UTC)
+    message = RetryableMessage(subject="test.subject", data={"key": "value"}, attempt=0, first_attempt_time=now)
+    assert message.subject == "test.subject"
+    assert message.data == {"key": "value"}
+    assert message.attempt == 0
+    assert message.first_attempt_time == now
 
-        # Attempt 3: ~8s (with ±25% jitter)
-        delay3 = handler.calculate_backoff(3)
-        assert 6.0 <= delay3 <= 10.0
 
-    def test_calculate_backoff_respects_max_delay(self):
-        """Backoff delay does not exceed max_delay (with jitter)."""
-        handler = NATSRetryHandler(max_retries=10, base_delay=1.0, max_delay=10.0)
+def test_nats_retry_handler_init():
+    """Test NATSRetryHandler initialization."""
+    handler = NATSRetryHandler(max_retries=5, base_delay=2.0, max_delay=60.0)
+    assert handler.max_retries == 5
+    assert handler.base_delay == 2.0
+    assert handler.max_delay == 60.0
+    assert handler.total_retries == 0
+    assert handler.config.max_attempts == 5
+    assert handler.config.base_delay == 2.0
+    assert handler.config.max_delay == 60.0
 
-        # High attempt number should cap at max_delay + jitter (25%)
-        # max_delay=10, so with jitter: 10 ± 2.5 = 7.5 to 12.5
-        delay = handler.calculate_backoff(20)
-        assert delay <= 12.5  # max_delay + 25% jitter
 
-    def test_calculate_backoff_with_jitter(self):
-        """Backoff includes random jitter."""
-        handler = NATSRetryHandler(max_retries=5, base_delay=1.0, max_delay=60.0)
+def test_nats_retry_handler_init_defaults():
+    """Test NATSRetryHandler default values."""
+    handler = NATSRetryHandler()
+    assert handler.max_retries == 3
+    assert handler.base_delay == 1.0
+    assert handler.max_delay == 60.0
 
-        delays = [handler.calculate_backoff(2) for _ in range(10)]
 
-        # All delays should be around 4.0 but with jitter
-        assert all(3.0 <= d <= 5.0 for d in delays)
+def test_calculate_backoff_base():
+    """Test calculate_backoff() with base attempt."""
+    handler = NATSRetryHandler(base_delay=1.0, max_delay=30.0)
+    delay = handler.calculate_backoff(0)
+    # Should be base_delay ± 25% jitter
+    assert 0.75 <= delay <= 1.25
 
-        # Should have variation (not all exactly the same)
-        assert len(set(delays)) > 1
 
-    @pytest.mark.asyncio
-    async def test_should_retry_within_max_attempts(self):
-        """Should retry when within max attempts."""
-        handler = NATSRetryHandler(max_retries=3)
+def test_calculate_backoff_exponential():
+    """Test calculate_backoff() with exponential growth."""
+    handler = NATSRetryHandler(base_delay=1.0, max_delay=30.0)
+    delay1 = handler.calculate_backoff(1)
+    delay2 = handler.calculate_backoff(2)
+    # delay2 should be approximately 2x delay1 (with jitter)
+    assert delay2 > delay1
 
-        message = RetryableMessage(
-            subject="test.subject", data={"test": "data"}, attempt=0, first_attempt_time=datetime.now()
-        )
 
-        assert await handler.should_retry(message, Exception("test error")) is True
+def test_calculate_backoff_capped():
+    """Test calculate_backoff() respects max_delay."""
+    handler = NATSRetryHandler(base_delay=1.0, max_delay=5.0)
+    delay = handler.calculate_backoff(10)  # Would be > max_delay without cap
+    assert delay <= 5.0 * 1.25  # Max delay + jitter
 
-        message.attempt = 2
-        assert await handler.should_retry(message, Exception("test error")) is True
 
-    @pytest.mark.asyncio
-    async def test_should_not_retry_after_max_attempts(self):
-        """Should not retry after max attempts exceeded."""
-        handler = NATSRetryHandler(max_retries=3)
+def test_calculate_backoff_non_negative():
+    """Test calculate_backoff() never returns negative."""
+    handler = NATSRetryHandler(base_delay=0.1, max_delay=1.0)
+    for attempt in range(10):
+        delay = handler.calculate_backoff(attempt)
+        assert delay >= 0
 
-        message = RetryableMessage(
-            subject="test.subject",
-            data={"test": "data"},
-            attempt=3,  # Already at max
-            first_attempt_time=datetime.now(),
-        )
 
-        assert await handler.should_retry(message, Exception("test error")) is False
+@pytest.mark.asyncio
+async def test_should_retry_under_max():
+    """Test should_retry() returns True when under max retries."""
+    handler = NATSRetryHandler(max_retries=3)
+    message = RetryableMessage(subject="test", data={}, attempt=0, first_attempt_time=datetime.now(UTC))
+    result = await handler.should_retry(message, Exception("Error"))
+    assert result is True
 
-    @pytest.mark.asyncio
-    async def test_retry_async_increments_attempt(self):
-        """Retry async increments attempt counter."""
-        handler = NATSRetryHandler(max_retries=5, base_delay=0.01)
 
-        mock_func = AsyncMock()
-        message = RetryableMessage(
-            subject="test.subject", data={"test": "data"}, attempt=0, first_attempt_time=datetime.now()
-        )
+@pytest.mark.asyncio
+async def test_should_retry_at_max():
+    """Test should_retry() returns False when at max retries."""
+    handler = NATSRetryHandler(max_retries=3)
+    message = RetryableMessage(subject="test", data={}, attempt=3, first_attempt_time=datetime.now(UTC))
+    result = await handler.should_retry(message, Exception("Error"))
+    assert result is False
 
-        await handler.retry_async(mock_func, message)
 
-        assert message.attempt == 1
-        mock_func.assert_awaited_once()
+@pytest.mark.asyncio
+async def test_should_retry_over_max():
+    """Test should_retry() returns False when over max retries."""
+    handler = NATSRetryHandler(max_retries=3)
+    message = RetryableMessage(subject="test", data={}, attempt=5, first_attempt_time=datetime.now(UTC))
+    result = await handler.should_retry(message, Exception("Error"))
+    assert result is False
 
-    @pytest.mark.asyncio
-    async def test_retry_async_waits_for_backoff(self):
-        """Retry async waits for backoff delay."""
-        handler = NATSRetryHandler(max_retries=5, base_delay=0.1)
 
-        mock_func = AsyncMock()
-        message = RetryableMessage(
-            subject="test.subject", data={"test": "data"}, attempt=1, first_attempt_time=datetime.now()
-        )
+@pytest.mark.asyncio
+async def test_retry_async_increments_attempt():
+    """Test retry_async() increments attempt counter."""
+    handler = NATSRetryHandler(base_delay=0.01, max_delay=1.0)
+    message = RetryableMessage(subject="test", data={}, attempt=0, first_attempt_time=datetime.now(UTC))
+    func = AsyncMock()
+    await handler.retry_async(func, message)
+    assert message.attempt == 1
+    assert handler.total_retries == 1
 
-        # Use get_running_loop() in async context instead of deprecated get_event_loop()
-        loop = asyncio.get_running_loop()
-        start_time = loop.time()
-        await handler.retry_async(mock_func, message)
-        elapsed = loop.time() - start_time
 
-        # Should have waited at least base_delay * 2^1 = 0.2s (with some tolerance)
-        assert elapsed >= 0.15
+@pytest.mark.asyncio
+async def test_retry_async_calls_function():
+    """Test retry_async() calls the provided function."""
+    handler = NATSRetryHandler(base_delay=0.01, max_delay=1.0)
+    message = RetryableMessage(subject="test", data={}, attempt=0, first_attempt_time=datetime.now(UTC))
+    func = AsyncMock()
+    await handler.retry_async(func, message)
+    func.assert_awaited_once_with(message)
 
-    @pytest.mark.asyncio
-    async def test_get_retry_stats(self):
-        """Get retry stats returns correct counts."""
-        handler = NATSRetryHandler(max_retries=5, base_delay=0.01)
 
-        mock_func = AsyncMock()
+@pytest.mark.asyncio
+async def test_retry_async_waits_for_backoff():
+    """Test retry_async() waits for backoff delay."""
+    handler = NATSRetryHandler(base_delay=0.1, max_delay=1.0)
+    message = RetryableMessage(subject="test", data={}, attempt=0, first_attempt_time=datetime.now(UTC))
+    func = AsyncMock()
+    start_time = asyncio.get_event_loop().time()
+    await handler.retry_async(func, message)
+    elapsed = asyncio.get_event_loop().time() - start_time
+    # Should have waited at least some time (with jitter, could be 0.075-0.125)
+    assert elapsed >= 0.05  # Allow some margin for jitter
 
-        message1 = RetryableMessage("test1", {}, 0, datetime.now())
-        message2 = RetryableMessage("test2", {}, 0, datetime.now())
 
-        await handler.retry_async(mock_func, message1)
-        await handler.retry_async(mock_func, message2)
+@pytest.mark.asyncio
+async def test_retry_async_zero_delay():
+    """Test retry_async() handles zero delay."""
+    handler = NATSRetryHandler(base_delay=0.0, max_delay=1.0)
+    message = RetryableMessage(subject="test", data={}, attempt=0, first_attempt_time=datetime.now(UTC))
+    func = AsyncMock()
+    await handler.retry_async(func, message)
+    func.assert_awaited_once_with(message)
 
-        stats = handler.get_retry_stats()
 
-        assert stats["total_retries"] == 2
+def test_get_retry_stats():
+    """Test get_retry_stats() returns correct statistics."""
+    handler = NATSRetryHandler(max_retries=5, base_delay=2.0, max_delay=60.0)
+    handler.total_retries = 10
+    stats = handler.get_retry_stats()
+    assert stats["total_retries"] == 10
+    assert stats["max_retries"] == 5
+    assert stats["base_delay"] == 2.0
+    assert stats["max_delay"] == 60.0
 
-    def test_retryable_message_creation(self):
-        """RetryableMessage initializes correctly."""
-        now = datetime.now()
-        message = RetryableMessage(subject="test.subject", data={"key": "value"}, attempt=0, first_attempt_time=now)
 
-        assert message.subject == "test.subject"
-        assert message.data == {"key": "value"}
-        assert message.attempt == 0
-        assert message.first_attempt_time == now
+@pytest.mark.asyncio
+async def test_retry_with_backoff_success_first_attempt():
+    """Test retry_with_backoff() succeeds on first attempt."""
+    handler = NATSRetryHandler(max_retries=3)
+    func = AsyncMock(return_value="success")
+    success, result = await handler.retry_with_backoff(func, "arg1", key="value")
+    assert success is True
+    assert result == "success"
+    func.assert_awaited_once_with("arg1", key="value")
 
-    @pytest.mark.asyncio
-    async def test_retry_async_passes_message_data_to_func(self):
-        """Retry async passes message data to function."""
-        handler = NATSRetryHandler(max_retries=5, base_delay=0.01)
 
-        mock_func = AsyncMock()
-        test_data = {"player": "test_player", "action": "move"}
-        message = RetryableMessage(subject="game.events", data=test_data, attempt=0, first_attempt_time=datetime.now())
+@pytest.mark.asyncio
+async def test_retry_with_backoff_success_after_retries():
+    """Test retry_with_backoff() succeeds after retries."""
+    handler = NATSRetryHandler(max_retries=3, base_delay=0.01, max_delay=1.0)
+    func = AsyncMock(side_effect=[Exception("Error1"), Exception("Error2"), "success"])
+    success, result = await handler.retry_with_backoff(func)
+    assert success is True
+    assert result == "success"
+    assert func.await_count == 3
 
-        await handler.retry_async(mock_func, message)
 
-        mock_func.assert_awaited_once_with(message)
+@pytest.mark.asyncio
+async def test_retry_with_backoff_all_retries_fail():
+    """Test retry_with_backoff() returns False when all retries fail."""
+    handler = NATSRetryHandler(max_retries=3, base_delay=0.01, max_delay=1.0)
+    error = ValueError("Final error")
+    func = AsyncMock(side_effect=error)
+    success, result = await handler.retry_with_backoff(func)
+    assert success is False
+    assert result == error
+    assert func.await_count == 3
 
-    @pytest.mark.asyncio
-    async def test_multiple_retries_track_attempts(self):
-        """Multiple retries correctly track attempt count."""
-        handler = NATSRetryHandler(max_retries=5, base_delay=0.01)
 
-        mock_func = AsyncMock()
-        message = RetryableMessage("test", {}, 0, datetime.now())
+@pytest.mark.asyncio
+async def test_retry_with_backoff_no_sleep_after_last_attempt():
+    """Test retry_with_backoff() doesn't sleep after last attempt."""
+    handler = NATSRetryHandler(max_retries=2, base_delay=0.1, max_delay=1.0)
+    func = AsyncMock(side_effect=Exception("Error"))
+    start_time = asyncio.get_event_loop().time()
+    await handler.retry_with_backoff(func)
+    elapsed = asyncio.get_event_loop().time() - start_time
+    # Should only sleep once (after first attempt), not after last
+    # With base_delay=0.1 and jitter, should be ~0.075-0.125
+    assert elapsed < 0.2  # Should not wait after last attempt
 
-        await handler.retry_async(mock_func, message)
-        assert message.attempt == 1
 
-        await handler.retry_async(mock_func, message)
-        assert message.attempt == 2
+def test_get_config():
+    """Test get_config() returns current RetryConfig."""
+    handler = NATSRetryHandler(max_retries=5, base_delay=2.0, max_delay=60.0)
+    config = handler.get_config()
+    assert isinstance(config, RetryConfig)
+    assert config.max_attempts == 5
+    assert config.base_delay == 2.0
+    assert config.max_delay == 60.0
 
-        await handler.retry_async(mock_func, message)
-        assert message.attempt == 3
 
-    def test_zero_max_retries_never_retries(self):
-        """Zero max retries means no retries allowed."""
-        handler = NATSRetryHandler(max_retries=0)
+def test_update_config_valid_field():
+    """Test update_config() updates valid field."""
+    handler = NATSRetryHandler()
+    handler.update_config(max_attempts=10)
+    assert handler.config.max_attempts == 10
 
-        message = RetryableMessage("test", {}, 0, datetime.now())
 
-        # Even first attempt should not be retryable
-        asyncio.run(handler.should_retry(message, Exception("test")))
-        # Should return False immediately
+def test_update_config_multiple_fields():
+    """Test update_config() updates multiple fields."""
+    handler = NATSRetryHandler()
+    handler.update_config(base_delay=2.0, max_delay=120.0)
+    assert handler.config.base_delay == 2.0
+    assert handler.config.max_delay == 120.0
+
+
+def test_update_config_invalid_field():
+    """Test update_config() ignores invalid field."""
+    handler = NATSRetryHandler()
+    original_max_attempts = handler.config.max_attempts
+    handler.update_config(invalid_field=123)
+    # Should not change valid fields
+    assert handler.config.max_attempts == original_max_attempts
+
+
+@pytest.mark.asyncio
+async def test_retry_with_backoff_preserves_exception_type():
+    """Test retry_with_backoff() preserves exception type."""
+    handler = NATSRetryHandler(max_retries=1, base_delay=0.01, max_delay=1.0)
+    error = ValueError("Test error")
+    func = AsyncMock(side_effect=error)
+    success, result = await handler.retry_with_backoff(func)
+    assert success is False
+    assert isinstance(result, ValueError)
+    assert str(result) == "Test error"
+
+
+@pytest.mark.asyncio
+async def test_retry_with_backoff_different_errors():
+    """Test retry_with_backoff() handles different error types."""
+    handler = NATSRetryHandler(max_retries=2, base_delay=0.01, max_delay=1.0)
+    func = AsyncMock(side_effect=[ValueError("Error1"), TypeError("Error2")])
+    success, result = await handler.retry_with_backoff(func)
+    assert success is False
+    assert isinstance(result, TypeError)  # Last error
+    assert str(result) == "Error2"

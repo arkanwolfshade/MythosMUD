@@ -10,7 +10,7 @@ from typing import Any
 
 from fastapi import WebSocket, WebSocketDisconnect
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

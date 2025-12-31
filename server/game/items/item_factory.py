@@ -7,7 +7,7 @@ from typing import Any
 from server.game.items.component_hooks import initialize_components
 from server.game.items.item_instance import ItemInstance
 from server.game.items.prototype_registry import PrototypeRegistry, PrototypeRegistryError
-from server.logging.enhanced_logging_config import get_logger
+from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

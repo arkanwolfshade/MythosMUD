@@ -7,7 +7,7 @@ This module contains handlers for alias-related commands.
 from typing import Any
 
 from ..alias_storage import AliasStorage
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

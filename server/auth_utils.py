@@ -1,4 +1,6 @@
+import json
 import os
+import time
 from datetime import UTC, datetime, timedelta
 
 from jose import JWTError, jwt
@@ -7,13 +9,46 @@ from jose import JWTError, jwt
 from server.auth.argon2_utils import hash_password as argon2_hash_password
 from server.auth.argon2_utils import verify_password as argon2_verify_password
 from server.exceptions import AuthenticationError
-from server.logging.enhanced_logging_config import get_logger
+from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
 
 # Use environment variable for secret key - CRITICAL: Must be set in production
 # Use MYTHOSMUD_JWT_SECRET for consistency with FastAPI Users system
+# #region agent log
+log_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), ".cursor", "debug.log")
+try:
+    jwt_secret_env = os.environ.get("MYTHOSMUD_JWT_SECRET", "NOT_SET_AT_AUTH_UTILS_IMPORT")
+    with open(log_path, "a", encoding="utf-8") as f:
+        f.write(
+            json.dumps(
+                {
+                    "id": f"log_{int(time.time())}_auth_utils_import_jwt",
+                    "timestamp": int(time.time() * 1000),
+                    "location": "server/auth_utils.py:17",
+                    "message": "MYTHOSMUD_JWT_SECRET at auth_utils import time",
+                    "data": {
+                        "env_var_exists": "MYTHOSMUD_JWT_SECRET" in os.environ,
+                        "env_var_value": jwt_secret_env[:3] + "..."
+                        if len(jwt_secret_env) > 3 and jwt_secret_env != "NOT_SET_AT_AUTH_UTILS_IMPORT"
+                        else jwt_secret_env,
+                        "env_var_length": len(jwt_secret_env)
+                        if jwt_secret_env != "NOT_SET_AT_AUTH_UTILS_IMPORT"
+                        else 0,
+                        "is_empty_string": jwt_secret_env == "",
+                        "python_path": os.environ.get("PYTHONPATH", "NOT_SET"),
+                    },
+                    "sessionId": "debug-session",
+                    "runId": "ci-debug",
+                    "hypothesisId": "H1_H2_H3",
+                }
+            )
+            + "\n"
+        )
+except Exception:
+    pass  # Ignore logging errors
+# #endregion
 SECRET_KEY = os.getenv("MYTHOSMUD_JWT_SECRET")
 if not SECRET_KEY:
     logger.error("MYTHOSMUD_JWT_SECRET environment variable not set")
@@ -43,7 +78,7 @@ def hash_password(password: str) -> str:
         logger.debug("Password hashed successfully")
         assert isinstance(hashed, str)
         return hashed
-    except Exception as e:
+    except (AuthenticationError, ValueError, TypeError, RuntimeError) as e:
         logger.error("Password hashing failed", error=str(e))
         log_and_raise(
             AuthenticationError,
@@ -69,7 +104,7 @@ def verify_password(password: str, password_hash: str) -> bool:
             logger.debug("Password verification failed")
         assert isinstance(result, bool)
         return result
-    except Exception as e:
+    except (ValueError, TypeError, AttributeError, RuntimeError) as e:
         logger.error("Password verification error", error=str(e))
         return False
 
@@ -87,12 +122,15 @@ def create_access_token(
     expire = datetime.now(UTC) + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
     to_encode.update({"exp": expire})
 
+    if secret_key is None:
+        raise AuthenticationError("JWT secret key is not configured")
+
     try:
         token = jwt.encode(to_encode, secret_key, algorithm=algorithm)
         logger.debug("Access token created successfully")
         assert isinstance(token, str)
         return token
-    except Exception as e:
+    except (JWTError, ValueError, TypeError, AttributeError, RuntimeError) as e:
         logger.error("Failed to create access token", error=str(e))
         log_and_raise(
             AuthenticationError,
@@ -110,6 +148,10 @@ def decode_access_token(
         logger.debug("No token provided for decoding")
         return None
 
+    if secret_key is None:
+        logger.error("JWT secret key is not configured for decoding")
+        return None
+
     try:
         payload = jwt.decode(token, secret_key, algorithms=[algorithm], audience="fastapi-users:auth")
         logger.debug("Access token decoded successfully")
@@ -118,6 +160,6 @@ def decode_access_token(
     except JWTError as e:
         logger.warning("JWT decode error", error=str(e))
         return None
-    except Exception as e:
+    except (ValueError, TypeError, AttributeError, RuntimeError) as e:
         logger.error("Unexpected error decoding token", error=str(e))
         return None

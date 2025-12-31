@@ -8,9 +8,9 @@ import asyncio
 from typing import Any
 from uuid import UUID
 
-from server.logging.enhanced_logging_config import get_logger
 from server.models.game import PositionState
 from server.services.nats_exceptions import NATSError
+from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

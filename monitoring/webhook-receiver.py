@@ -3,43 +3,45 @@
 Simple webhook receiver for testing MythosMUD alerts
 """
 
-from datetime import datetime
+from datetime import UTC, datetime
+from sqlite3 import DatabaseError
 
-from flask import Flask, jsonify, request
-
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from server.logging.enhanced_logging_config import get_logger
+from sqlalchemy.exc import SQLAlchemyError
 
 logger = get_logger(__name__)
 
-app = Flask(__name__)
+app = FastAPI(title="MythosMUD Webhook Receiver")
 
 
-@app.route("/webhook", methods=["POST"])
-def webhook():
+@app.post("/webhook")
+async def webhook(request: Request):
     """Receive and log alert webhooks"""
     try:
-        data = request.get_json()
+        data = await request.json()
 
         if not data:
             logger.warning("Received empty webhook data")
-            return jsonify({"error": "No data received"}), 400
+            return JSONResponse(status_code=400, content={"error": "No data received"})
 
         # Log the alert
-        logger.info("Received alert webhook", status=data.get('status', 'unknown'))
-        logger.info("Webhook group labels", group_labels=data.get('groupLabels', {}))
-        logger.info("Webhook common labels", common_labels=data.get('commonLabels', {}))
+        logger.info("Received alert webhook", status=data.get("status", "unknown"))
+        logger.info("Webhook group labels", group_labels=data.get("groupLabels", {}))
+        logger.info("Webhook common labels", common_labels=data.get("commonLabels", {}))
 
         # Log individual alerts
         alerts = data.get("alerts", [])
         for alert in alerts:
-            alert_name = alert.get('labels', {}).get('alertname', 'unknown')
-            alert_status = alert.get('status', 'unknown')
-            alert_severity = alert.get('labels', {}).get('severity', 'unknown')
-            alert_service = alert.get('labels', {}).get('service', 'unknown')
-            alert_summary = alert.get('annotations', {}).get('summary', 'No summary')
-            alert_description = alert.get('annotations', {}).get('description', 'No description')
-            alert_starts_at = alert.get('startsAt', 'unknown')
-            alert_ends_at = alert.get('endsAt')
+            alert_name = alert.get("labels", {}).get("alertname", "unknown")
+            alert_status = alert.get("status", "unknown")
+            alert_severity = alert.get("labels", {}).get("severity", "unknown")
+            alert_service = alert.get("labels", {}).get("service", "unknown")
+            alert_summary = alert.get("annotations", {}).get("summary", "No summary")
+            alert_description = alert.get("annotations", {}).get("description", "No description")
+            alert_starts_at = alert.get("startsAt", "unknown")
+            alert_ends_at = alert.get("endsAt")
 
             logger.info(
                 "Alert details",
@@ -53,33 +55,33 @@ def webhook():
                 ends_at=alert_ends_at,
             )
 
-        return jsonify({"status": "success", "message": "Webhook received"}), 200
+        return {"status": "success", "message": "Webhook received"}
 
-    except Exception as e:
+    except (DatabaseError, SQLAlchemyError) as e:
         logger.error("Error processing webhook", error=str(e), exc_info=True)
-        # Human reader: sanitize error message to prevent stack trace exposure.
-        # AI reader: never expose stack traces in API responses, only in logs.
-        error_msg = str(e).split('\n')[0].strip()  # Get first line only
-        # Remove file paths and line numbers
-        if any(pattern in error_msg.lower() for pattern in ['file "', 'line ', 'traceback']):
-            error_msg = "An error occurred processing the webhook"
-        return jsonify({"error": error_msg}), 500
+        # Return only a generic error message to avoid exposing internal details.
+        return JSONResponse(
+            status_code=500,
+            content={"error": "An error occurred processing the webhook"},
+        )
 
 
-@app.route("/health", methods=["GET"])
-def health():
+@app.get("/health")
+async def health():
     """Health check endpoint"""
-    return jsonify({"status": "healthy", "timestamp": datetime.utcnow().isoformat()}), 200
+    return {"status": "healthy", "timestamp": datetime.now(UTC).isoformat()}
 
 
-@app.route("/alerts", methods=["GET"])
-def get_alerts():
+@app.get("/alerts")
+async def get_alerts():
     """Get recent alerts (for testing)"""
     # This would typically store alerts in a database
     # For now, just return a simple response
-    return jsonify({"message": "Alert endpoint active", "timestamp": datetime.utcnow().isoformat()}), 200
+    return {"message": "Alert endpoint active", "timestamp": datetime.now(UTC).isoformat()}
 
 
 if __name__ == "__main__":
+    import uvicorn
+
     logger.info("Starting MythosMUD webhook receiver", host="0.0.0.0", port=5001)
-    app.run(host="0.0.0.0", port=5001, debug=False)
+    uvicorn.run(app, host="0.0.0.0", port=5001)

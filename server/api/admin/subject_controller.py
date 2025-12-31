@@ -19,13 +19,13 @@ from pydantic import BaseModel, Field
 
 from ...auth.dependencies import get_current_user
 from ...exceptions import LoggedHTTPException, create_error_context
-from ...logging.enhanced_logging_config import get_logger
 from ...services.nats_subject_manager import (
     InvalidPatternError,
     NATSSubjectManager,
     PatternNotFoundError,
     nats_subject_manager,
 )
+from ...structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger("api.admin.subject_controller")
 

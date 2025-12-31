@@ -10,7 +10,7 @@ from collections.abc import Callable
 from functools import wraps
 from typing import Any, TypeVar, cast
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .lru_cache import LRUCache, get_cache_manager
 
 logger = get_logger(__name__)

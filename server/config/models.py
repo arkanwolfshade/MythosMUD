@@ -16,7 +16,7 @@ from typing import Any
 from pydantic import AliasChoices, Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsError
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -264,11 +264,67 @@ class SecurityConfig(BaseSettings):
     @classmethod
     def validate_admin_password(cls, v: str) -> str:
         """Validate admin password strength (production only)."""
+        # #region agent log
+        import json
+        import time
+        log_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), ".cursor", "debug.log")
+        try:
+            env_value = os.getenv("MYTHOSMUD_ADMIN_PASSWORD", "NOT_SET")
+            with open(log_path, "a", encoding="utf-8") as f:
+                f.write(
+                    json.dumps(
+                        {
+                            "id": f"log_{int(time.time())}_validate_admin_password",
+                            "timestamp": int(time.time() * 1000),
+                            "location": "models.py:265",
+                            "message": "Validating admin password - entry",
+                            "data": {
+                                "password_length": len(v),
+                                "password_preview": v[:3] + "..." if len(v) > 3 else v,
+                                "env_var_value": env_value[:3] + "..." if len(env_value) > 3 and env_value != "NOT_SET" else env_value,
+                                "env_var_exists": "MYTHOSMUD_ADMIN_PASSWORD" in os.environ,
+                                "env_var_length": len(env_value) if env_value != "NOT_SET" else 0,
+                            },
+                            "sessionId": "debug-session",
+                            "runId": "ci-debug",
+                            "hypothesisId": "A",
+                        }
+                    )
+                    + "\n"
+                )
+        except Exception:
+            pass  # Ignore logging errors
+        # #endregion
         logger.debug("Validating admin password strength", password_length=len(v))
         # Only enforce strict validation in production
         # This is determined by LoggingConfig.environment but we can't access it here
         # So we check if it looks like a real password vs test password
         if len(v) < 8:
+            # #region agent log
+            try:
+                with open(log_path, "a", encoding="utf-8") as f:
+                    f.write(
+                        json.dumps(
+                            {
+                                "id": f"log_{int(time.time())}_validate_admin_password_fail",
+                                "timestamp": int(time.time() * 1000),
+                                "location": "models.py:271",
+                                "message": "Admin password validation failed - too short",
+                                "data": {
+                                    "password_length": len(v),
+                                    "minimum_length": 8,
+                                    "env_var_value": env_value[:3] + "..." if len(env_value) > 3 and env_value != "NOT_SET" else env_value,
+                                },
+                                "sessionId": "debug-session",
+                                "runId": "ci-debug",
+                                "hypothesisId": "B",
+                            }
+                        )
+                        + "\n"
+                    )
+            except Exception:
+                pass  # Ignore logging errors
+            # #endregion
             logger.error("Admin password validation failed - too short", password_length=len(v), minimum_length=8)
             raise ValueError("Admin password must be at least 8 characters")
         logger.debug("Admin password validation successful", password_length=len(v))
@@ -904,6 +960,45 @@ class AppConfig(BaseSettings):
 
     def __init__(self, **kwargs):
         """Initialize configuration and set environment variables for legacy compatibility."""
+        # #region agent log
+        import json
+        import time
+        log_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), ".cursor", "debug.log")
+        try:
+            # Check for .env files
+            env_files = []
+            project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+            for env_file in [".env", ".env.local", "server/tests/.env.unit_test"]:
+                env_path = os.path.join(project_root, env_file)
+                if os.path.exists(env_path):
+                    env_files.append(env_file)
+            admin_pw_env = os.getenv("MYTHOSMUD_ADMIN_PASSWORD", "NOT_SET")
+            with open(log_path, "a", encoding="utf-8") as f:
+                f.write(
+                    json.dumps(
+                        {
+                            "id": f"log_{int(time.time())}_appconfig_init",
+                            "timestamp": int(time.time() * 1000),
+                            "location": "models.py:961",
+                            "message": "AppConfig.__init__ - checking environment and .env files",
+                            "data": {
+                                "env_var_exists": "MYTHOSMUD_ADMIN_PASSWORD" in os.environ,
+                                "env_var_value": admin_pw_env[:3] + "..." if len(admin_pw_env) > 3 and admin_pw_env != "NOT_SET" else admin_pw_env,
+                                "env_var_length": len(admin_pw_env) if admin_pw_env != "NOT_SET" else 0,
+                                "is_empty_string": admin_pw_env == "",
+                                "env_files_found": env_files,
+                                "model_config_env_file": self.model_config.get("env_file", "NOT_SET"),
+                            },
+                            "sessionId": "debug-session",
+                            "runId": "config-init",
+                            "hypothesisId": "H",
+                        }
+                    )
+                    + "\n"
+                )
+        except Exception:
+            pass  # Ignore logging errors
+        # #endregion
         try:
             super().__init__(**kwargs)
         except SettingsError as error:

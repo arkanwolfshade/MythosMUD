@@ -8,10 +8,12 @@ stats generation, validation, and character creation with proper error handling.
 import uuid
 from typing import Any
 
+from pydantic import ValidationError as PydanticValidationError
+
 from ..exceptions import ValidationError
 from ..game.stats_generator import StatsGenerator
-from ..logging.enhanced_logging_config import get_logger
 from ..models import Stats
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import create_error_context, log_and_raise
 
 logger = get_logger(__name__)
@@ -30,7 +32,7 @@ class CharacterCreationService:
         self,
         method: str = "3d6",
         required_class: str | None = None,
-        max_attempts: int = 10,
+        max_attempts: int = 50,  # Increased from 10 to improve success rate for profession requirements
         profession_id: int | None = None,
     ) -> dict[str, Any]:
         """
@@ -59,8 +61,9 @@ class CharacterCreationService:
         try:
             if profession_id is not None:
                 # Use profession-based stat rolling
+                # Use default timeout_seconds from RollStatsRequest (5.0) for better success rate
                 stats, meets_requirements = self.stats_generator.roll_stats_with_profession(
-                    method=method, profession_id=profession_id, max_attempts=max_attempts
+                    method=method, profession_id=profession_id, max_attempts=max_attempts, timeout_seconds=5.0
                 )
                 stat_summary = self.stats_generator.get_stat_summary(stats)
 
@@ -135,7 +138,7 @@ class CharacterCreationService:
                 stat_summary = self.stats_generator.get_stat_summary(stats_obj)
 
                 return {"available_classes": available_classes, "stat_summary": stat_summary}
-        except Exception as e:
+        except (ValueError, PydanticValidationError) as e:
             logger.error("Stats validation failed", error=str(e))
             context = create_error_context()
             context.metadata["operation"] = "validate_stats"
@@ -199,7 +202,7 @@ class CharacterCreationService:
                 "player": player.model_dump(),
                 "stats": stats_obj.model_dump(),
             }
-        except Exception as e:
+        except (ValueError, PydanticValidationError, ValidationError) as e:
             logger.error("Character creation failed", name=name, error=str(e))
             context = create_error_context()
             context.metadata["operation"] = "create_character"

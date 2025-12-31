@@ -1,176 +1,410 @@
-"""Tests for the active lucidity adjustment service."""
+"""
+Unit tests for active lucidity service.
 
-from __future__ import annotations
+Tests the ActiveLucidityService class for encounter lucidity loss and recovery actions.
+"""
 
 import uuid
 from datetime import UTC, datetime, timedelta
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-from server.models.base import Base
-from server.models.lucidity import LucidityCooldown, PlayerLucidity
-from server.models.player import Player
-from server.models.user import User
+from server.services.active_lucidity_service import (
+    ActiveLucidityService,
+    LucidityActionOnCooldownError,
+    UnknownEncounterCategoryError,
+    UnknownLucidityActionError,
+)
 
 
 @pytest.fixture
-async def session_factory():
-    import os
-
-    database_url = os.getenv("DATABASE_URL")
-    if not database_url or not database_url.startswith("postgresql"):
-        raise ValueError("DATABASE_URL must be set to a PostgreSQL URL for this test.")
-    engine = create_async_engine(database_url, future=True)
-    async with engine.begin() as conn:
-        # PostgreSQL always enforces foreign keys - no PRAGMA needed
-        await conn.run_sync(Base.metadata.create_all)
-
-    factory = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
-    try:
-        yield factory
-    finally:
-        await engine.dispose()
+def mock_session():
+    """Create a mock async session."""
+    return AsyncMock()
 
 
-async def create_player(session: AsyncSession, *, room_id: str, lucidity: int = 100, tier: str = "lucid") -> Player:
-    player_id = str(uuid.uuid4())
-    user = User(
-        id=str(uuid.uuid4()),
-        email=f"{player_id}@example.com",
-        username=player_id,
-        display_name=player_id,
-        hashed_password="hashed",
-        is_active=True,
-        is_superuser=False,
-        is_verified=True,
+@pytest.fixture
+def active_lucidity_service(mock_session):
+    """Create an ActiveLucidityService instance."""
+    return ActiveLucidityService(mock_session)
+
+
+@pytest.fixture
+def sample_player_id():
+    """Create a sample player ID."""
+    return uuid.uuid4()
+
+
+@pytest.mark.asyncio
+async def test_active_lucidity_service_init(mock_session):
+    """Test ActiveLucidityService initialization."""
+    service = ActiveLucidityService(mock_session)
+    assert service._session == mock_session
+    assert service._lucidity_service is not None
+    assert service._now_provider is not None
+
+
+@pytest.mark.asyncio
+async def test_active_lucidity_service_init_with_now_provider(mock_session):
+    """Test ActiveLucidityService initialization with custom now_provider."""
+    custom_now = datetime(2024, 1, 1, tzinfo=UTC)
+
+    def now_provider():
+        return custom_now
+
+    service = ActiveLucidityService(mock_session, now_provider=now_provider)
+    assert service._now_provider() == custom_now
+
+
+@pytest.mark.asyncio
+async def test_apply_encounter_lucidity_loss_first_encounter(active_lucidity_service, sample_player_id):
+    """Test apply_encounter_lucidity_loss() for first encounter."""
+    mock_result = MagicMock()
+    mock_result.new_lcd = 94
+    active_lucidity_service._lucidity_service.increment_exposure_state = AsyncMock()
+    mock_exposure = MagicMock()
+    mock_exposure.encounter_count = 1
+    active_lucidity_service._lucidity_service.increment_exposure_state.return_value = mock_exposure
+    active_lucidity_service._lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
+
+    result = await active_lucidity_service.apply_encounter_lucidity_loss(
+        sample_player_id, "eldritch_horror", category="disturbing"
     )
-    player = Player(
-        player_id=player_id,
-        user_id=user.id,
-        name=player_id,
-        current_room_id=room_id,
+
+    assert result == mock_result
+    # First encounter should use first_time delta (-6 for disturbing)
+    call_args = active_lucidity_service._lucidity_service.apply_lucidity_adjustment.call_args
+    assert call_args[0][1] == -6  # first_time delta
+
+
+@pytest.mark.asyncio
+async def test_apply_encounter_lucidity_loss_repeat_encounter(active_lucidity_service, sample_player_id):
+    """Test apply_encounter_lucidity_loss() for repeat encounter."""
+    mock_result = MagicMock()
+    mock_result.new_lcd = 92
+    mock_exposure = MagicMock()
+    mock_exposure.encounter_count = 2  # Repeat encounter
+    active_lucidity_service._lucidity_service.increment_exposure_state = AsyncMock(return_value=mock_exposure)
+    active_lucidity_service._lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
+
+    result = await active_lucidity_service.apply_encounter_lucidity_loss(
+        sample_player_id, "eldritch_horror", category="disturbing"
     )
-    session.add_all([user, player])
-    session.add(
-        PlayerLucidity(
-            player_id=player_id,
-            current_lcd=lucidity,
-            current_tier=tier,
-        )
+
+    assert result == mock_result
+    # Repeat encounter should use repeat delta (-2 for disturbing)
+    call_args = active_lucidity_service._lucidity_service.apply_lucidity_adjustment.call_args
+    assert call_args[0][1] == -2  # repeat delta
+
+
+@pytest.mark.asyncio
+async def test_apply_encounter_lucidity_loss_acclimated(active_lucidity_service, sample_player_id):
+    """Test apply_encounter_lucidity_loss() for acclimated encounter."""
+    mock_result = MagicMock()
+    mock_result.new_lcd = 95
+    mock_exposure = MagicMock()
+    mock_exposure.encounter_count = 6  # At threshold
+    active_lucidity_service._lucidity_service.increment_exposure_state = AsyncMock(return_value=mock_exposure)
+    active_lucidity_service._lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
+
+    result = await active_lucidity_service.apply_encounter_lucidity_loss(
+        sample_player_id, "eldritch_horror", category="disturbing"
     )
-    await session.flush()
-    return player
+
+    assert result == mock_result
+    # Acclimated encounter should use half of repeat delta (-2/2 = -1 for disturbing)
+    call_args = active_lucidity_service._lucidity_service.apply_lucidity_adjustment.call_args
+    assert call_args[0][1] == -1  # half of repeat delta
 
 
 @pytest.mark.asyncio
-async def test_encounter_loss_first_and_repeat(session_factory):
-    async with session_factory() as session:
-        player = await create_player(session, room_id="earth_arkhamcity_downtown_room_curwen_st_017")
-        from server.services.active_lucidity_service import ActiveLucidityService
-
-        fixed_now = datetime(2025, 1, 1, 12, 0, tzinfo=UTC)
-        service = ActiveLucidityService(session, now_provider=lambda: fixed_now)
-
-        first = await service.apply_encounter_lucidity_loss(
-            player_id=player.player_id,
-            entity_archetype="disturbing_ghoul",
-            category="disturbing",
-            location_id="earth_arkhamcity_downtown_room_curwen_st_017",
+async def test_apply_encounter_lucidity_loss_unknown_category(active_lucidity_service, sample_player_id):
+    """Test apply_encounter_lucidity_loss() raises error for unknown category."""
+    with pytest.raises(UnknownEncounterCategoryError):
+        await active_lucidity_service.apply_encounter_lucidity_loss(
+            sample_player_id, "eldritch_horror", category="unknown_category"
         )
-        assert first.delta == -6
-
-        repeat = await service.apply_encounter_lucidity_loss(
-            player_id=player.player_id,
-            entity_archetype="disturbing_ghoul",
-            category="disturbing",
-            location_id="earth_arkhamcity_downtown_room_curwen_st_017",
-        )
-        assert repeat.delta == -2
-
-        refreshed = await session.get(PlayerLucidity, player.player_id)
-        assert refreshed is not None
-        assert refreshed.current_lcd == 92
 
 
 @pytest.mark.asyncio
-async def test_encounter_acclimation_reduces_loss(session_factory):
-    async with session_factory() as session:
-        player = await create_player(session, room_id="earth_arkhamcity_downtown_room_curwen_st_017", lucidity=100)
-        from server.services.active_lucidity_service import ActiveLucidityService
+async def test_apply_encounter_lucidity_loss_string_player_id(active_lucidity_service):
+    """Test apply_encounter_lucidity_loss() handles string player_id."""
+    player_id_str = str(uuid.uuid4())
+    mock_result = MagicMock()
+    mock_exposure = MagicMock()
+    mock_exposure.encounter_count = 1
+    active_lucidity_service._lucidity_service.increment_exposure_state = AsyncMock(return_value=mock_exposure)
+    active_lucidity_service._lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
 
-        service = ActiveLucidityService(session, now_provider=lambda: datetime.now(UTC))
+    result = await active_lucidity_service.apply_encounter_lucidity_loss(
+        player_id_str, "eldritch_horror", category="disturbing"
+    )
 
-        deltas = []
-        for _ in range(6):
-            result = await service.apply_encounter_lucidity_loss(
-                player_id=player.player_id,
-                entity_archetype="cosmic_outer_god",
-                category="cosmic",
-                location_id="earth_arkhamcity_downtown_room_curwen_st_017",
-            )
-            deltas.append(result.delta)
-
-        assert deltas[0] == -20  # first-time
-        assert deltas[1] == -10  # repeat
-        assert deltas[-1] == -5  # acclimated half-loss
-
-        refreshed = await session.get(PlayerLucidity, player.player_id)
-        assert refreshed is not None
-        assert refreshed.current_lcd == 100 + sum(deltas)
+    assert result == mock_result
+    # Should convert string to UUID
+    call_args = active_lucidity_service._lucidity_service.apply_lucidity_adjustment.call_args
+    assert isinstance(call_args[0][0], uuid.UUID)
 
 
 @pytest.mark.asyncio
-async def test_recovery_action_pray_sets_cooldown(session_factory):
-    async with session_factory() as session:
-        player = await create_player(session, room_id="earth_arkhamcity_LCDitarium_room_foyer_001", lucidity=40)
-        from server.services.active_lucidity_service import ActiveLucidityService
-
-        now = datetime(2025, 1, 1, 18, 0, tzinfo=UTC)
-        service = ActiveLucidityService(session, now_provider=lambda: now)
-
-        result = await service.perform_recovery_action(
-            player_id=player.player_id,
-            action_code="pray",
-            location_id="earth_arkhamcity_LCDitarium_room_foyer_001",
+async def test_apply_encounter_lucidity_loss_invalid_string_player_id(active_lucidity_service):
+    """Test apply_encounter_lucidity_loss() raises error for invalid string player_id."""
+    with pytest.raises(ValueError, match="Invalid player_id format"):
+        await active_lucidity_service.apply_encounter_lucidity_loss(
+            "invalid-uuid", "eldritch_horror", category="disturbing"
         )
-        assert result.delta == 8
-
-        cooldown = (
-            await session.execute(
-                select(LucidityCooldown).where(
-                    LucidityCooldown.player_id == player.player_id, LucidityCooldown.action_code == "pray"
-                )
-            )
-        ).scalar_one()
-        stored_expiry = cooldown.cooldown_expires_at
-        assert stored_expiry is not None
-        assert stored_expiry.replace(tzinfo=UTC) == now + timedelta(minutes=15)
-
-        refreshed = await session.get(PlayerLucidity, player.player_id)
-        assert refreshed is not None
-        assert refreshed.current_lcd == 48
 
 
 @pytest.mark.asyncio
-async def test_recovery_action_respects_cooldown(session_factory):
-    async with session_factory() as session:
-        player = await create_player(session, room_id="earth_arkhamcity_LCDitarium_room_foyer_001", lucidity=70)
-        from server.services.active_lucidity_service import ActiveLucidityService, LucidityActionOnCooldownError
+async def test_apply_encounter_lucidity_loss_horrific_category(active_lucidity_service, sample_player_id):
+    """Test apply_encounter_lucidity_loss() with horrific category."""
+    mock_result = MagicMock()
+    mock_exposure = MagicMock()
+    mock_exposure.encounter_count = 1
+    active_lucidity_service._lucidity_service.increment_exposure_state = AsyncMock(return_value=mock_exposure)
+    active_lucidity_service._lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
 
-        now = datetime(2025, 3, 15, 9, 0, tzinfo=UTC)
-        service = ActiveLucidityService(session, now_provider=lambda: now)
+    result = await active_lucidity_service.apply_encounter_lucidity_loss(
+        sample_player_id, "eldritch_horror", category="horrific"
+    )
 
-        await service.perform_recovery_action(
-            player_id=player.player_id,
-            action_code="pray",
-            location_id="earth_arkhamcity_LCDitarium_room_foyer_001",
-        )
+    assert result == mock_result
+    # Horrific first_time is -12
+    call_args = active_lucidity_service._lucidity_service.apply_lucidity_adjustment.call_args
+    assert call_args[0][1] == -12
 
-        with pytest.raises(LucidityActionOnCooldownError):
-            await service.perform_recovery_action(
-                player_id=player.player_id,
-                action_code="pray",
-                location_id="earth_arkhamcity_LCDitarium_room_foyer_001",
-            )
+
+@pytest.mark.asyncio
+async def test_apply_encounter_lucidity_loss_cosmic_category(active_lucidity_service, sample_player_id):
+    """Test apply_encounter_lucidity_loss() with cosmic category."""
+    mock_result = MagicMock()
+    mock_exposure = MagicMock()
+    mock_exposure.encounter_count = 1
+    active_lucidity_service._lucidity_service.increment_exposure_state = AsyncMock(return_value=mock_exposure)
+    active_lucidity_service._lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
+
+    result = await active_lucidity_service.apply_encounter_lucidity_loss(
+        sample_player_id, "eldritch_horror", category="cosmic"
+    )
+
+    assert result == mock_result
+    # Cosmic first_time is -20
+    call_args = active_lucidity_service._lucidity_service.apply_lucidity_adjustment.call_args
+    assert call_args[0][1] == -20
+
+
+@pytest.mark.asyncio
+async def test_apply_encounter_lucidity_loss_with_location(active_lucidity_service, sample_player_id):
+    """Test apply_encounter_lucidity_loss() includes location_id in metadata."""
+    mock_result = MagicMock()
+    mock_exposure = MagicMock()
+    mock_exposure.encounter_count = 1
+    active_lucidity_service._lucidity_service.increment_exposure_state = AsyncMock(return_value=mock_exposure)
+    active_lucidity_service._lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
+
+    await active_lucidity_service.apply_encounter_lucidity_loss(
+        sample_player_id, "eldritch_horror", category="disturbing", location_id="room_001"
+    )
+
+    call_args = active_lucidity_service._lucidity_service.apply_lucidity_adjustment.call_args
+    assert call_args[1]["location_id"] == "room_001"
+
+
+@pytest.mark.asyncio
+async def test_perform_recovery_action_success(active_lucidity_service, sample_player_id):
+    """Test perform_recovery_action() successfully performs recovery."""
+    mock_result = MagicMock()
+    mock_result.new_lcd = 55
+    active_lucidity_service._lucidity_service.get_cooldown = AsyncMock(return_value=None)
+    active_lucidity_service._lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
+    active_lucidity_service._lucidity_service.set_cooldown = AsyncMock()
+
+    result = await active_lucidity_service.perform_recovery_action(sample_player_id, action_code="pray")
+
+    assert result == mock_result
+    # Pray action should give +8 LCD
+    call_args = active_lucidity_service._lucidity_service.apply_lucidity_adjustment.call_args
+    assert call_args[0][1] == 8
+    active_lucidity_service._lucidity_service.set_cooldown.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_perform_recovery_action_on_cooldown(active_lucidity_service, sample_player_id):
+    """Test perform_recovery_action() raises error when on cooldown."""
+    mock_cooldown = MagicMock()
+    mock_cooldown.cooldown_expires_at = datetime.now(UTC) + timedelta(minutes=5)
+    active_lucidity_service._lucidity_service.get_cooldown = AsyncMock(return_value=mock_cooldown)
+
+    with pytest.raises(LucidityActionOnCooldownError):
+        await active_lucidity_service.perform_recovery_action(sample_player_id, action_code="pray")
+
+
+@pytest.mark.asyncio
+async def test_perform_recovery_action_cooldown_expired(active_lucidity_service, sample_player_id):
+    """Test perform_recovery_action() succeeds when cooldown has expired."""
+    mock_result = MagicMock()
+    mock_cooldown = MagicMock()
+    mock_cooldown.cooldown_expires_at = datetime.now(UTC) - timedelta(minutes=1)  # Expired
+    active_lucidity_service._lucidity_service.get_cooldown = AsyncMock(return_value=mock_cooldown)
+    active_lucidity_service._lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
+    active_lucidity_service._lucidity_service.set_cooldown = AsyncMock()
+
+    result = await active_lucidity_service.perform_recovery_action(sample_player_id, action_code="pray")
+
+    assert result == mock_result
+    active_lucidity_service._lucidity_service.set_cooldown.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_perform_recovery_action_naive_datetime_cooldown(mock_session, sample_player_id):
+    """Test perform_recovery_action() handles naive datetime in cooldown."""
+    # Use a fixed time to avoid timezone and timing issues
+    fixed_now = datetime(2024, 1, 15, 12, 0, 0, tzinfo=UTC)
+
+    def now_provider():
+        return fixed_now
+
+    service = ActiveLucidityService(mock_session, now_provider=now_provider)
+
+    mock_result = MagicMock()
+    mock_cooldown = MagicMock()
+    # Naive datetime (no timezone) - set to expired cooldown (1 minute ago in naive time)
+    # The code converts naive datetime to UTC-aware using .replace(tzinfo=UTC)
+    # which treats the naive time as if it were already UTC
+    mock_cooldown.cooldown_expires_at = datetime(2024, 1, 15, 11, 59, 0)  # 1 minute before fixed_now
+    service._lucidity_service.get_cooldown = AsyncMock(return_value=mock_cooldown)
+    service._lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
+    service._lucidity_service.set_cooldown = AsyncMock()
+
+    # Should convert naive datetime to UTC-aware and allow action since cooldown is expired
+    result = await service.perform_recovery_action(sample_player_id, action_code="pray")
+    assert result == mock_result
+
+
+@pytest.mark.asyncio
+async def test_perform_recovery_action_unknown_action(active_lucidity_service, sample_player_id):
+    """Test perform_recovery_action() raises error for unknown action."""
+    with pytest.raises(UnknownLucidityActionError):
+        await active_lucidity_service.perform_recovery_action(sample_player_id, action_code="unknown_action")
+
+
+@pytest.mark.asyncio
+async def test_perform_recovery_action_string_player_id(active_lucidity_service):
+    """Test perform_recovery_action() handles string player_id."""
+    player_id_str = str(uuid.uuid4())
+    mock_result = MagicMock()
+    active_lucidity_service._lucidity_service.get_cooldown = AsyncMock(return_value=None)
+    active_lucidity_service._lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
+    active_lucidity_service._lucidity_service.set_cooldown = AsyncMock()
+
+    result = await active_lucidity_service.perform_recovery_action(player_id_str, action_code="pray")
+
+    assert result == mock_result
+    # Should convert string to UUID
+    call_args = active_lucidity_service._lucidity_service.apply_lucidity_adjustment.call_args
+    assert isinstance(call_args[0][0], uuid.UUID)
+
+
+@pytest.mark.asyncio
+async def test_perform_recovery_action_invalid_string_player_id(active_lucidity_service):
+    """Test perform_recovery_action() raises error for invalid string player_id."""
+    with pytest.raises(ValueError, match="Invalid player_id format"):
+        await active_lucidity_service.perform_recovery_action("invalid-uuid", action_code="pray")
+
+
+@pytest.mark.asyncio
+async def test_perform_recovery_action_all_actions(active_lucidity_service, sample_player_id):
+    """Test perform_recovery_action() works for all recovery actions."""
+    actions = ["pray", "meditate", "group_solace", "therapy", "folk_tonic"]
+    expected_deltas = [8, 6, 4, 15, 3]
+
+    for action, expected_delta in zip(actions, expected_deltas, strict=True):
+        mock_result = MagicMock()
+        active_lucidity_service._lucidity_service.get_cooldown = AsyncMock(return_value=None)
+        active_lucidity_service._lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
+        active_lucidity_service._lucidity_service.set_cooldown = AsyncMock()
+
+        result = await active_lucidity_service.perform_recovery_action(sample_player_id, action_code=action)
+
+        assert result == mock_result
+        call_args = active_lucidity_service._lucidity_service.apply_lucidity_adjustment.call_args
+        assert call_args[0][1] == expected_delta
+
+
+@pytest.mark.asyncio
+async def test_perform_recovery_action_sets_cooldown(active_lucidity_service, sample_player_id):
+    """Test perform_recovery_action() sets cooldown after action."""
+    mock_result = MagicMock()
+    active_lucidity_service._lucidity_service.get_cooldown = AsyncMock(return_value=None)
+    active_lucidity_service._lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
+    active_lucidity_service._lucidity_service.set_cooldown = AsyncMock()
+
+    await active_lucidity_service.perform_recovery_action(sample_player_id, action_code="pray")
+
+    # Should set cooldown
+    active_lucidity_service._lucidity_service.set_cooldown.assert_awaited_once()
+    call_args = active_lucidity_service._lucidity_service.set_cooldown.call_args
+    assert call_args[0][1] == "pray"  # action_code
+    assert isinstance(call_args[0][2], datetime)  # expires_at
+
+
+@pytest.mark.asyncio
+async def test_perform_recovery_action_with_location(active_lucidity_service, sample_player_id):
+    """Test perform_recovery_action() includes location_id."""
+    mock_result = MagicMock()
+    active_lucidity_service._lucidity_service.get_cooldown = AsyncMock(return_value=None)
+    active_lucidity_service._lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
+    active_lucidity_service._lucidity_service.set_cooldown = AsyncMock()
+
+    await active_lucidity_service.perform_recovery_action(sample_player_id, action_code="pray", location_id="room_001")
+
+    call_args = active_lucidity_service._lucidity_service.apply_lucidity_adjustment.call_args
+    assert call_args[1]["location_id"] == "room_001"
+
+
+@pytest.mark.asyncio
+async def test_get_action_cooldown_success(active_lucidity_service, sample_player_id):
+    """Test get_action_cooldown() retrieves cooldown."""
+    mock_cooldown = MagicMock()
+    active_lucidity_service._lucidity_service.get_cooldown = AsyncMock(return_value=mock_cooldown)
+
+    result = await active_lucidity_service.get_action_cooldown(sample_player_id, "pray")
+
+    assert result == mock_cooldown
+    active_lucidity_service._lucidity_service.get_cooldown.assert_awaited_once_with(sample_player_id, "pray")
+
+
+@pytest.mark.asyncio
+async def test_get_action_cooldown_string_player_id(active_lucidity_service):
+    """Test get_action_cooldown() handles string player_id."""
+    player_id_str = str(uuid.uuid4())
+    mock_cooldown = MagicMock()
+    active_lucidity_service._lucidity_service.get_cooldown = AsyncMock(return_value=mock_cooldown)
+
+    result = await active_lucidity_service.get_action_cooldown(player_id_str, "pray")
+
+    assert result == mock_cooldown
+    # Should convert string to UUID
+    call_args = active_lucidity_service._lucidity_service.get_cooldown.call_args
+    assert isinstance(call_args[0][0], uuid.UUID)
+
+
+@pytest.mark.asyncio
+async def test_get_action_cooldown_invalid_string_player_id(active_lucidity_service):
+    """Test get_action_cooldown() raises error for invalid string player_id."""
+    with pytest.raises(ValueError, match="Invalid player_id format"):
+        await active_lucidity_service.get_action_cooldown("invalid-uuid", "pray")
+
+
+@pytest.mark.asyncio
+async def test_get_action_cooldown_lowercases_action_code(active_lucidity_service, sample_player_id):
+    """Test get_action_cooldown() lowercases action_code."""
+    mock_cooldown = MagicMock()
+    active_lucidity_service._lucidity_service.get_cooldown = AsyncMock(return_value=mock_cooldown)
+
+    await active_lucidity_service.get_action_cooldown(sample_player_id, "PRAY")
+
+    # Should lowercase action_code
+    call_args = active_lucidity_service._lucidity_service.get_cooldown.call_args
+    assert call_args[0][1] == "pray"

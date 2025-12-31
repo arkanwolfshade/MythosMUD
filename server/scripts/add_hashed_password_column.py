@@ -29,7 +29,7 @@ else:
     if env_file.exists():
         load_dotenv(env_file)
 
-from server.logging.enhanced_logging_config import get_logger  # noqa: E402
+from server.structured_logging.enhanced_logging_config import get_logger  # noqa: E402
 
 logger = get_logger(__name__)
 

@@ -31,7 +31,7 @@ export const CommandInputPanel: React.FC<CommandInputPanelProps> = ({
 
   const handleCommandSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!commandInput.trim() || disabled) return;
+    if (!commandInput.trim() || disabled || !isConnected) return;
 
     let command = commandInput.trim();
 

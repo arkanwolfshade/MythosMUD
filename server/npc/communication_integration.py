@@ -16,7 +16,7 @@ from typing import TYPE_CHECKING
 
 from ..events import EventBus
 from ..events.event_types import NPCListened, NPCSpoke
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 # Removed: from ..persistence import get_persistence - no longer needed
 

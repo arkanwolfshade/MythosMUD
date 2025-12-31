@@ -14,8 +14,8 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from server.logging.enhanced_logging_config import get_logger
 from server.models.player import PlayerChannelPreferences
+from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

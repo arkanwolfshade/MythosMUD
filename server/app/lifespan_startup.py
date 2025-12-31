@@ -10,7 +10,7 @@ from collections.abc import Iterable
 from fastapi import FastAPI
 
 from ..container import ApplicationContainer
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..time.time_event_consumer import MythosTimeEventConsumer
 from ..time.time_service import get_mythos_chronicle
 

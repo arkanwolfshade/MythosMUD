@@ -11,15 +11,15 @@ from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi_users import schemas
-from pydantic import BaseModel, field_validator
-from sqlalchemy.exc import IntegrityError
+from pydantic import BaseModel, Field, field_validator
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..database import get_async_session
 from ..exceptions import LoggedHTTPException
-from ..logging.enhanced_logging_config import get_logger
 from ..models.user import User
 from ..schemas.invite import InviteRead
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import create_context_from_request
 from .dependencies import get_current_active_user, get_current_superuser
 from .invites import InviteManager, get_invite_manager
@@ -77,15 +77,17 @@ class LoginRequest(BaseModel):
 
 # Define login response schema
 class LoginResponse(BaseModel):
-    """Schema for login responses."""
+    """Schema for login responses.
+
+    MULTI-CHARACTER: Updated to return list of characters instead of single character.
+    """
 
     __slots__ = ()  # Performance optimization
 
     access_token: str
     token_type: str = "bearer"
     user_id: str
-    has_character: bool = True
-    character_name: str | None = None
+    characters: list[dict[str, Any]] = Field(default_factory=list, description="List of active characters")
 
 
 @auth_router.post("/register", response_model=LoginResponse)
@@ -93,7 +95,6 @@ async def register_user(
     user_create: UserCreate,
     request: Request,
     invite_manager: InviteManager = Depends(get_invite_manager),
-    user_manager: UserManager = Depends(get_user_manager),
     session: AsyncSession = Depends(get_async_session),
 ) -> LoginResponse:
     """
@@ -133,13 +134,12 @@ async def register_user(
 
     try:
         # Create user directly using SQLAlchemy to bypass FastAPI Users issues
-        from sqlalchemy import select
+        # MULTI-CHARACTER: Check if username already exists (case-insensitive)
+        from sqlalchemy import func, select
 
-        from ..models.user import User
         from .argon2_utils import hash_password
 
-        # Check if username already exists
-        stmt = select(User).where(User.username == user_create_clean.username)
+        stmt = select(User).where(func.lower(User.username) == func.lower(user_create_clean.username))
         result = await session.execute(stmt)
         existing_user = result.scalar_one_or_none()
 
@@ -147,7 +147,11 @@ async def register_user(
             context = create_context_from_request(request)
             context.metadata["username"] = user_create_clean.username
             context.metadata["operation"] = "register_user"
-            raise LoggedHTTPException(status_code=400, detail="Username already exists", context=context)
+            raise LoggedHTTPException(
+                status_code=400,
+                detail="Username already exists (names are case-insensitive)",
+                context=context,
+            )
 
         # Hash password using Argon2
         hashed_password = hash_password(user_create_clean.password)
@@ -199,7 +203,7 @@ async def register_user(
                     user_id=user.id,
                     username=user.username,
                 )
-            except Exception as invite_error:
+            except SQLAlchemyError as invite_error:
                 # Log error but don't fail registration if invite marking fails
                 logger.error(
                     "Failed to mark invite as used during registration",
@@ -274,13 +278,12 @@ async def register_user(
     logger.debug("JWT token preview", token_preview=access_token[:50])
 
     # Newly registered users don't have characters yet
-    logger.info("Registration successful for user", username=user.username, has_character=False)
+    logger.info("Registration successful for user", username=user.username, character_count=0)
 
     return LoginResponse(
         access_token=access_token,
         user_id=str(user.id),
-        has_character=False,
-        character_name=None,
+        characters=[],
     )
 
 
@@ -308,10 +311,10 @@ async def login_user(
 
     logger.info("Login attempt", username=request.username)
 
-    from sqlalchemy import select
+    from sqlalchemy import func, select
 
-    # Find user by username
-    stmt = select(User).where(User.username == request.username)
+    # MULTI-CHARACTER: Find user by username (case-insensitive)
+    stmt = select(User).where(func.lower(User.username) == func.lower(request.username))
     result = await session.execute(stmt)
     user = result.scalar_one_or_none()
 
@@ -393,52 +396,47 @@ async def login_user(
         lifetime_seconds=3600,  # 1 hour
     )
 
-    # Check if user has a character
+    # MULTI-CHARACTER: Get all active characters for user
     from ..async_persistence import get_async_persistence
+    from ..schemas.player import CharacterInfo
 
     async_persistence = get_async_persistence()
-    player = await async_persistence.get_player_by_user_id(str(user.id))
+    active_players = await async_persistence.get_active_players_by_user_id(str(user.id))
 
-    has_character = player is not None
-    character_name: str | None = str(player.name) if player else None
+    # Convert players to CharacterInfo format
+    characters = []
+    for player in active_players:
+        # Get profession name if available
+        profession_name = None
+        if player.profession_id and hasattr(async_persistence, "get_profession_by_id"):
+            try:
+                profession = await async_persistence.get_profession_by_id(int(player.profession_id))
+                if profession:
+                    profession_name = profession.name
+            except SQLAlchemyError:
+                # If profession lookup fails, continue without profession name
+                pass
 
-    # CRITICAL FIX: Handle new game session to disconnect any existing connections
-    # This prevents the duplicate login bug where the same player can be logged in multiple times
-    if has_character and player:
-        import uuid
+        character_info = CharacterInfo(
+            player_id=str(player.player_id),
+            name=player.name,
+            profession_id=player.profession_id,
+            profession_name=profession_name,
+            level=player.level,
+            created_at=player.created_at,
+            last_active=player.last_active,
+        )
+        characters.append(character_info.model_dump())
 
-        # AI Agent: Get connection_manager from container instead of global import
-        #           Use http_request (the FastAPI Request), not request (the LoginRequest body)
-        connection_manager = http_request.app.state.container.connection_manager
+    # Note: Session management for existing connections is now handled when a character is selected
+    # We don't disconnect on login anymore since users can have multiple characters
 
-        # Generate a new session ID for this login
-        new_session_id = f"login_{uuid.uuid4().hex[:8]}"
-
-        # Disconnect any existing connections for this player
-        # Convert player_id to UUID (player.player_id is already a UUID at runtime)
-        player_id_uuid = uuid.UUID(str(player.player_id))
-        session_results = await connection_manager.handle_new_game_session(player_id_uuid, new_session_id)
-
-        if session_results["success"]:
-            logger.info(
-                "Login session management: Disconnected existing connections",
-                player_id=player.player_id,
-                connections_disconnected=session_results["connections_disconnected"],
-            )
-        else:
-            logger.warning(
-                "Login session management failed",
-                player_id=player.player_id,
-                errors=session_results["errors"],
-            )
-
-    logger.info("Login successful for user", username=user.username, has_character=has_character)
+    logger.info("Login successful for user", username=user.username, character_count=len(characters))
 
     return LoginResponse(
         access_token=access_token,
         user_id=str(user.id),
-        has_character=has_character,
-        character_name=character_name,
+        characters=characters,
     )
 
 
@@ -461,7 +459,7 @@ async def get_current_user_info(
 
 @auth_router.get("/invites")
 async def list_invites(
-    current_user: User = Depends(get_current_superuser),
+    _current_user: User = Depends(get_current_superuser),
     invite_manager: InviteManager = Depends(get_invite_manager),
 ) -> list[dict]:
     """
@@ -485,7 +483,7 @@ async def list_invites(
 
 @auth_router.post("/invites", response_model=InviteRead)
 async def create_invite(
-    current_user: User = Depends(get_current_superuser),
+    _current_user: User = Depends(get_current_superuser),
     invite_manager: InviteManager = Depends(get_invite_manager),
 ) -> dict[str, Any]:  # Return dict for better performance
     """

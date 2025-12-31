@@ -206,5 +206,121 @@ describe('roomMergeUtils', () => {
       const result = mergeRoomState(updatesRoom, prevRoom);
       expect(result?.npcs).toEqual(['npc1']);
     });
+
+    it('should handle updates with non-array players', () => {
+      const prevRoom: Room = {
+        id: 'room1',
+        name: 'Room 1',
+        players: ['player1'],
+      } as Room;
+
+      const updatesRoom = {
+        id: 'room1',
+        name: 'Room 1',
+        players: 'not-an-array',
+      } as unknown as Room;
+
+      const result = mergeRoomState(updatesRoom, prevRoom);
+      // Should preserve prevRoom players when updates has invalid data
+      expect(result?.players).toEqual(['player1']);
+    });
+
+    it('should handle updates with non-array npcs', () => {
+      const prevRoom: Room = {
+        id: 'room1',
+        name: 'Room 1',
+        npcs: ['npc1'],
+      } as Room;
+
+      const updatesRoom = {
+        id: 'room1',
+        name: 'Room 1',
+        npcs: 'not-an-array',
+      } as unknown as Room;
+
+      const result = mergeRoomState(updatesRoom, prevRoom);
+      // Should preserve prevRoom npcs when updates has invalid data
+      expect(result?.npcs).toEqual(['npc1']);
+    });
+
+    it('should handle updates with undefined players and npcs', () => {
+      const prevRoom: Room = {
+        id: 'room1',
+        name: 'Room 1',
+        players: ['player1'],
+        npcs: ['npc1'],
+      } as Room;
+
+      const updatesRoom: Room = {
+        id: 'room1',
+        name: 'Room 1',
+        description: 'Updated',
+        exits: {},
+        // players and npcs are undefined
+      };
+
+      const result = mergeRoomState(updatesRoom, prevRoom);
+      expect(result?.players).toEqual(['player1']);
+      expect(result?.npcs).toEqual(['npc1']);
+    });
+
+    it('should handle room ID change with empty arrays', () => {
+      const prevRoom: Room = {
+        id: 'room1',
+        name: 'Room 1',
+        players: ['player1'],
+        npcs: ['npc1'],
+      } as Room;
+
+      const updatesRoom: Room = {
+        id: 'room2',
+        name: 'Room 2',
+        description: 'New room',
+        exits: {},
+        players: [],
+        npcs: [],
+      };
+
+      const result = mergeRoomState(updatesRoom, prevRoom);
+      expect(result?.id).toBe('room2');
+      expect(result?.players).toEqual([]);
+      expect(result?.npcs).toEqual([]);
+    });
+
+    it('should handle updates with only players array', () => {
+      const prevRoom: Room = {
+        id: 'room1',
+        name: 'Room 1',
+        npcs: ['npc1'],
+      } as Room;
+
+      const updatesRoom: Room = {
+        id: 'room1',
+        name: 'Room 1',
+        players: ['player1'],
+      } as Room;
+
+      const result = mergeRoomState(updatesRoom, prevRoom);
+      expect(result?.players).toEqual(['player1']);
+      expect(result?.npcs).toEqual(['npc1']);
+    });
+
+    it('should handle updates with only npcs array', () => {
+      const prevRoom: Room = {
+        id: 'room1',
+        name: 'Room 1',
+        players: ['player1'],
+      } as Room;
+
+      const updatesRoom: Room = {
+        id: 'room1',
+        name: 'Room 1',
+        npcs: ['npc1'],
+      } as Room;
+
+      const result = mergeRoomState(updatesRoom, prevRoom);
+      expect(result?.players).toEqual(['player1']);
+      expect(result?.npcs).toEqual(['npc1']);
+    });
   });
 });

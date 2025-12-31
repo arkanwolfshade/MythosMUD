@@ -6,8 +6,8 @@ from collections.abc import Sequence
 from datetime import datetime
 from pathlib import Path
 
-from server.logging.enhanced_logging_config import get_logger
 from server.schemas.calendar import ScheduleCollection, ScheduleEntry
+from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.project_paths import get_calendar_paths_for_environment, normalize_environment
 
 logger = get_logger(__name__)

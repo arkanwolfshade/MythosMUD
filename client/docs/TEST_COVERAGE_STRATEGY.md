@@ -6,20 +6,40 @@ This document outlines our tiered approach to test coverage, focusing testing ef
 
 ### 🔴 Critical Code: 90%
 
-**Security, authentication, and data handling**
+**Security, authentication, data handling, event processing, and state management**
 
-These files require high test coverage due to their critical role in application security and data integrity:
+These files require high test coverage due to their critical role in application security, data integrity, and game state management:
+
+**Security and Authentication:**
 
 - `src/utils/security.ts` - Security utilities and sanitization
 - `src/utils/errorHandler.ts` - Error handling and reporting
 - `src/utils/logoutHandler.ts` - Authentication and logout flows
+
+**Connection Management:**
+
 - `src/hooks/useGameConnection.ts` - Connection management
 - `src/hooks/useWebSocketConnection.ts` - WebSocket connection handling
 - `src/hooks/useSessionManagement.ts` - Session ID generation and management (uses cryptographic APIs)
 - `src/stores/sessionStore.ts` - Session state management
 - `src/stores/connectionStore.ts` - Connection state management
 
-**Rationale**: These areas handle sensitive data, authentication, and critical system state. Bugs here can lead to security vulnerabilities, data loss, or system failures.
+**Event Processing:**
+
+- `src/components/ui-v2/eventHandlers/messageHandlers.ts` - Message event handling
+- `src/components/ui-v2/eventHandlers/playerHandlers.ts` - Player event handling
+- `src/components/ui-v2/eventHandlers/roomHandlers.ts` - Room event handling
+- `src/components/ui-v2/eventHandlers/systemHandlers.ts` - System event handling
+- `src/components/ui-v2/eventHandlers/combatHandlers.ts` - Combat event handling
+- `src/components/ui-v2/hooks/useEventProcessing.ts` - Event queue processing and deduplication
+
+**State Management Utilities:**
+
+- `src/components/ui-v2/utils/stateUpdateUtils.ts` - Game state update utilities
+- `src/components/ui-v2/utils/messageUtils.ts` - Message sanitization and processing
+- `src/components/ui-v2/utils/roomMergeUtils.ts` - Room state merging logic
+
+**Rationale**: These areas handle sensitive data, authentication, critical system state, event processing, and game state management. Bugs here can lead to security vulnerabilities, data loss, system failures, or incorrect game state.
 
 ### 🟡 Core Business Logic: 85%+
 
@@ -77,7 +97,7 @@ All files in:
 
 ## Global Threshold
 
-The global minimum threshold is set to **70%** (statements, functions, lines) and **65%** (branches) to ensure overall code quality while allowing flexibility for different code categories.
+The global minimum threshold is set to **70%** for all metrics (statements, branches, functions, lines) to ensure overall code quality while allowing flexibility for different code categories.
 
 ## Implementation
 
@@ -103,10 +123,18 @@ cd client && npm run test:coverage
 
 When adding new files:
 
-1. **Critical code**: Add to the 90% threshold list in `vitest.config.ts`
-2. **Core business logic**: Add to the 85% threshold list in `vitest.config.ts`
+1. **Critical code**: Add to the 90% threshold list in `vitest.config.ts` (security, auth, event handlers, state utilities)
+2. **Core business logic**: Add to the 85% threshold list in `vitest.config.ts` (game state, stores, contexts)
 3. **UI components**: Will use the global 70% threshold
 4. **Utilities**: Will use the global 70% threshold (adjust if critical)
+
+**Critical Path Definition**: Code is considered critical if it:
+
+- Handles authentication, security, or sensitive data
+- Processes game events that affect game state
+- Manages WebSocket connections or session state
+- Performs state updates or data merging
+- Handles error recovery or cleanup
 
 ## Coverage Goals
 

@@ -6,8 +6,8 @@ from unittest.mock import patch
 
 import pytest
 import structlog
-
 from server.logging.enhanced_logging_config import bind_request_context, get_logger
+
 from server.monitoring.exception_tracker import track_exception
 from server.monitoring.performance_monitor import measure_performance
 

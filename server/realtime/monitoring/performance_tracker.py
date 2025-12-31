@@ -11,7 +11,7 @@ Performance tracking is now a focused, independently testable component.
 import time
 from typing import Any, TypedDict
 
-from ...logging.enhanced_logging_config import get_logger
+from ...structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

@@ -17,7 +17,7 @@ from uuid import UUID
 from sqlalchemy.exc import SQLAlchemyError
 
 from server.events.event_types import BaseEvent
-from server.logging.enhanced_logging_config import get_logger
+from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

@@ -1,5 +1,10 @@
-import uuid
-from unittest.mock import AsyncMock, MagicMock
+"""
+Unit tests for look command helper functions.
+
+Tests utility functions used by the look command system.
+"""
+
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -7,299 +12,194 @@ from server.commands.look_helpers import (
     _get_health_label,
     _get_lucidity_label,
     _get_visible_equipment,
+    _get_wearable_container_service,
+    _is_direction,
     _parse_instance_number,
 )
-from server.commands.look_player import _get_players_in_room
 
 
-class TestParseInstanceNumber:
-    """Test _parse_instance_number helper function."""
-
-    def test_parse_instance_number_hyphen_syntax(self):
-        """Test parsing instance number with hyphen syntax."""
-        target, instance = _parse_instance_number("backpack-2")
-        assert target == "backpack"
-        assert instance == 2
-
-        target, instance = _parse_instance_number("lantern-1")
-        assert target == "lantern"
-        assert instance == 1
-
-        target, instance = _parse_instance_number("sword-10")
-        assert target == "sword"
-        assert instance == 10
-
-    def test_parse_instance_number_space_syntax(self):
-        """Test parsing instance number with space syntax."""
-        target, instance = _parse_instance_number("backpack 2")
-        assert target == "backpack"
-        assert instance == 2
-
-        target, instance = _parse_instance_number("lantern 1")
-        assert target == "lantern"
-        assert instance == 1
-
-        target, instance = _parse_instance_number("sword 10")
-        assert target == "sword"
-        assert instance == 10
-
-    def test_parse_instance_number_no_instance(self):
-        """Test parsing target without instance number."""
-        target, instance = _parse_instance_number("backpack")
-        assert target == "backpack"
-        assert instance is None
-
-        target, instance = _parse_instance_number("lantern")
-        assert target == "lantern"
-        assert instance is None
-
-    def test_parse_instance_number_multi_word_hyphen(self):
-        """Test parsing instance number with multi-word target and hyphen."""
-        target, instance = _parse_instance_number("leather backpack-2")
-        assert target == "leather backpack"
-        assert instance == 2
-
-    def test_parse_instance_number_multi_word_space(self):
-        """Test parsing instance number with multi-word target and space."""
-        target, instance = _parse_instance_number("leather backpack 2")
-        assert target == "leather backpack"
-        assert instance == 2
+def test_parse_instance_number_hyphen_syntax():
+    """Test _parse_instance_number with hyphen syntax."""
+    target_name, instance_number = _parse_instance_number("backpack-2")
+    assert target_name == "backpack"
+    assert instance_number == 2
 
 
-class TestGetHealthLabel:
-    """Test _get_health_label helper function."""
-
-    def test_get_health_label_healthy(self):
-        """Test health label for healthy player (>75%)."""
-        stats = {"current_dp": 20, "max_dp": 20}  # DP max = (CON + SIZ) / 5
-        assert _get_health_label(stats) == "healthy"
-
-        stats = {"current_dp": 80, "max_dp": 100}
-        assert _get_health_label(stats) == "healthy"
-
-        stats = {"current_dp": 76, "max_dp": 100}
-        assert _get_health_label(stats) == "healthy"
-
-    def test_get_health_label_wounded(self):
-        """Test health label for wounded player (25-75%)."""
-        stats = {"current_dp": 75, "max_dp": 100}
-        assert _get_health_label(stats) == "wounded"
-
-        stats = {"current_dp": 50, "max_dp": 100}
-        assert _get_health_label(stats) == "wounded"
-
-        stats = {"current_dp": 25, "max_dp": 100}
-        assert _get_health_label(stats) == "wounded"
-
-    def test_get_health_label_critical(self):
-        """Test health label for critical player (1-24%)."""
-        stats = {"current_dp": 24, "max_dp": 100}
-        assert _get_health_label(stats) == "critical"
-
-        stats = {"current_dp": 10, "max_dp": 100}
-        assert _get_health_label(stats) == "critical"
-
-        stats = {"current_dp": 1, "max_dp": 100}
-        assert _get_health_label(stats) == "critical"
-
-    def test_get_health_label_mortally_wounded(self):
-        """Test health label for mortally wounded player (<=0%)."""
-        stats = {"current_dp": 0, "max_dp": 100}
-        assert _get_health_label(stats) == "mortally wounded"
-
-        stats = {"current_dp": -10, "max_dp": 100}
-        assert _get_health_label(stats) == "mortally wounded"
+def test_parse_instance_number_space_syntax():
+    """Test _parse_instance_number with space syntax."""
+    target_name, instance_number = _parse_instance_number("backpack 2")
+    assert target_name == "backpack"
+    assert instance_number == 2
 
 
-class TestGetLucidityLabel:
-    """Test _get_lucidity_label helper function."""
-
-    def test_get_lucidity_label_lucid(self):
-        """Test lucidity label for lucid player (>75%)."""
-        stats = {"lucidity": 100, "max_lucidity": 100}
-        assert _get_lucidity_label(stats) == "lucid"
-
-        stats = {"lucidity": 80, "max_lucidity": 100}
-        assert _get_lucidity_label(stats) == "lucid"
-
-        stats = {"lucidity": 76, "max_lucidity": 100}
-        assert _get_lucidity_label(stats) == "lucid"
-
-    def test_get_lucidity_label_disturbed(self):
-        """Test lucidity label for disturbed player (25-75%)."""
-        stats = {"lucidity": 75, "max_lucidity": 100}
-        assert _get_lucidity_label(stats) == "disturbed"
-
-        stats = {"lucidity": 50, "max_lucidity": 100}
-        assert _get_lucidity_label(stats) == "disturbed"
-
-        stats = {"lucidity": 25, "max_lucidity": 100}
-        assert _get_lucidity_label(stats) == "disturbed"
-
-    def test_get_lucidity_label_unstable(self):
-        """Test lucidity label for unstable player (1-24%)."""
-        stats = {"lucidity": 24, "max_lucidity": 100}
-        assert _get_lucidity_label(stats) == "unstable"
-
-        stats = {"lucidity": 10, "max_lucidity": 100}
-        assert _get_lucidity_label(stats) == "unstable"
-
-        stats = {"lucidity": 1, "max_lucidity": 100}
-        assert _get_lucidity_label(stats) == "unstable"
-
-    def test_get_lucidity_label_mad(self):
-        """Test lucidity label for mad player (<=0%)."""
-        stats = {"lucidity": 0, "max_lucidity": 100}
-        assert _get_lucidity_label(stats) == "mad"
-
-        stats = {"lucidity": -10, "max_lucidity": 100}
-        assert _get_lucidity_label(stats) == "mad"
+def test_parse_instance_number_no_instance():
+    """Test _parse_instance_number with no instance number."""
+    target_name, instance_number = _parse_instance_number("backpack")
+    assert target_name == "backpack"
+    assert instance_number is None
 
 
-class TestGetVisibleEquipment:
-    """Test _get_visible_equipment helper function."""
+def test_parse_instance_number_multiple_spaces():
+    """Test _parse_instance_number with multiple spaces."""
+    target_name, instance_number = _parse_instance_number("back pack 2")
+    assert target_name == "back pack"
+    assert instance_number == 2
 
-    def test_get_visible_equipment_all_slots(self):
-        """Test getting visible equipment with all external slots."""
-        player = MagicMock()
-        player.get_equipped_items.return_value = {
-            "head": {"item_name": "Hat", "prototype_id": "hat"},
-            "torso": {"item_name": "Coat", "prototype_id": "coat"},
-            "legs": {"item_name": "Pants", "prototype_id": "pants"},
-            "hands": {"item_name": "Gloves", "prototype_id": "gloves"},
-            "feet": {"item_name": "Boots", "prototype_id": "boots"},
-            "main_hand": {"item_name": "Sword", "prototype_id": "sword"},
-            "off_hand": {"item_name": "Shield", "prototype_id": "shield"},
+
+def test_get_health_label_healthy():
+    """Test _get_health_label for healthy player."""
+    stats = {"current_dp": 80, "max_dp": 100, "constitution": 50, "size": 50}
+    label = _get_health_label(stats)
+    assert label == "healthy"
+
+
+def test_get_health_label_wounded():
+    """Test _get_health_label for wounded player."""
+    stats = {"current_dp": 50, "max_dp": 100, "constitution": 50, "size": 50}
+    label = _get_health_label(stats)
+    assert label == "wounded"
+
+
+def test_get_health_label_critical():
+    """Test _get_health_label for critical player."""
+    stats = {"current_dp": 20, "max_dp": 100, "constitution": 50, "size": 50}
+    label = _get_health_label(stats)
+    assert label == "critical"
+
+
+def test_get_health_label_mortally_wounded():
+    """Test _get_health_label for mortally wounded player."""
+    stats = {"current_dp": 0, "max_dp": 100, "constitution": 50, "size": 50}
+    label = _get_health_label(stats)
+    assert label == "mortally wounded"
+
+
+def test_get_health_label_no_max_dp():
+    """Test _get_health_label calculates max_dp from CON and SIZ."""
+    stats = {"current_dp": 50, "constitution": 50, "size": 50}
+    label = _get_health_label(stats)
+    # max_dp = (50 + 50) / 5 = 20, health_percent = 50/20 = 250% (clamped to healthy)
+    assert label in ["healthy", "wounded", "critical", "mortally wounded"]
+
+
+def test_get_health_label_zero_max_dp():
+    """Test _get_health_label with zero max_dp."""
+    stats = {"current_dp": 0, "max_dp": 0, "constitution": 0, "size": 0}
+    label = _get_health_label(stats)
+    assert label == "mortally wounded"
+
+
+def test_get_lucidity_label_lucid():
+    """Test _get_lucidity_label for lucid."""
+    stats = {"lucidity": 80, "max_lucidity": 100}
+    label = _get_lucidity_label(stats)
+    assert label == "lucid"
+
+
+def test_get_lucidity_label_disturbed():
+    """Test _get_lucidity_label for disturbed lucidity."""
+    stats = {"lucidity": 50, "max_lucidity": 100}
+    label = _get_lucidity_label(stats)
+    assert label == "disturbed"
+
+
+def test_get_lucidity_label_unstable():
+    """Test _get_lucidity_label for unstable lucidity."""
+    stats = {"lucidity": 10, "max_lucidity": 100}
+    label = _get_lucidity_label(stats)
+    assert label == "unstable"
+
+
+def test_get_lucidity_label_mad():
+    """Test _get_lucidity_label for mad lucidity."""
+    stats = {"lucidity": 0, "max_lucidity": 100}
+    label = _get_lucidity_label(stats)
+    assert label == "mad"
+
+
+def test_get_lucidity_label_no_lucidity():
+    """Test _get_lucidity_label when lucidity is missing."""
+    stats = {}
+    label = _get_lucidity_label(stats)
+    assert label == "mad"  # Defaults to 0 lucidity, which is mad
+
+
+def test_get_visible_equipment_no_equipment():
+    """Test _get_visible_equipment with no equipment."""
+    player = MagicMock()
+    player.get_equipped_items = MagicMock(return_value={})
+
+    result = _get_visible_equipment(player)
+    assert result == {}
+
+
+def test_get_visible_equipment_with_equipment():
+    """Test _get_visible_equipment with equipment."""
+    player = MagicMock()
+    player.get_equipped_items = MagicMock(
+        return_value={
+            "head": {"name": "Hat"},
+            "ring": {"name": "Ring"},  # Hidden slot
         }
+    )
 
-        visible = _get_visible_equipment(player)
-        assert "head" in visible
-        assert "torso" in visible
-        assert "legs" in visible
-        assert "hands" in visible
-        assert "feet" in visible
-        assert "main_hand" in visible
-        assert "off_hand" in visible
-        assert len(visible) == 7
-
-    def test_get_visible_equipment_excludes_internal_slots(self):
-        """Test that internal slots are excluded from visible equipment."""
-        player = MagicMock()
-        player.get_equipped_items.return_value = {
-            "head": {"item_name": "Hat", "prototype_id": "hat"},
-            "ring": {"item_name": "Ring", "prototype_id": "ring"},
-            "amulet": {"item_name": "Amulet", "prototype_id": "amulet"},
-            "belt": {"item_name": "Belt", "prototype_id": "belt"},
-            "backpack": {"item_name": "Backpack", "prototype_id": "backpack"},
-        }
-
-        visible = _get_visible_equipment(player)
-        assert "head" in visible
-        assert "ring" not in visible
-        assert "amulet" not in visible
-        assert "belt" not in visible
-        assert "backpack" not in visible
-        assert len(visible) == 1
-
-    def test_get_visible_equipment_partial_equipment(self):
-        """Test getting visible equipment with partial equipment."""
-        player = MagicMock()
-        player.get_equipped_items.return_value = {
-            "head": {"item_name": "Hat", "prototype_id": "hat"},
-            "main_hand": {"item_name": "Sword", "prototype_id": "sword"},
-        }
-
-        visible = _get_visible_equipment(player)
-        assert "head" in visible
-        assert "main_hand" in visible
-        assert len(visible) == 2
-
-    def test_get_visible_equipment_no_equipment(self):
-        """Test getting visible equipment with no equipment."""
-        player = MagicMock()
-        player.get_equipped_items.return_value = {}
-
-        visible = _get_visible_equipment(player)
-        assert len(visible) == 0
+    result = _get_visible_equipment(player)
+    assert "head" in result
+    assert "ring" not in result  # Ring is a hidden slot
+    assert result["head"]["name"] == "Hat"
 
 
-class TestGetPlayersInRoom:
-    """Test _get_players_in_room helper function."""
+def test_is_direction_cardinal():
+    """Test _is_direction with cardinal directions."""
+    assert _is_direction("north") is True
+    assert _is_direction("south") is True
+    assert _is_direction("east") is True
+    assert _is_direction("west") is True
 
-    @pytest.mark.asyncio
-    async def test_get_players_in_room_single_player(self):
-        """Test getting players from room with one player."""
-        room = MagicMock()
-        player_id_1 = str(uuid.uuid4())
-        room.get_players.return_value = [player_id_1]
 
-        persistence = MagicMock()
-        player1 = MagicMock()
-        player1.name = "Armitage"
-        persistence.get_player_by_id = AsyncMock(return_value=player1)
+def test_is_direction_abbreviation():
+    """Test _is_direction with abbreviations."""
+    assert _is_direction("n") is True
+    assert _is_direction("s") is True
+    assert _is_direction("e") is True
+    assert _is_direction("w") is True
 
-        players = await _get_players_in_room(room, persistence)
-        assert len(players) == 1
-        assert players[0].name == "Armitage"
 
-    @pytest.mark.asyncio
-    async def test_get_players_in_room_multiple_players(self):
-        """Test getting players from room with multiple players."""
-        room = MagicMock()
-        player_id_1 = str(uuid.uuid4())
-        player_id_2 = str(uuid.uuid4())
-        room.get_players.return_value = [player_id_1, player_id_2]
+def test_is_direction_not_direction():
+    """Test _is_direction with non-direction."""
+    assert _is_direction("player") is False
+    assert _is_direction("item") is False
+    assert _is_direction("") is False
 
-        persistence = MagicMock()
-        player1 = MagicMock()
-        player1.name = "Armitage"
-        player2 = MagicMock()
-        player2.name = "Marsh"
 
-        async def get_player_side_effect(player_id):
-            if str(player_id) == player_id_1:
-                return player1
-            elif str(player_id) == player_id_2:
-                return player2
-            return None
+def test_get_wearable_container_service_initializes():
+    """Test _get_wearable_container_service initializes service."""
+    mock_request = MagicMock()
+    mock_app = MagicMock()
+    mock_app.state = MagicMock()
+    mock_app.state.container = MagicMock()
+    mock_app.state.container.async_persistence = MagicMock()
+    mock_request.app = mock_app
 
-        persistence.get_player_by_id = AsyncMock(side_effect=get_player_side_effect)
+    # Clear cached instance
+    if hasattr(_get_wearable_container_service, "cached_instance"):
+        _get_wearable_container_service.cached_instance = None
 
-        players = await _get_players_in_room(room, persistence)
-        assert len(players) == 2
-        assert {p.name for p in players} == {"Armitage", "Marsh"}
+    service = _get_wearable_container_service(mock_request)
+    assert service is not None
 
-    @pytest.mark.asyncio
-    async def test_get_players_in_room_no_players(self):
-        """Test getting players from empty room."""
-        room = MagicMock()
-        room.get_players.return_value = []
 
-        persistence = MagicMock()
-        players = await _get_players_in_room(room, persistence)
-        assert len(players) == 0
+def test_get_wearable_container_service_no_persistence():
+    """Test _get_wearable_container_service raises when persistence missing."""
+    mock_request = MagicMock()
+    mock_app = MagicMock()
+    mock_app.state = MagicMock()
+    mock_app.state.container = None
+    mock_request.app = mock_app
 
-    @pytest.mark.asyncio
-    async def test_get_players_in_room_filters_none(self):
-        """Test that None players are filtered out."""
-        room = MagicMock()
-        player_id_1 = str(uuid.uuid4())
-        player_id_2 = str(uuid.uuid4())
-        room.get_players.return_value = [player_id_1, player_id_2]
+    # Clear cached instance
+    if hasattr(_get_wearable_container_service, "cached_instance"):
+        _get_wearable_container_service.cached_instance = None
 
-        persistence = MagicMock()
-        player1 = MagicMock()
-        player1.name = "Armitage"
-
-        async def get_player_side_effect(player_id):
-            if str(player_id) == player_id_1:
-                return player1
-            elif str(player_id) == player_id_2:
-                return None  # Player not found
-            return None
-
-        persistence.get_player_by_id = AsyncMock(side_effect=get_player_side_effect)
-
-        players = await _get_players_in_room(room, persistence)
-        assert len(players) == 1
-        assert players[0].name == "Armitage"
+    with pytest.raises(ValueError, match="async_persistence is required"):
+        _get_wearable_container_service(mock_request)

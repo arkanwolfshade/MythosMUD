@@ -13,8 +13,8 @@ from typing import Any
 from uuid import UUID
 
 from ..exceptions import ValidationError
-from ..logging.enhanced_logging_config import get_logger
 from ..models.container import ContainerComponent, ContainerLockState, ContainerSourceType
+from ..structured_logging.enhanced_logging_config import get_logger
 
 # Removed: from ..persistence import get_persistence - now using async_persistence parameter
 from ..utils.error_logging import create_error_context, log_and_raise

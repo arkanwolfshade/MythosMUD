@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import HTTPException
+from pydantic import ValidationError as PydanticValidationError
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -25,7 +26,7 @@ from sqlalchemy.ext.asyncio import (
 from sqlalchemy.pool import NullPool
 
 from .exceptions import DatabaseError, ValidationError
-from .logging.enhanced_logging_config import get_logger
+from .structured_logging.enhanced_logging_config import get_logger
 from .utils.error_logging import create_error_context, log_and_raise
 
 logger = get_logger(__name__)
@@ -111,12 +112,14 @@ class DatabaseManager:
             try:
                 config = get_config()
                 database_url = config.database.url
-            except Exception as e:
+            except (PydanticValidationError, ImportError, RuntimeError) as e:
+                # JUSTIFICATION: Catch common initialization errors including Pydantic validation
+                # and environment loading issues to provide a unified ValidationError.
                 log_and_raise(
                     ValidationError,
                     f"Failed to load configuration: {e}",
                     context=context,
-                    details={"config_error": str(e)},
+                    details={"config_error": str(e), "error_type": type(e).__name__},
                     user_friendly="Database cannot be initialized: configuration not loaded or invalid",
                 )
 
@@ -190,7 +193,8 @@ class DatabaseManager:
                     )
                     + "\n"
                 )
-        except Exception:
+        except OSError:
+            # Failure here must not crash the main database initialization flow.
             pass
         # #endregion agent log
 
@@ -219,7 +223,8 @@ class DatabaseManager:
                         )
                         + "\n"
                     )
-            except Exception:
+            except Exception:  # pylint: disable=broad-exception-caught
+                # JUSTIFICATION: Best-effort debug log.
                 pass
             # #endregion agent log
 
@@ -257,8 +262,11 @@ class DatabaseManager:
                 },
                 user_friendly="Cannot connect to database. Please check database server is running.",
             )
-        except Exception as e:
-            # Catch-all for other errors (authentication, SSL, etc.)
+        except Exception as e:  # pylint: disable=broad-exception-caught
+            # JUSTIFICATION: create_async_engine can raise a wide variety of exceptions depending
+            # on the driver (asyncpg), network state, and provided credentials. We catch Exception
+            # here to provide a unified, context-rich DatabaseError for any failure during this
+            # critical infrastructure setup.
             context = create_error_context()
             context.metadata["operation"] = "create_async_engine"
             log_and_raise(
@@ -337,7 +345,8 @@ class DatabaseManager:
                             )
                             + "\n"
                         )
-                except Exception:
+                except Exception:  # pylint: disable=broad-exception-caught
+                    # JUSTIFICATION: This is a best-effort debug log write. Failure here must not crash the main flow.
                     pass
                 # #endregion agent log
 
@@ -487,7 +496,10 @@ class DatabaseManager:
                 # Event loop is closed or proactor is None - this is expected during cleanup
                 # Don't log as error, just as debug since this is normal during test teardown
                 logger.debug("Event loop closed during engine disposal (expected during cleanup)", error=str(e))
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught
+                # JUSTIFICATION: This is a best-effort cleanup of database connections during engine disposal.
+                # We log any unexpected failures but must not raise them, ensuring the application shutdown
+                # process can continue for other components even if database cleanup fails.
                 # Any other error - log but don't raise
                 logger.warning("Error disposing database engine", error=str(e), error_type=type(e).__name__)
             finally:
@@ -501,20 +513,16 @@ class DatabaseManager:
             self._creation_loop_id = None
 
 
-# DEPRECATED: Module-level global removed - use ApplicationContainer instead
-# For backward compatibility during migration, delegate to DatabaseManager.get_instance()
-# TODO: Remove this function once all code uses container
-def get_database_manager() -> DatabaseManager:
+def reset_database() -> None:
     """
-    Get the database manager singleton.
+    Reset database state for testing.
 
-    DEPRECATED: Use ApplicationContainer.database_manager instead.
-    This function exists only for backward compatibility during migration.
-
-    Returns:
-        DatabaseManager: The database manager instance
+    This function resets the DatabaseManager singleton and module-level
+    _database_url. Use this in test fixtures to ensure clean state.
     """
-    return DatabaseManager.get_instance()
+    globals()["_database_url"] = None
+    DatabaseManager.reset_instance()
+    logger.debug("Database state reset")
 
 
 def get_engine() -> AsyncEngine:
@@ -527,7 +535,7 @@ def get_engine() -> AsyncEngine:
     Raises:
         ValidationError: If database cannot be initialized
     """
-    return get_database_manager().get_engine()
+    return DatabaseManager.get_instance().get_engine()
 
 
 def get_session_maker() -> async_sessionmaker:
@@ -540,7 +548,7 @@ def get_session_maker() -> async_sessionmaker:
     Raises:
         ValidationError: If database cannot be initialized
     """
-    return get_database_manager().get_session_maker()
+    return DatabaseManager.get_instance().get_session_maker()
 
 
 def get_database_url() -> str | None:
@@ -553,7 +561,7 @@ def get_database_url() -> str | None:
     Raises:
         ValidationError: If database cannot be initialized
     """
-    return get_database_manager().get_database_url()
+    return DatabaseManager.get_instance().get_database_url()
 
 
 async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
@@ -577,7 +585,10 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
             # not database errors. They're already logged by LoggedHTTPException,
             # so we should not log them as database errors. Just re-raise.
             raise
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught
+            # JUSTIFICATION: This is a top-level dependency handler for database sessions. We must
+            # catch any exception during session usage to perform a safety rollback before the
+            # session is automatically closed, ensuring data integrity for any partial operations.
             # Only log actual database-related exceptions
             context.metadata["error_type"] = type(e).__name__
             context.metadata["error_message"] = str(e)
@@ -590,7 +601,10 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
             try:
                 await session.rollback()
                 logger.debug("Database session rolled back after error")
-            except Exception as rollback_error:
+            except Exception as rollback_error:  # pylint: disable=broad-exception-caught
+                # JUSTIFICATION: This is a safety catch during error handling. If the session rollback
+                # itself fails, we log the failure but must re-raise the original exception that
+                # triggered the rollback attempt, to avoid masking the initial root cause.
                 logger.error(
                     "Failed to rollback database session",
                     context=context.to_dict(),
@@ -657,7 +671,10 @@ async def init_db() -> None:
             logger.info("Database connection verified successfully")
 
         logger.info("Database initialization complete - DDL must be applied separately via SQL scripts")
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught
+        # JUSTIFICATION: This is the top-level initialization for the main database. We catch Exception
+        # to ensure any failure during mapper configuration or connectivity checks is logged with
+        # structured context before the application fails to start.
         context.metadata["error_type"] = type(e).__name__
         context.metadata["error_message"] = str(e)
         logger.error(
@@ -676,12 +693,15 @@ async def close_db() -> None:
 
     logger.info("Closing database connections")
     try:
-        db_manager = get_database_manager()
+        db_manager = DatabaseManager.get_instance()
         # Ensure engine is initialized so dispose is meaningful
         _ = db_manager.get_engine()
         await db_manager.close()
         logger.info("Database connections closed")
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught
+        # JUSTIFICATION: This global database closure function must catch any error during resource
+        # cleanup to ensure failures are logged with structured context. It re-raises a
+        # RuntimeError as expected by the application's lifecycle management.
         context.metadata["error_type"] = type(e).__name__
         context.metadata["error_message"] = str(e)
         logger.error(
@@ -716,7 +736,7 @@ def get_database_path() -> Path | None:
         # Unsupported URL schemes should raise
         raise ValidationError(f"Unsupported database URL: {url}. Only PostgreSQL is supported.")
 
-    return get_database_manager().get_database_path()
+    return DatabaseManager.get_instance().get_database_path()
 
 
 def ensure_database_directory() -> None:

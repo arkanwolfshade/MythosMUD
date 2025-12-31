@@ -10,7 +10,7 @@ O(1) lookup and eliminates the need for repetitive conditional logic.
 import uuid
 from abc import ABC, abstractmethod
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

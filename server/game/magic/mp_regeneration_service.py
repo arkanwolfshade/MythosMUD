@@ -12,7 +12,7 @@ from typing import Any
 from sqlalchemy.exc import SQLAlchemyError
 
 from server.game.player_service import PlayerService
-from server.logging.enhanced_logging_config import get_logger
+from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -126,7 +126,7 @@ class MPRegenerationService:
                             },
                         },
                     )
-                except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError) as e:
+                except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError, RuntimeError) as e:
                     logger.warning("Failed to send MP regeneration update event", player_id=player_id, error=str(e))
 
             return {"mp_restored": mp_restored, "current_mp": new_mp, "max_mp": max_mp}

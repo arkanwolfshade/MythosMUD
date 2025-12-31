@@ -8,7 +8,7 @@ formatting player display, and handling player look requests.
 import uuid
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .look_helpers import _get_health_label, _get_lucidity_label, _get_visible_equipment
 
 logger = get_logger(__name__)

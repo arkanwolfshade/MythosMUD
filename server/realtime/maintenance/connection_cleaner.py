@@ -13,7 +13,11 @@ import uuid
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
-from ...logging.enhanced_logging_config import get_logger
+from sqlalchemy.exc import SQLAlchemyError
+
+from server.exceptions import DatabaseError
+
+from ...structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable
@@ -120,7 +124,7 @@ class ConnectionCleaner:
                 self.message_queue.remove_player_messages(str(pid))
             if stale_ids:
                 logger.info("Pruned stale players", stale_ids=[str(pid) for pid in stale_ids])
-        except Exception as e:
+        except (DatabaseError, SQLAlchemyError) as e:
             logger.error("Error pruning stale players", error=str(e))
 
     async def cleanup_orphaned_data(
@@ -171,10 +175,16 @@ class ConnectionCleaner:
                 if connection_id in active_websockets:
                     try:
                         websocket = active_websockets[connection_id]
+                        # Guard against None websocket (can happen during cleanup)
+                        # JUSTIFICATION: Type annotation says dict[str, WebSocket], but runtime can have None
+                        # values during cleanup/race conditions. This is defensive programming.
+                        if websocket is None:
+                            del active_websockets[connection_id]  # type: ignore[unreachable]
+                            continue
                         logger.info("DEBUG: Closing stale WebSocket due to timeout", connection_id=connection_id)
                         await websocket.close(code=1000, reason="Connection timeout")
                         logger.info("Successfully closed stale WebSocket", connection_id=connection_id)
-                    except Exception as e:
+                    except (DatabaseError, SQLAlchemyError) as e:
                         logger.warning("Error closing stale connection", connection_id=connection_id, error=str(e))
                     del active_websockets[connection_id]
                 del connection_timestamps[connection_id]
@@ -187,7 +197,7 @@ class ConnectionCleaner:
             if any(cleanup_stats_local.values()):
                 logger.info("Memory cleanup completed", stale_connections=cleanup_stats_local["stale_connections"])
 
-        except Exception as e:
+        except (DatabaseError, SQLAlchemyError) as e:
             logger.error("Error cleaning up orphaned data", error=str(e), exc_info=True)
 
     async def cleanup_dead_connections(
@@ -230,7 +240,7 @@ class ConnectionCleaner:
                                 try:
                                     # Check WebSocket health by checking its state
                                     if websocket.client_state.name != "CONNECTED":
-                                        raise Exception("WebSocket not connected")
+                                        raise ConnectionError("WebSocket not connected")
                                 except (RuntimeError, ConnectionError, AttributeError) as e:
                                     logger.debug(
                                         "WebSocket cleanup check failed",
@@ -242,13 +252,13 @@ class ConnectionCleaner:
                                     # Connection is dead, clean it up
                                     await self.cleanup_dead_websocket(pid, connection_id)
                                     cleanup_results["connections_cleaned"] += 1
-                except Exception as e:
+                except (DatabaseError, SQLAlchemyError) as e:
                     cleanup_results["errors"].append(f"Error cleaning player {pid}: {e}")
 
             logger.info("Connection cleanup completed", cleanup_results=cleanup_results)
             return cleanup_results
 
-        except Exception as e:
+        except (DatabaseError, SQLAlchemyError) as e:
             logger.error("Error during connection cleanup", error=str(e))
             cleanup_results["errors"].append(str(e))
             return cleanup_results
@@ -265,7 +275,7 @@ class ConnectionCleaner:
         """
         try:
             async_persistence = self.get_async_persistence()
-            if not async_persistence or not hasattr(async_persistence, "_room_cache"):
+            if not async_persistence or not hasattr(async_persistence, "list_rooms"):
                 return
 
             # Get all online player IDs (convert to strings for comparison with room._players)
@@ -274,12 +284,14 @@ class ConnectionCleaner:
             online_player_ids = {str(pid) for pid in online_players.keys()}
 
             # Get all rooms from the room cache
-            for _room_id, room in async_persistence._room_cache.items():
-                if not hasattr(room, "_players"):
+            for room in async_persistence.list_rooms():
+                if not hasattr(room, "get_players"):
                     continue
 
+                _room_id = room.id
+
                 # Get players in this room (already strings)
-                room_player_ids = set(room._players)
+                room_player_ids = set(room.get_players())
 
                 # Find ghost players (players in room but not online)
                 # Both sets are now strings, so comparison will work correctly
@@ -322,25 +334,19 @@ class ConnectionCleaner:
                             ghost_players=actual_ghost_players,
                         )
                         for ghost_player_id in actual_ghost_players:
-                            room._players.discard(ghost_player_id)
+                            room.remove_player_silently(ghost_player_id)
                             logger.debug(
                                 "DEBUG: Removed actual ghost player from room",
                                 ghost_player_id=ghost_player_id,
                                 room_id=room.id,
                             )
 
-        except Exception as e:
+        except (DatabaseError, SQLAlchemyError) as e:
             logger.error("Error cleaning up ghost players", error=str(e), exc_info=True)
 
     async def force_cleanup(
         self,
-        online_players: dict[uuid.UUID, dict[str, Any]],
-        last_seen: dict[uuid.UUID, float],
-        player_websockets: dict[uuid.UUID, list[str]],
-        active_websockets: dict[str, "WebSocket"],
-        connection_timestamps: dict[str, float],
         cleanup_stats: dict[str, Any],
-        last_active_update_times: dict[uuid.UUID, float],
         cleanup_orphaned_data_callback: Callable[[], "Awaitable[None]"],
         prune_stale_players_callback: Callable[[int], None],
     ) -> None:
@@ -348,13 +354,7 @@ class ConnectionCleaner:
         Force immediate cleanup of all orphaned data.
 
         Args:
-            online_players: Online players dictionary
-            last_seen: Last seen timestamps
-            player_websockets: Player to WebSocket connection mapping
-            active_websockets: Active WebSocket connections
-            connection_timestamps: Connection timestamp tracking
             cleanup_stats: Cleanup statistics dictionary
-            last_active_update_times: Last active update times
             cleanup_orphaned_data_callback: Callback to cleanup orphaned data
             prune_stale_players_callback: Callback to prune stale players
         """
@@ -369,7 +369,7 @@ class ConnectionCleaner:
             cleanup_stats["cleanups_performed"] += 1
             self.memory_monitor.update_cleanup_time()
             logger.info("Force cleanup completed")
-        except Exception as e:
+        except (DatabaseError, SQLAlchemyError) as e:
             logger.error("Error during force cleanup", error=str(e), exc_info=True)
 
     async def check_and_cleanup(

@@ -8,7 +8,6 @@ alias, aliases, unalias, help, npc, summon, teleport, goto, shutdown, learn.
 from typing import Literal, cast
 
 from ..exceptions import ValidationError as MythosValidationError
-from ..logging.enhanced_logging_config import get_logger
 from ..models.command import (
     AliasCommand,
     AliasesCommand,
@@ -25,6 +24,7 @@ from ..models.command import (
     TeleportCommand,
     UnaliasCommand,
 )
+from ..structured_logging.enhanced_logging_config import get_logger
 from .enhanced_error_logging import create_error_context, log_and_raise_enhanced
 
 logger = get_logger(__name__)

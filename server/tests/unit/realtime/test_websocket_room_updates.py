@@ -1,8 +1,7 @@
 """
-Tests for WebSocket room update and broadcast functions.
+Unit tests for WebSocket room updates.
 
-This module tests functions for handling room updates and broadcasting
-to players in real-time.
+Tests the websocket_room_updates module functions.
 """
 
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -19,378 +18,473 @@ from server.realtime.websocket_room_updates import (
 )
 
 
-class TestGetPlayerOccupants:
-    """Test get_player_occupants function."""
+@pytest.fixture
+def mock_connection_manager():
+    """Create a mock connection manager."""
+    manager = AsyncMock()
+    manager.get_room_occupants = AsyncMock(return_value=[])
+    manager.convert_room_players_uuids_to_names = AsyncMock(side_effect=lambda x: x)
+    manager.broadcast_to_room = AsyncMock()
+    manager.subscribe_to_room = AsyncMock()
+    manager.unsubscribe_from_room = AsyncMock()
+    manager.get_player = AsyncMock()
+    return manager
 
-    @pytest.mark.asyncio
-    async def test_get_player_occupants_success(self):
-        """Test successfully getting player occupants."""
-        mock_connection_manager = AsyncMock()
-        mock_connection_manager.get_room_occupants = AsyncMock(
-            return_value=[{"player_name": "Player1"}, {"name": "Player2"}]
-        )
 
-        result = await get_player_occupants(mock_connection_manager, "room-123")
+@pytest.fixture
+def mock_room():
+    """Create a mock room."""
+    room = MagicMock()
+    room.to_dict.return_value = {"id": "room_123", "name": "Test Room"}
+    room.get_players.return_value = []
+    room.get_objects.return_value = []
+    room.get_npcs.return_value = []
+    room.get_occupant_count.return_value = 0
+    return room
 
-        assert len(result) == 2
-        assert "Player1" in result
-        assert "Player2" in result
 
-    @pytest.mark.asyncio
-    async def test_get_player_occupants_empty(self):
-        """Test getting player occupants when room is empty."""
-        mock_connection_manager = AsyncMock()
-        mock_connection_manager.get_room_occupants = AsyncMock(return_value=[])
+@pytest.mark.asyncio
+async def test_get_player_occupants_success(mock_connection_manager):
+    """Test get_player_occupants() extracts player names."""
+    room_id = "room_123"
+    mock_connection_manager.get_room_occupants.return_value = [
+        {"player_name": "Player1"},
+        {"name": "Player2"},
+    ]
 
-        result = await get_player_occupants(mock_connection_manager, "room-123")
+    result = await get_player_occupants(mock_connection_manager, room_id)
 
+    assert "Player1" in result
+    assert "Player2" in result
+
+
+@pytest.mark.asyncio
+async def test_get_player_occupants_empty(mock_connection_manager):
+    """Test get_player_occupants() returns empty list when no occupants."""
+    room_id = "room_123"
+    mock_connection_manager.get_room_occupants.return_value = []
+
+    result = await get_player_occupants(mock_connection_manager, room_id)
+
+    assert result == []
+
+
+@pytest.mark.asyncio
+async def test_get_player_occupants_handles_exception(mock_connection_manager):
+    """Test get_player_occupants() handles exceptions."""
+    room_id = "room_123"
+    mock_connection_manager.get_room_occupants.side_effect = AttributeError("Error")
+
+    result = await get_player_occupants(mock_connection_manager, room_id)
+
+    assert result == []
+
+
+@pytest.mark.asyncio
+async def test_get_npc_occupants_from_lifecycle_manager_success():
+    """Test get_npc_occupants_from_lifecycle_manager() returns NPC names."""
+    room_id = "room_123"
+
+    mock_npc1 = MagicMock()
+    mock_npc1.name = "NPC1"
+    mock_npc1.is_alive = True
+    mock_npc1.current_room_id = "room_123"
+    mock_npc1.current_room = None
+
+    mock_npc2 = MagicMock()
+    mock_npc2.name = "NPC2"
+    mock_npc2.is_alive = True
+    mock_npc2.current_room_id = "room_123"
+    mock_npc2.current_room = None
+
+    with (
+        patch("server.services.npc_instance_service.get_npc_instance_service") as mock_get_service,
+        patch("server.realtime.websocket_room_updates.get_npc_name_from_instance") as mock_get_name,
+    ):
+        mock_service = MagicMock()
+        mock_service.lifecycle_manager.active_npcs = {"npc_1": mock_npc1, "npc_2": mock_npc2}
+        mock_get_service.return_value = mock_service
+        mock_get_name.side_effect = lambda npc_id: {"npc_1": "NPC1", "npc_2": "NPC2"}.get(npc_id)
+
+        result = await get_npc_occupants_from_lifecycle_manager(room_id)
+
+        assert "NPC1" in result
+        assert "NPC2" in result
+
+
+@pytest.mark.asyncio
+async def test_get_npc_occupants_from_lifecycle_manager_filters_dead():
+    """Test get_npc_occupants_from_lifecycle_manager() filters dead NPCs."""
+    room_id = "room_123"
+
+    mock_npc_alive = MagicMock()
+    mock_npc_alive.name = "AliveNPC"
+    mock_npc_alive.is_alive = True
+    mock_npc_alive.current_room_id = "room_123"
+    mock_npc_alive.current_room = None
+
+    mock_npc_dead = MagicMock()
+    mock_npc_dead.name = "DeadNPC"
+    mock_npc_dead.is_alive = False
+    mock_npc_dead.current_room_id = "room_123"
+    mock_npc_dead.current_room = None
+
+    with (
+        patch("server.services.npc_instance_service.get_npc_instance_service") as mock_get_service,
+        patch("server.realtime.websocket_room_updates.get_npc_name_from_instance") as mock_get_name,
+    ):
+        mock_service = MagicMock()
+        mock_service.lifecycle_manager.active_npcs = {"npc_alive": mock_npc_alive, "npc_dead": mock_npc_dead}
+        mock_get_service.return_value = mock_service
+        mock_get_name.side_effect = lambda npc_id: {"npc_alive": "AliveNPC"}.get(npc_id)  # Dead NPC returns None
+
+        result = await get_npc_occupants_from_lifecycle_manager(room_id)
+
+        assert "AliveNPC" in result
+        assert "DeadNPC" not in result
+
+
+@pytest.mark.asyncio
+async def test_get_npc_occupants_from_lifecycle_manager_wrong_room():
+    """Test get_npc_occupants_from_lifecycle_manager() filters by room."""
+    room_id = "room_123"
+
+    mock_npc = MagicMock()
+    mock_npc.name = "NPC1"
+    mock_npc.is_alive = True
+    mock_npc.current_room_id = "room_456"  # Different room
+
+    with patch("server.services.npc_instance_service.get_npc_instance_service") as mock_get_service:
+        mock_service = MagicMock()
+        mock_service.lifecycle_manager.active_npcs = {"npc_1": mock_npc}
+        mock_get_service.return_value = mock_service
+
+        result = await get_npc_occupants_from_lifecycle_manager(room_id)
+
+        assert "NPC1" not in result
+
+
+@pytest.mark.asyncio
+async def test_get_npc_occupants_from_lifecycle_manager_no_service():
+    """Test get_npc_occupants_from_lifecycle_manager() returns empty when no service."""
+    room_id = "room_123"
+
+    with patch("server.services.npc_instance_service.get_npc_instance_service", return_value=None):
+        result = await get_npc_occupants_from_lifecycle_manager(room_id)
         assert result == []
 
-    @pytest.mark.asyncio
-    async def test_get_player_occupants_error(self):
-        """Test getting player occupants when error occurs."""
-        mock_connection_manager = AsyncMock()
-        mock_connection_manager.get_room_occupants = AsyncMock(side_effect=AttributeError("Error"))
 
-        with patch("server.realtime.websocket_room_updates.logger"):
-            result = await get_player_occupants(mock_connection_manager, "room-123")
+@pytest.mark.asyncio
+async def test_get_npc_occupants_from_lifecycle_manager_handles_exception():
+    """Test get_npc_occupants_from_lifecycle_manager() handles exceptions."""
+    room_id = "room_123"
 
-            assert result == []
+    with patch("server.services.npc_instance_service.get_npc_instance_service", side_effect=AttributeError("Error")):
+        with pytest.raises(AttributeError):
+            await get_npc_occupants_from_lifecycle_manager(room_id)
 
 
-class TestGetNpcOccupantsFromLifecycleManager:
-    """Test get_npc_occupants_from_lifecycle_manager function."""
+@pytest.mark.asyncio
+async def test_get_npc_occupants_fallback_success(mock_room):
+    """Test get_npc_occupants_fallback() returns NPC names."""
+    room_id = "room_123"
+    mock_room.get_npcs.return_value = ["npc_1", "npc_2"]
 
-    @pytest.mark.asyncio
-    async def test_get_npc_occupants_success(self):
-        """Test successfully getting NPC occupants."""
-        room_id = "room-123"
+    mock_npc1 = MagicMock()
+    mock_npc1.name = "NPC1"
+    mock_npc1.is_alive = True
 
-        mock_npc1 = MagicMock()
-        mock_npc1.is_alive = True
-        mock_npc1.current_room = None  # Explicitly set to None so current_room_id is used
-        mock_npc1.current_room_id = room_id
-        mock_npc1.name = "NPC1"
+    mock_npc2 = MagicMock()
+    mock_npc2.name = "NPC2"
+    mock_npc2.is_alive = True
 
-        mock_npc2 = MagicMock()
-        mock_npc2.is_alive = True
-        mock_npc2.current_room = None  # Explicitly set to None so current_room_id is used
-        mock_npc2.current_room_id = room_id
-        mock_npc2.name = "NPC2"
+    with patch("server.services.npc_instance_service.get_npc_instance_service") as mock_get_service:
+        mock_service = MagicMock()
+        mock_service.lifecycle_manager.active_npcs = {"npc_1": mock_npc1, "npc_2": mock_npc2}
+        mock_get_service.return_value = mock_service
 
-        mock_lifecycle_manager = MagicMock()
-        mock_lifecycle_manager.active_npcs = {"npc-1": mock_npc1, "npc-2": mock_npc2}
+        result = await get_npc_occupants_fallback(mock_room, room_id)
 
+        assert "NPC1" in result
+        assert "NPC2" in result
+
+
+@pytest.mark.asyncio
+async def test_get_npc_occupants_fallback_filters_dead(mock_room):
+    """Test get_npc_occupants_fallback() filters dead NPCs."""
+    room_id = "room_123"
+    mock_room.get_npcs.return_value = ["npc_alive", "npc_dead"]
+
+    mock_npc_alive = MagicMock()
+    mock_npc_alive.name = "AliveNPC"
+    mock_npc_alive.is_alive = True
+
+    mock_npc_dead = MagicMock()
+    mock_npc_dead.name = "DeadNPC"
+    mock_npc_dead.is_alive = False
+
+    with patch("server.services.npc_instance_service.get_npc_instance_service") as mock_get_service:
+        mock_service = MagicMock()
+        mock_service.lifecycle_manager.active_npcs = {"npc_alive": mock_npc_alive, "npc_dead": mock_npc_dead}
+        mock_get_service.return_value = mock_service
+
+        result = await get_npc_occupants_fallback(mock_room, room_id)
+
+        assert "AliveNPC" in result
+        assert "DeadNPC" not in result
+
+
+@pytest.mark.asyncio
+async def test_get_npc_occupants_fallback_no_service(mock_room):
+    """Test get_npc_occupants_fallback() returns empty when no service."""
+    room_id = "room_123"
+    mock_room.get_npcs.return_value = ["npc_1"]
+
+    with patch("server.services.npc_instance_service.get_npc_instance_service", return_value=None):
+        result = await get_npc_occupants_fallback(mock_room, room_id)
+        assert result == []
+
+
+@pytest.mark.asyncio
+async def test_build_room_update_event(mock_connection_manager, mock_room):
+    """Test build_room_update_event() builds room update event."""
+    room_id = "room_123"
+    player_id = "player_123"
+    occupant_names = ["Player1", "NPC1"]
+
+    mock_connection_manager.room_manager = MagicMock()
+    mock_connection_manager.room_manager.list_room_drops.return_value = []
+
+    result = await build_room_update_event(mock_room, room_id, player_id, occupant_names, mock_connection_manager)
+
+    assert result["event_type"] == "room_update"
+    assert result["data"]["room"] is not None
+    assert result["data"]["occupants"] == occupant_names
+    assert result["data"]["occupant_count"] == 2
+
+
+@pytest.mark.asyncio
+async def test_build_room_update_event_with_drops(mock_connection_manager, mock_room):
+    """Test build_room_update_event() includes room drops."""
+    room_id = "room_123"
+    player_id = "player_123"
+    occupant_names = ["Player1"]
+
+    mock_drops = [{"item_id": "item_1", "name": "Test Item"}]
+    mock_connection_manager.room_manager = MagicMock()
+    mock_connection_manager.room_manager.list_room_drops.return_value = mock_drops
+
+    result = await build_room_update_event(mock_room, room_id, player_id, occupant_names, mock_connection_manager)
+
+    assert "room_drops" in result["data"]
+    assert "drop_summary" in result["data"]
+
+
+@pytest.mark.asyncio
+async def test_update_player_room_subscription_success(mock_connection_manager):
+    """Test update_player_room_subscription() updates subscription."""
+    player_id = "player_123"
+    room_id = "room_123"
+
+    mock_player = MagicMock()
+    mock_player.current_room_id = "room_456"  # Different room
+    mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
+
+    await update_player_room_subscription(mock_connection_manager, player_id, room_id)
+
+    mock_connection_manager.unsubscribe_from_room.assert_called_once_with(player_id, "room_456")
+    mock_connection_manager.subscribe_to_room.assert_called_once_with(player_id, room_id)
+    assert mock_player.current_room_id == room_id
+
+
+@pytest.mark.asyncio
+async def test_update_player_room_subscription_same_room(mock_connection_manager):
+    """Test update_player_room_subscription() doesn't unsubscribe when same room."""
+    player_id = "player_123"
+    room_id = "room_123"
+
+    mock_player = MagicMock()
+    mock_player.current_room_id = room_id  # Same room
+    mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
+
+    await update_player_room_subscription(mock_connection_manager, player_id, room_id)
+
+    mock_connection_manager.unsubscribe_from_room.assert_not_called()
+    mock_connection_manager.subscribe_to_room.assert_called_once_with(player_id, room_id)
+
+
+@pytest.mark.asyncio
+async def test_update_player_room_subscription_no_player(mock_connection_manager):
+    """Test update_player_room_subscription() does nothing when player not found."""
+    player_id = "player_123"
+    room_id = "room_123"
+
+    mock_connection_manager.get_player = AsyncMock(return_value=None)
+
+    await update_player_room_subscription(mock_connection_manager, player_id, room_id)
+
+    mock_connection_manager.subscribe_to_room.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_broadcast_room_update_success(mock_connection_manager):
+    """Test broadcast_room_update() successfully broadcasts update."""
+    player_id = "player_123"
+    room_id = "room_123"
+
+    mock_room = MagicMock()
+    mock_room.to_dict.return_value = {"id": room_id, "name": "Test Room"}
+    mock_room.get_players.return_value = []
+    mock_room.get_objects.return_value = []
+    mock_room.get_npcs.return_value = []
+
+    mock_player = MagicMock()
+    mock_player.current_room_id = room_id
+    mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
+
+    with (
+        patch("server.async_persistence.get_async_persistence") as mock_get_persistence,
+        patch("server.realtime.websocket_room_updates.get_player_occupants") as mock_get_players,
+        patch("server.realtime.websocket_room_updates.get_npc_occupants_from_lifecycle_manager") as mock_get_npcs,
+        patch("server.realtime.websocket_room_updates.build_room_update_event") as mock_build_event,
+    ):
+        mock_persistence = MagicMock()
+        mock_persistence.get_room_by_id.return_value = mock_room
+        mock_get_persistence.return_value = mock_persistence
+
+        mock_get_players.return_value = ["Player1"]
+        mock_get_npcs.return_value = ["NPC1"]
+        mock_build_event.return_value = {"event_type": "room_update", "data": {}}
+
+        await broadcast_room_update(player_id, room_id, mock_connection_manager)
+
+        mock_connection_manager.broadcast_to_room.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_broadcast_room_update_no_connection_manager():
+    """Test broadcast_room_update() resolves connection manager from app."""
+    player_id = "player_123"
+    room_id = "room_123"
+
+    mock_room = MagicMock()
+    mock_room.to_dict.return_value = {"id": room_id, "name": "Test Room"}
+    mock_room.get_players.return_value = []
+    mock_room.get_objects.return_value = []
+    mock_room.get_npcs.return_value = []
+
+    mock_connection_manager = AsyncMock()
+    mock_player = MagicMock()
+    mock_player.current_room_id = room_id
+    mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
+    mock_connection_manager.get_room_occupants = AsyncMock(return_value=[])
+    mock_connection_manager.broadcast_to_room = AsyncMock()
+    mock_connection_manager.subscribe_to_room = AsyncMock()
+    mock_connection_manager.room_manager = MagicMock()
+    mock_connection_manager.room_manager.list_room_drops.return_value = []
+
+    with (
+        patch("server.main.app") as mock_app,
+        patch("server.async_persistence.get_async_persistence") as mock_get_persistence,
+        patch("server.realtime.websocket_room_updates.get_player_occupants") as mock_get_players,
+        patch("server.realtime.websocket_room_updates.get_npc_occupants_fallback") as mock_get_npcs,
+        patch("server.realtime.websocket_room_updates.build_room_update_event") as mock_build_event,
+        patch("server.services.npc_instance_service.get_npc_instance_service") as mock_get_npc_service,
+    ):
+        # Mock the app import from ..main
+        mock_container = MagicMock()
+        mock_container.connection_manager = mock_connection_manager
+        mock_app.state.container = mock_container
+
+        # Mock NPC service to avoid initialization errors
         mock_npc_service = MagicMock()
-        mock_npc_service.lifecycle_manager = mock_lifecycle_manager
-
-        with patch("server.services.npc_instance_service.get_npc_instance_service", return_value=mock_npc_service):
-            # Patch get_npc_name_from_instance to return names directly
-            with patch("server.realtime.websocket_room_updates.get_npc_name_from_instance") as mock_get_name:
-
-                def get_name_side_effect(npc_id):
-                    return {"npc-1": "NPC1", "npc-2": "NPC2"}.get(npc_id)
+        mock_get_npc_service.return_value = mock_npc_service
 
-                mock_get_name.side_effect = get_name_side_effect
-                with patch("server.realtime.websocket_room_updates.logger"):
-                    result = await get_npc_occupants_from_lifecycle_manager(room_id)
+        mock_persistence = MagicMock()
+        mock_persistence.get_room_by_id.return_value = mock_room
+        mock_get_persistence.return_value = mock_persistence
 
-                    # The function gets names from npc_instance.name attribute
-                    assert len(result) == 2
-                    assert "NPC1" in result
-                    assert "NPC2" in result
+        mock_get_players.return_value = []
+        mock_get_npcs.return_value = []
+        mock_build_event.return_value = {"event_type": "room_update", "data": {}}
 
-    @pytest.mark.asyncio
-    async def test_get_npc_occupants_filters_dead_npcs(self):
-        """Test that dead NPCs are filtered out."""
-        room_id = "room-123"
+        await broadcast_room_update(player_id, room_id)
 
-        mock_npc1 = MagicMock()
-        mock_npc1.is_alive = True
-        mock_npc1.current_room = None
-        mock_npc1.current_room_id = room_id
+        mock_connection_manager.broadcast_to_room.assert_called_once()
 
-        mock_npc2 = MagicMock()
-        mock_npc2.is_alive = False  # Dead NPC
-        mock_npc2.current_room = None
-        mock_npc2.current_room_id = room_id
 
-        mock_lifecycle_manager = MagicMock()
-        mock_lifecycle_manager.active_npcs = {"npc-1": mock_npc1, "npc-2": mock_npc2}
+@pytest.mark.asyncio
+async def test_broadcast_room_update_room_not_found(mock_connection_manager):
+    """Test broadcast_room_update() does nothing when room not found."""
+    player_id = "player_123"
+    room_id = "room_123"
 
-        mock_npc_service = MagicMock()
-        mock_npc_service.lifecycle_manager = mock_lifecycle_manager
-
-        with patch("server.services.npc_instance_service.get_npc_instance_service", return_value=mock_npc_service):
-            with patch("server.realtime.websocket_room_updates.get_npc_name_from_instance", return_value="NPC1"):
-                with patch("server.realtime.websocket_room_updates.logger"):
-                    result = await get_npc_occupants_from_lifecycle_manager(room_id)
+    with patch("server.async_persistence.get_async_persistence") as mock_get_persistence:
+        mock_persistence = MagicMock()
+        mock_persistence.get_room_by_id.return_value = None
+        mock_get_persistence.return_value = mock_persistence
 
-                    # Only alive NPC should be included
-                    assert len(result) == 1
-                    assert "NPC1" in result
+        await broadcast_room_update(player_id, room_id, mock_connection_manager)
 
-    @pytest.mark.asyncio
-    async def test_get_npc_occupants_no_service(self):
-        """Test getting NPC occupants when service is not available."""
-        with patch("server.services.npc_instance_service.get_npc_instance_service", return_value=None):
-            with patch("server.realtime.websocket_room_updates.logger"):
-                result = await get_npc_occupants_from_lifecycle_manager("room-123")
-
-                assert result == []
-
-
-class TestGetNpcOccupantsFallback:
-    """Test get_npc_occupants_fallback function."""
-
-    @pytest.mark.asyncio
-    async def test_get_npc_occupants_fallback_success(self):
-        """Test successfully getting NPC occupants using fallback."""
-        mock_room = MagicMock()
-        mock_room.get_npcs.return_value = ["npc-1", "npc-2"]
-
-        mock_npc1 = MagicMock()
-        mock_npc1.is_alive = True
-
-        mock_npc2 = MagicMock()
-        mock_npc2.is_alive = True
-
-        mock_lifecycle_manager = MagicMock()
-        mock_lifecycle_manager.active_npcs = {"npc-1": mock_npc1, "npc-2": mock_npc2}
-
-        mock_npc_service = MagicMock()
-        mock_npc_service.lifecycle_manager = mock_lifecycle_manager
-
-        with patch("server.services.npc_instance_service.get_npc_instance_service", return_value=mock_npc_service):
-            with patch("server.realtime.websocket_room_updates.get_npc_name_from_instance") as mock_get_name:
-                # get_npc_name_from_instance is called for each npc_id
-                def get_name_side_effect(npc_id):
-                    names = {"npc-1": "NPC1", "npc-2": "NPC2"}
-                    return names.get(npc_id, None)
-
-                mock_get_name.side_effect = get_name_side_effect
-                with patch("server.realtime.websocket_room_updates.logger"):
-                    result = await get_npc_occupants_fallback(mock_room, "room-123")
-
-                    assert len(result) == 2
-                    assert "NPC1" in result
-                    assert "NPC2" in result
-
-    @pytest.mark.asyncio
-    async def test_get_npc_occupants_fallback_filters_dead(self):
-        """Test that fallback filters out dead NPCs."""
-        mock_room = MagicMock()
-        mock_room.get_npcs.return_value = ["npc-1", "npc-2"]
-
-        mock_npc1 = MagicMock()
-        mock_npc1.is_alive = True
-
-        mock_npc2 = MagicMock()
-        mock_npc2.is_alive = False  # Dead
-
-        mock_lifecycle_manager = MagicMock()
-        mock_lifecycle_manager.active_npcs = {"npc-1": mock_npc1, "npc-2": mock_npc2}
-
-        mock_npc_service = MagicMock()
-        mock_npc_service.lifecycle_manager = mock_lifecycle_manager
-
-        with patch("server.services.npc_instance_service.get_npc_instance_service", return_value=mock_npc_service):
-            with patch("server.realtime.websocket_room_updates.get_npc_name_from_instance", return_value="NPC1"):
-                with patch("server.realtime.websocket_room_updates.logger"):
-                    result = await get_npc_occupants_fallback(mock_room, "room-123")
-
-                    assert len(result) == 1
-                    assert "NPC1" in result
-
-
-class TestBuildRoomUpdateEvent:
-    """Test build_room_update_event function."""
-
-    @pytest.mark.asyncio
-    async def test_build_room_update_event_success(self):
-        """Test successfully building room update event."""
-        mock_room = MagicMock()
-        mock_room.to_dict.return_value = {"room_id": "room-123", "name": "Test Room"}
-        mock_room.get_players.return_value = []
-        mock_room.get_objects.return_value = []
-        mock_room.get_npcs.return_value = []
-        mock_room.get_occupant_count.return_value = 0
-
-        mock_connection_manager = AsyncMock()
-        mock_connection_manager.convert_room_players_uuids_to_names = AsyncMock(
-            return_value={"room_id": "room-123", "name": "Test Room"}
-        )
-        mock_connection_manager.room_manager = None
-
-        occupant_names = ["Player1", "Player2"]
-
-        with patch("server.realtime.websocket_room_updates.logger"):
-            result = await build_room_update_event(
-                mock_room, "room-123", "player-123", occupant_names, mock_connection_manager
-            )
-
-            assert result["event_type"] == "room_update"
-            assert result["data"]["occupants"] == occupant_names
-            assert result["data"]["occupant_count"] == 2
-
-    @pytest.mark.asyncio
-    async def test_build_room_update_event_with_room_drops(self):
-        """Test building room update event with room drops."""
-        mock_room = MagicMock()
-        mock_room.to_dict.return_value = {"room_id": "room-123", "name": "Test Room"}
-        mock_room.get_players.return_value = []
-        mock_room.get_objects.return_value = []
-        mock_room.get_npcs.return_value = []
-        mock_room.get_occupant_count.return_value = 0
-
-        mock_room_manager = MagicMock()
-        mock_room_manager.list_room_drops.return_value = [{"item_id": "item-1"}]
-
-        mock_connection_manager = AsyncMock()
-        mock_connection_manager.convert_room_players_uuids_to_names = AsyncMock(
-            return_value={"room_id": "room-123", "name": "Test Room"}
-        )
-        mock_connection_manager.room_manager = mock_room_manager
-
-        with patch("server.realtime.websocket_room_updates.logger"):
-            result = await build_room_update_event(mock_room, "room-123", "player-123", [], mock_connection_manager)
-
-            assert "room_drops" in result["data"]
-            assert "drop_summary" in result["data"]
-
-
-class TestUpdatePlayerRoomSubscription:
-    """Test update_player_room_subscription function."""
-
-    @pytest.mark.asyncio
-    async def test_update_player_room_subscription_new_room(self):
-        """Test updating subscription when player moves to new room."""
-        mock_connection_manager = AsyncMock()
-        mock_player = MagicMock()
-        mock_player.current_room_id = "room-1"
-        mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
-        mock_connection_manager.unsubscribe_from_room = AsyncMock()
-        mock_connection_manager.subscribe_to_room = AsyncMock()
-
-        with patch("server.realtime.websocket_room_updates.logger"):
-            await update_player_room_subscription(mock_connection_manager, "player-123", "room-2")
-
-            mock_connection_manager.unsubscribe_from_room.assert_called_once_with("player-123", "room-1")
-            mock_connection_manager.subscribe_to_room.assert_called_once_with("player-123", "room-2")
-            assert mock_player.current_room_id == "room-2"
-
-    @pytest.mark.asyncio
-    async def test_update_player_room_subscription_same_room(self):
-        """Test updating subscription when player stays in same room."""
-        mock_connection_manager = AsyncMock()
-        mock_player = MagicMock()
-        mock_player.current_room_id = "room-1"
-        mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
-        mock_connection_manager.unsubscribe_from_room = AsyncMock()
-        mock_connection_manager.subscribe_to_room = AsyncMock()
-
-        with patch("server.realtime.websocket_room_updates.logger"):
-            await update_player_room_subscription(mock_connection_manager, "player-123", "room-1")
-
-            mock_connection_manager.unsubscribe_from_room.assert_not_called()
-            mock_connection_manager.subscribe_to_room.assert_called_once()
-
-    @pytest.mark.asyncio
-    async def test_update_player_room_subscription_no_player(self):
-        """Test updating subscription when player is not found."""
-        mock_connection_manager = AsyncMock()
-        mock_connection_manager.get_player = AsyncMock(return_value=None)
-
-        await update_player_room_subscription(mock_connection_manager, "player-123", "room-1")
-
-        # Should return early without doing anything
-
-
-class TestBroadcastRoomUpdate:
-    """Test broadcast_room_update function."""
-
-    @pytest.mark.asyncio
-    async def test_broadcast_room_update_success(self):
-        """Test successfully broadcasting room update."""
-        mock_connection_manager = AsyncMock()
-        mock_connection_manager.get_room_occupants = AsyncMock(return_value=[{"player_name": "Player1"}])
-        mock_connection_manager.convert_room_players_uuids_to_names = AsyncMock(
-            return_value={"room_id": "room-123", "name": "Test Room"}
-        )
-        mock_connection_manager.broadcast_to_room = AsyncMock()
-        mock_connection_manager.get_player = AsyncMock(return_value=MagicMock())
-        mock_connection_manager.subscribe_to_room = AsyncMock()
-        mock_connection_manager.room_manager = None
-
-        mock_room = MagicMock()
-        mock_room.to_dict.return_value = {"room_id": "room-123", "name": "Test Room"}
-        mock_room.get_players.return_value = []
-        mock_room.get_objects.return_value = []
-        mock_room.get_npcs.return_value = []
-        mock_room.get_occupant_count.return_value = 0
-
-        mock_async_persistence = MagicMock()
-        mock_async_persistence.get_room_by_id.return_value = mock_room
-
-        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
-            with patch(
-                "server.realtime.websocket_room_updates.get_npc_occupants_from_lifecycle_manager",
-                new_callable=AsyncMock,
-            ) as mock_npc:
-                mock_npc.return_value = []
-                with patch("server.realtime.websocket_room_updates.logger"):
-                    await broadcast_room_update("player-123", "room-123", mock_connection_manager)
-
-                    mock_connection_manager.broadcast_to_room.assert_called_once()
-
-    @pytest.mark.asyncio
-    async def test_broadcast_room_update_no_room(self):
-        """Test broadcasting room update when room is not found."""
-        mock_connection_manager = AsyncMock()
-
-        mock_async_persistence = MagicMock()
-        mock_async_persistence.get_room_by_id.return_value = None
-
-        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
-            with patch("server.realtime.websocket_room_updates.logger"):
-                await broadcast_room_update("player-123", "room-123", mock_connection_manager)
-
-                mock_connection_manager.broadcast_to_room.assert_not_called()
-
-    @pytest.mark.asyncio
-    async def test_broadcast_room_update_npc_fallback(self):
-        """Test broadcasting room update with NPC fallback."""
-        mock_connection_manager = AsyncMock()
-        mock_connection_manager.get_room_occupants = AsyncMock(return_value=[])
-        mock_connection_manager.convert_room_players_uuids_to_names = AsyncMock(
-            return_value={"room_id": "room-123", "name": "Test Room"}
-        )
-        mock_connection_manager.broadcast_to_room = AsyncMock()
-        mock_connection_manager.get_player = AsyncMock(return_value=MagicMock())
-        mock_connection_manager.subscribe_to_room = AsyncMock()
-        mock_connection_manager.room_manager = None
-
-        mock_room = MagicMock()
-        mock_room.to_dict.return_value = {"room_id": "room-123", "name": "Test Room"}
-        mock_room.get_players.return_value = []
-        mock_room.get_objects.return_value = []
-        mock_room.get_npcs.return_value = []
-        mock_room.get_occupant_count.return_value = 0
-
-        mock_async_persistence = MagicMock()
-        mock_async_persistence.get_room_by_id.return_value = mock_room
-
-        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
-            with patch(
-                "server.realtime.websocket_room_updates.get_npc_occupants_from_lifecycle_manager",
-                new_callable=AsyncMock,
-            ) as mock_npc:
-                mock_npc.side_effect = AttributeError("Error")
-                with patch(
-                    "server.realtime.websocket_room_updates.get_npc_occupants_fallback", new_callable=AsyncMock
-                ) as mock_fallback:
-                    mock_fallback.return_value = []
-                    with patch("server.realtime.websocket_room_updates.logger"):
-                        await broadcast_room_update("player-123", "room-123", mock_connection_manager)
-
-                        mock_connection_manager.broadcast_to_room.assert_called_once()
+        mock_connection_manager.broadcast_to_room.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_broadcast_room_update_no_persistence(mock_connection_manager):
+    """Test broadcast_room_update() does nothing when persistence unavailable."""
+    player_id = "player_123"
+    room_id = "room_123"
+
+    with patch("server.async_persistence.get_async_persistence", return_value=None):
+        await broadcast_room_update(player_id, room_id, mock_connection_manager)
+
+        mock_connection_manager.broadcast_to_room.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_broadcast_room_update_fallback_npc_method(mock_connection_manager):
+    """Test broadcast_room_update() uses fallback when primary NPC method fails."""
+    player_id = "player_123"
+    room_id = "room_123"
+
+    mock_room = MagicMock()
+    mock_room.to_dict.return_value = {"id": room_id, "name": "Test Room"}
+    mock_room.get_players.return_value = []
+    mock_room.get_objects.return_value = []
+    mock_room.get_npcs.return_value = []
+
+    mock_player = MagicMock()
+    mock_player.current_room_id = room_id
+    mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
+
+    with (
+        patch("server.async_persistence.get_async_persistence") as mock_get_persistence,
+        patch("server.realtime.websocket_room_updates.get_player_occupants") as mock_get_players,
+        patch("server.realtime.websocket_room_updates.get_npc_occupants_from_lifecycle_manager") as mock_get_npcs,
+        patch("server.realtime.websocket_room_updates.get_npc_occupants_fallback") as mock_get_npcs_fallback,
+        patch("server.realtime.websocket_room_updates.build_room_update_event") as mock_build_event,
+    ):
+        mock_persistence = MagicMock()
+        mock_persistence.get_room_by_id.return_value = mock_room
+        mock_get_persistence.return_value = mock_persistence
+
+        mock_get_players.return_value = []
+        mock_get_npcs.side_effect = AttributeError("Error")  # Primary method fails
+        mock_get_npcs_fallback.return_value = ["NPC1"]
+        mock_build_event.return_value = {"event_type": "room_update", "data": {}}
+
+        await broadcast_room_update(player_id, room_id, mock_connection_manager)
+
+        mock_get_npcs_fallback.assert_called_once()
+        mock_connection_manager.broadcast_to_room.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_broadcast_room_update_handles_exception(mock_connection_manager):
+    """Test broadcast_room_update() handles exceptions."""
+    player_id = "player_123"
+    room_id = "room_123"
+
+    with patch("server.async_persistence.get_async_persistence", side_effect=ValueError("Error")):
+        # Should not raise
+        await broadcast_room_update(player_id, room_id, mock_connection_manager)

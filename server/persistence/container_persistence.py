@@ -17,7 +17,7 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 
 from ..exceptions import DatabaseError, ValidationError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import create_error_context, log_and_raise
 
 logger = get_logger(__name__)
@@ -684,7 +684,9 @@ def update_container(
             from .item_instance_persistence import ensure_item_instance
 
             for position, item in enumerate(items_json):
-                item_instance_id = item.get("item_instance_id") or item.get("item_id")
+                # Require both item_instance_id and (item_id or prototype_id)
+                # Items missing either should be skipped
+                item_instance_id = item.get("item_instance_id")
                 prototype_id = item.get("item_id") or item.get("prototype_id")
 
                 if item_instance_id and prototype_id:

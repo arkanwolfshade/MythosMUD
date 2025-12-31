@@ -11,7 +11,6 @@ from datetime import UTC, datetime
 from types import SimpleNamespace
 from typing import TYPE_CHECKING, Any
 
-from ..logging.enhanced_logging_config import get_logger
 from ..middleware.metrics_collector import metrics_collector
 from ..realtime.circuit_breaker import CircuitBreaker, CircuitBreakerOpen
 from ..realtime.dead_letter_queue import DeadLetterMessage, DeadLetterQueue
@@ -19,6 +18,7 @@ from ..realtime.envelope import build_event
 from ..realtime.nats_retry_handler import NATSRetryHandler
 from ..schemas.nats_messages import validate_message
 from ..services.nats_exceptions import NATSError
+from ..structured_logging.enhanced_logging_config import get_logger
 from .connection_manager import resolve_connection_manager as _resolve_connection_manager
 from .event_handlers import EventHandler
 from .message_filtering import MessageFilteringHelper

@@ -50,9 +50,9 @@ if TYPE_CHECKING:
     from .events.event_bus import EventBus
     from .game.items.item_factory import ItemFactory
     from .game.items.prototype_registry import PrototypeRegistry
+    from .game.movement_service import MovementService
     from .game.player_service import PlayerService
     from .game.room_service import RoomService
-    from .logging.log_aggregator import LogAggregator
     from .monitoring.exception_tracker import ExceptionTracker
     from .monitoring.monitoring_dashboard import MonitoringDashboard
     from .monitoring.performance_monitor import PerformanceMonitor
@@ -60,13 +60,15 @@ if TYPE_CHECKING:
     # Removed: from .persistence import PersistenceLayer - now using AsyncPersistenceLayer only
     from .realtime.connection_manager import ConnectionManager
     from .realtime.event_handler import RealTimeEventHandler
+    from .services.exploration_service import ExplorationService
     from .services.holiday_service import HolidayService
     from .services.nats_service import NATSService
     from .services.schedule_service import ScheduleService
     from .services.user_manager import UserManager
+    from .structured_logging.log_aggregator import LogAggregator
     from .time.tick_scheduler import MythosTickScheduler
 
-from .logging.enhanced_logging_config import get_logger
+from .structured_logging.enhanced_logging_config import get_logger
 from .utils.project_paths import (
     get_calendar_paths_for_environment,
     get_environment_data_dir,
@@ -133,6 +135,8 @@ class ApplicationContainer:
         # Game services
         self.player_service: PlayerService | None = None
         self.room_service: RoomService | None = None
+        self.movement_service: MovementService | None = None
+        self.exploration_service: ExplorationService | None = None
         self.user_manager: UserManager | None = None
         self.container_service: Any | None = None  # ContainerService type hint would create circular import
 
@@ -290,6 +294,19 @@ class ApplicationContainer:
                 self.persistence = self.async_persistence
                 logger.info("Persistence layer initialized (async only)")
 
+                # Phase 5.2: Gameplay services
+                logger.debug("Initializing gameplay services...")
+                from .game.movement_service import MovementService
+                from .services.exploration_service import ExplorationService
+
+                self.exploration_service = ExplorationService(database_manager=self.database_manager)
+                self.movement_service = MovementService(
+                    event_bus=self.event_bus,
+                    async_persistence=self.async_persistence,
+                    exploration_service=self.exploration_service,
+                )
+                logger.info("Exploration and movement services initialized")
+
                 # Phase 5.5: Temporal services (holidays and schedules - require async_persistence)
                 logger.debug("Initializing temporal services...")
                 from .services.holiday_service import HolidayService
@@ -442,10 +459,10 @@ class ApplicationContainer:
 
                 # Phase 9: Monitoring and observability
                 logger.debug("Initializing monitoring services...")
-                from .logging.log_aggregator import LogAggregator
                 from .monitoring.exception_tracker import ExceptionTracker
                 from .monitoring.monitoring_dashboard import MonitoringDashboard
                 from .monitoring.performance_monitor import PerformanceMonitor
+                from .structured_logging.log_aggregator import LogAggregator
 
                 # Initialize monitoring services directly (no singleton pattern)
                 self.performance_monitor = PerformanceMonitor()
@@ -463,6 +480,8 @@ class ApplicationContainer:
                         "event_bus",
                         "persistence",
                         "connection_manager",
+                        "movement_service",
+                        "exploration_service",
                         "player_service",
                         "room_service",
                         "user_manager",

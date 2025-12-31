@@ -11,7 +11,7 @@ from uuid import UUID
 from sqlalchemy.exc import SQLAlchemyError
 
 from ..game.mechanics import GameMechanicsService
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

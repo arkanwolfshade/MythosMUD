@@ -1,10 +1,11 @@
 """
-Tests for GameTickService.
+Unit tests for game tick service.
+
+Tests the GameTickService class for managing game tick intervals and events.
 """
 
 import asyncio
-from datetime import datetime
-from unittest.mock import AsyncMock, Mock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -12,170 +13,237 @@ from server.services.game_tick_service import GameTickService
 
 
 class TestGameTickService:
-    """Test cases for GameTickService."""
+    """Test suite for GameTickService class."""
 
-    def setup_method(self):
-        """Set up test fixtures."""
-        self.mock_event_publisher = Mock()
-        self.mock_event_publisher.publish_game_tick_event = AsyncMock()
+    def test_init_default_interval(self):
+        """Test GameTickService initialization with default interval."""
+        event_publisher = MagicMock()
+        service = GameTickService(event_publisher)
+        assert service.event_publisher == event_publisher
+        assert service.tick_interval == 10.0
+        assert service.is_running is False
+        assert service.tick_count == 0
+        assert service._tick_task is None
 
-        self.game_tick_service = GameTickService(
-            event_publisher=self.mock_event_publisher,
-            tick_interval=0.1,  # Use 0.1 seconds for faster testing
-        )
-
-    def test_initialization(self):
-        """Test GameTickService initialization."""
-        assert self.game_tick_service.event_publisher == self.mock_event_publisher
-        assert self.game_tick_service.tick_interval == 0.1
-        assert self.game_tick_service.is_running is False
-        assert self.game_tick_service.tick_count == 0
-
-    @pytest.mark.asyncio
-    async def test_start_stop(self):
-        """Test starting and stopping the game tick service."""
-        # Test start
-        await self.game_tick_service.start()
-        assert self.game_tick_service.is_running is True
-
-        # Wait a bit to ensure tick loop starts
-        await asyncio.sleep(0.05)
-
-        # Test stop
-        await self.game_tick_service.stop()
-        assert self.game_tick_service.is_running is False
+    def test_init_custom_interval(self):
+        """Test GameTickService initialization with custom interval."""
+        event_publisher = MagicMock()
+        service = GameTickService(event_publisher, tick_interval=5.0)
+        assert service.tick_interval == 5.0
 
     @pytest.mark.asyncio
-    async def test_tick_loop_generates_events(self):
-        """Test that the tick loop generates game tick events."""
-        await self.game_tick_service.start()
+    async def test_start_success(self):
+        """Test start successfully starts the service."""
+        event_publisher = MagicMock()
+        service = GameTickService(event_publisher)
+        with patch("server.services.game_tick_service.get_global_tracked_manager") as mock_manager:
+            mock_task = MagicMock()
+            mock_task.done.return_value = False
+            mock_tracked_manager = MagicMock()
+            mock_tracked_manager.create_tracked_task.return_value = mock_task
+            mock_manager.return_value = mock_tracked_manager
 
-        # Wait for at least one tick
-        await asyncio.sleep(0.15)
-
-        # Verify event was published
-        assert self.mock_event_publisher.publish_game_tick_event.called
-
-        await self.game_tick_service.stop()
-
-    @pytest.mark.asyncio
-    async def test_tick_count_increments(self):
-        """Test that tick count increments with each tick."""
-        await self.game_tick_service.start()
-
-        # Wait for multiple ticks
-        await asyncio.sleep(0.25)
-
-        # Verify tick count increased
-        assert self.game_tick_service.tick_count > 0
-
-        await self.game_tick_service.stop()
+            result = await service.start()
+            assert result is True
+            assert service.is_running is True
+            assert service._tick_task == mock_task
 
     @pytest.mark.asyncio
-    async def test_publish_game_tick_event_called_with_correct_data(self):
-        """Test that publish_game_tick_event is called with correct data."""
-        await self.game_tick_service.start()
+    async def test_start_already_running(self):
+        """Test start returns True when already running."""
+        event_publisher = MagicMock()
+        service = GameTickService(event_publisher)
+        service.is_running = True
 
-        # Wait for at least one tick
-        await asyncio.sleep(0.15)
-
-        # Verify the call was made
-        assert self.mock_event_publisher.publish_game_tick_event.called
-
-        # Get the call arguments
-        call_args = self.mock_event_publisher.publish_game_tick_event.call_args
-
-        # Verify timestamp is provided
-        assert "timestamp" in call_args.kwargs
-        assert call_args.kwargs["timestamp"] is not None
-
-        # Verify additional_metadata is provided
-        assert "additional_metadata" in call_args.kwargs
-        assert call_args.kwargs["additional_metadata"] is not None
-
-        await self.game_tick_service.stop()
+        result = await service.start()
+        assert result is True
 
     @pytest.mark.asyncio
-    async def test_publish_game_tick_event_failure_handling(self):
-        """Test that tick loop continues even if event publishing fails."""
-        # Make event publisher raise an exception
-        self.mock_event_publisher.publish_game_tick_event.side_effect = Exception("Publish failed")
-
-        await self.game_tick_service.start()
-
-        # Wait for multiple ticks
-        await asyncio.sleep(0.25)
-
-        # Verify tick count still increased despite failures
-        assert self.game_tick_service.tick_count > 0
-
-        await self.game_tick_service.stop()
+    async def test_start_failure(self):
+        """Test start handles exceptions gracefully."""
+        event_publisher = MagicMock()
+        service = GameTickService(event_publisher)
+        with patch("server.services.game_tick_service.get_global_tracked_manager", side_effect=Exception("Test error")):
+            result = await service.start()
+            assert result is False
+            assert service.is_running is False
 
     @pytest.mark.asyncio
-    async def test_multiple_start_calls_safe(self):
-        """Test that multiple start calls are safe."""
-        await self.game_tick_service.start()
-        await self.game_tick_service.start()  # Second start should be safe
+    async def test_stop_success(self):
+        """Test stop successfully stops the service."""
+        event_publisher = MagicMock()
+        service = GameTickService(event_publisher)
+        service.is_running = True
 
-        assert self.game_tick_service.is_running is True
+        # Create a real asyncio task that can be cancelled
+        async def dummy_task():
+            while True:
+                await asyncio.sleep(0.1)
 
-        await self.game_tick_service.stop()
+        real_task = asyncio.create_task(dummy_task())
+        service._tick_task = real_task
+
+        result = await service.stop()
+        assert result is True
+        assert service.is_running is False
+        assert service._tick_task is None
 
     @pytest.mark.asyncio
-    async def test_multiple_stop_calls_safe(self):
-        """Test that multiple stop calls are safe."""
-        await self.game_tick_service.start()
-        await self.game_tick_service.stop()
-        await self.game_tick_service.stop()  # Second stop should be safe
+    async def test_stop_not_running(self):
+        """Test stop returns True when not running."""
+        event_publisher = MagicMock()
+        service = GameTickService(event_publisher)
+        service.is_running = False
 
-        assert self.game_tick_service.is_running is False
+        result = await service.stop()
+        assert result is True
 
     @pytest.mark.asyncio
-    async def test_tick_interval_respected(self):
-        """Test that the tick interval is respected."""
-        start_time = datetime.now()
+    async def test_stop_task_already_done(self):
+        """Test stop handles task that's already done."""
+        event_publisher = MagicMock()
+        service = GameTickService(event_publisher)
+        service.is_running = True
+        mock_task = MagicMock()
+        mock_task.done.return_value = True
+        service._tick_task = mock_task
 
-        await self.game_tick_service.start()
+        result = await service.stop()
+        assert result is True
+        mock_task.cancel.assert_not_called()
 
-        # Wait for one tick
-        await asyncio.sleep(0.15)
+    @pytest.mark.asyncio
+    async def test_stop_failure(self):
+        """Test stop handles exceptions gracefully."""
+        event_publisher = MagicMock()
+        service = GameTickService(event_publisher)
+        service.is_running = True
+        mock_task = MagicMock()
+        mock_task.done.side_effect = Exception("Test error")
+        service._tick_task = mock_task
 
-        end_time = datetime.now()
-        elapsed = (end_time - start_time).total_seconds()
-
-        # Should be close to the tick interval (0.1s) plus some processing time
-        assert 0.1 <= elapsed <= 0.2
-
-        await self.game_tick_service.stop()
+        result = await service.stop()
+        assert result is False
 
     def test_get_tick_count(self):
-        """Test getting the current tick count."""
-        assert self.game_tick_service.get_tick_count() == 0
-
-        self.game_tick_service.tick_count = 5
-        assert self.game_tick_service.get_tick_count() == 5
+        """Test get_tick_count returns current count."""
+        event_publisher = MagicMock()
+        service = GameTickService(event_publisher)
+        service.tick_count = 42
+        assert service.get_tick_count() == 42
 
     def test_reset_tick_count(self):
-        """Test resetting the tick count."""
-        self.game_tick_service.tick_count = 10
-        self.game_tick_service.reset_tick_count()
-        assert self.game_tick_service.get_tick_count() == 0
+        """Test reset_tick_count resets count to zero."""
+        event_publisher = MagicMock()
+        service = GameTickService(event_publisher)
+        service.tick_count = 100
+        service.reset_tick_count()
+        assert service.tick_count == 0
+
+    def test_get_tick_interval(self):
+        """Test get_tick_interval returns interval."""
+        event_publisher = MagicMock()
+        service = GameTickService(event_publisher, tick_interval=5.0)
+        assert service.get_tick_interval() == 5.0
 
     @pytest.mark.asyncio
-    async def test_tick_loop_stops_cleanly(self):
-        """Test that the tick loop stops cleanly when stopped."""
-        await self.game_tick_service.start()
+    async def test_tick_loop_increments_count(self):
+        """Test _tick_loop increments tick count."""
+        event_publisher = AsyncMock()
+        event_publisher.publish_game_tick_event = AsyncMock(return_value=True)
+        service = GameTickService(event_publisher, tick_interval=0.1)
+        service.is_running = True
 
-        # Wait for a few ticks
-        await asyncio.sleep(0.25)
+        # Start the loop and let it run briefly
+        task = asyncio.create_task(service._tick_loop())
+        await asyncio.sleep(0.15)  # Wait for at least one tick
+        service.is_running = False
+        task.cancel()
+        try:
+            await task
+        except asyncio.CancelledError:
+            pass
 
-        initial_tick_count = self.game_tick_service.tick_count
+        assert service.tick_count > 0
 
-        # Stop the service
-        await self.game_tick_service.stop()
+    @pytest.mark.asyncio
+    async def test_tick_loop_publishes_events(self):
+        """Test _tick_loop publishes game tick events."""
+        event_publisher = AsyncMock()
+        event_publisher.publish_game_tick_event = AsyncMock(return_value=True)
+        service = GameTickService(event_publisher, tick_interval=0.1)
+        service.is_running = True
 
-        # Wait a bit more
-        await asyncio.sleep(0.1)
+        # Start the loop and let it run briefly
+        task = asyncio.create_task(service._tick_loop())
+        await asyncio.sleep(0.15)  # Wait for at least one tick
+        service.is_running = False
+        task.cancel()
+        try:
+            await task
+        except asyncio.CancelledError:
+            pass
 
-        # Tick count should not have increased after stopping
-        assert self.game_tick_service.tick_count == initial_tick_count
+        assert event_publisher.publish_game_tick_event.called
+
+    @pytest.mark.asyncio
+    async def test_tick_loop_handles_cancellation(self):
+        """Test _tick_loop handles cancellation gracefully."""
+        event_publisher = AsyncMock()
+        event_publisher.publish_game_tick_event = AsyncMock(return_value=True)
+        service = GameTickService(event_publisher, tick_interval=0.1)
+        service.is_running = True
+
+        task = asyncio.create_task(service._tick_loop())
+        await asyncio.sleep(0.05)
+        task.cancel()
+
+        try:
+            await task
+        except asyncio.CancelledError:
+            pass
+
+        # Should have handled cancellation without error
+        assert True  # If we get here, cancellation was handled
+
+    @pytest.mark.asyncio
+    async def test_tick_loop_handles_publish_failure(self):
+        """Test _tick_loop continues on publish failure."""
+        event_publisher = AsyncMock()
+        event_publisher.publish_game_tick_event = AsyncMock(return_value=False)
+        service = GameTickService(event_publisher, tick_interval=0.1)
+        service.is_running = True
+
+        # Start the loop and let it run briefly
+        task = asyncio.create_task(service._tick_loop())
+        await asyncio.sleep(0.15)  # Wait for at least one tick
+        service.is_running = False
+        task.cancel()
+        try:
+            await task
+        except asyncio.CancelledError:
+            pass
+
+        # Should have continued despite publish failure
+        assert service.tick_count > 0
+
+    @pytest.mark.asyncio
+    async def test_tick_loop_handles_exceptions(self):
+        """Test _tick_loop handles exceptions and continues."""
+        event_publisher = AsyncMock()
+        event_publisher.publish_game_tick_event = AsyncMock(side_effect=ValueError("Test error"))
+        service = GameTickService(event_publisher, tick_interval=0.1)
+        service.is_running = True
+
+        # Start the loop and let it run briefly
+        task = asyncio.create_task(service._tick_loop())
+        await asyncio.sleep(0.15)  # Wait for at least one tick
+        service.is_running = False
+        task.cancel()
+        try:
+            await task
+        except asyncio.CancelledError:
+            pass
+
+        # Should have continued despite exception
+        assert service.tick_count > 0

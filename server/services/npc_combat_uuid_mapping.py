@@ -7,7 +7,7 @@ enabling reverse lookups during XP calculation when NPCs may have been removed.
 
 from uuid import UUID, uuid4
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

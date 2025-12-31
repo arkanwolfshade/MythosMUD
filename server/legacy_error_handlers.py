@@ -31,7 +31,7 @@ from .exceptions import (
     create_error_context,
     handle_exception,
 )
-from .logging.enhanced_logging_config import get_logger
+from .structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

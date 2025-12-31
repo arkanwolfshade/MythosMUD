@@ -30,43 +30,9 @@ IN_CI = bool(CI or GITHUB_ACTIONS)
 
 if IN_CI:
     print("Running CI test suite directly (already in CI environment)...")
+    print("NOTE: Frontend tests are run in the 'React Client' CI job, not here.")
+    print("This job only runs backend Python tests.")
 
-    # Check if Node.js and npm are available, and install client dependencies if needed
-    client_dir = os.path.join(PROJECT_ROOT, "client")
-    node_modules_dir = os.path.join(client_dir, "node_modules")
-
-    # Check if Node.js is available
-    try:
-        subprocess.run(["node", "--version"], capture_output=True, check=True)
-        subprocess.run(["npm", "--version"], capture_output=True, check=True)
-        print("Node.js and npm are available")
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        print("WARNING: Node.js/npm not found. Skipping client tests.")
-        print("Client tests should be run in the frontend CI job instead.")
-    else:
-        # Install client dependencies if node_modules doesn't exist
-        if not os.path.exists(node_modules_dir):
-            print(f"Installing client dependencies in {client_dir}...")
-            subprocess.run(
-                ["npm", "ci"],
-                cwd=client_dir,
-                check=True,
-            )
-        else:
-            print("Client dependencies already installed")
-
-        # Client tests with coverage
-        subprocess.run(
-            ["npm", "run", "test:coverage"],
-            cwd=client_dir,
-            check=True,
-        )
-        # Client E2E tests
-        subprocess.run(
-            ["npm", "run", "test"],
-            cwd=client_dir,
-            check=True,
-        )
     # Server tests with coverage
     # Use Python from .venv-ci to run pytest as a module (cross-platform)
     if sys.platform == "win32":
@@ -78,7 +44,205 @@ if IN_CI:
     env = os.environ.copy()
     env["PYTHONUNBUFFERED"] = "1"
 
+    # #region agent log
+    log_path = os.path.join(PROJECT_ROOT, ".cursor", "debug.log")
+    try:
+        admin_pw_env = env.get("MYTHOSMUD_ADMIN_PASSWORD", "NOT_SET")
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(
+                json.dumps(
+                    {
+                        "id": f"log_{int(time.time())}_ci_env_check",
+                        "timestamp": int(time.time() * 1000),
+                        "location": "run_test_ci.py:44",
+                        "message": "CI environment check - MYTHOSMUD_ADMIN_PASSWORD",
+                        "data": {
+                            "env_var_exists": "MYTHOSMUD_ADMIN_PASSWORD" in env,
+                            "env_var_value": admin_pw_env[:3] + "..."
+                            if len(admin_pw_env) > 3 and admin_pw_env != "NOT_SET"
+                            else admin_pw_env,
+                            "env_var_length": len(admin_pw_env) if admin_pw_env != "NOT_SET" else 0,
+                            "is_empty_string": admin_pw_env == "",
+                            "in_ci": IN_CI,
+                        },
+                        "sessionId": "debug-session",
+                        "runId": "ci-env-check",
+                        "hypothesisId": "F",
+                    }
+                )
+                + "\n"
+            )
+    except Exception:
+        pass  # Ignore logging errors
+    # #endregion
+
+    # #region agent log
+    log_path = os.path.join(PROJECT_ROOT, ".cursor", "debug.log")
+    try:
+        # Check if pytest-xdist is installed
+        import importlib.util
+
+        xdist_path = importlib.util.find_spec("xdist")
+        pytest_xdist_installed = xdist_path is not None
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(
+                json.dumps(
+                    {
+                        "id": f"log_{int(time.time())}_check_xdist",
+                        "timestamp": int(time.time() * 1000),
+                        "location": "run_test_ci.py:47",
+                        "message": "Checking if pytest-xdist is installed",
+                        "data": {
+                            "pytest_xdist_installed": pytest_xdist_installed,
+                            "xdist_path": str(xdist_path) if xdist_path else None,
+                            "python_exe": python_exe,
+                        },
+                        "sessionId": "debug-session",
+                        "runId": "ci-check",
+                        "hypothesisId": "A",
+                    }
+                )
+                + "\n"
+            )
+    except Exception:
+        pass  # Ignore logging errors
+    # #endregion
+
+    # #region agent log
+    try:
+        # Check installed packages
+        result = subprocess.run(
+            [python_exe, "-m", "pip", "list"],
+            capture_output=True,
+            text=True,
+            cwd=PROJECT_ROOT,
+            env=env,
+        )
+        installed_packages = result.stdout
+        has_pytest_xdist = "pytest-xdist" in installed_packages
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(
+                json.dumps(
+                    {
+                        "id": f"log_{int(time.time())}_pip_list",
+                        "timestamp": int(time.time() * 1000),
+                        "location": "run_test_ci.py:75",
+                        "message": "Checking installed packages via pip list",
+                        "data": {
+                            "has_pytest_xdist": has_pytest_xdist,
+                            "pip_list_output_preview": installed_packages[:500],
+                        },
+                        "sessionId": "debug-session",
+                        "runId": "ci-check",
+                        "hypothesisId": "A",
+                    }
+                )
+                + "\n"
+            )
+    except Exception:
+        pass  # Ignore logging errors
+    # #endregion
+
+    # #region agent log
+    try:
+        # Check pytest plugins
+        result = subprocess.run(
+            [python_exe, "-m", "pytest", "--collect-only", "-q"],
+            capture_output=True,
+            text=True,
+            cwd=PROJECT_ROOT,
+            env=env,
+        )
+        pytest_plugins = result.stdout + result.stderr
+        has_xdist_plugin = "xdist" in pytest_plugins or "pytest-xdist" in pytest_plugins
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(
+                json.dumps(
+                    {
+                        "id": f"log_{int(time.time())}_pytest_plugins",
+                        "timestamp": int(time.time() * 1000),
+                        "location": "run_test_ci.py:100",
+                        "message": "Checking pytest plugins",
+                        "data": {
+                            "has_xdist_plugin": has_xdist_plugin,
+                            "pytest_output_preview": pytest_plugins[:500],
+                        },
+                        "sessionId": "debug-session",
+                        "runId": "ci-check",
+                        "hypothesisId": "B",
+                    }
+                )
+                + "\n"
+            )
+    except Exception:
+        pass  # Ignore logging errors
+    # #endregion
+
+    # #region agent log
+    try:
+        # Read pytest.ini to check for -n flag
+        pytest_ini_path = os.path.join(PROJECT_ROOT, "server", "pytest.ini")
+        with open(pytest_ini_path, encoding="utf-8") as f:
+            pytest_ini_content = f.read()
+        has_n_auto = "-n auto" in pytest_ini_content or "-n" in pytest_ini_content
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(
+                json.dumps(
+                    {
+                        "id": f"log_{int(time.time())}_pytest_ini",
+                        "timestamp": int(time.time() * 1000),
+                        "location": "run_test_ci.py:125",
+                        "message": "Checking pytest.ini for -n flag",
+                        "data": {
+                            "has_n_auto": has_n_auto,
+                            "pytest_ini_preview": pytest_ini_content[:500],
+                        },
+                        "sessionId": "debug-session",
+                        "runId": "ci-check",
+                        "hypothesisId": "C",
+                    }
+                )
+                + "\n"
+            )
+    except Exception:
+        pass  # Ignore logging errors
+    # #endregion
+
     # Run tests with coverage
+    # #region agent log
+    try:
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(
+                json.dumps(
+                    {
+                        "id": f"log_{int(time.time())}_pytest_start",
+                        "timestamp": int(time.time() * 1000),
+                        "location": "run_test_ci.py:150",
+                        "message": "Starting pytest execution",
+                        "data": {
+                            "pytest_command": [
+                                python_exe,
+                                "-m",
+                                "pytest",
+                                "server/tests/",
+                                "--cov=server",
+                                "--cov-report=xml",
+                                "--cov-report=html",
+                                "--cov-config=.coveragerc",
+                                "-v",
+                                "--tb=short",
+                            ],
+                        },
+                        "sessionId": "debug-session",
+                        "runId": "ci-check",
+                        "hypothesisId": "D",
+                    }
+                )
+                + "\n"
+            )
+    except Exception:
+        pass  # Ignore logging errors
+    # #endregion
     subprocess.run(
         [
             python_exe,
@@ -106,6 +270,45 @@ if IN_CI:
         env=env,
     )
 else:
+    # #region agent log
+    log_path = os.path.join(PROJECT_ROOT, ".cursor", "debug.log")
+    try:
+        admin_pw_env = os.environ.get("MYTHOSMUD_ADMIN_PASSWORD", "NOT_SET")
+        # Check for .env files
+        env_files = []
+        for env_file in [".env", ".env.local", "server/tests/.env.unit_test"]:
+            env_path = os.path.join(PROJECT_ROOT, env_file)
+            if os.path.exists(env_path):
+                env_files.append(env_file)
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(
+                json.dumps(
+                    {
+                        "id": f"log_{int(time.time())}_local_env_check",
+                        "timestamp": int(time.time() * 1000),
+                        "location": "run_test_ci.py:240",
+                        "message": "Local environment check - MYTHOSMUD_ADMIN_PASSWORD",
+                        "data": {
+                            "env_var_exists": "MYTHOSMUD_ADMIN_PASSWORD" in os.environ,
+                            "env_var_value": admin_pw_env[:3] + "..."
+                            if len(admin_pw_env) > 3 and admin_pw_env != "NOT_SET"
+                            else admin_pw_env,
+                            "env_var_length": len(admin_pw_env) if admin_pw_env != "NOT_SET" else 0,
+                            "is_empty_string": admin_pw_env == "",
+                            "env_files_found": env_files,
+                            "in_ci": IN_CI,
+                        },
+                        "sessionId": "debug-session",
+                        "runId": "local-env-check",
+                        "hypothesisId": "G",
+                    }
+                )
+                + "\n"
+            )
+    except Exception:
+        pass  # Ignore logging errors
+    # #endregion
+
     print("Building Docker runner image (this ensures dependencies are up-to-date)...")
     ACT_RUNNER_IMAGE = "mythosmud-gha-runner:latest"
     ACT_RUNNER_DOCKERFILE = "Dockerfile.github-runner"
@@ -172,7 +375,10 @@ else:
         "cd /workspace/client && npm run test:coverage && "
         "cd /workspace/client && npm run test && "
         # Use .venv from Docker volume (preserved from build, not overwritten by mount)
+        # Ensure pytest-mock and pytest-xdist are installed in the venv before running tests
+        # pytest-xdist is required for -n auto in pytest.ini
         "cd /workspace && source .venv/bin/activate && "
+        "uv pip install pytest-mock>=3.14.0 pytest-xdist>=3.8.0 && "
         "PYTHONUNBUFFERED=1 pytest server/tests/ --cov=server --cov-report=xml --cov-report=html "
         "--cov-config=.coveragerc -v --tb=short && "
         "uv run python scripts/check_coverage_thresholds.py"

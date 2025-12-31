@@ -16,7 +16,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
 from ...config import get_config
-from ...logging.enhanced_logging_config import _resolve_log_base, get_logger
+from ...structured_logging.enhanced_logging_config import _resolve_log_base, get_logger
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable

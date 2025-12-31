@@ -28,11 +28,12 @@ jobs:
       DATABASE_URL: postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit
       DATABASE_NPC_URL: postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit
       # Using GitHub Secrets for application secrets (CI-specific naming convention)
-      MYTHOSMUD_ADMIN_PASSWORD: ${{ secrets.MYTHOSMUD_ADMIN_PASSWORD_CI }}
-      MYTHOSMUD_SECRET_KEY: ${{ secrets.MYTHOSMUD_SECRET_KEY_CI }}
-      MYTHOSMUD_JWT_SECRET: ${{ secrets.MYTHOSMUD_JWT_SECRET_CI }}
-      MYTHOSMUD_RESET_TOKEN_SECRET: ${{ secrets.MYTHOSMUD_RESET_TOKEN_SECRET_CI }}
-      MYTHOSMUD_VERIFICATION_TOKEN_SECRET: ${{ secrets.MYTHOSMUD_VERIFICATION_TOKEN_SECRET_CI }}
+      # Provide test defaults if secrets are not set (empty secrets become empty strings in GitHub Actions)
+      MYTHOSMUD_ADMIN_PASSWORD: ${{ secrets.MYTHOSMUD_ADMIN_PASSWORD_CI || 'test-admin-password-for-development' }}
+      MYTHOSMUD_SECRET_KEY: ${{ secrets.MYTHOSMUD_SECRET_KEY_CI || 'test-secret-key-for-development' }}
+      MYTHOSMUD_JWT_SECRET: ${{ secrets.MYTHOSMUD_JWT_SECRET_CI || 'test-jwt-secret-key-for-development' }}
+      MYTHOSMUD_RESET_TOKEN_SECRET: ${{ secrets.MYTHOSMUD_RESET_TOKEN_SECRET_CI || 'test-reset-token-secret-for-development' }}
+      MYTHOSMUD_VERIFICATION_TOKEN_SECRET: ${{ secrets.MYTHOSMUD_VERIFICATION_TOKEN_SECRET_CI || 'test-verification-token-secret-for-development' }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         if: ${{ !env.ACT }}
@@ -60,6 +61,7 @@ jobs:
           source .venv-ci/bin/activate
           uv pip install -e .
           uv pip install -e ".[dev]"
+          uv pip install pytest-mock>=3.14.0 pytest-xdist>=3.8.0
       - name: Install Playwright browsers
         run: |
           source .venv-ci/bin/activate
@@ -236,5 +238,9 @@ jobs:
       - name: Lint with ESLint
         run: |
           npx eslint .
+      - name: Run unit tests with coverage
+        run: npm run test:coverage
+      - name: Run E2E tests
+        run: npm run test
       - name: Build React app
         run: npm run build

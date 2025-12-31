@@ -24,7 +24,7 @@ from server.npc.population_control import NPCPopulationController
 from server.npc.spawning_service import NPCSpawningService
 from server.schemas.calendar import ScheduleEntry
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 # Removed: from ..persistence import get_persistence - now using async_persistence parameter
 

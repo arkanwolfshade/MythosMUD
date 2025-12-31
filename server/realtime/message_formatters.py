@@ -2,8 +2,8 @@
 Message formatting utilities for NATS message handler.
 """
 
-from ..logging.enhanced_logging_config import get_logger
 from ..services.nats_exceptions import NATSError
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger("communications.message_formatters")
 

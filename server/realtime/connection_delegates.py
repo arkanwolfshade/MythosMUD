@@ -8,7 +8,7 @@ components, reducing boilerplate in the main ConnectionManager class.
 import uuid
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -56,6 +56,10 @@ async def cleanup_dead_websocket_impl(
     try:
         if connection_id in manager.active_websockets:
             websocket = manager.active_websockets[connection_id]
+            # Guard against None websocket (can happen during cleanup)
+            if websocket is None:
+                del manager.active_websockets[connection_id]
+                return
             logger.info("Closing dead WebSocket", connection_id=connection_id, player_id=player_id)
             try:
                 import asyncio

@@ -24,7 +24,7 @@ from ..exceptions import (
     LoggedHTTPException,
     MythosMUDError,
 )
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -74,7 +74,10 @@ class ErrorHandlingMiddleware:
             # Process the request
             await self.app(scope, receive, send)
 
-        except Exception as exc:
+        except Exception as exc:  # pylint: disable=broad-exception-caught
+            # JUSTIFICATION: This is error handling middleware that must catch ALL exceptions to ensure
+            # proper error responses are sent. The exception is then passed to _handle_exception which
+            # properly categorizes and handles different exception types (HTTPException, ValidationError, etc.)
             # Handle the exception and send error response
             await self._handle_exception(scope, receive, send, exc)
 
@@ -101,7 +104,12 @@ class ErrorHandlingMiddleware:
             # Log the exception with full context
             self._log_exception(request, exc, response.status_code)
 
-            # Send the error response
+            # Send the error response (guard against None send callable)
+            # JUSTIFICATION: ASGI spec requires send to be callable, but defensive programming guards
+            # against None. Mypy's type narrowing doesn't account for this runtime check.
+            if send is None:
+                logger.error("Cannot send error response: send callable is None", exc_info=True)  # type: ignore[unreachable]
+                return
             await send(
                 {
                     "type": "http.response.start",
@@ -116,7 +124,10 @@ class ErrorHandlingMiddleware:
                 }
             )
 
-        except Exception as handler_error:
+        except Exception as handler_error:  # pylint: disable=broad-exception-caught
+            # JUSTIFICATION: This is a fallback error handler that catches ALL exceptions when the error
+            # handler itself fails. This is the last resort to ensure some error response is sent even
+            # if the primary error handling code encounters an unexpected error.
             # Fallback error handling if the handler itself fails
             logger.error(
                 "Error in error handler",
@@ -140,6 +151,12 @@ class ErrorHandlingMiddleware:
                 }
             ).encode("utf-8")
 
+            # Guard against None send callable
+            # JUSTIFICATION: ASGI spec requires send to be callable, but defensive programming guards
+            # against None. Mypy's type narrowing doesn't account for this runtime check.
+            if send is None:
+                logger.error("Cannot send fallback error response: send callable is None", exc_info=True)  # type: ignore[unreachable]
+                return
             await send(
                 {
                     "type": "http.response.start",
@@ -170,14 +187,15 @@ class ErrorHandlingMiddleware:
         """
         # Add request ID to state for tracking
         if not hasattr(request.state, "request_id"):
-            import uuid
-
             request.state.request_id = str(uuid.uuid4())
 
         try:
             response = await call_next(request)
             return response
-        except Exception as exc:
+        except Exception as exc:  # pylint: disable=broad-exception-caught
+            # JUSTIFICATION: This is error handling middleware that must catch ALL exceptions to ensure
+            # proper error responses are returned. The exception is then passed to StandardizedErrorResponse
+            # which properly categorizes and handles different exception types (HTTPException, ValidationError, etc.)
             # Handle exception and return JSON response
             handler = StandardizedErrorResponse(request=request)
             response = handler.handle_exception(exc, include_details=self.include_details, response_type="http")

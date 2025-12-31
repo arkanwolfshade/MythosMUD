@@ -8,7 +8,7 @@ that are shared across all API endpoints.
 from fastapi import APIRouter, Depends
 
 from ..auth.users import get_current_user
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

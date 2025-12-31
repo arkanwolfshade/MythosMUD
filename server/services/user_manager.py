@@ -12,7 +12,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .chat_logger import chat_logger
 
 logger = get_logger("communications.user_manager")
@@ -126,7 +126,7 @@ class UserManager:
         except (ValueError, TypeError) as e:
             logger.error("Data validation error adding admin status", error=str(e), error_type=type(e).__name__)
             return False
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error("Unexpected error adding admin status", error=str(e), error_type=type(e).__name__)
             return False
 
@@ -172,7 +172,7 @@ class UserManager:
         except (ValueError, TypeError) as e:
             logger.error("Data validation error removing admin status", error=str(e), error_type=type(e).__name__)
             return False
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error("Unexpected error removing admin status", error=str(e), error_type=type(e).__name__)
             return False
 
@@ -237,7 +237,7 @@ class UserManager:
             logger.error(
                 "Data validation error checking admin status in database", error=str(e), error_type=type(e).__name__
             )
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error(
                 "Unexpected error checking admin status in database", error=str(e), error_type=type(e).__name__
             )
@@ -333,7 +333,7 @@ class UserManager:
         except (ValueError, TypeError) as e:
             logger.error("Data validation error muting player", error=str(e), error_type=type(e).__name__)
             return False
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error("Unexpected error muting player", error=str(e), error_type=type(e).__name__)
             return False
 
@@ -397,7 +397,7 @@ class UserManager:
                 )
                 return False
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error("Error unmuting player", error=str(e), unmuter_id=unmuter_id, target_id=target_id)
             return False
 
@@ -476,7 +476,7 @@ class UserManager:
         except (ValueError, TypeError) as e:
             logger.error("Data validation error muting channel", error=str(e), error_type=type(e).__name__)
             return False
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error("Unexpected error muting channel", error=str(e), error_type=type(e).__name__)
             return False
 
@@ -529,7 +529,7 @@ class UserManager:
                 logger.warning("Attempted to unmute non-muted channel", player_id=player_id_uuid, channel=channel)
                 return False
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error("Error unmuting channel", error=str(e), player_id=player_id, channel=channel)
             return False
 
@@ -562,7 +562,8 @@ class UserManager:
             target_id_uuid = self._normalize_to_uuid(target_id)
 
             # Check if target is admin (immune to mutes)
-            if self.is_admin(target_id_uuid):
+            # Use is_admin_sync since mute_global is synchronous
+            if self.is_admin_sync(target_id_uuid):
                 logger.warning(
                     "Attempted to globally mute admin player", muter_id=muter_id_uuid, target_id=target_id_uuid
                 )
@@ -614,7 +615,7 @@ class UserManager:
 
             return True
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error("Error applying global mute", error=str(e), muter_id=muter_id, target_id=target_id)
             return False
 
@@ -674,7 +675,7 @@ class UserManager:
                 )
                 return False
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error(
                 "Error removing global mute",
                 error=str(e),
@@ -772,7 +773,7 @@ class UserManager:
             )
             return False
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error(
                 "Error checking player mute",
                 error=str(e),
@@ -819,7 +820,7 @@ class UserManager:
 
             return False
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error(
                 "Error checking player mute (async)",
                 error=str(e),
@@ -860,7 +861,7 @@ class UserManager:
 
             return False
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error(
                 "Error checking channel mute",
                 error=str(e),
@@ -904,19 +905,19 @@ class UserManager:
         except (ValueError, TypeError) as e:
             logger.error("Data validation error checking global mute", error=str(e), error_type=type(e).__name__)
             return False
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error("Unexpected error checking global mute", error=str(e), error_type=type(e).__name__)
             return False
 
     def can_send_message(
-        self, sender_id: uuid.UUID | str, target_id: uuid.UUID | str | None = None, channel: str | None = None
+        self, sender_id: uuid.UUID | str, _target_id: uuid.UUID | str | None = None, channel: str | None = None
     ) -> bool:
         """
         Check if a player can send a message.
 
         Args:
             sender_id: Sender player ID
-            target_id: Target player ID (for whispers)
+            _target_id: Target player ID (for whispers) - unused, kept for API compatibility
             channel: Channel name (for channel messages)
 
         Returns:
@@ -998,7 +999,7 @@ class UserManager:
         except (ValueError, TypeError) as e:
             logger.error("Data validation error getting player mutes", error=str(e), error_type=type(e).__name__)
             return {"player_mutes": {}, "channel_mutes": {}, "global_mutes": {}}
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error("Unexpected error getting player mutes", error=str(e), error_type=type(e).__name__)
             return {"player_mutes": {}, "channel_mutes": {}, "global_mutes": {}}
 
@@ -1079,7 +1080,7 @@ class UserManager:
 
             return stats
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error("Error getting system stats", error=str(e))
             return {}
 
@@ -1116,7 +1117,7 @@ class UserManager:
                 if mute_info["expires_at"] and mute_info["expires_at"] < current_time:
                     del self._global_mutes[player_id]
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error("Error cleaning up expired mutes", error=str(e))
 
     def _get_player_mute_file(self, player_id: uuid.UUID | str) -> Path:
@@ -1227,7 +1228,7 @@ class UserManager:
             except (ValueError, TypeError):
                 pass
             return False
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error("Unexpected error loading player mute data", error=str(e), error_type=type(e).__name__)
             try:
                 player_id_uuid = self._normalize_to_uuid(player_id)
@@ -1278,7 +1279,7 @@ class UserManager:
             # Load from file using thread pool
             result = await asyncio.to_thread(self.load_player_mutes, player_id_uuid)
             return result
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error("Error in async mute loading", player_id=player_id, error=str(e))
             return False
 
@@ -1444,7 +1445,7 @@ class UserManager:
             logger.debug("Player mute data saved")
             return True
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error(
                 "Error saving player mute data",
                 error=str(e),
@@ -1499,7 +1500,7 @@ class UserManager:
                 "Data validation error cleaning up player mute data", error=str(e), error_type=type(e).__name__
             )
             return False
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error("Unexpected error cleaning up player mute data", error=str(e), error_type=type(e).__name__)
             return False
 

@@ -7,8 +7,8 @@ from pathlib import Path
 from pydantic import ValidationError
 
 from server.game.items.models import ItemPrototypeModel
-from server.logging.enhanced_logging_config import get_logger
 from server.monitoring.monitoring_dashboard import get_monitoring_dashboard
+from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

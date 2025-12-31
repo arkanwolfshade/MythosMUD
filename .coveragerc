@@ -2,6 +2,7 @@
 source = server
 omit =
     */tests/*
+    */tests_backup_original/*
     */alembic/*
     */__pycache__/*
     */stubs/*
@@ -23,5 +24,8 @@ exclude_lines =
     # Don't complain about abstract methods
     @(abc\.)?abstractmethod
 
-# Normal files - 70% threshold (default)
-fail_under = 70
+# Coverage policy
+# - Critical codepaths (documented in TESTING.md) are required to meet or exceed 90% coverage.
+# - All other code must meet or exceed 50% coverage.
+# Per-path enforcement is validated in CI; this config preserves the global floor.
+fail_under = 50

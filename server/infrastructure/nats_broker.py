@@ -15,7 +15,7 @@ from nats.aio.msg import Msg
 from nats.js.errors import BadRequestError  # noqa: F401
 
 from ..config.models import NATSConfig
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .message_broker import (
     ConnectionError,
     MessageBrokerError,

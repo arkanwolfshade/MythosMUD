@@ -15,7 +15,7 @@ from typing import Any
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from ..logging.enhanced_logging_config import (
+from ..structured_logging.enhanced_logging_config import (
     bind_request_context,
     clear_request_context,
     get_logger,

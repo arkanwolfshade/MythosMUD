@@ -8,7 +8,7 @@ for various operations like UUID conversion, sequence numbers, and deprecated me
 from typing import Any
 
 from ..exceptions import DatabaseError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -104,6 +104,9 @@ async def _send_to_websockets(
 
         had_connection_attempts = True
         websocket = manager.active_websockets[connection_id]
+        # Guard against None websocket (can happen during cleanup)
+        if websocket is None:
+            continue
         try:
             await websocket.send_json(serializable_event)
             delivery_status["websocket_delivered"] += 1
@@ -233,7 +236,7 @@ async def handle_new_login_impl(player_id: Any, manager: Any) -> None:
 
         login_log_entry = {
             "timestamp": datetime.now().isoformat(),
-            "player_id": player_id,
+            "player_id": str(player_id),
             "event_type": "NEW_LOGIN",
             "connections_before": {
                 "websocket": player_id in manager.player_websockets,

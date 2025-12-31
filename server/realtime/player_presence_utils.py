@@ -9,8 +9,8 @@ import uuid
 from typing import Any
 
 from ..exceptions import DatabaseError
-from ..logging.enhanced_logging_config import get_logger
 from ..models import Player
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

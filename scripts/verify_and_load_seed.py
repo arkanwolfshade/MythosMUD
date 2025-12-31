@@ -8,6 +8,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from sqlalchemy import text
+from sqlalchemy.exc import DatabaseError, SQLAlchemyError
 
 from server.config import get_config
 from server.database import get_async_session
@@ -49,16 +50,16 @@ async def main():
             for seed_file, name in seed_files:
                 file_path = Path(seed_file)
                 if not file_path.exists():
-                    print(f"  ✗ {name}: File not found ({seed_file})")
+                    print(f"  [X] {name}: File not found ({seed_file})")
                     continue
 
-                sql = file_path.read_text(encoding='utf-8')
+                sql = file_path.read_text(encoding="utf-8")
                 try:
                     await session.execute(text(sql))
                     await session.commit()
-                    print(f"  ✓ {name}: Loaded successfully")
-                except Exception as e:
-                    print(f"  ✗ {name}: ERROR - {e}")
+                    print(f"  [OK] {name}: Loaded successfully")
+                except SQLAlchemyError as e:
+                    print(f"  [X] {name}: ERROR - {e}")
                     await session.rollback()
 
             # Verify final counts
@@ -81,12 +82,14 @@ async def main():
 
             break
 
-        except Exception as e:
+        except (DatabaseError, SQLAlchemyError) as e:
             print(f"\nERROR: {e}")
             import traceback
+
             traceback.print_exc()
             await session.rollback()
             sys.exit(1)
+
 
 if __name__ == "__main__":
     asyncio.run(main())

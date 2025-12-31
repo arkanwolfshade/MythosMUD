@@ -11,8 +11,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional
 
-from .logging.enhanced_logging_config import get_logger
 from .models import Alias
+from .structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

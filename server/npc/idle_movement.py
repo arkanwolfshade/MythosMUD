@@ -15,7 +15,7 @@ import random
 import time
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 # Removed: from ..persistence import get_persistence - now using async_persistence parameter
 from .movement_integration import NPCMovementIntegration

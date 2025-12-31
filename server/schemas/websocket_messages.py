@@ -7,7 +7,10 @@ message types used in the MythosMUD real-time communication system.
 
 from typing import Any
 
-from pydantic import BaseModel, Field
+# pylint: disable=unused-import
+# JUSTIFICATION: ConfigDict is used in model_config attributes (lines 41, 57, 65).
+# Pylint incorrectly flags it as unused because it doesn't recognize model_config as a Pydantic special attribute.
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class BaseWebSocketMessage(BaseModel):
@@ -21,11 +24,10 @@ class BaseWebSocketMessage(BaseModel):
 class CommandMessage(BaseWebSocketMessage):
     """Schema for command messages from client."""
 
+    model_config = ConfigDict(populate_by_name=True)
+
     type: str = Field(default="command", description="Message type")
     data: dict[str, Any] = Field(..., description="Command data")
-
-    class Config:
-        populate_by_name = True
 
 
 class CommandMessageData(BaseModel):
@@ -38,11 +40,10 @@ class CommandMessageData(BaseModel):
 class ChatMessage(BaseWebSocketMessage):
     """Schema for chat messages from client."""
 
+    model_config = ConfigDict(populate_by_name=True)
+
     type: str = Field(default="chat", description="Message type")
     data: dict[str, Any] = Field(..., description="Chat message data")
-
-    class Config:
-        populate_by_name = True
 
 
 class ChatMessageData(BaseModel):
@@ -55,18 +56,16 @@ class ChatMessageData(BaseModel):
 class PingMessage(BaseWebSocketMessage):
     """Schema for ping/heartbeat messages."""
 
-    type: str = Field(default="ping", description="Message type")
+    model_config = ConfigDict(populate_by_name=True)
 
-    class Config:
-        populate_by_name = True
+    type: str = Field(default="ping", description="Message type")
 
 
 class WrappedMessage(BaseModel):
     """Schema for wrapped messages from useWebSocketConnection."""
 
+    model_config = ConfigDict(populate_by_name=True)
+
     message: str = Field(..., description="Inner message as JSON string")
     csrfToken: str | None = Field(None, alias="csrfToken", description="CSRF token")
     timestamp: int | None = Field(None, description="Message timestamp")
-
-    class Config:
-        populate_by_name = True

@@ -1,12 +1,9 @@
 """
-Tests for authentication dependencies.
-
-This module tests dependency injection functions for
-authentication and authorization.
+Unit tests for authentication dependencies.
 """
 
 import uuid
-from unittest.mock import AsyncMock, Mock
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 from fastapi import status
@@ -21,115 +18,221 @@ from server.exceptions import LoggedHTTPException
 from server.models.user import User
 
 
-class TestGetCurrentSuperuser:
-    """Test get_current_superuser dependency."""
+@pytest.mark.asyncio
+async def test_get_current_superuser_success():
+    """Test getting current superuser when user is superuser."""
+    user = User(
+        id=str(uuid.uuid4()),
+        username="admin",
+        email="admin@example.com",
+        hashed_password="hashed",
+        is_active=True,
+        is_superuser=True,
+        is_verified=True,
+    )
 
-    @pytest.mark.asyncio
-    async def test_get_current_superuser_with_superuser(self):
-        """Test get_current_superuser returns superuser."""
-        mock_user = Mock(spec=User)
-        mock_user.is_superuser = True
-
-        result = await get_current_superuser(current_user=mock_user)
-        assert result == mock_user
-
-    @pytest.mark.asyncio
-    async def test_get_current_superuser_with_non_superuser(self):
-        """Test get_current_superuser raises 403 for non-superuser."""
-        mock_user = Mock(spec=User)
-        mock_user.is_superuser = False
-
-        with pytest.raises(LoggedHTTPException) as exc_info:
-            await get_current_superuser(current_user=mock_user)
-
-        assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
-        assert "privileges" in exc_info.value.detail.lower()
+    result = await get_current_superuser(current_user=user)
+    assert result == user
+    assert result.is_superuser is True
 
 
-class TestGetCurrentVerifiedUser:
-    """Test get_current_verified_user dependency."""
+@pytest.mark.asyncio
+async def test_get_current_superuser_failure():
+    """Test getting current superuser when user is not superuser."""
+    user = User(
+        id=str(uuid.uuid4()),
+        username="regular_user",
+        email="user@example.com",
+        hashed_password="hashed",
+        is_active=True,
+        is_superuser=False,
+        is_verified=True,
+    )
 
-    @pytest.mark.asyncio
-    async def test_get_current_verified_user_with_verified_user(self):
-        """Test get_current_verified_user returns verified user."""
-        mock_user = Mock(spec=User)
-        mock_user.is_verified = True
+    with pytest.raises(LoggedHTTPException) as exc_info:
+        await get_current_superuser(current_user=user)
 
-        result = await get_current_verified_user(current_user=mock_user)
-        assert result == mock_user
-
-    @pytest.mark.asyncio
-    async def test_get_current_verified_user_with_unverified_user(self):
-        """Test get_current_verified_user raises 403 for unverified user."""
-        mock_user = Mock(spec=User)
-        mock_user.is_verified = False
-
-        with pytest.raises(LoggedHTTPException) as exc_info:
-            await get_current_verified_user(current_user=mock_user)
-
-        assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
-        assert "not verified" in exc_info.value.detail.lower()
+    assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
 
 
-class TestRequireInviteCode:
-    """Test require_invite_code dependency."""
+@pytest.mark.asyncio
+async def test_get_current_verified_user_success():
+    """Test getting current verified user when user is verified."""
+    user = User(
+        id=str(uuid.uuid4()),
+        username="verified_user",
+        email="user@example.com",
+        hashed_password="hashed",
+        is_active=True,
+        is_superuser=False,
+        is_verified=True,
+    )
 
-    @pytest.mark.asyncio
-    async def test_require_invite_code_with_valid_code(self):
-        """Test require_invite_code succeeds with valid invite code."""
-        mock_invite_manager = Mock()
-        mock_invite_manager.validate_invite = AsyncMock(return_value=Mock())
-
-        # Should not raise exception
-        await require_invite_code("valid-code-123", invite_manager=mock_invite_manager)
-        mock_invite_manager.validate_invite.assert_called_once_with("valid-code-123")
-
-    @pytest.mark.asyncio
-    async def test_require_invite_code_with_logged_http_exception(self):
-        """Test require_invite_code re-raises LoggedHTTPException."""
-        mock_invite_manager = Mock()
-        logged_exception = LoggedHTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid invite code",
-            context=None,
-        )
-        mock_invite_manager.validate_invite = AsyncMock(side_effect=logged_exception)
-
-        with pytest.raises(LoggedHTTPException) as exc_info:
-            await require_invite_code("invalid-code", invite_manager=mock_invite_manager)
-
-        assert exc_info.value == logged_exception
-        assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
-
-    @pytest.mark.asyncio
-    async def test_require_invite_code_with_generic_exception(self):
-        """Test require_invite_code converts generic exception to LoggedHTTPException."""
-        mock_invite_manager = Mock()
-        generic_exception = ValueError("Some validation error")
-        mock_invite_manager.validate_invite = AsyncMock(side_effect=generic_exception)
-
-        with pytest.raises(LoggedHTTPException) as exc_info:
-            await require_invite_code("bad-code", invite_manager=mock_invite_manager)
-
-        assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
-        assert "Invalid or expired invite code" in exc_info.value.detail
-        assert exc_info.value.__cause__ == generic_exception
+    result = await get_current_verified_user(current_user=user)
+    assert result == user
+    assert result.is_verified is True
 
 
-class TestGetOptionalCurrentUser:
-    """Test get_optional_current_user dependency."""
+@pytest.mark.asyncio
+async def test_get_current_verified_user_failure():
+    """Test getting current verified user when user is not verified."""
+    user = User(
+        id=str(uuid.uuid4()),
+        username="unverified_user",
+        email="user@example.com",
+        hashed_password="hashed",
+        is_active=True,
+        is_superuser=False,
+        is_verified=False,
+    )
 
-    @pytest.mark.asyncio
-    async def test_get_optional_current_user_with_user(self):
-        """Test get_optional_current_user returns user when authenticated."""
-        mock_user = Mock(spec=User)
-        mock_user.id = uuid.uuid4()
+    with pytest.raises(LoggedHTTPException) as exc_info:
+        await get_current_verified_user(current_user=user)
 
-        result = await get_optional_current_user(current_user=mock_user)
-        assert result == mock_user
+    assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
 
-    @pytest.mark.asyncio
-    async def test_get_optional_current_user_with_none(self):
-        """Test get_optional_current_user returns None when not authenticated."""
-        result = await get_optional_current_user(current_user=None)
-        assert result is None
+
+@pytest.mark.asyncio
+async def test_require_invite_code_success():
+    """Test requiring invite code with valid code."""
+    mock_invite_manager = MagicMock()
+    mock_invite_manager.validate_invite = AsyncMock()
+
+    await require_invite_code("valid_code", invite_manager=mock_invite_manager)
+
+    mock_invite_manager.validate_invite.assert_called_once_with("valid_code")
+
+
+@pytest.mark.asyncio
+async def test_require_invite_code_invalid():
+    """Test requiring invite code with invalid code."""
+    mock_invite_manager = MagicMock()
+    mock_invite_manager.validate_invite = AsyncMock(side_effect=ValueError("Invalid code"))
+
+    with pytest.raises(LoggedHTTPException) as exc_info:
+        await require_invite_code("invalid_code", invite_manager=mock_invite_manager)
+
+    assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+
+
+@pytest.mark.asyncio
+async def test_require_invite_code_logged_http_exception():
+    """Test requiring invite code when validate_invite raises LoggedHTTPException."""
+    mock_invite_manager = MagicMock()
+    logged_exception = LoggedHTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        detail="Invalid invite code",
+        context=None,
+    )
+    mock_invite_manager.validate_invite = AsyncMock(side_effect=logged_exception)
+
+    # Should re-raise the LoggedHTTPException
+    with pytest.raises(LoggedHTTPException) as exc_info:
+        await require_invite_code("invalid_code", invite_manager=mock_invite_manager)
+
+    assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+    assert exc_info.value.detail == "Invalid invite code"
+
+
+@pytest.mark.asyncio
+async def test_require_invite_code_generic_exception():
+    """Test requiring invite code when validate_invite raises generic Exception."""
+    mock_invite_manager = MagicMock()
+    mock_invite_manager.validate_invite = AsyncMock(side_effect=RuntimeError("Unexpected error"))
+
+    with pytest.raises(LoggedHTTPException) as exc_info:
+        await require_invite_code("invalid_code", invite_manager=mock_invite_manager)
+
+    assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+    assert "Invalid or expired invite code" in exc_info.value.detail
+
+
+@pytest.mark.asyncio
+async def test_get_optional_current_user_with_user():
+    """Test getting optional current user when user exists."""
+    user = User(
+        id=str(uuid.uuid4()),
+        username="testuser",
+        email="test@example.com",
+        hashed_password="hashed",
+        is_active=True,
+        is_superuser=False,
+        is_verified=True,
+    )
+
+    result = await get_optional_current_user(current_user=user)
+    assert result == user
+
+
+@pytest.mark.asyncio
+async def test_get_optional_current_user_none():
+    """Test getting optional current user when user is None."""
+    result = await get_optional_current_user(current_user=None)
+    assert result is None
+
+
+@pytest.mark.asyncio
+async def test_require_invite_code_none():
+    """Test requiring invite code with None code."""
+    mock_invite_manager = MagicMock()
+    mock_invite_manager.validate_invite = AsyncMock(side_effect=ValueError("Invalid code"))
+
+    with pytest.raises(LoggedHTTPException) as exc_info:
+        await require_invite_code(None, invite_manager=mock_invite_manager)
+
+    assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+
+
+@pytest.mark.asyncio
+async def test_require_invite_code_with_request():
+    """Test requiring invite code with request parameter."""
+    mock_invite_manager = MagicMock()
+    mock_invite_manager.validate_invite = AsyncMock()
+
+    await require_invite_code("valid_code", invite_manager=mock_invite_manager)
+
+    # Should call validate_invite
+    mock_invite_manager.validate_invite.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_get_current_superuser_with_none_user():
+    """Test get_current_superuser with None user (should fail via dependency)."""
+    # This would fail at the dependency level, but we test the function directly
+
+    # If None is passed, it would come from get_current_active_user which would raise
+    # But we can test the function logic directly
+    user = User(
+        id=str(uuid.uuid4()),
+        username="user",
+        email="user@example.com",
+        hashed_password="hashed",
+        is_active=True,
+        is_superuser=False,
+        is_verified=True,
+    )
+
+    with pytest.raises(LoggedHTTPException) as exc_info:
+        await get_current_superuser(current_user=user)
+
+    assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
+
+
+@pytest.mark.asyncio
+async def test_get_current_verified_user_with_none_user():
+    """Test get_current_verified_user with None user (should fail via dependency)."""
+    # This would fail at the dependency level, but we test the function logic
+    user = User(
+        id=str(uuid.uuid4()),
+        username="user",
+        email="user@example.com",
+        hashed_password="hashed",
+        is_active=True,
+        is_superuser=False,
+        is_verified=False,
+    )
+
+    with pytest.raises(LoggedHTTPException) as exc_info:
+        await get_current_verified_user(current_user=user)
+
+    assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN

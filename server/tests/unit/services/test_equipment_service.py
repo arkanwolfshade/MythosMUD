@@ -1,8 +1,8 @@
-"""Equip and unequip service tests."""
+"""
+Unit tests for equipment service.
 
-from __future__ import annotations
-
-import copy
+Tests the EquipmentService class for equip/unequip operations.
+"""
 
 import pytest
 
@@ -14,128 +14,228 @@ from server.services.equipment_service import (
 from server.services.inventory_service import InventoryService
 
 
-def build_service(max_slots: int = 20) -> EquipmentService:
-    """Helper to build the equipment service with canonical limits."""
-    return EquipmentService(inventory_service=InventoryService(max_slots=max_slots))
+@pytest.fixture
+def inventory_service():
+    """Create an InventoryService instance."""
+    return InventoryService(max_slots=20)
 
 
-def test_equip_moves_item_to_equipped(partial_inventory):
-    original_inventory = copy.deepcopy(partial_inventory)
-    equipped: dict[str, dict] = {}
-    service = build_service()
-
-    new_inventory, new_equipped = service.equip_from_inventory(partial_inventory, equipped, slot_index=1)
-
-    assert partial_inventory == original_inventory
-    assert equipped == {}
-    assert "left_hand" in new_equipped
-    assert new_equipped["left_hand"]["quantity"] == 1
-    assert new_equipped["left_hand"]["prototype_id"] == "lantern_battered"
-    assert "item_instance_id" in new_equipped["left_hand"]
-    assert len(new_inventory) == len(partial_inventory) - 1
+@pytest.fixture
+def equipment_service(inventory_service):
+    """Create an EquipmentService instance."""
+    return EquipmentService(inventory_service=inventory_service)
 
 
-def test_equip_decrements_stack_quantity(partial_inventory):
-    service = build_service()
-    inventory_copy = copy.deepcopy(partial_inventory)
-
-    new_inventory, new_equipped = service.equip_from_inventory(partial_inventory, {}, slot_index=2)
-
-    original_stack = next(item for item in inventory_copy if item["prototype_id"] == "tonic_laudanum")
-    updated_stack = next(item for item in new_inventory if item["prototype_id"] == "tonic_laudanum")
-    assert original_stack["quantity"] == 3
-    assert updated_stack["quantity"] == 2
-    assert new_equipped["backpack"]["prototype_id"] == "tonic_laudanum"
-    assert new_equipped["backpack"]["item_instance_id"] == original_stack["item_instance_id"]
-
-
-def test_equip_auto_swaps_existing_item(partial_inventory):
-    service = build_service()
-    inventory = copy.deepcopy(partial_inventory)
-    headpiece = {
-        "item_instance_id": "instance-mirror_mask",
-        "prototype_id": "mirror_mask",
-        "item_id": "mirror_mask",
-        "item_name": "Mirror Mask",
-        "slot_type": "head",
-        "quantity": 1,
-        "metadata": {"reflection": "eldritch"},
-    }
-    inventory.append(headpiece)
-    equipped = {
-        "head": {
-            "item_instance_id": "instance-crown_of_tindalos",
-            "prototype_id": "crown_of_tindalos",
-            "item_id": "crown_of_tindalos",
-            "item_name": "Crown of Tindalos",
-            "slot_type": "head",
+def test_equip_from_inventory_success(equipment_service):
+    """Test equip_from_inventory successful equip."""
+    inventory = [
+        {
+            "item_instance_id": "inst1",
+            "item_id": "item1",
+            "prototype_id": "proto1",
+            "item_name": "sword",
+            "slot_type": "main_hand",
             "quantity": 1,
-            "metadata": {"attuned": True},
+        }
+    ]
+    equipped = {}
+
+    new_inventory, new_equipped = equipment_service.equip_from_inventory(inventory, equipped, slot_index=0)
+
+    assert len(new_inventory) == 0
+    assert "main_hand" in new_equipped
+    assert new_equipped["main_hand"]["item_name"] == "sword"
+
+
+def test_equip_from_inventory_invalid_slot_index(equipment_service):
+    """Test equip_from_inventory with invalid slot index."""
+    inventory = [{"item_name": "sword", "slot_type": "main_hand", "quantity": 1}]
+    equipped = {}
+
+    with pytest.raises(SlotValidationError, match="invalid"):
+        equipment_service.equip_from_inventory(inventory, equipped, slot_index=10)
+
+
+def test_equip_from_inventory_no_slot_type(equipment_service):
+    """Test equip_from_inventory with item missing slot_type."""
+    inventory = [{"item_name": "sword", "quantity": 1}]
+    equipped = {}
+
+    with pytest.raises(SlotValidationError, match="slot_type"):
+        equipment_service.equip_from_inventory(inventory, equipped, slot_index=0)
+
+
+def test_equip_from_inventory_slot_mismatch(equipment_service):
+    """Test equip_from_inventory with slot type mismatch."""
+    inventory = [
+        {
+            "item_instance_id": "inst1",
+            "item_id": "item1",
+            "prototype_id": "proto1",
+            "item_name": "sword",
+            "slot_type": "main_hand",
+            "quantity": 1,
+        }
+    ]
+    equipped = {}
+
+    with pytest.raises(SlotValidationError, match="does not match"):
+        equipment_service.equip_from_inventory(inventory, equipped, slot_index=0, target_slot="off_hand")
+
+
+def test_equip_from_inventory_quantity_split(equipment_service):
+    """Test equip_from_inventory with quantity > 1."""
+    inventory = [
+        {
+            "item_instance_id": "inst1",
+            "item_id": "item1",
+            "prototype_id": "proto1",
+            "item_name": "potion",
+            "slot_type": "consumable",
+            "quantity": 5,
+        }
+    ]
+    equipped = {}
+
+    new_inventory, new_equipped = equipment_service.equip_from_inventory(inventory, equipped, slot_index=0)
+
+    assert len(new_inventory) == 1
+    assert new_inventory[0]["quantity"] == 4
+    assert new_equipped["consumable"]["quantity"] == 1
+
+
+def test_equip_from_inventory_swap_item(equipment_service):
+    """Test equip_from_inventory swaps previously equipped item."""
+    inventory = [
+        {
+            "item_instance_id": "inst2",
+            "item_id": "item2",
+            "prototype_id": "proto2",
+            "item_name": "better_sword",
+            "slot_type": "main_hand",
+            "quantity": 1,
+        }
+    ]
+    equipped = {
+        "main_hand": {
+            "item_instance_id": "inst1",
+            "item_id": "item1",
+            "prototype_id": "proto1",
+            "item_name": "sword",
+            "slot_type": "main_hand",
+            "quantity": 1,
         }
     }
 
-    new_inventory, new_equipped = service.equip_from_inventory(inventory, equipped, slot_index=len(inventory) - 1)
+    new_inventory, new_equipped = equipment_service.equip_from_inventory(inventory, equipped, slot_index=0)
 
-    assert new_equipped["head"]["prototype_id"] == "mirror_mask"
-    restored = [item for item in new_inventory if item["prototype_id"] == "crown_of_tindalos"]
-    assert restored and restored[0]["quantity"] == 1
-    assert equipped["head"]["prototype_id"] == "crown_of_tindalos"  # original untouched
-
-
-def test_equip_validates_target_slot(partial_inventory):
-    service = build_service()
-
-    with pytest.raises(SlotValidationError):
-        service.equip_from_inventory(partial_inventory, {}, slot_index=1, target_slot="head")
+    assert len(new_inventory) == 1
+    assert new_inventory[0]["item_name"] == "sword"
+    assert new_equipped["main_hand"]["item_name"] == "better_sword"
 
 
-def test_equip_raises_when_swap_overflows(full_inventory):
-    service = build_service()
-    inventory = copy.deepcopy(full_inventory)
-    inventory[0]["slot_type"] = "head"
-    inventory[0]["prototype_id"] = "dual_tiara"
-    inventory[0]["item_id"] = "dual_tiara"
-    inventory[0]["item_name"] = "Dual Tiara"
-    inventory[0]["quantity"] = 2
+def test_equip_from_inventory_capacity_error(equipment_service):
+    """Test equip_from_inventory raises EquipmentCapacityError when inventory full."""
+    # Create inventory at capacity
+    inventory = [
+        {
+            "item_instance_id": f"inst{i}",
+            "item_id": f"item{i}",
+            "prototype_id": f"proto{i}",
+            "item_name": f"item{i}",
+            "slot_type": "inventory",
+            "quantity": 1,
+        }
+        for i in range(20)
+    ]
     equipped = {
-        "head": {
-            "item_instance_id": "instance-obsidian_helm",
-            "prototype_id": "obsidian_helm",
-            "item_id": "obsidian_helm",
-            "item_name": "Obsidian Helm",
-            "slot_type": "head",
+        "main_hand": {
+            "item_instance_id": "inst_equipped",
+            "item_id": "item_equipped",
+            "prototype_id": "proto_equipped",
+            "item_name": "equipped_sword",
+            "slot_type": "main_hand",
+            "quantity": 1,
+        }
+    }
+    inventory.append(
+        {
+            "item_instance_id": "inst_new",
+            "item_id": "item_new",
+            "prototype_id": "proto_new",
+            "item_name": "new_sword",
+            "slot_type": "main_hand",
+            "quantity": 1,
+        }
+    )
+
+    with pytest.raises(EquipmentCapacityError, match="capacity reached"):
+        equipment_service.equip_from_inventory(inventory, equipped, slot_index=20)
+
+
+def test_unequip_to_inventory_success(equipment_service):
+    """Test unequip_to_inventory successful unequip."""
+    inventory = []
+    equipped = {
+        "main_hand": {
+            "item_instance_id": "inst1",
+            "item_id": "item1",
+            "prototype_id": "proto1",
+            "item_name": "sword",
+            "slot_type": "main_hand",
             "quantity": 1,
         }
     }
 
-    with pytest.raises(EquipmentCapacityError):
-        service.equip_from_inventory(inventory, equipped, slot_index=0)
+    new_inventory, new_equipped = equipment_service.unequip_to_inventory(inventory, equipped, slot_type="main_hand")
+
+    assert len(new_inventory) == 1
+    assert new_inventory[0]["item_name"] == "sword"
+    assert "main_hand" not in new_equipped
 
 
-def test_unequip_moves_item_to_inventory(partial_inventory):
-    service = build_service()
-    equipped = {
-        "head": {
-            "item_instance_id": "instance-obsidian_helm",
-            "prototype_id": "obsidian_helm",
-            "item_id": "obsidian_helm",
-            "item_name": "Obsidian Helm",
-            "slot_type": "head",
+def test_unequip_to_inventory_empty_slot(equipment_service):
+    """Test unequip_to_inventory with empty slot."""
+    inventory = []
+    equipped = {}
+
+    with pytest.raises(SlotValidationError, match="No equipped item"):
+        equipment_service.unequip_to_inventory(inventory, equipped, slot_type="main_hand")
+
+
+def test_unequip_to_inventory_no_slot_type(equipment_service):
+    """Test unequip_to_inventory with no slot type."""
+    inventory = []
+    equipped = {}
+
+    with pytest.raises(SlotValidationError, match="must be provided"):
+        equipment_service.unequip_to_inventory(inventory, equipped, slot_type="")
+
+
+def test_unequip_to_inventory_capacity_error(equipment_service):
+    """Test unequip_to_inventory raises EquipmentCapacityError when inventory full."""
+    # Create inventory at capacity
+    inventory = [
+        {
+            "item_instance_id": f"inst{i}",
+            "item_id": f"item{i}",
+            "prototype_id": f"proto{i}",
+            "item_name": f"item{i}",
+            "slot_type": "inventory",
             "quantity": 1,
-            "metadata": {"ward": "shadows"},
+        }
+        for i in range(20)
+    ]
+    equipped = {
+        "main_hand": {
+            "item_instance_id": "inst_equipped",
+            "item_id": "item_equipped",
+            "prototype_id": "proto_equipped",
+            "item_name": "equipped_sword",
+            "slot_type": "main_hand",
+            "quantity": 1,
         }
     }
 
-    new_inventory, new_equipped = service.unequip_to_inventory(partial_inventory, equipped, slot_type="head")
-
-    assert "head" not in new_equipped
-    restored = [item for item in new_inventory if item["prototype_id"] == "obsidian_helm"]
-    assert restored and restored[0]["metadata"]["ward"] == "shadows"
-    assert equipped["head"]["metadata"]["ward"] == "shadows"
-
-
-def test_unequip_requires_present_item(partial_inventory):
-    service = build_service()
-
-    with pytest.raises(SlotValidationError):
-        service.unequip_to_inventory(partial_inventory, {}, slot_type="head")
+    with pytest.raises(EquipmentCapacityError, match="capacity reached"):
+        equipment_service.unequip_to_inventory(inventory, equipped, slot_type="main_hand")

@@ -9,7 +9,7 @@ import asyncio
 import uuid
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .player_presence_utils import extract_player_name
 
 logger = get_logger(__name__)

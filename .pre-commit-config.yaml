@@ -14,6 +14,12 @@ repos:
           - types-python-dateutil
           - types-bleach
           - types-click
+          - types-psutil
+          - types-jsonschema
+          - types-psycopg2
+          - types-python-jose
+          - types-networkx
+          - jsonschema
           - pydantic-settings>=2.0.0
           - httpx>=0.28.1
           - pytest-asyncio>=1.2.0
@@ -25,7 +31,13 @@ repos:
           - uvicorn>=0.32.1
           - nats-py>=2.9.0
           - structlog>=25.1.0
-        args: [--config-file=pyproject.toml, --no-incremental]
+          - networkx
+          - ftfy
+          - python-statemachine
+          - prometheus-client
+          - psutil
+          - psycopg2-binary
+        args: [--config-file=pyproject.toml, --no-incremental, --show-error-codes, --pretty]
         # Align exclude patterns with pyproject.toml
         # --no-incremental: Disable incremental mode to avoid SQLite cache locking issues in pre-commit hooks
         # Exclude persistence/__init__.py to avoid duplicate module conflict with persistence.py
@@ -35,7 +47,9 @@ repos:
     rev: v6.0.0
     hooks:
       - id: end-of-file-fixer
+        exclude: '\.codacy/'
       - id: trailing-whitespace
+        exclude: '\.codacy/'
       - id: check-json
       - id: check-yaml
       - id: check-added-large-files

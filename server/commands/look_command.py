@@ -8,7 +8,7 @@ This is the main entry point that routes to specialized handlers.
 from typing import Any
 
 from ..alias_storage import AliasStorage
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
 from ..utils.room_renderer import clone_room_drops
 from .look_container import _handle_container_look, _try_lookup_container_implicit

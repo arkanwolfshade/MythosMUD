@@ -9,9 +9,9 @@ import uuid
 from collections.abc import Callable
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
 from ..realtime.envelope import build_event
 from ..services.nats_exceptions import NATSError
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger("communications.event_handlers")
 

@@ -10,8 +10,8 @@ import random
 import time
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
 from ..models import AttributeType, Stats
+from ..structured_logging.enhanced_logging_config import get_logger
 
 
 def generate_random_stats(seed: int | None = None) -> Stats:
@@ -303,8 +303,8 @@ class StatsGenerator:
         self,
         method: str = "3d6",
         profession_id: int = 0,
-        timeout_seconds: float = 1.0,
-        max_attempts: int = 10,
+        timeout_seconds: float = 5.0,  # Increased from 1.0 to allow more time for automatic rerolls
+        max_attempts: int = 50,  # Increased from 10 to improve success rate for profession requirements
         profession: Any | None = None,
     ) -> tuple[Stats, bool]:
         """
@@ -431,15 +431,37 @@ class StatsGenerator:
             bool: True if all requirements are met
         """
         logger.debug("DEBUG: Checking requirements against stats", requirements=requirements, stats=stats.model_dump())
+
+        # STAT NAME MAPPING: Map legacy/alternative stat names to actual Stats model attributes
+        # In Call of Cthulhu, "wisdom" is typically represented by "power" (willpower)
+        STAT_NAME_MAP = {
+            "wisdom": "power",  # Wisdom maps to power (willpower) in CoC
+        }
+
         for stat_name, min_value in requirements.items():
-            stat_value = getattr(stats, stat_name, None)
-            logger.debug("DEBUG: Checking stat", stat_name=stat_name, stat_value=stat_value, min_value=min_value)
+            # Map stat name if needed
+            mapped_stat_name = STAT_NAME_MAP.get(stat_name, stat_name)
+            stat_value = getattr(stats, mapped_stat_name, None)
+
+            logger.debug(
+                "DEBUG: Checking stat",
+                stat_name=stat_name,
+                mapped_stat_name=mapped_stat_name,
+                stat_value=stat_value,
+                min_value=min_value,
+            )
             if stat_value is None:
-                logger.warning("Unknown stat name in requirements", stat_name=stat_name)
+                logger.warning(
+                    "Unknown stat name in requirements", stat_name=stat_name, mapped_stat_name=mapped_stat_name
+                )
                 return False
             if stat_value < min_value:
                 logger.debug(
-                    "DEBUG: Requirement failed", stat_name=stat_name, stat_value=stat_value, min_value=min_value
+                    "DEBUG: Requirement failed",
+                    stat_name=stat_name,
+                    mapped_stat_name=mapped_stat_name,
+                    stat_value=stat_value,
+                    min_value=min_value,
                 )
                 return False
         logger.debug("DEBUG: All requirements met")

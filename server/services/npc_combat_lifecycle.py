@@ -10,7 +10,7 @@ from typing import Any
 
 from sqlalchemy.exc import SQLAlchemyError
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

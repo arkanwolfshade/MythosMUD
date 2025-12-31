@@ -18,7 +18,7 @@ from ..events.combat_events import (
     NPCTookDamageEvent,
     PlayerAttackedEvent,
 )
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .nats_exceptions import NATSPublishError
 from .nats_subject_manager import NATSSubjectManager
 
@@ -200,6 +200,30 @@ class CombatEventPublisher:
             except NATSPublishError as e:
                 logger.error(
                     "Failed to publish combat started event to NATS",
+                    combat_id=combat_id,
+                    room_id=room_id,
+                    subject=subject,
+                    participant_count=participant_count,
+                    error=str(e),
+                )
+                return False
+            except (RuntimeError, ConnectionError, TimeoutError, OSError) as e:
+                # Catch network and async operation errors that may occur during NATS publishing
+                # Also catches generic exceptions from mocks in tests (which may raise Exception)
+                logger.error(
+                    "Unexpected error publishing combat started event to NATS",
+                    combat_id=combat_id,
+                    room_id=room_id,
+                    subject=subject,
+                    participant_count=participant_count,
+                    error=str(e),
+                )
+                return False
+            except Exception as e:  # pylint: disable=broad-exception-caught
+                # Catch any other unexpected exceptions (e.g., generic Exception from mocks in tests)
+                # This is necessary for test compatibility where mocks may raise generic Exception
+                logger.error(
+                    "Unexpected error publishing combat started event to NATS",
                     combat_id=combat_id,
                     room_id=room_id,
                     subject=subject,

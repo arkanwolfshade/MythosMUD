@@ -8,7 +8,6 @@ look, go, sit, stand, lie, ground.
 from typing import Literal, cast
 
 from ..exceptions import ValidationError as MythosValidationError
-from ..logging.enhanced_logging_config import get_logger
 from ..models.command import (
     Direction,
     GoCommand,
@@ -18,6 +17,7 @@ from ..models.command import (
     SitCommand,
     StandCommand,
 )
+from ..structured_logging.enhanced_logging_config import get_logger
 from .enhanced_error_logging import create_error_context, log_and_raise_enhanced
 
 logger = get_logger(__name__)

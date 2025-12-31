@@ -11,13 +11,14 @@ from datetime import UTC, datetime
 from typing import Any, cast
 
 from sqlalchemy import Select, select
+from sqlalchemy.exc import DatabaseError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..async_persistence import AsyncPersistenceLayer
-from ..logging.enhanced_logging_config import get_logger
 from ..models.lucidity import PlayerLucidity
 from ..models.player import Player
 from ..services.lucidity_service import CatatoniaObserverProtocol, LucidityService, LucidityUpdateResult
+from ..structured_logging.enhanced_logging_config import get_logger
 
 try:
     from server.monitoring.performance_monitor import PerformanceMonitor
@@ -157,7 +158,7 @@ class PassiveLucidityFluxService:
             # causing 17-second delays (1,639% overhead).
             room_cache: dict[str, Any] = {}
             if self._persistence is not None:
-                unique_room_ids = {cast(str, player.current_room_id) for player in players}
+                unique_room_ids = {player.current_room_id for player in players}
                 for room_id in unique_room_ids:
                     # Use cached method which checks TTL cache first,
                     # then fetches asynchronously if needed
@@ -172,7 +173,7 @@ class PassiveLucidityFluxService:
                 player_id_value = player.player_id
                 player_id_uuid = uuid.UUID(str(player_id_value))
                 player_id_str = str(player_id_uuid)
-                room_id = cast(str, player.current_room_id)
+                room_id = player.current_room_id
 
                 processed_player_ids.add(player_id_str)
                 context = await self._resolve_context_async(player, timestamp, room_cache.get(room_id))
@@ -285,7 +286,7 @@ class PassiveLucidityFluxService:
                     # Update cache
                     self._room_cache[room_id] = CachedRoom(room=room, timestamp=current_time)
                 return room
-            except Exception as exc:  # pragma: no cover - defensive logging
+            except (DatabaseError, SQLAlchemyError) as exc:  # pragma: no cover - defensive logging
                 logger.warning(
                     "Failed to fetch room for caching",
                     room_id=room_id,
@@ -363,7 +364,7 @@ class PassiveLucidityFluxService:
             is_recently_created = False
             if hasattr(player, "created_at") and player.created_at is not None:
                 # Cast: SQLAlchemy Column returns datetime at runtime, but mypy sees Column type
-                created_at: datetime = cast(datetime, player.created_at)
+                created_at: datetime = player.created_at
                 # Ensure created_at is timezone-aware for comparison
                 if created_at.tzinfo is None:
                     created_at = created_at.replace(tzinfo=UTC)
@@ -436,7 +437,7 @@ class PassiveLucidityFluxService:
         if self._persistence is not None:
             try:
                 room = self._persistence.get_room_by_id(str(player.current_room_id))
-            except Exception as exc:  # pragma: no cover - defensive logging
+            except (DatabaseError, SQLAlchemyError) as exc:  # pragma: no cover - defensive logging
                 logger.warning(
                     "Failed to resolve room for passive flux",
                     player_id=player.player_id,
@@ -510,7 +511,7 @@ class PassiveLucidityFluxService:
         has_destabilizing_companion = False
 
         for companion in companions:
-            record = lucidity_records.get(cast(str, companion.player_id))
+            record = lucidity_records.get(companion.player_id)
             tier = record.current_tier if record else "lucid"
 
             if tier in {"lucid", "uneasy"}:

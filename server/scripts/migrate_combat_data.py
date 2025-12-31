@@ -11,7 +11,6 @@ from typing import Any
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from server.logging.enhanced_logging_config import get_logger
 from server.models.npc import NPCDefinition
 from server.npc_database import get_npc_session
 from server.schemas.combat_schema import (
@@ -19,6 +18,7 @@ from server.schemas.combat_schema import (
     add_default_combat_data_to_stats,
     validate_npc_combat_data,
 )
+from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

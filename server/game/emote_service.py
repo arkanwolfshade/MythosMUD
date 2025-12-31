@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING, Any, Optional
 import asyncpg
 
 from ..exceptions import ValidationError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import create_error_context, log_and_raise
 
 logger = get_logger(__name__)

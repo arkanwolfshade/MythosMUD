@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from ..config import get_config
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

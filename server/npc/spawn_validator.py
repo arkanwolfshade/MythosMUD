@@ -10,7 +10,7 @@ from typing import Any
 
 from server.models.npc import NPCDefinition, NPCSpawnRule
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .zone_configuration import ZoneConfiguration
 
 logger = get_logger(__name__)

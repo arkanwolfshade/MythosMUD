@@ -13,7 +13,7 @@ import psycopg2
 from psycopg2.extras import RealDictCursor, register_uuid
 from psycopg2.pool import ThreadedConnectionPool
 
-from .logging.enhanced_logging_config import get_logger
+from .structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

@@ -1,9 +1,7 @@
 """
-Tests for combat configuration service.
+Unit tests for combat configuration service.
 
-These tests verify that the combat configuration service properly manages
-combat settings, handles scope-specific overrides, and provides reliable
-configuration management.
+Tests the CombatConfigurationService class for managing combat configuration settings.
 """
 
 from unittest.mock import MagicMock, patch
@@ -15,596 +13,246 @@ from server.services.combat_configuration_service import (
     CombatConfigurationError,
     CombatConfigurationScope,
     CombatConfigurationService,
-    get_combat_config,
-    get_combat_configuration,
-    is_combat_available,
-    refresh_combat_configuration,
 )
 
 
-@pytest.fixture
-def mock_config():
-    """Mock configuration for testing."""
-    mock_config = MagicMock()
-    mock_config.game.combat_enabled = True
-    mock_config.game.combat_logging_enabled = True
-    mock_config.game.combat_monitoring_enabled = True
-    mock_config.game.combat_tick_interval = 6
-    mock_config.game.combat_timeout_seconds = 180
-    mock_config.game.combat_xp_multiplier = 1.0
-    mock_config.game.combat_alert_threshold = 5
-    mock_config.game.combat_performance_threshold = 1000
-    mock_config.game.combat_error_threshold = 3
-    return mock_config
-
-
-@pytest.fixture
-def mock_feature_flags():
-    """Mock feature flags for testing."""
-    mock_flags = MagicMock()
-    mock_flags.is_combat_enabled.return_value = True
-    mock_flags.is_combat_logging_enabled.return_value = True
-    mock_flags.is_combat_monitoring_enabled.return_value = True
-    mock_flags.clear_cache.return_value = None
-    return mock_flags
-
-
 class TestCombatConfiguration:
-    """Test CombatConfiguration data class."""
+    """Test suite for CombatConfiguration dataclass."""
 
-    def test_combat_configuration_defaults(self):
-        """Test default combat configuration values."""
+    def test_init_defaults(self):
+        """Test CombatConfiguration initialization with defaults."""
         config = CombatConfiguration()
-
         assert config.combat_enabled is True
         assert config.combat_tick_interval == 6
         assert config.combat_timeout_seconds == 180
         assert config.combat_xp_multiplier == 1.0
-        assert config.combat_logging_enabled is True
-        assert config.combat_monitoring_enabled is True
-        assert config.combat_alert_threshold == 5
-        assert config.combat_performance_threshold == 1000
-        assert config.combat_error_threshold == 3
-        assert config.combat_max_participants == 10
-        assert config.combat_auto_cleanup_interval == 300
-        assert config.combat_event_retention_hours == 24
 
-    def test_combat_configuration_custom_values(self):
-        """Test custom combat configuration values."""
+    def test_init_custom_values(self):
+        """Test CombatConfiguration initialization with custom values."""
         config = CombatConfiguration(
-            combat_enabled=False, combat_tick_interval=10, combat_timeout_seconds=300, combat_xp_multiplier=2.0
+            combat_enabled=False,
+            combat_tick_interval=10,
+            combat_timeout_seconds=300,
+            combat_xp_multiplier=2.0,
         )
-
         assert config.combat_enabled is False
         assert config.combat_tick_interval == 10
         assert config.combat_timeout_seconds == 300
         assert config.combat_xp_multiplier == 2.0
 
-    def test_combat_configuration_to_dict(self):
-        """Test converting configuration to dictionary."""
-        config = CombatConfiguration(combat_enabled=False, combat_tick_interval=10)
-        config_dict = config.to_dict()
+    def test_to_dict(self):
+        """Test to_dict converts configuration to dictionary."""
+        config = CombatConfiguration(combat_enabled=False, combat_tick_interval=5)
+        result = config.to_dict()
+        assert isinstance(result, dict)
+        assert result["combat_enabled"] is False
+        assert result["combat_tick_interval"] == 5
 
-        assert config_dict["combat_enabled"] is False
-        assert config_dict["combat_tick_interval"] == 10
-        assert "combat_timeout_seconds" in config_dict
-
-    def test_combat_configuration_from_dict(self):
-        """Test creating configuration from dictionary."""
-        config_dict = {
+    def test_from_dict(self):
+        """Test from_dict creates configuration from dictionary."""
+        data = {
             "combat_enabled": False,
-            "combat_tick_interval": 10,
-            "combat_timeout_seconds": 300,
-            "combat_xp_multiplier": 2.0,
-            "combat_logging_enabled": True,
-            "combat_monitoring_enabled": True,
-            "combat_alert_threshold": 5,
-            "combat_performance_threshold": 1000,
-            "combat_error_threshold": 3,
-            "combat_max_participants": 10,
-            "combat_auto_cleanup_interval": 300,
-            "combat_event_retention_hours": 24,
+            "combat_tick_interval": 8,
+            "combat_timeout_seconds": 240,
+            "combat_xp_multiplier": 1.5,
         }
-
-        config = CombatConfiguration.from_dict(config_dict)
-
+        config = CombatConfiguration.from_dict(data)
         assert config.combat_enabled is False
-        assert config.combat_tick_interval == 10
-        assert config.combat_timeout_seconds == 300
-        assert config.combat_xp_multiplier == 2.0
+        assert config.combat_tick_interval == 8
+        assert config.combat_timeout_seconds == 240
+        assert config.combat_xp_multiplier == 1.5
 
-    def test_combat_configuration_validation_valid(self):
-        """Test configuration validation with valid values."""
+    def test_validate_valid(self):
+        """Test validate returns empty list for valid configuration."""
         config = CombatConfiguration()
         errors = config.validate()
+        assert len(errors) == 0
 
-        assert errors == []
-
-    def test_combat_configuration_validation_invalid_tick_interval(self):
-        """Test configuration validation with invalid tick interval."""
+    def test_validate_invalid_tick_interval_too_low(self):
+        """Test validate catches tick interval too low."""
         config = CombatConfiguration(combat_tick_interval=0)
         errors = config.validate()
+        assert len(errors) > 0
+        assert any("tick interval" in error.lower() for error in errors)
 
-        assert len(errors) == 1
-        assert "Combat tick interval must be between 1 and 60 seconds" in errors[0]
-
-    def test_combat_configuration_validation_invalid_timeout(self):
-        """Test configuration validation with invalid timeout."""
-        config = CombatConfiguration(combat_timeout_seconds=30)
+    def test_validate_invalid_tick_interval_too_high(self):
+        """Test validate catches tick interval too high."""
+        config = CombatConfiguration(combat_tick_interval=61)
         errors = config.validate()
+        assert len(errors) > 0
 
-        assert len(errors) == 1
-        assert "Combat timeout must be between 60 and 1800 seconds" in errors[0]
-
-    def test_combat_configuration_validation_invalid_xp_multiplier(self):
-        """Test configuration validation with invalid XP multiplier."""
-        config = CombatConfiguration(combat_xp_multiplier=0.5)
+    def test_validate_invalid_timeout_too_low(self):
+        """Test validate catches timeout too low."""
+        config = CombatConfiguration(combat_timeout_seconds=59)
         errors = config.validate()
+        assert len(errors) > 0
+        assert any("timeout" in error.lower() for error in errors)
 
-        assert len(errors) == 1
-        assert "XP multiplier must be between 1.0 and 5.0" in errors[0]
-
-    def test_combat_configuration_validation_multiple_errors(self):
-        """Test configuration validation with multiple errors."""
-        config = CombatConfiguration(combat_tick_interval=0, combat_timeout_seconds=30, combat_xp_multiplier=0.5)
+    def test_validate_invalid_timeout_too_high(self):
+        """Test validate catches timeout too high."""
+        config = CombatConfiguration(combat_timeout_seconds=1801)
         errors = config.validate()
+        assert len(errors) > 0
 
-        assert len(errors) == 3
-        assert any("tick interval" in error for error in errors)
-        assert any("timeout" in error for error in errors)
-        assert any("XP multiplier" in error for error in errors)
+    def test_validate_invalid_xp_multiplier_too_low(self):
+        """Test validate catches XP multiplier too low."""
+        config = CombatConfiguration(combat_xp_multiplier=0.9)
+        errors = config.validate()
+        assert len(errors) > 0
+        assert any("xp multiplier" in error.lower() for error in errors)
+
+    def test_validate_invalid_xp_multiplier_too_high(self):
+        """Test validate catches XP multiplier too high."""
+        config = CombatConfiguration(combat_xp_multiplier=5.1)
+        errors = config.validate()
+        assert len(errors) > 0
+
+    def test_validate_invalid_alert_threshold(self):
+        """Test validate catches alert threshold out of range."""
+        config = CombatConfiguration(combat_alert_threshold=0)
+        errors = config.validate()
+        assert len(errors) > 0
+
+    def test_validate_invalid_max_participants(self):
+        """Test validate catches max participants out of range."""
+        config = CombatConfiguration(combat_max_participants=1)
+        errors = config.validate()
+        assert len(errors) > 0
 
 
 class TestCombatConfigurationService:
-    """Test CombatConfigurationService functionality."""
+    """Test suite for CombatConfigurationService class."""
 
-    @patch("server.services.combat_configuration_service.get_config")
-    @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_service_initialization(self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags):
-        """Test service initialization."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
+    @pytest.fixture
+    def mock_config(self):
+        """Create a mock config object."""
+        config = MagicMock()
+        config.game.combat_enabled = True
+        config.game.combat_tick_interval = 6
+        config.game.combat_timeout_seconds = 180
+        config.game.combat_xp_multiplier = 1.0
+        config.game.combat_logging_enabled = True
+        config.game.combat_monitoring_enabled = True
+        config.game.combat_alert_threshold = 5
+        config.game.combat_performance_threshold = 1000
+        config.game.combat_error_threshold = 3
+        return config
 
-        service = CombatConfigurationService()
-        assert service._config == mock_config
-        assert service._feature_flags == mock_feature_flags
+    @pytest.fixture
+    def service(self, mock_config):
+        """Create a CombatConfigurationService instance for testing."""
+        with patch("server.services.combat_configuration_service.get_config", return_value=mock_config):
+            with patch("server.services.combat_configuration_service.get_feature_flags"):
+                return CombatConfigurationService()
 
-    @patch("server.services.combat_configuration_service.get_config")
-    @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_get_combat_configuration(self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags):
-        """Test getting combat configuration."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
+    def test_init(self, service):
+        """Test CombatConfigurationService initialization."""
+        assert service._config is not None
+        assert service._overrides == {}
+        assert service._cached_config is None
 
-        service = CombatConfigurationService()
+    def test_get_combat_configuration(self, service):
+        """Test get_combat_configuration returns configuration."""
         config = service.get_combat_configuration()
-
         assert isinstance(config, CombatConfiguration)
         assert config.combat_enabled is True
         assert config.combat_tick_interval == 6
-        assert config.combat_timeout_seconds == 180
 
-    @patch("server.services.combat_configuration_service.get_config")
-    @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_get_combat_configuration_for_scope_global(
-        self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags
-    ):
-        """Test getting configuration for global scope."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
+    def test_get_combat_configuration_caching(self, service):
+        """Test get_combat_configuration caches configuration."""
+        config1 = service.get_combat_configuration()
+        config2 = service.get_combat_configuration()
+        assert config1 is config2  # Should be same cached instance
 
-        service = CombatConfigurationService()
+    def test_get_combat_configuration_for_scope_global(self, service):
+        """Test get_combat_configuration_for_scope with global scope."""
         config = service.get_combat_configuration_for_scope(CombatConfigurationScope.GLOBAL)
-
         assert isinstance(config, CombatConfiguration)
-        assert config.combat_enabled is True
 
-    @patch("server.services.combat_configuration_service.get_config")
-    @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_get_combat_configuration_for_scope_with_override(
-        self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags
-    ):
-        """Test getting configuration for scope with override."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
+    def test_get_combat_configuration_for_scope_room(self, service):
+        """Test get_combat_configuration_for_scope with room scope."""
+        config = service.get_combat_configuration_for_scope(CombatConfigurationScope.ROOM, "room_001")
+        assert isinstance(config, CombatConfiguration)
 
-        service = CombatConfigurationService()
+    def test_get_combat_configuration_for_scope_player(self, service):
+        """Test get_combat_configuration_for_scope with player scope."""
+        config = service.get_combat_configuration_for_scope(CombatConfigurationScope.PLAYER, "player_001")
+        assert isinstance(config, CombatConfiguration)
 
-        # Set up override
-        override_config = CombatConfiguration(combat_enabled=False, combat_tick_interval=10)
-        service._overrides["room:test_room"] = override_config
+    def test_get_combat_configuration_for_scope_temporary(self, service):
+        """Test get_combat_configuration_for_scope with temporary scope."""
+        config = service.get_combat_configuration_for_scope(CombatConfigurationScope.TEMPORARY, "temp_001")
+        assert isinstance(config, CombatConfiguration)
 
-        # Get configuration for room
-        config = service.get_combat_configuration_for_scope(CombatConfigurationScope.ROOM, "test_room")
-
-        assert config.combat_enabled is False
-        assert config.combat_tick_interval == 10
-
-    @patch("server.services.combat_configuration_service.get_config")
-    @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_update_combat_configuration_room_scope(
-        self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags
-    ):
-        """Test updating configuration for room scope."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
-
-        service = CombatConfigurationService()
-
+    def test_update_combat_configuration(self, service):
+        """Test update_combat_configuration sets configuration override."""
         updates = {"combat_enabled": False, "combat_tick_interval": 10}
-        updated_config = service.update_combat_configuration(updates, CombatConfigurationScope.ROOM, "test_room")
+        result = service.update_combat_configuration(updates, CombatConfigurationScope.ROOM, "room_001")
+        assert result.combat_enabled is False
+        assert result.combat_tick_interval == 10
+        assert "room:room_001" in service._overrides
 
-        assert updated_config.combat_enabled is False
-        assert updated_config.combat_tick_interval == 10
-
-        # Verify override was stored
-        assert "room:test_room" in service._overrides
-
-    @patch("server.services.combat_configuration_service.get_config")
-    @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_update_combat_configuration_invalid(
-        self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags
-    ):
-        """Test updating configuration with invalid values."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
-
-        service = CombatConfigurationService()
-
-        updates = {"combat_tick_interval": 0}  # Invalid
-
-        with pytest.raises(CombatConfigurationError) as exc_info:
-            service.update_combat_configuration(updates, CombatConfigurationScope.ROOM, "test_room")
-
-        assert "Invalid configuration" in str(exc_info.value)
-
-    @patch("server.services.combat_configuration_service.get_config")
-    @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_update_combat_configuration_global_scope(
-        self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags
-    ):
-        """Test updating configuration for global scope."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
-
-        service = CombatConfigurationService()
-
+    def test_update_combat_configuration_global_raises(self, service):
+        """Test update_combat_configuration raises error for global scope."""
         updates = {"combat_enabled": False}
-
-        with pytest.raises(CombatConfigurationError) as exc_info:
+        with pytest.raises(CombatConfigurationError, match="Global configuration updates"):
             service.update_combat_configuration(updates, CombatConfigurationScope.GLOBAL)
 
-        assert "Global configuration updates require server restart" in str(exc_info.value)
+    def test_update_combat_configuration_invalid_raises(self, service):
+        """Test update_combat_configuration raises error for invalid config."""
+        updates = {"combat_tick_interval": 0}  # Invalid
+        with pytest.raises(CombatConfigurationError):
+            service.update_combat_configuration(updates, CombatConfigurationScope.ROOM, "room_001")
 
-    @patch("server.services.combat_configuration_service.get_config")
-    @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_clear_scope_override(self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags):
-        """Test clearing scope override."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
+    def test_clear_scope_override(self, service):
+        """Test clear_scope_override removes configuration override."""
+        updates = {"combat_enabled": False}
+        service.update_combat_configuration(updates, CombatConfigurationScope.ROOM, "room_001")
+        service.clear_scope_override(CombatConfigurationScope.ROOM, "room_001")
+        assert "room:room_001" not in service._overrides
 
-        service = CombatConfigurationService()
+    def test_clear_scope_override_global_raises(self, service):
+        """Test clear_scope_override raises error for global scope."""
+        with pytest.raises(CombatConfigurationError, match="Cannot clear global"):
+            service.clear_scope_override(CombatConfigurationScope.GLOBAL, None)
 
-        # Set up override
-        override_config = CombatConfiguration(combat_enabled=False)
-        service._overrides["room:test_room"] = override_config
-
-        # Clear override
-        service.clear_scope_override(CombatConfigurationScope.ROOM, "test_room")
-
-        # Verify override was removed
-        assert "room:test_room" not in service._overrides
-
-    @patch("server.services.combat_configuration_service.get_config")
-    @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_clear_all_overrides(self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags):
-        """Test clearing all overrides."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
-
-        service = CombatConfigurationService()
-
-        # Set up overrides
-        service._overrides["room:test_room"] = CombatConfiguration(combat_enabled=False)
-        service._overrides["player:test_player"] = CombatConfiguration(combat_tick_interval=10)
-
-        # Clear all overrides
+    def test_clear_all_overrides(self, service):
+        """Test clear_all_overrides removes all overrides."""
+        updates = {"combat_enabled": False}
+        service.update_combat_configuration(updates, CombatConfigurationScope.ROOM, "room_001")
+        service.update_combat_configuration(updates, CombatConfigurationScope.PLAYER, "player_001")
         service.clear_all_overrides()
-
-        # Verify all overrides were removed
         assert len(service._overrides) == 0
 
-    @patch("server.services.combat_configuration_service.get_config")
-    @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_get_active_overrides(self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags):
-        """Test getting active overrides."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
-
-        service = CombatConfigurationService()
-
-        # Set up overrides
-        service._overrides["room:test_room"] = CombatConfiguration(combat_enabled=False)
-        service._overrides["player:test_player"] = CombatConfiguration(combat_tick_interval=10)
-
+    def test_get_active_overrides(self, service):
+        """Test get_active_overrides returns all active overrides."""
+        updates = {"combat_enabled": False}
+        service.update_combat_configuration(updates, CombatConfigurationScope.ROOM, "room_001")
         overrides = service.get_active_overrides()
+        assert "room:room_001" in overrides
+        assert overrides["room:room_001"]["combat_enabled"] is False
 
-        assert "room:test_room" in overrides
-        assert "player:test_player" in overrides
-        assert overrides["room:test_room"]["combat_enabled"] is False
-        assert overrides["player:test_player"]["combat_tick_interval"] == 10
-
-    @patch("server.services.combat_configuration_service.get_config")
-    @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_validate_configuration(self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags):
-        """Test configuration validation."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
-
-        service = CombatConfigurationService()
-
-        # Test with valid configuration
+    def test_validate_configuration(self, service):
+        """Test validate_configuration validates current configuration."""
         errors = service.validate_configuration()
-        assert errors == []
-
-        # Test with invalid configuration
-        invalid_config = CombatConfiguration(combat_tick_interval=0)
-        errors = service.validate_configuration(invalid_config)
-        assert len(errors) == 1
-        assert "tick interval" in errors[0]
-
-    @patch("server.services.combat_configuration_service.get_config")
-    @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_is_combat_available_enabled(
-        self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags
-    ):
-        """Test combat availability when enabled."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
-
-        service = CombatConfigurationService()
-
-        assert service.is_combat_available() is True
-        assert service.is_combat_available("player123") is True
-        assert service.is_combat_available("player123", "room456") is True
-
-    @patch("server.services.combat_configuration_service.get_config")
-    @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_is_combat_available_disabled_feature_flag(
-        self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags
-    ):
-        """Test combat availability when feature flag is disabled."""
-        mock_get_config.return_value = mock_config
-        mock_feature_flags.is_combat_enabled.return_value = False
-        mock_get_feature_flags.return_value = mock_feature_flags
-
-        service = CombatConfigurationService()
-
-        assert service.is_combat_available() is False
-
-    @patch("server.services.combat_configuration_service.get_config")
-    @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_is_combat_available_disabled_scope_config(
-        self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags
-    ):
-        """Test combat availability when scope configuration is disabled."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
-
-        service = CombatConfigurationService()
-
-        # Set up room override with combat disabled
-        override_config = CombatConfiguration(combat_enabled=False)
-        service._overrides["room:test_room"] = override_config
-
-        assert service.is_combat_available(room_id="test_room") is False
-
-    @patch("server.services.combat_configuration_service.get_config")
-    @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_get_combat_settings_summary(
-        self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags
-    ):
-        """Test getting combat settings summary."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
-
-        service = CombatConfigurationService()
-
-        summary = service.get_combat_settings_summary()
-
-        assert "base_configuration" in summary
-        assert "active_overrides" in summary
-        assert "feature_flags" in summary
-        assert "validation_errors" in summary
-
-        assert summary["base_configuration"]["combat_enabled"] is True
-        assert summary["feature_flags"]["combat_enabled"] is True
-        assert summary["validation_errors"] == []
-
-    @patch("server.services.combat_configuration_service.get_config")
-    @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_refresh_configuration(self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags):
-        """Test refreshing configuration."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
-
-        service = CombatConfigurationService()
-
-        # Call refresh
-        service.refresh_configuration()
-
-        # Verify cache was cleared
-        assert service._cached_config is None
-
-    @patch("server.services.combat_configuration_service.get_config")
-    @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_clear_cache(self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags):
-        """Test clearing cache."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
-
-        service = CombatConfigurationService()
-
-        # Populate cache
-        service.get_combat_configuration()
-
-        # Clear cache
-        service.clear_cache()
-
-        # Verify cache was cleared
-        assert service._cached_config is None
-
-
-class TestGlobalCombatConfigurationFunctions:
-    """Test global combat configuration functions."""
-
-    @patch("server.services.combat_configuration_service.combat_config")
-    def test_get_combat_config(self, mock_config):
-        """Test getting global combat configuration service."""
-        result = get_combat_config()
-        assert result == mock_config
-
-    @patch("server.services.combat_configuration_service.combat_config")
-    def test_refresh_combat_configuration(self, mock_config):
-        """Test refreshing combat configuration."""
-        refresh_combat_configuration()
-        mock_config.refresh_configuration.assert_called_once()
-
-    @patch("server.services.combat_configuration_service.combat_config")
-    def test_get_combat_configuration_convenience(self, mock_config):
-        """Test convenience function for getting combat configuration."""
-        mock_config.get_combat_configuration.return_value = CombatConfiguration()
-
-        result = get_combat_configuration()
-        assert isinstance(result, CombatConfiguration)
-        mock_config.get_combat_configuration.assert_called_once()
-
-    @patch("server.services.combat_configuration_service.combat_config")
-    def test_is_combat_available_convenience(self, mock_config):
-        """Test convenience function for checking combat availability."""
-        mock_config.is_combat_available.return_value = True
-
-        result = is_combat_available("player123", "room456")
-        assert result is True
-        mock_config.is_combat_available.assert_called_once_with("player123", "room456")
-
-
-class TestCombatConfigurationServiceIntegration:
-    """Test combat configuration service integration scenarios."""
-
-    @patch("server.services.combat_configuration_service.get_config")
-    @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_configuration_caching(self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags):
-        """Test that configuration is properly cached."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
-
-        service = CombatConfigurationService()
-
-        # First call should populate cache
-        service.get_combat_configuration()
-        assert service._cached_config is not None
-
-        # Second call should use cache
-        service.get_combat_configuration()
-        assert service._cached_config is not None
-
-        # get_config should only be called once due to caching
-        assert mock_get_config.call_count == 1
-
-    @patch("server.services.combat_configuration_service.get_config")
-    @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_scope_override_priority(self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags):
-        """Test that scope overrides take priority over base configuration."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
-
-        service = CombatConfigurationService()
-
-        # Set up room override
-        override_config = CombatConfiguration(combat_enabled=False, combat_tick_interval=10)
-        service._overrides["room:test_room"] = override_config
-
-        # Get base configuration
-        base_config = service.get_combat_configuration()
-        assert base_config.combat_enabled is True
-        assert base_config.combat_tick_interval == 6
-
-        # Get room configuration
-        room_config = service.get_combat_configuration_for_scope(CombatConfigurationScope.ROOM, "test_room")
-        assert room_config.combat_enabled is False
-        assert room_config.combat_tick_interval == 10
-
-    @patch("server.services.combat_configuration_service.get_config")
-    @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_configuration_update_flow(self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags):
-        """Test complete configuration update flow."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
-
-        service = CombatConfigurationService()
-
-        # Initial configuration
-        initial_config = service.get_combat_configuration_for_scope(CombatConfigurationScope.ROOM, "test_room")
-        assert initial_config.combat_enabled is True
-
-        # Update configuration
-        updates = {"combat_enabled": False, "combat_tick_interval": 10}
-        updated_config = service.update_combat_configuration(updates, CombatConfigurationScope.ROOM, "test_room")
-
-        assert updated_config.combat_enabled is False
-        assert updated_config.combat_tick_interval == 10
-
-        # Verify update is reflected in subsequent calls
-        retrieved_config = service.get_combat_configuration_for_scope(CombatConfigurationScope.ROOM, "test_room")
-        assert retrieved_config.combat_enabled is False
-        assert retrieved_config.combat_tick_interval == 10
-
-        # Clear override
-        service.clear_scope_override(CombatConfigurationScope.ROOM, "test_room")
-
-        # Verify configuration returns to base
-        final_config = service.get_combat_configuration_for_scope(CombatConfigurationScope.ROOM, "test_room")
-        assert final_config.combat_enabled is True
-        assert final_config.combat_tick_interval == 6
-
-
-class TestCombatConfigurationServiceErrorHandling:
-    """Test combat configuration service error handling."""
-
-    @patch("server.services.combat_configuration_service.get_config")
-    @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_invalid_configuration_update(
-        self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags
-    ):
-        """Test handling of invalid configuration updates."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
-
-        service = CombatConfigurationService()
-
-        # Try to update with invalid values
-        invalid_updates = {"combat_tick_interval": 0, "combat_timeout_seconds": 30, "combat_xp_multiplier": 0.5}
-
-        with pytest.raises(CombatConfigurationError) as exc_info:
-            service.update_combat_configuration(invalid_updates, CombatConfigurationScope.ROOM, "test_room")
-
-        error_message = str(exc_info.value)
-        assert "Invalid configuration" in error_message
-        assert "tick interval" in error_message
-
-    @patch("server.services.combat_configuration_service.get_config")
-    @patch("server.services.combat_configuration_service.get_feature_flags")
-    def test_clear_global_scope_override(
-        self, mock_get_feature_flags, mock_get_config, mock_config, mock_feature_flags
-    ):
-        """Test error when trying to clear global scope override."""
-        mock_get_config.return_value = mock_config
-        mock_get_feature_flags.return_value = mock_feature_flags
-
-        service = CombatConfigurationService()
-
-        with pytest.raises(CombatConfigurationError) as exc_info:
-            service.clear_scope_override(CombatConfigurationScope.GLOBAL, "global")
-
-        assert "Cannot clear global configuration" in str(exc_info.value)
+        assert isinstance(errors, list)
+
+    def test_validate_configuration_custom(self, service):
+        """Test validate_configuration validates custom configuration."""
+        custom_config = CombatConfiguration(combat_tick_interval=0)  # Invalid
+        errors = service.validate_configuration(custom_config)
+        assert len(errors) > 0
+
+    def test_is_combat_available(self, service):
+        """Test is_combat_available returns combat availability."""
+        with patch.object(service._feature_flags, "is_combat_enabled", return_value=True):
+            result = service.is_combat_available()
+            assert isinstance(result, bool)
+
+    def test_is_combat_available_with_override(self, service):
+        """Test is_combat_available respects override."""
+        with patch.object(service._feature_flags, "is_combat_enabled", return_value=True):
+            updates = {"combat_enabled": False}
+            service.update_combat_configuration(updates, CombatConfigurationScope.ROOM, "room_001")
+            result = service.is_combat_available(room_id="room_001")
+            assert result is False

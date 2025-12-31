@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { RoomMapEditor } from '../RoomMapEditor';
+import { useRoomMapData } from '../hooks/useRoomMapData';
 
 // Mock all dependencies
 vi.mock('reactflow', () => ({
@@ -59,7 +60,7 @@ vi.mock('reactflow', () => ({
 }));
 
 vi.mock('../hooks/useRoomMapData', () => ({
-  useRoomMapData: () => ({
+  useRoomMapData: vi.fn(() => ({
     rooms: [
       {
         id: 'room1',
@@ -73,7 +74,7 @@ vi.mock('../hooks/useRoomMapData', () => ({
     isLoading: false,
     error: null,
     refetch: vi.fn(),
-  }),
+  })),
 }));
 
 vi.mock('../hooks/useMapLayout', () => ({
@@ -428,6 +429,51 @@ describe('RoomMapEditor', () => {
       render(<RoomMapEditor {...defaultProps} />);
 
       expect(screen.getByTestId('react-flow')).toBeInTheDocument();
+    });
+  });
+
+  describe('Edge Cases', () => {
+    it('should handle empty rooms array', () => {
+      // Override the default mock for this test
+      vi.mocked(useRoomMapData).mockReturnValueOnce({
+        rooms: [],
+        isLoading: false,
+        error: null,
+        refetch: vi.fn(),
+      });
+
+      render(<RoomMapEditor {...defaultProps} />);
+
+      // When rooms array is empty, component shows "No rooms available" message
+      expect(screen.getByText(/No rooms available/i)).toBeInTheDocument();
+    });
+
+    it('should handle search query changes', () => {
+      render(<RoomMapEditor {...defaultProps} />);
+
+      const searchInput = screen.getByTestId('search-input');
+      expect(searchInput).toBeInTheDocument();
+    });
+
+    it('should handle plane changes', () => {
+      render(<RoomMapEditor {...defaultProps} />);
+
+      const planeInput = screen.getByTestId('plane-input');
+      expect(planeInput).toBeInTheDocument();
+    });
+
+    it('should handle zone changes', () => {
+      render(<RoomMapEditor {...defaultProps} />);
+
+      const zoneInput = screen.getByTestId('zone-input');
+      expect(zoneInput).toBeInTheDocument();
+    });
+
+    it('should handle subZone changes', () => {
+      render(<RoomMapEditor {...defaultProps} />);
+
+      const subzoneInput = screen.getByTestId('subzone-input');
+      expect(subzoneInput).toBeInTheDocument();
     });
   });
 });

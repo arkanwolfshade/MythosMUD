@@ -21,7 +21,7 @@ from collections import defaultdict
 from collections.abc import Callable
 from typing import Any, TypeVar
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .event_types import BaseEvent
 
 # Type variable for generic event handling
@@ -115,8 +115,13 @@ class EventBus:
 
     async def _stop_processing(self) -> None:
         """Stop pure async event processing gracefully."""
-        if self._running:
-            self._running = False
+        # Only process if we're actually running (idempotent)
+        if not self._running:
+            return
+
+        self._running = False
+
+        try:
             # Signal shutdown to async processing loop - Task 1.3
             self._shutdown_event.set()
 
@@ -124,49 +129,76 @@ class EventBus:
             # This ensures the task waiting on asyncio.wait_for() wakes up right away
             try:
                 self._event_queue.put_nowait(None)  # Sentinel to wake up waiting task
-            except asyncio.QueueFull:
-                # Queue is full, but that's okay - task will wake up on timeout or cancellation
+            except (asyncio.QueueFull, RuntimeError, AttributeError):
+                # Queue is full, closed, or doesn't exist - task will wake up on timeout or cancellation
                 pass
 
             # Cancel processing task explicitly if it exists
             if self._processing_task and not self._processing_task.done():
-                self._processing_task.cancel()
                 try:
-                    await self._processing_task
-                except asyncio.CancelledError:
+                    self._processing_task.cancel()
+                    await asyncio.wait_for(self._processing_task, timeout=0.5)
+                except (TimeoutError, asyncio.CancelledError, RuntimeError):
+                    # Task was cancelled, timed out, or event loop is closing - expected
                     pass
 
             # Cancel all active tasks and wait for graceful shutdown
             if self._active_tasks:
-                for task in list(self._active_tasks):
-                    if not task.done():
+                tasks_to_cancel = [task for task in list(self._active_tasks) if not task.done()]
+                for task in tasks_to_cancel:
+                    try:
                         task.cancel()
+                    except (RuntimeError, AttributeError):
+                        # Task or event loop is in invalid state - skip
+                        pass
 
                 # Wait for tasks to complete with timeout - use a more robust approach
-                try:
-                    # Use asyncio.wait instead of gather to avoid hanging on unresponsive tasks
-                    done, pending = await asyncio.wait(
-                        self._active_tasks, timeout=1.0, return_when=asyncio.ALL_COMPLETED
-                    )
+                if tasks_to_cancel:
+                    try:
+                        # Use asyncio.wait instead of gather to avoid hanging on unresponsive tasks
+                        done, pending = await asyncio.wait(
+                            tasks_to_cancel, timeout=0.5, return_when=asyncio.ALL_COMPLETED
+                        )
 
-                    # Force cancel any remaining pending tasks
-                    if pending:
-                        for task in pending:
-                            if not task.done():
-                                task.cancel()
+                        # Force cancel any remaining pending tasks
+                        if pending:
+                            for task in pending:
+                                try:
+                                    if not task.done():
+                                        task.cancel()
+                                except (RuntimeError, AttributeError):
+                                    pass
 
-                        # Give them a brief moment to cancel, then abandon
-                        try:
-                            await asyncio.wait_for(asyncio.gather(*pending, return_exceptions=True), timeout=0.5)
-                        except (TimeoutError, Exception):
-                            pass  # Abandon remaining tasks
+                            # Give them a brief moment to cancel, then abandon
+                            try:
+                                await asyncio.wait_for(asyncio.gather(*pending, return_exceptions=True), timeout=0.2)
+                            except (TimeoutError, RuntimeError, asyncio.CancelledError):
+                                # Timeout or event loop closing - abandon remaining tasks
+                                pass
 
-                except (RuntimeError, asyncio.CancelledError) as e:
-                    logger.error("Error during event bus shutdown", error=str(e), error_type=type(e).__name__)
-                    # Any error in shutdown - just clear the tasks
-                    pass
+                    except (RuntimeError, asyncio.CancelledError, AttributeError):
+                        # Event loop is closing or in invalid state - just clear tasks
+                        pass
 
-            self._logger.info("EventBus pure async processing stopped")
+        except Exception as e:
+            # Catch any unexpected errors during shutdown to prevent worker crashes
+            try:
+                logger.error(
+                    "Error during event bus processing stop (non-fatal)",
+                    error=str(e),
+                    error_type=type(e).__name__,
+                )
+            except Exception:
+                # If logging fails, continue anyway
+                pass
+        finally:
+            # Always clear tasks and reset state to prevent resource leaks
+            self._active_tasks.clear()
+            try:
+                self._logger.info("EventBus pure async processing stopped")
+            except Exception:
+                # If logging fails, continue anyway
+                pass
 
     async def _process_events_async(self) -> None:
         """Pure async event processing loop replacing the dangerous threading pattern."""
@@ -476,9 +508,46 @@ class EventBus:
         return {event_type.__name__: len(subscribers) for event_type, subscribers in self._subscribers.items()}
 
     async def shutdown(self) -> None:
-        """Shutdown the pure asyncio event bus with proper grace s period coordination."""
-        self._logger.info("Shutting down pure asyncio EventBus")
-        await self._stop_processing()
+        """
+        Shutdown the pure asyncio event bus with proper grace period coordination.
+
+        This method is designed to be safe even when called multiple times or
+        when the event loop is being torn down. All exceptions are caught to
+        prevent worker crashes in pytest-xdist parallel execution.
+        """
+        try:
+            self._logger.info("Shutting down pure asyncio EventBus")
+            await self._stop_processing()
+        except (RuntimeError, asyncio.CancelledError) as e:
+            # Event loop is closing or task was cancelled - this is expected during test teardown
+            self._logger.debug(
+                "EventBus shutdown cancelled or event loop closing",
+                error=str(e),
+                error_type=type(e).__name__,
+            )
+        except Exception as e:
+            # Catch all other exceptions to prevent worker crashes
+            # Log the error but don't re-raise to allow test cleanup to complete
+            try:
+                self._logger.warning(
+                    "Error during EventBus shutdown (non-fatal)",
+                    error=str(e),
+                    error_type=type(e).__name__,
+                    exc_info=True,
+                )
+            except Exception:
+                # If logging fails, just continue - don't let logging errors crash workers
+                pass
+        finally:
+            # Ensure state is always reset even if shutdown fails
+            self._running = False
+            if self._processing_task and not self._processing_task.done():
+                try:
+                    self._processing_task.cancel()
+                except Exception:
+                    pass
+            # Clear active tasks to prevent resource leaks
+            self._active_tasks.clear()
 
     def __del__(self) -> None:
         """Cleanup when the EventBus is destroyed - replaced with async-aware graceful shutdown."""

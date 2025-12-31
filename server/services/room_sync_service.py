@@ -15,7 +15,7 @@ from collections import defaultdict
 from typing import Any, TypeAlias, TypeVar
 
 from ..events.event_types import BaseEvent
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .room_data_cache import RoomDataCache
 from .room_data_fixer import RoomDataFixer
 from .room_data_validator import RoomDataValidator
@@ -334,7 +334,9 @@ class RoomSyncService:
 
         except (AttributeError, TypeError) as e:
             logger.error("Error processing room transition", error=str(e), exc_info=True)
-            return {"success": False, "errors": [str(e)], "player_id": transition_data.get("player_id")}
+            # Safely get player_id, or default to None if transition_data is None
+            player_id_for_log = transition_data.get("player_id") if isinstance(transition_data, dict) else None
+            return {"success": False, "errors": [str(e)], "player_id": player_id_for_log}
 
     def get_room_data_cache_stats(self) -> dict[str, Any]:
         """

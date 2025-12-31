@@ -9,8 +9,8 @@ import json
 from datetime import datetime
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
 from ..services.npc_instance_service import get_npc_instance_service
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

@@ -17,7 +17,7 @@ from datetime import UTC, datetime
 
 import psutil
 
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 from .tracked_task_manager import get_global_tracked_manager
 
 logger = get_logger("server.memory_cleanup_service")

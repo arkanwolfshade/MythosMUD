@@ -15,8 +15,8 @@ from typing import Any
 import psycopg2
 
 from server.config import get_config
-from server.logging.enhanced_logging_config import get_logger
 from server.persistence import container_persistence
+from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 

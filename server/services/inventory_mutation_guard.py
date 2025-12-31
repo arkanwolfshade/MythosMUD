@@ -12,9 +12,9 @@ from dataclasses import dataclass, field
 from time import monotonic
 from typing import cast
 
-from server.logging.enhanced_logging_config import get_logger
 from server.middleware.metrics_collector import metrics_collector
 from server.monitoring.monitoring_dashboard import get_monitoring_dashboard
+from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -285,8 +285,15 @@ class InventoryMutationGuard:
             if state and not state.recent_tokens:
                 # Try to acquire lock non-blocking to check if it's free
                 lock = state.get_lock()
-                if lock.locked():
-                    # Lock is held, can't cleanup yet
+                # Use try/except for lock.locked() to handle cases where
+                # the method might not be available or the lock is in an inconsistent state
+                try:
+                    if lock.locked():
+                        # Lock is held, can't cleanup yet
+                        return
+                except (AttributeError, RuntimeError):
+                    # If locked() method is not available or raises an error,
+                    # assume lock might be held and skip cleanup to be safe
                     return
                 # Lock is free, safe to cleanup
                 if not state.recent_tokens:

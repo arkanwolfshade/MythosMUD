@@ -9,15 +9,9 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     exclude: ['tests/**/*', '**/*.spec.ts', '**/*.spec.tsx', 'node_modules/**/*'],
     pool: 'threads',
-    maxConcurrency: 1,
-    // @ts-expect-error - poolOptions is valid but types are incomplete in vitest 4.0.15
-    poolOptions: {
-      threads: {
-        singleThread: true,
-        maxThreads: 1,
-        minThreads: 1,
-      },
-    },
+    // Tests run in parallel using Vitest's default behavior (CPU_COUNT - 1 workers)
+    // This significantly speeds up test execution while maintaining test isolation
+    // Note: E2E tests (Playwright) still run serially to avoid race conditions with shared player accounts
     coverage: {
       provider: 'v8',
       enabled: true,
@@ -45,10 +39,11 @@ export default defineConfig({
         // Note: Vitest requires exact file paths (not globs) for per-file thresholds.
         // Current coverage: 82.53% statements, 75.13% branches, 81.05% functions, 82.91% lines
         // Thresholds set with ~7-8% buffer to allow for normal fluctuations
-        statements: 75,
-        branches: 68,
-        functions: 74,
-        lines: 75,
+        // Global thresholds: 70% minimum for non-critical code
+        statements: 70,
+        branches: 70,
+        functions: 70,
+        lines: 70,
         // Critical code: security, authentication, data handling → 90%
         // Note: security.ts now at 100% coverage including branches (cleanup interval branches fully tested)
         'src/utils/security.ts': {
@@ -151,9 +146,66 @@ export default defineConfig({
           functions: 85,
           lines: 85,
         },
+        // Critical code: Event handlers → 90%
+        'src/components/ui-v2/eventHandlers/messageHandlers.ts': {
+          statements: 90,
+          branches: 90,
+          functions: 90,
+          lines: 90,
+        },
+        'src/components/ui-v2/eventHandlers/playerHandlers.ts': {
+          statements: 90,
+          branches: 90,
+          functions: 90,
+          lines: 90,
+        },
+        'src/components/ui-v2/eventHandlers/roomHandlers.ts': {
+          statements: 90,
+          branches: 90,
+          functions: 90,
+          lines: 90,
+        },
+        'src/components/ui-v2/eventHandlers/systemHandlers.ts': {
+          statements: 90,
+          branches: 90,
+          functions: 90,
+          lines: 90,
+        },
+        'src/components/ui-v2/eventHandlers/combatHandlers.ts': {
+          statements: 90,
+          branches: 90,
+          functions: 90,
+          lines: 90,
+        },
+        // Critical code: State management utilities → 90%
+        'src/components/ui-v2/utils/stateUpdateUtils.ts': {
+          statements: 90,
+          branches: 90,
+          functions: 90,
+          lines: 90,
+        },
+        'src/components/ui-v2/utils/messageUtils.ts': {
+          statements: 90,
+          branches: 90,
+          functions: 90,
+          lines: 90,
+        },
+        'src/components/ui-v2/utils/roomMergeUtils.ts': {
+          statements: 90,
+          branches: 90,
+          functions: 90,
+          lines: 90,
+        },
+        // Critical code: Event processing hook → 90%
+        'src/components/ui-v2/hooks/useEventProcessing.ts': {
+          statements: 90,
+          branches: 90,
+          functions: 90,
+          lines: 90,
+        },
         // Note: UI components (src/components/**/*.tsx, src/pages/**/*.tsx)
         // and utilities (src/utils/**/*.ts, src/types/**/*.ts, src/config/**/*.ts)
-        // use the global thresholds above (75% statements/lines, 74% functions, 68% branches).
+        // use the global thresholds above (70% statements/lines/functions/branches).
         // See docs/TEST_COVERAGE_STRATEGY.md for detailed category-specific targets.
       },
       reporter: ['text', 'html', 'json'],

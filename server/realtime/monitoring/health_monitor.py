@@ -15,7 +15,7 @@ import uuid
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
-from ...logging.enhanced_logging_config import get_logger
+from ...structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable
@@ -107,12 +107,17 @@ class HealthMonitor:
                 for connection_id in connection_ids:
                     if connection_id in active_websockets:
                         websocket = active_websockets[connection_id]
+                        # Guard against None websocket (can happen during cleanup)
+                        # JUSTIFICATION: Type annotation says dict[str, WebSocket], but runtime can have None
+                        # values during cleanup/race conditions. This is defensive programming.
+                        if websocket is None:
+                            continue  # type: ignore[unreachable]
                         try:
                             # Check WebSocket health by checking its state
                             if websocket.client_state.name == "CONNECTED":
                                 health_status["websocket_healthy"] += 1
                             else:
-                                raise Exception("WebSocket not connected")
+                                raise ConnectionError("WebSocket not connected")
                         except (RuntimeError, ConnectionError, AttributeError) as e:
                             logger.error(
                                 "WebSocket health check failed",
@@ -140,7 +145,7 @@ class HealthMonitor:
 
             return health_status
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors in health monitoring
             logger.error("Error checking connection health", player_id=player_id, error=str(e))
             health_status["overall_health"] = "error"
             return health_status
@@ -238,7 +243,7 @@ class HealthMonitor:
                     # Connection is healthy
                     metadata.is_healthy = True
 
-                except Exception as e:
+                except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors in health monitoring
                     logger.warning(
                         "Error checking connection health",
                         connection_id=connection_id,
@@ -259,7 +264,7 @@ class HealthMonitor:
                 for player_id, connection_id in stale_connections:
                     try:
                         await self.cleanup_dead_websocket(player_id, connection_id)
-                    except Exception as e:
+                    except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors during cleanup
                         logger.error(
                             "Error cleaning up stale connection",
                             player_id=player_id,
@@ -277,7 +282,7 @@ class HealthMonitor:
                 stale_connections_cleaned=len(stale_connections),
             )
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors in health monitoring
             logger.error("Error in connection health check", error=str(e), exc_info=True)
 
     async def periodic_health_check_task(
@@ -351,7 +356,7 @@ class HealthMonitor:
                 task_type="health_monitor",
             )
             logger.info("Periodic health check task started")
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors starting health check task
             logger.error("Error starting health check task", error=str(e), exc_info=True)
 
     def stop_periodic_checks(self) -> None:
@@ -376,7 +381,7 @@ class HealthMonitor:
                 except RuntimeError:
                     # No running loop - task will be cleaned up on next event loop
                     logger.debug("No running loop for health check task cancellation")
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors during task cancellation
                 logger.warning("Error waiting for health check task cancellation", error=str(e))
             self._health_check_task = None
 
@@ -386,5 +391,5 @@ class HealthMonitor:
             await asyncio.wait_for(task, timeout=5.0)
         except (TimeoutError, asyncio.CancelledError):
             pass
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors during task wait
             logger.debug("Task cancellation wait completed", error=str(e))

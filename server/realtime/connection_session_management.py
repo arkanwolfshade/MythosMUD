@@ -10,7 +10,7 @@ from typing import Any
 from fastapi import WebSocket
 
 from ..exceptions import DatabaseError
-from ..logging.enhanced_logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -47,6 +47,10 @@ async def _disconnect_connection_for_session(connection_id: str, player_id: uuid
         return False
 
     websocket = manager.active_websockets[connection_id]
+    # Guard against None websocket (can happen during cleanup)
+    if websocket is None:
+        del manager.active_websockets[connection_id]
+        return False
     disconnected = False
 
     try:

@@ -10,8 +10,8 @@ import time
 from abc import ABC, abstractmethod
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger
 from ..models.npc import NPCDefinition
+from ..structured_logging.enhanced_logging_config import get_logger
 from .behavior_engine import BehaviorEngine
 
 logger = get_logger(__name__)

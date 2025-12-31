@@ -1,267 +1,377 @@
 """
-Tests for alias management commands.
+Unit tests for alias command handlers.
 
-This module tests the alias command handlers including creation, viewing,
-listing, and deletion of player command aliases.
-
-As noted in the Pnakotic Manuscripts: "Shortcuts through the labyrinth must be
-tested thoroughly, lest they lead to unexpected dimensions."
+Tests the alias, aliases, and unalias commands.
 """
 
 from unittest.mock import MagicMock
 
 import pytest
 
-from server.alias_storage import AliasStorage
-from server.commands.alias_commands import (
-    handle_alias_command,
-    handle_aliases_command,
-    handle_unalias_command,
-)
-from server.models.alias import Alias
+from server.commands.alias_commands import handle_alias_command, handle_aliases_command, handle_unalias_command
 
 
 @pytest.fixture
 def mock_alias_storage():
-    """Create a mock alias storage instance."""
-    storage = MagicMock(spec=AliasStorage)
-    # Ensure all needed methods are available
-    storage.create_alias = MagicMock()
-    storage.get_alias = MagicMock(return_value=None)
-    storage.get_player_aliases = MagicMock(return_value=[])
-    storage.remove_alias = MagicMock()
+    """Create a mock alias storage."""
+    storage = MagicMock()
     return storage
 
 
 @pytest.fixture
-def mock_current_user():
-    """Create mock current user."""
-    return {"user_id": "test_user_001", "username": "testuser"}
+def mock_alias():
+    """Create a mock alias object."""
+    alias = MagicMock()
+    alias.name = "n"
+    alias.command = "go north"
+    return alias
 
 
-@pytest.fixture
-def mock_request():
-    """Create mock FastAPI request."""
-    request = MagicMock()
-    request.client = MagicMock()
-    request.client.host = "127.0.0.1"
-    return request
+@pytest.mark.asyncio
+async def test_handle_alias_command_no_storage():
+    """Test handle_alias_command when alias storage is not available."""
+    result = await handle_alias_command(
+        command_data={},
+        current_user={},
+        request=MagicMock(),
+        alias_storage=None,
+        player_name="TestPlayer",
+    )
+
+    assert "not available" in result["result"]
 
 
-@pytest.fixture
-def sample_alias():
-    """Create a sample alias."""
-    return Alias(name="gw", command="go west")
+@pytest.mark.asyncio
+async def test_handle_alias_command_no_args():
+    """Test handle_alias_command with no arguments."""
+    result = await handle_alias_command(
+        command_data={"args": []},
+        current_user={},
+        request=MagicMock(),
+        alias_storage=MagicMock(),
+        player_name="TestPlayer",
+    )
+
+    assert "Usage:" in result["result"]
 
 
-class TestHandleAliasCommandCreate:
-    """Test alias command handler for creating aliases."""
+@pytest.mark.asyncio
+async def test_handle_alias_command_view_existing(mock_alias_storage, mock_alias):
+    """Test handle_alias_command viewing existing alias."""
+    mock_alias_storage.get_alias.return_value = mock_alias
 
-    @pytest.mark.asyncio
-    async def test_create_alias_success(self, mock_alias_storage, mock_current_user, mock_request):
-        """Test successful alias creation."""
-        result = await handle_alias_command(
-            command_data={"args": ["gw", "go", "west"]},
-            current_user=mock_current_user,
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="TestPlayer",
-        )
+    result = await handle_alias_command(
+        command_data={"args": ["n"]},
+        current_user={},
+        request=MagicMock(),
+        alias_storage=mock_alias_storage,
+        player_name="TestPlayer",
+    )
 
-        assert result["result"] == "Alias 'gw' created successfully."
-        mock_alias_storage.create_alias.assert_called_once_with("TestPlayer", "gw", "go west")
-
-    @pytest.mark.asyncio
-    async def test_create_alias_handles_exception(self, mock_alias_storage, mock_current_user, mock_request):
-        """Test alias creation handles exceptions."""
-        mock_alias_storage.create_alias.side_effect = Exception("Database error")
-
-        result = await handle_alias_command(
-            command_data={"args": ["gw", "go", "west"]},
-            current_user=mock_current_user,
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="TestPlayer",
-        )
-
-        assert "Failed to create alias" in result["result"]
-
-    @pytest.mark.asyncio
-    async def test_alias_name_length_minimum(self, mock_alias_storage, mock_current_user, mock_request):
-        """Test alias name length minimum."""
-        result = await handle_alias_command(
-            command_data={"args": ["a", "look"]},
-            current_user=mock_current_user,
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="TestPlayer",
-        )
-
-        assert "created successfully" in result["result"]
+    assert "Alias 'n' = 'go north'" in result["result"]
+    mock_alias_storage.get_alias.assert_called_once_with("TestPlayer", "n")
 
 
-class TestHandleAliasCommandView:
-    """Test viewing existing aliases."""
+@pytest.mark.asyncio
+async def test_handle_alias_command_view_nonexistent(mock_alias_storage):
+    """Test handle_alias_command viewing nonexistent alias."""
+    mock_alias_storage.get_alias.return_value = None
 
-    @pytest.mark.asyncio
-    async def test_view_existing_alias(self, mock_alias_storage, mock_current_user, mock_request, sample_alias):
-        """Test viewing an existing alias."""
-        mock_alias_storage.get_alias.return_value = sample_alias
+    result = await handle_alias_command(
+        command_data={"args": ["nonexistent"]},
+        current_user={},
+        request=MagicMock(),
+        alias_storage=mock_alias_storage,
+        player_name="TestPlayer",
+    )
 
-        result = await handle_alias_command(
-            command_data={"args": ["gw"]},
-            current_user=mock_current_user,
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="TestPlayer",
-        )
-
-        assert result["result"] == "Alias 'gw' = 'go west'"
-        mock_alias_storage.get_alias.assert_called_once_with("TestPlayer", "gw")
+    assert "No alias found" in result["result"]
 
 
-class TestHandleAliasesCommand:
-    """Test aliases command handler for listing aliases."""
+@pytest.mark.asyncio
+async def test_handle_alias_command_create_from_args(mock_alias_storage):
+    """Test handle_alias_command creating alias from args."""
+    result = await handle_alias_command(
+        command_data={"args": ["move", "go", "north"]},
+        current_user={},
+        request=MagicMock(),
+        alias_storage=mock_alias_storage,
+        player_name="TestPlayer",
+    )
 
-    @pytest.mark.asyncio
-    async def test_list_aliases_with_data(self, mock_alias_storage, mock_current_user, mock_request):
-        """Test listing aliases when some exist."""
-        aliases = [
-            Alias(name="gw", command="go west"),
-            Alias(name="ge", command="go east"),
-            Alias(name="gs", command="go south"),
-        ]
-        mock_alias_storage.get_player_aliases.return_value = aliases
-
-        result = await handle_aliases_command(
-            command_data={"args": []},
-            current_user=mock_current_user,
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="TestPlayer",
-        )
-
-        assert "Your aliases:" in result["result"]
-        assert "gw: go west" in result["result"]
+    assert "created successfully" in result["result"]
+    mock_alias_storage.create_alias.assert_called_once_with("TestPlayer", "move", "go north")
 
 
-class TestHandleUnaliasCommand:
-    """Test unalias command handler for removing aliases."""
+@pytest.mark.asyncio
+async def test_handle_alias_command_create_from_structured_data(mock_alias_storage):
+    """Test handle_alias_command creating alias from structured data."""
+    result = await handle_alias_command(
+        command_data={"alias_name": "move", "command": "go north"},
+        current_user={},
+        request=MagicMock(),
+        alias_storage=mock_alias_storage,
+        player_name="TestPlayer",
+    )
 
-    @pytest.mark.asyncio
-    async def test_unalias_success(self, mock_alias_storage, mock_current_user, mock_request, sample_alias):
-        """Test successful alias removal."""
-        mock_alias_storage.get_alias.return_value = sample_alias
-
-        result = await handle_unalias_command(
-            command_data={"args": ["gw"]},
-            current_user=mock_current_user,
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="TestPlayer",
-        )
-
-        assert result["result"] == "Alias 'gw' removed successfully."
-        mock_alias_storage.get_alias.assert_called_once_with("TestPlayer", "gw")
-        mock_alias_storage.remove_alias.assert_called_once_with("TestPlayer", "gw")
-
-    @pytest.mark.asyncio
-    async def test_unalias_not_found(self, mock_alias_storage, mock_current_user, mock_request):
-        """Test unalias when alias doesn't exist."""
-        mock_alias_storage.get_alias.return_value = None
-
-        result = await handle_unalias_command(
-            command_data={"args": ["gw"]},
-            current_user=mock_current_user,
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="TestPlayer",
-        )
-
-        assert result["result"] == "No alias found for 'gw'"
-        mock_alias_storage.get_alias.assert_called_once_with("TestPlayer", "gw")
-        # delete_alias should NOT be called when alias doesn't exist
-        mock_alias_storage.remove_alias.assert_not_called()
+    assert "created successfully" in result["result"]
+    mock_alias_storage.create_alias.assert_called_once_with("TestPlayer", "move", "go north")
 
 
-class TestIntegrationScenarios:
-    """Test integration scenarios combining multiple commands."""
+@pytest.mark.asyncio
+async def test_handle_alias_command_invalid_name_too_long(mock_alias_storage):
+    """Test handle_alias_command with alias name too long."""
+    long_name = "a" * 21
+    result = await handle_alias_command(
+        command_data={"alias_name": long_name, "command": "go north"},
+        current_user={},
+        request=MagicMock(),
+        alias_storage=mock_alias_storage,
+        player_name="TestPlayer",
+    )
 
-    @pytest.mark.asyncio
-    async def test_complete_alias_lifecycle(self, mock_alias_storage, mock_current_user, mock_request):
-        """Test complete alias lifecycle: create, view, list, delete."""
-        sample_alias = Alias(name="gw", command="go west")
+    assert "1-20 characters" in result["result"]
 
-        # 1. Create alias
-        result = await handle_alias_command(
-            command_data={"args": ["gw", "go", "west"]},
-            current_user=mock_current_user,
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="TestPlayer",
-        )
-        assert "created successfully" in result["result"]
 
-        # 2. View alias
-        mock_alias_storage.get_alias.return_value = sample_alias
-        result = await handle_alias_command(
-            command_data={"args": ["gw"]},
-            current_user=mock_current_user,
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="TestPlayer",
-        )
-        assert "Alias 'gw' = 'go west'" in result["result"]
+@pytest.mark.asyncio
+async def test_handle_alias_command_invalid_command_too_long(mock_alias_storage):
+    """Test handle_alias_command with command too long."""
+    long_command = "a" * 201
+    result = await handle_alias_command(
+        command_data={"alias_name": "n", "command": long_command},
+        current_user={},
+        request=MagicMock(),
+        alias_storage=mock_alias_storage,
+        player_name="TestPlayer",
+    )
 
-        # 3. List aliases
-        mock_alias_storage.get_player_aliases.return_value = [sample_alias]
-        result = await handle_aliases_command(
-            command_data={"args": []},
-            current_user=mock_current_user,
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="TestPlayer",
-        )
-        assert "Your aliases:" in result["result"]
+    assert "1-200 characters" in result["result"]
 
-        # 4. Delete alias
-        result = await handle_unalias_command(
-            command_data={"args": ["gw"]},
-            current_user=mock_current_user,
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="TestPlayer",
-        )
-        assert "removed successfully" in result["result"]
 
-    @pytest.mark.asyncio
-    async def test_multiple_aliases_management(self, mock_alias_storage, mock_current_user, mock_request):
-        """Test managing multiple aliases."""
-        aliases_to_create = [("gw", "go west"), ("ge", "go east"), ("look", "examine room")]
+@pytest.mark.asyncio
+async def test_handle_alias_command_circular_reference(mock_alias_storage):
+    """Test handle_alias_command with circular reference."""
+    result = await handle_alias_command(
+        command_data={"alias_name": "n", "command": "n"},
+        current_user={},
+        request=MagicMock(),
+        alias_storage=mock_alias_storage,
+        player_name="TestPlayer",
+    )
 
-        # Create multiple aliases
-        for name, cmd in aliases_to_create:
-            result = await handle_alias_command(
-                command_data={"args": [name] + cmd.split()},
-                current_user=mock_current_user,
-                request=mock_request,
-                alias_storage=mock_alias_storage,
-                player_name="TestPlayer",
-            )
-            assert "created successfully" in result["result"]
+    assert "cannot reference itself" in result["result"]
 
-        # List all aliases
-        alias_objects = [Alias(name=name, command=cmd) for name, cmd in aliases_to_create]
-        mock_alias_storage.get_player_aliases.return_value = alias_objects
 
-        result = await handle_aliases_command(
-            command_data={"args": []},
-            current_user=mock_current_user,
-            request=mock_request,
-            alias_storage=mock_alias_storage,
-            player_name="TestPlayer",
-        )
+@pytest.mark.asyncio
+async def test_handle_alias_command_create_error(mock_alias_storage):
+    """Test handle_alias_command when creation fails."""
+    mock_alias_storage.create_alias.side_effect = Exception("Storage error")
 
-        assert "Your aliases:" in result["result"]
-        for name, _ in aliases_to_create:
-            assert name in result["result"]
+    result = await handle_alias_command(
+        command_data={"alias_name": "move", "command": "go north"},
+        current_user={},
+        request=MagicMock(),
+        alias_storage=mock_alias_storage,
+        player_name="TestPlayer",
+    )
+
+    assert "Failed to create alias" in result["result"]
+
+
+@pytest.mark.asyncio
+async def test_handle_aliases_command_no_storage():
+    """Test handle_aliases_command when alias storage is not available."""
+    result = await handle_aliases_command(
+        command_data={},
+        current_user={},
+        request=MagicMock(),
+        alias_storage=None,
+        player_name="TestPlayer",
+    )
+
+    assert "not available" in result["result"]
+
+
+@pytest.mark.asyncio
+async def test_handle_aliases_command_no_aliases(mock_alias_storage):
+    """Test handle_aliases_command when player has no aliases."""
+    mock_alias_storage.get_player_aliases.return_value = []
+
+    result = await handle_aliases_command(
+        command_data={},
+        current_user={},
+        request=MagicMock(),
+        alias_storage=mock_alias_storage,
+        player_name="TestPlayer",
+    )
+
+    assert "no aliases defined" in result["result"]
+
+
+@pytest.mark.asyncio
+async def test_handle_aliases_command_with_aliases(mock_alias_storage, mock_alias):
+    """Test handle_aliases_command listing aliases."""
+    mock_alias2 = MagicMock()
+    mock_alias2.name = "s"
+    mock_alias2.command = "go south"
+    mock_alias_storage.get_player_aliases.return_value = [mock_alias, mock_alias2]
+
+    result = await handle_aliases_command(
+        command_data={},
+        current_user={},
+        request=MagicMock(),
+        alias_storage=mock_alias_storage,
+        player_name="TestPlayer",
+    )
+
+    assert "Your aliases:" in result["result"]
+    assert "n: go north" in result["result"]
+    assert "s: go south" in result["result"]
+
+
+@pytest.mark.asyncio
+async def test_handle_aliases_command_error(mock_alias_storage):
+    """Test handle_aliases_command when listing fails."""
+    mock_alias_storage.get_player_aliases.side_effect = Exception("Storage error")
+
+    result = await handle_aliases_command(
+        command_data={},
+        current_user={},
+        request=MagicMock(),
+        alias_storage=mock_alias_storage,
+        player_name="TestPlayer",
+    )
+
+    assert "Failed to list aliases" in result["result"]
+
+
+@pytest.mark.asyncio
+async def test_handle_unalias_command_no_storage():
+    """Test handle_unalias_command when alias storage is not available."""
+    result = await handle_unalias_command(
+        command_data={},
+        current_user={},
+        request=MagicMock(),
+        alias_storage=None,
+        player_name="TestPlayer",
+    )
+
+    assert "not available" in result["result"]
+
+
+@pytest.mark.asyncio
+async def test_handle_unalias_command_no_args(mock_alias_storage):
+    """Test handle_unalias_command with no arguments."""
+    result = await handle_unalias_command(
+        command_data={"args": []},
+        current_user={},
+        request=MagicMock(),
+        alias_storage=mock_alias_storage,
+        player_name="TestPlayer",
+    )
+
+    assert "Usage:" in result["result"]
+
+
+@pytest.mark.asyncio
+async def test_handle_unalias_command_alias_not_found(mock_alias_storage):
+    """Test handle_unalias_command when alias doesn't exist."""
+    mock_alias_storage.get_alias.return_value = None
+
+    result = await handle_unalias_command(
+        command_data={"args": ["nonexistent"]},
+        current_user={},
+        request=MagicMock(),
+        alias_storage=mock_alias_storage,
+        player_name="TestPlayer",
+    )
+
+    assert "No alias found" in result["result"]
+
+
+@pytest.mark.asyncio
+async def test_handle_unalias_command_success(mock_alias_storage, mock_alias):
+    """Test handle_unalias_command successful removal."""
+    mock_alias_storage.get_alias.return_value = mock_alias
+
+    result = await handle_unalias_command(
+        command_data={"args": ["n"]},
+        current_user={},
+        request=MagicMock(),
+        alias_storage=mock_alias_storage,
+        player_name="TestPlayer",
+    )
+
+    assert "removed successfully" in result["result"]
+    mock_alias_storage.remove_alias.assert_called_once_with("TestPlayer", "n")
+
+
+@pytest.mark.asyncio
+async def test_handle_unalias_command_error(mock_alias_storage, mock_alias):
+    """Test handle_unalias_command when removal fails."""
+    mock_alias_storage.get_alias.return_value = mock_alias
+    mock_alias_storage.remove_alias.side_effect = Exception("Storage error")
+
+    result = await handle_unalias_command(
+        command_data={"args": ["n"]},
+        current_user={},
+        request=MagicMock(),
+        alias_storage=mock_alias_storage,
+        player_name="TestPlayer",
+    )
+
+    assert "Failed to remove alias" in result["result"]
+
+
+@pytest.mark.asyncio
+async def test_handle_alias_command_invalid_name_empty(mock_alias_storage):
+    """Test handle_alias_command with empty alias name."""
+    result = await handle_alias_command(
+        command_data={"alias_name": "", "command": "go north"},
+        current_user={},
+        request=MagicMock(),
+        alias_storage=mock_alias_storage,
+        player_name="TestPlayer",
+    )
+    assert "1-20 characters" in result["result"]
+
+
+@pytest.mark.asyncio
+async def test_handle_alias_command_invalid_command_empty(mock_alias_storage):
+    """Test handle_alias_command with empty command."""
+    result = await handle_alias_command(
+        command_data={"alias_name": "n", "command": ""},
+        current_user={},
+        request=MagicMock(),
+        alias_storage=mock_alias_storage,
+        player_name="TestPlayer",
+    )
+    assert "1-200 characters" in result["result"]
+
+
+@pytest.mark.asyncio
+async def test_handle_alias_command_view_from_structured_data(mock_alias_storage, mock_alias):
+    """Test handle_alias_command viewing alias from structured data."""
+    mock_alias_storage.get_alias.return_value = mock_alias
+    result = await handle_alias_command(
+        command_data={"alias_name": "n", "command": None},
+        current_user={},
+        request=MagicMock(),
+        alias_storage=mock_alias_storage,
+        player_name="TestPlayer",
+    )
+    assert "Alias 'n' = 'go north'" in result["result"]
+
+
+@pytest.mark.asyncio
+async def test_handle_alias_command_update_existing(mock_alias_storage):
+    """Test handle_alias_command updating existing alias."""
+    mock_alias_storage.create_alias.return_value = True
+    result = await handle_alias_command(
+        command_data={"alias_name": "n", "command": "go south"},
+        current_user={},
+        request=MagicMock(),
+        alias_storage=mock_alias_storage,
+        player_name="TestPlayer",
+    )
+    assert "created successfully" in result["result"] or "updated" in result["result"].lower()

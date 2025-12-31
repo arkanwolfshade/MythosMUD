@@ -15,7 +15,7 @@ from typing import TYPE_CHECKING, Any
 from fastapi import WebSocketDisconnect
 
 from ...exceptions import DatabaseError
-from ...logging.enhanced_logging_config import get_logger
+from ...structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable
@@ -136,6 +136,13 @@ class PersonalMessageSender:
                     if connection_id in active_websockets:
                         had_connection_attempts = True
                         websocket = active_websockets[connection_id]
+                        # Guard against None websocket (can happen during cleanup)
+                        # JUSTIFICATION: Type annotation says dict[str, WebSocket], but runtime can have None
+                        # values during cleanup/race conditions. This is defensive programming.
+                        if websocket is None:
+                            delivery_status["websocket_failed"] += 1  # type: ignore[unreachable]
+                            await self.cleanup_dead_websocket(player_id, connection_id)
+                            continue
                         try:
                             # Check WebSocket state before sending
                             from starlette.websockets import WebSocketState
