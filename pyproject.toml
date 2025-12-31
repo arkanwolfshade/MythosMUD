@@ -249,6 +249,7 @@ exclude = [
     "^server/tests/data/",
     "^server/time/",  # Exclude server/time to avoid conflict with stdlib time module
     ".*[\\\\/]time[\\\\/]__init__\\.py$",  # Also exclude time/__init__.py specifically (Windows and Unix paths)
+    "^server/persistence/__init__\\.py$",  # Exclude to avoid duplicate module conflict (matches pre-commit exclude)
 ]
 
 # Per-module options - Third-party libraries without stubs or with incomplete stubs
