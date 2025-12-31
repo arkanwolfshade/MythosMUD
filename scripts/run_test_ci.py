@@ -47,8 +47,41 @@ if IN_CI:
     # #region agent log
     log_path = os.path.join(PROJECT_ROOT, ".cursor", "debug.log")
     try:
+        admin_pw_env = env.get("MYTHOSMUD_ADMIN_PASSWORD", "NOT_SET")
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(
+                json.dumps(
+                    {
+                        "id": f"log_{int(time.time())}_ci_env_check",
+                        "timestamp": int(time.time() * 1000),
+                        "location": "run_test_ci.py:44",
+                        "message": "CI environment check - MYTHOSMUD_ADMIN_PASSWORD",
+                        "data": {
+                            "env_var_exists": "MYTHOSMUD_ADMIN_PASSWORD" in env,
+                            "env_var_value": admin_pw_env[:3] + "..."
+                            if len(admin_pw_env) > 3 and admin_pw_env != "NOT_SET"
+                            else admin_pw_env,
+                            "env_var_length": len(admin_pw_env) if admin_pw_env != "NOT_SET" else 0,
+                            "is_empty_string": admin_pw_env == "",
+                            "in_ci": IN_CI,
+                        },
+                        "sessionId": "debug-session",
+                        "runId": "ci-env-check",
+                        "hypothesisId": "F",
+                    }
+                )
+                + "\n"
+            )
+    except Exception:
+        pass  # Ignore logging errors
+    # #endregion
+
+    # #region agent log
+    log_path = os.path.join(PROJECT_ROOT, ".cursor", "debug.log")
+    try:
         # Check if pytest-xdist is installed
         import importlib.util
+
         xdist_path = importlib.util.find_spec("xdist")
         pytest_xdist_installed = xdist_path is not None
         with open(log_path, "a", encoding="utf-8") as f:
@@ -237,6 +270,45 @@ if IN_CI:
         env=env,
     )
 else:
+    # #region agent log
+    log_path = os.path.join(PROJECT_ROOT, ".cursor", "debug.log")
+    try:
+        admin_pw_env = os.environ.get("MYTHOSMUD_ADMIN_PASSWORD", "NOT_SET")
+        # Check for .env files
+        env_files = []
+        for env_file in [".env", ".env.local", "server/tests/.env.unit_test"]:
+            env_path = os.path.join(PROJECT_ROOT, env_file)
+            if os.path.exists(env_path):
+                env_files.append(env_file)
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(
+                json.dumps(
+                    {
+                        "id": f"log_{int(time.time())}_local_env_check",
+                        "timestamp": int(time.time() * 1000),
+                        "location": "run_test_ci.py:240",
+                        "message": "Local environment check - MYTHOSMUD_ADMIN_PASSWORD",
+                        "data": {
+                            "env_var_exists": "MYTHOSMUD_ADMIN_PASSWORD" in os.environ,
+                            "env_var_value": admin_pw_env[:3] + "..."
+                            if len(admin_pw_env) > 3 and admin_pw_env != "NOT_SET"
+                            else admin_pw_env,
+                            "env_var_length": len(admin_pw_env) if admin_pw_env != "NOT_SET" else 0,
+                            "is_empty_string": admin_pw_env == "",
+                            "env_files_found": env_files,
+                            "in_ci": IN_CI,
+                        },
+                        "sessionId": "debug-session",
+                        "runId": "local-env-check",
+                        "hypothesisId": "G",
+                    }
+                )
+                + "\n"
+            )
+    except Exception:
+        pass  # Ignore logging errors
+    # #endregion
+
     print("Building Docker runner image (this ensures dependencies are up-to-date)...")
     ACT_RUNNER_IMAGE = "mythosmud-gha-runner:latest"
     ACT_RUNNER_DOCKERFILE = "Dockerfile.github-runner"
