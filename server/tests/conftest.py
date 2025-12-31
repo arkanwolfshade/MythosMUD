@@ -5,47 +5,15 @@ This module provides core fixtures and test isolation for the new test suite.
 """
 
 import asyncio
-
-# Set critical environment variables immediately to prevent module-level config loading failures
-# #region agent log
-import json
 import os
 import random
-import time
 from collections.abc import Generator
 from pathlib import Path
 from typing import Any
 
 import pytest
 
-log_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), ".cursor", "debug.log")
-try:
-    admin_pw_before = os.environ.get("MYTHOSMUD_ADMIN_PASSWORD", "NOT_SET")
-    with open(log_path, "a", encoding="utf-8") as f:
-        f.write(
-            json.dumps(
-                {
-                    "id": f"log_{int(time.time())}_conftest_before_setdefault",
-                    "timestamp": int(time.time() * 1000),
-                    "location": "conftest.py:17",
-                    "message": "Before setdefault - checking MYTHOSMUD_ADMIN_PASSWORD",
-                    "data": {
-                        "env_var_exists": "MYTHOSMUD_ADMIN_PASSWORD" in os.environ,
-                        "env_var_value": admin_pw_before[:3] + "..."
-                        if len(admin_pw_before) > 3 and admin_pw_before != "NOT_SET"
-                        else admin_pw_before,
-                        "env_var_length": len(admin_pw_before) if admin_pw_before != "NOT_SET" else 0,
-                    },
-                    "sessionId": "debug-session",
-                    "runId": "ci-debug",
-                    "hypothesisId": "C",
-                }
-            )
-            + "\n"
-        )
-except Exception:
-    pass  # Ignore logging errors
-# #endregion
+# Set critical environment variables immediately to prevent module-level config loading failures
 # Use explicit assignment if empty, not setdefault (which only sets if key doesn't exist)
 if not os.environ.get("MYTHOSMUD_ADMIN_PASSWORD"):
     os.environ["MYTHOSMUD_ADMIN_PASSWORD"] = "test-admin-password-for-development"
@@ -58,34 +26,6 @@ os.environ.setdefault("LOGGING_ENVIRONMENT", "unit_test")
 os.environ.setdefault("DATABASE_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
 os.environ.setdefault("DATABASE_NPC_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
 os.environ.setdefault("GAME_ALIASES_DIR", "data/unit_test/players/aliases")
-# #region agent log
-try:
-    admin_pw_after = os.environ.get("MYTHOSMUD_ADMIN_PASSWORD", "NOT_SET")
-    with open(log_path, "a", encoding="utf-8") as f:
-        f.write(
-            json.dumps(
-                {
-                    "id": f"log_{int(time.time())}_conftest_after_setdefault",
-                    "timestamp": int(time.time() * 1000),
-                    "location": "conftest.py:25",
-                    "message": "After setdefault - checking MYTHOSMUD_ADMIN_PASSWORD",
-                    "data": {
-                        "env_var_exists": "MYTHOSMUD_ADMIN_PASSWORD" in os.environ,
-                        "env_var_value": admin_pw_after[:3] + "..."
-                        if len(admin_pw_after) > 3 and admin_pw_after != "NOT_SET"
-                        else admin_pw_after,
-                        "env_var_length": len(admin_pw_after) if admin_pw_after != "NOT_SET" else 0,
-                    },
-                    "sessionId": "debug-session",
-                    "runId": "ci-debug",
-                    "hypothesisId": "D",
-                }
-            )
-            + "\n"
-        )
-except Exception:
-    pass  # Ignore logging errors
-# #endregion
 
 # Imports must come after environment variables to prevent config loading failures
 from server.config import reset_config  # noqa: E402
