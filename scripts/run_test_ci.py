@@ -44,7 +44,172 @@ if IN_CI:
     env = os.environ.copy()
     env["PYTHONUNBUFFERED"] = "1"
 
+    # #region agent log
+    log_path = os.path.join(PROJECT_ROOT, ".cursor", "debug.log")
+    try:
+        # Check if pytest-xdist is installed
+        import importlib.util
+        xdist_path = importlib.util.find_spec("xdist")
+        pytest_xdist_installed = xdist_path is not None
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(
+                json.dumps(
+                    {
+                        "id": f"log_{int(time.time())}_check_xdist",
+                        "timestamp": int(time.time() * 1000),
+                        "location": "run_test_ci.py:47",
+                        "message": "Checking if pytest-xdist is installed",
+                        "data": {
+                            "pytest_xdist_installed": pytest_xdist_installed,
+                            "xdist_path": str(xdist_path) if xdist_path else None,
+                            "python_exe": python_exe,
+                        },
+                        "sessionId": "debug-session",
+                        "runId": "ci-check",
+                        "hypothesisId": "A",
+                    }
+                )
+                + "\n"
+            )
+    except Exception:
+        pass  # Ignore logging errors
+    # #endregion
+
+    # #region agent log
+    try:
+        # Check installed packages
+        result = subprocess.run(
+            [python_exe, "-m", "pip", "list"],
+            capture_output=True,
+            text=True,
+            cwd=PROJECT_ROOT,
+            env=env,
+        )
+        installed_packages = result.stdout
+        has_pytest_xdist = "pytest-xdist" in installed_packages
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(
+                json.dumps(
+                    {
+                        "id": f"log_{int(time.time())}_pip_list",
+                        "timestamp": int(time.time() * 1000),
+                        "location": "run_test_ci.py:75",
+                        "message": "Checking installed packages via pip list",
+                        "data": {
+                            "has_pytest_xdist": has_pytest_xdist,
+                            "pip_list_output_preview": installed_packages[:500],
+                        },
+                        "sessionId": "debug-session",
+                        "runId": "ci-check",
+                        "hypothesisId": "A",
+                    }
+                )
+                + "\n"
+            )
+    except Exception:
+        pass  # Ignore logging errors
+    # #endregion
+
+    # #region agent log
+    try:
+        # Check pytest plugins
+        result = subprocess.run(
+            [python_exe, "-m", "pytest", "--collect-only", "-q"],
+            capture_output=True,
+            text=True,
+            cwd=PROJECT_ROOT,
+            env=env,
+        )
+        pytest_plugins = result.stdout + result.stderr
+        has_xdist_plugin = "xdist" in pytest_plugins or "pytest-xdist" in pytest_plugins
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(
+                json.dumps(
+                    {
+                        "id": f"log_{int(time.time())}_pytest_plugins",
+                        "timestamp": int(time.time() * 1000),
+                        "location": "run_test_ci.py:100",
+                        "message": "Checking pytest plugins",
+                        "data": {
+                            "has_xdist_plugin": has_xdist_plugin,
+                            "pytest_output_preview": pytest_plugins[:500],
+                        },
+                        "sessionId": "debug-session",
+                        "runId": "ci-check",
+                        "hypothesisId": "B",
+                    }
+                )
+                + "\n"
+            )
+    except Exception:
+        pass  # Ignore logging errors
+    # #endregion
+
+    # #region agent log
+    try:
+        # Read pytest.ini to check for -n flag
+        pytest_ini_path = os.path.join(PROJECT_ROOT, "server", "pytest.ini")
+        with open(pytest_ini_path, encoding="utf-8") as f:
+            pytest_ini_content = f.read()
+        has_n_auto = "-n auto" in pytest_ini_content or "-n" in pytest_ini_content
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(
+                json.dumps(
+                    {
+                        "id": f"log_{int(time.time())}_pytest_ini",
+                        "timestamp": int(time.time() * 1000),
+                        "location": "run_test_ci.py:125",
+                        "message": "Checking pytest.ini for -n flag",
+                        "data": {
+                            "has_n_auto": has_n_auto,
+                            "pytest_ini_preview": pytest_ini_content[:500],
+                        },
+                        "sessionId": "debug-session",
+                        "runId": "ci-check",
+                        "hypothesisId": "C",
+                    }
+                )
+                + "\n"
+            )
+    except Exception:
+        pass  # Ignore logging errors
+    # #endregion
+
     # Run tests with coverage
+    # #region agent log
+    try:
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(
+                json.dumps(
+                    {
+                        "id": f"log_{int(time.time())}_pytest_start",
+                        "timestamp": int(time.time() * 1000),
+                        "location": "run_test_ci.py:150",
+                        "message": "Starting pytest execution",
+                        "data": {
+                            "pytest_command": [
+                                python_exe,
+                                "-m",
+                                "pytest",
+                                "server/tests/",
+                                "--cov=server",
+                                "--cov-report=xml",
+                                "--cov-report=html",
+                                "--cov-config=.coveragerc",
+                                "-v",
+                                "--tb=short",
+                            ],
+                        },
+                        "sessionId": "debug-session",
+                        "runId": "ci-check",
+                        "hypothesisId": "D",
+                    }
+                )
+                + "\n"
+            )
+    except Exception:
+        pass  # Ignore logging errors
+    # #endregion
     subprocess.run(
         [
             python_exe,
