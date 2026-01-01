@@ -22,11 +22,11 @@ describe('layout configuration', () => {
       expect(defaultForceLayoutConfig.linkDistance).toBe(200);
       expect(defaultForceLayoutConfig.chargeStrength).toBe(-1200);
       expect(defaultForceLayoutConfig.centerStrength).toBe(0.05);
-      expect(defaultForceLayoutConfig.iterations).toBe(400);
-      expect(defaultForceLayoutConfig.damping).toBe(0.85);
+      expect(defaultForceLayoutConfig.iterations).toBe(800);
+      expect(defaultForceLayoutConfig.damping).toBe(0.9);
       expect(defaultForceLayoutConfig.minDistance).toBe(120);
       expect(defaultForceLayoutConfig.nodeRadius).toBe(50);
-      expect(defaultForceLayoutConfig.collisionStrength).toBe(2.0);
+      expect(defaultForceLayoutConfig.collisionStrength).toBe(8.0);
       expect(defaultForceLayoutConfig.minimizeCrossings).toBe(true);
     });
   });

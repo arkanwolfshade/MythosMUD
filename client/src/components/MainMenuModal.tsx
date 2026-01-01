@@ -17,7 +17,7 @@ export interface MainMenuModalProps {
   isOpen: boolean;
   /** Callback when modal should close */
   onClose: () => void;
-  /** Callback when map button is clicked (for in-page modal) */
+  /** @deprecated Callback when map button is clicked (for in-page modal) - no longer used, always opens in new tab */
   onMapClick?: () => void;
   /** Callback when logout button is clicked */
   onLogoutClick: () => void;
@@ -28,26 +28,17 @@ export interface MainMenuModalProps {
     zone?: string;
     subZone?: string;
   } | null;
-  /** Whether to open map in new tab (default: true if currentRoom provided, false otherwise) */
+  /** @deprecated Always opens in new tab now */
   openMapInNewTab?: boolean;
 }
 
 /**
  * Main Menu Modal component.
  */
-export const MainMenuModal: React.FC<MainMenuModalProps> = ({
-  isOpen,
-  onClose,
-  onMapClick,
-  onLogoutClick,
-  currentRoom,
-  openMapInNewTab,
-}) => {
+export const MainMenuModal: React.FC<MainMenuModalProps> = ({ isOpen, onClose, onLogoutClick, currentRoom }) => {
   const handleMapClick = () => {
-    // Determine if we should open in new tab
-    const shouldOpenInNewTab = openMapInNewTab ?? (currentRoom !== undefined && currentRoom !== null);
-
-    if (shouldOpenInNewTab && currentRoom) {
+    // Always open map in new tab
+    if (currentRoom) {
       // Build URL with room parameters
       const params = new URLSearchParams();
       params.set('roomId', currentRoom.id);
@@ -57,16 +48,11 @@ export const MainMenuModal: React.FC<MainMenuModalProps> = ({
 
       // Open map in new tab
       window.open(`/map?${params.toString()}`, '_blank');
-      onClose();
-    } else if (onMapClick) {
-      // Use the callback for in-page modal
-      onMapClick();
-      onClose();
     } else {
       // Fallback: open in new tab without room info
       window.open('/map', '_blank');
-      onClose();
     }
+    onClose();
   };
   // Handle ESC key to close modal
   useEffect(() => {
@@ -149,7 +135,7 @@ export const MainMenuModal: React.FC<MainMenuModalProps> = ({
             style={{ pointerEvents: 'auto' }}
             type="button"
           >
-            Map {currentRoom ? '(New Tab)' : ''}
+            Map (New Tab)
           </button>
 
           {/* Settings Button (Placeholder - Inactive) */}

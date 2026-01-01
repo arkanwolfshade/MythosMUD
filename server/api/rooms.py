@@ -105,8 +105,9 @@ async def list_rooms(
     Returns room data in the same format as the single room endpoint,
     including map_x and map_y coordinates when available in the database.
 
-    If filter_explored is True and a user is authenticated, only returns
-    rooms that the player has explored.
+    If filter_explored is True and a user is authenticated:
+    - Admin users: See all rooms (filtering is skipped)
+    - Non-admin users: Only see rooms that the player has explored
     """
     logger.debug(
         "Room list requested",
@@ -126,55 +127,67 @@ async def list_rooms(
             include_exits=include_exits,
         )
 
-        # Filter by explored rooms if requested and user is authenticated
+        # Filter by explored rooms if requested, user is authenticated, and user is NOT an admin
+        # Admins should see all rooms regardless of exploration status
         if filter_explored and current_user:
-            try:
-                # Get player from user
-                persistence = request.app.state.persistence  # Now async_persistence
-                user_id = str(current_user.id)
-                player = await persistence.get_player_by_user_id(user_id)
+            # Check if user is admin - admins see all rooms
+            is_admin = current_user.is_admin or current_user.is_superuser
 
-                if player:
-                    # Get explored rooms for this player using ExplorationService from container
-                    container = request.app.state.container
-                    exploration_service = container.exploration_service
-                    player_id = uuid.UUID(str(player.player_id))
-                    explored_room_ids = await exploration_service.get_explored_rooms(player_id, session)
-
-                    # Convert explored room UUIDs to stable_ids for filtering
-                    # We need to look up stable_ids from room UUIDs
-                    if explored_room_ids:
-                        # Convert string UUIDs to UUID objects for proper PostgreSQL type handling
-                        room_uuid_list = [uuid.UUID(rid) for rid in explored_room_ids]
-                        # Use IN clause with expanding parameters for proper array handling
-                        # This avoids mixing parameter syntax with casting syntax that causes asyncpg errors
-                        lookup_query = text("SELECT stable_id FROM rooms WHERE id IN :room_ids").bindparams(
-                            bindparam("room_ids", expanding=True)
-                        )
-                        result = await session.execute(lookup_query, {"room_ids": room_uuid_list})
-                        explored_stable_ids = {row[0] for row in result.fetchall()}
-
-                        # Filter rooms to only include explored ones
-                        rooms = [room for room in rooms if room.get("id") in explored_stable_ids]
-
-                        logger.debug(
-                            "Filtered rooms by exploration",
-                            explored_count=len(explored_stable_ids),
-                            filtered_count=len(rooms),
-                        )
-                    else:
-                        # Player has explored no rooms - return empty list
-                        rooms = []
-                        logger.debug("Player has explored no rooms, returning empty list")
-                else:
-                    logger.warning("Player not found for user, cannot filter by exploration", user_id=user_id)
-            except Exception as e:
-                # Log error but don't fail the request - just return all rooms
-                logger.warning(
-                    "Error filtering by explored rooms, returning all rooms",
-                    error=str(e),
-                    error_type=type(e).__name__,
+            if is_admin:
+                logger.debug(
+                    "Admin user requested filtered rooms, but admins see all rooms",
+                    user_id=str(current_user.id),
+                    username=current_user.username,
                 )
+                # Skip filtering - admins see all rooms
+            else:
+                try:
+                    # Get player from user
+                    persistence = request.app.state.persistence  # Now async_persistence
+                    user_id = str(current_user.id)
+                    player = await persistence.get_player_by_user_id(user_id)
+
+                    if player:
+                        # Get explored rooms for this player using ExplorationService from container
+                        container = request.app.state.container
+                        exploration_service = container.exploration_service
+                        player_id = uuid.UUID(str(player.player_id))
+                        explored_room_ids = await exploration_service.get_explored_rooms(player_id, session)
+
+                        # Convert explored room UUIDs to stable_ids for filtering
+                        # We need to look up stable_ids from room UUIDs
+                        if explored_room_ids:
+                            # Convert string UUIDs to UUID objects for proper PostgreSQL type handling
+                            room_uuid_list = [uuid.UUID(rid) for rid in explored_room_ids]
+                            # Use IN clause with expanding parameters for proper array handling
+                            # This avoids mixing parameter syntax with casting syntax that causes asyncpg errors
+                            lookup_query = text("SELECT stable_id FROM rooms WHERE id IN :room_ids").bindparams(
+                                bindparam("room_ids", expanding=True)
+                            )
+                            result = await session.execute(lookup_query, {"room_ids": room_uuid_list})
+                            explored_stable_ids = {row[0] for row in result.fetchall()}
+
+                            # Filter rooms to only include explored ones
+                            rooms = [room for room in rooms if room.get("id") in explored_stable_ids]
+
+                            logger.debug(
+                                "Filtered rooms by exploration",
+                                explored_count=len(explored_stable_ids),
+                                filtered_count=len(rooms),
+                            )
+                        else:
+                            # Player has explored no rooms - return empty list
+                            rooms = []
+                            logger.debug("Player has explored no rooms, returning empty list")
+                    else:
+                        logger.warning("Player not found for user, cannot filter by exploration", user_id=user_id)
+                except Exception as e:
+                    # Log error but don't fail the request - just return all rooms
+                    logger.warning(
+                        "Error filtering by explored rooms, returning all rooms",
+                        error=str(e),
+                        error_type=type(e).__name__,
+                    )
 
         logger.debug(
             "Room list returned",
@@ -183,6 +196,7 @@ async def list_rooms(
             sub_zone=sub_zone,
             count=len(rooms),
             filtered=filter_explored,
+            is_admin=(current_user.is_admin or current_user.is_superuser) if current_user else False,
         )
 
         return {

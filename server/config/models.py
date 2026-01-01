@@ -267,6 +267,7 @@ class SecurityConfig(BaseSettings):
         # #region agent log
         import json
         import time
+
         log_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), ".cursor", "debug.log")
         try:
             env_value = os.getenv("MYTHOSMUD_ADMIN_PASSWORD", "NOT_SET")
@@ -281,7 +282,9 @@ class SecurityConfig(BaseSettings):
                             "data": {
                                 "password_length": len(v),
                                 "password_preview": v[:3] + "..." if len(v) > 3 else v,
-                                "env_var_value": env_value[:3] + "..." if len(env_value) > 3 and env_value != "NOT_SET" else env_value,
+                                "env_var_value": env_value[:3] + "..."
+                                if len(env_value) > 3 and env_value != "NOT_SET"
+                                else env_value,
                                 "env_var_exists": "MYTHOSMUD_ADMIN_PASSWORD" in os.environ,
                                 "env_var_length": len(env_value) if env_value != "NOT_SET" else 0,
                             },
@@ -313,7 +316,9 @@ class SecurityConfig(BaseSettings):
                                 "data": {
                                     "password_length": len(v),
                                     "minimum_length": 8,
-                                    "env_var_value": env_value[:3] + "..." if len(env_value) > 3 and env_value != "NOT_SET" else env_value,
+                                    "env_var_value": env_value[:3] + "..."
+                                    if len(env_value) > 3 and env_value != "NOT_SET"
+                                    else env_value,
                                 },
                                 "sessionId": "debug-session",
                                 "runId": "ci-debug",
@@ -963,6 +968,7 @@ class AppConfig(BaseSettings):
         # #region agent log
         import json
         import time
+
         log_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), ".cursor", "debug.log")
         try:
             # Check for .env files
@@ -983,7 +989,9 @@ class AppConfig(BaseSettings):
                             "message": "AppConfig.__init__ - checking environment and .env files",
                             "data": {
                                 "env_var_exists": "MYTHOSMUD_ADMIN_PASSWORD" in os.environ,
-                                "env_var_value": admin_pw_env[:3] + "..." if len(admin_pw_env) > 3 and admin_pw_env != "NOT_SET" else admin_pw_env,
+                                "env_var_value": admin_pw_env[:3] + "..."
+                                if len(admin_pw_env) > 3 and admin_pw_env != "NOT_SET"
+                                else admin_pw_env,
                                 "env_var_length": len(admin_pw_env) if admin_pw_env != "NOT_SET" else 0,
                                 "is_empty_string": admin_pw_env == "",
                                 "env_files_found": env_files,

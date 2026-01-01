@@ -8,6 +8,7 @@ import { useMemoryMonitor } from '../../utils/memoryMonitor';
 import { DeathInterstitial } from '../DeathInterstitial';
 import { DeliriumInterstitial } from '../DeliriumInterstitial';
 import { MainMenuModal } from '../MainMenuModal';
+import { AsciiMinimap } from '../map/AsciiMinimap';
 import { MapView } from '../MapView';
 import { GameClientV2 } from './GameClientV2';
 import { TabbedInterfaceOverlay } from './components/TabbedInterfaceOverlay';
@@ -354,6 +355,45 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
         currentRoom={gameState.room}
         authToken={authToken}
       />
+
+      {/* ASCII Minimap - always visible when player is in a room */}
+      {gameState.room && (
+        <AsciiMinimap
+          plane={gameState.room.plane || 'earth'}
+          zone={gameState.room.zone || 'arkhamcity'}
+          subZone={gameState.room.sub_zone}
+          currentRoomId={gameState.room.id}
+          authToken={authToken}
+          size={5}
+          position="bottom-right"
+          onClick={() => {
+            // Open map in a tab or full screen
+            if (tabs.length > 0) {
+              // If tabs are open, add map as a tab
+              addTab({
+                id: `map-${gameState.room?.id}`,
+                label: 'Map',
+                content: (
+                  <MapView
+                    isOpen={true}
+                    onClose={() => {
+                      closeTab(`map-${gameState.room?.id}`);
+                    }}
+                    currentRoom={gameState.room}
+                    authToken={authToken}
+                    hideHeader={true}
+                  />
+                ),
+                closable: true,
+              });
+              setActiveTab(`map-${gameState.room?.id}`);
+            } else {
+              // Otherwise open full screen
+              setShowMap(true);
+            }
+          }}
+        />
+      )}
     </div>
   );
 };

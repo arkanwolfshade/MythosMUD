@@ -62,6 +62,7 @@ def _create_config_instance() -> AppConfig:
     import json
     import os
     import time
+
     log_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), ".cursor", "debug.log")
     try:
         admin_pw_env = os.getenv("MYTHOSMUD_ADMIN_PASSWORD", "NOT_SET")
@@ -75,7 +76,9 @@ def _create_config_instance() -> AppConfig:
                         "message": "Creating AppConfig instance - checking environment",
                         "data": {
                             "env_var_exists": "MYTHOSMUD_ADMIN_PASSWORD" in os.environ,
-                            "env_var_value": admin_pw_env[:3] + "..." if len(admin_pw_env) > 3 and admin_pw_env != "NOT_SET" else admin_pw_env,
+                            "env_var_value": admin_pw_env[:3] + "..."
+                            if len(admin_pw_env) > 3 and admin_pw_env != "NOT_SET"
+                            else admin_pw_env,
                             "env_var_length": len(admin_pw_env) if admin_pw_env != "NOT_SET" else 0,
                         },
                         "sessionId": "debug-session",

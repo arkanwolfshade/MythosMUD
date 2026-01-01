@@ -9,15 +9,15 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { Node, Edge } from 'reactflow';
+import type { Edge, Node } from 'reactflow';
 import type { RoomNodeData } from '../types';
 import {
-  applyGridLayout,
   applyForceLayout,
-  type GridLayoutConfig,
-  type ForceLayoutConfig,
-  defaultGridLayoutConfig,
+  applyGridLayout,
   defaultForceLayoutConfig,
+  defaultGridLayoutConfig,
+  type ForceLayoutConfig,
+  type GridLayoutConfig,
 } from '../utils/layout';
 import { debounce } from '../utils/performance';
 
@@ -157,7 +157,7 @@ export function useMapLayout(options: UseMapLayoutOptions): UseMapLayoutResult {
     const autoLayoutMap = new Map(nodesWithLayout.map(n => [n.id, n.position]));
 
     // Combine all nodes with their appropriate positions
-    return nodes.map(node => {
+    const result = nodes.map(node => {
       // Check if node has stored coordinates and we should use them
       if (useStoredCoordinates && node.data) {
         const roomData = node.data as RoomNodeData & { map_x?: number | null; map_y?: number | null };
@@ -204,6 +204,8 @@ export function useMapLayout(options: UseMapLayoutOptions): UseMapLayoutResult {
       // Fallback: use existing position
       return node;
     });
+
+    return result;
   }, [nodes, edges, useStoredCoordinates, layoutConfig, forceLayoutConfig, layoutAlgorithm]);
   /* eslint-enable react-hooks/refs */
 
