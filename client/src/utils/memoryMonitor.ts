@@ -265,6 +265,8 @@ export class MemoryMonitor {
    * Handle memory warning
    */
   private handleMemoryWarning(message: string, snapshot: MemorySnapshot): void {
+    // nosemgrep: javascript.lang.security.audit.unsafe-formatstring.unsafe-formatstring
+    // This is internal logging with controlled string values, not user input
     console.warn(`[MemoryMonitor] ${message}`, snapshot);
 
     // Could send to analytics or logging service

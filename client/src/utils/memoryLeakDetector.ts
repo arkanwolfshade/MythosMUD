@@ -95,6 +95,8 @@ export class MemoryLeakDetector {
     // Check for critical memory usage
     if (usedMB > this.options.criticalThreshold) {
       const message = `CRITICAL: Memory usage is ${usedMB.toFixed(2)}MB (${totalMB.toFixed(2)}MB total)`;
+      // nosemgrep: javascript.lang.security.audit.unsafe-formatstring.unsafe-formatstring
+      // This is internal logging with controlled numeric values, not user input
       console.error(message, snapshot);
       this.onCritical?.(message, snapshot);
     }

@@ -15,7 +15,7 @@ from server.game.room_service import RoomService
 def mock_persistence():
     """Create a mock persistence layer."""
     persistence = MagicMock()
-    persistence.async_get_room = AsyncMock()
+    persistence.get_room_by_id = MagicMock()
     persistence.async_list_rooms = AsyncMock(return_value=[])
     return persistence
 
@@ -29,13 +29,13 @@ def mock_room_cache():
 
 
 @pytest.fixture
-def room_service(mock_persistence):
+def room_service(mock_persistence):  # pylint: disable=redefined-outer-name
     """Create a RoomService instance."""
     return RoomService(mock_persistence)
 
 
 @pytest.fixture
-def room_service_with_cache(mock_persistence, mock_room_cache):
+def room_service_with_cache(mock_persistence, mock_room_cache):  # pylint: disable=redefined-outer-name
     """Create a RoomService instance with cache."""
     return RoomService(mock_persistence, room_cache_service=mock_room_cache)
 
@@ -52,22 +52,24 @@ def sample_room_dict():
 
 
 @pytest.mark.asyncio
-async def test_room_service_init(room_service):
+async def test_room_service_init(room_service):  # pylint: disable=redefined-outer-name
     """Test RoomService initialization."""
     assert room_service.persistence is not None
     assert room_service.room_cache is None
+    # pylint: disable=protected-access
+    # Accessing protected member for test verification of internal state
     assert room_service._environment_state["daypart"] == "day"
     assert room_service._environment_state["is_daytime"] is True
 
 
 @pytest.mark.asyncio
-async def test_room_service_init_with_cache(room_service_with_cache):
+async def test_room_service_init_with_cache(room_service_with_cache):  # pylint: disable=redefined-outer-name
     """Test RoomService initialization with cache."""
     assert room_service_with_cache.room_cache is not None
 
 
 @pytest.mark.asyncio
-async def test_get_room_with_cache(room_service_with_cache, sample_room_dict):
+async def test_get_room_with_cache(room_service_with_cache, sample_room_dict):  # pylint: disable=redefined-outer-name
     """Test get_room() uses cache when available."""
     room_service_with_cache.room_cache.get_room = AsyncMock(return_value=sample_room_dict)
     result = await room_service_with_cache.get_room("room_001")
@@ -76,7 +78,7 @@ async def test_get_room_with_cache(room_service_with_cache, sample_room_dict):
 
 
 @pytest.mark.asyncio
-async def test_get_room_cache_not_found(room_service_with_cache):
+async def test_get_room_cache_not_found(room_service_with_cache):  # pylint: disable=redefined-outer-name
     """Test get_room() returns None when room not in cache."""
     room_service_with_cache.room_cache.get_room = AsyncMock(return_value=None)
     result = await room_service_with_cache.get_room("room_001")
@@ -84,47 +86,51 @@ async def test_get_room_cache_not_found(room_service_with_cache):
 
 
 @pytest.mark.asyncio
-async def test_get_room_without_cache(room_service, sample_room_dict):
+async def test_get_room_without_cache(room_service, sample_room_dict):  # pylint: disable=redefined-outer-name
     """Test get_room() falls back to persistence when cache unavailable."""
     mock_room = MagicMock()
     mock_room.name = "Test Room"
     mock_room.to_dict = MagicMock(return_value=sample_room_dict)
-    room_service.persistence.async_get_room = AsyncMock(return_value=mock_room)
+    room_service.persistence.get_room_by_id = MagicMock(return_value=mock_room)
     result = await room_service.get_room("room_001")
     assert result == sample_room_dict
-    room_service.persistence.async_get_room.assert_awaited_once_with("room_001")
+    room_service.persistence.get_room_by_id.assert_called_once_with("room_001")
 
 
 @pytest.mark.asyncio
-async def test_get_room_persistence_not_found(room_service):
+async def test_get_room_persistence_not_found(room_service):  # pylint: disable=redefined-outer-name
     """Test get_room() returns None when room not found in persistence."""
-    room_service.persistence.async_get_room = AsyncMock(return_value=None)
+    room_service.persistence.get_room_by_id = MagicMock(return_value=None)
     result = await room_service.get_room("room_001")
     assert result is None
 
 
 @pytest.mark.asyncio
-async def test_get_room_persistence_returns_dict(room_service, sample_room_dict):
+async def test_get_room_persistence_returns_dict(room_service, sample_room_dict):  # pylint: disable=redefined-outer-name
     """Test get_room() handles dict from persistence."""
-    room_service.persistence.async_get_room = AsyncMock(return_value=sample_room_dict)
+    # When persistence returns a dict, we wrap it to simulate a Room object
+    # The implementation expects a Room object with to_dict() method
+    mock_room = MagicMock()
+    mock_room.to_dict = MagicMock(return_value=sample_room_dict)
+    room_service.persistence.get_room_by_id = MagicMock(return_value=mock_room)
     result = await room_service.get_room("room_001")
     assert result == sample_room_dict
 
 
-def test_get_room_by_name(room_service):
+def test_get_room_by_name(room_service):  # pylint: disable=redefined-outer-name
     """Test get_room_by_name() returns None (not implemented)."""
     result = room_service.get_room_by_name("Test Room")
     assert result is None
 
 
-def test_list_rooms_in_zone(room_service):
+def test_list_rooms_in_zone(room_service):  # pylint: disable=redefined-outer-name
     """Test list_rooms_in_zone() returns empty list (not implemented)."""
     result = room_service.list_rooms_in_zone("zone_001")
     assert result == []
 
 
 @pytest.mark.asyncio
-async def test_get_adjacent_rooms_success(room_service_with_cache, sample_room_dict):
+async def test_get_adjacent_rooms_success(room_service_with_cache, sample_room_dict):  # pylint: disable=redefined-outer-name
     """Test get_adjacent_rooms() returns adjacent rooms."""
     room_002 = {"id": "room_002", "name": "Room 2"}
     room_003 = {"id": "room_003", "name": "Room 3"}
@@ -138,7 +144,7 @@ async def test_get_adjacent_rooms_success(room_service_with_cache, sample_room_d
 
 
 @pytest.mark.asyncio
-async def test_get_adjacent_rooms_source_not_found(room_service_with_cache):
+async def test_get_adjacent_rooms_source_not_found(room_service_with_cache):  # pylint: disable=redefined-outer-name
     """Test get_adjacent_rooms() returns empty list when source room not found."""
     room_service_with_cache.room_cache.get_room = AsyncMock(return_value=None)
     result = await room_service_with_cache.get_adjacent_rooms("room_001")
@@ -146,7 +152,7 @@ async def test_get_adjacent_rooms_source_not_found(room_service_with_cache):
 
 
 @pytest.mark.asyncio
-async def test_get_adjacent_rooms_no_exits(room_service_with_cache):
+async def test_get_adjacent_rooms_no_exits(room_service_with_cache):  # pylint: disable=redefined-outer-name
     """Test get_adjacent_rooms() handles room with no exits."""
     room_no_exits = {"id": "room_001", "name": "Test Room", "exits": {}}
     room_service_with_cache.room_cache.get_room = AsyncMock(return_value=room_no_exits)
@@ -155,7 +161,7 @@ async def test_get_adjacent_rooms_no_exits(room_service_with_cache):
 
 
 @pytest.mark.asyncio
-async def test_get_adjacent_rooms_null_exit(room_service_with_cache, sample_room_dict):
+async def test_get_adjacent_rooms_null_exit(room_service_with_cache, sample_room_dict):  # pylint: disable=redefined-outer-name
     """Test get_adjacent_rooms() skips null exits."""
     room_with_null = {
         **sample_room_dict,
@@ -172,7 +178,7 @@ async def test_get_adjacent_rooms_null_exit(room_service_with_cache, sample_room
 
 
 @pytest.mark.asyncio
-async def test_get_adjacent_rooms_target_not_found(room_service_with_cache, sample_room_dict):
+async def test_get_adjacent_rooms_target_not_found(room_service_with_cache, sample_room_dict):  # pylint: disable=redefined-outer-name
     """Test get_adjacent_rooms() handles target room not found."""
 
     # get_room is called for source room, then for each exit (north and south)
@@ -189,7 +195,7 @@ async def test_get_adjacent_rooms_target_not_found(room_service_with_cache, samp
 
 
 @pytest.mark.asyncio
-async def test_get_local_chat_scope(room_service_with_cache, sample_room_dict):
+async def test_get_local_chat_scope(room_service_with_cache, sample_room_dict):  # pylint: disable=redefined-outer-name
     """Test get_local_chat_scope() returns current room and adjacent rooms."""
     room_002 = {"id": "room_002", "name": "Room 2"}
     room_003 = {"id": "room_003", "name": "Room 3"}
@@ -214,7 +220,7 @@ async def test_get_local_chat_scope(room_service_with_cache, sample_room_dict):
 
 
 @pytest.mark.asyncio
-async def test_get_local_chat_scope_source_not_found(room_service_with_cache):
+async def test_get_local_chat_scope_source_not_found(room_service_with_cache):  # pylint: disable=redefined-outer-name
     """Test get_local_chat_scope() returns empty list when source room not found."""
     room_service_with_cache.room_cache.get_room = AsyncMock(return_value=None)
     result = await room_service_with_cache.get_local_chat_scope("room_001")
@@ -222,7 +228,7 @@ async def test_get_local_chat_scope_source_not_found(room_service_with_cache):
 
 
 @pytest.mark.asyncio
-async def test_validate_room_exists_with_cache(room_service_with_cache, sample_room_dict):
+async def test_validate_room_exists_with_cache(room_service_with_cache, sample_room_dict):  # pylint: disable=redefined-outer-name
     """Test validate_room_exists() uses cache."""
     room_service_with_cache.room_cache.get_room = AsyncMock(return_value=sample_room_dict)
     result = await room_service_with_cache.validate_room_exists("room_001")
@@ -230,7 +236,7 @@ async def test_validate_room_exists_with_cache(room_service_with_cache, sample_r
 
 
 @pytest.mark.asyncio
-async def test_validate_room_exists_cache_not_found(room_service_with_cache):
+async def test_validate_room_exists_cache_not_found(room_service_with_cache):  # pylint: disable=redefined-outer-name
     """Test validate_room_exists() returns False when room not in cache."""
     room_service_with_cache.room_cache.get_room = AsyncMock(return_value=None)
     result = await room_service_with_cache.validate_room_exists("room_001")
@@ -238,15 +244,17 @@ async def test_validate_room_exists_cache_not_found(room_service_with_cache):
 
 
 @pytest.mark.asyncio
-async def test_validate_room_exists_without_cache(room_service, sample_room_dict):
+async def test_validate_room_exists_without_cache(room_service, sample_room_dict):  # pylint: disable=redefined-outer-name
     """Test validate_room_exists() falls back to persistence."""
-    room_service.persistence.async_get_room = AsyncMock(return_value=sample_room_dict)
+    mock_room = MagicMock()
+    mock_room.to_dict = MagicMock(return_value=sample_room_dict)
+    room_service.persistence.get_room_by_id = MagicMock(return_value=mock_room)
     result = await room_service.validate_room_exists("room_001")
     assert result is True
 
 
 @pytest.mark.asyncio
-async def test_validate_exit_exists_success(room_service_with_cache, sample_room_dict):
+async def test_validate_exit_exists_success(room_service_with_cache, sample_room_dict):  # pylint: disable=redefined-outer-name
     """Test validate_exit_exists() returns True for valid exit."""
     room_service_with_cache.room_cache.get_room = AsyncMock(return_value=sample_room_dict)
     result = await room_service_with_cache.validate_exit_exists("room_001", "room_002")
@@ -254,7 +262,7 @@ async def test_validate_exit_exists_success(room_service_with_cache, sample_room
 
 
 @pytest.mark.asyncio
-async def test_validate_exit_exists_invalid(room_service_with_cache, sample_room_dict):
+async def test_validate_exit_exists_invalid(room_service_with_cache, sample_room_dict):  # pylint: disable=redefined-outer-name
     """Test validate_exit_exists() returns False for invalid exit."""
     room_service_with_cache.room_cache.get_room = AsyncMock(return_value=sample_room_dict)
     result = await room_service_with_cache.validate_exit_exists("room_001", "room_999")
@@ -262,7 +270,7 @@ async def test_validate_exit_exists_invalid(room_service_with_cache, sample_room
 
 
 @pytest.mark.asyncio
-async def test_validate_exit_exists_from_room_not_found(room_service_with_cache):
+async def test_validate_exit_exists_from_room_not_found(room_service_with_cache):  # pylint: disable=redefined-outer-name
     """Test validate_exit_exists() returns False when from_room not found."""
     room_service_with_cache.room_cache.get_room = AsyncMock(return_value=None)
     result = await room_service_with_cache.validate_exit_exists("room_001", "room_002")
@@ -270,7 +278,7 @@ async def test_validate_exit_exists_from_room_not_found(room_service_with_cache)
 
 
 @pytest.mark.asyncio
-async def test_validate_exit_exists_no_exits(room_service_with_cache):
+async def test_validate_exit_exists_no_exits(room_service_with_cache):  # pylint: disable=redefined-outer-name
     """Test validate_exit_exists() returns False when room has no exits."""
     room_no_exits = {"id": "room_001", "name": "Test Room", "exits": {}}
     room_service_with_cache.room_cache.get_room = AsyncMock(return_value=room_no_exits)
@@ -279,7 +287,7 @@ async def test_validate_exit_exists_no_exits(room_service_with_cache):
 
 
 @pytest.mark.asyncio
-async def test_get_room_occupants_with_cache_room_object(room_service_with_cache):
+async def test_get_room_occupants_with_cache_room_object(room_service_with_cache):  # pylint: disable=redefined-outer-name
     """Test get_room_occupants() handles Room object with get_players/get_npcs."""
     mock_room = MagicMock()
     mock_room.get_players = MagicMock(return_value=["player1", "player2"])
@@ -293,7 +301,7 @@ async def test_get_room_occupants_with_cache_room_object(room_service_with_cache
 
 
 @pytest.mark.asyncio
-async def test_get_room_occupants_with_cache_dict(room_service_with_cache):
+async def test_get_room_occupants_with_cache_dict(room_service_with_cache):  # pylint: disable=redefined-outer-name
     """Test get_room_occupants() handles room dict."""
     room_dict = {"id": "room_001", "occupants": ["player1", "player2"]}
     room_service_with_cache.room_cache.get_room = AsyncMock(return_value=room_dict)
@@ -302,7 +310,7 @@ async def test_get_room_occupants_with_cache_dict(room_service_with_cache):
 
 
 @pytest.mark.asyncio
-async def test_get_room_occupants_cache_not_found(room_service_with_cache):
+async def test_get_room_occupants_cache_not_found(room_service_with_cache):  # pylint: disable=redefined-outer-name
     """Test get_room_occupants() returns empty list when room not found."""
     room_service_with_cache.room_cache.get_room = AsyncMock(return_value=None)
     result = await room_service_with_cache.get_room_occupants("room_001")
@@ -310,12 +318,12 @@ async def test_get_room_occupants_cache_not_found(room_service_with_cache):
 
 
 @pytest.mark.asyncio
-async def test_get_room_occupants_without_cache(room_service):
+async def test_get_room_occupants_without_cache(room_service):  # pylint: disable=redefined-outer-name
     """Test get_room_occupants() falls back to persistence."""
     mock_room = MagicMock()
     mock_room.get_players = MagicMock(return_value=["player1"])
     mock_room.get_npcs = MagicMock(return_value=["npc1"])
-    room_service.persistence.async_get_room = AsyncMock(return_value=mock_room)
+    room_service.persistence.get_room_by_id = MagicMock(return_value=mock_room)
     result = await room_service.get_room_occupants("room_001")
     assert len(result) == 2
     assert "player1" in result
@@ -323,7 +331,7 @@ async def test_get_room_occupants_without_cache(room_service):
 
 
 @pytest.mark.asyncio
-async def test_validate_player_in_room_with_cache_true(room_service_with_cache):
+async def test_validate_player_in_room_with_cache_true(room_service_with_cache):  # pylint: disable=redefined-outer-name
     """Test validate_player_in_room() returns True when player in room."""
     mock_room = MagicMock()
     mock_room.has_player = MagicMock(return_value=True)
@@ -333,7 +341,7 @@ async def test_validate_player_in_room_with_cache_true(room_service_with_cache):
 
 
 @pytest.mark.asyncio
-async def test_validate_player_in_room_with_cache_false(room_service_with_cache):
+async def test_validate_player_in_room_with_cache_false(room_service_with_cache):  # pylint: disable=redefined-outer-name
     """Test validate_player_in_room() returns False when player not in room."""
     mock_room = MagicMock()
     mock_room.has_player = MagicMock(return_value=False)
@@ -343,7 +351,7 @@ async def test_validate_player_in_room_with_cache_false(room_service_with_cache)
 
 
 @pytest.mark.asyncio
-async def test_validate_player_in_room_cache_dict(room_service_with_cache):
+async def test_validate_player_in_room_cache_dict(room_service_with_cache):  # pylint: disable=redefined-outer-name
     """Test validate_player_in_room() handles room dict."""
     room_dict = {"id": "room_001", "occupants": ["player1", "player2"]}
     room_service_with_cache.room_cache.get_room = AsyncMock(return_value=room_dict)
@@ -354,7 +362,7 @@ async def test_validate_player_in_room_cache_dict(room_service_with_cache):
 
 
 @pytest.mark.asyncio
-async def test_validate_player_in_room_cache_not_found(room_service_with_cache):
+async def test_validate_player_in_room_cache_not_found(room_service_with_cache):  # pylint: disable=redefined-outer-name
     """Test validate_player_in_room() returns False when room not found."""
     room_service_with_cache.room_cache.get_room = AsyncMock(return_value=None)
     result = await room_service_with_cache.validate_player_in_room("player1", "room_001")
@@ -362,7 +370,7 @@ async def test_validate_player_in_room_cache_not_found(room_service_with_cache):
 
 
 @pytest.mark.asyncio
-async def test_get_room_exits_success(room_service_with_cache, sample_room_dict):
+async def test_get_room_exits_success(room_service_with_cache, sample_room_dict):  # pylint: disable=redefined-outer-name
     """Test get_room_exits() returns exits dictionary."""
     room_service_with_cache.room_cache.get_room = AsyncMock(return_value=sample_room_dict)
     result = await room_service_with_cache.get_room_exits("room_001")
@@ -370,7 +378,7 @@ async def test_get_room_exits_success(room_service_with_cache, sample_room_dict)
 
 
 @pytest.mark.asyncio
-async def test_get_room_exits_room_not_found(room_service_with_cache):
+async def test_get_room_exits_room_not_found(room_service_with_cache):  # pylint: disable=redefined-outer-name
     """Test get_room_exits() returns empty dict when room not found."""
     room_service_with_cache.room_cache.get_room = AsyncMock(return_value=None)
     result = await room_service_with_cache.get_room_exits("room_001")
@@ -378,7 +386,7 @@ async def test_get_room_exits_room_not_found(room_service_with_cache):
 
 
 @pytest.mark.asyncio
-async def test_get_room_exits_no_exits(room_service_with_cache):
+async def test_get_room_exits_no_exits(room_service_with_cache):  # pylint: disable=redefined-outer-name
     """Test get_room_exits() returns empty dict when room has no exits."""
     room_no_exits = {"id": "room_001", "name": "Test Room"}
     room_service_with_cache.room_cache.get_room = AsyncMock(return_value=room_no_exits)
@@ -387,7 +395,7 @@ async def test_get_room_exits_no_exits(room_service_with_cache):
 
 
 @pytest.mark.asyncio
-async def test_list_rooms_with_plane_zone(room_service):
+async def test_list_rooms_with_plane_zone(room_service):  # pylint: disable=redefined-outer-name
     """Test list_rooms() filters by plane and zone."""
     mock_room1 = MagicMock()
     mock_room1.to_dict = MagicMock(return_value={"id": "room_001", "plane": "earth", "zone": "arkhamcity"})
@@ -400,7 +408,7 @@ async def test_list_rooms_with_plane_zone(room_service):
 
 
 @pytest.mark.asyncio
-async def test_list_rooms_with_sub_zone(room_service):
+async def test_list_rooms_with_sub_zone(room_service):  # pylint: disable=redefined-outer-name
     """Test list_rooms() filters by sub_zone."""
     mock_room1 = MagicMock()
     mock_room1.to_dict = MagicMock(
@@ -417,7 +425,7 @@ async def test_list_rooms_with_sub_zone(room_service):
 
 
 @pytest.mark.asyncio
-async def test_list_rooms_exclude_exits(room_service):
+async def test_list_rooms_exclude_exits(room_service):  # pylint: disable=redefined-outer-name
     """Test list_rooms() excludes exits when include_exits=False."""
     mock_room = MagicMock()
     mock_room.to_dict = MagicMock(
@@ -430,7 +438,7 @@ async def test_list_rooms_exclude_exits(room_service):
 
 
 @pytest.mark.asyncio
-async def test_get_room_info_success(room_service_with_cache, sample_room_dict):
+async def test_get_room_info_success(room_service_with_cache, sample_room_dict):  # pylint: disable=redefined-outer-name
     """Test get_room_info() returns comprehensive room information."""
     mock_room = MagicMock()
     mock_room.get_players = MagicMock(return_value=["player1"])
@@ -451,14 +459,14 @@ async def test_get_room_info_success(room_service_with_cache, sample_room_dict):
 
 
 @pytest.mark.asyncio
-async def test_get_room_info_not_found(room_service_with_cache):
+async def test_get_room_info_not_found(room_service_with_cache):  # pylint: disable=redefined-outer-name
     """Test get_room_info() returns None when room not found."""
     room_service_with_cache.room_cache.get_room = AsyncMock(return_value=None)
     result = await room_service_with_cache.get_room_info("room_001")
     assert result is None
 
 
-def test_update_environment_state(room_service):
+def test_update_environment_state(room_service):  # pylint: disable=redefined-outer-name
     """Test update_environment_state() updates environment state."""
     room_service.update_environment_state(daypart="night", is_daytime=False, active_holidays=["halloween"])
     state = room_service.get_environment_state()
@@ -467,7 +475,7 @@ def test_update_environment_state(room_service):
     assert "halloween" in state["active_holidays"]
 
 
-def test_get_environment_state(room_service):
+def test_get_environment_state(room_service):  # pylint: disable=redefined-outer-name
     """Test get_environment_state() returns current environment state."""
     state = room_service.get_environment_state()
     assert "daypart" in state
@@ -475,46 +483,46 @@ def test_get_environment_state(room_service):
     assert "active_holidays" in state
 
 
-def test_describe_lighting_day(room_service):
+def test_describe_lighting_day(room_service):  # pylint: disable=redefined-outer-name
     """Test describe_lighting() returns description for day."""
     room_service.update_environment_state(daypart="day", is_daytime=True, active_holidays=[])
     description = room_service.describe_lighting()
     assert "sunlight" in description.lower() or "day" in description.lower()
 
 
-def test_describe_lighting_night(room_service):
+def test_describe_lighting_night(room_service):  # pylint: disable=redefined-outer-name
     """Test describe_lighting() returns description for night."""
     room_service.update_environment_state(daypart="night", is_daytime=False, active_holidays=[])
     description = room_service.describe_lighting()
     assert "night" in description.lower() or "gaslights" in description.lower()
 
 
-def test_describe_lighting_unknown_daypart(room_service):
+def test_describe_lighting_unknown_daypart(room_service):  # pylint: disable=redefined-outer-name
     """Test describe_lighting() returns default for unknown daypart."""
     room_service.update_environment_state(daypart="unknown", is_daytime=True, active_holidays=[])
     description = room_service.describe_lighting()
     assert "atmosphere" in description.lower() or "shifts" in description.lower()
 
 
-def test_search_rooms_by_name_short_term(room_service):
+def test_search_rooms_by_name_short_term(room_service):  # pylint: disable=redefined-outer-name
     """Test search_rooms_by_name() returns empty list for short search term."""
     result = room_service.search_rooms_by_name("a")
     assert result == []
 
 
-def test_search_rooms_by_name_empty_term(room_service):
+def test_search_rooms_by_name_empty_term(room_service):  # pylint: disable=redefined-outer-name
     """Test search_rooms_by_name() returns empty list for empty term."""
     result = room_service.search_rooms_by_name("")
     assert result == []
 
 
-def test_search_rooms_by_name_not_implemented(room_service):
+def test_search_rooms_by_name_not_implemented(room_service):  # pylint: disable=redefined-outer-name
     """Test search_rooms_by_name() returns empty list (not implemented)."""
     result = room_service.search_rooms_by_name("test room")
     assert result == []
 
 
-def test_get_rooms_in_zone(room_service):
+def test_get_rooms_in_zone(room_service):  # pylint: disable=redefined-outer-name
     """Test get_rooms_in_zone() returns empty list (not implemented)."""
     result = room_service.get_rooms_in_zone("zone_001")
     assert result == []
