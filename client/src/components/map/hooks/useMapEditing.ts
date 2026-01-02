@@ -9,7 +9,7 @@
  * of our eldritch architecture.
  */
 
-import { useCallback, useRef, useState, useEffect } from 'react';
+import React, { useCallback, useRef, useState, useEffect, startTransition } from 'react';
 import type { Node, Edge } from 'reactflow';
 import type { RoomNodeData, ExitEdgeData } from '../types';
 
@@ -100,6 +100,25 @@ export function useMapEditing(options: UseMapEditingOptions): UseMapEditingResul
   const { nodes: initialNodes, edges: initialEdges, onSave } = options;
 
   const [nodes, setNodes] = useState<Node<RoomNodeData>[]>(initialNodes);
+  // #region agent log
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          location: 'useMapEditing.ts:103',
+          message: 'useMapEditing nodes state',
+          data: { nodesCount: nodes.length, firstNodeId: nodes[0]?.id, firstNodePos: nodes[0]?.position },
+          timestamp: Date.now(),
+          sessionId: 'debug-session',
+          runId: 'run1',
+          hypothesisId: 'D',
+        }),
+      }).catch(() => {});
+    }
+  }, [nodes]);
+  // #endregion
   const [edges, setEdges] = useState<Edge<ExitEdgeData>[]>(initialEdges);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [canUndo, setCanUndo] = useState(false);
@@ -147,6 +166,77 @@ export function useMapEditing(options: UseMapEditingOptions): UseMapEditingResul
     setCanUndo(historyIndexRef.current > 0);
     setCanRedo(historyIndexRef.current < historyRef.current.length - 1);
   }, []);
+
+  // Sync state when initialNodes/initialEdges change (e.g., when data loads asynchronously)
+  // Use a ref to track previous initialNodes/initialEdges to avoid infinite loops
+  const prevInitialNodesRef = useRef<Node<RoomNodeData>[]>(initialNodes);
+  const prevInitialEdgesRef = useRef<Edge<ExitEdgeData>[]>(initialEdges);
+
+  useEffect(() => {
+    // Check if initialNodes/initialEdges have actually changed
+    const nodesChanged =
+      initialNodes.length !== prevInitialNodesRef.current.length ||
+      initialNodes.some((n, i) => n.id !== prevInitialNodesRef.current[i]?.id);
+    const edgesChanged =
+      initialEdges.length !== prevInitialEdgesRef.current.length ||
+      initialEdges.some((e, i) => e.id !== prevInitialEdgesRef.current[i]?.id);
+
+    if (nodesChanged || edgesChanged) {
+      // #region agent log
+      if (typeof window !== 'undefined') {
+        fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            location: 'useMapEditing.ts:155',
+            message: 'Syncing state from initialNodes change',
+            data: {
+              initialNodesCount: initialNodes.length,
+              prevNodesCount: prevInitialNodesRef.current.length,
+              nodesChanged,
+              edgesChanged,
+            },
+            timestamp: Date.now(),
+            sessionId: 'debug-session',
+            runId: 'post-fix',
+            hypothesisId: 'D',
+          }),
+        }).catch(() => {});
+      }
+      // #endregion
+      // Use startTransition to avoid cascading renders from synchronous setState in effect
+      startTransition(() => {
+        setNodes(initialNodes);
+        setEdges(initialEdges);
+      });
+      // Reset change tracking when initial data changes
+      nodePositionChangesRef.current.clear();
+      newEdgesRef.current = [];
+      deletedEdgeIdsRef.current.clear();
+      edgeUpdatesRef.current.clear();
+      roomUpdatesRef.current.clear();
+      // Use startTransition to avoid cascading renders from synchronous setState in effect
+      startTransition(() => {
+        setHasUnsavedChanges(false);
+      });
+      // Reset history to new initial state
+      historyRef.current = [
+        {
+          nodes: JSON.parse(JSON.stringify(initialNodes)),
+          edges: JSON.parse(JSON.stringify(initialEdges)),
+        },
+      ];
+      historyIndexRef.current = 0;
+      // Use startTransition to avoid cascading renders from synchronous setState in effect
+      startTransition(() => {
+        setCanUndo(false);
+        setCanRedo(false);
+      });
+      // Update refs to track current values
+      prevInitialNodesRef.current = initialNodes;
+      prevInitialEdgesRef.current = initialEdges;
+    }
+  }, [initialNodes, initialEdges]);
 
   // Update node position
   const updateNodePosition = useCallback(
@@ -349,6 +439,23 @@ export function useMapEditing(options: UseMapEditingOptions): UseMapEditingResul
   // Save changes
   const save = useCallback(async () => {
     if (!onSave) {
+      // #region agent log
+      if (typeof window !== 'undefined') {
+        fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            location: 'useMapEditing.ts:396',
+            message: 'save called but no onSave callback',
+            data: {},
+            timestamp: Date.now(),
+            sessionId: 'debug-session',
+            runId: 'run1',
+            hypothesisId: 'E',
+          }),
+        }).catch(() => {});
+      }
+      // #endregion
       return;
     }
 
@@ -360,15 +467,74 @@ export function useMapEditing(options: UseMapEditingOptions): UseMapEditingResul
       roomUpdates: roomUpdatesRef.current,
     };
 
-    await onSave(changes);
+    // #region agent log
+    if (typeof window !== 'undefined') {
+      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          location: 'useMapEditing.ts:408',
+          message: 'save calling onSave',
+          data: {
+            nodePositionsCount: changes.nodePositions.size,
+            firstNodePosition: Array.from(changes.nodePositions.entries())[0],
+          },
+          timestamp: Date.now(),
+          sessionId: 'debug-session',
+          runId: 'run1',
+          hypothesisId: 'E',
+        }),
+      }).catch(() => {});
+    }
+    // #endregion
 
-    // Clear change tracking after successful save
-    nodePositionChangesRef.current.clear();
-    newEdgesRef.current = [];
-    deletedEdgeIdsRef.current.clear();
-    edgeUpdatesRef.current.clear();
-    roomUpdatesRef.current.clear();
-    setHasUnsavedChanges(false);
+    try {
+      await onSave(changes);
+      // #region agent log
+      if (typeof window !== 'undefined') {
+        fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            location: 'useMapEditing.ts:415',
+            message: 'save completed successfully',
+            data: {},
+            timestamp: Date.now(),
+            sessionId: 'debug-session',
+            runId: 'run1',
+            hypothesisId: 'E',
+          }),
+        }).catch(() => {});
+      }
+      // #endregion
+
+      // Clear change tracking after successful save
+      nodePositionChangesRef.current.clear();
+      newEdgesRef.current = [];
+      deletedEdgeIdsRef.current.clear();
+      edgeUpdatesRef.current.clear();
+      roomUpdatesRef.current.clear();
+      setHasUnsavedChanges(false);
+    } catch (error) {
+      // #region agent log
+      if (typeof window !== 'undefined') {
+        fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            location: 'useMapEditing.ts:427',
+            message: 'save failed with error',
+            data: { error: error instanceof Error ? error.message : String(error) },
+            timestamp: Date.now(),
+            sessionId: 'debug-session',
+            runId: 'run1',
+            hypothesisId: 'E',
+          }),
+        }).catch(() => {});
+      }
+      // #endregion
+      throw error; // Re-throw so UI can handle it
+    }
   }, [onSave]);
 
   // Reset to initial state

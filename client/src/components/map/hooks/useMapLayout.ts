@@ -117,11 +117,16 @@ export function useMapLayout(options: UseMapLayoutOptions): UseMapLayoutResult {
   }, [initialNodes, nodes]);
 
   // Calculate layout nodes with stored coordinates or auto layout
+  // Use initialNodes directly instead of nodes state to avoid stale closure issues
   // Accessing refs in useMemo is safe; refs don't cause re-renders and this is intentional for performance
   /* eslint-disable react-hooks/refs */
+  // Accessing ref.current in useMemo is intentional for performance (refs don't trigger re-renders)
   const layoutNodes = useMemo(() => {
+    // Use initialNodes directly to avoid stale state issues
+    const currentNodes = initialNodes;
     // Determine which nodes need auto-layout (don't have stored or manual positions)
-    const nodesNeedingLayout = nodes.filter(node => {
+
+    const nodesNeedingLayout = currentNodes.filter(node => {
       // Skip if has manual position
       if (manualPositionsRef.current.has(node.id)) {
         return false;
@@ -157,7 +162,8 @@ export function useMapLayout(options: UseMapLayoutOptions): UseMapLayoutResult {
     const autoLayoutMap = new Map(nodesWithLayout.map(n => [n.id, n.position]));
 
     // Combine all nodes with their appropriate positions
-    const result = nodes.map(node => {
+
+    const result = currentNodes.map(node => {
       // Check if node has stored coordinates and we should use them
       if (useStoredCoordinates && node.data) {
         const roomData = node.data as RoomNodeData & { map_x?: number | null; map_y?: number | null };
@@ -206,8 +212,61 @@ export function useMapLayout(options: UseMapLayoutOptions): UseMapLayoutResult {
     });
 
     return result;
-  }, [nodes, edges, useStoredCoordinates, layoutConfig, forceLayoutConfig, layoutAlgorithm]);
+  }, [initialNodes, edges, useStoredCoordinates, layoutConfig, forceLayoutConfig, layoutAlgorithm]);
   /* eslint-enable react-hooks/refs */
+
+  // Debug logging for layoutNodes computation (moved to useEffect to avoid calling Date.now during render)
+  useEffect(() => {
+    const nodesNeedingLayoutCount = layoutNodes.filter(node => {
+      // Skip if has manual position
+      if (manualPositionsRef.current.has(node.id)) {
+        return false;
+      }
+      // Skip if has stored coordinates and we should use them
+      if (useStoredCoordinates && node.data) {
+        const roomData = node.data as RoomNodeData & { map_x?: number | null; map_y?: number | null };
+        if (
+          roomData.map_x !== null &&
+          roomData.map_x !== undefined &&
+          roomData.map_y !== null &&
+          roomData.map_y !== undefined
+        ) {
+          return false;
+        }
+      }
+      return true;
+    }).length;
+
+    // #region agent log
+    if (typeof window !== 'undefined') {
+      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          location: 'useMapLayout.ts:122',
+          message: 'useMapLayout layoutNodes computed',
+          data: {
+            nodesCount: initialNodes.length,
+            initialNodesCount: initialNodes.length,
+            useStoredCoordinates,
+            layoutAlgorithm,
+            edgesCount: edges.length,
+            nodesNeedingLayoutCount,
+            layoutNodesCount: layoutNodes.length,
+            firstNodePos: layoutNodes[0]?.position,
+            resultCount: layoutNodes.length,
+            firstResultNodeId: layoutNodes[0]?.id,
+            firstResultNodePos: layoutNodes[0]?.position,
+          },
+          timestamp: Date.now(),
+          sessionId: 'debug-session',
+          runId: 'run1',
+          hypothesisId: 'A',
+        }),
+      }).catch(() => {});
+    }
+    // #endregion
+  }, [layoutNodes, initialNodes.length, useStoredCoordinates, layoutAlgorithm, edges.length]);
 
   // Apply auto layout to all nodes
   const applyGridLayoutToNodes = useCallback(() => {

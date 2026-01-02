@@ -48,7 +48,7 @@ class TaskRegistry:
     All tracked tasks are monitored for graceful shutdown with proper timeout boundaries.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize TaskRegistry with empty task collections."""
         # Core collections
         self._active_tasks: dict[asyncio.Task[Any], TaskMetadata] = {}

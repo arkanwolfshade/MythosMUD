@@ -15,7 +15,7 @@ logger = get_logger(__name__)
 class NPCCombatUUIDMapping:
     """Manages UUID mappings for NPC combat."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize UUID mapping storage."""
         # UUID to string ID mapping for reverse lookup during XP calculation
         self._uuid_to_string_id_mapping: dict[UUID, str] = {}

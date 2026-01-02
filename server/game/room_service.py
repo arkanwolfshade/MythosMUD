@@ -6,9 +6,13 @@ room information retrieval and room state management.
 """
 
 from collections.abc import Sequence
-from typing import Any
+from typing import TYPE_CHECKING, Any, cast
 
 from ..structured_logging.enhanced_logging_config import get_logger
+
+if TYPE_CHECKING:
+    from ..async_persistence import AsyncPersistenceLayer
+    from ..caching.cache_service import RoomCacheService
 
 logger = get_logger(__name__)
 
@@ -16,7 +20,11 @@ logger = get_logger(__name__)
 class RoomService:
     """Service class for room-related operations."""
 
-    def __init__(self, persistence, room_cache_service=None):
+    def __init__(
+        self,
+        persistence: "AsyncPersistenceLayer",
+        room_cache_service: "RoomCacheService | None" = None,
+    ) -> None:
         """Initialize the room service with a persistence layer and optional cache service."""
         self.persistence = persistence
         self.room_cache = room_cache_service
@@ -50,15 +58,15 @@ class RoomService:
             return room_dict
         else:
             # Fallback to direct persistence call
-            room = await self.persistence.async_get_room(room_id)
+            room = self.persistence.get_room_by_id(room_id)
             if room is None:
                 logger.debug("Room not found by ID", room_id=room_id)
                 return None
 
-            # Room could be a dict or a Room object
-            room_name = room.name if hasattr(room, "name") else room.get("name", "Unknown")
+            # Room is a Room object, convert to dict
+            room_name = room.name if hasattr(room, "name") else "Unknown"
             logger.debug("Room found by ID", room_id=room_id, room_name=room_name)
-            return room.to_dict() if hasattr(room, "to_dict") else room
+            return room.to_dict() if hasattr(room, "to_dict") else {"id": room_id, "name": room_name}
 
     def get_room_by_name(self, room_name: str) -> dict[str, Any] | None:
         """
@@ -187,7 +195,8 @@ class RoomService:
             exists = room is not None
         else:
             # Fallback to direct persistence call
-            room = await self.persistence.async_get_room(room_id)
+            # Room object is sufficient for existence check, no dict conversion needed
+            room = self.persistence.get_room_by_id(room_id)  # type: ignore[assignment]
             exists = room is not None
 
         logger.debug("Room existence validation", room_id=room_id, exists=exists)
@@ -266,7 +275,8 @@ class RoomService:
             return occupants
         else:
             # Fallback to direct persistence call
-            room = await self.persistence.async_get_room(room_id)
+            # Room object has methods for getting occupants, no dict conversion needed
+            room = self.persistence.get_room_by_id(room_id)  # type: ignore[assignment]
             if not room:
                 logger.debug("Room not found for occupant lookup", room_id=room_id)
                 return []
@@ -321,7 +331,8 @@ class RoomService:
             return is_in_room
         else:
             # Fallback to direct persistence call
-            room = await self.persistence.async_get_room(room_id)
+            # Room object has methods for validation, no dict conversion needed
+            room = self.persistence.get_room_by_id(room_id)  # type: ignore[assignment]
             if not room:
                 logger.debug("Room not found for player validation", room_id=room_id)
                 return False
@@ -389,10 +400,10 @@ class RoomService:
         rooms = await self.persistence.async_list_rooms()
 
         # Filter rooms by plane, zone, and optionally sub_zone
-        filtered_rooms = []
+        filtered_rooms: list[dict[str, Any]] = []
         for room in rooms:
             # Convert Room object to dict if needed
-            room_dict = room.to_dict() if hasattr(room, "to_dict") else room
+            room_dict: dict[str, Any] = cast(dict[str, Any], room.to_dict() if hasattr(room, "to_dict") else room)
 
             # Check plane match
             if room_dict.get("plane") != plane:

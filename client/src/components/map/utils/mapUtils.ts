@@ -85,6 +85,21 @@ export const roomsToNodes = (
   currentRoomId?: string,
   layoutConfig?: GridLayoutConfig
 ): Node<RoomNodeData>[] => {
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      location: 'mapUtils.ts:89',
+      message: 'roomsToNodes entry',
+      data: { roomsCount: rooms.length, currentRoomId },
+      timestamp: Date.now(),
+      sessionId: 'debug-session',
+      runId: 'run1',
+      hypothesisId: 'B',
+    }),
+  }).catch(() => {});
+  // #endregion
   // First, create nodes without positions (or with stored positions)
   const nodes = rooms.map((room, index) => roomToNode(room, currentRoomId, index, rooms));
 
@@ -101,9 +116,44 @@ export const roomsToNodes = (
     const layoutedNodes = applyGridLayout(nodesNeedingLayout, layoutConfig);
 
     // Merge nodes with positions and layouted nodes
-    return [...nodesWithPositions, ...layoutedNodes];
+    const result = [...nodesWithPositions, ...layoutedNodes];
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        location: 'mapUtils.ts:104',
+        message: 'roomsToNodes exit (with layout)',
+        data: {
+          resultCount: result.length,
+          nodesWithPositionsCount: nodesWithPositions.length,
+          layoutedNodesCount: layoutedNodes.length,
+        },
+        timestamp: Date.now(),
+        sessionId: 'debug-session',
+        runId: 'run1',
+        hypothesisId: 'B',
+      }),
+    }).catch(() => {});
+    // #endregion
+    return result;
   }
 
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      location: 'mapUtils.ts:108',
+      message: 'roomsToNodes exit (no layout needed)',
+      data: { nodesCount: nodes.length },
+      timestamp: Date.now(),
+      sessionId: 'debug-session',
+      runId: 'run1',
+      hypothesisId: 'B',
+    }),
+  }).catch(() => {});
+  // #endregion
   return nodes;
 };
 

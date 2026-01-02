@@ -72,7 +72,7 @@ class MonitoringDashboard:
     data including performance metrics, exception tracking, and log aggregation.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the monitoring dashboard."""
         self.performance_monitor = get_performance_monitor()
         self.exception_tracker = get_exception_tracker()

@@ -82,7 +82,7 @@ async def _update_room_position_in_db(
 async def _invalidate_room_cache(room_service: RoomService, room_id: str) -> None:
     """Invalidate room cache to force reload."""
     if room_service.room_cache:
-        await room_service.room_cache.invalidate_room(room_id)
+        room_service.room_cache.invalidate_room(room_id)
 
 
 # IMPORTANT: /list route must come BEFORE /{room_id} route
@@ -291,10 +291,10 @@ async def update_room_position(
     except Exception as e:
         await session.rollback()
         context = create_context_from_request(request)
+        context.metadata["requested_room_id"] = room_id
         logger.error(
             "Error updating room position",
             error=str(e),
-            room_id=room_id,
             exc_info=True,
             **context.to_dict(),
         )

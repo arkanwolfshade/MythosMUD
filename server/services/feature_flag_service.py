@@ -26,7 +26,7 @@ class FeatureFlagService:
     environment-specific overrides.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the feature flag service."""
         self._config = get_config()
         self._cached_combat_enabled: bool | None = None

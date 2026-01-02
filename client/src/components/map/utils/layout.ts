@@ -141,10 +141,28 @@ export const calculateGridPosition = (
     const row = Math.floor(index / colsPerRow);
     const col = index % colsPerRow;
 
-    return {
+    const position = {
       x: col * (cellWidth + horizontalSpacing),
       y: row * (cellHeight + verticalSpacing),
     };
+    // #region agent log
+    if (typeof window !== 'undefined' && index < 3) {
+      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          location: 'layout.ts:147',
+          message: 'calculateGridPosition simple grid result',
+          data: { nodeId: node.id, index, colsPerRow, row, col, position },
+          timestamp: Date.now(),
+          sessionId: 'debug-session',
+          runId: 'run1',
+          hypothesisId: 'A',
+        }),
+      }).catch(() => {});
+    }
+    // #endregion
+    return position;
   }
 };
 
@@ -165,7 +183,8 @@ interface NodeState {
 const initializeNodePositions = (nodes: Node<RoomNodeData>[], minDistance: number): Node<RoomNodeData>[] => {
   return nodes.map((node, index) => {
     // Check if node has a meaningful position (not just at origin)
-    const hasPosition = !(node.position.x === 0 && node.position.y === 0) || index === 0;
+    // Fixed: removed `|| index === 0` which was preventing first node from being initialized
+    const hasPosition = !(node.position.x === 0 && node.position.y === 0);
 
     if (!hasPosition) {
       // Spread initial positions in a wider circle/spiral pattern
@@ -588,12 +607,46 @@ export const applyForceLayout = (
   edges: Edge[],
   config: ForceLayoutConfig = defaultForceLayoutConfig
 ): Node<RoomNodeData>[] => {
+  // #region agent log
+  if (typeof window !== 'undefined') {
+    fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        location: 'layout.ts:591',
+        message: 'applyForceLayout entry',
+        data: { nodesCount: nodes.length, edgesCount: edges.length, config },
+        timestamp: Date.now(),
+        sessionId: 'debug-session',
+        runId: 'run1',
+        hypothesisId: 'A',
+      }),
+    }).catch(() => {});
+  }
+  // #endregion
   if (nodes.length === 0) {
     return nodes;
   }
 
   // Initialize positions if not set - spread nodes in a wider pattern to avoid initial overlaps
   const positionedNodes = initializeNodePositions(nodes, config.minDistance);
+  // #region agent log
+  if (typeof window !== 'undefined') {
+    fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        location: 'layout.ts:597',
+        message: 'applyForceLayout after initializeNodePositions',
+        data: { positionedNodesCount: positionedNodes.length, firstNodePos: positionedNodes[0]?.position },
+        timestamp: Date.now(),
+        sessionId: 'debug-session',
+        runId: 'run1',
+        hypothesisId: 'A',
+      }),
+    }).catch(() => {});
+  }
+  // #endregion
 
   // Create node map for quick lookup
   const nodeMap = new Map<string, NodeState>(
@@ -665,6 +718,23 @@ export const applyForceLayout = (
     return node;
   });
 
+  // #region agent log
+  if (typeof window !== 'undefined') {
+    fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        location: 'layout.ts:678',
+        message: 'applyForceLayout exit',
+        data: { resultCount: result.length, firstNodePos: result[0]?.position },
+        timestamp: Date.now(),
+        sessionId: 'debug-session',
+        runId: 'run1',
+        hypothesisId: 'A',
+      }),
+    }).catch(() => {});
+  }
+  // #endregion
   return result;
 };
 
@@ -675,11 +745,63 @@ export const applyGridLayout = (
   nodes: Node<RoomNodeData>[],
   config: GridLayoutConfig = defaultGridLayoutConfig
 ): Node<RoomNodeData>[] => {
-  return nodes.map((node, index) => {
+  // #region agent log
+  if (typeof window !== 'undefined') {
+    fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        location: 'layout.ts:678',
+        message: 'applyGridLayout entry',
+        data: { nodesCount: nodes.length, config },
+        timestamp: Date.now(),
+        sessionId: 'debug-session',
+        runId: 'run1',
+        hypothesisId: 'A',
+      }),
+    }).catch(() => {});
+  }
+  // #endregion
+  const result = nodes.map((node, index) => {
     const position = calculateGridPosition(node, index, nodes, config);
+    // #region agent log
+    if (typeof window !== 'undefined' && index < 3) {
+      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          location: 'layout.ts:682',
+          message: 'applyGridLayout calculated position',
+          data: { nodeId: node.id, index, position, nodeDataSubZone: node.data?.subZone },
+          timestamp: Date.now(),
+          sessionId: 'debug-session',
+          runId: 'run1',
+          hypothesisId: 'A',
+        }),
+      }).catch(() => {});
+    }
+    // #endregion
     return {
       ...node,
       position,
     };
   });
+  // #region agent log
+  if (typeof window !== 'undefined') {
+    fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        location: 'layout.ts:690',
+        message: 'applyGridLayout exit',
+        data: { resultCount: result.length, firstNodePos: result[0]?.position },
+        timestamp: Date.now(),
+        sessionId: 'debug-session',
+        runId: 'run1',
+        hypothesisId: 'A',
+      }),
+    }).catch(() => {});
+  }
+  // #endregion
+  return result;
 };

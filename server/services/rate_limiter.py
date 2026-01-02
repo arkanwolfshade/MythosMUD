@@ -24,7 +24,7 @@ class RateLimiter:
     limits and sliding window tracking for accurate rate enforcement.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the rate limiter with configuration-based limits."""
         # Load rate limits from configuration
         config = get_config()

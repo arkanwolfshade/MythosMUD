@@ -74,7 +74,7 @@ class MessageHandlerFactory:
     are added to the system.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the factory with registered handlers."""
         self._handlers: dict[str, MessageHandler] = {
             "command": CommandMessageHandler(),

@@ -27,7 +27,7 @@ class MetricsCollector:
     AI: In-memory metrics with atomic updates for low overhead.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Initialize metrics collector.
 
