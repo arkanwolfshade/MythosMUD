@@ -9,7 +9,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { RoomMapViewer } from '../components/map';
+import { RoomMapEditor, RoomMapViewer } from '../components/map';
 import { API_BASE_URL } from '../utils/config';
 import { logger } from '../utils/logger';
 import { secureTokenStorage } from '../utils/security';
@@ -29,6 +29,7 @@ export const MapPage: React.FC = () => {
   const [currentRoom, setCurrentRoom] = useState<RoomData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [editMode, setEditMode] = useState(false);
 
   /**
    * Fetch the current room information from the API.
@@ -68,6 +69,9 @@ export const MapPage: React.FC = () => {
       const plane = urlParams.get('plane');
       const zone = urlParams.get('zone');
       const subZone = urlParams.get('subZone');
+      const isEditMode = urlParams.get('edit') === 'true';
+
+      setEditMode(isEditMode);
 
       if (roomId && plane && zone) {
         setCurrentRoom({
@@ -136,14 +140,25 @@ export const MapPage: React.FC = () => {
 
   return (
     <div className="h-screen w-screen bg-mythos-terminal-background">
-      <RoomMapViewer
-        plane={currentRoom?.plane || 'earth'}
-        zone={currentRoom?.zone || 'arkhamcity'}
-        subZone={currentRoom?.subZone}
-        currentRoomId={currentRoom?.id}
-        authToken={authToken}
-        baseUrl={API_BASE_URL}
-      />
+      {editMode ? (
+        <RoomMapEditor
+          plane={currentRoom?.plane || 'earth'}
+          zone={currentRoom?.zone || 'arkhamcity'}
+          subZone={currentRoom?.subZone}
+          currentRoomId={currentRoom?.id}
+          authToken={authToken}
+          baseUrl={API_BASE_URL}
+        />
+      ) : (
+        <RoomMapViewer
+          plane={currentRoom?.plane || 'earth'}
+          zone={currentRoom?.zone || 'arkhamcity'}
+          subZone={currentRoom?.subZone}
+          currentRoomId={currentRoom?.id}
+          authToken={authToken}
+          baseUrl={API_BASE_URL}
+        />
+      )}
     </div>
   );
 };

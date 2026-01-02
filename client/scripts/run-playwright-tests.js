@@ -17,9 +17,10 @@ if (!existsSync(testsDir)) {
 }
 
 // Run Playwright tests
+// Using shell: false for security - spawn with array arguments doesn't require shell
 const playwright = spawn('npx', ['playwright', 'test'], {
   stdio: 'inherit',
-  shell: true,
+  shell: false,
   cwd: clientRoot,
 });
 

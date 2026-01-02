@@ -10,7 +10,7 @@
  */
 
 import React, { useEffect } from 'react';
-import { RoomMapViewer } from './map/RoomMapViewer';
+import { AsciiMapViewer } from './map/AsciiMapViewer';
 import { getApiBaseUrl } from '../utils/config';
 
 // Room type compatible with both gameStore and ui-v2 types
@@ -112,7 +112,7 @@ export const MapView: React.FC<MapViewProps> = ({
       {/* Map viewer */}
       <div className="flex-1 overflow-hidden">
         {currentRoom ? (
-          <RoomMapViewer
+          <AsciiMapViewer
             plane={plane}
             zone={zone}
             subZone={subZone}

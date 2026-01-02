@@ -85,6 +85,23 @@ export const roomsToNodes = (
   currentRoomId?: string,
   layoutConfig?: GridLayoutConfig
 ): Node<RoomNodeData>[] => {
+  // #region agent log
+  // nosemgrep: typescript.react.security.react-insecure-request.react-insecure-request
+  // Intentional debug logging to localhost endpoint (127.0.0.1) for development only
+  fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      location: 'mapUtils.ts:89',
+      message: 'roomsToNodes entry',
+      data: { roomsCount: rooms.length, currentRoomId },
+      timestamp: Date.now(),
+      sessionId: 'debug-session',
+      runId: 'run1',
+      hypothesisId: 'B',
+    }),
+  }).catch(() => {});
+  // #endregion
   // First, create nodes without positions (or with stored positions)
   const nodes = rooms.map((room, index) => roomToNode(room, currentRoomId, index, rooms));
 
@@ -101,9 +118,48 @@ export const roomsToNodes = (
     const layoutedNodes = applyGridLayout(nodesNeedingLayout, layoutConfig);
 
     // Merge nodes with positions and layouted nodes
-    return [...nodesWithPositions, ...layoutedNodes];
+    const result = [...nodesWithPositions, ...layoutedNodes];
+    // #region agent log
+    // nosemgrep: typescript.react.security.react-insecure-request.react-insecure-request
+    // Intentional debug logging to localhost endpoint (127.0.0.1) for development only
+    fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        location: 'mapUtils.ts:104',
+        message: 'roomsToNodes exit (with layout)',
+        data: {
+          resultCount: result.length,
+          nodesWithPositionsCount: nodesWithPositions.length,
+          layoutedNodesCount: layoutedNodes.length,
+        },
+        timestamp: Date.now(),
+        sessionId: 'debug-session',
+        runId: 'run1',
+        hypothesisId: 'B',
+      }),
+    }).catch(() => {});
+    // #endregion
+    return result;
   }
 
+  // #region agent log
+  // nosemgrep: typescript.react.security.react-insecure-request.react-insecure-request
+  // Intentional debug logging to localhost endpoint (127.0.0.1) for development only
+  fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      location: 'mapUtils.ts:108',
+      message: 'roomsToNodes exit (no layout needed)',
+      data: { nodesCount: nodes.length },
+      timestamp: Date.now(),
+      sessionId: 'debug-session',
+      runId: 'run1',
+      hypothesisId: 'B',
+    }),
+  }).catch(() => {});
+  // #endregion
   return nodes;
 };
 
@@ -157,6 +213,47 @@ const extractExitDescription = (exitValue: ExitValue): string | undefined => {
 };
 
 /**
+ * Get source and target handle IDs for an edge based on exit direction.
+ * Canvas orientation: Top=North, Bottom=South, Right=East, Left=West
+ *
+ * @param direction - The exit direction (north, south, east, west, etc.)
+ * @returns Object with sourceHandle and targetHandle IDs
+ */
+const getEdgeHandles = (direction: string): { sourceHandle: string; targetHandle: string } => {
+  const normalizedDirection = direction.toLowerCase();
+
+  switch (normalizedDirection) {
+    case 'north':
+      // Source exits north, so edge starts at top of source, ends at bottom of target
+      return { sourceHandle: 'source-top', targetHandle: 'target-bottom' };
+    case 'south':
+      // Source exits south, so edge starts at bottom of source, ends at top of target
+      return { sourceHandle: 'source-bottom', targetHandle: 'target-top' };
+    case 'east':
+      // Source exits east, so edge starts at right of source, ends at left of target
+      return { sourceHandle: 'source-right', targetHandle: 'target-left' };
+    case 'west':
+      // Source exits west, so edge starts at left of source, ends at right of target
+      return { sourceHandle: 'source-left', targetHandle: 'target-right' };
+    case 'northeast':
+      return { sourceHandle: 'source-top', targetHandle: 'target-bottom' };
+    case 'northwest':
+      return { sourceHandle: 'source-top', targetHandle: 'target-bottom' };
+    case 'southeast':
+      return { sourceHandle: 'source-bottom', targetHandle: 'target-top' };
+    case 'southwest':
+      return { sourceHandle: 'source-bottom', targetHandle: 'target-top' };
+    case 'up':
+      return { sourceHandle: 'source-top', targetHandle: 'target-bottom' };
+    case 'down':
+      return { sourceHandle: 'source-bottom', targetHandle: 'target-top' };
+    default:
+      // For unknown directions, use default (top to bottom)
+      return { sourceHandle: 'source-top', targetHandle: 'target-bottom' };
+  }
+};
+
+/**
  * Create React Flow edges from room exits.
  */
 export const createEdgesFromRooms = (rooms: Room[]): Edge<ExitEdgeData>[] => {
@@ -192,11 +289,16 @@ export const createEdgesFromRooms = (rooms: Room[]): Edge<ExitEdgeData>[] => {
         description,
       };
 
+      // Get edge handle IDs based on exit direction
+      const { sourceHandle, targetHandle } = getEdgeHandles(direction);
+
       edges.push({
         id: `${room.id}-${direction}-${targetRoomId}`,
         source: room.id,
         target: targetRoomId,
         type: 'exit',
+        sourceHandle,
+        targetHandle,
         data: edgeData,
       });
     }

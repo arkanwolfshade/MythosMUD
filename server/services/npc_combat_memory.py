@@ -13,7 +13,7 @@ logger = get_logger(__name__)
 class NPCCombatMemory:
     """Manages NPC combat memory - tracking attackers."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize combat memory storage."""
         self._npc_combat_memory: dict[str, str] = {}
 

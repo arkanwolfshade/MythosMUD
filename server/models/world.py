@@ -2,7 +2,7 @@
 SQLAlchemy models for world data (zones, subzones, rooms, and links).
 """
 
-from sqlalchemy import CheckConstraint, ForeignKey, Text, UniqueConstraint
+from sqlalchemy import Boolean, CheckConstraint, ForeignKey, Numeric, Text, UniqueConstraint
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -93,6 +93,11 @@ class RoomModel(Base):
     name: Mapped[str] = mapped_column(Text, nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=False)
     attributes: Mapped[dict] = mapped_column(JSONB, nullable=False, default=dict)
+    map_x: Mapped[float | None] = mapped_column(Numeric(10, 2), nullable=True)
+    map_y: Mapped[float | None] = mapped_column(Numeric(10, 2), nullable=True)
+    map_origin_zone: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    map_symbol: Mapped[str | None] = mapped_column(Text, nullable=True)
+    map_style: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     subzone: Mapped["Subzone"] = relationship("Subzone", back_populates="rooms")
     exits: Mapped[list["RoomLink"]] = relationship(

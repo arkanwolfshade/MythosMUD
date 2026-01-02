@@ -241,7 +241,7 @@ def test_create_command_object_unsupported_command(command_parser):
     assert "Unsupported command" in str(exc_info.value)
 
 
-def test_create_command_object_pydantic_validation_error(command_parser):
+def test_create_command_object_pydantic_validation_error(command_parser) -> None:
     """Test _create_command_object handles Pydantic validation errors."""
     from pydantic import BaseModel
 

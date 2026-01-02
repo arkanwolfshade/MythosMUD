@@ -383,19 +383,21 @@ async def test_broadcast_room_update_no_connection_manager():
     mock_connection_manager.room_manager = MagicMock()
     mock_connection_manager.room_manager.list_room_drops.return_value = []
 
+    # Create a proper mock FastAPI app structure before patching
+    mock_app = MagicMock()
+    mock_app.state = MagicMock()
+    mock_container = MagicMock()
+    mock_container.connection_manager = mock_connection_manager
+    mock_app.state.container = mock_container
+
     with (
-        patch("server.main.app") as mock_app,
+        patch("server.main.app", mock_app),
         patch("server.async_persistence.get_async_persistence") as mock_get_persistence,
         patch("server.realtime.websocket_room_updates.get_player_occupants") as mock_get_players,
         patch("server.realtime.websocket_room_updates.get_npc_occupants_fallback") as mock_get_npcs,
         patch("server.realtime.websocket_room_updates.build_room_update_event") as mock_build_event,
         patch("server.services.npc_instance_service.get_npc_instance_service") as mock_get_npc_service,
     ):
-        # Mock the app import from ..main
-        mock_container = MagicMock()
-        mock_container.connection_manager = mock_connection_manager
-        mock_app.state.container = mock_container
-
         # Mock NPC service to avoid initialization errors
         mock_npc_service = MagicMock()
         mock_get_npc_service.return_value = mock_npc_service

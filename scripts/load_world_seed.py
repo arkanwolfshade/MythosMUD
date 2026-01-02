@@ -139,6 +139,8 @@ async def main():
                 if not statement:
                     continue
                 try:
+                    # nosemgrep: python.lang.security.audit.sqli.asyncpg-sqli.asyncpg-sqli
+                    # This is loading seed data from SQL files (not user input), so SQL injection is not possible
                     await conn.execute(statement + ";")
                     inserted_count += 1
                 except asyncpg.PostgresError as e:

@@ -16,6 +16,7 @@ from ..api.admin import npc_router as admin_npc_router
 from ..api.admin import subject_router as admin_subject_router
 from ..api.containers import container_router
 from ..api.game import game_router
+from ..api.maps import map_router
 from ..api.metrics import router as metrics_router
 from ..api.monitoring import monitoring_router
 from ..api.players import player_router
@@ -175,6 +176,7 @@ def create_app() -> FastAPI:
     app.include_router(metrics_router)  # NEW: NATS metrics endpoint (CRITICAL-4)
     app.include_router(realtime_router)
     app.include_router(room_router, prefix="/api")
+    app.include_router(map_router, prefix="/api")
     app.include_router(container_router)  # Container system endpoints
     app.include_router(admin_npc_router)
     app.include_router(admin_subject_router, prefix="/api/admin")  # NATS subject management endpoints

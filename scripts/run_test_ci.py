@@ -72,8 +72,8 @@ if IN_CI:
                 )
                 + "\n"
             )
-    except Exception:
-        pass  # Ignore logging errors
+    except (OSError, TypeError, ValueError):
+        pass  # Ignore logging errors (file I/O or JSON serialization issues)
     # #endregion
 
     # #region agent log
@@ -104,8 +104,8 @@ if IN_CI:
                 )
                 + "\n"
             )
-    except Exception:
-        pass  # Ignore logging errors
+    except (OSError, TypeError, ValueError):
+        pass  # Ignore logging errors (file I/O or JSON serialization issues)
     # #endregion
 
     # #region agent log
@@ -117,6 +117,7 @@ if IN_CI:
             text=True,
             cwd=PROJECT_ROOT,
             env=env,
+            check=False,  # Don't raise on error, just log the output
         )
         installed_packages = result.stdout
         has_pytest_xdist = "pytest-xdist" in installed_packages
@@ -139,8 +140,8 @@ if IN_CI:
                 )
                 + "\n"
             )
-    except Exception:
-        pass  # Ignore logging errors
+    except (OSError, TypeError, ValueError):
+        pass  # Ignore logging errors (file I/O or JSON serialization issues)
     # #endregion
 
     # #region agent log
@@ -152,6 +153,7 @@ if IN_CI:
             text=True,
             cwd=PROJECT_ROOT,
             env=env,
+            check=False,  # Don't raise on error, just log the output
         )
         pytest_plugins = result.stdout + result.stderr
         has_xdist_plugin = "xdist" in pytest_plugins or "pytest-xdist" in pytest_plugins
@@ -174,8 +176,8 @@ if IN_CI:
                 )
                 + "\n"
             )
-    except Exception:
-        pass  # Ignore logging errors
+    except (OSError, TypeError, ValueError):
+        pass  # Ignore logging errors (file I/O or JSON serialization issues)
     # #endregion
 
     # #region agent log
@@ -204,8 +206,8 @@ if IN_CI:
                 )
                 + "\n"
             )
-    except Exception:
-        pass  # Ignore logging errors
+    except (OSError, TypeError, ValueError):
+        pass  # Ignore logging errors (file I/O or JSON serialization issues)
     # #endregion
 
     # Run tests with coverage
@@ -240,8 +242,8 @@ if IN_CI:
                 )
                 + "\n"
             )
-    except Exception:
-        pass  # Ignore logging errors
+    except (OSError, TypeError, ValueError):
+        pass  # Ignore logging errors (file I/O or JSON serialization issues)
     # #endregion
     subprocess.run(
         [
@@ -305,8 +307,8 @@ else:
                 )
                 + "\n"
             )
-    except Exception:
-        pass  # Ignore logging errors
+    except (OSError, TypeError, ValueError):
+        pass  # Ignore logging errors (file I/O or JSON serialization issues)
     # #endregion
 
     print("Building Docker runner image (this ensures dependencies are up-to-date)...")
@@ -434,6 +436,9 @@ else:
     # This avoids Windows filesystem I/O issues and ensures Linux-specific dependencies work correctly
     # Use Popen with real-time output to avoid deadlock from output buffering
     start_time = time.time()
+    # nosemgrep: python.lang.compatibility.python36.python36-compatibility-Popen1
+    # nosemgrep: python.lang.compatibility.python36.python36-compatibility-Popen2
+    # Project requires Python >= 3.12, so encoding/errors arguments are available
     process = subprocess.Popen(
         [
             "docker",

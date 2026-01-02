@@ -310,6 +310,8 @@ export const useCommandStore = create<CommandStore>()(
                 return false; // Pattern contains dangerous nested quantifiers
               }
 
+              // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
+              // ReDoS protection is in place: pattern validation above and 100ms timeout below
               const regex = new RegExp(trigger.pattern, trigger.caseSensitive ? 'g' : 'gi');
 
               // Add timeout protection for regex execution
@@ -379,7 +381,7 @@ export const useCommandStore = create<CommandStore>()(
     }),
     {
       name: 'command-store',
-      partialize: state => ({
+      partialize: (state: CommandStore) => ({
         commandHistory: state.commandHistory,
         aliases: state.aliases,
         triggers: state.triggers,

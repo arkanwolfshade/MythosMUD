@@ -4,15 +4,21 @@
  * This module exports the configured node types, edge types, and default
  * settings for the React Flow map visualization.
  *
+ * Canvas Orientation:
+ * - Top of canvas = North
+ * - Bottom of canvas = South
+ * - Right side of canvas = East
+ * - Left side of canvas = West
+ *
  * As documented in the Pnakotic Manuscripts, proper configuration of
  * dimensional visualization tools is essential for maintaining spatial
  * awareness across the eldritch architecture.
  */
 
-import type { NodeTypes, EdgeTypes } from 'reactflow';
-import { RoomNode } from './nodes/RoomNode';
-import { IntersectionNode } from './nodes/IntersectionNode';
+import type { EdgeTypes, NodeTypes } from 'reactflow';
 import { ExitEdge } from './edges/ExitEdge';
+import { IntersectionNode } from './nodes/IntersectionNode';
+import { RoomNode } from './nodes/RoomNode';
 
 /**
  * Custom node types for the map editor.

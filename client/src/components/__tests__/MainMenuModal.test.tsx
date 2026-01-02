@@ -1,7 +1,6 @@
-import { describe, expect, it, beforeEach, vi, afterEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MainMenuModal } from '../MainMenuModal';
 
 // Mock createPortal to render in the same tree
@@ -41,7 +40,7 @@ describe('MainMenuModal', () => {
 
     // Assert
     expect(screen.getByText('Main Menu')).toBeInTheDocument();
-    expect(screen.getByText('Map')).toBeInTheDocument();
+    expect(screen.getByText('Map (New Tab)')).toBeInTheDocument();
     expect(screen.getByText('Logout')).toBeInTheDocument();
   });
 
@@ -163,19 +162,27 @@ describe('MainMenuModal', () => {
     windowOpenSpy.mockRestore();
   });
 
-  it('should call onMapClick when provided and openMapInNewTab is false', () => {
+  it('should always open map in new tab regardless of deprecated props', () => {
     // Arrange
+    // Note: onMapClick and openMapInNewTab are deprecated - map always opens in new tab
     const onMapClick = vi.fn();
     const windowOpenSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
-    render(<MainMenuModal {...defaultProps} onMapClick={onMapClick} openMapInNewTab={false} />);
+    const currentRoom = {
+      id: 'room-123',
+      plane: 'earth',
+      zone: 'arkhamcity',
+    };
+    render(
+      <MainMenuModal {...defaultProps} currentRoom={currentRoom} onMapClick={onMapClick} openMapInNewTab={false} />
+    );
 
     // Act
     const mapButton = screen.getByText(/^Map/);
     fireEvent.click(mapButton);
 
-    // Assert
-    expect(onMapClick).toHaveBeenCalledTimes(1);
-    expect(windowOpenSpy).not.toHaveBeenCalled();
+    // Assert - should always open in new tab, ignoring deprecated props
+    expect(windowOpenSpy).toHaveBeenCalledWith('/map?roomId=room-123&plane=earth&zone=arkhamcity', '_blank');
+    expect(onMapClick).not.toHaveBeenCalled(); // Deprecated prop is ignored
     expect(defaultProps.onClose).toHaveBeenCalled();
 
     windowOpenSpy.mockRestore();
@@ -284,12 +291,15 @@ describe('MainMenuModal', () => {
     windowOpenSpy.mockRestore();
   });
 
-  it('should use openMapInNewTab prop when explicitly set to false', () => {
+  it('should always open map in new tab even when deprecated openMapInNewTab is false', () => {
     // Arrange
+    // Note: openMapInNewTab is deprecated - map always opens in new tab
     const onMapClick = vi.fn();
     const windowOpenSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
     const currentRoom = {
       id: 'room-123',
+      plane: 'earth',
+      zone: 'arkhamcity',
     };
 
     render(
@@ -300,9 +310,9 @@ describe('MainMenuModal', () => {
     const mapButton = screen.getByText(/^Map/);
     fireEvent.click(mapButton);
 
-    // Assert - should use callback instead
-    expect(onMapClick).toHaveBeenCalled();
-    expect(windowOpenSpy).not.toHaveBeenCalled();
+    // Assert - should always open in new tab, ignoring deprecated prop
+    expect(windowOpenSpy).toHaveBeenCalledWith('/map?roomId=room-123&plane=earth&zone=arkhamcity', '_blank');
+    expect(onMapClick).not.toHaveBeenCalled(); // Deprecated prop is ignored
 
     windowOpenSpy.mockRestore();
   });

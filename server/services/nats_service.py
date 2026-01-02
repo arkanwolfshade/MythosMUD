@@ -31,7 +31,7 @@ logger = get_logger("nats")
 class NATSMetrics:
     """NATS-specific metrics collection for monitoring and alerting."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.publish_count = 0
         self.publish_errors = 0
         self.subscribe_count = 0
@@ -926,7 +926,7 @@ class NATSService:
             **self.metrics.get_metrics(),
         }
 
-    async def _initialize_connection_pool(self):
+    async def _initialize_connection_pool(self) -> None:
         """Initialize connection pool for high-throughput scenarios."""
         if self._pool_initialized:
             return
@@ -1182,7 +1182,7 @@ class NATSService:
         finally:
             self._batch_task = None
 
-    async def _flush_batch(self):
+    async def _flush_batch(self) -> None:
         """Flush all batched messages efficiently."""
         if not self.message_batch:
             return

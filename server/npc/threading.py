@@ -195,7 +195,7 @@ class NPCThreadManager:
     NPC threads, ensuring proper resource management and thread safety.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the NPC thread manager."""
         self.active_threads: dict[str, asyncio.Task] = {}
         self.npc_definitions: dict[str, NPCDefinition] = {}
@@ -518,7 +518,7 @@ class NPCCommunicationBridge:
     messages between NPCs and the main game systems.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the communication bridge."""
         self.outgoing_messages: list[dict[str, Any]] = []
         self.incoming_messages: dict[str, list[dict[str, Any]]] = defaultdict(list)

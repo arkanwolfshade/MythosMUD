@@ -130,7 +130,7 @@ class CombatMonitoringService:
     when thresholds are exceeded.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the combat monitoring service."""
         self._config = get_config()
         self._feature_flags = get_feature_flags()

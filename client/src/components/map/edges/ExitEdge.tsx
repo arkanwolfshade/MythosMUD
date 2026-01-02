@@ -10,7 +10,7 @@
  */
 
 import React from 'react';
-import { BaseEdge, EdgeLabelRenderer, getBezierPath, type EdgeProps } from 'reactflow';
+import { BaseEdge, EdgeLabelRenderer, getStraightPath, type EdgeProps } from 'reactflow';
 import type { ExitEdgeData } from '../types';
 
 // Type alias for ExitEdge props - extends EdgeProps for type safety
@@ -40,14 +40,12 @@ const getFlagIcon = (flag: string): { icon: string; color: string; label: string
  * Memoized to prevent unnecessary re-renders when props haven't changed.
  */
 export const ExitEdge: React.FC<ExitEdgeProps> = React.memo(
-  ({ id, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, style = {}, markerEnd, data }) => {
-    const [edgePath, labelX, labelY] = getBezierPath({
+  ({ id, sourceX, sourceY, targetX, targetY, style = {}, markerEnd, data }) => {
+    const [edgePath, labelX, labelY] = getStraightPath({
       sourceX,
       sourceY,
-      sourcePosition,
       targetX,
       targetY,
-      targetPosition,
     });
 
     const flags = data?.flags || [];

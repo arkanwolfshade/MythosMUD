@@ -11,7 +11,7 @@
 
 import { describe, expect, it } from 'vitest';
 import type { Room } from '../../../../stores/gameStore';
-import { roomToNode, roomsToNodes, createEdgesFromRooms, transformRoomsToMapData } from '../mapUtils';
+import { createEdgesFromRooms, roomToNode, roomsToNodes, transformRoomsToMapData } from '../mapUtils';
 
 describe('mapUtils', () => {
   describe('roomToNode', () => {
@@ -197,8 +197,8 @@ describe('mapUtils', () => {
           environment: 'outdoors',
           exits: {
             north: 'room_002',
-            south: null,
-          },
+            // south: null - null exits are filtered out by createEdgesFromRooms
+          } as Record<string, string>,
         },
         {
           id: 'room_002',
@@ -221,6 +221,9 @@ describe('mapUtils', () => {
       expect(edges[0].data?.direction).toBe('north');
       expect(edges[0].data?.sourceRoomId).toBe('room_001');
       expect(edges[0].data?.targetRoomId).toBe('room_002');
+      // Verify edge handles for north exit
+      expect(edges[0].sourceHandle).toBe('source-top');
+      expect(edges[0].targetHandle).toBe('target-bottom');
     });
 
     it('should create edges from object exit format with flags', () => {
@@ -328,8 +331,8 @@ describe('mapUtils', () => {
           sub_zone: 'campus',
           environment: 'outdoors',
           exits: {
-            north: null,
-            south: null,
+            // north: null - null exits are filtered out by createEdgesFromRooms
+            // south: null - null exits are filtered out by createEdgesFromRooms
             east: 'room_002',
           },
         },
@@ -349,6 +352,90 @@ describe('mapUtils', () => {
 
       expect(edges).toHaveLength(1);
       expect(edges[0].data?.direction).toBe('east');
+    });
+
+    it('should set correct edge positions for south exit', () => {
+      const rooms: Room[] = [
+        {
+          id: 'room_001',
+          name: 'Room 1',
+          description: 'First room',
+          plane: 'earth',
+          zone: 'arkhamcity',
+          sub_zone: 'campus',
+          environment: 'outdoors',
+          exits: {
+            south: 'room_002',
+          },
+        },
+        {
+          id: 'room_002',
+          name: 'Room 2',
+          description: 'Second room',
+          plane: 'earth',
+          zone: 'arkhamcity',
+          sub_zone: 'campus',
+          environment: 'indoors',
+          exits: {},
+        },
+      ];
+
+      const edges = createEdgesFromRooms(rooms);
+
+      expect(edges).toHaveLength(1);
+      expect(edges[0].data?.direction).toBe('south');
+      // Verify edge handles for south exit
+      expect(edges[0].sourceHandle).toBe('source-bottom');
+      expect(edges[0].targetHandle).toBe('target-top');
+    });
+
+    it('should set correct edge positions for east and west exits', () => {
+      const rooms: Room[] = [
+        {
+          id: 'room_001',
+          name: 'Room 1',
+          description: 'First room',
+          plane: 'earth',
+          zone: 'arkhamcity',
+          sub_zone: 'campus',
+          environment: 'outdoors',
+          exits: {
+            east: 'room_002',
+            west: 'room_003',
+          },
+        },
+        {
+          id: 'room_002',
+          name: 'Room 2',
+          description: 'Second room',
+          plane: 'earth',
+          zone: 'arkhamcity',
+          sub_zone: 'campus',
+          environment: 'indoors',
+          exits: {},
+        },
+        {
+          id: 'room_003',
+          name: 'Room 3',
+          description: 'Third room',
+          plane: 'earth',
+          zone: 'arkhamcity',
+          sub_zone: 'campus',
+          environment: 'indoors',
+          exits: {},
+        },
+      ];
+
+      const edges = createEdgesFromRooms(rooms);
+
+      expect(edges).toHaveLength(2);
+      const eastEdge = edges.find(e => e.data?.direction === 'east');
+      const westEdge = edges.find(e => e.data?.direction === 'west');
+
+      expect(eastEdge?.sourceHandle).toBe('source-right');
+      expect(eastEdge?.targetHandle).toBe('target-left');
+      expect(westEdge?.sourceHandle).toBe('source-left');
+      expect(westEdge?.targetHandle).toBe('target-right');
     });
 
     it('should handle all exit directions', () => {
@@ -506,7 +593,7 @@ describe('mapUtils', () => {
               flags: ['one_way'],
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } as any,
-            east: null,
+            // east: null - null exits are filtered out by createEdgesFromRooms
           },
         },
         {

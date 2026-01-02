@@ -18,7 +18,7 @@ sys.path.insert(0, str(server_dir))
 from server.services.npc_instance_service import get_npc_instance_service  # noqa: E402
 
 
-async def verify_npcs_in_lifecycle_manager():
+async def verify_npcs_in_lifecycle_manager() -> None:
     """Verify NPCs exist in lifecycle manager and test query logic."""
     print("=" * 80)
     print("NPC LIFECYCLE MANAGER VERIFICATION")

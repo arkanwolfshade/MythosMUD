@@ -83,6 +83,7 @@ DROP INDEX IF EXISTS public.idx_spells_school;
 DROP INDEX IF EXISTS public.idx_spells_name;
 DROP INDEX IF EXISTS public.idx_rooms_subzone;
 DROP INDEX IF EXISTS public.idx_rooms_map_coordinates;
+DROP INDEX IF EXISTS public.idx_rooms_map_origin_zone;
 DROP INDEX IF EXISTS public.idx_room_links_to;
 DROP INDEX IF EXISTS public.idx_room_links_from;
 DROP INDEX IF EXISTS public.idx_professions_available;
@@ -1133,7 +1134,10 @@ CREATE TABLE public.rooms (
     description text NOT NULL,
     attributes jsonb DEFAULT '{}'::jsonb NOT NULL,
     map_x numeric(10,2),
-    map_y numeric(10,2)
+    map_y numeric(10,2),
+    map_origin_zone boolean DEFAULT false NOT NULL,
+    map_symbol text,
+    map_style text
 );
 
 
@@ -1149,6 +1153,27 @@ COMMENT ON COLUMN public.rooms.map_x IS 'X coordinate for room position on the i
 --
 
 COMMENT ON COLUMN public.rooms.map_y IS 'Y coordinate for room position on the interactive map (admin layout). NULL if not set.';
+
+
+--
+-- Name: COLUMN rooms.map_origin_zone; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.rooms.map_origin_zone IS 'Marks this room as the origin for coordinate generation in its zone/subzone. Only one room per zone/subzone should be marked.';
+
+
+--
+-- Name: COLUMN rooms.map_symbol; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.rooms.map_symbol IS 'Admin-configurable ASCII symbol for this room on the map. If NULL, symbol is auto-assigned based on environment/type.';
+
+
+--
+-- Name: COLUMN rooms.map_style; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.rooms.map_style IS 'Style override for map rendering (e.g., "world", "city", "interior"). If NULL, style is determined from environment.';
 
 
 --
@@ -2173,6 +2198,13 @@ CREATE INDEX idx_room_links_to ON public.room_links USING btree (to_room_id);
 --
 
 CREATE INDEX idx_rooms_map_coordinates ON public.rooms USING btree (map_x, map_y) WHERE ((map_x IS NOT NULL) AND (map_y IS NOT NULL));
+
+
+---
+-- Name: idx_rooms_map_origin_zone; Type: INDEX; Schema: public; Owner: -
+---
+
+CREATE INDEX idx_rooms_map_origin_zone ON public.rooms USING btree (map_origin_zone) WHERE (map_origin_zone = true);
 
 
 --

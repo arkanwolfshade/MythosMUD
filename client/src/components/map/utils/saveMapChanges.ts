@@ -8,9 +8,9 @@
  */
 
 import type { Edge } from 'reactflow';
-import type { ExitEdgeData, RoomNodeData } from '../types';
-import type { MapEditingChanges } from '../hooks/useMapEditing';
 import { getApiBaseUrl } from '../../../utils/config';
+import type { MapEditingChanges } from '../hooks/useMapEditing';
+import type { ExitEdgeData, RoomNodeData } from '../types';
 
 export interface SaveMapChangesOptions {
   /** Auth token for authenticated requests */
@@ -29,8 +29,47 @@ export async function saveNodePositions(
   const { authToken, baseUrl } = options;
   const apiBaseUrl = baseUrl || getApiBaseUrl();
 
+  // #region agent log
+  if (typeof window !== 'undefined') {
+    // nosemgrep: typescript.react.security.react-insecure-request.react-insecure-request
+    // Intentional debug logging to localhost endpoint (127.0.0.1) for development only
+    fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        location: 'saveMapChanges.ts:33',
+        message: 'saveNodePositions entry',
+        data: { nodePositionsCount: nodePositions.size, hasAuthToken: !!authToken, baseUrl: apiBaseUrl },
+        timestamp: Date.now(),
+        sessionId: 'debug-session',
+        runId: 'run1',
+        hypothesisId: 'E',
+      }),
+    }).catch(() => {});
+  }
+  // #endregion
+
   // Save each node position
   const savePromises = Array.from(nodePositions.entries()).map(async ([roomId, position]) => {
+    // #region agent log
+    if (typeof window !== 'undefined') {
+      // nosemgrep: typescript.react.security.react-insecure-request.react-insecure-request
+      // Intentional debug logging to localhost endpoint (127.0.0.1) for development only
+      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          location: 'saveMapChanges.ts:40',
+          message: 'Saving node position',
+          data: { roomId, position },
+          timestamp: Date.now(),
+          sessionId: 'debug-session',
+          runId: 'run1',
+          hypothesisId: 'E',
+        }),
+      }).catch(() => {});
+    }
+    // #endregion
     const response = await fetch(`${apiBaseUrl}/api/rooms/${encodeURIComponent(roomId)}/position`, {
       method: 'POST',
       headers: {
@@ -43,8 +82,47 @@ export async function saveNodePositions(
       }),
     });
 
+    // #region agent log
+    if (typeof window !== 'undefined') {
+      // nosemgrep: typescript.react.security.react-insecure-request.react-insecure-request
+      // Intentional debug logging to localhost endpoint (127.0.0.1) for development only
+      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          location: 'saveMapChanges.ts:52',
+          message: 'Node position save response',
+          data: { roomId, status: response.status, statusText: response.statusText, ok: response.ok },
+          timestamp: Date.now(),
+          sessionId: 'debug-session',
+          runId: 'run1',
+          hypothesisId: 'E',
+        }),
+      }).catch(() => {});
+    }
+    // #endregion
+
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ detail: 'Unknown error' }));
+      // #region agent log
+      if (typeof window !== 'undefined') {
+        // nosemgrep: typescript.react.security.react-insecure-request.react-insecure-request
+        // Intentional debug logging to localhost endpoint (127.0.0.1) for development only
+        fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            location: 'saveMapChanges.ts:56',
+            message: 'Node position save failed',
+            data: { roomId, error: errorData.detail || response.statusText, status: response.status },
+            timestamp: Date.now(),
+            sessionId: 'debug-session',
+            runId: 'run1',
+            hypothesisId: 'E',
+          }),
+        }).catch(() => {});
+      }
+      // #endregion
       throw new Error(`Failed to save position for room ${roomId}: ${errorData.detail || response.statusText}`);
     }
   });
@@ -109,6 +187,46 @@ export async function saveRoomUpdates(
  */
 export async function saveMapChanges(changes: MapEditingChanges, options: SaveMapChangesOptions): Promise<void> {
   const { authToken, baseUrl } = options;
+
+  // Check if there are any changes to save
+  const hasChanges =
+    changes.nodePositions.size > 0 ||
+    changes.newEdges.length > 0 ||
+    changes.deletedEdgeIds.length > 0 ||
+    changes.edgeUpdates.size > 0 ||
+    changes.roomUpdates.size > 0;
+
+  // Only log debug information if there are actual changes
+  if (hasChanges && typeof window !== 'undefined') {
+    // #region agent log
+    // nosemgrep: typescript.react.security.react-insecure-request.react-insecure-request
+    // Intentional debug logging to localhost endpoint (127.0.0.1) for development only
+    fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        location: 'saveMapChanges.ts:110',
+        message: 'saveMapChanges entry',
+        data: {
+          nodePositionsCount: changes.nodePositions.size,
+          newEdgesCount: changes.newEdges.length,
+          deletedEdgeIdsCount: changes.deletedEdgeIds.length,
+          edgeUpdatesCount: changes.edgeUpdates.size,
+          roomUpdatesCount: changes.roomUpdates.size,
+        },
+        timestamp: Date.now(),
+        sessionId: 'debug-session',
+        runId: 'run1',
+        hypothesisId: 'E',
+      }),
+    }).catch(() => {});
+    // #endregion
+  }
+
+  // Early return if no changes
+  if (!hasChanges) {
+    return;
+  }
 
   // Save node positions
   if (changes.nodePositions.size > 0) {

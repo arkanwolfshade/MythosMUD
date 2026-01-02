@@ -6,6 +6,7 @@ import { EldritchIcon, MythosIcons } from '../../ui/EldritchIcon';
 interface ChatMessageProps {
   message: {
     text: string;
+    rawText?: string;
     timestamp: string;
     isHtml: boolean;
     isCompleteHtml?: boolean;
@@ -99,6 +100,8 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, index }) => {
       >
         {message.isHtml ? (
           <span
+            // nosemgrep: typescript.react.security.audit.react-dangerouslysetinnerhtml.react-dangerouslysetinnerhtml
+            // HTML is sanitized using DOMPurify via inputSanitizer.sanitizeIncomingHtml() before being rendered
             dangerouslySetInnerHTML={{
               __html: inputSanitizer.sanitizeIncomingHtml(
                 message.isCompleteHtml ? message.text : ansiToHtmlWithBreaks(message.text)

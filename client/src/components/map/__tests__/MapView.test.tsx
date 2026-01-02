@@ -5,19 +5,25 @@
  * and proper display of map content.
  */
 
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { MapView } from '../../MapView';
 
-// Mock RoomMapViewer
-vi.mock('../RoomMapViewer', () => ({
-  RoomMapViewer: ({ plane, zone, currentRoomId }: { plane: string; zone: string; currentRoomId?: string }) => (
-    <div data-testid="room-map-viewer">
-      <div>Plane: {plane}</div>
-      <div>Zone: {zone}</div>
-      {currentRoomId && <div>Current Room: {currentRoomId}</div>}
-    </div>
-  ),
+// Mock AsciiMapViewer - simulate loaded state
+// Mock path from test file location: client/src/components/map/__tests__/
+// Target: client/src/components/map/AsciiMapViewer.tsx
+// Path: ../AsciiMapViewer (up one level from __tests__ to map/, then AsciiMapViewer)
+vi.mock('../AsciiMapViewer', () => ({
+  AsciiMapViewer: ({ plane, zone, currentRoomId }: { plane: string; zone: string; currentRoomId?: string }) => {
+    // Simulate component that immediately shows content (not loading)
+    return (
+      <div data-testid="ascii-map-viewer">
+        <div>Plane: {plane}</div>
+        <div>Zone: {zone}</div>
+        {currentRoomId && <div>Current Room: {currentRoomId}</div>}
+      </div>
+    );
+  },
 }));
 
 describe('MapView', () => {
@@ -45,7 +51,7 @@ describe('MapView', () => {
   it('should render when isOpen is true', () => {
     render(<MapView {...defaultProps} />);
     expect(screen.getByText('Map')).toBeInTheDocument();
-    expect(screen.getByTestId('room-map-viewer')).toBeInTheDocument();
+    expect(screen.getByTestId('ascii-map-viewer')).toBeInTheDocument();
   });
 
   it('should not render when isOpen is false', () => {
@@ -68,17 +74,20 @@ describe('MapView', () => {
     });
   });
 
-  it('should pass correct props to RoomMapViewer', () => {
+  it('should pass correct props to AsciiMapViewer', async () => {
     render(<MapView {...defaultProps} />);
-    expect(screen.getByText('Plane: earth')).toBeInTheDocument();
+    // Wait for the component to finish loading
+    await waitFor(() => {
+      expect(screen.getByText('Plane: earth')).toBeInTheDocument();
+    });
     expect(screen.getByText('Zone: arkhamcity')).toBeInTheDocument();
     expect(screen.getByText('Current Room: earth_arkhamcity_northside_room_test')).toBeInTheDocument();
   });
 
-  it('should show error message when room data is missing (not render RoomMapViewer)', () => {
+  it('should show error message when room data is missing (not render AsciiMapViewer)', () => {
     render(<MapView {...defaultProps} currentRoom={null} />);
-    // When room is null, MapView shows error message instead of RoomMapViewer
-    expect(screen.queryByTestId('room-map-viewer')).not.toBeInTheDocument();
+    // When room is null, MapView shows error message instead of AsciiMapViewer
+    expect(screen.queryByTestId('ascii-map-viewer')).not.toBeInTheDocument();
     expect(screen.getByText(/Unable to load map: No room data available/)).toBeInTheDocument();
     expect(screen.getByText(/You must be in a room to view the map/)).toBeInTheDocument();
   });

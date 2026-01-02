@@ -667,8 +667,8 @@ describe('CommandPanel', () => {
       render(<CommandPanel {...defaultProps} onSendCommand={mockOnSendCommand} />);
 
       const input = screen.getByTestId('command-input');
-      // nosemgrep: javascript.lang.security.audit.unknown-value-with-script-tag.unknown-value-with-script-tag
       // This is a test file testing XSS protection, the script tag is intentional test data
+      // nosemgrep: javascript.lang.security.audit.unknown-value-with-script-tag.unknown-value-with-script-tag
       await user.type(input, 'say "Hello, world!" & <script>alert("test")</script>');
       await user.keyboard('{Enter}');
 

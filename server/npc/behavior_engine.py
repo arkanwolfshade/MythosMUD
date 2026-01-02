@@ -25,7 +25,7 @@ class BehaviorEngine:
     in a deterministic, priority-based manner.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the behavior engine."""
         self.rules: list[dict[str, Any]] = []
         self.action_handlers: dict[str, Callable] = {}

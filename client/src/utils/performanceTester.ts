@@ -51,6 +51,8 @@ export class PerformanceTester {
         await testFunction();
         // Don't record warmup times
       } catch (error) {
+        // nosemgrep: javascript.lang.security.audit.unsafe-formatstring.unsafe-formatstring
+        // This is internal test logging with controlled iteration number, not user input
         console.warn(`Warmup iteration ${i} failed:`, error);
       }
     }

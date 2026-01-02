@@ -99,7 +99,7 @@ class ApplicationContainer:
     _instance: "ApplicationContainer | None" = None
     _lock: threading.Lock = threading.Lock()
 
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Initialize the container.
 

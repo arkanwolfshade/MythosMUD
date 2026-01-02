@@ -16,7 +16,7 @@ vi.mock('reactflow', () => ({
   EdgeLabelRenderer: ({ children }: { children: React.ReactNode }): React.ReactElement => (
     <div data-testid="edge-label-renderer">{children}</div>
   ),
-  getBezierPath: vi.fn(() => ['M0,0 L100,100', 50, 50]),
+  getStraightPath: vi.fn(() => ['M0,0 L100,100', 50, 50]),
   Position: {
     Right: 'right',
     Left: 'left',
