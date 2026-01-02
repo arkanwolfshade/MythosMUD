@@ -99,7 +99,7 @@ export const AsciiMinimap: React.FC<AsciiMinimapProps> = ({
 
   // Fetch minimap when dependencies change
   useEffect(() => {
-    fetchMinimap();
+    void fetchMinimap();
   }, [fetchMinimap]);
 
   // Position classes

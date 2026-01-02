@@ -115,7 +115,9 @@ export const AsciiMapEditor: React.FC<AsciiMapEditorProps> = ({ plane, zone, sub
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-lg font-bold text-mythos-terminal-text">Room: {selectedRoomId}</h3>
             <button
-              onClick={() => setSelectedRoomId(null)}
+              onClick={() => {
+                setSelectedRoomId(null);
+              }}
               className="text-mythos-terminal-text hover:text-mythos-terminal-error"
             >
               ×

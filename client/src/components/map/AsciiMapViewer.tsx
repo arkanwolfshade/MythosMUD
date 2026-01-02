@@ -146,7 +146,7 @@ export const AsciiMapViewer: React.FC<AsciiMapViewerProps> = ({
 
   // Fetch map when dependencies change
   useEffect(() => {
-    fetchMap();
+    void fetchMap();
   }, [fetchMap]);
 
   // Handle keyboard navigation
@@ -246,28 +246,36 @@ export const AsciiMapViewer: React.FC<AsciiMapViewerProps> = ({
       {/* Viewport controls */}
       <div className="absolute top-4 right-4 z-10 flex gap-2">
         <button
-          onClick={() => setViewportX(prev => prev - 1)}
+          onClick={() => {
+            setViewportX(prev => prev - 1);
+          }}
           className="px-2 py-1 bg-mythos-terminal-background border border-mythos-terminal-border text-mythos-terminal-text rounded hover:bg-mythos-terminal-border"
           title="Scroll left"
         >
           ←
         </button>
         <button
-          onClick={() => setViewportX(prev => prev + 1)}
+          onClick={() => {
+            setViewportX(prev => prev + 1);
+          }}
           className="px-2 py-1 bg-mythos-terminal-background border border-mythos-terminal-border text-mythos-terminal-text rounded hover:bg-mythos-terminal-border"
           title="Scroll right"
         >
           →
         </button>
         <button
-          onClick={() => setViewportY(prev => prev - 1)}
+          onClick={() => {
+            setViewportY(prev => prev - 1);
+          }}
           className="px-2 py-1 bg-mythos-terminal-background border border-mythos-terminal-border text-mythos-terminal-text rounded hover:bg-mythos-terminal-border"
           title="Scroll up"
         >
           ↑
         </button>
         <button
-          onClick={() => setViewportY(prev => prev + 1)}
+          onClick={() => {
+            setViewportY(prev => prev + 1);
+          }}
           className="px-2 py-1 bg-mythos-terminal-background border border-mythos-terminal-border text-mythos-terminal-text rounded hover:bg-mythos-terminal-border"
           title="Scroll down"
         >
