@@ -6,92 +6,24 @@ channel management, and real-time communication between players.
 """
 
 import uuid
-from datetime import UTC, datetime
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from ..services.chat_logger import chat_logger
-from ..services.nats_exceptions import NATSPublishError
-from ..services.nats_subject_manager import SubjectValidationError
 from ..services.rate_limiter import rate_limiter
 from ..services.user_manager import user_manager
 from ..structured_logging.enhanced_logging_config import get_logger
+from .chat_message import ChatMessage
+from .chat_moderation import ChatModeration
+
+if TYPE_CHECKING:
+    from .chat_moderation import UserManagerProtocol  # noqa: F401
+from .chat_nats_publisher import publish_chat_message_to_nats
+from .chat_pose_manager import ChatPoseManager
+from .chat_whisper_tracker import ChatWhisperTracker
 
 # NATS service import moved to constructor to avoid circular dependency issues
 
 logger = get_logger("communications.chat_service")
-
-
-class ChatMessage:
-    """Represents a chat message with metadata."""
-
-    def __init__(
-        self,
-        sender_id: uuid.UUID | str,
-        sender_name: str,
-        channel: str,
-        content: str,
-        target_id: uuid.UUID | str | None = None,
-        target_name: str | None = None,
-    ):
-        self.id = str(uuid.uuid4())
-        # Convert UUID to string for JSON serialization
-        self.sender_id = str(sender_id) if isinstance(sender_id, uuid.UUID) else sender_id
-        self.sender_name = sender_name
-        self.channel = channel
-        self.content = content
-        # Convert UUID to string for JSON serialization
-        # Type annotation ensures mypy knows this is str | None after conversion
-        if target_id is None:
-            self.target_id: str | None = None
-        elif isinstance(target_id, uuid.UUID):
-            self.target_id = str(target_id)
-        else:
-            self.target_id = target_id
-        self.target_name = target_name
-        self.timestamp = datetime.now(UTC)
-        self.echo_sent = False
-
-    def to_dict(self) -> dict[str, Any]:
-        """Convert message to dictionary for serialization."""
-        result: dict[str, Any] = {
-            "id": self.id,
-            "sender_id": self.sender_id,
-            "sender_name": self.sender_name,
-            "channel": self.channel,
-            "content": self.content,
-            "timestamp": self.timestamp.isoformat(),
-        }
-
-        # Add target information for whisper messages
-        if self.target_id:
-            result["target_id"] = self.target_id
-        if self.target_name:
-            result["target_name"] = self.target_name
-
-        # Indicate metadata flags when present
-        if getattr(self, "echo_sent", False):
-            result["echo_sent"] = True
-
-        return result
-
-    def log_message(self) -> None:
-        """Log this chat message to the communications log."""
-        log_data = {
-            "message_id": self.id,
-            "sender_id": self.sender_id,
-            "sender_name": self.sender_name,
-            "channel": self.channel,
-            "content": self.content,
-            "timestamp": self.timestamp.isoformat(),
-        }
-
-        # Add target information for whisper messages
-        if self.target_id:
-            log_data["target_id"] = self.target_id
-        if self.target_name:
-            log_data["target_name"] = self.target_name
-
-        logger.info("CHAT MESSAGE", **log_data)
 
 
 class ChatService:
@@ -133,8 +65,16 @@ class ChatService:
         # Message limits
         self._max_messages_per_room = 100
 
-        # Last whisper tracking for reply functionality
-        self._last_whisper_senders: dict[str, str] = {}  # player_name -> last_sender_name
+        # Pose and whisper tracking managers
+        self._pose_manager = ChatPoseManager()
+        self._whisper_tracker = ChatWhisperTracker()
+
+        # User manager for muting and permissions
+        self.user_manager = user_manager_instance or user_manager
+
+        # Moderation handler (must be after user_manager is set)
+        # Cast to UserManagerProtocol for type checking - runtime type is compatible with protocol
+        self._moderation = ChatModeration(self.player_service, cast("UserManagerProtocol", self.user_manager))
 
         # NATS service for real-time messaging (use provided instance or fall back to global)
         from ..services.nats_service import nats_service as global_nats_service
@@ -150,94 +90,12 @@ class ChatService:
         # Rate limiter for message throttling
         self.rate_limiter = rate_limiter
 
-        # User manager for muting and permissions
-        self.user_manager = user_manager_instance or user_manager
-
         logger.info("ChatService initialized with NATS integration and AI-ready logging")
 
     @staticmethod
     def _normalize_player_id(player_id: Any) -> str:
         """Normalize player identifiers to string form."""
         return str(player_id)
-
-    def _build_nats_subject(self, chat_message: ChatMessage, room_id: str | None) -> str:
-        """
-        Build NATS subject using standardized patterns or fallback to legacy construction.
-
-        Args:
-            chat_message: The chat message to build subject for
-            room_id: The room ID for the message
-
-        Returns:
-            NATS subject string
-
-        AI: Uses NATSSubjectManager for standardized patterns when available.
-        AI: Falls back to legacy construction for backward compatibility.
-        """
-        if self.subject_manager:
-            try:
-                # Use standardized patterns based on channel type
-                if chat_message.channel == "say":
-                    return cast(str, self.subject_manager.build_subject("chat_say_room", room_id=room_id))
-                elif chat_message.channel == "local":
-                    from ..utils.room_utils import extract_subzone_from_room_id
-
-                    if room_id is None:
-                        subzone = "unknown"
-                    else:
-                        subzone_result = extract_subzone_from_room_id(room_id)
-                        subzone = subzone_result if subzone_result else "unknown"
-                    return cast(str, self.subject_manager.build_subject("chat_local_subzone", subzone=subzone))
-                elif chat_message.channel == "global":
-                    return cast(str, self.subject_manager.build_subject("chat_global"))
-                elif chat_message.channel == "system":
-                    return cast(str, self.subject_manager.build_subject("chat_system"))
-                elif chat_message.channel == "whisper":
-                    target_id = getattr(chat_message, "target_id", None)
-                    if target_id:
-                        return cast(str, self.subject_manager.build_subject("chat_whisper_player", target_id=target_id))
-                    else:
-                        # Fallback for whisper without target
-                        return "chat.whisper"
-                elif chat_message.channel == "emote":
-                    return cast(str, self.subject_manager.build_subject("chat_emote_room", room_id=room_id))
-                elif chat_message.channel == "pose":
-                    return cast(str, self.subject_manager.build_subject("chat_pose_room", room_id=room_id))
-                else:
-                    # For other channels, use room level pattern
-                    return f"chat.{chat_message.channel}.{room_id}"
-            except (ValueError, TypeError, KeyError, SubjectValidationError) as e:
-                logger.warning(
-                    "Failed to build subject with NATSSubjectManager, falling back to legacy construction",
-                    error=str(e),
-                    channel=chat_message.channel,
-                    room_id=room_id,
-                )
-                # Fall through to legacy construction
-
-        # Legacy subject construction (backward compatibility)
-        if chat_message.channel == "local":
-            from ..utils.room_utils import extract_subzone_from_room_id
-
-            if room_id is None:
-                subzone = "unknown"
-            else:
-                subzone_result = extract_subzone_from_room_id(room_id)
-                subzone = subzone_result if subzone_result else "unknown"
-            return f"chat.local.subzone.{subzone}"
-        elif chat_message.channel == "global":
-            return "chat.global"
-        elif chat_message.channel == "system":
-            return "chat.system"
-        elif chat_message.channel == "whisper":
-            target_id = getattr(chat_message, "target_id", None)
-            if target_id:
-                return f"chat.whisper.player.{target_id}"
-            else:
-                return "chat.whisper"
-        else:
-            # For other channels, use room level subject
-            return f"chat.{chat_message.channel}.{room_id}"
 
     async def send_say_message(self, player_id: uuid.UUID | str, message: str) -> dict[str, Any]:
         """
@@ -361,7 +219,7 @@ class ChatService:
             nats_connected=self.nats_service.is_connected() if self.nats_service else False,
         )
 
-        success = await self._publish_chat_message_to_nats(chat_message, room_id)
+        success = await publish_chat_message_to_nats(chat_message, room_id, self.nats_service, self.subject_manager)
         if not success:
             # NATS publishing failed - detailed error already logged in _publish_chat_message_to_nats
             logger.error(
@@ -379,7 +237,7 @@ class ChatService:
 
         try:
             from server.realtime.message_filtering import SUPPRESS_ECHO_MESSAGE_IDS
-        except Exception as import_error:  # pragma: no cover - defensive against circular import edge cases
+        except ImportError as import_error:  # pragma: no cover - defensive against circular import edge cases
             logger.debug(
                 "=== CHAT SERVICE DEBUG: Failed to register echo suppression token ===",
                 error=str(import_error),
@@ -515,7 +373,7 @@ class ChatService:
 
         # Publish message to NATS for real-time distribution
         logger.debug("=== CHAT SERVICE DEBUG: About to publish message to NATS ===")
-        success = await self._publish_chat_message_to_nats(chat_message, room_id)
+        success = await publish_chat_message_to_nats(chat_message, room_id, self.nats_service, self.subject_manager)
         if not success:
             # NATS publishing failed - detailed error already logged in _publish_chat_message_to_nats
             logger.error(
@@ -538,7 +396,7 @@ class ChatService:
         # Register the message ID so the broadcasting layer can suppress duplicate echoes when no recipients exist.
         try:
             from server.realtime.message_filtering import SUPPRESS_ECHO_MESSAGE_IDS
-        except Exception as import_error:  # pragma: no cover - defensive guard for import cycles
+        except ImportError as import_error:  # pragma: no cover - defensive guard for import cycles
             logger.debug(
                 "=== CHAT SERVICE DEBUG: Failed to register echo suppression token ===",
                 error=str(import_error),
@@ -679,7 +537,9 @@ class ChatService:
 
         # Publish message to NATS for real-time distribution
         logger.debug("=== CHAT SERVICE DEBUG: About to publish global message to NATS ===")
-        success = await self._publish_chat_message_to_nats(chat_message, None)  # Global messages don't have room_id
+        success = await publish_chat_message_to_nats(
+            chat_message, None, self.nats_service, self.subject_manager
+        )  # Global messages don't have room_id
         if not success:
             # NATS publishing failed - detailed error already logged in _publish_chat_message_to_nats
             logger.error(
@@ -802,7 +662,9 @@ class ChatService:
 
         # Publish message to NATS for real-time distribution
         logger.debug("=== CHAT SERVICE DEBUG: About to publish system message to NATS ===")
-        success = await self._publish_chat_message_to_nats(chat_message, None)  # System messages don't have room_id
+        success = await publish_chat_message_to_nats(
+            chat_message, None, self.nats_service, self.subject_manager
+        )  # System messages don't have room_id
         if not success:
             # NATS publishing failed - detailed error already logged in _publish_chat_message_to_nats
             logger.error(
@@ -866,7 +728,7 @@ class ChatService:
         target_obj = await self.player_service.get_player_by_id(target_id)
         if not target_obj:
             logger.debug("=== CHAT SERVICE DEBUG: Target not found ===")
-            return {"success": False, "error": "Target player not found"}
+            return {"success": False, "error": "You whisper into the aether."}
 
         # Check rate limiting
         sender_name = getattr(sender_obj, "name", "UnknownPlayer")
@@ -921,7 +783,7 @@ class ChatService:
 
         # Store last whisper sender for reply functionality
         target_name = getattr(target_obj, "name", "UnknownPlayer")
-        self.store_last_whisper_sender(target_name, sender_name)
+        self._whisper_tracker.store_sender(target_name, sender_name)
 
         # Also log to communications log (existing behavior)
         chat_message.log_message()
@@ -949,7 +811,9 @@ class ChatService:
 
         # Publish message to NATS for real-time distribution
         logger.debug("=== CHAT SERVICE DEBUG: About to publish whisper message to NATS ===")
-        success = await self._publish_chat_message_to_nats(chat_message, None)  # Whisper messages don't have room_id
+        success = await publish_chat_message_to_nats(
+            chat_message, None, self.nats_service, self.subject_manager
+        )  # Whisper messages don't have room_id
         if not success:
             # NATS publishing failed - detailed error already logged in _publish_chat_message_to_nats
             logger.error(
@@ -1090,7 +954,7 @@ class ChatService:
 
         # Publish message to NATS for real-time distribution
         logger.debug("=== CHAT SERVICE DEBUG: About to publish emote message to NATS ===")
-        success = await self._publish_chat_message_to_nats(chat_message, room_id)
+        success = await publish_chat_message_to_nats(chat_message, room_id, self.nats_service, self.subject_manager)
         if not success:
             # NATS publishing failed - detailed error already logged in _publish_chat_message_to_nats
             logger.error(
@@ -1108,7 +972,7 @@ class ChatService:
 
         try:
             from server.realtime.message_filtering import SUPPRESS_ECHO_MESSAGE_IDS
-        except Exception as import_error:  # pragma: no cover - defensive against circular import edge cases
+        except ImportError as import_error:  # pragma: no cover - defensive against circular import edge cases
             logger.debug(
                 "=== CHAT SERVICE DEBUG: Failed to register echo suppression token ===",
                 error=str(import_error),
@@ -1123,9 +987,6 @@ class ChatService:
             )
 
         return {"success": True, "message": message_dict, "room_id": room_id}
-
-    # In-memory storage for player poses (not persisted to database)
-    _player_poses: dict[str, str] = {}
 
     async def set_player_pose(self, player_id: uuid.UUID | str, pose: str) -> dict[str, Any]:
         """
@@ -1163,7 +1024,7 @@ class ChatService:
             return {"success": False, "error": "Player not in a room"}
 
         # Set the pose in memory
-        self._player_poses[player_id] = pose.strip()
+        self._pose_manager.set_pose(player_id, pose)
 
         # Create a chat message to notify room of pose change
         # ChatMessage accepts UUID | str and converts internally
@@ -1179,7 +1040,7 @@ class ChatService:
 
         # Publish pose change to NATS for real-time distribution
         logger.debug("=== CHAT SERVICE DEBUG: About to publish pose message to NATS ===")
-        success = await self._publish_chat_message_to_nats(chat_message, room_id)
+        success = await publish_chat_message_to_nats(chat_message, room_id, self.nats_service, self.subject_manager)
         if not success:
             # NATS publishing failed - detailed error already logged in _publish_chat_message_to_nats
             logger.error(
@@ -1204,8 +1065,7 @@ class ChatService:
         Returns:
             Current pose description or None if no pose set
         """
-        player_id = self._normalize_player_id(player_id)
-        return self._player_poses.get(player_id)
+        return self._pose_manager.get_pose(player_id)
 
     def clear_player_pose(self, player_id: uuid.UUID | str) -> bool:
         """
@@ -1217,11 +1077,7 @@ class ChatService:
         Returns:
             True if pose was cleared, False if no pose was set
         """
-        player_id = self._normalize_player_id(player_id)
-        if player_id in self._player_poses:
-            del self._player_poses[player_id]
-            return True
-        return False
+        return self._pose_manager.clear_pose(player_id)
 
     async def get_room_poses(self, room_id: str) -> dict[str, str]:
         """
@@ -1237,7 +1093,7 @@ class ChatService:
         room_players = await self.room_service.get_room_occupants(room_id)
 
         for player_id in room_players:
-            pose = self._player_poses.get(player_id)
+            pose = self._pose_manager.get_pose(player_id)
             if pose:
                 player = await self.player_service.get_player_by_id(player_id)
                 if player:
@@ -1352,7 +1208,7 @@ class ChatService:
 
         # Publish message to NATS for real-time distribution
         logger.debug("=== CHAT SERVICE DEBUG: About to publish predefined emote message to NATS ===")
-        success = await self._publish_chat_message_to_nats(chat_message, room_id)
+        success = await publish_chat_message_to_nats(chat_message, room_id, self.nats_service, self.subject_manager)
         if not success:
             # NATS publishing failed - detailed error already logged in _publish_chat_message_to_nats
             logger.error(
@@ -1373,373 +1229,67 @@ class ChatService:
             "room_id": room_id,
         }
 
-    async def _publish_chat_message_to_nats(self, chat_message: ChatMessage, room_id: str | None) -> bool:
-        """
-        Publish a chat message to NATS for real-time distribution.
-
-        This method publishes the message to the appropriate NATS subject
-        for distribution to all subscribers.
-
-        Args:
-            chat_message: The chat message to publish
-            room_id: The room ID for the message
-
-        Returns:
-            True if published successfully, False otherwise
-        """
-        try:
-            # Pre-transmission validation
-            if not self._validate_chat_message(chat_message):
-                logger.warning("Chat message validation failed", message_id=chat_message.id)
-                return False
-
-            if not self._validate_room_access(chat_message.sender_id, room_id):
-                logger.warning("Room access validation failed", sender_id=chat_message.sender_id, room_id=room_id)
-                return False
-
-            # Check if NATS service is available and connected
-            if not self.nats_service:
-                logger.error(
-                    "NATS service not available - NATS is mandatory for chat functionality",
-                    message_id=chat_message.id,
-                    room_id=room_id,
-                )
-                return False
-
-            # Check connection status before attempting publish
-            if not self.nats_service.is_connected():
-                logger.error(
-                    "NATS service not connected - NATS is mandatory for chat functionality",
-                    message_id=chat_message.id,
-                    room_id=room_id,
-                    nats_service_type=type(self.nats_service).__name__,
-                )
-                return False
-
-            # Check connection pool initialization (if available)
-            if hasattr(self.nats_service, "_pool_initialized") and not self.nats_service._pool_initialized:
-                logger.error(
-                    "NATS connection pool not initialized - cannot publish",
-                    message_id=chat_message.id,
-                    room_id=room_id,
-                )
-                return False
-
-            logger.debug(
-                "NATS service available and connected",
-                nats_service_type=type(self.nats_service).__name__,
-                nats_connected=True,
-                message_id=chat_message.id,
-            )
-
-            # Create message data for NATS
-            message_data = {
-                "message_id": chat_message.id,
-                "sender_id": chat_message.sender_id,
-                "sender_name": chat_message.sender_name,
-                "channel": chat_message.channel,
-                "content": chat_message.content,
-                "timestamp": chat_message.timestamp.isoformat(),
-                "room_id": room_id,
-            }
-
-            # Add target information for whisper messages
-            if hasattr(chat_message, "target_id") and chat_message.target_id:
-                # target_id is guaranteed to be str | None after ChatMessage.__init__
-                message_data["target_id"] = chat_message.target_id
-            if hasattr(chat_message, "target_name") and chat_message.target_name:
-                message_data["target_name"] = chat_message.target_name
-
-            # Build NATS subject using standardized patterns
-            subject = self._build_nats_subject(chat_message, room_id)
-            logger.debug(
-                "NATS subject determined",
-                subject=subject,
-                channel=chat_message.channel,
-                room_id=room_id,
-                using_subject_manager=self.subject_manager is not None,
-            )
-
-            # Publish to NATS
-            # Note: publish() returns None on success, raises NATSPublishError on failure
-            await self.nats_service.publish(subject, message_data)
-            logger.info(
-                "Chat message published to NATS successfully",
-                message_id=chat_message.id,
-                subject=subject,
-                sender_id=chat_message.sender_id,
-                room_id=room_id,
-            )
-            return True
-
-        except NATSPublishError as e:
-            # NATS publish failed with specific error
-            logger.error(
-                "Failed to publish chat message to NATS",
-                error=str(e),
-                error_type=type(e).__name__,
-                message_id=chat_message.id,
-                subject=getattr(e, "subject", None),
-                room_id=room_id,
-                original_error=str(getattr(e, "original_error", None)) if hasattr(e, "original_error") else None,
-            )
-            return False
-
-        except Exception as e:
-            # Unexpected error during publish
-            logger.error(
-                "Unexpected error publishing chat message to NATS",
-                error=str(e),
-                error_type=type(e).__name__,
-                message_id=chat_message.id,
-                room_id=room_id,
-                exc_info=True,
-            )
-            return False
-
     async def mute_channel(self, player_id: uuid.UUID | str, channel: str) -> bool:
         """Mute a specific channel for a player."""
-        player_id_str = self._normalize_player_id(player_id)
-
-        # Get player name for logging
-        player = await self.player_service.get_player_by_id(player_id_str)
-        player_name = player.name if player else player_id_str
-
-        success = self.user_manager.mute_channel(player_id_str, player_name, channel)
-        if success:
-            logger.info("Player muted channel", player_id=player_id_str, channel=channel)
-        return bool(success)
+        return await self._moderation.mute_channel(player_id, channel)
 
     async def unmute_channel(self, player_id: uuid.UUID | str, channel: str) -> bool:
         """Unmute a specific channel for a player."""
-        player_id_str = self._normalize_player_id(player_id)
-
-        # Get player name for logging
-        player = await self.player_service.get_player_by_id(player_id_str)
-        player_name = player.name if player else player_id_str
-
-        success = self.user_manager.unmute_channel(player_id_str, player_name, channel)
-        if success:
-            logger.info("Player unmuted channel", player_id=player_id_str, channel=channel)
-        return bool(success)
+        return await self._moderation.unmute_channel(player_id, channel)
 
     def is_channel_muted(self, player_id: uuid.UUID | str, channel: str) -> bool:
         """Check if a channel is muted for a player."""
-        player_id_str = self._normalize_player_id(player_id)
-        return bool(self.user_manager.is_channel_muted(player_id_str, channel))
+        return self._moderation.is_channel_muted(player_id, channel)
 
     async def mute_player(self, muter_id: uuid.UUID | str, target_player_name: str) -> bool:
         """Mute a specific player for another player."""
-        # Get muter name for logging
-        muter_id_str = self._normalize_player_id(muter_id)
-        muter = await self.player_service.get_player_by_id(muter_id_str)
-        muter_name = muter.name if muter else muter_id_str
-
-        # Resolve target player name to ID
-        target_player = await self.player_service.resolve_player_name(target_player_name)
-        if not target_player:
-            return False
-
-        target_id_str = self._normalize_player_id(target_player.id)
-
-        success = self.user_manager.mute_player(muter_id_str, muter_name, target_id_str, target_player_name)
-        if success:
-            logger.info("Player muted another player", muter_id=muter_id_str, target=target_player_name)
-        return bool(success)
+        return await self._moderation.mute_player(muter_id, target_player_name)
 
     async def unmute_player(self, muter_id: uuid.UUID | str, target_player_name: str) -> bool:
         """Unmute a specific player for another player."""
-        # Get muter name for logging
-        muter_id_str = self._normalize_player_id(muter_id)
-        muter = await self.player_service.get_player_by_id(muter_id_str)
-        muter_name = muter.name if muter else muter_id_str
-
-        # Resolve target player name to ID
-        target_player = await self.player_service.resolve_player_name(target_player_name)
-        if not target_player:
-            return False
-
-        target_id_str = self._normalize_player_id(target_player.id)
-
-        success = self.user_manager.unmute_player(muter_id_str, muter_name, target_id_str, target_player_name)
-        if success:
-            logger.info("Player unmuted another player", muter_id=muter_id_str, target=target_player_name)
-        return bool(success)
+        return await self._moderation.unmute_player(muter_id, target_player_name)
 
     def is_player_muted(self, muter_id: uuid.UUID | str, target_player_id: uuid.UUID | str) -> bool:
         """Check if a player is muted by another player."""
-        muter_id_str = self._normalize_player_id(muter_id)
-        target_id_str = self._normalize_player_id(target_player_id)
-        return bool(self.user_manager.is_player_muted(muter_id_str, target_id_str))
+        return self._moderation.is_player_muted(muter_id, target_player_id)
 
     async def mute_global(
         self, muter_id: uuid.UUID | str, target_player_name: str, duration_minutes: int | None = None, reason: str = ""
     ) -> bool:
         """Apply a global mute to a player (cannot use any chat channels)."""
-        # Get muter name for logging
-        muter_id_str = self._normalize_player_id(muter_id)
-        muter = await self.player_service.get_player_by_id(muter_id_str)
-        muter_name = muter.name if muter else muter_id_str
-
-        # Resolve target player name to ID
-        target_player = await self.player_service.resolve_player_name(target_player_name)
-        if not target_player:
-            return False
-
-        target_id_str = self._normalize_player_id(target_player.id)
-
-        success = self.user_manager.mute_global(
-            muter_id_str, muter_name, target_id_str, target_player_name, duration_minutes, reason
-        )
-        if success:
-            logger.info(
-                "Player globally muted", muter_id=muter_id_str, target=target_player_name, duration=duration_minutes
-            )
-        return bool(success)
+        return await self._moderation.mute_global(muter_id, target_player_name, duration_minutes, reason)
 
     async def unmute_global(self, unmuter_id: uuid.UUID | str, target_player_name: str) -> bool:
         """Remove a global mute from a player."""
-        # Get unmuter name for logging
-        unmuter_id_str = self._normalize_player_id(unmuter_id)
-        unmuter = await self.player_service.get_player_by_id(unmuter_id_str)
-        unmuter_name = unmuter.name if unmuter else unmuter_id_str
-
-        # Resolve target player name to ID
-        target_player = await self.player_service.resolve_player_name(target_player_name)
-        if not target_player:
-            return False
-
-        target_id_str = self._normalize_player_id(target_player.id)
-
-        success = self.user_manager.unmute_global(unmuter_id_str, unmuter_name, target_id_str, target_player_name)
-        if success:
-            logger.info("Player globally unmuted", unmuter_id=unmuter_id_str, target=target_player_name)
-        return bool(success)
+        return await self._moderation.unmute_global(unmuter_id, target_player_name)
 
     def is_globally_muted(self, player_id: uuid.UUID | str) -> bool:
         """Check if a player is globally muted."""
-        # user_manager expects string, normalize UUID to string
-        player_id_str = self._normalize_player_id(player_id)
-        return bool(self.user_manager.is_globally_muted(player_id_str))
+        return self._moderation.is_globally_muted(player_id)
 
     async def add_admin(self, player_id: uuid.UUID | str) -> bool:
         """Add a player as an admin."""
-        # Normalize UUID to string for user_manager and player_service
-        player_id_str = self._normalize_player_id(player_id)
-        player = await self.player_service.get_player_by_id(player_id_str)
-        player_name = player.name if player else player_id_str
-
-        self.user_manager.add_admin(player_id_str, player_name)
-        # Structlog handles UUID objects automatically, no need to convert to string
-        logger.info("Player added as admin", player_id=player_id, player_name=player_name)
-        return True
+        return await self._moderation.add_admin(player_id)
 
     async def remove_admin(self, player_id: uuid.UUID | str) -> bool:
         """Remove a player's admin status."""
-        # Normalize UUID to string for user_manager and player_service
-        player_id_str = self._normalize_player_id(player_id)
-        player = await self.player_service.get_player_by_id(player_id_str)
-        player_name = player.name if player else player_id_str
-
-        self.user_manager.remove_admin(player_id_str, player_name)
-        # Structlog handles UUID objects automatically, no need to convert to string
-        logger.info("Player admin status removed", player_id=player_id, player_name=player_name)
-        return True
+        return await self._moderation.remove_admin(player_id)
 
     def is_admin(self, player_id: uuid.UUID | str) -> bool:
         """Check if a player is an admin."""
-        # user_manager expects string, normalize UUID to string
-        player_id_str = self._normalize_player_id(player_id)
-        return bool(self.user_manager.is_admin(player_id_str))
-
-    def _validate_chat_message(self, chat_message: ChatMessage) -> bool:
-        """Validate chat message before transmission."""
-        try:
-            # Check message content
-            if not chat_message.content or len(chat_message.content.strip()) == 0:
-                logger.warning("Empty message content", message_id=chat_message.id)
-                return False
-
-            # Check message length
-            if len(chat_message.content) > 1000:  # Max length
-                logger.warning("Message too long", message_id=chat_message.id, length=len(chat_message.content))
-                return False
-
-            # Check sender information
-            if not chat_message.sender_id or not chat_message.sender_name:
-                logger.warning("Missing sender information", message_id=chat_message.id)
-                return False
-
-            # Check for malicious content patterns
-            if self._contains_malicious_content(chat_message.content):
-                logger.warning(
-                    "Malicious content detected", message_id=chat_message.id, sender_id=chat_message.sender_id
-                )
-                return False
-
-            return True
-
-        except Exception as e:
-            logger.error("Error validating chat message", error=str(e), message_id=chat_message.id)
-            return False
-
-    def _validate_room_access(self, sender_id: str, room_id: str | None) -> bool:
-        """Validate sender has access to the room."""
-        try:
-            # Check if sender exists and is active
-            if not sender_id:
-                return False
-
-            # Allow None room_id for system messages (broadcast to all players)
-            if room_id is None:
-                return True
-            # Explicitly validate non-empty string
-            if room_id.strip() == "":
-                return False
-
-            return True
-
-        except Exception as e:
-            logger.error("Error validating room access", error=str(e), sender_id=sender_id, room_id=room_id)
-            return False
-
-    def _contains_malicious_content(self, content: str) -> bool:
-        """Check for malicious content patterns."""
-        try:
-            # Basic malicious pattern detection
-            malicious_patterns = [
-                r"<script[^>]*>.*?</script>",  # Script tags
-                r"javascript:",  # JavaScript URLs
-                r"data:text/html",  # Data URLs
-                r"vbscript:",  # VBScript URLs
-                r"on\w+\s*=",  # Event handlers
-            ]
-
-            import re
-
-            for pattern in malicious_patterns:
-                if re.search(pattern, content, re.IGNORECASE):
-                    return True
-
-            return False
-
-        except Exception as e:
-            logger.error("Error checking malicious content", error=str(e))
-            return True  # Fail safe - reject if check fails
+        return self._moderation.is_admin(player_id)
 
     def can_send_message(self, sender_id: str, target_id: str | None = None, channel: str | None = None) -> bool:
         """Check if a player can send a message."""
-        return bool(self.user_manager.can_send_message(sender_id, target_id, channel))
+        return self._moderation.can_send_message(sender_id, target_id, channel)
 
     def get_player_mutes(self, player_id: uuid.UUID | str) -> dict[str, Any]:
         """Get all mutes applied by a player."""
-        # user_manager expects string, normalize UUID to string
-        player_id_str = self._normalize_player_id(player_id)
-        return cast(dict[str, Any], self.user_manager.get_player_mutes(player_id_str))
+        return self._moderation.get_player_mutes(player_id)
 
     def get_user_management_stats(self) -> dict[str, Any]:
         """Get user management system statistics."""
-        return cast(dict[str, Any], self.user_manager.get_system_stats())
+        return self._moderation.get_user_management_stats()
 
     def get_room_messages(self, room_id: str, limit: int = 50) -> list[dict[str, Any]]:
         """Get recent messages for a room."""
@@ -1756,138 +1306,7 @@ class ChatService:
         Returns:
             Formatted string with mute status information
         """
-        try:
-            # Convert player_id to UUID if it's a string
-            if isinstance(player_id, str):
-                try:
-                    player_id_uuid = uuid.UUID(player_id)
-                except (ValueError, AttributeError):
-                    logger.error("Invalid player_id format", player_id=player_id)
-                    return "Invalid player ID format."
-            else:
-                player_id_uuid = player_id
-
-            # Get player name (player_service accepts UUID)
-            player = await self.player_service.get_player_by_id(player_id_uuid)
-            if not player:
-                return "Player not found."
-
-            player_name = player.name
-
-            # Convert to string for user_manager methods (they expect strings)
-            player_id_str = str(player_id_uuid)
-
-            # Load player's mute data first
-            self.user_manager.load_player_mutes(player_id_str)
-
-            # Get mute information from UserManager
-            mute_info = self.user_manager.get_player_mutes(player_id_str)
-
-            # Check if player is admin
-            is_admin = self.user_manager.is_admin(player_id_str)
-
-            # Build status report
-            status_lines = []
-            status_lines.append(f"=== MUTE STATUS FOR {player_name.upper()} ===")
-
-            if is_admin:
-                status_lines.append("🔴 ADMIN STATUS: You are an admin (immune to all mutes)")
-
-            status_lines.append("")
-
-            # Personal mutes (players you have muted)
-            personal_mutes = mute_info.get("player_mutes", {})
-            if personal_mutes:
-                status_lines.append("🔇 PLAYERS YOU HAVE MUTED:")
-                for _target_id, mute_data in personal_mutes.items():
-                    target_name = mute_data.get("target_name", "Unknown")
-                    expires_at = mute_data.get("expires_at")
-                    reason = mute_data.get("reason", "")
-
-                    if expires_at:
-                        # Calculate remaining time
-                        from datetime import UTC, datetime
-
-                        try:
-                            if isinstance(expires_at, str):
-                                expires_dt = datetime.fromisoformat(expires_at.replace("Z", "+00:00"))
-                            else:
-                                expires_dt = expires_at
-
-                            now = datetime.now(UTC)
-                            if expires_dt.tzinfo is None:
-                                expires_dt = expires_dt.replace(tzinfo=UTC)
-
-                            remaining = expires_dt - now
-                            if remaining.total_seconds() > 0:
-                                minutes_left = int(remaining.total_seconds() / 60)
-                                duration_text = f" ({minutes_left} minutes remaining)"
-                            else:
-                                duration_text = " (EXPIRED)"
-                        except (ValueError, TypeError, AttributeError) as e:
-                            logger.debug("Error calculating mute duration", error=str(e), error_type=type(e).__name__)
-                            duration_text = ""
-                    else:
-                        duration_text = " (PERMANENT)"
-
-                    reason_text = f" - {reason}" if reason else ""
-                    status_lines.append(f"  • {target_name}{duration_text}{reason_text}")
-            else:
-                status_lines.append("🔇 PLAYERS YOU HAVE MUTED: None")
-
-            status_lines.append("")
-
-            # Global mutes (players you have globally muted)
-            global_mutes = mute_info.get("global_mutes", {})
-            if global_mutes:
-                status_lines.append("🌐 PLAYERS YOU HAVE GLOBALLY MUTED:")
-                for _target_id, mute_data in global_mutes.items():
-                    target_name = mute_data.get("target_name", "Unknown")
-                    expires_at = mute_data.get("expires_at")
-                    reason = mute_data.get("reason", "")
-
-                    if expires_at:
-                        # Calculate remaining time
-                        from datetime import UTC, datetime
-
-                        try:
-                            if isinstance(expires_at, str):
-                                expires_dt = datetime.fromisoformat(expires_at.replace("Z", "+00:00"))
-                            else:
-                                expires_dt = expires_at
-
-                            now = datetime.now(UTC)
-                            if expires_dt.tzinfo is None:
-                                expires_dt = expires_dt.replace(tzinfo=UTC)
-
-                            remaining = expires_dt - now
-                            if remaining.total_seconds() > 0:
-                                minutes_left = int(remaining.total_seconds() / 60)
-                                duration_text = f" ({minutes_left} minutes remaining)"
-                            else:
-                                duration_text = " (EXPIRED)"
-                        except (ValueError, TypeError, AttributeError) as e:
-                            logger.debug("Error calculating mute duration", error=str(e), error_type=type(e).__name__)
-                            duration_text = ""
-                    else:
-                        duration_text = " (PERMANENT)"
-
-                    reason_text = f" - {reason}" if reason else ""
-                    status_lines.append(f"  • {target_name}{duration_text}{reason_text}")
-            else:
-                status_lines.append("🌐 PLAYERS YOU HAVE GLOBALLY MUTED: None")
-
-            status_lines.append("")
-
-            # Note: We do not show if you are muted by others to prevent retaliation
-            # This information is kept private for the protection of players who mute others
-
-            return "\n".join(status_lines)
-
-        except Exception as e:
-            # Structlog handles UUID objects automatically, no need to convert to string
-            logger.error("Error getting mute status", error=str(e), player_id=player_id)
-            return "Error retrieving mute status."
+        return await self._moderation.get_mute_status(player_id)
 
     def store_last_whisper_sender(self, receiver_name: str, sender_name: str) -> None:
         """
@@ -1897,8 +1316,7 @@ class ChatService:
             receiver_name: Name of the player who received the whisper
             sender_name: Name of the player who sent the whisper
         """
-        self._last_whisper_senders[receiver_name] = sender_name
-        logger.debug("Stored last whisper sender", receiver=receiver_name, sender=sender_name)
+        self._whisper_tracker.store_sender(receiver_name, sender_name)
 
     def get_last_whisper_sender(self, player_name: str) -> str | None:
         """
@@ -1910,9 +1328,7 @@ class ChatService:
         Returns:
             Name of the last whisper sender, or None if no whisper received
         """
-        sender = self._last_whisper_senders.get(player_name)
-        logger.debug("Retrieved last whisper sender", player=player_name, sender=sender)
-        return sender
+        return self._whisper_tracker.get_sender(player_name)
 
     def clear_last_whisper_sender(self, player_name: str) -> None:
         """
@@ -1921,6 +1337,4 @@ class ChatService:
         Args:
             player_name: Name of the player
         """
-        if player_name in self._last_whisper_senders:
-            del self._last_whisper_senders[player_name]
-            logger.debug("Cleared last whisper sender", player=player_name)
+        self._whisper_tracker.clear_sender(player_name)

@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from ..alias_storage import AliasStorage
-from ..commands.admin_commands import validate_admin_permission
+from ..commands.admin_permission_utils import validate_admin_permission
 from ..commands.inventory_commands import _broadcast_room_event, _resolve_player, _resolve_state
 from ..exceptions import DatabaseError, ValidationError
 from ..game.items.item_factory import ItemFactoryError

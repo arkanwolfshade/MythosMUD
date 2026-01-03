@@ -173,31 +173,6 @@ class DatabaseManager:
         # Create async engine with PostgreSQL configuration
         # CRITICAL FIX: Add proper exception handling for engine creation
         # Handles connection failures, authentication errors, and configuration issues
-        # #region agent log
-        try:
-            import json
-
-            log_path = Path(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log")
-            with open(log_path, "a", encoding="utf-8") as f:
-                f.write(
-                    json.dumps(
-                        {
-                            "sessionId": "debug-session",
-                            "runId": "run1",
-                            "hypothesisId": "E",
-                            "location": "database.py:_initialize_database:before_create_engine",
-                            "message": "About to create async engine",
-                            "data": {"database_url_prefix": self.database_url[:30] if self.database_url else None},
-                            "timestamp": int(__import__("time").time() * 1000),
-                        }
-                    )
-                    + "\n"
-                )
-        except OSError:
-            # Failure here must not crash the main database initialization flow.
-            pass
-        # #endregion agent log
-
         try:
             self.engine = create_async_engine(
                 self.database_url,
@@ -205,28 +180,6 @@ class DatabaseManager:
                 pool_pre_ping=True,
                 **pool_kwargs,
             )
-
-            # #region agent log
-            try:
-                with open(log_path, "a", encoding="utf-8") as f:
-                    f.write(
-                        json.dumps(
-                            {
-                                "sessionId": "debug-session",
-                                "runId": "run1",
-                                "hypothesisId": "E",
-                                "location": "database.py:_initialize_database:after_create_engine",
-                                "message": "Async engine created successfully",
-                                "data": {},
-                                "timestamp": int(__import__("time").time() * 1000),
-                            }
-                        )
-                        + "\n"
-                    )
-            except Exception:  # pylint: disable=broad-exception-caught
-                # JUSTIFICATION: Best-effort debug log.
-                pass
-            # #endregion agent log
 
             pool_type = "NullPool" if "test" in self.database_url else "AsyncAdaptedQueuePool"
             logger.info("Database engine created", pool_type=pool_type)
@@ -325,31 +278,6 @@ class DatabaseManager:
             current_loop = asyncio.get_running_loop()
             current_loop_id = id(current_loop)
             if self._creation_loop_id is not None and current_loop_id != self._creation_loop_id:
-                # #region agent log
-                try:
-                    import json
-
-                    log_path = Path(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log")
-                    with open(log_path, "a", encoding="utf-8") as f:
-                        f.write(
-                            json.dumps(
-                                {
-                                    "sessionId": "debug-session",
-                                    "runId": "run1",
-                                    "hypothesisId": "E",
-                                    "location": "database.py:get_engine:loop_changed",
-                                    "message": "Event loop changed, recreating engine",
-                                    "data": {"old_loop_id": self._creation_loop_id, "new_loop_id": current_loop_id},
-                                    "timestamp": int(__import__("time").time() * 1000),
-                                }
-                            )
-                            + "\n"
-                        )
-                except Exception:  # pylint: disable=broad-exception-caught
-                    # JUSTIFICATION: This is a best-effort debug log write. Failure here must not crash the main flow.
-                    pass
-                # #endregion agent log
-
                 logger.warning(
                     "Event loop changed, recreating database engine",
                     old_loop_id=self._creation_loop_id,

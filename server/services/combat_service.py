@@ -258,6 +258,100 @@ class CombatService:
             str(combat.combat_id),
         )
 
+    async def _check_involuntary_flee(self, target: CombatParticipant, damage: int, combat: CombatInstance) -> bool:
+        """
+        Check if player should involuntarily flee due to lucidity effects.
+
+        Deranged tier players have a 20% chance to auto-flee when taking >15% max HP damage
+        in one hit, with a 2-minute cooldown.
+
+        Args:
+            target: The player participant who took damage
+            damage: Amount of damage taken
+            combat: Combat instance
+
+        Returns:
+            True if player should flee, False otherwise
+        """
+        _ = combat  # Intentionally unused - reserved for future combat context needs
+        try:
+            from datetime import UTC, datetime, timedelta
+
+            from ..database import get_async_session
+            from ..services.lucidity_command_disruption import should_involuntary_flee
+            from ..services.lucidity_service import LucidityService
+
+            # Calculate damage percentage
+            if target.max_dp <= 0:
+                return False  # Avoid division by zero
+            damage_percent = damage / target.max_dp
+
+            # Get lucidity tier from database
+            async for session in get_async_session():
+                try:
+                    lucidity_service = LucidityService(session)
+                    lucidity_record = await lucidity_service.get_player_lucidity(target.participant_id)
+                    tier = lucidity_record.current_tier if lucidity_record else "lucid"
+
+                    # Check if should flee based on tier and damage
+                    if not should_involuntary_flee(tier, damage_percent):
+                        return False
+
+                    # Check cooldown (2 minutes)
+                    cooldown_code = "involuntary_flee"
+                    cooldown = await lucidity_service.get_cooldown(target.participant_id, cooldown_code)
+                    if cooldown and cooldown.cooldown_expires_at:
+                        # Cooldown still active
+                        if cooldown.cooldown_expires_at.tzinfo is None:
+                            expires_at = cooldown.cooldown_expires_at.replace(tzinfo=UTC)
+                        else:
+                            expires_at = cooldown.cooldown_expires_at
+                        if datetime.now(UTC) < expires_at:
+                            logger.debug(
+                                "Involuntary flee on cooldown",
+                                player_id=target.participant_id,
+                                expires_at=expires_at.isoformat(),
+                            )
+                            return False
+
+                    # Set cooldown (2 minutes from now)
+                    cooldown_expires = datetime.now(UTC) + timedelta(minutes=2)
+                    # Remove timezone for database storage (PostgreSQL TIMESTAMP WITHOUT TIME ZONE)
+                    cooldown_expires_naive = cooldown_expires.replace(tzinfo=None)
+                    await lucidity_service.set_cooldown(target.participant_id, cooldown_code, cooldown_expires_naive)
+                    await session.commit()
+
+                    logger.info(
+                        "Involuntary flee conditions met",
+                        player_id=target.participant_id,
+                        tier=tier,
+                        damage=damage,
+                        damage_percent=damage_percent,
+                        max_dp=target.max_dp,
+                    )
+                    return True
+
+                except Exception as e:  # pylint: disable=broad-except
+                    logger.warning(
+                        "Error checking involuntary flee",
+                        player_id=target.participant_id,
+                        error=str(e),
+                        error_type=type(e).__name__,
+                    )
+                    await session.rollback()
+                    return False
+
+        except Exception as e:  # pylint: disable=broad-except
+            logger.warning(
+                "Error in involuntary flee check (session creation)",
+                player_id=target.participant_id,
+                error=str(e),
+                error_type=type(e).__name__,
+            )
+            return False
+
+        return False
+
     async def _validate_and_get_combat_participants(
         self, attacker_id: UUID, target_id: UUID, is_initial_attack: bool
     ) -> tuple[CombatInstance, CombatParticipant, CombatParticipant]:
@@ -433,6 +527,28 @@ class CombatService:
         # Apply damage
         # old_dp is handled inside _apply_attack_damage via _handle_player_dp_update
         _, target_died, target_mortally_wounded = await self._apply_attack_damage(combat, target, damage)
+
+        # Check for involuntary flee (Deranged tier players may auto-flee on >15% max HP damage)
+        if target.participant_type == CombatParticipantType.PLAYER:
+            should_flee = await self._check_involuntary_flee(target, damage, combat)
+            if should_flee:
+                logger.info(
+                    "Involuntary flee triggered",
+                    player_id=target.participant_id,
+                    player_name=target.name,
+                    damage=damage,
+                    max_dp=target.max_dp,
+                )
+                await self.end_combat(combat.combat_id, f"{target.name} flees in terror from the attack")
+                # Return early - combat has ended
+                return CombatResult(
+                    success=True,
+                    damage=damage,
+                    target_died=False,
+                    combat_ended=True,
+                    message=f"{target.name} flees in panic from {current_participant.name}'s attack!",
+                    combat_id=combat.combat_id,
+                )
 
         # Check if combat ended
         combat_ended = combat.is_combat_over()

@@ -72,6 +72,13 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   const [clearedChannels, setClearedChannels] = useState<Record<string, number>>({});
   const [isHistoryVisible, setIsHistoryVisible] = useState(false);
   const [currentChannel, setCurrentChannel] = useState<string>(selectedChannel ?? ALL_MESSAGES_CHANNEL.id);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [searchFilterChannel, setSearchFilterChannel] = useState<string>('all');
+  const [searchFilterType, setSearchFilterType] = useState<string>('all');
+  const [currentSearchIndex, setCurrentSearchIndex] = useState<number>(-1);
+  const [showExportDialog, setShowExportDialog] = useState<boolean>(false);
+  const [exportFormat, setExportFormat] = useState<string>('txt');
+  const [isExporting, setIsExporting] = useState<boolean>(false);
 
   useEffect(() => {
     if (selectedChannel !== undefined) {
@@ -129,7 +136,55 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
     () => messages.filter(message => message.messageType !== 'system'),
     [messages]
   );
-  const visibleMessages = isHistoryVisible ? historyEligibleMessages : filteredMessages;
+
+  // Search and filter logic
+  const searchFilteredMessages = useMemo(() => {
+    let baseMessages = isHistoryVisible ? historyEligibleMessages : filteredMessages;
+
+    // Apply search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      baseMessages = baseMessages.filter(message => {
+        const text = (message.rawText ?? message.text).toLowerCase();
+        return text.includes(query);
+      });
+    }
+
+    // Apply channel filter
+    if (searchFilterChannel !== 'all') {
+      baseMessages = baseMessages.filter(message => {
+        const messageChannel = message.channel || extractChannelFromMessage(message.text) || 'local';
+        return messageChannel === searchFilterChannel;
+      });
+    }
+
+    // Apply message type filter
+    if (searchFilterType !== 'all') {
+      baseMessages = baseMessages.filter(message => {
+        return message.messageType === searchFilterType;
+      });
+    }
+
+    return baseMessages;
+  }, [filteredMessages, historyEligibleMessages, isHistoryVisible, searchQuery, searchFilterChannel, searchFilterType]);
+
+  // Find search matches for highlighting
+  const searchMatches = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return new Set<number>();
+    }
+    const query = searchQuery.toLowerCase();
+    const matches = new Set<number>();
+    searchFilteredMessages.forEach((message, index) => {
+      const text = (message.rawText ?? message.text).toLowerCase();
+      if (text.includes(query)) {
+        matches.add(index);
+      }
+    });
+    return matches;
+  }, [searchFilteredMessages, searchQuery]);
+
+  const visibleMessages = searchFilteredMessages;
 
   const chatStats = {
     currentChannelMessages: filteredMessages.length,
@@ -214,6 +269,167 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 
   const toggleHistory = () => {
     setIsHistoryVisible(prev => !prev);
+    setCurrentSearchIndex(-1);
+  };
+
+  const handleSearchNext = () => {
+    if (searchMatches.size === 0) return;
+    const matches = Array.from(searchMatches).sort((a, b) => a - b);
+    const nextIndex = matches.findIndex(idx => idx > currentSearchIndex);
+    if (nextIndex >= 0) {
+      setCurrentSearchIndex(matches[nextIndex]);
+    } else {
+      setCurrentSearchIndex(matches[0]); // Wrap around
+    }
+  };
+
+  const handleSearchPrevious = () => {
+    if (searchMatches.size === 0) return;
+    const matches = Array.from(searchMatches).sort((a, b) => b - a);
+    const prevIndex = matches.findIndex(idx => idx < currentSearchIndex);
+    if (prevIndex >= 0) {
+      setCurrentSearchIndex(matches[prevIndex]);
+    } else {
+      setCurrentSearchIndex(matches[0]); // Wrap around
+    }
+  };
+
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
+    setCurrentSearchIndex(-1);
+  };
+
+  // Export functions
+  const exportToText = (messagesToExport: ChatMessage[]): string => {
+    return messagesToExport
+      .map(msg => {
+        const timestamp = formatTimestamp(msg.timestamp);
+        const text = msg.rawText ?? msg.text;
+        return `[${timestamp}] ${text}`;
+      })
+      .join('\n');
+  };
+
+  const exportToHTML = (messagesToExport: ChatMessage[]): string => {
+    const htmlMessages = messagesToExport
+      .map(msg => {
+        const timestamp = formatTimestamp(msg.timestamp);
+        const text = msg.isHtml
+          ? msg.isCompleteHtml
+            ? msg.text
+            : ansiToHtmlWithBreaks(msg.text)
+          : (msg.rawText ?? msg.text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        const messageClass = getMessageClass(msg);
+        return `<div class="message" style="margin-bottom: 1em;">
+          <div style="font-size: 0.8em; color: #888;">[${timestamp}]</div>
+          <div class="${messageClass}">${text}</div>
+        </div>`;
+      })
+      .join('\n');
+    return `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Chat Export</title>
+  <style>
+    body { font-family: monospace; background: #1a1a1a; color: #e0e0e0; padding: 20px; }
+    .message { padding: 10px; border-bottom: 1px solid #333; }
+  </style>
+</head>
+<body>
+  <h1>Chat Export</h1>
+  ${htmlMessages}
+</body>
+</html>`;
+  };
+
+  const exportToJSON = (messagesToExport: ChatMessage[]): string => {
+    return JSON.stringify(
+      messagesToExport.map(msg => ({
+        timestamp: msg.timestamp,
+        text: msg.rawText ?? msg.text,
+        channel: msg.channel,
+        messageType: msg.messageType,
+        tags: msg.tags,
+      })),
+      null,
+      2
+    );
+  };
+
+  const exportToCSV = (messagesToExport: ChatMessage[]): string => {
+    const headers = ['Timestamp', 'Channel', 'Type', 'Message'];
+    const rows = messagesToExport.map(msg => {
+      const timestamp = formatTimestamp(msg.timestamp);
+      const text = (msg.rawText ?? msg.text).replace(/"/g, '""'); // Escape quotes for CSV
+      return `"${timestamp}","${msg.channel || ''}","${msg.messageType || ''}","${text}"`;
+    });
+    return [headers.map(h => `"${h}"`).join(','), ...rows].join('\n');
+  };
+
+  const handleExport = () => {
+    if (isExporting) return;
+
+    setIsExporting(true);
+    const messagesToExport = visibleMessages;
+
+    let content: string;
+    let filename: string;
+    let mimeType: string;
+
+    switch (exportFormat) {
+      case 'html':
+        content = exportToHTML(messagesToExport);
+        filename = `chat_export_${new Date().toISOString().split('T')[0]}.html`;
+        mimeType = 'text/html';
+        break;
+      case 'json':
+        content = exportToJSON(messagesToExport);
+        filename = `chat_export_${new Date().toISOString().split('T')[0]}.json`;
+        mimeType = 'application/json';
+        break;
+      case 'csv':
+        content = exportToCSV(messagesToExport);
+        filename = `chat_export_${new Date().toISOString().split('T')[0]}.csv`;
+        mimeType = 'text/csv';
+        break;
+      case 'txt':
+      default:
+        content = exportToText(messagesToExport);
+        filename = `chat_export_${new Date().toISOString().split('T')[0]}.txt`;
+        mimeType = 'text/plain';
+        break;
+    }
+
+    // Create blob and download
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    setTimeout(() => {
+      setIsExporting(false);
+      setShowExportDialog(false);
+    }, 500);
+  };
+
+  // Highlight search term in text (plain text only, not for HTML)
+  const highlightSearchText = (text: string, query: string): string => {
+    if (!query.trim()) return text;
+    // Escape HTML entities first
+    const escapedText = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    return escapedText.replace(regex, '<mark class="bg-yellow-500 text-black font-semibold">$1</mark>');
   };
 
   return (
@@ -301,22 +517,105 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 
       {/* Chat History Toggle */}
       <div className="p-2 border-b border-gray-700 bg-mythos-terminal-background" data-testid="chat-history-toggle">
-        <button className="text-xs text-mythos-terminal-primary" onClick={toggleHistory} type="button">
-          Chat History
-        </button>
-        <select
-          className="ml-2 text-xs bg-mythos-terminal-surface border border-gray-700 rounded px-1"
-          value={isHistoryVisible ? 'all' : 'current'}
-          onChange={event => {
-            setIsHistoryVisible(event.target.value === 'all');
-          }}
-        >
-          <option value="current">Current</option>
-          <option value="all">All</option>
-        </select>
-        <span className="ml-2 text-xs text-mythos-terminal-text-secondary">
-          Messages: {isHistoryVisible ? historyEligibleMessages.length : filteredMessages.length}
-        </span>
+        <div className="flex items-center gap-2 flex-wrap">
+          <button className="text-xs text-mythos-terminal-primary" onClick={toggleHistory} type="button">
+            Chat History
+          </button>
+          <select
+            className="text-xs bg-mythos-terminal-surface border border-gray-700 rounded px-1"
+            value={isHistoryVisible ? 'all' : 'current'}
+            onChange={event => {
+              setIsHistoryVisible(event.target.value === 'all');
+            }}
+          >
+            <option value="current">Current</option>
+            <option value="all">All</option>
+          </select>
+          <span className="text-xs text-mythos-terminal-text-secondary">
+            Messages: {visibleMessages.length} /{' '}
+            {isHistoryVisible ? historyEligibleMessages.length : filteredMessages.length}
+          </span>
+        </div>
+
+        {/* Search Controls */}
+        <div className="mt-2 flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-1 flex-1 min-w-[200px]">
+            <EldritchIcon name={MythosIcons.search} size={14} variant="primary" />
+            <input
+              type="text"
+              placeholder="Search messages..."
+              value={searchQuery}
+              onChange={e => handleSearchChange(e.target.value)}
+              className="flex-1 text-xs bg-mythos-terminal-surface border border-gray-700 rounded px-2 py-1 text-mythos-terminal-text focus:outline-none focus:border-mythos-terminal-primary"
+              disabled={disabled}
+            />
+            {searchQuery && (
+              <>
+                <button
+                  onClick={handleSearchPrevious}
+                  disabled={searchMatches.size === 0}
+                  className="text-xs px-2 py-1 bg-mythos-terminal-surface border border-gray-700 rounded hover:bg-mythos-terminal-background disabled:opacity-50"
+                  title="Previous match"
+                  type="button"
+                >
+                  ↑
+                </button>
+                <button
+                  onClick={handleSearchNext}
+                  disabled={searchMatches.size === 0}
+                  className="text-xs px-2 py-1 bg-mythos-terminal-surface border border-gray-700 rounded hover:bg-mythos-terminal-background disabled:opacity-50"
+                  title="Next match"
+                  type="button"
+                >
+                  ↓
+                </button>
+                <button
+                  onClick={() => handleSearchChange('')}
+                  className="text-xs px-2 py-1 bg-mythos-terminal-surface border border-gray-700 rounded hover:bg-mythos-terminal-background"
+                  title="Clear search"
+                  type="button"
+                >
+                  ×
+                </button>
+                {searchMatches.size > 0 && (
+                  <span className="text-xs text-mythos-terminal-text-secondary">
+                    {Array.from(searchMatches).findIndex(idx => idx === currentSearchIndex) + 1 || 0} /{' '}
+                    {searchMatches.size}
+                  </span>
+                )}
+              </>
+            )}
+          </div>
+          {searchQuery && (
+            <>
+              <select
+                value={searchFilterChannel}
+                onChange={e => setSearchFilterChannel(e.target.value)}
+                className="text-xs bg-mythos-terminal-surface border border-gray-700 rounded px-1"
+                disabled={disabled}
+              >
+                <option value="all">All Channels</option>
+                {AVAILABLE_CHANNELS.map(channel => (
+                  <option key={channel.id} value={channel.id}>
+                    {channel.name}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={searchFilterType}
+                onChange={e => setSearchFilterType(e.target.value)}
+                className="text-xs bg-mythos-terminal-surface border border-gray-700 rounded px-1"
+                disabled={disabled}
+              >
+                <option value="all">All Types</option>
+                <option value="chat">Chat</option>
+                <option value="whisper">Whisper</option>
+                <option value="emote">Emote</option>
+                <option value="error">Error</option>
+              </select>
+            </>
+          )}
+        </div>
       </div>
 
       {/* Chat Filter Summary */}
@@ -353,9 +652,21 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
             {visibleMessages.map((message, index) => (
               <div
                 key={index}
-                className="message p-3 bg-mythos-terminal-surface border border-gray-700 rounded transition-all duration-300 hover:border-mythos-terminal-primary/30 hover:shadow-lg animate-fade-in"
+                className={
+                  `message p-3 bg-mythos-terminal-surface border rounded transition-all duration-300 ` +
+                  `hover:border-mythos-terminal-primary/30 hover:shadow-lg animate-fade-in ${
+                    currentSearchIndex === index && searchQuery
+                      ? 'border-mythos-terminal-warning border-2 shadow-lg shadow-mythos-terminal-warning/50'
+                      : 'border-gray-700'
+                  }`
+                }
                 style={{ animationDelay: `${index * 50}ms` }}
                 data-testid="chat-message"
+                ref={(el: HTMLDivElement | null) => {
+                  if (currentSearchIndex === index && el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  }
+                }}
               >
                 {/* Alias Expansion Information */}
                 {message.aliasChain && message.aliasChain.length > 0 && (
@@ -400,9 +711,20 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                       }}
                     />
                   ) : (
-                    <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }} title="Right-click for options">
-                      {message.rawText ?? message.text}
-                    </span>
+                    <span
+                      style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+                      title="Right-click for options"
+                      dangerouslySetInnerHTML={{
+                        __html: searchQuery
+                          ? highlightSearchText(message.rawText ?? message.text, searchQuery)
+                          : (message.rawText ?? message.text)
+                              .replace(/&/g, '&amp;')
+                              .replace(/</g, '&lt;')
+                              .replace(/>/g, '&gt;')
+                              .replace(/"/g, '&quot;')
+                              .replace(/'/g, '&#39;'),
+                      }}
+                    />
                   )}
                 </div>
               </div>
@@ -410,6 +732,58 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
           </div>
         )}
       </div>
+
+      {/* Export Dialog */}
+      {showExportDialog && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          onClick={() => !isExporting && setShowExportDialog(false)}
+        >
+          <div
+            className="bg-mythos-terminal-surface border border-mythos-terminal-primary rounded-lg p-6 max-w-md w-full"
+            onClick={e => e.stopPropagation()}
+          >
+            <h3 className="text-mythos-terminal-primary font-bold text-lg mb-4">Export Chat Messages</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm text-mythos-terminal-text-secondary mb-2">Export Format</label>
+                <select
+                  value={exportFormat}
+                  onChange={e => setExportFormat(e.target.value)}
+                  className="w-full text-sm bg-mythos-terminal-background border border-gray-700 rounded px-2 py-1 text-mythos-terminal-text"
+                  disabled={isExporting}
+                >
+                  <option value="txt">Plain Text (.txt)</option>
+                  <option value="html">HTML (.html)</option>
+                  <option value="json">JSON (.json)</option>
+                  <option value="csv">CSV (.csv)</option>
+                </select>
+              </div>
+              <div className="text-xs text-mythos-terminal-text-secondary">
+                Exporting {visibleMessages.length} message{visibleMessages.length === 1 ? '' : 's'}
+              </div>
+              <div className="flex gap-2 justify-end">
+                <button
+                  onClick={() => setShowExportDialog(false)}
+                  disabled={isExporting}
+                  className="px-4 py-2 text-sm bg-mythos-terminal-background border border-gray-700 rounded hover:bg-mythos-terminal-surface disabled:opacity-50"
+                  type="button"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleExport}
+                  disabled={isExporting || visibleMessages.length === 0}
+                  className="px-4 py-2 text-sm bg-mythos-terminal-primary text-black rounded hover:bg-mythos-terminal-primary/80 disabled:opacity-50 font-bold"
+                  type="button"
+                >
+                  {isExporting ? 'Exporting...' : 'Export'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

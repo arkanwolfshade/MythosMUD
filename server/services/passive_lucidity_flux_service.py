@@ -203,6 +203,110 @@ class PassiveLucidityFluxService:
                 if delta == 0:
                     continue
 
+                # Check for time-based hallucination triggers (Fractured/Deranged tiers)
+                # Note: Room entry hallucinations (Uneasy tier) are handled separately via event subscription
+                # NOTE: Time-based checks should ideally run on a separate timer (every second or so),
+                # but for now we check during passive flux ticks as a compromise
+                from ..services.hallucination_frequency_service import HallucinationFrequencyService
+
+                frequency_service = HallucinationFrequencyService()
+                lucidity_record = lucidity_records.get(player_id_str)
+                if lucidity_record and lucidity_record.current_tier in ("fractured", "deranged"):
+                    current_lcd = lucidity_record.current_lcd
+                    should_trigger = await frequency_service.check_time_based_hallucination(
+                        player_id_uuid, current_lcd, session
+                    )
+                    if should_trigger:
+                        # Hallucination should trigger - determine specific type and dispatch
+                        from ..services.lucidity_event_dispatcher import send_hallucination_event
+                        from ..services.phantom_hostile_service import PhantomHostileService
+
+                        tier = lucidity_record.current_tier
+                        phantom_service = PhantomHostileService()
+
+                        # Check if this should be a phantom hostile spawn
+                        # Fractured: 15% chance of phantom hostile (non-damaging combat)
+                        # Deranged: Always spawn phantom hostile (attackable, vanish on hit)
+                        if phantom_service.should_spawn_phantom_hostile(tier):
+                            # Create phantom hostile data
+                            phantom_data = phantom_service.create_phantom_hostile_data(player_id_uuid, room_id, tier)
+
+                            # Send phantom hostile spawn hallucination event
+                            await send_hallucination_event(
+                                player_id_uuid,
+                                hallucination_type="phantom_hostile_spawn",
+                                message=f"A {phantom_data['name']} materializes before you!",
+                                metadata={
+                                    "tier": tier,
+                                    "lcd": current_lcd,
+                                    "phantom_id": phantom_data["phantom_id"],
+                                    "phantom_name": phantom_data["name"],
+                                    "room_id": room_id,
+                                    "max_dp": 1,
+                                    "current_dp": 1,
+                                    "is_non_damaging": phantom_data["is_non_damaging"],
+                                },
+                            )
+                            logger.debug(
+                                "Phantom hostile spawn hallucination triggered",
+                                player_id=player_id_uuid,
+                                tier=tier,
+                                phantom_id=phantom_data["phantom_id"],
+                                phantom_name=phantom_data["name"],
+                            )
+                        else:
+                            # Other hallucination types (fake NPC tells, room text overlays, etc.)
+                            from ..services.fake_hallucination_service import FakeHallucinationService
+
+                            fake_hallucination_service = FakeHallucinationService()
+                            hallucination_type = fake_hallucination_service.select_hallucination_type()
+
+                            if hallucination_type == "fake_npc_tell":
+                                # Generate fake NPC tell
+                                fake_tell_data = fake_hallucination_service.generate_fake_npc_tell(
+                                    player_id_uuid, room_id
+                                )
+                                await send_hallucination_event(
+                                    player_id_uuid,
+                                    hallucination_type="fake_npc_tell",
+                                    message=fake_tell_data["message"],
+                                    metadata={
+                                        "tier": tier,
+                                        "lcd": current_lcd,
+                                        "npc_name": fake_tell_data["npc_name"],
+                                        "room_id": room_id,
+                                        "hallucination_id": fake_tell_data["hallucination_id"],
+                                    },
+                                )
+                                logger.debug(
+                                    "Fake NPC tell hallucination triggered",
+                                    player_id=player_id_uuid,
+                                    tier=tier,
+                                    npc_name=fake_tell_data["npc_name"],
+                                )
+                            else:  # room_text_overlay
+                                # Generate room text overlay
+                                overlay_data = fake_hallucination_service.generate_room_text_overlay(
+                                    player_id_uuid, room_id
+                                )
+                                await send_hallucination_event(
+                                    player_id_uuid,
+                                    hallucination_type="room_text_overlay",
+                                    message=overlay_data["overlay_text"],
+                                    metadata={
+                                        "tier": tier,
+                                        "lcd": current_lcd,
+                                        "room_id": room_id,
+                                        "hallucination_id": overlay_data["hallucination_id"],
+                                    },
+                                )
+                                logger.debug(
+                                    "Room text overlay hallucination triggered",
+                                    player_id=player_id_uuid,
+                                    tier=tier,
+                                    room_id=room_id,
+                                )
+
                 result = await lucidity_service.apply_lucidity_adjustment(
                     player_id_uuid,
                     delta,

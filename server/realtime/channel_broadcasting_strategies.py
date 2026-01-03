@@ -39,7 +39,6 @@ class ChannelBroadcastingStrategy(ABC):
             sender_id: Sender player ID (UUID)
             nats_handler: NATS message handler instance
         """
-        pass
 
 
 class RoomBasedChannelStrategy(ChannelBroadcastingStrategy):
@@ -67,7 +66,9 @@ class RoomBasedChannelStrategy(ChannelBroadcastingStrategy):
         if room_id:
             # Convert UUID to string for _broadcast_to_room_with_filtering which expects string
             sender_id_str = str(sender_id)
-            await nats_handler._broadcast_to_room_with_filtering(room_id, chat_event, sender_id_str, self.channel_type)
+            await nats_handler._broadcast_to_room_with_filtering(  # pylint: disable=protected-access
+                room_id, chat_event, sender_id_str, self.channel_type
+            )
             logger.debug(
                 "Broadcasted room message with server-side filtering",
                 channel=self.channel_type,
@@ -130,12 +131,16 @@ class WhisperChannelStrategy(ChannelBroadcastingStrategy):
         sender_id: uuid.UUID,
         nats_handler,
     ) -> None:
-        """Send whisper message to specific player."""
+        """Send whisper message to specific player with communication dampening."""
         if target_player_id:
-            # AI Agent: Use connection_manager from nats_handler (injected dependency)
-            await nats_handler.connection_manager.send_personal_message(target_player_id, chat_event)
+            # Apply communication dampening and send message
+            sender_id_str = str(sender_id)
+            target_id_str = str(target_player_id)
+            await nats_handler._apply_dampening_and_send_message(  # pylint: disable=protected-access
+                chat_event, sender_id_str, target_id_str, "whisper"
+            )
             logger.debug(
-                "Sent whisper message",
+                "Sent whisper message with dampening",
                 sender_id=sender_id,
                 target_player_id=target_player_id,
             )

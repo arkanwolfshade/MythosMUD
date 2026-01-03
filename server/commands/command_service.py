@@ -14,25 +14,24 @@ from ..exceptions import ValidationError as MythosValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import parse_command
 from ..validators.security_validator import strip_ansi_codes
-from .admin_commands import (
+from .admin_commands import handle_admin_command
+from .admin_mute_commands import (
     handle_add_admin_command,
-    handle_admin_command,
-    # Teleport commands now consolidated into admin_commands.py
-    handle_goto_command,
     handle_mute_command,
     handle_mute_global_command,
     handle_mutes_command,
-    handle_teleport_command,
     handle_unmute_command,
     handle_unmute_global_command,
 )
 from .admin_shutdown_command import handle_shutdown_command
 from .admin_summon_command import handle_summon_command
+from .admin_teleport_commands import handle_goto_command, handle_teleport_command
 from .alias_commands import (
     handle_alias_command,
     handle_aliases_command,
     handle_unalias_command,
 )
+from .channel_commands import handle_channel_command
 from .combat import (
     handle_attack_command,
     handle_kick_command,
@@ -49,6 +48,7 @@ from .communication_commands import (
     handle_system_command,
     handle_whisper_command,
 )
+from .debrief_command import handle_debrief_command
 from .exploration_commands import handle_go_command, handle_look_command
 from .inventory_commands import (
     handle_drop_command,
@@ -130,6 +130,7 @@ class CommandService:
             "whisper": handle_whisper_command,
             "reply": handle_reply_command,
             "emote": handle_emote_command,
+            "channel": handle_channel_command,
             # Administrative commands
             "mute": handle_mute_command,
             "unmute": handle_unmute_command,
@@ -183,6 +184,7 @@ class CommandService:
             "group_solace": handle_group_solace_command,
             "therapy": handle_therapy_command,
             "folk_tonic": handle_folk_tonic_command,
+            "debrief": handle_debrief_command,
             "ground": handle_ground_command,
         }
 

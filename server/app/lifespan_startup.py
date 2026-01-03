@@ -175,7 +175,8 @@ async def initialize_combat_services(app: FastAPI, container: ApplicationContain
 
     async def _sanitarium_failover(player_id: str, current_lcd: int) -> None:
         """Failover callback that relocates catatonic players to the sanitarium."""
-        await asyncio.sleep(0.1)
+        # 10-second fade before transport per spec
+        await asyncio.sleep(10.0)
 
         if container.database_manager is None:
             logger.error("Database manager not available for catatonia failover", player_id=player_id)
@@ -194,8 +195,22 @@ async def initialize_combat_services(app: FastAPI, container: ApplicationContain
 
         async with session_maker() as session:
             try:
+                # Clear all active hallucination timers per spec requirement
+                import uuid as uuid_lib
+
+                from ..services.lucidity_service import LucidityService
+
+                player_id_uuid = uuid_lib.UUID(player_id) if isinstance(player_id, str) else player_id
+                lucidity_service = LucidityService(session)
+                timers_cleared = await lucidity_service.clear_hallucination_timers(player_id_uuid)
+                logger.debug(
+                    "Hallucination timers cleared in failover",
+                    player_id=player_id,
+                    timers_cleared=timers_cleared,
+                )
+
                 await app.state.player_respawn_service.move_player_to_limbo(player_id, "catatonia_failover", session)
-                await app.state.player_respawn_service.respawn_player(player_id, session)
+                await app.state.player_respawn_service.respawn_player_from_sanitarium(player_id, session)
                 logger.info("Catatonia failover completed", player_id=player_id, lcd=current_lcd)
             except (
                 ValueError,
