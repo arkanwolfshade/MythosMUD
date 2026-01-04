@@ -27,6 +27,7 @@ from .admin_mute_commands import (
     handle_unmute_global_command,
 )
 from .admin_setlucidity_command import _handle_admin_set_lucidity_command
+from .admin_setstat_command import _handle_admin_set_stat_command
 from .admin_teleport_commands import DIRECTION_OPPOSITES, handle_goto_command, handle_teleport_command
 from .admin_teleport_utils import create_teleport_effect_message
 
@@ -65,6 +66,8 @@ async def handle_admin_command(
         return await _handle_admin_time_command(command_data, current_user, request, alias_storage, player_name)
     if subcommand == "setlucidity" or subcommand == "lcd":
         return await _handle_admin_set_lucidity_command(command_data, current_user, request, alias_storage, player_name)
+    if subcommand == "set":
+        return await _handle_admin_set_stat_command(command_data, current_user, request, alias_storage, player_name)
 
     logger.warning("Unknown admin subcommand requested", player_name=player_name, subcommand=subcommand)
     return {"result": f"Unknown admin subcommand '{subcommand}'."}

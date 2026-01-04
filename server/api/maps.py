@@ -9,12 +9,13 @@ from typing import Any
 
 from fastapi import APIRouter, Depends, Query, Request
 from pydantic import BaseModel, Field
-from sqlalchemy import text
+from sqlalchemy import bindparam, text
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..auth.users import get_current_user
 from ..database import get_async_session
-from ..exceptions import LoggedHTTPException
+from ..exceptions import DatabaseError, LoggedHTTPException
 from ..models.user import User
 from ..services.admin_auth_service import AdminAction, get_admin_auth_service
 from ..services.ascii_map_renderer import AsciiMapRenderer
@@ -61,35 +62,64 @@ async def get_ascii_map(
             viewport_y=viewport_y,
         )
 
+        # Get persistence - needed for player lookup in filtering
+        persistence = request.app.state.persistence
+
         # Get current player's room - prefer client-provided value, fallback to database
         current_room_id = request.query_params.get("current_room_id")
         if not current_room_id and current_user:
             try:
-                persistence = request.app.state.persistence
                 user_id = str(current_user.id)
                 player = await persistence.get_player_by_user_id(user_id)
                 if player:
                     current_room_id = player.current_room_id
-            except Exception as e:
+            except (DatabaseError, SQLAlchemyError) as e:
                 logger.warning("Error getting player room for map", error=str(e))
 
         # Load rooms with coordinates
         rooms = await _load_rooms_with_coordinates(session, plane, zone, sub_zone)
 
-        # Filter to explored rooms if player (not admin)
+        # Get player and player_id for exploration filtering (if not admin)
+        player = None
+        player_id = None
+        exploration_service = None
         if current_user and not (current_user.is_admin or current_user.is_superuser):
             container = request.app.state.container
-            exploration_service: ExplorationService = container.exploration_service
+            exploration_service = container.exploration_service
             user_id = str(current_user.id)
             player = await persistence.get_player_by_user_id(user_id)
             if player:
                 player_id = uuid.UUID(str(player.player_id))
-                explored_room_ids = await exploration_service.get_explored_rooms(player_id, session)
-                # Filter rooms to only explored ones
-                explored_stable_ids = set(explored_room_ids)
-                rooms = [
-                    r for r in rooms if r.get("stable_id") in explored_stable_ids or r.get("id") in explored_stable_ids
-                ]
+
+        # Filter to explored rooms if player (not admin)
+        if player and exploration_service and player_id:
+            explored_room_ids = await exploration_service.get_explored_rooms(player_id, session)
+
+            # Convert explored room UUIDs to stable_ids for filtering
+            # We need to look up stable_ids from room UUIDs
+            if explored_room_ids:
+                # Convert string UUIDs to UUID objects for proper PostgreSQL type handling
+                room_uuid_list = [uuid.UUID(rid) for rid in explored_room_ids]
+                # Use IN clause with expanding parameters for proper array handling
+                # This avoids mixing parameter syntax with casting syntax that causes asyncpg errors
+                lookup_query = text("SELECT stable_id FROM rooms WHERE id IN :room_ids").bindparams(
+                    bindparam("room_ids", expanding=True)
+                )
+                result = await session.execute(lookup_query, {"room_ids": room_uuid_list})
+                explored_stable_ids = {row[0] for row in result.fetchall()}
+
+                # Filter rooms to only include explored ones
+                rooms = [room for room in rooms if room.get("id") in explored_stable_ids]
+
+                logger.debug(
+                    "Filtered rooms by exploration",
+                    explored_count=len(explored_stable_ids),
+                    filtered_count=len(rooms),
+                )
+            else:
+                # Player has explored no rooms - return empty list
+                rooms = []
+                logger.debug("Player has explored no rooms, returning empty list")
 
         # Generate coordinates if missing
         if not rooms or any(r.get("map_x") is None or r.get("map_y") is None for r in rooms):
@@ -99,15 +129,24 @@ async def get_ascii_map(
             # Reload rooms after coordinate generation
             rooms = await _load_rooms_with_coordinates(session, plane, zone, sub_zone)
             if current_user and not (current_user.is_admin or current_user.is_superuser):
-                # Re-filter explored rooms
-                if player:
+                # Re-filter explored rooms after coordinate generation
+                if player and exploration_service and player_id:
                     explored_room_ids = await exploration_service.get_explored_rooms(player_id, session)
-                    explored_stable_ids = set(explored_room_ids)
-                    rooms = [
-                        r
-                        for r in rooms
-                        if r.get("stable_id") in explored_stable_ids or r.get("id") in explored_stable_ids
-                    ]
+
+                    # Convert explored room UUIDs to stable_ids for filtering
+                    if explored_room_ids:
+                        room_uuid_list = [uuid.UUID(rid) for rid in explored_room_ids]
+                        lookup_query = text("SELECT stable_id FROM rooms WHERE id IN :room_ids").bindparams(
+                            bindparam("room_ids", expanding=True)
+                        )
+                        result = await session.execute(lookup_query, {"room_ids": room_uuid_list})
+                        explored_stable_ids = {row[0] for row in result.fetchall()}
+
+                        # Filter rooms to only include explored ones
+                        rooms = [room for room in rooms if room.get("id") in explored_stable_ids]
+                    else:
+                        # Player has explored no rooms - return empty list
+                        rooms = []
 
         # Render ASCII map
         renderer = AsciiMapRenderer()
@@ -190,10 +229,32 @@ async def get_ascii_minimap(
             exploration_service: ExplorationService = container.exploration_service
             player_id = uuid.UUID(str(player.player_id))
             explored_room_ids = await exploration_service.get_explored_rooms(player_id, session)
-            explored_stable_ids = set(explored_room_ids)
-            rooms = [
-                r for r in rooms if r.get("stable_id") in explored_stable_ids or r.get("id") in explored_stable_ids
-            ]
+
+            # Convert explored room UUIDs to stable_ids for filtering
+            # We need to look up stable_ids from room UUIDs
+            if explored_room_ids:
+                # Convert string UUIDs to UUID objects for proper PostgreSQL type handling
+                room_uuid_list = [uuid.UUID(rid) for rid in explored_room_ids]
+                # Use IN clause with expanding parameters for proper array handling
+                # This avoids mixing parameter syntax with casting syntax that causes asyncpg errors
+                lookup_query = text("SELECT stable_id FROM rooms WHERE id IN :room_ids").bindparams(
+                    bindparam("room_ids", expanding=True)
+                )
+                result = await session.execute(lookup_query, {"room_ids": room_uuid_list})
+                explored_stable_ids = {row[0] for row in result.fetchall()}
+
+                # Filter rooms to only include explored ones
+                rooms = [room for room in rooms if room.get("id") in explored_stable_ids]
+
+                logger.debug(
+                    "Filtered rooms by exploration for minimap",
+                    explored_count=len(explored_stable_ids),
+                    filtered_count=len(rooms),
+                )
+            else:
+                # Player has explored no rooms - return empty list
+                rooms = []
+                logger.debug("Player has explored no rooms for minimap, returning empty list")
 
         # Render minimap (always centers on player)
         # Size parameter directly controls dimensions (e.g., size=5 means 5x5 grid)

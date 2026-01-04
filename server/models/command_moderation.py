@@ -114,7 +114,7 @@ class AdminCommand(BaseCommand):
     @classmethod
     def validate_subcommand(cls, v: str) -> str:
         """Validate and normalize admin subcommand names."""
-        allowed_subcommands = {"status"}
+        allowed_subcommands = {"status", "set", "setlucidity", "lcd", "time"}
         normalized = v.lower()
         if normalized not in allowed_subcommands:
             raise ValueError(f"Invalid admin subcommand: {v}. Allowed subcommands: {sorted(allowed_subcommands)}")
