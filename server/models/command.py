@@ -16,6 +16,9 @@ from .command_admin import GotoCommand, NPCCommand, ShutdownCommand, SummonComma
 from .command_alias import AliasCommand, AliasesCommand, UnaliasCommand
 from .command_base import BaseCommand, CommandType, Direction
 
+# Import channel commands
+from .command_channel import ChannelCommand
+
 # Import combat commands
 from .command_combat import AttackCommand, KickCommand, PunchCommand, StrikeCommand
 
@@ -71,6 +74,8 @@ __all__ = [
     "BaseCommand",
     "CommandType",
     "Direction",
+    # Channel commands
+    "ChannelCommand",
     # Communication commands
     "SayCommand",
     "LocalCommand",
@@ -175,6 +180,7 @@ Command = (
     | LieCommand
     | GroundCommand
     | ShutdownCommand
+    | ChannelCommand
     | WhisperCommand
     | ReplyCommand
     | AttackCommand

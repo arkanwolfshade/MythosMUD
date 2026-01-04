@@ -329,17 +329,43 @@ async def handle_mutes_command(
         return {"result": "Mute information is not available."}
 
     try:
-        mutes = user_manager.get_player_mutes(get_username_from_user(current_user))
-        if mutes:
-            mute_list = []
-            for mute in mutes:
-                if mute.get("expires_at"):
-                    mute_list.append(f"{mute['target_player']} (expires: {mute['expires_at']})")
-                else:
-                    mute_list.append(f"{mute['target_player']} (permanent)")
+        # Get player service to resolve player_name to player_id
+        player_service = app.state.player_service if app else None
+        if not player_service:
+            return {"result": "Player service not available."}
 
+        # Get current player's actual player object and ID
+        current_player_obj = await player_service.resolve_player_name(player_name)
+        if not current_player_obj:
+            return {"result": "Current player not found."}
+        current_player_id = current_player_obj.id
+
+        mutes = user_manager.get_player_mutes(current_player_id)
+        mute_list = []
+
+        # Iterate over the three categories: player_mutes, channel_mutes, global_mutes
+        for category_name, category_dict in mutes.items():
+            if not category_dict:
+                continue
+
+            # Iterate over mute_info dictionaries in this category
+            for target_id_or_channel, mute_info in category_dict.items():
+                # Extract target name based on category
+                if category_name == "channel_mutes":
+                    target_display = f"#{mute_info.get('channel', target_id_or_channel)}"
+                else:
+                    target_display = mute_info.get("target_name", str(target_id_or_channel))
+
+                # Format expiration info
+                expires_at = mute_info.get("expires_at")
+                if expires_at:
+                    mute_list.append(f"{target_display} (expires: {expires_at})")
+                else:
+                    mute_list.append(f"{target_display} (permanent)")
+
+        if mute_list:
             result = "Current mutes:\n" + "\n".join(mute_list)
-            logger.debug("Mutes listed successfully", player_name=player_name, count=len(mutes))
+            logger.debug("Mutes listed successfully", player_name=player_name, count=len(mute_list))
             return {"result": result}
         else:
             logger.debug("No mutes found", player_name=player_name)

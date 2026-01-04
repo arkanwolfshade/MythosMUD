@@ -35,7 +35,7 @@ async def _perform_recovery_action(
         return {"result": "The ritual falters; the ley lines are inaccessible."}
 
     username = get_username_from_user(current_user)
-    player = persistence.get_player_by_name(username)
+    player = await persistence.get_player_by_name(username)
     if not player:
         logger.error("Recovery command failed to locate player", action=action_code, username=username)
         return {"result": "Your identity wavers in the void. Try again after stabilizing your presence."}

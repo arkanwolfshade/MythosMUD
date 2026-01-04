@@ -48,14 +48,43 @@ async def handle_channel_command(
         return {"result": "Channel preferences are not available."}
 
     username = get_username_from_user(current_user)
-    player = persistence.get_player_by_name(username)
+    player = await persistence.get_player_by_name(username)
     if not player:
         logger.warning("Channel command failed - player not found", player_name=player_name, username=username)
         return {"result": "Player not found."}
 
-    # Extract channel from command_data
+    # Extract channel from command_data (fields should be extracted from parsed_command)
     channel = command_data.get("channel") or command_data.get("action")
+
+    # Fallback: try to get from parsed_command if fields weren't extracted
     if not channel:
+        parsed_cmd = command_data.get("parsed_command")
+        if parsed_cmd:
+            logger.debug(
+                "Fallback: checking parsed_command", player_name=player_name, has_channel=hasattr(parsed_cmd, "channel")
+            )
+            if hasattr(parsed_cmd, "channel"):
+                channel = parsed_cmd.channel or parsed_cmd.action
+                logger.debug("Fallback: got channel from parsed_command", player_name=player_name, channel=channel)
+            else:
+                logger.warning(
+                    "Fallback: parsed_command exists but has no channel attribute",
+                    player_name=player_name,
+                    parsed_cmd_type=type(parsed_cmd).__name__,
+                )
+        else:
+            logger.warning(
+                "Fallback: parsed_command not in command_data",
+                player_name=player_name,
+                command_data_keys=list(command_data.keys()),
+            )
+
+    if not channel:
+        logger.warning(
+            "Channel command with missing channel field",
+            player_name=player_name,
+            command_data_keys=list(command_data.keys()),
+        )
         return {"result": "Usage: /channel <channel_name> or /channel default <channel_name>"}
 
     channel = channel.lower().strip()

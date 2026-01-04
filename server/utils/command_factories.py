@@ -64,6 +64,10 @@ class CommandFactory:
         """Create ReplyCommand from arguments."""
         return self._communication.create_reply_command(args)
 
+    def create_channel_command(self, args: list[str]):
+        """Create ChannelCommand from arguments."""
+        return self._communication.create_channel_command(args)
+
     # Exploration commands
     def create_look_command(self, args: list[str]):
         """Create LookCommand from arguments."""
