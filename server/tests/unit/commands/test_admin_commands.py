@@ -345,15 +345,20 @@ async def test_handle_mutes_command_success():
     mock_app = MagicMock()
     mock_state = MagicMock()
     mock_user_manager = MagicMock()
-    mock_user_manager.get_player_mutes = MagicMock(return_value=[])
+    mock_user_manager.get_player_mutes = MagicMock(return_value={})
+    mock_player_service = AsyncMock()
+    mock_current_player = MagicMock()
+    mock_current_player.id = uuid.uuid4()
+    mock_player_service.resolve_player_name = AsyncMock(return_value=mock_current_player)
     mock_state.user_manager = mock_user_manager
+    mock_state.player_service = mock_player_service
     mock_app.state = mock_state
     mock_request.app = mock_app
 
     result = await handle_mutes_command({}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
 
     assert "result" in result
-    assert "No active mutes" in result["result"]
+    assert "No active mutes found" in result["result"]
     mock_user_manager.get_player_mutes.assert_called_once()
 
 
