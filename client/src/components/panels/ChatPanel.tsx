@@ -11,6 +11,7 @@ import { extractChannelFromMessage, isChatContent } from '../../utils/messageTyp
 import { ChannelSelector } from '../ui/ChannelSelector';
 import { EldritchIcon, MythosIcons } from '../ui/EldritchIcon';
 import { TerminalButton } from '../ui/TerminalButton';
+import { SafeHtml } from '../common/SafeHtml';
 
 // Function to get font size class
 const getFontSizeClass = (): string => {
@@ -80,9 +81,11 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   const [exportFormat, setExportFormat] = useState<string>('txt');
   const [isExporting, setIsExporting] = useState<boolean>(false);
 
+  // Sync selectedChannel prop to internal state when prop changes
+  // This enables controlled mode (prop-driven) while maintaining uncontrolled mode (user-initiated changes)
   useEffect(() => {
     if (selectedChannel !== undefined) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- sync fallback when parent controls channel
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCurrentChannel(prev => (prev === selectedChannel ? prev : selectedChannel));
     }
   }, [selectedChannel]);
@@ -421,6 +424,14 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   // Highlight search term in text (plain text only, not for HTML)
   const highlightSearchText = (text: string, query: string): string => {
     if (!query.trim()) return text;
+
+    // Limit query length to prevent ReDoS attacks (pure operation, safe for render)
+    const MAX_QUERY_LENGTH = 100;
+    if (query.length > MAX_QUERY_LENGTH) {
+      console.warn('Query length exceeds maximum, truncating for safety');
+      query = query.substring(0, MAX_QUERY_LENGTH);
+    }
+
     // Escape HTML entities first
     const escapedText = text
       .replace(/&/g, '&amp;')
@@ -428,8 +439,17 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
-    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-    return escapedText.replace(regex, '<mark class="bg-yellow-500 text-black font-semibold">$1</mark>');
+
+    // Escape regex special characters in query to prevent ReDoS
+    const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    // Create regex for highlighting (query is escaped above to prevent regex injection)
+    // nosemgrep: typescript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
+    // Query is escaped to prevent regex injection, and length is limited above
+    const regex = new RegExp(`(${escapedQuery})`, 'gi');
+    const result = escapedText.replace(regex, '<mark class="bg-yellow-500 text-black font-semibold">$1</mark>');
+
+    return result;
   };
 
   return (
@@ -712,26 +732,24 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                   }}
                 >
                   {message.isHtml ? (
-                    <span
+                    <SafeHtml
+                      html={message.isCompleteHtml ? message.text : ansiToHtmlWithBreaks(message.text)}
                       title="Right-click for options"
-                      dangerouslySetInnerHTML={{
-                        __html: message.isCompleteHtml ? message.text : ansiToHtmlWithBreaks(message.text),
-                      }}
                     />
                   ) : (
-                    <span
-                      style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
-                      title="Right-click for options"
-                      dangerouslySetInnerHTML={{
-                        __html: searchQuery
+                    <SafeHtml
+                      html={
+                        searchQuery
                           ? highlightSearchText(message.rawText ?? message.text, searchQuery)
                           : (message.rawText ?? message.text)
                               .replace(/&/g, '&amp;')
                               .replace(/</g, '&lt;')
                               .replace(/>/g, '&gt;')
                               .replace(/"/g, '&quot;')
-                              .replace(/'/g, '&#39;'),
-                      }}
+                              .replace(/'/g, '&#39;')
+                      }
+                      title="Right-click for options"
+                      style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
                     />
                   )}
                 </div>

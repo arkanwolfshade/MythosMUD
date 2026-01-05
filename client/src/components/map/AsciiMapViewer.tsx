@@ -11,6 +11,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { getApiBaseUrl } from '../../utils/config';
 import { MapControls } from './MapControls';
+import { SafeHtml } from '../common/SafeHtml';
 
 export interface AsciiMapViewerProps {
   /** Plane name (required) */
@@ -294,10 +295,11 @@ export const AsciiMapViewer: React.FC<AsciiMapViewerProps> = ({
       </div>
 
       {/* ASCII map display */}
-      <div
+      <SafeHtml
+        html={mapHtml}
         className="flex items-center justify-center h-full w-full overflow-auto"
+        tag="div"
         onClick={handleMapClick}
-        dangerouslySetInnerHTML={{ __html: mapHtml }}
       />
 
       {/* Viewport info */}

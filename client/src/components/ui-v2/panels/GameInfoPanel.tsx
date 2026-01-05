@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ansiToHtmlWithBreaks } from '../../../utils/ansiToHtml';
 import { EldritchIcon, MythosIcons } from '../../ui/EldritchIcon';
 import { TerminalButton } from '../../ui/TerminalButton';
+import { SafeHtml } from '../../common/SafeHtml';
 import type { ChatMessage } from '../types';
 
 interface GameInfoPanelProps {
@@ -160,10 +161,9 @@ export const GameInfoPanel: React.FC<GameInfoPanelProps> = ({ messages, onClearM
                 </span>
                 <div className={`flex-1 ${getMessageClass(message.messageType)}`} data-message-text={message.text}>
                   {message.isHtml ? (
-                    <div
-                      dangerouslySetInnerHTML={{
-                        __html: message.isCompleteHtml ? message.text : ansiToHtmlWithBreaks(message.text),
-                      }}
+                    <SafeHtml
+                      html={message.isCompleteHtml ? message.text : ansiToHtmlWithBreaks(message.text)}
+                      tag="div"
                     />
                   ) : (
                     <span>{message.text}</span>

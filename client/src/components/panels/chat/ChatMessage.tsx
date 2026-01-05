@@ -1,6 +1,6 @@
 import React from 'react';
 import { ansiToHtmlWithBreaks } from '../../../utils/ansiToHtml';
-import { inputSanitizer } from '../../../utils/security';
+import { SafeHtml } from '../../common/SafeHtml';
 import { EldritchIcon, MythosIcons } from '../../ui/EldritchIcon';
 
 interface ChatMessageProps {
@@ -99,15 +99,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, index }) => {
         title="Right-click to ignore user"
       >
         {message.isHtml ? (
-          <span
-            // nosemgrep: typescript.react.security.audit.react-dangerouslysetinnerhtml.react-dangerouslysetinnerhtml
-            // HTML is sanitized using DOMPurify via inputSanitizer.sanitizeIncomingHtml() before being rendered
-            dangerouslySetInnerHTML={{
-              __html: inputSanitizer.sanitizeIncomingHtml(
-                message.isCompleteHtml ? message.text : ansiToHtmlWithBreaks(message.text)
-              ),
-            }}
-          />
+          <SafeHtml html={message.isCompleteHtml ? message.text : ansiToHtmlWithBreaks(message.text)} />
         ) : (
           <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{message.rawText ?? message.text}</span>
         )}

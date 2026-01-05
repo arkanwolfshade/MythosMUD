@@ -10,15 +10,24 @@ Checks:
 
 import asyncio
 import json
+import os
 import sys
 
 import asyncpg
 
 # Database connection parameters
-DEFAULT_HOST = "localhost"
-DEFAULT_PORT = 5432
-DEFAULT_USER = "postgres"
-DEFAULT_PASSWORD = "Cthulhu1"
+# WARNING: In production, always use environment variables for passwords
+# The default password is for local development only
+DEFAULT_HOST = os.getenv("DATABASE_HOST", "localhost")
+DEFAULT_PORT = int(os.getenv("DATABASE_PORT", "5432"))
+DEFAULT_USER = os.getenv("DATABASE_USER", "postgres")
+DEFAULT_PASSWORD = os.getenv("DATABASE_PASSWORD", "Cthulhu1")
+
+# Warn if using default password in production-like environments
+if DEFAULT_PASSWORD == "Cthulhu1" and os.getenv("ENVIRONMENT") in ("production", "staging"):
+    print(
+        "WARNING: Using default password in production/staging environment! Set DATABASE_PASSWORD environment variable."
+    )
 
 DATABASES = ["mythos_dev", "mythos_unit", "mythos_e2e"]
 
@@ -253,7 +262,8 @@ async def verify_database(db_name: str, host: str, port: int, user: str, passwor
                     try:
                         stats_sample = json.loads(sample["stats"])
                         print(f"  stats keys: {list(stats_sample.keys())[:5]}...")
-                    except Exception:
+                    except json.JSONDecodeError:
+                        # Catch JSON parsing errors when stats column contains invalid JSON
                         print(f"  stats: {sample['stats'][:50]}...")
 
             # 8. Check foreign key constraints
@@ -291,7 +301,8 @@ async def verify_database(db_name: str, host: str, port: int, user: str, passwor
         finally:
             await conn.close()
 
-    except Exception as e:
+    except asyncpg.PostgresError as e:
+        # Catch all asyncpg database errors (connection errors, query errors, etc.)
         print(f"[ERROR] Failed to verify {db_name}: {e}")
         import traceback
 

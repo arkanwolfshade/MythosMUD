@@ -48,7 +48,9 @@ def run_command(cmd, cwd=None, check=True):
     print(f"Running: {' '.join(cmd)} (from {os.path.basename(cwd)})")
 
     try:
-        result = subprocess.run(cmd, cwd=cwd, check=check, capture_output=True, text=True)
+        from utils.safe_subprocess import safe_run
+
+        result = safe_run(cmd, cwd=cwd, check=check, capture_output=True, text=True)
         if result.stdout:
             print(result.stdout)
         return result
@@ -69,8 +71,10 @@ def install_dependencies():
     print(f"Installing dependencies from {current_worktree} worktree...")
 
     # Run the install script from project root
+    from utils.safe_subprocess import safe_run_static
+
     install_script = os.path.join(project_root, "scripts", "install.py")
-    result = subprocess.run([sys.executable, install_script], cwd=project_root, check=False)
+    result = safe_run_static(sys.executable, install_script, cwd=project_root, check=False)
 
     if result.returncode == 0:
         print("[OK] Dependencies installed successfully!")
@@ -86,17 +90,19 @@ def run_tests():
 
     print(f"Running tests from {current_worktree} worktree...")
 
+    from utils.safe_subprocess import safe_run_static
+
     if current_worktree == "client":
         # Run client tests
         client_path = os.path.join(project_root, "client")
-        result = subprocess.run(["npm", "test"], cwd=client_path, check=False)
+        result = safe_run_static("npm", "test", cwd=client_path, check=False)
     elif current_worktree == "server":
         # Run server tests
-        result = subprocess.run(["python", "-m", "pytest"], cwd=project_root, check=False)
+        result = safe_run_static("python", "-m", "pytest", cwd=project_root, check=False)
     else:
         # Run all tests
         test_script = os.path.join(project_root, "scripts", "test.py")
-        result = subprocess.run([sys.executable, test_script], cwd=project_root, check=False)
+        result = safe_run_static(sys.executable, test_script, cwd=project_root, check=False)
 
     if result.returncode == 0:
         print("[OK] Tests completed successfully!")
@@ -112,17 +118,19 @@ def run_lint():
 
     print(f"Running lint from {current_worktree} worktree...")
 
+    from utils.safe_subprocess import safe_run_static
+
     if current_worktree == "client":
         # Run client lint
         client_path = os.path.join(project_root, "client")
-        result = subprocess.run(["npm", "run", "lint"], cwd=client_path, check=False)
+        result = safe_run_static("npm", "run", "lint", cwd=client_path, check=False)
     elif current_worktree == "server":
         # Run server lint
-        result = subprocess.run(["ruff", "check", "server"], cwd=project_root, check=False)
+        result = safe_run_static("ruff", "check", "server", cwd=project_root, check=False)
     else:
         # Run all lint
         lint_script = os.path.join(project_root, "scripts", "lint.py")
-        result = subprocess.run([sys.executable, lint_script], cwd=project_root, check=False)
+        result = safe_run_static(sys.executable, lint_script, cwd=project_root, check=False)
 
     if result.returncode == 0:
         print("[OK] Lint completed successfully!")
@@ -138,17 +146,19 @@ def run_format():
 
     print(f"Running format from {current_worktree} worktree...")
 
+    from utils.safe_subprocess import safe_run_static
+
     if current_worktree == "client":
         # Run client format
         client_path = os.path.join(project_root, "client")
-        result = subprocess.run(["npm", "run", "format"], cwd=client_path, check=False)
+        result = safe_run_static("npm", "run", "format", cwd=client_path, check=False)
     elif current_worktree == "server":
         # Run server format
-        result = subprocess.run(["ruff", "format", "server"], cwd=project_root, check=False)
+        result = safe_run_static("ruff", "format", "server", cwd=project_root, check=False)
     else:
         # Run all format
         format_script = os.path.join(project_root, "scripts", "format.py")
-        result = subprocess.run([sys.executable, format_script], cwd=project_root, check=False)
+        result = safe_run_static(sys.executable, format_script, cwd=project_root, check=False)
 
     if result.returncode == 0:
         print("[OK] Format completed successfully!")
@@ -169,15 +179,17 @@ def show_status():
     print(f"   Project root: {project_root}")
 
     # Show git status
+    from utils.safe_subprocess import safe_run_static
+
     print("\nGit Status:")
-    result = subprocess.run(["git", "status", "--short"], cwd=current_dir, capture_output=True, text=True, check=False)
+    result = safe_run_static("git", "status", "--short", cwd=current_dir, capture_output=True, text=True, check=False)
     if result.stdout.strip():
         print(result.stdout)
     else:
         print("   Working directory clean")
 
     # Show branch info
-    result = subprocess.run(
+    result = safe_run_static(
         ["git", "branch", "--show-current"], cwd=current_dir, capture_output=True, text=True, check=False
     )
     if result.returncode == 0:

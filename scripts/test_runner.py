@@ -14,12 +14,12 @@ Author: Professor of Occult Studies, Miskatonic University
 
 import argparse
 import os
-import subprocess
 import sys
 import time
 from pathlib import Path
 
 import structlog
+from utils.safe_subprocess import safe_run
 
 # Configure basic logging for the test runner itself
 structlog.configure(
@@ -179,7 +179,9 @@ class TestRunner:
 
             return True
 
-        except Exception as e:
+        except (AttributeError, TypeError) as e:
+            # Catch AttributeError (non-string values calling .startswith())
+            # and TypeError (non-string values in slicing/len operations)
             logger.error("Failed to check test database configuration", error=str(e))
             return False
 
@@ -277,7 +279,7 @@ class TestRunner:
         try:
             # Run pytest from server/ directory so conftest.py files are discovered correctly
             # This is CRITICAL for pytestmark in conftest.py to work properly
-            result = subprocess.run(
+            result = safe_run(
                 cmd,
                 cwd=self.server_dir,  # Changed from project_root to server_dir
                 env=env,
@@ -292,7 +294,9 @@ class TestRunner:
 
             return result.returncode
 
-        except Exception as e:
+        except (ValueError, OSError) as e:
+            # Catch validation errors (ValueError) from safe_run and OS-level errors (OSError)
+            # OSError includes FileNotFoundError, PermissionError, etc. from subprocess.run
             logger.error("Test execution failed", error=str(e))
             return 1
 

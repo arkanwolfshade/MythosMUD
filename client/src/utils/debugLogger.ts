@@ -89,24 +89,27 @@ class DebugLogger {
   private logToConsole(entry: LogEntry): void {
     if (!this.config.enableConsole) return;
 
-    const consoleMethod = this.getConsoleMethod(entry.level);
     const formattedMessage = this.formatMessage(entry);
+    const data = entry.data || '';
 
-    console[consoleMethod](formattedMessage, entry.data || '');
-  }
-
-  private getConsoleMethod(level: LogLevel): 'debug' | 'log' | 'warn' | 'error' {
-    switch (level) {
+    // Use explicit method mapping instead of dynamic property access
+    // This prevents potential security issues with dynamic method calls
+    switch (entry.level) {
       case 'DEBUG':
-        return 'debug';
+        console.debug(formattedMessage, data);
+        break;
       case 'INFO':
-        return 'log';
+        console.log(formattedMessage, data);
+        break;
       case 'WARN':
-        return 'warn';
+        console.warn(formattedMessage, data);
+        break;
       case 'ERROR':
-        return 'error';
+        console.error(formattedMessage, data);
+        break;
       default:
-        return 'log';
+        console.log(formattedMessage, data);
+        break;
     }
   }
 
@@ -205,4 +208,4 @@ export function debugLogger(component: string, config?: Partial<LogConfig>): Deb
 
 // Export types for external use
 export { DebugLogger };
-export type { LogConfig, LogEntry, LogLevel };
+export type { LogConfig, LogEntry };

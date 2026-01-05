@@ -9,6 +9,8 @@ import sys
 import threading
 import time
 
+from utils.safe_subprocess import safe_run_static
+
 # Configure stdout/stderr encoding for Windows to handle Unicode characters
 if sys.platform == "win32":
     try:
@@ -111,8 +113,11 @@ if IN_CI:
     # #region agent log
     try:
         # Check installed packages
-        result = subprocess.run(
-            [python_exe, "-m", "pip", "list"],
+        result = safe_run_static(
+            python_exe,
+            "-m",
+            "pip",
+            "list",
             capture_output=True,
             text=True,
             cwd=PROJECT_ROOT,
@@ -147,8 +152,12 @@ if IN_CI:
     # #region agent log
     try:
         # Check pytest plugins
-        result = subprocess.run(
-            [python_exe, "-m", "pytest", "--collect-only", "-q"],
+        result = safe_run_static(
+            python_exe,
+            "-m",
+            "pytest",
+            "--collect-only",
+            "-q",
             capture_output=True,
             text=True,
             cwd=PROJECT_ROOT,
@@ -245,19 +254,17 @@ if IN_CI:
     except (OSError, TypeError, ValueError):
         pass  # Ignore logging errors (file I/O or JSON serialization issues)
     # #endregion
-    subprocess.run(
-        [
-            python_exe,
-            "-m",
-            "pytest",
-            "server/tests/",
-            "--cov=server",
-            "--cov-report=xml",
-            "--cov-report=html",
-            "--cov-config=.coveragerc",
-            "-v",
-            "--tb=short",
-        ],
+    safe_run_static(
+        python_exe,
+        "-m",
+        "pytest",
+        "server/tests/",
+        "--cov=server",
+        "--cov-report=xml",
+        "--cov-report=html",
+        "--cov-config=.coveragerc",
+        "-v",
+        "--tb=short",
         cwd=PROJECT_ROOT,
         check=True,
         env=env,
@@ -265,8 +272,9 @@ if IN_CI:
 
     # Check per-file thresholds
     check_script = os.path.join(PROJECT_ROOT, "scripts", "check_coverage_thresholds.py")
-    subprocess.run(
-        [python_exe, check_script],
+    safe_run_static(
+        python_exe,
+        check_script,
         cwd=PROJECT_ROOT,
         check=True,
         env=env,
@@ -283,30 +291,28 @@ else:
             if os.path.exists(env_path):
                 env_files.append(env_file)
         with open(log_path, "a", encoding="utf-8") as f:
-            f.write(
-                json.dumps(
-                    {
-                        "id": f"log_{int(time.time())}_local_env_check",
-                        "timestamp": int(time.time() * 1000),
-                        "location": "run_test_ci.py:240",
-                        "message": "Local environment check - MYTHOSMUD_ADMIN_PASSWORD",
-                        "data": {
-                            "env_var_exists": "MYTHOSMUD_ADMIN_PASSWORD" in os.environ,
-                            "env_var_value": admin_pw_env[:3] + "..."
-                            if len(admin_pw_env) > 3 and admin_pw_env != "NOT_SET"
-                            else admin_pw_env,
-                            "env_var_length": len(admin_pw_env) if admin_pw_env != "NOT_SET" else 0,
-                            "is_empty_string": admin_pw_env == "",
-                            "env_files_found": env_files,
-                            "in_ci": IN_CI,
-                        },
-                        "sessionId": "debug-session",
-                        "runId": "local-env-check",
-                        "hypothesisId": "G",
-                    }
-                )
-                + "\n"
+            log_entry = json.dumps(
+                {
+                    "id": f"log_{int(time.time())}_local_env_check",
+                    "timestamp": int(time.time() * 1000),
+                    "location": "run_test_ci.py:240",
+                    "message": "Local environment check - MYTHOSMUD_ADMIN_PASSWORD",
+                    "data": {
+                        "env_var_exists": "MYTHOSMUD_ADMIN_PASSWORD" in os.environ,
+                        "env_var_value": admin_pw_env[:3] + "..."
+                        if len(admin_pw_env) > 3 and admin_pw_env != "NOT_SET"
+                        else admin_pw_env,
+                        "env_var_length": len(admin_pw_env) if admin_pw_env != "NOT_SET" else 0,
+                        "is_empty_string": admin_pw_env == "",
+                        "env_files_found": env_files,
+                        "in_ci": IN_CI,
+                    },
+                    "sessionId": "debug-session",
+                    "runId": "local-env-check",
+                    "hypothesisId": "G",
+                }
             )
+            f.write(log_entry + "\n")
     except (OSError, TypeError, ValueError):
         pass  # Ignore logging errors (file I/O or JSON serialization issues)
     # #endregion
@@ -315,17 +321,15 @@ else:
     ACT_RUNNER_IMAGE = "mythosmud-gha-runner:latest"
     ACT_RUNNER_DOCKERFILE = "Dockerfile.github-runner"
 
-    subprocess.run(
-        [
-            "docker",
-            "build",
-            "--pull",
-            "-t",
-            ACT_RUNNER_IMAGE,
-            "-f",
-            ACT_RUNNER_DOCKERFILE,
-            ".",
-        ],
+    safe_run_static(
+        "docker",
+        "build",
+        "--pull",
+        "-t",
+        ACT_RUNNER_IMAGE,
+        "-f",
+        ACT_RUNNER_DOCKERFILE,
+        ".",
         cwd=PROJECT_ROOT,
         check=True,
     )

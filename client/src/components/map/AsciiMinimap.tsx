@@ -10,6 +10,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { getApiBaseUrl } from '../../utils/config';
+import { SafeHtml } from '../common/SafeHtml';
 
 export interface AsciiMinimapProps {
   /** Plane name (required) */
@@ -138,9 +139,7 @@ export const AsciiMinimap: React.FC<AsciiMinimapProps> = ({
           Map Error
         </div>
       )}
-      {!isLoading && !error && mapHtml && (
-        <div className="minimap-container" dangerouslySetInnerHTML={{ __html: mapHtml }} />
-      )}
+      {!isLoading && !error && mapHtml && <SafeHtml html={mapHtml} className="minimap-container" tag="div" />}
     </div>
   );
 };

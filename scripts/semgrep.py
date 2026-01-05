@@ -1,8 +1,9 @@
 import io
 import os
 import shutil
-import subprocess
 import sys
+
+from utils.safe_subprocess import safe_run
 
 # Force UTF-8 encoding to handle Unicode characters in semgrep rules
 # This prevents UnicodeEncodeError on Windows when semgrep downloads rules
@@ -34,7 +35,7 @@ cmd = [semgrep_path, "scan", "--config=auto", "--json", "--quiet", "."]
 
 try:
     # Use UTF-8 encoding for subprocess to handle Unicode in semgrep output
-    result = subprocess.run(
+    result = safe_run(
         cmd,
         capture_output=True,
         text=True,
@@ -59,8 +60,10 @@ try:
         print("Errors:", result.stderr)
         success = False
 
-except Exception as e:  # noqa: BLE001
-    # We catch all exceptions here to ensure graceful failure reporting
+except (ValueError, OSError) as e:
+    # Catch validation errors (ValueError) and OS-level errors (OSError)
+    # OSError includes FileNotFoundError, PermissionError, etc.
+    # We catch these specific exceptions to ensure graceful failure reporting
     print(f"[ERROR] Error running semgrep: {e}")
     success = False
 
