@@ -33,10 +33,11 @@ describe('SafeHtml', () => {
     const maliciousHtml = '<a href="javascript:alert(\'XSS\')">Link</a>';
     const { container } = render(<SafeHtml html={maliciousHtml} />);
 
+    // Anchor tags are not in ALLOWED_TAGS, so they are removed entirely (safer than just stripping javascript:)
     const link = container.querySelector('a');
-    expect(link).not.toBeNull();
-    // javascript: protocol should be removed
-    expect(link?.getAttribute('href')).not.toContain('javascript:');
+    expect(link).toBeNull();
+    // The malicious link should be completely removed, leaving only safe content
+    expect(container.textContent).toBe('Link'); // Text content remains but link is removed
   });
 
   it('should preserve allowed HTML tags', () => {
