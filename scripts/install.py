@@ -47,9 +47,14 @@ if is_worktree:
     print(f"Worktree context detected: {os.path.basename(os.getcwd())}")
 
 steps = [
-    ["uv", "sync", "--project", "server"],
+    # Install Python dependencies including dev prerequisites
+    # --all-extras: includes all optional dependencies from [project.optional-dependencies]
+    # --dev: explicitly includes dev dependency group (included by default, but being explicit)
+    ["uv", "sync", "--project", "server", "--all-extras", "--dev"],
     ["uv", "run", "--active", "pre-commit", "install", "-f"],
     ["npx.cmd" if is_windows else "npx", "--version"],
+    # Install Node dependencies including devDependencies
+    # npm install includes devDependencies by default (unless --production is used)
     ["npm.cmd" if is_windows else "npm", "install"],
 ]
 

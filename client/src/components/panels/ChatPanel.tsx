@@ -545,7 +545,9 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
               type="text"
               placeholder="Search messages..."
               value={searchQuery}
-              onChange={e => handleSearchChange(e.target.value)}
+              onChange={e => {
+                handleSearchChange(e.target.value);
+              }}
               className="flex-1 text-xs bg-mythos-terminal-surface border border-gray-700 rounded px-2 py-1 text-mythos-terminal-text focus:outline-none focus:border-mythos-terminal-primary"
               disabled={disabled}
             />
@@ -570,7 +572,9 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                   ↓
                 </button>
                 <button
-                  onClick={() => handleSearchChange('')}
+                  onClick={() => {
+                    handleSearchChange('');
+                  }}
                   className="text-xs px-2 py-1 bg-mythos-terminal-surface border border-gray-700 rounded hover:bg-mythos-terminal-background"
                   title="Clear search"
                   type="button"
@@ -590,7 +594,9 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
             <>
               <select
                 value={searchFilterChannel}
-                onChange={e => setSearchFilterChannel(e.target.value)}
+                onChange={e => {
+                  setSearchFilterChannel(e.target.value);
+                }}
                 className="text-xs bg-mythos-terminal-surface border border-gray-700 rounded px-1"
                 disabled={disabled}
               >
@@ -603,7 +609,9 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
               </select>
               <select
                 value={searchFilterType}
-                onChange={e => setSearchFilterType(e.target.value)}
+                onChange={e => {
+                  setSearchFilterType(e.target.value);
+                }}
                 className="text-xs bg-mythos-terminal-surface border border-gray-700 rounded px-1"
                 disabled={disabled}
               >
@@ -741,7 +749,9 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         >
           <div
             className="bg-mythos-terminal-surface border border-mythos-terminal-primary rounded-lg p-6 max-w-md w-full"
-            onClick={e => e.stopPropagation()}
+            onClick={e => {
+              e.stopPropagation();
+            }}
           >
             <h3 className="text-mythos-terminal-primary font-bold text-lg mb-4">Export Chat Messages</h3>
             <div className="space-y-4">
@@ -749,7 +759,9 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                 <label className="block text-sm text-mythos-terminal-text-secondary mb-2">Export Format</label>
                 <select
                   value={exportFormat}
-                  onChange={e => setExportFormat(e.target.value)}
+                  onChange={e => {
+                    setExportFormat(e.target.value);
+                  }}
                   className="w-full text-sm bg-mythos-terminal-background border border-gray-700 rounded px-2 py-1 text-mythos-terminal-text"
                   disabled={isExporting}
                 >
@@ -764,7 +776,9 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
               </div>
               <div className="flex gap-2 justify-end">
                 <button
-                  onClick={() => setShowExportDialog(false)}
+                  onClick={() => {
+                    setShowExportDialog(false);
+                  }}
                   disabled={isExporting}
                   className="px-4 py-2 text-sm bg-mythos-terminal-background border border-gray-700 rounded hover:bg-mythos-terminal-surface disabled:opacity-50"
                   type="button"
