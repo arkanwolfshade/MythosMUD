@@ -6,11 +6,32 @@ SQL injection attacks by using parameterized queries.
 """
 
 import uuid
+from datetime import datetime
 from unittest.mock import MagicMock
 
 import pytest
 
 from server.persistence.container_persistence import update_container
+
+
+def _create_mock_container_row(container_id: uuid.UUID) -> dict:
+    """Create a complete mock container row with all required columns."""
+    return {
+        "container_instance_id": str(container_id),
+        "source_type": "room",
+        "owner_id": None,
+        "room_id": "test-room",
+        "entity_id": None,
+        "lock_state": "unlocked",
+        "capacity_slots": 10,
+        "weight_limit": 100.0,
+        "decay_at": None,
+        "allowed_roles": [],
+        "metadata_json": {},
+        "created_at": datetime.now(),
+        "updated_at": datetime.now(),
+        "container_item_instance_id": None,
+    }
 
 
 class TestContainerPersistenceSQLInjection:
@@ -43,11 +64,18 @@ class TestContainerPersistenceSQLInjection:
     def test_update_container_sql_injection_in_metadata(self):
         """Test that SQL injection in metadata_json is prevented."""
         conn = MagicMock()
-        cursor = MagicMock()
-        conn.cursor.return_value = cursor
-        cursor.fetchone.return_value = {"container_instance_id": str(uuid.uuid4())}
-
         container_id = uuid.uuid4()
+
+        # Create cursors: first for update_container, second for get_container, third for _fetch_container_items
+        update_cursor = MagicMock()
+        update_cursor.fetchone.return_value = {"container_instance_id": str(container_id)}
+        get_cursor = MagicMock()
+        get_cursor.fetchone.return_value = _create_mock_container_row(container_id)
+        items_cursor = MagicMock()
+        items_cursor.fetchall.return_value = []  # Empty items list
+
+        # Make conn.cursor() return different cursors on different calls
+        conn.cursor.side_effect = [update_cursor, get_cursor, items_cursor]
 
         # Attempt SQL injection in metadata
         malicious_metadata = {
@@ -63,27 +91,35 @@ class TestContainerPersistenceSQLInjection:
         )
 
         # Verify that cursor.execute was called with parameterized query
-        assert cursor.execute.called
-        call_args = cursor.execute.call_args
+        assert update_cursor.execute.called
+        call_args = update_cursor.execute.call_args
 
         # The query should use psycopg2.sql.SQL, not f-strings
         # The parameters should be passed separately, not concatenated
         assert call_args is not None
         # Verify parameters are passed as tuple/list, not concatenated into SQL string
-        if len(call_args) > 1:
-            # If parameters are passed, they should be in the second argument
-            params = call_args[1] if len(call_args) > 1 else call_args[0][1]
+        # call_args is (args, kwargs), so call_args[0] is the args tuple
+        if len(call_args[0]) > 1:
+            # Parameters should be in the second positional argument
+            params = call_args[0][1]
             # Parameters should be a list/tuple, not a string
             assert isinstance(params, (list, tuple))
 
     def test_update_container_uses_parameterized_queries(self):
         """Test that update_container uses parameterized queries, not string concatenation."""
         conn = MagicMock()
-        cursor = MagicMock()
-        conn.cursor.return_value = cursor
-        cursor.fetchone.return_value = {"container_instance_id": str(uuid.uuid4())}
-
         container_id = uuid.uuid4()
+
+        # Create cursors: first for update_container, second for get_container, third for _fetch_container_items
+        update_cursor = MagicMock()
+        update_cursor.fetchone.return_value = {"container_instance_id": str(container_id)}
+        get_cursor = MagicMock()
+        get_cursor.fetchone.return_value = _create_mock_container_row(container_id)
+        items_cursor = MagicMock()
+        items_cursor.fetchall.return_value = []  # Empty items list
+
+        # Make conn.cursor() return different cursors on different calls
+        conn.cursor.side_effect = [update_cursor, get_cursor, items_cursor]
 
         update_container(
             conn=conn,
@@ -93,10 +129,10 @@ class TestContainerPersistenceSQLInjection:
         )
 
         # Verify cursor.execute was called
-        assert cursor.execute.called
+        assert update_cursor.execute.called
 
         # Get the query that was executed
-        call_args = cursor.execute.call_args
+        call_args = update_cursor.execute.call_args
         query = call_args[0][0] if call_args else None
 
         # Query should not contain f-string formatting with user input
@@ -108,11 +144,18 @@ class TestContainerPersistenceSQLInjection:
     def test_update_container_safe_column_names(self):
         """Test that column names are hardcoded, not from user input."""
         conn = MagicMock()
-        cursor = MagicMock()
-        conn.cursor.return_value = cursor
-        cursor.fetchone.return_value = {"container_instance_id": str(uuid.uuid4())}
-
         container_id = uuid.uuid4()
+
+        # Create cursors: first for update_container, second for get_container, third for _fetch_container_items
+        update_cursor = MagicMock()
+        update_cursor.fetchone.return_value = {"container_instance_id": str(container_id)}
+        get_cursor = MagicMock()
+        get_cursor.fetchone.return_value = _create_mock_container_row(container_id)
+        items_cursor = MagicMock()
+        items_cursor.fetchall.return_value = []  # Empty items list
+
+        # Make conn.cursor() return different cursors on different calls
+        conn.cursor.side_effect = [update_cursor, get_cursor, items_cursor]
 
         # Column names should be hardcoded in the code
         # User input should only affect parameter values, not column names
@@ -122,8 +165,8 @@ class TestContainerPersistenceSQLInjection:
             lock_state="locked",
         )
 
-        assert cursor.execute.called
-        call_args = cursor.execute.call_args
+        assert update_cursor.execute.called
+        call_args = update_cursor.execute.call_args
         query = call_args[0][0] if call_args else None
 
         # Column names should be hardcoded (lock_state, updated_at, container_instance_id)
