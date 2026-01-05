@@ -26,9 +26,9 @@ async def test_handle_say_command_no_message():
     """Test handle_say_command with no message."""
     result = await handle_say_command(
         command_data={},
-        current_user={},
+        _current_user={},
         request=MagicMock(),
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -43,9 +43,9 @@ async def test_handle_say_command_no_services():
 
     result = await handle_say_command(
         command_data={"message": "Hello"},
-        current_user={},
+        _current_user={},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -65,9 +65,9 @@ async def test_handle_say_command_player_not_found():
 
     result = await handle_say_command(
         command_data={"message": "Hello"},
-        current_user={},
+        _current_user={},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -92,9 +92,9 @@ async def test_handle_say_command_success():
 
     result = await handle_say_command(
         command_data={"message": "Hello"},
-        current_user={},
+        _current_user={},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -107,9 +107,9 @@ async def test_handle_me_command_no_action():
     """Test handle_me_command with no action."""
     result = await handle_me_command(
         command_data={},
-        current_user={},
-        request=MagicMock(),
-        alias_storage=None,
+        _current_user={},
+        _request=MagicMock(),
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -121,9 +121,9 @@ async def test_handle_me_command_success():
     """Test handle_me_command successful execution."""
     result = await handle_me_command(
         command_data={"action": "waves hello"},
-        current_user={},
-        request=MagicMock(),
-        alias_storage=None,
+        _current_user={},
+        _request=MagicMock(),
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -140,7 +140,7 @@ async def test_handle_pose_command_no_persistence():
         command_data={"pose": "standing tall"},
         current_user={},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -161,7 +161,7 @@ async def test_handle_pose_command_player_not_found():
         command_data={"pose": "standing tall"},
         current_user={"username": "TestPlayer"},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -185,7 +185,7 @@ async def test_handle_pose_command_clear_pose():
         command_data={},
         current_user={"username": "TestPlayer"},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -210,7 +210,7 @@ async def test_handle_pose_command_set_pose():
         command_data={"pose": "standing tall"},
         current_user={"username": "TestPlayer"},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -224,9 +224,9 @@ async def test_handle_local_command_no_message():
     """Test handle_local_command with no message."""
     result = await handle_local_command(
         command_data={},
-        current_user={},
+        _current_user={},
         request=MagicMock(),
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -241,9 +241,9 @@ async def test_handle_local_command_no_services():
 
     result = await handle_local_command(
         command_data={"message": "Hello"},
-        current_user={},
+        _current_user={},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -268,9 +268,9 @@ async def test_handle_local_command_success():
 
     result = await handle_local_command(
         command_data={"message": "Hello"},
-        current_user={},
+        _current_user={},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -283,9 +283,9 @@ async def test_handle_global_command_no_message():
     """Test handle_global_command with no message."""
     result = await handle_global_command(
         command_data={},
-        current_user={},
+        _current_user={},
         request=MagicMock(),
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -300,9 +300,9 @@ async def test_handle_global_command_no_services():
 
     result = await handle_global_command(
         command_data={"message": "Hello"},
-        current_user={},
+        _current_user={},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -324,9 +324,9 @@ async def test_handle_global_command_level_too_low():
 
     result = await handle_global_command(
         command_data={"message": "Hello"},
-        current_user={},
+        _current_user={},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -351,9 +351,9 @@ async def test_handle_global_command_success():
 
     result = await handle_global_command(
         command_data={"message": "Hello"},
-        current_user={},
+        _current_user={},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -366,9 +366,9 @@ async def test_handle_system_command_no_message():
     """Test handle_system_command with no message."""
     result = await handle_system_command(
         command_data={},
-        current_user={},
+        _current_user={},
         request=MagicMock(),
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -383,9 +383,9 @@ async def test_handle_system_command_no_services():
 
     result = await handle_system_command(
         command_data={"message": "Hello"},
-        current_user={},
+        _current_user={},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -411,9 +411,9 @@ async def test_handle_system_command_not_admin():
 
     result = await handle_system_command(
         command_data={"message": "Hello"},
-        current_user={},
+        _current_user={},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -441,9 +441,9 @@ async def test_handle_system_command_success():
 
     result = await handle_system_command(
         command_data={"message": "Hello"},
-        current_user={},
+        _current_user={},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -457,9 +457,9 @@ async def test_handle_whisper_command_no_target():
     """Test handle_whisper_command with no target."""
     result = await handle_whisper_command(
         command_data={"message": "Hello"},
-        current_user={},
+        _current_user={},
         request=MagicMock(),
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -471,9 +471,9 @@ async def test_handle_whisper_command_no_message():
     """Test handle_whisper_command with no message."""
     result = await handle_whisper_command(
         command_data={"target": "OtherPlayer"},
-        current_user={},
+        _current_user={},
         request=MagicMock(),
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -488,9 +488,9 @@ async def test_handle_whisper_command_no_services():
 
     result = await handle_whisper_command(
         command_data={"target": "OtherPlayer", "message": "Hello"},
-        current_user={},
+        _current_user={},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -512,13 +512,13 @@ async def test_handle_whisper_command_target_not_found():
 
     result = await handle_whisper_command(
         command_data={"target": "OtherPlayer", "message": "Hello"},
-        current_user={},
+        _current_user={},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
-    assert "not found" in result["result"]
+    assert "whisper into the aether" in result["result"].lower()
 
 
 @pytest.mark.asyncio
@@ -537,9 +537,9 @@ async def test_handle_whisper_command_whisper_to_self():
 
     result = await handle_whisper_command(
         command_data={"target": "TestPlayer", "message": "Hello"},
-        current_user={},
+        _current_user={},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -565,9 +565,9 @@ async def test_handle_whisper_command_success():
 
     result = await handle_whisper_command(
         command_data={"target": "OtherPlayer", "message": "Hello"},
-        current_user={},
+        _current_user={},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -580,9 +580,9 @@ async def test_handle_reply_command_no_message():
     """Test handle_reply_command with no message."""
     result = await handle_reply_command(
         command_data={},
-        current_user={},
+        _current_user={},
         request=MagicMock(),
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -597,9 +597,9 @@ async def test_handle_reply_command_no_services():
 
     result = await handle_reply_command(
         command_data={"message": "Hello"},
-        current_user={},
+        _current_user={},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -623,9 +623,9 @@ async def test_handle_reply_command_no_last_whisper_sender():
 
     result = await handle_reply_command(
         command_data={"message": "Hello"},
-        current_user={},
+        _current_user={},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -652,9 +652,9 @@ async def test_handle_reply_command_success():
 
     result = await handle_reply_command(
         command_data={"message": "Hello"},
-        current_user={},
+        _current_user={},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -678,9 +678,9 @@ async def test_handle_say_command_no_room():
 
     result = await handle_say_command(
         command_data={"message": "Hello"},
-        current_user={},
+        _current_user={},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -704,9 +704,9 @@ async def test_handle_say_command_no_player_id():
 
     result = await handle_say_command(
         command_data={"message": "Hello"},
-        current_user={},
+        _current_user={},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -731,9 +731,9 @@ async def test_handle_say_command_chat_service_failure():
 
     result = await handle_say_command(
         command_data={"message": "Hello"},
-        current_user={},
+        _current_user={},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -747,15 +747,15 @@ async def test_handle_say_command_exception():
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
     mock_player_service = AsyncMock()
-    mock_player_service.resolve_player_name = AsyncMock(side_effect=Exception("Database error"))
+    mock_player_service.resolve_player_name = AsyncMock(side_effect=RuntimeError("Database error"))
     mock_request.app.state.player_service = mock_player_service
     mock_request.app.state.chat_service = AsyncMock()
 
     result = await handle_say_command(
         command_data={"message": "Hello"},
-        current_user={},
+        _current_user={},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -778,9 +778,9 @@ async def test_handle_local_command_no_room():
 
     result = await handle_local_command(
         command_data={"message": "Hello"},
-        current_user={},
+        _current_user={},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -800,9 +800,9 @@ async def test_handle_global_command_player_not_found():
 
     result = await handle_global_command(
         command_data={"message": "Hello"},
-        current_user={},
+        _current_user={},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 
@@ -828,9 +828,9 @@ async def test_handle_whisper_command_chat_service_failure():
 
     result = await handle_whisper_command(
         command_data={"target": "OtherPlayer", "message": "Hello"},
-        current_user={},
+        _current_user={},
         request=mock_request,
-        alias_storage=None,
+        _alias_storage=None,
         player_name="TestPlayer",
     )
 

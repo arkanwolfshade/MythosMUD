@@ -521,18 +521,21 @@ class NATSMessageHandler:
         Returns:
             WebSocket chat event dictionary
         """
+        event_data = {
+            "sender_id": str(chat_fields["sender_id"]),
+            "player_name": chat_fields["sender_name"],
+            "channel": chat_fields["channel"],
+            "message": formatted_message,
+            "message_id": chat_fields["message_id"],
+            "timestamp": chat_fields["timestamp"],
+            "target_id": chat_fields["target_id"],
+            "target_name": chat_fields["target_name"],
+            # Store original content for communication dampening processing
+            "original_content": chat_fields["content"],
+        }
         return build_event(
             "chat_message",
-            {
-                "sender_id": str(chat_fields["sender_id"]),
-                "player_name": chat_fields["sender_name"],
-                "channel": chat_fields["channel"],
-                "message": formatted_message,
-                "message_id": chat_fields["message_id"],
-                "timestamp": chat_fields["timestamp"],
-                "target_id": chat_fields["target_id"],
-                "target_name": chat_fields["target_name"],
-            },
+            event_data,
             player_id=str(chat_fields["sender_id"]),
         )
 
@@ -583,7 +586,7 @@ class NATSMessageHandler:
             strategy = channel_strategy_factory.get_strategy(channel)
             await strategy.broadcast(chat_event, room_id, party_id, target_player_id, sender_id, self)
 
-        except (NATSError, RuntimeError, ValueError, AttributeError, TypeError, Exception) as e:
+        except (NATSError, RuntimeError, ValueError, AttributeError, TypeError) as e:
             logger.error(
                 "Error broadcasting message by channel type",
                 error=str(e),
@@ -636,7 +639,7 @@ class NATSMessageHandler:
         self, filtered_targets: list[str], chat_event: dict, room_id: str, sender_id: str, channel: str
     ) -> None:
         """
-        Send messages to filtered target players.
+        Send messages to filtered target players, applying communication dampening per receiver.
 
         Args:
             filtered_targets: List of filtered player IDs
@@ -645,6 +648,28 @@ class NATSMessageHandler:
             sender_id: Sender player ID
             channel: Channel type
         """
+        # Get original content and sender info from chat event
+        event_data = chat_event.get("data", {})
+        original_content = event_data.get("original_content", "")
+        sender_name = event_data.get("player_name", "")
+
+        if not original_content:
+            # Fallback: try to extract from formatted message (less reliable)
+            formatted_message = event_data.get("message", "")
+            logger.warning(
+                "Original content not found in chat_event, using formatted message",
+                sender_id=sender_id,
+                channel=channel,
+            )
+            original_content = formatted_message
+
+        # Get sender tier once (used for all receivers)
+        sender_tier = await self._get_player_lucidity_tier(sender_id)
+
+        # Apply communication dampening per receiver (function handles both outgoing and incoming effects)
+        from ..services.lucidity_communication_dampening import apply_communication_dampening
+
+        # Send message to each receiver with per-receiver dampening
         for player_id in filtered_targets:
             logger.debug(
                 "=== BROADCAST FILTERING DEBUG: Sending message to player ===",
@@ -654,8 +679,32 @@ class NATSMessageHandler:
                 channel=channel,
             )
             try:
+                # Get receiver tier for incoming dampening
+                receiver_tier = await self._get_player_lucidity_tier(player_id)
+
+                # Apply communication dampening (handles both outgoing sender effects and incoming receiver effects)
+                dampening_result = apply_communication_dampening(original_content, sender_tier, receiver_tier, channel)
+
+                if dampening_result["blocked"]:
+                    # Message blocked (e.g., Deranged player trying to shout)
+                    logger.debug("Message blocked by communication dampening", receiver_id=player_id, channel=channel)
+                    continue
+
+                # Create modified chat event for this receiver
+                receiver_content = dampening_result["message"]
+                receiver_formatted = self._format_message_for_receiver(channel, sender_name, receiver_content)
+
+                # Create copy of chat_event with modified message
+                receiver_event = chat_event.copy()
+                receiver_event["data"] = event_data.copy()
+                receiver_event["data"]["message"] = receiver_formatted
+
+                # Add tags if any (e.g., 'strained', 'muffled', 'scrambled')
+                if dampening_result.get("tags"):
+                    receiver_event["data"]["tags"] = dampening_result["tags"]
+
                 player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
-                await self.connection_manager.send_personal_message(player_id_uuid, chat_event)
+                await self.connection_manager.send_personal_message(player_id_uuid, receiver_event)
             except (ValueError, AttributeError, TypeError) as e:
                 logger.warning(
                     "Invalid player_id format for send_personal_message",
@@ -810,6 +859,136 @@ class NATSMessageHandler:
         from ..services.user_manager import user_manager as global_user_manager
 
         return global_user_manager
+
+    def _format_message_for_receiver(self, channel: str, sender_name: str, content: str) -> str:
+        """
+        Format message content for a receiver (after dampening applied).
+
+        Args:
+            channel: Channel type
+            sender_name: Name of the message sender
+            content: Message content (may have been modified by dampening)
+
+        Returns:
+            Formatted message content with sender name
+        """
+        return format_message_content(channel, sender_name, content)
+
+    async def _apply_dampening_and_send_message(
+        self, chat_event: dict, sender_id: str, receiver_id: str, channel: str
+    ) -> None:
+        """
+        Apply communication dampening and send message to a single receiver.
+
+        Helper method for sending messages with dampening applied.
+        Used for whisper messages and can be used for other single-receiver scenarios.
+
+        Args:
+            chat_event: Original chat event
+            sender_id: Sender player ID (string)
+            receiver_id: Receiver player ID (string)
+            channel: Channel type
+        """
+        try:
+            # Get original content and sender info from chat event
+            event_data = chat_event.get("data", {})
+            original_content = event_data.get("original_content", "")
+            sender_name = event_data.get("player_name", "")
+
+            if not original_content:
+                # Fallback: try to extract from formatted message
+                formatted_message = event_data.get("message", "")
+                logger.warning(
+                    "Original content not found in chat_event for dampening, using formatted message",
+                    sender_id=sender_id,
+                    receiver_id=receiver_id,
+                    channel=channel,
+                )
+                original_content = formatted_message
+
+            # Get sender and receiver tiers
+            sender_tier = await self._get_player_lucidity_tier(sender_id)
+            receiver_tier = await self._get_player_lucidity_tier(receiver_id)
+
+            # Apply communication dampening
+            from ..services.lucidity_communication_dampening import apply_communication_dampening
+
+            dampening_result = apply_communication_dampening(original_content, sender_tier, receiver_tier, channel)
+
+            if dampening_result["blocked"]:
+                # Message blocked (e.g., Deranged player trying to shout)
+                logger.debug(
+                    "Message blocked by communication dampening",
+                    receiver_id=receiver_id,
+                    channel=channel,
+                )
+                return
+
+            # Create modified chat event for receiver
+            receiver_content = dampening_result["message"]
+            receiver_formatted = self._format_message_for_receiver(channel, sender_name, receiver_content)
+
+            # Create copy of chat_event with modified message
+            receiver_event = chat_event.copy()
+            receiver_event["data"] = event_data.copy()
+            receiver_event["data"]["message"] = receiver_formatted
+
+            # Add tags if any (e.g., 'strained', 'muffled', 'scrambled')
+            if dampening_result.get("tags"):
+                receiver_event["data"]["tags"] = dampening_result["tags"]
+
+            receiver_id_uuid = uuid.UUID(receiver_id) if isinstance(receiver_id, str) else receiver_id
+            await self.connection_manager.send_personal_message(receiver_id_uuid, receiver_event)
+
+        except (ValueError, AttributeError, TypeError) as e:
+            logger.warning(
+                "Error applying dampening and sending message",
+                sender_id=sender_id,
+                receiver_id=receiver_id,
+                error=str(e),
+            )
+
+    async def _get_player_lucidity_tier(self, player_id: str) -> str:
+        """
+        Get a player's current lucidity tier from database.
+
+        Args:
+            player_id: Player ID (string or UUID)
+
+        Returns:
+            Lucidity tier string (defaults to 'lucid' if not found)
+        """
+        try:
+            from ..database import get_async_session
+            from ..services.lucidity_service import LucidityService
+
+            player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+
+            async for session in get_async_session():
+                try:
+                    lucidity_service = LucidityService(session)
+                    lucidity_record = await lucidity_service.get_player_lucidity(player_id_uuid)
+                    tier = lucidity_record.current_tier if lucidity_record else "lucid"
+                    return tier
+                except Exception as e:  # pylint: disable=broad-except
+                    logger.debug(
+                        "Error getting player lucidity tier",
+                        player_id=player_id,
+                        error=str(e),
+                        error_type=type(e).__name__,
+                    )
+                    return "lucid"
+
+        except Exception as e:  # pylint: disable=broad-except
+            logger.debug(
+                "Error in _get_player_lucidity_tier (session creation)",
+                player_id=player_id,
+                error=str(e),
+                error_type=type(e).__name__,
+            )
+            return "lucid"
+
+        return "lucid"
 
     def _compare_canonical_rooms(self, player_room_id: str, message_room_id: str) -> bool:
         """Compare two room IDs using canonical room ID resolution."""

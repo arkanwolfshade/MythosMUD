@@ -79,6 +79,7 @@ class CommandParser:
             CommandType.LIE.value: self.factory.create_lie_command,
             CommandType.GROUND.value: self.factory.create_ground_command,
             # Communication commands
+            CommandType.CHANNEL.value: self.factory.create_channel_command,
             CommandType.WHISPER.value: self.factory.create_whisper_command,
             CommandType.REPLY.value: self.factory.create_reply_command,
             # Admin server management commands

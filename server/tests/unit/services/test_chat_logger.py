@@ -20,7 +20,7 @@ def temp_log_dir():
 
 
 @pytest.fixture
-def chat_logger(temp_log_dir):
+def chat_logger(temp_log_dir):  # pylint: disable=redefined-outer-name
     """Create a ChatLogger instance with temp directory."""
     logger = ChatLogger(log_dir=temp_log_dir)
     yield logger
@@ -28,15 +28,17 @@ def chat_logger(temp_log_dir):
     logger.shutdown()
 
 
-def test_chat_logger_initialization_with_directory(temp_log_dir):
+def test_chat_logger_initialization_with_directory(temp_log_dir):  # pylint: disable=redefined-outer-name
     """Test ChatLogger initialization with explicit directory."""
     logger = ChatLogger(log_dir=temp_log_dir)
     assert logger.log_dir == Path(temp_log_dir)
+    # pylint: disable=protected-access
+    # Accessing protected member for test verification of internal state
     assert logger._writer_thread is not None
     logger.shutdown()
 
 
-def test_log_chat_message(chat_logger, temp_log_dir):
+def test_log_chat_message(chat_logger, temp_log_dir):  # pylint: disable=redefined-outer-name
     """Test log_chat_message writes entry."""
     chat_logger.log_chat_message(
         {
@@ -56,7 +58,7 @@ def test_log_chat_message(chat_logger, temp_log_dir):
     assert len(log_files) > 0
 
 
-def test_log_moderation_event(chat_logger, temp_log_dir):
+def test_log_moderation_event(chat_logger, temp_log_dir):  # pylint: disable=redefined-outer-name
     """Test log_moderation_event writes entry."""
     chat_logger.log_moderation_event(
         event_type="mute",
@@ -76,7 +78,7 @@ def test_log_moderation_event(chat_logger, temp_log_dir):
     assert len(log_files) > 0
 
 
-def test_log_system_event(chat_logger, temp_log_dir):
+def test_log_system_event(chat_logger, temp_log_dir):  # pylint: disable=redefined-outer-name
     """Test log_system_event writes entry."""
     chat_logger.log_system_event(
         event_type="player_join",
@@ -94,8 +96,10 @@ def test_log_system_event(chat_logger, temp_log_dir):
     assert len(log_files) > 0
 
 
-def test_shutdown(chat_logger):
+def test_shutdown(chat_logger):  # pylint: disable=redefined-outer-name
     """Test shutdown stops writer thread."""
+    # pylint: disable=protected-access
+    # Accessing protected members for test verification of internal state
     assert chat_logger._writer_thread is not None
     assert chat_logger._writer_thread.is_alive()
 
@@ -107,10 +111,10 @@ def test_shutdown(chat_logger):
     time.sleep(0.1)
 
     # Thread should be stopped (or stopping)
-    assert not chat_logger._shutdown_event.is_set() or not chat_logger._writer_thread.is_alive()
+    assert not chat_logger._shutdown_event.is_set() or not chat_logger._writer_thread.is_alive()  # pylint: disable=protected-access
 
 
-def test_log_player_muted(chat_logger, temp_log_dir):
+def test_log_player_muted(chat_logger, temp_log_dir):  # pylint: disable=redefined-outer-name
     """Test log_player_muted writes entry."""
     chat_logger.log_player_muted(
         muter_id="admin123",
@@ -129,7 +133,7 @@ def test_log_player_muted(chat_logger, temp_log_dir):
     assert len(log_files) > 0
 
 
-def test_log_player_unmuted(chat_logger, temp_log_dir):
+def test_log_player_unmuted(chat_logger, temp_log_dir):  # pylint: disable=redefined-outer-name
     """Test log_player_unmuted writes entry."""
     chat_logger.log_player_unmuted(
         unmuter_id="admin123",
@@ -146,7 +150,7 @@ def test_log_player_unmuted(chat_logger, temp_log_dir):
     assert len(log_files) > 0
 
 
-def test_log_player_joined_room(chat_logger, temp_log_dir):
+def test_log_player_joined_room(chat_logger, temp_log_dir):  # pylint: disable=redefined-outer-name
     """Test log_player_joined_room writes entry."""
     chat_logger.log_player_joined_room(
         player_id="player123",
@@ -163,7 +167,7 @@ def test_log_player_joined_room(chat_logger, temp_log_dir):
     assert len(log_files) > 0
 
 
-def test_log_rate_limit_violation(chat_logger, temp_log_dir):
+def test_log_rate_limit_violation(chat_logger, temp_log_dir):  # pylint: disable=redefined-outer-name
     """Test log_rate_limit_violation writes entry."""
     chat_logger.log_rate_limit_violation(
         player_id="player123",
@@ -181,7 +185,7 @@ def test_log_rate_limit_violation(chat_logger, temp_log_dir):
     assert len(log_files) > 0
 
 
-def test_get_log_file_paths(chat_logger):
+def test_get_log_file_paths(chat_logger):  # pylint: disable=redefined-outer-name
     """Test get_log_file_paths returns correct paths."""
     paths = chat_logger.get_log_file_paths()
 
@@ -191,7 +195,7 @@ def test_get_log_file_paths(chat_logger):
     assert isinstance(paths["chat"], Path)
 
 
-def test_get_log_stats(chat_logger):
+def test_get_log_stats(chat_logger):  # pylint: disable=redefined-outer-name
     """Test get_log_stats returns statistics."""
     stats = chat_logger.get_log_stats()
 
@@ -199,3 +203,25 @@ def test_get_log_stats(chat_logger):
     assert "moderation" in stats
     assert "system" in stats
     assert isinstance(stats["chat"], dict)
+
+
+def test_log_whisper_channel_message(chat_logger, temp_log_dir):  # pylint: disable=redefined-outer-name
+    """Test log_whisper_channel_message writes entry."""
+    chat_logger.log_whisper_channel_message(
+        {
+            "message_id": "msg123",
+            "channel": "whisper",
+            "sender_id": "sender123",
+            "sender_name": "Sender",
+            "target_id": "target123",
+            "target_name": "Target",
+            "content": "Hello, private message",
+        }
+    )
+
+    # Give writer thread time to process
+    chat_logger.wait_for_queue_processing(timeout=1.0)
+
+    # Check that log file was created
+    log_files = list(Path(temp_log_dir).glob("chat_whisper_*.log"))
+    assert len(log_files) > 0

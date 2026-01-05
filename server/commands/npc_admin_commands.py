@@ -42,14 +42,24 @@ def validate_npc_admin_permission(player, player_name: str) -> bool:
             return False
 
         # Check if player has admin privileges
-        if not hasattr(player, "is_admin") or not getattr(player, "is_admin", False):
-            logger.warning("NPC admin permission check failed - player is not an admin", player_name=player_name)
+        # Use try-except to catch exceptions when accessing is_admin (e.g., if it's a property that raises)
+        try:
+            # Access is_admin directly to catch any exceptions
+            is_admin = player.is_admin
+            if not is_admin:
+                logger.warning("NPC admin permission check failed - player is not an admin", player_name=player_name)
+                return False
+        except (AttributeError, TypeError) as e:
+            # If accessing is_admin raises AttributeError or TypeError, log it as an error and return False
+            # Catching specific exceptions here since is_admin might be a property that raises
+            logger.error("Error checking NPC admin permission", player_name=player_name, error=str(e))
             return False
 
         logger.debug("NPC admin permission check passed", player_name=player_name)
         return True
 
-    except Exception as e:
+    except (AttributeError, TypeError, ValueError) as e:
+        # Catching specific exceptions for player object access issues
         logger.error("Error checking NPC admin permission", player_name=player_name, error=str(e))
         return False
 
@@ -190,7 +200,7 @@ NPC Types: shopkeeper, passive_mob, aggressive_mob, quest_giver, merchant
 
 
 async def handle_npc_create_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC creation command."""
     logger.debug("Processing NPC create command", player_name=player_name)
@@ -234,13 +244,15 @@ async def handle_npc_create_command(
             logger.info("NPC created successfully", npc_name=name, admin_name=player_name, npc_id=definition.id)
             return {"result": f"NPC '{name}' created successfully with ID {definition.id}"}
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+        # Catching broad Exception to handle database errors, validation errors, and service errors
+        # and return user-friendly error messages
         logger.error("Error creating NPC", admin_name=player_name, error=str(e))
         return {"result": f"Error creating NPC: {str(e)}"}
 
 
 async def handle_npc_edit_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC editing command."""
     logger.debug("Processing NPC edit command", player_name=player_name)
@@ -288,13 +300,15 @@ async def handle_npc_edit_command(
             logger.info("NPC definition updated", npc_id=npc_id, admin_name=player_name, field=field, value=value)
             return {"result": f"NPC definition {npc_id} updated successfully"}
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+        # Catching broad Exception to handle database errors, validation errors, and service errors
+        # and return user-friendly error messages
         logger.error("Error editing NPC", npc_id=npc_id, admin_name=player_name, error=str(e))
         return {"result": f"Error editing NPC: {str(e)}"}
 
 
 async def handle_npc_delete_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC deletion command."""
     logger.debug("Processing NPC delete command", player_name=player_name)
@@ -324,13 +338,15 @@ async def handle_npc_delete_command(
             logger.info("NPC definition deleted", npc_id=npc_id, admin_name=player_name)
             return {"result": f"NPC definition {npc_id} deleted successfully"}
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+        # Catching broad Exception to handle database errors, validation errors, and service errors
+        # and return user-friendly error messages
         logger.error("Error deleting NPC", npc_id=npc_id, admin_name=player_name, error=str(e))
         return {"result": f"Error deleting NPC: {str(e)}"}
 
 
 async def handle_npc_list_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    _command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC listing command."""
     logger.debug("Processing NPC list command", player_name=player_name)
@@ -357,7 +373,9 @@ async def handle_npc_list_command(
             logger.info("NPC definitions listed", admin_name=player_name, count=len(definitions))
             return {"result": "\n".join(result_lines)}
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+        # Catching broad Exception to handle database errors and service errors
+        # and return user-friendly error messages
         logger.error("Error listing NPCs", admin_name=player_name, error=str(e))
         return {"result": f"Error listing NPCs: {str(e)}"}
 
@@ -366,7 +384,7 @@ async def handle_npc_list_command(
 
 
 async def handle_npc_spawn_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict, _current_user: dict, _request: Any, _alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC spawning command."""
     logger.debug("Processing NPC spawn command", player_name=player_name)
@@ -392,13 +410,15 @@ async def handle_npc_spawn_command(
         logger.info("NPC spawned", admin_name=player_name, definition_id=definition_id, room_id=room_id)
         return {"result": f"NPC spawned successfully in {room_id}"}
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+        # Catching broad Exception to handle service errors, validation errors, and instance management errors
+        # and return user-friendly error messages
         logger.error("Error spawning NPC", admin_name=player_name, error=str(e))
         return {"result": f"Error spawning NPC: {str(e)}"}
 
 
 async def handle_npc_despawn_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict, _current_user: dict, _request: Any, _alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC despawning command."""
     logger.debug("Processing NPC despawn command", player_name=player_name)
@@ -422,13 +442,15 @@ async def handle_npc_despawn_command(
         logger.info("NPC despawned", npc_id=npc_id, admin_name=player_name)
         return {"result": f"NPC {npc_id} despawned successfully"}
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+        # Catching broad Exception to handle service errors and instance management errors
+        # and return user-friendly error messages
         logger.error("Error despawning NPC", npc_id=npc_id, admin_name=player_name, error=str(e))
         return {"result": f"Error despawning NPC: {str(e)}"}
 
 
 async def handle_npc_move_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict, _current_user: dict, _request: Any, _alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC movement command."""
     logger.debug("Processing NPC move command", player_name=player_name)
@@ -453,13 +475,15 @@ async def handle_npc_move_command(
         logger.info("NPC moved", npc_id=npc_id, admin_name=player_name, room_id=room_id)
         return {"result": f"NPC {npc_id} moved to {room_id}"}
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+        # Catching broad Exception to handle service errors, validation errors, and instance management errors
+        # and return user-friendly error messages
         logger.error("Error moving NPC", npc_id=npc_id, admin_name=player_name, error=str(e))
         return {"result": f"Error moving NPC: {str(e)}"}
 
 
 async def handle_npc_stats_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict, _current_user: dict, _request: Any, _alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC stats command."""
     logger.debug("Processing NPC stats command", player_name=player_name)
@@ -488,7 +512,9 @@ async def handle_npc_stats_command(
         logger.info("NPC stats retrieved", npc_id=npc_id, admin_name=player_name)
         return {"result": "\n".join(result_lines)}
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+        # Catching broad Exception to handle service errors and instance management errors
+        # and return user-friendly error messages
         logger.error("Error getting NPC stats", admin_name=player_name, error=str(e))
         return {"result": f"Error getting NPC stats: {str(e)}"}
 
@@ -497,7 +523,7 @@ async def handle_npc_stats_command(
 
 
 async def handle_npc_population_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    _command_data: dict, _current_user: dict, _request: Any, _alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC population stats command."""
     logger.debug("Processing NPC population command", player_name=player_name)
@@ -526,13 +552,15 @@ async def handle_npc_population_command(
         logger.info("NPC population stats retrieved", admin_name=player_name)
         return {"result": "\n".join(result_lines)}
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+        # Catching broad Exception to handle service errors and instance management errors
+        # and return user-friendly error messages
         logger.error("Error getting NPC population stats", admin_name=player_name, error=str(e))
         return {"result": f"Error getting NPC population stats: {str(e)}"}
 
 
 async def handle_npc_zone_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict, _current_user: dict, _request: Any, _alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC zone stats command."""
     logger.debug("Processing NPC zone command", player_name=player_name)
@@ -565,13 +593,15 @@ async def handle_npc_zone_command(
         logger.info("NPC zone stats retrieved", admin_name=player_name, zone_key=zone_key)
         return {"result": "\n".join(result_lines)}
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+        # Catching broad Exception to handle service errors and instance management errors
+        # and return user-friendly error messages
         logger.error("Error getting NPC zone stats", admin_name=player_name, error=str(e))
         return {"result": f"Error getting NPC zone stats: {str(e)}"}
 
 
 async def handle_npc_status_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    _command_data: dict, _current_user: dict, _request: Any, _alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC system status command."""
     logger.debug("Processing NPC status command", player_name=player_name)
@@ -594,7 +624,9 @@ async def handle_npc_status_command(
         logger.info("NPC system status retrieved", admin_name=player_name)
         return {"result": "\n".join(result_lines)}
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+        # Catching broad Exception to handle service errors and instance management errors
+        # and return user-friendly error messages
         logger.error("Error getting NPC system status", admin_name=player_name, error=str(e))
         return {"result": f"Error getting NPC system status: {str(e)}"}
 
@@ -603,7 +635,7 @@ async def handle_npc_status_command(
 
 
 async def handle_npc_behavior_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict, _current_user: dict, _request: Any, _alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC behavior control command."""
     logger.debug("Processing NPC behavior command", player_name=player_name)
@@ -628,13 +660,15 @@ async def handle_npc_behavior_command(
         # For now, return not implemented message
         return {"result": "NPC behavior modification not yet implemented"}
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+        # Catching broad Exception to handle service errors and validation errors
+        # and return user-friendly error messages
         logger.error("Error setting NPC behavior", npc_id=npc_id, admin_name=player_name, error=str(e))
         return {"result": f"Error setting NPC behavior: {str(e)}"}
 
 
 async def handle_npc_react_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict, _current_user: dict, _request: Any, _alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC reaction trigger command."""
     logger.debug("Processing NPC react command", player_name=player_name)
@@ -659,13 +693,15 @@ async def handle_npc_react_command(
         # For now, return not implemented message
         return {"result": "NPC reaction triggering not yet implemented"}
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+        # Catching broad Exception to handle service errors and validation errors
+        # and return user-friendly error messages
         logger.error("Error triggering NPC reaction", npc_id=npc_id, admin_name=player_name, error=str(e))
         return {"result": f"Error triggering NPC reaction: {str(e)}"}
 
 
 async def handle_npc_stop_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict, _current_user: dict, _request: Any, _alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle NPC behavior stop command."""
     logger.debug("Processing NPC stop command", player_name=player_name)
@@ -684,13 +720,15 @@ async def handle_npc_stop_command(
         # For now, return not implemented message
         return {"result": "NPC behavior stopping not yet implemented"}
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+        # Catching broad Exception to handle service errors and validation errors
+        # and return user-friendly error messages
         logger.error("Error stopping NPC behavior", npc_id=npc_id, admin_name=player_name, error=str(e))
         return {"result": f"Error stopping NPC behavior: {str(e)}"}
 
 
 async def handle_npc_test_occupants_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle NPC test occupants command - manually trigger occupant query for debugging.
@@ -742,7 +780,9 @@ async def handle_npc_test_occupants_command(
         )
 
         # Get occupants using the same method that the room_occupants event uses
-        occupants_info = event_handler._get_room_occupants(room_id)
+        # Accessing protected member _get_room_occupants is necessary for testing/debugging
+        # as it's the internal method used by the event system
+        occupants_info = event_handler._get_room_occupants(room_id)  # noqa: SLF001  # pylint: disable=protected-access
 
         # Separate players and NPCs
         players: list[str] = []
@@ -786,6 +826,8 @@ async def handle_npc_test_occupants_command(
 
         return {"result": "\n".join(result_lines)}
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+        # Catching broad Exception to handle service errors, player resolution errors, and event handler errors
+        # and return user-friendly error messages
         logger.error("Error testing NPC occupants", admin_name=player_name, error=str(e), exc_info=True)
         return {"result": f"Error testing NPC occupants: {str(e)}"}

@@ -18,7 +18,7 @@ async def _dispatch_player_event(player_id: uuid.UUID | str, event_type: str, pa
 
     try:
         from ..realtime.connection_manager_api import send_game_event
-    except Exception as exc:  # pragma: no cover - import side effects in tests
+    except ImportError as exc:  # pragma: no cover - import side effects in tests
         logger.debug(
             "Lucidity event dispatch unavailable",
             event_type=event_type,
@@ -30,7 +30,14 @@ async def _dispatch_player_event(player_id: uuid.UUID | str, event_type: str, pa
 
     try:
         await send_game_event(player_id_str, event_type, payload)
-    except Exception as exc:  # pragma: no cover - connection manager may be absent in tests
+    except (
+        AttributeError,
+        TypeError,
+        ValueError,
+        RuntimeError,
+        ConnectionError,
+        OSError,
+    ) as exc:  # pragma: no cover - connection manager may be absent in tests
         logger.debug(
             "Failed to deliver lucidity event",
             event_type=event_type,
@@ -153,8 +160,27 @@ async def send_rescue_update_event(
     await _dispatch_player_event(player_id, "rescue_update", payload)
 
 
+async def send_hallucination_event(
+    player_id: uuid.UUID | str,
+    *,
+    hallucination_type: str,
+    message: str,
+    metadata: dict[str, Any] | None = None,
+) -> None:
+    """Send a hallucination event to a player."""
+    payload: dict[str, Any] = {
+        "hallucination_type": hallucination_type,
+        "message": message,
+    }
+    if metadata:
+        payload["metadata"] = metadata
+
+    await _dispatch_player_event(player_id, "hallucination", payload)
+
+
 __all__ = [
     "send_catatonia_event",
     "send_rescue_update_event",
     "send_lucidity_change_event",
+    "send_hallucination_event",
 ]

@@ -4,7 +4,8 @@ Unit tests for admin_commands helper functions.
 Tests helper functions in admin_commands.py module.
 """
 
-from server.commands.admin_commands import DIRECTION_OPPOSITES, create_teleport_effect_message
+from server.commands.admin_teleport_commands import DIRECTION_OPPOSITES
+from server.commands.admin_teleport_utils import create_teleport_effect_message
 
 
 def test_direction_opposites():

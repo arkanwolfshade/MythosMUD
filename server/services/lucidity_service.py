@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Any, Protocol
 
-from sqlalchemy import Select, select
+from sqlalchemy import Select, delete, select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -191,6 +191,27 @@ class LucidityRepository:
             cooldown.cooldown_expires_at = expires_at
         await self._session.flush()
         return cooldown
+
+    async def delete_cooldowns_by_action_code_pattern(self, player_id: uuid.UUID, action_code_pattern: str) -> int:
+        """
+        Delete all cooldowns for a player matching an action code pattern.
+
+        Args:
+            player_id: Player ID
+            action_code_pattern: Action code pattern (e.g., 'hallucination_timer' or 'hallucination_%')
+
+        Returns:
+            Number of cooldowns deleted
+        """
+        stmt = delete(LucidityCooldown).where(
+            LucidityCooldown.player_id == player_id,
+            LucidityCooldown.action_code.like(action_code_pattern),
+        )
+        result = await self._session.execute(stmt)
+        await self._session.flush()
+        # SQLAlchemy Result objects have rowcount attribute at runtime, but mypy stubs don't reflect this
+        deleted_count: int = getattr(result, "rowcount", 0)
+        return deleted_count
 
 
 class CatatoniaObserverProtocol(Protocol):
@@ -492,6 +513,29 @@ class LucidityService:
     async def set_cooldown(self, player_id: uuid.UUID, action_code: str, expires_at: datetime) -> LucidityCooldown:
         """Set or update an action cooldown."""
         return await self._repo.set_cooldown(player_id, action_code, expires_at)
+
+    async def clear_hallucination_timers(self, player_id: uuid.UUID) -> int:
+        """
+        Clear all hallucination timer cooldowns for a player.
+
+        Used when player enters sanitarium failover state (LCD -100).
+
+        Args:
+            player_id: Player ID
+
+        Returns:
+            Number of hallucination timers cleared
+        """
+        # Delete all cooldowns with action_code matching 'hallucination_timer' or 'hallucination_%'
+        # Using pattern matching to catch any hallucination-related timers
+        deleted_count = await self._repo.delete_cooldowns_by_action_code_pattern(player_id, "hallucination_%")
+        if deleted_count > 0:
+            logger.info(
+                "Hallucination timers cleared for sanitarium failover",
+                player_id=player_id,
+                timers_cleared=deleted_count,
+            )
+        return deleted_count
 
     def _worsened_tier(self, previous_tier: Tier, new_tier: Tier) -> bool:
         return TIER_ORDER.index(new_tier) > TIER_ORDER.index(previous_tier)

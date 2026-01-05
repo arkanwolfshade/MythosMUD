@@ -95,7 +95,7 @@ def test_format_liabilities_empty_code():
 
 
 @pytest.mark.asyncio
-async def test_send_lucidity_change_event_basic(mock_send_game_event):
+async def test_send_lucidity_change_event_basic(mock_send_game_event):  # pylint: disable=redefined-outer-name
     """Test send_lucidity_change_event with basic parameters."""
     player_id = uuid.uuid4()
     with patch("server.realtime.connection_manager_api.send_game_event", mock_send_game_event):
@@ -112,7 +112,7 @@ async def test_send_lucidity_change_event_basic(mock_send_game_event):
 
 
 @pytest.mark.asyncio
-async def test_send_lucidity_change_event_with_max_lcd(mock_send_game_event):
+async def test_send_lucidity_change_event_with_max_lcd(mock_send_game_event):  # pylint: disable=redefined-outer-name
     """Test send_lucidity_change_event with custom max_lcd."""
     player_id = uuid.uuid4()
     with patch("server.realtime.connection_manager_api.send_game_event", mock_send_game_event):
@@ -123,7 +123,7 @@ async def test_send_lucidity_change_event_with_max_lcd(mock_send_game_event):
 
 
 @pytest.mark.asyncio
-async def test_send_lucidity_change_event_with_liabilities(mock_send_game_event):
+async def test_send_lucidity_change_event_with_liabilities(mock_send_game_event):  # pylint: disable=redefined-outer-name
     """Test send_lucidity_change_event with liabilities."""
     player_id = uuid.uuid4()
     liabilities = [{"code": "nightmare", "stacks": 2}, {"code": "hallucination", "stacks": 1}]
@@ -137,7 +137,7 @@ async def test_send_lucidity_change_event_with_liabilities(mock_send_game_event)
 
 
 @pytest.mark.asyncio
-async def test_send_lucidity_change_event_with_reason_and_source(mock_send_game_event):
+async def test_send_lucidity_change_event_with_reason_and_source(mock_send_game_event):  # pylint: disable=redefined-outer-name
     """Test send_lucidity_change_event with reason and source."""
     player_id = uuid.uuid4()
     with patch("server.realtime.connection_manager_api.send_game_event", mock_send_game_event):
@@ -156,7 +156,7 @@ async def test_send_lucidity_change_event_with_reason_and_source(mock_send_game_
 
 
 @pytest.mark.asyncio
-async def test_send_lucidity_change_event_with_metadata(mock_send_game_event):
+async def test_send_lucidity_change_event_with_metadata(mock_send_game_event):  # pylint: disable=redefined-outer-name
     """Test send_lucidity_change_event with metadata."""
     player_id = uuid.uuid4()
     metadata = {"spell_id": "spell_001", "caster": "TestPlayer"}
@@ -168,7 +168,7 @@ async def test_send_lucidity_change_event_with_metadata(mock_send_game_event):
 
 
 @pytest.mark.asyncio
-async def test_send_lucidity_change_event_string_player_id(mock_send_game_event):
+async def test_send_lucidity_change_event_string_player_id(mock_send_game_event):  # pylint: disable=redefined-outer-name
     """Test send_lucidity_change_event with string player_id."""
     player_id_str = str(uuid.uuid4())
     with patch("server.realtime.connection_manager_api.send_game_event", mock_send_game_event):
@@ -178,10 +178,10 @@ async def test_send_lucidity_change_event_string_player_id(mock_send_game_event)
 
 
 @pytest.mark.asyncio
-async def test_send_lucidity_change_event_dispatch_error(mock_send_game_event):
+async def test_send_lucidity_change_event_dispatch_error(mock_send_game_event):  # pylint: disable=redefined-outer-name
     """Test send_lucidity_change_event handles dispatch errors gracefully."""
     player_id = uuid.uuid4()
-    mock_send_game_event.side_effect = Exception("Connection error")
+    mock_send_game_event.side_effect = ConnectionError("Connection error")
     with patch("server.realtime.connection_manager_api.send_game_event", mock_send_game_event):
         # Should not raise an exception
         await send_lucidity_change_event(player_id, current_lcd=50, delta=-5, tier="stable")
@@ -189,7 +189,7 @@ async def test_send_lucidity_change_event_dispatch_error(mock_send_game_event):
 
 
 @pytest.mark.asyncio
-async def test_send_catatonia_event_basic(mock_send_game_event):
+async def test_send_catatonia_event_basic(mock_send_game_event):  # pylint: disable=redefined-outer-name
     """Test send_catatonia_event with basic parameters."""
     player_id = uuid.uuid4()
     with patch("server.realtime.connection_manager_api.send_game_event", mock_send_game_event):
@@ -203,7 +203,7 @@ async def test_send_catatonia_event_basic(mock_send_game_event):
 
 
 @pytest.mark.asyncio
-async def test_send_catatonia_event_with_current_lcd(mock_send_game_event):
+async def test_send_catatonia_event_with_current_lcd(mock_send_game_event):  # pylint: disable=redefined-outer-name
     """Test send_catatonia_event with current_lcd."""
     player_id = uuid.uuid4()
     with patch("server.realtime.connection_manager_api.send_game_event", mock_send_game_event):
@@ -214,7 +214,7 @@ async def test_send_catatonia_event_with_current_lcd(mock_send_game_event):
 
 
 @pytest.mark.asyncio
-async def test_send_catatonia_event_with_message(mock_send_game_event):
+async def test_send_catatonia_event_with_message(mock_send_game_event):  # pylint: disable=redefined-outer-name
     """Test send_catatonia_event with message."""
     player_id = uuid.uuid4()
     with patch("server.realtime.connection_manager_api.send_game_event", mock_send_game_event):
@@ -225,7 +225,7 @@ async def test_send_catatonia_event_with_message(mock_send_game_event):
 
 
 @pytest.mark.asyncio
-async def test_send_catatonia_event_with_rescuer_and_target(mock_send_game_event):
+async def test_send_catatonia_event_with_rescuer_and_target(mock_send_game_event):  # pylint: disable=redefined-outer-name
     """Test send_catatonia_event with rescuer and target names."""
     player_id = uuid.uuid4()
     with patch("server.realtime.connection_manager_api.send_game_event", mock_send_game_event):
@@ -237,10 +237,10 @@ async def test_send_catatonia_event_with_rescuer_and_target(mock_send_game_event
 
 
 @pytest.mark.asyncio
-async def test_send_catatonia_event_dispatch_error(mock_send_game_event):
+async def test_send_catatonia_event_dispatch_error(mock_send_game_event):  # pylint: disable=redefined-outer-name
     """Test send_catatonia_event handles dispatch errors gracefully."""
     player_id = uuid.uuid4()
-    mock_send_game_event.side_effect = Exception("Connection error")
+    mock_send_game_event.side_effect = ConnectionError("Connection error")
     with patch("server.realtime.connection_manager_api.send_game_event", mock_send_game_event):
         # Should not raise an exception
         await send_catatonia_event(player_id, status="catatonic")
@@ -248,7 +248,7 @@ async def test_send_catatonia_event_dispatch_error(mock_send_game_event):
 
 
 @pytest.mark.asyncio
-async def test_send_rescue_update_event_basic(mock_send_game_event):
+async def test_send_rescue_update_event_basic(mock_send_game_event):  # pylint: disable=redefined-outer-name
     """Test send_rescue_update_event with basic parameters."""
     player_id = uuid.uuid4()
     with patch("server.realtime.connection_manager_api.send_game_event", mock_send_game_event):
@@ -262,7 +262,7 @@ async def test_send_rescue_update_event_basic(mock_send_game_event):
 
 
 @pytest.mark.asyncio
-async def test_send_rescue_update_event_with_all_fields(mock_send_game_event):
+async def test_send_rescue_update_event_with_all_fields(mock_send_game_event):  # pylint: disable=redefined-outer-name
     """Test send_rescue_update_event with all optional fields."""
     player_id = uuid.uuid4()
     with patch("server.realtime.connection_manager_api.send_game_event", mock_send_game_event):
@@ -288,7 +288,7 @@ async def test_send_rescue_update_event_with_all_fields(mock_send_game_event):
 
 
 @pytest.mark.asyncio
-async def test_send_rescue_update_event_with_progress_only(mock_send_game_event):
+async def test_send_rescue_update_event_with_progress_only(mock_send_game_event):  # pylint: disable=redefined-outer-name
     """Test send_rescue_update_event with progress only."""
     player_id = uuid.uuid4()
     with patch("server.realtime.connection_manager_api.send_game_event", mock_send_game_event):
@@ -301,10 +301,10 @@ async def test_send_rescue_update_event_with_progress_only(mock_send_game_event)
 
 
 @pytest.mark.asyncio
-async def test_send_rescue_update_event_dispatch_error(mock_send_game_event):
+async def test_send_rescue_update_event_dispatch_error(mock_send_game_event):  # pylint: disable=redefined-outer-name
     """Test send_rescue_update_event handles dispatch errors gracefully."""
     player_id = uuid.uuid4()
-    mock_send_game_event.side_effect = Exception("Connection error")
+    mock_send_game_event.side_effect = ConnectionError("Connection error")
     with patch("server.realtime.connection_manager_api.send_game_event", mock_send_game_event):
         # Should not raise an exception
         await send_rescue_update_event(player_id, status="channeling")
@@ -312,7 +312,7 @@ async def test_send_rescue_update_event_dispatch_error(mock_send_game_event):
 
 
 @pytest.mark.asyncio
-async def test_dispatch_player_event_import_error():
+async def test_dispatch_player_event_import_error():  # pylint: disable=redefined-outer-name
     """Test _dispatch_player_event handles import errors gracefully."""
     player_id = uuid.uuid4()
     # The function imports send_game_event inside, so we need to patch the import
@@ -332,7 +332,7 @@ async def test_dispatch_player_event_import_error():
 
 
 @pytest.mark.asyncio
-async def test_dispatch_player_event_uuid_conversion(mock_send_game_event):
+async def test_dispatch_player_event_uuid_conversion(mock_send_game_event):  # pylint: disable=redefined-outer-name
     """Test _dispatch_player_event converts UUID to string."""
     player_id = uuid.uuid4()
     with patch("server.realtime.connection_manager_api.send_game_event", mock_send_game_event):

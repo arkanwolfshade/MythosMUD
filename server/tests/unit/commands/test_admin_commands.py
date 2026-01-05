@@ -12,14 +12,13 @@ import pytest
 from server.commands.admin_commands import (
     handle_add_admin_command,
     handle_admin_command,
-    handle_goto_command,
     handle_mute_command,
     handle_mute_global_command,
     handle_mutes_command,
-    handle_teleport_command,
     handle_unmute_command,
     handle_unmute_global_command,
 )
+from server.commands.admin_teleport_commands import handle_goto_command, handle_teleport_command
 
 
 @pytest.mark.asyncio
@@ -346,15 +345,20 @@ async def test_handle_mutes_command_success():
     mock_app = MagicMock()
     mock_state = MagicMock()
     mock_user_manager = MagicMock()
-    mock_user_manager.get_player_mutes = MagicMock(return_value=[])
+    mock_user_manager.get_player_mutes = MagicMock(return_value={})
+    mock_player_service = AsyncMock()
+    mock_current_player = MagicMock()
+    mock_current_player.id = uuid.uuid4()
+    mock_player_service.resolve_player_name = AsyncMock(return_value=mock_current_player)
     mock_state.user_manager = mock_user_manager
+    mock_state.player_service = mock_player_service
     mock_app.state = mock_state
     mock_request.app = mock_app
 
     result = await handle_mutes_command({}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
 
     assert "result" in result
-    assert "No active mutes" in result["result"]
+    assert "No active mutes found" in result["result"]
     mock_user_manager.get_player_mutes.assert_called_once()
 
 
@@ -386,7 +390,7 @@ async def test_handle_teleport_command_no_target():
     mock_app.state = mock_state
     mock_request.app = mock_app
 
-    with patch("server.commands.admin_commands.validate_admin_permission", return_value=True):
+    with patch("server.commands.admin_teleport_commands.validate_admin_permission", return_value=True):
         result = await handle_teleport_command({}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
 
     assert "result" in result
@@ -421,7 +425,7 @@ async def test_handle_goto_command_no_target():
     mock_app.state = mock_state
     mock_request.app = mock_app
 
-    with patch("server.commands.admin_commands.validate_admin_permission", return_value=True):
+    with patch("server.commands.admin_teleport_commands.validate_admin_permission", return_value=True):
         result = await handle_goto_command({}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
 
     assert "result" in result
@@ -519,12 +523,14 @@ async def test_handle_mute_command_mute_failure():
 @pytest.mark.asyncio
 async def test_handle_mute_command_exception():
     """Test handle_mute_command() handles exceptions."""
+    from server.exceptions import DatabaseError
+
     mock_request = MagicMock()
     mock_app = MagicMock()
     mock_state = MagicMock()
     mock_user_manager = MagicMock()
     mock_player_service = AsyncMock()
-    mock_player_service.resolve_player_name = AsyncMock(side_effect=Exception("Database error"))
+    mock_player_service.resolve_player_name = AsyncMock(side_effect=DatabaseError("Database error"))
     mock_state.user_manager = mock_user_manager
     mock_state.player_service = mock_player_service
     mock_app.state = mock_state

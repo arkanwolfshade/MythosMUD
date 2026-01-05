@@ -58,39 +58,6 @@ def _create_config_instance() -> AppConfig:
     Returns:
         AppConfig: A new AppConfig instance loaded from environment variables
     """
-    # #region agent log
-    import json
-    import os
-    import time
-
-    log_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), ".cursor", "debug.log")
-    try:
-        admin_pw_env = os.getenv("MYTHOSMUD_ADMIN_PASSWORD", "NOT_SET")
-        with open(log_path, "a", encoding="utf-8") as f:
-            f.write(
-                json.dumps(
-                    {
-                        "id": f"log_{int(time.time())}_create_config_instance",
-                        "timestamp": int(time.time() * 1000),
-                        "location": "__init__.py:52",
-                        "message": "Creating AppConfig instance - checking environment",
-                        "data": {
-                            "env_var_exists": "MYTHOSMUD_ADMIN_PASSWORD" in os.environ,
-                            "env_var_value": admin_pw_env[:3] + "..."
-                            if len(admin_pw_env) > 3 and admin_pw_env != "NOT_SET"
-                            else admin_pw_env,
-                            "env_var_length": len(admin_pw_env) if admin_pw_env != "NOT_SET" else 0,
-                        },
-                        "sessionId": "debug-session",
-                        "runId": "ci-debug",
-                        "hypothesisId": "E",
-                    }
-                )
-                + "\n"
-            )
-    except Exception:
-        pass  # Ignore logging errors
-    # #endregion
     return AppConfig()
 
 

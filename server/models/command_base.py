@@ -71,6 +71,7 @@ class CommandType(str, Enum):
     # Communication commands
     WHISPER = "whisper"
     REPLY = "reply"
+    CHANNEL = "channel"
     # Admin server management commands
     SHUTDOWN = "shutdown"
     # Combat commands

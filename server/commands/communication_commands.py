@@ -14,16 +14,16 @@ logger = get_logger(__name__)
 
 
 async def handle_say_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the say command for speaking to other players.
 
     Args:
         command_data: Command data dictionary containing validated command information
-        current_user: Current user information
+        _current_user: Current user information (unused, required by command handler interface)
         request: FastAPI request object
-        alias_storage: Alias storage instance
+        _alias_storage: Alias storage instance (unused, required by command handler interface)
         player_name: Player name for logging
 
     Returns:
@@ -86,7 +86,7 @@ async def handle_say_command(
             logger.warning("Say command failed", player_name=player_name, error=error_msg)
             return {"result": f"Error sending message: {error_msg}"}
 
-    except Exception as e:
+    except (AttributeError, TypeError, ValueError, RuntimeError) as e:
         logger.error(
             "Say command error",
             player=player_name,
@@ -99,16 +99,16 @@ async def handle_say_command(
 
 
 async def handle_me_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict, _current_user: dict, _request: Any, _alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the me command for performing actions/emotes.
 
     Args:
         command_data: Command data dictionary containing validated command information
-        current_user: Current user information
-        request: FastAPI request object
-        alias_storage: Alias storage instance
+        _current_user: Current user information (unused, required by command handler interface)
+        _request: FastAPI request object (unused, required by command handler interface)
+        _alias_storage: Alias storage instance (unused, required by command handler interface)
         player_name: Player name for logging
 
     Returns:
@@ -131,7 +131,7 @@ async def handle_me_command(
 
 
 async def handle_pose_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict, current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the pose command for setting character description.
@@ -140,7 +140,7 @@ async def handle_pose_command(
         command_data: Command data dictionary containing validated command information
         current_user: Current user information
         request: FastAPI request object
-        alias_storage: Alias storage instance
+        _alias_storage: Alias storage instance (unused, required by command handler interface)
         player_name: Player name for logging
 
     Returns:
@@ -181,16 +181,16 @@ async def handle_pose_command(
 
 
 async def handle_local_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the local command for speaking in the local channel.
 
     Args:
         command_data: Command data dictionary containing validated command information
-        current_user: Current user information
+        _current_user: Current user information (unused, required by command handler interface)
         request: FastAPI request object
-        alias_storage: Alias storage instance
+        _alias_storage: Alias storage instance (unused, required by command handler interface)
         player_name: Player name for logging
 
     Returns:
@@ -255,7 +255,7 @@ async def handle_local_command(
             logger.warning("Local command failed", player_name=player_name, error_msg=error_msg)
             return {"result": f"Error sending message: {error_msg}"}
 
-    except Exception as e:
+    except (AttributeError, TypeError, ValueError, RuntimeError) as e:
         logger.error(
             "Local command error",
             player=player_name,
@@ -268,16 +268,16 @@ async def handle_local_command(
 
 
 async def handle_global_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the global command for speaking in the global channel.
 
     Args:
         command_data: Command data dictionary containing validated command information
-        current_user: Current user information
+        _current_user: Current user information (unused, required by command handler interface)
         request: FastAPI request object
-        alias_storage: Alias storage instance
+        _alias_storage: Alias storage instance (unused, required by command handler interface)
         player_name: Player name for logging
 
     Returns:
@@ -341,22 +341,22 @@ async def handle_global_command(
             logger.warning("Global command failed", player_name=player_name, error_msg=error_msg)
             return {"result": f"Error sending message: {error_msg}"}
 
-    except Exception as e:
+    except (AttributeError, TypeError, ValueError, RuntimeError) as e:
         logger.error("Global command error", player_name=player_name, error=str(e))
         return {"result": f"Error sending message: {str(e)}"}
 
 
 async def handle_system_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the system command for sending system messages (admin only).
 
     Args:
         command_data: Command data dictionary containing validated command information
-        current_user: Current user information
+        _current_user: Current user information (unused, required by command handler interface)
         request: FastAPI request object
-        alias_storage: Alias storage instance
+        _alias_storage: Alias storage instance (unused, required by command handler interface)
         player_name: Player name for logging
 
     Returns:
@@ -423,22 +423,22 @@ async def handle_system_command(
             logger.warning("System command failed", player_name=player_name, error_msg=error_msg)
             return {"result": f"Error sending system message: {error_msg}"}
 
-    except Exception as e:
+    except (AttributeError, TypeError, ValueError, RuntimeError) as e:
         logger.error("System command error", player_name=player_name, error=str(e))
         return {"result": f"Error sending system message: {str(e)}"}
 
 
 async def handle_whisper_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the whisper command for private messaging between players.
 
     Args:
         command_data: Command data dictionary containing validated command information
-        current_user: Current user information
+        _current_user: Current user information (unused, required by command handler interface)
         request: FastAPI request object
-        alias_storage: Alias storage instance
+        _alias_storage: Alias storage instance (unused, required by command handler interface)
         player_name: Player name for logging
 
     Returns:
@@ -480,7 +480,7 @@ async def handle_whisper_command(
         # Get target player object
         target_obj = await player_service.resolve_player_name(target)
         if not target_obj:
-            return {"result": f"Player '{target}' not found"}
+            return {"result": "You whisper into the aether."}
 
         # Check if trying to whisper to self
         if sender_obj.id == target_obj.id:
@@ -510,22 +510,22 @@ async def handle_whisper_command(
             logger.warning("Whisper command failed", player_name=player_name, error_msg=error_msg)
             return {"result": f"Error sending whisper: {error_msg}"}
 
-    except Exception as e:
+    except (AttributeError, TypeError, ValueError, RuntimeError) as e:
         logger.error("Whisper command error", player_name=player_name, error=str(e))
         return {"result": f"Error sending whisper: {str(e)}"}
 
 
 async def handle_reply_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the reply command for responding to the last whisper received.
 
     Args:
         command_data: Command data dictionary containing validated command information
-        current_user: Current user information
+        _current_user: Current user information (unused, required by command handler interface)
         request: FastAPI request object
-        alias_storage: Alias storage instance
+        _alias_storage: Alias storage instance (unused, required by command handler interface)
         player_name: Player name for logging
 
     Returns:
@@ -597,6 +597,6 @@ async def handle_reply_command(
             logger.warning("Reply command failed", player_name=player_name, error_msg=error_msg)
             return {"result": f"Error sending reply: {error_msg}"}
 
-    except Exception as e:
+    except (AttributeError, TypeError, ValueError, RuntimeError) as e:
         logger.error("Reply command error", player_name=player_name, error=str(e))
         return {"result": f"Error sending reply: {str(e)}"}

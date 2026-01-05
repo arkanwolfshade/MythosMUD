@@ -7,6 +7,7 @@ say, local, system, emote, me, pose, whisper, reply.
 
 from ..exceptions import ValidationError as MythosValidationError
 from ..models.command import (
+    ChannelCommand,
     EmoteCommand,
     LocalCommand,
     MeCommand,
@@ -151,3 +152,34 @@ class CommunicationCommandFactory:
             )
 
         return ReplyCommand(message=message)
+
+    @staticmethod
+    def create_channel_command(args: list[str]) -> ChannelCommand:
+        """Create a ChannelCommand from parsed arguments."""
+        if not args:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: channel <channel_name> or channel default <channel_name>",
+                context=context,
+                logger_name=__name__,
+            )
+
+        channel = args[0].lower().strip()
+        action = None
+
+        # Handle "default" action: channel default <channel_name>
+        if channel == "default":
+            if len(args) < 2:
+                context = create_error_context()
+                context.metadata = {"args": args}
+                log_and_raise_enhanced(
+                    MythosValidationError,
+                    "Usage: channel default <channel_name>",
+                    context=context,
+                    logger_name=__name__,
+                )
+            action = args[1].lower().strip()
+
+        return ChannelCommand(channel=channel, action=action)

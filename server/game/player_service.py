@@ -884,12 +884,19 @@ class PlayerService:
         from sqlalchemy import select
         from sqlalchemy.orm import selectinload
 
-        # Look up player by user_id (not primary key player_id)
+        # MULTI-CHARACTER: Get all active players for user, then find the dead one
+        # Look up all active players by user_id (not primary key player_id)
         # Eagerly load user relationship to prevent N+1 queries
-        stmt = select(Player).options(selectinload(Player.user)).where(Player.user_id == user_id)
+        stmt = (
+            select(Player)
+            .options(selectinload(Player.user))
+            .where(Player.user_id == user_id)
+            .where(Player.is_deleted == False)  # noqa: E712
+        )
         result = await session.execute(stmt)
-        player = result.scalar_one_or_none()
-        if not player:
+        all_players = list(result.scalars().all())
+
+        if not all_players:
             context = create_error_context()
             context.metadata["operation"] = "respawn_player_by_user_id"
             context.metadata["user_id"] = user_id
@@ -901,19 +908,34 @@ class PlayerService:
                 user_friendly="Player not found",
             )
 
-        # Verify player is dead
-        if not player.is_dead():
+        # MULTI-CHARACTER: Find the dead player(s) among active characters
+        # Filter to players that are dead (DP <= -10)
+        dead_players = [p for p in all_players if p.is_dead()]
+
+        if not dead_players:
+            # No dead players found - check if any players exist to give better error message
             context = create_error_context()
             context.metadata["operation"] = "respawn_player_by_user_id"
             context.metadata["user_id"] = user_id
-            context.metadata["player_dp"] = player.get_stats().get("current_dp", 0)
+            if all_players:
+                context.metadata["player_dp"] = all_players[0].get_stats().get("current_dp", 0)
             log_and_raise_enhanced(
                 ValidationError,
                 "Player must be dead to respawn (DP must be -10 or below)",
                 context=context,
-                details={"user_id": user_id, "player_dp": player.get_stats().get("current_dp", 0)},
+                details={
+                    "user_id": user_id,
+                    "player_dp": all_players[0].get_stats().get("current_dp", 0) if all_players else None,
+                },
                 user_friendly="Player must be dead to respawn",
             )
+
+        # MULTI-CHARACTER: If multiple dead players, select the most recently active one
+        if len(dead_players) > 1:
+            # Sort by last_active descending (most recent first) and take the first
+            dead_players.sort(key=lambda p: p.last_active if p.last_active else datetime.datetime.min, reverse=True)
+
+        player = dead_players[0]
 
         # Respawn the player
         # Convert player.player_id to UUID (handles SQLAlchemy Column[str])
@@ -941,7 +963,6 @@ class PlayerService:
         # Get respawn room data
         respawn_room_id = player.current_room_id  # Updated by respawn_player
         room = persistence.get_room_by_id(str(respawn_room_id))
-
         if not room:
             logger.warning("Respawn room not found", respawn_room_id=respawn_room_id)
             room_data = {"id": respawn_room_id, "name": "Unknown Room"}
