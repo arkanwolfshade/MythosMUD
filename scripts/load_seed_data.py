@@ -39,6 +39,8 @@ def run_psql_command(args, description):
     env = os.environ.copy()
     env["PGPASSWORD"] = PGPASSWORD
 
+    # pylint: disable=import-outside-toplevel
+    # Lazy import to avoid circular dependencies and improve startup performance
     from utils.safe_subprocess import safe_run
 
     cmd = [PSQL_PATH, "-h", DB_HOST, "-U", DB_USER, "-d", DB_NAME] + args

@@ -59,6 +59,7 @@ class TestContainerPersistenceSQLInjection:
 
         # Verify that no SQL was executed (cursor.execute should not be called)
         # The validation should fail before any SQL is executed
+        # nosec B101: pytest uses assert statements for test assertions
         assert "Invalid lock_state" in str(exc_info.value) or isinstance(exc_info.value, Exception)
 
     def test_update_container_sql_injection_in_metadata(self):
@@ -91,11 +92,13 @@ class TestContainerPersistenceSQLInjection:
         )
 
         # Verify that cursor.execute was called with parameterized query
+        # nosec B101: pytest uses assert statements for test assertions
         assert update_cursor.execute.called
         call_args = update_cursor.execute.call_args
 
         # The query should use psycopg2.sql.SQL, not f-strings
         # The parameters should be passed separately, not concatenated
+        # nosec B101: pytest uses assert statements for test assertions
         assert call_args is not None
         # Verify parameters are passed as tuple/list, not concatenated into SQL string
         # call_args is (args, kwargs), so call_args[0] is the args tuple
@@ -103,7 +106,8 @@ class TestContainerPersistenceSQLInjection:
             # Parameters should be in the second positional argument
             params = call_args[0][1]
             # Parameters should be a list/tuple, not a string
-            assert isinstance(params, (list, tuple))
+            # nosec B101: pytest uses assert statements for test assertions
+            assert isinstance(params, list | tuple)
 
     def test_update_container_uses_parameterized_queries(self):
         """Test that update_container uses parameterized queries, not string concatenation."""
@@ -129,6 +133,7 @@ class TestContainerPersistenceSQLInjection:
         )
 
         # Verify cursor.execute was called
+        # nosec B101: pytest uses assert statements for test assertions
         assert update_cursor.execute.called
 
         # Get the query that was executed
@@ -165,6 +170,7 @@ class TestContainerPersistenceSQLInjection:
             lock_state="locked",
         )
 
+        # nosec B101: pytest uses assert statements for test assertions
         assert update_cursor.execute.called
         call_args = update_cursor.execute.call_args
         query = call_args[0][0] if call_args else None
@@ -173,6 +179,9 @@ class TestContainerPersistenceSQLInjection:
         if query:
             query_str = str(query)
             # These are the expected hardcoded column names
+            # nosec B101: pytest uses assert statements for test assertions
             assert "lock_state" in query_str or "sql.SQL" in str(type(query))
+            # nosec B101: pytest uses assert statements for test assertions
             assert "updated_at" in query_str or "sql.SQL" in str(type(query))
+            # nosec B101: pytest uses assert statements for test assertions
             assert "container_instance_id" in query_str or "sql.SQL" in str(type(query))

@@ -83,7 +83,7 @@ describe('SafeHtml', () => {
   it('should support className prop', () => {
     const { container } = render(<SafeHtml html="Content" className="test-class" />);
     const wrapper = container.firstChild as HTMLElement;
-    expect(wrapper?.className).toBe('test-class');
+    expect(wrapper.className).toBe('test-class');
   });
 
   it('should sanitize nested script tags', () => {

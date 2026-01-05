@@ -746,6 +746,7 @@ def update_container(
                 RETURNING container_instance_id
             """).format(set_clauses)
 
+            # nosec B608: Using psycopg2.sql.SQL for safe SQL construction (column names are hardcoded)
             cursor.execute(query, params)
             row = cursor.fetchone()
         elif items_json is not None:

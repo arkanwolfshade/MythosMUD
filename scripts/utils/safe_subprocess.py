@@ -134,6 +134,7 @@ def safe_run(
     kwargs["shell"] = False
 
     # Execute command with validated arguments
+    # nosec B603: args validated by validate_command, shell=False, no user input in execution
     return subprocess.run(
         args,
         cwd=cwd,

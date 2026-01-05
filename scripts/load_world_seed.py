@@ -140,6 +140,7 @@ async def main():
                     continue
                 try:
                     # nosemgrep: python.lang.security.audit.sqli.asyncpg-sqli.asyncpg-sqli
+                    # nosec B608: Loading seed data from trusted SQL files in repository (not user input)
                     # This is loading seed data from SQL files (not user input), so SQL injection is not possible
                     # The statement is read from trusted SQL files in the repository, not from user input
                     # Adding semicolon for statement termination (safe - no user input involved)

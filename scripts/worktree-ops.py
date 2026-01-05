@@ -48,6 +48,8 @@ def run_command(cmd, cwd=None, check=True):
     print(f"Running: {' '.join(cmd)} (from {os.path.basename(cwd)})")
 
     try:
+        # pylint: disable=import-outside-toplevel
+        # Lazy import to avoid circular dependencies and improve startup performance
         from utils.safe_subprocess import safe_run
 
         result = safe_run(cmd, cwd=cwd, check=check, capture_output=True, text=True)
@@ -71,6 +73,8 @@ def install_dependencies():
     print(f"Installing dependencies from {current_worktree} worktree...")
 
     # Run the install script from project root
+    # pylint: disable=import-outside-toplevel
+    # Lazy import to avoid circular dependencies and improve startup performance
     from utils.safe_subprocess import safe_run_static
 
     install_script = os.path.join(project_root, "scripts", "install.py")
