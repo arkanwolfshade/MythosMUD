@@ -302,19 +302,24 @@ async def test_handle_npc_stats_command():
 @pytest.mark.asyncio
 async def test_validate_npc_admin_permission_exception():
     """Test validate_npc_admin_permission() handles exceptions."""
-    mock_player = MagicMock()
 
-    # Make getattr raise an exception when checking is_admin
-    def side_effect(*args, **kwargs):
-        if args[0] == "is_admin":
-            raise Exception("Test error")
-        return MagicMock()
+    # Create a player object that raises an exception when accessing is_admin
+    class ExceptionPlayer:
+        """Player that raises exception when accessing is_admin."""
 
-    mock_player.is_admin = property(side_effect)
-    # Make hasattr return False to trigger the exception path
-    with patch("builtins.hasattr", return_value=False):
+        @property
+        def is_admin(self):
+            raise AttributeError("Test error")
+
+    mock_player = ExceptionPlayer()
+
+    # Mock the logger to avoid logging configuration issues in parallel test execution
+    # This prevents WarningOnlyFilter errors that occur when logging happens during exception handling
+    with patch("server.commands.npc_admin_commands.logger") as mock_logger:
         result = validate_npc_admin_permission(mock_player, "TestPlayer")
         assert result is False
+        # Verify error was logged
+        mock_logger.error.assert_called_once()
 
 
 @pytest.mark.asyncio

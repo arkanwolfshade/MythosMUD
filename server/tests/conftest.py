@@ -24,7 +24,10 @@ os.environ.setdefault("SERVER_PORT", "54731")
 os.environ.setdefault("SERVER_HOST", "127.0.0.1")
 os.environ.setdefault("LOGGING_ENVIRONMENT", "unit_test")
 os.environ.setdefault("DATABASE_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
-os.environ.setdefault("DATABASE_NPC_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
+# Use explicit assignment to ensure DATABASE_NPC_URL is always set (not just setdefault)
+# This prevents test isolation issues where env vars might be cleared by other tests
+if not os.environ.get("DATABASE_NPC_URL"):
+    os.environ["DATABASE_NPC_URL"] = "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
 os.environ.setdefault("GAME_ALIASES_DIR", "data/unit_test/players/aliases")
 
 # Imports must come after environment variables to prevent config loading failures
@@ -41,6 +44,20 @@ pytest_plugins = [
     "server.tests.fixtures.unit",
     "server.tests.fixtures.integration",
 ]
+
+
+@pytest.fixture(autouse=True)
+def ensure_test_environment_variables() -> Generator[None, None, None]:
+    """
+    Ensure critical environment variables are set before each test.
+
+    Some tests may clear environment variables (e.g., DATABASE_NPC_URL),
+    so we ensure they're always set before each test runs.
+    """
+    # Ensure DATABASE_NPC_URL is always set (some tests clear it)
+    os.environ.setdefault("DATABASE_NPC_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
+    yield
+    # No cleanup needed - env vars persist for next test
 
 
 @pytest.fixture(autouse=True)
@@ -102,13 +119,16 @@ def test_logger() -> Any:
     return get_logger(__name__)
 
 
-def pytest_collection_modifyitems(config: Any, items: list[Any]) -> None:
+def pytest_collection_modifyitems(config: Any, items: list[Any]) -> None:  # noqa: ARG001, pylint: disable=unused-argument
     """
     Auto-mark tests based on their file path.
 
     Tests in unit/ get @pytest.mark.unit
     Tests in integration/ get @pytest.mark.integration (and serial for xdist safety)
     Tests in e2e/ get @pytest.mark.e2e
+
+    Note: `config` parameter is required by pytest hookspec but not used in this implementation.
+    Suppressed lint warnings: ARG001 (ruff unused argument), unused-argument (pylint).
     """
     for item in items:
         file_path = str(item.fspath)
