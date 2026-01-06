@@ -351,8 +351,10 @@ async def test_execute_command_handler_returns_non_dict(command_service, mock_re
 
     command_data = {"command_type": "test"}
 
-    # The code has assert isinstance(result, dict) which will raise AssertionError
-    with pytest.raises(AssertionError):
-        await command_service._execute_command_handler(
-            mock_handler, command_data, mock_parsed, mock_user, mock_request, None, "TestPlayer", "test"
-        )
+    # The code catches TypeError and returns an error dict instead of raising
+    result = await command_service._execute_command_handler(
+        mock_handler, command_data, mock_parsed, mock_user, mock_request, None, "TestPlayer", "test"
+    )
+
+    assert "Error processing command" in result["result"]
+    assert "Command handler must return a dict" in result["result"]

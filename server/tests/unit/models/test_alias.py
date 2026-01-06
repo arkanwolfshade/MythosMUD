@@ -186,7 +186,7 @@ def test_alias_get_expanded_command_with_args():
     """Test get_expanded_command returns command as-is even with args (current implementation)."""
     alias = Alias(name="test", command="look")
 
-    result = alias.get_expanded_command(args=["north"])
+    result = alias.get_expanded_command(_args=["north"])
 
     # Current implementation just returns command as-is
     assert result == "look"
