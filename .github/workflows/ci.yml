@@ -58,9 +58,9 @@ jobs:
       - name: Install dependencies
         run: |
           uv venv .venv-ci
-          .venv-ci/bin/python -m pip install -e .
-          .venv-ci/bin/python -m pip install -e ".[dev]"
-          .venv-ci/bin/python -m pip install pytest-mock>=3.14.0 pytest-xdist>=3.8.0
+          uv pip install --python .venv-ci/bin/python -e .
+          uv pip install --python .venv-ci/bin/python -e ".[dev]"
+          uv pip install --python .venv-ci/bin/python pytest-mock>=3.14.0 pytest-xdist>=3.8.0
       - name: Install Playwright browsers
         run: |
           .venv-ci/bin/python -m playwright install chromium
