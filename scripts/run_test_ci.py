@@ -36,11 +36,10 @@ if IN_CI:
     print("This job only runs backend Python tests.")
 
     # Server tests with coverage
-    # Use Python from .venv-ci to run pytest as a module (cross-platform)
-    if sys.platform == "win32":
-        python_exe = os.path.join(PROJECT_ROOT, ".venv-ci", "Scripts", "python.exe")
-    else:
-        python_exe = os.path.join(PROJECT_ROOT, ".venv-ci", "bin", "python")
+    # Use sys.executable to use the currently active Python interpreter
+    # This works correctly in both local development (venv activated) and CI (venv activated)
+    # When run from an activated venv, sys.executable points to the venv Python with all dependencies
+    python_exe = sys.executable
 
     # Set environment variables to prevent output buffering issues in CI/Docker
     env = os.environ.copy()

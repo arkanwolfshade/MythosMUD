@@ -441,11 +441,19 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
       .replace(/'/g, '&#39;');
 
     // Escape regex special characters in query to prevent ReDoS
+    // All regex metacharacters are escaped: . * + ? ^ $ { } ( ) | [ ] \
+    // This converts the query into a literal string match, preventing regex injection
+    // After escaping, escapedQuery contains only literal characters or escaped metacharacters
     const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-    // Create regex for highlighting (query is escaped above to prevent regex injection)
+    // Create regex for highlighting
+    // SAFETY MEASURES FOR REGEXP CONSTRUCTOR:
+    // 1. Query length is limited to MAX_QUERY_LENGTH (100 chars) to prevent ReDoS
+    // 2. All regex metacharacters are escaped via .replace() above, converting user input to literal match
+    // 3. escapedQuery can only contain: literal characters (a-z, 0-9, etc.) or escaped sequences (\., \*, etc.)
+    // 4. No dangerous regex patterns can be constructed after escaping
+    // This pattern is safe because the escaped query is treated as a literal string, not a regex pattern
     // nosemgrep: typescript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
-    // Query is escaped to prevent regex injection, and length is limited above
     const regex = new RegExp(`(${escapedQuery})`, 'gi');
     // nosemgrep: typescript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
     // nosemgrep: typescript.lang.security.audit.xss.xss
