@@ -57,10 +57,15 @@ jobs:
           echo "$HOME/.local/bin" >> $GITHUB_PATH
       - name: Install dependencies
         run: |
+          # Create venv explicitly (uv sync may not respect UV_PROJECT_ENVIRONMENT)
           uv venv .venv-ci
-          uv pip install --python .venv-ci/bin/python -e .
-          uv pip install --python .venv-ci/bin/python -e ".[dev]"
-          uv pip install --python .venv-ci/bin/python pytest-mock>=3.14.0 pytest-xdist>=3.8.0
+          # Activate venv and use uv pip install (uv detects active venv automatically)
+          source .venv-ci/bin/activate
+          uv pip install -e .
+          uv pip install -e ".[dev]"
+          uv pip install pytest-mock>=3.14.0 pytest-xdist>=3.8.0
+          # Verify pytest is installed in the venv
+          python -c "import pytest; print(f'pytest version: {pytest.__version__}')"
       - name: Install Playwright browsers
         run: |
           .venv-ci/bin/python -m playwright install chromium
