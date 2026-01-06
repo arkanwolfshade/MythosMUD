@@ -45,14 +45,52 @@ if IN_CI:
             venv_path = os.path.join(PROJECT_ROOT, venv_name, "Scripts", "python.exe")
         else:
             venv_path = os.path.join(PROJECT_ROOT, venv_name, "bin", "python")
+        # Use absolute path to ensure we get the correct Python
+        venv_path = os.path.abspath(venv_path)
         if os.path.exists(venv_path):
             venv_python = venv_path
+            print(f"[INFO] Found venv Python: {venv_python}")
+            # Verify pytest is available in this venv
+            try:
+                result = safe_run_static(
+                    venv_python,
+                    "-m",
+                    "pytest",
+                    "--version",
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+                if result.returncode == 0:
+                    print("[INFO] Verified pytest is available in venv")
+                else:
+                    print(f"[WARN] pytest not available in venv: {result.stderr}")
+            except Exception as e:
+                print(f"[WARN] Could not verify pytest in venv: {e}")
             break
+
+    if not venv_python:
+        print(f"[WARN] No venv Python found, using sys.executable: {sys.executable}")
+        print(f"[WARN] PROJECT_ROOT: {PROJECT_ROOT}")
+        # List available venv directories for debugging
+        for venv_name in [".venv-ci", ".venv"]:
+            venv_dir = os.path.join(PROJECT_ROOT, venv_name)
+            if os.path.exists(venv_dir):
+                print(f"[INFO] Found venv directory: {venv_dir}")
+                bin_dir = os.path.join(venv_dir, "bin" if sys.platform != "win32" else "Scripts")
+                if os.path.exists(bin_dir):
+                    print(f"[INFO] Found bin directory: {bin_dir}")
+                    try:
+                        python_files = [f for f in os.listdir(bin_dir) if f.startswith("python")]
+                        print(f"[INFO] Python files in bin: {python_files}")
+                    except OSError:
+                        pass
 
     # Use venv Python if found, otherwise fall back to sys.executable
     # pylint: disable=invalid-name
     # Variable name follows Python convention (not a constant, so lowercase_with_underscores is correct)
     python_exe = venv_python if venv_python else sys.executable  # noqa: N806
+    print(f"[INFO] Using Python executable: {python_exe}")
 
     # Set environment variables to prevent output buffering issues in CI/Docker
     env = os.environ.copy()

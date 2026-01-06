@@ -57,16 +57,14 @@ jobs:
           echo "$HOME/.local/bin" >> $GITHUB_PATH
       - name: Install dependencies
         run: |
-          uv venv
-          source .venv-ci/bin/activate
-          uv pip install -e .
-          uv pip install -e ".[dev]"
-          uv pip install pytest-mock>=3.14.0 pytest-xdist>=3.8.0
+          uv venv .venv-ci
+          .venv-ci/bin/python -m pip install -e .
+          .venv-ci/bin/python -m pip install -e ".[dev]"
+          .venv-ci/bin/python -m pip install pytest-mock>=3.14.0 pytest-xdist>=3.8.0
       - name: Install Playwright browsers
         run: |
-          source .venv-ci/bin/activate
-          playwright install chromium
-          playwright install-deps
+          .venv-ci/bin/python -m playwright install chromium
+          .venv-ci/bin/python -m playwright install-deps chromium
       - name: Install PostgreSQL 18
         if: ${{ !env.ACT }}
         run: |
@@ -171,7 +169,7 @@ jobs:
           fi
       - name: Run tests with coverage
         run: |
-          uv run python scripts/run_test_ci.py
+          .venv-ci/bin/python scripts/run_test_ci.py
       - name: Check for excessive warnings
         run: |
           source .venv-ci/bin/activate
