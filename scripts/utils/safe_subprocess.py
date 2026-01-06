@@ -31,19 +31,32 @@ def validate_path(path: str | Path, must_exist: bool = True) -> Path:
     Raises:
         ValueError: If path is outside project root or doesn't exist when required
     """
-    resolved = Path(path).resolve()
+    path_obj = Path(path)
     project_root = PROJECT_ROOT.resolve()
 
-    # Check if path is within project root
+    # First check if the original path (before resolving symlinks) is within project root
+    # This handles symlinks that point outside the project (e.g., .venv/bin/python -> system Python)
+    # We validate the symlink location, not the resolved target, for security
     try:
-        resolved.relative_to(project_root)
-    except ValueError as err:
-        raise ValueError(f"Path {resolved} is outside project root {project_root}") from err
-
-    if must_exist and not resolved.exists():
-        raise ValueError(f"Path {resolved} does not exist")
-
-    return resolved
+        path_obj.relative_to(project_root)
+        # Original path is within project root - this is valid even if symlink points outside
+        # Check existence on the original path (will follow symlink if needed)
+        if must_exist and not path_obj.exists():
+            raise ValueError(f"Path {path_obj} does not exist")
+        # Return resolved path for actual use, but we've validated the symlink is in project root
+        return path_obj.resolve()
+    except ValueError:
+        # Original path is not relative to project root, try resolving it
+        # This handles absolute paths that might resolve to something within project root
+        resolved = path_obj.resolve()
+        try:
+            resolved.relative_to(project_root)
+        except ValueError as err:
+            raise ValueError(f"Path {path_obj} is outside project root {project_root}") from err
+        # Resolved path is within project root
+        if must_exist and not resolved.exists():
+            raise ValueError(f"Path {resolved} does not exist") from None
+        return resolved
 
 
 def validate_command(command: str | list[str]) -> list[str]:
@@ -134,6 +147,7 @@ def safe_run(
     kwargs["shell"] = False
 
     # Execute command with validated arguments
+    # nosemgrep: python.lang.security.audit.subprocess-shell-true.subprocess-shell-true
     # nosec B603: args validated by validate_command, shell=False, no user input in execution
     return subprocess.run(
         args,

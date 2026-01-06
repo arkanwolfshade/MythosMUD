@@ -26,6 +26,7 @@ if not npx_path:
 print("Running ESLint in client...")
 # Use subprocess.run directly for system executables (like format.py does)
 # We've already verified npx exists via shutil.which
+# nosemgrep: python.lang.security.audit.subprocess-shell-true.subprocess-shell-true
 # nosec B603: npx_path is from shutil.which (trusted system path), args are list (not shell=True)
 result = subprocess.run([npx_path, "eslint", "--fix", "."], cwd="client", check=False)
 if result.returncode != 0:

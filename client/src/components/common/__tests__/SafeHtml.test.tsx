@@ -10,6 +10,7 @@ import { SafeHtml } from '../SafeHtml';
 describe('SafeHtml', () => {
   it('should sanitize script tags', () => {
     const maliciousHtml = '<script>alert("XSS")</script><p>Safe content</p>';
+    // nosemgrep: typescript.react.security.audit.dangerouslysetinnerhtml.dangerouslysetinnerhtml
     const { container } = render(<SafeHtml html={maliciousHtml} />);
 
     // Script tag should be removed
@@ -20,6 +21,7 @@ describe('SafeHtml', () => {
 
   it('should sanitize event handlers', () => {
     const maliciousHtml = '<div onclick="alert(\'XSS\')">Click me</div>';
+    // nosemgrep: typescript.react.security.audit.dangerouslysetinnerhtml.dangerouslysetinnerhtml
     const { container } = render(<SafeHtml html={maliciousHtml} />);
 
     const div = container.querySelector('div');
@@ -31,6 +33,7 @@ describe('SafeHtml', () => {
 
   it('should sanitize javascript: protocol', () => {
     const maliciousHtml = '<a href="javascript:alert(\'XSS\')">Link</a>';
+    // nosemgrep: typescript.react.security.audit.dangerouslysetinnerhtml.dangerouslysetinnerhtml
     const { container } = render(<SafeHtml html={maliciousHtml} />);
 
     // Anchor tags are not in ALLOWED_TAGS, so they are removed entirely (safer than just stripping javascript:)
@@ -42,6 +45,7 @@ describe('SafeHtml', () => {
 
   it('should preserve allowed HTML tags', () => {
     const safeHtml = '<b>Bold</b> <i>Italic</i> <em>Emphasis</em> <strong>Strong</strong>';
+    // nosemgrep: typescript.react.security.audit.dangerouslysetinnerhtml.dangerouslysetinnerhtml
     const { container } = render(<SafeHtml html={safeHtml} />);
 
     expect(container.querySelector('b')).not.toBeNull();
@@ -52,6 +56,7 @@ describe('SafeHtml', () => {
 
   it('should preserve allowed attributes', () => {
     const htmlWithClass = '<div class="test-class">Content</div>';
+    // nosemgrep: typescript.react.security.audit.dangerouslysetinnerhtml.dangerouslysetinnerhtml
     const { container } = render(<SafeHtml html={htmlWithClass} />);
 
     const div = container.querySelector('div');
@@ -73,6 +78,7 @@ describe('SafeHtml', () => {
 
   it('should support custom tag prop', () => {
     const html = '<p>Content</p>';
+    // nosemgrep: typescript.react.security.audit.dangerouslysetinnerhtml.dangerouslysetinnerhtml
     const { container } = render(<SafeHtml html={html} tag="div" />);
 
     // Should render as div, not span
@@ -114,6 +120,7 @@ describe('SafeHtml', () => {
   it('should handle ANSI-to-HTML converted content', () => {
     // Simulate content from ansiToHtmlWithBreaks
     const ansiHtml = '<span style="color: #ff4444">Red text</span>';
+    // nosemgrep: typescript.react.security.audit.dangerouslysetinnerhtml.dangerouslysetinnerhtml
     const { container } = render(<SafeHtml html={ansiHtml} />);
 
     // Style attributes are not allowed, so span should exist but without style

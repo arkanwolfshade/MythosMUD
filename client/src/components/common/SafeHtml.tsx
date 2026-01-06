@@ -35,7 +35,10 @@ interface SafeHtmlProps extends React.HTMLAttributes<HTMLElement> {
  */
 export const SafeHtml: React.FC<SafeHtmlProps> = ({ html, className, tag: Tag = 'span', ...props }) => {
   // Sanitize HTML content before rendering
+  // nosemgrep: typescript.lang.security.audit.xss.xss
+  // nosemgrep: typescript.react.security.audit.dangerouslysetinnerhtml.dangerouslysetinnerhtml
   const sanitizedHtml = inputSanitizer.sanitizeIncomingHtml(html);
 
+  // nosemgrep: typescript.react.security.audit.dangerouslysetinnerhtml.dangerouslysetinnerhtml
   return <Tag className={className} dangerouslySetInnerHTML={{ __html: sanitizedHtml }} {...props} />;
 };

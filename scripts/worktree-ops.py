@@ -94,6 +94,7 @@ def run_tests():
 
     print(f"Running tests from {current_worktree} worktree...")
 
+    # pylint: disable=import-outside-toplevel
     from utils.safe_subprocess import safe_run_static
 
     if current_worktree == "client":

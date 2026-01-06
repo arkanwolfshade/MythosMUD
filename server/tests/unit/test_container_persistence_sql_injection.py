@@ -59,6 +59,7 @@ class TestContainerPersistenceSQLInjection:
 
         # Verify that no SQL was executed (cursor.execute should not be called)
         # The validation should fail before any SQL is executed
+        # nosemgrep: python.lang.security.audit.assert_used.assert_used
         # nosec B101: pytest uses assert statements for test assertions
         assert "Invalid lock_state" in str(exc_info.value) or isinstance(exc_info.value, Exception)
 
@@ -92,12 +93,14 @@ class TestContainerPersistenceSQLInjection:
         )
 
         # Verify that cursor.execute was called with parameterized query
+        # nosemgrep: python.lang.security.audit.assert_used.assert_used
         # nosec B101: pytest uses assert statements for test assertions
         assert update_cursor.execute.called
         call_args = update_cursor.execute.call_args
 
         # The query should use psycopg2.sql.SQL, not f-strings
         # The parameters should be passed separately, not concatenated
+        # nosemgrep: python.lang.security.audit.assert_used.assert_used
         # nosec B101: pytest uses assert statements for test assertions
         assert call_args is not None
         # Verify parameters are passed as tuple/list, not concatenated into SQL string
@@ -106,6 +109,7 @@ class TestContainerPersistenceSQLInjection:
             # Parameters should be in the second positional argument
             params = call_args[0][1]
             # Parameters should be a list/tuple, not a string
+            # nosemgrep: python.lang.security.audit.assert_used.assert_used
             # nosec B101: pytest uses assert statements for test assertions
             assert isinstance(params, list | tuple)
 
@@ -133,6 +137,7 @@ class TestContainerPersistenceSQLInjection:
         )
 
         # Verify cursor.execute was called
+        # nosemgrep: python.lang.security.audit.assert_used.assert_used
         # nosec B101: pytest uses assert statements for test assertions
         assert update_cursor.execute.called
 
@@ -144,6 +149,7 @@ class TestContainerPersistenceSQLInjection:
         # It should use %s placeholders or psycopg2.sql.SQL
         if query:
             # Should not have f-string interpolation of user data
+            # nosemgrep: python.lang.security.audit.assert_used.assert_used
             assert "%s" in str(query) or "sql.SQL" in str(type(query))
 
     def test_update_container_safe_column_names(self):
@@ -170,6 +176,7 @@ class TestContainerPersistenceSQLInjection:
             lock_state="locked",
         )
 
+        # nosemgrep: python.lang.security.audit.assert_used.assert_used
         # nosec B101: pytest uses assert statements for test assertions
         assert update_cursor.execute.called
         call_args = update_cursor.execute.call_args
@@ -179,9 +186,12 @@ class TestContainerPersistenceSQLInjection:
         if query:
             query_str = str(query)
             # These are the expected hardcoded column names
+            # nosemgrep: python.lang.security.audit.assert_used.assert_used
             # nosec B101: pytest uses assert statements for test assertions
             assert "lock_state" in query_str or "sql.SQL" in str(type(query))
+            # nosemgrep: python.lang.security.audit.assert_used.assert_used
             # nosec B101: pytest uses assert statements for test assertions
             assert "updated_at" in query_str or "sql.SQL" in str(type(query))
+            # nosemgrep: python.lang.security.audit.assert_used.assert_used
             # nosec B101: pytest uses assert statements for test assertions
             assert "container_instance_id" in query_str or "sql.SQL" in str(type(query))

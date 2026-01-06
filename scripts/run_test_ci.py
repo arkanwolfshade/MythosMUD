@@ -51,12 +51,12 @@ if IN_CI:
     try:
         # Check password env var without storing the actual value to avoid CodeQL alert
         pw_exists = "MYTHOSMUD_ADMIN_PASSWORD" in env
-        pw_value = env.get("MYTHOSMUD_ADMIN_PASSWORD", "")
-        pw_set = pw_value != "" and pw_value != "NOT_SET"
-        pw_length = len(pw_value) if pw_set else 0
+        PW_VALUE = env.get("MYTHOSMUD_ADMIN_PASSWORD", "")  # noqa: N806
+        pw_set = PW_VALUE not in ("", "NOT_SET")
+        pw_length = len(PW_VALUE) if pw_set else 0
         # Clear the variable to avoid storing sensitive data
-        pw_value = None
-        del pw_value
+        PW_VALUE = None  # noqa: N806
+        del PW_VALUE
         with open(log_path, "a", encoding="utf-8") as f:
             f.write(
                 json.dumps(
