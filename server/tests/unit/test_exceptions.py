@@ -183,7 +183,7 @@ def test_database_error_without_table():
 def test_validation_error_initialization():
     """Test ValidationError initialization."""
     with patch("server.exceptions.logger"):
-        error = ValidationError("Invalid input", field="username", value="test")
+        error = ValidationError("Invalid input", field_name="username", value="test")
 
         assert error.message == "Invalid input"
         assert error.field == "username"

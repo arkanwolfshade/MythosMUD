@@ -136,7 +136,7 @@ def test_database_error():
 def test_validation_error():
     """Test ValidationError can be instantiated."""
     with patch("server.exceptions.logger"):
-        error = ValidationError("Validation failed", field="name")
+        error = ValidationError("Validation failed", field_name="name")
 
         assert error.message == "Validation failed"
         assert error.field == "name"
