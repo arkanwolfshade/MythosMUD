@@ -37,8 +37,9 @@ if IN_CI:
 
     # Server tests with coverage
     # Use sys.executable to use the currently active Python interpreter
-    # This works correctly in both local development (venv activated) and CI (venv activated)
-    # When run from an activated venv, sys.executable points to the venv Python with all dependencies
+    # This works correctly in both local development (venv activated) and CI (venv Python explicitly invoked)
+    # In CI, the workflow runs: .venv-ci/bin/python scripts/run_test_ci.py
+    # This ensures sys.executable points to the venv Python with all dependencies (including pytest)
     # pylint: disable=invalid-name
     # Variable name follows Python convention (not a constant, so lowercase_with_underscores is correct)
     python_exe = sys.executable  # noqa: N806

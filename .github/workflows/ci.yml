@@ -172,7 +172,7 @@ jobs:
       - name: Run tests with coverage
         run: |
           source .venv-ci/bin/activate
-          make test-ci
+          .venv-ci/bin/python scripts/run_test_ci.py
       - name: Check for excessive warnings
         run: |
           source .venv-ci/bin/activate
