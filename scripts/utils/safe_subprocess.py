@@ -77,17 +77,17 @@ def validate_command(command: str | list[str]) -> list[str]:
     if not executable:
         raise ValueError("Executable cannot be empty")
 
-    # If it's a relative path, resolve it relative to project root
+    # If it's a path (contains path separators), validate it
     if "/" in executable or "\\" in executable:
-        # It's a path - validate it
+        # It's a path - validate it's within project root
+        # For executable paths, we allow them to not exist yet (e.g., in CI before venv is fully set up)
+        # but they must be within the project root for security
         try:
-            validated_path = validate_path(executable, must_exist=True)
+            validated_path = validate_path(executable, must_exist=False)
             args[0] = str(validated_path)
-        except ValueError:
-            # If validation fails, check if it's a valid executable name
-            # (e.g., "python", "npm", etc.)
-            if not executable.replace("_", "").replace("-", "").isalnum():
-                raise ValueError(f"Invalid executable name: {executable}") from None
+        except ValueError as e:
+            # Path validation failed - this is a real error, don't fall back to alphanumeric check
+            raise ValueError(f"Invalid executable path: {executable} - {e}") from e
 
     return args
 

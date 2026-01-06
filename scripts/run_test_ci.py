@@ -49,7 +49,14 @@ if IN_CI:
     # #region agent log
     log_path = os.path.join(PROJECT_ROOT, ".cursor", "debug.log")
     try:
-        admin_pw_env = env.get("MYTHOSMUD_ADMIN_PASSWORD", "NOT_SET")
+        # Check password env var without storing the actual value to avoid CodeQL alert
+        pw_exists = "MYTHOSMUD_ADMIN_PASSWORD" in env
+        pw_value = env.get("MYTHOSMUD_ADMIN_PASSWORD", "")
+        pw_set = pw_value != "" and pw_value != "NOT_SET"
+        pw_length = len(pw_value) if pw_set else 0
+        # Clear the variable to avoid storing sensitive data
+        pw_value = None
+        del pw_value
         with open(log_path, "a", encoding="utf-8") as f:
             f.write(
                 json.dumps(
@@ -59,12 +66,9 @@ if IN_CI:
                         "location": "run_test_ci.py:44",
                         "message": "CI environment check - MYTHOSMUD_ADMIN_PASSWORD",
                         "data": {
-                            "env_var_exists": "MYTHOSMUD_ADMIN_PASSWORD" in env,
-                            "env_var_value": admin_pw_env[:3] + "..."
-                            if len(admin_pw_env) > 3 and admin_pw_env != "NOT_SET"
-                            else admin_pw_env,
-                            "env_var_length": len(admin_pw_env) if admin_pw_env != "NOT_SET" else 0,
-                            "is_empty_string": admin_pw_env == "",
+                            "env_var_exists": pw_exists,
+                            "env_var_set": pw_set,
+                            "env_var_length": pw_length,
                             "in_ci": IN_CI,
                         },
                         "sessionId": "debug-session",
@@ -283,7 +287,14 @@ else:
     # #region agent log
     log_path = os.path.join(PROJECT_ROOT, ".cursor", "debug.log")
     try:
-        admin_pw_env = os.environ.get("MYTHOSMUD_ADMIN_PASSWORD", "NOT_SET")
+        # Check password env var without storing the actual value to avoid CodeQL alert
+        pw_exists = "MYTHOSMUD_ADMIN_PASSWORD" in os.environ
+        pw_value = os.environ.get("MYTHOSMUD_ADMIN_PASSWORD", "")
+        pw_set = pw_value != "" and pw_value != "NOT_SET"
+        pw_length = len(pw_value) if pw_set else 0
+        # Clear the variable to avoid storing sensitive data
+        pw_value = None
+        del pw_value
         # Check for .env files
         env_files = []
         for env_file in [".env", ".env.local", "server/tests/.env.unit_test"]:
@@ -298,12 +309,9 @@ else:
                     "location": "run_test_ci.py:240",
                     "message": "Local environment check - MYTHOSMUD_ADMIN_PASSWORD",
                     "data": {
-                        "env_var_exists": "MYTHOSMUD_ADMIN_PASSWORD" in os.environ,
-                        "env_var_value": admin_pw_env[:3] + "..."
-                        if len(admin_pw_env) > 3 and admin_pw_env != "NOT_SET"
-                        else admin_pw_env,
-                        "env_var_length": len(admin_pw_env) if admin_pw_env != "NOT_SET" else 0,
-                        "is_empty_string": admin_pw_env == "",
+                        "env_var_exists": pw_exists,
+                        "env_var_set": pw_set,
+                        "env_var_length": pw_length,
                         "env_files_found": env_files,
                         "in_ci": IN_CI,
                     },
