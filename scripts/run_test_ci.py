@@ -36,13 +36,23 @@ if IN_CI:
     print("This job only runs backend Python tests.")
 
     # Server tests with coverage
-    # Use sys.executable to use the currently active Python interpreter
-    # This works correctly in both local development (venv activated) and CI (venv Python explicitly invoked)
-    # In CI, the workflow runs: .venv-ci/bin/python scripts/run_test_ci.py
-    # This ensures sys.executable points to the venv Python with all dependencies (including pytest)
+    # In CI, use the venv Python explicitly to ensure pytest is available
+    # Check for venv Python first (CI uses .venv-ci, local uses .venv)
+    venv_python = None
+    for venv_name in [".venv-ci", ".venv"]:
+        # Handle both Unix and Windows paths
+        if sys.platform == "win32":
+            venv_path = os.path.join(PROJECT_ROOT, venv_name, "Scripts", "python.exe")
+        else:
+            venv_path = os.path.join(PROJECT_ROOT, venv_name, "bin", "python")
+        if os.path.exists(venv_path):
+            venv_python = venv_path
+            break
+
+    # Use venv Python if found, otherwise fall back to sys.executable
     # pylint: disable=invalid-name
     # Variable name follows Python convention (not a constant, so lowercase_with_underscores is correct)
-    python_exe = sys.executable  # noqa: N806
+    python_exe = venv_python if venv_python else sys.executable  # noqa: N806
 
     # Set environment variables to prevent output buffering issues in CI/Docker
     env = os.environ.copy()

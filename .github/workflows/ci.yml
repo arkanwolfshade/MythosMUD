@@ -171,8 +171,7 @@ jobs:
           fi
       - name: Run tests with coverage
         run: |
-          source .venv-ci/bin/activate
-          .venv-ci/bin/python scripts/run_test_ci.py
+          uv run python scripts/run_test_ci.py
       - name: Check for excessive warnings
         run: |
           source .venv-ci/bin/activate
