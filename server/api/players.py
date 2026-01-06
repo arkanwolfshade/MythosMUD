@@ -124,7 +124,7 @@ async def get_user_characters(
     try:
         characters = await player_service.get_user_characters(current_user.id)
         return characters
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Character retrieval errors unpredictable, must create error context
         context = create_error_context(request, current_user, operation="get_user_characters")
         logger.error("Error getting user characters", error=str(e), user_id=current_user.id)
         raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context) from e
@@ -224,7 +224,7 @@ async def delete_character(
         return {"success": True, "message": message}
     except LoggedHTTPException:
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Character deletion errors unpredictable, must create error context
         context = create_error_context(request, current_user, operation="delete_character")
         logger.error("Error deleting character", error=str(e), character_id=character_id, user_id=current_user.id)
         raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context) from e
@@ -361,7 +361,7 @@ async def select_character(
         return character.model_dump()
     except LoggedHTTPException:
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Character selection errors unpredictable, must create error context
         context = create_error_context(request, current_user, operation="select_character")
         logger.error(
             "Error selecting character",

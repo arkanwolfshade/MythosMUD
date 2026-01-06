@@ -26,7 +26,7 @@ _ALIAS_VALIDATOR_IMPORT_FAILED = False
 
 def _get_alias_validator() -> Optional["SchemaValidator"]:
     """Lazily instantiate and cache the alias schema validator."""
-    global _ALIAS_VALIDATOR, _ALIAS_VALIDATOR_IMPORT_FAILED
+    global _ALIAS_VALIDATOR, _ALIAS_VALIDATOR_IMPORT_FAILED  # pylint: disable=global-statement  # Reason: Singleton pattern for validator caching
 
     if _ALIAS_VALIDATOR is not None:
         return _ALIAS_VALIDATOR
@@ -43,7 +43,7 @@ def _get_alias_validator() -> Optional["SchemaValidator"]:
 
     try:
         _ALIAS_VALIDATOR = create_validator("alias")
-    except Exception as exc:  # pragma: no cover - defensive logging path
+    except Exception as exc:  # pragma: no cover - defensive logging path  # pylint: disable=broad-exception-caught  # Reason: Validator creation errors unpredictable, must handle gracefully
         logger.warning("Alias schema validator creation failed", error=str(exc))
         _ALIAS_VALIDATOR = None
 
@@ -149,7 +149,7 @@ class AliasStorage:
 
                 alias = Alias(**alias_data)
                 aliases.append(alias)
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Alias parsing errors unpredictable, must continue processing
                 logger.error("Error parsing alias data", error=str(e))
                 continue
 

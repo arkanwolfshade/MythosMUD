@@ -89,8 +89,7 @@ class PostgresConnection:
         Returns:
             psycopg2.extensions.cursor: Raw psycopg2 cursor
         """
-        from psycopg2.extras import RealDictCursor
-
+        # RealDictCursor is imported at module level (line 13)
         if cursor_factory is None:
             cursor_factory = RealDictCursor
         return self._conn.cursor(cursor_factory=cursor_factory)

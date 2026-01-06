@@ -36,6 +36,7 @@ class AdminActionsLogger:
             from server.structured_logging.enhanced_logging_config import _resolve_log_base
 
             config = get_config()
+            # pylint: disable=no-member  # Pydantic FieldInfo dynamic attributes
             log_base = config.logging.log_base
             environment = config.logging.environment
 
@@ -212,7 +213,7 @@ class AdminActionsLogger:
             with open(self.current_log_file, "a", encoding="utf-8") as f:
                 f.write(json.dumps(log_entry) + "\n")
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: File write errors unpredictable, must log but not fail
             logger.error("Failed to write admin action log entry", error=str(e), operation="log_entry_write")
 
     def get_recent_actions(
@@ -276,7 +277,7 @@ class AdminActionsLogger:
 
             return actions
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: File read errors unpredictable, must return empty list
             logger.error("Failed to retrieve recent admin actions", error=str(e), operation="admin_actions_retrieval")
             return []
 
@@ -332,7 +333,7 @@ def get_admin_actions_logger() -> AdminActionsLogger:
     Returns:
         AdminActionsLogger instance
     """
-    global _admin_actions_logger
+    global _admin_actions_logger  # pylint: disable=global-statement  # Reason: Required for singleton pattern
     if _admin_actions_logger is None:
         _admin_actions_logger = AdminActionsLogger()
     return _admin_actions_logger

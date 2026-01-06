@@ -1,0 +1,4 @@
+[sqlfluff]
+dialect = postgres
+exclude_rules = CP02,RF06,LT05,LT02,CP05,AL03,AL01,AL05,LT12,RF04,ST09,RF03,LT09,AL08,CP01,CP03,CP04,LT14
+large_file_skip_byte_limit = 500000

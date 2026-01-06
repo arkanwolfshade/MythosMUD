@@ -1,6 +1,8 @@
-#!/usr/bin/env pwsh
+﻿#!/usr/bin/env pwsh
 # MythosMUD PostgreSQL Connection Diagnostic Script
 # Checks PostgreSQL connectivity and configuration for tests
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and diagnostic messages require Write-Host for proper display')]
 
 param(
     [string]$DatabaseUrl = "",

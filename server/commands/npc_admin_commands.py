@@ -244,7 +244,7 @@ async def handle_npc_create_command(
             logger.info("NPC created successfully", npc_name=name, admin_name=player_name, npc_id=definition.id)
             return {"result": f"NPC '{name}' created successfully with ID {definition.id}"}
 
-    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught  # Reason: NPC creation errors unpredictable, must return user-friendly error
         # Catching broad Exception to handle database errors, validation errors, and service errors
         # and return user-friendly error messages
         logger.error("Error creating NPC", admin_name=player_name, error=str(e))
@@ -300,7 +300,7 @@ async def handle_npc_edit_command(
             logger.info("NPC definition updated", npc_id=npc_id, admin_name=player_name, field=field, value=value)
             return {"result": f"NPC definition {npc_id} updated successfully"}
 
-    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught  # Reason: NPC creation errors unpredictable, must return user-friendly error
         # Catching broad Exception to handle database errors, validation errors, and service errors
         # and return user-friendly error messages
         logger.error("Error editing NPC", npc_id=npc_id, admin_name=player_name, error=str(e))
@@ -338,7 +338,7 @@ async def handle_npc_delete_command(
             logger.info("NPC definition deleted", npc_id=npc_id, admin_name=player_name)
             return {"result": f"NPC definition {npc_id} deleted successfully"}
 
-    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught  # Reason: NPC creation errors unpredictable, must return user-friendly error
         # Catching broad Exception to handle database errors, validation errors, and service errors
         # and return user-friendly error messages
         logger.error("Error deleting NPC", npc_id=npc_id, admin_name=player_name, error=str(e))
@@ -656,7 +656,7 @@ async def handle_npc_behavior_command(
         # Get NPC instance service
         _instance_service = get_npc_instance_service()
 
-        # TODO: Implement set_npc_behavior method in NPCInstanceService
+        # TODO: Implement set_npc_behavior method in NPCInstanceService  # pylint: disable=fixme  # Reason: Feature placeholder for NPC behavior system
         # For now, return not implemented message
         return {"result": "NPC behavior modification not yet implemented"}
 
@@ -689,7 +689,7 @@ async def handle_npc_react_command(
         # Get NPC instance service
         _instance_service = get_npc_instance_service()
 
-        # TODO: Implement trigger_npc_reaction method in NPCInstanceService
+        # TODO: Implement trigger_npc_reaction method in NPCInstanceService  # pylint: disable=fixme  # Reason: Feature placeholder for NPC reaction system
         # For now, return not implemented message
         return {"result": "NPC reaction triggering not yet implemented"}
 
@@ -716,7 +716,7 @@ async def handle_npc_stop_command(
         # Get NPC instance service
         _instance_service = get_npc_instance_service()
 
-        # TODO: Implement stop_npc_behavior method in NPCInstanceService
+        # TODO: Implement stop_npc_behavior method in NPCInstanceService  # pylint: disable=fixme  # Reason: Feature placeholder for NPC behavior control
         # For now, return not implemented message
         return {"result": "NPC behavior stopping not yet implemented"}
 

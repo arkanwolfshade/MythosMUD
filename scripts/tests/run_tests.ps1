@@ -8,11 +8,10 @@
     This script runs the PowerShell tests for NATS Manager including
     environment variable support and backward compatibility testing.
 #>
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for user-facing colored test output
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'User-facing test output requires colored status messages')]
 
 param(
-    [Parameter(HelpMessage = "Show verbose output")]
-    [switch]$ShowVerbose,
-
     [Parameter(HelpMessage = "Run specific test file")]
     [string]$TestFile = "*"
 )

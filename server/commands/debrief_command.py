@@ -98,7 +98,7 @@ async def handle_debrief_command(
                         "\n\nTherapy is currently unavailable due to recent sessions. "
                         "You may return later for additional support."
                     )
-                except Exception as therapy_exc:  # pylint: disable=broad-except
+                except Exception as therapy_exc:  # pylint: disable=broad-exception-caught  # Reason: Therapy errors unpredictable, must not fail debrief
                     logger.warning(
                         "Therapy failed during debrief",
                         player_id=player_id_uuid,
@@ -122,7 +122,7 @@ async def handle_debrief_command(
             logger.info("Debrief completed", player_id=player_id_uuid, therapy_requested=wants_therapy)
             return {"result": result_message}
 
-        except Exception as e:  # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Debrief errors unpredictable, must handle gracefully
             logger.error(
                 "Debrief command failed",
                 player_id=player.player_id,
@@ -200,7 +200,7 @@ def _generate_narrative_recap(player_id: Any, session: Any, _lucidity_service: L
 
         return "\n".join(recap_parts)
 
-    except Exception as e:  # pylint: disable=broad-except
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Recap generation errors unpredictable, must return fallback
         logger.warning("Failed to generate narrative recap", player_id=player_id, error=str(e))
         return (
             "The sanitarium staff provides a general overview: you experienced a severe "

@@ -19,6 +19,11 @@ PYTEST_COV_OPTS := --cov=server --cov-report=html --cov-report=term-missing --co
 .PHONY: help clean install build run
 .PHONY: lint lint-sqlalchemy format mypy
 .PHONY: semgrep semgrep-autofix
+.PHONY: bandit pylint ruff sqlfluff sqlint
+.PHONY: hadolint shellcheck psscriptanalyzer
+.PHONY: stylelint markdownlint jackson-linter
+.PHONY: trivy lizard
+.PHONY: codacy-tools
 .PHONY: setup-test-env check-postgresql setup-postgresql-test-db verify-schema
 .PHONY: test test-coverage test-client test-client-coverage test-server test-server-coverage test-ci
 .PHONY: coverage all
@@ -37,6 +42,24 @@ help:
 	@echo "  mypy            - Run mypy static type checking"
 	@echo "  semgrep         - Run Semgrep security analysis"
 	@echo "  semgrep-autofix - Run Semgrep with autofix"
+	@echo ""
+	@echo "Codacy Tools (Python):"
+	@echo "  bandit          - Python security linter"
+	@echo "  pylint         - Python code quality linter"
+	@echo "  ruff           - Python linter/formatter (included in lint)"
+	@echo "  sqlfluff       - SQL linting and formatting"
+	@echo "  sqlint         - SQL linting"
+	@echo ""
+	@echo "Codacy Tools (Other):"
+	@echo "  hadolint       - Dockerfile linter"
+	@echo "  shellcheck     - Shell script linter"
+	@echo "  psscriptanalyzer - PowerShell script linter"
+	@echo "  stylelint      - CSS linter"
+	@echo "  markdownlint   - Markdown linter"
+	@echo "  jackson-linter - JSON linter"
+	@echo "  trivy          - Dependency security scanner"
+	@echo "  lizard         - Code complexity analyzer"
+	@echo "  codacy-tools   - Run all Codacy tools"
 	@echo ""
 	@echo "Database Setup:"
 	@echo "  setup-test-env         - Create test environment files"
@@ -87,6 +110,53 @@ semgrep:
 
 semgrep-autofix:
 	$(POWERSHELL) scripts/semgrep-autofix.ps1
+
+# ============================================================================
+# CODACY TOOLS - Python
+# ============================================================================
+
+bandit:
+	$(PYTHON) scripts/bandit.py
+
+pylint:
+	$(PYTHON) scripts/pylint.py
+
+sqlfluff:
+	$(PYTHON) scripts/sqlfluff.py
+
+sqlint:
+	$(PYTHON) scripts/sqlint.py
+
+# ============================================================================
+# CODACY TOOLS - Other Languages
+# ============================================================================
+
+hadolint:
+	$(POWERSHELL) scripts/hadolint.ps1
+
+shellcheck:
+	$(POWERSHELL) scripts/shellcheck.ps1
+
+psscriptanalyzer:
+	$(POWERSHELL) scripts/psscriptanalyzer.ps1
+
+stylelint:
+	$(PYTHON) scripts/stylelint.py
+
+markdownlint:
+	$(PYTHON) scripts/markdownlint.py
+
+jackson-linter:
+	$(PYTHON) scripts/jackson_linter.py
+
+trivy:
+	$(PYTHON) scripts/trivy.py
+
+lizard:
+	$(PYTHON) scripts/lizard.py
+
+# Run all Codacy tools (except those already in lint/format)
+codacy-tools: bandit pylint sqlfluff hadolint shellcheck psscriptanalyzer stylelint markdownlint jackson-linter trivy lizard
 
 # ============================================================================
 # DATABASE SETUP
@@ -163,4 +233,4 @@ run:
 # COMPOSITE TARGETS
 # ============================================================================
 
-all: format mypy lint lint-sqlalchemy semgrep-autofix build test-coverage
+all: format mypy lint lint-sqlalchemy codacy-tools semgrep-autofix codacy-tools build test-coverage

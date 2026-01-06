@@ -207,7 +207,7 @@ class LRUCache[K, V]:
 
             # Check TTL if set
             if self.ttl_seconds is not None:
-                value, timestamp = self._cache[key]
+                _value, timestamp = self._cache[key]  # pylint: disable=unused-variable  # Reason: value is part of tuple unpacking, only timestamp is used
                 if time.time() - timestamp > self.ttl_seconds:
                     del self._cache[key]
                     return False
@@ -361,7 +361,7 @@ def get_cache_manager() -> CacheManager:
     Returns:
         The global cache manager instance
     """
-    global _cache_manager
+    global _cache_manager  # pylint: disable=global-statement  # Reason: Singleton pattern for cache manager
     if _cache_manager is None:
         with _cache_manager_lock:
             if _cache_manager is None:
@@ -371,6 +371,6 @@ def get_cache_manager() -> CacheManager:
 
 def reset_cache_manager() -> None:
     """Reset the global cache manager (for testing)."""
-    global _cache_manager
+    global _cache_manager  # pylint: disable=global-statement  # Reason: Singleton pattern for testing reset
     with _cache_manager_lock:
         _cache_manager = None

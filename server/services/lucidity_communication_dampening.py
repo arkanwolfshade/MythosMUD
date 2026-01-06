@@ -50,8 +50,8 @@ def apply_communication_dampening(
 
     # Fractured tier outgoing chat: 20% chance to append Mythos glyphs
     if sender_tier == "fractured" and message_type in ("chat", "say", "local", "global"):
-        if random.random() < 0.20:
-            glyph = random.choice(MYTHOS_GLYPHS)
+        if random.random() < 0.20:  # nosec B311: Game mechanics probability check, not cryptographic
+            glyph = random.choice(MYTHOS_GLYPHS)  # nosec B311: Game mechanics glyph selection, not cryptographic
             result["message"] = message + f" {glyph}"
 
     # Deranged tier: Block shout commands
@@ -63,20 +63,20 @@ def apply_communication_dampening(
 
     # Fractured tier incoming: 30% chance to lose punctuation
     if receiver_tier == "fractured" and message_type in ("chat", "say", "local", "global", "whisper"):
-        if random.random() < 0.30:
+        if random.random() < 0.30:  # nosec B311: Game mechanics probability check, not cryptographic
             # Remove punctuation
             result["message"] = re.sub(r'[.,!?;:"]', "", message)
             result["tags"].append("muffled")
 
     # Deranged tier incoming: 10% chance to scramble syllables
     if receiver_tier == "deranged" and message_type in ("chat", "say", "local", "global", "whisper"):
-        if random.random() < 0.10:
+        if random.random() < 0.10:  # nosec B311: Game mechanics probability check, not cryptographic
             # Simple word scrambling: swap adjacent words
             words = message.split()
             if len(words) > 1:
                 # Swap random adjacent pairs
                 for _ in range(min(len(words) // 4, 3)):  # Scramble up to 3 pairs
-                    i = random.randint(0, len(words) - 2)
+                    i = random.randint(0, len(words) - 2)  # nosec B311: Game mechanics word scrambling, not cryptographic
                     words[i], words[i + 1] = words[i + 1], words[i]
                 result["message"] = " ".join(words)
                 result["tags"].append("scrambled")

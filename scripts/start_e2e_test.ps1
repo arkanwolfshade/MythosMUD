@@ -3,6 +3,8 @@
 # MythosMUD E2E Test Environment Startup Script
 # Starts both the backend server and Vite dev client with E2E test configuration
 
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and output messages require Write-Host for proper display')]
 param(
     [switch]$Help
 )

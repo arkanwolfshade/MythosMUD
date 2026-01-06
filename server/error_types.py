@@ -17,8 +17,8 @@ class ErrorType(Enum):
     # Authentication and Authorization
     AUTHENTICATION_FAILED = "authentication_failed"
     AUTHORIZATION_DENIED = "authorization_denied"
-    INVALID_TOKEN = "invalid_token"
-    TOKEN_EXPIRED = "token_expired"
+    INVALID_TOKEN = "invalid_token"  # nosec B105: Error code string, not a password
+    TOKEN_EXPIRED = "token_expired"  # nosec B105: Error code string, not a password
 
     # Validation Errors
     VALIDATION_ERROR = "validation_error"
@@ -167,7 +167,7 @@ class ErrorMessages:
     # Authentication
     AUTHENTICATION_REQUIRED = "Authentication required"
     INVALID_CREDENTIALS = "Invalid username or password"
-    TOKEN_EXPIRED = "Your session has expired. Please log in again."
+    TOKEN_EXPIRED = "Your session has expired. Please log in again."  # nosec B105: Error message string, not a password
 
     # Validation
     INVALID_INPUT = "Invalid input provided"

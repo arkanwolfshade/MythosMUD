@@ -297,7 +297,8 @@ class DatabaseManager:
             # No running loop - that's okay, engine will be created when needed
             logger.debug("No running event loop, engine will be created when needed")
 
-        assert self.engine is not None, "Database engine not initialized"
+        if self.engine is None:
+            raise RuntimeError("Database engine not initialized")
         return self.engine
 
     def get_session_maker(self) -> async_sessionmaker:
@@ -312,7 +313,8 @@ class DatabaseManager:
         """
         if not self._initialized:
             self._initialize_database()
-        assert self.session_maker is not None, "Session maker not initialized"
+        if self.session_maker is None:
+            raise RuntimeError("Session maker not initialized")
         return self.session_maker
 
     def get_database_url(self) -> str | None:

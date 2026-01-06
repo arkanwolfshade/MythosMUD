@@ -1,10 +1,12 @@
-#!/usr/bin/env pwsh
+﻿#!/usr/bin/env pwsh
 # MythosMUD PostgreSQL Test Database Setup Script
 # Creates and initializes the PostgreSQL test database
 
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and output messages require Write-Host for proper display')]
 param(
-    [switch]$Force,
-    [switch]$Verbose
+    [switch]$Force
+    # Verbose parameter removed - not currently used
 )
 
 $ErrorActionPreference = "Stop"

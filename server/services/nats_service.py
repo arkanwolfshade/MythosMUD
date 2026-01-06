@@ -57,7 +57,7 @@ class NATSMetrics:
         if not success:
             self.subscribe_errors += 1
 
-    def record_batch_flush(self, success: bool, message_count: int):
+    def record_batch_flush(self, success: bool, _message_count: int):
         """Record batch flush operation metrics."""
         self.batch_flush_count += 1
         if not success:
@@ -289,7 +289,7 @@ class NATSService:
             )
             return True
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NATS connection errors unpredictable, must handle all errors
             self._connection_retries += 1
 
             # Transition to failed state
@@ -339,7 +339,7 @@ class NATSService:
                     try:
                         await subscription.drain()  # Wait for in-flight messages
                         logger.debug("Subscription drained", subject=subject)
-                    except Exception as e:
+                    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Subscription drain errors unpredictable, must not fail cleanup
                         logger.warning("Error draining subscription", subject=subject, error=str(e))
 
                 # Close all subscriptions
@@ -347,7 +347,7 @@ class NATSService:
                     try:
                         await subscription.unsubscribe()
                         logger.debug("Unsubscribed from NATS subject", subject=subject)
-                    except Exception as e:
+                    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Unsubscribe errors unpredictable, must not fail cleanup
                         logger.warning("Error unsubscribing from subject", subject=subject, error=str(e))
 
                 # Close NATS connection
@@ -369,7 +369,7 @@ class NATSService:
             # Stop health check monitoring
             await self._stop_health_monitoring()
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Disconnect errors unpredictable, must handle gracefully
             logger.error("Error disconnecting from NATS server", error=str(e))
 
     async def _start_health_monitoring(self):
@@ -414,7 +414,7 @@ class NATSService:
         # Wait for tasks to complete with timeout
         if self._background_tasks:
             try:
-                done, pending = await asyncio.wait(
+                _done, pending = await asyncio.wait(
                     self._background_tasks, timeout=2.0, return_when=asyncio.ALL_COMPLETED
                 )
 
@@ -426,7 +426,7 @@ class NATSService:
                     # Give them a brief moment to cancel
                     try:
                         await asyncio.wait_for(asyncio.gather(*pending, return_exceptions=True), timeout=0.5)
-                    except (TimeoutError, Exception):
+                    except (TimeoutError, Exception):  # pylint: disable=broad-exception-caught  # Abandon remaining tasks on any error
                         pass  # Abandon remaining tasks
 
             except (RuntimeError, asyncio.CancelledError) as e:
@@ -483,7 +483,7 @@ class NATSService:
 
             except asyncio.CancelledError:
                 break
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Health check errors unpredictable, must continue loop
                 logger.error("Error in health check loop", error=str(e))
                 self._consecutive_health_failures += 1
                 await asyncio.sleep(health_check_interval)  # Wait before retrying
@@ -511,7 +511,7 @@ class NATSService:
         except TimeoutError:
             logger.warning("Health check timeout", timeout=self._health_check_timeout)
             return False
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Health check errors unpredictable, must return False
             logger.warning("Health check failed", error=str(e), error_type=type(e).__name__)
             return False
 
@@ -590,7 +590,7 @@ class NATSService:
                                 subject=subject,
                                 message_id=message_data.get("message_id"),
                             )
-                        except Exception as ack_error:
+                        except Exception as ack_error:  # pylint: disable=broad-exception-caught  # Reason: Message ack errors unpredictable, must log but continue
                             logger.error(
                                 "Failed to acknowledge message",
                                 error=str(ack_error),
@@ -612,17 +612,17 @@ class NATSService:
                     if manual_ack_enabled and hasattr(msg, "nak"):
                         try:
                             await msg.nak()
-                        except Exception as nak_error:
+                        except Exception as nak_error:  # pylint: disable=broad-exception-caught  # Reason: Message nak errors unpredictable, must log but continue
                             logger.error(
                                 "Failed to negatively acknowledge message", error=str(nak_error), subject=subject
                             )
-                except Exception as e:
+                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Message handling errors unpredictable, must handle gracefully
                     logger.error("Error handling NATS message", error=str(e), subject=subject)
                     # Negatively acknowledge on processing failure (if manual ack enabled)
                     if manual_ack_enabled and hasattr(msg, "nak"):
                         try:
                             await msg.nak()
-                        except Exception as nak_error:
+                        except Exception as nak_error:  # pylint: disable=broad-exception-caught  # Reason: Message nak errors unpredictable, must log but continue
                             logger.error(
                                 "Failed to negatively acknowledge message", error=str(nak_error), subject=subject
                             )
@@ -643,7 +643,7 @@ class NATSService:
         except NATSSubscribeError:
             # Re-raise NATS subscribe errors
             raise
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Subscribe errors unpredictable, must record metrics and handle
             # Record metrics
             self.metrics.record_subscribe(False)
             error_msg = f"Failed to subscribe to NATS subject: {str(e)}"
@@ -672,7 +672,7 @@ class NATSService:
             logger.info("Unsubscribed from NATS subject", subject=subject)
             return True
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Unsubscribe errors unpredictable, must return False
             logger.error("Failed to unsubscribe from NATS subject", error=str(e), subject=subject)
             return False
 
@@ -715,7 +715,7 @@ class NATSService:
         except TimeoutError:
             logger.warning("Request timeout", subject=subject, timeout=timeout)
             return None
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Request errors unpredictable, must return None
             logger.error("Failed to send request", error=str(e), subject=subject)
             return None
 
@@ -830,7 +830,7 @@ class NATSService:
             # Degrade connection if currently connected
             if self.state_machine.current_state.id == "connected":
                 self.state_machine.degrade()
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Error handler errors unpredictable, must log but not fail
             logger.error("Error in async error handler", error=str(e), original_error=str(error))
 
     def _on_disconnect(self):
@@ -861,7 +861,7 @@ class NATSService:
             if self.state_machine.current_state.id in ["connected", "degraded"]:
                 self.state_machine.disconnect()
                 self.state_machine.start_reconnect()
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Disconnect handler errors unpredictable, must log but not fail
             logger.error("Error in async disconnect handler", error=str(e))
 
     def _on_reconnect(self):
@@ -895,7 +895,7 @@ class NATSService:
                 self.state_machine.connected_successfully()
             elif self.state_machine.current_state.id == "degraded":
                 self.state_machine.recover()
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Reconnect handler errors unpredictable, must log but not fail
             logger.error("Error in async reconnect handler", error=str(e))
 
     def get_connection_stats(self) -> dict[str, Any]:
@@ -978,7 +978,7 @@ class NATSService:
                 url=nats_url,
             )
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Pool initialization errors unpredictable, must handle gracefully
             logger.error(
                 "Failed to initialize NATS connection pool",
                 error=str(e),
@@ -1069,7 +1069,7 @@ class NATSService:
         except NATSPublishError:
             # Re-raise NATS publish errors
             raise
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Publish errors unpredictable, must handle and log
             error_msg = f"Failed to publish message via connection pool: {str(e)}"
             logger.error(
                 "Failed to publish message via connection pool",
@@ -1095,7 +1095,7 @@ class NATSService:
                 except asyncio.CancelledError:
                     logger.warning("NATS connection close cancelled during shutdown", connection=str(connection))
                     continue
-                except Exception as e:
+                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Connection close errors unpredictable, must continue cleanup
                     logger.warning("Error closing pool connection", error=str(e))
 
             # Clear pool
@@ -1104,7 +1104,7 @@ class NATSService:
 
             logger.info("Connection pool cleaned up", pool_size=len(self.connection_pool))
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Pool cleanup errors unpredictable, must handle gracefully
             logger.error("Error cleaning up connection pool", error=str(e))
 
     async def publish_batch(self, subject: str, data: dict[str, Any]) -> bool:
@@ -1162,7 +1162,7 @@ class NATSService:
 
             return True
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Batch add errors unpredictable, must handle gracefully
             logger.error(
                 "Failed to add message to batch",
                 error=str(e),
@@ -1215,7 +1215,7 @@ class NATSService:
                 unique_subjects=len(grouped_messages),
             )
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Batch flush errors unpredictable, must handle gracefully
             logger.error(
                 "Failed to flush message batch",
                 error=str(e),

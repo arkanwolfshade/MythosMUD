@@ -167,15 +167,15 @@ class ValidationError(MythosMUDError):
         self,
         message: str,
         context: ErrorContext | None = None,
-        field: str | None = None,
+        field_name: str | None = None,  # pylint: disable=redefined-outer-name  # Renamed to avoid shadowing dataclasses.field
         value: Any | None = None,
         **kwargs: Any,
     ) -> None:
         super().__init__(message, context, **kwargs)
-        self.field = field
+        self.field = field_name
         self.value = value
-        if field:
-            self.details["field"] = field
+        if field_name:
+            self.details["field"] = field_name
         if value is not None:
             self.details["value"] = str(value)
 

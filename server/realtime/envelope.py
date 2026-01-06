@@ -23,7 +23,7 @@ from typing import Any
 class UUIDEncoder(json.JSONEncoder):
     """Custom JSON encoder that handles UUID objects."""
 
-    def default(self, obj: Any) -> Any:
+    def default(self, obj: Any) -> Any:  # pylint: disable=arguments-renamed  # Reason: JSONEncoder interface requires 'obj' parameter name, parent class uses 'o'
         if isinstance(obj, uuid.UUID):
             return str(obj)
         return super().default(obj)
@@ -38,7 +38,7 @@ def _get_next_global_sequence() -> int:
     """Thread-safe global sequence number generation (fallback when no connection_manager)."""
     import threading
 
-    global _global_sequence_counter, _sequence_lock
+    global _global_sequence_counter, _sequence_lock  # pylint: disable=global-statement  # Reason: Singleton pattern for sequence counter
     if _sequence_lock is None:
         _sequence_lock = threading.Lock()
 
@@ -80,7 +80,7 @@ def build_event(
     if sequence_number is not None:
         seq = sequence_number
     elif connection_manager is not None:
-        seq = connection_manager._get_next_sequence()  # noqa: SLF001
+        seq = connection_manager._get_next_sequence()  # pylint: disable=protected-access  # Reason: Internal sequence number generation required
     else:
         seq = _get_next_global_sequence()  # Fallback for backward compatibility
     event: dict[str, Any] = {

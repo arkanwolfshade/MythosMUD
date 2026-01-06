@@ -1,7 +1,9 @@
-# MythosMUD NPC Database Migration Script
+﻿# MythosMUD NPC Database Migration Script
 # Applies the rename_players_to_population migration to NPC databases
 # This renames min_players/max_players to min_population/max_population in npc_spawn_rules
 
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and output messages require Write-Host for proper display')]
 param(
     [string]$Environment = "local"
 )

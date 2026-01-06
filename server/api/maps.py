@@ -172,7 +172,7 @@ async def get_ascii_map(
             },
         }
 
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Map generation errors unpredictable, must handle gracefully
         logger.error(
             "Error generating ASCII map",
             error=str(e),
@@ -278,7 +278,7 @@ async def get_ascii_minimap(
 
     except LoggedHTTPException:
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Minimap generation errors unpredictable, must handle gracefully
         logger.error(
             "Error generating ASCII minimap",
             error=str(e),
@@ -427,7 +427,7 @@ async def recalculate_coordinates(
 
     except LoggedHTTPException:
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Coordinate recalculation errors unpredictable, must handle gracefully
         logger.error(
             "Error recalculating coordinates",
             error=str(e),
@@ -542,7 +542,7 @@ async def set_map_origin(
 
     except LoggedHTTPException:
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Map operation errors unpredictable, must rollback and handle
         await session.rollback()
         logger.error(
             "Error setting map origin",

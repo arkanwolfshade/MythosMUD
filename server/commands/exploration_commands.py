@@ -16,7 +16,7 @@ async def handle_explore_command(
     command_data: dict,
     current_user: dict,
     request,
-    alias_storage,
+    _alias_storage,
     player_name: str,
 ) -> dict:
     """

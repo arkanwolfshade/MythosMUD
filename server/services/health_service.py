@@ -69,7 +69,7 @@ class HealthService:
             process = psutil.Process()
             memory_info = process.memory_info()
             return memory_info.rss / 1024 / 1024  # Convert to MB
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # System monitoring errors unpredictable, return default
             logger.warning("Failed to get memory usage", error=str(e))
             return 0.0
 
@@ -77,7 +77,7 @@ class HealthService:
         """Get current CPU usage percentage."""
         try:
             return psutil.cpu_percent(interval=0.1)
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # System monitoring errors unpredictable, return default
             logger.warning("Failed to get CPU usage", error=str(e))
             return 0.0
 
@@ -113,7 +113,7 @@ class HealthService:
                         # rooms = asyncio.run(room_service.list_rooms("default", "default"))
                         # Skip actual query for health check to avoid requiring parameters
                         pass
-                    except Exception as e:
+                    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Database query errors unpredictable, defensive logging
                         logger.debug("Failed to list rooms for health check", error=str(e))
                         rooms = []
 
@@ -132,7 +132,7 @@ class HealthService:
                 "connection_count": len(rooms) if rooms else 0,
                 "last_query_time_ms": query_time_ms,
             }
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Database health check errors unpredictable, must return fallback
             logger.warning("Database health check failed", error=str(e))
             return {
                 "status": HealthStatus.UNHEALTHY,
@@ -180,7 +180,7 @@ class HealthService:
                 "max_connections": max_connections,
                 "connection_rate_per_minute": connection_rate,
             }
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Connection health check errors unpredictable, must return fallback
             logger.warning("Connection health check failed", error=str(e))
             return {
                 "status": HealthStatus.UNHEALTHY,
@@ -340,6 +340,7 @@ def get_health_service(connection_manager=None) -> HealthService:
         connection_manager: Optional ConnectionManager to bind to the service.
             When provided, ensures the singleton tracks the current container-managed instance.
     """
+    # pylint: disable=global-statement  # Singleton pattern requires global variable
     global _health_service
     if _health_service is None:
         _health_service = HealthService(connection_manager=connection_manager)

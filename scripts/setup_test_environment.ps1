@@ -2,6 +2,8 @@
 # MythosMUD Test Environment Setup Script
 # Ensures all required test environment files exist before running tests
 
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and output messages require Write-Host for proper display')]
 param(
     [switch]$Force,
     [switch]$Verbose

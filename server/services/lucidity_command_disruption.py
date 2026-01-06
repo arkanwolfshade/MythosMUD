@@ -52,7 +52,7 @@ def should_misfire_command(command_type: str, tier: str) -> bool:
     if probability <= 0.0:
         return False
 
-    return random.random() < probability
+    return random.random() < probability  # nosec B311: Game mechanics probability check, not cryptographic
 
 
 def get_misfire_message(command_type: str, tier: str) -> str:
@@ -91,7 +91,7 @@ def should_involuntary_flee(tier: str, damage_percent: float) -> bool:
     if damage_percent < INVOLUNTARY_FLEE_DAMAGE_THRESHOLD:
         return False
 
-    return random.random() < INVOLUNTARY_FLEE_PROBABILITY
+    return random.random() < INVOLUNTARY_FLEE_PROBABILITY  # nosec B311: Game mechanics probability check, not cryptographic
 
 
 def can_perform_action(tier: str) -> bool:

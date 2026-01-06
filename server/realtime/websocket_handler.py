@@ -329,7 +329,7 @@ async def _handle_websocket_message_loop(
                 break
             if should_raise:
                 raise
-        except Exception as e:  # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Message loop errors unpredictable, must prevent crash
             # Final catch-all for truly unexpected exceptions that weren't caught above
             # This is necessary to prevent the message loop from crashing on unknown errors
             # All exceptions are logged and handled gracefully via _handle_message_loop_exception
@@ -634,7 +634,8 @@ async def process_websocket_command(cmd: str, args: list, player_id: str, connec
         alias_storage=alias_storage,
         player_name=player_name,
     )
-    assert isinstance(result, dict)
+    if not isinstance(result, dict):
+        raise TypeError("Command handler must return a dict")
     return result
 
 

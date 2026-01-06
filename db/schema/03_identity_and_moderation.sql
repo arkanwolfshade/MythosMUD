@@ -1,12 +1,14 @@
--- MythosMUD Schema: Identity (users/players), Professions, Invites, Muting, and ID maps
--- Runtime domains use v4 UUIDs assigned during migration; static (professions/invites if static) use v5 via loader.
+-- MythosMUD Schema: Identity (users/players), Professions, Invites,
+-- Muting, and ID maps
+-- Runtime domains use v4 UUIDs assigned during migration; static
+-- (professions/invites if static) use v5 via loader.
 SET client_min_messages = WARNING;
 SET search_path = public;
 -- Professions (static reference)
 -- NOTE: SQLAlchemy uses Integer primary key, not UUID
 CREATE TABLE IF NOT EXISTS professions (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE,
+    "name" VARCHAR(255) NOT NULL UNIQUE,
     description TEXT NOT NULL,
     flavor_text TEXT NOT NULL,
     stat_requirements TEXT NOT NULL DEFAULT '{}',
@@ -31,15 +33,17 @@ CREATE TABLE IF NOT EXISTS muting_rules (
     target_id uuid NOT NULL,
     -- users.id or players.id
     reason text,
-    created_by_user uuid REFERENCES users(id) ON DELETE
-    SET NULL,
-        is_active boolean NOT NULL DEFAULT true,
-        created_at timestamptz NOT NULL DEFAULT now(),
-        expires_at timestamptz
+    created_by_user uuid REFERENCES users (id)
+        ON DELETE SET NULL,
+    is_active boolean NOT NULL DEFAULT true,
+    created_at timestamptz NOT NULL DEFAULT now(),
+    expires_at timestamptz
 );
-CREATE UNIQUE INDEX IF NOT EXISTS uq_muting_active_per_target ON muting_rules(target_type, target_id)
+CREATE UNIQUE INDEX IF NOT EXISTS uq_muting_active_per_target
+ON muting_rules (target_type, target_id)
 WHERE is_active;
-CREATE INDEX IF NOT EXISTS idx_muting_expires_at ON muting_rules(expires_at);
+CREATE INDEX IF NOT EXISTS idx_muting_expires_at
+ON muting_rules (expires_at);
 -- ID maps for migration from SQLite IDs (text UUIDs) to UUIDs
 CREATE TABLE IF NOT EXISTS id_map_users (
     old_sqlite_id text PRIMARY KEY,
@@ -49,6 +53,7 @@ CREATE TABLE IF NOT EXISTS id_map_users (
 CREATE TABLE IF NOT EXISTS id_map_players (
     old_sqlite_id text PRIMARY KEY,
     new_uuid uuid NOT NULL UNIQUE,
-    user_uuid uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    name text
+    user_uuid uuid NOT NULL REFERENCES users (id)
+        ON DELETE CASCADE,
+    "name" text
 );

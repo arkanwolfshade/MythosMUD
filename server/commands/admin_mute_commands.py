@@ -300,7 +300,7 @@ async def handle_add_admin_command(
 
 
 async def handle_mutes_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict, _current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the mutes command for listing current mutes.

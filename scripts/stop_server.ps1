@@ -1,4 +1,6 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for user-facing status messages
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'User-facing script requires Write-Host for status messages')]
 
 <#
 .SYNOPSIS
@@ -46,15 +48,19 @@ param(
 
 # Function to kill entire process trees
 function Stop-ProcessTree {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter(Mandatory = $true)]
         [int]$ProcessId
     )
 
+    if (-not $PSCmdlet.ShouldProcess("process tree for PID $ProcessId", "Stop")) {
+        return
+    }
+
     try {
         # Get child processes
-        $children = Get-WmiObject -Class Win32_Process | Where-Object { $_.ParentProcessId -eq $ProcessId }
+        $children = Get-CimInstance -ClassName Win32_Process | Where-Object { $_.ParentProcessId -eq $ProcessId }
 
         # Kill children first
         foreach ($child in $children) {
@@ -72,12 +78,16 @@ function Stop-ProcessTree {
 
 # Function to kill processes by port
 function Stop-ProcessesByPort {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter(Mandatory = $true)]
         [ValidateRange(1, 65535)]
         [int]$Port
     )
+
+    if (-not $PSCmdlet.ShouldProcess("processes using port $Port", "Stop")) {
+        return
+    }
 
     Write-Host "Checking for processes using port ${Port}..." -ForegroundColor Cyan
 
@@ -108,8 +118,12 @@ function Stop-ProcessesByPort {
 
 # Function to stop NATS server
 function Stop-NatsServerForMythosMUD {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param()
+
+    if (-not $PSCmdlet.ShouldProcess("NATS server", "Stop")) {
+        return
+    }
 
     Write-Host "Stopping NATS server..." -ForegroundColor Cyan
 
@@ -137,12 +151,16 @@ function Stop-NatsServerForMythosMUD {
 
 # Function to kill processes by name pattern
 function Stop-ProcessesByName {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string]$NamePattern
     )
+
+    if (-not $PSCmdlet.ShouldProcess("processes matching '$NamePattern'", "Stop")) {
+        return
+    }
 
     Write-Host "Checking for processes matching '$NamePattern'..." -ForegroundColor Cyan
 
@@ -170,12 +188,16 @@ function Stop-ProcessesByName {
 
 # Function to kill processes by command line pattern
 function Stop-ProcessesByCommandLine {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string]$CommandPattern
     )
+
+    if (-not $PSCmdlet.ShouldProcess("processes with command line containing '$CommandPattern'", "Stop")) {
+        return
+    }
 
     Write-Host "Checking for processes with command line containing '$CommandPattern'..." -ForegroundColor Cyan
 
@@ -183,7 +205,7 @@ function Stop-ProcessesByCommandLine {
         $pythonProcesses = Get-Process | Where-Object { $_.ProcessName -like "*python*" }
         foreach ($process in $pythonProcesses) {
             try {
-                $commandLine = (Get-WmiObject -Class Win32_Process -Filter "ProcessId = $($process.Id)").CommandLine
+                $commandLine = (Get-CimInstance -ClassName Win32_Process -Filter "ProcessId = $($process.Id)").CommandLine
                 if ($commandLine -and $commandLine -like "*$CommandPattern*") {
                     Write-Host "Found process with command line '$CommandPattern': $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
                     Stop-ProcessTree -ProcessId $process.Id
@@ -201,9 +223,13 @@ function Stop-ProcessesByCommandLine {
 }
 
 # Function to kill PowerShell processes that spawned the server
-function Stop-PowerShellServerProcesses {
-    [CmdletBinding()]
+function Stop-PowerShellServerProcess {
+    [CmdletBinding(SupportsShouldProcess)]
     param()
+
+    if (-not $PSCmdlet.ShouldProcess("PowerShell server processes", "Stop")) {
+        return
+    }
 
     Write-Host "Checking for PowerShell processes running server..." -ForegroundColor Cyan
 
@@ -211,7 +237,7 @@ function Stop-PowerShellServerProcesses {
         $powerShellProcesses = Get-Process | Where-Object { $_.ProcessName -like "*powershell*" }
         foreach ($process in $powerShellProcesses) {
             try {
-                $commandLine = (Get-WmiObject -Class Win32_Process -Filter "ProcessId = $($process.Id)").CommandLine
+                $commandLine = (Get-CimInstance -ClassName Win32_Process -Filter "ProcessId = $($process.Id)").CommandLine
                 if ($commandLine -and ($commandLine -like "*uvicorn*" -or $commandLine -like "*start_server.ps1*" -or $commandLine -like "*server.main:app*" -or $commandLine -like "*mythosmud*" -or $commandLine -like "*uv run*")) {
                     Write-Host "Found PowerShell server process: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
                     Write-Host "  Command line: $commandLine" -ForegroundColor Gray
@@ -240,7 +266,7 @@ function Close-OrphanedTerminalWindows {
         $processes = Get-Process | Where-Object { $_.ProcessName -like "*powershell*" -or $_.ProcessName -like "*cmd*" }
         foreach ($process in $processes) {
             try {
-                $commandLine = (Get-WmiObject -Class Win32_Process -Filter "ProcessId = $($process.Id)").CommandLine
+                $commandLine = (Get-CimInstance -ClassName Win32_Process -Filter "ProcessId = $($process.Id)").CommandLine
                 if ($commandLine -and ($commandLine -like "*mythosmud*" -or $commandLine -like "*uvicorn*" -or $commandLine -like "*start_server.ps1*" -or $commandLine -like "*server.main*")) {
                     Write-Host "Found orphaned terminal: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
                     Write-Host "  Command line: $commandLine" -ForegroundColor Gray
@@ -296,7 +322,7 @@ try {
     Stop-NatsServerForMythosMUD
 
     # Method 2: Kill PowerShell processes that spawned the server
-    Stop-PowerShellServerProcesses
+    Stop-PowerShellServerProcess
 
     # Method 3: Kill processes by port
     Stop-ProcessesByPort -Port 54731
@@ -321,7 +347,7 @@ try {
         $pythonProcesses = Get-Process | Where-Object { $_.ProcessName -like "*python*" }
         foreach ($process in $pythonProcesses) {
             try {
-                $commandLine = (Get-WmiObject -Class Win32_Process -Filter "ProcessId = $($process.Id)").CommandLine
+                $commandLine = (Get-CimInstance -ClassName Win32_Process -Filter "ProcessId = $($process.Id)").CommandLine
                 # Only kill Python processes that are running MythosMUD-related code
                 if ($commandLine -and (
                         $commandLine -like "*uvicorn*" -or

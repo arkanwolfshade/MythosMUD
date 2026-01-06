@@ -1,6 +1,8 @@
-# NPC Sample Data Population Script (PowerShell)
+﻿# NPC Sample Data Population Script (PowerShell)
 # This script populates both production and test NPC databases with sample data
 
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and output messages require Write-Host for proper display')]
 param(
     [switch]$TestOnly,
     [switch]$ProdOnly,
@@ -26,15 +28,15 @@ if ($Help) {
 Write-Host "🧙‍♂️ Populating NPC Sample Data..." -ForegroundColor Cyan
 Write-Host ""
 
-# Build the Python command
-$pythonCmd = "python scripts/populate_npc_sample_data.py"
+# Build the Python command arguments
+$pythonArgs = @("scripts/populate_npc_sample_data.py")
 
 if ($TestOnly) {
-    $pythonCmd += " --test-only"
+    $pythonArgs += "--test-only"
     Write-Host "📝 Populating test database only" -ForegroundColor Yellow
 }
 elseif ($ProdOnly) {
-    $pythonCmd += " --prod-only"
+    $pythonArgs += "--prod-only"
     Write-Host "🏭 Populating production database only" -ForegroundColor Yellow
 }
 else {
@@ -45,7 +47,7 @@ Write-Host ""
 
 # Execute the Python script
 try {
-    Invoke-Expression $pythonCmd
+    & python $pythonArgs
 
     if ($LASTEXITCODE -eq 0) {
         Write-Host ""

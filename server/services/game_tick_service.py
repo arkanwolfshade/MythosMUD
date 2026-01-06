@@ -54,7 +54,7 @@ class GameTickService:
             self.is_running = True
             logger.info("GameTickService started", tick_interval=self.tick_interval)
             return True
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Service startup errors unpredictable, must return False
             logger.error("Failed to start GameTickService", error=str(e))
             return False
 
@@ -82,7 +82,7 @@ class GameTickService:
             self._tick_task = None
             logger.info("GameTickService stopped")
             return True
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Service shutdown errors unpredictable, must return False
             logger.error("Failed to stop GameTickService", error=str(e))
             return False
 
@@ -123,7 +123,7 @@ class GameTickService:
             except asyncio.CancelledError:
                 logger.info("Game tick loop cancelled")
                 break
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Continue loop on error to maintain game tick
                 logger.error("Error in game tick loop", error=str(e))
                 # Continue the loop even if there's an error
                 await asyncio.sleep(self.tick_interval)

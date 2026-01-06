@@ -2,7 +2,11 @@
 
 ## Overview
 
-This directory contains the modular E2E test suite for MythosMUD, refactored from the monolithic `MULTIPLAYER_SCENARIOS_PLAYBOOK.md` into a structured, maintainable format. The modular approach reduces AI context requirements, enables selective scenario execution, and provides the most appropriate testing tool for each scenario's complexity level.
+This directory contains the modular E2E test suite for MythosMUD, refactored
+from the monolithic `MULTIPLAYER_SCENARIOS_PLAYBOOK.md` into a structured,
+maintainable format. The modular approach reduces AI context requirements,
+enables selective scenario execution, and provides the most appropriate
+testing tool for each scenario's complexity level.
 
 ## Directory Structure
 
@@ -122,6 +126,7 @@ Each scenario file follows a standardized structure:
 ## Usage Instructions
 
 ### Option 1: Execute All Scenarios (Legacy Compatibility)
+
 ```bash
 # Follow master rules and execute all 21 scenarios in order
 1. Read e2e-tests/MULTIPLAYER_TEST_RULES.md for master rules
@@ -130,6 +135,7 @@ Each scenario file follows a standardized structure:
 ```
 
 ### Option 2: Execute Individual Scenario
+
 ```bash
 # Execute a specific scenario
 1. Read e2e-tests/MULTIPLAYER_TEST_RULES.md for master rules
@@ -138,6 +144,7 @@ Each scenario file follows a standardized structure:
 ```
 
 ### Option 3: Execute Scenario Group
+
 ```bash
 # Execute related scenarios
 1. Read e2e-tests/MULTIPLAYER_TEST_RULES.md for master rules
@@ -146,6 +153,7 @@ Each scenario file follows a standardized structure:
 ```
 
 ### Option 4: Use Original Playbook (Backward Compatibility)
+
 ```bash
 # Use the original monolithic playbook
 Execute MULTIPLAYER_SCENARIOS_PLAYBOOK.md (preserved unchanged)
@@ -154,6 +162,7 @@ Execute MULTIPLAYER_SCENARIOS_PLAYBOOK.md (preserved unchanged)
 ## Testing Approach
 
 **All scenarios use Playwright MCP** for the following reasons:
+
 - **Multi-tab Coordination**: All scenarios require 2+ browser tabs for multiplayer testing
 - **Real-time Interaction**: All scenarios involve real-time message broadcasting and state synchronization
 - **Complex User Flows**: All scenarios require complex multiplayer interaction patterns
@@ -163,6 +172,7 @@ Execute MULTIPLAYER_SCENARIOS_PLAYBOOK.md (preserved unchanged)
 ## Key Benefits
 
 ### Modular Structure Benefits
+
 - **Reduced AI Context Load**: Individual files fit within AI context limits
 - **Selective Execution**: Can execute specific scenarios for targeted testing
 - **Parallel Development**: Multiple scenarios can be developed simultaneously
@@ -170,6 +180,7 @@ Execute MULTIPLAYER_SCENARIOS_PLAYBOOK.md (preserved unchanged)
 - **Better Documentation**: Each scenario is self-documenting
 
 ### Backward Compatibility
+
 - **Original Playbook Preserved**: `MULTIPLAYER_SCENARIOS_PLAYBOOK.md` remains unchanged
 - **All Scenarios Preserved**: All 21 scenarios preserved in individual files
 - **All Procedures Preserved**: All execution procedures preserved
@@ -187,6 +198,7 @@ Execute MULTIPLAYER_SCENARIOS_PLAYBOOK.md (preserved unchanged)
 ## Quick Navigation
 
 ### By Category
+
 - **Connection & State**: scenarios 1-2
 - **Movement & Communication**: scenarios 3-5
 - **Admin & Commands**: scenarios 6-7
@@ -195,6 +207,7 @@ Execute MULTIPLAYER_SCENARIOS_PLAYBOOK.md (preserved unchanged)
 - **Logout Button**: scenarios 19-21
 
 ### By Complexity
+
 - **Low-Medium**: scenarios 1-2, 4-5, 7, 19
 - **Medium**: scenarios 3, 6, 8, 13, 16, 20
 - **Medium-High**: scenarios 9-10, 14-15, 18, 21

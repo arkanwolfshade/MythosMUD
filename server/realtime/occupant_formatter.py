@@ -119,7 +119,8 @@ class OccupantFormatter:
             name = occ.get("name")
             if self._is_valid_name_for_occupant(name):
                 # Type narrowing: _is_valid_name_for_occupant returns True only for non-empty strings
-                assert isinstance(name, str), "name must be str if _is_valid_name_for_occupant returns True"
+                if not isinstance(name, str):
+                    raise TypeError("name must be str if _is_valid_name_for_occupant returns True")
                 all_occupants.append(name)
 
     def _process_string_occupant_for_update(self, occ: str, all_occupants: list[str], room_id: str) -> None:

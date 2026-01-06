@@ -59,7 +59,7 @@ class PlayerPositionService:
                 existing_alias = self._alias_storage.get_alias(player_name, alias_name)
                 if existing_alias is None or existing_alias.command.lower() != command:
                     self._alias_storage.create_alias(player_name, alias_name, command)
-            except Exception as exc:  # pragma: no cover - defensive logging path
+            except Exception as exc:  # pragma: no cover - defensive logging path  # pylint: disable=broad-exception-caught  # Reason: Alias seeding errors unpredictable, must log but continue
                 logger.warning(
                     "Failed to seed default position alias",
                     player_name=player_name,
@@ -119,7 +119,7 @@ class PlayerPositionService:
         stats: dict[str, Any]
         try:
             stats = player.get_stats() if hasattr(player, "get_stats") else {}
-        except Exception as exc:  # pragma: no cover - defensive logging path
+        except Exception as exc:  # pragma: no cover - defensive logging path  # pylint: disable=broad-exception-caught  # Reason: Player stats loading errors unpredictable, must use empty dict
             logger.error(
                 "Failed to load player stats during position update",
                 player_name=player_name,
@@ -187,7 +187,7 @@ class PlayerPositionService:
                 player_info = getter(player_name)
                 if isinstance(player_info, dict):
                     player_info["position"] = position
-        except Exception as exc:  # pragma: no cover - defensive logging path
+        except Exception as exc:  # pragma: no cover - defensive logging path  # pylint: disable=broad-exception-caught  # Reason: Position tracking errors unpredictable, must log but continue
             logger.warning(
                 "Failed to update in-memory position tracking",
                 player_name=player_name,

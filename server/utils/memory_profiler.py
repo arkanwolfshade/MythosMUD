@@ -203,7 +203,7 @@ class MemoryProfiler:
 
                 result = self.measure_model_instantiation(model_class, iterations, **model_test_data)
                 results[model_class.__name__] = result
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Model profiling errors unpredictable, must record error and continue
                 results[model_class.__name__] = {"error": str(e)}
 
         # Calculate statistics

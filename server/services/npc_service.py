@@ -58,7 +58,7 @@ class NPCService:
         except SQLAlchemyError as e:
             logger.error("Database error retrieving NPC definitions", error=str(e), error_type=type(e).__name__)
             raise DatabaseError(f"Failed to retrieve NPC definitions: {e}") from e
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC retrieval errors unpredictable, must re-raise
             logger.error("Unexpected error retrieving NPC definitions", error=str(e), error_type=type(e).__name__)
             raise
 
@@ -88,7 +88,7 @@ class NPCService:
 
             return definition
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC definition retrieval errors unpredictable, must re-raise
             logger.error("Error retrieving NPC definition", error=str(e), definition_id=definition_id)
             raise
 
@@ -172,7 +172,7 @@ class NPCService:
 
             return definition
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC definition creation errors unpredictable, must re-raise
             logger.error("Error creating NPC definition", error=str(e), name=name, npc_type=npc_type)
             raise
 
@@ -272,7 +272,7 @@ class NPCService:
 
             return definition
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC definition update errors unpredictable, must re-raise
             logger.error("Error updating NPC definition", error=str(e), definition_id=definition_id)
             raise
 
@@ -300,7 +300,7 @@ class NPCService:
 
             return True
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC definition deletion errors unpredictable, must re-raise
             logger.error("Error deleting NPC definition", error=str(e), definition_id=definition_id)
             raise
 
@@ -328,7 +328,7 @@ class NPCService:
         except SQLAlchemyError as e:
             logger.error("Database error retrieving NPC spawn rules", error=str(e), error_type=type(e).__name__)
             raise DatabaseError(f"Failed to retrieve NPC spawn rules: {e}") from e
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC spawn rule retrieval errors unpredictable, must re-raise
             logger.error("Unexpected error retrieving NPC spawn rules", error=str(e), error_type=type(e).__name__)
             raise
 
@@ -354,7 +354,7 @@ class NPCService:
 
             return rule
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC spawn rule retrieval errors unpredictable, must re-raise
             logger.error("Error retrieving NPC spawn rule", error=str(e), rule_id=rule_id)
             raise
 
@@ -418,7 +418,7 @@ class NPCService:
 
             return rule
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC spawn rule creation errors unpredictable, must re-raise
             logger.error("Error creating NPC spawn rule", error=str(e), npc_definition_id=npc_definition_id)
             raise
 
@@ -446,7 +446,7 @@ class NPCService:
 
             return True
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC spawn rule deletion errors unpredictable, must re-raise
             logger.error("Error deleting NPC spawn rule", error=str(e), rule_id=rule_id)
             raise
 
@@ -475,7 +475,7 @@ class NPCService:
             logger.info("Retrieved NPC definitions by type", npc_type=npc_type, count=len(definitions))
             return list(definitions)
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC definition type retrieval errors unpredictable, must re-raise
             logger.error("Error retrieving NPC definitions by type", error=str(e), npc_type=npc_type)
             raise
 
@@ -502,7 +502,7 @@ class NPCService:
             logger.info("Retrieved NPC definitions by sub-zone", sub_zone_id=sub_zone_id, count=len(definitions))
             return list(definitions)
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC definition sub-zone retrieval errors unpredictable, must re-raise
             logger.error("Error retrieving NPC definitions by sub-zone", error=str(e), sub_zone_id=sub_zone_id)
             raise
 
@@ -518,6 +518,7 @@ class NPCService:
         """
         try:
             # Count NPC definitions by type
+            # pylint: disable=not-callable  # SQLAlchemy func is callable at runtime
             definitions_result = await session.execute(
                 select(NPCDefinition.npc_type, func.count(NPCDefinition.id)).group_by(NPCDefinition.npc_type)
             )
@@ -544,7 +545,7 @@ class NPCService:
         except SQLAlchemyError as e:
             logger.error("Database error generating NPC system statistics", error=str(e), error_type=type(e).__name__)
             raise DatabaseError(f"Failed to generate NPC system statistics: {e}") from e
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC statistics generation errors unpredictable, must re-raise
             logger.error("Unexpected error generating NPC system statistics", error=str(e), error_type=type(e).__name__)
             raise
 

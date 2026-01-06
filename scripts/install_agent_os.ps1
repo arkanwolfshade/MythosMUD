@@ -1,6 +1,8 @@
 # Agent OS Installation Script for Windows PowerShell
 # Equivalent to the bash setup script but adapted for PowerShell
 
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and output messages require Write-Host for proper display')]
 param(
     [switch]$Cursor,
     [switch]$ClaudeCode,
@@ -29,7 +31,7 @@ New-Item -ItemType Directory -Path $INSTALL_DIR -Force | Out-Null
 New-Item -ItemType Directory -Path (Join-Path $INSTALL_DIR "setup") -Force | Out-Null
 
 # Function to download file from GitHub
-function Download-File {
+function Save-WebFile {
     param(
         [string]$Url,
         [string]$Destination,
@@ -120,7 +122,7 @@ function Install-FromGitHub {
     foreach ($file in $coreFiles) {
         $url = "$BASE_URL/instructions/core/$file.md"
         $dest = Join-Path $TargetDir "instructions\core\$file.md"
-        Download-File -Url $url -Destination $dest -Overwrite $OverwriteInst -Description "instructions/core/$file.md"
+        Save-WebFile -Url $url -Destination $dest -Overwrite $OverwriteInst -Description "instructions/core/$file.md"
     }
 
     # Meta instructions
@@ -130,7 +132,7 @@ function Install-FromGitHub {
     foreach ($file in $metaFiles) {
         $url = "$BASE_URL/instructions/meta/$file.md"
         $dest = Join-Path $TargetDir "instructions\meta\$file.md"
-        Download-File -Url $url -Destination $dest -Overwrite $OverwriteInst -Description "instructions/meta/$file.md"
+        Save-WebFile -Url $url -Destination $dest -Overwrite $OverwriteInst -Description "instructions/meta/$file.md"
     }
 
     # Download standards
@@ -146,7 +148,7 @@ function Install-FromGitHub {
     foreach ($file in $standardsFiles.Keys) {
         $url = "$BASE_URL/standards/$file"
         $dest = Join-Path $TargetDir "standards\$file"
-        Download-File -Url $url -Destination $dest -Overwrite $OverwriteStd -Description $standardsFiles[$file]
+        Save-WebFile -Url $url -Destination $dest -Overwrite $OverwriteStd -Description $standardsFiles[$file]
     }
 
     # Download code-style subdirectory
@@ -157,7 +159,7 @@ function Install-FromGitHub {
     foreach ($file in $codeStyleFiles) {
         $url = "$BASE_URL/standards/code-style/$file.md"
         $dest = Join-Path $TargetDir "standards\code-style\$file.md"
-        Download-File -Url $url -Destination $dest -Overwrite $OverwriteStd -Description "standards/code-style/$file.md"
+        Save-WebFile -Url $url -Destination $dest -Overwrite $OverwriteStd -Description "standards/code-style/$file.md"
     }
 
     # Download commands (only if requested)
@@ -170,14 +172,14 @@ function Install-FromGitHub {
         foreach ($cmd in $commandFiles) {
             $url = "$BASE_URL/commands/$cmd.md"
             $dest = Join-Path $TargetDir "commands\$cmd.md"
-            Download-File -Url $url -Destination $dest -Overwrite $OverwriteStd -Description "commands/$cmd.md"
+            Save-WebFile -Url $url -Destination $dest -Overwrite $OverwriteStd -Description "commands/$cmd.md"
         }
     }
 }
 
 # Download functions.sh to its permanent location
 Write-Host "Downloading setup functions..." -ForegroundColor Cyan
-Download-File -Url "$BASE_URL/setup/functions.sh" -Destination (Join-Path $INSTALL_DIR "setup\functions.sh") -Overwrite $true -Description "setup/functions.sh"
+Save-WebFile -Url "$BASE_URL/setup/functions.sh" -Destination (Join-Path $INSTALL_DIR "setup\functions.sh") -Overwrite $true -Description "setup/functions.sh"
 
 Write-Host ""
 Write-Host "Installing the latest version of Agent OS from the Agent OS GitHub repository..." -ForegroundColor Cyan
@@ -188,12 +190,12 @@ Install-FromGitHub -TargetDir $INSTALL_DIR -OverwriteInst $OverwriteInstructions
 # Download config.yml
 Write-Host ""
 Write-Host "Downloading configuration..." -ForegroundColor Cyan
-Download-File -Url "$BASE_URL/config.yml" -Destination (Join-Path $INSTALL_DIR "config.yml") -Overwrite $OverwriteConfig -Description "config.yml"
+Save-WebFile -Url "$BASE_URL/config.yml" -Destination (Join-Path $INSTALL_DIR "config.yml") -Overwrite $OverwriteConfig -Description "config.yml"
 
 # Download setup/project.sh
 Write-Host ""
 Write-Host "Downloading project setup script..." -ForegroundColor Cyan
-Download-File -Url "$BASE_URL/setup/project.sh" -Destination (Join-Path $INSTALL_DIR "setup\project.sh") -Overwrite $true -Description "setup/project.sh"
+Save-WebFile -Url "$BASE_URL/setup/project.sh" -Destination (Join-Path $INSTALL_DIR "setup\project.sh") -Overwrite $true -Description "setup/project.sh"
 
 # Handle Claude Code installation
 if ($ClaudeCode) {
@@ -207,7 +209,7 @@ if ($ClaudeCode) {
     foreach ($agent in $agents) {
         $url = "$BASE_URL/claude-code/agents/$agent.md"
         $dest = Join-Path $INSTALL_DIR "claude-code\agents\$agent.md"
-        Download-File -Url $url -Destination $dest -Overwrite $false -Description "claude-code/agents/$agent.md"
+        Save-WebFile -Url $url -Destination $dest -Overwrite $false -Description "claude-code/agents/$agent.md"
     }
 
     # Update config to enable claude_code

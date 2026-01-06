@@ -32,6 +32,7 @@ class RateLimiter:
         # Handle both new Pydantic config and legacy dict format
         if hasattr(config, "chat"):
             # New Pydantic config system
+            # pylint: disable=no-member  # Pydantic FieldInfo dynamic attributes
             self.limits = {
                 "global": config.chat.rate_limit_global,
                 "local": config.chat.rate_limit_local,
@@ -159,7 +160,7 @@ class RateLimiter:
 
             return within_limits
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Rate limit check errors unpredictable, fail open
             logger.error("Error checking rate limit", error=str(e), player_id=player_id, channel=channel)
             # On error, allow the message (fail open)
             return True
@@ -195,7 +196,7 @@ class RateLimiter:
                 limit=limit,
             )
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Rate limit recording errors unpredictable, must handle gracefully
             logger.error(
                 "Error recording message for rate limiting", error=str(e), player_id=player_id, channel=channel
             )
@@ -244,7 +245,7 @@ class RateLimiter:
                     self.windows[player_id].clear()
                     logger.info("All rate limits reset for player", player_id=player_id)
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Rate limit reset errors unpredictable, must handle gracefully
             logger.error("Error resetting rate limits", error=str(e), player_id=player_id, channel=channel)
 
     def get_system_stats(self) -> dict[str, Any]:
@@ -286,7 +287,7 @@ class RateLimiter:
                 "limits": self.limits.copy(),
             }
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Stats retrieval errors unpredictable, must return empty dict
             logger.error("Error getting system stats", error=str(e))
             return {}
 
@@ -320,7 +321,7 @@ class RateLimiter:
             limit = self.get_limit(channel)
             return max(0, limit - current_count)
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Remaining messages calculation errors unpredictable, must return 0
             logger.error("Error getting remaining messages", error=str(e), player_id=player_id, channel=channel)
             return 0
 

@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 # MythosMUD PostgreSQL Test Database Setup Script (Linux/CI)
 # Creates and initializes the PostgreSQL test database
 
@@ -100,7 +100,7 @@ echo "[INFO] Database created. Schema will be initialized by DDL scripts or test
 echo "[INFO] You may need to run database initialization scripts separately."
 
 echo ""
-echo "Setup completed successfully! âœ“"
+echo "Setup completed successfully!"
 echo "You can now run: scripts/check_postgresql.sh to verify the connection"
 
 unset PGPASSWORD

@@ -376,7 +376,7 @@ class SpellEffects:
             logger.error("Error adjusting corruption", target_id=target.target_id, error=str(e))
             return {"success": False, "message": f"Failed to adjust corruption: {str(e)}", "effect_applied": False}
 
-    async def _process_teleport(self, spell: Spell, target: TargetMatch, mastery_modifier: float) -> dict[str, Any]:
+    async def _process_teleport(self, spell: Spell, target: TargetMatch, _mastery_modifier: float) -> dict[str, Any]:  # pylint: disable=unused-argument  # Reason: Parameter reserved for future mastery-based teleport enhancement
         """Process teleport effect."""
         if target.target_type != TargetType.PLAYER:
             return {"success": False, "message": "Teleport can only target players", "effect_applied": False}

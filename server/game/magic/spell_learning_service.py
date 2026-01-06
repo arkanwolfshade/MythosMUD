@@ -205,7 +205,7 @@ class SpellLearningService:
         Returns:
             dict: Result with success, message, and details
         """
-        # TODO: Integrate with item system to get spellbook data
+        # TODO: Integrate with item system to get spellbook data  # pylint: disable=fixme  # Reason: Feature placeholder for item system integration
         # For now, this is a placeholder that can be called when item interaction is implemented
         logger.debug("Learning spell from book", player_id=player_id, item_id=spellbook_item_id, spell_id=spell_id)
 
@@ -228,7 +228,7 @@ class SpellLearningService:
         Returns:
             dict: Result with success, message, and details
         """
-        # TODO: Integrate with NPC system to validate teacher status
+        # TODO: Integrate with NPC system to validate teacher status  # pylint: disable=fixme  # Reason: Feature placeholder for NPC system integration
         # For now, this is a placeholder that can be called when NPC interaction is implemented
         logger.debug("Learning spell from NPC", player_id=player_id, npc_id=npc_id, spell_id=spell_id)
 
@@ -246,7 +246,7 @@ class SpellLearningService:
         Returns:
             dict: Result with success, message, and details
         """
-        # TODO: Integrate with quest system to validate quest completion
+        # TODO: Integrate with quest system to validate quest completion  # pylint: disable=fixme  # Reason: Feature placeholder for quest system integration
         # For now, this is a placeholder that can be called when quest system is implemented
         logger.debug("Learning spell from quest", player_id=player_id, quest_id=quest_id, spell_id=spell_id)
 
@@ -284,7 +284,7 @@ class SpellLearningService:
             # Very slow progress at high mastery
             import random
 
-            mastery_gain = 1 if random.random() < 0.5 else 0
+            mastery_gain = 1 if random.random() < 0.5 else 0  # nosec B311: Game mechanics probability, not cryptographic
 
         # Calculate new mastery and ensure it's an int
         new_mastery = int(min(100, current_mastery + mastery_gain))

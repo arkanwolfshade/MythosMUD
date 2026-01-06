@@ -90,7 +90,7 @@ class EventPublisher:
                     room = async_persistence.get_room_by_id(room_id)
                     if room and hasattr(room, "name") and room.name:
                         room_name = room.name
-                except Exception as e:
+                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Database/attribute access errors unpredictable, optional metadata
                     logger.debug("Failed to get player/room names", player_id=player_id, room_id=room_id, error=str(e))
 
             # Generate event data
@@ -138,7 +138,7 @@ class EventPublisher:
                 )
                 return False
 
-        except (OSError, ValueError, TypeError, Exception) as e:
+        except (OSError, ValueError, TypeError, Exception) as e:  # pylint: disable=broad-exception-caught  # Reason: Event publishing errors unpredictable, must handle all error types
             logger.error(
                 "Error publishing player entered event",
                 error=str(e),
@@ -193,7 +193,7 @@ class EventPublisher:
                     room = async_persistence.get_room_by_id(room_id)
                     if room and hasattr(room, "name") and room.name:
                         room_name = room.name
-                except Exception as e:
+                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Database/attribute access errors unpredictable, optional metadata
                     logger.debug("Failed to get player/room names", player_id=player_id, room_id=room_id, error=str(e))
 
             # Generate event data
@@ -238,7 +238,7 @@ class EventPublisher:
                 )
                 return False
 
-        except (OSError, ValueError, TypeError, Exception) as e:
+        except (OSError, ValueError, TypeError, Exception) as e:  # pylint: disable=broad-exception-caught  # Reason: Event publishing errors unpredictable, must handle all error types
             logger.error(
                 "Error publishing player left event",
                 error=str(e),
@@ -303,7 +303,7 @@ class EventPublisher:
                 logger.error("Failed to publish game tick event")
                 return False
 
-        except (OSError, ValueError, TypeError, Exception) as e:
+        except (OSError, ValueError, TypeError, Exception) as e:  # pylint: disable=broad-exception-caught  # Reason: Event publishing errors unpredictable, must handle all error types
             logger.error("Error publishing game tick event", error=str(e), error_type=type(e).__name__)
             return False
 
@@ -379,7 +379,7 @@ class EventPublisher:
                 container = ApplicationContainer.get_instance()
                 if container and container.async_persistence:
                     self._async_persistence = container.async_persistence
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Container access errors unpredictable, must handle gracefully
                 logger.warning("Failed to get async_persistence from ApplicationContainer", error=str(e))
         return self._async_persistence
 

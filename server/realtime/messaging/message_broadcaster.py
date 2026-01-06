@@ -57,7 +57,7 @@ class MessageBroadcaster:
         room_id: str,
         event: dict[str, Any],
         exclude_player: uuid.UUID | str | None = None,
-        player_websockets: dict[uuid.UUID, list[str]] | None = None,
+        _player_websockets: dict[uuid.UUID, list[str]] | None = None,  # pylint: disable=unused-argument  # Reason: Parameter reserved for future websocket filtering
     ) -> dict[str, Any]:
         """
         Broadcast a message to all players in a room.
@@ -139,7 +139,7 @@ class MessageBroadcaster:
                             broadcast_stats["successful_deliveries"] += 1
                         else:
                             broadcast_stats["failed_deliveries"] += 1
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Batch broadcast errors unpredictable, must handle gracefully
                 logger.error(
                     "Error in batch broadcast",
                     room_id=room_id,
@@ -156,7 +156,7 @@ class MessageBroadcaster:
                             broadcast_stats["successful_deliveries"] += 1
                         else:
                             broadcast_stats["failed_deliveries"] += 1
-                    except Exception as individual_error:
+                    except Exception as individual_error:  # pylint: disable=broad-exception-caught  # Reason: Individual message sending errors unpredictable, must continue processing
                         logger.error(
                             "Error sending individual message in fallback",
                             player_id=pid_str,
@@ -228,7 +228,7 @@ class MessageBroadcaster:
                             global_stats["successful_deliveries"] += 1
                         else:
                             global_stats["failed_deliveries"] += 1
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Batch global broadcast errors unpredictable, must handle gracefully
                 logger.error(
                     "Error in batch global broadcast",
                     target_count=len(target_list),
@@ -244,7 +244,7 @@ class MessageBroadcaster:
                             global_stats["successful_deliveries"] += 1
                         else:
                             global_stats["failed_deliveries"] += 1
-                    except Exception as individual_error:
+                    except Exception as individual_error:  # pylint: disable=broad-exception-caught  # Reason: Individual message sending errors unpredictable, must continue processing
                         logger.error(
                             "Error sending individual message in fallback",
                             player_id=player_id,
@@ -263,7 +263,7 @@ class MessageBroadcaster:
             event = build_event(event_type, data)
             result = await self.broadcast_to_room(room_id, event, None, None)
             return result
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Room event broadcasting errors unpredictable, must return error response
             logger.error("Error broadcasting room event", error=str(e), event_type=event_type, room_id=room_id)
             return {
                 "room_id": room_id,
@@ -282,7 +282,7 @@ class MessageBroadcaster:
 
             event = build_event(event_type, data)
             return await self.broadcast_global(event, None, {})
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Global event broadcasting errors unpredictable, must return error response
             logger.error("Error broadcasting global event", error=str(e), event_type=event_type)
             return {
                 "total_players": 0,

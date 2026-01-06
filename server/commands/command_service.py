@@ -226,13 +226,15 @@ class CommandService:
             # Call handler with command_data (standardized format)
             # At this point handler is guaranteed to be CommandHandler (not None) due to check above
             logger.debug("DEBUG: About to call handler", handler=handler, command_data=command_data)
-            assert handler is not None  # Type narrowing for mypy
+            if handler is None:
+                raise RuntimeError("Handler must not be None")
             result = await handler(command_data, current_user, request, alias_storage, player_name)
             logger.debug(
                 "Command processed successfully with command_data", player=player_name, command_type=command_type
             )
-            # Type assertion to help MyPy understand the return type
-            assert isinstance(result, dict)
+            # Type check to help MyPy understand the return type
+            if not isinstance(result, dict):
+                raise TypeError("Command handler must return a dict")
             return result
         except (ValueError, TypeError, AttributeError, KeyError, RuntimeError, MythosValidationError) as e:
             # Format exception traceback and sanitize ANSI codes for Windows compatibility
@@ -435,10 +437,12 @@ class CommandService:
             dict: Command result
         """
         try:
-            assert handler is not None  # Type narrowing for mypy
+            if handler is None:
+                raise RuntimeError("Handler must not be None")
             result = await handler(command_data, current_user, request, alias_storage, player_name)
             logger.debug("Command processed successfully with command_data", player=player_name, command=cmd)
-            assert isinstance(result, dict)
+            if not isinstance(result, dict):
+                raise TypeError("Command handler must return a dict")
             return result
         except (ValueError, TypeError, AttributeError, KeyError, RuntimeError, MythosValidationError) as e:
             logger.error(

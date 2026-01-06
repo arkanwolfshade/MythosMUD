@@ -6,32 +6,46 @@
 
 ## Executive Summary
 
-Executing the modular E2E test suite per `@.cursor/rules/run-multiplayer-playbook.mdc`. This document tracks all findings and remediation steps.
+Executing the modular E2E test suite per
+`@.cursor/rules/run-multiplayer-playbook.mdc`. This document tracks all
+findings and remediation steps.
 
 ## Scenario 01: Basic Connection/Disconnection Flow
 
 ### Status: ✅ COMPLETED (with known issues)
 
-### Findings
+### Scenario 01: Findings
 
 #### 1. Timing Artifact Confirmed ⚠️
 
-- **Issue**: Connection messages ("Ithaqua has entered the game") not received by first player (AW)
+- **Issue**: Connection messages ("Ithaqua has entered the game") not
+  received by first player (AW)
 - **Expected**: This is a known timing artifact documented in the scenario
-- **Root Cause**: Race condition in room subscription timing - first player not properly subscribed when second player connects
-- **Impact**: Low - connection message broadcasting works correctly, but timing prevents delivery
-- **Remediation**: Requires investigation into room subscription timing and message delivery sequence
+- **Root Cause**: Race condition in room subscription timing - first player
+  not properly subscribed when second player connects
+- **Impact**: Low - connection message broadcasting works correctly, but
+  timing prevents delivery
+- **Remediation**: Requires investigation into room subscription timing and
+  message delivery sequence
 
 #### 2. Session Loss on Tab Closure 🔴 **FIXED**
 
-- **Issue**: When Ithaqua's browser tab was closed, AW's tab was redirected to the login page
-- **Expected**: AW's session should remain active when another player disconnects
-- **Root Cause**: `handleDisconnect` in `GameTerminalWithPanels.tsx` was immediately triggering logout on any disconnect, even temporary ones that might reconnect
-- **Impact**: High - breaks multiplayer experience, causes unexpected disconnections
+- **Issue**: When Ithaqua's browser tab was closed, AW's tab was redirected
+  to the login page
+- **Expected**: AW's session should remain active when another player
+  disconnects
+- **Root Cause**: `handleDisconnect` in `GameTerminalWithPanels.tsx` was
+  immediately triggering logout on any disconnect, even temporary ones that
+  might reconnect
+- **Impact**: High - breaks multiplayer experience, causes unexpected
+  disconnections
 - **Remediation**: **FIXED**
-  - Modified `handleDisconnect` to not immediately trigger logout (lines 2079-2087)
-  - Added connection state monitoring that only triggers logout after all reconnection attempts fail (5 attempts) (lines 2108-2114)
-  - This allows temporary disconnections to reconnect without triggering logout
+  - Modified `handleDisconnect` to not immediately trigger logout (lines
+    2079-2087)
+  - Added connection state monitoring that only triggers logout after all
+    reconnection attempts fail (5 attempts) (lines 2108-2114)
+  - This allows temporary disconnections to reconnect without triggering
+    logout
   - **File**: `client/src/components/GameTerminalWithPanels.tsx`
   - **Status**: Fix applied, requires testing
 
@@ -43,18 +57,20 @@ Executing the modular E2E test suite per `@.cursor/rules/run-multiplayer-playboo
 - **Impact**: Medium - players don't see when others leave
 - **Remediation**: Investigate after fixing session loss issue
 
-### Test Results
+### Scenario 01: Test Results
 
 - ✅ AW successfully logged in and entered game
 - ✅ Ithaqua successfully logged in and entered game
 - ⚠️ AW did NOT see "Ithaqua has entered the game" message (timing artifact)
 - ✅ Ithaqua saw NO unwanted connection messages (correct behavior)
-- ⚠️ AW did NOT see "Ithaqua has left the game" message (timing artifact or session loss)
+- ⚠️ AW did NOT see "Ithaqua has left the game" message (timing artifact or
+  session loss)
 - 🔴 AW's session was lost when Ithaqua's tab closed (BUG)
 
-### Remediation Priority
+### Scenario 01: Remediation Priority
 
-1. **HIGH**: ✅ **FIXED** - Session loss on tab closure (fix applied, requires testing)
+1. **HIGH**: ✅ **FIXED** - Session loss on tab closure (fix applied, requires
+   testing)
 2. **MEDIUM**: Investigate disconnect message delivery
 3. **LOW**: Fix timing artifact for connection messages (known limitation)
 
@@ -62,27 +78,32 @@ Executing the modular E2E test suite per `@.cursor/rules/run-multiplayer-playboo
 
 ### Status: ✅ COMPLETED
 
-### Findings
+### Scenario 02: Findings
 
 #### 1. Clean Game State Verification ✅
 
 - **Issue**: Players should not see stale messages from previous sessions
 - **Expected**: Each new connection starts with a clean slate
-- **Result**: ✅ **VERIFIED** - Both AW and Ithaqua's Game Logs show only current session messages (game ticks, lucidity changes)
+- **Result**: ✅ **VERIFIED** - Both AW and Ithaqua's Game Logs show only
+  current session messages (game ticks, lucidity changes)
 - **Status**: Clean game state is working correctly
 - **Details**:
-  - AW's Game Log: Only game ticks and lucidity changes, NO connection/disconnection messages
-  - Ithaqua's Game Log: Only game ticks and lucidity changes, NO connection/disconnection messages
+  - AW's Game Log: Only game ticks and lucidity changes, NO
+    connection/disconnection messages
+  - Ithaqua's Game Log: Only game ticks and lucidity changes, NO
+    connection/disconnection messages
   - Both players start with fresh sessions and don't see stale messages
 
 #### 2. Tab Management Working ✅
 
 - **Issue**: Multi-tab functionality required for scenario execution
 - **Expected**: Ability to open multiple browser tabs and switch between them
-- **Result**: ✅ **WORKING** - Playwright MCP tab functions (`mcp_playwright_browser_tabs`) working correctly after browser automation was disabled
+- **Result**: ✅ **WORKING** - Playwright MCP tab functions
+  (`mcp_playwright_browser_tabs`) working correctly after browser automation
+  was disabled
 - **Status**: Tab management fully functional
 
-### Test Results
+### Scenario 02: Test Results
 
 - ✅ AW successfully logged in and entered game
 - ✅ AW sees NO stale messages from previous sessions (verified via Game Log)
@@ -91,7 +112,7 @@ Executing the modular E2E test suite per `@.cursor/rules/run-multiplayer-playboo
 - ✅ Clean game state verified for both players
 - ✅ Message isolation working correctly between sessions
 
-### Remediation Priority
+### Scenario 02: Remediation Priority
 
 1. ✅ **COMPLETED** - Clean game state verification
 2. ✅ **COMPLETED** - Tab management functionality confirmed working

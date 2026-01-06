@@ -74,25 +74,25 @@ class Alias(BaseModel):
             "shout",
             "emote",
         }
-        return self.name.lower() in reserved_commands
+        return self.name.lower() in reserved_commands  # pylint: disable=no-member  # Pydantic FieldInfo dynamic attribute
 
     def validate_name(self) -> bool:
         """Validate the alias name is not empty."""
-        return bool(self.name and self.name.strip())
+        return bool(self.name and self.name.strip())  # pylint: disable=no-member  # Pydantic FieldInfo dynamic attribute
 
-    def get_expanded_command(self, args: list[str] | None = None) -> str:
+    def get_expanded_command(self, _args: list[str] | None = None) -> str:  # pylint: disable=unused-argument  # Reason: Parameter reserved for future argument expansion
         """Get the expanded command with optional arguments appended."""
         # Current implementation: just return the command as-is
         # Future enhancement: could support argument substitution
         return self.command
 
-    def model_dump(self, **kwargs) -> dict[str, Any]:
+    def model_dump(self, **_kwargs) -> dict[str, Any]:  # pylint: disable=unused-argument  # Reason: Parameter required for Pydantic compatibility
         """Convert alias to dictionary for JSON serialization."""
         return {
             "id": self.id,
             "name": self.name,
             "command": self.command,
             "version": self.version,
-            "created_at": self.created_at.isoformat() + "Z",
-            "updated_at": self.updated_at.isoformat() + "Z",
+            "created_at": self.created_at.isoformat() + "Z",  # pylint: disable=no-member  # Pydantic FieldInfo dynamic attribute
+            "updated_at": self.updated_at.isoformat() + "Z",  # pylint: disable=no-member  # Pydantic FieldInfo dynamic attribute
         }

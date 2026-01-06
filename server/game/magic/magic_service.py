@@ -306,7 +306,7 @@ class MagicService:
         # Base success chance: Intelligence + mastery
         # Simplified: roll d100, succeed if roll <= (intelligence + mastery)
         base_chance = intelligence + mastery
-        roll = random.randint(1, 100)
+        roll = random.randint(1, 100)  # nosec B311: Game mechanics dice roll, not cryptographic
 
         success = roll <= base_chance
         logger.debug(
@@ -594,7 +594,7 @@ class MagicService:
 
         stats = player.get_stats()
         luck = stats.get("luck", 50)
-        roll = random.randint(1, 100)
+        roll = random.randint(1, 100)  # nosec B311: Game mechanics dice roll, not cryptographic
 
         success = roll <= luck
         logger.debug(

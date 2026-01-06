@@ -65,7 +65,7 @@ async def handle_read_command(
     item_name = args[0]
     spell_name = args[1] if len(args) > 1 else None
 
-    # TODO: Integrate with item system to find spellbook
+    # TODO: Integrate with item system to find spellbook  # pylint: disable=fixme  # Reason: Feature placeholder for item system integration
     # For now, check if item is in inventory or room
     # This is a placeholder - full integration requires item system lookup
 
@@ -82,7 +82,7 @@ async def handle_read_command(
 
         if not item_found:
             # Check room drops
-            # TODO: Check room drops via room manager
+            # TODO: Check room drops via room manager  # pylint: disable=fixme  # Reason: Feature placeholder for room drop system
             return {"result": f"'{item_name}' not found in your inventory or the room."}
 
         # Check if item is a spellbook (has spellbook metadata)

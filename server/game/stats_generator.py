@@ -27,7 +27,7 @@ def generate_random_stats(seed: int | None = None) -> Stats:
     Returns:
         Stats: A new Stats object with randomly generated attribute values
     """
-    local_rng = random.Random(seed) if seed is not None else random.Random()
+    local_rng = random.Random(seed) if seed is not None else random.Random()  # nosec B311: Game mechanics stat generation, not cryptographic
 
     # Roll Size using formula: (2D6+6)*5 (range 40-90)
     size_roll = local_rng.randint(2, 12) + 6  # 2D6+6 (range 8-18)
@@ -123,28 +123,28 @@ class StatsGenerator:
 
     def _roll_size(self) -> int:
         """Roll Size using formula: (2D6+6)*5 (range 40-90)."""
-        size_roll = random.randint(2, 12) + 6  # 2D6+6 (range 8-18)
+        size_roll = random.randint(2, 12) + 6  # nosec B311: Game mechanics dice roll, not cryptographic  # 2D6+6 (range 8-18)
         return size_roll * 5  # Multiply by 5 (range 40-90)
 
     def _roll_3d6(self) -> Stats:
         """Roll stats using 3d6 method (scaled to 15-90 range)."""
         return Stats(
-            strength=random.randint(15, 90),
-            dexterity=random.randint(15, 90),
-            constitution=random.randint(15, 90),
+            strength=random.randint(15, 90),  # nosec B311: Game mechanics stat generation, not cryptographic
+            dexterity=random.randint(15, 90),  # nosec B311: Game mechanics stat generation, not cryptographic
+            constitution=random.randint(15, 90),  # nosec B311: Game mechanics stat generation, not cryptographic
             size=self._roll_size(),
-            intelligence=random.randint(15, 90),
-            power=random.randint(15, 90),
-            education=random.randint(15, 90),
-            charisma=random.randint(15, 90),
-            luck=random.randint(15, 90),
+            intelligence=random.randint(15, 90),  # nosec B311: Game mechanics stat generation, not cryptographic
+            power=random.randint(15, 90),  # nosec B311: Game mechanics stat generation, not cryptographic
+            education=random.randint(15, 90),  # nosec B311: Game mechanics stat generation, not cryptographic
+            charisma=random.randint(15, 90),  # nosec B311: Game mechanics stat generation, not cryptographic
+            luck=random.randint(15, 90),  # nosec B311: Game mechanics stat generation, not cryptographic
         )
 
     def _roll_4d6_drop_lowest(self) -> Stats:
         """Roll stats using 4d6 drop lowest method (more generous, scaled to 15-90 range)."""
 
         def roll_4d6_drop_lowest() -> int:
-            rolls = [random.randint(1, 6) for _ in range(4)]
+            rolls = [random.randint(1, 6) for _ in range(4)]  # nosec B311: Game mechanics dice roll, not cryptographic
             rolls.remove(min(rolls))
             # Scale from 3-18 range to 15-90 range (multiply by 5)
             return sum(rolls) * 5
@@ -184,7 +184,7 @@ class StatsGenerator:
         stat_names = [k for k in base_stats.keys() if k != "size"]  # Don't modify size
 
         while points_remaining > 0:
-            stat = random.choice(stat_names)
+            stat = random.choice(stat_names)  # nosec B311: Game mechanics stat selection, not cryptographic
             current_value = base_stats[stat]
 
             if current_value >= 90:

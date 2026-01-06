@@ -38,6 +38,7 @@ class ChatLogger:
             from ..structured_logging.enhanced_logging_config import _resolve_log_base
 
             config = get_config()
+            # pylint: disable=no-member  # Pydantic FieldInfo dynamic attributes
             log_base = config.logging.log_base
             environment = config.logging.environment
 
@@ -82,7 +83,7 @@ class ChatLogger:
                 self._process_log_entry(log_entry)
                 self._log_queue.task_done()
 
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Writer thread errors unpredictable, must continue loop
                 logger.error("Error in writer thread", error=str(e))
 
         logger.debug("ChatLogger writer thread stopped")
@@ -104,9 +105,11 @@ class ChatLogger:
                 return
 
             # Type narrowing for mypy
-            # AI Agent: After validation, we assert types for mypy type safety
-            assert isinstance(file_path, str), "file_path must be str after validation"
-            assert isinstance(content, str), "content must be str after validation"
+            # AI Agent: After validation, we validate types for mypy type safety
+            if not isinstance(file_path, str):
+                raise TypeError("file_path must be str after validation")
+            if not isinstance(content, str):
+                raise TypeError("content must be str after validation")
 
             # Ensure directory exists
             Path(file_path).parent.mkdir(parents=True, exist_ok=True)
@@ -117,7 +120,7 @@ class ChatLogger:
 
             logger.debug("Log entry written", type=log_type, file=str(file_path))
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Log processing errors unpredictable, must handle gracefully
             logger.error("Failed to process log entry", error=str(e), log_entry=log_entry)
 
     def shutdown(self):
@@ -132,7 +135,7 @@ class ChatLogger:
 
         logger.info("ChatLogger shutdown complete")
 
-    def wait_for_queue_processing(self, timeout: float = 5.0):
+    def wait_for_queue_processing(self, _timeout: float = 5.0):  # pylint: disable=unused-argument  # Reason: Parameter reserved for future timeout-based queue processing
         """
         Wait for all queued log entries to be processed.
 
@@ -145,7 +148,7 @@ class ChatLogger:
         try:
             self._log_queue.join()
             return True
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Queue processing wait errors unpredictable, must return False
             logger.error("Error waiting for queue processing", error=str(e))
             return False
 
@@ -160,7 +163,7 @@ class ChatLogger:
         """
         try:
             self._log_queue.put({"type": log_type, "file_path": str(file_path), "content": content})
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Log queue put errors unpredictable, must handle gracefully
             logger.error("Failed to queue log entry", error=str(e), log_type=log_type)
 
     def _get_local_channel_log_file(self, subzone: str) -> Path:
@@ -210,7 +213,7 @@ class ChatLogger:
             content = json.dumps(entry, ensure_ascii=False)
             self._queue_log_entry(log_type, log_file, content)
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Log entry queueing errors unpredictable, must handle gracefully
             logger.error("Failed to queue log entry", error=str(e), log_type=log_type, entry=entry)
 
     def log_chat_message(self, message_data: dict[str, Any]):
@@ -520,7 +523,7 @@ class ChatLogger:
 
             logger.debug("Local channel message queued", message_id=message_data.get("message_id"), subzone=subzone)
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Local channel logging errors unpredictable, must handle gracefully
             logger.error("Failed to log local channel message", error=str(e), message_data=message_data)
 
     def log_global_channel_message(self, message_data: dict[str, Any]):
@@ -566,7 +569,7 @@ class ChatLogger:
 
             logger.debug("Global channel message queued", message_id=message_data.get("message_id"))
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Global channel logging errors unpredictable, must handle gracefully
             logger.error("Failed to log global channel message", error=str(e), message_data=message_data)
 
     def _get_global_channel_log_file(self) -> Path:
@@ -622,7 +625,7 @@ class ChatLogger:
 
             logger.debug("System channel message queued", message_id=message_data.get("message_id"))
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: System channel logging errors unpredictable, must handle gracefully
             logger.error("Failed to log system channel message", error=str(e), message_data=message_data)
 
     def log_whisper_channel_message(self, message_data: dict[str, Any]):
@@ -672,7 +675,7 @@ class ChatLogger:
 
             logger.debug("Whisper channel message queued", message_id=message_data.get("message_id"))
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Whisper channel logging errors unpredictable, must handle gracefully
             logger.error("Failed to log whisper channel message", error=str(e), message_data=message_data)
 
     def _get_whisper_channel_log_file(self) -> Path:
@@ -761,7 +764,7 @@ class ChatLogger:
                         log_file.unlink()
                         deleted_files.append(str(log_file))
                         logger.info("Deleted old global channel log file", file_path=str(log_file))
-                    except Exception as e:
+                    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Log file deletion errors unpredictable, must continue processing
                         logger.error(
                             "Failed to delete old global channel log file", file_path=str(log_file), error=str(e)
                         )
@@ -824,11 +827,13 @@ class ChatLogger:
         Returns:
             List of deleted file paths
         """
-        from datetime import timedelta
+        from datetime import (
+            timedelta as dt_timedelta,  # pylint: disable=redefined-outer-name,reimported  # Reason: Local import to avoid shadowing outer scope
+        )
 
         deleted_files = []
         current_time = datetime.now(UTC)
-        cutoff_date = current_time - timedelta(days=days_to_keep)
+        cutoff_date = current_time - dt_timedelta(days=days_to_keep)
 
         for log_file in self.log_dir.glob("chat_local_*.log"):
             try:
@@ -838,7 +843,7 @@ class ChatLogger:
                     log_file.unlink()
                     deleted_files.append(str(log_file))
                     logger.info("Deleted old local channel log file", file_path=str(log_file))
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Log file deletion errors unpredictable, must handle gracefully
                 logger.error("Failed to delete old local channel log file", file_path=str(log_file), error=str(e))
 
         return deleted_files

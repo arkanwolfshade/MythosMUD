@@ -36,7 +36,7 @@ class InviteManager:
         """Create a new invite."""
         logger.info("Creating new invite", expires_in_days=expires_in_days)
 
-        invite_code = Invite._generate_invite_code()
+        invite_code = Invite._generate_invite_code()  # pylint: disable=protected-access  # Reason: Class method access required for invite code generation
         # Persist naive UTC timestamps
         expires_at = (datetime.now(UTC) + timedelta(days=expires_in_days)).replace(tzinfo=None)
 

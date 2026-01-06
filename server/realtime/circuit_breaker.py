@@ -43,8 +43,6 @@ class CircuitBreakerOpen(Exception):
     AI: Fast-fail behavior prevents resource exhaustion.
     """
 
-    pass
-
 
 class CircuitBreaker:
     """

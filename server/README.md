@@ -6,7 +6,8 @@ The backend server for MythosMUD, a Lovecraftian horror MUD game.
 
 ### Core Systems
 
-- **World Loading**: Loads room data from JSON files organized by zones (now in `data/local/rooms/`)
+- **World Loading**: Loads room data from JSON files organized by zones (now
+  in `data/local/rooms/`)
 - **Player Management**: Complete player character system with stats and persistence
 - **Real-time Game Loop**: Tick-based game loop for processing game events
 - **Status Effects**: Dynamic status effect system for horror mechanics
@@ -51,7 +52,8 @@ The game features a comprehensive stats system with Lovecraftian horror elements
 ### System Health & Monitoring
 
 - `GET /monitoring/health` - Get comprehensive system health status
-  - Returns server status, uptime, memory usage, database connectivity, and active connections
+  - Returns server status, uptime, memory usage, database connectivity, and
+    active connections
   - HTTP 200: System is healthy or degraded (with status in response body)
   - HTTP 503: System is unhealthy
   - HTTP 500: Health check itself failed
@@ -171,8 +173,10 @@ The game features a comprehensive stats system with Lovecraftian horror elements
 
 #### Health Endpoint Usage Guidelines
 
-- **Monitoring**: Use this endpoint for load balancer health checks and monitoring systems
-- **Performance**: Response time is optimized to be under 100ms for healthy systems
+- **Monitoring**: Use this endpoint for load balancer health checks and
+  monitoring systems
+- **Performance**: Response time is optimized to be under 100ms for healthy
+  systems
 - **Rate Limiting**: No rate limiting applied - designed for frequent health checks
 - **Authentication**: No authentication required - public endpoint for monitoring
 - **Alert Thresholds**:
@@ -238,7 +242,8 @@ python test_player_stats.py
 ### Lucidity System
 
 - Players start with 100 lucidity
-- Encountering horrors, reading forbidden texts, or learning occult knowledge reduces lucidity
+- Encountering horrors, reading forbidden texts, or learning occult knowledge
+  reduces lucidity
 - Low lucidity triggers status effects (paranoia, hallucinations, delirium)
 - Lucidity can be recovered through rest, therapy, or certain items
 

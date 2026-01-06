@@ -38,7 +38,7 @@ def _format_combat_status(player: Any, combat_instance: Any | None) -> str:
     return "You are not in combat."
 
 
-def _get_combat_target(player: Any, target_name: str | None) -> Any | None:
+def _get_combat_target(_player: Any, target_name: str | None) -> Any | None:  # pylint: disable=unused-argument  # Reason: Parameter reserved for future player-based target resolution
     """
     Resolve a combat target by name.
 
@@ -166,9 +166,9 @@ class CombatCommandHandler:
                     "Your anger needs direction - who shall bear the brunt of your assault?",
                     "The cosmic forces require a target for your destructive intent.",
                 ]
-                import random
+                import secrets
 
-                return {"result": random.choice(error_messages)}
+                return {"result": secrets.choice(error_messages)}
 
             logger.debug("DEBUG: Target name", target_name=target_name)
 
@@ -270,7 +270,7 @@ class CombatCommandHandler:
 
             return combat_result
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Combat errors unpredictable, must return error message
             logger.error("ERROR: Exception in combat handler", error=str(e), exc_info=True)
             return {"result": f"An error occurred during combat: {str(e)}"}
 
@@ -296,7 +296,7 @@ class CombatCommandHandler:
 
             return None
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC lookup errors unpredictable, must return None
             logger.error("Error getting NPC instance", npc_id=npc_id, error=str(e))
             return None
 
@@ -336,7 +336,7 @@ class CombatCommandHandler:
             npc_name = npc_instance.name if npc_instance else "unknown target"
 
             # Calculate basic damage using configured value
-            # TODO: Implement proper damage calculation based on player stats, weapon, etc.
+            # TODO: Implement proper damage calculation based on player stats, weapon, etc.  # pylint: disable=fixme  # Reason: Enhancement for more sophisticated damage system
             config = get_config()
             damage = config.game.basic_unarmed_damage
 
@@ -377,7 +377,7 @@ class CombatCommandHandler:
             # Return simple acknowledgment since detailed message is sent via broadcast system
             return {"result": f"You {command} {npc_name}!"}
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Combat action errors unpredictable, must return error message
             logger.error("Error executing combat action", error=str(e), exc_info=True)
             return {"result": f"Error executing {command} command"}
 
@@ -393,7 +393,7 @@ def get_combat_command_handler() -> CombatCommandHandler:
     This uses lazy initialization to ensure that the combat_service from
     app.state is properly initialized before we create the handler.
     """
-    global _combat_command_handler
+    global _combat_command_handler  # pylint: disable=global-statement  # Reason: Singleton pattern for combat handler
     if _combat_command_handler is None:
         # Import here to avoid circular dependency
         from server.main import app

@@ -32,7 +32,9 @@
 - Use `is_background: false` to see output
 - Wait for "Press any key to exit" message
 
-### If start_local.ps1 fails or shows errors, DO NOT run it again - investigate the error first
+### If start_local.ps1 fails or shows errors, DO NOT run it again -
+
+investigate the error first
 
 - Don't try multiple starts
 - Read the error message carefully
@@ -47,7 +49,9 @@
 
 ## EXISTING RULES (REINFORCED)
 
-- DO NOT START THE SERVER WITHOUT MAKING SURE THERE ARE NO RUNNING INSTANCES!
-- Always verify that there is not an existing instance of the server running before trying to start the server
+- DO NOT START THE SERVER WITHOUT MAKING SURE THERE ARE NO RUNNING
+  INSTANCES!
+- Always verify that there is not an existing instance of the server running
+  before trying to start the server
 - Only kill tasks that are part of this project by name
 - Never use taskkill on node.exe

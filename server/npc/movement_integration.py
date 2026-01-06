@@ -137,7 +137,7 @@ class NPCMovementIntegration:
                                 npc_id=npc_id,
                                 new_room_id=to_room_id,
                             )
-            except Exception as update_error:
+            except Exception as update_error:  # pylint: disable=broad-exception-caught  # Reason: NPC room tracking update errors unpredictable, must handle gracefully
                 logger.warning(
                     "Error updating NPC instance room tracking",
                     npc_id=npc_id,
@@ -149,7 +149,7 @@ class NPCMovementIntegration:
             logger.info("NPC moved successfully", npc_id=npc_id, from_room=from_room_id, to_room=to_room_id)
             return True
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC movement errors unpredictable, must return False
             logger.error("Error moving NPC", npc_id=npc_id, error=str(e))
             return False
 
@@ -184,7 +184,7 @@ class NPCMovementIntegration:
 
             logger.debug("Published NPC movement events", npc_id=npc_id, from_room=from_room_id, to_room=to_room_id)
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Event publishing errors unpredictable, must handle gracefully
             logger.error("Error publishing NPC movement events", npc_id=npc_id, error=str(e))
 
     def get_npc_room(self, npc_id: str) -> str | None:
@@ -201,7 +201,7 @@ class NPCMovementIntegration:
             # This would need to be implemented based on how NPCs are tracked
             # For now, return None as NPCs track their own room
             return None
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC room retrieval errors unpredictable, must return None
             logger.error("Error getting NPC room", npc_id=npc_id, error=str(e))
             return None
 
@@ -220,7 +220,7 @@ class NPCMovementIntegration:
             if room:
                 return room.get_npcs()
             return []
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Room NPC retrieval errors unpredictable, must return empty list
             logger.error("Error getting room NPCs", room_id=room_id, error=str(e))
             return []
 
@@ -254,7 +254,7 @@ class NPCMovementIntegration:
 
             return True
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Movement validation errors unpredictable, must return False
             logger.error("Error validating NPC movement", npc_id=npc_id, error=str(e))
             return False
 
@@ -273,7 +273,7 @@ class NPCMovementIntegration:
             if room:
                 return room.exits
             return {}
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Room exit retrieval errors unpredictable, must return empty dict
             logger.error("Error getting room exits", room_id=room_id, error=str(e))
             return {}
 
@@ -299,7 +299,7 @@ class NPCMovementIntegration:
             # Could implement proper pathfinding here
             return None
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Path finding errors unpredictable, must return None
             logger.error("Error finding path between rooms", from_room=from_room_id, to_room=to_room_id, error=str(e))
             return None
 
@@ -362,7 +362,7 @@ class NPCMovementIntegration:
 
             return is_valid
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Boundary validation errors unpredictable, must return False
             logger.error(
                 "Error validating subzone boundary",
                 npc_sub_zone_id=npc_sub_zone_id,

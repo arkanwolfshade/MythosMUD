@@ -142,7 +142,7 @@ class StatisticsAggregator:
                 "message_queue": message_queue_stats,
                 "room_manager": room_stats,
             }
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Memory stats retrieval errors unpredictable, must return empty dict
             logger.error("Error getting memory stats", error=str(e), exc_info=True)
             return {}
 
@@ -243,7 +243,7 @@ class StatisticsAggregator:
                 },
                 "timestamp": now,
             }
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Connection stats retrieval errors unpredictable, must return error response
             logger.error("Error getting connection stats", error=str(e), exc_info=True)
             return {"error": f"Failed to get connection stats: {e}", "timestamp": time.time()}
 
@@ -351,7 +351,7 @@ class StatisticsAggregator:
                 },
                 "timestamp": now,
             }
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Connection health stats retrieval errors unpredictable, must return error response
             logger.error("Error getting connection health stats", error=str(e), exc_info=True)
             return {"error": f"Failed to get connection health stats: {e}", "timestamp": time.time()}
 
@@ -380,6 +380,6 @@ class StatisticsAggregator:
                 "stale_connections": stale_connections,
             }
             return self.memory_monitor.get_memory_alerts(connection_stats)
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Memory alerts retrieval errors unpredictable, must return error message
             logger.error("Error getting memory alerts", error=str(e), exc_info=True)
             return [f"ERROR: Failed to get memory alerts: {e}"]

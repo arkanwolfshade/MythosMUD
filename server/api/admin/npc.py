@@ -80,7 +80,7 @@ class NPCDefinitionResponse(BaseModel):
     ai_integration_stub: dict[str, Any]
 
     @classmethod
-    def from_orm(cls, npc_def: NPCDefinition) -> "NPCDefinitionResponse":
+    def from_orm(cls, npc_def: NPCDefinition) -> "NPCDefinitionResponse":  # pylint: disable=arguments-renamed  # Reason: Parameter renamed for clarity, parent class uses 'obj'
         """Create response from ORM object."""
         # Parse JSON fields if they're strings
         base_stats = json.loads(str(npc_def.base_stats)) if isinstance(npc_def.base_stats, str) else npc_def.base_stats  # type: ignore[unreachable]
@@ -145,7 +145,7 @@ class NPCSpawnRuleResponse(BaseModel):
     spawn_conditions: dict[str, Any]
 
     @classmethod
-    def from_orm(cls, spawn_rule: NPCSpawnRule) -> "NPCSpawnRuleResponse":
+    def from_orm(cls, spawn_rule: NPCSpawnRule) -> "NPCSpawnRuleResponse":  # pylint: disable=arguments-renamed  # Reason: Parameter renamed for clarity, parent class uses 'obj'
         """Create response from ORM object."""
         return cls(
             id=int(spawn_rule.id),
@@ -198,7 +198,7 @@ async def get_npc_definitions(
 
     except HTTPException:
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC retrieval errors unpredictable, must create error context
         context = create_context_from_request(request)
         logger.error("Error retrieving NPC definitions", error=str(e), **context.to_dict())
         raise LoggedHTTPException(
@@ -239,13 +239,13 @@ async def create_npc_definition(
             break
 
         # Commit the transaction
-        await npc_session.commit()
+        await npc_session.commit()  # pylint: disable=undefined-loop-variable  # Reason: Loop always executes once due to break, npc_session is always defined
 
         return NPCDefinitionResponse.from_orm(definition)
 
     except HTTPException:
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC creation errors unpredictable, must create error context
         # Rollback is handled by the session context manager
         context = create_context_from_request(request)
         logger.error("Error creating NPC definition", error=str(e), **context.to_dict())
@@ -280,7 +280,7 @@ async def get_npc_definition(
 
     except HTTPException:
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC retrieval errors unpredictable, must create error context
         context = create_context_from_request(request)
         logger.error("Error retrieving NPC definition", error=str(e), **context.to_dict())
         raise LoggedHTTPException(
@@ -329,7 +329,7 @@ async def update_npc_definition(
 
     except HTTPException:
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC update errors unpredictable, must rollback and create error context
         await session.rollback()
         context = create_context_from_request(request)
         logger.error("Error updating NPC definition", error=str(e), **context.to_dict())
@@ -367,7 +367,7 @@ async def delete_npc_definition(
 
     except HTTPException:
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC deletion errors unpredictable, must rollback and create error context
         await session.rollback()
         context = create_context_from_request(request)
         logger.error("Error deleting NPC definition", error=str(e), **context.to_dict())
@@ -403,7 +403,7 @@ async def get_npc_instances(
 
     except HTTPException:
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC instance retrieval errors unpredictable, must create error context
         context = create_context_from_request(request)
         logger.error("Error retrieving NPC instances", error=str(e), **context.to_dict())
         raise LoggedHTTPException(
@@ -454,7 +454,7 @@ async def spawn_npc_instance(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
     except HTTPException:
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC spawn errors unpredictable, must create error context
         context = create_context_from_request(request)
         logger.error("Error spawning NPC instance", error=str(e), **context.to_dict())
         raise LoggedHTTPException(
@@ -498,7 +498,7 @@ async def despawn_npc_instance(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
     except HTTPException:
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC despawn errors unpredictable, must create error context
         context = create_context_from_request(request)
         logger.error("Error despawning NPC instance", error=str(e), **context.to_dict())
         raise LoggedHTTPException(
@@ -548,7 +548,7 @@ async def move_npc_instance(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
     except HTTPException:
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC movement errors unpredictable, must create error context
         context = create_context_from_request(request)
         logger.error("Error moving NPC instance", error=str(e), **context.to_dict())
         raise LoggedHTTPException(
@@ -589,7 +589,7 @@ async def get_npc_stats(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
     except HTTPException:
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC stats retrieval errors unpredictable, must create error context
         context = create_context_from_request(request)
         logger.error("Error retrieving NPC stats", error=str(e), **context.to_dict())
         raise LoggedHTTPException(
@@ -628,7 +628,7 @@ async def get_npc_population_stats(
 
     except HTTPException:
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC population stats errors unpredictable, must create error context
         context = create_context_from_request(request)
         logger.error("Error retrieving NPC population stats", error=str(e), **context.to_dict())
         raise LoggedHTTPException(
@@ -668,7 +668,7 @@ async def get_npc_zone_stats(
 
     except HTTPException:
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC zone stats errors unpredictable, must create error context
         context = create_context_from_request(request)
         logger.error("Error retrieving NPC zone stats", error=str(e), **context.to_dict())
         raise LoggedHTTPException(
@@ -706,7 +706,7 @@ async def get_npc_system_status(
 
     except HTTPException:
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC system status errors unpredictable, must create error context
         context = create_context_from_request(request)
         logger.error("Error retrieving NPC system status", error=str(e), **context.to_dict())
         raise LoggedHTTPException(
@@ -742,7 +742,7 @@ async def get_npc_spawn_rules(
 
     except HTTPException:
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC spawn rule retrieval errors unpredictable, must create error context
         context = create_context_from_request(request)
         logger.error("Error retrieving NPC spawn rules", error=str(e), **context.to_dict())
         raise LoggedHTTPException(
@@ -787,7 +787,7 @@ async def create_npc_spawn_rule(
 
     except HTTPException:
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC spawn rule creation errors unpredictable, must rollback and create error context
         await session.rollback()
         context = create_context_from_request(request)
         logger.error("Error creating NPC spawn rule", error=str(e), **context.to_dict())
@@ -825,7 +825,7 @@ async def delete_npc_spawn_rule(
 
     except HTTPException:
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC spawn rule deletion errors unpredictable, must rollback and create error context
         await session.rollback()
         context = create_context_from_request(request)
         logger.error("Error deleting NPC spawn rule", error=str(e), **context.to_dict())
@@ -859,7 +859,7 @@ async def get_admin_sessions(
 
     except HTTPException:
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Admin session retrieval errors unpredictable, must create error context
         context = create_context_from_request(request)
         logger.error("Error retrieving admin sessions", error=str(e), **context.to_dict())
         raise LoggedHTTPException(
@@ -891,7 +891,7 @@ async def get_admin_audit_log(
 
     except HTTPException:
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Admin audit log retrieval errors unpredictable, must create error context
         context = create_context_from_request(request)
         logger.error("Error retrieving admin audit log", error=str(e), **context.to_dict())
         raise LoggedHTTPException(
@@ -923,7 +923,7 @@ async def cleanup_admin_sessions(
 
     except HTTPException:
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Admin session cleanup errors unpredictable, must create error context
         context = create_context_from_request(request)
         logger.error("Error cleaning up admin sessions", error=str(e), **context.to_dict())
         raise LoggedHTTPException(

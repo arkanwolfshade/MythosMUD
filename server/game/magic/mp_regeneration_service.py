@@ -153,7 +153,7 @@ class MPRegenerationService:
             return REST_MP_REGEN_MULTIPLIER * 1.2  # Slightly better when lying
 
         # Check for meditation status effect
-        # TODO: Check status effects for meditation when status effect system supports it
+        # TODO: Check status effects for meditation when status effect system supports it  # pylint: disable=fixme  # Reason: Feature placeholder for status effect system integration
         # For now, base rate only
 
         return 1.0  # Base rate

@@ -39,7 +39,9 @@ if IN_CI:
     # Use sys.executable to use the currently active Python interpreter
     # This works correctly in both local development (venv activated) and CI (venv activated)
     # When run from an activated venv, sys.executable points to the venv Python with all dependencies
-    python_exe = sys.executable
+    # pylint: disable=invalid-name
+    # Variable name follows Python convention (not a constant, so lowercase_with_underscores is correct)
+    python_exe = sys.executable  # noqa: N806
 
     # Set environment variables to prevent output buffering issues in CI/Docker
     env = os.environ.copy()
@@ -288,8 +290,11 @@ else:
     try:
         # Check password env var without storing the actual value to avoid CodeQL alert
         pw_exists = "MYTHOSMUD_ADMIN_PASSWORD" in os.environ
-        pw_value = os.environ.get("MYTHOSMUD_ADMIN_PASSWORD", "")
-        pw_set = pw_value != "" and pw_value != "NOT_SET"
+        # pylint: disable=invalid-name
+        # Variable name follows Python convention (not a constant, so lowercase_with_underscores is correct)
+        pw_value = os.environ.get("MYTHOSMUD_ADMIN_PASSWORD", "")  # noqa: N806
+        # Merge comparisons using 'in' for better performance
+        pw_set = pw_value not in ("", "NOT_SET")
         pw_length = len(pw_value) if pw_set else 0
         # Clear the variable to avoid storing sensitive data
         pw_value = None

@@ -1,4 +1,6 @@
-#!/usr/bin/env pwsh
+﻿#!/usr/bin/env pwsh
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and output messages require Write-Host for proper display')]
 <#
 .SYNOPSIS
     Run comprehensive bug prevention tests for MythosMUD.
@@ -25,6 +27,8 @@
     .\run_bug_prevention_tests.ps1 -TestType all -Verbose
 #>
 
+# Suppress PSReviewUnusedParameter: Verbose is used in conditional logic for pytest verbosity
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', 'Verbose', Justification = 'Parameter is used to control pytest verbosity via conditional logic')]
 param(
     [ValidateSet("server", "client", "integration", "all")]
     [string]$TestType = "all",
@@ -72,7 +76,7 @@ function Test-Command {
     }
 }
 
-function Invoke-ServerTests {
+function Invoke-ServerTest {
     Write-Section "Running Server-Side Bug Prevention Tests"
 
     # Check if we're in the right directory
@@ -111,7 +115,7 @@ function Invoke-ServerTests {
             }
 
             try {
-                $result = python -m pytest @pytestArgs
+                python -m pytest @pytestArgs | Out-Null
                 if ($LASTEXITCODE -eq 0) {
                     Write-ColorOutput "✓ $testFile passed" $Green
                 }
@@ -133,7 +137,7 @@ function Invoke-ServerTests {
     return $allPassed
 }
 
-function Invoke-ClientTests {
+function Invoke-ClientTest {
     Write-Section "Running Client-Side Bug Prevention Tests"
 
     # Check if we're in the right directory
@@ -167,7 +171,7 @@ function Invoke-ClientTests {
             $testArgs += "--reporter=verbose"
         }
 
-        $result = npm @testArgs
+        npm @testArgs | Out-Null
         $success = $LASTEXITCODE -eq 0
 
         if ($success) {
@@ -188,7 +192,7 @@ function Invoke-ClientTests {
     }
 }
 
-function Invoke-IntegrationTests {
+function Invoke-IntegrationTest {
     Write-Section "Running Integration Tests"
 
     # Run the integration tests that simulate real scenarios
@@ -214,7 +218,7 @@ function Invoke-IntegrationTests {
         }
 
         try {
-            $result = python -m pytest @pytestArgs
+            python -m pytest @pytestArgs | Out-Null
             $success = $LASTEXITCODE -eq 0
 
             if ($success) {
@@ -294,15 +298,15 @@ $integrationTestsPassed = $true
 try {
     # Run tests based on type
     if ($TestType -eq "all" -or $TestType -eq "server") {
-        $serverTestsPassed = Invoke-ServerTests
+        $serverTestsPassed = Invoke-ServerTest
     }
 
     if ($TestType -eq "all" -or $TestType -eq "client") {
-        $clientTestsPassed = Invoke-ClientTests
+        $clientTestsPassed = Invoke-ClientTest
     }
 
     if ($TestType -eq "all" -or $TestType -eq "integration") {
-        $integrationTestsPassed = Invoke-IntegrationTests
+        $integrationTestsPassed = Invoke-IntegrationTest
     }
 
     # Show summary

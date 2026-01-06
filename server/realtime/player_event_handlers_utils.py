@@ -142,7 +142,8 @@ class PlayerEventHandlerUtils:
             return
 
         # Type narrowing: is_valid_name_for_occupant returns True only for non-empty strings
-        assert isinstance(name, str), "name must be str if is_valid_name_for_occupant returns True"
+        if not isinstance(name, str):
+            raise TypeError("name must be str if is_valid_name_for_occupant returns True")
 
         if is_player:
             players.append(name)
@@ -172,7 +173,8 @@ class PlayerEventHandlerUtils:
             name = occ.get("name")
             if name and self.name_extractor.is_valid_name_for_occupant(name):
                 # Type narrowing: is_valid_name_for_occupant returns True only for non-empty strings
-                assert isinstance(name, str), "name must be str if is_valid_name_for_occupant returns True"
+                if not isinstance(name, str):
+                    raise TypeError("name must be str if is_valid_name_for_occupant returns True")
                 all_occupants.append(name)
 
     def build_occupants_snapshot_data(self, occupants_snapshot: list[dict[str, Any] | str]) -> dict[str, Any]:

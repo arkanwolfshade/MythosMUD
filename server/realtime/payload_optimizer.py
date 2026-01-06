@@ -62,7 +62,7 @@ class PayloadOptimizer:
         try:
             json_str = json.dumps(payload, separators=(",", ":"))
             return len(json_str.encode("utf-8"))
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Payload size calculation errors unpredictable, must return 0
             logger.warning("Error calculating payload size", error=str(e))
             return 0
 
@@ -87,7 +87,7 @@ class PayloadOptimizer:
                 "compressed_size": len(compressed),
                 "compression_ratio": len(compressed) / len(json_str.encode("utf-8")) if json_str else 0,
             }
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Payload compression errors unpredictable, must return original payload
             logger.error("Error compressing payload", error=str(e), exc_info=True)
             return payload
 
@@ -200,7 +200,7 @@ class PayloadOptimizer:
                 "changes": changes,
                 "timestamp": full_payload.get("timestamp"),
             }
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Incremental update creation errors unpredictable, must fallback to full payload
             logger.error("Error creating incremental update", error=str(e), exc_info=True)
             # Fallback to full payload on error
             return full_payload

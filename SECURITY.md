@@ -2,7 +2,9 @@
 
 ## Reporting a Vulnerability
 
-The security of MythosMUD is of paramount importance. We take all security vulnerabilities seriously and appreciate your efforts to responsibly disclose your findings.
+The security of MythosMUD is of paramount importance. We take all security
+vulnerabilities seriously and appreciate your efforts to responsibly disclose
+your findings.
 
 ### How to Report
 
@@ -26,10 +28,12 @@ Please include the following information in your report:
 
 When you report a security vulnerability, you can expect:
 
-1. **Acknowledgment**: We will acknowledge receipt of your vulnerability report within 48 hours
+1. **Acknowledgment**: We will acknowledge receipt of your vulnerability
+   report within 48 hours
 2. **Investigation**: We will investigate the issue and determine its severity
 3. **Communication**: We will keep you informed of our progress toward a fix
-4. **Credit**: We will credit you for the discovery (unless you prefer to remain anonymous)
+4. **Credit**: We will credit you for the discovery (unless you prefer to
+   remain anonymous)
 5. **Disclosure**: We will coordinate disclosure timing with you
 
 ### Timeline
@@ -47,7 +51,8 @@ When you report a security vulnerability, you can expect:
 | dev     | :white_check_mark: |
 | < 1.0   | :x:                |
 
-**Note**: MythosMUD is currently in beta development. We are actively addressing security issues across all development branches.
+**Note**: MythosMUD is currently in beta development. We are actively
+addressing security issues across all development branches.
 
 ## Security Measures
 
@@ -61,10 +66,12 @@ MythosMUD implements comprehensive security measures to protect users and data:
 - Never trust client-side validation alone
 - Implement rate limiting for authentication endpoints
 - Use secure session management practices
-- **Argon2 Password Hashing**: Industry-leading password protection with configurable parameters
+- **Argon2 Password Hashing**: Industry-leading password protection with
+  configurable parameters
 - **JWT Token Authentication**: Secure, stateless authentication with proper expiration
 - **Invite-Only System**: Controlled access with database-backed invite management
-- **Role-Based Access Control**: Admin and user role separation with proper authorization checks
+- **Role-Based Access Control**: Admin and user role separation with proper
+  authorization checks
 
 #### Data Protection
 
@@ -79,7 +86,8 @@ MythosMUD implements comprehensive security measures to protect users and data:
 - **XSS Protection**: Complete client-side XSS vulnerability elimination
 - **Path Traversal Prevention**: Secure path validation for all file operations
 - **Rate Limiting**: Per-user and per-endpoint abuse prevention
-- **Security Headers**: Comprehensive HTTP security headers including CSP, HSTS, X-Frame-Options
+- **Security Headers**: Comprehensive HTTP security headers including CSP,
+  HSTS, X-Frame-Options
 - **CORS Configuration**: Properly configured cross-origin resource sharing
 
 #### Privacy & Compliance
@@ -165,7 +173,8 @@ We follow responsible disclosure practices:
 1. **Private Reporting**: All vulnerabilities should be reported privately
 2. **Coordinated Disclosure**: We will work with you to coordinate public disclosure
 3. **Recognition**: Security researchers will be acknowledged (with permission)
-4. **No Legal Action**: We will not pursue legal action against researchers who follow responsible disclosure
+4. **No Legal Action**: We will not pursue legal action against researchers
+   who follow responsible disclosure
 
 ### Out of Scope
 
@@ -201,7 +210,11 @@ For security-related questions or concerns:
 
 ---
 
-*"The wards are in place, the sigils inscribed. We guard not only against the eldritch horrors of the Mythos, but also against the all-too-real threats of the digital realm."*
+## Closing Note
+
+"The wards are in place, the sigils inscribed. We guard not only against the
+eldritch horrors of the Mythos, but also against the all-too-real threats of
+the digital realm."
 
 **Last Updated**: January 2025
 **Version**: 1.0

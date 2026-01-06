@@ -154,8 +154,8 @@ async def get_subject_statistics(
 
         # Get configuration info
         patterns_count = len(subject_manager.patterns)
-        cache_enabled = subject_manager._cache_enabled
-        strict_validation = subject_manager._strict_validation
+        cache_enabled = subject_manager._cache_enabled  # pylint: disable=protected-access  # Reason: Configuration access required for admin statistics
+        strict_validation = subject_manager._strict_validation  # pylint: disable=protected-access  # Reason: Configuration access required for admin statistics
 
         logger.info(
             "Subject statistics requested",
@@ -171,7 +171,7 @@ async def get_subject_statistics(
             "strict_validation": strict_validation,
         }
 
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Statistics retrieval errors unpredictable, must create error context
         logger.error("Error retrieving subject statistics", error=str(e), error_type=type(e).__name__)
         raise LoggedHTTPException(
             status_code=500,
@@ -233,7 +233,7 @@ async def validate_subject(
             "details": details,
         }
 
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Subject validation errors unpredictable, must create error context
         logger.error(
             "Error validating subject",
             error=str(e),
@@ -282,7 +282,7 @@ async def get_patterns(
 
         return {"patterns": patterns, "total_count": len(patterns)}
 
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Pattern retrieval errors unpredictable, must create error context
         logger.error("Error retrieving patterns", error=str(e), error_type=type(e).__name__, user_id=current_user.id)
         raise LoggedHTTPException(
             status_code=500,
@@ -357,7 +357,7 @@ async def register_pattern(
             ),
         ) from e
 
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Pattern registration errors unpredictable, must create error context
         logger.error(
             "Error registering pattern",
             error=str(e),

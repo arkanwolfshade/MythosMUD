@@ -123,6 +123,8 @@ def run_lint():
 
     print(f"Running lint from {current_worktree} worktree...")
 
+    # pylint: disable=import-outside-toplevel
+    # Lazy import to avoid circular dependencies and improve startup performance
     from utils.safe_subprocess import safe_run_static
 
     if current_worktree == "client":

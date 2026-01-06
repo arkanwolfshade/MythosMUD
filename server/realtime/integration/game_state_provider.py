@@ -105,7 +105,7 @@ class GameStateProvider:
                 player = await async_persistence.get_player_by_id(player_id)
                 if player:
                     players[player_id] = player
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Player batch loading errors unpredictable, must continue processing
                 # Structlog handles UUID objects automatically, no need to convert to string
                 logger.debug("Error loading player in batch", player_id=player_id, error=str(e))
 
@@ -152,7 +152,7 @@ class GameStateProvider:
                         else:
                             # Fallback: Extract NPC name from the NPC ID
                             npc_names[npc_id] = npc_id.split("_")[0].replace("_", " ").title()
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC name batch loading errors unpredictable, must use fallback names
             logger.debug("Error batch loading NPC names", npc_count=len(npc_ids), error=str(e))
             # Fallback: Generate names from IDs
             for npc_id in npc_ids:
@@ -199,7 +199,7 @@ class GameStateProvider:
                                         player_name = getattr(user, "username", None) or getattr(
                                             user, "display_name", None
                                         )
-                                except Exception:
+                                except Exception:  # pylint: disable=broad-exception-caught  # nosec B110: Graceful fallback if user attributes are unavailable
                                     pass
 
                         # Validate name is not UUID
@@ -386,7 +386,7 @@ class GameStateProvider:
                         "current_room_id": room_id,
                         "stats": stats_data,  # Include stats in fallback
                     }
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Player data retrieval errors unpredictable, must return fallback data
                 logger.error(
                     "Error getting complete player data in game_state_provider",
                     error=str(e),
@@ -430,5 +430,5 @@ class GameStateProvider:
             await self.send_personal_message(player_id, game_state_event)
             logger.info("Sent initial game_state to player", player_id=player_id)
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Game state sending errors unpredictable, must handle gracefully
             logger.error("Error sending initial game_state to player", player_id=player_id, error=str(e), exc_info=True)

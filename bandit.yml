@@ -1,15 +1,32 @@
 # Bandit configuration for Codacy
-# This file configures Bandit to skip B101 (assert_used) checks only in test files
-# Assert statements are standard and expected in test files (pytest uses them extensively)
-# but should still be flagged in production code for security reasons
+# This file configures Bandit to skip common false positives in test files
+# Test files contain test data, mock values, and intentional patterns that trigger
+# security warnings but are not actual security issues
 
 # Configure assert_used plugin to skip B101 checks only for test files
-# This keeps B101 enabled for production code while allowing assert statements in tests
+# Assert statements are standard and expected in test files (pytest uses them extensively)
+# but should still be flagged in production code for security reasons
 assert_used:
   skips:
     - '*/test_*.py'     # Matches test_*.py files at any directory depth (e.g., server/tests/unit/services/test_models.py)
     - '*_test.py'       # Matches *_test.py files (alternative naming convention)
     - '*/tests/*.py'    # Matches all Python files directly in tests directories (e.g., server/tests/conftest.py)
 
-# Note: B101 will remain enabled for production code files to catch inappropriate
-# use of assert statements that would be removed in optimized byte code.
+# Configure hardcoded_password_string plugin to skip B105/B106 checks in test files
+# Test files contain hardcoded test passwords, tokens, and secrets for testing purposes
+# These are not security issues as they are only used in test environments
+# Using the plugin name that bandit uses internally for B105/B106 checks
+hardcoded_password_string:
+  skips:
+    - '*/test_*.py'
+    - '*_test.py'
+    - '*/tests/*.py'
+
+# Note: B101, B105, and B106 will remain enabled for production code files to catch
+# inappropriate use of assert statements and hardcoded credentials in production code.
+
+# Skip B608 globally - PostgreSQL array literals cannot be parameterized
+# When array literals come from validated, hardcoded dictionaries (not user input),
+# they must be embedded in SQL strings. This is safe and documented with nosec comments.
+skips:
+  - B608

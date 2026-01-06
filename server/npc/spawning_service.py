@@ -14,13 +14,16 @@ appear at the right time, in the right place, and under the right conditions.
 import random
 import time
 from dataclasses import dataclass
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from server.events.event_bus import EventBus
+
+if TYPE_CHECKING:
+    from server.npc.population_control import NPCPopulationController
 from server.events.event_types import NPCEnteredRoom, NPCLeftRoom, PlayerEnteredRoom, PlayerLeftRoom
 from server.models.npc import NPCDefinition, NPCSpawnRule
 from server.npc.behaviors import AggressiveMobNPC, NPCBase, PassiveMobNPC, ShopkeeperNPC
-from server.npc.population_control import NPCPopulationController, ZoneConfiguration
+from server.npc.population_control import ZoneConfiguration  # NPCPopulationController removed - unused import
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -169,7 +172,6 @@ class NPCSpawningService:
         """Handle player leaving a room - may trigger despawn checks."""
         # For now, we don't automatically despawn NPCs when players leave
         # This could be implemented based on specific requirements
-        pass
 
     def _handle_npc_entered_room(self, event: NPCEnteredRoom) -> None:
         """Handle NPC entering a room."""
@@ -193,7 +195,7 @@ class NPCSpawningService:
         if self.population_controller is None:
             return
 
-        zone_key = self.population_controller._get_zone_key_from_room_id(room_id)
+        zone_key = self.population_controller._get_zone_key_from_room_id(room_id)  # pylint: disable=protected-access  # Reason: Internal zone key retrieval required
         zone_config = self.population_controller.get_zone_configuration(zone_key)
 
         if not zone_config:
@@ -230,7 +232,7 @@ class NPCSpawningService:
         spawn_requests: list[NPCSpawnRequest] = []
 
         # Check population limits
-        zone_key = self.population_controller._get_zone_key_from_room_id(room_id)
+        zone_key = self.population_controller._get_zone_key_from_room_id(room_id)  # pylint: disable=protected-access  # Reason: Internal zone key retrieval required
         stats = self.population_controller.get_population_stats(zone_key)
         if stats:
             # Check by individual NPC definition ID, not by type
@@ -270,7 +272,7 @@ class NPCSpawningService:
 
                 # Check spawn probability with zone modifier
                 effective_probability = zone_config.get_effective_spawn_probability(float(definition.spawn_probability))
-                if random.random() <= effective_probability:
+                if random.random() <= effective_probability:  # nosec B311: Game mechanics spawn probability, not cryptographic
                     request = NPCSpawnRequest(
                         definition=definition,
                         room_id=room_id,
@@ -296,7 +298,10 @@ class NPCSpawningService:
         return spawn_requests
 
     def _calculate_spawn_priority(
-        self, definition: NPCDefinition, rule: NPCSpawnRule, zone_config: "ZoneConfiguration"
+        self,
+        definition: NPCDefinition,
+        _rule: NPCSpawnRule,
+        zone_config: "ZoneConfiguration",  # pylint: disable=unused-argument  # Reason: Parameter reserved for future rule-based priority calculation
     ) -> int:
         """
         Calculate spawn priority for an NPC.
@@ -442,7 +447,7 @@ class NPCSpawningService:
                 spawn_request=request,
             )
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC spawn request errors unpredictable, must handle gracefully
             logger.error("Failed to spawn NPC from request", request=request, error=str(e))
             return NPCSpawnResult(
                 success=False,
@@ -532,7 +537,7 @@ class NPCSpawningService:
 
             return npc_instance
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC spawn errors unpredictable, must handle gracefully
             # Use extracted name to avoid potential lazy loading issues
             definition_name = getattr(definition, "name", "Unknown NPC")
             logger.error("Failed to create NPC instance", npc_name=definition_name, error=str(e))
@@ -550,12 +555,12 @@ class NPCSpawningService:
             Unique NPC ID
         """
         timestamp = int(time.time())
-        random_suffix = random.randint(1000, 9999)
+        random_suffix = random.randint(1000, 9999)  # nosec B311: Game mechanics NPC ID generation, not cryptographic
         # Use getattr to avoid potential lazy loading issues
         definition_name = getattr(definition, "name", "unknown_npc")
         return f"{definition_name.lower().replace(' ', '_')}_{room_id}_{timestamp}_{random_suffix}"
 
-    def despawn_npc(self, npc_id: str, reason: str = "manual") -> bool:
+    def despawn_npc(self, npc_id: str, _reason: str = "manual") -> bool:  # pylint: disable=unused-argument  # Reason: Parameter reserved for future reason-based despawn logic
         """
         Despawn an NPC instance.
 
@@ -645,7 +650,7 @@ class NPCSpawningService:
         if self.population_controller is None:
             return "unknown/unknown"
 
-        return self.population_controller._get_zone_key_from_room_id(room_id)
+        return self.population_controller._get_zone_key_from_room_id(room_id)  # pylint: disable=protected-access  # Reason: Internal zone key retrieval required
 
     def get_population_stats(self, zone_key: str) -> Any | None:
         """

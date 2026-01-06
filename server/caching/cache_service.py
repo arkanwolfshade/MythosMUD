@@ -19,7 +19,7 @@ logger = get_logger(__name__)
 T = TypeVar("T")
 
 
-def cached(cache_name: str, key_func: Callable[..., str] | None = None, ttl_seconds: int | None = None) -> Callable:
+def cached(cache_name: str, key_func: Callable[..., str] | None = None, _ttl_seconds: int | None = None) -> Callable:  # pylint: disable=unused-argument  # Reason: Parameter reserved for future TTL implementation
     """
     Decorator to cache function results.
 
@@ -301,9 +301,11 @@ class NPCCacheService:
                 spawn_rules_cache_opt = self.cache_manager.get_cache("npc_spawn_rules")
                 logger.debug("NPC spawn rules cache already existed; using existing instance")
 
-        # Assign with precise types (assert non-None after creation/retrieval)
-        assert definitions_cache_opt is not None, "NPC definitions cache must exist after initialization"
-        assert spawn_rules_cache_opt is not None, "NPC spawn rules cache must exist after initialization"
+        # Assign with precise types (check non-None after creation/retrieval)
+        if definitions_cache_opt is None:
+            raise RuntimeError("NPC definitions cache must exist after initialization")
+        if spawn_rules_cache_opt is None:
+            raise RuntimeError("NPC spawn rules cache must exist after initialization")
         self.definitions_cache: LRUCache[Any, Any] = definitions_cache_opt
         self.spawn_rules_cache: LRUCache[Any, Any] = spawn_rules_cache_opt
 
@@ -588,13 +590,13 @@ class CacheService:
         try:
             starting_room_id = "earth_arkhamcity_northside_intersection_derby_high"
             self.room_cache.get_room_sync(starting_room_id)
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Cache preload errors unpredictable, must not fail initialization
             logger.warning("Failed to preload starting room", error=str(e))
 
         # Preload all professions
         try:
             self.profession_cache.get_all_professions()
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Cache preload errors unpredictable, must not fail initialization
             logger.warning("Failed to preload professions", error=str(e))
 
         logger.info("Frequently accessed data preloading completed")

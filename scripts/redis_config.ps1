@@ -1,7 +1,9 @@
-# Redis Configuration for MythosMUD
+﻿# Redis Configuration for MythosMUD
 # This script provides Redis connection information and utilities
 
 # Redis connection details
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and output messages require Write-Host for proper display')]
 $WSL_IP = "172.28.79.204"
 $Port = 6379
 $Localhost = "localhost"

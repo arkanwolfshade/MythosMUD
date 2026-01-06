@@ -138,7 +138,7 @@ class NPCMessageQueue:
                 logger.debug("Added message to NPC queue", npc_id=npc_id, message_type=message.get("type"))
                 return True
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Message queue errors unpredictable, must return False
             logger.error("Error adding message to NPC queue", npc_id=npc_id, error=str(e))
             return False
 
@@ -172,7 +172,7 @@ class NPCMessageQueue:
                     self.pending_messages[npc_id].clear()
                     logger.debug("Cleared NPC messages", npc_id=npc_id, message_count=message_count)
                 return True
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Message clearing errors unpredictable, must return False
             logger.error("Error clearing NPC messages", npc_id=npc_id, error=str(e))
             return False
 
@@ -220,7 +220,7 @@ class NPCThreadManager:
             self.is_running = True
             logger.info("NPC thread manager started")
             return True
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Thread manager startup errors unpredictable, must return False
             logger.error("Failed to start NPC thread manager", error=str(e))
             return False
 
@@ -253,7 +253,7 @@ class NPCThreadManager:
 
             logger.info("NPC thread manager stopped")
             return True
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Thread manager shutdown errors unpredictable, must return False
             logger.error("Failed to stop NPC thread manager", error=str(e))
             return False
 
@@ -286,7 +286,7 @@ class NPCThreadManager:
                 logger.info("Started NPC thread", npc_id=npc_id, npc_name=npc_definition.name)
                 return True
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC thread startup errors unpredictable, must return False
             logger.error("Failed to start NPC thread", npc_id=npc_id, error=str(e))
             return False
 
@@ -303,7 +303,7 @@ class NPCThreadManager:
         try:
             async with self._lock:
                 return await self._stop_npc_thread_internal(npc_id)
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC thread shutdown errors unpredictable, must return False
             logger.error("Failed to stop NPC thread", npc_id=npc_id, error=str(e))
             return False
 
@@ -348,7 +348,7 @@ class NPCThreadManager:
 
             # Start a new thread
             return await self.start_npc_thread(npc_id, npc_definition)
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC thread restart errors unpredictable, must return False
             logger.error("Failed to restart NPC thread", npc_id=npc_id, error=str(e))
             return False
 
@@ -388,7 +388,7 @@ class NPCThreadManager:
 
         except asyncio.CancelledError:
             logger.info("NPC thread worker cancelled", npc_id=npc_id)
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Thread worker errors unpredictable, must handle gracefully
             logger.error("Error in NPC thread worker", npc_id=npc_id, error=str(e))
         finally:
             logger.info("NPC thread worker ended", npc_id=npc_id)
@@ -405,10 +405,10 @@ class NPCThreadManager:
                 await self._process_wander_action(npc_id, message)
             # Add other action type handlers here as needed
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Message processing errors unpredictable, must handle gracefully
             logger.error("Error processing NPC message", npc_id=npc_id, error=str(e))
 
-    async def _process_wander_action(self, npc_id: str, message: dict[str, Any]):
+    async def _process_wander_action(self, npc_id: str, _message: dict[str, Any]):  # pylint: disable=unused-argument  # Reason: Parameter required for action signature, message content not used
         """
         Process a WANDER action for idle movement.
 
@@ -440,7 +440,7 @@ class NPCThreadManager:
             # Get behavior config
             behavior_config = getattr(npc_instance, "_behavior_config", {})
             if isinstance(behavior_config, str):
-                import json
+                # json already imported at module level
 
                 try:
                     behavior_config = json.loads(behavior_config)
@@ -470,15 +470,15 @@ class NPCThreadManager:
             if success:
                 # Update last idle movement time on NPC instance to prevent immediate re-scheduling
                 if hasattr(npc_instance, "_last_idle_movement_time"):
-                    npc_instance._last_idle_movement_time = time.time()
+                    npc_instance._last_idle_movement_time = time.time()  # pylint: disable=protected-access  # Reason: Internal state tracking required
                 logger.debug("WANDER action executed successfully", npc_id=npc_id)
             else:
                 logger.debug("WANDER action did not result in movement", npc_id=npc_id)
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: WANDER action processing errors unpredictable, must handle gracefully
             logger.error("Error processing WANDER action", npc_id=npc_id, error=str(e))
 
-    async def _execute_npc_behavior(self, npc_id: str, npc_definition: NPCDefinition):
+    async def _execute_npc_behavior(self, npc_id: str, _npc_definition: NPCDefinition):  # pylint: disable=unused-argument  # Reason: Parameter reserved for future definition-based behavior execution
         """Execute NPC behavior based on its type and configuration."""
         try:
             # Get NPC instance from lifecycle manager
@@ -503,10 +503,10 @@ class NPCThreadManager:
                 logger.debug(
                     "Executed NPC behavior", npc_id=npc_id, npc_type=getattr(npc_instance, "npc_type", "unknown")
                 )
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Behavior execution errors unpredictable, must handle gracefully
                 logger.error("Error executing NPC behavior", npc_id=npc_id, error=str(e), exc_info=True)
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Behavior execution errors unpredictable, must handle gracefully
             logger.error("Error executing NPC behavior", npc_id=npc_id, error=str(e))
 
 
@@ -548,7 +548,7 @@ class NPCCommunicationBridge:
             logger.debug("Sent message to NPC", npc_id=npc_id, message_type=message.get("type"))
             return True
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Message sending errors unpredictable, must return False
             logger.error("Error sending message to NPC", npc_id=npc_id, error=str(e))
             return False
 
@@ -573,7 +573,7 @@ class NPCCommunicationBridge:
             logger.debug("Received message from NPC", npc_id=npc_id, message_type=message.get("type"))
             return True
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Message receiving errors unpredictable, must return False
             logger.error("Error receiving message from NPC", npc_id=npc_id, error=str(e))
             return False
 
@@ -598,7 +598,7 @@ class NPCCommunicationBridge:
             logger.debug("Broadcast message to all NPCs", message_type=message.get("type"))
             return True
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Message broadcasting errors unpredictable, must return False
             logger.error("Error broadcasting message to NPCs", error=str(e))
             return False
 

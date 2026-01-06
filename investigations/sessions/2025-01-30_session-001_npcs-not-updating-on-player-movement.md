@@ -1,6 +1,7 @@
 # BUG INVESTIGATION REPORT: NPCs Not Updating in Occupants List When Player Moves
 
-**Bug Description**: NPCs in the Occupants list are not updating when the player moves to other rooms
+**Bug Description**: NPCs in the Occupants list are not updating when the
+player moves to other rooms
 
 **Investigation Date**: 2025-01-30
 **Investigator**: AI Assistant (GPT-4)
@@ -11,9 +12,17 @@
 
 ## EXECUTIVE SUMMARY
 
-When a player moves between rooms, the `room_occupants` event is sent to update the Occupants panel, but NPCs are not being included in the update. The root cause is that `_send_room_occupants_update` is called with `exclude_player` parameter when a player enters a room, which broadcasts to all players EXCEPT the entering player. The entering player receives a separate personal message via `_send_occupants_snapshot_to_player`, but there may be a timing issue or the NPCs may not be properly queried when the player first enters the room.
+When a player moves between rooms, the `room_occupants` event is sent to update
+the Occupants panel, but NPCs are not being included in the update. The root
+cause is that `_send_room_occupants_update` is called with `exclude_player`
+parameter when a player enters a room, which broadcasts to all players EXCEPT
+the entering player. The entering player receives a separate personal message
+via `_send_occupants_snapshot_to_player`, but there may be a timing issue or
+the NPCs may not be properly queried when the player first enters the room.
 
-Additionally, the NPC query mechanism in `_get_room_occupants` relies on NPC instances having `current_room` or `current_room_id` attributes set correctly, which was fixed in a previous investigation but may still have edge cases.
+Additionally, the NPC query mechanism in `_get_room_occupants` relies on NPC
+instances having `current_room` or `current_room_id` attributes set correctly,
+which was fixed in a previous investigation but may still have edge cases.
 
 ---
 
@@ -21,16 +30,19 @@ Additionally, the NPC query mechanism in `_get_room_occupants` relies on NPC ins
 
 ### 1. Bug Description Analysis
 
-**Reported Issue**: NPCs in the Occupants list are not updating when the player moves to other rooms
+**Reported Issue**: NPCs in the Occupants list are not updating when the
+player moves to other rooms
 
 **Expected Behavior**:
+
 - When a player moves to a new room, the Occupants panel should update to show:
   - Players in the new room
   - NPCs in the new room
 - NPCs from the old room should disappear
 - NPCs in the new room should appear
 
-**Actual Behavior**: NPCs are not updating in the Occupants list when the player moves
+**Actual Behavior**: NPCs are not updating in the Occupants list when the
+player moves
 
 ### 2. Code Flow Analysis: Player Movement
 

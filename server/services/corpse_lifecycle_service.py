@@ -170,7 +170,7 @@ class CorpseLifecycleService:
 
             return corpse
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Convert to domain exception
             log_and_raise(
                 CorpseServiceError,
                 f"Failed to create corpse container: {str(e)}",
@@ -278,7 +278,7 @@ class CorpseLifecycleService:
                 container = ContainerComponent.model_validate(container_data)
                 if container.source_type == ContainerSourceType.CORPSE and self.is_corpse_decayed(container):
                     decayed.append(container)
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Continue processing other containers on error
                 logger.warning(
                     "Error validating container for decay check",
                     error=str(e),
@@ -345,7 +345,7 @@ class CorpseLifecycleService:
                 items_count=len(container.items),
             )
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Convert to domain exception
             log_and_raise(
                 CorpseServiceError,
                 f"Failed to delete decayed corpse: {str(e)}",
@@ -373,7 +373,7 @@ class CorpseLifecycleService:
             try:
                 await self.cleanup_decayed_corpse(corpse.container_id)
                 cleaned_count += 1
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Continue processing other corpses on error
                 logger.error(
                     "Error cleaning up decayed corpse",
                     error=str(e),
@@ -415,7 +415,7 @@ class CorpseLifecycleService:
                 container = ContainerComponent.model_validate(container_data)
                 if container.source_type == ContainerSourceType.CORPSE:
                     decayed_corpses.append(container)
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Continue processing other containers on error
                 logger.warning(
                     "Error validating decayed container",
                     error=str(e),
@@ -441,7 +441,7 @@ class CorpseLifecycleService:
             try:
                 await self.cleanup_decayed_corpse(corpse.container_id)
                 cleaned_count += 1
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Continue processing other corpses on error
                 logger.error(
                     "Error cleaning up decayed corpse",
                     error=str(e),

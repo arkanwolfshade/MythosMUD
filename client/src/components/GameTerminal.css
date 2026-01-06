@@ -4,7 +4,7 @@
   height: 100vh;
   max-height: 100vh;
   background-color: #0a0a0a;
-  color: #00ff00;
+  color: #0f0;
   font-family: 'Courier New', monospace;
   padding: 20px;
   gap: 10px;
@@ -59,42 +59,42 @@
 }
 
 .status-indicator.connected {
-  background-color: #004400;
-  color: #00ff00;
+  background-color: #040;
+  color: #0f0;
 }
 
 .status-indicator.disconnected {
-  background-color: #440000;
-  color: #ff0000;
+  background-color: #400;
+  color: #f00;
 }
 
 .error-message {
-  color: #ff6666;
+  color: #f66;
   font-size: 12px;
 }
 
 .reconnect-info {
-  color: #ffff00;
+  color: #ff0;
   font-size: 12px;
 }
 
 /* Connection instructions */
 .connection-instructions {
   background-color: #1a1a1a;
-  border: 1px solid #00ff00;
+  border: 1px solid #0f0;
   border-radius: 5px;
   padding: 15px;
   margin-bottom: 10px;
 }
 
 .connection-instructions h4 {
-  color: #00ff00;
+  color: #0f0;
   margin: 0 0 10px 0;
   font-size: 14px;
 }
 
 .connection-instructions p {
-  color: #cccccc;
+  color: #ccc;
   margin: 5px 0;
   font-size: 12px;
   line-height: 1.4;
@@ -110,8 +110,8 @@
 
 .connection-controls button {
   background-color: #2a2a2a;
-  color: #00ff00;
-  border: 1px solid #00ff00;
+  color: #0f0;
+  border: 1px solid #0f0;
   padding: 8px 15px;
   border-radius: 3px;
   cursor: pointer;
@@ -133,27 +133,27 @@
 }
 
 .connect-btn {
-  background-color: #004400 !important;
+  background-color: #040 !important;
 }
 
 .connect-btn:hover {
-  background-color: #006600 !important;
+  background-color: #060 !important;
 }
 
 .disconnect-btn {
-  background-color: #440000 !important;
+  background-color: #400 !important;
 }
 
 .disconnect-btn:hover {
-  background-color: #660000 !important;
+  background-color: #600 !important;
 }
 
 .logout-btn {
-  background-color: #660000 !important;
+  background-color: #600 !important;
 }
 
 .logout-btn:hover {
-  background-color: #880000 !important;
+  background-color: #800 !important;
 }
 
 .download-logs-btn {
@@ -168,7 +168,7 @@
   background-color: #1a1a1a;
   padding: 15px;
   border-radius: 5px;
-  border-left: 3px solid #00ff00;
+  border-left: 3px solid #0f0;
   margin-bottom: 15px;
   height: 480px;
   overflow-y: auto;
@@ -176,7 +176,7 @@
 
 .player-info h3 {
   margin: 0 0 10px 0;
-  color: #00ffff;
+  color: #0ff;
   font-size: 16px;
   text-align: center;
 }
@@ -203,14 +203,14 @@
 }
 
 .stat-label {
-  color: #00aa00;
+  color: #0a0;
   font-weight: bold;
   font-size: 11px;
   text-transform: uppercase;
 }
 
 .stat-value {
-  color: #00ff00;
+  color: #0f0;
   font-weight: 500;
   font-size: 11px;
 }
@@ -226,6 +226,8 @@
   border: 1px solid #333;
   min-height: 1000px; /* Ensure minimum height */
   grid-row: 1; /* Take up the first grid row */
+  scrollbar-width: thin;
+  scrollbar-color: #0f0 #1a1a1a;
 }
 
 .message {
@@ -245,7 +247,7 @@
 /* Emote message styling - italic formatting */
 .emote-message {
   font-style: italic;
-  color: #00cc00;
+  color: #0c0;
 }
 
 .command-input {
@@ -259,8 +261,8 @@
 .command-input input {
   flex: 1;
   background-color: #1a1a1a;
-  border: 1px solid #00ff00;
-  color: #00ff00;
+  border: 1px solid #0f0;
+  color: #0f0;
   padding: 10px;
   border-radius: 5px;
   font-family: 'Courier New', monospace;
@@ -269,7 +271,7 @@
 
 .command-input input:focus {
   outline: none;
-  border-color: #00ffff;
+  border-color: #0ff;
   box-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
 }
 
@@ -280,9 +282,9 @@
 }
 
 .command-input button {
-  background-color: #004400;
-  color: #00ff00;
-  border: 1px solid #00ff00;
+  background-color: #040;
+  color: #0f0;
+  border: 1px solid #0f0;
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
@@ -291,7 +293,7 @@
 }
 
 .command-input button:hover:not(:disabled) {
-  background-color: #006600;
+  background-color: #060;
 }
 
 .command-input button:disabled {
@@ -309,8 +311,8 @@
 
 .quick-commands button {
   background-color: #2a2a2a;
-  color: #00ff00;
-  border: 1px solid #00ff00;
+  color: #0f0;
+  border: 1px solid #0f0;
   padding: 8px 15px;
   border-radius: 3px;
   cursor: pointer;
@@ -340,19 +342,13 @@
 }
 
 .message-log::-webkit-scrollbar-thumb {
-  background: #00ff00;
+  background: #0f0;
   border-radius: 6px;
   border: 2px solid #1a1a1a; /* Add border for better definition */
 }
 
 .message-log::-webkit-scrollbar-thumb:hover {
-  background: #00cc00;
-}
-
-/* Firefox scrollbar styling */
-.message-log {
-  scrollbar-width: thin;
-  scrollbar-color: #00ff00 #1a1a1a;
+  background: #0c0;
 }
 
 /* Responsive design */
@@ -400,12 +396,12 @@
 /* Alias expansion styles */
 .alias-expansion {
   background-color: #1a1a1a;
-  border: 1px solid #00aa00;
+  border: 1px solid #0a0;
   border-radius: 3px;
   padding: 5px 8px;
   margin-bottom: 5px;
   font-size: 11px;
-  color: #00cc00;
+  color: #0c0;
 }
 
 .alias-indicator {
@@ -419,17 +415,17 @@
 }
 
 .alias-original {
-  color: #ffaa00;
+  color: #fa0;
   font-weight: bold;
 }
 
 .alias-arrow {
-  color: #00aa00;
+  color: #0a0;
   margin: 0 3px;
 }
 
 .alias-expanded {
-  color: #00ff00;
+  color: #0f0;
   font-style: italic;
 }
 

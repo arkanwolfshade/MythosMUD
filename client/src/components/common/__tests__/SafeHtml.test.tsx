@@ -11,6 +11,8 @@ describe('SafeHtml', () => {
   it('should sanitize script tags', () => {
     const maliciousHtml = '<script>alert("XSS")</script><p>Safe content</p>';
     // nosemgrep: typescript.react.security.audit.dangerouslysetinnerhtml.dangerouslysetinnerhtml
+    // nosemgrep: typescript.lang.security.audit.xss.xss
+    // This test intentionally uses malicious HTML to verify that SafeHtml component properly sanitizes it
     const { container } = render(<SafeHtml html={maliciousHtml} />);
 
     // Script tag should be removed

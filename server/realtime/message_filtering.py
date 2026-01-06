@@ -402,7 +402,7 @@ class MessageFilteringHelper:
             )
             return False
 
-        except (NATSError, RuntimeError, Exception) as e:
+        except (NATSError, RuntimeError, Exception) as e:  # pylint: disable=broad-exception-caught  # Reason: Mute status check errors unpredictable, must return False
             logger.error(
                 "Error checking mute status",
                 error=str(e),

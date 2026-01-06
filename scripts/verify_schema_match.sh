@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 # Verify that db/authoritative_schema.sql matches the current mythos_dev database structure
 # This script compares the schema file with the actual database to detect drift
 
@@ -80,9 +80,13 @@ if [ -n "${DATABASE_URL:-}" ]; then
 
     if [[ "${HOST_PORT_DB}" =~ :([0-9]+)$ ]]; then
         DB_HOST="${HOST_PORT_DB%:*}"
+        # DB_PORT is extracted but not used in this script
+        # shellcheck disable=SC2034
         DB_PORT="${BASH_REMATCH[1]}"
     else
         DB_HOST="${HOST_PORT_DB}"
+        # DB_PORT is extracted but not used in this script
+        # shellcheck disable=SC2034
         DB_PORT="5432"
     fi
 
@@ -152,8 +156,7 @@ find_pg_dump() {
 }
 
 # Find pg_dump
-PG_DUMP_CMD=$(find_pg_dump)
-if [ $? -ne 0 ]; then
+if ! PG_DUMP_CMD=$(find_pg_dump); then
     echo -e "${RED}Error: pg_dump is not installed or not in PATH${NC}"
     echo -e "${YELLOW}Please install PostgreSQL or add it to your PATH${NC}"
     exit 1
@@ -201,7 +204,7 @@ fi
 
 # Generate current schema from database
 TEMP_SCHEMA=$(mktemp)
-trap "rm -f ${TEMP_SCHEMA}" EXIT
+trap 'rm -f "${TEMP_SCHEMA}"' EXIT
 
 if [ -n "${DB_PASSWORD:-}" ]; then
     export PGPASSWORD="${DB_PASSWORD}"
@@ -223,10 +226,10 @@ CURRENT_CONTENT=$(grep -v "^--" "${TEMP_SCHEMA}" | grep -v "^SET " | grep -v "^$
 
 # Compare schemas
 if [ "${SCHEMA_CONTENT}" = "${CURRENT_CONTENT}" ]; then
-    echo -e "${GREEN}âœ“ Schema matches! ${SCHEMA_FILE} is up-to-date with ${DB_NAME}${NC}"
+    echo -e "${GREEN}Schema matches! ${SCHEMA_FILE} is up-to-date with ${DB_NAME}${NC}"
     exit 0
 else
-    echo -e "${RED}âœ— Schema drift detected!${NC}"
+    echo -e "${RED}Schema drift detected!${NC}"
     echo -e "${YELLOW}The schema file does not match the current database structure.${NC}"
     echo -e "${YELLOW}Run ./scripts/generate_schema_from_dev.sh to regenerate the schema file.${NC}"
     echo ""

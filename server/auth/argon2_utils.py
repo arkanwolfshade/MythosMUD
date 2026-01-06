@@ -123,7 +123,8 @@ def hash_password(password: str) -> str:
     try:
         hashed = _default_hasher.hash(password)
         logger.debug("Password hashed successfully")
-        assert isinstance(hashed, str)
+        if not isinstance(hashed, str):
+            raise TypeError("Argon2 hash must return a string")
         return hashed
     except exceptions.HashingError as e:
         logger.error("Argon2 hashing error", error=str(e), error_type=type(e).__name__)
@@ -201,7 +202,8 @@ def needs_rehash(hashed: str) -> bool:
 
     try:
         result = _default_hasher.check_needs_rehash(hashed)
-        assert isinstance(result, bool)
+        if not isinstance(result, bool):
+            raise TypeError("check_needs_rehash must return a bool")
         return result
     except (ValueError, TypeError, AttributeError) as e:
         logger.error("Error checking password rehash needs", error=str(e), error_type=type(e).__name__)
@@ -215,7 +217,8 @@ def get_hash_info(hashed: str | None) -> dict[str, str | int] | None:
 
     try:
         # Parse the hash format: $argon2id$v=19$m=65536,t=3,p=1$salt$hash
-        assert hashed is not None
+        if hashed is None:
+            raise ValueError("Hash cannot be None")
         parts = hashed.split("$")
         if len(parts) < 5:
             return None

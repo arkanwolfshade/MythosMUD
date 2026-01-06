@@ -1,5 +1,7 @@
 # MythosMUD Worktree Manager
 # A script to help manage our Git worktree setup
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for user-facing colored output
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'User-facing interactive script requires colored output for better UX')]
 
 param(
     [Parameter(Mandatory = $false)]
@@ -8,7 +10,7 @@ param(
 )
 
 # Configuration
-$ProjectRoot = "E:/projects/GitHub/MythosMUD"
+# $ProjectRoot variable removed - not used in script
 $Worktrees = @{
     "main"    = "E:/projects/GitHub/MythosMUD"
     "client"  = "E:/projects/GitHub/MythosMUD-client"
@@ -67,7 +69,14 @@ function Show-WorktreeInfo {
     }
 }
 
-function Cleanup-LegacyBranches {
+function Remove-LegacyBranch {
+    [CmdletBinding(SupportsShouldProcess)]
+    param()
+
+    if (-not $PSCmdlet.ShouldProcess("legacy branches", "Remove")) {
+        return
+    }
+
     Write-Host "`n=== Cleaning up legacy branches ===" -ForegroundColor Cyan
 
     # List branches to be cleaned up
@@ -115,7 +124,7 @@ switch ($Action) {
         Switch-ToWorktree "testing"
     }
     "cleanup" {
-        Cleanup-LegacyBranches
+        Remove-LegacyBranch
     }
     default {
         Write-Host "`n=== MythosMUD Worktree Manager ===" -ForegroundColor Cyan

@@ -62,7 +62,7 @@
 }
 
 .character-name {
-  color: #ffffff;
+  color: #fff;
   font-size: 1.5rem;
   margin-bottom: 0.5rem;
 }
@@ -113,7 +113,7 @@
 .select-character-button.primary,
 .create-character-button.primary {
   background: #e94560;
-  color: #ffffff;
+  color: #fff;
 }
 
 .select-character-button.primary:hover,
@@ -164,7 +164,7 @@
 }
 
 .delete-confirmation p {
-  color: #ffffff;
+  color: #fff;
   font-size: 0.9rem;
   margin: 0;
 }
@@ -186,7 +186,7 @@
 
 .confirm-delete-button {
   background: #c83232;
-  color: #ffffff;
+  color: #fff;
 }
 
 .confirm-delete-button:hover {

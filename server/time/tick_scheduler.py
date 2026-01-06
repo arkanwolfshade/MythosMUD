@@ -77,7 +77,7 @@ class MythosTickScheduler:
                 await self._sleep_until_next_hour()
         except asyncio.CancelledError:
             self._logger.debug("Mythos tick scheduler cancelled")
-        except Exception as exc:  # pragma: no cover - defensive logging
+        except Exception as exc:  # pragma: no cover - defensive logging  # pylint: disable=broad-exception-caught  # Reason: Scheduler errors unpredictable, must log but continue
             self._logger.error("Mythos tick scheduler failed", error=str(exc), exc_info=True)
 
     async def _emit_pending_ticks(self) -> None:

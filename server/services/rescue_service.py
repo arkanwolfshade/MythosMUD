@@ -114,7 +114,7 @@ class RescueService:
                     location_id=str(getattr(rescuer, "current_room_id", None)),
                 )
                 await session.commit()
-            except Exception as exc:  # pragma: no cover - defensive path
+            except Exception as exc:  # pragma: no cover - defensive path  # pylint: disable=broad-exception-caught  # Reason: Rescue operation errors unpredictable, must rollback and return error
                 await session.rollback()
                 logger.error("Rescue failed", rescuer=rescuer_name, target=target_name, error=str(exc))
                 return {"result": "Rescue failed due to an unexpected error."}
@@ -137,7 +137,7 @@ class RescueService:
                     message=f"You rescue {target_name}, their lucidity stabilizing.",
                     progress=100.0,
                 )
-            except Exception:  # pragma: no cover - notifications are best-effort
+            except Exception:  # pragma: no cover - notifications are best-effort  # pylint: disable=broad-exception-caught  # Reason: Event dispatch errors unpredictable, must log but continue
                 logger.warning("Rescue event dispatch failed", rescuer=rescuer_name, target=target_name)
 
         new_lcd: str | None = getattr(result, "new_lcd", None)

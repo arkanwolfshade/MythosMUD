@@ -22,8 +22,6 @@ logger = get_logger(__name__)
 class CombatConfigurationError(Exception):
     """Exception raised for combat configuration errors."""
 
-    pass
-
 
 class CombatConfigurationScope(Enum):
     """Scope for combat configuration changes."""
@@ -132,6 +130,7 @@ class CombatConfigurationService:
             self._cached_config = CombatConfiguration(
                 combat_enabled=self._config.game.combat_enabled,
                 combat_tick_interval=self._config.game.combat_tick_interval,
+                # pylint: disable=no-member  # Pydantic FieldInfo dynamic attributes
                 combat_timeout_seconds=self._config.game.combat_timeout_seconds,
                 combat_xp_multiplier=self._config.game.combat_xp_multiplier,
                 combat_logging_enabled=self._config.game.combat_logging_enabled,

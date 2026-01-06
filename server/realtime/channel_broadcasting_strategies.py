@@ -113,7 +113,7 @@ class PartyChannelStrategy(ChannelBroadcastingStrategy):
     ) -> None:
         """Broadcast party message to party members."""
         if party_id:
-            # TODO: Implement party-based broadcasting when party system is available
+            # TODO: Implement party-based broadcasting when party system is available  # pylint: disable=fixme  # Reason: Feature placeholder for party system integration
             logger.debug("Party message received")
         else:
             logger.warning("Party message missing party_id")

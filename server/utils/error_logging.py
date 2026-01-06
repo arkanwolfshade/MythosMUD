@@ -111,7 +111,7 @@ def log_and_raise(
     # Increment exception counter for monitoring
     try:
         increment_exception(exception_class.__name__)
-    except Exception:
+    except Exception:  # pylint: disable=broad-exception-caught  # Reason: Monitoring errors must never break error propagation
         # Monitoring must never break error propagation
         pass
 
@@ -368,7 +368,7 @@ def log_error_with_context(
     # Increment exception counter for monitoring
     try:
         increment_exception(error.__class__.__name__)
-    except Exception:
+    except Exception:  # pylint: disable=broad-exception-caught  # Reason: Monitoring errors must never break error propagation
         pass
 
 

@@ -39,7 +39,7 @@ class MessageBroker(Protocol):
         Returns:
             bool: True if connection successful, False otherwise
         """
-        ...
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: Abstract method placeholder required by ABC
 
     async def disconnect(self) -> None:
         """
@@ -47,7 +47,7 @@ class MessageBroker(Protocol):
 
         Closes all subscriptions and releases resources.
         """
-        ...
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: Abstract method placeholder required by ABC
 
     def is_connected(self) -> bool:
         """
@@ -56,7 +56,7 @@ class MessageBroker(Protocol):
         Returns:
             bool: True if connected, False otherwise
         """
-        ...
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: Abstract method placeholder required by ABC
 
     async def publish(self, subject: str, message: dict[str, Any]) -> None:
         """
@@ -69,7 +69,7 @@ class MessageBroker(Protocol):
         Raises:
             MessageBrokerError: If publishing fails
         """
-        ...
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: Abstract method placeholder required by ABC
 
     async def subscribe(self, subject: str, handler: MessageHandler, queue_group: str | None = None) -> str:
         """
@@ -86,7 +86,7 @@ class MessageBroker(Protocol):
         Raises:
             MessageBrokerError: If subscription fails
         """
-        ...
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: Abstract method placeholder required by ABC
 
     async def unsubscribe(self, subscription_id: str) -> None:
         """
@@ -98,9 +98,9 @@ class MessageBroker(Protocol):
         Raises:
             MessageBrokerError: If unsubscribe fails
         """
-        ...
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: Abstract method placeholder required by ABC
 
-    async def request(self, subject: str, message: dict[str, Any], timeout: float = 2.0) -> dict[str, Any]:
+    async def request(self, subject: str, message: dict[str, Any], timeout: float = 2.0) -> dict[str, Any]:  # pylint: disable=unnecessary-ellipsis  # Reason: Abstract method placeholder required by ABC
         """
         Send a request and wait for a reply (request-reply pattern).
 
@@ -116,40 +116,28 @@ class MessageBroker(Protocol):
             MessageBrokerError: If request fails
             TimeoutError: If no reply received within timeout
         """
-        ...
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: Abstract method placeholder required by ABC
 
 
 class MessageBrokerError(Exception):
     """Base exception for message broker errors."""
 
-    pass
 
-
-class ConnectionError(MessageBrokerError):
+class MessageBrokerConnectionError(MessageBrokerError):
     """Exception raised when connection to message broker fails."""
-
-    pass
 
 
 class PublishError(MessageBrokerError):
     """Exception raised when publishing message fails."""
 
-    pass
-
 
 class SubscribeError(MessageBrokerError):
     """Exception raised when subscribing to subject fails."""
-
-    pass
 
 
 class UnsubscribeError(MessageBrokerError):
     """Exception raised when unsubscribing from subject fails."""
 
-    pass
-
 
 class RequestError(MessageBrokerError):
     """Exception raised when request-reply fails."""
-
-    pass

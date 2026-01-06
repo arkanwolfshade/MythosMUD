@@ -1,6 +1,8 @@
 # Load seed data into PostgreSQL database with FK validation
 # This script checks for FK violations, loads seed data, and verifies integrity
 
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and output messages require Write-Host for proper display')]
 $ErrorActionPreference = "Stop"
 
 # Load environment variables from .env file
@@ -27,7 +29,7 @@ if ($url -match "postgresql://([^:]+):([^@]+)@([^:]+):(\d+)/(.+)") {
     $DB_USER = $matches[1]
     $PGPASSWORD = $matches[2]
     $DB_HOST = $matches[3]
-    $DB_PORT = $matches[4]
+    # $DB_PORT is parsed but not used - PostgreSQL uses default port if not specified
     $DB_NAME = $matches[5]
 } else {
     Write-Host "ERROR: Could not parse DATABASE_URL" -ForegroundColor Red

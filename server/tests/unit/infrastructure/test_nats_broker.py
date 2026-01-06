@@ -11,7 +11,7 @@ import pytest
 
 from server.config.models import NATSConfig
 from server.infrastructure.message_broker import (
-    ConnectionError,
+    MessageBrokerConnectionError,
     MessageBrokerError,
     PublishError,
     RequestError,
@@ -75,7 +75,7 @@ async def test_connect_failure(nats_broker):
         new_callable=AsyncMock,
         side_effect=Exception("Connection failed"),
     ):
-        with pytest.raises(ConnectionError, match="Failed to connect to NATS"):
+        with pytest.raises(MessageBrokerConnectionError, match="Failed to connect to NATS"):
             await nats_broker.connect()
 
 

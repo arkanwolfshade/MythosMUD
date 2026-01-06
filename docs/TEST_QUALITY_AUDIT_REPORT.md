@@ -1,6 +1,9 @@
 # Test Suite Quality Audit Report
 
-> *"In the forbidden archives of test archaeology, we discover that not all tests are created equal. Some guard against the dimensional rifts of regression bugs, while others merely perform ceremonial validations of the obvious."*
+> *"In the forbidden archives of test archaeology, we discover that not all
+> tests are created equal. Some guard against the dimensional rifts of
+> regression bugs, while others merely perform ceremonial validations of the
+> obvious."*
 >
 > — Professor of Occult Software Engineering, Miskatonic University
 
@@ -16,11 +19,15 @@
 ### Key Findings
 
 **Test Value Distribution:**
-- **🔴 CRITICAL (High-Value):** ~1,250-1,500 tests (25-30%) — **~7-10 minutes**
+
+- **🔴 CRITICAL (High-Value):** ~1,250-1,500 tests (25-30%) — **~7-10
+  minutes**
 - **🟡 IMPORTANT (Medium-Value):** ~2,500-3,000 tests (50-60%) — **~15-18 minutes**
 - **🟢 LOW-VALUE:** ~500-750 tests (10-15%) — **~3-5 minutes**
 
-**Bottom Line:** Approximately **25-30% of tests provide critical regression protection**, another 50-60% provide important behavioral validation, and 10-15% are candidates for optimization or removal.
+**Bottom Line:** Approximately **25-30% of tests provide critical regression
+protection**, another 50-60% provide important behavioral validation, and
+10-15% are candidates for optimization or removal.
 
 ---
 
@@ -56,7 +63,8 @@
 | `test_npc_integration.py`                | 959   | ~35+       | Integration/NPC     |
 | `test_npc_admin_commands_integration.py` | 958   | ~35+       | Integration/NPC     |
 
-**Key Insight:** Largest files include both valuable tests (connection_manager) and coverage-driven tests (command_handler_coverage).
+**Key Insight:** Largest files include both valuable tests (connection_manager)
+and coverage-driven tests (command_handler_coverage).
 
 ### 1.3 Infrastructure Test Analysis
 
@@ -68,9 +76,12 @@
 - `test_dependency_functions.py` (332 lines)
 - `test_app_factory.py`, `test_database.py`, `test_lifespan.py`, etc.
 
-**Trivial Assertions:** 112 instances of `assert isinstance`, `assert hasattr`, `assert callable`
+**Trivial Assertions:** 112 instances of `assert isinstance`, `assert hasattr`,
+`assert callable`
 
-**Assessment:** Many infrastructure tests verify that dependency injection returns the correct type or that objects have expected attributes. These are **low-value** because:
+**Assessment:** Many infrastructure tests verify that dependency injection
+returns the correct type or that objects have expected attributes. These are
+**low-value** because:
 - They would fail immediately at runtime if broken
 - They test Python/FastAPI framework behavior, not our business logic
 - They have high maintenance cost (break on refactoring)

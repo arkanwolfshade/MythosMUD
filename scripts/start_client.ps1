@@ -3,6 +3,8 @@
 # MythosMUD Client Startup Script
 # Starts the React development server for the MythosMUD client
 
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and output messages require Write-Host for proper display')]
 param(
     [string]$Port = "5173",
     [switch]$Help

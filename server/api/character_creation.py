@@ -151,7 +151,7 @@ async def roll_character_stats(
     except LoggedHTTPException:
         # Re-raise LoggedHTTPException without modification
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Character creation errors unpredictable, must create error context
         context = create_error_context()
         if current_user:
             context.user_id = str(current_user.id)
@@ -245,7 +245,7 @@ async def create_character_with_stats(
     except ValueError as e:
         context = create_error_context_helper(request, current_user, operation="create_character")
         raise LoggedHTTPException(status_code=400, detail=ErrorMessages.INVALID_INPUT, context=context) from e
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Character creation errors unpredictable, must create error context
         context = create_error_context_helper(request, current_user, operation="create_character")
         raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context) from e
 
@@ -284,7 +284,7 @@ async def validate_character_stats(
             stat_summary = stats_generator.get_stat_summary(stats_obj)
 
             return {"available_classes": available_classes, "stat_summary": stat_summary}
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Class retrieval errors unpredictable, must create error context
         context = create_error_context()
         if current_user:
             context.user_id = str(current_user.id)

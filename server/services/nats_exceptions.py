@@ -11,8 +11,6 @@ AI: Custom exceptions provide context and enable precise error handling.
 class NATSError(Exception):
     """Base exception for all NATS-related errors."""
 
-    pass
-
 
 class NATSConnectionError(NATSError):
     """Raised when NATS connection operations fail."""

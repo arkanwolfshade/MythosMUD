@@ -91,7 +91,7 @@ class PlayerPreferencesService:
             await session.rollback()
             logger.error("Failed to create player preferences - database error", player_id=player_id, error=str(e))
             return {"success": False, "error": f"Database error: {str(e)}"}
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Preference creation errors unpredictable, must rollback
             await session.rollback()
             logger.error("Failed to create player preferences", player_id=player_id, error=str(e))
             return {"success": False, "error": f"Unexpected error: {str(e)}"}
@@ -137,7 +137,7 @@ class PlayerPreferencesService:
         except SQLAlchemyError as e:
             logger.error("Failed to get player preferences", player_id=player_id, error=str(e))
             return {"success": False, "error": f"Database error: {str(e)}"}
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Preference retrieval errors unpredictable, must handle gracefully
             logger.error("Failed to get player preferences", player_id=player_id, error=str(e))
             return {"success": False, "error": f"Unexpected error: {str(e)}"}
 
@@ -186,7 +186,7 @@ class PlayerPreferencesService:
             await session.rollback()
             logger.error("Failed to update default channel", player_id=player_id, channel=channel, error=str(e))
             return {"success": False, "error": f"Database error: {str(e)}"}
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Channel update errors unpredictable, must rollback
             await session.rollback()
             logger.error("Failed to update default channel", player_id=player_id, channel=channel, error=str(e))
             return {"success": False, "error": f"Unexpected error: {str(e)}"}
@@ -240,7 +240,7 @@ class PlayerPreferencesService:
             await session.rollback()
             logger.error("Failed to mute channel", player_id=player_id, channel=channel, error=str(e))
             return {"success": False, "error": f"Database error: {str(e)}"}
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Channel mute errors unpredictable, must rollback
             await session.rollback()
             logger.error("Failed to mute channel", player_id=player_id, channel=channel, error=str(e))
             return {"success": False, "error": f"Unexpected error: {str(e)}"}
@@ -290,7 +290,7 @@ class PlayerPreferencesService:
             await session.rollback()
             logger.error("Failed to unmute channel", player_id=player_id, channel=channel, error=str(e))
             return {"success": False, "error": f"Database error: {str(e)}"}
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Channel unmute errors unpredictable, must rollback
             await session.rollback()
             logger.error("Failed to unmute channel", player_id=player_id, channel=channel, error=str(e))
             return {"success": False, "error": f"Unexpected error: {str(e)}"}
@@ -326,7 +326,7 @@ class PlayerPreferencesService:
         except SQLAlchemyError as e:
             logger.error("Failed to get muted channels", player_id=player_id, error=str(e))
             return {"success": False, "error": f"Database error: {str(e)}"}
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Muted channels retrieval errors unpredictable, must handle gracefully
             logger.error("Failed to get muted channels", player_id=player_id, error=str(e))
             return {"success": False, "error": f"Unexpected error: {str(e)}"}
 
@@ -367,7 +367,7 @@ class PlayerPreferencesService:
         except SQLAlchemyError as e:
             logger.error("Failed to check channel mute status", player_id=player_id, channel=channel, error=str(e))
             return {"success": False, "error": f"Database error: {str(e)}"}
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Mute status check errors unpredictable, must handle gracefully
             logger.error("Failed to check channel mute status", player_id=player_id, channel=channel, error=str(e))
             return {"success": False, "error": f"Unexpected error: {str(e)}"}
 
@@ -408,7 +408,7 @@ class PlayerPreferencesService:
             await session.rollback()
             logger.error("Failed to delete player preferences", player_id=player_id, error=str(e))
             return {"success": False, "error": f"Database error: {str(e)}"}
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Preference deletion errors unpredictable, must rollback
             await session.rollback()
             logger.error("Failed to delete player preferences", player_id=player_id, error=str(e))
             return {"success": False, "error": f"Unexpected error: {str(e)}"}
