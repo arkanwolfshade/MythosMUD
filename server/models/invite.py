@@ -67,7 +67,7 @@ class Invite(Base):
     def use_invite(self, user_id: str) -> None:
         """Mark this invite as used by a specific user."""
         self.is_active = False  # type: ignore[assignment]  # Mark as used (inactive)
-        self.used_by_user_id = user_id  # type: ignore[assignment]
+        self.used_by_user_id = user_id  # type: ignore[assignment]  # SQLAlchemy Column type compatibility - UUID column accepts string assignment
 
     @classmethod
     def create_invite(cls, created_by_user_id: str | None = None, expires_in_days: int = 30) -> "Invite":

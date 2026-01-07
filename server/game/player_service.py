@@ -205,7 +205,7 @@ class PlayerService:
             player.set_stats(stats.model_dump())
         else:
             # Dictionary
-            player.set_stats(stats)  # type: ignore[arg-type]
+            player.set_stats(stats)  # type: ignore[arg-type]  # Reason: Type narrowing from hasattr check doesn't satisfy mypy. After checking that stats doesn't have model_dump, we know it's a dict, but mypy can't infer this pattern.
 
         # Ensure JSONB fields are initialized (PostgreSQL NOT NULL constraints)
         if not getattr(player, "inventory", None):

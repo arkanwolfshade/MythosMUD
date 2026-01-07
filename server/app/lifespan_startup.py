@@ -5,11 +5,29 @@ including container initialization, service setup, and dependency wiring.
 """
 
 import asyncio
+import uuid as uuid_lib
 from collections.abc import Iterable
 
 from fastapi import FastAPI
 
 from ..container import ApplicationContainer
+from ..game.chat_service import ChatService
+from ..npc.lifecycle_manager import NPCLifecycleManager
+from ..npc.population_control import NPCPopulationController
+from ..npc.spawning_service import NPCSpawningService
+from ..npc_database import get_npc_session
+from ..services.catatonia_registry import CatatoniaRegistry
+from ..services.combat_service import CombatService, set_combat_service
+from ..services.lucidity_service import LucidityService
+from ..services.nats_subject_manager import nats_subject_manager
+from ..services.npc_instance_service import initialize_npc_instance_service
+from ..services.npc_service import NPCService
+from ..services.npc_startup_service import get_npc_startup_service
+from ..services.passive_lucidity_flux_service import PassiveLucidityFluxService
+from ..services.player_combat_service import PlayerCombatService
+from ..services.player_death_service import PlayerDeathService
+from ..services.player_respawn_service import PlayerRespawnService
+from ..services.target_resolution_service import TargetResolutionService
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..time.time_event_consumer import MythosTimeEventConsumer
 from ..time.time_service import get_mythos_chronicle
@@ -52,7 +70,7 @@ async def initialize_container_and_legacy_services(app: FastAPI, container: Appl
                 if asyncio.iscoroutine(entries):
                     try:
                         entries = await entries
-                    except Exception:  # pylint: disable=broad-exception-caught
+                    except Exception:  # pylint: disable=broad-exception-caught  # Reason: Startup code must handle all exceptions gracefully to prevent application failure during initialization. Item registry errors are non-critical and should not block startup.
                         entries = None
                 if isinstance(entries, Iterable):
                     prototype_count = sum(1 for _ in entries)
@@ -81,12 +99,6 @@ async def setup_connection_manager(app: FastAPI, container: ApplicationContainer
 
 async def initialize_npc_services(app: FastAPI, container: ApplicationContainer) -> None:
     """Initialize NPC services and load definitions."""
-    from ..npc.lifecycle_manager import NPCLifecycleManager
-    from ..npc.population_control import NPCPopulationController
-    from ..npc.spawning_service import NPCSpawningService
-    from ..services.npc_instance_service import initialize_npc_instance_service
-    from ..services.npc_service import NPCService
-
     if container.event_bus is None:
         raise RuntimeError("EventBus must be initialized")
     app.state.npc_spawning_service = NPCSpawningService(container.event_bus, None)
@@ -113,8 +125,6 @@ async def initialize_npc_services(app: FastAPI, container: ApplicationContainer)
         population_controller=app.state.npc_population_controller,
         event_bus=container.event_bus,
     )
-
-    from ..npc_database import get_npc_session
 
     npc_service = NPCService()
     async for npc_session in get_npc_session():
@@ -154,12 +164,6 @@ async def initialize_npc_services(app: FastAPI, container: ApplicationContainer)
 
 async def initialize_combat_services(app: FastAPI, container: ApplicationContainer) -> None:
     """Initialize combat-related services."""
-    from ..services.catatonia_registry import CatatoniaRegistry
-    from ..services.passive_lucidity_flux_service import PassiveLucidityFluxService
-    from ..services.player_combat_service import PlayerCombatService
-    from ..services.player_death_service import PlayerDeathService
-    from ..services.player_respawn_service import PlayerRespawnService
-
     app.state.player_combat_service = PlayerCombatService(container.persistence, container.event_bus)
     if container.connection_manager is not None:
         container.connection_manager.set_player_combat_service(app.state.player_combat_service)
@@ -198,10 +202,6 @@ async def initialize_combat_services(app: FastAPI, container: ApplicationContain
         async with session_maker() as session:
             try:
                 # Clear all active hallucination timers per spec requirement
-                import uuid as uuid_lib
-
-                from ..services.lucidity_service import LucidityService
-
                 player_id_uuid = uuid_lib.UUID(player_id) if isinstance(player_id, str) else player_id
                 lucidity_service = LucidityService(session)
                 timers_cleared = await lucidity_service.clear_hallucination_timers(player_id_uuid)
@@ -258,8 +258,6 @@ async def initialize_mythos_time_consumer(app: FastAPI, container: ApplicationCo
 
 async def initialize_npc_startup_spawning(_app: FastAPI) -> None:
     """Initialize and run NPC startup spawning."""
-    from ..services.npc_startup_service import get_npc_startup_service
-
     logger.info("Starting NPC startup spawning process")
     try:
         startup_service = get_npc_startup_service()
@@ -294,8 +292,6 @@ async def initialize_nats_and_combat_services(app: FastAPI, container: Applicati
     if container.nats_service is not None and container.nats_service.is_connected():
         logger.info("NATS service available from container")
         app.state.nats_service = container.nats_service
-
-        from ..services.combat_service import CombatService, set_combat_service
 
         app.state.combat_service = CombatService(
             app.state.player_combat_service,
@@ -336,9 +332,6 @@ async def initialize_nats_and_combat_services(app: FastAPI, container: Applicati
 
 async def initialize_chat_service(app: FastAPI, container: ApplicationContainer) -> None:
     """Initialize chat service."""
-    from ..game.chat_service import ChatService
-    from ..services.nats_subject_manager import nats_subject_manager
-
     if container.config is None:
         raise RuntimeError("Config must be initialized")
     is_testing = container.config.logging.environment in ("unit_test", "e2e_test")
@@ -372,6 +365,9 @@ async def initialize_chat_service(app: FastAPI, container: ApplicationContainer)
 
 async def initialize_magic_services(app: FastAPI, container: ApplicationContainer) -> None:
     """Initialize magic system services and wire them to app.state."""
+    # Import here to avoid circular imports: spell_targeting -> combat_service -> lifespan -> lifespan_startup
+    # pylint: disable=import-outside-toplevel
+    # Reason: Circular import avoidance - spell_targeting imports CombatService which imports from lifespan
     from ..game.magic.magic_service import MagicService
     from ..game.magic.mp_regeneration_service import MPRegenerationService
     from ..game.magic.spell_effects import SpellEffects
@@ -380,7 +376,6 @@ async def initialize_magic_services(app: FastAPI, container: ApplicationContaine
     from ..game.magic.spell_targeting import SpellTargetingService
     from ..persistence.repositories.player_spell_repository import PlayerSpellRepository
     from ..persistence.repositories.spell_repository import SpellRepository as SpellRepositoryClass
-    from ..services.target_resolution_service import TargetResolutionService
 
     logger.info("Initializing magic system services...")
 

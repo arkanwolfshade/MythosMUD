@@ -196,7 +196,7 @@ class RoomService:
         else:
             # Fallback to direct persistence call
             # Room object is sufficient for existence check, no dict conversion needed
-            room = self.persistence.get_room_by_id(room_id)  # type: ignore[assignment]
+            room = self.persistence.get_room_by_id(room_id)  # type: ignore[assignment]  # Reason: get_room_by_id returns Room | None, but None is checked immediately after assignment. Type ignore needed due to SQLAlchemy type inference limitations.
             exists = room is not None
 
         logger.debug("Room existence validation", room_id=room_id, exists=exists)
@@ -276,7 +276,7 @@ class RoomService:
         else:
             # Fallback to direct persistence call
             # Room object has methods for getting occupants, no dict conversion needed
-            room = self.persistence.get_room_by_id(room_id)  # type: ignore[assignment]
+            room = self.persistence.get_room_by_id(room_id)  # type: ignore[assignment]  # Reason: get_room_by_id returns Room | None, but None is checked immediately after assignment. Type ignore needed due to SQLAlchemy type inference limitations.
             if not room:
                 logger.debug("Room not found for occupant lookup", room_id=room_id)
                 return []
@@ -332,7 +332,7 @@ class RoomService:
         else:
             # Fallback to direct persistence call
             # Room object has methods for validation, no dict conversion needed
-            room = self.persistence.get_room_by_id(room_id)  # type: ignore[assignment]
+            room = self.persistence.get_room_by_id(room_id)  # type: ignore[assignment]  # Reason: get_room_by_id returns Room | None, but None is checked immediately after assignment. Type ignore needed due to SQLAlchemy type inference limitations.
             if not room:
                 logger.debug("Room not found for player validation", room_id=room_id)
                 return False

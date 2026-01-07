@@ -10,21 +10,26 @@ from unittest.mock import AsyncMock, MagicMock, Mock, patch
 import pytest
 from fastapi import Request
 
-from server.command_handler_unified import (
-    _check_catatonia_block,
+from server.command_handler.catatonia_check import (
     _check_catatonia_database,
     _check_catatonia_registry,
     _fetch_lucidity_record,
     _is_catatonic,
-    _is_predefined_emote,
     _load_player_for_catatonia_check,
     _query_lucidity_record,
-    _should_treat_as_emote,
-    clean_command_input,
-    get_help_content,
-    normalize_command,
-    process_command,
+    check_catatonia_block,
 )
+from server.command_handler.command_input import (
+    _is_predefined_emote,
+    clean_command_input,
+    normalize_command,
+    should_treat_as_emote,
+)
+from server.command_handler_unified import get_help_content, process_command
+
+# Alias for backward compatibility in tests
+_check_catatonia_block = check_catatonia_block
+_should_treat_as_emote = should_treat_as_emote
 
 
 class TestCommandNormalization:
@@ -84,7 +89,7 @@ class TestCommandNormalization:
 class TestEmoteDetection:
     """Test emote detection functions."""
 
-    @patch("server.game.emote_service.EmoteService")
+    @patch("server.command_handler.command_input.EmoteService")
     def test_is_predefined_emote_true(self, mock_emote_service_class):
         """Test _is_predefined_emote() returns True for predefined emote."""
         mock_service = MagicMock()
@@ -94,7 +99,7 @@ class TestEmoteDetection:
         result = _is_predefined_emote("smile")
         assert result is True
 
-    @patch("server.game.emote_service.EmoteService")
+    @patch("server.command_handler.command_input.EmoteService")
     def test_is_predefined_emote_false(self, mock_emote_service_class):
         """Test _is_predefined_emote() returns False for non-emote."""
         mock_service = MagicMock()
@@ -104,7 +109,7 @@ class TestEmoteDetection:
         result = _is_predefined_emote("look")
         assert result is False
 
-    @patch("server.game.emote_service.EmoteService")
+    @patch("server.command_handler.command_input.EmoteService")
     def test_is_predefined_emote_handles_error(self, mock_emote_service_class):
         """Test _is_predefined_emote() handles errors gracefully."""
         mock_emote_service_class.side_effect = ImportError("Module not found")
@@ -118,13 +123,13 @@ class TestEmoteDetection:
 
     def test_should_treat_as_emote_unknown_word(self):
         """Test _should_treat_as_emote() returns False for unknown words."""
-        with patch("server.command_handler_unified._is_predefined_emote", return_value=False):
+        with patch("server.command_handler.command_input._is_predefined_emote", return_value=False):
             result = _should_treat_as_emote("unknownword")
             assert result is False
 
     def test_should_treat_as_emote_predefined_emote(self):
         """Test _should_treat_as_emote() returns True for predefined emotes."""
-        with patch("server.command_handler_unified._is_predefined_emote", return_value=True):
+        with patch("server.command_handler.command_input._is_predefined_emote", return_value=True):
             result = _should_treat_as_emote("smile")
             assert result is True
 
@@ -194,7 +199,7 @@ class TestCatatoniaChecks:
             """Create async generator that yields mock_session."""
             yield mock_session
 
-        with patch("server.command_handler_unified.get_async_session", return_value=mock_async_gen()):
+        with patch("server.command_handler.catatonia_check.get_async_session", return_value=mock_async_gen()):
             result = await _query_lucidity_record(player_id, "testplayer")
             assert result == mock_record
 
@@ -206,7 +211,7 @@ class TestCatatoniaChecks:
         mock_record.current_tier = "catatonic"
         mock_record.current_lcd = 0
 
-        with patch("server.command_handler_unified._query_lucidity_record", return_value=mock_record):
+        with patch("server.command_handler.catatonia_check._query_lucidity_record", return_value=mock_record):
             blocked, message = await _check_catatonia_database(player_id, "testplayer")
             assert blocked is True
             assert message is not None
@@ -219,7 +224,7 @@ class TestCatatoniaChecks:
         mock_record.current_tier = "normal"
         mock_record.current_lcd = 50
 
-        with patch("server.command_handler_unified._query_lucidity_record", return_value=mock_record):
+        with patch("server.command_handler.catatonia_check._query_lucidity_record", return_value=mock_record):
             blocked, message = await _check_catatonia_database(player_id, "testplayer")
             assert blocked is False
             assert message is None
@@ -257,7 +262,7 @@ class TestCatatoniaChecks:
         mock_player = MagicMock()
         player_name = "testplayer"
 
-        with patch("server.command_handler_unified.get_cached_player", return_value=mock_player):
+        with patch("server.command_handler.catatonia_check.get_cached_player", return_value=mock_player):
             result = await _load_player_for_catatonia_check(request, player_name, None)
             assert result == mock_player
 
@@ -270,8 +275,8 @@ class TestCatatoniaChecks:
         mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         player_name = "testplayer"
 
-        with patch("server.command_handler_unified.get_cached_player", return_value=None):
-            with patch("server.command_handler_unified.cache_player"):
+        with patch("server.command_handler.catatonia_check.get_cached_player", return_value=None):
+            with patch("server.command_handler.catatonia_check.cache_player"):
                 result = await _load_player_for_catatonia_check(request, player_name, mock_persistence)
                 assert result == mock_player
 
@@ -318,12 +323,12 @@ class TestLegacyFunctions:
 
     def test_get_help_content(self):
         """Test get_help_content() delegates to help system."""
-        with patch("server.help.help_content.get_help_content", return_value="Help text"):
+        with patch("server.command_handler_unified.get_help_content_new", return_value="Help text"):
             result = get_help_content("look")
             assert result == "Help text"
 
     def test_get_help_content_none(self):
         """Test get_help_content() with None command."""
-        with patch("server.help.help_content.get_help_content", return_value="General help"):
+        with patch("server.command_handler_unified.get_help_content_new", return_value="General help"):
             result = get_help_content(None)
             assert result == "General help"
