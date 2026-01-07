@@ -115,10 +115,77 @@ if IN_CI:
                         pass
 
     # Use venv Python if found, otherwise fall back to sys.executable
-    # pylint: disable=invalid-name
-    # Variable name follows Python convention (not a constant, so lowercase_with_underscores is correct)
-    python_exe = venv_python if venv_python else sys.executable  # noqa: N806
-    print(f"[INFO] Using Python executable: {python_exe}")
+    # In CI, when we're invoked as .venv-ci/bin/python, sys.executable is already the venv Python
+    # so we should use it directly to avoid symlink resolution issues
+    # Normalize paths for comparison (os.path.abspath handles different path formats)
+    sys_executable_normalized = os.path.abspath(sys.executable)
+    if IN_CI and venv_python and sys_executable_normalized == venv_python:
+        # We're already running in the venv Python, use sys.executable directly
+        # This ensures we use the exact same Python instance that's running this script
+        python_exe = sys.executable  # noqa: N806
+        print(f"[INFO] In CI with venv Python, using sys.executable: {python_exe}")
+        print(f"[INFO] sys.executable normalized: {sys_executable_normalized}")
+        print(f"[INFO] venv_python: {venv_python}")
+    elif venv_python:
+        # Use the venv Python we found
+        python_exe = venv_python  # noqa: N806
+        print(f"[INFO] Using venv Python: {python_exe}")
+    else:
+        # Fall back to sys.executable
+        python_exe = sys.executable  # noqa: N806
+        print(f"[INFO] No venv found, using sys.executable: {python_exe}")
+
+    # CRITICAL VERIFICATION: Ensure this Python actually has pytest before proceeding
+    # This fails fast and prevents wasting CI minutes on failed test runs
+    print(f"\n[VERIFICATION] Checking if pytest is available in: {python_exe}")
+    print("[VERIFICATION] This is the Python that will be used for: python -m pytest")
+
+    try:
+        # First, verify the Python path is what we expect
+        python_path_check = safe_run_static(
+            python_exe,
+            "-c",
+            "import sys; print(sys.executable)",
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if python_path_check.returncode == 0:
+            actual_python_path = python_path_check.stdout.strip()
+            print(f"[VERIFICATION] Python resolves to: {actual_python_path}")
+            if actual_python_path != python_exe:
+                print(f"[WARNING] Path mismatch - requested: {python_exe}, actual: {actual_python_path}")
+
+        # Now verify pytest is importable
+        result = safe_run_static(
+            python_exe,
+            "-c",
+            "import pytest; print(f'pytest {pytest.__version__}')",
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if result.returncode == 0:
+            print(f"[VERIFICATION] ✓ pytest IS available: {result.stdout.strip()}")
+        else:
+            print("[VERIFICATION] ✗ pytest NOT available!")
+            print(f"[VERIFICATION] Error: {result.stderr}")
+            print(f"[VERIFICATION] Command tried: {python_exe} -c 'import pytest; print(pytest.__version__)'")
+            # In CI, this is a fatal error - fail immediately to save CI minutes
+            if IN_CI:
+                print("\n[FATAL ERROR] Cannot run tests - pytest not found in CI environment")
+                print(f"[FATAL ERROR] This Python does not have pytest installed: {python_exe}")
+                print("[FATAL ERROR] Check the dependency installation step in the workflow")
+                sys.exit(1)
+            else:
+                print("[WARNING] pytest not available - tests may fail")
+    except Exception as e:
+        print(f"[VERIFICATION] ✗ Error checking pytest: {e}")
+        if IN_CI:
+            print("[FATAL ERROR] Cannot verify pytest in CI environment")
+            sys.exit(1)
+        else:
+            print("[WARNING] Could not verify pytest - tests may fail")
 
     # Set environment variables to prevent output buffering issues in CI/Docker
     env = os.environ.copy()
