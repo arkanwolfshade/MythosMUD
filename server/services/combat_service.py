@@ -7,7 +7,6 @@ turn order calculation, and combat resolution.
 
 from uuid import UUID
 
-from server.app.lifespan import get_current_tick
 from server.events.combat_events import CombatStartedEvent
 from server.models.combat import (
     CombatInstance,
@@ -496,6 +495,12 @@ class CombatService:
                 )
         else:
             # Set up next turn tick for auto-progression
+            # Lazy import to avoid circular import: lifespan -> lifespan_startup -> combat_service -> lifespan
+            # pylint: disable=import-outside-toplevel
+            # Reason: Circular import avoidance - combat_service imports get_current_tick from lifespan,
+            # but lifespan imports from lifespan_startup which imports CombatService
+            from server.app.lifespan import get_current_tick  # noqa: PLC0415
+
             combat.next_turn_tick = get_current_tick() + combat.turn_interval_ticks
             logger.debug("Combat attack processed, auto-progression enabled", combat_id=combat.combat_id)
 

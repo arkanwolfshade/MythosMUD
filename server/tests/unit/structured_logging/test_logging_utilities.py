@@ -289,12 +289,24 @@ def test_detect_environment_explicit_env_var():
 
 
 def test_detect_environment_logging_environment():
-    """Test detect_environment() uses LOGGING_ENVIRONMENT variable."""
-    with patch.dict(os.environ, {"LOGGING_ENVIRONMENT": "e2e_test"}, clear=False):
-        with patch("sys.modules", {}):
-            with patch("sys.argv", ["script.py"]):
-                result = detect_environment()
-                assert result == "e2e_test"
+    """Test detect_environment() uses LOGGING_ENVIRONMENT variable.
+
+    Note: When running under pytest, the detect_environment() function
+    first checks for pytest in sys.modules. To properly test LOGGING_ENVIRONMENT,
+    we need to mock sys.modules at the module level where it's used.
+    """
+    # Mock at the point of usage in the function under test
+    mock_modules = {"os": os}  # Don't include pytest
+    mock_argv = ["script.py"]  # Not pytest
+    env_vars = {"LOGGING_ENVIRONMENT": "e2e_test"}
+    # Clear MYTHOSMUD_TEST_MODE and MYTHOSMUD_ENV to ensure LOGGING_ENVIRONMENT is checked
+    with patch.dict(os.environ, env_vars, clear=False):
+        # Remove any existing environment variables that would take precedence
+        with patch.dict(os.environ, {"MYTHOSMUD_TEST_MODE": "", "MYTHOSMUD_ENV": ""}, clear=False):
+            with patch.object(sys, "modules", mock_modules):
+                with patch.object(sys, "argv", mock_argv):
+                    result = detect_environment()
+                    assert result == "e2e_test"
 
 
 def test_detect_environment_test_mode():
