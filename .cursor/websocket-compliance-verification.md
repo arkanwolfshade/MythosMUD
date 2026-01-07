@@ -1,21 +1,25 @@
 # WebSocket Best Practices Compliance Verification
 
 ## Overview
+
 This document verifies that all code changes from the WebSocket-only migration align with the best practices outlined in `.cursor/rules/websocket.mdc`.
 
 ## 1. Code Organization and Structure ✅
 
 ### Directory Structure
+
 - **Client**: Well-organized with hooks (`client/src/hooks/`), stores (`client/src/stores/`), and utilities (`client/src/utils/`)
 - **Server**: Modular structure with dedicated modules (`server/realtime/connection_manager.py`, `server/realtime/websocket_handler.py`)
 - **Tests**: Properly organized in `__tests__` directories
 
 ### File Naming Conventions ✅
+
 - Consistent naming: `useWebSocketConnection.ts`, `connectionStore.ts`, `connection_manager.py`
 - TypeScript files use `.ts` extension
 - Python files use `.py` extension
 
 ### Module Organization ✅
+
 - Clear separation of concerns:
   - Connection management: `useWebSocketConnection.ts`
   - State management: `useConnectionStateMachine.ts`, `connectionStore.ts`
@@ -23,6 +27,7 @@ This document verifies that all code changes from the WebSocket-only migration a
   - Error handling: `errorHandler.ts`
 
 ### Component Architecture ✅
+
 - Component-based architecture with reusable hooks
 - Observer pattern implemented via XState state machine
 - Dependency injection via React hooks
@@ -30,17 +35,20 @@ This document verifies that all code changes from the WebSocket-only migration a
 ## 2. Common Patterns and Anti-patterns ✅
 
 ### Design Patterns ✅
+
 - **Observer Pattern**: Implemented via XState state machine for connection state management
 - **Factory Pattern**: Connection creation abstracted in hooks
 - **Middleware Pattern**: Authentication and validation in connection flow
 
 ### Recommended Approaches ✅
+
 - ✅ **No Global WebSocket Instance**: Using refs (`websocketRef`) instead of global instances
 - ✅ **Focused Event Handlers**: Event handlers are small and delegate to callbacks
 - ✅ **Automatic Reconnection**: Implemented with exponential backoff
 - ✅ **Heartbeats**: Ping/pong implemented (30s interval)
 
 ### Anti-patterns Avoided ✅
+
 - ❌ **No Global WebSocket Instance**: Confirmed - using refs
 - ❌ **No Overly Complex Event Handlers**: Handlers are focused
 - ❌ **No Ignored Errors**: All errors are logged and handled
@@ -48,11 +56,13 @@ This document verifies that all code changes from the WebSocket-only migration a
 - ❌ **No Tight Coupling**: Hooks are decoupled via dependency injection
 
 ### State Management ✅
+
 - **Centralized State**: Zustand store (`connectionStore.ts`) for global connection state
 - **State Synchronization**: State machine ensures consistent state between client and server
 - **Immutable Updates**: Zustand uses immutable updates
 
 ### Error Handling ✅
+
 - **Try-Catch Blocks**: Used in `sendMessage` and connection logic
 - **Promise Rejections**: Async errors handled properly
 - **Global Error Handler**: Error handlers registered in FastAPI middleware
@@ -62,17 +72,20 @@ This document verifies that all code changes from the WebSocket-only migration a
 ## 3. Performance Considerations ✅
 
 ### Optimization Techniques ✅
+
 - **Minimize Data Transmission**: Message length limits (1000 chars)
 - **Data Compression**: JSON payloads (can be optimized further if needed)
 - **Message Payloads**: Using JSON strings (can be optimized to binary if needed)
 - **Namespaces/Rooms**: Room subscription manager for targeted messaging
 
 ### Memory Management ✅
+
 - **Resource Cleanup**: `useResourceCleanup` hook manages timers and intervals
 - **Connection Cleanup**: Proper cleanup on disconnect
 - **Memory Monitoring**: `MemoryMonitor` class tracks memory usage
 
 ### Heartbeats ✅
+
 - **Ping/Pong**: Implemented with 30s interval
 - **Health Checks**: NATS health checks in development mode
 - **Connection Monitoring**: Health check system tracks connection status
@@ -80,6 +93,7 @@ This document verifies that all code changes from the WebSocket-only migration a
 ## 4. Security Best Practices ✅
 
 ### Common Vulnerabilities Prevention ✅
+
 - **XSS Prevention**: Input sanitization via `inputSanitizer.sanitizeCommand()`
 - **SQL Injection**: Not applicable (using ORM)
 - **DoS Prevention**: Rate limiting via `RateLimiter` class
@@ -87,23 +101,27 @@ This document verifies that all code changes from the WebSocket-only migration a
 - **Unauthorized Access**: JWT authentication required
 
 ### Input Validation ✅
+
 - **Server-Side Validation**: All inputs validated on server
 - **Client-Side Sanitization**: Messages sanitized before sending
 - **Schema Validation**: Pydantic models for request/response validation
 - **Message Length Limits**: 1000 character limit enforced
 
 ### Authentication and Authorization ✅
+
 - **JWT Authentication**: Tokens passed via WebSocket subprotocols
 - **Token Revalidation**: Periodic token validation (every 5 minutes)
 - **HTTPS**: Required for production
 - **WebSocket Middleware**: Authentication before connection acceptance
 
 ### Data Protection ✅
+
 - **Encryption in Transit**: HTTPS/WSS required
 - **Token Storage**: Tokens not stored in client state (passed via subprotocols)
 - **Sensitive Data Masking**: Error responses sanitize sensitive information
 
 ### Secure API Communication ✅
+
 - **HTTPS**: Required for all communication
 - **SSL/TLS Validation**: Certificate validation enforced
 - **Rate Limiting**: Connection rate limiting implemented
@@ -113,6 +131,7 @@ This document verifies that all code changes from the WebSocket-only migration a
 ## 5. Testing Approaches ✅
 
 ### Unit Testing ✅
+
 - **Component Tests**: Individual hooks tested (`useWebSocketConnection.test.ts`)
 - **State Machine Tests**: Connection state machine thoroughly tested
 - **Mocking**: WebSocket mocked in tests
@@ -120,22 +139,26 @@ This document verifies that all code changes from the WebSocket-only migration a
 - **High Coverage**: Comprehensive test coverage
 
 ### Integration Testing ✅
+
 - **Client-Server Interaction**: Integration tests verify WebSocket communication
 - **Test Environment**: Test environment mimics production
 - **Real Dependencies**: Some integration tests use real WebSocket connections
 
 ### End-to-End Testing ✅
+
 - **E2E Tests**: Playwright-based E2E tests for multiplayer scenarios
 - **Real-World Scenarios**: Tests simulate actual user interactions
 - **Performance Testing**: Load testing capabilities
 
 ### Test Organization ✅
+
 - **Separate Directory**: Tests in `__tests__` directories
 - **Consistent Naming**: `*.test.ts` naming convention
 - **Grouped by Feature**: Tests organized by component/feature
 - **Clear Descriptions**: Descriptive test names
 
 ### Mocking and Stubbing ✅
+
 - **WebSocket Mocking**: `MockWebSocket` class for testing
 - **External Dependencies**: Dependencies mocked in tests
 - **Function Stubbing**: Functions stubbed for controlled behavior
@@ -143,6 +166,7 @@ This document verifies that all code changes from the WebSocket-only migration a
 ## 6. Common Pitfalls and Gotchas ✅
 
 ### Frequent Mistakes Avoided ✅
+
 - ✅ **Disconnection Handling**: Graceful disconnection with cleanup
 - ✅ **Input Validation**: All inputs validated
 - ✅ **Connection Security**: JWT authentication required
@@ -155,6 +179,7 @@ This document verifies that all code changes from the WebSocket-only migration a
 - ✅ **Comprehensive Testing**: Thorough test coverage
 
 ### Edge Cases Handled ✅
+
 - **Network Interruptions**: Automatic reconnection with exponential backoff
 - **Slow Connections**: Timeout guards (30s connection, 5s reconnect)
 - **Multiple Connections**: Support for multiple WebSocket connections per player
@@ -164,6 +189,7 @@ This document verifies that all code changes from the WebSocket-only migration a
 ## 7. Tooling and Environment ✅
 
 ### Recommended Tools ✅
+
 - **Code Editor**: VS Code with TypeScript support
 - **Testing Framework**: Vitest for client, pytest for server
 - **Bundler**: Vite for client builds
@@ -171,11 +197,13 @@ This document verifies that all code changes from the WebSocket-only migration a
 - **Network Monitoring**: Browser DevTools for WebSocket inspection
 
 ### Build Configuration ✅
+
 - **Build Tool**: Vite configured for client
 - **Minification**: Production builds minified
 - **Environment Variables**: Configuration via `.env` files
 
 ### Linting and Formatting ✅
+
 - **ESLint**: Configured for TypeScript
 - **Ruff**: Configured for Python
 - **Pre-commit Hooks**: Pre-commit hooks configured

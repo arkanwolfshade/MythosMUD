@@ -230,7 +230,8 @@ function Start-NatsServerForMythosMUD {
             if ($PSCmdlet.ShouldProcess("NATS server for MythosMUD", "Start")) {
                 Write-Host "Starting NATS server for MythosMUD..." -ForegroundColor Yellow
                 $natsStarted = Start-NatsServer -UseConfig -Background
-            } else {
+            }
+            else {
                 $natsStarted = $false
             }
             if ($natsStarted) {
@@ -287,7 +288,7 @@ function Start-MythosMUDServer {
         $serverCommand = ($commandArgs | ForEach-Object { if ($_ -contains ' ') { "`"$_`"" } else { $_ } }) -join ' '
     }
 
-    if (-not $PSCmdlet.ShouldProcess("MythosMUD server on $ServerHost:$Port", "Start")) {
+    if (-not $PSCmdlet.ShouldProcess("MythosMUD server on $($ServerHost):$($Port)", "Start")) {
         return
     }
 
