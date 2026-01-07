@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "eslint": "^9.39.1"
+    "eslint": "^9.39.2"
   },
   "devDependencies": {
     "markdownlint-cli": "^0.47.0"

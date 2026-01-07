@@ -9,67 +9,67 @@ description = "MythosMUD - A Cthulhu Mythos-themed MUD"
 requires-python = ">=3.12"
 
 dependencies = [
-    "fastapi>=0.121.1",
-    "uvicorn[standard]>=0.37.0",
-    "pydantic>=2.12.4",
-    "pydantic-settings>=2.0.0",
+    "fastapi>=0.128.0",
+    "uvicorn[standard]>=0.40.0",
+    "pydantic>=2.12.5",
+    "pydantic-settings>=2.12.0",
     "requests>=2.32.5",
     "httpx>=0.28.1",
-    "argon2-cffi>=23.1.0,<24",
+    "argon2-cffi>=25.1.0",
     "python-jose>=3.5.0",
-    "PyJWT>=2.8.0",  # Required by fastapi-users for JWT token handling
-    "faker>=37.12.0",
+    "PyJWT>=2.10.1",  # Required by fastapi-users for JWT token handling
+    "faker>=40.1.0",
     "python-dotenv>=1.2.1",
-    "sqlalchemy>=2.0.44",
+    "sqlalchemy>=2.0.45",
     "structlog>=25.5.0",
-    "fastapi-users[sqlalchemy]>=15.0.1",
-    "setuptools<81",
-    "pre-commit>=4.4.0",
-    "pytest>=8.4.2",
+    "fastapi-users[sqlalchemy]>=15.0.3",
+    "setuptools>=80.9.0,<81",
+    "pre-commit>=4.5.1",
+    "pytest>=9.0.2",
     "pytest-cov>=7.0.0",
-    "pytest-mock>=3.14.0",
-    "psycopg2-binary>=2.9.9",
-    "asyncpg>=0.29.0",
-    "pytest-asyncio>=1.2.0",
-    "jsonschema>=4.20.0",
+    "pytest-mock>=3.15.1",
+    "psycopg2-binary>=2.9.11",
+    "asyncpg>=0.31.0",
+    "pytest-asyncio>=1.3.0",
+    "jsonschema>=4.25.1,<4.26.0",
     "bleach>=6.3.0",
     "tqdm>=4.67.1",
-    "click>=8.1.8", # Command line interface for command parsing and validation
+    "click>=8.1.8,<8.2.0", # Command line interface for command parsing and validation (constrained by semgrep)
     "defusedxml>=0.7.1", # Secure XML parsing for coverage reports
-    "pwdlib[bcrypt]>=0.2.1", # Required by fastapi-users (we override the hashing)
+    "pwdlib[bcrypt]>=0.3.0", # Required by fastapi-users (we override the hashing)
     "nats-py>=2.12.0", # NATS Python client for messaging
-    "psutil>=7.1.3", # System and process utilities for memory monitoring
-    "ftfy>=6.1.3", # Fixes "bad" Unicode input safely
+    "psutil>=7.2.1", # System and process utilities for memory monitoring
+    "ftfy>=6.3.1", # Fixes "bad" Unicode input safely
     "strip-ansi>=0.1.1", # Removes ANSI escape codes
-    "playwright>=1.55.0",
+    "playwright>=1.57.0",
     "pytest-timeout>=2.4.0",
-    "networkx>=3.0", # Graph analysis for alias cycle detection (CRITICAL-3 fix)
+    "networkx>=3.6.1", # Graph analysis for alias cycle detection (CRITICAL-3 fix)
     "python-statemachine>=2.5.0",
-    "prometheus-client>=0.21.0",
+    "prometheus-client>=0.23.1",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=8.4.2",
+    "pytest>=9.0.2",
     "pytest-cov>=7.0.0",
     "pytest-xdist>=3.8.0",  # Parallel test execution (required for -n auto in pytest.ini)
-    "networkx>=3.5",
-    "matplotlib>=3.10.5",
-    "numpy>=2.3.2",
-    "pytest-asyncio>=1.2.0",
-    "debugpy>=1.8.15",
-    "ruff>=0.14.4",
-    "pre-commit>=4.4.0",
-    "mypy>=1.13.0",  # Static type checking
-    "types-requests>=2.32.0",  # Type stubs for requests
-    "types-python-dateutil>=2.9.0.20251108",  # Type stubs for dateutil
-    "types-bleach>=6.3.0.20251029",  # Type stubs for bleach
-    "semgrep>=1.142.1",  # Static analysis for security and best practices
+    "networkx>=3.6.1",
+    "matplotlib>=3.10.8",
+    "numpy>=2.4.0",
+    "pytest-asyncio>=1.3.0",
+    "debugpy>=1.8.19",
+    "ruff>=0.14.10",
+    "pre-commit>=4.5.1",
+    "mypy>=1.19.1",  # Static type checking
+    "types-requests>=2.32.4.20260107",  # Type stubs for requests
+    "types-python-dateutil>=2.9.0.20251115",  # Type stubs for dateutil
+    "types-bleach>=6.3.0.20251115",  # Type stubs for bleach
+    "semgrep>=1.146.0",  # Static analysis for security and best practices
     "websocket-client>=1.9.0",  # WebSocket client for testing connection termination
-    "bandit>=1.7.8",  # Python security linter
-    "pylint>=3.3.6",  # Python code quality linter
-    "sqlfluff>=3.0.0",  # SQL linting and formatting
-    "lizard>=1.18.0",  # Code complexity analyzer (used by Codacy)
+    "bandit>=1.9.2",  # Python security linter
+    "pylint>=4.0.4",  # Python code quality linter
+    "sqlfluff>=3.5.0",  # SQL linting and formatting
+    "lizard>=1.19.0",  # Code complexity analyzer (used by Codacy)
     # sqlint>=0.2.1 - REMOVED: Conflicts with click>=8.1.8 (sqlint requires click==7.0)
     # Use sqlfluff instead, which provides comprehensive SQL linting
 ]
@@ -337,22 +337,22 @@ ignore_missing_imports = true
 
 [dependency-groups]
 dev = [
-    "ruff>=0.14.4",
-    "mypy>=1.13.0", # Static type checking
-    "types-requests>=2.32.0", # Type stubs for requests
-    "types-python-dateutil>=2.9.0.20251108", # Type stubs for dateutil
-    "semgrep>=1.142.1", # Static analysis for security and best practices
+    "ruff>=0.14.10",
+    "mypy>=1.19.1", # Static type checking
+    "types-requests>=2.32.4.20260107", # Type stubs for requests
+    "types-python-dateutil>=2.9.0.20251115", # Type stubs for dateutil
+    "semgrep>=1.146.0", # Static analysis for security and best practices
     "websocket-client>=1.9.0", # WebSocket client for testing connection termination
-    "types-bleach>=6.3.0.20251029",
-    "types-psutil>=7.1.3.20251211",
+    "types-bleach>=6.3.0.20251115",
+    "types-psutil>=7.2.1.20251231",
     "types-jsonschema>=4.25.1.20251009",
     "types-psycopg2>=2.9.21.20251012",
     "types-python-jose>=3.5.0.20250531",
-    "types-networkx>=3.6.1.20251212",
-    "bandit>=1.7.8", # Python security linter
-    "pylint>=3.3.6", # Python code quality linter
-    "sqlfluff>=3.0.0", # SQL linting and formatting
-    "lizard>=1.18.0", # Code complexity analyzer (used by Codacy)
+    "types-networkx>=3.6.1.20251220",
+    "bandit>=1.9.2", # Python security linter
+    "pylint>=4.0.4", # Python code quality linter
+    "sqlfluff>=3.5.0", # SQL linting and formatting
+    "lizard>=1.19.0", # Code complexity analyzer (used by Codacy)
     # sqlint>=0.2.1 - REMOVED: Conflicts with click>=8.1.8 (sqlint requires click==7.0)
     # Use sqlfluff instead, which provides comprehensive SQL linting
 ]
