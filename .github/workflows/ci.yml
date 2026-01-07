@@ -60,9 +60,17 @@ jobs:
           # UV_PROJECT_ENVIRONMENT tells uv venv to create .venv-ci instead of .venv
           uv venv
           source .venv-ci/bin/activate
-          uv pip install -e .
-          uv pip install -e ".[dev]"
-          uv pip install pytest-mock>=3.14.0 pytest-xdist>=3.8.0
+          # Install pip into venv first (uv venv doesn't install pip by default)
+          # We need pip for python -m pip to work, which is more reliable with symlinked venv Pythons
+          uv pip install pip setuptools wheel
+          # Use python -m pip instead of uv pip to ensure packages install into venv's site-packages
+          # This is necessary when venv Python is a symlink - python -m pip respects VIRTUAL_ENV
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+          python -m pip install -e ".[dev]"
+          python -m pip install pytest-mock>=3.14.0 pytest-xdist>=3.8.0
+          # Verify pytest was installed correctly
+          python -c "import pytest; print(f'pytest {pytest.__version__} installed in: {__import__(\"sys\").executable}')"
       - name: Install Playwright browsers
         run: |
           source .venv-ci/bin/activate

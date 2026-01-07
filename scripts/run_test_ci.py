@@ -68,13 +68,36 @@ if IN_CI:
                 )
                 if result.returncode == 0:
                     venv_site_packages = result.stdout.strip()
-                    print(f"[INFO] Venv site-packages: {venv_site_packages}")
+                    print(f"[INFO] Venv site-packages (from Python): {venv_site_packages}")
+                    # Check if this is actually in the venv directory or in the base Python
+                    if venv_name not in venv_site_packages:
+                        print(
+                            "[WARN] Site-packages is NOT in venv directory - this is the base Python's site-packages!"
+                        )
+                        # Try to find the actual venv site-packages directory
+                        venv_lib_dir = os.path.join(PROJECT_ROOT, venv_name, "lib")
+                        if os.path.exists(venv_lib_dir):
+                            # Find pythonX.Y directory
+                            python_dirs = [d for d in os.listdir(venv_lib_dir) if d.startswith("python")]
+                            if python_dirs:
+                                actual_venv_site_packages = os.path.join(venv_lib_dir, python_dirs[0], "site-packages")
+                                print(f"[INFO] Actual venv site-packages should be: {actual_venv_site_packages}")
+                                if os.path.exists(actual_venv_site_packages):
+                                    venv_site_packages = actual_venv_site_packages
+                                    print(f"[INFO] Using actual venv site-packages: {venv_site_packages}")
                     # Check if pytest is in site-packages
                     pytest_path = os.path.join(venv_site_packages, "pytest")
                     if os.path.exists(pytest_path):
-                        print("[INFO] pytest found in venv site-packages")
+                        print(f"[INFO] pytest found in venv site-packages: {pytest_path}")
                     else:
                         print(f"[WARN] pytest NOT found in venv site-packages: {pytest_path}")
+                        # List what IS in site-packages for debugging
+                        if os.path.exists(venv_site_packages):
+                            try:
+                                contents = os.listdir(venv_site_packages)
+                                print(f"[INFO] Site-packages contents: {contents[:10]}")  # First 10 entries
+                            except Exception:
+                                pass
             except Exception as e:
                 print(f"[WARN] Could not check site-packages: {e}")
             # Verify pytest is available in this venv
