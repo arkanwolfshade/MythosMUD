@@ -254,7 +254,7 @@ class StandardizedErrorResponse:
     def _handle_pydantic_validation_error(
         self,
         error: ValidationError,
-        include_details: bool,
+        include_details: bool,  # pylint: disable=unused-argument  # Reason: Parameter reserved for future use
         response_type: str,  # pylint: disable=unused-argument  # Reason: Parameters used indirectly via handler
     ) -> JSONResponse:
         """Handle Pydantic ValidationError instances."""

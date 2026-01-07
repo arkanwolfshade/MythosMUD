@@ -44,9 +44,12 @@ if [ "$USE_EXPLICIT_PYTHON" = "true" ]; then
     echo "Installing dependencies with explicit --python flag..."
     uv pip install --python "$PYTHON_EXE" -e .
     uv pip install --python "$PYTHON_EXE" -e ".[dev]"
-    uv pip install --python "$PYTHON_EXE" pytest-mock>=3.14.0 pytest-xdist>=3.8.0
+    # Quote version specifiers to prevent shell redirection interpretation
+    uv pip install --python "$PYTHON_EXE" "pytest-mock>=3.14.0" "pytest-xdist>=3.8.0"
 else
     echo "Installing dependencies with venv activation (ensures proper site-packages isolation)..."
+    # shellcheck disable=SC1091
+    # Source the venv activation script - path is constructed dynamically so shellcheck can't verify it
     source "$VENV_NAME/bin/activate"
     # Verify we're using the venv Python
     echo "Active Python: $(which python)"
@@ -64,7 +67,8 @@ else
     python -m pip install --upgrade pip
     python -m pip install -e .
     python -m pip install -e ".[dev]"
-    python -m pip install pytest-mock>=3.14.0 pytest-xdist>=3.8.0
+    # Quote version specifiers to prevent shell redirection interpretation
+    python -m pip install "pytest-mock>=3.14.0" "pytest-xdist>=3.8.0"
     deactivate
 fi
 
@@ -95,6 +99,8 @@ if [ -d "$VENV_SITE_PACKAGES/pytest" ]; then
 else
     echo "ERROR: pytest NOT found in venv site-packages: $VENV_SITE_PACKAGES/pytest"
     echo "Listing site-packages contents:"
+    # shellcheck disable=SC2012
+    # Using ls is acceptable here for human-readable output - we're just listing directory contents
     ls -la "$VENV_SITE_PACKAGES" | head -20
     echo ""
     echo "Checking if venv has its own site-packages directory:"

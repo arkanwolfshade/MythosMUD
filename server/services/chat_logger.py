@@ -827,8 +827,10 @@ class ChatLogger:
         Returns:
             List of deleted file paths
         """
+        # pylint: disable=reimported
+        # Local import with alias to avoid shadowing outer scope timedelta
         from datetime import (
-            timedelta as dt_timedelta,  # pylint: disable=redefined-outer-name,reimported  # Reason: Local import to avoid shadowing outer scope
+            timedelta as dt_timedelta,  # pylint: disable=redefined-outer-name
         )
 
         deleted_files = []

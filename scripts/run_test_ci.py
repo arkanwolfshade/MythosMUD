@@ -38,7 +38,9 @@ if IN_CI:
     # Server tests with coverage
     # In CI, use the venv Python explicitly to ensure pytest is available
     # Check for venv Python first (CI uses .venv-ci, local uses .venv)
-    venv_python = None
+    # pylint: disable=invalid-name
+    # Variable name follows Python convention (not a constant, so lowercase_with_underscores is correct)
+    venv_python = None  # noqa: N806
     for venv_name in [".venv-ci", ".venv"]:
         # Handle both Unix and Windows paths
         if sys.platform == "win32":
@@ -55,7 +57,9 @@ if IN_CI:
             print(f"[INFO] Resolved to: {venv_python_real}")
             # Check if pytest is actually installed by checking site-packages
             # Get site-packages for this venv
-            venv_site_packages = None
+            # pylint: disable=invalid-name
+            # Variable name follows Python convention (not a constant, so lowercase_with_underscores is correct)
+            venv_site_packages = None  # noqa: N806
             try:
                 # Try to get site-packages by running Python from venv
                 result = safe_run_static(
@@ -96,9 +100,13 @@ if IN_CI:
                             try:
                                 contents = os.listdir(venv_site_packages)
                                 print(f"[INFO] Site-packages contents: {contents[:10]}")  # First 10 entries
-                            except Exception:
+                            except (OSError, PermissionError):
+                                # OSError: file system errors, PermissionError: access denied
+                                # Silently ignore - this is just for debugging output
                                 pass
-            except Exception as e:
+            except (OSError, subprocess.SubprocessError, ValueError) as e:
+                # OSError: file system errors, subprocess.SubprocessError: subprocess issues,
+                # ValueError: invalid arguments to safe_run_static
                 print(f"[WARN] Could not check site-packages: {e}")
             # Verify pytest is available in this venv
             try:
@@ -116,7 +124,9 @@ if IN_CI:
                 else:
                     print(f"[WARN] pytest not available in venv: {result.stderr}")
                     print(f"[WARN] Command used: {venv_python} -m pytest --version")
-            except Exception as e:
+            except (OSError, subprocess.SubprocessError, ValueError) as e:
+                # OSError: file system errors, subprocess.SubprocessError: subprocess issues,
+                # ValueError: invalid arguments to safe_run_static
                 print(f"[WARN] Could not verify pytest in venv: {e}")
             break
 
@@ -145,16 +155,22 @@ if IN_CI:
     if IN_CI and venv_python and sys_executable_normalized == venv_python:
         # We're already running in the venv Python, use sys.executable directly
         # This ensures we use the exact same Python instance that's running this script
+        # pylint: disable=invalid-name
+        # Variable name follows Python convention (not a constant, so lowercase_with_underscores is correct)
         python_exe = sys.executable  # noqa: N806
         print(f"[INFO] In CI with venv Python, using sys.executable: {python_exe}")
         print(f"[INFO] sys.executable normalized: {sys_executable_normalized}")
         print(f"[INFO] venv_python: {venv_python}")
     elif venv_python:
         # Use the venv Python we found
+        # pylint: disable=invalid-name
+        # Variable name follows Python convention (not a constant, so lowercase_with_underscores is correct)
         python_exe = venv_python  # noqa: N806
         print(f"[INFO] Using venv Python: {python_exe}")
     else:
         # Fall back to sys.executable
+        # pylint: disable=invalid-name
+        # Variable name follows Python convention (not a constant, so lowercase_with_underscores is correct)
         python_exe = sys.executable  # noqa: N806
         print(f"[INFO] No venv found, using sys.executable: {python_exe}")
 
@@ -162,6 +178,16 @@ if IN_CI:
     # This fails fast and prevents wasting CI minutes on failed test runs
     print(f"\n[VERIFICATION] Checking if pytest is available in: {python_exe}")
     print("[VERIFICATION] This is the Python that will be used for: python -m pytest")
+
+    # When venv Python is a symlink, we need to set PYTHONPATH or VIRTUAL_ENV
+    # to ensure it uses the venv's site-packages, not the base Python's
+    verify_env = os.environ.copy()
+    if IN_CI and venv_python and sys_executable_normalized == venv_python:
+        # We're in CI using a symlinked venv Python - need to set VIRTUAL_ENV
+        # to ensure it uses the venv's site-packages
+        venv_dir = os.path.dirname(os.path.dirname(venv_python))  # Go up from bin/python
+        verify_env["VIRTUAL_ENV"] = venv_dir
+        print(f"[VERIFICATION] Setting VIRTUAL_ENV={venv_dir} to ensure venv site-packages are used")
 
     try:
         # First, verify the Python path is what we expect
@@ -172,6 +198,7 @@ if IN_CI:
             capture_output=True,
             text=True,
             check=False,
+            env=verify_env,
         )
         if python_path_check.returncode == 0:
             actual_python_path = python_path_check.stdout.strip()
@@ -187,6 +214,7 @@ if IN_CI:
             capture_output=True,
             text=True,
             check=False,
+            env=verify_env,
         )
         if result.returncode == 0:
             print(f"[VERIFICATION] ✓ pytest IS available: {result.stdout.strip()}")
@@ -202,17 +230,25 @@ if IN_CI:
                 sys.exit(1)
             else:
                 print("[WARNING] pytest not available - tests may fail")
-    except Exception as e:
+    except (OSError, subprocess.SubprocessError, ValueError) as e:
+        # OSError: file system errors, subprocess.SubprocessError: subprocess issues,
+        # ValueError: invalid arguments to safe_run_static
         print(f"[VERIFICATION] ✗ Error checking pytest: {e}")
         if IN_CI:
             print("[FATAL ERROR] Cannot verify pytest in CI environment")
             sys.exit(1)
         else:
             print("[WARNING] Could not verify pytest - tests may fail")
-
     # Set environment variables to prevent output buffering issues in CI/Docker
     env = os.environ.copy()
     env["PYTHONUNBUFFERED"] = "1"
+
+    # When using a symlinked venv Python, we must set VIRTUAL_ENV to ensure
+    # Python uses the venv's site-packages, not the base Python's
+    if IN_CI and venv_python and sys_executable_normalized == venv_python:
+        venv_dir = os.path.dirname(os.path.dirname(venv_python))  # Go up from bin/python to venv root
+        env["VIRTUAL_ENV"] = venv_dir
+        print(f"[INFO] Setting VIRTUAL_ENV={venv_dir} to ensure venv site-packages are used for pytest")
 
     # #region agent log
     log_path = os.path.join(PROJECT_ROOT, ".cursor", "debug.log")
@@ -452,6 +488,7 @@ if IN_CI:
         env=env,
     )
 else:
+    # Non-CI execution path (local development)
     # #region agent log
     log_path = os.path.join(PROJECT_ROOT, ".cursor", "debug.log")
     try:
@@ -546,7 +583,9 @@ else:
         # For Docker Desktop on Windows, we can use the path as-is with proper escaping
         workspace_path = PROJECT_ROOT.replace("\\", "/")
 
-    docker_cmd = (
+    # pylint: disable=invalid-name
+    # Variable name follows Python convention (not a constant, so lowercase_with_underscores is correct)
+    docker_cmd = (  # noqa: N806
         "service postgresql start && sleep 3 && "
         # Install npm dependencies in container (node_modules uses Docker volume, not Windows mount)
         # This ensures Linux-specific optional dependencies are installed correctly
@@ -788,9 +827,12 @@ else:
                     break
                 continue
 
-        returncode = process.returncode if process.poll() is not None else 1
-        stdout = "".join(output_lines)
-        stderr = ""
+        # pylint: disable=invalid-name
+        # Variable names follow Python convention (not constants, so lowercase_with_underscores is correct)
+        # These match subprocess.CompletedProcess interface (returncode, stdout, stderr)
+        returncode = process.returncode if process.poll() is not None else 1  # noqa: N806
+        stdout = "".join(output_lines)  # noqa: N806
+        stderr = ""  # noqa: N806
 
         # #region agent log
         try:
@@ -840,14 +882,21 @@ else:
             pass
         # #endregion
         process.kill()
-        returncode = 1
-        stdout = "".join(output_lines)
-        stderr = str(e)
+        # pylint: disable=invalid-name
+        # Variable names follow Python convention (not constants, so lowercase_with_underscores is correct)
+        returncode = 1  # noqa: N806
+        stdout = "".join(output_lines)  # noqa: N806
+        stderr = str(e)  # noqa: N806
 
     # Create result-like object
     class Result:
+        """Container for subprocess result data (returncode, stdout, stderr)."""
+
         def __init__(self, retcode, stdout_data, stderr_data):
-            self.returncode = retcode
+            # pylint: disable=invalid-name
+            # Attribute names match subprocess.CompletedProcess interface (returncode, stdout, stderr)
+            # These are instance attributes, not constants, so lowercase_with_underscores is correct
+            self.returncode = retcode  # noqa: N806
             self.stdout = stdout_data
             self.stderr = stderr_data
 

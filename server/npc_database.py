@@ -290,8 +290,10 @@ async def init_npc_db():
         # Import all NPC models to ensure they're registered with metadata
         from sqlalchemy.orm import configure_mappers
 
+        # pylint: disable=unused-import
+        # Imported for side effects (SQLAlchemy mapper registration)
         from server.models.npc import (
-            NPCDefinition,  # noqa: F401  # pylint: disable=unused-import  # Imported for side effects (SQLAlchemy mapper registration)
+            NPCDefinition,  # noqa: F401
         )
 
         logger.debug("Configuring NPC SQLAlchemy mappers")
