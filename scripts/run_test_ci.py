@@ -179,15 +179,23 @@ if IN_CI:
     print(f"\n[VERIFICATION] Checking if pytest is available in: {python_exe}")
     print("[VERIFICATION] This is the Python that will be used for: python -m pytest")
 
-    # When venv Python is a symlink, we need to set PYTHONPATH or VIRTUAL_ENV
+    # When venv Python is a symlink, we need to set VIRTUAL_ENV AND PYTHONPATH
     # to ensure it uses the venv's site-packages, not the base Python's
     verify_env = os.environ.copy()
     if IN_CI and venv_python and sys_executable_normalized == venv_python:
-        # We're in CI using a symlinked venv Python - need to set VIRTUAL_ENV
+        # We're in CI using a symlinked venv Python - need to set VIRTUAL_ENV and PYTHONPATH
         # to ensure it uses the venv's site-packages
         venv_dir = os.path.dirname(os.path.dirname(venv_python))  # Go up from bin/python
+        venv_site_packages = os.path.join(venv_dir, "lib", "python3.12", "site-packages")
         verify_env["VIRTUAL_ENV"] = venv_dir
+        # PYTHONPATH must include the venv's site-packages for symlinked Python to find packages
+        existing_pythonpath = verify_env.get("PYTHONPATH", "")
+        if existing_pythonpath:
+            verify_env["PYTHONPATH"] = f"{venv_site_packages}:{existing_pythonpath}"
+        else:
+            verify_env["PYTHONPATH"] = venv_site_packages
         print(f"[VERIFICATION] Setting VIRTUAL_ENV={venv_dir} to ensure venv site-packages are used")
+        print(f"[VERIFICATION] Setting PYTHONPATH={venv_site_packages} to ensure packages are found")
 
     try:
         # First, verify the Python path is what we expect
@@ -243,12 +251,20 @@ if IN_CI:
     env = os.environ.copy()
     env["PYTHONUNBUFFERED"] = "1"
 
-    # When using a symlinked venv Python, we must set VIRTUAL_ENV to ensure
+    # When using a symlinked venv Python, we must set VIRTUAL_ENV and PYTHONPATH to ensure
     # Python uses the venv's site-packages, not the base Python's
     if IN_CI and venv_python and sys_executable_normalized == venv_python:
         venv_dir = os.path.dirname(os.path.dirname(venv_python))  # Go up from bin/python to venv root
+        venv_site_packages = os.path.join(venv_dir, "lib", "python3.12", "site-packages")
         env["VIRTUAL_ENV"] = venv_dir
+        # PYTHONPATH must include the venv's site-packages for symlinked Python to find packages
+        existing_pythonpath = env.get("PYTHONPATH", "")
+        if existing_pythonpath:
+            env["PYTHONPATH"] = f"{venv_site_packages}:{existing_pythonpath}"
+        else:
+            env["PYTHONPATH"] = venv_site_packages
         print(f"[INFO] Setting VIRTUAL_ENV={venv_dir} to ensure venv site-packages are used for pytest")
+        print(f"[INFO] Setting PYTHONPATH={venv_site_packages} to ensure packages are found")
 
     # #region agent log
     log_path = os.path.join(PROJECT_ROOT, ".cursor", "debug.log")
