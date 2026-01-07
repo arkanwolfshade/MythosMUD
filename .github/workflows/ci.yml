@@ -58,8 +58,9 @@ jobs:
       - name: Install dependencies
         run: |
           # Use shared script for consistent dependency installation across all environments
-          # This ensures Docker, CI, and local test-ci all use the same setup
-          VENV_NAME=.venv-ci USE_EXPLICIT_PYTHON=true bash scripts/install_ci_dependencies.sh
+          # Use activation mode (not explicit --python) to handle symlinked venv Pythons correctly
+          # This ensures packages are installed into the venv's site-packages, not the base Python's
+          VENV_NAME=.venv-ci USE_EXPLICIT_PYTHON=false bash scripts/install_ci_dependencies.sh
       - name: Install Playwright browsers
         run: |
           # Use the same venv Python as dependency installation
