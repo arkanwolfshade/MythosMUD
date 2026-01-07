@@ -256,14 +256,17 @@ class LogAggregator:
         return self.get_logs(correlation_id=correlation_id)
 
     def export_logs(
-        self, file_path: str | None = None, format: str = "json", filters: dict[str, Any] | None = None
+        self,
+        file_path: str | None = None,
+        format_type: str = "json",
+        filters: dict[str, Any] | None = None,  # pylint: disable=redefined-builtin  # Reason: 'format' renamed to 'format_type' to avoid builtin shadowing
     ) -> str:
         """
         Export logs to a file.
 
         Args:
             file_path: Path to export file (uses default if None)
-            format: Export format (json, csv)
+            format_type: Export format (json, csv)
             filters: Filters to apply to exported logs
 
         Returns:
@@ -274,7 +277,7 @@ class LogAggregator:
             if self.export_path is None:
                 raise ValueError("No export path specified")
             timestamp = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
-            export_path = self.export_path / f"logs_export_{timestamp}.{format}"
+            export_path = self.export_path / f"logs_export_{timestamp}.{format_type}"
         else:
             export_path = Path(file_path)
 
@@ -287,14 +290,14 @@ class LogAggregator:
             logs = self.aggregated_logs
 
         # Export in specified format
-        if format == "json":
+        if format_type == "json":
             self._export_json(export_path, logs)
-        elif format == "csv":
+        elif format_type == "csv":
             self._export_csv(export_path, logs)
         else:
-            raise ValueError(f"Unsupported export format: {format}")
+            raise ValueError(f"Unsupported export format: {format_type}")
 
-        logger.info("Logs exported", file_path=str(export_path), format=format, log_count=len(logs))
+        logger.info("Logs exported", file_path=str(export_path), format=format_type, log_count=len(logs))
 
         return str(export_path)
 
@@ -338,14 +341,14 @@ class LogAggregator:
                 for callback in self.aggregation_callbacks:
                     try:
                         callback(log_entry)
-                    except Exception as e:
+                    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Callback errors unpredictable, must log but continue
                         logger.error("Aggregation callback failed", callback=str(callback), error=str(e), exc_info=True)
 
                 self.log_entries.task_done()
 
             except queue.Empty:
                 continue
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Log processing errors unpredictable, must log but continue
                 logger.error("Error processing log entry", error=str(e), exc_info=True)
 
     def _update_stats(self, log_entry: LogEntry) -> None:
@@ -419,7 +422,7 @@ def get_log_aggregator() -> LogAggregator:
     Returns:
         Global LogAggregator instance
     """
-    global _log_aggregator
+    global _log_aggregator  # pylint: disable=global-statement  # Reason: Required for singleton pattern
     if _log_aggregator is None:
         _log_aggregator = LogAggregator()
     return _log_aggregator

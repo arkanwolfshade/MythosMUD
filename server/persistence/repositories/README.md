@@ -4,7 +4,10 @@ Async repository modules for domain-specific database operations.
 
 ## Overview
 
-This directory contains focused async repositories that handle database operations for specific domains (players, rooms, health, etc.). These repositories use SQLAlchemy async ORM with PostgreSQL for true non-blocking database access.
+This directory contains focused async repositories that handle database
+operations for specific domains (players, rooms, health, etc.). These
+repositories use SQLAlchemy async ORM with PostgreSQL for true non-blocking
+database access.
 
 ## Quick Start
 

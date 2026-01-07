@@ -74,6 +74,13 @@ export const processGameEvent = (
   const eventType = (event.event_type || '').toString().trim().toLowerCase();
   logger.info('eventHandlers', 'Processing event', { event_type: eventType });
 
+  // Validate event type against allowlist to prevent unsafe dynamic method calls
+  // Only allow event types that are explicitly defined in the eventHandlers registry
+  if (!(eventType in eventHandlers)) {
+    logger.warn('eventHandlers', 'Unknown event type, ignoring', { event_type: eventType });
+    return null;
+  }
+
   const handler = eventHandlers[eventType];
   if (handler) {
     try {

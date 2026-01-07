@@ -12,12 +12,12 @@ from uuid import uuid4
 
 import nats
 from nats.aio.msg import Msg
-from nats.js.errors import BadRequestError  # noqa: F401
 
+# BadRequestError removed - unused import
 from ..config.models import NATSConfig
 from ..structured_logging.enhanced_logging_config import get_logger
 from .message_broker import (
-    ConnectionError,
+    MessageBrokerConnectionError,
     MessageBrokerError,
     MessageHandler,
     PublishError,
@@ -80,7 +80,7 @@ class NATSMessageBroker:
 
         except Exception as e:
             self._logger.error("Failed to connect to NATS", error=str(e), exc_info=True)
-            raise ConnectionError(f"Failed to connect to NATS: {e}") from e
+            raise MessageBrokerConnectionError(f"Failed to connect to NATS: {e}") from e
 
     async def disconnect(self) -> None:
         """Disconnect from NATS server."""
@@ -92,7 +92,7 @@ class NATSMessageBroker:
             for subscription_id in list(self._subscriptions.keys()):
                 try:
                     await self.unsubscribe(subscription_id)
-                except Exception as e:
+                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Unsubscribe errors unpredictable, must handle gracefully
                     self._logger.warning("Error unsubscribing", subscription_id=subscription_id, error=str(e))
 
             # Close client connection
@@ -167,7 +167,7 @@ class NATSMessageBroker:
                     message_dict = json.loads(msg.data.decode("utf-8"))
                     # Call user handler
                     await handler(message_dict)
-                except Exception as e:
+                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Message handler errors unpredictable, must handle gracefully
                     self._logger.error(
                         "Error processing NATS message", subject=msg.subject, error=str(e), exc_info=True
                     )

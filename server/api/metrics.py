@@ -89,7 +89,8 @@ async def get_metrics(current_user: User = Depends(verify_admin_access)) -> dict
 
         logger.info("Metrics retrieved", admin_user=current_user.username)
 
-        assert isinstance(base_metrics, dict)
+        if not isinstance(base_metrics, dict):
+            raise TypeError("base_metrics must be a dict")
         return base_metrics
 
     except Exception as e:
@@ -98,7 +99,7 @@ async def get_metrics(current_user: User = Depends(verify_admin_access)) -> dict
 
 
 @router.get("/summary")
-async def get_metrics_summary(current_user: User = Depends(verify_admin_access)) -> dict[str, Any]:
+async def get_metrics_summary(_current_user: User = Depends(verify_admin_access)) -> dict[str, Any]:  # pylint: disable=unused-argument  # Required by Depends for auth
     """
     Get concise metrics summary.
 
@@ -126,7 +127,8 @@ async def get_metrics_summary(current_user: User = Depends(verify_admin_access))
             summary["dlq_pending"] = dlq_count
             summary["circuit_state"] = nats_message_handler.circuit_breaker.get_state().value
 
-        assert isinstance(summary, dict)
+        if not isinstance(summary, dict):
+            raise TypeError("summary must be a dict")
         return summary
 
     except Exception as e:
@@ -292,7 +294,7 @@ async def _replay_message_safely(
     Raises:
         Exception: If replay fails (logged but not exposed to user)
     """
-    await nats_message_handler._process_single_message(message_data)
+    await nats_message_handler._process_single_message(message_data)  # pylint: disable=protected-access  # Reason: Internal method access required for DLQ replay functionality
 
     # Success! Remove from DLQ
     nats_message_handler.dead_letter_queue.delete_message(str(dlq_path))

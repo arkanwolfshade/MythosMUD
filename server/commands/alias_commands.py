@@ -13,7 +13,7 @@ logger = get_logger(__name__)
 
 
 async def handle_alias_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict, _current_user: dict, _request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the alias command for creating and viewing aliases.
@@ -106,7 +106,7 @@ async def handle_alias_command(
         logger.info("Alias created", player_name=player_name, alias_name=alias_name, command=command)
         return {"result": f"Alias '{alias_name}' created successfully."}
 
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Alias creation errors unpredictable, must return error message
         logger.error(
             "Failed to create alias", player_name=player_name, alias_name=alias_name, command=command, error=str(e)
         )
@@ -114,7 +114,7 @@ async def handle_alias_command(
 
 
 async def handle_aliases_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    _command_data: dict, _current_user: dict, _request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the aliases command for listing all aliases.
@@ -151,13 +151,13 @@ async def handle_aliases_command(
         logger.debug("Aliases listed", player_name=player_name, alias_count=len(aliases))
         return {"result": result}
 
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Alias listing errors unpredictable, must return error message
         logger.error("Failed to list aliases", player_name=player_name, error=str(e))
         return {"result": f"Failed to list aliases: {str(e)}"}
 
 
 async def handle_unalias_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict, _current_user: dict, _request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """
     Handle the unalias command for removing aliases.
@@ -202,6 +202,6 @@ async def handle_unalias_command(
         logger.info("Alias removed", player_name=player_name, alias_name=alias_name)
         return {"result": f"Alias '{alias_name}' removed successfully."}
 
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Alias removal errors unpredictable, must return error message
         logger.error("Failed to remove alias", player_name=player_name, alias_name=alias_name, error=str(e))
         return {"result": f"Failed to remove alias: {str(e)}"}

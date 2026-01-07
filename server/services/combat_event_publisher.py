@@ -149,7 +149,8 @@ class CombatEventPublisher:
                 return False
 
             # Ensure timestamp is set (should be guaranteed by BaseEvent.__post_init__)
-            assert event.timestamp is not None, "Event timestamp should be set by BaseEvent.__post_init__"
+            if event.timestamp is None:
+                raise ValueError("Event timestamp should be set by BaseEvent.__post_init__")
 
             # Create event data dictionary
             event_data = {

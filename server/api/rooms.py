@@ -181,7 +181,7 @@ async def list_rooms(
                             logger.debug("Player has explored no rooms, returning empty list")
                     else:
                         logger.warning("Player not found for user, cannot filter by exploration", user_id=user_id)
-                except Exception as e:
+                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Exploration filter errors unpredictable, fallback to all rooms
                     # Log error but don't fail the request - just return all rooms
                     logger.warning(
                         "Error filtering by explored rooms, returning all rooms",
@@ -206,7 +206,7 @@ async def list_rooms(
             "zone": zone,
             "sub_zone": sub_zone,
         }
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Room listing errors unpredictable, must handle gracefully
         logger.error(
             "Error listing rooms",
             error=str(e),
@@ -288,7 +288,7 @@ async def update_room_position(
 
     except LoggedHTTPException:
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Room creation errors unpredictable, must rollback and create context
         await session.rollback()
         context = create_context_from_request(request)
         context.metadata["requested_room_id"] = room_id
@@ -322,5 +322,6 @@ async def get_room(
         raise LoggedHTTPException(status_code=404, detail="Room not found", context=context)
 
     logger.debug("Room information returned", room_id=room_id, room_name=room.get("name", "Unknown"))
-    assert isinstance(room, dict)
+    if not isinstance(room, dict):
+        raise TypeError("room must be a dict")
     return room

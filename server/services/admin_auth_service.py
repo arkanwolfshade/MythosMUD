@@ -133,13 +133,15 @@ class AdminAuthService:
         # Try to get username from User object
         if hasattr(current_user, "username"):
             result = current_user.username
-            assert isinstance(result, str)
+            if not isinstance(result, str):
+                raise TypeError("username must be a string")
             return result
 
         # Try to get username from dictionary
         if hasattr(current_user, "get"):
             result = current_user.get("username", "unknown")
-            assert isinstance(result, str)
+            if not isinstance(result, str):
+                raise TypeError("username must be a string")
             return result
 
         return "unknown"
@@ -252,7 +254,7 @@ class AdminAuthService:
 
         return action in permissions.get(role, [])
 
-    def _check_rate_limit(self, user_id: str, request: Request | None = None) -> None:
+    def _check_rate_limit(self, user_id: str, _request: Request | None = None) -> None:  # pylint: disable=unused-argument  # Reason: Parameter reserved for future request-based rate limiting
         """
         Check if user has exceeded rate limits.
 

@@ -2,6 +2,8 @@
 # MythosMUD Schema Verification Script
 # Verifies that db/authoritative_schema.sql matches the current mythos_dev database structure
 
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and output messages require Write-Host for proper display')]
 $ErrorActionPreference = "Stop"
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -38,20 +40,20 @@ if (Test-Path $EnvFile) {
         }
 
         if ($key -eq "DATABASE_URL") {
-            $DatabaseUrl = $value
+            $script:DatabaseUrl = $value
         }
     }
 }
 
 # Parse DATABASE_URL if set
-if ($DatabaseUrl) {
+if ($script:DatabaseUrl) {
     # Handle both postgresql:// and postgresql+asyncpg:// formats
     $dbUrl = $DatabaseUrl -replace '^postgresql\+asyncpg://', '' -replace '^postgresql://', ''
     if ($dbUrl -match '^([^:]+):([^@]+)@([^:/]+)(:([0-9]+))?/(.+)$') {
         $DbUser = $matches[1]
         $DbPassword = $matches[2]
         $DbHost = $matches[3]
-        $DbPort = if ($matches[5]) { $matches[5] } else { "5432" }
+        # $DbPort is parsed but not used - PostgreSQL uses default port if not specified
         $DbName = $matches[6]
         Write-Host "Parsed DATABASE_URL: user=$DbUser, host=$DbHost, database=$DbName" -ForegroundColor Cyan
     }
@@ -104,7 +106,7 @@ try {
         Join-Path $pgDumpDir "pg_isready.exe"
     }
 
-    $isReadyResult = & $pgIsready -h $DbHost -U $DbUser -d $DbName 2>&1
+    & $pgIsready -h $DbHost -U $DbUser -d $DbName 2>&1 | Out-Null
     if ($LASTEXITCODE -ne 0) {
         Write-Host "Warning: Cannot verify database connectivity." -ForegroundColor Yellow
         Write-Host "Schema file exists but cannot verify against database." -ForegroundColor Yellow

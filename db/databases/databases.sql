@@ -3,15 +3,30 @@
 -- Creates three databases and enables pgcrypto in each, with secure defaults.
 -- Applies least-privilege grants to application roles.
 
--- Create databases with owners (must not run inside a transaction/function)
-SELECT 'CREATE DATABASE mythos_dev OWNER mythos_owner_dev ENCODING ''UTF8'' TEMPLATE template1'
-WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'mythos_dev')\gexec
+-- Create databases with owners (must not run inside a
+-- transaction/function)
+SELECT
+    'CREATE DATABASE mythos_dev OWNER mythos_owner_dev ENCODING'
+    ' ''UTF8'' TEMPLATE template1'
+WHERE
+    NOT EXISTS (SELECT FROM pg_database WHERE datname = 'mythos_dev')
+\gexec
 
-SELECT 'CREATE DATABASE mythos_unit OWNER mythos_owner_unit ENCODING ''UTF8'' TEMPLATE template1'
-WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'mythos_unit')\gexec
+SELECT
+    'CREATE DATABASE mythos_unit OWNER mythos_owner_unit ENCODING'
+    ' ''UTF8'' TEMPLATE template1'
+WHERE
+    NOT EXISTS (
+        SELECT FROM pg_database WHERE datname = 'mythos_unit'
+    )
+\gexec
 
-SELECT 'CREATE DATABASE mythos_e2e OWNER mythos_owner_e2e ENCODING ''UTF8'' TEMPLATE template1'
-WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'mythos_e2e')\gexec
+SELECT
+    'CREATE DATABASE mythos_e2e OWNER mythos_owner_e2e ENCODING'
+    ' ''UTF8'' TEMPLATE template1'
+WHERE
+    NOT EXISTS (SELECT FROM pg_database WHERE datname = 'mythos_e2e')
+\gexec
 
 \connect mythos_dev
 SET client_min_messages = WARNING;

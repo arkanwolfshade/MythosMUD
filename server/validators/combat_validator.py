@@ -168,7 +168,7 @@ class CombatValidator:
             # All validations passed
             return True, None, None
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Validation errors unpredictable, must return error message
             logger.error("Error in combat command validation", error=str(e))
             return False, "The cosmic forces have rejected your command.", None
 
@@ -310,7 +310,7 @@ class CombatValidator:
 
         return False
 
-    def _is_rate_limited(self, player_context: dict[str, Any]) -> bool:
+    def _is_rate_limited(self, _player_context: dict[str, Any]) -> bool:  # pylint: disable=unused-argument  # Reason: Parameter reserved for future rate limiting implementation
         """Check if player is rate limited."""
         # This would integrate with actual rate limiting system
         # For now, return False (no rate limiting)
@@ -321,7 +321,7 @@ class CombatValidator:
         import random
 
         messages = self.error_messages.get(error_type, ["An error occurred."])
-        return random.choice(messages)
+        return random.choice(messages)  # nosec B311: Game mechanics message selection, not cryptographic
 
     def get_combat_help_message(self) -> str:
         """Get a thematic help message for combat commands."""
@@ -367,7 +367,7 @@ The cosmic forces will guide your hand in battle, but choose your targets wisely
 
         import random
 
-        return random.choice(death_messages)
+        return random.choice(death_messages)  # nosec B311: Game mechanics message selection, not cryptographic
 
     def get_combat_victory_message(self, player_name: str, target: str, xp_gained: int) -> str:
         """Get a thematic victory message."""
@@ -380,4 +380,4 @@ The cosmic forces will guide your hand in battle, but choose your targets wisely
 
         import random
 
-        return random.choice(victory_messages)
+        return random.choice(victory_messages)  # nosec B311: Game mechanics message selection, not cryptographic

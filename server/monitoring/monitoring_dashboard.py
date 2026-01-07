@@ -422,7 +422,7 @@ class MonitoringDashboard:
         cutoff_time = datetime.now(UTC) - timedelta(hours=hours)
         return [alert for alert in self.alerts if alert.timestamp >= cutoff_time]
 
-    def export_monitoring_data(self, format: str = "json") -> dict[str, Any]:
+    def export_monitoring_data(self, _format: str = "json") -> dict[str, Any]:  # pylint: disable=unused-argument  # Reason: Parameter reserved for future format support (currently only JSON)
         """
         Export comprehensive monitoring data.
 
@@ -518,9 +518,9 @@ class MonitoringDashboard:
     def _generate_recommendations(
         self,
         system_health: SystemHealth,
-        perf_stats: dict[str, PerformanceStats],
+        _perf_stats: dict[str, PerformanceStats],  # pylint: disable=unused-argument  # Reason: Parameter reserved for future performance-based alerting
         exc_stats: ExceptionStats,
-        log_stats: LogAggregationStats,
+        _log_stats: LogAggregationStats,  # pylint: disable=unused-argument  # Reason: Parameter reserved for future log-based alerting
     ) -> list[str]:
         """Generate system recommendations based on current metrics."""
         recommendations = []
@@ -583,7 +583,7 @@ def get_monitoring_dashboard() -> MonitoringDashboard:
     Returns:
         Global MonitoringDashboard instance
     """
-    global _monitoring_dashboard
+    global _monitoring_dashboard  # pylint: disable=global-statement  # Reason: Singleton pattern for monitoring dashboard
     if _monitoring_dashboard is None:
         _monitoring_dashboard = MonitoringDashboard()
     return _monitoring_dashboard

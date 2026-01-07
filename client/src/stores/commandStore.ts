@@ -311,7 +311,9 @@ export const useCommandStore = create<CommandStore>()(
               }
 
               // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
-              // ReDoS protection is in place: pattern validation above and 100ms timeout below
+              // ReDoS protection is in place: pattern validation above (checks for dangerous nested quantifiers)
+              // and 100ms timeout below. The trigger.pattern comes from user configuration but is validated
+              // before use to prevent ReDoS attacks.
               const regex = new RegExp(trigger.pattern, trigger.caseSensitive ? 'g' : 'gi');
 
               // Add timeout protection for regex execution

@@ -69,7 +69,8 @@ async def lifespan(app: FastAPI):
     logger.info("Logging system enhanced with PlayerGuidFormatter")
 
     # Set the main event loop for the EventBus to handle async event handlers
-    assert container.event_bus is not None, "EventBus must be initialized"
+    if container.event_bus is None:
+        raise RuntimeError("EventBus must be initialized")
     main_loop = asyncio.get_running_loop()
     container.event_bus.set_main_loop(main_loop)
 
@@ -85,7 +86,8 @@ async def lifespan(app: FastAPI):
     await initialize_magic_services(app, container)
 
     # Start the game tick loop using TaskRegistry from container
-    assert container.task_registry is not None, "TaskRegistry must be initialized"
+    if container.task_registry is None:
+        raise RuntimeError("TaskRegistry must be initialized")
     tick_task = container.task_registry.register_task(game_tick_loop(app), "lifecycle/game_tick_loop", "lifecycle")
     app.state.tick_task = tick_task
     logger.info("MythosMUD server started successfully with ApplicationContainer")

@@ -9,7 +9,7 @@
 body {
   font-family: 'Courier New', monospace;
   background: #0a0a0a;
-  color: #00ff00;
+  color: #0f0;
   line-height: 1.6;
 }
 
@@ -42,8 +42,8 @@ body {
 .login-container h1 {
   font-size: 3.5rem;
   margin-bottom: 0.5rem;
-  text-shadow: 0 0 10px #00ff00;
-  color: #00ff00;
+  text-shadow: 0 0 10px #0f0;
+  color: #0f0;
 }
 
 .subtitle {
@@ -57,7 +57,7 @@ body {
   background: rgba(0, 0, 0, 0.8);
   padding: 2rem;
   border-radius: 8px;
-  border: 1px solid #00ff00;
+  border: 1px solid #0f0;
   box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
   width: 100%;
   max-width: 400px;
@@ -70,7 +70,7 @@ body {
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #00ff00;
+  color: #0f0;
   font-weight: bold;
 }
 
@@ -80,21 +80,21 @@ body {
   border: 1px solid #333;
   border-radius: 4px;
   background: #1a1a1a;
-  color: #00ff00;
+  color: #0f0;
   font-family: inherit;
   font-size: 1.125rem;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #00ff00;
+  border-color: #0f0;
   box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
 }
 
 .login-button {
   width: 100%;
   padding: 1rem;
-  background: #00ff00;
+  background: #0f0;
   color: #000;
   border: none;
   border-radius: 4px;
@@ -105,7 +105,7 @@ body {
 }
 
 .login-button:hover:not(:disabled) {
-  background: #00cc00;
+  background: #0c0;
   box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
 }
 
@@ -117,11 +117,11 @@ body {
 
 .error-message {
   background: rgba(244, 67, 54, 0.1);
-  border: 1px solid #f44336;
-  color: #f44336;
+  border: 1px solid #f44;
+  color: #f44;
   padding: 0.75rem;
   border-radius: 4px;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
   font-size: 1.1rem;
 }
 
@@ -143,8 +143,8 @@ body {
 
 .debug-button {
   background: rgba(0, 255, 0, 0.1);
-  border: 1px solid #00ff00;
-  color: #00ff00;
+  border: 1px solid #0f0;
+  color: #0f0;
   padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
@@ -163,7 +163,7 @@ body {
   height: 100vh;
   width: 100%;
   background: #0a0a0a;
-  color: #00ff00;
+  color: #0f0;
   font-family: 'Courier New', monospace;
   overflow: hidden;
 }
@@ -173,7 +173,7 @@ body {
   min-height: 100vh;
   max-height: 100vh; /* Constrain to viewport height */
   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-  color: #00ff00;
+  color: #0f0;
   font-family: 'Courier New', monospace;
   display: flex;
   align-items: flex-start; /* Start from top instead of center */
@@ -199,19 +199,19 @@ body {
 .profession-selection-header h1 {
   font-size: 3rem;
   margin-bottom: 1rem;
-  text-shadow: 0 0 10px #00ff00;
-  color: #00ff00;
+  text-shadow: 0 0 10px #0f0;
+  color: #0f0;
 }
 
 .character-welcome {
   font-size: 1.5rem;
   margin-bottom: 1rem;
-  color: #00ff00;
+  color: #0f0;
 }
 
 .profession-instructions {
   font-size: 1.1rem;
-  color: #00ff00;
+  color: #0f0;
   opacity: 0.8;
   max-width: 600px;
   margin: 0 auto;
@@ -227,7 +227,7 @@ body {
 
 .profession-card {
   background: rgba(0, 0, 0, 0.7);
-  border: 2px solid #00ff00;
+  border: 2px solid #0f0;
   border-radius: 8px;
   padding: 1.5rem;
   cursor: pointer;
@@ -252,19 +252,19 @@ body {
 }
 
 .profession-card:hover {
-  border-color: #00ff00;
+  border-color: #0f0;
   box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
   transform: translateY(-2px);
 }
 
 .profession-card.selected {
-  border-color: #00ff00;
+  border-color: #0f0;
   background: rgba(0, 255, 0, 0.1);
   box-shadow: 0 0 25px rgba(0, 255, 0, 0.4);
 }
 
 .profession-card:focus {
-  outline: 2px solid #00ff00;
+  outline: 2px solid #0f0;
   outline-offset: 2px;
 }
 
@@ -275,9 +275,9 @@ body {
 .profession-name {
   font-size: 1.8rem;
   font-weight: bold;
-  color: #00ff00;
+  color: #0f0;
   margin: 0;
-  text-shadow: 0 0 5px #00ff00;
+  text-shadow: 0 0 5px #0f0;
 }
 
 .profession-content {
@@ -288,7 +288,7 @@ body {
 
 .profession-description {
   font-size: 1.1rem;
-  color: #00ff00;
+  color: #0f0;
   opacity: 0.9;
   line-height: 1.5;
   margin: 0;
@@ -296,7 +296,7 @@ body {
 
 .profession-flavor-text {
   font-size: 1rem;
-  color: #00ff00;
+  color: #0f0;
   opacity: 0.7;
   font-style: italic;
   line-height: 1.4;
@@ -311,13 +311,13 @@ body {
 
 .stat-requirements {
   font-size: 1rem;
-  color: #00ff00;
+  color: #0f0;
   font-weight: bold;
 }
 
 .stat-requirements.highlighted {
-  color: #ffff00;
-  text-shadow: 0 0 5px #ffff00;
+  color: #ff0;
+  text-shadow: 0 0 5px #ff0;
 }
 
 .profession-selection-actions {
@@ -333,9 +333,9 @@ body {
   padding: 1rem 2rem;
   font-size: 1.2rem;
   font-weight: bold;
-  border: 2px solid #00ff00;
+  border: 2px solid #0f0;
   background: transparent;
-  color: #00ff00;
+  color: #0f0;
   cursor: pointer;
   font-family: inherit;
   border-radius: 4px;
@@ -371,21 +371,15 @@ body {
 .error-container h2 {
   font-size: 2rem;
   margin-bottom: 1rem;
-  color: #00ff00;
-}
-
-.error-message {
-  color: #ff4444;
-  margin-bottom: 2rem;
-  font-size: 1.1rem;
+  color: #0f0;
 }
 
 .retry-button {
   padding: 0.8rem 1.5rem;
   font-size: 1rem;
-  border: 2px solid #00ff00;
+  border: 2px solid #0f0;
   background: transparent;
-  color: #00ff00;
+  color: #0f0;
   cursor: pointer;
   font-family: inherit;
   border-radius: 4px;
@@ -402,9 +396,9 @@ body {
 .stats-actions .back-button {
   padding: 0.8rem 1.5rem;
   font-size: 1rem;
-  border: 2px solid #00ff00;
+  border: 2px solid #0f0;
   background: transparent;
-  color: #00ff00;
+  color: #0f0;
   cursor: pointer;
   font-family: inherit;
   border-radius: 4px;

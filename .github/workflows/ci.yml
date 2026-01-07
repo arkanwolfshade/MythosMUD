@@ -57,16 +57,25 @@ jobs:
           echo "$HOME/.local/bin" >> $GITHUB_PATH
       - name: Install dependencies
         run: |
+          # UV_PROJECT_ENVIRONMENT tells uv venv to create .venv-ci instead of .venv
           uv venv
           source .venv-ci/bin/activate
-          uv pip install -e .
-          uv pip install -e ".[dev]"
-          uv pip install pytest-mock>=3.14.0 pytest-xdist>=3.8.0
+          # Install pip into venv explicitly using --python flag to ensure it goes into the venv
+          # uv venv doesn't install pip by default, and we need it for python -m pip to work
+          uv pip install --python .venv-ci/bin/python pip setuptools wheel
+          # Use python -m pip instead of uv pip to ensure packages install into venv's site-packages
+          # This is necessary when venv Python is a symlink - python -m pip respects VIRTUAL_ENV
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+          python -m pip install -e ".[dev]"
+          python -m pip install "pytest-mock>=3.14.0" "pytest-xdist>=3.8.0"
+          # Verify pytest was installed correctly and show where it's installed
+          python -c "import pytest, sys, site; print(f'pytest {pytest.__version__}'); print(f'Python: {sys.executable}'); print(f'Site-packages: {site.getsitepackages()[0] if site.getsitepackages() else site.getusersitepackages()}')"
       - name: Install Playwright browsers
         run: |
           source .venv-ci/bin/activate
           playwright install chromium
-          playwright install-deps
+          playwright install-deps chromium
       - name: Install PostgreSQL 18
         if: ${{ !env.ACT }}
         run: |
@@ -96,16 +105,40 @@ jobs:
           (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'Cthulhu1';")
           # Initialize database schema and apply migrations
           # Use su postgres for Docker compatibility, fall back to sudo for GitHub Actions
-          su postgres -c "psql -f $WORKSPACE_PATH/db/roles/roles.sql" || \
-          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -f db/roles/roles.sql)
-          su postgres -c "psql -f $WORKSPACE_PATH/db/databases/databases.sql" || \
-          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -f db/databases/databases.sql)
-          su postgres -c "psql -d mythos_unit -f $WORKSPACE_PATH/db/authoritative_schema.sql" || \
-          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -d mythos_unit -f db/authoritative_schema.sql)
-          # Verify migrations were applied correctly
-          su postgres -c "psql -v ON_ERROR_STOP=1 -d mythos_unit -c \"SELECT column_name FROM information_schema.columns WHERE table_name = 'containers' AND column_name = 'container_item_instance_id';\"" | grep -q container_item_instance_id || \
-          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -v ON_ERROR_STOP=1 -d mythos_unit -c "SELECT column_name FROM information_schema.columns WHERE table_name = 'containers' AND column_name = 'container_item_instance_id';" | grep -q container_item_instance_id) || \
-          (echo "ERROR: container_item_instance_id column not found after migration" && exit 1)
+          su postgres -c "psql -v ON_ERROR_STOP=1 -f $WORKSPACE_PATH/db/roles/roles.sql" || \
+          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -v ON_ERROR_STOP=1 -f db/roles/roles.sql)
+          su postgres -c "psql -v ON_ERROR_STOP=1 -f $WORKSPACE_PATH/db/databases/databases.sql" || \
+          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -v ON_ERROR_STOP=1 -f db/databases/databases.sql)
+          # Apply authoritative schema with error checking
+          echo "Applying authoritative schema..."
+          if ! su postgres -c "psql -v ON_ERROR_STOP=1 -d mythos_unit -f $WORKSPACE_PATH/db/authoritative_schema.sql" 2>&1; then
+            if command -v sudo >/dev/null 2>&1; then
+              if ! sudo -u postgres psql -v ON_ERROR_STOP=1 -d mythos_unit -f db/authoritative_schema.sql 2>&1; then
+                echo "ERROR: Failed to apply authoritative schema"
+                exit 1
+              fi
+            else
+              echo "ERROR: Failed to apply authoritative schema"
+              exit 1
+            fi
+          fi
+          echo "✓ Schema applied successfully"
+          # Verify migrations were applied correctly - check for container_item_instance_id column
+          # Use explicit schema qualification and better error handling
+          # Prefer sudo -u postgres (no password prompt) over su postgres (requires password)
+          COLUMN_CHECK=$((command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -t -A -d mythos_unit -c "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'containers' AND column_name = 'container_item_instance_id');" 2>&1) || \
+            (su postgres -c "psql -t -A -d mythos_unit -c \"SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'containers' AND column_name = 'container_item_instance_id');\"" 2>&1))
+          # Strip whitespace and check for actual result
+          COLUMN_CHECK=$(echo "$COLUMN_CHECK" | tr -d '[:space:]')
+          if [ "$COLUMN_CHECK" != "t" ]; then
+            echo "ERROR: container_item_instance_id column not found in containers table after schema application"
+            echo "Column check result: '$COLUMN_CHECK'"
+            echo "Verifying containers table exists..."
+            (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -d mythos_unit -c "SELECT column_name, data_type FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'containers' ORDER BY ordinal_position;") || \
+              su postgres -c "psql -d mythos_unit -c \"SELECT column_name, data_type FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'containers' ORDER BY ordinal_position;\""
+            exit 1
+          fi
+          echo "✓ Verified container_item_instance_id column exists in containers table"
           su postgres -c "psql -d mythos_unit -f $WORKSPACE_PATH/data/db/00_world_and_emotes.sql" || \
           (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -d mythos_unit -f data/db/00_world_and_emotes.sql)
           su postgres -c "psql -d mythos_unit -f $WORKSPACE_PATH/data/db/01_professions.sql" || \
@@ -147,8 +180,7 @@ jobs:
           fi
       - name: Run tests with coverage
         run: |
-          source .venv-ci/bin/activate
-          make test-ci
+          .venv-ci/bin/python scripts/run_test_ci.py
       - name: Check for excessive warnings
         run: |
           source .venv-ci/bin/activate

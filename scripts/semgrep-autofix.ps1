@@ -3,6 +3,8 @@
 # characters in semgrep rules on Windows systems.
 
 # Force UTF-8 encoding to prevent UnicodeEncodeError
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and output messages require Write-Host for proper display')]
 $env:PYTHONUTF8 = "1"
 $env:PYTHONIOENCODING = "utf-8"
 

@@ -77,7 +77,7 @@ async def respawn_player_from_delirium(
                     ) from e
             except LoggedHTTPException:
                 raise
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Respawn errors unpredictable, must create error context
                 context = create_error_context(request, current_user, operation="respawn_player_from_delirium")
                 logger.error(
                     "Error in delirium respawn endpoint",
@@ -98,7 +98,7 @@ async def respawn_player_from_delirium(
 
     except LoggedHTTPException:
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Respawn errors unpredictable, must create error context
         context = create_error_context(request, current_user, operation="respawn_player_from_delirium")
         logger.error(
             "Unexpected error in delirium respawn endpoint",

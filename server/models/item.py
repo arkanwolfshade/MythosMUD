@@ -67,7 +67,7 @@ class ItemPrototype(Base):
         DateTime(timezone=True),
         nullable=False,
         default=lambda: datetime.now(UTC),
-        server_default=func.now(),
+        server_default=func.now(),  # pylint: disable=not-callable  # SQLAlchemy func is callable at runtime  # pylint: disable=not-callable  # SQLAlchemy func is callable at runtime
     )
 
     item_instances: Mapped[list[ItemInstance]] = relationship(
@@ -117,14 +117,14 @@ class ItemInstance(Base):
         DateTime(timezone=True),
         nullable=False,
         default=lambda: datetime.now(UTC),
-        server_default=func.now(),
+        server_default=func.now(),  # pylint: disable=not-callable  # SQLAlchemy func is callable at runtime  # pylint: disable=not-callable  # SQLAlchemy func is callable at runtime
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
         default=lambda: datetime.now(UTC),
         onupdate=lambda: datetime.now(UTC),
-        server_default=func.now(),
+        server_default=func.now(),  # pylint: disable=not-callable  # SQLAlchemy func is callable at runtime
     )
 
     prototype: Mapped[ItemPrototype] = relationship(back_populates="item_instances")
@@ -162,7 +162,7 @@ class ItemComponentState(Base):
         nullable=False,
         default=lambda: datetime.now(UTC),
         onupdate=lambda: datetime.now(UTC),
-        server_default=func.now(),
+        server_default=func.now(),  # pylint: disable=not-callable  # SQLAlchemy func is callable at runtime
     )
 
     item_instance: Mapped[ItemInstance] = relationship(back_populates="component_states")

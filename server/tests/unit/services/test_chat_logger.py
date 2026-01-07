@@ -51,7 +51,7 @@ def test_log_chat_message(chat_logger, temp_log_dir):  # pylint: disable=redefin
     )
 
     # Give writer thread time to process
-    chat_logger.wait_for_queue_processing(timeout=1.0)
+    chat_logger.wait_for_queue_processing(_timeout=1.0)
 
     # Check that log file was created
     log_files = list(Path(temp_log_dir).glob("chat_chat_*.log"))
@@ -71,7 +71,7 @@ def test_log_moderation_event(chat_logger, temp_log_dir):  # pylint: disable=red
     )
 
     # Give writer thread time to process
-    chat_logger.wait_for_queue_processing(timeout=1.0)
+    chat_logger.wait_for_queue_processing(_timeout=1.0)
 
     # Check that log file was created
     log_files = list(Path(temp_log_dir).glob("chat_moderation_*.log"))
@@ -89,7 +89,7 @@ def test_log_system_event(chat_logger, temp_log_dir):  # pylint: disable=redefin
     )
 
     # Give writer thread time to process
-    chat_logger.wait_for_queue_processing(timeout=1.0)
+    chat_logger.wait_for_queue_processing(_timeout=1.0)
 
     # Check that log file was created
     log_files = list(Path(temp_log_dir).glob("chat_system_*.log"))
@@ -126,7 +126,7 @@ def test_log_player_muted(chat_logger, temp_log_dir):  # pylint: disable=redefin
     )
 
     # Give writer thread time to process
-    chat_logger.wait_for_queue_processing(timeout=1.0)
+    chat_logger.wait_for_queue_processing(_timeout=1.0)
 
     # Check that log file was created
     log_files = list(Path(temp_log_dir).glob("chat_moderation_*.log"))
@@ -143,7 +143,7 @@ def test_log_player_unmuted(chat_logger, temp_log_dir):  # pylint: disable=redef
     )
 
     # Give writer thread time to process
-    chat_logger.wait_for_queue_processing(timeout=1.0)
+    chat_logger.wait_for_queue_processing(_timeout=1.0)
 
     # Check that log file was created
     log_files = list(Path(temp_log_dir).glob("chat_moderation_*.log"))
@@ -160,7 +160,7 @@ def test_log_player_joined_room(chat_logger, temp_log_dir):  # pylint: disable=r
     )
 
     # Give writer thread time to process
-    chat_logger.wait_for_queue_processing(timeout=1.0)
+    chat_logger.wait_for_queue_processing(_timeout=1.0)
 
     # Check that log file was created
     log_files = list(Path(temp_log_dir).glob("chat_system_*.log"))
@@ -178,7 +178,7 @@ def test_log_rate_limit_violation(chat_logger, temp_log_dir):  # pylint: disable
     )
 
     # Give writer thread time to process
-    chat_logger.wait_for_queue_processing(timeout=1.0)
+    chat_logger.wait_for_queue_processing(_timeout=1.0)
 
     # Check that log file was created
     log_files = list(Path(temp_log_dir).glob("chat_moderation_*.log"))
@@ -220,7 +220,7 @@ def test_log_whisper_channel_message(chat_logger, temp_log_dir):  # pylint: disa
     )
 
     # Give writer thread time to process
-    chat_logger.wait_for_queue_processing(timeout=1.0)
+    chat_logger.wait_for_queue_processing(_timeout=1.0)
 
     # Check that log file was created
     log_files = list(Path(temp_log_dir).glob("chat_whisper_*.log"))

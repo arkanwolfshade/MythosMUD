@@ -70,7 +70,7 @@ def create_app() -> FastAPI:
         expose_headers_list = list(getattr(cors_cfg, "expose_headers", []))
         allow_credentials_bool = bool(getattr(cors_cfg, "allow_credentials", True))
         max_age_int = int(getattr(cors_cfg, "max_age", 600))
-    except Exception:
+    except Exception:  # pylint: disable=broad-exception-caught  # Reason: CORS config errors unpredictable, must fallback to environment
         # Minimal fallback sourced only from environment
         allowed_origins_list = [
             "http://localhost:5173",

@@ -152,6 +152,7 @@ class ConnectionErrorHandler:
 
             # Write to error log file using proper logging configuration
             config = get_config()
+            # pylint: disable=no-member  # Pydantic FieldInfo dynamic attributes
             log_base = config.logging.log_base
             environment = config.logging.environment
 
@@ -159,7 +160,7 @@ class ConnectionErrorHandler:
             error_log_path = resolved_log_base / environment / "connection_errors.log"
             error_log_path.parent.mkdir(parents=True, exist_ok=True)
 
-            with open(error_log_path, "a") as f:
+            with open(error_log_path, "a", encoding="utf-8") as f:  # pylint: disable=unspecified-encoding  # Reason: Explicit UTF-8 encoding for log file
                 f.write(json.dumps(error_log_entry) + "\n")
 
             # Determine if this is a fatal error
@@ -198,7 +199,7 @@ class ConnectionErrorHandler:
             error_results["success"] = True
             logger.info("Error handling completed for player", player_id=player_id, error_results=error_results)
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Error state detection errors unpredictable, must handle gracefully
             error_msg = f"Error in detect_and_handle_error_state for {player_id}: {e}"
             logger.error(error_msg, exc_info=True)
             error_results["errors"].append(error_msg)
@@ -329,7 +330,7 @@ class ConnectionErrorHandler:
             recovery_results["success"] = True
             logger.info("Recovery completed for player", player_id=player_id, recovery_results=recovery_results)
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Recovery errors unpredictable, must handle gracefully
             error_msg = f"Error during recovery for player {player_id}: {e}"
             logger.error(error_msg, exc_info=True)
             recovery_results["errors"].append(error_msg)
@@ -352,6 +353,7 @@ class ConnectionErrorHandler:
         """
         # Get the proper error log path using logging configuration
         config = get_config()
+        # pylint: disable=no-member  # Pydantic FieldInfo dynamic attributes
         log_base = config.logging.log_base
         environment = config.logging.environment
 

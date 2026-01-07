@@ -19,7 +19,7 @@ logger = get_logger(__name__)
 def should_spawn_npc(
     definition: NPCDefinition,
     zone_config: ZoneConfiguration,
-    room_id: str,  # noqa: ARG001
+    _room_id: str,  # pylint: disable=unused-argument  # Reason: Parameter reserved for future room-based validation
     population_stats: Any | None,
     spawn_rules: dict[int, list[NPCSpawnRule]],
     current_game_state: dict[str, Any],
@@ -88,7 +88,7 @@ def should_spawn_npc(
 
             # Check spawn probability with zone modifier
             effective_probability = zone_config.get_effective_spawn_probability(float(definition.spawn_probability))
-            random_roll = random.random()
+            random_roll = random.random()  # nosec B311: Game mechanics spawn probability check, not cryptographic
             logger.info(
                 "Spawn rule probability check",
                 rule_index=i + 1,

@@ -1,4 +1,6 @@
 #!/usr/bin/env pwsh
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status messages require Write-Host for proper display')]
 <#
 .SYNOPSIS
     Clean Log Files for MythosMUD

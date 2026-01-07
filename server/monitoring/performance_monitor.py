@@ -220,7 +220,7 @@ class PerformanceMonitor:
         for callback in self.alert_callbacks:
             try:
                 callback(metric, alert_data)
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Callback errors unpredictable, must not fail alert processing
                 logger.error("Alert callback failed", callback=str(callback), error=str(e), exc_info=True)
 
     def reset_metrics(self) -> None:
@@ -265,7 +265,7 @@ def get_performance_monitor() -> PerformanceMonitor:
     Returns:
         Global PerformanceMonitor instance
     """
-    global _performance_monitor
+    global _performance_monitor  # pylint: disable=global-statement  # Reason: Singleton pattern for performance monitoring
     if _performance_monitor is None:
         _performance_monitor = PerformanceMonitor()
     return _performance_monitor

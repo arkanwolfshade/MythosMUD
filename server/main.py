@@ -41,7 +41,7 @@ setup_enhanced_logging(config.to_legacy_dict())
 
 # Get logger - now created AFTER logging is set up
 logger = get_logger(__name__)
-logger.info("Logging setup completed", environment=config.logging.environment)
+logger.info("Logging setup completed", environment=config.logging.environment)  # pylint: disable=no-member  # Pydantic FieldInfo dynamic attribute
 
 
 # ErrorLoggingMiddleware has been replaced by ComprehensiveLoggingMiddleware
@@ -49,9 +49,9 @@ logger.info("Logging setup completed", environment=config.logging.environment)
 
 
 @asynccontextmanager
-async def enhanced_lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+async def enhanced_lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:  # pylint: disable=redefined-outer-name,unused-argument  # Reason: Parameter name matches FastAPI convention, prefixed to avoid unused-argument
     """Enhanced lifespan with comprehensive monitoring and logging."""
-    logger = get_logger("server.enhanced_main")
+    logger = get_logger("server.enhanced_main")  # pylint: disable=redefined-outer-name  # Reason: Context-specific logger instance
     log_aggregator = None
 
     try:
@@ -85,7 +85,7 @@ async def enhanced_lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
             if log_aggregator is not None:
                 log_aggregator.shutdown()
                 logger.info("Enhanced systems shutdown complete")
-        except Exception as error:
+        except Exception as error:  # pylint: disable=broad-exception-caught  # Reason: Lifespan cleanup must not fail, catch all errors
             log_exception_once(
                 logger,
                 "error",
@@ -96,7 +96,7 @@ async def enhanced_lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
             )
 
 
-def setup_monitoring_endpoints(app: FastAPI) -> None:
+def setup_monitoring_endpoints(app: FastAPI) -> None:  # pylint: disable=redefined-outer-name  # Reason: Parameter name matches FastAPI convention
     """Setup monitoring and health check endpoints."""
     from fastapi import HTTPException
 
@@ -116,7 +116,7 @@ def setup_monitoring_endpoints(app: FastAPI) -> None:
                 "active_users": system_health.active_users,
             }
         except Exception as error:
-            logger = get_logger("server.health")
+            logger = get_logger("server.health")  # pylint: disable=redefined-outer-name  # Reason: Context-specific logger instance
             logger.error("Health check failed", error=str(error), exc_info=True)
             raise HTTPException(status_code=503, detail="Health check failed") from error
 
@@ -126,10 +126,11 @@ def setup_monitoring_endpoints(app: FastAPI) -> None:
         try:
             dashboard = get_monitoring_dashboard()
             result = dashboard.export_monitoring_data()
-            assert isinstance(result, dict)
+            if not isinstance(result, dict):
+                raise TypeError("export_monitoring_data must return a dict")
             return result
         except Exception as error:
-            logger = get_logger("server.metrics")
+            logger = get_logger("server.metrics")  # pylint: disable=redefined-outer-name  # Reason: Context-specific logger instance
             logger.error("Metrics retrieval failed", error=str(error), exc_info=True)
             raise HTTPException(status_code=500, detail="Metrics retrieval failed") from error
 
@@ -139,10 +140,11 @@ def setup_monitoring_endpoints(app: FastAPI) -> None:
         try:
             dashboard = get_monitoring_dashboard()
             result = dashboard.get_monitoring_summary()
-            assert isinstance(result, dict)
+            if not isinstance(result, dict):
+                raise TypeError("get_monitoring_summary must return a dict")
             return result
         except Exception as error:
-            logger = get_logger("server.monitoring")
+            logger = get_logger("server.monitoring")  # pylint: disable=redefined-outer-name  # Reason: Context-specific logger instance
             logger.error("Monitoring summary failed", error=str(error), exc_info=True)
             raise HTTPException(status_code=500, detail="Monitoring summary failed") from error
 
@@ -154,7 +156,7 @@ def setup_monitoring_endpoints(app: FastAPI) -> None:
             alerts = dashboard.check_alerts()
             return {"alerts": [alert.to_dict() if hasattr(alert, "to_dict") else alert for alert in alerts]}
         except Exception as error:
-            logger = get_logger("server.alerts")
+            logger = get_logger("server.alerts")  # pylint: disable=redefined-outer-name  # Reason: Context-specific logger instance
             logger.error("Alert retrieval failed", error=str(error), exc_info=True)
             raise HTTPException(status_code=500, detail="Alert retrieval failed") from error
 
@@ -171,7 +173,7 @@ def setup_monitoring_endpoints(app: FastAPI) -> None:
         except HTTPException:
             raise
         except Exception as error:
-            logger = get_logger("server.alerts")
+            logger = get_logger("server.alerts")  # pylint: disable=redefined-outer-name  # Reason: Context-specific logger instance
             logger.error("Alert resolution failed", error=str(error), exc_info=True)
             raise HTTPException(status_code=500, detail="Alert resolution failed") from error
 
@@ -179,7 +181,7 @@ def setup_monitoring_endpoints(app: FastAPI) -> None:
 def main() -> FastAPI:
     """Main entry point for the MythosMUD server."""
     logger.info("Starting MythosMUD server...")
-    app = create_app()
+    app = create_app()  # pylint: disable=redefined-outer-name  # Reason: Module-level app instance for main entry point
 
     # Error logging is now handled by ComprehensiveLoggingMiddleware in the factory
 
@@ -207,6 +209,7 @@ app.router.lifespan_context = composed_lifespan
 
 app.add_middleware(CorrelationMiddleware, correlation_header="X-Correlation-ID")
 
+# pylint: disable=no-member  # Pydantic FieldInfo dynamic attributes
 cors_kwargs = {
     "allow_origins": config.cors.allow_origins,
     "allow_credentials": config.cors.allow_credentials,
@@ -252,7 +255,7 @@ if __name__ == "__main__":
     uvicorn.run(
         "server.main:app",  # Use the correct module path from project root
         host=config.server.host,
-        port=config.server.port,
+        port=config.server.port,  # pylint: disable=no-member  # Pydantic FieldInfo dynamic attribute
         reload=False,  # Hot reloading disabled due to client compatibility issues
         # Use our StructLog system for all logging
         access_log=True,

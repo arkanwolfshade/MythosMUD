@@ -87,9 +87,11 @@ async def initialize_npc_services(app: FastAPI, container: ApplicationContainer)
     from ..services.npc_instance_service import initialize_npc_instance_service
     from ..services.npc_service import NPCService
 
-    assert container.event_bus is not None, "EventBus must be initialized"
+    if container.event_bus is None:
+        raise RuntimeError("EventBus must be initialized")
     app.state.npc_spawning_service = NPCSpawningService(container.event_bus, None)
-    assert container.persistence is not None, "Persistence must be initialized"
+    if container.persistence is None:
+        raise RuntimeError("Persistence must be initialized")
     app.state.npc_lifecycle_manager = NPCLifecycleManager(
         event_bus=container.event_bus,
         population_controller=None,
@@ -285,7 +287,8 @@ async def initialize_npc_startup_spawning(_app: FastAPI) -> None:
 
 async def initialize_nats_and_combat_services(app: FastAPI, container: ApplicationContainer) -> None:
     """Initialize NATS-dependent services including combat service."""
-    assert container.config is not None, "Config must be initialized"
+    if container.config is None:
+        raise RuntimeError("Config must be initialized")
     is_testing = container.config.logging.environment in ("unit_test", "e2e_test")
 
     if container.nats_service is not None and container.nats_service.is_connected():
@@ -304,7 +307,8 @@ async def initialize_nats_and_combat_services(app: FastAPI, container: Applicati
 
         set_combat_service(app.state.combat_service)
 
-        assert container.player_service is not None, "PlayerService must be initialized"
+        if container.player_service is None:
+            raise RuntimeError("PlayerService must be initialized")
         container.player_service.combat_service = app.state.combat_service
         container.player_service.player_combat_service = app.state.player_combat_service
         logger.info("Combat service initialized and added to app.state")
@@ -335,7 +339,8 @@ async def initialize_chat_service(app: FastAPI, container: ApplicationContainer)
     from ..game.chat_service import ChatService
     from ..services.nats_subject_manager import nats_subject_manager
 
-    assert container.config is not None, "Config must be initialized"
+    if container.config is None:
+        raise RuntimeError("Config must be initialized")
     is_testing = container.config.logging.environment in ("unit_test", "e2e_test")
 
     subject_manager = None

@@ -47,7 +47,7 @@ def _get_shared_services(request: Any) -> tuple[InventoryService, WearableContai
     Returns:
         Tuple of (inventory_service, wearable_container_service, equipment_service)
     """
-    global _SHARED_INVENTORY_SERVICE, _SHARED_WEARABLE_CONTAINER_SERVICE, _SHARED_EQUIPMENT_SERVICE
+    global _SHARED_INVENTORY_SERVICE, _SHARED_WEARABLE_CONTAINER_SERVICE, _SHARED_EQUIPMENT_SERVICE  # pylint: disable=global-statement  # Reason: Singleton pattern for shared services
 
     if _SHARED_INVENTORY_SERVICE is None:
         # Get async_persistence from container
@@ -66,9 +66,12 @@ def _get_shared_services(request: Any) -> tuple[InventoryService, WearableContai
         )
 
     # Type narrowing: After initialization, these are guaranteed to be non-None
-    assert _SHARED_INVENTORY_SERVICE is not None
-    assert _SHARED_WEARABLE_CONTAINER_SERVICE is not None
-    assert _SHARED_EQUIPMENT_SERVICE is not None
+    if _SHARED_INVENTORY_SERVICE is None:
+        raise RuntimeError("Inventory service must be initialized")
+    if _SHARED_WEARABLE_CONTAINER_SERVICE is None:
+        raise RuntimeError("Wearable container service must be initialized")
+    if _SHARED_EQUIPMENT_SERVICE is None:
+        raise RuntimeError("Equipment service must be initialized")
 
     return _SHARED_INVENTORY_SERVICE, _SHARED_WEARABLE_CONTAINER_SERVICE, _SHARED_EQUIPMENT_SERVICE
 
@@ -256,7 +259,7 @@ async def _resolve_player(
 
     try:
         player = await persistence.get_player_by_name(username)
-    except Exception as exc:  # pragma: no cover - defensive logging path
+    except Exception as exc:  # pragma: no cover - defensive logging path  # pylint: disable=broad-exception-caught  # Reason: Persistence errors unpredictable, must handle gracefully
         logger.error("Persistence error resolving player", player=username, error=str(exc))
         return None, {"result": f"Error resolving player: {str(exc)}"}
 
@@ -280,7 +283,7 @@ def _format_metadata(metadata: Mapping[str, Any] | None) -> str:
                 components.append(f"{key}={value}")
         if components:
             return f" [{', '.join(components)}]"
-    except Exception as exc:  # pragma: no cover - metadata formatting should rarely fail
+    except Exception as exc:  # pragma: no cover - metadata formatting should rarely fail  # pylint: disable=broad-exception-caught  # Reason: Metadata formatting errors unpredictable, optional display
         logger.error("Failed to format metadata", error=str(exc), metadata=metadata, exc_info=True)
     return ""
 
@@ -451,7 +454,7 @@ async def _broadcast_room_event(
         result = connection_manager.broadcast_to_room(str(room_id), event, exclude_player=exclude_player)
         if inspect.isawaitable(result):
             await result
-    except Exception as exc:  # pragma: no cover - broadcast failures logged but not fatal
+    except Exception as exc:  # pragma: no cover - broadcast failures logged but not fatal  # pylint: disable=broad-exception-caught  # Reason: Broadcast errors unpredictable, must not fail command
         logger.warning("Failed to broadcast room event", room_id=room_id, error=str(exc))
 
 
@@ -462,16 +465,16 @@ def _persist_player(persistence: Any, player: Player) -> dict[str, str] | None:
     except InventorySchemaValidationError as exc:
         logger.error("Inventory schema validation during persistence", player=player.name, error=str(exc))
         return {"result": "Inventory data rejected by schema validation."}
-    except Exception as exc:  # pragma: no cover - defensive logging path
+    except Exception as exc:  # pragma: no cover - defensive logging path  # pylint: disable=broad-exception-caught  # Reason: Persistence errors unpredictable, must handle gracefully
         logger.error("Error saving player inventory", player=player.name, error=str(exc))
         return {"result": "An error occurred while saving your inventory."}
 
 
 async def handle_inventory_command(
-    command_data: dict,
+    _command_data: dict,  # pylint: disable=unused-argument  # Reason: Command data not used in this handler
     current_user: dict,
     request: Any,
-    alias_storage: AliasStorage | None,
+    _alias_storage: AliasStorage | None,
     player_name: str,
 ) -> dict[str, Any]:
     """Display the player's inventory and equipped items, including container contents."""
@@ -558,7 +561,7 @@ async def handle_inventory_command(
                     container_item_id=container_item_id,
                     equipped_slots=list(equipped_view.keys()),
                 )
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Container access errors unpredictable, optional display
         logger.debug(
             "Error getting container contents for inventory display",
             error=str(e),
@@ -611,7 +614,7 @@ async def handle_pickup_command(
     command_data: dict,
     current_user: dict,
     request: Any,
-    alias_storage: AliasStorage | None,
+    _alias_storage: AliasStorage | None,
     player_name: str,
 ) -> dict[str, Any]:
     """Move an item stack from room drops into the player's inventory."""
@@ -731,7 +734,7 @@ async def handle_pickup_command(
                 prototype_id=prototype_id,
                 player_id=str(player.player_id),
             )
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Item instance errors unpredictable, must not fail pickup
             logger.warning(
                 "Failed to ensure item instance for picked up item",
                 item_instance_id=item_instance_id,
@@ -824,7 +827,7 @@ async def handle_drop_command(
     command_data: dict,
     current_user: dict,
     request: Any,
-    alias_storage: AliasStorage | None,
+    _alias_storage: AliasStorage | None,
     player_name: str,
 ) -> dict[str, Any]:
     """Drop an inventory stack into the current room."""
@@ -923,7 +926,7 @@ async def handle_equip_command(
     command_data: dict,
     current_user: dict,
     request: Any,
-    alias_storage: AliasStorage | None,
+    _alias_storage: AliasStorage | None,
     player_name: str,
 ) -> dict[str, Any]:
     """Equip an item from inventory."""
@@ -1087,7 +1090,7 @@ async def handle_equip_command(
                     item_id=equipped_item.get("item_id"),
                     container_id=container_result.get("container_id"),
                 )
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Container creation errors unpredictable, not critical
             # Log but don't fail - container creation is not critical
             logger.warning(
                 "Failed to create wearable container on equip",
@@ -1142,7 +1145,7 @@ async def handle_unequip_command(
     command_data: dict,
     current_user: dict,
     request: Any,
-    alias_storage: AliasStorage | None,
+    _alias_storage: AliasStorage | None,
     player_name: str,
 ) -> dict[str, Any]:
     """Unequip an item into the player's inventory."""
@@ -1265,7 +1268,7 @@ async def handle_unequip_command(
                             item_id=unequipped_item.get("item_id"),
                         )
                         break
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Container preservation errors unpredictable, not critical
             # Log but don't fail - container preservation is not critical
             logger.warning(
                 "Failed to preserve wearable container on unequip",
@@ -1318,7 +1321,7 @@ async def handle_put_command(
     command_data: dict,
     current_user: dict,
     request: Any,
-    alias_storage: AliasStorage | None,
+    _alias_storage: AliasStorage | None,
     player_name: str,
 ) -> dict[str, Any]:
     """Put an item from inventory into a container."""
@@ -1513,7 +1516,7 @@ async def handle_put_command(
                                             player=player.name,
                                         )
                                         break
-                    except Exception as e:
+                    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Container lookup errors unpredictable, fallback available
                         logger.debug(
                             "Error finding container via wearable container service",
                             error=str(e),
@@ -1601,14 +1604,14 @@ async def handle_put_command(
                                             player=player.name,
                                         )
                                         break
-                                except Exception as e2:
+                                except Exception as e2:  # pylint: disable=broad-exception-caught  # Reason: Container creation errors unpredictable, fallback available
                                     logger.debug(
                                         "Failed to create container directly",
                                         error=str(e2),
                                         slot=slot,
                                         player=player.name,
                                     )
-                        except Exception as e:
+                        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Container creation errors unpredictable, fallback available
                             logger.debug(
                                 "Failed to create container for equipped item in put command",
                                 error=str(e),
@@ -1639,7 +1642,7 @@ async def handle_put_command(
         try:
             open_result = await container_service.open_container(container_id, player_id_uuid)
             mutation_token = open_result.get("mutation_token")
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Container access errors unpredictable, must return error message
             return {"result": f"Cannot access container: {str(e)}"}
 
     # Transfer item
@@ -1673,7 +1676,7 @@ async def handle_put_command(
                     prototype_id=prototype_id,
                     player_id=str(player.player_id),
                 )
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Item instance errors unpredictable, must not fail transfer
                 logger.warning(
                     "Failed to ensure item instance before transfer to container",
                     item_instance_id=item_instance_id,
@@ -1726,7 +1729,7 @@ async def handle_put_command(
             "game_log_message": f"{player.name} put {transfer_quantity}x {item_display_name} into {container_name}",
             "game_log_channel": "game-log",
         }
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Container operation errors unpredictable, must handle gracefully
         logger.error("Error putting item in container", player=player.name, error=str(e))
         return {"result": f"Error: {str(e)}"}
 
@@ -1735,7 +1738,7 @@ async def handle_get_command(
     command_data: dict,
     current_user: dict,
     request: Any,
-    alias_storage: AliasStorage | None,
+    _alias_storage: AliasStorage | None,
     player_name: str,
 ) -> dict[str, Any]:
     """Get an item from a container into inventory."""
@@ -1900,7 +1903,7 @@ async def handle_get_command(
                                         player=player.name,
                                     )
                                     break
-                except Exception as e:
+                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Container lookup errors unpredictable, fallback available
                     logger.debug(
                         "Error finding container via wearable container service for get command",
                         error=str(e),
@@ -2069,7 +2072,7 @@ async def handle_get_command(
         try:
             open_result = await container_service.open_container(container_id, player_id_uuid)
             mutation_token = open_result.get("mutation_token")
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Container access errors unpredictable, must return error message
             return {"result": f"Cannot access container: {str(e)}"}
 
     # Transfer item
@@ -2098,7 +2101,7 @@ async def handle_get_command(
             "game_log_message": f"{player.name} got {transfer_quantity}x {item_display_name} from {container_name}",
             "game_log_channel": "game-log",
         }
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Container operation errors unpredictable, must handle gracefully
         logger.error("Error getting item from container", player=player.name, error=str(e))
         return {"result": f"Error: {str(e)}"}
 

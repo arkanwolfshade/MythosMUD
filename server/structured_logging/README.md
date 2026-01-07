@@ -2,7 +2,10 @@
 
 ## Overview
 
-The MythosMUD server uses an enhanced structured logging system built on `structlog` with MDC (Mapped Diagnostic Context), correlation IDs, security sanitization, and performance optimizations. This system provides comprehensive observability for debugging, monitoring, and audit purposes.
+The MythosMUD server uses an enhanced structured logging system built on
+`structlog` with MDC (Mapped Diagnostic Context), correlation IDs, security
+sanitization, and performance optimizations. This system provides comprehensive
+observability for debugging, monitoring, and audit purposes.
 
 ## Quick Start
 
@@ -54,7 +57,8 @@ bind_request_context(
 
 ### Log Categories
 
-The system automatically routes logs to subsystem-specific files. Each subsystem has its own log file for better organization and debugging:
+The system automatically routes logs to subsystem-specific files. Each
+subsystem has its own log file for better organization and debugging:
 
 **Core Subsystems:**
 - **server.log**: Core server operations, uvicorn lifecycle
@@ -80,7 +84,8 @@ The system automatically routes logs to subsystem-specific files. Each subsystem
 
 **Aggregator Logs:**
 - **warnings.log**: ALL WARNING level logs from ALL subsystems (dual logging)
-- **errors.log**: ALL ERROR and CRITICAL level logs from ALL subsystems (dual logging)
+- **errors.log**: ALL ERROR and CRITICAL level logs from ALL subsystems (dual
+  logging)
 - **console.log**: Console output, general logging
 
 ### Dual Logging Behavior
@@ -91,9 +96,12 @@ The system implements dual logging for warnings and errors:
 - **Errors**: All ERROR and CRITICAL level logs appear in BOTH their subsystem log file AND `errors.log`
 
 This enables:
-- **Subsystem-specific debugging**: Find all logs for a specific subsystem in its dedicated file
-- **Centralized monitoring**: Quickly scan all warnings or errors across the entire system
-- **Better observability**: No need to search multiple files to find all warnings or errors
+- **Subsystem-specific debugging**: Find all logs for a specific subsystem in
+  its dedicated file
+- **Centralized monitoring**: Quickly scan all warnings or errors across the
+  entire system
+- **Better observability**: No need to search multiple files to find all
+  warnings or errors
 
 Example:
 ```python
@@ -107,7 +115,8 @@ logger.error("Database connection failed", error=str(e))
 
 ## F-String Logging Anti-Pattern
 
-**CRITICAL**: The most common and destructive anti-pattern is f-string logging. This MUST be eliminated:
+**CRITICAL**: The most common and destructive anti-pattern is f-string
+logging. This MUST be eliminated:
 
 ```python
 # ❌ WRONG - Destroys structured logging benefits
@@ -116,9 +125,11 @@ logger.error(f"Failed to process: {error}")
 logger.debug(f"Message data: {message_data}")
 
 # ✅ CORRECT - Structured logging enables aggregation and analysis
-logger.info("Starting combat", attacker=attacker, target=target, room_id=room_id)
+logger.info("Starting combat", attacker=attacker, target=target,
+            room_id=room_id)
 logger.error("Failed to process", error=str(error), operation="combat_start")
-logger.debug("NATS message received", message_data=message_data, message_type=type(message_data))
+logger.debug("NATS message received", message_data=message_data,
+             message_type=type(message_data))
 ```
 
 **Why f-strings are forbidden:**
@@ -134,17 +145,20 @@ logger.debug("NATS message received", message_data=message_data, message_type=ty
 
 ```python
 # ✅ Structured logging with key-value pairs
-logger.info("User action completed", user_id=user.id, action="login", success=True)
+logger.info("User action completed", user_id=user.id, action="login",
+            success=True)
 
 # ✅ Error logging with context
-logger.error("Operation failed", operation="user_creation", error=str(e), retry_count=3)
+logger.error("Operation failed", operation="user_creation", error=str(e),
+             retry_count=3)
 
 # ✅ Performance logging
 with measure_performance("database_query", user_id=user.id):
     result = database.query("SELECT * FROM players")
 
 # ✅ Request context binding
-bind_request_context(correlation_id=req_id, user_id=user.id, session_id=session.id)
+bind_request_context(correlation_id=req_id, user_id=user.id,
+                     session_id=session.id)
 ```
 
 ### ❌ FORBIDDEN Anti-Patterns

@@ -197,13 +197,19 @@ class ExperienceRepository:
 
         try:
             # Get the PostgreSQL array literal from the mapping dictionary
+            # Field name is validated against whitelist (line 189), array literal is from hardcoded dict
             array_literal = self.FIELD_NAME_TO_ARRAY[field_name]
 
             session_maker = get_session_maker()
             async with session_maker() as session:
                 # Use raw SQL for JSONB path updates (SQLAlchemy ORM doesn't support this easily)
-                update_query = text(
-                    f"""
+                # Array literal is from hardcoded dictionary (FIELD_NAME_TO_ARRAY), field_name is
+                # whitelist-validated before this point. PostgreSQL array literals must be embedded
+                # in SQL, not parameterized. Since values are from validated, hardcoded source, this is safe.
+                # nosemgrep: python.lang.security.audit.sql-injection.sql-injection
+                # Array literal is from validated whitelist and hardcoded dictionary, not user input
+                # nosec B608: Array literal from validated whitelist and hardcoded dictionary, not user input
+                query_str = f"""  # nosec B608
                     UPDATE players
                     SET stats = jsonb_set(
                         COALESCE(stats, '{{}}'::jsonb),
@@ -213,7 +219,7 @@ class ExperienceRepository:
                     )
                     WHERE player_id = :player_id
                     """
-                )
+                update_query = text(query_str)
 
                 result = await session.execute(
                     update_query, {"field_name": field_name, "delta": delta, "player_id": str(player_id)}

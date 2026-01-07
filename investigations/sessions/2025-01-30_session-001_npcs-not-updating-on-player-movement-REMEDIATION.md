@@ -8,7 +8,9 @@
 
 ## SUMMARY OF FIXES
 
-This document describes the remediation fixes implemented to resolve the issue where NPCs in the Occupants list were not updating when players moved to other rooms.
+This document describes the remediation fixes implemented to resolve the issue
+where NPCs in the Occupants list were not updating when players moved to other
+rooms.
 
 ---
 
@@ -19,61 +21,73 @@ This document describes the remediation fixes implemented to resolve the issue w
 **File**: `server/realtime/event_handler.py:466-482`
 
 **Changes**:
+
 - Added detailed logging when sending occupants snapshot to entering player
 - Added debug logging after snapshot is sent successfully
 - Improved error context in logging
 
-**Purpose**: Track NPC query execution during player movement to identify any issues with personal message delivery.
+**Purpose**: Track NPC query execution during player movement to identify any
+issues with personal message delivery.
 
 ### 2. Enhanced NPC Query Logging and Validation
 
 **File**: `server/realtime/event_handler.py:319-406` (specifically `_send_occupants_snapshot_to_player`)
 
 **Changes**:
+
 - Added logging before querying room occupants
 - Added validation to count NPCs and players in snapshot
 - Added warning if no NPCs are included in snapshot
 - Added debug logging when NPCs are successfully included
 - Enhanced error logging with full exception context
 
-**Purpose**: Ensure NPCs are always included in personal messages to entering players and provide visibility into any failures.
+**Purpose**: Ensure NPCs are always included in personal messages to entering
+players and provide visibility into any failures.
 
 ### 3. Canonical Room ID Normalization
 
 **File**: `server/realtime/event_handler.py:957-1046` (specifically `_get_room_occupants`)
 
 **Changes**:
+
 - Added canonical room ID resolution for consistent comparison
 - Enhanced NPC room matching to check both original and canonical room IDs
 - Added tracking of NPCs without room tracking attributes
 - Added warning when NPCs exist but none match the room (potential format mismatch)
 - Enhanced logging with canonical room ID information
 
-**Purpose**: Ensure room ID format consistency when matching NPCs to rooms, preventing mismatches due to string vs canonical ID differences.
+**Purpose**: Ensure room ID format consistency when matching NPCs to rooms,
+preventing mismatches due to string vs canonical ID differences.
 
 ### 4. NPC Room Tracking Validation
 
 **File**: `server/npc/lifecycle_manager.py:415-442`
 
 **Changes**:
-- Changed from conditional setting to always setting `current_room` and `current_room_id`
+
+- Changed from conditional setting to always setting `current_room` and
+  `current_room_id`
 - Added validation to verify room tracking was set correctly
 - Added error logging if room tracking fails
 - Added debug logging when room tracking succeeds
 
-**Purpose**: Ensure NPC instances always have room tracking attributes set correctly during spawning.
+**Purpose**: Ensure NPC instances always have room tracking attributes set
+correctly during spawning.
 
 ### 5. NPC Movement Room Tracking Validation
 
 **File**: `server/npc/movement_integration.py:106-130`
 
 **Changes**:
-- Enhanced room tracking update to always set both `current_room` and `current_room_id`
+
+- Enhanced room tracking update to always set both `current_room` and
+  `current_room_id`
 - Added creation of `current_room_id` attribute if it doesn't exist
 - Added validation to verify room tracking was updated correctly
 - Enhanced error logging if room tracking update fails
 
-**Purpose**: Ensure NPC instances have room tracking updated correctly when NPCs move between rooms.
+**Purpose**: Ensure NPC instances have room tracking updated correctly when NPCs
+move between rooms.
 
 ---
 

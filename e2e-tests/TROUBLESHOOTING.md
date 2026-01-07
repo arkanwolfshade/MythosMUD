@@ -2,13 +2,17 @@
 
 ## Overview
 
-This document provides comprehensive troubleshooting procedures for common issues encountered during multiplayer test scenario execution. It includes both standard troubleshooting steps and performance-specific optimizations for different machine types.
+This document provides comprehensive troubleshooting procedures for common
+issues encountered during multiplayer test scenario execution. It includes
+both standard troubleshooting steps and performance-specific optimizations
+for different machine types.
 
 ## Common Issues and Solutions
 
 ### Issue 1: Server Won't Start
 
 **Symptoms**:
+
 - `./scripts/start_local.ps1` fails
 - Server startup errors
 - Port already in use errors
@@ -16,22 +20,26 @@ This document provides comprehensive troubleshooting procedures for common issue
 **Solutions**:
 
 1. **Check if ports are already in use**:
+
    ```powershell
    netstat -an | findstr :54731
    netstat -an | findstr :5173
    ```
 
 2. **Verify PostgreSQL database is accessible**:
+
    ```powershell
    $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "SELECT 1;"
    ```
 
 3. **Check server logs for detailed error information**:
+
    ```powershell
    Get-Content logs/e2e_test/server.log -Tail 50
    ```
 
 4. **Restart with proper shutdown sequence**:
+
    ```powershell
    ./scripts/stop_server.ps1
    Start-Sleep -Seconds 5
@@ -51,6 +59,7 @@ This document provides comprehensive troubleshooting procedures for common issue
 ### Issue 2: Players Can't Connect
 
 **Symptoms**:
+
 - Browser shows connection errors
 - WebSocket connection failures
 - Login timeouts
@@ -58,21 +67,26 @@ This document provides comprehensive troubleshooting procedures for common issue
 **Solutions**:
 
 1. **Verify server is running on correct port**:
+
    ```powershell
    netstat -an | findstr :54731
    ```
 
 2. **Check client accessibility**:
+
    ```powershell
    netstat -an | findstr :5173
    ```
 
 3. **Verify database contains test players**:
+
    ```powershell
-   $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "SELECT name FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
+   $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c
+   "SELECT name FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
    ```
 
 4. **Check network connectivity**:
+
    ```powershell
    Test-NetConnection -ComputerName localhost -Port 54731
    Test-NetConnection -ComputerName localhost -Port 5173
@@ -91,6 +105,7 @@ This document provides comprehensive troubleshooting procedures for common issue
 ### Issue 3: Messages Not Appearing
 
 **Symptoms**:
+
 - Expected messages don't show up in chat
 - WebSocket message delivery failures
 - Timing-related message issues
@@ -103,18 +118,21 @@ This document provides comprehensive troubleshooting procedures for common issue
    - High-performance machines: Wait 3-5 seconds
 
 2. **Check browser console for errors**:
+
    ```javascript
    // In browser console
    console.log('WebSocket status:', window.websocket?.readyState);
    ```
 
 3. **Verify WebSocket connections are active**:
+
    ```javascript
    // Check connection status
    await mcp_playwright_browser_evaluate({function: "() => window.websocket?.readyState === 1"});
    ```
 
 4. **Check server logs for message broadcasting errors**:
+
    ```powershell
    Get-Content logs/e2e_test/server.log -Tail 100 | Select-String "message|broadcast|websocket"
    ```
@@ -131,6 +149,7 @@ This document provides comprehensive troubleshooting procedures for common issue
 ### Issue 4: Database State Issues
 
 **Symptoms**:
+
 - Players in wrong rooms
 - Missing test players
 - Admin privileges not working
@@ -138,27 +157,39 @@ This document provides comprehensive troubleshooting procedures for common issue
 **Solutions**:
 
 1. **Use PostgreSQL CLI to verify player state**:
+
    ```powershell
    # Check current player state
-   $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
+   $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c
+   "SELECT name, current_room_id, is_admin FROM players WHERE name IN
+   ('ArkanWolfshade', 'Ithaqua');"
 
    # Fix player locations
-   $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "UPDATE players SET current_room_id = 'earth_arkhamcity_sanitarium_room_foyer_001' WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
+   $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c
+   "UPDATE players SET current_room_id =
+   'earth_arkhamcity_sanitarium_room_foyer_001' WHERE name IN
+   ('ArkanWolfshade', 'Ithaqua');"
 
    # Fix admin privileges
-   $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "UPDATE players SET is_admin = 1 WHERE name = 'ArkanWolfshade';"
+   $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c
+   "UPDATE players SET is_admin = 1 WHERE name = 'ArkanWolfshade';"
 
    # Verify fixes
-   $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
+   $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c
+   "SELECT name, current_room_id, is_admin FROM players WHERE name IN
+   ('ArkanWolfshade', 'Ithaqua');"
    ```
 
 2. **Check PostgreSQL connection and permissions**:
+
    ```powershell
    # Test database connection
-   $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "SELECT current_database(), current_user;"
+   $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c
+   "SELECT current_database(), current_user;"
    ```
 
 3. **Restore from backup if needed**:
+
    ```powershell
    # If database is corrupted, restore from pg_dump backup
    # Note: Backup/restore procedures should be documented separately
@@ -168,6 +199,7 @@ This document provides comprehensive troubleshooting procedures for common issue
 ### Issue 5: Browser Automation Failures
 
 **Symptoms**:
+
 - Playwright commands fail
 - Element not found errors
 - Tab switching issues
@@ -175,18 +207,22 @@ This document provides comprehensive troubleshooting procedures for common issue
 **Solutions**:
 
 1. **Check element selectors and references**:
+
    ```javascript
    // Verify element exists
-   await mcp_playwright_browser_evaluate({function: "() => document.querySelector('[data-testid=\"element-id\"]') !== null"});
+   await mcp_playwright_browser_evaluate({function: "() =>
+   document.querySelector('[data-testid=\"element-id\"]') !== null"});
    ```
 
 2. **Add explicit waits for element loading**:
+
    ```javascript
    // Wait for element to be available
    await mcp_playwright_browser_wait_for({text: "Expected Text", time: 30});
    ```
 
 3. **Verify tab state before switching**:
+
    ```javascript
    // Check current tab count
    const tabs = await mcp_playwright_browser_tab_list();
@@ -207,6 +243,7 @@ This document provides comprehensive troubleshooting procedures for common issue
 ### Low-Performance Machine Issues
 
 **Common Symptoms**:
+
 - Timeouts on all operations
 - Slow browser responses
 - Browser freezing or crashing
@@ -215,6 +252,7 @@ This document provides comprehensive troubleshooting procedures for common issue
 **Solutions**:
 
 1. **Memory Management**:
+
    ```powershell
    # Check available memory
    Get-WmiObject -Class Win32_OperatingSystem | Select-Object TotalVisibleMemorySize, FreePhysicalMemory
@@ -243,6 +281,7 @@ This document provides comprehensive troubleshooting procedures for common issue
 ### High-Performance Machine Issues
 
 **Common Symptoms**:
+
 - Unexpected timeouts despite fast hardware
 - Race conditions in test execution
 - Browser automation too fast for server
@@ -250,6 +289,7 @@ This document provides comprehensive troubleshooting procedures for common issue
 **Solutions**:
 
 1. **Add Delays for Server Processing**:
+
    ```javascript
    // Add small delays for server processing
    await mcp_playwright_browser_wait_for({time: 1});
@@ -313,17 +353,20 @@ console.log('WebSocket status:', wsStatus);
 If all else fails:
 
 1. **Force kill all processes**:
+
    ```powershell
    Get-Process | Where-Object {$_.ProcessName -like "*python*" -or $_.ProcessName -like "*node*"} | Stop-Process -Force
    ```
 
 2. **Clear all ports**:
+
    ```powershell
    netstat -an | findstr :54731
    netstat -an | findstr :5173
    ```
 
 3. **Restart from clean state**:
+
    ```powershell
    ./scripts/stop_server.ps1
    Start-Sleep -Seconds 10
@@ -331,6 +374,7 @@ If all else fails:
    ```
 
 4. **Verify clean startup**:
+
    ```powershell
    # Wait 3 minutes for startup
    Start-Sleep -Seconds 180

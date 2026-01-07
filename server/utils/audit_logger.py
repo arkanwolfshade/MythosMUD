@@ -44,6 +44,7 @@ class AuditLogger:
         if log_directory is None:
             # Get environment from config
             config = get_config()
+            # pylint: disable=no-member  # Pydantic FieldInfo dynamic attributes
             environment = config.logging.environment
             log_base = config.logging.log_base
 
@@ -361,7 +362,7 @@ class AuditLogger:
             with open(log_file, "a", encoding="utf-8") as f:
                 f.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: File write errors unpredictable, must log but not fail
             logger.error("Failed to write audit log entry", error=str(e), entry_type=entry.get("event_type"))
 
     def get_recent_entries(
@@ -419,7 +420,7 @@ class AuditLogger:
                             logger.warning("Failed to parse audit log entry", file=str(log_file), error=str(e))
                             continue
 
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: File read errors unpredictable, must log but continue
                 logger.error("Failed to read audit log file", file=str(log_file), error=str(e))
                 continue
 

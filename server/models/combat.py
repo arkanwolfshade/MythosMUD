@@ -21,7 +21,8 @@ def _get_default_damage() -> int:
     try:
         config = get_config()
         damage = config.game.basic_unarmed_damage
-        assert isinstance(damage, int)
+        if not isinstance(damage, int):
+            raise TypeError("basic_unarmed_damage must be an int")
         return damage
     except (ImportError, AttributeError, ValueError) as e:
         logger.error("Error getting basic unarmed damage config", error=str(e), error_type=type(e).__name__)

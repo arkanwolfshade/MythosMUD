@@ -187,7 +187,7 @@ class EnvironmentalContainerLoader:
 
             return container_id
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Convert to domain exception
             log_and_raise(
                 ValidationError,
                 f"Failed to migrate container to PostgreSQL: {str(e)}",
@@ -217,7 +217,7 @@ class EnvironmentalContainerLoader:
                 if container_data.get("source_type") == "environment":
                     container = ContainerComponent.model_validate(container_data)
                     containers.append(container)
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Continue processing other containers on error
                 logger.warning(
                     "Error loading container for room",
                     error=str(e),

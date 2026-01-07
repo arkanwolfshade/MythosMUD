@@ -49,9 +49,9 @@ BEGIN
     LOOP
         IF NOT EXISTS (
             SELECT 1
-            FROM information_schema.tables t
+            FROM information_schema.tables AS t
             WHERE t.table_schema = 'public'
-            AND t.table_name = verify_ddl.table_name
+            AND t.table_name = table_name
         ) THEN
             missing_tables := array_append(missing_tables, table_name);
         END IF;
@@ -69,17 +69,38 @@ SELECT
     table_name,
     CASE
         WHEN table_name = ANY(ARRAY[
-            'calendar_holidays', 'calendar_npc_schedules', 'emotes', 'emote_aliases',
-            'zones', 'subzones', 'rooms', 'room_links', 'aliases',
-            'item_component_states_static', 'npc_definitions', 'npc_relationships', 'npc_spawn_rules',
-            'professions', 'muting_rules', 'id_map_users', 'id_map_players',
-            'users', 'players', 'player_inventories', 'invites',
-            'player_sanity', 'sanity_adjustment_log', 'sanity_exposure_state', 'sanity_cooldowns',
-            'item_prototypes', 'item_instances', 'item_component_states'
+            'calendar_holidays',
+            'calendar_npc_schedules',
+            'emotes',
+            'emote_aliases',
+            'zones',
+            'subzones',
+            'rooms',
+            'room_links',
+            'aliases',
+            'item_component_states_static',
+            'npc_definitions',
+            'npc_relationships',
+            'npc_spawn_rules',
+            'professions',
+            'muting_rules',
+            'id_map_users',
+            'id_map_players',
+            'users',
+            'players',
+            'player_inventories',
+            'invites',
+            'player_sanity',
+            'sanity_adjustment_log',
+            'sanity_exposure_state',
+            'sanity_cooldowns',
+            'item_prototypes',
+            'item_instances',
+            'item_component_states'
         ]) THEN 'Expected'
         ELSE 'Unexpected'
-    END as status
-FROM information_schema.tables
-WHERE table_schema = 'public'
-AND table_type = 'BASE TABLE'
+    END AS status
+FROM information_schema.tables AS t
+WHERE t.table_schema = 'public'
+AND t.table_type = 'BASE TABLE'
 ORDER BY status, table_name;

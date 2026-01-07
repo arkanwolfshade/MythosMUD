@@ -504,11 +504,15 @@ class NATSMessageHandler:
             logger.warning("Invalid NATS message - missing required fields", message_data=message_data)
             raise ValueError("Missing required message fields")
 
-        # Type narrowing for mypy - only assert fields validated above
-        assert isinstance(channel, str), "channel must be str"
-        assert isinstance(sender_name, str), "sender_name must be str"
-        assert isinstance(content, str), "content must be str"
-        assert isinstance(sender_id, str), "sender_id must be str"
+        # Type narrowing for mypy - validate fields
+        if not isinstance(channel, str):
+            raise TypeError("channel must be str")
+        if not isinstance(sender_name, str):
+            raise TypeError("sender_name must be str")
+        if not isinstance(content, str):
+            raise TypeError("content must be str")
+        if not isinstance(sender_id, str):
+            raise TypeError("sender_id must be str")
 
     def _build_chat_event(self, chat_fields: dict[str, Any], formatted_message: str) -> dict[str, Any]:
         """
@@ -970,7 +974,7 @@ class NATSMessageHandler:
                     lucidity_record = await lucidity_service.get_player_lucidity(player_id_uuid)
                     tier = lucidity_record.current_tier if lucidity_record else "lucid"
                     return tier
-                except Exception as e:  # pylint: disable=broad-except
+                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Lucidity tier retrieval errors unpredictable, optional metadata
                     logger.debug(
                         "Error getting player lucidity tier",
                         player_id=player_id,
@@ -979,7 +983,7 @@ class NATSMessageHandler:
                     )
                     return "lucid"
 
-        except Exception as e:  # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Session creation errors unpredictable, must return fallback
             logger.debug(
                 "Error in _get_player_lucidity_tier (session creation)",
                 player_id=player_id,

@@ -2,13 +2,15 @@ import os
 import subprocess
 import sys
 
+from utils.safe_subprocess import safe_run_static
+
 is_windows = sys.platform.startswith("win")
 
 # Check if uv is available
 try:
-    subprocess.run(["uv", "--version"], check=True, capture_output=True)
+    safe_run_static("uv", "--version", check=True, capture_output=True)
     print("[OK] uv is available")
-except (subprocess.CalledProcessError, FileNotFoundError):
+except (FileNotFoundError, subprocess.CalledProcessError, ValueError):
     print("[ERROR] uv is not available. Please install uv first:")
     print("  curl -LsSf https://astral.sh/uv/install.sh | sh")
     print("  # or on Windows:")
@@ -67,10 +69,10 @@ for i, step in enumerate(steps):
     if i == 3:  # npm install in client
         # Always run npm install from the main project's client directory
         client_path = os.path.join(project_root, "client")
-        result = subprocess.run(step, cwd=client_path, check=False)
+        result = safe_run_static(*step, cwd=client_path, check=False)
     else:
         # For other steps, run from the project root
-        result = subprocess.run(step, cwd=project_root, check=False)
+        result = safe_run_static(*step, cwd=project_root, check=False)
 
     if result.returncode != 0:
         print(f"[ERROR] Step failed: {' '.join(str(s) for s in step)}")

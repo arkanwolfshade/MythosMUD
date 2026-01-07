@@ -79,7 +79,7 @@ class CombatService:
                 logger.debug("Created NATSSubjectManager with default settings")
             self._combat_event_publisher = CombatEventPublisher(nats_service, subject_manager)
             logger.debug("CombatEventPublisher created successfully")
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: CombatEventPublisher creation errors unpredictable, must handle gracefully
             logger.error(
                 "CRITICAL ERROR: Failed to create CombatEventPublisher",
                 error=str(e),
@@ -331,7 +331,7 @@ class CombatService:
                     )
                     return True
 
-                except Exception as e:  # pylint: disable=broad-except
+                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Flee check errors unpredictable, must not fail combat
                     logger.warning(
                         "Error checking involuntary flee",
                         player_id=target.participant_id,

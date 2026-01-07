@@ -179,7 +179,8 @@ async def _resolve_player_id(websocket: WebSocket, token: str | None, logger: An
             raise LoggedHTTPException(status_code=401, detail="Invalid or missing token", context=context)
         return await _resolve_player_id_from_test(websocket, player_id_str, logger)
     # Type narrowing: payload is guaranteed to be a dict with "sub" key at this point
-    assert payload is not None and "sub" in payload
+    if payload is None or "sub" not in payload:
+        raise ValueError("Invalid payload: missing 'sub' key")
     return await _resolve_player_id_from_token(websocket, cast(dict[str, Any], payload))
 
 
@@ -210,7 +211,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
         await handle_websocket_connection(
             websocket, player_id, session_id, connection_manager=connection_manager, token=token
         )
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: WebSocket errors unpredictable, must log and re-raise
         logger.error("Error in WebSocket endpoint", player_id=player_id, error=str(e), exc_info=True)
         raise
 
@@ -281,14 +282,15 @@ async def handle_new_game_session(player_id: uuid.UUID, request: Request) -> dic
         session_results = await connection_manager.handle_new_game_session(player_id, new_session_id)
 
         logger.info("New game session handled", player_id=player_id, session_results=session_results)
-        assert isinstance(session_results, dict)
+        if not isinstance(session_results, dict):
+            raise TypeError("session_results must be a dict")
         return session_results
 
     except json.JSONDecodeError as e:
         context = create_context_from_request(request)
         context.user_id = str(player_id)
         raise LoggedHTTPException(status_code=400, detail="Invalid JSON in request body", context=context) from e
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Session handling errors unpredictable, must log and handle
         # Structlog handles UUID objects automatically, no need to convert to string
         logger.error("Error handling new game session", player_id=player_id, error=str(e), exc_info=True)
         context = create_context_from_request(request)

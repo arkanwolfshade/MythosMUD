@@ -1,4 +1,6 @@
 #Requires -Version 5.1
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for user-facing status messages
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'User-facing startup script requires Write-Host for status messages')]
 
 <#
 .SYNOPSIS
@@ -56,7 +58,7 @@ param(
 )
 
 # Function to load environment variables
-function Load-EnvironmentConfig {
+function Import-EnvironmentConfig {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -154,9 +156,13 @@ if ($Help) {
 # (Pydantic BaseSettings loads from .env files automatically)
 
 # Function to terminate server processes
-function Stop-ServerProcesses {
-    [CmdletBinding()]
+function Stop-ServerProcess {
+    [CmdletBinding(SupportsShouldProcess)]
     param()
+
+    if (-not $PSCmdlet.ShouldProcess("server processes", "Stop")) {
+        return
+    }
 
     Write-Host "Checking for existing server processes..." -ForegroundColor Yellow
 
@@ -209,7 +215,7 @@ function Test-PortInUse {
 
 # Function to start NATS server
 function Start-NatsServerForMythosMUD {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param()
 
     Write-Host "Checking NATS server..." -ForegroundColor Cyan
@@ -221,8 +227,12 @@ function Start-NatsServerForMythosMUD {
 
         # Check if NATS is running
         if (-not (Test-NatsServerRunning)) {
-            Write-Host "Starting NATS server for MythosMUD..." -ForegroundColor Yellow
-            $natsStarted = Start-NatsServer -UseConfig -Background
+            if ($PSCmdlet.ShouldProcess("NATS server for MythosMUD", "Start")) {
+                Write-Host "Starting NATS server for MythosMUD..." -ForegroundColor Yellow
+                $natsStarted = Start-NatsServer -UseConfig -Background
+            } else {
+                $natsStarted = $false
+            }
             if ($natsStarted) {
                 Write-Host "NATS server started successfully" -ForegroundColor Green
             }
@@ -241,7 +251,7 @@ function Start-NatsServerForMythosMUD {
 
 # Function to start the server
 function Start-MythosMUDServer {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -275,6 +285,10 @@ function Start-MythosMUDServer {
         # Build command arguments for non-reload mode
         $commandArgs = @("uv", "run", "uvicorn", "server.main:app", "--host", $ServerHost, "--port", $Port.ToString())
         $serverCommand = ($commandArgs | ForEach-Object { if ($_ -contains ' ') { "`"$_`"" } else { $_ } }) -join ' '
+    }
+
+    if (-not $PSCmdlet.ShouldProcess("MythosMUD server on $ServerHost:$Port", "Start")) {
+        return
     }
 
     Write-Host "Executing: $serverCommand" -ForegroundColor Gray
@@ -322,9 +336,7 @@ function Start-MythosMUDServer {
             }
             catch {
                 $attempt++
-                $errorMessage = $_.Exception.Message
-                $errorType = $_.Exception.GetType().FullName
-
+                # Error details logged via exception object, no need to store separately
                 Write-Host "Attempt $attempt of $maxAttempts - Server not ready yet..." -ForegroundColor Yellow
                 Start-Sleep -Seconds 2
             }
@@ -362,7 +374,7 @@ try {
     }
 
     # Step 2: Load environment configuration
-    Load-EnvironmentConfig -Environment $Environment
+    Import-EnvironmentConfig -Environment $Environment
 
     # Step 2.5: Set LOGGING_ENVIRONMENT for Pydantic configuration
     # The Pydantic config uses this to determine log directories
@@ -379,7 +391,7 @@ try {
     }
 
     # Step 4: Stop existing processes
-    Stop-ServerProcesses
+    Stop-ServerProcess
 
     # Step 5: Start NATS server
     Start-NatsServerForMythosMUD

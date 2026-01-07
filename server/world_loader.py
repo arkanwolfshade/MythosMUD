@@ -10,7 +10,7 @@ logger = get_logger(__name__)
 # Try to import the shared schema validator
 try:
     import sys
-    from pathlib import Path
+    # Path is imported at module level (line 1)
 
     # Add the project root to the path to find the schemas package
     project_root = Path(__file__).parent.parent
@@ -67,19 +67,22 @@ def get_room_environment(
     # Check room-specific environment first
     if room_data.get("environment"):
         result = room_data["environment"]
-        assert isinstance(result, str)
+        if not isinstance(result, str):
+            raise TypeError("room environment must be a string")
         return result
 
     # Check sub-zone environment
     if subzone_config and subzone_config.get("environment"):
         result = subzone_config["environment"]
-        assert isinstance(result, str)
+        if not isinstance(result, str):
+            raise TypeError("subzone environment must be a string")
         return result
 
     # Check zone environment
     if zone_config and zone_config.get("environment"):
         result = zone_config["environment"]
-        assert isinstance(result, str)
+        if not isinstance(result, str):
+            raise TypeError("zone environment must be a string")
         return result
 
     # Default fallback
@@ -107,7 +110,7 @@ def validate_room_data(
     if validator is None:
         try:
             validator = create_validator("unified")
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Validator creation errors unpredictable, must handle gracefully
             logger.warning("Could not create schema validator", error=str(e))
             return []
 
@@ -125,9 +128,10 @@ def validate_room_data(
                 details={"file_path": file_path, "validation_errors": errors},
                 user_friendly="Room data validation failed",
             )
-        assert isinstance(errors, list)
+        if not isinstance(errors, list):
+            raise TypeError("validation errors must be a list")
         return errors
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Validation errors unpredictable, must handle gracefully
         if strict_validation:
             context = create_error_context()
             context.metadata["operation"] = "validate_room_data"

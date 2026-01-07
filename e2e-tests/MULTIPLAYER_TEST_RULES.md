@@ -72,10 +72,13 @@ if (messages.length === 0) {
 
 **MANDATORY LLM REQUIREMENT:**
 
-- **MUST USE GPT-4**: This playbook requires GPT-4 or higher level reasoning and instruction adherence
+- **MUST USE GPT-4 OR NEWER MODEL**: This playbook requires GPT-4 or newer model with higher level reasoning
+  and instruction adherence
 - **DO NOT USE**: GPT-3.5, Claude, or other LLMs for playbook execution
-- **REASON**: Complex multi-step scenarios with strict execution requirements need advanced reasoning capabilities
-- **VERIFICATION**: Confirm you are using GPT-4 or greater before proceeding with any scenario
+- **REASON**: Complex multi-step scenarios with strict execution requirements
+  need advanced reasoning capabilities
+- **VERIFICATION**: Confirm you are using GPT-4 or greater before proceeding
+  with any scenario
 
 ## 🚨 CRITICAL INSTRUCTION FOR AI EXECUTORS 🚨
 
@@ -83,13 +86,18 @@ if (messages.length === 0) {
 
 **BEFORE YOU DO ANYTHING ELSE:**
 
-1. **MANDATORY DATABASE VERIFICATION**: You MUST verify the starting room configuration BEFORE starting the server
-2. **MANDATORY PREREQUISITE CHECKS**: You MUST complete ALL pre-execution steps before ANY scenario
-3. **ZERO TOLERANCE FOR SKIPPING**: Execute EVERY step in EVERY scenario EXACTLY as written
+1. **MANDATORY DATABASE VERIFICATION**: You MUST verify the starting room
+   configuration BEFORE starting the server
+2. **MANDATORY PREREQUISITE CHECKS**: You MUST complete ALL pre-execution
+   steps before ANY scenario
+3. **ZERO TOLERANCE FOR SKIPPING**: Execute EVERY step in EVERY scenario
+   EXACTLY as written
 4. **NO INTERPRETATION ALLOWED**: Do NOT skip, modify, or interpret any steps
-5. **NO ASSUMPTIONS ALLOWED**: Do NOT make assumptions about how systems should work
+5. **NO ASSUMPTIONS ALLOWED**: Do NOT make assumptions about how systems
+   should work
 6. **EXECUTION ONLY**: Your job is to execute, not to interpret or improve
-7. **EXECUTE EVEN IF WRONG**: If you think a step is wrong, execute it anyway and document the result
+7. **EXECUTE EVEN IF WRONG**: If you think a step is wrong, execute it anyway
+   and document the result
 
 **VIOLATION CONSEQUENCES:**
 
@@ -115,7 +123,8 @@ if (messages.length === 0) {
 
 ### Command Syntax
 
-- **Movement**: `go <direction>` or direction shortcuts (e.g., `go east`, `east`, `e`, `go west`, `west`, `w`)
+- **Movement**: `go <direction>` or direction shortcuts (e.g., `go east`,
+  `east`, `e`, `go west`, `west`, `w`)
 - **Say**: `say <message>` or `/say <message>` or just `<message>` (defaults to say channel)
 - **Local**: `local <message>` or `/l <message>`
 - **Whisper**: `whisper <player> <message>`
@@ -161,7 +170,8 @@ if (messages.length === 0) {
 ### MANDATORY SERVER STARTUP PROCEDURE
 
 1. **STOP FIRST**: Before starting a server, ALWAYS run `./scripts/stop_server.ps1`
-2. **VERIFY PORTS**: After stopping, verify ports are free with `netstat -an | findstr :54731` and `netstat -an | findstr :5173`
+2. **VERIFY PORTS**: After stopping, verify ports are free with `netstat -an |
+   findstr :54731` and `netstat -an | findstr :5173`
 3. **NO BACKGROUND**: NEVER use `is_background: true` for server startup commands
 4. **SEE OUTPUT**: ALWAYS use `is_background: false` for server startup so you can see what's happening
 5. **ONE START ONLY**: Run `./scripts/start_local.ps1` with `is_background: false` exactly ONCE
@@ -174,7 +184,8 @@ Before running ANY server command, ask yourself:
 - Did I already start a server in this session? (YES = STOP, don't start another)
 - Am I about to use `is_background: true`? (YES = STOP, use false instead)
 - Did I run `stop_server.ps1` first? (NO = STOP, run it first)
-- Am I about to run `start_local.ps1` when I already see "Press any key to exit"? (YES = STOP, server is already running)
+- Am I about to run `start_local.ps1` when I already see "Press any key to
+  exit"? (YES = STOP, server is already running)
 
 ## MANDATORY PRE-EXECUTION CHECKLIST
 

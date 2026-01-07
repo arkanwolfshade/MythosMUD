@@ -72,7 +72,7 @@ def _get_config_cached() -> AppConfig:
     Returns:
         AppConfig: Cached application configuration
     """
-    global _config_instance
+    global _config_instance  # pylint: disable=global-statement  # Reason: Singleton pattern for configuration
     with _config_lock:
         if _config_instance is None:
             _config_instance = _create_config_instance()

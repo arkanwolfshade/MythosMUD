@@ -66,6 +66,12 @@ dev = [
     "types-bleach>=6.3.0.20251029",  # Type stubs for bleach
     "semgrep>=1.142.1",  # Static analysis for security and best practices
     "websocket-client>=1.9.0",  # WebSocket client for testing connection termination
+    "bandit>=1.7.8",  # Python security linter
+    "pylint>=3.3.6",  # Python code quality linter
+    "sqlfluff>=3.0.0",  # SQL linting and formatting
+    "lizard>=1.18.0",  # Code complexity analyzer (used by Codacy)
+    # sqlint>=0.2.1 - REMOVED: Conflicts with click>=8.1.8 (sqlint requires click==7.0)
+    # Use sqlfluff instead, which provides comprehensive SQL linting
 ]
 
 [tool.setuptools.packages.find]
@@ -343,4 +349,10 @@ dev = [
     "types-psycopg2>=2.9.21.20251012",
     "types-python-jose>=3.5.0.20250531",
     "types-networkx>=3.6.1.20251212",
+    "bandit>=1.7.8", # Python security linter
+    "pylint>=3.3.6", # Python code quality linter
+    "sqlfluff>=3.0.0", # SQL linting and formatting
+    "lizard>=1.18.0", # Code complexity analyzer (used by Codacy)
+    # sqlint>=0.2.1 - REMOVED: Conflicts with click>=8.1.8 (sqlint requires click==7.0)
+    # Use sqlfluff instead, which provides comprehensive SQL linting
 ]

@@ -1,4 +1,6 @@
 #Requires -Version 5.1
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and management messages require Write-Host for proper display')]
 
 <#
 .SYNOPSIS
@@ -144,7 +146,8 @@ function Get-NatsServerPath {
             }
         }
         catch {
-            # Continue to error below
+            # Log error but continue to try other paths
+            Write-Debug "Failed to detect NATS server at $detectedPath : $_"
         }
     }
 
@@ -167,7 +170,7 @@ For more info: https://docs.nats.io/running-a-nats-service/introduction/installa
 }
 
 # Function to ensure NATS log directory exists
-function Ensure-NatsLogDirectory {
+function Initialize-NatsLogDirectory {
     [CmdletBinding()]
     param()
 
@@ -225,13 +228,13 @@ function Test-NatsServerRunning {
 
 # Function to start NATS server
 function Start-NatsServer {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter(HelpMessage = "Use configuration file")]
-        [switch]$UseConfig = $true,
+        [switch]$UseConfig,
 
         [Parameter(HelpMessage = "Start in background")]
-        [switch]$Background = $true
+        [switch]$Background
     )
 
     if (-not (Test-NatsServerInstalled)) {
@@ -243,10 +246,14 @@ function Start-NatsServer {
         return $true
     }
 
+    if (-not $PSCmdlet.ShouldProcess("NATS server", "Start")) {
+        return $false
+    }
+
     Write-Host "Starting NATS server..." -ForegroundColor Cyan
 
     # Ensure NATS log directory exists
-    Ensure-NatsLogDirectory | Out-Null
+    Initialize-NatsLogDirectory | Out-Null
 
     try {
         # Get the actual NATS server path using the new function
@@ -259,21 +266,22 @@ function Start-NatsServer {
 
         if ($UseConfig -and (Test-Path $NatsConfigPath)) {
             Write-Host "Using configuration file: $NatsConfigPath" -ForegroundColor Gray
-            $command = "& '$actualNatsPath' -c '$NatsConfigPath' -l '$NatsLogPath'"
+            $natsArgs = @("-c", $NatsConfigPath, "-l", $NatsLogPath)
         }
         else {
             Write-Host "Using default configuration" -ForegroundColor Gray
-            $command = "& '$actualNatsPath' -p $NatsPort -m $NatsHttpPort -l '$NatsLogPath'"
+            $natsArgs = @("-p", $NatsPort, "-m", $NatsHttpPort, "-l", $NatsLogPath)
         }
 
         if ($Background) {
             # Start NATS server in background
+            $command = "& '$actualNatsPath' $($natsArgs -join ' ')"
             Start-Process powershell -ArgumentList "-NoExit", "-Command", $command -WindowStyle Normal
             Write-Host "NATS server started in background" -ForegroundColor Green
         }
         else {
-            # Start NATS server in foreground
-            Invoke-Expression $command
+            # Start NATS server in foreground - use & to execute directly
+            & $actualNatsPath $natsArgs
         }
 
         # Wait for server to start (longer wait for background processes)
@@ -304,8 +312,12 @@ function Start-NatsServer {
 
 # Function to stop NATS server
 function Stop-NatsServer {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param()
+
+    if (-not $PSCmdlet.ShouldProcess("NATS server", "Stop")) {
+        return $false
+    }
 
     Write-Host "Stopping NATS server..." -ForegroundColor Cyan
 
@@ -361,14 +373,18 @@ function Stop-NatsServer {
 
 # Function to restart NATS server
 function Restart-NatsServer {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter(HelpMessage = "Use configuration file")]
-        [switch]$UseConfig = $true,
+        [switch]$UseConfig,
 
         [Parameter(HelpMessage = "Start in background")]
-        [switch]$Background = $true
+        [switch]$Background
     )
+
+    if (-not $PSCmdlet.ShouldProcess("NATS server", "Restart")) {
+        return $false
+    }
 
     Write-Host "Restarting NATS server..." -ForegroundColor Cyan
 
@@ -401,7 +417,7 @@ function Get-NatsServerStatus {
     $httpPort = Test-NetConnection -ComputerName localhost -Port $NatsHttpPort -WarningAction SilentlyContinue
 
     # Ensure log directory exists and check log file
-    Ensure-NatsLogDirectory | Out-Null
+    Initialize-NatsLogDirectory | Out-Null
     $logExists = Test-Path $NatsLogPath
 
     Write-Host ""

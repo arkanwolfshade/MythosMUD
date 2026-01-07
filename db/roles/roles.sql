@@ -1,8 +1,11 @@
 -- MythosMUD PostgreSQL Roles
 -- Apply with a superuser connection (e.g., psql to 'postgres' DB).
--- This script creates owner roles (no login) and application roles (no login).
--- Create actual login users separately and GRANT them membership in the app roles.
--- Security rationale: ownership is separated from day-to-day application privileges.
+-- This script creates owner roles (no login) and application roles
+-- (no login).
+-- Create actual login users separately and GRANT them membership in
+-- the app roles.
+-- Security rationale: ownership is separated from day-to-day
+-- application privileges.
 
 -- Owners (no login)
 DO $$

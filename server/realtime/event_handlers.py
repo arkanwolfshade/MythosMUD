@@ -85,7 +85,8 @@ class EventHandler:
                 return
 
             # Type narrowing: validate_event_message ensures event_type is not None
-            assert event_type is not None, "event_type should not be None after validation"
+            if event_type is None:
+                raise ValueError("event_type should not be None after validation")
             event_type_str: str = event_type
 
             # Route event based on type using dispatch map

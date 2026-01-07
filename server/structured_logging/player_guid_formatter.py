@@ -100,7 +100,7 @@ class PlayerGuidFormatter(logging.Formatter):
         # Replace all UUID patterns in the message
         return self.uuid_pattern.sub(replace_guid, message)
 
-    def _is_likely_player_id(self, guid: str, message: str) -> bool:
+    def _is_likely_player_id(self, _guid: str, message: str) -> bool:  # pylint: disable=unused-argument  # Reason: guid parameter reserved for future player ID validation
         """
         Determine if a GUID is likely to be a player ID based on context.
 

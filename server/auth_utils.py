@@ -41,7 +41,8 @@ def hash_password(password: str) -> str:
     try:
         hashed = argon2_hash_password(password)
         logger.debug("Password hashed successfully")
-        assert isinstance(hashed, str)
+        if not isinstance(hashed, str):
+            raise TypeError("Password hash must be a string")
         return hashed
     except (AuthenticationError, ValueError, TypeError, RuntimeError) as e:
         logger.error("Password hashing failed", error=str(e))
@@ -67,7 +68,8 @@ def verify_password(password: str, password_hash: str) -> bool:
             logger.debug("Password verification successful")
         else:
             logger.debug("Password verification failed")
-        assert isinstance(result, bool)
+        if not isinstance(result, bool):
+            raise TypeError("Password verification must return a bool")
         return result
     except (ValueError, TypeError, AttributeError, RuntimeError) as e:
         logger.error("Password verification error", error=str(e))
@@ -93,7 +95,8 @@ def create_access_token(
     try:
         token = jwt.encode(to_encode, secret_key, algorithm=algorithm)
         logger.debug("Access token created successfully")
-        assert isinstance(token, str)
+        if not isinstance(token, str):
+            raise TypeError("JWT token must be a string")
         return token
     except (JWTError, ValueError, TypeError, AttributeError, RuntimeError) as e:
         logger.error("Failed to create access token", error=str(e))
@@ -120,7 +123,8 @@ def decode_access_token(
     try:
         payload = jwt.decode(token, secret_key, algorithms=[algorithm], audience="fastapi-users:auth")
         logger.debug("Access token decoded successfully")
-        assert isinstance(payload, dict)
+        if not isinstance(payload, dict):
+            raise TypeError("JWT payload must be a dict")
         return payload
     except JWTError as e:
         logger.warning("JWT decode error", error=str(e))

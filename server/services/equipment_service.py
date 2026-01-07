@@ -109,7 +109,7 @@ class EquipmentService:
                 # This is a limitation - we may need to refactor EquipmentService to accept player_id
                 # For now, we'll skip container creation here and handle it at the API/command layer
                 pass
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Logging/cleanup code that must not fail
                 # Log but don't fail - container creation is not critical for equip operation
                 logger.warning(
                     "Failed to create wearable container on equip",
@@ -155,7 +155,7 @@ class EquipmentService:
                 # This is a limitation - we may need to refactor EquipmentService to accept player_id
                 # For now, we'll skip container preservation here and handle it at the API/command layer
                 pass
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Logging/cleanup code that must not fail
                 # Log but don't fail - container preservation is not critical for unequip operation
                 logger.warning(
                     "Failed to preserve wearable container on unequip",

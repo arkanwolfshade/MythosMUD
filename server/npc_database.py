@@ -45,7 +45,7 @@ def _initialize_npc_database() -> None:
     Raises:
         ValidationError: If configuration is missing or invalid
     """
-    global _npc_engine, _npc_async_session_maker, _npc_database_url
+    global _npc_engine, _npc_async_session_maker, _npc_database_url  # pylint: disable=global-statement  # Reason: Singleton pattern for database engine
 
     # Avoid re-initialization
     if _npc_engine is not None:
@@ -70,7 +70,7 @@ def _initialize_npc_database() -> None:
     try:
         config = get_config()
         npc_database_url = config.database.npc_url
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Configuration errors unpredictable, fallback needed for tests
         # Optional fallback for unit tests that provide only NPC DB URL
         allow_env_fallback = os.getenv("NPC_DB_ENV_FALLBACK", "").lower() in {"1", "true", "yes"}
         env_npc_url = os.getenv("DATABASE_NPC_URL") or os.getenv("NPC_DATABASE_URL") or os.getenv("DATABASE__NPC_URL")
@@ -119,8 +119,8 @@ def _initialize_npc_database() -> None:
         pool_kwargs.update(
             {
                 "pool_size": config.database.pool_size,
-                "max_overflow": config.database.max_overflow,
-                "pool_timeout": config.database.pool_timeout,
+                "max_overflow": config.database.max_overflow,  # pylint: disable=no-member  # Pydantic FieldInfo dynamic attribute
+                "pool_timeout": config.database.pool_timeout,  # pylint: disable=no-member  # Pydantic FieldInfo dynamic attribute
             }
         )
 
@@ -148,7 +148,7 @@ def _initialize_npc_database() -> None:
     # Track the event loop that created this engine
     try:
         loop = asyncio.get_running_loop()
-        global _npc_creation_loop_id
+        global _npc_creation_loop_id  # pylint: disable=global-statement  # Reason: Singleton pattern for tracking creation loop
         _npc_creation_loop_id = id(loop)
     except RuntimeError:
         # No running loop - that's okay, we'll track it as None
@@ -165,7 +165,7 @@ def get_npc_engine() -> AsyncEngine | None:
     Raises:
         ValidationError: If NPC database cannot be initialized
     """
-    global _npc_engine, _npc_async_session_maker, _npc_creation_loop_id
+    global _npc_engine, _npc_async_session_maker, _npc_creation_loop_id  # pylint: disable=global-statement  # Reason: Singleton pattern for database engine
 
     if _npc_engine is None:
         _initialize_npc_database()
@@ -210,7 +210,8 @@ def get_npc_session_maker() -> async_sessionmaker:
     """
     if _npc_async_session_maker is None:
         _initialize_npc_database()
-    assert _npc_async_session_maker is not None, "NPC session maker not initialized"
+    if _npc_async_session_maker is None:
+        raise RuntimeError("NPC session maker not initialized")
     return _npc_async_session_maker
 
 
@@ -226,7 +227,7 @@ async def get_npc_session() -> AsyncGenerator[AsyncSession, None]:
 
     logger.debug("Creating NPC database session")
     # Prefer existing session maker if already set (e.g., tests mocking it)
-    global _npc_async_session_maker
+    global _npc_async_session_maker  # pylint: disable=global-statement,global-variable-not-assigned  # Reason: Singleton pattern, checking if None before assignment
     if _npc_async_session_maker is None:
         # For unit tests, ensure a clean DB schema before providing a session
         if _npc_database_url is None:
@@ -240,7 +241,7 @@ async def get_npc_session() -> AsyncGenerator[AsyncSession, None]:
         try:
             logger.debug("NPC database session created successfully")
             yield session
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Database session errors unpredictable, must log and rollback
             context.metadata["error_type"] = type(e).__name__
             context.metadata["error_message"] = str(e)
             logger.error(
@@ -252,7 +253,7 @@ async def get_npc_session() -> AsyncGenerator[AsyncSession, None]:
             try:
                 await session.rollback()
                 logger.debug("NPC database session rolled back after error")
-            except Exception as rollback_error:
+            except Exception as rollback_error:  # pylint: disable=broad-exception-caught  # Reason: Rollback errors unpredictable, must log but not fail
                 logger.error(
                     "Failed to rollback NPC database session",
                     context=context.to_dict(),
@@ -289,7 +290,11 @@ async def init_npc_db():
         # Import all NPC models to ensure they're registered with metadata
         from sqlalchemy.orm import configure_mappers
 
-        from server.models.npc import NPCDefinition  # noqa: F401
+        # pylint: disable=unused-import
+        # Imported for side effects (SQLAlchemy mapper registration)
+        from server.models.npc import (
+            NPCDefinition,  # noqa: F401
+        )
 
         logger.debug("Configuring NPC SQLAlchemy mappers")
         configure_mappers()
@@ -310,7 +315,7 @@ async def init_npc_db():
             logger.info("NPC database connection verified successfully")
 
         logger.info("NPC database initialization complete - DDL must be applied separately via SQL scripts")
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Database initialization errors unpredictable, must log with context
         context.metadata["error_type"] = type(e).__name__
         context.metadata["error_message"] = str(e)
         logger.error(
@@ -324,7 +329,7 @@ async def init_npc_db():
 
 async def close_npc_db():
     """Close NPC database connections."""
-    global _npc_engine, _npc_async_session_maker, _npc_creation_loop_id
+    global _npc_engine, _npc_async_session_maker, _npc_creation_loop_id  # pylint: disable=global-statement  # Reason: Singleton pattern for database engine cleanup
 
     context = create_error_context()
     context.metadata["operation"] = "close_npc_db"
@@ -378,7 +383,7 @@ async def close_npc_db():
                 # Event loop is closed or proactor is None - this is expected during cleanup
                 # Don't log as error, just as debug since this is normal during test teardown
                 logger.debug("Event loop closed during NPC engine disposal (expected during cleanup)", error=str(e))
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Engine disposal errors unpredictable, must log but not fail
                 # Any other error - log but don't raise
                 logger.warning("Error disposing NPC database engine", error=str(e), error_type=type(e).__name__)
             finally:
@@ -386,7 +391,7 @@ async def close_npc_db():
                 _npc_engine = None
                 _npc_async_session_maker = None
                 _npc_creation_loop_id = None
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Cleanup errors unpredictable, best effort only
         # Only log, don't raise - best effort cleanup
         context.metadata["error_type"] = type(e).__name__
         context.metadata["error_message"] = str(e)
@@ -414,7 +419,7 @@ def reset_npc_database() -> None:
     Note: This does NOT close existing connections. Use close_npc_db() first
     if you need to dispose of active connections.
     """
-    global _npc_engine, _npc_async_session_maker, _npc_database_url, _npc_creation_loop_id
+    global _npc_engine, _npc_async_session_maker, _npc_database_url, _npc_creation_loop_id  # pylint: disable=global-statement  # Reason: Singleton pattern for database engine reset
     _npc_engine = None
     _npc_async_session_maker = None
     _npc_database_url = None
@@ -438,7 +443,8 @@ def get_npc_database_path() -> Path | None:
         _initialize_npc_database()
 
     # After initialization, database URL should be set
-    assert _npc_database_url is not None, "NPC database URL should be initialized"
+    if _npc_database_url is None:
+        raise RuntimeError("NPC database URL should be initialized")
 
     if _npc_database_url.startswith("postgresql"):
         # PostgreSQL doesn't have a file path
@@ -454,8 +460,8 @@ def get_npc_database_path() -> Path | None:
             details={"database_url": _npc_database_url},
             user_friendly="Unsupported NPC database configuration - PostgreSQL required",
         )
-        # Satisfy type checker: log_and_raise raises
-        raise AssertionError("unreachable")
+        # log_and_raise returns NoReturn, so this code is unreachable
+        # Type checker understands this, but we keep the else branch for clarity
 
 
 def ensure_npc_database_directory():
@@ -468,6 +474,7 @@ def ensure_npc_database_directory():
     For PostgreSQL, database directories are managed by the PostgreSQL server,
     not by the application.
     """
+    # pylint: disable=assignment-from-none  # Function returns Path | None, not always None
     db_path = get_npc_database_path()
     # PostgreSQL always returns None, so this is effectively a no-op
     if db_path is not None:

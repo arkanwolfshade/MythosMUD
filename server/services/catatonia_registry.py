@@ -87,7 +87,7 @@ class CatatoniaRegistry(CatatoniaObserverProtocol):
                     def log_failover_error(t: asyncio.Task) -> None:
                         try:
                             t.result()  # This will raise if task failed
-                        except Exception as e:
+                        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Failover callback task errors unpredictable, must handle gracefully
                             # Structlog handles UUID objects automatically, no need to convert to string
                             logger.error("Failover callback task failed", player_id=player_id, error=str(e))
 
@@ -96,7 +96,7 @@ class CatatoniaRegistry(CatatoniaObserverProtocol):
                     # No event loop available - log and continue
                     # Structlog handles UUID objects automatically, no need to convert to string
                     logger.warning("Failover callback requires event loop", player_id=player_id)
-        except Exception as exc:  # pragma: no cover - defensive logging
+        except Exception as exc:  # pragma: no cover - defensive logging  # pylint: disable=broad-exception-caught  # Reason: Failover callback errors unpredictable, must handle gracefully
             # Structlog handles UUID objects automatically, no need to convert to string
             logger.error("Failover callback failed", player_id=player_id, error=str(exc))
 

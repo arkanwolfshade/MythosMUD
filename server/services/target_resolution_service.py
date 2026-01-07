@@ -273,12 +273,15 @@ class TargetResolutionService:
             logger.debug("_search_players_in_room: Returning matches", room_id=room_id, matches_count=len(matches))
             return matches
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Player search errors unpredictable, must return empty list
             logger.error("Error searching players in room", room_id=room_id, error=str(e))
             return []
 
     async def _search_npcs_in_room(
-        self, room_id: str, target_name: str, disambiguation_suffix: str | None = None
+        self,
+        room_id: str,
+        target_name: str,
+        _disambiguation_suffix: str | None = None,  # pylint: disable=unused-argument  # Reason: Reserved for future disambiguation feature
     ) -> list[TargetMatch]:
         """Search for NPCs in the specified room."""
         try:
@@ -343,7 +346,7 @@ class TargetResolutionService:
                             npc_room_id = current_room or current_room_id
                             if npc_room_id == room_id:
                                 npc_ids.append(npc_id)
-            except Exception as npc_query_error:
+            except Exception as npc_query_error:  # pylint: disable=broad-exception-caught  # Reason: NPC query errors unpredictable, must fallback to room.get_npcs()
                 logger.warning(
                     "Error querying NPCs from lifecycle manager, falling back to room.get_npcs()",
                     room_id=room_id,
@@ -413,7 +416,7 @@ class TargetResolutionService:
 
             return matches
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC search errors unpredictable, must return empty list
             logger.error("Error searching NPCs in room", room_id=room_id, error=str(e))
             return []
 
@@ -430,6 +433,6 @@ class TargetResolutionService:
 
             return None
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC instance retrieval errors unpredictable, must return None
             logger.error("Error getting NPC instance", npc_id=npc_id, error=str(e))
             return None

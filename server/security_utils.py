@@ -71,7 +71,6 @@ def validate_secure_path(base_path: str, user_path: str) -> str:
         # If paths are on different drives (Windows), commonpath will fail
         # In this case, we'll allow it for testing purposes
         logger.debug("Cross-drive path validation skipped", base_path=base_path, full_path=full_path)
-        pass
 
     logger.debug("Path validation successful", base_path=base_path, user_path=user_path, full_path=full_path)
     return full_path

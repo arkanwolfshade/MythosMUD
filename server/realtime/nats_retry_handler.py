@@ -124,11 +124,11 @@ class NATSRetryHandler:
 
         # Add jitter (±25%)
         jitter = delay * 0.25
-        delay = delay + random.uniform(-jitter, jitter)
+        delay = delay + random.uniform(-jitter, jitter)  # nosec B311: Retry jitter calculation, not cryptographic
 
         return max(0, delay)
 
-    async def should_retry(self, message: RetryableMessage, error: Exception) -> bool:
+    async def should_retry(self, message: RetryableMessage, _error: Exception) -> bool:  # pylint: disable=unused-argument  # Reason: Parameter reserved for future error-based retry logic
         """
         Determine if a message should be retried.
 
@@ -219,7 +219,7 @@ class NATSRetryHandler:
 
                 return True, result
 
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Retry attempt errors unpredictable, must continue with next attempt
                 last_error = e
 
                 # Don't sleep after last attempt

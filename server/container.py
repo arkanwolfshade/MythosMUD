@@ -365,7 +365,7 @@ class ApplicationContainer:
                 from .services.nats_service import NATSService
 
                 # Initialize NATS service if enabled
-                if self.config.nats.enabled:
+                if self.config.nats.enabled:  # pylint: disable=no-member  # Pydantic FieldInfo dynamic attribute
                     self.nats_service = NATSService(config=self.config.nats)
                     await self.nats_service.connect()
                     logger.info("NATS service connected")

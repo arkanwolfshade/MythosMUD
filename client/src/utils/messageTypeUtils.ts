@@ -23,6 +23,11 @@ interface MessagePattern {
   channelExtractor?: RegExp;
 }
 
+// Compile-time constants for regex patterns - safe from ReDoS
+// nosemgrep: typescript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
+// These patterns use compile-time string constants (CARDINAL_REGEX, TELEPORT_EFFECT_VARIANTS)
+// which are defined in this file and never contain user input. The template literals
+// are evaluated at module load time, not runtime, making them safe from ReDoS attacks.
 const CARDINAL_REGEX = '(north|south|east|west|up|down|northeast|northwest|southeast|southwest)';
 const TELEPORT_DEPARTURE_PATTERN = new RegExp(`^You teleport \\w+ to the ${CARDINAL_REGEX}\\.?$`, 'i');
 const PLAYER_LEAVES_PATTERN = new RegExp(`^\\w+ leaves the room(?: heading ${CARDINAL_REGEX})?\\.?$`, 'i');

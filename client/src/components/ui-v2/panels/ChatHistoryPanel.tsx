@@ -5,6 +5,7 @@ import { extractChannelFromMessage, isChatContent } from '../../../utils/message
 import { ChannelSelector } from '../../ui/ChannelSelector';
 import { EldritchIcon, MythosIcons } from '../../ui/EldritchIcon';
 import { TerminalButton } from '../../ui/TerminalButton';
+import { SafeHtml } from '../../common/SafeHtml';
 import type { ChatMessage } from '../types';
 
 interface ChatHistoryPanelProps {
@@ -237,11 +238,7 @@ export const ChatHistoryPanel: React.FC<ChatHistoryPanelProps> = ({
                   data-message-text={message.rawText ?? message.text}
                 >
                   {message.isHtml ? (
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: message.isCompleteHtml ? message.text : ansiToHtmlWithBreaks(message.text),
-                      }}
-                    />
+                    <SafeHtml html={message.isCompleteHtml ? message.text : ansiToHtmlWithBreaks(message.text)} />
                   ) : (
                     <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                       {message.rawText ?? message.text}

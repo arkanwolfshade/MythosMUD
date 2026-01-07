@@ -106,7 +106,7 @@ class NPCStartupService:
                     startup_results["errors"].extend(optional_results["errors"])
                     startup_results["spawned_npcs"].extend(optional_results["spawned_npcs"])
 
-                except Exception as e:
+                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC spawning errors unpredictable, must log and continue
                     error_msg = f"Error during startup spawning: {str(e)}"
                     logger.error(error_msg)
                     startup_results["errors"].append(error_msg)
@@ -124,7 +124,7 @@ class NPCStartupService:
 
             return startup_results
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Startup spawning errors unpredictable, must return results
             error_msg = f"Critical error in startup spawning: {str(e)}"
             logger.error(error_msg)
             startup_results["errors"].append(error_msg)
@@ -183,7 +183,7 @@ class NPCStartupService:
                     results["errors"].append(error_msg)
                     results["failed"] += 1
 
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Required NPC spawning errors unpredictable, must log but continue
                 error_msg = f"Error spawning required NPC {npc_def.name}: {str(e)}"
                 logger.error(error_msg)
                 results["errors"].append(error_msg)
@@ -251,7 +251,7 @@ class NPCStartupService:
                     )
                     results["failed"] += 1
 
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Optional NPC spawning errors unpredictable, must log but continue
                 error_msg = f"Error spawning optional NPC {npc_def.name}: {str(e)}"
                 logger.warning(error_msg)  # Use warning for optional NPCs
                 results["errors"].append(error_msg)
@@ -334,7 +334,7 @@ class NPCStartupService:
                 )
                 return None
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Room determination errors unpredictable, must return None
             logger.error("Error determining spawn room for NPC", npc_name=npc_def.name, error=str(e))
             return None
 

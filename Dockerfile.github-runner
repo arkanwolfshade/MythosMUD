@@ -4,12 +4,18 @@
 #
 FROM ubuntu:24.04@sha256:c35e29c9450151419d9448b0fd75374fec4fff364a27f176fb458d472dfc9e54
 
+# Set shell with pipefail for better error handling in RUN commands with pipes
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Human reader: install baseline system packages required for Python/Node builds,
 # PostgreSQL 18 server and client libraries, and Playwright runtime dependencies used in CI.
 # AI reader: keep package list minimal and aligned with workflow requirements.
 # Install PostgreSQL 18 from official PostgreSQL APT repository (Ubuntu 24.04 default is PostgreSQL 16).
+# Note: Package versions not pinned to allow CI flexibility with Ubuntu 24.04 LTS updates.
+# Ubuntu LTS provides security updates while maintaining API compatibility.
+# hadolint ignore=DL3008
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     ca-certificates \
@@ -22,9 +28,8 @@ RUN apt-get update && \
     python3.12-venv \
     python3.12-dev \
     python3-pip \
-    wget \
     lsb-release \
-    && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgresql-keyring.gpg \
+    && curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgresql-keyring.gpg \
     && echo "deb [signed-by=/usr/share/keyrings/postgresql-keyring.gpg] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
     && apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -64,6 +69,10 @@ ENV PATH="/root/.local/bin:${PATH}"
 # Install Node.js 22 via NodeSource (matches frontend workflow requirement).
 # Human reader: download and verify NodeSource setup script before execution.
 # AI reader: pinning script downloads prevents supply chain attacks.
+# Note: Node.js version managed by NodeSource repository (setup_22.x ensures Node.js 22.x).
+# Pinning specific nodejs package version would require tracking NodeSource's package versions,
+# which change frequently. Using NodeSource repository ensures we get Node.js 22.x with security updates.
+# hadolint ignore=DL3008
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x -o /tmp/nodesource-setup.sh && \
     bash /tmp/nodesource-setup.sh && \
     rm /tmp/nodesource-setup.sh && \
@@ -101,14 +110,10 @@ RUN mkdir -p /workspace/data/unit_test/players /workspace/data/unit_test/npcs
 
 # Install Python dependencies using uv inside project virtual environment.
 # Install dependencies from pyproject.toml, which includes all runtime and dev dependencies.
-RUN uv venv && \
-    . .venv/bin/activate && \
-    uv pip install -e . && \
-    uv pip install -e ".[dev]" && \
-    uv pip install pytest-mock>=3.14.0
-
-# Install Playwright Chromium and its runtime dependencies.
-RUN . .venv/bin/activate && \
+# Use .venv-ci to match GitHub Actions workflow for consistency
+# Also install Playwright Chromium and its runtime dependencies in the same layer
+RUN VENV_NAME=.venv-ci USE_EXPLICIT_PYTHON=true bash scripts/install_ci_dependencies.sh && \
+    . .venv-ci/bin/activate && \
     playwright install chromium && \
     playwright install-deps chromium
 
@@ -121,6 +126,10 @@ WORKDIR /workspace
 # Note: Running as root in Docker, use su to execute as postgres user.
 # hadolint ignore=DL3009
 ARG POSTGRES_PASSWORD=Cthulhu1
+# Note: service command required to start PostgreSQL in Ubuntu container for CI workflows.
+# Alternative approaches (pg_ctlcluster, direct postgres binary) are more complex and
+# don't work reliably in this Ubuntu 24.04 + PostgreSQL 18 setup.
+# hadolint ignore=DL3001
 RUN service postgresql start && \
     sleep 3 && \
     pg_isready -U postgres && \

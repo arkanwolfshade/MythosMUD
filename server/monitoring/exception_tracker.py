@@ -332,14 +332,14 @@ class ExceptionTracker:
         for handler in self.exception_handlers[exception_type]:
             try:
                 handler(exception, record)
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Handler errors unpredictable, must not fail exception tracking
                 logger.error("Exception handler failed", handler=str(handler), error=str(e), exc_info=True)
 
         # Call global handlers
         for handler in self.global_handlers:
             try:
                 handler(exception, record)
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Handler errors unpredictable, must not fail exception tracking
                 logger.error("Global exception handler failed", handler=str(handler), error=str(e), exc_info=True)
 
 
@@ -354,7 +354,7 @@ def get_exception_tracker() -> ExceptionTracker:
     Returns:
         Global ExceptionTracker instance
     """
-    global _exception_tracker
+    global _exception_tracker  # pylint: disable=global-statement  # Reason: Singleton pattern for exception tracking
     if _exception_tracker is None:
         _exception_tracker = ExceptionTracker()
     return _exception_tracker

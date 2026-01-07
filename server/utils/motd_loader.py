@@ -42,7 +42,7 @@ def load_motd() -> str:
             logger.warning("MOTD file not found", **context.to_dict())
             return "Welcome to MythosMUD - Enter the realm of forbidden knowledge..."
 
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: MOTD loading errors unpredictable, must return default message
         context = create_error_context()
         context.metadata = {
             "motd_path": motd_path,

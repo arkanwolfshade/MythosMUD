@@ -32,8 +32,8 @@ async def test_handle_alias_command_no_storage():
     """Test handle_alias_command when alias storage is not available."""
     result = await handle_alias_command(
         command_data={},
-        current_user={},
-        request=MagicMock(),
+        _current_user={},
+        _request=MagicMock(),
         alias_storage=None,
         player_name="TestPlayer",
     )
@@ -46,8 +46,8 @@ async def test_handle_alias_command_no_args():
     """Test handle_alias_command with no arguments."""
     result = await handle_alias_command(
         command_data={"args": []},
-        current_user={},
-        request=MagicMock(),
+        _current_user={},
+        _request=MagicMock(),
         alias_storage=MagicMock(),
         player_name="TestPlayer",
     )
@@ -62,8 +62,8 @@ async def test_handle_alias_command_view_existing(mock_alias_storage, mock_alias
 
     result = await handle_alias_command(
         command_data={"args": ["n"]},
-        current_user={},
-        request=MagicMock(),
+        _current_user={},
+        _request=MagicMock(),
         alias_storage=mock_alias_storage,
         player_name="TestPlayer",
     )
@@ -79,8 +79,8 @@ async def test_handle_alias_command_view_nonexistent(mock_alias_storage):
 
     result = await handle_alias_command(
         command_data={"args": ["nonexistent"]},
-        current_user={},
-        request=MagicMock(),
+        _current_user={},
+        _request=MagicMock(),
         alias_storage=mock_alias_storage,
         player_name="TestPlayer",
     )
@@ -93,8 +93,8 @@ async def test_handle_alias_command_create_from_args(mock_alias_storage):
     """Test handle_alias_command creating alias from args."""
     result = await handle_alias_command(
         command_data={"args": ["move", "go", "north"]},
-        current_user={},
-        request=MagicMock(),
+        _current_user={},
+        _request=MagicMock(),
         alias_storage=mock_alias_storage,
         player_name="TestPlayer",
     )
@@ -108,8 +108,8 @@ async def test_handle_alias_command_create_from_structured_data(mock_alias_stora
     """Test handle_alias_command creating alias from structured data."""
     result = await handle_alias_command(
         command_data={"alias_name": "move", "command": "go north"},
-        current_user={},
-        request=MagicMock(),
+        _current_user={},
+        _request=MagicMock(),
         alias_storage=mock_alias_storage,
         player_name="TestPlayer",
     )
@@ -124,8 +124,8 @@ async def test_handle_alias_command_invalid_name_too_long(mock_alias_storage):
     long_name = "a" * 21
     result = await handle_alias_command(
         command_data={"alias_name": long_name, "command": "go north"},
-        current_user={},
-        request=MagicMock(),
+        _current_user={},
+        _request=MagicMock(),
         alias_storage=mock_alias_storage,
         player_name="TestPlayer",
     )
@@ -139,8 +139,8 @@ async def test_handle_alias_command_invalid_command_too_long(mock_alias_storage)
     long_command = "a" * 201
     result = await handle_alias_command(
         command_data={"alias_name": "n", "command": long_command},
-        current_user={},
-        request=MagicMock(),
+        _current_user={},
+        _request=MagicMock(),
         alias_storage=mock_alias_storage,
         player_name="TestPlayer",
     )
@@ -153,8 +153,8 @@ async def test_handle_alias_command_circular_reference(mock_alias_storage):
     """Test handle_alias_command with circular reference."""
     result = await handle_alias_command(
         command_data={"alias_name": "n", "command": "n"},
-        current_user={},
-        request=MagicMock(),
+        _current_user={},
+        _request=MagicMock(),
         alias_storage=mock_alias_storage,
         player_name="TestPlayer",
     )
@@ -169,8 +169,8 @@ async def test_handle_alias_command_create_error(mock_alias_storage):
 
     result = await handle_alias_command(
         command_data={"alias_name": "move", "command": "go north"},
-        current_user={},
-        request=MagicMock(),
+        _current_user={},
+        _request=MagicMock(),
         alias_storage=mock_alias_storage,
         player_name="TestPlayer",
     )
@@ -182,9 +182,9 @@ async def test_handle_alias_command_create_error(mock_alias_storage):
 async def test_handle_aliases_command_no_storage():
     """Test handle_aliases_command when alias storage is not available."""
     result = await handle_aliases_command(
-        command_data={},
-        current_user={},
-        request=MagicMock(),
+        _command_data={},
+        _current_user={},
+        _request=MagicMock(),
         alias_storage=None,
         player_name="TestPlayer",
     )
@@ -198,9 +198,9 @@ async def test_handle_aliases_command_no_aliases(mock_alias_storage):
     mock_alias_storage.get_player_aliases.return_value = []
 
     result = await handle_aliases_command(
-        command_data={},
-        current_user={},
-        request=MagicMock(),
+        _command_data={},
+        _current_user={},
+        _request=MagicMock(),
         alias_storage=mock_alias_storage,
         player_name="TestPlayer",
     )
@@ -217,9 +217,9 @@ async def test_handle_aliases_command_with_aliases(mock_alias_storage, mock_alia
     mock_alias_storage.get_player_aliases.return_value = [mock_alias, mock_alias2]
 
     result = await handle_aliases_command(
-        command_data={},
-        current_user={},
-        request=MagicMock(),
+        _command_data={},
+        _current_user={},
+        _request=MagicMock(),
         alias_storage=mock_alias_storage,
         player_name="TestPlayer",
     )
@@ -235,9 +235,9 @@ async def test_handle_aliases_command_error(mock_alias_storage):
     mock_alias_storage.get_player_aliases.side_effect = Exception("Storage error")
 
     result = await handle_aliases_command(
-        command_data={},
-        current_user={},
-        request=MagicMock(),
+        _command_data={},
+        _current_user={},
+        _request=MagicMock(),
         alias_storage=mock_alias_storage,
         player_name="TestPlayer",
     )
@@ -250,8 +250,8 @@ async def test_handle_unalias_command_no_storage():
     """Test handle_unalias_command when alias storage is not available."""
     result = await handle_unalias_command(
         command_data={},
-        current_user={},
-        request=MagicMock(),
+        _current_user={},
+        _request=MagicMock(),
         alias_storage=None,
         player_name="TestPlayer",
     )
@@ -264,8 +264,8 @@ async def test_handle_unalias_command_no_args(mock_alias_storage):
     """Test handle_unalias_command with no arguments."""
     result = await handle_unalias_command(
         command_data={"args": []},
-        current_user={},
-        request=MagicMock(),
+        _current_user={},
+        _request=MagicMock(),
         alias_storage=mock_alias_storage,
         player_name="TestPlayer",
     )
@@ -280,8 +280,8 @@ async def test_handle_unalias_command_alias_not_found(mock_alias_storage):
 
     result = await handle_unalias_command(
         command_data={"args": ["nonexistent"]},
-        current_user={},
-        request=MagicMock(),
+        _current_user={},
+        _request=MagicMock(),
         alias_storage=mock_alias_storage,
         player_name="TestPlayer",
     )
@@ -296,8 +296,8 @@ async def test_handle_unalias_command_success(mock_alias_storage, mock_alias):
 
     result = await handle_unalias_command(
         command_data={"args": ["n"]},
-        current_user={},
-        request=MagicMock(),
+        _current_user={},
+        _request=MagicMock(),
         alias_storage=mock_alias_storage,
         player_name="TestPlayer",
     )
@@ -314,8 +314,8 @@ async def test_handle_unalias_command_error(mock_alias_storage, mock_alias):
 
     result = await handle_unalias_command(
         command_data={"args": ["n"]},
-        current_user={},
-        request=MagicMock(),
+        _current_user={},
+        _request=MagicMock(),
         alias_storage=mock_alias_storage,
         player_name="TestPlayer",
     )
@@ -328,8 +328,8 @@ async def test_handle_alias_command_invalid_name_empty(mock_alias_storage):
     """Test handle_alias_command with empty alias name."""
     result = await handle_alias_command(
         command_data={"alias_name": "", "command": "go north"},
-        current_user={},
-        request=MagicMock(),
+        _current_user={},
+        _request=MagicMock(),
         alias_storage=mock_alias_storage,
         player_name="TestPlayer",
     )
@@ -341,8 +341,8 @@ async def test_handle_alias_command_invalid_command_empty(mock_alias_storage):
     """Test handle_alias_command with empty command."""
     result = await handle_alias_command(
         command_data={"alias_name": "n", "command": ""},
-        current_user={},
-        request=MagicMock(),
+        _current_user={},
+        _request=MagicMock(),
         alias_storage=mock_alias_storage,
         player_name="TestPlayer",
     )
@@ -355,8 +355,8 @@ async def test_handle_alias_command_view_from_structured_data(mock_alias_storage
     mock_alias_storage.get_alias.return_value = mock_alias
     result = await handle_alias_command(
         command_data={"alias_name": "n", "command": None},
-        current_user={},
-        request=MagicMock(),
+        _current_user={},
+        _request=MagicMock(),
         alias_storage=mock_alias_storage,
         player_name="TestPlayer",
     )
@@ -369,8 +369,8 @@ async def test_handle_alias_command_update_existing(mock_alias_storage):
     mock_alias_storage.create_alias.return_value = True
     result = await handle_alias_command(
         command_data={"alias_name": "n", "command": "go south"},
-        current_user={},
-        request=MagicMock(),
+        _current_user={},
+        _request=MagicMock(),
         alias_storage=mock_alias_storage,
         player_name="TestPlayer",
     )

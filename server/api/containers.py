@@ -240,7 +240,9 @@ async def open_container(
 
                 container = ContainerComponent.model_validate(result["container"])
                 mutation_token = result["mutation_token"]
-                expires_at = datetime.now(UTC) + timedelta(minutes=5)  # TODO: Get actual expiry from mutation guard
+                expires_at = (
+                    datetime.now(UTC) + timedelta(minutes=5)
+                )  # TODO: Get actual expiry from mutation guard  # pylint: disable=fixme  # Reason: Placeholder until mutation guard expiry API is implemented
 
                 # Emit to opening player
                 await emit_container_opened(
@@ -261,7 +263,7 @@ async def open_container(
                         mutation_token=mutation_token,
                         expires_at=expires_at,
                     )
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Event emission errors unpredictable, must not fail request
             # Log but don't fail the request if event emission fails
             logger.warning(
                 "Failed to emit container.opened event",
@@ -326,7 +328,7 @@ async def open_container(
             context=context,
         ) from e
 
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Container operation errors unpredictable, must create error context
         context = _create_error_context(
             request, current_user, container_id=str(request_data.container_id), operation="open_container"
         )
@@ -436,7 +438,7 @@ async def transfer_items(
                         diff=diff,
                         actor_id=player_id,
                     )
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Event emission errors unpredictable, must not fail request
             # Log but don't fail the request if event emission fails
             logger.warning(
                 "Failed to emit container.updated event",
@@ -519,7 +521,7 @@ async def transfer_items(
             context=context,
         ) from e
 
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Container operation errors unpredictable, must create error context
         context = _create_error_context(
             request, current_user, container_id=str(request_data.container_id), operation="transfer_items"
         )
@@ -606,7 +608,7 @@ async def close_container(
                             room_id=container.room_id,
                             player_id=player_id,
                         )
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Event emission errors unpredictable, must not fail request
             # Log but don't fail the request if event emission fails
             logger.warning(
                 "Failed to emit container.closed event",
@@ -651,7 +653,7 @@ async def close_container(
             context=context,
         ) from e
 
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Container operation errors unpredictable, must create error context
         context = _create_error_context(
             request, current_user, container_id=str(request_data.container_id), operation="close_container"
         )
@@ -770,7 +772,7 @@ async def loot_all_items(
                     player_id=str(player_id),
                 )
                 break
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Item transfer errors unpredictable, must continue with other items
                 # Log but continue with other items
                 logger.warning(
                     "Error transferring item during loot-all",
@@ -804,7 +806,7 @@ async def loot_all_items(
                     diff=diff,
                     actor_id=player_id,
                 )
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Event emission errors unpredictable, must not fail request
             # Log but don't fail the request if event emission fails
             logger.warning(
                 "Failed to emit container.updated event for loot-all",
@@ -833,7 +835,7 @@ async def loot_all_items(
                 items_count=items_count,
                 success=True,
             )
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Audit log errors unpredictable, must not fail request
             logger.warning("Failed to log container loot_all to audit log", error=str(e))
 
         return {
@@ -884,7 +886,7 @@ async def loot_all_items(
     except (LoggedHTTPException, HTTPException):
         # Re-raise HTTP exceptions (including LoggedHTTPException) to let FastAPI handle them
         raise
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Container operation errors unpredictable, must create error context
         context = _create_error_context(
             request, current_user, container_id=str(request_data.container_id), operation="loot_all"
         )

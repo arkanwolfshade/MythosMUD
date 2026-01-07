@@ -779,7 +779,8 @@ async def handle_shutdown_command(
         return {"result": "Shutdown functionality is not available at this time."}
 
     # At this point, app must be non-None since player_service exists
-    assert app is not None, "App should be available if player_service exists"
+    if app is None:
+        raise RuntimeError("App should be available if player_service exists")
 
     # Get player object (use same method as other admin commands)
     player_obj = await player_service.get_player_by_name(player_name)

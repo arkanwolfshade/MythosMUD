@@ -228,7 +228,7 @@ class ContainerService:
                 room_id=container.room_id,
                 success=True,
             )
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Audit logging errors unpredictable, must not fail container operation
             logger.warning("Failed to log container open to audit log", error=str(e))
 
         return {
@@ -289,7 +289,7 @@ class ContainerService:
                     room_id=container.room_id,
                     success=True,
                 )
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Audit logging errors unpredictable, must not fail container operation
             logger.warning("Failed to log container close to audit log", error=str(e))
 
     async def close_container(self, container_id: UUID, player_id: UUID, mutation_token: str) -> None:
@@ -527,7 +527,7 @@ class ContainerService:
                     item_name=item.get("item_name"),
                     success=True,
                 )
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Audit logging errors unpredictable, must not fail container operation
                 logger.warning("Failed to log container transfer to audit log", error=str(e))
 
             return {
@@ -535,7 +535,7 @@ class ContainerService:
                 "player_inventory": player.inventory if hasattr(player, "inventory") else [],
             }
 
-    def _prepare_transfer_item(self, item: InventoryStack, quantity: int | None, context: Any) -> InventoryStack:
+    def _prepare_transfer_item(self, item: InventoryStack, quantity: int | None, _context: Any) -> InventoryStack:
         """Prepare item for transfer, handling quantity and slot_type."""
         # TypedDict.copy() returns a dict, which is compatible with InventoryStack at runtime
         # Create a mutable copy to allow modifications
@@ -659,7 +659,7 @@ class ContainerService:
                 item_name=item.get("item_name"),
                 success=True,
             )
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Audit logging must not fail
             logger.warning("Failed to log container transfer to audit log", error=str(e))
 
         return {
@@ -863,7 +863,7 @@ class ContainerService:
                     player_id=str(player_id),
                 )
                 break
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Continue processing other items on error
                 # Log but continue with other items
                 logger.warning(
                     "Error transferring item during loot-all",

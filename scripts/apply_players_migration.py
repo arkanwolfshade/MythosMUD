@@ -5,16 +5,27 @@ This script applies the migration using Python/asyncpg instead of requiring psql
 """
 
 import asyncio
+import os
 import sys
 from pathlib import Path
 
 import asyncpg
 
 # Default connection parameters
-DEFAULT_HOST = "localhost"
-DEFAULT_PORT = 5432
-DEFAULT_USER = "postgres"
-DEFAULT_PASSWORD = "Cthulhu1"
+# WARNING: In production, always use environment variables for passwords
+# The default password is for local development only
+DEFAULT_HOST = os.getenv("DATABASE_HOST", "localhost")
+DEFAULT_PORT = int(os.getenv("DATABASE_PORT", "5432"))
+DEFAULT_USER = os.getenv("DATABASE_USER", "postgres")
+# nosemgrep: python.lang.security.audit.hardcoded-password.hardcoded-password
+# nosec B105: Default password for development/seed data only (not used in production)
+DEFAULT_PASSWORD = os.getenv("DATABASE_PASSWORD", "Cthulhu1")
+
+# Warn if using default password in production-like environments
+if DEFAULT_PASSWORD == "Cthulhu1" and os.getenv("ENVIRONMENT") in ("production", "staging"):
+    print(
+        "WARNING: Using default password in production/staging environment! Set DATABASE_PASSWORD environment variable."
+    )
 
 DATABASES = ["mythos_dev", "mythos_unit", "mythos_e2e"]
 
@@ -25,13 +36,7 @@ async def apply_migration(db_name: str, host: str, port: int, user: str, passwor
 
     try:
         # Connect to database
-        conn = await asyncpg.connect(
-            host=host,
-            port=port,
-            user=user,
-            password=password,
-            database=db_name
-        )
+        conn = await asyncpg.connect(host=host, port=port, user=user, password=password, database=db_name)
 
         try:
             # Read migration SQL file
@@ -58,7 +63,9 @@ async def apply_migration(db_name: str, host: str, port: int, user: str, passwor
     except asyncpg.exceptions.InvalidCatalogNameError:
         print(f"[WARN] Database {db_name} does not exist. Skipping...")
         return True  # Not an error, just skip
-    except Exception as e:
+    except (asyncpg.exceptions.PostgresError, OSError) as e:
+        # PostgresError catches database errors (connection, SQL execution, etc.)
+        # OSError catches file I/O errors when reading the migration file
         print(f"[ERROR] Migration failed for {db_name}: {e}")
         return False
 
@@ -69,10 +76,7 @@ async def main():
 
     parser = argparse.ArgumentParser(description="Apply players table migration")
     parser.add_argument(
-        "--database",
-        "-d",
-        default="all",
-        help="Database to migrate (mythos_dev, mythos_unit, mythos_e2e, or 'all')"
+        "--database", "-d", default="all", help="Database to migrate (mythos_dev, mythos_unit, mythos_e2e, or 'all')"
     )
     parser.add_argument("--host", default=DEFAULT_HOST, help="PostgreSQL host")
     parser.add_argument("--port", type=int, default=DEFAULT_PORT, help="PostgreSQL port")
@@ -90,13 +94,7 @@ async def main():
     # Apply migration to each database
     success = True
     for db in databases:
-        result = await apply_migration(
-            db,
-            args.host,
-            args.port,
-            args.user,
-            args.password
-        )
+        result = await apply_migration(db, args.host, args.port, args.user, args.password)
         if not result:
             success = False
 

@@ -122,7 +122,7 @@ class PydanticErrorHandler:
                     severity=severity,
                 )
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Error handler errors unpredictable, must have fallback
             # Fallback error handling
             logger.error("Error in PydanticErrorHandler", error=str(e), exc_info=True)
             return self._create_fallback_error_response(error, response_type)
@@ -280,7 +280,7 @@ class PydanticErrorHandler:
         # Convert snake_case to readable format
         return field_name.replace("_", " ")
 
-    def _create_error_details(self, error_info: dict[str, Any], original_error: ValidationError) -> dict[str, Any]:
+    def _create_error_details(self, error_info: dict[str, Any], _original_error: ValidationError) -> dict[str, Any]:  # pylint: disable=unused-argument  # Reason: Parameter reserved for future error context enhancement
         """
         Create detailed error information for debugging.
 

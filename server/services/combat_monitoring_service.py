@@ -148,6 +148,7 @@ class CombatMonitoringService:
         self._alert_counter: int = 0
 
         # Thresholds
+        # pylint: disable=no-member  # Pydantic FieldInfo dynamic attributes
         self._performance_threshold = self._config.game.combat_performance_threshold
         self._error_threshold = self._config.game.combat_error_threshold
         self._alert_threshold = self._config.game.combat_alert_threshold
@@ -246,7 +247,10 @@ class CombatMonitoringService:
         logger.debug("Ended monitoring turn for combat", combat_id=combat_id, duration=duration)
 
     def record_combat_error(
-        self, error_type: str, combat_id: str | None = None, error_details: dict[str, Any] | None = None
+        self,
+        error_type: str,
+        combat_id: str | None = None,
+        _error_details: dict[str, Any] | None = None,  # pylint: disable=unused-argument  # Reason: Parameter reserved for future detailed error tracking
     ) -> None:
         """
         Record a combat error.
@@ -505,7 +509,7 @@ class CombatMonitoringService:
         for callback in self._alert_callbacks:
             try:
                 callback(alert)
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Alert callback errors unpredictable, must not fail alert processing
                 logger.error("Error in alert callback", error=str(e))
 
         logger.warning("Generated alert", alert_id=alert_id, title=title)
@@ -536,6 +540,7 @@ class CombatMonitoringService:
     def refresh_configuration(self) -> None:
         """Refresh configuration from source."""
         self._config = get_config()
+        # pylint: disable=no-member  # Pydantic FieldInfo dynamic attributes
         self._performance_threshold = self._config.game.combat_performance_threshold
         self._error_threshold = self._config.game.combat_error_threshold
         self._alert_threshold = self._config.game.combat_alert_threshold

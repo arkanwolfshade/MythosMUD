@@ -82,7 +82,7 @@ async def handle_teach_command(
     if target_match.target_type != TargetType.NPC:
         return {"result": f"{npc_name} is not an NPC."}
 
-    # TODO: Check if NPC is a teacher and can teach this spell
+    # TODO: Check if NPC is a teacher and can teach this spell  # pylint: disable=fixme  # Reason: Feature placeholder for NPC teaching validation
     # This would require NPC definition metadata (e.g., "teaches_spells": ["spell1", "spell2"])
     # For now, allow any NPC to teach any spell (can be restricted later)
 
@@ -96,7 +96,7 @@ async def handle_teach_command(
     if result.get("corruption_applied", 0) > 0:
         message += f" The forbidden knowledge has tainted your mind (+{result['corruption_applied']} corruption)."
 
-    # TODO: Send message to room about NPC teaching
+    # TODO: Send message to room about NPC teaching  # pylint: disable=fixme  # Reason: Feature placeholder for room message broadcasting
     # "Professor Armitage teaches you the spell 'Minor Heal'."
 
     return {"result": message}

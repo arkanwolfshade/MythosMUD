@@ -109,7 +109,7 @@ def retry_with_backoff(
                 for attempt in range(1, max_attempts + 1):
                     try:
                         return await func(*args, **kwargs)
-                    except Exception as e:
+                    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Retry mechanism must catch all exceptions to determine retry behavior
                         last_error = e
 
                         # Check if we should retry this error
@@ -161,7 +161,7 @@ def retry_with_backoff(
                 for attempt in range(1, max_attempts + 1):
                     try:
                         return func(*args, **kwargs)
-                    except Exception as e:
+                    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Retry mechanism must catch all exceptions to determine retry behavior
                         last_error = e
 
                         # Check if we should retry this error

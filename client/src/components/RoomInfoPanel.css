@@ -1,6 +1,6 @@
 .room-info-panel {
   background-color: #1a1a1a;
-  border: 1px solid #00ff00;
+  border: 1px solid #0f0;
   border-radius: 5px;
   padding: 8px;
   margin-bottom: 0;
@@ -8,19 +8,21 @@
   min-height: 200px;
   overflow-y: auto;
   flex-shrink: 0;
+  scrollbar-width: thin;
+  scrollbar-color: #0f0 #1a1a1a;
   display: flex;
   flex-direction: column;
 }
 
 .room-info-header {
-  border-bottom: 1px solid #00ff00;
+  border-bottom: 1px solid #0f0;
   margin-bottom: 15px;
   padding-bottom: 10px;
 }
 
 .room-info-header h3 {
   margin: 0;
-  color: #00ff00;
+  color: #0f0;
   font-size: 16px;
   font-weight: bold;
 }
@@ -34,14 +36,14 @@
 
 .room-name h4 {
   margin: 0;
-  color: #ffff00;
+  color: #ff0;
   font-size: 16px;
   font-weight: bold;
   text-align: center;
   padding: 8px;
   background-color: #2a2a2a;
   border-radius: 3px;
-  border: 1px solid #ffff00;
+  border: 1px solid #ff0;
 }
 
 .room-location {
@@ -66,7 +68,7 @@
 }
 
 .location-label {
-  color: #00aa00;
+  color: #0a0;
   font-weight: bold;
   text-transform: uppercase;
   font-size: 11px;
@@ -74,7 +76,7 @@
 }
 
 .location-value {
-  color: #00ff00;
+  color: #0f0;
   text-transform: capitalize;
   font-weight: 500;
   text-align: right;
@@ -95,7 +97,7 @@
 
 .zone-label,
 .subzone-label {
-  color: #00aa00;
+  color: #0a0;
   font-weight: bold;
   font-size: 12px;
   text-transform: uppercase;
@@ -103,7 +105,7 @@
 
 .zone-value,
 .subzone-value {
-  color: #00ff00;
+  color: #0f0;
   font-weight: 500;
   font-size: 12px;
   text-align: right;
@@ -118,7 +120,7 @@
 }
 
 .description-label {
-  color: #00aa00;
+  color: #0a0;
   font-weight: bold;
   font-size: 12px;
   text-transform: uppercase;
@@ -126,7 +128,7 @@
 
 .description-text {
   margin: 0;
-  color: #cccccc;
+  color: #ccc;
   font-size: 11px;
   line-height: 1.4;
   text-align: justify;
@@ -140,16 +142,9 @@
   border: 1px solid #333;
 }
 
-.room-exits {
-  background-color: #2a2a2a;
-  padding: 10px;
-  border-radius: 3px;
-  border: 1px solid #333;
-}
-
 .room-exits h5 {
   margin: 0 0 10px 0;
-  color: #00aa00;
+  color: #0a0;
   font-size: 14px;
   font-weight: bold;
 }
@@ -162,7 +157,7 @@
 
 .exit-item {
   background-color: #1a1a1a;
-  border: 1px solid #00ff00;
+  border: 1px solid #0f0;
   border-radius: 4px;
   padding: 6px 8px;
   text-align: center;
@@ -172,13 +167,13 @@
 
 .exit-item:hover {
   background-color: #2a2a2a;
-  border-color: #00cc00;
+  border-color: #0c0;
   transform: translateY(-1px);
   box-shadow: 0 2px 4px rgba(0, 255, 0, 0.2);
 }
 
 .exit-direction {
-  color: #00ff00;
+  color: #0f0;
   font-size: 11px;
   font-weight: bold;
   text-transform: uppercase;
@@ -198,10 +193,14 @@
   flex-direction: column;
   gap: 5px;
   min-height: 0;
+  background-color: #2a2a2a;
+  padding: 10px;
+  border-radius: 3px;
+  border: 1px solid #333;
 }
 
 .exits-label {
-  color: #00aa00;
+  color: #0a0;
   font-weight: bold;
   font-size: 12px;
   text-transform: uppercase;
@@ -209,7 +208,7 @@
 
 .exits-text {
   margin: 0;
-  color: #cccccc;
+  color: #ccc;
   font-size: 11px;
   line-height: 1.4;
   padding: 5px;
@@ -240,7 +239,7 @@
 }
 
 .occupants-label {
-  color: #00aa00;
+  color: #0a0;
   font-weight: bold;
   font-size: 12px;
   text-transform: uppercase;
@@ -250,7 +249,7 @@
 }
 
 .occupant-count-badge {
-  background-color: #00ff00;
+  background-color: #0f0;
   color: #000;
   font-size: 10px;
   font-weight: bold;
@@ -288,11 +287,11 @@
 
 .occupant-item:hover {
   background-color: #333;
-  border-color: #00ff00;
+  border-color: #0f0;
 }
 
 .occupant-indicator {
-  color: #00ff00;
+  color: #0f0;
   font-size: 8px;
   animation: pulse 2s infinite;
 }
@@ -308,7 +307,7 @@
 }
 
 .occupant-name {
-  color: #cccccc;
+  color: #ccc;
   font-size: 11px;
   font-weight: 500;
   flex: 1;
@@ -347,19 +346,13 @@
 }
 
 .room-info-panel::-webkit-scrollbar-thumb {
-  background: #00ff00;
+  background: #0f0;
   border-radius: 4px;
   border: 1px solid #1a1a1a;
 }
 
 .room-info-panel::-webkit-scrollbar-thumb:hover {
-  background: #00cc00;
-}
-
-/* Firefox scrollbar styling */
-.room-info-panel {
-  scrollbar-width: thin;
-  scrollbar-color: #00ff00 #1a1a1a;
+  background: #0c0;
 }
 
 /* Responsive design */

@@ -50,7 +50,7 @@ def test_should_spawn_npc_population_limit_exceeded(mock_npc_definition, mock_zo
     result = should_spawn_npc(
         definition=mock_npc_definition,
         zone_config=mock_zone_config,
-        room_id="room-123",
+        _room_id="room-123",
         population_stats=stats,
         spawn_rules={},
         current_game_state={},
@@ -65,7 +65,7 @@ def test_should_spawn_npc_population_limit_ok(mock_npc_definition, mock_zone_con
     result = should_spawn_npc(
         definition=mock_npc_definition,
         zone_config=mock_zone_config,
-        room_id="room-123",
+        _room_id="room-123",
         population_stats=mock_population_stats,
         spawn_rules={},
         current_game_state={},
@@ -79,7 +79,7 @@ def test_should_spawn_npc_no_population_stats(mock_npc_definition, mock_zone_con
     result = should_spawn_npc(
         definition=mock_npc_definition,
         zone_config=mock_zone_config,
-        room_id="room-123",
+        _room_id="room-123",
         population_stats=None,
         spawn_rules={},
         current_game_state={},
@@ -100,7 +100,7 @@ def test_should_spawn_npc_spawn_rule_passes(mock_npc_definition, mock_zone_confi
         result = should_spawn_npc(
             definition=mock_npc_definition,
             zone_config=mock_zone_config,
-            room_id="room-123",
+            _room_id="room-123",
             population_stats=mock_population_stats,
             spawn_rules=spawn_rules,
             current_game_state={},
@@ -117,7 +117,7 @@ def test_should_spawn_npc_spawn_rule_fails_population(mock_npc_definition, mock_
     result = should_spawn_npc(
         definition=mock_npc_definition,
         zone_config=mock_zone_config,
-        room_id="room-123",
+        _room_id="room-123",
         population_stats=mock_population_stats,
         spawn_rules=spawn_rules,
         current_game_state={},
@@ -136,7 +136,7 @@ def test_should_spawn_npc_spawn_rule_fails_conditions(mock_npc_definition, mock_
     result = should_spawn_npc(
         definition=mock_npc_definition,
         zone_config=mock_zone_config,
-        room_id="room-123",
+        _room_id="room-123",
         population_stats=mock_population_stats,
         spawn_rules=spawn_rules,
         current_game_state={},
@@ -156,7 +156,7 @@ def test_should_spawn_npc_spawn_rule_fails_probability(mock_npc_definition, mock
         result = should_spawn_npc(
             definition=mock_npc_definition,
             zone_config=mock_zone_config,
-            room_id="room-123",
+            _room_id="room-123",
             population_stats=mock_population_stats,
             spawn_rules=spawn_rules,
             current_game_state={},
@@ -172,7 +172,7 @@ def test_should_spawn_npc_required_npc_spawns(mock_npc_definition, mock_zone_con
     result = should_spawn_npc(
         definition=mock_npc_definition,
         zone_config=mock_zone_config,
-        room_id="room-123",
+        _room_id="room-123",
         population_stats=mock_population_stats,
         spawn_rules={},
         current_game_state={},
@@ -187,7 +187,7 @@ def test_should_spawn_npc_not_required_no_rules(mock_npc_definition, mock_zone_c
     result = should_spawn_npc(
         definition=mock_npc_definition,
         zone_config=mock_zone_config,
-        room_id="room-123",
+        _room_id="room-123",
         population_stats=mock_population_stats,
         spawn_rules={},
         current_game_state={},
@@ -209,7 +209,7 @@ def test_should_spawn_npc_multiple_rules_first_passes(mock_npc_definition, mock_
         result = should_spawn_npc(
             definition=mock_npc_definition,
             zone_config=mock_zone_config,
-            room_id="room-123",
+            _room_id="room-123",
             population_stats=mock_population_stats,
             spawn_rules=spawn_rules,
             current_game_state={},
@@ -232,7 +232,7 @@ def test_should_spawn_npc_multiple_rules_second_passes(mock_npc_definition, mock
         result = should_spawn_npc(
             definition=mock_npc_definition,
             zone_config=mock_zone_config,
-            room_id="room-123",
+            _room_id="room-123",
             population_stats=mock_population_stats,
             spawn_rules=spawn_rules,
             current_game_state={},
@@ -255,7 +255,7 @@ def test_should_spawn_npc_uses_zone_effective_probability(mock_npc_definition, m
         result = should_spawn_npc(
             definition=mock_npc_definition,
             zone_config=mock_zone_config,
-            room_id="room-123",
+            _room_id="room-123",
             population_stats=mock_population_stats,
             spawn_rules=spawn_rules,
             current_game_state={},
@@ -277,7 +277,7 @@ def test_should_spawn_npc_population_stats_npcs_by_definition(mock_npc_definitio
         should_spawn_npc(
             definition=mock_npc_definition,
             zone_config=mock_zone_config,
-            room_id="room-123",
+            _room_id="room-123",
             population_stats=stats,
             spawn_rules=spawn_rules,
             current_game_state={},

@@ -263,12 +263,14 @@ async def broadcast_room_event_impl(
 ) -> dict[str, Any]:
     """Broadcast a room-specific event to all players in the room."""
     try:
-        from ..exceptions import DatabaseError
+        from ..exceptions import (
+            DatabaseError as DBError,  # pylint: disable=redefined-outer-name  # Reason: Renamed to avoid shadowing outer scope
+        )
         from .envelope import build_event
 
         event = build_event(event_type, data)
         return await manager.broadcast_to_room(room_id, event)
-    except (DatabaseError, AttributeError) as e:
+    except (DBError, AttributeError) as e:
         logger.error("Error broadcasting room event", error=str(e), event_type=event_type, room_id=room_id)
         return {
             "room_id": room_id,
@@ -288,12 +290,14 @@ async def broadcast_global_event_impl(
 ) -> dict[str, Any]:
     """Broadcast a global event to all connected players."""
     try:
-        from ..exceptions import DatabaseError
+        from ..exceptions import (
+            DatabaseError as DBError,  # pylint: disable=redefined-outer-name  # Reason: Renamed to avoid shadowing outer scope
+        )
         from .envelope import build_event
 
         event = build_event(event_type, data)
         return await manager.broadcast_global(event)
-    except (DatabaseError, AttributeError) as e:
+    except (DBError, AttributeError) as e:
         logger.error("Error broadcasting global event", error=str(e), event_type=event_type)
         return {
             "total_players": 0,
@@ -311,7 +315,9 @@ def mark_player_seen_impl(player_id: Any, manager: Any) -> None:
         import asyncio
         import time
 
-        from ..exceptions import DatabaseError
+        from ..exceptions import (
+            DatabaseError as DBError,  # pylint: disable=redefined-outer-name  # Reason: Renamed to avoid shadowing outer scope
+        )
 
         now_ts = time.time()
         manager.last_seen[player_id] = now_ts
@@ -332,7 +338,7 @@ def mark_player_seen_impl(player_id: Any, manager: Any) -> None:
                         loop.create_task(manager.async_persistence.update_player_last_active(player_id))
                     except RuntimeError:
                         pass
-                except (DatabaseError, AttributeError) as update_error:
+                except (DBError, AttributeError) as update_error:
                     logger.warning(
                         "Failed to persist last_active update",
                         player_id=player_id,

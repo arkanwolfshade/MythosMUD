@@ -2,6 +2,8 @@
 # This script applies the magic system migration (015_add_magic_system_tables.sql)
 # and seed data (seed_spells.sql) to all databases (mythos_dev, mythos_unit, mythos_e2e)
 
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and output messages require Write-Host for proper display')]
 param(
     [string]$Database = "all",  # "all", "mythos_dev", "mythos_unit", "mythos_e2e"
     [string]$DbHost = "localhost",

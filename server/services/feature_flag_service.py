@@ -93,6 +93,7 @@ class FeatureFlagService:
         """
         config = {
             "combat_enabled": self.is_combat_enabled(),
+            # pylint: disable=no-member  # Pydantic FieldInfo dynamic attributes
             "combat_tick_interval": self._config.game.combat_tick_interval,
             "combat_timeout_seconds": self._config.game.combat_timeout_seconds,
             "combat_xp_multiplier": self._config.game.combat_xp_multiplier,
@@ -228,7 +229,6 @@ def refresh_feature_flags() -> None:
     This should be called when configuration changes are made
     to ensure fresh values are retrieved.
     """
-    global feature_flags
     feature_flags.clear_cache()
     logger.info("Feature flags refreshed")
 

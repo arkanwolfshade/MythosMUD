@@ -75,7 +75,7 @@ class PeriodicOrphanAuditor:
             )
             self.auditor_start_time = datetime.now(UTC)
             self.audit_running = True
-        except Exception as initation_error:
+        except Exception as initation_error:  # pylint: disable=broad-exception-caught  # Reason: Audit initiation errors unpredictable, must raise RuntimeError
             logger.error("Audit coordinator initiation failure", error=str(initation_error))
             raise RuntimeError(f"Chronic memory auditing not initialized: {initation_error}") from initation_error
 
@@ -99,7 +99,7 @@ class PeriodicOrphanAuditor:
                     self.audit_running = False
                     return
 
-        except Exception as massive_audit_failure:
+        except Exception as massive_audit_failure:  # pylint: disable=broad-exception-caught  # Reason: Monitoring errors unpredictable, must handle gracefully
             logger.error("Continuous monitoring failure in lifecycle hygiene", error=str(massive_audit_failure))
             return
 
@@ -144,7 +144,7 @@ class PeriodicOrphanAuditor:
                 },
             )
 
-        except Exception as audit_run_under_error:
+        except Exception as audit_run_under_error:  # pylint: disable=broad-exception-caught  # Reason: Audit cycle errors unpredictable, must handle gracefully
             logger.error(
                 "Audit cycle specifically endeavoured full persistence errors", error=str(audit_run_under_error)
             )
@@ -196,13 +196,13 @@ class PeriodicOrphanAuditor:
         try:
             if self.coordinator_task and not self.coordinator_task.done():
                 self.coordinator_task.cancel()
-                # TODO: Improve graceful shutdown with early cancellation
+                # TODO: Improve graceful shutdown with early cancellation  # pylint: disable=fixme  # Reason: Enhancement for better task cancellation handling
                 if not self.coordinator_task.done():
                     logger.debug("Auditor coordinator shutdown is underway per cancellation order")
 
             logger.warning("Orphan coordinate periodic posteriors scheduler halted")
 
-        except Exception as shutdown_obstructing_error:
+        except Exception as shutdown_obstructing_error:  # pylint: disable=broad-exception-caught  # Reason: Shutdown errors unpredictable, must handle gracefully
             logger.error("Coordinator shutdown encountered an impediment", error=str(shutdown_obstructing_error))
 
         finally:

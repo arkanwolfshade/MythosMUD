@@ -31,7 +31,6 @@ class MessageHandler(ABC):
             player_id: The player's ID
             data: The message data
         """
-        pass
 
 
 class CommandMessageHandler(MessageHandler):

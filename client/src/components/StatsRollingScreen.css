@@ -334,20 +334,20 @@
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   .stats-rolling-screen {
-    border: 2px solid #ffffff;
+    border: 2px solid #fff;
   }
 
   .stat-item {
-    border: 2px solid #ffffff;
+    border: 2px solid #fff;
   }
 
   .stat-value {
-    border: 2px solid #ffffff;
+    border: 2px solid #fff;
   }
 
   .reroll-button,
   .accept-button {
-    border: 2px solid #ffffff;
+    border: 2px solid #fff;
   }
 }
 

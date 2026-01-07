@@ -1,13 +1,16 @@
 # Room Pathing Validator
 
-A comprehensive validation tool for room connectivity and structure in the MythosMUD world. This validator implements the dimensional mapping techniques described in the Pnakotic Manuscripts to ensure proper eldritch architecture.
+A comprehensive validation tool for room connectivity and structure in the
+MythosMUD world. This validator implements the dimensional mapping techniques
+described in the Pnakotic Manuscripts to ensure proper eldritch architecture.
 
 ## Features
 
 - **JSON Schema Validation**: Validates room definitions against a comprehensive schema
 - **Connectivity Analysis**: Checks for unreachable rooms and dead ends
 - **Bidirectional Path Validation**: Ensures proper return paths between rooms
-- **Support for Exit Flags**: Handles one-way exits and self-references
+- **Support for Exit Flags**: Handles one-way exits and
+  self-references
 - **Zone-based Validation**: Validate specific zones or the entire world
 - **Multiple Output Formats**: Console output with colors or structured JSON
 - **Progress Indicators**: Visual feedback for large room sets
@@ -21,7 +24,7 @@ A comprehensive validation tool for room connectivity and structure in the Mytho
 uv pip install -r requirements.txt
 ```
 
-2. Run the validator:
+1. Run the validator:
 
 ```bash
 python validator.py --base-path ../data/local/rooms
@@ -133,8 +136,10 @@ The validator supports both legacy string format and new object format for exits
 
 ### Connectivity Rules
 
-- **Bidirectional Connections**: Ensures room A → room B implies room B → room A
-- **Unreachable Room Detection**: Finds rooms that cannot be reached from starting point
+- **Bidirectional Connections**: Ensures room A → room B implies room B →
+  room A
+- **Unreachable Room Detection**: Finds rooms that cannot be reached from
+  starting point
 - **Dead End Detection**: Identifies rooms with no exits (true dead ends)
 - **Self Reference Validation**: Checks for proper self-reference flags
 
@@ -142,7 +147,7 @@ The validator supports both legacy string format and new object format for exits
 
 ### Console Output
 
-```
+```text
 🔍 Room Validator v1.0
 📁 Scanning ../data/local/rooms...
 
@@ -153,8 +158,11 @@ The validator supports both legacy string format and new object format for exits
 ❌ ERRORS FOUND:
 
 🏠 arkham_002.json (Miskatonic University Gates)
-  ❌ Bidirectional: Exit 'south' → earth_arkhamcity_intersection_derby_high, but earth_arkhamcity_intersection_derby_high has no 'north' return
-     💡 Suggestion: Add "north": "arkham_002" to earth_arkhamcity_intersection_derby_high or flag as one_way
+  ❌ Bidirectional: Exit 'south' →
+  earth_arkhamcity_intersection_derby_high, but
+  earth_arkhamcity_intersection_derby_high has no 'north' return
+     💡 Suggestion: Add "north": "arkham_002" to
+     earth_arkhamcity_intersection_derby_high or flag as one_way
 
 ⚠️  WARNINGS:
 🏠 arkham_007.json (Underground Tunnels)
@@ -184,8 +192,10 @@ The validator supports both legacy string format and new object format for exits
     {
       "type": "bidirectional",
       "room_id": "arkham_002",
-      "message": "Exit 'south' → earth_arkhamcity_intersection_derby_high, but earth_arkhamcity_intersection_derby_high has no 'north' return",
-      "suggestion": "Add \"north\": \"arkham_002\" to earth_arkhamcity_intersection_derby_high or flag as one_way"
+      "message": "Exit 'south' → earth_arkhamcity_intersection_derby_high, but
+      earth_arkhamcity_intersection_derby_high has no 'north' return",
+      "suggestion": "Add \"north\": \"arkham_002\" to
+      earth_arkhamcity_intersection_derby_high or flag as one_way"
     }
   ],
   "warnings": [

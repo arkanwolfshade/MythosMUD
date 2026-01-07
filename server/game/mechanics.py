@@ -5,7 +5,7 @@ This module handles all game mechanics-related business logic including
 lucidity, fear, corruption, healing, and damage mechanics.
 """
 
-from pathlib import Path  # noqa: F401
+from pathlib import Path  # noqa: F401  # pylint: disable=unused-import  # Reserved for future use
 
 from ..exceptions import ValidationError
 from ..structured_logging.enhanced_logging_config import get_logger

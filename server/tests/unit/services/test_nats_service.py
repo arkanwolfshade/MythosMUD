@@ -3,6 +3,12 @@ Unit tests for NATS service.
 
 Tests the NATSService class and NATSMetrics.
 """
+# pylint: disable=too-many-lines
+# Test file exceeds 550 lines but contains comprehensive test coverage for NATS service
+# pylint: disable=redefined-outer-name
+# Pytest fixtures are injected as function parameters, which triggers this warning
+# pylint: disable=protected-access
+# Tests need to access protected members to verify internal state
 
 import asyncio
 import json
@@ -88,7 +94,7 @@ def test_nats_metrics_record_subscribe_error():
 def test_nats_metrics_record_batch_flush_success():
     """Test NATSMetrics.record_batch_flush() records successful flush."""
     metrics = NATSMetrics()
-    metrics.record_batch_flush(success=True, message_count=10)
+    metrics.record_batch_flush(success=True, _message_count=10)
     assert metrics.batch_flush_count == 1
     assert metrics.batch_flush_errors == 0
 
@@ -96,7 +102,7 @@ def test_nats_metrics_record_batch_flush_success():
 def test_nats_metrics_record_batch_flush_error():
     """Test NATSMetrics.record_batch_flush() records failed flush."""
     metrics = NATSMetrics()
-    metrics.record_batch_flush(success=False, message_count=10)
+    metrics.record_batch_flush(success=False, _message_count=10)
     assert metrics.batch_flush_count == 1
     assert metrics.batch_flush_errors == 1
 
@@ -139,7 +145,7 @@ def test_nats_metrics_get_metrics():
     metrics.record_publish(success=True, processing_time=0.1)
     metrics.record_publish(success=False, processing_time=0.2)
     metrics.record_subscribe(success=True)
-    metrics.record_batch_flush(success=True, message_count=5)
+    metrics.record_batch_flush(success=True, _message_count=5)
     metrics.update_connection_health(80.0)
     metrics.update_pool_utilization(0.6)
     result = metrics.get_metrics()
@@ -177,7 +183,7 @@ def test_nats_service_init_with_config(nats_config):
     service = NATSService(nats_config)
     assert service.config == nats_config
     assert service.nc is None
-    assert service.subscriptions == {}
+    assert not service.subscriptions
     assert service._running is False
     assert isinstance(service.metrics, NATSMetrics)
     assert isinstance(service.state_machine, NATSConnectionStateMachine)
@@ -208,7 +214,7 @@ def test_nats_service_init_with_subject_manager(nats_config):
 def test_nats_service_init_connection_pool(nats_config):
     """Test NATSService initializes connection pool structures."""
     service = NATSService(nats_config)
-    assert service.connection_pool == []
+    assert not service.connection_pool
     assert service.pool_size == 5  # Default
     assert isinstance(service.available_connections, asyncio.Queue)
     assert service._pool_initialized is False
@@ -217,7 +223,7 @@ def test_nats_service_init_connection_pool(nats_config):
 def test_nats_service_init_message_batch(nats_config):
     """Test NATSService initializes message batching structures."""
     service = NATSService(nats_config)
-    assert service.message_batch == []
+    assert not service.message_batch
     assert service.batch_size == 100  # Default
     assert service.batch_timeout == 0.1  # Default 100ms
 

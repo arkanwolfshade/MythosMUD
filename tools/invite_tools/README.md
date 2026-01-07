@@ -1,12 +1,14 @@
 # Invite Management Tools
 
-This directory contains tools for managing Mythos-themed invite codes for the MythosMUD project.
+This directory contains tools for managing Mythos-themed invite codes for the
+MythosMUD project.
 
 ## Scripts
 
 ### `run_invite_tools.ps1` (Recommended)
 
-PowerShell script that sets up the environment and runs the invite tools. This is the easiest way to use the tools.
+PowerShell script that sets up the environment and runs the invite tools.
+This is the easiest way to use the tools.
 
 **Usage:**
 
@@ -29,7 +31,8 @@ PowerShell script that sets up the environment and runs the invite tools. This i
 
 ### `generate_invites.py`
 
-Generates Mythos-themed invite codes using the database storage system with FastAPI Users migration structure.
+Generates Mythos-themed invite codes using the database storage system with
+FastAPI Users migration structure.
 
 **Usage:**
 

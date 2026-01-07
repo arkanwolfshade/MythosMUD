@@ -74,7 +74,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         if not isinstance(value, str):
             try:
                 value = str(value)
-            except Exception as err:
+            except Exception as err:  # pylint: disable=broad-exception-caught  # Reason: String conversion errors unpredictable, must raise InvalidID
                 raise InvalidID() from err
         try:
             return uuid.UUID(value)
@@ -189,7 +189,7 @@ def get_current_user_with_logging():
         except HTTPException as e:
             logger.warning("Authentication HTTP error", status_code=e.status_code, detail=e.detail)
             return None
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Authentication errors unpredictable, must return None
             logger.error("Unexpected authentication error", error_type=type(e).__name__, error=str(e))
             logger.debug("Authentication error details", error_type=type(e).__name__, error=str(e))
             return None

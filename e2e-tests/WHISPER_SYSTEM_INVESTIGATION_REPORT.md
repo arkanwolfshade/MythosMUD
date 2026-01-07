@@ -9,7 +9,10 @@
 
 ## Executive Summary
 
-This report documents a comprehensive investigation into the whisper messaging system following a complete functionality failure discovered during E2E testing. The investigation identified a single-line bug in the NATS subject construction logic that prevented all whisper messages from being delivered.
+This report documents a comprehensive investigation into the whisper messaging
+system following a complete functionality failure discovered during E2E testing.
+The investigation identified a single-line bug in the NATS subject construction
+logic that prevented all whisper messages from being delivered.
 
 ### ✅ REMEDIATION STATUS
 
@@ -25,7 +28,8 @@ This report documents a comprehensive investigation into the whisper messaging s
 - **Location:** `server/game/chat_service.py` line 212
 - **Impact:** 100% whisper functionality failure across all 6 whisper test scenarios
 - **Severity:** CRITICAL - Core multiplayer feature completely non-functional
-- **Fix Applied:** 2025-10-29 (Actual fix time: 2 hours including investigation + testing)
+- **Fix Applied:** 2025-10-29 (Actual fix time: 2 hours including
+  investigation + testing)
 - **Additional Bug Found:** Legacy subscription pattern inconsistency (also fixed)
 
 ---
@@ -78,7 +82,11 @@ return f"chat.whisper.player.{target_id}"
 
 ### Why This Causes Complete Failure
 
-The NATS message handler subscribes to whisper messages using the pattern `chat.whisper.player.*`, which expects subjects in the format `chat.whisper.player.<player_uuid>`. However, the chat service constructs subjects as `chat.whisper.<player_uuid>`, missing the critical `player.` segment.
+The NATS message handler subscribes to whisper messages using the pattern
+`chat.whisper.player.*`, which expects subjects in the format
+`chat.whisper.player.<player_uuid>`. However, the chat service constructs
+subjects as `chat.whisper.<player_uuid>`, missing the critical `player.`
+segment.
 
 **Result:** NATS subject validation fails, preventing message publication and delivery.
 
@@ -91,20 +99,26 @@ The NATS message handler subscribes to whisper messages using the pattern `chat.
 **Source:** `logs/local/communications.log` line 21
 
 ```log
-2025-10-29 07:32:47 - communications.nats_message_handler - INFO - subject='chat.whisper.player.*' debug=True event='Successfully subscribed to NATS subject'
+2025-10-29 07:32:47 - communications.nats_message_handler - INFO -
+subject='chat.whisper.player.*' debug=True event='Successfully subscribed to
+NATS subject'
 ```
 
-**Interpretation:** The system correctly subscribes to `chat.whisper.player.*` pattern to receive whisper messages.
+**Interpretation:** The system correctly subscribes to `chat.whisper.player.*`
+pattern to receive whisper messages.
 
 ### 2. Actual Publish Subject
 
 **Source:** `logs/local/errors.log` line 11
 
 ```log
-2025-10-29 07:40:35 - nats - ERROR - subject='chat.whisper.12aed7c5-dc99-488f-a979-28b9d227e858' message_id='599f41c3-5a0a-418f-b5eb-2347b1c0cabb' correlation_id=None event='Subject validation failed'
+2025-10-29 07:40:35 - nats - ERROR - subject='chat.whisper.12aed7c5-dc99-488f-
+a979-28b9d227e858' message_id='599f41c3-5a0a-418f-b5eb-2347b1c0cabb'
+correlation_id=None event='Subject validation failed'
 ```
 
-**Interpretation:** The chat service attempted to publish to `chat.whisper.<UUID>`, which doesn't match the subscription pattern.
+**Interpretation:** The chat service attempted to publish to
+`chat.whisper.<UUID>`, which doesn't match the subscription pattern.
 
 ### 3. Subject Validation Failure
 

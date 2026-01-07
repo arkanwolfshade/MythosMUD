@@ -2,11 +2,15 @@
 # Generate authoritative database schema from mythos_dev PostgreSQL database
 # This script extracts DDL from the mythos_dev database and writes it to db/authoritative_schema.sql
 
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and output messages require Write-Host for proper display')]
+# Suppress PSAvoidUsingConvertToSecureStringWithPlainText: Password from DATABASE_URL requires plaintext conversion
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '', Justification = 'Password from DATABASE_URL environment variable requires plaintext conversion for SecureString parameter')]
 param(
     [string]$DB_HOST = "",
     [string]$DB_USER = "",
     [string]$DB_NAME = "",
-    [string]$DB_PASSWORD = "",
+    [SecureString]$DB_PASSWORD = $null,
     [string]$OUTPUT_FILE = "db/authoritative_schema.sql"
 )
 
@@ -21,7 +25,7 @@ if (-not (Test-Path $EnvFile)) {
     $EnvFile = Join-Path $ProjectRoot ".env"
 }
 
-$DatabaseUrl = $null
+$script:DatabaseUrl = $null
 
 if (Test-Path $EnvFile) {
     Write-Host "Loading environment from $EnvFile" -ForegroundColor Cyan
@@ -40,18 +44,21 @@ if (Test-Path $EnvFile) {
         }
 
         if ($key -eq "DATABASE_URL") {
-            $DatabaseUrl = $value
+            $script:DatabaseUrl = $value
         }
     }
 }
 
 # Parse DATABASE_URL if set, otherwise use parameters or defaults
-if ($DatabaseUrl) {
+if ($script:DatabaseUrl) {
     # Handle both postgresql:// and postgresql+asyncpg:// formats
-    $dbUrl = $DatabaseUrl -replace '^postgresql\+asyncpg://', '' -replace '^postgresql://', ''
+    $dbUrl = $script:DatabaseUrl -replace '^postgresql\+asyncpg://', '' -replace '^postgresql://', ''
     if ($dbUrl -match '^([^:]+):([^@]+)@([^:/]+)(:([0-9]+))?/(.+)$') {
         if (-not $DB_USER) { $DB_USER = $matches[1] }
-        if (-not $DB_PASSWORD) { $DB_PASSWORD = $matches[2] }
+        if (-not $DB_PASSWORD) {
+            # Convert string password from URL to SecureString
+            $DB_PASSWORD = ConvertTo-SecureString $matches[2] -AsPlainText -Force
+        }
         if (-not $DB_HOST) { $DB_HOST = $matches[3] }
         if (-not $DB_NAME) { $DB_NAME = $matches[6] }
     }
@@ -109,10 +116,19 @@ $pgIsready = if (Get-Command pg_isready -ErrorAction SilentlyContinue) {
 }
 
 if (Test-Path $pgIsready) {
-    $env:PGPASSWORD = $DB_PASSWORD
-    $isReady = & $pgIsready -h $DB_HOST -U $DB_USER -d $DB_NAME 2>&1
+    # Convert SecureString to plain text for environment variable
+    if ($DB_PASSWORD) {
+        $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($DB_PASSWORD)
+        $plainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
+        $env:PGPASSWORD = $plainPassword
+        [System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($BSTR)
+    }
+    & $pgIsready -h $DB_HOST -U $DB_USER -d $DB_NAME 2>&1 | Out-Null
     if ($LASTEXITCODE -ne 0) {
         Write-ColorOutput "Warning: Cannot verify database connectivity. Proceeding anyway..." "Yellow"
+    }
+    if ($plainPassword) {
+        $plainPassword = $null
     }
 }
 
@@ -125,7 +141,13 @@ if (-not (Test-Path $outputDir)) {
 # Generate schema dump
 Write-ColorOutput "Running pg_dump..." "Green"
 
-$env:PGPASSWORD = $DB_PASSWORD
+# Convert SecureString to plain text for environment variable
+if ($DB_PASSWORD) {
+    $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($DB_PASSWORD)
+    $plainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
+    $env:PGPASSWORD = $plainPassword
+    [System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($BSTR)
+}
 
 $pgDumpArgs = @(
     "-h", $DB_HOST
@@ -176,3 +198,9 @@ Move-Item -Path $tempFile -Destination $OUTPUT_FILE -Force
 
 Write-ColorOutput "Schema generated successfully: $OUTPUT_FILE" "Green"
 Write-ColorOutput "Please review the generated file before committing." "Yellow"
+
+# Clean up password from memory
+$env:PGPASSWORD = $null
+if ($plainPassword) {
+    $plainPassword = $null
+}

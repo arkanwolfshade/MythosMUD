@@ -1,5 +1,7 @@
 # Agent OS Setup Wrapper Script
 # Equivalent to: curl -sSL https://raw.githubusercontent.com/buildermethods/agent-os/main/setup/base.sh | bash -s -- --cursor
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for user-facing colored output
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'User-facing help text requires colored output')]
 
 param(
     [switch]$Cursor,

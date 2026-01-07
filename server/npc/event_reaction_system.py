@@ -86,7 +86,7 @@ class NPCEventReaction:
 
         try:
             return self.condition(event, npc_context)
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Reaction condition errors unpredictable, must return False
             logger.error("Error checking reaction condition", event_type=event.event_type, error=str(e))
             return False
 
@@ -108,7 +108,7 @@ class NPCEventReaction:
             self.last_triggered = time.time()
             self.trigger_count += 1
             return self.action(event, npc_context)
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Reaction action errors unpredictable, must return False
             logger.error("Error executing reaction action", event_type=event.event_type, error=str(e))
             return False
 
@@ -260,7 +260,7 @@ class NPCEventReactionSystem:
             # For now, return a basic context
             # In a real implementation, this would query the NPC system
             return {"npc_id": npc_id, "current_room": "unknown", "is_alive": True, "stats": {}, "behavior_config": {}}
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC context retrieval errors unpredictable, must return None
             logger.error("Error getting NPC context", npc_id=npc_id, error=str(e))
             return None
 
@@ -306,7 +306,7 @@ class NPCEventReactionTemplates:
         def condition(event: PlayerEnteredRoom, npc_context: dict[str, Any]) -> bool:
             return event.room_id == npc_context.get("current_room")
 
-        def action(event: PlayerEnteredRoom, npc_context: dict[str, Any]) -> bool:
+        def action(event: PlayerEnteredRoom, _npc_context: dict[str, Any]) -> bool:  # pylint: disable=unused-argument  # Reason: Parameter required for action signature, context not used in this action
             # This would need to be connected to the NPC's speak method
             logger.info("NPC would greet player", npc_id=npc_id, player_id=event.player_id, message=greeting_message)
             return True
@@ -320,7 +320,7 @@ class NPCEventReactionTemplates:
         def condition(event: PlayerLeftRoom, npc_context: dict[str, Any]) -> bool:
             return event.room_id == npc_context.get("current_room")
 
-        def action(event: PlayerLeftRoom, npc_context: dict[str, Any]) -> bool:
+        def action(event: PlayerLeftRoom, _npc_context: dict[str, Any]) -> bool:  # pylint: disable=unused-argument  # Reason: Parameter required for action signature, context not used in this action
             logger.info("NPC would say farewell", npc_id=npc_id, player_id=event.player_id, message=farewell_message)
             return True
 
@@ -333,7 +333,7 @@ class NPCEventReactionTemplates:
         def condition(event: NPCAttacked, npc_context: dict[str, Any]) -> bool:
             return event.target_id == npc_id and npc_context.get("is_alive", True)
 
-        def action(event: NPCAttacked, npc_context: dict[str, Any]) -> bool:
+        def action(event: NPCAttacked, _npc_context: dict[str, Any]) -> bool:  # pylint: disable=unused-argument  # Reason: Parameter required for action signature, context not used in this action
             logger.info("NPC would retaliate", npc_id=npc_id, attacker_id=event.npc_id)
             return True
 
@@ -351,7 +351,7 @@ class NPCEventReactionTemplates:
         def condition(event: NPCListened, npc_context: dict[str, Any]) -> bool:
             return event.npc_id == npc_id and event.room_id == npc_context.get("current_room")
 
-        def action(event: NPCListened, npc_context: dict[str, Any]) -> bool:
+        def action(event: NPCListened, _npc_context: dict[str, Any]) -> bool:  # pylint: disable=unused-argument  # Reason: Parameter required for action signature, context not used in this action
             logger.info(
                 "NPC would respond to player", npc_id=npc_id, speaker_id=event.speaker_id, message=response_message
             )

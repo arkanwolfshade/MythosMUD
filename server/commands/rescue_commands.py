@@ -22,7 +22,7 @@ async def handle_rescue_command(
     command_data: dict,
     current_user: dict,
     request: Any,
-    alias_storage: AliasStorage | None,
+    _alias_storage: AliasStorage | None,
     player_name: str,
 ) -> dict[str, str]:
     """
@@ -50,7 +50,7 @@ async def handle_ground_command(
     command_data: dict,
     current_user: dict,
     request: Any,
-    alias_storage: AliasStorage | None,
+    _alias_storage: AliasStorage | None,
     player_name: str,
 ) -> dict[str, str]:
     """Attempt to ground a catatonic ally back to 1 LCD."""
@@ -143,7 +143,7 @@ async def handle_ground_command(
                 location_id=str(rescuer_room),
             )
             await session.commit()
-        except Exception as exc:  # pragma: no cover - defensive
+        except Exception as exc:  # pragma: no cover - defensive  # pylint: disable=broad-exception-caught  # Reason: Database errors unpredictable, must rollback
             await session.rollback()
             logger.error(
                 "Ground command failed",

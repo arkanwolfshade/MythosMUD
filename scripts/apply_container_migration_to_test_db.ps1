@@ -1,7 +1,9 @@
-#!/usr/bin/env pwsh
+﻿#!/usr/bin/env pwsh
 # Apply container_item_instance_id migration to test database
 # This script applies the migration to an existing test database
 
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and output messages require Write-Host for proper display')]
 $ErrorActionPreference = "Stop"
 
 Write-Host "MythosMUD Container Migration for Test Database" -ForegroundColor Green

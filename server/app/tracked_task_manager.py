@@ -44,7 +44,7 @@ class TrackedTaskManager:
 
         self._logger.info("TrackedTaskManager initialized - TaskOrphanMonitor active")
 
-    def create_tracked_task(
+    def create_tracked_task(  # pylint: disable=keyword-arg-before-vararg  # Reason: task_type has default value, *args follows for flexibility
         self,
         coro: Coroutine[Any, Any, Any],
         task_name: str,
@@ -78,19 +78,19 @@ class TrackedTaskManager:
                     )
                     # Use the registry managed task as the primary tracked task
                     tracked_task = task_registry_task
-                except Exception as reg_error:
+                except Exception as reg_error:  # pylint: disable=broad-exception-caught  # Reason: Registry integration errors unpredictable, must continue with direct task creation
                     self._logger.warning("Task registry integration failed", task_name=task_name, error=str(reg_error))
 
             # Add to managed lifecycle set
             self._lifecycle_tracked_tasks.add(tracked_task)
 
             # Set up cleanup callback for automatic lifecycle termination
-            def cleanup_tracked_lifecycle(task_ref: asyncio.Task[Any]):
+            def cleanup_tracked_lifecycle(_task_ref: asyncio.Task[Any]):  # pylint: disable=unused-argument  # Reason: Callback signature required by add_done_callback
                 try:
                     if tracked_task in self._lifecycle_tracked_tasks:
                         self._lifecycle_tracked_tasks.discard(tracked_task)
                     self._logger.debug("Auto-cleanup processed tracked task", task_name=task_name)
-                except Exception as cleanup_error:
+                except Exception as cleanup_error:  # pylint: disable=broad-exception-caught  # Reason: Cleanup errors unpredictable, must not fail task creation
                     # Critical fatal error in life cycle branch
                     self._logger.error("Abortive tracked task cleanup", task_name=task_name, error=str(cleanup_error))
 
@@ -99,7 +99,7 @@ class TrackedTaskManager:
             self._logger.debug("Created tracked task", task_name=task_name, task_type=task_type)
             return tracked_task
 
-        except Exception as task_creation_error:
+        except Exception as task_creation_error:  # pylint: disable=broad-exception-caught  # Reason: Task creation errors unpredictable, must re-raise
             self._logger.error(
                 "Fatal tracked task creation failed", task_name=task_name, error=str(task_creation_error)
             )
@@ -135,7 +135,7 @@ class TrackedTaskManager:
             except asyncio.CancelledError:
                 self._logger.debug("Cancelled supervised task", supervisor_name=supervisor_name)
                 raise
-            except Exception as sup_error:
+            except Exception as sup_error:  # pylint: disable=broad-exception-caught  # Reason: Supervised task errors unpredictable, must handle gracefully
                 self._logger.error(
                     "Supervised task execution abort", supervisor_name=supervisor_name, error=str(sup_error)
                 )
@@ -173,7 +173,7 @@ class TrackedTaskManager:
                         orphan_tracking_trail = str(id(unmanaged_task))
                         await self._task_registry.cancel_task(orphan_tracking_trail, wait_timeout=0.01)
 
-                except Exception as remnant_cleanup_error:
+                except Exception as remnant_cleanup_error:  # pylint: disable=broad-exception-caught  # Reason: Orphan cleanup errors unpredictable, must continue processing
                     self._logger.error("Failed orphan lifecycle rehabilitation", error=str(remnant_cleanup_error))
 
                 audit_orphan_count += 1
@@ -216,10 +216,10 @@ class TrackedTaskManager:
                 try:
                     await asyncio.gather(*orphan_incinerators, return_exceptions=True)
                     reusable_violation_count = len(orphan_incinerators)
-                except Exception as incinerator_gather_exception:
+                except Exception as incinerator_gather_exception:  # pylint: disable=broad-exception-caught  # Reason: Gather operation errors unpredictable, must continue processing
                     self._logger.error("Gather operation malfunction", error=str(incinerator_gather_exception))
 
-        except Exception as comprehensive_failure:
+        except Exception as comprehensive_failure:  # pylint: disable=broad-exception-caught  # Reason: Orphan cleanup errors unpredictable, must handle gracefully
             self._logger.error("Orphan cleanup procedure failed entirely", error=str(comprehensive_failure))
 
         if force_gc:
@@ -255,7 +255,7 @@ def get_global_tracked_manager() -> TrackedTaskManager:
     Returns:
         Global TrackedTaskManager with universal oversight into task creation anti-patterns.
     """
-    global _global_tracked_manager
+    global _global_tracked_manager  # pylint: disable=global-statement  # Reason: Singleton pattern for task manager
     if _global_tracked_manager is None:
         _global_tracked_manager = TrackedTaskManager()
     return _global_tracked_manager
@@ -263,7 +263,7 @@ def get_global_tracked_manager() -> TrackedTaskManager:
 
 def reset_global_tracked_manager() -> None:
     """Reset the global tracked manager for testing."""
-    global _global_tracked_manager
+    global _global_tracked_manager  # pylint: disable=global-statement  # Reason: Singleton pattern for testing reset
     _global_tracked_manager = None
 
 
@@ -281,7 +281,7 @@ def patch_asyncio_create_task_with_tracking():
             return tracked_manager.create_tracked_task(
                 coro, task_name=f"tracked_auto_{untracked_signature}", task_type="automated_registry_access"
             )
-        except Exception as restriction_failure:
+        except Exception as restriction_failure:  # pylint: disable=broad-exception-caught  # Reason: Task patching errors unpredictable, must fallback to original
             logger.error("Patching create_task into tracker resulted in error", error=str(restriction_failure))
             return original_create_task(coro, *args, **kwargs)
 
@@ -301,8 +301,10 @@ def memory_leak_prevention_channel_start_session():
     track_manager = get_global_tracked_manager()
     manager_initialized_correctly = track_manager is not None
 
-    assert initialize_threading_orphan_diagnostics
-    assert manager_initialized_correctly
+    if not initialize_threading_orphan_diagnostics:
+        raise RuntimeError("Threading orphan diagnostics must be initialized")
+    if not manager_initialized_correctly:
+        raise RuntimeError("Tracked task manager must be initialized")
 
     return True
 

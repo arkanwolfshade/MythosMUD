@@ -84,7 +84,7 @@ class RoomSubscriptionManager:
             logger.debug("Player unsubscribed from room", player_id=player_id, room_id=canonical_id)
             return True
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Unsubscribe errors unpredictable, must handle gracefully
             logger.error("Error unsubscribing player from room", player_id=player_id, room_id=room_id, error=str(e))
             return False
 
@@ -101,7 +101,7 @@ class RoomSubscriptionManager:
         try:
             canonical_id = self._canonical_room_id(room_id) or room_id
             return self.room_subscriptions.get(canonical_id, set()).copy()
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Subscription access errors unpredictable, must return empty set
             logger.error("Error getting subscribers for room", room_id=room_id, error=str(e))
             return set()
 
@@ -119,7 +119,7 @@ class RoomSubscriptionManager:
             canonical_id = self._canonical_room_id(room_id) or room_id
             stacks = self.room_drops.get(canonical_id, [])
             return [deepcopy(stack) for stack in stacks]
-        except Exception as exc:  # pragma: no cover - defensive logging
+        except Exception as exc:  # pragma: no cover - defensive logging  # pylint: disable=broad-exception-caught  # Reason: Deepcopy errors unpredictable, must return empty list
             logger.error("Error listing room drops", room_id=room_id, error=str(exc))
             return []
 
@@ -145,7 +145,7 @@ class RoomSubscriptionManager:
                 item_id=drop_stack.get("item_id"),
                 quantity=quantity,
             )
-        except Exception as exc:
+        except Exception as exc:  # pylint: disable=broad-exception-caught  # Reason: Room drop add errors unpredictable, must handle gracefully
             logger.error("Failed adding room drop", room_id=canonical_id, error=str(exc))
 
     def take_room_drop(self, room_id: str, index: int, quantity: int) -> dict[str, Any] | None:
@@ -191,7 +191,7 @@ class RoomSubscriptionManager:
                 quantity=removed_quantity,
             )
             return removed
-        except Exception as exc:
+        except Exception as exc:  # pylint: disable=broad-exception-caught  # Reason: Room drop retrieval errors unpredictable, must return None
             logger.error("Failed retrieving room drop", room_id=canonical_id, error=str(exc))
             return None
 
@@ -225,7 +225,7 @@ class RoomSubscriptionManager:
 
             logger.debug("Room drop adjusted", room_id=canonical_id, index=index, quantity=quantity)
             return True
-        except Exception as exc:
+        except Exception as exc:  # pylint: disable=broad-exception-caught  # Reason: Room drop adjustment errors unpredictable, must return False
             logger.error("Failed adjusting room drop", room_id=canonical_id, error=str(exc))
             return False
 
@@ -249,7 +249,7 @@ class RoomSubscriptionManager:
             logger.debug("Player added as occupant of room", player_id=player_id, room_id=canonical_id)
             return True
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Occupant add errors unpredictable, must return False
             logger.error("Error adding occupant to room", player_id=player_id, room_id=room_id, error=str(e))
             return False
 
@@ -274,7 +274,7 @@ class RoomSubscriptionManager:
             logger.debug("Player removed as occupant of room", player_id=player_id, room_id=canonical_id)
             return True
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Occupant remove errors unpredictable, must return False
             logger.error("Error removing occupant from room", player_id=player_id, room_id=room_id, error=str(e))
             return False
 
@@ -294,9 +294,7 @@ class RoomSubscriptionManager:
 
             # Resolve to canonical id and check set presence
             canonical_id = self._canonical_room_id(room_id) or room_id
-            if canonical_id not in self.room_occupants:
-                # Still check for NPCs even if no players
-                canonical_id = canonical_id
+            # Note: Even if canonical_id not in room_occupants, we still check for NPCs below
 
             # Only include online players currently tracked in this room
             if canonical_id in self.room_occupants:
@@ -352,7 +350,7 @@ class RoomSubscriptionManager:
                         if lifecycle_manager and npc_id in lifecycle_manager.active_npcs:
                             npc_instance = lifecycle_manager.active_npcs[npc_id]
                             npc_name = getattr(npc_instance, "name", None)
-                    except Exception:
+                    except Exception:  # pylint: disable=broad-exception-caught  # nosec B110: NPC attribute access errors unpredictable, optional metadata
                         pass
 
                     # Fallback to npc_id if name not found (shouldn't happen)
@@ -368,7 +366,7 @@ class RoomSubscriptionManager:
                             "is_npc": True,
                         }
                     )
-            except Exception as npc_query_error:
+            except Exception as npc_query_error:  # pylint: disable=broad-exception-caught  # Reason: NPC query errors unpredictable, fallback available
                 logger.warning(
                     "Error querying NPCs from lifecycle manager, falling back to room.get_npcs()",
                     room_id=canonical_id,
@@ -408,7 +406,7 @@ class RoomSubscriptionManager:
                                                     npc_id=npc_id,
                                                     room_id=canonical_id,
                                                 )
-                        except Exception as filter_error:
+                        except Exception as filter_error:  # pylint: disable=broad-exception-caught  # Reason: NPC filter errors unpredictable, fallback available
                             logger.warning(
                                 "Error filtering fallback NPCs, using all room NPCs",
                                 room_id=canonical_id,
@@ -427,7 +425,7 @@ class RoomSubscriptionManager:
 
             return occupants
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Occupant query errors unpredictable, must return empty list
             logger.error("Error getting occupants for room", room_id=room_id, error=str(e))
             return []
 
@@ -459,7 +457,7 @@ class RoomSubscriptionManager:
             logger.debug("Player removed from all rooms", player_id=player_id)
             return True
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Player removal errors unpredictable, must return False
             logger.error("Error removing player from all rooms", player_id=player_id, error=str(e))
             return False
 
@@ -488,7 +486,7 @@ class RoomSubscriptionManager:
                 )
             return True
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Room reconciliation errors unpredictable, must return False
             logger.error("Error reconciling room presence", room_id=room_id, error=str(e))
             return False
 
@@ -512,7 +510,7 @@ class RoomSubscriptionManager:
             room = self.async_persistence.get_room_by_id(room_id)  # Sync method, uses cache
             if room is not None and getattr(room, "id", None):
                 return room.id
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Room resolution errors unpredictable, fallback to original id
             logger.error("Error resolving canonical room id", room_id=room_id, error=str(e))
         return room_id
 
@@ -537,6 +535,6 @@ class RoomSubscriptionManager:
                 else 0,
                 "average_occupants_per_room": total_occupants / len(self.room_occupants) if self.room_occupants else 0,
             }
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Stats calculation errors unpredictable, must return empty dict
             logger.error("Error getting room subscription stats", error=str(e))
             return {}

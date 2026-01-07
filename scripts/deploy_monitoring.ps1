@@ -1,5 +1,11 @@
-# MythosMUD Monitoring Stack Deployment Script
+﻿# MythosMUD Monitoring Stack Deployment Script
 
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and output messages require Write-Host for proper display')]
+# Suppress PSReviewUnusedParameter: SkipPrometheus, SkipGrafana, SkipAlertmanager reserved for future use
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', 'SkipPrometheus', Justification = 'Parameter reserved for future use')]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', 'SkipGrafana', Justification = 'Parameter reserved for future use')]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', 'SkipAlertmanager', Justification = 'Parameter reserved for future use')]
 param(
     [string]$Environment = "development",
     [switch]$SkipPrometheus,

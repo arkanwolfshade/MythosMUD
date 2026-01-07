@@ -14,7 +14,7 @@ logger = get_logger(__name__)
 
 
 async def handle_time_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    _command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
     """Handle the time command, exposing the current Mythos time and active holidays."""
 
@@ -32,7 +32,7 @@ async def handle_time_command(
         try:
             holiday_service.refresh_active(mythos_dt)
             active_holidays = holiday_service.get_active_holiday_names()
-        except Exception as exc:  # pragma: no cover - defensive logging
+        except Exception as exc:  # pragma: no cover - defensive logging  # pylint: disable=broad-exception-caught  # Reason: Holiday service errors unpredictable, optional metadata
             logger.warning("Time command could not refresh holiday data", error=str(exc))
 
     clock_line = chronicle.format_clock(mythos_dt)

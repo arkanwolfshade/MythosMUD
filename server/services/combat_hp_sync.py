@@ -121,7 +121,7 @@ class CombatDPSync:
                 player_id=player_id,
                 error=str(e),
             )
-        except Exception as e:  # pragma: no cover - defensive path for unexpected test doubles
+        except Exception as e:  # pragma: no cover - defensive path for unexpected test doubles  # pylint: disable=broad-exception-caught  # Reason: Task creation errors unpredictable, must handle gracefully
             task_coro.close()
             logger.error(
                 "Failed to create background task for DP persistence",

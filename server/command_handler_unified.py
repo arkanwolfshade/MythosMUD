@@ -106,7 +106,7 @@ def _is_predefined_emote(command: str) -> bool:
 
         emote_service = EmoteService()
         return emote_service.is_emote_alias(command)
-    except (ImportError, AttributeError, TypeError, RuntimeError, Exception) as e:
+    except (ImportError, AttributeError, TypeError, RuntimeError, Exception) as e:  # pylint: disable=broad-exception-caught  # Reason: Service initialization errors unpredictable, must handle gracefully
         # Catch all exceptions to handle test errors and service failures gracefully
         logger.warning("Error checking predefined emote", error=str(e))
         return False

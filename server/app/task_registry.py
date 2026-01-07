@@ -60,7 +60,7 @@ class TaskRegistry:
 
         logger.info("TaskRegistry initialized - it is watched by eyes of unmeaning")
 
-    def register_task(
+    def register_task(  # pylint: disable=keyword-arg-before-vararg  # Reason: task_type has default value, *args follows for flexibility
         self, coro: Coroutine[Any, Any, Any], task_name: str, task_type: str = "unknown", *args
     ) -> asyncio.Task[Any]:
         """
@@ -106,7 +106,7 @@ class TaskRegistry:
                     if task_name in self._task_names and self._task_names[task_name] == completed_task:
                         del self._task_names[task_name]
                     logger.debug("Task completed and cleaned up", task_name=task_name)
-                except Exception as e:
+                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Task cleanup errors unpredictable, must not fail task completion
                     logger.error("Error during task completion cleanup", task_name=task_name, error=str(e))
 
             task.add_done_callback(task_completion_callback)
@@ -114,7 +114,7 @@ class TaskRegistry:
             logger.debug("Registered task", task_name=task_name, task_type=task_type)
             return task
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Task registration errors unpredictable, must raise RuntimeError
             logger.error("Failed to register task", task_name=task_name, error=str(e))
             raise RuntimeError(f"Task registration failed for {task_name}") from e
 
@@ -158,7 +158,7 @@ class TaskRegistry:
             else:
                 return False
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Task unregistration errors unpredictable, must return False
             logger.error("Task unregistration error", error=str(e))
             return False
 
@@ -197,12 +197,12 @@ class TaskRegistry:
                 except asyncio.CancelledError:
                     logger.debug("Cancelled task successfully", target_task=target_task)
                     return True
-                except Exception as e:
+                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Task completion errors unpredictable, must return True
                     logger.error("Unexpected task completion error", error=str(e))
                     return True
 
             return True  # Task is already done
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Task cancellation errors unpredictable, must return False
             logger.error("Task cancellation failed", error=str(e))
             return False
 
@@ -240,7 +240,7 @@ class TaskRegistry:
                     try:
                         task.cancel()
                         cancelled_count += 1
-                    except Exception as e:
+                    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Lifecycle cancellation errors unpredictable, must continue processing
                         logger.error("Cancel lifecycle failed", task_name=metadata.task_name, error=str(e))
 
             # Phase 2: Cancel remaining active tasks
@@ -251,7 +251,7 @@ class TaskRegistry:
                     try:
                         task.cancel()
                         cancelled_count += 1
-                    except Exception as e:
+                    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Task cancellation errors unpredictable, must continue processing
                         logger.error("Cancel task failed", task_name=metadata.task_name, error=str(e))
 
             logger.info("Cancelled active tasks - awaiting completion", cancelled_count=cancelled_count)
@@ -276,10 +276,10 @@ class TaskRegistry:
                     if not task.done():
                         task.cancel()  # Forcible cancel
                         final_cancelled += 1
-                except Exception as e:
+                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Forcible cancellation errors unpredictable, must continue processing
                     logger.error("Forcible cancellation error", error=str(e))
             logger.info("Forcibly cancelled remaining tasks", final_cancelled=final_cancelled)
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Shutdown coordination errors unpredictable, must handle gracefully
             logger.error("Critical shutdown coordination error", error=str(e), exc_info=True)
             success = False
         finally:
@@ -289,7 +289,7 @@ class TaskRegistry:
                     if self._active_tasks.get(task) is None:
                         continue  # Might already be collected by gc
                     self.unregister_task(task)
-            except Exception as cleanup_e:
+            except Exception as cleanup_e:  # pylint: disable=broad-exception-caught  # Reason: Collection cleanup errors unpredictable, must be ignored
                 logger.warning("Collection cleanup error ignored", error=str(cleanup_e))
             self._lifecycle_tasks.clear()
 

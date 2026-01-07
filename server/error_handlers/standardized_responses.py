@@ -213,7 +213,7 @@ class StandardizedErrorResponse:
             else:
                 return self._handle_generic_exception(exc, include_details, response_type)
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Error handler errors unpredictable, must have fallback
             # Fallback error handling
             logger.error("Error in StandardizedErrorResponse", error=str(e), exc_info=True)
             return self._create_fallback_response(exc, response_type)
@@ -252,7 +252,10 @@ class StandardizedErrorResponse:
             return JSONResponse(status_code=status_code, content=response_data)
 
     def _handle_pydantic_validation_error(
-        self, error: ValidationError, include_details: bool, response_type: str
+        self,
+        error: ValidationError,
+        include_details: bool,  # pylint: disable=unused-argument  # Reason: Parameter reserved for future use
+        response_type: str,  # pylint: disable=unused-argument  # Reason: Parameters used indirectly via handler
     ) -> JSONResponse:
         """Handle Pydantic ValidationError instances."""
         # Use PydanticErrorHandler for consistent processing
@@ -301,7 +304,7 @@ class StandardizedErrorResponse:
 
         return JSONResponse(status_code=exc.status_code, content=response_data)
 
-    def _handle_http_exception(self, exc: HTTPException, include_details: bool, response_type: str) -> JSONResponse:
+    def _handle_http_exception(self, exc: HTTPException, include_details: bool, response_type: str) -> JSONResponse:  # pylint: disable=unused-argument  # Reason: response_type unused in this handler
         """Handle standard HTTPException instances."""
         # Map status code to error type
         error_type = self._map_status_code_to_error_type(exc.status_code)
@@ -325,7 +328,7 @@ class StandardizedErrorResponse:
 
         return JSONResponse(status_code=exc.status_code, content=response_data)
 
-    def _handle_generic_exception(self, exc: Exception, include_details: bool, response_type: str) -> JSONResponse:
+    def _handle_generic_exception(self, exc: Exception, include_details: bool, response_type: str) -> JSONResponse:  # pylint: disable=unused-argument  # Reason: response_type unused in this handler
         """Handle generic exceptions."""
         error_type = ErrorType.INTERNAL_ERROR
         # Human reader: sanitize exception message to prevent stack trace exposure.
@@ -454,7 +457,7 @@ class StandardizedErrorResponse:
 
         return message
 
-    def _create_fallback_response(self, exc: Exception, response_type: str) -> JSONResponse:
+    def _create_fallback_response(self, _exc: Exception, response_type: str) -> JSONResponse:  # pylint: disable=unused-argument  # Reason: exc unused in fallback
         """Create fallback error response when normal handling fails."""
         message = "An unexpected error occurred"
         user_friendly = "Please try again later"
@@ -488,8 +491,8 @@ class StandardizedErrorResponse:
 # Convenience functions for common use cases
 def create_standardized_error_response(
     request: Request | None = None,
-    include_details: bool = False,
-    response_type: str = "http",
+    _include_details: bool = False,  # pylint: disable=unused-argument  # Reason: Parameter reserved for future response customization
+    _response_type: str = "http",  # pylint: disable=unused-argument  # Reason: Parameter reserved for future response customization
 ) -> StandardizedErrorResponse:
     """
     Create a standardized error response handler.

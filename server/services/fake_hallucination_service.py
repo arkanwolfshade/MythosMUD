@@ -86,8 +86,8 @@ class FakeHallucinationService:
         Returns:
             Dictionary with fake NPC tell data
         """
-        fake_npc_name = random.choice(FAKE_NPC_NAMES)
-        fake_message = random.choice(FAKE_NPC_TELL_MESSAGES)
+        fake_npc_name = random.choice(FAKE_NPC_NAMES)  # nosec B311: Game mechanics hallucination generation, not cryptographic
+        fake_message = random.choice(FAKE_NPC_TELL_MESSAGES)  # nosec B311: Game mechanics hallucination generation, not cryptographic
 
         return {
             "npc_name": fake_npc_name,
@@ -107,7 +107,7 @@ class FakeHallucinationService:
         Returns:
             Dictionary with room text overlay data
         """
-        overlay_text = random.choice(ROOM_TEXT_OVERLAYS)
+        overlay_text = random.choice(ROOM_TEXT_OVERLAYS)  # nosec B311: Game mechanics hallucination generation, not cryptographic
 
         return {
             "overlay_text": overlay_text,
@@ -122,7 +122,7 @@ class FakeHallucinationService:
         Returns:
             Either "fake_npc_tell" or "room_text_overlay"
         """
-        return random.choice(["fake_npc_tell", "room_text_overlay"])
+        return random.choice(["fake_npc_tell", "room_text_overlay"])  # nosec B311: Game mechanics hallucination type selection, not cryptographic
 
 
 __all__ = ["FakeHallucinationService", "FAKE_NPC_NAMES", "FAKE_NPC_TELL_MESSAGES", "ROOM_TEXT_OVERLAYS"]

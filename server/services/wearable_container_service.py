@@ -182,7 +182,7 @@ class WearableContainerService:
 
             return {"container_id": container_id}
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Container creation errors unpredictable, must log and re-raise as specific error
             log_and_raise(
                 WearableContainerServiceError,
                 f"Failed to create wearable container: {str(e)}",
@@ -265,7 +265,7 @@ class WearableContainerService:
                 if container_data.get("source_type") == "equipment":
                     container = ContainerComponent.model_validate(_filter_container_data(container_data))
                     containers.append(container)
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Container loading errors unpredictable, must log but continue
                 logger.warning(
                     "Error loading wearable container",
                     error=str(e),
@@ -535,7 +535,7 @@ class WearableContainerService:
                         room_id=room_id,
                         items_count=len(ground_items),
                     )
-                except Exception as e:
+                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Ground container creation errors unpredictable, must log but continue
                     logger.error(
                         "Failed to create ground container for overflow items",
                         error=str(e),

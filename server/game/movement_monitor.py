@@ -283,7 +283,7 @@ _monitor_lock = threading.RLock()
 
 def get_movement_monitor() -> MovementMonitor:
     """Get the global movement monitor instance."""
-    global _movement_monitor
+    global _movement_monitor  # pylint: disable=global-statement  # Reason: Singleton pattern for movement monitor
 
     with _monitor_lock:
         if _movement_monitor is None:
@@ -294,7 +294,7 @@ def get_movement_monitor() -> MovementMonitor:
 
 def reset_movement_monitor():
     """Reset the global movement monitor (useful for testing)."""
-    global _movement_monitor
+    global _movement_monitor  # pylint: disable=global-statement  # Reason: Singleton pattern for testing reset
 
     with _monitor_lock:
         if _movement_monitor:

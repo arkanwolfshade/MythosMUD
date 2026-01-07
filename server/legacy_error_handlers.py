@@ -382,7 +382,7 @@ def graceful_degradation(fallback_value: Any, error_type: str = "unknown"):
     """
     try:
         yield
-    except Exception as exc:
+    except Exception as exc:  # pylint: disable=broad-exception-caught  # Reason: Graceful degradation must catch all errors
         logger.warning(
             "Graceful degradation applied",
             error_type=error_type,

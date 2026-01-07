@@ -43,7 +43,7 @@ async def handle_chat_message(websocket: WebSocket, player_id: str, data: dict[s
     await handle_chat(websocket, player_id, chat_message)
 
 
-async def handle_ping_message(websocket: WebSocket, player_id: str, data: dict[str, Any]) -> None:
+async def handle_ping_message(websocket: WebSocket, player_id: str, _data: dict[str, Any]) -> None:  # pylint: disable=unused-argument  # Reason: Parameter required for message handler interface, data not used for ping
     """Handle ping message type."""
     from .envelope import build_event
 

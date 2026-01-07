@@ -155,7 +155,13 @@ def rotate_log_files(env_log_dir: Path) -> None:
     # Rotate each log file by renaming with timestamp
     for log_file in log_files:
         # Only rotate non-empty files
-        if log_file.exists() and log_file.stat().st_size > 0:
+        try:
+            exists = log_file.exists()
+            size = log_file.stat().st_size if exists else 0
+        except FileNotFoundError:
+            continue
+
+        if exists and size > 0:
             rotated_name = f"{log_file.stem}.log.{timestamp}"
             rotated_path = log_file.parent / rotated_name
 

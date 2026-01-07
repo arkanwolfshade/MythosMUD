@@ -66,7 +66,7 @@ class HallucinationFrequencyService:
 
         # For room entry (Uneasy), no cooldown - just roll the chance
         if trigger_type == "room_entry":
-            return random.random() < config["chance"]
+            return random.random() < config["chance"]  # nosec B311: Game mechanics probability check, not cryptographic
 
         # For time-based (Fractured, Deranged), check cooldown first
         if trigger_type == "time_based":
@@ -95,7 +95,7 @@ class HallucinationFrequencyService:
                         return False
 
                 # Cooldown expired or doesn't exist - roll chance
-                should_trigger = random.random() < config["chance"]
+                should_trigger = random.random() < config["chance"]  # nosec B311: Game mechanics probability check, not cryptographic
 
                 if should_trigger:
                     # Set new cooldown

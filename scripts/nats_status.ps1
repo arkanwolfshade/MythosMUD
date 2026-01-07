@@ -1,6 +1,8 @@
-#!/usr/bin/env pwsh
+﻿#!/usr/bin/env pwsh
 
 #Requires -Version 5.1
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status messages require Write-Host for proper display')]
 
 <#
 .SYNOPSIS

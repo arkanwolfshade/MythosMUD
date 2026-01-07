@@ -2,6 +2,8 @@
 
 # MythosMUD Development Startup Script
 # Starts both the server and client for development
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for user-facing status messages
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'User-facing startup script requires Write-Host for status messages')]
 
 param(
     [string]$ServerPort = "54731",
@@ -47,6 +49,13 @@ if (-not (Test-Path "server") -or -not (Test-Path "client")) {
 
 # Function to start server
 function Start-Server {
+    [CmdletBinding(SupportsShouldProcess)]
+    param()
+
+    if (-not $PSCmdlet.ShouldProcess("MythosMUD server", "Start")) {
+        return
+    }
+
     Write-Host "Starting MythosMUD server on port $ServerPort..." -ForegroundColor Yellow
     Write-Host "Server will be available at: http://localhost:$ServerPort" -ForegroundColor Cyan
     Write-Host "NATS server will be started automatically" -ForegroundColor Cyan
@@ -59,6 +68,13 @@ function Start-Server {
 
 # Function to start client
 function Start-Client {
+    [CmdletBinding(SupportsShouldProcess)]
+    param()
+
+    if (-not $PSCmdlet.ShouldProcess("MythosMUD client", "Start")) {
+        return
+    }
+
     Write-Host "Starting MythosMUD client on port $ClientPort..." -ForegroundColor Yellow
     Write-Host "Client will be available at: http://localhost:$ClientPort" -ForegroundColor Cyan
     Write-Host ""

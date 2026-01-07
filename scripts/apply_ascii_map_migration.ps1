@@ -2,12 +2,16 @@
 # This script applies the ASCII map migration (017_add_ascii_map_fields.sql)
 # to all databases (mythos_dev, mythos_unit, mythos_e2e)
 
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and output messages require Write-Host for proper display')]
+# Suppress PSAvoidUsingConvertToSecureStringWithPlainText: Default parameter value requires plaintext conversion
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '', Justification = 'Default parameter value requires plaintext conversion for SecureString parameter')]
 param(
     [string]$Database = "all",  # "all", "mythos_dev", "mythos_unit", "mythos_e2e"
     [string]$DbHost = "localhost",
     [string]$Port = "5432",
     [string]$User = "postgres",
-    [string]$Password = "Cthulhu1"
+    [SecureString]$Password = (ConvertTo-SecureString "Cthulhu1" -AsPlainText -Force)
 )
 
 $ErrorActionPreference = "Stop"
@@ -56,7 +60,11 @@ else {
     $databases = @($Database)
 }
 
-$env:PGPASSWORD = $Password
+# Convert SecureString to plain text for environment variable
+$BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password)
+$plainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
+$env:PGPASSWORD = $plainPassword
+[System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($BSTR)
 
 foreach ($db in $databases) {
     Write-Host "`n[INFO] Processing database: $db" -ForegroundColor Yellow

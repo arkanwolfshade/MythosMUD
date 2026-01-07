@@ -56,7 +56,8 @@ DANGEROUS_CHARS = set("<>\"'&")
 def _cached_ftfy_fix(text: str) -> str:
     """Cached version of ftfy.fix_text for repeated inputs."""
     result = ftfy.fix_text(text)
-    assert isinstance(result, str)
+    if not isinstance(result, str):
+        raise TypeError("ftfy.fix_text must return a string")
     return result
 
 
@@ -64,7 +65,8 @@ def _cached_ftfy_fix(text: str) -> str:
 def _cached_strip_ansi(text: str) -> str:
     """Cached version of strip_ansi for repeated inputs."""
     result = strip_ansi.strip_ansi(text)
-    assert isinstance(result, str)
+    if not isinstance(result, str):
+        raise TypeError("strip_ansi must return a string")
     return result
 
 

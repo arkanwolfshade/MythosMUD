@@ -30,7 +30,5 @@ Example:
 class DomainError(Exception):
     """Base exception for all domain errors."""
 
-    pass
-
 
 __all__ = ["DomainError"]

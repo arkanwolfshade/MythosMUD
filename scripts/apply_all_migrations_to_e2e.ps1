@@ -1,11 +1,15 @@
 # Apply all database migrations to mythos_e2e database
 # This script applies all numbered migrations (002-014) in order
 
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and output messages require Write-Host for proper display')]
+# Suppress PSAvoidUsingConvertToSecureStringWithPlainText: Default parameter value requires plaintext conversion
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '', Justification = 'Default parameter value requires plaintext conversion for SecureString parameter')]
 param(
     [string]$DbHost = "localhost",
     [string]$Port = "5432",
     [string]$User = "postgres",
-    [string]$Password = "Cthulhu1",
+    [SecureString]$Password = (ConvertTo-SecureString "Cthulhu1" -AsPlainText -Force),
     [string]$Database = "mythos_e2e"
 )
 
@@ -25,7 +29,10 @@ $projectRoot = Split-Path -Parent $scriptDir
 $migrationsDir = Join-Path $projectRoot "db\migrations"
 
 # Set PostgreSQL password
-$env:PGPASSWORD = $Password
+$BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password)
+$plainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
+$env:PGPASSWORD = $plainPassword
+[System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($BSTR)
 
 # List of migrations to apply in order
 $migrations = @(
@@ -77,13 +84,10 @@ foreach ($migration in $migrations) {
     try {
         # Apply migration - capture both stdout and stderr
         # NOTICE messages go to stderr but are not errors
-        $stdout = $null
-        $stderr = $null
         $process = Start-Process -FilePath $psqlPath -ArgumentList @("-h", $DbHost, "-p", $Port, "-U", $User, "-d", $Database, "-f", $migrationFile) -NoNewWindow -Wait -PassThru -RedirectStandardOutput "temp_stdout.txt" -RedirectStandardError "temp_stderr.txt"
 
         $exitCode = $process.ExitCode
         $stderrContent = Get-Content "temp_stderr.txt" -ErrorAction SilentlyContinue | Out-String
-        $stdoutContent = Get-Content "temp_stdout.txt" -ErrorAction SilentlyContinue | Out-String
 
         # Clean up temp files
         Remove-Item "temp_stdout.txt" -ErrorAction SilentlyContinue
@@ -149,3 +153,6 @@ else {
 }
 
 $env:PGPASSWORD = $null
+if ($plainPassword) {
+    $plainPassword = $null
+}

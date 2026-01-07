@@ -367,7 +367,8 @@ class PlayerNameExtractor:
         player_name = getattr(player, "name", None)
         if self._is_valid_name(player_name):
             # Type narrowing: _is_valid_name returns True only for non-empty strings
-            assert isinstance(player_name, str), "player_name must be str if _is_valid_name returns True"
+            if not isinstance(player_name, str):
+                raise TypeError("player_name must be str if _is_valid_name returns True")
             return player_name
 
         # Try to get name from related User object
@@ -378,7 +379,8 @@ class PlayerNameExtractor:
                     player_name = getattr(user, "username", None) or getattr(user, "display_name", None)
                     if self._is_valid_name(player_name):
                         # Type narrowing: _is_valid_name returns True only for non-empty strings
-                        assert isinstance(player_name, str), "player_name must be str if _is_valid_name returns True"
+                        if not isinstance(player_name, str):
+                            raise TypeError("player_name must be str if _is_valid_name returns True")
                         return player_name
             except (AttributeError, TypeError) as e:
                 self._logger.debug("Error accessing user relationship for player name", error=str(e))
