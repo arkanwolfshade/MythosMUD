@@ -207,6 +207,9 @@ test-coverage: test-client-coverage test-server-coverage
 # CI/CD test suite (with coverage, enforces thresholds)
 # Runs in Docker locally to match CI/CD Ubuntu environment
 # Runs directly when already in CI/CD environment (detected via CI or GITHUB_ACTIONS env vars)
+# CI/CD test suite (with coverage, enforces thresholds)
+# run_test_ci.py automatically detects and uses .venv-ci or .venv if available
+# This ensures local test-ci matches CI environment behavior
 test-ci:
 	$(PYTHON) scripts/run_test_ci.py
 

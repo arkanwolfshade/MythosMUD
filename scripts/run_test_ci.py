@@ -45,11 +45,38 @@ if IN_CI:
             venv_path = os.path.join(PROJECT_ROOT, venv_name, "Scripts", "python.exe")
         else:
             venv_path = os.path.join(PROJECT_ROOT, venv_name, "bin", "python")
-        # Use absolute path to ensure we get the correct Python
+        # Use absolute path and resolve symlinks to get the actual Python executable
         venv_path = os.path.abspath(venv_path)
         if os.path.exists(venv_path):
-            venv_python = venv_path
+            # Resolve symlinks to get the actual Python (venv Python may be symlinked)
+            venv_python_real = os.path.realpath(venv_path)
+            venv_python = venv_path  # Keep original path for subprocess (works better)
             print(f"[INFO] Found venv Python: {venv_python}")
+            print(f"[INFO] Resolved to: {venv_python_real}")
+            # Check if pytest is actually installed by checking site-packages
+            # Get site-packages for this venv
+            venv_site_packages = None
+            try:
+                # Try to get site-packages by running Python from venv
+                result = safe_run_static(
+                    venv_python,
+                    "-c",
+                    "import site; print(site.getsitepackages()[0] if site.getsitepackages() else site.getusersitepackages())",
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+                if result.returncode == 0:
+                    venv_site_packages = result.stdout.strip()
+                    print(f"[INFO] Venv site-packages: {venv_site_packages}")
+                    # Check if pytest is in site-packages
+                    pytest_path = os.path.join(venv_site_packages, "pytest")
+                    if os.path.exists(pytest_path):
+                        print("[INFO] pytest found in venv site-packages")
+                    else:
+                        print(f"[WARN] pytest NOT found in venv site-packages: {pytest_path}")
+            except Exception as e:
+                print(f"[WARN] Could not check site-packages: {e}")
             # Verify pytest is available in this venv
             try:
                 result = safe_run_static(
@@ -65,6 +92,7 @@ if IN_CI:
                     print("[INFO] Verified pytest is available in venv")
                 else:
                     print(f"[WARN] pytest not available in venv: {result.stderr}")
+                    print(f"[WARN] Command used: {venv_python} -m pytest --version")
             except Exception as e:
                 print(f"[WARN] Could not verify pytest in venv: {e}")
             break

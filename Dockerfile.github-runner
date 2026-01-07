@@ -110,14 +110,11 @@ RUN mkdir -p /workspace/data/unit_test/players /workspace/data/unit_test/npcs
 
 # Install Python dependencies using uv inside project virtual environment.
 # Install dependencies from pyproject.toml, which includes all runtime and dev dependencies.
-RUN uv venv && \
-    . .venv/bin/activate && \
-    uv pip install -e . && \
-    uv pip install -e ".[dev]" && \
-    uv pip install pytest-mock>=3.14.0
+# Use .venv-ci to match GitHub Actions workflow for consistency
+RUN VENV_NAME=.venv-ci USE_EXPLICIT_PYTHON=true bash scripts/install_ci_dependencies.sh
 
 # Install Playwright Chromium and its runtime dependencies.
-RUN . .venv/bin/activate && \
+RUN . .venv-ci/bin/activate && \
     playwright install chromium && \
     playwright install-deps chromium
 
