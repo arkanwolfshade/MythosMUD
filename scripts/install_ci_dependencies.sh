@@ -52,11 +52,19 @@ else
     echo "Active Python: $(which python)"
     echo "Python executable: $(python -c 'import sys; print(sys.executable)')"
     echo "VIRTUAL_ENV: $VIRTUAL_ENV"
-    # Use uv pip install without --python flag - uv should detect the active venv
-    # This ensures packages are installed into the venv's site-packages, not the base Python's
-    uv pip install -e .
-    uv pip install -e ".[dev]"
-    uv pip install pytest-mock>=3.14.0 pytest-xdist>=3.8.0
+
+    # Check if pip is available in the venv
+    if ! python -m pip --version >/dev/null 2>&1; then
+        echo "Installing pip into venv..."
+        uv pip install --python "$PYTHON_EXE" pip
+    fi
+
+    # Use python -m pip to ensure packages install into the venv's site-packages
+    # This is more reliable when the venv Python is a symlink
+    python -m pip install --upgrade pip
+    python -m pip install -e .
+    python -m pip install -e ".[dev]"
+    python -m pip install pytest-mock>=3.14.0 pytest-xdist>=3.8.0
     deactivate
 fi
 
