@@ -2,10 +2,16 @@
  * Tests for systemHandlers.
  */
 
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { MythosTimePayload } from '../../../../types/mythosTime';
 import type { ChatMessage, Player } from '../../types';
-import { handleGameTick, handleLucidityChange, handleMythosTimeUpdate, handleRescueUpdate } from '../systemHandlers';
+import {
+  handleGameTick,
+  handleIntentionalDisconnect,
+  handleLucidityChange,
+  handleMythosTimeUpdate,
+  handleRescueUpdate,
+} from '../systemHandlers';
 import type { EventHandlerContext } from '../types';
 
 // Mock dependencies
@@ -37,6 +43,7 @@ vi.mock('../../../../utils/logger', () => ({
   logger: {
     info: vi.fn(),
     error: vi.fn(),
+    warn: vi.fn(),
   },
 }));
 
@@ -63,12 +70,18 @@ describe('systemHandlers', () => {
     setDeathLocation: vi.fn(),
     setDeliriumLocation: vi.fn(),
     setRescueState: vi.fn(),
+    onLogout: undefined,
   };
 
   beforeEach(() => {
     vi.clearAllMocks();
     mockContext.lastDaypartRef.current = null;
     mockContext.lastHourRef.current = null;
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   describe('handleLucidityChange', () => {
@@ -139,6 +152,29 @@ describe('systemHandlers', () => {
       };
       handleLucidityChange(event, mockContext, mockAppendMessage);
       expect(mockContext.setLucidityStatus).toHaveBeenCalled();
+    });
+
+    it('should use fallback for current_dp when stats.current_dp is undefined', async () => {
+      const mockPlayer = {
+        id: 'player1',
+        name: 'TestPlayer',
+        stats: { max_dp: 100, lucidity: 50, max_lucidity: 100 }, // current_dp is missing
+      };
+      mockContext.currentPlayerRef.current = mockPlayer as unknown as Player;
+      mockContext.lucidityStatusRef.current = { current: 50, max: 100, tier: 'lucid', liabilities: [] };
+      const lucidityUtils = await import('../../../../utils/lucidityEventUtils');
+      vi.mocked(lucidityUtils.buildLucidityStatus).mockReturnValueOnce({
+        status: { current: 75, max: 100, tier: 'lucid', liabilities: [] },
+        delta: 0,
+      });
+      const event = {
+        event_type: 'lucidity_change',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { current_lcd: 75, max_lcd: 100 },
+      };
+      const result = handleLucidityChange(event, mockContext, mockAppendMessage);
+      expect(result?.player?.stats?.current_dp).toBe(0); // Should use fallback value
     });
   });
 
@@ -388,7 +424,7 @@ describe('systemHandlers', () => {
         if (callCount === 2 && args[0] === 'test-throw-non-error') {
           throw { message: 'Not an Error object', toString: () => 'Not an Error object' }; // Non-Error exception
         }
-        return new originalDate(...args);
+        return new originalDate(...(args as Parameters<typeof Date>));
       };
       DateConstructor.prototype = originalDate.prototype;
       DateConstructor.now = originalDate.now;
@@ -421,6 +457,71 @@ describe('systemHandlers', () => {
 
       // Restore original Date
       global.Date = originalDate;
+    });
+
+    it('should handle date parse error with Error instance', async () => {
+      const loggerModule = await import('../../../../utils/logger');
+      vi.clearAllMocks();
+
+      // Create a scenario where Date constructor throws an Error
+      const originalDate = global.Date;
+      let callCount = 0;
+      const DateConstructor = function (this: Date, ...args: unknown[]) {
+        callCount++;
+        // On the call for mythos_datetime (second Date construction), throw Error
+        if (callCount === 2 && args[0] === 'test-throw-error') {
+          throw new Error('Invalid date format');
+        }
+        return new originalDate(...(args as Parameters<typeof Date>));
+      };
+      DateConstructor.prototype = originalDate.prototype;
+      DateConstructor.now = originalDate.now;
+      DateConstructor.parse = originalDate.parse;
+      DateConstructor.UTC = originalDate.UTC;
+      global.Date = DateConstructor as unknown as typeof Date;
+
+      const event = {
+        event_type: 'mythos_time_update',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          mythos_clock: '12:00 PM',
+          daypart: 'afternoon',
+          mythos_datetime: 'test-throw-error', // Will trigger Error exception
+        },
+      };
+
+      handleMythosTimeUpdate(event, mockContext, mockAppendMessage);
+
+      // Should call logger.error with error.message path (since error is instanceof Error)
+      expect(vi.mocked(loggerModule.logger.error)).toHaveBeenCalledWith(
+        'systemHandlers',
+        'Failed to parse mythos_datetime for clock chime',
+        expect.objectContaining({
+          error: 'Invalid date format',
+          mythos_datetime: 'test-throw-error',
+        })
+      );
+
+      // Restore original Date
+      global.Date = originalDate;
+    });
+
+    it('should use fallback message when daypart is not in DAYPART_MESSAGES', () => {
+      mockContext.lastDaypartRef.current = 'morning';
+      const event = {
+        event_type: 'mythos_time_update',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { mythos_clock: '12:00 PM', daypart: 'midnight' }, // 'midnight' is not in DAYPART_MESSAGES
+      };
+      handleMythosTimeUpdate(event, mockContext, mockAppendMessage);
+      expect(mockAppendMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          text: expect.stringContaining('The Mythos clock shifts into the midnight watch.'),
+        })
+      );
+      expect(mockContext.lastDaypartRef.current).toBe('midnight');
     });
   });
 
@@ -502,6 +603,152 @@ describe('systemHandlers', () => {
       };
       handleGameTick(event, mockContext, mockAppendMessage);
       expect(mockAppendMessage).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('handleIntentionalDisconnect', () => {
+    it('should append default message when message is not provided', () => {
+      const event = {
+        event_type: 'intentional_disconnect',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {},
+      };
+      handleIntentionalDisconnect(event, mockContext, mockAppendMessage);
+      expect(mockAppendMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          text: 'You have disconnected from the game.',
+          messageType: 'system',
+          channel: 'system',
+        })
+      );
+    });
+
+    it('should append custom message when message is provided', () => {
+      const customMessage = 'Custom disconnect message';
+      const event = {
+        event_type: 'intentional_disconnect',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { message: customMessage },
+      };
+      handleIntentionalDisconnect(event, mockContext, mockAppendMessage);
+      expect(mockAppendMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          text: customMessage,
+          messageType: 'system',
+          channel: 'system',
+        })
+      );
+    });
+
+    it('should call onLogout after timeout when onLogout exists', async () => {
+      const mockOnLogout = vi.fn();
+      const contextWithLogout: EventHandlerContext = {
+        ...mockContext,
+        onLogout: mockOnLogout,
+      };
+      const event = {
+        event_type: 'intentional_disconnect',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { message: 'Disconnecting...' },
+      };
+
+      handleIntentionalDisconnect(event, contextWithLogout, mockAppendMessage);
+
+      // Verify onLogout is not called immediately
+      expect(mockOnLogout).not.toHaveBeenCalled();
+
+      // Fast-forward time by 500ms
+      vi.advanceTimersByTime(500);
+
+      // Verify onLogout is called after timeout
+      expect(mockOnLogout).toHaveBeenCalledTimes(1);
+    });
+
+    it('should log info when onLogout exists', async () => {
+      const loggerModule = await import('../../../../utils/logger');
+      const mockOnLogout = vi.fn();
+      const contextWithLogout: EventHandlerContext = {
+        ...mockContext,
+        onLogout: mockOnLogout,
+      };
+      const disconnectMessage = 'Disconnecting...';
+      const event = {
+        event_type: 'intentional_disconnect',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { message: disconnectMessage },
+      };
+
+      handleIntentionalDisconnect(event, contextWithLogout, mockAppendMessage);
+
+      expect(vi.mocked(loggerModule.logger.info)).toHaveBeenCalledWith(
+        'systemHandlers',
+        'Intentional disconnect received, triggering logout',
+        { message: disconnectMessage }
+      );
+    });
+
+    it('should log warning when onLogout does not exist', async () => {
+      const loggerModule = await import('../../../../utils/logger');
+      const event = {
+        event_type: 'intentional_disconnect',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { message: 'Disconnecting...' },
+      };
+
+      handleIntentionalDisconnect(event, mockContext, mockAppendMessage);
+
+      expect(vi.mocked(loggerModule.logger.warn)).toHaveBeenCalledWith(
+        'systemHandlers',
+        'Intentional disconnect received but onLogout not available'
+      );
+    });
+
+    it('should append message even when onLogout does not exist', () => {
+      const event = {
+        event_type: 'intentional_disconnect',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { message: 'Disconnecting...' },
+      };
+
+      handleIntentionalDisconnect(event, mockContext, mockAppendMessage);
+
+      expect(mockAppendMessage).toHaveBeenCalled();
+    });
+
+    it('should use optional chaining when calling onLogout in setTimeout', async () => {
+      const mockOnLogout = vi.fn();
+      const contextWithLogout: EventHandlerContext = {
+        ...mockContext,
+        onLogout: mockOnLogout,
+      };
+      const event = {
+        event_type: 'intentional_disconnect',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {},
+      };
+
+      handleIntentionalDisconnect(event, contextWithLogout, mockAppendMessage);
+
+      // Fast-forward time - onLogout should be called
+      vi.advanceTimersByTime(500);
+
+      // Verify onLogout was called
+      expect(mockOnLogout).toHaveBeenCalledTimes(1);
+
+      // Now test that setting onLogout to undefined and calling again doesn't crash
+      contextWithLogout.onLogout = undefined;
+      handleIntentionalDisconnect(event, contextWithLogout, mockAppendMessage);
+      vi.advanceTimersByTime(500);
+
+      // Should not crash, and onLogout should still only be called once (from first call)
+      expect(mockOnLogout).toHaveBeenCalledTimes(1);
     });
   });
 });

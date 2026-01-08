@@ -10,6 +10,7 @@ import uuid
 from typing import Any
 
 from ..structured_logging.enhanced_logging_config import get_logger
+from .disconnect_grace_period import is_player_in_grace_period
 from .player_name_utils import PlayerNameExtractor
 
 
@@ -96,6 +97,14 @@ class PlayerOccupantProcessor:
         player_name = self.name_extractor.extract_and_validate_player_name(player, player_id_str, player_id_uuid)
         if not player_name:
             return None
+
+        # Check if player is in grace period and add "(linkdead)" indicator
+        try:
+            if is_player_in_grace_period(player_id_uuid, self.connection_manager):
+                player_name = f"{player_name} (linkdead)"
+        except (AttributeError, ImportError, TypeError):
+            # If we can't check grace period, use name as-is
+            pass
 
         # Check if player is online (player_websockets uses UUID keys)
         is_online = player_id_uuid in self.connection_manager.player_websockets

@@ -8,6 +8,7 @@ formatting player display, and handling player look requests.
 import uuid
 from typing import Any
 
+from ..realtime.disconnect_grace_period import is_player_in_grace_period
 from ..structured_logging.enhanced_logging_config import get_logger
 from .look_helpers import _get_health_label, _get_lucidity_label, _get_visible_equipment
 
@@ -105,9 +106,34 @@ def _select_target_player(
     return (None, {"result": f"You see multiple players matching '{target}': {', '.join(player_names)}"})
 
 
-def _format_player_look_display(target_player: Any) -> str:
-    """Format the display text for looking at a player."""
+def _format_player_look_display(target_player: Any, connection_manager: Any | None = None) -> str:
+    """
+    Format the display text for looking at a player.
+    Adds "(linkdead)" indicator if player is in grace period.
+
+    Args:
+        target_player: The player object to format
+        connection_manager: ConnectionManager instance for checking grace period
+
+    Returns:
+        Formatted display text
+    """
     player_name_display = target_player.name if hasattr(target_player, "name") else "Unknown"
+    # Check if player is in grace period
+    if connection_manager and hasattr(target_player, "player_id"):
+        try:
+            player_id = (
+                uuid.UUID(target_player.player_id)
+                if isinstance(target_player.player_id, str)
+                else target_player.player_id
+            )
+
+            if is_player_in_grace_period(player_id, connection_manager):
+                player_name_display = f"{player_name_display} (linkdead)"
+        except (ValueError, AttributeError, ImportError, TypeError):
+            # If we can't check grace period, use name as-is
+            pass
+
     stats = target_player.get_stats() if hasattr(target_player, "get_stats") else {}
     position = stats.get("position", "standing") if stats else "standing"
 
@@ -138,6 +164,7 @@ async def _handle_player_look(
     room: Any,
     persistence: Any,
     player_name: str,
+    connection_manager: Any | None = None,
 ) -> dict[str, Any] | None:
     """Handle looking at a specific player."""
     logger.debug(
@@ -152,7 +179,7 @@ async def _handle_player_look(
             logger.debug("No players match target", player=player_name, target=target)
         return error_result
 
-    result_text = _format_player_look_display(target_player)
+    result_text = _format_player_look_display(target_player, connection_manager)
     player_name_display = target_player.name if hasattr(target_player, "name") else "Unknown"
     logger.debug("Player look completed", player=player_name, target=target, target_player=player_name_display)
     return {"result": result_text}
@@ -165,6 +192,7 @@ async def _try_lookup_player_implicit(
     room: Any,
     persistence: Any,
     player_name: str,
+    connection_manager: Any | None = None,
 ) -> dict[str, Any] | None:
     """Try to find and display a player in implicit lookup."""
     matching_players = await _find_matching_players(target_lower, room, persistence)
@@ -175,7 +203,7 @@ async def _try_lookup_player_implicit(
     if error_result:
         return error_result
 
-    result_text = _format_player_look_display(target_player)
+    result_text = _format_player_look_display(target_player, connection_manager)
     player_name_display = target_player.name if hasattr(target_player, "name") else "Unknown"
     logger.debug("Player look completed", player=player_name, target=target, target_player=player_name_display)
     return {"result": result_text}

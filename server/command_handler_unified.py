@@ -10,6 +10,7 @@ As the Necronomicon states: "In unity there is strength, and in
 consistency there is power."
 """
 
+import uuid
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
@@ -32,6 +33,7 @@ from .commands.command_service import CommandService
 from .config import get_config
 from .help.help_content import get_help_content as get_help_content_new
 from .middleware.command_rate_limiter import command_rate_limiter
+from .realtime.disconnect_grace_period import is_player_in_grace_period
 from .structured_logging.enhanced_logging_config import get_logger
 from .utils.audit_logger import audit_logger
 from .utils.command_parser import get_username_from_user
@@ -141,7 +143,12 @@ async def process_command_unified(
         )
         return {"result": catatonia_message}
 
-    # Step 7: Check if player is casting
+    # Step 7: Check if player is in grace period (disconnected but still in-game)
+    grace_period_result = await _check_grace_period_block(player_name, request)
+    if grace_period_result:
+        return grace_period_result
+
+    # Step 8: Check if player is casting
     casting_result = await _check_casting_state(cmd, player_name, request)
     if casting_result:
         return casting_result
@@ -246,6 +253,46 @@ def _ensure_alias_storage(alias_storage: AliasStorage | None) -> AliasStorage | 
             error_type=type(e).__name__,
         )
         return None
+
+
+async def _check_grace_period_block(player_name: str, request: Request) -> dict[str, Any] | None:
+    """
+    Check if player is in grace period and block commands.
+
+    Players in grace period (disconnected but still in-game) cannot execute commands,
+    but can still auto-attack when attacked in combat.
+
+    Returns:
+        Block result if player is in grace period, None otherwise
+    """
+    try:
+        connection_manager = getattr(request.app.state, "connection_manager", None)
+        if not connection_manager:
+            return None
+
+        # Get player ID
+        player_service = getattr(request.app.state, "player_service", None)
+        if not player_service:
+            return None
+
+        player = await player_service.get_player_by_name(player_name)
+        if not player:
+            return None
+
+        player_id = uuid.UUID(player.player_id) if isinstance(player.player_id, str) else player.player_id
+
+        # Check if player is in grace period
+        if is_player_in_grace_period(player_id, connection_manager):
+            logger.info("Command blocked - player is in grace period (disconnected)", player=player_name)
+            return {
+                "result": "You are disconnected and cannot perform actions. You will be removed from the game shortly."
+            }
+
+    except (AttributeError, ValueError, TypeError, ImportError) as e:
+        logger.debug("Error checking grace period", player=player_name, error=str(e))
+        # Don't block on error - allow command to proceed
+
+    return None
 
 
 async def _check_casting_state(cmd: str, player_name: str, request: Request) -> dict[str, Any] | None:

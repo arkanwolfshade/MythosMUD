@@ -4,9 +4,11 @@ Magic command handlers for spellcasting.
 This module implements the /cast, /spells, and /spell commands.
 """
 
+import uuid
 from typing import TYPE_CHECKING, Any
 
 from server.alias_storage import AliasStorage
+from server.commands.rest_command import _cancel_rest_countdown, is_player_resting
 from server.game.magic.magic_service import MagicService
 from server.game.magic.spell_registry import SpellRegistry
 from server.persistence.repositories.player_spell_repository import PlayerSpellRepository
@@ -85,6 +87,30 @@ class MagicCommandHandler:
 
         if not spell_name:
             return {"result": "Usage: /cast <spell_name> [target]"}
+
+        # Check if player is resting and interrupt rest
+        # Get connection_manager from magic_service if available
+        try:
+            app = getattr(self.magic_service, "_app_instance", None)
+            if not app:
+                # Try to get from player_service
+                app = getattr(self.magic_service.player_service, "_app_instance", None)
+
+            if app:
+                connection_manager = getattr(app.state, "connection_manager", None)
+                if connection_manager:
+                    player_id = uuid.UUID(player.player_id) if isinstance(player.player_id, str) else player.player_id
+
+                    if is_player_resting(player_id, connection_manager):
+                        await _cancel_rest_countdown(player_id, connection_manager)
+                        logger.info(
+                            "Rest interrupted by spellcasting",
+                            player_id=player_id,
+                            player_name=player_name,
+                            spell=spell_name,
+                        )
+        except (AttributeError, ImportError, TypeError) as e:
+            logger.debug("Could not check rest state for spellcasting", player_name=player_name, error=str(e))
 
         # Cast spell
         result = await self.magic_service.cast_spell(player.player_id, spell_name, target_name)

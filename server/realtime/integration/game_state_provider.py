@@ -8,12 +8,16 @@ AI Agent: Extracted from ConnectionManager to follow Single Responsibility Princ
 Game state generation is now a focused, independently testable component.
 """
 
+import json
 import uuid
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
 from ...models import Player
+from ...services.npc_instance_service import get_npc_instance_service
 from ...structured_logging.enhanced_logging_config import get_logger
+from ..disconnect_grace_period import is_player_in_grace_period
+from ..envelope import build_event
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable
@@ -68,9 +72,7 @@ class GameStateProvider:
         Returns:
             Optional[Player]: The player object or None if not found
         """
-        from ...async_persistence import get_async_persistence
-
-        async_persistence = get_async_persistence()
+        async_persistence = self.get_async_persistence()
         player = await async_persistence.get_player_by_id(player_id)
         return player
 
@@ -134,8 +136,6 @@ class GameStateProvider:
 
         try:
             # Get NPC instance service for batch lookup
-            from ...services.npc_instance_service import get_npc_instance_service
-
             npc_instance_service = get_npc_instance_service()
             if hasattr(npc_instance_service, "lifecycle_manager"):
                 lifecycle_manager = npc_instance_service.lifecycle_manager
@@ -210,6 +210,16 @@ class GameStateProvider:
                                 and all(c in "0123456789abcdefABCDEF-" for c in player_name)
                             )
                             if not is_uuid_string:
+                                # Check if player is in grace period and add "(linkdead)" indicator
+                                try:
+                                    app = self.get_app()
+                                    connection_manager = getattr(app.state, "connection_manager", None) if app else None
+                                    if connection_manager:
+                                        if is_player_in_grace_period(player_id_uuid, connection_manager):
+                                            player_name = f"{player_name} (linkdead)"
+                                except (AttributeError, ImportError, TypeError, ValueError):
+                                    # If we can't check grace period, use name as-is
+                                    pass
                                 player_names.append(player_name)
                 except (ValueError, AttributeError):
                     # Skip invalid UUIDs
@@ -274,8 +284,6 @@ class GameStateProvider:
             online_players: Online players dictionary
         """
         try:
-            from ..envelope import build_event
-
             # Get room information
             room_data = None
             async_persistence = self.get_async_persistence()
@@ -311,14 +319,32 @@ class GameStateProvider:
                         # Separate into players and NPCs for structured data
                         if is_npc:
                             npc_names_list.append(occupant_name)
-                        elif occ_info.get("player_id") != player_id:
-                            # Exclude current player from the list shown to them
-                            player_names_list.append(occupant_name)
-                        elif occ_info.get("player_id") == player_id:
-                            # BUGFIX: Include current player in the list (user wants to see themselves)
-                            player_names_list.append(occupant_name)
+                        else:
+                            # Check if player is in grace period and add "(linkdead)" indicator
+                            occ_player_id = occ_info.get("player_id")
+                            if occ_player_id:
+                                try:
+                                    occ_player_id_uuid = (
+                                        uuid.UUID(occ_player_id) if isinstance(occ_player_id, str) else occ_player_id
+                                    )
+                                    app = self.get_app()
+                                    connection_manager = getattr(app.state, "connection_manager", None) if app else None
+                                    if connection_manager:
+                                        if is_player_in_grace_period(occ_player_id_uuid, connection_manager):
+                                            occupant_name = f"{occupant_name} (linkdead)"
+                                except (AttributeError, ImportError, TypeError, ValueError):
+                                    # If we can't check grace period, use name as-is
+                                    pass
+
+                            if occ_info.get("player_id") != player_id:
+                                # Exclude current player from the list shown to them
+                                player_names_list.append(occupant_name)
+                            elif occ_info.get("player_id") == player_id:
+                                # BUGFIX: Include current player in the list (user wants to see themselves)
+                                player_names_list.append(occupant_name)
 
                         # Add to flat occupants list for backward compatibility
+                        # (occupant_name already has "(linkdead)" if applicable from above)
                         if occ_info.get("player_id") != player_id or is_npc:
                             occupants.append(occupant_name)
                         else:
@@ -369,8 +395,6 @@ class GameStateProvider:
                     else:
                         raw_stats = getattr(player, "stats", {})
                         if isinstance(raw_stats, str):
-                            import json
-
                             try:
                                 stats_data = json.loads(raw_stats)
                             except (ValueError, TypeError, json.JSONDecodeError):

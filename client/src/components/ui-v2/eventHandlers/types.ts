@@ -47,6 +47,7 @@ export interface EventHandlerContext {
   setDeathLocation: (location: string) => void;
   setDeliriumLocation: (location: string) => void;
   setRescueState: (state: RescueState | null) => void;
+  onLogout?: () => void;
 }
 
 export type EventHandler = (

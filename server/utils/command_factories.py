@@ -176,6 +176,10 @@ class CommandFactory:
         """Create LogoutCommand from arguments."""
         return self._player_state.create_logout_command(args)
 
+    def create_rest_command(self, args: list[str]):
+        """Create RestCommand from arguments."""
+        return self._player_state.create_rest_command(args)
+
     # Combat commands
     def create_attack_command(self, args: list[str]):
         """Create AttackCommand from arguments."""

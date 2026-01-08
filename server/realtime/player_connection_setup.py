@@ -11,6 +11,8 @@ from typing import Any
 from ..exceptions import DatabaseError
 from ..models import Player
 from ..structured_logging.enhanced_logging_config import get_logger
+from .disconnect_grace_period import cancel_grace_period
+from .envelope import build_event
 from .player_presence_utils import extract_player_name
 
 logger = get_logger(__name__)
@@ -73,8 +75,6 @@ async def _broadcast_player_entered_game(player_id: uuid.UUID, player: Player, r
         manager: ConnectionManager instance
     """
     try:
-        from .envelope import build_event
-
         player_name = extract_player_name(player, player_id)
         entered_event = build_event(
             "player_entered_game",
@@ -160,6 +160,11 @@ async def handle_new_connection_setup(
     # Clear processed disconnect flag to allow future disconnect processing
     async with manager.processed_disconnect_lock:
         manager.processed_disconnects.discard(player_id)
+
+    # Cancel grace period if player was in grace period (reconnection)
+    if player_id in getattr(manager, "grace_period_players", {}):
+        logger.info("Player reconnected during grace period, cancelling grace period", player_id=player_id)
+        await cancel_grace_period(player_id, manager)
 
     # Update room occupants using canonical room id
     if not room_id:

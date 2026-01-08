@@ -5,11 +5,13 @@ This module provides helper functions for tracking player connections
 and disconnections, extracting common logic from ConnectionManager.
 """
 
+import time
 import uuid
 from typing import Any
 
 from ..exceptions import DatabaseError
 from ..structured_logging.enhanced_logging_config import get_logger
+from .disconnect_grace_period import start_grace_period
 from .player_connection_setup import handle_new_connection_setup
 from .player_disconnect_handlers import (
     _cleanup_player_references,
@@ -42,8 +44,6 @@ def _build_player_info(
     Returns:
         Dictionary with player connection info
     """
-    import time
-
     position = get_player_position(player, player_id)
     player_name = extract_player_name(player, player_id)
 
@@ -216,6 +216,9 @@ async def track_player_disconnected_impl(
     """
     Track when a player disconnects.
 
+    For unintentional disconnects (connection loss), starts a 30-second grace period.
+    For intentional disconnects (via /rest or /quit), performs immediate cleanup.
+
     Args:
         player_id: The player's ID
         connection_type: Type of connection being disconnected
@@ -230,27 +233,45 @@ async def track_player_disconnected_impl(
         if not await _acquire_disconnect_lock(player_id, manager):
             return
 
-        # Resolve player
-        pl = await manager._get_player(player_id)  # pylint: disable=protected-access
-        room_id: str | None = getattr(pl, "current_room_id", None) if pl else None
-        player_name: str = extract_player_name(pl, player_id) if pl else "Unknown Player"
+        # Check if this is an intentional disconnect (no grace period)
+        is_intentional = player_id in getattr(manager, "intentional_disconnects", set())
 
-        # Collect all keys to remove
-        keys_to_remove, keys_to_remove_str = _collect_disconnect_keys(player_id, pl)
+        if is_intentional:
+            # Intentional disconnect - perform immediate cleanup (no grace period)
+            logger.info("Intentional disconnect detected, skipping grace period", player_id=player_id)
 
-        # Handle disconnect broadcast
-        await handle_player_disconnect_broadcast(player_id, player_name, room_id, manager)
+            # Remove from intentional disconnects set
+            manager.intentional_disconnects.discard(player_id)
 
-        # Remove player from online tracking
-        _remove_player_from_online_tracking(keys_to_remove, keys_to_remove_str, manager)
+            # Resolve player
+            pl = await manager._get_player(player_id)  # pylint: disable=protected-access
+            room_id: str | None = getattr(pl, "current_room_id", None) if pl else None
+            player_name: str = extract_player_name(pl, player_id) if pl else "Unknown Player"
 
-        # Clean up ghost players
-        manager._cleanup_ghost_players()  # pylint: disable=protected-access
+            # Collect all keys to remove
+            keys_to_remove, keys_to_remove_str = _collect_disconnect_keys(player_id, pl)
 
-        # Clean up remaining references
-        _cleanup_player_references(player_id, manager)
+            # Handle disconnect broadcast
+            await handle_player_disconnect_broadcast(player_id, player_name, room_id, manager)
 
-        logger.info("Player presence tracked as disconnected", player_id=player_id)
+            # Remove player from online tracking
+            _remove_player_from_online_tracking(keys_to_remove, keys_to_remove_str, manager)
+
+            # Clean up ghost players
+            manager._cleanup_ghost_players()  # pylint: disable=protected-access
+
+            # Clean up remaining references
+            _cleanup_player_references(player_id, manager)
+
+            logger.info("Player presence tracked as disconnected (intentional)", player_id=player_id)
+        else:
+            # Unintentional disconnect - start grace period
+            logger.info("Unintentional disconnect detected, starting grace period", player_id=player_id)
+
+            # Start grace period (player will remain in-game for 30 seconds)
+            await start_grace_period(player_id, manager)
+
+            logger.info("Grace period started for disconnected player", player_id=player_id)
 
     except (DatabaseError, AttributeError) as e:
         logger.error("Error tracking player disconnection", error=str(e), exc_info=True)

@@ -4,10 +4,14 @@ WebSocket room update and broadcast functions for MythosMUD real-time communicat
 This module handles room updates and broadcasting to players.
 """
 
+import uuid
 from typing import Any
 
+from ..async_persistence import get_async_persistence
+from ..services.npc_instance_service import get_npc_instance_service
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.room_renderer import build_room_drop_summary, clone_room_drops
+from .disconnect_grace_period import is_player_in_grace_period
 from .envelope import build_event
 from .websocket_helpers import convert_uuids_to_strings, get_npc_name_from_instance
 
@@ -15,13 +19,29 @@ logger = get_logger(__name__)
 
 
 async def get_player_occupants(connection_manager, room_id: str) -> list[str]:
-    """Get player occupant names from room."""
+    """
+    Get player occupant names from room.
+
+    Includes "(linkdead)" indicator for players in grace period.
+    """
     occupant_names = []
     try:
         room_occupants = await connection_manager.get_room_occupants(room_id)
         for occ in room_occupants or []:
             name = occ.get("player_name") or occ.get("name")
             if name:
+                # Check if player is in grace period (name may already include "(linkdead)" from occupant processor)
+                # But we check here as well for safety
+                player_id_str = occ.get("player_id")
+                if player_id_str and connection_manager:
+                    try:
+                        player_id = uuid.UUID(player_id_str) if isinstance(player_id_str, str) else player_id_str
+
+                        if is_player_in_grace_period(player_id, connection_manager) and "(linkdead)" not in name:
+                            name = f"{name} (linkdead)"
+                    except (ValueError, AttributeError, ImportError, TypeError):
+                        # If we can't check grace period, use name as-is
+                        pass
                 occupant_names.append(name)
     except (AttributeError, KeyError, TypeError, ValueError) as e:
         logger.error("Error transforming room occupants", room_id=room_id, error=str(e))
@@ -33,8 +53,6 @@ async def get_npc_occupants_from_lifecycle_manager(room_id: str) -> list[str]:
     occupant_names = []
     npc_ids: list[str] = []
     try:
-        from ..services.npc_instance_service import get_npc_instance_service
-
         npc_instance_service = get_npc_instance_service()
         if npc_instance_service and hasattr(npc_instance_service, "lifecycle_manager"):
             lifecycle_manager = npc_instance_service.lifecycle_manager
@@ -82,8 +100,6 @@ async def get_npc_occupants_fallback(room, room_id: str) -> list[str]:
 
     filtered_npc_ids = []
     try:
-        from ..services.npc_instance_service import get_npc_instance_service
-
         npc_instance_service = get_npc_instance_service()
         if npc_instance_service and hasattr(npc_instance_service, "lifecycle_manager"):
             lifecycle_manager = npc_instance_service.lifecycle_manager
@@ -177,11 +193,10 @@ async def broadcast_room_update(player_id: str, room_id: str, connection_manager
     logger.debug("broadcast_room_update called", player_id=player_id, room_id=room_id)
     try:
         if connection_manager is None:
-            from ..main import app
+            # Import inside function to avoid circular import (main.py imports websocket_room_updates indirectly)
+            from ..main import app  # pylint: disable=import-outside-toplevel
 
             connection_manager = app.state.container.connection_manager
-
-        from ..async_persistence import get_async_persistence
 
         async_persistence = get_async_persistence()
         if not async_persistence:

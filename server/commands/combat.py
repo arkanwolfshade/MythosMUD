@@ -5,18 +5,24 @@ This module implements the combat commands including attack, punch, kick,
 strike, and other combat-related actions.
 """
 
+import secrets
+import uuid
 from typing import TYPE_CHECKING, Any
 
 from server.alias_storage import AliasStorage
+from server.commands.rest_command import _cancel_rest_countdown, is_player_resting
 from server.config import get_config
+from server.game.player_service import PlayerService
 
 # Removed: from server.persistence import get_persistence - now using async_persistence parameter
 from server.schemas.target_resolution import TargetType
 from server.services.npc_combat_integration_service import (
     NPCCombatIntegrationService,
 )
+from server.services.npc_instance_service import get_npc_instance_service
 from server.services.target_resolution_service import TargetResolutionService
 from server.structured_logging.enhanced_logging_config import get_logger
+from server.utils.command_parser import get_username_from_user
 from server.validators.combat_validator import CombatValidator
 
 if TYPE_CHECKING:
@@ -103,8 +109,6 @@ class CombatCommandHandler:
         self.persistence = async_persistence
         self.combat_validator = CombatValidator()
         # Initialize target resolution service
-        from server.game.player_service import PlayerService
-
         # Use async persistence for target resolution and player service
         self.target_resolution_service = TargetResolutionService(async_persistence, PlayerService(async_persistence))
 
@@ -129,6 +133,20 @@ class CombatCommandHandler:
         Returns:
             dict: Attack command result with 'result' key
         """
+        # Check if player is resting and interrupt rest
+        request_app = request.app if request else None
+        if request_app:
+            connection_manager = getattr(request_app.state, "connection_manager", None)
+            persistence = getattr(request_app.state, "persistence", None)
+            if connection_manager and persistence:
+                player = await persistence.get_player_by_name(get_username_from_user(current_user))
+                if player:
+                    player_id = uuid.UUID(player.player_id) if isinstance(player.player_id, str) else player.player_id
+
+                    if is_player_resting(player_id, connection_manager):
+                        await _cancel_rest_countdown(player_id, connection_manager)
+                        logger.info("Rest interrupted by combat command", player_id=player_id, player_name=player_name)
+
         command_type = command_data.get("command_type", "attack")
         # Convert enum to string if needed
         if hasattr(command_type, "value"):
@@ -166,7 +184,6 @@ class CombatCommandHandler:
                     "Your anger needs direction - who shall bear the brunt of your assault?",
                     "The cosmic forces require a target for your destructive intent.",
                 ]
-                import secrets
 
                 return {"result": secrets.choice(error_messages)}
 
@@ -174,16 +191,14 @@ class CombatCommandHandler:
 
             # Get persistence layer and player data (following the same pattern as look command)
             logger.debug("DEBUG: Getting persistence layer", player_name=player_name)
-            app = request.app if request else None
-            persistence = app.state.persistence if app else None
+            request_app = request.app if request else None
+            persistence = request_app.state.persistence if request_app else None
 
             if not persistence:
                 logger.debug("DEBUG: No persistence layer found", player_name=player_name)
                 return {"result": "The cosmic forces are unreachable."}
 
             logger.debug("DEBUG: Getting player data", player_name=player_name)
-            from ..utils.command_parser import get_username_from_user
-
             player = await persistence.get_player_by_name(get_username_from_user(current_user))
             if not player:
                 logger.debug("DEBUG: Player not found", player_name=player_name)
@@ -286,8 +301,6 @@ class CombatCommandHandler:
         """Get NPC instance from the spawning service."""
         try:
             # Use the same approach as websocket handler
-            from ..services.npc_instance_service import get_npc_instance_service
-
             npc_instance_service = get_npc_instance_service()
             if hasattr(npc_instance_service, "lifecycle_manager"):
                 lifecycle_manager = npc_instance_service.lifecycle_manager
@@ -386,18 +399,20 @@ class CombatCommandHandler:
 _combat_command_handler: CombatCommandHandler | None = None
 
 
-def get_combat_command_handler() -> CombatCommandHandler:
+def get_combat_command_handler(app: Any = None) -> CombatCommandHandler:
     """
     Get the global combat command handler instance, creating it if needed.
 
     This uses lazy initialization to ensure that the combat_service from
     app.state is properly initialized before we create the handler.
+
+    Args:
+        app: Optional FastAPI app instance. If None, uses cached handler if available.
     """
     global _combat_command_handler  # pylint: disable=global-statement  # Reason: Singleton pattern for combat handler
     if _combat_command_handler is None:
-        # Import here to avoid circular dependency
-        from server.main import app
-
+        if app is None:
+            raise RuntimeError("Cannot initialize combat command handler without app instance")
         combat_service = getattr(app.state, "combat_service", None)
         event_bus = getattr(app.state, "event_bus", None)
         player_combat_service = getattr(app.state, "player_combat_service", None)
@@ -427,7 +442,8 @@ async def handle_attack_command(
     player_name: str,
 ) -> dict[str, str]:
     """Handle attack command."""
-    handler = get_combat_command_handler()
+    app = getattr(request, "app", None)
+    handler = get_combat_command_handler(app)
     return await handler.handle_attack_command(command_data, current_user, request, alias_storage, player_name)
 
 
@@ -442,7 +458,8 @@ async def handle_punch_command(
     # Set command type to punch for proper messaging
     command_data = command_data.copy()
     command_data["command_type"] = "punch"
-    handler = get_combat_command_handler()
+    app = getattr(request, "app", None)
+    handler = get_combat_command_handler(app)
     return await handler.handle_attack_command(command_data, current_user, request, alias_storage, player_name)
 
 
@@ -457,7 +474,8 @@ async def handle_kick_command(
     # Set command type to kick for proper messaging
     command_data = command_data.copy()
     command_data["command_type"] = "kick"
-    handler = get_combat_command_handler()
+    app = getattr(request, "app", None)
+    handler = get_combat_command_handler(app)
     return await handler.handle_attack_command(command_data, current_user, request, alias_storage, player_name)
 
 
@@ -472,5 +490,6 @@ async def handle_strike_command(
     # Set command type to strike for proper messaging
     command_data = command_data.copy()
     command_data["command_type"] = "strike"
-    handler = get_combat_command_handler()
+    app = getattr(request, "app", None)
+    handler = get_combat_command_handler(app)
     return await handler.handle_attack_command(command_data, current_user, request, alias_storage, player_name)

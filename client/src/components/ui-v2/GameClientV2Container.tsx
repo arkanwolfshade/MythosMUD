@@ -8,8 +8,8 @@ import { useMemoryMonitor } from '../../utils/memoryMonitor';
 import { DeathInterstitial } from '../DeathInterstitial';
 import { DeliriumInterstitial } from '../DeliriumInterstitial';
 import { MainMenuModal } from '../MainMenuModal';
-import { AsciiMinimap } from '../map/AsciiMinimap';
 import { MapView } from '../MapView';
+import { AsciiMinimap } from '../map/AsciiMinimap';
 import { GameClientV2 } from './GameClientV2';
 import { TabbedInterfaceOverlay } from './components/TabbedInterfaceOverlay';
 import type { EventHandlerContext } from './eventHandlers/types';
@@ -23,7 +23,6 @@ import { useRefSynchronization } from './hooks/useRefSynchronization';
 import { useRespawnHandlers } from './hooks/useRespawnHandlers';
 import type { ChatMessage, Player, Room } from './types';
 import { useTabbedInterface } from './useTabbedInterface';
-import { sanitizeChatMessageForState } from './utils/messageUtils';
 import type { GameState } from './utils/stateUpdateUtils';
 
 interface GameClientV2ContainerProps {
@@ -166,6 +165,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
     setDeathLocation,
     setDeliriumLocation,
     setRescueState,
+    onLogout,
   };
 
   // Event processing hook
@@ -208,26 +208,31 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
     setGameState,
   });
 
-  const handleLogout = () => {
-    const logoutMessage: ChatMessage = sanitizeChatMessageForState({
-      text: 'You have been logged out of the MythosMUD server.',
-      timestamp: new Date().toISOString(),
-      messageType: 'system',
-      isHtml: false,
-    });
-
-    setGameState(prev => ({
-      ...prev,
-      messages: [...prev.messages, logoutMessage],
-    }));
-
-    setTimeout(() => {
+  const handleLogout = async () => {
+    // Send /rest command instead of immediate disconnect
+    // The /rest command will handle the countdown and disconnect automatically
+    if (!isConnected) {
+      // If not connected, fall back to immediate disconnect
       if (onLogout) {
         onLogout();
       } else {
         disconnect();
       }
-    }, 500);
+      return;
+    }
+
+    // Send the /rest command
+    const success = await sendCommand('rest', []);
+    if (!success) {
+      logger.error('GameClientV2Container', 'Failed to send /rest command, falling back to immediate disconnect');
+      // Fallback to immediate disconnect if command fails
+      if (onLogout) {
+        onLogout();
+      } else {
+        disconnect();
+      }
+    }
+    // If successful, the /rest command will handle the countdown and disconnect
   };
 
   // Respawn handlers

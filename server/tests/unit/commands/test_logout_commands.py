@@ -4,6 +4,10 @@ Unit tests for logout commands.
 Tests the logout and quit command handlers for proper cleanup and session management.
 """
 
+# pylint: disable=redefined-outer-name
+# Fixtures are injected as parameters by pytest, which is the standard pattern.
+# This suppression is applied at module level since all test functions use fixtures.
+
 import uuid
 from datetime import UTC, datetime
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -63,6 +67,8 @@ def mock_player():
 def test_clear_corrupted_cache_entry_with_cache(mock_request):
     """Test _clear_corrupted_cache_entry clears entry from cache."""
     cache = {"testplayer": MagicMock()}
+    # Accessing protected member is necessary to test internal cache behavior
+    # pylint: disable=protected-access
     mock_request.state._command_player_cache = cache
 
     _clear_corrupted_cache_entry(mock_request, "testplayer")
@@ -72,6 +78,8 @@ def test_clear_corrupted_cache_entry_with_cache(mock_request):
 
 def test_clear_corrupted_cache_entry_no_cache(mock_request):
     """Test _clear_corrupted_cache_entry handles missing cache gracefully."""
+    # Accessing protected member is necessary to test internal cache behavior
+    # pylint: disable=protected-access
     mock_request.state._command_player_cache = None
 
     # Should not raise
@@ -87,11 +95,12 @@ def test_clear_corrupted_cache_entry_no_request():
 @pytest.mark.asyncio
 async def test_get_player_for_logout_from_cache(mock_request, mock_persistence):
     """Test _get_player_for_logout retrieves player from cache."""
-    mock_player = MagicMock()
-    with patch("server.commands.logout_commands.get_cached_player", return_value=mock_player):
+    # Use a different name to avoid redefining the fixture
+    cached_player = MagicMock()
+    with patch("server.commands.logout_commands.get_cached_player", return_value=cached_player):
         player = await _get_player_for_logout(mock_request, mock_persistence, "testplayer")
 
-        assert player == mock_player
+        assert player == cached_player
 
 
 @pytest.mark.asyncio
@@ -208,7 +217,6 @@ def test_sync_player_position_no_change(mock_player):
 
     # Should not call set_stats if position hasn't changed
     # (Implementation may still call it, but we verify the logic)
-    pass
 
 
 def test_sync_player_position_none_value(mock_player):
@@ -236,13 +244,20 @@ async def test_update_and_save_player_last_active_no_persistence(mock_player):
 
 
 @pytest.mark.asyncio
-async def test_disconnect_player_connections_success(mock_connection_manager):
+async def test_disconnect_player_connections_success(mock_connection_manager, mock_player):
     """Test _disconnect_player_connections disconnects player."""
+    # Set up mock persistence to return a player
+    # Use a different name to avoid redefining the fixture
+    persistence_mock = AsyncMock()
+    persistence_mock.get_player_by_name = AsyncMock(return_value=mock_player)
+    mock_connection_manager.async_persistence = persistence_mock
     mock_connection_manager.force_disconnect_player = AsyncMock()
+    mock_connection_manager.intentional_disconnects = set()
 
     await _disconnect_player_connections(mock_connection_manager, "TestPlayer")
 
-    mock_connection_manager.force_disconnect_player.assert_awaited_once_with("TestPlayer")
+    # force_disconnect_player expects player_id (UUID), not player_name
+    mock_connection_manager.force_disconnect_player.assert_awaited_once_with(mock_player.player_id)
 
 
 @pytest.mark.asyncio

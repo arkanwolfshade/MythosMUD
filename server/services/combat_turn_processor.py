@@ -277,6 +277,10 @@ class CombatTurnProcessor:
                 logger.warning("No target found for player", player_name=player.name, combat_id=combat.combat_id)
                 return
 
+            # Note: Players in grace period (disconnected but still in-game) can still auto-attack.
+            # Commands are blocked for grace period players, but combat auto-attack continues normally.
+            # Grace period players use normal auto-attack (with weapons, no special abilities).
+
             # Check if player is casting a spell - if so, skip autoattack
             # Casting spells takes priority over autoattacks
             try:

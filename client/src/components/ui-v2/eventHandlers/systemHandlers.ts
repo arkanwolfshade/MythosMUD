@@ -133,3 +133,33 @@ export const handleGameTick: EventHandler = (event, _context, appendMessage) => 
     );
   }
 };
+
+export const handleIntentionalDisconnect: EventHandler = (event, context, appendMessage) => {
+  const message = (event.data as { message?: string })?.message || 'You have disconnected from the game.';
+
+  // Add message to chat
+  appendMessage(
+    sanitizeChatMessageForState({
+      text: message,
+      timestamp: event.timestamp,
+      messageType: 'system',
+      channel: 'system',
+      isHtml: false,
+    })
+  );
+
+  // Mark as intentional disconnect to prevent reconnection
+  // Trigger logout which will disconnect and prevent auto-reconnect
+  if (context.onLogout) {
+    logger.info('systemHandlers', 'Intentional disconnect received, triggering logout', {
+      message,
+    });
+    // Use setTimeout to allow the message to be displayed before logout
+    // The logout will clear auth state and prevent reconnection
+    setTimeout(() => {
+      context.onLogout?.();
+    }, 500);
+  } else {
+    logger.warn('systemHandlers', 'Intentional disconnect received but onLogout not available');
+  }
+};

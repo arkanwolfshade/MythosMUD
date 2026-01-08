@@ -63,7 +63,15 @@ from .command_moderation import (
 )
 
 # Import player state commands
-from .command_player_state import GroundCommand, LieCommand, LogoutCommand, QuitCommand, SitCommand, StandCommand
+from .command_player_state import (
+    GroundCommand,
+    LieCommand,
+    LogoutCommand,
+    QuitCommand,
+    RestCommand,
+    SitCommand,
+    StandCommand,
+)
 
 # Import utility commands
 from .command_utility import HelpCommand, StatusCommand, TimeCommand, WhoamiCommand, WhoCommand
@@ -125,6 +133,7 @@ __all__ = [
     "SitCommand",
     "StandCommand",
     "LieCommand",
+    "RestCommand",
     "GroundCommand",
     # System commands
     "ShutdownCommand",
@@ -178,6 +187,7 @@ Command = (
     | SitCommand
     | StandCommand
     | LieCommand
+    | RestCommand
     | GroundCommand
     | ShutdownCommand
     | ChannelCommand
