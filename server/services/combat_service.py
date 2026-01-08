@@ -7,7 +7,6 @@ turn order calculation, and combat resolution.
 
 from uuid import UUID
 
-from server.app.game_tick_processing import get_current_tick
 from server.commands.rest_command import _cancel_rest_countdown, is_player_resting
 from server.config import get_config
 from server.events.combat_events import CombatStartedEvent
@@ -19,6 +18,7 @@ from server.models.combat import (
     CombatResult,
     CombatStatus,
 )
+from server.realtime.login_grace_period import is_player_in_login_grace_period
 from server.services.combat_attack_handler import CombatAttackHandler
 from server.services.combat_cleanup_handler import CombatCleanupHandler
 from server.services.combat_death_handler import CombatDeathHandler
@@ -162,6 +162,17 @@ class CombatService:
                     if connection_manager:
                         # participant_id is always UUID per CombatParticipantData type definition
                         target_id = target.participant_id
+
+                        # Check if target is in login grace period - prevent combat initiation
+                        if is_player_in_login_grace_period(target_id, connection_manager):
+                            logger.info(
+                                "Combat prevented - target in login grace period",
+                                target_id=target_id,
+                                target_name=target.name,
+                                attacker_name=attacker.name,
+                            )
+                            raise ValueError("Target is protected by login grace period and cannot be attacked")
+
                         if is_player_resting(target_id, connection_manager):
                             await _cancel_rest_countdown(target_id, connection_manager)
                             logger.info(
@@ -172,6 +183,35 @@ class CombatService:
             except (AttributeError, ImportError, TypeError, ValueError) as e:
                 logger.debug(
                     "Could not check rest state for combat start", target_id=target.participant_id, error=str(e)
+                )
+                # Re-raise ValueError if it's from grace period check
+                if isinstance(e, ValueError) and "login grace period" in str(e):
+                    raise
+
+        # Check if attacker is in login grace period (if attacker is a player)
+        if attacker.participant_type == CombatParticipantType.PLAYER:
+            try:
+                config = get_config()
+                app = getattr(config, "_app_instance", None)
+                if app:
+                    connection_manager = getattr(app.state, "connection_manager", None)
+                    if connection_manager:
+                        attacker_id = attacker.participant_id
+
+                        if is_player_in_login_grace_period(attacker_id, connection_manager):
+                            logger.info(
+                                "Combat prevented - attacker in login grace period",
+                                attacker_id=attacker_id,
+                                attacker_name=attacker.name,
+                                target_name=target.name,
+                            )
+                            raise ValueError("You are protected by login grace period and cannot initiate combat")
+            except (AttributeError, ImportError, TypeError, ValueError) as e:
+                # Re-raise ValueError if it's from grace period check
+                if isinstance(e, ValueError) and "login grace period" in str(e):
+                    raise
+                logger.debug(
+                    "Could not check login grace period for attacker", attacker_id=attacker.participant_id, error=str(e)
                 )
 
         # Check if either participant is already in combat
@@ -447,6 +487,9 @@ class CombatService:
                 )
         else:
             # Set up next turn tick for auto-progression
+            # Lazy import to avoid circular dependency with game_tick_processing
+            from server.app.game_tick_processing import get_current_tick  # noqa: E402
+
             combat.next_turn_tick = get_current_tick() + combat.turn_interval_ticks
             logger.debug("Combat attack processed, auto-progression enabled", combat_id=combat.combat_id)
 

@@ -24,6 +24,8 @@ export interface GameStateUpdates {
   player?: Player | null;
   room?: Room | null;
   messages?: ChatMessage[];
+  loginGracePeriodActive?: boolean;
+  loginGracePeriodRemaining?: number;
 }
 
 export interface EventHandlerContext {

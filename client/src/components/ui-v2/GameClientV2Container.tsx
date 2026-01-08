@@ -11,6 +11,7 @@ import { MainMenuModal } from '../MainMenuModal';
 import { MapView } from '../MapView';
 import { AsciiMinimap } from '../map/AsciiMinimap';
 import { GameClientV2 } from './GameClientV2';
+import { LoginGracePeriodBanner } from './LoginGracePeriodBanner';
 import { TabbedInterfaceOverlay } from './components/TabbedInterfaceOverlay';
 import type { EventHandlerContext } from './eventHandlers/types';
 import { useCommandHandlers } from './hooks/useCommandHandlers';
@@ -55,6 +56,8 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
     room: null,
     messages: [],
     commandHistory: [],
+    loginGracePeriodActive: false,
+    loginGracePeriodRemaining: 0,
   });
 
   const [isMortallyWounded, setIsMortallyWounded] = useState(false);
@@ -292,6 +295,14 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
           onDownloadLogs={() => {
             logger.downloadLogs();
           }}
+        />
+      )}
+
+      {/* Login Grace Period Banner */}
+      {gameState.loginGracePeriodActive && gameState.loginGracePeriodRemaining !== undefined && (
+        <LoginGracePeriodBanner
+          remainingSeconds={gameState.loginGracePeriodRemaining}
+          className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 max-w-md"
         />
       )}
 

@@ -14,17 +14,8 @@ import pytest
 from fastapi import Request
 from pydantic import ValidationError
 
-from server.api.containers import (
-    CloseContainerRequest,
-    OpenContainerRequest,
-    TransferContainerRequest,
-    _create_error_context,
-    _get_container_service,
-    _get_player_id_from_user,
-    close_container,
-    open_container,
-    transfer_items,
-)
+# Lazy imports to avoid circular import issues
+# Import inside functions that need them to avoid triggering circular import chain
 from server.exceptions import LoggedHTTPException, RateLimitError
 from server.models.user import User
 from server.services.container_service import (
@@ -80,6 +71,9 @@ class TestHelperFunctions:
 
     def test_create_error_context(self, mock_request, mock_user):
         """Test _create_error_context() creates context."""
+        # Lazy import to avoid circular import
+        from server.api.containers import _create_error_context  # noqa: E402
+
         context = _create_error_context(mock_request, mock_user, operation="test")
         assert context.user_id == str(mock_user.id)
         assert context.metadata["operation"] == "test"
@@ -87,6 +81,9 @@ class TestHelperFunctions:
     @pytest.mark.asyncio
     async def test_get_player_id_from_user_success(self, mock_user, mock_persistence):
         """Test _get_player_id_from_user() returns player ID."""
+        # Lazy import to avoid circular import
+        from server.api.containers import _get_player_id_from_user  # noqa: E402
+
         mock_player = MagicMock()
         mock_player.player_id = uuid.uuid4()
         mock_persistence.get_player_by_user_id = AsyncMock(return_value=mock_player)
@@ -97,6 +94,9 @@ class TestHelperFunctions:
     @pytest.mark.asyncio
     async def test_get_player_id_from_user_not_found(self, mock_user, mock_persistence):
         """Test _get_player_id_from_user() raises when player not found."""
+        # Lazy import to avoid circular import
+        from server.api.containers import _get_player_id_from_user  # noqa: E402
+
         mock_persistence.get_player_by_user_id = AsyncMock(return_value=None)
 
         with pytest.raises(LoggedHTTPException) as exc_info:
@@ -105,17 +105,26 @@ class TestHelperFunctions:
 
     def test_get_container_service_with_persistence(self, mock_persistence):
         """Test _get_container_service() with provided persistence."""
+        # Lazy import to avoid circular import
+        from server.api.containers import _get_container_service  # noqa: E402
+
         service = _get_container_service(persistence=mock_persistence)
         assert isinstance(service, ContainerService)
 
     def test_get_container_service_from_request(self, mock_request, mock_persistence):
         """Test _get_container_service() gets persistence from request."""
+        # Lazy import to avoid circular import
+        from server.api.containers import _get_container_service  # noqa: E402
+
         mock_request.app.state.persistence = mock_persistence
         service = _get_container_service(request=mock_request)
         assert isinstance(service, ContainerService)
 
     def test_get_container_service_raises_without_args(self):
         """Test _get_container_service() raises when neither persistence nor request provided."""
+        # Lazy import to avoid circular import
+        from server.api.containers import _get_container_service  # noqa: E402
+
         with pytest.raises(ValueError, match="Either persistence or request must be provided"):
             _get_container_service()
 
@@ -126,6 +135,9 @@ class TestOpenContainer:
     @pytest.mark.asyncio
     async def test_open_container_not_authenticated(self, mock_request):
         """Test open_container() requires authentication."""
+        # Lazy import to avoid circular import
+        from server.api.containers import OpenContainerRequest, open_container  # noqa: E402
+
         request_data = OpenContainerRequest(container_id=uuid.uuid4())
         with pytest.raises(LoggedHTTPException) as exc_info:
             await open_container(
@@ -138,6 +150,9 @@ class TestOpenContainer:
     @pytest.mark.asyncio
     async def test_open_container_rate_limit(self, mock_request, mock_user):
         """Test open_container() enforces rate limiting."""
+        # Lazy import to avoid circular import
+        from server.api.containers import OpenContainerRequest, open_container  # noqa: E402
+
         request_data = OpenContainerRequest(container_id=uuid.uuid4())
         with patch("server.api.containers.container_rate_limiter") as mock_limiter:
             mock_limiter.enforce_rate_limit.side_effect = RateLimitError("Rate limit exceeded", retry_after=60)
@@ -152,6 +167,9 @@ class TestOpenContainer:
     @pytest.mark.asyncio
     async def test_open_container_success(self, mock_request, mock_user, mock_persistence, mock_container_service):
         """Test open_container() successfully opens container."""
+        # Lazy import to avoid circular import
+        from server.api.containers import OpenContainerRequest, open_container  # noqa: E402
+
         container_id = uuid.uuid4()
         request_data = OpenContainerRequest(container_id=container_id)
         player_id = uuid.uuid4()
@@ -179,6 +197,9 @@ class TestOpenContainer:
     @pytest.mark.asyncio
     async def test_open_container_not_found(self, mock_request, mock_user, mock_persistence, mock_container_service):
         """Test open_container() handles ContainerNotFoundError."""
+        # Lazy import to avoid circular import
+        from server.api.containers import OpenContainerRequest, open_container  # noqa: E402
+
         container_id = uuid.uuid4()
         request_data = OpenContainerRequest(container_id=container_id)
         player_id = uuid.uuid4()
@@ -201,6 +222,9 @@ class TestOpenContainer:
     @pytest.mark.asyncio
     async def test_open_container_locked(self, mock_request, mock_user, mock_persistence, mock_container_service):
         """Test open_container() handles ContainerLockedError."""
+        # Lazy import to avoid circular import
+        from server.api.containers import OpenContainerRequest, open_container  # noqa: E402
+
         container_id = uuid.uuid4()
         request_data = OpenContainerRequest(container_id=container_id)
         player_id = uuid.uuid4()
@@ -225,6 +249,9 @@ class TestOpenContainer:
         self, mock_request, mock_user, mock_persistence, mock_container_service
     ):
         """Test open_container() handles ContainerAccessDeniedError."""
+        # Lazy import to avoid circular import
+        from server.api.containers import OpenContainerRequest, open_container  # noqa: E402
+
         container_id = uuid.uuid4()
         request_data = OpenContainerRequest(container_id=container_id)
         player_id = uuid.uuid4()
@@ -251,6 +278,9 @@ class TestTransferItems:
     @pytest.mark.asyncio
     async def test_transfer_items_not_authenticated(self, mock_request):
         """Test transfer_items() requires authentication."""
+        # Lazy import to avoid circular import
+        from server.api.containers import TransferContainerRequest, transfer_items  # noqa: E402
+
         request_data = TransferContainerRequest(
             container_id=uuid.uuid4(),
             mutation_token="token",
@@ -269,6 +299,9 @@ class TestTransferItems:
     @pytest.mark.asyncio
     async def test_transfer_items_rate_limit(self, mock_request, mock_user):
         """Test transfer_items() enforces rate limiting."""
+        # Lazy import to avoid circular import
+        from server.api.containers import TransferContainerRequest, transfer_items  # noqa: E402
+
         request_data = TransferContainerRequest(
             container_id=uuid.uuid4(),
             mutation_token="token",
@@ -289,6 +322,9 @@ class TestTransferItems:
     @pytest.mark.asyncio
     async def test_transfer_items_to_container(self, mock_request, mock_user, mock_persistence, mock_container_service):
         """Test transfer_items() transfers to container."""
+        # Lazy import to avoid circular import
+        from server.api.containers import TransferContainerRequest, transfer_items  # noqa: E402
+
         container_id = uuid.uuid4()
         request_data = TransferContainerRequest(
             container_id=container_id,
@@ -318,6 +354,9 @@ class TestTransferItems:
     @pytest.mark.asyncio
     async def test_transfer_items_to_player(self, mock_request, mock_user, mock_persistence, mock_container_service):
         """Test transfer_items() transfers to player."""
+        # Lazy import to avoid circular import
+        from server.api.containers import TransferContainerRequest, transfer_items  # noqa: E402
+
         container_id = uuid.uuid4()
         request_data = TransferContainerRequest(
             container_id=container_id,
@@ -349,6 +388,9 @@ class TestTransferItems:
         self, mock_request, mock_user, mock_persistence, mock_container_service
     ):
         """Test transfer_items() handles ContainerCapacityError."""
+        # Lazy import to avoid circular import
+        from server.api.containers import TransferContainerRequest, transfer_items  # noqa: E402
+
         container_id = uuid.uuid4()
         request_data = TransferContainerRequest(
             container_id=container_id,
@@ -379,6 +421,9 @@ class TestTransferItems:
     @pytest.mark.asyncio
     async def test_transfer_items_stale_token(self, mock_request, mock_user, mock_persistence, mock_container_service):
         """Test transfer_items() handles stale mutation token."""
+        # Lazy import to avoid circular import
+        from server.api.containers import TransferContainerRequest, transfer_items  # noqa: E402
+
         container_id = uuid.uuid4()
         request_data = TransferContainerRequest(
             container_id=container_id,
@@ -413,6 +458,9 @@ class TestCloseContainer:
     @pytest.mark.asyncio
     async def test_close_container_not_authenticated(self, mock_request):
         """Test close_container() requires authentication."""
+        # Lazy import to avoid circular import
+        from server.api.containers import CloseContainerRequest, close_container  # noqa: E402
+
         request_data = CloseContainerRequest(container_id=uuid.uuid4(), mutation_token="token")
         with pytest.raises(LoggedHTTPException) as exc_info:
             await close_container(
@@ -425,6 +473,9 @@ class TestCloseContainer:
     @pytest.mark.asyncio
     async def test_close_container_rate_limit(self, mock_request, mock_user):
         """Test close_container() enforces rate limiting."""
+        # Lazy import to avoid circular import
+        from server.api.containers import CloseContainerRequest, close_container  # noqa: E402
+
         request_data = CloseContainerRequest(container_id=uuid.uuid4(), mutation_token="token")
         with patch("server.api.containers.container_rate_limiter") as mock_limiter:
             mock_limiter.enforce_rate_limit.side_effect = RateLimitError("Rate limit exceeded", retry_after=60)
@@ -439,6 +490,9 @@ class TestCloseContainer:
     @pytest.mark.asyncio
     async def test_close_container_success(self, mock_request, mock_user, mock_persistence, mock_container_service):
         """Test close_container() successfully closes container."""
+        # Lazy import to avoid circular import
+        from server.api.containers import CloseContainerRequest, close_container  # noqa: E402
+
         container_id = uuid.uuid4()
         request_data = CloseContainerRequest(container_id=container_id, mutation_token="token")
         player_id = uuid.uuid4()
@@ -464,6 +518,9 @@ class TestRequestModels:
 
     def test_transfer_container_request_direction_validation(self):
         """Test TransferContainerRequest validates direction."""
+        # Lazy import to avoid circular import
+        from server.api.containers import TransferContainerRequest  # noqa: E402
+
         # Valid direction
         request = TransferContainerRequest(
             container_id=uuid.uuid4(),
@@ -486,6 +543,9 @@ class TestRequestModels:
 
     def test_transfer_container_request_quantity_validation(self):
         """Test TransferContainerRequest validates quantity."""
+        # Lazy import to avoid circular import
+        from server.api.containers import TransferContainerRequest  # noqa: E402
+
         # Valid quantity
         request = TransferContainerRequest(
             container_id=uuid.uuid4(),

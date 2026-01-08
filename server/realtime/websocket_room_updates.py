@@ -13,6 +13,7 @@ from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.room_renderer import build_room_drop_summary, clone_room_drops
 from .disconnect_grace_period import is_player_in_grace_period
 from .envelope import build_event
+from .login_grace_period import is_player_in_login_grace_period
 from .websocket_helpers import convert_uuids_to_strings, get_npc_name_from_instance
 
 logger = get_logger(__name__)
@@ -30,7 +31,8 @@ async def get_player_occupants(connection_manager, room_id: str) -> list[str]:
         for occ in room_occupants or []:
             name = occ.get("player_name") or occ.get("name")
             if name:
-                # Check if player is in grace period (name may already include "(linkdead)" from occupant processor)
+                # Check if player is in disconnect grace period (name may already include "(linkdead)" from occupant processor)
+                # Also check if player is in login grace period and add "(warded)" indicator
                 # But we check here as well for safety
                 player_id_str = occ.get("player_id")
                 if player_id_str and connection_manager:
@@ -39,6 +41,9 @@ async def get_player_occupants(connection_manager, room_id: str) -> list[str]:
 
                         if is_player_in_grace_period(player_id, connection_manager) and "(linkdead)" not in name:
                             name = f"{name} (linkdead)"
+                        # Check login grace period (can have both indicators)
+                        if is_player_in_login_grace_period(player_id, connection_manager) and "(warded)" not in name:
+                            name = f"{name} (warded)"
                     except (ValueError, AttributeError, ImportError, TypeError):
                         # If we can't check grace period, use name as-is
                         pass

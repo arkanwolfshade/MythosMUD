@@ -9,6 +9,7 @@ import uuid
 from typing import Any
 
 from ..realtime.disconnect_grace_period import is_player_in_grace_period
+from ..realtime.login_grace_period import is_player_in_login_grace_period
 from ..structured_logging.enhanced_logging_config import get_logger
 from .look_helpers import _get_health_label, _get_lucidity_label, _get_visible_equipment
 
@@ -130,6 +131,9 @@ def _format_player_look_display(target_player: Any, connection_manager: Any | No
 
             if is_player_in_grace_period(player_id, connection_manager):
                 player_name_display = f"{player_name_display} (linkdead)"
+            # Check login grace period (can have both indicators)
+            if is_player_in_login_grace_period(player_id, connection_manager):
+                player_name_display = f"{player_name_display} (warded)"
         except (ValueError, AttributeError, ImportError, TypeError):
             # If we can't check grace period, use name as-is
             pass

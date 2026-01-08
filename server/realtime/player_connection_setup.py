@@ -13,6 +13,7 @@ from ..models import Player
 from ..structured_logging.enhanced_logging_config import get_logger
 from .disconnect_grace_period import cancel_grace_period
 from .envelope import build_event
+from .login_grace_period import start_login_grace_period
 from .player_presence_utils import extract_player_name
 
 logger = get_logger(__name__)
@@ -166,6 +167,35 @@ async def handle_new_connection_setup(
         logger.info("Player reconnected during grace period, cancelling grace period", player_id=player_id)
         await cancel_grace_period(player_id, manager)
 
+    # Remove player from combat if they're in combat state on login
+    # This ensures players are never in combat when they log in
+    try:
+        # Lazy import to avoid circular dependency with combat_service
+        from ..services.combat_service import get_combat_service  # noqa: E402
+
+        combat_service = get_combat_service()
+        if combat_service:
+            combat = await combat_service.get_combat_by_participant(player_id)
+            if combat:
+                try:
+                    await combat_service.end_combat(combat.combat_id, "Player logged in - removing from combat")
+                    logger.info(
+                        "Ended combat for player on login",
+                        player_id=player_id,
+                        combat_id=combat.combat_id,
+                    )
+                except Exception as combat_error:  # pylint: disable=broad-exception-caught
+                    # Log but don't fail - combat cleanup is best effort
+                    logger.warning(
+                        "Error ending combat for player on login",
+                        player_id=player_id,
+                        combat_id=combat.combat_id if combat else None,
+                        error=str(combat_error),
+                    )
+    except (AttributeError, ImportError, TypeError, ValueError) as e:
+        # If we can't check combat, log but don't fail - combat cleanup is best effort
+        logger.debug("Could not check combat state for player on login", player_id=player_id, error=str(e))
+
     # Update room occupants using canonical room id
     if not room_id:
         return
@@ -178,6 +208,10 @@ async def handle_new_connection_setup(
 
     # Add player to the Room object WITHOUT triggering player_entered event
     await _add_player_to_room_silently(player_id, room_id, manager)
+
+    # Start login grace period for the newly connected player
+    # This provides 10 seconds of immunity to damage and negative effects
+    await start_login_grace_period(player_id, manager)
 
     # Send initial game_state event to the player
     # Accessing protected method is necessary for modularity

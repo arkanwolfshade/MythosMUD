@@ -441,7 +441,7 @@ function App() {
     setShowProfessionSelection(true);
   };
 
-  const handleMotdContinue = () => {
+  const handleMotdContinue = async () => {
     // The token should be in state from successful login (which also stored it in localStorage)
     // Since tokens are cleared on mount and login happens after mount, the token in state
     // is the source of truth for this session. We don't need to restore from storage
@@ -457,6 +457,28 @@ function App() {
       setShowMotd(false);
       setShowCharacterSelection(false);
       return;
+    }
+
+    // Start login grace period when MOTD is dismissed
+    if (selectedCharacterId) {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/players/${selectedCharacterId}/start-login-grace-period`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+
+        if (!response.ok) {
+          // Log error but don't block game entry - grace period is best effort
+          const errorData = await response.json().catch(() => ({}));
+          console.warn('Failed to start login grace period:', errorData.detail || 'Unknown error');
+        }
+      } catch (error) {
+        // Log error but don't block game entry - grace period is best effort
+        console.warn('Error starting login grace period:', error);
+      }
     }
 
     // Proceed to game terminal - token is already in state and storage from login

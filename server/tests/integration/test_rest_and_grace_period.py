@@ -6,21 +6,38 @@ combat blocking, and visual indicators.
 """
 
 import asyncio
+import os
 import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from server.commands.rest_command import (
-    _cancel_rest_countdown,
-    _start_rest_countdown,
-    handle_rest_command,
-)
+# Set environment variables before imports that require config
+# This ensures config can be initialized during import
+# CRITICAL: These must be set before importing server modules that initialize config
+os.environ.setdefault("SERVER_PORT", "54731")
+os.environ.setdefault("SERVER_HOST", "127.0.0.1")
+os.environ.setdefault("LOGGING_ENVIRONMENT", "unit_test")
+os.environ.setdefault("DATABASE_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
+os.environ.setdefault("DATABASE_NPC_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
+os.environ.setdefault("GAME_ALIASES_DIR", "data/unit_test/players/aliases")
+if not os.environ.get("MYTHOSMUD_ADMIN_PASSWORD"):
+    os.environ["MYTHOSMUD_ADMIN_PASSWORD"] = "test-admin-password-for-development"
+if not os.environ.get("MYTHOSMUD_JWT_SECRET"):
+    os.environ["MYTHOSMUD_JWT_SECRET"] = "test-jwt-secret-key-for-testing-only"
+
+# Imports must come after environment variable setup to allow config initialization
+# Use lazy imports to avoid circular import issues
+# ruff: noqa: E402, I001
+# pylint: disable=wrong-import-position
 from server.realtime.disconnect_grace_period import (
     cancel_grace_period,
     is_player_in_grace_period,
 )
-from server.realtime.player_presence_tracker import track_player_disconnected_impl
+# pylint: enable=wrong-import-position
+
+# Lazy imports for rest_command and player_presence_tracker to avoid circular import
+# Import inside functions that need them to avoid triggering circular import chain
 
 
 @pytest.fixture
@@ -61,6 +78,9 @@ def mock_persistence_full():
 @pytest.mark.asyncio
 async def test_unintentional_disconnect_starts_grace_period(mock_connection_manager_full, mock_persistence_full):  # pylint: disable=redefined-outer-name
     """Test that unintentional disconnect starts grace period."""
+    # Lazy import to avoid circular import
+    from server.realtime.player_presence_tracker import track_player_disconnected_impl  # noqa: E402
+
     player_id = uuid.uuid4()
     mock_player = MagicMock()
     mock_player.current_room_id = "room_123"
@@ -85,6 +105,9 @@ async def test_unintentional_disconnect_starts_grace_period(mock_connection_mana
 @pytest.mark.asyncio
 async def test_intentional_disconnect_no_grace_period(mock_connection_manager_full, mock_persistence_full):  # pylint: disable=redefined-outer-name
     """Test that intentional disconnect does NOT start grace period."""
+    # Lazy import to avoid circular import
+    from server.realtime.player_presence_tracker import track_player_disconnected_impl  # noqa: E402
+
     player_id = uuid.uuid4()
     mock_player = MagicMock()
     mock_player.current_room_id = "room_123"
@@ -122,6 +145,9 @@ async def test_rest_command_blocks_during_combat(  # pylint: disable=redefined-o
     mock_app_with_services, mock_connection_manager_full, mock_persistence_full
 ):
     """Test that /rest command is blocked during combat."""
+    # Lazy import to avoid circular import
+    from server.commands.rest_command import handle_rest_command  # noqa: E402
+
     player_id = uuid.uuid4()
     mock_player = MagicMock()
     mock_player.player_id = str(player_id)
@@ -151,6 +177,9 @@ async def test_rest_command_starts_countdown_not_in_combat(  # pylint: disable=r
     mock_app_with_services, mock_connection_manager_full, mock_persistence_full
 ):
     """Test that /rest command starts countdown when not in combat."""
+    # Lazy import to avoid circular import
+    from server.commands.rest_command import handle_rest_command  # noqa: E402
+
     player_id = uuid.uuid4()
     mock_player = MagicMock()
     mock_player.player_id = str(player_id)
@@ -190,6 +219,9 @@ async def test_rest_command_starts_countdown_not_in_combat(  # pylint: disable=r
 @pytest.mark.asyncio
 async def test_rest_interrupts_combat_action(mock_connection_manager_full):  # pylint: disable=redefined-outer-name
     """Test that combat action interrupts rest countdown."""
+    # Lazy import to avoid circular import
+    from server.commands.rest_command import _cancel_rest_countdown  # noqa: E402
+
     player_id = uuid.uuid4()
     task = asyncio.create_task(asyncio.sleep(10))
     mock_connection_manager_full.resting_players[player_id] = task
@@ -250,6 +282,9 @@ async def test_rest_location_instant_disconnect(  # pylint: disable=redefined-ou
     mock_app_with_services, mock_connection_manager_full, mock_persistence_full
 ):
     """Test that rest location provides instant disconnect when not in combat."""
+    # Lazy import to avoid circular import
+    from server.commands.rest_command import handle_rest_command  # noqa: E402
+
     player_id = uuid.uuid4()
     mock_player = MagicMock()
     mock_player.player_id = str(player_id)
@@ -289,6 +324,9 @@ async def test_rest_location_blocked_during_combat(  # pylint: disable=redefined
     mock_app_with_services, mock_connection_manager_full, mock_persistence_full
 ):
     """Test that /rest in rest location is still blocked during combat."""
+    # Lazy import to avoid circular import
+    from server.commands.rest_command import handle_rest_command  # noqa: E402
+
     player_id = uuid.uuid4()
     mock_player = MagicMock()
     mock_player.player_id = str(player_id)
@@ -335,6 +373,9 @@ async def test_visual_indicator_in_grace_period(mock_connection_manager_full):  
 @pytest.mark.asyncio
 async def test_rest_countdown_completes_disconnect(mock_connection_manager_full, mock_persistence_full):  # pylint: disable=redefined-outer-name
     """Test that rest countdown completes and disconnects player."""
+    # Lazy import to avoid circular import
+    from server.commands.rest_command import _start_rest_countdown  # noqa: E402
+
     player_id = uuid.uuid4()
     player_name = "TestPlayer"
 

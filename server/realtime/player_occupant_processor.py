@@ -11,6 +11,7 @@ from typing import Any
 
 from ..structured_logging.enhanced_logging_config import get_logger
 from .disconnect_grace_period import is_player_in_grace_period
+from .login_grace_period import is_player_in_login_grace_period
 from .player_name_utils import PlayerNameExtractor
 
 
@@ -98,10 +99,14 @@ class PlayerOccupantProcessor:
         if not player_name:
             return None
 
-        # Check if player is in grace period and add "(linkdead)" indicator
+        # Check if player is in disconnect grace period and add "(linkdead)" indicator
+        # Also check if player is in login grace period and add "(warded)" indicator
         try:
             if is_player_in_grace_period(player_id_uuid, self.connection_manager):
                 player_name = f"{player_name} (linkdead)"
+            # Check login grace period (can have both indicators)
+            if is_player_in_login_grace_period(player_id_uuid, self.connection_manager):
+                player_name = f"{player_name} (warded)"
         except (AttributeError, ImportError, TypeError):
             # If we can't check grace period, use name as-is
             pass

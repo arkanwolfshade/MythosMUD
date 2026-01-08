@@ -18,6 +18,10 @@ from ...services.npc_instance_service import get_npc_instance_service
 from ...structured_logging.enhanced_logging_config import get_logger
 from ..disconnect_grace_period import is_player_in_grace_period
 from ..envelope import build_event
+from ..login_grace_period import (
+    get_login_grace_period_remaining,
+    is_player_in_login_grace_period,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable
@@ -210,13 +214,17 @@ class GameStateProvider:
                                 and all(c in "0123456789abcdefABCDEF-" for c in player_name)
                             )
                             if not is_uuid_string:
-                                # Check if player is in grace period and add "(linkdead)" indicator
+                                # Check if player is in disconnect grace period and add "(linkdead)" indicator
+                                # Also check if player is in login grace period and add "(warded)" indicator
                                 try:
                                     app = self.get_app()
                                     connection_manager = getattr(app.state, "connection_manager", None) if app else None
                                     if connection_manager:
                                         if is_player_in_grace_period(player_id_uuid, connection_manager):
                                             player_name = f"{player_name} (linkdead)"
+                                        # Check login grace period (can have both indicators)
+                                        if is_player_in_login_grace_period(player_id_uuid, connection_manager):
+                                            player_name = f"{player_name} (warded)"
                                 except (AttributeError, ImportError, TypeError, ValueError):
                                     # If we can't check grace period, use name as-is
                                     pass
@@ -320,7 +328,8 @@ class GameStateProvider:
                         if is_npc:
                             npc_names_list.append(occupant_name)
                         else:
-                            # Check if player is in grace period and add "(linkdead)" indicator
+                            # Check if player is in disconnect grace period and add "(linkdead)" indicator
+                            # Also check if player is in login grace period and add "(warded)" indicator
                             occ_player_id = occ_info.get("player_id")
                             if occ_player_id:
                                 try:
@@ -332,6 +341,9 @@ class GameStateProvider:
                                     if connection_manager:
                                         if is_player_in_grace_period(occ_player_id_uuid, connection_manager):
                                             occupant_name = f"{occupant_name} (linkdead)"
+                                        # Check login grace period (can have both indicators)
+                                        if is_player_in_login_grace_period(occ_player_id_uuid, connection_manager):
+                                            occupant_name = f"{occupant_name} (warded)"
                                 except (AttributeError, ImportError, TypeError, ValueError):
                                     # If we can't check grace period, use name as-is
                                     pass
@@ -427,11 +439,27 @@ class GameStateProvider:
                     "stats": {},  # Empty stats to prevent client errors
                 }
 
+            # Add login grace period status to game state
+            login_grace_period_active = False
+            login_grace_period_remaining = 0.0
+            try:
+                app = self.get_app()
+                connection_manager = getattr(app.state, "connection_manager", None) if app else None
+                if connection_manager:
+                    if is_player_in_login_grace_period(player_id, connection_manager):
+                        login_grace_period_active = True
+                        login_grace_period_remaining = get_login_grace_period_remaining(player_id, connection_manager)
+            except (AttributeError, ImportError, TypeError, ValueError) as e:
+                # If we can't check grace period, use defaults (fail open)
+                logger.debug("Could not check login grace period for game state", player_id=player_id, error=str(e))
+
             # Create game_state event
             game_state_data = {
                 "player": player_data_for_client,
                 "room": room_data,
                 "occupants": occupants,
+                "login_grace_period_active": login_grace_period_active,
+                "login_grace_period_remaining": login_grace_period_remaining,
             }
 
             # BUGFIX: Populate room_data with structured player/NPC arrays for new UI

@@ -13,6 +13,7 @@ from server.alias_storage import AliasStorage
 from server.commands.rest_command import _cancel_rest_countdown, is_player_resting
 from server.config import get_config
 from server.game.player_service import PlayerService
+from server.realtime.login_grace_period import is_player_in_login_grace_period
 
 # Removed: from server.persistence import get_persistence - now using async_persistence parameter
 from server.schemas.target_resolution import TargetType
@@ -142,6 +143,17 @@ class CombatCommandHandler:
                 player = await persistence.get_player_by_name(get_username_from_user(current_user))
                 if player:
                     player_id = uuid.UUID(player.player_id) if isinstance(player.player_id, str) else player.player_id
+
+                    # Check if player is in login grace period - block combat commands
+                    if is_player_in_login_grace_period(player_id, connection_manager):
+                        logger.info(
+                            "Combat command blocked - player in login grace period",
+                            player_id=player_id,
+                            player_name=player_name,
+                        )
+                        return {
+                            "result": "You are still warded by protective energies. You cannot engage in combat yet."
+                        }
 
                     if is_player_resting(player_id, connection_manager):
                         await _cancel_rest_countdown(player_id, connection_manager)

@@ -9,6 +9,7 @@ import uuid
 from typing import Any
 
 from ..realtime.disconnect_grace_period import is_player_in_grace_period
+from ..realtime.login_grace_period import is_player_in_login_grace_period
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.room_renderer import format_room_drop_lines
 from .look_npc import _get_npcs_in_room
@@ -88,13 +89,17 @@ async def _filter_other_players(
     for p in players_in_room:
         if hasattr(p, "name") and p.name != player_name:
             display_name = p.name
-            # Check if player is in grace period
+            # Check if player is in disconnect grace period and add "(linkdead)" indicator
+            # Also check if player is in login grace period and add "(warded)" indicator
             if connection_manager and hasattr(p, "player_id"):
                 try:
                     player_id = uuid.UUID(p.player_id) if isinstance(p.player_id, str) else p.player_id
 
                     if is_player_in_grace_period(player_id, connection_manager):
                         display_name = f"{p.name} (linkdead)"
+                    # Check login grace period (can have both indicators)
+                    if is_player_in_login_grace_period(player_id, connection_manager):
+                        display_name = f"{display_name} (warded)"
                 except (ValueError, AttributeError, ImportError, TypeError):
                     # If we can't check grace period, use name as-is
                     pass
