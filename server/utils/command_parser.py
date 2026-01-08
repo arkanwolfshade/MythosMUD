@@ -77,6 +77,7 @@ class CommandParser:
             CommandType.SIT.value: self.factory.create_sit_command,
             CommandType.STAND.value: self.factory.create_stand_command,
             CommandType.LIE.value: self.factory.create_lie_command,
+            CommandType.REST.value: self.factory.create_rest_command,
             CommandType.GROUND.value: self.factory.create_ground_command,
             # Communication commands
             CommandType.CHANNEL.value: self.factory.create_channel_command,

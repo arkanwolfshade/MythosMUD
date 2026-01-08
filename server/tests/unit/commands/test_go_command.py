@@ -4,6 +4,7 @@ Unit tests for go command handler.
 Tests the go command for player movement.
 """
 
+import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -386,7 +387,7 @@ async def test_handle_go_command_success():
     command_data = {"direction": "north"}
     mock_player = MagicMock()
     mock_player.current_room_id = "test_room"
-    mock_player.player_id = "test-player-id"
+    mock_player.player_id = uuid.uuid4()
     mock_player.get_stats = MagicMock(return_value={"position": "standing"})
     mock_room = MagicMock()
     mock_room.id = "test_room"

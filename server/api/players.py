@@ -7,9 +7,10 @@ This module handles basic player CRUD operations and multi-character management.
 import uuid
 from typing import Any
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi import Request as FastAPIRequest
 
+from ..async_persistence import get_async_persistence
 from ..auth.users import get_current_active_user, get_current_user
 from ..dependencies import PlayerServiceDep, StatsGeneratorDep
 from ..error_types import ErrorMessages
@@ -17,6 +18,11 @@ from ..exceptions import DatabaseError, LoggedHTTPException, ValidationError
 from ..game.player_service import PlayerService
 from ..game.stats_generator import StatsGenerator
 from ..models.user import User
+from ..realtime.login_grace_period import (
+    get_login_grace_period_remaining,
+    is_player_in_login_grace_period,
+    start_login_grace_period,
+)
 from ..schemas.player import PlayerRead
 from ..schemas.player_requests import SelectCharacterRequest
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -30,6 +36,7 @@ player_router = APIRouter(prefix="/api/players", tags=["players"])
 # Import sub-modules to register their routes with player_router
 # This must happen after player_router is created but before it's exported
 # The imports trigger the decorators which register routes
+# pylint: disable=wrong-import-position
 from . import character_creation, player_effects, player_respawn  # noqa: E402
 
 # Explicitly reference the imports to indicate they're used for side effects
@@ -62,8 +69,6 @@ async def list_players(
     """Get a list of all players."""
     # Note: _current_user is optional for CORS testing, but endpoint requires auth for actual use
     if _current_user is None:
-        from fastapi import HTTPException
-
         raise HTTPException(status_code=401, detail="Authentication required")
     result = await player_service.list_players()
     if not isinstance(result, list):
@@ -271,8 +276,6 @@ async def select_character(
             raise LoggedHTTPException(status_code=404, detail="Character not found", context=context)
 
         # Get the actual Player object to check is_deleted and user_id
-        from ..async_persistence import get_async_persistence
-
         async_persistence = get_async_persistence()
         if not async_persistence:
             context = create_error_context(request, current_user, operation="select_character")
@@ -370,3 +373,117 @@ async def select_character(
             user_id=current_user.id,
         )
         raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context) from e
+
+
+@player_router.post("/{player_id}/start-login-grace-period")
+async def start_login_grace_period_endpoint(
+    player_id: uuid.UUID,
+    request: FastAPIRequest,
+    current_user: User = Depends(get_current_active_user),
+) -> dict[str, Any]:
+    """
+    Start login grace period for a player after MOTD dismissal.
+
+    This endpoint is called when a player clicks through the MOTD screen
+    to enter the game, starting their 10-second grace period of immunity.
+
+    Args:
+        player_id: The player's ID
+        request: FastAPI request object
+        current_user: Current authenticated user
+
+    Returns:
+        dict: Success status and grace period details
+
+    Raises:
+        HTTPException: If player not found, doesn't belong to user, or already in grace period
+    """
+    try:
+        # Get connection manager from app state
+        connection_manager = getattr(request.app.state, "container", None)
+        if connection_manager:
+            connection_manager = getattr(connection_manager, "connection_manager", None)
+
+        if not connection_manager:
+            context = create_error_context(request, current_user, operation="start_login_grace_period")
+            raise LoggedHTTPException(status_code=500, detail="Connection manager not available", context=context)
+
+        # Validate player belongs to user
+        async_persistence = get_async_persistence()
+        if not async_persistence:
+            context = create_error_context(request, current_user, operation="start_login_grace_period")
+            raise LoggedHTTPException(status_code=500, detail="Persistence layer not available", context=context)
+
+        player = await async_persistence.get_player_by_id(player_id)
+        if not player:
+            context = create_error_context(request, current_user, operation="start_login_grace_period")
+            raise LoggedHTTPException(status_code=404, detail="Character not found", context=context)
+
+        # Validate character belongs to user
+        if str(player.user_id) != str(current_user.id):
+            context = create_error_context(request, current_user, operation="start_login_grace_period")
+            raise LoggedHTTPException(status_code=403, detail="Character does not belong to user", context=context)
+
+        # Check if already in grace period
+        if is_player_in_login_grace_period(player_id, connection_manager):
+            remaining = get_login_grace_period_remaining(player_id, connection_manager)
+            return {
+                "success": True,
+                "message": "Login grace period already active",
+                "grace_period_active": True,
+                "grace_period_remaining": remaining,
+            }
+
+        # Remove player from combat if they're in combat
+        # Lazy import to avoid circular dependency with combat_service
+        from ..services.combat_service import get_combat_service  # noqa: E402
+
+        combat_service = get_combat_service()
+        if combat_service:
+            # Check if player is in combat
+            combat = await combat_service.get_combat_by_participant(player_id)
+            if combat:
+                try:
+                    await combat_service.end_combat(combat.combat_id, "Player entered login grace period")
+                    logger.info(
+                        "Ended combat for player entering login grace period",
+                        player_id=player_id,
+                        combat_id=combat.combat_id,
+                    )
+                except Exception as combat_error:  # pylint: disable=broad-exception-caught
+                    # Log but don't fail - combat cleanup is best effort
+                    logger.warning(
+                        "Error ending combat for login grace period",
+                        player_id=player_id,
+                        combat_id=combat.combat_id,
+                        error=str(combat_error),
+                    )
+
+        # Start login grace period
+        await start_login_grace_period(player_id, connection_manager)
+
+        remaining = get_login_grace_period_remaining(player_id, connection_manager)
+
+        logger.info("Login grace period started", player_id=player_id, remaining=remaining)
+
+        return {
+            "success": True,
+            "message": "Login grace period started",
+            "grace_period_active": True,
+            "grace_period_remaining": remaining,
+        }
+
+    except LoggedHTTPException:
+        raise
+    except Exception as e:  # pylint: disable=broad-exception-caught
+        context = create_error_context(request, current_user, operation="start_login_grace_period")
+        logger.error(
+            "Error starting login grace period",
+            error=str(e),
+            player_id=player_id,
+            user_id=current_user.id if current_user else None,
+            exc_info=True,
+        )
+        raise LoggedHTTPException(
+            status_code=500, detail=f"Error starting login grace period: {str(e)}", context=context
+        ) from e

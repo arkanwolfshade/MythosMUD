@@ -4,8 +4,12 @@ Unit tests for game state provider.
 Tests the GameStateProvider class.
 """
 
+# pylint: disable=redefined-outer-name
+# Fixtures are injected as parameters by pytest, which is the standard pattern.
+# This suppression is applied at module level since all test functions use fixtures.
+
 import uuid
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
@@ -48,18 +52,17 @@ def game_state_provider(mock_room_manager, mock_get_async_persistence, mock_send
 
 
 @pytest.mark.asyncio
-async def test_get_player(game_state_provider):
+async def test_get_player(game_state_provider, mock_get_async_persistence):
     """Test get_player() retrieves player from persistence."""
     player_id = uuid.uuid4()
     mock_player = MagicMock()
-    # get_player uses get_async_persistence() directly from async_persistence module
-    with patch("server.async_persistence.get_async_persistence") as mock_get_persistence:
-        mock_persistence = MagicMock()
-        mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-        mock_get_persistence.return_value = mock_persistence
-        result = await game_state_provider.get_player(player_id)
-        assert result == mock_player
-        mock_persistence.get_player_by_id.assert_awaited_once_with(player_id)
+    # get_player uses get_async_persistence callback from fixture
+    mock_persistence = MagicMock()
+    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
+    mock_get_async_persistence.return_value = mock_persistence
+    result = await game_state_provider.get_player(player_id)
+    assert result == mock_player
+    mock_persistence.get_player_by_id.assert_awaited_once_with(player_id)
 
 
 @pytest.mark.asyncio
@@ -81,7 +84,7 @@ async def test_get_players_batch(game_state_provider, mock_get_async_persistence
 
 
 @pytest.mark.asyncio
-async def test_get_players_batch_empty(game_state_provider, mock_get_async_persistence):
+async def test_get_players_batch_empty(game_state_provider):
     """Test get_players_batch() returns empty dict for empty input."""
     result = await game_state_provider.get_players_batch([])
     assert result == {}
@@ -143,7 +146,7 @@ async def test_convert_room_uuids_to_names(game_state_provider, mock_get_async_p
 
 
 @pytest.mark.asyncio
-async def test_get_room_occupants(game_state_provider, mock_room_manager, mock_get_async_persistence):
+async def test_get_room_occupants(game_state_provider, mock_room_manager):
     """Test get_room_occupants() returns room occupants."""
     room_id = "room_001"
     online_players = {}
@@ -155,7 +158,7 @@ async def test_get_room_occupants(game_state_provider, mock_room_manager, mock_g
 
 
 @pytest.mark.asyncio
-async def test_send_initial_game_state(game_state_provider, mock_send_personal_message):
+async def test_send_initial_game_state(game_state_provider):
     """Test send_initial_game_state() sends initial state."""
     player_id = uuid.uuid4()
     mock_player = MagicMock()
@@ -169,15 +172,14 @@ async def test_send_initial_game_state(game_state_provider, mock_send_personal_m
 
 
 @pytest.mark.asyncio
-async def test_get_player_not_found(game_state_provider):
+async def test_get_player_not_found(game_state_provider, mock_get_async_persistence):
     """Test get_player() returns None when player not found."""
     player_id = uuid.uuid4()
-    with patch("server.async_persistence.get_async_persistence") as mock_get_persistence:
-        mock_persistence = MagicMock()
-        mock_persistence.get_player_by_id = AsyncMock(return_value=None)
-        mock_get_persistence.return_value = mock_persistence
-        result = await game_state_provider.get_player(player_id)
-        assert result is None
+    mock_persistence = MagicMock()
+    mock_persistence.get_player_by_id = AsyncMock(return_value=None)
+    mock_get_async_persistence.return_value = mock_persistence
+    result = await game_state_provider.get_player(player_id)
+    assert result is None
 
 
 def test_get_npcs_batch_none_ids(game_state_provider):
@@ -248,7 +250,7 @@ async def test_get_room_occupants_with_online_players(game_state_provider, mock_
 
 
 @pytest.mark.asyncio
-async def test_send_initial_game_state_no_player(game_state_provider, mock_send_personal_message):
+async def test_send_initial_game_state_no_player(game_state_provider):
     """Test send_initial_game_state() handles None player."""
     player_id = uuid.uuid4()
     room_id = "room_001"

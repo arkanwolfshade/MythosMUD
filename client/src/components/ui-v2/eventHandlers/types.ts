@@ -24,6 +24,8 @@ export interface GameStateUpdates {
   player?: Player | null;
   room?: Room | null;
   messages?: ChatMessage[];
+  loginGracePeriodActive?: boolean;
+  loginGracePeriodRemaining?: number;
 }
 
 export interface EventHandlerContext {
@@ -47,6 +49,7 @@ export interface EventHandlerContext {
   setDeathLocation: (location: string) => void;
   setDeliriumLocation: (location: string) => void;
   setRescueState: (state: RescueState | null) => void;
+  onLogout?: () => void;
 }
 
 export type EventHandler = (

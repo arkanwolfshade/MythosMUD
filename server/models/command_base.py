@@ -66,6 +66,7 @@ class CommandType(str, Enum):
     SIT = "sit"
     STAND = "stand"
     LIE = "lie"
+    REST = "rest"
     GROUND = "ground"
     TIME = "time"
     # Communication commands

@@ -9,6 +9,8 @@ export const handleGameState: EventHandler = (event, _context) => {
   const playerData = event.data.player as unknown;
   const roomData = event.data.room as unknown;
   const occupants = event.data.occupants as string[] | undefined;
+  const loginGracePeriodActive = event.data.login_grace_period_active as boolean | undefined;
+  const loginGracePeriodRemaining = event.data.login_grace_period_remaining as number | undefined;
   if (playerData && roomData) {
     // Validate that playerData has at least the required 'name' property
     const player = playerData as Player;
@@ -19,6 +21,8 @@ export const handleGameState: EventHandler = (event, _context) => {
           ...(roomData as Room),
           ...(occupants && { occupants, occupant_count: occupants.length }),
         },
+        ...(loginGracePeriodActive !== undefined && { loginGracePeriodActive }),
+        ...(loginGracePeriodRemaining !== undefined && { loginGracePeriodRemaining }),
       };
     } else {
       logger.warn('roomHandlers', 'handleGameState: invalid player data, missing name property');
@@ -28,6 +32,8 @@ export const handleGameState: EventHandler = (event, _context) => {
           ...(roomData as Room),
           ...(occupants && { occupants, occupant_count: occupants.length }),
         },
+        ...(loginGracePeriodActive !== undefined && { loginGracePeriodActive }),
+        ...(loginGracePeriodRemaining !== undefined && { loginGracePeriodRemaining }),
       };
     }
   }

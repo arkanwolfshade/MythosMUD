@@ -9,6 +9,7 @@ from ..exceptions import ValidationError as MythosValidationError
 from ..models.command import (
     LogoutCommand,
     QuitCommand,
+    RestCommand,
     StatusCommand,
     TimeCommand,
     WhoamiCommand,
@@ -79,3 +80,14 @@ class PlayerStateCommandFactory:
         # Logout command ignores arguments (like quit command)
         # This allows for commands like "logout force now" to work
         return LogoutCommand()
+
+    @staticmethod
+    def create_rest_command(args: list[str]) -> RestCommand:
+        """Create RestCommand from arguments."""
+        if args:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise_enhanced(
+                MythosValidationError, "Rest command takes no arguments", context=context, logger_name=__name__
+            )
+        return RestCommand()

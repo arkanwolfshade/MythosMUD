@@ -55,6 +55,12 @@ class LieCommand(BaseCommand):
         return normalized
 
 
+class RestCommand(BaseCommand):
+    """Command for clean disconnection with optional countdown."""
+
+    command_type: Literal[CommandType.REST] = CommandType.REST
+
+
 class GroundCommand(BaseCommand):
     """Command for grounding a catatonic ally back to lucidity."""
 

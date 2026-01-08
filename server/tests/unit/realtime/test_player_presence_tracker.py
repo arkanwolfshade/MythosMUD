@@ -9,6 +9,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from server.exceptions import DatabaseError
 from server.realtime.player_presence_tracker import (
     _acquire_disconnect_lock,
     _build_player_info,
@@ -258,8 +259,6 @@ async def test_broadcast_connection_message_impl_no_room():
 @pytest.mark.asyncio
 async def test_broadcast_connection_message_impl_error():
     """Test broadcast_connection_message_impl() handles errors."""
-    from server.exceptions import DatabaseError
-
     player_id = uuid.uuid4()
     mock_player = MagicMock()
     mock_player.current_room_id = "room_123"
@@ -373,28 +372,44 @@ async def test_track_player_disconnected_impl_success():
     mock_manager.disconnect_lock = AsyncMock()
     mock_manager.disconnect_lock.__aenter__ = AsyncMock(return_value=None)
     mock_manager.disconnect_lock.__aexit__ = AsyncMock(return_value=None)
+    # Mark as intentional so handle_player_disconnect_broadcast is called
+    mock_manager.intentional_disconnects = {player_id}
     mock_player = MagicMock()
     mock_player.current_room_id = "room_123"
-    mock_manager._get_player = AsyncMock(return_value=mock_player)
-    mock_manager._cleanup_ghost_players = MagicMock()
+    # Accessing protected members is necessary to mock the methods used by player_presence_tracker implementation
+    mock_manager._get_player = AsyncMock(return_value=mock_player)  # pylint: disable=protected-access
+    mock_manager._cleanup_ghost_players = MagicMock()  # pylint: disable=protected-access
 
-    with patch("server.realtime.player_presence_tracker._collect_disconnect_keys", return_value=([], [])):
-        with patch("server.realtime.player_presence_tracker.handle_player_disconnect_broadcast") as mock_broadcast:
-            with patch("server.realtime.player_presence_tracker._remove_player_from_online_tracking") as mock_remove:
-                with patch("server.realtime.player_presence_tracker._cleanup_player_references") as mock_cleanup:
+    with patch("server.realtime.player_presence_tracker._should_skip_disconnect", return_value=False):
+        with patch("server.realtime.player_presence_tracker._acquire_disconnect_lock", return_value=True):
+            with patch("server.realtime.player_presence_tracker._collect_disconnect_keys", return_value=([], [])):
+                with patch(
+                    "server.realtime.player_presence_tracker.handle_player_disconnect_broadcast"
+                ) as mock_broadcast:
                     with patch(
-                        "server.realtime.player_presence_tracker.extract_player_name", return_value="TestPlayer"
-                    ):
-                        with patch("server.realtime.player_presence_tracker.logger") as mock_logger:
-                            await track_player_disconnected_impl(player_id, mock_manager, "websocket")
+                        "server.realtime.player_presence_tracker._remove_player_from_online_tracking"
+                    ) as mock_remove:
+                        with patch(
+                            "server.realtime.player_presence_tracker._cleanup_player_references"
+                        ) as mock_cleanup:
+                            with patch(
+                                "server.realtime.player_presence_tracker.extract_player_name", return_value="TestPlayer"
+                            ):
+                                with patch("server.realtime.player_presence_tracker.logger") as mock_logger:
+                                    await track_player_disconnected_impl(player_id, mock_manager, "websocket")
 
-                            mock_broadcast.assert_called_once()
-                            mock_remove.assert_called_once()
-                            mock_cleanup.assert_called_once()
-                            mock_manager._cleanup_ghost_players.assert_called_once()
-                            mock_logger.info.assert_called_once()
-                            # Player should be removed from disconnecting_players in finally block
-                            assert player_id not in mock_manager.disconnecting_players
+                                    mock_broadcast.assert_called_once()
+                                    mock_remove.assert_called_once()
+                                    mock_cleanup.assert_called_once()
+                                    # Accessing protected member is necessary to verify the method was called
+                                    mock_manager._cleanup_ghost_players.assert_called_once()  # pylint: disable=protected-access
+                                    # Check for intentional disconnect log message
+                                    assert any(
+                                        "intentional" in str(call).lower() or "disconnected" in str(call).lower()
+                                        for call in mock_logger.info.call_args_list
+                                    )
+                                    # Player should be removed from disconnecting_players in finally block
+                                    assert player_id not in mock_manager.disconnecting_players
 
 
 @pytest.mark.asyncio
@@ -437,28 +452,34 @@ async def test_track_player_disconnected_impl_no_player():
     mock_manager.disconnect_lock = AsyncMock()
     mock_manager.disconnect_lock.__aenter__ = AsyncMock(return_value=None)
     mock_manager.disconnect_lock.__aexit__ = AsyncMock(return_value=None)
-    mock_manager._get_player = AsyncMock(return_value=None)
-    mock_manager._cleanup_ghost_players = MagicMock()
+    # Mark as intentional so handle_player_disconnect_broadcast is called
+    mock_manager.intentional_disconnects = {player_id}
+    # Accessing protected members is necessary to mock the methods used by player_presence_tracker implementation
+    mock_manager._get_player = AsyncMock(return_value=None)  # pylint: disable=protected-access
+    mock_manager._cleanup_ghost_players = MagicMock()  # pylint: disable=protected-access
 
-    with patch("server.realtime.player_presence_tracker._collect_disconnect_keys", return_value=([], [])):
-        with patch("server.realtime.player_presence_tracker.handle_player_disconnect_broadcast") as mock_broadcast:
-            with patch("server.realtime.player_presence_tracker._remove_player_from_online_tracking"):
-                with patch("server.realtime.player_presence_tracker._cleanup_player_references"):
-                    with patch(
-                        "server.realtime.player_presence_tracker.extract_player_name", return_value="Unknown Player"
-                    ):
-                        await track_player_disconnected_impl(player_id, mock_manager, "websocket")
+    with patch("server.realtime.player_presence_tracker._should_skip_disconnect", return_value=False):
+        with patch("server.realtime.player_presence_tracker._acquire_disconnect_lock", return_value=True):
+            with patch("server.realtime.player_presence_tracker._collect_disconnect_keys", return_value=([], [])):
+                with patch(
+                    "server.realtime.player_presence_tracker.handle_player_disconnect_broadcast"
+                ) as mock_broadcast:
+                    with patch("server.realtime.player_presence_tracker._remove_player_from_online_tracking"):
+                        with patch("server.realtime.player_presence_tracker._cleanup_player_references"):
+                            with patch(
+                                "server.realtime.player_presence_tracker.extract_player_name",
+                                return_value="Unknown Player",
+                            ):
+                                await track_player_disconnected_impl(player_id, mock_manager, "websocket")
 
-                        # Should still process disconnect even without player
-                        mock_broadcast.assert_called_once()
-                        assert player_id not in mock_manager.disconnecting_players
+                                # Should still process disconnect even without player
+                                mock_broadcast.assert_called_once()
+                                assert player_id not in mock_manager.disconnecting_players
 
 
 @pytest.mark.asyncio
 async def test_track_player_disconnected_impl_error():
     """Test track_player_disconnected_impl() handles errors."""
-    from server.exceptions import DatabaseError
-
     player_id = uuid.uuid4()
     mock_manager = MagicMock()
     mock_manager.has_websocket_connection = MagicMock(return_value=False)
@@ -466,14 +487,20 @@ async def test_track_player_disconnected_impl_error():
     mock_manager.disconnect_lock = AsyncMock()
     mock_manager.disconnect_lock.__aenter__ = AsyncMock(return_value=None)
     mock_manager.disconnect_lock.__aexit__ = AsyncMock(return_value=None)
-    mock_manager._get_player = AsyncMock(side_effect=DatabaseError("DB error"))
+    # Mark as intentional so _get_player is called and exception is raised
+    mock_manager.intentional_disconnects = {player_id}
+    # Accessing protected members is necessary to mock the methods used by player_presence_tracker implementation
+    mock_manager._get_player = AsyncMock(side_effect=DatabaseError("DB error"))  # pylint: disable=protected-access
+    mock_manager._cleanup_ghost_players = MagicMock()  # pylint: disable=protected-access
 
     with patch("server.realtime.player_presence_tracker.logger") as mock_logger:
-        await track_player_disconnected_impl(player_id, mock_manager, "websocket")
+        with patch("server.realtime.player_presence_tracker._should_skip_disconnect", return_value=False):
+            with patch("server.realtime.player_presence_tracker._acquire_disconnect_lock", return_value=True):
+                await track_player_disconnected_impl(player_id, mock_manager, "websocket")
 
-        mock_logger.error.assert_called_once()
-        # Player should still be removed from disconnecting_players in finally block
-        assert player_id not in mock_manager.disconnecting_players
+                mock_logger.error.assert_called_once()
+                # Player should still be removed from disconnecting_players in finally block
+                assert player_id not in mock_manager.disconnecting_players
 
 
 @pytest.mark.asyncio
@@ -486,20 +513,24 @@ async def test_track_player_disconnected_impl_finally_cleanup():
     mock_manager.disconnect_lock = AsyncMock()
     mock_manager.disconnect_lock.__aenter__ = AsyncMock(return_value=None)
     mock_manager.disconnect_lock.__aexit__ = AsyncMock(return_value=None)
-    mock_manager._get_player = AsyncMock(side_effect=Exception("Test error"))
-    mock_manager._cleanup_ghost_players = MagicMock()
+    # Mark as intentional so _get_player is called
+    mock_manager.intentional_disconnects = {player_id}
+    # Raise DatabaseError which is caught, but finally block should still execute
+    # Accessing protected members is necessary to mock the methods used by player_presence_tracker implementation
+    mock_manager._get_player = AsyncMock(side_effect=DatabaseError("Test error"))  # pylint: disable=protected-access
+    mock_manager._cleanup_ghost_players = MagicMock()  # pylint: disable=protected-access
 
     # The function will add player to disconnecting_players in _acquire_disconnect_lock
-    # Then raise exception, then finally block removes it
+    # Then raise exception (which is caught), then finally block removes it
     async def mock_acquire_lock(pid, mgr):
         mgr.disconnecting_players.add(pid)
         return True
 
-    with patch("server.realtime.player_presence_tracker._acquire_disconnect_lock", side_effect=mock_acquire_lock):
-        with patch("server.realtime.player_presence_tracker._collect_disconnect_keys", return_value=([], [])):
-            # Exception will be raised, but finally block should still execute
-            with pytest.raises(Exception, match="Test error"):
+    with patch("server.realtime.player_presence_tracker._should_skip_disconnect", return_value=False):
+        with patch("server.realtime.player_presence_tracker._acquire_disconnect_lock", side_effect=mock_acquire_lock):
+            with patch("server.realtime.player_presence_tracker._collect_disconnect_keys", return_value=([], [])):
+                # Exception is caught internally, but finally block should still execute
                 await track_player_disconnected_impl(player_id, mock_manager, "websocket")
 
-            # Even with error, finally block should remove player
-            assert player_id not in mock_manager.disconnecting_players
+                # Even with error, finally block should remove player
+                assert player_id not in mock_manager.disconnecting_players

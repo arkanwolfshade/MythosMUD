@@ -54,6 +54,7 @@ class Room:
         self.sub_zone = room_data.get("sub_zone", "")
         self.environment = room_data.get("resolved_environment", "outdoors")
         self.exits = room_data.get("exits", {})
+        self.rest_location: bool = room_data.get("rest_location", False)
 
         # Containers in this room (loaded from PostgreSQL)
         self._containers: list = room_data.get("containers", [])

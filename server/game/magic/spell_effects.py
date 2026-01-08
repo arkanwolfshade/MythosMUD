@@ -8,10 +8,12 @@ damage, status effects, stat modifications, and other magical effects.
 import uuid
 from typing import Any, assert_never
 
+from server.config import get_config
 from server.game.player_service import PlayerService
 from server.models.game import StatusEffect, StatusEffectType
 from server.models.spell import Spell, SpellEffectType
 from server.persistence.repositories.player_spell_repository import PlayerSpellRepository
+from server.realtime.login_grace_period import is_player_in_login_grace_period
 from server.schemas.target_resolution import TargetMatch, TargetType
 from server.structured_logging.enhanced_logging_config import get_logger
 
@@ -179,6 +181,47 @@ class SpellEffects:
         if target.target_type == TargetType.PLAYER:
             try:
                 target_id = uuid.UUID(target.target_id)
+
+                # Check if target is in login grace period - block negative effects
+                try:
+                    config = get_config()
+                    app = getattr(config, "_app_instance", None)
+                    if app:
+                        connection_manager = getattr(app.state, "connection_manager", None)
+                        if connection_manager:
+                            if is_player_in_login_grace_period(target_id, connection_manager):
+                                # Check if this is a negative effect
+                                # Negative effects from StatusEffectType enum: STUNNED, POISONED, HALLUCINATING, PARANOID, TREMBLING, CORRUPTED, DELIRIOUS
+                                # Positive effects: BUFF
+                                negative_effect_types = {
+                                    StatusEffectType.STUNNED,
+                                    StatusEffectType.POISONED,
+                                    StatusEffectType.HALLUCINATING,
+                                    StatusEffectType.PARANOID,
+                                    StatusEffectType.TREMBLING,
+                                    StatusEffectType.CORRUPTED,
+                                    StatusEffectType.DELIRIOUS,
+                                }
+                                if effect_type in negative_effect_types:
+                                    logger.info(
+                                        "Negative status effect blocked - target in login grace period",
+                                        target_id=target.target_id,
+                                        effect_type=effect_type.value,
+                                    )
+                                    return {
+                                        "success": False,
+                                        "message": f"Target is protected and immune to {effect_type.value}",
+                                        "effect_applied": False,
+                                    }
+                                # Allow positive effects to proceed
+                except (AttributeError, ImportError, TypeError, ValueError) as e:
+                    # If we can't check grace period, proceed with effect (fail open)
+                    logger.debug(
+                        "Could not check login grace period for status effect",
+                        target_id=target.target_id,
+                        error=str(e),
+                    )
+
                 player = await self.player_service.persistence.get_player_by_id(target_id)
                 if not player:
                     return {"success": False, "message": "Target player not found", "effect_applied": False}

@@ -17,7 +17,6 @@ from ..npc.population_control import NPCPopulationController
 from ..npc.spawning_service import NPCSpawningService
 from ..npc_database import get_npc_session
 from ..services.catatonia_registry import CatatoniaRegistry
-from ..services.combat_service import CombatService, set_combat_service
 from ..services.lucidity_service import LucidityService
 from ..services.nats_subject_manager import nats_subject_manager
 from ..services.npc_instance_service import initialize_npc_instance_service
@@ -292,6 +291,9 @@ async def initialize_nats_and_combat_services(app: FastAPI, container: Applicati
     if container.nats_service is not None and container.nats_service.is_connected():
         logger.info("NATS service available from container")
         app.state.nats_service = container.nats_service
+
+        # Lazy import to avoid circular dependency with combat_service
+        from ..services.combat_service import CombatService, set_combat_service  # noqa: E402
 
         app.state.combat_service = CombatService(
             app.state.player_combat_service,

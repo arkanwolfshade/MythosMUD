@@ -4,9 +4,11 @@ Go command for MythosMUD.
 This module handles the go command for player movement.
 """
 
+import uuid
 from typing import Any
 
 from ..alias_storage import AliasStorage
+from ..commands.rest_command import _cancel_rest_countdown, is_player_resting
 from ..exceptions import DatabaseError, ValidationError
 from ..game.movement_service import MovementService
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -193,6 +195,18 @@ async def handle_go_command(
     valid_posture, posture_message = _validate_player_posture(player, player_name, room_id)
     if not valid_posture:
         return {"result": posture_message}
+
+    # Check if player is resting and interrupt rest
+    connection_manager = getattr(app.state, "connection_manager", None) if app else None
+    if connection_manager:
+        player_id = uuid.UUID(player.player_id) if isinstance(player.player_id, str) else player.player_id
+
+        if is_player_resting(player_id, connection_manager):
+            await _cancel_rest_countdown(player_id, connection_manager)
+            logger.info(
+                "Rest interrupted by movement", player_id=player_id, player_name=player_name, direction=direction
+            )
+            return {"result": "Your rest is interrupted as you begin to move."}
 
     target_room_id = _validate_exit(direction, room, persistence, player_name, room_id)
     if not target_room_id:

@@ -44,14 +44,14 @@ def test_format_items_section_with_items():
 async def test_format_containers_section_no_room_id():
     """Test _format_containers_section with no room_id."""
     result = await _format_containers_section(None, MagicMock())
-    assert result == []
+    assert not result
 
 
 @pytest.mark.asyncio
 async def test_format_containers_section_no_persistence():
     """Test _format_containers_section with no persistence."""
     result = await _format_containers_section("test_room", None)
-    assert result == []
+    assert not result
 
 
 @pytest.mark.asyncio
@@ -79,7 +79,7 @@ async def test_format_containers_section_empty():
     mock_persistence.get_containers_by_room_id = AsyncMock(return_value=[])
 
     result = await _format_containers_section("test_room", mock_persistence)
-    assert result == []
+    assert not result
 
 
 @pytest.mark.asyncio
@@ -109,10 +109,11 @@ async def test_format_npcs_section_empty():
     with patch("server.commands.look_room._get_npcs_in_room", new_callable=AsyncMock) as mock_get_npcs:
         mock_get_npcs.return_value = []
         result = await _format_npcs_section("test_room")
-        assert result == []
+        assert not result
 
 
-def test_filter_other_players_excludes_current():
+@pytest.mark.asyncio
+async def test_filter_other_players_excludes_current():
     """Test _filter_other_players excludes current player."""
     player1 = MagicMock()
     player1.name = "Player1"
@@ -121,21 +122,22 @@ def test_filter_other_players_excludes_current():
     player3 = MagicMock()
     player3.name = "CurrentPlayer"
 
-    result = _filter_other_players([player1, player2, player3], "CurrentPlayer")
+    result = await _filter_other_players([player1, player2, player3], "CurrentPlayer")
 
     assert "Player1" in result
     assert "Player2" in result
     assert "CurrentPlayer" not in result
 
 
-def test_filter_other_players_no_name_attribute():
+@pytest.mark.asyncio
+async def test_filter_other_players_no_name_attribute():
     """Test _filter_other_players handles players without name attribute."""
     player1 = MagicMock()
     player1.name = "Player1"
     player2 = MagicMock()
     del player2.name
 
-    result = _filter_other_players([player1, player2], "CurrentPlayer")
+    result = await _filter_other_players([player1, player2], "CurrentPlayer")
 
     assert "Player1" in result
     assert len(result) == 1
@@ -144,7 +146,7 @@ def test_filter_other_players_no_name_attribute():
 def test_format_players_section_empty():
     """Test _format_players_section with no players."""
     result = _format_players_section([])
-    assert result == []
+    assert not result
 
 
 def test_format_players_section_with_players():

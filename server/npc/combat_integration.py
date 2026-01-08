@@ -13,10 +13,12 @@ entities they encounter.
 import uuid
 from typing import Any
 
+from ..config import get_config
 from ..events import EventBus
 from ..events.event_types import NPCAttacked
 from ..exceptions import DatabaseError, ValidationError
 from ..game.mechanics import GameMechanicsService
+from ..realtime.login_grace_period import is_player_in_login_grace_period
 from ..structured_logging.enhanced_logging_config import get_logger
 
 # Removed: from ..persistence import get_persistence - now using async_persistence
@@ -131,6 +133,26 @@ class NPCCombatIntegration:
 
     async def _apply_player_combat_effects(self, target_id: str, damage: int, damage_type: str) -> bool:
         """Apply combat effects to a player."""
+        # Check if target is in login grace period - block damage if so
+        try:
+            config = get_config()
+            app = getattr(config, "_app_instance", None)
+            if app:
+                connection_manager = getattr(app.state, "connection_manager", None)
+                if connection_manager:
+                    target_uuid = uuid.UUID(target_id) if isinstance(target_id, str) else target_id
+                    if is_player_in_login_grace_period(target_uuid, connection_manager):
+                        logger.info(
+                            "NPC damage blocked - target in login grace period",
+                            target_id=target_id,
+                            damage=damage,
+                            damage_type=damage_type,
+                        )
+                        return False  # Damage blocked
+        except (AttributeError, ImportError, TypeError, ValueError) as e:
+            # If we can't check grace period, proceed with damage (fail open)
+            logger.debug("Could not check login grace period for NPC damage", target_id=target_id, error=str(e))
+
         # Apply damage to player using game mechanics service
         success, _ = await self._game_mechanics.damage_player(target_id, damage, damage_type)
 
@@ -214,6 +236,25 @@ class NPCCombatIntegration:
             bool: True if attack was handled successfully
         """
         try:
+            # Check if target is in login grace period - prevent NPC attacks
+            try:
+                config = get_config()
+                app = getattr(config, "_app_instance", None)
+                if app:
+                    connection_manager = getattr(app.state, "connection_manager", None)
+                    if connection_manager:
+                        target_uuid = uuid.UUID(target_id) if isinstance(target_id, str) else target_id
+                        if is_player_in_login_grace_period(target_uuid, connection_manager):
+                            logger.info(
+                                "NPC attack blocked - target in login grace period",
+                                npc_id=npc_id,
+                                target_id=target_id,
+                            )
+                            return False  # Attack blocked
+            except (AttributeError, ImportError, TypeError, ValueError) as e:
+                # If we can't check grace period, proceed with attack (fail open)
+                logger.debug("Could not check login grace period for NPC attack", target_id=target_id, error=str(e))
+
             target_stats = self._get_target_stats(target_id)
             npc_stats = self._get_npc_stats(npc_stats)
             actual_damage = self.calculate_damage(npc_stats, target_stats, attack_damage, attack_type)
