@@ -15,7 +15,7 @@ from typing import Any
 import psycopg2
 
 from server.config import get_config
-from server.persistence import container_persistence
+from server.persistence import container_persistence, container_query_helpers
 from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -133,7 +133,7 @@ class ContainerRepository:
 
         def _get_sync():
             with self._get_sync_connection() as conn:
-                results = container_persistence.get_containers_by_room_id(conn, room_id)  # pylint: disable=no-member  # Reason: Function exists in container_persistence module but pylint cannot resolve cross-module imports
+                results = container_query_helpers.get_containers_by_room_id(conn, room_id)
                 # Convert ContainerData objects to dicts
                 return [
                     {
@@ -153,7 +153,7 @@ class ContainerRepository:
             with self._get_sync_connection() as conn:
                 # Ensure entity_id is a UUID object (psycopg2 can handle UUID objects)
                 entity_id_uuid = uuid.UUID(str(entity_id)) if not isinstance(entity_id, uuid.UUID) else entity_id
-                results = container_persistence.get_containers_by_entity_id(conn, entity_id_uuid)  # pylint: disable=no-member  # Reason: Function exists in container_persistence module but pylint cannot resolve cross-module imports
+                results = container_query_helpers.get_containers_by_entity_id(conn, entity_id_uuid)
                 # Convert ContainerData objects to dicts
                 return [
                     {
@@ -198,7 +198,7 @@ class ContainerRepository:
 
         def _get_sync():
             with self._get_sync_connection() as conn:
-                results = container_persistence.get_decayed_containers(conn, current_time)  # pylint: disable=no-member  # Reason: Function exists in container_persistence module but pylint cannot resolve cross-module imports
+                results = container_query_helpers.get_decayed_containers(conn, current_time)
                 # Convert ContainerData objects to dicts
                 return [
                     {

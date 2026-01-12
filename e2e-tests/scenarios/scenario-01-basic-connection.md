@@ -83,14 +83,15 @@ await mcp_playwright_browser_click({element: "Login button", ref: "e11"});
 await mcp_playwright_browser_wait_for({time: 15});
 
 // MULTI-CHARACTER: Check if character selection screen appears
-// If user has multiple characters, select one; if no characters, proceed to creation
+// If user has multiple characters, select the character with the same name as the player account
 const snapshot = await mcp_playwright_browser_snapshot();
 if (snapshot.includes("Select Your Character") || snapshot.includes("character-selection")) {
-  // User has multiple characters - select the first one or specified character
+  // User has multiple characters - select the character matching the player name (ArkanWolfshade)
   // Wait for character selection screen
-  await mcp_playwright_browser_wait_for({text: "Select Character", time: 30});
-  // Click first "Select Character" button (adjust ref as needed)
-  await mcp_playwright_browser_click({element: "Select Character button", ref: "eXX"});
+  await mcp_playwright_browser_wait_for({text: "Select Your Character", time: 15});
+  // Find and click the "Select Character" button for the character named "ArkanWolfshade"
+  // Use browser_snapshot() to get the correct element reference for the ArkanWolfshade character
+  // Example: await mcp_playwright_browser_click({element: "Select Character button for ArkanWolfshade", ref: "eXX"});
   await mcp_playwright_browser_wait_for({time: 5});
 }
 
@@ -134,8 +135,21 @@ await mcp_playwright_browser_click({element: "Login button", ref: "e11"});
 // Wait for login processing
 await mcp_playwright_browser_wait_for({time: 15});
 
+// MULTI-CHARACTER: Check if character selection screen appears
+// If user has multiple characters, select the character with the same name as the player account
+const snapshotIthaqua = await mcp_playwright_browser_snapshot();
+if (snapshotIthaqua.includes("Select Your Character") || snapshotIthaqua.includes("character-selection")) {
+  // User has multiple characters - select the character matching the player name (Ithaqua)
+  // Wait for character selection screen
+  await mcp_playwright_browser_wait_for({text: "Select Your Character", time: 15});
+  // Find and click the "Select Character" button for the character named "Ithaqua"
+  // Use browser_snapshot() to get the correct element reference for the Ithaqua character
+  // Example: await mcp_playwright_browser_click({element: "Select Character button for Ithaqua", ref: "eXX"});
+  await mcp_playwright_browser_wait_for({time: 5});
+}
+
 // Wait for MOTD screen and click Continue to enter game (current continue ref: e59)
-await mcp_playwright_browser_wait_for({text: "Continue", time: 30});
+await mcp_playwright_browser_wait_for({text: "Continue", time: 15});
 await mcp_playwright_browser_click({element: "Continue button", ref: "e59"});
 
 // Wait for game interface to load
@@ -145,7 +159,7 @@ await mcp_playwright_browser_wait_for({text: "Chat", time: 30});
 await mcp_playwright_browser_wait_for({time: 15});
 ```
 
-**Expected Result**: Ithaqua successfully logs in and enters the game world
+**Expected Result**: Ithaqua successfully logs in, selects character (if multiple exist), and enters the game world
 
 ### Step 4: Verify AW Sees Ithaqua Entered Message
 

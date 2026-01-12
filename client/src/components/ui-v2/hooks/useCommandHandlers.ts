@@ -15,6 +15,21 @@ interface UseCommandHandlersParams {
 export const useCommandHandlers = ({ isConnected, sendCommand, setGameState }: UseCommandHandlersParams) => {
   const handleCommandSubmit = useCallback(
     async (command: string) => {
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          location: 'useCommandHandlers.ts:17',
+          message: 'handleCommandSubmit entry',
+          data: { command, isConnected },
+          timestamp: Date.now(),
+          sessionId: 'debug-session',
+          runId: 'run1',
+          hypothesisId: 'A',
+        }),
+      }).catch(() => {});
+      // #endregion
       if (!command.trim() || !isConnected) return;
 
       let normalized = command.trim();
@@ -49,6 +64,21 @@ export const useCommandHandlers = ({ isConnected, sendCommand, setGameState }: U
       const commandParts = normalized.split(/\s+/);
       const commandName = commandParts[0];
       const commandArgs = commandParts.slice(1);
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          location: 'useCommandHandlers.ts:49',
+          message: 'Before sendCommand',
+          data: { normalized, commandName, commandArgs },
+          timestamp: Date.now(),
+          sessionId: 'debug-session',
+          runId: 'run1',
+          hypothesisId: 'A',
+        }),
+      }).catch(() => {});
+      // #endregion
 
       const success = await sendCommand(commandName, commandArgs);
       if (!success) {

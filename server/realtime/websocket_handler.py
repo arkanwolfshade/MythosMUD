@@ -423,13 +423,6 @@ async def handle_game_command(
             from ..main import app
 
             connection_manager = app.state.container.connection_manager
-
-        logger.info(
-            "🚨 SERVER DEBUG: handle_game_command called",
-            command=command,
-            args=args,
-            player_id=player_id,
-        )
         # Parse command and arguments if args not provided
         if args is None:
             parts = command.strip().split()
@@ -449,14 +442,7 @@ async def handle_game_command(
         result = await process_websocket_command(cmd, args, player_id, connection_manager=connection_manager)
 
         # Send the result back to the player
-        logger.info(
-            "SERVER DEBUG: Sending command_response event for player",
-            player_id=player_id,
-            command=cmd,
-            result=result,
-        )
         await websocket.send_json(build_event("command_response", result, player_id=player_id))
-        logger.info("SERVER DEBUG: command_response event sent successfully", player_id=player_id)
 
         # Handle broadcasting if the command result includes broadcast data
         if result.get("broadcast") and result.get("broadcast_type"):
@@ -507,7 +493,6 @@ async def process_websocket_command(cmd: str, args: list, player_id: str, connec
     Returns:
         dict: Command result
     """
-    logger.info("SERVER DEBUG: process_websocket_command called", cmd=cmd, args=args, player_id=player_id)
     logger.debug("Processing command", cmd=cmd, args=args, player_id=player_id)
 
     # Resolve connection_manager if not provided (backward compatibility)
@@ -577,7 +562,6 @@ async def process_websocket_command(cmd: str, args: list, player_id: str, connec
 
     # Process the command using the unified command handler
     command_line = f"{cmd} {' '.join(args)}".strip()
-    logger.info("SERVER DEBUG: Reconstructed command_line", command_line=command_line, cmd=cmd, args=args)
     result = await process_command_unified(
         command_line=command_line,
         current_user=player,

@@ -74,6 +74,22 @@ class MovementService:
             has_exploration_service=bool(exploration_service),
         )
 
+    def set_player_combat_service(self, player_combat_service) -> None:
+        """
+        Set the player combat service after initialization.
+
+        This allows the combat service to be injected after MovementService
+        is created, since combat services are initialized later in the startup sequence.
+
+        Args:
+            player_combat_service: PlayerCombatService instance
+        """
+        self._player_combat_service = player_combat_service
+        self._logger.info(
+            "MovementService updated with player_combat_service",
+            has_combat_service=bool(player_combat_service),
+        )
+
     def _validate_move_params(self, player_id: uuid.UUID | str, from_room_id: str, to_room_id: str) -> bool:
         """Validate movement parameters. Returns False if validation fails (same room), raises on invalid params."""
         if not player_id:

@@ -115,6 +115,28 @@ class CommandParser:
             ValueError: If command is invalid or contains injection attempts
             ValidationError: If command data doesn't match expected schema
         """
+        # #region agent log
+        import json
+
+        try:
+            with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8") as f:
+                f.write(
+                    json.dumps(
+                        {
+                            "sessionId": "debug-session",
+                            "runId": "run1",
+                            "hypothesisId": "A",
+                            "location": "command_parser.py:118",
+                            "message": "parse_command entry",
+                            "data": {"command_string": command_string},
+                            "timestamp": int(__import__("time").time() * 1000),
+                        }
+                    )
+                    + "\n"
+                )
+        except Exception:  # E722: Catch all exceptions during debug logging to prevent failures
+            pass
+        # #endregion
         logger.debug("Parsing command", command=command_string, length=len(command_string))
 
         # Basic input validation
@@ -140,6 +162,28 @@ class CommandParser:
 
         # Parse command and arguments
         command, args = self._parse_command_parts(normalized)
+        # #region agent log
+        import json
+
+        try:
+            with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8") as f:
+                f.write(
+                    json.dumps(
+                        {
+                            "sessionId": "debug-session",
+                            "runId": "run1",
+                            "hypothesisId": "C",
+                            "location": "command_parser.py:142",
+                            "message": "After _parse_command_parts",
+                            "data": {"command": command, "args": args, "normalized": normalized},
+                            "timestamp": int(__import__("time").time() * 1000),
+                        }
+                    )
+                    + "\n"
+                )
+        except Exception:  # E722: Catch all exceptions during debug logging to prevent failures
+            pass
+        # #endregion
 
         # Validate command type (including aliases)
         valid_commands_with_aliases = self.valid_commands | {"l", "g"}  # Add aliases (no w for whisper)
@@ -183,6 +227,28 @@ class CommandParser:
         Returns:
             Tuple of (command, arguments)
         """
+        # #region agent log
+        import json
+
+        try:
+            with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8") as f:
+                f.write(
+                    json.dumps(
+                        {
+                            "sessionId": "debug-session",
+                            "runId": "run1",
+                            "hypothesisId": "C",
+                            "location": "command_parser.py:176",
+                            "message": "_parse_command_parts entry",
+                            "data": {"command_string": command_string},
+                            "timestamp": int(__import__("time").time() * 1000),
+                        }
+                    )
+                    + "\n"
+                )
+        except Exception:  # E722: Catch all exceptions during debug logging to prevent failures
+            pass
+        # #endregion
         # Defensive programming: Handle mock objects during testing
         if hasattr(command_string, "_mock_name") or hasattr(command_string, "_mock_return_value"):
             logger.warning("Mock object passed to _parse_command_parts - this should not happen in production")
@@ -196,6 +262,26 @@ class CommandParser:
             )
 
         parts = command_string.split()
+        # #region agent log
+        try:
+            with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8") as f:
+                f.write(
+                    json.dumps(
+                        {
+                            "sessionId": "debug-session",
+                            "runId": "run1",
+                            "hypothesisId": "C",
+                            "location": "command_parser.py:198",
+                            "message": "After split",
+                            "data": {"parts": parts},
+                            "timestamp": int(__import__("time").time() * 1000),
+                        }
+                    )
+                    + "\n"
+                )
+        except Exception:  # E722: Catch all exceptions during debug logging to prevent failures
+            pass
+        # #endregion
         if not parts:
             context = create_error_context()
             context.metadata = {"command_string": command_string}
@@ -205,6 +291,26 @@ class CommandParser:
 
         command = parts[0].lower()
         args = parts[1:] if len(parts) > 1 else []
+        # #region agent log
+        try:
+            with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8") as f:
+                f.write(
+                    json.dumps(
+                        {
+                            "sessionId": "debug-session",
+                            "runId": "run1",
+                            "hypothesisId": "C",
+                            "location": "command_parser.py:207",
+                            "message": "_parse_command_parts exit",
+                            "data": {"command": command, "args": args},
+                            "timestamp": int(__import__("time").time() * 1000),
+                        }
+                    )
+                    + "\n"
+                )
+        except Exception:  # E722: Catch all exceptions during debug logging to prevent failures
+            pass
+        # #endregion
 
         logger.debug("Command parsed", command=command, args=args)
         return command, args

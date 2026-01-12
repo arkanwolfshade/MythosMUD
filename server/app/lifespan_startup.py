@@ -166,6 +166,10 @@ async def initialize_combat_services(app: FastAPI, container: ApplicationContain
     app.state.player_combat_service = PlayerCombatService(container.persistence, container.event_bus)
     if container.connection_manager is not None:
         container.connection_manager.set_player_combat_service(app.state.player_combat_service)
+    # Update MovementService with combat service if it exists
+    if hasattr(container, "movement_service") and container.movement_service is not None:
+        container.movement_service.set_player_combat_service(app.state.player_combat_service)
+        logger.info("MovementService updated with player_combat_service")
     logger.info("Player combat service initialized")
 
     app.state.player_death_service = PlayerDeathService(

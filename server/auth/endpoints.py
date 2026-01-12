@@ -90,7 +90,6 @@ class LoginResponse(BaseModel):
     characters: list[dict[str, Any]] = Field(default_factory=list, description="List of active characters")
 
 
-@auth_router.post("/register", response_model=LoginResponse)
 def _check_shutdown_status(request: Request) -> None:
     """Check if server is shutting down and raise exception if so."""
     from ..commands.admin_shutdown_command import get_shutdown_blocking_message, is_shutdown_pending
@@ -240,6 +239,7 @@ def _generate_jwt_token(user: User) -> str:
     return access_token
 
 
+@auth_router.post("/register", response_model=LoginResponse)
 async def register_user(
     user_create: UserCreate,
     request: Request,
@@ -302,7 +302,6 @@ async def register_user(
     )
 
 
-@auth_router.post("/login", response_model=LoginResponse)
 def _check_login_shutdown_status(http_request: Request) -> None:
     """Check if server is shutting down and raise exception if so."""
     from ..commands.admin_shutdown_command import get_shutdown_blocking_message, is_shutdown_pending
@@ -430,6 +429,7 @@ async def _get_user_characters(user: User) -> list[dict[str, Any]]:
     return characters
 
 
+@auth_router.post("/login", response_model=LoginResponse)
 async def login_user(
     request: LoginRequest,
     http_request: Request,
