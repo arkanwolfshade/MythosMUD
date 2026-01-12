@@ -159,6 +159,7 @@ def get_decayed_containers(conn: Any, current_time: datetime | None = None) -> l
     Args:
         conn: Database connection
         current_time: Current time for decay comparison (defaults to now() if not provided)
+                      Must be timezone-aware UTC for proper PostgreSQL timestamptz comparison
 
     Returns:
         list[ContainerData]: List of decayed container data
@@ -170,7 +171,26 @@ def get_decayed_containers(conn: Any, current_time: datetime | None = None) -> l
     context.metadata["operation"] = "get_decayed_containers"
 
     if current_time is None:
-        current_time = datetime.now(UTC).replace(tzinfo=None)
+        current_time = datetime.now(UTC)
+        logger.debug("get_decayed_containers: Using current UTC time", current_time=current_time.isoformat())
+    else:
+        # Normalize to UTC: if timezone-aware, convert to UTC; if naive, assume UTC
+        original_time = current_time
+        if current_time.tzinfo is None:
+            current_time = current_time.replace(tzinfo=UTC)
+            logger.debug(
+                "get_decayed_containers: Normalized naive datetime to UTC",
+                original_time=original_time.isoformat(),
+                normalized_time=current_time.isoformat(),
+            )
+        else:
+            current_time = current_time.astimezone(UTC)
+            if current_time.tzinfo != original_time.tzinfo:
+                logger.debug(
+                    "get_decayed_containers: Converted timezone-aware datetime to UTC",
+                    original_time=original_time.isoformat(),
+                    normalized_time=current_time.isoformat(),
+                )
 
     try:
         cursor = conn.cursor(cursor_factory=RealDictCursor)

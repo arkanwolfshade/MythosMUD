@@ -3,6 +3,7 @@ Unit tests for corpse lifecycle service.
 
 Tests the CorpseLifecycleService class.
 """
+# pylint: disable=redefined-outer-name,too-many-lines  # Reason: Pytest fixtures use fixture names as parameters. Comprehensive test file with many test cases.
 
 import uuid
 from datetime import UTC, datetime, timedelta
@@ -24,6 +25,8 @@ def test_get_enum_value_enum():
     from enum import Enum
 
     class TestEnum(Enum):
+        """Test enum for _get_enum_value() tests."""
+
         VALUE1 = "value1"
 
     result = _get_enum_value(TestEnum.VALUE1)
@@ -261,11 +264,14 @@ def test_is_corpse_decayed_no_decay_time(corpse_service):
     assert result is False
 
 
-def test_is_corpse_decayed_with_time_service(corpse_service):
-    """Test is_corpse_decayed() uses time service when available."""
+def test_is_corpse_decayed_uses_real_time_not_mythos_time(corpse_service):
+    """Test is_corpse_decayed() uses real UTC time, not Mythos time, even when time service is available."""
     mock_time_service = MagicMock()
-    mock_time_service.get_current_mythos_datetime.return_value = datetime.now(UTC) + timedelta(hours=2)
+    # Mock Mythos time to be far in the future (simulating accelerated time)
+    mock_time_service.get_current_mythos_datetime.return_value = datetime.now(UTC) + timedelta(days=10)
     corpse_service.time_service = mock_time_service
+
+    # Corpse decay_at is 1 hour in the past (real time)
     past_time = datetime.now(UTC) - timedelta(hours=1)
     corpse = ContainerComponent(
         container_id=uuid.uuid4(),
@@ -276,9 +282,13 @@ def test_is_corpse_decayed_with_time_service(corpse_service):
         lock_state=ContainerLockState.UNLOCKED,
         decay_at=past_time,
     )
+
+    # Should use real time, so corpse should be decayed (1 hour past)
     result = corpse_service.is_corpse_decayed(corpse)
     assert result is True
-    mock_time_service.get_current_mythos_datetime.assert_called_once()
+
+    # Verify time service was NOT called (we use real UTC time, not Mythos time)
+    mock_time_service.get_current_mythos_datetime.assert_not_called()
 
 
 @pytest.mark.asyncio
@@ -346,8 +356,6 @@ async def test_cleanup_decayed_corpse_not_corpse(corpse_service, mock_persistenc
     """Test cleanup_decayed_corpse() raises error when container is not a corpse."""
     container_id = uuid.uuid4()
     # Use a valid source_type that's not CORPSE
-    from server.models.container import ContainerSourceType
-
     container_data = {
         "container_id": str(container_id),
         "source_type": ContainerSourceType.ENVIRONMENT.value,
@@ -477,8 +485,6 @@ async def test_get_decayed_corpses_in_room_validation_error(corpse_service, mock
 @pytest.mark.asyncio
 async def test_get_decayed_corpses_in_room_non_corpse(corpse_service, mock_persistence):
     """Test get_decayed_corpses_in_room() filters out non-corpse containers."""
-    from server.models.container import ContainerSourceType
-
     container_data = {
         "container_id": str(uuid.uuid4()),
         "source_type": ContainerSourceType.ENVIRONMENT.value,
@@ -552,11 +558,13 @@ async def test_get_all_decayed_corpses_empty(corpse_service, mock_persistence):
 
 
 @pytest.mark.asyncio
-async def test_get_all_decayed_corpses_with_time_service(corpse_service, mock_persistence):
-    """Test get_all_decayed_corpses() uses time service when available."""
+async def test_get_all_decayed_corpses_uses_real_time_not_mythos_time(corpse_service, mock_persistence):
+    """Test get_all_decayed_corpses() uses real UTC time, not Mythos time, even when time service is available."""
     mock_time_service = MagicMock()
-    mock_time_service.get_current_mythos_datetime.return_value = datetime.now(UTC)
+    # Mock Mythos time to be far in the future (simulating accelerated time)
+    mock_time_service.get_current_mythos_datetime.return_value = datetime.now(UTC) + timedelta(days=10)
     corpse_service.time_service = mock_time_service
+
     past_time = datetime.now(UTC) - timedelta(hours=1)
     container_data = {
         "container_id": str(uuid.uuid4()),
@@ -570,9 +578,17 @@ async def test_get_all_decayed_corpses_with_time_service(corpse_service, mock_pe
         "metadata": {},
     }
     mock_persistence.get_decayed_containers = AsyncMock(return_value=[container_data])
+
     result = await corpse_service.get_all_decayed_corpses()
     assert len(result) == 1
-    mock_time_service.get_current_mythos_datetime.assert_called_once()
+
+    # Verify time service was NOT called (we use real UTC time, not Mythos time)
+    mock_time_service.get_current_mythos_datetime.assert_not_called()
+
+    # Verify get_decayed_containers was called with a timezone-aware UTC datetime
+    call_args = mock_persistence.get_decayed_containers.call_args[0][0]
+    assert call_args.tzinfo is not None, "current_time should be timezone-aware"
+    assert call_args.tzinfo == UTC or call_args.tzinfo.utcoffset(None) == timedelta(0), "current_time should be UTC"
 
 
 @pytest.mark.asyncio
@@ -588,8 +604,6 @@ async def test_get_all_decayed_corpses_validation_error(corpse_service, mock_per
 @pytest.mark.asyncio
 async def test_get_all_decayed_corpses_non_corpse(corpse_service, mock_persistence):
     """Test get_all_decayed_corpses() filters out non-corpse containers."""
-    from server.models.container import ContainerSourceType
-
     container_data = {
         "container_id": str(uuid.uuid4()),
         "source_type": ContainerSourceType.ENVIRONMENT.value,
@@ -662,3 +676,80 @@ async def test_create_corpse_on_death_custom_grace_period(corpse_service, mock_p
     assert isinstance(result, ContainerComponent)
     assert result.metadata.get("grace_period_seconds") == 600
     assert result.decay_at is not None
+
+
+def test_is_corpse_decayed_timezone_aware(corpse_service):
+    """Test is_corpse_decayed() works correctly with timezone-aware datetimes."""
+    # Create decay_at with timezone-aware UTC datetime
+    decay_at = datetime.now(UTC) - timedelta(hours=1)
+    assert decay_at.tzinfo is not None, "decay_at should be timezone-aware"
+
+    corpse = ContainerComponent(
+        container_id=uuid.uuid4(),
+        source_type=ContainerSourceType.CORPSE,
+        owner_id=uuid.uuid4(),
+        room_id="room_001",
+        capacity_slots=20,
+        lock_state=ContainerLockState.UNLOCKED,
+        decay_at=decay_at,
+    )
+
+    # Should correctly identify as decayed
+    result = corpse_service.is_corpse_decayed(corpse)
+    assert result is True
+
+
+def test_is_corpse_decayed_timezone_naive_vs_aware(corpse_service):
+    """Test is_corpse_decayed() handles timezone-aware decay_at correctly."""
+    # Even if decay_at is timezone-naive (edge case), comparison should work
+    # This tests the robustness of the decay check
+
+    # Create a timezone-naive datetime (shouldn't happen in practice, but test edge case)
+    naive_decay_at = datetime.now(UTC).replace(tzinfo=None) - timedelta(hours=1)
+
+    corpse = ContainerComponent(
+        container_id=uuid.uuid4(),
+        source_type=ContainerSourceType.CORPSE,
+        owner_id=uuid.uuid4(),
+        room_id="room_001",
+        capacity_slots=20,
+        lock_state=ContainerLockState.UNLOCKED,
+        decay_at=naive_decay_at,
+    )
+
+    # Should still work - datetime comparison handles naive vs aware
+    result = corpse_service.is_corpse_decayed(corpse)
+    assert result is True
+
+
+@pytest.mark.asyncio
+async def test_get_all_decayed_corpses_timezone_aware_utc(corpse_service, mock_persistence):
+    """Test get_all_decayed_corpses() passes timezone-aware UTC datetime to persistence layer."""
+    past_time = datetime.now(UTC) - timedelta(hours=1)
+    container_data = {
+        "container_id": str(uuid.uuid4()),
+        "source_type": "corpse",
+        "owner_id": str(uuid.uuid4()),
+        "room_id": "room_001",
+        "capacity_slots": 20,
+        "lock_state": "unlocked",
+        "decay_at": past_time,
+        "items": [],
+        "metadata": {},
+    }
+    mock_persistence.get_decayed_containers = AsyncMock(return_value=[container_data])
+
+    await corpse_service.get_all_decayed_corpses()
+
+    # Verify get_decayed_containers was called
+    mock_persistence.get_decayed_containers.assert_awaited_once()
+
+    # Get the current_time argument that was passed
+    call_args = mock_persistence.get_decayed_containers.call_args[0]
+    current_time_arg = call_args[0] if call_args else None
+
+    assert current_time_arg is not None, "current_time should be passed"
+    assert isinstance(current_time_arg, datetime), "current_time should be a datetime"
+    assert current_time_arg.tzinfo is not None, "current_time should be timezone-aware"
+    # Check it's UTC (either UTC timezone or offset of 0)
+    assert current_time_arg.tzinfo == UTC or current_time_arg.utcoffset() == timedelta(0), "current_time should be UTC"

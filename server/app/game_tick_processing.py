@@ -415,10 +415,16 @@ async def cleanup_decayed_corpses(app: FastAPI, tick_count: int) -> None:
     if tick_count % 60:
         return
 
+    logger.debug("Running decayed corpse cleanup check", tick_count=tick_count)
+
     try:
         persistence = app.state.container.persistence
         connection_manager = app.state.container.connection_manager
         time_service = get_mythos_chronicle()
+
+        if persistence is None:
+            logger.warning("Persistence layer not available for corpse cleanup", tick_count=tick_count)
+            return
 
         corpse_service = CorpseLifecycleService(
             persistence=persistence,
@@ -427,6 +433,12 @@ async def cleanup_decayed_corpses(app: FastAPI, tick_count: int) -> None:
         )
 
         decayed = await corpse_service.get_all_decayed_corpses()
+        logger.debug(
+            "Decayed corpses check completed",
+            tick_count=tick_count,
+            decayed_count=len(decayed),
+        )
+
         cleaned_count = 0
 
         for corpse in decayed:
@@ -440,11 +452,18 @@ async def cleanup_decayed_corpses(app: FastAPI, tick_count: int) -> None:
 
                 await corpse_service.cleanup_decayed_corpse(corpse.container_id)
                 cleaned_count += 1
+                logger.debug(
+                    "Cleaned up decayed corpse",
+                    tick_count=tick_count,
+                    container_id=str(corpse.container_id),
+                    room_id=corpse.room_id,
+                )
             except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as cleanup_error:
                 logger.error(
                     "Error cleaning up individual decayed corpse",
                     error=str(cleanup_error),
                     container_id=str(corpse.container_id),
+                    tick_count=tick_count,
                     exc_info=True,
                 )
                 continue
@@ -456,9 +475,16 @@ async def cleanup_decayed_corpses(app: FastAPI, tick_count: int) -> None:
                 cleaned_count=cleaned_count,
                 total_decayed=len(decayed),
             )
+        elif len(decayed) > 0:
+            logger.warning(
+                "Found decayed corpses but none were cleaned",
+                tick_count=tick_count,
+                total_decayed=len(decayed),
+                cleaned_count=cleaned_count,
+            )
     except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as corpse_cleanup_error:
-        logger.warning(
-            "Error cleaning up decayed corpses",
+        logger.error(
+            "Error during decayed corpse cleanup",
             error=str(corpse_cleanup_error),
             tick_count=tick_count,
             exc_info=True,

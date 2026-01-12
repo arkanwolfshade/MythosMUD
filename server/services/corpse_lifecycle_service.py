@@ -43,6 +43,33 @@ def _get_enum_value(enum_or_str: Any) -> str:
     return str(enum_or_str)
 
 
+def _filter_container_data(container_data: dict[str, Any]) -> dict[str, Any]:
+    """
+    Filter out database-specific fields that are not part of the ContainerComponent model.
+
+    The database returns created_at and updated_at fields, but the ContainerComponent
+    model has extra="forbid", so these fields must be removed before validation.
+
+    Also converts items_json to items and metadata_json to metadata to match
+    the ContainerComponent model field names.
+
+    Args:
+        container_data: Raw container data from database
+
+    Returns:
+        Filtered container data without database-specific fields, with field names converted
+    """
+    filtered = {k: v for k, v in container_data.items() if k not in ("created_at", "updated_at")}
+
+    # Convert items_json to items and metadata_json to metadata for ContainerComponent model
+    if "items_json" in filtered:
+        filtered["items"] = filtered.pop("items_json")
+    if "metadata_json" in filtered:
+        filtered["metadata"] = filtered.pop("metadata_json")
+
+    return filtered
+
+
 class CorpseServiceError(MythosMUDError):
     """Base exception for corpse service operations."""
 
@@ -251,13 +278,20 @@ class CorpseLifecycleService:
         if not corpse.decay_at:
             return False
 
-        # Use time service if available, otherwise use system time
-        if self.time_service:
-            current_time = self.time_service.get_current_mythos_datetime()
-        else:
-            current_time = datetime.now(UTC)
+        # Use real UTC time for decay comparison (decay_at is set using real UTC time)
+        # Decay timers should use real-world time, not accelerated Mythos time
+        current_time = datetime.now(UTC)
 
-        return current_time >= corpse.decay_at
+        # Normalize decay_at to UTC if needed (handle both timezone-aware and naive datetimes)
+        decay_at = corpse.decay_at
+        if decay_at.tzinfo is None:
+            # If naive, assume UTC
+            decay_at = decay_at.replace(tzinfo=UTC)
+        else:
+            # If timezone-aware, convert to UTC
+            decay_at = decay_at.astimezone(UTC)
+
+        return current_time >= decay_at
 
     async def get_decayed_corpses_in_room(self, room_id: str) -> list[ContainerComponent]:
         """
@@ -277,7 +311,8 @@ class CorpseLifecycleService:
         decayed = []
         for container_data in containers_data:
             try:
-                container = ContainerComponent.model_validate(container_data)
+                filtered_data = _filter_container_data(container_data)
+                container = ContainerComponent.model_validate(filtered_data)
                 if container.source_type == ContainerSourceType.CORPSE and self.is_corpse_decayed(container):
                     decayed.append(container)
             except Exception as e:  # pylint: disable=broad-exception-caught  # Continue processing other containers on error  # noqa: B904
@@ -321,7 +356,8 @@ class CorpseLifecycleService:
                 user_friendly="Corpse container not found",
             )
 
-        container = ContainerComponent.model_validate(container_data)
+        filtered_data = _filter_container_data(container_data)
+        container = ContainerComponent.model_validate(filtered_data)
 
         # Verify it's a corpse
         if container.source_type != ContainerSourceType.CORPSE:
@@ -400,23 +436,35 @@ class CorpseLifecycleService:
         Returns:
             list[ContainerComponent]: List of all decayed corpse containers
         """
-        # Use time service if available, otherwise use system time
-        if self.time_service:
-            current_time = self.time_service.get_current_mythos_datetime()
-        else:
-            current_time = datetime.now(UTC)
+        # Use real UTC time for decay comparison (decay_at is set using real UTC time)
+        # Decay timers should use real-world time, not accelerated Mythos time
+        current_time = datetime.now(UTC)
+
+        logger.debug(
+            "Checking for decayed corpses",
+            current_time=current_time.isoformat(),
+        )
 
         # Get all decayed containers from persistence
         decayed_data = await self.persistence.get_decayed_containers(current_time)
         if not decayed_data:
+            logger.debug("No decayed containers found", current_time=current_time.isoformat())
             return []
 
         decayed_corpses = []
         for container_data in decayed_data:
             try:
-                container = ContainerComponent.model_validate(container_data)
+                filtered_data = _filter_container_data(container_data)
+                container = ContainerComponent.model_validate(filtered_data)
                 if container.source_type == ContainerSourceType.CORPSE:
                     decayed_corpses.append(container)
+                    logger.debug(
+                        "Found decayed corpse",
+                        container_id=str(container.container_id),
+                        room_id=container.room_id,
+                        decay_at=container.decay_at.isoformat() if container.decay_at else None,
+                        current_time=current_time.isoformat(),
+                    )
             except Exception as e:  # pylint: disable=broad-exception-caught  # Continue processing other containers on error  # noqa: B904
                 logger.warning(
                     "Error validating decayed container",
@@ -424,6 +472,12 @@ class CorpseLifecycleService:
                     container_data=container_data,
                 )
                 continue
+
+        logger.debug(
+            "Decayed corpses found",
+            total_containers=len(decayed_data),
+            corpse_count=len(decayed_corpses),
+        )
 
         return decayed_corpses
 
