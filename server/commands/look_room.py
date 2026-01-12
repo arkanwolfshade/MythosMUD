@@ -5,8 +5,11 @@ This module handles looking at rooms, including formatting room descriptions,
 listing items, NPCs, players, and exits in the room.
 """
 
+import uuid
 from typing import Any
 
+from ..realtime.disconnect_grace_period import is_player_in_grace_period
+from ..realtime.login_grace_period import is_player_in_login_grace_period
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.room_renderer import format_room_drop_lines
 from .look_npc import _get_npcs_in_room
@@ -67,12 +70,40 @@ async def _format_npcs_section(room_id: str | None) -> list[str]:
     return [f"Also here: {npc_list}", ""]
 
 
-def _filter_other_players(players_in_room: list[Any], player_name: str) -> list[str]:
-    """Filter out the current player from the list of players in room."""
+async def _filter_other_players(
+    players_in_room: list[Any], player_name: str, connection_manager: Any | None = None
+) -> list[str]:
+    """
+    Filter out the current player from the list of players in room.
+    Adds "(linkdead)" indicator for players in grace period.
+
+    Args:
+        players_in_room: List of player objects
+        player_name: Current player's name (to filter out)
+        connection_manager: ConnectionManager instance for checking grace period
+
+    Returns:
+        List of player names with "(linkdead)" indicator if applicable
+    """
     player_names = []
     for p in players_in_room:
         if hasattr(p, "name") and p.name != player_name:
-            player_names.append(p.name)
+            display_name = p.name
+            # Check if player is in disconnect grace period and add "(linkdead)" indicator
+            # Also check if player is in login grace period and add "(warded)" indicator
+            if connection_manager and hasattr(p, "player_id"):
+                try:
+                    player_id = uuid.UUID(p.player_id) if isinstance(p.player_id, str) else p.player_id
+
+                    if is_player_in_grace_period(player_id, connection_manager):
+                        display_name = f"{p.name} (linkdead)"
+                    # Check login grace period (can have both indicators)
+                    if is_player_in_login_grace_period(player_id, connection_manager):
+                        display_name = f"{display_name} (warded)"
+                except (ValueError, AttributeError, ImportError, TypeError):
+                    # If we can't check grace period, use name as-is
+                    pass
+            player_names.append(display_name)
     return player_names
 
 
@@ -111,6 +142,7 @@ async def _handle_room_look(
     room_drops: list[dict[str, Any]],
     persistence: Any,
     player_name: str,
+    request: Any | None = None,
 ) -> dict[str, Any]:
     """Handle looking at the current room."""
     desc = _get_room_description(room)
@@ -137,7 +169,10 @@ async def _handle_room_look(
 
     # 6. Players
     players_in_room = await _get_players_in_room(room, persistence)
-    player_names = _filter_other_players(players_in_room, player_name)
+    # Get connection_manager for grace period check
+    app = getattr(request, "app", None) if "request" in locals() else None
+    connection_manager = getattr(app.state, "connection_manager", None) if app else None
+    player_names = await _filter_other_players(players_in_room, player_name, connection_manager)
     lines.extend(_format_players_section(player_names))
 
     # 9. Exits

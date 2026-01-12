@@ -77,7 +77,7 @@ class NPCMaintenanceConfig:
         Returns:
             True if maintenance should run on this tick
         """
-        return tick_count % cls.MAINTENANCE_INTERVAL_TICKS == 0
+        return not tick_count % cls.MAINTENANCE_INTERVAL_TICKS
 
     @classmethod
     def get_config_summary(cls) -> dict[str, Any]:

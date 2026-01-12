@@ -6,6 +6,8 @@ This module handles all player-related events (entered, left, XP, DP, death, res
 As documented in "Player Event Propagation Protocols" - Dr. Armitage, 1928
 """
 
+# pylint: disable=too-many-instance-attributes,too-many-arguments,too-many-positional-arguments  # Reason: Event handlers require many service attributes and complex event processing logic
+
 from typing import Any
 
 from ..events.event_types import PlayerDPUpdated, PlayerEnteredRoom, PlayerLeftRoom

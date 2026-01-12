@@ -92,10 +92,9 @@ class PlayerGuidFormatter(logging.Formatter):
 
             if player_name:
                 return f"<{player_name}>: {guid}"
-            else:
-                # Log the lookup failure and return fallback format
-                self._log_lookup_failure(guid)
-                return f"<UNKNOWN>: {guid}"
+            # Log the lookup failure and return fallback format
+            self._log_lookup_failure(guid)
+            return f"<UNKNOWN>: {guid}"
 
         # Replace all UUID patterns in the message
         return self.uuid_pattern.sub(replace_guid, message)

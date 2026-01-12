@@ -5,6 +5,8 @@ This module handles all player-related business logic including
 creation, retrieval, validation, and state management.
 """
 
+# pylint: disable=too-many-lines,wrong-import-position,too-many-public-methods  # Reason: Player service requires extensive functionality for comprehensive player management operations across all game systems. Imports after TYPE_CHECKING block are intentional to avoid circular dependencies. Player service legitimately requires many public methods for comprehensive player management.
+
 import datetime
 import uuid
 from typing import TYPE_CHECKING, Any
@@ -112,7 +114,7 @@ class PlayerService:
         # Convert to schema format
         return await self._convert_player_to_schema(player)
 
-    async def create_player_with_stats(
+    async def create_player_with_stats(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Player creation requires many parameters for stats and configuration
         self,
         name: str,
         stats: Stats,
@@ -852,7 +854,7 @@ class PlayerService:
         logger.info("Player damaged successfully", player_id=player_id, amount=amount, damage_type=damage_type)
         return {"message": f"Damaged {player.name} for {amount} {damage_type} damage"}
 
-    async def respawn_player_by_user_id(
+    async def respawn_player_by_user_id(  # pylint: disable=too-many-locals  # Reason: Respawn requires many intermediate variables for complex respawn logic
         self,
         user_id: str,
         session: "AsyncSession",
@@ -891,7 +893,7 @@ class PlayerService:
             select(Player)
             .options(selectinload(Player.user))
             .where(Player.user_id == user_id)
-            .where(Player.is_deleted == False)  # noqa: E712
+            .where(Player.is_deleted.is_(False))  # Use is_() for SQLAlchemy boolean comparison
         )
         result = await session.execute(stmt)
         all_players = list(result.scalars().all())
@@ -987,7 +989,7 @@ class PlayerService:
             "message": "You have been resurrected and returned to the waking world",
         }
 
-    async def respawn_player_from_delirium_by_user_id(
+    async def respawn_player_from_delirium_by_user_id(  # pylint: disable=too-many-locals  # Reason: Delirium respawn requires many intermediate variables for complex respawn logic
         self,
         user_id: str,
         session: "AsyncSession",
@@ -1125,21 +1127,9 @@ class PlayerService:
         """
         return await self._convert_player_to_schema(player)
 
-    async def _convert_player_to_schema(self, player) -> PlayerRead:
-        """
-        Convert a player object to PlayerRead schema.
-
-        Args:
-            player: Player object or dictionary
-
-        Returns:
-            PlayerRead: The player data in schema format
-        """
-        # Check if player is in combat using player combat service
-        # In test environments, always default to False to avoid Mock object issues
+    async def _check_player_combat_state(self, player: Any) -> bool:
+        """Check if player is in combat."""
         in_combat = False
-
-        # Only check combat state in non-test environments
         if (
             hasattr(self, "player_combat_service")
             and self.player_combat_service
@@ -1148,14 +1138,14 @@ class PlayerService:
         ):
             if hasattr(player, "player_id"):
                 try:
-                    # Check if player is currently in combat using PlayerCombatService
                     if hasattr(self.player_combat_service, "is_player_in_combat"):
                         in_combat = await self.player_combat_service.is_player_in_combat(player.player_id)
                 except (DatabaseError, AttributeError) as e:
                     logger.warning("Failed to check combat state for player", player_id=player.player_id, error=str(e))
-                    in_combat = False
+        return in_combat
 
-        # Get profession information
+    async def _get_profession_details(self, player: Any) -> tuple[int, str | None, str | None, str | None]:
+        """Get profession information for player."""
         player_profession_id = 0
         profession_name = None
         profession_description = None
@@ -1166,7 +1156,6 @@ class PlayerService:
         elif isinstance(player, dict):
             player_profession_id = player.get("profession_id", 0)
 
-        # Fetch profession details from persistence
         if player_profession_id is not None:
             try:
                 profession = await self.persistence.get_profession_by_id(player_profession_id)
@@ -1177,118 +1166,157 @@ class PlayerService:
             except (DatabaseError, AttributeError) as e:
                 logger.warning("Failed to fetch profession", profession_id=player_profession_id, error=str(e))
 
+        return player_profession_id, profession_name, profession_description, profession_flavor_text
+
+    async def _get_player_data_methods(
+        self, player: Any
+    ) -> tuple[dict[str, Any], list[dict[str, Any]], list[dict[str, Any]]]:
+        """Get stats, inventory, and status_effects from player, handling async methods."""
+        stats = player.get_stats()
+        inventory = player.get_inventory()
+        status_effects = player.get_status_effects()
+
+        # If these are coroutines (from AsyncMock), await them
+        if hasattr(stats, "__await__"):
+            stats = await stats
+        if hasattr(inventory, "__await__"):
+            inventory = await inventory
+        if hasattr(status_effects, "__await__"):
+            status_effects = await status_effects
+
+        return stats, inventory, status_effects
+
+    def _compute_derived_stats_fields(self, stats: dict[str, Any]) -> None:
+        """Compute derived stats fields (max_dp, max_magic_points, max_lucidity)."""
+        try:
+            import math
+
+            con = stats.get("constitution", 50)
+            siz = stats.get("size", 50)
+            pow_val = stats.get("power", 50)
+            edu = stats.get("education", 50)
+
+            if "max_dp" not in stats:
+                stats["max_dp"] = (con + siz) // 5
+            if "max_magic_points" not in stats:
+                stats["max_magic_points"] = math.ceil(pow_val * 0.2)
+            if "max_lucidity" not in stats:
+                stats["max_lucidity"] = edu
+
+            # Initialize magic_points to max if it's 0 (full MP at character creation)
+            if not stats.get("magic_points", 0) and stats.get("max_magic_points", 0) > 0:
+                stats["magic_points"] = stats["max_magic_points"]
+            # Cap lucidity to max_lucidity if it exceeds max
+            max_lucidity_val = stats.get("max_lucidity", edu)
+            if stats.get("lucidity", 100) > max_lucidity_val:
+                stats["lucidity"] = max_lucidity_val
+        except (DatabaseError, AttributeError) as e:
+            logger.error(
+                "Error adding computed fields to stats",
+                player_id=stats.get("player_id"),
+                error=str(e),
+                exc_info=True,
+            )
+
+    def _get_position_state(self, position_value: int, player_id: Any = None) -> PositionState:
+        """Get PositionState from position value, with fallback to STANDING."""
+        try:
+            return PositionState(position_value)
+        except ValueError:
+            logger.warning(
+                "Invalid position value on player stats, defaulting to standing",
+                player_id=player_id,
+                position_value=position_value,
+            )
+            return PositionState.STANDING
+
+    async def _create_player_read_from_object(
+        self, player: Any, in_combat: bool, profession_data: tuple[int, str | None, str | None, str | None]
+    ) -> PlayerRead:
+        """Create PlayerRead schema from player object."""
+        player_profession_id, profession_name, profession_description, profession_flavor_text = profession_data
+
+        stats, inventory, status_effects = await self._get_player_data_methods(player)
+
+        position_value = stats.get("position", PositionState.STANDING.value)
+        position_state = self._get_position_state(position_value, getattr(player, "player_id", None))
+
+        self._compute_derived_stats_fields(stats)
+
+        return PlayerRead(
+            id=player.player_id,
+            user_id=player.user_id,
+            name=player.name,
+            profession_id=player_profession_id,
+            profession_name=profession_name,
+            profession_description=profession_description,
+            profession_flavor_text=profession_flavor_text,
+            current_room_id=player.current_room_id,
+            experience_points=player.experience_points,
+            level=player.level,
+            stats=stats,
+            inventory=inventory,
+            status_effects=status_effects,
+            created_at=player.created_at,
+            last_active=player.last_active,
+            is_admin=bool(player.is_admin),  # Convert integer to boolean
+            in_combat=in_combat,
+            position=position_state,
+        )
+
+    def _create_player_read_from_dict(
+        self, player: dict[str, Any], in_combat: bool, profession_data: tuple[int, str | None, str | None, str | None]
+    ) -> PlayerRead:
+        """Create PlayerRead schema from player dictionary."""
+        player_profession_id, profession_name, profession_description, profession_flavor_text = profession_data
+
+        stats_data = player["stats"]
+        position_value = stats_data.get("position", PositionState.STANDING.value)
+        position_state = self._get_position_state(position_value, player.get("player_id"))
+
+        return PlayerRead(
+            id=player["player_id"],
+            user_id=player["user_id"],
+            name=player["name"],
+            profession_id=player_profession_id,
+            profession_name=profession_name,
+            profession_description=profession_description,
+            profession_flavor_text=profession_flavor_text,
+            current_room_id=player["current_room_id"],
+            experience_points=player["experience_points"],
+            level=player["level"],
+            stats=player["stats"],
+            inventory=player["inventory"],
+            status_effects=player["status_effects"],
+            created_at=player["created_at"],
+            last_active=player["last_active"],
+            is_admin=bool(player.get("is_admin", 0)),  # Convert integer to boolean with default
+            in_combat=in_combat,
+            position=position_state,
+        )
+
+    async def _convert_player_to_schema(self, player) -> PlayerRead:
+        """
+        Convert a player object to PlayerRead schema.
+
+        Args:
+            player: Player object or dictionary
+
+        Returns:
+            PlayerRead: The player data in schema format
+        """
+        # Check if player is in combat
+        in_combat = await self._check_player_combat_state(player)
+
+        # Get profession information
+        profession_data = await self._get_profession_details(player)
+
         if hasattr(player, "player_id"):  # Player object
-            # Handle both sync and async method calls
-            stats = player.get_stats()
-            inventory = player.get_inventory()
-            status_effects = player.get_status_effects()
+            return await self._create_player_read_from_object(player, in_combat, profession_data)
 
-            # If these are coroutines (from AsyncMock), await them
-            if hasattr(stats, "__await__"):
-                stats = await stats
-            if hasattr(inventory, "__await__"):
-                inventory = await inventory
-            if hasattr(status_effects, "__await__"):
-                status_effects = await status_effects
-
-            position_value = stats.get("position", PositionState.STANDING.value)
-            try:
-                position_state = PositionState(position_value)
-            except ValueError:
-                logger.warning(
-                    "Invalid position value on player stats, defaulting to standing",
-                    player_id=getattr(player, "player_id", None),
-                    position_value=position_value,
-                )
-                position_state = PositionState.STANDING
-
-            # Add computed fields to stats dict if not present
-            try:
-                import math
-
-                con = stats.get("constitution", 50)
-                siz = stats.get("size", 50)
-                pow_val = stats.get("power", 50)
-                edu = stats.get("education", 50)
-
-                if "max_dp" not in stats:
-                    stats["max_dp"] = (con + siz) // 5
-                if "max_magic_points" not in stats:
-                    stats["max_magic_points"] = math.ceil(pow_val * 0.2)
-                if "max_lucidity" not in stats:
-                    stats["max_lucidity"] = edu
-
-                # Initialize magic_points to max if it's 0 (full MP at character creation)
-                if stats.get("magic_points", 0) == 0 and stats.get("max_magic_points", 0) > 0:
-                    stats["magic_points"] = stats["max_magic_points"]
-                # Cap lucidity to max_lucidity if it exceeds max
-                max_lucidity_val = stats.get("max_lucidity", edu)
-                if stats.get("lucidity", 100) > max_lucidity_val:
-                    stats["lucidity"] = max_lucidity_val
-            except (DatabaseError, AttributeError) as e:
-                logger.error(
-                    "Error adding computed fields to stats",
-                    player_id=getattr(player, "player_id", None),
-                    error=str(e),
-                    exc_info=True,
-                )
-                # Continue with stats as-is rather than failing completely
-
-            return PlayerRead(
-                id=player.player_id,
-                user_id=player.user_id,
-                name=player.name,
-                profession_id=player_profession_id,
-                profession_name=profession_name,
-                profession_description=profession_description,
-                profession_flavor_text=profession_flavor_text,
-                current_room_id=player.current_room_id,
-                experience_points=player.experience_points,
-                level=player.level,
-                stats=stats,
-                inventory=inventory,
-                status_effects=status_effects,
-                created_at=player.created_at,
-                last_active=player.last_active,
-                is_admin=bool(player.is_admin),  # Convert integer to boolean
-                in_combat=in_combat,
-                position=position_state,
-            )
-        else:  # Dictionary
-            # Check if player is a Mock by checking for MagicMock type
-            if "Mock" in str(type(player).__name__):
-                # In tests, return the Mock directly
-                return player
-
-            stats_data = player["stats"]
-            position_value = stats_data.get("position", PositionState.STANDING.value)
-            try:
-                position_state = PositionState(position_value)
-            except ValueError:
-                logger.warning(
-                    "Invalid position value on player stats dict, defaulting to standing",
-                    player_id=player.get("player_id"),
-                    position_value=position_value,
-                )
-                position_state = PositionState.STANDING
-
-            return PlayerRead(
-                id=player["player_id"],
-                user_id=player["user_id"],
-                name=player["name"],
-                profession_id=player_profession_id,
-                profession_name=profession_name,
-                profession_description=profession_description,
-                profession_flavor_text=profession_flavor_text,
-                current_room_id=player["current_room_id"],
-                experience_points=player["experience_points"],
-                level=player["level"],
-                stats=player["stats"],
-                inventory=player["inventory"],
-                status_effects=player["status_effects"],
-                created_at=player["created_at"],
-                last_active=player["last_active"],
-                is_admin=bool(player.get("is_admin", 0)),  # Convert integer to boolean with default
-                in_combat=in_combat,
-                position=position_state,
-            )
+        # Dictionary
+        # Check if player is a Mock by checking for MagicMock type
+        if "Mock" in str(type(player).__name__):
+            # In tests, return the Mock directly
+            return player
+        return self._create_player_read_from_dict(player, in_combat, profession_data)

@@ -74,7 +74,7 @@ async def get_all_professions(
 
         return {"professions": profession_list}
 
-    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Profession retrieval errors unpredictable, must create error context
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Profession retrieval errors unpredictable, must create error context
         context = create_context_from_request(request)
         if current_user:
             context.user_id = str(current_user.id)
@@ -143,7 +143,7 @@ async def get_profession_by_id(
     except LoggedHTTPException:
         # Re-raise LoggedHTTPException as-is
         raise
-    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Profession selection errors unpredictable, must create error context
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Profession selection errors unpredictable, must create error context
         context = create_context_from_request(request)
         if current_user:
             context.user_id = str(current_user.id)

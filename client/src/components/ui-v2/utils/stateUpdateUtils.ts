@@ -2,16 +2,18 @@
 // Extracted from GameClientV2Container to reduce complexity
 // As documented in "State Management Patterns" - Dr. Armitage, 1928
 
+import type { GameStateUpdates } from '../eventHandlers/types';
 import type { ChatMessage, Player, Room } from '../types';
 import { sanitizeChatMessageForState } from './messageUtils';
 import { mergeRoomState } from './roomMergeUtils';
-import type { GameStateUpdates } from '../eventHandlers/types';
 
 export interface GameState {
   player: Player | null;
   room: Room | null;
   messages: ChatMessage[];
   commandHistory: string[];
+  loginGracePeriodActive?: boolean;
+  loginGracePeriodRemaining?: number;
 }
 
 // Helper function to merge occupant data from two room updates
@@ -75,6 +77,16 @@ export const applyMessageUpdates = (
   updates.messages.push(...eventUpdates.messages);
 };
 
+// Helper function to apply grace period updates
+export const applyGracePeriodUpdate = (eventUpdates: GameStateUpdates, updates: Partial<GameState>): void => {
+  if (eventUpdates.loginGracePeriodActive !== undefined) {
+    updates.loginGracePeriodActive = eventUpdates.loginGracePeriodActive;
+  }
+  if (eventUpdates.loginGracePeriodRemaining !== undefined) {
+    updates.loginGracePeriodRemaining = eventUpdates.loginGracePeriodRemaining;
+  }
+};
+
 // Helper function to apply updates from a single event
 export const applyEventUpdates = (
   eventUpdates: GameStateUpdates | void,
@@ -88,6 +100,7 @@ export const applyEventUpdates = (
   applyPlayerUpdate(eventUpdates, updates);
   applyRoomUpdate(eventUpdates, updates, mergeRoomUpdate);
   applyMessageUpdates(eventUpdates, updates, currentMessages);
+  applyGracePeriodUpdate(eventUpdates, updates);
 };
 
 // Helper function to sanitize and apply updates to state
@@ -111,6 +124,13 @@ export const sanitizeAndApplyUpdates = (
       messages: sanitizedMessages || prev.messages,
       player: updates.player || prev.player,
       room: finalRoom,
+      // Preserve grace period fields if not explicitly updated
+      loginGracePeriodActive:
+        updates.loginGracePeriodActive !== undefined ? updates.loginGracePeriodActive : prev.loginGracePeriodActive,
+      loginGracePeriodRemaining:
+        updates.loginGracePeriodRemaining !== undefined
+          ? updates.loginGracePeriodRemaining
+          : prev.loginGracePeriodRemaining,
     };
   });
 };

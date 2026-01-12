@@ -120,7 +120,6 @@ def validate_message(data: dict[str, Any], message_type: str = "chat") -> BaseMe
     """
     if message_type == "chat":
         return validate_chat_message(data)
-    elif message_type == "event":
+    if message_type == "event":
         return validate_event_message(data)
-    else:
-        raise ValueError(f"Unknown message type: {message_type}")
+    raise ValueError(f"Unknown message type: {message_type}")

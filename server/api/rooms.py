@@ -66,7 +66,7 @@ async def _update_room_position_in_db(
     )
 
     rowcount: int = getattr(result, "rowcount", 0)
-    if rowcount == 0:
+    if not rowcount:
         logger.warning("No rows updated for room position", room_id=room_id)
         context = create_context_from_request(request)
         context.metadata["requested_room_id"] = room_id
@@ -88,7 +88,7 @@ async def _invalidate_room_cache(room_service: RoomService, room_id: str) -> Non
 # IMPORTANT: /list route must come BEFORE /{room_id} route
 # FastAPI matches routes in order, and /{room_id} would match /list otherwise
 @room_router.get("/list")
-async def list_rooms(
+async def list_rooms(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: API endpoint requires many query parameters and intermediate variables for room listing
     request: Request,
     plane: str = Query(..., description="Plane name (required)"),
     zone: str = Query(..., description="Zone name (required)"),
@@ -119,7 +119,7 @@ async def list_rooms(
         has_user=current_user is not None,
     )
 
-    try:
+    try:  # pylint: disable=too-many-nested-blocks  # Reason: Room listing requires complex nested logic for filtering, error handling, and response formatting
         rooms = await room_service.list_rooms(
             plane=plane,
             zone=zone,
@@ -181,7 +181,7 @@ async def list_rooms(
                             logger.debug("Player has explored no rooms, returning empty list")
                     else:
                         logger.warning("Player not found for user, cannot filter by exploration", user_id=user_id)
-                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Exploration filter errors unpredictable, fallback to all rooms
+                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Exploration filter errors unpredictable, fallback to all rooms
                     # Log error but don't fail the request - just return all rooms
                     logger.warning(
                         "Error filtering by explored rooms, returning all rooms",
@@ -206,7 +206,7 @@ async def list_rooms(
             "zone": zone,
             "sub_zone": sub_zone,
         }
-    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Room listing errors unpredictable, must handle gracefully
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Room listing errors unpredictable, must handle gracefully
         logger.error(
             "Error listing rooms",
             error=str(e),
@@ -231,7 +231,7 @@ class RoomPositionUpdate(BaseModel):
 
 
 @room_router.post("/{room_id}/position")
-async def update_room_position(
+async def update_room_position(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: API endpoint requires many parameters for room position updates
     room_id: str,
     position_data: RoomPositionUpdate,
     request: Request,
@@ -288,7 +288,7 @@ async def update_room_position(
 
     except LoggedHTTPException:
         raise
-    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Room creation errors unpredictable, must rollback and create context
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Room creation errors unpredictable, must rollback and create context
         await session.rollback()
         context = create_context_from_request(request)
         context.metadata["requested_room_id"] = room_id

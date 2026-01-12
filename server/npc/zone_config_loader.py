@@ -183,7 +183,7 @@ def load_zone_configurations() -> dict[str, ZoneConfiguration]:
         asyncio.set_event_loop(new_loop)
         try:
             new_loop.run_until_complete(async_load_zone_configurations(result_container))
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Zone config loading errors unpredictable, must store in container
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Zone config loading errors unpredictable, must store in container
             # Store exception in result_container if not already stored
             # (async_load_zone_configurations may have already stored it)
             if result_container.get("error") is None:

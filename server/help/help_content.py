@@ -5,6 +5,8 @@ This module contains the comprehensive command documentation and
 help system for the MythosMUD game.
 """
 
+# pylint: disable=too-many-lines  # Reason: Help content requires extensive documentation strings for comprehensive command help system
+
 from typing import Any, cast
 
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -848,8 +850,8 @@ def get_help_content(command_name: str | None = None) -> str:
     if command_name in COMMANDS:
         command_info = COMMANDS[command_name]
         return cast(str, command_info["detailed_help"])
-    else:
-        return f"""
+
+    return f"""
 <div style="color: #FF4500;">
 <h3>Command Not Found</h3>
 <p>The command '{command_name}' was not found. Use 'help' to see available commands.</p>

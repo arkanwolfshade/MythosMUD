@@ -5,6 +5,8 @@ This module provides handler classes and utilities for creating and configuring
 file-based logging handlers with proper rotation, Windows safety, and directory management.
 """
 
+# pylint: disable=too-few-public-methods  # Reason: Logging handler classes with focused responsibility, minimal public interface
+
 import io
 import logging
 import sys
@@ -112,7 +114,7 @@ class SafeRotatingFileHandler(RotatingFileHandler):
         return False
 
 
-class WarningOnlyFilter(logging.Filter):
+class WarningOnlyFilter(logging.Filter):  # pylint: disable=too-few-public-methods  # Reason: Filter class with focused responsibility, minimal public interface
     """
     Filter that only allows WARNING level logs to pass through.
 
@@ -169,6 +171,8 @@ def create_aggregator_handler(
         if sys.platform == "win32":
             # Windows-safe handler also needs directory safety
             class SafeWinHandlerAggregator(_WinSafeHandler):  # type: ignore[misc, valid-type]
+                """Windows-safe rotating file handler with directory safety for aggregator logs."""
+
                 def shouldRollover(self, record):  # noqa: N802
                     if self.baseFilename:
                         log_path = Path(self.baseFilename)

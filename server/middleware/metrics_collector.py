@@ -17,7 +17,7 @@ from ..structured_logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 
-class MetricsCollector:
+class MetricsCollector:  # pylint: disable=too-many-instance-attributes  # Reason: Metrics collector requires many tracking attributes for comprehensive metrics
     """
     Simple metrics collector for NATS message delivery.
 

@@ -4,6 +4,8 @@ Combat death handling logic.
 Handles player death, NPC death, mortally wounded states, and related events.
 """
 
+# pylint: disable=too-many-locals,too-many-arguments,too-many-positional-arguments  # Reason: Death handling requires many intermediate variables and parameters for complex death processing logic
+
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType
 from server.services.nats_exceptions import NATSError
 from server.structured_logging.enhanced_logging_config import get_logger
@@ -84,7 +86,7 @@ class CombatDeathHandler:
                 exc_info=True,
             )
 
-    async def _handle_npc_death(self, target: CombatParticipant, combat: CombatInstance, xp_reward: int) -> None:
+    async def _handle_npc_death(self, target: CombatParticipant, combat: CombatInstance, xp_reward: int) -> None:  # pylint: disable=too-many-locals  # Reason: NPC death handling requires many intermediate variables for complex death processing logic
         """Handle NPC death event publishing and ID resolution."""
         try:
             from ..container import ApplicationContainer
@@ -170,7 +172,7 @@ class CombatDeathHandler:
                 exc_info=True,
             )
 
-    async def handle_target_state_changes(
+    async def handle_target_state_changes(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: State change handling requires many parameters for context and state updates
         self,
         target: CombatParticipant,
         current_participant: CombatParticipant,

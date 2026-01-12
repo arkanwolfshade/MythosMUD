@@ -8,7 +8,7 @@ configuration data, including spawn modifiers and access requirements.
 from typing import Any
 
 
-class ZoneConfiguration:
+class ZoneConfiguration:  # pylint: disable=too-many-instance-attributes  # Reason: Zone configuration requires many fields to capture complete zone configuration
     """Represents the configuration for a zone or sub-zone."""
 
     def __init__(self, config_data: dict[str, Any]):

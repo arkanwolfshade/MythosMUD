@@ -12,6 +12,8 @@ Provides a single, consistent schema for events emitted over WebSocket:
 As noted in the Pnakotic Manuscripts, chronology must be preserved lest causality unravel.
 """
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event envelope building requires many parameters for complete event context
+
 from __future__ import annotations
 
 import json
@@ -30,8 +32,8 @@ class UUIDEncoder(json.JSONEncoder):
 
 
 # Global sequence counter for events (when connection_manager not available)
-_global_sequence_counter = 0
-_sequence_lock = None
+_global_sequence_counter = 0  # pylint: disable=invalid-name  # Reason: Private module-level variable, intentionally uses _ prefix
+_sequence_lock = None  # pylint: disable=invalid-name  # Reason: Private module-level variable, intentionally uses _ prefix
 
 
 def _get_next_global_sequence() -> int:
@@ -52,7 +54,7 @@ def utc_now_z() -> str:
     return datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z")
 
 
-def build_event(
+def build_event(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event building requires many parameters for complete event context
     event_type: str,
     data: dict[str, Any] | None = None,
     *,

@@ -5,6 +5,8 @@ This module provides utility functions and helpers used by the connection manage
 for various operations like UUID conversion, sequence numbers, and deprecated methods.
 """
 
+# pylint: disable=too-many-locals  # Reason: Connection helpers require many intermediate variables for complex connection operations
+
 from typing import Any
 
 from ..exceptions import DatabaseError
@@ -25,12 +27,11 @@ def convert_uuids_to_strings(obj: Any) -> Any:
     """
     if isinstance(obj, dict):
         return {k: convert_uuids_to_strings(v) for k, v in obj.items()}
-    elif isinstance(obj, list):
+    if isinstance(obj, list):
         return [convert_uuids_to_strings(item) for item in obj]
-    elif hasattr(obj, "__class__") and "UUID" in obj.__class__.__name__:
+    if hasattr(obj, "__class__") and "UUID" in obj.__class__.__name__:
         return str(obj)
-    else:
-        return obj
+    return obj
 
 
 def _optimize_payload(event: dict[str, Any], player_id: Any) -> dict[str, Any]:
@@ -161,7 +162,7 @@ def _update_delivery_status(
         delivery_status: Status dict to update
         had_connection_attempts: Whether any connection attempts were made
     """
-    if delivery_status["active_connections"] == 0:
+    if not delivery_status["active_connections"]:
         if had_connection_attempts and delivery_status["websocket_failed"] > 0:
             delivery_status["success"] = False
         else:
@@ -205,7 +206,7 @@ async def send_personal_message_old_impl(
 
         had_connection_attempts = await _send_to_websockets(player_id, serializable_event, manager, delivery_status)
 
-        if delivery_status["active_connections"] == 0:
+        if not delivery_status["active_connections"]:
             _queue_message_if_needed(player_id, serializable_event, manager, event)
 
         _update_delivery_status(delivery_status, had_connection_attempts)
@@ -231,8 +232,8 @@ async def handle_new_login_impl(player_id: Any, manager: Any) -> None:
         logger.info("NEW LOGIN detected for player, terminating existing connections", player_id=player_id)
 
         import json
-        import os
         from datetime import datetime
+        from pathlib import Path
 
         login_log_entry = {
             "timestamp": datetime.now().isoformat(),
@@ -244,10 +245,43 @@ async def handle_new_login_impl(player_id: Any, manager: Any) -> None:
             },
         }
 
-        login_log_path = "logs/development/new_logins.log"
-        os.makedirs(os.path.dirname(login_log_path), exist_ok=True)
-        with open(login_log_path, "a", encoding="utf-8") as f:
-            f.write(json.dumps(login_log_entry) + "\n")
+        # CRITICAL: Use absolute path from project root to prevent permission issues in CI
+        # Find project root by looking for pyproject.toml
+        current_file = Path(__file__).resolve()
+        project_root = current_file.parent
+        while project_root.parent != project_root:
+            if (project_root / "pyproject.toml").exists():
+                break
+            project_root = project_root.parent
+
+        # Get environment from config (defaults to development)
+        try:
+            from ..config import get_config
+
+            config = get_config()
+            environment = config.logging.environment
+        except (ImportError, AttributeError):
+            # Fallback to development if config not available
+            environment = "development"
+
+        login_log_dir = project_root / "logs" / environment
+        try:
+            login_log_dir.mkdir(parents=True, exist_ok=True)
+        except (OSError, PermissionError) as dir_error:
+            # Log but don't fail - login logging is non-critical
+            logger.debug("Could not create login log directory", error=str(dir_error), log_dir=str(login_log_dir))
+            # Skip logging if directory can't be created
+            await manager.force_disconnect_player(player_id)
+            return
+
+        login_log_path = login_log_dir / "new_logins.log"
+
+        try:
+            with open(login_log_path, "a", encoding="utf-8") as f:
+                f.write(json.dumps(login_log_entry) + "\n")
+        except (OSError, PermissionError) as log_error:
+            # Log but don't fail - login logging is non-critical
+            logger.debug("Could not write login log", error=str(log_error), log_path=str(login_log_path))
 
         await manager.force_disconnect_player(player_id)
 
@@ -264,7 +298,7 @@ async def broadcast_room_event_impl(
     """Broadcast a room-specific event to all players in the room."""
     try:
         from ..exceptions import (
-            DatabaseError as DBError,  # pylint: disable=redefined-outer-name  # Reason: Renamed to avoid shadowing outer scope
+            DatabaseError as DBError,  # pylint: disable=redefined-outer-name  # noqa: F811  # Reason: Renamed to avoid shadowing outer scope
         )
         from .envelope import build_event
 
@@ -291,7 +325,7 @@ async def broadcast_global_event_impl(
     """Broadcast a global event to all connected players."""
     try:
         from ..exceptions import (
-            DatabaseError as DBError,  # pylint: disable=redefined-outer-name  # Reason: Renamed to avoid shadowing outer scope
+            DatabaseError as DBError,  # pylint: disable=redefined-outer-name  # noqa: F811  # Reason: Renamed to avoid shadowing outer scope
         )
         from .envelope import build_event
 
@@ -316,7 +350,7 @@ def mark_player_seen_impl(player_id: Any, manager: Any) -> None:
         import time
 
         from ..exceptions import (
-            DatabaseError as DBError,  # pylint: disable=redefined-outer-name  # Reason: Renamed to avoid shadowing outer scope
+            DatabaseError as DBError,  # pylint: disable=redefined-outer-name  # noqa: F811  # Reason: Renamed to avoid shadowing outer scope
         )
 
         now_ts = time.time()

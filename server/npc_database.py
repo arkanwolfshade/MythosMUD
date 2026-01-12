@@ -30,10 +30,10 @@ from .utils.error_logging import create_error_context, log_and_raise
 logger = get_logger(__name__)
 
 # LAZY INITIALIZATION: These are initialized on first use, not at import time
-_npc_engine: AsyncEngine | None = None
-_npc_async_session_maker: async_sessionmaker | None = None
-_npc_database_url: str | None = None
-_npc_creation_loop_id: int | None = None  # Track which loop created the NPC engine
+_npc_engine: AsyncEngine | None = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
+_npc_async_session_maker: async_sessionmaker | None = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
+_npc_database_url: str | None = None  # pylint: disable=invalid-name  # Reason: Private module-level variable, intentionally uses _ prefix
+_npc_creation_loop_id: int | None = None  # pylint: disable=invalid-name  # Reason: Private module-level variable, intentionally uses _ prefix  # Track which loop created the NPC engine
 
 
 def _initialize_npc_database() -> None:
@@ -70,7 +70,7 @@ def _initialize_npc_database() -> None:
     try:
         config = get_config()
         npc_database_url = config.database.npc_url
-    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Configuration errors unpredictable, fallback needed for tests
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Configuration errors unpredictable, fallback needed for tests
         # Optional fallback for unit tests that provide only NPC DB URL
         allow_env_fallback = os.getenv("NPC_DB_ENV_FALLBACK", "").lower() in {"1", "true", "yes"}
         env_npc_url = os.getenv("DATABASE_NPC_URL") or os.getenv("NPC_DATABASE_URL") or os.getenv("DATABASE__NPC_URL")
@@ -241,7 +241,7 @@ async def get_npc_session() -> AsyncGenerator[AsyncSession, None]:
         try:
             logger.debug("NPC database session created successfully")
             yield session
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Database session errors unpredictable, must log and rollback
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Database session errors unpredictable, must log and rollback
             context.metadata["error_type"] = type(e).__name__
             context.metadata["error_message"] = str(e)
             logger.error(
@@ -253,7 +253,7 @@ async def get_npc_session() -> AsyncGenerator[AsyncSession, None]:
             try:
                 await session.rollback()
                 logger.debug("NPC database session rolled back after error")
-            except Exception as rollback_error:  # pylint: disable=broad-exception-caught  # Reason: Rollback errors unpredictable, must log but not fail
+            except Exception as rollback_error:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Rollback errors unpredictable, must log but not fail
                 logger.error(
                     "Failed to rollback NPC database session",
                     context=context.to_dict(),
@@ -290,10 +290,9 @@ async def init_npc_db():
         # Import all NPC models to ensure they're registered with metadata
         from sqlalchemy.orm import configure_mappers
 
-        # pylint: disable=unused-import
-        # Imported for side effects (SQLAlchemy mapper registration)
+        # pylint: disable=unused-import  # noqa: F401  # Imported for side effects (SQLAlchemy mapper registration)
         from server.models.npc import (
-            NPCDefinition,  # noqa: F401
+            NPCDefinition,  # noqa: F401  # pylint: disable=unused-import
         )
 
         logger.debug("Configuring NPC SQLAlchemy mappers")
@@ -315,7 +314,7 @@ async def init_npc_db():
             logger.info("NPC database connection verified successfully")
 
         logger.info("NPC database initialization complete - DDL must be applied separately via SQL scripts")
-    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Database initialization errors unpredictable, must log with context
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Database initialization errors unpredictable, must log with context
         context.metadata["error_type"] = type(e).__name__
         context.metadata["error_message"] = str(e)
         logger.error(
@@ -383,7 +382,7 @@ async def close_npc_db():
                 # Event loop is closed or proactor is None - this is expected during cleanup
                 # Don't log as error, just as debug since this is normal during test teardown
                 logger.debug("Event loop closed during NPC engine disposal (expected during cleanup)", error=str(e))
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Engine disposal errors unpredictable, must log but not fail
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Engine disposal errors unpredictable, must log but not fail
                 # Any other error - log but don't raise
                 logger.warning("Error disposing NPC database engine", error=str(e), error_type=type(e).__name__)
             finally:
@@ -391,7 +390,7 @@ async def close_npc_db():
                 _npc_engine = None
                 _npc_async_session_maker = None
                 _npc_creation_loop_id = None
-    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Cleanup errors unpredictable, best effort only
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Cleanup errors unpredictable, best effort only
         # Only log, don't raise - best effort cleanup
         context.metadata["error_type"] = type(e).__name__
         context.metadata["error_message"] = str(e)
@@ -449,19 +448,19 @@ def get_npc_database_path() -> Path | None:
     if _npc_database_url.startswith("postgresql"):
         # PostgreSQL doesn't have a file path
         return None
-    else:
-        context = create_error_context()
-        context.metadata["operation"] = "get_npc_database_path"
-        context.metadata["database_url"] = _npc_database_url
-        log_and_raise(
-            ValidationError,
-            f"Unsupported NPC database URL: {_npc_database_url}. Only PostgreSQL is supported.",
-            context=context,
-            details={"database_url": _npc_database_url},
-            user_friendly="Unsupported NPC database configuration - PostgreSQL required",
-        )
-        # log_and_raise returns NoReturn, so this code is unreachable
-        # Type checker understands this, but we keep the else branch for clarity
+
+    context = create_error_context()
+    context.metadata["operation"] = "get_npc_database_path"
+    context.metadata["database_url"] = _npc_database_url
+    log_and_raise(
+        ValidationError,
+        f"Unsupported NPC database URL: {_npc_database_url}. Only PostgreSQL is supported.",
+        context=context,
+        details={"database_url": _npc_database_url},
+        user_friendly="Unsupported NPC database configuration - PostgreSQL required",
+    )
+    # log_and_raise returns NoReturn, so this code is unreachable
+    # Type checker understands this, but we keep the else branch for clarity
 
 
 def ensure_npc_database_directory():

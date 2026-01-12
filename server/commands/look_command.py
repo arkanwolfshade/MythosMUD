@@ -5,6 +5,8 @@ This module handles the look command for examining surroundings.
 This is the main entry point that routes to specialized handlers.
 """
 
+# pylint: disable=too-many-arguments  # Reason: Look command requires many parameters for context and target resolution
+
 from typing import Any
 
 from ..alias_storage import AliasStorage
@@ -73,7 +75,7 @@ def _get_room_drops(app: Any, room_id: int, player_name: str) -> list[dict[str, 
     return room_drops
 
 
-async def _setup_look_command(
+async def _setup_look_command(  # pylint: disable=too-many-arguments  # Reason: Look command setup requires many parameters for context and validation
     request: Any, current_user: dict, player_name: str
 ) -> tuple[Any, Any, Any, Any, list[dict[str, Any]]] | None:
     """Setup and validate look command prerequisites."""
@@ -89,24 +91,28 @@ async def _setup_look_command(
     return (app, persistence, player, room, room_drops)
 
 
-async def _try_explicit_player_look(
+async def _try_explicit_player_look(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Look command requires many parameters for context and target resolution
     target: str | None,
     target_type: str | None,
     instance_number: int | None,
     room: Any,
     persistence: Any,
     player_name: str,
+    app: Any | None = None,
 ) -> dict[str, Any] | None:
     """Try to handle explicit player look."""
     if target_type == "player" and target:
         target_lower = target.lower()
-        result = await _handle_player_look(target, target_lower, instance_number, room, persistence, player_name)
+        connection_manager = getattr(app.state, "connection_manager", None) if app else None
+        result = await _handle_player_look(
+            target, target_lower, instance_number, room, persistence, player_name, connection_manager
+        )
         if result:
             return result
     return None
 
 
-async def _try_explicit_item_look(
+async def _try_explicit_item_look(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Look command requires many parameters for context and target resolution
     target: str | None,
     target_type: str | None,
     instance_number: int | None,
@@ -128,7 +134,7 @@ async def _try_explicit_item_look(
     return None
 
 
-async def _try_explicit_container_look(
+async def _try_explicit_container_look(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Look command requires many parameters for context and target resolution
     target: str | None,
     target_type: str | None,
     instance_number: int | None,
@@ -161,7 +167,7 @@ async def _try_explicit_container_look(
     return None
 
 
-async def _handle_implicit_target_lookup(
+async def _handle_implicit_target_lookup(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Look command requires many parameters for context and target resolution
     target: str,
     target_lower: str,
     instance_number: int | None,
@@ -179,7 +185,10 @@ async def _handle_implicit_target_lookup(
         return None  # Will be handled as direction
 
     # Priority 1: Try players
-    result = await _try_lookup_player_implicit(target, target_lower, instance_number, room, persistence, player_name)
+    connection_manager = getattr(app.state, "connection_manager", None) if app else None
+    result = await _try_lookup_player_implicit(
+        target, target_lower, instance_number, room, persistence, player_name, connection_manager
+    )
     if result:
         return result
 
@@ -205,7 +214,7 @@ async def _handle_implicit_target_lookup(
     return {"result": f"You don't see any '{target}' here."}
 
 
-async def _try_implicit_target_lookup(
+async def _try_implicit_target_lookup(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Look command requires many parameters for context and target resolution
     target: str | None,
     target_type: str | None,
     instance_number: int | None,
@@ -240,7 +249,7 @@ async def _try_direction_look(
     return None
 
 
-async def _route_look_command(
+async def _route_look_command(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Look command routing requires many parameters for context and target resolution
     command_data: dict,
     target: str | None,
     target_type: str | None,
@@ -256,7 +265,7 @@ async def _route_look_command(
 ) -> dict[str, Any]:
     """Route look command to appropriate handler."""
     # Try explicit handlers in order
-    result = await _try_explicit_player_look(target, target_type, instance_number, room, persistence, player_name)
+    result = await _try_explicit_player_look(target, target_type, instance_number, room, persistence, player_name, app)
     if result:
         return result
 
@@ -287,7 +296,7 @@ async def _route_look_command(
         return result
 
     # Look at current room (default)
-    return await _handle_room_look(room, room_drops, persistence, player_name)
+    return await _handle_room_look(room, room_drops, persistence, player_name, request)
 
 
 async def handle_look_command(

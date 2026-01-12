@@ -6,6 +6,7 @@ Tests open, transfer, close, and loot-all container operations.
 # pylint: disable=redefined-outer-name
 # Pytest fixtures are injected as function parameters, which triggers
 # "redefined-outer-name" warnings. This is standard pytest pattern.
+# pylint: disable=too-many-lines
 
 import uuid
 from unittest.mock import AsyncMock, MagicMock, Mock, patch
@@ -14,17 +15,8 @@ import pytest
 from fastapi import Request
 from pydantic import ValidationError
 
-from server.api.containers import (
-    CloseContainerRequest,
-    OpenContainerRequest,
-    TransferContainerRequest,
-    _create_error_context,
-    _get_container_service,
-    _get_player_id_from_user,
-    close_container,
-    open_container,
-    transfer_items,
-)
+# Lazy imports to avoid circular import issues
+# Import inside functions that need them to avoid triggering circular import chain
 from server.exceptions import LoggedHTTPException, RateLimitError
 from server.models.user import User
 from server.services.container_service import (
@@ -79,45 +71,63 @@ class TestHelperFunctions:
     """Test helper functions."""
 
     def test_create_error_context(self, mock_request, mock_user):
-        """Test _create_error_context() creates context."""
-        context = _create_error_context(mock_request, mock_user, operation="test")
+        """Test create_error_context() creates context."""
+        # Lazy import to avoid circular import
+        from server.api.container_helpers import create_error_context  # noqa: E402
+
+        context = create_error_context(mock_request, mock_user, operation="test")
         assert context.user_id == str(mock_user.id)
         assert context.metadata["operation"] == "test"
 
     @pytest.mark.asyncio
     async def test_get_player_id_from_user_success(self, mock_user, mock_persistence):
-        """Test _get_player_id_from_user() returns player ID."""
+        """Test get_player_id_from_user() returns player ID."""
+        # Lazy import to avoid circular import
+        from server.api.container_helpers import get_player_id_from_user  # noqa: E402
+
         mock_player = MagicMock()
         mock_player.player_id = uuid.uuid4()
         mock_persistence.get_player_by_user_id = AsyncMock(return_value=mock_player)
 
-        result = await _get_player_id_from_user(mock_user, mock_persistence)
+        result = await get_player_id_from_user(mock_user, mock_persistence)
         assert result == mock_player.player_id
 
     @pytest.mark.asyncio
     async def test_get_player_id_from_user_not_found(self, mock_user, mock_persistence):
-        """Test _get_player_id_from_user() raises when player not found."""
+        """Test get_player_id_from_user() raises when player not found."""
+        # Lazy import to avoid circular import
+        from server.api.container_helpers import get_player_id_from_user  # noqa: E402
+
         mock_persistence.get_player_by_user_id = AsyncMock(return_value=None)
 
         with pytest.raises(LoggedHTTPException) as exc_info:
-            await _get_player_id_from_user(mock_user, mock_persistence)
+            await get_player_id_from_user(mock_user, mock_persistence)
         assert exc_info.value.status_code == 404
 
     def test_get_container_service_with_persistence(self, mock_persistence):
-        """Test _get_container_service() with provided persistence."""
-        service = _get_container_service(persistence=mock_persistence)
+        """Test get_container_service() with provided persistence."""
+        # Lazy import to avoid circular import
+        from server.api.container_helpers import get_container_service  # noqa: E402
+
+        service = get_container_service(persistence=mock_persistence)
         assert isinstance(service, ContainerService)
 
     def test_get_container_service_from_request(self, mock_request, mock_persistence):
-        """Test _get_container_service() gets persistence from request."""
+        """Test get_container_service() gets persistence from request."""
+        # Lazy import to avoid circular import
+        from server.api.container_helpers import get_container_service  # noqa: E402
+
         mock_request.app.state.persistence = mock_persistence
-        service = _get_container_service(request=mock_request)
+        service = get_container_service(request=mock_request)
         assert isinstance(service, ContainerService)
 
     def test_get_container_service_raises_without_args(self):
-        """Test _get_container_service() raises when neither persistence nor request provided."""
+        """Test get_container_service() raises when neither persistence nor request provided."""
+        # Lazy import to avoid circular import
+        from server.api.container_helpers import get_container_service  # noqa: E402
+
         with pytest.raises(ValueError, match="Either persistence or request must be provided"):
-            _get_container_service()
+            get_container_service()
 
 
 class TestOpenContainer:
@@ -126,6 +136,9 @@ class TestOpenContainer:
     @pytest.mark.asyncio
     async def test_open_container_not_authenticated(self, mock_request):
         """Test open_container() requires authentication."""
+        # Lazy import to avoid circular import
+        from server.api.containers import OpenContainerRequest, open_container  # noqa: E402
+
         request_data = OpenContainerRequest(container_id=uuid.uuid4())
         with pytest.raises(LoggedHTTPException) as exc_info:
             await open_container(
@@ -138,8 +151,11 @@ class TestOpenContainer:
     @pytest.mark.asyncio
     async def test_open_container_rate_limit(self, mock_request, mock_user):
         """Test open_container() enforces rate limiting."""
+        # Lazy import to avoid circular import
+        from server.api.containers import OpenContainerRequest, open_container  # noqa: E402
+
         request_data = OpenContainerRequest(container_id=uuid.uuid4())
-        with patch("server.api.containers.container_rate_limiter") as mock_limiter:
+        with patch("server.api.container_helpers.container_rate_limiter") as mock_limiter:
             mock_limiter.enforce_rate_limit.side_effect = RateLimitError("Rate limit exceeded", retry_after=60)
             with pytest.raises(LoggedHTTPException) as exc_info:
                 await open_container(
@@ -152,6 +168,9 @@ class TestOpenContainer:
     @pytest.mark.asyncio
     async def test_open_container_success(self, mock_request, mock_user, mock_persistence, mock_container_service):
         """Test open_container() successfully opens container."""
+        # Lazy import to avoid circular import
+        from server.api.containers import OpenContainerRequest, open_container  # noqa: E402
+
         container_id = uuid.uuid4()
         request_data = OpenContainerRequest(container_id=container_id)
         player_id = uuid.uuid4()
@@ -164,10 +183,12 @@ class TestOpenContainer:
         mock_container_service.open_container = AsyncMock(return_value=mock_result)
         mock_request.app.state.persistence = mock_persistence
 
-        with patch("server.api.containers.container_rate_limiter") as mock_limiter:
+        with patch("server.api.container_helpers.container_rate_limiter") as mock_limiter:
             mock_limiter.enforce_rate_limit.return_value = None
-            with patch("server.api.containers._get_container_service", return_value=mock_container_service):
-                with patch("server.api.containers.emit_container_opened", new_callable=AsyncMock):
+            # Patch where it's imported and used
+            with patch("server.api.containers.get_container_service", return_value=mock_container_service):
+                with patch("server.api.containers.emit_container_opened_events", new_callable=AsyncMock) as mock_emit:
+                    mock_emit.return_value = None
                     result = await open_container(
                         request_data=request_data,
                         request=mock_request,
@@ -179,6 +200,9 @@ class TestOpenContainer:
     @pytest.mark.asyncio
     async def test_open_container_not_found(self, mock_request, mock_user, mock_persistence, mock_container_service):
         """Test open_container() handles ContainerNotFoundError."""
+        # Lazy import to avoid circular import
+        from server.api.containers import OpenContainerRequest, open_container  # noqa: E402
+
         container_id = uuid.uuid4()
         request_data = OpenContainerRequest(container_id=container_id)
         player_id = uuid.uuid4()
@@ -187,9 +211,10 @@ class TestOpenContainer:
         mock_container_service.open_container = AsyncMock(side_effect=ContainerNotFoundError("Not found"))
         mock_request.app.state.persistence = mock_persistence
 
-        with patch("server.api.containers.container_rate_limiter") as mock_limiter:
+        with patch("server.api.container_helpers.container_rate_limiter") as mock_limiter:
             mock_limiter.enforce_rate_limit.return_value = None
-            with patch("server.api.containers._get_container_service", return_value=mock_container_service):
+            # Patch where it's imported and used
+            with patch("server.api.containers.get_container_service", return_value=mock_container_service):
                 with pytest.raises(LoggedHTTPException) as exc_info:
                     await open_container(
                         request_data=request_data,
@@ -201,6 +226,9 @@ class TestOpenContainer:
     @pytest.mark.asyncio
     async def test_open_container_locked(self, mock_request, mock_user, mock_persistence, mock_container_service):
         """Test open_container() handles ContainerLockedError."""
+        # Lazy import to avoid circular import
+        from server.api.containers import OpenContainerRequest, open_container  # noqa: E402
+
         container_id = uuid.uuid4()
         request_data = OpenContainerRequest(container_id=container_id)
         player_id = uuid.uuid4()
@@ -209,9 +237,9 @@ class TestOpenContainer:
         mock_container_service.open_container = AsyncMock(side_effect=ContainerLockedError("Locked"))
         mock_request.app.state.persistence = mock_persistence
 
-        with patch("server.api.containers.container_rate_limiter") as mock_limiter:
+        with patch("server.api.container_helpers.container_rate_limiter") as mock_limiter:
             mock_limiter.enforce_rate_limit.return_value = None
-            with patch("server.api.containers._get_container_service", return_value=mock_container_service):
+            with patch("server.api.containers.get_container_service", return_value=mock_container_service):
                 with pytest.raises(LoggedHTTPException) as exc_info:
                     await open_container(
                         request_data=request_data,
@@ -225,6 +253,9 @@ class TestOpenContainer:
         self, mock_request, mock_user, mock_persistence, mock_container_service
     ):
         """Test open_container() handles ContainerAccessDeniedError."""
+        # Lazy import to avoid circular import
+        from server.api.containers import OpenContainerRequest, open_container  # noqa: E402
+
         container_id = uuid.uuid4()
         request_data = OpenContainerRequest(container_id=container_id)
         player_id = uuid.uuid4()
@@ -233,9 +264,9 @@ class TestOpenContainer:
         mock_container_service.open_container = AsyncMock(side_effect=ContainerAccessDeniedError("Access denied"))
         mock_request.app.state.persistence = mock_persistence
 
-        with patch("server.api.containers.container_rate_limiter") as mock_limiter:
+        with patch("server.api.container_helpers.container_rate_limiter") as mock_limiter:
             mock_limiter.enforce_rate_limit.return_value = None
-            with patch("server.api.containers._get_container_service", return_value=mock_container_service):
+            with patch("server.api.containers.get_container_service", return_value=mock_container_service):
                 with pytest.raises(LoggedHTTPException) as exc_info:
                     await open_container(
                         request_data=request_data,
@@ -251,6 +282,9 @@ class TestTransferItems:
     @pytest.mark.asyncio
     async def test_transfer_items_not_authenticated(self, mock_request):
         """Test transfer_items() requires authentication."""
+        # Lazy import to avoid circular import
+        from server.api.containers import TransferContainerRequest, transfer_items  # noqa: E402
+
         request_data = TransferContainerRequest(
             container_id=uuid.uuid4(),
             mutation_token="token",
@@ -269,6 +303,9 @@ class TestTransferItems:
     @pytest.mark.asyncio
     async def test_transfer_items_rate_limit(self, mock_request, mock_user):
         """Test transfer_items() enforces rate limiting."""
+        # Lazy import to avoid circular import
+        from server.api.containers import TransferContainerRequest, transfer_items  # noqa: E402
+
         request_data = TransferContainerRequest(
             container_id=uuid.uuid4(),
             mutation_token="token",
@@ -276,7 +313,7 @@ class TestTransferItems:
             stack={"item_id": str(uuid.uuid4())},
             quantity=1,
         )
-        with patch("server.api.containers.container_rate_limiter") as mock_limiter:
+        with patch("server.api.container_helpers.container_rate_limiter") as mock_limiter:
             mock_limiter.enforce_rate_limit.side_effect = RateLimitError("Rate limit exceeded", retry_after=60)
             with pytest.raises(LoggedHTTPException) as exc_info:
                 await transfer_items(
@@ -289,6 +326,9 @@ class TestTransferItems:
     @pytest.mark.asyncio
     async def test_transfer_items_to_container(self, mock_request, mock_user, mock_persistence, mock_container_service):
         """Test transfer_items() transfers to container."""
+        # Lazy import to avoid circular import
+        from server.api.containers import TransferContainerRequest, transfer_items  # noqa: E402
+
         container_id = uuid.uuid4()
         request_data = TransferContainerRequest(
             container_id=container_id,
@@ -304,9 +344,9 @@ class TestTransferItems:
         mock_container_service.transfer_to_container = AsyncMock(return_value=mock_result)
         mock_request.app.state.persistence = mock_persistence
 
-        with patch("server.api.containers.container_rate_limiter") as mock_limiter:
+        with patch("server.api.container_helpers.container_rate_limiter") as mock_limiter:
             mock_limiter.enforce_rate_limit.return_value = None
-            with patch("server.api.containers._get_container_service", return_value=mock_container_service):
+            with patch("server.api.containers.get_container_service", return_value=mock_container_service):
                 result = await transfer_items(
                     request_data=request_data,
                     request=mock_request,
@@ -318,6 +358,9 @@ class TestTransferItems:
     @pytest.mark.asyncio
     async def test_transfer_items_to_player(self, mock_request, mock_user, mock_persistence, mock_container_service):
         """Test transfer_items() transfers to player."""
+        # Lazy import to avoid circular import
+        from server.api.containers import TransferContainerRequest, transfer_items  # noqa: E402
+
         container_id = uuid.uuid4()
         request_data = TransferContainerRequest(
             container_id=container_id,
@@ -333,9 +376,9 @@ class TestTransferItems:
         mock_container_service.transfer_from_container = AsyncMock(return_value=mock_result)
         mock_request.app.state.persistence = mock_persistence
 
-        with patch("server.api.containers.container_rate_limiter") as mock_limiter:
+        with patch("server.api.container_helpers.container_rate_limiter") as mock_limiter:
             mock_limiter.enforce_rate_limit.return_value = None
-            with patch("server.api.containers._get_container_service", return_value=mock_container_service):
+            with patch("server.api.containers.get_container_service", return_value=mock_container_service):
                 result = await transfer_items(
                     request_data=request_data,
                     request=mock_request,
@@ -349,6 +392,9 @@ class TestTransferItems:
         self, mock_request, mock_user, mock_persistence, mock_container_service
     ):
         """Test transfer_items() handles ContainerCapacityError."""
+        # Lazy import to avoid circular import
+        from server.api.containers import TransferContainerRequest, transfer_items  # noqa: E402
+
         container_id = uuid.uuid4()
         request_data = TransferContainerRequest(
             container_id=container_id,
@@ -365,9 +411,9 @@ class TestTransferItems:
         )
         mock_request.app.state.persistence = mock_persistence
 
-        with patch("server.api.containers.container_rate_limiter") as mock_limiter:
+        with patch("server.api.container_helpers.container_rate_limiter") as mock_limiter:
             mock_limiter.enforce_rate_limit.return_value = None
-            with patch("server.api.containers._get_container_service", return_value=mock_container_service):
+            with patch("server.api.containers.get_container_service", return_value=mock_container_service):
                 with pytest.raises(LoggedHTTPException) as exc_info:
                     await transfer_items(
                         request_data=request_data,
@@ -379,6 +425,9 @@ class TestTransferItems:
     @pytest.mark.asyncio
     async def test_transfer_items_stale_token(self, mock_request, mock_user, mock_persistence, mock_container_service):
         """Test transfer_items() handles stale mutation token."""
+        # Lazy import to avoid circular import
+        from server.api.containers import TransferContainerRequest, transfer_items  # noqa: E402
+
         container_id = uuid.uuid4()
         request_data = TransferContainerRequest(
             container_id=container_id,
@@ -395,9 +444,9 @@ class TestTransferItems:
         )
         mock_request.app.state.persistence = mock_persistence
 
-        with patch("server.api.containers.container_rate_limiter") as mock_limiter:
+        with patch("server.api.container_helpers.container_rate_limiter") as mock_limiter:
             mock_limiter.enforce_rate_limit.return_value = None
-            with patch("server.api.containers._get_container_service", return_value=mock_container_service):
+            with patch("server.api.containers.get_container_service", return_value=mock_container_service):
                 with pytest.raises(LoggedHTTPException) as exc_info:
                     await transfer_items(
                         request_data=request_data,
@@ -413,6 +462,9 @@ class TestCloseContainer:
     @pytest.mark.asyncio
     async def test_close_container_not_authenticated(self, mock_request):
         """Test close_container() requires authentication."""
+        # Lazy import to avoid circular import
+        from server.api.containers import CloseContainerRequest, close_container  # noqa: E402
+
         request_data = CloseContainerRequest(container_id=uuid.uuid4(), mutation_token="token")
         with pytest.raises(LoggedHTTPException) as exc_info:
             await close_container(
@@ -425,8 +477,11 @@ class TestCloseContainer:
     @pytest.mark.asyncio
     async def test_close_container_rate_limit(self, mock_request, mock_user):
         """Test close_container() enforces rate limiting."""
+        # Lazy import to avoid circular import
+        from server.api.containers import CloseContainerRequest, close_container  # noqa: E402
+
         request_data = CloseContainerRequest(container_id=uuid.uuid4(), mutation_token="token")
-        with patch("server.api.containers.container_rate_limiter") as mock_limiter:
+        with patch("server.api.container_helpers.container_rate_limiter") as mock_limiter:
             mock_limiter.enforce_rate_limit.side_effect = RateLimitError("Rate limit exceeded", retry_after=60)
             with pytest.raises(LoggedHTTPException) as exc_info:
                 await close_container(
@@ -439,6 +494,9 @@ class TestCloseContainer:
     @pytest.mark.asyncio
     async def test_close_container_success(self, mock_request, mock_user, mock_persistence, mock_container_service):
         """Test close_container() successfully closes container."""
+        # Lazy import to avoid circular import
+        from server.api.containers import CloseContainerRequest, close_container  # noqa: E402
+
         container_id = uuid.uuid4()
         request_data = CloseContainerRequest(container_id=container_id, mutation_token="token")
         player_id = uuid.uuid4()
@@ -447,9 +505,9 @@ class TestCloseContainer:
         mock_container_service.close_container = AsyncMock()
         mock_request.app.state.persistence = mock_persistence
 
-        with patch("server.api.containers.container_rate_limiter") as mock_limiter:
+        with patch("server.api.container_helpers.container_rate_limiter") as mock_limiter:
             mock_limiter.enforce_rate_limit.return_value = None
-            with patch("server.api.containers._get_container_service", return_value=mock_container_service):
+            with patch("server.api.containers.get_container_service", return_value=mock_container_service):
                 result = await close_container(
                     request_data=request_data,
                     request=mock_request,
@@ -464,6 +522,9 @@ class TestRequestModels:
 
     def test_transfer_container_request_direction_validation(self):
         """Test TransferContainerRequest validates direction."""
+        # Lazy import to avoid circular import
+        from server.api.containers import TransferContainerRequest  # noqa: E402
+
         # Valid direction
         request = TransferContainerRequest(
             container_id=uuid.uuid4(),
@@ -486,6 +547,9 @@ class TestRequestModels:
 
     def test_transfer_container_request_quantity_validation(self):
         """Test TransferContainerRequest validates quantity."""
+        # Lazy import to avoid circular import
+        from server.api.containers import TransferContainerRequest  # noqa: E402
+
         # Valid quantity
         request = TransferContainerRequest(
             container_id=uuid.uuid4(),

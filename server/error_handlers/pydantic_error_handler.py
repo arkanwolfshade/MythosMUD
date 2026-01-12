@@ -9,6 +9,8 @@ As noted in the Necronomicon: "The errors of the ancients must be
 translated into terms the mortal mind can comprehend, lest madness take hold."
 """
 
+# pylint: disable=too-many-return-statements  # Reason: Error handlers require multiple return statements for different error type handling and response generation
+
 from typing import Any
 
 from pydantic import ValidationError
@@ -109,20 +111,20 @@ class PydanticErrorHandler:
                 return create_websocket_error_response(
                     error_type=error_type, message=error_info["message"], user_friendly=user_friendly, details=details
                 )
-            elif response_type == "sse":
+            if response_type == "sse":
                 return create_sse_error_response(
                     error_type=error_type, message=error_info["message"], user_friendly=user_friendly, details=details
                 )
-            else:  # Default to HTTP
-                return create_standard_error_response(
-                    error_type=error_type,
-                    message=error_info["message"],
-                    user_friendly=user_friendly,
-                    details=details,
-                    severity=severity,
-                )
+            # Default to HTTP
+            return create_standard_error_response(
+                error_type=error_type,
+                message=error_info["message"],
+                user_friendly=user_friendly,
+                details=details,
+                severity=severity,
+            )
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Error handler errors unpredictable, must have fallback
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Error handler errors unpredictable, must have fallback
             # Fallback error handling
             logger.error("Error in PydanticErrorHandler", error=str(e), exc_info=True)
             return self._create_fallback_error_response(error, response_type)
@@ -234,28 +236,26 @@ class PydanticErrorHandler:
 
             if error["error_type"] == "missing":
                 return f"Please provide {field_name}"
-            elif error["error_type"] == "value_error":
+            if error["error_type"] == "value_error":
                 return f"Invalid value for {field_name}"
-            elif error["error_type"] == "type_error":
+            if error["error_type"] == "type_error":
                 return f"Invalid format for {field_name}"
-            elif error["error_type"] == "string_too_short":
+            if error["error_type"] == "string_too_short":
                 min_length = error["context"].get("min_length", 1)
                 return f"{field_name.capitalize()} must be at least {min_length} characters"
-            elif error["error_type"] == "string_too_long":
+            if error["error_type"] == "string_too_long":
                 max_length = error["context"].get("max_length", 100)
                 return f"{field_name.capitalize()} must be no more than {max_length} characters"
-            elif error["error_type"] == "extra_forbidden":
+            if error["error_type"] == "extra_forbidden":
                 return "Invalid field provided"
-            else:
-                return f"Invalid {field_name}"
-        else:
-            # Multiple errors - provide general message
-            field_count = len(error_info["fields_with_errors"])
-            if field_count == 1:
-                field_name = self._get_display_field_name(list(error_info["fields_with_errors"])[0])
-                return f"Please check {field_name}"
-            else:
-                return f"Please check {field_count} fields"
+            return f"Invalid {field_name}"
+
+        # Multiple errors - provide general message
+        field_count = len(error_info["fields_with_errors"])
+        if field_count == 1:
+            field_name = self._get_display_field_name(list(error_info["fields_with_errors"])[0])
+            return f"Please check {field_name}"
+        return f"Please check {field_count} fields"
 
     def _get_display_field_name(self, field_path: str) -> str:
         """
@@ -336,21 +336,21 @@ class PydanticErrorHandler:
                 user_friendly=user_friendly,
                 details={"fallback": True},
             )
-        elif response_type == "sse":
+        if response_type == "sse":
             return create_sse_error_response(
                 error_type=ErrorType.VALIDATION_ERROR,
                 message=message,
                 user_friendly=user_friendly,
                 details={"fallback": True},
             )
-        else:
-            return create_standard_error_response(
-                error_type=ErrorType.VALIDATION_ERROR,
-                message=message,
-                user_friendly=user_friendly,
-                details={"fallback": True},
-                severity=ErrorSeverity.MEDIUM,
-            )
+        # Default to HTTP
+        return create_standard_error_response(
+            error_type=ErrorType.VALIDATION_ERROR,
+            message=message,
+            user_friendly=user_friendly,
+            details={"fallback": True},
+            severity=ErrorSeverity.MEDIUM,
+        )
 
     def convert_to_mythos_error(self, error: ValidationError, model_class: type | None = None) -> MythosValidationError:
         """

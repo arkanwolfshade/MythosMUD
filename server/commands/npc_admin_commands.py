@@ -10,6 +10,8 @@ are essential for maintaining control over the eldritch entities that
 lurk in the shadows of our world.
 """
 
+# pylint: disable=too-many-return-statements,too-many-lines  # Reason: Command handlers require multiple return statements for early validation returns (input validation, permission checks, error handling). NPC admin commands require extensive handlers for comprehensive NPC management operations.
+
 import inspect
 from typing import Any
 
@@ -117,40 +119,35 @@ async def handle_npc_command(
     # This maintains backward compatibility with existing subcommand handlers
 
     # Route to appropriate subcommand handler
-    if subcommand == "help":
-        return _get_npc_help()
-    elif subcommand == "create":
-        return await handle_npc_create_command(command_data, current_user, request, alias_storage, player_name)
-    elif subcommand == "edit":
-        return await handle_npc_edit_command(command_data, current_user, request, alias_storage, player_name)
-    elif subcommand == "delete":
-        return await handle_npc_delete_command(command_data, current_user, request, alias_storage, player_name)
-    elif subcommand == "list":
-        return await handle_npc_list_command(command_data, current_user, request, alias_storage, player_name)
-    elif subcommand == "spawn":
-        return await handle_npc_spawn_command(command_data, current_user, request, alias_storage, player_name)
-    elif subcommand == "despawn":
-        return await handle_npc_despawn_command(command_data, current_user, request, alias_storage, player_name)
-    elif subcommand == "move":
-        return await handle_npc_move_command(command_data, current_user, request, alias_storage, player_name)
-    elif subcommand == "stats":
-        return await handle_npc_stats_command(command_data, current_user, request, alias_storage, player_name)
-    elif subcommand == "population":
-        return await handle_npc_population_command(command_data, current_user, request, alias_storage, player_name)
-    elif subcommand == "zone":
-        return await handle_npc_zone_command(command_data, current_user, request, alias_storage, player_name)
-    elif subcommand == "status":
-        return await handle_npc_status_command(command_data, current_user, request, alias_storage, player_name)
-    elif subcommand == "behavior":
-        return await handle_npc_behavior_command(command_data, current_user, request, alias_storage, player_name)
-    elif subcommand == "react":
-        return await handle_npc_react_command(command_data, current_user, request, alias_storage, player_name)
-    elif subcommand == "stop":
-        return await handle_npc_stop_command(command_data, current_user, request, alias_storage, player_name)
-    elif subcommand == "test-occupants":
-        return await handle_npc_test_occupants_command(command_data, current_user, request, alias_storage, player_name)
-    else:
+    async def _route_npc_subcommand() -> dict[str, str]:
+        """Route to the appropriate NPC subcommand handler."""
+        subcommand_map = {
+            "help": _get_npc_help,
+            "create": handle_npc_create_command,
+            "edit": handle_npc_edit_command,
+            "delete": handle_npc_delete_command,
+            "list": handle_npc_list_command,
+            "spawn": handle_npc_spawn_command,
+            "despawn": handle_npc_despawn_command,
+            "move": handle_npc_move_command,
+            "stats": handle_npc_stats_command,
+            "population": handle_npc_population_command,
+            "zone": handle_npc_zone_command,
+            "status": handle_npc_status_command,
+            "behavior": handle_npc_behavior_command,
+            "react": handle_npc_react_command,
+            "stop": handle_npc_stop_command,
+            "test-occupants": handle_npc_test_occupants_command,
+        }
+
+        handler = subcommand_map.get(subcommand)
+        if handler:
+            if subcommand == "help":
+                return handler()  # type: ignore[operator]  # Handler is a callable from the map with unknown signature
+            return await handler(command_data, current_user, request, alias_storage, player_name)  # type: ignore[operator]  # Handler is a callable from the map with unknown signature
         return {"result": f"Unknown NPC command: {subcommand}. Use 'npc help' for available commands."}
+
+    return await _route_npc_subcommand()
 
 
 def _get_npc_help() -> dict[str, str]:
@@ -244,7 +241,7 @@ async def handle_npc_create_command(
             logger.info("NPC created successfully", npc_name=name, admin_name=player_name, npc_id=definition.id)
             return {"result": f"NPC '{name}' created successfully with ID {definition.id}"}
 
-    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught  # Reason: NPC creation errors unpredictable, must return user-friendly error
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught  # Reason: NPC creation errors unpredictable, must return user-friendly error
         # Catching broad Exception to handle database errors, validation errors, and service errors
         # and return user-friendly error messages
         logger.error("Error creating NPC", admin_name=player_name, error=str(e))
@@ -300,7 +297,7 @@ async def handle_npc_edit_command(
             logger.info("NPC definition updated", npc_id=npc_id, admin_name=player_name, field=field, value=value)
             return {"result": f"NPC definition {npc_id} updated successfully"}
 
-    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught  # Reason: NPC creation errors unpredictable, must return user-friendly error
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught  # Reason: NPC creation errors unpredictable, must return user-friendly error
         # Catching broad Exception to handle database errors, validation errors, and service errors
         # and return user-friendly error messages
         logger.error("Error editing NPC", npc_id=npc_id, admin_name=player_name, error=str(e))
@@ -338,7 +335,7 @@ async def handle_npc_delete_command(
             logger.info("NPC definition deleted", npc_id=npc_id, admin_name=player_name)
             return {"result": f"NPC definition {npc_id} deleted successfully"}
 
-    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught  # Reason: NPC creation errors unpredictable, must return user-friendly error
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught  # Reason: NPC creation errors unpredictable, must return user-friendly error
         # Catching broad Exception to handle database errors, validation errors, and service errors
         # and return user-friendly error messages
         logger.error("Error deleting NPC", npc_id=npc_id, admin_name=player_name, error=str(e))
@@ -373,7 +370,7 @@ async def handle_npc_list_command(
             logger.info("NPC definitions listed", admin_name=player_name, count=len(definitions))
             return {"result": "\n".join(result_lines)}
 
-    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
         # Catching broad Exception to handle database errors and service errors
         # and return user-friendly error messages
         logger.error("Error listing NPCs", admin_name=player_name, error=str(e))
@@ -410,7 +407,7 @@ async def handle_npc_spawn_command(
         logger.info("NPC spawned", admin_name=player_name, definition_id=definition_id, room_id=room_id)
         return {"result": f"NPC spawned successfully in {room_id}"}
 
-    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
         # Catching broad Exception to handle service errors, validation errors, and instance management errors
         # and return user-friendly error messages
         logger.error("Error spawning NPC", admin_name=player_name, error=str(e))
@@ -442,7 +439,7 @@ async def handle_npc_despawn_command(
         logger.info("NPC despawned", npc_id=npc_id, admin_name=player_name)
         return {"result": f"NPC {npc_id} despawned successfully"}
 
-    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
         # Catching broad Exception to handle service errors and instance management errors
         # and return user-friendly error messages
         logger.error("Error despawning NPC", npc_id=npc_id, admin_name=player_name, error=str(e))
@@ -475,7 +472,7 @@ async def handle_npc_move_command(
         logger.info("NPC moved", npc_id=npc_id, admin_name=player_name, room_id=room_id)
         return {"result": f"NPC {npc_id} moved to {room_id}"}
 
-    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
         # Catching broad Exception to handle service errors, validation errors, and instance management errors
         # and return user-friendly error messages
         logger.error("Error moving NPC", npc_id=npc_id, admin_name=player_name, error=str(e))
@@ -512,7 +509,7 @@ async def handle_npc_stats_command(
         logger.info("NPC stats retrieved", npc_id=npc_id, admin_name=player_name)
         return {"result": "\n".join(result_lines)}
 
-    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
         # Catching broad Exception to handle service errors and instance management errors
         # and return user-friendly error messages
         logger.error("Error getting NPC stats", admin_name=player_name, error=str(e))
@@ -552,7 +549,7 @@ async def handle_npc_population_command(
         logger.info("NPC population stats retrieved", admin_name=player_name)
         return {"result": "\n".join(result_lines)}
 
-    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
         # Catching broad Exception to handle service errors and instance management errors
         # and return user-friendly error messages
         logger.error("Error getting NPC population stats", admin_name=player_name, error=str(e))
@@ -593,7 +590,7 @@ async def handle_npc_zone_command(
         logger.info("NPC zone stats retrieved", admin_name=player_name, zone_key=zone_key)
         return {"result": "\n".join(result_lines)}
 
-    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
         # Catching broad Exception to handle service errors and instance management errors
         # and return user-friendly error messages
         logger.error("Error getting NPC zone stats", admin_name=player_name, error=str(e))
@@ -624,7 +621,7 @@ async def handle_npc_status_command(
         logger.info("NPC system status retrieved", admin_name=player_name)
         return {"result": "\n".join(result_lines)}
 
-    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
         # Catching broad Exception to handle service errors and instance management errors
         # and return user-friendly error messages
         logger.error("Error getting NPC system status", admin_name=player_name, error=str(e))
@@ -660,7 +657,7 @@ async def handle_npc_behavior_command(
         # For now, return not implemented message
         return {"result": "NPC behavior modification not yet implemented"}
 
-    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
         # Catching broad Exception to handle service errors and validation errors
         # and return user-friendly error messages
         logger.error("Error setting NPC behavior", npc_id=npc_id, admin_name=player_name, error=str(e))
@@ -693,7 +690,7 @@ async def handle_npc_react_command(
         # For now, return not implemented message
         return {"result": "NPC reaction triggering not yet implemented"}
 
-    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
         # Catching broad Exception to handle service errors and validation errors
         # and return user-friendly error messages
         logger.error("Error triggering NPC reaction", npc_id=npc_id, admin_name=player_name, error=str(e))
@@ -720,11 +717,74 @@ async def handle_npc_stop_command(
         # For now, return not implemented message
         return {"result": "NPC behavior stopping not yet implemented"}
 
-    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
         # Catching broad Exception to handle service errors and validation errors
         # and return user-friendly error messages
         logger.error("Error stopping NPC behavior", npc_id=npc_id, admin_name=player_name, error=str(e))
         return {"result": f"Error stopping NPC behavior: {str(e)}"}
+
+
+async def _get_room_id_for_test_occupants(
+    command_data: dict, player_obj: Any
+) -> tuple[str | None, dict[str, str] | None]:
+    """Get room_id from args or current room. Returns (room_id, error_result)."""
+    args = command_data.get("args", [])
+    room_id = args[1] if len(args) > 1 else None
+
+    if not room_id:
+        room_id = getattr(player_obj, "current_room_id", None)
+        if not room_id:
+            return None, {"result": "No room ID provided and player has no current room."}
+
+    return room_id, None
+
+
+def _get_event_handler_for_test_occupants(app: Any) -> tuple[Any | None, dict[str, str] | None]:
+    """Get event handler from app.state. Returns (event_handler, error_result)."""
+    event_handler = getattr(app.state, "event_handler", None)
+    if not event_handler:
+        event_handler = getattr(app.state.container, "real_time_event_handler", None)
+
+    if not event_handler:
+        return None, {"result": "Event handler not available. Cannot test occupants directly."}
+
+    return event_handler, None
+
+
+def _separate_occupants(occupants_info: list[dict[str, Any]] | None) -> tuple[list[str], list[str]]:
+    """Separate occupants into players and NPCs."""
+    players: list[str] = []
+    npcs: list[str] = []
+
+    for occ in occupants_info or []:
+        if isinstance(occ, dict):
+            if "player_name" in occ:
+                players.append(occ.get("player_name", "Unknown"))
+            elif "npc_name" in occ:
+                npcs.append(occ.get("npc_name", "Unknown"))
+
+    return players, npcs
+
+
+def _format_occupants_result(room_id: str, players: list[str], npcs: list[str]) -> str:
+    """Format occupants result as a string."""
+    result_lines = [f"Occupants in room: {room_id}", ""]
+    result_lines.append(f"Players ({len(players)}):")
+    if players:
+        for player in players:
+            result_lines.append(f"  - {player}")
+    else:
+        result_lines.append("  (none)")
+
+    result_lines.append(f"\nNPCs ({len(npcs)}):")
+    if npcs:
+        for npc in npcs:
+            result_lines.append(f"  - {npc}")
+    else:
+        result_lines.append("  (none)")
+
+    result_lines.append("\n✅ Occupant update broadcast triggered. Check logs for detailed NPC query information.")
+    return "\n".join(result_lines)
 
 
 async def handle_npc_test_occupants_command(
@@ -734,7 +794,7 @@ async def handle_npc_test_occupants_command(
     Handle NPC test occupants command - manually trigger occupant query for debugging.
 
     Usage: npc test-occupants [room_id]
-    If room_id is not provided, uses the player's current room.
+    If room_id is not provided, uses the current room.
     """
     logger.info("Processing NPC test occupants command", admin_name=player_name)
 
@@ -743,11 +803,6 @@ async def handle_npc_test_occupants_command(
         if not app:
             return {"result": "Server application not available."}
 
-        # Get player's current room if room_id not provided
-        args = command_data.get("args", [])
-        room_id = args[1] if len(args) > 1 else None
-
-        # Get player object
         player_service = app.state.player_service if app else None
         if not player_service:
             return {"result": "Player service not available."}
@@ -757,64 +812,25 @@ async def handle_npc_test_occupants_command(
         if not player_obj:
             return {"result": "Player not found."}
 
-        # Use player's current room if room_id not provided
-        if not room_id:
-            room_id = getattr(player_obj, "current_room_id", None)
-            if not room_id:
-                return {"result": "No room ID provided and player has no current room."}
+        room_id, error_result = await _get_room_id_for_test_occupants(command_data, player_obj)
+        if error_result:
+            return error_result
 
-        # Get event handler from app.state (it's created during startup)
-        event_handler = getattr(app.state, "event_handler", None)
-        if not event_handler:
-            # Try alternative location from container
-            event_handler = getattr(app.state.container, "real_time_event_handler", None)
+        event_handler, error_result = _get_event_handler_for_test_occupants(app)
+        if error_result or event_handler is None:
+            return error_result or {"result": "Event handler not available."}
 
-        if not event_handler:
-            return {"result": "Event handler not available. Cannot test occupants directly."}
+        if room_id is None:
+            return {"result": "Room ID is required for testing occupants."}
 
-        # Trigger occupant query manually
-        logger.info(
-            "Manually triggering occupant query for testing",
-            admin_name=player_name,
-            room_id=room_id,
-        )
+        logger.info("Manually triggering occupant query for testing", admin_name=player_name, room_id=room_id)
 
-        # Get occupants using the same method that the room_occupants event uses
-        # Accessing protected member _get_room_occupants is necessary for testing/debugging
-        # as it's the internal method used by the event system
         occupants_info = event_handler._get_room_occupants(room_id)  # noqa: SLF001  # pylint: disable=protected-access
+        players, npcs = _separate_occupants(occupants_info)
 
-        # Separate players and NPCs
-        players: list[str] = []
-        npcs: list[str] = []
-
-        for occ in occupants_info or []:
-            if isinstance(occ, dict):
-                if "player_name" in occ:
-                    players.append(occ.get("player_name", "Unknown"))
-                elif "npc_name" in occ:
-                    npcs.append(occ.get("npc_name", "Unknown"))
-
-        # Format result
-        result_lines = [f"Occupants in room: {room_id}", ""]
-        result_lines.append(f"Players ({len(players)}):")
-        if players:
-            for player in players:
-                result_lines.append(f"  - {player}")
-        else:
-            result_lines.append("  (none)")
-
-        result_lines.append(f"\nNPCs ({len(npcs)}):")
-        if npcs:
-            for npc in npcs:
-                result_lines.append(f"  - {npc}")
-        else:
-            result_lines.append("  (none)")
-
-        # Also trigger the actual occupant update broadcast
         await event_handler.send_room_occupants_update(room_id)
 
-        result_lines.append("\n✅ Occupant update broadcast triggered. Check logs for detailed NPC query information.")
+        result_text = _format_occupants_result(room_id, players, npcs)
 
         logger.info(
             "NPC test occupants command completed",
@@ -824,9 +840,9 @@ async def handle_npc_test_occupants_command(
             npc_count=len(npcs),
         )
 
-        return {"result": "\n".join(result_lines)}
+        return {"result": result_text}
 
-    except Exception as e:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
         # Catching broad Exception to handle service errors, player resolution errors, and event handler errors
         # and return user-friendly error messages
         logger.error("Error testing NPC occupants", admin_name=player_name, error=str(e), exc_info=True)

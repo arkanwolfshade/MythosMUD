@@ -10,6 +10,8 @@ exploration is essential for maintaining awareness of dimensional
 territories that have been traversed.
 """
 
+# pylint: disable=too-many-return-statements  # Reason: Exploration service methods require multiple return statements for early validation returns (permission checks, validation, error handling)
+
 import asyncio
 from datetime import UTC, datetime
 from typing import Any
@@ -78,13 +80,12 @@ class ExplorationService:
             if session:
                 # Use provided session
                 return await self._mark_explored_in_session(session, player_id, room_uuid)
-            else:
-                # Create a new session
-                async_session_maker = self._database_manager.get_session_maker()
-                async with async_session_maker() as new_session:
-                    result = await self._mark_explored_in_session(new_session, player_id, room_uuid)
-                    await new_session.commit()
-                    return result
+            # Create a new session
+            async_session_maker = self._database_manager.get_session_maker()
+            async with async_session_maker() as new_session:
+                result = await self._mark_explored_in_session(new_session, player_id, room_uuid)
+                await new_session.commit()
+                return result
 
         except SQLAlchemyError as e:
             logger.error(
@@ -138,27 +139,26 @@ class ExplorationService:
                     # Convert to string first (handles asyncpg UUID objects), then to UUID
                     return UUID(str(room_uuid_result))
                 return None
-            else:
-                # Create a new session
-                async_session_maker = self._database_manager.get_session_maker()
-                async with async_session_maker() as new_session:
-                    query = text("SELECT id FROM rooms WHERE stable_id = :stable_id")
-                    result = await new_session.execute(query, {"stable_id": stable_id})
-                    room_uuid_result = result.scalar_one_or_none()
-                    if room_uuid_result:
-                        # CRITICAL FIX: asyncpg returns pgproto.UUID objects, not standard UUID objects
-                        # Convert to string first, then to UUID to handle both string and UUID-like objects
-                        # This prevents "'asyncpg.pgproto.pgproto.UUID' object has no attribute 'replace'" error
-                        if isinstance(room_uuid_result, UUID):
-                            # Already a standard UUID, return it directly
-                            return room_uuid_result
-                        # Handle string UUIDs (from tests or database)
-                        if isinstance(room_uuid_result, str):
-                            # Already a string, convert directly to UUID
-                            return UUID(room_uuid_result)
-                        # Convert to string first (handles asyncpg UUID objects), then to UUID
-                        return UUID(str(room_uuid_result))
-                    return None
+            # Create a new session
+            async_session_maker = self._database_manager.get_session_maker()
+            async with async_session_maker() as new_session:
+                query = text("SELECT id FROM rooms WHERE stable_id = :stable_id")
+                result = await new_session.execute(query, {"stable_id": stable_id})
+                room_uuid_result = result.scalar_one_or_none()
+                if room_uuid_result:
+                    # CRITICAL FIX: asyncpg returns pgproto.UUID objects, not standard UUID objects
+                    # Convert to string first, then to UUID to handle both string and UUID-like objects
+                    # This prevents "'asyncpg.pgproto.pgproto.UUID' object has no attribute 'replace'" error
+                    if isinstance(room_uuid_result, UUID):
+                        # Already a standard UUID, return it directly
+                        return room_uuid_result
+                    # Handle string UUIDs (from tests or database)
+                    if isinstance(room_uuid_result, str):
+                        # Already a string, convert directly to UUID
+                        return UUID(room_uuid_result)
+                    # Convert to string first (handles asyncpg UUID objects), then to UUID
+                    return UUID(str(room_uuid_result))
+                return None
 
         except SQLAlchemyError as e:
             logger.error(

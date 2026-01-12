@@ -11,6 +11,8 @@ that lurk in the shadows of our world. The spawn modifiers found in zone
 configurations reflect the inherent mystical properties of different locations.
 """
 
+# pylint: disable=too-many-lines  # Reason: Population control requires extensive population management logic for comprehensive NPC population tracking and control
+
 import time
 from typing import Any
 
@@ -38,7 +40,7 @@ from .zone_configuration import ZoneConfiguration
 logger = get_logger(__name__)
 
 
-class NPCPopulationController:
+class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  # Reason: Population controller requires many state tracking and configuration attributes
     """
     Controller for NPC population management across zones and sub-zones.
 
@@ -405,11 +407,12 @@ class NPCPopulationController:
                     zone_key=zone_key,
                 )
                 return npc_id
-            else:
-                # Use getattr to avoid potential lazy loading issues
-                definition_name = getattr(definition, "name", "Unknown NPC")
-                logger.error("Failed to spawn NPC", npc_name=definition_name, room_id=room_id)
-                return None
+
+            # NPC spawn failed or returned None
+            # Use getattr to avoid potential lazy loading issues
+            definition_name = getattr(definition, "name", "Unknown NPC")
+            logger.error("Failed to spawn NPC", npc_name=definition_name, room_id=room_id)
+            return None
 
         except (ValueError, KeyError, AttributeError, TypeError, IndexError, RuntimeError) as e:
             # Use getattr to avoid potential lazy loading issues

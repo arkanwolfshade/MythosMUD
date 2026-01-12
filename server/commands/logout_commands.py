@@ -5,6 +5,8 @@ This module contains handlers for quit and logout commands.
 """
 
 import inspect
+import uuid
+from datetime import UTC, datetime
 from typing import Any
 
 from ..alias_storage import AliasStorage
@@ -59,7 +61,7 @@ async def _get_player_for_logout(request: Any, persistence: Any, lookup_name: st
                 logger.error("get_player_by_name returned a coroutine instead of player", lookup_name=lookup_name)
                 return None
             cache_player(request, lookup_name, player)
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Player fetch errors unpredictable, must return None
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Player fetch errors unpredictable, must return None
             logger.error("Error fetching player for logout", error=str(e), error_type=type(e).__name__)
             return None
 
@@ -121,29 +123,58 @@ async def _update_and_save_player_last_active(persistence: Any, player: Any) -> 
     if not persistence:
         return
 
-    from datetime import UTC, datetime
-
     player.last_active = datetime.now(UTC)
     await persistence.save_player(player)
     logger.info("Player logout - updated last active")
 
 
-async def _disconnect_player_connections(connection_manager: Any, player_name: str) -> None:
+async def _disconnect_player_connections(
+    connection_manager: Any, player_name: str, mark_intentional: bool = True
+) -> None:
     """
     Disconnect player from all connections.
 
     Args:
         connection_manager: Connection manager instance
         player_name: Player name to disconnect
+        mark_intentional: If True, mark disconnect as intentional (no grace period)
     """
     if not connection_manager:
         logger.warning("Connection manager not available for logout")
         return
 
     try:
-        await connection_manager.force_disconnect_player(player_name)
-        logger.info("Player disconnected from all connections")
-    except (AttributeError, RuntimeError) as e:
+        # Get player ID to mark as intentional disconnect and to call force_disconnect_player
+        persistence = getattr(connection_manager, "async_persistence", None)
+        player_id = None
+        if persistence:
+            player = await persistence.get_player_by_name(player_name)
+            if player:
+                player_id = uuid.UUID(player.player_id) if isinstance(player.player_id, str) else player.player_id
+                # Mark as intentional disconnect (no grace period)
+                if mark_intentional:
+                    connection_manager.intentional_disconnects.add(player_id)
+                    logger.debug("Marked disconnect as intentional", player_id=player_id, player_name=player_name)
+
+        if player_id:
+            await connection_manager.force_disconnect_player(player_id)
+        else:
+            # Fallback: try to get player_id from online_players
+            player_info = connection_manager.get_online_player_by_display_name(player_name)
+            if player_info:
+                player_id_str = player_info.get("player_id")
+                if player_id_str:
+                    player_id = uuid.UUID(player_id_str) if isinstance(player_id_str, str) else player_id_str
+                    if mark_intentional:
+                        connection_manager.intentional_disconnects.add(player_id)
+                    await connection_manager.force_disconnect_player(player_id)
+                else:
+                    logger.warning("Could not resolve player_id for disconnect", player_name=player_name)
+            else:
+                logger.warning("Player not found online for disconnect", player_name=player_name)
+
+        logger.info("Player disconnected from all connections", intentional=mark_intentional, player_name=player_name)
+    except (AttributeError, RuntimeError, ValueError, TypeError) as e:
         logger.error("Error disconnecting player", error=str(e), error_type=type(e).__name__)
 
 
@@ -176,13 +207,26 @@ async def handle_quit_command(
         try:
             player = persistence.get_player_by_name(get_username_from_user(current_user))
             if player:
-                from datetime import UTC, datetime
-
                 player.last_active = datetime.now(UTC)
                 persistence.save_player(player)
                 logger.info("Player quit - updated last active")
-        except (OSError, ValueError, TypeError, Exception) as e:  # pylint: disable=broad-exception-caught  # Reason: Exception catch-all for last active update errors, must handle gracefully
+        except (OSError, ValueError, TypeError, Exception) as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Exception catch-all for last active update errors, must handle gracefully
             logger.error("Error updating last active on quit", error=str(e), error_type=type(e).__name__)
+
+    # Mark disconnect as intentional (no grace period) for /quit command
+    app = request.app if request else None
+    if app:
+        connection_manager = getattr(app.state, "connection_manager", None)
+        persistence = getattr(app.state, "persistence", None)
+        if connection_manager and persistence:
+            try:
+                player = await persistence.get_player_by_name(get_username_from_user(current_user))
+                if player:
+                    player_id = uuid.UUID(player.player_id) if isinstance(player.player_id, str) else player.player_id
+                    connection_manager.intentional_disconnects.add(player_id)
+                    logger.debug("Marked quit as intentional disconnect", player_id=player_id)
+            except (AttributeError, ValueError, TypeError) as e:
+                logger.debug("Could not mark quit as intentional", error=str(e))
 
     logger.info("Player quitting")
     return {"result": "Goodbye! You have been disconnected from the game."}
@@ -228,7 +272,13 @@ async def handle_logout_command(
             _sync_player_position(player, position_value)
             await _update_and_save_player_last_active(persistence, player)
 
-        await _disconnect_player_connections(connection_manager, player_name)
+            # Mark disconnect as intentional (no grace period)
+            player_id = uuid.UUID(player.player_id) if isinstance(player.player_id, str) else player.player_id
+            if connection_manager:
+                connection_manager.intentional_disconnects.add(player_id)
+                logger.debug("Marked logout as intentional disconnect", player_id=player_id, player_name=player_name)
+
+        await _disconnect_player_connections(connection_manager, player_name, mark_intentional=True)
 
         logger.info("Player logged out successfully")
 
@@ -239,7 +289,7 @@ async def handle_logout_command(
             "message": "You have been logged out and disconnected from the game.",
         }
 
-    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Logout errors unpredictable, must handle gracefully
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Logout errors unpredictable, must handle gracefully
         logger.error("Unexpected error during logout", error=str(e), error_type=type(e).__name__, exc_info=True)
 
         # Even if there's an error, we should still indicate logout success

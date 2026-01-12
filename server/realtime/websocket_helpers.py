@@ -100,12 +100,11 @@ def convert_uuids_to_strings(obj: Any) -> Any:
     """Recursively convert UUID objects to strings for JSON serialization."""
     if isinstance(obj, dict):
         return {k: convert_uuids_to_strings(v) for k, v in obj.items()}
-    elif isinstance(obj, list):
+    if isinstance(obj, list):
         return [convert_uuids_to_strings(item) for item in obj]
-    elif hasattr(obj, "__class__") and "UUID" in obj.__class__.__name__:
+    if hasattr(obj, "__class__") and "UUID" in obj.__class__.__name__:
         return str(obj)
-    else:
-        return obj
+    return obj
 
 
 def get_player_service_from_connection_manager(connection_manager) -> Any:

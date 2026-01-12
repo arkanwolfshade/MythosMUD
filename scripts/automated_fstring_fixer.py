@@ -130,72 +130,54 @@ class FStringLoggingFixer:
 
         return f'logger.{method}("{clean_message}", {", ".join(params)})'
 
-    def fix_fstring_logging_in_file(self, file_path: Path) -> int:
-        """Fix f-string logging violations in a single file."""
-        if not file_path.exists() or file_path.suffix != ".py":
-            return 0
+    def _validate_file(self, file_path: Path) -> bool:
+        """Validate that file exists and is a Python file."""
+        return file_path.exists() and file_path.suffix == ".py"
 
+    def _read_file_content(self, file_path: Path) -> str | None:
+        """Read file content with error handling."""
         try:
             with open(file_path, encoding="utf-8") as f:
-                content = f.read()
+                return f.read()
         except (UnicodeDecodeError, FileNotFoundError):
             if self.verbose:
                 print(f"Warning: Could not read {file_path}")
-            return 0
+            return None
 
-        original_content = content
-        fixes_applied = 0
+    def _build_complex_params(self, variables: list[str]) -> list[str]:
+        """Build parameters list for complex patterns."""
+        params = []
+        for var in variables:
+            if "[" in var and "]" in var:
+                clean_var = var.split("[")[0]
+                params.append(f"{clean_var}={var}")
+            else:
+                params.append(f"{var}={var}")
+        return params
 
-        # Pattern 1: Simple f-string patterns
-        simple_pattern = re.compile(
-            r'logger\.(info|debug|warning|error|critical|exception)\s*\(\s*f["\']([^"\']*)["\']'
-        )
+    def _handle_complex_pattern_replacement(self, match: re.Match, fixes_applied_ref: list[int]) -> str:
+        """Handle replacement for complex f-string patterns with additional parameters."""
+        method = match.group(1)
+        fstring_content = match.group(2)
+        additional_params = match.group(3)
 
-        def replace_simple(match):
-            nonlocal fixes_applied
-            result = self.fix_simple_pattern(match)
-            fixes_applied += 1
-            return result
+        variables = self.extract_variables_from_fstring(fstring_content)
 
-        # Pattern 2: Complex patterns with additional parameters
-        complex_pattern = re.compile(
-            r'logger\.(info|debug|warning|error|critical|exception)\s*\(\s*f["\']([^"\']*)["\']\s*,\s*([^)]+)\)'
-        )
+        if not variables:
+            return f'logger.{method}("{fstring_content}", {additional_params})'
 
-        def replace_complex(match):
-            nonlocal fixes_applied
-            method = match.group(1)
-            fstring_content = match.group(2)
-            additional_params = match.group(3)
+        clean_message = fstring_content
+        for var in variables:
+            clean_message = clean_message.replace(f"{{{var}}}", f"{{{var}}}")
 
-            # Extract variables
-            variables = self.extract_variables_from_fstring(fstring_content)
+        params = self._build_complex_params(variables)
+        fixes_applied_ref[0] += 1
+        return f'logger.{method}("{clean_message}", {", ".join(params)}, {additional_params})'
 
-            if not variables:
-                return f'logger.{method}("{fstring_content}", {additional_params})'
-
-            # Create structured message
-            clean_message = fstring_content
-            for var in variables:
-                clean_message = clean_message.replace(f"{{{var}}}", f"{{{var}}}")
-
-            # Create parameters
-            params = []
-            for var in variables:
-                if "[" in var and "]" in var:
-                    clean_var = var.split("[")[0]
-                    params.append(f"{clean_var}={var}")
-                else:
-                    params.append(f"{var}={var}")
-
-            fixes_applied += 1
-            return f'logger.{method}("{clean_message}", {", ".join(params)}, {additional_params})'
-
-        # Apply fixes
-        new_content = simple_pattern.sub(replace_simple, content)
-        new_content = complex_pattern.sub(replace_complex, new_content)
-
-        # Only write if changes were made and not in dry run mode
+    def _write_file_if_changed(
+        self, file_path: Path, original_content: str, new_content: str, fixes_applied: int
+    ) -> None:
+        """Write file if content has changed."""
         if new_content != original_content and not self.dry_run:
             with open(file_path, "w", encoding="utf-8") as f:
                 f.write(new_content)
@@ -205,7 +187,40 @@ class FStringLoggingFixer:
             if self.verbose:
                 print(f"Would fix {fixes_applied} violations in {file_path}")
 
-        return fixes_applied
+    def fix_fstring_logging_in_file(self, file_path: Path) -> int:
+        """Fix f-string logging violations in a single file."""
+        if not self._validate_file(file_path):
+            return 0
+
+        content = self._read_file_content(file_path)
+        if content is None:
+            return 0
+
+        original_content = content
+        fixes_applied = [0]
+
+        simple_pattern = re.compile(
+            r'logger\.(info|debug|warning|error|critical|exception)\s*\(\s*f["\']([^"\']*)["\']'
+        )
+
+        def replace_simple(match: re.Match) -> str:
+            result = self.fix_simple_pattern(match)
+            fixes_applied[0] += 1
+            return result
+
+        complex_pattern = re.compile(
+            r'logger\.(info|debug|warning|error|critical|exception)\s*\(\s*f["\']([^"\']*)["\']\s*,\s*([^)]+)\)'
+        )
+
+        def replace_complex(match: re.Match) -> str:
+            return self._handle_complex_pattern_replacement(match, fixes_applied)
+
+        new_content = simple_pattern.sub(replace_simple, content)
+        new_content = complex_pattern.sub(replace_complex, new_content)
+
+        self._write_file_if_changed(file_path, original_content, new_content, fixes_applied[0])
+
+        return fixes_applied[0]
 
     def process_files(self, file_paths: list[Path]) -> dict[str, Any]:
         """Process multiple files and return statistics."""
@@ -226,7 +241,9 @@ class FStringLoggingFixer:
                     if self.verbose:
                         print(f"Fixed {fixes} violations in {file_path}")
 
-            except Exception as e:
+            except (OSError, re.error) as e:
+                # OSError covers file I/O errors (permission denied, disk full, etc.)
+                # re.error covers regex compilation errors (unlikely but possible)
                 results["errors"].append(f"Error processing {file_path}: {e}")
 
         results["patterns_fixed"] = self.patterns_fixed

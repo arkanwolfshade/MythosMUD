@@ -5,6 +5,8 @@ This module defines the Profession model that stores profession data
 including requirements, effects, and availability status.
 """
 
+# pylint: disable=too-few-public-methods  # Reason: SQLAlchemy models are data classes, no instance methods needed
+
 import json
 from typing import Any, cast
 
@@ -15,6 +17,8 @@ from ..metadata import metadata
 
 
 class Base(DeclarativeBase):
+    """SQLAlchemy declarative base for profession database models."""
+
     metadata = metadata
 
 

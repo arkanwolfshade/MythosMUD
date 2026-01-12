@@ -40,7 +40,7 @@ class SubjectValidator:
         Returns:
             True if basic validation passes, False otherwise
         """
-        if not subject or len(subject) == 0:
+        if not subject:
             return False
 
         if len(subject) > self._max_subject_length:
@@ -86,7 +86,7 @@ class SubjectValidator:
         str_value = str(param_value)
 
         # Check for empty values
-        if not str_value or len(str_value) == 0:
+        if not str_value:
             raise SubjectValidationError(f"Parameter '{param_name}' cannot be empty")
 
         # Check for invalid characters
@@ -98,11 +98,10 @@ class SubjectValidator:
                     f"Parameter '{param_name}' contains invalid characters: '{str_value}' "
                     "(strict mode: only letters, numbers, and hyphens allowed)"
                 )
-            else:
-                raise SubjectValidationError(
-                    f"Parameter '{param_name}' contains invalid characters: '{str_value}' "
-                    "(allowed: letters, numbers, underscores, hyphens)"
-                )
+            raise SubjectValidationError(
+                f"Parameter '{param_name}' contains invalid characters: '{str_value}' "
+                "(allowed: letters, numbers, underscores, hyphens)"
+            )
 
     def validate_pattern_params(self, pattern: str, params: dict[str, Any]) -> None:
         """

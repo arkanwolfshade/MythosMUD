@@ -5,6 +5,8 @@ This module handles combat result processing and NPC death handling,
 with defensive error handling to prevent player disconnections.
 """
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Combat handlers require many parameters for context and combat processing
+
 from typing import Any
 from uuid import UUID, uuid4
 
@@ -22,7 +24,7 @@ logger = get_logger(__name__)
 class NPCCombatHandlers:
     """Handles combat result processing and NPC death operations."""
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Combat handler initialization requires many service dependencies
         self,
         data_provider: NPCCombatDataProvider,
         rewards: NPCCombatRewards,
@@ -46,7 +48,7 @@ class NPCCombatHandlers:
         self._lifecycle = lifecycle
         self._messaging_integration = messaging_integration
 
-    async def handle_combat_result(
+    async def handle_combat_result(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Combat result handling requires many parameters for context and result processing
         self,
         combat_result: Any,
         player_id: str,
@@ -101,16 +103,15 @@ class NPCCombatHandlers:
             )
 
             return combat_result.success
-        else:
-            logger.warning(
-                "Combat attack failed",
-                player_id=player_id,
-                npc_id=npc_id,
-                message=combat_result.message,
-            )
-            return combat_result.success
+        logger.warning(
+            "Combat attack failed",
+            player_id=player_id,
+            npc_id=npc_id,
+            message=combat_result.message,
+        )
+        return combat_result.success
 
-    async def _handle_npc_death_on_combat_end(
+    async def _handle_npc_death_on_combat_end(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: NPC death handling requires many parameters for context and death processing
         self, player_id: str, npc_id: str, room_id: str, combat_result: Any, handle_npc_death_callback: Any
     ) -> None:
         """

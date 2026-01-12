@@ -1,5 +1,7 @@
 """Passive LCD flux scheduler guided by the Pnakotic curricula."""
 
+# pylint: disable=too-many-instance-attributes,too-many-arguments,too-many-positional-arguments,too-many-locals,too-few-public-methods,too-many-lines  # Reason: Lucidity flux service requires many state attributes, parameters, intermediate variables, and has focused responsibility with minimal public interface. Passive lucidity flux service requires extensive flux calculation logic for comprehensive lucidity management.
+
 from __future__ import annotations
 
 import math
@@ -81,10 +83,10 @@ def _period_label(timestamp: datetime) -> str:
     return "night"
 
 
-class PassiveLucidityFluxService:
+class PassiveLucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Reason: Lucidity flux service requires many state tracking and configuration attributes
     """Applies passive LCD flux each in-game minute with structured telemetry."""
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Lucidity flux initialization requires many service dependencies
         self,
         persistence: AsyncPersistenceLayer | None = None,
         performance_monitor: PerformanceMonitor | None = None,
@@ -125,7 +127,186 @@ class PassiveLucidityFluxService:
             room_cache_ttl=self._room_cache_ttl,
         )
 
-    async def process_tick(
+    async def _build_room_cache(self, players: list[Any]) -> dict[str, Any]:
+        """Build room cache for all players."""
+        room_cache: dict[str, Any] = {}
+        if self._persistence is not None:
+            unique_room_ids = {player.current_room_id for player in players}
+            for room_id in unique_room_ids:
+                room = await self._get_room_cached(room_id)
+                if room is not None:
+                    room_cache[room_id] = room
+        return room_cache
+
+    async def _handle_phantom_hostile_hallucination(
+        self, player_id_uuid: uuid.UUID, room_id: str, tier: str, current_lcd: int
+    ) -> None:
+        """Handle phantom hostile spawn hallucination."""
+        from ..services.lucidity_event_dispatcher import send_hallucination_event
+        from ..services.phantom_hostile_service import PhantomHostileService
+
+        phantom_service = PhantomHostileService()
+        phantom_data = phantom_service.create_phantom_hostile_data(player_id_uuid, room_id, tier)
+        await send_hallucination_event(
+            player_id_uuid,
+            hallucination_type="phantom_hostile_spawn",
+            message=f"A {phantom_data['name']} materializes before you!",
+            metadata={
+                "tier": tier,
+                "lcd": current_lcd,
+                "phantom_id": phantom_data["phantom_id"],
+                "phantom_name": phantom_data["name"],
+                "room_id": room_id,
+                "max_dp": 1,
+                "current_dp": 1,
+                "is_non_damaging": phantom_data["is_non_damaging"],
+            },
+        )
+        logger.debug(
+            "Phantom hostile spawn hallucination triggered",
+            player_id=player_id_uuid,
+            tier=tier,
+            phantom_id=phantom_data["phantom_id"],
+            phantom_name=phantom_data["name"],
+        )
+
+    async def _handle_fake_hallucination(
+        self, player_id_uuid: uuid.UUID, room_id: str, tier: str, current_lcd: int
+    ) -> None:
+        """Handle fake hallucination (NPC tells or room text overlays)."""
+        from ..services.fake_hallucination_service import FakeHallucinationService
+        from ..services.lucidity_event_dispatcher import send_hallucination_event
+
+        fake_hallucination_service = FakeHallucinationService()
+        hallucination_type = fake_hallucination_service.select_hallucination_type()
+
+        if hallucination_type == "fake_npc_tell":
+            fake_tell_data = fake_hallucination_service.generate_fake_npc_tell(player_id_uuid, room_id)
+            await send_hallucination_event(
+                player_id_uuid,
+                hallucination_type="fake_npc_tell",
+                message=fake_tell_data["message"],
+                metadata={
+                    "tier": tier,
+                    "lcd": current_lcd,
+                    "npc_name": fake_tell_data["npc_name"],
+                    "room_id": room_id,
+                    "hallucination_id": fake_tell_data["hallucination_id"],
+                },
+            )
+            logger.debug(
+                "Fake NPC tell hallucination triggered",
+                player_id=player_id_uuid,
+                tier=tier,
+                npc_name=fake_tell_data["npc_name"],
+            )
+        else:  # room_text_overlay
+            overlay_data = fake_hallucination_service.generate_room_text_overlay(player_id_uuid, room_id)
+            await send_hallucination_event(
+                player_id_uuid,
+                hallucination_type="room_text_overlay",
+                message=overlay_data["overlay_text"],
+                metadata={
+                    "tier": tier,
+                    "lcd": current_lcd,
+                    "room_id": room_id,
+                    "hallucination_id": overlay_data["hallucination_id"],
+                },
+            )
+            logger.debug(
+                "Room text overlay hallucination triggered",
+                player_id=player_id_uuid,
+                tier=tier,
+                room_id=room_id,
+            )
+
+    async def _handle_hallucination_triggers(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Hallucination handling requires many parameters for context and trigger processing
+        self,
+        player_id_uuid: uuid.UUID,
+        player_id_str: str,
+        room_id: str,
+        lucidity_records: dict[str, Any],
+        session: AsyncSession,
+    ) -> None:
+        """Check and handle time-based hallucination triggers."""
+        from ..services.hallucination_frequency_service import HallucinationFrequencyService
+        from ..services.phantom_hostile_service import PhantomHostileService
+
+        frequency_service = HallucinationFrequencyService()
+        lucidity_record = lucidity_records.get(player_id_str)
+        if lucidity_record and lucidity_record.current_tier in ("fractured", "deranged"):
+            current_lcd = lucidity_record.current_lcd
+            should_trigger = await frequency_service.check_time_based_hallucination(
+                player_id_uuid, current_lcd, session
+            )
+            if should_trigger:
+                tier = lucidity_record.current_tier
+                phantom_service = PhantomHostileService()
+                if phantom_service.should_spawn_phantom_hostile(tier):
+                    await self._handle_phantom_hostile_hallucination(player_id_uuid, room_id, tier, current_lcd)
+                else:
+                    await self._handle_fake_hallucination(player_id_uuid, room_id, tier, current_lcd)
+
+    async def _process_single_player(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Player processing requires many parameters and intermediate variables for complex lucidity processing logic
+        self,
+        player: Any,
+        players: list[Any],
+        lucidity_records: dict[str, Any],
+        room_cache: dict[str, Any],
+        timestamp: datetime,
+        tick_count: int,
+        lucidity_service: Any,
+        session: AsyncSession,
+    ) -> tuple[str, LucidityUpdateResult | None]:
+        """Process a single player's passive flux."""
+        player_id_value = player.player_id
+        player_id_uuid = uuid.UUID(str(player_id_value))
+        player_id_str = str(player_id_uuid)
+        room_id = player.current_room_id
+
+        context = await self._resolve_context_async(player, timestamp, room_cache.get(room_id))
+        base_flux = context.base_flux
+        companion_flux = self._companion_modifier(player, players, lucidity_records)
+        total_flux = base_flux + companion_flux
+        total_flux = self._apply_adaptive_resistance(player_id_str, room_id, total_flux)
+        delta = self._apply_residual(player_id_str, total_flux)
+
+        if abs(delta) > 5 or abs(total_flux) > 5:
+            logger.warning(
+                "Large flux or delta calculated for player",
+                player_id=player_id_str,
+                room_id=room_id,
+                base_flux=base_flux,
+                companion_flux=companion_flux,
+                total_flux_before_adaptive=base_flux + companion_flux,
+                total_flux_after_adaptive=total_flux,
+                delta=delta,
+                source=context.source,
+                metadata=context.metadata,
+            )
+
+        if not delta:
+            return player_id_str, None
+
+        await self._handle_hallucination_triggers(player_id_uuid, player_id_str, room_id, lucidity_records, session)
+
+        result = await lucidity_service.apply_lucidity_adjustment(
+            player_id_uuid,
+            delta,
+            reason_code="passive_flux",
+            metadata={
+                "context_tags": list(context.tags),
+                "source": context.source,
+                "base_flux": base_flux,
+                "companion_flux": companion_flux,
+                "total_flux": total_flux,
+                "tick_count": tick_count,
+                **context.metadata,
+            },
+        )
+        return player_id_str, result
+
+    async def process_tick(  # pylint: disable=too-many-locals  # Reason: Tick processing requires many intermediate variables for complex tick processing logic
         self, session: AsyncSession, tick_count: int, *, now: datetime | None = None
     ) -> dict[str, Any]:
         """Evaluate passive LCD flux for the current tick."""
@@ -146,182 +327,22 @@ class PassiveLucidityFluxService:
         lucidity_service = LucidityService(session, catatonia_observer=self._catatonia_observer)
 
         try:
-            # Load all players and filter to active ones (active in last 5 minutes)
             all_players = await self._load_players(session)
             players = self._filter_active_players(all_players, timestamp)
             lucidity_records = await self._load_lucidity_records(session)
-
-            # Cache rooms for all players to avoid repeated lookups
-            # CRITICAL FIX: Use _get_room_cached() which implements TTL caching
-            # and async_get_room() to prevent event loop blocking.
-            # Previously used sync get_room() which blocked the entire event loop,
-            # causing 17-second delays (1,639% overhead).
-            room_cache: dict[str, Any] = {}
-            if self._persistence is not None:
-                unique_room_ids = {player.current_room_id for player in players}
-                for room_id in unique_room_ids:
-                    # Use cached method which checks TTL cache first,
-                    # then fetches asynchronously if needed
-                    room = await self._get_room_cached(room_id)
-                    if room is not None:
-                        room_cache[room_id] = room
+            room_cache = await self._build_room_cache(players)
 
             for player in players:
-                # Convert player.player_id to UUID for apply_lucidity_adjustment
-                # SQLAlchemy Column[str] returns UUID at runtime, but mypy sees it as Column[str]
-                # Always convert to string first, then to UUID
                 player_id_value = player.player_id
-                player_id_uuid = uuid.UUID(str(player_id_value))
-                player_id_str = str(player_id_uuid)
-                room_id = player.current_room_id
+                player_id_str = str(uuid.UUID(str(player_id_value)))
 
                 processed_player_ids.add(player_id_str)
-                context = await self._resolve_context_async(player, timestamp, room_cache.get(room_id))
-                base_flux = context.base_flux
-
-                companion_flux = self._companion_modifier(player, players, lucidity_records)
-                total_flux = base_flux + companion_flux
-
-                total_flux = self._apply_adaptive_resistance(player_id_str, room_id, total_flux)
-                delta = self._apply_residual(player_id_str, total_flux)
-
-                # Log flux calculation for debugging
-                if abs(delta) > 5 or abs(total_flux) > 5:
-                    logger.warning(
-                        "Large flux or delta calculated for player",
-                        player_id=player_id_str,
-                        room_id=room_id,
-                        base_flux=base_flux,
-                        companion_flux=companion_flux,
-                        total_flux_before_adaptive=base_flux + companion_flux,
-                        total_flux_after_adaptive=total_flux,
-                        delta=delta,
-                        source=context.source,
-                        metadata=context.metadata,
-                    )
-
-                if delta == 0:
-                    continue
-
-                # Check for time-based hallucination triggers (Fractured/Deranged tiers)
-                # Note: Room entry hallucinations (Uneasy tier) are handled separately via event subscription
-                # NOTE: Time-based checks should ideally run on a separate timer (every second or so),
-                # but for now we check during passive flux ticks as a compromise
-                from ..services.hallucination_frequency_service import HallucinationFrequencyService
-
-                frequency_service = HallucinationFrequencyService()
-                lucidity_record = lucidity_records.get(player_id_str)
-                if lucidity_record and lucidity_record.current_tier in ("fractured", "deranged"):
-                    current_lcd = lucidity_record.current_lcd
-                    should_trigger = await frequency_service.check_time_based_hallucination(
-                        player_id_uuid, current_lcd, session
-                    )
-                    if should_trigger:
-                        # Hallucination should trigger - determine specific type and dispatch
-                        from ..services.lucidity_event_dispatcher import send_hallucination_event
-                        from ..services.phantom_hostile_service import PhantomHostileService
-
-                        tier = lucidity_record.current_tier
-                        phantom_service = PhantomHostileService()
-
-                        # Check if this should be a phantom hostile spawn
-                        # Fractured: 15% chance of phantom hostile (non-damaging combat)
-                        # Deranged: Always spawn phantom hostile (attackable, vanish on hit)
-                        if phantom_service.should_spawn_phantom_hostile(tier):
-                            # Create phantom hostile data
-                            phantom_data = phantom_service.create_phantom_hostile_data(player_id_uuid, room_id, tier)
-
-                            # Send phantom hostile spawn hallucination event
-                            await send_hallucination_event(
-                                player_id_uuid,
-                                hallucination_type="phantom_hostile_spawn",
-                                message=f"A {phantom_data['name']} materializes before you!",
-                                metadata={
-                                    "tier": tier,
-                                    "lcd": current_lcd,
-                                    "phantom_id": phantom_data["phantom_id"],
-                                    "phantom_name": phantom_data["name"],
-                                    "room_id": room_id,
-                                    "max_dp": 1,
-                                    "current_dp": 1,
-                                    "is_non_damaging": phantom_data["is_non_damaging"],
-                                },
-                            )
-                            logger.debug(
-                                "Phantom hostile spawn hallucination triggered",
-                                player_id=player_id_uuid,
-                                tier=tier,
-                                phantom_id=phantom_data["phantom_id"],
-                                phantom_name=phantom_data["name"],
-                            )
-                        else:
-                            # Other hallucination types (fake NPC tells, room text overlays, etc.)
-                            from ..services.fake_hallucination_service import FakeHallucinationService
-
-                            fake_hallucination_service = FakeHallucinationService()
-                            hallucination_type = fake_hallucination_service.select_hallucination_type()
-
-                            if hallucination_type == "fake_npc_tell":
-                                # Generate fake NPC tell
-                                fake_tell_data = fake_hallucination_service.generate_fake_npc_tell(
-                                    player_id_uuid, room_id
-                                )
-                                await send_hallucination_event(
-                                    player_id_uuid,
-                                    hallucination_type="fake_npc_tell",
-                                    message=fake_tell_data["message"],
-                                    metadata={
-                                        "tier": tier,
-                                        "lcd": current_lcd,
-                                        "npc_name": fake_tell_data["npc_name"],
-                                        "room_id": room_id,
-                                        "hallucination_id": fake_tell_data["hallucination_id"],
-                                    },
-                                )
-                                logger.debug(
-                                    "Fake NPC tell hallucination triggered",
-                                    player_id=player_id_uuid,
-                                    tier=tier,
-                                    npc_name=fake_tell_data["npc_name"],
-                                )
-                            else:  # room_text_overlay
-                                # Generate room text overlay
-                                overlay_data = fake_hallucination_service.generate_room_text_overlay(
-                                    player_id_uuid, room_id
-                                )
-                                await send_hallucination_event(
-                                    player_id_uuid,
-                                    hallucination_type="room_text_overlay",
-                                    message=overlay_data["overlay_text"],
-                                    metadata={
-                                        "tier": tier,
-                                        "lcd": current_lcd,
-                                        "room_id": room_id,
-                                        "hallucination_id": overlay_data["hallucination_id"],
-                                    },
-                                )
-                                logger.debug(
-                                    "Room text overlay hallucination triggered",
-                                    player_id=player_id_uuid,
-                                    tier=tier,
-                                    room_id=room_id,
-                                )
-
-                result = await lucidity_service.apply_lucidity_adjustment(
-                    player_id_uuid,
-                    delta,
-                    reason_code="passive_flux",
-                    metadata={
-                        "context_tags": list(context.tags),
-                        "source": context.source,
-                        "base_flux": base_flux,
-                        "companion_flux": companion_flux,
-                        "total_flux": total_flux,
-                        "tick_count": tick_count,
-                        **context.metadata,
-                    },
+                player_id_str, result = await self._process_single_player(
+                    player, players, lucidity_records, room_cache, timestamp, tick_count, lucidity_service, session
                 )
-                adjustments.append(result)
+
+                if result is not None:
+                    adjustments.append(result)
 
             if adjustments:
                 await session.commit()
@@ -355,7 +376,7 @@ class PassiveLucidityFluxService:
             raise
 
     def _should_process_tick(self, tick_count: int) -> bool:
-        return self._ticks_per_minute <= 1 or tick_count % self._ticks_per_minute == 0
+        return self._ticks_per_minute <= 1 or not tick_count % self._ticks_per_minute
 
     async def _get_room_cached(self, room_id: str) -> Any | None:
         """
@@ -415,6 +436,74 @@ class PassiveLucidityFluxService:
         result = await session.execute(stmt)
         return result.scalars().all()
 
+    def _parse_last_active(self, last_active_raw: datetime | str | None) -> datetime | None:  # pylint: disable=too-many-return-statements  # Reason: Last active parsing requires multiple return statements for different format handling and validation
+        """
+        Parse last_active from various formats.
+
+        Args:
+            last_active_raw: Raw last_active value (datetime, string, or None)
+
+        Returns:
+            Parsed datetime or None
+        """
+        if last_active_raw is None:
+            return None
+
+        if isinstance(last_active_raw, datetime):
+            return last_active_raw
+
+        if isinstance(last_active_raw, str):
+            try:
+                last_active_str = last_active_raw.strip()
+                if last_active_str.endswith("Z"):
+                    return datetime.fromisoformat(last_active_str[:-1] + "+00:00")
+                if "+" in last_active_str or "-" in last_active_str[-6:]:
+                    return datetime.fromisoformat(last_active_str)
+                return datetime.fromisoformat(last_active_str).replace(tzinfo=UTC)
+            except (ValueError, AttributeError):
+                return None
+
+        # This should never be reached given the type signature (datetime | str | None),
+        # but kept for defensive programming
+        return None  # type: ignore[unreachable]
+
+    def _normalize_datetime_timezone(self, dt: datetime | None) -> datetime | None:
+        """Normalize datetime to timezone-aware UTC."""
+        if dt and dt.tzinfo is None:
+            return dt.replace(tzinfo=UTC)
+        return dt
+
+    def _is_player_active(
+        self, player: Player, last_active: datetime | None, active_threshold: datetime, timestamp: datetime
+    ) -> bool:
+        """
+        Check if player is active based on last_active and created_at.
+
+        Args:
+            player: Player object
+            last_active: Parsed last_active datetime
+            active_threshold: Threshold for active status
+            timestamp: Current timestamp
+
+        Returns:
+            True if player is active
+        """
+        from datetime import timedelta
+
+        if last_active:
+            is_recently_active = last_active >= active_threshold
+        else:
+            is_recently_active = False
+
+        is_recently_created = False
+        if hasattr(player, "created_at") and player.created_at is not None:
+            created_at_raw = player.created_at
+            created_at = self._normalize_datetime_timezone(created_at_raw)
+            if created_at:
+                is_recently_created = created_at >= timestamp - timedelta(hours=1)
+
+        return is_recently_active or is_recently_created
+
     def _filter_active_players(self, players: Sequence[Player], timestamp: datetime) -> list[Player]:
         """Filter players to only those active in the last 5 minutes."""
         from datetime import timedelta
@@ -423,59 +512,21 @@ class PassiveLucidityFluxService:
         active_players = []
 
         for player in players:
-            # Consider player active if last_active is within threshold or None (new players)
-            # Also consider players active if created recently (within last hour) - handles test scenarios
-            # Cast: SQLAlchemy Column returns datetime | None at runtime, but mypy sees Column type
             last_active_raw: datetime | str | None = cast(datetime | str | None, player.last_active)
+
             if last_active_raw is None:
                 active_players.append(player)
                 continue
 
-            # Handle both datetime and string formats (string handling for legacy/serialized data)
-            last_active: datetime | None = None
-            if isinstance(last_active_raw, str):
-                try:
-                    # Optimized string parsing - handle common formats more efficiently
-                    last_active_str = last_active_raw.strip()
-                    if last_active_str.endswith("Z"):
-                        # Handle UTC format
-                        last_active = datetime.fromisoformat(last_active_str[:-1] + "+00:00")
-                    elif "+" in last_active_str or "-" in last_active_str[-6:]:
-                        # Handle timezone format
-                        last_active = datetime.fromisoformat(last_active_str)
-                    else:
-                        # Assume UTC if no timezone info
-                        last_active = datetime.fromisoformat(last_active_str).replace(tzinfo=UTC)
-                except (ValueError, AttributeError):
-                    # If parsing fails, assume player is active
-                    active_players.append(player)
-                    continue
-            elif isinstance(last_active_raw, datetime):
-                last_active = last_active_raw
-            else:
-                # Unknown type, assume player is active to be safe
-                # Type ignore: Defensive check - mypy knows this is unreachable but we keep it for safety
-                active_players.append(player)  # type: ignore[unreachable]
+            last_active = self._parse_last_active(last_active_raw)
+            if last_active is None:
+                active_players.append(player)
                 continue
 
-            # Ensure both datetimes are timezone-aware for comparison
-            if last_active and last_active.tzinfo is None:
-                last_active = last_active.replace(tzinfo=UTC)
+            last_active = self._normalize_datetime_timezone(last_active)
 
-            # Check if player is active (within 5 minutes) OR was created recently (within last hour)
-            # This handles test scenarios where players are created just before processing
-            is_recently_active = last_active and last_active >= active_threshold
-            is_recently_created = False
-            if hasattr(player, "created_at") and player.created_at is not None:
-                # Cast: SQLAlchemy Column returns datetime at runtime, but mypy sees Column type
-                created_at: datetime = player.created_at
-                # Ensure created_at is timezone-aware for comparison
-                if created_at.tzinfo is None:
-                    created_at = created_at.replace(tzinfo=UTC)
-                is_recently_created = created_at >= timestamp - timedelta(hours=1)
-
-                if is_recently_active or is_recently_created:
-                    active_players.append(player)
+            if self._is_player_active(player, last_active, active_threshold, timestamp):
+                active_players.append(player)
 
         return active_players
 
@@ -679,7 +730,7 @@ class PassiveLucidityFluxService:
             pid: tracker for pid, tracker in self._player_room_tracker.items() if pid in active_set
         }
 
-    def _emit_telemetry(
+    def _emit_telemetry(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Telemetry emission requires many parameters for complete telemetry context
         self,
         duration_ms: float,
         evaluated_players: int,
@@ -762,7 +813,7 @@ class PassiveLucidityFluxService:
             logger.info("No lucidity rate overrides found in database")
         return overrides
 
-    async def _async_load_lucidity_rate_overrides(self, result_container: dict[str, Any]) -> None:
+    async def _async_load_lucidity_rate_overrides(self, result_container: dict[str, Any]) -> None:  # pylint: disable=too-many-locals  # Reason: Rate override loading requires many intermediate variables for complex data processing
         """Async helper to load lucidity rate overrides from PostgreSQL."""
         import json
         import os

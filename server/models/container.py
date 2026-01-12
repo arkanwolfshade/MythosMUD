@@ -244,7 +244,7 @@ class ContainerComponent(BaseModel):
         return current_time >= self.decay_at
 
     @classmethod
-    def create_environment(
+    def create_environment(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Container creation requires many parameters to capture complete container state
         cls,
         container_id: UUID,
         room_id: str,
@@ -284,7 +284,7 @@ class ContainerComponent(BaseModel):
         )
 
     @classmethod
-    def create_equipment(
+    def create_equipment(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Container creation requires many parameters to capture complete container state
         cls,
         container_id: UUID,
         entity_id: UUID,
@@ -324,7 +324,7 @@ class ContainerComponent(BaseModel):
         )
 
     @classmethod
-    def create_corpse(
+    def create_corpse(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Container creation requires many parameters to capture complete container state
         cls,
         container_id: UUID,
         owner_id: UUID,

@@ -10,7 +10,7 @@ for maintaining the integrity of our eldritch dimensional architecture.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from ..events import EventBus, NPCEnteredRoom, NPCLeftRoom
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -55,6 +55,116 @@ class NPCMovementIntegration:
 
         logger.debug("NPC movement integration initialized")
 
+    def _validate_room_ids(self, npc_id: str, from_room_id: str, to_room_id: str) -> bool:
+        """
+        Validate room IDs for NPC movement.
+
+        Args:
+            npc_id: ID of the NPC
+            from_room_id: Source room ID
+            to_room_id: Destination room ID
+
+        Returns:
+            True if room IDs are valid, False otherwise
+        """
+        if not from_room_id or not to_room_id:
+            logger.warning(
+                "Invalid room IDs for NPC movement", npc_id=npc_id, from_room=from_room_id, to_room=to_room_id
+            )
+            return False
+
+        if from_room_id == to_room_id:
+            logger.debug("NPC already in target room", npc_id=npc_id, room_id=to_room_id)
+            return False
+
+        return True
+
+    def _get_room_objects(self, npc_id: str, from_room_id: str, to_room_id: str) -> tuple[Any, Any] | None:
+        """
+        Get room objects and validate they exist.
+
+        Args:
+            npc_id: ID of the NPC
+            from_room_id: Source room ID
+            to_room_id: Destination room ID
+
+        Returns:
+            Tuple of (from_room, to_room) if both exist, None otherwise
+        """
+        from_room = self.persistence.get_room_by_id(from_room_id)
+        to_room = self.persistence.get_room_by_id(to_room_id)
+
+        if not from_room:
+            logger.warning("Source room not found", npc_id=npc_id, from_room=from_room_id)
+            return None
+
+        if not to_room:
+            logger.warning("Destination room not found", npc_id=npc_id, to_room=to_room_id)
+            return None
+
+        return from_room, to_room
+
+    def _update_room_occupancy(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Room occupancy update requires many parameters for context and state updates
+        self, npc_id: str, from_room: Any, to_room: Any, from_room_id: str, to_room_id: str
+    ) -> None:
+        """
+        Update room occupancy by removing NPC from source and adding to destination.
+
+        Args:
+            npc_id: ID of the NPC
+            from_room: Source room object
+            to_room: Destination room object
+            from_room_id: Source room ID
+            to_room_id: Destination room ID
+        """
+        if from_room.has_npc(npc_id):
+            from_room.npc_left(npc_id, to_room_id=to_room_id)
+            logger.debug("Removed NPC from source room", npc_id=npc_id, from_room=from_room_id, to_room=to_room_id)
+
+        if not to_room.has_npc(npc_id):
+            to_room.npc_entered(npc_id, from_room_id=from_room_id)
+            logger.debug("Added NPC to destination room", npc_id=npc_id, from_room=from_room_id, to_room=to_room_id)
+
+    def _update_npc_instance_room_tracking(self, npc_id: str, to_room_id: str) -> None:
+        """
+        Update NPC instance room tracking for occupant queries.
+
+        Args:
+            npc_id: ID of the NPC
+            to_room_id: Destination room ID
+        """
+        try:
+            from ..services.npc_instance_service import get_npc_instance_service
+
+            npc_instance_service = get_npc_instance_service()
+            if npc_instance_service and hasattr(npc_instance_service, "lifecycle_manager"):
+                lifecycle_manager = npc_instance_service.lifecycle_manager
+                if lifecycle_manager and npc_id in lifecycle_manager.active_npcs:
+                    npc_instance = lifecycle_manager.active_npcs[npc_id]
+                    npc_instance.current_room = to_room_id
+                    npc_instance.current_room_id = to_room_id  # type: ignore[attr-defined]
+
+                    if not npc_instance.current_room or npc_instance.current_room != to_room_id:
+                        logger.error(
+                            "Failed to update NPC room tracking correctly",
+                            npc_id=npc_id,
+                            to_room_id=to_room_id,
+                            current_room=getattr(npc_instance, "current_room", None),
+                            current_room_id=getattr(npc_instance, "current_room_id", None),
+                        )
+                    else:
+                        logger.debug(
+                            "Updated NPC instance room tracking",
+                            npc_id=npc_id,
+                            new_room_id=to_room_id,
+                        )
+        except Exception as update_error:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC room tracking update errors unpredictable, must handle gracefully
+            logger.warning(
+                "Error updating NPC instance room tracking",
+                npc_id=npc_id,
+                error=str(update_error),
+            )
+
     def move_npc_to_room(self, npc_id: str, from_room_id: str, to_room_id: str) -> bool:
         """
         Move an NPC to a different room with full integration.
@@ -74,82 +184,22 @@ class NPCMovementIntegration:
             bool: True if movement was successful
         """
         try:
-            if not from_room_id or not to_room_id:
-                logger.warning(
-                    "Invalid room IDs for NPC movement", npc_id=npc_id, from_room=from_room_id, to_room=to_room_id
-                )
+            if not self._validate_room_ids(npc_id, from_room_id, to_room_id):
                 return False
 
-            if from_room_id == to_room_id:
-                logger.debug("NPC already in target room", npc_id=npc_id, room_id=to_room_id)
-                return True
-
-            # Get room objects
-            from_room = self.persistence.get_room_by_id(from_room_id)
-            to_room = self.persistence.get_room_by_id(to_room_id)
-
-            if not from_room:
-                logger.warning("Source room not found", npc_id=npc_id, from_room=from_room_id)
+            room_objects = self._get_room_objects(npc_id, from_room_id, to_room_id)
+            if room_objects is None:
                 return False
 
-            if not to_room:
-                logger.warning("Destination room not found", npc_id=npc_id, to_room=to_room_id)
-                return False
+            from_room, to_room = room_objects
 
-            # Remove NPC from source room (pass to_room_id for movement tracking)
-            if from_room.has_npc(npc_id):
-                from_room.npc_left(npc_id, to_room_id=to_room_id)
-                logger.debug("Removed NPC from source room", npc_id=npc_id, from_room=from_room_id, to_room=to_room_id)
-
-            # Add NPC to destination room (pass from_room_id for movement tracking)
-            if not to_room.has_npc(npc_id):
-                to_room.npc_entered(npc_id, from_room_id=from_room_id)
-                logger.debug("Added NPC to destination room", npc_id=npc_id, from_room=from_room_id, to_room=to_room_id)
-
-            # CRITICAL FIX: Update NPC instance room tracking for occupant queries
-            # Get NPC instance from lifecycle manager and update current_room/current_room_id
-            # This ensures NPCs appear in the correct room's occupants list after movement
-            try:
-                from ..services.npc_instance_service import get_npc_instance_service
-
-                npc_instance_service = get_npc_instance_service()
-                if npc_instance_service and hasattr(npc_instance_service, "lifecycle_manager"):
-                    lifecycle_manager = npc_instance_service.lifecycle_manager
-                    if lifecycle_manager and npc_id in lifecycle_manager.active_npcs:
-                        npc_instance = lifecycle_manager.active_npcs[npc_id]
-                        # CRITICAL: Always update both attributes to ensure room tracking works
-                        npc_instance.current_room = to_room_id
-                        # Also set current_room_id for compatibility (dynamic attribute)
-                        npc_instance.current_room_id = to_room_id  # type: ignore[attr-defined]
-
-                        # CRITICAL: Validate room tracking was updated correctly
-                        if not npc_instance.current_room or npc_instance.current_room != to_room_id:
-                            logger.error(
-                                "Failed to update NPC room tracking correctly",
-                                npc_id=npc_id,
-                                to_room_id=to_room_id,
-                                current_room=getattr(npc_instance, "current_room", None),
-                                current_room_id=getattr(npc_instance, "current_room_id", None),
-                            )
-                        else:
-                            logger.debug(
-                                "Updated NPC instance room tracking",
-                                npc_id=npc_id,
-                                new_room_id=to_room_id,
-                            )
-            except Exception as update_error:  # pylint: disable=broad-exception-caught  # Reason: NPC room tracking update errors unpredictable, must handle gracefully
-                logger.warning(
-                    "Error updating NPC instance room tracking",
-                    npc_id=npc_id,
-                    error=str(update_error),
-                )
-
-            # Event publication is handled by Room methods; avoid duplicate publishes
+            self._update_room_occupancy(npc_id, from_room, to_room, from_room_id, to_room_id)
+            self._update_npc_instance_room_tracking(npc_id, to_room_id)
 
             logger.info("NPC moved successfully", npc_id=npc_id, from_room=from_room_id, to_room=to_room_id)
             return True
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC movement errors unpredictable, must return False
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC movement errors unpredictable, must return False
             logger.error("Error moving NPC", npc_id=npc_id, error=str(e))
             return False
 
@@ -184,7 +234,7 @@ class NPCMovementIntegration:
 
             logger.debug("Published NPC movement events", npc_id=npc_id, from_room=from_room_id, to_room=to_room_id)
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Event publishing errors unpredictable, must handle gracefully
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Event publishing errors unpredictable, must handle gracefully
             logger.error("Error publishing NPC movement events", npc_id=npc_id, error=str(e))
 
     def get_npc_room(self, npc_id: str) -> str | None:
@@ -201,7 +251,7 @@ class NPCMovementIntegration:
             # This would need to be implemented based on how NPCs are tracked
             # For now, return None as NPCs track their own room
             return None
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC room retrieval errors unpredictable, must return None
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC room retrieval errors unpredictable, must return None
             logger.error("Error getting NPC room", npc_id=npc_id, error=str(e))
             return None
 
@@ -220,7 +270,7 @@ class NPCMovementIntegration:
             if room:
                 return room.get_npcs()
             return []
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Room NPC retrieval errors unpredictable, must return empty list
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Room NPC retrieval errors unpredictable, must return empty list
             logger.error("Error getting room NPCs", room_id=room_id, error=str(e))
             return []
 
@@ -254,7 +304,7 @@ class NPCMovementIntegration:
 
             return True
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Movement validation errors unpredictable, must return False
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Movement validation errors unpredictable, must return False
             logger.error("Error validating NPC movement", npc_id=npc_id, error=str(e))
             return False
 
@@ -273,7 +323,7 @@ class NPCMovementIntegration:
             if room:
                 return room.exits
             return {}
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Room exit retrieval errors unpredictable, must return empty dict
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Room exit retrieval errors unpredictable, must return empty dict
             logger.error("Error getting room exits", room_id=room_id, error=str(e))
             return {}
 
@@ -299,7 +349,7 @@ class NPCMovementIntegration:
             # Could implement proper pathfinding here
             return None
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Path finding errors unpredictable, must return None
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Path finding errors unpredictable, must return None
             logger.error("Error finding path between rooms", from_room=from_room_id, to_room=to_room_id, error=str(e))
             return None
 
@@ -362,7 +412,7 @@ class NPCMovementIntegration:
 
             return is_valid
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Boundary validation errors unpredictable, must return False
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Boundary validation errors unpredictable, must return False
             logger.error(
                 "Error validating subzone boundary",
                 npc_sub_zone_id=npc_sub_zone_id,

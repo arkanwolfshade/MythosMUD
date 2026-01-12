@@ -30,6 +30,12 @@
     }
   },
   "include": ["src"],
-  "exclude": ["src/**/*.test.{ts,tsx}", "src/**/*.spec.{ts,tsx}", "src/test/**/*", "tests/**/*"],
+  "exclude": [
+    "src/**/*.test.{ts,tsx}",
+    "src/**/*.spec.{ts,tsx}",
+    "src/test/**/*",
+    "tests/**/*",
+    "playwright.config.ts"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

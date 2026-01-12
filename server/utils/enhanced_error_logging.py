@@ -9,6 +9,8 @@ As the Pnakotic Manuscripts teach us, proper documentation of anomalies is
 essential for understanding the deeper mysteries of our digital realm.
 """
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Error logging requires many parameters for complete error context
+
 import traceback
 from typing import Any, NoReturn
 
@@ -65,7 +67,7 @@ THIRD_PARTY_EXCEPTION_MAPPING = {
 }
 
 
-def log_and_raise_enhanced(
+def log_and_raise_enhanced(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Error logging requires many parameters for complete error context
     exception_class: type[MythosMUDError],
     message: str,
     context: ErrorContext | None = None,

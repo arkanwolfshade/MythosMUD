@@ -7,8 +7,7 @@ message types used in the MythosMUD real-time communication system.
 
 from typing import Any
 
-# pylint: disable=unused-import
-# JUSTIFICATION: ConfigDict is used in model_config attributes (lines 41, 57, 65).
+# pylint: disable=unused-import  # noqa: F401# JUSTIFICATION: ConfigDict is used in model_config attributes (lines 41, 57, 65).
 # Pylint incorrectly flags it as unused because it doesn't recognize model_config as a Pydantic special attribute.
 from pydantic import BaseModel, ConfigDict, Field
 

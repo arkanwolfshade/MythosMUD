@@ -5,6 +5,8 @@ This module handles looking at items, including finding items in various locatio
 (room drops, inventory, equipped items) and formatting item descriptions.
 """
 
+# pylint: disable=too-many-arguments  # Reason: Item look requires many parameters for context and target resolution
+
 from typing import Any
 
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -193,7 +195,7 @@ def _check_equipped_item(
     return _check_item_in_location(item_found, prototype_registry, f"equipped in {slot}")
 
 
-async def _handle_item_look(
+async def _handle_item_look(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Item look requires many parameters for context and target resolution
     target: str,
     target_lower: str,
     instance_number: int | None,

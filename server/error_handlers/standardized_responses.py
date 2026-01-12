@@ -11,6 +11,8 @@ consistent in form and structure, lest the mortal mind be overwhelmed
 by the chaos of inconsistent error reporting."
 """
 
+# pylint: disable=too-many-return-statements  # Reason: Standardized response handlers require multiple return statements for different error type handling and response generation
+
 from typing import Any
 
 from fastapi import HTTPException, Request, status
@@ -46,7 +48,7 @@ from .pydantic_error_handler import PydanticErrorHandler
 logger = get_logger(__name__)
 
 
-class StandardizedErrorResponse:
+class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Reason: Utility class with focused responsibility, minimal public interface
     """
     Standardized error response handler for all API endpoints.
 
@@ -204,16 +206,15 @@ class StandardizedErrorResponse:
             # Handle different exception types
             if isinstance(exc, MythosMUDError):
                 return self._handle_mythos_error(exc, include_details, response_type)
-            elif isinstance(exc, ValidationError):
+            if isinstance(exc, ValidationError):
                 return self._handle_pydantic_validation_error(exc, include_details, response_type)
-            elif isinstance(exc, LoggedHTTPException):
+            if isinstance(exc, LoggedHTTPException):
                 return self._handle_logged_http_exception(exc, include_details, response_type)
-            elif isinstance(exc, HTTPException):
+            if isinstance(exc, HTTPException):
                 return self._handle_http_exception(exc, include_details, response_type)
-            else:
-                return self._handle_generic_exception(exc, include_details, response_type)
+            return self._handle_generic_exception(exc, include_details, response_type)
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Error handler errors unpredictable, must have fallback
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Error handler errors unpredictable, must have fallback
             # Fallback error handling
             logger.error("Error in StandardizedErrorResponse", error=str(e), exc_info=True)
             return self._create_fallback_response(exc, response_type)
@@ -236,20 +237,20 @@ class StandardizedErrorResponse:
                 error_type=error_type, message=error.message, user_friendly=user_friendly, details=details
             )
             return JSONResponse(status_code=status_code, content=response_data)
-        elif response_type == "sse":
+        if response_type == "sse":
             response_data = create_sse_error_response(
                 error_type=error_type, message=error.message, user_friendly=user_friendly, details=details
             )
             return JSONResponse(status_code=status_code, content=response_data)
-        else:  # HTTP
-            response_data = create_standard_error_response(
-                error_type=error_type,
-                message=error.message,
-                user_friendly=user_friendly,
-                details=details,
-                severity=ErrorSeverity.MEDIUM,
-            )
-            return JSONResponse(status_code=status_code, content=response_data)
+        # HTTP
+        response_data = create_standard_error_response(
+            error_type=error_type,
+            message=error.message,
+            user_friendly=user_friendly,
+            details=details,
+            severity=ErrorSeverity.MEDIUM,
+        )
+        return JSONResponse(status_code=status_code, content=response_data)
 
     def _handle_pydantic_validation_error(
         self,
@@ -364,20 +365,19 @@ class StandardizedErrorResponse:
         # Map exception types to error types
         if isinstance(error, AuthenticationError):
             return ErrorType.AUTHENTICATION_FAILED
-        elif isinstance(error, MythosValidationError):
+        if isinstance(error, MythosValidationError):
             return ErrorType.VALIDATION_ERROR
-        elif isinstance(error, GameLogicError):
+        if isinstance(error, GameLogicError):
             return ErrorType.GAME_LOGIC_ERROR
-        elif isinstance(error, DatabaseError):
+        if isinstance(error, DatabaseError):
             return ErrorType.DATABASE_ERROR
-        elif isinstance(error, NetworkError):
+        if isinstance(error, NetworkError):
             return ErrorType.NETWORK_ERROR
-        elif isinstance(error, RateLimitError):
+        if isinstance(error, RateLimitError):
             return ErrorType.RATE_LIMIT_EXCEEDED
-        elif isinstance(error, ResourceNotFoundError):
+        if isinstance(error, ResourceNotFoundError):
             return ErrorType.RESOURCE_NOT_FOUND
-        else:
-            return ErrorType.INTERNAL_ERROR
+        return ErrorType.INTERNAL_ERROR
 
     def _map_status_code_to_error_type(self, status_code: int) -> ErrorType:
         """Map HTTP status code to ErrorType."""

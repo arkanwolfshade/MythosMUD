@@ -81,7 +81,7 @@ class NPCCommunicationIntegration:
             logger.info("NPC sent message to room", npc_id=npc_id, room_id=room_id, message=message, channel=channel)
             return True
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC communication errors unpredictable, must return False
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC communication errors unpredictable, must return False
             logger.error("Error sending NPC message to room", npc_id=npc_id, room_id=room_id, error=str(e))
             return False
 
@@ -122,13 +122,13 @@ class NPCCommunicationIntegration:
             )
             return True
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC whisper errors unpredictable, must return False
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC whisper errors unpredictable, must return False
             logger.error(
                 "Error sending NPC whisper to player", npc_id=npc_id, target_player_id=target_player_id, error=str(e)
             )
             return False
 
-    def handle_player_message(
+    def handle_player_message(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Message handling requires many parameters for context and message routing
         self, npc_id: str, player_id: str, message: str, room_id: str, channel: str = "local"
     ) -> bool:
         """
@@ -166,7 +166,7 @@ class NPCCommunicationIntegration:
             )
             return True
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC message handling errors unpredictable, must return False
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC message handling errors unpredictable, must return False
             logger.error("Error handling player message for NPC", npc_id=npc_id, player_id=player_id, error=str(e))
             return False
 
@@ -215,7 +215,7 @@ class NPCCommunicationIntegration:
                 response = random.choice(responses)  # nosec B311: Game mechanics NPC response selection, not cryptographic
                 self.send_message_to_room(npc_id, room_id, response, channel)
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC message processing errors unpredictable, must handle gracefully
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC message processing errors unpredictable, must handle gracefully
             logger.error("Error processing message for response", npc_id=npc_id, error=str(e))
 
     def subscribe_to_room_messages(self, npc_id: str, room_id: str) -> bool:
@@ -235,7 +235,7 @@ class NPCCommunicationIntegration:
             logger.debug("NPC subscribed to room messages", npc_id=npc_id, room_id=room_id)
             return True
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC subscription errors unpredictable, must return False
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC subscription errors unpredictable, must return False
             logger.error("Error subscribing NPC to room messages", npc_id=npc_id, room_id=room_id, error=str(e))
             return False
 
@@ -256,6 +256,6 @@ class NPCCommunicationIntegration:
             logger.debug("NPC unsubscribed from room messages", npc_id=npc_id, room_id=room_id)
             return True
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC unsubscription errors unpredictable, must return False
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC unsubscription errors unpredictable, must return False
             logger.error("Error unsubscribing NPC from room messages", npc_id=npc_id, room_id=room_id, error=str(e))
             return False

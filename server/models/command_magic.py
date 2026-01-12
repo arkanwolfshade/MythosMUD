@@ -32,7 +32,7 @@ class CastCommand(BaseCommand):
         """Validate target format."""
         if v is not None:
             v = v.strip() if isinstance(v, str) else v
-            if v == "":
+            if not v:
                 return None
         return v
 

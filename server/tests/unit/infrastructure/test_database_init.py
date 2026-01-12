@@ -422,7 +422,7 @@ def test_get_database_path_module_level_none():
     # Set to empty string to trigger "Database URL is None" error
     db_module._database_url = ""
 
-    with pytest.raises(ValidationError, match="Database URL is None"):
+    with pytest.raises(ValidationError, match="Database URL is not configured"):
         from server.database import get_database_path
 
         get_database_path()

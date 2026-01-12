@@ -76,7 +76,7 @@ class EnvironmentalContainerLoader:
         key_item_id = container_block.get("key_item_id")
 
         # Validate capacity
-        if not (1 <= capacity_slots <= 20):
+        if not 1 <= capacity_slots <= 20:
             log_and_raise(
                 ValidationError,
                 f"Invalid capacity_slots: {capacity_slots}. Must be between 1 and 20",
@@ -187,7 +187,7 @@ class EnvironmentalContainerLoader:
 
             return container_id
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Convert to domain exception
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Convert to domain exception  # noqa: B904
             log_and_raise(
                 ValidationError,
                 f"Failed to migrate container to PostgreSQL: {str(e)}",
@@ -217,7 +217,7 @@ class EnvironmentalContainerLoader:
                 if container_data.get("source_type") == "environment":
                     container = ContainerComponent.model_validate(container_data)
                     containers.append(container)
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Continue processing other containers on error
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Continue processing other containers on error  # noqa: B904
                 logger.warning(
                     "Error loading container for room",
                     error=str(e),

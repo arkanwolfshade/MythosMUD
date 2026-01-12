@@ -5,6 +5,8 @@ This module provides NATS subject building and message publishing functionality
 for chat messages, handling standardized subject patterns and NATS connectivity.
 """
 
+# pylint: disable=too-many-return-statements  # Reason: NATS publishing methods require multiple return statements for early validation returns (subject validation, connection checks, error handling)
+
 from typing import TYPE_CHECKING, Any, cast
 
 from ..services.nats_exceptions import NATSPublishError
@@ -15,6 +17,69 @@ if TYPE_CHECKING:
     from .chat_message import ChatMessage
 
 logger = get_logger("communications.chat_nats_publisher")
+
+
+def _extract_subzone_from_room(room_id: str | None) -> str:
+    """Extract subzone from room_id, returning 'unknown' if extraction fails."""
+    from ..utils.room_utils import extract_subzone_from_room_id
+
+    if room_id is None:
+        return "unknown"
+    subzone_result = extract_subzone_from_room_id(room_id)
+    return subzone_result if subzone_result else "unknown"
+
+
+def _build_standardized_subject(chat_message: "ChatMessage", room_id: str | None, subject_manager: Any) -> str | None:
+    """Build NATS subject using standardized patterns via subject_manager."""
+    try:
+        match chat_message.channel:
+            case "say":
+                return cast(str, subject_manager.build_subject("chat_say_room", room_id=room_id))
+            case "local":
+                subzone = _extract_subzone_from_room(room_id)
+                return cast(str, subject_manager.build_subject("chat_local_subzone", subzone=subzone))
+            case "global":
+                return cast(str, subject_manager.build_subject("chat_global"))
+            case "system":
+                return cast(str, subject_manager.build_subject("chat_system"))
+            case "whisper":
+                target_id = getattr(chat_message, "target_id", None)
+                if target_id:
+                    return cast(str, subject_manager.build_subject("chat_whisper_player", target_id=target_id))
+                return "chat.whisper"
+            case "emote":
+                return cast(str, subject_manager.build_subject("chat_emote_room", room_id=room_id))
+            case "pose":
+                return cast(str, subject_manager.build_subject("chat_pose_room", room_id=room_id))
+            case _:
+                return f"chat.{chat_message.channel}.{room_id}"
+    except (ValueError, TypeError, KeyError, SubjectValidationError) as e:
+        logger.warning(
+            "Failed to build subject with NATSSubjectManager, falling back to legacy construction",
+            error=str(e),
+            channel=chat_message.channel,
+            room_id=room_id,
+        )
+        return None
+
+
+def _build_legacy_subject(chat_message: "ChatMessage", room_id: str | None) -> str:
+    """Build NATS subject using legacy construction (backward compatibility)."""
+    match chat_message.channel:
+        case "local":
+            subzone = _extract_subzone_from_room(room_id)
+            return f"chat.local.subzone.{subzone}"
+        case "global":
+            return "chat.global"
+        case "system":
+            return "chat.system"
+        case "whisper":
+            target_id = getattr(chat_message, "target_id", None)
+            if target_id:
+                return f"chat.whisper.player.{target_id}"
+            return "chat.whisper"
+        case _:
+            return f"chat.{chat_message.channel}.{room_id}"
 
 
 def build_nats_subject(chat_message: "ChatMessage", room_id: str | None, subject_manager: Any | None = None) -> str:
@@ -30,69 +95,12 @@ def build_nats_subject(chat_message: "ChatMessage", room_id: str | None, subject
         NATS subject string
     """
     if subject_manager:
-        try:
-            # Use standardized patterns based on channel type
-            if chat_message.channel == "say":
-                return cast(str, subject_manager.build_subject("chat_say_room", room_id=room_id))
-            elif chat_message.channel == "local":
-                from ..utils.room_utils import extract_subzone_from_room_id
+        standardized_subject = _build_standardized_subject(chat_message, room_id, subject_manager)
+        if standardized_subject is not None:
+            return standardized_subject
 
-                if room_id is None:
-                    subzone = "unknown"
-                else:
-                    subzone_result = extract_subzone_from_room_id(room_id)
-                    subzone = subzone_result if subzone_result else "unknown"
-                return cast(str, subject_manager.build_subject("chat_local_subzone", subzone=subzone))
-            elif chat_message.channel == "global":
-                return cast(str, subject_manager.build_subject("chat_global"))
-            elif chat_message.channel == "system":
-                return cast(str, subject_manager.build_subject("chat_system"))
-            elif chat_message.channel == "whisper":
-                target_id = getattr(chat_message, "target_id", None)
-                if target_id:
-                    return cast(str, subject_manager.build_subject("chat_whisper_player", target_id=target_id))
-                else:
-                    # Fallback for whisper without target
-                    return "chat.whisper"
-            elif chat_message.channel == "emote":
-                return cast(str, subject_manager.build_subject("chat_emote_room", room_id=room_id))
-            elif chat_message.channel == "pose":
-                return cast(str, subject_manager.build_subject("chat_pose_room", room_id=room_id))
-            else:
-                # For other channels, use room level pattern
-                return f"chat.{chat_message.channel}.{room_id}"
-        except (ValueError, TypeError, KeyError, SubjectValidationError) as e:
-            logger.warning(
-                "Failed to build subject with NATSSubjectManager, falling back to legacy construction",
-                error=str(e),
-                channel=chat_message.channel,
-                room_id=room_id,
-            )
-            # Fall through to legacy construction
-
-    # Legacy subject construction (backward compatibility)
-    if chat_message.channel == "local":
-        from ..utils.room_utils import extract_subzone_from_room_id
-
-        if room_id is None:
-            subzone = "unknown"
-        else:
-            subzone_result = extract_subzone_from_room_id(room_id)
-            subzone = subzone_result if subzone_result else "unknown"
-        return f"chat.local.subzone.{subzone}"
-    elif chat_message.channel == "global":
-        return "chat.global"
-    elif chat_message.channel == "system":
-        return "chat.system"
-    elif chat_message.channel == "whisper":
-        target_id = getattr(chat_message, "target_id", None)
-        if target_id:
-            return f"chat.whisper.player.{target_id}"
-        else:
-            return "chat.whisper"
-    else:
-        # For other channels, use room level subject
-        return f"chat.{chat_message.channel}.{room_id}"
+    # Fall back to legacy construction
+    return _build_legacy_subject(chat_message, room_id)
 
 
 async def publish_chat_message_to_nats(

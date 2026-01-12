@@ -144,7 +144,7 @@ class ExperienceRepository:
 
                 result = await session.execute(update_query, {"player_id": str(player_id), "delta": delta})
 
-                if result.rowcount == 0:
+                if not result.rowcount:
                     raise ValueError(f"Player {player_id} not found")
 
                 await session.commit()
@@ -225,7 +225,7 @@ class ExperienceRepository:
                     update_query, {"field_name": field_name, "delta": delta, "player_id": str(player_id)}
                 )
 
-                if result.rowcount == 0:
+                if not result.rowcount:
                     raise ValueError(f"Player {player_id} not found")
 
                 await session.commit()

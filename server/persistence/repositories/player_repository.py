@@ -5,6 +5,8 @@ This module provides async database operations for player CRUD, queries,
 and inventory management using SQLAlchemy ORM with PostgreSQL.
 """
 
+# pylint: disable=too-few-public-methods,too-many-lines  # Reason: Repository class with focused responsibility, minimal public interface. Player repository requires extensive database operations for comprehensive player persistence.
+
 import json
 import uuid
 from datetime import UTC, datetime
@@ -105,7 +107,9 @@ class PlayerRepository:
             async with session_maker() as session:
                 # Use case-insensitive comparison and exclude deleted characters
                 stmt = (
-                    select(Player).where(func.lower(Player.name) == func.lower(name)).where(Player.is_deleted == False)  # noqa: E712
+                    select(Player)
+                    .where(func.lower(Player.name) == func.lower(name))
+                    .where(Player.is_deleted.is_(False))  # Use is_() for SQLAlchemy boolean comparison
                 )
                 result = await session.execute(stmt)
                 player = result.scalar_one_or_none()
@@ -224,7 +228,9 @@ class PlayerRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 stmt = (
-                    select(Player).where(Player.user_id == user_id).where(Player.is_deleted == False)  # noqa: E712
+                    select(Player)
+                    .where(Player.user_id == user_id)
+                    .where(Player.is_deleted.is_(False))  # Use is_() for SQLAlchemy boolean comparison
                 )
                 result = await session.execute(stmt)
                 players = list(result.scalars().all())

@@ -5,6 +5,8 @@ This module handles lucidity (sanity) effects when players encounter NPCs,
 applying appropriate lucidity loss based on NPC type and characteristics.
 """
 
+# pylint: disable=too-few-public-methods  # Reason: Lucidity effects class with focused responsibility, minimal public interface
+
 from typing import Any
 
 from sqlalchemy.exc import SQLAlchemyError
@@ -16,7 +18,7 @@ from .active_lucidity_service import ActiveLucidityService, UnknownEncounterCate
 logger = get_logger(__name__)
 
 
-class NPCCombatLucidity:
+class NPCCombatLucidity:  # pylint: disable=too-few-public-methods  # Reason: Lucidity effects class with focused responsibility, minimal public interface
     """Manages lucidity effects for NPC encounters."""
 
     async def apply_encounter_lucidity_effect(

@@ -149,7 +149,7 @@ class MPRegenerationService:
         # For now, check position - sitting/lying = rest, meditation would be a status effect
         if position == "sitting":
             return REST_MP_REGEN_MULTIPLIER
-        elif position == "lying":
+        if position == "lying":
             return REST_MP_REGEN_MULTIPLIER * 1.2  # Slightly better when lying
 
         # Check for meditation status effect

@@ -5,6 +5,8 @@ This module handles incoming NATS messages and broadcasts them to WebSocket clie
 It replaces the previous Redis message handler with NATS-based messaging.
 """
 
+# pylint: disable=too-many-instance-attributes,too-many-arguments,too-many-positional-arguments,too-many-locals,too-many-lines  # Reason: NATS handler requires many state tracking attributes and complex message processing logic. NATS message handler requires extensive message handling logic for comprehensive real-time messaging system.
+
 import uuid
 from collections.abc import Callable
 from datetime import UTC, datetime
@@ -121,6 +123,12 @@ class NATSMessageHandler:
 
     @property
     def connection_manager(self):
+        """Get the connection manager instance.
+
+        Returns:
+            The connection manager, preferring explicitly injected manager
+            over the container's default manager.
+        """
         # Prefer explicitly injected manager
         if self._connection_manager is not None:
             resolved = _resolve_connection_manager(self._connection_manager)
@@ -277,9 +285,8 @@ class NATSMessageHandler:
                     del self.subscriptions[subject]
                 logger.info("Unsubscribed from NATS subject")
                 return True
-            else:
-                logger.error("Failed to unsubscribe from NATS subject")
-                return False
+            logger.error("Failed to unsubscribe from NATS subject")
+            return False
         except (NATSError, RuntimeError) as e:
             logger.error("Error unsubscribing from NATS subject", subject=subject, error=str(e))
             return False
@@ -974,7 +981,7 @@ class NATSMessageHandler:
                     lucidity_record = await lucidity_service.get_player_lucidity(player_id_uuid)
                     tier = lucidity_record.current_tier if lucidity_record else "lucid"
                     return tier
-                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Lucidity tier retrieval errors unpredictable, optional metadata
+                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Lucidity tier retrieval errors unpredictable, optional metadata
                     logger.debug(
                         "Error getting player lucidity tier",
                         player_id=player_id,
@@ -983,7 +990,7 @@ class NATSMessageHandler:
                     )
                     return "lucid"
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Session creation errors unpredictable, must return fallback
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Session creation errors unpredictable, must return fallback
             logger.debug(
                 "Error in _get_player_lucidity_tier (session creation)",
                 player_id=player_id,
@@ -1110,9 +1117,8 @@ class NATSMessageHandler:
                 self.subzone_subscriptions[subzone] = 1
                 logger.info("Subscribed to sub-zone local channel", subzone=subzone, subject=subzone_subject)
                 return True
-            else:
-                logger.error("Failed to subscribe to sub-zone local channel", subzone=subzone, subject=subzone_subject)
-                return False
+            logger.error("Failed to subscribe to sub-zone local channel", subzone=subzone, subject=subzone_subject)
+            return False
 
         except NATSError as e:
             logger.error("Error subscribing to sub-zone local channel", error=str(e), subzone=subzone)
@@ -1148,19 +1154,16 @@ class NATSMessageHandler:
                             "Unsubscribed from sub-zone local channel", subzone=subzone, subject=subzone_subject
                         )
                         return True
-                    else:
-                        logger.error(
-                            "Failed to unsubscribe from sub-zone local channel",
-                            subzone=subzone,
-                            subject=subzone_subject,
-                        )
-                        return False
-                else:
-                    logger.debug("Sub-zone subscription count decreased", subzone=subzone, count=count)
-                    return True
-            else:
-                logger.warning("Not subscribed to sub-zone local channel", subzone=subzone)
-                return False
+                    logger.error(
+                        "Failed to unsubscribe from sub-zone local channel",
+                        subzone=subzone,
+                        subject=subzone_subject,
+                    )
+                    return False
+                logger.debug("Sub-zone subscription count decreased", subzone=subzone, count=count)
+                return True
+            logger.warning("Not subscribed to sub-zone local channel", subzone=subzone)
+            return False
 
         except NATSError as e:
             logger.error("Error unsubscribing from sub-zone local channel", error=str(e), subzone=subzone)
@@ -1319,11 +1322,10 @@ class NATSMessageHandler:
             if success_count == len(event_subjects):
                 logger.info("Successfully subscribed to all event subjects", count=success_count)
                 return True
-            else:
-                logger.warning(
-                    "Partial success subscribing to event subjects", successful=success_count, total=len(event_subjects)
-                )
-                return success_count == len(event_subjects)
+            logger.warning(
+                "Partial success subscribing to event subjects", successful=success_count, total=len(event_subjects)
+            )
+            return success_count == len(event_subjects)
 
         except NATSError as e:
             logger.error("Error subscribing to event subjects", error=str(e))
@@ -1365,13 +1367,12 @@ class NATSMessageHandler:
             if success_count == len(event_subjects):
                 logger.info("Successfully unsubscribed from all event subjects", count=success_count)
                 return True
-            else:
-                logger.warning(
-                    "Partial success unsubscribing from event subjects",
-                    successful=success_count,
-                    total=len(event_subjects),
-                )
-                return success_count == len(event_subjects)
+            logger.warning(
+                "Partial success unsubscribing from event subjects",
+                successful=success_count,
+                total=len(event_subjects),
+            )
+            return success_count == len(event_subjects)
 
         except NATSError as e:
             logger.error("Error unsubscribing from event subjects", error=str(e))

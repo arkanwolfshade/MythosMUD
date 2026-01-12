@@ -1,3 +1,9 @@
+"""Prototype registry for managing item prototypes.
+
+This module provides the PrototypeRegistry class for loading, storing, and
+retrieving item prototypes from JSON files.
+"""
+
 from __future__ import annotations
 
 import json
@@ -26,6 +32,17 @@ class PrototypeRegistry:
 
     @classmethod
     def load_from_path(cls, directory: Path | str) -> PrototypeRegistry:
+        """Load item prototypes from JSON files in a directory.
+
+        Args:
+            directory: Path to the directory containing prototype JSON files
+
+        Returns:
+            PrototypeRegistry: A registry containing loaded prototypes
+
+        Raises:
+            PrototypeRegistryError: If the directory does not exist
+        """
         directory_path = Path(directory)
         dashboard = get_monitoring_dashboard()
         if not directory_path.exists():
@@ -96,16 +113,45 @@ class PrototypeRegistry:
         return cls(prototypes, invalid_entries)
 
     def get(self, prototype_id: str) -> ItemPrototypeModel:
+        """Get a prototype by ID.
+
+        Args:
+            prototype_id: The ID of the prototype to retrieve
+
+        Returns:
+            ItemPrototypeModel: The requested prototype
+
+        Raises:
+            PrototypeRegistryError: If the prototype is not found
+        """
         try:
             return self._prototypes[prototype_id]
         except KeyError as exc:
             raise PrototypeRegistryError(f"Prototype not found: {prototype_id}") from exc
 
     def find_by_tag(self, tag: str) -> list[ItemPrototypeModel]:
+        """Find all prototypes that have a specific tag.
+
+        Args:
+            tag: The tag to search for
+
+        Returns:
+            list[ItemPrototypeModel]: List of prototypes with the specified tag
+        """
         return [prototype for prototype in self._prototypes.values() if tag in prototype.tags]
 
     def all(self) -> Iterable[ItemPrototypeModel]:
+        """Get all prototypes in the registry.
+
+        Returns:
+            Iterable[ItemPrototypeModel]: An iterable of all prototypes
+        """
         return self._prototypes.values()
 
     def invalid_entries(self) -> list[dict]:
+        """Get all invalid entries that failed validation.
+
+        Returns:
+            list[dict]: List of invalid entry dictionaries with error information
+        """
         return list(self._invalid_entries)

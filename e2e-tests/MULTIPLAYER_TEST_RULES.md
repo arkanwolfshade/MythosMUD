@@ -111,7 +111,11 @@ if (messages.length === 0) {
 ### Test Players
 
 - **ArkanWolfshade** (AW) - password: Cthulhu1
+  - **Character Name**: ArkanWolfshade (must match player name)
 - **Ithaqua** - password: Cthulhu1
+  - **Character Name**: Ithaqua (must match player name)
+
+**⚠️ MULTI-CHARACTER REQUIREMENT**: After logging in, players must select a character with the same name as the player account before proceeding to the MOTD screen. The character selection screen will appear automatically if the player has multiple characters.
 
 ### Server Configuration
 
@@ -137,6 +141,7 @@ if (messages.length === 0) {
 ### Standard Timeouts (Default)
 
 - **Login form wait**: 15 seconds
+- **Character selection wait**: 15 seconds (after login, if multiple characters exist)
 - **MOTD screen wait**: 15 seconds
 - **Game interface load**: 15 seconds
 - **Message delivery wait**: 10 seconds
@@ -196,6 +201,7 @@ Before running ANY server command, ask yourself:
 - [ ] I have verified both test players exist in the database
 - [ ] I have confirmed both players are in room `earth_arkhamcity_sanitarium_room_foyer_001`
 - [ ] I have confirmed ArkanWolfshade has admin privileges (is_admin = 1)
+- [ ] I have verified both players have active characters with names matching their player accounts
 - [ ] I have run the SQL commands to update player locations if needed
 
 **INSTRUCTION COMPLIANCE (MANDATORY):**
@@ -246,9 +252,21 @@ $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "UPDA
 
 # MANDATORY: Verify the updates worked
 $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
+
+# MANDATORY: Verify characters exist with matching names
+$env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "SELECT u.username, p.name as character_name, p.is_deleted FROM users u JOIN players p ON u.id = p.user_id WHERE u.username IN ('ArkanWolfshade', 'Ithaqua') AND p.name = u.username AND p.is_deleted = false;"
 ```
 
 **MANDATORY VERIFICATION**: Both players must exist, be in Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`), and AW must have admin privileges (is_admin = 1)
+
+**MANDATORY CHARACTER VERIFICATION**: Both users must have active characters with names matching their usernames:
+
+```powershell
+# MANDATORY: Verify characters exist with matching names
+$env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "SELECT u.username, p.name as character_name, p.is_deleted FROM users u JOIN players p ON u.id = p.user_id WHERE u.username IN ('ArkanWolfshade', 'Ithaqua') AND p.name = u.username AND p.is_deleted = false;"
+```
+
+**MANDATORY VERIFICATION**: Both users must have active characters with names matching their usernames (ArkanWolfshade character for ArkanWolfshade user, Ithaqua character for Ithaqua user)
 
 **⚠️ FAILURE TO COMPLETE THIS STEP = COMPLETE TEST FAILURE**
 
@@ -310,6 +328,56 @@ do {
 ```
 
 **Expected**: Both endpoints return successful responses after retries
+
+## Login Flow with Character Selection
+
+**⚠️ CRITICAL: ALL SCENARIOS MUST FOLLOW THIS LOGIN FLOW**
+
+### Standard Login Flow
+
+1. **Navigate to Client**: Open browser and navigate to `http://localhost:5173`
+2. **Wait for Login Form**: Wait for username/password fields to appear
+3. **Enter Credentials**: Type username and password, click login button
+4. **Wait for Login Processing**: Allow time for authentication (15 seconds)
+5. **Character Selection (if applicable)**:
+   - If character selection screen appears (text: "Select Your Character"), select the character with the same name as the player account
+   - Click the "Select Character" button for the matching character
+   - Wait for character selection processing (5 seconds)
+6. **Wait for MOTD Screen**: Wait for "Continue" button to appear (15 seconds)
+7. **Click Continue**: Click the Continue button to enter the game
+8. **Wait for Game Interface**: Wait for "Chat" text to appear (15 seconds)
+
+### Character Selection Details
+
+- **When it appears**: Character selection screen appears automatically if the player has multiple active characters
+- **What to select**: Always select the character with the same name as the player account (ArkanWolfshade player → ArkanWolfshade character, Ithaqua player → Ithaqua character)
+- **How to identify**: Use `browser_snapshot()` to find the correct "Select Character" button reference
+- **Timeout**: Wait up to 15 seconds for character selection screen to appear after login
+
+### Example Character Selection Code
+
+```javascript
+// After login, check for character selection screen
+await mcp_playwright_browser_wait_for({time: 15});
+
+// Check if character selection screen appears
+const snapshot = await mcp_playwright_browser_snapshot();
+if (snapshot.includes("Select Your Character") || snapshot.includes("character-selection")) {
+  // Wait for character selection screen to fully load
+  await mcp_playwright_browser_wait_for({text: "Select Your Character", time: 15});
+
+  // Find and click the "Select Character" button for the character matching the player name
+  // Use browser_snapshot() to get the correct element reference
+  // Example: await mcp_playwright_browser_click({element: "Select Character button for ArkanWolfshade", ref: "eXX"});
+
+  // Wait for character selection processing
+  await mcp_playwright_browser_wait_for({time: 5});
+}
+
+// Proceed to MOTD screen
+await mcp_playwright_browser_wait_for({text: "Continue", time: 15});
+await mcp_playwright_browser_click({element: "Continue button", ref: "e59"});
+```
 
 ## NO INTERPRETATION RULE
 

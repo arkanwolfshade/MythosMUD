@@ -7,6 +7,8 @@ and extensible approach. As noted in the restricted archives, this pattern
 provides O(1) lookup and eliminates the need for repetitive conditional logic.
 """
 
+# pylint: disable=too-few-public-methods  # Reason: Handler classes have focused responsibility, minimal public interface
+
 from abc import ABC, abstractmethod
 from typing import Any
 

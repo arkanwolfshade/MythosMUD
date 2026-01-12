@@ -1,3 +1,11 @@
+"""Tick scheduler for managing game tick events.
+
+This module provides the MythosTickScheduler class for scheduling and
+executing game tick events at regular intervals.
+"""
+
+# pylint: disable=too-many-instance-attributes  # Reason: Tick scheduler requires many state tracking and configuration attributes
+
 from __future__ import annotations
 
 import asyncio
@@ -14,7 +22,7 @@ from .time_service import MythosChronicle
 HolidayResolver = Callable[[datetime], Sequence[str]]
 
 
-class MythosTickScheduler:
+class MythosTickScheduler:  # pylint: disable=too-many-instance-attributes  # Reason: Tick scheduler requires many state tracking and configuration attributes
     """
     Periodic dispatcher that emits Mythos hour ticks based on the accelerated chronicle.
 
@@ -77,7 +85,7 @@ class MythosTickScheduler:
                 await self._sleep_until_next_hour()
         except asyncio.CancelledError:
             self._logger.debug("Mythos tick scheduler cancelled")
-        except Exception as exc:  # pragma: no cover - defensive logging  # pylint: disable=broad-exception-caught  # Reason: Scheduler errors unpredictable, must log but continue
+        except Exception as exc:  # noqa: B904  # pragma: no cover - defensive logging  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Scheduler errors unpredictable, must log but continue
             self._logger.error("Mythos tick scheduler failed", error=str(exc), exc_info=True)
 
     async def _emit_pending_ticks(self) -> None:

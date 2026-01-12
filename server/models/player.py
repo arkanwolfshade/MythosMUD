@@ -5,6 +5,8 @@ This module defines the Player model that stores game-specific data
 for each user, including stats, inventory, and current location.
 """
 
+# pylint: disable=too-few-public-methods  # Reason: SQLAlchemy models are data classes, no instance methods needed
+
 import json
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, cast
@@ -199,12 +201,11 @@ class Player(Base):
             if isinstance(inventory_value, list):
                 # Already a list (in-memory format after persistence fix)
                 return cast(list[dict[str, Any]], inventory_value)
-            elif isinstance(inventory_value, str):
+            if isinstance(inventory_value, str):
                 # JSON string (from database or legacy format)
                 return cast(list[dict[str, Any]], json.loads(inventory_value))
-            else:
-                # Handle None or other types
-                return []
+            # Handle None or other types
+            return []
         except (json.JSONDecodeError, TypeError, AttributeError):
             return []
 
@@ -288,10 +289,9 @@ class Player(Base):
 
         if current_dp > 0:
             return "alive"
-        elif current_dp > -10:
+        if current_dp > -10:
             return "mortally_wounded"
-        else:
-            return "dead"
+        return "dead"
 
     def is_admin_user(self) -> bool:
         """Check if player has admin privileges."""
@@ -309,7 +309,7 @@ class Player(Base):
         constitution = stats.get("constitution", 50)
         size = stats.get("size", 50)
         max_dp = stats.get("max_dp", (constitution + size) // 5)  # DP max = (CON + SIZ) / 5
-        if max_dp == 0:
+        if not max_dp:
             max_dp = 20  # Prevent division by zero
         return float((current_dp / max_dp) * 100)
 

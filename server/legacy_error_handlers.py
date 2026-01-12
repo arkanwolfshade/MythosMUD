@@ -6,6 +6,8 @@ degradation strategies. As the Necronomicon teaches us, even in the
 face of eldritch horrors, we must maintain order and structure.
 """
 
+# pylint: disable=too-many-return-statements,too-many-lines  # Reason: Error handlers require multiple return statements for different error type handling and response generation. Error handling module requires comprehensive coverage of all error scenarios.
+
 import traceback
 from contextlib import contextmanager
 from datetime import datetime
@@ -44,7 +46,7 @@ class ErrorResponse:
     following the dimensional mapping principles for error categorization.
     """
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Error handler initialization requires many parameters for context and formatting
         self,
         error_type: ErrorType,
         message: str,
@@ -382,7 +384,7 @@ def graceful_degradation(fallback_value: Any, error_type: str = "unknown"):
     """
     try:
         yield
-    except Exception as exc:  # pylint: disable=broad-exception-caught  # Reason: Graceful degradation must catch all errors
+    except Exception as exc:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Graceful degradation must catch all errors
         logger.warning(
             "Graceful degradation applied",
             error_type=error_type,
@@ -415,7 +417,7 @@ def register_error_handlers(app):
     logger.info("Error handlers registered with FastAPI application")
 
 
-class CircuitBreaker:
+class CircuitBreaker:  # pylint: disable=too-few-public-methods  # Reason: Utility class with focused responsibility, minimal public interface
     """
     Simple circuit breaker pattern implementation.
 
@@ -572,18 +574,17 @@ def _sanitize_detail_value(value: Any) -> Any:
             return sanitized[:100] + "..."
 
         return sanitized
-    elif isinstance(value, int | float | bool):
+    if isinstance(value, int | float | bool):
         return value
-    elif isinstance(value, dict):
+    if isinstance(value, dict):
         return {k: _sanitize_detail_value(v) for k, v in value.items() if _is_safe_detail_key(k)}
-    elif isinstance(value, list):
+    if isinstance(value, list):
         return [_sanitize_detail_value(v) for v in value]
-    else:
-        # Convert to string and sanitize
-        str_value = str(value)
-        if len(str_value) > 100:
-            str_value = str_value[:100] + "..."
-        return _sanitize_detail_value(str_value)
+    # Convert to string and sanitize
+    str_value = str(value)
+    if len(str_value) > 100:
+        str_value = str_value[:100] + "..."
+    return _sanitize_detail_value(str_value)
 
 
 def _sanitize_context(context) -> dict[str, Any] | None:

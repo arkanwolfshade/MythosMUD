@@ -35,7 +35,7 @@ class CombatEndedEvent(BaseEvent):
 
 
 @dataclass
-class PlayerAttackedEvent(BaseEvent):
+class PlayerAttackedEvent(BaseEvent):  # pylint: disable=too-many-instance-attributes  # Reason: Combat event requires many fields to capture complete attack state
     """Event fired when a player attacks."""
 
     combat_id: UUID
@@ -51,7 +51,7 @@ class PlayerAttackedEvent(BaseEvent):
 
 
 @dataclass
-class NPCAttackedEvent(BaseEvent):
+class NPCAttackedEvent(BaseEvent):  # pylint: disable=too-many-instance-attributes  # Reason: Combat event requires many fields to capture complete attack state
     """Event fired when an NPC is attacked."""
 
     combat_id: UUID

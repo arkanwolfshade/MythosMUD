@@ -36,20 +36,18 @@ class InventoryCommandFactory:
         return InventoryCommand()
 
     @staticmethod
-    def create_pickup_command(args: list[str]) -> PickupCommand:
-        """Create pickup command supporting numeric indices or fuzzy names."""
+    def _parse_quantity_from_args(args: list[str], selector_tokens: list[str]) -> tuple[int | None, list[str]]:
+        """
+        Parse quantity from args if present.
 
-        if not args:
-            context = create_error_context()
-            log_and_raise_enhanced(
-                MythosValidationError,
-                "Usage: pickup <item-number|item-name> [quantity]",
-                context=context,
-                logger_name=__name__,
-            )
+        Args:
+            args: Original args list
+            selector_tokens: Current selector tokens
 
+        Returns:
+            Tuple of (quantity, remaining_selector_tokens)
+        """
         quantity: int | None = None
-        selector_tokens = list(args)
 
         if len(selector_tokens) > 1:
             potential_quantity = selector_tokens[-1]
@@ -71,6 +69,20 @@ class InventoryCommandFactory:
                 quantity = quantity_candidate
                 selector_tokens = selector_tokens[:-1]
 
+        return quantity, selector_tokens
+
+    @staticmethod
+    def _parse_index_or_search_term(args: list[str], selector_tokens: list[str]) -> tuple[int | None, str | None]:
+        """
+        Parse index or search term from selector tokens.
+
+        Args:
+            args: Original args list
+            selector_tokens: Selector tokens (after quantity extraction)
+
+        Returns:
+            Tuple of (index, search_term)
+        """
         if not selector_tokens:
             context = create_error_context()
             context.metadata = {"args": args}
@@ -123,6 +135,24 @@ class InventoryCommandFactory:
                     context=context,
                     logger_name=__name__,
                 )
+
+        return index, search_term
+
+    @staticmethod
+    def create_pickup_command(args: list[str]) -> PickupCommand:
+        """Create pickup command supporting numeric indices or fuzzy names."""
+        if not args:
+            context = create_error_context()
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: pickup <item-number|item-name> [quantity]",
+                context=context,
+                logger_name=__name__,
+            )
+
+        selector_tokens = list(args)
+        quantity, selector_tokens = InventoryCommandFactory._parse_quantity_from_args(args, selector_tokens)
+        index, search_term = InventoryCommandFactory._parse_index_or_search_term(args, selector_tokens)
 
         return PickupCommand(index=index, search_term=search_term, quantity=quantity)
 

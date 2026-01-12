@@ -19,9 +19,12 @@ vi.mock('./utils/logger', () => ({
 // Mock secure token storage
 vi.mock('./utils/security', () => ({
   secureTokenStorage: {
+    getToken: vi.fn(() => null),
     setToken: vi.fn(),
     setRefreshToken: vi.fn(),
     clearAllTokens: vi.fn(),
+    isValidToken: vi.fn(() => false),
+    isTokenExpired: vi.fn(() => true),
   },
   inputSanitizer: {
     sanitizeUsername: vi.fn(val => val),

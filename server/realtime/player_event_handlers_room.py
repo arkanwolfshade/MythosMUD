@@ -4,6 +4,8 @@ Room-related player event handlers.
 This module handles player room entry/exit events and room occupant management.
 """
 
+# pylint: disable=too-many-instance-attributes,too-many-arguments,too-many-positional-arguments,too-many-lines  # Reason: Event handlers require many service attributes and complex event processing logic. Room event handlers require extensive event handling logic for comprehensive room event management.
+
 import uuid
 from datetime import UTC, datetime
 from typing import Any
@@ -248,7 +250,7 @@ class PlayerRoomEventHandler:
             players=occupants_data["players"],
             npcs=occupants_data["npcs"],
         )
-        if len(occupants_data["npcs"]) == 0:
+        if not occupants_data["npcs"]:
             # Log as warning to help identify NPC spawning issues
             self._logger.warning(
                 "No NPCs included in occupants snapshot - player may not see NPCs",

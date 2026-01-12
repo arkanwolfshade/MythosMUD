@@ -5,6 +5,8 @@ This module provides comprehensive NPC management including CRUD operations
 for NPC definitions, spawn rules, relationships, and instance management.
 """
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals,too-many-lines  # Reason: NPC service requires many parameters and intermediate variables for complex NPC management logic. NPC service requires extensive NPC management operations for comprehensive NPC system management.
+
 import json
 from datetime import UTC, datetime
 from typing import Any
@@ -58,7 +60,7 @@ class NPCService:
         except SQLAlchemyError as e:
             logger.error("Database error retrieving NPC definitions", error=str(e), error_type=type(e).__name__)
             raise DatabaseError(f"Failed to retrieve NPC definitions: {e}") from e
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC retrieval errors unpredictable, must re-raise
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC retrieval errors unpredictable, must re-raise
             logger.error("Unexpected error retrieving NPC definitions", error=str(e), error_type=type(e).__name__)
             raise
 
@@ -88,11 +90,11 @@ class NPCService:
 
             return definition
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC definition retrieval errors unpredictable, must re-raise
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC definition retrieval errors unpredictable, must re-raise
             logger.error("Error retrieving NPC definition", error=str(e), definition_id=definition_id)
             raise
 
-    async def create_npc_definition(
+    async def create_npc_definition(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: NPC definition creation requires many parameters for complete NPC setup
         self,
         session: AsyncSession,
         name: str,
@@ -172,11 +174,73 @@ class NPCService:
 
             return definition
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC definition creation errors unpredictable, must re-raise
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC definition creation errors unpredictable, must re-raise
             logger.error("Error creating NPC definition", error=str(e), name=name, npc_type=npc_type)
             raise
 
-    async def update_npc_definition(
+    def _validate_npc_update_params(
+        self, npc_type: str | None, spawn_probability: float | None, max_population: int | None
+    ) -> None:
+        """Validate NPC update parameters."""
+        if npc_type is not None and npc_type not in [t.value for t in NPCDefinitionType]:
+            raise ValueError(f"Invalid NPC type: {npc_type}")
+
+        if spawn_probability is not None and not 0.0 <= spawn_probability <= 1.0:
+            raise ValueError(f"Spawn probability must be between 0.0 and 1.0, got: {spawn_probability}")
+
+        if max_population is not None and max_population < 1:
+            raise ValueError(f"Max population must be at least 1, got: {max_population}")
+
+    def _add_simple_field(self, update_data: dict[str, Any], field_name: str, value: Any | None) -> None:
+        """Add a simple field to update_data if value is not None."""
+        if value is not None:
+            update_data[field_name] = value
+
+    def _add_json_field(self, update_data: dict[str, Any], field_name: str, value: dict[str, Any] | None) -> None:
+        """Add a JSON-encoded field to update_data if value is not None."""
+        if value is not None:
+            update_data[field_name] = json.dumps(value)
+
+    def _build_npc_update_data(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: NPC update data building requires many parameters for complete update context
+        self,
+        name: str | None,
+        description: str | None,
+        npc_type: str | None,
+        sub_zone_id: str | None,
+        room_id: str | None,
+        required_npc: bool | None,
+        max_population: int | None,
+        spawn_probability: float | None,
+        base_stats: dict[str, Any] | None,
+        behavior_config: dict[str, Any] | None,
+        ai_integration_stub: dict[str, Any] | None,
+    ) -> dict[str, Any]:
+        """Build update data dictionary from provided parameters."""
+        update_data: dict[str, Any] = {}
+        self._add_simple_field(update_data, "name", name)
+        self._add_simple_field(update_data, "description", description)
+        self._add_simple_field(update_data, "npc_type", npc_type)
+        self._add_simple_field(update_data, "sub_zone_id", sub_zone_id)
+        self._add_simple_field(update_data, "room_id", room_id)
+        self._add_simple_field(update_data, "required_npc", required_npc)
+        self._add_simple_field(update_data, "max_population", max_population)
+        self._add_simple_field(update_data, "spawn_probability", spawn_probability)
+        self._add_json_field(update_data, "base_stats", base_stats)
+        self._add_json_field(update_data, "behavior_config", behavior_config)
+        self._add_json_field(update_data, "ai_integration_stub", ai_integration_stub)
+        update_data["updated_at"] = datetime.now(UTC).replace(tzinfo=None)
+        return update_data
+
+    async def _execute_npc_update(
+        self, session: AsyncSession, definition_id: int, update_data: dict[str, Any], definition: NPCDefinition
+    ) -> NPCDefinition:
+        """Execute the database update and refresh the definition."""
+        await session.execute(update(NPCDefinition).where(NPCDefinition.id == definition_id).values(**update_data))
+        await session.refresh(definition)
+        logger.info("Updated NPC definition", definition_id=definition_id, updated_fields=list(update_data.keys()))
+        return definition
+
+    async def update_npc_definition(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: NPC definition update requires many parameters and intermediate variables for complex update logic
         self,
         session: AsyncSession,
         definition_id: int,
@@ -217,62 +281,29 @@ class NPCService:
             ValueError: If validation fails
         """
         try:
-            # Get existing definition
             definition = await self.get_npc_definition(session, definition_id)
             if not definition:
                 return None
 
-            # Validate NPC type if provided
-            if npc_type is not None and npc_type not in [t.value for t in NPCDefinitionType]:
-                raise ValueError(f"Invalid NPC type: {npc_type}")
+            self._validate_npc_update_params(npc_type, spawn_probability, max_population)
 
-            # Validate spawn probability if provided
-            if spawn_probability is not None and not 0.0 <= spawn_probability <= 1.0:
-                raise ValueError(f"Spawn probability must be between 0.0 and 1.0, got: {spawn_probability}")
+            update_data = self._build_npc_update_data(
+                name,
+                description,
+                npc_type,
+                sub_zone_id,
+                room_id,
+                required_npc,
+                max_population,
+                spawn_probability,
+                base_stats,
+                behavior_config,
+                ai_integration_stub,
+            )
 
-            # Validate max population if provided
-            if max_population is not None and max_population < 1:
-                raise ValueError(f"Max population must be at least 1, got: {max_population}")
+            return await self._execute_npc_update(session, definition_id, update_data, definition)
 
-            # Update fields
-            update_data: dict[str, Any] = {}
-            if name is not None:
-                update_data["name"] = name
-            if description is not None:
-                update_data["description"] = description
-            if npc_type is not None:
-                update_data["npc_type"] = npc_type
-            if sub_zone_id is not None:
-                update_data["sub_zone_id"] = sub_zone_id
-            if room_id is not None:
-                update_data["room_id"] = room_id
-            if required_npc is not None:
-                update_data["required_npc"] = required_npc
-            if max_population is not None:
-                update_data["max_population"] = max_population
-            if spawn_probability is not None:
-                update_data["spawn_probability"] = spawn_probability
-            if base_stats is not None:
-                update_data["base_stats"] = json.dumps(base_stats)
-            if behavior_config is not None:
-                update_data["behavior_config"] = json.dumps(behavior_config)
-            if ai_integration_stub is not None:
-                update_data["ai_integration_stub"] = json.dumps(ai_integration_stub)
-
-            # Update timestamp
-            update_data["updated_at"] = datetime.now(UTC).replace(tzinfo=None)
-
-            # Perform update
-            await session.execute(update(NPCDefinition).where(NPCDefinition.id == definition_id).values(**update_data))
-
-            # Refresh the definition
-            await session.refresh(definition)
-
-            logger.info("Updated NPC definition", definition_id=definition_id, updated_fields=list(update_data.keys()))
-
-            return definition
-
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC definition update errors unpredictable, must re-raise
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC definition update errors unpredictable, must re-raise
             logger.error("Error updating NPC definition", error=str(e), definition_id=definition_id)
             raise
 
@@ -300,7 +331,7 @@ class NPCService:
 
             return True
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC definition deletion errors unpredictable, must re-raise
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC definition deletion errors unpredictable, must re-raise
             logger.error("Error deleting NPC definition", error=str(e), definition_id=definition_id)
             raise
 
@@ -328,7 +359,7 @@ class NPCService:
         except SQLAlchemyError as e:
             logger.error("Database error retrieving NPC spawn rules", error=str(e), error_type=type(e).__name__)
             raise DatabaseError(f"Failed to retrieve NPC spawn rules: {e}") from e
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC spawn rule retrieval errors unpredictable, must re-raise
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC spawn rule retrieval errors unpredictable, must re-raise
             logger.error("Unexpected error retrieving NPC spawn rules", error=str(e), error_type=type(e).__name__)
             raise
 
@@ -354,11 +385,11 @@ class NPCService:
 
             return rule
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC spawn rule retrieval errors unpredictable, must re-raise
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC spawn rule retrieval errors unpredictable, must re-raise
             logger.error("Error retrieving NPC spawn rule", error=str(e), rule_id=rule_id)
             raise
 
-    async def create_spawn_rule(
+    async def create_spawn_rule(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Spawn rule creation requires many parameters for complete spawn rule setup
         self,
         session: AsyncSession,
         npc_definition_id: int,
@@ -418,7 +449,7 @@ class NPCService:
 
             return rule
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC spawn rule creation errors unpredictable, must re-raise
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC spawn rule creation errors unpredictable, must re-raise
             logger.error("Error creating NPC spawn rule", error=str(e), npc_definition_id=npc_definition_id)
             raise
 
@@ -446,7 +477,7 @@ class NPCService:
 
             return True
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC spawn rule deletion errors unpredictable, must re-raise
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC spawn rule deletion errors unpredictable, must re-raise
             logger.error("Error deleting NPC spawn rule", error=str(e), rule_id=rule_id)
             raise
 
@@ -475,7 +506,7 @@ class NPCService:
             logger.info("Retrieved NPC definitions by type", npc_type=npc_type, count=len(definitions))
             return list(definitions)
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC definition type retrieval errors unpredictable, must re-raise
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC definition type retrieval errors unpredictable, must re-raise
             logger.error("Error retrieving NPC definitions by type", error=str(e), npc_type=npc_type)
             raise
 
@@ -502,7 +533,7 @@ class NPCService:
             logger.info("Retrieved NPC definitions by sub-zone", sub_zone_id=sub_zone_id, count=len(definitions))
             return list(definitions)
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC definition sub-zone retrieval errors unpredictable, must re-raise
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC definition sub-zone retrieval errors unpredictable, must re-raise
             logger.error("Error retrieving NPC definitions by sub-zone", error=str(e), sub_zone_id=sub_zone_id)
             raise
 
@@ -545,7 +576,7 @@ class NPCService:
         except SQLAlchemyError as e:
             logger.error("Database error generating NPC system statistics", error=str(e), error_type=type(e).__name__)
             raise DatabaseError(f"Failed to generate NPC system statistics: {e}") from e
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC statistics generation errors unpredictable, must re-raise
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC statistics generation errors unpredictable, must re-raise
             logger.error("Unexpected error generating NPC system statistics", error=str(e), error_type=type(e).__name__)
             raise
 

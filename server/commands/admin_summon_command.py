@@ -1,12 +1,14 @@
 """Administrative summon command implementation."""
 
+# pylint: disable=too-many-locals,too-many-return-statements  # Reason: Command handlers require many intermediate variables for complex game logic and multiple return statements for early validation returns
+
 from __future__ import annotations
 
 from typing import Any
 
 from ..alias_storage import AliasStorage
 from ..commands.admin_permission_utils import validate_admin_permission
-from ..commands.inventory_commands import _broadcast_room_event, _resolve_player, _resolve_state
+from ..commands.inventory_command_helpers import broadcast_room_event, resolve_player, resolve_state
 from ..exceptions import DatabaseError, ValidationError
 from ..game.items.item_factory import ItemFactoryError
 from ..monitoring.monitoring_dashboard import get_monitoring_dashboard
@@ -26,8 +28,8 @@ async def handle_summon_command(
 ) -> dict[str, str]:
     """Handle the `/summon` administrative command."""
 
-    persistence, connection_manager = _resolve_state(request)
-    player, error = await _resolve_player(persistence, current_user, player_name)
+    persistence, connection_manager = resolve_state(request)
+    player, error = await resolve_player(persistence, current_user, player_name)
     if error or not player:
         return error or {"result": "Player information not found."}
 
@@ -189,7 +191,7 @@ async def handle_summon_command(
         connection_manager=connection_manager,
     )
 
-    await _broadcast_room_event(
+    await broadcast_room_event(
         connection_manager,
         room_id,
         event,

@@ -2,6 +2,8 @@
 SQLAlchemy models for calendar data (holidays and NPC schedules).
 """
 
+# pylint: disable=too-few-public-methods  # Reason: SQLAlchemy models are data classes, no instance methods needed
+
 from sqlalchemy import SmallInteger, String, Text, text
 from sqlalchemy.dialects.postgresql import ARRAY, UUID
 from sqlalchemy.orm import Mapped, mapped_column

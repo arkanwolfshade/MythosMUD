@@ -211,7 +211,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
         await handle_websocket_connection(
             websocket, player_id, session_id, connection_manager=connection_manager, token=token
         )
-    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: WebSocket errors unpredictable, must log and re-raise
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: WebSocket errors unpredictable, must log and re-raise
         logger.error("Error in WebSocket endpoint", player_id=player_id, error=str(e), exc_info=True)
         raise
 
@@ -290,7 +290,7 @@ async def handle_new_game_session(player_id: uuid.UUID, request: Request) -> dic
         context = create_context_from_request(request)
         context.user_id = str(player_id)
         raise LoggedHTTPException(status_code=400, detail="Invalid JSON in request body", context=context) from e
-    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Session handling errors unpredictable, must log and handle
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Session handling errors unpredictable, must log and handle
         # Structlog handles UUID objects automatically, no need to convert to string
         logger.error("Error handling new game session", player_id=player_id, error=str(e), exc_info=True)
         context = create_context_from_request(request)
@@ -329,7 +329,7 @@ async def get_connection_statistics(request: Request) -> dict[str, Any]:
 
 
 @realtime_router.websocket("/ws/{player_id}")
-async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None:
+async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None:  # pylint: disable=too-many-locals  # Reason: WebSocket endpoint requires many intermediate variables for connection management
     """
     Backward-compatible WebSocket endpoint that accepts a path player_id but
     prefers JWT token identity when provided.

@@ -10,6 +10,8 @@ dimensional events is essential for maintaining the integrity of our
 eldritch architecture.
 """
 
+# pylint: disable=too-many-instance-attributes  # Reason: Event dataclasses require many fields to capture complete event state
+
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from uuid import UUID

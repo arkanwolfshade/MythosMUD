@@ -4,9 +4,12 @@ Utility functions for player event handlers.
 This module contains helper functions used across player event handling.
 """
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event handler utilities require many parameters for context and event processing
+
 import uuid
 from typing import Any
 
+from .disconnect_grace_period import is_player_in_grace_period
 from .player_name_utils import PlayerNameExtractor
 
 
@@ -125,7 +128,7 @@ class PlayerEventHandlerUtils:
                 names.append(name)
         return names
 
-    def add_valid_name_to_lists(
+    def add_valid_name_to_lists(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Name list management requires many parameters for context and validation
         self, name: str | None, players: list[str], npcs: list[str], all_occupants: list[str], is_player: bool = False
     ) -> None:
         """
@@ -238,4 +241,23 @@ class PlayerEventHandlerUtils:
             player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
             return player_id_uuid in self.connection_manager.disconnecting_players
         except (ValueError, AttributeError):
+            return False
+
+    def is_player_in_grace_period(self, player_id: uuid.UUID | str) -> bool:
+        """
+        Check if a player is currently in grace period after disconnect.
+
+        Args:
+            player_id: The player's ID (UUID or string)
+
+        Returns:
+            True if player is in grace period, False otherwise
+        """
+        if not self.connection_manager:
+            return False
+
+        try:
+            player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+            return is_player_in_grace_period(player_id_uuid, self.connection_manager)
+        except (ValueError, AttributeError, ImportError):
             return False

@@ -6,8 +6,9 @@ separates concerns into dedicated components for better maintainability
 and testability.
 """
 
+# pylint: disable=too-many-instance-attributes,too-many-lines,too-many-public-methods,too-many-statements  # Reason: Connection manager requires many state tracking and service attributes. Connection manager requires extensive connection management logic for comprehensive real-time communication. Connection manager legitimately requires many public methods and statements for comprehensive connection management.
+
 import asyncio
-import inspect
 import time
 import uuid
 from typing import Any
@@ -37,6 +38,8 @@ from .connection_initialization import (
     initialize_room_event_handler,
 )
 from .connection_manager_methods import (
+    _check_connection_health_impl,
+    _periodic_health_check_impl,
     broadcast_global_event_impl,
     broadcast_global_impl,
     broadcast_room_event_impl,
@@ -97,6 +100,7 @@ from .connection_manager_methods import (
     validate_player_presence_method,
     validate_session_impl,
 )
+from .connection_manager_utils import lazy_import_api_function, resolve_connection_manager
 from .connection_models import ConnectionMetadata
 from .connection_room_utils import (
     canonical_room_id_impl,
@@ -179,6 +183,16 @@ class ConnectionManager:
         # Track players whose disconnect has already been processed
         self.processed_disconnects: set[uuid.UUID] = set()
         self.processed_disconnect_lock = asyncio.Lock()
+        # Track players in grace period after unintentional disconnect
+        self.grace_period_players: dict[uuid.UUID, asyncio.Task] = {}
+        # Track players in login grace period (10-second immunity after login)
+        self.login_grace_period_players: dict[uuid.UUID, asyncio.Task] = {}
+        # Track login grace period start times for remaining time calculation
+        self.login_grace_period_start_times: dict[uuid.UUID, float] = {}
+        # Track players currently resting (for /rest command countdown)
+        self.resting_players: dict[uuid.UUID, asyncio.Task] = {}
+        # Track players intentionally disconnecting (via /rest or /quit) - no grace period
+        self.intentional_disconnects: set[uuid.UUID] = set()
 
         # Connection tracking with timestamps
         self.connection_timestamps: dict[str, float] = {}
@@ -397,14 +411,10 @@ class ConnectionManager:
 
     async def _check_connection_health(self) -> None:
         """Check health of all connections and clean up stale/dead ones."""
-        from .connection_manager_methods import _check_connection_health_impl
-
         await _check_connection_health_impl(self)
 
     async def _periodic_health_check(self) -> None:
         """Periodic health check task that runs continuously."""
-        from .connection_manager_methods import _periodic_health_check_impl
-
         await _periodic_health_check_impl(self)
 
     def start_health_checks(self) -> None:
@@ -644,89 +654,6 @@ class ConnectionManager:
 # Attach compatibility properties after class definition
 attach_compatibility_properties(ConnectionManager)
 
-# Constants for async compatibility
-_ASYNC_METHODS_REQUIRING_COMPAT: set[str] = {
-    "handle_new_game_session",
-    "force_cleanup",
-    "check_connection_health",
-    "cleanup_orphaned_data",
-    "broadcast_room_event",
-    "broadcast_global_event",
-    "broadcast_global",
-    "send_personal_message",
-}
-
-
-def _ensure_async_compat(manager: "Any | None") -> "Any | None":
-    """
-    Ensure connection manager methods are awaitable.
-
-    Wraps synchronous callables in async wrappers to ensure production code
-    can await methods that might be synchronous (e.g., in test scenarios).
-    Uses duck typing to detect mock-like objects without importing test utilities.
-    """
-    if manager is None:
-        return None
-
-    for method_name in _ASYNC_METHODS_REQUIRING_COMPAT:
-        if not hasattr(manager, method_name):
-            continue
-
-        attr = getattr(manager, method_name)
-
-        # Already awaitable - nothing to do
-        if inspect.iscoroutinefunction(attr) or inspect.isawaitable(attr):
-            continue
-
-        # Wrap any callable (including mock-like objects) in an async wrapper
-        # This works for both real methods and test mocks without importing Mock types
-        if callable(attr):
-
-            async def _async_wrapper(*args, _attr=attr, **kwargs):
-                result = _attr(*args, **kwargs)
-                if inspect.isawaitable(result):
-                    return await result
-                return result
-
-            setattr(manager, method_name, _async_wrapper)
-
-    return manager
-
-
-def resolve_connection_manager(candidate: "Any | None" = None) -> "Any | None":
-    """
-    Resolve a connection manager instance.
-
-    Prefers explicitly supplied candidate, then tries to resolve from:
-    1. FastAPI app state container (if available in context)
-    2. ApplicationContainer.get_instance() (for background tasks)
-
-    Args:
-        candidate: Explicit connection manager to prefer.
-
-    Returns:
-        Optional[ConnectionManager]: The resolved connection manager instance (if any)
-    """
-    if candidate is not None:
-        return _ensure_async_compat(candidate)
-
-    # Try to get from app state (for API routes)
-    # This requires accessing the current request context, which is not always available
-    # For now, try ApplicationContainer.get_instance() as fallback
-    try:
-        from ..container import ApplicationContainer
-
-        container = ApplicationContainer.get_instance()
-        if container is not None:
-            manager = getattr(container, "connection_manager", None)
-            if manager is not None:
-                return _ensure_async_compat(manager)
-    except (AttributeError, RuntimeError, ImportError):
-        # Container not available or not initialized
-        pass
-
-    return None
-
 
 # Re-export for backward compatibility
 __all__ = [
@@ -738,31 +665,7 @@ __all__ = [
 
 def __getattr__(name: str) -> Any:
     """Lazy import for API utility functions to avoid circular dependencies."""
-    from collections.abc import Callable
-    from typing import cast
-
-    if name == "broadcast_game_event":
-        from .connection_manager_api import broadcast_game_event
-
-        return cast(Callable[..., Any], broadcast_game_event)
-    elif name == "send_game_event":
-        from .connection_manager_api import send_game_event
-
-        return cast(Callable[..., Any], send_game_event)
-    elif name == "send_player_status_update":
-        from .connection_manager_api import send_player_status_update
-
-        return cast(Callable[..., Any], send_player_status_update)
-    elif name == "send_room_description":
-        from .connection_manager_api import send_room_description
-
-        return cast(Callable[..., Any], send_room_description)
-    elif name == "send_room_event":
-        from .connection_manager_api import send_room_event
-
-        return cast(Callable[..., Any], send_room_event)
-    elif name == "send_system_notification":
-        from .connection_manager_api import send_system_notification
-
-        return cast(Callable[..., Any], send_system_notification)
-    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    try:
+        return lazy_import_api_function(name)
+    except AttributeError:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from None

@@ -9,6 +9,8 @@ The CommandFactory class delegates to specialized factory classes organized by
 command category to keep the codebase maintainable and under size limits.
 """
 
+# pylint: disable=too-many-public-methods  # Reason: Command factory legitimately requires many public methods for comprehensive command creation across all command categories
+
 from .command_factories_combat import CombatCommandFactory
 from .command_factories_communication import CommunicationCommandFactory
 from .command_factories_exploration import ExplorationCommandFactory
@@ -175,6 +177,10 @@ class CommandFactory:
     def create_logout_command(self, args: list[str]):
         """Create LogoutCommand from arguments."""
         return self._player_state.create_logout_command(args)
+
+    def create_rest_command(self, args: list[str]):
+        """Create RestCommand from arguments."""
+        return self._player_state.create_rest_command(args)
 
     # Combat commands
     def create_attack_command(self, args: list[str]):

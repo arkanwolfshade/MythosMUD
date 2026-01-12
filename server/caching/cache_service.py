@@ -5,6 +5,8 @@ This module provides caching services that integrate with the existing
 persistence layer to cache frequently accessed data like rooms, NPCs, and professions.
 """
 
+# pylint: disable=too-many-lines  # Reason: Cache service requires extensive caching logic for multiple entity types and cache management operations
+
 import asyncio
 from collections.abc import Callable
 from functools import wraps
@@ -100,8 +102,7 @@ def cached(cache_name: str, key_func: Callable[..., str] | None = None, _ttl_sec
         # Return appropriate wrapper based on function type
         if asyncio.iscoroutinefunction(func):
             return async_wrapper
-        else:
-            return sync_wrapper
+        return sync_wrapper
 
     return decorator
 
@@ -590,13 +591,13 @@ class CacheService:
         try:
             starting_room_id = "earth_arkhamcity_northside_intersection_derby_high"
             self.room_cache.get_room_sync(starting_room_id)
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Cache preload errors unpredictable, must not fail initialization
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Cache preload errors unpredictable, must not fail initialization
             logger.warning("Failed to preload starting room", error=str(e))
 
         # Preload all professions
         try:
             self.profession_cache.get_all_professions()
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Cache preload errors unpredictable, must not fail initialization
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Cache preload errors unpredictable, must not fail initialization
             logger.warning("Failed to preload professions", error=str(e))
 
         logger.info("Frequently accessed data preloading completed")

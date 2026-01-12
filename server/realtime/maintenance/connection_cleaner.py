@@ -8,6 +8,8 @@ AI Agent: Extracted from ConnectionManager to follow Single Responsibility Princ
 Cleanup and maintenance is now a focused, independently testable component.
 """
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Connection cleanup requires many parameters for context and cleanup operations
+
 import time
 import uuid
 from collections.abc import Callable
@@ -46,7 +48,7 @@ class ConnectionCleaner:
     AI Agent: Single Responsibility - Connection cleanup and maintenance only.
     """
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Connection cleaner initialization requires many service dependencies
         self,
         memory_monitor: "MemoryMonitor",
         rate_limiter: "RateLimiter",
@@ -76,7 +78,62 @@ class ConnectionCleaner:
         self.has_websocket_connection = has_websocket_connection_callback
         self.get_async_persistence = get_async_persistence
 
-    def prune_stale_players(
+    def _identify_stale_players(
+        self, last_seen: dict[uuid.UUID, float], max_age_seconds: int, now_ts: float
+    ) -> list[uuid.UUID]:
+        """
+        Identify players whose last_seen timestamp exceeds the max age.
+
+        Args:
+            last_seen: Last seen timestamps
+            max_age_seconds: Maximum age in seconds
+            now_ts: Current timestamp
+
+        Returns:
+            List of stale player IDs
+        """
+        stale_ids: list[uuid.UUID] = []
+        for pid, last in list(last_seen.items()):
+            if now_ts - last > max_age_seconds:
+                stale_ids.append(pid)
+        return stale_ids
+
+    def _remove_stale_player_data(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Player data cleanup requires many parameters for context and cleanup operations
+        self,
+        pid: uuid.UUID,
+        online_players: dict[uuid.UUID, dict[str, Any]],
+        player_websockets: dict[uuid.UUID, list[str]],
+        active_websockets: dict[str, "WebSocket"],
+        last_seen: dict[uuid.UUID, float],
+        last_active_update_times: dict[uuid.UUID, float],
+    ) -> None:
+        """
+        Remove all data for a stale player.
+
+        Args:
+            pid: Player ID to remove
+            online_players: Online players dictionary
+            player_websockets: Player to WebSocket connection mapping
+            active_websockets: Active WebSocket connections
+            last_seen: Last seen timestamps
+            last_active_update_times: Last active update times
+        """
+        if pid in online_players:
+            del online_players[pid]
+        if pid in player_websockets:
+            conn_ids = player_websockets.pop(pid, None)
+            if conn_ids:
+                for conn_id in conn_ids:
+                    if conn_id in active_websockets:
+                        del active_websockets[conn_id]
+        self.room_manager.remove_player_from_all_rooms(str(pid))
+        if pid in last_seen:
+            del last_seen[pid]
+        last_active_update_times.pop(pid, None)
+        self.rate_limiter.remove_player_data(str(pid))
+        self.message_queue.remove_player_messages(str(pid))
+
+    def prune_stale_players(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Player pruning requires many parameters for context and pruning operations
         self,
         last_seen: dict[uuid.UUID, float],
         online_players: dict[uuid.UUID, dict[str, Any]],
@@ -98,30 +155,13 @@ class ConnectionCleaner:
         """
         try:
             now_ts = time.time()
-            stale_ids: list[uuid.UUID] = []
-            for pid, last in list(last_seen.items()):
-                if now_ts - last > max_age_seconds:
-                    stale_ids.append(pid)
+            stale_ids = self._identify_stale_players(last_seen, max_age_seconds, now_ts)
 
             for pid in stale_ids:
-                if pid in online_players:
-                    del online_players[pid]
-                if pid in player_websockets:
-                    # forget websocket mapping; socket likely already dead
-                    conn_ids = player_websockets.pop(pid, None)
-                    if conn_ids:
-                        for conn_id in conn_ids:
-                            if conn_id in active_websockets:
-                                del active_websockets[conn_id]
-                # remove from rooms
-                self.room_manager.remove_player_from_all_rooms(str(pid))
-                # forget last_seen entry
-                if pid in last_seen:
-                    del last_seen[pid]
-                last_active_update_times.pop(pid, None)
-                # Clean up other references
-                self.rate_limiter.remove_player_data(str(pid))
-                self.message_queue.remove_player_messages(str(pid))
+                self._remove_stale_player_data(
+                    pid, online_players, player_websockets, active_websockets, last_seen, last_active_update_times
+                )
+
             if stale_ids:
                 logger.info("Pruned stale players", stale_ids=[str(pid) for pid in stale_ids])
         except (DatabaseError, SQLAlchemyError) as e:
@@ -219,7 +259,7 @@ class ConnectionCleaner:
         """
         cleanup_results: dict[str, Any] = {"players_checked": 0, "connections_cleaned": 0, "errors": []}
 
-        try:
+        try:  # pylint: disable=too-many-nested-blocks  # Reason: Connection cleanup requires complex nested logic for player iteration, connection validation, and error handling
             if player_id:
                 # Clean up specific player
                 players_to_check = [player_id]
@@ -273,7 +313,7 @@ class ConnectionCleaner:
         Args:
             online_players: Online players dictionary
         """
-        try:
+        try:  # pylint: disable=too-many-nested-blocks  # Reason: Room cleanup requires complex nested logic for persistence validation, room iteration, and player tracking
             async_persistence = self.get_async_persistence()
             if not async_persistence or not hasattr(async_persistence, "list_rooms"):
                 return
@@ -372,7 +412,7 @@ class ConnectionCleaner:
         except (DatabaseError, SQLAlchemyError) as e:
             logger.error("Error during force cleanup", error=str(e), exc_info=True)
 
-    async def check_and_cleanup(
+    async def check_and_cleanup(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Cleanup checking requires many parameters for context and cleanup operations
         self,
         online_players: dict[uuid.UUID, dict[str, Any]],
         last_seen: dict[uuid.UUID, float],

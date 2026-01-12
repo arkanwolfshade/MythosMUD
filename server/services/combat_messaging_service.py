@@ -5,6 +5,8 @@ This service handles the generation and formatting of combat messages
 with proper perspective (attacker, defender, others) and variable substitution.
 """
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Messaging service requires many parameters for context and message formatting
+
 from typing import Any
 
 from server.exceptions import MythosMUDError

@@ -42,6 +42,11 @@ class PostgresRow:
         return iter(self._row_dict.values())
 
     def keys(self):
+        """Return the keys of the row dictionary.
+
+        Returns:
+            dict_keys: The keys of the row dictionary
+        """
         return self._row_dict.keys()
 
     def __contains__(self, key: str) -> bool:

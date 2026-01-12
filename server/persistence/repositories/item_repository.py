@@ -55,7 +55,7 @@ class ItemRepository:
         finally:
             conn.close()
 
-    async def create_item_instance(
+    async def create_item_instance(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Item creation requires many parameters and intermediate variables for complex item instantiation logic
         self,
         item_instance_id: str,
         prototype_id: str,
@@ -96,7 +96,7 @@ class ItemRepository:
 
         return await asyncio.to_thread(_create_sync)
 
-    async def ensure_item_instance(
+    async def ensure_item_instance(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Item instance persistence requires many parameters for context and validation
         self,
         item_instance_id: str,
         prototype_id: str,

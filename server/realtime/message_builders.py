@@ -110,12 +110,11 @@ class MessageBuilder:
             if direction:
                 return f"{npc_name} left {direction}."
             return f"{npc_name} left the room."
-        elif movement_type == "entered":
+        if movement_type == "entered":
             if direction:
                 return f"{npc_name} entered from {direction}."
             return f"{npc_name} entered the room."
-        else:
-            return f"{npc_name} moved."
+        return f"{npc_name} moved."
 
     def build_occupants_update_message(
         self, room_id_str: str, players: list[str], npcs: list[str], all_occupants: list[str]

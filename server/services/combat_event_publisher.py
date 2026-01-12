@@ -5,6 +5,8 @@ This module provides a service for publishing combat events to NATS
 for real-time distribution to clients and other systems.
 """
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-return-statements,too-many-lines  # Reason: Event publishing requires many parameters for complete event context and multiple return statements for early validation returns. Combat event publisher requires extensive event publishing logic for comprehensive combat event distribution.
+
 import uuid
 from datetime import UTC, datetime
 
@@ -57,7 +59,7 @@ class CombatEventPublisher:
             subject_manager_enabled=subject_manager is not None,
         )
 
-    def _create_event_message(
+    def _create_event_message(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event message creation requires many parameters for complete event context
         self,
         event_type: str,
         event_data: dict,
@@ -220,8 +222,7 @@ class CombatEventPublisher:
                     error=str(e),
                 )
                 return False
-            except Exception as e:  # pylint: disable=broad-exception-caught
-                # Catch any other unexpected exceptions (e.g., generic Exception from mocks in tests)
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904                # Catch any other unexpected exceptions (e.g., generic Exception from mocks in tests)
                 # This is necessary for test compatibility where mocks may raise generic Exception
                 logger.error(
                     "Unexpected error publishing combat started event to NATS",

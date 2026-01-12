@@ -6,6 +6,8 @@ persistence requires careful handling to ensure proper storage and retrieval
 of investigator artifacts across environmental props, wearable gear, and corpses.
 """
 
+# pylint: disable=too-many-lines  # Reason: Container persistence requires extensive persistence operations for complex container structures and item management
+
 from __future__ import annotations
 
 import json
@@ -139,10 +141,10 @@ def _fetch_container_items(conn: Any, container_id: UUID) -> list[dict[str, Any]
     return items
 
 
-class ContainerData:
+class ContainerData:  # pylint: disable=too-many-instance-attributes,too-few-public-methods  # Reason: Data class requires many fields to capture complete container state
     """Data class for container information."""
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Container data initialization requires many parameters to capture complete container state
         self,
         container_instance_id: UUID,
         source_type: str,
@@ -195,7 +197,7 @@ class ContainerData:
         return result
 
 
-def create_container(
+def create_container(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Container creation requires many parameters and intermediate variables for complex container logic
     conn: Any,
     source_type: str,
     owner_id: UUID | None = None,
@@ -586,7 +588,7 @@ def get_containers_by_entity_id(conn: Any, entity_id: UUID) -> list[ContainerDat
         )
 
 
-def update_container(
+def update_container(  # pylint: disable=too-many-locals  # Reason: Container update requires many intermediate variables for complex container logic
     conn: Any,
     container_id: UUID,
     items_json: list[dict[str, Any]] | None = None,

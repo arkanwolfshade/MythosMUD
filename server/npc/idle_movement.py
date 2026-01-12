@@ -107,10 +107,55 @@ class IdleMovementHandler:
 
             return True
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC idle movement check errors unpredictable, must return False
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC idle movement check errors unpredictable, must return False
             npc_id = getattr(npc_instance, "npc_id", "unknown")
             logger.error("Error checking if NPC should idle move", npc_id=npc_id, error=str(e))
             return False
+
+    def _check_npc_combat_via_uuid(self, npc_id: str, combat_service: Any) -> bool:
+        """
+        Check if NPC is in combat via UUID lookup.
+
+        Args:
+            npc_id: NPC ID (string or UUID)
+            combat_service: Combat service instance
+
+        Returns:
+            True if NPC is in combat
+        """
+        import uuid
+
+        try:
+            npc_uuid = uuid.UUID(npc_id) if isinstance(npc_id, str) else npc_id
+            if npc_uuid in combat_service._npc_combats:  # pylint: disable=protected-access  # Reason: Internal combat state access required
+                return True
+        except (ValueError, AttributeError):
+            pass
+        return False
+
+    def _check_npc_combat_via_string_mapping(self, npc_id: str, combat_service: Any) -> bool:
+        """
+        Check if NPC is in combat via string ID mapping.
+
+        Args:
+            npc_id: NPC ID as string
+            combat_service: Combat service instance
+
+        Returns:
+            True if NPC is in combat
+        """
+        if not hasattr(combat_service, "_npc_combat_integration_service"):
+            return False
+
+        npc_combat_service = combat_service._npc_combat_integration_service  # pylint: disable=protected-access  # Reason: Internal service access required
+        if not npc_combat_service or not hasattr(npc_combat_service, "_uuid_to_string_id_mapping"):
+            return False
+
+        for uuid_key, string_id in npc_combat_service._uuid_to_string_id_mapping.items():  # pylint: disable=protected-access  # Reason: Internal mapping access required
+            if string_id == npc_id:
+                if uuid_key in combat_service._npc_combats:  # pylint: disable=protected-access  # Reason: Internal combat state access required
+                    return True
+        return False
 
     def _is_npc_in_combat(self, npc_instance: Any) -> bool:
         """
@@ -123,47 +168,32 @@ class IdleMovementHandler:
             bool: True if NPC is in combat, False otherwise
         """
         try:
-            # Try to get combat integration from NPC instance
             if hasattr(npc_instance, "combat_integration") and npc_instance.combat_integration:
-                # Check if there's a way to query combat state
-                # For now, we'll check if the NPC has combat-related attributes
-                # that indicate active combat
                 pass
 
-            # Try to query combat service directly
             try:
                 from ..services.combat_service import get_combat_service
 
                 combat_service = get_combat_service()
-                if combat_service:
-                    # Check if NPC is in the combat service's tracking
-                    npc_id = getattr(npc_instance, "npc_id", None)
-                    if npc_id:
-                        # Convert string ID to UUID if needed
-                        import uuid
+                if not combat_service:
+                    return False
 
-                        try:
-                            npc_uuid = uuid.UUID(npc_id) if isinstance(npc_id, str) else npc_id
-                            if npc_uuid in combat_service._npc_combats:  # pylint: disable=protected-access  # Reason: Internal combat state access required
-                                return True
-                        except (ValueError, AttributeError):
-                            # NPC ID might not be a valid UUID, check string mapping
-                            # Check if there's a UUID mapping in combat integration service
-                            if hasattr(combat_service, "_npc_combat_integration_service"):
-                                npc_combat_service = combat_service._npc_combat_integration_service  # pylint: disable=protected-access  # Reason: Internal service access required
-                                if npc_combat_service and hasattr(npc_combat_service, "_uuid_to_string_id_mapping"):
-                                    # Check reverse mapping
-                                    for uuid_key, string_id in npc_combat_service._uuid_to_string_id_mapping.items():  # pylint: disable=protected-access  # Reason: Internal mapping access required
-                                        if string_id == npc_id:
-                                            if uuid_key in combat_service._npc_combats:  # pylint: disable=protected-access  # Reason: Internal combat state access required
-                                                return True
+                npc_id = getattr(npc_instance, "npc_id", None)
+                if not npc_id:
+                    return False
+
+                if self._check_npc_combat_via_uuid(npc_id, combat_service):
+                    return True
+
+                if self._check_npc_combat_via_string_mapping(npc_id, combat_service):
+                    return True
+
             except (ImportError, AttributeError, RuntimeError):
-                # Combat service not available or not initialized
                 logger.debug("Combat service not available for combat check")
 
             return False
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC combat state check errors unpredictable, must return False
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC combat state check errors unpredictable, must return False
             logger.debug("Error checking NPC combat state", error=str(e))
             return False
 
@@ -212,9 +242,84 @@ class IdleMovementHandler:
 
             return valid_exits
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Exit retrieval errors unpredictable, must return empty dict
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Exit retrieval errors unpredictable, must return empty dict
             logger.error("Error getting valid exits", room_id=current_room_id, error=str(e))
             return {}
+
+    def _calculate_exit_weight(self, target_distance: int, spawn_distance: int) -> float:
+        """
+        Calculate weight for an exit based on distance from spawn.
+
+        Args:
+            target_distance: Distance from target room to spawn
+            spawn_distance: Distance from current room to spawn
+
+        Returns:
+            Weight value (higher = better)
+        """
+        distance_diff = target_distance - spawn_distance
+        if distance_diff < 0:
+            return 1.0
+        if not distance_diff:
+            return 0.75
+        if distance_diff == 1:
+            return 0.5
+        return 0.25
+
+    def _calculate_exit_weights(
+        self, valid_exits: dict[str, str], current_room_id: str, spawn_room_id: str
+    ) -> list[tuple[str, str, float]]:
+        """
+        Calculate weights for all exits.
+
+        Args:
+            valid_exits: Dictionary of direction -> room_id mappings
+            current_room_id: Current room ID
+            spawn_room_id: Spawn room ID
+
+        Returns:
+            List of (direction, room_id, weight) tuples
+        """
+        exit_weights: list[tuple[str, str, float]] = []
+        spawn_distance = self._calculate_distance_to_room(current_room_id, spawn_room_id)
+
+        for direction, target_room_id in valid_exits.items():
+            target_distance = self._calculate_distance_to_room(target_room_id, spawn_room_id)
+            weight = self._calculate_exit_weight(target_distance, spawn_distance)
+            exit_weights.append((direction, target_room_id, weight))
+
+        return exit_weights
+
+    def _select_weighted_exit(
+        self, exit_weights: list[tuple[str, str, float]], valid_exits: dict[str, str]
+    ) -> tuple[str, str] | None:
+        """
+        Select exit based on weighted probabilities.
+
+        Args:
+            exit_weights: List of (direction, room_id, weight) tuples
+            valid_exits: Dictionary of direction -> room_id mappings
+
+        Returns:
+            (direction, room_id) tuple if selected, None otherwise
+        """
+        if not exit_weights:
+            return None
+
+        total_weight = sum(weight for _, _, weight in exit_weights)
+        if not total_weight:
+            direction = random.choice(list(valid_exits.keys()))  # nosec B311: Game mechanics direction selection, not cryptographic
+            return (direction, valid_exits[direction])
+
+        rand = random.random() * total_weight  # nosec B311: Game mechanics weighted selection, not cryptographic
+        cumulative = 0.0
+        for direction, room_id, weight in exit_weights:
+            cumulative += weight
+            if rand <= cumulative:
+                return (direction, room_id)
+
+        direction, room_id, _ = exit_weights[-1]
+        return (direction, room_id)
 
     def select_exit(
         self,
@@ -239,66 +344,20 @@ class IdleMovementHandler:
             if not valid_exits:
                 return None
 
-            # If only one exit, return it
             if len(valid_exits) == 1:
                 direction, room_id = next(iter(valid_exits.items()))
                 return (direction, room_id)
 
-            # Check if weighted selection is enabled
             weighted_home = behavior_config.get("idle_movement_weighted_home", True)
 
             if not weighted_home:
-                # Random selection without weighting
                 direction = random.choice(list(valid_exits.keys()))  # nosec B311: Game mechanics direction selection, not cryptographic
                 return (direction, valid_exits[direction])
 
-            # Weighted selection: prefer exits that keep NPC closer to spawn room
-            # Calculate distances and assign weights
-            exit_weights: list[tuple[str, str, float]] = []
-            spawn_distance = self._calculate_distance_to_room(current_room_id, spawn_room_id)
+            exit_weights = self._calculate_exit_weights(valid_exits, current_room_id, spawn_room_id)
+            return self._select_weighted_exit(exit_weights, valid_exits)
 
-            for direction, target_room_id in valid_exits.items():
-                target_distance = self._calculate_distance_to_room(target_room_id, spawn_room_id)
-                # Weight inversely proportional to distance from spawn
-                # Exits that move closer to spawn get higher weight
-                # Exits that move further get lower weight
-                distance_diff = target_distance - spawn_distance
-                # Weight: 1.0 for moving closer, 0.5 for moving further, 0.25 for moving much further
-                if distance_diff < 0:
-                    weight = 1.0  # Moving closer to spawn
-                elif distance_diff == 0:
-                    weight = 0.75  # Same distance
-                elif distance_diff == 1:
-                    weight = 0.5  # One room further
-                else:
-                    weight = 0.25  # Much further
-
-                exit_weights.append((direction, target_room_id, weight))
-
-            # Select exit based on weights
-            if not exit_weights:
-                return None
-
-            # Normalize weights to probabilities
-            total_weight = sum(weight for _, _, weight in exit_weights)
-            if total_weight == 0:
-                # Fallback to random selection
-                direction = random.choice(list(valid_exits.keys()))  # nosec B311: Game mechanics direction selection, not cryptographic
-                return (direction, valid_exits[direction])
-
-            # Select based on weighted probabilities
-            rand = random.random() * total_weight  # nosec B311: Game mechanics weighted selection, not cryptographic
-            cumulative = 0.0
-            for direction, room_id, weight in exit_weights:
-                cumulative += weight
-                if rand <= cumulative:
-                    return (direction, room_id)
-
-            # Fallback to last exit
-            direction, room_id, _ = exit_weights[-1]
-            return (direction, room_id)
-
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Exit selection errors unpredictable, must return None
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Exit selection errors unpredictable, must return None
             logger.error("Error selecting exit", error=str(e))
             return None
 
@@ -337,7 +396,7 @@ class IdleMovementHandler:
             # Different subzones or invalid format - return high distance
             return 999
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Distance calculation errors unpredictable, must return max distance
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Distance calculation errors unpredictable, must return max distance
             logger.debug("Error calculating room distance", error=str(e))
             return 999
 
@@ -417,7 +476,7 @@ class IdleMovementHandler:
 
             return success
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Idle movement execution errors unpredictable, must return False
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Idle movement execution errors unpredictable, must return False
             npc_id = getattr(npc_instance, "npc_id", "unknown")
             logger.error("Error executing idle movement", npc_id=npc_id, error=str(e))
             return False

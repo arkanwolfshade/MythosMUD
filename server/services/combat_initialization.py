@@ -4,6 +4,8 @@ Combat initialization logic.
 Handles creation and setup of combat instances.
 """
 
+# pylint: disable=too-few-public-methods,too-many-arguments,too-many-positional-arguments  # Reason: Initialization class has focused responsibility with minimal public interface, and requires many parameters for combat setup
+
 from server.models.combat import CombatInstance, CombatParticipant
 from server.services.combat_types import CombatParticipantData
 from server.structured_logging.enhanced_logging_config import get_logger
@@ -11,11 +13,11 @@ from server.structured_logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 
-class CombatInitializer:
+class CombatInitializer:  # pylint: disable=too-few-public-methods  # Reason: Initialization class with focused responsibility, minimal public interface
     """Handles combat instance initialization and setup."""
 
     @staticmethod
-    def create_combat_instance(
+    def create_combat_instance(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Combat instance creation requires many parameters for complete combat setup
         room_id: str,
         attacker: CombatParticipantData,
         target: CombatParticipantData,

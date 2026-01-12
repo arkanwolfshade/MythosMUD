@@ -16,6 +16,8 @@ essential for maintaining awareness of the dimensional shifts that
 occur throughout our eldritch architecture.
 """
 
+# pylint: disable=too-many-lines  # Reason: Event bus requires extensive event handling logic for comprehensive event system management
+
 import asyncio
 from collections import defaultdict
 from collections.abc import Callable
@@ -30,7 +32,7 @@ T = TypeVar("T", bound=BaseEvent)
 logger = get_logger(__name__)
 
 
-class EventBus:
+class EventBus:  # pylint: disable=too-many-instance-attributes  # Reason: Event bus requires multiple subscription maps and state tracking
     """
     Pure asyncio event bus for MythosMUD.
 
@@ -89,7 +91,7 @@ class EventBus:
                     error=str(e),
                     error_type=type(e).__name__,
                 )
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Event emission errors unpredictable, must handle gracefully
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Event emission errors unpredictable, must handle gracefully
                 # Unexpected error - log it
                 self._logger.error(
                     "Unexpected error starting EventBus processing",
@@ -113,92 +115,94 @@ class EventBus:
         """Legacy wrapper for API compatibility during transition."""
         self._ensure_async_processing()
 
+    def _signal_shutdown(self) -> None:
+        """Signal shutdown to async processing loop."""
+        self._shutdown_event.set()
+        try:
+            self._event_queue.put_nowait(None)  # Sentinel to wake up waiting task
+        except (asyncio.QueueFull, RuntimeError, AttributeError):
+            # Queue is full, closed, or doesn't exist - task will wake up on timeout or cancellation
+            pass
+
+    async def _cancel_processing_task(self) -> None:
+        """Cancel the main processing task if it exists."""
+        if self._processing_task and not self._processing_task.done():
+            try:
+                self._processing_task.cancel()
+                await asyncio.wait_for(self._processing_task, timeout=0.5)
+            except (TimeoutError, asyncio.CancelledError, RuntimeError):
+                # Task was cancelled, timed out, or event loop is closing - expected
+                pass
+
+    async def _cancel_and_wait_for_active_tasks(self) -> None:
+        """Cancel all active tasks and wait for graceful shutdown."""
+        if not self._active_tasks:
+            return
+
+        tasks_to_cancel = [task for task in list(self._active_tasks) if not task.done()]
+        for task in tasks_to_cancel:
+            try:
+                task.cancel()
+            except (RuntimeError, AttributeError):
+                # Task or event loop is in invalid state - skip
+                pass
+
+        if not tasks_to_cancel:
+            return
+
+        try:
+            _done, pending = await asyncio.wait(  # pylint: disable=unused-variable  # noqa: F841  # Reason: done is part of asyncio.wait return tuple
+                tasks_to_cancel, timeout=0.5, return_when=asyncio.ALL_COMPLETED
+            )
+
+            if pending:
+                for task in pending:
+                    try:
+                        if not task.done():
+                            task.cancel()
+                    except (RuntimeError, AttributeError):
+                        pass
+
+                try:
+                    await asyncio.wait_for(asyncio.gather(*pending, return_exceptions=True), timeout=0.2)
+                except (TimeoutError, RuntimeError, asyncio.CancelledError):
+                    # Timeout or event loop closing - abandon remaining tasks
+                    pass
+
+        except (RuntimeError, asyncio.CancelledError, AttributeError):
+            # Event loop is closing or in invalid state - just clear tasks
+            pass
+
+    def _finalize_shutdown(self) -> None:
+        """Finalize shutdown by clearing tasks and logging."""
+        self._active_tasks.clear()
+        try:
+            self._logger.info("EventBus pure async processing stopped")
+        except Exception:  # pylint: disable=broad-exception-caught  # nosec B110: Logging errors must not fail shutdown  # noqa: B904            # If logging fails, continue anyway
+            pass
+
     async def _stop_processing(self) -> None:
         """Stop pure async event processing gracefully."""
-        # Only process if we're actually running (idempotent)
         if not self._running:
             return
 
         self._running = False
 
         try:
-            # Signal shutdown to async processing loop - Task 1.3
-            self._shutdown_event.set()
-
-            # Put sentinel in queue to wake up processing task immediately
-            # This ensures the task waiting on asyncio.wait_for() wakes up right away
-            try:
-                self._event_queue.put_nowait(None)  # Sentinel to wake up waiting task
-            except (asyncio.QueueFull, RuntimeError, AttributeError):
-                # Queue is full, closed, or doesn't exist - task will wake up on timeout or cancellation
-                pass
-
-            # Cancel processing task explicitly if it exists
-            if self._processing_task and not self._processing_task.done():
-                try:
-                    self._processing_task.cancel()
-                    await asyncio.wait_for(self._processing_task, timeout=0.5)
-                except (TimeoutError, asyncio.CancelledError, RuntimeError):
-                    # Task was cancelled, timed out, or event loop is closing - expected
-                    pass
-
-            # Cancel all active tasks and wait for graceful shutdown
-            if self._active_tasks:
-                tasks_to_cancel = [task for task in list(self._active_tasks) if not task.done()]
-                for task in tasks_to_cancel:
-                    try:
-                        task.cancel()
-                    except (RuntimeError, AttributeError):
-                        # Task or event loop is in invalid state - skip
-                        pass
-
-                # Wait for tasks to complete with timeout - use a more robust approach
-                if tasks_to_cancel:
-                    try:
-                        # Use asyncio.wait instead of gather to avoid hanging on unresponsive tasks
-                        _done, pending = await asyncio.wait(  # pylint: disable=unused-variable  # Reason: done is part of asyncio.wait return tuple
-                            tasks_to_cancel, timeout=0.5, return_when=asyncio.ALL_COMPLETED
-                        )
-
-                        # Force cancel any remaining pending tasks
-                        if pending:
-                            for task in pending:
-                                try:
-                                    if not task.done():
-                                        task.cancel()
-                                except (RuntimeError, AttributeError):
-                                    pass
-
-                            # Give them a brief moment to cancel, then abandon
-                            try:
-                                await asyncio.wait_for(asyncio.gather(*pending, return_exceptions=True), timeout=0.2)
-                            except (TimeoutError, RuntimeError, asyncio.CancelledError):
-                                # Timeout or event loop closing - abandon remaining tasks
-                                pass
-
-                    except (RuntimeError, asyncio.CancelledError, AttributeError):
-                        # Event loop is closing or in invalid state - just clear tasks
-                        pass
-
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Shutdown errors unpredictable, must prevent worker crashes
-            # Catch any unexpected errors during shutdown to prevent worker crashes
+            self._signal_shutdown()
+            await self._cancel_processing_task()
+            await self._cancel_and_wait_for_active_tasks()
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Shutdown errors unpredictable, must prevent worker crashes
             try:
                 logger.error(
                     "Error during event bus processing stop (non-fatal)",
                     error=str(e),
                     error_type=type(e).__name__,
                 )
-            except Exception:  # pylint: disable=broad-exception-caught  # nosec B110: Logging errors must not fail shutdown
-                # If logging fails, continue anyway
+            except Exception:  # pylint: disable=broad-exception-caught  # nosec B110: Logging errors must not fail shutdown  # noqa: B904
                 pass
         finally:
-            # Always clear tasks and reset state to prevent resource leaks
-            self._active_tasks.clear()
-            try:
-                self._logger.info("EventBus pure async processing stopped")
-            except Exception:  # pylint: disable=broad-exception-caught  # nosec B110: Logging errors must not fail shutdown
-                # If logging fails, continue anyway
-                pass
+            self._finalize_shutdown()
 
     async def _process_events_async(self) -> None:
         """Pure async event processing loop replacing the dangerous threading pattern."""
@@ -227,7 +231,7 @@ class EventBus:
                 except asyncio.CancelledError:
                     # Task was cancelled - break out of loop
                     break
-                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Cleanup errors unpredictable, must handle gracefully
+                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Cleanup errors unpredictable, must handle gracefully
                     # Use basic print to avoid Unicode encoding issues during cleanup
                     try:
                         self._logger.error("Error processing event", error=str(e), exc_info=True)
@@ -242,7 +246,7 @@ class EventBus:
                 if self._shutdown_event.is_set():
                     break
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Cleanup errors unpredictable, must handle gracefully
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Cleanup errors unpredictable, must handle gracefully
             # Use basic print to avoid Unicode encoding issues during cleanup
             try:
                 self._logger.error("Fatal error in async event processing", error=str(e), exc_info=True)
@@ -251,6 +255,87 @@ class EventBus:
                 self._logger.critical("Fatal error in async event processing", error=str(e), exc_info=True)
         finally:
             self._logger.info("EventBus pure async processing stopped")
+
+    def _separate_subscribers(
+        self, subscribers: list[Callable[[BaseEvent], Any]]
+    ) -> tuple[list[Callable[[BaseEvent], Any]], list[Callable[[BaseEvent], Any]]]:
+        """Separate async and sync subscribers. Returns (async_subscribers, sync_subscribers)."""
+        import inspect
+
+        async_subscribers: list[Callable[[BaseEvent], Any]] = []
+        sync_subscribers: list[Callable[[BaseEvent], Any]] = []
+
+        for subscriber in subscribers:
+            if inspect.iscoroutinefunction(subscriber):
+                async_subscribers.append(subscriber)
+            else:
+                sync_subscribers.append(subscriber)
+
+        return async_subscribers, sync_subscribers
+
+    def _process_sync_subscribers(self, sync_subscribers: list[Callable[[BaseEvent], Any]], event: BaseEvent) -> None:
+        """Process sync subscribers."""
+        for subscriber in sync_subscribers:
+            try:
+                subscriber(event)
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Subscriber errors unpredictable, must not fail event processing
+                subscriber_name = getattr(subscriber, "__name__", "unknown")
+                self._logger.error("Error in sync event subscriber", subscriber_name=subscriber_name, error=str(e))
+
+    def _create_async_subscriber_tasks(
+        self, async_subscribers: list[Callable[[BaseEvent], Any]], event: BaseEvent
+    ) -> tuple[list[asyncio.Task], dict[asyncio.Task, str]]:
+        """Create tasks for async subscribers. Returns (tasks, subscriber_names)."""
+        tasks: list[asyncio.Task] = []
+        subscriber_names: dict[asyncio.Task, str] = {}
+
+        for subscriber in async_subscribers:
+            subscriber_name = getattr(subscriber, "__name__", "unknown")
+            try:
+                task = asyncio.create_task(subscriber(event))
+                tasks.append(task)
+                subscriber_names[task] = subscriber_name
+                self._active_tasks.add(task)
+
+                def remove_task(t: asyncio.Task, _sn: str = subscriber_name) -> None:  # pylint: disable=unused-argument  # Reason: Parameter required for callback signature, subscriber_name captured in closure
+                    self._active_tasks.discard(t)
+
+                task.add_done_callback(remove_task)
+                self._logger.debug("Created tracked task for async subscriber", subscriber_name=subscriber_name)
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Task creation errors unpredictable, must continue with other subscribers
+                self._logger.error(
+                    "Failed to create task for subscriber", subscriber_name=subscriber_name, error=str(e)
+                )
+
+        return tasks, subscriber_names
+
+    async def _wait_for_async_subscribers(
+        self, tasks: list[asyncio.Task], subscriber_names: dict[asyncio.Task, str]
+    ) -> None:
+        """Wait for async subscriber tasks and handle results."""
+        if not tasks:
+            return
+
+        try:
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            for task, result in zip(tasks, results, strict=False):
+                subscriber_name = subscriber_names.get(task, "unknown")
+                if isinstance(result, Exception):
+                    self._logger.error(
+                        "Error in async subscriber",
+                        subscriber_name=subscriber_name,
+                        error=str(result),
+                        error_type=type(result).__name__,
+                        exc_info=True,
+                    )
+                else:
+                    self._logger.debug(
+                        "Async subscriber completed successfully",
+                        subscriber_name=subscriber_name,
+                        has_result=result is not None,
+                    )
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Gather operation errors unpredictable, must handle defensively
+            self._logger.error("Unexpected error in subscriber task group", error=str(e), error_type=type(e).__name__)
 
     async def _handle_event_async(self, event: BaseEvent) -> None:
         """
@@ -277,89 +362,21 @@ class EventBus:
             subscriber_count=len(subscribers),
             subscriber_names=[getattr(s, "__name__", "unknown") for s in subscribers],
         )
-        import inspect
 
-        # Separate async and sync subscribers
-        async_subscribers: list[Callable[[BaseEvent], Any]] = []
-        sync_subscribers: list[Callable[[BaseEvent], Any]] = []
+        async_subscribers, sync_subscribers = self._separate_subscribers(subscribers)
 
-        for subscriber in subscribers:
-            if inspect.iscoroutinefunction(subscriber):
-                async_subscribers.append(subscriber)
-            else:
-                sync_subscribers.append(subscriber)
+        self._process_sync_subscribers(sync_subscribers, event)
 
-        # Process sync subscribers first (they're blocking but quick)
-        for subscriber in sync_subscribers:
-            try:
-                subscriber(event)
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Subscriber errors unpredictable, must not fail event processing
-                subscriber_name = getattr(subscriber, "__name__", "unknown")
-                self._logger.error("Error in sync event subscriber", subscriber_name=subscriber_name, error=str(e))
-
-        # Process async subscribers with structured concurrency
-        # Use asyncio.gather with return_exceptions=True to ensure all subscribers run
-        # even if individual ones fail (appropriate for event subscribers)
         if async_subscribers:
-            # Create all subscriber tasks first
-            tasks: list[asyncio.Task] = []
-            subscriber_names: dict[asyncio.Task, str] = {}
-
-            for subscriber in async_subscribers:
-                subscriber_name = getattr(subscriber, "__name__", "unknown")
-                try:
-                    # Create task and track it
-                    task = asyncio.create_task(subscriber(event))
-                    tasks.append(task)
-                    subscriber_names[task] = subscriber_name
-                    self._active_tasks.add(task)
-
-                    # Remove from active tasks when complete
-                    def remove_task(t: asyncio.Task, _sn: str = subscriber_name) -> None:  # pylint: disable=unused-argument  # Reason: Parameter required for callback signature, subscriber_name captured in closure
-                        self._active_tasks.discard(t)
-
-                    task.add_done_callback(remove_task)
-                    self._logger.debug("Created tracked task for async subscriber", subscriber_name=subscriber_name)
-                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Task creation errors unpredictable, must continue with other subscribers
-                    # If task creation fails, log but continue with other subscribers
-                    self._logger.error(
-                        "Failed to create task for subscriber", subscriber_name=subscriber_name, error=str(e)
-                    )
-
-            # Wait for all tasks with structured concurrency pattern
-            # return_exceptions=True ensures all tasks complete even if some fail
-            if tasks:
-                try:
-                    results = await asyncio.gather(*tasks, return_exceptions=True)
-                    # Log any exceptions from subscribers
-                    for task, result in zip(tasks, results, strict=False):
-                        subscriber_name = subscriber_names.get(task, "unknown")
-                        if isinstance(result, Exception):
-                            self._logger.error(
-                                "Error in async subscriber",
-                                subscriber_name=subscriber_name,
-                                error=str(result),
-                                error_type=type(result).__name__,
-                                exc_info=True,
-                            )
-                        else:
-                            self._logger.debug(
-                                "Async subscriber completed successfully",
-                                subscriber_name=subscriber_name,
-                                has_result=result is not None,
-                            )
-                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Gather operation errors unpredictable, must handle defensively
-                    # This should not happen with return_exceptions=True, but handle defensively
-                    self._logger.error(
-                        "Unexpected error in subscriber task group", error=str(e), error_type=type(e).__name__
-                    )
+            tasks, subscriber_names = self._create_async_subscriber_tasks(async_subscribers, event)
+            await self._wait_for_async_subscribers(tasks, subscriber_names)
 
     def _handle_task_result_async(self, task: asyncio.Task, subscriber_name: str) -> None:
         """Handle async task completion with proper exception extraction."""
         try:
             # Get the result to handle exceptions without threading/runtime scheduler crossing
             task.result()
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Async subscriber errors unpredictable, must handle gracefully
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Async subscriber errors unpredictable, must handle gracefully
             self._logger.error("Error in async subscriber", subscriber_name=subscriber_name, error=str(e))
 
     def publish(self, event: BaseEvent) -> None:
@@ -412,7 +429,7 @@ class EventBus:
                             )
                     else:
                         subscriber(event)
-                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Subscriber errors unpredictable, must not fail event processing
+                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Subscriber errors unpredictable, must not fail event processing
                     subscriber_name = getattr(subscriber, "__name__", "unknown")
                     self._logger.error(
                         "Error in sync test mode subscriber", subscriber_name=subscriber_name, error=str(e)
@@ -525,7 +542,7 @@ class EventBus:
                 error=str(e),
                 error_type=type(e).__name__,
             )
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Event processing errors unpredictable, must prevent worker crashes
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Event processing errors unpredictable, must prevent worker crashes
             # Catch all other exceptions to prevent worker crashes
             # Log the error but don't re-raise to allow test cleanup to complete
             try:
@@ -535,8 +552,7 @@ class EventBus:
                     error_type=type(e).__name__,
                     exc_info=True,
                 )
-            except Exception:  # pylint: disable=broad-exception-caught  # nosec B110: Logging errors must not crash workers
-                # If logging fails, just continue - don't let logging errors crash workers
+            except Exception:  # pylint: disable=broad-exception-caught  # nosec B110: Logging errors must not crash workers  # noqa: B904                # If logging fails, just continue - don't let logging errors crash workers
                 pass
         finally:
             # Ensure state is always reset even if shutdown fails
@@ -544,14 +560,14 @@ class EventBus:
             if self._processing_task and not self._processing_task.done():
                 try:
                     self._processing_task.cancel()
-                except Exception:  # pylint: disable=broad-exception-caught  # nosec B110: Task cancellation errors unpredictable, must handle gracefully
+                except Exception:  # pylint: disable=broad-exception-caught  # nosec B110: Task cancellation errors unpredictable, must handle gracefully  # noqa: B904
                     pass
             # Clear active tasks to prevent resource leaks
             self._active_tasks.clear()
 
     def __del__(self) -> None:
         """Cleanup when the EventBus is destroyed - replaced with async-aware graceful shutdown."""
-        if self._running:
+        if self._running:  # pylint: disable=too-many-nested-blocks  # Reason: EventBus cleanup requires complex nested logic for error handling and resource cleanup
             # Use basic print instead of logger to avoid encoding issues during cleanup
             try:
                 self._logger.warning("EventBus destroyed without graceful shutdown")
@@ -574,7 +590,7 @@ class EventBus:
                         for task in list(self._active_tasks):
                             if not task.done():
                                 task.cancel()
-                except (RuntimeError, Exception):  # pylint: disable=broad-exception-caught  # Reason: Event loop cleanup errors unpredictable, must handle gracefully
+                except (RuntimeError, Exception):  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Event loop cleanup errors unpredictable, must handle gracefully
                     # Event loop is closed or not running - just clear tasks
                     pass
                 finally:

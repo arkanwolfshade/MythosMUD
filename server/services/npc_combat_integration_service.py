@@ -12,17 +12,24 @@ ASYNC MIGRATION (Phase 2):
 All persistence calls wrapped in asyncio.to_thread() to prevent event loop blocking.
 """
 
-from typing import Any
+# pylint: disable=too-many-instance-attributes,too-many-arguments,too-many-positional-arguments,too-many-locals,too-many-lines,wrong-import-position  # Reason: NPC combat integration requires many state attributes, parameters, and intermediate variables for complex combat logic. NPC combat integration requires extensive integration logic for comprehensive NPC-combat system integration. Imports after TYPE_CHECKING block are intentional to avoid circular dependencies.
+
+import uuid
+from typing import TYPE_CHECKING, Any
 from uuid import UUID, uuid4
+
+if TYPE_CHECKING:
+    from .combat_service import CombatService
 
 from sqlalchemy.exc import SQLAlchemyError
 
+from ..config import get_config
 from ..events.event_bus import EventBus
 from ..game.mechanics import GameMechanicsService
+from ..realtime.login_grace_period import is_player_in_login_grace_period
 from ..structured_logging.enhanced_logging_config import get_logger
 from .combat_event_publisher import CombatEventPublisher
 from .combat_messaging_integration import CombatMessagingIntegration
-from .combat_service import CombatService
 from .npc_combat_data_provider import NPCCombatDataProvider
 from .npc_combat_handlers import NPCCombatHandlers
 from .npc_combat_lifecycle import NPCCombatLifecycle
@@ -35,7 +42,7 @@ from .player_combat_service import PlayerCombatService
 logger = get_logger(__name__)
 
 
-class NPCCombatIntegrationService:
+class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attributes  # Reason: Combat integration service requires many state tracking and service attributes
     """
     Service for integrating NPCs with the combat system.
 
@@ -45,7 +52,7 @@ class NPCCombatIntegrationService:
     - Event publishing and messaging
     """
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Combat integration initialization requires many service dependencies
         self,
         event_bus: EventBus | None = None,
         combat_service: "CombatService | None" = None,
@@ -118,6 +125,9 @@ class NPCCombatIntegrationService:
         else:
             # Only create a new CombatService if one was not provided
             # (this is primarily for testing)
+            # Lazy import to avoid circular dependency with combat_service
+            from .combat_service import CombatService  # noqa: E402  # pylint: disable=wrong-import-position
+
             self._combat_service = CombatService(self._player_combat_service, npc_combat_integration_service=self)
 
         # Enable auto-progression features
@@ -140,7 +150,7 @@ class NPCCombatIntegrationService:
 
         logger.info("NPC Combat Integration Service initialized with auto-progression enabled")
 
-    async def handle_player_attack_on_npc(
+    async def handle_player_attack_on_npc(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Attack handling requires many parameters and intermediate variables for complex combat logic
         self,
         player_id: str,
         npc_id: str,
@@ -165,6 +175,25 @@ class NPCCombatIntegrationService:
             bool: True if attack was handled successfully
         """
         try:
+            # Check if player is in login grace period - prevent attacks
+            try:
+                config = get_config()
+                app = getattr(config, "_app_instance", None)
+                if app:
+                    connection_manager = getattr(app.state, "connection_manager", None)
+                    if connection_manager:
+                        player_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+                        if is_player_in_login_grace_period(player_uuid, connection_manager):
+                            logger.info(
+                                "Player attack on NPC blocked - player in login grace period",
+                                player_id=player_id,
+                                npc_id=npc_id,
+                            )
+                            return False  # Attack blocked
+            except (AttributeError, ImportError, TypeError, ValueError) as e:
+                # If we can't check grace period, proceed with attack (fail open)
+                logger.debug("Could not check login grace period for player attack", player_id=player_id, error=str(e))
+
             # Validate and get NPC instance
             npc_instance = await self._validate_and_get_npc_instance(player_id, npc_id, npc_instance)
             if not npc_instance:
@@ -336,7 +365,7 @@ class NPCCombatIntegrationService:
 
         return attacker_uuid, target_uuid
 
-    async def _store_npc_xp_mapping(
+    async def _store_npc_xp_mapping(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: XP mapping storage requires many parameters for context and mapping operations
         self, npc_id: str, target_uuid: UUID, room_id: str, player_id: str, first_engagement: bool
     ) -> None:
         """
@@ -381,7 +410,7 @@ class NPCCombatIntegrationService:
                 npc_id=npc_id,
             )
 
-    async def _process_combat_attack(
+    async def _process_combat_attack(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Combat attack processing requires many parameters for context and attack logic
         self,
         player_id: str,
         room_id: str,
@@ -404,7 +433,8 @@ class NPCCombatIntegrationService:
         Returns:
             Combat result
         """
-        from ..app.lifespan import get_current_tick
+        # Lazy import to avoid circular dependency with lifespan
+        from ..app.lifespan import get_current_tick  # noqa: E402  # pylint: disable=wrong-import-position
 
         current_tick = get_current_tick()
 
@@ -415,13 +445,12 @@ class NPCCombatIntegrationService:
             return await self._combat_service.process_attack(
                 attacker_id=attacker_uuid, target_id=target_uuid, damage=damage
             )
-        else:
-            # Start new combat
-            return await self._start_new_combat(
-                player_id, room_id, attacker_uuid, target_uuid, damage, npc_instance, current_tick
-            )
+        # Start new combat
+        return await self._start_new_combat(
+            player_id, room_id, attacker_uuid, target_uuid, damage, npc_instance, current_tick
+        )
 
-    async def _start_new_combat(
+    async def _start_new_combat(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Combat initialization requires many parameters for complete combat setup
         self,
         player_id: str,
         room_id: str,

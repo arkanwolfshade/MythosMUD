@@ -32,7 +32,7 @@ async def handle_time_command(
         try:
             holiday_service.refresh_active(mythos_dt)
             active_holidays = holiday_service.get_active_holiday_names()
-        except Exception as exc:  # pragma: no cover - defensive logging  # pylint: disable=broad-exception-caught  # Reason: Holiday service errors unpredictable, optional metadata
+        except Exception as exc:  # noqa: B904  # pragma: no cover - defensive logging  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Holiday service errors unpredictable, optional metadata
             logger.warning("Time command could not refresh holiday data", error=str(exc))
 
     clock_line = chronicle.format_clock(mythos_dt)

@@ -1,3 +1,11 @@
+"""Time service for managing Mythos game time and calendar.
+
+This module provides the MythosChronicle and related classes for managing
+in-game time, calendar systems, and time-based calculations.
+"""
+
+# pylint: disable=too-many-instance-attributes  # Reason: Time service requires many state tracking and configuration attributes
+
 from __future__ import annotations
 
 import calendar
@@ -61,7 +69,7 @@ class ChronicleState:
 
 
 @dataclass(frozen=True)
-class MythosCalendarComponents:
+class MythosCalendarComponents:  # pylint: disable=too-many-instance-attributes  # Reason: Calendar components dataclass requires many fields to capture complete calendar state
     """Structured view of the accelerated calendar for downstream systems."""
 
     mythos_datetime: datetime
@@ -95,10 +103,21 @@ class ChronicleLike(Protocol):
     """
 
     def get_current_mythos_datetime(self) -> datetime:  # pragma: no cover - Protocol definition
-        ...
+        """Get the current Mythos datetime.
+
+        Returns:
+            datetime: The current Mythos datetime
+        """
 
     def format_clock(self, mythos_dt: datetime | None = None) -> str:  # pragma: no cover - Protocol definition
-        ...
+        """Format the clock display string.
+
+        Args:
+            mythos_dt: Optional Mythos datetime to format (defaults to current time)
+
+        Returns:
+            str: The formatted clock string
+        """
 
 
 class MythosChronicle:
@@ -208,7 +227,7 @@ class MythosChronicle:
 
         target = _ensure_utc(mythos_dt or self.get_current_mythos_datetime())
         hour = target.hour
-        return hour == 23 or hour == 0
+        return hour == 23 or not hour
 
     def is_daytime(self, mythos_dt: datetime | None = None) -> bool:
         """Return True when the timestamp is between dawn (06:00) and dusk (18:00)."""

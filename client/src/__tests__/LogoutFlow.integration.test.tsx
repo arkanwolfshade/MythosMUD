@@ -26,11 +26,14 @@ const mockLogoutHandler = vi.mocked(logoutHandler);
 // Mock the secureTokenStorage
 vi.mock('../utils/security', () => ({
   secureTokenStorage: {
+    getToken: vi.fn(() => null),
     clearToken: vi.fn(),
     clearRefreshToken: vi.fn(),
     clearAllTokens: vi.fn(),
     setToken: vi.fn(),
     setRefreshToken: vi.fn(),
+    isValidToken: vi.fn(() => false),
+    isTokenExpired: vi.fn(() => true),
   },
   inputSanitizer: {
     sanitizeUsername: vi.fn(input => input),

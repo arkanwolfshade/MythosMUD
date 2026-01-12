@@ -7,6 +7,8 @@ cascading failures when NATS is experiencing issues.
 AI: Circuit breakers protect upstream systems from overwhelming failing downstream systems.
 """
 
+# pylint: disable=too-many-instance-attributes  # Reason: Circuit breaker requires many state tracking attributes
+
 from collections.abc import Callable
 from datetime import UTC, datetime, timedelta
 from enum import Enum

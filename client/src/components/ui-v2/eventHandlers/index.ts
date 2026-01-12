@@ -54,6 +54,7 @@ const eventHandlers: Record<string, EventHandler> = {
   rescue_update: systemHandlers.handleRescueUpdate,
   mythos_time_update: systemHandlers.handleMythosTimeUpdate,
   game_tick: systemHandlers.handleGameTick,
+  intentional_disconnect: systemHandlers.handleIntentionalDisconnect,
 };
 
 /**

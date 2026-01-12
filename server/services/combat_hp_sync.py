@@ -8,6 +8,8 @@ As documented in the restricted archives, DP synchronization requires careful
 coordination between in-memory combat state and persistent database storage.
 """
 
+# pylint: disable=too-few-public-methods,too-many-arguments,too-many-positional-arguments  # Reason: HP sync module has focused responsibility with minimal public interface, and requires many parameters for synchronization logic
+
 from uuid import UUID
 
 from ..events.event_bus import EventBus
@@ -19,7 +21,7 @@ from ..structured_logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 
-class CombatDPSync:
+class CombatDPSync:  # pylint: disable=too-few-public-methods  # Reason: DP sync class with focused responsibility, minimal public interface
     """Handles DP synchronization for combat operations."""
 
     def __init__(self, combat_service):
@@ -121,7 +123,7 @@ class CombatDPSync:
                 player_id=player_id,
                 error=str(e),
             )
-        except Exception as e:  # pragma: no cover - defensive path for unexpected test doubles  # pylint: disable=broad-exception-caught  # Reason: Task creation errors unpredictable, must handle gracefully
+        except Exception as e:  # noqa: B904  # pragma: no cover - defensive path for unexpected test doubles  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Task creation errors unpredictable, must handle gracefully
             task_coro.close()
             logger.error(
                 "Failed to create background task for DP persistence",
@@ -150,7 +152,7 @@ class CombatDPSync:
             logger.warning("Could not get persistence from container", error=str(e), player_id=player_id)
             return None
 
-    def _update_player_position(
+    def _update_player_position(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Position update requires many parameters for context and position updates
         self, stats: dict, current_dp: int, old_dp: int, player_id: UUID, player_name: str
     ) -> None:
         """
@@ -163,7 +165,7 @@ class CombatDPSync:
             player_id: Player ID for logging
             player_name: Player name for logging
         """
-        if current_dp <= 0 and old_dp > 0:
+        if current_dp <= 0 < old_dp:
             stats["position"] = PositionState.LYING
             logger.info(
                 "Player posture changed to lying (unconscious in combat)",
@@ -225,7 +227,7 @@ class CombatDPSync:
                 player_id=player_id,
                 player_name=player_name,
             )
-        elif current_dp <= 0 and old_dp > 0:
+        elif current_dp <= 0 < old_dp:
             logger.info(
                 "Player became mortally wounded in combat",
                 player_id=player_id,
@@ -320,7 +322,7 @@ class CombatDPSync:
                 exc_info=True,
             )
 
-    async def _publish_player_dp_update_event(
+    async def _publish_player_dp_update_event(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event publishing requires many parameters for complete event context
         self,
         player_id: UUID,
         old_dp: int,
@@ -439,7 +441,7 @@ class CombatDPSync:
                 exc_info=True,
             )
 
-    async def _publish_player_dp_correction_event(
+    async def _publish_player_dp_correction_event(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event publishing requires many parameters for complete event context
         self,
         player_id: UUID,
         correct_dp: int,

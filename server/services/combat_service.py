@@ -5,9 +5,14 @@ This service handles all combat-related operations including state management,
 turn order calculation, and combat resolution.
 """
 
+# pylint: disable=too-many-instance-attributes,too-many-arguments,too-many-positional-arguments,too-many-locals,too-many-lines  # Reason: Combat service requires many state tracking attributes and complex combat logic. Combat service requires extensive combat logic for comprehensive combat system management.
+
 from uuid import UUID
 
+from server.commands.rest_command import _cancel_rest_countdown, is_player_resting
+from server.config import get_config
 from server.events.combat_events import CombatStartedEvent
+from server.events.event_bus import EventBus
 from server.models.combat import (
     CombatInstance,
     CombatParticipant,
@@ -15,23 +20,31 @@ from server.models.combat import (
     CombatResult,
     CombatStatus,
 )
+from server.realtime.login_grace_period import is_player_in_login_grace_period
 from server.services.combat_attack_handler import CombatAttackHandler
 from server.services.combat_cleanup_handler import CombatCleanupHandler
 from server.services.combat_death_handler import CombatDeathHandler
 from server.services.combat_event_handler import CombatEventHandler
 from server.services.combat_event_publisher import CombatEventPublisher
+from server.services.combat_flee_handler import check_involuntary_flee
 from server.services.combat_initialization import CombatInitializer
 from server.services.combat_persistence_handler import CombatPersistenceHandler
+from server.services.combat_service_state import (  # noqa: PLC0415
+    COMBAT_SERVICE,
+    get_combat_service,
+    set_combat_service,
+)
 from server.services.combat_turn_processor import CombatTurnProcessor
 from server.services.combat_types import CombatParticipantData
 from server.services.nats_exceptions import NATSError
+from server.services.nats_subject_manager import NATSSubjectManager
 from server.services.player_combat_service import PlayerCombatService
 from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
 
-class CombatService:
+class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: Combat service requires many state tracking and service attributes
     """
     Service for managing combat instances and state.
 
@@ -51,9 +64,6 @@ class CombatService:
         magic_service=None,
     ):
         """Initialize the combat service."""
-        from server.config import get_config
-        from server.events.event_bus import EventBus
-
         self._active_combats: dict[UUID, CombatInstance] = {}
         self._player_combats: dict[UUID, UUID] = {}  # player_id -> combat_id
         self._npc_combats: dict[UUID, UUID] = {}  # npc_id -> combat_id
@@ -72,13 +82,11 @@ class CombatService:
             logger.debug("Creating CombatEventPublisher")
             # If no subject_manager provided, create one with default settings
             if subject_manager is None and nats_service is not None:
-                from .nats_subject_manager import NATSSubjectManager
-
                 subject_manager = NATSSubjectManager()
                 logger.debug("Created NATSSubjectManager with default settings")
             self._combat_event_publisher = CombatEventPublisher(nats_service, subject_manager)
             logger.debug("CombatEventPublisher created successfully")
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: CombatEventPublisher creation errors unpredictable, must handle gracefully
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: CombatEventPublisher creation errors unpredictable, must handle gracefully
             logger.error(
                 "CRITICAL ERROR: Failed to create CombatEventPublisher",
                 error=str(e),
@@ -120,6 +128,91 @@ class CombatService:
         """Set turn interval in seconds."""
         self._turn_interval_seconds = value
 
+    async def _check_target_rest_and_grace_period(
+        self, target: CombatParticipantData, attacker: CombatParticipantData
+    ) -> None:
+        """Check if target is resting or in grace period and handle accordingly."""
+        if target.participant_type != CombatParticipantType.PLAYER:
+            return
+
+        try:
+            config = get_config()
+            app = getattr(config, "_app_instance", None)
+            if not app:
+                return
+
+            connection_manager = getattr(app.state, "connection_manager", None)
+            if not connection_manager:
+                return
+
+            target_id = target.participant_id
+
+            if is_player_in_login_grace_period(target_id, connection_manager):
+                logger.info(
+                    "Combat prevented - target in login grace period",
+                    target_id=target_id,
+                    target_name=target.name,
+                    attacker_name=attacker.name,
+                )
+                raise ValueError("Target is protected by login grace period and cannot be attacked")
+
+            if is_player_resting(target_id, connection_manager):
+                await _cancel_rest_countdown(target_id, connection_manager)
+                logger.info(
+                    "Rest interrupted by combat start (player attacked)",
+                    target_id=target_id,
+                    target_name=target.name,
+                )
+        except (AttributeError, ImportError, TypeError) as e:
+            logger.debug("Could not check rest state for combat start", target_id=target.participant_id, error=str(e))
+        except ValueError as e:
+            if "login grace period" in str(e):
+                raise
+            logger.debug("Could not check rest state for combat start", target_id=target.participant_id, error=str(e))
+
+    async def _check_attacker_grace_period(
+        self, attacker: CombatParticipantData, target: CombatParticipantData
+    ) -> None:
+        """Check if attacker is in login grace period."""
+        if attacker.participant_type != CombatParticipantType.PLAYER:
+            return
+
+        try:
+            config = get_config()
+            app = getattr(config, "_app_instance", None)
+            if not app:
+                return
+
+            connection_manager = getattr(app.state, "connection_manager", None)
+            if not connection_manager:
+                return
+
+            attacker_id = attacker.participant_id
+
+            if is_player_in_login_grace_period(attacker_id, connection_manager):
+                logger.info(
+                    "Combat prevented - attacker in login grace period",
+                    attacker_id=attacker_id,
+                    attacker_name=attacker.name,
+                    target_name=target.name,
+                )
+                raise ValueError("You are protected by login grace period and cannot initiate combat")
+        except (AttributeError, ImportError, TypeError) as e:
+            logger.debug(
+                "Could not check login grace period for attacker", attacker_id=attacker.participant_id, error=str(e)
+            )
+        except ValueError as e:
+            if "login grace period" in str(e):
+                raise
+            logger.debug(
+                "Could not check login grace period for attacker", attacker_id=attacker.participant_id, error=str(e)
+            )
+
+    def _validate_combat_can_start(self, attacker: CombatParticipantData, target: CombatParticipantData) -> None:
+        """Validate that combat can start (participants not already in combat)."""
+        if attacker.participant_id in self._player_combats or target.participant_id in self._npc_combats:
+            raise ValueError("One or both participants are already in combat")
+
     async def start_combat(
         self,
         room_id: str,
@@ -143,11 +236,11 @@ class CombatService:
             ValueError: If combat cannot be started (invalid participants, etc.)
         """
         logger.info("Starting combat", attacker=attacker.name, target=target.name, room_id=room_id)
-        # Check if either participant is already in combat
-        if attacker.participant_id in self._player_combats or target.participant_id in self._npc_combats:
-            raise ValueError("One or both participants are already in combat")
 
-        # Create and initialize combat instance
+        await self._check_target_rest_and_grace_period(target, attacker)
+        await self._check_attacker_grace_period(attacker, target)
+        self._validate_combat_can_start(attacker, target)
+
         combat = CombatInitializer.create_combat_instance(
             room_id=room_id,
             attacker=attacker,
@@ -157,12 +250,10 @@ class CombatService:
             turn_interval_seconds=self._turn_interval_seconds,
         )
 
-        # Store combat and track state
         await self._register_combat(combat, attacker, room_id)
 
         logger.info("Combat started", combat_id=combat.combat_id, turn_order=combat.turn_order)
 
-        # Publish combat started event
         await self._publish_combat_started_event(combat, room_id)
 
         return combat
@@ -261,95 +352,16 @@ class CombatService:
         """
         Check if player should involuntarily flee due to lucidity effects.
 
-        Deranged tier players have a 20% chance to auto-flee when taking >15% max HP damage
-        in one hit, with a 2-minute cooldown.
-
         Args:
             target: The player participant who took damage
             damage: Amount of damage taken
-            combat: Combat instance
+            combat: Combat instance (unused, reserved for future use)
 
         Returns:
             True if player should flee, False otherwise
         """
         _ = combat  # Intentionally unused - reserved for future combat context needs
-        try:
-            from datetime import UTC, datetime, timedelta
-
-            from ..database import get_async_session
-            from ..services.lucidity_command_disruption import should_involuntary_flee
-            from ..services.lucidity_service import LucidityService
-
-            # Calculate damage percentage
-            if target.max_dp <= 0:
-                return False  # Avoid division by zero
-            damage_percent = damage / target.max_dp
-
-            # Get lucidity tier from database
-            async for session in get_async_session():
-                try:
-                    lucidity_service = LucidityService(session)
-                    lucidity_record = await lucidity_service.get_player_lucidity(target.participant_id)
-                    tier = lucidity_record.current_tier if lucidity_record else "lucid"
-
-                    # Check if should flee based on tier and damage
-                    if not should_involuntary_flee(tier, damage_percent):
-                        return False
-
-                    # Check cooldown (2 minutes)
-                    cooldown_code = "involuntary_flee"
-                    cooldown = await lucidity_service.get_cooldown(target.participant_id, cooldown_code)
-                    if cooldown and cooldown.cooldown_expires_at:
-                        # Cooldown still active
-                        if cooldown.cooldown_expires_at.tzinfo is None:
-                            expires_at = cooldown.cooldown_expires_at.replace(tzinfo=UTC)
-                        else:
-                            expires_at = cooldown.cooldown_expires_at
-                        if datetime.now(UTC) < expires_at:
-                            logger.debug(
-                                "Involuntary flee on cooldown",
-                                player_id=target.participant_id,
-                                expires_at=expires_at.isoformat(),
-                            )
-                            return False
-
-                    # Set cooldown (2 minutes from now)
-                    cooldown_expires = datetime.now(UTC) + timedelta(minutes=2)
-                    # Remove timezone for database storage (PostgreSQL TIMESTAMP WITHOUT TIME ZONE)
-                    cooldown_expires_naive = cooldown_expires.replace(tzinfo=None)
-                    await lucidity_service.set_cooldown(target.participant_id, cooldown_code, cooldown_expires_naive)
-                    await session.commit()
-
-                    logger.info(
-                        "Involuntary flee conditions met",
-                        player_id=target.participant_id,
-                        tier=tier,
-                        damage=damage,
-                        damage_percent=damage_percent,
-                        max_dp=target.max_dp,
-                    )
-                    return True
-
-                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Flee check errors unpredictable, must not fail combat
-                    logger.warning(
-                        "Error checking involuntary flee",
-                        player_id=target.participant_id,
-                        error=str(e),
-                        error_type=type(e).__name__,
-                    )
-                    await session.rollback()
-                    return False
-
-        except Exception as e:  # pylint: disable=broad-except
-            logger.warning(
-                "Error in involuntary flee check (session creation)",
-                player_id=target.participant_id,
-                error=str(e),
-                error_type=type(e).__name__,
-            )
-            return False
-
-        return False
+        return await check_involuntary_flee(target, damage)
 
     async def _validate_and_get_combat_participants(
         self, attacker_id: UUID, target_id: UUID, is_initial_attack: bool
@@ -393,7 +405,7 @@ class CombatService:
             await self._handle_player_dp_update(target, old_dp, combat)
         return old_dp, target_died, target_mortally_wounded
 
-    async def _handle_target_state_changes(
+    async def _handle_target_state_changes(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: State change handling requires many parameters for context and state updates
         self,
         target: CombatParticipant,
         current_participant: CombatParticipant,
@@ -495,16 +507,15 @@ class CombatService:
                 )
         else:
             # Set up next turn tick for auto-progression
-            # Lazy import to avoid circular import: lifespan -> lifespan_startup -> combat_service -> lifespan
-            # pylint: disable=import-outside-toplevel
-            # Reason: Circular import avoidance - combat_service imports get_current_tick from lifespan,
-            # but lifespan imports from lifespan_startup which imports CombatService
-            from server.app.lifespan import get_current_tick  # noqa: PLC0415
+            # Lazy import to avoid circular dependency with game_tick_processing
+            from server.app.game_tick_processing import (
+                get_current_tick,  # noqa: E402  # pylint: disable=wrong-import-position
+            )
 
             combat.next_turn_tick = get_current_tick() + combat.turn_interval_ticks
             logger.debug("Combat attack processed, auto-progression enabled", combat_id=combat.combat_id)
 
-    async def process_attack(
+    async def process_attack(  # pylint: disable=too-many-locals  # Reason: Attack processing requires many intermediate variables for complex combat logic
         self, attacker_id: UUID, target_id: UUID, damage: int = 10, is_initial_attack: bool = False
     ) -> CombatResult:
         """
@@ -655,20 +666,4 @@ class CombatService:
         }
 
 
-# Global combat service instance - will be properly initialized by lifespan
-# Using a dict container to avoid global statement warnings
-_combat_service_state: dict[str, CombatService | None] = {"service": None}
-
-
-def get_combat_service() -> CombatService | None:
-    """Get the global combat service instance."""
-    return _combat_service_state["service"]
-
-
-def set_combat_service(service: CombatService | None) -> None:
-    """Set the global combat service instance."""
-    _combat_service_state["service"] = service
-
-
-# For backward compatibility
-combat_service = None
+__all__ = ["CombatService", "get_combat_service", "set_combat_service", "COMBAT_SERVICE"]

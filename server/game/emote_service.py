@@ -46,7 +46,7 @@ def _get_emote_validator() -> Optional["SchemaValidator"]:
 
     try:
         _EMOTE_VALIDATOR = create_validator("emote")
-    except Exception as exc:  # pragma: no cover - defensive logging path  # pylint: disable=broad-exception-caught  # Reason: Validator creation errors unpredictable, must handle gracefully
+    except Exception as exc:  # noqa: B904  # pragma: no cover - defensive logging path  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Validator creation errors unpredictable, must handle gracefully
         logger.warning("Emote schema validator creation failed", error=str(exc))
         _EMOTE_VALIDATOR = None
 
@@ -80,7 +80,7 @@ class EmoteService:
             asyncio.set_event_loop(new_loop)
             try:
                 new_loop.run_until_complete(self._async_load_emotes(result_container))
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Emote loading errors unpredictable, must allow graceful degradation
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Emote loading errors unpredictable, must allow graceful degradation
                 # Catch exception and store in result_container instead of raising
                 # This allows graceful degradation when database table doesn't exist
                 result_container["error"] = e
@@ -185,7 +185,7 @@ class EmoteService:
                         result_container["aliases"][stable_id].append(alias)
             finally:
                 await conn.close()
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Database connection errors unpredictable, must store in container
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Database connection errors unpredictable, must store in container
             # Store error in result_container - don't raise, let _load_emotes handle it
             result_container["error"] = e
 

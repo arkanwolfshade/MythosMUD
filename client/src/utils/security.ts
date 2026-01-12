@@ -20,34 +20,59 @@ interface RefreshTokenResponse {
 
 /**
  * Secure token storage using httpOnly cookies
+ * MULTI-TAB SUPPORT: Uses user-specific keys to prevent token conflicts between tabs
  */
 export const secureTokenStorage = {
   /**
-   * Store authentication token in localStorage
+   * Get the storage key for a specific username
+   * Uses sessionStorage to track which user is logged in on this tab
+   */
+  getStorageKey(): string {
+    // Get username from sessionStorage (per-tab, so each tab knows its own user)
+    const username = sessionStorage.getItem('mythosmud_username');
+    if (username) {
+      return `authToken_${username}`;
+    }
+    // Fallback to default key for backward compatibility
+    return 'authToken';
+  },
+
+  /**
+   * Store authentication token in localStorage with user-specific key
+   * Also stores username in sessionStorage to track which user this tab belongs to
    * NOTE: For production, this should be stored in httpOnly cookies set by the server
    */
-  setToken(token: string): void {
+  setToken(token: string, username?: string): void {
     if (import.meta.env.DEV || import.meta.env.MODE === 'test') {
-      localStorage.setItem('authToken', token);
+      // If username provided, store it in sessionStorage (per-tab)
+      if (username) {
+        sessionStorage.setItem('mythosmud_username', username);
+      }
+      const key = this.getStorageKey();
+      localStorage.setItem(key, token);
     }
   },
 
   /**
-   * Retrieve authentication token from localStorage
+   * Retrieve authentication token from localStorage using user-specific key
    */
   getToken(): string | null {
     if (!(import.meta.env.DEV || import.meta.env.MODE === 'test')) {
       return null;
     }
-    return localStorage.getItem('authToken');
+    const key = this.getStorageKey();
+    return localStorage.getItem(key);
   },
 
   /**
-   * Clear authentication token
+   * Clear authentication token for the current user
    */
   clearToken(): void {
     if (import.meta.env.DEV || import.meta.env.MODE === 'test') {
-      localStorage.removeItem('authToken');
+      const key = this.getStorageKey();
+      localStorage.removeItem(key);
+      // Also clear username from sessionStorage
+      sessionStorage.removeItem('mythosmud_username');
     }
   },
 
@@ -125,35 +150,45 @@ export const secureTokenStorage = {
   },
 
   /**
-   * Get refresh token from localStorage
+   * Get refresh token from localStorage using user-specific key
    */
   getRefreshToken(): string | null {
     if (!(import.meta.env.DEV || import.meta.env.MODE === 'test')) {
       return null;
     }
-    return localStorage.getItem('refreshToken');
+    const username = sessionStorage.getItem('mythosmud_username');
+    const key = username ? `refreshToken_${username}` : 'refreshToken';
+    return localStorage.getItem(key);
   },
 
   /**
-   * Set refresh token in localStorage
+   * Set refresh token in localStorage with user-specific key
    */
-  setRefreshToken(token: string): void {
+  setRefreshToken(token: string, username?: string): void {
     if (import.meta.env.DEV || import.meta.env.MODE === 'test') {
-      localStorage.setItem('refreshToken', token);
+      if (username) {
+        sessionStorage.setItem('mythosmud_username', username);
+      }
+      const usernameFromStorage = sessionStorage.getItem('mythosmud_username');
+      const key = usernameFromStorage ? `refreshToken_${usernameFromStorage}` : 'refreshToken';
+      localStorage.setItem(key, token);
     }
   },
 
   /**
-   * Clear refresh token
+   * Clear refresh token for the current user
    */
   clearRefreshToken(): void {
     if (import.meta.env.DEV || import.meta.env.MODE === 'test') {
-      localStorage.removeItem('refreshToken');
+      const username = sessionStorage.getItem('mythosmud_username');
+      const key = username ? `refreshToken_${username}` : 'refreshToken';
+      localStorage.removeItem(key);
     }
   },
 
   /**
-   * Clear all tokens (both access and refresh)
+   * Clear all tokens (both access and refresh) for the current user
+   * Note: This only clears tokens for the user associated with this tab (via sessionStorage)
    */
   clearAllTokens(): void {
     this.clearToken();

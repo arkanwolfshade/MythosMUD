@@ -1,3 +1,9 @@
+"""Pydantic models for item prototype validation.
+
+This module defines the ItemPrototypeModel and related models used for
+validating item prototype data structures.
+"""
+
 from __future__ import annotations
 
 from typing import Any
@@ -35,6 +41,17 @@ class ItemPrototypeModel(BaseModel):
     @field_validator("item_type")
     @classmethod
     def validate_item_type(cls, value: str) -> str:
+        """Validate that item_type is in the allowed list.
+
+        Args:
+            value: The item type to validate
+
+        Returns:
+            str: The validated item type
+
+        Raises:
+            ValueError: If item_type is not in ALLOWED_ITEM_TYPES
+        """
         if value not in ALLOWED_ITEM_TYPES:
             msg = f"item_type must be one of: {sorted(ALLOWED_ITEM_TYPES)}"
             raise ValueError(msg)
@@ -43,6 +60,17 @@ class ItemPrototypeModel(BaseModel):
     @field_validator("flags")
     @classmethod
     def validate_flags(cls, value: list[str]) -> list[str]:
+        """Validate that all flags are in the allowed list.
+
+        Args:
+            value: The list of flags to validate
+
+        Returns:
+            list[str]: The validated list of flags
+
+        Raises:
+            ValueError: If any flag is not in ALLOWED_FLAGS
+        """
         invalid = [flag for flag in value if flag not in ALLOWED_FLAGS]
         if invalid:
             raise ValueError(f"Invalid flags: {invalid}")
@@ -51,6 +79,17 @@ class ItemPrototypeModel(BaseModel):
     @field_validator("wear_slots")
     @classmethod
     def validate_wear_slots(cls, value: list[str]) -> list[str]:
+        """Validate that all wear slots are in the allowed list.
+
+        Args:
+            value: The list of wear slots to validate
+
+        Returns:
+            list[str]: The validated list of wear slots
+
+        Raises:
+            ValueError: If any wear slot is not in ALLOWED_WEAR_SLOTS
+        """
         invalid = [slot for slot in value if slot not in ALLOWED_WEAR_SLOTS]
         if invalid:
             raise ValueError(f"Invalid wear slots: {invalid}")
@@ -59,6 +98,17 @@ class ItemPrototypeModel(BaseModel):
     @field_validator("effect_components")
     @classmethod
     def validate_effect_components(cls, value: list[str]) -> list[str]:
+        """Validate and normalize effect components.
+
+        Args:
+            value: The list of effect components to validate
+
+        Returns:
+            list[str]: The normalized list of effect components
+
+        Raises:
+            ValueError: If any component is not a non-empty string
+        """
         normalised: list[str] = []
         for component in value:
             if not isinstance(component, str) or not component.strip():
@@ -69,6 +119,14 @@ class ItemPrototypeModel(BaseModel):
     @field_validator("tags")
     @classmethod
     def validate_tags(cls, value: list[str]) -> list[str]:
+        """Validate and normalize tags.
+
+        Args:
+            value: The list of tags to validate
+
+        Returns:
+            list[str]: The normalized list of tags (stripped and non-empty)
+        """
         return [tag.strip() for tag in value if tag.strip()]
 
 

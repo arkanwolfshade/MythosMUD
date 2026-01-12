@@ -28,6 +28,8 @@ class InventorySplitError(InventoryServiceError):
 
 
 class InventoryStackRequired(TypedDict):
+    """Required fields for inventory stack TypedDict."""
+
     item_instance_id: str
     prototype_id: str
     item_id: str
@@ -46,6 +48,8 @@ class InnerContainer(TypedDict, total=False):
 
 
 class InventoryStack(InventoryStackRequired, total=False):
+    """Inventory stack TypedDict with required and optional fields."""
+
     metadata: dict[str, Any]
     flags: list[str]
     origin: dict[str, Any]
@@ -169,33 +173,36 @@ class InventoryService:
         player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
         return self.mutation_guard.acquire(player_id_str, token)
 
-    def _clone_stack(self, stack: Mapping[str, Any]) -> InventoryStack:
-        try:
-            raw_instance_id = stack.get("item_instance_id") or stack.get("item_id")
-            if not raw_instance_id:
-                raise KeyError("item_instance_id")
-            item_instance_id = cast(str, raw_instance_id)
-            prototype_id = cast(str, stack.get("prototype_id") or stack.get("item_id"))
-            item_name = cast(str, stack["item_name"])
-            slot_type = cast(str, stack["slot_type"])
-            quantity = int(stack["quantity"])
-        except KeyError as exc:
-            raise InventoryValidationError(f"Missing required inventory field: {exc.args[0]}") from None
-        except (TypeError, ValueError) as exc:
-            raise InventoryValidationError("Quantity must be coercible to an integer.") from exc
+    def _extract_required_fields(self, stack: Mapping[str, Any]) -> tuple[str, str, str, str, int]:
+        """
+        Extract required fields from stack.
 
-        if quantity <= 0:
-            raise InventoryValidationError("Quantity must be a positive integer.")
+        Returns:
+            Tuple of (item_instance_id, prototype_id, item_name, slot_type, quantity)
+        """
+        raw_instance_id = stack.get("item_instance_id") or stack.get("item_id")
+        if not raw_instance_id:
+            raise KeyError("item_instance_id")
 
-        clone: InventoryStack = {
-            "item_instance_id": item_instance_id,
-            "prototype_id": prototype_id,
-            "item_id": prototype_id,
-            "item_name": item_name,
-            "slot_type": slot_type,
-            "quantity": quantity,
-        }
+        item_instance_id = cast(str, raw_instance_id)
+        prototype_id = cast(str, stack.get("prototype_id") or stack.get("item_id"))
+        item_name = cast(str, stack["item_name"])
+        slot_type = cast(str, stack["slot_type"])
+        quantity = int(stack["quantity"])
 
+        return item_instance_id, prototype_id, item_name, slot_type, quantity
+
+    def _validate_and_clone_optional_fields(self, stack: Mapping[str, Any], clone: InventoryStack) -> InventoryStack:
+        """
+        Validate and clone optional fields (metadata, flags, origin, etc.).
+
+        Args:
+            stack: Original stack
+            clone: Clone dictionary to update
+
+        Returns:
+            Updated clone dictionary
+        """
         metadata = stack.get("metadata")
         if metadata is not None:
             if not isinstance(metadata, dict):
@@ -225,6 +232,28 @@ class InventoryService:
             clone["inner_container"] = cast(InnerContainer, copy.deepcopy(inner_container))
 
         return clone
+
+    def _clone_stack(self, stack: Mapping[str, Any]) -> InventoryStack:
+        try:
+            item_instance_id, prototype_id, item_name, slot_type, quantity = self._extract_required_fields(stack)
+        except KeyError as exc:
+            raise InventoryValidationError(f"Missing required inventory field: {exc.args[0]}") from None
+        except (TypeError, ValueError) as exc:
+            raise InventoryValidationError("Quantity must be coercible to an integer.") from exc
+
+        if quantity <= 0:
+            raise InventoryValidationError("Quantity must be a positive integer.")
+
+        clone: InventoryStack = {
+            "item_instance_id": item_instance_id,
+            "prototype_id": prototype_id,
+            "item_id": prototype_id,
+            "item_name": item_name,
+            "slot_type": slot_type,
+            "quantity": quantity,
+        }
+
+        return self._validate_and_clone_optional_fields(stack, clone)
 
     def _clone_with_quantity(self, stack: Mapping[str, Any], quantity: int) -> InventoryStack:
         if quantity <= 0:

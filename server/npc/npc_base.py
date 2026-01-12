@@ -5,6 +5,8 @@ This module provides the base NPC class with common functionality including
 stats management, inventory, communication, and basic behavior framework.
 """
 
+# pylint: disable=too-many-lines,too-many-public-methods  # Reason: NPC base class requires extensive base functionality for comprehensive NPC behavior and state management. NPC base class legitimately requires many public methods for comprehensive NPC operations.
+
 import json
 import time
 from abc import ABC, abstractmethod
@@ -17,7 +19,7 @@ from .behavior_engine import BehaviorEngine
 logger = get_logger(__name__)
 
 
-class NPCBase(ABC):
+class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: NPC base requires many fields for complete NPC state and behavior
     """
     Base class for all NPCs.
 
@@ -221,9 +223,9 @@ class NPCBase(ABC):
             if len(self._inventory) < original_count:
                 logger.debug("Removed item from inventory", npc_id=self.npc_id, item_id=item_id)
                 return True
-            else:
-                logger.warning("Item not found in inventory", npc_id=self.npc_id, item_id=item_id)
-                return False
+
+            logger.warning("Item not found in inventory", npc_id=self.npc_id, item_id=item_id)
+            return False
         except (TypeError, KeyError, AttributeError) as e:
             logger.error(
                 "Error removing item from inventory", npc_id=self.npc_id, error=str(e), error_type=type(e).__name__
@@ -465,26 +467,24 @@ class NPCBase(ABC):
                     return self.communication_integration.send_whisper_to_player(
                         self.npc_id, target_id, message, self.current_room
                     )
-                else:
-                    # Send message to room
-                    return self.communication_integration.send_message_to_room(
-                        self.npc_id, self.current_room, message, channel
-                    )
-            else:
-                # Fallback to direct event publishing
-                if self.event_bus:
-                    from ..events.event_types import NPCSpoke
+                # Send message to room
+                return self.communication_integration.send_message_to_room(
+                    self.npc_id, self.current_room, message, channel
+                )
+            # Fallback to direct event publishing
+            if self.event_bus:
+                from ..events.event_types import NPCSpoke
 
-                    self.event_bus.publish(
-                        NPCSpoke(
-                            npc_id=self.npc_id,
-                            room_id=self.current_room or "unknown",
-                            message=message,
-                            channel=channel,
-                            target_id=target_id,
-                        )
+                self.event_bus.publish(
+                    NPCSpoke(
+                        npc_id=self.npc_id,
+                        room_id=self.current_room or "unknown",
+                        message=message,
+                        channel=channel,
+                        target_id=target_id,
                     )
-                return True
+                )
+            return True
 
         except (AttributeError, TypeError, RuntimeError) as e:
             logger.error("Error NPC speaking", npc_id=self.npc_id, error=str(e), error_type=type(e).__name__)
@@ -500,21 +500,24 @@ class NPCBase(ABC):
                 return self.communication_integration.handle_player_message(
                     self.npc_id, speaker_id, message, self.current_room, channel
                 )
-            else:
-                # Fallback to direct event publishing
-                if self.event_bus:
-                    from ..events.event_types import NPCListened
 
-                    self.event_bus.publish(
-                        NPCListened(
-                            npc_id=self.npc_id,
-                            room_id=self.current_room or "unknown",
-                            message=message,
-                            speaker_id=speaker_id,
-                            channel=channel,
-                        )
+            # Fallback to direct event publishing
+            if self.event_bus:
+                from ..events.event_types import NPCListened
+
+                self.event_bus.publish(
+                    NPCListened(
+                        npc_id=self.npc_id,
+                        room_id=self.current_room or "unknown",
+                        message=message,
+                        speaker_id=speaker_id,
+                        channel=channel,
                     )
+                )
                 return True
+
+            # No event bus available
+            return False
 
         except (AttributeError, TypeError, RuntimeError) as e:
             logger.error("Error NPC listening", npc_id=self.npc_id, error=str(e), error_type=type(e).__name__)
@@ -691,16 +694,14 @@ class NPCBase(ABC):
         if self._ai_config.get("ai_enabled", False):
             # Placeholder for AI integration
             return f"[AI Response to: {input_text}]"
-        else:
-            return "I don't understand."
+        return "I don't understand."
 
     def make_ai_decision(self, _context: dict[str, Any]) -> dict[str, Any]:
         """Make AI decision (placeholder for future implementation)."""
         if self._ai_config.get("ai_enabled", False):
             # Placeholder for AI decision making
             return {"action": "idle", "confidence": 0.5}
-        else:
-            return {"action": "idle", "confidence": 1.0}
+        return {"action": "idle", "confidence": 1.0}
 
     def learn_from_interaction(self, player_id: str, feedback: str) -> bool:
         """Learn from interaction (placeholder for future implementation)."""
@@ -708,5 +709,4 @@ class NPCBase(ABC):
             # Placeholder for AI learning
             logger.debug("AI learning from interaction", npc_id=self.npc_id, player_id=player_id, feedback=feedback)
             return True
-        else:
-            return False
+        return False

@@ -52,6 +52,103 @@ class MessageBroadcaster:
         self.room_manager = room_manager
         self.send_personal_message = send_personal_message_callback
 
+    def _build_target_mapping(
+        self, target_list: list[str], room_id: str, broadcast_stats: dict[str, Any]
+    ) -> list[tuple[str, uuid.UUID]]:
+        """
+        Convert string player IDs to UUIDs for message sending.
+
+        Args:
+            target_list: List of player ID strings
+            room_id: Room ID for logging
+            broadcast_stats: Stats dict to update with failures
+
+        Returns:
+            List of (player_id_str, player_id_uuid) tuples
+        """
+        target_mapping: list[tuple[str, uuid.UUID]] = []
+        for pid_str in target_list:
+            try:
+                pid_uuid = uuid.UUID(pid_str)
+                target_mapping.append((pid_str, pid_uuid))
+            except (ValueError, TypeError, AttributeError):
+                logger.warning("Invalid player ID format in room subscribers", player_id=pid_str, room_id=room_id)
+                broadcast_stats["delivery_details"][pid_str] = {
+                    "success": False,
+                    "error": "Invalid player ID format",
+                }
+                broadcast_stats["failed_deliveries"] += 1
+        return target_mapping
+
+    def _process_batch_delivery_results(
+        self,
+        delivery_results: list[Any],
+        target_mapping: list[tuple[str, uuid.UUID]],
+        room_id: str,
+        broadcast_stats: dict[str, Any],
+    ) -> None:
+        """
+        Process results from batch message delivery.
+
+        Args:
+            delivery_results: Results from asyncio.gather
+            target_mapping: List of (player_id_str, player_id_uuid) tuples
+            room_id: Room ID for logging
+            broadcast_stats: Stats dict to update
+        """
+        for i, (pid_str, _pid_uuid) in enumerate(target_mapping):
+            if i >= len(delivery_results):
+                continue
+            result = delivery_results[i]
+            if isinstance(result, Exception):
+                logger.error(
+                    "Error sending message in batch broadcast",
+                    player_id=pid_str,
+                    room_id=room_id,
+                    error=str(result),
+                )
+                broadcast_stats["delivery_details"][pid_str] = {"success": False, "error": str(result)}
+                broadcast_stats["failed_deliveries"] += 1
+            else:
+                delivery_status: dict[str, Any] = result
+                broadcast_stats["delivery_details"][pid_str] = delivery_status
+                if delivery_status["success"]:
+                    broadcast_stats["successful_deliveries"] += 1
+                else:
+                    broadcast_stats["failed_deliveries"] += 1
+
+    async def _fallback_individual_send(
+        self,
+        target_mapping: list[tuple[str, uuid.UUID]],
+        event: dict[str, Any],
+        _room_id: str,
+        broadcast_stats: dict[str, Any],
+    ) -> None:
+        """
+        Fallback to individual message sending if batch fails.
+
+        Args:
+            target_mapping: List of (player_id_str, player_id_uuid) tuples
+            event: Event to send
+            room_id: Room ID for logging
+            broadcast_stats: Stats dict to update
+        """
+        for pid_str, pid_uuid in target_mapping:
+            try:
+                delivery_status = await self.send_personal_message(pid_uuid, event)
+                broadcast_stats["delivery_details"][pid_str] = delivery_status
+                if delivery_status["success"]:
+                    broadcast_stats["successful_deliveries"] += 1
+                else:
+                    broadcast_stats["failed_deliveries"] += 1
+            except Exception as individual_error:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Individual message sending errors unpredictable, must continue processing
+                logger.error(
+                    "Error sending individual message in fallback",
+                    player_id=pid_str,
+                    error=str(individual_error),
+                )
+                broadcast_stats["failed_deliveries"] += 1
+
     async def broadcast_to_room(
         self,
         room_id: str,
@@ -96,50 +193,16 @@ class MessageBroadcaster:
             broadcast_stats["excluded_players"] = excluded_count
 
         if target_list:
-            # Convert string player IDs to UUIDs for send_personal_message
-            target_mapping: list[tuple[str, uuid.UUID]] = []
-            for pid_str in target_list:
-                try:
-                    pid_uuid = uuid.UUID(pid_str)
-                    target_mapping.append((pid_str, pid_uuid))
-                except (ValueError, TypeError, AttributeError):
-                    logger.warning("Invalid player ID format in room subscribers", player_id=pid_str, room_id=room_id)
-                    broadcast_stats["delivery_details"][pid_str] = {
-                        "success": False,
-                        "error": "Invalid player ID format",
-                    }
-                    broadcast_stats["failed_deliveries"] += 1
-                    continue
+            target_mapping = self._build_target_mapping(target_list, room_id, broadcast_stats)
 
-            # Send to all targets concurrently using asyncio.gather
             try:
                 delivery_results = await asyncio.gather(
                     *[self.send_personal_message(pid_uuid, event) for _pid_str, pid_uuid in target_mapping],
                     return_exceptions=True,
                 )
 
-                # Process results
-                for i, (pid_str, _pid_uuid) in enumerate(target_mapping):
-                    if i >= len(delivery_results):
-                        continue
-                    result = delivery_results[i]
-                    if isinstance(result, Exception):
-                        logger.error(
-                            "Error sending message in batch broadcast",
-                            player_id=pid_str,
-                            room_id=room_id,
-                            error=str(result),
-                        )
-                        broadcast_stats["delivery_details"][pid_str] = {"success": False, "error": str(result)}
-                        broadcast_stats["failed_deliveries"] += 1
-                    else:
-                        delivery_status: dict[str, Any] = result  # type: ignore[assignment]
-                        broadcast_stats["delivery_details"][pid_str] = delivery_status
-                        if delivery_status["success"]:
-                            broadcast_stats["successful_deliveries"] += 1
-                        else:
-                            broadcast_stats["failed_deliveries"] += 1
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Batch broadcast errors unpredictable, must handle gracefully
+                self._process_batch_delivery_results(delivery_results, target_mapping, room_id, broadcast_stats)
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Batch broadcast errors unpredictable, must handle gracefully
                 logger.error(
                     "Error in batch broadcast",
                     room_id=room_id,
@@ -147,22 +210,7 @@ class MessageBroadcaster:
                     error=str(e),
                     exc_info=True,
                 )
-                # Fallback: send individually if batch fails
-                for pid_str, pid_uuid in target_mapping:
-                    try:
-                        delivery_status = await self.send_personal_message(pid_uuid, event)
-                        broadcast_stats["delivery_details"][pid_str] = delivery_status
-                        if delivery_status["success"]:
-                            broadcast_stats["successful_deliveries"] += 1
-                        else:
-                            broadcast_stats["failed_deliveries"] += 1
-                    except Exception as individual_error:  # pylint: disable=broad-exception-caught  # Reason: Individual message sending errors unpredictable, must continue processing
-                        logger.error(
-                            "Error sending individual message in fallback",
-                            player_id=pid_str,
-                            error=str(individual_error),
-                        )
-                        broadcast_stats["failed_deliveries"] += 1
+                await self._fallback_individual_send(target_mapping, event, room_id, broadcast_stats)
 
         logger.debug("broadcast_to_room: delivery stats for room", room_id=room_id, stats=broadcast_stats)
         return broadcast_stats
@@ -228,7 +276,7 @@ class MessageBroadcaster:
                             global_stats["successful_deliveries"] += 1
                         else:
                             global_stats["failed_deliveries"] += 1
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Batch global broadcast errors unpredictable, must handle gracefully
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Batch global broadcast errors unpredictable, must handle gracefully
                 logger.error(
                     "Error in batch global broadcast",
                     target_count=len(target_list),
@@ -244,7 +292,7 @@ class MessageBroadcaster:
                             global_stats["successful_deliveries"] += 1
                         else:
                             global_stats["failed_deliveries"] += 1
-                    except Exception as individual_error:  # pylint: disable=broad-exception-caught  # Reason: Individual message sending errors unpredictable, must continue processing
+                    except Exception as individual_error:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Individual message sending errors unpredictable, must continue processing
                         logger.error(
                             "Error sending individual message in fallback",
                             player_id=player_id,
@@ -263,7 +311,7 @@ class MessageBroadcaster:
             event = build_event(event_type, data)
             result = await self.broadcast_to_room(room_id, event, None, None)
             return result
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Room event broadcasting errors unpredictable, must return error response
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Room event broadcasting errors unpredictable, must return error response
             logger.error("Error broadcasting room event", error=str(e), event_type=event_type, room_id=room_id)
             return {
                 "room_id": room_id,
@@ -282,7 +330,7 @@ class MessageBroadcaster:
 
             event = build_event(event_type, data)
             return await self.broadcast_global(event, None, {})
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Global event broadcasting errors unpredictable, must return error response
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Global event broadcasting errors unpredictable, must return error response
             logger.error("Error broadcasting global event", error=str(e), event_type=event_type)
             return {
                 "total_players": 0,

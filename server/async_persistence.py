@@ -7,6 +7,8 @@ for true async PostgreSQL database operations without blocking the event loop.
 This is now a facade that delegates to focused async repositories.
 """
 
+# pylint: disable=too-many-lines,too-many-public-methods  # Reason: Async persistence layer requires extensive functionality for comprehensive database operations across all game entities. Persistence layer legitimately requires many public methods for comprehensive database operations.
+
 import asyncio
 import uuid
 from datetime import datetime
@@ -40,19 +42,19 @@ logger = get_logger(__name__)
 
 # Player table columns for explicit SELECT queries (avoids SELECT * anti-pattern)
 # Exported for security tests that verify compile-time constants
-PLAYER_COLUMNS = (
+PLAYER_COLUMNS = (  # pylint: disable=invalid-name  # Reason: Module-level constant exported for tests, UPPER_CASE is appropriate
     "player_id, user_id, name, current_room_id, profession_id, "
     "experience_points, level, stats, inventory, status_effects, "
     "created_at, last_active, is_admin"
 )
 # Convert tuple to string for compatibility with security tests
-PLAYER_COLUMNS = "".join(PLAYER_COLUMNS)
+PLAYER_COLUMNS = "".join(PLAYER_COLUMNS)  # pylint: disable=invalid-name  # Reason: Module-level constant exported for tests, UPPER_CASE is appropriate
 
 # Profession table columns for explicit SELECT queries
 PROFESSION_COLUMNS = "id, name, description, flavor_text, is_available"
 
 
-class AsyncPersistenceLayer:
+class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # Reason: Persistence layer requires multiple repository instances and caches
     """
     Async persistence layer using SQLAlchemy ORM for true async PostgreSQL operations.
 
@@ -200,7 +202,7 @@ class AsyncPersistenceLayer:
         except (DatabaseError, OSError, RuntimeError, ConnectionError, TimeoutError) as e:
             # Catch specific database and connection errors
             error_msg = str(e).lower()
-            if "does not exist" in error_msg or "relation" in error_msg or len(rooms_rows) == 0:
+            if "does not exist" in error_msg or "relation" in error_msg or not rooms_rows:
                 # Tables don't exist or are empty - initialize empty cache
                 result_container["rooms"] = {}
                 self._logger.warning(
@@ -212,12 +214,12 @@ class AsyncPersistenceLayer:
                 # Other errors should be raised
                 result_container["error"] = e
                 raise
-        except Exception as e:  # pylint: disable=broad-exception-caught
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904
             # Catch any other unexpected exceptions (e.g., asyncpg exceptions, test mocks)
             # This is necessary for test compatibility where mocks may raise generic Exception
             # and to handle asyncpg-specific exceptions that don't inherit from standard types
             error_msg = str(e).lower()
-            if "does not exist" in error_msg or "relation" in error_msg or len(rooms_rows) == 0:
+            if "does not exist" in error_msg or "relation" in error_msg or not rooms_rows:
                 # Tables don't exist or are empty - initialize empty cache
                 result_container["rooms"] = {}
                 self._logger.warning(
@@ -290,7 +292,7 @@ class AsyncPersistenceLayer:
                 return []
             raise
 
-    def _process_room_rows(self, rooms_rows: list[Any]) -> list[dict[str, Any]]:
+    def _process_room_rows(self, rooms_rows: list[Any]) -> list[dict[str, Any]]:  # pylint: disable=too-many-locals  # Reason: Complex data transformation requires many intermediate variables
         """Process room database rows into structured room data list."""
         from .world_loader import generate_room_id
 
@@ -337,7 +339,7 @@ class AsyncPersistenceLayer:
 
         return room_data_list
 
-    def _process_exit_rows(self, exits_rows: list[Any]) -> dict[str, dict[str, str]]:
+    def _process_exit_rows(self, exits_rows: list[Any]) -> dict[str, dict[str, str]]:  # pylint: disable=too-many-locals  # Reason: Complex data transformation requires many intermediate variables
         """Process exit database rows into exits dictionary keyed by room_id."""
         from .world_loader import generate_room_id
 
@@ -572,10 +574,10 @@ class AsyncPersistenceLayer:
 
         try:
             async for session in get_async_session():
-                # SQLAlchemy Column supports == comparison even with type annotations
-                # The type annotation is for runtime value access, not query construction
+                # SQLAlchemy Column: use .is_(True) for boolean comparisons
                 # At runtime, Profession.is_available is a Column, not a bool
-                stmt = select(Profession).where(Profession.is_available == True).order_by(Profession.id)  # type: ignore[arg-type]  # noqa: E712
+                # SQLAlchemy Column objects have .is_() method at runtime, but mypy sees it as bool
+                stmt = select(Profession).where(Profession.is_available.is_(True)).order_by(Profession.id)  # type: ignore[attr-defined]
                 result = await session.execute(stmt)
                 professions = list(result.scalars().all())
                 return professions
@@ -700,7 +702,7 @@ class AsyncPersistenceLayer:
         return await self._container_repo.delete_container(container_id)
 
     # Item methods
-    async def create_item_instance(
+    async def create_item_instance(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Item creation requires many optional parameters for flexibility
         self,
         item_instance_id: str,
         prototype_id: str,
@@ -735,7 +737,7 @@ class AsyncPersistenceLayer:
             origin_metadata,
         )
 
-    async def ensure_item_instance(
+    async def ensure_item_instance(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Item creation requires many optional parameters for flexibility
         self,
         item_instance_id: str,
         prototype_id: str,
@@ -765,7 +767,7 @@ class AsyncPersistenceLayer:
 
 # DEPRECATED: Module-level global singleton removed - use ApplicationContainer instead
 # Keeping these functions for backward compatibility during migration
-_async_persistence_instance: AsyncPersistenceLayer | None = None
+_async_persistence_instance: AsyncPersistenceLayer | None = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
 
 
 def get_async_persistence() -> AsyncPersistenceLayer:

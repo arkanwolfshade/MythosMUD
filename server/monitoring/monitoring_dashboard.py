@@ -9,6 +9,8 @@ As noted in the Pnakotic Manuscripts, understanding the interconnected
 patterns of our systems is essential for maintaining their stability.
 """
 
+# pylint: disable=too-many-lines  # Reason: Monitoring dashboard requires extensive dashboard logic for comprehensive system monitoring and metrics aggregation
+
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from typing import Any
@@ -23,7 +25,7 @@ logger = get_logger(__name__)
 
 
 @dataclass
-class SystemHealth:
+class SystemHealth:  # pylint: disable=too-many-instance-attributes  # Reason: System health requires many fields to capture complete health status
     """Represents overall system health status."""
 
     status: str  # healthy, warning, critical
@@ -510,10 +512,9 @@ class MonitoringDashboard:
         """Determine overall health status."""
         if performance_score < 50.0 or error_rate > 10.0 or exception_rate > 5.0:
             return "critical"
-        elif performance_score < 70.0 or error_rate > 5.0 or warning_rate > 15.0 or exception_rate > 2.0:
+        if performance_score < 70.0 or error_rate > 5.0 or warning_rate > 15.0 or exception_rate > 2.0:
             return "warning"
-        else:
-            return "healthy"
+        return "healthy"
 
     def _generate_recommendations(
         self,
@@ -573,7 +574,7 @@ class MonitoringDashboard:
 
 
 # Global monitoring dashboard instance
-_monitoring_dashboard: MonitoringDashboard | None = None
+_monitoring_dashboard: MonitoringDashboard | None = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
 
 
 def get_monitoring_dashboard() -> MonitoringDashboard:

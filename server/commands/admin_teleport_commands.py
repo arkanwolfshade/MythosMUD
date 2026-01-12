@@ -4,37 +4,41 @@ Admin teleport command handlers for MythosMUD.
 This module provides handlers for teleport and goto administrative commands.
 """
 
+# pylint: disable=too-many-locals,too-many-return-statements  # Reason: Command handlers require many intermediate variables for complex game logic and multiple return statements for early validation returns
+
 from typing import Any
 
 from sqlalchemy.exc import SQLAlchemyError
 
 from ..alias_storage import AliasStorage
 from ..exceptions import DatabaseError
-from ..realtime.websocket_handler import broadcast_room_update
 from ..structured_logging.admin_actions_logger import get_admin_actions_logger
 from ..structured_logging.enhanced_logging_config import get_logger
 from .admin_permission_utils import validate_admin_permission
-from .admin_teleport_utils import (
-    broadcast_teleport_effects,
-    get_online_player_by_display_name,
-    notify_player_of_teleport,
+from .goto_helpers import (
+    execute_confirm_goto,
+    execute_goto_teleport,
+    log_goto_failure,
+    resolve_goto_target,
+    resolve_target_player_for_goto,
+    validate_confirm_goto_context,
+    validate_goto_context,
+)
+from .teleport_helpers import (
+    DIRECTION_OPPOSITES,
+    broadcast_teleport_updates,
+    build_teleport_message,
+    execute_confirm_teleport,
+    log_teleport_success,
+    resolve_target_player,
+    resolve_target_player_for_teleport,
+    resolve_teleport_direction,
+    resolve_teleport_services,
+    update_teleport_location,
+    validate_confirm_teleport_context,
 )
 
 logger = get_logger(__name__)
-
-# Direction opposites for teleport arrival messages
-DIRECTION_OPPOSITES: dict[str, str] = {
-    "north": "south",
-    "south": "north",
-    "east": "west",
-    "west": "east",
-    "up": "down",
-    "down": "up",
-    "northeast": "southwest",
-    "southwest": "northeast",
-    "northwest": "southeast",
-    "southeast": "northwest",
-}
 
 
 async def handle_teleport_command(
@@ -60,21 +64,11 @@ async def handle_teleport_command(
 
     try:
         app = request.app if request else None
-        if not app:
-            logger.warning("Teleport command failed - no app context", player_name=player_name)
-            return {"result": "Teleport functionality is not available."}
+        service_result = await resolve_teleport_services(app, player_name)
+        if isinstance(service_result, dict):
+            return service_result
 
-        player_service = app.state.player_service if app else None
-        if not player_service:
-            logger.warning("Teleport command failed - no player service", player_name=player_name)
-            return {"result": "Player service not available."}
-
-        connection_manager = app.state.connection_manager if app else None
-        if not connection_manager:
-            logger.warning("Teleport command failed - no connection manager", player_name=player_name)
-            return {"result": "Connection manager not available."}
-
-        persistence = getattr(app.state, "persistence", None)
+        player_service, connection_manager, persistence, app = service_result
 
         current_player = await player_service.get_player_by_name(player_name)
         if not current_player:
@@ -91,188 +85,59 @@ async def handle_teleport_command(
         direction_value = command_data.get("direction")
         direction_value = str(direction_value).lower() if direction_value else None
 
-        if direction_value and not persistence:
-            logger.warning(
-                "Teleport command failed - direction specified but persistence unavailable", player_name=player_name
-            )
-            return {"result": "World data is not available for directional teleportation."}
+        direction_result = resolve_teleport_direction(direction_value, persistence, current_player, player_name)
+        if isinstance(direction_result, dict):
+            return direction_result
 
-        target_room_id = current_player.current_room_id
-        target_room_name = None
-        if direction_value:
-            admin_room = persistence.get_room_by_id(current_player.current_room_id) if persistence else None
-            if not admin_room:
-                logger.warning(
-                    "Teleport command failed - admin room not found",
-                    player_name=player_name,
-                    room_id=current_player.current_room_id,
-                )
-                return {"result": "Unable to determine your current location."}
+        target_room_id, target_room_name = direction_result
 
-            exits = getattr(admin_room, "exits", {}) or {}
-            target_room_id = exits.get(direction_value)
-            if not target_room_id:
-                logger.warning(
-                    "Teleport command failed - invalid direction",
-                    player_name=player_name,
-                    direction=direction_value,
-                    room_id=current_player.current_room_id,
-                )
-                return {"result": f"There is no exit to the {direction_value} from here."}
+        # Resolve target player
+        target_result = await resolve_target_player(
+            player_service, connection_manager, target_player_name, current_player, direction_value
+        )
+        if isinstance(target_result, dict):
+            return target_result
 
-            if persistence:
-                target_room = persistence.get_room_by_id(target_room_id)
-                if target_room and hasattr(target_room, "name"):
-                    target_room_name = target_room.name
-
-        target_player_info = await get_online_player_by_display_name(target_player_name, connection_manager)
-        if not target_player_info:
-            return {"result": f"Player '{target_player_name}' is not online or not found."}
-
-        target_player = await player_service.get_player_by_name(target_player_name)
-        if not target_player:
-            logger.warning(
-                "Teleport command failed - target player not found in database", target_player_name=target_player_name
-            )
-            return {"result": f"Player '{target_player_name}' not found in database."}
-
-        if not direction_value and target_player.current_room_id == current_player.current_room_id:
-            return {"result": f"{target_player_name} is already in your location."}
+        target_player, target_player_info = target_result
 
         try:
-            original_room_id = target_player.current_room_id
-            success = await player_service.update_player_location(target_player_name, target_room_id)
-            if not success:
-                logger.error("Failed to update target player location", target_player_name=target_player_name)
-                return {"result": f"Failed to teleport {target_player_name}: database update failed."}
-
-            target_player.current_room_id = target_room_id
-
-            target_player_identifier = (
-                target_player_info.get("player_id")
-                or getattr(target_player, "player_id", None)
-                or getattr(target_player, "id", None)
-            )
-            if target_player_identifier is not None:
-                target_player_identifier = str(target_player_identifier)
-                target_player_info["current_room_id"] = target_room_id
-
-                online_record = connection_manager.online_players.get(target_player_identifier)
-                if online_record is not None:
-                    online_record["current_room_id"] = target_room_id
-
-                try:
-                    connection_manager.room_manager.remove_room_occupant(target_player_identifier, original_room_id)
-                except (ValueError, TypeError, AttributeError, KeyError) as exc:
-                    logger.debug(
-                        "Failed to remove teleport target from prior room occupants",
-                        player_id=target_player_identifier,
-                        room_id=original_room_id,
-                        error=str(exc),
-                    )
-
-                try:
-                    connection_manager.room_manager.add_room_occupant(target_player_identifier, target_room_id)
-                except (ValueError, TypeError, AttributeError, KeyError) as exc:
-                    logger.debug(
-                        "Failed to add teleport target to destination room occupants",
-                        player_id=target_player_identifier,
-                        room_id=target_room_id,
-                        error=str(exc),
-                    )
-
-                try:
-                    connection_manager.room_manager.reconcile_room_presence(
-                        original_room_id, connection_manager.online_players
-                    )
-                    connection_manager.room_manager.reconcile_room_presence(
-                        target_room_id, connection_manager.online_players
-                    )
-                except (ValueError, TypeError, AttributeError, KeyError) as exc:
-                    logger.debug(
-                        "Failed to reconcile room presence after teleport",
-                        player_id=target_player_identifier,
-                        error=str(exc),
-                    )
-
-                if persistence:
-                    try:
-                        source_room = persistence.get_room_by_id(original_room_id)
-                        if source_room:
-                            source_room.player_left(target_player_identifier)
-                    except (ValueError, AttributeError, TypeError) as exc:
-                        logger.debug(
-                            "Failed to mark teleport target as leaving source room",
-                            player_id=target_player_identifier,
-                            room_id=original_room_id,
-                            error=str(exc),
-                        )
-
-                    try:
-                        destination_room = persistence.get_room_by_id(target_room_id)
-                        if destination_room:
-                            destination_room.player_entered(target_player_identifier)
-                    except (ValueError, AttributeError, TypeError) as exc:
-                        logger.debug(
-                            "Failed to mark teleport target as entering destination room",
-                            player_id=target_player_identifier,
-                            room_id=target_room_id,
-                            error=str(exc),
-                        )
-
-            # broadcast_room_update expects player_id as string
-            await broadcast_room_update(str(target_player_info["player_id"]), target_room_id)
-
-            current_player_identifier = getattr(current_player, "player_id", getattr(current_player, "id", None))
-            if current_player_identifier:
-                await broadcast_room_update(str(current_player_identifier), current_player.current_room_id)
-
-            arrival_direction = DIRECTION_OPPOSITES.get(direction_value) if direction_value else None
-            await broadcast_teleport_effects(
-                connection_manager,
+            # Update player location
+            location_result = await update_teleport_location(
+                player_service,
+                target_player,
                 target_player_name,
-                original_room_id,
                 target_room_id,
-                "teleport",
-                direction=direction_value,
-                arrival_direction=arrival_direction,
-                target_player_id=str(target_player_info.get("player_id")) if target_player_info else None,
+                target_player_info,
+                connection_manager,
+                persistence,
+            )
+            if isinstance(location_result, dict):
+                return location_result
+
+            original_room_id = location_result
+
+            await broadcast_teleport_updates(
+                connection_manager,
+                current_player,
+                target_player_info,
+                target_room_id,
+                target_player_name,
+                player_name,
+                direction_value,
+                target_room_name,
+                original_room_id,
             )
 
-            if direction_value:
-                admin_message = f"You teleport {target_player_name} to the {direction_value}."
-                target_message = f"You are teleported to the {direction_value} by {player_name}."
-            else:
-                admin_message = f"You teleport {target_player_name} to your location."
-                destination_name = target_room_name or f"{player_name}'s location"
-                target_message = f"You are teleported to {destination_name}."
-
-            await notify_player_of_teleport(
-                connection_manager, target_player_name, player_name, "teleported_to", message=target_message
+            log_teleport_success(
+                player_name,
+                target_player_name,
+                direction_value,
+                target_room_id,
+                original_room_id,
+                current_player.current_room_id,
             )
 
-            admin_logger = get_admin_actions_logger()
-            admin_logger.log_teleport_action(
-                admin_name=player_name,
-                target_player=target_player_name,
-                action_type="teleport",
-                from_room=original_room_id,
-                to_room=target_room_id,
-                success=True,
-                additional_data={
-                    "admin_room_id": current_player.current_room_id,
-                    "target_room_id": target_room_id,
-                    "direction": direction_value,
-                },
-            )
-
-            logger.info(
-                "Teleport executed successfully",
-                admin_name=player_name,
-                target_player=target_player_name,
-                direction=direction_value,
-                destination_room=target_room_id,
-            )
+            admin_message = build_teleport_message(target_player_name, direction_value)
             return {"result": admin_message}
 
         except (DatabaseError, SQLAlchemyError, ValueError, TypeError, AttributeError, OSError, KeyError) as e:
@@ -326,49 +191,23 @@ async def handle_goto_command(
     logger.debug("Processing goto command", player_name=player_name, command_data=command_data)
 
     app = request.app if request else None
-    if not app:
-        logger.warning("Goto command failed - no app context", player_name=player_name)
-        return {"result": "Goto functionality is not available."}
-
-    # Get player service
     player_service = app.state.player_service if app else None
-    if not player_service:
-        logger.warning("Goto command failed - no player service", player_name=player_name)
-        return {"result": "Player service not available."}
+    connection_manager = app.state.connection_manager if app else None
 
-    # Get current player and validate admin permissions
-    current_player = await player_service.get_player_by_name(player_name)
-    if not current_player:
-        logger.warning("Goto command failed - current player not found", player_name=player_name)
-        return {"result": "Player not found."}
-
-    is_admin = await validate_admin_permission(current_player, player_name)
-    if not is_admin:
-        return {"result": "You do not have permission to use goto commands."}
+    # Validate context and get current player
+    current_player, context_error = await validate_goto_context(app, player_service, connection_manager, player_name)
+    if context_error:
+        return context_error
 
     # Extract target player from command data
     target_player_name = command_data.get("target_player")
     if not target_player_name:
         return {"result": "Usage: goto <player_name>"}
 
-    # Get connection manager
-    connection_manager = app.state.connection_manager if app else None
-    if not connection_manager:
-        logger.warning("Goto command failed - no connection manager", player_name=player_name)
-        return {"result": "Connection manager not available."}
-
-    # Find target player online
-    target_player_info = await get_online_player_by_display_name(target_player_name, connection_manager)
-    if not target_player_info:
-        return {"result": f"Player '{target_player_name}' is not online or not found."}
-
-    # Get target player object
-    target_player = await player_service.get_player_by_name(target_player_name)
-    if not target_player:
-        logger.warning(
-            "Goto command failed - target player not found in database", target_player_name=target_player_name
-        )
-        return {"result": f"Player '{target_player_name}' not found in database."}
+    # Resolve target player
+    target_player, target_error = await resolve_goto_target(target_player_name, player_service, connection_manager)
+    if target_error:
+        return target_error
 
     # Check if admin is already in the same room
     if current_player.current_room_id == target_player.current_room_id:
@@ -376,95 +215,11 @@ async def handle_goto_command(
 
     # Execute goto immediately without confirmation
     try:
-        # Store original location for visual effects
-        original_room_id = current_player.current_room_id
-        target_room_id = target_player.current_room_id
-
-        # Update admin player's location using PlayerService
-        success = await player_service.update_player_location(player_name, target_room_id)
-        if not success:
-            logger.error("Failed to update admin player location", player_name=player_name)
-            return {"result": f"Failed to teleport to {target_player_name}: database update failed."}
-
-        # Update connection manager's online player info for admin
-        admin_player_info = connection_manager.get_online_player_by_display_name(player_name)
-        if admin_player_info:
-            admin_player_info["room_id"] = target_room_id
-
-        # Broadcast room update to the admin player
-        # broadcast_room_update expects player_id as string
-        await broadcast_room_update(str(admin_player_info["player_id"]), target_room_id)
-
-        target_player_identifier = getattr(target_player, "player_id", getattr(target_player, "id", None))
-        if target_player_identifier:
-            await broadcast_room_update(str(target_player_identifier), target_room_id)
-
-        # Broadcast visual effects
-        await broadcast_teleport_effects(
-            connection_manager,
-            player_name,
-            original_room_id,
-            target_room_id,
-            "goto",
-            direction=None,
-            arrival_direction=None,
-            target_player_id=str(admin_player_info.get("player_id")) if admin_player_info else None,
+        return await execute_goto_teleport(
+            player_service, connection_manager, current_player, target_player, target_player_name, player_name
         )
-
-        await notify_player_of_teleport(
-            connection_manager,
-            target_player_name,
-            player_name,
-            "teleported_to",
-            message=f"{player_name} appears at your location.",
-        )
-
-        # Log the successful goto action
-        admin_logger = get_admin_actions_logger()
-        admin_logger.log_teleport_action(
-            admin_name=player_name,
-            target_player=target_player_name,
-            action_type="goto",
-            from_room=original_room_id,
-            to_room=target_room_id,
-            success=True,
-            additional_data={
-                "admin_room_id": current_player.current_room_id,
-                "target_room_id": target_player.current_room_id,
-            },
-        )
-
-        logger.info(
-            "Goto executed successfully",
-            player_name=player_name,
-            target_player_name=target_player_name,
-            target_room_id=target_room_id,
-        )
-        return {"result": f"You teleport to {target_player_name}'s location."}
-
     except (DatabaseError, SQLAlchemyError, ValueError, TypeError, AttributeError, OSError, KeyError) as e:
-        # Log the failed goto action
-        admin_logger = get_admin_actions_logger()
-        try:
-            admin_logger.log_teleport_action(
-                admin_name=player_name,
-                target_player=target_player_name,
-                action_type="goto",
-                from_room=current_player.current_room_id,
-                to_room=target_player.current_room_id,
-                success=False,
-                error_message=str(e),
-                additional_data={
-                    "admin_room_id": current_player.current_room_id,
-                    "target_room_id": target_player.current_room_id,
-                },
-            )
-        except (OSError, AttributeError, TypeError):
-            pass  # Ignore logging errors if command itself failed
-
-        logger.error(
-            "Goto execution failed", admin_name=player_name, target_player_name=target_player_name, error=str(e)
-        )
+        log_goto_failure(player_name, target_player_name, current_player, target_player, e)
         return {"result": f"Failed to teleport to {target_player_name}: {str(e)}"}
 
 
@@ -490,136 +245,73 @@ async def handle_confirm_teleport_command(
     logger.debug("Processing confirm teleport command", player_name=player_name, command_data=command_data)
 
     app = request.app if request else None
-    if not app:
-        logger.warning("Confirm teleport command failed - no app context", player_name=player_name)
-        return {"result": "Teleport functionality is not available."}
-
-    # Get player service
     player_service = app.state.player_service if app else None
-    if not player_service:
-        logger.warning("Confirm teleport command failed - no player service", player_name=player_name)
-        return {"result": "Player service not available."}
 
-    # Get current player and validate admin permissions
-    current_player = await player_service.get_player_by_name(player_name)
-    if not current_player:
-        logger.warning("Confirm teleport command failed - current player not found", player_name=player_name)
-        return {"result": "Player not found."}
+    current_player, error_result = await validate_confirm_teleport_context(app, player_service, player_name)
+    if error_result:
+        return error_result
 
-    is_admin = await validate_admin_permission(current_player, player_name)
-    if not is_admin:
-        return {"result": "You do not have permission to use teleport commands."}
-
-    # Extract target player from command data
     target_player_name = command_data.get("target_player")
     if not target_player_name:
         return {"result": "Usage: confirm teleport <player_name>"}
 
-    # Get connection manager
     connection_manager = app.state.connection_manager if app else None
     if not connection_manager:
         logger.warning("Confirm teleport command failed - no connection manager", player_name=player_name)
         return {"result": "Connection manager not available."}
 
-    # Find target player online
-    target_player_info = await get_online_player_by_display_name(target_player_name, connection_manager)
-    if not target_player_info:
-        return {"result": f"Player '{target_player_name}' is not online or not found."}
+    target_player_info, target_player, error_result = await resolve_target_player_for_teleport(
+        target_player_name, connection_manager, player_service
+    )
+    if error_result:
+        return error_result
 
-    # Get target player object
-    target_player = await player_service.get_player_by_name(target_player_name)
-    if not target_player:
+    # After error check, target_player and target_player_info should not be None, but verify for mypy
+    if target_player is None or target_player_info is None:
         logger.warning(
-            "Confirm teleport command failed - target player not found in database",
-            target_player_name=target_player_name,
+            "Confirm teleport command failed - target player resolution returned None", player_name=player_name
         )
-        return {"result": f"Player '{target_player_name}' not found in database."}
+        return {"result": f"Failed to resolve target player '{target_player_name}'."}
 
-    # Check if target is already in the same room
+    if current_player is None:
+        logger.warning("Confirm teleport command failed - current player is None", player_name=player_name)
+        return {"result": "Current player information is not available."}
+
     if target_player.current_room_id == current_player.current_room_id:
         return {"result": f"{target_player_name} is already in your location."}
 
     try:
-        # Store original location for visual effects
-        original_room_id = target_player.current_room_id
-        target_room_id = current_player.current_room_id
-
-        # Update target player's location using PlayerService
-        success = await player_service.update_player_location(target_player_name, target_room_id)
-        if not success:
-            logger.error("Failed to update target player location", target_player_name=target_player_name)
-            return {"result": f"Failed to teleport {target_player_name}: database update failed."}
-
-        # Update connection manager's online player info
-        if target_player_info:
-            target_player_info["room_id"] = target_room_id
-
-        # Broadcast room update to the teleported player
-        # broadcast_room_update expects player_id as string
-        await broadcast_room_update(str(target_player_info["player_id"]), target_room_id)
-
-        # Broadcast visual effects
-        await broadcast_teleport_effects(
-            connection_manager,
+        return await execute_confirm_teleport(
             target_player_name,
-            original_room_id,
-            target_room_id,
-            "teleport",
-            direction=None,
-            arrival_direction=None,
-            target_player_id=str(target_player_info.get("player_id")) if target_player_info else None,
-        )
-
-        await notify_player_of_teleport(
+            target_player,
+            target_player_info,
+            current_player,
+            player_service,
             connection_manager,
-            target_player_name,
             player_name,
-            "teleported_to",
-            message=f"You are teleported to {player_name}'s location.",
         )
-
-        # Log the successful teleport action
-        admin_logger = get_admin_actions_logger()
-        admin_logger.log_teleport_action(
-            admin_name=player_name,
-            target_player=target_player_name,
-            action_type="teleport",
-            from_room=original_room_id,
-            to_room=target_room_id,
-            success=True,
-            additional_data={
-                "admin_room_id": current_player.current_room_id,
-                "target_room_id": target_player.current_room_id,
-            },
-        )
-
-        logger.info(
-            "Teleport executed successfully",
-            player_name=player_name,
-            target_player_name=target_player_name,
-            target_room_id=target_room_id,
-        )
-        return {"result": f"You have successfully teleported {target_player_name} to your location."}
 
     except (DatabaseError, SQLAlchemyError, ValueError, TypeError, AttributeError, OSError, KeyError) as e:
         # Log the failed teleport action
-        admin_logger = get_admin_actions_logger()
-        try:
-            admin_logger.log_teleport_action(
-                admin_name=player_name,
-                target_player=target_player_name,
-                action_type="teleport",
-                from_room=target_player.current_room_id,
-                to_room=current_player.current_room_id,
-                success=False,
-                error_message=str(e),
-                additional_data={
-                    "admin_room_id": current_player.current_room_id,
-                    "target_room_id": target_player.current_room_id,
-                },
-            )
-        except (OSError, AttributeError, TypeError):
-            pass  # Ignore logging errors if command itself failed
+        # target_player and current_player are guaranteed to be non-None here (checked before execute_confirm_teleport)
+        if target_player is not None and current_player is not None:
+            admin_logger = get_admin_actions_logger()
+            try:
+                admin_logger.log_teleport_action(
+                    admin_name=player_name,
+                    target_player=target_player_name,
+                    action_type="teleport",
+                    from_room=target_player.current_room_id,
+                    to_room=current_player.current_room_id,
+                    success=False,
+                    error_message=str(e),
+                    additional_data={
+                        "admin_room_id": current_player.current_room_id,
+                        "target_room_id": target_player.current_room_id,
+                    },
+                )
+            except (OSError, AttributeError, TypeError):
+                pass  # Ignore logging errors if command itself failed
 
         logger.error(
             "Teleport execution failed", admin_name=player_name, target_player_name=target_player_name, error=str(e)
@@ -649,128 +341,70 @@ async def handle_confirm_goto_command(
     logger.debug("Processing confirm goto command", player_name=player_name, command_data=command_data)
 
     app = request.app if request else None
-    if not app:
-        logger.warning("Confirm goto command failed - no app context", player_name=player_name)
-        return {"result": "Goto functionality is not available."}
-
-    # Get player service
     player_service = app.state.player_service if app else None
-    if not player_service:
-        logger.warning("Confirm goto command failed - no player service", player_name=player_name)
-        return {"result": "Player service not available."}
 
-    # Get current player and validate admin permissions
-    current_player = await player_service.get_player_by_name(player_name)
-    if not current_player:
-        logger.warning("Confirm goto command failed - current player not found", player_name=player_name)
-        return {"result": "Player not found."}
+    current_player, error_result = await validate_confirm_goto_context(app, player_service, player_name)
+    if error_result:
+        return error_result
 
-    is_admin = await validate_admin_permission(current_player, player_name)
-    if not is_admin:
-        return {"result": "You do not have permission to use goto commands."}
-
-    # Extract target player from command data
     target_player_name = command_data.get("target_player")
     if not target_player_name:
         return {"result": "Usage: confirm goto <player_name>"}
 
-    # Get connection manager
     connection_manager = app.state.connection_manager if app else None
     if not connection_manager:
         logger.warning("Confirm goto command failed - no connection manager", player_name=player_name)
         return {"result": "Connection manager not available."}
 
-    # Find target player online
-    target_player_info = await get_online_player_by_display_name(target_player_name, connection_manager)
-    if not target_player_info:
-        return {"result": f"Player '{target_player_name}' is not online or not found."}
+    _, target_player, error_result = await resolve_target_player_for_goto(
+        target_player_name, connection_manager, player_service
+    )
+    if error_result:
+        return error_result
 
-    # Get target player object
-    target_player = await player_service.get_player_by_name(target_player_name)
-    if not target_player:
-        logger.warning(
-            "Confirm goto command failed - target player not found in database", target_player_name=target_player_name
-        )
-        return {"result": f"Player '{target_player_name}' not found in database."}
+    # After error check, target_player and current_player should not be None, but verify for mypy
+    if target_player is None:
+        logger.warning("Confirm goto command failed - target player resolution returned None", player_name=player_name)
+        return {"result": f"Failed to resolve target player '{target_player_name}'."}
 
-    # Check if admin is already in the same room
+    if current_player is None:
+        logger.warning("Confirm goto command failed - current player is None", player_name=player_name)
+        return {"result": "Current player information is not available."}
+
     if current_player.current_room_id == target_player.current_room_id:
         return {"result": f"You are already in the same location as {target_player_name}."}
 
     try:
-        # Store original location for visual effects
-        original_room_id = current_player.current_room_id
-        target_room_id = target_player.current_room_id
-
-        # Update admin player's location using PlayerService
-        success = await player_service.update_player_location(player_name, target_room_id)
-        if not success:
-            logger.error("Failed to update admin player location", player_name=player_name)
-            return {"result": f"Failed to teleport to {target_player_name}: database update failed."}
-
-        # Update connection manager's online player info for admin
-        admin_player_info = connection_manager.get_online_player_by_display_name(player_name)
-        if admin_player_info:
-            admin_player_info["room_id"] = target_room_id
-
-        # Broadcast room update to the admin player
-        # broadcast_room_update expects player_id as string
-        await broadcast_room_update(str(admin_player_info["player_id"]), target_room_id)
-
-        # Broadcast visual effects
-        await broadcast_teleport_effects(
-            connection_manager,
+        return await execute_confirm_goto(
             player_name,
-            original_room_id,
-            target_room_id,
-            "goto",
-            direction=None,
-            arrival_direction=None,
-            target_player_id=str(admin_player_info.get("player_id")) if admin_player_info else None,
+            current_player,
+            target_player_name,
+            target_player,
+            player_service,
+            connection_manager,
         )
-
-        # Log the successful goto action
-        admin_logger = get_admin_actions_logger()
-        admin_logger.log_teleport_action(
-            admin_name=player_name,
-            target_player=target_player_name,
-            action_type="goto",
-            from_room=original_room_id,
-            to_room=target_room_id,
-            success=True,
-            additional_data={
-                "admin_room_id": current_player.current_room_id,
-                "target_room_id": target_player.current_room_id,
-            },
-        )
-
-        logger.info(
-            "Goto executed successfully",
-            player_name=player_name,
-            target_player_name=target_player_name,
-            target_room_id=target_room_id,
-        )
-        return {"result": f"You have successfully teleported to {target_player_name}'s location."}
 
     except (DatabaseError, SQLAlchemyError, ValueError, TypeError, AttributeError, OSError, KeyError) as e:
         # Log the failed goto action
-        admin_logger = get_admin_actions_logger()
-        try:
-            admin_logger.log_teleport_action(
-                admin_name=player_name,
-                target_player=target_player_name,
-                action_type="goto",
-                from_room=current_player.current_room_id,
-                to_room=target_player.current_room_id,
-                success=False,
-                error_message=str(e),
-                additional_data={
-                    "admin_room_id": current_player.current_room_id,
-                    "target_room_id": target_player.current_room_id,
-                },
-            )
-        except (OSError, AttributeError, TypeError):
-            pass  # Ignore logging errors if command itself failed
+        # target_player and current_player are guaranteed to be non-None here (checked before execute_confirm_goto)
+        if target_player is not None and current_player is not None:
+            admin_logger = get_admin_actions_logger()
+            try:
+                admin_logger.log_teleport_action(
+                    admin_name=player_name,
+                    target_player=target_player_name,
+                    action_type="goto",
+                    from_room=current_player.current_room_id,
+                    to_room=target_player.current_room_id,
+                    success=False,
+                    error_message=str(e),
+                    additional_data={
+                        "admin_room_id": current_player.current_room_id,
+                        "target_room_id": target_player.current_room_id,
+                    },
+                )
+            except (OSError, AttributeError, TypeError):
+                pass  # Ignore logging errors if command itself failed
 
         logger.error(
             "Goto execution failed", admin_name=player_name, target_player_name=target_player_name, error=str(e)

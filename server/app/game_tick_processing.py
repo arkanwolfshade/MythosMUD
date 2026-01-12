@@ -4,6 +4,7 @@ This module handles all game tick processing logic, including status effects,
 combat, death processing, and periodic maintenance tasks.
 """
 
+import asyncio
 import datetime
 import uuid
 from typing import TYPE_CHECKING
@@ -12,7 +13,13 @@ from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..config import get_config
+from ..config.npc_config import NPCMaintenanceConfig
+from ..database import get_async_session
 from ..realtime.connection_manager_api import broadcast_game_event
+from ..realtime.login_grace_period import is_player_in_login_grace_period
+from ..services.combat_messaging_integration import combat_messaging_integration
+from ..services.container_websocket_events import emit_container_decayed
+from ..services.corpse_lifecycle_service import CorpseLifecycleService
 from ..services.player_respawn_service import LIMBO_ROOM_ID
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..time.time_service import get_mythos_chronicle
@@ -26,7 +33,7 @@ logger = get_logger("server.game_tick")
 # Global tick counter for combat system
 # NOTE: This remains global for now as it's shared state needed by combat system
 # FUTURE: Move to domain layer when implementing Phase 3.3
-_current_tick = 0
+_current_tick = 0  # pylint: disable=invalid-name  # noqa: N816  # Reason: Mutable module-level variable, not a constant
 
 
 def get_current_tick() -> int:
@@ -69,7 +76,7 @@ def _validate_app_state_for_status_effects(app: FastAPI) -> tuple[bool, "Applica
     return True, container
 
 
-async def _process_damage_over_time_effect(
+async def _process_damage_over_time_effect(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Effect processing requires many parameters for game state and effect context
     app: FastAPI, container: "ApplicationContainer", player: "Player", effect: dict, remaining: int, player_id: str
 ) -> bool:
     """Process a damage over time effect.
@@ -79,6 +86,22 @@ async def _process_damage_over_time_effect(
     """
     if remaining <= 0:
         return False
+
+    # Check if player is in login grace period - block negative effects
+    try:
+        connection_manager = getattr(app.state, "connection_manager", None)
+        if connection_manager:
+            player_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+            if is_player_in_login_grace_period(player_uuid, connection_manager):
+                logger.debug(
+                    "Damage over time effect blocked - player in login grace period",
+                    player_id=player_id,
+                    effect_type=effect.get("type", ""),
+                )
+                return False  # Effect blocked
+    except (AttributeError, ImportError, TypeError, ValueError) as e:
+        # If we can't check grace period, proceed with effect (fail open)
+        logger.debug("Could not check login grace period for damage over time", player_id=player_id, error=str(e))
 
     damage = effect.get("damage", 0)
     if damage > 0 and hasattr(app.state, "player_death_service") and container.async_persistence:
@@ -125,12 +148,12 @@ async def _process_single_effect(
         if remaining > 0:
             return {**effect, "remaining": remaining}, effect_applied
         return None, effect_applied
-    elif effect_type == "heal_over_time":
+    if effect_type == "heal_over_time":
         effect_applied = await _process_heal_over_time_effect(container, player, effect, remaining, player_id)
         if remaining > 0:
             return {**effect, "remaining": remaining}, effect_applied
         return None, effect_applied
-    elif remaining > 0:
+    if remaining > 0:
         return {**effect, "remaining": remaining}, False
 
     return None, False
@@ -246,8 +269,6 @@ async def _process_mortally_wounded_player(app: FastAPI, player: "Player", sessi
     new_dp = stats.get("current_dp", 0)
 
     if hasattr(app.state, "combat_service"):
-        from ..services.combat_messaging_integration import combat_messaging_integration
-
         await combat_messaging_integration.send_dp_decay_message(str(player.player_id), new_dp)
 
     if new_dp <= -10:
@@ -364,8 +385,6 @@ async def process_dp_decay_and_death(app: FastAPI, tick_count: int) -> None:
         return
 
     try:
-        from ..database import get_async_session
-
         async for session in get_async_session():
             try:
                 await _process_session_dp_decay_and_death(app, session, tick_count)
@@ -377,8 +396,6 @@ async def process_dp_decay_and_death(app: FastAPI, tick_count: int) -> None:
 
 async def process_npc_maintenance(app: FastAPI, tick_count: int) -> None:
     """Process NPC lifecycle maintenance (every 60 ticks = 1 minute)."""
-    from ..config.npc_config import NPCMaintenanceConfig
-
     if NPCMaintenanceConfig.should_run_maintenance(tick_count) and hasattr(app.state, "npc_lifecycle_manager"):
         try:
             logger.debug(
@@ -395,12 +412,10 @@ async def process_npc_maintenance(app: FastAPI, tick_count: int) -> None:
 
 async def cleanup_decayed_corpses(app: FastAPI, tick_count: int) -> None:
     """Cleanup decayed corpse containers (every 60 ticks = 1 minute)."""
-    if tick_count % 60 != 0:
+    if tick_count % 60:
         return
 
     try:
-        from ..services.corpse_lifecycle_service import CorpseLifecycleService
-
         persistence = app.state.container.persistence
         connection_manager = app.state.container.connection_manager
         time_service = get_mythos_chronicle()
@@ -417,8 +432,6 @@ async def cleanup_decayed_corpses(app: FastAPI, tick_count: int) -> None:
         for corpse in decayed:
             try:
                 if connection_manager and corpse.room_id:
-                    from ..services.container_websocket_events import emit_container_decayed
-
                     await emit_container_decayed(
                         connection_manager=connection_manager,
                         container_id=corpse.container_id,
@@ -474,8 +487,6 @@ async def game_tick_loop(app: FastAPI):
     This function runs continuously and handles periodic game updates,
     including broadcasting tick information to connected players.
     """
-    import asyncio
-
     global _current_tick  # pylint: disable=global-statement
     tick_count = 0
     tick_interval = get_tick_interval()
@@ -492,7 +503,7 @@ async def game_tick_loop(app: FastAPI):
             await process_npc_maintenance(app, tick_count)
             await cleanup_decayed_corpses(app, tick_count)
             # Broadcast tick event every 10 ticks (1 second at 100ms per tick)
-            if tick_count % 10 == 0:
+            if not tick_count % 10:
                 await broadcast_tick_event(app, tick_count)
 
             # Sleep for tick interval

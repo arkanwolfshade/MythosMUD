@@ -7,6 +7,8 @@ all connected players. These events must be properly formatted and broadcast
 to ensure consistent game state.
 """
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: WebSocket event emission requires many parameters for context and event routing
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -75,7 +77,7 @@ async def emit_container_opened(
     return delivery_status
 
 
-async def emit_container_opened_to_room(
+async def emit_container_opened_to_room(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: WebSocket event emission requires many parameters for context and event routing
     connection_manager: Any,
     container: ContainerComponent,
     room_id: str,

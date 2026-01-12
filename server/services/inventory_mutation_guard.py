@@ -94,7 +94,7 @@ class InventoryMutationGuard:
         state.lock.acquire()
         duplicate_detected = False
 
-        try:
+        try:  # pylint: disable=too-many-nested-blocks  # Reason: Mutation guard requires complex nested logic for token validation, duplicate detection, and state management
             now = monotonic()
             self._prune_tokens(state, now)
 
@@ -183,7 +183,7 @@ class InventoryMutationGuard:
         await lock.acquire()
         duplicate_detected = False
 
-        try:
+        try:  # pylint: disable=too-many-nested-blocks  # Reason: Async mutation guard requires complex nested logic for token validation, duplicate detection, and async state management
             now = monotonic()
             self._prune_tokens_async(state, now)
 
