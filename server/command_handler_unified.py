@@ -53,6 +53,108 @@ class CommandRequest(BaseModel):
     command: str
 
 
+def _prepare_command_for_processing(
+    command_line: str, player_name: str, alias_storage: AliasStorage | None
+) -> tuple[str, str, list[str], AliasStorage | None, dict[str, Any] | None]:
+    """Prepare command for processing. Returns (command_line, cmd, args, alias_storage, error_result)."""
+    rate_limit_result = _check_rate_limit(player_name)
+    if rate_limit_result:
+        return "", "", [], alias_storage, rate_limit_result
+
+    validation_result = _validate_command_basics(command_line, player_name)
+    if validation_result:
+        return "", "", [], alias_storage, validation_result
+
+    command_line = clean_command_input(command_line)
+    if not command_line:
+        logger.debug("Empty command after cleaning")
+        return "", "", [], alias_storage, {"result": ""}
+
+    command_line = normalize_command(command_line)
+    if not command_line:
+        logger.debug("Empty command after normalization")
+        return "", "", [], alias_storage, {"result": ""}
+
+    alias_storage = _ensure_alias_storage(alias_storage)
+
+    parts = command_line.split()
+    cmd = parts[0].lower()
+    args = parts[1:]
+
+    logger.debug(
+        "Command parsed",
+        player=player_name,
+        command=cmd,
+        args=args,
+        original_command=command_line,
+    )
+
+    return command_line, cmd, args, alias_storage, None
+
+
+async def _check_all_command_blocks(cmd: str, player_name: str, request: Request) -> dict[str, Any] | None:
+    """Check all command blocking conditions. Returns result if blocked, None otherwise."""
+    logger.debug("Checking catatonia before command processing", player=player_name, command=cmd)
+    block_catatonia, catatonia_message = await check_catatonia_block(player_name, cmd, request)
+    logger.debug(
+        "Catatonia check result",
+        player=player_name,
+        command=cmd,
+        block=block_catatonia,
+        message=catatonia_message,
+    )
+    if block_catatonia:
+        logger.info(
+            "Command blocked due to catatonia",
+            player=player_name,
+            command=cmd,
+            message=catatonia_message,
+        )
+        return {"result": catatonia_message}
+
+    grace_period_result = await _check_grace_period_block(player_name, request)
+    if grace_period_result:
+        return grace_period_result
+
+    casting_result = await _check_casting_state(cmd, player_name, request)
+    if casting_result:
+        return casting_result
+
+    return None
+
+
+async def _handle_special_command_routing(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Command routing requires many parameters for context and routing logic
+    cmd: str,
+    args: list[str],
+    command_line: str,
+    alias_storage: AliasStorage | None,
+    player_name: str,
+    current_user: dict,
+    request: Request,
+) -> dict[str, Any] | None:
+    """Handle special command routing (alias management, alias expansion, emote). Returns result if handled, None otherwise."""
+    if cmd in ["alias", "aliases", "unalias"]:
+        logger.debug("Processing alias management command", player=player_name, command=cmd)
+        if alias_storage is None:
+            return {"result": "Alias system not available"}
+        return await command_service.process_command(command_line, current_user, request, alias_storage, player_name)
+
+    alias_result = await _process_alias_expansion(cmd, args, alias_storage, player_name, current_user, request)
+    if alias_result:
+        return alias_result
+
+    if not args and should_treat_as_emote(cmd):
+        logger.debug(
+            "Single word emote detected, converting to emote command",
+            player=player_name,
+            emote=cmd,
+        )
+        emote_command = f"emote {cmd}"
+        return await command_service.process_command(emote_command, current_user, request, alias_storage, player_name)
+
+    return None
+
+
 async def process_command_unified(
     command_line: str,
     current_user: dict,
@@ -76,7 +178,6 @@ async def process_command_unified(
     Returns:
         dict: Command result with 'result' key and optional metadata
     """
-    # Extract player name if not provided
     if not player_name:
         player_name = get_username_from_user(current_user)
 
@@ -86,96 +187,22 @@ async def process_command_unified(
         command=command_line,
     )
 
-    # Step 1: Command Rate Limiting (CRITICAL-3)
-    # Prevent command flooding and DoS attacks
-    rate_limit_result = _check_rate_limit(player_name)
-    if rate_limit_result:
-        return rate_limit_result
-
-    # Step 2: Basic validation
-    validation_result = _validate_command_basics(command_line, player_name)
-    if validation_result:
-        return validation_result
-
-    # Step 3: Clean and normalize command
-    command_line = clean_command_input(command_line)
-    if not command_line:
-        logger.debug("Empty command after cleaning")
-        return {"result": ""}
-
-    command_line = normalize_command(command_line)
-    if not command_line:
-        logger.debug("Empty command after normalization")
-        return {"result": ""}
-
-    # Step 4: Initialize alias storage if not provided
-    alias_storage = _ensure_alias_storage(alias_storage)
-
-    # Step 5: Parse command and arguments
-    parts = command_line.split()
-    cmd = parts[0].lower()
-    args = parts[1:]
-
-    logger.debug(
-        "Command parsed",
-        player=player_name,
-        command=cmd,
-        args=args,
-        original_command=command_line,
+    command_line, cmd, args, alias_storage, error_result = _prepare_command_for_processing(
+        command_line, player_name, alias_storage
     )
+    if error_result:
+        return error_result
 
-    # Step 6: Check catatonia
-    logger.debug("Checking catatonia before command processing", player=player_name, command=cmd)
-    block_catatonia, catatonia_message = await check_catatonia_block(player_name, cmd, request)
-    logger.debug(
-        "Catatonia check result",
-        player=player_name,
-        command=cmd,
-        block=block_catatonia,
-        message=catatonia_message,
+    block_result = await _check_all_command_blocks(cmd, player_name, request)
+    if block_result:
+        return block_result
+
+    special_result = await _handle_special_command_routing(
+        cmd, args, command_line, alias_storage, player_name, current_user, request
     )
-    if block_catatonia:
-        logger.info(
-            "Command blocked due to catatonia",
-            player=player_name,
-            command=cmd,
-            message=catatonia_message,
-        )
-        return {"result": catatonia_message}
+    if special_result:
+        return special_result
 
-    # Step 7: Check if player is in grace period (disconnected but still in-game)
-    grace_period_result = await _check_grace_period_block(player_name, request)
-    if grace_period_result:
-        return grace_period_result
-
-    # Step 8: Check if player is casting
-    casting_result = await _check_casting_state(cmd, player_name, request)
-    if casting_result:
-        return casting_result
-
-    # Step 8: Handle alias management commands first (don't expand these)
-    if cmd in ["alias", "aliases", "unalias"]:
-        logger.debug("Processing alias management command", player=player_name, command=cmd)
-        if alias_storage is None:
-            return {"result": "Alias system not available"}
-        return await command_service.process_command(command_line, current_user, request, alias_storage, player_name)
-
-    # Step 9: Check for alias expansion with cycle detection
-    alias_result = await _process_alias_expansion(cmd, args, alias_storage, player_name, current_user, request)
-    if alias_result:
-        return alias_result
-
-    # Step 10: Check if single word command is an emote
-    if not args and should_treat_as_emote(cmd):
-        logger.debug(
-            "Single word emote detected, converting to emote command",
-            player=player_name,
-            emote=cmd,
-        )
-        emote_command = f"emote {cmd}"
-        return await command_service.process_command(emote_command, current_user, request, alias_storage, player_name)
-
-    # Step 11: Process command with validation system
     logger.debug("Processing command with validation system", player=player_name, command=cmd)
     return await process_command_with_validation(command_line, current_user, request, alias_storage, player_name)
 
@@ -321,7 +348,7 @@ async def _check_casting_state(cmd: str, player_name: str, request: Request) -> 
     return None
 
 
-async def _process_alias_expansion(
+async def _process_alias_expansion(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Command processing requires many parameters for context and routing
     cmd: str,
     args: list[str],
     alias_storage: AliasStorage | None,
@@ -419,7 +446,7 @@ async def handle_command(
 
 
 # Legacy compatibility function
-async def process_command(
+async def process_command(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Command processing requires many parameters for context and routing
     cmd: str,
     args: list[str],
     current_user: dict,

@@ -6,6 +6,8 @@ replacing the previous Redis-based implementation with a more lightweight
 and Windows-native solution.
 """
 
+# pylint: disable=too-many-instance-attributes,too-many-lines  # Reason: NATS service requires many state tracking and configuration attributes. NATS service requires extensive NATS integration logic for comprehensive real-time messaging system.
+
 import asyncio
 import json
 import ssl
@@ -28,7 +30,7 @@ from .nats_subject_manager import NATSSubjectManager, SubjectValidationError
 logger = get_logger("nats")
 
 
-class NATSMetrics:
+class NATSMetrics:  # pylint: disable=too-many-instance-attributes  # Reason: Metrics class requires many fields to capture complete NATS metrics
     """NATS-specific metrics collection for monitoring and alerting."""
 
     def __init__(self) -> None:
@@ -94,7 +96,7 @@ class NATSMetrics:
         }
 
 
-class NATSService:
+class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NATS service requires many state tracking and configuration attributes
     """
     NATS service for handling pub/sub operations and real-time messaging.
 
@@ -182,6 +184,74 @@ class NATSService:
             subject_manager = NATSSubjectManager(strict_validation=self.config.strict_subject_validation)
         self.subject_manager = subject_manager
 
+    def _check_connection_allowed(self) -> bool:
+        """Check if connection attempt is allowed by state machine."""
+        if not self.state_machine.can_attempt_connection():
+            logger.warning(
+                "Connection attempt blocked by state machine",
+                current_state=self.state_machine.current_state.id,
+                reconnect_attempts=self.state_machine.reconnect_attempts,
+            )
+            return False
+
+        if self.state_machine.current_state.id == "disconnected":
+            self.state_machine.connect()
+        elif self.state_machine.current_state.id == "reconnecting":
+            pass
+
+        return True
+
+    def _build_connect_options(self) -> dict[str, Any]:
+        """Build connection options for NATS."""
+        connect_options: dict[str, Any] = {
+            "reconnect_time_wait": self.config.reconnect_time_wait,
+            "max_reconnect_attempts": self._max_retries,
+            "connect_timeout": self.config.connect_timeout,
+            "ping_interval": self.config.ping_interval,
+            "max_outstanding_pings": self.config.max_outstanding_pings,
+        }
+        return connect_options
+
+    def _configure_tls(self, connect_options: dict[str, Any]) -> None:
+        """Configure TLS settings for NATS connection."""
+        if not self.config.tls_enabled:
+            return
+
+        ssl_context = ssl.create_default_context()
+
+        if self.config.tls_cert_file and self.config.tls_key_file:
+            cert_path = Path(self.config.tls_cert_file)
+            key_path = Path(self.config.tls_key_file)
+            ssl_context.load_cert_chain(cert_path, key_path)
+            logger.debug("Loaded TLS client certificate", cert_file=str(cert_path), key_file=str(key_path))
+
+        if self.config.tls_ca_file:
+            ca_path = Path(self.config.tls_ca_file)
+            ssl_context.load_verify_locations(ca_path)
+            logger.debug("Loaded TLS CA certificate", ca_file=str(ca_path))
+
+        if self.config.tls_verify:
+            ssl_context.check_hostname = True
+            ssl_context.verify_mode = ssl.CERT_REQUIRED
+        else:
+            ssl_context.check_hostname = False
+            ssl_context.verify_mode = ssl.CERT_NONE
+            logger.warning("TLS verification disabled - using unverified certificates")
+
+        connect_options["tls"] = ssl_context
+        logger.info("TLS enabled for NATS connection", verify=self.config.tls_verify)
+
+    def _setup_connection_handlers(self) -> None:
+        """Set up connection event handlers."""
+        if self.nc is None:
+            return
+        try:
+            self.nc.add_error_listener(self._on_error)
+            self.nc.add_disconnect_listener(self._on_disconnect)
+            self.nc.add_reconnect_listener(self._on_reconnect)
+        except AttributeError:
+            logger.debug("Event listeners not available in nats-py version")
+
     async def connect(self) -> bool:
         """
         Connect to NATS server with state machine tracking.
@@ -191,64 +261,13 @@ class NATSService:
 
         AI: State machine tracks connection lifecycle and enables circuit breaker integration.
         """
-        # Check if connection attempt is allowed by state machine
-        if not self.state_machine.can_attempt_connection():
-            logger.warning(
-                "Connection attempt blocked by state machine",
-                current_state=self.state_machine.current_state.id,
-                reconnect_attempts=self.state_machine.reconnect_attempts,
-            )
+        if not self._check_connection_allowed():
             return False
 
-        # Transition to connecting state
-        if self.state_machine.current_state.id == "disconnected":
-            self.state_machine.connect()
-        elif self.state_machine.current_state.id == "reconnecting":
-            # Already in reconnecting, continue
-            pass
-
         try:
-            # Get NATS connection URL from config (Pydantic attribute access)
             nats_url = self.config.url
-
-            # Connection options (Pydantic attribute access)
-            # Type annotation allows TLS context to be added
-            connect_options: dict[str, Any] = {
-                "reconnect_time_wait": self.config.reconnect_time_wait,
-                "max_reconnect_attempts": self._max_retries,
-                "connect_timeout": self.config.connect_timeout,
-                "ping_interval": self.config.ping_interval,
-                "max_outstanding_pings": self.config.max_outstanding_pings,
-            }
-
-            # Configure TLS if enabled
-            if self.config.tls_enabled:
-                ssl_context = ssl.create_default_context()
-
-                # Load client certificate and key
-                if self.config.tls_cert_file and self.config.tls_key_file:
-                    cert_path = Path(self.config.tls_cert_file)
-                    key_path = Path(self.config.tls_key_file)
-                    ssl_context.load_cert_chain(cert_path, key_path)
-                    logger.debug("Loaded TLS client certificate", cert_file=str(cert_path), key_file=str(key_path))
-
-                # Load CA certificate for verification
-                if self.config.tls_ca_file:
-                    ca_path = Path(self.config.tls_ca_file)
-                    ssl_context.load_verify_locations(ca_path)
-                    logger.debug("Loaded TLS CA certificate", ca_file=str(ca_path))
-
-                # Configure certificate verification
-                if self.config.tls_verify:
-                    ssl_context.check_hostname = True
-                    ssl_context.verify_mode = ssl.CERT_REQUIRED
-                else:
-                    ssl_context.check_hostname = False
-                    ssl_context.verify_mode = ssl.CERT_NONE
-                    logger.warning("TLS verification disabled - using unverified certificates")
-
-                connect_options["tls"] = ssl_context
-                logger.info("TLS enabled for NATS connection", verify=self.config.tls_verify)
+            connect_options = self._build_connect_options()
+            self._configure_tls(connect_options)
 
             logger.info(
                 "Connecting to NATS server",
@@ -257,25 +276,12 @@ class NATSService:
                 state=self.state_machine.current_state.id,
             )
 
-            # Connect to NATS
             self.nc = await nats.connect(nats_url, **connect_options)
-
-            # Set up connection event handlers (if available)
-            try:
-                self.nc.add_error_listener(self._on_error)
-                self.nc.add_disconnect_listener(self._on_disconnect)
-                self.nc.add_reconnect_listener(self._on_reconnect)
-            except AttributeError:
-                # Event listeners not available in this version of nats-py
-                logger.debug("Event listeners not available in nats-py version")
+            self._setup_connection_handlers()
 
             self._running = True
             self._connection_retries = 0
-
-            # Transition to connected state
             self.state_machine.connected_successfully()
-
-            # Initialize connection pool for high-throughput scenarios
             await self._initialize_connection_pool()
 
             # Start health check monitoring task
@@ -289,7 +295,7 @@ class NATSService:
             )
             return True
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NATS connection errors unpredictable, must handle all errors
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NATS connection errors unpredictable, must handle all errors
             self._connection_retries += 1
 
             # Transition to failed state
@@ -339,7 +345,7 @@ class NATSService:
                     try:
                         await subscription.drain()  # Wait for in-flight messages
                         logger.debug("Subscription drained", subject=subject)
-                    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Subscription drain errors unpredictable, must not fail cleanup
+                    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Subscription drain errors unpredictable, must not fail cleanup
                         logger.warning("Error draining subscription", subject=subject, error=str(e))
 
                 # Close all subscriptions
@@ -347,7 +353,7 @@ class NATSService:
                     try:
                         await subscription.unsubscribe()
                         logger.debug("Unsubscribed from NATS subject", subject=subject)
-                    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Unsubscribe errors unpredictable, must not fail cleanup
+                    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Unsubscribe errors unpredictable, must not fail cleanup
                         logger.warning("Error unsubscribing from subject", subject=subject, error=str(e))
 
                 # Close NATS connection
@@ -369,7 +375,7 @@ class NATSService:
             # Stop health check monitoring
             await self._stop_health_monitoring()
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Disconnect errors unpredictable, must handle gracefully
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Disconnect errors unpredictable, must handle gracefully
             logger.error("Error disconnecting from NATS server", error=str(e))
 
     async def _start_health_monitoring(self):
@@ -426,7 +432,7 @@ class NATSService:
                     # Give them a brief moment to cancel
                     try:
                         await asyncio.wait_for(asyncio.gather(*pending, return_exceptions=True), timeout=0.5)
-                    except (TimeoutError, Exception):  # pylint: disable=broad-exception-caught  # Abandon remaining tasks on any error
+                    except (TimeoutError, Exception):  # pylint: disable=broad-exception-caught  # Abandon remaining tasks on any error  # noqa: B904
                         pass  # Abandon remaining tasks
 
             except (RuntimeError, asyncio.CancelledError) as e:
@@ -483,7 +489,7 @@ class NATSService:
 
             except asyncio.CancelledError:
                 break
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Health check errors unpredictable, must continue loop
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Health check errors unpredictable, must continue loop
                 logger.error("Error in health check loop", error=str(e))
                 self._consecutive_health_failures += 1
                 await asyncio.sleep(health_check_interval)  # Wait before retrying
@@ -511,7 +517,7 @@ class NATSService:
         except TimeoutError:
             logger.warning("Health check timeout", timeout=self._health_check_timeout)
             return False
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Health check errors unpredictable, must return False
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Health check errors unpredictable, must return False
             logger.warning("Health check failed", error=str(e), error_type=type(e).__name__)
             return False
 
@@ -543,6 +549,50 @@ class NATSService:
         # Use connection pool
         await self.publish_with_pool(subject, data)
 
+    async def _decode_message_data(self, msg: Any) -> dict[str, Any]:
+        """Decode message data from NATS message."""
+        loop = asyncio.get_running_loop()
+        return await loop.run_in_executor(None, lambda: json.loads(msg.data.decode("utf-8")))
+
+    async def _call_callback(self, callback: Callable[[dict[str, Any]], None], message_data: dict[str, Any]) -> None:
+        """Call the registered callback, handling both async and sync callbacks."""
+        if asyncio.iscoroutinefunction(callback):
+            await callback(message_data)
+        else:
+            callback(message_data)
+
+    async def _acknowledge_message(self, msg: Any, subject: str, message_data: dict[str, Any]) -> bool:
+        """Acknowledge message if manual ack is enabled. Returns True if acknowledged."""
+        if not hasattr(msg, "ack"):
+            return False
+
+        try:
+            await msg.ack()
+            logger.debug(
+                "Message acknowledged",
+                subject=subject,
+                message_id=message_data.get("message_id"),
+            )
+            return True
+        except Exception as ack_error:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Message ack errors unpredictable, must log but continue
+            logger.error(
+                "Failed to acknowledge message",
+                error=str(ack_error),
+                subject=subject,
+                message_id=message_data.get("message_id"),
+            )
+            return False
+
+    async def _negatively_acknowledge_message(self, msg: Any, subject: str) -> None:
+        """Negatively acknowledge message if manual ack is enabled."""
+        if not hasattr(msg, "nak"):
+            return
+
+        try:
+            await msg.nak()
+        except Exception as nak_error:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Message nak errors unpredictable, must log but continue
+            logger.error("Failed to negatively acknowledge message", error=str(nak_error), subject=subject)
+
     async def subscribe(self, subject: str, callback: Callable[[dict[str, Any]], None]) -> None:
         """
         Subscribe to a NATS subject and register a callback for incoming messages.
@@ -566,37 +616,14 @@ class NATSService:
 
             manual_ack_enabled = getattr(self.config, "manual_ack", False)
 
-            # Create message handler with acknowledgment support
-            async def message_handler(msg):
+            async def message_handler(msg: Any) -> None:
                 message_acknowledged = False
                 try:
-                    # Decode message data using thread pool for CPU-bound operation
-                    loop = asyncio.get_running_loop()
-                    message_data = await loop.run_in_executor(None, lambda: json.loads(msg.data.decode("utf-8")))
+                    message_data = await self._decode_message_data(msg)
+                    await self._call_callback(callback, message_data)
 
-                    # Call the registered callback (await if it's async)
-                    if asyncio.iscoroutinefunction(callback):
-                        await callback(message_data)
-                    else:
-                        callback(message_data)
-
-                    # Acknowledge message after successful processing (if manual ack enabled)
-                    if manual_ack_enabled and hasattr(msg, "ack"):
-                        try:
-                            await msg.ack()
-                            message_acknowledged = True
-                            logger.debug(
-                                "Message acknowledged",
-                                subject=subject,
-                                message_id=message_data.get("message_id"),
-                            )
-                        except Exception as ack_error:  # pylint: disable=broad-exception-caught  # Reason: Message ack errors unpredictable, must log but continue
-                            logger.error(
-                                "Failed to acknowledge message",
-                                error=str(ack_error),
-                                subject=subject,
-                                message_id=message_data.get("message_id"),
-                            )
+                    if manual_ack_enabled:
+                        message_acknowledged = await self._acknowledge_message(msg, subject, message_data)
 
                     logger.debug(
                         "Message received from NATS subject",
@@ -608,30 +635,16 @@ class NATSService:
 
                 except json.JSONDecodeError as e:
                     logger.error("Failed to decode NATS message", error=str(e), subject=subject)
-                    # Negatively acknowledge on decode failure (if manual ack enabled)
-                    if manual_ack_enabled and hasattr(msg, "nak"):
-                        try:
-                            await msg.nak()
-                        except Exception as nak_error:  # pylint: disable=broad-exception-caught  # Reason: Message nak errors unpredictable, must log but continue
-                            logger.error(
-                                "Failed to negatively acknowledge message", error=str(nak_error), subject=subject
-                            )
-                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Message handling errors unpredictable, must handle gracefully
+                    if manual_ack_enabled:
+                        await self._negatively_acknowledge_message(msg, subject)
+                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Message handling errors unpredictable, must handle gracefully
                     logger.error("Error handling NATS message", error=str(e), subject=subject)
-                    # Negatively acknowledge on processing failure (if manual ack enabled)
-                    if manual_ack_enabled and hasattr(msg, "nak"):
-                        try:
-                            await msg.nak()
-                        except Exception as nak_error:  # pylint: disable=broad-exception-caught  # Reason: Message nak errors unpredictable, must log but continue
-                            logger.error(
-                                "Failed to negatively acknowledge message", error=str(nak_error), subject=subject
-                            )
+                    if manual_ack_enabled:
+                        await self._negatively_acknowledge_message(msg, subject)
 
-            # Subscribe to subject
             subscription = await self.nc.subscribe(subject, cb=message_handler)
             self.subscriptions[subject] = subscription
 
-            # Record metrics
             self.metrics.record_subscribe(True)
 
             logger.info(
@@ -641,9 +654,8 @@ class NATSService:
             )
 
         except NATSSubscribeError:
-            # Re-raise NATS subscribe errors
             raise
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Subscribe errors unpredictable, must record metrics and handle
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Subscribe errors unpredictable, must record metrics and handle
             # Record metrics
             self.metrics.record_subscribe(False)
             error_msg = f"Failed to subscribe to NATS subject: {str(e)}"
@@ -672,7 +684,7 @@ class NATSService:
             logger.info("Unsubscribed from NATS subject", subject=subject)
             return True
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Unsubscribe errors unpredictable, must return False
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Unsubscribe errors unpredictable, must return False
             logger.error("Failed to unsubscribe from NATS subject", error=str(e), subject=subject)
             return False
 
@@ -715,7 +727,7 @@ class NATSService:
         except TimeoutError:
             logger.warning("Request timeout", subject=subject, timeout=timeout)
             return None
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Request errors unpredictable, must return None
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Request errors unpredictable, must return None
             logger.error("Failed to send request", error=str(e), subject=subject)
             return None
 
@@ -830,7 +842,7 @@ class NATSService:
             # Degrade connection if currently connected
             if self.state_machine.current_state.id == "connected":
                 self.state_machine.degrade()
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Error handler errors unpredictable, must log but not fail
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Error handler errors unpredictable, must log but not fail
             logger.error("Error in async error handler", error=str(e), original_error=str(error))
 
     def _on_disconnect(self):
@@ -861,7 +873,7 @@ class NATSService:
             if self.state_machine.current_state.id in ["connected", "degraded"]:
                 self.state_machine.disconnect()
                 self.state_machine.start_reconnect()
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Disconnect handler errors unpredictable, must log but not fail
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Disconnect handler errors unpredictable, must log but not fail
             logger.error("Error in async disconnect handler", error=str(e))
 
     def _on_reconnect(self):
@@ -895,7 +907,7 @@ class NATSService:
                 self.state_machine.connected_successfully()
             elif self.state_machine.current_state.id == "degraded":
                 self.state_machine.recover()
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Reconnect handler errors unpredictable, must log but not fail
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Reconnect handler errors unpredictable, must log but not fail
             logger.error("Error in async reconnect handler", error=str(e))
 
     def get_connection_stats(self) -> dict[str, Any]:
@@ -978,7 +990,7 @@ class NATSService:
                 url=nats_url,
             )
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Pool initialization errors unpredictable, must handle gracefully
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Pool initialization errors unpredictable, must handle gracefully
             logger.error(
                 "Failed to initialize NATS connection pool",
                 error=str(e),
@@ -1069,7 +1081,7 @@ class NATSService:
         except NATSPublishError:
             # Re-raise NATS publish errors
             raise
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Publish errors unpredictable, must handle and log
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Publish errors unpredictable, must handle and log
             error_msg = f"Failed to publish message via connection pool: {str(e)}"
             logger.error(
                 "Failed to publish message via connection pool",
@@ -1095,7 +1107,7 @@ class NATSService:
                 except asyncio.CancelledError:
                     logger.warning("NATS connection close cancelled during shutdown", connection=str(connection))
                     continue
-                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Connection close errors unpredictable, must continue cleanup
+                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Connection close errors unpredictable, must continue cleanup
                     logger.warning("Error closing pool connection", error=str(e))
 
             # Clear pool
@@ -1104,7 +1116,7 @@ class NATSService:
 
             logger.info("Connection pool cleaned up", pool_size=len(self.connection_pool))
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Pool cleanup errors unpredictable, must handle gracefully
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Pool cleanup errors unpredictable, must handle gracefully
             logger.error("Error cleaning up connection pool", error=str(e))
 
     async def publish_batch(self, subject: str, data: dict[str, Any]) -> bool:
@@ -1162,7 +1174,7 @@ class NATSService:
 
             return True
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Batch add errors unpredictable, must handle gracefully
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Batch add errors unpredictable, must handle gracefully
             logger.error(
                 "Failed to add message to batch",
                 error=str(e),
@@ -1215,7 +1227,7 @@ class NATSService:
                 unique_subjects=len(grouped_messages),
             )
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Batch flush errors unpredictable, must handle gracefully
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Batch flush errors unpredictable, must handle gracefully
             logger.error(
                 "Failed to flush message batch",
                 error=str(e),

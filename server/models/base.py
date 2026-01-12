@@ -8,6 +8,8 @@ CRITICAL: All models MUST use this shared Base class, not their own.
          Otherwise SQLAlchemy cannot resolve string references in relationships.
 """
 
+# pylint: disable=too-few-public-methods  # Reason: SQLAlchemy base classes are declarative bases, no instance methods needed
+
 from sqlalchemy.orm import DeclarativeBase
 
 from ..metadata import metadata

@@ -9,6 +9,8 @@ dimensional coordinates is essential for maintaining the integrity
 of our eldritch architecture.
 """
 
+# pylint: disable=too-many-instance-attributes  # Reason: Room sync service requires many state tracking and cache attributes
+
 import asyncio
 import time
 from collections import defaultdict
@@ -31,7 +33,7 @@ EventSequence: TypeAlias = dict[str, int]  # noqa: UP040
 logger = get_logger(__name__)
 
 
-class RoomSyncService:
+class RoomSyncService:  # pylint: disable=too-many-instance-attributes  # Reason: Room sync service requires many state tracking and cache attributes
     """
     Enhanced room synchronization service.
 
@@ -217,9 +219,8 @@ class RoomSyncService:
                     room_name=fresh_room_data.get("name", "Unknown"),
                 )
                 return fresh_room_data
-            else:
-                logger.warning("Fresh room data not found", room_id=room_id)
-                return None
+            logger.warning("Fresh room data not found", room_id=room_id)
+            return None
         except (AttributeError, TypeError) as fetch_error:
             logger.error(
                 "Error fetching fresh room data",

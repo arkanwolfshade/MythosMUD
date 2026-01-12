@@ -45,7 +45,7 @@ def _format_npc_description(npc: Any) -> str:
         description = getattr(definition, "short_description", None)
     if not description:
         description = getattr(definition, "desc", None)
-    if not description or description.strip() == "":
+    if not description or not description.strip():
         return "You see nothing remarkable about them."
     return description
 

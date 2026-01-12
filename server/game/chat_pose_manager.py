@@ -5,6 +5,8 @@ This module provides pose management functionality for players,
 handling in-memory storage of player poses.
 """
 
+# pylint: disable=wrong-import-position  # Reason: Import after TYPE_CHECKING block is intentional to avoid circular dependencies
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:

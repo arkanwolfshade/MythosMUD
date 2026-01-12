@@ -8,6 +8,8 @@ As noted in the restricted archives: "Explicit configuration prevents
 the seepage of secrets into unintended dimensions."
 """
 
+# pylint: disable=too-many-lines  # Reason: Configuration models require extensive Pydantic model definitions for all server configuration options
+
 import json
 import os
 from datetime import UTC, datetime
@@ -568,7 +570,7 @@ class CORSConfig(BaseSettings):
             or os.getenv("CORS_ALLOWED_ORIGINS")
             or os.getenv("ALLOWED_ORIGINS")
         )
-        if env_raw is not None and str(env_raw).strip() != "":
+        if env_raw is not None and str(env_raw).strip():
             # Override allow_origins with parsed environment value
             parsed = self._parse_csv(env_raw, allow_empty=False)
             try:
@@ -586,7 +588,7 @@ class CORSConfig(BaseSettings):
             or os.getenv("CORS_ALLOWED_ORIGINS")
             or os.getenv("ALLOWED_ORIGINS")
         )
-        if env_raw is not None and str(env_raw).strip() != "":
+        if env_raw is not None and str(env_raw).strip():
             parsed = self._parse_csv(env_raw, allow_empty=False)
             try:
                 object.__setattr__(self, "allow_origins", parsed)
@@ -640,7 +642,7 @@ class CORSConfig(BaseSettings):
         return None
 
     @classmethod
-    def settings_customise_sources(
+    def settings_customise_sources(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Pydantic settings customization requires many parameters for configuration sources
         cls,
         settings_cls,
         init_settings,
@@ -746,13 +748,13 @@ class CORSConfig(BaseSettings):
             or os.getenv("CORS_ALLOWED_ORIGINS")
             or os.getenv("ALLOWED_ORIGINS")
         )
-        if env_raw is not None and str(env_raw).strip() != "":
+        if env_raw is not None and str(env_raw).strip():
             return cls._parse_csv(env_raw, allow_empty=False)
 
         # Fall back to provided value (from init or defaults)
         if isinstance(value, list):
             return cls._parse_csv(value, allow_empty=False)
-        if isinstance(value, str) and value.strip() != "":
+        if isinstance(value, str) and value.strip():
             return cls._parse_csv(value, allow_empty=False)
 
         # Final fallback to the model default
@@ -768,6 +770,14 @@ class CORSConfig(BaseSettings):
     @field_validator("allow_methods", mode="before")
     @classmethod
     def parse_allow_methods(cls, value: object) -> list[str]:
+        """Parse and validate CORS allowed methods.
+
+        Args:
+            value: The value to parse (can be string, list, or other)
+
+        Returns:
+            list[str]: List of uppercase HTTP method names
+        """
         # Prefer explicit env overrides when present to ensure reliable behavior
         env_methods = os.getenv("CORS_ALLOW_METHODS") or os.getenv("ALLOWED_METHODS")
         if env_methods:
@@ -779,6 +789,14 @@ class CORSConfig(BaseSettings):
     @field_validator("allow_headers", mode="before")
     @classmethod
     def parse_allow_headers(cls, value: object) -> list[str]:
+        """Parse and validate CORS allowed headers.
+
+        Args:
+            value: The value to parse (can be string, list, or other)
+
+        Returns:
+            list[str]: List of allowed header names
+        """
         env_headers = os.getenv("CORS_ALLOW_HEADERS") or os.getenv("ALLOWED_HEADERS")
         if env_headers:
             return cls._parse_csv(env_headers, allow_empty=False)
@@ -787,8 +805,16 @@ class CORSConfig(BaseSettings):
     @field_validator("max_age", mode="before")
     @classmethod
     def parse_max_age(cls, value: object) -> int:
+        """Parse and validate CORS max age value.
+
+        Args:
+            value: The value to parse (can be int, string, or other)
+
+        Returns:
+            int: The max age in seconds (defaults to 600 if invalid)
+        """
         env_max_age = os.getenv("CORS_MAX_AGE")
-        if env_max_age is not None and env_max_age != "":
+        if env_max_age is not None and env_max_age:
             try:
                 return int(env_max_age)
             except ValueError:
@@ -798,11 +824,30 @@ class CORSConfig(BaseSettings):
     @field_validator("expose_headers", mode="before")
     @classmethod
     def parse_expose_headers(cls, value: object) -> list[str]:
+        """Parse and validate CORS exposed headers.
+
+        Args:
+            value: The value to parse (can be string, list, or other)
+
+        Returns:
+            list[str]: List of exposed header names
+        """
         return cls._parse_csv(value, allow_empty=True)
 
     @field_validator("max_age")
     @classmethod
     def validate_max_age(cls, value: int) -> int:
+        """Validate that max_age is non-negative.
+
+        Args:
+            value: The max age value to validate
+
+        Returns:
+            int: The validated max age value
+
+        Raises:
+            ValueError: If max_age is negative
+        """
         if value < 0:
             raise ValueError("max_age must be non-negative")
         return value

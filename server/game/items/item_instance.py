@@ -1,3 +1,9 @@
+"""Item instance model for runtime item representation.
+
+This module defines the ItemInstance dataclass which represents a runtime
+item created from an item prototype, with instance-specific state and properties.
+"""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -6,7 +12,7 @@ from typing import Any
 
 
 @dataclass(frozen=True, slots=True)
-class ItemInstance:
+class ItemInstance:  # pylint: disable=too-many-instance-attributes  # Reason: Item instance requires many fields to capture complete item state
     """Runtime representation of an item created from a prototype."""
 
     item_instance_id: str

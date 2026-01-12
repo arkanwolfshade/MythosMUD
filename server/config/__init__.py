@@ -21,7 +21,7 @@ from .models import AppConfig
 __all__ = ["get_config", "reset_config", "AppConfig"]
 
 # Module-level config cache
-_config_instance = None
+_config_instance = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
 _config_lock = threading.Lock()
 
 

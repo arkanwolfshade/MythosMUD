@@ -74,20 +74,20 @@ class CharacterCreationService:
                     "meets_requirements": meets_requirements,
                     "method_used": method,
                 }
-            else:
-                # Use legacy class-based stat rolling
-                stats, available_classes = self.stats_generator.roll_stats_with_validation(
-                    method=method, required_class=required_class, max_attempts=max_attempts
-                )
-                stat_summary = self.stats_generator.get_stat_summary(stats)
 
-                return {
-                    "stats": stats.model_dump(),
-                    "stat_summary": stat_summary,
-                    "available_classes": available_classes,
-                    "method_used": method,
-                    "meets_class_requirements": required_class in available_classes if required_class else True,
-                }
+            # Use legacy class-based stat rolling
+            stats, available_classes = self.stats_generator.roll_stats_with_validation(
+                method=method, required_class=required_class, max_attempts=max_attempts
+            )
+            stat_summary = self.stats_generator.get_stat_summary(stats)
+
+            return {
+                "stats": stats.model_dump(),
+                "stat_summary": stat_summary,
+                "available_classes": available_classes,
+                "method_used": method,
+                "meets_class_requirements": required_class in available_classes if required_class else True,
+            }
         except ValueError as e:
             logger.error("Invalid parameters for stats rolling", error=str(e))
             context = create_error_context()
@@ -133,11 +133,11 @@ class CharacterCreationService:
                     "available_classes": available_classes,
                     "requested_class": class_name,
                 }
-            else:
-                available_classes = self.stats_generator.get_available_classes(stats_obj)
-                stat_summary = self.stats_generator.get_stat_summary(stats_obj)
 
-                return {"available_classes": available_classes, "stat_summary": stat_summary}
+            available_classes = self.stats_generator.get_available_classes(stats_obj)
+            stat_summary = self.stats_generator.get_stat_summary(stats_obj)
+
+            return {"available_classes": available_classes, "stat_summary": stat_summary}
         except (ValueError, PydanticValidationError) as e:
             logger.error("Stats validation failed", error=str(e))
             context = create_error_context()
@@ -150,7 +150,7 @@ class CharacterCreationService:
                 user_friendly="Invalid stats format provided",
             )
 
-    def create_character_with_stats(
+    def create_character_with_stats(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Character creation requires many parameters for stats and configuration
         self,
         name: str,
         stats: dict,

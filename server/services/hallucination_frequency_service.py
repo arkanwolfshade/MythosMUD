@@ -7,6 +7,8 @@ Implements tier-based hallucination frequency system:
 - Deranged: 45% chance per 20 seconds
 """
 
+# pylint: disable=too-many-return-statements  # Reason: Hallucination frequency service requires multiple return statements for different tier checks and frequency calculations
+
 from __future__ import annotations
 
 import random

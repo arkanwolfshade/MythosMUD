@@ -4,6 +4,8 @@ Status command handlers for MythosMUD.
 This module contains handlers for status and whoami commands.
 """
 
+# pylint: disable=too-many-locals  # Reason: Status commands require many intermediate variables for complex status display logic
+
 from typing import Any
 
 from ..alias_storage import AliasStorage
@@ -32,7 +34,7 @@ async def _get_profession_info(player: Any, persistence: Any) -> dict[str, Any]:
         profession_id = player.get("profession_id", 0)
 
     # Mypy: profession_id can be 0 but not None at this point
-    if profession_id == 0:
+    if not profession_id:
         return {"name": None, "description": None, "flavor_text": None}
 
     try:

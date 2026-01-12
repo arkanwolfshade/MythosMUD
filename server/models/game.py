@@ -72,7 +72,7 @@ class StatusEffect(BaseModel):
 
     def is_active(self, current_tick: int) -> bool:
         """Check if the status effect is still active."""
-        if self.duration == 0:
+        if not self.duration:
             return True
         # For testing purposes, use a simple tick-based system
         # In real usage, this would be more sophisticated
@@ -207,16 +207,14 @@ class Stats(BaseModel):
         max_lucidity_value = self.education or 50
 
         # Cap current_dp (DP) at max_dp
-        if self.current_dp > max_dp:
-            self.current_dp = max_dp
+        # Use object.__setattr__ to bypass Pydantic validation and prevent recursion
+        object.__setattr__(self, "current_dp", min(self.current_dp, max_dp))
 
         # Cap magic_points at max_magic_points
-        if self.magic_points > max_mp:
-            self.magic_points = max_mp
+        object.__setattr__(self, "magic_points", min(self.magic_points, max_mp))
 
         # Cap lucidity at max_lucidity
-        if self.lucidity > max_lucidity_value:
-            self.lucidity = max_lucidity_value
+        object.__setattr__(self, "lucidity", min(self.lucidity, max_lucidity_value))
 
         return self
 
@@ -322,7 +320,7 @@ class Player(BaseModel):
             if inv_item.item_id == item_id:
                 if inv_item.quantity >= quantity:
                     new_quantity = inv_item.quantity - quantity
-                    if new_quantity == 0:
+                    if not new_quantity:
                         # Remove item completely
                         inventory.pop(i)
                     else:

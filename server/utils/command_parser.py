@@ -16,7 +16,11 @@ from ..models.command import (
 )
 from ..structured_logging.enhanced_logging_config import get_logger
 from .command_factories import CommandFactory
-from .command_helpers import get_command_help, get_username_from_user, validate_command_safety  # noqa: F401
+from .command_helpers import (  # noqa: F401  # pylint: disable=unused-import
+    get_command_help,
+    get_username_from_user,
+    validate_command_safety,
+)
 from .enhanced_error_logging import create_error_context, log_and_raise_enhanced
 
 logger = get_logger(__name__)
@@ -233,16 +237,15 @@ class CommandParser:
             create_method = self._command_factory.get(command)
             if create_method:
                 return create_method(args)
-            else:
-                context = create_error_context()
-                context.metadata = {
-                    "command": command,
-                    "args": args,
-                    "available_commands": list(self._command_factory.keys()),
-                }
-                log_and_raise_enhanced(
-                    MythosValidationError, f"Unsupported command: {command}", context=context, logger_name=__name__
-                )
+            context = create_error_context()
+            context.metadata = {
+                "command": command,
+                "args": args,
+                "available_commands": list(self._command_factory.keys()),
+            }
+            log_and_raise_enhanced(
+                MythosValidationError, f"Unsupported command: {command}", context=context, logger_name=__name__
+            )
 
         except MythosValidationError:
             # Re-raise MythosValidationError without wrapping it
@@ -278,7 +281,7 @@ class CommandParser:
             Help text for the command(s)
         """
         # Define basic command help
-        COMMAND_HELP = {
+        command_help = {  # pylint: disable=invalid-name  # Reason: Local variable, not a constant
             "look": "Examine your surroundings or look in a specific direction",
             "go": "Move in a specific direction (north, south, east, west)",
             "say": "Speak to other players in your current room",
@@ -300,16 +303,14 @@ class CommandParser:
 
         if command_name:
             # Return specific command help
-            if command_name.lower() in COMMAND_HELP:
-                return COMMAND_HELP[command_name.lower()]
-            else:
-                return f"No help available for command '{command_name}'"
-        else:
-            # Return general help
-            help_text = "Available commands:\n"
-            for cmd, info in COMMAND_HELP.items():
-                help_text += f"  {cmd}: {info}\n"
-            return help_text
+            if command_name.lower() in command_help:
+                return command_help[command_name.lower()]
+            return f"No help available for command '{command_name}'"
+        # Return general help
+        help_text = "Available commands:\n"
+        for cmd, info in command_help.items():
+            help_text += f"  {cmd}: {info}\n"
+        return help_text
 
 
 # Global command parser instance

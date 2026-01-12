@@ -16,6 +16,8 @@ AI: Uses template-based patterns with validation to prevent routing errors.
 AI: Tracks performance metrics for optimization and monitoring.
 """
 
+# pylint: disable=too-many-instance-attributes  # Reason: Subject manager requires many state tracking and configuration attributes
+
 from typing import Any
 
 from .exceptions import (
@@ -35,7 +37,7 @@ from .subscription_patterns import (
 from .validation import SubjectValidator
 
 
-class NATSSubjectManager:
+class NATSSubjectManager:  # pylint: disable=too-many-instance-attributes  # Reason: Subject manager requires many state tracking and configuration attributes
     """
     Manager for NATS subject patterns and validation.
 

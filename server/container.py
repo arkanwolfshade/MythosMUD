@@ -29,6 +29,8 @@ USAGE:
     player_service = container.player_service  # No global state!
 """
 
+# pylint: disable=too-many-return-statements,too-many-lines,wrong-import-position  # Reason: Container methods require multiple return statements for service resolution logic (type checking, initialization states, error handling). Container requires extensive service registration and lifecycle management code. Imports after TYPE_CHECKING block are intentional to avoid circular dependencies.
+
 import asyncio
 import json
 import threading
@@ -79,7 +81,7 @@ from .utils.project_paths import (
 logger = get_logger(__name__)
 
 
-class ApplicationContainer:
+class ApplicationContainer:  # pylint: disable=too-many-instance-attributes  # Reason: DI container requires many service instances and configuration attributes
     """
     Dependency Injection Container for MythosMUD application.
 
@@ -219,7 +221,7 @@ class ApplicationContainer:
             cls._instance = instance
         logger.debug("ApplicationContainer instance set via set_instance()")
 
-    async def initialize(self) -> None:
+    async def initialize(self) -> None:  # pylint: disable=too-many-locals,too-many-statements  # Reason: Service initialization requires many intermediate variables and statements for complex dependency setup
         """
         Initialize all services in proper dependency order.
 
@@ -495,7 +497,7 @@ class ApplicationContainer:
                 await self.shutdown()
                 raise RuntimeError(f"Failed to initialize application container: {e}") from e
 
-    async def _initialize_item_services(self) -> None:
+    async def _initialize_item_services(self) -> None:  # pylint: disable=too-many-locals  # Reason: Item service initialization requires many intermediate variables
         """Load item prototypes from PostgreSQL and create the shared item factory."""
         from sqlalchemy import select
         from sqlalchemy.exc import SQLAlchemyError
@@ -575,7 +577,7 @@ class ApplicationContainer:
 
     def _decode_json_column(self, value: Any, expected_type: type) -> Any:
         """Decode a JSON column value, returning the type's default on failure."""
-        if value is None or value == "":
+        if value is None or not value:
             return expected_type()
         if isinstance(value, list | dict):
             return value

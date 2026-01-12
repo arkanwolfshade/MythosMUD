@@ -22,7 +22,7 @@ logger = get_logger(__name__)
 
 
 @dataclass
-class ContainerCreateParams:
+class ContainerCreateParams:  # pylint: disable=too-many-instance-attributes  # Reason: Container creation params requires many fields to capture complete container creation context
     """Parameters for creating a container."""
 
     owner_id: uuid.UUID | None = None
@@ -133,7 +133,7 @@ class ContainerRepository:
 
         def _get_sync():
             with self._get_sync_connection() as conn:
-                results = container_persistence.get_containers_by_room_id(conn, room_id)
+                results = container_persistence.get_containers_by_room_id(conn, room_id)  # pylint: disable=no-member  # Reason: Function exists in container_persistence module but pylint cannot resolve cross-module imports
                 # Convert ContainerData objects to dicts
                 return [
                     {
@@ -153,7 +153,7 @@ class ContainerRepository:
             with self._get_sync_connection() as conn:
                 # Ensure entity_id is a UUID object (psycopg2 can handle UUID objects)
                 entity_id_uuid = uuid.UUID(str(entity_id)) if not isinstance(entity_id, uuid.UUID) else entity_id
-                results = container_persistence.get_containers_by_entity_id(conn, entity_id_uuid)
+                results = container_persistence.get_containers_by_entity_id(conn, entity_id_uuid)  # pylint: disable=no-member  # Reason: Function exists in container_persistence module but pylint cannot resolve cross-module imports
                 # Convert ContainerData objects to dicts
                 return [
                     {
@@ -198,7 +198,7 @@ class ContainerRepository:
 
         def _get_sync():
             with self._get_sync_connection() as conn:
-                results = container_persistence.get_decayed_containers(conn, current_time)
+                results = container_persistence.get_decayed_containers(conn, current_time)  # pylint: disable=no-member  # Reason: Function exists in container_persistence module but pylint cannot resolve cross-module imports
                 # Convert ContainerData objects to dicts
                 return [
                     {

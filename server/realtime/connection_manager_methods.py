@@ -5,6 +5,8 @@ This module contains methods that were extracted from ConnectionManager
 to reduce file complexity and improve maintainability.
 """
 
+# pylint: disable=too-many-lines  # Reason: Connection manager methods require extensive method implementations for comprehensive connection management operations
+
 from typing import Any
 from uuid import UUID
 

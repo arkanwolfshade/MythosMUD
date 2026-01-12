@@ -188,7 +188,7 @@ class CommandService:
             "ground": handle_ground_command,
         }
 
-    async def process_validated_command(
+    async def process_validated_command(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Command processing requires many parameters for context and routing
         self,
         command_data: dict,
         current_user: dict,
@@ -262,8 +262,7 @@ class CommandService:
                         error=str(e)[:200],  # Truncate to avoid encoding issues
                         log_error=str(log_error)[:200],
                     )
-                except (ValueError, TypeError, AttributeError, KeyError, RuntimeError):  # pylint: disable=broad-exception-caught
-                    # Last resort: silent failure to prevent test crashes
+                except (ValueError, TypeError, AttributeError, KeyError, RuntimeError):  # pylint: disable=broad-exception-caught  # noqa: B904                    # Last resort: silent failure to prevent test crashes
                     # Using broad exception catch as this is defensive code to prevent cascading failures
                     pass
             return {"result": f"Error processing {command_type} command: {str(e)}"}
@@ -419,7 +418,7 @@ class CommandService:
             has_container_in_result="container" in parsed_fields,
         )
 
-    async def _execute_command_handler(
+    async def _execute_command_handler(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Command execution requires many parameters for context and handler invocation
         self,
         handler: CommandHandler,
         command_data: dict[str, Any],
@@ -458,7 +457,7 @@ class CommandService:
             )
             return {"result": f"Error processing command: {str(e)}"}
 
-    async def process_command(
+    async def process_command(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Command processing requires many parameters for context and routing
         self,
         command: str,
         current_user: dict,

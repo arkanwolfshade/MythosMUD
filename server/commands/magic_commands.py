@@ -4,6 +4,8 @@ Magic command handlers for spellcasting.
 This module implements the /cast, /spells, and /spell commands.
 """
 
+# pylint: disable=too-many-arguments  # Reason: Magic commands require many parameters for spell context and validation
+
 import uuid
 from typing import TYPE_CHECKING, Any
 
@@ -28,7 +30,7 @@ class MagicCommandHandler:
     Processes /cast, /spells, and /spell commands.
     """
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Magic command handler initialization requires many service dependencies
         self,
         magic_service: MagicService,
         spell_registry: SpellRegistry,

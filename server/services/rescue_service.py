@@ -5,6 +5,8 @@ This isolates the rescue logic from command handlers so tests can exercise the
 real behavior by mocking persistence, session providers, and event dispatch.
 """
 
+# pylint: disable=too-few-public-methods,too-many-arguments,too-many-positional-arguments,too-many-locals,too-many-return-statements  # Reason: Rescue service has focused responsibility with minimal public interface, and requires many parameters and intermediate variables for complex rescue logic and multiple return statements for early validation returns
+
 from __future__ import annotations
 
 import asyncio
@@ -41,7 +43,7 @@ async def _maybe_await(value: Any) -> Any:
     return value
 
 
-class RescueService:
+class RescueService:  # pylint: disable=too-few-public-methods  # Reason: Rescue service class with focused responsibility, minimal public interface
     """Service for performing rescue operations."""
 
     def __init__(
@@ -61,7 +63,7 @@ class RescueService:
         )
         self.event_dispatcher = event_dispatcher
 
-    async def rescue(self, target_name: str, current_user: dict, player_name: str | None = None) -> dict[str, str]:
+    async def rescue(self, target_name: str, current_user: dict, player_name: str | None = None) -> dict[str, str]:  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Rescue operation requires many parameters and intermediate variables for complex rescue logic
         """
         Perform a rescue for the given target.
 
@@ -114,7 +116,7 @@ class RescueService:
                     location_id=str(getattr(rescuer, "current_room_id", None)),
                 )
                 await session.commit()
-            except Exception as exc:  # pragma: no cover - defensive path  # pylint: disable=broad-exception-caught  # Reason: Rescue operation errors unpredictable, must rollback and return error
+            except Exception as exc:  # noqa: B904  # pragma: no cover - defensive path  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Rescue operation errors unpredictable, must rollback and return error
                 await session.rollback()
                 logger.error("Rescue failed", rescuer=rescuer_name, target=target_name, error=str(exc))
                 return {"result": "Rescue failed due to an unexpected error."}
@@ -137,7 +139,7 @@ class RescueService:
                     message=f"You rescue {target_name}, their lucidity stabilizing.",
                     progress=100.0,
                 )
-            except Exception:  # pragma: no cover - notifications are best-effort  # pylint: disable=broad-exception-caught  # Reason: Event dispatch errors unpredictable, must log but continue
+            except Exception:  # noqa: B904  # pragma: no cover - notifications are best-effort  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Event dispatch errors unpredictable, must log but continue
                 logger.warning("Rescue event dispatch failed", rescuer=rescuer_name, target=target_name)
 
         new_lcd: str | None = getattr(result, "new_lcd", None)

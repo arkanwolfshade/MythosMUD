@@ -5,6 +5,8 @@ This module provides comprehensive logging for admin actions including
 teleport commands, with structured logging for audit purposes.
 """
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Admin logging requires many parameters for complete audit context
+
 import json
 from datetime import datetime
 from pathlib import Path
@@ -65,7 +67,7 @@ class AdminActionsLogger:
                 f.write(f"# Created: {datetime.now().isoformat()}\n")
                 f.write("# Format: JSON lines\n\n")
 
-    def log_teleport_action(
+    def log_teleport_action(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Teleport logging requires many parameters for complete audit context
         self,
         admin_name: str,
         target_player: str,
@@ -123,7 +125,7 @@ class AdminActionsLogger:
                 error_message=error_message,
             )
 
-    def log_admin_command(
+    def log_admin_command(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Admin command logging requires many parameters for complete audit context
         self,
         admin_name: str,
         command: str,
@@ -213,7 +215,7 @@ class AdminActionsLogger:
             with open(self.current_log_file, "a", encoding="utf-8") as f:
                 f.write(json.dumps(log_entry) + "\n")
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: File write errors unpredictable, must log but not fail
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: File write errors unpredictable, must log but not fail
             logger.error("Failed to write admin action log entry", error=str(e), operation="log_entry_write")
 
     def get_recent_actions(
@@ -277,7 +279,7 @@ class AdminActionsLogger:
 
             return actions
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: File read errors unpredictable, must return empty list
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: File read errors unpredictable, must return empty list
             logger.error("Failed to retrieve recent admin actions", error=str(e), operation="admin_actions_retrieval")
             return []
 
@@ -323,7 +325,7 @@ class AdminActionsLogger:
 
 
 # Global instance for easy access
-_admin_actions_logger: AdminActionsLogger | None = None
+_admin_actions_logger: AdminActionsLogger | None = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
 
 
 def get_admin_actions_logger() -> AdminActionsLogger:

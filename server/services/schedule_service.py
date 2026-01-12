@@ -1,3 +1,9 @@
+"""Schedule service for managing in-game schedules and recurring events.
+
+This module provides the ScheduleService class for loading, caching, and
+querying schedule data from calendar JSON files.
+"""
+
 from __future__ import annotations
 
 import asyncio
@@ -155,8 +161,18 @@ class ScheduleService:
 
     @property
     def entries(self) -> list[ScheduleEntry]:
+        """Get all schedule entries.
+
+        Returns:
+            list[ScheduleEntry]: List of all schedule entries
+        """
         return list(self._entries)
 
     @property
     def entry_count(self) -> int:
+        """Get the number of schedule entries.
+
+        Returns:
+            int: The count of schedule entries
+        """
         return len(self._entries)

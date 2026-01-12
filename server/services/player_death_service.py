@@ -76,7 +76,7 @@ class PlayerDeathService:
                 current_dp = stats.get("current_dp", 0)  # current_dp represents DP
                 if 0 >= current_dp > -10:
                     mortally_wounded.append(player)
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Player stats retrieval errors unpredictable, must return empty list
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Player stats retrieval errors unpredictable, must return empty list
             logger.error("Error getting mortally wounded players", error=str(e), exc_info=True)
             return []
 
@@ -168,7 +168,7 @@ class PlayerDeathService:
             # BUGFIX: Automatically change posture to lying when DP drops to <= 0
             # As documented in "Corporeal Collapse and Unconsciousness" - Dr. Armitage, 1928
             # When a player's determination points drop to zero or below, their body automatically collapses
-            if new_dp <= 0 and old_dp > 0:
+            if new_dp <= 0 < old_dp:
                 stats["position"] = PositionState.LYING
                 logger.info(
                     "Player posture changed to lying (unconscious)",
@@ -207,7 +207,7 @@ class PlayerDeathService:
 
             return True
 
-        except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError, Exception) as e:  # pylint: disable=broad-exception-caught  # Reason: DP decay errors unpredictable, must log and return False
+        except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError, Exception) as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: DP decay errors unpredictable, must log and return False
             log_exception_once(
                 logger,
                 "error",
@@ -368,7 +368,7 @@ class PlayerDeathService:
 
             return True
 
-        except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError, Exception) as e:  # pylint: disable=broad-exception-caught  # Reason: Player death handling errors unpredictable, must log and return False
+        except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError, Exception) as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Player death handling errors unpredictable, must log and return False
             log_exception_once(
                 logger,
                 "error",

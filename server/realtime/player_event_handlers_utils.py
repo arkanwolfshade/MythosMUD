@@ -4,6 +4,8 @@ Utility functions for player event handlers.
 This module contains helper functions used across player event handling.
 """
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event handler utilities require many parameters for context and event processing
+
 import uuid
 from typing import Any
 
@@ -126,7 +128,7 @@ class PlayerEventHandlerUtils:
                 names.append(name)
         return names
 
-    def add_valid_name_to_lists(
+    def add_valid_name_to_lists(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Name list management requires many parameters for context and validation
         self, name: str | None, players: list[str], npcs: list[str], all_occupants: list[str], is_player: bool = False
     ) -> None:
         """

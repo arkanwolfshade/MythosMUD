@@ -5,6 +5,8 @@ This module provides processors for sanitizing sensitive data, adding correlatio
 request context, and enhancing player IDs with names.
 """
 
+# pylint: disable=too-few-public-methods  # Reason: Logging processor classes with focused responsibility, minimal public interface
+
 import re
 import threading
 import uuid
@@ -13,7 +15,7 @@ from typing import Any
 
 
 # Type stub for function attribute
-class _PlayerServiceHolder:
+class _PlayerServiceHolder:  # pylint: disable=too-few-public-methods  # Reason: Holder class with focused responsibility, minimal public interface
     player_service: Any | None = None
 
 
@@ -177,7 +179,7 @@ def enhance_player_ids(_logger: Any, _name: str, event_dict: dict[str, Any]) -> 
 
     # Set recursion guard IMMEDIATELY before any operations that might trigger logging
     _enhancing_player_ids.active = True
-    try:
+    try:  # pylint: disable=too-many-nested-blocks  # Reason: Logging processor requires complex nested logic for player ID enhancement, UUID validation, and event dictionary processing
         if player_service and hasattr(player_service, "persistence"):
             # Process any player_id fields in the event dictionary
             for key, value in event_dict.items():
@@ -187,7 +189,9 @@ def enhance_player_ids(_logger: Any, _name: str, event_dict: dict[str, Any]) -> 
                         # Import here to avoid circular import with server.exceptions -> enhanced_logging_config
                         # Define a local exception type alias for optional dependency
                         try:
-                            from server.exceptions import DatabaseError as _ImportedDatabaseError  # noqa: F401
+                            from server.exceptions import (
+                                DatabaseError as _ImportedDatabaseError,  # noqa: F401  # pylint: disable=unused-import
+                            )
 
                             _DatabaseErrorType: type[BaseException] = _ImportedDatabaseError
                         except ImportError:  # fallback if exceptions not yet available

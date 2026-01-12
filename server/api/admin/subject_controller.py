@@ -171,7 +171,7 @@ async def get_subject_statistics(
             "strict_validation": strict_validation,
         }
 
-    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Statistics retrieval errors unpredictable, must create error context
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Statistics retrieval errors unpredictable, must create error context
         logger.error("Error retrieving subject statistics", error=str(e), error_type=type(e).__name__)
         raise LoggedHTTPException(
             status_code=500,
@@ -233,7 +233,7 @@ async def validate_subject(
             "details": details,
         }
 
-    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Subject validation errors unpredictable, must create error context
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Subject validation errors unpredictable, must create error context
         logger.error(
             "Error validating subject",
             error=str(e),
@@ -282,7 +282,7 @@ async def get_patterns(
 
         return {"patterns": patterns, "total_count": len(patterns)}
 
-    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Pattern retrieval errors unpredictable, must create error context
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Pattern retrieval errors unpredictable, must create error context
         logger.error("Error retrieving patterns", error=str(e), error_type=type(e).__name__, user_id=current_user.id)
         raise LoggedHTTPException(
             status_code=500,
@@ -357,7 +357,7 @@ async def register_pattern(
             ),
         ) from e
 
-    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Pattern registration errors unpredictable, must create error context
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Pattern registration errors unpredictable, must create error context
         logger.error(
             "Error registering pattern",
             error=str(e),

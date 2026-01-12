@@ -9,6 +9,10 @@ our realm must be watched with eternal vigilance, lest they spiral
 beyond mortal comprehension."
 """
 
+# pylint: disable=too-many-lines  # Reason: Combat monitoring service requires extensive monitoring logic for comprehensive combat system health tracking and alerting
+
+# pylint: disable=too-many-instance-attributes,too-many-arguments,too-many-positional-arguments  # Reason: Monitoring service requires many state tracking attributes and complex monitoring logic
+
 import time
 from collections import deque
 from collections.abc import Callable
@@ -94,7 +98,7 @@ class CombatMetrics:
 
 
 @dataclass
-class Alert:
+class Alert:  # pylint: disable=too-many-instance-attributes  # Reason: Alert requires many fields to capture complete alert state
     """Combat system alert."""
 
     alert_id: str
@@ -417,8 +421,7 @@ class CombatMonitoringService:
     def _update_timing_metrics(self, duration: float) -> None:
         """Update timing metrics with new combat duration."""
         # Update max duration
-        if duration > self._metrics.max_combat_duration:
-            self._metrics.max_combat_duration = duration
+        self._metrics.max_combat_duration = max(self._metrics.max_combat_duration, duration)
 
         # Update average duration (simple moving average)
         if self._metrics.completed_combats > 0:
@@ -479,7 +482,7 @@ class CombatMonitoringService:
                 },
             )
 
-    def _generate_alert(
+    def _generate_alert(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Alert generation requires many parameters for complete alert context
         self,
         alert_type: AlertType,
         severity: AlertSeverity,
@@ -509,7 +512,7 @@ class CombatMonitoringService:
         for callback in self._alert_callbacks:
             try:
                 callback(alert)
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Alert callback errors unpredictable, must not fail alert processing
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Alert callback errors unpredictable, must not fail alert processing
                 logger.error("Error in alert callback", error=str(e))
 
         logger.warning("Generated alert", alert_id=alert_id, title=title)

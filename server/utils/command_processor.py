@@ -237,8 +237,7 @@ class CommandProcessor:
         is_safe = validate_command_safety(command_line)
         if is_safe:
             return True, None
-        else:
-            return False, "Command contains dangerous patterns"
+        return False, "Command contains dangerous patterns"
 
     def get_command_help(self, command_name: str | None = None) -> str:
         """

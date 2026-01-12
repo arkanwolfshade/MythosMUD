@@ -43,7 +43,7 @@ class RoomDataValidator:
             if "id" in room_data and not RoomDataValidator.is_valid_room_id(room_data["id"]):
                 errors.append(f"Invalid room ID format: {room_data['id']}")
 
-            is_valid = len(errors) == 0
+            is_valid = not errors
 
             logger.debug(
                 "Room data validation completed",
@@ -201,7 +201,7 @@ class RoomDataValidator:
             List[str]: List of inconsistency messages, empty if consistent
         """
         inconsistencies = []
-        if room_data.get("name", "").strip() == "" and room_data.get("occupant_count", 0) > 0:
+        if not room_data.get("name", "").strip() and room_data.get("occupant_count", 0) > 0:
             inconsistencies.append("Room has occupants but no name")
 
         return inconsistencies
@@ -229,7 +229,7 @@ class RoomDataValidator:
             # Check for empty room with occupants
             inconsistencies.extend(RoomDataValidator.check_empty_room_with_occupants(room_data))
 
-            is_consistent = len(inconsistencies) == 0
+            is_consistent = not inconsistencies
 
             logger.debug(
                 "Room consistency validation completed",

@@ -113,7 +113,7 @@ def set_display_name_default(_mapper, _connection, target):  # pylint: disable=u
     This is critical for PostgreSQL NOT NULL constraint compliance.
     """
     # If display_name is None, empty string, or not set, use username
-    if not target.display_name or target.display_name == "":
+    if not target.display_name:
         if target.username:
             target.display_name = target.username
         # If username is also not set (shouldn't happen, but safety first)

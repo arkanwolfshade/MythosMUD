@@ -32,7 +32,7 @@ auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 # Define user schemas compatible with FastAPI Users v14
-class UserRead(schemas.BaseUser[uuid.UUID]):
+class UserRead(schemas.BaseUser[uuid.UUID]):  # pylint: disable=too-few-public-methods  # Reason: Pydantic schema class, inherits methods from BaseUser
     """Schema for user read operations."""
 
     username: str
@@ -91,6 +91,155 @@ class LoginResponse(BaseModel):
 
 
 @auth_router.post("/register", response_model=LoginResponse)
+def _check_shutdown_status(request: Request) -> None:
+    """Check if server is shutting down and raise exception if so."""
+    from ..commands.admin_shutdown_command import get_shutdown_blocking_message, is_shutdown_pending
+
+    if is_shutdown_pending(request.app):
+        context = create_context_from_request(request)
+        context.metadata["operation"] = "register_user"
+        context.metadata["reason"] = "server_shutdown"
+        raise LoggedHTTPException(status_code=503, detail=get_shutdown_blocking_message("login"), context=context)
+
+
+def _ensure_user_email(user_create: UserCreate) -> None:
+    """Generate email if not provided."""
+    if not user_create.email:
+        user_create.email = f"{user_create.username}@wolfshade.org"
+        logger.info("Generated simple bogus email", username=user_create.username, email=user_create.email)
+
+
+async def _validate_invite_code(user_create: UserCreate, invite_manager: InviteManager, request: Request) -> Any:
+    """Validate invite code. Returns validated invite or None."""
+    if not user_create.invite_code:
+        return None
+
+    try:
+        return await invite_manager.validate_invite(user_create.invite_code, request)
+    except LoggedHTTPException as e:
+        raise e
+
+
+async def _check_username_exists(session: AsyncSession, username: str, request: Request) -> None:
+    """Check if username already exists and raise exception if so."""
+    from sqlalchemy import func, select
+
+    stmt = select(User).where(func.lower(User.username) == func.lower(username))
+    result = await session.execute(stmt)
+    existing_user = result.scalar_one_or_none()
+
+    if existing_user:
+        context = create_context_from_request(request)
+        context.metadata["username"] = username
+        context.metadata["operation"] = "register_user"
+        raise LoggedHTTPException(
+            status_code=400,
+            detail="Username already exists (names are case-insensitive)",
+            context=context,
+        )
+
+
+def _create_user_object(user_create_clean: UserCreate) -> User:
+    """Create and configure a new User object."""
+    from datetime import UTC, datetime
+
+    from .argon2_utils import hash_password
+
+    hashed_password = hash_password(user_create_clean.password)
+
+    user = User()
+    user.username = user_create_clean.username
+    user.display_name = user_create_clean.username
+    user.email = user_create_clean.email
+    user.hashed_password = hashed_password
+    user.is_active = True
+    user.is_superuser = False
+    user.is_verified = False
+    user.is_admin = False
+    user.created_at = datetime.now(UTC).replace(tzinfo=None)
+    user.updated_at = datetime.now(UTC).replace(tzinfo=None)
+
+    return user
+
+
+async def _mark_invite_as_used(
+    session: AsyncSession, user: User, invite_code: str | None, validated_invite: Any
+) -> None:
+    """Mark invite as used after successful registration."""
+    if not validated_invite or not invite_code:
+        return
+
+    try:
+        from sqlalchemy import text
+
+        await session.execute(
+            text("""
+                UPDATE invites
+                SET is_active = :is_active, used_by_user_id = CAST(:used_by_user_id AS UUID)
+                WHERE invite_code = :invite_code
+            """),
+            {
+                "is_active": False,
+                "used_by_user_id": str(user.id),
+                "invite_code": invite_code,
+            },
+        )
+        await session.commit()
+        logger.info(
+            "Invite marked as used during registration",
+            invite_code=invite_code,
+            user_id=user.id,
+            username=user.username,
+        )
+    except SQLAlchemyError as invite_error:
+        logger.error(
+            "Failed to mark invite as used during registration",
+            error=str(invite_error),
+            error_type=type(invite_error).__name__,
+            invite_code=invite_code,
+            user_id=user.id,
+        )
+
+
+def _handle_integrity_error(e: IntegrityError, username: str, request: Request) -> None:
+    """Handle IntegrityError during registration."""
+    error_str = str(e).lower()
+    orig_error_str = str(e.orig).lower() if hasattr(e, "orig") else ""
+    combined_error = f"{error_str} {orig_error_str}".lower()
+
+    if "username" in combined_error or "users_username_key" in combined_error:
+        detail = "Username already exists"
+    elif "email" in combined_error or "users_email_key" in combined_error:
+        detail = "Email already exists"
+    else:
+        detail = "A user with this information already exists"
+
+    context = create_context_from_request(request)
+    context.metadata["username"] = username
+    context.metadata["operation"] = "register_user"
+    context.metadata["constraint_error"] = str(e)
+    context.metadata["original_error"] = orig_error_str if hasattr(e, "orig") else ""
+    raise LoggedHTTPException(status_code=400, detail=detail, context=context) from e
+
+
+def _generate_jwt_token(user: User) -> str:
+    """Generate JWT token for user."""
+    import os
+
+    from fastapi_users.jwt import generate_jwt
+
+    data = {"sub": str(user.id), "aud": ["fastapi-users:auth"]}
+    jwt_secret = os.getenv("MYTHOSMUD_JWT_SECRET", "dev-jwt-secret")
+    access_token = generate_jwt(data, jwt_secret, lifetime_seconds=3600)
+
+    logger.debug("JWT token generated for user", username=user.username)
+    logger.debug("JWT data", data=data)
+    logger.debug("JWT secret", jwt_secret=jwt_secret)
+    logger.debug("JWT token preview", token_preview=access_token[:50])
+
+    return access_token
+
+
 async def register_user(
     user_create: UserCreate,
     request: Request,
@@ -103,181 +252,47 @@ async def register_user(
     This endpoint validates the invite code and creates a new user account.
     The invite code is marked as used after successful registration.
     """
-    # Check if server is shutting down
-    from ..commands.admin_shutdown_command import get_shutdown_blocking_message, is_shutdown_pending
-
-    if is_shutdown_pending(request.app):
-        context = create_context_from_request(request)
-        context.metadata["operation"] = "register_user"
-        context.metadata["reason"] = "server_shutdown"
-        raise LoggedHTTPException(status_code=503, detail=get_shutdown_blocking_message("login"), context=context)
+    _check_shutdown_status(request)
 
     logger.info("Registration attempt", username=user_create.username)
 
-    # Generate unique bogus email if not provided
-    if not user_create.email:
-        # Use a simple email format to avoid the complex generation
-        user_create.email = f"{user_create.username}@wolfshade.org"
-        logger.info("Generated simple bogus email", username=user_create.username, email=user_create.email)
+    _ensure_user_email(user_create)
 
-    # Validate invite code
-    validated_invite = None
-    if user_create.invite_code:
-        try:
-            validated_invite = await invite_manager.validate_invite(user_create.invite_code, request)
-        except LoggedHTTPException as e:
-            raise e
+    validated_invite = await _validate_invite_code(user_create, invite_manager, request)
 
-    # Create user without invite_code field
     user_data = {"username": user_create.username, "password": user_create.password, "email": user_create.email}
     user_create_clean = UserCreate(**user_data)
 
     try:
-        # Create user directly using SQLAlchemy to bypass FastAPI Users issues
-        # MULTI-CHARACTER: Check if username already exists (case-insensitive)
-        from sqlalchemy import func, select
+        await _check_username_exists(session, user_create_clean.username, request)
 
-        from .argon2_utils import hash_password
-
-        stmt = select(User).where(func.lower(User.username) == func.lower(user_create_clean.username))
-        result = await session.execute(stmt)
-        existing_user = result.scalar_one_or_none()
-
-        if existing_user:
-            context = create_context_from_request(request)
-            context.metadata["username"] = user_create_clean.username
-            context.metadata["operation"] = "register_user"
-            raise LoggedHTTPException(
-                status_code=400,
-                detail="Username already exists (names are case-insensitive)",
-                context=context,
-            )
-
-        # Hash password using Argon2
-        hashed_password = hash_password(user_create_clean.password)
-
-        # Create user with explicit timestamps to avoid None issues
-        from datetime import UTC, datetime
-
-        # Create a minimal user object to avoid FastAPI Users issues
-        user = User()
-        user.username = user_create_clean.username
-        user.display_name = user_create_clean.username  # Default display_name to username
-        user.email = user_create_clean.email
-        user.hashed_password = hashed_password
-        user.is_active = True
-        user.is_superuser = False
-        user.is_verified = False
-        user.is_admin = False  # New users are not admins by default
-        user.created_at = datetime.now(UTC).replace(tzinfo=None)
-        user.updated_at = datetime.now(UTC).replace(tzinfo=None)
+        user = _create_user_object(user_create_clean)
 
         session.add(user)
         await session.commit()
         await session.refresh(user)
 
-        # Mark invite as used now that user registration is successful
-        if validated_invite and user_create.invite_code:
-            try:
-                # Re-query the invite in the current session to ensure it's attached
-                from sqlalchemy import text
-
-                # Use raw SQL update to avoid UUID type mismatch issues
-                # Cast used_by_user_id to UUID in the SQL to match the column type
-                await session.execute(
-                    text("""
-                        UPDATE invites
-                        SET is_active = :is_active, used_by_user_id = CAST(:used_by_user_id AS UUID)
-                        WHERE invite_code = :invite_code
-                    """),
-                    {
-                        "is_active": False,
-                        "used_by_user_id": str(user.id),
-                        "invite_code": user_create.invite_code,
-                    },
-                )
-                await session.commit()
-                logger.info(
-                    "Invite marked as used during registration",
-                    invite_code=user_create.invite_code,
-                    user_id=user.id,
-                    username=user.username,
-                )
-            except SQLAlchemyError as invite_error:
-                # Log error but don't fail registration if invite marking fails
-                logger.error(
-                    "Failed to mark invite as used during registration",
-                    error=str(invite_error),
-                    error_type=type(invite_error).__name__,
-                    invite_code=user_create.invite_code,
-                    user_id=user.id,
-                )
+        await _mark_invite_as_used(session, user, user_create.invite_code, validated_invite)
 
     except LoggedHTTPException:
         raise
     except IntegrityError as e:
-        # Handle database integrity constraint violations (duplicate username, email, etc.)
-        # Check both the exception message and the underlying exception
-        error_str = str(e).lower()
-        orig_error_str = str(e.orig).lower() if hasattr(e, "orig") else ""
-        combined_error = f"{error_str} {orig_error_str}".lower()
-
-        # Any IntegrityError during registration is likely a constraint violation
-        # (duplicate username, email, etc.) - return 400 instead of 500
-        # Try to determine the specific constraint, but default to generic message
-
-        # Determine if it's username or email constraint
-        if "username" in combined_error or "users_username_key" in combined_error:
-            detail = "Username already exists"
-        elif "email" in combined_error or "users_email_key" in combined_error:
-            detail = "Email already exists"
-        else:
-            # Generic message for any integrity constraint violation
-            detail = "A user with this information already exists"
-
-        context = create_context_from_request(request)
-        context.metadata["username"] = user_create_clean.username
-        context.metadata["operation"] = "register_user"
-        context.metadata["constraint_error"] = str(e)
-        context.metadata["original_error"] = orig_error_str if hasattr(e, "orig") else ""
-        raise LoggedHTTPException(status_code=400, detail=detail, context=context) from e
+        _handle_integrity_error(e, user_create_clean.username, request)
     except HTTPException:
-        # Re-raise HTTP exceptions to let FastAPI handle them
         raise
     except Exception as e:
-        # Log unexpected exceptions for debugging
-        # Use error=str(e) instead of exc_info=True to avoid Unicode encoding issues on Windows
         logger.error(
             "Unexpected error during registration",
             error=str(e),
             error_type=type(e).__name__,
             username=user_create_clean.username,
         )
-        # Re-raise other exceptions
         raise e
 
     logger.info("User registered successfully", username=user.username, user_id=user.id)
 
-    # Generate JWT token using FastAPI Users' built-in method
-    import os
+    access_token = _generate_jwt_token(user)
 
-    from fastapi_users.jwt import generate_jwt
-
-    # Create JWT token with the same format as FastAPI Users expects
-    data = {"sub": str(user.id), "aud": ["fastapi-users:auth"]}
-    jwt_secret = os.getenv("MYTHOSMUD_JWT_SECRET", "dev-jwt-secret")
-    access_token = generate_jwt(
-        data,
-        jwt_secret,
-        lifetime_seconds=3600,  # 1 hour
-    )
-
-    logger.debug("JWT token generated for user", username=user.username)
-    logger.debug("JWT data", data=data)
-    logger.debug("JWT secret", jwt_secret=jwt_secret)
-    logger.debug("JWT token preview", token_preview=access_token[:50])
-
-    # Newly registered users don't have characters yet
     logger.info("Registration successful for user", username=user.username, character_count=0)
 
     return LoginResponse(
@@ -288,19 +303,8 @@ async def register_user(
 
 
 @auth_router.post("/login", response_model=LoginResponse)
-async def login_user(
-    request: LoginRequest,
-    http_request: Request,
-    user_manager: UserManager = Depends(get_user_manager),
-    session: AsyncSession = Depends(get_async_session),
-) -> LoginResponse:
-    """
-    Authenticate a user and return an access token.
-
-    This endpoint validates user credentials and returns a JWT token
-    for authenticated requests.
-    """
-    # Check if server is shutting down
+def _check_login_shutdown_status(http_request: Request) -> None:
+    """Check if server is shutting down and raise exception if so."""
     from ..commands.admin_shutdown_command import get_shutdown_blocking_message, is_shutdown_pending
 
     if is_shutdown_pending(http_request.app):
@@ -309,104 +313,100 @@ async def login_user(
         context.metadata["reason"] = "server_shutdown"
         raise LoggedHTTPException(status_code=503, detail=get_shutdown_blocking_message("login"), context=context)
 
-    logger.info("Login attempt", username=request.username)
 
+async def _find_user_by_username(session: AsyncSession, username: str, http_request: Request) -> User:
+    """Find user by username (case-insensitive). Raises exception if not found."""
     from sqlalchemy import func, select
 
-    # MULTI-CHARACTER: Find user by username (case-insensitive)
-    stmt = select(User).where(func.lower(User.username) == func.lower(request.username))
+    stmt = select(User).where(func.lower(User.username) == func.lower(username))
     result = await session.execute(stmt)
     user = result.scalar_one_or_none()
 
     logger.info("User lookup result", user=user)
 
     if not user:
-        logger.info("User not found", username=request.username)
+        logger.info("User not found", username=username)
         context = create_context_from_request(http_request)
-        context.metadata["username"] = request.username
+        context.metadata["username"] = username
         context.metadata["operation"] = "login_user"
         raise LoggedHTTPException(status_code=401, detail="Invalid credentials", context=context)
 
-    # Verify password using FastAPI Users with email lookup
+    return user
+
+
+async def _authenticate_user_credentials(
+    user: User, password: str, username: str, user_manager: UserManager, http_request: Request
+) -> None:
+    """Authenticate user credentials. Raises exception if authentication fails."""
     try:
-        # Get the user's email for FastAPI Users authentication
         user_email = user.email
         if not user_email:
-            logger.error("User has no email address", username=request.username)
+            logger.error("User has no email address", username=username)
             context = create_context_from_request(http_request)
-            context.metadata["username"] = request.username
+            context.metadata["username"] = username
             context.metadata["user_id"] = str(user.id)
             context.metadata["operation"] = "login_user"
             raise LoggedHTTPException(status_code=401, detail="Invalid credentials", context=context)
 
-        # Create OAuth2PasswordRequestForm for FastAPI Users authentication
         from fastapi.security import OAuth2PasswordRequestForm
 
-        # Create credentials form with email (not username) for FastAPI Users
         credentials = OAuth2PasswordRequestForm(
-            username=user_email,  # Use email for FastAPI Users
-            password=request.password,
+            username=user_email,
+            password=password,
             grant_type="password",
             scope="",
             client_id=None,
             client_secret=None,
         )
 
-        # Use the user manager's authenticate method with email
         authenticated_user = await user_manager.authenticate(credentials)
         if not authenticated_user:
             context = create_context_from_request(http_request)
-            context.metadata["username"] = request.username
+            context.metadata["username"] = username
             context.metadata["user_id"] = str(user.id)
             context.metadata["operation"] = "login_user"
             raise LoggedHTTPException(status_code=401, detail="Invalid credentials", context=context)
 
-        # Verify we got the same user back
         if authenticated_user.id != user.id:
             logger.error("User ID mismatch", expected_id=user.id, got_id=authenticated_user.id)
             context = create_context_from_request(http_request)
-            context.metadata["username"] = request.username
+            context.metadata["username"] = username
             context.metadata["expected_user_id"] = str(user.id)
             context.metadata["actual_user_id"] = str(authenticated_user.id)
             context.metadata["operation"] = "login_user"
             raise LoggedHTTPException(status_code=401, detail="Invalid credentials", context=context)
     except (LoggedHTTPException, HTTPException):
-        # Re-raise HTTP exceptions to let FastAPI handle them
         raise
     except Exception as e:
-        # Use error=str(e) instead of exc_info=True to avoid Unicode encoding issues on Windows
         logger.error("Authentication failed", error=str(e), error_type=type(e).__name__)
         context = create_context_from_request(http_request)
-        context.metadata["username"] = request.username
+        context.metadata["username"] = username
         context.metadata["operation"] = "login_user"
         context.metadata["error"] = str(e)
         raise LoggedHTTPException(status_code=401, detail="Invalid credentials", context=context) from None
 
-    # Generate access token using FastAPI Users approach
+
+def _generate_login_jwt_token(user: User) -> str:
+    """Generate JWT token for logged-in user."""
     import os
 
     from fastapi_users.jwt import generate_jwt
 
-    # Create JWT token manually using the same secret as the auth backend
     data = {"sub": str(user.id), "aud": ["fastapi-users:auth"]}
     jwt_secret = os.getenv("MYTHOSMUD_JWT_SECRET", "dev-jwt-secret")
-    access_token = generate_jwt(
-        data,
-        jwt_secret,
-        lifetime_seconds=3600,  # 1 hour
-    )
+    return generate_jwt(data, jwt_secret, lifetime_seconds=3600)
 
-    # MULTI-CHARACTER: Get all active characters for user
+
+async def _get_user_characters(user: User) -> list[dict[str, Any]]:
+    """Get all active characters for user."""
     from ..async_persistence import get_async_persistence
     from ..schemas.player import CharacterInfo
 
     async_persistence = get_async_persistence()
     active_players = await async_persistence.get_active_players_by_user_id(str(user.id))
 
-    # Convert players to CharacterInfo format
     characters = []
     for player in active_players:
-        # Get profession name if available
         profession_name = None
         if player.profession_id and hasattr(async_persistence, "get_profession_by_id"):
             try:
@@ -414,7 +414,6 @@ async def login_user(
                 if profession:
                     profession_name = profession.name
             except SQLAlchemyError:
-                # If profession lookup fails, continue without profession name
                 pass
 
         character_info = CharacterInfo(
@@ -428,8 +427,32 @@ async def login_user(
         )
         characters.append(character_info.model_dump())
 
-    # Note: Session management for existing connections is now handled when a character is selected
-    # We don't disconnect on login anymore since users can have multiple characters
+    return characters
+
+
+async def login_user(
+    request: LoginRequest,
+    http_request: Request,
+    user_manager: UserManager = Depends(get_user_manager),
+    session: AsyncSession = Depends(get_async_session),
+) -> LoginResponse:
+    """
+    Authenticate a user and return an access token.
+
+    This endpoint validates user credentials and returns a JWT token
+    for authenticated requests.
+    """
+    _check_login_shutdown_status(http_request)
+
+    logger.info("Login attempt", username=request.username)
+
+    user = await _find_user_by_username(session, request.username, http_request)
+
+    await _authenticate_user_credentials(user, request.password, request.username, user_manager, http_request)
+
+    access_token = _generate_login_jwt_token(user)
+
+    characters = await _get_user_characters(user)
 
     logger.info("Login successful for user", username=user.username, character_count=len(characters))
 

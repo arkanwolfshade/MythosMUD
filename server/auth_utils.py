@@ -1,3 +1,9 @@
+"""Authentication utilities for JWT token generation and validation.
+
+This module provides functions for creating and verifying JWT access tokens
+used for user authentication in the MythosMUD server.
+"""
+
 import os
 from datetime import UTC, datetime, timedelta
 

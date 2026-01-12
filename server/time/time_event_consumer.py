@@ -1,3 +1,11 @@
+"""Time event consumer for processing game time events.
+
+This module provides the TimeEventConsumer class for consuming and processing
+MythosHourTickEvent events from the event bus.
+"""
+
+# pylint: disable=too-few-public-methods,too-many-arguments,too-many-positional-arguments  # Reason: Event consumer class with focused responsibility, minimal public interface, and complex event processing logic
+
 from __future__ import annotations
 
 from collections.abc import Sequence
@@ -16,10 +24,10 @@ from server.time.time_service import ChronicleLike
 logger = get_logger(__name__)
 
 
-class MythosTimeEventConsumer:
+class MythosTimeEventConsumer:  # pylint: disable=too-few-public-methods  # Reason: Event consumer class with focused responsibility, minimal public interface
     """Bridges hour tick events into downstream systems such as NPC schedules and room lighting."""
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event consumer initialization requires many service dependencies
         self,
         *,
         event_bus: EventBus,

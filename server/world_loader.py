@@ -1,3 +1,9 @@
+"""World loader utilities for room ID generation and schema validation.
+
+This module provides functions for generating room IDs and loading world data
+with optional schema validation support.
+"""
+
 from pathlib import Path
 from typing import Any
 
@@ -110,7 +116,7 @@ def validate_room_data(
     if validator is None:
         try:
             validator = create_validator("unified")
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Validator creation errors unpredictable, must handle gracefully
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Validator creation errors unpredictable, must handle gracefully
             logger.warning("Could not create schema validator", error=str(e))
             return []
 
@@ -131,7 +137,7 @@ def validate_room_data(
         if not isinstance(errors, list):
             raise TypeError("validation errors must be a list")
         return errors
-    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Validation errors unpredictable, must handle gracefully
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Validation errors unpredictable, must handle gracefully
         if strict_validation:
             context = create_error_context()
             context.metadata["operation"] = "validate_room_data"

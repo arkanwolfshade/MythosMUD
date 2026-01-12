@@ -43,7 +43,7 @@ def _get_alias_validator() -> Optional["SchemaValidator"]:
 
     try:
         _ALIAS_VALIDATOR = create_validator("alias")
-    except Exception as exc:  # pragma: no cover - defensive logging path  # pylint: disable=broad-exception-caught  # Reason: Validator creation errors unpredictable, must handle gracefully
+    except Exception as exc:  # noqa: B904  # pragma: no cover - defensive logging path  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Validator creation errors unpredictable, must handle gracefully
         logger.warning("Alias schema validator creation failed", error=str(exc))
         _ALIAS_VALIDATOR = None
 
@@ -149,7 +149,7 @@ class AliasStorage:
 
                 alias = Alias(**alias_data)
                 aliases.append(alias)
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Alias parsing errors unpredictable, must continue processing
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Alias parsing errors unpredictable, must continue processing
                 logger.error("Error parsing alias data", error=str(e))
                 continue
 

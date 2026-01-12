@@ -68,6 +68,7 @@ dev = [
     "websocket-client>=1.9.0",  # WebSocket client for testing connection termination
     "bandit>=1.9.2",  # Python security linter
     "pylint>=4.0.4",  # Python code quality linter
+    "pylint-per-file-ignores>=3.2.0",  # Per-file ignore support for pylint (matches ruff per-file-ignores)
     "sqlfluff>=3.5.0",  # SQL linting and formatting
     "lizard>=1.19.0",  # Code complexity analyzer (used by Codacy)
     # sqlint>=0.2.1 - REMOVED: Conflicts with click>=8.1.8 (sqlint requires click==7.0)
@@ -89,13 +90,17 @@ select = [
     "I",  # isort
     "B",  # flake8-bugbear
     "C4", # flake8-comprehensions
+    "C90", # mccabe complexity (includes C901: too complex)
     "UP", # pyupgrade
 ]
 ignore = [
     "E501",  # line too long, handled by line-length
     "B008",  # do not perform function calls in argument defaults
-    "C901",  # too complex
 ]
+# Cyclomatic complexity threshold: 11 (matches Codacy threshold)
+# Functions with complexity > 10 will trigger C901 violation
+[tool.ruff.lint.mccabe]
+max-complexity = 11
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
@@ -351,6 +356,7 @@ dev = [
     "types-networkx>=3.6.1.20251220",
     "bandit>=1.9.2", # Python security linter
     "pylint>=4.0.4", # Python code quality linter
+    "pylint-per-file-ignores>=3.2.0", # Per-file ignore support for pylint (matches ruff per-file-ignores)
     "sqlfluff>=3.5.0", # SQL linting and formatting
     "lizard>=1.19.0", # Code complexity analyzer (used by Codacy)
     # sqlint>=0.2.1 - REMOVED: Conflicts with click>=8.1.8 (sqlint requires click==7.0)

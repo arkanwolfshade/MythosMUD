@@ -127,7 +127,7 @@ class SpellLearningService:
             "source": source,
         }
 
-    async def _validate_prerequisites(self, player_id: uuid.UUID, spell: Spell) -> dict[str, Any]:
+    async def _validate_prerequisites(self, player_id: uuid.UUID, spell: Spell) -> dict[str, Any]:  # pylint: disable=too-many-locals  # Reason: Prerequisite validation requires many intermediate variables for complex validation logic
         """
         Validate prerequisites for learning a spell.
 

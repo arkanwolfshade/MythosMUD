@@ -112,31 +112,31 @@ def lazy_import_api_function(name: str) -> Any:
         )
 
         return cast(Callable[..., Any], broadcast_game_event)
-    elif name == "send_game_event":
+    if name == "send_game_event":
         from .connection_manager_api import (  # pylint: disable=import-outside-toplevel  # Reason: Lazy import to avoid circular dependencies
             send_game_event,
         )
 
         return cast(Callable[..., Any], send_game_event)
-    elif name == "send_player_status_update":
+    if name == "send_player_status_update":
         from .connection_manager_api import (  # pylint: disable=import-outside-toplevel  # Reason: Lazy import to avoid circular dependencies
             send_player_status_update,
         )
 
         return cast(Callable[..., Any], send_player_status_update)
-    elif name == "send_room_description":
+    if name == "send_room_description":
         from .connection_manager_api import (  # pylint: disable=import-outside-toplevel  # Reason: Lazy import to avoid circular dependencies
             send_room_description,
         )
 
         return cast(Callable[..., Any], send_room_description)
-    elif name == "send_room_event":
+    if name == "send_room_event":
         from .connection_manager_api import (  # pylint: disable=import-outside-toplevel  # Reason: Lazy import to avoid circular dependencies
             send_room_event,
         )
 
         return cast(Callable[..., Any], send_room_event)
-    elif name == "send_system_notification":
+    if name == "send_system_notification":
         from .connection_manager_api import (  # pylint: disable=import-outside-toplevel  # Reason: Lazy import to avoid circular dependencies
             send_system_notification,
         )

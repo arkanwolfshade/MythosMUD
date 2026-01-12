@@ -10,6 +10,8 @@ for maintaining the integrity of our eldritch architecture and ensuring
 that dimensional shifts are properly recorded.
 """
 
+# pylint: disable=too-many-return-statements,too-many-lines  # Reason: Movement service methods require multiple return statements for early validation returns (movement validation, permission checks, error handling). Movement service requires extensive logic for complex movement operations and state management.
+
 import threading
 import time
 import uuid
@@ -72,29 +74,8 @@ class MovementService:
             has_exploration_service=bool(exploration_service),
         )
 
-    async def move_player(self, player_id: uuid.UUID | str, from_room_id: str, to_room_id: str) -> bool:
-        """
-        Move a player from one room to another atomically.
-
-        This operation ensures ACID properties:
-        - Atomicity: Either the entire move succeeds or fails
-        - Consistency: Player is never in multiple rooms
-        - Isolation: Concurrent moves don't interfere
-        - Durability: Changes are persisted
-
-        Args:
-            player_id: The ID of the player to move (UUID or string UUID/name for backward compatibility)
-            from_room_id: The ID of the room the player is leaving
-            to_room_id: The ID of the room the player is entering
-
-        Returns:
-            True if the move was successful, False otherwise
-
-        Raises:
-            ValueError: If any parameters are invalid
-            RuntimeError: If the move cannot be completed
-        """
-        # Validate player_id is not empty
+    def _validate_move_params(self, player_id: uuid.UUID | str, from_room_id: str, to_room_id: str) -> bool:
+        """Validate movement parameters. Returns False if validation fails (same room), raises on invalid params."""
         if not player_id:
             context = create_error_context()
             context.metadata["operation"] = "move_player"
@@ -135,74 +116,186 @@ class MovementService:
             self._logger.warning("Player attempted to move to same room", player_id=player_id, room_id=from_room_id)
             return False
 
+        return True
+
+    async def _resolve_player_for_movement(
+        self, player_id: uuid.UUID | str, timing_breakdown: dict[str, float]
+    ) -> tuple[Any, uuid.UUID | str]:
+        """Resolve player by ID or name and return player object and resolved ID."""
+        self._logger.debug("MovementService using persistence instance", persistence_id=id(self._persistence))
+        player_lookup_start = time.time()
+        if isinstance(player_id, uuid.UUID):
+            player_uuid = player_id
+            player = await self._persistence.get_player_by_id(player_uuid)
+        else:
+            try:
+                player_uuid = uuid.UUID(player_id)
+                player = await self._persistence.get_player_by_id(player_uuid)
+            except (ValueError, AttributeError):
+                player = await self._persistence.get_player_by_name(player_id)
+                if player:
+                    self._logger.info("Resolved player by name", player_name=player_id, player_id=player.player_id)
+        player_lookup_end = time.time()
+        timing_breakdown["player_lookup_ms"] = (player_lookup_end - player_lookup_start) * 1000
+
+        if not player:
+            self._logger.error("Player not found", player_id=player_id)
+            raise ValidationError(f"Player not found: {player_id}")
+
+        resolved_player_id_str = str(player.player_id)
+        try:
+            resolved_player_id: uuid.UUID | str = uuid.UUID(resolved_player_id_str)
+        except (ValueError, AttributeError, TypeError):
+            resolved_player_id = resolved_player_id_str
+
+        if str(resolved_player_id) != str(player_id):
+            self._logger.info("Player ID resolved", player_name=player_id, player_id=resolved_player_id)
+
+        return player, resolved_player_id
+
+    def _get_rooms_for_movement(
+        self,
+        from_room_id: str,
+        to_room_id: str,
+        resolved_player_id: uuid.UUID | str,
+        timing_breakdown: dict[str, float],
+    ) -> tuple[Room, Room]:
+        """Get and validate rooms for movement."""
+        room_lookup_start = time.time()
+        from_room = self._persistence.get_room_by_id(from_room_id)
+        to_room = self._persistence.get_room_by_id(to_room_id)
+        room_lookup_end = time.time()
+        timing_breakdown["room_lookup_ms"] = (room_lookup_end - room_lookup_start) * 1000
+
+        if not from_room:
+            self._logger.error("From room not found", room_id=from_room_id)
+            raise ValidationError(f"From room {from_room_id} not found")
+
+        if not to_room:
+            self._logger.error("To room not found", room_id=to_room_id)
+            raise ValidationError(f"To room {to_room_id} not found")
+
+        if not from_room.has_player(resolved_player_id):
+            self._logger.error("Player not in room", player_id=resolved_player_id, room_id=from_room_id)
+            raise ValidationError("Player not in source room")
+
+        return from_room, to_room
+
+    def _execute_room_transfer(
+        self, from_room: Room, to_room: Room, resolved_player_id: uuid.UUID | str, timing_breakdown: dict[str, float]
+    ) -> None:
+        """Execute the atomic room transfer."""
+        self._logger.info("Moving player", player_id=resolved_player_id, from_room=from_room.id, to_room=to_room.id)
+        room_update_start = time.time()
+        self._logger.debug("Removing player from room", player_id=resolved_player_id, room_id=from_room.id)
+        from_room.player_left(resolved_player_id)
+        self._logger.debug("Adding player to room", player_id=resolved_player_id, room_id=to_room.id)
+        to_room.player_entered(resolved_player_id, force_event=True)
+        room_update_end = time.time()
+        timing_breakdown["room_update_ms"] = (room_update_end - room_update_start) * 1000
+
+    async def _persist_player_location(self, player: Any, to_room_id: str, timing_breakdown: dict[str, float]) -> None:
+        """Update player location in database."""
+        db_write_start = time.time()
+        self._logger.debug("Updating player room in database", player_id=player.player_id, room_id=to_room_id)
+        setattr(player, "current_room_id", to_room_id)  # noqa: B010
+        await self._persistence.save_player(player)
+        db_write_end = time.time()
+        timing_breakdown["db_write_ms"] = (db_write_end - db_write_start) * 1000
+
+    def _mark_room_explored(self, resolved_player_id: uuid.UUID | str, to_room_id: str) -> None:
+        """Mark destination room as explored (non-blocking)."""
+        try:
+            exploration_service = self._exploration_service
+            if exploration_service:
+                player_uuid = (
+                    resolved_player_id if isinstance(resolved_player_id, uuid.UUID) else uuid.UUID(resolved_player_id)
+                )
+                exploration_service.mark_room_as_explored_sync(player_uuid, to_room_id)
+        except (DatabaseError, SQLAlchemyError) as e:
+            self._logger.warning(
+                "Failed to mark room as explored (non-blocking)",
+                player_id=resolved_player_id,
+                room_id=to_room_id,
+                error=str(e),
+                error_type=type(e).__name__,
+            )
+
+    def _handle_movement_error(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Error handling requires many parameters for context and error reporting
+        self,
+        e: Exception,
+        player_id: uuid.UUID | str,
+        from_room_id: str,
+        to_room_id: str,
+        start_time: float,
+        timing_breakdown: dict[str, float],
+    ) -> None:
+        """Handle movement errors with monitoring."""
+        duration_ms = (time.time() - start_time) * 1000
+        timing_breakdown["total_ms"] = duration_ms
+        monitor = get_movement_monitor()
+        self._logger.error(
+            "Error moving player",
+            player_id=player_id,
+            error=str(e),
+            total_ms=duration_ms,
+            lock_wait_ms=timing_breakdown.get("lock_wait_ms", 0),
+            player_lookup_ms=timing_breakdown.get("player_lookup_ms", 0),
+            validation_ms=timing_breakdown.get("validation_ms", 0),
+            room_lookup_ms=timing_breakdown.get("room_lookup_ms", 0),
+            room_update_ms=timing_breakdown.get("room_update_ms", 0),
+            db_write_ms=timing_breakdown.get("db_write_ms", 0),
+        )
+        context = create_error_context()
+        context.metadata["player_id"] = player_id
+        context.metadata["from_room_id"] = from_room_id
+        context.metadata["to_room_id"] = to_room_id
+        context.metadata["operation"] = "move_player"
+        monitor.record_movement_attempt(str(player_id), from_room_id, to_room_id, False, duration_ms)
+        log_and_raise(
+            DatabaseError,
+            f"Error moving player {player_id}: {e}",
+            context=context,
+            details={"player_id": player_id, "from_room_id": from_room_id, "to_room_id": to_room_id, "error": str(e)},
+            user_friendly="Movement failed",
+        )
+
+    async def move_player(self, player_id: uuid.UUID | str, from_room_id: str, to_room_id: str) -> bool:  # pylint: disable=too-many-locals  # Reason: Movement requires many intermediate variables for complex movement logic
+        """
+        Move a player from one room to another atomically.
+
+        This operation ensures ACID properties:
+        - Atomicity: Either the entire move succeeds or fails
+        - Consistency: Player is never in multiple rooms
+        - Isolation: Concurrent moves don't interfere
+        - Durability: Changes are persisted
+
+        Args:
+            player_id: The ID of the player to move (UUID or string UUID/name for backward compatibility)
+            from_room_id: The ID of the room the player is leaving
+            to_room_id: The ID of the room the player is entering
+
+        Returns:
+            True if the move was successful, False otherwise
+
+        Raises:
+            ValueError: If any parameters are invalid
+            RuntimeError: If the move cannot be completed
+        """
+        if not self._validate_move_params(player_id, from_room_id, to_room_id):
+            return False
+
         start_time = time.time()
         monitor = get_movement_monitor()
-
-        # Track timing breakdown for each operation phase
-        timing_breakdown = {}
+        timing_breakdown: dict[str, float] = {}
 
         with self._lock:
             try:
-                # Measure lock acquisition wait time
                 lock_acquisition_time = time.time()
                 timing_breakdown["lock_wait_ms"] = (lock_acquisition_time - start_time) * 1000
 
-                # Step 1: Resolve the player (prefer by ID, fallback to name)
-                self._logger.debug("MovementService using persistence instance", persistence_id=id(self._persistence))
-                player_lookup_start = time.time()
-                # Convert player_id to UUID if it's a string, otherwise use directly
-                if isinstance(player_id, uuid.UUID):
-                    player_uuid = player_id
-                    player = await self._persistence.get_player_by_id(player_uuid)
-                else:
-                    # Try to convert string to UUID first
-                    try:
-                        player_uuid = uuid.UUID(player_id)
-                        player = await self._persistence.get_player_by_id(player_uuid)
-                    except (ValueError, AttributeError):
-                        # If player_id is not a valid UUID, try name lookup
-                        player = await self._persistence.get_player_by_name(player_id)
-                        if player:
-                            self._logger.info(
-                                "Resolved player by name", player_name=player_id, player_id=player.player_id
-                            )
-                player_lookup_end = time.time()
-                timing_breakdown["player_lookup_ms"] = (player_lookup_end - player_lookup_start) * 1000
+                player, resolved_player_id = await self._resolve_player_for_movement(player_id, timing_breakdown)
 
-                if not player:
-                    # Structlog handles UUID objects automatically, no need to convert to string
-                    self._logger.error("Player not found", player_id=player_id)
-                    context = create_error_context()
-                    # Structlog handles UUID objects automatically, no need to convert to string
-                    context.metadata["player_id"] = player_id
-                    context.metadata["from_room_id"] = from_room_id
-                    context.metadata["to_room_id"] = to_room_id
-                    context.metadata["operation"] = "move_player"
-                    duration_ms = (time.time() - start_time) * 1000
-                    # record_movement_attempt accepts uuid.UUID | str
-                    monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
-                    log_and_raise(
-                        ValidationError,
-                        f"Player not found: {player_id}",
-                        context=context,
-                        details={"player_id": player_id, "from_room_id": from_room_id, "to_room_id": to_room_id},
-                        user_friendly="Player not found",
-                    )
-
-                # Use the resolved player ID consistently
-                # Convert to UUID for consistency (player.player_id is a string from UUID(as_uuid=False))
-                resolved_player_id_str = str(player.player_id)  # Ensure it's a string
-                try:
-                    resolved_player_id: uuid.UUID | str = uuid.UUID(resolved_player_id_str)
-                except (ValueError, AttributeError, TypeError):
-                    # Fallback to string if conversion fails (shouldn't happen for valid UUIDs)
-                    resolved_player_id = resolved_player_id_str
-
-                # Log the resolution for debugging
-                if str(resolved_player_id) != str(player_id):
-                    self._logger.info("Player ID resolved", player_name=player_id, player_id=resolved_player_id)
-
-                # Step 2: Validate the move
                 validation_start = time.time()
                 if not await self._validate_movement(player, from_room_id, to_room_id):
                     validation_end = time.time()
@@ -219,98 +312,15 @@ class MovementService:
                 validation_end = time.time()
                 timing_breakdown["validation_ms"] = (validation_end - validation_start) * 1000
 
-                # Step 3: Get the rooms
-                room_lookup_start = time.time()
-                from_room = self._persistence.get_room_by_id(from_room_id)  # Sync method, uses cache
-                to_room = self._persistence.get_room_by_id(to_room_id)  # Sync method, uses cache
-                room_lookup_end = time.time()
-                timing_breakdown["room_lookup_ms"] = (room_lookup_end - room_lookup_start) * 1000
-
-                if not from_room:
-                    self._logger.error("From room not found", room_id=from_room_id)
-                    context = create_error_context()
-                    context.metadata["player_id"] = resolved_player_id
-                    context.metadata["from_room_id"] = from_room_id
-                    context.metadata["to_room_id"] = to_room_id
-                    context.metadata["operation"] = "move_player"
-                    duration_ms = (time.time() - start_time) * 1000
-                    # record_movement_attempt accepts uuid.UUID | str
-                    monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
-                    log_and_raise(
-                        ValidationError,
-                        f"From room {from_room_id} not found",
-                        context=context,
-                        details={
-                            "player_id": resolved_player_id,
-                            "from_room_id": from_room_id,
-                            "to_room_id": to_room_id,
-                        },
-                        user_friendly="Source room not found",
-                    )
-
-                if not to_room:
-                    self._logger.error("To room not found", room_id=to_room_id)
-                    context = create_error_context()
-                    context.metadata["player_id"] = resolved_player_id
-                    context.metadata["from_room_id"] = from_room_id
-                    context.metadata["to_room_id"] = to_room_id
-                    context.metadata["operation"] = "move_player"
-                    duration_ms = (time.time() - start_time) * 1000
-                    # record_movement_attempt accepts uuid.UUID | str
-                    monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
-                    log_and_raise(
-                        ValidationError,
-                        f"To room {to_room_id} not found",
-                        context=context,
-                        details={
-                            "player_id": resolved_player_id,
-                            "from_room_id": from_room_id,
-                            "to_room_id": to_room_id,
-                        },
-                        user_friendly="Destination room not found",
-                    )
-
-                    # Step 4: Verify player is in the from_room (auto-add logic is now in _validate_movement)
-                if not from_room.has_player(resolved_player_id):
-                    self._logger.error("Player not in room", player_id=resolved_player_id, room_id=from_room_id)
-                    duration_ms = (time.time() - start_time) * 1000
-                    # record_movement_attempt accepts uuid.UUID | str
-                    monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
-                    return False
-
-                # Step 5: Perform the atomic move
-                self._logger.info(
-                    "Moving player", player_id=resolved_player_id, from_room=from_room_id, to_room=to_room_id
+                from_room, to_room = self._get_rooms_for_movement(
+                    from_room_id, to_room_id, resolved_player_id, timing_breakdown
                 )
 
-                # Remove from old room
-                room_update_start = time.time()
-                self._logger.debug("Removing player from room", player_id=resolved_player_id, room_id=from_room_id)
-                from_room.player_left(resolved_player_id)
+                self._execute_room_transfer(from_room, to_room, resolved_player_id, timing_breakdown)
+                await self._persist_player_location(player, to_room_id, timing_breakdown)
 
-                # Add to new room
-                # CRITICAL: Always force event to ensure room_update is sent even when returning to previously visited rooms
-                # This ensures the client always receives room descriptions, location name, and exits when moving
-                self._logger.debug("Adding player to room", player_id=resolved_player_id, room_id=to_room_id)
-                to_room.player_entered(resolved_player_id, force_event=True)
-                room_update_end = time.time()
-                timing_breakdown["room_update_ms"] = (room_update_end - room_update_start) * 1000
-
-                # Update player's room in persistence
-                db_write_start = time.time()
-                self._logger.debug("Updating player room in database", player_id=resolved_player_id, room_id=to_room_id)
-                # Use setattr to bypass mypy's strict type checking for SQLAlchemy Column descriptors
-                # At runtime, this attribute behaves as a string despite mypy seeing Column[str]
-                setattr(player, "current_room_id", to_room_id)  # noqa: B010
-                await self._persistence.save_player(player)
-                db_write_end = time.time()
-                timing_breakdown["db_write_ms"] = (db_write_end - db_write_start) * 1000
-
-                # Record successful movement with timing breakdown
                 duration_ms = (time.time() - start_time) * 1000
                 timing_breakdown["total_ms"] = duration_ms
-
-                # Log detailed timing breakdown for performance analysis
                 self._logger.info(
                     "Movement timing breakdown",
                     player_id=resolved_player_id,
@@ -324,71 +334,21 @@ class MovementService:
                     room_update_ms=timing_breakdown.get("room_update_ms", 0),
                     db_write_ms=timing_breakdown.get("db_write_ms", 0),
                 )
-
-                # record_movement_attempt accepts uuid.UUID | str
                 monitor.record_movement_attempt(player_id, from_room_id, to_room_id, True, duration_ms)
 
-                # Mark the destination room as explored (fire-and-forget, errors don't block movement)
-                # As documented in the Pnakotic Manuscripts, exploration tracking is essential
-                # for maintaining awareness of dimensional territories traversed
-                try:
-                    exploration_service = self._exploration_service
-                    if exploration_service:
-                        # Use sync wrapper - exploration failures should not block movement
-                        # Ensure player_id is UUID (mark_room_as_explored_sync expects UUID)
-                        player_uuid = (
-                            resolved_player_id
-                            if isinstance(resolved_player_id, uuid.UUID)
-                            else uuid.UUID(resolved_player_id)
-                        )
-                        exploration_service.mark_room_as_explored_sync(player_uuid, to_room_id)
-                except (DatabaseError, SQLAlchemyError) as e:
-                    # Log but don't raise - exploration tracking is non-critical
-                    self._logger.warning(
-                        "Failed to mark room as explored (non-blocking)",
-                        player_id=resolved_player_id,
-                        room_id=to_room_id,
-                        error=str(e),
-                        error_type=type(e).__name__,
-                    )
+                self._mark_room_explored(resolved_player_id, to_room_id)
 
                 self._logger.info("Successfully moved player", player_id=resolved_player_id, room_id=to_room_id)
                 return True
 
-            except (DatabaseError, SQLAlchemyError) as e:
+            except ValidationError as e:
                 duration_ms = (time.time() - start_time) * 1000
-                timing_breakdown["total_ms"] = duration_ms
-
-                self._logger.error(
-                    "Error moving player",
-                    player_id=player_id,
-                    error=str(e),
-                    total_ms=duration_ms,
-                    lock_wait_ms=timing_breakdown.get("lock_wait_ms", 0),
-                    player_lookup_ms=timing_breakdown.get("player_lookup_ms", 0),
-                    validation_ms=timing_breakdown.get("validation_ms", 0),
-                    room_lookup_ms=timing_breakdown.get("room_lookup_ms", 0),
-                    room_update_ms=timing_breakdown.get("room_update_ms", 0),
-                    db_write_ms=timing_breakdown.get("db_write_ms", 0),
-                )
-                context = create_error_context()
-                context.metadata["player_id"] = player_id
-                context.metadata["from_room_id"] = from_room_id
-                context.metadata["to_room_id"] = to_room_id
-                context.metadata["operation"] = "move_player"
-                monitor.record_movement_attempt(str(player_id), from_room_id, to_room_id, False, duration_ms)
-                log_and_raise(
-                    DatabaseError,
-                    f"Error moving player {player_id}: {e}",
-                    context=context,
-                    details={
-                        "player_id": player_id,
-                        "from_room_id": from_room_id,
-                        "to_room_id": to_room_id,
-                        "error": str(e),
-                    },
-                    user_friendly="Movement failed",
-                )
+                monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
+                self._logger.warning("Movement validation failed", player_id=player_id, error=str(e))
+                return False
+            except (DatabaseError, SQLAlchemyError) as e:
+                self._handle_movement_error(e, player_id, from_room_id, to_room_id, start_time, timing_breakdown)
+                return False
 
     def _extract_player_id(self, player_obj, from_room_id: str, to_room_id: str) -> uuid.UUID | None:
         """Extract and validate player ID from player object."""
@@ -490,17 +450,17 @@ class MovementService:
                     )
                     from_room.add_player_silently(player_id)
                     return True
-                else:
-                    self._logger.error(
-                        "Player not in expected room",
-                        player_id=player_id,
-                        expected_room=from_room_id,
-                        actual_room=str(db_player.current_room_id),
-                    )
-                    return False
-            else:
-                self._logger.error("Player not found in database", player_id=player_id)
+
+                self._logger.error(
+                    "Player not in expected room",
+                    player_id=player_id,
+                    expected_room=from_room_id,
+                    actual_room=str(db_player.current_room_id),
+                )
                 return False
+
+            self._logger.error("Player not found in database", player_id=player_id)
+            return False
         except (DatabaseError, SQLAlchemyError) as e:
             self._logger.warning(
                 "Failed to verify player room from database",

@@ -26,7 +26,7 @@ async def get_player_occupants(connection_manager, room_id: str) -> list[str]:
     Includes "(linkdead)" indicator for players in grace period.
     """
     occupant_names = []
-    try:
+    try:  # pylint: disable=too-many-nested-blocks  # Reason: Room occupant processing requires complex nested logic for name extraction, grace period checks, and formatting
         room_occupants = await connection_manager.get_room_occupants(room_id)
         for occ in room_occupants or []:
             name = occ.get("player_name") or occ.get("name")
@@ -104,7 +104,7 @@ async def get_npc_occupants_fallback(room, room_id: str) -> list[str]:
     logger.debug("DEBUG: Room has NPCs from fallback", room_id=room_id, npc_ids=room_npc_ids)
 
     filtered_npc_ids = []
-    try:
+    try:  # pylint: disable=too-many-nested-blocks  # Reason: NPC filtering requires complex nested logic for service lookup, lifecycle validation, and NPC ID filtering
         npc_instance_service = get_npc_instance_service()
         if npc_instance_service and hasattr(npc_instance_service, "lifecycle_manager"):
             lifecycle_manager = npc_instance_service.lifecycle_manager

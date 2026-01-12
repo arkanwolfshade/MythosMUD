@@ -15,7 +15,7 @@ logger = get_logger(__name__)
 
 
 @dataclass
-class CastingState:
+class CastingState:  # pylint: disable=too-many-instance-attributes  # Reason: Casting state requires many fields to capture complete spell casting state
     """Represents an active spell casting state."""
 
     player_id: uuid.UUID
@@ -47,7 +47,7 @@ class CastingStateManager:
         self._casting_states: dict[uuid.UUID, CastingState] = {}
         logger.info("CastingStateManager initialized")
 
-    def start_casting(
+    def start_casting(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Spell casting requires many parameters for context and spell configuration
         self,
         player_id: uuid.UUID,
         spell: Any,

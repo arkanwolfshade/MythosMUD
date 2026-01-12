@@ -11,6 +11,10 @@ that lurk in the shadows of our world. The spawning service ensures that NPCs
 appear at the right time, in the right place, and under the right conditions.
 """
 
+# pylint: disable=too-many-lines,wrong-import-position  # Reason: Spawning service requires extensive spawning logic for comprehensive NPC spawning operations and rule evaluation. Imports after TYPE_CHECKING block are intentional to avoid circular dependencies.
+
+# pylint: disable=too-few-public-methods  # Reason: Data classes and service classes with focused responsibility, minimal public interface
+
 import random
 import time
 from dataclasses import dataclass
@@ -31,7 +35,7 @@ logger = get_logger(__name__)
 
 
 @dataclass
-class SimpleNPCDefinition:
+class SimpleNPCDefinition:  # pylint: disable=too-many-instance-attributes  # Reason: NPC definition requires many fields to capture complete NPC definition
     """Simple data class to hold NPC definition data without SQLAlchemy relationships."""
 
     id: int
@@ -47,7 +51,7 @@ class SimpleNPCDefinition:
 class NPCSpawnRequest:
     """Represents a request to spawn an NPC."""
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Spawn request initialization requires many parameters for complete spawn context
         self,
         definition: NPCDefinition,
         room_id: str,
@@ -80,7 +84,7 @@ class NPCSpawnRequest:
 class NPCSpawnResult:
     """Represents the result of an NPC spawn attempt."""
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Spawn result initialization requires many parameters for complete spawn result context
         self,
         success: bool,
         npc_id: str | None = None,
@@ -109,8 +113,7 @@ class NPCSpawnResult:
         """String representation of spawn result."""
         if self.success:
             return f"<NPCSpawnResult(success=True, npc_id={self.npc_id})>"
-        else:
-            return f"<NPCSpawnResult(success=False, error={self.error_message})>"
+        return f"<NPCSpawnResult(success=False, error={self.error_message})>"
 
 
 class NPCSpawningService:
@@ -285,7 +288,7 @@ class NPCSpawningService:
         # Required NPCs always spawn if conditions are met
         if definition.is_required() and not spawn_requests:
             # Check if we already have a required NPC of this specific definition
-            if stats and stats.npcs_by_definition.get(int(definition.id), 0) == 0:
+            if stats and not stats.npcs_by_definition.get(int(definition.id), 0):
                 request = NPCSpawnRequest(
                     definition=definition,
                     room_id=room_id,
@@ -447,7 +450,7 @@ class NPCSpawningService:
                 spawn_request=request,
             )
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC spawn request errors unpredictable, must handle gracefully
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC spawn request errors unpredictable, must handle gracefully
             logger.error("Failed to spawn NPC from request", request=request, error=str(e))
             return NPCSpawnResult(
                 success=False,
@@ -537,7 +540,7 @@ class NPCSpawningService:
 
             return npc_instance
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC spawn errors unpredictable, must handle gracefully
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC spawn errors unpredictable, must handle gracefully
             # Use extracted name to avoid potential lazy loading issues
             definition_name = getattr(definition, "name", "Unknown NPC")
             logger.error("Failed to create NPC instance", npc_name=definition_name, error=str(e))

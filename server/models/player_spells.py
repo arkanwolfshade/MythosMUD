@@ -5,6 +5,8 @@ This module contains SQLAlchemy models for tracking which spells players have le
 and their mastery level with each spell.
 """
 
+# pylint: disable=too-few-public-methods  # Reason: SQLAlchemy models are data classes, no instance methods needed
+
 from typing import TYPE_CHECKING
 
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, text

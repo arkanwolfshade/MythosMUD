@@ -69,7 +69,7 @@ async def initialize_container_and_legacy_services(app: FastAPI, container: Appl
                 if asyncio.iscoroutine(entries):
                     try:
                         entries = await entries
-                    except Exception:  # pylint: disable=broad-exception-caught  # Reason: Startup code must handle all exceptions gracefully to prevent application failure during initialization. Item registry errors are non-critical and should not block startup.
+                    except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Startup code must handle all exceptions gracefully to prevent application failure during initialization. Item registry errors are non-critical and should not block startup.
                         entries = None
                 if isinstance(entries, Iterable):
                     prototype_count = sum(1 for _ in entries)
@@ -293,7 +293,10 @@ async def initialize_nats_and_combat_services(app: FastAPI, container: Applicati
         app.state.nats_service = container.nats_service
 
         # Lazy import to avoid circular dependency with combat_service
-        from ..services.combat_service import CombatService, set_combat_service  # noqa: E402
+        from ..services.combat_service import (  # noqa: E402  # pylint: disable=wrong-import-position
+            CombatService,
+            set_combat_service,
+        )
 
         app.state.combat_service = CombatService(
             app.state.player_combat_service,
@@ -365,7 +368,7 @@ async def initialize_chat_service(app: FastAPI, container: ApplicationContainer)
     logger.info("Chat service initialized")
 
 
-async def initialize_magic_services(app: FastAPI, container: ApplicationContainer) -> None:
+async def initialize_magic_services(app: FastAPI, container: ApplicationContainer) -> None:  # pylint: disable=too-many-locals  # Reason: Service initialization requires many intermediate variables for dependency setup
     """Initialize magic system services and wire them to app.state."""
     # Import here to avoid circular imports: spell_targeting -> combat_service -> lifespan -> lifespan_startup
     # pylint: disable=import-outside-toplevel

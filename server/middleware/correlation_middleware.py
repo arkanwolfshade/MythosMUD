@@ -24,7 +24,7 @@ from ..structured_logging.enhanced_logging_config import (
 logger = get_logger(__name__)
 
 
-class CorrelationMiddleware(BaseHTTPMiddleware):
+class CorrelationMiddleware(BaseHTTPMiddleware):  # pylint: disable=too-few-public-methods  # Reason: Middleware class with focused responsibility, minimal public interface
     """
     Middleware for adding correlation IDs and request context to all requests.
 
@@ -117,7 +117,7 @@ class CorrelationMiddleware(BaseHTTPMiddleware):
             clear_request_context()
 
 
-class WebSocketCorrelationMiddleware:
+class WebSocketCorrelationMiddleware:  # pylint: disable=too-few-public-methods  # Reason: Middleware class with focused responsibility, minimal public interface
     """
     Middleware for adding correlation IDs to WebSocket connections.
 

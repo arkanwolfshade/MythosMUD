@@ -59,7 +59,7 @@ class PlayerPositionService:
                 existing_alias = self._alias_storage.get_alias(player_name, alias_name)
                 if existing_alias is None or existing_alias.command.lower() != command:
                     self._alias_storage.create_alias(player_name, alias_name, command)
-            except Exception as exc:  # pragma: no cover - defensive logging path  # pylint: disable=broad-exception-caught  # Reason: Alias seeding errors unpredictable, must log but continue
+            except Exception as exc:  # noqa: B904  # pragma: no cover - defensive logging path  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Alias seeding errors unpredictable, must log but continue
                 logger.warning(
                     "Failed to seed default position alias",
                     player_name=player_name,
@@ -67,13 +67,96 @@ class PlayerPositionService:
                     error=str(exc),
                 )
 
-    async def change_position(self, player_name: str, target_position: str) -> dict[str, Any]:
-        """Mutate persistence and in-memory tracking to reflect the requested position."""
+    def _validate_position(self, target_position: str) -> str:
+        """Validate and normalize position."""
         normalized_position = target_position.lower()
         if normalized_position not in VALID_POSITIONS:
             raise ValueError(f"Unsupported position: {target_position}")
+        return normalized_position
 
-        # Both scholars and agents rely on the same payload shape for downstream routing.
+    async def _get_player_for_position_change(self, player_name: str) -> tuple[Any | None, dict[str, Any]] | None:
+        """
+        Get player for position change.
+
+        Returns:
+            Tuple of (player, response_dict) if persistence available, None if no persistence
+            Response dict contains error_type: "not_found" or "error" when player is None
+        """
+        if not self._persistence:
+            return None
+
+        try:
+            player = await self._persistence.get_player_by_name(player_name)
+        except (DatabaseError, ValueError, AttributeError, TypeError) as exc:
+            logger.error(
+                "Failed to retrieve player for position update",
+                player_name=player_name,
+                error=str(exc),
+            )
+            return None, {"error_type": "error"}
+
+        if not player:
+            return None, {"error_type": "not_found"}
+
+        return player, {}
+
+    def _extract_player_info(self, player: Any, player_name: str) -> dict[str, Any]:
+        """Extract player information for response."""
+        player_id_value = getattr(player, "player_id", None)
+        room_id_value = getattr(player, "current_room_id", None)
+        player_display_name = getattr(player, "name", player_name)
+
+        info = {"player_display_name": player_display_name}
+        if player_id_value is not None:
+            info["player_id"] = player_id_value
+        if room_id_value is not None:
+            info["room_id"] = room_id_value
+        return info
+
+    def _get_current_position(self, player: Any, player_name: str) -> str:
+        """Get current position from player stats."""
+        stats: dict[str, Any]
+        try:
+            stats = player.get_stats() if hasattr(player, "get_stats") else {}
+        except Exception as exc:  # noqa: B904  # pragma: no cover - defensive logging path  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Player stats loading errors unpredictable, must use empty dict
+            logger.error(
+                "Failed to load player stats during position update",
+                player_name=player_name,
+                error=str(exc),
+            )
+            stats = {}
+
+        if not isinstance(stats, dict):
+            stats = {}
+
+        return stats.get("position", "standing")
+
+    async def _update_player_position(
+        self, player: Any, stats: dict[str, Any], normalized_position: str, player_name: str
+    ) -> bool:
+        """Update player position in persistence."""
+        if self._persistence is None:
+            return False
+        stats["position"] = normalized_position
+        if hasattr(player, "set_stats"):
+            player.set_stats(stats)
+
+        try:
+            await self._persistence.save_player(player)
+            return True
+        except (DatabaseError, ValueError, AttributeError, TypeError) as exc:
+            logger.error(
+                "Failed to persist player position",
+                player_name=player_name,
+                desired_position=normalized_position,
+                error=str(exc),
+            )
+            return False
+
+    async def change_position(self, player_name: str, target_position: str) -> dict[str, Any]:
+        """Mutate persistence and in-memory tracking to reflect the requested position."""
+        normalized_position = self._validate_position(target_position)
+
         response: dict[str, Any] = {
             "position": normalized_position,
             "success": False,
@@ -90,47 +173,25 @@ class PlayerPositionService:
             response["message"] = "Position changes are currently unavailable."
             return response
 
-        try:
-            player = await self._persistence.get_player_by_name(player_name)
-        except (DatabaseError, ValueError, AttributeError, TypeError) as exc:
-            logger.error(
-                "Failed to retrieve player for position update",
-                player_name=player_name,
-                error=str(exc),
-            )
+        player_result = await self._get_player_for_position_change(player_name)
+        if player_result is None:
             response["message"] = "Unable to change position right now."
             return response
 
-        if not player:
-            response["message"] = "Player information not found."
+        player, error_info = player_result
+        if player is None:
+            # Check error type to provide specific message
+            error_type = error_info.get("error_type", "error")
+            if error_type == "not_found":
+                response["message"] = "Player not found."
+            else:
+                response["message"] = "Unable to change position right now."
             return response
 
-        player_id_value = getattr(player, "player_id", None)
-        room_id_value = getattr(player, "current_room_id", None)
-        player_display_name = getattr(player, "name", player_name)
+        player_info = self._extract_player_info(player, player_name)
+        response.update(player_info)
 
-        if player_id_value is not None:
-            # Return UUID directly - let callers convert to string if needed
-            response["player_id"] = player_id_value
-        if room_id_value is not None:
-            response["room_id"] = room_id_value
-        response["player_display_name"] = player_display_name
-
-        stats: dict[str, Any]
-        try:
-            stats = player.get_stats() if hasattr(player, "get_stats") else {}
-        except Exception as exc:  # pragma: no cover - defensive logging path  # pylint: disable=broad-exception-caught  # Reason: Player stats loading errors unpredictable, must use empty dict
-            logger.error(
-                "Failed to load player stats during position update",
-                player_name=player_name,
-                error=str(exc),
-            )
-            stats = {}
-
-        if not isinstance(stats, dict):
-            stats = {}
-
-        current_position = stats.get("position", "standing")
+        current_position = self._get_current_position(player, player_name)
         response["previous_position"] = current_position
 
         if current_position == normalized_position:
@@ -138,19 +199,20 @@ class PlayerPositionService:
             self._update_connection_manager(player, player_name, normalized_position)
             return response
 
-        stats["position"] = normalized_position
-        if hasattr(player, "set_stats"):
-            player.set_stats(stats)
-
+        # Get stats for position update, using same error handling as _get_current_position
+        stats: dict[str, Any]
         try:
-            await self._persistence.save_player(player)
-        except (DatabaseError, ValueError, AttributeError, TypeError) as exc:
+            stats = player.get_stats() if hasattr(player, "get_stats") else {}
+        except Exception as exc:  # noqa: B904  # pragma: no cover - defensive logging path  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Player stats loading errors unpredictable, must use empty dict
             logger.error(
-                "Failed to persist player position",
+                "Failed to load player stats during position update",
                 player_name=player_name,
-                desired_position=normalized_position,
                 error=str(exc),
             )
+            stats = {}
+
+        success = await self._update_player_position(player, stats, normalized_position, player_name)
+        if not success:
             response["message"] = "Unable to change position right now."
             return response
 
@@ -187,7 +249,7 @@ class PlayerPositionService:
                 player_info = getter(player_name)
                 if isinstance(player_info, dict):
                     player_info["position"] = position
-        except Exception as exc:  # pragma: no cover - defensive logging path  # pylint: disable=broad-exception-caught  # Reason: Position tracking errors unpredictable, must log but continue
+        except Exception as exc:  # noqa: B904  # pragma: no cover - defensive logging path  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Position tracking errors unpredictable, must log but continue
             logger.warning(
                 "Failed to update in-memory position tracking",
                 player_name=player_name,

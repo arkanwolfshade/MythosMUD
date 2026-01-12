@@ -117,6 +117,14 @@ class EquipCommand(BaseCommand):
     @field_validator("target_slot")
     @classmethod
     def validate_slot(cls, value: str | None) -> str | None:
+        """Validate target slot value.
+
+        Args:
+            value: The target slot value to validate (can be None)
+
+        Returns:
+            str | None: The validated target slot or None
+        """
         if value is None:
             return None
         normalized = value.strip().lower()

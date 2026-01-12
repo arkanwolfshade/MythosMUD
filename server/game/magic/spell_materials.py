@@ -66,6 +66,77 @@ class SpellMaterialsService:
 
         return missing
 
+    def _process_material_requirement(
+        self, material: Any, inventory: list[dict[str, Any]], processed_materials: set[int]
+    ) -> tuple[bool, int | None, bool]:
+        """
+        Process a single material requirement.
+
+        Args:
+            material: Material requirement
+            inventory: Player inventory
+            processed_materials: Set of already processed inventory indices
+
+        Returns:
+            Tuple of (found, inventory_index, should_consume)
+        """
+        material_id = material.item_id
+
+        for i, item in enumerate(inventory):
+            if i in processed_materials:
+                continue
+
+            item_id = item.get("item_id") or item.get("prototype_id", "")
+            if item_id == material_id:
+                return True, i, material.consumed
+
+        return False, None, False
+
+    def _consume_material_item(
+        self, item: dict[str, Any], _material_id: str, consumed: bool
+    ) -> tuple[dict[str, Any] | None, bool]:
+        """
+        Consume a material item.
+
+        Args:
+            item: Inventory item
+            material_id: Material ID
+            consumed: Whether material should be consumed
+
+        Returns:
+            Tuple of (updated_item_or_none, was_consumed)
+        """
+        if not consumed:
+            return item, False
+
+        quantity = item.get("quantity", 1)
+        if quantity > 1:
+            updated_item = item.copy()
+            updated_item["quantity"] = quantity - 1
+            return updated_item, True
+
+        return None, True
+
+    def _build_final_inventory(
+        self, inventory: list[dict[str, Any]], processed_materials: set[int], final_inventory: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
+        """
+        Build final inventory with consumed materials removed.
+
+        Args:
+            inventory: Original inventory
+            processed_materials: Set of processed material indices
+            final_inventory: Inventory items already processed
+
+        Returns:
+            Final inventory list
+        """
+        for i, item in enumerate(inventory):
+            if i not in processed_materials:
+                final_inventory.append(item)
+
+        return final_inventory
+
     async def consume_materials(self, player_id: uuid.UUID, spell: Spell) -> dict[str, Any]:
         """
         Consume spell materials from player inventory.
@@ -87,49 +158,30 @@ class SpellMaterialsService:
         inventory = player.get_inventory()
         consumed_items = []
         final_inventory = []
-        processed_materials = set()
+        processed_materials: set[int] = set()
 
-        # Process each material requirement
         for material in spell.materials:
-            material_id = material.item_id
-            found = False
+            found, item_index, should_consume = self._process_material_requirement(
+                material, inventory, processed_materials
+            )
 
-            # Find matching item in inventory
-            for i, item in enumerate(inventory):
-                if i in processed_materials:
-                    continue
-
-                item_id = item.get("item_id") or item.get("prototype_id", "")
-                if item_id == material_id:
-                    processed_materials.add(i)
-
-                    if material.consumed:
-                        # Consume the material
-                        quantity = item.get("quantity", 1)
-                        if quantity > 1:
-                            # Reduce quantity
-                            updated_item = item.copy()
-                            updated_item["quantity"] = quantity - 1
-                            final_inventory.append(updated_item)
-                        # If quantity == 1, don't add to final_inventory (item is consumed)
-                        consumed_items.append(material_id)
-                    else:
-                        # Reusable material - keep it in inventory
-                        final_inventory.append(item)
-
-                    found = True
-                    break
-
-            if not found:
+            if not found or item_index is None:
                 return {
                     "success": False,
-                    "message": f"Missing required material: {material_id}.",
+                    "message": f"Missing required material: {material.item_id}.",
                 }
 
-        # Add all items that weren't materials
-        for i, item in enumerate(inventory):
-            if i not in processed_materials:
-                final_inventory.append(item)
+            processed_materials.add(item_index)
+            item = inventory[item_index]
+            updated_item, was_consumed = self._consume_material_item(item, material.item_id, should_consume)
+
+            if updated_item is not None:
+                final_inventory.append(updated_item)
+
+            if was_consumed:
+                consumed_items.append(material.item_id)
+
+        final_inventory = self._build_final_inventory(inventory, processed_materials, final_inventory)
 
         # Update player inventory
         player.set_inventory(final_inventory)

@@ -4,6 +4,8 @@ Go command for MythosMUD.
 This module handles the go command for player movement.
 """
 
+# pylint: disable=too-many-arguments,too-many-locals  # Reason: Movement commands require many parameters and intermediate variables for complex movement logic
+
 import uuid
 from typing import Any
 
@@ -112,7 +114,7 @@ def _validate_exit(direction: str, room: Any, persistence: Any, player_name: str
     return target_room_id
 
 
-async def _execute_movement(
+async def _execute_movement(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Movement execution requires many parameters and intermediate variables for complex movement logic
     player: Any,
     room_id: str,
     target_room_id: str,
@@ -159,7 +161,7 @@ async def _execute_movement(
         return {"result": f"Error during movement: {str(e)}"}
 
 
-async def handle_go_command(
+async def handle_go_command(  # pylint: disable=too-many-arguments,too-many-locals  # Reason: Go command requires many parameters and intermediate variables for complex movement logic
     command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, Any]:
     """

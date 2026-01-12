@@ -1,5 +1,7 @@
 """Recovery rituals that steady a mind frayed by eldritch exposure."""
 
+# pylint: disable=too-many-locals,too-many-return-statements  # Reason: Recovery commands require many intermediate variables for complex lucidity logic and multiple return statements for early validation returns
+
 from __future__ import annotations
 
 from datetime import UTC, datetime
@@ -18,6 +20,80 @@ from ..utils.command_parser import get_username_from_user
 logger = get_logger(__name__)
 
 
+async def _validate_recovery_context(
+    request: Any, current_user: dict, action_code: str, player_name: str
+) -> tuple[Any, Any, Any, dict[str, str] | None]:
+    """Validate persistence and player for recovery action."""
+    app = getattr(request, "app", None)
+    persistence = getattr(app.state, "persistence", None) if app else None
+    if not persistence:
+        logger.error("Recovery command invoked without persistence", action=action_code, player=player_name)
+        return None, None, None, {"result": "The ritual falters; the ley lines are inaccessible."}
+
+    username = get_username_from_user(current_user)
+    player = await persistence.get_player_by_name(username)
+    if not player:
+        logger.error("Recovery command failed to locate player", action=action_code, username=username)
+        return (
+            None,
+            None,
+            None,
+            {"result": "Your identity wavers in the void. Try again after stabilizing your presence."},
+        )
+
+    room_id = getattr(player, "current_room_id", None)
+    if not room_id:
+        return None, None, None, {"result": "Without a locus in space, the ritual dissipates into meaningless static."}
+
+    return persistence, player, room_id, None
+
+
+def _format_cooldown_message(cooldown_expires_at: datetime) -> dict[str, str]:
+    """Format cooldown error message with remaining time."""
+    if cooldown_expires_at.tzinfo is None:
+        expiry = cooldown_expires_at.replace(tzinfo=UTC)
+    else:
+        expiry = cooldown_expires_at
+    remaining_seconds = max(0.0, (expiry - datetime.now(UTC)).total_seconds())
+    remaining_minutes = int(remaining_seconds // 60)
+    return {
+        "result": (
+            "The sigils are still cooling from your previous rite. "
+            f"Return in {remaining_minutes or 1} minutes to try again."
+        )
+    }
+
+
+async def _restore_mp_for_action(app: Any, action_code: str, player: Any) -> str:
+    """Restore MP for meditation and pray actions, returning message if MP was restored."""
+    if action_code not in ("meditate", "pray"):
+        return ""
+
+    mp_regeneration_service = getattr(app.state, "mp_regeneration_service", None) if app else None
+    if not mp_regeneration_service:
+        return ""
+
+    if action_code == "meditate":
+        mp_result = await mp_regeneration_service.restore_mp_from_meditation(player.player_id, duration_seconds=180)
+    else:  # pray
+        mp_result = await mp_regeneration_service.restore_mp_from_rest(player.player_id, duration_seconds=60)
+
+    if mp_result.get("mp_restored", 0) > 0:
+        return f" You also recover {mp_result['mp_restored']} magic points."
+    return ""
+
+
+def _format_recovery_success_message(action_code: str, delta: int, new_total: int, mp_message: str) -> dict[str, str]:
+    """Format success message for recovery action."""
+    sign = "+" if delta >= 0 else ""
+    narrative = (
+        f"You complete the {action_code.replace('_', ' ')} rite. "
+        f"Stability shifts {sign}{delta}, settling at {new_total}/100."
+    )
+    lore_note = "Archivist's Aside: record this moment; resilience is born in repeated discipline."
+    return {"result": f"{narrative}{mp_message}\n{lore_note}"}
+
+
 async def _perform_recovery_action(
     action_code: str,
     _command_data: dict,
@@ -27,22 +103,14 @@ async def _perform_recovery_action(
     player_name: str,
 ) -> dict[str, str]:
     """Common execution path for LCD recovery commands."""
-
     app = getattr(request, "app", None)
-    persistence = getattr(app.state, "persistence", None) if app else None
-    if not persistence:
-        logger.error("Recovery command invoked without persistence", action=action_code, player=player_name)
-        return {"result": "The ritual falters; the ley lines are inaccessible."}
 
-    username = get_username_from_user(current_user)
-    player = await persistence.get_player_by_name(username)
-    if not player:
-        logger.error("Recovery command failed to locate player", action=action_code, username=username)
-        return {"result": "Your identity wavers in the void. Try again after stabilizing your presence."}
-
-    room_id = getattr(player, "current_room_id", None)
-    if not room_id:
-        return {"result": "Without a locus in space, the ritual dissipates into meaningless static."}
+    # Validate context
+    _persistence, player, room_id, validation_error = await _validate_recovery_context(  # pylint: disable=unused-variable  # Reason: persistence is part of validation tuple but not used in this function
+        request, current_user, action_code, player_name
+    )
+    if validation_error:
+        return validation_error
 
     catatonia_observer = getattr(app.state, "catatonia_registry", None) if app else None
 
@@ -59,17 +127,7 @@ async def _perform_recovery_action(
             await session.rollback()
             cooldown = await service.get_action_cooldown(player.player_id, action_code)
             if cooldown and cooldown.cooldown_expires_at:
-                expiry = cooldown.cooldown_expires_at
-                if expiry.tzinfo is None:
-                    expiry = expiry.replace(tzinfo=UTC)
-                remaining_seconds = max(0.0, (expiry - datetime.now(UTC)).total_seconds())
-                remaining_minutes = int(remaining_seconds // 60)
-                return {
-                    "result": (
-                        "The sigils are still cooling from your previous rite. "
-                        f"Return in {remaining_minutes or 1} minutes to try again."
-                    )
-                }
+                return _format_cooldown_message(cooldown.cooldown_expires_at)
             return {"result": "The ritual pathways are still resonating; patience is required."}
         except UnknownLucidityActionError:
             await session.rollback()
@@ -84,34 +142,8 @@ async def _perform_recovery_action(
                 error=str(exc),
             )
             return {"result": "Anomalous interference disrupts the ritual. Try again when the stars align."}
-        else:
-            delta = result.delta
-            new_total = result.new_lcd
-            sign = "+" if delta >= 0 else ""
-            narrative = (
-                f"You complete the {action_code.replace('_', ' ')} rite. "
-                f"Stability shifts {sign}{delta}, settling at {new_total}/100."
-            )
-
-            # Restore MP for meditation and rest actions
-            mp_message = ""
-            if action_code in ("meditate", "pray"):
-                mp_regeneration_service = getattr(app.state, "mp_regeneration_service", None) if app else None
-                if mp_regeneration_service:
-                    if action_code == "meditate":
-                        mp_result = await mp_regeneration_service.restore_mp_from_meditation(
-                            player.player_id, duration_seconds=180
-                        )
-                    else:  # pray
-                        mp_result = await mp_regeneration_service.restore_mp_from_rest(
-                            player.player_id, duration_seconds=60
-                        )
-
-                    if mp_result.get("mp_restored", 0) > 0:
-                        mp_message = f" You also recover {mp_result['mp_restored']} magic points."
-
-            lore_note = "Archivist's Aside: record this moment; resilience is born in repeated discipline."
-            return {"result": f"{narrative}{mp_message}\n{lore_note}"}
+        mp_message = await _restore_mp_for_action(app, action_code, player)
+        return _format_recovery_success_message(action_code, result.delta, result.new_lcd, mp_message)
 
     return {"result": "The rite fizzles before contact is made with the numinous."}
 

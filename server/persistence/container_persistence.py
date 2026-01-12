@@ -14,195 +14,28 @@ from typing import Any
 from uuid import UUID
 
 import psycopg2
-from psycopg2 import sql
 from psycopg2.extras import RealDictCursor
 
 from ..exceptions import DatabaseError, ValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import create_error_context, log_and_raise
+from .container_data import ContainerData
+from .container_helpers import (
+    build_update_query,
+    fetch_container_items,
+    parse_jsonb_column,
+    update_container_items,
+    validate_lock_state,
+)
 
 logger = get_logger(__name__)
 
-
-def _parse_jsonb_column(value: Any, default: Any) -> Any:
-    """
-    Parse a JSONB column value from database.
-
-    JSONB columns may be returned as:
-    - Python objects (dict/list) when using RealDictCursor
-    - Strings that need parsing
-    - None values
-
-    Args:
-        value: The JSONB column value from database
-        default: Default value if value is None or empty
-
-    Returns:
-        Parsed Python object (dict/list) or default value
-    """
-    if value is None:
-        return default
-    if isinstance(value, str):
-        return json.loads(value) if value else default
-    # Already a Python object (dict/list)
-    return value if value else default
+# Re-export functions with original names for backward compatibility with tests
+_fetch_container_items = fetch_container_items
+_parse_jsonb_column = parse_jsonb_column
 
 
-def _fetch_container_items(conn: Any, container_id: UUID) -> list[dict[str, Any]]:
-    """
-    Fetch container items directly from normalized tables.
-
-    Queries container_contents JOIN item_instances JOIN item_prototypes
-    to build the items list without using stored procedures.
-
-    Args:
-        conn: Database connection
-        container_id: Container UUID
-
-    Returns:
-        List of item dictionaries matching the old items_json format
-    """
-    # Convert UUID to string for psycopg2 compatibility
-    container_id_str = str(container_id) if isinstance(container_id, UUID) else container_id
-    cursor = conn.cursor(cursor_factory=RealDictCursor)
-    cursor.execute(
-        """
-        SELECT
-            cc.item_instance_id,
-            ii.prototype_id as item_id,
-            COALESCE(ii.custom_name, ip.name) as item_name,
-            ii.quantity,
-            ii.condition,
-            ii.metadata,
-            cc.position
-        FROM container_contents cc
-        JOIN item_instances ii ON cc.item_instance_id = ii.item_instance_id
-        JOIN item_prototypes ip ON ii.prototype_id = ip.prototype_id
-        WHERE cc.container_id = %s
-        ORDER BY cc.position
-        """,
-        (container_id_str,),
-    )
-    rows = cursor.fetchall()
-    cursor.close()
-
-    items = []
-    for row in rows:
-        # Ensure row is a dictionary (RealDictCursor should guarantee this, but be defensive)
-        if not isinstance(row, dict):
-            logger.warning(
-                "Skipping non-dictionary row in container_contents query",
-                container_id=str(container_id),
-                row_type=type(row).__name__,
-                row=str(row)[:100],
-            )
-            continue
-
-        # Ensure all required fields are present and of correct type
-        item_instance_id = row.get("item_instance_id")
-        item_id = row.get("item_id")
-        item_name = row.get("item_name")
-        quantity = row.get("quantity")
-        condition = row.get("condition")
-        position = row.get("position")
-
-        # Skip if critical fields are missing
-        if not item_instance_id:
-            logger.warning(
-                "Skipping row with missing item_instance_id",
-                container_id=str(container_id),
-                row_keys=list(row.keys()) if isinstance(row, dict) else None,
-            )
-            continue
-
-        # Parse metadata if it's a string
-        metadata = row.get("metadata")
-        if isinstance(metadata, str):
-            try:
-                metadata = json.loads(metadata)
-            except (json.JSONDecodeError, ValueError):
-                metadata = {}
-        elif metadata is None:
-            metadata = {}
-        elif not isinstance(metadata, dict):
-            metadata = {}
-
-        item: dict[str, Any] = {
-            "item_instance_id": str(item_instance_id) if item_instance_id else None,
-            "item_id": str(item_id) if item_id else None,
-            "item_name": str(item_name) if item_name else "Unknown Item",
-            "quantity": int(quantity) if quantity is not None else 1,
-            "condition": str(condition) if condition else "pristine",
-            "position": int(position) if position is not None else 0,
-            "metadata": metadata,
-            "slot_type": "backpack",  # Container items need slot_type for inventory validation
-        }
-        items.append(item)
-
-    return items
-
-
-class ContainerData:
-    """Data class for container information."""
-
-    def __init__(
-        self,
-        container_instance_id: UUID,
-        source_type: str,
-        owner_id: UUID | None = None,
-        room_id: str | None = None,
-        entity_id: UUID | None = None,
-        lock_state: str = "unlocked",
-        capacity_slots: int = 20,
-        weight_limit: int | None = None,
-        decay_at: datetime | None = None,
-        allowed_roles: list[str] | None = None,
-        items_json: list[dict[str, Any]] | None = None,
-        metadata_json: dict[str, Any] | None = None,
-        created_at: datetime | None = None,
-        updated_at: datetime | None = None,
-    ):
-        self.container_instance_id = container_instance_id
-        self.source_type = source_type
-        self.owner_id = owner_id
-        self.room_id = room_id
-        self.entity_id = entity_id
-        self.lock_state = lock_state
-        self.capacity_slots = capacity_slots
-        self.weight_limit = weight_limit
-        self.decay_at = decay_at
-        self.allowed_roles = allowed_roles or []
-        self.items_json = items_json or []
-        self.metadata_json = metadata_json or {}
-        self.created_at = created_at
-        self.updated_at = updated_at
-
-    def to_dict(self) -> dict[str, Any]:
-        """
-        Convert container data to dictionary.
-
-        Returns dictionary with model field names (container_id, items, metadata)
-        to match ContainerComponent model expectations.
-        """
-        return {
-            "container_id": str(self.container_instance_id),
-            "source_type": self.source_type,
-            "owner_id": str(self.owner_id) if self.owner_id else None,
-            "room_id": self.room_id,
-            "entity_id": str(self.entity_id) if self.entity_id else None,
-            "lock_state": self.lock_state,
-            "capacity_slots": self.capacity_slots,
-            "weight_limit": self.weight_limit,
-            "decay_at": self.decay_at.isoformat() if self.decay_at else None,
-            "allowed_roles": self.allowed_roles,
-            "items": self.items_json,
-            "metadata": self.metadata_json,
-            "created_at": self.created_at.isoformat() if self.created_at else None,
-            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
-        }
-
-
-def create_container(
+def create_container(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Container creation requires many parameters and intermediate variables for complex container logic
     conn: Any,
     source_type: str,
     owner_id: UUID | None = None,
@@ -453,7 +286,7 @@ def get_container(conn: Any, container_id: UUID) -> ContainerData | None:
             return None
 
         # Fetch items directly from normalized tables
-        items_json = _fetch_container_items(conn, container_id)
+        items_json = fetch_container_items(conn, container_id)
 
         # Convert row to ContainerData
         return ContainerData(
@@ -466,9 +299,9 @@ def get_container(conn: Any, container_id: UUID) -> ContainerData | None:
             capacity_slots=row["capacity_slots"],
             weight_limit=row["weight_limit"],
             decay_at=row["decay_at"],
-            allowed_roles=_parse_jsonb_column(row["allowed_roles"], []),
+            allowed_roles=parse_jsonb_column(row["allowed_roles"], []),
             items_json=items_json,
-            metadata_json=_parse_jsonb_column(row["metadata_json"], {}),
+            metadata_json=parse_jsonb_column(row["metadata_json"], {}),
             created_at=row["created_at"],
             updated_at=row["updated_at"],
         )
@@ -480,150 +313,6 @@ def get_container(conn: Any, container_id: UUID) -> ContainerData | None:
             context=context,
             details={"container_id": str(container_id), "error": str(e)},
             user_friendly="Failed to retrieve container",
-        )
-
-
-def get_containers_by_room_id(conn: Any, room_id: str) -> list[ContainerData]:
-    """
-    Get all containers in a room.
-
-    Args:
-        conn: Database connection
-        room_id: Room identifier
-
-    Returns:
-        list[ContainerData]: List of containers in the room
-
-    Raises:
-        DatabaseError: If database operation fails
-    """
-    context = create_error_context()
-    context.metadata["operation"] = "get_containers_by_room_id"
-    context.metadata["room_id"] = room_id
-
-    try:
-        cursor = conn.cursor(cursor_factory=RealDictCursor)
-        cursor.execute(
-            """
-            SELECT
-                container_instance_id, source_type, owner_id, room_id, entity_id,
-                lock_state, capacity_slots, weight_limit, decay_at,
-                allowed_roles, metadata_json, created_at, updated_at,
-                container_item_instance_id
-            FROM containers
-            WHERE room_id = %s
-            ORDER BY created_at
-            """,
-            (room_id,),
-        )
-        rows = cursor.fetchall()
-        cursor.close()
-
-        containers = []
-        for row in rows:
-            # Fetch items directly from normalized tables
-            items_json = _fetch_container_items(conn, row["container_instance_id"])
-
-            containers.append(
-                ContainerData(
-                    container_instance_id=row["container_instance_id"],
-                    source_type=row["source_type"],
-                    owner_id=row["owner_id"],
-                    room_id=row["room_id"],
-                    entity_id=row["entity_id"],
-                    lock_state=row["lock_state"],
-                    capacity_slots=row["capacity_slots"],
-                    weight_limit=row["weight_limit"],
-                    decay_at=row["decay_at"],
-                    allowed_roles=_parse_jsonb_column(row["allowed_roles"], []),
-                    items_json=items_json,
-                    metadata_json=_parse_jsonb_column(row["metadata_json"], {}),
-                    created_at=row["created_at"],
-                    updated_at=row["updated_at"],
-                )
-            )
-
-        return containers
-
-    except psycopg2.Error as e:
-        log_and_raise(
-            DatabaseError,
-            f"Database error retrieving containers by room_id: {e}",
-            context=context,
-            details={"room_id": room_id, "error": str(e)},
-            user_friendly="Failed to retrieve containers",
-        )
-
-
-def get_containers_by_entity_id(conn: Any, entity_id: UUID) -> list[ContainerData]:
-    """
-    Get all containers owned by an entity (player/NPC).
-
-    Args:
-        conn: Database connection
-        entity_id: Player/NPC UUID
-
-    Returns:
-        list[ContainerData]: List of containers owned by the entity
-
-    Raises:
-        DatabaseError: If database operation fails
-    """
-    context = create_error_context()
-    context.metadata["operation"] = "get_containers_by_entity_id"
-    context.metadata["entity_id"] = str(entity_id)
-
-    try:
-        cursor = conn.cursor(cursor_factory=RealDictCursor)
-        cursor.execute(
-            """
-            SELECT
-                container_instance_id, source_type, owner_id, room_id, entity_id,
-                lock_state, capacity_slots, weight_limit, decay_at,
-                allowed_roles, metadata_json, created_at, updated_at,
-                container_item_instance_id
-            FROM containers
-            WHERE entity_id = %s
-            ORDER BY created_at
-            """,
-            (str(entity_id) if isinstance(entity_id, UUID) else entity_id,),
-        )
-        rows = cursor.fetchall()
-        cursor.close()
-
-        containers = []
-        for row in rows:
-            # Fetch items directly from normalized tables
-            items_json = _fetch_container_items(conn, row["container_instance_id"])
-
-            containers.append(
-                ContainerData(
-                    container_instance_id=row["container_instance_id"],
-                    source_type=row["source_type"],
-                    owner_id=row["owner_id"],
-                    room_id=row["room_id"],
-                    entity_id=row["entity_id"],
-                    lock_state=row["lock_state"],
-                    capacity_slots=row["capacity_slots"],
-                    weight_limit=row["weight_limit"],
-                    decay_at=row["decay_at"],
-                    allowed_roles=_parse_jsonb_column(row["allowed_roles"], []),
-                    items_json=items_json,
-                    metadata_json=_parse_jsonb_column(row["metadata_json"], {}),
-                    created_at=row["created_at"],
-                    updated_at=row["updated_at"],
-                )
-            )
-
-        return containers
-
-    except psycopg2.Error as e:
-        log_and_raise(
-            DatabaseError,
-            f"Database error retrieving containers by entity_id: {e}",
-            context=context,
-            details={"entity_id": str(entity_id), "error": str(e)},
-            user_friendly="Failed to retrieve containers",
         )
 
 
@@ -655,68 +344,18 @@ def update_container(
     context.metadata["operation"] = "update_container"
     context.metadata["container_id"] = str(container_id)
 
-    # Validate lock_state if provided
-    if lock_state is not None and lock_state not in ("unlocked", "locked", "sealed"):
-        log_and_raise(
-            ValidationError,
-            f"Invalid lock_state: {lock_state}. Must be 'unlocked', 'locked', or 'sealed'",
-            context=context,
-            details={"lock_state": lock_state},
-            user_friendly="Invalid lock state",
-        )
+    validate_lock_state(lock_state, context)
 
     try:
-        # Convert container_id to string for psycopg2 compatibility
         container_id_str = str(container_id) if isinstance(container_id, UUID) else container_id
 
-        # Build update query dynamically
         updates: list[str] = []
         params: list[Any] = []
         current_time = datetime.now(UTC).replace(tzinfo=None)
         cursor = conn.cursor()
 
         if items_json is not None:
-            # Use stored procedures to update container contents
-            # First, clear existing contents
-            cursor.execute("SELECT clear_container_contents(%s)", (container_id_str,))
-
-            # Then add each item using stored procedure
-            # First ensure item instances exist, then add them to container
-            from .item_instance_persistence import ensure_item_instance
-
-            for position, item in enumerate(items_json):
-                # Require both item_instance_id and (item_id or prototype_id)
-                # Items missing either should be skipped
-                item_instance_id = item.get("item_instance_id")
-                prototype_id = item.get("item_id") or item.get("prototype_id")
-
-                if item_instance_id and prototype_id:
-                    # Ensure item instance exists in database before adding to container
-                    # This is required for foreign key constraint on container_contents
-                    try:
-                        ensure_item_instance(
-                            conn,
-                            item_instance_id=item_instance_id,
-                            prototype_id=prototype_id,
-                            owner_type="container",
-                            owner_id=container_id_str,
-                            quantity=item.get("quantity", 1),
-                            metadata=item.get("metadata", {}),
-                        )
-                    except (DatabaseError, ValidationError) as e:
-                        logger.warning(
-                            "Failed to ensure item instance exists, skipping item",
-                            item_instance_id=item_instance_id,
-                            prototype_id=prototype_id,
-                            error=str(e),
-                        )
-                        continue
-
-                    # Now add item to container
-                    cursor.execute(
-                        "SELECT add_item_to_container(%s, %s, %s)",
-                        (container_id_str, item_instance_id, position),
-                    )
+            update_container_items(cursor, container_id_str, items_json, conn)
 
         if lock_state is not None:
             updates.append("lock_state = %s")
@@ -726,47 +365,16 @@ def update_container(
             updates.append("metadata_json = %s::jsonb")
             params.append(json.dumps(metadata_json))
 
-        # Initialize row variable
         row = None
 
         if updates:
-            # Always update updated_at
-            updates.append("updated_at = %s")
-            params.append(current_time)
-            params.append(container_id_str)
-
-            # Use psycopg2.sql to safely construct the query
-            # Column names are hardcoded in code (not user input), but we use
-            # sql.SQL to satisfy static analysis tools
-            set_clauses = sql.SQL(", ").join([sql.SQL(clause) for clause in updates])
-            query = sql.SQL("""
-                UPDATE containers
-                SET {}
-                WHERE container_instance_id = %s
-                RETURNING container_instance_id
-            """).format(set_clauses)
-
+            query = build_update_query(updates, params, container_id_str, current_time)
             # nosemgrep: python.lang.security.audit.sql-injection.sql-injection
             # nosec B608: Using psycopg2.sql.SQL for safe SQL construction (column names are hardcoded)
             cursor.execute(query, params)
             row = cursor.fetchone()
         elif items_json is not None:
-            # If only items_json was provided, still update updated_at
-            updates.append("updated_at = %s")
-            params.append(current_time)
-            params.append(container_id_str)
-
-            # Use psycopg2.sql to safely construct the query
-            # Column names are hardcoded in code (not user input), but we use
-            # sql.SQL to satisfy static analysis tools
-            set_clauses = sql.SQL(", ").join([sql.SQL(clause) for clause in updates])
-            query = sql.SQL("""
-                UPDATE containers
-                SET {}
-                WHERE container_instance_id = %s
-                RETURNING container_instance_id
-            """).format(set_clauses)
-
+            query = build_update_query(updates, params, container_id_str, current_time)
             # nosemgrep: python.lang.security.audit.sql-injection.sql-injection
             # nosec B608: Using psycopg2.sql.SQL for safe SQL construction (column names are hardcoded)
             cursor.execute(query, params)
@@ -794,80 +402,6 @@ def update_container(
             context=context,
             details={"container_id": str(container_id), "error": str(e)},
             user_friendly="Failed to update container",
-        )
-
-
-def get_decayed_containers(conn: Any, current_time: datetime | None = None) -> list[ContainerData]:
-    """
-    Get all containers that have decayed (decay_at < current_time).
-
-    Args:
-        conn: Database connection
-        current_time: Current time for decay comparison (defaults to now() if not provided)
-
-    Returns:
-        list[ContainerData]: List of decayed container data
-
-    Raises:
-        DatabaseError: If database operation fails
-    """
-    context = create_error_context()
-    context.metadata["operation"] = "get_decayed_containers"
-
-    if current_time is None:
-        current_time = datetime.now(UTC).replace(tzinfo=None)
-
-    try:
-        cursor = conn.cursor(cursor_factory=RealDictCursor)
-        cursor.execute(
-            """
-            SELECT
-                container_instance_id, source_type, owner_id, room_id, entity_id,
-                lock_state, capacity_slots, weight_limit, decay_at,
-                allowed_roles, metadata_json, created_at, updated_at,
-                container_item_instance_id
-            FROM containers
-            WHERE decay_at IS NOT NULL AND decay_at < %s
-            ORDER BY decay_at
-            """,
-            (current_time,),
-        )
-        rows = cursor.fetchall()
-        cursor.close()
-
-        containers = []
-        for row in rows:
-            # Fetch items directly from normalized tables
-            items_json = _fetch_container_items(conn, row["container_instance_id"])
-
-            containers.append(
-                ContainerData(
-                    container_instance_id=row["container_instance_id"],
-                    source_type=row["source_type"],
-                    owner_id=row["owner_id"],
-                    room_id=row["room_id"],
-                    entity_id=row["entity_id"],
-                    lock_state=row["lock_state"],
-                    capacity_slots=row["capacity_slots"],
-                    weight_limit=row["weight_limit"],
-                    decay_at=row["decay_at"],
-                    allowed_roles=_parse_jsonb_column(row["allowed_roles"], []),
-                    items_json=items_json,
-                    metadata_json=_parse_jsonb_column(row["metadata_json"], {}),
-                    created_at=row["created_at"],
-                    updated_at=row["updated_at"],
-                )
-            )
-
-        return containers
-
-    except psycopg2.Error as e:
-        log_and_raise(
-            DatabaseError,
-            f"Database error retrieving decayed containers: {e}",
-            context=context,
-            details={"current_time": current_time.isoformat(), "error": str(e)},
-            user_friendly="Failed to retrieve decayed containers",
         )
 
 

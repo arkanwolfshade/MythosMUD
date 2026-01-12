@@ -6,6 +6,8 @@ separates concerns into dedicated components for better maintainability
 and testability.
 """
 
+# pylint: disable=too-many-instance-attributes,too-many-lines,too-many-public-methods,too-many-statements  # Reason: Connection manager requires many state tracking and service attributes. Connection manager requires extensive connection management logic for comprehensive real-time communication. Connection manager legitimately requires many public methods and statements for comprehensive connection management.
+
 import asyncio
 import time
 import uuid

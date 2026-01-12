@@ -6,6 +6,8 @@ This module handles querying and processing player occupants for rooms.
 As documented in "Dimensional Occupancy Tracking" - Dr. Armitage, 1929
 """
 
+# pylint: disable=too-few-public-methods  # Reason: Utility class with focused responsibility, minimal public interface
+
 import uuid
 from typing import Any
 

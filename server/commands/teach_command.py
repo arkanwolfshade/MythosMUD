@@ -4,6 +4,8 @@ Teach command handler for learning spells from NPC teachers.
 This module handles the /teach command for NPCs to teach spells to players.
 """
 
+# pylint: disable=too-many-locals,too-many-return-statements  # Reason: Teach commands require many intermediate variables for complex teaching logic and multiple return statements for early validation returns
+
 from typing import Any
 
 from server.alias_storage import AliasStorage

@@ -219,7 +219,7 @@ class NATSRetryHandler:
 
                 return True, result
 
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Retry attempt errors unpredictable, must continue with next attempt
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Retry attempt errors unpredictable, must continue with next attempt
                 last_error = e
 
                 # Don't sleep after last attempt

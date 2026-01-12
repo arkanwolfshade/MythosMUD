@@ -4,11 +4,13 @@ Pattern matching utilities for NATS Subject Manager.
 This module provides pattern matching logic for validating subjects against patterns.
 """
 
+# pylint: disable=too-few-public-methods  # Reason: Pattern matcher class with focused responsibility, minimal public interface
+
 import re
 from typing import Any
 
 
-class PatternMatcher:
+class PatternMatcher:  # pylint: disable=too-few-public-methods  # Reason: Pattern matcher class with focused responsibility, minimal public interface
     """
     Matcher for validating subjects against registered patterns.
     """

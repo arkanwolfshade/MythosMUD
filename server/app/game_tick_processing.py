@@ -76,7 +76,7 @@ def _validate_app_state_for_status_effects(app: FastAPI) -> tuple[bool, "Applica
     return True, container
 
 
-async def _process_damage_over_time_effect(
+async def _process_damage_over_time_effect(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Effect processing requires many parameters for game state and effect context
     app: FastAPI, container: "ApplicationContainer", player: "Player", effect: dict, remaining: int, player_id: str
 ) -> bool:
     """Process a damage over time effect.
@@ -148,12 +148,12 @@ async def _process_single_effect(
         if remaining > 0:
             return {**effect, "remaining": remaining}, effect_applied
         return None, effect_applied
-    elif effect_type == "heal_over_time":
+    if effect_type == "heal_over_time":
         effect_applied = await _process_heal_over_time_effect(container, player, effect, remaining, player_id)
         if remaining > 0:
             return {**effect, "remaining": remaining}, effect_applied
         return None, effect_applied
-    elif remaining > 0:
+    if remaining > 0:
         return {**effect, "remaining": remaining}, False
 
     return None, False
@@ -412,7 +412,7 @@ async def process_npc_maintenance(app: FastAPI, tick_count: int) -> None:
 
 async def cleanup_decayed_corpses(app: FastAPI, tick_count: int) -> None:
     """Cleanup decayed corpse containers (every 60 ticks = 1 minute)."""
-    if tick_count % 60 != 0:
+    if tick_count % 60:
         return
 
     try:
@@ -503,7 +503,7 @@ async def game_tick_loop(app: FastAPI):
             await process_npc_maintenance(app, tick_count)
             await cleanup_decayed_corpses(app, tick_count)
             # Broadcast tick event every 10 ticks (1 second at 100ms per tick)
-            if tick_count % 10 == 0:
+            if not tick_count % 10:
                 await broadcast_tick_event(app, tick_count)
 
             # Sleep for tick interval

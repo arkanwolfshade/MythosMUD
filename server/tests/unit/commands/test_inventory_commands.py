@@ -38,7 +38,7 @@ async def test_handle_inventory_command():
     mock_app.state = mock_state
     mock_request.app = mock_app
 
-    with patch("server.commands.inventory_commands._get_shared_services") as mock_get_services:
+    with patch("server.commands.inventory_commands.get_shared_services") as mock_get_services:
         mock_wearable_service = AsyncMock()
         mock_wearable_service.get_wearable_containers_for_player = AsyncMock(return_value=[])
         mock_get_services.return_value = (MagicMock(), mock_wearable_service, MagicMock())
@@ -103,13 +103,15 @@ async def test_handle_pickup_command():
     mock_app.state = mock_state
     mock_request.app = mock_app
 
-    with patch("server.commands.inventory_commands._get_shared_services") as mock_get_services:
+    with patch("server.commands.inventory_commands.get_shared_services") as mock_get_services:
         from server.services.inventory_service import InventoryService
 
         mock_inventory_service = InventoryService()
         mock_get_services.return_value = (mock_inventory_service, MagicMock(), MagicMock())
-        with patch("server.commands.inventory_commands._persist_player", return_value=None):
-            with patch("server.commands.inventory_commands._broadcast_room_event", new_callable=AsyncMock):
+        with patch("server.commands.inventory_commands.persist_player", return_value=None):
+            with patch(
+                "server.commands.inventory_commands.build_and_broadcast_inventory_event", new_callable=AsyncMock
+            ):
                 result = await handle_pickup_command(
                     {"index": 1}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer"
                 )
@@ -288,7 +290,7 @@ async def test_handle_pickup_command_inventory_capacity_error():
     mock_app.state = mock_state
     mock_request.app = mock_app
 
-    with patch("server.commands.inventory_commands._get_shared_services") as mock_get_services:
+    with patch("server.commands.inventory_commands.get_shared_services") as mock_get_services:
         from server.services.inventory_service import InventoryService
 
         mock_inventory_service = InventoryService()
@@ -324,7 +326,7 @@ async def test_handle_drop_command():
     mock_app.state = mock_state
     mock_request.app = mock_app
 
-    with patch("server.commands.inventory_commands._get_shared_services") as mock_get_services:
+    with patch("server.commands.inventory_commands.get_shared_services") as mock_get_services:
         mock_inventory_service = MagicMock()
         mock_inventory_service.remove_item_from_inventory = AsyncMock(return_value={"success": True})
         mock_get_services.return_value = (mock_inventory_service, MagicMock(), MagicMock())
@@ -379,7 +381,7 @@ async def test_handle_equip_command():
     mock_app.state = mock_state
     mock_request.app = mock_app
 
-    with patch("server.commands.inventory_commands._get_shared_services") as mock_get_services:
+    with patch("server.commands.inventory_commands.get_shared_services") as mock_get_services:
         mock_inventory_service = MagicMock()
         mock_equipment_service = MagicMock()
         mock_equipment_service.equip_item = AsyncMock(return_value={"success": True})
@@ -437,7 +439,7 @@ async def test_handle_unequip_command():
     mock_app.state = mock_state
     mock_request.app = mock_app
 
-    with patch("server.commands.inventory_commands._get_shared_services") as mock_get_services:
+    with patch("server.commands.inventory_commands.get_shared_services") as mock_get_services:
         mock_inventory_service = MagicMock()
         mock_equipment_service = MagicMock()
         mock_equipment_service.unequip_item = AsyncMock(return_value={"success": True})
@@ -493,7 +495,7 @@ async def test_handle_put_command():
     mock_app.state = mock_state
     mock_request.app = mock_app
 
-    with patch("server.commands.inventory_commands._get_shared_services") as mock_get_services:
+    with patch("server.commands.inventory_commands.get_shared_services") as mock_get_services:
         mock_inventory_service = MagicMock()
         mock_wearable_service = AsyncMock()
         mock_wearable_service.add_item_to_container = AsyncMock(return_value={"success": True})
@@ -548,7 +550,7 @@ async def test_handle_get_command():
     mock_app.state = mock_state
     mock_request.app = mock_app
 
-    with patch("server.commands.inventory_commands._get_shared_services") as mock_get_services:
+    with patch("server.commands.inventory_commands.get_shared_services") as mock_get_services:
         mock_inventory_service = MagicMock()
         mock_wearable_service = AsyncMock()
         mock_wearable_service.remove_item_from_container = AsyncMock(return_value={"success": True})

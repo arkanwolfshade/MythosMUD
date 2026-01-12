@@ -161,7 +161,7 @@ def create_sse_error_response(
 
 
 # Common error messages for consistency
-class ErrorMessages:
+class ErrorMessages:  # pylint: disable=too-few-public-methods  # Reason: Utility class with class-level constants, no instance methods needed
     """Common error messages for consistent user experience."""
 
     # Authentication

@@ -8,12 +8,14 @@ AI: Provides observability into subject management performance.
 AI: Helps identify bottlenecks and optimize validation operations.
 """
 
+# pylint: disable=too-many-instance-attributes  # Reason: Metrics class requires many fields to capture complete performance metrics
+
 from collections import deque
 from collections.abc import Iterable
 from typing import Any
 
 
-class SubjectManagerMetrics:
+class SubjectManagerMetrics:  # pylint: disable=too-many-instance-attributes  # Reason: Metrics class requires many fields to capture complete performance metrics
     """
     Performance metrics for NATS Subject Manager operations.
 

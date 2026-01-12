@@ -46,7 +46,7 @@ class CombatParticipantType(Enum):
 
 
 @dataclass
-class CombatParticipant:
+class CombatParticipant:  # pylint: disable=too-many-instance-attributes  # Reason: Combat participant requires many fields to capture complete combat state
     """Represents a participant in combat."""
 
     participant_id: UUID
@@ -68,13 +68,12 @@ class CombatParticipant:
         if self.participant_type == CombatParticipantType.PLAYER:
             # Players remain "in combat" until -10 DP (mortally wounded at 0 DP is still "alive" for combat purposes)
             return self.current_dp > -10 and self.is_active
-        else:
-            # NPCs die at 0 DP
-            return self.current_dp > 0 and self.is_active
+        # NPCs die at 0 DP
+        return self.current_dp > 0 and self.is_active
 
 
 @dataclass
-class CombatInstance:
+class CombatInstance:  # pylint: disable=too-many-instance-attributes  # Reason: Combat instance requires many fields to capture complete combat state
     """Represents an active combat instance."""
 
     combat_id: UUID = field(default_factory=uuid4)
@@ -139,7 +138,7 @@ class CombatInstance:
 
 
 @dataclass
-class CombatAction:
+class CombatAction:  # pylint: disable=too-many-instance-attributes  # Reason: Combat action requires many fields to capture complete action state
     """Represents a combat action."""
 
     action_id: UUID = field(default_factory=uuid4)

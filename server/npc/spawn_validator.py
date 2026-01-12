@@ -98,8 +98,8 @@ def should_spawn_npc(
             if random_roll <= effective_probability:
                 logger.info("NPC should spawn based on spawn rule", npc_id=definition.id, rule_number=i + 1)
                 return True
-            else:
-                logger.info("NPC failed probability roll for spawn rule", npc_id=definition.id, rule_number=i + 1)
+
+            logger.info("NPC failed probability roll for spawn rule", npc_id=definition.id, rule_number=i + 1)
     else:
         logger.info("No spawn rules found for NPC", npc_id=definition.id)
 

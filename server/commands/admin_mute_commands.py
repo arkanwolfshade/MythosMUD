@@ -4,6 +4,10 @@ Admin mute command handlers for MythosMUD.
 This module provides handlers for mute/unmute administrative commands.
 """
 
+# pylint: disable=too-many-return-statements  # Reason: Command handlers require multiple return statements for early validation returns (input validation, permission checks, error handling)
+
+# pylint: disable=too-many-locals,too-many-return-statements  # Reason: Command handlers require many intermediate variables for complex game logic and multiple return statements for early validation returns
+
 from typing import Any
 
 from sqlalchemy.exc import SQLAlchemyError
@@ -89,9 +93,9 @@ async def handle_mute_command(
                 duration_text=duration_text,
             )
             return {"result": f"You have muted {target_player} {duration_text}."}
-        else:
-            logger.warning("Mute command failed", admin_name=player_name, target_player=target_player)
-            return {"result": f"Failed to mute {target_player}."}
+
+        logger.warning("Mute command failed", admin_name=player_name, target_player=target_player)
+        return {"result": f"Failed to mute {target_player}."}
     except (DatabaseError, SQLAlchemyError, ValueError, TypeError, AttributeError) as e:
         logger.error("Mute command error", admin_name=player_name, target_player=target_player, error=str(e))
         return {"result": f"Error muting {target_player}: {str(e)}"}
@@ -158,9 +162,9 @@ async def handle_unmute_command(
         if success:
             logger.info("Player unmuted successfully", admin_name=player_name, target_player=target_player)
             return {"result": f"You have unmuted {target_player}."}
-        else:
-            logger.warning("Unmute command failed", admin_name=player_name, target_player=target_player)
-            return {"result": f"Failed to unmute {target_player}."}
+
+        logger.warning("Unmute command failed", admin_name=player_name, target_player=target_player)
+        return {"result": f"Failed to unmute {target_player}."}
     except (DatabaseError, SQLAlchemyError, ValueError, TypeError, AttributeError) as e:
         logger.error("Unmute command error", admin_name=player_name, target_player=target_player, error=str(e))
         return {"result": f"Error unmuting {target_player}: {str(e)}"}
@@ -200,9 +204,9 @@ async def handle_mute_global_command(
         if success:
             logger.info("Global mute activated", admin_name=player_name)
             return {"result": "Global mute has been activated."}
-        else:
-            logger.warning("Global mute command failed", player_name=player_name)
-            return {"result": "Failed to activate global mute."}
+
+        logger.warning("Global mute command failed", player_name=player_name)
+        return {"result": "Failed to activate global mute."}
     except (ValueError, TypeError, AttributeError, KeyError) as e:
         logger.error("Global mute command error", player_name=player_name, error=str(e))
         return {"result": f"Error activating global mute: {str(e)}"}
@@ -242,9 +246,9 @@ async def handle_unmute_global_command(
         if success:
             logger.info("Global mute deactivated", admin_name=player_name)
             return {"result": "Global mute has been deactivated."}
-        else:
-            logger.warning("Global unmute command failed", player_name=player_name)
-            return {"result": "Failed to deactivate global mute."}
+
+        logger.warning("Global unmute command failed", player_name=player_name)
+        return {"result": "Failed to deactivate global mute."}
     except (ValueError, TypeError, AttributeError, KeyError) as e:
         logger.error("Global unmute command error", player_name=player_name, error=str(e))
         return {"result": f"Error deactivating global mute: {str(e)}"}
@@ -291,9 +295,9 @@ async def handle_add_admin_command(
         if success:
             logger.info("Admin added successfully", admin_name=player_name, target_player=target_player)
             return {"result": f"{target_player} has been granted administrator privileges."}
-        else:
-            logger.warning("Add admin command failed", admin_name=player_name, target_player=target_player)
-            return {"result": f"Failed to grant administrator privileges to {target_player}."}
+
+        logger.warning("Add admin command failed", admin_name=player_name, target_player=target_player)
+        return {"result": f"Failed to grant administrator privileges to {target_player}."}
     except (ValueError, TypeError, AttributeError, KeyError, DatabaseError, SQLAlchemyError) as e:
         logger.error("Add admin command error", admin_name=player_name, target_player=target_player, error=str(e))
         return {"result": f"Error granting administrator privileges: {str(e)}"}
@@ -367,9 +371,9 @@ async def handle_mutes_command(
             result = "Current mutes:\n" + "\n".join(mute_list)
             logger.debug("Mutes listed successfully", player_name=player_name, count=len(mute_list))
             return {"result": result}
-        else:
-            logger.debug("No mutes found", player_name=player_name)
-            return {"result": "No active mutes found."}
+
+        logger.debug("No mutes found", player_name=player_name)
+        return {"result": "No active mutes found."}
     except (ValueError, TypeError, AttributeError, KeyError) as e:
         logger.error("Mutes command error", player_name=player_name, error=str(e))
         return {"result": f"Error retrieving mute information: {str(e)}"}

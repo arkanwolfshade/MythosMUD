@@ -4,6 +4,8 @@ Combat flee handler for involuntary flee logic.
 Handles checking if players should involuntarily flee due to lucidity effects.
 """
 
+# pylint: disable=too-many-return-statements  # Reason: Flee handler requires multiple return statements for different flee condition checks and state evaluations
+
 from datetime import UTC, datetime, timedelta
 
 from server.database import get_async_session
@@ -80,7 +82,7 @@ async def check_involuntary_flee(target: CombatParticipant, damage: int) -> bool
                 )
                 return True
 
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Flee check errors unpredictable, must not fail combat
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Flee check errors unpredictable, must not fail combat
                 logger.warning(
                     "Error checking involuntary flee",
                     player_id=target.participant_id,

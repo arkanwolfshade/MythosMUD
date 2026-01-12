@@ -131,7 +131,7 @@ def get_mythos_time(request: Request) -> dict[str, Any]:
             active_holidays = [_serialize_holiday(entry) for entry in active_entries]
             upcoming_entries = holiday_service.get_upcoming_holidays(3)
             upcoming_holidays = [_serialize_holiday(entry) for entry in upcoming_entries]
-        except Exception as exc:  # pragma: no cover - defensive logging  # pylint: disable=broad-exception-caught  # Reason: Holiday service errors unpredictable, optional metadata
+        except Exception as exc:  # noqa: B904  # pragma: no cover - defensive logging  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Holiday service errors unpredictable, optional metadata
             logger.warning("Failed to build holiday payload for /game/time", error=str(exc))
 
     payload = {

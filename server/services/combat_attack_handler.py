@@ -60,7 +60,7 @@ class CombatAttackHandler:
                             )
                             # Return original DP, no death, no mortal wound
                             return target.current_dp, False, False
-            except (AttributeError, ImportError, TypeError, ValueError, Exception) as e:  # pylint: disable=broad-exception-caught  # Reason: Fail-open behavior requires catching all exceptions
+            except (AttributeError, ImportError, TypeError, ValueError, Exception) as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Fail-open behavior requires catching all exceptions
                 # If we can't check grace period, proceed with damage (fail open)
                 logger.debug(
                     "Could not check login grace period for damage", target_id=target.participant_id, error=str(e)
@@ -70,7 +70,7 @@ class CombatAttackHandler:
         if target.participant_type == CombatParticipantType.PLAYER:
             target.current_dp = max(-10, target.current_dp - damage)
             target_died = target.current_dp <= -10
-            target_mortally_wounded = old_dp > 0 and target.current_dp == 0
+            target_mortally_wounded = old_dp > 0 and not target.current_dp
         else:
             target.current_dp = max(0, target.current_dp - damage)
             target_died = target.current_dp <= 0

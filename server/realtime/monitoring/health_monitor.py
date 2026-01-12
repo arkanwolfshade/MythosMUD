@@ -9,6 +9,8 @@ AI Agent: Extracted from ConnectionManager to follow Single Responsibility Princ
 Health monitoring is now a focused, independently testable component.
 """
 
+# pylint: disable=too-many-instance-attributes,too-many-arguments,too-many-positional-arguments  # Reason: Health monitor requires many state tracking attributes and complex health checking logic
+
 import asyncio
 import time
 import uuid
@@ -100,7 +102,7 @@ class HealthMonitor:
             "overall_health": "unknown",
         }
 
-        try:
+        try:  # pylint: disable=too-many-nested-blocks  # Reason: Health monitoring requires complex nested logic for connection validation, health status checks, and metrics collection
             # Check WebSocket connections
             if player_id in player_websockets:
                 connection_ids = player_websockets[player_id].copy()
@@ -134,9 +136,9 @@ class HealthMonitor:
             total_healthy = health_status["websocket_healthy"]
             total_connections = total_healthy + health_status["websocket_unhealthy"]
 
-            if total_connections == 0:
+            if not total_connections:
                 health_status["overall_health"] = "no_connections"
-            elif health_status["websocket_unhealthy"] == 0:
+            elif not health_status["websocket_unhealthy"]:
                 health_status["overall_health"] = "healthy"
             elif total_healthy > 0:
                 health_status["overall_health"] = "degraded"
@@ -149,6 +151,116 @@ class HealthMonitor:
             logger.error("Error checking connection health", player_id=player_id, error=str(e))
             health_status["overall_health"] = "error"
             return health_status
+
+    def _find_player_id_for_cleanup(
+        self, connection_id: str, player_websockets: dict[uuid.UUID, list[str]]
+    ) -> uuid.UUID | None:
+        """Find player_id for cleanup when metadata is missing."""
+        for pid, conn_ids in player_websockets.items():
+            if connection_id in conn_ids:
+                return pid
+        return None
+
+    def _check_connection_stale(self, metadata: "ConnectionMetadata", now: float, connection_id: str) -> bool:
+        """Check if connection is stale based on timeout."""
+        time_since_last_seen = now - metadata.last_seen
+        if time_since_last_seen > self.connection_timeout:
+            logger.debug(
+                "Connection marked as stale",
+                connection_id=connection_id,
+                player_id=metadata.player_id,
+                seconds_idle=time_since_last_seen,
+            )
+            metadata.is_healthy = False
+            return True
+        return False
+
+    def _check_websocket_open(self, websocket: "WebSocket", connection_id: str, metadata: "ConnectionMetadata") -> bool:
+        """Check if WebSocket is actually open."""
+        if not self.is_websocket_open(websocket):
+            logger.debug(
+                "WebSocket not open, marking for cleanup",
+                connection_id=connection_id,
+                player_id=metadata.player_id,
+            )
+            metadata.is_healthy = False
+            return False
+        return True
+
+    async def _validate_and_update_token(self, metadata: "ConnectionMetadata", now: float, connection_id: str) -> bool:
+        """Validate token and update last validation time if needed."""
+        if metadata.token and metadata.last_token_validation:
+            time_since_validation = now - metadata.last_token_validation
+            if time_since_validation >= self.token_revalidation_interval:
+                if not await self.validate_token(metadata.token, metadata.player_id):
+                    logger.warning(
+                        "Token validation failed during health check",
+                        connection_id=connection_id,
+                        player_id=metadata.player_id,
+                    )
+                    metadata.is_healthy = False
+                    return False
+                metadata.last_token_validation = now
+                logger.debug(
+                    "Token revalidated successfully",
+                    connection_id=connection_id,
+                    player_id=metadata.player_id,
+                )
+        return True
+
+    async def _process_single_connection(
+        self,
+        connection_id: str,
+        websocket: "WebSocket",
+        connection_metadata: dict[str, "ConnectionMetadata"],
+        player_websockets: dict[uuid.UUID, list[str]],
+        now: float,
+        stale_connections: list[tuple[uuid.UUID, str]],
+    ) -> None:
+        """Process health check for a single connection."""
+        try:
+            metadata = connection_metadata.get(connection_id)
+            if not metadata:
+                player_id_for_cleanup = self._find_player_id_for_cleanup(connection_id, player_websockets)
+                if player_id_for_cleanup is not None:
+                    stale_connections.append((player_id_for_cleanup, connection_id))
+                return
+
+            if self._check_connection_stale(metadata, now, connection_id):
+                stale_connections.append((metadata.player_id, connection_id))
+                return
+
+            if not self._check_websocket_open(websocket, connection_id, metadata):
+                stale_connections.append((metadata.player_id, connection_id))
+                return
+
+            if not await self._validate_and_update_token(metadata, now, connection_id):
+                stale_connections.append((metadata.player_id, connection_id))
+                return
+
+            metadata.is_healthy = True
+
+        except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors in health monitoring
+            logger.warning("Error checking connection health", connection_id=connection_id, error=str(e))
+            metadata = connection_metadata.get(connection_id)
+            if metadata:
+                stale_connections.append((metadata.player_id, connection_id))
+                metadata.is_healthy = False
+
+    async def _cleanup_stale_connections(self, stale_connections: list[tuple[uuid.UUID, str]]) -> None:
+        """Clean up stale connections."""
+        if stale_connections:
+            logger.info("Cleaning up stale connections from health check", stale_count=len(stale_connections))
+            for player_id, connection_id in stale_connections:
+                try:
+                    await self.cleanup_dead_websocket(player_id, connection_id)
+                except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors during cleanup
+                    logger.error(
+                        "Error cleaning up stale connection",
+                        player_id=player_id,
+                        connection_id=connection_id,
+                        error=str(e),
+                    )
 
     async def check_all_connections_health(
         self,
@@ -175,104 +287,15 @@ class HealthMonitor:
         start_time = time.time()
         try:
             now = time.time()
-            stale_connections: list[tuple[uuid.UUID, str]] = []  # (player_id, connection_id)
+            stale_connections: list[tuple[uuid.UUID, str]] = []
 
-            # Check WebSocket connections
             for connection_id, websocket in list(active_websockets.items()):
-                try:
-                    # Get connection metadata
-                    metadata = connection_metadata.get(connection_id)
-                    if not metadata:
-                        # Missing metadata - mark for cleanup
-                        # Try to find player_id from player_websockets mapping
-                        player_id_for_cleanup: uuid.UUID | None = None
-                        for pid, conn_ids in player_websockets.items():
-                            if connection_id in conn_ids:
-                                player_id_for_cleanup = pid
-                                break
-                        if player_id_for_cleanup is not None:
-                            stale_connections.append((player_id_for_cleanup, connection_id))
-                        continue
-
-                    # Check if connection is stale (no activity for timeout period)
-                    time_since_last_seen = now - metadata.last_seen
-                    if time_since_last_seen > self.connection_timeout:
-                        logger.debug(
-                            "Connection marked as stale",
-                            connection_id=connection_id,
-                            player_id=metadata.player_id,
-                            seconds_idle=time_since_last_seen,
-                        )
-                        stale_connections.append((metadata.player_id, connection_id))
-                        metadata.is_healthy = False
-                        continue
-
-                    # Verify WebSocket is actually open
-                    if not self.is_websocket_open(websocket):
-                        logger.debug(
-                            "WebSocket not open, marking for cleanup",
-                            connection_id=connection_id,
-                            player_id=metadata.player_id,
-                        )
-                        stale_connections.append((metadata.player_id, connection_id))
-                        metadata.is_healthy = False
-                        continue
-
-                    # Check token validity if token exists and revalidation interval has passed
-                    if metadata.token and metadata.last_token_validation:
-                        time_since_validation = now - metadata.last_token_validation
-                        if time_since_validation >= self.token_revalidation_interval:
-                            if not await self.validate_token(metadata.token, metadata.player_id):
-                                logger.warning(
-                                    "Token validation failed during health check",
-                                    connection_id=connection_id,
-                                    player_id=metadata.player_id,
-                                )
-                                stale_connections.append((metadata.player_id, connection_id))
-                                metadata.is_healthy = False
-                                continue
-                            else:
-                                # Update last validation time
-                                metadata.last_token_validation = now
-                                logger.debug(
-                                    "Token revalidated successfully",
-                                    connection_id=connection_id,
-                                    player_id=metadata.player_id,
-                                )
-
-                    # Connection is healthy
-                    metadata.is_healthy = True
-
-                except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors in health monitoring
-                    logger.warning(
-                        "Error checking connection health",
-                        connection_id=connection_id,
-                        error=str(e),
-                    )
-                    # Mark for cleanup on error
-                    metadata = connection_metadata.get(connection_id)
-                    if metadata:
-                        stale_connections.append((metadata.player_id, connection_id))
-                        metadata.is_healthy = False
-
-            # Clean up stale connections
-            if stale_connections:
-                logger.info(
-                    "Cleaning up stale connections from health check",
-                    stale_count=len(stale_connections),
+                await self._process_single_connection(
+                    connection_id, websocket, connection_metadata, player_websockets, now, stale_connections
                 )
-                for player_id, connection_id in stale_connections:
-                    try:
-                        await self.cleanup_dead_websocket(player_id, connection_id)
-                    except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors during cleanup
-                        logger.error(
-                            "Error cleaning up stale connection",
-                            player_id=player_id,
-                            connection_id=connection_id,
-                            error=str(e),
-                        )
 
-            # Update performance stats
+            await self._cleanup_stale_connections(stale_connections)
+
             duration_ms = (time.time() - start_time) * 1000
             self.performance_tracker.record_health_check(duration_ms)
 

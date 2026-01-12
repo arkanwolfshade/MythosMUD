@@ -5,6 +5,8 @@ This module handles room filtering, mute checking, and player location validatio
 for message broadcasting.
 """
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-lines  # Reason: Message filtering requires many parameters for context and filtering logic. Message filtering requires extensive filtering logic for comprehensive message routing and validation.
+
 import uuid
 from typing import TYPE_CHECKING, Any, cast
 from unittest.mock import Mock
@@ -402,7 +404,7 @@ class MessageFilteringHelper:
             )
             return False
 
-        except (NATSError, RuntimeError, Exception) as e:  # pylint: disable=broad-exception-caught  # Reason: Mute status check errors unpredictable, must return False
+        except (NATSError, RuntimeError, Exception) as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Mute status check errors unpredictable, must return False
             logger.error(
                 "Error checking mute status",
                 error=str(e),
@@ -534,7 +536,7 @@ class MessageFilteringHelper:
             )
             return False
 
-    async def check_player_mute_status(
+    async def check_player_mute_status(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Mute checking requires many parameters for context and validation
         self,
         user_manager: "UserManager",
         player_id: str,
@@ -603,7 +605,7 @@ class MessageFilteringHelper:
 
         return is_muted
 
-    async def filter_target_players(
+    async def filter_target_players(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Player filtering requires many parameters for context and filtering logic
         self,
         targets: set[str],
         sender_id: str,

@@ -8,6 +8,8 @@ AI Agent: Extracted from ConnectionManager to follow Single Responsibility Princ
 Room event handling is now a focused, independently testable component.
 """
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Room event handling requires many parameters and intermediate variables for complex event processing logic
+
 import uuid
 from collections.abc import Callable
 from datetime import UTC, datetime
@@ -37,7 +39,7 @@ class RoomEventHandler:
     AI Agent: Single Responsibility - Room event integration only.
     """
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event handler initialization requires many service dependencies
         self,
         room_manager: "RoomSubscriptionManager",
         get_event_bus: Callable[[], Any],
@@ -76,7 +78,7 @@ class RoomEventHandler:
             event_bus.subscribe(PlayerEnteredRoom, self.handle_player_entered_room)
             event_bus.subscribe(PlayerLeftRoom, self.handle_player_left_room)
             logger.info("Successfully subscribed to room movement events")
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Event subscription errors unpredictable, must handle gracefully
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Event subscription errors unpredictable, must handle gracefully
             logger.error("Error subscribing to room events", error=str(e), exc_info=True)
 
     async def unsubscribe_from_events(self) -> None:
@@ -91,7 +93,7 @@ class RoomEventHandler:
             event_bus.unsubscribe(PlayerEnteredRoom, self.handle_player_entered_room)
             event_bus.unsubscribe(PlayerLeftRoom, self.handle_player_left_room)
             logger.info("Successfully unsubscribed from room movement events")
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Event unsubscription errors unpredictable, must handle gracefully
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Event unsubscription errors unpredictable, must handle gracefully
             logger.error("Error unsubscribing from room events", error=str(e), exc_info=True)
 
     async def handle_player_entered_room(self, event_data: dict[str, Any]) -> None:
@@ -112,7 +114,7 @@ class RoomEventHandler:
                     await event_publisher.publish_player_entered_event(
                         player_id=player_id, room_id=room_id, timestamp=timestamp
                     )
-                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NATS event publishing errors unpredictable, must handle gracefully
+                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NATS event publishing errors unpredictable, must handle gracefully
                     logger.error("Failed to publish player_entered NATS event", error=str(e))
 
             # Get current room occupants
@@ -151,7 +153,7 @@ class RoomEventHandler:
 
             logger.debug("Broadcasted room_occupants event for room", room_id=room_id, occupant_count=len(names))
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Player entered event handling errors unpredictable, must handle gracefully
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Player entered event handling errors unpredictable, must handle gracefully
             logger.error("Error handling PlayerEnteredRoom event", error=str(e), exc_info=True)
 
     async def handle_player_left_room(self, event_data: dict[str, Any]) -> None:
@@ -172,7 +174,7 @@ class RoomEventHandler:
                     await event_publisher.publish_player_left_event(
                         player_id=player_id, room_id=room_id, timestamp=timestamp
                     )
-                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NATS event publishing errors unpredictable, must handle gracefully
+                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NATS event publishing errors unpredictable, must handle gracefully
                     logger.error("Failed to publish player_left NATS event", error=str(e))
 
             # Get current room occupants
@@ -210,5 +212,5 @@ class RoomEventHandler:
 
             logger.debug("Broadcasted room_occupants event for room", room_id=room_id, occupant_count=len(names))
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Player left event handling errors unpredictable, must handle gracefully
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Player left event handling errors unpredictable, must handle gracefully
             logger.error("Error handling PlayerLeftRoom event", error=str(e), exc_info=True)

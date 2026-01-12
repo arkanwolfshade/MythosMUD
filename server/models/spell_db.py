@@ -5,6 +5,8 @@ This module contains the SQLAlchemy ORM model for the spells table,
 separate from the Pydantic Spell model used for validation.
 """
 
+# pylint: disable=too-few-public-methods  # Reason: SQLAlchemy models are data classes, no instance methods needed
+
 from typing import TYPE_CHECKING
 
 from sqlalchemy import Column, DateTime, Integer, String, Text, text

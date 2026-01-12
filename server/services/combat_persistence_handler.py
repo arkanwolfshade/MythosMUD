@@ -4,6 +4,8 @@ Combat persistence handling logic.
 Handles player DP persistence, verification, and event publishing.
 """
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals,too-many-lines  # Reason: Persistence handling requires many parameters and intermediate variables for complex persistence logic. Combat persistence handler requires extensive persistence logic for comprehensive DP management.
+
 import asyncio
 from typing import Any
 from uuid import UUID
@@ -78,7 +80,7 @@ class CombatPersistenceHandler:
         # BUGFIX: Automatically change posture to lying when DP drops to <= 0
         # As documented in "Combat Collapse and Unconsciousness" - Dr. Armitage, 1929
         # When a player's DP reaches zero or below in combat, their body automatically collapses
-        if current_dp <= 0 and old_dp > 0:
+        if current_dp <= 0 < old_dp:
             stats["position"] = PositionState.LYING
             logger.info(
                 "Player posture changed to lying (unconscious in combat)",
@@ -158,7 +160,7 @@ class CombatPersistenceHandler:
                 player_id=player_id,
                 player_name=player_name,
             )
-        elif current_dp <= 0 and old_dp > 0:
+        elif current_dp <= 0 < old_dp:
             # Player just became mortally wounded
             logger.info(
                 "Player became mortally wounded in combat",
@@ -231,7 +233,7 @@ class CombatPersistenceHandler:
                 exc_info=True,
             )
 
-    def _persist_player_dp_background(
+    def _persist_player_dp_background(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: DP persistence requires many parameters for context and persistence operations
         self,
         player_id: UUID,
         current_dp: int,
@@ -322,7 +324,7 @@ class CombatPersistenceHandler:
                 error=str(e),
             )
 
-    def persist_player_dp_background(
+    def persist_player_dp_background(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: DP persistence requires many parameters for context and persistence operations
         self,
         player_id: UUID,
         current_dp: int,
@@ -346,7 +348,7 @@ class CombatPersistenceHandler:
         """
         self._persist_player_dp_background(player_id, current_dp, old_dp, max_dp, room_id, combat_id)
 
-    async def publish_player_dp_update_event(
+    async def publish_player_dp_update_event(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event publishing requires many parameters for complete event context
         self,
         player_id: UUID,
         old_dp: int,
@@ -368,7 +370,7 @@ class CombatPersistenceHandler:
         """
         await self._publish_player_dp_update_event_impl(player_id, old_dp, new_dp, max_dp, combat_id, room_id)
 
-    async def _publish_player_dp_update_event_impl(
+    async def _publish_player_dp_update_event_impl(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event publishing requires many parameters for complete event context
         self,
         player_id: UUID,
         old_dp: int,
@@ -510,7 +512,7 @@ class CombatPersistenceHandler:
                 exc_info=True,
             )
 
-    async def _publish_player_dp_correction_event(
+    async def _publish_player_dp_correction_event(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event publishing requires many parameters for complete event context
         self,
         player_id: UUID,
         correct_dp: int,

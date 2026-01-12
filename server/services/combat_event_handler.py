@@ -4,6 +4,8 @@ Combat event publishing logic.
 Handles publishing of combat-related events (attacks, deaths, XP awards, combat ended).
 """
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event publishing requires many parameters for complete event context
+
 from datetime import datetime
 from uuid import UUID
 
@@ -86,7 +88,7 @@ class CombatEventHandler:
             )
             await combat_event_publisher.publish_npc_took_damage(damage_event)
 
-    async def handle_attack_events_and_xp(
+    async def handle_attack_events_and_xp(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Attack event handling requires many parameters for context and event processing
         self,
         current_participant: CombatParticipant,
         target: CombatParticipant,
@@ -147,10 +149,9 @@ class CombatEventHandler:
         if player_combat_service:
             logger.info("Using PlayerCombatService for XP calculation", npc_id=npc_id)
             return await player_combat_service.calculate_xp_reward(npc_id)
-        else:
-            # Fallback to default XP value if no player combat service
-            logger.info("Using default XP reward", npc_id=npc_id)
-            return 0  # Default XP reward changed to 0 to highlight database lookup issues
+        # Fallback to default XP value if no player combat service
+        logger.info("Using default XP reward", npc_id=npc_id)
+        return 0  # Default XP reward changed to 0 to highlight database lookup issues
 
     async def award_xp_to_player(
         self, current_participant: CombatParticipant, target: CombatParticipant, target_id: UUID, xp_amount: int | None

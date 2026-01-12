@@ -10,6 +10,10 @@ All service methods made async to prevent event loop blocking.
 Uses asyncio.to_thread() for synchronous persistence calls.
 """
 
+# pylint: disable=too-many-lines  # Reason: Container service requires extensive service operations for comprehensive container system management across all container types
+
+# pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Container service requires many parameters and intermediate variables for complex container operations
+
 from __future__ import annotations
 
 import uuid
@@ -228,7 +232,7 @@ class ContainerService:
                 room_id=container.room_id,
                 success=True,
             )
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Audit logging errors unpredictable, must not fail container operation
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Audit logging errors unpredictable, must not fail container operation
             logger.warning("Failed to log container open to audit log", error=str(e))
 
         return {
@@ -289,7 +293,7 @@ class ContainerService:
                     room_id=container.room_id,
                     success=True,
                 )
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Audit logging errors unpredictable, must not fail container operation
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Audit logging errors unpredictable, must not fail container operation
             logger.warning("Failed to log container close to audit log", error=str(e))
 
     async def close_container(self, container_id: UUID, player_id: UUID, mutation_token: str) -> None:
@@ -337,7 +341,7 @@ class ContainerService:
             return self._open_containers[container_id].get(player_id)
         return None
 
-    async def transfer_to_container(
+    async def transfer_to_container(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Container transfer requires many parameters and intermediate variables for complex transfer logic
         self,
         container_id: UUID,
         player_id: UUID,
@@ -527,7 +531,7 @@ class ContainerService:
                     item_name=item.get("item_name"),
                     success=True,
                 )
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Audit logging errors unpredictable, must not fail container operation
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Audit logging errors unpredictable, must not fail container operation
                 logger.warning("Failed to log container transfer to audit log", error=str(e))
 
             return {
@@ -591,7 +595,7 @@ class ContainerService:
 
         return new_container_items
 
-    def _add_item_to_player_inventory(
+    def _add_item_to_player_inventory(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Inventory management requires many parameters for context and inventory operations
         self, player: Any, transfer_item_dict: InventoryStack, container_id: UUID, player_id: UUID, context: Any
     ) -> list[InventoryStack]:
         """Add item to player inventory using InventoryService."""
@@ -659,7 +663,7 @@ class ContainerService:
                 item_name=item.get("item_name"),
                 success=True,
             )
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Audit logging must not fail
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Audit logging must not fail  # noqa: B904
             logger.warning("Failed to log container transfer to audit log", error=str(e))
 
         return {
@@ -667,7 +671,7 @@ class ContainerService:
             "player_inventory": new_player_inventory,
         }
 
-    async def transfer_from_container(
+    async def transfer_from_container(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Container transfer requires many parameters for context and transfer operations
         self,
         container_id: UUID,
         player_id: UUID,
@@ -863,8 +867,7 @@ class ContainerService:
                     player_id=str(player_id),
                 )
                 break
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Continue processing other items on error
-                # Log but continue with other items
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Continue processing other items on error  # noqa: B904                # Log but continue with other items
                 logger.warning(
                     "Error transferring item during loot-all",
                     error=str(e),

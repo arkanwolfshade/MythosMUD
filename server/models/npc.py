@@ -5,6 +5,8 @@ This module defines the SQLAlchemy models for NPC definitions, spawn rules,
 and relationships that support the NPC subsystem.
 """
 
+# pylint: disable=too-few-public-methods  # Reason: SQLAlchemy models are data classes, no instance methods needed
+
 import json
 from datetime import UTC, datetime
 from enum import Enum
@@ -28,6 +30,8 @@ from ..npc_metadata import npc_metadata
 
 
 class Base(DeclarativeBase):
+    """SQLAlchemy declarative base for NPC database models."""
+
     metadata = npc_metadata
 
 
@@ -204,43 +208,74 @@ class NPCSpawnRule(Base):
         max_pop: int = int(self.max_population)
         return bool(current_population < max_pop)
 
+    def _check_missing_key_condition(self, key: str, value: Any, game_state: dict[str, Any]) -> bool | None:
+        """
+        Check if missing key condition is acceptable.
+
+        Returns:
+            True if condition passes, False if fails, None if key exists (continue checking)
+        """
+        if key not in game_state:
+            if value == "any" or (isinstance(value, list) and not value):
+                return True
+            return False
+        return None
+
+    def _check_list_condition(self, value: list[Any], game_value: Any) -> bool | None:
+        """
+        Check list condition.
+
+        Returns:
+            True if condition passes, False if fails, None if should skip (empty list)
+        """
+        if not value:
+            return None
+        return game_value in value
+
+    def _check_dict_condition(self, value: dict[str, Any], game_value: Any) -> bool:
+        """Check dict (range) condition."""
+        if "min" in value and game_value < value["min"]:
+            return False
+        if "max" in value and game_value > value["max"]:
+            return False
+        return True
+
+    def _check_simple_condition(self, value: Any, game_value: Any) -> bool | None:
+        """
+        Check simple value condition.
+
+        Returns:
+            True if condition passes, False if fails, None if should skip ("any")
+        """
+        if value == "any":
+            return None
+        return game_value == value
+
     def check_spawn_conditions(self, game_state: dict[str, Any]) -> bool:
         """Check if current game state meets spawn conditions."""
         conditions = self.get_spawn_conditions()
         if not conditions:
             return True
 
-        # Enhanced condition checking with proper handling of missing keys
         for key, value in conditions.items():
-            # Handle missing keys in game state
-            if key not in game_state:
-                # If the condition value is "any" or empty list, missing key is acceptable
-                if value == "any" or (isinstance(value, list) and len(value) == 0):
-                    continue  # Skip this condition check - missing key is acceptable
-                else:
-                    # Missing key is not acceptable for this condition
-                    return False
+            missing_check = self._check_missing_key_condition(key, value, game_state)
+            if missing_check is False:
+                return False
+            if missing_check is True:
+                continue
 
             game_value = game_state[key]
 
-            # Handle different condition types
             if isinstance(value, list):
-                # Empty list means "any value is acceptable" (like "any")
-                if len(value) == 0:
-                    continue  # Skip this condition check
-                elif game_value not in value:
+                list_check = self._check_list_condition(value, game_value)
+                if list_check is False:
                     return False
             elif isinstance(value, dict):
-                # Range checking
-                if "min" in value and game_value < value["min"]:
-                    return False
-                if "max" in value and game_value > value["max"]:
+                if not self._check_dict_condition(value, game_value):
                     return False
             else:
-                # Handle "any" as a special case meaning "any value is acceptable"
-                if value == "any":
-                    continue  # Skip this condition check
-                elif game_value != value:
+                simple_check = self._check_simple_condition(value, game_value)
+                if simple_check is False:
                     return False
 
         return True

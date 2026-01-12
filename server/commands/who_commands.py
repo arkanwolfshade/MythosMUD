@@ -4,6 +4,8 @@ Who command handlers and utilities for MythosMUD.
 This module contains the who command handler and related helper functions.
 """
 
+# pylint: disable=too-many-locals,too-many-return-statements  # Reason: Who commands require many intermediate variables for complex player listing logic and multiple return statements for early validation returns
+
 from typing import Any
 
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -59,9 +61,8 @@ def format_player_location(room_id: str) -> str:
             room_display = room_name.replace("_", " ").title()
 
             return f"{zone_display}: {sub_zone_display}: {room_display}"
-        else:
-            # Fallback for unexpected format
-            return room_id.replace("_", " ").title()
+        # If parts < 4, return unknown location
+        return "Unknown Location"
     except (ValueError, TypeError, AttributeError) as e:
         logger.error("Error parsing room ID", room_id=room_id, error=str(e), error_type=type(e).__name__)
         # Safe fallback that doesn't depend on room_id being a valid string
@@ -119,10 +120,9 @@ def parse_last_active_datetime(last_active: Any) -> Any:
             last_active_str = last_active.strip()
             if last_active_str.endswith("Z"):
                 return datetime.fromisoformat(last_active_str[:-1] + "+00:00")
-            elif "+" in last_active_str or "-" in last_active_str[-6:]:
+            if "+" in last_active_str or "-" in last_active_str[-6:]:
                 return datetime.fromisoformat(last_active_str)
-            else:
-                return datetime.fromisoformat(last_active_str).replace(tzinfo=UTC)
+            return datetime.fromisoformat(last_active_str).replace(tzinfo=UTC)
         except (ValueError, AttributeError) as e:
             logger.warning("Failed to parse last_active string", last_active=last_active, error=str(e))
             return None

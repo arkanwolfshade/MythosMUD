@@ -5,6 +5,8 @@ This module handles looking at players, including finding matching players,
 formatting player display, and handling player look requests.
 """
 
+# pylint: disable=too-many-arguments  # Reason: Player look requires many parameters for context and target resolution
+
 import uuid
 from typing import Any
 
@@ -161,7 +163,7 @@ def _format_player_look_display(target_player: Any, connection_manager: Any | No
     return "\n".join(lines)
 
 
-async def _handle_player_look(
+async def _handle_player_look(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Player look requires many parameters for context and target resolution
     target: str,
     target_lower: str,
     instance_number: int | None,
@@ -189,7 +191,7 @@ async def _handle_player_look(
     return {"result": result_text}
 
 
-async def _try_lookup_player_implicit(
+async def _try_lookup_player_implicit(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Player look requires many parameters for context and target resolution
     target: str,
     target_lower: str,
     instance_number: int | None,

@@ -37,6 +37,17 @@ class HolidayEntry(BaseModel):
     @field_validator("tradition")
     @classmethod
     def validate_tradition(cls, value: str) -> str:
+        """Validate tradition value.
+
+        Args:
+            value: The tradition string to validate
+
+        Returns:
+            str: The validated tradition
+
+        Raises:
+            ValueError: If tradition is not in the allowed list
+        """
         if value not in _TRADITIONS:
             raise ValueError(f"tradition must be one of: {sorted(_TRADITIONS)}")
         return value
@@ -44,6 +55,17 @@ class HolidayEntry(BaseModel):
     @field_validator("season")
     @classmethod
     def validate_season(cls, value: str) -> str:
+        """Validate season value.
+
+        Args:
+            value: The season string to validate
+
+        Returns:
+            str: The validated season
+
+        Raises:
+            ValueError: If season is not in the allowed list
+        """
         if value not in _SEASONS:
             raise ValueError(f"season must be one of: {sorted(_SEASONS)}")
         return value
@@ -51,6 +73,7 @@ class HolidayEntry(BaseModel):
     @field_validator("bonus_tags")
     @classmethod
     def validate_bonus_tags(cls, value: Sequence[str]) -> list[str]:
+        """Validate bonus tags format."""
         for tag in value:
             if not re.fullmatch(r"[a-z0-9_\-]+", tag):
                 raise ValueError(f"bonus tag '{tag}' must be lowercase snake/kebab case")
@@ -64,15 +87,26 @@ class HolidayCollection(BaseModel):
 
     @property
     def id_map(self) -> dict[str, HolidayEntry]:
+        """Create a mapping of holiday IDs to holiday entries.
+
+        Returns:
+            dict[str, HolidayEntry]: Dictionary mapping holiday IDs to entries
+        """
         return {entry.id: entry for entry in self.holidays}
 
     @classmethod
     def load_file(cls, path: Path | str) -> HolidayCollection:
+        """Load holiday collection from JSON file."""
         with Path(path).open("r", encoding="utf-8") as handle:
             payload = json.load(handle)
         return cls.model_validate(payload)
 
     def ensure_unique_ids(self) -> None:
+        """Ensure all holiday IDs are unique.
+
+        Raises:
+            ValueError: If duplicate holiday IDs are detected
+        """
         seen: set[str] = set()
         duplicates: list[str] = []
         for holiday in self.holidays:
@@ -99,6 +133,7 @@ class ScheduleEntry(BaseModel):
     @field_validator("days")
     @classmethod
     def validate_days(cls, value: Sequence[str]) -> list[str]:
+        """Validate schedule entry days."""
         if not value:
             raise ValueError("days must contain at least one Mythos weekday")
         invalid = [day for day in value if day not in _MYTHOS_WEEKDAYS]
@@ -109,6 +144,17 @@ class ScheduleEntry(BaseModel):
     @field_validator("applies_to", "effects")
     @classmethod
     def validate_slug_list(cls, value: Sequence[str]) -> list[str]:
+        """Validate slug-formatted list entries.
+
+        Args:
+            value: Sequence of strings to validate
+
+        Returns:
+            list[str]: The validated list of slug-formatted strings
+
+        Raises:
+            ValueError: If any entry does not match slug format
+        """
         for item in value:
             if not re.fullmatch(r"[a-z0-9_\-]+", item):
                 raise ValueError(f"list entry '{item}' must use lowercase slug formatting")
@@ -131,6 +177,14 @@ class ScheduleCollection(BaseModel):
 
     @classmethod
     def load_file(cls, path: Path | str) -> ScheduleCollection:
+        """Load schedule collection from a JSON file.
+
+        Args:
+            path: Path to the JSON file containing schedule data
+
+        Returns:
+            ScheduleCollection: The loaded schedule collection
+        """
         with Path(path).open("r", encoding="utf-8") as handle:
             payload = json.load(handle)
         return cls.model_validate(payload)

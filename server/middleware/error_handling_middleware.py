@@ -74,8 +74,7 @@ class ErrorHandlingMiddleware:
             # Process the request
             await self.app(scope, receive, send)
 
-        except Exception as exc:  # pylint: disable=broad-exception-caught
-            # JUSTIFICATION: This is error handling middleware that must catch ALL exceptions to ensure
+        except Exception as exc:  # pylint: disable=broad-exception-caught  # noqa: B904            # JUSTIFICATION: This is error handling middleware that must catch ALL exceptions to ensure
             # proper error responses are sent. The exception is then passed to _handle_exception which
             # properly categorizes and handles different exception types (HTTPException, ValidationError, etc.)
             # Handle the exception and send error response
@@ -124,8 +123,7 @@ class ErrorHandlingMiddleware:
                 }
             )
 
-        except Exception as handler_error:  # pylint: disable=broad-exception-caught
-            # JUSTIFICATION: This is a fallback error handler that catches ALL exceptions when the error
+        except Exception as handler_error:  # pylint: disable=broad-exception-caught  # noqa: B904            # JUSTIFICATION: This is a fallback error handler that catches ALL exceptions when the error
             # handler itself fails. This is the last resort to ensure some error response is sent even
             # if the primary error handling code encounters an unexpected error.
             # Fallback error handling if the handler itself fails
@@ -192,8 +190,7 @@ class ErrorHandlingMiddleware:
         try:
             response = await call_next(request)
             return response
-        except Exception as exc:  # pylint: disable=broad-exception-caught
-            # JUSTIFICATION: This is error handling middleware that must catch ALL exceptions to ensure
+        except Exception as exc:  # pylint: disable=broad-exception-caught  # noqa: B904            # JUSTIFICATION: This is error handling middleware that must catch ALL exceptions to ensure
             # proper error responses are returned. The exception is then passed to StandardizedErrorResponse
             # which properly categorizes and handles different exception types (HTTPException, ValidationError, etc.)
             # Handle exception and return JSON response

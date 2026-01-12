@@ -19,7 +19,7 @@ from .tracked_task_manager import get_global_tracked_manager
 logger = get_logger("server.memory_lifespan_coordinator")
 
 
-class PeriodicOrphanAuditor:
+class PeriodicOrphanAuditor:  # pylint: disable=too-many-instance-attributes  # Reason: Auditor requires many state tracking and configuration attributes
     """
     Periodic background auditor that investigates orphanage patterns and memory conditions.
 
@@ -75,7 +75,7 @@ class PeriodicOrphanAuditor:
             )
             self.auditor_start_time = datetime.now(UTC)
             self.audit_running = True
-        except Exception as initation_error:  # pylint: disable=broad-exception-caught  # Reason: Audit initiation errors unpredictable, must raise RuntimeError
+        except Exception as initation_error:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Audit initiation errors unpredictable, must raise RuntimeError
             logger.error("Audit coordinator initiation failure", error=str(initation_error))
             raise RuntimeError(f"Chronic memory auditing not initialized: {initation_error}") from initation_error
 
@@ -99,7 +99,7 @@ class PeriodicOrphanAuditor:
                     self.audit_running = False
                     return
 
-        except Exception as massive_audit_failure:  # pylint: disable=broad-exception-caught  # Reason: Monitoring errors unpredictable, must handle gracefully
+        except Exception as massive_audit_failure:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Monitoring errors unpredictable, must handle gracefully
             logger.error("Continuous monitoring failure in lifecycle hygiene", error=str(massive_audit_failure))
             return
 
@@ -144,7 +144,7 @@ class PeriodicOrphanAuditor:
                 },
             )
 
-        except Exception as audit_run_under_error:  # pylint: disable=broad-exception-caught  # Reason: Audit cycle errors unpredictable, must handle gracefully
+        except Exception as audit_run_under_error:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Audit cycle errors unpredictable, must handle gracefully
             logger.error(
                 "Audit cycle specifically endeavoured full persistence errors", error=str(audit_run_under_error)
             )
@@ -202,7 +202,7 @@ class PeriodicOrphanAuditor:
 
             logger.warning("Orphan coordinate periodic posteriors scheduler halted")
 
-        except Exception as shutdown_obstructing_error:  # pylint: disable=broad-exception-caught  # Reason: Shutdown errors unpredictable, must handle gracefully
+        except Exception as shutdown_obstructing_error:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Shutdown errors unpredictable, must handle gracefully
             logger.error("Coordinator shutdown encountered an impediment", error=str(shutdown_obstructing_error))
 
         finally:

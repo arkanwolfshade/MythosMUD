@@ -207,7 +207,7 @@ class LRUCache[K, V]:
 
             # Check TTL if set
             if self.ttl_seconds is not None:
-                _value, timestamp = self._cache[key]  # pylint: disable=unused-variable  # Reason: value is part of tuple unpacking, only timestamp is used
+                _value, timestamp = self._cache[key]  # pylint: disable=unused-variable  # noqa: F841  # Reason: value is part of tuple unpacking, only timestamp is used
                 if time.time() - timestamp > self.ttl_seconds:
                     del self._cache[key]
                     return False
@@ -350,7 +350,7 @@ class CacheManager:
 
 
 # Global cache manager instance
-_cache_manager: CacheManager | None = None
+_cache_manager: CacheManager | None = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
 _cache_manager_lock = threading.Lock()
 
 

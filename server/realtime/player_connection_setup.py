@@ -171,7 +171,7 @@ async def handle_new_connection_setup(
     # This ensures players are never in combat when they log in
     try:
         # Lazy import to avoid circular dependency with combat_service
-        from ..services.combat_service import get_combat_service  # noqa: E402
+        from ..services.combat_service import get_combat_service  # noqa: E402  # pylint: disable=wrong-import-position
 
         combat_service = get_combat_service()
         if combat_service:
@@ -184,8 +184,7 @@ async def handle_new_connection_setup(
                         player_id=player_id,
                         combat_id=combat.combat_id,
                     )
-                except Exception as combat_error:  # pylint: disable=broad-exception-caught
-                    # Log but don't fail - combat cleanup is best effort
+                except Exception as combat_error:  # pylint: disable=broad-exception-caught  # noqa: B904                    # Log but don't fail - combat cleanup is best effort
                     logger.warning(
                         "Error ending combat for player on login",
                         player_id=player_id,

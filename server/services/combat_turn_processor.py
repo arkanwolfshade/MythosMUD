@@ -5,6 +5,8 @@ Handles turn advancement, NPC turn processing, and player turn processing
 for automatic combat progression.
 """
 
+# pylint: disable=too-few-public-methods  # Reason: Turn processor class with focused responsibility, minimal public interface
+
 from server.config import get_config
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType, CombatStatus
 from server.services.nats_exceptions import NATSError

@@ -12,6 +12,8 @@ ASYNC MIGRATION (Phase 2):
 All persistence calls wrapped in asyncio.to_thread() to prevent event loop blocking.
 """
 
+# pylint: disable=too-few-public-methods  # Reason: Startup service class with focused responsibility, minimal public interface
+
 import asyncio
 import random
 from typing import Any
@@ -24,7 +26,7 @@ from ..structured_logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 
-class NPCStartupService:
+class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: Startup service class with focused responsibility, minimal public interface
     """
     Service for automatic NPC spawning during server startup.
 
@@ -106,7 +108,7 @@ class NPCStartupService:
                     startup_results["errors"].extend(optional_results["errors"])
                     startup_results["spawned_npcs"].extend(optional_results["spawned_npcs"])
 
-                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC spawning errors unpredictable, must log and continue
+                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC spawning errors unpredictable, must log and continue
                     error_msg = f"Error during startup spawning: {str(e)}"
                     logger.error(error_msg)
                     startup_results["errors"].append(error_msg)
@@ -124,7 +126,7 @@ class NPCStartupService:
 
             return startup_results
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Startup spawning errors unpredictable, must return results
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Startup spawning errors unpredictable, must return results
             error_msg = f"Critical error in startup spawning: {str(e)}"
             logger.error(error_msg)
             startup_results["errors"].append(error_msg)
@@ -183,7 +185,7 @@ class NPCStartupService:
                     results["errors"].append(error_msg)
                     results["failed"] += 1
 
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Required NPC spawning errors unpredictable, must log but continue
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Required NPC spawning errors unpredictable, must log but continue
                 error_msg = f"Error spawning required NPC {npc_def.name}: {str(e)}"
                 logger.error(error_msg)
                 results["errors"].append(error_msg)
@@ -251,7 +253,7 @@ class NPCStartupService:
                     )
                     results["failed"] += 1
 
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Optional NPC spawning errors unpredictable, must log but continue
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Optional NPC spawning errors unpredictable, must log but continue
                 error_msg = f"Error spawning optional NPC {npc_def.name}: {str(e)}"
                 logger.warning(error_msg)  # Use warning for optional NPCs
                 results["errors"].append(error_msg)
@@ -290,14 +292,13 @@ class NPCStartupService:
                 if room:
                     logger.debug("Using specific room for NPC", npc_name=npc_def.name, room_id=room_id)
                     return room_id
-                else:
-                    logger.warning(
-                        "NPC room_id not found in database",
-                        npc_name=npc_def.name,
-                        room_id=room_id,
-                        definition_id=npc_def.id,
-                    )
-                    # Try fallback to sub-zone default
+                logger.warning(
+                    "NPC room_id not found in database",
+                    npc_name=npc_def.name,
+                    room_id=room_id,
+                    definition_id=npc_def.id,
+                )
+                # Try fallback to sub-zone default
 
             # If NPC has a sub_zone_id, try to find a valid room in that sub-zone
             if hasattr(npc_def, "sub_zone_id") and npc_def.sub_zone_id:
@@ -312,13 +313,12 @@ class NPCStartupService:
                             room_id=default_room,
                         )
                         return default_room
-                    else:
-                        logger.warning(
-                            "Default room for sub-zone not found in database",
-                            npc_name=npc_def.name,
-                            sub_zone_id=npc_def.sub_zone_id,
-                            room_id=default_room,
-                        )
+                    logger.warning(
+                        "Default room for sub-zone not found in database",
+                        npc_name=npc_def.name,
+                        sub_zone_id=npc_def.sub_zone_id,
+                        room_id=default_room,
+                    )
 
             # Fallback to a default starting room
             fallback_room_id = "earth_arkhamcity_northside_intersection_derby_high"
@@ -326,15 +326,14 @@ class NPCStartupService:
             if room:
                 logger.debug("Using fallback room for NPC", npc_name=npc_def.name, room_id=fallback_room_id)
                 return fallback_room_id
-            else:
-                logger.error(
-                    "Fallback room not found in database",
-                    npc_name=npc_def.name,
-                    room_id=fallback_room_id,
-                )
-                return None
+            logger.error(
+                "Fallback room not found in database",
+                npc_name=npc_def.name,
+                room_id=fallback_room_id,
+            )
+            return None
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Room determination errors unpredictable, must return None
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Room determination errors unpredictable, must return None
             logger.error("Error determining spawn room for NPC", npc_name=npc_def.name, error=str(e))
             return None
 

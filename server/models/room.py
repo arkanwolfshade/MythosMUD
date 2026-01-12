@@ -24,7 +24,7 @@ from ..events.event_types import (
 from ..structured_logging.enhanced_logging_config import get_logger
 
 
-class Room:
+class Room:  # pylint: disable=too-many-instance-attributes  # Reason: Room requires many fields to capture complete room state
     """
     Represents a room in the MythosMUD game world.
 
@@ -350,7 +350,7 @@ class Room:
         Returns:
             True if the room is empty, False otherwise
         """
-        return self.get_occupant_count() == 0
+        return not self.get_occupant_count()
 
     def get_containers(self) -> list:
         """

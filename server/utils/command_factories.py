@@ -9,6 +9,8 @@ The CommandFactory class delegates to specialized factory classes organized by
 command category to keep the codebase maintainable and under size limits.
 """
 
+# pylint: disable=too-many-public-methods  # Reason: Command factory legitimately requires many public methods for comprehensive command creation across all command categories
+
 from .command_factories_combat import CombatCommandFactory
 from .command_factories_communication import CommunicationCommandFactory
 from .command_factories_exploration import ExplorationCommandFactory

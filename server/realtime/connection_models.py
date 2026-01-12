@@ -5,6 +5,8 @@ This module defines data structures used by the connection manager
 for tracking connection state and metadata.
 """
 
+# pylint: disable=too-many-instance-attributes  # Reason: Connection models require many fields to capture complete connection state
+
 import uuid
 from dataclasses import dataclass
 

@@ -10,6 +10,8 @@ As documented in "The Art of Restful Departure" - Dr. Armitage, 1931,
 proper rest requires tranquility and freedom from disturbance.
 """
 
+# pylint: disable=too-many-return-statements  # Reason: Rest command handler requires multiple return statements for early validation returns (combat checks, rest location validation, error handling)
+
 import asyncio
 import json
 import time

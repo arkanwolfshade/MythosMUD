@@ -8,6 +8,8 @@ ASYNC MIGRATION (Phase 2):
 All persistence calls wrapped in asyncio.to_thread() to prevent event loop blocking.
 """
 
+# pylint: disable=too-few-public-methods  # Reason: Combat service class with focused responsibility, minimal public interface
+
 import asyncio
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
@@ -39,7 +41,7 @@ class PlayerCombatState:
             self.last_activity = datetime.now(UTC)
 
 
-class PlayerXPAwardEvent(BaseEvent):
+class PlayerXPAwardEvent(BaseEvent):  # pylint: disable=too-few-public-methods  # Reason: Event dataclass with focused responsibility, minimal public interface
     """Event published when a player receives XP."""
 
     def __init__(self, player_id: UUID, xp_amount: int, new_level: int, timestamp: datetime | None = None) -> None:
@@ -296,7 +298,7 @@ class PlayerCombatService:
 
             logger.info("Awarded XP to player", xp_amount=xp_amount, player_name=player.name, new_level=player.level)
 
-        except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError, Exception) as e:  # pylint: disable=broad-exception-caught  # Reason: XP award errors unpredictable, must not crash service
+        except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError, Exception) as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: XP award errors unpredictable, must not crash service
             # Catch all exceptions to prevent XP award failures from crashing the service
             logger.error(
                 "Error awarding XP to player",
@@ -336,8 +338,6 @@ class PlayerCombatService:
                 )
                 assert isinstance(xp_reward, int)
                 return xp_reward
-            else:
-                logger.debug("UUID not found in XP mapping", npc_id=npc_id)
 
         # Fallback to database lookup if UUID-to-XP mapping doesn't have the value
         try:
@@ -380,9 +380,7 @@ class PlayerCombatService:
                             )
                             assert isinstance(xp_reward, int)
                             return xp_reward
-                        else:
-                            logger.debug("No xp_value in base_stats", base_stats=base_stats)
-                else:
+                        logger.debug("No xp_value in base_stats", base_stats=base_stats)
                     # Log all available lifecycle record IDs for debugging
                     available_ids = (
                         list(lifecycle_manager.lifecycle_records.keys())

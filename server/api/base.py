@@ -16,6 +16,6 @@ logger = get_logger(__name__)
 api_router = APIRouter(prefix="/api", tags=["api"])
 
 # Common dependencies
-CurrentUser = Depends(get_current_user)
+CurrentUser = Depends(get_current_user)  # pylint: disable=invalid-name  # Reason: FastAPI dependency name follows FastAPI conventions
 
 logger.info("Base API router initialized", prefix="/api")

@@ -61,7 +61,7 @@ async def _get_player_for_logout(request: Any, persistence: Any, lookup_name: st
                 logger.error("get_player_by_name returned a coroutine instead of player", lookup_name=lookup_name)
                 return None
             cache_player(request, lookup_name, player)
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Player fetch errors unpredictable, must return None
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Player fetch errors unpredictable, must return None
             logger.error("Error fetching player for logout", error=str(e), error_type=type(e).__name__)
             return None
 
@@ -210,7 +210,7 @@ async def handle_quit_command(
                 player.last_active = datetime.now(UTC)
                 persistence.save_player(player)
                 logger.info("Player quit - updated last active")
-        except (OSError, ValueError, TypeError, Exception) as e:  # pylint: disable=broad-exception-caught  # Reason: Exception catch-all for last active update errors, must handle gracefully
+        except (OSError, ValueError, TypeError, Exception) as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Exception catch-all for last active update errors, must handle gracefully
             logger.error("Error updating last active on quit", error=str(e), error_type=type(e).__name__)
 
     # Mark disconnect as intentional (no grace period) for /quit command
@@ -289,7 +289,7 @@ async def handle_logout_command(
             "message": "You have been logged out and disconnected from the game.",
         }
 
-    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Logout errors unpredictable, must handle gracefully
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Logout errors unpredictable, must handle gracefully
         logger.error("Unexpected error during logout", error=str(e), error_type=type(e).__name__, exc_info=True)
 
         # Even if there's an error, we should still indicate logout success

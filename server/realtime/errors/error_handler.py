@@ -9,6 +9,8 @@ AI Agent: Extracted from ConnectionManager to follow Single Responsibility Princ
 Error handling is now a focused, independently testable component.
 """
 
+# pylint: disable=too-many-instance-attributes,too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Error handler requires many state tracking attributes and complex error processing logic
+
 import json
 import uuid
 from collections.abc import Callable
@@ -199,7 +201,7 @@ class ConnectionErrorHandler:
             error_results["success"] = True
             logger.info("Error handling completed for player", player_id=player_id, error_results=error_results)
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Error state detection errors unpredictable, must handle gracefully
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Error state detection errors unpredictable, must handle gracefully
             error_msg = f"Error in detect_and_handle_error_state for {player_id}: {e}"
             logger.error(error_msg, exc_info=True)
             error_results["errors"].append(error_msg)
@@ -235,11 +237,10 @@ class ConnectionErrorHandler:
             return await self.detect_and_handle_error_state(
                 player_id, "CRITICAL_WEBSOCKET_ERROR", f"{error_type}: {error_details}", connection_id
             )
-        else:
-            # Non-critical WebSocket error, just disconnect the specific connection
-            return await self.detect_and_handle_error_state(
-                player_id, "WEBSOCKET_ERROR", f"{error_type}: {error_details}", connection_id
-            )
+        # Non-critical WebSocket error, just disconnect the specific connection
+        return await self.detect_and_handle_error_state(
+            player_id, "WEBSOCKET_ERROR", f"{error_type}: {error_details}", connection_id
+        )
 
     async def handle_authentication_error(
         self, player_id: uuid.UUID, error_type: str, error_details: str
@@ -330,7 +331,7 @@ class ConnectionErrorHandler:
             recovery_results["success"] = True
             logger.info("Recovery completed for player", player_id=player_id, recovery_results=recovery_results)
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Recovery errors unpredictable, must handle gracefully
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Recovery errors unpredictable, must handle gracefully
             error_msg = f"Error during recovery for player {player_id}: {e}"
             logger.error(error_msg, exc_info=True)
             recovery_results["errors"].append(error_msg)

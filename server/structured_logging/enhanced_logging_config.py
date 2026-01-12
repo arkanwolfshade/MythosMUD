@@ -8,6 +8,8 @@ This is the main entry point for the logging system. Implementation details
 are split across multiple modules for better maintainability.
 """
 
+# pylint: disable=too-few-public-methods  # Reason: Logging configuration classes with focused responsibility, minimal public interface
+
 import json
 import logging
 import re
@@ -63,7 +65,7 @@ _setup_enhanced_file_logging = setup_enhanced_file_logging
 logger = structlog.get_logger(__name__)
 
 
-class _LoggingState:
+class _LoggingState:  # pylint: disable=too-few-public-methods  # Reason: State container class with focused responsibility, minimal public interface
     """State container for logging initialization to avoid global statements."""
 
     initialized: bool = False

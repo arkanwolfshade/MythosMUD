@@ -40,6 +40,17 @@ class SummonCommand(BaseCommand):
     @field_validator("prototype_id")
     @classmethod
     def validate_prototype_id(cls, value: str) -> str:
+        """Validate prototype ID format.
+
+        Args:
+            value: The prototype ID to validate
+
+        Returns:
+            str: The validated and normalized prototype ID
+
+        Raises:
+            ValueError: If the prototype ID format is invalid
+        """
         candidate = value.strip()
         if not re.match(r"^[a-zA-Z0-9._-]+$", candidate):
             raise ValueError("Prototype ID must contain only letters, numbers, dots, underscores, or hyphens.")

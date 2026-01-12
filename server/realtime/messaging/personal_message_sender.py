@@ -8,6 +8,8 @@ AI Agent: Extracted from ConnectionManager to follow Single Responsibility Princ
 Personal message delivery is now a focused, independently testable component.
 """
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Message sending requires many parameters for context and message routing
+
 import uuid
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
@@ -58,6 +60,109 @@ class PersonalMessageSender:
         self.cleanup_dead_websocket = cleanup_dead_websocket_callback
         self.convert_uuids_to_strings = convert_uuids_to_strings
 
+    def _prepare_payload(self, player_id: uuid.UUID, event: dict[str, Any]) -> dict[str, Any]:
+        """Prepare and optimize the payload for sending."""
+        serializable_event = self.convert_uuids_to_strings(event)
+
+        try:
+            from ..payload_optimizer import get_payload_optimizer
+
+            optimizer = get_payload_optimizer()
+            serializable_event = optimizer.optimize_payload(serializable_event)
+        except ValueError as size_error:
+            logger.error(
+                "Payload too large to send",
+                player_id=player_id,
+                error=str(size_error),
+                event_type=event.get("event_type"),
+            )
+            serializable_event = {
+                "type": "error",
+                "error_type": "payload_too_large",
+                "message": "Message payload too large to transmit",
+                "details": {"max_size": optimizer.max_payload_size},
+            }
+        except (DatabaseError, AttributeError) as opt_error:
+            logger.warning(
+                "Payload optimization failed, using original",
+                player_id=player_id,
+                error=str(opt_error),
+            )
+
+        if event.get("event_type") == "game_state":
+            logger.info("Sending game_state event", player_id=player_id, event_data=serializable_event)
+
+        return serializable_event
+
+    async def _send_to_websocket(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: WebSocket sending requires many parameters for context and message routing
+        self,
+        player_id: uuid.UUID,
+        connection_id: str,
+        websocket: "WebSocket",
+        serializable_event: dict[str, Any],
+        delivery_status: dict[str, Any],
+    ) -> bool:
+        """Send message to a single WebSocket connection. Returns True if successful."""
+        if websocket is None:
+            delivery_status["websocket_failed"] += 1  # type: ignore[unreachable]
+            await self.cleanup_dead_websocket(player_id, connection_id)
+            return False
+
+        try:
+            from starlette.websockets import WebSocketState
+
+            ws_state = getattr(websocket, "application_state", None)
+            if ws_state == WebSocketState.DISCONNECTED:
+                delivery_status["websocket_failed"] += 1
+                await self.cleanup_dead_websocket(player_id, connection_id)
+                return False
+
+            await websocket.send_json(serializable_event)
+            delivery_status["websocket_delivered"] += 1
+            delivery_status["active_connections"] += 1
+            return True
+        except (RuntimeError, ConnectionError, WebSocketDisconnect) as ws_error:
+            error_message = str(ws_error)
+            if (
+                "close message has been sent" not in error_message.lower()
+                and "cannot call" not in error_message.lower()
+            ):
+                logger.warning(
+                    "WebSocket send failed",
+                    player_id=player_id,
+                    connection_id=connection_id,
+                    error=error_message,
+                )
+            delivery_status["websocket_failed"] += 1
+            await self.cleanup_dead_websocket(player_id, connection_id)
+            return False
+
+    async def _queue_message_if_needed(
+        self,
+        player_id: uuid.UUID,
+        serializable_event: dict[str, Any],
+        delivery_status: dict[str, Any],
+        had_connection_attempts: bool,
+    ) -> None:
+        """Queue message if no active connections."""
+        if not delivery_status["active_connections"]:
+            player_id_str = str(player_id)
+            if player_id_str not in self.message_queue.pending_messages:
+                self.message_queue.pending_messages[player_id_str] = []
+            self.message_queue.pending_messages[player_id_str].append(serializable_event)
+            logger.debug(
+                "No active connections, queued message for later delivery",
+                player_id=player_id,
+                event_type=serializable_event.get("event_type"),
+            )
+
+            if had_connection_attempts and delivery_status["websocket_failed"] > 0:
+                delivery_status["success"] = False
+            else:
+                delivery_status["success"] = True
+        else:
+            delivery_status["success"] = delivery_status["websocket_delivered"] > 0
+
     async def send_message(
         self,
         player_id: uuid.UUID,
@@ -86,116 +191,24 @@ class PersonalMessageSender:
         }
 
         try:
-            # Convert UUIDs to strings for JSON serialization
-            serializable_event = self.convert_uuids_to_strings(event)
+            serializable_event = self._prepare_payload(player_id, event)
 
-            # OPTIMIZATION: Optimize payload size (compression, size limits)
-            try:
-                from ..payload_optimizer import get_payload_optimizer
-
-                optimizer = get_payload_optimizer()
-                serializable_event = optimizer.optimize_payload(serializable_event)
-            except ValueError as size_error:
-                # Payload too large - log error and send truncated/error message
-                logger.error(
-                    "Payload too large to send",
-                    player_id=player_id,
-                    error=str(size_error),
-                    event_type=event.get("event_type"),
-                )
-                # Send error message instead
-                serializable_event = {
-                    "type": "error",
-                    "error_type": "payload_too_large",
-                    "message": "Message payload too large to transmit",
-                    "details": {"max_size": optimizer.max_payload_size},
-                }
-            except (DatabaseError, AttributeError) as opt_error:
-                # Optimization failed, but continue with original payload
-                logger.warning(
-                    "Payload optimization failed, using original",
-                    player_id=player_id,
-                    error=str(opt_error),
-                )
-
-            # Debug logging to see what's being sent
-            if event.get("event_type") == "game_state":
-                logger.info("Sending game_state event", player_id=player_id, event_data=serializable_event)
-
-            # Count total connections
             websocket_count = len(player_websockets.get(player_id, []))
             delivery_status["total_connections"] = websocket_count
 
-            # Track if we had any connection attempts (for failure detection)
             had_connection_attempts = False
 
-            # Try WebSocket connections
             if player_id in player_websockets:
-                connection_ids = player_websockets[player_id].copy()  # Copy to avoid modification during iteration
+                connection_ids = player_websockets[player_id].copy()
                 for connection_id in connection_ids:
                     if connection_id in active_websockets:
                         had_connection_attempts = True
                         websocket = active_websockets[connection_id]
-                        # Guard against None websocket (can happen during cleanup)
-                        # JUSTIFICATION: Type annotation says dict[str, WebSocket], but runtime can have None
-                        # values during cleanup/race conditions. This is defensive programming.
-                        if websocket is None:
-                            delivery_status["websocket_failed"] += 1  # type: ignore[unreachable]
-                            await self.cleanup_dead_websocket(player_id, connection_id)
-                            continue
-                        try:
-                            # Check WebSocket state before sending
-                            from starlette.websockets import WebSocketState
+                        await self._send_to_websocket(
+                            player_id, connection_id, websocket, serializable_event, delivery_status
+                        )
 
-                            ws_state = getattr(websocket, "application_state", None)
-                            if ws_state == WebSocketState.DISCONNECTED:
-                                # WebSocket already disconnected, skip and clean up
-                                delivery_status["websocket_failed"] += 1
-                                await self.cleanup_dead_websocket(player_id, connection_id)
-                                continue
-
-                            # Check if WebSocket is still open by attempting to send
-                            await websocket.send_json(serializable_event)
-                            delivery_status["websocket_delivered"] += 1
-                            delivery_status["active_connections"] += 1
-                        except (RuntimeError, ConnectionError, WebSocketDisconnect) as ws_error:
-                            # WebSocket is closed or in an invalid state
-                            error_message = str(ws_error)
-                            # Only log if it's not a simple "close message" error (expected during cleanup)
-                            if (
-                                "close message has been sent" not in error_message.lower()
-                                and "cannot call" not in error_message.lower()
-                            ):
-                                logger.warning(
-                                    "WebSocket send failed",
-                                    player_id=player_id,
-                                    connection_id=connection_id,
-                                    error=error_message,
-                                )
-                            delivery_status["websocket_failed"] += 1
-                            # Clean up the dead WebSocket connection
-                            await self.cleanup_dead_websocket(player_id, connection_id)
-                            # Continue to other connections
-            # If no active connections, queue the message for later delivery
-            if delivery_status["active_connections"] == 0:
-                player_id_str = str(player_id)
-                if player_id_str not in self.message_queue.pending_messages:
-                    self.message_queue.pending_messages[player_id_str] = []
-                self.message_queue.pending_messages[player_id_str].append(serializable_event)
-                logger.debug(
-                    "No active connections, queued message for later delivery",
-                    player_id=player_id,
-                    event_type=event.get("event_type"),
-                )
-                # Mark as successful if message was queued (will be delivered on reconnect)
-                # BUT: if we had connection attempts that failed, this is still a failure
-                if had_connection_attempts and delivery_status["websocket_failed"] > 0:
-                    delivery_status["success"] = False
-                else:
-                    delivery_status["success"] = True
-            else:
-                # Mark as successful if any delivery succeeded
-                delivery_status["success"] = delivery_status["websocket_delivered"] > 0
+            await self._queue_message_if_needed(player_id, serializable_event, delivery_status, had_connection_attempts)
 
             logger.debug("Message delivery status", player_id=player_id, delivery_status=delivery_status)
             return delivery_status

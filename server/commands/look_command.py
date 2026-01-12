@@ -5,6 +5,8 @@ This module handles the look command for examining surroundings.
 This is the main entry point that routes to specialized handlers.
 """
 
+# pylint: disable=too-many-arguments  # Reason: Look command requires many parameters for context and target resolution
+
 from typing import Any
 
 from ..alias_storage import AliasStorage
@@ -73,7 +75,7 @@ def _get_room_drops(app: Any, room_id: int, player_name: str) -> list[dict[str, 
     return room_drops
 
 
-async def _setup_look_command(
+async def _setup_look_command(  # pylint: disable=too-many-arguments  # Reason: Look command setup requires many parameters for context and validation
     request: Any, current_user: dict, player_name: str
 ) -> tuple[Any, Any, Any, Any, list[dict[str, Any]]] | None:
     """Setup and validate look command prerequisites."""
@@ -89,7 +91,7 @@ async def _setup_look_command(
     return (app, persistence, player, room, room_drops)
 
 
-async def _try_explicit_player_look(
+async def _try_explicit_player_look(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Look command requires many parameters for context and target resolution
     target: str | None,
     target_type: str | None,
     instance_number: int | None,
@@ -110,7 +112,7 @@ async def _try_explicit_player_look(
     return None
 
 
-async def _try_explicit_item_look(
+async def _try_explicit_item_look(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Look command requires many parameters for context and target resolution
     target: str | None,
     target_type: str | None,
     instance_number: int | None,
@@ -132,7 +134,7 @@ async def _try_explicit_item_look(
     return None
 
 
-async def _try_explicit_container_look(
+async def _try_explicit_container_look(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Look command requires many parameters for context and target resolution
     target: str | None,
     target_type: str | None,
     instance_number: int | None,
@@ -165,7 +167,7 @@ async def _try_explicit_container_look(
     return None
 
 
-async def _handle_implicit_target_lookup(
+async def _handle_implicit_target_lookup(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Look command requires many parameters for context and target resolution
     target: str,
     target_lower: str,
     instance_number: int | None,
@@ -212,7 +214,7 @@ async def _handle_implicit_target_lookup(
     return {"result": f"You don't see any '{target}' here."}
 
 
-async def _try_implicit_target_lookup(
+async def _try_implicit_target_lookup(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Look command requires many parameters for context and target resolution
     target: str | None,
     target_type: str | None,
     instance_number: int | None,
@@ -247,7 +249,7 @@ async def _try_direction_look(
     return None
 
 
-async def _route_look_command(
+async def _route_look_command(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Look command routing requires many parameters for context and target resolution
     command_data: dict,
     target: str | None,
     target_type: str | None,

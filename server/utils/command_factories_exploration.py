@@ -5,6 +5,8 @@ This module contains factory methods for movement and exploration commands:
 look, go, sit, stand, lie, ground.
 """
 
+# pylint: disable=too-many-return-statements  # Reason: Command factory methods require multiple return statements for early validation returns (input validation, permission checks, error handling)
+
 from typing import Literal, cast
 
 from ..exceptions import ValidationError as MythosValidationError
@@ -133,9 +135,8 @@ class ExplorationCommandFactory:
                 target=target,
                 instance_number=instance_number,
             )
-        else:
-            # Implicit target (will be resolved by priority in handler)
-            return LookCommand(target=target, instance_number=instance_number)
+        # Implicit target (will be resolved by priority in handler)
+        return LookCommand(target=target, instance_number=instance_number)
 
     @staticmethod
     def create_go_command(args: list[str]) -> GoCommand:

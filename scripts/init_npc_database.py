@@ -236,6 +236,42 @@ def init_database_schema(database_url: str, database_name: str, populate_seed: b
         return False
 
 
+def _determine_database_init_flags(args: argparse.Namespace) -> tuple[bool, bool, bool]:
+    """Determine which databases to initialize based on arguments."""
+    if args.e2e_only:
+        return True, False, False
+    elif args.unit_only:
+        return False, True, False
+    elif args.test_only:
+        return True, True, False
+    elif args.prod_only:
+        return False, False, True
+    else:
+        return True, True, True
+
+
+def _initialize_database_with_url(env: str, db_name: str, success: bool) -> bool:
+    """Initialize a database with URL checking. Returns updated success flag."""
+    npc_url = get_npc_database_url(env)
+    if npc_url:
+        return success and init_database_schema(npc_url, db_name, populate_seed=False)
+    else:
+        print(f"[WARNING] DATABASE_NPC_URL not set for {env}, skipping {db_name} database initialization")
+        return False
+
+
+def _print_final_message(success: bool) -> None:
+    """Print final success or error message and exit."""
+    if success:
+        print("\n[SUCCESS] All databases initialized successfully!")
+        print("[INFO] NPC schema is now managed via PostgreSQL SQL files in db/schema/")
+        sys.exit(0)
+    else:
+        print("\n[ERROR] Some databases failed to initialize!")
+        print("[INFO] Ensure DATABASE_NPC_URL (or DATABASE_URL) is set to a PostgreSQL URL")
+        sys.exit(1)
+
+
 def main():
     """Main function to initialize NPC database schema."""
     parser = argparse.ArgumentParser(description="Initialize NPC database schema in PostgreSQL")
@@ -250,67 +286,20 @@ def main():
     print("[INFO] NPC databases are now PostgreSQL databases managed via db/schema/ SQL files")
     print("[INFO] This script applies the NPC schema from db/schema/04_runtime_tables.sql\n")
 
-    # Determine which databases to initialize
-    if args.e2e_only:
-        init_e2e = True
-        init_unit = False
-        init_prod = False
-    elif args.unit_only:
-        init_e2e = False
-        init_unit = True
-        init_prod = False
-    elif args.test_only:
-        init_e2e = True
-        init_unit = True
-        init_prod = False
-    elif args.prod_only:
-        init_e2e = False
-        init_unit = False
-        init_prod = True
-    else:
-        # Default: initialize all
-        init_e2e = True
-        init_unit = True
-        init_prod = True
+    init_e2e, init_unit, init_prod = _determine_database_init_flags(args)
 
     success = True
 
-    # Initialize databases using DATABASE_NPC_URL from environment
-    # Note: In the new system, NPCs are typically in the same database or a separate NPC database
-    # This script will use DATABASE_NPC_URL if set, otherwise fall back to DATABASE_URL
-
     if init_e2e:
-        npc_url = get_npc_database_url("e2e")
-        if npc_url:
-            success &= init_database_schema(npc_url, "e2e_test", populate_seed=False)
-        else:
-            print("[WARNING] DATABASE_NPC_URL not set for e2e, skipping e2e database initialization")
-            success = False
+        success = _initialize_database_with_url("e2e", "e2e_test", success)
 
     if init_unit:
-        npc_url = get_npc_database_url("unit")
-        if npc_url:
-            success &= init_database_schema(npc_url, "unit_test", populate_seed=False)
-        else:
-            print("[WARNING] DATABASE_NPC_URL not set for unit, skipping unit database initialization")
-            success = False
+        success = _initialize_database_with_url("unit", "unit_test", success)
 
     if init_prod:
-        npc_url = get_npc_database_url("prod")
-        if npc_url:
-            success &= init_database_schema(npc_url, "production", populate_seed=False)
-        else:
-            print("[WARNING] DATABASE_NPC_URL not set for production, skipping production database initialization")
-            success = False
+        success = _initialize_database_with_url("prod", "production", success)
 
-    if success:
-        print("\n[SUCCESS] All databases initialized successfully!")
-        print("[INFO] NPC schema is now managed via PostgreSQL SQL files in db/schema/")
-        sys.exit(0)
-    else:
-        print("\n[ERROR] Some databases failed to initialize!")
-        print("[INFO] Ensure DATABASE_NPC_URL (or DATABASE_URL) is set to a PostgreSQL URL")
-        sys.exit(1)
+    _print_final_message(success)
 
 
 if __name__ == "__main__":

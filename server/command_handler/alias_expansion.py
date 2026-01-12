@@ -5,6 +5,8 @@ This module handles alias resolution, expansion, and safety checks
 including cycle detection to prevent infinite loops.
 """
 
+# pylint: disable=too-many-arguments  # Reason: Alias expansion requires many parameters for context and expansion logic
+
 from typing import TYPE_CHECKING, Any
 
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -147,7 +149,7 @@ def validate_expanded_command(
     return True, None
 
 
-async def handle_expanded_command(
+async def handle_expanded_command(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Alias expansion requires many parameters for context and expansion logic
     command_line: str,
     current_user: dict,
     request: "Request",

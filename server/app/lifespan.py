@@ -39,7 +39,7 @@ __all__ = ["lifespan", "get_current_tick", "reset_current_tick"]
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI):  # pylint: disable=too-many-statements  # Reason: Application lifespan manager legitimately requires many statements for comprehensive startup and shutdown orchestration
     """
     Application lifespan manager.
 

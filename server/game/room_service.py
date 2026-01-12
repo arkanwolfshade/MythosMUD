@@ -56,19 +56,19 @@ class RoomService:
 
             logger.debug("Room found by ID", room_id=room_id, room_name=room_dict.get("name", "Unknown"))
             return room_dict
-        else:
-            # Fallback to direct persistence call
-            room = self.persistence.get_room_by_id(room_id)
-            if room is None:
-                logger.debug("Room not found by ID", room_id=room_id)
-                return None
 
-            # Room is a Room object, convert to dict
-            room_name = room.name if hasattr(room, "name") else "Unknown"
-            logger.debug("Room found by ID", room_id=room_id, room_name=room_name)
-            return room.to_dict() if hasattr(room, "to_dict") else {"id": room_id, "name": room_name}
+        # Fallback to direct persistence call
+        room = self.persistence.get_room_by_id(room_id)
+        if room is None:
+            logger.debug("Room not found by ID", room_id=room_id)
+            return None
 
-    def get_room_by_name(self, room_name: str) -> dict[str, Any] | None:
+        # Room is a Room object, convert to dict
+        room_name = room.name if hasattr(room, "name") else "Unknown"
+        logger.debug("Room found by ID", room_id=room_id, room_name=room_name)
+        return room.to_dict() if hasattr(room, "to_dict") else {"id": room_id, "name": room_name}
+
+    def get_room_by_name(self, room_name: str) -> dict[str, Any] | None:  # pylint: disable=useless-return  # Reason: Explicit return None is clearer than implicit return for this placeholder function
         """
         Get room information by room name.
 
@@ -273,32 +273,30 @@ class RoomService:
                 npc_count=len(npcs) if hasattr(room, "get_npcs") else 0,
             )
             return occupants
+
+        # If room_cache is not available, fall back to persistence
+        logger.debug("Room cache not available, falling back to persistence", room_id=room_id)
+        room_obj = self.persistence.get_room_by_id(room_id)
+        if not room_obj:
+            logger.debug("Room not found for occupant lookup", room_id=room_id)
+            return []
+
+        # Extract occupants from room object
+        # Note: get_room_by_id returns Room | None, so after None check, room_obj is always a Room object
+        if hasattr(room_obj, "get_players"):
+            players = room_obj.get_players()
+            npcs = room_obj.get_npcs() if hasattr(room_obj, "get_npcs") else []
+            occupants = players + npcs
         else:
-            # Fallback to direct persistence call
-            # Room object has methods for getting occupants, no dict conversion needed
-            room = self.persistence.get_room_by_id(room_id)  # type: ignore[assignment]  # Reason: get_room_by_id returns Room | None, but None is checked immediately after assignment. Type ignore needed due to SQLAlchemy type inference limitations.
-            if not room:
-                logger.debug("Room not found for occupant lookup", room_id=room_id)
-                return []
+            # If it's a dictionary, check for occupants field (defensive check, unreachable in practice)
+            occupants = room_obj.get("occupants", []) if isinstance(room_obj, dict) else []
 
-            # AI Agent: CRITICAL FIX - Include NPCs in fallback path to match cached path behavior
-            #           Previously only returned players, causing NPCs to not appear when cache unavailable
-            if hasattr(room, "get_players"):
-                players = room.get_players()
-                npcs = room.get_npcs() if hasattr(room, "get_npcs") else []
-                occupants = players + npcs
-            else:
-                # If it's a dictionary, check for occupants field
-                occupants = room.get("occupants", [])
-
-            logger.debug(
-                "Room occupants retrieved (fallback path)",
-                room_id=room_id,
-                occupant_count=len(occupants),
-                player_count=len(players) if hasattr(room, "get_players") else 0,
-                npc_count=len(npcs) if hasattr(room, "get_npcs") else 0,
-            )
-            return occupants
+        logger.debug(
+            "Room occupants retrieved from persistence",
+            room_id=room_id,
+            occupant_count=len(occupants),
+        )
+        return occupants
 
     async def validate_player_in_room(self, player_id: str, room_id: str) -> bool:
         """
@@ -329,24 +327,26 @@ class RoomService:
 
             logger.debug("Player room validation", player_id=player_id, room_id=room_id, is_in_room=is_in_room)
             return is_in_room
-        else:
-            # Fallback to direct persistence call
-            # Room object has methods for validation, no dict conversion needed
-            room = self.persistence.get_room_by_id(room_id)  # type: ignore[assignment]  # Reason: get_room_by_id returns Room | None, but None is checked immediately after assignment. Type ignore needed due to SQLAlchemy type inference limitations.
-            if not room:
-                logger.debug("Room not found for player validation", room_id=room_id)
-                return False
 
-            # If it's a Room object, use its method
-            if hasattr(room, "has_player"):
-                is_in_room = room.has_player(player_id)
-            else:
-                # If it's a dictionary, check occupants field
-                occupants = room.get("occupants", [])
-                is_in_room = player_id in occupants
+        # If room_cache is not available, fall back to persistence
+        logger.debug("Room cache not available, falling back to persistence", player_id=player_id, room_id=room_id)
+        room_obj = self.persistence.get_room_by_id(room_id)
+        if not room_obj:
+            logger.debug("Room not found for player validation", player_id=player_id, room_id=room_id)
+            return False
 
-            logger.debug("Player room validation", player_id=player_id, room_id=room_id, is_in_room=is_in_room)
-            return is_in_room
+        # Check if player is in room using room object methods
+        # Note: get_room_by_id returns Room | None, so after None check, room_obj is always a Room object
+        # Room objects always have has_player method, so we can call it directly
+        is_in_room = room_obj.has_player(player_id)
+
+        logger.debug(
+            "Player validation result from persistence",
+            player_id=player_id,
+            room_id=room_id,
+            is_in_room=is_in_room,
+        )
+        return is_in_room
 
     async def get_room_exits(self, room_id: str) -> dict[str, str]:
         """

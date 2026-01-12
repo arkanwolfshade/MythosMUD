@@ -62,7 +62,7 @@ class PayloadOptimizer:
         try:
             json_str = json.dumps(payload, separators=(",", ":"))
             return len(json_str.encode("utf-8"))
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Payload size calculation errors unpredictable, must return 0
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Payload size calculation errors unpredictable, must return 0
             logger.warning("Error calculating payload size", error=str(e))
             return 0
 
@@ -87,7 +87,7 @@ class PayloadOptimizer:
                 "compressed_size": len(compressed),
                 "compression_ratio": len(compressed) / len(json_str.encode("utf-8")) if json_str else 0,
             }
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Payload compression errors unpredictable, must return original payload
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Payload compression errors unpredictable, must return original payload
             logger.error("Error compressing payload", error=str(e), exc_info=True)
             return payload
 
@@ -129,25 +129,21 @@ class PayloadOptimizer:
                         compression_ratio=compressed.get("compression_ratio", 0),
                     )
                     return compressed
-                else:
-                    logger.error(
-                        "Payload too large even after compression",
-                        original_size=size,
-                        compressed_size=compressed_size,
-                        max_compressed_size=self.max_compressed_size,
-                    )
-                    raise ValueError(
-                        f"Payload too large: {compressed_size} bytes (max: {self.max_compressed_size} bytes)"
-                    )
-            else:
-                # Payload too large and below compression threshold - truncate or error
                 logger.error(
-                    "Payload exceeds maximum size and is below compression threshold",
-                    payload_size=size,
-                    max_size=self.max_payload_size,
-                    compression_threshold=self.compression_threshold,
+                    "Payload too large even after compression",
+                    original_size=size,
+                    compressed_size=compressed_size,
+                    max_compressed_size=self.max_compressed_size,
                 )
-                raise ValueError(f"Payload too large: {size} bytes (max: {self.max_payload_size} bytes)")
+                raise ValueError(f"Payload too large: {compressed_size} bytes (max: {self.max_compressed_size} bytes)")
+            # Payload too large and below compression threshold - truncate or error
+            logger.error(
+                "Payload exceeds maximum size and is below compression threshold",
+                payload_size=size,
+                max_size=self.max_payload_size,
+                compression_threshold=self.compression_threshold,
+            )
+            raise ValueError(f"Payload too large: {size} bytes (max: {self.max_payload_size} bytes)")
 
         # Apply compression if above threshold
         if size > self.compression_threshold or force_compression:
@@ -200,7 +196,7 @@ class PayloadOptimizer:
                 "changes": changes,
                 "timestamp": full_payload.get("timestamp"),
             }
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Incremental update creation errors unpredictable, must fallback to full payload
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Incremental update creation errors unpredictable, must fallback to full payload
             logger.error("Error creating incremental update", error=str(e), exc_info=True)
             # Fallback to full payload on error
             return full_payload

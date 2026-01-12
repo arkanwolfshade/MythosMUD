@@ -6,6 +6,8 @@ Cthulhu Mythos-themed error messages that maintain the atmosphere
 while providing clear feedback to players.
 """
 
+# pylint: disable=too-many-return-statements  # Reason: Combat validators require multiple return statements for different validation scenarios and error condition checks
+
 import re
 from typing import Any
 
@@ -168,7 +170,7 @@ class CombatValidator:
             # All validations passed
             return True, None, None
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Validation errors unpredictable, must return error message
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Validation errors unpredictable, must return error message
             logger.error("Error in combat command validation", error=str(e))
             return False, "The cosmic forces have rejected your command.", None
 
@@ -343,18 +345,15 @@ The cosmic forces will guide your hand in battle, but choose your targets wisely
         """Get a thematic combat status message."""
         if combat_state.get("in_combat", False):
             return f"{player_name} is locked in mortal combat with {combat_state.get('target', 'unknown')}."
-        else:
-            return f"{player_name} stands ready for battle, their eyes scanning for threats."
+        return f"{player_name} stands ready for battle, their eyes scanning for threats."
 
     def get_combat_result_message(self, action: str, target: str, success: bool, damage: int = 0) -> str:
         """Get a thematic combat result message."""
         if success:
             if damage > 0:
                 return f"You {action} {target} for {damage} damage! The cosmic forces favor your assault."
-            else:
-                return f"You {action} {target}! The ancient ones watch your battle with interest."
-        else:
-            return f"Your {action} against {target} fails! The cosmic forces mock your feeble attempt."
+            return f"You {action} {target}! The ancient ones watch your battle with interest."
+        return f"Your {action} against {target} fails! The cosmic forces mock your feeble attempt."
 
     def get_combat_death_message(self, target: str, killer: str) -> str:
         """Get a thematic death message."""

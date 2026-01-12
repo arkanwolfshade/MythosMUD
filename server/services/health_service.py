@@ -9,6 +9,8 @@ systems is essential for maintaining the delicate balance between order
 and chaos in our digital realm.
 """
 
+# pylint: disable=too-many-instance-attributes  # Reason: Health service requires many state tracking attributes
+
 import time
 from datetime import UTC, datetime
 from typing import Any
@@ -69,16 +71,14 @@ class HealthService:
             process = psutil.Process()
             memory_info = process.memory_info()
             return memory_info.rss / 1024 / 1024  # Convert to MB
-        except Exception as e:  # pylint: disable=broad-exception-caught  # System monitoring errors unpredictable, return default
-            logger.warning("Failed to get memory usage", error=str(e))
+        except Exception:  # pylint: disable=broad-exception-caught  # System monitoring errors unpredictable, return default  # noqa: B904            logger.warning("Failed to get memory usage", error=str(e))
             return 0.0
 
     def get_cpu_usage(self) -> float:
         """Get current CPU usage percentage."""
         try:
             return psutil.cpu_percent(interval=0.1)
-        except Exception as e:  # pylint: disable=broad-exception-caught  # System monitoring errors unpredictable, return default
-            logger.warning("Failed to get CPU usage", error=str(e))
+        except Exception:  # pylint: disable=broad-exception-caught  # System monitoring errors unpredictable, return default  # noqa: B904            logger.warning("Failed to get CPU usage", error=str(e))
             return 0.0
 
     def check_database_health(self) -> dict:
@@ -113,7 +113,7 @@ class HealthService:
                         # rooms = asyncio.run(room_service.list_rooms("default", "default"))
                         # Skip actual query for health check to avoid requiring parameters
                         pass
-                    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Database query errors unpredictable, defensive logging
+                    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Database query errors unpredictable, defensive logging
                         logger.debug("Failed to list rooms for health check", error=str(e))
                         rooms = []
 
@@ -132,7 +132,7 @@ class HealthService:
                 "connection_count": len(rooms) if rooms else 0,
                 "last_query_time_ms": query_time_ms,
             }
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Database health check errors unpredictable, must return fallback
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Database health check errors unpredictable, must return fallback
             logger.warning("Database health check failed", error=str(e))
             return {
                 "status": HealthStatus.UNHEALTHY,
@@ -180,7 +180,7 @@ class HealthService:
                 "max_connections": max_connections,
                 "connection_rate_per_minute": connection_rate,
             }
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Connection health check errors unpredictable, must return fallback
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Connection health check errors unpredictable, must return fallback
             logger.warning("Connection health check failed", error=str(e))
             return {
                 "status": HealthStatus.UNHEALTHY,
@@ -264,18 +264,18 @@ class HealthService:
     def determine_overall_status(self, components: HealthComponents) -> HealthStatus:
         """Determine overall system health status."""
         # If any component is unhealthy, overall status is unhealthy
-        if (
-            components.server.status == HealthStatus.UNHEALTHY
-            or components.database.status == HealthStatus.UNHEALTHY
-            or components.connections.status == HealthStatus.UNHEALTHY
+        if HealthStatus.UNHEALTHY in (
+            components.server.status,
+            components.database.status,
+            components.connections.status,
         ):
             return HealthStatus.UNHEALTHY
 
         # If any component is degraded, overall status is degraded
-        if (
-            components.server.status == HealthStatus.DEGRADED
-            or components.database.status == HealthStatus.DEGRADED
-            or components.connections.status == HealthStatus.DEGRADED
+        if HealthStatus.DEGRADED in (
+            components.server.status,
+            components.database.status,
+            components.connections.status,
         ):
             return HealthStatus.DEGRADED
 
@@ -329,7 +329,7 @@ class HealthService:
 
 
 # Global health service instance
-_health_service: HealthService | None = None
+_health_service: HealthService | None = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
 
 
 def get_health_service(connection_manager=None) -> HealthService:

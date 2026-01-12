@@ -92,7 +92,7 @@ class NATSMessageBroker:
             for subscription_id in list(self._subscriptions.keys()):
                 try:
                     await self.unsubscribe(subscription_id)
-                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Unsubscribe errors unpredictable, must handle gracefully
+                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Unsubscribe errors unpredictable, must handle gracefully
                     self._logger.warning("Error unsubscribing", subscription_id=subscription_id, error=str(e))
 
             # Close client connection
@@ -167,7 +167,7 @@ class NATSMessageBroker:
                     message_dict = json.loads(msg.data.decode("utf-8"))
                     # Call user handler
                     await handler(message_dict)
-                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Message handler errors unpredictable, must handle gracefully
+                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Message handler errors unpredictable, must handle gracefully
                     self._logger.error(
                         "Error processing NATS message", subject=msg.subject, error=str(e), exc_info=True
                     )

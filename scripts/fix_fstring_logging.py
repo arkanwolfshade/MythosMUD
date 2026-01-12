@@ -64,6 +64,70 @@ def create_structured_log_message(fstring_content: str, variables: list[str]) ->
     return message, ", ".join(params)
 
 
+def _validate_file(file_path: Path) -> bool:
+    """Validate that file exists and is a Python file."""
+    return file_path.exists() and file_path.suffix == ".py"
+
+
+def _read_file_content(file_path: Path) -> str | None:
+    """Read file content with error handling."""
+    try:
+        with open(file_path, encoding="utf-8") as f:
+            return f.read()
+    except (UnicodeDecodeError, FileNotFoundError):
+        return None
+
+
+def _handle_no_variables_case(method: str, fstring_content: str) -> str:
+    """Handle case where f-string has no variables."""
+    return f'logger.{method}("{fstring_content}")'
+
+
+def _build_structured_params(variables: list[str]) -> list[str]:
+    """Build structured parameters list from variables."""
+    structured_params = []
+    for var in variables:
+        if "[" in var and "]" in var:
+            clean_var = var.split("[")[0]
+            structured_params.append(f"{clean_var}={var}")
+        else:
+            structured_params.append(f"{var}={var}")
+    return structured_params
+
+
+def _clean_message(message: str, variables: list[str]) -> str:
+    """Clean message by removing variable placeholders."""
+    clean_message = message
+    for var in variables:
+        clean_message = clean_message.replace(f"{{{var}}}", f"{{{var}}}")
+    return clean_message
+
+
+def _create_replacement_for_fstring(match: re.Match, fixes_applied_ref: list[int]) -> str:
+    """Create replacement string for f-string logging call."""
+    method = match.group(1)
+    fstring_content = match.group(2)
+
+    variables = extract_variables_from_fstring(fstring_content)
+
+    if not variables:
+        return _handle_no_variables_case(method, fstring_content)
+
+    message, _ = create_structured_log_message(fstring_content, variables)
+    clean_message = _clean_message(message, variables)
+    structured_params = _build_structured_params(variables)
+
+    fixes_applied_ref[0] += 1
+    return f'logger.{method}("{clean_message}", {", ".join(structured_params)})'
+
+
+def _write_file_if_changed(file_path: Path, original_content: str, new_content: str) -> None:
+    """Write file if content has changed."""
+    if new_content != original_content:
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write(new_content)
+
+
 def fix_fstring_logging_in_file(file_path: Path) -> int:
     """
     Fix f-string logging violations in a single file.
@@ -74,64 +138,25 @@ def fix_fstring_logging_in_file(file_path: Path) -> int:
     Returns:
         Number of violations fixed
     """
-    if not file_path.exists() or file_path.suffix != ".py":
+    if not _validate_file(file_path):
         return 0
 
-    try:
-        with open(file_path, encoding="utf-8") as f:
-            content = f.read()
-    except (UnicodeDecodeError, FileNotFoundError):
+    content = _read_file_content(file_path)
+    if content is None:
         return 0
 
     original_content = content
-    fixes_applied = 0
+    fixes_applied = [0]
 
-    # Pattern to match logger calls with f-strings
     fstring_pattern = re.compile(r'logger\.(info|debug|warning|error|critical|exception)\s*\(\s*f["\']([^"\']*)["\']')
 
-    def replace_fstring_logging(match):
-        nonlocal fixes_applied
-        method = match.group(1)
-        fstring_content = match.group(2)
+    def replace_fstring_logging(match: re.Match) -> str:
+        return _create_replacement_for_fstring(match, fixes_applied)
 
-        # Extract variables from the f-string
-        variables = extract_variables_from_fstring(fstring_content)
-
-        if not variables:
-            # No variables found, just convert to regular string
-            return f'logger.{method}("{fstring_content}")'
-
-        # Create structured logging
-        message, params = create_structured_log_message(fstring_content, variables)
-
-        # Clean up the message by removing variable placeholders
-        clean_message = message
-        for var in variables:
-            clean_message = clean_message.replace(f"{{{var}}}", f"{{{var}}}")
-
-        # For now, create a simple structured message
-        # This is a simplified approach - manual review needed for complex cases
-        structured_params = []
-        for var in variables:
-            if "[" in var and "]" in var:
-                # Handle dict access
-                clean_var = var.split("[")[0]
-                structured_params.append(f"{clean_var}={var}")
-            else:
-                structured_params.append(f"{var}={var}")
-
-        fixes_applied += 1
-        return f'logger.{method}("{clean_message}", {", ".join(structured_params)})'
-
-    # Apply the fixes
     new_content = fstring_pattern.sub(replace_fstring_logging, content)
+    _write_file_if_changed(file_path, original_content, new_content)
 
-    # Only write if changes were made
-    if new_content != original_content:
-        with open(file_path, "w", encoding="utf-8") as f:
-            f.write(new_content)
-
-    return fixes_applied
+    return fixes_applied[0]
 
 
 def main():

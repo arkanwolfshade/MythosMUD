@@ -86,7 +86,7 @@ class NPCEventReaction:
 
         try:
             return self.condition(event, npc_context)
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Reaction condition errors unpredictable, must return False
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Reaction condition errors unpredictable, must return False
             logger.error("Error checking reaction condition", event_type=event.event_type, error=str(e))
             return False
 
@@ -108,7 +108,7 @@ class NPCEventReaction:
             self.last_triggered = time.time()
             self.trigger_count += 1
             return self.action(event, npc_context)
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Reaction action errors unpredictable, must return False
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Reaction action errors unpredictable, must return False
             logger.error("Error executing reaction action", event_type=event.event_type, error=str(e))
             return False
 
@@ -260,7 +260,7 @@ class NPCEventReactionSystem:
             # For now, return a basic context
             # In a real implementation, this would query the NPC system
             return {"npc_id": npc_id, "current_room": "unknown", "is_alive": True, "stats": {}, "behavior_config": {}}
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC context retrieval errors unpredictable, must return None
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC context retrieval errors unpredictable, must return None
             logger.error("Error getting NPC context", npc_id=npc_id, error=str(e))
             return None
 

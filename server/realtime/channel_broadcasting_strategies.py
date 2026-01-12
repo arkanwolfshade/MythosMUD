@@ -7,6 +7,8 @@ and extensible approach. As noted in the restricted archives, this pattern provi
 O(1) lookup and eliminates the need for repetitive conditional logic.
 """
 
+# pylint: disable=too-few-public-methods,too-many-arguments  # Reason: Strategy classes have focused responsibility with minimal public interface, and broadcast methods require many parameters
+
 import uuid
 from abc import ABC, abstractmethod
 
@@ -19,7 +21,7 @@ class ChannelBroadcastingStrategy(ABC):
     """Abstract base class for channel broadcasting strategies."""
 
     @abstractmethod
-    async def broadcast(
+    async def broadcast(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Broadcasting requires many parameters for context and message routing
         self,
         chat_event: dict,
         room_id: str,
@@ -41,7 +43,7 @@ class ChannelBroadcastingStrategy(ABC):
         """
 
 
-class RoomBasedChannelStrategy(ChannelBroadcastingStrategy):
+class RoomBasedChannelStrategy(ChannelBroadcastingStrategy):  # pylint: disable=too-few-public-methods  # Reason: Strategy class with focused responsibility, minimal public interface
     """Strategy for room-based channels (say, local, emote, pose)."""
 
     def __init__(self, channel_type: str):
@@ -53,7 +55,7 @@ class RoomBasedChannelStrategy(ChannelBroadcastingStrategy):
         """
         self.channel_type = channel_type
 
-    async def broadcast(
+    async def broadcast(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Broadcasting requires many parameters for context and message routing
         self,
         chat_event: dict,
         room_id: str,
@@ -79,10 +81,10 @@ class RoomBasedChannelStrategy(ChannelBroadcastingStrategy):
             logger.warning("Room-based message missing room_id")
 
 
-class GlobalChannelStrategy(ChannelBroadcastingStrategy):
+class GlobalChannelStrategy(ChannelBroadcastingStrategy):  # pylint: disable=too-few-public-methods  # Reason: Strategy class with focused responsibility, minimal public interface
     """Strategy for global channel broadcasting."""
 
-    async def broadcast(
+    async def broadcast(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Broadcasting requires many parameters for context and message routing
         self,
         chat_event: dict,
         room_id: str,
@@ -99,10 +101,10 @@ class GlobalChannelStrategy(ChannelBroadcastingStrategy):
         logger.debug("Broadcasted global message", sender_id=sender_id)
 
 
-class PartyChannelStrategy(ChannelBroadcastingStrategy):
+class PartyChannelStrategy(ChannelBroadcastingStrategy):  # pylint: disable=too-few-public-methods  # Reason: Strategy class with focused responsibility, minimal public interface
     """Strategy for party channel broadcasting."""
 
-    async def broadcast(
+    async def broadcast(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Broadcasting requires many parameters for context and message routing
         self,
         chat_event: dict,
         room_id: str,
@@ -119,10 +121,10 @@ class PartyChannelStrategy(ChannelBroadcastingStrategy):
             logger.warning("Party message missing party_id")
 
 
-class WhisperChannelStrategy(ChannelBroadcastingStrategy):
+class WhisperChannelStrategy(ChannelBroadcastingStrategy):  # pylint: disable=too-few-public-methods  # Reason: Strategy class with focused responsibility, minimal public interface
     """Strategy for whisper channel broadcasting."""
 
-    async def broadcast(
+    async def broadcast(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Broadcasting requires many parameters for context and message routing
         self,
         chat_event: dict,
         room_id: str,
@@ -148,7 +150,7 @@ class WhisperChannelStrategy(ChannelBroadcastingStrategy):
             logger.warning("Whisper message missing target_player_id")
 
 
-class SystemAdminChannelStrategy(ChannelBroadcastingStrategy):
+class SystemAdminChannelStrategy(ChannelBroadcastingStrategy):  # pylint: disable=too-few-public-methods  # Reason: Strategy class with focused responsibility, minimal public interface
     """Strategy for system/admin channel broadcasting."""
 
     def __init__(self, channel_type: str):
@@ -160,7 +162,7 @@ class SystemAdminChannelStrategy(ChannelBroadcastingStrategy):
         """
         self.channel_type = channel_type
 
-    async def broadcast(
+    async def broadcast(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Broadcasting requires many parameters for context and message routing
         self,
         chat_event: dict,
         room_id: str,
@@ -177,7 +179,7 @@ class SystemAdminChannelStrategy(ChannelBroadcastingStrategy):
         logger.debug("Broadcasted message", channel_type=self.channel_type, sender_id=sender_id)
 
 
-class UnknownChannelStrategy(ChannelBroadcastingStrategy):
+class UnknownChannelStrategy(ChannelBroadcastingStrategy):  # pylint: disable=too-few-public-methods  # Reason: Strategy class with focused responsibility, minimal public interface
     """Strategy for unknown channel types."""
 
     def __init__(self, channel_type: str):
@@ -189,7 +191,7 @@ class UnknownChannelStrategy(ChannelBroadcastingStrategy):
         """
         self.channel_type = channel_type
 
-    async def broadcast(
+    async def broadcast(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Broadcasting requires many parameters for context and message routing
         self,
         chat_event: dict,
         room_id: str,
