@@ -114,7 +114,7 @@ class ActiveLucidityService:
         elif encounter_count >= self.ACCLIMATION_THRESHOLD:
             half = profile.repeat / 2
             half_value = math.trunc(half)
-            if half_value == 0 and profile.repeat < 0:
+            if not half_value and profile.repeat < 0:
                 half_value = -1
             delta = half_value
         else:

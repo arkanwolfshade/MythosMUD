@@ -8,6 +8,10 @@ As noted in the Pnakotic Manuscripts, the transmission of forbidden knowledge
 must reach all who bear witness to the cosmic horror unfolding.
 """
 
+# pylint: disable=too-many-lines  # Reason: Combat messaging integration requires extensive integration logic for comprehensive combat message broadcasting
+
+# pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Messaging integration requires many parameters for context and message routing
+
 from typing import Any
 
 from server.realtime.envelope import build_event

@@ -167,7 +167,7 @@ class ValidationError(MythosMUDError):
         self,
         message: str,
         context: ErrorContext | None = None,
-        field_name: str | None = None,  # pylint: disable=redefined-outer-name  # Renamed to avoid shadowing dataclasses.field
+        field_name: str | None = None,  # pylint: disable=redefined-outer-name  # noqa: F811  # Renamed to avoid shadowing dataclasses.field
         value: Any | None = None,
         **kwargs: Any,
     ) -> None:
@@ -335,15 +335,14 @@ def handle_exception(exc: Exception, context: ErrorContext | None = None) -> Myt
     # Convert common exceptions to MythosMUD errors
     if isinstance(exc, ValueError | TypeError):
         return ValidationError(str(exc), context, details={"original_type": type(exc).__name__})
-    elif isinstance(exc, FileNotFoundError):
+    if isinstance(exc, FileNotFoundError):
         return ResourceNotFoundError(str(exc), context, details={"original_type": type(exc).__name__})
-    elif isinstance(exc, ConnectionError | TimeoutError):
+    if isinstance(exc, ConnectionError | TimeoutError):
         return NetworkError(str(exc), context, details={"original_type": type(exc).__name__})
-    elif isinstance(exc, OSError):
+    if isinstance(exc, OSError):
         # OSError is a parent of FileNotFoundError, so check it after FileNotFoundError
         return ResourceNotFoundError(str(exc), context, details={"original_type": type(exc).__name__})
-    else:
-        # Generic error for unknown exceptions
-        return MythosMUDError(
-            str(exc), context, details={"original_type": type(exc).__name__, "traceback": traceback.format_exc()}
-        )
+    # Generic error for unknown exceptions
+    return MythosMUDError(
+        str(exc), context, details={"original_type": type(exc).__name__, "traceback": traceback.format_exc()}
+    )

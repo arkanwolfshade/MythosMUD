@@ -2,6 +2,8 @@
 SQLAlchemy models for world data (zones, subzones, rooms, and links).
 """
 
+# pylint: disable=too-few-public-methods  # Reason: SQLAlchemy models are data classes, no instance methods needed
+
 from sqlalchemy import Boolean, CheckConstraint, ForeignKey, Numeric, Text, UniqueConstraint
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship

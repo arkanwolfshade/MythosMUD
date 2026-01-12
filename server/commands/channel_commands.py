@@ -19,44 +19,29 @@ logger = get_logger(__name__)
 VALID_CHANNELS = {"local", "global", "whisper", "system"}
 
 
-async def handle_channel_command(
-    command_data: dict, current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
-) -> dict[str, str]:
-    """
-    Handle the channel command for switching channels or setting default channel.
-
-    Usage:
-        /channel <channel_name> - Switch to channel (UI operation, but can set default)
-        /channel default <channel_name> - Set default channel
-
-    Args:
-        command_data: Command data dictionary containing validated command information
-        current_user: Current user information
-        request: FastAPI request object
-        _alias_storage: Alias storage instance (unused, required by command handler interface)
-        player_name: Player name for logging
-
-    Returns:
-        dict: Channel command result
-    """
-    logger.debug("Processing channel command", player_name=player_name, command_data=command_data)
-
+async def _get_persistence_and_player(
+    request: Any, current_user: dict, player_name: str
+) -> tuple[Any, Any] | tuple[None, None]:
+    """Get persistence and player. Returns (persistence, player) or (None, None) if not found."""
     app = getattr(request, "app", None)
     persistence = getattr(app.state, "persistence", None) if app else None
     if not persistence:
         logger.warning("Channel command failed - no persistence", player_name=player_name)
-        return {"result": "Channel preferences are not available."}
+        return None, None
 
     username = get_username_from_user(current_user)
     player = await persistence.get_player_by_name(username)
     if not player:
         logger.warning("Channel command failed - player not found", player_name=player_name, username=username)
-        return {"result": "Player not found."}
+        return None, None
 
-    # Extract channel from command_data (fields should be extracted from parsed_command)
+    return persistence, player
+
+
+def _extract_channel_from_command(command_data: dict, player_name: str) -> str | None:
+    """Extract channel name from command_data. Returns channel name or None."""
     channel = command_data.get("channel") or command_data.get("action")
 
-    # Fallback: try to get from parsed_command if fields weren't extracted
     if not channel:
         parsed_cmd = command_data.get("parsed_command")
         if parsed_cmd:
@@ -85,46 +70,88 @@ async def handle_channel_command(
             player_name=player_name,
             command_data_keys=list(command_data.keys()),
         )
-        return {"result": "Usage: /channel <channel_name> or /channel default <channel_name>"}
+        return None
 
-    channel = channel.lower().strip()
+    return channel.lower().strip()
 
-    # Handle "default" action
-    if channel == "default":
-        default_channel = command_data.get("action") or command_data.get("channel")
-        if not default_channel:
-            return {"result": "Usage: /channel default <channel_name>"}
-        default_channel = default_channel.lower().strip()
-        if default_channel not in VALID_CHANNELS:
-            return {"result": f"Invalid channel. Valid channels: {', '.join(sorted(VALID_CHANNELS))}"}
 
-        # Set default channel
-        async for session in get_async_session():
-            try:
-                prefs_service = PlayerPreferencesService()
-                result = await prefs_service.update_default_channel(session, player.player_id, default_channel)
-                await session.commit()
+async def _handle_default_channel_setting(command_data: dict, player: Any, player_name: str) -> dict[str, str] | None:
+    """Handle setting default channel. Returns result dict or None if not a default command."""
+    default_channel = command_data.get("action") or command_data.get("channel")
+    if not default_channel:
+        return {"result": "Usage: /channel default <channel_name>"}
 
-                if result.get("success"):
-                    logger.info("Default channel updated", player_name=player_name, channel=default_channel)
-                    return {"result": f"Default channel set to {default_channel}."}
-                else:
-                    error = result.get("error", "Unknown error")
-                    logger.warning("Failed to update default channel", player_name=player_name, error=error)
-                    return {"result": f"Error setting default channel: {error}"}
-            except SQLAlchemyError as e:
-                await session.rollback()
-                logger.error("Error updating default channel", player_name=player_name, error=str(e))
-                return {"result": f"Error setting default channel: {str(e)}"}
-
-        return {"result": "Error: Could not access database."}
-
-    # Validate channel name
-    if channel not in VALID_CHANNELS:
+    default_channel = default_channel.lower().strip()
+    if default_channel not in VALID_CHANNELS:
         return {"result": f"Invalid channel. Valid channels: {', '.join(sorted(VALID_CHANNELS))}"}
 
-    # For now, just acknowledge the channel switch (UI handles the actual switching)
-    # In the future, this could set the default channel as well
+    async for session in get_async_session():
+        try:
+            prefs_service = PlayerPreferencesService()
+            result = await prefs_service.update_default_channel(session, player.player_id, default_channel)
+            await session.commit()
+
+            if result.get("success"):
+                logger.info("Default channel updated", player_name=player_name, channel=default_channel)
+                return {"result": f"Default channel set to {default_channel}."}
+
+            error = result.get("error", "Unknown error")
+            logger.warning("Failed to update default channel", player_name=player_name, error=error)
+            return {"result": f"Error setting default channel: {error}"}
+        except SQLAlchemyError as e:
+            await session.rollback()
+            logger.error("Error updating default channel", player_name=player_name, error=str(e))
+            return {"result": f"Error setting default channel: {str(e)}"}
+
+    return {"result": "Error: Could not access database."}
+
+
+def _validate_channel_name(channel: str) -> dict[str, str] | None:
+    """Validate channel name. Returns error dict if invalid, None if valid."""
+    if channel not in VALID_CHANNELS:
+        return {"result": f"Invalid channel. Valid channels: {', '.join(sorted(VALID_CHANNELS))}"}
+    return None
+
+
+async def handle_channel_command(
+    command_data: dict, current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
+) -> dict[str, str]:
+    """
+    Handle the channel command for switching channels or setting default channel.
+
+    Usage:
+        /channel <channel_name> - Switch to channel (UI operation, but can set default)
+        /channel default <channel_name> - Set default channel
+
+    Args:
+        command_data: Command data dictionary containing validated command information
+        current_user: Current user information
+        request: FastAPI request object
+        _alias_storage: Alias storage instance (unused, required by command handler interface)
+        player_name: Player name for logging
+
+    Returns:
+        dict: Channel command result
+    """
+    logger.debug("Processing channel command", player_name=player_name, command_data=command_data)
+
+    persistence, player = await _get_persistence_and_player(request, current_user, player_name)
+    if not persistence or not player:
+        return {"result": "Channel preferences are not available." if not persistence else "Player not found."}
+
+    channel = _extract_channel_from_command(command_data, player_name)
+    if not channel:
+        return {"result": "Usage: /channel <channel_name> or /channel default <channel_name>"}
+
+    if channel == "default":
+        result = await _handle_default_channel_setting(command_data, player, player_name)
+        if result:
+            return result
+
+    error_result = _validate_channel_name(channel)
+    if error_result:
+        return error_result
+
     logger.debug("Channel switch requested", player_name=player_name, channel=channel)
     return {"result": f"Switching to {channel} channel. (Use /channel default {channel} to set as default)"}
 

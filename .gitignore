@@ -1,6 +1,27 @@
+# =============================================================================
+# Operating System Files
+# =============================================================================
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+ehthumbs.db
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# =============================================================================
+# Python
+# =============================================================================
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[codz]
+*.py[cod]
 *$py.class
 
 # C extensions
@@ -27,8 +48,6 @@ share/python-wheels/
 MANIFEST
 
 # PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
 
@@ -50,20 +69,22 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
+coverage/
+coverage-final.json
 
 # Translations
 *.mo
 *.pot
 
-# Django stuff:
+# Django stuff
 *.log
 local_settings.py
 
-# Flask stuff:
+# Flask stuff
 instance/
 .webassets-cache
 
-# Scrapy stuff:
+# Scrapy stuff
 .scrapy
 
 # Sphinx documentation
@@ -132,46 +153,6 @@ celerybeat.pid
 # SageMath parsed files
 *.sage.py
 
-# Environment files (CRITICAL: Never commit actual .env files)
-.env.local
-.env.production
-.env
-.env.*
-.env.prod
-.env.development
-.env.dev
-.env.local
-.env.e2e_test
-.env.test
-.env.unit_test
-.env.local
-.env.production
-.env.prod
-.env.dev
-.venv
-.venv-ci
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Allow example environment files ONLY (never actual secrets)
-!.env.example
-!*.env.example
-!env.*.example
-.act.secrets
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
 # mypy
 .mypy_cache/
 .dmypy.json
@@ -186,18 +167,50 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-# PyCharm
+# Ruff
+.ruff_cache/
+
+# PyPI configuration file
+.pypirc
+
+# Marimo
+marimo/_static/
+marimo/_lsp/
+__marimo__/
+
+# =============================================================================
+# Node.js / TypeScript / JavaScript
+# =============================================================================
+
+# Dependencies
+node_modules/
+scripts/node_modules/
+scripts/static_data/node_modules/
+.npm/
+.node_repl_history
+
+# Yarn
+.yarn/
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# TypeScript build artifacts
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# =============================================================================
+# IDEs and Editors
+# =============================================================================
+
+# PyCharm / IntelliJ IDEA
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 .idea/
-
-# Abstra
-# Abstra is an AI-powered process automation framework.
-# Ignore directories containing user credentials, local state, and settings.
-# Learn more at https://abstra.io/docs
-.abstra/
 
 # Visual Studio Code
 #  Visual Studio Code specific template is maintained in a separate VisualStudioCode.gitignore
@@ -205,12 +218,6 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file. However, if you prefer,
 #  you could uncomment the following to ignore the entire vscode folder
 # .vscode/
-
-# Ruff stuff:
-.ruff_cache/
-
-# PyPI configuration file
-.pypirc
 
 # Cursor
 #  Cursor is an AI-powered code editor. `.cursorignore` specifies files/directories to
@@ -220,26 +227,53 @@ cython_debug/
 .cursorindexingignore
 .cursorrules
 
-# Marimo
-marimo/_static/
-marimo/_lsp/
-__marimo__/
+# Spyder project settings
+.spyderproject
+.spyproject
 
-# Local development files
-TASKS.local.md
+# Rope project settings
+.ropeproject
 
-# Logging files (CRITICAL: Never commit log files)
-logs/
-server/tests/logs/
+# Abstra
+# Abstra is an AI-powered process automation framework.
+# Ignore directories containing user credentials, local state, and settings.
+# Learn more at https://abstra.io/docs
+.abstra/
 
-# Database files (CRITICAL: Never commit database files)
-server/tests/data/players/unit_test_players.db
-server/tests/data/players/unit_test_players.db
-data/players/local_players.db
+# =============================================================================
+# Environment and Configuration Files
+# =============================================================================
 
-# TypeScript build artifacts
-*.tsbuildinfo
-tsconfig.tsbuildinfo
+# CRITICAL: Never commit actual .env files
+.env
+.env.*
+.env.local
+.env.development
+.env.dev
+.env.production
+.env.prod
+.env.test
+.env.unit_test
+.env.e2e_test
+.act.secrets
+
+# Virtual environments
+.venv
+.venv-ci
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Allow example environment files ONLY (never actual secrets)
+!.env.example
+!*.env.example
+!env.*.example
+
+# =============================================================================
+# Build Artifacts
+# =============================================================================
 
 # Build output directories
 dist/
@@ -251,6 +285,15 @@ out/
 artifacts/
 *.bench.json
 *.perf.json
+
+# =============================================================================
+# Testing
+# =============================================================================
+
+# Test output files
+*-out.txt
+test-*.txt
+*.test.log
 
 # Client test output and coverage reports
 client/coverage/
@@ -266,36 +309,51 @@ test-results/
 .cache/
 .playwright-mcp/
 
-# Test output files
-*-out.txt
-test-*.txt
-*.test.log
+# Coverage reports
+.nyc_output/
+*.lcov
+server/tests/coverage/
 
-# Node.js
-node_modules/
-scripts/node_modules/
-scripts/static_data/node_modules/
-.npm/
-.node_repl_history
-.yarn/
-.yarn/cache
-.yarn/unplugged
-.yarn/build-state.yml
-.yarn/install-state.gz
-.pnp.*
+# =============================================================================
+# Logs
+# =============================================================================
 
-# OS-specific files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-desktop.ini
-$RECYCLE.BIN/
+# CRITICAL: Never commit log files
+logs/
+server/tests/logs/
+*.log
+*.debug
 
-# Temporary files
+# =============================================================================
+# Database Files
+# =============================================================================
+
+# CRITICAL: Never commit database files
+server/tests/data/players/unit_test_players.db
+data/players/local_players.db
+
+# =============================================================================
+# Project-Specific Files
+# =============================================================================
+
+# Local development files
+TASKS.local.md
+
+# Documentation build
+/site
+
+# Debug files
+debug-*.png
+debug-*.jpg
+debug-*.jpeg
+
+# Linter output
+pylint_output.txt
+
+# =============================================================================
+# Temporary Files
+# =============================================================================
+
 *.tmp
 *.temp
 *.swp
@@ -304,21 +362,3 @@ $RECYCLE.BIN/
 *.bak
 *.backup
 *.orig
-
-# Debug and development files
-*.log
-*.debug
-debug-*.png
-debug-*.jpg
-debug-*.jpeg
-
-# Coverage reports (additional patterns)
-coverage/
-.nyc_output/
-*.lcov
-coverage-final.json
-server/tests/coverage/__pycache__/
-server/tests/coverage/__pycache__/**
-server/tests/coverage/__pycache__/
-server/tests/coverage/__pycache__/**
-server/tests/coverage/__pycache__/test_error_logging_coverage.cpython-312-pytest-9.0.1.pyc

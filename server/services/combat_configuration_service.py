@@ -8,6 +8,8 @@ As noted in the restricted archives: "The configuration of cosmic forces
 determines the very fabric of reality within our domain."
 """
 
+# pylint: disable=too-many-instance-attributes  # Reason: Configuration service requires many configuration and state tracking attributes
+
 from dataclasses import asdict, dataclass
 from enum import Enum
 from typing import Any
@@ -33,7 +35,7 @@ class CombatConfigurationScope(Enum):
 
 
 @dataclass
-class CombatConfiguration:
+class CombatConfiguration:  # pylint: disable=too-many-instance-attributes  # Reason: Configuration dataclass requires many fields to capture complete combat configuration
     """Combat configuration data class."""
 
     # Core combat settings

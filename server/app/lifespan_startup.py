@@ -17,7 +17,6 @@ from ..npc.population_control import NPCPopulationController
 from ..npc.spawning_service import NPCSpawningService
 from ..npc_database import get_npc_session
 from ..services.catatonia_registry import CatatoniaRegistry
-from ..services.combat_service import CombatService, set_combat_service
 from ..services.lucidity_service import LucidityService
 from ..services.nats_subject_manager import nats_subject_manager
 from ..services.npc_instance_service import initialize_npc_instance_service
@@ -70,7 +69,7 @@ async def initialize_container_and_legacy_services(app: FastAPI, container: Appl
                 if asyncio.iscoroutine(entries):
                     try:
                         entries = await entries
-                    except Exception:  # pylint: disable=broad-exception-caught  # Reason: Startup code must handle all exceptions gracefully to prevent application failure during initialization. Item registry errors are non-critical and should not block startup.
+                    except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Startup code must handle all exceptions gracefully to prevent application failure during initialization. Item registry errors are non-critical and should not block startup.
                         entries = None
                 if isinstance(entries, Iterable):
                     prototype_count = sum(1 for _ in entries)
@@ -167,6 +166,10 @@ async def initialize_combat_services(app: FastAPI, container: ApplicationContain
     app.state.player_combat_service = PlayerCombatService(container.persistence, container.event_bus)
     if container.connection_manager is not None:
         container.connection_manager.set_player_combat_service(app.state.player_combat_service)
+    # Update MovementService with combat service if it exists
+    if hasattr(container, "movement_service") and container.movement_service is not None:
+        container.movement_service.set_player_combat_service(app.state.player_combat_service)
+        logger.info("MovementService updated with player_combat_service")
     logger.info("Player combat service initialized")
 
     app.state.player_death_service = PlayerDeathService(
@@ -293,6 +296,12 @@ async def initialize_nats_and_combat_services(app: FastAPI, container: Applicati
         logger.info("NATS service available from container")
         app.state.nats_service = container.nats_service
 
+        # Lazy import to avoid circular dependency with combat_service
+        from ..services.combat_service import (  # noqa: E402  # pylint: disable=wrong-import-position
+            CombatService,
+            set_combat_service,
+        )
+
         app.state.combat_service = CombatService(
             app.state.player_combat_service,
             container.nats_service,
@@ -363,7 +372,7 @@ async def initialize_chat_service(app: FastAPI, container: ApplicationContainer)
     logger.info("Chat service initialized")
 
 
-async def initialize_magic_services(app: FastAPI, container: ApplicationContainer) -> None:
+async def initialize_magic_services(app: FastAPI, container: ApplicationContainer) -> None:  # pylint: disable=too-many-locals  # Reason: Service initialization requires many intermediate variables for dependency setup
     """Initialize magic system services and wire them to app.state."""
     # Import here to avoid circular imports: spell_targeting -> combat_service -> lifespan -> lifespan_startup
     # pylint: disable=import-outside-toplevel

@@ -8,6 +8,8 @@ As noted in the Pnakotic Manuscripts, proper aggregation of knowledge is
 essential for understanding the deeper patterns and mysteries of our systems.
 """
 
+# pylint: disable=too-many-instance-attributes,too-many-arguments,too-many-positional-arguments  # Reason: Log aggregator requires many state tracking attributes and complex aggregation logic
+
 import json
 import queue
 import threading
@@ -24,7 +26,7 @@ logger = get_logger(__name__)
 
 
 @dataclass
-class LogEntry:
+class LogEntry:  # pylint: disable=too-many-instance-attributes  # Reason: Log entry dataclass requires many fields to capture complete log entry context
     """Represents a single log entry."""
 
     timestamp: datetime
@@ -38,7 +40,7 @@ class LogEntry:
 
 
 @dataclass
-class LogAggregationStats:
+class LogAggregationStats:  # pylint: disable=too-many-instance-attributes  # Reason: Log stats dataclass requires many fields to capture complete statistics
     """Statistics for log aggregation."""
 
     total_entries: int
@@ -99,7 +101,7 @@ class LogAggregator:
             export_path=str(self.export_path) if self.export_path else None,
         )
 
-    def add_log_entry(
+    def add_log_entry(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Log entry addition requires many parameters for complete log context
         self,
         level: str,
         logger_name: str,
@@ -259,7 +261,7 @@ class LogAggregator:
         self,
         file_path: str | None = None,
         format_type: str = "json",
-        filters: dict[str, Any] | None = None,  # pylint: disable=redefined-builtin  # Reason: 'format' renamed to 'format_type' to avoid builtin shadowing
+        filters: dict[str, Any] | None = None,  # pylint: disable=redefined-builtin  # noqa: F811  # Reason: 'format' renamed to 'format_type' to avoid builtin shadowing
     ) -> str:
         """
         Export logs to a file.
@@ -341,14 +343,14 @@ class LogAggregator:
                 for callback in self.aggregation_callbacks:
                     try:
                         callback(log_entry)
-                    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Callback errors unpredictable, must log but continue
+                    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Callback errors unpredictable, must log but continue
                         logger.error("Aggregation callback failed", callback=str(callback), error=str(e), exc_info=True)
 
                 self.log_entries.task_done()
 
             except queue.Empty:
                 continue
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Log processing errors unpredictable, must log but continue
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Log processing errors unpredictable, must log but continue
                 logger.error("Error processing log entry", error=str(e), exc_info=True)
 
     def _update_stats(self, log_entry: LogEntry) -> None:
@@ -412,7 +414,7 @@ class LogAggregator:
 
 
 # Global log aggregator instance
-_log_aggregator: LogAggregator | None = None
+_log_aggregator: LogAggregator | None = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
 
 
 def get_log_aggregator() -> LogAggregator:
@@ -428,7 +430,7 @@ def get_log_aggregator() -> LogAggregator:
     return _log_aggregator
 
 
-def aggregate_log_entry(
+def aggregate_log_entry(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Log aggregation requires many parameters for complete log context
     level: str,
     logger_name: str,
     message: str,

@@ -7,6 +7,8 @@ from player objects, ensuring UUIDs are never used as names (security requiremen
 As documented in "Identity Protection Protocols" - Dr. Armitage, 1928
 """
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Name extraction requires many parameters for context and validation
+
 import uuid
 from typing import Any
 
@@ -238,7 +240,7 @@ class PlayerNameExtractor:
         uuid_str = str(player_id_uuid)
         return player_name == player_id_str or player_name == uuid_str or player_name.lower() == uuid_str.lower()
 
-    def _log_uuid_validation_failure(
+    def _log_uuid_validation_failure(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: UUID validation logging requires many parameters for complete logging context
         self,
         player_name: str,
         player_id_str: str,
@@ -309,7 +311,7 @@ class PlayerNameExtractor:
         # If either check fails, log and return False
         if is_uuid_pattern or matches_uuid_string:
             uuid_str = str(player_id_uuid)
-            is_critical = player_name == player_id_str or uuid_str == player_name
+            is_critical = player_name in (player_id_str, uuid_str)
             self._log_uuid_validation_failure(
                 player_name, player_id_str, player_id_uuid, player, is_uuid_pattern, is_critical
             )

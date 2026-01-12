@@ -1,3 +1,11 @@
+"""Holiday service for managing in-game holidays and events.
+
+This module provides the HolidayService class for loading, caching, and
+querying holiday data from calendar JSON files.
+"""
+
+# pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Holiday service requires many parameters for context and holiday operations
+
 from __future__ import annotations
 
 import asyncio
@@ -23,7 +31,7 @@ def _ensure_utc(value: datetime) -> datetime:
 class HolidayService:
     """Tracks active Mythos holidays and upcoming triggers."""
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Holiday service initialization requires many service dependencies
         self,
         *,
         chronicle: ChronicleLike,
@@ -227,8 +235,18 @@ class HolidayService:
 
     @property
     def collection(self) -> HolidayCollection:
+        """Get the holiday collection.
+
+        Returns:
+            HolidayCollection: The loaded holiday collection
+        """
         return self._collection
 
     @property
     def last_refresh(self) -> datetime | None:
+        """Get the last refresh timestamp.
+
+        Returns:
+            datetime | None: The timestamp of the last refresh or None if never refreshed
+        """
         return self._last_refresh

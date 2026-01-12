@@ -5,6 +5,8 @@ This module provides the main magic service that handles MP management,
 spell validation, casting rolls, and cost application.
 """
 
+# pylint: disable=too-many-return-statements,too-many-lines  # Reason: Magic service methods require multiple return statements for early validation returns (spell validation, MP checks, error handling). Magic service requires extensive spellcasting logic and MP management.
+
 import random
 import uuid
 from typing import Any
@@ -27,7 +29,7 @@ from server.structured_logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 
-class MagicService:
+class MagicService:  # pylint: disable=too-many-instance-attributes  # Reason: Magic service requires many configuration and state tracking attributes
     """
     Core magic service for spellcasting operations.
 
@@ -35,7 +37,7 @@ class MagicService:
     and coordinates with other services for spell effects.
     """
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Magic service initialization requires many service dependencies
         self,
         spell_registry: SpellRegistry,
         player_service: PlayerService,
@@ -100,7 +102,7 @@ class MagicService:
         pow_val = stats.get("power", 50)
         if "max_magic_points" not in stats:
             stats["max_magic_points"] = math.ceil(pow_val * 0.2)
-        if stats.get("magic_points", 0) == 0 and stats.get("max_magic_points", 0) > 0:
+        if not stats.get("magic_points", 0) and stats.get("max_magic_points", 0) > 0:
             stats["magic_points"] = stats["max_magic_points"]
 
         # Check MP cost
@@ -131,127 +133,88 @@ class MagicService:
 
         return True, ""
 
-    async def cast_spell(self, player_id: uuid.UUID, spell_id: str, target_name: str | None = None) -> dict[str, Any]:
-        """
-        Cast a spell.
+    def _check_already_casting(self, player_id: uuid.UUID) -> dict[str, Any] | None:
+        """Check if player is already casting a spell."""
+        if not self.casting_state_manager.is_casting(player_id):
+            return None
 
-        Args:
-            player_id: Player ID
-            spell_id: Spell ID to cast
-            target_name: Optional target name
-
-        Returns:
-            dict: Result with success, messages, and effect details
-        """
-        logger.info("Casting spell", player_id=player_id, spell_id=spell_id, target_name=target_name)
-
-        # Check if player is already casting
-        if self.casting_state_manager.is_casting(player_id):
-            casting_state = self.casting_state_manager.get_casting_state(player_id)
-            if casting_state is None:
-                # This should not happen if is_casting returns True, but handle defensively
-                return {
-                    "success": False,
-                    "message": "You are already casting a spell. Use 'stop' to interrupt.",
-                }
+        casting_state = self.casting_state_manager.get_casting_state(player_id)
+        if casting_state is None:
             return {
                 "success": False,
-                "message": f"You are already casting {casting_state.spell_name}. Use 'stop' to interrupt.",
+                "message": "You are already casting a spell. Use 'stop' to interrupt.",
             }
+        return {
+            "success": False,
+            "message": f"You are already casting {casting_state.spell_name}. Use 'stop' to interrupt.",
+        }
 
-        # Get spell from registry
+    def _get_spell_from_registry(self, spell_id: str) -> Any | None:
+        """Get spell from registry by ID or name."""
         spell = self.spell_registry.get_spell(spell_id)
         if not spell:
-            # Try by name
             spell = self.spell_registry.get_spell_by_name(spell_id)
-            if not spell:
-                return {"success": False, "message": f"Spell '{spell_id}' not found."}
+        return spell
 
-        # Check if can cast
+    async def _validate_spell_casting(
+        self, player_id: uuid.UUID, spell: Any, target_name: str | None
+    ) -> tuple[Any | None, str | None]:
+        """Validate spell can be cast and resolve target."""
         can_cast, error_msg = await self.can_cast_spell(player_id, spell)
         if not can_cast:
-            return {"success": False, "message": error_msg}
+            return None, error_msg
 
-        # Resolve target
         target, target_error = await self.spell_targeting_service.resolve_spell_target(player_id, spell, target_name)
         if not target:
-            return {"success": False, "message": target_error}
+            return None, target_error
 
-        # Get player spell for mastery
-        player_spell = await self.player_spell_repository.get_player_spell(player_id, spell.spell_id)
-        mastery = int(player_spell.mastery) if player_spell else 0
+        return target, None
 
-        # Consume materials (before casting roll, so materials are consumed even on failure)
-        if spell.materials:
-            material_result = await self.spell_materials_service.consume_materials(player_id, spell)
-            if not material_result.get("success"):
-                return {"success": False, "message": material_result.get("message", "Failed to consume materials.")}
+    async def _handle_instant_cast(self, player_id: uuid.UUID, spell: Any, target: Any, mastery: int) -> dict[str, Any]:
+        """Handle instant cast (casting_time == 0)."""
+        await self.spell_costs_service.apply_costs(player_id, spell)
+        effect_result = await self.spell_effects.process_effect(spell, target, player_id, mastery)
+        await self.player_spell_repository.record_spell_cast(player_id, spell.spell_id)
 
-        # Perform casting roll (simplified CoC mechanics)
-        casting_success = await self._casting_roll(player_id, spell, mastery)
-        if not casting_success:
-            # Still pay costs on failure
-            await self.spell_costs_service.apply_costs(player_id, spell)
-            return {
-                "success": False,
-                "message": f"{spell.name} failed! The cosmic forces resist your incantation.",
-                "costs_paid": True,
-            }
+        if self.spell_learning_service:
+            await self.spell_learning_service.increase_mastery_on_cast(player_id, spell.spell_id, True)
 
-        # If casting time is 0, execute immediately (instant cast)
-        if spell.casting_time_seconds == 0:
-            # Apply costs
-            await self.spell_costs_service.apply_costs(player_id, spell)
+        return {
+            "success": True,
+            "message": effect_result.get("message", f"{spell.name} cast successfully."),
+            "spell_name": spell.name,
+            "target": target.target_name,
+            "effect_result": effect_result,
+            "mastery": mastery,
+        }
 
-            # Process effect
-            effect_result = await self.spell_effects.process_effect(spell, target, player_id, mastery)
+    def _calculate_initiative_tick(self, combat: Any, current_tick: int, player_id: uuid.UUID) -> int | None:
+        """Calculate next initiative tick for combat casting."""
+        current_participant = combat.get_current_turn_participant()
+        if current_participant and current_participant.participant_id == player_id:
+            return None  # It's their turn, start casting immediately
 
-            # Record spell cast
-            await self.player_spell_repository.record_spell_cast(player_id, spell.spell_id)
+        next_initiative_tick = combat.next_turn_tick
+        if next_initiative_tick is None or next_initiative_tick <= current_tick:
+            next_initiative_tick = current_tick + combat.turn_interval_ticks
+        return next_initiative_tick
 
-            # Increase mastery on successful cast
-            if self.spell_learning_service:
-                await self.spell_learning_service.increase_mastery_on_cast(player_id, spell.spell_id, casting_success)
-
-            # Combine results
-            return {
-                "success": True,
-                "message": effect_result.get("message", f"{spell.name} cast successfully."),
-                "spell_name": spell.name,
-                "target": target.target_name,
-                "effect_result": effect_result,
-                "mastery": mastery,
-            }
-
-        # Casting time > 0: Start casting process
-        current_tick = get_current_tick()
+    async def _start_delayed_cast(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Delayed cast requires many parameters for spell context and timing
+        self, player_id: uuid.UUID, spell: Any, target: Any, mastery: int, current_tick: int
+    ) -> dict[str, Any]:
+        """Start delayed cast (casting_time > 0)."""
         combat_id = None
         next_initiative_tick = None
 
-        # Check if in combat and handle initiative
         if self.combat_service:
             combat = await self.combat_service.get_combat_by_participant(player_id)
             if combat:
                 combat_id = combat.combat_id
-                current_participant = combat.get_current_turn_participant()
-                # Check if it's player's turn
-                if current_participant and current_participant.participant_id == player_id:
-                    # It's their turn, start casting immediately
-                    next_initiative_tick = None
-                else:
-                    # Not their turn, wait for next initiative
-                    # Calculate next turn tick (6 ticks per turn)
-                    next_initiative_tick = combat.next_turn_tick
-                    # If next_turn_tick is 0 or in the past, calculate from current
-                    if next_initiative_tick is None or next_initiative_tick <= current_tick:
-                        next_initiative_tick = current_tick + combat.turn_interval_ticks
+                next_initiative_tick = self._calculate_initiative_tick(combat, current_tick, player_id)
 
-        # Start casting state
+        target_type_str = target.target_type.value if hasattr(target.target_type, "value") else str(target.target_type)
+
         try:
-            # Store target_type as string value for later reconstruction
-            target_type_str = (
-                target.target_type.value if hasattr(target.target_type, "value") else str(target.target_type)
-            )
             self.casting_state_manager.start_casting(
                 player_id=player_id,
                 spell=spell,
@@ -266,9 +229,6 @@ class MagicService:
         except ValueError as e:
             return {"success": False, "message": str(e)}
 
-        # Store target info for later use (we'll need it when casting completes)
-        # The target is stored in casting_state, so we can retrieve it later
-
         message = f"You begin casting {spell.name}..."
         if next_initiative_tick is not None:
             message += " (waiting for your turn in combat)"
@@ -282,6 +242,62 @@ class MagicService:
             "casting_time": spell.casting_time_seconds,
             "is_casting": True,
         }
+
+    async def cast_spell(self, player_id: uuid.UUID, spell_id: str, target_name: str | None = None) -> dict[str, Any]:
+        """
+        Cast a spell.
+
+        Args:
+            player_id: Player ID
+            spell_id: Spell ID to cast
+            target_name: Optional target name
+
+        Returns:
+            dict: Result with success, messages, and effect details
+        """
+        logger.info("Casting spell", player_id=player_id, spell_id=spell_id, target_name=target_name)
+
+        # Check if already casting
+        already_casting = self._check_already_casting(player_id)
+        if already_casting:
+            return already_casting
+
+        # Get spell from registry
+        spell = self._get_spell_from_registry(spell_id)
+        if not spell:
+            return {"success": False, "message": f"Spell '{spell_id}' not found."}
+
+        # Validate spell casting and resolve target
+        target, validation_error = await self._validate_spell_casting(player_id, spell, target_name)
+        if validation_error:
+            return {"success": False, "message": validation_error}
+
+        # Get player spell for mastery
+        player_spell = await self.player_spell_repository.get_player_spell(player_id, spell.spell_id)
+        mastery = int(player_spell.mastery) if player_spell else 0
+
+        # Consume materials (before casting roll, so materials are consumed even on failure)
+        if spell.materials:
+            material_result = await self.spell_materials_service.consume_materials(player_id, spell)
+            if not material_result.get("success"):
+                return {"success": False, "message": material_result.get("message", "Failed to consume materials.")}
+
+        # Perform casting roll
+        casting_success = await self._casting_roll(player_id, spell, mastery)
+        if not casting_success:
+            await self.spell_costs_service.apply_costs(player_id, spell)
+            return {
+                "success": False,
+                "message": f"{spell.name} failed! The cosmic forces resist your incantation.",
+                "costs_paid": True,
+            }
+
+        # Handle instant cast or delayed cast
+        if not spell.casting_time_seconds:
+            return await self._handle_instant_cast(player_id, spell, target, mastery)
+
+        current_tick = get_current_tick()
+        return await self._start_delayed_cast(player_id, spell, target, mastery, current_tick)
 
     async def _casting_roll(self, player_id: uuid.UUID, spell: Spell, mastery: int) -> bool:
         """
@@ -356,6 +372,177 @@ class MagicService:
                 # Casting is complete, process it
                 await self._complete_casting(player_id, casting_state)
 
+    async def _get_player_and_room(self, player_id: uuid.UUID) -> tuple[Any, str] | None:
+        """
+        Get player and room_id for casting completion.
+
+        Returns:
+            Tuple of (player, room_id) if successful, None otherwise
+        """
+        player = await self.player_service.persistence.get_player_by_id(player_id)
+        if not player:
+            logger.error("Player not found when completing casting", player_id=player_id)
+            self.casting_state_manager.complete_casting(player_id)
+            return None
+
+        room_id = player.current_room_id or ""
+        return player, room_id
+
+    def _recreate_target_from_state(self, casting_state: Any, player_id: uuid.UUID, player: Any, room_id: str) -> Any:
+        """
+        Recreate target from stored casting state.
+
+        Args:
+            casting_state: The casting state
+            player_id: Player ID
+            player: Player object
+            room_id: Room ID
+
+        Returns:
+            TargetMatch object
+        """
+        from server.schemas.target_resolution import TargetType
+
+        target_type_str = casting_state.target_type or "player"
+        try:
+            target_type = TargetType(target_type_str)
+        except ValueError:
+            target_type = TargetType.PLAYER
+
+        return TargetMatch(
+            target_id=casting_state.target_id or str(player_id),
+            target_name=casting_state.target_name or player.name,
+            target_type=target_type,
+            room_id=room_id,
+        )
+
+    async def _apply_spell_costs_and_effects(
+        self, player_id: uuid.UUID, spell: Any, target: Any, casting_state: Any
+    ) -> dict[str, Any]:
+        """
+        Apply spell costs and process effects.
+
+        Args:
+            player_id: Player ID
+            spell: Spell object
+            target: TargetMatch object
+            casting_state: Casting state
+
+        Returns:
+            Effect result dictionary
+        """
+        await self.spell_costs_service.apply_costs(player_id, spell)
+        effect_result = await self.spell_effects.process_effect(spell, target, player_id, casting_state.mastery)
+        await self.player_spell_repository.record_spell_cast(player_id, spell.spell_id)
+
+        if self.spell_learning_service:
+            await self.spell_learning_service.increase_mastery_on_cast(player_id, spell.spell_id, True)
+
+        return effect_result
+
+    async def _send_spell_completion_message(
+        self, player_id: uuid.UUID, spell_id: str, effect_result: dict[str, Any]
+    ) -> None:
+        """Send spell completion message to player."""
+        try:
+            from server.realtime.connection_manager_api import send_game_event
+
+            if effect_result.get("success") and effect_result.get("message"):
+                await send_game_event(
+                    player_id,
+                    "command_response",
+                    {
+                        "result": effect_result.get("message", ""),
+                        "game_log_message": effect_result.get("message", ""),
+                        "game_log_channel": "game-log",
+                    },
+                )
+            elif not effect_result.get("success"):
+                failure_message = effect_result.get("message", "The spell failed.")
+                await send_game_event(
+                    player_id,
+                    "command_response",
+                    {
+                        "result": failure_message,
+                        "game_log_message": failure_message,
+                        "game_log_channel": "game-log",
+                    },
+                )
+        except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError, RuntimeError) as msg_error:
+            logger.warning(
+                "Failed to send spell completion message",
+                player_id=player_id,
+                spell_id=spell_id,
+                error=str(msg_error),
+            )
+
+    async def _send_healing_update_event(  # pylint: disable=too-many-locals  # Reason: Healing event requires many intermediate variables for complex event processing
+        self, player_id: uuid.UUID, effect_result: dict[str, Any], spell_id: str, room_id: str
+    ) -> None:
+        """Send player_dp_updated event if healing occurred."""
+        if not (
+            effect_result.get("success") and effect_result.get("effect_applied") and effect_result.get("heal_amount")
+        ):
+            return
+
+        try:
+            from server.container import ApplicationContainer
+            from server.events.event_types import PlayerDPUpdated
+
+            updated_player = await self.player_service.persistence.get_player_by_id(player_id)
+            if not updated_player:
+                return
+
+            stats = updated_player.get_stats()
+            current_dp = stats.get("current_dp", 0)
+            max_dp = stats.get("max_dp", 0)
+            heal_amount = effect_result.get("heal_amount", 0)
+            old_dp = max(0, current_dp - heal_amount)
+
+            container = ApplicationContainer.get_instance()
+            if container and container.event_bus:
+                dp_event = PlayerDPUpdated(
+                    player_id=player_id,
+                    old_dp=old_dp,
+                    new_dp=current_dp,
+                    max_dp=max_dp,
+                    damage_taken=-heal_amount,
+                    source_id=spell_id,
+                    room_id=room_id,
+                )
+                container.event_bus.publish(dp_event)
+            else:
+                from server.realtime.connection_manager_api import send_game_event
+
+                await send_game_event(
+                    player_id,
+                    "player_dp_updated",
+                    {
+                        "old_dp": old_dp,
+                        "new_dp": current_dp,
+                        "max_dp": max_dp,
+                        "damage_taken": -heal_amount,
+                        "player": {
+                            "stats": {
+                                "current_dp": current_dp,
+                                "max_dp": max_dp,
+                            },
+                        },
+                    },
+                )
+                logger.warning(
+                    "Event bus not available for DP update after spell",
+                    player_id=player_id,
+                    spell_id=spell_id,
+                )
+        except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError, RuntimeError) as dp_error:
+            logger.warning(
+                "Failed to publish PlayerDPUpdated event after spell",
+                player_id=player_id,
+                spell_id=spell_id,
+                error=str(dp_error),
+            )
+
     async def _complete_casting(self, player_id: uuid.UUID, casting_state: Any) -> None:
         """
         Complete a casting and apply spell effects.
@@ -364,57 +551,19 @@ class MagicService:
             player_id: Player ID
             casting_state: The casting state to complete
         """
-        from server.schemas.target_resolution import TargetType
-
         spell = casting_state.spell
 
-        # CRITICAL: Clear casting state IMMEDIATELY to prevent race conditions
-        # If we clear it at the end, a second cast attempt might see the state and think it's still casting
-        # But we need the state data, so we'll clear it in the finally block instead
-        # Actually, we should clear it early but keep a local reference
         try:
-            # Get player to get room_id
-            player = await self.player_service.persistence.get_player_by_id(player_id)
-            if not player:
-                logger.error("Player not found when completing casting", player_id=player_id)
-                self.casting_state_manager.complete_casting(player_id)
+            player_result = await self._get_player_and_room(player_id)
+            if player_result is None:
                 return
 
-            room_id = player.current_room_id or ""
+            player, room_id = player_result
 
-            # Recreate target from stored state
-            # Convert target_type string back to enum
-            target_type_str = casting_state.target_type or "player"
-            try:
-                target_type = TargetType(target_type_str)
-            except ValueError:
-                # Fallback to player if invalid
-                target_type = TargetType.PLAYER
-
-            target = TargetMatch(
-                target_id=casting_state.target_id or str(player_id),
-                target_name=casting_state.target_name or player.name,
-                target_type=target_type,
-                room_id=room_id,
-            )
-
-            # CRITICAL: Clear casting state BEFORE processing effect to prevent race conditions
-            # If we clear it after, a rapid second cast might see the state and think it's still casting
-            # We've already extracted all needed data from casting_state, so it's safe to clear now
+            target = self._recreate_target_from_state(casting_state, player_id, player, room_id)
             self.casting_state_manager.complete_casting(player_id)
 
-            # Apply costs (MP was not consumed at start, do it now)
-            await self.spell_costs_service.apply_costs(player_id, spell)
-
-            # Process effect
-            effect_result = await self.spell_effects.process_effect(spell, target, player_id, casting_state.mastery)
-
-            # Record spell cast
-            await self.player_spell_repository.record_spell_cast(player_id, spell.spell_id)
-
-            # Increase mastery on successful cast
-            if self.spell_learning_service:
-                await self.spell_learning_service.increase_mastery_on_cast(player_id, spell.spell_id, True)
+            effect_result = await self._apply_spell_costs_and_effects(player_id, spell, target, casting_state)
 
             logger.info(
                 "Completed casting",
@@ -423,107 +572,9 @@ class MagicService:
                 effect_success=effect_result.get("success", False),
             )
 
-            # Send spell completion message to player
-            try:
-                from server.realtime.connection_manager_api import send_game_event
+            await self._send_spell_completion_message(player_id, spell.spell_id, effect_result)
+            await self._send_healing_update_event(player_id, effect_result, spell.spell_id, room_id)
 
-                # Send completion message using command_response event type (client handles this)
-                if effect_result.get("success") and effect_result.get("message"):
-                    await send_game_event(
-                        player_id,
-                        "command_response",
-                        {
-                            "result": effect_result.get("message", ""),
-                            "game_log_message": effect_result.get("message", ""),
-                            "game_log_channel": "game-log",
-                        },
-                    )
-                elif not effect_result.get("success"):
-                    # Send failure message
-                    failure_message = effect_result.get("message", "The spell failed.")
-                    await send_game_event(
-                        player_id,
-                        "command_response",
-                        {
-                            "result": failure_message,
-                            "game_log_message": failure_message,
-                            "game_log_channel": "game-log",
-                        },
-                    )
-            except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError, RuntimeError) as msg_error:
-                # RuntimeError can occur when connection manager is not available (e.g., in tests)
-                logger.warning(
-                    "Failed to send spell completion message",
-                    player_id=player_id,
-                    spell_id=spell.spell_id,
-                    error=str(msg_error),
-                )
-
-            # Send player_dp_updated event to refresh health display if healing occurred
-            if (
-                effect_result.get("success")
-                and effect_result.get("effect_applied")
-                and effect_result.get("heal_amount")
-            ):
-                try:
-                    from server.container import ApplicationContainer
-                    from server.events.event_types import PlayerDPUpdated
-
-                    # Get updated player to calculate DP values
-                    updated_player = await self.player_service.persistence.get_player_by_id(player_id)
-                    if updated_player:
-                        stats = updated_player.get_stats()
-                        current_dp = stats.get("current_dp", 0)
-                        max_dp = stats.get("max_dp", 0)
-                        heal_amount = effect_result.get("heal_amount", 0)
-                        old_dp = max(0, current_dp - heal_amount)  # Calculate old DP before healing
-
-                        # Publish PlayerDPUpdated event for health UI update
-                        container = ApplicationContainer.get_instance()
-                        if container and container.event_bus:
-                            dp_event = PlayerDPUpdated(
-                                player_id=player_id,
-                                old_dp=old_dp,
-                                new_dp=current_dp,
-                                max_dp=max_dp,
-                                damage_taken=-heal_amount,  # Negative for healing
-                                source_id=spell.spell_id,
-                                room_id=room_id,
-                            )
-                            container.event_bus.publish(dp_event)
-                        else:
-                            # Fallback: send player_dp_updated event directly if event bus unavailable
-                            from server.realtime.connection_manager_api import send_game_event
-
-                            await send_game_event(
-                                player_id,
-                                "player_dp_updated",
-                                {
-                                    "old_dp": old_dp,
-                                    "new_dp": current_dp,
-                                    "max_dp": max_dp,
-                                    "damage_taken": -heal_amount,  # Negative for healing
-                                    "player": {
-                                        "stats": {
-                                            "current_dp": current_dp,
-                                            "max_dp": max_dp,
-                                        },
-                                    },
-                                },
-                            )
-                            logger.warning(
-                                "Event bus not available for DP update after spell",
-                                player_id=player_id,
-                                spell_id=spell.spell_id,
-                            )
-                except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError, RuntimeError) as dp_error:
-                    # RuntimeError can occur when connection manager is not available (e.g., in tests)
-                    logger.warning(
-                        "Failed to publish PlayerDPUpdated event after spell",
-                        player_id=player_id,
-                        spell_id=spell.spell_id,
-                        error=str(dp_error),
-                    )
         except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError) as e:
             logger.error(
                 "Error completing casting - clearing stuck state",
@@ -534,10 +585,6 @@ class MagicService:
                 exc_info=True,
             )
         finally:
-            # Always remove casting state, even if an error occurred
-            # This prevents infinite error loops from stuck castings
-            # NOTE: State is already cleared before processing effect (line 473) to prevent race conditions
-            # This finally block is a safety net in case of early returns
             if self.casting_state_manager.is_casting(player_id):
                 self.casting_state_manager.complete_casting(player_id)
 
@@ -568,15 +615,15 @@ class MagicService:
                 "message": f"You interrupt your casting of {casting_state.spell_name}. Your luck preserves your magic points.",
                 "mp_lost": False,
             }
-        else:
-            # Failed LUCK check: lose MP
-            await self.spell_costs_service.apply_costs(player_id, casting_state.spell)
-            return {
-                "success": True,
-                "message": f"You interrupt your casting of {casting_state.spell_name}. The disruption costs you {casting_state.mp_cost} MP.",
-                "mp_lost": True,
-                "mp_cost": casting_state.mp_cost,
-            }
+
+        # Failed LUCK check: lose MP
+        await self.spell_costs_service.apply_costs(player_id, casting_state.spell)
+        return {
+            "success": True,
+            "message": f"You interrupt your casting of {casting_state.spell_name}. The disruption costs you {casting_state.mp_cost} MP.",
+            "mp_lost": True,
+            "mp_cost": casting_state.mp_cost,
+        }
 
     async def _perform_luck_check(self, player_id: uuid.UUID) -> bool:
         """

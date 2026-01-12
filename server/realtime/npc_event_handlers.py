@@ -63,7 +63,7 @@ class NPCEventHandler:
                 return None
 
             return lifecycle_manager.active_npcs[npc_id]
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC instance retrieval errors unpredictable, must return None
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC instance retrieval errors unpredictable, must return None
             self._logger.debug("Error getting NPC instance", npc_id=npc_id, error=str(e))
             return None
 
@@ -154,7 +154,7 @@ class NPCEventHandler:
             spawn_message = self._extract_spawn_message_from_config(parsed_config)
             return spawn_message if spawn_message else f"{npc_name} appears."
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC spawn message retrieval errors unpredictable, must return None
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC spawn message retrieval errors unpredictable, must return None
             self._logger.debug("Error getting NPC spawn message", npc_id=npc_id, error=str(e))
             return None
 
@@ -182,7 +182,7 @@ class NPCEventHandler:
             npc_instance = lifecycle_manager.active_npcs[npc_id]
             npc_name = getattr(npc_instance, "name", None)
             return npc_name if npc_name else None
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC name retrieval errors unpredictable, must return None
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC name retrieval errors unpredictable, must return None
             self._logger.debug("Error getting NPC name", npc_id=npc_id, error=str(e))
             return None
 
@@ -212,7 +212,7 @@ class NPCEventHandler:
                     return direction
 
             return None
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Direction determination errors unpredictable, must return None
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Direction determination errors unpredictable, must return None
             self._logger.debug(
                 "Error determining direction from rooms", error=str(e), from_room=from_room_id, to_room=to_room_id
             )
@@ -272,7 +272,7 @@ class NPCEventHandler:
             # Return default message if no custom message is defined
             return f"{npc_name} leaves."
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC departure message retrieval errors unpredictable, must return None
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC departure message retrieval errors unpredictable, must return None
             self._logger.debug("Error getting NPC departure message", npc_id=npc_id, error=str(e))
             return None
 
@@ -346,7 +346,7 @@ class NPCEventHandler:
                     # No running event loop - log and skip async operation
                     self._logger.debug("No event loop available for room message broadcast")
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Room message sending errors unpredictable, must handle gracefully
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Room message sending errors unpredictable, must handle gracefully
             self._logger.error("Error sending room message", room_id=room_id, error=str(e), exc_info=True)
 
     async def handle_npc_entered(self, event: NPCEnteredRoom) -> None:
@@ -427,7 +427,7 @@ class NPCEventHandler:
 
             self._logger.debug("Processed NPC entered event", npc_id=event.npc_id, room_id=event.room_id)
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC entered event handling errors unpredictable, must handle gracefully
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC entered event handling errors unpredictable, must handle gracefully
             self._logger.error("Error handling NPC entered room event", error=str(e), exc_info=True)
 
     async def handle_npc_left(self, event: NPCLeftRoom) -> None:
@@ -506,5 +506,5 @@ class NPCEventHandler:
 
             self._logger.debug("Processed NPC left event", npc_id=event.npc_id, room_id=event.room_id)
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC left event handling errors unpredictable, must handle gracefully
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC left event handling errors unpredictable, must handle gracefully
             self._logger.error("Error handling NPC left room event", error=str(e), exc_info=True)

@@ -5,6 +5,8 @@ stance can alter a scholar's fate. These handlers apply those shifts while
 keeping persistence and live state aligned.
 """
 
+# pylint: disable=too-many-arguments,too-many-locals  # Reason: Position commands require many parameters and intermediate variables for complex position logic
+
 from __future__ import annotations
 
 from typing import Any
@@ -38,7 +40,7 @@ def _format_room_posture_message(player_name: str, previous_position: str | None
     return f"{player_name} shifts their posture uneasily."
 
 
-async def _handle_position_change(
+async def _handle_position_change(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Position commands require many parameters for context and position logic
     current_user: dict,
     request: Any,
     alias_storage: AliasStorage | None,

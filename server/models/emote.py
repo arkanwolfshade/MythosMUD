@@ -2,6 +2,8 @@
 SQLAlchemy models for emotes.
 """
 
+# pylint: disable=too-few-public-methods  # Reason: SQLAlchemy models are data classes, no instance methods needed
+
 from sqlalchemy import Column, ForeignKey, Text
 from sqlalchemy.dialects.postgresql import UUID
 

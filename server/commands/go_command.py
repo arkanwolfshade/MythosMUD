@@ -4,9 +4,13 @@ Go command for MythosMUD.
 This module handles the go command for player movement.
 """
 
+# pylint: disable=too-many-arguments,too-many-locals  # Reason: Movement commands require many parameters and intermediate variables for complex movement logic
+
+import uuid
 from typing import Any
 
 from ..alias_storage import AliasStorage
+from ..commands.rest_command import _cancel_rest_countdown, is_player_resting
 from ..exceptions import DatabaseError, ValidationError
 from ..game.movement_service import MovementService
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -110,7 +114,7 @@ def _validate_exit(direction: str, room: Any, persistence: Any, player_name: str
     return target_room_id
 
 
-async def _execute_movement(
+async def _execute_movement(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Movement execution requires many parameters and intermediate variables for complex movement logic
     player: Any,
     room_id: str,
     target_room_id: str,
@@ -157,7 +161,7 @@ async def _execute_movement(
         return {"result": f"Error during movement: {str(e)}"}
 
 
-async def handle_go_command(
+async def handle_go_command(  # pylint: disable=too-many-arguments,too-many-locals  # Reason: Go command requires many parameters and intermediate variables for complex movement logic
     command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, Any]:
     """
@@ -193,6 +197,18 @@ async def handle_go_command(
     valid_posture, posture_message = _validate_player_posture(player, player_name, room_id)
     if not valid_posture:
         return {"result": posture_message}
+
+    # Check if player is resting and interrupt rest
+    connection_manager = getattr(app.state, "connection_manager", None) if app else None
+    if connection_manager:
+        player_id = uuid.UUID(player.player_id) if isinstance(player.player_id, str) else player.player_id
+
+        if is_player_resting(player_id, connection_manager):
+            await _cancel_rest_countdown(player_id, connection_manager)
+            logger.info(
+                "Rest interrupted by movement", player_id=player_id, player_name=player_name, direction=direction
+            )
+            return {"result": "Your rest is interrupted as you begin to move."}
 
     target_room_id = _validate_exit(direction, room, persistence, player_name, room_id)
     if not target_room_id:

@@ -9,6 +9,8 @@ As documented in the Pnakotic Manuscripts, proper spatial visualization
 is essential for navigating the eldritch architecture of our world.
 """
 
+# pylint: disable=too-few-public-methods,too-many-locals,too-many-arguments,too-many-positional-arguments  # Reason: Renderer class with focused responsibility, minimal public interface, and complex rendering logic requiring many parameters
+
 from typing import Any
 
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -80,7 +82,113 @@ class AsciiMapRenderer:
             },
         }
 
-    def render_map(
+    def _build_exit_lookup(self, rooms: list[dict[str, Any]]) -> dict[tuple[int, int], dict[str, dict[str, Any]]]:
+        """Build exit lookup map from room data."""
+        exit_from: dict[tuple[int, int], dict[str, dict[str, Any]]] = {}
+        for room in rooms:
+            room_id = room.get("id") or room.get("stable_id", "")
+            map_x = room.get("map_x")
+            map_y = room.get("map_y")
+            if map_x is None or map_y is None:
+                continue
+            x = int(map_x)
+            y = int(map_y)
+            exits = room.get("exits", {})
+            for direction, target_id in exits.items():
+                target_id_str = str(target_id) if target_id else ""
+                target_room = next(
+                    (r for r in rooms if str(r.get("id") or r.get("stable_id", "")) == target_id_str), None
+                )
+                if target_room:
+                    target_x = target_room.get("map_x")
+                    target_y = target_room.get("map_y")
+                    if target_x is not None and target_y is not None:
+                        tx, ty = int(target_x), int(target_y)
+                        target_exits = target_room.get("exits", {})
+                        reverse_dir = self._get_reverse_direction(direction)
+                        is_bidirectional = reverse_dir in target_exits and target_exits[reverse_dir] == room_id
+                        if (x, y) not in exit_from:
+                            exit_from[(x, y)] = {}
+                        exit_from[(x, y)][direction] = {"target": (tx, ty), "is_bidirectional": is_bidirectional}
+        return exit_from
+
+    def _auto_center_viewport(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Viewport centering requires many parameters for context and viewport calculations
+        self,
+        current_room_id: str | None,
+        room_positions: dict[str, tuple[int, int]],
+        viewport_width: int,
+        viewport_height: int,
+        viewport_x: int,
+        viewport_y: int,
+    ) -> tuple[int, int]:
+        """Auto-center viewport on current room if provided."""
+        current_id_str = str(current_room_id) if current_room_id else None
+        if current_id_str and current_id_str in room_positions:
+            player_x, player_y = room_positions[current_id_str]
+            return player_x - viewport_width // 2, player_y - viewport_height // 2
+        return viewport_x, viewport_y
+
+    def _render_room_row(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Room row rendering requires many parameters for context and rendering logic
+        self,
+        y: int,
+        grid: dict[tuple[int, int], dict[str, Any] | str],
+        exit_from: dict[tuple[int, int], dict[str, dict[str, Any]]],
+        map_style: str,
+        viewport_x: int,
+        viewport_width: int,
+    ) -> str:
+        """Render a single row of rooms with horizontal exits."""
+        line = []
+        for x in range(viewport_x, viewport_x + viewport_width):
+            cell = grid.get((x, y), " ")
+            if isinstance(cell, dict):
+                symbol = cell.get("symbol", " ")
+                is_player = cell.get("is_player", False)
+                room_name = cell.get("room_name", "")
+                style = self.style_colors[map_style]["player"] if is_player else self.style_colors[map_style]["room"]
+                title_attr = f' title="{room_name}"' if room_name else ""
+                line.append(f'<span style="{style}"{title_attr}>{symbol}</span>')
+                exit_char = self._get_horizontal_exit_char(x, y, exit_from, grid, viewport_x, viewport_width)
+                if exit_char:
+                    exit_style = self.style_colors[map_style]["exit"]
+                    line.append(f'<span style="{exit_style}">{exit_char}</span>')
+                else:
+                    line.append(" ")
+            else:
+                line.append("  ")
+        return "".join(line)
+
+    def _render_exit_row(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Exit row rendering requires many parameters for context and rendering logic
+        self,
+        y: int,
+        grid: dict[tuple[int, int], dict[str, Any] | str],
+        exit_from: dict[tuple[int, int], dict[str, dict[str, Any]]],
+        map_style: str,
+        viewport_x: int,
+        viewport_width: int,
+        viewport_y: int,
+        viewport_height: int,
+    ) -> str:
+        """Render a single row of vertical exits between room rows."""
+        if y >= viewport_y + viewport_height - 1:
+            return ""
+        exit_line = []
+        for x in range(viewport_x, viewport_x + viewport_width):
+            cell = grid.get((x, y), " ")
+            next_cell = grid.get((x, y + 1), " ")
+            if isinstance(cell, dict) and isinstance(next_cell, dict):
+                exit_char = self._get_vertical_exit_char(x, y, exit_from, grid, viewport_y, viewport_height)
+                if exit_char:
+                    exit_style = self.style_colors[map_style]["exit"]
+                    exit_line.append(f'<span style="{exit_style}">{exit_char}</span>')
+                    exit_line.append(" ")
+                else:
+                    exit_line.append("  ")
+            else:
+                exit_line.append("  ")
+        return "".join(exit_line)
+
+    def render_map(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Map rendering requires many parameters for context and rendering logic
         self,
         rooms: list[dict[str, Any]],
         current_room_id: str | None = None,
@@ -106,125 +214,28 @@ class AsciiMapRenderer:
         if not rooms:
             return self._render_empty_map(viewport_width, viewport_height)
 
-        # Determine map style from rooms (use first room's style or environment)
         map_style = self._determine_map_style(rooms)
-
-        # Build coordinate grid
         grid, room_positions = self._build_grid(rooms, current_room_id)
+        viewport_x, viewport_y = self._auto_center_viewport(
+            current_room_id, room_positions, viewport_width, viewport_height, viewport_x, viewport_y
+        )
+        exit_from = self._build_exit_lookup(rooms)
 
-        # Auto-center viewport on current room if provided
-        # Convert current_room_id to string for lookup
-        current_id_str = str(current_room_id) if current_room_id else None
-        if current_id_str and current_id_str in room_positions:
-            player_x, player_y = room_positions[current_id_str]
-            viewport_x = player_x - viewport_width // 2
-            viewport_y = player_y - viewport_height // 2
-
-        # Build exit lookup maps
-        exit_from: dict[tuple[int, int], dict[str, dict[str, Any]]] = {}  # (x,y) -> {direction: exit_info}
-        for room in rooms:
-            room_id = room.get("id") or room.get("stable_id", "")
-            map_x = room.get("map_x")
-            map_y = room.get("map_y")
-            if map_x is None or map_y is None:
-                continue
-            x = int(map_x)
-            y = int(map_y)
-            exits = room.get("exits", {})
-            for direction, target_id in exits.items():
-                # Convert target_id to string for comparison
-                target_id_str = str(target_id) if target_id else ""
-                target_room = next(
-                    (r for r in rooms if str(r.get("id") or r.get("stable_id", "")) == target_id_str), None
-                )
-                if target_room:
-                    target_x = target_room.get("map_x")
-                    target_y = target_room.get("map_y")
-                    if target_x is not None and target_y is not None:
-                        tx, ty = int(target_x), int(target_y)
-                        # Check if bidirectional
-                        target_exits = target_room.get("exits", {})
-                        reverse_dir = self._get_reverse_direction(direction)
-                        is_bidirectional = reverse_dir in target_exits and target_exits[reverse_dir] == room_id
-                        if (x, y) not in exit_from:
-                            exit_from[(x, y)] = {}
-                        exit_from[(x, y)][direction] = {
-                            "target": (tx, ty),
-                            "is_bidirectional": is_bidirectional,
-                        }
-
-        # Render grid to HTML
-        # We need to render with fixed-width cells to maintain grid alignment
-        # Each cell is 2 characters: room symbol + potential exit character
         html_lines = []
         html_lines.append('<div class="ascii-map" style="font-family: monospace; white-space: pre; line-height: 1.2;">')
 
         for y in range(viewport_y, viewport_y + viewport_height):
-            # Render room row with fixed-width cells
-            line = []
-            for x in range(viewport_x, viewport_x + viewport_width):
-                cell = grid.get((x, y), " ")
-                if isinstance(cell, dict):
-                    # Cell contains room data
-                    symbol = cell.get("symbol", " ")
-                    is_player = cell.get("is_player", False)
-                    room_name = cell.get("room_name", "")
-
-                    # Apply styling
-                    if is_player:
-                        style = self.style_colors[map_style]["player"]
-                    else:
-                        style = self.style_colors[map_style]["room"]
-
-                    # Create clickable/hoverable cell
-                    title_attr = f' title="{room_name}"' if room_name else ""
-                    line.append(f'<span style="{style}"{title_attr}>{symbol}</span>')
-
-                    # Check for horizontal exits (east/west) and add exit character
-                    exit_char = self._get_horizontal_exit_char(x, y, exit_from, grid, viewport_x, viewport_width)
-                    if exit_char:
-                        exit_style = self.style_colors[map_style]["exit"]
-                        line.append(f'<span style="{exit_style}">{exit_char}</span>')
-                    else:
-                        # No exit, add space to maintain grid alignment
-                        line.append(" ")
-                else:
-                    # Empty cell - add two spaces to maintain grid alignment
-                    line.append("  ")
-
-            html_lines.append("".join(line))
-
-            # Render vertical exit row (between this row and the next)
-            # This row must align with room positions (first char of each 2-char cell)
-            # Each cell is 2 chars: exit/space + space (to match room row's room+exit/space)
-            if y < viewport_y + viewport_height - 1:  # Don't add exit row after last room row
-                exit_line = []
-                for x in range(viewport_x, viewport_x + viewport_width):
-                    cell = grid.get((x, y), " ")
-                    next_cell = grid.get((x, y + 1), " ")
-
-                    # Check if there's a vertical exit between current and next room
-                    if isinstance(cell, dict) and isinstance(next_cell, dict):
-                        # Both are rooms - check for vertical exit
-                        exit_char = self._get_vertical_exit_char(x, y, exit_from, grid, viewport_y, viewport_height)
-                        if exit_char:
-                            exit_style = self.style_colors[map_style]["exit"]
-                            # Exit char in first position (aligns with room above), space in second
-                            exit_line.append(f'<span style="{exit_style}">{exit_char}</span>')
-                            exit_line.append(" ")
-                        else:
-                            # No exit - two spaces to match room row cell width
-                            exit_line.append("  ")
-                    else:
-                        # Empty cell - two spaces to match room row cell width
-                        exit_line.append("  ")
-
-                html_lines.append("".join(exit_line))
+            html_lines.append(self._render_room_row(y, grid, exit_from, map_style, viewport_x, viewport_width))
+            exit_row = self._render_exit_row(
+                y, grid, exit_from, map_style, viewport_x, viewport_width, viewport_y, viewport_height
+            )
+            if exit_row:
+                html_lines.append(exit_row)
 
         html_lines.append("</div>")
         return "\n".join(html_lines)
 
-    def _get_horizontal_exit_char(
+    def _get_horizontal_exit_char(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Exit character calculation requires many parameters for context and character selection
         self,
         x: int,
         y: int,
@@ -264,16 +275,15 @@ class AsciiMapRenderer:
                     if west_exit_back and west_exit_back["target"] == (x, y):
                         # Bidirectional
                         return "—"  # em dash
-                    else:
-                        # One-way east
-                        return ">"
-                elif west_exit_back and west_exit_back["target"] == (x, y):
+                    # One-way east
+                    return ">"
+                if west_exit_back and west_exit_back["target"] == (x, y):
                     # Next room has west exit (one-way west)
                     return "<"
 
         return None
 
-    def _get_vertical_exit_char(
+    def _get_vertical_exit_char(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Exit character calculation requires many parameters for context and character selection
         self,
         x: int,
         y: int,
@@ -312,10 +322,9 @@ class AsciiMapRenderer:
                     if north_exit_back and north_exit_back["target"] == (x, y):
                         # Bidirectional
                         return "|"
-                    else:
-                        # One-way south
-                        return "v"
-                elif north_exit_back and north_exit_back["target"] == (x, y):
+                    # One-way south
+                    return "v"
+                if north_exit_back and north_exit_back["target"] == (x, y):
                     # Next room has north exit (one-way north)
                     return "^"
 
@@ -345,7 +354,7 @@ class AsciiMapRenderer:
             environment = room.get("environment", "outdoors")
             if environment == "indoors":
                 return "interior"
-            elif environment in ("city", "town"):
+            if environment in ("city", "town"):
                 return "city"
 
         # Default to world

@@ -5,6 +5,8 @@ This module handles NPC despawning and lifecycle operations during combat,
 with defensive error handling to prevent player disconnections.
 """
 
+# pylint: disable=too-few-public-methods  # Reason: Lifecycle class with focused responsibility, minimal public interface
+
 import asyncio
 from typing import Any
 
@@ -15,7 +17,7 @@ from ..structured_logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 
-class NPCCombatLifecycle:
+class NPCCombatLifecycle:  # pylint: disable=too-few-public-methods  # Reason: Lifecycle class with focused responsibility, minimal public interface
     """Manages NPC lifecycle operations during combat."""
 
     def __init__(self, async_persistence: Any):

@@ -1,5 +1,7 @@
 """Lucidity tracking models drawn from the Pnakotic Manuscripts."""
 
+# pylint: disable=too-few-public-methods  # Reason: SQLAlchemy models are data classes, no instance methods needed
+
 from __future__ import annotations
 
 import uuid

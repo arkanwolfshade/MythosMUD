@@ -157,6 +157,48 @@ class RoomLoader:
 
         return sorted(json_files)
 
+    def _validate_room_structure(self, room_data: dict) -> None:
+        """Validate basic room structure."""
+        if not isinstance(room_data, dict):
+            raise ValueError("Room data must be a JSON object")
+
+    def _extract_location_from_path(self, path_parts: tuple[str, ...]) -> tuple[str, str, str] | None:
+        """Extract plane, zone, sub_zone from file path."""
+        if len(path_parts) >= 4:
+            return path_parts[-4], path_parts[-3], path_parts[-2]
+        return None
+
+    def _validate_or_update_room_id(
+        self, room_data: dict, file_path: Path, parsed_filename: dict, location: tuple[str, str, str]
+    ) -> None:
+        """Validate or update room ID based on filename and location."""
+        plane, zone, sub_zone = location
+        expected_id = self.generate_room_id(parsed_filename, plane, zone, sub_zone)
+
+        if "id" not in room_data:
+            room_data["id"] = expected_id
+        elif room_data["id"] != expected_id:
+            self.parsing_errors.append(
+                (str(file_path), f"Room ID mismatch: expected {expected_id}, got {room_data['id']}")
+            )
+
+    def _validate_required_fields(self, room_data: dict) -> None:
+        """Validate required fields are present."""
+        required_fields = ["id", "name", "description", "exits"]
+        for field in required_fields:
+            if field not in room_data:
+                raise ValueError(f"Missing required field: {field}")
+
+    def _add_location_fields(self, room_data: dict, path_parts: tuple[str, ...]) -> None:
+        """Add location fields if missing."""
+        if len(path_parts) >= 4:
+            if "plane" not in room_data:
+                room_data["plane"] = path_parts[-4]
+            if "zone" not in room_data:
+                room_data["zone"] = path_parts[-3]
+            if "sub_zone" not in room_data:
+                room_data["sub_zone"] = path_parts[-2]
+
     def load_room_data(self, file_path: Path) -> dict | None:
         """
         Parse a single room file with error handling.
@@ -171,46 +213,18 @@ class RoomLoader:
             with open(file_path, encoding="utf-8") as f:
                 room_data = json.load(f)
 
-            # Validate basic structure
-            if not isinstance(room_data, dict):
-                raise ValueError("Room data must be a JSON object")
+            self._validate_room_structure(room_data)
 
-            # Parse filename to validate naming schema
             parsed_filename = self.parse_room_filename(file_path.name)
+            path_parts = file_path.parts
+
             if parsed_filename:
-                # Extract location from file path
-                path_parts = file_path.parts
-                if len(path_parts) >= 4:
-                    # Expected: .../data/local/rooms/{plane}/{zone}/{subzone}/filename.json
-                    plane = path_parts[-4]
-                    zone = path_parts[-3]
-                    sub_zone = path_parts[-2]
+                location = self._extract_location_from_path(path_parts)
+                if location:
+                    self._validate_or_update_room_id(room_data, file_path, parsed_filename, location)
 
-                    # Generate expected room ID
-                    expected_id = self.generate_room_id(parsed_filename, plane, zone, sub_zone)
-
-                    # Validate or update room ID
-                    if "id" not in room_data:
-                        room_data["id"] = expected_id
-                    elif room_data["id"] != expected_id:
-                        # Log mismatch but don't fail
-                        self.parsing_errors.append(
-                            (str(file_path), f"Room ID mismatch: expected {expected_id}, got {room_data['id']}")
-                        )
-
-            # Validate required fields
-            required_fields = ["id", "name", "description", "exits"]
-            for field in required_fields:
-                if field not in room_data:
-                    raise ValueError(f"Missing required field: {field}")
-
-            # Add location fields if missing
-            if "plane" not in room_data and len(path_parts) >= 4:
-                room_data["plane"] = path_parts[-4]
-            if "zone" not in room_data and len(path_parts) >= 4:
-                room_data["zone"] = path_parts[-3]
-            if "sub_zone" not in room_data and len(path_parts) >= 4:
-                room_data["sub_zone"] = path_parts[-2]
+            self._validate_required_fields(room_data)
+            self._add_location_fields(room_data, path_parts)
 
             return room_data
 
@@ -265,6 +279,31 @@ class RoomLoader:
 
         return self.room_database
 
+    def _get_referenced_room_ids(self) -> set[str]:
+        """Get all referenced room IDs from current database."""
+        referenced_rooms = set()
+        for room_data in self.room_database.values():
+            exits = room_data.get("exits", {})
+            for _direction, target_room in exits.items():
+                if target_room and isinstance(target_room, str):
+                    referenced_rooms.add(target_room)
+        return referenced_rooms
+
+    def _check_intersection_references_rooms(self, intersection_data: dict) -> bool:
+        """Check if intersection references any rooms in our database."""
+        exits = intersection_data.get("exits", {})
+        for _direction, target_room in exits.items():
+            if target_room and isinstance(target_room, str):
+                if target_room in self.room_database:
+                    return True
+        return False
+
+    def _add_intersection_to_database(self, intersection_data: dict) -> None:
+        """Add intersection to database if it has a valid ID."""
+        room_id = intersection_data.get("id")
+        if room_id:
+            self.room_database[room_id] = intersection_data
+
     def _load_referenced_intersections(self, base_path: str | None = None):
         """
         Load intersection files that are referenced by rooms in the database.
@@ -274,20 +313,10 @@ class RoomLoader:
         """
         search_path = Path(base_path) if base_path else self.base_path
 
-        # Find intersection directory
         intersection_dir = search_path / "intersections"
         if not intersection_dir.exists():
             return
 
-        # Get all referenced room IDs from current database
-        referenced_rooms = set()
-        for room_data in self.room_database.values():
-            exits = room_data.get("exits", {})
-            for _direction, target_room in exits.items():
-                if target_room and isinstance(target_room, str):
-                    referenced_rooms.add(target_room)
-
-        # Load intersection files that reference rooms in our database
         for intersection_file in intersection_dir.glob("*.json"):
             if intersection_file.name in ["subzone_config.json", "zone_config.json"]:
                 continue
@@ -296,20 +325,8 @@ class RoomLoader:
             if not intersection_data:
                 continue
 
-            # Check if this intersection references any rooms in our database
-            exits = intersection_data.get("exits", {})
-            references_our_rooms = False
-            for _direction, target_room in exits.items():
-                if target_room and isinstance(target_room, str):
-                    if target_room in self.room_database:
-                        references_our_rooms = True
-                        break
-
-            # If intersection references our rooms, add it to database
-            if references_our_rooms:
-                room_id = intersection_data.get("id")
-                if room_id:
-                    self.room_database[room_id] = intersection_data
+            if self._check_intersection_references_rooms(intersection_data):
+                self._add_intersection_to_database(intersection_data)
 
     def get_zones(self) -> list[str]:
         """

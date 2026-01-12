@@ -114,7 +114,7 @@ class HealthRepository:
             constitution = stats.get("constitution", 50)
             size = stats.get("size", 50)
             max_dp = stats.get("max_dp", (constitution + size) // 5)  # DP max = (CON + SIZ) / 5
-            if max_dp == 0:
+            if not max_dp:
                 max_dp = 20  # Prevent division by zero
             new_dp = min(max_dp, current_dp + amount)
             actual_heal_amount = new_dp - current_dp  # Calculate actual amount healed (capped)

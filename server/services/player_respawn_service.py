@@ -6,6 +6,8 @@ As documented in the Pnakotic Manuscripts, resurrection requires careful navigat
 the spaces between worlds.
 """
 
+# pylint: disable=too-many-locals,too-many-statements  # Reason: Respawn service requires many intermediate variables for complex respawn logic. Respawn service legitimately requires many statements for comprehensive respawn operations.
+
 import uuid
 from datetime import UTC, datetime
 from typing import Any
@@ -139,9 +141,8 @@ class PlayerRespawnService:
             if respawn_room:
                 logger.debug("Using custom respawn room", player_id=player_id, respawn_room=respawn_room)
                 return str(respawn_room)
-            else:
-                logger.debug("Using default respawn room", player_id=player_id, respawn_room=DEFAULT_RESPAWN_ROOM)
-                return DEFAULT_RESPAWN_ROOM
+            logger.debug("Using default respawn room", player_id=player_id, respawn_room=DEFAULT_RESPAWN_ROOM)
+            return DEFAULT_RESPAWN_ROOM
 
         except (DatabaseError, SQLAlchemyError) as e:
             logger.error("Error getting respawn room, using default", player_id=player_id, error=str(e))
@@ -346,7 +347,7 @@ class PlayerRespawnService:
             await session.rollback()
             return False
 
-    async def respawn_player_from_sanitarium(self, player_id: uuid.UUID, session: AsyncSession) -> bool:
+    async def respawn_player_from_sanitarium(self, player_id: uuid.UUID, session: AsyncSession) -> bool:  # pylint: disable=too-many-locals  # Reason: Respawn processing requires many intermediate variables for complex respawn logic
         """
         Respawn a player from sanitarium failover at LCD -100.
 

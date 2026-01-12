@@ -5,6 +5,8 @@ This module provides utility functions for teleport-related admin commands,
 including player lookup, teleport effect messages, and broadcasting.
 """
 
+# pylint: disable=too-many-arguments,too-many-return-statements  # Reason: Teleport utilities require many parameters for context and validation and multiple return statements for early validation returns
+
 from typing import Any
 
 from ..realtime.envelope import build_event
@@ -72,7 +74,7 @@ def create_teleport_effect_message(
     return f"{player_name} is affected by mysterious forces."
 
 
-async def broadcast_teleport_effects(
+async def broadcast_teleport_effects(  # pylint: disable=too-many-arguments  # Reason: Teleport utilities require many parameters for context and broadcasting
     connection_manager: Any,
     player_name: str,
     from_room_id: str,

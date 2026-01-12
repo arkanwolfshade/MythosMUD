@@ -5,20 +5,24 @@ This module handles applying spell effects to targets, including healing,
 damage, status effects, stat modifications, and other magical effects.
 """
 
+# pylint: disable=too-many-return-statements  # Reason: Spell effects require multiple return statements for early validation returns (target validation, effect validation, error handling)
+
 import uuid
 from typing import Any, assert_never
 
+from server.config import get_config
 from server.game.player_service import PlayerService
 from server.models.game import StatusEffect, StatusEffectType
 from server.models.spell import Spell, SpellEffectType
 from server.persistence.repositories.player_spell_repository import PlayerSpellRepository
+from server.realtime.login_grace_period import is_player_in_login_grace_period
 from server.schemas.target_resolution import TargetMatch, TargetType
 from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
 
-class SpellEffects:
+class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility class with focused responsibility, minimal public interface
     """
     Engine for processing spell effects.
 
@@ -75,24 +79,23 @@ class SpellEffects:
         # Route to appropriate effect handler
         if spell.effect_type == SpellEffectType.HEAL:
             return await self._process_heal(spell, target, mastery_modifier)
-        elif spell.effect_type == SpellEffectType.DAMAGE:
+        if spell.effect_type == SpellEffectType.DAMAGE:
             return await self._process_damage(spell, target, mastery_modifier)
-        elif spell.effect_type == SpellEffectType.STATUS_EFFECT:
+        if spell.effect_type == SpellEffectType.STATUS_EFFECT:
             return await self._process_status_effect(spell, target, mastery_modifier)
-        elif spell.effect_type == SpellEffectType.STAT_MODIFY:
+        if spell.effect_type == SpellEffectType.STAT_MODIFY:
             return await self._process_stat_modify(spell, target, mastery_modifier)
-        elif spell.effect_type == SpellEffectType.LUCIDITY_ADJUST:
+        if spell.effect_type == SpellEffectType.LUCIDITY_ADJUST:
             return await self._process_lucidity_adjust(spell, target, mastery_modifier)
-        elif spell.effect_type == SpellEffectType.CORRUPTION_ADJUST:
+        if spell.effect_type == SpellEffectType.CORRUPTION_ADJUST:
             return await self._process_corruption_adjust(spell, target, mastery_modifier)
-        elif spell.effect_type == SpellEffectType.TELEPORT:
+        if spell.effect_type == SpellEffectType.TELEPORT:
             return await self._process_teleport(spell, target, mastery_modifier)
-        elif spell.effect_type == SpellEffectType.CREATE_OBJECT:
+        if spell.effect_type == SpellEffectType.CREATE_OBJECT:
             return await self._process_create_object(spell, target, mastery_modifier)
-        else:
-            # This should never happen if all enum values are handled
-            # Using assert_never for exhaustive enum checking
-            assert_never(spell.effect_type)
+        # This should never happen if all enum values are handled
+        # Using assert_never for exhaustive enum checking
+        assert_never(spell.effect_type)
 
     async def _process_heal(self, spell: Spell, target: TargetMatch, mastery_modifier: float) -> dict[str, Any]:
         """Process heal effect."""
@@ -156,7 +159,7 @@ class SpellEffects:
             "effect_applied": True,
         }
 
-    async def _process_status_effect(
+    async def _process_status_effect(  # pylint: disable=too-many-locals  # Reason: Status effect processing requires many intermediate variables for complex effect logic
         self, spell: Spell, target: TargetMatch, mastery_modifier: float
     ) -> dict[str, Any]:
         """Process status effect."""
@@ -176,9 +179,50 @@ class SpellEffects:
                 "effect_applied": False,
             }
 
-        if target.target_type == TargetType.PLAYER:
+        if target.target_type == TargetType.PLAYER:  # pylint: disable=too-many-nested-blocks  # Reason: Spell effects require complex nested logic for target validation, grace period checks, and effect application
             try:
                 target_id = uuid.UUID(target.target_id)
+
+                # Check if target is in login grace period - block negative effects
+                try:
+                    config = get_config()
+                    app = getattr(config, "_app_instance", None)
+                    if app:
+                        connection_manager = getattr(app.state, "connection_manager", None)
+                        if connection_manager:
+                            if is_player_in_login_grace_period(target_id, connection_manager):
+                                # Check if this is a negative effect
+                                # Negative effects from StatusEffectType enum: STUNNED, POISONED, HALLUCINATING, PARANOID, TREMBLING, CORRUPTED, DELIRIOUS
+                                # Positive effects: BUFF
+                                negative_effect_types = {
+                                    StatusEffectType.STUNNED,
+                                    StatusEffectType.POISONED,
+                                    StatusEffectType.HALLUCINATING,
+                                    StatusEffectType.PARANOID,
+                                    StatusEffectType.TREMBLING,
+                                    StatusEffectType.CORRUPTED,
+                                    StatusEffectType.DELIRIOUS,
+                                }
+                                if effect_type in negative_effect_types:
+                                    logger.info(
+                                        "Negative status effect blocked - target in login grace period",
+                                        target_id=target.target_id,
+                                        effect_type=effect_type.value,
+                                    )
+                                    return {
+                                        "success": False,
+                                        "message": f"Target is protected and immune to {effect_type.value}",
+                                        "effect_applied": False,
+                                    }
+                                # Allow positive effects to proceed
+                except (AttributeError, ImportError, TypeError, ValueError) as e:
+                    # If we can't check grace period, proceed with effect (fail open)
+                    logger.debug(
+                        "Could not check login grace period for status effect",
+                        target_id=target.target_id,
+                        error=str(e),
+                    )
+
                 player = await self.player_service.persistence.get_player_by_id(target_id)
                 if not player:
                     return {"success": False, "message": "Target player not found", "effect_applied": False}
@@ -216,7 +260,7 @@ class SpellEffects:
             "effect_applied": True,
         }
 
-    async def _process_stat_modify(self, spell: Spell, target: TargetMatch, mastery_modifier: float) -> dict[str, Any]:
+    async def _process_stat_modify(self, spell: Spell, target: TargetMatch, mastery_modifier: float) -> dict[str, Any]:  # pylint: disable=too-many-locals  # Reason: Stat modification requires many intermediate variables for complex stat calculation logic
         """Process stat modification effect."""
         if target.target_type != TargetType.PLAYER:
             return {"success": False, "message": "Stat modification can only target players", "effect_applied": False}
@@ -305,7 +349,7 @@ class SpellEffects:
             return {"success": False, "message": "Lucidity adjustment can only target players", "effect_applied": False}
 
         adjust_amount = int(spell.effect_data.get("adjust_amount", 0) * mastery_modifier)
-        if adjust_amount == 0:
+        if not adjust_amount:
             return {"success": False, "message": "Invalid lucidity adjustment amount", "effect_applied": False}
 
         try:
@@ -345,7 +389,7 @@ class SpellEffects:
             }
 
         adjust_amount = int(spell.effect_data.get("adjust_amount", 0) * mastery_modifier)
-        if adjust_amount == 0:
+        if not adjust_amount:
             return {"success": False, "message": "Invalid corruption adjustment amount", "effect_applied": False}
 
         try:

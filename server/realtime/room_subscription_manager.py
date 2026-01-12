@@ -5,6 +5,8 @@ This module provides room subscription functionality for tracking
 which players are subscribed to which rooms and managing room occupants.
 """
 
+# pylint: disable=too-many-lines  # Reason: Room subscription manager requires extensive subscription management logic for comprehensive room subscription tracking
+
 from __future__ import annotations
 
 from collections.abc import Mapping
@@ -84,7 +86,7 @@ class RoomSubscriptionManager:
             logger.debug("Player unsubscribed from room", player_id=player_id, room_id=canonical_id)
             return True
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Unsubscribe errors unpredictable, must handle gracefully
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Unsubscribe errors unpredictable, must handle gracefully
             logger.error("Error unsubscribing player from room", player_id=player_id, room_id=room_id, error=str(e))
             return False
 
@@ -101,7 +103,7 @@ class RoomSubscriptionManager:
         try:
             canonical_id = self._canonical_room_id(room_id) or room_id
             return self.room_subscriptions.get(canonical_id, set()).copy()
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Subscription access errors unpredictable, must return empty set
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Subscription access errors unpredictable, must return empty set
             logger.error("Error getting subscribers for room", room_id=room_id, error=str(e))
             return set()
 
@@ -119,7 +121,7 @@ class RoomSubscriptionManager:
             canonical_id = self._canonical_room_id(room_id) or room_id
             stacks = self.room_drops.get(canonical_id, [])
             return [deepcopy(stack) for stack in stacks]
-        except Exception as exc:  # pragma: no cover - defensive logging  # pylint: disable=broad-exception-caught  # Reason: Deepcopy errors unpredictable, must return empty list
+        except Exception as exc:  # noqa: B904  # pragma: no cover - defensive logging  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Deepcopy errors unpredictable, must return empty list
             logger.error("Error listing room drops", room_id=room_id, error=str(exc))
             return []
 
@@ -145,7 +147,7 @@ class RoomSubscriptionManager:
                 item_id=drop_stack.get("item_id"),
                 quantity=quantity,
             )
-        except Exception as exc:  # pylint: disable=broad-exception-caught  # Reason: Room drop add errors unpredictable, must handle gracefully
+        except Exception as exc:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Room drop add errors unpredictable, must handle gracefully
             logger.error("Failed adding room drop", room_id=canonical_id, error=str(exc))
 
     def take_room_drop(self, room_id: str, index: int, quantity: int) -> dict[str, Any] | None:
@@ -166,7 +168,7 @@ class RoomSubscriptionManager:
                 raise ValueError("Quantity must be positive when taking room drops.")
 
             drop_list = self.room_drops.get(canonical_id)
-            if not drop_list or not (0 <= index < len(drop_list)):
+            if not drop_list or not 0 <= index < len(drop_list):
                 return None
 
             stack = drop_list[index]
@@ -191,7 +193,7 @@ class RoomSubscriptionManager:
                 quantity=removed_quantity,
             )
             return removed
-        except Exception as exc:  # pylint: disable=broad-exception-caught  # Reason: Room drop retrieval errors unpredictable, must return None
+        except Exception as exc:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Room drop retrieval errors unpredictable, must return None
             logger.error("Failed retrieving room drop", room_id=canonical_id, error=str(exc))
             return None
 
@@ -213,7 +215,7 @@ class RoomSubscriptionManager:
             if drop_list is None or not (0 <= index < len(drop_list)) or quantity < 0:
                 return False
 
-            if quantity == 0:
+            if not quantity:
                 drop_list.pop(index)
             else:
                 drop_list[index]["quantity"] = quantity
@@ -225,7 +227,7 @@ class RoomSubscriptionManager:
 
             logger.debug("Room drop adjusted", room_id=canonical_id, index=index, quantity=quantity)
             return True
-        except Exception as exc:  # pylint: disable=broad-exception-caught  # Reason: Room drop adjustment errors unpredictable, must return False
+        except Exception as exc:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Room drop adjustment errors unpredictable, must return False
             logger.error("Failed adjusting room drop", room_id=canonical_id, error=str(exc))
             return False
 
@@ -249,7 +251,7 @@ class RoomSubscriptionManager:
             logger.debug("Player added as occupant of room", player_id=player_id, room_id=canonical_id)
             return True
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Occupant add errors unpredictable, must return False
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Occupant add errors unpredictable, must return False
             logger.error("Error adding occupant to room", player_id=player_id, room_id=room_id, error=str(e))
             return False
 
@@ -274,9 +276,127 @@ class RoomSubscriptionManager:
             logger.debug("Player removed as occupant of room", player_id=player_id, room_id=canonical_id)
             return True
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Occupant remove errors unpredictable, must return False
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Occupant remove errors unpredictable, must return False
             logger.error("Error removing occupant from room", player_id=player_id, room_id=room_id, error=str(e))
             return False
+
+    def _get_online_player_occupants(self, canonical_id: str, online_players: dict[str, Any]) -> list[dict[str, Any]]:
+        """Get online player occupants from room_occupants."""
+        occupants: list[dict[str, Any]] = []
+        if canonical_id in self.room_occupants:
+            for player_id in self.room_occupants[canonical_id]:
+                if player_id in online_players:
+                    occupants.append(online_players[player_id])
+        return occupants
+
+    def _get_npc_name_from_lifecycle_manager(self, lifecycle_manager: Any, npc_id: str) -> str:
+        """Get NPC display name from lifecycle manager."""
+        try:
+            if lifecycle_manager and npc_id in lifecycle_manager.active_npcs:
+                npc_instance = lifecycle_manager.active_npcs[npc_id]
+                npc_name = getattr(npc_instance, "name", None)
+                if npc_name:
+                    return npc_name
+        except Exception:  # pylint: disable=broad-exception-caught  # nosec B110: NPC attribute access errors unpredictable, optional metadata  # noqa: B904
+            pass
+        logger.warning("NPC name not found, using ID as fallback", npc_id=npc_id)
+        return npc_id
+
+    def _add_npc_to_occupants(self, occupants: list[dict[str, Any]], npc_id: str, npc_name: str) -> None:
+        """Add NPC to occupants list."""
+        occupants.append(
+            {
+                "player_id": npc_id,
+                "player_name": npc_name,
+                "is_npc": True,
+            }
+        )
+
+    def _query_npcs_from_lifecycle_manager(self, canonical_id: str, lifecycle_manager: Any) -> list[dict[str, Any]]:
+        """Query NPCs from lifecycle manager and add to occupants."""
+        npc_occupants: list[dict[str, Any]] = []
+        active_npcs_dict = lifecycle_manager.active_npcs
+
+        for npc_id, npc_instance in active_npcs_dict.items():
+            # Skip dead NPCs
+            if not getattr(npc_instance, "is_alive", True):
+                logger.debug(
+                    "Skipping dead NPC from occupants",
+                    npc_id=npc_id,
+                    npc_name=getattr(npc_instance, "name", "unknown"),
+                    room_id=canonical_id,
+                )
+                continue
+
+            # Check both current_room and current_room_id for compatibility
+            current_room = getattr(npc_instance, "current_room", None)
+            current_room_id = getattr(npc_instance, "current_room_id", None)
+            npc_room_id = current_room or current_room_id
+            if npc_room_id == canonical_id:
+                npc_name = self._get_npc_name_from_lifecycle_manager(lifecycle_manager, npc_id)
+                self._add_npc_to_occupants(npc_occupants, npc_id, npc_name)
+
+        return npc_occupants
+
+    def _filter_fallback_npcs(self, room_npc_ids: list[str], lifecycle_manager: Any, canonical_id: str) -> list[str]:
+        """Filter fallback NPCs to only include alive NPCs from active_npcs."""
+        filtered_npc_ids = []
+        try:
+            if lifecycle_manager and hasattr(lifecycle_manager, "active_npcs"):
+                for npc_id in room_npc_ids:
+                    if npc_id in lifecycle_manager.active_npcs:
+                        npc_instance = lifecycle_manager.active_npcs[npc_id]
+                        if getattr(npc_instance, "is_alive", True):
+                            filtered_npc_ids.append(npc_id)
+                        else:
+                            logger.debug(
+                                "Filtered dead NPC from fallback occupants",
+                                npc_id=npc_id,
+                                room_id=canonical_id,
+                            )
+        except Exception as filter_error:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC filter errors unpredictable, fallback available
+            logger.warning(
+                "Error filtering fallback NPCs, using all room NPCs",
+                room_id=canonical_id,
+                error=str(filter_error),
+            )
+            return room_npc_ids
+        return filtered_npc_ids
+
+    def _get_fallback_npcs_from_room(self, canonical_id: str) -> list[dict[str, Any]]:
+        """Get NPCs from room.get_npcs() as fallback."""
+        npc_occupants: list[dict[str, Any]] = []
+        if not self.async_persistence:
+            return npc_occupants
+
+        room = self.async_persistence.get_room_by_id(canonical_id)  # Sync method, uses cache
+        if not room or not hasattr(room, "get_npcs"):
+            return npc_occupants
+
+        room_npc_ids = room.get_npcs()
+        logger.debug(
+            "Adding NPCs to room occupants from room.get_npcs() fallback",
+            room_id=canonical_id,
+            npc_count=len(room_npc_ids),
+        )
+
+        # Filter fallback NPCs: only include those in active_npcs and alive
+        try:
+            from ..services.npc_instance_service import get_npc_instance_service
+
+            npc_instance_service = get_npc_instance_service()
+            if npc_instance_service and hasattr(npc_instance_service, "lifecycle_manager"):
+                lifecycle_manager = npc_instance_service.lifecycle_manager
+                filtered_npc_ids = self._filter_fallback_npcs(room_npc_ids, lifecycle_manager, canonical_id)
+            else:
+                filtered_npc_ids = room_npc_ids
+        except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC filter errors unpredictable, fallback available
+            filtered_npc_ids = room_npc_ids
+
+        for npc_id in filtered_npc_ids:
+            self._add_npc_to_occupants(npc_occupants, npc_id, npc_id)
+
+        return npc_occupants
 
     async def get_room_occupants(self, room_id: str, online_players: dict[str, Any]) -> list[dict[str, Any]]:
         """
@@ -290,22 +410,16 @@ class RoomSubscriptionManager:
             List[Dict[str, Any]]: List of occupant information (players and NPCs)
         """
         try:
-            occupants: list[dict[str, Any]] = []
-
             # Resolve to canonical id and check set presence
             canonical_id = self._canonical_room_id(room_id) or room_id
             # Note: Even if canonical_id not in room_occupants, we still check for NPCs below
 
-            # Only include online players currently tracked in this room
-            if canonical_id in self.room_occupants:
-                for player_id in self.room_occupants[canonical_id]:
-                    if player_id in online_players:
-                        occupants.append(online_players[player_id])
+            # Get online player occupants
+            occupants = self._get_online_player_occupants(canonical_id, online_players)
 
             # CRITICAL FIX: Query NPCs from lifecycle manager instead of Room instance
             # Room instances are recreated from persistence and lose in-memory NPC tracking
             # NPCs are actually tracked in the lifecycle manager with their current_room/current_room_id
-            npc_ids: list[str] = []
             try:
                 from ..services.npc_instance_service import get_npc_instance_service
 
@@ -313,119 +427,26 @@ class RoomSubscriptionManager:
                 if npc_instance_service and hasattr(npc_instance_service, "lifecycle_manager"):
                     lifecycle_manager = npc_instance_service.lifecycle_manager
                     if lifecycle_manager and hasattr(lifecycle_manager, "active_npcs"):
-                        active_npcs_dict = lifecycle_manager.active_npcs
-                        # Query all active NPCs to find those in this room
-                        # BUGFIX: Filter out dead NPCs (is_alive=False) to prevent showing dead NPCs in occupants
-                        # As documented in investigation: 2025-11-30_session-001_npc-combat-start-failure.md
-                        for npc_id, npc_instance in active_npcs_dict.items():
-                            # Skip dead NPCs
-                            is_alive_value = getattr(npc_instance, "is_alive", True)
-
-                            if not is_alive_value:
-                                logger.debug(
-                                    "Skipping dead NPC from occupants",
-                                    npc_id=npc_id,
-                                    npc_name=getattr(npc_instance, "name", "unknown"),
-                                    room_id=canonical_id,
-                                )
-                                continue
-
-                            # Check both current_room and current_room_id for compatibility
-                            current_room = getattr(npc_instance, "current_room", None)
-                            current_room_id = getattr(npc_instance, "current_room_id", None)
-                            npc_room_id = current_room or current_room_id
-                            if npc_room_id == canonical_id:
-                                npc_ids.append(npc_id)
-
-                logger.debug(
-                    "Adding NPCs to room occupants from lifecycle manager",
-                    room_id=canonical_id,
-                    npc_count=len(npc_ids),
-                )
-                for npc_id in npc_ids:
-                    # Get NPC display name from lifecycle manager
-                    # BUGFIX: Resolve name here instead of using npc_id to prevent UUID display
-                    npc_name = None
-                    try:
-                        if lifecycle_manager and npc_id in lifecycle_manager.active_npcs:
-                            npc_instance = lifecycle_manager.active_npcs[npc_id]
-                            npc_name = getattr(npc_instance, "name", None)
-                    except Exception:  # pylint: disable=broad-exception-caught  # nosec B110: NPC attribute access errors unpredictable, optional metadata
-                        pass
-
-                    # Fallback to npc_id if name not found (shouldn't happen)
-                    if not npc_name:
-                        npc_name = npc_id
-                        logger.warning("NPC name not found, using ID as fallback", npc_id=npc_id)
-
-                    # Create a minimal dict for NPC occupant (matching player format)
-                    occupants.append(
-                        {
-                            "player_id": npc_id,  # Use npc_id as player_id for compatibility
-                            "player_name": npc_name,  # BUGFIX: Use display name, not ID!
-                            "is_npc": True,
-                        }
-                    )
-            except Exception as npc_query_error:  # pylint: disable=broad-exception-caught  # Reason: NPC query errors unpredictable, fallback available
+                        npc_occupants = self._query_npcs_from_lifecycle_manager(canonical_id, lifecycle_manager)
+                        occupants.extend(npc_occupants)
+                        logger.debug(
+                            "Adding NPCs to room occupants from lifecycle manager",
+                            room_id=canonical_id,
+                            npc_count=len(npc_occupants),
+                        )
+            except Exception as npc_query_error:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC query errors unpredictable, fallback available
                 logger.warning(
                     "Error querying NPCs from lifecycle manager, falling back to room.get_npcs()",
                     room_id=canonical_id,
                     error=str(npc_query_error),
                 )
                 # Fallback to room.get_npcs() if lifecycle manager query fails
-                # BUGFIX: Filter fallback NPCs to only include alive NPCs from active_npcs
-                # As documented in investigation: 2025-11-30_session-001_npc-combat-start-failure.md
-                if self.async_persistence:
-                    room = self.async_persistence.get_room_by_id(canonical_id)  # Sync method, uses cache
-                    if room and hasattr(room, "get_npcs"):
-                        room_npc_ids = room.get_npcs()
-                        logger.debug(
-                            "Adding NPCs to room occupants from room.get_npcs() fallback",
-                            room_id=canonical_id,
-                            npc_count=len(room_npc_ids),
-                        )
-
-                        # Filter fallback NPCs: only include those in active_npcs and alive
-                        filtered_npc_ids = []
-                        try:
-                            from ..services.npc_instance_service import get_npc_instance_service
-
-                            npc_instance_service = get_npc_instance_service()
-                            if npc_instance_service and hasattr(npc_instance_service, "lifecycle_manager"):
-                                lifecycle_manager = npc_instance_service.lifecycle_manager
-                                if lifecycle_manager and hasattr(lifecycle_manager, "active_npcs"):
-                                    for npc_id in room_npc_ids:
-                                        if npc_id in lifecycle_manager.active_npcs:
-                                            npc_instance = lifecycle_manager.active_npcs[npc_id]
-                                            # Only include alive NPCs
-                                            if getattr(npc_instance, "is_alive", True):
-                                                filtered_npc_ids.append(npc_id)
-                                            else:
-                                                logger.debug(
-                                                    "Filtered dead NPC from fallback occupants",
-                                                    npc_id=npc_id,
-                                                    room_id=canonical_id,
-                                                )
-                        except Exception as filter_error:  # pylint: disable=broad-exception-caught  # Reason: NPC filter errors unpredictable, fallback available
-                            logger.warning(
-                                "Error filtering fallback NPCs, using all room NPCs",
-                                room_id=canonical_id,
-                                error=str(filter_error),
-                            )
-                            filtered_npc_ids = room_npc_ids
-
-                        for npc_id in filtered_npc_ids:
-                            occupants.append(
-                                {
-                                    "player_id": npc_id,
-                                    "player_name": npc_id,
-                                    "is_npc": True,
-                                }
-                            )
+                npc_occupants = self._get_fallback_npcs_from_room(canonical_id)
+                occupants.extend(npc_occupants)
 
             return occupants
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Occupant query errors unpredictable, must return empty list
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Occupant query errors unpredictable, must return empty list
             logger.error("Error getting occupants for room", room_id=room_id, error=str(e))
             return []
 
@@ -457,7 +478,7 @@ class RoomSubscriptionManager:
             logger.debug("Player removed from all rooms", player_id=player_id)
             return True
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Player removal errors unpredictable, must return False
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Player removal errors unpredictable, must return False
             logger.error("Error removing player from all rooms", player_id=player_id, error=str(e))
             return False
 
@@ -486,7 +507,7 @@ class RoomSubscriptionManager:
                 )
             return True
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Room reconciliation errors unpredictable, must return False
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Room reconciliation errors unpredictable, must return False
             logger.error("Error reconciling room presence", room_id=room_id, error=str(e))
             return False
 
@@ -500,7 +521,7 @@ class RoomSubscriptionManager:
         Returns:
             Optional[str]: The canonical room ID or the original ID if resolution fails
         """
-        if room_id is None or room_id == "":
+        if room_id is None or not room_id:
             return room_id
 
         if self.async_persistence is None:
@@ -510,7 +531,7 @@ class RoomSubscriptionManager:
             room = self.async_persistence.get_room_by_id(room_id)  # Sync method, uses cache
             if room is not None and getattr(room, "id", None):
                 return room.id
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Room resolution errors unpredictable, fallback to original id
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Room resolution errors unpredictable, fallback to original id
             logger.error("Error resolving canonical room id", room_id=room_id, error=str(e))
         return room_id
 
@@ -535,6 +556,6 @@ class RoomSubscriptionManager:
                 else 0,
                 "average_occupants_per_room": total_occupants / len(self.room_occupants) if self.room_occupants else 0,
             }
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Stats calculation errors unpredictable, must return empty dict
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Stats calculation errors unpredictable, must return empty dict
             logger.error("Error getting room subscription stats", error=str(e))
             return {}

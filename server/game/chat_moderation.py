@@ -44,7 +44,7 @@ if TYPE_CHECKING:
         def is_player_muted(self, muter_id: str, target_id: str) -> bool:
             """Check if player is muted."""
 
-        def mute_global(
+        def mute_global(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Mute operations require many parameters for context and validation
             self,
             muter_id: str,
             muter_name: str,
@@ -267,6 +267,51 @@ class ChatModeration:
         """Get user management system statistics."""
         return self.user_manager.get_system_stats()
 
+    def _format_mute_duration(self, expires_at: str | datetime | None) -> str:
+        """Format mute duration text with remaining time or expiration status."""
+        if not expires_at:
+            return " (PERMANENT)"
+
+        try:
+            if isinstance(expires_at, str):
+                expires_dt = datetime.fromisoformat(expires_at.replace("Z", "+00:00"))
+            else:
+                expires_dt = expires_at
+
+            now = datetime.now(UTC)
+            if expires_dt.tzinfo is None:
+                expires_dt = expires_dt.replace(tzinfo=UTC)
+
+            remaining = expires_dt - now
+            if remaining.total_seconds() > 0:
+                minutes_left = int(remaining.total_seconds() / 60)
+                return f" ({minutes_left} minutes remaining)"
+            return " (EXPIRED)"
+        except (ValueError, TypeError, AttributeError) as e:
+            logger.debug("Error calculating mute duration", error=str(e), error_type=type(e).__name__)
+            return ""
+
+    def _format_mute_entry(self, mute_data: dict[str, Any]) -> str:
+        """Format a single mute entry for display."""
+        target_name = mute_data.get("target_name", "Unknown")
+        expires_at = mute_data.get("expires_at")
+        reason = mute_data.get("reason", "")
+
+        duration_text = self._format_mute_duration(expires_at)
+        reason_text = f" - {reason}" if reason else ""
+        return f"  • {target_name}{duration_text}{reason_text}"
+
+    def _format_mute_section(self, section_title: str, mutes: dict[str, Any], empty_message: str) -> list[str]:
+        """Format a section of mutes (personal or global) for display."""
+        status_lines = []
+        if mutes:
+            status_lines.append(section_title)
+            for _target_id, mute_data in mutes.items():
+                status_lines.append(self._format_mute_entry(mute_data))
+        else:
+            status_lines.append(empty_message)
+        return status_lines
+
     async def get_mute_status(self, player_id: uuid.UUID | str) -> str:
         """
         Get comprehensive mute status for a player.
@@ -318,81 +363,21 @@ class ChatModeration:
 
             # Personal mutes (players you have muted)
             personal_mutes = mute_info.get("player_mutes", {})
-            if personal_mutes:
-                status_lines.append("🔇 PLAYERS YOU HAVE MUTED:")
-                for _target_id, mute_data in personal_mutes.items():
-                    target_name = mute_data.get("target_name", "Unknown")
-                    expires_at = mute_data.get("expires_at")
-                    reason = mute_data.get("reason", "")
-
-                    if expires_at:
-                        # Calculate remaining time
-                        try:
-                            if isinstance(expires_at, str):
-                                expires_dt = datetime.fromisoformat(expires_at.replace("Z", "+00:00"))
-                            else:
-                                expires_dt = expires_at
-
-                            now = datetime.now(UTC)
-                            if expires_dt.tzinfo is None:
-                                expires_dt = expires_dt.replace(tzinfo=UTC)
-
-                            remaining = expires_dt - now
-                            if remaining.total_seconds() > 0:
-                                minutes_left = int(remaining.total_seconds() / 60)
-                                duration_text = f" ({minutes_left} minutes remaining)"
-                            else:
-                                duration_text = " (EXPIRED)"
-                        except (ValueError, TypeError, AttributeError) as e:
-                            logger.debug("Error calculating mute duration", error=str(e), error_type=type(e).__name__)
-                            duration_text = ""
-                    else:
-                        duration_text = " (PERMANENT)"
-
-                    reason_text = f" - {reason}" if reason else ""
-                    status_lines.append(f"  • {target_name}{duration_text}{reason_text}")
-            else:
-                status_lines.append("🔇 PLAYERS YOU HAVE MUTED: None")
+            status_lines.extend(
+                self._format_mute_section(
+                    "🔇 PLAYERS YOU HAVE MUTED:", personal_mutes, "🔇 PLAYERS YOU HAVE MUTED: None"
+                )
+            )
 
             status_lines.append("")
 
             # Global mutes (players you have globally muted)
             global_mutes = mute_info.get("global_mutes", {})
-            if global_mutes:
-                status_lines.append("🌐 PLAYERS YOU HAVE GLOBALLY MUTED:")
-                for _target_id, mute_data in global_mutes.items():
-                    target_name = mute_data.get("target_name", "Unknown")
-                    expires_at = mute_data.get("expires_at")
-                    reason = mute_data.get("reason", "")
-
-                    if expires_at:
-                        # Calculate remaining time
-                        try:
-                            if isinstance(expires_at, str):
-                                expires_dt = datetime.fromisoformat(expires_at.replace("Z", "+00:00"))
-                            else:
-                                expires_dt = expires_at
-
-                            now = datetime.now(UTC)
-                            if expires_dt.tzinfo is None:
-                                expires_dt = expires_dt.replace(tzinfo=UTC)
-
-                            remaining = expires_dt - now
-                            if remaining.total_seconds() > 0:
-                                minutes_left = int(remaining.total_seconds() / 60)
-                                duration_text = f" ({minutes_left} minutes remaining)"
-                            else:
-                                duration_text = " (EXPIRED)"
-                        except (ValueError, TypeError, AttributeError) as e:
-                            logger.debug("Error calculating mute duration", error=str(e), error_type=type(e).__name__)
-                            duration_text = ""
-                    else:
-                        duration_text = " (PERMANENT)"
-
-                    reason_text = f" - {reason}" if reason else ""
-                    status_lines.append(f"  • {target_name}{duration_text}{reason_text}")
-            else:
-                status_lines.append("🌐 PLAYERS YOU HAVE GLOBALLY MUTED: None")
+            status_lines.extend(
+                self._format_mute_section(
+                    "🌐 PLAYERS YOU HAVE GLOBALLY MUTED:", global_mutes, "🌐 PLAYERS YOU HAVE GLOBALLY MUTED: None"
+                )
+            )
 
             status_lines.append("")
 

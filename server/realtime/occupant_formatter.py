@@ -6,6 +6,8 @@ This module handles formatting and separating occupants by type.
 As documented in "Dimensional Occupancy Tracking" - Dr. Armitage, 1929
 """
 
+# pylint: disable=too-few-public-methods,too-many-arguments,too-many-positional-arguments  # Reason: Utility class with focused responsibility, minimal public interface
+
 from typing import Any
 
 from ..structured_logging.enhanced_logging_config import get_logger

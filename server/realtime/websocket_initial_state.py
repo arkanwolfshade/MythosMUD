@@ -4,6 +4,8 @@ WebSocket initial state preparation for MythosMUD real-time communication.
 This module handles sending initial game state to connecting players.
 """
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Initial state preparation requires many parameters for complete game state context
+
 import uuid
 from typing import Any
 
@@ -104,7 +106,7 @@ async def send_initial_game_state(
         return None, False
 
 
-async def check_and_send_death_notification(
+async def check_and_send_death_notification(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Death notification requires many parameters for context and notification logic
     websocket: WebSocket, player_id: uuid.UUID, player_id_str: str, canonical_room_id: str, room, connection_manager
 ) -> None:
     """Check if player is dead and send death notification if needed."""

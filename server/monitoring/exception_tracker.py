@@ -23,7 +23,7 @@ logger = get_logger(__name__)
 
 
 @dataclass
-class ExceptionRecord:
+class ExceptionRecord:  # pylint: disable=too-many-instance-attributes  # Reason: Exception record requires many fields to capture complete exception context
     """Represents a tracked exception with full context."""
 
     exception_id: str
@@ -87,7 +87,7 @@ class ExceptionTracker:
 
         logger.info("Exception tracker initialized", max_records=max_records)
 
-    def track_exception(
+    def track_exception(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Exception tracking requires many parameters for complete exception context
         self,
         exception: Exception,
         context: dict[str, Any] | None = None,
@@ -332,19 +332,19 @@ class ExceptionTracker:
         for handler in self.exception_handlers[exception_type]:
             try:
                 handler(exception, record)
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Handler errors unpredictable, must not fail exception tracking
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Handler errors unpredictable, must not fail exception tracking
                 logger.error("Exception handler failed", handler=str(handler), error=str(e), exc_info=True)
 
         # Call global handlers
         for handler in self.global_handlers:
             try:
                 handler(exception, record)
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Handler errors unpredictable, must not fail exception tracking
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Handler errors unpredictable, must not fail exception tracking
                 logger.error("Global exception handler failed", handler=str(handler), error=str(e), exc_info=True)
 
 
 # Global exception tracker instance
-_exception_tracker: ExceptionTracker | None = None
+_exception_tracker: ExceptionTracker | None = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
 
 
 def get_exception_tracker() -> ExceptionTracker:
@@ -360,7 +360,7 @@ def get_exception_tracker() -> ExceptionTracker:
     return _exception_tracker
 
 
-def track_exception(
+def track_exception(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Exception tracking requires many parameters for complete exception context
     exception: Exception,
     context: dict[str, Any] | None = None,
     user_id: str | None = None,
@@ -406,7 +406,7 @@ def track_exception(
     )
 
 
-def track_exception_with_context(
+def track_exception_with_context(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Exception tracking requires many parameters for complete exception context
     exception: Exception,
     request=None,
     websocket=None,

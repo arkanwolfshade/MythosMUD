@@ -113,12 +113,12 @@ class RoomIDUtils:
             True if any fallback IDs match, False otherwise
         """
         # Check direct matches first
-        if npc_room_id == room_id or npc_room_id == canonical_room_id:
+        if npc_room_id in (room_id, canonical_room_id):
             return True
 
         # Check canonical room ID matches if available
         if npc_canonical_room_id is not None:
-            return npc_canonical_room_id == room_id or npc_canonical_room_id == canonical_room_id
+            return npc_canonical_room_id in (room_id, canonical_room_id)
 
         return False
 

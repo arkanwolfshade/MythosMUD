@@ -28,7 +28,7 @@ def validate_chat_message(chat_message: "ChatMessage") -> bool:
     """
     try:
         # Check message content
-        if not chat_message.content or len(chat_message.content.strip()) == 0:
+        if not chat_message.content or not chat_message.content.strip():
             logger.warning("Empty message content", message_id=chat_message.id)
             return False
 
@@ -75,7 +75,7 @@ def validate_room_access(sender_id: str, room_id: str | None) -> bool:
         if room_id is None:
             return True
         # Explicitly validate non-empty string
-        if room_id.strip() == "":
+        if not room_id.strip():
             return False
 
         return True

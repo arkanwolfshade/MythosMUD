@@ -93,19 +93,100 @@ function App() {
   // NOTE: This clears tokens from storage, but tokens stored AFTER this mount
   // (i.e., during login in the same session) will remain valid for that session
   // NOTE: This only runs for the main app route, not for /map route
+  // FIX: Use sessionStorage flag to prevent clearing tokens on component remount
+  // (e.g., when Playwright switches tabs). Only clear on actual page load.
   useEffect(() => {
-    // Clear all stored tokens to force fresh authentication
-    // This ensures that after server restart, clients cannot use stale tokens
-    secureTokenStorage.clearAllTokens();
+    // Check if a valid token already exists before clearing
+    // This prevents clearing tokens on component remount when user is already authenticated
+    // Only clear tokens on fresh page load (no valid token exists)
+    const existingToken = secureTokenStorage.getToken();
+    const hasValidToken =
+      existingToken &&
+      secureTokenStorage.isValidToken(existingToken) &&
+      !secureTokenStorage.isTokenExpired(existingToken);
 
-    // Also clear any auth state that might have been restored
-    setAuthToken('');
-    setIsAuthenticated(false);
-    setCharacters([]);
-    setSelectedCharacterName('');
-    setSelectedCharacterId('');
-    setShowMotd(false);
-    setShowCharacterSelection(false);
+    if (!hasValidToken) {
+      // No valid token exists - clear all tokens (fresh page load or expired token)
+      secureTokenStorage.clearAllTokens();
+
+      // Also clear any auth state that might have been restored
+      setAuthToken('');
+      setIsAuthenticated(false);
+      setCharacters([]);
+      setSelectedCharacterName('');
+      setSelectedCharacterId('');
+      setShowMotd(false);
+      setShowCharacterSelection(false);
+    } else {
+      // Valid token exists - restore authentication state (component remount scenario)
+      // Restore token to state so defensive code can use it
+      setAuthToken(existingToken);
+      setIsAuthenticated(true);
+
+      // Try to restore characters list from API to fully restore session state
+      // This allows the component to properly render the game interface after remount
+      fetch(`${API_BASE_URL}/api/players/characters`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${existingToken}`,
+        },
+      })
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+          // If 401, token is invalid - clear it
+          if (response.status === 401) {
+            secureTokenStorage.clearAllTokens();
+            setIsAuthenticated(false);
+            setAuthToken('');
+          }
+          return null;
+        })
+        .then(charactersList => {
+          if (Array.isArray(charactersList) && charactersList.length > 0) {
+            // Map server response to client interface
+            // Server returns PlayerRead which has player_id as the ID field
+            const mappedCharacters = charactersList.map(
+              (c: { player_id?: string; id?: string; name?: string; [key: string]: unknown }): CharacterInfo => ({
+                player_id: c.player_id || c.id || '',
+                name: c.name || '',
+                profession_id: (c as { profession_id?: number }).profession_id || 0,
+                profession_name: (c as { profession_name?: string }).profession_name || undefined,
+                level: (c as { level?: number }).level || 1,
+                created_at: (c as { created_at?: string }).created_at || new Date().toISOString(),
+                last_active: (c as { last_active?: string }).last_active || new Date().toISOString(),
+              })
+            );
+            setCharacters(mappedCharacters);
+
+            // If only one character, auto-select it (common case after remount)
+            if (mappedCharacters.length === 1) {
+              const singleChar = mappedCharacters[0];
+              setSelectedCharacterId(singleChar.player_id);
+              setSelectedCharacterName(singleChar.name);
+              // Skip character selection and MOTD, go straight to game
+              setShowCharacterSelection(false);
+              setShowMotd(false);
+            } else if (mappedCharacters.length > 1) {
+              // Multiple characters - show selection screen
+              setShowCharacterSelection(true);
+            }
+          } else if (Array.isArray(charactersList) && charactersList.length === 0) {
+            // No characters - user needs to create one
+            setShowProfessionSelection(true);
+            setShowCharacterSelection(false);
+          }
+        })
+        .catch(error => {
+          // If API call fails, token might be invalid - clear it
+          console.warn('Failed to restore characters on remount:', error);
+          secureTokenStorage.clearAllTokens();
+          setIsAuthenticated(false);
+          setAuthToken('');
+        });
+    }
   }, []); // Only run on mount
 
   const handleLoginClick = async () => {
@@ -141,10 +222,10 @@ function App() {
 
       if (!token) throw new Error('No access_token in response');
 
-      // Store tokens securely
-      secureTokenStorage.setToken(token);
+      // Store tokens securely with username-specific keys (prevents tab conflicts)
+      secureTokenStorage.setToken(token, sanitizedUsername);
       if (refreshToken) {
-        secureTokenStorage.setRefreshToken(refreshToken);
+        secureTokenStorage.setRefreshToken(refreshToken, sanitizedUsername);
       }
 
       setAuthToken(token);
@@ -215,10 +296,10 @@ function App() {
 
       if (!token) throw new Error('No access_token in response');
 
-      // Store tokens securely
-      secureTokenStorage.setToken(token);
+      // Store tokens securely with username-specific keys (prevents tab conflicts)
+      secureTokenStorage.setToken(token, sanitizedUsername);
       if (refreshToken) {
-        secureTokenStorage.setRefreshToken(refreshToken);
+        secureTokenStorage.setRefreshToken(refreshToken, sanitizedUsername);
       }
 
       setAuthToken(token);
@@ -441,7 +522,7 @@ function App() {
     setShowProfessionSelection(true);
   };
 
-  const handleMotdContinue = () => {
+  const handleMotdContinue = async () => {
     // The token should be in state from successful login (which also stored it in localStorage)
     // Since tokens are cleared on mount and login happens after mount, the token in state
     // is the source of truth for this session. We don't need to restore from storage
@@ -457,6 +538,28 @@ function App() {
       setShowMotd(false);
       setShowCharacterSelection(false);
       return;
+    }
+
+    // Start login grace period when MOTD is dismissed
+    if (selectedCharacterId) {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/players/${selectedCharacterId}/start-login-grace-period`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+
+        if (!response.ok) {
+          // Log error but don't block game entry - grace period is best effort
+          const errorData = await response.json().catch(() => ({}));
+          console.warn('Failed to start login grace period:', errorData.detail || 'Unknown error');
+        }
+      } catch (error) {
+        // Log error but don't block game entry - grace period is best effort
+        console.warn('Error starting login grace period:', error);
+      }
     }
 
     // Proceed to game terminal - token is already in state and storage from login

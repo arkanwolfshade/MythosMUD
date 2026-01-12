@@ -5,6 +5,8 @@ This module handles looking at containers, including finding containers in rooms
 or equipped items, formatting container displays, and handling container look requests.
 """
 
+# pylint: disable=too-many-arguments,too-many-locals  # Reason: Container look requires many parameters and intermediate variables for complex display logic
+
 from typing import Any
 from uuid import UUID
 
@@ -152,7 +154,7 @@ def _extract_container_metadata(container_component: Any) -> dict[str, Any]:
     }
 
 
-async def _try_match_container_component(
+async def _try_match_container_component(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Container look requires many parameters for context and matching logic
     container_component: Any,
     item_instance_id: Any,
     slot_lower: str,
@@ -192,7 +194,7 @@ async def _try_match_container_component(
     return None
 
 
-async def _find_container_via_wearable_service(
+async def _find_container_via_wearable_service(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Container look requires many parameters for context and service lookup
     slot: str,
     item: dict[str, Any],
     target_lower: str,
@@ -227,7 +229,7 @@ async def _find_container_via_wearable_service(
     return None
 
 
-async def _find_container_in_room_or_equipped(
+async def _find_container_in_room_or_equipped(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Container look requires many parameters for context and container lookup
     target_lower: str,
     instance_number: int | None,
     room: Any,
@@ -341,7 +343,7 @@ def _format_container_display(
     return "\n".join(lines)
 
 
-async def _handle_container_look(
+async def _handle_container_look(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Container look requires many parameters and intermediate variables for complex display logic
     target: str,
     target_lower: str,
     instance_number: int | None,
@@ -379,7 +381,7 @@ async def _handle_container_look(
     return {"result": result_text}
 
 
-async def _try_lookup_container_implicit(
+async def _try_lookup_container_implicit(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Container look requires many parameters for context and container lookup
     target: str,
     target_lower: str,
     instance_number: int | None,

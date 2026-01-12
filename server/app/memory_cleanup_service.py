@@ -92,7 +92,7 @@ class MemoryThresholdMonitor:
             pre_collection_count = len(gc.get_objects())
             gc.collect()
             logger.debug("Garbage collector flush completed", pre_collection_count=pre_collection_count)
-        except Exception as gc_operation_failure:  # pylint: disable=broad-exception-caught  # Reason: GC operation errors unpredictable, must handle gracefully
+        except Exception as gc_operation_failure:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: GC operation errors unpredictable, must handle gracefully
             logger.error("Garbage collection optimization failed", error=str(gc_operation_failure))
 
     async def get_memory_status_report(self) -> dict:
@@ -183,7 +183,7 @@ class MemoryThresholdMonitor:
         except TimeoutError:
             logger.error("Cleanup operation timed out", timeout_seconds=timeout_seconds)
             return -1  # Negative return signals timeout
-        except Exception as cleanup_execution_exception:  # pylint: disable=broad-exception-caught  # Reason: Cleanup execution errors unpredictable, must handle gracefully
+        except Exception as cleanup_execution_exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Cleanup execution errors unpredictable, must handle gracefully
             logger.error("Managed cleanup runtime execution failed", error=str(cleanup_execution_exception))
             return -2  # Negative return signals failure
 

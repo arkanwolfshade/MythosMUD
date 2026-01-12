@@ -9,6 +9,8 @@ Other admin commands have been extracted to separate modules for better organiza
 - admin_teleport_commands.py: Teleport/goto command handlers
 """
 
+# pylint: disable=too-many-locals  # Reason: Command handlers require many intermediate variables for complex game logic
+
 from typing import Any
 
 from sqlalchemy.exc import SQLAlchemyError
@@ -64,7 +66,7 @@ async def handle_admin_command(
         return await _handle_admin_status_command(command_data, current_user, request, alias_storage, player_name)
     if subcommand == "time":
         return await _handle_admin_time_command(command_data, current_user, request, alias_storage, player_name)
-    if subcommand == "setlucidity" or subcommand == "lcd":
+    if subcommand in ("setlucidity", "lcd"):
         return await _handle_admin_set_lucidity_command(command_data, current_user, request, alias_storage, player_name)
     if subcommand == "set":
         return await _handle_admin_set_stat_command(command_data, current_user, request, alias_storage, player_name)

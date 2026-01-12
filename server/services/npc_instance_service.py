@@ -8,6 +8,8 @@ As documented in the Cultes des Goules, proper instance management is essential
 for maintaining control over the eldritch entities that inhabit our world.
 """
 
+# pylint: disable=too-many-lines  # Reason: NPC instance service requires extensive instance management logic for comprehensive NPC instance operations
+
 from typing import Any, cast
 
 from server.events.event_bus import EventBus
@@ -520,11 +522,10 @@ class NPCInstanceService:
                 zone = parts[1] if len(parts) > 1 else "unknown"
                 subzone = parts[2] if len(parts) > 2 else "unknown"
                 return f"{zone}/{subzone}"
-            elif len(parts) == 2:
+            if len(parts) == 2:
                 # Short format: earth_zone
                 return f"{parts[1]}/unknown"
-            else:
-                return "unknown/unknown"
+            return "unknown/unknown"
 
         except (OSError, ValueError, TypeError) as e:
             logger.error("Error getting NPC location", room_id=room_id, error=str(e), error_type=type(e).__name__)
@@ -537,7 +538,7 @@ _npc_instance_service_storage: list[NPCInstanceService | None] = [None]
 
 # Module-level variable for backward compatibility (used in tests)
 # This references the first element of the storage list
-npc_instance_service: NPCInstanceService | None = None
+npc_instance_service: NPCInstanceService | None = None  # pylint: disable=invalid-name  # Reason: Module-level variable for backward compatibility with tests
 
 
 def get_npc_instance_service() -> NPCInstanceService:

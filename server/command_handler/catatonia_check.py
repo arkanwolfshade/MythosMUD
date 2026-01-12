@@ -7,6 +7,8 @@ to zero, they enter catatonia and can only execute limited commands
 until another player helps them recover.
 """
 
+# pylint: disable=too-many-return-statements  # Reason: Catatonia checking requires multiple return statements for different command validation states and permission checks
+
 import uuid
 from typing import TYPE_CHECKING, Any
 
@@ -129,16 +131,15 @@ def _convert_player_id_to_uuid(player_id: Any, player_name: str) -> uuid.UUID | 
     try:
         if isinstance(player_id, uuid.UUID):
             return player_id
-        elif isinstance(player_id, str) and len(player_id) == 36:  # Valid UUID string length
+        if isinstance(player_id, str) and len(player_id) == 36:  # Valid UUID string length
             return uuid.UUID(player_id)
-        else:
-            # Invalid player_id format, skip database check
-            logger.debug(
-                "Skipping catatonia database check - invalid player_id format",
-                player=player_name,
-                player_id_type=type(player_id).__name__,
-            )
-            return None
+        # Invalid player_id format, skip database check
+        logger.debug(
+            "Skipping catatonia database check - invalid player_id format",
+            player=player_name,
+            player_id_type=type(player_id).__name__,
+        )
+        return None
     except (ValueError, AttributeError, TypeError) as e:
         # Invalid UUID format, skip database check
         logger.debug(

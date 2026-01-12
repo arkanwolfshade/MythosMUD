@@ -5,18 +5,27 @@ This module implements the combat commands including attack, punch, kick,
 strike, and other combat-related actions.
 """
 
+# pylint: disable=too-many-return-statements  # Reason: Combat command handlers require multiple return statements for early validation returns (target validation, combat state checks, error handling)
+
+import secrets
+import uuid
 from typing import TYPE_CHECKING, Any
 
 from server.alias_storage import AliasStorage
+from server.commands.rest_command import _cancel_rest_countdown, is_player_resting
 from server.config import get_config
+from server.game.player_service import PlayerService
+from server.realtime.login_grace_period import is_player_in_login_grace_period
 
 # Removed: from server.persistence import get_persistence - now using async_persistence parameter
 from server.schemas.target_resolution import TargetType
 from server.services.npc_combat_integration_service import (
     NPCCombatIntegrationService,
 )
+from server.services.npc_instance_service import get_npc_instance_service
 from server.services.target_resolution_service import TargetResolutionService
 from server.structured_logging.enhanced_logging_config import get_logger
+from server.utils.command_parser import get_username_from_user
 from server.validators.combat_validator import CombatValidator
 
 if TYPE_CHECKING:
@@ -52,7 +61,7 @@ def _get_combat_target(_player: Any, target_name: str | None) -> Any | None:  # 
     return None
 
 
-class CombatCommandHandler:
+class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason: Command handler class with focused responsibility, minimal public interface
     """
     Handler for combat-related commands.
 
@@ -60,7 +69,7 @@ class CombatCommandHandler:
     command system and combat service.
     """
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Command handler initialization requires many service dependencies
         self,
         combat_service: "CombatService | None" = None,
         event_bus=None,
@@ -103,12 +112,119 @@ class CombatCommandHandler:
         self.persistence = async_persistence
         self.combat_validator = CombatValidator()
         # Initialize target resolution service
-        from server.game.player_service import PlayerService
-
         # Use async persistence for target resolution and player service
         self.target_resolution_service = TargetResolutionService(async_persistence, PlayerService(async_persistence))
 
-    async def handle_attack_command(
+    async def _check_and_interrupt_rest(
+        self, request_app: Any, player_name: str, current_user: dict
+    ) -> dict[str, str] | None:
+        """Check if player is resting or in login grace period, interrupt rest if needed."""
+        if not request_app:
+            return None
+
+        connection_manager = getattr(request_app.state, "connection_manager", None)
+        persistence = getattr(request_app.state, "persistence", None)
+        if not (connection_manager and persistence):
+            return None
+
+        player = await persistence.get_player_by_name(get_username_from_user(current_user))
+        if not player:
+            return None
+
+        player_id = uuid.UUID(player.player_id) if isinstance(player.player_id, str) else player.player_id
+
+        # Check if player is in login grace period - block combat commands
+        if is_player_in_login_grace_period(player_id, connection_manager):
+            logger.info(
+                "Combat command blocked - player in login grace period",
+                player_id=player_id,
+                player_name=player_name,
+            )
+            return {"result": "You are still warded by protective energies. You cannot engage in combat yet."}
+
+        if is_player_resting(player_id, connection_manager):
+            await _cancel_rest_countdown(player_id, connection_manager)
+            logger.info("Rest interrupted by combat command", player_id=player_id, player_name=player_name)
+
+        return None
+
+    def _extract_combat_command_data(self, command_data: dict) -> tuple[str, str | None]:
+        """Extract command type and target name from command_data."""
+        command_type = command_data.get("command_type", "attack")
+        # Convert enum to string if needed
+        if hasattr(command_type, "value"):
+            command = command_type.value
+        else:
+            command = str(command_type)
+        target_name = command_data.get("target_player")
+        return command, target_name
+
+    def _validate_target_name(self, target_name: str | None) -> dict[str, str] | None:
+        """Validate that target name is provided."""
+        if not target_name:
+            error_messages = [
+                "You must focus your wrath upon a specific target, lest your fury be wasted.",
+                "The void stares back at you, demanding a name to direct your hatred.",
+                "Your anger needs direction - who shall bear the brunt of your assault?",
+                "The cosmic forces require a target for your destructive intent.",
+            ]
+            return {"result": secrets.choice(error_messages)}
+        return None
+
+    async def _get_player_and_room(
+        self, request_app: Any, current_user: dict
+    ) -> tuple[Any, Any, dict[str, str] | None]:
+        """Get player data and room, returning error dict if any step fails."""
+        persistence = request_app.state.persistence if request_app else None
+        if not persistence:
+            return None, None, {"result": "The cosmic forces are unreachable."}
+
+        player = await persistence.get_player_by_name(get_username_from_user(current_user))
+        if not player:
+            return None, None, {"result": "You are not recognized by the cosmic forces."}
+
+        room_id = player.current_room_id
+        if not room_id:
+            return None, None, {"result": "You are not in a room."}
+
+        room = persistence.get_room_by_id(room_id)  # Sync method, uses cache
+        if not room:
+            return None, None, {"result": "You are in an unknown room."}
+
+        return player, room, None
+
+    async def _resolve_combat_target(self, player: Any, target_name: str) -> tuple[Any, dict[str, str] | None]:
+        """Resolve combat target using target resolution service."""
+        target_result = await self.target_resolution_service.resolve_target(player.player_id, target_name)
+
+        if not target_result.success:
+            return None, {"result": target_result.error_message or "Target not found"}
+
+        target_match = target_result.get_single_match()
+        if not target_match:
+            return None, {"result": target_result.error_message or "No valid target found"}
+
+        if target_match.target_type != TargetType.NPC:
+            return None, {"result": f"You can only attack NPCs, not {target_match.target_type}s."}
+
+        npc_instance = self._get_npc_instance(target_match.target_id)
+        if not npc_instance:
+            return None, {"result": "Target not found."}
+
+        # Validate NPC is alive before proceeding
+        if not getattr(npc_instance, "is_alive", True):
+            npc_name = getattr(npc_instance, "name", "target")
+            logger.warning(
+                "Player attempted to attack dead NPC",
+                player_name=player.player_name if hasattr(player, "player_name") else "unknown",
+                npc_id=target_match.target_id,
+                npc_name=npc_name,
+            )
+            return None, {"result": f"{npc_name} is already dead."}
+
+        return target_match, None
+
+    async def handle_attack_command(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Combat command handling requires many parameters and intermediate variables for complex combat logic
         self,
         command_data: dict,
         current_user: dict,
@@ -129,13 +245,17 @@ class CombatCommandHandler:
         Returns:
             dict: Attack command result with 'result' key
         """
-        command_type = command_data.get("command_type", "attack")
-        # Convert enum to string if needed
-        if hasattr(command_type, "value"):
-            command = command_type.value
-        else:
-            command = str(command_type)
-        target_name = command_data.get("target_player")
+        _ = alias_storage  # Intentionally unused - part of standard command handler interface
+
+        request_app = request.app if request else None
+
+        # Check if player is resting and interrupt rest
+        rest_check_result = await self._check_and_interrupt_rest(request_app, player_name, current_user)
+        if rest_check_result:
+            return rest_check_result
+
+        # Extract command data
+        command, target_name = self._extract_combat_command_data(command_data)
 
         logger.debug(
             "🚨 COMBAT DEBUG: Processing attack command",
@@ -143,134 +263,47 @@ class CombatCommandHandler:
             player_name=player_name,
             target_name=target_name,
         )
-        logger.debug("DEBUG: command_data keys", keys=list(command_data.keys()))
-        logger.debug("DEBUG: current_user type", user_type=type(current_user))
-        logger.debug("DEBUG: current_user value", user_value=current_user)
-        logger.debug(
-            "DEBUG: current_user keys",
-            keys=list(current_user.keys()) if hasattr(current_user, "keys") else "No keys method",
-        )
-        logger.debug("DEBUG: request type", request_type=type(request))
-        logger.debug("DEBUG: alias_storage type", alias_storage_type=type(alias_storage))
 
-        # Add more debug logging to trace execution
         try:
-            logger.debug("DEBUG: Starting target validation", player_name=player_name)
-            logger.debug("DEBUG: About to check target_name", target_name=target_name)
-            if not target_name:
-                logger.debug("DEBUG: No target name provided", player_name=player_name)
-                # Return a thematic error message for no target
-                error_messages = [
-                    "You must focus your wrath upon a specific target, lest your fury be wasted.",
-                    "The void stares back at you, demanding a name to direct your hatred.",
-                    "Your anger needs direction - who shall bear the brunt of your assault?",
-                    "The cosmic forces require a target for your destructive intent.",
-                ]
-                import secrets
+            # Validate target name
+            target_validation_error = self._validate_target_name(target_name)
+            if target_validation_error:
+                return target_validation_error
 
-                return {"result": secrets.choice(error_messages)}
+            # After validation, target_name is guaranteed to be non-None
+            if target_name is None:
+                return {"result": "Target name is required for attack command."}
 
-            logger.debug("DEBUG: Target name", target_name=target_name)
+            assert target_name is not None, "target_name should not be None after validation"
 
-            # Get persistence layer and player data (following the same pattern as look command)
-            logger.debug("DEBUG: Getting persistence layer", player_name=player_name)
-            app = request.app if request else None
-            persistence = app.state.persistence if app else None
+            # Get player and room
+            player, _, player_error = await self._get_player_and_room(request_app, current_user)
+            if player_error:
+                return player_error
 
-            if not persistence:
-                logger.debug("DEBUG: No persistence layer found", player_name=player_name)
-                return {"result": "The cosmic forces are unreachable."}
-
-            logger.debug("DEBUG: Getting player data", player_name=player_name)
-            from ..utils.command_parser import get_username_from_user
-
-            player = await persistence.get_player_by_name(get_username_from_user(current_user))
-            if not player:
-                logger.debug("DEBUG: Player not found", player_name=player_name)
-                return {"result": "You are not recognized by the cosmic forces."}
-
-            logger.debug("DEBUG: Player found", player=player)
-
-            # Get player's current room
-            logger.debug("DEBUG: Getting player's current room", player_name=player_name)
             room_id = player.current_room_id
-            if not room_id:
-                logger.debug("DEBUG: No room_id found in player data", player_name=player_name)
-                return {"result": "You are not in a room."}
 
-            logger.debug("DEBUG: Player room_id", room_id=room_id)
+            # Resolve combat target
+            target_match, target_error = await self._resolve_combat_target(player, target_name)
+            if target_error:
+                return target_error
 
-            # Get room data
-            logger.debug("DEBUG: Getting room data", player_name=player_name)
-            room = persistence.get_room_by_id(room_id)  # Sync method, uses cache
-            if not room:
-                logger.debug("DEBUG: Room data not found", player_name=player_name)
-                return {"result": "You are in an unknown room."}
-
-            logger.debug("DEBUG: Room data found", room=room)
-
-            # Use target resolution service to find targets
-            logger.debug("DEBUG: Using target resolution service", player_name=player_name, player_room_id=room_id)
-            target_result = await self.target_resolution_service.resolve_target(player.player_id, target_name)
-
-            if not target_result.success:
-                logger.debug("DEBUG: Target resolution failed", error_message=target_result.error_message)
-                # AI Agent: Provide fallback for None case
-                return {"result": target_result.error_message or "Target not found"}
-
-            # Get the single match
-            target_match = target_result.get_single_match()
-            if not target_match:
-                logger.debug("DEBUG: No single match found", player_name=player_name)
-                # AI Agent: Provide fallback for None case
-                return {"result": target_result.error_message or "No valid target found"}
-
-            # Check if target is an NPC (combat only works on NPCs for now)
-            if target_match.target_type != TargetType.NPC:
-                logger.debug("DEBUG: Target is not an NPC", target_type=target_match.target_type)
-                return {"result": f"You can only attack NPCs, not {target_match.target_type}s."}
-
-            # Get NPC instance for combat
-            npc_instance = self._get_npc_instance(target_match.target_id)
-            if not npc_instance:
-                logger.debug("DEBUG: Could not get NPC instance", target_id=target_match.target_id)
-                return {"result": "Target not found."}
-
-            # BUGFIX: Validate NPC is alive before proceeding
-            # This prevents passing dead NPCs to the combat service
-            # As documented in investigation: 2025-11-30_session-001_npc-combat-start-failure.md
-            if not getattr(npc_instance, "is_alive", True):
-                npc_name = getattr(npc_instance, "name", "target")
-                logger.warning(
-                    "Player attempted to attack dead NPC",
-                    player_name=player_name,
-                    npc_id=target_match.target_id,
-                    npc_name=npc_name,
-                )
-                return {"result": f"{npc_name} is already dead."}
-
-            logger.debug("DEBUG: Found target NPC", npc_name=npc_instance.name, target_id=target_match.target_id)
+            npc_id = target_match.target_id
+            npc_instance = self._get_npc_instance(npc_id)
 
             # Validate combat action
-            logger.debug("DEBUG: Validating combat action", player_name=player_name)
-            npc_id = target_match.target_id
             validation_result = await self._validate_combat_action(player_name, npc_id, command)
             if not validation_result.get("valid", False):
-                logger.debug("DEBUG: Combat validation failed", validation_result=validation_result)
                 return {"result": validation_result.get("message", "Invalid combat action.")}
 
-            logger.debug("DEBUG: Combat validation passed", player_name=player_name)
-
-            # Execute combat action - pass validated NPC instance to avoid redundant lookup
-            logger.debug("DEBUG: Executing combat action", player_name=player_name)
+            # Execute combat action
             combat_result = await self._execute_combat_action(
                 player_name, npc_id, command, room_id, npc_instance=npc_instance
             )
-            logger.debug("DEBUG: Combat action executed", combat_result=combat_result)
 
             return combat_result
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Combat errors unpredictable, must return error message
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Combat errors unpredictable, must return error message
             logger.error("ERROR: Exception in combat handler", error=str(e), exc_info=True)
             return {"result": f"An error occurred during combat: {str(e)}"}
 
@@ -286,8 +319,6 @@ class CombatCommandHandler:
         """Get NPC instance from the spawning service."""
         try:
             # Use the same approach as websocket handler
-            from ..services.npc_instance_service import get_npc_instance_service
-
             npc_instance_service = get_npc_instance_service()
             if hasattr(npc_instance_service, "lifecycle_manager"):
                 lifecycle_manager = npc_instance_service.lifecycle_manager
@@ -296,7 +327,7 @@ class CombatCommandHandler:
 
             return None
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: NPC lookup errors unpredictable, must return None
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC lookup errors unpredictable, must return None
             logger.error("Error getting NPC instance", npc_id=npc_id, error=str(e))
             return None
 
@@ -307,7 +338,7 @@ class CombatCommandHandler:
             return {"valid": False, "message": "Invalid combat parameters"}
         return {"valid": True}
 
-    async def _execute_combat_action(
+    async def _execute_combat_action(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Combat action execution requires many parameters for context and state
         self, player_name: str, npc_id: str, command: str, room_id: str, npc_instance: Any | None = None
     ) -> dict[str, str]:
         """
@@ -377,27 +408,29 @@ class CombatCommandHandler:
             # Return simple acknowledgment since detailed message is sent via broadcast system
             return {"result": f"You {command} {npc_name}!"}
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Combat action errors unpredictable, must return error message
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Combat action errors unpredictable, must return error message
             logger.error("Error executing combat action", error=str(e), exc_info=True)
             return {"result": f"Error executing {command} command"}
 
 
 # Global combat command handler instance (initialized lazily)
-_combat_command_handler: CombatCommandHandler | None = None
+_combat_command_handler: CombatCommandHandler | None = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
 
 
-def get_combat_command_handler() -> CombatCommandHandler:
+def get_combat_command_handler(app: Any = None) -> CombatCommandHandler:
     """
     Get the global combat command handler instance, creating it if needed.
 
     This uses lazy initialization to ensure that the combat_service from
     app.state is properly initialized before we create the handler.
+
+    Args:
+        app: Optional FastAPI app instance. If None, uses cached handler if available.
     """
     global _combat_command_handler  # pylint: disable=global-statement  # Reason: Singleton pattern for combat handler
     if _combat_command_handler is None:
-        # Import here to avoid circular dependency
-        from server.main import app
-
+        if app is None:
+            raise RuntimeError("Cannot initialize combat command handler without app instance")
         combat_service = getattr(app.state, "combat_service", None)
         event_bus = getattr(app.state, "event_bus", None)
         player_combat_service = getattr(app.state, "player_combat_service", None)
@@ -427,7 +460,8 @@ async def handle_attack_command(
     player_name: str,
 ) -> dict[str, str]:
     """Handle attack command."""
-    handler = get_combat_command_handler()
+    app = getattr(request, "app", None)
+    handler = get_combat_command_handler(app)
     return await handler.handle_attack_command(command_data, current_user, request, alias_storage, player_name)
 
 
@@ -442,7 +476,8 @@ async def handle_punch_command(
     # Set command type to punch for proper messaging
     command_data = command_data.copy()
     command_data["command_type"] = "punch"
-    handler = get_combat_command_handler()
+    app = getattr(request, "app", None)
+    handler = get_combat_command_handler(app)
     return await handler.handle_attack_command(command_data, current_user, request, alias_storage, player_name)
 
 
@@ -457,7 +492,8 @@ async def handle_kick_command(
     # Set command type to kick for proper messaging
     command_data = command_data.copy()
     command_data["command_type"] = "kick"
-    handler = get_combat_command_handler()
+    app = getattr(request, "app", None)
+    handler = get_combat_command_handler(app)
     return await handler.handle_attack_command(command_data, current_user, request, alias_storage, player_name)
 
 
@@ -472,5 +508,6 @@ async def handle_strike_command(
     # Set command type to strike for proper messaging
     command_data = command_data.copy()
     command_data["command_type"] = "strike"
-    handler = get_combat_command_handler()
+    app = getattr(request, "app", None)
+    handler = get_combat_command_handler(app)
     return await handler.handle_attack_command(command_data, current_user, request, alias_storage, player_name)

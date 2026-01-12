@@ -204,6 +204,6 @@ class PerformanceTracker:
                 },
                 "timestamp": time.time(),
             }
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Performance stats retrieval errors unpredictable, must return error response
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Performance stats retrieval errors unpredictable, must return error response
             logger.error("Error getting performance stats", error=str(e), exc_info=True)
             return {"error": f"Failed to get performance stats: {e}", "timestamp": time.time()}

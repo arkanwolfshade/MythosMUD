@@ -18,7 +18,7 @@ from server.structured_logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 
-class SpellTargetingService:
+class SpellTargetingService:  # pylint: disable=too-few-public-methods  # Reason: Utility class with focused responsibility, minimal public interface
     """
     Service for resolving spell targets.
 
@@ -45,6 +45,56 @@ class SpellTargetingService:
         self.player_combat_service = player_combat_service
         logger.info("SpellTargetingService initialized")
 
+    async def _resolve_self_target(self, player_id: uuid.UUID) -> tuple[TargetMatch | None, str]:
+        """Resolve self-target spell. Returns (target_match, error_message)."""
+        player = await self._get_player(player_id)
+        if not player:
+            return None, "You are not recognized by the cosmic forces."
+
+        return (
+            TargetMatch(
+                target_id=str(player_id),
+                target_name=player.name,
+                target_type=TargetType.PLAYER,
+                room_id=player.current_room_id,
+            ),
+            "",
+        )
+
+    async def _resolve_area_target(self, player_id: uuid.UUID) -> tuple[TargetMatch | None, str]:
+        """Resolve area/all target spell. Returns (target_match, error_message)."""
+        player = await self._get_player(player_id)
+        if not player:
+            return None, "You are not recognized by the cosmic forces."
+
+        return (
+            TargetMatch(
+                target_id="area",
+                target_name="area",
+                target_type=TargetType.ROOM,
+                room_id=player.current_room_id,
+            ),
+            "",
+        )
+
+    async def _resolve_entity_target(
+        self, player_id: uuid.UUID, spell: Spell, target_name: str
+    ) -> tuple[TargetMatch | None, str]:
+        """Resolve entity/location target spell with explicit target. Returns (target_match, error_message)."""
+        target_result = await self.target_resolution_service.resolve_target(player_id, target_name)
+        if not target_result.success:
+            return None, target_result.error_message or "Target not found."
+
+        target_match = target_result.get_single_match()
+        if not target_match:
+            return None, target_result.error_message or "No valid target found."
+
+        if spell.target_type == SpellTargetType.ENTITY:
+            if target_match.target_type not in (TargetType.PLAYER, TargetType.NPC):
+                return None, f"{spell.name} can only target entities, not locations."
+
+        return target_match, ""
+
     async def resolve_spell_target(
         self, player_id: uuid.UUID, spell: Spell, target_name: str | None = None
     ) -> tuple[TargetMatch | None, str]:
@@ -61,41 +111,13 @@ class SpellTargetingService:
         """
         logger.debug("Resolving spell target", player_id=player_id, spell_id=spell.spell_id, target_name=target_name)
 
-        # Handle self-target spells
         if spell.target_type == SpellTargetType.SELF:
-            # Get player as target
-            player = await self._get_player(player_id)
-            if not player:
-                return None, "You are not recognized by the cosmic forces."
+            return await self._resolve_self_target(player_id)
 
-            return (
-                TargetMatch(
-                    target_id=str(player_id),
-                    target_name=player.name,
-                    target_type=TargetType.PLAYER,
-                    room_id=player.current_room_id,
-                ),
-                "",
-            )
-
-        # Handle area/all target spells (no specific target needed)
         if spell.target_type in (SpellTargetType.AREA, SpellTargetType.ALL):
-            player = await self._get_player(player_id)
-            if not player:
-                return None, "You are not recognized by the cosmic forces."
-            return (
-                TargetMatch(
-                    target_id="area",
-                    target_name="area",
-                    target_type=TargetType.ROOM,
-                    room_id=player.current_room_id,
-                ),
-                "",
-            )
+            return await self._resolve_area_target(player_id)
 
-        # Handle entity/location target spells
         if spell.target_type in (SpellTargetType.ENTITY, SpellTargetType.LOCATION):
-            # If no target specified, check for combat auto-target
             if not target_name:
                 auto_target = await self._get_combat_target(player_id)
                 if auto_target:
@@ -104,21 +126,7 @@ class SpellTargetingService:
 
                 return None, f"{spell.name} requires a target."
 
-            # Resolve explicit target
-            target_result = await self.target_resolution_service.resolve_target(player_id, target_name)
-            if not target_result.success:
-                return None, target_result.error_message or "Target not found."
-
-            target_match = target_result.get_single_match()
-            if not target_match:
-                return None, target_result.error_message or "No valid target found."
-
-            # Validate target type matches spell requirements
-            if spell.target_type == SpellTargetType.ENTITY:
-                if target_match.target_type not in (TargetType.PLAYER, TargetType.NPC):
-                    return None, f"{spell.name} can only target entities, not locations."
-
-            return target_match, ""
+            return await self._resolve_entity_target(player_id, spell, target_name)
 
         return None, f"Unknown target type: {spell.target_type}"
 

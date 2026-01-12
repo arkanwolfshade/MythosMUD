@@ -2,6 +2,8 @@
 Message formatting utilities for NATS message handler.
 """
 
+# pylint: disable=too-many-return-statements  # Reason: Message formatting requires multiple return statements for different channel types and formatting logic
+
 from ..services.nats_exceptions import NATSError
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -23,23 +25,22 @@ def format_message_content(channel: str, sender_name: str, content: str) -> str:
     try:
         if channel == "say":
             return f"{sender_name} says: {content}"
-        elif channel == "local":
+        if channel == "local":
             return f"{sender_name} (local): {content}"
-        elif channel == "global":
+        if channel == "global":
             return f"{sender_name} (global): {content}"
-        elif channel == "emote":
+        if channel == "emote":
             return f"{sender_name} {content}"
-        elif channel == "pose":
+        if channel == "pose":
             return f"{sender_name} {content}"
-        elif channel == "whisper":
+        if channel == "whisper":
             return f"{sender_name} whispers: {content}"
-        elif channel == "system":
+        if channel == "system":
             return f"[SYSTEM] {content}"
-        elif channel == "admin":
+        if channel == "admin":
             return f"[ADMIN] {sender_name}: {content}"
-        else:
-            # Default format for unknown channels
-            return f"{sender_name} ({channel}): {content}"
+        # Default format for unknown channels
+        return f"{sender_name} ({channel}): {content}"
 
     except NATSError as e:
         logger.error("Error formatting message content", error=str(e), channel=channel, sender_name=sender_name)

@@ -1,5 +1,7 @@
 """Helpers for broadcasting lucidity-related SSE events."""
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event dispatching requires many parameters for context and event routing
+
 from __future__ import annotations
 
 import uuid
@@ -108,7 +110,7 @@ async def send_lucidity_change_event(
     await _dispatch_player_event(player_id, "lucidity_change", payload)
 
 
-async def send_catatonia_event(
+async def send_catatonia_event(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event dispatching requires many parameters for context and event routing
     player_id: uuid.UUID | str,
     *,
     current_lcd: int | None = None,

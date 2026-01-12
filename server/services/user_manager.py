@@ -5,6 +5,8 @@ This module provides comprehensive user management including muting,
 permissions, and user state tracking for the chat system.
 """
 
+# pylint: disable=too-many-instance-attributes,too-many-arguments,too-many-positional-arguments,too-many-lines,too-many-public-methods  # Reason: User manager requires many state tracking attributes and complex user management logic. User manager requires extensive user management operations for comprehensive chat system user management. User manager legitimately requires many public methods for comprehensive user management.
+
 import asyncio
 import json
 import uuid
@@ -18,7 +20,7 @@ from .chat_logger import chat_logger
 logger = get_logger("communications.user_manager")
 
 
-class UserManager:
+class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: User manager requires many state tracking and configuration attributes
     """
     Comprehensive user management for chat system.
 
@@ -244,7 +246,7 @@ class UserManager:
 
         return False
 
-    def mute_player(
+    def mute_player(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Player muting requires many parameters for context and mute operations
         self,
         muter_id: uuid.UUID | str,
         muter_name: str,
@@ -391,17 +393,14 @@ class UserManager:
                 self.save_player_mutes(target_id_uuid)
 
                 return True
-            else:
-                logger.warning(
-                    "Attempted to unmute non-muted player", unmuter_id=unmuter_id_uuid, target_id=target_id_uuid
-                )
-                return False
+            logger.warning("Attempted to unmute non-muted player", unmuter_id=unmuter_id_uuid, target_id=target_id_uuid)
+            return False
 
         except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error("Error unmuting player", error=str(e), unmuter_id=unmuter_id, target_id=target_id)
             return False
 
-    def mute_channel(
+    def mute_channel(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Channel muting requires many parameters for context and mute operations
         self,
         player_id: uuid.UUID | str,
         player_name: str,
@@ -525,15 +524,14 @@ class UserManager:
                 self.save_player_mutes(player_id_uuid)
 
                 return True
-            else:
-                logger.warning("Attempted to unmute non-muted channel", player_id=player_id_uuid, channel=channel)
-                return False
+            logger.warning("Attempted to unmute non-muted channel", player_id=player_id_uuid, channel=channel)
+            return False
 
         except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error("Error unmuting channel", error=str(e), player_id=player_id, channel=channel)
             return False
 
-    def mute_global(
+    def mute_global(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Global muting requires many parameters for context and mute operations
         self,
         muter_id: uuid.UUID | str,
         muter_name: str,
@@ -669,11 +667,10 @@ class UserManager:
                 self.save_player_mutes(target_id_uuid)
 
                 return True
-            else:
-                logger.warning(
-                    "Attempted to remove non-existent global mute", unmuter_id=unmuter_id_uuid, target_id=target_id_uuid
-                )
-                return False
+            logger.warning(
+                "Attempted to remove non-existent global mute", unmuter_id=unmuter_id_uuid, target_id=target_id_uuid
+            )
+            return False
 
         except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error(
@@ -752,14 +749,12 @@ class UserManager:
                         mute_info=mute_info,
                     )
                     return True
-                else:
-                    logger.info(
-                        "=== USER MANAGER: Target NOT in muted players list ===",
-                        player_id=str(player_id_uuid),
-                        target_id=str(target_id_uuid),
-                        muted_players=[str(p) for p in muted_players],
-                    )
-            else:
+                logger.info(
+                    "=== USER MANAGER: Target NOT in muted players list ===",
+                    player_id=str(player_id_uuid),
+                    target_id=str(target_id_uuid),
+                    muted_players=[str(p) for p in muted_players],
+                )
                 logger.info(
                     "=== USER MANAGER: Player has NO mute data loaded ===",
                     player_id=str(player_id_uuid),
@@ -953,6 +948,33 @@ class UserManager:
             )
             return False
 
+    def _get_active_player_mutes(self, player_id_uuid: uuid.UUID, current_time: datetime) -> dict[Any, Any]:
+        """Get active player mutes for a player."""
+        active_mutes = {}
+        if player_id_uuid in self._player_mutes:
+            for target_id_uuid, mute_info in self._player_mutes[player_id_uuid].items():
+                if not mute_info["expires_at"] or mute_info["expires_at"] > current_time:
+                    active_mutes[target_id_uuid] = mute_info
+        return active_mutes
+
+    def _get_active_channel_mutes(self, player_id_uuid: uuid.UUID, current_time: datetime) -> dict[str, Any]:
+        """Get active channel mutes for a player."""
+        active_mutes = {}
+        if player_id_uuid in self._channel_mutes:
+            for channel, mute_info in self._channel_mutes[player_id_uuid].items():
+                if not mute_info["expires_at"] or mute_info["expires_at"] > current_time:
+                    active_mutes[channel] = mute_info
+        return active_mutes
+
+    def _get_active_global_mutes(self, player_id_uuid: uuid.UUID, current_time: datetime) -> dict[Any, Any]:
+        """Get active global mutes applied by a player."""
+        active_mutes = {}
+        for target_id_uuid, mute_info in self._global_mutes.items():
+            if mute_info["muted_by"] == player_id_uuid:
+                if not mute_info["expires_at"] or mute_info["expires_at"] > current_time:
+                    active_mutes[target_id_uuid] = mute_info
+        return active_mutes
+
     def get_player_mutes(self, player_id: uuid.UUID | str) -> dict[str, Any]:
         """
         Get all mutes applied by a player.
@@ -964,32 +986,14 @@ class UserManager:
             Dictionary with mute information
         """
         try:
-            # Normalize to UUID for dictionary operations
             player_id_uuid = self._normalize_to_uuid(player_id)
+            current_time = datetime.now(UTC)
 
-            # Type annotation: player_mutes and global_mutes use UUID keys, channel_mutes uses string keys
-            mutes: dict[str, Any] = {"player_mutes": {}, "channel_mutes": {}, "global_mutes": {}}
-
-            # Get player mutes (keep UUID objects)
-            if player_id_uuid in self._player_mutes:
-                for target_id_uuid, mute_info in self._player_mutes[player_id_uuid].items():
-                    # Check if not expired
-                    if not mute_info["expires_at"] or mute_info["expires_at"] > datetime.now(UTC):
-                        mutes["player_mutes"][target_id_uuid] = mute_info
-
-            # Get channel mutes
-            if player_id_uuid in self._channel_mutes:
-                for channel, mute_info in self._channel_mutes[player_id_uuid].items():
-                    # Check if not expired
-                    if not mute_info["expires_at"] or mute_info["expires_at"] > datetime.now(UTC):
-                        mutes["channel_mutes"][channel] = mute_info
-
-            # Get global mutes applied by this player (keep UUID objects)
-            for target_id_uuid, mute_info in self._global_mutes.items():
-                if mute_info["muted_by"] == player_id_uuid:  # Compare UUID objects
-                    # Check if not expired
-                    if not mute_info["expires_at"] or mute_info["expires_at"] > datetime.now(UTC):
-                        mutes["global_mutes"][target_id_uuid] = mute_info
+            mutes: dict[str, Any] = {
+                "player_mutes": self._get_active_player_mutes(player_id_uuid, current_time),
+                "channel_mutes": self._get_active_channel_mutes(player_id_uuid, current_time),
+                "global_mutes": self._get_active_global_mutes(player_id_uuid, current_time),
+            }
 
             return mutes
 
@@ -1084,39 +1088,42 @@ class UserManager:
             logger.error("Error getting system stats", error=str(e))
             return {}
 
+    def _cleanup_player_mutes(self, current_time: datetime) -> None:
+        """Clean up expired player mutes."""
+        for player_id in list(self._player_mutes.keys()):
+            for target_id in list(self._player_mutes[player_id].keys()):
+                mute_info = self._player_mutes[player_id][target_id]
+                if mute_info["expires_at"] and mute_info["expires_at"] < current_time:
+                    del self._player_mutes[player_id][target_id]
+
+            if not self._player_mutes[player_id]:
+                del self._player_mutes[player_id]
+
+    def _cleanup_channel_mutes(self, current_time: datetime) -> None:
+        """Clean up expired channel mutes."""
+        for player_id in list(self._channel_mutes.keys()):
+            for channel in list(self._channel_mutes[player_id].keys()):
+                mute_info = self._channel_mutes[player_id][channel]
+                if mute_info["expires_at"] and mute_info["expires_at"] < current_time:
+                    del self._channel_mutes[player_id][channel]
+
+            if not self._channel_mutes[player_id]:
+                del self._channel_mutes[player_id]
+
+    def _cleanup_global_mutes(self, current_time: datetime) -> None:
+        """Clean up expired global mutes."""
+        for player_id in list(self._global_mutes.keys()):
+            mute_info = self._global_mutes[player_id]
+            if mute_info["expires_at"] and mute_info["expires_at"] < current_time:
+                del self._global_mutes[player_id]
+
     def _cleanup_expired_mutes(self):
         """Clean up expired mutes from all storage."""
         try:
             current_time = datetime.now(UTC)
-
-            # Clean up player mutes
-            for player_id in list(self._player_mutes.keys()):
-                for target_id in list(self._player_mutes[player_id].keys()):
-                    mute_info = self._player_mutes[player_id][target_id]
-                    if mute_info["expires_at"] and mute_info["expires_at"] < current_time:
-                        del self._player_mutes[player_id][target_id]
-
-                # Remove empty player entries
-                if not self._player_mutes[player_id]:
-                    del self._player_mutes[player_id]
-
-            # Clean up channel mutes
-            for player_id in list(self._channel_mutes.keys()):
-                for channel in list(self._channel_mutes[player_id].keys()):
-                    mute_info = self._channel_mutes[player_id][channel]
-                    if mute_info["expires_at"] and mute_info["expires_at"] < current_time:
-                        del self._channel_mutes[player_id][channel]
-
-                # Remove empty player entries
-                if not self._channel_mutes[player_id]:
-                    del self._channel_mutes[player_id]
-
-            # Clean up global mutes
-            for player_id in list(self._global_mutes.keys()):
-                mute_info = self._global_mutes[player_id]
-                if mute_info["expires_at"] and mute_info["expires_at"] < current_time:
-                    del self._global_mutes[player_id]
-
+            self._cleanup_player_mutes(current_time)
+            self._cleanup_channel_mutes(current_time)
+            self._cleanup_global_mutes(current_time)
         except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error("Error cleaning up expired mutes", error=str(e))
 
@@ -1125,6 +1132,107 @@ class UserManager:
         # Convert to string for filename
         player_id_str = str(player_id)
         return self.data_dir / f"mutes_{player_id_str}.json"
+
+    def _convert_mute_info_timestamps(self, mute_info: dict[str, Any]) -> None:
+        """Convert timestamp strings in mute_info to datetime objects."""
+        if "muted_at" in mute_info:
+            mute_info["muted_at"] = datetime.fromisoformat(mute_info["muted_at"])
+        if "expires_at" in mute_info and mute_info["expires_at"]:
+            mute_info["expires_at"] = datetime.fromisoformat(mute_info["expires_at"])
+
+    def _convert_mute_info_uuids(self, mute_info: dict[str, Any]) -> None:
+        """Convert UUID strings in mute_info to UUID objects."""
+        if "target_id" in mute_info and isinstance(mute_info["target_id"], str):
+            mute_info["target_id"] = uuid.UUID(mute_info["target_id"])
+        if "muted_by" in mute_info and isinstance(mute_info["muted_by"], str):
+            mute_info["muted_by"] = uuid.UUID(mute_info["muted_by"])
+
+    def _load_player_mutes_from_data(self, data: dict[str, Any], player_id_uuid: uuid.UUID) -> None:
+        """Load player mutes from JSON data into memory."""
+        if "player_mutes" not in data:
+            return
+
+        self._player_mutes[player_id_uuid] = {}
+        for target_id_str, mute_info in data["player_mutes"].items():
+            self._convert_mute_info_timestamps(mute_info)
+            self._convert_mute_info_uuids(mute_info)
+
+            try:
+                target_id_uuid = uuid.UUID(target_id_str)
+                self._player_mutes[player_id_uuid][target_id_uuid] = mute_info
+            except (ValueError, TypeError):
+                logger.warning("Invalid UUID format in player_mutes", target_id=target_id_str)
+
+    def _load_channel_mutes_from_data(self, data: dict[str, Any], player_id_uuid: uuid.UUID) -> None:
+        """Load channel mutes from JSON data into memory."""
+        if "channel_mutes" not in data:
+            return
+
+        self._channel_mutes[player_id_uuid] = {}
+        for channel, mute_info in data["channel_mutes"].items():
+            self._convert_mute_info_timestamps(mute_info)
+            self._channel_mutes[player_id_uuid][channel] = mute_info
+
+    def _load_global_mutes_from_data(self, data: dict[str, Any]) -> None:
+        """Load global mutes from JSON data into memory."""
+        if "global_mutes" not in data:
+            return
+
+        for target_id_str, mute_info in data["global_mutes"].items():
+            self._convert_mute_info_timestamps(mute_info)
+            self._convert_mute_info_uuids(mute_info)
+
+            try:
+                target_id_uuid = uuid.UUID(target_id_str)
+                self._global_mutes[target_id_uuid] = mute_info
+            except (ValueError, TypeError):
+                logger.warning("Invalid UUID format in global_mutes", target_id=target_id_str)
+
+    def _update_cache_on_error(self, player_id: uuid.UUID | str) -> None:
+        """Update cache to mark load as failed."""
+        try:
+            player_id_uuid = self._normalize_to_uuid(player_id)
+            self._mute_cache[player_id_uuid] = (datetime.now(UTC), False)
+        except (ValueError, TypeError):
+            pass
+
+    def _serialize_mute_info_for_json(self, mute_info: dict[str, Any]) -> dict[str, Any]:
+        """Convert mute_info datetime and UUID objects to JSON-serializable formats."""
+        serialized_mute = mute_info.copy()
+        if "muted_at" in serialized_mute:
+            serialized_mute["muted_at"] = serialized_mute["muted_at"].isoformat()
+        if "expires_at" in serialized_mute and serialized_mute["expires_at"]:
+            serialized_mute["expires_at"] = serialized_mute["expires_at"].isoformat()
+        if "target_id" in serialized_mute and isinstance(serialized_mute["target_id"], uuid.UUID):
+            serialized_mute["target_id"] = str(serialized_mute["target_id"])
+        if "muted_by" in serialized_mute and isinstance(serialized_mute["muted_by"], uuid.UUID):
+            serialized_mute["muted_by"] = str(serialized_mute["muted_by"])
+        return serialized_mute
+
+    def _save_player_mutes_to_data(self, data: dict[str, Any], player_id_uuid: uuid.UUID) -> None:
+        """Save player mutes to data dictionary for JSON serialization."""
+        if player_id_uuid not in self._player_mutes:
+            return
+
+        for target_id_uuid, mute_info in self._player_mutes[player_id_uuid].items():
+            serialized_mute = self._serialize_mute_info_for_json(mute_info)
+            data["player_mutes"][str(target_id_uuid)] = serialized_mute
+
+    def _save_channel_mutes_to_data(self, data: dict[str, Any], player_id_uuid: uuid.UUID) -> None:
+        """Save channel mutes to data dictionary for JSON serialization."""
+        if player_id_uuid not in self._channel_mutes:
+            return
+
+        for channel, mute_info in self._channel_mutes[player_id_uuid].items():
+            serialized_mute = self._serialize_mute_info_for_json(mute_info)
+            data["channel_mutes"][channel] = serialized_mute
+
+    def _save_global_mutes_to_data(self, data: dict[str, Any], player_id_uuid: uuid.UUID) -> None:
+        """Save global mutes applied by this player to data dictionary for JSON serialization."""
+        for target_id_uuid, mute_info in self._global_mutes.items():
+            if mute_info.get("muted_by") == player_id_uuid:  # Compare UUID objects
+                serialized_mute = self._serialize_mute_info_for_json(mute_info)
+                data["global_mutes"][str(target_id_uuid)] = serialized_mute
 
     def load_player_mutes(self, player_id: uuid.UUID | str) -> bool:
         """
@@ -1149,59 +1257,10 @@ class UserManager:
             with open(mute_file, encoding="utf-8") as f:
                 data = json.load(f)
 
-            # Load player mutes (convert string keys from JSON to UUID keys and UUID strings to UUID objects)
-            if "player_mutes" in data:
-                self._player_mutes[player_id_uuid] = {}
-                for target_id_str, mute_info in data["player_mutes"].items():
-                    # Convert timestamp strings back to datetime objects
-                    if "muted_at" in mute_info:
-                        mute_info["muted_at"] = datetime.fromisoformat(mute_info["muted_at"])
-                    if "expires_at" in mute_info and mute_info["expires_at"]:
-                        mute_info["expires_at"] = datetime.fromisoformat(mute_info["expires_at"])
-                    # Convert string UUIDs in mute_info back to UUID objects
-                    if "target_id" in mute_info and isinstance(mute_info["target_id"], str):
-                        mute_info["target_id"] = uuid.UUID(mute_info["target_id"])
-                    if "muted_by" in mute_info and isinstance(mute_info["muted_by"], str):
-                        mute_info["muted_by"] = uuid.UUID(mute_info["muted_by"])
-                    # Convert string key to UUID
-                    try:
-                        target_id_uuid = uuid.UUID(target_id_str)
-                        self._player_mutes[player_id_uuid][target_id_uuid] = mute_info
-                    except (ValueError, TypeError):
-                        logger.warning("Invalid UUID format in player_mutes", target_id=target_id_str)
-                        continue
-
-            # Load channel mutes
-            if "channel_mutes" in data:
-                self._channel_mutes[player_id_uuid] = {}
-                for channel, mute_info in data["channel_mutes"].items():
-                    # Convert timestamp strings back to datetime objects
-                    if "muted_at" in mute_info:
-                        mute_info["muted_at"] = datetime.fromisoformat(mute_info["muted_at"])
-                    if "expires_at" in mute_info and mute_info["expires_at"]:
-                        mute_info["expires_at"] = datetime.fromisoformat(mute_info["expires_at"])
-                    self._channel_mutes[player_id_uuid][channel] = mute_info
-
-            # Load global mutes applied by this player (convert string keys from JSON to UUID keys and UUID strings to UUID objects)
-            if "global_mutes" in data:
-                for target_id_str, mute_info in data["global_mutes"].items():
-                    # Convert timestamp strings back to datetime objects
-                    if "muted_at" in mute_info:
-                        mute_info["muted_at"] = datetime.fromisoformat(mute_info["muted_at"])
-                    if "expires_at" in mute_info and mute_info["expires_at"]:
-                        mute_info["expires_at"] = datetime.fromisoformat(mute_info["expires_at"])
-                    # Convert string UUIDs in mute_info back to UUID objects
-                    if "target_id" in mute_info and isinstance(mute_info["target_id"], str):
-                        mute_info["target_id"] = uuid.UUID(mute_info["target_id"])
-                    if "muted_by" in mute_info and isinstance(mute_info["muted_by"], str):
-                        mute_info["muted_by"] = uuid.UUID(mute_info["muted_by"])
-                    # Convert string key to UUID
-                    try:
-                        target_id_uuid = uuid.UUID(target_id_str)
-                        self._global_mutes[target_id_uuid] = mute_info
-                    except (ValueError, TypeError):
-                        logger.warning("Invalid UUID format in global_mutes", target_id=target_id_str)
-                        continue
+            # Load all mute types from JSON data
+            self._load_player_mutes_from_data(data, player_id_uuid)
+            self._load_channel_mutes_from_data(data, player_id_uuid)
+            self._load_global_mutes_from_data(data)
 
             # Load admin status (using UUID object as key)
             if "is_admin" in data and data["is_admin"]:
@@ -1214,27 +1273,15 @@ class UserManager:
 
         except OSError as e:
             logger.error("File system error loading player mute data", error=str(e), error_type=type(e).__name__)
-            try:
-                player_id_uuid = self._normalize_to_uuid(player_id)
-                self._mute_cache[player_id_uuid] = (datetime.now(UTC), False)
-            except (ValueError, TypeError):
-                pass
+            self._update_cache_on_error(player_id)
             return False
         except (ValueError, TypeError, json.JSONDecodeError) as e:
             logger.error("Data validation error loading player mute data", error=str(e), error_type=type(e).__name__)
-            try:
-                player_id_uuid = self._normalize_to_uuid(player_id)
-                self._mute_cache[player_id_uuid] = (datetime.now(UTC), False)
-            except (ValueError, TypeError):
-                pass
+            self._update_cache_on_error(player_id)
             return False
         except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error("Unexpected error loading player mute data", error=str(e), error_type=type(e).__name__)
-            try:
-                player_id_uuid = self._normalize_to_uuid(player_id)
-                self._mute_cache[player_id_uuid] = (datetime.now(UTC), False)
-            except (ValueError, TypeError):
-                pass
+            self._update_cache_on_error(player_id)
             return False
 
     def _is_cache_valid(self, player_id: uuid.UUID) -> bool:
@@ -1376,48 +1423,10 @@ class UserManager:
                 "is_admin": player_id_uuid in self._admin_players,  # Use UUID for dictionary lookup
             }
 
-            # Save player mutes (convert UUID keys to strings for JSON)
-            if player_id_uuid in self._player_mutes:
-                for target_id_uuid, mute_info in self._player_mutes[player_id_uuid].items():
-                    # Convert datetime objects to ISO strings for JSON serialization
-                    serialized_mute = mute_info.copy()
-                    if "muted_at" in serialized_mute:
-                        serialized_mute["muted_at"] = serialized_mute["muted_at"].isoformat()
-                    if "expires_at" in serialized_mute and serialized_mute["expires_at"]:
-                        serialized_mute["expires_at"] = serialized_mute["expires_at"].isoformat()
-                    # Convert UUID objects to strings for JSON serialization
-                    if "target_id" in serialized_mute and isinstance(serialized_mute["target_id"], uuid.UUID):
-                        serialized_mute["target_id"] = str(serialized_mute["target_id"])
-                    if "muted_by" in serialized_mute and isinstance(serialized_mute["muted_by"], uuid.UUID):
-                        serialized_mute["muted_by"] = str(serialized_mute["muted_by"])
-                    data["player_mutes"][str(target_id_uuid)] = serialized_mute
-
-            # Save channel mutes
-            if player_id_uuid in self._channel_mutes:
-                for channel, mute_info in self._channel_mutes[player_id_uuid].items():
-                    # Convert datetime objects to ISO strings for JSON serialization
-                    serialized_mute = mute_info.copy()
-                    if "muted_at" in serialized_mute:
-                        serialized_mute["muted_at"] = serialized_mute["muted_at"].isoformat()
-                    if "expires_at" in serialized_mute and serialized_mute["expires_at"]:
-                        serialized_mute["expires_at"] = serialized_mute["expires_at"].isoformat()
-                    data["channel_mutes"][channel] = serialized_mute
-
-            # Save global mutes applied by this player (convert UUID keys to strings for JSON)
-            for target_id_uuid, mute_info in self._global_mutes.items():
-                if mute_info.get("muted_by") == player_id_uuid:  # Compare UUID objects
-                    # Convert datetime objects to ISO strings for JSON serialization
-                    serialized_mute = mute_info.copy()
-                    if "muted_at" in serialized_mute:
-                        serialized_mute["muted_at"] = serialized_mute["muted_at"].isoformat()
-                    if "expires_at" in serialized_mute and serialized_mute["expires_at"]:
-                        serialized_mute["expires_at"] = serialized_mute["expires_at"].isoformat()
-                    # Convert UUID objects to strings for JSON serialization
-                    if "target_id" in serialized_mute and isinstance(serialized_mute["target_id"], uuid.UUID):
-                        serialized_mute["target_id"] = str(serialized_mute["target_id"])
-                    if "muted_by" in serialized_mute and isinstance(serialized_mute["muted_by"], uuid.UUID):
-                        serialized_mute["muted_by"] = str(serialized_mute["muted_by"])
-                    data["global_mutes"][str(target_id_uuid)] = serialized_mute
+            # Save all mute types to data dictionary
+            self._save_player_mutes_to_data(data, player_id_uuid)
+            self._save_channel_mutes_to_data(data, player_id_uuid)
+            self._save_global_mutes_to_data(data, player_id_uuid)
 
             # Validate data is serializable before writing
             try:

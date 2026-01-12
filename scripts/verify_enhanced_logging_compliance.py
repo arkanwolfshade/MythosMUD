@@ -185,6 +185,100 @@ def check_file(file_path: Path) -> tuple[bool, list[tuple[int, str, str]]]:
     return len(checker.violations) == 0, checker.violations
 
 
+def _find_python_files(server_dir: Path) -> list[Path]:
+    """Find all Python files in server directory, excluding tests."""
+    python_files = []
+    for py_file in server_dir.rglob("*.py"):
+        if "test" in str(py_file) or "__pycache__" in str(py_file):
+            continue
+        python_files.append(py_file)
+    return python_files
+
+
+def _check_all_files(python_files: list[Path]) -> tuple[dict[Path, list[tuple[int, str, str]]], int]:
+    """Check all files and collect violations. Returns (violations_dict, compliant_count)."""
+    all_violations: dict[Path, list[tuple[int, str, str]]] = {}
+    compliant_files = 0
+
+    for file_path in sorted(python_files):
+        is_compliant, violations = check_file(file_path)
+        if violations:
+            all_violations[file_path] = violations
+        else:
+            compliant_files += 1
+
+    return all_violations, compliant_files
+
+
+def _group_violations_by_type(violations: list[tuple[int, str, str]]) -> dict[str, list[tuple[int, str, str]]]:
+    """Group violations by type."""
+    by_type: dict[str, list[tuple[int, str, str]]] = {}
+    for line_num, violation_type, message in violations:
+        if violation_type not in by_type:
+            by_type[violation_type] = []
+        by_type[violation_type].append((line_num, violation_type, message))
+    return by_type
+
+
+def _print_violations_for_file(file_path: Path, violations: list[tuple[int, str, str]], project_root: Path) -> None:
+    """Print violations for a single file."""
+    rel_path = file_path.relative_to(project_root)
+    print(f"{YELLOW}File: {rel_path}{RESET}")
+    print("-" * 60)
+
+    by_type = _group_violations_by_type(violations)
+    for violation_type in sorted(by_type.keys()):
+        print(f"  {RED}{violation_type}:{RESET}")
+        for line_num, _, message in by_type[violation_type]:
+            print(f"    Line {line_num}: {message}")
+    print()
+
+
+def _print_fix_instructions() -> None:
+    """Print fix instructions."""
+    print("HOW TO FIX:")
+    print("1. Replace 'import logging' with 'from server.logging.enhanced_logging_config import get_logger'")
+    print("2. Replace 'logging.getLogger(__name__)' with 'get_logger(__name__)'")
+    print("3. Replace f-string logging with structured key-value pairs")
+    print('   WRONG: logger.info(f"User {user_id} performed {action}")')
+    print('   RIGHT: logger.info("User action", user_id=user_id, action=action)')
+    print()
+    print("See .cursor/rules/structlog.mdc and docs/LOGGING_BEST_PRACTICES.md for details.")
+
+
+def _print_violations_report(
+    all_violations: dict[Path, list[tuple[int, str, str]]],
+    compliant_files: int,
+    python_files: list[Path],
+    project_root: Path,
+) -> None:
+    """Print violations report."""
+    print(f"{RED}{BOLD}VIOLATIONS FOUND{RESET}")
+    print("=" * 60)
+    print()
+
+    total_violations = sum(len(v) for v in all_violations.values())
+    print(f"Found {total_violations} violation(s) in {len(all_violations)} file(s):")
+    print()
+
+    for file_path, violations in sorted(all_violations.items()):
+        _print_violations_for_file(file_path, violations, project_root)
+
+    print(f"{RED}COMPLIANCE FAILED{RESET}")
+    print(f"Compliant files: {compliant_files}/{len(python_files)}")
+    print()
+    _print_fix_instructions()
+
+
+def _print_compliance_success(compliant_files: int) -> None:
+    """Print compliance success message."""
+    print(f"{GREEN}{BOLD}ALL FILES COMPLIANT{RESET}")
+    print("=" * 60)
+    print()
+    print(f"All {compliant_files} production files use enhanced logging system")
+    print()
+
+
 def main():
     """Main function to check all server files for logging compliance."""
     project_root = Path(__file__).parent.parent
@@ -198,73 +292,17 @@ def main():
     print("=" * 60)
     print()
 
-    # Find all Python files in server directory (excluding tests)
-    python_files = []
-    for py_file in server_dir.rglob("*.py"):
-        # Skip test files
-        if "test" in str(py_file) or "__pycache__" in str(py_file):
-            continue
-        python_files.append(py_file)
-
+    python_files = _find_python_files(server_dir)
     print(f"Checking {len(python_files)} production files...")
     print()
 
-    all_violations: dict[Path, list[tuple[int, str, str]]] = {}
-    compliant_files = 0
+    all_violations, compliant_files = _check_all_files(python_files)
 
-    for file_path in sorted(python_files):
-        is_compliant, violations = check_file(file_path)
-        if violations:
-            all_violations[file_path] = violations
-        else:
-            compliant_files += 1
-
-    # Report results
     if all_violations:
-        print(f"{RED}{BOLD}VIOLATIONS FOUND{RESET}")
-        print("=" * 60)
-        print()
-
-        total_violations = sum(len(v) for v in all_violations.values())
-        print(f"Found {total_violations} violation(s) in {len(all_violations)} file(s):")
-        print()
-
-        for file_path, violations in sorted(all_violations.items()):
-            rel_path = file_path.relative_to(project_root)
-            print(f"{YELLOW}File: {rel_path}{RESET}")
-            print("-" * 60)
-
-            # Group violations by type
-            by_type: dict[str, list[tuple[int, str, str]]] = {}
-            for line_num, violation_type, message in violations:
-                if violation_type not in by_type:
-                    by_type[violation_type] = []
-                by_type[violation_type].append((line_num, violation_type, message))
-
-            for violation_type in sorted(by_type.keys()):
-                print(f"  {RED}{violation_type}:{RESET}")
-                for line_num, _, message in by_type[violation_type]:
-                    print(f"    Line {line_num}: {message}")
-            print()
-
-        print(f"{RED}COMPLIANCE FAILED{RESET}")
-        print(f"Compliant files: {compliant_files}/{len(python_files)}")
-        print()
-        print("HOW TO FIX:")
-        print("1. Replace 'import logging' with 'from server.logging.enhanced_logging_config import get_logger'")
-        print("2. Replace 'logging.getLogger(__name__)' with 'get_logger(__name__)'")
-        print("3. Replace f-string logging with structured key-value pairs")
-        print("   WRONG: logger.info(f\"User {user_id} performed {action}\")")
-        print("   RIGHT: logger.info(\"User action\", user_id=user_id, action=action)")
-        print()
-        print("See .cursor/rules/structlog.mdc and docs/LOGGING_BEST_PRACTICES.md for details.")
+        _print_violations_report(all_violations, compliant_files, python_files, project_root)
         sys.exit(1)
     else:
-        print(f"{GREEN}{BOLD}ALL FILES COMPLIANT{RESET}")
-        print("=" * 60)
-        print()
-        print(f"All {compliant_files} production files use enhanced logging system")
-        print()
+        _print_compliance_success(compliant_files)
         sys.exit(0)
 
 

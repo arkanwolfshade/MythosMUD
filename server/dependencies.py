@@ -136,7 +136,7 @@ def get_stats_generator() -> StatsGenerator:
 
 
 # Dependency injection type aliases for use in route handlers
-ContainerDep = Depends(get_container)
-PlayerServiceDep = Depends(get_player_service)
-RoomServiceDep = Depends(get_room_service)
-StatsGeneratorDep = Depends(get_stats_generator)
+ContainerDep = Depends(get_container)  # pylint: disable=invalid-name  # Reason: FastAPI dependency name follows FastAPI conventions
+PlayerServiceDep = Depends(get_player_service)  # pylint: disable=invalid-name  # Reason: FastAPI dependency name follows FastAPI conventions
+RoomServiceDep = Depends(get_room_service)  # pylint: disable=invalid-name  # Reason: FastAPI dependency name follows FastAPI conventions
+StatsGeneratorDep = Depends(get_stats_generator)  # pylint: disable=invalid-name  # Reason: FastAPI dependency name follows FastAPI conventions

@@ -159,20 +159,19 @@ def get_username_from_user(user_obj: Any) -> str:
     # Handle Player objects (which have 'name' attribute)
     if hasattr(user_obj, "name") and hasattr(user_obj, "player_id"):
         return str(user_obj.name)
-    elif hasattr(user_obj, "username"):
+    if hasattr(user_obj, "username"):
         return str(user_obj.username)
-    elif hasattr(user_obj, "name"):
+    if hasattr(user_obj, "name"):
         return str(user_obj.name)
-    elif isinstance(user_obj, dict) and "username" in user_obj:
+    if isinstance(user_obj, dict) and "username" in user_obj:
         return str(user_obj["username"])
-    elif isinstance(user_obj, dict) and "name" in user_obj:
+    if isinstance(user_obj, dict) and "name" in user_obj:
         return str(user_obj["name"])
-    else:
-        context = create_error_context()
-        context.metadata = {"user_obj_type": type(user_obj).__name__, "user_obj": str(user_obj)}
-        log_and_raise_enhanced(
-            MythosValidationError,
-            "User object must have username or name attribute or key",
-            context=context,
-            logger_name=__name__,
-        )
+    context = create_error_context()
+    context.metadata = {"user_obj_type": type(user_obj).__name__, "user_obj": str(user_obj)}
+    log_and_raise_enhanced(
+        MythosValidationError,
+        "User object must have username or name attribute or key",
+        context=context,
+        logger_name=__name__,
+    )

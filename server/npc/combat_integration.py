@@ -13,10 +13,12 @@ entities they encounter.
 import uuid
 from typing import Any
 
+from ..config import get_config
 from ..events import EventBus
 from ..events.event_types import NPCAttacked
 from ..exceptions import DatabaseError, ValidationError
 from ..game.mechanics import GameMechanicsService
+from ..realtime.login_grace_period import is_player_in_login_grace_period
 from ..structured_logging.enhanced_logging_config import get_logger
 
 # Removed: from ..persistence import get_persistence - now using async_persistence
@@ -131,6 +133,26 @@ class NPCCombatIntegration:
 
     async def _apply_player_combat_effects(self, target_id: str, damage: int, damage_type: str) -> bool:
         """Apply combat effects to a player."""
+        # Check if target is in login grace period - block damage if so
+        try:
+            config = get_config()
+            app = getattr(config, "_app_instance", None)
+            if app:
+                connection_manager = getattr(app.state, "connection_manager", None)
+                if connection_manager:
+                    target_uuid = uuid.UUID(target_id) if isinstance(target_id, str) else target_id
+                    if is_player_in_login_grace_period(target_uuid, connection_manager):
+                        logger.info(
+                            "NPC damage blocked - target in login grace period",
+                            target_id=target_id,
+                            damage=damage,
+                            damage_type=damage_type,
+                        )
+                        return False  # Damage blocked
+        except (AttributeError, ImportError, TypeError, ValueError) as e:
+            # If we can't check grace period, proceed with damage (fail open)
+            logger.debug("Could not check login grace period for NPC damage", target_id=target_id, error=str(e))
+
         # Apply damage to player using game mechanics service
         success, _ = await self._game_mechanics.damage_player(target_id, damage, damage_type)
 
@@ -152,7 +174,7 @@ class NPCCombatIntegration:
             fear_gain = min(damage // 3, 5)  # Cap fear gain
             await self._game_mechanics.apply_fear(target_id, fear_gain, f"combat_{damage_type}")
 
-    def _handle_attribute_error(
+    def _handle_attribute_error(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Error handling requires many parameters for context and error reporting
         self, target_id: str, damage: int, damage_type: str, source_id: str | None, error: AttributeError
     ) -> None:
         """Handle AttributeError (critical programming error)."""
@@ -190,7 +212,7 @@ class NPCCombatIntegration:
             exc_info=True,
         )
 
-    async def handle_npc_attack(
+    async def handle_npc_attack(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: NPC attack handling requires many parameters for context and attack state
         self,
         npc_id: str,
         target_id: str,
@@ -214,6 +236,25 @@ class NPCCombatIntegration:
             bool: True if attack was handled successfully
         """
         try:
+            # Check if target is in login grace period - prevent NPC attacks
+            try:
+                config = get_config()
+                app = getattr(config, "_app_instance", None)
+                if app:
+                    connection_manager = getattr(app.state, "connection_manager", None)
+                    if connection_manager:
+                        target_uuid = uuid.UUID(target_id) if isinstance(target_id, str) else target_id
+                        if is_player_in_login_grace_period(target_uuid, connection_manager):
+                            logger.info(
+                                "NPC attack blocked - target in login grace period",
+                                npc_id=npc_id,
+                                target_id=target_id,
+                            )
+                            return False  # Attack blocked
+            except (AttributeError, ImportError, TypeError, ValueError) as e:
+                # If we can't check grace period, proceed with attack (fail open)
+                logger.debug("Could not check login grace period for NPC attack", target_id=target_id, error=str(e))
+
             target_stats = self._get_target_stats(target_id)
             npc_stats = self._get_npc_stats(npc_stats)
             actual_damage = self.calculate_damage(npc_stats, target_stats, attack_damage, attack_type)
@@ -243,7 +284,7 @@ class NPCCombatIntegration:
             return {"strength": 50, "constitution": 50}  # Default stats
         return npc_stats
 
-    def _publish_attack_event(self, npc_id: str, target_id: str, room_id: str, damage: int, attack_type: str) -> None:
+    def _publish_attack_event(self, npc_id: str, target_id: str, room_id: str, damage: int, attack_type: str) -> None:  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event publishing requires many parameters for complete event context
         """Publish NPC attack event to event bus."""
         if self.event_bus:
             self.event_bus.publish(
@@ -311,6 +352,46 @@ class NPCCombatIntegration:
             logger.error("Error handling NPC death", npc_id=npc_id, error=str(e))
             return False
 
+    def _calculate_max_dp(self, stats: dict[str, Any]) -> int:
+        """Calculate max_dp from stats with fallbacks."""
+        max_dp = stats.get("max_dp")
+        if max_dp is not None:
+            return max_dp
+
+        max_dp = stats.get("max_health")
+        if max_dp is not None:
+            return max_dp
+
+        con = stats.get("constitution", 50)
+        siz = stats.get("size", 50)
+        return (con + siz) // 5 if con and siz else 100
+
+    def _get_player_combat_stats(self, stats: dict[str, Any]) -> dict[str, Any]:
+        """Get combat stats for a player."""
+        current_dp = stats.get("current_dp", 100)
+        max_dp = self._calculate_max_dp(stats)
+
+        return {
+            "dp": current_dp,
+            "max_dp": max_dp,
+            "strength": stats.get("strength", 50),
+            "constitution": stats.get("constitution", 50),
+            "lucidity": stats.get("lucidity", 100),
+            "fear": stats.get("fear", 0),
+            "corruption": stats.get("corruption", 0),
+        }
+
+    def _normalize_npc_stats(self, npc_stats: dict[str, Any]) -> dict[str, Any]:
+        """Normalize NPC stats to include 'hp' for backward compatibility."""
+        normalized_stats = dict(npc_stats)
+        if "hp" not in normalized_stats:
+            hp_value = normalized_stats.get("determination_points")
+            if hp_value is None:
+                hp_value = normalized_stats.get("dp")
+            if hp_value is not None:
+                normalized_stats["hp"] = hp_value
+        return normalized_stats
+
     def get_combat_stats(self, entity_id: str, npc_stats: dict[str, Any] | None = None) -> dict[str, Any]:
         """
         Get combat-relevant stats for an entity.
@@ -323,66 +404,23 @@ class NPCCombatIntegration:
             dict: Combat stats
         """
         try:
-            # Check if it's a player
-            # Convert entity_id to UUID if it's a string
             entity_id_uuid = uuid.UUID(entity_id) if isinstance(entity_id, str) else entity_id
             player = self._persistence.get_player(entity_id_uuid)
             if player:
                 stats = player.stats.model_dump()
-                # Use current_dp for determination points
-                current_dp = stats.get("current_dp", 100)
-                # Handle both max_dp and max_health for backward compatibility
-                # If neither exists, try to compute from constitution and size, or default to 100
-                max_dp = stats.get("max_dp")
-                if max_dp is None:
-                    max_dp = stats.get("max_health")
-                if max_dp is None:
-                    # Try to compute from constitution and size if available
-                    con = stats.get("constitution", 50)
-                    siz = stats.get("size", 50)
-                    max_dp = (con + siz) // 5 if con and siz else 100
-                return {
-                    "dp": current_dp,
-                    "max_dp": max_dp,
-                    "strength": stats.get("strength", 50),
-                    "constitution": stats.get("constitution", 50),
-                    "lucidity": stats.get("lucidity", 100),
-                    "fear": stats.get("fear", 0),
-                    "corruption": stats.get("corruption", 0),
-                }
+                return self._get_player_combat_stats(stats)
 
-            # For NPCs, normalize stats to include 'hp' for backward compatibility
             if npc_stats:
-                normalized_stats = dict(npc_stats)
-                # Map determination_points or dp to hp if hp is missing
-                if "hp" not in normalized_stats:
-                    # Check determination_points first, then dp
-                    hp_value = normalized_stats.get("determination_points")
-                    if hp_value is None:
-                        hp_value = normalized_stats.get("dp")
-                    if hp_value is not None:
-                        normalized_stats["hp"] = hp_value
-                return normalized_stats
+                return self._normalize_npc_stats(npc_stats)
 
             logger.warning("Entity not found for combat stats", entity_id=entity_id)
             return {}
 
         except (ValueError, TypeError, AttributeError, DatabaseError, ValidationError) as e:
-            # If there's an error (e.g., invalid UUID, missing attributes, type mismatch, database errors),
-            # try to return NPC stats if provided (normalized to include 'hp' for backward compatibility)
             if npc_stats:
                 logger.debug(
                     "Error getting combat stats, returning provided NPC stats", entity_id=entity_id, error=str(e)
                 )
-                normalized_stats = dict(npc_stats)
-                # Map determination_points or dp to hp if hp is missing
-                if "hp" not in normalized_stats:
-                    # Check determination_points first, then dp
-                    hp_value = normalized_stats.get("determination_points")
-                    if hp_value is None:
-                        hp_value = normalized_stats.get("dp")
-                    if hp_value is not None:
-                        normalized_stats["hp"] = hp_value
-                return normalized_stats
+                return self._normalize_npc_stats(npc_stats)
             logger.error("Error getting combat stats", entity_id=entity_id, error=str(e))
             return {}

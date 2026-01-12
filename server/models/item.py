@@ -6,6 +6,8 @@ for authoring tools while providing runtime storage for instantiated items and
 component-specific metadata.
 """
 
+# pylint: disable=too-few-public-methods  # Reason: SQLAlchemy models are data classes, no instance methods needed
+
 from __future__ import annotations
 
 from datetime import UTC, datetime

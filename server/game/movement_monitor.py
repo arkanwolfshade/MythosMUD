@@ -17,7 +17,7 @@ from typing import Any
 from ..structured_logging.enhanced_logging_config import get_logger
 
 
-class MovementMonitor:
+class MovementMonitor:  # pylint: disable=too-many-instance-attributes  # Reason: Monitoring system requires many metrics and state tracking attributes
     """
     Comprehensive monitoring system for the movement system.
 
@@ -62,7 +62,7 @@ class MovementMonitor:
 
         self._logger.info("MovementMonitor initialized")
 
-    def record_movement_attempt(
+    def record_movement_attempt(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Movement monitoring requires many parameters to track complete movement state
         self, player_id: uuid.UUID | str, from_room_id: str, to_room_id: str, success: bool, duration_ms: float
     ):
         """Record a movement attempt with metrics."""
@@ -151,7 +151,7 @@ class MovementMonitor:
         )
 
         result = {
-            "valid": len(violations) == 0,
+            "valid": not violations,
             "violations": violations,
             "total_rooms": len(rooms),
             "total_players": total_players,
@@ -277,7 +277,7 @@ class MovementMonitor:
 
 
 # Global monitor instance
-_movement_monitor: MovementMonitor | None = None
+_movement_monitor: MovementMonitor | None = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
 _monitor_lock = threading.RLock()
 
 

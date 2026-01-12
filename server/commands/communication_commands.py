@@ -4,6 +4,8 @@ Communication commands for MythosMUD.
 This module contains handlers for communication-related commands like say, me, and pose.
 """
 
+# pylint: disable=too-many-return-statements,too-many-lines  # Reason: Command handlers require multiple return statements for early validation returns (input validation, permission checks, error handling). Communication commands require extensive handlers for multiple communication channels and message types.
+
 from typing import Any
 
 from ..alias_storage import AliasStorage
@@ -81,10 +83,10 @@ async def handle_say_command(
                 message_id=result.get("message", {}).get("id"),
             )
             return {"result": f"You say: {message}"}
-        else:
-            error_msg = result.get("error", "Unknown error")
-            logger.warning("Say command failed", player_name=player_name, error=error_msg)
-            return {"result": f"Error sending message: {error_msg}"}
+
+        error_msg = result.get("error", "Unknown error")
+        logger.warning("Say command failed", player_name=player_name, error=error_msg)
+        return {"result": f"Error sending message: {error_msg}"}
 
     except (AttributeError, TypeError, ValueError, RuntimeError) as e:
         logger.error(
@@ -250,10 +252,10 @@ async def handle_local_command(
                 message_id=result.get("message", {}).get("id"),
             )
             return {"result": f"You say locally: {message}"}
-        else:
-            error_msg = result.get("error", "Unknown error")
-            logger.warning("Local command failed", player_name=player_name, error_msg=error_msg)
-            return {"result": f"Error sending message: {error_msg}"}
+
+        error_msg = result.get("error", "Unknown error")
+        logger.warning("Local command failed", player_name=player_name, error_msg=error_msg)
+        return {"result": f"Error sending message: {error_msg}"}
 
     except (AttributeError, TypeError, ValueError, RuntimeError) as e:
         logger.error(
@@ -336,10 +338,10 @@ async def handle_global_command(
                 message_id=result.get("message", {}).get("id"),
             )
             return {"result": f"You say (global): {message}"}
-        else:
-            error_msg = result.get("error", "Unknown error")
-            logger.warning("Global command failed", player_name=player_name, error_msg=error_msg)
-            return {"result": f"Error sending message: {error_msg}"}
+
+        error_msg = result.get("error", "Unknown error")
+        logger.warning("Global command failed", player_name=player_name, error_msg=error_msg)
+        return {"result": f"Error sending message: {error_msg}"}
 
     except (AttributeError, TypeError, ValueError, RuntimeError) as e:
         logger.error("Global command error", player_name=player_name, error=str(e))
@@ -418,10 +420,10 @@ async def handle_system_command(
                 message_id=result.get("message", {}).get("id"),
             )
             return {"result": f"You system: {message}"}
-        else:
-            error_msg = result.get("error", "Unknown error")
-            logger.warning("System command failed", player_name=player_name, error_msg=error_msg)
-            return {"result": f"Error sending system message: {error_msg}"}
+
+        error_msg = result.get("error", "Unknown error")
+        logger.warning("System command failed", player_name=player_name, error_msg=error_msg)
+        return {"result": f"Error sending system message: {error_msg}"}
 
     except (AttributeError, TypeError, ValueError, RuntimeError) as e:
         logger.error("System command error", player_name=player_name, error=str(e))
@@ -505,10 +507,10 @@ async def handle_whisper_command(
                 message_id=result.get("message", {}).get("id"),
             )
             return {"result": f"You whisper to {target}: {message}"}
-        else:
-            error_msg = result.get("error", "Unknown error")
-            logger.warning("Whisper command failed", player_name=player_name, error_msg=error_msg)
-            return {"result": f"Error sending whisper: {error_msg}"}
+
+        error_msg = result.get("error", "Unknown error")
+        logger.warning("Whisper command failed", player_name=player_name, error_msg=error_msg)
+        return {"result": f"Error sending whisper: {error_msg}"}
 
     except (AttributeError, TypeError, ValueError, RuntimeError) as e:
         logger.error("Whisper command error", player_name=player_name, error=str(e))
@@ -592,10 +594,10 @@ async def handle_reply_command(
                 message_id=result.get("message", {}).get("id"),
             )
             return {"result": f"You whisper to {last_whisper_sender}: {message}"}
-        else:
-            error_msg = result.get("error", "Unknown error")
-            logger.warning("Reply command failed", player_name=player_name, error_msg=error_msg)
-            return {"result": f"Error sending reply: {error_msg}"}
+
+        error_msg = result.get("error", "Unknown error")
+        logger.warning("Reply command failed", player_name=player_name, error_msg=error_msg)
+        return {"result": f"Error sending reply: {error_msg}"}
 
     except (AttributeError, TypeError, ValueError, RuntimeError) as e:
         logger.error("Reply command error", player_name=player_name, error=str(e))

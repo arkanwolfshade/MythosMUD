@@ -11,6 +11,8 @@ eldritch architecture.
 Refactored to delegate to specialized modules for better maintainability.
 """
 
+# pylint: disable=too-many-instance-attributes  # Reason: Event handler requires many service and state tracking attributes
+
 import uuid
 from typing import Any
 

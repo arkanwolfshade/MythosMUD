@@ -32,7 +32,7 @@ class PerformanceMetric:
 
 
 @dataclass
-class PerformanceStats:
+class PerformanceStats:  # pylint: disable=too-many-instance-attributes  # Reason: Performance stats requires many fields to capture complete performance metrics
     """Aggregated performance statistics."""
 
     operation: str
@@ -220,7 +220,7 @@ class PerformanceMonitor:
         for callback in self.alert_callbacks:
             try:
                 callback(metric, alert_data)
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Callback errors unpredictable, must not fail alert processing
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Callback errors unpredictable, must not fail alert processing
                 logger.error("Alert callback failed", callback=str(callback), error=str(e), exc_info=True)
 
     def reset_metrics(self) -> None:
@@ -255,7 +255,7 @@ class PerformanceMonitor:
 
 
 # Global performance monitor instance
-_performance_monitor: PerformanceMonitor | None = None
+_performance_monitor: PerformanceMonitor | None = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
 
 
 def get_performance_monitor() -> PerformanceMonitor:
@@ -354,8 +354,7 @@ def get_performance_stats(operation: str | None = None, monitor: PerformanceMoni
 
     if operation:
         return monitor.get_operation_stats(operation)
-    else:
-        return monitor.get_all_stats()
+    return monitor.get_all_stats()
 
 
 def reset_performance_metrics(monitor: PerformanceMonitor | None = None) -> None:

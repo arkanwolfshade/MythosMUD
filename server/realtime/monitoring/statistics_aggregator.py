@@ -7,6 +7,8 @@ and provides comprehensive reporting for monitoring and diagnostics.
 AI Agent: Extracted from ConnectionManager to centralize statistics reporting logic.
 """
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Statistics aggregation requires many parameters and intermediate variables for complex statistics processing logic
+
 import time
 import uuid
 from typing import TYPE_CHECKING, Any
@@ -33,7 +35,7 @@ class StatisticsAggregator:
     AI Agent: Single Responsibility - Statistics aggregation and reporting only.
     """
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Statistics aggregator initialization requires many service dependencies
         self,
         memory_monitor: "MemoryMonitor",
         rate_limiter: "RateLimiter",
@@ -57,7 +59,7 @@ class StatisticsAggregator:
         self.room_manager = room_manager
         self.performance_tracker = performance_tracker
 
-    def get_memory_stats(
+    def get_memory_stats(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Memory stats retrieval requires many parameters and intermediate variables for complex statistics processing
         self,
         active_websockets: dict[str, Any],
         player_websockets: dict[uuid.UUID, list[str]],
@@ -142,7 +144,7 @@ class StatisticsAggregator:
                 "message_queue": message_queue_stats,
                 "room_manager": room_stats,
             }
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Memory stats retrieval errors unpredictable, must return empty dict
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Memory stats retrieval errors unpredictable, must return empty dict
             logger.error("Error getting memory stats", error=str(e), exc_info=True)
             return {}
 
@@ -243,9 +245,195 @@ class StatisticsAggregator:
                 },
                 "timestamp": now,
             }
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Connection stats retrieval errors unpredictable, must return error response
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Connection stats retrieval errors unpredictable, must return error response
             logger.error("Error getting connection stats", error=str(e), exc_info=True)
             return {"error": f"Failed to get connection stats: {e}", "timestamp": time.time()}
+
+    def _analyze_connection_health(self, connection_metadata: dict[str, Any]) -> tuple[int, int]:
+        """
+        Analyze connection health distribution.
+
+        Args:
+            connection_metadata: Connection metadata
+
+        Returns:
+            Tuple of (healthy_connections, unhealthy_connections)
+        """
+        healthy_connections = 0
+        unhealthy_connections = 0
+
+        for _connection_id, metadata in connection_metadata.items():
+            if metadata.is_healthy:
+                healthy_connections += 1
+            else:
+                unhealthy_connections += 1
+
+        return healthy_connections, unhealthy_connections
+
+    def _analyze_connection_types(self, connection_metadata: dict[str, Any]) -> int:
+        """
+        Analyze connection types.
+
+        Args:
+            connection_metadata: Connection metadata
+
+        Returns:
+            Number of websocket connections
+        """
+        websocket_connections = 0
+
+        for _connection_id, metadata in connection_metadata.items():
+            if metadata.connection_type == "websocket":
+                websocket_connections += 1
+
+        return websocket_connections
+
+    def _analyze_connection_ages(self, connection_metadata: dict[str, Any], now: float) -> tuple[list[float], int]:
+        """
+        Analyze connection ages.
+
+        Args:
+            connection_metadata: Connection metadata
+            now: Current timestamp
+
+        Returns:
+            Tuple of (connection_ages list, stale_connections count)
+        """
+        connection_ages = []
+        stale_connections = 0
+
+        for _connection_id, metadata in connection_metadata.items():
+            age = now - metadata.established_at
+            connection_ages.append(age)
+            if age > 3600:  # 1 hour
+                stale_connections += 1
+
+        return connection_ages, stale_connections
+
+    def _analyze_session_health(self, connection_metadata: dict[str, Any]) -> dict[str, dict[str, int]]:
+        """
+        Analyze session health.
+
+        Args:
+            connection_metadata: Connection metadata
+
+        Returns:
+            Dictionary mapping session_id to health stats
+        """
+        session_health = {}
+
+        for _connection_id, metadata in connection_metadata.items():
+            if metadata.session_id:
+                if metadata.session_id not in session_health:
+                    session_health[metadata.session_id] = {"healthy": 0, "unhealthy": 0, "total": 0}
+                session_health[metadata.session_id]["total"] += 1
+                if metadata.is_healthy:
+                    session_health[metadata.session_id]["healthy"] += 1
+                else:
+                    session_health[metadata.session_id]["unhealthy"] += 1
+
+        return session_health
+
+    def _calculate_session_health_percentages(self, session_health: dict[str, dict[str, int]]) -> tuple[int, int]:
+        """
+        Calculate session health percentages.
+
+        Args:
+            session_health: Session health dictionary
+
+        Returns:
+            Tuple of (healthy_sessions, unhealthy_sessions)
+        """
+        healthy_sessions = 0
+        unhealthy_sessions = 0
+
+        for _session_id, health in session_health.items():
+            if health["total"] > 0:
+                health_percentage = health["healthy"] / health["total"] * 100
+                if health_percentage >= 80:  # 80% threshold for healthy session
+                    healthy_sessions += 1
+                else:
+                    unhealthy_sessions += 1
+
+        return healthy_sessions, unhealthy_sessions
+
+    def _build_health_trends(self, connection_ages: list[float]) -> dict[str, int]:
+        """
+        Build health trends statistics.
+
+        Args:
+            connection_ages: List of connection ages
+
+        Returns:
+            Dictionary with health trends
+        """
+        return {
+            "connections_older_than_1h": sum(1 for age in connection_ages if age > 3600),
+            "connections_older_than_24h": sum(1 for age in connection_ages if age > 86400),
+            "connections_older_than_7d": sum(1 for age in connection_ages if age > 604800),
+        }
+
+    def _build_health_stats_response(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Health stats building requires many parameters for complete health context
+        self,
+        total_connections: int,
+        healthy_connections: int,
+        unhealthy_connections: int,
+        websocket_connections: int,
+        connection_ages: list[float],
+        stale_connections: int,
+        total_sessions: int,
+        healthy_sessions: int,
+        unhealthy_sessions: int,
+        now: float,
+    ) -> dict[str, Any]:
+        """
+        Build connection health statistics response.
+
+        Args:
+            total_connections: Total number of connections
+            healthy_connections: Number of healthy connections
+            unhealthy_connections: Number of unhealthy connections
+            websocket_connections: Number of websocket connections
+            connection_ages: List of connection ages
+            stale_connections: Number of stale connections
+            total_sessions: Total number of sessions
+            healthy_sessions: Number of healthy sessions
+            unhealthy_sessions: Number of unhealthy sessions
+            now: Current timestamp
+
+        Returns:
+            Dictionary with health statistics
+        """
+        return {
+            "overall_health": {
+                "total_connections": total_connections,
+                "healthy_connections": healthy_connections,
+                "unhealthy_connections": unhealthy_connections,
+                "health_percentage": (healthy_connections / total_connections * 100) if total_connections > 0 else 0,
+            },
+            "connection_type_health": {
+                "websocket_connections": websocket_connections,
+                "websocket_health_percentage": 0,  # Would need separate tracking
+            },
+            "connection_lifecycle": {
+                "avg_connection_age_seconds": sum(connection_ages) / len(connection_ages) if connection_ages else 0,
+                "max_connection_age_seconds": max(connection_ages) if connection_ages else 0,
+                "min_connection_age_seconds": min(connection_ages) if connection_ages else 0,
+                "stale_connections": stale_connections,
+                "stale_connection_percentage": (stale_connections / total_connections * 100)
+                if total_connections > 0
+                else 0,
+            },
+            "session_health": {
+                "total_sessions": total_sessions,
+                "healthy_sessions": healthy_sessions,
+                "unhealthy_sessions": unhealthy_sessions,
+                "session_health_percentage": (healthy_sessions / total_sessions * 100) if total_sessions > 0 else 0,
+                "avg_connections_per_session": total_connections / total_sessions if total_sessions > 0 else 0,
+            },
+            "health_trends": self._build_health_trends(connection_ages),
+            "timestamp": now,
+        }
 
     def get_connection_health_stats(self, connection_metadata: dict[str, Any]) -> dict[str, Any]:
         """
@@ -260,98 +448,28 @@ class StatisticsAggregator:
         try:
             now = time.time()
 
-            # Analyze connection health distribution
-            healthy_connections = 0
-            unhealthy_connections = 0
-
-            # Analyze connection types
-            websocket_connections = 0
-
-            # Analyze connection ages
-            connection_ages = []
-            stale_connections = 0
-
-            # Analyze session health
-            session_health = {}
-
-            for _connection_id, metadata in connection_metadata.items():
-                # Health analysis
-                if metadata.is_healthy:
-                    healthy_connections += 1
-                else:
-                    unhealthy_connections += 1
-
-                # Type analysis
-                if metadata.connection_type == "websocket":
-                    websocket_connections += 1
-
-                # Age analysis
-                age = now - metadata.established_at
-                connection_ages.append(age)
-                if age > 3600:  # 1 hour
-                    stale_connections += 1
-
-                # Session health analysis
-                if metadata.session_id:
-                    if metadata.session_id not in session_health:
-                        session_health[metadata.session_id] = {"healthy": 0, "unhealthy": 0, "total": 0}
-                    session_health[metadata.session_id]["total"] += 1
-                    if metadata.is_healthy:
-                        session_health[metadata.session_id]["healthy"] += 1
-                    else:
-                        session_health[metadata.session_id]["unhealthy"] += 1
-
-            # Calculate session health percentages
-            healthy_sessions = 0
-            unhealthy_sessions = 0
-            for _session_id, health in session_health.items():
-                if health["total"] > 0:
-                    health_percentage = health["healthy"] / health["total"] * 100
-                    if health_percentage >= 80:  # 80% threshold for healthy session
-                        healthy_sessions += 1
-                    else:
-                        unhealthy_sessions += 1
+            healthy_connections, unhealthy_connections = self._analyze_connection_health(connection_metadata)
+            websocket_connections = self._analyze_connection_types(connection_metadata)
+            connection_ages, stale_connections = self._analyze_connection_ages(connection_metadata, now)
+            session_health = self._analyze_session_health(connection_metadata)
+            healthy_sessions, unhealthy_sessions = self._calculate_session_health_percentages(session_health)
 
             total_connections = len(connection_metadata)
             total_sessions = len(session_health)
 
-            return {
-                "overall_health": {
-                    "total_connections": total_connections,
-                    "healthy_connections": healthy_connections,
-                    "unhealthy_connections": unhealthy_connections,
-                    "health_percentage": (healthy_connections / total_connections * 100)
-                    if total_connections > 0
-                    else 0,
-                },
-                "connection_type_health": {
-                    "websocket_connections": websocket_connections,
-                    "websocket_health_percentage": 0,  # Would need separate tracking
-                },
-                "connection_lifecycle": {
-                    "avg_connection_age_seconds": sum(connection_ages) / len(connection_ages) if connection_ages else 0,
-                    "max_connection_age_seconds": max(connection_ages) if connection_ages else 0,
-                    "min_connection_age_seconds": min(connection_ages) if connection_ages else 0,
-                    "stale_connections": stale_connections,
-                    "stale_connection_percentage": (stale_connections / total_connections * 100)
-                    if total_connections > 0
-                    else 0,
-                },
-                "session_health": {
-                    "total_sessions": total_sessions,
-                    "healthy_sessions": healthy_sessions,
-                    "unhealthy_sessions": unhealthy_sessions,
-                    "session_health_percentage": (healthy_sessions / total_sessions * 100) if total_sessions > 0 else 0,
-                    "avg_connections_per_session": total_connections / total_sessions if total_sessions > 0 else 0,
-                },
-                "health_trends": {
-                    "connections_older_than_1h": sum(1 for age in connection_ages if age > 3600),
-                    "connections_older_than_24h": sum(1 for age in connection_ages if age > 86400),
-                    "connections_older_than_7d": sum(1 for age in connection_ages if age > 604800),
-                },
-                "timestamp": now,
-            }
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Connection health stats retrieval errors unpredictable, must return error response
+            return self._build_health_stats_response(
+                total_connections,
+                healthy_connections,
+                unhealthy_connections,
+                websocket_connections,
+                connection_ages,
+                stale_connections,
+                total_sessions,
+                healthy_sessions,
+                unhealthy_sessions,
+                now,
+            )
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Connection health stats retrieval errors unpredictable, must return error response
             logger.error("Error getting connection health stats", error=str(e), exc_info=True)
             return {"error": f"Failed to get connection health stats: {e}", "timestamp": time.time()}
 
@@ -380,6 +498,6 @@ class StatisticsAggregator:
                 "stale_connections": stale_connections,
             }
             return self.memory_monitor.get_memory_alerts(connection_stats)
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Memory alerts retrieval errors unpredictable, must return error message
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Memory alerts retrieval errors unpredictable, must return error message
             logger.error("Error getting memory alerts", error=str(e), exc_info=True)
             return [f"ERROR: Failed to get memory alerts: {e}"]

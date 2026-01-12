@@ -6,6 +6,8 @@ Tests the helper functions in look_room.py module.
 
 from unittest.mock import MagicMock
 
+import pytest
+
 from server.commands.look_room import (
     _filter_other_players,
     _format_exits_list,
@@ -40,7 +42,8 @@ def test_format_items_section_empty():
     assert any("no abandoned curios" in line.lower() for line in result)
 
 
-def test_filter_other_players():
+@pytest.mark.asyncio
+async def test_filter_other_players():
     """Test _filter_other_players() filters out current player."""
     player1 = MagicMock()
     player1.name = "Player1"
@@ -48,21 +51,22 @@ def test_filter_other_players():
     player2.name = "Player2"
     players_in_room = [player1, player2]
 
-    result = _filter_other_players(players_in_room, "Player1")
+    result = await _filter_other_players(players_in_room, "Player1")
 
     assert "Player2" in result
     assert "Player1" not in result
 
 
-def test_filter_other_players_all_filtered():
+@pytest.mark.asyncio
+async def test_filter_other_players_all_filtered():
     """Test _filter_other_players() returns empty list when only current player."""
     player1 = MagicMock()
     player1.name = "Player1"
     players_in_room = [player1]
 
-    result = _filter_other_players(players_in_room, "Player1")
+    result = await _filter_other_players(players_in_room, "Player1")
 
-    assert result == []
+    assert not result
 
 
 def test_format_players_section():
@@ -84,7 +88,7 @@ def test_format_players_section_empty():
 
     result = _format_players_section(player_names)
 
-    assert result == []
+    assert not result
 
 
 def test_get_room_description():

@@ -165,7 +165,7 @@ class DeadLetterQueue:
             oldest_file.unlink()
 
             return data
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: DLQ dequeue errors unpredictable, must return None
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: DLQ dequeue errors unpredictable, must return None
             logger.error("Error dequeuing DLQ message", filepath=str(oldest_file), error=str(e))
             return None
 
@@ -194,7 +194,7 @@ class DeadLetterQueue:
                 "oldest_message_age": oldest_age,
                 "storage_dir": str(self.storage_dir),
             }
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: DLQ statistics errors unpredictable, must return default stats
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: DLQ statistics errors unpredictable, must return default stats
             logger.error("Error getting DLQ statistics", error=str(e))
             return {
                 "total_messages": 0,
@@ -226,7 +226,7 @@ class DeadLetterQueue:
                     data = json.load(f)
                     data["dlq_file"] = str(filepath)
                     messages.append(data)
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: DLQ file read errors unpredictable, must continue processing
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: DLQ file read errors unpredictable, must continue processing
                 logger.error("Error reading DLQ file", filepath=str(filepath), error=str(e))
                 continue
 
@@ -293,7 +293,7 @@ class DeadLetterQueue:
                     if file_time < cutoff_time:
                         filepath.unlink()
                         removed_count += 1
-                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: DLQ file removal errors unpredictable, must continue processing
+                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: DLQ file removal errors unpredictable, must continue processing
                     logger.warning("Error removing old DLQ file", filepath=str(filepath), error=str(e))
                     continue
 
@@ -301,6 +301,6 @@ class DeadLetterQueue:
                 logger.info("Cleaned up old DLQ messages", removed_count=removed_count, max_age_days=max_age_days)
 
             return removed_count
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: DLQ cleanup errors unpredictable, must return 0
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: DLQ cleanup errors unpredictable, must return 0
             logger.error("Error during DLQ cleanup", error=str(e))
             return 0

@@ -8,33 +8,66 @@ CRITICAL: Database initialization is LAZY and requires configuration to be loade
          The system will FAIL LOUDLY if configuration is not properly set.
 """
 
-import asyncio
-import threading
-from collections.abc import AsyncGenerator
-from pathlib import Path
-from typing import Any
+# pylint: disable=too-many-lines  # Reason: Database module requires extensive configuration, connection management, and session handling code
 
-from fastapi import HTTPException
-from pydantic import ValidationError as PydanticValidationError
-from sqlalchemy import text
+import asyncio
+import importlib.util
+import threading
+from collections.abc import AsyncIterator
+from pathlib import Path
+
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
     async_sessionmaker,
     create_async_engine,
 )
-from sqlalchemy.pool import NullPool
 
+from .database_config_helpers import (
+    configure_pool_settings,
+    get_test_database_url,
+    load_database_url,
+    normalize_database_url,
+    set_test_database_url,
+    validate_database_url,
+)
 from .exceptions import DatabaseError, ValidationError
 from .structured_logging.enhanced_logging_config import get_logger
 from .utils.error_logging import create_error_context, log_and_raise
 
 logger = get_logger(__name__)
 
-
 # Backward-compatibility override for tests expecting module-level URL
 # Tests may patch `server.database._database_url` to control path resolution.
-_database_url: str | None = None
+# This syncs with database_config_helpers for actual storage
+# Using a dict to avoid global statement while maintaining mutable state
+_database_url_state: dict[str, str | None] = {"url": None}
+
+# Expose as simple variable for backward compatibility with tests
+# Tests can patch this directly: `server.database._database_url = "postgresql://..."`
+_database_url: str | None = None  # pylint: disable=invalid-name  # Reason: Private module-level variable for test compatibility, intentionally uses _ prefix
+
+
+def _get_database_url_state() -> str | None:
+    """
+    Get database URL state for testing.
+
+    This is a public function to access the internal _database_url_state
+    without directly accessing the protected member.
+    """
+    return _database_url_state["url"]
+
+
+def _reset_database_url_state() -> None:
+    """
+    Reset database URL state for testing.
+
+    This is a public function to reset the internal _database_url_state
+    without directly accessing the protected member.
+    """
+    _database_url_state["url"] = None
+    # Note: _database_url is for backward compatibility and can be patched directly by tests
 
 
 class DatabaseManager:
@@ -90,85 +123,36 @@ class DatabaseManager:
         context = create_error_context()
         context.metadata["operation"] = "database_initialization"
 
-        # Import config here to avoid circular imports
-        try:
-            from .config import get_config
-        except ImportError as e:
+        # Check if config module is available
+        config_spec = importlib.util.find_spec(".config", package=__package__)
+        if config_spec is None:
             log_and_raise(
                 ValidationError,
                 "Failed to import config - configuration system unavailable",
                 context=context,
-                details={"import_error": str(e)},
+                details={"import_error": "config module not found"},
                 user_friendly="Critical system error: configuration system not available",
             )
 
-        # Allow test override via module-level _database_url
-        # Note: Reading module-level variable, no assignment needed
-        database_url: str | None = None
-        if _database_url is not None:
-            database_url = _database_url
+        # Handle test override for backward compatibility
+        # Check both dict-based storage and direct variable (for backward compatibility)
+        # Tests can patch either _database_url_state["url"] or _database_url directly
+        test_url = _database_url_state["url"] or _database_url
+        if test_url is not None:
+            set_test_database_url(test_url)
+            # Sync dict storage (no global needed)
+            _database_url_state["url"] = test_url
         else:
-            # Load configuration - this will FAIL LOUDLY with ValidationError if required fields missing
-            try:
-                config = get_config()
-                database_url = config.database.url
-            except (PydanticValidationError, ImportError, RuntimeError) as e:
-                # JUSTIFICATION: Catch common initialization errors including Pydantic validation
-                # and environment loading issues to provide a unified ValidationError.
-                log_and_raise(
-                    ValidationError,
-                    f"Failed to load configuration: {e}",
-                    context=context,
-                    details={"config_error": str(e), "error_type": type(e).__name__},
-                    user_friendly="Database cannot be initialized: configuration not loaded or invalid",
-                )
+            # Sync from config helpers if module-level is None
+            test_url_from_config = get_test_database_url()
+            _database_url_state["url"] = test_url_from_config
 
-        # PostgreSQL-only: Verify we have a PostgreSQL URL
-        # Ensure database_url is set before checking
-        if database_url is None:
-            log_and_raise(
-                ValidationError,
-                "Database URL is not configured",
-                context=context,
-                user_friendly="Database configuration error - URL not set",
-            )
-        if not database_url.startswith("postgresql"):
-            log_and_raise(
-                ValidationError,
-                f"Unsupported database URL: {database_url}. Only PostgreSQL is supported.",
-                context=context,
-                user_friendly="Database configuration error - PostgreSQL required",
-            )
-
-        # PostgreSQL URL (postgresql+asyncpg:// or postgresql://)
-        if not database_url.startswith("postgresql+asyncpg"):
-            # Convert postgresql:// to postgresql+asyncpg:// for async support
-            self.database_url = database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
-        else:
-            self.database_url = database_url
+        database_url = load_database_url(context)
+        validate_database_url(database_url, context)
+        self.database_url = normalize_database_url(database_url)
         logger.info("Using PostgreSQL database URL from environment", database_url=self.database_url)
 
-        # Determine pool class based on database URL
-        # Use NullPool for tests, default AsyncAdaptedQueuePool for production
-        # For async engines, AsyncAdaptedQueuePool is used automatically if poolclass not specified
-        pool_kwargs: dict[str, Any] = {}
-        if "test" in self.database_url:
-            pool_kwargs["poolclass"] = NullPool
-        else:
-            # For production, use default AsyncAdaptedQueuePool with configured pool size
-            # AsyncAdaptedQueuePool is automatically used by create_async_engine()
-            # Get pool configuration from config
-            # Extract database config to avoid type checker FieldInfo issues
-            config = get_config()
-            # Access via model_dump to get actual values, not FieldInfo
-            db_config_dict = config.database.model_dump()
-            pool_kwargs.update(
-                {
-                    "pool_size": db_config_dict["pool_size"],
-                    "max_overflow": db_config_dict["max_overflow"],
-                    "pool_timeout": db_config_dict["pool_timeout"],
-                }
-            )
+        pool_kwargs = configure_pool_settings(self.database_url)
 
         # Create async engine with PostgreSQL configuration
         # CRITICAL FIX: Add proper exception handling for engine creation
@@ -215,8 +199,7 @@ class DatabaseManager:
                 },
                 user_friendly="Cannot connect to database. Please check database server is running.",
             )
-        except Exception as e:  # pylint: disable=broad-exception-caught
-            # JUSTIFICATION: create_async_engine can raise a wide variety of exceptions depending
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904            # JUSTIFICATION: create_async_engine can raise a wide variety of exceptions depending
             # on the driver (asyncpg), network state, and provided credentials. We catch Exception
             # here to provide a unified, context-rich DatabaseError for any failure during this
             # critical infrastructure setup.
@@ -357,17 +340,17 @@ class DatabaseManager:
         if database_url.startswith("postgresql"):
             # PostgreSQL doesn't have a file path
             return None
-        else:
-            context = create_error_context()
-            context.metadata["operation"] = "get_database_path"
-            context.metadata["database_url"] = database_url
-            log_and_raise(
-                ValidationError,
-                f"Unsupported database URL: {database_url}. Only PostgreSQL is supported.",
-                context=context,
-                details={"database_url": database_url},
-                user_friendly="Unsupported database configuration - PostgreSQL required",
-            )
+
+        context = create_error_context()
+        context.metadata["operation"] = "get_database_path"
+        context.metadata["database_url"] = database_url
+        log_and_raise(
+            ValidationError,
+            f"Unsupported database URL: {database_url}. Only PostgreSQL is supported.",
+            context=context,
+            details={"database_url": database_url},
+            user_friendly="Unsupported database configuration - PostgreSQL required",
+        )
 
     async def close(self) -> None:
         """Close database connections."""
@@ -426,8 +409,7 @@ class DatabaseManager:
                 # Event loop is closed or proactor is None - this is expected during cleanup
                 # Don't log as error, just as debug since this is normal during test teardown
                 logger.debug("Event loop closed during engine disposal (expected during cleanup)", error=str(e))
-            except Exception as e:  # pylint: disable=broad-exception-caught
-                # JUSTIFICATION: This is a best-effort cleanup of database connections during engine disposal.
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904                # JUSTIFICATION: This is a best-effort cleanup of database connections during engine disposal.
                 # We log any unexpected failures but must not raise them, ensuring the application shutdown
                 # process can continue for other components even if database cleanup fails.
                 # Any other error - log but don't raise
@@ -443,37 +425,15 @@ class DatabaseManager:
             self._creation_loop_id = None
 
 
-def reset_database() -> None:
-    """
-    Reset database state for testing.
-
-    This function resets the DatabaseManager singleton and module-level
-    _database_url. Use this in test fixtures to ensure clean state.
-    """
-    globals()["_database_url"] = None
-    DatabaseManager.reset_instance()
-    logger.debug("Database state reset")
-
-
-def get_engine() -> AsyncEngine:
-    """
-    Get the database engine, initializing if necessary.
-
-    Returns:
-        AsyncEngine: The database engine (never None)
-
-    Raises:
-        ValidationError: If database cannot be initialized
-    """
-    return DatabaseManager.get_instance().get_engine()
+# Module-level utility functions for backward compatibility
 
 
 def get_session_maker() -> async_sessionmaker:
     """
-    Get the async session maker, initializing if necessary.
+    Get the async session maker from DatabaseManager.
 
     Returns:
-        async_sessionmaker: The session maker (never None)
+        async_sessionmaker: The session maker
 
     Raises:
         ValidationError: If database cannot be initialized
@@ -481,205 +441,128 @@ def get_session_maker() -> async_sessionmaker:
     return DatabaseManager.get_instance().get_session_maker()
 
 
-def get_database_url() -> str | None:
+async def get_async_session() -> AsyncIterator[AsyncSession]:
     """
-    Get the database URL, initializing if necessary.
+    Get an async database session as an async context manager.
 
-    Returns:
-        str | None: The database URL, or None if not configured
-
-    Raises:
-        ValidationError: If database cannot be initialized
-    """
-    return DatabaseManager.get_instance().get_database_url()
-
-
-async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
-    """
-    Dependency to get database session.
+    Usage:
+        async for session in get_async_session():
+            # Use session here
+            result = await session.execute(query)
+            await session.commit()
 
     Yields:
-        AsyncSession: Database session for async operations
+        AsyncSession: An async database session
     """
-    context = create_error_context()
-    context.metadata["operation"] = "database_session"
-
-    logger.debug("Creating database session")
-    session_maker = get_session_maker()  # Initialize if needed
+    session_maker = get_session_maker()
     async with session_maker() as session:
         try:
-            logger.debug("Database session created successfully")
             yield session
-        except HTTPException:
-            # HTTP exceptions (including LoggedHTTPException) are business logic errors,
-            # not database errors. They're already logged by LoggedHTTPException,
-            # so we should not log them as database errors. Just re-raise.
+        except Exception:
+            # Rollback on exception before re-raising
+            await session.rollback()
             raise
-        except Exception as e:  # pylint: disable=broad-exception-caught
-            # JUSTIFICATION: This is a top-level dependency handler for database sessions. We must
-            # catch any exception during session usage to perform a safety rollback before the
-            # session is automatically closed, ensuring data integrity for any partial operations.
-            # Only log actual database-related exceptions
-            context.metadata["error_type"] = type(e).__name__
-            context.metadata["error_message"] = str(e)
-            logger.error(
-                "Database session error",
-                context=context.to_dict(),
-                error=str(e),
-                error_type=type(e).__name__,
-            )
-            try:
-                await session.rollback()
-                logger.debug("Database session rolled back after error")
-            except Exception as rollback_error:  # pylint: disable=broad-exception-caught
-                # JUSTIFICATION: This is a safety catch during error handling. If the session rollback
-                # itself fails, we log the failure but must re-raise the original exception that
-                # triggered the rollback attempt, to avoid masking the initial root cause.
-                logger.error(
-                    "Failed to rollback database session",
-                    context=context.to_dict(),
-                    rollback_error=str(rollback_error),
-                )
-            raise
-        finally:
-            # Session is automatically closed by the async context manager
-            # Log session closure for monitoring (debug level to avoid noise)
-            logger.debug("Database session closed")
 
 
 async def init_db() -> None:
     """
-    Initialize database connection and verify configuration.
+    Initialize the database (deprecated - kept for backward compatibility).
 
-    NOTE: DDL (table creation) is NOT managed by this function.
-    All database schema must be created via SQL scripts in db/authoritative_schema.sql
-    and applied using database management scripts (e.g., psql).
-
-    This function only:
-    - Initializes the database engine and session maker
-    - Configures SQLAlchemy mappers for ORM relationships
-    - Verifies database connectivity
-
-    To create tables, use the SQL script db/authoritative_schema.sql.
+    This function initializes the DatabaseManager singleton and configures mappers.
+    The database is now initialized lazily when needed, but this function ensures
+    proper initialization for compatibility.
     """
-    context = create_error_context()
-    context.metadata["operation"] = "init_db"
+    from sqlalchemy.orm import (
+        configure_mappers,  # noqa: PLC0415  # JUSTIFICATION: Lazy import to avoid circular dependency
+    )
 
-    logger.info("Initializing database connection")
+    # Configure mappers before initializing database
+    configure_mappers()
 
-    try:
-        # Import all models to ensure they're registered with metadata
-        # NOTE: NPC models are NOT imported here - they belong to the NPC database
-        # Configure all mappers before setting up relationships
-        from sqlalchemy.orm import configure_mappers
+    # Initialize database manager
+    manager = DatabaseManager.get_instance()
+    manager._initialize_database()  # noqa: SLF001  # pylint: disable=protected-access
 
-        # CRITICAL: Import ALL models that use metadata before configure_mappers()
-        # This allows SQLAlchemy to resolve string references in relationships
-        # Do NOT import NPC models here - they use npc_metadata, not metadata
-        # These imports are required for side effects (model registration) but appear unused
-        from server.models.invite import Invite  # noqa: F401  # pylint: disable=unused-import
-        from server.models.lucidity import (  # noqa: F401  # pylint: disable=unused-import
-            LucidityAdjustmentLog,
-            LucidityCooldown,
-            LucidityExposureState,
-            PlayerLucidity,
-        )
-        from server.models.player import Player  # noqa: F401  # pylint: disable=unused-import
-        from server.models.user import User  # noqa: F401  # pylint: disable=unused-import
+    # Verify connectivity by getting engine (initializes if needed)
+    engine = get_engine()
+    async with engine.begin() as conn:
+        # Execute a simple query to verify connectivity
+        await conn.execute(select(1))  # noqa: S101  # JUSTIFICATION: Query result not needed, just connectivity check
 
-        logger.debug("Configuring SQLAlchemy mappers")
-        # ARCHITECTURE FIX Phase 3.1: Relationships now defined directly in models
-        # String references resolved via SQLAlchemy registry after all models imported
-        configure_mappers()
 
-        # Initialize engine to verify connectivity
-        engine = get_engine()  # Initialize if needed
+def reset_database() -> None:
+    """
+    Reset the database connection state (for testing).
 
-        # Verify database connectivity with a simple query
-        async with engine.begin() as conn:
-            await conn.execute(text("SELECT 1"))
-            logger.info("Database connection verified successfully")
+    This resets the DatabaseManager state without closing connections.
+    For actually closing connections, use DatabaseManager.get_instance().close() in async contexts.
 
-        logger.info("Database initialization complete - DDL must be applied separately via SQL scripts")
-    except Exception as e:  # pylint: disable=broad-exception-caught
-        # JUSTIFICATION: This is the top-level initialization for the main database. We catch Exception
-        # to ensure any failure during mapper configuration or connectivity checks is logged with
-        # structured context before the application fails to start.
-        context.metadata["error_type"] = type(e).__name__
-        context.metadata["error_message"] = str(e)
-        logger.error(
-            "Database initialization failed",
-            context=context.to_dict(),
-            error=str(e),
-            error_type=type(e).__name__,
-        )
-        raise
+    Note: This is a synchronous function for test compatibility.
+    """
+    # Reset singleton instance
+    DatabaseManager.reset_instance()
+    # Reset module-level _database_url for backward compatibility with tests
+    global _database_url  # pylint: disable=global-statement  # JUSTIFICATION: Required for test cleanup
+    _database_url = None
+    _reset_database_url_state()
+    # Also reset database_config_helpers state to ensure tests can mock get_config()
+    set_test_database_url(None)
 
 
 async def close_db() -> None:
-    """Close database connections."""
-    context = create_error_context()
-    context.metadata["operation"] = "close_db"
+    """
+    Close database connections.
 
-    logger.info("Closing database connections")
+    This closes the database manager's engine and connections properly.
+    For testing, use reset_database() instead.
+    """
     try:
-        db_manager = DatabaseManager.get_instance()
-        # Ensure engine is initialized so dispose is meaningful
-        _ = db_manager.get_engine()
-        await db_manager.close()
-        logger.info("Database connections closed")
-    except Exception as e:  # pylint: disable=broad-exception-caught
-        # JUSTIFICATION: This global database closure function must catch any error during resource
-        # cleanup to ensure failures are logged with structured context. It re-raises a
-        # RuntimeError as expected by the application's lifecycle management.
-        context.metadata["error_type"] = type(e).__name__
-        context.metadata["error_message"] = str(e)
-        logger.error(
-            "Error closing database connections",
-            context=context.to_dict(),
-            error=str(e),
-            error_type=type(e).__name__,
-        )
-        # Tests expect a RuntimeError on failure here
+        manager = DatabaseManager.get_instance()
+        engine = manager.get_engine()
+        if engine:
+            await manager.close()
+    except RuntimeError as e:
         raise RuntimeError("Failed to close database connections") from e
-
-
-def get_database_path() -> Path | None:
-    """
-    Get the database file path.
-
-    DEPRECATED: PostgreSQL does not use file paths. This function always returns None
-    for PostgreSQL databases. Kept for backward compatibility with code that may
-    check for database paths.
-
-    Returns:
-        Path | None: Always None for PostgreSQL (no file path)
-    """
-    # Test override path handling without requiring initialization
-    if _database_url is not None:
-        url = _database_url
-        if not url:
-            raise ValidationError("Database URL is None")
-        if url.startswith("postgresql"):
-            # PostgreSQL doesn't have a file path
-            return None
-        # Unsupported URL schemes should raise
-        raise ValidationError(f"Unsupported database URL: {url}. Only PostgreSQL is supported.")
-
-    return DatabaseManager.get_instance().get_database_path()
 
 
 def ensure_database_directory() -> None:
     """
-    Ensure database directory exists.
+    Ensure database directory exists (deprecated for PostgreSQL).
 
-    DEPRECATED: PostgreSQL does not use file paths or directories. This function
-    is a no-op for PostgreSQL databases. Kept for backward compatibility.
-
-    For PostgreSQL, database directories are managed by the PostgreSQL server,
-    not by the application.
+    This function is a no-op for PostgreSQL databases as they don't use file paths.
+    Kept for backward compatibility with code that may call it.
     """
-    db_path = get_database_path()
-    # PostgreSQL always returns None, so this is effectively a no-op
-    if db_path is not None:
-        db_path.parent.mkdir(parents=True, exist_ok=True)
+    # PostgreSQL doesn't use file paths, so this is a no-op
+
+
+def get_engine() -> AsyncEngine:
+    """
+    Get the database engine from DatabaseManager.
+
+    Returns:
+        AsyncEngine: The database engine
+
+    Raises:
+        ValidationError: If database cannot be initialized
+    """
+    return DatabaseManager.get_instance().get_engine()
+
+
+def get_database_path() -> Path | None:
+    """
+    Get the database file path (deprecated for PostgreSQL).
+
+    Returns:
+        Path | None: Always None for PostgreSQL (no file path)
+    """
+    return DatabaseManager.get_instance().get_database_path()
+
+
+def get_database_url() -> str | None:
+    """
+    Get the database URL from DatabaseManager.
+
+    Returns:
+        str | None: The database URL
+    """
+    return DatabaseManager.get_instance().get_database_url()

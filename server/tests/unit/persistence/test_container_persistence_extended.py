@@ -13,16 +13,18 @@ import psycopg2
 import pytest
 
 from server.exceptions import DatabaseError
-from server.persistence.container_persistence import (
+from server.persistence import (
     ContainerData,
+    get_containers_by_entity_id,
+    get_containers_by_room_id,
+    get_decayed_containers,
+)
+from server.persistence.container_persistence import (
     _fetch_container_items,
     _parse_jsonb_column,
     create_container,
     delete_container,
     get_container,
-    get_containers_by_entity_id,
-    get_containers_by_room_id,
-    get_decayed_containers,
     update_container,
 )
 

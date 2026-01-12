@@ -7,6 +7,8 @@ teach us, proper categorization and documentation of anomalies is essential for
 understanding the deeper mysteries of our digital realm.
 """
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Error logging requires many parameters for complete error context
+
 import traceback
 from typing import Any, NoReturn
 
@@ -67,7 +69,7 @@ THIRD_PARTY_EXCEPTION_MAPPING = {
 }
 
 
-def log_and_raise(
+def log_and_raise(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Error logging requires many parameters for complete error context
     exception_class: type[MythosMUDError],
     message: str,
     context: ErrorContext | None = None,
@@ -111,7 +113,7 @@ def log_and_raise(
     # Increment exception counter for monitoring
     try:
         increment_exception(exception_class.__name__)
-    except Exception:  # pylint: disable=broad-exception-caught  # Reason: Monitoring errors must never break error propagation
+    except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Monitoring errors must never break error propagation
         # Monitoring must never break error propagation
         pass
 
@@ -368,7 +370,7 @@ def log_error_with_context(
     # Increment exception counter for monitoring
     try:
         increment_exception(error.__class__.__name__)
-    except Exception:  # pylint: disable=broad-exception-caught  # Reason: Monitoring errors must never break error propagation
+    except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Monitoring errors must never break error propagation
         pass
 
 

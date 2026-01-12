@@ -67,7 +67,7 @@ class MemoryProfiler:
                 instances.append(instance)
 
             # Measure memory usage (memory_after triggers measurement snapshot)
-            _memory_after = self.get_current_memory_usage()  # noqa: F841
+            _memory_after = self.get_current_memory_usage()  # noqa: F841  # pylint: disable=unused-variable  # pylint: disable=unused-variable
             memory_delta = self.get_memory_delta()
             memory_per_instance = memory_delta / iterations if iterations > 0 else 0
 
@@ -115,7 +115,7 @@ class MemoryProfiler:
                 serialized_data.append(instance.model_dump())
 
         # Measure memory usage (memory_after triggers measurement snapshot)
-        _memory_after = self.get_current_memory_usage()  # noqa: F841
+        _memory_after = self.get_current_memory_usage()  # noqa: F841  # pylint: disable=unused-variable
         memory_delta = self.get_memory_delta()
         memory_per_serialization = memory_delta / (len(instances) * iterations) if iterations > 0 else 0
 
@@ -159,7 +159,7 @@ class MemoryProfiler:
                 deserialized_instances.append(instance)
 
         # Measure memory usage (memory_after triggers measurement snapshot)
-        _memory_after = self.get_current_memory_usage()  # noqa: F841
+        _memory_after = self.get_current_memory_usage()  # noqa: F841  # pylint: disable=unused-variable
         memory_delta = self.get_memory_delta()
         memory_per_deserialization = memory_delta / (len(serialized_data) * iterations) if iterations > 0 else 0
 
@@ -203,7 +203,7 @@ class MemoryProfiler:
 
                 result = self.measure_model_instantiation(model_class, iterations, **model_test_data)
                 results[model_class.__name__] = result
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Model profiling errors unpredictable, must record error and continue
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Model profiling errors unpredictable, must record error and continue
                 results[model_class.__name__] = {"error": str(e)}
 
         # Calculate statistics

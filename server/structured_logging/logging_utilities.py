@@ -5,6 +5,8 @@ This module provides thread-safe directory creation, log path resolution,
 log file rotation, and environment detection utilities.
 """
 
+# pylint: disable=too-many-return-statements  # Reason: Logging utilities require multiple return statements for different path resolution and environment detection scenarios
+
 import os
 import sys
 import threading
@@ -109,9 +111,8 @@ def resolve_log_base(log_base: str) -> Path:
 
     if project_root:
         return project_root / log_path
-    else:
-        # Fallback to current directory if project root not found
-        return current_dir / log_path
+    # Fallback to current directory if project root not found
+    return current_dir / log_path
 
 
 def rotate_log_files(env_log_dir: Path) -> None:
@@ -153,7 +154,7 @@ def rotate_log_files(env_log_dir: Path) -> None:
         return
 
     # Rotate each log file by renaming with timestamp
-    for log_file in log_files:
+    for log_file in log_files:  # pylint: disable=too-many-nested-blocks  # Reason: Log rotation requires complex nested logic for file validation, size checking, and timestamp-based renaming
         # Only rotate non-empty files
         try:
             exists = log_file.exists()
@@ -226,7 +227,7 @@ def detect_environment() -> str:
         - production: Production deployment
     """
     # Define valid environments to prevent invalid directory creation
-    VALID_ENVIRONMENTS = ["e2e_test", "unit_test", "production", "local"]
+    valid_environments = ["e2e_test", "unit_test", "production", "local"]  # pylint: disable=invalid-name  # Reason: Local variable, not a constant
 
     # Check if running under pytest (unit tests)
     if "pytest" in sys.modules or "pytest" in sys.argv[0]:
@@ -234,7 +235,7 @@ def detect_environment() -> str:
 
     # Check explicit environment variable (with validation)
     env = os.getenv("MYTHOSMUD_ENV")
-    if env and env in VALID_ENVIRONMENTS:
+    if env and env in valid_environments:
         return env
 
     # Check if test configuration is being used
@@ -243,18 +244,18 @@ def detect_environment() -> str:
 
     # Try to determine from LOGGING_ENVIRONMENT (Pydantic config)
     logging_env = os.getenv("LOGGING_ENVIRONMENT", "")
-    if logging_env in VALID_ENVIRONMENTS:
+    if logging_env in valid_environments:
         return logging_env
 
     # Fallback: check legacy config path for backward compatibility
     config_path = os.getenv("MYTHOSMUD_CONFIG_PATH", "")
     if "e2e_test" in config_path:
         return "e2e_test"
-    elif "unit_test" in config_path:
+    if "unit_test" in config_path:
         return "unit_test"
-    elif "production" in config_path:
+    if "production" in config_path:
         return "production"
-    elif "local" in config_path:
+    if "local" in config_path:
         return "local"
 
     # Default to local (not "development" - that's not a valid environment)

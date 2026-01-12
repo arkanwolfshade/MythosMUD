@@ -279,6 +279,11 @@
     },
     "field3": {
       "description": "Optional field for future extensibility (NPCs, items, effects)"
+    },
+    "rest_location": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, this room is a rest location (inn/hotel/motel) where players can instantly disconnect when not in combat"
     }
   },
   "additionalProperties": false,

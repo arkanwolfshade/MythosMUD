@@ -186,6 +186,65 @@ class RoomFixer:
 
         return fixed_rooms
 
+    def _find_room_file(self, room_id: str, room_data: dict) -> Path | None:
+        """Find the file for a room. Returns None if file doesn't exist."""
+        zone = room_data.get("zone", "unknown")
+        room_file = self.base_path / "rooms" / zone / f"{room_id}.json"
+
+        if not room_file.exists():
+            self.fixes_failed.append(f"Could not find file for {room_id}")
+            return None
+
+        return room_file
+
+    def _create_backup_if_requested(self, room_file: Path, create_backups: bool) -> None:
+        """Create backup if requested."""
+        if create_backups:
+            backup_path = self.create_backup(room_file)
+            self.fixes_applied.append(f"Created backup: {backup_path}")
+
+    def _fix_missing_exits(self, room_data: dict) -> bool:
+        """Fix missing exits field. Returns True if fixed."""
+        if "exits" not in room_data:
+            room_data["exits"] = {
+                "north": None,
+                "south": None,
+                "east": None,
+                "west": None,
+                "up": None,
+                "down": None,
+            }
+            return True
+        return False
+
+    def _fix_missing_optional_fields(self, room_data: dict) -> bool:
+        """Fix missing optional fields. Returns True if any fixed."""
+        fixed = False
+        for field in ["field1", "field2", "field3"]:
+            if field not in room_data:
+                room_data[field] = None
+                fixed = True
+        return fixed
+
+    def _fix_missing_fields(self, room_data: dict, errors: list[str]) -> bool:
+        """Fix missing fields based on errors. Returns True if any fixed."""
+        fixed = False
+
+        for error in errors:
+            if "missing required field" in error.lower():
+                if self._fix_missing_exits(room_data):
+                    fixed = True
+                if self._fix_missing_optional_fields(room_data):
+                    fixed = True
+
+        return fixed
+
+    def _save_fixed_room(self, room_file: Path, room_data: dict, room_id: str, fixed_rooms: list[str]) -> None:
+        """Save fixed room if changes were made."""
+        self.save_room_file(room_file, room_data)
+        fixed_rooms.append(room_id)
+        self.fixes_applied.append(f"Fixed schema issues in {room_id}")
+
     def fix_schema_issues(
         self, room_database: dict[str, dict], schema_errors: dict[str, list[str]], create_backups: bool = False
     ) -> list[str]:
@@ -204,57 +263,19 @@ class RoomFixer:
 
         for room_id, errors in schema_errors.items():
             try:
-                # Find the file for the room
                 room_data = room_database[room_id]
-                zone = room_data.get("zone", "unknown")
-                room_file = self.base_path / "rooms" / zone / f"{room_id}.json"
-
-                if not room_file.exists():
-                    self.fixes_failed.append(f"Could not find file for {room_id}")
+                room_file = self._find_room_file(room_id, room_data)
+                if room_file is None:
                     continue
 
-                # Create backup if requested
-                if create_backups:
-                    backup_path = self.create_backup(room_file)
-                    self.fixes_applied.append(f"Created backup: {backup_path}")
+                self._create_backup_if_requested(room_file, create_backups)
 
-                # Load the room data
                 room_data = self.load_room_file(room_file)
 
-                # Apply fixes based on error types
-                fixed = False
-
-                for error in errors:
-                    if "missing required field" in error.lower():
-                        if "exits" not in room_data:
-                            room_data["exits"] = {
-                                "north": None,
-                                "south": None,
-                                "east": None,
-                                "west": None,
-                                "up": None,
-                                "down": None,
-                            }
-                            fixed = True
-
-                        if "field1" not in room_data:
-                            room_data["field1"] = None
-                            fixed = True
-
-                        if "field2" not in room_data:
-                            room_data["field2"] = None
-                            fixed = True
-
-                        if "field3" not in room_data:
-                            room_data["field3"] = None
-                            fixed = True
+                fixed = self._fix_missing_fields(room_data, errors)
 
                 if fixed:
-                    # Save the fixed room
-                    self.save_room_file(room_file, room_data)
-
-                    fixed_rooms.append(room_id)
-                    self.fixes_applied.append(f"Fixed schema issues in {room_id}")
+                    self._save_fixed_room(room_file, room_data, room_id, fixed_rooms)
 
             except Exception as e:
                 self.fixes_failed.append(f"Failed to fix {room_id}: {e}")

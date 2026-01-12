@@ -26,6 +26,129 @@ from .players import player_router
 logger = get_logger(__name__)
 
 
+def _check_shutdown_status(request: Request, current_user: User) -> None:
+    """Check if server is shutting down and raise exception if so."""
+    from ..commands.admin_shutdown_command import get_shutdown_blocking_message, is_shutdown_pending
+
+    if request and is_shutdown_pending(request.app):
+        context = create_error_context(user_id=str(current_user.id) if current_user else None)
+        context.metadata["operation"] = "roll_stats"
+        context.metadata["reason"] = "server_shutdown"
+        raise LoggedHTTPException(
+            status_code=503, detail=get_shutdown_blocking_message("stats_rolling"), context=context
+        )
+
+
+def _validate_user_for_stats_roll(current_user: User) -> None:
+    """Validate user is authenticated for stats roll."""
+    logger.debug("Authentication check", current_user=current_user)
+    if not current_user:
+        logger.warning("Authentication failed: No user returned from get_current_active_user")
+        context = create_error_context()
+        raise LoggedHTTPException(status_code=401, detail="Authentication required", context=context)
+
+    logger.info("Authentication successful for user", username=current_user.username, user_id=current_user.id)
+
+
+def _apply_rate_limiting_for_stats_roll(current_user: User) -> None:
+    """Apply rate limiting for stats roll operation."""
+    try:
+        stats_roll_limiter.enforce_rate_limit(str(current_user.id))
+    except RateLimitError as e:
+        context = create_error_context()
+        if current_user:
+            context.user_id = str(current_user.id)
+        context.metadata["rate_limit_type"] = "stats_roll"
+        raise LoggedHTTPException(
+            status_code=429,
+            detail=f"Rate limit exceeded: {str(e)}. Retry after {e.retry_after} seconds",
+            context=context,
+        ) from e
+
+
+async def _roll_stats_with_profession(
+    request_data: RollStatsRequest,
+    stats_generator: StatsGenerator,
+    current_user: User,
+    max_attempts: int,
+) -> dict[str, Any]:
+    """Roll stats using profession-based method."""
+    from ..async_persistence import get_async_persistence
+
+    async_persistence = get_async_persistence()
+    if not async_persistence:
+        context = create_error_context()
+        if current_user:
+            context.user_id = str(current_user.id)
+        context.metadata["operation"] = "roll_stats"
+        context.metadata["profession_id"] = request_data.profession_id
+        raise LoggedHTTPException(status_code=500, detail="Persistence layer not available", context=context)
+
+    # profession_id is required for profession-based stats rolling
+    if request_data.profession_id is None:
+        context = create_error_context()
+        if current_user:
+            context.user_id = str(current_user.id)
+        context.metadata["operation"] = "roll_stats"
+        raise LoggedHTTPException(
+            status_code=400, detail="profession_id is required for profession-based stats rolling", context=context
+        )
+
+    # After None check, profession_id is guaranteed to be non-None
+    assert request_data.profession_id is not None, "profession_id should not be None after validation"
+    profession_id: int = request_data.profession_id
+
+    profession = await async_persistence.get_profession_by_id(profession_id)
+    if not profession:
+        context = create_error_context()
+        if current_user:
+            context.user_id = str(current_user.id)
+        context.metadata["operation"] = "roll_stats"
+        context.metadata["profession_id"] = profession_id
+        raise LoggedHTTPException(
+            status_code=404, detail=f"Profession with ID {profession_id} not found", context=context
+        )
+
+    stats, meets_requirements = stats_generator.roll_stats_with_profession(
+        method=request_data.method,
+        profession_id=profession_id,
+        timeout_seconds=request_data.timeout_seconds,
+        max_attempts=max_attempts,
+        profession=profession,
+    )
+    stat_summary = stats_generator.get_stat_summary(stats)
+
+    return {
+        "stats": stats.model_dump(),
+        "stat_summary": stat_summary,
+        "profession_id": profession_id,
+        "meets_requirements": meets_requirements,
+        "method_used": request_data.method,
+    }
+
+
+def _roll_stats_with_class(
+    request_data: RollStatsRequest, stats_generator: StatsGenerator, max_attempts: int
+) -> dict[str, Any]:
+    """Roll stats using legacy class-based method."""
+    stats, available_classes = stats_generator.roll_stats_with_validation(
+        method=request_data.method,
+        required_class=request_data.required_class,
+        max_attempts=max_attempts,
+    )
+    stat_summary = stats_generator.get_stat_summary(stats)
+
+    return {
+        "stats": stats.model_dump(),
+        "stat_summary": stat_summary,
+        "available_classes": available_classes,
+        "method_used": request_data.method,
+        "meets_class_requirements": request_data.required_class in available_classes
+        if request_data.required_class
+        else True,
+    }
+
+
 @player_router.post("/roll-stats")
 async def roll_character_stats(
     request_data: RollStatsRequest,
@@ -42,104 +165,14 @@ async def roll_character_stats(
 
     Rate limited to 10 requests per minute per user.
     """
-    # Check if server is shutting down
-    from ..commands.admin_shutdown_command import get_shutdown_blocking_message, is_shutdown_pending
-
-    if request and is_shutdown_pending(request.app):
-        context = create_error_context(user_id=str(current_user.id) if current_user else None)
-        context.metadata["operation"] = "roll_stats"
-        context.metadata["reason"] = "server_shutdown"
-        raise LoggedHTTPException(
-            status_code=503, detail=get_shutdown_blocking_message("stats_rolling"), context=context
-        )
-    # Check if user is authenticated
-    logger.debug("Authentication check", current_user=current_user)
-    if not current_user:
-        logger.warning("Authentication failed: No user returned from get_current_active_user")
-        # Note: We don't have request context here, so we'll create a minimal context
-        context = create_error_context()
-        raise LoggedHTTPException(status_code=401, detail="Authentication required", context=context)
-
-    logger.info("Authentication successful for user", username=current_user.username, user_id=current_user.id)
-
-    # Apply rate limiting
-    try:
-        stats_roll_limiter.enforce_rate_limit(str(current_user.id))
-    except RateLimitError as e:
-        context = create_error_context()
-        if current_user:
-            context.user_id = str(current_user.id)
-        context.metadata["rate_limit_type"] = "stats_roll"
-        raise LoggedHTTPException(
-            status_code=429,
-            detail=f"Rate limit exceeded: {str(e)}. Retry after {e.retry_after} seconds",
-            context=context,
-        ) from e
+    _check_shutdown_status(request, current_user)
+    _validate_user_for_stats_roll(current_user)
+    _apply_rate_limiting_for_stats_roll(current_user)
 
     try:
-        # Extract parameters from request data
-        method = request_data.method
-        profession_id = request_data.profession_id
-        required_class = request_data.required_class
-        timeout_seconds = request_data.timeout_seconds
-
-        if profession_id is not None:
-            # Fetch profession first (async)
-            from ..async_persistence import get_async_persistence
-
-            async_persistence = get_async_persistence()
-            if not async_persistence:
-                context = create_error_context()
-                if current_user:
-                    context.user_id = str(current_user.id)
-                context.metadata["operation"] = "roll_stats"
-                context.metadata["profession_id"] = profession_id
-                raise LoggedHTTPException(status_code=500, detail="Persistence layer not available", context=context)
-            profession = await async_persistence.get_profession_by_id(profession_id)
-
-            if not profession:
-                context = create_error_context()
-                if current_user:
-                    context.user_id = str(current_user.id)
-                context.metadata["operation"] = "roll_stats"
-                context.metadata["profession_id"] = profession_id
-                raise LoggedHTTPException(
-                    status_code=404, detail=f"Profession with ID {profession_id} not found", context=context
-                )
-
-            # Use profession-based stat rolling with fetched profession
-            stats, meets_requirements = stats_generator.roll_stats_with_profession(
-                method=method,
-                profession_id=profession_id,
-                timeout_seconds=timeout_seconds,
-                max_attempts=max_attempts,
-                profession=profession,  # Pass profession to avoid async lookup
-            )
-            stat_summary = stats_generator.get_stat_summary(stats)
-
-            return {
-                "stats": stats.model_dump(),
-                "stat_summary": stat_summary,
-                "profession_id": profession_id,
-                "meets_requirements": meets_requirements,
-                "method_used": method,
-            }
-        else:
-            # Use legacy class-based stat rolling
-            stats, available_classes = stats_generator.roll_stats_with_validation(
-                method=method,
-                required_class=required_class,
-                max_attempts=max_attempts,
-            )
-            stat_summary = stats_generator.get_stat_summary(stats)
-
-            return {
-                "stats": stats.model_dump(),
-                "stat_summary": stat_summary,
-                "available_classes": available_classes,
-                "method_used": method,
-                "meets_class_requirements": required_class in available_classes if required_class else True,
-            }
+        if request_data.profession_id is not None:
+            return await _roll_stats_with_profession(request_data, stats_generator, current_user, max_attempts)
+        return _roll_stats_with_class(request_data, stats_generator, max_attempts)
     except ValueError as e:
         # Handle validation errors (e.g., invalid profession ID)
         context = create_error_context()
@@ -151,7 +184,7 @@ async def roll_character_stats(
     except LoggedHTTPException:
         # Re-raise LoggedHTTPException without modification
         raise
-    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Character creation errors unpredictable, must create error context
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Character creation errors unpredictable, must create error context
         context = create_error_context()
         if current_user:
             context.user_id = str(current_user.id)
@@ -245,7 +278,7 @@ async def create_character_with_stats(
     except ValueError as e:
         context = create_error_context_helper(request, current_user, operation="create_character")
         raise LoggedHTTPException(status_code=400, detail=ErrorMessages.INVALID_INPUT, context=context) from e
-    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Character creation errors unpredictable, must create error context
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Character creation errors unpredictable, must create error context
         context = create_error_context_helper(request, current_user, operation="create_character")
         raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context) from e
 
@@ -279,12 +312,12 @@ async def validate_character_stats(
                 "available_classes": available_classes,
                 "requested_class": class_name,
             }
-        else:
-            available_classes = stats_generator.get_available_classes(stats_obj)
-            stat_summary = stats_generator.get_stat_summary(stats_obj)
 
-            return {"available_classes": available_classes, "stat_summary": stat_summary}
-    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Class retrieval errors unpredictable, must create error context
+        available_classes = stats_generator.get_available_classes(stats_obj)
+        stat_summary = stats_generator.get_stat_summary(stats_obj)
+
+        return {"available_classes": available_classes, "stat_summary": stat_summary}
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Class retrieval errors unpredictable, must create error context
         context = create_error_context()
         if current_user:
             context.user_id = str(current_user.id)

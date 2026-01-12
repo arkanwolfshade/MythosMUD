@@ -9,6 +9,8 @@ As documented in the Pnakotic Manuscripts, proper spatial mapping is essential
 for understanding the eldritch architecture of our dimensional spaces.
 """
 
+# pylint: disable=too-few-public-methods,too-many-locals  # Reason: Coordinate generator class with focused responsibility, minimal public interface, and complex coordinate generation logic
+
 from collections import deque
 from typing import Any
 
@@ -99,7 +101,7 @@ class CoordinateGenerator:
             "origin_room": None,  # Could return per-subzone origins if needed
         }
 
-    async def _load_rooms_data(self, plane: str, zone: str, sub_zone: str | None) -> list[dict[str, Any]]:
+    async def _load_rooms_data(self, plane: str, zone: str, sub_zone: str | None) -> list[dict[str, Any]]:  # pylint: disable=too-many-locals  # Reason: Room data loading requires many intermediate variables for complex data processing
         """
         Load rooms and their exits from database.
 
@@ -211,35 +213,15 @@ class CoordinateGenerator:
 
         return rooms
 
-    async def _generate_for_subzone(
-        self, rooms: list[dict[str, Any]]
-    ) -> tuple[dict[str, tuple[int, int]], list[tuple[str, str, int, int]], str | None]:
-        """
-        Generate coordinates for rooms in a single subzone.
-
-        Args:
-            rooms: List of room dictionaries with exits
-
-        Returns:
-            Tuple of (coordinates dict, conflicts list, origin_room_id)
-        """
-        if not rooms:
-            return {}, [], None
-
-        # Find origin room (map_origin_zone=true, or first room)
-        origin_room = None
+    def _find_origin_room(self, rooms: list[dict[str, Any]]) -> dict[str, Any] | None:
+        """Find the origin room (map_origin_zone=true, or first room)."""
         for room in rooms:
             if room.get("map_origin_zone"):
-                origin_room = room
-                break
+                return room
+        return rooms[0] if rooms else None
 
-        if not origin_room:
-            origin_room = rooms[0]
-
-        origin_id = origin_room["id"]
-        logger.debug("Using origin room", origin_id=origin_id, origin_name=origin_room.get("name"))
-
-        # Build adjacency list from exits
+    def _build_adjacency_list(self, rooms: list[dict[str, Any]]) -> dict[str, list[tuple[str, str]]]:
+        """Build adjacency list from room exits."""
         adjacency: dict[str, list[tuple[str, str]]] = {}
         for room in rooms:
             room_id = room["id"]
@@ -257,8 +239,12 @@ class CoordinateGenerator:
                         adjacency[target_id] = []
                     reverse_dir = self._reverse_direction(direction.lower())
                     adjacency[target_id].append((room_id, reverse_dir))
+        return adjacency
 
-        # BFS to assign coordinates
+    def _assign_coordinates_bfs(
+        self, origin_id: str, adjacency: dict[str, list[tuple[str, str]]]
+    ) -> dict[str, tuple[int, int]]:
+        """Assign coordinates using BFS starting from origin."""
         coords: dict[str, tuple[int, int]] = {}
         visited: set[str] = set()
         queue: deque[tuple[str, int, int]] = deque([(origin_id, 0, 0)])
@@ -277,7 +263,10 @@ class CoordinateGenerator:
                         visited.add(next_room_id)
                         queue.append((next_room_id, new_x, new_y))
 
-        # Detect conflicts (multiple rooms at same x,y)
+        return coords
+
+    def _detect_coordinate_conflicts(self, coords: dict[str, tuple[int, int]]) -> list[tuple[str, str, int, int]]:
+        """Detect conflicts (multiple rooms at same x,y coordinates)."""
         conflicts: list[tuple[str, str, int, int]] = []
         coord_to_rooms: dict[tuple[int, int], list[str]] = {}
         for room_id, (cx, cy) in coords.items():
@@ -288,16 +277,50 @@ class CoordinateGenerator:
         for (cx, cy), room_ids in coord_to_rooms.items():
             if len(room_ids) > 1:
                 # Multiple rooms at same position - conflict
-                for i in range(len(room_ids)):
-                    for j in range(i + 1, len(room_ids)):
-                        conflicts.append((room_ids[i], room_ids[j], cx, cy))
+                for i, room_id1 in enumerate(room_ids):
+                    for room_id2 in room_ids[i + 1 :]:
+                        conflicts.append((room_id1, room_id2, cx, cy))
                         logger.warning(
                             "Coordinate conflict detected",
-                            room1=room_ids[i],
-                            room2=room_ids[j],
+                            room1=room_id1,
+                            room2=room_id2,
                             x=cx,
                             y=cy,
                         )
+
+        return conflicts
+
+    async def _generate_for_subzone(
+        self, rooms: list[dict[str, Any]]
+    ) -> tuple[dict[str, tuple[int, int]], list[tuple[str, str, int, int]], str | None]:
+        """
+        Generate coordinates for rooms in a single subzone.
+
+        Args:
+            rooms: List of room dictionaries with exits
+
+        Returns:
+            Tuple of (coordinates dict, conflicts list, origin_room_id)
+        """
+        if not rooms:
+            return {}, [], None
+
+        # Find origin room
+        origin_room = self._find_origin_room(rooms)
+        if not origin_room:
+            return {}, [], None
+
+        origin_id = origin_room["id"]
+        logger.debug("Using origin room", origin_id=origin_id, origin_name=origin_room.get("name"))
+
+        # Build adjacency list from exits
+        adjacency = self._build_adjacency_list(rooms)
+
+        # BFS to assign coordinates
+        coords = self._assign_coordinates_bfs(origin_id, adjacency)
+
+        # Detect conflicts (multiple rooms at same x,y)
+        conflicts = self._detect_coordinate_conflicts(coords)
 
         return coords, conflicts, origin_id
 
@@ -316,15 +339,14 @@ class CoordinateGenerator:
         direction = direction.lower()
         if direction == "north":
             return (x, y - 1)
-        elif direction == "south":
+        if direction == "south":
             return (x, y + 1)
-        elif direction == "east":
+        if direction == "east":
             return (x + 1, y)
-        elif direction == "west":
+        if direction == "west":
             return (x - 1, y)
-        else:
-            # up/down don't change 2D coordinates
-            return (x, y)
+        # up/down don't change 2D coordinates
+        return (x, y)
 
     def _reverse_direction(self, direction: str) -> str:
         """

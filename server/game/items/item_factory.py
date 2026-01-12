@@ -1,3 +1,9 @@
+"""Item factory for creating item instances from prototypes.
+
+This module provides the ItemFactory class which creates runtime item instances
+from item prototypes stored in the prototype registry.
+"""
+
 from __future__ import annotations
 
 import uuid
@@ -16,13 +22,18 @@ class ItemFactoryError(Exception):
     """Raised when the factory cannot produce a valid instance."""
 
 
-class ItemFactory:
+class ItemFactory:  # pylint: disable=too-few-public-methods  # Reason: Factory class with focused responsibility, minimal public interface
     """Factory responsible for instantiating runtime item instances."""
 
     def __init__(self, registry: PrototypeRegistry):
+        """Initialize the item factory with a prototype registry.
+
+        Args:
+            registry: The prototype registry to use for item creation
+        """
         self._registry = registry
 
-    def create_instance(
+    def create_instance(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Item creation requires many parameters and intermediate variables for complex item instantiation logic
         self,
         prototype_id: str,
         *,
@@ -31,6 +42,21 @@ class ItemFactory:
         origin: dict[str, Any] | None = None,
         slot_type: str | None = None,
     ) -> ItemInstance:
+        """Create an item instance from a prototype.
+
+        Args:
+            prototype_id: The ID of the prototype to use
+            quantity: Number of items to create (default: 1)
+            overrides: Optional dictionary of property overrides
+            origin: Optional dictionary describing item origin
+            slot_type: Optional slot type for the item
+
+        Returns:
+            ItemInstance: The created item instance
+
+        Raises:
+            ItemFactoryError: If quantity is invalid or prototype not found
+        """
         if quantity <= 0:
             raise ItemFactoryError("Quantity must be a positive integer.")
 

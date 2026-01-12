@@ -68,10 +68,10 @@ def get_misfire_message(command_type: str, tier: str) -> str:
     """
     if tier == "catatonic":
         return "Your limbs refuse to respond. The void between thought and action yawns wide."
-    elif tier == "deranged":
+    if tier == "deranged":
         return f"Your {command_type} command falters. Reality wavers; the gesture dissolves into meaningless motion."
-    else:  # fractured
-        return f"The {command_type} command sputters and fails. Your focus fractures, and the ritual collapses."
+    # fractured
+    return f"The {command_type} command sputters and fails. Your focus fractures, and the ritual collapses."
 
 
 def should_involuntary_flee(tier: str, damage_percent: float) -> bool:

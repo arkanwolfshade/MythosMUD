@@ -6,6 +6,8 @@ lifecycle automation requires careful orchestration to ensure proper handling
 of player death, grace periods, decay timers, and item redistribution.
 """
 
+# pylint: disable=too-many-return-statements  # Reason: Corpse lifecycle methods require multiple return statements for early validation returns (state checks, permission validation, error handling)
+
 from __future__ import annotations
 
 import uuid
@@ -170,7 +172,7 @@ class CorpseLifecycleService:
 
             return corpse
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Convert to domain exception
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Convert to domain exception  # noqa: B904
             log_and_raise(
                 CorpseServiceError,
                 f"Failed to create corpse container: {str(e)}",
@@ -278,7 +280,7 @@ class CorpseLifecycleService:
                 container = ContainerComponent.model_validate(container_data)
                 if container.source_type == ContainerSourceType.CORPSE and self.is_corpse_decayed(container):
                     decayed.append(container)
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Continue processing other containers on error
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Continue processing other containers on error  # noqa: B904
                 logger.warning(
                     "Error validating container for decay check",
                     error=str(e),
@@ -345,7 +347,7 @@ class CorpseLifecycleService:
                 items_count=len(container.items),
             )
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Convert to domain exception
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Convert to domain exception  # noqa: B904
             log_and_raise(
                 CorpseServiceError,
                 f"Failed to delete decayed corpse: {str(e)}",
@@ -373,7 +375,7 @@ class CorpseLifecycleService:
             try:
                 await self.cleanup_decayed_corpse(corpse.container_id)
                 cleaned_count += 1
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Continue processing other corpses on error
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Continue processing other corpses on error  # noqa: B904
                 logger.error(
                     "Error cleaning up decayed corpse",
                     error=str(e),
@@ -415,7 +417,7 @@ class CorpseLifecycleService:
                 container = ContainerComponent.model_validate(container_data)
                 if container.source_type == ContainerSourceType.CORPSE:
                     decayed_corpses.append(container)
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Continue processing other containers on error
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Continue processing other containers on error  # noqa: B904
                 logger.warning(
                     "Error validating decayed container",
                     error=str(e),
@@ -441,7 +443,7 @@ class CorpseLifecycleService:
             try:
                 await self.cleanup_decayed_corpse(corpse.container_id)
                 cleaned_count += 1
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Continue processing other corpses on error
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Continue processing other corpses on error  # noqa: B904
                 logger.error(
                     "Error cleaning up decayed corpse",
                     error=str(e),

@@ -10,6 +10,8 @@ are essential for maintaining control over the eldritch entities that
 lurk in the shadows of our world.
 """
 
+# pylint: disable=too-many-instance-attributes,too-few-public-methods,too-many-arguments,too-many-positional-arguments  # Reason: Auth service requires many state tracking attributes and complex authentication logic
+
 import time
 from datetime import UTC, datetime
 from enum import Enum

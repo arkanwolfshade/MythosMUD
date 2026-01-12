@@ -9,6 +9,8 @@ for maintaining the delicate balance between order and chaos in our eldritch
 entity management systems.
 """
 
+# pylint: disable=too-many-return-statements  # Reason: Behavior engine requires multiple return statements for different behavior rule evaluations and action selection
+
 from collections.abc import Callable
 from typing import Any
 
@@ -86,9 +88,9 @@ class BehaviorEngine:
             if len(self.rules) < original_count:
                 logger.debug("Removed behavior rule", rule_name=rule_name)
                 return True
-            else:
-                logger.warning("Rule not found for removal", rule_name=rule_name)
-                return False
+
+            logger.warning("Rule not found for removal", rule_name=rule_name)
+            return False
 
         except (TypeError, KeyError, AttributeError) as e:
             logger.error("Error removing behavior rule", error=str(e), error_type=type(e).__name__)
@@ -166,11 +168,11 @@ class BehaviorEngine:
 
         if operator == ">=":
             return var_value >= threshold
-        elif operator == "<=":
+        if operator == "<=":
             return var_value <= threshold
-        elif operator == ">":
+        if operator == ">":
             return var_value > threshold
-        elif operator == "<":
+        if operator == "<":
             return var_value < threshold
 
         return None

@@ -21,7 +21,7 @@ from ..utils.error_logging import create_error_context, log_and_raise
 logger = get_logger(__name__)
 
 
-def create_item_instance(
+def create_item_instance(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Item creation requires many parameters and intermediate variables for complex item instantiation logic
     conn: Any,
     item_instance_id: str,
     prototype_id: str,
@@ -243,7 +243,7 @@ def item_instance_exists(conn: Any, item_instance_id: str) -> bool:
         cursor.close()
 
 
-def ensure_item_instance(
+def ensure_item_instance(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Item instance persistence requires many parameters for context and validation
     conn: Any,
     item_instance_id: str,
     prototype_id: str,

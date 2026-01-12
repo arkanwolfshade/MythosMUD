@@ -43,7 +43,7 @@ logger = get_logger(__name__)
 # which provides the same functionality plus error logging and better organization
 
 
-def create_app() -> FastAPI:
+def create_app() -> FastAPI:  # pylint: disable=too-many-locals,too-many-statements  # Reason: Application factory requires many intermediate variables for service configuration. Application factory legitimately requires many statements for comprehensive app setup.
     """
     Create and configure the FastAPI application.
 
@@ -70,7 +70,7 @@ def create_app() -> FastAPI:
         expose_headers_list = list(getattr(cors_cfg, "expose_headers", []))
         allow_credentials_bool = bool(getattr(cors_cfg, "allow_credentials", True))
         max_age_int = int(getattr(cors_cfg, "max_age", 600))
-    except Exception:  # pylint: disable=broad-exception-caught  # Reason: CORS config errors unpredictable, must fallback to environment
+    except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: CORS config errors unpredictable, must fallback to environment
         # Minimal fallback sourced only from environment
         allowed_origins_list = [
             "http://localhost:5173",

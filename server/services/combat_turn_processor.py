@@ -5,6 +5,8 @@ Handles turn advancement, NPC turn processing, and player turn processing
 for automatic combat progression.
 """
 
+# pylint: disable=too-few-public-methods  # Reason: Turn processor class with focused responsibility, minimal public interface
+
 from server.config import get_config
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType, CombatStatus
 from server.services.nats_exceptions import NATSError
@@ -276,6 +278,10 @@ class CombatTurnProcessor:
             if not target:
                 logger.warning("No target found for player", player_name=player.name, combat_id=combat.combat_id)
                 return
+
+            # Note: Players in grace period (disconnected but still in-game) can still auto-attack.
+            # Commands are blocked for grace period players, but combat auto-attack continues normally.
+            # Grace period players use normal auto-attack (with weapons, no special abilities).
 
             # Check if player is casting a spell - if so, skip autoattack
             # Casting spells takes priority over autoattacks

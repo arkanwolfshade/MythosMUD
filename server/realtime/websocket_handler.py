@@ -5,6 +5,8 @@ This module handles WebSocket message processing, command handling,
 and real-time updates for the game.
 """
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals,too-many-lines  # Reason: WebSocket handler requires many parameters and intermediate variables for complex message processing logic. WebSocket handler requires extensive message processing logic for comprehensive real-time communication.
+
 import json
 import time
 import uuid
@@ -204,7 +206,7 @@ async def _handle_generic_exception(
     return should_break
 
 
-async def _process_message(
+async def _process_message(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Message processing requires many parameters for context and message handling
     websocket: WebSocket,
     data: str,
     player_id: uuid.UUID,
@@ -258,6 +260,16 @@ async def _handle_message_loop_exception(
     return should_break, False
 
 
+async def _process_exception_in_message_loop(
+    websocket: WebSocket, e: Exception, player_id: uuid.UUID, player_id_str: str, connection_id: str
+) -> tuple[bool, bool]:
+    """Process exception in message loop and return (should_break, should_raise)."""
+    should_break, should_raise = await _handle_message_loop_exception(
+        websocket, e, player_id, player_id_str, connection_id
+    )
+    return should_break, should_raise
+
+
 async def _handle_websocket_message_loop(
     websocket: WebSocket, player_id: uuid.UUID, player_id_str: str, connection_manager
 ) -> None:
@@ -273,69 +285,10 @@ async def _handle_websocket_message_loop(
             await _process_message(
                 websocket, data, player_id, player_id_str, connection_id, connection_manager, validator
             )
-
-        except (json.JSONDecodeError, WebSocketDisconnect, RuntimeError) as e:
-            should_break, should_raise = await _handle_message_loop_exception(
-                websocket, e, player_id, player_id_str, connection_id
-            )
-            if should_break:
-                break
-            if should_raise:
-                raise
-        except (ValueError, ConnectionError, KeyError, AttributeError, TypeError) as e:
-            # Catch specific exceptions from message processing
-            # (e.g., validation errors, command processing errors, data access errors)
-            # and route through the exception handler
-            should_break, should_raise = await _handle_message_loop_exception(
-                websocket, e, player_id, player_id_str, connection_id
-            )
-            if should_break:
-                break
-            if should_raise:
-                raise
-        except (OSError, TimeoutError) as e:
-            # Catch network errors that might occur during async operations
-            # These are common in WebSocket operations but weren't caught above
-            # Note: UnicodeDecodeError is a subclass of ValueError, so it's already caught above
-            should_break, should_raise = await _handle_message_loop_exception(
-                websocket, e, player_id, player_id_str, connection_id
-            )
-            if should_break:
-                break
-            if should_raise:
-                raise
-        except (LookupError, ArithmeticError, AssertionError) as e:
-            # Catch additional specific exceptions that might occur during message processing
-            # LookupError covers IndexError, KeyError (already caught above), and other lookup-related errors
-            # ArithmeticError covers math-related errors
-            # AssertionError covers assertion failures (common in development/debugging)
-            should_break, should_raise = await _handle_message_loop_exception(
-                websocket, e, player_id, player_id_str, connection_id
-            )
-            if should_break:
-                break
-            if should_raise:
-                raise
-        except (StopAsyncIteration, ReferenceError, SystemError, MemoryError) as e:
-            # Catch async and system-level exceptions that might occur during message processing
-            # StopAsyncIteration: can occur in async iterators
-            # ReferenceError: rare but possible with weak references
-            # SystemError: internal Python errors
-            # MemoryError: out of memory conditions
-            should_break, should_raise = await _handle_message_loop_exception(
-                websocket, e, player_id, player_id_str, connection_id
-            )
-            if should_break:
-                break
-            if should_raise:
-                raise
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Message loop errors unpredictable, must prevent crash
-            # Final catch-all for truly unexpected exceptions that weren't caught above
-            # This is necessary to prevent the message loop from crashing on unknown errors
-            # All exceptions are logged and handled gracefully via _handle_message_loop_exception
-            # Note: This catch-all is intentionally broad to ensure the message loop remains stable
-            # even when encountering unexpected exception types from third-party libraries or custom exceptions
-            should_break, should_raise = await _handle_message_loop_exception(
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Message loop errors unpredictable, must prevent crash
+            # Handle all exceptions uniformly through the exception handler
+            # This consolidates multiple exception handlers into one to reduce complexity
+            should_break, should_raise = await _process_exception_in_message_loop(
                 websocket, e, player_id, player_id_str, connection_id
             )
             if should_break:
@@ -470,13 +423,6 @@ async def handle_game_command(
             from ..main import app
 
             connection_manager = app.state.container.connection_manager
-
-        logger.info(
-            "🚨 SERVER DEBUG: handle_game_command called",
-            command=command,
-            args=args,
-            player_id=player_id,
-        )
         # Parse command and arguments if args not provided
         if args is None:
             parts = command.strip().split()
@@ -496,14 +442,7 @@ async def handle_game_command(
         result = await process_websocket_command(cmd, args, player_id, connection_manager=connection_manager)
 
         # Send the result back to the player
-        logger.info(
-            "SERVER DEBUG: Sending command_response event for player",
-            player_id=player_id,
-            command=cmd,
-            result=result,
-        )
         await websocket.send_json(build_event("command_response", result, player_id=player_id))
-        logger.info("SERVER DEBUG: command_response event sent successfully", player_id=player_id)
 
         # Handle broadcasting if the command result includes broadcast data
         if result.get("broadcast") and result.get("broadcast_type"):
@@ -554,7 +493,6 @@ async def process_websocket_command(cmd: str, args: list, player_id: str, connec
     Returns:
         dict: Command result
     """
-    logger.info("SERVER DEBUG: process_websocket_command called", cmd=cmd, args=args, player_id=player_id)
     logger.debug("Processing command", cmd=cmd, args=args, player_id=player_id)
 
     # Resolve connection_manager if not provided (backward compatibility)
@@ -624,7 +562,6 @@ async def process_websocket_command(cmd: str, args: list, player_id: str, connec
 
     # Process the command using the unified command handler
     command_line = f"{cmd} {' '.join(args)}".strip()
-    logger.info("SERVER DEBUG: Reconstructed command_line", command_line=command_line, cmd=cmd, args=args)
     result = await process_command_unified(
         command_line=command_line,
         current_user=player,

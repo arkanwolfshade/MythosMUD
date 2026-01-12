@@ -65,19 +65,18 @@ async def respawn_player_from_delirium(
                 context = create_error_context(request, current_user)
                 if "not found" in str(e).lower():
                     raise LoggedHTTPException(status_code=404, detail="Player not found", context=context) from e
-                elif "must be delirious" in str(e).lower() or "lucidity" in str(e).lower():
+                if "must be delirious" in str(e).lower() or "lucidity" in str(e).lower():
                     raise LoggedHTTPException(
                         status_code=403,
                         detail="Player must be delirious to respawn (lucidity must be -10 or below)",
                         context=context,
                     ) from e
-                else:
-                    raise LoggedHTTPException(
-                        status_code=500, detail="Failed to respawn player from delirium", context=context
-                    ) from e
+                raise LoggedHTTPException(
+                    status_code=500, detail="Failed to respawn player from delirium", context=context
+                ) from e
             except LoggedHTTPException:
                 raise
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Respawn errors unpredictable, must create error context
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Respawn errors unpredictable, must create error context
                 context = create_error_context(request, current_user, operation="respawn_player_from_delirium")
                 logger.error(
                     "Error in delirium respawn endpoint",
@@ -98,7 +97,7 @@ async def respawn_player_from_delirium(
 
     except LoggedHTTPException:
         raise
-    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Respawn errors unpredictable, must create error context
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Respawn errors unpredictable, must create error context
         context = create_error_context(request, current_user, operation="respawn_player_from_delirium")
         logger.error(
             "Unexpected error in delirium respawn endpoint",
@@ -156,16 +155,13 @@ async def respawn_player(
                 context = create_error_context(request, current_user)
                 if "not found" in str(e).lower():
                     raise LoggedHTTPException(status_code=404, detail="Player not found", context=context) from e
-                elif "must be dead" in str(e).lower():
+                if "must be dead" in str(e).lower():
                     raise LoggedHTTPException(
                         status_code=403,
                         detail="Player must be dead to respawn (DP must be -10 or below)",
                         context=context,
                     ) from e
-                else:
-                    raise LoggedHTTPException(
-                        status_code=500, detail="Failed to respawn player", context=context
-                    ) from e
+                raise LoggedHTTPException(status_code=500, detail="Failed to respawn player", context=context) from e
             except LoggedHTTPException:
                 raise
             except Exception as e:

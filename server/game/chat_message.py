@@ -14,10 +14,10 @@ from ..structured_logging.enhanced_logging_config import get_logger
 logger = get_logger("communications.chat_message")
 
 
-class ChatMessage:
+class ChatMessage:  # pylint: disable=too-many-instance-attributes  # Reason: Chat message requires many metadata fields
     """Represents a chat message with metadata."""
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Chat message initialization requires many parameters for metadata
         self,
         sender_id: uuid.UUID | str,
         sender_name: str,

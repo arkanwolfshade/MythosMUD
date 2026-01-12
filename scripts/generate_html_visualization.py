@@ -53,13 +53,9 @@ def load_room_data(zone_path: str) -> tuple[dict, dict, set]:
     return rooms, intersections, connections
 
 
-def generate_html_visualization(
-    rooms: dict, intersections: dict, connections: set, output_path: str = "arkhamcity_visualization.html"
-):
-    """Generate an HTML visualization of the room network."""
-
-    # Color scheme for subzones
-    subzone_colors = {
+def _get_subzone_colors() -> dict[str, str]:
+    """Get color scheme for subzones."""
+    return {
         "campus": "#2E8B57",
         "northside": "#8B0000",
         "downtown": "#4169E1",
@@ -71,7 +67,9 @@ def generate_html_visualization(
         "french_hill": "#FFD700",
     }
 
-    # Generate node data for JavaScript
+
+def _generate_room_nodes(rooms: dict, subzone_colors: dict[str, str]) -> list[dict]:
+    """Generate node data for rooms."""
     nodes = []
     for room_id, room_data in rooms.items():
         nodes.append(
@@ -83,7 +81,12 @@ def generate_html_visualization(
                 "color": subzone_colors.get(room_data["subzone"], "#CCCCCC"),
             }
         )
+    return nodes
 
+
+def _generate_intersection_nodes(intersections: dict, subzone_colors: dict[str, str]) -> list[dict]:
+    """Generate node data for intersections."""
+    nodes = []
     for intersection_id, intersection_data in intersections.items():
         nodes.append(
             {
@@ -94,64 +97,89 @@ def generate_html_visualization(
                 "color": subzone_colors.get(intersection_data["subzone"], "#CCCCCC"),
             }
         )
+    return nodes
 
-    # Generate edge data for JavaScript
+
+def _generate_edge_data(connections: set) -> list[dict]:
+    """Generate edge data for JavaScript."""
     edges = []
     for source, target, direction in connections:
         edges.append({"source": source, "target": target, "direction": direction})
+    return edges
 
-    # Helper function to format exits
-    def format_exits(exits_data):
-        if not exits_data:
-            return "None"
-        exit_strings = []
-        for direction, target in exits_data.items():
-            if target:
-                exit_strings.append(f"{direction}: {target}")
-        return ", ".join(exit_strings) if exit_strings else "None"
 
-    # Generate room list HTML
-    def generate_room_list_html():
-        subzone_sections = []
-        all_subzones = sorted(
-            {room["subzone"] for room in rooms.values()}
-            | {intersection["subzone"] for intersection in intersections.values()}
-        )
+def _format_exits(exits_data: dict) -> str:
+    """Format exits data for display."""
+    if not exits_data:
+        return "None"
+    exit_strings = []
+    for direction, target in exits_data.items():
+        if target:
+            exit_strings.append(f"{direction}: {target}")
+    return ", ".join(exit_strings) if exit_strings else "None"
 
-        for subzone in all_subzones:
-            # Generate room items for this subzone
-            room_items = []
-            for room_id, room_data in sorted(
-                [(rid, rdata) for rid, rdata in rooms.items() if rdata["subzone"] == subzone]
-            ):
-                room_items.append(f"""
+
+def _generate_room_items_for_subzone(rooms: dict, subzone: str) -> list[str]:
+    """Generate room items HTML for a subzone."""
+    room_items = []
+    for room_id, room_data in sorted([(rid, rdata) for rid, rdata in rooms.items() if rdata["subzone"] == subzone]):
+        room_items.append(f"""
                 <div class="room-item">
                     <div class="room-name">{room_data["name"]}</div>
                     <div class="room-id">{room_id}</div>
-                    <div class="room-exits">Exits: {format_exits(room_data["exits"])}</div>
+                    <div class="room-exits">Exits: {_format_exits(room_data["exits"])}</div>
                 </div>""")
+    return room_items
 
-            # Generate intersection items for this subzone
-            intersection_items = []
-            for intersection_id, intersection_data in sorted(
-                [(iid, idata) for iid, idata in intersections.items() if idata["subzone"] == subzone]
-            ):
-                intersection_items.append(f"""
+
+def _generate_intersection_items_for_subzone(intersections: dict, subzone: str) -> list[str]:
+    """Generate intersection items HTML for a subzone."""
+    intersection_items = []
+    for intersection_id, intersection_data in sorted(
+        [(iid, idata) for iid, idata in intersections.items() if idata["subzone"] == subzone]
+    ):
+        intersection_items.append(f"""
                 <div class="intersection-item">
                     <div class="room-name">{intersection_data["name"]}</div>
                     <div class="room-id">{intersection_id}</div>
-                    <div class="room-exits">Exits: {format_exits(intersection_data["exits"])}</div>
+                    <div class="room-exits">Exits: {_format_exits(intersection_data["exits"])}</div>
                 </div>""")
+    return intersection_items
 
-            # Combine room and intersection items
-            all_items = room_items + intersection_items
-            subzone_sections.append(f"""
+
+def _generate_room_list_html(rooms: dict, intersections: dict) -> str:
+    """Generate room list HTML."""
+    subzone_sections = []
+    all_subzones = sorted(
+        {room["subzone"] for room in rooms.values()}
+        | {intersection["subzone"] for intersection in intersections.values()}
+    )
+
+    for subzone in all_subzones:
+        room_items = _generate_room_items_for_subzone(rooms, subzone)
+        intersection_items = _generate_intersection_items_for_subzone(intersections, subzone)
+        all_items = room_items + intersection_items
+        subzone_sections.append(f"""
             <div class="subzone-section">
                 <div class="subzone-title">{subzone.upper()}</div>
                 {chr(10).join(all_items)}
             </div>""")
 
-        return chr(10).join(subzone_sections)
+    return chr(10).join(subzone_sections)
+
+
+def generate_html_visualization(
+    rooms: dict, intersections: dict, connections: set, output_path: str = "arkhamcity_visualization.html"
+):
+    """Generate an HTML visualization of the room network."""
+
+    subzone_colors = _get_subzone_colors()
+
+    room_nodes = _generate_room_nodes(rooms, subzone_colors)
+    intersection_nodes = _generate_intersection_nodes(intersections, subzone_colors)
+    nodes = room_nodes + intersection_nodes
+
+    edges = _generate_edge_data(connections)
 
     # Create HTML content
     html_content = f"""
@@ -332,7 +360,7 @@ def generate_html_visualization(
 
         <div class="room-list">
             <h2>📋 Detailed Room Listing</h2>
-            {generate_room_list_html()}
+            {_generate_room_list_html(rooms, intersections)}
         </div>
     </div>
 

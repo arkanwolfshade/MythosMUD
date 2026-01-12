@@ -10,6 +10,10 @@ As noted in the Pnakotic Manuscripts: "Security must be consistent across all
 gateways, lest the ancient ones find a way through the cracks in our defenses."
 """
 
+# pylint: disable=too-many-lines  # Reason: Security validator requires extensive security pattern definitions and validation logic for comprehensive input security
+
+# pylint: disable=too-many-return-statements  # Reason: Security validators require multiple return statements for different validation patterns and security check scenarios
+
 import re
 
 import ftfy
@@ -597,20 +601,19 @@ def validate_security_comprehensive(text: str, field_type: str = "message") -> s
     # Apply appropriate validation based on field type
     if field_type in ["message", "reason", "pose"]:
         return validate_message_content(text)
-    elif field_type == "action":
+    if field_type == "action":
         return validate_action_content(text)
-    elif field_type == "player_name":
+    if field_type == "player_name":
         return validate_player_name(text)
-    elif field_type == "alias_name":
+    if field_type == "alias_name":
         return validate_alias_name(text)
-    elif field_type == "command":
+    if field_type == "command":
         return validate_command_content(text)
-    elif field_type == "filter_name":
+    if field_type == "filter_name":
         return validate_filter_name(text)
-    elif field_type == "target":
+    if field_type == "target":
         return validate_target_player(text)
-    elif field_type == "combat_target":
+    if field_type == "combat_target":
         return validate_combat_target(text)
-    else:
-        # Default to message validation for unknown field types
-        return validate_message_content(text)
+    # Default to message validation for unknown field types
+    return validate_message_content(text)

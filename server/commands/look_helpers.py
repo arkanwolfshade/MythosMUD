@@ -91,21 +91,20 @@ def _get_health_label(stats: dict) -> str:
     constitution = stats.get("constitution", 50)
     size = stats.get("size", 50)
     max_dp = stats.get("max_dp", (constitution + size) // 5)  # DP max = (CON + SIZ) / 5
-    if max_dp == 0:
+    if not max_dp:
         max_dp = 100  # Prevent division by zero
-    if max_dp == 0:
+    if not max_dp:
         return "mortally wounded"
 
     health_percent = (health / max_dp) * 100
 
     if health_percent > 75:
         return "healthy"
-    elif health_percent >= 25:
+    if health_percent >= 25:
         return "wounded"
-    elif health_percent > 0:
+    if health_percent > 0:
         return "critical"
-    else:
-        return "mortally wounded"
+    return "mortally wounded"
 
 
 def _get_lucidity_label(stats: dict) -> str:
@@ -120,19 +119,18 @@ def _get_lucidity_label(stats: dict) -> str:
     """
     lucidity = stats.get("lucidity", 0)
     max_lucidity = stats.get("max_lucidity", 100)
-    if max_lucidity == 0:
+    if not max_lucidity:
         return "mad"
 
     lucidity_percent = (lucidity / max_lucidity) * 100
 
     if lucidity_percent > 75:
         return "lucid"
-    elif lucidity_percent >= 25:
+    if lucidity_percent >= 25:
         return "disturbed"
-    elif lucidity_percent > 0:
+    if lucidity_percent > 0:
         return "unstable"
-    else:
-        return "mad"
+    return "mad"
 
 
 def _get_visible_equipment(player: Any) -> dict[str, dict]:

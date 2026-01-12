@@ -8,12 +8,12 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from server.commands.inventory_commands import (
-    _broadcast_room_event,
-    _clone_inventory,
-    _persist_player,
-    _resolve_player,
-    _resolve_state,
+from server.commands.inventory_command_helpers import (
+    broadcast_room_event,
+    clone_inventory,
+    persist_player,
+    resolve_player,
+    resolve_state,
 )
 
 
@@ -29,7 +29,7 @@ def test_resolve_state_with_app():
     mock_request = MagicMock()
     mock_request.app = mock_app
 
-    persistence, connection_manager = _resolve_state(mock_request)
+    persistence, connection_manager = resolve_state(mock_request)
 
     assert persistence == mock_persistence
     assert connection_manager == mock_connection_manager
@@ -40,7 +40,7 @@ def test_resolve_state_no_app():
     mock_request = MagicMock()
     mock_request.app = None
 
-    persistence, connection_manager = _resolve_state(mock_request)
+    persistence, connection_manager = resolve_state(mock_request)
 
     assert persistence is None
     assert connection_manager is None
@@ -53,7 +53,7 @@ def test_resolve_state_no_state():
     mock_request = MagicMock()
     mock_request.app = mock_app
 
-    persistence, connection_manager = _resolve_state(mock_request)
+    persistence, connection_manager = resolve_state(mock_request)
 
     assert persistence is None
     assert connection_manager is None
@@ -68,7 +68,7 @@ async def test_resolve_player_success():
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     current_user = {"name": "TestPlayer"}
 
-    player, error = await _resolve_player(mock_persistence, current_user, "TestPlayer")
+    player, error = await resolve_player(mock_persistence, current_user, "TestPlayer")
 
     assert player == mock_player
     assert error is None
@@ -76,10 +76,10 @@ async def test_resolve_player_success():
 
 @pytest.mark.asyncio
 async def test_resolve_player_no_persistence():
-    """Test _resolve_player() returns error when persistence is None."""
+    """Test resolve_player() returns error when persistence is None."""
     current_user = {"name": "TestPlayer"}
 
-    player, error = await _resolve_player(None, current_user, "TestPlayer")
+    player, error = await resolve_player(None, current_user, "TestPlayer")
 
     assert player is None
     assert error is not None
@@ -93,7 +93,7 @@ async def test_resolve_player_not_found():
     mock_persistence.get_player_by_name = AsyncMock(return_value=None)
     current_user = {"name": "TestPlayer"}
 
-    player, error = await _resolve_player(mock_persistence, current_user, "TestPlayer")
+    player, error = await resolve_player(mock_persistence, current_user, "TestPlayer")
 
     assert player is None
     assert error is not None
@@ -106,7 +106,7 @@ def test_clone_inventory():
     original_inventory = [{"item_id": "sword_001", "quantity": 1}]
     player.get_inventory.return_value = original_inventory
 
-    result = _clone_inventory(player)
+    result = clone_inventory(player)
 
     assert result == original_inventory
     assert result is not original_inventory  # Should be a copy
@@ -122,30 +122,30 @@ async def test_broadcast_room_event_with_connection_manager():
     mock_connection_manager.broadcast_to_room = AsyncMock()
     event = {"type": "test_event", "data": "test"}
 
-    await _broadcast_room_event(mock_connection_manager, "room_001", event)
+    await broadcast_room_event(mock_connection_manager, "room_001", event)
 
     mock_connection_manager.broadcast_to_room.assert_called_once_with("room_001", event, exclude_player=None)
 
 
 @pytest.mark.asyncio
 async def test_broadcast_room_event_with_exclude_player():
-    """Test _broadcast_room_event() passes exclude_player parameter."""
+    """Test broadcast_room_event() passes exclude_player parameter."""
     mock_connection_manager = MagicMock()
     mock_connection_manager.broadcast_to_room = AsyncMock()
     event = {"type": "test_event", "data": "test"}
 
-    await _broadcast_room_event(mock_connection_manager, "room_001", event, exclude_player="player_001")
+    await broadcast_room_event(mock_connection_manager, "room_001", event, exclude_player="player_001")
 
     mock_connection_manager.broadcast_to_room.assert_called_once_with("room_001", event, exclude_player="player_001")
 
 
 @pytest.mark.asyncio
 async def test_broadcast_room_event_no_connection_manager():
-    """Test _broadcast_room_event() handles None connection_manager."""
+    """Test broadcast_room_event() handles None connection_manager."""
     event = {"type": "test_event", "data": "test"}
 
     # Should not raise
-    await _broadcast_room_event(None, "room_001", event)
+    await broadcast_room_event(None, "room_001", event)
 
 
 @pytest.mark.asyncio
@@ -156,7 +156,7 @@ async def test_broadcast_room_event_no_broadcast_method():
     event = {"type": "test_event", "data": "test"}
 
     # Should not raise
-    await _broadcast_room_event(mock_connection_manager, "room_001", event)
+    await broadcast_room_event(mock_connection_manager, "room_001", event)
 
 
 @pytest.mark.asyncio
@@ -167,7 +167,7 @@ async def test_broadcast_room_event_exception():
     event = {"type": "test_event", "data": "test"}
 
     # Should not raise, just log
-    await _broadcast_room_event(mock_connection_manager, "room_001", event)
+    await broadcast_room_event(mock_connection_manager, "room_001", event)
 
 
 def test_persist_player_success():
@@ -177,7 +177,7 @@ def test_persist_player_success():
     player = MagicMock()
     player.name = "TestPlayer"
 
-    result = _persist_player(mock_persistence, player)
+    result = persist_player(mock_persistence, player)
 
     assert result is None
     mock_persistence.save_player.assert_called_once_with(player)
@@ -192,7 +192,7 @@ def test_persist_player_inventory_schema_error():
     player = MagicMock()
     player.name = "TestPlayer"
 
-    result = _persist_player(mock_persistence, player)
+    result = persist_player(mock_persistence, player)
 
     assert result is not None
     assert "schema validation" in result["result"].lower()
@@ -205,7 +205,7 @@ def test_persist_player_generic_exception():
     player = MagicMock()
     player.name = "TestPlayer"
 
-    result = _persist_player(mock_persistence, player)
+    result = persist_player(mock_persistence, player)
 
     assert result is not None
     assert "error" in result["result"].lower()

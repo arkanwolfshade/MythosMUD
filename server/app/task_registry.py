@@ -6,6 +6,8 @@ all asyncio.Tasks created during application lifecycle, ensuring proper
 cleanup and shutdown coordination with timeout boundaries.
 """
 
+# pylint: disable=too-many-return-statements  # Reason: Task registry methods require multiple return statements for different task states and lifecycle conditions
+
 import asyncio
 from collections.abc import Coroutine
 from typing import Any
@@ -15,7 +17,7 @@ from ..structured_logging.enhanced_logging_config import get_logger
 logger = get_logger("server.task_registry")
 
 
-class TaskMetadata:
+class TaskMetadata:  # pylint: disable=too-few-public-methods  # Reason: Data class for metadata, no instance methods needed
     """Metadata for tracked asyncio.Tasks."""
 
     def __init__(self, task: asyncio.Task[Any], task_name: str, task_type: str = "unknown"):
@@ -106,7 +108,7 @@ class TaskRegistry:
                     if task_name in self._task_names and self._task_names[task_name] == completed_task:
                         del self._task_names[task_name]
                     logger.debug("Task completed and cleaned up", task_name=task_name)
-                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Task cleanup errors unpredictable, must not fail task completion
+                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Task cleanup errors unpredictable, must not fail task completion
                     logger.error("Error during task completion cleanup", task_name=task_name, error=str(e))
 
             task.add_done_callback(task_completion_callback)
@@ -114,7 +116,7 @@ class TaskRegistry:
             logger.debug("Registered task", task_name=task_name, task_type=task_type)
             return task
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Task registration errors unpredictable, must raise RuntimeError
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Task registration errors unpredictable, must raise RuntimeError
             logger.error("Failed to register task", task_name=task_name, error=str(e))
             raise RuntimeError(f"Task registration failed for {task_name}") from e
 
@@ -155,10 +157,10 @@ class TaskRegistry:
 
                 logger.debug("Registered task unregistered successfully", task_name=task_name)
                 return True
-            else:
-                return False
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Task unregistration errors unpredictable, must return False
+            return False
+
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Task unregistration errors unpredictable, must return False
             logger.error("Task unregistration error", error=str(e))
             return False
 
@@ -197,14 +199,78 @@ class TaskRegistry:
                 except asyncio.CancelledError:
                     logger.debug("Cancelled task successfully", target_task=target_task)
                     return True
-                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Task completion errors unpredictable, must return True
+                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Task completion errors unpredictable, must return True
                     logger.error("Unexpected task completion error", error=str(e))
                     return True
 
             return True  # Task is already done
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Task cancellation errors unpredictable, must return False
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Task cancellation errors unpredictable, must return False
             logger.error("Task cancellation failed", error=str(e))
             return False
+
+    def _cancel_lifecycle_tasks(self) -> int:
+        """Cancel lifecycle/critical tasks first (Phase 1)."""
+        cancelled_count = 0
+        lifecycle_futures = list(self._lifecycle_tasks.copy())
+        for task in lifecycle_futures:
+            if task in self._active_tasks and not task.done():
+                metadata = self._active_tasks[task]
+                logger.info("Phase 1: Cancelling lifecycle task", task_name=metadata.task_name)
+                try:
+                    task.cancel()
+                    cancelled_count += 1
+                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Lifecycle cancellation errors unpredictable, must continue processing
+                    logger.error("Cancel lifecycle failed", task_name=metadata.task_name, error=str(e))
+        return cancelled_count
+
+    def _cancel_remaining_tasks(self) -> int:
+        """Cancel remaining active tasks (Phase 2)."""
+        cancelled_count = 0
+        active_futures = list(self._active_tasks.keys())
+        for task in active_futures:
+            if not task.done() and task not in self._lifecycle_tasks:
+                metadata = self._active_tasks[task]
+                try:
+                    task.cancel()
+                    cancelled_count += 1
+                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Task cancellation errors unpredictable, must continue processing
+                    logger.error("Cancel task failed", task_name=metadata.task_name, error=str(e))
+        return cancelled_count
+
+    async def _wait_for_task_completion(self, timeout: float) -> bool:
+        """Wait for task completion with timeout."""
+        await asyncio.wait_for(asyncio.gather(*self._active_tasks, return_exceptions=True), timeout)
+        remaining = len([t for t in self._active_tasks if not t.done()])
+        success = not remaining
+        if success:
+            logger.info("Successful shutdown - all tasks terminated gracefully")
+        else:
+            logger.error("Shutdown timeout - tasks still active", remaining=remaining)
+        return success
+
+    def _forcible_cleanup_on_timeout(self) -> int:
+        """Forcibly cancel any lingering tasks that didn't respond to graceful cancellation."""
+        final_cancelled = 0
+        for task in list(self._active_tasks.keys()):
+            try:
+                if not task.done():
+                    task.cancel()  # Forcible cancel
+                    final_cancelled += 1
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Forcible cancellation errors unpredictable, must continue processing
+                logger.error("Forcible cancellation error", error=str(e))
+        logger.info("Forcibly cancelled remaining tasks", final_cancelled=final_cancelled)
+        return final_cancelled
+
+    def _cleanup_registry_collections(self) -> None:
+        """Clean up active collections after final shutdown."""
+        try:
+            for task in list(self._active_tasks.keys()):
+                if self._active_tasks.get(task) is None:
+                    continue  # Might already be collected by gc
+                self.unregister_task(task)
+        except Exception as cleanup_e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Collection cleanup errors unpredictable, must be ignored
+            logger.warning("Collection cleanup error ignored", error=str(cleanup_e))
+        self._lifecycle_tasks.clear()
 
     async def shutdown_all(self, timeout: float = 5.0) -> bool:
         """
@@ -228,75 +294,31 @@ class TaskRegistry:
 
         logger.info("TaskRegistry initiating comprehensive shutdown phase coordination")
 
-        cancelled_count = 0
-
         try:
             # Phase 1: Cancel lifecycle/critical tasks first
-            lifecycle_futures = list(self._lifecycle_tasks.copy())
-            for task in lifecycle_futures:
-                if task in self._active_tasks and not task.done():
-                    metadata = self._active_tasks[task]
-                    logger.info("Phase 1: Cancelling lifecycle task", task_name=metadata.task_name)
-                    try:
-                        task.cancel()
-                        cancelled_count += 1
-                    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Lifecycle cancellation errors unpredictable, must continue processing
-                        logger.error("Cancel lifecycle failed", task_name=metadata.task_name, error=str(e))
+            lifecycle_cancelled = self._cancel_lifecycle_tasks()
 
             # Phase 2: Cancel remaining active tasks
-            active_futures = list(self._active_tasks.keys())
-            for task in active_futures:
-                if not task.done() and task not in self._lifecycle_tasks:
-                    metadata = self._active_tasks[task]
-                    try:
-                        task.cancel()
-                        cancelled_count += 1
-                    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Task cancellation errors unpredictable, must continue processing
-                        logger.error("Cancel task failed", task_name=metadata.task_name, error=str(e))
+            remaining_cancelled = self._cancel_remaining_tasks()
 
+            cancelled_count = lifecycle_cancelled + remaining_cancelled
             logger.info("Cancelled active tasks - awaiting completion", cancelled_count=cancelled_count)
 
             # Wait for completion with timeout boundary
-            await asyncio.wait_for(asyncio.gather(*self._active_tasks.keys(), return_exceptions=True), timeout)
-
-            remaining = len([t for t in self._active_tasks.keys() if not t.done()])
-            success = remaining == 0
-
-            if success:
-                logger.info("Successful shutdown - all tasks terminated gracefully")
-            else:
-                logger.error("Shutdown timeout - tasks still active", remaining=remaining)
+            await self._wait_for_task_completion(timeout)
 
         except TimeoutError:
             logger.error("TaskRegistry shutdown timeout - forcible cleanup", timeout=timeout)
-            # Final sweep to cancel any lingering tasks that didn't respond to gracelful cancellation
-            final_cancelled = 0
-            for task in list(self._active_tasks.keys()):
-                try:
-                    if not task.done():
-                        task.cancel()  # Forcible cancel
-                        final_cancelled += 1
-                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Forcible cancellation errors unpredictable, must continue processing
-                    logger.error("Forcible cancellation error", error=str(e))
-            logger.info("Forcibly cancelled remaining tasks", final_cancelled=final_cancelled)
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Shutdown coordination errors unpredictable, must handle gracefully
+            self._forcible_cleanup_on_timeout()
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Shutdown coordination errors unpredictable, must handle gracefully
             logger.error("Critical shutdown coordination error", error=str(e), exc_info=True)
-            success = False
         finally:
-            # Emptify active collections after final shutdown
-            try:
-                for task in list(self._active_tasks.keys()):
-                    if self._active_tasks.get(task) is None:
-                        continue  # Might already be collected by gc
-                    self.unregister_task(task)
-            except Exception as cleanup_e:  # pylint: disable=broad-exception-caught  # Reason: Collection cleanup errors unpredictable, must be ignored
-                logger.warning("Collection cleanup error ignored", error=str(cleanup_e))
-            self._lifecycle_tasks.clear()
+            self._cleanup_registry_collections()
 
         self._shutdown_in_progress = False
         self._shutdown_semaphore.clear()
 
-        full_success = len(self._active_tasks) == 0
+        full_success = not self._active_tasks
         if not full_success:
             logger.warning("Cleaned up most tasks, timeout reached")
             logger.warning("Remaining active", active_tasks=[m.task_name for m in self._active_tasks.values()])

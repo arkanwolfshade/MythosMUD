@@ -181,7 +181,7 @@ class StatsGenerator:
 
         # Adjust points for 9 stats instead of 6 (more points needed)
         points_remaining = 200  # Increased from 135 to account for more stats
-        stat_names = [k for k in base_stats.keys() if k != "size"]  # Don't modify size
+        stat_names = [k for k in base_stats if k != "size"]  # Don't modify size
 
         while points_remaining > 0:
             stat = random.choice(stat_names)  # nosec B311: Game mechanics stat selection, not cryptographic
@@ -227,7 +227,7 @@ class StatsGenerator:
             if current_value < minimum_value:
                 failed_requirements.append(f"{attribute.value.title()} {current_value} < {minimum_value}")
 
-        meets_prerequisites = len(failed_requirements) == 0
+        meets_prerequisites = not failed_requirements
 
         logger.debug(
             "Class prerequisite check",
@@ -250,7 +250,7 @@ class StatsGenerator:
         """
         available_classes = []
 
-        for class_name in self.CLASS_PREREQUISITES.keys():
+        for class_name in self.CLASS_PREREQUISITES:
             meets_prerequisites, _ = self.validate_class_prerequisites(stats, class_name)
             if meets_prerequisites:
                 available_classes.append(class_name)
@@ -299,7 +299,7 @@ class StatsGenerator:
         available_classes = self.get_available_classes(stats)
         return stats, available_classes
 
-    def roll_stats_with_profession(
+    def roll_stats_with_profession(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Stats rolling requires many parameters and intermediate variables for complex stat generation logic
         self,
         method: str = "3d6",
         profession_id: int = 0,
@@ -434,13 +434,13 @@ class StatsGenerator:
 
         # STAT NAME MAPPING: Map legacy/alternative stat names to actual Stats model attributes
         # In Call of Cthulhu, "wisdom" is typically represented by "power" (willpower)
-        STAT_NAME_MAP = {
+        stat_name_map = {  # pylint: disable=invalid-name  # Reason: Local variable, not a constant
             "wisdom": "power",  # Wisdom maps to power (willpower) in CoC
         }
 
         for stat_name, min_value in requirements.items():
             # Map stat name if needed
-            mapped_stat_name = STAT_NAME_MAP.get(stat_name, stat_name)
+            mapped_stat_name = stat_name_map.get(stat_name, stat_name)
             stat_value = getattr(stats, mapped_stat_name, None)
 
             logger.debug(

@@ -7,6 +7,8 @@ like admin commands, permission changes, and player management.
 AI: Audit logs are critical for incident response and compliance.
 """
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Audit logging requires many parameters for complete audit context
+
 import json
 from datetime import UTC, datetime
 from pathlib import Path
@@ -79,7 +81,7 @@ class AuditLogger:
         today = datetime.now(UTC).strftime("%Y-%m-%d")
         return self.log_directory / f"audit_{today}.jsonl"
 
-    def log_command(
+    def log_command(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Command logging requires many parameters for complete audit context
         self,
         player_name: str,
         command: str,
@@ -124,7 +126,7 @@ class AuditLogger:
             success=success,
         )
 
-    def log_permission_change(
+    def log_permission_change(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Permission change logging requires many parameters for complete audit context
         self,
         admin_name: str,
         target_player: str,
@@ -230,7 +232,7 @@ class AuditLogger:
             event_type=event_type,
         )
 
-    def log_player_action(
+    def log_player_action(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Player action logging requires many parameters for complete audit context
         self,
         admin_name: str,
         target_player: str,
@@ -307,7 +309,7 @@ class AuditLogger:
         else:
             logger.warning("Security event logged", event_type=event_type, player=player_name, severity=severity)
 
-    def log_alias_expansion(
+    def log_alias_expansion(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Alias expansion logging requires many parameters for complete audit context
         self,
         player_name: str,
         alias_name: str,
@@ -362,7 +364,7 @@ class AuditLogger:
             with open(log_file, "a", encoding="utf-8") as f:
                 f.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: File write errors unpredictable, must log but not fail
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: File write errors unpredictable, must log but not fail
             logger.error("Failed to write audit log entry", error=str(e), entry_type=entry.get("event_type"))
 
     def get_recent_entries(
@@ -420,7 +422,7 @@ class AuditLogger:
                             logger.warning("Failed to parse audit log entry", file=str(log_file), error=str(e))
                             continue
 
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: File read errors unpredictable, must log but continue
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: File read errors unpredictable, must log but continue
                 logger.error("Failed to read audit log file", file=str(log_file), error=str(e))
                 continue
 

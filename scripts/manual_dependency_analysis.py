@@ -132,11 +132,8 @@ class ManualDependencyAnalyzer:
         else:
             return "LOW"
 
-    def analyze_dependencies(self) -> dict[str, Any]:
-        """Analyze all dependencies"""
-        print("🔍 Analyzing MythosMUD dependencies...")
-
-        # Process NPM dependencies
+    def _process_npm_dependencies(self) -> dict[str, Any]:
+        """Process NPM dependencies."""
         npm_deps = {}
         for pkg, info in self.npm_outdated_data.items():
             npm_deps[pkg] = {
@@ -147,8 +144,10 @@ class ManualDependencyAnalyzer:
                 "update_type": self.categorize_update(info["current"], info["latest"]),
                 "risk_level": self.assess_npm_risk(pkg, info["current"], info["latest"]),
             }
+        return npm_deps
 
-        # Process Python dependencies
+    def _process_python_dependencies(self) -> dict[str, Any]:
+        """Process Python dependencies."""
         python_deps = {}
         for pkg, info in self.python_outdated_data.items():
             python_deps[pkg] = {
@@ -158,11 +157,10 @@ class ManualDependencyAnalyzer:
                 "update_type": self.categorize_update(info["current"], info["latest"]),
                 "risk_level": self.assess_python_risk(pkg, info["current"], info["latest"]),
             }
+        return python_deps
 
-        # Combine all dependencies
-        all_deps = {**npm_deps, **python_deps}
-
-        # Count by update type
+    def _count_updates_and_risks(self, all_deps: dict[str, Any]) -> tuple[dict[str, int], dict[str, int]]:
+        """Count dependencies by update type and risk level."""
         update_counts = {"major": 0, "minor": 0, "patch": 0, "unknown": 0}
         risk_counts = {"HIGH": 0, "MEDIUM": 0, "LOW": 0}
 
@@ -170,36 +168,40 @@ class ManualDependencyAnalyzer:
             update_counts[dep_info["update_type"]] += 1
             risk_counts[dep_info["risk_level"]] += 1
 
-        # Determine strategy
-        if update_counts["major"] > 0:
-            strategy = "INCREMENTAL"
-            priority = "HIGH"
-        elif update_counts["minor"] > 3:
-            strategy = "BATCHED"
-            priority = "MEDIUM"
-        else:
-            strategy = "IMMEDIATE"
-            priority = "LOW"
+        return update_counts, risk_counts
 
-        # Create priority order
+    def _determine_update_strategy(self, update_counts: dict[str, int]) -> tuple[str, str]:
+        """Determine update strategy and priority."""
+        if update_counts["major"] > 0:
+            return "INCREMENTAL", "HIGH"
+        elif update_counts["minor"] > 3:
+            return "BATCHED", "MEDIUM"
+        else:
+            return "IMMEDIATE", "LOW"
+
+    def _calculate_priority_score(self, dep_info: dict[str, Any]) -> int:
+        """Calculate priority score for a dependency."""
+        priority_score = 0
+
+        if dep_info["update_type"] == "major":
+            priority_score += 100
+        elif dep_info["update_type"] == "minor":
+            priority_score += 50
+        elif dep_info["update_type"] == "patch":
+            priority_score += 10
+
+        if dep_info["risk_level"] == "HIGH":
+            priority_score += 20
+        elif dep_info["risk_level"] == "MEDIUM":
+            priority_score += 10
+
+        return priority_score
+
+    def _create_priority_order(self, all_deps: dict[str, Any]) -> list[dict[str, Any]]:
+        """Create priority order for dependencies."""
         priority_order = []
         for pkg_name, dep_info in all_deps.items():
-            priority_score = 0
-
-            # Base score by update type
-            if dep_info["update_type"] == "major":
-                priority_score += 100
-            elif dep_info["update_type"] == "minor":
-                priority_score += 50
-            elif dep_info["update_type"] == "patch":
-                priority_score += 10
-
-            # Adjust by risk level
-            if dep_info["risk_level"] == "HIGH":
-                priority_score += 20
-            elif dep_info["risk_level"] == "MEDIUM":
-                priority_score += 10
-
+            priority_score = self._calculate_priority_score(dep_info)
             priority_order.append(
                 {
                     "package": pkg_name,
@@ -212,10 +214,11 @@ class ManualDependencyAnalyzer:
                 }
             )
 
-        # Sort by priority score (descending)
         priority_order.sort(key=lambda x: x["priority_score"], reverse=True)
+        return priority_order
 
-        # Identify breaking changes
+    def _identify_breaking_changes(self, all_deps: dict[str, Any]) -> list[dict[str, Any]]:
+        """Identify breaking changes (major version updates)."""
         breaking_changes = []
         for pkg_name, dep_info in all_deps.items():
             if dep_info["update_type"] == "major":
@@ -227,15 +230,32 @@ class ManualDependencyAnalyzer:
                         "ecosystem": dep_info["ecosystem"],
                     }
                 )
+        return breaking_changes
 
-        # Determine overall risk
-        overall_risk = "LOW"
+    def _determine_overall_risk(self, breaking_changes: list[dict[str, Any]]) -> str:
+        """Determine overall risk level."""
         if len(breaking_changes) > 2:
-            overall_risk = "HIGH"
+            return "HIGH"
         elif len(breaking_changes) > 0:
-            overall_risk = "MEDIUM"
+            return "MEDIUM"
+        else:
+            return "LOW"
 
-        analysis = {
+    def _build_analysis_dict(
+        self,
+        npm_deps: dict[str, Any],
+        python_deps: dict[str, Any],
+        all_deps: dict[str, Any],
+        update_counts: dict[str, int],
+        risk_counts: dict[str, int],
+        strategy: str,
+        priority: str,
+        breaking_changes: list[dict[str, Any]],
+        overall_risk: str,
+        priority_order: list[dict[str, Any]],
+    ) -> dict[str, Any]:
+        """Build the final analysis dictionary."""
+        return {
             "timestamp": datetime.now().isoformat(),
             "project": "MythosMUD",
             "client_dependencies": npm_deps,
@@ -251,7 +271,23 @@ class ManualDependencyAnalyzer:
             "priority_order": priority_order,
         }
 
-        return analysis
+    def analyze_dependencies(self) -> dict[str, Any]:
+        """Analyze all dependencies"""
+        print("🔍 Analyzing MythosMUD dependencies...")
+
+        npm_deps = self._process_npm_dependencies()
+        python_deps = self._process_python_dependencies()
+        all_deps = {**npm_deps, **python_deps}
+
+        update_counts, risk_counts = self._count_updates_and_risks(all_deps)
+        strategy, priority = self._determine_update_strategy(update_counts)
+        priority_order = self._create_priority_order(all_deps)
+        breaking_changes = self._identify_breaking_changes(all_deps)
+        overall_risk = self._determine_overall_risk(breaking_changes)
+
+        return self._build_analysis_dict(
+            npm_deps, python_deps, all_deps, update_counts, risk_counts, strategy, priority, breaking_changes, overall_risk, priority_order
+        )
 
     def generate_report(self, analysis: dict[str, Any]) -> str:
         """Generate comprehensive upgrade report"""

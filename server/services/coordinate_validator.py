@@ -8,6 +8,8 @@ As noted in the Necronomicon, spatial conflicts can lead to dimensional
 instability and must be resolved by the administrator.
 """
 
+# pylint: disable=too-few-public-methods  # Reason: Validator class with focused responsibility, minimal public interface
+
 from typing import Any
 
 from sqlalchemy import text
@@ -18,7 +20,7 @@ from ..structured_logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 
-class CoordinateValidator:
+class CoordinateValidator:  # pylint: disable=too-few-public-methods  # Reason: Validator class with focused responsibility, minimal public interface
     """
     Validates room coordinates and detects conflicts.
 
@@ -105,7 +107,7 @@ class CoordinateValidator:
         count_result = await self._session.execute(count_query, {"pattern": zone_pattern})
         total_rooms = count_result.scalar_one() or 0
 
-        is_valid = len(conflicts) == 0
+        is_valid = not conflicts
 
         if conflicts:
             logger.warning(

@@ -5,6 +5,8 @@ This module provides specialized logging for combat events to ensure
 security, compliance, and monitoring of combat activities in the MUD.
 """
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Combat audit logging requires many parameters for complete audit context
+
 from datetime import UTC, datetime
 from typing import Any
 
@@ -26,7 +28,7 @@ class CombatAuditLogger:
         """Initialize the combat audit logger."""
         self.logger = get_logger("combat.audit")
 
-    def log_combat_start(
+    def log_combat_start(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Combat start logging requires many parameters for complete audit context
         self,
         player_id: str,
         player_name: str,
@@ -65,7 +67,7 @@ class CombatAuditLogger:
             compliance_required=True,
         )
 
-    def log_combat_attack(
+    def log_combat_attack(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Combat attack logging requires many parameters for complete audit context
         self,
         player_id: str,
         player_name: str,
@@ -113,7 +115,7 @@ class CombatAuditLogger:
             compliance_required=True,
         )
 
-    def log_combat_death(
+    def log_combat_death(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Combat death logging requires many parameters for complete audit context
         self,
         player_id: str,
         player_name: str,
@@ -149,7 +151,7 @@ class CombatAuditLogger:
             compliance_required=True,
         )
 
-    def log_combat_end(
+    def log_combat_end(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Combat end logging requires many parameters for complete audit context
         self,
         player_id: str,
         player_name: str,
@@ -188,7 +190,7 @@ class CombatAuditLogger:
             compliance_required=True,
         )
 
-    def log_combat_security_event(
+    def log_combat_security_event(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Security event logging requires many parameters for complete audit context
         self,
         event_type: str,
         player_id: str,
@@ -228,7 +230,7 @@ class CombatAuditLogger:
 
         self.logger.warning("Combat security event detected", **log_data)
 
-    def log_combat_validation_failure(
+    def log_combat_validation_failure(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Validation failure logging requires many parameters for complete audit context
         self,
         player_id: str,
         player_name: str,
@@ -264,7 +266,7 @@ class CombatAuditLogger:
             compliance_required=True,
         )
 
-    def log_combat_rate_limit(
+    def log_combat_rate_limit(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Rate limit logging requires many parameters for complete audit context
         self,
         player_id: str,
         player_name: str,
@@ -300,7 +302,7 @@ class CombatAuditLogger:
             compliance_required=True,
         )
 
-    def log_combat_monitoring_alert(
+    def log_combat_monitoring_alert(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Monitoring alert logging requires many parameters for complete audit context
         self,
         alert_type: str,
         severity: str,
