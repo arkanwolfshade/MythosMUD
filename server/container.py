@@ -31,7 +31,6 @@ USAGE:
 
 # pylint: disable=too-many-return-statements,too-many-lines,wrong-import-position  # Reason: Container methods require multiple return statements for service resolution logic (type checking, initialization states, error handling). Container requires extensive service registration and lifecycle management code. Imports after TYPE_CHECKING block are intentional to avoid circular dependencies.
 
-import asyncio
 import json
 import threading
 from datetime import datetime
@@ -40,6 +39,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse
 
+from anyio import Lock
 from pydantic import ValidationError
 
 if TYPE_CHECKING:
@@ -165,7 +165,7 @@ class ApplicationContainer:  # pylint: disable=too-many-instance-attributes  # R
 
         # Initialization state
         self._initialized: bool = False
-        self._initialization_lock = asyncio.Lock()
+        self._initialization_lock = Lock()
         self._project_root: Path | None = None
 
         logger.info("ApplicationContainer created (not yet initialized)")

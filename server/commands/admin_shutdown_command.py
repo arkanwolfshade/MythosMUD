@@ -15,6 +15,8 @@ import asyncio
 import time
 from typing import Any
 
+from anyio import sleep
+
 from ..alias_storage import AliasStorage
 from ..structured_logging.admin_actions_logger import AdminActionsLogger
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -191,7 +193,7 @@ async def countdown_loop(app: Any, countdown_seconds: int, admin_username: str) 
             time_until_notification = countdown_seconds - notify_at_seconds - current_elapsed
 
             if time_until_notification > 0:
-                await asyncio.sleep(time_until_notification)
+                await sleep(time_until_notification)
 
             # Check if shutdown was cancelled
             if not getattr(app.state, "server_shutdown_pending", False):
@@ -204,7 +206,7 @@ async def countdown_loop(app: Any, countdown_seconds: int, admin_username: str) 
         # Final wait to reach exact shutdown time
         remaining = end_time - time.time()
         if remaining > 0:
-            await asyncio.sleep(remaining)
+            await sleep(remaining)
 
         # Check one last time if shutdown was cancelled
         if not getattr(app.state, "server_shutdown_pending", False):

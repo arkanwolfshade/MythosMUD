@@ -17,8 +17,7 @@ from pathlib import Path
 # Add server directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "server"))
 
-import asyncio
-
+from anyio import run
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine
 
@@ -40,8 +39,8 @@ async def check_migration_013(engine):
         )
         columns = [row[0] for row in result.fetchall()]
 
-        has_map_x = 'map_x' in columns
-        has_map_y = 'map_y' in columns
+        has_map_x = "map_x" in columns
+        has_map_y = "map_y" in columns
 
         return has_map_x and has_map_y, columns
 
@@ -59,7 +58,7 @@ async def check_migration_014(engine):
         )
         tables = [row[0] for row in result.fetchall()]
 
-        return 'player_exploration' in tables
+        return "player_exploration" in tables
 
 
 async def apply_migration_013(engine):
@@ -71,7 +70,7 @@ async def apply_migration_013(engine):
         return False
 
     print(f"[INFO] Reading migration file: {migration_file}")
-    with open(migration_file, encoding='utf-8') as f:
+    with open(migration_file, encoding="utf-8") as f:
         migration_sql = f.read()
 
     try:
@@ -93,7 +92,7 @@ async def apply_migration_014(engine):
         return False
 
     print(f"[INFO] Reading migration file: {migration_file}")
-    with open(migration_file, encoding='utf-8') as f:
+    with open(migration_file, encoding="utf-8") as f:
         migration_sql = f.read()
 
     try:
@@ -158,6 +157,7 @@ async def main():
     except Exception as e:
         print(f"[ERROR] Unexpected error: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)
     finally:
@@ -165,4 +165,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    run(main)

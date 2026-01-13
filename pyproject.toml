@@ -29,6 +29,7 @@ dependencies = [
     "pytest-cov>=7.0.0",
     "pytest-mock>=3.15.1",
     "psycopg2-binary>=2.9.11",
+    "anyio>=4.0.0",  # Unified async API for backend-agnostic code
     "asyncpg>=0.31.0",
     "pytest-asyncio>=1.3.0",
     "jsonschema>=4.25.1,<4.26.0",

@@ -8,6 +8,7 @@ import asyncio
 import uuid as uuid_lib
 from collections.abc import Iterable
 
+from anyio import sleep
 from fastapi import FastAPI
 
 from ..container import ApplicationContainer
@@ -185,7 +186,7 @@ async def initialize_combat_services(app: FastAPI, container: ApplicationContain
     async def _sanitarium_failover(player_id: str, current_lcd: int) -> None:
         """Failover callback that relocates catatonic players to the sanitarium."""
         # 10-second fade before transport per spec
-        await asyncio.sleep(10.0)
+        await sleep(10.0)
 
         if container.database_manager is None:
             logger.error("Database manager not available for catatonia failover", player_id=player_id)

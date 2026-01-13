@@ -4,12 +4,12 @@ Apply players table migration to align with SQLAlchemy model.
 This script applies the migration using Python/asyncpg instead of requiring psql.
 """
 
-import asyncio
 import os
 import sys
 from pathlib import Path
 
 import asyncpg
+from anyio import run
 
 # Default connection parameters
 # WARNING: In production, always use environment variables for passwords
@@ -107,4 +107,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    sys.exit(asyncio.run(main()))
+    sys.exit(run(main))

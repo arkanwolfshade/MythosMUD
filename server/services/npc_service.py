@@ -555,11 +555,11 @@ class NPCService:
             definitions_by_type: dict[str, int] = dict(definitions_result.all())  # type: ignore[arg-type]  # Reason: SQLAlchemy result.all() returns Row tuples, dict() constructor handles the conversion correctly at runtime
 
             # Count total definitions
-            total_definitions_result = await session.execute(select(func.count(NPCDefinition.id)))
+            total_definitions_result = await session.execute(select(func.count(NPCDefinition.id)))  # pylint: disable=not-callable  # Reason: SQLAlchemy func is callable at runtime, pylint cannot detect this statically
             total_definitions = total_definitions_result.scalar()
 
             # Count spawn rules
-            spawn_rules_result = await session.execute(select(func.count(NPCSpawnRule.id)))
+            spawn_rules_result = await session.execute(select(func.count(NPCSpawnRule.id)))  # pylint: disable=not-callable  # Reason: SQLAlchemy func is callable at runtime, pylint cannot detect this statically
             total_spawn_rules = spawn_rules_result.scalar()
 
             stats = {

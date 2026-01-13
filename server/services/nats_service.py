@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any
 
 import nats
+from anyio import sleep
 
 from ..config.models import NATSConfig
 from ..realtime.connection_state_machine import NATSConnectionStateMachine
@@ -459,7 +460,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
 
         while self._running:
             try:
-                await asyncio.sleep(health_check_interval)
+                await sleep(health_check_interval)
 
                 if not self.nc or not self._running:
                     break
@@ -492,7 +493,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Health check errors unpredictable, must continue loop
                 logger.error("Error in health check loop", error=str(e))
                 self._consecutive_health_failures += 1
-                await asyncio.sleep(health_check_interval)  # Wait before retrying
+                await sleep(health_check_interval)  # Wait before retrying
 
     async def _perform_health_check(self) -> bool:
         """
@@ -1186,7 +1187,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
     async def _batch_timeout(self):
         """Handle batch timeout for low-traffic scenarios."""
         try:
-            await asyncio.sleep(self.batch_timeout)
+            await sleep(self.batch_timeout)
             await self._flush_batch()
         except asyncio.CancelledError:
             # Task was cancelled, which is expected

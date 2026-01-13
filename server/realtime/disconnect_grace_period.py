@@ -13,6 +13,8 @@ import asyncio
 import uuid
 from typing import Any
 
+from anyio import sleep
+
 from ..structured_logging.enhanced_logging_config import get_logger
 from .player_disconnect_handlers import (
     _cleanup_player_references,
@@ -55,7 +57,7 @@ async def start_grace_period(
     async def grace_period_task() -> None:
         try:
             # Wait for grace period duration
-            await asyncio.sleep(GRACE_PERIOD_DURATION)
+            await sleep(GRACE_PERIOD_DURATION)
 
             # Check if player reconnected (task may have been cancelled)
             if player_id not in manager.grace_period_players:

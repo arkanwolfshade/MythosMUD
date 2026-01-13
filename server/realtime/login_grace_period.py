@@ -13,6 +13,8 @@ import time
 import uuid
 from typing import Any
 
+from anyio import sleep
+
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -53,7 +55,7 @@ async def start_login_grace_period(
     async def grace_period_task() -> None:
         try:
             # Wait for grace period duration
-            await asyncio.sleep(LOGIN_GRACE_PERIOD_DURATION)
+            await sleep(LOGIN_GRACE_PERIOD_DURATION)
 
             # Check if player is still in grace period (task may have been cancelled)
             if player_id not in manager.login_grace_period_players:

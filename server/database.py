@@ -16,6 +16,7 @@ import threading
 from collections.abc import AsyncIterator
 from pathlib import Path
 
+from anyio import sleep
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -375,7 +376,7 @@ class DatabaseManager:
                 try:
                     # Step 1: Wait for any pending operations to complete
                     # This gives time for any in-flight queries to finish
-                    await asyncio.sleep(0.3)
+                    await sleep(0.3)
 
                     # Step 2: Shield disposal from cancellation to ensure cleanup completes
                     # This prevents Connection._cancel coroutines from being interrupted during cleanup
@@ -384,7 +385,7 @@ class DatabaseManager:
                         # Wait a bit more to ensure all asyncpg cleanup coroutines complete
                         # This helps prevent Connection._cancel coroutines from being garbage collected
                         # before they're awaited
-                        await asyncio.sleep(0.2)
+                        await sleep(0.2)
 
                     # Shield the disposal to prevent cancellation from interrupting cleanup
                     await asyncio.wait_for(asyncio.shield(_dispose_engine()), timeout=3.0)

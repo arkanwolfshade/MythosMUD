@@ -160,7 +160,7 @@ class ExplorationCommandFactory:
                     )
                     + "\n"
                 )
-        except Exception:  # E722: Catch all exceptions during debug logging to prevent failures
+        except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904, E722  # Reason: Debug logging must not fail, catch all exceptions to prevent failures
             pass
         # #endregion
         if not args:
@@ -188,7 +188,7 @@ class ExplorationCommandFactory:
                     )
                     + "\n"
                 )
-        except Exception:  # E722: Catch all exceptions during debug logging to prevent failures
+        except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904, E722  # Reason: Debug logging must not fail, catch all exceptions to prevent failures
             pass
         # #endregion
         return GoCommand(direction=direction)

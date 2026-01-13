@@ -5,6 +5,7 @@ This module provides secure command parsing and validation to prevent command
 injection and ensure type safety.
 """
 
+import json
 import re
 
 from pydantic import ValidationError as PydanticValidationError
@@ -116,8 +117,6 @@ class CommandParser:
             ValidationError: If command data doesn't match expected schema
         """
         # #region agent log
-        import json
-
         try:
             with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8") as f:
                 f.write(
@@ -134,7 +133,7 @@ class CommandParser:
                     )
                     + "\n"
                 )
-        except Exception:  # E722: Catch all exceptions during debug logging to prevent failures
+        except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904, E722  # Reason: Debug logging must not fail, catch all exceptions to prevent failures
             pass
         # #endregion
         logger.debug("Parsing command", command=command_string, length=len(command_string))
@@ -163,8 +162,6 @@ class CommandParser:
         # Parse command and arguments
         command, args = self._parse_command_parts(normalized)
         # #region agent log
-        import json
-
         try:
             with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8") as f:
                 f.write(
@@ -181,7 +178,7 @@ class CommandParser:
                     )
                     + "\n"
                 )
-        except Exception:  # E722: Catch all exceptions during debug logging to prevent failures
+        except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904, E722  # Reason: Debug logging must not fail, catch all exceptions to prevent failures
             pass
         # #endregion
 
@@ -228,8 +225,6 @@ class CommandParser:
             Tuple of (command, arguments)
         """
         # #region agent log
-        import json
-
         try:
             with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8") as f:
                 f.write(
@@ -246,7 +241,7 @@ class CommandParser:
                     )
                     + "\n"
                 )
-        except Exception:  # E722: Catch all exceptions during debug logging to prevent failures
+        except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904, E722  # Reason: Debug logging must not fail, catch all exceptions to prevent failures
             pass
         # #endregion
         # Defensive programming: Handle mock objects during testing
@@ -279,7 +274,7 @@ class CommandParser:
                     )
                     + "\n"
                 )
-        except Exception:  # E722: Catch all exceptions during debug logging to prevent failures
+        except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904, E722  # Reason: Debug logging must not fail, catch all exceptions to prevent failures
             pass
         # #endregion
         if not parts:
@@ -308,7 +303,7 @@ class CommandParser:
                     )
                     + "\n"
                 )
-        except Exception:  # E722: Catch all exceptions during debug logging to prevent failures
+        except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904, E722  # Reason: Debug logging must not fail, catch all exceptions to prevent failures
             pass
         # #endregion
 

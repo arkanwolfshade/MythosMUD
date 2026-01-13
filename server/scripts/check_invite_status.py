@@ -1,8 +1,8 @@
 """Check the status of a specific invite code."""
 
-import asyncio
 from pathlib import Path
 
+from anyio import run
 from dotenv import load_dotenv
 from sqlalchemy import text
 
@@ -36,4 +36,4 @@ if __name__ == "__main__":
     import sys
 
     invite_code = sys.argv[1] if len(sys.argv) > 1 else "COSMOS202541"
-    asyncio.run(check_invite(invite_code))
+    run(check_invite, invite_code)  # anyio.run supports *args for async functions

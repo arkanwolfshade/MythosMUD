@@ -17,6 +17,8 @@ import uuid
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
+from anyio import sleep
+
 from ...structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
@@ -337,7 +339,7 @@ class HealthMonitor:
 
         try:
             while True:
-                await asyncio.sleep(self.health_check_interval)
+                await sleep(self.health_check_interval)
                 await self.check_all_connections_health(active_websockets, connection_metadata, player_websockets)
         except asyncio.CancelledError:
             logger.info("Periodic health check task cancelled")

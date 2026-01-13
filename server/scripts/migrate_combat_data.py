@@ -5,9 +5,9 @@ This script adds default combat data to existing NPC definitions,
 including base stats and behavior configuration.
 """
 
-import asyncio
 from typing import Any
 
+from anyio import run
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -297,4 +297,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    run(main)

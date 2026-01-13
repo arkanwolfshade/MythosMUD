@@ -6,12 +6,13 @@ Writes metrics to artifacts/perf/cache_bench_npc.json.
 
 from __future__ import annotations
 
-import asyncio
 import json
 import os
 import time
 from types import SimpleNamespace
 from typing import Any
+
+from anyio import run, sleep
 
 
 class _FakeNPCService:
@@ -19,15 +20,15 @@ class _FakeNPCService:
         self._latency = latency_ms / 1000.0
 
     async def get_npc_definitions(self, session: Any) -> list[Any]:
-        await asyncio.sleep(self._latency)
+        await sleep(self._latency)
         return [SimpleNamespace(id=i, name=f"NPC-{i}") for i in range(50)]
 
     async def get_npc_definition(self, session: Any, definition_id: int) -> Any:
-        await asyncio.sleep(self._latency)
+        await sleep(self._latency)
         return SimpleNamespace(id=definition_id, name=f"NPC-{definition_id}")
 
     async def get_spawn_rules(self, session: Any) -> list[Any]:
-        await asyncio.sleep(self._latency)
+        await sleep(self._latency)
         return [SimpleNamespace(id=i, rule="any") for i in range(25)]
 
 
@@ -70,7 +71,7 @@ async def bench_npc_cache() -> dict[str, Any]:
 
 
 def main() -> None:
-    metrics = asyncio.run(bench_npc_cache())
+    metrics = run(bench_npc_cache)
     out_dir = os.path.join("artifacts", "perf")
     os.makedirs(out_dir, exist_ok=True)
     out_path = os.path.join(out_dir, "cache_bench_npc.json")

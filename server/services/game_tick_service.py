@@ -6,6 +6,8 @@ Handles the game tick system that runs at regular intervals.
 import asyncio
 from datetime import UTC, datetime
 
+from anyio import sleep
+
 from ..app.tracked_task_manager import get_global_tracked_manager
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -118,7 +120,7 @@ class GameTickService:
                     logger.warning("Failed to publish game tick event", tick_count=self.tick_count)
 
                 # Wait for the next tick
-                await asyncio.sleep(self.tick_interval)
+                await sleep(self.tick_interval)
 
             except asyncio.CancelledError:
                 logger.info("Game tick loop cancelled")
@@ -126,7 +128,7 @@ class GameTickService:
             except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Continue loop on error to maintain game tick, errors are logged but must not stop the core game mechanics
                 logger.error("Error in game tick loop", error=str(e))
                 # Continue the loop even if there's an error
-                await asyncio.sleep(self.tick_interval)
+                await sleep(self.tick_interval)
 
         logger.info("Game tick loop ended")
 

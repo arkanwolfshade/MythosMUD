@@ -23,6 +23,8 @@ from collections import defaultdict
 from collections.abc import Callable
 from typing import Any, TypeVar
 
+from anyio import Event
+
 from ..structured_logging.enhanced_logging_config import get_logger
 from .event_types import BaseEvent
 
@@ -54,7 +56,7 @@ class EventBus:  # pylint: disable=too-many-instance-attributes  # Reason: Event
         self._logger = get_logger("EventBus")
         # Task references for proper lifecycle management - Task 1.5
         self._active_tasks: set[asyncio.Task] = set()
-        self._shutdown_event: asyncio.Event = asyncio.Event()
+        self._shutdown_event: Event = Event()
         self._main_loop: asyncio.AbstractEventLoop | None = None
         # Fix: Initialize on-demand rather than during __init__
         self._processing_task: asyncio.Task | None = None

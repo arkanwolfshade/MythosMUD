@@ -13,6 +13,8 @@ import time
 import uuid
 from typing import Any
 
+from anyio import sleep
+
 from ..realtime.envelope import build_event
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -132,7 +134,7 @@ async def _handle_countdown_loop(player_id: uuid.UUID, connection_manager: Any, 
             return False
 
         await _send_countdown_message(player_id, remaining, connection_manager)
-        await asyncio.sleep(1.0)
+        await sleep(1.0)
 
     return True
 

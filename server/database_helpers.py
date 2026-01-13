@@ -5,6 +5,8 @@ This module provides module-level utility functions for database operations,
 including session management and initialization helpers.
 """
 
+# pylint: disable=unused-import  # Reason: Model imports required for SQLAlchemy side effects (model registration), not directly used
+
 from collections.abc import AsyncGenerator
 from pathlib import Path
 

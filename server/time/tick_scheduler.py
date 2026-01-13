@@ -12,6 +12,8 @@ import asyncio
 from collections.abc import Callable, Sequence
 from datetime import UTC, datetime, timedelta
 
+from anyio import Lock, sleep
+
 from server.app.task_registry import TaskRegistry
 from server.events.event_bus import EventBus
 from server.events.event_types import MythosHourTickEvent
@@ -50,7 +52,7 @@ class MythosTickScheduler:  # pylint: disable=too-many-instance-attributes  # Re
         self._task: asyncio.Task | None = None
         self._running = False
         self._last_emitted_hour: datetime | None = None
-        self._lock = asyncio.Lock()
+        self._lock = Lock()
 
     async def start(self) -> None:
         """Register the scheduler loop with the task registry."""
@@ -104,7 +106,7 @@ class MythosTickScheduler:  # pylint: disable=too-many-instance-attributes  # Re
         """Sleep until the next Mythos hour boundary, respecting compression ratio."""
 
         if self._last_emitted_hour is None:
-            await asyncio.sleep(self.MIN_SLEEP_SECONDS)
+            await sleep(self.MIN_SLEEP_SECONDS)
             return
 
         target_hour = self._last_emitted_hour + timedelta(hours=1)
@@ -117,7 +119,7 @@ class MythosTickScheduler:  # pylint: disable=too-many-instance-attributes  # Re
         elif sleep_seconds > self.MAX_SLEEP_SECONDS:
             sleep_seconds = self.MAX_SLEEP_SECONDS
 
-        await asyncio.sleep(sleep_seconds)
+        await sleep(sleep_seconds)
 
     def _publish_tick(self, mythos_hour: datetime) -> None:
         """Publish the hourly tick event to the EventBus."""

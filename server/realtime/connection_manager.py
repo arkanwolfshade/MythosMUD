@@ -13,6 +13,7 @@ import time
 import uuid
 from typing import Any
 
+from anyio import Lock
 from fastapi import WebSocket
 
 from ..models import Player
@@ -179,10 +180,10 @@ class ConnectionManager:
         self.last_active_update_times: dict[uuid.UUID, float] = {}
         # Track players currently being disconnected to prevent duplicate events
         self.disconnecting_players: set[uuid.UUID] = set()
-        self.disconnect_lock = asyncio.Lock()
+        self.disconnect_lock = Lock()
         # Track players whose disconnect has already been processed
         self.processed_disconnects: set[uuid.UUID] = set()
-        self.processed_disconnect_lock = asyncio.Lock()
+        self.processed_disconnect_lock = Lock()
         # Track players in grace period after unintentional disconnect
         self.grace_period_players: dict[uuid.UUID, asyncio.Task] = {}
         # Track players in login grace period (10-second immunity after login)

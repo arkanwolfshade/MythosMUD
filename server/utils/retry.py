@@ -13,6 +13,8 @@ from collections.abc import Callable
 from functools import wraps
 from typing import Any, TypeVar
 
+from anyio import sleep
+
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -135,7 +137,7 @@ def _create_async_wrapper[F: Callable[..., Any]](  # pylint: disable=too-many-ar
 
                 delay = _calculate_retry_delay(attempt, initial_delay, max_delay, exponential_base)
                 _log_retry_attempt(func.__name__, attempt, max_attempts, delay, e)
-                await asyncio.sleep(delay)
+                await sleep(delay)
 
         if last_error:
             raise last_error

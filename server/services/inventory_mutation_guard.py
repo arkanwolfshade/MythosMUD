@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import asyncio
 import inspect
 import threading
 from collections import OrderedDict
@@ -11,6 +10,8 @@ from contextlib import asynccontextmanager, contextmanager
 from dataclasses import dataclass, field
 from time import monotonic
 from typing import cast
+
+from anyio import Lock
 
 from server.middleware.metrics_collector import metrics_collector
 from server.monitoring.monitoring_dashboard import get_monitoring_dashboard
@@ -39,13 +40,13 @@ class _PlayerGuardState:
 class _AsyncPlayerGuardState:
     """Internal state tracking per-player mutation metadata for async contexts."""
 
-    lock: asyncio.Lock | None = None
+    lock: Lock | None = None
     recent_tokens: OrderedDict[str, float] = field(default_factory=OrderedDict)
 
-    def get_lock(self) -> asyncio.Lock:
+    def get_lock(self) -> Lock:
         """Get or create the async lock (lazy initialization)."""
         if self.lock is None:
-            self.lock = asyncio.Lock()
+            self.lock = Lock()
         return self.lock
 
 
@@ -67,14 +68,14 @@ class InventoryMutationGuard:
         self._token_ttl = token_ttl_seconds
         self._max_tokens = max_tokens
         self._global_lock = threading.Lock()
-        self._async_global_lock: asyncio.Lock | None = None
+        self._async_global_lock: Lock | None = None
         self._states: dict[str, _PlayerGuardState] = {}
         self._async_states: dict[str, _AsyncPlayerGuardState] = {}
 
-    def _get_async_global_lock(self) -> asyncio.Lock:
+    def _get_async_global_lock(self) -> Lock:
         """Get or create the async global lock (lazy initialization)."""
         if self._async_global_lock is None:
-            self._async_global_lock = asyncio.Lock()
+            self._async_global_lock = Lock()
         return self._async_global_lock
 
     @contextmanager

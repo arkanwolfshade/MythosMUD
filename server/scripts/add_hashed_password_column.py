@@ -6,11 +6,11 @@ This script adds the missing hashed_password column required by FastAPI Users
 to the PostgreSQL database.
 """
 
-import asyncio
 import os
 import sys
 from pathlib import Path
 
+from anyio import run
 from dotenv import load_dotenv
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine
@@ -167,4 +167,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    run(main)

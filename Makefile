@@ -46,7 +46,6 @@ help:
 	@echo "Codacy Tools (Python):"
 	@echo "  bandit          - Python security linter"
 	@echo "  pylint         - Python code quality linter"
-	@echo "  ruff           - Python linter/formatter (included in lint)"
 	@echo "  sqlfluff       - SQL linting and formatting"
 	@echo "  sqlint         - SQL linting"
 	@echo ""

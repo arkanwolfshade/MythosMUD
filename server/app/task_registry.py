@@ -12,6 +12,8 @@ import asyncio
 from collections.abc import Coroutine
 from typing import Any
 
+from anyio import Event
+
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger("server.task_registry")
@@ -57,7 +59,7 @@ class TaskRegistry:
         self._task_names: dict[str, asyncio.Task[Any]] = {}  # For name-based lookup
         self._shutdown_timeout: float = 5.0  # Default timeout for graceful shutdown
         self._lifecycle_tasks: set[asyncio.Task[Any]] = set()  # Critical system tasks
-        self._shutdown_semaphore = asyncio.Event()
+        self._shutdown_semaphore = Event()
         self._shutdown_in_progress = False
 
         logger.info("TaskRegistry initialized - it is watched by eyes of unmeaning")
@@ -316,7 +318,7 @@ class TaskRegistry:
             self._cleanup_registry_collections()
 
         self._shutdown_in_progress = False
-        self._shutdown_semaphore.clear()
+        self._shutdown_semaphore = Event()  # anyio.Event doesn't have clear(), create new instance
 
         full_success = not self._active_tasks
         if not full_success:

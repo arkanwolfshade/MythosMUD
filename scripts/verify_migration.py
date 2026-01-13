@@ -8,12 +8,12 @@ Checks:
 4. Data integrity checks
 """
 
-import asyncio
 import json
 import os
 import sys
 
 import asyncpg
+from anyio import run
 
 # Database connection parameters
 # WARNING: In production, always use environment variables for passwords
@@ -404,4 +404,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    sys.exit(asyncio.run(main()))
+    sys.exit(run(main))

@@ -9,6 +9,7 @@ import datetime
 import uuid
 from typing import TYPE_CHECKING
 
+from anyio import sleep
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -533,7 +534,7 @@ async def game_tick_loop(app: FastAPI):
                 await broadcast_tick_event(app, tick_count)
 
             # Sleep for tick interval
-            await asyncio.sleep(tick_interval)
+            await sleep(tick_interval)
             tick_count += 1
         except asyncio.CancelledError:
             logger.info("Game tick loop cancelled")
@@ -541,7 +542,7 @@ async def game_tick_loop(app: FastAPI):
         except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
             logger.error("Error in game tick loop", tick_count=tick_count, error=str(e), exc_info=True)
             try:
-                await asyncio.sleep(tick_interval)
+                await sleep(tick_interval)
             except asyncio.CancelledError:
                 logger.info("Game tick loop cancelled during error recovery")
                 break

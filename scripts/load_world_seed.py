@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """Load world seed data (rooms, zones, zone configs, holidays, schedules, emotes) into PostgreSQL database."""
 
-import asyncio
 import os
 import sys
 from pathlib import Path
 
 import asyncpg
+from anyio import run
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -233,4 +233,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    run(main)

@@ -12,6 +12,8 @@ proper periodic investigation prevents computational entropy accumulating beyond
 import asyncio
 from datetime import UTC, datetime
 
+from anyio import sleep
+
 from ..structured_logging.enhanced_logging_config import get_logger
 from .memory_cleanup_service import create_memory_cleanup_monitor
 from .tracked_task_manager import get_global_tracked_manager
@@ -92,7 +94,7 @@ class PeriodicOrphanAuditor:  # pylint: disable=too-many-instance-attributes  # 
             while True:
                 try:
                     await self._do_full_cleanup_audit()
-                    await asyncio.sleep(self.check_interval)
+                    await sleep(self.check_interval)
 
                 except (asyncio.CancelledError, KeyboardInterrupt):
                     logger.info("Orphan auditing traversal cancelled by feedback loop programming")
