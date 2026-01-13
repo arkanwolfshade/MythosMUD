@@ -5,6 +5,8 @@ This module handles formatting and displaying validation results,
 with special consideration for dimensional anomalies and zone transitions.
 """
 
+import click
+
 
 class Reporter:
     """
@@ -20,34 +22,34 @@ class Reporter:
         """
         self.use_colors = use_colors
 
-    def print_header(self, title: str = "Room Validator v1.0"):
+    def print_header(self, title: str = "Room Validator v1.0") -> None:
         """Print validator header."""
-        print(f"\n🔍 {title}")
-        print("=" * 40)
+        click.echo(f"\n🔍 {title}")
+        click.echo("=" * 40)
 
-    def print_room_header(self, room_id: str):
+    def print_room_header(self, room_id: str) -> None:
         """Print room header with ID."""
-        print(f"\n🏠 {room_id}")
+        click.echo(f"\n🏠 {room_id}")
 
-    def print_error(self, message: str):
+    def print_error(self, message: str) -> None:
         """Print error message."""
-        print(f"❌ {message}")
+        click.secho(f"❌ {message}", fg="red", err=True)
 
-    def print_warning(self, message: str):
+    def print_warning(self, message: str) -> None:
         """Print warning message."""
-        print(f"⚠️  {message}")
+        click.secho(f"⚠️  {message}", fg="yellow", err=True)
 
-    def print_success(self, message: str):
+    def print_success(self, message: str) -> None:
         """Print success message."""
-        print(f"✅ {message}")
+        click.secho(f"✅ {message}", fg="green")
 
-    def print_progress(self, message: str):
+    def print_progress(self, message: str) -> None:
         """Print progress message."""
-        print(f"🔄 {message}")
+        click.echo(f"🔄 {message}")
 
-    def print_suggestion(self, message: str):
+    def print_suggestion(self, message: str) -> None:
         """Print suggestion."""
-        print(f"   💡 Suggestion: {message}")
+        click.echo(f"   💡 Suggestion: {message}")
 
     def print_bidirectional_errors(
         self, missing_returns: list[tuple[str, str, str, str, bool]], room_database: dict[str, dict]
@@ -86,16 +88,16 @@ class Reporter:
             self.print_room_header(file_path)
             self.print_error(f"Parse Error: {error}")
 
-    def print_zone_discovery(self, zones: list[str]):
+    def print_zone_discovery(self, zones: list[str]) -> None:
         """Print discovered zones."""
-        print(f"\n📍 Discovered {len(zones)} zones:")
+        click.echo(f"\n📍 Discovered {len(zones)} zones:")
         for zone in zones:
-            print(f"  - {zone}")
+            click.echo(f"  - {zone}")
 
-    def print_validation_warnings(self, warnings: list[dict]):
+    def print_validation_warnings(self, warnings: list[dict]) -> None:
         """Print validation warnings."""
         if warnings:
-            print("\n⚠️  WARNINGS:")
+            click.echo("\n⚠️  WARNINGS:")
             for warning in warnings:
                 self.print_warning(warning.get("message", "Unknown warning"))
 
@@ -119,10 +121,10 @@ class Reporter:
 
         return f"{colors.get(color, '')}{text}{colors['reset']}"
 
-    def print_validation_errors(self, errors: list[dict]):
+    def print_validation_errors(self, errors: list[dict]) -> None:
         """Print validation errors."""
         if errors:
-            print("\n❌ Errors:")
+            click.echo("\n❌ Errors:")
             for error in errors:
                 error_msg = self.format_error(
                     error.get("type", "ERROR"),
@@ -138,14 +140,14 @@ class Reporter:
 
         return json.dumps({"stats": stats, "errors": errors, "warnings": warnings}, indent=2)
 
-    def print_summary(self, stats: dict):
+    def print_summary(self, stats: dict) -> None:
         """Print validation summary with statistics."""
-        print("\n=== Validation Summary ===")
-        print(f"Zones: {stats.get('zones', 0)}")
-        print(f"Subzones: {stats.get('subzones', 0)} (configured: {stats.get('config_subzones', 0)})")
-        print(f"Rooms: {stats.get('rooms', 0)}")
-        print(f"Errors: {stats.get('errors', 0)}")
-        print(f"Warnings: {stats.get('warnings', 0)}")
+        click.echo("\n=== Validation Summary ===")
+        click.echo(f"Zones: {stats.get('zones', 0)}")
+        click.echo(f"Subzones: {stats.get('subzones', 0)} (configured: {stats.get('config_subzones', 0)})")
+        click.echo(f"Rooms: {stats.get('rooms', 0)}")
+        click.echo(f"Errors: {stats.get('errors', 0)}")
+        click.echo(f"Warnings: {stats.get('warnings', 0)}")
 
         if stats.get("success", False):
             self.print_success("All validations passed!")

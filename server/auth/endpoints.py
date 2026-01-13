@@ -55,13 +55,19 @@ class UserCreate(BaseModel):
     invite_code: str | None = None
     email: str | None = None
 
-    # Add password validation to reject empty passwords
+    # Add password validation to reject empty passwords and enforce length limits
     @field_validator("password")
     @classmethod
-    def validate_password_not_empty(cls, v: str) -> str:
-        """Validate that password is not empty."""
+    def validate_password(cls, v: str) -> str:
+        """Validate password length and content."""
         if not v or not v.strip():
             raise ValueError("Password cannot be empty")
+        if len(v) < 8:
+            raise ValueError("Password must be at least 8 characters long")
+        # Enforce maximum length to prevent DoS attacks (matches argon2_utils.py)
+        MAX_PASSWORD_LENGTH = 1024
+        if len(v) > MAX_PASSWORD_LENGTH:
+            raise ValueError(f"Password must not exceed {MAX_PASSWORD_LENGTH} characters")
         return v
 
 

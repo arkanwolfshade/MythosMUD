@@ -26,7 +26,8 @@ class UserCreate(UserBase):
 
     __slots__ = ()  # Performance optimization
 
-    password: str = Field(..., min_length=8, description="User's password")
+    # Maximum length matches argon2_utils.py to prevent DoS attacks
+    password: str = Field(..., min_length=8, max_length=1024, description="User's password")
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -72,7 +73,8 @@ class UserUpdate(BaseModel):
     __slots__ = ()  # Performance optimization
 
     username: str | None = Field(None, description="User's username")
-    password: str | None = Field(None, min_length=8, description="User's password")
+    # Maximum length matches argon2_utils.py to prevent DoS attacks
+    password: str | None = Field(None, min_length=8, max_length=1024, description="User's password")
     is_active: bool | None = Field(None, description="Whether user is active")
     is_superuser: bool | None = Field(None, description="Whether user is superuser")
 

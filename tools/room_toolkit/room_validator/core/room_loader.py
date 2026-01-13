@@ -232,7 +232,9 @@ class RoomLoader:
             error_msg = f"Invalid JSON: {e}"
             self.parsing_errors.append((str(file_path), error_msg))
             return None
-        except Exception as e:
+        except (OSError, ValueError) as e:
+            # OSError covers FileNotFoundError, PermissionError, and other I/O errors
+            # ValueError covers validation errors from _validate_room_structure and _validate_required_fields
             error_msg = f"Error loading room: {e}"
             self.parsing_errors.append((str(file_path), error_msg))
             return None
@@ -252,7 +254,9 @@ class RoomLoader:
         json_files = self.discover_room_files(str(search_path))
 
         if not json_files:
-            print(f"⚠️  No JSON files found in {search_path}")
+            import click
+
+            click.secho(f"⚠️  No JSON files found in {search_path}", fg="yellow", err=True)
             return {}
 
         # Clear previous data
@@ -466,7 +470,9 @@ class RoomLoader:
             error_msg = f"Invalid JSON: {e}"
             self.parsing_errors.append((str(file_path), error_msg))
             return None
-        except Exception as e:
+        except (OSError, ValueError) as e:
+            # OSError covers FileNotFoundError, PermissionError, and other I/O errors
+            # ValueError covers validation errors from the isinstance check
             error_msg = f"Error loading config: {e}"
             self.parsing_errors.append((str(file_path), error_msg))
             return None
