@@ -195,6 +195,41 @@ class HolidayService:
                 entries.append(entry)
         return entries
 
+    def get_serialized_active_holidays(self, mythos_dt: datetime) -> list[HolidayEntry]:
+        """
+        Get active holidays and serialize them for API responses.
+
+        This method encapsulates the logic for refreshing active holidays and
+        ensuring they are properly serialized, centralizing business logic
+        that was previously in the API endpoint.
+
+        Args:
+            mythos_dt: Current Mythos datetime
+
+        Returns:
+            list[HolidayEntry]: Serialized active holiday entries
+        """
+        active_entries = self.refresh_active(mythos_dt)
+        # HolidayEntry objects are already Pydantic models, so they serialize directly
+        return active_entries
+
+    def get_serialized_upcoming_holidays(self, count: int = 3) -> list[HolidayEntry]:
+        """
+        Get upcoming holidays and serialize them for API responses.
+
+        This method encapsulates the logic for retrieving upcoming holidays,
+        centralizing business logic that was previously in the API endpoint.
+
+        Args:
+            count: Number of upcoming holidays to retrieve
+
+        Returns:
+            list[HolidayEntry]: Serialized upcoming holiday entries
+        """
+        upcoming_entries = self.get_upcoming_holidays(count)
+        # HolidayEntry objects are already Pydantic models, so they serialize directly
+        return upcoming_entries
+
     def get_active_holiday_names(self) -> list[str]:
         """Convenience helper for formatted admin output."""
 

@@ -12,7 +12,7 @@ AI: Includes health monitoring, pattern validation, and dynamic registration.
 """
 
 import time
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
@@ -26,6 +26,9 @@ from ...services.nats_subject_manager import (
     nats_subject_manager,
 )
 from ...structured_logging.enhanced_logging_config import get_logger
+
+if TYPE_CHECKING:
+    from ...models.user import User
 
 logger = get_logger("api.admin.subject_controller")
 
@@ -99,7 +102,7 @@ def get_subject_manager_dependency() -> NATSSubjectManager:
     return nats_subject_manager
 
 
-def require_admin_user(current_user: Any = Depends(get_current_user)) -> Any:
+def require_admin_user(current_user: "User" = Depends(get_current_user)) -> "User":
     """
     Dependency to require admin permissions.
 
@@ -132,7 +135,7 @@ def require_admin_user(current_user: Any = Depends(get_current_user)) -> Any:
 @router.get("/health", response_model=SubjectStatisticsResponse)
 async def get_subject_statistics(
     subject_manager: NATSSubjectManager = Depends(get_subject_manager_dependency),
-) -> dict[str, Any]:
+) -> SubjectStatisticsResponse:
     """
     Get NATS subject management statistics and health status.
 
@@ -163,13 +166,13 @@ async def get_subject_statistics(
             metrics_available=metrics is not None,
         )
 
-        return {
-            "status": "healthy",
-            "metrics": metrics,
-            "patterns_registered": patterns_count,
-            "cache_enabled": cache_enabled,
-            "strict_validation": strict_validation,
-        }
+        return SubjectStatisticsResponse(
+            status="healthy",
+            metrics=metrics,
+            patterns_registered=patterns_count,
+            cache_enabled=cache_enabled,
+            strict_validation=strict_validation,
+        )
 
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Statistics retrieval errors unpredictable, must create error context
         logger.error("Error retrieving subject statistics", error=str(e), error_type=type(e).__name__)
@@ -183,9 +186,9 @@ async def get_subject_statistics(
 @router.post("/validate", response_model=ValidateSubjectResponse)
 async def validate_subject(
     request: ValidateSubjectRequest,
-    current_user: Any = Depends(require_admin_user),
+    current_user: "User" = Depends(require_admin_user),
     subject_manager: NATSSubjectManager = Depends(get_subject_manager_dependency),
-) -> dict[str, Any]:
+) -> ValidateSubjectResponse:
     """
     Validate a NATS subject against registered patterns.
 
@@ -226,12 +229,12 @@ async def validate_subject(
         if not is_valid:
             details = "Subject does not match any registered patterns"
 
-        return {
-            "subject": request.subject,
-            "is_valid": is_valid,
-            "validation_time_ms": duration * 1000,
-            "details": details,
-        }
+        return ValidateSubjectResponse(
+            subject=request.subject,
+            is_valid=is_valid,
+            validation_time_ms=duration * 1000,
+            details=details,
+        )
 
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Subject validation errors unpredictable, must create error context
         logger.error(
@@ -252,9 +255,9 @@ async def validate_subject(
 
 @router.get("/patterns", response_model=PatternsResponse)
 async def get_patterns(
-    current_user: Any = Depends(require_admin_user),
+    current_user: "User" = Depends(require_admin_user),
     subject_manager: NATSSubjectManager = Depends(get_subject_manager_dependency),
-) -> dict[str, Any]:
+) -> PatternsResponse:
     """
     Get all registered subject patterns.
 
@@ -280,7 +283,7 @@ async def get_patterns(
 
         logger.info("Patterns requested", pattern_count=len(patterns), user_id=current_user.id)
 
-        return {"patterns": patterns, "total_count": len(patterns)}
+        return PatternsResponse(patterns=patterns, total_count=len(patterns))
 
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Pattern retrieval errors unpredictable, must create error context
         logger.error("Error retrieving patterns", error=str(e), error_type=type(e).__name__, user_id=current_user.id)
@@ -294,9 +297,9 @@ async def get_patterns(
 @router.post("/patterns", response_model=RegisterPatternResponse)
 async def register_pattern(
     request: RegisterPatternRequest,
-    current_user: Any = Depends(require_admin_user),
+    current_user: "User" = Depends(require_admin_user),
     subject_manager: NATSSubjectManager = Depends(get_subject_manager_dependency),
-) -> dict[str, Any]:
+) -> RegisterPatternResponse:
     """
     Register a new subject pattern.
 
@@ -334,7 +337,9 @@ async def register_pattern(
             user_id=current_user.id,
         )
 
-        return {"success": True, "pattern_name": request.name, "message": "Pattern registered successfully"}
+        return RegisterPatternResponse(
+            success=True, pattern_name=request.name, message="Pattern registered successfully"
+        )
 
     except (InvalidPatternError, PatternNotFoundError) as e:
         logger.warning(

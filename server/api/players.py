@@ -9,10 +9,9 @@ This module handles basic player CRUD operations and multi-character management.
 import uuid
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from fastapi import Request as FastAPIRequest
 
-from ..async_persistence import get_async_persistence
 from ..auth.users import get_current_active_user, get_current_user
 from ..dependencies import PlayerServiceDep, StatsGeneratorDep
 from ..error_types import ErrorMessages
@@ -25,7 +24,13 @@ from ..realtime.login_grace_period import (
     is_player_in_login_grace_period,
     start_login_grace_period,
 )
-from ..schemas.player import PlayerRead
+from ..schemas.player import (
+    AvailableClassesResponse,
+    DeleteCharacterResponse,
+    LoginGracePeriodResponse,
+    MessageResponse,
+    PlayerRead,
+)
 from ..schemas.player_requests import SelectCharacterRequest
 from ..structured_logging.enhanced_logging_config import get_logger
 from .player_helpers import create_error_context
@@ -56,11 +61,11 @@ async def create_player(
     starting_room_id: str = "earth_arkhamcity_sanitarium_room_foyer_001",
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
-) -> dict[str, Any]:
+) -> PlayerRead:
     """Create a new player character."""
     try:
         player = await player_service.create_player(name, profession_id=0, starting_room_id=starting_room_id)
-        return player.model_dump()
+        return player
     except ValidationError:
         context = create_error_context(request, current_user, player_name=name, starting_room_id=starting_room_id)
         raise LoggedHTTPException(status_code=400, detail=ErrorMessages.INVALID_INPUT, context=context) from None
@@ -71,16 +76,16 @@ async def list_players(
     _request: FastAPIRequest,
     _current_user: User | None = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
-) -> list[dict[str, Any]]:
+) -> list[PlayerRead]:
     """Get a list of all players."""
     # Note: _current_user is optional for CORS testing, but endpoint requires auth for actual use
     if _current_user is None:
-        raise HTTPException(status_code=401, detail="Authentication required")
+        context = create_error_context(_request, _current_user, operation="list_players")
+        raise LoggedHTTPException(status_code=401, detail="Authentication required", context=context)
     result = await player_service.list_players()
     if not isinstance(result, list):
         raise RuntimeError(f"Expected list from player_service.list_players(), got {type(result).__name__}")
-    # Convert all PlayerRead objects to dicts
-    return [player.model_dump() for player in result]
+    return result
 
 
 def get_class_description(class_name: str) -> str:
@@ -96,11 +101,11 @@ def get_class_description(class_name: str) -> str:
     return descriptions.get(class_name, "A mysterious character with unknown capabilities.")
 
 
-@player_router.get("/available-classes")
+@player_router.get("/available-classes", response_model=AvailableClassesResponse)
 async def get_available_classes(
     _current_user: User = Depends(get_current_user),
     stats_generator: StatsGenerator = StatsGeneratorDep,
-) -> dict[str, Any]:
+) -> AvailableClassesResponse:
     """
     Get information about all available character classes and their prerequisites.
     """
@@ -111,7 +116,9 @@ async def get_available_classes(
             "description": get_class_description(class_name),
         }
 
-    return {"classes": class_info, "stat_range": {"min": stats_generator.MIN_STAT, "max": stats_generator.MAX_STAT}}
+    return AvailableClassesResponse(
+        classes=class_info, stat_range={"min": stats_generator.MIN_STAT, "max": stats_generator.MAX_STAT}
+    )
 
 
 @player_router.get("/characters", response_model=list[PlayerRead])
@@ -147,14 +154,14 @@ async def get_player(
     request: FastAPIRequest,
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
-) -> dict[str, Any]:
+) -> PlayerRead:
     """Get a specific player by ID."""
     player = await player_service.get_player_by_id(player_id)
     if not player:
         context = create_error_context(request, current_user, requested_player_id=player_id)
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
 
-    return player.model_dump()
+    return player
 
 
 @player_router.get("/name/{player_name}", response_model=PlayerRead)
@@ -163,23 +170,23 @@ async def get_player_by_name(
     request: FastAPIRequest,
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
-) -> dict[str, Any]:
+) -> PlayerRead:
     """Get a specific player by name."""
     player = await player_service.get_player_by_name(player_name)
     if not player:
         context = create_error_context(request, current_user, requested_player_name=player_name)
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
 
-    return player.model_dump()
+    return player
 
 
-@player_router.delete("/{player_id}")
+@player_router.delete("/{player_id}", response_model=MessageResponse)
 async def delete_player(
     player_id: uuid.UUID,
     request: FastAPIRequest,
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
-) -> dict[str, str]:
+) -> MessageResponse:
     """Delete a player character."""
     try:
         success, message = await player_service.delete_player(player_id)
@@ -187,19 +194,19 @@ async def delete_player(
             context = create_error_context(request, current_user, requested_player_id=player_id)
             raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
 
-        return {"message": message}
+        return MessageResponse(message=message)
     except ValidationError as e:
         context = create_error_context(request, current_user, requested_player_id=player_id)
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
-@player_router.delete("/characters/{character_id}")
+@player_router.delete("/characters/{character_id}", response_model=DeleteCharacterResponse)
 async def delete_character(
     character_id: str,
     request: FastAPIRequest,
     current_user: User = Depends(get_current_active_user),
     player_service: PlayerService = PlayerServiceDep,
-) -> dict[str, Any]:
+) -> DeleteCharacterResponse:
     """
     Soft delete a character.
 
@@ -232,7 +239,7 @@ async def delete_character(
             context = create_error_context(request, current_user, operation="delete_character")
             raise LoggedHTTPException(status_code=404, detail=message, context=context)
 
-        return {"success": True, "message": message}
+        return DeleteCharacterResponse(success=True, message=message)
     except LoggedHTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Character deletion errors unpredictable, must create error context
@@ -269,6 +276,9 @@ async def _validate_character_access(
     """
     Validate character exists, belongs to user, and is not deleted.
 
+    Delegates to PlayerService.validate_character_access() for business logic,
+    then converts validation result to appropriate HTTP exceptions.
+
     Args:
         character_uuid: Character UUID to validate
         current_user: Current user object
@@ -281,32 +291,20 @@ async def _validate_character_access(
     Raises:
         LoggedHTTPException: If character not found, deleted, or doesn't belong to user
     """
-    # Get character from player service
-    character = await player_service.get_player_by_id(character_uuid)
-    if not character:
-        context = create_error_context(request, current_user, operation="select_character")
-        raise LoggedHTTPException(status_code=404, detail="Character not found", context=context)
+    is_valid, character, error_message = await player_service.validate_character_access(character_uuid, current_user.id)
 
-    # Get the actual Player object to check is_deleted and user_id
-    async_persistence = get_async_persistence()
-    if not async_persistence:
+    if not is_valid:
         context = create_error_context(request, current_user, operation="select_character")
-        raise LoggedHTTPException(status_code=500, detail="Persistence layer not available", context=context)
-
-    player = await async_persistence.get_player_by_id(character_uuid)
-    if not player:
-        context = create_error_context(request, current_user, operation="select_character")
-        raise LoggedHTTPException(status_code=404, detail="Character not found", context=context)
-
-    # Validate character belongs to user
-    if str(player.user_id) != str(current_user.id):
-        context = create_error_context(request, current_user, operation="select_character")
-        raise LoggedHTTPException(status_code=403, detail="Character does not belong to user", context=context)
-
-    # Validate character is not deleted
-    if player.is_deleted:
-        context = create_error_context(request, current_user, operation="select_character")
-        raise LoggedHTTPException(status_code=404, detail="Character has been deleted", context=context)
+        # Determine appropriate status code based on error message
+        if "not found" in error_message.lower():
+            status_code = 404
+        elif "does not belong" in error_message.lower():
+            status_code = 403
+        elif "deleted" in error_message.lower():
+            status_code = 404
+        else:
+            status_code = 400
+        raise LoggedHTTPException(status_code=status_code, detail=error_message, context=context)
 
     return character
 
@@ -327,7 +325,9 @@ def _get_connection_manager(request: FastAPIRequest) -> Any:
     return None
 
 
-async def _disconnect_other_characters(character_uuid: uuid.UUID, current_user: User, connection_manager: Any) -> None:
+async def _disconnect_other_characters(
+    character_uuid: uuid.UUID, current_user: User, connection_manager: Any, player_service: PlayerService
+) -> None:
     """
     Disconnect all other active characters for the user.
 
@@ -337,23 +337,20 @@ async def _disconnect_other_characters(character_uuid: uuid.UUID, current_user: 
         character_uuid: UUID of the character being selected
         current_user: Current user object
         connection_manager: Connection manager instance
+        player_service: Player service instance for getting user characters
     """
     if not connection_manager:
         return
 
     try:
-        async_persistence = get_async_persistence()
-        if not async_persistence:
-            return
-
-        # Get all active characters for this user
-        active_characters = await async_persistence.get_active_players_by_user_id(str(current_user.id))
+        # Get all active characters for this user using PlayerService
+        active_characters = await player_service.get_user_characters(current_user.id)
 
         # Disconnect connections for other characters
         disconnected_count = 0
         for other_character in active_characters:
-            if str(other_character.player_id) != str(character_uuid):
-                other_character_id = uuid.UUID(str(other_character.player_id))
+            if str(other_character.id) != str(character_uuid):
+                other_character_id = uuid.UUID(str(other_character.id))
                 if other_character_id in connection_manager.player_websockets:
                     try:
                         await connection_manager.disconnect_websocket(other_character_id, is_force_disconnect=True)
@@ -361,7 +358,7 @@ async def _disconnect_other_characters(character_uuid: uuid.UUID, current_user: 
                         logger.info(
                             "Disconnected existing character connection for user",
                             user_id=str(current_user.id),
-                            disconnected_character_id=str(other_character.player_id),
+                            disconnected_character_id=str(other_character.id),
                             disconnected_character_name=other_character.name,
                             selected_character_id=str(character_uuid),
                         )
@@ -376,7 +373,7 @@ async def _disconnect_other_characters(character_uuid: uuid.UUID, current_user: 
                         logger.warning(
                             "Failed to disconnect character connection",
                             user_id=str(current_user.id),
-                            character_id=str(other_character.player_id),
+                            character_id=str(other_character.id),
                             error=str(disconnect_error),
                         )
 
@@ -396,13 +393,13 @@ async def _disconnect_other_characters(character_uuid: uuid.UUID, current_user: 
         )
 
 
-@player_router.post("/select-character")
+@player_router.post("/select-character", response_model=PlayerRead)
 async def select_character(
     request_data: SelectCharacterRequest,
     request: FastAPIRequest,
     current_user: User = Depends(get_current_active_user),
     player_service: PlayerService = PlayerServiceDep,
-) -> dict[str, Any]:
+) -> PlayerRead:
     """
     Select a character to play.
 
@@ -429,9 +426,9 @@ async def select_character(
         # SINGLE-CHARACTER LOGIN: Disconnect all other characters for this user
         connection_manager = _get_connection_manager(request)
         if connection_manager:
-            await _disconnect_other_characters(character_uuid, current_user, connection_manager)
+            await _disconnect_other_characters(character_uuid, current_user, connection_manager, player_service)
 
-        return character.model_dump()
+        return character
     except LoggedHTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Character selection errors unpredictable, must create error context
@@ -445,36 +442,43 @@ async def select_character(
         raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context) from e
 
 
-async def _validate_player_for_grace_period(player_id: uuid.UUID, current_user: User, request: FastAPIRequest) -> Any:
+async def _validate_player_for_grace_period(
+    player_id: uuid.UUID, current_user: User, request: FastAPIRequest, player_service: PlayerService
+) -> Any:
     """
     Validate player exists and belongs to user for grace period operations.
+
+    Delegates to PlayerService.validate_character_access() for business logic,
+    then converts validation result to appropriate HTTP exceptions.
 
     Args:
         player_id: Player UUID to validate
         current_user: Current user object
         request: FastAPI request object
+        player_service: Player service instance
 
     Returns:
-        Player object
+        PlayerRead object
 
     Raises:
         LoggedHTTPException: If player not found, persistence unavailable, or doesn't belong to user
     """
-    async_persistence = get_async_persistence()
-    if not async_persistence:
-        context = create_error_context(request, current_user, operation="start_login_grace_period")
-        raise LoggedHTTPException(status_code=500, detail="Persistence layer not available", context=context)
+    is_valid, character, error_message = await player_service.validate_character_access(player_id, current_user.id)
 
-    player = await async_persistence.get_player_by_id(player_id)
-    if not player:
+    if not is_valid:
         context = create_error_context(request, current_user, operation="start_login_grace_period")
-        raise LoggedHTTPException(status_code=404, detail="Character not found", context=context)
+        # Determine appropriate status code based on error message
+        if "not found" in error_message.lower():
+            status_code = 404
+        elif "does not belong" in error_message.lower():
+            status_code = 403
+        elif "deleted" in error_message.lower():
+            status_code = 404
+        else:
+            status_code = 400
+        raise LoggedHTTPException(status_code=status_code, detail=error_message, context=context)
 
-    if str(player.user_id) != str(current_user.id):
-        context = create_error_context(request, current_user, operation="start_login_grace_period")
-        raise LoggedHTTPException(status_code=403, detail="Character does not belong to user", context=context)
-
-    return player
+    return character
 
 
 async def _end_combat_for_grace_period(player_id: uuid.UUID) -> None:
@@ -513,12 +517,13 @@ async def _end_combat_for_grace_period(player_id: uuid.UUID) -> None:
         )
 
 
-@player_router.post("/{player_id}/start-login-grace-period")
+@player_router.post("/{player_id}/start-login-grace-period", response_model=LoginGracePeriodResponse)
 async def start_login_grace_period_endpoint(
     player_id: uuid.UUID,
     request: FastAPIRequest,
     current_user: User = Depends(get_current_active_user),
-) -> dict[str, Any]:
+    player_service: PlayerService = PlayerServiceDep,
+) -> LoginGracePeriodResponse:
     """
     Start login grace period for a player after MOTD dismissal.
 
@@ -542,17 +547,17 @@ async def start_login_grace_period_endpoint(
             context = create_error_context(request, current_user, operation="start_login_grace_period")
             raise LoggedHTTPException(status_code=500, detail="Connection manager not available", context=context)
 
-        await _validate_player_for_grace_period(player_id, current_user, request)
+        await _validate_player_for_grace_period(player_id, current_user, request, player_service)
 
         # Check if already in grace period
         if is_player_in_login_grace_period(player_id, connection_manager):
             remaining = get_login_grace_period_remaining(player_id, connection_manager)
-            return {
-                "success": True,
-                "message": "Login grace period already active",
-                "grace_period_active": True,
-                "grace_period_remaining": remaining,
-            }
+            return LoginGracePeriodResponse(
+                success=True,
+                message="Login grace period already active",
+                grace_period_active=True,
+                grace_period_remaining=remaining,
+            )
 
         # Remove player from combat if they're in combat
         await _end_combat_for_grace_period(player_id)
@@ -562,12 +567,12 @@ async def start_login_grace_period_endpoint(
         remaining = get_login_grace_period_remaining(player_id, connection_manager)
         logger.info("Login grace period started", player_id=player_id, remaining=remaining)
 
-        return {
-            "success": True,
-            "message": "Login grace period started",
-            "grace_period_active": True,
-            "grace_period_remaining": remaining,
-        }
+        return LoginGracePeriodResponse(
+            success=True,
+            message="Login grace period started",
+            grace_period_active=True,
+            grace_period_remaining=remaining,
+        )
 
     except LoggedHTTPException:
         raise

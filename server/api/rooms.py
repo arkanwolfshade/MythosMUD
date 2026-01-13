@@ -6,24 +6,27 @@ room information retrieval and room state management.
 """
 
 import uuid
-from typing import Any
+from typing import TYPE_CHECKING
 
 from fastapi import APIRouter, Depends, Query, Request, status
 from pydantic import BaseModel, Field
-from sqlalchemy import bindparam, text
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..auth.users import get_current_user
 from ..database import get_async_session
-from ..dependencies import RoomServiceDep
+from ..dependencies import AsyncPersistenceDep, ExplorationServiceDep, RoomServiceDep
 from ..exceptions import LoggedHTTPException
 from ..game.room_service import RoomService
 from ..models.user import User
-
-# Removed: from ..persistence import get_persistence - now using async_persistence from request
+from ..schemas.room import RoomListResponse, RoomPositionUpdateResponse, RoomResponse
 from ..services.admin_auth_service import AdminAction, get_admin_auth_service
+from ..services.exploration_service import ExplorationService
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import create_context_from_request
+
+if TYPE_CHECKING:
+    from ..async_persistence import AsyncPersistenceLayer
 
 logger = get_logger(__name__)
 
@@ -87,7 +90,7 @@ async def _invalidate_room_cache(room_service: RoomService, room_id: str) -> Non
 
 # IMPORTANT: /list route must come BEFORE /{room_id} route
 # FastAPI matches routes in order, and /{room_id} would match /list otherwise
-@room_router.get("/list")
+@room_router.get("/list", response_model=RoomListResponse)
 async def list_rooms(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: API endpoint requires many query parameters and intermediate variables for room listing
     request: Request,
     plane: str = Query(..., description="Plane name (required)"),
@@ -98,7 +101,9 @@ async def list_rooms(  # pylint: disable=too-many-arguments,too-many-positional-
     current_user: User | None = Depends(get_current_user),
     session: AsyncSession = Depends(get_async_session),
     room_service: RoomService = RoomServiceDep,
-) -> dict[str, Any]:
+    persistence: "AsyncPersistenceLayer" = AsyncPersistenceDep,
+    exploration_service: ExplorationService = ExplorationServiceDep,
+) -> RoomListResponse:
     """
     List rooms filtered by plane, zone, and optionally sub_zone.
 
@@ -141,53 +146,18 @@ async def list_rooms(  # pylint: disable=too-many-arguments,too-many-positional-
                 )
                 # Skip filtering - admins see all rooms
             else:
-                try:
-                    # Get player from user
-                    persistence = request.app.state.persistence  # Now async_persistence
-                    user_id = str(current_user.id)
-                    player = await persistence.get_player_by_user_id(user_id)
+                # Get player from user
+                user_id = str(current_user.id)
+                player = await persistence.get_player_by_user_id(user_id)
 
-                    if player:
-                        # Get explored rooms for this player using ExplorationService from container
-                        container = request.app.state.container
-                        exploration_service = container.exploration_service
-                        player_id = uuid.UUID(str(player.player_id))
-                        explored_room_ids = await exploration_service.get_explored_rooms(player_id, session)
-
-                        # Convert explored room UUIDs to stable_ids for filtering
-                        # We need to look up stable_ids from room UUIDs
-                        if explored_room_ids:
-                            # Convert string UUIDs to UUID objects for proper PostgreSQL type handling
-                            room_uuid_list = [uuid.UUID(rid) for rid in explored_room_ids]
-                            # Use IN clause with expanding parameters for proper array handling
-                            # This avoids mixing parameter syntax with casting syntax that causes asyncpg errors
-                            lookup_query = text("SELECT stable_id FROM rooms WHERE id IN :room_ids").bindparams(
-                                bindparam("room_ids", expanding=True)
-                            )
-                            result = await session.execute(lookup_query, {"room_ids": room_uuid_list})
-                            explored_stable_ids = {row[0] for row in result.fetchall()}
-
-                            # Filter rooms to only include explored ones
-                            rooms = [room for room in rooms if room.get("id") in explored_stable_ids]
-
-                            logger.debug(
-                                "Filtered rooms by exploration",
-                                explored_count=len(explored_stable_ids),
-                                filtered_count=len(rooms),
-                            )
-                        else:
-                            # Player has explored no rooms - return empty list
-                            rooms = []
-                            logger.debug("Player has explored no rooms, returning empty list")
-                    else:
-                        logger.warning("Player not found for user, cannot filter by exploration", user_id=user_id)
-                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Exploration filter errors unpredictable, fallback to all rooms
-                    # Log error but don't fail the request - just return all rooms
-                    logger.warning(
-                        "Error filtering by explored rooms, returning all rooms",
-                        error=str(e),
-                        error_type=type(e).__name__,
+                if player:
+                    # Get explored rooms for this player using RoomService
+                    player_id = uuid.UUID(str(player.player_id))
+                    rooms = await room_service.filter_rooms_by_exploration(
+                        rooms, player_id, exploration_service, session
                     )
+                else:
+                    logger.warning("Player not found for user, cannot filter by exploration", user_id=user_id)
 
         logger.debug(
             "Room list returned",
@@ -199,13 +169,13 @@ async def list_rooms(  # pylint: disable=too-many-arguments,too-many-positional-
             is_admin=(current_user.is_admin or current_user.is_superuser) if current_user else False,
         )
 
-        return {
-            "rooms": rooms,
-            "total": len(rooms),
-            "plane": plane,
-            "zone": zone,
-            "sub_zone": sub_zone,
-        }
+        return RoomListResponse(
+            rooms=rooms,
+            total=len(rooms),
+            plane=plane,
+            zone=zone,
+            sub_zone=sub_zone,
+        )
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Room listing errors unpredictable, must handle gracefully
         logger.error(
             "Error listing rooms",
@@ -230,7 +200,7 @@ class RoomPositionUpdate(BaseModel):
     map_y: float = Field(..., description="Y coordinate for map position", ge=-10000, le=10000)
 
 
-@room_router.post("/{room_id}/position")
+@room_router.post("/{room_id}/position", response_model=RoomPositionUpdateResponse)
 async def update_room_position(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: API endpoint requires many parameters for room position updates
     room_id: str,
     position_data: RoomPositionUpdate,
@@ -238,7 +208,7 @@ async def update_room_position(  # pylint: disable=too-many-arguments,too-many-p
     current_user: User | None = Depends(get_current_user),
     session: AsyncSession = Depends(get_async_session),
     room_service: RoomService = RoomServiceDep,
-) -> dict[str, Any]:
+) -> RoomPositionUpdateResponse:
     """
     Update room map coordinates (admin only).
 
@@ -279,12 +249,12 @@ async def update_room_position(  # pylint: disable=too-many-arguments,too-many-p
         # Invalidate room cache
         await _invalidate_room_cache(room_service, room_id)
 
-        return {
-            "room_id": room_id,
-            "map_x": position_data.map_x,
-            "map_y": position_data.map_y,
-            "message": "Room position updated successfully",
-        }
+        return RoomPositionUpdateResponse(
+            room_id=room_id,
+            map_x=position_data.map_x,
+            map_y=position_data.map_y,
+            message="Room position updated successfully",
+        )
 
     except LoggedHTTPException:
         raise
@@ -305,12 +275,12 @@ async def update_room_position(  # pylint: disable=too-many-arguments,too-many-p
         ) from e
 
 
-@room_router.get("/{room_id}")
+@room_router.get("/{room_id}", response_model=RoomResponse)
 async def get_room(
     room_id: str,
     request: Request,
     room_service: RoomService = RoomServiceDep,
-) -> dict[str, Any]:
+) -> RoomResponse:
     """Get room information by room ID."""
     logger.debug("Room information requested", room_id=room_id)
 
@@ -324,4 +294,4 @@ async def get_room(
     logger.debug("Room information returned", room_id=room_id, room_name=room.get("name", "Unknown"))
     if not isinstance(room, dict):
         raise TypeError("room must be a dict")
-    return room
+    return RoomResponse(**room)

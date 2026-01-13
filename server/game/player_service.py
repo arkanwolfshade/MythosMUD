@@ -114,6 +114,30 @@ class PlayerService:
         # Convert to schema format
         return await self._convert_player_to_schema(player)
 
+    def get_default_starting_room(self, requested_room_id: str | None = None) -> str:
+        """
+        Get the default starting room for new characters.
+
+        Returns the requested room ID if provided, otherwise returns the configured
+        default starting room. Falls back to a hardcoded default if configuration is unavailable.
+
+        Args:
+            requested_room_id: Optional room ID from request, takes precedence over config
+
+        Returns:
+            str: Starting room ID to use
+        """
+        if requested_room_id:
+            return requested_room_id
+
+        try:
+            default_start_room = get_config().game.default_player_room
+            return default_start_room
+        except (ImportError, AttributeError, ValueError) as e:
+            logger.error("Error getting default start room config", error=str(e), error_type=type(e).__name__)
+            # Fallback to hardcoded default
+            return "earth_arkhamcity_northside_intersection_derby_high"
+
     async def create_player_with_stats(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Player creation requires many parameters for stats and configuration
         self,
         name: str,
@@ -520,6 +544,45 @@ class PlayerService:
         logger.debug("Getting user characters", user_id=user_id)
         players = await self.persistence.get_active_players_by_user_id(str(user_id))
         return [await self._convert_player_to_schema(player) for player in players]
+
+    async def validate_character_access(
+        self, character_id: uuid.UUID, user_id: uuid.UUID
+    ) -> tuple[bool, PlayerRead | None, str]:
+        """
+        Validate that a character exists, belongs to the user, and is not deleted.
+
+        Args:
+            character_id: Character UUID to validate
+            user_id: User UUID that should own the character
+
+        Returns:
+            Tuple of (is_valid, character, error_message)
+            - is_valid: True if character is valid and accessible
+            - character: PlayerRead object if valid, None otherwise
+            - error_message: Error message if validation failed, empty string if valid
+        """
+        logger.debug("Validating character access", character_id=character_id, user_id=user_id)
+
+        # Get character from player service
+        character = await self.get_player_by_id(character_id)
+        if not character:
+            return False, None, "Character not found"
+
+        # Get the actual Player object to check is_deleted and user_id
+        player = await self.persistence.get_player_by_id(character_id)
+        if not player:
+            return False, None, "Character not found"
+
+        # Validate character belongs to user
+        if str(player.user_id) != str(user_id):
+            return False, None, "Character does not belong to user"
+
+        # Validate character is not deleted
+        if player.is_deleted:
+            return False, None, "Character has been deleted"
+
+        logger.debug("Character access validated successfully", character_id=character_id, user_id=user_id)
+        return True, character, ""
 
     async def soft_delete_character(self, player_id: uuid.UUID, user_id: uuid.UUID) -> tuple[bool, str]:
         """

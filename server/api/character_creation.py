@@ -5,25 +5,69 @@ This module handles endpoints for rolling stats, creating characters,
 and validating character stats.
 """
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from fastapi import Depends, HTTPException, Request
 
 from ..auth.users import get_current_user
-from ..dependencies import PlayerServiceDep, StatsGeneratorDep
+from ..dependencies import PlayerServiceDep, ProfessionServiceDep, StatsGeneratorDep
 from ..error_types import ErrorMessages
-from ..exceptions import LoggedHTTPException, RateLimitError, create_error_context
+from ..exceptions import LoggedHTTPException, RateLimitError, ValidationError, create_error_context
 from ..game.player_service import PlayerService
+from ..game.profession_service import ProfessionService
 from ..game.stats_generator import StatsGenerator
 from ..models import Stats
 from ..models.user import User
+from ..schemas.character_creation import (
+    CreateCharacterResponse,
+    RollStatsResponse,
+    StatSummary,
+    ValidateStatsResponse,
+)
 from ..schemas.player_requests import CreateCharacterRequest, RollStatsRequest
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.rate_limiter import character_creation_limiter, stats_roll_limiter
 from .player_helpers import create_error_context as create_error_context_helper
 from .players import player_router
 
+if TYPE_CHECKING:
+    pass
+
 logger = get_logger(__name__)
+
+
+def _convert_stat_summary_to_stat_summary_model(stats: Stats, summary_dict: dict[str, Any]) -> StatSummary:
+    """
+    Convert get_stat_summary dict to StatSummary model format.
+
+    Args:
+        stats: Stats model instance
+        summary_dict: Dict returned from get_stat_summary
+
+    Returns:
+        StatSummary model instance
+    """
+    # Calculate highest and lowest stat values
+    stat_values = [
+        stats.strength or 50,
+        stats.dexterity or 50,
+        stats.constitution or 50,
+        stats.size or 50,
+        stats.intelligence or 50,
+        stats.power or 50,
+        stats.education or 50,
+        stats.charisma or 50,
+        stats.luck or 50,
+    ]
+    highest = max(stat_values)
+    lowest = min(stat_values)
+
+    return StatSummary(
+        total=summary_dict.get("total_points", 0),
+        average=summary_dict.get("average_stat", 0.0),
+        highest=highest,
+        lowest=lowest,
+    )
 
 
 def _check_shutdown_status(request: Request, current_user: User) -> None:
@@ -71,44 +115,36 @@ async def _roll_stats_with_profession(
     stats_generator: StatsGenerator,
     current_user: User,
     max_attempts: int,
+    profession_service: ProfessionService,
 ) -> dict[str, Any]:
-    """Roll stats using profession-based method."""
-    from ..async_persistence import get_async_persistence
+    """
+    Roll stats using profession-based method.
 
-    async_persistence = get_async_persistence()
-    if not async_persistence:
+    Delegates profession validation to ProfessionService.validate_and_get_profession()
+    to centralize business logic and improve reusability.
+    """
+    # Validate and get profession using ProfessionService
+    try:
+        # After None check, profession_id is guaranteed to be non-None
+        assert request_data.profession_id is not None, "profession_id should not be None for profession-based rolling"
+        profession_id: int = request_data.profession_id
+
+        profession = await profession_service.validate_and_get_profession(profession_id)
+    except ValidationError as e:
         context = create_error_context()
         if current_user:
             context.user_id = str(current_user.id)
         context.metadata["operation"] = "roll_stats"
-        context.metadata["profession_id"] = request_data.profession_id
-        raise LoggedHTTPException(status_code=500, detail="Persistence layer not available", context=context)
+        if request_data.profession_id:
+            context.metadata["profession_id"] = request_data.profession_id
+        # Convert ValidationError to appropriate HTTP status code
+        if "not found" in str(e).lower():
+            status_code = 404
+        else:
+            status_code = 400
+        raise LoggedHTTPException(status_code=status_code, detail=str(e), context=context) from e
 
-    # profession_id is required for profession-based stats rolling
-    if request_data.profession_id is None:
-        context = create_error_context()
-        if current_user:
-            context.user_id = str(current_user.id)
-        context.metadata["operation"] = "roll_stats"
-        raise LoggedHTTPException(
-            status_code=400, detail="profession_id is required for profession-based stats rolling", context=context
-        )
-
-    # After None check, profession_id is guaranteed to be non-None
-    assert request_data.profession_id is not None, "profession_id should not be None after validation"
-    profession_id: int = request_data.profession_id
-
-    profession = await async_persistence.get_profession_by_id(profession_id)
-    if not profession:
-        context = create_error_context()
-        if current_user:
-            context.user_id = str(current_user.id)
-        context.metadata["operation"] = "roll_stats"
-        context.metadata["profession_id"] = profession_id
-        raise LoggedHTTPException(
-            status_code=404, detail=f"Profession with ID {profession_id} not found", context=context
-        )
-
+    # Roll stats with validated profession
     stats, meets_requirements = stats_generator.roll_stats_with_profession(
         method=request_data.method,
         profession_id=profession_id,
@@ -116,7 +152,8 @@ async def _roll_stats_with_profession(
         max_attempts=max_attempts,
         profession=profession,
     )
-    stat_summary = stats_generator.get_stat_summary(stats)
+    stat_summary_dict = stats_generator.get_stat_summary(stats)
+    stat_summary = _convert_stat_summary_to_stat_summary_model(stats, stat_summary_dict)
 
     return {
         "stats": stats.model_dump(),
@@ -136,7 +173,8 @@ def _roll_stats_with_class(
         required_class=request_data.required_class,
         max_attempts=max_attempts,
     )
-    stat_summary = stats_generator.get_stat_summary(stats)
+    stat_summary_dict = stats_generator.get_stat_summary(stats)
+    stat_summary = _convert_stat_summary_to_stat_summary_model(stats, stat_summary_dict)
 
     return {
         "stats": stats.model_dump(),
@@ -149,14 +187,15 @@ def _roll_stats_with_class(
     }
 
 
-@player_router.post("/roll-stats")
-async def roll_character_stats(
+@player_router.post("/roll-stats", response_model=RollStatsResponse)
+async def roll_character_stats(  # pylint: disable=too-many-arguments  # Reason: FastAPI endpoint requires request, user, and service dependencies; max_attempts is a configurable parameter
     request_data: RollStatsRequest,
     request: Request,
     max_attempts: int = 50,  # Increased from 10 to improve success rate for profession requirements
     current_user: User = Depends(get_current_user),
     stats_generator: StatsGenerator = StatsGeneratorDep,
-) -> dict[str, Any]:
+    profession_service: ProfessionService = ProfessionServiceDep,
+) -> RollStatsResponse:
     """
     Roll random stats for character creation.
 
@@ -171,8 +210,12 @@ async def roll_character_stats(
 
     try:
         if request_data.profession_id is not None:
-            return await _roll_stats_with_profession(request_data, stats_generator, current_user, max_attempts)
-        return _roll_stats_with_class(request_data, stats_generator, max_attempts)
+            result = await _roll_stats_with_profession(
+                request_data, stats_generator, current_user, max_attempts, profession_service
+            )
+            return RollStatsResponse(**result)
+        result = _roll_stats_with_class(request_data, stats_generator, max_attempts)
+        return RollStatsResponse(**result)
     except ValueError as e:
         # Handle validation errors (e.g., invalid profession ID)
         context = create_error_context()
@@ -192,13 +235,13 @@ async def roll_character_stats(
         raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context) from e
 
 
-@player_router.post("/create-character")
+@player_router.post("/create-character", response_model=CreateCharacterResponse)
 async def create_character_with_stats(
     request_data: CreateCharacterRequest,
     request: Request,
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
-) -> dict[str, Any]:
+) -> CreateCharacterResponse:
     """
     Create a new character with specific stats.
 
@@ -241,16 +284,9 @@ async def create_character_with_stats(
         # Convert dict to Stats object
         stats_obj = Stats(**request_data.stats)
 
-        # Determine starting room from request or config default
-        try:
-            from ..config import get_config
-
-            default_start_room = get_config().game.default_player_room
-        except (ImportError, AttributeError, ValueError) as e:
-            logger.error("Error getting default start room config", error=str(e), error_type=type(e).__name__)
-            default_start_room = "earth_arkhamcity_northside_intersection_derby_high"
-
-        starting_room_id = getattr(request_data, "starting_room_id", None) or default_start_room
+        # Determine starting room from request or config default using PlayerService
+        requested_room_id = getattr(request_data, "starting_room_id", None)
+        starting_room_id = player_service.get_default_starting_room(requested_room_id)
 
         # Create player with stats
         player = await player_service.create_player_with_stats(
@@ -270,8 +306,7 @@ async def create_character_with_stats(
 
         logger.info("Character created successfully", character_name=request_data.name, user_id=current_user.id)
 
-        # Convert PlayerRead to dict for better performance
-        return player.model_dump()
+        return CreateCharacterResponse(player=player)
     except HTTPException:
         # Re-raise HTTPExceptions without modification
         raise
@@ -283,13 +318,13 @@ async def create_character_with_stats(
         raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context) from e
 
 
-@player_router.post("/validate-stats")
+@player_router.post("/validate-stats", response_model=ValidateStatsResponse)
 async def validate_character_stats(
     stats: dict,
     class_name: str | None = None,
     current_user: User = Depends(get_current_user),
     stats_generator: StatsGenerator = StatsGeneratorDep,
-) -> dict[str, Any]:
+) -> ValidateStatsResponse:
     """
     Validate character stats against class prerequisites.
 
@@ -306,17 +341,17 @@ async def validate_character_stats(
             )
             available_classes = stats_generator.get_available_classes(stats_obj)
 
-            return {
-                "meets_prerequisites": meets_prerequisites,
-                "failed_requirements": failed_requirements,
-                "available_classes": available_classes,
-                "requested_class": class_name,
-            }
+            return ValidateStatsResponse(
+                meets_prerequisites=meets_prerequisites,
+                failed_requirements=failed_requirements,
+                available_classes=available_classes,
+                requested_class=class_name,
+            )
 
         available_classes = stats_generator.get_available_classes(stats_obj)
         stat_summary = stats_generator.get_stat_summary(stats_obj)
 
-        return {"available_classes": available_classes, "stat_summary": stat_summary}
+        return ValidateStatsResponse(available_classes=available_classes, stat_summary=stat_summary)
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Class retrieval errors unpredictable, must create error context
         context = create_error_context()
         if current_user:

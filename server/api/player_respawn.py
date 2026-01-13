@@ -4,28 +4,35 @@ Player respawn API endpoints.
 This module handles endpoints for respawning players after death or delirium.
 """
 
-from typing import Any
+from typing import TYPE_CHECKING
 
 from fastapi import Depends, Request
 
 from ..auth.users import get_current_active_user
-from ..dependencies import PlayerServiceDep
+from ..dependencies import AsyncPersistenceDep, PlayerRespawnServiceDep, PlayerServiceDep
 from ..exceptions import LoggedHTTPException, ValidationError
 from ..game.player_service import PlayerService
 from ..models.user import User
+from ..schemas.player_respawn import RespawnResponse
 from ..structured_logging.enhanced_logging_config import get_logger
 from .player_helpers import create_error_context
 from .players import player_router
 
+if TYPE_CHECKING:
+    from ..async_persistence import AsyncPersistenceLayer
+    from ..services.player_respawn_service import PlayerRespawnService
+
 logger = get_logger(__name__)
 
 
-@player_router.post("/respawn-delirium")
+@player_router.post("/respawn-delirium", response_model=RespawnResponse)
 async def respawn_player_from_delirium(
     request: Request,
     current_user: User = Depends(get_current_active_user),
     player_service: PlayerService = PlayerServiceDep,
-) -> dict[str, Any]:
+    respawn_service: "PlayerRespawnService" = PlayerRespawnServiceDep,
+    persistence: "AsyncPersistenceLayer" = AsyncPersistenceDep,
+) -> RespawnResponse:
     """
     Respawn a delirious player at the Sanitarium with restored lucidity.
 
@@ -49,17 +56,14 @@ async def respawn_player_from_delirium(
     try:
         async for session in get_async_session():
             try:
-                # Get respawn service from app.state
-                respawn_service = request.app.state.player_respawn_service
-                persistence = request.app.state.persistence  # Now async_persistence
-
                 # Use service layer method to handle delirium respawn logic
-                return await player_service.respawn_player_from_delirium_by_user_id(
+                result = await player_service.respawn_player_from_delirium_by_user_id(
                     user_id=str(current_user.id),
                     session=session,
                     respawn_service=respawn_service,
                     persistence=persistence,
                 )
+                return RespawnResponse(**result)
             except ValidationError as e:
                 # Convert ValidationError to appropriate HTTPException
                 context = create_error_context(request, current_user)
@@ -110,12 +114,14 @@ async def respawn_player_from_delirium(
         ) from e
 
 
-@player_router.post("/respawn")
+@player_router.post("/respawn", response_model=RespawnResponse)
 async def respawn_player(
     request: Request,
     current_user: User = Depends(get_current_active_user),
     player_service: PlayerService = PlayerServiceDep,
-) -> dict[str, Any]:
+    respawn_service: "PlayerRespawnService" = PlayerRespawnServiceDep,
+    persistence: "AsyncPersistenceLayer" = AsyncPersistenceDep,
+) -> RespawnResponse:
     """
     Respawn a dead player at their respawn location with full DP.
 
@@ -139,17 +145,14 @@ async def respawn_player(
     try:
         async for session in get_async_session():
             try:
-                # Get respawn service from app.state
-                respawn_service = request.app.state.player_respawn_service
-                persistence = request.app.state.persistence  # Now async_persistence
-
                 # Use service layer method to handle respawn logic
-                return await player_service.respawn_player_by_user_id(
+                result = await player_service.respawn_player_by_user_id(
                     user_id=str(current_user.id),
                     session=session,
                     respawn_service=respawn_service,
                     persistence=persistence,
                 )
+                return RespawnResponse(**result)
             except ValidationError as e:
                 # Convert ValidationError to appropriate HTTPException
                 context = create_error_context(request, current_user)

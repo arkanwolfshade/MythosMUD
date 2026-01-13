@@ -14,7 +14,6 @@ and chaos. This server implementation follows those ancient principles.
 import warnings
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from typing import Any
 
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -96,120 +95,23 @@ async def enhanced_lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:  # pyl
             )
 
 
-async def _handle_health_check() -> dict[str, Any]:
-    """Handle health check endpoint logic."""
-    from fastapi import HTTPException
-
-    try:
-        dashboard = get_monitoring_dashboard()
-        system_health = dashboard.get_system_health()
-
-        return {
-            "status": system_health.status,
-            "timestamp": system_health.timestamp.isoformat(),
-            "performance_score": system_health.performance_score,
-            "error_rate": system_health.error_rate,
-            "warning_rate": system_health.warning_rate,
-            "active_users": system_health.active_users,
-        }
-    except Exception as error:
-        logger = get_logger("server.health")  # pylint: disable=redefined-outer-name  # noqa: F811  # Reason: Context-specific logger instance
-        logger.error("Health check failed", error=str(error), exc_info=True)
-        raise HTTPException(status_code=503, detail="Health check failed") from error
+# Handler functions moved to server/api/monitoring.py
+# These are kept for backward compatibility but are no longer used
 
 
-async def _handle_get_metrics() -> dict[str, Any]:
-    """Handle metrics endpoint logic."""
-    from fastapi import HTTPException
+# Monitoring endpoints have been moved to server/api/monitoring.py
+# This function is kept for backward compatibility but is now a no-op
+def setup_monitoring_endpoints(app: FastAPI) -> None:  # pylint: disable=redefined-outer-name  # noqa: F811  # Reason: Parameter name matches FastAPI convention, kept for backward compatibility
+    """Setup monitoring and health check endpoints.
 
-    try:
-        dashboard = get_monitoring_dashboard()
-        result = dashboard.export_monitoring_data()
-        if not isinstance(result, dict):
-            raise TypeError("export_monitoring_data must return a dict")
-        return result
-    except Exception as error:
-        logger = get_logger("server.metrics")  # pylint: disable=redefined-outer-name  # noqa: F811  # Reason: Context-specific logger instance
-        logger.error("Metrics retrieval failed", error=str(error), exc_info=True)
-        raise HTTPException(status_code=500, detail="Metrics retrieval failed") from error
+    NOTE: Monitoring endpoints have been moved to server/api/monitoring.py
+    and are now registered via the monitoring_router. This function registers
+    the routers for testing purposes.
+    """
+    from server.api.monitoring import monitoring_router, system_monitoring_router
 
-
-async def _handle_get_monitoring_summary() -> dict[str, Any]:
-    """Handle monitoring summary endpoint logic."""
-    from fastapi import HTTPException
-
-    try:
-        dashboard = get_monitoring_dashboard()
-        result = dashboard.get_monitoring_summary()
-        if not isinstance(result, dict):
-            raise TypeError("get_monitoring_summary must return a dict")
-        return result
-    except Exception as error:
-        logger = get_logger("server.monitoring")  # pylint: disable=redefined-outer-name  # noqa: F811  # Reason: Context-specific logger instance
-        logger.error("Monitoring summary failed", error=str(error), exc_info=True)
-        raise HTTPException(status_code=500, detail="Monitoring summary failed") from error
-
-
-async def _handle_get_alerts() -> dict[str, Any]:
-    """Handle alerts endpoint logic."""
-    from fastapi import HTTPException
-
-    try:
-        dashboard = get_monitoring_dashboard()
-        alerts = dashboard.check_alerts()
-        return {"alerts": [alert.to_dict() if hasattr(alert, "to_dict") else alert for alert in alerts]}
-    except Exception as error:
-        logger = get_logger("server.alerts")  # pylint: disable=redefined-outer-name  # noqa: F811  # Reason: Context-specific logger instance
-        logger.error("Alert retrieval failed", error=str(error), exc_info=True)
-        raise HTTPException(status_code=500, detail="Alert retrieval failed") from error
-
-
-async def _handle_resolve_alert(alert_id: str) -> dict[str, str]:
-    """Handle resolve alert endpoint logic."""
-    from fastapi import HTTPException
-
-    try:
-        dashboard = get_monitoring_dashboard()
-        success = dashboard.resolve_alert(alert_id)
-
-        if success:
-            return {"message": f"Alert {alert_id} resolved"}
-        raise HTTPException(status_code=404, detail="Alert not found")
-    except HTTPException:
-        raise
-    except Exception as error:
-        logger = get_logger("server.alerts")  # pylint: disable=redefined-outer-name  # noqa: F811  # Reason: Context-specific logger instance
-        logger.error("Alert resolution failed", error=str(error), exc_info=True)
-        raise HTTPException(status_code=500, detail="Alert resolution failed") from error
-
-
-def setup_monitoring_endpoints(app: FastAPI) -> None:  # pylint: disable=redefined-outer-name  # noqa: F811  # Reason: Parameter name matches FastAPI convention
-    """Setup monitoring and health check endpoints."""
-
-    @app.get("/health")
-    async def health_check() -> dict[str, Any]:
-        """Enhanced health check endpoint."""
-        return await _handle_health_check()
-
-    @app.get("/metrics")
-    async def get_metrics() -> dict[str, Any]:
-        """Get system metrics."""
-        return await _handle_get_metrics()
-
-    @app.get("/monitoring/summary")
-    async def get_monitoring_summary() -> dict[str, Any]:
-        """Get comprehensive monitoring summary."""
-        return await _handle_get_monitoring_summary()
-
-    @app.get("/monitoring/alerts")
-    async def get_alerts() -> dict[str, Any]:
-        """Get system alerts."""
-        return await _handle_get_alerts()
-
-    @app.post("/monitoring/alerts/{alert_id}/resolve")
-    async def resolve_alert(alert_id: str) -> dict[str, str]:
-        """Resolve a system alert."""
-        return await _handle_resolve_alert(alert_id)
+    app.include_router(monitoring_router)
+    app.include_router(system_monitoring_router)
 
 
 def main() -> FastAPI:

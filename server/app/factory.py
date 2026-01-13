@@ -18,7 +18,7 @@ from ..api.containers import container_router
 from ..api.game import game_router
 from ..api.maps import map_router
 from ..api.metrics import router as metrics_router
-from ..api.monitoring import monitoring_router
+from ..api.monitoring import monitoring_router, system_monitoring_router
 from ..api.players import player_router
 from ..api.professions import profession_router
 from ..api.real_time import realtime_router
@@ -173,6 +173,7 @@ def create_app() -> FastAPI:  # pylint: disable=too-many-locals,too-many-stateme
     app.include_router(profession_router)
     app.include_router(game_router)
     app.include_router(monitoring_router)
+    app.include_router(system_monitoring_router)  # System-level monitoring (root-level paths)
     app.include_router(metrics_router)  # NEW: NATS metrics endpoint (CRITICAL-4)
     app.include_router(realtime_router)
     app.include_router(room_router, prefix="/api")

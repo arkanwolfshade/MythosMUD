@@ -254,6 +254,37 @@ class MovementMonitor:  # pylint: disable=too-many-instance-attributes  # Reason
             self._last_validation_time = None
             self._logger.info("Movement metrics reset")
 
+    def get_performance_summary(self) -> dict[str, Any]:
+        """
+        Get a formatted performance summary for API responses.
+
+        This method encapsulates the logic for formatting metrics into a
+        human-readable summary, centralizing business logic that was
+        previously in the API endpoint.
+
+        Returns:
+            dict[str, Any]: Formatted performance summary with summary dict, alerts list, and timestamp
+        """
+        metrics = self.get_metrics()
+        alerts = self.get_alerts()
+
+        summary = {
+            "summary": {
+                "total_movements": metrics["total_movements"],
+                "success_rate": f"{metrics['success_rate']:.2%}",
+                "avg_movement_time": f"{metrics['avg_movement_time_ms']:.2f}ms",
+                "current_concurrent": metrics["current_concurrent_movements"],
+                "max_concurrent": metrics["max_concurrent_movements"],
+                "integrity_rate": f"{metrics['integrity_rate']:.2%}",
+                "uptime": f"{metrics['uptime_seconds']:.1f}s",
+                "alert_count": len(alerts),
+            },
+            "alerts": alerts,
+            "timestamp": metrics["timestamp"].isoformat(),
+        }
+
+        return summary
+
     def log_performance_summary(self):
         """Log a comprehensive performance summary."""
         metrics = self.get_metrics()

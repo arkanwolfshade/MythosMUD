@@ -7,18 +7,26 @@ This module handles ASCII map rendering and coordinate management endpoints.
 # pylint: disable=too-many-lines  # Reason: Map API requires extensive endpoint handlers for coordinate management, map rendering, and room visualization
 
 import uuid
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from fastapi import APIRouter, Depends, Query, Request
 from pydantic import BaseModel, Field
-from sqlalchemy import bindparam, text
+from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..auth.users import get_current_user
 from ..database import get_async_session
+from ..dependencies import AsyncPersistenceDep, ExplorationServiceDep, RoomServiceDep
 from ..exceptions import DatabaseError, LoggedHTTPException
+from ..game.room_service import RoomService
 from ..models.user import User
+from ..schemas.map import (
+    AsciiMapResponse,
+    AsciiMinimapResponse,
+    CoordinateRecalculationResponse,
+    MapOriginSetResponse,
+)
 from ..services.admin_auth_service import AdminAction, get_admin_auth_service
 from ..services.ascii_map_renderer import AsciiMapRenderer
 from ..services.coordinate_generator import CoordinateGenerator
@@ -26,6 +34,9 @@ from ..services.coordinate_validator import CoordinateValidator
 from ..services.exploration_service import ExplorationService
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import create_context_from_request
+
+if TYPE_CHECKING:
+    from ..async_persistence import AsyncPersistenceLayer
 
 logger = get_logger(__name__)
 
@@ -35,7 +46,9 @@ map_router = APIRouter(prefix="/maps", tags=["maps"])
 logger.info("Maps API router initialized", prefix="/maps")
 
 
-async def _get_current_room_id(request: Request, current_user: User | None, persistence: Any) -> str | None:
+async def _get_current_room_id(
+    request: Request, current_user: User | None, persistence: "AsyncPersistenceLayer"
+) -> str | None:
     """Get current room ID from query params or database. Returns room ID or None."""
     current_room_id = request.query_params.get("current_room_id")
     if not current_room_id and current_user:
@@ -50,12 +63,10 @@ async def _get_current_room_id(request: Request, current_user: User | None, pers
 
 
 async def _get_player_and_exploration_service(
-    request: Request, current_user: User | None, persistence: Any
-) -> tuple[Any, uuid.UUID | None, Any]:
+    current_user: User | None, persistence: "AsyncPersistenceLayer", exploration_service: ExplorationService
+) -> tuple[Any, uuid.UUID | None, ExplorationService | None]:
     """Get player, player_id, and exploration service. Returns (player, player_id, exploration_service)."""
     if current_user and not (current_user.is_admin or current_user.is_superuser):
-        container = request.app.state.container
-        exploration_service = container.exploration_service
         user_id = str(current_user.id)
         player = await persistence.get_player_by_user_id(user_id)
         if player:
@@ -65,31 +76,19 @@ async def _get_player_and_exploration_service(
 
 
 async def _filter_explored_rooms(
-    rooms: list[dict[str, Any]], player_id: uuid.UUID, exploration_service: Any, session: AsyncSession
+    rooms: list[dict[str, Any]],
+    player_id: uuid.UUID,
+    exploration_service: ExplorationService,
+    session: AsyncSession,
+    room_service: RoomService,
 ) -> list[dict[str, Any]]:
-    """Filter rooms to only include explored ones. Returns filtered rooms list."""
-    explored_room_ids = await exploration_service.get_explored_rooms(player_id, session)
+    """
+    Filter rooms to only include explored ones using RoomService.
 
-    if not explored_room_ids:
-        logger.debug("Player has explored no rooms, returning empty list")
-        return []
-
-    room_uuid_list = [uuid.UUID(rid) for rid in explored_room_ids]
-    lookup_query = text("SELECT stable_id FROM rooms WHERE id IN :room_ids").bindparams(
-        bindparam("room_ids", expanding=True)
-    )
-    result = await session.execute(lookup_query, {"room_ids": room_uuid_list})
-    explored_stable_ids = {row[0] for row in result.fetchall()}
-
-    filtered_rooms = [room for room in rooms if room.get("id") in explored_stable_ids]
-
-    logger.debug(
-        "Filtered rooms by exploration",
-        explored_count=len(explored_stable_ids),
-        filtered_count=len(filtered_rooms),
-    )
-
-    return filtered_rooms
+    This is a thin wrapper around RoomService.filter_rooms_by_exploration()
+    to maintain backward compatibility with existing code.
+    """
+    return await room_service.filter_rooms_by_exploration(rooms, player_id, exploration_service, session)
 
 
 async def _ensure_coordinates_generated(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Coordinate generation requires many parameters for plane/zone/subzone context
@@ -100,8 +99,9 @@ async def _ensure_coordinates_generated(  # pylint: disable=too-many-arguments,t
     rooms: list[dict[str, Any]],
     player: Any,
     player_id: uuid.UUID | None,
-    exploration_service: Any,
+    exploration_service: ExplorationService,
     current_user: User | None,
+    room_service: RoomService,
 ) -> list[dict[str, Any]]:
     """Generate coordinates if missing and reload rooms. Returns updated rooms list."""
     if not rooms or any(r.get("map_x") is None or r.get("map_y") is None for r in rooms):
@@ -112,12 +112,12 @@ async def _ensure_coordinates_generated(  # pylint: disable=too-many-arguments,t
 
         if current_user and not (current_user.is_admin or current_user.is_superuser):
             if player and exploration_service and player_id:
-                rooms = await _filter_explored_rooms(rooms, player_id, exploration_service, session)
+                rooms = await _filter_explored_rooms(rooms, player_id, exploration_service, session, room_service)
 
     return rooms
 
 
-@map_router.get("/ascii")
+@map_router.get("/ascii", response_model=AsciiMapResponse)
 async def get_ascii_map(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: API endpoint requires many query parameters and intermediate variables for map generation
     request: Request,
     plane: str = Query(..., description="Plane name"),
@@ -129,7 +129,10 @@ async def get_ascii_map(  # pylint: disable=too-many-arguments,too-many-position
     viewport_height: int = Query(24, description="Viewport height in lines"),
     current_user: User | None = Depends(get_current_user),
     session: AsyncSession = Depends(get_async_session),
-) -> dict[str, Any]:
+    persistence: "AsyncPersistenceLayer" = AsyncPersistenceDep,
+    exploration_service: ExplorationService = ExplorationServiceDep,
+    room_service: RoomService = RoomServiceDep,
+) -> AsciiMapResponse:
     """
     Get ASCII map for a zone/subzone.
 
@@ -146,21 +149,17 @@ async def get_ascii_map(  # pylint: disable=too-many-arguments,too-many-position
             viewport_y=viewport_y,
         )
 
-        persistence = request.app.state.persistence
-
         current_room_id = await _get_current_room_id(request, current_user, persistence)
 
         rooms = await _load_rooms_with_coordinates(session, plane, zone, sub_zone)
 
-        player, player_id, exploration_service = await _get_player_and_exploration_service(
-            request, current_user, persistence
-        )
+        player, player_id, _ = await _get_player_and_exploration_service(current_user, persistence, exploration_service)
 
         if player and exploration_service and player_id:
-            rooms = await _filter_explored_rooms(rooms, player_id, exploration_service, session)
+            rooms = await _filter_explored_rooms(rooms, player_id, exploration_service, session, room_service)
 
         rooms = await _ensure_coordinates_generated(
-            session, plane, zone, sub_zone, rooms, player, player_id, exploration_service, current_user
+            session, plane, zone, sub_zone, rooms, player, player_id, exploration_service, current_user, room_service
         )
 
         renderer = AsciiMapRenderer()
@@ -173,18 +172,18 @@ async def get_ascii_map(  # pylint: disable=too-many-arguments,too-many-position
             viewport_y=viewport_y,
         )
 
-        return {
-            "map_html": html_map,
-            "plane": plane,
-            "zone": zone,
-            "sub_zone": sub_zone,
-            "viewport": {
+        return AsciiMapResponse(
+            map_html=html_map,
+            plane=plane,
+            zone=zone,
+            sub_zone=sub_zone,
+            viewport={
                 "x": viewport_x,
                 "y": viewport_y,
                 "width": viewport_width,
                 "height": viewport_height,
             },
-        }
+        )
 
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Map generation errors unpredictable, must handle gracefully
         logger.error(
@@ -203,7 +202,7 @@ async def get_ascii_map(  # pylint: disable=too-many-arguments,too-many-position
         ) from e
 
 
-@map_router.get("/ascii/minimap")
+@map_router.get("/ascii/minimap", response_model=AsciiMinimapResponse)
 async def get_ascii_minimap(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: API endpoint requires many query parameters and intermediate variables for minimap generation
     request: Request,
     plane: str = Query(..., description="Plane name"),
@@ -212,7 +211,10 @@ async def get_ascii_minimap(  # pylint: disable=too-many-arguments,too-many-posi
     size: int = Query(5, description="Minimap size in characters (e.g., 5 means 5x5 grid)"),
     current_user: User | None = Depends(get_current_user),
     session: AsyncSession = Depends(get_async_session),
-) -> dict[str, Any]:
+    persistence: "AsyncPersistenceLayer" = AsyncPersistenceDep,
+    exploration_service: ExplorationService = ExplorationServiceDep,
+    room_service: RoomService = RoomServiceDep,
+) -> AsciiMinimapResponse:
     """
     Get ASCII minimap centered on player.
 
@@ -224,7 +226,6 @@ async def get_ascii_minimap(  # pylint: disable=too-many-arguments,too-many-posi
             raise LoggedHTTPException(status_code=401, detail="Authentication required", context=context)
 
         # Get player object (needed for exploration filtering)
-        persistence = request.app.state.persistence
         user_id = str(current_user.id)
         player = await persistence.get_player_by_user_id(user_id)
         if not player:
@@ -239,36 +240,17 @@ async def get_ascii_minimap(  # pylint: disable=too-many-arguments,too-many-posi
 
         # Filter to explored rooms if not admin
         if not (current_user.is_admin or current_user.is_superuser):
-            container = request.app.state.container
-            exploration_service: ExplorationService = container.exploration_service
             player_id = uuid.UUID(str(player.player_id))
-            explored_room_ids = await exploration_service.get_explored_rooms(player_id, session)
+            rooms = await room_service.filter_rooms_by_exploration(rooms, player_id, exploration_service, session)
 
-            # Convert explored room UUIDs to stable_ids for filtering
-            # We need to look up stable_ids from room UUIDs
-            if explored_room_ids:
-                # Convert string UUIDs to UUID objects for proper PostgreSQL type handling
-                room_uuid_list = [uuid.UUID(rid) for rid in explored_room_ids]
-                # Use IN clause with expanding parameters for proper array handling
-                # This avoids mixing parameter syntax with casting syntax that causes asyncpg errors
-                lookup_query = text("SELECT stable_id FROM rooms WHERE id IN :room_ids").bindparams(
-                    bindparam("room_ids", expanding=True)
-                )
-                result = await session.execute(lookup_query, {"room_ids": room_uuid_list})
-                explored_stable_ids = {row[0] for row in result.fetchall()}
-
-                # Filter rooms to only include explored ones
-                rooms = [room for room in rooms if room.get("id") in explored_stable_ids]
-
-                logger.debug(
-                    "Filtered rooms by exploration for minimap",
-                    explored_count=len(explored_stable_ids),
-                    filtered_count=len(rooms),
-                )
-            else:
-                # Player has explored no rooms - return empty list
-                rooms = []
-                logger.debug("Player has explored no rooms for minimap, returning empty list")
+            logger.debug(
+                "Filtered rooms by exploration for minimap",
+                filtered_count=len(rooms),
+            )
+        else:
+            # Player has explored no rooms - return empty list
+            rooms = []
+            logger.debug("Player has explored no rooms for minimap, returning empty list")
 
         # Render minimap (always centers on player)
         # Size parameter directly controls dimensions (e.g., size=5 means 5x5 grid)
@@ -282,13 +264,13 @@ async def get_ascii_minimap(  # pylint: disable=too-many-arguments,too-many-posi
             viewport_y=0,  # Will be auto-centered
         )
 
-        return {
-            "map_html": html_map,
-            "plane": plane,
-            "zone": zone,
-            "sub_zone": sub_zone,
-            "size": size,
-        }
+        return AsciiMinimapResponse(
+            map_html=html_map,
+            plane=plane,
+            zone=zone,
+            sub_zone=sub_zone,
+            size=size,
+        )
 
     except LoggedHTTPException:
         raise
@@ -392,7 +374,7 @@ async def _load_rooms_with_coordinates(  # pylint: disable=too-many-locals  # Re
     return rooms
 
 
-@map_router.post("/coordinates/recalculate")
+@map_router.post("/coordinates/recalculate", response_model=CoordinateRecalculationResponse)
 async def recalculate_coordinates(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: API endpoint requires many query parameters for coordinate recalculation
     request: Request,
     plane: str = Query(..., description="Plane name"),
@@ -400,7 +382,7 @@ async def recalculate_coordinates(  # pylint: disable=too-many-arguments,too-man
     sub_zone: str | None = Query(None, description="Sub-zone name"),
     current_user: User | None = Depends(get_current_user),
     session: AsyncSession = Depends(get_async_session),
-) -> dict[str, Any]:
+) -> CoordinateRecalculationResponse:
     """
     Trigger coordinate recalculation for a zone/subzone (admin only).
 
@@ -431,13 +413,13 @@ async def recalculate_coordinates(  # pylint: disable=too-many-arguments,too-man
         validator = CoordinateValidator(session)
         validation_result = await validator.validate_coordinates(plane, zone, sub_zone)
 
-        return {
-            "message": "Coordinates recalculated",
-            "coordinates_generated": len(result["coordinates"]),
-            "conflicts": validation_result["conflicts"],
-            "conflict_count": validation_result["conflict_count"],
-            "valid": validation_result["valid"],
-        }
+        return CoordinateRecalculationResponse(
+            message="Coordinates recalculated",
+            coordinates_generated=len(result["coordinates"]),
+            conflicts=validation_result["conflicts"],
+            conflict_count=validation_result["conflict_count"],
+            valid=validation_result["valid"],
+        )
 
     except LoggedHTTPException:
         raise
@@ -466,14 +448,14 @@ class SetOriginRequest(BaseModel):
     sub_zone: str | None = Field(None, description="Sub-zone name")
 
 
-@map_router.post("/rooms/{room_id}/origin")
+@map_router.post("/rooms/{room_id}/origin", response_model=MapOriginSetResponse)
 async def set_map_origin(  # pylint: disable=too-many-locals  # Reason: Map origin setting requires many intermediate variables for validation and processing
     room_id: str,
     origin_data: SetOriginRequest,
     request: Request,
     current_user: User | None = Depends(get_current_user),
     session: AsyncSession = Depends(get_async_session),
-) -> dict[str, Any]:
+) -> MapOriginSetResponse:
     """
     Set a room as the map origin for its zone/subzone (admin only).
 
@@ -545,14 +527,14 @@ async def set_map_origin(  # pylint: disable=too-many-locals  # Reason: Map orig
             conflicts=validation_result["conflict_count"],
         )
 
-        return {
-            "room_id": room_id,
-            "message": "Map origin set and coordinates recalculated",
-            "coordinates_generated": len(coordinate_result["coordinates"]),
-            "conflicts": validation_result["conflicts"],
-            "conflict_count": validation_result["conflict_count"],
-            "valid": validation_result["valid"],
-        }
+        return MapOriginSetResponse(
+            room_id=room_id,
+            message="Map origin set and coordinates recalculated",
+            coordinates_generated=len(coordinate_result["coordinates"]),
+            conflicts=validation_result["conflicts"],
+            conflict_count=validation_result["conflict_count"],
+            valid=validation_result["valid"],
+        )
 
     except LoggedHTTPException:
         raise

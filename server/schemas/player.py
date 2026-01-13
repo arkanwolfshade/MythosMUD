@@ -141,3 +141,76 @@ class PlayerUpdate(BaseModel):
             }
         }
     )
+
+
+class AvailableClassesResponse(BaseModel):
+    """Response model for available character classes endpoint."""
+
+    classes: dict[str, dict[str, Any]] = Field(
+        ..., description="Dictionary of class names to their prerequisites and descriptions"
+    )
+    stat_range: dict[str, int] = Field(..., description="Stat range information (min and max values)")
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "classes": {
+                    "investigator": {
+                        "prerequisites": {"int": 12},
+                        "description": "A skilled researcher and detective",
+                    }
+                },
+                "stat_range": {"min": 3, "max": 18},
+            }
+        }
+    )
+
+
+class MessageResponse(BaseModel):
+    """Generic response model for operations that return a simple message."""
+
+    message: str = Field(..., description="Success or status message")
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "message": "Operation completed successfully",
+            }
+        }
+    )
+
+
+class DeleteCharacterResponse(BaseModel):
+    """Response model for character deletion."""
+
+    success: bool = Field(..., description="Whether deletion was successful")
+    message: str = Field(..., description="Deletion result message")
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "success": True,
+                "message": "Character deleted successfully",
+            }
+        }
+    )
+
+
+class LoginGracePeriodResponse(BaseModel):
+    """Response model for login grace period operations."""
+
+    success: bool = Field(..., description="Whether operation was successful")
+    message: str = Field(..., description="Status message")
+    grace_period_active: bool = Field(..., description="Whether grace period is currently active")
+    grace_period_remaining: float = Field(..., description="Remaining grace period time in seconds")
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "success": True,
+                "message": "Login grace period started",
+                "grace_period_active": True,
+                "grace_period_remaining": 10.0,
+            }
+        }
+    )

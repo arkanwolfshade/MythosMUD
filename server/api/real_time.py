@@ -9,12 +9,18 @@ import uuid
 from typing import Any, cast
 from unittest.mock import Mock
 
-from fastapi import APIRouter, HTTPException, Request, WebSocket
+from fastapi import APIRouter, Request, WebSocket
 
 from ..auth_utils import decode_access_token
 from ..exceptions import LoggedHTTPException
 from ..realtime.connection_manager import resolve_connection_manager
 from ..realtime.websocket_handler import handle_websocket_connection
+from ..schemas.realtime import (
+    ConnectionStatisticsResponse,
+    NewGameSessionResponse,
+    PlayerConnectionsResponse,
+    SessionInfo,
+)
 from ..utils.error_logging import create_context_from_request, create_context_from_websocket
 
 # AI Agent: Don't import app at module level - causes circular import!
@@ -37,10 +43,16 @@ def _resolve_connection_manager_from_state(state) -> Any:
     return manager
 
 
-def _ensure_connection_manager(state) -> Any:
-    connection_manager = _resolve_connection_manager_from_state(state)
+def _ensure_connection_manager(request: Request) -> Any:
+    """
+    Ensure connection manager is available.
+    Raises LoggedHTTPException with proper context if unavailable.
+    """
+    connection_manager = _resolve_connection_manager_from_state(request.app.state)
     if connection_manager is None:
-        raise HTTPException(status_code=503, detail="Service temporarily unavailable")
+        context = create_context_from_request(request)
+        context.metadata["operation"] = "ensure_connection_manager"
+        raise LoggedHTTPException(status_code=503, detail="Service temporarily unavailable", context=context)
     return connection_manager
 
 
@@ -216,8 +228,8 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
         raise
 
 
-@realtime_router.get("/connections/{player_id}")
-async def get_player_connections(player_id: uuid.UUID, request: Request) -> dict[str, Any]:
+@realtime_router.get("/connections/{player_id}", response_model=PlayerConnectionsResponse)
+async def get_player_connections(player_id: uuid.UUID, request: Request) -> PlayerConnectionsResponse:
     """
     Get connection information for a player.
     Returns detailed connection metadata including session information.
@@ -226,7 +238,7 @@ async def get_player_connections(player_id: uuid.UUID, request: Request) -> dict
 
     logger = get_logger(__name__)
 
-    connection_manager = _ensure_connection_manager(request.app.state)
+    connection_manager = _ensure_connection_manager(request)
 
     # Get connection information
     presence_info = connection_manager.get_player_presence_info(player_id)
@@ -238,24 +250,24 @@ async def get_player_connections(player_id: uuid.UUID, request: Request) -> dict
     # Get connection health
     health_info = await connection_manager.check_connection_health(player_id)
 
-    connection_data = {
-        "player_id": player_id,
-        "presence": presence_info,
-        "session": {
-            "session_id": session_id,
-            "session_connections": session_connections,
-            "is_valid": connection_manager.validate_session(player_id, session_id) if session_id else False,
-        },
-        "health": health_info,
-        "timestamp": time.time(),
-    }
+    connection_data = PlayerConnectionsResponse(
+        player_id=str(player_id),
+        presence=presence_info,
+        session=SessionInfo(
+            session_id=session_id,
+            session_connections=session_connections,
+            is_valid=connection_manager.validate_session(player_id, session_id) if session_id else False,
+        ),
+        health=health_info,
+        timestamp=time.time(),
+    )
 
     logger.info("Connection info requested", player_id=player_id)
     return connection_data
 
 
-@realtime_router.post("/connections/{player_id}/session")
-async def handle_new_game_session(player_id: uuid.UUID, request: Request) -> dict[str, Any]:
+@realtime_router.post("/connections/{player_id}/session", response_model=NewGameSessionResponse)
+async def handle_new_game_session(player_id: uuid.UUID, request: Request) -> NewGameSessionResponse:
     """
     Handle a new game session for a player.
     This will disconnect existing connections and establish a new session.
@@ -266,7 +278,7 @@ async def handle_new_game_session(player_id: uuid.UUID, request: Request) -> dic
 
     logger = get_logger(__name__)
 
-    connection_manager = _ensure_connection_manager(request.app.state)
+    connection_manager = _ensure_connection_manager(request)
 
     try:
         # Get new session ID from request body
@@ -284,7 +296,8 @@ async def handle_new_game_session(player_id: uuid.UUID, request: Request) -> dic
         logger.info("New game session handled", player_id=player_id, session_results=session_results)
         if not isinstance(session_results, dict):
             raise TypeError("session_results must be a dict")
-        return session_results
+        # Convert dict response to Pydantic model
+        return NewGameSessionResponse(**session_results)
 
     except json.JSONDecodeError as e:
         context = create_context_from_request(request)
@@ -300,8 +313,8 @@ async def handle_new_game_session(player_id: uuid.UUID, request: Request) -> dic
         ) from e
 
 
-@realtime_router.get("/connections/stats")
-async def get_connection_statistics(request: Request) -> dict[str, Any]:
+@realtime_router.get("/connections/stats", response_model=ConnectionStatisticsResponse)
+async def get_connection_statistics(request: Request) -> ConnectionStatisticsResponse:
     """
     Get comprehensive connection statistics.
     Returns detailed statistics about all connections, sessions, and presence.
@@ -310,19 +323,19 @@ async def get_connection_statistics(request: Request) -> dict[str, Any]:
 
     logger = get_logger(__name__)
 
-    connection_manager = _ensure_connection_manager(request.app.state)
+    connection_manager = _ensure_connection_manager(request)
 
     # Get various statistics
     presence_stats = connection_manager.get_presence_statistics()
     session_stats = connection_manager.get_session_stats()
     error_stats = connection_manager.get_error_statistics()
 
-    statistics = {
-        "presence": presence_stats,
-        "sessions": session_stats,
-        "errors": error_stats,
-        "timestamp": time.time(),
-    }
+    statistics = ConnectionStatisticsResponse(
+        presence=presence_stats,
+        sessions=session_stats,
+        errors=error_stats,
+        timestamp=time.time(),
+    )
 
     logger.info("Connection statistics requested")
     return statistics
@@ -382,7 +395,8 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None
 
         # resolved_player_id needs to be UUID for handle_websocket_connection
         if not resolved_player_id:
-            raise HTTPException(status_code=401, detail="Unable to resolve player ID")
+            context = create_context_from_websocket(websocket)
+            raise LoggedHTTPException(status_code=401, detail="Unable to resolve player ID", context=context)
         await handle_websocket_connection(
             websocket, resolved_player_id, session_id, connection_manager=connection_manager
         )

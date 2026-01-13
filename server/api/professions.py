@@ -5,14 +5,15 @@ This module handles all profession-related API operations including
 retrieval of available professions and profession details.
 """
 
-from typing import Any
-
 from fastapi import APIRouter, Depends, Request
 
 from ..auth.users import get_current_user
+from ..dependencies import ProfessionServiceDep
 from ..error_types import ErrorMessages
 from ..exceptions import LoggedHTTPException
+from ..game.profession_service import ProfessionService
 from ..models.user import User
+from ..schemas.profession import ProfessionListResponse, ProfessionResponse
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import create_context_from_request
 
@@ -22,11 +23,12 @@ logger = get_logger(__name__)
 profession_router = APIRouter(prefix="/professions", tags=["professions"])
 
 
-@profession_router.get("/")
+@profession_router.get("/", response_model=ProfessionListResponse)
 async def get_all_professions(
     request: Request,
     current_user: User = Depends(get_current_user),
-) -> dict[str, Any]:
+    profession_service: ProfessionService = ProfessionServiceDep,
+) -> ProfessionListResponse:
     """
     Retrieve all available professions for character creation with caching.
 
@@ -40,39 +42,10 @@ async def get_all_professions(
         raise LoggedHTTPException(status_code=401, detail=ErrorMessages.AUTHENTICATION_REQUIRED, context=context)
 
     try:
-        # Ensure request is available
-        if not request:
-            raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR)
+        # Get professions using ProfessionService
+        profession_list = await profession_service.get_all_professions_dict()
 
-        # Use async persistence layer
-        from ..async_persistence import get_async_persistence
-
-        async_persistence = get_async_persistence()
-        if not async_persistence:
-            context = create_context_from_request(request)
-            if current_user:
-                context.user_id = str(current_user.id)
-            context.metadata["operation"] = "get_all_professions"
-            raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context)
-
-        # Query using async persistence method
-        professions = await async_persistence.get_professions()
-
-        # Convert profession objects to dictionaries
-        profession_list = []
-        for profession in professions:
-            profession_dict = {
-                "id": profession.id,
-                "name": profession.name,
-                "description": profession.description,
-                "flavor_text": profession.flavor_text,
-                "stat_requirements": profession.get_stat_requirements(),
-                "mechanical_effects": profession.get_mechanical_effects(),
-                "is_available": profession.is_available,
-            }
-            profession_list.append(profession_dict)
-
-        return {"professions": profession_list}
+        return ProfessionListResponse(professions=profession_list)
 
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Profession retrieval errors unpredictable, must create error context
         context = create_context_from_request(request)
@@ -83,12 +56,13 @@ async def get_all_professions(
         raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context) from e
 
 
-@profession_router.get("/{profession_id}")
+@profession_router.get("/{profession_id}", response_model=ProfessionResponse)
 async def get_profession_by_id(
     profession_id: int,
     request: Request,
     current_user: User = Depends(get_current_user),
-) -> dict[str, Any]:
+    profession_service: ProfessionService = ProfessionServiceDep,
+) -> ProfessionResponse:
     """
     Retrieve specific profession details by ID with caching.
 
@@ -101,44 +75,17 @@ async def get_profession_by_id(
         raise LoggedHTTPException(status_code=401, detail=ErrorMessages.AUTHENTICATION_REQUIRED, context=context)
 
     try:
-        # Ensure request is available
-        if not request:
-            raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR)
+        # Get profession using ProfessionService
+        profession_dict = await profession_service.get_profession_by_id_dict(profession_id)
 
-        # Use async persistence layer
-        from ..async_persistence import get_async_persistence
-
-        async_persistence = get_async_persistence()
-        if not async_persistence:
-            context = create_context_from_request(request)
-            if current_user:
-                context.user_id = str(current_user.id)
-            context.metadata["operation"] = "get_profession_by_id"
-            context.metadata["profession_id"] = profession_id
-            raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context)
-
-        # Query using async persistence method
-        profession = await async_persistence.get_profession_by_id(profession_id)
-
-        if not profession:
+        if not profession_dict:
             context = create_context_from_request(request)
             if current_user:
                 context.user_id = str(current_user.id)
             context.metadata["profession_id"] = profession_id
             raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PROFESSION_NOT_FOUND, context=context)
 
-        # Convert profession object to dictionary
-        profession_dict = {
-            "id": profession.id,
-            "name": profession.name,
-            "description": profession.description,
-            "flavor_text": profession.flavor_text,
-            "stat_requirements": profession.get_stat_requirements(),
-            "mechanical_effects": profession.get_mechanical_effects(),
-            "is_available": profession.is_available,
-        }
-
-        return profession_dict
+        return ProfessionResponse(**profession_dict)
 
     except LoggedHTTPException:
         # Re-raise LoggedHTTPException as-is

@@ -28,6 +28,11 @@ MEMORY_COST = int(os.getenv("ARGON2_MEMORY_COST", "65536"))  # 64MB
 PARALLELISM = int(os.getenv("ARGON2_PARALLELISM", "1"))
 HASH_LENGTH = int(os.getenv("ARGON2_HASH_LENGTH", "32"))  # 256 bits
 
+# Maximum password length to prevent DoS attacks
+# 1024 characters is a reasonable limit that prevents resource exhaustion
+# while allowing for passphrases and complex passwords
+MAX_PASSWORD_LENGTH = 1024
+
 # Validate parameters are within safe ranges
 if TIME_COST < 1 or TIME_COST > 10:
     raise ValueError(f"ARGON2_TIME_COST must be between 1 and 10, got {TIME_COST}")
@@ -121,12 +126,9 @@ def hash_password(password: str) -> str:
         raise AuthenticationError("Password must be a string")
 
     # Enforce maximum password length to prevent DoS attacks
-    # 1024 characters is a reasonable limit that prevents resource exhaustion
-    # while allowing for passphrases and complex passwords
-    MAX_PASSWORD_LENGTH = 1024
     if len(password) > MAX_PASSWORD_LENGTH:
         logger.error("Password exceeds maximum length", password_length=len(password), max_length=MAX_PASSWORD_LENGTH)
-        raise AuthenticationError(f"Password must not exceed {MAX_PASSWORD_LENGTH} characters")
+        raise AuthenticationError(f"Password must not exceed {MAX_PASSWORD_LENGTH} characters")  # pylint: disable=redefined-outer-name  # Reason: MAX_PASSWORD_LENGTH is a module-level constant, not being redefined; Pylint false positive
 
     if not password:
         logger.error("Password cannot be empty")

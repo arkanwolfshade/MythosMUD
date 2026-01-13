@@ -26,6 +26,18 @@ from ...exceptions import LoggedHTTPException
 from ...models.npc import NPCDefinition, NPCDefinitionType, NPCSpawnRule
 from ...models.user import User
 from ...npc_database import get_npc_session
+from ...schemas.npc_admin import (
+    AdminAuditLogResponse,
+    AdminCleanupSessionsResponse,
+    AdminSessionsResponse,
+    NPCDespawnResponse,
+    NPCMoveResponse,
+    NPCPopulationStatsResponse,
+    NPCSpawnResponse,
+    NPCStatsResponse,
+    NPCSystemStatusResponse,
+    NPCZoneStatsResponse,
+)
 from ...services.admin_auth_service import AdminAction, get_admin_auth_service
 from ...services.npc_instance_service import get_npc_instance_service
 from ...services.npc_service import npc_service
@@ -276,7 +288,12 @@ async def get_npc_definition(
         definition = await npc_service.get_npc_definition(session, definition_id)
 
         if not definition:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="NPC definition not found")
+            context = create_context_from_request(request)
+            context.metadata["operation"] = "get_npc_definition"
+            context.metadata["definition_id"] = definition_id
+            raise LoggedHTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="NPC definition not found", context=context
+            )
 
         return NPCDefinitionResponse.from_orm(definition)
 
@@ -322,7 +339,13 @@ async def update_npc_definition(
         )
 
         if not definition:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="NPC definition not found")
+            context = create_context_from_request(request)
+            context.user_id = str(current_user.id) if current_user else None
+            context.metadata["operation"] = "update_npc_definition"
+            context.metadata["definition_id"] = definition_id
+            raise LoggedHTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="NPC definition not found", context=context
+            )
 
         # Commit the transaction
         await session.commit()
@@ -362,7 +385,13 @@ async def delete_npc_definition(
         deleted = await npc_service.delete_npc_definition(session, definition_id)
 
         if not deleted:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="NPC definition not found")
+            context = create_context_from_request(request)
+            context.user_id = str(current_user.id) if current_user else None
+            context.metadata["operation"] = "delete_npc_definition"
+            context.metadata["definition_id"] = definition_id
+            raise LoggedHTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="NPC definition not found", context=context
+            )
 
         # Commit the transaction
         await session.commit()
@@ -413,12 +442,12 @@ async def get_npc_instances(
         ) from e
 
 
-@npc_router.post("/instances/spawn")
+@npc_router.post("/instances/spawn", response_model=NPCSpawnResponse)
 async def spawn_npc_instance(
     spawn_data: NPCSpawnRequest,
     request: Request,
     current_user: User | None = Depends(get_current_user),
-) -> dict[str, Any]:
+) -> NPCSpawnResponse:
     """Spawn a new NPC instance."""
     try:
         validate_admin_permission(current_user, AdminAction.SPAWN_NPC, request)
@@ -450,10 +479,15 @@ async def spawn_npc_instance(
             room_id=spawn_data.room_id,
         )
 
-        return result
+        return NPCSpawnResponse(**result)
 
     except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
+        context = create_context_from_request(request)
+        context.user_id = str(current_user.id) if current_user else None
+        context.metadata["operation"] = "spawn_npc_instance"
+        context.metadata["definition_id"] = spawn_data.definition_id
+        context.metadata["room_id"] = spawn_data.room_id
+        raise LoggedHTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e), context=context) from e
     except HTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC spawn errors unpredictable, must create error context
@@ -464,12 +498,12 @@ async def spawn_npc_instance(
         ) from e
 
 
-@npc_router.delete("/instances/{npc_id}")
+@npc_router.delete("/instances/{npc_id}", response_model=NPCDespawnResponse)
 async def despawn_npc_instance(
     npc_id: str,
     request: Request,
     current_user: User | None = Depends(get_current_user),
-) -> dict[str, Any]:
+) -> NPCDespawnResponse:
     """Despawn an NPC instance."""
     try:
         validate_admin_permission(current_user, AdminAction.DESPAWN_NPC, request)
@@ -494,10 +528,14 @@ async def despawn_npc_instance(
             npc_name=result.get("npc_name"),
         )
 
-        return result
+        return NPCDespawnResponse(**result)
 
     except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
+        context = create_context_from_request(request)
+        context.user_id = str(current_user.id) if current_user else None
+        context.metadata["operation"] = "despawn_npc_instance"
+        context.metadata["npc_id"] = npc_id
+        raise LoggedHTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e), context=context) from e
     except HTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC despawn errors unpredictable, must create error context
@@ -508,13 +546,13 @@ async def despawn_npc_instance(
         ) from e
 
 
-@npc_router.put("/instances/{npc_id}/move")
+@npc_router.put("/instances/{npc_id}/move", response_model=NPCMoveResponse)
 async def move_npc_instance(
     npc_id: str,
     move_data: NPCMoveRequest,
     request: Request,
     current_user: User | None = Depends(get_current_user),
-) -> dict[str, Any]:
+) -> NPCMoveResponse:
     """Move an NPC instance to a different room."""
     try:
         validate_admin_permission(current_user, AdminAction.MOVE_NPC, request)
@@ -544,10 +582,15 @@ async def move_npc_instance(
             new_room_id=result.get("new_room_id"),
         )
 
-        return result
+        return NPCMoveResponse(**result)
 
     except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
+        context = create_context_from_request(request)
+        context.user_id = str(current_user.id) if current_user else None
+        context.metadata["operation"] = "move_npc_instance"
+        context.metadata["npc_id"] = npc_id
+        context.metadata["room_id"] = move_data.room_id
+        raise LoggedHTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e), context=context) from e
     except HTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC movement errors unpredictable, must create error context
@@ -558,12 +601,12 @@ async def move_npc_instance(
         ) from e
 
 
-@npc_router.get("/instances/{npc_id}/stats")
+@npc_router.get("/instances/{npc_id}/stats", response_model=NPCStatsResponse)
 async def get_npc_stats(
     npc_id: str,
     request: Request,
     current_user: User | None = Depends(get_current_user),
-) -> dict[str, Any]:
+) -> NPCStatsResponse:
     """Get stats for a specific NPC instance."""
     try:
         validate_admin_permission(current_user, AdminAction.GET_NPC_STATS, request)
@@ -585,10 +628,14 @@ async def get_npc_stats(
             npc_name=stats.get("name"),
         )
 
-        return stats
+        return NPCStatsResponse(**stats)
 
     except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
+        context = create_context_from_request(request)
+        context.user_id = str(current_user.id) if current_user else None
+        context.metadata["operation"] = "get_npc_stats"
+        context.metadata["npc_id"] = npc_id
+        raise LoggedHTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e), context=context) from e
     except HTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC stats retrieval errors unpredictable, must create error context
@@ -602,11 +649,11 @@ async def get_npc_stats(
 # --- Population Monitoring Endpoints ---
 
 
-@npc_router.get("/population")
+@npc_router.get("/population", response_model=NPCPopulationStatsResponse)
 async def get_npc_population_stats(
     request: Request,
     current_user: User | None = Depends(get_current_user),
-) -> dict[str, Any]:
+) -> NPCPopulationStatsResponse:
     """Get NPC population statistics."""
     try:
         validate_admin_permission(current_user, AdminAction.GET_POPULATION_STATS, request)
@@ -626,7 +673,7 @@ async def get_npc_population_stats(
             total_npcs=stats.get("total_npcs"),
         )
 
-        return stats
+        return NPCPopulationStatsResponse(**stats)
 
     except HTTPException:
         raise
@@ -640,11 +687,11 @@ async def get_npc_population_stats(
         ) from e
 
 
-@npc_router.get("/zones")
+@npc_router.get("/zones", response_model=NPCZoneStatsResponse)
 async def get_npc_zone_stats(
     request: Request,
     current_user: User | None = Depends(get_current_user),
-) -> dict[str, Any]:
+) -> NPCZoneStatsResponse:
     """Get NPC zone statistics."""
     try:
         validate_admin_permission(current_user, AdminAction.GET_ZONE_STATS, request)
@@ -666,7 +713,7 @@ async def get_npc_zone_stats(
             total_npcs=stats.get("total_npcs"),
         )
 
-        return stats
+        return NPCZoneStatsResponse(**stats)
 
     except HTTPException:
         raise
@@ -678,11 +725,11 @@ async def get_npc_zone_stats(
         ) from e
 
 
-@npc_router.get("/status")
+@npc_router.get("/status", response_model=NPCSystemStatusResponse)
 async def get_npc_system_status(
     request: Request,
     current_user: User | None = Depends(get_current_user),
-) -> dict[str, Any]:
+) -> NPCSystemStatusResponse:
     """Get NPC system status."""
     try:
         validate_admin_permission(current_user, AdminAction.GET_SYSTEM_STATUS, request)
@@ -704,7 +751,7 @@ async def get_npc_system_status(
             active_npcs=system_status.get("active_npcs"),
         )
 
-        return system_status
+        return NPCSystemStatusResponse(**system_status)
 
     except HTTPException:
         raise
@@ -820,7 +867,13 @@ async def delete_npc_spawn_rule(
         deleted = await npc_service.delete_spawn_rule(session, spawn_rule_id)
 
         if not deleted:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="NPC spawn rule not found")
+            context = create_context_from_request(request)
+            context.user_id = str(current_user.id) if current_user else None
+            context.metadata["operation"] = "delete_npc_spawn_rule"
+            context.metadata["spawn_rule_id"] = spawn_rule_id
+            raise LoggedHTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="NPC spawn rule not found", context=context
+            )
 
         # Commit the transaction
         await session.commit()
@@ -839,11 +892,11 @@ async def delete_npc_spawn_rule(
 # --- Admin Management Endpoints ---
 
 
-@npc_router.get("/admin/sessions")
+@npc_router.get("/admin/sessions", response_model=AdminSessionsResponse)
 async def get_admin_sessions(
     request: Request,
     current_user: User | None = Depends(get_current_user),
-) -> dict[str, Any]:
+) -> AdminSessionsResponse:
     """Get active admin sessions."""
     try:
         validate_admin_permission(current_user, AdminAction.GET_SYSTEM_STATUS, request)
@@ -857,7 +910,7 @@ async def get_admin_sessions(
             session_count=len(sessions),
         )
 
-        return {"sessions": sessions, "count": len(sessions)}
+        return AdminSessionsResponse(sessions=sessions, count=len(sessions))
 
     except HTTPException:
         raise
@@ -869,12 +922,12 @@ async def get_admin_sessions(
         ) from e
 
 
-@npc_router.get("/admin/audit-log")
+@npc_router.get("/admin/audit-log", response_model=AdminAuditLogResponse)
 async def get_admin_audit_log(
     request: Request,
     limit: int = 100,
     current_user: User | None = Depends(get_current_user),
-) -> dict[str, Any]:
+) -> AdminAuditLogResponse:
     """Get admin audit log."""
     try:
         validate_admin_permission(current_user, AdminAction.GET_SYSTEM_STATUS, request)
@@ -889,7 +942,7 @@ async def get_admin_audit_log(
             entries=len(audit_log),
         )
 
-        return {"audit_log": audit_log, "count": len(audit_log)}
+        return AdminAuditLogResponse(audit_log=audit_log, count=len(audit_log))
 
     except HTTPException:
         raise
@@ -903,11 +956,11 @@ async def get_admin_audit_log(
         ) from e
 
 
-@npc_router.post("/admin/cleanup-sessions")
+@npc_router.post("/admin/cleanup-sessions", response_model=AdminCleanupSessionsResponse)
 async def cleanup_admin_sessions(
     request: Request,
     current_user: User | None = Depends(get_current_user),
-) -> dict[str, Any]:
+) -> AdminCleanupSessionsResponse:
     """Clean up expired admin sessions."""
     try:
         validate_admin_permission(current_user, AdminAction.GET_SYSTEM_STATUS, request)
@@ -921,7 +974,9 @@ async def cleanup_admin_sessions(
             cleaned_count=cleaned_count,
         )
 
-        return {"message": f"Cleaned up {cleaned_count} expired sessions", "cleaned_count": cleaned_count}
+        return AdminCleanupSessionsResponse(
+            message=f"Cleaned up {cleaned_count} expired sessions", cleaned_count=cleaned_count
+        )
 
     except HTTPException:
         raise

@@ -10,23 +10,33 @@ are essential for maintaining oversight of our eldritch systems.
 
 from __future__ import annotations
 
+from dataclasses import asdict
 from datetime import UTC, datetime
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
+from ..dependencies import AsyncPersistenceDep
 from ..exceptions import LoggedHTTPException
 from ..game.movement_monitor import get_movement_monitor
 from ..models.health import HealthErrorResponse, HealthResponse, HealthStatus
-
-# Removed: from ..persistence import get_persistence - now using async_persistence from request
+from ..monitoring.monitoring_dashboard import get_monitoring_dashboard
 from ..realtime.connection_manager import resolve_connection_manager
 from ..services.health_service import get_health_service
+from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import create_context_from_request
 
+if TYPE_CHECKING:
+    from ..async_persistence import AsyncPersistenceLayer
+
+logger = get_logger(__name__)
+
 monitoring_router = APIRouter(prefix="/monitoring", tags=["monitoring"])
+
+# System-level monitoring router (for root-level endpoints)
+system_monitoring_router = APIRouter(tags=["monitoring", "system"])
 
 
 def _resolve_connection_manager_from_request(request: Request):
@@ -139,6 +149,20 @@ class ConnectionHealthStatsResponse(BaseModel):
     timestamp: float
 
 
+class MessageResponse(BaseModel):
+    """Generic response model for operations that return a simple message."""
+
+    message: str
+
+
+class PerformanceSummaryResponse(BaseModel):
+    """Response model for performance summary endpoint."""
+
+    summary: dict[str, Any]
+    alerts: list[dict[str, Any]]
+    timestamp: str
+
+
 @monitoring_router.get("/metrics", response_model=MetricsResponse)
 async def get_movement_metrics(request: Request) -> MetricsResponse:
     """Get comprehensive movement system metrics."""
@@ -161,15 +185,16 @@ async def get_movement_metrics(request: Request) -> MetricsResponse:
 
 
 @monitoring_router.get("/integrity", response_model=IntegrityResponse)
-async def validate_room_integrity(request: Request) -> IntegrityResponse:
+async def validate_room_integrity(
+    request: Request, persistence: AsyncPersistenceLayer = AsyncPersistenceDep
+) -> IntegrityResponse:
     """Validate room data integrity and return results."""
     try:
         monitor = get_movement_monitor()
-        persistence = request.app.state.persistence  # Now async_persistence
 
         # Get all rooms from persistence
         rooms = {}
-        room_list = await persistence.list_rooms()
+        room_list = persistence.list_rooms()
         for room in room_list:
             rooms[room.id] = room
 
@@ -203,44 +228,29 @@ async def get_system_alerts(request: Request) -> AlertsResponse:
         raise LoggedHTTPException(status_code=500, detail=f"Error retrieving alerts: {str(e)}", context=context) from e
 
 
-@monitoring_router.post("/reset")
-async def reset_metrics(request: Request) -> dict[str, str]:
+@monitoring_router.post("/reset", response_model=MessageResponse)
+async def reset_metrics(request: Request) -> MessageResponse:
     """Reset all movement metrics (admin only)."""
     try:
         from ..game.movement_monitor import reset_movement_monitor
 
         reset_movement_monitor()
-        return {"message": "Metrics reset successfully"}
+        return MessageResponse(message="Metrics reset successfully")
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Metrics reset errors unpredictable, must create error context
         context = create_context_from_request(request)
         context.metadata["operation"] = "reset_metrics"
         raise LoggedHTTPException(status_code=500, detail=f"Error resetting metrics: {str(e)}", context=context) from e
 
 
-@monitoring_router.get("/performance-summary")
-async def get_performance_summary(request: Request) -> dict[str, Any]:
+@monitoring_router.get("/performance-summary", response_model=PerformanceSummaryResponse)
+async def get_performance_summary(request: Request) -> PerformanceSummaryResponse:
     """Get a human-readable performance summary."""
     try:
         monitor = get_movement_monitor()
-        metrics = monitor.get_metrics()
-        alerts = monitor.get_alerts()
+        # Use service method that handles formatting internally
+        summary = monitor.get_performance_summary()
 
-        summary = {
-            "summary": {
-                "total_movements": metrics["total_movements"],
-                "success_rate": f"{metrics['success_rate']:.2%}",
-                "avg_movement_time": f"{metrics['avg_movement_time_ms']:.2f}ms",
-                "current_concurrent": metrics["current_concurrent_movements"],
-                "max_concurrent": metrics["max_concurrent_movements"],
-                "integrity_rate": f"{metrics['integrity_rate']:.2%}",
-                "uptime": f"{metrics['uptime_seconds']:.1f}s",
-                "alert_count": len(alerts),
-            },
-            "alerts": alerts,
-            "timestamp": metrics["timestamp"].isoformat(),
-        }
-
-        return summary
+        return PerformanceSummaryResponse(**summary)
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Performance summary errors unpredictable, must create error context
         context = create_context_from_request(request)
         context.metadata["operation"] = "get_performance_summary"
@@ -282,14 +292,14 @@ async def get_memory_alerts(request: Request) -> MemoryAlertsResponse:
         ) from e
 
 
-@monitoring_router.post("/memory/cleanup")
-async def force_memory_cleanup(request: Request) -> dict[str, str]:
+@monitoring_router.post("/memory/cleanup", response_model=MessageResponse)
+async def force_memory_cleanup(request: Request) -> MessageResponse:
     """Force immediate memory cleanup (admin only)."""
     try:
         # AI Agent: Get connection_manager from container instead of global import
         connection_manager = _resolve_connection_manager_from_request(request)
         await connection_manager.force_cleanup()
-        return {"message": "Memory cleanup completed successfully"}
+        return MessageResponse(message="Memory cleanup completed successfully")
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Memory cleanup errors unpredictable, must create error context
         context = create_context_from_request(request)
         context.metadata["operation"] = "force_memory_cleanup"
@@ -371,3 +381,132 @@ async def get_health_status(request: Request) -> HealthResponse | JSONResponse:
         context = create_context_from_request(request)
         context.metadata["operation"] = "get_health_status"
         raise LoggedHTTPException(status_code=500, detail=error_response.model_dump(), context=context) from e  # type: ignore[arg-type]  # Reason: LoggedHTTPException accepts context parameter, but mypy cannot infer it from FastAPI exception base class signature
+
+
+# System-level monitoring endpoints (moved from main.py)
+# These use the general monitoring dashboard, not the movement monitor
+
+
+class SystemHealthResponse(BaseModel):
+    """Response model for system health check."""
+
+    status: str
+    timestamp: str
+    performance_score: float
+    error_rate: float
+    warning_rate: float
+    active_users: int
+
+
+class SystemMetricsResponse(BaseModel):
+    """Response model for system metrics."""
+
+    model_config = ConfigDict(extra="allow")
+
+
+class SystemMonitoringSummaryResponse(BaseModel):
+    """Response model for system monitoring summary."""
+
+    model_config = ConfigDict(extra="allow")
+
+
+class SystemAlertsResponse(BaseModel):
+    """Response model for system alerts."""
+
+    alerts: list[dict[str, Any]]
+
+
+class AlertResolveResponse(BaseModel):
+    """Response model for alert resolution."""
+
+    message: str
+
+
+@system_monitoring_router.get("/health", response_model=SystemHealthResponse)
+async def get_system_health(request: Request) -> SystemHealthResponse:
+    """Enhanced health check endpoint using monitoring dashboard."""
+    try:
+        dashboard = get_monitoring_dashboard()
+        system_health = dashboard.get_system_health()
+
+        return SystemHealthResponse(
+            status=system_health.status,
+            timestamp=system_health.timestamp.isoformat(),
+            performance_score=system_health.performance_score,
+            error_rate=system_health.error_rate,
+            warning_rate=system_health.warning_rate,
+            active_users=system_health.active_users,
+        )
+    except Exception as error:
+        context = create_context_from_request(request)
+        context.metadata["operation"] = "get_system_health"
+        raise LoggedHTTPException(status_code=503, detail="Health check failed", context=context) from error
+
+
+@system_monitoring_router.get("/metrics", response_model=SystemMetricsResponse)
+async def get_system_metrics(request: Request) -> SystemMetricsResponse:
+    """Get system metrics from monitoring dashboard."""
+    try:
+        dashboard = get_monitoring_dashboard()
+        result = dashboard.export_monitoring_data()
+        if not isinstance(result, dict):
+            raise TypeError("export_monitoring_data must return a dict")
+        # Type narrowing: after isinstance check, result is guaranteed to be a dict
+        result_dict: dict[str, Any] = result
+        return SystemMetricsResponse(**result_dict)
+    except Exception as error:
+        context = create_context_from_request(request)
+        context.metadata["operation"] = "get_system_metrics"
+        raise LoggedHTTPException(status_code=500, detail="Metrics retrieval failed", context=context) from error
+
+
+@system_monitoring_router.get("/monitoring/summary", response_model=SystemMonitoringSummaryResponse)
+async def get_system_monitoring_summary(request: Request) -> SystemMonitoringSummaryResponse:
+    """Get comprehensive monitoring summary."""
+    try:
+        dashboard = get_monitoring_dashboard()
+        result = dashboard.get_monitoring_summary()
+        # Convert MonitoringSummary dataclass to dict for Pydantic model
+        result_dict = asdict(result)
+        return SystemMonitoringSummaryResponse(**result_dict)
+    except Exception as error:
+        context = create_context_from_request(request)
+        context.metadata["operation"] = "get_system_monitoring_summary"
+        raise LoggedHTTPException(status_code=500, detail="Monitoring summary failed", context=context) from error
+
+
+@system_monitoring_router.get("/monitoring/alerts", response_model=SystemAlertsResponse)
+async def get_system_monitoring_alerts(request: Request) -> SystemAlertsResponse:
+    """Get system alerts from monitoring dashboard."""
+    try:
+        dashboard = get_monitoring_dashboard()
+        alerts = dashboard.check_alerts()
+        return SystemAlertsResponse(
+            alerts=[alert.to_dict() if hasattr(alert, "to_dict") else alert for alert in alerts]
+        )
+    except Exception as error:
+        context = create_context_from_request(request)
+        context.metadata["operation"] = "get_system_monitoring_alerts"
+        raise LoggedHTTPException(status_code=500, detail="Alert retrieval failed", context=context) from error
+
+
+@system_monitoring_router.post("/monitoring/alerts/{alert_id}/resolve", response_model=AlertResolveResponse)
+async def resolve_system_alert(alert_id: str, request: Request) -> AlertResolveResponse:
+    """Resolve a system alert."""
+    try:
+        dashboard = get_monitoring_dashboard()
+        success = dashboard.resolve_alert(alert_id)
+
+        if success:
+            return AlertResolveResponse(message=f"Alert {alert_id} resolved")
+        context = create_context_from_request(request)
+        context.metadata["operation"] = "resolve_system_alert"
+        context.metadata["alert_id"] = alert_id
+        raise LoggedHTTPException(status_code=404, detail="Alert not found", context=context)
+    except LoggedHTTPException:
+        raise
+    except Exception as error:
+        context = create_context_from_request(request)
+        context.metadata["operation"] = "resolve_system_alert"
+        context.metadata["alert_id"] = alert_id
+        raise LoggedHTTPException(status_code=500, detail="Alert resolution failed", context=context) from error
