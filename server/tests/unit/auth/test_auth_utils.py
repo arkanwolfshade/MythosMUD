@@ -336,17 +336,15 @@ def test_decode_access_token_attribute_error():
 
 
 def test_hash_password_empty_string():
-    """Test hashing empty string password."""
-    hashed = hash_password("")
-    assert isinstance(hashed, str)
-    assert len(hashed) > 0
+    """Test hashing empty string password raises AuthenticationError."""
+    with pytest.raises(AuthenticationError, match="Password cannot be empty"):
+        hash_password("")
 
 
 def test_verify_password_empty_string():
-    """Test verifying empty string password."""
-    hashed = hash_password("")
-    result = verify_password("", hashed)
-    assert result is True
+    """Test verifying empty string password - cannot hash empty password."""
+    with pytest.raises(AuthenticationError, match="Password cannot be empty"):
+        hash_password("")
 
 
 def test_create_access_token_with_none_expires_delta():
@@ -381,19 +379,17 @@ def test_create_access_token_with_audience():
 
 
 def test_hash_password_with_very_long_password():
-    """Test hashing a very long password."""
+    """Test hashing a very long password raises AuthenticationError."""
     long_password = "a" * 10000
-    hashed = hash_password(long_password)
-    assert isinstance(hashed, str)
-    assert len(hashed) > 0
+    with pytest.raises(AuthenticationError, match="Password must not exceed 1024 characters"):
+        hash_password(long_password)
 
 
 def test_verify_password_with_very_long_password():
-    """Test verifying a very long password."""
+    """Test verifying a very long password - cannot hash password exceeding limit."""
     long_password = "a" * 10000
-    hashed = hash_password(long_password)
-    result = verify_password(long_password, hashed)
-    assert result is True
+    with pytest.raises(AuthenticationError, match="Password must not exceed 1024 characters"):
+        hash_password(long_password)
 
 
 def test_create_access_token_with_custom_expires_delta_zero():
