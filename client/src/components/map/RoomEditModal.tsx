@@ -164,6 +164,7 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({ isOpen, onClose, r
         if (error) {
           return { ...prev, [field]: error };
         } else {
+          // Destructuring removes field from errors object, _removed variable intentionally unused
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { [field]: _removed, ...rest } = prev;
           return rest;

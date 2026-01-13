@@ -115,7 +115,7 @@ class HallucinationFrequencyService:
                     )
                 return should_trigger
 
-            except Exception as e:  # pylint: disable=broad-except
+            except Exception as e:  # pylint: disable=broad-except  # Reason: Hallucination frequency check errors unpredictable, must catch all exceptions to handle various failure modes during frequency validation
                 logger.warning(
                     "Error checking hallucination frequency",
                     player_id=player_id,

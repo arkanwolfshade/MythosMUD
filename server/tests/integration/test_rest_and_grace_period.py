@@ -28,8 +28,8 @@ if not os.environ.get("MYTHOSMUD_JWT_SECRET"):
 
 # Imports must come after environment variable setup to allow config initialization
 # Use lazy imports to avoid circular import issues
-# ruff: noqa: E402, I001
-# pylint: disable=wrong-import-position
+# ruff: noqa: E402, I001  # Reason: Imports must come after environment variable setup to allow config initialization, wrong import position is intentional
+# pylint: disable=wrong-import-position  # Reason: Imports must come after environment variable setup to allow config initialization, wrong import position is intentional
 from server.realtime.disconnect_grace_period import (
     cancel_grace_period,
     is_player_in_grace_period,
@@ -60,9 +60,9 @@ def mock_connection_manager_full():
     manager.disconnect_lock.__aenter__ = AsyncMock(return_value=None)
     manager.disconnect_lock.__aexit__ = AsyncMock(return_value=None)
     # Accessing protected member is necessary to mock the method used by player_presence_tracker implementation
-    manager._get_player = AsyncMock()  # pylint: disable=protected-access
+    manager._get_player = AsyncMock()  # pylint: disable=protected-access  # Reason: Accessing protected member is necessary to mock the method used by player_presence_tracker implementation
     # Accessing protected member is necessary to mock the method used by player_presence_tracker implementation
-    manager._cleanup_ghost_players = MagicMock()  # pylint: disable=protected-access
+    manager._cleanup_ghost_players = MagicMock()  # pylint: disable=protected-access  # Reason: Accessing protected member is necessary to mock the method used by player_presence_tracker implementation
     manager.force_disconnect_player = AsyncMock()
     manager.player_websockets = {}
     return manager
@@ -76,16 +76,16 @@ def mock_persistence_full():
 
 
 @pytest.mark.asyncio
-async def test_unintentional_disconnect_starts_grace_period(mock_connection_manager_full, mock_persistence_full):  # pylint: disable=redefined-outer-name
+async def test_unintentional_disconnect_starts_grace_period(mock_connection_manager_full, mock_persistence_full):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
     """Test that unintentional disconnect starts grace period."""
     # Lazy import to avoid circular import
-    from server.realtime.player_presence_tracker import track_player_disconnected_impl  # noqa: E402
+    from server.realtime.player_presence_tracker import track_player_disconnected_impl  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
 
     player_id = uuid.uuid4()
     mock_player = MagicMock()
     mock_player.current_room_id = "room_123"
     # Accessing protected member is necessary to mock the method used by player_presence_tracker implementation
-    mock_connection_manager_full._get_player.return_value = mock_player  # pylint: disable=protected-access
+    mock_connection_manager_full._get_player.return_value = mock_player  # pylint: disable=protected-access  # Reason: Accessing protected member is necessary to mock the method used by player_presence_tracker implementation
     mock_connection_manager_full.async_persistence = mock_persistence_full
 
     with patch("server.realtime.player_presence_tracker._should_skip_disconnect", return_value=False):
@@ -103,16 +103,16 @@ async def test_unintentional_disconnect_starts_grace_period(mock_connection_mana
 
 
 @pytest.mark.asyncio
-async def test_intentional_disconnect_no_grace_period(mock_connection_manager_full, mock_persistence_full):  # pylint: disable=redefined-outer-name
+async def test_intentional_disconnect_no_grace_period(mock_connection_manager_full, mock_persistence_full):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
     """Test that intentional disconnect does NOT start grace period."""
     # Lazy import to avoid circular import
-    from server.realtime.player_presence_tracker import track_player_disconnected_impl  # noqa: E402
+    from server.realtime.player_presence_tracker import track_player_disconnected_impl  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
 
     player_id = uuid.uuid4()
     mock_player = MagicMock()
     mock_player.current_room_id = "room_123"
     # Accessing protected member is necessary to mock the method used by player_presence_tracker implementation
-    mock_connection_manager_full._get_player.return_value = mock_player  # pylint: disable=protected-access
+    mock_connection_manager_full._get_player.return_value = mock_player  # pylint: disable=protected-access  # Reason: Accessing protected member is necessary to mock the method used by player_presence_tracker implementation
     mock_connection_manager_full.async_persistence = mock_persistence_full
     mock_connection_manager_full.intentional_disconnects.add(player_id)  # Mark as intentional
 
@@ -141,12 +141,12 @@ async def test_intentional_disconnect_no_grace_period(mock_connection_manager_fu
 
 
 @pytest.mark.asyncio
-async def test_rest_command_blocks_during_combat(  # pylint: disable=redefined-outer-name
+async def test_rest_command_blocks_during_combat(  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
     mock_app_with_services, mock_connection_manager_full, mock_persistence_full
 ):
     """Test that /rest command is blocked during combat."""
     # Lazy import to avoid circular import
-    from server.commands.rest_command import handle_rest_command  # noqa: E402
+    from server.commands.rest_command import handle_rest_command  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
 
     player_id = uuid.uuid4()
     mock_player = MagicMock()
@@ -173,12 +173,12 @@ async def test_rest_command_blocks_during_combat(  # pylint: disable=redefined-o
 
 
 @pytest.mark.asyncio
-async def test_rest_command_starts_countdown_not_in_combat(  # pylint: disable=redefined-outer-name
+async def test_rest_command_starts_countdown_not_in_combat(  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
     mock_app_with_services, mock_connection_manager_full, mock_persistence_full
 ):
     """Test that /rest command starts countdown when not in combat."""
     # Lazy import to avoid circular import
-    from server.commands.rest_command import handle_rest_command  # noqa: E402
+    from server.commands.rest_command import handle_rest_command  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
 
     player_id = uuid.uuid4()
     mock_player = MagicMock()
@@ -217,10 +217,10 @@ async def test_rest_command_starts_countdown_not_in_combat(  # pylint: disable=r
 
 
 @pytest.mark.asyncio
-async def test_rest_interrupts_combat_action(mock_connection_manager_full):  # pylint: disable=redefined-outer-name
+async def test_rest_interrupts_combat_action(mock_connection_manager_full):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test that combat action interrupts rest countdown."""
     # Lazy import to avoid circular import
-    from server.commands.rest_command import _cancel_rest_countdown  # noqa: E402
+    from server.commands.rest_command import _cancel_rest_countdown  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
 
     player_id = uuid.uuid4()
     task = asyncio.create_task(asyncio.sleep(10))
@@ -235,7 +235,7 @@ async def test_rest_interrupts_combat_action(mock_connection_manager_full):  # p
 
 
 @pytest.mark.asyncio
-async def test_reconnection_cancels_grace_period(mock_connection_manager_full):  # pylint: disable=redefined-outer-name
+async def test_reconnection_cancels_grace_period(mock_connection_manager_full):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test that reconnection cancels grace period."""
     player_id = uuid.uuid4()
     task = asyncio.create_task(asyncio.sleep(30))
@@ -250,7 +250,7 @@ async def test_reconnection_cancels_grace_period(mock_connection_manager_full): 
 
 
 @pytest.mark.asyncio
-async def test_grace_period_player_can_auto_attack(mock_connection_manager_full):  # pylint: disable=redefined-outer-name
+async def test_grace_period_player_can_auto_attack(mock_connection_manager_full):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test that grace period player can auto-attack when attacked."""
     player_id = uuid.uuid4()
     task = asyncio.create_task(asyncio.sleep(30))
@@ -264,7 +264,7 @@ async def test_grace_period_player_can_auto_attack(mock_connection_manager_full)
 
 
 @pytest.mark.asyncio
-async def test_grace_period_player_cannot_use_commands(mock_connection_manager_full):  # pylint: disable=redefined-outer-name
+async def test_grace_period_player_cannot_use_commands(mock_connection_manager_full):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test that grace period player cannot use commands."""
     player_id = uuid.uuid4()
     task = asyncio.create_task(asyncio.sleep(30))
@@ -278,12 +278,12 @@ async def test_grace_period_player_cannot_use_commands(mock_connection_manager_f
 
 
 @pytest.mark.asyncio
-async def test_rest_location_instant_disconnect(  # pylint: disable=redefined-outer-name
+async def test_rest_location_instant_disconnect(  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
     mock_app_with_services, mock_connection_manager_full, mock_persistence_full
 ):
     """Test that rest location provides instant disconnect when not in combat."""
     # Lazy import to avoid circular import
-    from server.commands.rest_command import handle_rest_command  # noqa: E402
+    from server.commands.rest_command import handle_rest_command  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
 
     player_id = uuid.uuid4()
     mock_player = MagicMock()
@@ -320,12 +320,12 @@ async def test_rest_location_instant_disconnect(  # pylint: disable=redefined-ou
 
 
 @pytest.mark.asyncio
-async def test_rest_location_blocked_during_combat(  # pylint: disable=redefined-outer-name
+async def test_rest_location_blocked_during_combat(  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
     mock_app_with_services, mock_connection_manager_full, mock_persistence_full
 ):
     """Test that /rest in rest location is still blocked during combat."""
     # Lazy import to avoid circular import
-    from server.commands.rest_command import handle_rest_command  # noqa: E402
+    from server.commands.rest_command import handle_rest_command  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
 
     player_id = uuid.uuid4()
     mock_player = MagicMock()
@@ -357,7 +357,7 @@ async def test_rest_location_blocked_during_combat(  # pylint: disable=redefined
 
 
 @pytest.mark.asyncio
-async def test_visual_indicator_in_grace_period(mock_connection_manager_full):  # pylint: disable=redefined-outer-name
+async def test_visual_indicator_in_grace_period(mock_connection_manager_full):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test that visual indicator (linkdead) is shown for grace period players."""
     player_id = uuid.uuid4()
     task = asyncio.create_task(asyncio.sleep(30))
@@ -371,10 +371,10 @@ async def test_visual_indicator_in_grace_period(mock_connection_manager_full):  
 
 
 @pytest.mark.asyncio
-async def test_rest_countdown_completes_disconnect(mock_connection_manager_full, mock_persistence_full):  # pylint: disable=redefined-outer-name
+async def test_rest_countdown_completes_disconnect(mock_connection_manager_full, mock_persistence_full):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
     """Test that rest countdown completes and disconnects player."""
     # Lazy import to avoid circular import
-    from server.commands.rest_command import _start_rest_countdown  # noqa: E402
+    from server.commands.rest_command import _start_rest_countdown  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
 
     player_id = uuid.uuid4()
     player_name = "TestPlayer"

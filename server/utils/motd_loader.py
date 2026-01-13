@@ -26,7 +26,7 @@ def load_motd() -> str:
 
     try:
         config = get_config()
-        motd_file = config.get("motd_file", "./data/motd.txt")  # type: ignore[attr-defined]
+        motd_file = config.get("motd_file", "./data/motd.txt")  # type: ignore[attr-defined]  # Reason: Legacy dict format support for tests, config.get() not available on AppConfig but supported for backward compatibility
 
         # Resolve relative path from server directory to project root
         server_dir = os.path.dirname(os.path.abspath(__file__))

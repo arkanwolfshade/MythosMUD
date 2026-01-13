@@ -3,10 +3,10 @@ Unit tests for container API endpoints.
 
 Tests open, transfer, close, and loot-all container operations.
 """
-# pylint: disable=redefined-outer-name
+# pylint: disable=redefined-outer-name  # Reason: Pytest fixtures are injected as function parameters, which pylint incorrectly flags as redefining names from outer scope, this is standard pytest usage
 # Pytest fixtures are injected as function parameters, which triggers
 # "redefined-outer-name" warnings. This is standard pytest pattern.
-# pylint: disable=too-many-lines
+# pylint: disable=too-many-lines  # Reason: Test file exceeds 550 lines but contains comprehensive test coverage for container API, splitting would reduce cohesion
 
 import uuid
 from unittest.mock import AsyncMock, MagicMock, Mock, patch
@@ -73,7 +73,9 @@ class TestHelperFunctions:
     def test_create_error_context(self, mock_request, mock_user):
         """Test create_error_context() creates context."""
         # Lazy import to avoid circular import
-        from server.api.container_helpers import create_error_context  # noqa: E402
+        from server.api.container_helpers import (
+            create_error_context,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         context = create_error_context(mock_request, mock_user, operation="test")
         assert context.user_id == str(mock_user.id)
@@ -83,7 +85,9 @@ class TestHelperFunctions:
     async def test_get_player_id_from_user_success(self, mock_user, mock_persistence):
         """Test get_player_id_from_user() returns player ID."""
         # Lazy import to avoid circular import
-        from server.api.container_helpers import get_player_id_from_user  # noqa: E402
+        from server.api.container_helpers import (
+            get_player_id_from_user,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         mock_player = MagicMock()
         mock_player.player_id = uuid.uuid4()
@@ -96,7 +100,9 @@ class TestHelperFunctions:
     async def test_get_player_id_from_user_not_found(self, mock_user, mock_persistence):
         """Test get_player_id_from_user() raises when player not found."""
         # Lazy import to avoid circular import
-        from server.api.container_helpers import get_player_id_from_user  # noqa: E402
+        from server.api.container_helpers import (
+            get_player_id_from_user,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         mock_persistence.get_player_by_user_id = AsyncMock(return_value=None)
 
@@ -107,7 +113,9 @@ class TestHelperFunctions:
     def test_get_container_service_with_persistence(self, mock_persistence):
         """Test get_container_service() with provided persistence."""
         # Lazy import to avoid circular import
-        from server.api.container_helpers import get_container_service  # noqa: E402
+        from server.api.container_helpers import (
+            get_container_service,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         service = get_container_service(persistence=mock_persistence)
         assert isinstance(service, ContainerService)
@@ -115,7 +123,9 @@ class TestHelperFunctions:
     def test_get_container_service_from_request(self, mock_request, mock_persistence):
         """Test get_container_service() gets persistence from request."""
         # Lazy import to avoid circular import
-        from server.api.container_helpers import get_container_service  # noqa: E402
+        from server.api.container_helpers import (
+            get_container_service,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         mock_request.app.state.persistence = mock_persistence
         service = get_container_service(request=mock_request)
@@ -124,7 +134,9 @@ class TestHelperFunctions:
     def test_get_container_service_raises_without_args(self):
         """Test get_container_service() raises when neither persistence nor request provided."""
         # Lazy import to avoid circular import
-        from server.api.container_helpers import get_container_service  # noqa: E402
+        from server.api.container_helpers import (
+            get_container_service,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         with pytest.raises(ValueError, match="Either persistence or request must be provided"):
             get_container_service()
@@ -137,7 +149,10 @@ class TestOpenContainer:
     async def test_open_container_not_authenticated(self, mock_request):
         """Test open_container() requires authentication."""
         # Lazy import to avoid circular import
-        from server.api.containers import OpenContainerRequest, open_container  # noqa: E402
+        from server.api.containers import (  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+            OpenContainerRequest,
+            open_container,
+        )
 
         request_data = OpenContainerRequest(container_id=uuid.uuid4())
         with pytest.raises(LoggedHTTPException) as exc_info:
@@ -152,7 +167,10 @@ class TestOpenContainer:
     async def test_open_container_rate_limit(self, mock_request, mock_user):
         """Test open_container() enforces rate limiting."""
         # Lazy import to avoid circular import
-        from server.api.containers import OpenContainerRequest, open_container  # noqa: E402
+        from server.api.containers import (  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+            OpenContainerRequest,
+            open_container,
+        )
 
         request_data = OpenContainerRequest(container_id=uuid.uuid4())
         with patch("server.api.container_helpers.container_rate_limiter") as mock_limiter:
@@ -169,7 +187,10 @@ class TestOpenContainer:
     async def test_open_container_success(self, mock_request, mock_user, mock_persistence, mock_container_service):
         """Test open_container() successfully opens container."""
         # Lazy import to avoid circular import
-        from server.api.containers import OpenContainerRequest, open_container  # noqa: E402
+        from server.api.containers import (  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+            OpenContainerRequest,
+            open_container,
+        )
 
         container_id = uuid.uuid4()
         request_data = OpenContainerRequest(container_id=container_id)
@@ -201,7 +222,10 @@ class TestOpenContainer:
     async def test_open_container_not_found(self, mock_request, mock_user, mock_persistence, mock_container_service):
         """Test open_container() handles ContainerNotFoundError."""
         # Lazy import to avoid circular import
-        from server.api.containers import OpenContainerRequest, open_container  # noqa: E402
+        from server.api.containers import (  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+            OpenContainerRequest,
+            open_container,
+        )
 
         container_id = uuid.uuid4()
         request_data = OpenContainerRequest(container_id=container_id)
@@ -227,7 +251,10 @@ class TestOpenContainer:
     async def test_open_container_locked(self, mock_request, mock_user, mock_persistence, mock_container_service):
         """Test open_container() handles ContainerLockedError."""
         # Lazy import to avoid circular import
-        from server.api.containers import OpenContainerRequest, open_container  # noqa: E402
+        from server.api.containers import (  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+            OpenContainerRequest,
+            open_container,
+        )
 
         container_id = uuid.uuid4()
         request_data = OpenContainerRequest(container_id=container_id)
@@ -254,7 +281,10 @@ class TestOpenContainer:
     ):
         """Test open_container() handles ContainerAccessDeniedError."""
         # Lazy import to avoid circular import
-        from server.api.containers import OpenContainerRequest, open_container  # noqa: E402
+        from server.api.containers import (  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+            OpenContainerRequest,
+            open_container,
+        )
 
         container_id = uuid.uuid4()
         request_data = OpenContainerRequest(container_id=container_id)
@@ -283,7 +313,10 @@ class TestTransferItems:
     async def test_transfer_items_not_authenticated(self, mock_request):
         """Test transfer_items() requires authentication."""
         # Lazy import to avoid circular import
-        from server.api.containers import TransferContainerRequest, transfer_items  # noqa: E402
+        from server.api.containers import (  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+            TransferContainerRequest,
+            transfer_items,
+        )
 
         request_data = TransferContainerRequest(
             container_id=uuid.uuid4(),
@@ -304,7 +337,10 @@ class TestTransferItems:
     async def test_transfer_items_rate_limit(self, mock_request, mock_user):
         """Test transfer_items() enforces rate limiting."""
         # Lazy import to avoid circular import
-        from server.api.containers import TransferContainerRequest, transfer_items  # noqa: E402
+        from server.api.containers import (  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+            TransferContainerRequest,
+            transfer_items,
+        )
 
         request_data = TransferContainerRequest(
             container_id=uuid.uuid4(),
@@ -327,7 +363,10 @@ class TestTransferItems:
     async def test_transfer_items_to_container(self, mock_request, mock_user, mock_persistence, mock_container_service):
         """Test transfer_items() transfers to container."""
         # Lazy import to avoid circular import
-        from server.api.containers import TransferContainerRequest, transfer_items  # noqa: E402
+        from server.api.containers import (  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+            TransferContainerRequest,
+            transfer_items,
+        )
 
         container_id = uuid.uuid4()
         request_data = TransferContainerRequest(
@@ -359,7 +398,10 @@ class TestTransferItems:
     async def test_transfer_items_to_player(self, mock_request, mock_user, mock_persistence, mock_container_service):
         """Test transfer_items() transfers to player."""
         # Lazy import to avoid circular import
-        from server.api.containers import TransferContainerRequest, transfer_items  # noqa: E402
+        from server.api.containers import (  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+            TransferContainerRequest,
+            transfer_items,
+        )
 
         container_id = uuid.uuid4()
         request_data = TransferContainerRequest(
@@ -393,7 +435,10 @@ class TestTransferItems:
     ):
         """Test transfer_items() handles ContainerCapacityError."""
         # Lazy import to avoid circular import
-        from server.api.containers import TransferContainerRequest, transfer_items  # noqa: E402
+        from server.api.containers import (  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+            TransferContainerRequest,
+            transfer_items,
+        )
 
         container_id = uuid.uuid4()
         request_data = TransferContainerRequest(
@@ -426,7 +471,10 @@ class TestTransferItems:
     async def test_transfer_items_stale_token(self, mock_request, mock_user, mock_persistence, mock_container_service):
         """Test transfer_items() handles stale mutation token."""
         # Lazy import to avoid circular import
-        from server.api.containers import TransferContainerRequest, transfer_items  # noqa: E402
+        from server.api.containers import (  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+            TransferContainerRequest,
+            transfer_items,
+        )
 
         container_id = uuid.uuid4()
         request_data = TransferContainerRequest(
@@ -463,7 +511,10 @@ class TestCloseContainer:
     async def test_close_container_not_authenticated(self, mock_request):
         """Test close_container() requires authentication."""
         # Lazy import to avoid circular import
-        from server.api.containers import CloseContainerRequest, close_container  # noqa: E402
+        from server.api.containers import (  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+            CloseContainerRequest,
+            close_container,
+        )
 
         request_data = CloseContainerRequest(container_id=uuid.uuid4(), mutation_token="token")
         with pytest.raises(LoggedHTTPException) as exc_info:
@@ -478,7 +529,10 @@ class TestCloseContainer:
     async def test_close_container_rate_limit(self, mock_request, mock_user):
         """Test close_container() enforces rate limiting."""
         # Lazy import to avoid circular import
-        from server.api.containers import CloseContainerRequest, close_container  # noqa: E402
+        from server.api.containers import (  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+            CloseContainerRequest,
+            close_container,
+        )
 
         request_data = CloseContainerRequest(container_id=uuid.uuid4(), mutation_token="token")
         with patch("server.api.container_helpers.container_rate_limiter") as mock_limiter:
@@ -495,7 +549,10 @@ class TestCloseContainer:
     async def test_close_container_success(self, mock_request, mock_user, mock_persistence, mock_container_service):
         """Test close_container() successfully closes container."""
         # Lazy import to avoid circular import
-        from server.api.containers import CloseContainerRequest, close_container  # noqa: E402
+        from server.api.containers import (  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+            CloseContainerRequest,
+            close_container,
+        )
 
         container_id = uuid.uuid4()
         request_data = CloseContainerRequest(container_id=container_id, mutation_token="token")
@@ -523,7 +580,9 @@ class TestRequestModels:
     def test_transfer_container_request_direction_validation(self):
         """Test TransferContainerRequest validates direction."""
         # Lazy import to avoid circular import
-        from server.api.containers import TransferContainerRequest  # noqa: E402
+        from server.api.containers import (
+            TransferContainerRequest,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         # Valid direction
         request = TransferContainerRequest(
@@ -548,7 +607,9 @@ class TestRequestModels:
     def test_transfer_container_request_quantity_validation(self):
         """Test TransferContainerRequest validates quantity."""
         # Lazy import to avoid circular import
-        from server.api.containers import TransferContainerRequest  # noqa: E402
+        from server.api.containers import (
+            TransferContainerRequest,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         # Valid quantity
         request = TransferContainerRequest(

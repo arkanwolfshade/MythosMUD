@@ -19,6 +19,7 @@ Object.defineProperty(global, 'performance', {
 });
 
 // Also set the global performance for compatibility
+// Global performance object requires any type for test mock setup
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (global as any).performance = {
   memory: mockMemory,
@@ -62,6 +63,7 @@ describe('MemoryLeakDetector', () => {
     mockMemory.jsHeapSizeLimit = 200 * 1024 * 1024;
 
     // Set up performance mock in beforeEach
+    // Global performance object requires any type for test mock setup
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (global as any).performance = {
       memory: mockMemory,

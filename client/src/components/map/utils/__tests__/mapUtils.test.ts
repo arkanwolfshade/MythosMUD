@@ -241,6 +241,7 @@ describe('mapUtils', () => {
               target: 'room_002',
               flags: ['hidden', 'locked'],
               description: 'A hidden locked door',
+              // Exit object structure varies, using any for test data flexibility
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } as any,
           },
@@ -279,6 +280,7 @@ describe('mapUtils', () => {
             south: {
               target: 'room_003',
               flags: ['one_way'],
+              // Exit object structure varies, using any for test data flexibility
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } as any,
           },
@@ -591,6 +593,7 @@ describe('mapUtils', () => {
             south: {
               target: 'room_003',
               flags: ['one_way'],
+              // Exit object structure varies, using any for test data flexibility
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } as any,
             // east: null - null exits are filtered out by createEdgesFromRooms

@@ -148,7 +148,7 @@ class PlayerOccupantProcessor:
 
         # OPTIMIZATION: Batch load all players at once to eliminate N+1 queries
         # Note: Using protected method for performance optimization - this is intentional
-        players = await self.connection_manager._get_players_batch(player_id_uuids)  # noqa: SLF001  # pylint: disable=protected-access
+        players = await self.connection_manager._get_players_batch(player_id_uuids)  # noqa: SLF001  # pylint: disable=protected-access  # Reason: Accessing protected method _get_players_batch is intentional for batch performance optimization, this is part of the connection manager internal API
 
         self._logger.debug(
             "Batch loaded players for room occupants",

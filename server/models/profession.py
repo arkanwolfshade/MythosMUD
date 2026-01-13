@@ -44,12 +44,12 @@ class Profession(Base):
     description = Column(Text(), nullable=False)
     flavor_text = Column(Text(), nullable=False)
 
-    # Game mechanics stored as JSON in TEXT fields (SQLite compatible)
+    # Game mechanics stored as JSON in TEXT fields
     stat_requirements = Column(Text(), nullable=False, default="{}")
     mechanical_effects = Column(Text(), nullable=False, default="{}")
 
     # Availability status
-    is_available: bool = Column(Boolean(), default=True, nullable=False)  # type: ignore[assignment]
+    is_available: bool = Column(Boolean(), default=True, nullable=False)  # type: ignore[assignment]  # Reason: SQLAlchemy Column returns Column object, but mypy expects bool, runtime type is correct
 
     def __repr__(self) -> str:
         """String representation of the profession."""
@@ -64,7 +64,7 @@ class Profession(Base):
 
     def set_stat_requirements(self, requirements: dict[str, Any]) -> None:
         """Set profession stat requirements from dictionary."""
-        self.stat_requirements = json.dumps(requirements)  # type: ignore[assignment]
+        self.stat_requirements = json.dumps(requirements)  # type: ignore[assignment]  # Reason: SQLAlchemy Text column accepts str, but mypy infers dict[str, Any] from parameter type, json.dumps returns str at runtime
 
     def get_mechanical_effects(self) -> dict[str, Any]:
         """Get profession mechanical effects as dictionary."""
@@ -75,7 +75,7 @@ class Profession(Base):
 
     def set_mechanical_effects(self, effects: dict[str, Any]) -> None:
         """Set profession mechanical effects from dictionary."""
-        self.mechanical_effects = json.dumps(effects)  # type: ignore[assignment]
+        self.mechanical_effects = json.dumps(effects)  # type: ignore[assignment]  # Reason: SQLAlchemy Text column accepts str, but mypy infers dict[str, Any] from parameter type, json.dumps returns str at runtime
 
     def meets_stat_requirements(self, stats: dict[str, int]) -> bool:
         """

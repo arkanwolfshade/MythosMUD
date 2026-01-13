@@ -27,8 +27,8 @@ T = TypeVar("T", bound=BaseEvent)
 
 # Type aliases for better readability
 # Using TypeAlias instead of 'type' keyword for Pylint compatibility (Pylint 3.3.6 doesn't support Python 3.12+ 'type' keyword)
-RoomData: TypeAlias = dict[str, Any]  # noqa: UP040
-EventSequence: TypeAlias = dict[str, int]  # noqa: UP040
+RoomData: TypeAlias = dict[str, Any]  # noqa: UP040  # Reason: Using TypeAlias instead of Python 3.12+ 'type' keyword for Pylint compatibility, dict syntax is clearer for type annotations
+EventSequence: TypeAlias = dict[str, int]  # noqa: UP040  # Reason: Using TypeAlias instead of Python 3.12+ 'type' keyword for Pylint compatibility, dict syntax is clearer for type annotations
 
 logger = get_logger(__name__)
 

@@ -47,7 +47,7 @@ class RateLimiter:
             # Legacy dict format (for backward compatibility with tests)
             # This branch should never execute in production since get_config() always returns AppConfig
             # which has a "chat" attribute. Kept for test compatibility where config may be a dict.
-            chat_config = config.get("chat", {})  # type: ignore[attr-defined,unused-ignore]
+            chat_config = config.get("chat", {})  # type: ignore[attr-defined,unused-ignore]  # Reason: Legacy dict format for test compatibility, config may be dict in tests but AppConfig in production, mypy cannot verify dict.get on AppConfig
             rate_limiting_config = chat_config.get("rate_limiting", {})
             default_limits = {
                 "global": 10,

@@ -43,7 +43,7 @@ def get_current_tick() -> int:
 
 def reset_current_tick() -> None:
     """Reset the current tick for testing."""
-    global _current_tick  # pylint: disable=global-statement
+    global _current_tick  # pylint: disable=global-statement  # Reason: Module-level tick counter must be mutable for testing and game state tracking
     _current_tick = 0
 
 
@@ -513,7 +513,7 @@ async def game_tick_loop(app: FastAPI):
     This function runs continuously and handles periodic game updates,
     including broadcasting tick information to connected players.
     """
-    global _current_tick  # pylint: disable=global-statement
+    global _current_tick  # pylint: disable=global-statement  # Reason: Module-level tick counter must be mutable for game state tracking and synchronization
     tick_count = 0
     tick_interval = get_tick_interval()
     logger.info("Game tick loop started", tick_interval=tick_interval)

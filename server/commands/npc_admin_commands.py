@@ -370,7 +370,7 @@ async def handle_npc_list_command(
             logger.info("NPC definitions listed", admin_name=player_name, count=len(definitions))
             return {"result": "\n".join(result_lines)}
 
-    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught  # Reason: NPC listing errors unpredictable (database, service, validation), must return user-friendly error messages
         # Catching broad Exception to handle database errors and service errors
         # and return user-friendly error messages
         logger.error("Error listing NPCs", admin_name=player_name, error=str(e))
@@ -407,7 +407,7 @@ async def handle_npc_spawn_command(
         logger.info("NPC spawned", admin_name=player_name, definition_id=definition_id, room_id=room_id)
         return {"result": f"NPC spawned successfully in {room_id}"}
 
-    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught  # Reason: NPC spawning errors unpredictable (service, validation, instance management), must return user-friendly error messages
         # Catching broad Exception to handle service errors, validation errors, and instance management errors
         # and return user-friendly error messages
         logger.error("Error spawning NPC", admin_name=player_name, error=str(e))
@@ -439,7 +439,7 @@ async def handle_npc_despawn_command(
         logger.info("NPC despawned", npc_id=npc_id, admin_name=player_name)
         return {"result": f"NPC {npc_id} despawned successfully"}
 
-    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught  # Reason: NPC despawning errors unpredictable (service, instance management), must return user-friendly error messages
         # Catching broad Exception to handle service errors and instance management errors
         # and return user-friendly error messages
         logger.error("Error despawning NPC", npc_id=npc_id, admin_name=player_name, error=str(e))
@@ -472,7 +472,7 @@ async def handle_npc_move_command(
         logger.info("NPC moved", npc_id=npc_id, admin_name=player_name, room_id=room_id)
         return {"result": f"NPC {npc_id} moved to {room_id}"}
 
-    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught  # Reason: NPC movement errors unpredictable (service, validation, instance management), must return user-friendly error messages
         # Catching broad Exception to handle service errors, validation errors, and instance management errors
         # and return user-friendly error messages
         logger.error("Error moving NPC", npc_id=npc_id, admin_name=player_name, error=str(e))
@@ -509,7 +509,7 @@ async def handle_npc_stats_command(
         logger.info("NPC stats retrieved", npc_id=npc_id, admin_name=player_name)
         return {"result": "\n".join(result_lines)}
 
-    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught  # Reason: NPC stats retrieval errors unpredictable (service, instance management), must return user-friendly error messages
         # Catching broad Exception to handle service errors and instance management errors
         # and return user-friendly error messages
         logger.error("Error getting NPC stats", admin_name=player_name, error=str(e))
@@ -549,7 +549,7 @@ async def handle_npc_population_command(
         logger.info("NPC population stats retrieved", admin_name=player_name)
         return {"result": "\n".join(result_lines)}
 
-    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught  # Reason: NPC population stats errors unpredictable (service, instance management), must return user-friendly error messages
         # Catching broad Exception to handle service errors and instance management errors
         # and return user-friendly error messages
         logger.error("Error getting NPC population stats", admin_name=player_name, error=str(e))
@@ -590,7 +590,7 @@ async def handle_npc_zone_command(
         logger.info("NPC zone stats retrieved", admin_name=player_name, zone_key=zone_key)
         return {"result": "\n".join(result_lines)}
 
-    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught  # Reason: NPC zone stats errors unpredictable (service, instance management), must return user-friendly error messages
         # Catching broad Exception to handle service errors and instance management errors
         # and return user-friendly error messages
         logger.error("Error getting NPC zone stats", admin_name=player_name, error=str(e))
@@ -621,7 +621,7 @@ async def handle_npc_status_command(
         logger.info("NPC system status retrieved", admin_name=player_name)
         return {"result": "\n".join(result_lines)}
 
-    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught  # Reason: NPC system status errors unpredictable (service, instance management), must return user-friendly error messages
         # Catching broad Exception to handle service errors and instance management errors
         # and return user-friendly error messages
         logger.error("Error getting NPC system status", admin_name=player_name, error=str(e))
@@ -657,7 +657,7 @@ async def handle_npc_behavior_command(
         # For now, return not implemented message
         return {"result": "NPC behavior modification not yet implemented"}
 
-    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught  # Reason: NPC behavior setting errors unpredictable (service, validation), must return user-friendly error messages
         # Catching broad Exception to handle service errors and validation errors
         # and return user-friendly error messages
         logger.error("Error setting NPC behavior", npc_id=npc_id, admin_name=player_name, error=str(e))
@@ -690,7 +690,7 @@ async def handle_npc_react_command(
         # For now, return not implemented message
         return {"result": "NPC reaction triggering not yet implemented"}
 
-    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught  # Reason: NPC reaction triggering errors unpredictable (service, validation), must return user-friendly error messages
         # Catching broad Exception to handle service errors and validation errors
         # and return user-friendly error messages
         logger.error("Error triggering NPC reaction", npc_id=npc_id, admin_name=player_name, error=str(e))
@@ -717,7 +717,7 @@ async def handle_npc_stop_command(
         # For now, return not implemented message
         return {"result": "NPC behavior stopping not yet implemented"}
 
-    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught  # Reason: NPC behavior stopping errors unpredictable (service, validation), must return user-friendly error messages
         # Catching broad Exception to handle service errors and validation errors
         # and return user-friendly error messages
         logger.error("Error stopping NPC behavior", npc_id=npc_id, admin_name=player_name, error=str(e))
@@ -825,7 +825,7 @@ async def handle_npc_test_occupants_command(
 
         logger.info("Manually triggering occupant query for testing", admin_name=player_name, room_id=room_id)
 
-        occupants_info = event_handler._get_room_occupants(room_id)  # noqa: SLF001  # pylint: disable=protected-access
+        occupants_info = event_handler._get_room_occupants(room_id)  # noqa: SLF001  # pylint: disable=protected-access  # Reason: Accessing internal method for testing/debugging purposes, event_handler is internal implementation detail
         players, npcs = _separate_occupants(occupants_info)
 
         await event_handler.send_room_occupants_update(room_id)
@@ -842,7 +842,7 @@ async def handle_npc_test_occupants_command(
 
         return {"result": result_text}
 
-    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught  # Reason: NPC occupant testing errors unpredictable (service, player resolution, event handler), must return user-friendly error messages
         # Catching broad Exception to handle service errors, player resolution errors, and event handler errors
         # and return user-friendly error messages
         logger.error("Error testing NPC occupants", admin_name=player_name, error=str(e), exc_info=True)

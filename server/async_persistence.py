@@ -214,7 +214,7 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
                 # Other errors should be raised
                 result_container["error"] = e
                 raise
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Catch-all for asyncpg-specific exceptions and test mocks that don't inherit from standard exception types, ensures test compatibility
             # Catch any other unexpected exceptions (e.g., asyncpg exceptions, test mocks)
             # This is necessary for test compatibility where mocks may raise generic Exception
             # and to handle asyncpg-specific exceptions that don't inherit from standard types
@@ -577,7 +577,7 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
                 # SQLAlchemy Column: use .is_(True) for boolean comparisons
                 # At runtime, Profession.is_available is a Column, not a bool
                 # SQLAlchemy Column objects have .is_() method at runtime, but mypy sees it as bool
-                stmt = select(Profession).where(Profession.is_available.is_(True)).order_by(Profession.id)  # type: ignore[attr-defined]
+                stmt = select(Profession).where(Profession.is_available.is_(True)).order_by(Profession.id)  # type: ignore[attr-defined]  # Reason: SQLAlchemy Column objects have .is_() method at runtime for boolean comparisons, but mypy infers bool type and cannot see the method
                 result = await session.execute(stmt)
                 professions = list(result.scalars().all())
                 return professions
@@ -780,7 +780,7 @@ def get_async_persistence() -> AsyncPersistenceLayer:
     Returns:
         AsyncPersistenceLayer: The async persistence instance
     """
-    global _async_persistence_instance  # pylint: disable=global-statement
+    global _async_persistence_instance  # pylint: disable=global-statement  # Reason: Singleton pattern requires global variable access for backward compatibility during migration
     if _async_persistence_instance is None:
         _async_persistence_instance = AsyncPersistenceLayer()
     return _async_persistence_instance
@@ -793,5 +793,5 @@ def reset_async_persistence() -> None:
     DEPRECATED: Use ApplicationContainer.reset_instance() instead.
     This function exists only for backward compatibility during migration.
     """
-    global _async_persistence_instance  # pylint: disable=global-statement
+    global _async_persistence_instance  # pylint: disable=global-statement  # Reason: Singleton reset pattern requires global variable access for backward compatibility during migration
     _async_persistence_instance = None

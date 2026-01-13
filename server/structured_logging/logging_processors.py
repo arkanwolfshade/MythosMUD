@@ -190,7 +190,7 @@ def enhance_player_ids(_logger: Any, _name: str, event_dict: dict[str, Any]) -> 
                         # Define a local exception type alias for optional dependency
                         try:
                             from server.exceptions import (
-                                DatabaseError as _ImportedDatabaseError,  # noqa: F401  # pylint: disable=unused-import
+                                DatabaseError as _ImportedDatabaseError,  # noqa: F401  # pylint: disable=unused-import  # Reason: Imported for type alias assignment, unused but required for type annotation
                             )
 
                             _DatabaseErrorType: type[BaseException] = _ImportedDatabaseError

@@ -4,9 +4,7 @@ Unit tests for logout commands.
 Tests the logout and quit command handlers for proper cleanup and session management.
 """
 
-# pylint: disable=redefined-outer-name
-# Fixtures are injected as parameters by pytest, which is the standard pattern.
-# This suppression is applied at module level since all test functions use fixtures.
+# pylint: disable=redefined-outer-name  # Reason: Fixtures are injected as parameters by pytest, which is the standard pattern, suppression applied at module level since all test functions use fixtures
 
 import uuid
 from datetime import UTC, datetime
@@ -68,7 +66,7 @@ def test_clear_corrupted_cache_entry_with_cache(mock_request):
     """Test _clear_corrupted_cache_entry clears entry from cache."""
     cache = {"testplayer": MagicMock()}
     # Accessing protected member is necessary to test internal cache behavior
-    # pylint: disable=protected-access
+    # pylint: disable=protected-access  # Reason: Accessing protected member is necessary to test internal cache behavior
     mock_request.state._command_player_cache = cache
 
     _clear_corrupted_cache_entry(mock_request, "testplayer")
@@ -79,7 +77,7 @@ def test_clear_corrupted_cache_entry_with_cache(mock_request):
 def test_clear_corrupted_cache_entry_no_cache(mock_request):
     """Test _clear_corrupted_cache_entry handles missing cache gracefully."""
     # Accessing protected member is necessary to test internal cache behavior
-    # pylint: disable=protected-access
+    # pylint: disable=protected-access  # Reason: Accessing protected member is necessary to test internal cache behavior
     mock_request.state._command_player_cache = None
 
     # Should not raise

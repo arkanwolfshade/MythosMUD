@@ -521,7 +521,7 @@ async def set_map_origin(  # pylint: disable=too-many-locals  # Reason: Map orig
         await session.commit()
 
         # SQLAlchemy Result objects have rowcount attribute at runtime, but mypy stubs don't reflect this
-        if not update_result.rowcount:  # type: ignore[attr-defined]
+        if not update_result.rowcount:  # type: ignore[attr-defined]  # Reason: SQLAlchemy Result objects have rowcount attribute at runtime, but mypy stubs don't reflect this
             context = create_context_from_request(request)
             context.metadata["requested_room_id"] = room_id
             raise LoggedHTTPException(status_code=404, detail="Room not found", context=context)

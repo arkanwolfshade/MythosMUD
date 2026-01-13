@@ -38,11 +38,15 @@ player_router = APIRouter(prefix="/api/players", tags=["players"])
 # Import sub-modules to register their routes with player_router
 # This must happen after player_router is created but before it's exported
 # The imports trigger the decorators which register routes
-# pylint: disable=wrong-import-position  # noqa: E402
-from . import character_creation, player_effects, player_respawn  # noqa: E402  # pylint: disable=wrong-import-position
+# pylint: disable=wrong-import-position  # noqa: E402  # Reason: Imports must occur after router creation to trigger route registration decorators
+from . import (  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Imports must occur after router creation to trigger route registration decorators
+    character_creation,
+    player_effects,
+    player_respawn,
+)
 
 # Explicitly reference the imports to indicate they're used for side effects
-_ = (character_creation, player_effects, player_respawn)  # noqa: F401  # pylint: disable=unused-import
+_ = (character_creation, player_effects, player_respawn)  # noqa: F401  # pylint: disable=unused-import  # Reason: Imports are used for side effects (route registration), not direct usage, assignment prevents unused import warning
 
 
 @player_router.post("/", response_model=PlayerRead)
@@ -481,7 +485,9 @@ async def _end_combat_for_grace_period(player_id: uuid.UUID) -> None:
         player_id: Player UUID
     """
     # Lazy import to avoid circular dependency with combat_service
-    from ..services.combat_service import get_combat_service  # noqa: E402  # pylint: disable=wrong-import-position
+    from ..services.combat_service import (
+        get_combat_service,  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Lazy import inside function to break circular dependency between API and combat service modules
+    )
 
     combat_service = get_combat_service()
     if not combat_service:
@@ -565,7 +571,8 @@ async def start_login_grace_period_endpoint(
 
     except LoggedHTTPException:
         raise
-    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904        context = create_error_context(request, current_user, operation="start_login_grace_period")
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Login grace period errors unpredictable (service, database, validation), must create error context and return user-friendly message
+        context = create_error_context(request, current_user, operation="start_login_grace_period")
         logger.error(
             "Error starting login grace period",
             error=str(e),

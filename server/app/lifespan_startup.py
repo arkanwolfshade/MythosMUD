@@ -149,7 +149,7 @@ async def initialize_npc_services(app: FastAPI, container: ApplicationContainer)
             if hasattr(app.state.npc_lifecycle_manager, "_pending_thread_starts"):
                 # Accessing protected member via getattr() for internal state initialization
                 # This is safe as we check existence first and handle gracefully
-                pending_starts = getattr(app.state.npc_lifecycle_manager, "_pending_thread_starts", [])  # pylint: disable=protected-access
+                pending_starts = getattr(app.state.npc_lifecycle_manager, "_pending_thread_starts", [])  # pylint: disable=protected-access  # Reason: Accessing internal state for startup initialization, existence checked first and handled gracefully
                 for npc_id, definition in pending_starts:
                     try:
                         await app.state.npc_lifecycle_manager.thread_manager.start_npc_thread(npc_id, definition)
@@ -297,7 +297,7 @@ async def initialize_nats_and_combat_services(app: FastAPI, container: Applicati
         app.state.nats_service = container.nats_service
 
         # Lazy import to avoid circular dependency with combat_service
-        from ..services.combat_service import (  # noqa: E402  # pylint: disable=wrong-import-position
+        from ..services.combat_service import (  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Lazy import required to avoid circular dependency with combat_service module
             CombatService,
             set_combat_service,
         )
@@ -375,8 +375,7 @@ async def initialize_chat_service(app: FastAPI, container: ApplicationContainer)
 async def initialize_magic_services(app: FastAPI, container: ApplicationContainer) -> None:  # pylint: disable=too-many-locals  # Reason: Service initialization requires many intermediate variables for dependency setup
     """Initialize magic system services and wire them to app.state."""
     # Import here to avoid circular imports: spell_targeting -> combat_service -> lifespan -> lifespan_startup
-    # pylint: disable=import-outside-toplevel
-    # Reason: Circular import avoidance - spell_targeting imports CombatService which imports from lifespan
+    # pylint: disable=import-outside-toplevel  # Reason: Circular import avoidance - spell_targeting imports CombatService which imports from lifespan
     from ..game.magic.magic_service import MagicService
     from ..game.magic.mp_regeneration_service import MPRegenerationService
     from ..game.magic.spell_effects import SpellEffects
@@ -396,7 +395,7 @@ async def initialize_magic_services(app: FastAPI, container: ApplicationContaine
     # Initialize SpellRegistry and load spells
     spell_registry = SpellRegistry(spell_repository)
     await spell_registry.load_spells()
-    spell_count = len(spell_registry._spells)  # pylint: disable=protected-access
+    spell_count = len(spell_registry._spells)  # pylint: disable=protected-access  # Reason: Accessing internal spell dictionary for initialization logging, SpellRegistry manages this as internal state
     app.state.spell_registry = spell_registry
     logger.info("SpellRegistry initialized and loaded", spell_count=spell_count)
 
@@ -408,7 +407,7 @@ async def initialize_magic_services(app: FastAPI, container: ApplicationContaine
     # TargetResolutionService accepts both sync and async persistence layers
     # The protocol is too strict for mypy, but the service handles both at runtime
     target_resolution_service = TargetResolutionService(
-        persistence=container.async_persistence,  # type: ignore[arg-type]
+        persistence=container.async_persistence,  # type: ignore[arg-type]  # Reason: TargetResolutionService accepts both sync and async persistence at runtime, but mypy protocol is too strict
         player_service=container.player_service,
     )
     spell_targeting_service = SpellTargetingService(

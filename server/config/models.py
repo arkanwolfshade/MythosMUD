@@ -762,7 +762,7 @@ class CORSConfig(BaseSettings):
         if field_info is None:
             raise ValueError("Field 'allow_origins' not found in model fields")
         default_factory = field_info.default_factory
-        defaults = list(default_factory()) if default_factory else []  # type: ignore[call-arg]
+        defaults = list(default_factory()) if default_factory else []  # type: ignore[call-arg]  # Reason: Pydantic FieldInfo.default_factory is callable but mypy cannot infer the call signature, this is safe at runtime
         if not defaults:
             raise ValueError("At least one CORS origin must be provided")
         return defaults
@@ -964,7 +964,7 @@ class AppConfig(BaseSettings):
     def set_legacy_environment_variables(self) -> "AppConfig":
         """Set environment variables for legacy code that reads them directly."""
         # In mode="after", all fields are validated and instantiated as their config types
-        # pylint: disable=no-member
+        # pylint: disable=no-member  # Reason: Pydantic model fields are dynamically accessible after validation, pylint cannot detect them statically
         database = self.database
         game = self.game
 
@@ -1005,7 +1005,7 @@ class AppConfig(BaseSettings):
         This allows gradual migration of code that expects dict-based config access.
         """
         # Pylint can't detect Pydantic dynamic attributes, so disable no-member for this method
-        # pylint: disable=no-member
+        # pylint: disable=no-member  # Reason: Pydantic model fields are dynamically accessible, pylint cannot detect them statically but they exist at runtime
         server = self.server
         database = self.database
         security = self.security

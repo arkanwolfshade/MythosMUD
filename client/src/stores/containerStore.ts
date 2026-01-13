@@ -8,7 +8,6 @@
 
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import type { StateCreator } from 'zustand';
 
 // Container types matching server-side definitions
 export type ContainerSourceType = 'environment' | 'equipment' | 'corpse';
@@ -101,12 +100,8 @@ const createInitialState = (): ContainerState => ({
   isLoading: false,
 });
 
-const withDevtools: <T>(fn: StateCreator<T, [], []>) => StateCreator<T, [], []> = import.meta.env.DEV
-  ? (devtools as unknown as <T>(fn: StateCreator<T, [], []>) => StateCreator<T, [], []>)
-  : fn => fn;
-
 export const useContainerStore = create<ContainerStore>()(
-  withDevtools(
+  devtools(
     (set, get) => ({
       ...createInitialState(),
 
@@ -130,8 +125,10 @@ export const useContainerStore = create<ContainerStore>()(
       closeContainer: (containerId: string) =>
         set(
           state => {
+            // Destructuring removes containerId from state, _removed variable intentionally unused
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { [containerId]: _removed, ...remainingContainers } = state.openContainers;
+            // Destructuring removes containerId token from state, _removedToken variable intentionally unused
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { [containerId]: _removedToken, ...remainingTokens } = state.mutationTokens;
             return {
@@ -211,7 +208,7 @@ export const useContainerStore = create<ContainerStore>()(
     }),
     {
       name: 'container-store',
-      partialize: state => ({
+      partialize: (state: ContainerStore) => ({
         openContainers: state.openContainers,
         selectedContainerId: state.selectedContainerId,
       }),

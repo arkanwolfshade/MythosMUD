@@ -81,8 +81,10 @@ describe('RoomMapViewer - Data Loading', () => {
       },
     ];
 
+    // Mock function requires any type for vi.mock type casting
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (roomsToNodes as any).mockReturnValue(mockNodes);
+    // Mock hook requires any type for vi.mock type casting
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMapLayout as any).mockReturnValue({
       layoutNodes: mockNodes,
@@ -103,6 +105,7 @@ describe('RoomMapViewer - Data Loading', () => {
 
   it('should handle retry on error', () => {
     const refetch = vi.fn();
+    // Mock hook requires any type for vi.mock type casting
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useRoomMapData as any).mockReturnValue({
       rooms: [],
@@ -121,6 +124,7 @@ describe('RoomMapViewer - Data Loading', () => {
   });
 
   it('should handle empty rooms array', () => {
+    // Mock hook requires any type for vi.mock type casting
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useRoomMapData as any).mockReturnValue({
       rooms: [],
@@ -130,8 +134,10 @@ describe('RoomMapViewer - Data Loading', () => {
       total: 0,
     });
 
+    // Mock function requires any type for vi.mock type casting
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (roomsToNodes as any).mockReturnValue([]);
+    // Mock hook requires any type for vi.mock type casting
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMapLayout as any).mockReturnValue({
       layoutNodes: [],
@@ -144,6 +150,7 @@ describe('RoomMapViewer - Data Loading', () => {
   });
 
   it('should handle loading state', () => {
+    // Mock hook requires any type for vi.mock type casting
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useRoomMapData as any).mockReturnValue({
       rooms: [],
@@ -160,6 +167,7 @@ describe('RoomMapViewer - Data Loading', () => {
 
   it('should handle error state with retry button', () => {
     const refetch = vi.fn();
+    // Mock hook requires any type for vi.mock type casting
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useRoomMapData as any).mockReturnValue({
       rooms: [],

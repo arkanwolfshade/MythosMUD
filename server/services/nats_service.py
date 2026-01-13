@@ -432,7 +432,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
                     # Give them a brief moment to cancel
                     try:
                         await asyncio.wait_for(asyncio.gather(*pending, return_exceptions=True), timeout=0.5)
-                    except (TimeoutError, Exception):  # pylint: disable=broad-exception-caught  # Abandon remaining tasks on any error  # noqa: B904
+                    except (TimeoutError, Exception):  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Task cancellation errors unpredictable, must abandon remaining tasks on any error during shutdown
                         pass  # Abandon remaining tasks
 
             except (RuntimeError, asyncio.CancelledError) as e:

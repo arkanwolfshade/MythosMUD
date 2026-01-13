@@ -68,7 +68,7 @@ class RoomBasedChannelStrategy(ChannelBroadcastingStrategy):  # pylint: disable=
         if room_id:
             # Convert UUID to string for _broadcast_to_room_with_filtering which expects string
             sender_id_str = str(sender_id)
-            await nats_handler._broadcast_to_room_with_filtering(  # pylint: disable=protected-access
+            await nats_handler._broadcast_to_room_with_filtering(  # pylint: disable=protected-access  # Reason: Accessing protected member _broadcast_to_room_with_filtering is necessary for NATS handler integration, this is part of the internal API
                 room_id, chat_event, sender_id_str, self.channel_type
             )
             logger.debug(
@@ -138,7 +138,7 @@ class WhisperChannelStrategy(ChannelBroadcastingStrategy):  # pylint: disable=to
             # Apply communication dampening and send message
             sender_id_str = str(sender_id)
             target_id_str = str(target_player_id)
-            await nats_handler._apply_dampening_and_send_message(  # pylint: disable=protected-access
+            await nats_handler._apply_dampening_and_send_message(  # pylint: disable=protected-access  # Reason: Accessing protected member _apply_dampening_and_send_message is necessary for NATS handler integration, this is part of the internal API
                 chat_event, sender_id_str, target_id_str, "whisper"
             )
             logger.debug(

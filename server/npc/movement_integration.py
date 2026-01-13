@@ -142,7 +142,7 @@ class NPCMovementIntegration:
                 if lifecycle_manager and npc_id in lifecycle_manager.active_npcs:
                     npc_instance = lifecycle_manager.active_npcs[npc_id]
                     npc_instance.current_room = to_room_id
-                    npc_instance.current_room_id = to_room_id  # type: ignore[attr-defined]
+                    npc_instance.current_room_id = to_room_id  # type: ignore[attr-defined]  # Reason: NPCInstance has current_room_id attribute at runtime for room tracking, but mypy stubs don't reflect this dynamic attribute
 
                     if not npc_instance.current_room or npc_instance.current_room != to_room_id:
                         logger.error(

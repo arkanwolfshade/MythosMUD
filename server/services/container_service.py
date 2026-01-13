@@ -663,7 +663,7 @@ class ContainerService:
                 item_name=item.get("item_name"),
                 success=True,
             )
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Audit logging must not fail  # noqa: B904
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Audit logging errors unpredictable, must not fail container operation
             logger.warning("Failed to log container transfer to audit log", error=str(e))
 
         return {

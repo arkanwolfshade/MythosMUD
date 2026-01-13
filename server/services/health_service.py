@@ -71,14 +71,16 @@ class HealthService:
             process = psutil.Process()
             memory_info = process.memory_info()
             return memory_info.rss / 1024 / 1024  # Convert to MB
-        except Exception:  # pylint: disable=broad-exception-caught  # System monitoring errors unpredictable, return default  # noqa: B904            logger.warning("Failed to get memory usage", error=str(e))
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: System monitoring errors unpredictable, must return default value to prevent health check failure
+            logger.warning("Failed to get memory usage", error=str(e))
             return 0.0
 
     def get_cpu_usage(self) -> float:
         """Get current CPU usage percentage."""
         try:
             return psutil.cpu_percent(interval=0.1)
-        except Exception:  # pylint: disable=broad-exception-caught  # System monitoring errors unpredictable, return default  # noqa: B904            logger.warning("Failed to get CPU usage", error=str(e))
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: System monitoring errors unpredictable, must return default value to prevent health check failure
+            logger.warning("Failed to get CPU usage", error=str(e))
             return 0.0
 
     def check_database_health(self) -> dict:
@@ -340,8 +342,7 @@ def get_health_service(connection_manager=None) -> HealthService:
         connection_manager: Optional ConnectionManager to bind to the service.
             When provided, ensures the singleton tracks the current container-managed instance.
     """
-    # pylint: disable=global-statement  # Singleton pattern requires global variable
-    global _health_service
+    global _health_service  # pylint: disable=global-statement  # Reason: Singleton pattern requires global variable to maintain single instance across module scope
     if _health_service is None:
         _health_service = HealthService(connection_manager=connection_manager)
     elif connection_manager is not None:

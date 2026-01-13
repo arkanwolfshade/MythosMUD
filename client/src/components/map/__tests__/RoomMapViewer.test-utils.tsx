@@ -36,6 +36,7 @@ export const setupDefaultMocks = () => {
   vi.clearAllMocks();
 
   // Default mock implementations
+  // Mock hook requires any type for vi.mock type casting
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (useRoomMapData as any).mockReturnValue({
     rooms: mockRooms,
@@ -45,6 +46,7 @@ export const setupDefaultMocks = () => {
     total: 2,
   });
 
+  // Mock hook requires any type for vi.mock type casting
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (useMapLayout as any).mockReturnValue({
     layoutNodes: [],
@@ -55,8 +57,10 @@ export const setupDefaultMocks = () => {
     applyGridLayout: vi.fn(),
   });
 
+  // Mock function requires any type for vi.mock type casting
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (roomsToNodes as any).mockReturnValue([]);
+  // Mock function requires any type for vi.mock type casting
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (createEdgesFromRooms as any).mockReturnValue([]);
 };

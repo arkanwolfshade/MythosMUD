@@ -373,7 +373,7 @@ class NPCOccupantProcessor:
 
         # OPTIMIZATION: Batch load all NPC names at once to eliminate N+1 queries
         # Note: Using protected method for performance optimization - this is intentional
-        npc_names = self.connection_manager._get_npcs_batch(list(npc_ids))  # noqa: SLF001  # pylint: disable=protected-access
+        npc_names = self.connection_manager._get_npcs_batch(list(npc_ids))  # noqa: SLF001  # pylint: disable=protected-access  # Reason: Accessing protected method _get_npcs_batch is intentional for batch performance optimization, this is part of the connection manager internal API
 
         # Convert NPCs to occupant information using batch-loaded names
         for npc_id in npc_ids:

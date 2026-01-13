@@ -141,7 +141,7 @@ def _create_async_wrapper[F: Callable[..., Any]](  # pylint: disable=too-many-ar
             raise last_error
         raise RuntimeError("Retry logic failed unexpectedly")
 
-    return async_wrapper  # type: ignore[return-value]
+    return async_wrapper  # type: ignore[return-value]  # Reason: Generic function wrapper preserves input function type F, but mypy cannot verify type preservation through wrapper function
 
 
 def _create_sync_wrapper[F: Callable[..., Any]](  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Retry wrapper creation requires many parameters for complete retry configuration
@@ -177,7 +177,7 @@ def _create_sync_wrapper[F: Callable[..., Any]](  # pylint: disable=too-many-arg
             raise last_error
         raise RuntimeError("Retry logic failed unexpectedly")
 
-    return sync_wrapper  # type: ignore[return-value]
+    return sync_wrapper  # type: ignore[return-value]  # Reason: Generic function wrapper preserves input function type F, but mypy cannot verify type preservation through wrapper function
 
 
 def retry_with_backoff[F: Callable[..., Any]](

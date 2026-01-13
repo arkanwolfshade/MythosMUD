@@ -9,6 +9,7 @@ describe('Session Management', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.useFakeTimers();
+    // Accessing internal properties for test setup, sessionManager internals not part of public API
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sessionManagerAny = sessionManager as any;
     if (!sessionManagerAny.cleanupInterval) {
@@ -90,6 +91,7 @@ describe('Session Management', () => {
   });
 
   it('should handle expireSession when session does not exist', () => {
+    // Accessing internal properties for test setup, sessionManager internals not part of public API
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sessionManagerAny = sessionManager as any;
 
@@ -131,6 +133,7 @@ describe('Session Management', () => {
   });
 
   it('should destroy session manager when cleanupInterval is null', () => {
+    // Accessing internal properties for test setup, sessionManager internals not part of public API
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sessionManagerAny = sessionManager as any;
 
@@ -191,6 +194,7 @@ describe('Session Management', () => {
   });
 
   it('should clear existing cleanup interval when starting new one', () => {
+    // Accessing internal properties for test setup, sessionManager internals not part of public API
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sessionManagerAny = sessionManager as any;
 
@@ -214,6 +218,7 @@ describe('Session Management', () => {
   });
 
   it('should start cleanup interval when none exists', () => {
+    // Accessing internal properties for test setup, sessionManager internals not part of public API
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sessionManagerAny = sessionManager as any;
 
@@ -236,6 +241,7 @@ describe('Session Management', () => {
   });
 
   it('should call cleanupExpiredSessions from interval callback', () => {
+    // Accessing internal properties for test setup, sessionManager internals not part of public API
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sessionManagerAny = sessionManager as any;
 

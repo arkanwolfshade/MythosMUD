@@ -25,8 +25,7 @@ async def test_room_based_channel_strategy_broadcast():
     """Test RoomBasedChannelStrategy.broadcast() broadcasts to room."""
     strategy = RoomBasedChannelStrategy("say")
     mock_nats_handler = MagicMock()
-    # pylint: disable=protected-access
-    # Accessing protected member for testing internal NATS handler methods
+    # pylint: disable=protected-access  # Reason: Accessing protected member for testing internal NATS handler methods
     mock_nats_handler._broadcast_to_room_with_filtering = AsyncMock()
     chat_event = {"type": "chat", "message": "Hello"}
     room_id = "room_123"
@@ -46,8 +45,7 @@ async def test_room_based_channel_strategy_broadcast_no_room_id():
     """Test RoomBasedChannelStrategy.broadcast() handles missing room_id."""
     strategy = RoomBasedChannelStrategy("say")
     mock_nats_handler = MagicMock()
-    # pylint: disable=protected-access
-    # Accessing protected member for testing internal NATS handler methods
+    # pylint: disable=protected-access  # Reason: Accessing protected member for testing internal NATS handler methods
     mock_nats_handler._broadcast_to_room_with_filtering = AsyncMock()
     chat_event = {"type": "chat", "message": "Hello"}
     room_id = None
@@ -116,8 +114,7 @@ async def test_whisper_channel_strategy_broadcast():
     """Test WhisperChannelStrategy.broadcast() sends personal message."""
     strategy = WhisperChannelStrategy()
     mock_nats_handler = MagicMock()
-    # pylint: disable=protected-access
-    # Accessing protected member for testing internal NATS handler methods
+    # pylint: disable=protected-access  # Reason: Accessing protected member for testing internal NATS handler methods
     mock_nats_handler._apply_dampening_and_send_message = AsyncMock()
     chat_event = {"type": "chat", "message": "Hello"}
     room_id = ""
@@ -190,8 +187,7 @@ def test_channel_broadcasting_strategy_factory_init():
     """Test ChannelBroadcastingStrategyFactory.__init__() initializes with default strategies."""
     factory = ChannelBroadcastingStrategyFactory()
 
-    # pylint: disable=protected-access
-    # Accessing protected member for testing internal factory strategy registration
+    # pylint: disable=protected-access  # Reason: Accessing protected member for testing internal factory strategy registration
     assert "say" in factory._strategies
     assert "local" in factory._strategies
     assert "emote" in factory._strategies
@@ -230,8 +226,7 @@ def test_channel_broadcasting_strategy_factory_register_strategy():
 
     factory.register_strategy("custom", mock_strategy)
 
-    # pylint: disable=protected-access
-    # Accessing protected member for testing internal factory strategy registration
+    # pylint: disable=protected-access  # Reason: Accessing protected member for testing internal factory strategy registration
     assert factory._strategies["custom"] == mock_strategy
 
 

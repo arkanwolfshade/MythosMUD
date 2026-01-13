@@ -16,7 +16,7 @@ from ..models.command import (
 )
 from ..structured_logging.enhanced_logging_config import get_logger
 from .command_factories import CommandFactory
-from .command_helpers import (  # noqa: F401  # pylint: disable=unused-import
+from .command_helpers import (  # noqa: F401  # pylint: disable=unused-import  # Reason: Imported for backwards compatibility, may be used in tests or external code, unused in this module
     get_command_help,
     get_username_from_user,
     validate_command_safety,

@@ -116,7 +116,7 @@ def hash_password(password: str) -> str:
     """
     # Runtime type validation (defensive programming - catches incorrect calls at runtime)
     if not isinstance(password, str):
-        logger.error("Password must be a string", password_type=type(password).__name__)  # type: ignore[unreachable]
+        logger.error("Password must be a string", password_type=type(password).__name__)  # type: ignore[unreachable]  # Reason: Runtime type validation catches incorrect calls, but mypy infers str from function signature and marks this branch as unreachable
         raise AuthenticationError("Password must be a string")
 
     logger.debug("Hashing password with Argon2id")
@@ -160,11 +160,11 @@ def verify_password(password: str, hashed: str) -> bool:
     """
     # Runtime type validation (defensive programming - catches incorrect calls at runtime)
     if not isinstance(password, str):
-        logger.warning("Password verification failed - password not a string", password_type=type(password).__name__)  # type: ignore[unreachable]
+        logger.warning("Password verification failed - password not a string", password_type=type(password).__name__)  # type: ignore[unreachable]  # Reason: Runtime type validation catches incorrect calls, but mypy infers str from function signature and marks this branch as unreachable
         return False
 
     if not isinstance(hashed, str):
-        logger.warning("Password verification failed - hash not a string", hash_type=type(hashed).__name__)  # type: ignore[unreachable]
+        logger.warning("Password verification failed - hash not a string", hash_type=type(hashed).__name__)  # type: ignore[unreachable]  # Reason: Runtime type validation catches incorrect calls, but mypy infers str from function signature and marks this branch as unreachable
         return False
 
     if not hashed:

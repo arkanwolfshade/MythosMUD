@@ -45,7 +45,7 @@ class WindowsSafeRotatingFileHandler(RotatingFileHandler):
     Size-based rotating file handler that uses copy-then-truncate on Windows.
     """
 
-    def doRollover(self) -> None:  # noqa: N802 - match logging API
+    def doRollover(self) -> None:  # noqa: N802  # Reason: Method name matches logging.handlers.RotatingFileHandler API, must use camelCase to override base class method
         if self.stream:
             self.stream.close()
 
@@ -90,7 +90,7 @@ class WindowsSafeTimedRotatingFileHandler(TimedRotatingFileHandler):
     Timed rotating file handler that uses copy-then-truncate on Windows.
     """
 
-    def rotation_filename(self, default_name: str) -> str:  # noqa: D401
+    def rotation_filename(self, default_name: str) -> str:  # noqa: D401  # Reason: Method name is inherited from logging.handlers.RotatingFileHandler, docstring not required for override
         # Use default naming
         return default_name
 

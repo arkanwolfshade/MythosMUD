@@ -3,12 +3,9 @@ Unit tests for NATS service.
 
 Tests the NATSService class and NATSMetrics.
 """
-# pylint: disable=too-many-lines
-# Test file exceeds 550 lines but contains comprehensive test coverage for NATS service
-# pylint: disable=redefined-outer-name
-# Pytest fixtures are injected as function parameters, which triggers this warning
-# pylint: disable=protected-access
-# Tests need to access protected members to verify internal state
+# pylint: disable=too-many-lines  # Reason: Test file exceeds 550 lines but contains comprehensive test coverage for NATS service, splitting would reduce cohesion
+# pylint: disable=redefined-outer-name  # Reason: Pytest fixtures are injected as function parameters, which triggers this warning but is the standard pytest pattern
+# pylint: disable=protected-access  # Reason: Tests need to access protected members to verify internal state and behavior
 
 import asyncio
 import json

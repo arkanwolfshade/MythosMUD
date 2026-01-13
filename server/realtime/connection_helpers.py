@@ -120,7 +120,7 @@ async def _send_to_websockets(
                 error=str(ws_error),
             )
             delivery_status["websocket_failed"] += 1
-            await manager._cleanup_dead_websocket(player_id, connection_id)  # pylint: disable=protected-access
+            await manager._cleanup_dead_websocket(player_id, connection_id)  # pylint: disable=protected-access  # Reason: Accessing protected method _cleanup_dead_websocket is necessary for connection cleanup, this is part of the connection manager internal API
 
     return had_connection_attempts
 

@@ -442,7 +442,7 @@ class PlayerPreferencesService:
 
         # Type signature guarantees player_id is uuid.UUID | str, so all cases are handled above
         # This line is unreachable but kept for defensive programming
-        return False  # type: ignore[unreachable]
+        return False  # type: ignore[unreachable]  # Reason: Type signature guarantees all cases are handled, this line is unreachable but kept for defensive programming
 
     def _is_valid_channel(self, channel: str) -> bool:
         """

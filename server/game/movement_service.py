@@ -214,7 +214,7 @@ class MovementService:
         """Update player location in database."""
         db_write_start = time.time()
         self._logger.debug("Updating player room in database", player_id=player.player_id, room_id=to_room_id)
-        setattr(player, "current_room_id", to_room_id)  # noqa: B010
+        setattr(player, "current_room_id", to_room_id)  # noqa: B010  # Reason: Use setattr to bypass mypy's strict type checking for SQLAlchemy Column descriptors, at runtime this attribute behaves as a string despite mypy seeing Column[str]
         await self._persistence.save_player(player)
         db_write_end = time.time()
         timing_breakdown["db_write_ms"] = (db_write_end - db_write_start) * 1000
@@ -653,7 +653,7 @@ class MovementService:
                 if player:
                     # Use setattr to bypass mypy's strict type checking for SQLAlchemy Column descriptors
                     # At runtime, this attribute behaves as a string despite mypy seeing Column[str]
-                    setattr(player, "current_room_id", room_id)  # noqa: B010
+                    setattr(player, "current_room_id", room_id)  # noqa: B010  # Reason: Use setattr to bypass mypy's strict type checking for SQLAlchemy Column descriptors, at runtime this attribute behaves as a string despite mypy seeing Column[str]
                     await self._persistence.save_player(player)
 
                 self._logger.info("Added player to room", player_id=player_id, room_id=room_id)

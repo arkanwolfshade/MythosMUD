@@ -36,7 +36,7 @@ def mock_connection_manager():
 
 
 @pytest.mark.asyncio
-async def test_warded_indicator_in_game_state_provider(mock_connection_manager):  # pylint: disable=redefined-outer-name
+async def test_warded_indicator_in_game_state_provider(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test that game state provider adds '(warded)' indicator."""
     player_id = uuid.uuid4()
     await start_login_grace_period(player_id, mock_connection_manager)
@@ -63,7 +63,7 @@ async def test_warded_indicator_in_game_state_provider(mock_connection_manager):
 
 
 @pytest.mark.asyncio
-async def test_warded_indicator_in_player_occupant_processor(mock_connection_manager):  # pylint: disable=redefined-outer-name
+async def test_warded_indicator_in_player_occupant_processor(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test that player occupant processor adds '(warded)' indicator."""
     player_id = uuid.uuid4()
     await start_login_grace_period(player_id, mock_connection_manager)
@@ -86,7 +86,7 @@ async def test_warded_indicator_in_player_occupant_processor(mock_connection_man
 
 
 @pytest.mark.asyncio
-async def test_warded_indicator_in_look_room(mock_connection_manager):  # pylint: disable=redefined-outer-name
+async def test_warded_indicator_in_look_room(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test that look_room command adds '(warded)' indicator."""
     player_id = uuid.uuid4()
     await start_login_grace_period(player_id, mock_connection_manager)
@@ -105,7 +105,7 @@ async def test_warded_indicator_in_look_room(mock_connection_manager):  # pylint
 
 
 @pytest.mark.asyncio
-async def test_warded_indicator_in_look_player(mock_connection_manager):  # pylint: disable=redefined-outer-name
+async def test_warded_indicator_in_look_player(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test that look_player command adds '(warded)' indicator."""
     player_id = uuid.uuid4()
     await start_login_grace_period(player_id, mock_connection_manager)
@@ -124,7 +124,7 @@ async def test_warded_indicator_in_look_player(mock_connection_manager):  # pyli
 
 
 @pytest.mark.asyncio
-async def test_warded_indicator_in_websocket_room_updates(mock_connection_manager):  # pylint: disable=redefined-outer-name
+async def test_warded_indicator_in_websocket_room_updates(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test that websocket room updates add '(warded)' indicator."""
     player_id = uuid.uuid4()
     await start_login_grace_period(player_id, mock_connection_manager)
@@ -149,7 +149,7 @@ async def test_warded_indicator_in_websocket_room_updates(mock_connection_manage
 
 
 @pytest.mark.asyncio
-async def test_warded_indicator_removed_after_expiration(mock_connection_manager):  # pylint: disable=redefined-outer-name
+async def test_warded_indicator_removed_after_expiration(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test that '(warded)' indicator is removed when grace period expires."""
     player_id = uuid.uuid4()
     await start_login_grace_period(player_id, mock_connection_manager)
@@ -176,7 +176,7 @@ async def test_warded_indicator_removed_after_expiration(mock_connection_manager
 
 
 @pytest.mark.asyncio
-async def test_warded_indicator_not_shown_for_reconnections(mock_connection_manager):  # pylint: disable=redefined-outer-name
+async def test_warded_indicator_not_shown_for_reconnections(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test that '(warded)' indicator is not shown for reconnections."""
     player_id = uuid.uuid4()
 
@@ -197,7 +197,7 @@ async def test_warded_indicator_not_shown_for_reconnections(mock_connection_mana
 
 
 @pytest.mark.asyncio
-async def test_both_linkdead_and_warded_indicators(mock_connection_manager):  # pylint: disable=redefined-outer-name
+async def test_both_linkdead_and_warded_indicators(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test that both '(linkdead)' and '(warded)' can appear together."""
     player_id = uuid.uuid4()
 

@@ -115,7 +115,7 @@ class CombatDPSync:  # pylint: disable=too-few-public-methods  # Reason: DP sync
             # Type checker thinks this is unreachable (asyncio.create_task always returns Task),
             # but test doubles may return non-Task objects, so we keep the check for test safety
             if not isinstance(task, asyncio.Task):
-                task_coro.close()  # type: ignore[unreachable]
+                task_coro.close()  # type: ignore[unreachable]  # Reason: Type checker thinks this is unreachable (asyncio.create_task always returns Task), but test doubles may return non-Task objects, we keep the check for test safety
         except RuntimeError as e:
             task_coro.close()
             logger.error(

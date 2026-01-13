@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useReducer, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo, useReducer } from 'react';
 import type { PanelPosition, PanelSize, PanelState } from '../types';
 import { PanelManagerContext } from './PanelManagerContext';
 
@@ -182,6 +182,8 @@ const panelReducer = (state: PanelManagerState, action: PanelAction): PanelManag
 
     case 'CLOSE_PANEL': {
       const { id } = action.payload;
+
+      // Destructuring removes panel id from state, _removed variable intentionally unused
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [id]: _removed, ...remainingPanels } = state.panels;
 

@@ -46,7 +46,7 @@ def mock_target():
 
 
 @pytest.mark.asyncio
-async def test_whisper_command_missing_target(mock_request):  # pylint: disable=redefined-outer-name
+async def test_whisper_command_missing_target(mock_request):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test whisper command with missing target."""
     result = await handle_whisper_command(
         command_data={"message": "hello"},
@@ -60,7 +60,7 @@ async def test_whisper_command_missing_target(mock_request):  # pylint: disable=
 
 
 @pytest.mark.asyncio
-async def test_whisper_command_missing_message(mock_request):  # pylint: disable=redefined-outer-name
+async def test_whisper_command_missing_message(mock_request):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test whisper command with missing message."""
     result = await handle_whisper_command(
         command_data={"target": "target"},
@@ -74,7 +74,7 @@ async def test_whisper_command_missing_message(mock_request):  # pylint: disable
 
 
 @pytest.mark.asyncio
-async def test_whisper_command_no_player_service(mock_request):  # pylint: disable=redefined-outer-name
+async def test_whisper_command_no_player_service(mock_request):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test whisper command when player service is unavailable."""
     mock_request.app.state.player_service = None
 
@@ -90,7 +90,7 @@ async def test_whisper_command_no_player_service(mock_request):  # pylint: disab
 
 
 @pytest.mark.asyncio
-async def test_whisper_command_sender_not_found(mock_request):  # pylint: disable=redefined-outer-name
+async def test_whisper_command_sender_not_found(mock_request):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test whisper command when sender not found."""
     mock_request.app.state.player_service.resolve_player_name = AsyncMock(return_value=None)
 
@@ -106,7 +106,7 @@ async def test_whisper_command_sender_not_found(mock_request):  # pylint: disabl
 
 
 @pytest.mark.asyncio
-async def test_whisper_command_target_not_found(mock_request, mock_sender):  # pylint: disable=redefined-outer-name
+async def test_whisper_command_target_not_found(mock_request, mock_sender):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
     """Test whisper command when target not found."""
     mock_request.app.state.player_service.resolve_player_name = AsyncMock(side_effect=[mock_sender, None])
 
@@ -122,7 +122,7 @@ async def test_whisper_command_target_not_found(mock_request, mock_sender):  # p
 
 
 @pytest.mark.asyncio
-async def test_whisper_command_whisper_to_self(mock_request, mock_sender):  # pylint: disable=redefined-outer-name
+async def test_whisper_command_whisper_to_self(mock_request, mock_sender):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
     """Test whisper command when trying to whisper to self."""
     mock_request.app.state.player_service.resolve_player_name = AsyncMock(return_value=mock_sender)
 
@@ -138,7 +138,7 @@ async def test_whisper_command_whisper_to_self(mock_request, mock_sender):  # py
 
 
 @pytest.mark.asyncio
-async def test_whisper_command_success(mock_request, mock_sender, mock_target):  # pylint: disable=redefined-outer-name
+async def test_whisper_command_success(mock_request, mock_sender, mock_target):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
     """Test successful whisper command."""
     mock_request.app.state.player_service.resolve_player_name = AsyncMock(side_effect=[mock_sender, mock_target])
     mock_request.app.state.chat_service.send_whisper_message = AsyncMock(

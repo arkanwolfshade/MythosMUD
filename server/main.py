@@ -41,7 +41,7 @@ setup_enhanced_logging(config.to_legacy_dict())
 
 # Get logger - now created AFTER logging is set up
 logger = get_logger(__name__)
-logger.info("Logging setup completed", environment=config.logging.environment)  # pylint: disable=no-member  # Pydantic FieldInfo dynamic attribute
+logger.info("Logging setup completed", environment=config.logging.environment)  # pylint: disable=no-member  # Reason: Pydantic model fields are dynamically accessible, pylint cannot detect them statically but they exist at runtime
 
 
 # ErrorLoggingMiddleware has been replaced by ComprehensiveLoggingMiddleware
@@ -254,7 +254,7 @@ app.router.lifespan_context = composed_lifespan
 
 app.add_middleware(CorrelationMiddleware, correlation_header="X-Correlation-ID")
 
-# pylint: disable=no-member  # Pydantic FieldInfo dynamic attributes
+# pylint: disable=no-member  # Reason: Pydantic model fields are dynamically accessible, pylint cannot detect them statically but they exist at runtime
 cors_kwargs = {
     "allow_origins": config.cors.allow_origins,
     "allow_credentials": config.cors.allow_credentials,
@@ -268,7 +268,7 @@ if config.cors.expose_headers:
 
 # The trusted origins list keeps our gateways as secure as the wards at the Arkham Library.
 # CORSMiddleware uses **kwargs which mypy can't validate against strict Starlette signatures
-app.add_middleware(CORSMiddleware, **cors_kwargs)  # type: ignore[arg-type]
+app.add_middleware(CORSMiddleware, **cors_kwargs)  # type: ignore[arg-type]  # Reason: CORSMiddleware accepts **kwargs which mypy cannot validate against strict Starlette middleware signatures, but runtime validation ensures compatibility
 
 setup_monitoring_endpoints(app)
 
@@ -299,7 +299,7 @@ if __name__ == "__main__":
     uvicorn.run(
         "server.main:app",  # Use the correct module path from project root
         host=config.server.host,
-        port=config.server.port,  # pylint: disable=no-member  # Pydantic FieldInfo dynamic attribute
+        port=config.server.port,  # pylint: disable=no-member  # Reason: Pydantic model fields are dynamically accessible, pylint cannot detect them statically but they exist at runtime
         reload=False,  # Hot reloading disabled due to client compatibility issues
         # Use our StructLog system for all logging
         access_log=True,

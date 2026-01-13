@@ -109,7 +109,7 @@ class PlayerEventHandlerUtils:
         if isinstance(occ, str):
             return occ
         # Defensive return for unexpected types (unreachable in normal flow)
-        return None  # type: ignore[unreachable]
+        return None  # type: ignore[unreachable]  # Reason: Defensive return for unexpected types, mypy cannot verify that all cases are handled but this is unreachable in normal flow
 
     def extract_occupant_names(self, occupants_info: list[dict[str, Any] | str]) -> list[str]:
         """

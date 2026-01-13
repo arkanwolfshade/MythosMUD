@@ -32,6 +32,8 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
 }) => {
   const [commandInput, setCommandInput] = useState('');
   const isControlled = onChannelSelect !== undefined;
+
+  // Uncontrolled mode state variable, setter intentionally unused in controlled mode
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [uncontrolledChannel, _setUncontrolledChannel] = useState(selectedChannel ?? DEFAULT_CHANNEL);
   const currentChannel = isControlled ? (selectedChannel ?? DEFAULT_CHANNEL) : uncontrolledChannel;

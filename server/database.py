@@ -199,10 +199,7 @@ class DatabaseManager:
                 },
                 user_friendly="Cannot connect to database. Please check database server is running.",
             )
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904            # JUSTIFICATION: create_async_engine can raise a wide variety of exceptions depending
-            # on the driver (asyncpg), network state, and provided credentials. We catch Exception
-            # here to provide a unified, context-rich DatabaseError for any failure during this
-            # critical infrastructure setup.
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: create_async_engine can raise a wide variety of exceptions depending on the driver (asyncpg), network state, and provided credentials, we catch Exception here to provide a unified, context-rich DatabaseError for any failure during this critical infrastructure setup
             context = create_error_context()
             context.metadata["operation"] = "create_async_engine"
             log_and_raise(
@@ -409,9 +406,7 @@ class DatabaseManager:
                 # Event loop is closed or proactor is None - this is expected during cleanup
                 # Don't log as error, just as debug since this is normal during test teardown
                 logger.debug("Event loop closed during engine disposal (expected during cleanup)", error=str(e))
-            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904                # JUSTIFICATION: This is a best-effort cleanup of database connections during engine disposal.
-                # We log any unexpected failures but must not raise them, ensuring the application shutdown
-                # process can continue for other components even if database cleanup fails.
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: This is a best-effort cleanup of database connections during engine disposal, we log any unexpected failures but must not raise them, ensuring the application shutdown process can continue for other components even if database cleanup fails
                 # Any other error - log but don't raise
                 logger.warning("Error disposing database engine", error=str(e), error_type=type(e).__name__)
             finally:
@@ -473,7 +468,7 @@ async def init_db() -> None:
     proper initialization for compatibility.
     """
     from sqlalchemy.orm import (
-        configure_mappers,  # noqa: PLC0415  # JUSTIFICATION: Lazy import to avoid circular dependency
+        configure_mappers,  # noqa: PLC0415  # Reason: Lazy import inside function to avoid circular import chain during module initialization
     )
 
     # Configure mappers before initializing database
@@ -481,13 +476,13 @@ async def init_db() -> None:
 
     # Initialize database manager
     manager = DatabaseManager.get_instance()
-    manager._initialize_database()  # noqa: SLF001  # pylint: disable=protected-access
+    manager._initialize_database()  # noqa: SLF001  # pylint: disable=protected-access  # Reason: Accessing protected method _initialize_database is necessary for database manager initialization, this is part of the DatabaseManager internal API
 
     # Verify connectivity by getting engine (initializes if needed)
     engine = get_engine()
     async with engine.begin() as conn:
         # Execute a simple query to verify connectivity
-        await conn.execute(select(1))  # noqa: S101  # JUSTIFICATION: Query result not needed, just connectivity check
+        await conn.execute(select(1))  # noqa: S101  # Reason: Query result not needed, just connectivity check to verify database is accessible
 
 
 def reset_database() -> None:
@@ -502,7 +497,7 @@ def reset_database() -> None:
     # Reset singleton instance
     DatabaseManager.reset_instance()
     # Reset module-level _database_url for backward compatibility with tests
-    global _database_url  # pylint: disable=global-statement  # JUSTIFICATION: Required for test cleanup
+    global _database_url  # pylint: disable=global-statement  # Reason: Required for test cleanup, module-level variable must be reset for test isolation
     _database_url = None
     _reset_database_url_state()
     # Also reset database_config_helpers state to ensure tests can mock get_config()

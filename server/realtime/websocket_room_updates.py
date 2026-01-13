@@ -199,7 +199,9 @@ async def broadcast_room_update(player_id: str, room_id: str, connection_manager
     try:
         if connection_manager is None:
             # Import inside function to avoid circular import (main.py imports websocket_room_updates indirectly)
-            from ..main import app  # pylint: disable=import-outside-toplevel
+            from ..main import (
+                app,  # pylint: disable=import-outside-toplevel  # Reason: Import inside function to avoid circular import, main.py imports websocket_room_updates indirectly
+            )
 
             connection_manager = app.state.container.connection_manager
 

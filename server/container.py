@@ -367,7 +367,7 @@ class ApplicationContainer:  # pylint: disable=too-many-instance-attributes  # R
                 from .services.nats_service import NATSService
 
                 # Initialize NATS service if enabled
-                if self.config.nats.enabled:  # pylint: disable=no-member  # Pydantic FieldInfo dynamic attribute
+                if self.config.nats.enabled:  # pylint: disable=no-member  # Reason: Pydantic model fields are dynamically accessible after validation, pylint cannot detect them statically
                     self.nats_service = NATSService(config=self.config.nats)
                     await self.nats_service.connect()
                     logger.info("NATS service connected")
@@ -590,7 +590,7 @@ class ApplicationContainer:  # pylint: disable=too-many-instance-attributes  # R
             if expected_type is dict:
                 return dict(decoded)
             return decoded
-        except JSONDecodeError:  # noqa: BLE001
+        except JSONDecodeError:  # noqa: BLE001  # Reason: JSON decode errors are expected for malformed data, caught explicitly to return default value, no security risk from logging
             logger.warning("Failed to decode JSON column; using default value", column_value=value)
             return expected_type()
 

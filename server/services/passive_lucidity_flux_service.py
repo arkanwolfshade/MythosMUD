@@ -25,7 +25,7 @@ from ..structured_logging.enhanced_logging_config import get_logger
 try:
     from server.monitoring.performance_monitor import PerformanceMonitor
 except ImportError:  # pragma: no cover - monitoring is optional in some test harnesses
-    PerformanceMonitor = None  # type: ignore[assignment, misc]
+    PerformanceMonitor = None  # type: ignore[assignment, misc]  # Reason: PerformanceMonitor is optional dependency, when not installed it is set to None, type checker cannot infer this conditional assignment
 
 logger = get_logger(__name__)
 
@@ -465,7 +465,7 @@ class PassiveLucidityFluxService:  # pylint: disable=too-many-instance-attribute
 
         # This should never be reached given the type signature (datetime | str | None),
         # but kept for defensive programming
-        return None  # type: ignore[unreachable]
+        return None  # type: ignore[unreachable]  # Reason: Defensive programming fallback, type checker cannot detect all runtime type variations despite type signature
 
     def _normalize_datetime_timezone(self, dt: datetime | None) -> datetime | None:
         """Normalize datetime to timezone-aware UTC."""

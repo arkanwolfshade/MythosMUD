@@ -4,10 +4,7 @@ Unit tests for lucidity recovery command handlers.
 Tests the pray, meditate, group_solace, therapy, and folk_tonic commands.
 """
 
-# Pylint false positive: pytest fixtures are injected as function parameters,
-# which pylint incorrectly flags as redefining names from outer scope.
-# This is standard pytest usage and cannot be avoided.
-# pylint: disable=redefined-outer-name
+# pylint: disable=redefined-outer-name  # Reason: Pytest fixtures are injected as function parameters, which pylint incorrectly flags as redefining names from outer scope, this is standard pytest usage and cannot be avoided
 
 import uuid
 from datetime import UTC, datetime, timedelta

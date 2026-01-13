@@ -85,15 +85,15 @@ class NPCDefinitionResponse(BaseModel):
     def from_orm(cls, npc_def: NPCDefinition) -> "NPCDefinitionResponse":  # pylint: disable=arguments-renamed  # Reason: Parameter renamed for clarity, parent class uses 'obj'
         """Create response from ORM object."""
         # Parse JSON fields if they're strings
-        base_stats = json.loads(str(npc_def.base_stats)) if isinstance(npc_def.base_stats, str) else npc_def.base_stats  # type: ignore[unreachable]
+        base_stats = json.loads(str(npc_def.base_stats)) if isinstance(npc_def.base_stats, str) else npc_def.base_stats  # type: ignore[unreachable]  # Reason: isinstance check ensures str branch, but mypy infers union type and marks else branch as unreachable
         behavior_config = (
             json.loads(str(npc_def.behavior_config))
-            if isinstance(npc_def.behavior_config, str)  # type: ignore[unreachable]
+            if isinstance(npc_def.behavior_config, str)  # type: ignore[unreachable]  # Reason: isinstance check ensures str branch, but mypy infers union type and marks else branch as unreachable
             else npc_def.behavior_config
         )
         ai_integration_stub = (
             json.loads(str(npc_def.ai_integration_stub))
-            if isinstance(npc_def.ai_integration_stub, str)  # type: ignore[unreachable]
+            if isinstance(npc_def.ai_integration_stub, str)  # type: ignore[unreachable]  # Reason: isinstance check ensures str branch, but mypy infers union type and marks else branch as unreachable
             else npc_def.ai_integration_stub
         )
 
@@ -156,7 +156,7 @@ class NPCSpawnRuleResponse(BaseModel):
             min_population=int(spawn_rule.min_population),
             max_population=int(spawn_rule.max_population),
             spawn_conditions=json.loads(str(spawn_rule.spawn_conditions))
-            if isinstance(spawn_rule.spawn_conditions, str)  # type: ignore[unreachable]
+            if isinstance(spawn_rule.spawn_conditions, str)  # type: ignore[unreachable]  # Reason: isinstance check ensures str branch, but mypy infers union type and marks else branch as unreachable
             else spawn_rule.spawn_conditions,
         )
 

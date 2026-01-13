@@ -178,7 +178,7 @@ class EventBus:  # pylint: disable=too-many-instance-attributes  # Reason: Event
         self._active_tasks.clear()
         try:
             self._logger.info("EventBus pure async processing stopped")
-        except Exception:  # pylint: disable=broad-exception-caught  # nosec B110: Logging errors must not fail shutdown  # noqa: B904            # If logging fails, continue anyway
+        except Exception:  # pylint: disable=broad-exception-caught  # nosec B110  # noqa: B904  # Reason: Logging errors must not fail shutdown, if logging fails continue anyway
             pass
 
     async def _stop_processing(self) -> None:
@@ -199,7 +199,7 @@ class EventBus:  # pylint: disable=too-many-instance-attributes  # Reason: Event
                     error=str(e),
                     error_type=type(e).__name__,
                 )
-            except Exception:  # pylint: disable=broad-exception-caught  # nosec B110: Logging errors must not fail shutdown  # noqa: B904
+            except Exception:  # pylint: disable=broad-exception-caught  # nosec B110  # noqa: B904  # Reason: Logging errors must not fail shutdown, if logging fails continue anyway
                 pass
         finally:
             self._finalize_shutdown()
@@ -259,7 +259,19 @@ class EventBus:  # pylint: disable=too-many-instance-attributes  # Reason: Event
     def _separate_subscribers(
         self, subscribers: list[Callable[[BaseEvent], Any]]
     ) -> tuple[list[Callable[[BaseEvent], Any]], list[Callable[[BaseEvent], Any]]]:
-        """Separate async and sync subscribers. Returns (async_subscribers, sync_subscribers)."""
+        """
+        Separate async and sync subscribers for appropriate execution.
+
+        Uses inspect.iscoroutinefunction to detect async callables at runtime. This allows
+        the event bus to handle mixed subscriber lists, executing sync subscribers immediately
+        and async subscribers concurrently via asyncio tasks.
+
+        Args:
+            subscribers: Mixed list of sync and async subscriber callables
+
+        Returns:
+            Tuple of (async_subscribers, sync_subscribers) for separate processing
+        """
         import inspect
 
         async_subscribers: list[Callable[[BaseEvent], Any]] = []
@@ -274,7 +286,18 @@ class EventBus:  # pylint: disable=too-many-instance-attributes  # Reason: Event
         return async_subscribers, sync_subscribers
 
     def _process_sync_subscribers(self, sync_subscribers: list[Callable[[BaseEvent], Any]], event: BaseEvent) -> None:
-        """Process sync subscribers."""
+        """
+        Execute sync subscribers sequentially with error isolation.
+
+        Sync subscribers are called directly in the current execution context. Errors
+        are caught and logged but do not prevent other subscribers from executing. This
+        ensures that a single subscriber failure doesn't disrupt event processing for
+        other subscribers.
+
+        Args:
+            sync_subscribers: List of synchronous subscriber callables
+            event: Event to pass to each subscriber
+        """
         for subscriber in sync_subscribers:
             try:
                 subscriber(event)
@@ -285,7 +308,24 @@ class EventBus:  # pylint: disable=too-many-instance-attributes  # Reason: Event
     def _create_async_subscriber_tasks(
         self, async_subscribers: list[Callable[[BaseEvent], Any]], event: BaseEvent
     ) -> tuple[list[asyncio.Task], dict[asyncio.Task, str]]:
-        """Create tasks for async subscribers. Returns (tasks, subscriber_names)."""
+        """
+        Create asyncio tasks for async event subscribers and track their lifecycle.
+
+        This method creates tasks for all async subscribers, registers them in the active
+        tasks set for lifecycle tracking, and sets up done callbacks to automatically
+        remove them from tracking when complete. This ensures we can monitor all active
+        event processing tasks for graceful shutdown.
+
+        The subscriber_names mapping allows error handling to identify which subscriber
+        failed without maintaining task-to-subscriber references separately.
+
+        Args:
+            async_subscribers: List of async callable subscribers to invoke
+            event: Event to pass to each subscriber
+
+        Returns:
+            Tuple of (list of created tasks, mapping of task to subscriber name for error reporting)
+        """
         tasks: list[asyncio.Task] = []
         subscriber_names: dict[asyncio.Task, str] = {}
 
@@ -312,7 +352,20 @@ class EventBus:  # pylint: disable=too-many-instance-attributes  # Reason: Event
     async def _wait_for_async_subscribers(
         self, tasks: list[asyncio.Task], subscriber_names: dict[asyncio.Task, str]
     ) -> None:
-        """Wait for async subscriber tasks and handle results."""
+        """
+        Wait for all async subscriber tasks to complete and handle their results.
+
+        Uses asyncio.gather with return_exceptions=True to ensure all subscribers execute
+        even if one fails. This is critical for event processing reliability - a single
+        subscriber failure must not prevent other subscribers from receiving the event.
+
+        Errors are logged but not raised, allowing the event bus to continue processing
+        subsequent events. The subscriber_names mapping provides context for error logs.
+
+        Args:
+            tasks: List of asyncio tasks created for async subscribers
+            subscriber_names: Mapping of task to subscriber name for error reporting
+        """
         if not tasks:
             return
 
@@ -474,7 +527,7 @@ class EventBus:  # pylint: disable=too-many-instance-attributes  # Reason: Event
 
         # Remove threading dependency - Python dict operations are atomic at GIL
         # level for simple operations like this, sufficient for single-threaded async
-        self._subscribers[event_type].append(handler)  # type: ignore[arg-type]
+        self._subscribers[event_type].append(handler)  # type: ignore[arg-type]  # Reason: Handler type is Callable but mypy cannot infer compatibility with list[Callable[[BaseEvent], Any]] due to generic type variance
         self._logger.debug("Added subscriber for event type", event_type=event_type.__name__)
 
     def unsubscribe(self, event_type: type[T], handler: Callable[[T], Any]) -> bool:
@@ -494,7 +547,7 @@ class EventBus:  # pylint: disable=too-many-instance-attributes  # Reason: Event
         # Remove threading dependency - GIL atomic operations suffice for read-only
         subscribers = self._subscribers.get(event_type, [])
         try:
-            subscribers.remove(handler)  # type: ignore[arg-type]
+            subscribers.remove(handler)  # type: ignore[arg-type]  # Reason: Handler type is Callable but mypy cannot infer compatibility with list[Callable[[BaseEvent], Any]] due to generic type variance
             self._logger.debug("Removed subscriber for event type", event_type=event_type.__name__)
             return True
         except ValueError:
@@ -552,7 +605,7 @@ class EventBus:  # pylint: disable=too-many-instance-attributes  # Reason: Event
                     error_type=type(e).__name__,
                     exc_info=True,
                 )
-            except Exception:  # pylint: disable=broad-exception-caught  # nosec B110: Logging errors must not crash workers  # noqa: B904                # If logging fails, just continue - don't let logging errors crash workers
+            except Exception:  # pylint: disable=broad-exception-caught  # nosec B110  # noqa: B904  # Reason: Logging errors must not crash workers, if logging fails just continue
                 pass
         finally:
             # Ensure state is always reset even if shutdown fails
@@ -560,7 +613,7 @@ class EventBus:  # pylint: disable=too-many-instance-attributes  # Reason: Event
             if self._processing_task and not self._processing_task.done():
                 try:
                     self._processing_task.cancel()
-                except Exception:  # pylint: disable=broad-exception-caught  # nosec B110: Task cancellation errors unpredictable, must handle gracefully  # noqa: B904
+                except Exception:  # pylint: disable=broad-exception-caught  # nosec B110  # noqa: B904  # Reason: Task cancellation errors unpredictable, must handle gracefully
                     pass
             # Clear active tasks to prevent resource leaks
             self._active_tasks.clear()

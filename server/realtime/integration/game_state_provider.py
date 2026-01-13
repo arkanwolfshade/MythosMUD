@@ -179,7 +179,7 @@ class GameStateProvider:
                     user = getattr(player_obj, "user", None)
                     if user:
                         player_name = getattr(user, "username", None) or getattr(user, "display_name", None)
-                except Exception:  # pylint: disable=broad-exception-caught  # nosec B110: Graceful fallback if user attributes are unavailable  # noqa: B904
+                except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: User attribute access errors unpredictable, graceful fallback if user attributes are unavailable, must continue processing
                     pass
 
         # Validate name is not UUID

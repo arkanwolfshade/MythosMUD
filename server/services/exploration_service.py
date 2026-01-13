@@ -96,7 +96,7 @@ class ExplorationService:
                 error_type=type(e).__name__,
             )
             raise DatabaseError(f"Failed to mark room as explored: {e}") from e
-        except Exception as e:  # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except  # Reason: Catch-all for unexpected errors (non-database) during room exploration tracking, ensures all errors are logged before propagation
             # Unforeseen dimensional ripples must be logged before being
             # allowed to propagate further into the local reality.
             logger.error(
@@ -168,7 +168,7 @@ class ExplorationService:
                 error_type=type(e).__name__,
             )
             raise DatabaseError(f"Failed to look up room UUID: {e}") from e
-        except Exception as e:  # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except  # Reason: Catch-all for unexpected errors (non-database) during room UUID lookup, ensures all errors are logged before propagation
             # Dimensional instability during room lookup must be recorded.
             logger.error(
                 "Unexpected error looking up room UUID",
@@ -276,7 +276,7 @@ class ExplorationService:
                 error_type=type(e).__name__,
             )
             raise DatabaseError(f"Failed to retrieve explored rooms: {e}") from e
-        except Exception as e:  # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except  # Reason: Catch-all for unexpected errors (non-database) during explored rooms retrieval, ensures all errors are logged before propagation
             # Unforeseen disruptions in the retrieval of spatial memories.
             logger.error(
                 "Unexpected error retrieving explored rooms",
@@ -329,7 +329,7 @@ class ExplorationService:
                 error_type=type(e).__name__,
             )
             raise DatabaseError(f"Failed to check room exploration: {e}") from e
-        except Exception as e:  # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except  # Reason: Catch-all for unexpected errors (non-database) during room exploration check, ensures all errors are logged before propagation
             # Dimensional resonance failures during exploration verification.
             logger.error(
                 "Unexpected error checking room exploration",
@@ -375,7 +375,7 @@ class ExplorationService:
                         error=str(e),
                         error_type=type(e).__name__,
                     )
-            except Exception as e:  # pylint: disable=broad-except
+            except Exception as e:  # pylint: disable=broad-except  # Reason: Fire-and-forget background task must catch all exceptions to prevent blocking core game mechanics, errors logged but not propagated
                 # As documented in the Great Library of Celephaïs, unforeseen dimensional
                 # ripples (unexpected exceptions) must be contained to prevent them from
                 # disrupting the primary thread of reality (the player's movement).
@@ -414,7 +414,7 @@ class ExplorationService:
                 # Alternative: Could use threading to run in background, but adds complexity
                 # Since exploration is non-critical, skipping is acceptable
 
-        except Exception as e:  # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except  # Reason: Scheduling failures must not disrupt player movement, catch all exceptions to log but not propagate, exploration is non-critical
             # As recorded in the Elder Signs, even the most basic attempts to manifest
             # intention (scheduling the task) can be thwarted by the Outer Gods.
             # We catch all exceptions here to ensure that scheduling failures do not

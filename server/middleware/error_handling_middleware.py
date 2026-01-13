@@ -107,7 +107,7 @@ class ErrorHandlingMiddleware:
             # JUSTIFICATION: ASGI spec requires send to be callable, but defensive programming guards
             # against None. Mypy's type narrowing doesn't account for this runtime check.
             if send is None:
-                logger.error("Cannot send error response: send callable is None", exc_info=True)  # type: ignore[unreachable]
+                logger.error("Cannot send error response: send callable is None", exc_info=True)  # type: ignore[unreachable]  # Reason: ASGI spec requires send to be callable, but defensive programming guards against None, mypy's type narrowing doesn't account for this runtime check
                 return
             await send(
                 {
@@ -153,7 +153,7 @@ class ErrorHandlingMiddleware:
             # JUSTIFICATION: ASGI spec requires send to be callable, but defensive programming guards
             # against None. Mypy's type narrowing doesn't account for this runtime check.
             if send is None:
-                logger.error("Cannot send fallback error response: send callable is None", exc_info=True)  # type: ignore[unreachable]
+                logger.error("Cannot send fallback error response: send callable is None", exc_info=True)  # type: ignore[unreachable]  # Reason: ASGI spec requires send to be callable, but defensive programming guards against None, mypy's type narrowing doesn't account for this runtime check
                 return
             await send(
                 {

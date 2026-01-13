@@ -376,9 +376,7 @@ async def replay_dlq_message(filepath: str, current_user: User = Depends(verify_
         except (ValueError, RuntimeError, OSError, AttributeError) as replay_error:
             # Catch specific exceptions that can occur during message replay
             return _handle_replay_error(replay_error, filepath, current_user)
-        except Exception as replay_error:  # pylint: disable=broad-except
-            # Catch any other unexpected exceptions during replay
-            # This is necessary because message processing can fail for various reasons
+        except Exception as replay_error:  # pylint: disable=broad-except  # Reason: Message replay errors unpredictable, must catch all exceptions to handle various failure modes during message processing
             # (network errors, processing errors, etc.) and we want to handle all of them
             # the same way (log and return generic error to user)
             return _handle_replay_error(replay_error, filepath, current_user)

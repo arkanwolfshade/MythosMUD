@@ -32,7 +32,7 @@ async def test_reconnection_cancels_grace_period():
     mock_manager.room_manager.reconcile_room_presence = MagicMock()
     mock_manager.online_players = {}
     # Accessing protected member is necessary to mock the method used by player_connection_setup implementation
-    mock_manager._send_initial_game_state = AsyncMock()  # pylint: disable=protected-access
+    mock_manager._send_initial_game_state = AsyncMock()  # pylint: disable=protected-access  # Reason: Accessing protected member is necessary to mock the method used by player_connection_setup implementation
     mock_manager.broadcast_to_room = AsyncMock()
     # Set up app.state.event_handler for room occupants update
     mock_manager.app = MagicMock()
@@ -73,7 +73,7 @@ async def test_reconnection_no_grace_period():
     mock_manager.room_manager.reconcile_room_presence = MagicMock()
     mock_manager.online_players = {}
     # Accessing protected member is necessary to mock the method used by player_connection_setup implementation
-    mock_manager._send_initial_game_state = AsyncMock()  # pylint: disable=protected-access
+    mock_manager._send_initial_game_state = AsyncMock()  # pylint: disable=protected-access  # Reason: Accessing protected member is necessary to mock the method used by player_connection_setup implementation
     mock_manager.broadcast_to_room = AsyncMock()
     # Set up app.state.event_handler for room occupants update
     mock_manager.app = MagicMock()

@@ -297,6 +297,7 @@ describe('PanelContainer', () => {
     });
 
     it('should not render close button when onClose is not provided', () => {
+      // Destructuring removes onClose from props, variable intentionally unused
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { onClose, ...propsWithoutClose } = defaultProps;
       render(<PanelContainer {...propsWithoutClose} />);

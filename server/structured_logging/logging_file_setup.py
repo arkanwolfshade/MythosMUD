@@ -134,7 +134,7 @@ def setup_enhanced_file_logging(  # pylint: disable=too-many-locals  # Reason: F
     log_config: dict[str, Any],
     log_level: str,
     player_service: Any = None,
-    enable_async: bool = True,  # noqa: ARG001  # pylint: disable=unused-argument
+    enable_async: bool = True,  # noqa: ARG001  # pylint: disable=unused-argument  # Reason: Parameter kept for API compatibility with future async logging implementation, currently unused but reserved for future use
 ) -> None:
     """Set up enhanced file logging handlers with async support."""
     # Use Windows-safe rotation handlers when available
@@ -289,17 +289,17 @@ def setup_enhanced_file_logging(  # pylint: disable=too-many-locals  # Reason: F
     try:
         if sys.platform == "win32":
             # Windows-safe handler also needs directory safety
-            class SafeWinHandlerConsole(_WinSafeHandler):  # type: ignore[misc, valid-type]
+            class SafeWinHandlerConsole(_WinSafeHandler):  # type: ignore[misc, valid-type]  # Reason: Dynamic class creation inside conditional block, mypy cannot validate type compatibility at definition time
                 """Windows-safe rotating file handler with directory safety for console logs."""
 
-                def shouldRollover(self, record):  # noqa: N802
+                def shouldRollover(self, record):  # noqa: N802  # Reason: Method name required by parent class logging.handlers.RotatingFileHandler, cannot change to follow PEP8 naming
                     if self.baseFilename:
                         log_path = Path(self.baseFilename)
                         ensure_log_directory(log_path)
                     return super().shouldRollover(record)
 
             handler_class = SafeWinHandlerConsole
-    except Exception:  # pylint: disable=broad-except
+    except Exception:  # pylint: disable=broad-except  # Reason: Defensive fallback for class definition failures, must catch all exceptions to prevent logging setup from failing completely
         # Defensive fallback: if class definition fails for any reason,
         # fall back to base handler (e.g., if _WinSafeHandler is invalid)
         handler_class = _BaseHandler

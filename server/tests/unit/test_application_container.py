@@ -295,7 +295,7 @@ class TestContainerItemServices:
         mock_session.execute = AsyncMock(return_value=mock_result)
 
         # Testing protected method _initialize_item_services is necessary for unit test coverage
-        await container._initialize_item_services()  # pylint: disable=protected-access
+        await container._initialize_item_services()  # pylint: disable=protected-access  # Reason: Testing protected method is necessary for unit test coverage
         # Should complete without error
 
     @pytest.mark.asyncio
@@ -305,7 +305,7 @@ class TestContainerItemServices:
         container.database_manager = None
 
         # Testing protected method _initialize_item_services is necessary for unit test coverage
-        await container._initialize_item_services()  # pylint: disable=protected-access
+        await container._initialize_item_services()  # pylint: disable=protected-access  # Reason: Testing protected method is necessary for unit test coverage
         assert container.item_prototype_registry is None
         assert container.item_factory is None
 
@@ -313,7 +313,7 @@ class TestContainerItemServices:
         """Test _decode_json_column() with None value."""
         container = ApplicationContainer()
         # Testing protected method _decode_json_column is necessary for unit test coverage
-        result = container._decode_json_column(None, list)  # pylint: disable=protected-access
+        result = container._decode_json_column(None, list)  # pylint: disable=protected-access  # Reason: Testing protected method is necessary for unit test coverage
         assert result == []
 
     def test_decode_json_column_already_list(self):
@@ -321,7 +321,7 @@ class TestContainerItemServices:
         container = ApplicationContainer()
         value = [1, 2, 3]
         # Testing protected method _decode_json_column is necessary for unit test coverage
-        result = container._decode_json_column(value, list)  # pylint: disable=protected-access
+        result = container._decode_json_column(value, list)  # pylint: disable=protected-access  # Reason: Testing protected method is necessary for unit test coverage
         assert result == value
 
     def test_decode_json_column_json_string(self):
@@ -331,12 +331,12 @@ class TestContainerItemServices:
         container = ApplicationContainer()
         value = json.dumps([1, 2, 3])
         # Testing protected method _decode_json_column is necessary for unit test coverage
-        result = container._decode_json_column(value, list)  # pylint: disable=protected-access
+        result = container._decode_json_column(value, list)  # pylint: disable=protected-access  # Reason: Testing protected method is necessary for unit test coverage
         assert result == [1, 2, 3]
 
     def test_decode_json_column_invalid_json(self):
         """Test _decode_json_column() handles invalid JSON."""
         container = ApplicationContainer()
         # Testing protected method _decode_json_column is necessary for unit test coverage
-        result = container._decode_json_column("invalid json", list)  # pylint: disable=protected-access
+        result = container._decode_json_column("invalid json", list)  # pylint: disable=protected-access  # Reason: Testing protected method is necessary for unit test coverage
         assert result == []

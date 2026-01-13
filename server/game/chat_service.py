@@ -53,7 +53,9 @@ from .chat_validation_helpers import (
 from .chat_whisper_tracker import ChatWhisperTracker
 
 if TYPE_CHECKING:
-    from .chat_moderation import UserManagerProtocol  # noqa: F401  # pylint: disable=unused-import
+    from .chat_moderation import (
+        UserManagerProtocol,  # noqa: F401  # pylint: disable=unused-import  # Reason: Imported for type checking only, unused at runtime but needed for TYPE_CHECKING block
+    )
 # NATS service import moved to constructor to avoid circular dependency issues
 
 logger = get_logger("communications.chat_service")

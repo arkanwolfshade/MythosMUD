@@ -567,7 +567,7 @@ async def process_websocket_command(cmd: str, args: list, player_id: str, connec
         current_user=player,
         # WebSocketRequestContext provides duck-typed Request interface but isn't a subclass
         # This is intentional - WebSocket contexts need different lifecycle than HTTP Requests
-        request=request_context,  # type: ignore[arg-type]
+        request=request_context,  # type: ignore[arg-type]  # Reason: WebSocketRequestContext provides duck-typed Request interface but isn't a subclass, WebSocket contexts need different lifecycle than HTTP Requests
         alias_storage=alias_storage,
         player_name=player_name,
     )

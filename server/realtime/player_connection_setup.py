@@ -171,7 +171,9 @@ async def handle_new_connection_setup(
     # This ensures players are never in combat when they log in
     try:
         # Lazy import to avoid circular dependency with combat_service
-        from ..services.combat_service import get_combat_service  # noqa: E402  # pylint: disable=wrong-import-position
+        from ..services.combat_service import (
+            get_combat_service,  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Lazy import inside function to avoid circular import chain during module initialization, wrong import position is intentional
+        )
 
         combat_service = get_combat_service()
         if combat_service:
@@ -184,7 +186,7 @@ async def handle_new_connection_setup(
                         player_id=player_id,
                         combat_id=combat.combat_id,
                     )
-                except Exception as combat_error:  # pylint: disable=broad-exception-caught  # noqa: B904                    # Log but don't fail - combat cleanup is best effort
+                except Exception as combat_error:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Combat cleanup is best effort during player connection setup, all exceptions must be caught to prevent connection failure
                     logger.warning(
                         "Error ending combat for player on login",
                         player_id=player_id,
@@ -214,8 +216,7 @@ async def handle_new_connection_setup(
 
     # Send initial game_state event to the player
     # Accessing protected method is necessary for modularity
-    # pylint: disable=protected-access
-    await manager._send_initial_game_state(player_id, player, room_id)
+    await manager._send_initial_game_state(player_id, player, room_id)  # pylint: disable=protected-access  # Reason: Accessing protected member _send_initial_game_state is necessary for player connection setup implementation, this is part of the internal API
 
     # Broadcast a structured entry event to other occupants (excluding the newcomer)
     await _broadcast_player_entered_game(player_id, player, room_id, manager)

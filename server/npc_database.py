@@ -290,9 +290,9 @@ async def init_npc_db():
         # Import all NPC models to ensure they're registered with metadata
         from sqlalchemy.orm import configure_mappers
 
-        # pylint: disable=unused-import  # noqa: F401  # Imported for side effects (SQLAlchemy mapper registration)
+        # pylint: disable=unused-import  # noqa: F401  # Reason: Imported for side effects (SQLAlchemy mapper registration)
         from server.models.npc import (
-            NPCDefinition,  # noqa: F401  # pylint: disable=unused-import
+            NPCDefinition,  # noqa: F401  # pylint: disable=unused-import  # Reason: Imported for side effects (SQLAlchemy mapper registration), unused but required for ORM setup
         )
 
         logger.debug("Configuring NPC SQLAlchemy mappers")
@@ -473,8 +473,7 @@ def ensure_npc_database_directory():
     For PostgreSQL, database directories are managed by the PostgreSQL server,
     not by the application.
     """
-    # pylint: disable=assignment-from-none  # Function returns Path | None, not always None
-    db_path = get_npc_database_path()
+    db_path = get_npc_database_path()  # pylint: disable=assignment-from-none  # Reason: Function returns Path | None, but with PostgreSQL it always returns None, assignment is effectively a no-op but pylint flags it
     # PostgreSQL always returns None, so this is effectively a no-op
     if db_path is not None:
         db_path.parent.mkdir(parents=True, exist_ok=True)

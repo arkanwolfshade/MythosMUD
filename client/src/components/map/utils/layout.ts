@@ -93,8 +93,12 @@ export const calculateGridPosition = (
 ): { x: number; y: number } => {
   // If node has stored position, use it
   if (node.data && 'map_x' in node.data && 'map_y' in node.data) {
+    // Node data structure varies by node type, runtime check ensures map_x/map_y exist but
+    // TypeScript cannot infer type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mapX = (node.data as any).map_x;
+    // Node data structure varies by node type, runtime check ensures map_x/map_y exist but
+    // TypeScript cannot infer type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mapY = (node.data as any).map_y;
     if (mapX !== null && mapY !== null && mapX !== undefined && mapY !== undefined) {

@@ -94,7 +94,7 @@ async def check_involuntary_flee(target: CombatParticipant, damage: int) -> bool
         # If async for loop doesn't yield any sessions (shouldn't happen, but mypy needs this)
         return False
 
-    except Exception as e:  # pylint: disable=broad-except
+    except Exception as e:  # pylint: disable=broad-except  # Reason: Flee check errors unpredictable, must catch all exceptions to handle various failure modes during flee validation
         logger.warning(
             "Error in involuntary flee check (session creation)",
             player_id=target.participant_id,

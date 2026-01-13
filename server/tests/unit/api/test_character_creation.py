@@ -3,7 +3,7 @@ Unit tests for character creation API endpoints.
 
 Tests roll stats, create character, and validate stats endpoints.
 """
-# pylint: disable=redefined-outer-name
+# pylint: disable=redefined-outer-name  # Reason: Pytest fixtures are injected as function parameters, which pylint incorrectly flags as redefining names from outer scope, this is standard pytest usage
 # Pytest fixtures are injected as function parameters, which triggers
 # "redefined-outer-name" warnings. This is standard pytest pattern.
 
@@ -72,7 +72,9 @@ class TestRollCharacterStats:
     async def test_roll_character_stats_shutdown_pending(self, mock_request, mock_user, mock_stats_generator):
         """Test roll_character_stats() blocks when server is shutting down."""
         # Lazy import to avoid circular import
-        from server.api.character_creation import roll_character_stats  # noqa: E402
+        from server.api.character_creation import (
+            roll_character_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         request_data = RollStatsRequest(method="4d6")
         with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=True):
@@ -90,7 +92,9 @@ class TestRollCharacterStats:
     async def test_roll_character_stats_not_authenticated(self, mock_request, mock_stats_generator):
         """Test roll_character_stats() requires authentication."""
         # Lazy import to avoid circular import
-        from server.api.character_creation import roll_character_stats  # noqa: E402
+        from server.api.character_creation import (
+            roll_character_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         request_data = RollStatsRequest(method="4d6")
         with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
@@ -107,7 +111,9 @@ class TestRollCharacterStats:
     async def test_roll_character_stats_rate_limit(self, mock_request, mock_user, mock_stats_generator):
         """Test roll_character_stats() enforces rate limiting."""
         # Lazy import to avoid circular import
-        from server.api.character_creation import roll_character_stats  # noqa: E402
+        from server.api.character_creation import (
+            roll_character_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         request_data = RollStatsRequest(method="4d6")
         with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
@@ -128,7 +134,9 @@ class TestRollCharacterStats:
     ):
         """Test roll_character_stats() with profession_id."""
         # Lazy import to avoid circular import
-        from server.api.character_creation import roll_character_stats  # noqa: E402
+        from server.api.character_creation import (
+            roll_character_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         request_data = RollStatsRequest(method="4d6", profession_id=1)
         mock_profession = MagicMock()
@@ -158,7 +166,9 @@ class TestRollCharacterStats:
     async def test_roll_character_stats_profession_not_found(self, mock_request, mock_user, mock_stats_generator):
         """Test roll_character_stats() when profession not found."""
         # Lazy import to avoid circular import
-        from server.api.character_creation import roll_character_stats  # noqa: E402
+        from server.api.character_creation import (
+            roll_character_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         profession_id = 999
         request_data = RollStatsRequest(method="4d6", profession_id=profession_id)
@@ -184,7 +194,9 @@ class TestRollCharacterStats:
     async def test_roll_character_stats_with_class(self, mock_request, mock_user, mock_stats_generator, mock_stats):
         """Test roll_character_stats() with required_class."""
         # Lazy import to avoid circular import
-        from server.api.character_creation import roll_character_stats  # noqa: E402
+        from server.api.character_creation import (
+            roll_character_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         request_data = RollStatsRequest(method="4d6", required_class="warrior")
         mock_stats_generator.roll_stats_with_validation = Mock(return_value=(mock_stats, ["warrior", "mage"]))
@@ -209,7 +221,9 @@ class TestRollCharacterStats:
     async def test_roll_character_stats_persistence_not_available(self, mock_request, mock_user, mock_stats_generator):
         """Test roll_character_stats() when persistence not available."""
         # Lazy import to avoid circular import
-        from server.api.character_creation import roll_character_stats  # noqa: E402
+        from server.api.character_creation import (
+            roll_character_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         request_data = RollStatsRequest(method="4d6", profession_id=1)
 
@@ -234,7 +248,9 @@ class TestCreateCharacterWithStats:
     async def test_create_character_shutdown_pending(self, mock_request, mock_user):
         """Test create_character_with_stats() blocks when server is shutting down."""
         # Lazy import to avoid circular import
-        from server.api.character_creation import create_character_with_stats  # noqa: E402
+        from server.api.character_creation import (
+            create_character_with_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         request_data = CreateCharacterRequest(
             name="TestCharacter",
@@ -264,7 +280,9 @@ class TestCreateCharacterWithStats:
     async def test_create_character_not_authenticated(self, mock_request):
         """Test create_character_with_stats() requires authentication."""
         # Lazy import to avoid circular import
-        from server.api.character_creation import create_character_with_stats  # noqa: E402
+        from server.api.character_creation import (
+            create_character_with_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         request_data = CreateCharacterRequest(
             name="TestCharacter",
@@ -293,7 +311,9 @@ class TestCreateCharacterWithStats:
     async def test_create_character_rate_limit(self, mock_request, mock_user):
         """Test create_character_with_stats() enforces rate limiting."""
         # Lazy import to avoid circular import
-        from server.api.character_creation import create_character_with_stats  # noqa: E402
+        from server.api.character_creation import (
+            create_character_with_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         request_data = CreateCharacterRequest(
             name="TestCharacter",
@@ -324,7 +344,9 @@ class TestCreateCharacterWithStats:
     async def test_create_character_success(self, mock_request, mock_user):
         """Test create_character_with_stats() successfully creates character."""
         # Lazy import to avoid circular import
-        from server.api.character_creation import create_character_with_stats  # noqa: E402
+        from server.api.character_creation import (
+            create_character_with_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         request_data = CreateCharacterRequest(
             name="TestCharacter",
@@ -368,7 +390,9 @@ class TestValidateCharacterStats:
     async def test_validate_stats_with_class(self, mock_user, mock_stats_generator):
         """Test validate_character_stats() with class_name."""
         # Lazy import to avoid circular import
-        from server.api.character_creation import validate_character_stats  # noqa: E402
+        from server.api.character_creation import (
+            validate_character_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         stats = {
             "str": 15,
@@ -396,7 +420,9 @@ class TestValidateCharacterStats:
     async def test_validate_stats_without_class(self, mock_user, mock_stats_generator):
         """Test validate_character_stats() without class_name."""
         # Lazy import to avoid circular import
-        from server.api.character_creation import validate_character_stats  # noqa: E402
+        from server.api.character_creation import (
+            validate_character_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         stats = {
             "str": 10,
@@ -423,7 +449,9 @@ class TestValidateCharacterStats:
     async def test_validate_stats_invalid_input(self, mock_user, mock_stats_generator):
         """Test validate_character_stats() handles invalid stats."""
         # Lazy import to avoid circular import
-        from server.api.character_creation import validate_character_stats  # noqa: E402
+        from server.api.character_creation import (
+            validate_character_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         # Stats requires numeric values, passing a non-numeric string should trigger validation error
         invalid_stats = {"strength": "not_a_number", "intelligence": 10, "wisdom": 10}

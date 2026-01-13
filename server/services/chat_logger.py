@@ -40,7 +40,7 @@ class ChatLogger:
             from ..structured_logging.enhanced_logging_config import _resolve_log_base
 
             config = get_config()
-            # pylint: disable=no-member  # Pydantic FieldInfo dynamic attributes
+            # pylint: disable=no-member  # Reason: Pydantic model fields are dynamically accessible after validation, pylint cannot detect them statically
             log_base = config.logging.log_base
             environment = config.logging.environment
 
@@ -829,10 +829,10 @@ class ChatLogger:
         Returns:
             List of deleted file paths
         """
-        # pylint: disable=reimported
+        # pylint: disable=reimported  # Reason: Local import with alias to avoid shadowing outer scope timedelta, reimport is intentional for scoped alias
         # Local import with alias to avoid shadowing outer scope timedelta
         from datetime import (
-            timedelta as dt_timedelta,  # pylint: disable=redefined-outer-name  # noqa: F811
+            timedelta as dt_timedelta,  # pylint: disable=redefined-outer-name  # noqa: F811  # Reason: Local import with alias to avoid shadowing outer scope timedelta, redefined-outer-name is intentional for scoped alias
         )
 
         deleted_files = []

@@ -36,7 +36,7 @@ def mock_persistence():
 
 
 @pytest.fixture
-def mock_request(mock_connection_manager, mock_persistence):  # pylint: disable=redefined-outer-name
+def mock_request(mock_connection_manager, mock_persistence):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
     """Create a mock FastAPI request."""
     request = MagicMock()
     app = MagicMock()
@@ -51,7 +51,7 @@ def mock_request(mock_connection_manager, mock_persistence):  # pylint: disable=
 
 
 @pytest.mark.asyncio
-async def test_attack_command_blocked_during_grace_period(mock_request, mock_connection_manager):  # pylint: disable=redefined-outer-name
+async def test_attack_command_blocked_during_grace_period(mock_request, mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
     """Test that attack commands are blocked during login grace period."""
     player_id = uuid.uuid4()
     player_name = "TestPlayer"
@@ -67,7 +67,9 @@ async def test_attack_command_blocked_during_grace_period(mock_request, mock_con
     await start_login_grace_period(player_id, mock_connection_manager)
 
     # Lazy import to avoid circular import
-    from server.commands.combat import CombatCommandHandler  # noqa: E402
+    from server.commands.combat import (
+        CombatCommandHandler,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+    )
 
     # Create command handler with async_persistence
     handler = CombatCommandHandler(async_persistence=async_persistence)
@@ -91,7 +93,7 @@ async def test_attack_command_blocked_during_grace_period(mock_request, mock_con
 
 
 @pytest.mark.asyncio
-async def test_attack_command_allowed_after_grace_period(mock_request):  # pylint: disable=redefined-outer-name
+async def test_attack_command_allowed_after_grace_period(mock_request):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test that attack commands work normally after grace period expires."""
     player_id = uuid.uuid4()
     player_name = "TestPlayer"
@@ -105,7 +107,9 @@ async def test_attack_command_allowed_after_grace_period(mock_request):  # pylin
     # Don't start grace period - player should be able to attack
 
     # Lazy import to avoid circular import
-    from server.commands.combat import CombatCommandHandler  # noqa: E402
+    from server.commands.combat import (
+        CombatCommandHandler,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+    )
 
     # Create command handler with async_persistence
     handler = CombatCommandHandler(async_persistence=async_persistence)
@@ -136,7 +140,7 @@ async def test_attack_command_allowed_after_grace_period(mock_request):  # pylin
 
 
 @pytest.mark.asyncio
-async def test_attack_command_works_when_not_in_grace_period(mock_request, mock_connection_manager):  # pylint: disable=redefined-outer-name
+async def test_attack_command_works_when_not_in_grace_period(mock_request, mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
     """Test that attack commands work when player is not in grace period."""
     player_id = uuid.uuid4()
     player_name = "TestPlayer"
@@ -151,7 +155,9 @@ async def test_attack_command_works_when_not_in_grace_period(mock_request, mock_
     assert is_player_in_login_grace_period(player_id, mock_connection_manager) is False
 
     # Lazy import to avoid circular import
-    from server.commands.combat import CombatCommandHandler  # noqa: E402
+    from server.commands.combat import (
+        CombatCommandHandler,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+    )
 
     # Create command handler with async_persistence
     handler = CombatCommandHandler(async_persistence=async_persistence)

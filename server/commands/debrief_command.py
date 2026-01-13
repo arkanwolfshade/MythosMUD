@@ -110,7 +110,7 @@ async def handle_debrief_command(
 
             # Clear debrief pending flag (delete the cooldown)
             # Use delete_cooldowns_by_action_code_pattern to remove it
-            await lucidity_service._repo.delete_cooldowns_by_action_code_pattern(  # pylint: disable=protected-access
+            await lucidity_service._repo.delete_cooldowns_by_action_code_pattern(  # pylint: disable=protected-access  # Reason: Accessing protected member _repo is necessary for lucidity service repository access, this is part of the service internal API
                 player_id_uuid, DEBRIEF_PENDING_ACTION_CODE
             )
 

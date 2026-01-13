@@ -99,6 +99,8 @@ export const useGameConnectionManagement = ({
       logger.info('GameClientV2Container', 'Cleaning up connection on unmount');
       disconnectFn();
     };
+
+    // Cleanup function should only run on mount/unmount, disconnectFn is stable and doesn't need to be in deps
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

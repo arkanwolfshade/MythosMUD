@@ -370,4 +370,4 @@ async def get_health_status(request: Request) -> HealthResponse | JSONResponse:
         )
         context = create_context_from_request(request)
         context.metadata["operation"] = "get_health_status"
-        raise LoggedHTTPException(status_code=500, detail=error_response.model_dump(), context=context) from e  # type: ignore[arg-type]
+        raise LoggedHTTPException(status_code=500, detail=error_response.model_dump(), context=context) from e  # type: ignore[arg-type]  # Reason: LoggedHTTPException accepts context parameter, but mypy cannot infer it from FastAPI exception base class signature

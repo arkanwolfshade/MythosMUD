@@ -372,6 +372,6 @@ def log_exception_once(
     if exc is not None and mark_logged:
         marker = getattr(exc, "mark_logged", None)
         if callable(marker):
-            marker()  # pylint: disable=not-callable
+            marker()  # pylint: disable=not-callable  # Reason: callable() check confirms marker is callable at runtime, pylint cannot detect this through getattr
         else:
-            cast(Any, exc)._already_logged = True  # pylint: disable=protected-access
+            cast(Any, exc)._already_logged = True  # pylint: disable=protected-access  # Reason: Accessing protected member _already_logged is necessary for exception logging state tracking, this is part of the exception protocol

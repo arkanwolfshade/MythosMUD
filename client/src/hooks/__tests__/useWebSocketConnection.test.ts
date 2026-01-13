@@ -95,6 +95,7 @@ class MockWebSocket {
     this.url = typeof url === 'string' ? url : url.toString();
     this.protocols = Array.isArray(protocols) ? protocols : protocols ? [protocols] : [];
     // Track this instance globally for test assertions
+    // Test mock requires storing this reference for assertion purposes
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     latestWebSocketInstance = this;
   }

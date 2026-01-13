@@ -549,11 +549,10 @@ class NPCService:
         """
         try:
             # Count NPC definitions by type
-            # pylint: disable=not-callable  # SQLAlchemy func is callable at runtime
             definitions_result = await session.execute(
-                select(NPCDefinition.npc_type, func.count(NPCDefinition.id)).group_by(NPCDefinition.npc_type)
+                select(NPCDefinition.npc_type, func.count(NPCDefinition.id)).group_by(NPCDefinition.npc_type)  # pylint: disable=not-callable  # Reason: SQLAlchemy func is callable at runtime, pylint cannot detect this statically
             )
-            definitions_by_type: dict[str, int] = dict(definitions_result.all())  # type: ignore[arg-type]
+            definitions_by_type: dict[str, int] = dict(definitions_result.all())  # type: ignore[arg-type]  # Reason: SQLAlchemy result.all() returns Row tuples, dict() constructor handles the conversion correctly at runtime
 
             # Count total definitions
             total_definitions_result = await session.execute(select(func.count(NPCDefinition.id)))

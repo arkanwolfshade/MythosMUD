@@ -132,8 +132,8 @@ class PerformanceTracker:
         Args:
             metric_key: Key in performance_stats to trim
         """
-        if len(self.performance_stats[metric_key]) > self.max_samples:  # type: ignore[literal-required]
-            self.performance_stats[metric_key] = self.performance_stats[metric_key][-self.max_samples :]  # type: ignore[literal-required]
+        if len(self.performance_stats[metric_key]) > self.max_samples:  # type: ignore[literal-required]  # Reason: TypedDict access with variable key, mypy cannot verify key exists or value type, but _trim_samples is only called with known list keys
+            self.performance_stats[metric_key] = self.performance_stats[metric_key][-self.max_samples :]  # type: ignore[literal-required]  # Reason: TypedDict access with variable key, mypy cannot verify key exists or value type, but _trim_samples is only called with known list keys
 
     def get_stats(self) -> dict[str, Any]:
         """

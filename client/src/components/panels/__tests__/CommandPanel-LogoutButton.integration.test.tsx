@@ -219,6 +219,7 @@ describe('CommandPanel with LogoutButton Integration', () => {
     });
 
     it('does not render logout button when onLogout prop is not provided', () => {
+      // Destructuring removes onLogout from props, variable intentionally unused
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { onLogout, ...propsWithoutLogout } = defaultProps;
       render(<CommandPanel {...propsWithoutLogout} />);
