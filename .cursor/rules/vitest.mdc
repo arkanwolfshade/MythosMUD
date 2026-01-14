@@ -10,16 +10,18 @@ Vitest is the definitive testing framework for our Vite-powered projects. It off
 
 **Always co-locate test files with their source.** This improves discoverability and ensures tests are updated alongside their implementation.
 
-*   **File Naming**: Use `*.test.{ts,tsx,js,jsx}`.
-*   **Location**: Place test files directly next to the component or module they test.
+* **File Naming**: Use `*.test.{ts,tsx,js,jsx}`.
+* **Location**: Place test files directly next to the component or module they test.
 
 ❌ BAD:
+
 ```
 // src/components/Button/Button.tsx
 // tests/components/Button.test.tsx
 ```
 
 ✅ GOOD:
+
 ```typescript
 // src/components/Button/Button.tsx
 // src/components/Button/Button.test.tsx
@@ -29,11 +31,12 @@ Vitest is the definitive testing framework for our Vite-powered projects. It off
 
 **Organize tests logically using `describe` and `it` (or `test`) blocks.** Ensure each test is isolated and deterministic.
 
-*   **`describe`**: Group related tests into suites.
-*   **`it` / `test`**: Define individual test cases. Prefer `it` for consistency with Jest.
-*   **Hooks (`beforeEach`, `afterEach`)**: Use these for setup and teardown to ensure test isolation.
+* **`describe`**: Group related tests into suites.
+* **`it` / `test`**: Define individual test cases. Prefer `it` for consistency with Jest.
+* **Hooks (`beforeEach`, `afterEach`)**: Use these for setup and teardown to ensure test isolation.
 
 ❌ BAD: (Shared state, no cleanup)
+
 ```typescript
 let user;
 test('creates user', () => {
@@ -47,6 +50,7 @@ test('updates user', () => { // Depends on previous test
 ```
 
 ✅ GOOD: (Isolated tests with hooks)
+
 ```typescript
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createUser, deleteUser } from './user-service';
@@ -79,6 +83,7 @@ describe('User Service', () => {
 **Always use `vi.waitFor` for polling conditions in asynchronous tests.** Avoid arbitrary `setTimeout` calls or manual polling loops. `vi.waitFor` is designed for reliable synchronization.
 
 ❌ BAD: (Flaky, relies on arbitrary timeout)
+
 ```typescript
 test('data loads after delay', async () => {
   let data = null;
@@ -89,6 +94,7 @@ test('data loads after delay', async () => {
 ```
 
 ✅ GOOD: (Reliable polling with `vi.waitFor`)
+
 ```typescript
 import { it, expect, vi } from 'vitest';
 import { fetchData } from './api'; // Assume fetchData returns a Promise
@@ -108,13 +114,14 @@ it('should load data after delay', async () => {
 
 **Leverage Vitest's `vi` API for all mocking.** This provides Jest-compatible syntax and seamless integration. Always clean up mocks after each test.
 
-*   **`vi.fn()`**: Mock individual functions.
-*   **`vi.spyOn()`**: Spy on existing object methods.
-*   **`vi.mock()`**: Mock entire modules.
+* **`vi.fn()`**: Mock individual functions.
+* **`vi.spyOn()`**: Spy on existing object methods.
+* **`vi.mock()`**: Mock entire modules.
 
 ### Function Mocking
 
 ❌ BAD: (Manual mock, no easy reset)
+
 ```typescript
 const originalFetch = global.fetch;
 global.fetch = () => Promise.resolve({ json: () => ({ id: 1 }) });
@@ -123,6 +130,7 @@ global.fetch = originalFetch; // Easy to forget cleanup
 ```
 
 ✅ GOOD: (Using `vi.fn` with `afterEach` cleanup)
+
 ```typescript
 import { it, expect, vi, afterEach } from 'vitest';
 import { getUser } from './user-api';
@@ -156,6 +164,7 @@ it('should fetch user data', async () => {
 **Mock modules at the top of the file.** This ensures the mock is applied before the module under test imports it.
 
 ✅ GOOD: (Module mock before imports)
+
 ```typescript
 import { vi, it, expect } from 'vitest';
 
@@ -177,9 +186,10 @@ it('should call save function without debounce delay', () => {
 
 **Use `happy-dom` for lightweight DOM environments.** It's generally faster and sufficient for most component tests. Switch to `jsdom` only if specific browser APIs are missing in `happy-dom`.
 
-*   Configure in `vite.config.ts` or `vitest.config.ts`.
+* Configure in `vite.config.ts` or `vitest.config.ts`.
 
 ✅ GOOD: (Configuring `happy-dom`)
+
 ```typescript
 // vite.config.ts or vitest.config.ts
 import { defineConfig } from 'vitest/config';
@@ -196,11 +206,12 @@ export default defineConfig({
 
 **Utilize `.concurrent` for tests that can run in parallel.** This significantly speeds up test suites where tests are independent.
 
-*   Use `it.concurrent` for individual tests.
-*   Use `describe.concurrent` for entire suites.
-*   **Important**: When using `.concurrent`, always destructure `expect` from the test context to avoid issues with snapshot and assertion tracking.
+* Use `it.concurrent` for individual tests.
+* Use `describe.concurrent` for entire suites.
+* **Important**: When using `.concurrent`, always destructure `expect` from the test context to avoid issues with snapshot and assertion tracking.
 
 ❌ BAD: (Sequential tests, slow)
+
 ```typescript
 describe('My Feature', () => {
   it('test A', async () => { /* ... */ });
@@ -209,6 +220,7 @@ describe('My Feature', () => {
 ```
 
 ✅ GOOD: (Concurrent tests, faster)
+
 ```typescript
 import { describe, it } from 'vitest';
 
@@ -227,10 +239,11 @@ describe.concurrent('My Feature', () => {
 
 **Enable V8-based code coverage.** It offers near-zero overhead and integrates seamlessly.
 
-*   Add `coverage` configuration to `vite.config.ts` or `vitest.config.ts`.
-*   Run with `vitest run --coverage`.
+* Add `coverage` configuration to `vite.config.ts` or `vitest.config.ts`.
+* Run with `vitest run --coverage`.
 
 ✅ GOOD: (V8 coverage configuration)
+
 ```typescript
 // vite.config.ts or vitest.config.ts
 import { defineConfig } from 'vitest/config';

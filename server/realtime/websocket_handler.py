@@ -340,7 +340,7 @@ async def handle_websocket_connection(
         return
 
     player_id_str = str(player_id)
-    load_player_mute_data(player_id_str)
+    await load_player_mute_data(player_id_str)
 
     try:
         canonical_room_id, should_exit = await send_initial_game_state(

@@ -358,6 +358,7 @@ dev = [
     "pylint-per-file-ignores>=3.2.0", # Per-file ignore support for pylint (matches ruff per-file-ignores)
     "sqlfluff>=3.5.0", # SQL linting and formatting
     "lizard>=1.19.0", # Code complexity analyzer (used by Codacy)
+    "pytest-xdist>=3.8.0", # Parallel test execution (required for -n auto in pytest.ini)
     # sqlint>=0.2.1 - REMOVED: Conflicts with click>=8.1.8 (sqlint requires click==7.0)
     # Use sqlfluff instead, which provides comprehensive SQL linting
 ]

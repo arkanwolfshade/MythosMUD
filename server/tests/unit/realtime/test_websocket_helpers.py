@@ -141,22 +141,34 @@ async def test_check_shutdown_and_reject_websocket_disconnect():
         assert result is False
 
 
-def test_load_player_mute_data_success():
+@pytest.mark.asyncio
+async def test_load_player_mute_data_success():
     """Test load_player_mute_data() successfully loads mute data."""
     player_id_str = "player_123"
 
     with patch("server.services.user_manager.user_manager") as mock_user_manager:
-        load_player_mute_data(player_id_str)
-        mock_user_manager.load_player_mutes.assert_called_once_with(player_id_str)
+        mock_user_manager.load_player_mutes_async = AsyncMock(return_value=True)
+        await load_player_mute_data(player_id_str)
+        mock_user_manager.load_player_mutes_async.assert_called_once_with(player_id_str)
 
 
-def test_load_player_mute_data_import_error():
+@pytest.mark.asyncio
+async def test_load_player_mute_data_import_error():
     """Test load_player_mute_data() handles ImportError."""
+    import sys
+
     player_id_str = "player_123"
 
-    with patch("server.services.user_manager.user_manager", side_effect=ImportError("No module")):
-        # Should not raise
-        load_player_mute_data(player_id_str)
+    # Temporarily remove the module from sys.modules to simulate ImportError
+    # Save the original module if it exists
+    original_module = sys.modules.pop("server.services.user_manager", None)
+    try:
+        # Should not raise, just log error
+        await load_player_mute_data(player_id_str)
+    finally:
+        # Restore the module if it was there
+        if original_module is not None:
+            sys.modules["server.services.user_manager"] = original_module
 
 
 def test_validate_occupant_name_valid():

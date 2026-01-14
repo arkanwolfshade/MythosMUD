@@ -399,6 +399,7 @@ class NATSSubjectManager:  # pylint: disable=too-many-instance-attributes  # Rea
 
         Raises:
             PatternNotFoundError: If pattern_name is not registered
+            SubjectValidationError: If generated pattern is overly broad
 
         Example:
             >>> manager = NATSSubjectManager()
@@ -408,11 +409,12 @@ class NATSSubjectManager:  # pylint: disable=too-many-instance-attributes  # Rea
 
         AI: Generates wildcard patterns for NATS subscriptions from registered patterns.
         AI: Replaces all parameter placeholders with '*' for subscription matching.
+        AI: Validates that generated patterns are not too broad to prevent unintended subscriptions.
         """
         if pattern_name not in self.patterns:
             raise PatternNotFoundError(pattern_name)
 
-        return get_subscription_pattern(self.patterns[pattern_name])
+        return get_subscription_pattern(self.patterns[pattern_name], validator=self._validator)
 
     def get_chat_subscription_patterns(self) -> list[str]:
         """
@@ -430,7 +432,7 @@ class NATSSubjectManager:  # pylint: disable=too-many-instance-attributes  # Rea
         AI: Provides subscription patterns for all chat-related subjects.
         AI: Used by message handlers to subscribe to all chat channels.
         """
-        return get_chat_subscription_patterns(self.patterns)
+        return get_chat_subscription_patterns(self.patterns, validator=self._validator)
 
     def get_event_subscription_patterns(self) -> list[str]:
         """
@@ -448,7 +450,7 @@ class NATSSubjectManager:  # pylint: disable=too-many-instance-attributes  # Rea
         AI: Provides subscription patterns for all event-related subjects.
         AI: Used by message handlers to subscribe to game events and combat events.
         """
-        return get_event_subscription_patterns(self.patterns)
+        return get_event_subscription_patterns(self.patterns, validator=self._validator)
 
     def clear_cache(self) -> None:
         """

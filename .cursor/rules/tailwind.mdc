@@ -11,11 +11,13 @@ Tailwind CSS is a powerful utility-first framework. These rules ensure our proje
 **Always define your design system in `tailwind.config.js`.** Avoid arbitrary values in markup unless absolutely necessary for unique, non-reusable styles. This ensures UI consistency and enables efficient PurgeCSS tree-shaking.
 
 ❌ BAD: Arbitrary values in markup
+
 ```html
 <div class="bg-[#1a2b3c] text-[15px] p-[1.25rem] rounded-[8px]">...</div>
 ```
 
 ✅ GOOD: Configured design tokens
+
 ```js
 // tailwind.config.js
 module.exports = {
@@ -37,6 +39,7 @@ module.exports = {
   },
 };
 ```
+
 ```html
 <div class="bg-brand-500 text-body-md p-layout-sm rounded-card">...</div>
 ```
@@ -48,6 +51,7 @@ module.exports = {
 **Avoid `@apply` for general component styling.** It creates custom CSS that hides Tailwind's utility-first nature, making refactoring harder and reducing clarity. Reserve `@apply` for very specific, non-reusable base styles (e.g., resetting browser defaults) or legacy migrations.
 
 ❌ BAD: Duplicated utility soup in every instance
+
 ```html
 <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-hidden focus:ring-2 focus:ring-blue-500/50">
   Submit
@@ -56,6 +60,7 @@ module.exports = {
 ```
 
 ✅ GOOD: Reusable component (React example)
+
 ```jsx
 // components/Button.jsx
 import clsx from 'clsx';
@@ -79,6 +84,7 @@ export function Button({ variant = 'primary', size = 'md', className, ...props }
   );
 }
 ```
+
 ```jsx
 // Usage
 <Button>Submit</Button>
@@ -91,11 +97,13 @@ export function Button({ variant = 'primary', size = 'md', className, ...props }
 `Layout` > `Flexbox` > `Grid` > `Box Model (p, m, w, h)` > `Typography` > `Backgrounds` > `Borders` > `Effects` > `Interactivity` > `States (hover, focus, active, responsive)`
 
 ❌ BAD: Random order
+
 ```html
 <div class="text-lg flex shadow-md p-4 items-center bg-white rounded-lg">...</div>
 ```
 
 ✅ GOOD: Consistent order
+
 ```html
 <div class="flex items-center p-4 bg-white rounded-lg shadow-md text-lg">...</div>
 ```
@@ -138,15 +146,18 @@ module.exports = {
 **Prioritize semantic HTML.** Tailwind styles should enhance, not replace, proper HTML structure. Ensure all interactive elements have clear, visible focus states.
 
 **`outline-hidden` vs `outline-none` (Tailwind v4):**
-*   **`outline-hidden`**: Sets an invisible outline that *still shows in forced colors mode* for accessibility. **Prefer this for interactive elements** when you want to hide the default browser outline but ensure accessibility.
-*   **`outline-none`**: Sets `outline-style: none`, completely removing the outline. **Avoid this for interactive elements** unless you provide a custom, accessible focus indicator (e.g., `focus:ring-2`).
+
+* **`outline-hidden`**: Sets an invisible outline that *still shows in forced colors mode* for accessibility. **Prefer this for interactive elements** when you want to hide the default browser outline but ensure accessibility.
+* **`outline-none`**: Sets `outline-style: none`, completely removing the outline. **Avoid this for interactive elements** unless you provide a custom, accessible focus indicator (e.g., `focus:ring-2`).
 
 ❌ BAD: Removing focus entirely
+
 ```html
 <button class="focus:outline-none">Click me</button>
 ```
 
 ✅ GOOD: Accessible focus state
+
 ```html
 <button class="focus:outline-hidden focus:ring-2 focus:ring-blue-500/50">Click me</button>
 ```
@@ -169,6 +180,7 @@ module.exports = {
   },
 };
 ```
+
 ```html
 <div class="bg-primary-light dark:bg-primary-dark text-gray-900 dark:text-gray-100">
   Hello, world!

@@ -62,12 +62,15 @@ async def check_shutdown_and_reject(websocket: WebSocket, player_id: uuid.UUID) 
     return False
 
 
-def load_player_mute_data(player_id_str: str) -> None:
-    """Load player mute data when they connect."""
+async def load_player_mute_data(player_id_str: str) -> None:
+    """Load player mute data when they connect.
+
+    AI: Uses async version to avoid blocking the event loop.
+    """
     try:
         from ..services.user_manager import user_manager
 
-        user_manager.load_player_mutes(player_id_str)
+        await user_manager.load_player_mutes_async(player_id_str)
         logger.info("Loaded mute data", player_id=player_id_str)
     except (ImportError, RuntimeError, AttributeError) as e:
         logger.error("Error loading mute data", player_id=player_id_str, error=str(e))

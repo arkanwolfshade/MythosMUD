@@ -416,31 +416,35 @@ async def test_subscribe_with_manual_ack(nats_service):
 @pytest.mark.asyncio
 async def test_unsubscribe_success(nats_service):
     """Test unsubscribe() successfully unsubscribes."""
+
     mock_subscription = MagicMock()
     mock_subscription.unsubscribe = AsyncMock()
     nats_service.subscriptions = {"test.subject": mock_subscription}
-    result = await nats_service.unsubscribe("test.subject")
-    assert result is True
+    await nats_service.unsubscribe("test.subject")
     assert "test.subject" not in nats_service.subscriptions
     mock_subscription.unsubscribe.assert_awaited_once()
 
 
 @pytest.mark.asyncio
 async def test_unsubscribe_not_found(nats_service):
-    """Test unsubscribe() returns False when subscription not found."""
+    """Test unsubscribe() raises NATSUnsubscribeError when subscription not found."""
+    from server.services.nats_exceptions import NATSUnsubscribeError
+
     nats_service.subscriptions = {}
-    result = await nats_service.unsubscribe("test.subject")
-    assert result is False
+    with pytest.raises(NATSUnsubscribeError):
+        await nats_service.unsubscribe("test.subject")
 
 
 @pytest.mark.asyncio
 async def test_unsubscribe_error(nats_service):
-    """Test unsubscribe() handles unsubscribe errors."""
+    """Test unsubscribe() raises NATSUnsubscribeError on unsubscribe errors."""
+    from server.services.nats_exceptions import NATSUnsubscribeError
+
     mock_subscription = MagicMock()
     mock_subscription.unsubscribe = AsyncMock(side_effect=Exception("Unsubscribe error"))
     nats_service.subscriptions = {"test.subject": mock_subscription}
-    result = await nats_service.unsubscribe("test.subject")
-    assert result is False
+    with pytest.raises(NATSUnsubscribeError):
+        await nats_service.unsubscribe("test.subject")
 
 
 @pytest.mark.asyncio
@@ -460,32 +464,42 @@ async def test_request_success(nats_service):
 
 @pytest.mark.asyncio
 async def test_request_not_connected(nats_service):
-    """Test request() returns None when not connected."""
+    """Test request() raises NATSRequestError when not connected."""
+    from server.services.nats_exceptions import NATSRequestError
+
     nats_service.nc = None
-    reply = await nats_service.request("test.subject", {"request": "data"})
-    assert reply is None
+    with pytest.raises(NATSRequestError):
+        await nats_service.request("test.subject", {"request": "data"})
 
 
 @pytest.mark.asyncio
 async def test_request_timeout(nats_service):
-    """Test request() handles timeout."""
+    """Test request() raises NATSRequestError on timeout."""
+    from server.services.nats_exceptions import NATSRequestError
+
     mock_client = MagicMock()
     mock_client.is_connected = True
     mock_client.request = AsyncMock(side_effect=TimeoutError())
     nats_service.nc = mock_client
-    reply = await nats_service.request("test.subject", {"request": "data"}, timeout=0.1)
-    assert reply is None
+    nats_service._running = True
+    nats_service.config.health_check_interval = 0  # Disable health check for simpler test
+    with pytest.raises(NATSRequestError):
+        await nats_service.request("test.subject", {"request": "data"}, timeout=0.1)
 
 
 @pytest.mark.asyncio
 async def test_request_error(nats_service):
-    """Test request() handles errors."""
+    """Test request() raises NATSRequestError on errors."""
+    from server.services.nats_exceptions import NATSRequestError
+
     mock_client = MagicMock()
     mock_client.is_connected = True
     mock_client.request = AsyncMock(side_effect=Exception("Request error"))
     nats_service.nc = mock_client
-    reply = await nats_service.request("test.subject", {"request": "data"})
-    assert reply is None
+    nats_service._running = True
+    nats_service.config.health_check_interval = 0  # Disable health check for simpler test
+    with pytest.raises(NATSRequestError):
+        await nats_service.request("test.subject", {"request": "data"})
 
 
 @pytest.mark.asyncio

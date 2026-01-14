@@ -11,6 +11,7 @@ globs: **/*.py
 For any code making more than a single HTTP call, or any reusable API client, you **must** use a `requests.Session` object. Sessions provide connection pooling and cookie persistence, drastically improving performance and resource usage.
 
 ❌ **BAD: Direct `requests` calls**
+
 ```python
 import requests
 
@@ -20,6 +21,7 @@ response2 = requests.get("https://api.example.com/data/2")
 ```
 
 ✅ **GOOD: Use a `Session` with a context manager**
+
 ```python
 import requests
 
@@ -34,6 +36,7 @@ with requests.Session() as session:
 Enhance session reliability by mounting a custom `HTTPAdapter` to handle retries with backoff and set default timeouts. This prevents flaky network issues from crashing your application and ensures requests don't hang indefinitely.
 
 ❌ **BAD: No retries, no default timeouts**
+
 ```python
 import requests
 
@@ -43,6 +46,7 @@ with requests.Session() as session:
 ```
 
 ✅ **GOOD: Mount an `HTTPAdapter` with `Retry` logic**
+
 ```python
 import requests
 from requests.adapters import HTTPAdapter
@@ -64,21 +68,24 @@ with requests.Session() as session:
     # All requests made with this session will use the retry logic
     response = session.get("https://api.example.com/flaky-endpoint", timeout=(5, 10))
 ```
+
 **Note:** `timeout` should still be explicitly set on individual requests, even with an adapter, to override or confirm the default.
 
 ## 3. Always Set Explicit Timeouts
 
 Never make a `requests` call without an explicit `timeout` parameter. This prevents your application from hanging indefinitely due to slow or unresponsive servers. Specify a tuple `(connect_timeout, read_timeout)`.
 
-*   `connect_timeout`: The time limit for the client to establish a connection to the server.
-*   `read_timeout`: The time limit for the client to wait for a response after sending the request.
+* `connect_timeout`: The time limit for the client to establish a connection to the server.
+* `read_timeout`: The time limit for the client to wait for a response after sending the request.
 
 ❌ **BAD: Missing timeout**
+
 ```python
 response = session.get("https://api.example.com/slow-endpoint") # Can hang forever
 ```
 
 ✅ **GOOD: Explicit `(connect, read)` timeout**
+
 ```python
 # Wait 5 seconds to connect, 10 seconds to receive data
 response = session.get("https://api.example.com/slow-endpoint", timeout=(5, 10))
@@ -89,6 +96,7 @@ response = session.get("https://api.example.com/slow-endpoint", timeout=(5, 10))
 Process responses defensively. Always check for HTTP status codes, handle JSON parsing errors, and log sufficient context for debugging.
 
 ❌ **BAD: Naive response handling**
+
 ```python
 response = session.get("https://api.example.com/data")
 data = response.json() # Fails if not JSON or 204 No Content
@@ -96,6 +104,7 @@ print(data) # Continues even if HTTP 4xx/5xx
 ```
 
 ✅ **GOOD: `raise_for_status()` and `try/except` for JSON**
+
 ```python
 import logging
 import requests
@@ -134,6 +143,7 @@ except requests.exceptions.RequestException as e:
 Isolate all `requests` logic within a dedicated API client class or module. This improves testability, reusability, and maintainability. Use type hints for clarity.
 
 ❌ **BAD: Scattered `requests` calls**
+
 ```python
 # In main.py
 def process_user_data(user_id):
@@ -147,6 +157,7 @@ def fetch_product_info(product_id):
 ```
 
 ✅ **GOOD: Dedicated API Client Class**
+
 ```python
 # api_client.py
 import requests
@@ -248,6 +259,7 @@ except requests.exceptions.RequestException as e:
 Externalize base URLs, API keys, and other sensitive configurations using environment variables or dedicated configuration files. This is crucial for security and deploying across different environments (dev, staging, prod).
 
 ❌ **BAD: Hardcoded values**
+
 ```python
 # In code
 API_URL = "https://prod.api.example.com/v1"
@@ -255,6 +267,7 @@ AUTH_TOKEN = "super_secret_token_123"
 ```
 
 ✅ **GOOD: Environment variables**
+
 ```python
 # In code
 import os

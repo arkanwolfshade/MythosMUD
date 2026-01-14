@@ -30,13 +30,15 @@ def nats_config():
         reconnect_time_wait=2.0,
         ping_interval=20,
         max_outstanding_pings=2,
+        enable_subject_validation=False,  # Disable for unit tests to allow test subjects
     )
 
 
 @pytest.fixture
 def nats_broker(nats_config):
     """Create a NATSMessageBroker instance."""
-    return NATSMessageBroker(nats_config)
+    # Disable message validation for unit tests to allow simple test messages
+    return NATSMessageBroker(nats_config, enable_message_validation=False)
 
 
 def test_nats_message_broker_init(nats_broker, nats_config):
@@ -52,9 +54,11 @@ async def test_connect_success(nats_broker):
     mock_client = MagicMock()
     mock_client.is_connected = True
     with patch("server.infrastructure.nats_broker.nats.connect", new_callable=AsyncMock, return_value=mock_client):
-        result = await nats_broker.connect()
-        assert result is True
-        assert nats_broker._client == mock_client
+        # Mock health monitoring to prevent it from starting during test
+        with patch.object(nats_broker, "_start_health_monitoring", new_callable=AsyncMock):
+            result = await nats_broker.connect()
+            assert result is True
+            assert nats_broker._client == mock_client
 
 
 @pytest.mark.asyncio
@@ -87,11 +91,13 @@ async def test_connect_sets_callbacks(nats_broker):
     with patch(
         "server.infrastructure.nats_broker.nats.connect", new_callable=AsyncMock, return_value=mock_client
     ) as mock_connect:
-        await nats_broker.connect()
-        call_kwargs = mock_connect.call_args[1]
-        assert "error_cb" in call_kwargs
-        assert "disconnected_cb" in call_kwargs
-        assert "reconnected_cb" in call_kwargs
+        # Mock health monitoring to prevent it from starting during test
+        with patch.object(nats_broker, "_start_health_monitoring", new_callable=AsyncMock):
+            await nats_broker.connect()
+            call_kwargs = mock_connect.call_args[1]
+            assert "error_cb" in call_kwargs
+            assert "disconnected_cb" in call_kwargs
+            assert "reconnected_cb" in call_kwargs
 
 
 @pytest.mark.asyncio
@@ -159,6 +165,8 @@ def test_is_connected_true(nats_broker):
     mock_client = MagicMock()
     mock_client.is_connected = True
     nats_broker._client = mock_client
+    nats_broker._running = True
+    nats_broker._last_health_check = 0  # Initialize health check timestamp
     assert nats_broker.is_connected() is True
 
 
@@ -182,6 +190,8 @@ async def test_publish_success(nats_broker):
     mock_client.is_connected = True
     mock_client.publish = AsyncMock()
     nats_broker._client = mock_client
+    nats_broker._running = True
+    nats_broker._last_health_check = 0  # Initialize health check timestamp
     message = {"key": "value"}
     await nats_broker.publish("test.subject", message)
     mock_client.publish.assert_awaited_once()
@@ -204,6 +214,8 @@ async def test_publish_failure(nats_broker):
     mock_client.is_connected = True
     mock_client.publish = AsyncMock(side_effect=Exception("Publish failed"))
     nats_broker._client = mock_client
+    nats_broker._running = True
+    nats_broker._last_health_check = 0  # Initialize health check timestamp
     with pytest.raises(PublishError, match="Failed to publish to test.subject"):
         await nats_broker.publish("test.subject", {"key": "value"})
 
@@ -215,6 +227,8 @@ async def test_publish_json_serialization(nats_broker):
     mock_client.is_connected = True
     mock_client.publish = AsyncMock()
     nats_broker._client = mock_client
+    nats_broker._running = True
+    nats_broker._last_health_check = 0  # Initialize health check timestamp
     message = {"nested": {"key": "value"}, "list": [1, 2, 3]}
     await nats_broker.publish("test.subject", message)
     call_args = mock_client.publish.call_args
@@ -230,6 +244,8 @@ async def test_subscribe_success(nats_broker):
     mock_subscription = MagicMock()
     mock_client.subscribe = AsyncMock(return_value=mock_subscription)
     nats_broker._client = mock_client
+    nats_broker._running = True
+    nats_broker._last_health_check = 0  # Initialize health check timestamp
     handler = AsyncMock()
     subscription_id = await nats_broker.subscribe("test.subject", handler)
     assert subscription_id in nats_broker._subscriptions
@@ -245,6 +261,8 @@ async def test_subscribe_with_queue_group(nats_broker):
     mock_subscription = MagicMock()
     mock_client.subscribe = AsyncMock(return_value=mock_subscription)
     nats_broker._client = mock_client
+    nats_broker._running = True
+    nats_broker._last_health_check = 0  # Initialize health check timestamp
     handler = AsyncMock()
     await nats_broker.subscribe("test.subject", handler, queue_group="workers")
     call_args = mock_client.subscribe.call_args
@@ -259,6 +277,8 @@ async def test_subscribe_without_queue_group(nats_broker):
     mock_subscription = MagicMock()
     mock_client.subscribe = AsyncMock(return_value=mock_subscription)
     nats_broker._client = mock_client
+    nats_broker._running = True
+    nats_broker._last_health_check = 0  # Initialize health check timestamp
     handler = AsyncMock()
     await nats_broker.subscribe("test.subject", handler, queue_group=None)
     call_args = mock_client.subscribe.call_args
@@ -280,6 +300,8 @@ async def test_subscribe_failure(nats_broker):
     mock_client.is_connected = True
     mock_client.subscribe = AsyncMock(side_effect=Exception("Subscribe failed"))
     nats_broker._client = mock_client
+    nats_broker._running = True
+    nats_broker._last_health_check = 0  # Initialize health check timestamp
     handler = AsyncMock()
     with pytest.raises(SubscribeError, match="Failed to subscribe to test.subject"):
         await nats_broker.subscribe("test.subject", handler)
@@ -293,6 +315,8 @@ async def test_subscribe_message_wrapper_calls_handler(nats_broker):
     mock_subscription = MagicMock()
     mock_client.subscribe = AsyncMock(return_value=mock_subscription)
     nats_broker._client = mock_client
+    nats_broker._running = True
+    nats_broker._last_health_check = 0  # Initialize health check timestamp
     handler = AsyncMock()
     await nats_broker.subscribe("test.subject", handler)
     # Get the wrapper function
@@ -314,6 +338,8 @@ async def test_subscribe_message_wrapper_handles_error(nats_broker):
     mock_subscription = MagicMock()
     mock_client.subscribe = AsyncMock(return_value=mock_subscription)
     nats_broker._client = mock_client
+    nats_broker._running = True
+    nats_broker._last_health_check = 0  # Initialize health check timestamp
     handler = AsyncMock(side_effect=ValueError("Handler error"))
     await nats_broker.subscribe("test.subject", handler)
     # Get the wrapper function
@@ -365,6 +391,8 @@ async def test_request_success(nats_broker):
     mock_reply.data = json.dumps({"reply": "data"}).encode("utf-8")
     mock_client.request = AsyncMock(return_value=mock_reply)
     nats_broker._client = mock_client
+    nats_broker._running = True
+    nats_broker._last_health_check = 0  # Initialize health check timestamp
     request_message = {"request": "data"}
     reply = await nats_broker.request("test.subject", request_message, timeout=1.0)
     assert reply == {"reply": "data"}
@@ -388,6 +416,8 @@ async def test_request_timeout(nats_broker):
     mock_client.is_connected = True
     mock_client.request = AsyncMock(side_effect=TimeoutError())
     nats_broker._client = mock_client
+    nats_broker._running = True
+    nats_broker._last_health_check = 0  # Initialize health check timestamp
     with pytest.raises(TimeoutError, match="Request to test.subject timed out"):
         await nats_broker.request("test.subject", {"key": "value"}, timeout=0.1)
 
@@ -399,6 +429,8 @@ async def test_request_failure(nats_broker):
     mock_client.is_connected = True
     mock_client.request = AsyncMock(side_effect=Exception("Request failed"))
     nats_broker._client = mock_client
+    nats_broker._running = True
+    nats_broker._last_health_check = 0  # Initialize health check timestamp
     with pytest.raises(RequestError, match="Request to test.subject failed"):
         await nats_broker.request("test.subject", {"key": "value"})
 
@@ -407,25 +439,34 @@ async def test_request_failure(nats_broker):
 async def test_error_callback(nats_broker):
     """Test _error_callback() logs error."""
     error = Exception("Test error")
+    # _error_callback is a sync wrapper that creates an async task
+    # Call the async handler directly instead
     with patch.object(nats_broker._logger, "error") as mock_log:
-        await nats_broker._error_callback(error)
+        await nats_broker._handle_error_async(error)
         mock_log.assert_called_once()
 
 
 @pytest.mark.asyncio
 async def test_disconnected_callback(nats_broker):
     """Test _disconnected_callback() logs warning."""
+    # _disconnected_callback is a sync wrapper that creates an async task
+    # Call the async handler directly instead
     with patch.object(nats_broker._logger, "warning") as mock_log:
-        await nats_broker._disconnected_callback()
+        await nats_broker._handle_disconnect_async()
         mock_log.assert_called_once()
 
 
 @pytest.mark.asyncio
 async def test_reconnected_callback(nats_broker):
     """Test _reconnected_callback() logs info."""
-    with patch.object(nats_broker._logger, "info") as mock_log:
-        await nats_broker._reconnected_callback()
-        mock_log.assert_called_once()
+    # _reconnected_callback is a sync wrapper that creates an async task
+    # Call the async handler directly instead
+    # Mock health monitoring to prevent it from starting and logging
+    with patch.object(nats_broker, "_start_health_monitoring", new_callable=AsyncMock):
+        with patch.object(nats_broker._logger, "info") as mock_log:
+            await nats_broker._handle_reconnect_async()
+            # Check that "Reconnected to NATS" was logged
+            mock_log.assert_any_call("Reconnected to NATS")
 
 
 @pytest.mark.asyncio
@@ -436,6 +477,8 @@ async def test_subscribe_message_wrapper_invalid_json(nats_broker):
     mock_subscription = MagicMock()
     mock_client.subscribe = AsyncMock(return_value=mock_subscription)
     nats_broker._client = mock_client
+    nats_broker._running = True
+    nats_broker._last_health_check = 0  # Initialize health check timestamp
     handler = AsyncMock()
     await nats_broker.subscribe("test.subject", handler)
     # Get the wrapper function

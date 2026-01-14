@@ -176,6 +176,7 @@ class NATSConfig(BaseSettings):
     batch_size: int = Field(default=100, description="Maximum messages per batch")
     batch_timeout: float = Field(default=0.1, description="Batch timeout in seconds")
     enable_message_batching: bool = Field(default=True, description="Enable message batching")
+    max_batch_retries: int = Field(default=3, description="Maximum retry attempts for failed batch groups")
 
     # Subject validation configuration
     enable_subject_validation: bool = Field(default=True, description="Enable NATS subject validation")

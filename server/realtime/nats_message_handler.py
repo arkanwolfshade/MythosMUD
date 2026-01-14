@@ -276,17 +276,21 @@ class NATSMessageHandler:
             # Re-raise to propagate error
             raise
 
-    async def _unsubscribe_from_subject(self, subject: str):
-        """Unsubscribe from a specific NATS subject."""
+    async def _unsubscribe_from_subject(self, subject: str) -> bool:
+        """
+        Unsubscribe from a specific NATS subject.
+
+        Returns:
+            True if unsubscribed successfully, False if error occurred
+
+        AI: Handles NATSUnsubscribeError exceptions and returns False for backward compatibility.
+        """
         try:
-            success = await self.nats_service.unsubscribe(subject)
-            if success:
-                if subject in self.subscriptions:
-                    del self.subscriptions[subject]
-                logger.info("Unsubscribed from NATS subject")
-                return True
-            logger.error("Failed to unsubscribe from NATS subject")
-            return False
+            await self.nats_service.unsubscribe(subject)
+            if subject in self.subscriptions:
+                del self.subscriptions[subject]
+            logger.info("Unsubscribed from NATS subject", subject=subject)
+            return True
         except (NATSError, RuntimeError) as e:
             logger.error("Error unsubscribing from NATS subject", subject=subject, error=str(e))
             return False
