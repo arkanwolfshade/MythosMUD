@@ -5,13 +5,18 @@ This module provides Pydantic models for profession-related API responses,
 ensuring type safety and automatic OpenAPI documentation.
 """
 
-from typing import Any
-
 from pydantic import BaseModel, ConfigDict, Field
 
 
 class StatRequirement(BaseModel):
     """Stat requirement for a profession."""
+
+    model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
+    )
 
     stat: str = Field(..., description="Stat name (e.g., 'str', 'int', 'con')")
     minimum: int = Field(..., description="Minimum stat value required")
@@ -19,6 +24,13 @@ class StatRequirement(BaseModel):
 
 class MechanicalEffect(BaseModel):
     """Mechanical effect of a profession."""
+
+    model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
+    )
 
     effect_type: str = Field(..., description="Type of mechanical effect")
     value: int | float = Field(..., description="Effect value")
@@ -37,6 +49,10 @@ class ProfessionData(BaseModel):
     is_available: bool = Field(..., description="Whether the profession is available for selection")
 
     model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
         json_schema_extra={
             "example": {
                 "id": 1,
@@ -49,7 +65,7 @@ class ProfessionData(BaseModel):
                 ],
                 "is_available": True,
             }
-        }
+        },
     )
 
 
@@ -59,6 +75,10 @@ class ProfessionListResponse(BaseModel):
     professions: list[ProfessionData] = Field(..., description="List of available professions")
 
     model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
         json_schema_extra={
             "example": {
                 "professions": [
@@ -70,7 +90,7 @@ class ProfessionListResponse(BaseModel):
                     }
                 ]
             }
-        }
+        },
     )
 
 
@@ -81,20 +101,24 @@ class ProfessionResponse(BaseModel):
     name: str = Field(..., description="Profession name")
     description: str = Field(..., description="Profession description")
     flavor_text: str | None = Field(default=None, description="Flavor text for the profession")
-    stat_requirements: dict[str, Any] = Field(..., description="Stat requirements as dictionary")
-    mechanical_effects: dict[str, Any] = Field(..., description="Mechanical effects as dictionary")
+    stat_requirements: list[StatRequirement] = Field(..., description="Stat requirements")
+    mechanical_effects: list[MechanicalEffect] = Field(..., description="Mechanical effects")
     is_available: bool = Field(..., description="Whether the profession is available for selection")
 
     model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
         json_schema_extra={
             "example": {
                 "id": 1,
                 "name": "Investigator",
                 "description": "A skilled investigator of the unknown",
                 "flavor_text": "You have seen things that cannot be unseen...",
-                "stat_requirements": {"int": 12},
-                "mechanical_effects": {"skill_bonus": 5},
+                "stat_requirements": [{"stat": "int", "minimum": 12}],
+                "mechanical_effects": [{"effect_type": "skill_bonus", "value": 5}],
                 "is_available": True,
             }
-        }
+        },
     )

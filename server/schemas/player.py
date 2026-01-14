@@ -11,13 +11,20 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from ..models.game import PositionState
+from ..models.game import InventoryItem, PositionState, Stats, StatusEffect
 
 
 class PlayerBase(BaseModel):
     """Base player schema with common fields."""
 
     __slots__ = ()  # Performance optimization
+
+    model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
+    )
 
     name: str = Field(..., min_length=1, max_length=50, description="Player name")
     current_room_id: str = Field(default="earth_arkhamcity_sanitarium_room_foyer_001", description="Current room ID")
@@ -31,11 +38,15 @@ class PlayerCreate(PlayerBase):
     __slots__ = ()  # Performance optimization
 
     user_id: uuid.UUID = Field(..., description="Associated user ID")
-    stats: dict[str, Any] = Field(default={"health": 100, "lucidity": 100, "strength": 50}, description="Player stats")
-    inventory: list[dict[str, Any]] = Field(default=[], description="Player inventory")
-    status_effects: list[dict[str, Any]] = Field(default=[], description="Player status effects")
+    stats: Stats = Field(default_factory=Stats, description="Player stats")
+    inventory: list[InventoryItem] = Field(default_factory=list, description="Player inventory")
+    status_effects: list[StatusEffect] = Field(default_factory=list, description="Player status effects")
 
     model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
         json_schema_extra={
             "example": {
                 "user_id": "123e4567-e89b-12d3-a456-426614174000",
@@ -47,7 +58,7 @@ class PlayerCreate(PlayerBase):
                 "inventory": [],
                 "status_effects": [],
             }
-        }
+        },
     )
 
 
@@ -62,9 +73,9 @@ class PlayerRead(PlayerBase):
     profession_name: str | None = Field(default=None, description="Player's profession name")
     profession_description: str | None = Field(default=None, description="Player's profession description")
     profession_flavor_text: str | None = Field(default=None, description="Player's profession flavor text")
-    stats: dict[str, Any] = Field(..., description="Player stats")
-    inventory: list[dict[str, Any]] = Field(..., description="Player inventory")
-    status_effects: list[dict[str, Any]] = Field(..., description="Player status effects")
+    stats: Stats = Field(..., description="Player stats")
+    inventory: list[InventoryItem] = Field(..., description="Player inventory")
+    status_effects: list[StatusEffect] = Field(..., description="Player status effects")
     created_at: datetime = Field(..., description="Player creation timestamp")
     last_active: datetime = Field(..., description="Player last active timestamp")
     is_admin: bool = Field(default=False, description="Whether player has admin privileges")
@@ -72,6 +83,10 @@ class PlayerRead(PlayerBase):
     position: PositionState = Field(default=PositionState.STANDING, description="Current body posture")
 
     model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
         from_attributes=True,
         populate_by_name=True,
         json_schema_extra={
@@ -112,7 +127,13 @@ class CharacterInfo(BaseModel):
     created_at: datetime = Field(..., description="Character creation timestamp")
     last_active: datetime = Field(..., description="Character last active timestamp")
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
+        from_attributes=True,
+    )
 
 
 class PlayerUpdate(BaseModel):
@@ -124,11 +145,15 @@ class PlayerUpdate(BaseModel):
     current_room_id: str | None = Field(None, description="Current room ID")
     experience_points: int | None = Field(None, ge=0, description="Experience points")
     level: int | None = Field(None, ge=1, description="Player level")
-    stats: dict[str, Any] | None = Field(None, description="Player stats")
-    inventory: list[dict[str, Any]] | None = Field(None, description="Player inventory")
-    status_effects: list[dict[str, Any]] | None = Field(None, description="Player status effects")
+    stats: Stats | None = Field(None, description="Player stats")
+    inventory: list[InventoryItem] | None = Field(None, description="Player inventory")
+    status_effects: list[StatusEffect] | None = Field(None, description="Player status effects")
 
     model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
         json_schema_extra={
             "example": {
                 "name": "NewPlayerName",
@@ -139,7 +164,7 @@ class PlayerUpdate(BaseModel):
                 "inventory": [{"id": "potion", "name": "Health Potion"}],
                 "status_effects": [],
             }
-        }
+        },
     )
 
 
@@ -152,6 +177,10 @@ class AvailableClassesResponse(BaseModel):
     stat_range: dict[str, int] = Field(..., description="Stat range information (min and max values)")
 
     model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
         json_schema_extra={
             "example": {
                 "classes": {
@@ -162,7 +191,7 @@ class AvailableClassesResponse(BaseModel):
                 },
                 "stat_range": {"min": 3, "max": 18},
             }
-        }
+        },
     )
 
 
@@ -172,11 +201,15 @@ class MessageResponse(BaseModel):
     message: str = Field(..., description="Success or status message")
 
     model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
         json_schema_extra={
             "example": {
                 "message": "Operation completed successfully",
             }
-        }
+        },
     )
 
 
@@ -187,12 +220,16 @@ class DeleteCharacterResponse(BaseModel):
     message: str = Field(..., description="Deletion result message")
 
     model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
         json_schema_extra={
             "example": {
                 "success": True,
                 "message": "Character deleted successfully",
             }
-        }
+        },
     )
 
 
@@ -205,6 +242,10 @@ class LoginGracePeriodResponse(BaseModel):
     grace_period_remaining: float = Field(..., description="Remaining grace period time in seconds")
 
     model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
         json_schema_extra={
             "example": {
                 "success": True,
@@ -212,5 +253,5 @@ class LoginGracePeriodResponse(BaseModel):
                 "grace_period_active": True,
                 "grace_period_remaining": 10.0,
             }
-        }
+        },
     )

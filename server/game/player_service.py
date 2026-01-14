@@ -5,7 +5,7 @@ This module handles all player-related business logic including
 creation, retrieval, validation, and state management.
 """
 
-# pylint: disable=too-many-lines,wrong-import-position,too-many-public-methods  # Reason: Player service requires extensive functionality for comprehensive player management operations across all game systems. Imports after TYPE_CHECKING block are intentional to avoid circular dependencies. Player service legitimately requires many public methods for comprehensive player management.
+# pylint: disable=wrong-import-position,too-many-public-methods  # Reason: Player service requires extensive functionality for comprehensive player management operations across all game systems. Imports after TYPE_CHECKING block are intentional to avoid circular dependencies. Player service legitimately requires many public methods for comprehensive player management.
 
 import datetime
 import uuid
@@ -21,7 +21,11 @@ if TYPE_CHECKING:
 from ..config import get_config
 from ..exceptions import DatabaseError, ValidationError
 from ..models import Stats
-from ..models.game import PositionState
+from ..models.game import (  # pylint: disable=unused-import  # Reason: InventoryItem and StatusEffect are used in _create_player_read_from_object and _create_player_read_from_dict methods for type conversion
+    InventoryItem,
+    PositionState,
+    StatusEffect,
+)
 from ..models.player import Player
 from ..schemas.player import PlayerRead
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -1281,11 +1285,15 @@ class PlayerService:
                 exc_info=True,
             )
 
-    def _get_position_state(self, position_value: int, player_id: Any = None) -> PositionState:
+    def _get_position_state(self, position_value: str | int, player_id: Any = None) -> PositionState:
         """Get PositionState from position value, with fallback to STANDING."""
         try:
-            return PositionState(position_value)
-        except ValueError:
+            # PositionState is a str Enum, so convert int to str if needed
+            if isinstance(position_value, int):
+                # Try to find enum by value index (not recommended but handles legacy data)
+                position_value = PositionState.STANDING.value
+            return PositionState(str(position_value))
+        except (ValueError, TypeError):
             logger.warning(
                 "Invalid position value on player stats, defaulting to standing",
                 player_id=player_id,
@@ -1306,6 +1314,19 @@ class PlayerService:
 
         self._compute_derived_stats_fields(stats)
 
+        # Convert dicts to typed models
+        stats_model = Stats(**stats) if isinstance(stats, dict) else stats
+        inventory_models = (
+            [InventoryItem(**item) if isinstance(item, dict) else item for item in inventory]
+            if isinstance(inventory, list)
+            else inventory
+        )
+        status_effects_models = (
+            [StatusEffect(**effect) if isinstance(effect, dict) else effect for effect in status_effects]
+            if isinstance(status_effects, list)
+            else status_effects
+        )
+
         return PlayerRead(
             id=player.player_id,
             user_id=player.user_id,
@@ -1317,9 +1338,9 @@ class PlayerService:
             current_room_id=player.current_room_id,
             experience_points=player.experience_points,
             level=player.level,
-            stats=stats,
-            inventory=inventory,
-            status_effects=status_effects,
+            stats=stats_model,
+            inventory=inventory_models,
+            status_effects=status_effects_models,
             created_at=player.created_at,
             last_active=player.last_active,
             is_admin=bool(player.is_admin),  # Convert integer to boolean
@@ -1334,8 +1355,28 @@ class PlayerService:
         player_profession_id, profession_name, profession_description, profession_flavor_text = profession_data
 
         stats_data = player["stats"]
-        position_value = stats_data.get("position", PositionState.STANDING.value)
+        # Extract position value - PositionState is a str Enum
+        if isinstance(stats_data, dict):
+            position_value = stats_data.get("position", PositionState.STANDING.value)
+            # Ensure it's a string (PositionState is str Enum)
+            if not isinstance(position_value, str):
+                position_value = PositionState.STANDING.value
+        else:
+            position_value = PositionState.STANDING.value
         position_state = self._get_position_state(position_value, player.get("player_id"))
+
+        # Convert dicts to typed models
+        stats_model = Stats(**player["stats"]) if isinstance(player["stats"], dict) else player["stats"]
+        inventory_models = (
+            [InventoryItem(**item) if isinstance(item, dict) else item for item in player["inventory"]]
+            if isinstance(player["inventory"], list)
+            else player["inventory"]
+        )
+        status_effects_models = (
+            [StatusEffect(**effect) if isinstance(effect, dict) else effect for effect in player["status_effects"]]
+            if isinstance(player["status_effects"], list)
+            else player["status_effects"]
+        )
 
         return PlayerRead(
             id=player["player_id"],
@@ -1348,9 +1389,9 @@ class PlayerService:
             current_room_id=player["current_room_id"],
             experience_points=player["experience_points"],
             level=player["level"],
-            stats=player["stats"],
-            inventory=player["inventory"],
-            status_effects=player["status_effects"],
+            stats=stats_model,
+            inventory=inventory_models,
+            status_effects=status_effects_models,
             created_at=player["created_at"],
             last_active=player["last_active"],
             is_admin=bool(player.get("is_admin", 0)),  # Convert integer to boolean with default

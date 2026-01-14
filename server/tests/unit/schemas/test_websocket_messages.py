@@ -27,9 +27,14 @@ def test_base_websocket_message():
 
 def test_command_message():
     """Test CommandMessage schema."""
-    message = CommandMessage(data={"command": "look", "args": []})
+    data = CommandMessageData(command="look", args=[])
+    message = CommandMessage(data=data)
     assert message.type == "command"
-    assert message.data == {"command": "look", "args": []}
+    # Access via getattr to avoid FieldInfo type inference issue
+    message_data = getattr(message, "data")  # noqa: B009  # Reason: Using getattr to work around Pydantic Field typing limitation
+    assert isinstance(message_data, CommandMessageData)
+    assert message_data.command == "look"
+    assert message_data.args == []
 
 
 def test_command_message_data():
@@ -41,9 +46,13 @@ def test_command_message_data():
 
 def test_chat_message():
     """Test ChatMessage schema."""
-    message = ChatMessage(data={"message": "Hello"})
+    data = ChatMessageData(message="Hello")
+    message = ChatMessage(data=data)
     assert message.type == "chat"
-    assert message.data == {"message": "Hello"}
+    # Access via getattr to avoid FieldInfo type inference issue
+    message_data = getattr(message, "data")  # noqa: B009  # Reason: Using getattr to work around Pydantic Field typing limitation
+    assert isinstance(message_data, ChatMessageData)
+    assert message_data.message == "Hello"
 
 
 def test_chat_message_data():
@@ -80,10 +89,14 @@ def test_base_websocket_message_with_timestamp():
 
 def test_command_message_with_csrf_token():
     """Test CommandMessage with CSRF token."""
-    message = CommandMessage(data={"command": "look"}, csrfToken="token123")
+    data = CommandMessageData(command="look")
+    message = CommandMessage(data=data, csrfToken="token123")
     assert message.type == "command"
     assert message.csrfToken == "token123"
-    assert message.data == {"command": "look"}
+    # Access via getattr to avoid FieldInfo type inference issue
+    message_data = getattr(message, "data")  # noqa: B009  # Reason: Using getattr to work around Pydantic Field typing limitation
+    assert isinstance(message_data, CommandMessageData)
+    assert message_data.command == "look"
 
 
 def test_command_message_data_empty_args():
@@ -108,9 +121,14 @@ def test_command_message_data_validation_error():
 
 def test_chat_message_with_channel():
     """Test ChatMessage with channel."""
-    message = ChatMessage(data={"message": "Hello", "channel": "say"})
+    data = ChatMessageData(message="Hello", channel="say")
+    message = ChatMessage(data=data)
     assert message.type == "chat"
-    assert message.data == {"message": "Hello", "channel": "say"}
+    # Access via getattr to avoid FieldInfo type inference issue
+    message_data = getattr(message, "data")  # noqa: B009  # Reason: Using getattr to work around Pydantic Field typing limitation
+    assert isinstance(message_data, ChatMessageData)
+    assert message_data.message == "Hello"
+    assert message_data.channel == "say"
 
 
 def test_chat_message_data_with_channel():
@@ -159,3 +177,17 @@ def test_wrapped_message_with_timestamp():
     message = WrappedMessage(message='{"type": "test"}', timestamp=1234567890)
     assert message.message == '{"type": "test"}'
     assert message.timestamp == 1234567890
+
+
+def test_command_message_rejects_extra_fields():
+    """Test CommandMessage rejects extra fields (extra='forbid')."""
+    data = CommandMessageData(command="look")
+    with pytest.raises(ValidationError):
+        CommandMessage(data=data, extra_field="should_fail")
+
+
+def test_chat_message_rejects_extra_fields():
+    """Test ChatMessage rejects extra fields (extra='forbid')."""
+    data = ChatMessageData(message="Hello")
+    with pytest.raises(ValidationError):
+        ChatMessage(data=data, extra_field="should_fail")
