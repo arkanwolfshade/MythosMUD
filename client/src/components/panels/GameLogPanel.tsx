@@ -232,7 +232,7 @@ export const GameLogPanel: React.FC<GameLogPanelProps> = ({ messages, onClearMes
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-2 min-h-[300px]" style={{ minHeight: '300px' }}>
+      <div className="flex-1 overflow-y-auto p-3 space-y-2 min-h-panel-md" style={{ minHeight: '300px' }}>
         {filteredMessages.length === 0 ? (
           <div className="text-center text-mythos-terminal-text-secondary py-8">
             <EldritchIcon name={MythosIcons.log} size={32} className="mx-auto mb-2 opacity-50" />

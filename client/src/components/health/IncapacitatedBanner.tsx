@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { DismissButton } from '../ui/DismissButton';
 
 interface IncapacitatedBannerProps {
   onDismiss?: () => void;
@@ -31,15 +32,7 @@ export const IncapacitatedBanner = memo<IncapacitatedBannerProps>(({ onDismiss, 
             </p>
           )}
         </div>
-        {onDismiss && (
-          <button
-            type="button"
-            onClick={onDismiss}
-            className="rounded bg-transparent px-2 py-1 text-[11px] uppercase tracking-wide text-mythos-terminal-text-secondary hover:text-mythos-terminal-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mythos-terminal-primary/60"
-          >
-            Dismiss
-          </button>
-        )}
+        {onDismiss && <DismissButton onClick={onDismiss} variant="primary" />}
       </div>
     </aside>
   );

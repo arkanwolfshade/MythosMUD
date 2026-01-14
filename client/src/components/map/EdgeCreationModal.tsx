@@ -231,7 +231,7 @@ export const EdgeCreationModal: React.FC<EdgeCreationModalProps> = ({
       aria-labelledby="edge-creation-title"
     >
       <div
-        className="bg-mythos-terminal-background border-2 border-mythos-terminal-border rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl"
+        className="bg-mythos-terminal-background border-2 border-mythos-terminal-border rounded-lg p-6 w-full max-w-2xl max-h-modal overflow-y-auto shadow-xl"
         onClick={e => {
           e.stopPropagation();
         }}

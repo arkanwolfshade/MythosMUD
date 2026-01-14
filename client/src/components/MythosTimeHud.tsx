@@ -20,7 +20,7 @@ export const MythosTimeHud: React.FC<MythosTimeHudProps> = ({ mythosTime }) => {
         data-testid="mythos-clock"
         className="flex flex-col gap-1 rounded-md border border-mythos-terminal-border/40 bg-mythos-terminal-surface/60 px-3 py-2 text-xs text-mythos-terminal-text-secondary"
       >
-        <span className="uppercase tracking-[0.3em] text-[10px] text-mythos-terminal-text-secondary/80">
+        <span className="uppercase tracking-eldritch text-xs-2 text-mythos-terminal-text-secondary/80">
           Mythos Time
         </span>
         <span>Calibrating chronicle...</span>
@@ -40,7 +40,7 @@ export const MythosTimeHud: React.FC<MythosTimeHudProps> = ({ mythosTime }) => {
       data-testid="mythos-clock"
       className="flex flex-col gap-1 rounded-md border border-mythos-terminal-border/40 bg-mythos-terminal-surface/80 px-4 py-2 text-mythos-terminal-text"
     >
-      <span className="uppercase tracking-[0.3em] text-[10px] text-mythos-terminal-text-secondary/80">Mythos Time</span>
+      <span className="uppercase tracking-eldritch text-xs-2 text-mythos-terminal-text-secondary/80">Mythos Time</span>
       <div className="flex flex-wrap items-baseline gap-3">
         <span className="text-2xl font-semibold text-mythos-terminal-primary">
           {formatMythosTime12Hour(mythosTime.mythos_clock)}
@@ -75,25 +75,25 @@ export const HolidayBanner: React.FC<HolidayBannerProps> = ({ holidays }) => {
       data-testid="holiday-banner"
       className="flex flex-col gap-2 rounded-lg border border-mythos-terminal-border/40 bg-mythos-terminal-surface/95 p-4 shadow-lg shadow-black/20"
     >
-      <div className="text-xs uppercase tracking-[0.4em] text-mythos-terminal-text-secondary">Active Observances</div>
+      <div className="text-xs uppercase tracking-eldritch text-mythos-terminal-text-secondary">Active Observances</div>
       <div className="grid gap-3 md:grid-cols-2">
         {holidays.map(holiday => {
           const palette = TRADITION_COLORS[holiday.tradition] ?? 'from-slate-500/30 to-slate-700/30 text-slate-100';
           return (
             <div
               key={holiday.id}
-              className={`rounded-md border border-white/10 bg-gradient-to-br ${palette} px-3 py-2 text-sm`}
+              className={`rounded-md border border-white/10 bg-linear-to-br ${palette} px-3 py-2 text-sm`}
             >
               <div className="flex items-center justify-between">
                 <span className="font-semibold">{holiday.name}</span>
-                <span className="text-[11px] uppercase text-white/70">{holiday.tradition.replace('_', ' ')}</span>
+                <span className="text-xs-3 uppercase text-white/70">{holiday.tradition.replace('_', ' ')}</span>
               </div>
               {holiday.notes && <p className="text-xs text-white/80">{holiday.notes}</p>}
               {holiday.bonus_tags.length > 0 && (
-                <div className="mt-1 flex flex-wrap gap-1 text-[10px] uppercase tracking-wide">
+                <div className="mt-1 flex flex-wrap gap-1 text-xs-2 uppercase tracking-wide">
                   {holiday.bonus_tags.map(tag => (
                     <span key={tag} className="rounded-full bg-black/30 px-2 py-0.5">
-                      {tag.replaceAll('_', ' ')}
+                      {tag.replace(/_/g, ' ')}
                     </span>
                   ))}
                 </div>

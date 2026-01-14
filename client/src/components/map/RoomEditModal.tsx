@@ -239,7 +239,7 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({ isOpen, onClose, r
   // Base input classes
   const baseInputClasses =
     'w-full px-3 py-2 bg-mythos-terminal-background border rounded text-mythos-terminal-text ' +
-    'focus:outline-none focus:ring-2 focus:ring-mythos-terminal-primary focus:border-transparent';
+    'focus:outline-hidden focus:ring-2 focus:ring-mythos-terminal-primary focus:border-transparent';
   const baseTextAreaClasses = baseInputClasses + ' resize-y font-mono text-sm';
   const baseMonoInputClasses = baseInputClasses + ' font-mono text-sm';
 
@@ -252,7 +252,7 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({ isOpen, onClose, r
       aria-labelledby="room-edit-title"
     >
       <div
-        className="bg-mythos-terminal-background border-2 border-mythos-terminal-border rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden shadow-xl flex flex-col"
+        className="bg-mythos-terminal-background border-2 border-mythos-terminal-border rounded-lg w-full max-w-4xl max-h-modal overflow-hidden shadow-xl flex flex-col"
         onClick={e => {
           e.stopPropagation();
         }}
@@ -514,7 +514,7 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({ isOpen, onClose, r
                     onChange={e => {
                       handleFieldChange('environment', e.target.value);
                     }}
-                    className="w-full px-3 py-2 bg-mythos-terminal-background border border-mythos-terminal-border rounded text-mythos-terminal-text focus:outline-none focus:ring-2 focus:ring-mythos-terminal-primary focus:border-transparent"
+                    className="w-full px-3 py-2 bg-mythos-terminal-background border border-mythos-terminal-border rounded text-mythos-terminal-text focus:outline-hidden focus:ring-2 focus:ring-mythos-terminal-primary focus:border-transparent"
                   >
                     {ENVIRONMENT_OPTIONS.map(option => (
                       <option key={option.value} value={option.value}>

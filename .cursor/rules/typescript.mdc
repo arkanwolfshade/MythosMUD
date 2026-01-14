@@ -1,4 +1,4 @@
----
+Review the codebase with @.cursor/rules/structlog.mdc   looking for anti-patterns, sematic problems, and bad code and create a plan to remediate any findings---
 description: Enforce modern TypeScript best practices for robust, type-safe JavaScript applications, focusing on strictness, clear type definitions, and runtime validation.
 globs: **/*.{js,jsx}
 ---

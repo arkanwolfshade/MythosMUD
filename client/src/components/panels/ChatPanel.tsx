@@ -535,7 +535,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                     {channel.name}
                   </span>
                   {unreadCount > 0 && (
-                    <div className="bg-mythos-terminal-error text-white text-xs rounded-full px-1 min-w-[16px] h-4 flex items-center justify-center animate-bounce">
+                    <div className="bg-mythos-terminal-error text-white text-xs rounded-full px-1 min-w-badge h-4 flex items-center justify-center animate-bounce">
                       {unreadCount > 99 ? '99+' : unreadCount}
                     </div>
                   )}
@@ -570,7 +570,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 
         {/* Search Controls */}
         <div className="mt-2 flex items-center gap-2 flex-wrap">
-          <div className="flex items-center gap-1 flex-1 min-w-[200px]">
+          <div className="flex items-center gap-1 flex-1 min-w-input">
             <EldritchIcon name={MythosIcons.search} size={14} variant="primary" />
             <input
               type="text"
@@ -579,7 +579,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
               onChange={e => {
                 handleSearchChange(e.target.value);
               }}
-              className="flex-1 text-xs bg-mythos-terminal-surface border border-gray-700 rounded px-2 py-1 text-mythos-terminal-text focus:outline-none focus:border-mythos-terminal-primary"
+              className="flex-1 text-xs bg-mythos-terminal-surface border border-gray-700 rounded px-2 py-1 text-mythos-terminal-text focus:outline-hidden focus:border-mythos-terminal-primary"
               disabled={disabled}
             />
             {searchQuery && (

@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import type { RescueState } from '../../types/lucidity';
+import { DismissButton } from '../ui/DismissButton';
 
 interface RescueStatusBannerProps {
   state: RescueState | null;
@@ -64,27 +65,19 @@ export const RescueStatusBanner = memo<RescueStatusBannerProps>(({ state, onDism
             <p className="mt-1 leading-relaxed text-mythos-terminal-text-secondary">{style.description}</p>
           )}
           {(state.rescuerName || state.targetName) && (
-            <p className="text-[11px] uppercase tracking-wide text-mythos-terminal-text-secondary/80 mt-1">
+            <p className="text-xs-3 uppercase tracking-wide text-mythos-terminal-text-secondary/80 mt-1">
               {state.rescuerName && <span>Rescuer: {state.rescuerName}</span>}
               {state.rescuerName && state.targetName && <span className="mx-1">•</span>}
               {state.targetName && <span>Target: {state.targetName}</span>}
             </p>
           )}
         </div>
-        {onDismiss && (
-          <button
-            type="button"
-            onClick={onDismiss}
-            className="rounded bg-transparent px-2 py-1 text-[11px] uppercase tracking-wide text-mythos-terminal-text-secondary hover:text-mythos-terminal-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mythos-terminal-primary/60"
-          >
-            Dismiss
-          </button>
-        )}
+        {onDismiss && <DismissButton onClick={onDismiss} variant="primary" />}
       </div>
 
       {state.status === 'channeling' && typeof state.progress === 'number' && (
         <div className="space-y-1">
-          <div className="flex items-center justify-between text-[11px] text-mythos-terminal-text-secondary">
+          <div className="flex items-center justify-between text-xs-3 text-mythos-terminal-text-secondary">
             <span>Stability tether</span>
             <span>{Math.round(state.progress)}%</span>
           </div>
@@ -96,7 +89,7 @@ export const RescueStatusBanner = memo<RescueStatusBannerProps>(({ state, onDism
             />
           </div>
           {typeof state.etaSeconds === 'number' && (
-            <div className="text-[11px] text-mythos-terminal-text-secondary">
+            <div className="text-xs-3 text-mythos-terminal-text-secondary">
               Estimated stabilization: ~{Math.max(0, Math.round(state.etaSeconds))}s
             </div>
           )}

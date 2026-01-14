@@ -114,7 +114,7 @@ export const BackpackTab: React.FC<BackpackTabProps> = ({ onSelect, className = 
             className={`
               flex items-center gap-2 px-3 py-2 rounded border font-mono text-sm
               transition-eldritch duration-eldritch ease-eldritch
-              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mythos-terminal-primary
+              focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-mythos-terminal-primary
               ${
                 isSelected
                   ? 'bg-mythos-terminal-primary text-mythos-terminal-background border-mythos-terminal-primary hover:bg-mythos-terminal-primary/90'

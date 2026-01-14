@@ -38,13 +38,13 @@ export const LogoutButton: React.FC<LogoutButtonProps> = ({
   const isDisabled = disabled || isLoggingOut;
 
   const baseClasses =
-    'font-mono border rounded transition-eldritch duration-eldritch ease-eldritch focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-mythos-terminal-background';
+    'font-mono border rounded transition-eldritch duration-eldritch ease-eldritch focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-offset-mythos-terminal-background';
 
   const variantClasses = isDisabled
     ? 'bg-mythos-terminal-surface border-mythos-terminal-error text-mythos-terminal-error opacity-50 cursor-not-allowed hover:bg-mythos-terminal-surface hover:text-mythos-terminal-error hover:animate-none'
     : 'bg-mythos-terminal-surface border-mythos-terminal-error text-mythos-terminal-error hover:bg-mythos-terminal-error hover:text-mythos-terminal-background hover:animate-eldritch-glow focus:ring-mythos-terminal-error cursor-pointer hover:animate-eldritch-scale';
 
-  const sizeClasses = 'px-4 py-5 text-base min-h-[44px]';
+  const sizeClasses = 'px-4 py-5 text-base min-h-touch';
   const widthClasses = 'w-full';
 
   const classes = [baseClasses, variantClasses, sizeClasses, widthClasses, className].join(' ');

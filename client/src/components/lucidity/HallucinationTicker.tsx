@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import type { HallucinationMessage } from '../../types/lucidity';
+import { DismissButton } from '../ui/DismissButton';
 
 interface HallucinationTickerProps {
   hallucinations: HallucinationMessage[];
@@ -51,20 +52,16 @@ export const HallucinationTicker = memo<HallucinationTickerProps>(({ hallucinati
                   {entry.description && (
                     <p className="text-mythos-terminal-text-secondary leading-snug">{entry.description}</p>
                   )}
-                  <span className="text-[11px] uppercase tracking-wide text-mythos-terminal-text-secondary">
+                  <span className="text-xs-3 uppercase tracking-wide text-mythos-terminal-text-secondary">
                     {entry.severity} vision · {timeDisplay}
                   </span>
                 </div>
                 {onDismiss && (
-                  <button
-                    type="button"
-                    className="rounded bg-transparent px-2 py-1 text-[11px] uppercase tracking-wide text-mythos-terminal-text-secondary hover:text-mythos-terminal-error focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mythos-terminal-primary/60"
-                    onClick={() => {
-                      onDismiss(entry.id);
-                    }}
-                  >
-                    Dismiss
-                  </button>
+                  <DismissButton
+                    onClick={() => onDismiss(entry.id)}
+                    variant="error"
+                    aria-label={`Dismiss ${entry.title}`}
+                  />
                 )}
               </div>
             </li>

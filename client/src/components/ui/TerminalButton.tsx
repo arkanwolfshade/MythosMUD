@@ -27,19 +27,19 @@ export const TerminalButton = React.forwardRef<HTMLButtonElement, TerminalButton
     ref
   ) => {
     const baseClasses =
-      'font-mono border rounded transition-eldritch duration-eldritch ease-eldritch focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-mythos-terminal-background';
+      'font-mono border rounded transition-eldritch duration-eldritch ease-eldritch focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-offset-mythos-terminal-background';
 
     const variantClasses = {
       primary:
-        'bg-mythos-terminal-surface border-mythos-terminal-primary text-mythos-terminal-primary hover:bg-mythos-terminal-primary hover:text-mythos-terminal-background hover:animate-eldritch-glow focus:ring-mythos-terminal-primary',
+        'text-mythos-terminal-primary bg-mythos-terminal-surface border-mythos-terminal-primary hover:bg-mythos-terminal-primary hover:text-mythos-terminal-background hover:animate-eldritch-glow focus:ring-mythos-terminal-primary',
       secondary:
-        'bg-mythos-terminal-surface border-mythos-terminal-secondary text-mythos-terminal-secondary hover:bg-mythos-terminal-secondary hover:text-mythos-terminal-background hover:animate-eldritch-pulse focus:ring-mythos-terminal-secondary',
+        'text-mythos-terminal-secondary bg-mythos-terminal-surface border-mythos-terminal-secondary hover:bg-mythos-terminal-secondary hover:text-mythos-terminal-background hover:animate-eldritch-pulse focus:ring-mythos-terminal-secondary',
       danger:
-        'bg-mythos-terminal-surface border-mythos-terminal-error text-mythos-terminal-error hover:bg-mythos-terminal-error hover:text-mythos-terminal-background hover:animate-eldritch-glow focus:ring-mythos-terminal-error',
+        'text-mythos-terminal-error bg-mythos-terminal-surface border-mythos-terminal-error hover:bg-mythos-terminal-error hover:text-mythos-terminal-background hover:animate-eldritch-glow focus:ring-mythos-terminal-error',
       warning:
-        'bg-mythos-terminal-surface border-mythos-terminal-warning text-mythos-terminal-warning hover:bg-mythos-terminal-warning hover:text-mythos-terminal-background hover:animate-eldritch-pulse focus:ring-mythos-terminal-warning',
+        'text-mythos-terminal-warning bg-mythos-terminal-surface border-mythos-terminal-warning hover:bg-mythos-terminal-warning hover:text-mythos-terminal-background hover:animate-eldritch-pulse focus:ring-mythos-terminal-warning',
       success:
-        'bg-mythos-terminal-surface border-mythos-terminal-success text-mythos-terminal-success hover:bg-mythos-terminal-success hover:text-mythos-terminal-background hover:animate-eldritch-glow focus:ring-mythos-terminal-success',
+        'text-mythos-terminal-success bg-mythos-terminal-surface border-mythos-terminal-success hover:bg-mythos-terminal-success hover:text-mythos-terminal-background hover:animate-eldritch-glow focus:ring-mythos-terminal-success',
     };
 
     const sizeClasses = {

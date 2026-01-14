@@ -108,7 +108,7 @@ export const ChannelSelector: React.FC<ChannelSelectorProps> = ({
         disabled={disabled}
         className={`
           relative z-20 flex items-center gap-2 px-3 py-2 bg-mythos-terminal-surface border border-gray-700 rounded
-          text-sm font-mono transition-all duration-200 min-w-[140px]
+          text-sm font-mono transition-all duration-200 min-w-button
           ${
             disabled
               ? 'opacity-50 cursor-not-allowed'

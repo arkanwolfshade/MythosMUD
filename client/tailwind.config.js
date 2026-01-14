@@ -45,6 +45,27 @@ export default {
       fontFamily: {
         mono: ['Courier New', 'Courier', 'monospace'],
       },
+      fontSize: {
+        'xs-2': '10px',
+        'xs-3': '11px',
+      },
+      spacing: {
+        'min-w-button': '140px',
+        'min-w-input': '200px',
+        'min-w-badge': '16px',
+      },
+      minHeight: {
+        'panel-sm': '150px',
+        'panel-md': '300px',
+        touch: '44px',
+      },
+      maxHeight: {
+        modal: '90vh',
+        panel: '80vh',
+      },
+      letterSpacing: {
+        eldritch: '0.3em',
+      },
       animation: {
         shimmer: 'shimmer 2s linear infinite',
         // Phase 4.1: Advanced Mythos Animations

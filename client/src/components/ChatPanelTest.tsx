@@ -208,7 +208,7 @@ export const ChatPanelTest: React.FC = () => {
                     onChange={e => {
                       setMessageType(e.target.value as ChatMessageType);
                     }}
-                    className="w-full p-2 bg-mythos-terminal-surface border border-gray-700 rounded text-mythos-terminal-text focus:border-mythos-terminal-primary focus:outline-none"
+                    className="w-full p-2 bg-mythos-terminal-surface border border-gray-700 rounded text-mythos-terminal-text focus:border-mythos-terminal-primary focus:outline-hidden"
                   >
                     <option value="chat">Chat</option>
                     <option value="whisper">Whisper</option>
