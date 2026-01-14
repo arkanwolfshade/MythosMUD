@@ -18,10 +18,13 @@ import sys
 import time
 from pathlib import Path
 
+# Configure basic logging for the test runner itself
+# NOTE: Test runner uses minimal structlog configuration for console output
+# during test execution. This is acceptable for test infrastructure.
+# The actual test code will use the enhanced logging system.
 import structlog
 from utils.safe_subprocess import safe_run
 
-# Configure basic logging for the test runner itself
 structlog.configure(
     processors=[
         structlog.stdlib.add_log_level,

@@ -62,6 +62,10 @@ _create_aggregator_handler = create_aggregator_handler
 _setup_enhanced_file_logging = setup_enhanced_file_logging
 
 # Module-level logger for internal use
+# NOTE: Infrastructure files may use structlog.get_logger() directly to avoid
+# circular imports during logging system initialization. This is acceptable for
+# internal logging infrastructure code only. All other modules must use
+# get_logger() from this module.
 logger = structlog.get_logger(__name__)
 
 
@@ -125,26 +129,52 @@ def configure_enhanced_structlog(
     # Configure structlog with a custom renderer that strips ANSI codes
     def strip_ansi_renderer(bound_logger: Any, name: str, event_dict: dict[str, Any]) -> str | bytes:
         """Custom renderer that strips ANSI escape sequences."""
-        # Use KeyValueRenderer to get the formatted message
-        formatted = structlog.processors.KeyValueRenderer()(bound_logger, name, event_dict)
+        try:
+            # Use KeyValueRenderer to get the formatted message
+            formatted = structlog.processors.KeyValueRenderer()(bound_logger, name, event_dict)
 
-        # Strip ANSI escape sequences
-        ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
-        return ansi_escape.sub("", formatted)
+            # Strip ANSI escape sequences
+            ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
+            return ansi_escape.sub("", formatted)
+        except Exception as e:
+            # Graceful fallback: if rendering fails, return a safe error message
+            # This prevents logging failures from crashing the application
+            return f"Logging renderer error: {type(e).__name__}: {str(e)}"
 
-    structlog.configure(
-        processors=base_processors + [strip_ansi_renderer],
-        context_class=dict,
-        logger_factory=LoggerFactory(),
-        wrapper_class=BoundLogger,
-        cache_logger_on_first_use=False,
-    )
+    try:
+        structlog.configure(
+            processors=base_processors + [strip_ansi_renderer],
+            context_class=dict,
+            logger_factory=LoggerFactory(),
+            wrapper_class=BoundLogger,
+            cache_logger_on_first_use=False,
+        )
+    except Exception as e:
+        # Fallback to basic structlog configuration if enhanced setup fails
+        # This ensures logging still works even if enhanced features fail
+        logger.warning(
+            "Enhanced structlog configuration failed, using basic configuration",
+            error=str(e),
+            error_type=type(e).__name__,
+        )
+        structlog.configure(
+            processors=[
+                structlog.stdlib.add_log_level,
+                structlog.processors.TimeStamper(fmt="iso"),
+                structlog.processors.format_exc_info,
+                structlog.dev.ConsoleRenderer(),  # type: ignore[attr-defined]  # Reason: structlog.dev module exists at runtime but type stubs may not include it, this is fallback configuration for error recovery
+            ],
+            wrapper_class=BoundLogger,
+            logger_factory=LoggerFactory(),
+        )
 
     # AI Agent: Now that structlog is configured, log the enhanced error handling setup
     # This confirms that the global error handler is capturing all errors from all modules
     if log_config and not log_config.get("disable_logging", False):
         env_log_dir = resolve_log_base(log_config.get("log_base", "logs")) / environment
         errors_log_path = env_log_dir / "errors.log"
+        # NOTE: Using structlog.get_logger() directly is acceptable here since structlog
+        # is already configured at this point, and this is infrastructure code.
         configured_logger = structlog.get_logger(__name__)
         configured_logger.info(
             "Enhanced error logging configured",
@@ -267,12 +297,18 @@ def get_logger(name: str) -> Any:  # Returns BoundLogger but typed as Any for fl
     Pnakotic Manuscripts, proper categorization of knowledge is essential
     for its preservation.
 
+    This is the public API for obtaining loggers. All application code
+    should use this function rather than calling structlog.get_logger()
+    directly.
+
     Args:
         name: Logger name (typically __name__)
 
     Returns:
         Configured Structlog logger instance
     """
+    # NOTE: This function is the public API wrapper around structlog.get_logger().
+    # Using structlog.get_logger() here is correct as this IS the enhanced logging API.
     return structlog.get_logger(name)
 
 

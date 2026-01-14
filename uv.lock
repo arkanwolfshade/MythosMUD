@@ -1487,7 +1487,6 @@ dependencies = [
     { name = "python-dotenv" },
     { name = "python-jose" },
     { name = "python-statemachine" },
-    { name = "requests" },
     { name = "setuptools" },
     { name = "sqlalchemy" },
     { name = "strip-ansi" },
@@ -1516,7 +1515,6 @@ dev = [
     { name = "sqlfluff" },
     { name = "types-bleach" },
     { name = "types-python-dateutil" },
-    { name = "types-requests" },
     { name = "websocket-client" },
 ]
 
@@ -1538,7 +1536,6 @@ dev = [
     { name = "types-psycopg2" },
     { name = "types-python-dateutil" },
     { name = "types-python-jose" },
-    { name = "types-requests" },
     { name = "websocket-client" },
 ]
 
@@ -1588,7 +1585,6 @@ requires-dist = [
     { name = "python-dotenv", specifier = ">=1.2.1" },
     { name = "python-jose", specifier = ">=3.5.0" },
     { name = "python-statemachine", specifier = ">=2.5.0" },
-    { name = "requests", specifier = ">=2.32.5" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.14.10" },
     { name = "semgrep", marker = "extra == 'dev'", specifier = ">=1.146.0" },
     { name = "setuptools", specifier = ">=80.9.0,<81" },
@@ -1599,7 +1595,6 @@ requires-dist = [
     { name = "tqdm", specifier = ">=4.67.1" },
     { name = "types-bleach", marker = "extra == 'dev'", specifier = ">=6.3.0.20251115" },
     { name = "types-python-dateutil", marker = "extra == 'dev'", specifier = ">=2.9.0.20251115" },
-    { name = "types-requests", marker = "extra == 'dev'", specifier = ">=2.32.4.20260107" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.40.0" },
     { name = "websocket-client", marker = "extra == 'dev'", specifier = ">=1.9.0" },
 ]
@@ -1623,7 +1618,6 @@ dev = [
     { name = "types-psycopg2", specifier = ">=2.9.21.20251012" },
     { name = "types-python-dateutil", specifier = ">=2.9.0.20251115" },
     { name = "types-python-jose", specifier = ">=3.5.0.20250531" },
-    { name = "types-requests", specifier = ">=2.32.4.20260107" },
     { name = "websocket-client", specifier = ">=1.9.0" },
 ]
 
@@ -3075,18 +3069,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/89/c8/09095e22b8e5eb3992f47722a3e1b31098b55c5e8325f4b21c5f1bdcb06b/types_python_jose-3.5.0.20250531.tar.gz", hash = "sha256:dbac2bc99fbb8124068696617f8709acfe4a43d79c6df3e59800006d46d621fe", size = 11891, upload-time = "2025-05-31T03:04:29.017Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/67/33/9d8c351a44e68896a53003e00fb01e1158b9e5b68cf3b75c1e4b51eb5263/types_python_jose-3.5.0.20250531-py3-none-any.whl", hash = "sha256:1609ee4d40a8a2ef5f62fcda99ec977b2ae773dfee9355cfb7e5002afa063c55", size = 14725, upload-time = "2025-05-31T03:04:27.802Z" },
-]
-
-[[package]]
-name = "types-requests"
-version = "2.32.4.20260107"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "urllib3" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/0f/f3/a0663907082280664d745929205a89d41dffb29e89a50f753af7d57d0a96/types_requests-2.32.4.20260107.tar.gz", hash = "sha256:018a11ac158f801bfa84857ddec1650750e393df8a004a8a9ae2a9bec6fcb24f", size = 23165, upload-time = "2026-01-07T03:20:54.091Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/1c/12/709ea261f2bf91ef0a26a9eed20f2623227a8ed85610c1e54c5805692ecb/types_requests-2.32.4.20260107-py3-none-any.whl", hash = "sha256:b703fe72f8ce5b31ef031264fe9395cac8f46a04661a79f7ed31a80fb308730d", size = 20676, upload-time = "2026-01-07T03:20:52.929Z" },
 ]
 
 [[package]]

@@ -291,15 +291,15 @@ class MovementMonitor:  # pylint: disable=too-many-instance-attributes  # Reason
         alerts = self.get_alerts()
 
         self._logger.info(
-            f"Movement Performance Summary:\n"
-            f"  Total Movements: {metrics['total_movements']}\n"
-            f"  Success Rate: {metrics['success_rate']:.2%}\n"
-            f"  Avg Movement Time: {metrics['avg_movement_time_ms']:.2f}ms\n"
-            f"  Current Concurrent: {metrics['current_concurrent_movements']}\n"
-            f"  Max Concurrent: {metrics['max_concurrent_movements']}\n"
-            f"  Integrity Rate: {metrics['integrity_rate']:.2%}\n"
-            f"  Uptime: {metrics['uptime_seconds']:.1f}s\n"
-            f"  Alerts: {len(alerts)}"
+            "Movement performance summary",
+            total_movements=metrics["total_movements"],
+            success_rate=f"{metrics['success_rate']:.2%}",
+            avg_movement_time_ms=metrics["avg_movement_time_ms"],
+            current_concurrent=metrics["current_concurrent_movements"],
+            max_concurrent=metrics["max_concurrent_movements"],
+            integrity_rate=f"{metrics['integrity_rate']:.2%}",
+            uptime_seconds=metrics["uptime_seconds"],
+            alert_count=len(alerts),
         )
 
         if alerts:

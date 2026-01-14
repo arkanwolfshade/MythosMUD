@@ -8,13 +8,251 @@ with proper categorization, rotation, and Windows safety.
 # pylint: disable=too-few-public-methods,too-many-locals,too-many-statements  # Reason: File setup class with focused responsibility, minimal public interface, and complex setup logic requiring many intermediate variables. File setup legitimately requires many statements for comprehensive logging configuration.
 
 import logging
+import queue
 import sys
-from logging.handlers import RotatingFileHandler
+import threading
+from logging.handlers import QueueHandler, QueueListener, RotatingFileHandler
 from pathlib import Path
 from typing import Any
 
 from server.structured_logging.logging_handlers import SafeRotatingFileHandler, create_aggregator_handler
 from server.structured_logging.logging_utilities import ensure_log_directory, resolve_log_base, rotate_log_files
+
+# Global queue and listener for async logging (initialized once)
+_log_queue: queue.Queue[logging.LogRecord] | None = None
+_queue_listener: QueueListener | None = None
+_queue_listener_lock = threading.Lock()
+
+
+def _get_or_create_log_queue() -> queue.Queue[logging.LogRecord]:
+    """
+    Get or create the global log queue for async logging.
+
+    Returns:
+        The global log queue for async log processing
+    """
+    global _log_queue  # pylint: disable=global-statement  # Reason: Global queue must be shared across all QueueHandlers
+
+    with _queue_listener_lock:
+        if _log_queue is None:
+            _log_queue = queue.Queue(-1)
+        return _log_queue
+
+
+def _setup_category_handlers(
+    log_categories: dict[str, list[str]],
+    env_log_dir: Path,
+    handler_class: type,
+    max_bytes: int,
+    backup_count: int,
+    player_service: Any | None,
+    enable_async: bool,
+    log_queue: queue.Queue[logging.LogRecord] | None,
+    environment: str,
+    log_level: str,
+) -> list[logging.Handler]:
+    """
+    Set up handlers for log categories.
+
+    Returns:
+        List of file handlers created
+    """
+    all_file_handlers: list[logging.Handler] = []
+
+    for log_file, prefixes in log_categories.items():
+        log_path = env_log_dir / f"{log_file}.log"
+        handler = _create_handler_for_category(log_path, handler_class, max_bytes, backup_count, player_service)
+        all_file_handlers.append(handler)
+
+        # If async is enabled, wrap handler in QueueHandler, otherwise add directly
+        if enable_async and log_queue:
+            # QueueHandler will be added to loggers, actual handler goes to queue listener
+            queue_handler = QueueHandler(log_queue)
+            _add_handler_to_loggers(queue_handler, prefixes, log_file, environment, log_level)
+        else:
+            _add_handler_to_loggers(handler, prefixes, log_file, environment, log_level)
+
+    return all_file_handlers
+
+
+def _setup_aggregator_handlers(
+    env_log_dir: Path,
+    max_bytes: int,
+    backup_count: int,
+    player_service: Any | None,
+    enable_async: bool,
+    log_queue: queue.Queue[logging.LogRecord] | None,
+    root_logger: logging.Logger,
+) -> list[logging.Handler]:
+    """
+    Set up aggregator handlers (warnings.log and errors.log).
+
+    Returns:
+        List of aggregator handlers created
+    """
+    all_file_handlers: list[logging.Handler] = []
+
+    # Create warnings.log aggregator handler
+    warnings_log_path = env_log_dir / "warnings.log"
+    warnings_handler = create_aggregator_handler(
+        warnings_log_path,
+        logging.WARNING,
+        max_bytes,
+        backup_count,
+        player_service,
+    )
+    all_file_handlers.append(warnings_handler)
+    if enable_async and log_queue:
+        warnings_queue_handler = QueueHandler(log_queue)
+        root_logger.addHandler(warnings_queue_handler)
+    else:
+        root_logger.addHandler(warnings_handler)
+
+    # Create errors.log aggregator handler
+    errors_log_path = env_log_dir / "errors.log"
+    errors_handler = create_aggregator_handler(
+        errors_log_path,
+        logging.ERROR,
+        max_bytes,
+        backup_count,
+        player_service,
+    )
+    all_file_handlers.append(errors_handler)
+    if enable_async and log_queue:
+        errors_queue_handler = QueueHandler(log_queue)
+        root_logger.addHandler(errors_queue_handler)
+    else:
+        root_logger.addHandler(errors_handler)
+
+    return all_file_handlers
+
+
+def _setup_console_handler(
+    env_log_dir: Path,
+    max_bytes: int,
+    backup_count: int,
+    player_service: Any | None,
+    log_level: str,
+    _WinSafeHandler: type[RotatingFileHandler],
+    _BaseHandler: type[RotatingFileHandler],
+    enable_async: bool,
+    log_queue: queue.Queue[logging.LogRecord] | None,
+    root_logger: logging.Logger,
+) -> logging.Handler:
+    """
+    Set up console handler with structured output.
+
+    Returns:
+        Console handler created
+    """
+    console_log_path = env_log_dir / "console.log"
+    handler_class = _BaseHandler
+    try:
+        if sys.platform == "win32":
+            # Windows-safe handler also needs directory safety
+            class SafeWinHandlerConsole(_WinSafeHandler):  # type: ignore[misc, valid-type]  # Reason: Dynamic class creation inside conditional block, mypy cannot validate type compatibility at definition time
+                """Windows-safe rotating file handler with directory safety for console logs."""
+
+                def shouldRollover(self, record):  # noqa: N802  # Reason: Method name required by parent class logging.handlers.RotatingFileHandler, cannot change to follow PEP8 naming
+                    if self.baseFilename:
+                        log_path = Path(self.baseFilename)
+                        ensure_log_directory(log_path)
+                    return super().shouldRollover(record)
+
+            handler_class = SafeWinHandlerConsole
+    except Exception:  # pylint: disable=broad-except  # Reason: Defensive fallback for class definition failures, must catch all exceptions to prevent logging setup from failing completely
+        # Defensive fallback: if class definition fails for any reason,
+        # fall back to base handler (e.g., if _WinSafeHandler is invalid)
+        handler_class = _BaseHandler
+
+    # Ensure directory exists right before creating handler to prevent race conditions
+    ensure_log_directory(console_log_path)
+    try:
+        console_handler = handler_class(
+            console_log_path,
+            maxBytes=max_bytes,
+            backupCount=backup_count,
+            encoding="utf-8",
+        )
+    except (FileNotFoundError, OSError):
+        # If directory doesn't exist or was deleted, recreate it and try again
+        ensure_log_directory(console_log_path)
+        console_handler = handler_class(
+            console_log_path,
+            maxBytes=max_bytes,
+            backupCount=backup_count,
+            encoding="utf-8",
+        )
+    console_handler.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
+
+    # Use enhanced formatter for console handler
+    console_formatter: logging.Formatter
+    if player_service is not None:
+        from server.structured_logging.player_guid_formatter import PlayerGuidFormatter
+
+        console_formatter = PlayerGuidFormatter(
+            player_service=player_service,
+            fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
+        )
+    else:
+        console_formatter = logging.Formatter(
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
+        )
+    console_handler.setFormatter(console_formatter)
+
+    if enable_async and log_queue:
+        console_queue_handler = QueueHandler(log_queue)
+        root_logger.addHandler(console_queue_handler)
+    else:
+        root_logger.addHandler(console_handler)
+
+    return console_handler
+
+
+def _setup_async_logging_queue(handlers: list[logging.Handler]) -> None:
+    """
+    Set up async logging queue listener for non-blocking file I/O.
+
+    Uses QueueHandler/QueueListener pattern to offload file writing to a
+    background thread, improving performance for high-throughput logging.
+    Implements log batching by processing multiple log records in the queue
+    before writing to disk, reducing I/O operations.
+
+    Args:
+        handlers: List of file handlers to process asynchronously
+    """
+    global _queue_listener, _log_queue  # pylint: disable=global-statement  # Reason: Global queue listener must be initialized once and kept alive
+
+    with _queue_listener_lock:
+        if _queue_listener is not None:
+            # Queue listener already initialized
+            return
+
+        if _log_queue is None:
+            # Use a larger queue size for better batching performance
+            # -1 means unlimited, but in practice the queue will be bounded by memory
+            _log_queue = queue.Queue(-1)
+
+        try:
+            # Create queue listener with all file handlers
+            # The QueueListener automatically batches writes for better performance
+            _queue_listener = QueueListener(_log_queue, *handlers, respect_handler_level=True)
+
+            # Start the listener in a background thread
+            _queue_listener.start()
+        except Exception as e:
+            # Graceful fallback: if async logging setup fails, log error and continue
+            # Application will still work with synchronous logging
+            import sys
+
+            print(
+                f"Warning: Failed to set up async logging: {type(e).__name__}: {e}",
+                file=sys.stderr,
+            )
+            # Reset global state so retry is possible
+            _queue_listener = None
 
 
 def _get_handler_class(_WinSafeHandler: type, _BaseHandler: type) -> type:  # pylint: disable=invalid-name  # Reason: Parameter names match class names for type hints
@@ -105,28 +343,45 @@ def _create_handler_for_category(
     backup_count: int,
     player_service: Any | None,
 ) -> logging.Handler:
-    """Create handler for a log category."""
-    ensure_log_directory(log_path)
+    """
+    Create handler for a log category with graceful error handling.
+
+    If handler creation fails, returns a NullHandler to prevent logging
+    failures from crashing the application.
+    """
     try:
-        handler = handler_class(
-            log_path,
-            maxBytes=max_bytes,
-            backupCount=backup_count,
-            encoding="utf-8",
-        )
-    except (FileNotFoundError, OSError):
-        # If directory doesn't exist or was deleted, recreate it and try again
         ensure_log_directory(log_path)
-        handler = handler_class(
-            log_path,
-            maxBytes=max_bytes,
-            backupCount=backup_count,
-            encoding="utf-8",
+        try:
+            handler = handler_class(
+                log_path,
+                maxBytes=max_bytes,
+                backupCount=backup_count,
+                encoding="utf-8",
+            )
+        except (FileNotFoundError, OSError):
+            # If directory doesn't exist or was deleted, recreate it and try again
+            ensure_log_directory(log_path)
+            handler = handler_class(
+                log_path,
+                maxBytes=max_bytes,
+                backupCount=backup_count,
+                encoding="utf-8",
+            )
+        handler.setLevel(logging.DEBUG)
+        formatter = _create_formatter(player_service)
+        handler.setFormatter(formatter)
+        return handler
+    except Exception as e:
+        # Graceful fallback: if handler creation fails, use NullHandler
+        # This prevents logging setup failures from crashing the application
+        # Log the error to stderr as a last resort
+        import sys
+
+        print(
+            f"Warning: Failed to create log handler for {log_path}: {type(e).__name__}: {e}",
+            file=sys.stderr,
         )
-    handler.setLevel(logging.DEBUG)
-    formatter = _create_formatter(player_service)
-    handler.setFormatter(formatter)
-    return handler
+        return logging.NullHandler()
 
 
 def setup_enhanced_file_logging(  # pylint: disable=too-many-locals  # Reason: File logging setup requires many intermediate variables for complex logging configuration
@@ -134,9 +389,15 @@ def setup_enhanced_file_logging(  # pylint: disable=too-many-locals  # Reason: F
     log_config: dict[str, Any],
     log_level: str,
     player_service: Any = None,
-    enable_async: bool = True,  # noqa: ARG001  # pylint: disable=unused-argument  # Reason: Parameter kept for API compatibility with future async logging implementation, currently unused but reserved for future use
+    enable_async: bool = True,
 ) -> None:
-    """Set up enhanced file logging handlers with async support."""
+    """
+    Set up enhanced file logging handlers with async support.
+
+    When enable_async is True, uses QueueHandler/QueueListener pattern for
+    non-blocking file I/O operations, improving performance for high-throughput
+    logging scenarios.
+    """
     # Use Windows-safe rotation handlers when available
     _WinSafeHandler: type[RotatingFileHandler] = RotatingFileHandler
     try:
@@ -250,99 +511,58 @@ def setup_enhanced_file_logging(  # pylint: disable=too-many-locals  # Reason: F
         "security": ["security", "audit"],
     }
 
+    # Initialize async logging queue if enabled
+    log_queue: queue.Queue[logging.LogRecord] | None = None
+    if enable_async:
+        log_queue = _get_or_create_log_queue()
+
     # Create handlers for different log categories
     handler_class = _get_handler_class(_WinSafeHandler, _BaseHandler)
-    for log_file, prefixes in log_categories.items():
-        log_path = env_log_dir / f"{log_file}.log"
-        handler = _create_handler_for_category(log_path, handler_class, max_bytes, backup_count, player_service)
-        _add_handler_to_loggers(handler, prefixes, log_file, environment, log_level)
-
-    # Create warnings.log aggregator handler
-    # This captures ALL WARNING level logs from ALL subsystems
-    # Warnings appear in both their subsystem log AND warnings.log
-    warnings_log_path = env_log_dir / "warnings.log"
-    warnings_handler = create_aggregator_handler(
-        warnings_log_path,
-        logging.WARNING,
+    all_file_handlers = _setup_category_handlers(
+        log_categories,
+        env_log_dir,
+        handler_class,
         max_bytes,
         backup_count,
         player_service,
+        enable_async,
+        log_queue,
+        environment,
+        log_level,
     )
-    root_logger.addHandler(warnings_handler)
 
-    # Create errors.log aggregator handler
-    # This captures ALL ERROR and CRITICAL level logs from ALL subsystems
-    # Errors appear in both their subsystem log AND errors.log
-    errors_log_path = env_log_dir / "errors.log"
-    errors_handler = create_aggregator_handler(
-        errors_log_path,
-        logging.ERROR,
+    # Set up aggregator handlers (warnings.log and errors.log)
+    aggregator_handlers = _setup_aggregator_handlers(
+        env_log_dir,
         max_bytes,
         backup_count,
         player_service,
+        enable_async,
+        log_queue,
+        root_logger,
     )
-    root_logger.addHandler(errors_handler)
+    all_file_handlers.extend(aggregator_handlers)
 
-    # Enhanced console handler with structured output
-    console_log_path = env_log_dir / "console.log"
-    handler_class = _BaseHandler
-    try:
-        if sys.platform == "win32":
-            # Windows-safe handler also needs directory safety
-            class SafeWinHandlerConsole(_WinSafeHandler):  # type: ignore[misc, valid-type]  # Reason: Dynamic class creation inside conditional block, mypy cannot validate type compatibility at definition time
-                """Windows-safe rotating file handler with directory safety for console logs."""
-
-                def shouldRollover(self, record):  # noqa: N802  # Reason: Method name required by parent class logging.handlers.RotatingFileHandler, cannot change to follow PEP8 naming
-                    if self.baseFilename:
-                        log_path = Path(self.baseFilename)
-                        ensure_log_directory(log_path)
-                    return super().shouldRollover(record)
-
-            handler_class = SafeWinHandlerConsole
-    except Exception:  # pylint: disable=broad-except  # Reason: Defensive fallback for class definition failures, must catch all exceptions to prevent logging setup from failing completely
-        # Defensive fallback: if class definition fails for any reason,
-        # fall back to base handler (e.g., if _WinSafeHandler is invalid)
-        handler_class = _BaseHandler
-
-    # Ensure directory exists right before creating handler to prevent race conditions
-    ensure_log_directory(console_log_path)
-    try:
-        console_handler = handler_class(
-            console_log_path,
-            maxBytes=max_bytes,
-            backupCount=backup_count,
-            encoding="utf-8",
-        )
-    except (FileNotFoundError, OSError):
-        # If directory doesn't exist or was deleted, recreate it and try again
-        ensure_log_directory(console_log_path)
-        console_handler = handler_class(
-            console_log_path,
-            maxBytes=max_bytes,
-            backupCount=backup_count,
-            encoding="utf-8",
-        )
-    console_handler.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
-
-    # Use enhanced formatter for console handler
-    console_formatter: logging.Formatter
-    if player_service is not None:
-        from server.structured_logging.player_guid_formatter import PlayerGuidFormatter
-
-        console_formatter = PlayerGuidFormatter(
-            player_service=player_service,
-            fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S",
-        )
-    else:
-        console_formatter = logging.Formatter(
-            "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S",
-        )
-    console_handler.setFormatter(console_formatter)
-    root_logger.addHandler(console_handler)
+    # Set up console handler
+    console_handler = _setup_console_handler(
+        env_log_dir,
+        max_bytes,
+        backup_count,
+        player_service,
+        log_level,
+        _WinSafeHandler,
+        _BaseHandler,
+        enable_async,
+        log_queue,
+        root_logger,
+    )
+    all_file_handlers.append(console_handler)
 
     root_logger.setLevel(logging.DEBUG)
+
+    # Set up async logging with QueueListener if enabled
+    if enable_async and all_file_handlers:
+        _setup_async_logging_queue(all_file_handlers)
 
     # AI Agent: Log after structlog is configured using structlog logger
     # This will be called after configure_enhanced_structlog() completes
