@@ -49,8 +49,6 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
     onClose,
     onFocus,
   }) => {
-    const [isDragging, setIsDragging] = useState(false);
-
     // Track window dimensions for responsive maximized size calculation
     // As noted in "Viewport-Aware Panel Sizing" - Dr. Armitage, 1928
     const [windowDimensions, setWindowDimensions] = useState(() => ({
@@ -94,14 +92,12 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
 
     // Handle drag start
     const handleDragStart = useCallback(() => {
-      setIsDragging(true);
       onFocus(id);
     }, [id, onFocus]);
 
     // Handle drag stop
     const handleDragStop = useCallback(
       (_e: unknown, d: { x: number; y: number }) => {
-        setIsDragging(false);
         onPositionChange(id, { x: d.x, y: d.y });
       },
       [id, onPositionChange]
@@ -136,14 +132,6 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
         onClose(id);
       }
     }, [id, onClose]);
-
-    // Update z-index when panel is focused
-    useEffect(() => {
-      if (isDragging) {
-        // Panel is being dragged, ensure it's on top
-        // This is handled by the panel manager
-      }
-    }, [isDragging]);
 
     // Get variant classes
     const variantClasses = useMemo(() => {

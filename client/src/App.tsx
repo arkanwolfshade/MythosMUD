@@ -52,6 +52,14 @@ interface ServerCharacterResponse {
   last_active: string;
 }
 
+// Loading fallback component for lazy-loaded screens
+// Defined at module level to prevent recreation on every render
+const LoadingFallback = () => (
+  <div className="App flex items-center justify-center min-h-screen bg-mythos-terminal-background">
+    <div className="text-mythos-terminal-text font-mono">Loading...</div>
+  </div>
+);
+
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   // MULTI-CHARACTER: Replaced hasCharacter/characterName with characters array
@@ -95,6 +103,10 @@ function App() {
   // NOTE: This only runs for the main app route, not for /map route
   // FIX: Use sessionStorage flag to prevent clearing tokens on component remount
   // (e.g., when Playwright switches tabs). Only clear on actual page load.
+
+  // Dependencies intentionally omitted: API_BASE_URL and secureTokenStorage are stable module-level
+  // references that never change. All setState functions are stable references from useState.
+  // This effect should only run once on mount to check for existing authentication state.
   useEffect(() => {
     // Check if a valid token already exists before clearing
     // This prevents clearing tokens on component remount when user is already authenticated
@@ -691,13 +703,6 @@ function App() {
       }
     }
   };
-
-  // Loading fallback component for lazy-loaded screens
-  const LoadingFallback = () => (
-    <div className="App flex items-center justify-center min-h-screen bg-mythos-terminal-background">
-      <div className="text-mythos-terminal-text font-mono">Loading...</div>
-    </div>
-  );
 
   if (showDemo) {
     return (
