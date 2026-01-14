@@ -186,7 +186,7 @@ class DependencyAnalyzer:
         high_risk_packages = ["fastapi", "pydantic", "sqlalchemy", "uvicorn", "pytest", "pytest-asyncio", "structlog"]
 
         # Medium-risk packages
-        medium_risk_packages = ["requests", "httpx", "python-jose", "argon2-cffi", "fastapi-users", "click", "nats-py"]
+        medium_risk_packages = ["httpx", "python-jose", "argon2-cffi", "fastapi-users", "click", "nats-py"]
 
         if update_type == "major":
             return "HIGH"
