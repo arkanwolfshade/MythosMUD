@@ -39,10 +39,13 @@ monitoring_router = APIRouter(prefix="/monitoring", tags=["monitoring"])
 system_monitoring_router = APIRouter(tags=["monitoring", "system"])
 
 
-def _resolve_connection_manager_from_request(request: Request):
+def _resolve_connection_manager_from_request(request: Request) -> Any:
     """
     Resolve a connection manager for routes that require it, preferring the container-managed
     instance while remaining compatible with legacy module-level injection used in tests.
+
+    Returns:
+        Connection manager instance (raises RuntimeError if not configured).
     """
     container = getattr(request.app.state, "container", None)
     candidate = getattr(container, "connection_manager", None) if container else None

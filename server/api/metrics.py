@@ -385,8 +385,12 @@ def _handle_replay_error(replay_error: Exception, filepath: str, current_user: U
     return DLQReplayResponse(status="failed", message="Replay failed. Message remains in DLQ.", filepath=filepath)
 
 
-def _get_nats_handler():
-    """Get NATS message handler from app state."""
+def _get_nats_handler() -> Any:
+    """Get NATS message handler from app state.
+
+    Returns:
+        NATSMessageHandler: The NATS message handler instance (raises HTTPException if not available).
+    """
     from ..main import app
 
     nats_message_handler = app.state.container.nats_message_handler

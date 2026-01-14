@@ -19,6 +19,7 @@ occur throughout our eldritch architecture.
 # pylint: disable=too-many-lines  # Reason: Event bus requires extensive event handling logic for comprehensive event system management
 
 import asyncio
+import inspect
 from collections import defaultdict
 from collections.abc import Callable
 from typing import Any, TypeVar
@@ -274,8 +275,6 @@ class EventBus:  # pylint: disable=too-many-instance-attributes  # Reason: Event
         Returns:
             Tuple of (async_subscribers, sync_subscribers) for separate processing
         """
-        import inspect
-
         async_subscribers: list[Callable[[BaseEvent], Any]] = []
         sync_subscribers: list[Callable[[BaseEvent], Any]] = []
 
