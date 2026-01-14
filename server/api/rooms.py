@@ -6,7 +6,7 @@ room information retrieval and room state management.
 """
 
 import uuid
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from fastapi import APIRouter, Depends, Query, Request, status
 from pydantic import BaseModel, Field
@@ -34,6 +34,56 @@ logger = get_logger(__name__)
 room_router = APIRouter(prefix="/rooms", tags=["rooms"])
 
 logger.info("Rooms API router initialized", prefix="/rooms")
+
+
+async def _apply_exploration_filter_if_needed(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Exploration filtering requires multiple dependencies (user, services, persistence, session) for proper validation and filtering
+    rooms: list[dict[str, Any]],
+    filter_explored: bool,
+    current_user: User | None,
+    room_service: RoomService,
+    persistence: "AsyncPersistenceLayer",
+    exploration_service: ExplorationService,
+    session: AsyncSession,
+) -> list[dict[str, Any]]:
+    """
+    Apply exploration filter to rooms if requested and user is not admin.
+
+    Args:
+        rooms: List of room dictionaries
+        filter_explored: Whether to filter by explored rooms
+        current_user: Current authenticated user
+        room_service: Room service instance
+        persistence: Persistence layer instance
+        exploration_service: Exploration service instance
+        session: Database session
+
+    Returns:
+        Filtered list of room dictionaries
+    """
+    if not filter_explored or not current_user:
+        return rooms
+
+    # Admins see all rooms regardless of exploration status
+    is_admin = current_user.is_admin or current_user.is_superuser
+    if is_admin:
+        logger.debug(
+            "Admin user requested filtered rooms, but admins see all rooms",
+            user_id=str(current_user.id),
+            username=current_user.username,
+        )
+        return rooms
+
+    # Get player from user
+    user_id = str(current_user.id)
+    player = await persistence.get_player_by_user_id(user_id)
+
+    if player:
+        # Get explored rooms for this player using RoomService
+        player_id = uuid.UUID(str(player.player_id))
+        return await room_service.filter_rooms_by_exploration(rooms, player_id, exploration_service, session)
+
+    logger.warning("Player not found for user, cannot filter by exploration", user_id=user_id)
+    return rooms
 
 
 def _validate_room_position_update(current_user: User | None, room_id: str, request: Request) -> None:
@@ -132,32 +182,9 @@ async def list_rooms(  # pylint: disable=too-many-arguments,too-many-positional-
             include_exits=include_exits,
         )
 
-        # Filter by explored rooms if requested, user is authenticated, and user is NOT an admin
-        # Admins should see all rooms regardless of exploration status
-        if filter_explored and current_user:
-            # Check if user is admin - admins see all rooms
-            is_admin = current_user.is_admin or current_user.is_superuser
-
-            if is_admin:
-                logger.debug(
-                    "Admin user requested filtered rooms, but admins see all rooms",
-                    user_id=str(current_user.id),
-                    username=current_user.username,
-                )
-                # Skip filtering - admins see all rooms
-            else:
-                # Get player from user
-                user_id = str(current_user.id)
-                player = await persistence.get_player_by_user_id(user_id)
-
-                if player:
-                    # Get explored rooms for this player using RoomService
-                    player_id = uuid.UUID(str(player.player_id))
-                    rooms = await room_service.filter_rooms_by_exploration(
-                        rooms, player_id, exploration_service, session
-                    )
-                else:
-                    logger.warning("Player not found for user, cannot filter by exploration", user_id=user_id)
+        rooms = await _apply_exploration_filter_if_needed(
+            rooms, filter_explored, current_user, room_service, persistence, exploration_service, session
+        )
 
         logger.debug(
             "Room list returned",

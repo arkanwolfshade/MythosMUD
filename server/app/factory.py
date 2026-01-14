@@ -7,7 +7,7 @@ and router registration.
 
 import json
 import os
-from typing import Any
+from typing import Any, TypedDict, cast
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -43,6 +43,144 @@ logger = get_logger(__name__)
 # which provides the same functionality plus error logging and better organization
 
 
+class CORSConfigDict(TypedDict):
+    """Type definition for CORS configuration dictionary."""
+
+    allow_origins: list[str]
+    allow_methods: list[str]
+    allow_headers: list[str]
+    expose_headers: list[str]
+    allow_credentials: bool
+    max_age: int
+
+
+def _get_default_cors_config() -> CORSConfigDict:
+    """
+    Get default CORS configuration values.
+
+    Returns:
+        CORSConfigDict: Dictionary with default CORS settings
+    """
+    return {
+        "allow_origins": [
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+        ],
+        "allow_methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        "allow_headers": [
+            "Content-Type",
+            "Authorization",
+            "X-Requested-With",
+            "Accept",
+            "Accept-Language",
+        ],
+        "expose_headers": [],
+        "allow_credentials": True,
+        "max_age": 600,
+    }
+
+
+def _get_cors_config_from_app_config() -> CORSConfigDict:
+    """
+    Get CORS configuration from AppConfig, with fallback to defaults.
+
+    Returns:
+        CORSConfigDict: CORS configuration from config or defaults
+    """
+    try:
+        config = get_config()
+        cors_cfg: Any = config.cors
+        return {
+            "allow_origins": list(getattr(cors_cfg, "allow_origins", [])),
+            "allow_methods": [str(m).upper() for m in getattr(cors_cfg, "allow_methods", [])],
+            "allow_headers": [str(h) for h in getattr(cors_cfg, "allow_headers", [])],
+            "expose_headers": list(getattr(cors_cfg, "expose_headers", [])),
+            "allow_credentials": bool(getattr(cors_cfg, "allow_credentials", True)),
+            "max_age": int(getattr(cors_cfg, "max_age", 600)),
+        }
+    except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: CORS config errors unpredictable, must fallback to environment
+        return _get_default_cors_config()
+
+
+def _parse_cors_env_vars() -> dict[str, Any]:
+    """
+    Parse CORS-related environment variables and return overrides.
+
+    Environment variables take precedence over config file values.
+    Supports multiple formats:
+    - Comma-separated values: "origin1,origin2"
+    - JSON arrays: '["origin1","origin2"]'
+
+    Returns:
+        dict: Dictionary with environment variable overrides (may be empty)
+    """
+    overrides: dict[str, Any] = {}
+
+    # Parse ALLOWED_ORIGINS / CORS_ALLOW_ORIGINS / CORS_ORIGINS
+    env_origins = os.getenv("ALLOWED_ORIGINS") or os.getenv("CORS_ALLOW_ORIGINS") or os.getenv("CORS_ORIGINS")
+    if env_origins:
+        candidate = env_origins.strip()
+        if candidate.startswith("["):
+            try:
+                parsed = json.loads(candidate)
+                overrides["allow_origins"] = [str(o).strip() for o in parsed if str(o).strip()]
+            except json.JSONDecodeError:
+                overrides["allow_origins"] = [
+                    o.strip().strip('"').strip("'") for o in candidate.strip("[]").split(",") if o.strip()
+                ]
+        else:
+            overrides["allow_origins"] = [o.strip() for o in candidate.split(",") if o.strip()]
+
+    # Parse ALLOWED_METHODS / CORS_ALLOW_METHODS
+    env_methods = os.getenv("ALLOWED_METHODS") or os.getenv("CORS_ALLOW_METHODS")
+    if env_methods:
+        overrides["allow_methods"] = [m.strip().upper() for m in env_methods.split(",")]
+
+    # Parse ALLOWED_HEADERS / CORS_ALLOW_HEADERS
+    env_headers = os.getenv("ALLOWED_HEADERS") or os.getenv("CORS_ALLOW_HEADERS")
+    if env_headers:
+        overrides["allow_headers"] = [h.strip() for h in env_headers.split(",")]
+
+    return overrides
+
+
+def _configure_cors() -> CORSConfigDict:
+    """
+    Configure CORS settings from config file and environment variables.
+
+    Precedence: ENV > CONFIG > DEFAULTS
+
+    Returns:
+        CORSConfigDict: Final CORS configuration dictionary
+    """
+    # Start with config file values (or defaults)
+    cors_config = _get_cors_config_from_app_config()
+
+    logger.info(
+        "CORS configuration",
+        allow_origins=cors_config["allow_origins"],
+        allow_methods=cors_config["allow_methods"],
+        allow_headers=cors_config["allow_headers"],
+        expose_headers=cors_config["expose_headers"],
+        allow_credentials=cors_config["allow_credentials"],
+        max_age=cors_config["max_age"],
+    )
+
+    # Apply environment variable overrides
+    env_overrides = _parse_cors_env_vars()
+    # Cast to CORSConfigDict for type safety - env_overrides only contains valid CORS keys
+    cors_config.update(cast(CORSConfigDict, env_overrides))
+
+    logger.info(
+        "Final CORS configuration after environment overrides",
+        origins=cors_config["allow_origins"],
+        methods=cors_config["allow_methods"],
+        headers=cors_config["allow_headers"],
+    )
+
+    return cors_config
+
+
 def create_app() -> FastAPI:  # pylint: disable=too-many-locals,too-many-statements  # Reason: Application factory requires many intermediate variables for service configuration. Application factory legitimately requires many statements for comprehensive app setup.
     """
     Create and configure the FastAPI application.
@@ -60,78 +198,8 @@ def create_app() -> FastAPI:  # pylint: disable=too-many-locals,too-many-stateme
         lifespan=lifespan,
     )
 
-    # Resolve CORS configuration (prefer full AppConfig, fallback to environment-only if unavailable)
-    try:
-        config = get_config()
-        cors_cfg: Any = config.cors
-        allowed_origins_list = list(getattr(cors_cfg, "allow_origins", []))
-        allowed_methods_list = [str(m).upper() for m in getattr(cors_cfg, "allow_methods", [])]
-        allowed_headers_list = [str(h) for h in getattr(cors_cfg, "allow_headers", [])]
-        expose_headers_list = list(getattr(cors_cfg, "expose_headers", []))
-        allow_credentials_bool = bool(getattr(cors_cfg, "allow_credentials", True))
-        max_age_int = int(getattr(cors_cfg, "max_age", 600))
-    except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: CORS config errors unpredictable, must fallback to environment
-        # Minimal fallback sourced only from environment
-        allowed_origins_list = [
-            "http://localhost:5173",
-            "http://127.0.0.1:5173",
-        ]
-        allowed_methods_list = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
-        allowed_headers_list = [
-            "Content-Type",
-            "Authorization",
-            "X-Requested-With",
-            "Accept",
-            "Accept-Language",
-        ]
-        expose_headers_list = []
-        allow_credentials_bool = True
-        max_age_int = 600
-
-    logger.info(
-        "CORS configuration",
-        allow_origins=allowed_origins_list,
-        allow_methods=allowed_methods_list,
-        allow_headers=allowed_headers_list,
-        expose_headers=expose_headers_list,
-        allow_credentials=allow_credentials_bool,
-        max_age=max_age_int,
-    )
-
-    # ARCHITECTURE FIX Phase 2.1: Simplified CORS configuration
-    # Environment variables take precedence over config file
-    # Precedence: ENV > CONFIG > DEFAULTS
-    final_origins = allowed_origins_list
-    final_methods = allowed_methods_list
-    final_headers = allowed_headers_list
-
-    # Check for environment variable overrides
-    env_origins = os.getenv("ALLOWED_ORIGINS") or os.getenv("CORS_ALLOW_ORIGINS") or os.getenv("CORS_ORIGINS")
-    if env_origins:
-        candidate = env_origins.strip()
-        if candidate.startswith("["):
-            try:
-                parsed = json.loads(candidate)
-                final_origins = [str(o).strip() for o in parsed if str(o).strip()]
-            except json.JSONDecodeError:
-                final_origins = [o.strip().strip('"').strip("'") for o in candidate.strip("[]").split(",") if o.strip()]
-        else:
-            final_origins = [o.strip() for o in candidate.split(",") if o.strip()]
-
-    env_methods = os.getenv("ALLOWED_METHODS") or os.getenv("CORS_ALLOW_METHODS")
-    if env_methods:
-        final_methods = [m.strip().upper() for m in env_methods.split(",")]
-
-    env_headers = os.getenv("ALLOWED_HEADERS") or os.getenv("CORS_ALLOW_HEADERS")
-    if env_headers:
-        final_headers = [h.strip() for h in env_headers.split(",")]
-
-    logger.info(
-        "Final CORS configuration after environment overrides",
-        origins=final_origins,
-        methods=final_methods,
-        headers=final_headers,
-    )
+    # Configure CORS settings (precedence: ENV > CONFIG > DEFAULTS)
+    cors_config = _configure_cors()
 
     # Add security and logging first (inner layers)
     app.add_middleware(SecurityHeadersMiddleware)
@@ -141,12 +209,12 @@ def create_app() -> FastAPI:  # pylint: disable=too-many-locals,too-many-stateme
     # SecurityHeadersMiddleware handles all security headers
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=final_origins,
-        allow_credentials=allow_credentials_bool,
-        allow_methods=final_methods,
-        allow_headers=final_headers,
-        max_age=max_age_int,
-        expose_headers=expose_headers_list if expose_headers_list else [],
+        allow_origins=cors_config["allow_origins"],
+        allow_credentials=cors_config["allow_credentials"],
+        allow_methods=cors_config["allow_methods"],
+        allow_headers=cors_config["allow_headers"],
+        max_age=cors_config["max_age"],
+        expose_headers=cors_config["expose_headers"] if cors_config["expose_headers"] else [],
     )
 
     # Note: AllowedCORSMiddleware removed - functionality consolidated into CORSMiddleware above

@@ -224,3 +224,74 @@ def handle_close_container_exceptions(
         detail="Internal server error",
         context=context,
     ) from e
+
+
+def handle_loot_all_exceptions(
+    e: Exception,
+    request: Request,
+    current_user: User,
+    container_id: UUID,
+) -> None:
+    """
+    Handle exceptions for loot_all_items endpoint.
+
+    Args:
+        e: The exception that occurred
+        request: FastAPI Request object
+        current_user: Current authenticated user
+        container_id: Container UUID
+
+    Raises:
+        LoggedHTTPException: With appropriate status code based on exception type
+    """
+    from ..services.container_service import (
+        ContainerAccessDeniedError,
+        ContainerLockedError,
+        ContainerNotFoundError,
+    )
+
+    context = create_error_context(request, current_user, container_id=str(container_id), operation="loot_all")
+
+    if isinstance(e, ContainerNotFoundError):
+        raise LoggedHTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Container not found",
+            context=context,
+        ) from e
+
+    if isinstance(e, ContainerLockedError):
+        raise LoggedHTTPException(
+            status_code=status.HTTP_423_LOCKED,
+            detail="Container is locked",
+            context=context,
+        ) from e
+
+    if isinstance(e, ContainerAccessDeniedError):
+        raise LoggedHTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied",
+            context=context,
+        ) from e
+
+    if isinstance(e, ContainerCapacityError):
+        raise LoggedHTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Player inventory capacity exceeded",
+            context=context,
+        ) from e
+
+    if isinstance(e, ContainerServiceError):
+        raise LoggedHTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to loot items from container",
+            context=context,
+        ) from e
+
+    # Generic exception handler
+    # Use error=str(e) instead of exc_info=True to avoid Unicode encoding issues on Windows
+    logger.error("Unexpected error in loot-all", error=str(e), **context.to_dict())
+    raise LoggedHTTPException(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        detail="Internal server error",
+        context=context,
+    ) from e

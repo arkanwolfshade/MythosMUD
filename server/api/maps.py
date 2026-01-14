@@ -91,6 +91,49 @@ async def _filter_explored_rooms(
     return await room_service.filter_rooms_by_exploration(rooms, player_id, exploration_service, session)
 
 
+def _needs_coordinate_generation(rooms: list[dict[str, Any]]) -> bool:
+    """
+    Check if rooms need coordinate generation.
+
+    Args:
+        rooms: List of room dictionaries
+
+    Returns:
+        True if coordinates need to be generated, False otherwise
+    """
+    return not rooms or any(r.get("map_x") is None or r.get("map_y") is None for r in rooms)
+
+
+async def _apply_exploration_filter_if_needed(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Exploration filtering requires multiple dependencies (user, player, services, session) for proper validation and filtering
+    rooms: list[dict[str, Any]],
+    current_user: User | None,
+    player: Any,
+    player_id: uuid.UUID | None,
+    exploration_service: ExplorationService,
+    session: AsyncSession,
+    room_service: RoomService,
+) -> list[dict[str, Any]]:
+    """
+    Apply exploration filter to rooms if user is not admin/superuser.
+
+    Args:
+        rooms: List of room dictionaries
+        current_user: Current user object
+        player: Player object
+        player_id: Player UUID
+        exploration_service: Exploration service instance
+        session: Database session
+        room_service: Room service instance
+
+    Returns:
+        Filtered list of rooms
+    """
+    if current_user and not (current_user.is_admin or current_user.is_superuser):
+        if player and exploration_service and player_id:
+            rooms = await _filter_explored_rooms(rooms, player_id, exploration_service, session, room_service)
+    return rooms
+
+
 async def _ensure_coordinates_generated(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Coordinate generation requires many parameters for plane/zone/subzone context
     session: AsyncSession,
     plane: str,
@@ -103,16 +146,35 @@ async def _ensure_coordinates_generated(  # pylint: disable=too-many-arguments,t
     current_user: User | None,
     room_service: RoomService,
 ) -> list[dict[str, Any]]:
-    """Generate coordinates if missing and reload rooms. Returns updated rooms list."""
-    if not rooms or any(r.get("map_x") is None or r.get("map_y") is None for r in rooms):
+    """
+    Generate coordinates if missing and reload rooms.
+
+    Returns updated rooms list with coordinates and exploration filtering applied.
+
+    Args:
+        session: Database session
+        plane: Plane name
+        zone: Zone name
+        sub_zone: Optional sub-zone name
+        rooms: List of room dictionaries
+        player: Player object
+        player_id: Player UUID
+        exploration_service: Exploration service instance
+        current_user: Current user object
+        room_service: Room service instance
+
+    Returns:
+        Updated list of room dictionaries with coordinates
+    """
+    if _needs_coordinate_generation(rooms):
         logger.debug("Generating missing coordinates", room_count=len(rooms))
         generator = CoordinateGenerator(session)
         await generator.generate_coordinates_for_zone(plane, zone, sub_zone)
         rooms = await _load_rooms_with_coordinates(session, plane, zone, sub_zone)
 
-        if current_user and not (current_user.is_admin or current_user.is_superuser):
-            if player and exploration_service and player_id:
-                rooms = await _filter_explored_rooms(rooms, player_id, exploration_service, session, room_service)
+    rooms = await _apply_exploration_filter_if_needed(
+        rooms, current_user, player, player_id, exploration_service, session, room_service
+    )
 
     return rooms
 
@@ -291,7 +353,86 @@ async def get_ascii_minimap(  # pylint: disable=too-many-arguments,too-many-posi
         ) from e
 
 
-async def _load_rooms_with_coordinates(  # pylint: disable=too-many-locals  # Reason: Room loading requires many intermediate variables for coordinate processing
+def _build_zone_pattern(plane: str, zone: str, sub_zone: str | None) -> str:
+    """
+    Build zone pattern for room query.
+
+    Args:
+        plane: Plane name
+        zone: Zone name
+        sub_zone: Optional sub-zone name
+
+    Returns:
+        Zone pattern string for SQL LIKE query
+    """
+    zone_pattern = f"{plane}_{zone}"
+    if sub_zone:
+        zone_pattern = f"{zone_pattern}_{sub_zone}"
+    return zone_pattern
+
+
+def _build_room_dict(row: Any) -> dict[str, Any]:
+    """
+    Build room dictionary from database row.
+
+    Args:
+        row: Database row result
+
+    Returns:
+        Room dictionary with all room properties
+    """
+    attrs = row[3] if row[3] else {}
+    return {
+        "id": row[1],  # Use stable_id as id
+        "uuid": str(row[0]),
+        "stable_id": row[1],
+        "name": row[2],
+        "attributes": attrs,
+        "map_x": float(row[4]) if row[4] is not None else None,
+        "map_y": float(row[5]) if row[5] is not None else None,
+        "map_origin_zone": bool(row[6]) if row[6] is not None else False,
+        "map_symbol": row[7],
+        "map_style": row[8],
+        "environment": attrs.get("environment", "outdoors"),
+        "exits": {},
+    }
+
+
+async def _load_room_exits(session: AsyncSession, rooms: list[dict[str, Any]]) -> None:
+    """
+    Load exits for rooms and attach them to room dictionaries.
+
+    Args:
+        session: Database session
+        rooms: List of room dictionaries to populate with exits
+    """
+    if not rooms:
+        return
+
+    stable_ids = [r["stable_id"] for r in rooms]
+    exits_query = text("""
+        SELECT r1.stable_id as from_stable_id, r2.stable_id as to_stable_id, rl.direction
+        FROM room_links rl
+        JOIN rooms r1 ON rl.from_room_id = r1.id
+        JOIN rooms r2 ON rl.to_room_id = r2.id
+        WHERE r1.stable_id = ANY(:stable_ids)
+    """)
+    exits_result = await session.execute(exits_query, {"stable_ids": stable_ids})
+
+    exits_by_room: dict[str, dict[str, str]] = {}
+    for row in exits_result:
+        from_stable = row[0]
+        to_stable = row[1]
+        direction = row[2]
+        if from_stable not in exits_by_room:
+            exits_by_room[from_stable] = {}
+        exits_by_room[from_stable][direction] = to_stable
+
+    for room in rooms:
+        room["exits"] = exits_by_room.get(room["stable_id"], {})
+
+
+async def _load_rooms_with_coordinates(
     session: AsyncSession, plane: str, zone: str, sub_zone: str | None
 ) -> list[dict[str, Any]]:
     """
@@ -306,9 +447,7 @@ async def _load_rooms_with_coordinates(  # pylint: disable=too-many-locals  # Re
     Returns:
         List of room dictionaries with coordinates and exits
     """
-    zone_pattern = f"{plane}_{zone}"
-    if sub_zone:
-        zone_pattern = f"{zone_pattern}_{sub_zone}"
+    zone_pattern = _build_zone_pattern(plane, zone, sub_zone)
 
     query = text("""
         SELECT
@@ -328,48 +467,9 @@ async def _load_rooms_with_coordinates(  # pylint: disable=too-many-locals  # Re
     """)
 
     result = await session.execute(query, {"pattern": zone_pattern})
-    rooms = []
-    for row in result:
-        attrs = row[3] if row[3] else {}
-        room_dict = {
-            "id": row[1],  # Use stable_id as id
-            "uuid": str(row[0]),
-            "stable_id": row[1],
-            "name": row[2],
-            "attributes": attrs,
-            "map_x": float(row[4]) if row[4] is not None else None,
-            "map_y": float(row[5]) if row[5] is not None else None,
-            "map_origin_zone": bool(row[6]) if row[6] is not None else False,
-            "map_symbol": row[7],
-            "map_style": row[8],
-            "environment": attrs.get("environment", "outdoors"),
-            "exits": {},
-        }
-        rooms.append(room_dict)
+    rooms = [_build_room_dict(row) for row in result]
 
-    # Load exits
-    if rooms:
-        stable_ids = [r["stable_id"] for r in rooms]
-        exits_query = text("""
-            SELECT r1.stable_id as from_stable_id, r2.stable_id as to_stable_id, rl.direction
-            FROM room_links rl
-            JOIN rooms r1 ON rl.from_room_id = r1.id
-            JOIN rooms r2 ON rl.to_room_id = r2.id
-            WHERE r1.stable_id = ANY(:stable_ids)
-        """)
-        exits_result = await session.execute(exits_query, {"stable_ids": stable_ids})
-
-        exits_by_room: dict[str, dict[str, str]] = {}
-        for row in exits_result:
-            from_stable = row[0]
-            to_stable = row[1]
-            direction = row[2]
-            if from_stable not in exits_by_room:
-                exits_by_room[from_stable] = {}
-            exits_by_room[from_stable][direction] = to_stable
-
-        for room in rooms:
-            room["exits"] = exits_by_room.get(room["stable_id"], {})
+    await _load_room_exits(session, rooms)
 
     return rooms
 

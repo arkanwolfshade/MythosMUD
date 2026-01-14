@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Request
 
 from ..auth.users import get_current_user
 from ..dependencies import AsyncPersistenceDep, ConnectionManagerDep
@@ -17,18 +17,12 @@ from ..exceptions import LoggedHTTPException
 from ..models.container import ContainerComponent
 from ..models.user import User
 from ..schemas.container import ContainerLootAllResponse
-from ..services.container_service import (
-    ContainerAccessDeniedError,
-    ContainerCapacityError,
-    ContainerLockedError,
-    ContainerNotFoundError,
-)
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.audit_logger import audit_logger
 from .container_events import emit_loot_all_event
+from .container_exception_handlers import handle_loot_all_exceptions
 from .container_helpers import (
     apply_rate_limiting_for_loot_all,
-    create_error_context,
     get_container_and_player_for_loot_all,
     get_container_service,
     get_player_id_from_user,
@@ -134,60 +128,14 @@ async def loot_all_items(
             items_looted=items_looted,
         )
 
-    except ContainerNotFoundError as e:
-        context = create_error_context(
-            request, current_user, container_id=str(request_data.container_id), operation="loot_all"
-        )
-        raise LoggedHTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Container not found",
-            context=context,
-        ) from e
-
-    except ContainerLockedError as e:
-        context = create_error_context(
-            request, current_user, container_id=str(request_data.container_id), operation="loot_all"
-        )
-        raise LoggedHTTPException(
-            status_code=status.HTTP_423_LOCKED,
-            detail="Container is locked",
-            context=context,
-        ) from e
-
-    except ContainerAccessDeniedError as e:
-        context = create_error_context(
-            request, current_user, container_id=str(request_data.container_id), operation="loot_all"
-        )
-        raise LoggedHTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Access denied",
-            context=context,
-        ) from e
-
-    except ContainerCapacityError as e:
-        context = create_error_context(
-            request, current_user, container_id=str(request_data.container_id), operation="loot_all"
-        )
-        raise LoggedHTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="Player inventory capacity exceeded",
-            context=context,
-        ) from e
-
     except (LoggedHTTPException, HTTPException):
         # Re-raise HTTP exceptions (including LoggedHTTPException) to let FastAPI handle them
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Container operation errors unpredictable, must create error context
-        context = create_error_context(
-            request, current_user, container_id=str(request_data.container_id), operation="loot_all"
-        )
-        # Use error=str(e) instead of exc_info=True to avoid Unicode encoding issues on Windows
-        logger.error("Unexpected error in loot-all", error=str(e), **context.to_dict())
-        raise LoggedHTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error",
-            context=context,
-        ) from e
+        handle_loot_all_exceptions(e, request, current_user, request_data.container_id)
+        raise AssertionError(
+            "handle_loot_all_exceptions should always raise"
+        ) from e  # Reason: Exception handler always raises, but mypy needs explicit return path
 
 
 def register_loot_endpoints(router: APIRouter) -> None:

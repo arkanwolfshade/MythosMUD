@@ -5,6 +5,8 @@ This module handles all room-related business logic including
 room information retrieval and room state management.
 """
 
+# pylint: disable=too-many-lines  # Reason: Room service module requires extensive functionality for room retrieval, filtering, exploration tracking, coordinate management, and all room-related business logic
+
 import uuid
 from collections.abc import Sequence
 from typing import TYPE_CHECKING, Any, cast

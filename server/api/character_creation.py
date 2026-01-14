@@ -188,7 +188,7 @@ def _roll_stats_with_class(
 
 
 @player_router.post("/roll-stats", response_model=RollStatsResponse)
-async def roll_character_stats(  # pylint: disable=too-many-arguments  # Reason: FastAPI endpoint requires request, user, and service dependencies; max_attempts is a configurable parameter
+async def roll_character_stats(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: FastAPI endpoint requires request, user, and service dependencies; max_attempts is a configurable parameter
     request_data: RollStatsRequest,
     request: Request,
     max_attempts: int = 50,  # Increased from 10 to improve success rate for profession requirements

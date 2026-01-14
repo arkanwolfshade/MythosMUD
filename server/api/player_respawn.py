@@ -25,6 +25,58 @@ if TYPE_CHECKING:
 logger = get_logger(__name__)
 
 
+def _handle_respawn_validation_error(e: ValidationError, request: Request, current_user: User) -> None:
+    """
+    Convert ValidationError to appropriate HTTPException for respawn.
+
+    Args:
+        e: ValidationError exception
+        request: FastAPI Request object
+        current_user: Current authenticated user
+
+    Raises:
+        LoggedHTTPException: With appropriate status code based on error message
+    """
+    context = create_error_context(request, current_user)
+    error_message = str(e).lower()
+
+    if "not found" in error_message:
+        raise LoggedHTTPException(status_code=404, detail="Player not found", context=context) from e
+    if "must be dead" in error_message:
+        raise LoggedHTTPException(
+            status_code=403,
+            detail="Player must be dead to respawn (DP must be -10 or below)",
+            context=context,
+        ) from e
+    raise LoggedHTTPException(status_code=500, detail="Failed to respawn player", context=context) from e
+
+
+def _handle_delirium_respawn_validation_error(e: ValidationError, request: Request, current_user: User) -> None:
+    """
+    Convert ValidationError to appropriate HTTPException for delirium respawn.
+
+    Args:
+        e: ValidationError exception
+        request: FastAPI Request object
+        current_user: Current authenticated user
+
+    Raises:
+        LoggedHTTPException: With appropriate status code based on error message
+    """
+    context = create_error_context(request, current_user)
+    error_message = str(e).lower()
+
+    if "not found" in error_message:
+        raise LoggedHTTPException(status_code=404, detail="Player not found", context=context) from e
+    if "must be delirious" in error_message or "lucidity" in error_message:
+        raise LoggedHTTPException(
+            status_code=403,
+            detail="Player must be delirious to respawn (lucidity must be -10 or below)",
+            context=context,
+        ) from e
+    raise LoggedHTTPException(status_code=500, detail="Failed to respawn player from delirium", context=context) from e
+
+
 @player_router.post("/respawn-delirium", response_model=RespawnResponse)
 async def respawn_player_from_delirium(
     request: Request,
@@ -65,19 +117,7 @@ async def respawn_player_from_delirium(
                 )
                 return RespawnResponse(**result)
             except ValidationError as e:
-                # Convert ValidationError to appropriate HTTPException
-                context = create_error_context(request, current_user)
-                if "not found" in str(e).lower():
-                    raise LoggedHTTPException(status_code=404, detail="Player not found", context=context) from e
-                if "must be delirious" in str(e).lower() or "lucidity" in str(e).lower():
-                    raise LoggedHTTPException(
-                        status_code=403,
-                        detail="Player must be delirious to respawn (lucidity must be -10 or below)",
-                        context=context,
-                    ) from e
-                raise LoggedHTTPException(
-                    status_code=500, detail="Failed to respawn player from delirium", context=context
-                ) from e
+                _handle_delirium_respawn_validation_error(e, request, current_user)
             except LoggedHTTPException:
                 raise
             except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Respawn errors unpredictable, must create error context
@@ -154,17 +194,7 @@ async def respawn_player(
                 )
                 return RespawnResponse(**result)
             except ValidationError as e:
-                # Convert ValidationError to appropriate HTTPException
-                context = create_error_context(request, current_user)
-                if "not found" in str(e).lower():
-                    raise LoggedHTTPException(status_code=404, detail="Player not found", context=context) from e
-                if "must be dead" in str(e).lower():
-                    raise LoggedHTTPException(
-                        status_code=403,
-                        detail="Player must be dead to respawn (DP must be -10 or below)",
-                        context=context,
-                    ) from e
-                raise LoggedHTTPException(status_code=500, detail="Failed to respawn player", context=context) from e
+                _handle_respawn_validation_error(e, request, current_user)
             except LoggedHTTPException:
                 raise
             except Exception as e:

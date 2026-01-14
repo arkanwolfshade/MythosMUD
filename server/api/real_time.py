@@ -72,31 +72,71 @@ async def _validate_and_accept_websocket(websocket: WebSocket, connection_manage
     return True
 
 
+def _extract_bearer_token(parts: list[str]) -> str | None:
+    """
+    Extract bearer token from parsed subprotocol parts.
+
+    If 'bearer' marker is present, prefer the next token-like value.
+    Otherwise, use the last part.
+
+    Args:
+        parts: List of parsed subprotocol parts
+
+    Returns:
+        Token string if found, None otherwise
+    """
+    if "bearer" in [p.lower() for p in parts]:
+        for p in parts:
+            if p.lower() == "bearer":
+                continue
+            if p:
+                return p
+    elif parts:
+        return parts[-1]
+    return None
+
+
+def _parse_subprotocol_token(subproto_header: str) -> str | None:
+    """
+    Parse token from WebSocket subprotocol header.
+
+    Example formats: "bearer, <token>" or just "<token>"
+
+    Args:
+        subproto_header: The sec-websocket-protocol header value
+
+    Returns:
+        Token string if found, None otherwise
+    """
+    parts = [p.strip() for p in subproto_header.split(",") if p and p.strip()]
+    return _extract_bearer_token(parts)
+
+
 def _parse_websocket_token(websocket: WebSocket, logger: Any) -> str | None:
     """
     Parse token from WebSocket subprotocol (preferred) or query params (fallback).
-    Returns the token string or None if not found.
+
+    Args:
+        websocket: WebSocket connection object
+        logger: Logger instance for error reporting
+
+    Returns:
+        Token string if found, None otherwise
     """
-    # Accept token via WebSocket subprotocol (preferred) or query token (fallback)
+    # Try query parameter first (fallback)
     token = websocket.query_params.get("token")
+
+    # Try subprotocol header (preferred method)
     try:
         subproto_header = websocket.headers.get("sec-websocket-protocol")
         if subproto_header:
-            # Example formats observed: "bearer, <token>" or just "<token>"
-            parts = [p.strip() for p in subproto_header.split(",") if p and p.strip()]
-            # If 'bearer' marker present, prefer the next token-like value; else use the last part
-            if "bearer" in [p.lower() for p in parts]:
-                for p in parts:
-                    if p.lower() == "bearer":
-                        continue
-                    if p:
-                        token = p
-                        break
-            elif parts:
-                token = parts[-1]
+            subproto_token = _parse_subprotocol_token(subproto_header)
+            if subproto_token:
+                token = subproto_token
     except (ValueError, TypeError, AttributeError) as e:
         logger.error("Error parsing Authorization header", error=str(e), error_type=type(e).__name__)
         # Non-fatal: fall back to query param token
+
     return token
 
 
@@ -341,6 +381,63 @@ async def get_connection_statistics(request: Request) -> ConnectionStatisticsRes
     return statistics
 
 
+async def _validate_websocket_connection_manager(websocket: WebSocket) -> Any | None:
+    """
+    Validate and resolve connection manager for WebSocket.
+
+    Args:
+        websocket: WebSocket connection object
+
+    Returns:
+        Connection manager instance or None if unavailable
+    """
+    websocket_app = getattr(websocket, "app", None)
+    websocket_state = getattr(websocket_app, "state", None)
+    connection_manager = _resolve_connection_manager_from_state(websocket_state)
+    if connection_manager is None or getattr(connection_manager, "persistence", None) is None:
+        await websocket.accept()
+        await websocket.send_json({"type": "error", "message": "Service temporarily unavailable"})
+        await websocket.close(code=1013)
+        return None
+    return connection_manager
+
+
+async def _resolve_player_id_from_path_or_token(player_id: str, token: str | None) -> uuid.UUID | None:
+    """
+    Resolve player ID from path parameter or token.
+
+    Args:
+        player_id: Player ID from path parameter
+        token: JWT token from query parameters
+
+    Returns:
+        Resolved player UUID or None if resolution fails
+    """
+    # Try to convert path parameter player_id to UUID
+    try:
+        return uuid.UUID(player_id)
+    except (ValueError, AttributeError, TypeError):
+        # If conversion fails, try to resolve from token
+        pass
+
+    # Try to resolve from token
+    if token:
+        payload = decode_access_token(token)
+        if payload and "sub" in payload:
+            user_id = str(payload["sub"]).strip()
+            from ..async_persistence import get_async_persistence
+
+            async_persistence = get_async_persistence()
+            player = await async_persistence.get_player_by_user_id(user_id)
+            if player:
+                # player.player_id is a SQLAlchemy Column[str] but returns UUID at runtime
+                # Convert to UUID for type safety - always convert to string first
+                player_id_value = player.player_id
+                return uuid.UUID(str(player_id_value))
+
+    return None
+
+
 @realtime_router.websocket("/ws/{player_id}")
 async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None:  # pylint: disable=too-many-locals  # Reason: WebSocket endpoint requires many intermediate variables for connection management
     """
@@ -362,41 +459,17 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None
     )
 
     try:
-        websocket_app = getattr(websocket, "app", None)
-        websocket_state = getattr(websocket_app, "state", None)
-        connection_manager = _resolve_connection_manager_from_state(websocket_state)
-        if connection_manager is None or getattr(connection_manager, "persistence", None) is None:
-            await websocket.accept()
-            await websocket.send_json({"type": "error", "message": "Service temporarily unavailable"})
-            await websocket.close(code=1013)
+        connection_manager = await _validate_websocket_connection_manager(websocket)
+        if connection_manager is None:
             return
 
         token = websocket.query_params.get("token")
-        # Convert path parameter player_id (str) to UUID
-        resolved_player_id: uuid.UUID | None = None
-        try:
-            resolved_player_id = uuid.UUID(player_id)
-        except (ValueError, AttributeError, TypeError):
-            # If conversion fails, try to resolve from token
-            pass
+        resolved_player_id = await _resolve_player_id_from_path_or_token(player_id, token)
 
-        payload = decode_access_token(token)
-        if payload and "sub" in payload:
-            user_id = str(payload["sub"]).strip()
-            from ..async_persistence import get_async_persistence
-
-            async_persistence = get_async_persistence()
-            player = await async_persistence.get_player_by_user_id(user_id)
-            if player:
-                # player.player_id is a SQLAlchemy Column[str] but returns UUID at runtime
-                # Convert to UUID for type safety - always convert to string first
-                player_id_value = player.player_id
-                resolved_player_id = uuid.UUID(str(player_id_value))
-
-        # resolved_player_id needs to be UUID for handle_websocket_connection
         if not resolved_player_id:
             context = create_context_from_websocket(websocket)
             raise LoggedHTTPException(status_code=401, detail="Unable to resolve player ID", context=context)
+
         await handle_websocket_connection(
             websocket, resolved_player_id, session_id, connection_manager=connection_manager
         )
