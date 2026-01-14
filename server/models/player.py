@@ -11,7 +11,7 @@ import json
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, cast
 
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Text, event, text
+from sqlalchemy import BigInteger, Boolean, Column, DateTime, ForeignKey, Integer, String, Text, event, text
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.ext.mutable import MutableDict, MutableList
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -107,7 +107,7 @@ class Player(Base):
     )
 
     # Profession - add index for queries filtering by profession
-    profession_id: Mapped[int] = mapped_column(Integer(), default=0, nullable=False, index=True)
+    profession_id: Mapped[int] = mapped_column(BigInteger(), default=0, nullable=False, index=True)
 
     # MULTI-CHARACTER: Soft deletion support
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, index=True)

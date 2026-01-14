@@ -14,6 +14,7 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
 from sqlalchemy import (
+    BigInteger,
     DateTime,
     Float,
     ForeignKey,
@@ -147,7 +148,7 @@ class ItemComponentState(Base):
 
     __tablename__ = "item_component_states"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     item_instance_id: Mapped[str] = mapped_column(
         String(64),
         ForeignKey("item_instances.item_instance_id", ondelete="CASCADE"),

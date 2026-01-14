@@ -13,6 +13,7 @@ from enum import Enum
 from typing import Any, cast
 
 from sqlalchemy import (
+    BigInteger,
     Boolean,
     CheckConstraint,
     Column,
@@ -61,7 +62,7 @@ class NPCDefinition(Base):
     )
 
     # Primary key
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
 
     # Basic information
     name = Column(String(100), nullable=False, index=True)
@@ -165,7 +166,7 @@ class NPCSpawnRule(Base):
     __tablename__ = "npc_spawn_rules"
 
     # Primary key
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
 
     # Foreign key to NPC definition
     npc_definition_id = Column(
@@ -298,11 +299,11 @@ class NPCRelationship(Base):
     )
 
     # Primary key
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
 
     # Foreign keys to NPC definitions
-    npc_id_1 = Column(Integer, ForeignKey("npc_definitions.id", ondelete="CASCADE"), nullable=False)
-    npc_id_2 = Column(Integer, ForeignKey("npc_definitions.id", ondelete="CASCADE"), nullable=False)
+    npc_id_1 = Column(BigInteger, ForeignKey("npc_definitions.id", ondelete="CASCADE"), nullable=False)
+    npc_id_2 = Column(BigInteger, ForeignKey("npc_definitions.id", ondelete="CASCADE"), nullable=False)
 
     # Relationship information
     relationship_type = Column(String(20), nullable=False)

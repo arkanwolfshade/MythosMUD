@@ -10,7 +10,7 @@ including requirements, effects, and availability status.
 import json
 from typing import Any, cast
 
-from sqlalchemy import Boolean, Column, Index, Integer, String, Text
+from sqlalchemy import BigInteger, Boolean, Column, Index, String, Text
 from sqlalchemy.orm import DeclarativeBase
 
 from ..metadata import metadata
@@ -37,7 +37,7 @@ class Profession(Base):
     )
 
     # Primary key
-    id = Column(Integer, primary_key=True)
+    id = Column(BigInteger, primary_key=True)
 
     # Profession information
     name = Column(String(length=50), unique=True, nullable=False)

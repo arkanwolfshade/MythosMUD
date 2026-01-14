@@ -1,21 +1,22 @@
 -- Create Professions Table DDL Script
 -- This script creates the professions table and related indexes for the profession system
 -- Create the professions table
-CREATE TABLE IF NOT EXISTS professions (
-    id INTEGER PRIMARY KEY,
-    name TEXT NOT NULL UNIQUE,
-    description TEXT NOT NULL,
-    flavor_text TEXT NOT NULL,
-    stat_requirements TEXT NOT NULL,
+create table if not exists professions (
+    id bigint generated always as identity primary key,
+    name text not null unique,
+    description text not null,
+    flavor_text text not null,
+    stat_requirements text not null,
     -- JSON: {"strength": 12, "intelligence": 50}
-    mechanical_effects TEXT NOT NULL,
+    mechanical_effects text not null,
     -- JSON: future bonuses/penalties
-    is_available BOOLEAN NOT NULL DEFAULT 1
+    is_available boolean not null default true
 );
 -- Create index for efficient filtering by availability
-CREATE INDEX IF NOT EXISTS idx_professions_available ON professions(is_available);
+create index if not exists idx_professions_available on professions(is_available);
 -- Insert MVP professions (Tramp and Gutter Rat)
-INSERT INTO professions (
+-- Note: Since id is now identity, we need to use OVERRIDING SYSTEM VALUE
+insert into professions (
         id,
         name,
         description,
@@ -23,7 +24,8 @@ INSERT INTO professions (
         stat_requirements,
         mechanical_effects
     )
-VALUES (
+overriding system value
+values (
         0,
         'Tramp',
         'A wandering soul with no fixed abode',
@@ -40,10 +42,20 @@ VALUES (
         '{}'
     );
 -- Add profession_id column to players table
-ALTER TABLE players
-ADD COLUMN profession_id INTEGER NOT NULL DEFAULT 0;
+alter table players
+add column if not exists profession_id bigint not null default 0;
 -- Add foreign key constraint after seeding professions
-ALTER TABLE players
-ADD CONSTRAINT fk_players_profession FOREIGN KEY (profession_id) REFERENCES professions(id);
+do $$
+begin
+    if not exists (
+        select 1
+        from information_schema.table_constraints
+        where constraint_name = 'fk_players_profession'
+        and table_name = 'players'
+    ) then
+        alter table players
+        add constraint fk_players_profession foreign key (profession_id) references professions(id);
+    end if;
+end $$;
 -- Create index on players.profession_id for efficient lookups
-CREATE INDEX IF NOT EXISTS idx_players_profession_id ON players(profession_id);
+create index if not exists idx_players_profession_id on players(profession_id);
