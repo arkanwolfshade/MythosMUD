@@ -414,10 +414,36 @@ class LucidityService:
         """Calculate max_lcd from player's education stat."""
         max_lcd = 100  # Default fallback
         try:
-            if hasattr(record, "player") and record.player:
-                stats = record.player.get_stats()
-                max_lcd = stats.get("max_lucidity") or stats.get("education") or 100
-            else:
+            # Try to safely check if player relationship is already loaded
+            # Use inspect to check relationship state without triggering lazy load
+            from sqlalchemy import inspect as sqlalchemy_inspect
+
+            player_obj = None
+            try:
+                insp = sqlalchemy_inspect(record)
+                if hasattr(insp, "attrs") and "player" in insp.attrs:
+                    attr_state = insp.attrs.player
+                    # Check if relationship is loaded using the state's loaded_value or value attribute
+                    # loaded_value is set when relationship is eagerly loaded
+                    if hasattr(attr_state, "loaded_value") and attr_state.loaded_value is not None:
+                        player_obj = attr_state.loaded_value
+                    elif hasattr(attr_state, "value") and attr_state.value is not None:
+                        player_obj = attr_state.value
+            except Exception:
+                # If inspect fails (e.g., on new records), fall through to explicit load
+                pass
+
+            # Verify player_obj is actually a Player instance (not a LoaderCallableStatus)
+            if player_obj is not None and hasattr(player_obj, "get_stats"):
+                try:
+                    stats = player_obj.get_stats()
+                    max_lcd = stats.get("max_lucidity") or stats.get("education") or 100
+                except AttributeError:
+                    # player_obj is not actually a Player (e.g., LoaderCallableStatus) - fall through to explicit load
+                    player_obj = None  # Force explicit load path
+
+            if player_obj is None:
+                # Player relationship not loaded or inspect failed - use explicit async load
                 from ..models.player import Player
 
                 player = await self._session.get(Player, player_id)

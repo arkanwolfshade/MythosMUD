@@ -15,6 +15,8 @@ from contextlib import contextmanager
 from dataclasses import dataclass, field
 from typing import Any
 
+import numpy as np
+
 from server.structured_logging.enhanced_logging_config import get_logger, log_with_context
 
 logger = get_logger(__name__)
@@ -122,18 +124,19 @@ class PerformanceMonitor:
             return None
 
         metrics = self.operation_stats[operation]
-        durations = [m.duration_ms for m in metrics]
-        successes = [m.success for m in metrics]
+        # Convert to NumPy arrays with explicit dtype for efficient statistical operations
+        durations = np.array([m.duration_ms for m in metrics], dtype=np.float32)
+        successes = np.array([m.success for m in metrics], dtype=np.bool_)
 
         return PerformanceStats(
             operation=operation,
             count=len(metrics),
-            total_duration_ms=sum(durations),
-            avg_duration_ms=sum(durations) / len(durations),
-            min_duration_ms=min(durations),
-            max_duration_ms=max(durations),
-            success_rate=sum(successes) / len(successes) * 100,
-            error_rate=(len(successes) - sum(successes)) / len(successes) * 100,
+            total_duration_ms=float(np.sum(durations)),
+            avg_duration_ms=float(np.mean(durations)),
+            min_duration_ms=float(np.min(durations)),
+            max_duration_ms=float(np.max(durations)),
+            success_rate=float(np.mean(successes) * 100),
+            error_rate=float((1 - np.mean(successes)) * 100),
         )
 
     def get_all_stats(self) -> dict[str, PerformanceStats | None]:

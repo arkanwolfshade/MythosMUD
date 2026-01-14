@@ -46,6 +46,7 @@ dependencies = [
     "networkx>=3.6.1", # Graph analysis for alias cycle detection (CRITICAL-3 fix)
     "python-statemachine>=2.5.0",
     "prometheus-client>=0.23.1",
+    "numpy>=2.4.1", # Numerical computing for performance monitoring and statistical calculations
 ]
 
 [project.optional-dependencies]
@@ -55,7 +56,6 @@ dev = [
     "pytest-xdist>=3.8.0",  # Parallel test execution (required for -n auto in pytest.ini)
     "networkx>=3.6.1",
     "matplotlib>=3.10.8",
-    "numpy>=2.4.0",
     "pytest-asyncio>=1.3.0",
     "debugpy>=1.8.19",
     "ruff>=0.14.10",
