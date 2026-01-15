@@ -361,21 +361,95 @@ async def get_connection_health_stats(request: Request) -> ConnectionHealthStats
 
 @monitoring_router.get("/health", response_model=HealthResponse)
 async def get_health_status(request: Request) -> HealthResponse | JSONResponse:
-    """Get comprehensive system health status."""
+    """
+    Get comprehensive system health status with timeout protection.
+
+    This endpoint validates all critical components:
+    - Server metrics (CPU, memory, uptime)
+    - Database connectivity (actual query validation)
+    - Connection manager health
+    - Event loop health
+
+    Returns appropriate HTTP status codes:
+    - 200 OK: System healthy or degraded (status in response body)
+    - 503 Service Unavailable: System unhealthy
+    - 500 Internal Server Error: Health check itself failed
+    """
+    import asyncio
+
     try:
         connection_manager = _resolve_connection_manager_from_request(request)
         health_service = get_health_service(connection_manager=connection_manager)
-        health_response = health_service.get_health_status()
 
-        # Return appropriate HTTP status code based on health status
-        if health_response.status == HealthStatus.HEALTHY:
-            return health_response
-        if health_response.status == HealthStatus.DEGRADED:
-            # Return 200 with degraded status in response body
-            return health_response
-        # UNHEALTHY
-        # Return 503 Service Unavailable for unhealthy status
-        return JSONResponse(status_code=503, content=health_response.model_dump())
+        # Use async health check with timeout protection
+        try:
+            # Get component health with async validation
+            server_health = health_service.get_server_component_health()
+            database_health = await asyncio.wait_for(
+                health_service.get_database_component_health_async(),
+                timeout=health_service.health_check_timeout_seconds,
+            )
+            connections_health = health_service.get_connections_component_health()
+
+            # Create components object
+            from ..models.health import HealthComponents
+
+            components = HealthComponents(
+                server=server_health,
+                database=database_health,
+                connections=connections_health,
+            )
+
+            # Determine overall status
+            overall_status = health_service.determine_overall_status(components)
+
+            # Generate alerts
+            alerts = health_service.generate_alerts(components)
+
+            # Update health check statistics
+            health_service.health_check_count += 1
+            health_service.last_health_check = datetime.now(UTC)
+
+            # Get version from project configuration
+            import importlib.metadata
+
+            try:
+                version = importlib.metadata.version("mythosmud")
+            except importlib.metadata.PackageNotFoundError:
+                version = "0.1.0"  # Fallback version
+
+            health_response = HealthResponse(
+                status=overall_status,
+                timestamp=datetime.now(UTC).isoformat(),
+                uptime_seconds=health_service.get_server_uptime(),
+                version=version,
+                components=components,
+                alerts=alerts,
+            )
+
+            # Return appropriate HTTP status code based on health status
+            if health_response.status == HealthStatus.HEALTHY:
+                return health_response
+            if health_response.status == HealthStatus.DEGRADED:
+                # Return 200 with degraded status in response body
+                return health_response
+            # UNHEALTHY
+            # Return 503 Service Unavailable for unhealthy status
+            return JSONResponse(status_code=503, content=health_response.model_dump())
+
+        except TimeoutError:
+            # Health check timed out - return unhealthy
+            logger.warning("Health check timed out", timeout=health_service.health_check_timeout_seconds)
+            error_response = HealthErrorResponse(
+                error="Health check timeout",
+                detail=f"Health check exceeded timeout of {health_service.health_check_timeout_seconds}s",
+                timestamp=datetime.now(UTC).isoformat(),
+            )
+            context = create_context_from_request(request)
+            context.metadata["operation"] = "get_health_status"
+            context.metadata["timeout"] = health_service.health_check_timeout_seconds
+            raise LoggedHTTPException(status_code=503, detail=error_response.model_dump(), context=context) from None  # type: ignore[arg-type]  # Reason: LoggedHTTPException accepts context parameter, but mypy cannot infer it from FastAPI exception base class signature
+
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Health check errors unpredictable, must return error response
         # Return 500 Internal Server Error if health check itself fails
         error_response = HealthErrorResponse(

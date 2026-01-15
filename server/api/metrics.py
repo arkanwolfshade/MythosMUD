@@ -57,11 +57,14 @@ def verify_admin_access(request: Request, current_user: User | None = Depends(ge
     is_admin = current_user.is_admin or current_user.is_superuser
 
     if not is_admin:
-        logger.warning("Non-admin user attempted to access metrics", username=current_user.username)
+        # Create context before logging to ensure full context in logs
         context = create_context_from_request(request)
         context.user_id = str(current_user.id)
         context.metadata["operation"] = "verify_admin_access"
         context.metadata["username"] = current_user.username
+        logger.warning(
+            "Non-admin user attempted to access metrics", username=current_user.username, context=context.to_dict()
+        )
         raise LoggedHTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="Admin access required for metrics", context=context
         )
@@ -289,9 +292,9 @@ async def reset_circuit_breaker(
         ) from e
 
 
-def _load_dlq_message(dlq_path) -> dict[str, Any]:
+async def _load_dlq_message(dlq_path) -> dict[str, Any]:
     """
-    Load and validate DLQ message data from file.
+    Load and validate DLQ message data from file (async version using aiofiles).
 
     Args:
         dlq_path: Path to the DLQ file
@@ -304,11 +307,14 @@ def _load_dlq_message(dlq_path) -> dict[str, Any]:
     """
     import json
 
+    import aiofiles  # type: ignore[import-untyped]  # Reason: types-aiofiles stubs installed but may not be resolved in pre-commit mypy environment
+
     if not dlq_path.exists():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"DLQ file not found: {dlq_path}")
 
-    with open(dlq_path, encoding="utf-8") as f:
-        dlq_entry = json.load(f)
+    async with aiofiles.open(dlq_path, encoding="utf-8") as f:
+        content = await f.read()
+        dlq_entry = json.loads(content)
 
     # DeadLetterQueue stores entries via DeadLetterMessage.to_dict(),
     # where the original message is under the "data" key (not "message").
@@ -421,7 +427,7 @@ async def replay_dlq_message(
     try:
         nats_message_handler = _get_nats_handler()
         dlq_path = nats_message_handler.dead_letter_queue.storage_dir / filepath
-        message_data = _load_dlq_message(dlq_path)
+        message_data = await _load_dlq_message(dlq_path)
 
         # Attempt to replay message
         try:

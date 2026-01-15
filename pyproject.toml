@@ -46,6 +46,7 @@ dependencies = [
     "python-statemachine>=2.5.0",
     "prometheus-client>=0.23.1",
     "numpy>=2.4.1", # Numerical computing for performance monitoring and statistical calculations
+    "aiofiles>=24.1.0", # Async file I/O to prevent blocking the event loop
 ]
 
 [project.optional-dependencies]

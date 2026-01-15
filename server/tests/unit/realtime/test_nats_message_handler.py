@@ -271,12 +271,12 @@ async def test_handle_nats_message_dlq_on_final_failure(nats_message_handler):
         "content": "Hello",
     }
     nats_message_handler.circuit_breaker.call = AsyncMock(side_effect=NATSError("Unhandled error"))
-    nats_message_handler.dead_letter_queue.enqueue = MagicMock()
+    nats_message_handler.dead_letter_queue.enqueue_async = AsyncMock()
     nats_message_handler.metrics.record_message_failed = MagicMock()
     with patch("server.realtime.nats_message_handler.validate_message", return_value=message_data):
         await nats_message_handler._handle_nats_message(message_data)
         # Should add to DLQ on unhandled error
-        nats_message_handler.dead_letter_queue.enqueue.assert_called_once()
+        nats_message_handler.dead_letter_queue.enqueue_async.assert_awaited_once()
 
 
 @pytest.mark.asyncio

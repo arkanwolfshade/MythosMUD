@@ -133,8 +133,8 @@ def _setup_console_handler(
     backup_count: int,
     player_service: Any | None,
     log_level: str,
-    _WinSafeHandler: type[RotatingFileHandler],
-    _BaseHandler: type[RotatingFileHandler],
+    win_safe_handler: type[RotatingFileHandler],  # pylint: disable=invalid-name  # Reason: Parameter name changed from _WinSafeHandler to follow snake_case, but kept descriptive name
+    base_handler: type[RotatingFileHandler],  # pylint: disable=invalid-name  # Reason: Parameter name changed from _BaseHandler to follow snake_case, but kept descriptive name
     enable_async: bool,
     log_queue: queue.Queue[logging.LogRecord] | None,
     root_logger: logging.Logger,
@@ -146,14 +146,22 @@ def _setup_console_handler(
         Console handler created
     """
     console_log_path = env_log_dir / "console.log"
-    handler_class = _BaseHandler
+    handler_class = base_handler
     try:
         if sys.platform == "win32":
             # Windows-safe handler also needs directory safety
-            class SafeWinHandlerConsole(_WinSafeHandler):  # type: ignore[misc, valid-type]  # Reason: Dynamic class creation inside conditional block, mypy cannot validate type compatibility at definition time
+            class SafeWinHandlerConsole(win_safe_handler):  # type: ignore[misc, valid-type]  # Reason: Dynamic class creation inside conditional block, mypy cannot validate type compatibility at definition time
                 """Windows-safe rotating file handler with directory safety for console logs."""
 
-                def shouldRollover(self, record):  # noqa: N802  # Reason: Method name required by parent class logging.handlers.RotatingFileHandler, cannot change to follow PEP8 naming
+                def shouldRollover(self, record):  # noqa: N802  # pylint: disable=invalid-name  # Reason: Method name required by parent class logging.handlers.RotatingFileHandler, cannot change to follow PEP8 naming
+                    """Check if log file should roll over, ensuring directory exists first.
+
+                    Args:
+                        record: Log record to check
+
+                    Returns:
+                        bool: True if rollover should occur, False otherwise
+                    """
                     if self.baseFilename:
                         log_path = Path(self.baseFilename)
                         ensure_log_directory(log_path)
@@ -162,8 +170,8 @@ def _setup_console_handler(
             handler_class = SafeWinHandlerConsole
     except Exception:  # pylint: disable=broad-except  # Reason: Defensive fallback for class definition failures, must catch all exceptions to prevent logging setup from failing completely
         # Defensive fallback: if class definition fails for any reason,
-        # fall back to base handler (e.g., if _WinSafeHandler is invalid)
-        handler_class = _BaseHandler
+        # fall back to base handler (e.g., if win_safe_handler is invalid)
+        handler_class = base_handler
 
     # Ensure directory exists right before creating handler to prevent race conditions
     ensure_log_directory(console_log_path)
@@ -242,11 +250,9 @@ def _setup_async_logging_queue(handlers: list[logging.Handler]) -> None:
 
             # Start the listener in a background thread
             _queue_listener.start()
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Defensive fallback for async logging setup failures, must catch all exceptions to prevent logging setup from failing completely
             # Graceful fallback: if async logging setup fails, log error and continue
             # Application will still work with synchronous logging
-            import sys
-
             print(
                 f"Warning: Failed to set up async logging: {type(e).__name__}: {e}",
                 file=sys.stderr,
@@ -371,12 +377,10 @@ def _create_handler_for_category(
         formatter = _create_formatter(player_service)
         handler.setFormatter(formatter)
         return handler
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Defensive fallback for handler creation failures, must catch all exceptions to prevent logging setup from crashing the application
         # Graceful fallback: if handler creation fails, use NullHandler
         # This prevents logging setup failures from crashing the application
         # Log the error to stderr as a last resort
-        import sys
-
         print(
             f"Warning: Failed to create log handler for {log_path}: {type(e).__name__}: {e}",
             file=sys.stderr,
@@ -550,8 +554,8 @@ def setup_enhanced_file_logging(  # pylint: disable=too-many-locals  # Reason: F
         backup_count,
         player_service,
         log_level,
-        _WinSafeHandler,
-        _BaseHandler,
+        _WinSafeHandler,  # pylint: disable=invalid-name  # Reason: Local variable name matches imported class name for clarity
+        _BaseHandler,  # pylint: disable=invalid-name  # Reason: Local variable name matches imported class name for clarity
         enable_async,
         log_queue,
         root_logger,

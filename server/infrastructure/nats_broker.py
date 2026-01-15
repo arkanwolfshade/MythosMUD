@@ -32,7 +32,7 @@ from .message_broker import (
 logger = get_logger(__name__)
 
 
-class NATSMessageBroker:
+class NATSMessageBroker:  # pylint: disable=too-many-instance-attributes  # Reason: NATS broker requires multiple attributes for configuration, client state, subscriptions, health monitoring, and validation. All attributes are necessary for proper functionality.
     """
     NATS implementation of MessageBroker protocol.
 

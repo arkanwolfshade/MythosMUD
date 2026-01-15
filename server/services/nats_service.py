@@ -1061,7 +1061,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
                     )
 
             # Determine pool initialization status
-            if successful_connections == 0:
+            if not successful_connections:
                 # No connections succeeded, disable pool
                 self._pool_initialized = False
                 logger.error(
@@ -1346,7 +1346,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
         successful_messages = sum(len(grouped_messages[subject]) for subject in successful_groups)
         failed_messages = total_messages - successful_messages
 
-        if failed_messages == 0:
+        if not failed_messages:
             self.metrics.record_batch_flush(True, total_messages)
             logger.info(
                 "Message batch flushed successfully",

@@ -12,37 +12,65 @@ from unittest.mock import MagicMock, Mock, patch
 import pytest
 from fastapi import FastAPI
 
+from server.app.lifespan import lifespan
 from server.exceptions import LoggedHTTPException
-from server.main import enhanced_lifespan
 
 
-class TestEnhancedLifespan:
-    """Test enhanced_lifespan() context manager."""
-
-    @pytest.mark.asyncio
-    async def test_enhanced_lifespan_success(self):
-        """Test enhanced_lifespan() initializes monitoring successfully."""
-        app = FastAPI()
-        async with enhanced_lifespan(app):
-            # Should not raise
-            pass
+class TestLifespan:
+    """Test lifespan() context manager."""
 
     @pytest.mark.asyncio
-    async def test_enhanced_lifespan_shutdown(self):
-        """Test enhanced_lifespan() shuts down properly."""
+    async def test_lifespan_success(self):
+        """Test lifespan() initializes monitoring successfully."""
         app = FastAPI()
-        async with enhanced_lifespan(app):
-            pass
-        # Shutdown should complete without errors
+        # Mock all initialization functions to avoid actual service initialization
+        with (
+            patch("server.app.lifespan._initialize_enhanced_systems") as mock_init,
+            patch("server.app.lifespan._startup_application") as mock_startup,
+            patch("server.app.lifespan._shutdown_with_error_handling") as mock_shutdown,
+        ):
+            from server.container import ApplicationContainer
+
+            mock_container = MagicMock(spec=ApplicationContainer)
+            mock_startup.return_value = mock_container
+            mock_init.return_value = MagicMock()
+
+            async with lifespan(app):
+                # Should not raise
+                pass
+
+            # Verify shutdown was called
+            mock_shutdown.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_enhanced_lifespan_initialization_failure(self):
-        """Test enhanced_lifespan() handles initialization failure."""
+    async def test_lifespan_shutdown(self):
+        """Test lifespan() shuts down properly."""
+        app = FastAPI()
+        # Mock all initialization functions to avoid actual service initialization
+        with (
+            patch("server.app.lifespan._initialize_enhanced_systems") as mock_init,
+            patch("server.app.lifespan._startup_application") as mock_startup,
+            patch("server.app.lifespan._shutdown_with_error_handling") as mock_shutdown,
+        ):
+            from server.container import ApplicationContainer
+
+            mock_container = MagicMock(spec=ApplicationContainer)
+            mock_startup.return_value = mock_container
+            mock_init.return_value = MagicMock()
+
+            async with lifespan(app):
+                pass
+            # Shutdown should complete without errors
+            mock_shutdown.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_lifespan_initialization_failure(self):
+        """Test lifespan() handles initialization failure."""
         app = FastAPI()
 
-        with patch("server.main.get_performance_monitor", side_effect=RuntimeError("Init error")):
+        with patch("server.app.lifespan._initialize_enhanced_systems", side_effect=RuntimeError("Init error")):
             with pytest.raises(RuntimeError, match="Init error"):
-                async with enhanced_lifespan(app):
+                async with lifespan(app):
                     pass
 
 

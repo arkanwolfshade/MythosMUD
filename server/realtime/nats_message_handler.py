@@ -352,7 +352,7 @@ class NATSMessageHandler:
                 exc_info=True,
             )
 
-            # Add to DLQ as last resort
+            # Add to DLQ as last resort (use async version to avoid blocking)
             dlq_message = DeadLetterMessage(
                 subject=channel,
                 data=message_data,
@@ -361,7 +361,7 @@ class NATSMessageHandler:
                 retry_count=0,
                 original_headers={"reason": "unhandled_exception"},
             )
-            self.dead_letter_queue.enqueue(dlq_message)
+            await self.dead_letter_queue.enqueue_async(dlq_message)
 
             self.metrics.record_message_failed(channel, type(e).__name__)
 
@@ -401,7 +401,7 @@ class NATSMessageHandler:
                 retry_count=self.retry_handler.max_retries,
                 original_headers={"channel": channel},
             )
-            self.dead_letter_queue.enqueue(dlq_message)
+            await self.dead_letter_queue.enqueue_async(dlq_message)
 
             self.metrics.record_message_dlq(channel)
             self.metrics.record_message_failed(channel, type(result).__name__)

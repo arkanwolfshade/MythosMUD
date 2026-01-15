@@ -12,22 +12,16 @@ and chaos. This server implementation follows those ancient principles.
 """
 
 import warnings
-from collections.abc import AsyncGenerator
-from contextlib import asynccontextmanager
+from collections.abc import Callable
 
 from fastapi import Depends, FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer
 
 from .app.factory import create_app
 from .auth.users import get_current_user
 from .config import get_config
 from .middleware.correlation_middleware import CorrelationMiddleware
-from .monitoring.exception_tracker import get_exception_tracker
-from .monitoring.monitoring_dashboard import get_monitoring_dashboard
-from .monitoring.performance_monitor import get_performance_monitor
-from .structured_logging.enhanced_logging_config import get_logger, log_exception_once, setup_enhanced_logging
-from .structured_logging.log_aggregator import get_log_aggregator
+from .structured_logging.enhanced_logging_config import get_logger, setup_enhanced_logging
 
 # Suppress passlib deprecation warning about pkg_resources
 # Note: We keep passlib for fastapi-users compatibility but use our own Argon2 implementation
@@ -45,55 +39,6 @@ logger.info("Logging setup completed", environment=config.logging.environment)  
 
 # ErrorLoggingMiddleware has been replaced by ComprehensiveLoggingMiddleware
 # which provides the same functionality plus request/response logging and better organization
-
-
-@asynccontextmanager
-async def enhanced_lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:  # pylint: disable=redefined-outer-name,unused-argument  # noqa: F811  # Reason: Parameter name matches FastAPI convention, prefixed to avoid unused-argument
-    """Enhanced lifespan with comprehensive monitoring and logging."""
-    logger = get_logger("server.enhanced_main")  # pylint: disable=redefined-outer-name  # noqa: F811  # Reason: Context-specific logger instance
-    log_aggregator = None
-
-    try:
-        get_performance_monitor()
-        get_exception_tracker()
-        get_monitoring_dashboard()
-        log_aggregator = get_log_aggregator()
-
-        logger.info(
-            "Enhanced logging and monitoring systems initialized",
-            performance_monitoring=True,
-            exception_tracking=True,
-            log_aggregation=True,
-            monitoring_dashboard=True,
-        )
-
-        yield
-
-    except Exception as error:
-        log_exception_once(
-            logger,
-            "error",
-            "Failed to initialize enhanced systems",
-            exc=error,
-            lifespan_phase="startup",
-            exc_info=True,
-        )
-        raise
-    finally:
-        try:
-            if log_aggregator is not None:
-                log_aggregator.shutdown()
-                logger.info("Enhanced systems shutdown complete")
-        except Exception as error:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Lifespan cleanup must not fail, catch all errors
-            log_exception_once(
-                logger,
-                "error",
-                "Error during enhanced systems shutdown",
-                exc=error,
-                lifespan_phase="shutdown",
-                exc_info=True,
-            )
-
 
 # Handler functions moved to server/api/monitoring.py
 # These are kept for backward compatibility but are no longer used
@@ -120,57 +65,48 @@ def main() -> FastAPI:
     app = create_app()  # pylint: disable=redefined-outer-name  # noqa: F811  # Reason: Module-level app instance for main entry point
 
     # Error logging is now handled by ComprehensiveLoggingMiddleware in the factory
+    # Lifespan (including enhanced logging/monitoring) is configured in factory
 
     logger.info("MythosMUD server started successfully")
     return app
 
 
-# Create the FastAPI application
-app = create_app()
-
-# Compose lifespans: run enhanced_lifespan around the app's existing lifespan
-original_lifespan = app.router.lifespan_context
-
-
-@asynccontextmanager
-async def composed_lifespan(application: FastAPI):
-    """Compose multiple lifespan contexts for application startup/shutdown.
-
-    This function combines the enhanced logging/monitoring lifespan with
-    the factory/app lifespan (DB init, persistence binding, etc.).
-
-    Args:
-        application: The FastAPI application instance
-
-    Yields:
-        None: Control is yielded to the application
+def _create_get_app() -> Callable[[], FastAPI]:
     """
-    # Outer: enhanced logging/monitoring
-    async with enhanced_lifespan(application):
-        # Inner: factory/app lifespan (DB init, persistence binding, etc.)
-        async with original_lifespan(application):
-            yield
+    Factory function that creates the get_app function with encapsulated cache.
+
+    This closure pattern avoids global variables while maintaining lazy initialization.
+    """
+    app_instance: FastAPI | None = None
+
+    def _app_getter() -> FastAPI:
+        """
+        Get or create the FastAPI application instance.
+
+        This function provides lazy app creation for better testability and
+        uvicorn reload compatibility. The app is created on first access.
+
+        Returns:
+            FastAPI: The configured FastAPI application instance
+        """
+        nonlocal app_instance
+        if app_instance is None:
+            app_instance = create_app()
+        return app_instance
+
+    return _app_getter
 
 
-app.router.lifespan_context = composed_lifespan
+get_app = _create_get_app()
 
+
+# Create the FastAPI application for uvicorn compatibility
+# Note: This is created at module level for uvicorn's "server.main:app" reference
+# but uses lazy initialization pattern internally
+app = get_app()
+
+# Add correlation middleware (CORS is already configured in factory)
 app.add_middleware(CorrelationMiddleware, correlation_header="X-Correlation-ID")
-
-# pylint: disable=no-member  # Reason: Pydantic model fields are dynamically accessible, pylint cannot detect them statically but they exist at runtime
-cors_kwargs = {
-    "allow_origins": config.cors.allow_origins,
-    "allow_credentials": config.cors.allow_credentials,
-    "allow_methods": config.cors.allow_methods,
-    "allow_headers": config.cors.allow_headers,
-    "max_age": config.cors.max_age,
-}
-
-if config.cors.expose_headers:
-    cors_kwargs["expose_headers"] = config.cors.expose_headers
-
-# The trusted origins list keeps our gateways as secure as the wards at the Arkham Library.
-# CORSMiddleware uses **kwargs which mypy can't validate against strict Starlette signatures
-app.add_middleware(CORSMiddleware, **cors_kwargs)  # type: ignore[arg-type]  # Reason: CORSMiddleware accepts **kwargs which mypy cannot validate against strict Starlette middleware signatures, but runtime validation ensures compatibility
 
 setup_monitoring_endpoints(app)
 

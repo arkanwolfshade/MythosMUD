@@ -140,7 +140,7 @@ class SubjectValidator:
             return False
 
         components = pattern.split(".")
-        wildcard_count = sum(1 for comp in components if comp == "*" or comp == ">")
+        wildcard_count = sum(1 for comp in components if comp in ("*", ">"))
 
         # Reject patterns with too many wildcards (more than 2)
         if wildcard_count > 2:
