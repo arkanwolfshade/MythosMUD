@@ -4,6 +4,9 @@ Unit tests for WebSocket initial state.
 Tests the websocket_initial_state module functions.
 """
 
+# pylint: disable=redefined-outer-name
+# Reason: Pytest fixtures are injected as function parameters, which pylint incorrectly flags as redefining names from outer scope, this is standard pytest usage and cannot be avoided
+
 import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -266,7 +269,10 @@ async def test_add_npc_occupants_to_list_success(mock_connection_manager, mock_r
     mock_room.get_npcs.return_value = ["npc_1", "npc_2"]
 
     mock_app = MagicMock()
-    mock_app.state.npc_lifecycle_manager.active_npcs = {"npc_1": mock_npc1, "npc_2": mock_npc2}
+    mock_app.state = MagicMock()
+    mock_app.state.container = MagicMock()
+    mock_app.state.container.npc_lifecycle_manager = MagicMock()
+    mock_app.state.container.npc_lifecycle_manager.active_npcs = {"npc_1": mock_npc1, "npc_2": mock_npc2}
     mock_connection_manager.app = mock_app
 
     await add_npc_occupants_to_list(mock_room, occupant_names, canonical_room_id, mock_connection_manager)
@@ -309,7 +315,13 @@ async def test_add_npc_occupants_to_list_filters_dead_npcs(mock_connection_manag
     mock_room.get_npcs.return_value = ["npc_alive", "npc_dead"]
 
     mock_app = MagicMock()
-    mock_app.state.npc_lifecycle_manager.active_npcs = {"npc_alive": mock_npc_alive, "npc_dead": mock_npc_dead}
+    mock_app.state = MagicMock()
+    mock_app.state.container = MagicMock()
+    mock_app.state.container.npc_lifecycle_manager = MagicMock()
+    mock_app.state.container.npc_lifecycle_manager.active_npcs = {
+        "npc_alive": mock_npc_alive,
+        "npc_dead": mock_npc_dead,
+    }
     mock_connection_manager.app = mock_app
 
     await add_npc_occupants_to_list(mock_room, occupant_names, canonical_room_id, mock_connection_manager)
@@ -332,23 +344,27 @@ def test_get_event_handler_for_initial_state_from_connection_manager(mock_connec
     """Test get_event_handler_for_initial_state() gets handler from connection manager."""
     mock_event_handler = MagicMock()
     mock_app = MagicMock()
-    mock_app.state.event_handler = mock_event_handler
+    mock_app.state = MagicMock()
+    mock_app.state.container = MagicMock()
+    mock_app.state.container.real_time_event_handler = mock_event_handler
     mock_connection_manager.app = mock_app
 
     result = get_event_handler_for_initial_state(mock_connection_manager, mock_websocket)
-    assert result == mock_event_handler
+    assert result is mock_event_handler
 
 
 def test_get_event_handler_for_initial_state_from_websocket(mock_connection_manager, mock_websocket):
     """Test get_event_handler_for_initial_state() gets handler from websocket."""
     mock_event_handler = MagicMock()
     mock_app = MagicMock()
-    mock_app.state.event_handler = mock_event_handler
+    mock_app.state = MagicMock()
+    mock_app.state.container = MagicMock()
+    mock_app.state.container.real_time_event_handler = mock_event_handler
     mock_connection_manager.app = None
     mock_websocket.app = mock_app
 
     result = get_event_handler_for_initial_state(mock_connection_manager, mock_websocket)
-    assert result == mock_event_handler
+    assert result is mock_event_handler
 
 
 def test_get_event_handler_for_initial_state_not_found(mock_connection_manager, mock_websocket):

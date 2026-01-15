@@ -34,11 +34,15 @@ async def test_reconnection_cancels_grace_period():
     # Accessing protected member is necessary to mock the method used by player_connection_setup implementation
     mock_manager._send_initial_game_state = AsyncMock()  # pylint: disable=protected-access  # Reason: Accessing protected member is necessary to mock the method used by player_connection_setup implementation
     mock_manager.broadcast_to_room = AsyncMock()
-    # Set up app.state.event_handler for room occupants update
+    # Set up async_persistence for _update_player_last_active (even though it's patched, ensure it's available)
+    mock_manager.async_persistence = AsyncMock()
+    mock_manager.async_persistence.update_player_last_active = AsyncMock()
+    # Set up app.state.container.real_time_event_handler for room occupants update
     mock_manager.app = MagicMock()
     mock_manager.app.state = MagicMock()
-    mock_manager.app.state.event_handler = MagicMock()
-    mock_manager.app.state.event_handler.send_room_occupants_update = AsyncMock()
+    mock_manager.app.state.container = MagicMock()
+    mock_manager.app.state.container.real_time_event_handler = MagicMock()
+    mock_manager.app.state.container.real_time_event_handler.send_room_occupants_update = AsyncMock()
 
     with patch("server.realtime.player_connection_setup._update_player_last_active", new_callable=AsyncMock):
         with patch("server.realtime.player_connection_setup._add_player_to_room_silently", new_callable=AsyncMock):
@@ -75,11 +79,15 @@ async def test_reconnection_no_grace_period():
     # Accessing protected member is necessary to mock the method used by player_connection_setup implementation
     mock_manager._send_initial_game_state = AsyncMock()  # pylint: disable=protected-access  # Reason: Accessing protected member is necessary to mock the method used by player_connection_setup implementation
     mock_manager.broadcast_to_room = AsyncMock()
-    # Set up app.state.event_handler for room occupants update
+    # Set up async_persistence for _update_player_last_active (even though it's patched, ensure it's available)
+    mock_manager.async_persistence = AsyncMock()
+    mock_manager.async_persistence.update_player_last_active = AsyncMock()
+    # Set up app.state.container.real_time_event_handler for room occupants update
     mock_manager.app = MagicMock()
     mock_manager.app.state = MagicMock()
-    mock_manager.app.state.event_handler = MagicMock()
-    mock_manager.app.state.event_handler.send_room_occupants_update = AsyncMock()
+    mock_manager.app.state.container = MagicMock()
+    mock_manager.app.state.container.real_time_event_handler = MagicMock()
+    mock_manager.app.state.container.real_time_event_handler.send_room_occupants_update = AsyncMock()
 
     with patch("server.realtime.player_connection_setup._update_player_last_active", new_callable=AsyncMock):
         with patch("server.realtime.player_connection_setup._add_player_to_room_silently", new_callable=AsyncMock):

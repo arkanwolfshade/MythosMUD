@@ -30,6 +30,7 @@ def mock_request():
     request = MagicMock()
     request.app = MagicMock()
     request.app.state = MagicMock()
+    request.app.state.container = MagicMock()
     return request
 
 
@@ -277,9 +278,9 @@ async def test_disconnect_player_connections_error(mock_connection_manager):
 @pytest.mark.asyncio
 async def test_handle_quit_command_success(mock_request, mock_persistence, mock_player):
     """Test handle_quit_command updates last active and returns message."""
-    mock_request.app.state.persistence = mock_persistence
-    mock_persistence.get_player_by_name = MagicMock(return_value=mock_player)
-    mock_persistence.save_player = MagicMock()
+    mock_request.app.state.container.async_persistence = mock_persistence
+    mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+    mock_persistence.save_player = AsyncMock()
 
     with patch("server.commands.logout_commands.get_username_from_user", return_value="testuser"):
         result = await handle_quit_command({}, {"username": "testuser"}, mock_request, None, "TestPlayer")
@@ -303,8 +304,8 @@ async def test_handle_quit_command_no_persistence(mock_request):
 @pytest.mark.asyncio
 async def test_handle_quit_command_persistence_error(mock_request, mock_persistence):
     """Test handle_quit_command handles persistence errors gracefully."""
-    mock_request.app.state.persistence = mock_persistence
-    mock_persistence.get_player_by_name = MagicMock(side_effect=ValueError("DB error"))
+    mock_request.app.state.container.async_persistence = mock_persistence
+    mock_persistence.get_player_by_name = AsyncMock(side_effect=ValueError("DB error"))
 
     with patch("server.commands.logout_commands.get_username_from_user", return_value="testuser"):
         result = await handle_quit_command({}, {"username": "testuser"}, mock_request, None, "TestPlayer")
@@ -317,8 +318,8 @@ async def test_handle_quit_command_persistence_error(mock_request, mock_persiste
 @pytest.mark.asyncio
 async def test_handle_logout_command_success(mock_request, mock_persistence, mock_connection_manager, mock_player):
     """Test handle_logout_command performs complete logout."""
-    mock_request.app.state.persistence = mock_persistence
-    mock_request.app.state.connection_manager = mock_connection_manager
+    mock_request.app.state.container.async_persistence = mock_persistence
+    mock_request.app.state.container.connection_manager = mock_connection_manager
     mock_connection_manager.online_players = {str(mock_player.player_id): {"position": "sitting"}}
     mock_connection_manager.force_disconnect_player = AsyncMock()
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
@@ -337,8 +338,8 @@ async def test_handle_logout_command_success(mock_request, mock_persistence, moc
 @pytest.mark.asyncio
 async def test_handle_logout_command_no_player(mock_request, mock_persistence, mock_connection_manager):
     """Test handle_logout_command handles missing player gracefully."""
-    mock_request.app.state.persistence = mock_persistence
-    mock_request.app.state.connection_manager = mock_connection_manager
+    mock_request.app.state.container.async_persistence = mock_persistence
+    mock_request.app.state.container.connection_manager = mock_connection_manager
     mock_connection_manager.force_disconnect_player = AsyncMock()
 
     with patch("server.commands.logout_commands._get_player_for_logout", return_value=None):
@@ -362,8 +363,8 @@ async def test_handle_logout_command_no_persistence(mock_request):
 @pytest.mark.asyncio
 async def test_handle_logout_command_error_handling(mock_request, mock_persistence, mock_connection_manager):
     """Test handle_logout_command handles errors gracefully."""
-    mock_request.app.state.persistence = mock_persistence
-    mock_request.app.state.connection_manager = mock_connection_manager
+    mock_request.app.state.container.async_persistence = mock_persistence
+    mock_request.app.state.container.connection_manager = mock_connection_manager
 
     with patch("server.commands.logout_commands._get_player_for_logout", side_effect=RuntimeError("Unexpected error")):
         result = await handle_logout_command({}, {"username": "testuser"}, mock_request, None, "TestPlayer")
@@ -378,8 +379,8 @@ async def test_handle_logout_command_syncs_position(
     mock_request, mock_persistence, mock_connection_manager, mock_player
 ):
     """Test handle_logout_command syncs player position from connection manager."""
-    mock_request.app.state.persistence = mock_persistence
-    mock_request.app.state.connection_manager = mock_connection_manager
+    mock_request.app.state.container.async_persistence = mock_persistence
+    mock_request.app.state.container.connection_manager = mock_connection_manager
     mock_connection_manager.online_players = {str(mock_player.player_id): {"position": "lying"}}
     mock_persistence.save_player = AsyncMock()
 

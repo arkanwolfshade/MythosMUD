@@ -151,7 +151,8 @@ async def test_get_combat_status_player_not_in_combat():
     mock_combat_service.get_combat_by_participant = AsyncMock(return_value=None)
     mock_app = MagicMock()
     mock_app.state = MagicMock()
-    mock_app.state.combat_service = mock_combat_service
+    mock_app.state.container = MagicMock()
+    mock_app.state.container.combat_service = mock_combat_service
     mock_player = MagicMock()
     mock_player.player_id = "test-player-id"
 
@@ -281,13 +282,13 @@ async def test_handle_status_command_no_persistence():
 @pytest.mark.asyncio
 async def test_handle_status_command_player_not_found():
     """Test handle_status_command returns error when player not found."""
-    mock_persistence = MagicMock()
+    mock_persistence = AsyncMock()
     mock_persistence.get_player_by_name = AsyncMock(return_value=None)
     mock_app = MagicMock()
     mock_app.state = MagicMock()
     # Prefer container, fallback to app.state for backward compatibility
     mock_container = MagicMock()
-    mock_container.persistence = mock_persistence
+    mock_container.async_persistence = mock_persistence
     mock_app.state.container = mock_container
     # Backward compatibility: also set in app.state
     mock_app.state.persistence = mock_persistence
@@ -317,7 +318,7 @@ async def test_handle_status_command_success():
     )
     mock_room = MagicMock()
     mock_room.name = "Test Room"
-    mock_persistence = MagicMock()
+    mock_persistence = AsyncMock()
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_persistence.get_profession_by_id = AsyncMock(return_value=None)
     mock_persistence.get_room_by_id = MagicMock(return_value=mock_room)
@@ -327,7 +328,7 @@ async def test_handle_status_command_success():
     mock_app.state = MagicMock()
     # Prefer container, fallback to app.state for backward compatibility
     mock_container = MagicMock()
-    mock_container.persistence = mock_persistence
+    mock_container.async_persistence = mock_persistence
     mock_container.combat_service = mock_combat_service
     mock_app.state.container = mock_container
     # Backward compatibility: also set in app.state
@@ -346,11 +347,12 @@ async def test_handle_status_command_success():
 @pytest.mark.asyncio
 async def test_handle_status_command_error_handling():
     """Test handle_status_command handles errors gracefully."""
-    mock_persistence = MagicMock()
+    mock_persistence = AsyncMock()
     mock_persistence.get_player_by_name = AsyncMock(side_effect=AttributeError("Test error"))
     mock_app = MagicMock()
     mock_app.state = MagicMock()
-    mock_app.state.persistence = mock_persistence
+    mock_app.state.container = MagicMock()
+    mock_app.state.container.async_persistence = mock_persistence
     mock_request = MagicMock()
     mock_request.app = mock_app
 

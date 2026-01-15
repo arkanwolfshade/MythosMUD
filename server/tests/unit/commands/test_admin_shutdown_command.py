@@ -251,7 +251,9 @@ async def test_handle_shutdown_command_initiate_failure():
 def test_is_shutdown_pending_true():
     """Test is_shutdown_pending() returns True when shutdown is pending."""
     mock_app = MagicMock()
-    mock_app.state.server_shutdown_pending = True
+    mock_app.state = MagicMock()
+    mock_app.state.container = MagicMock()
+    mock_app.state.container.server_shutdown_pending = True
     result = is_shutdown_pending(mock_app)
     assert result is True
 
@@ -259,7 +261,9 @@ def test_is_shutdown_pending_true():
 def test_is_shutdown_pending_false():
     """Test is_shutdown_pending() returns False when shutdown is not pending."""
     mock_app = MagicMock()
-    mock_app.state.server_shutdown_pending = False
+    mock_app.state = MagicMock()
+    mock_app.state.container = MagicMock()
+    mock_app.state.container.server_shutdown_pending = False
     result = is_shutdown_pending(mock_app)
     assert result is False
 
@@ -411,7 +415,10 @@ def test_parse_shutdown_parameters_invalid_string():
 async def test_cancel_shutdown_countdown_no_active():
     """Test cancel_shutdown_countdown() when no shutdown is active."""
     mock_app = MagicMock()
-    mock_app.state.server_shutdown_pending = False
+    mock_app.state = MagicMock()
+    mock_app.state.container = MagicMock()
+    mock_app.state.container.server_shutdown_pending = False
+    mock_app.state.container.shutdown_data = None
     result = await cancel_shutdown_countdown(mock_app, "TestAdmin")
     assert result is False
 
@@ -420,10 +427,12 @@ async def test_cancel_shutdown_countdown_no_active():
 async def test_cancel_shutdown_countdown_success():
     """Test cancel_shutdown_countdown() successfully cancels shutdown."""
     mock_app = MagicMock()
-    mock_app.state.server_shutdown_pending = True
+    mock_app.state = MagicMock()
+    mock_app.state.container = MagicMock()
+    mock_app.state.container.server_shutdown_pending = True
     mock_task = MagicMock()
     mock_task.done = MagicMock(return_value=False)
-    mock_app.state.shutdown_data = {
+    mock_app.state.container.shutdown_data = {
         "task": mock_task,
         "end_time": time.time() + 60,
     }
@@ -431,7 +440,7 @@ async def test_cancel_shutdown_countdown_success():
     mock_app.state.connection_manager.broadcast_global_event = AsyncMock()
     result = await cancel_shutdown_countdown(mock_app, "TestAdmin")
     assert result is True
-    assert mock_app.state.server_shutdown_pending is False
+    assert mock_app.state.container.server_shutdown_pending is False
 
 
 @pytest.mark.asyncio

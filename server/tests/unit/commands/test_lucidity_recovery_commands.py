@@ -4,7 +4,9 @@ Unit tests for lucidity recovery command handlers.
 Tests the pray, meditate, group_solace, therapy, and folk_tonic commands.
 """
 
-# pylint: disable=redefined-outer-name  # Reason: Pytest fixtures are injected as function parameters, which pylint incorrectly flags as redefining names from outer scope, this is standard pytest usage and cannot be avoided
+# pylint: disable=redefined-outer-name,too-many-lines
+# Reason: Pytest fixtures are injected as function parameters, which pylint incorrectly flags as redefining names from outer scope, this is standard pytest usage and cannot be avoided
+# Reason: This file tests multiple related lucidity recovery commands (pray, meditate, group_solace, therapy, folk_tonic) with comprehensive test coverage. Splitting would fragment related tests and reduce maintainability.
 
 import uuid
 from datetime import UTC, datetime, timedelta
@@ -24,10 +26,11 @@ from server.services.active_lucidity_service import LucidityActionOnCooldownErro
 
 @pytest.fixture
 def mock_request():
-    """Create a mock request with app state."""
+    """Create a mock request with app state and container."""
     request = MagicMock()
     request.app = MagicMock()
     request.app.state = MagicMock()
+    request.app.state.container = MagicMock()
     return request
 
 
@@ -50,7 +53,7 @@ def mock_player():
 @pytest.mark.asyncio
 async def test_handle_pray_command_no_persistence(mock_request):
     """Test handle_pray_command when persistence is not available."""
-    mock_request.app.state.persistence = None
+    mock_request.app.state.container.async_persistence = None
 
     result = await handle_pray_command(
         command_data={},
@@ -67,7 +70,7 @@ async def test_handle_pray_command_no_persistence(mock_request):
 async def test_handle_pray_command_player_not_found(mock_request, mock_persistence):
     """Test handle_pray_command when player is not found."""
     mock_persistence.get_player_by_name = AsyncMock(return_value=None)
-    mock_request.app.state.persistence = mock_persistence
+    mock_request.app.state.container.async_persistence = mock_persistence
 
     result = await handle_pray_command(
         command_data={},
@@ -85,7 +88,7 @@ async def test_handle_pray_command_no_room(mock_request, mock_persistence, mock_
     """Test handle_pray_command when player has no room."""
     mock_player.current_room_id = None
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.persistence = mock_persistence
+    mock_request.app.state.container.async_persistence = mock_persistence
 
     result = await handle_pray_command(
         command_data={},
@@ -102,9 +105,9 @@ async def test_handle_pray_command_no_room(mock_request, mock_persistence, mock_
 async def test_handle_pray_command_success(mock_request, mock_persistence, mock_player):
     """Test handle_pray_command successful execution."""
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.persistence = mock_persistence
+    mock_request.app.state.container.async_persistence = mock_persistence
     # Explicitly set mp_regeneration_service to None (MagicMock returns MagicMock for any attribute)
-    mock_request.app.state.mp_regeneration_service = None
+    mock_request.app.state.container.mp_regeneration_service = None
 
     mock_result = MagicMock()
     mock_result.delta = 5
@@ -138,7 +141,7 @@ async def test_handle_pray_command_success(mock_request, mock_persistence, mock_
 async def test_handle_pray_command_cooldown(mock_request, mock_persistence, mock_player):
     """Test handle_pray_command when action is on cooldown."""
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.persistence = mock_persistence
+    mock_request.app.state.container.async_persistence = mock_persistence
 
     mock_cooldown = MagicMock()
     mock_cooldown.cooldown_expires_at = datetime.now(UTC) + timedelta(minutes=5)
@@ -169,7 +172,7 @@ async def test_handle_pray_command_cooldown(mock_request, mock_persistence, mock
 async def test_handle_pray_command_unknown_action(mock_request, mock_persistence, mock_player):
     """Test handle_pray_command with unknown action."""
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.persistence = mock_persistence
+    mock_request.app.state.container.async_persistence = mock_persistence
 
     async def async_gen():
         mock_session = AsyncMock()
@@ -196,11 +199,11 @@ async def test_handle_pray_command_unknown_action(mock_request, mock_persistence
 async def test_handle_pray_command_with_mp_restoration(mock_request, mock_persistence, mock_player):
     """Test handle_pray_command with MP restoration."""
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.persistence = mock_persistence
+    mock_request.app.state.container.async_persistence = mock_persistence
 
     mock_mp_service = AsyncMock()
     mock_mp_service.restore_mp_from_rest = AsyncMock(return_value={"mp_restored": 10})
-    mock_request.app.state.mp_regeneration_service = mock_mp_service
+    mock_request.app.state.container.mp_regeneration_service = mock_mp_service
 
     mock_result = MagicMock()
     mock_result.delta = 5
@@ -237,9 +240,9 @@ async def test_handle_pray_command_with_mp_restoration(mock_request, mock_persis
 async def test_handle_meditate_command_delegates(mock_request, mock_persistence, mock_player):
     """Test handle_meditate_command delegates to _perform_recovery_action."""
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.persistence = mock_persistence
+    mock_request.app.state.container.async_persistence = mock_persistence
     # Explicitly set mp_regeneration_service to None (MagicMock returns MagicMock for any attribute)
-    mock_request.app.state.mp_regeneration_service = None
+    mock_request.app.state.container.mp_regeneration_service = None
 
     mock_result = MagicMock()
     mock_result.delta = 5
@@ -271,7 +274,7 @@ async def test_handle_meditate_command_delegates(mock_request, mock_persistence,
 async def test_handle_group_solace_command_delegates(mock_request, mock_persistence, mock_player):
     """Test handle_group_solace_command delegates to _perform_recovery_action."""
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.persistence = mock_persistence
+    mock_request.app.state.container.async_persistence = mock_persistence
 
     mock_result = MagicMock()
     mock_result.delta = 5
@@ -302,7 +305,7 @@ async def test_handle_group_solace_command_delegates(mock_request, mock_persiste
 async def test_handle_therapy_command_delegates(mock_request, mock_persistence, mock_player):
     """Test handle_therapy_command delegates to _perform_recovery_action."""
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.persistence = mock_persistence
+    mock_request.app.state.container.async_persistence = mock_persistence
 
     mock_result = MagicMock()
     mock_result.delta = 5
@@ -333,7 +336,7 @@ async def test_handle_therapy_command_delegates(mock_request, mock_persistence, 
 async def test_handle_folk_tonic_command_delegates(mock_request, mock_persistence, mock_player):
     """Test handle_folk_tonic_command delegates to _perform_recovery_action."""
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.persistence = mock_persistence
+    mock_request.app.state.container.async_persistence = mock_persistence
 
     mock_result = MagicMock()
     mock_result.delta = 5
@@ -364,7 +367,7 @@ async def test_handle_folk_tonic_command_delegates(mock_request, mock_persistenc
 async def test_handle_pray_command_os_error(mock_request, mock_persistence, mock_player):
     """Test handle_pray_command handles OSError."""
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.persistence = mock_persistence
+    mock_request.app.state.container.async_persistence = mock_persistence
 
     mock_session = AsyncMock()
     mock_session.rollback = AsyncMock()
@@ -394,7 +397,7 @@ async def test_handle_pray_command_os_error(mock_request, mock_persistence, mock
 async def test_handle_pray_command_cooldown_no_expiry(mock_request, mock_persistence, mock_player):
     """Test handle_pray_command when cooldown has no expiry time."""
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.persistence = mock_persistence
+    mock_request.app.state.container.async_persistence = mock_persistence
 
     mock_cooldown = MagicMock()
     mock_cooldown.cooldown_expires_at = None
@@ -425,7 +428,7 @@ async def test_handle_pray_command_cooldown_no_expiry(mock_request, mock_persist
 async def test_handle_pray_command_cooldown_no_cooldown_object(mock_request, mock_persistence, mock_player):
     """Test handle_pray_command when get_action_cooldown returns None."""
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.persistence = mock_persistence
+    mock_request.app.state.container.async_persistence = mock_persistence
 
     async def async_gen():
         mock_session = AsyncMock()
@@ -453,8 +456,8 @@ async def test_handle_pray_command_cooldown_no_cooldown_object(mock_request, moc
 async def test_handle_pray_command_negative_delta(mock_request, mock_persistence, mock_player):
     """Test handle_pray_command with negative delta."""
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.persistence = mock_persistence
-    mock_request.app.state.mp_regeneration_service = None
+    mock_request.app.state.container.async_persistence = mock_persistence
+    mock_request.app.state.container.mp_regeneration_service = None
 
     mock_result = MagicMock()
     mock_result.delta = -5  # Negative delta
@@ -487,11 +490,11 @@ async def test_handle_pray_command_negative_delta(mock_request, mock_persistence
 async def test_handle_meditate_command_with_mp_restoration(mock_request, mock_persistence, mock_player):
     """Test handle_meditate_command with MP restoration."""
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.persistence = mock_persistence
+    mock_request.app.state.container.async_persistence = mock_persistence
 
     mock_mp_service = AsyncMock()
     mock_mp_service.restore_mp_from_meditation = AsyncMock(return_value={"mp_restored": 15})
-    mock_request.app.state.mp_regeneration_service = mock_mp_service
+    mock_request.app.state.container.mp_regeneration_service = mock_mp_service
 
     mock_result = MagicMock()
     mock_result.delta = 5
@@ -525,11 +528,11 @@ async def test_handle_meditate_command_with_mp_restoration(mock_request, mock_pe
 async def test_handle_pray_command_mp_restored_zero(mock_request, mock_persistence, mock_player):
     """Test handle_pray_command when MP restoration returns 0."""
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.persistence = mock_persistence
+    mock_request.app.state.container.async_persistence = mock_persistence
 
     mock_mp_service = AsyncMock()
     mock_mp_service.restore_mp_from_rest = AsyncMock(return_value={"mp_restored": 0})
-    mock_request.app.state.mp_regeneration_service = mock_mp_service
+    mock_request.app.state.container.mp_regeneration_service = mock_mp_service
 
     mock_result = MagicMock()
     mock_result.delta = 5
@@ -578,7 +581,7 @@ async def test_handle_pray_command_no_app(mock_request):
 async def test_handle_pray_command_cooldown_naive_datetime(mock_request, mock_persistence, mock_player):
     """Test handle_pray_command when cooldown expiry is naive datetime."""
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.persistence = mock_persistence
+    mock_request.app.state.container.async_persistence = mock_persistence
 
     mock_cooldown = MagicMock()
     # Naive datetime (no timezone)
@@ -610,7 +613,7 @@ async def test_handle_pray_command_cooldown_naive_datetime(mock_request, mock_pe
 async def test_handle_meditate_command_cooldown(mock_request, mock_persistence, mock_player):
     """Test handle_meditate_command when action is on cooldown."""
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.persistence = mock_persistence
+    mock_request.app.state.container.async_persistence = mock_persistence
 
     mock_cooldown = MagicMock()
     mock_cooldown.cooldown_expires_at = datetime.now(UTC) + timedelta(minutes=3)
@@ -641,7 +644,7 @@ async def test_handle_meditate_command_cooldown(mock_request, mock_persistence, 
 async def test_handle_group_solace_command_unknown_action(mock_request, mock_persistence, mock_player):
     """Test handle_group_solace_command with unknown action."""
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.persistence = mock_persistence
+    mock_request.app.state.container.async_persistence = mock_persistence
 
     mock_session = AsyncMock()
     mock_session.rollback = AsyncMock()

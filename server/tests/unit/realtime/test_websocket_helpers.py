@@ -283,7 +283,8 @@ def test_get_player_service_from_connection_manager_success():
     """Test get_player_service_from_connection_manager() returns player service."""
     mock_player_service = MagicMock()
     mock_app_state = MagicMock()
-    mock_app_state.player_service = mock_player_service
+    mock_app_state.container = MagicMock()
+    mock_app_state.container.player_service = mock_player_service
     mock_app = MagicMock()
     mock_app.state = mock_app_state
     mock_connection_manager = MagicMock()
@@ -407,7 +408,7 @@ async def test_prepare_player_data_with_service():
     mock_player.name = "TestPlayer"
     player_id = uuid.uuid4()
 
-    mock_player_service = MagicMock()
+    mock_player_service = AsyncMock()
     mock_complete_data = MagicMock()
     mock_complete_data.model_dump.return_value = {"name": "TestPlayer", "experience_points": 1000}
     mock_player_service.convert_player_to_schema = AsyncMock(return_value=mock_complete_data)
@@ -415,7 +416,8 @@ async def test_prepare_player_data_with_service():
     mock_connection_manager = MagicMock()
     mock_connection_manager.app = MagicMock()
     mock_connection_manager.app.state = MagicMock()
-    mock_connection_manager.app.state.player_service = mock_player_service
+    mock_connection_manager.app.state.container = MagicMock()
+    mock_connection_manager.app.state.container.player_service = mock_player_service
 
     result = await prepare_player_data(mock_player, player_id, mock_connection_manager)
     assert result["name"] == "TestPlayer"
@@ -446,13 +448,14 @@ async def test_prepare_player_data_service_error():
     mock_player.get_stats.return_value = {"hp": 100}
     player_id = uuid.uuid4()
 
-    mock_player_service = MagicMock()
+    mock_player_service = AsyncMock()
     mock_player_service.convert_player_to_schema = AsyncMock(side_effect=RuntimeError("Service error"))
 
     mock_connection_manager = MagicMock()
     mock_connection_manager.app = MagicMock()
     mock_connection_manager.app.state = MagicMock()
-    mock_connection_manager.app.state.player_service = mock_player_service
+    mock_connection_manager.app.state.container = MagicMock()
+    mock_connection_manager.app.state.container.player_service = mock_player_service
 
     result = await prepare_player_data(mock_player, player_id, mock_connection_manager)
     assert result["name"] == "TestPlayer"
@@ -549,4 +552,5 @@ async def test_get_player_and_room_adds_player_to_room():
         player, room, canonical_room_id = await get_player_and_room(player_id, player_id_str, mock_connection_manager)
         assert player == mock_player
         assert room == mock_room
+        assert canonical_room_id == room_id
         mock_room.player_entered.assert_called_once_with(player_id_str)

@@ -341,9 +341,10 @@ async def test_handle_who_command_no_players():
     mock_request = MagicMock()
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
+    mock_request.app.state.container = MagicMock()
     mock_persistence = AsyncMock()
     mock_persistence.list_players = AsyncMock(return_value=[])
-    mock_request.app.state.persistence = mock_persistence
+    mock_request.app.state.container.async_persistence = mock_persistence
 
     result = await handle_who_command(
         command_data={},
@@ -362,6 +363,7 @@ async def test_handle_who_command_success():
     mock_request = MagicMock()
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
+    mock_request.app.state.container = MagicMock()
     mock_persistence = AsyncMock()
 
     # Create mock players with recent last_active
@@ -373,7 +375,7 @@ async def test_handle_who_command_success():
     player1.last_active = datetime.now(UTC).isoformat()
 
     mock_persistence.list_players = AsyncMock(return_value=[player1])
-    mock_request.app.state.persistence = mock_persistence
+    mock_request.app.state.container.async_persistence = mock_persistence
 
     result = await handle_who_command(
         command_data={},
@@ -393,6 +395,7 @@ async def test_handle_who_command_with_filter():
     mock_request = MagicMock()
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
+    mock_request.app.state.container = MagicMock()
     mock_persistence = AsyncMock()
 
     player1 = MagicMock()
@@ -410,7 +413,7 @@ async def test_handle_who_command_with_filter():
     player2.last_active = datetime.now(UTC).isoformat()
 
     mock_persistence.list_players = AsyncMock(return_value=[player1, player2])
-    mock_request.app.state.persistence = mock_persistence
+    mock_request.app.state.container.async_persistence = mock_persistence
 
     result = await handle_who_command(
         command_data={"target_player": "al"},
@@ -430,9 +433,10 @@ async def test_handle_who_command_error_handling():
     mock_request = MagicMock()
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
+    mock_request.app.state.container = MagicMock()
     mock_persistence = AsyncMock()
     mock_persistence.list_players = AsyncMock(side_effect=ValueError("Test error"))
-    mock_request.app.state.persistence = mock_persistence
+    mock_request.app.state.container.async_persistence = mock_persistence
 
     result = await handle_who_command(
         command_data={},
