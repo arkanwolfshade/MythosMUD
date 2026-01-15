@@ -201,7 +201,12 @@ async def handle_quit_command(
 
     # Update last active timestamp before quitting
     app = request.app if request else None
-    persistence = app.state.persistence if app else None
+    # Prefer container, fallback to app.state for backward compatibility
+    persistence = None
+    if app and hasattr(app.state, "container") and app.state.container:
+        persistence = app.state.container.async_persistence
+    elif app:
+        persistence = getattr(app.state, "persistence", None)
 
     if persistence:
         try:
@@ -261,8 +266,18 @@ async def handle_logout_command(
 
     try:
         app = request.app if request else None
-        persistence = app.state.persistence if app else None
-        connection_manager = app.state.connection_manager if app else None
+        # Prefer container, fallback to app.state for backward compatibility
+        persistence = None
+        if app and hasattr(app.state, "container") and app.state.container:
+            persistence = app.state.container.async_persistence
+        elif app:
+            persistence = getattr(app.state, "persistence", None)
+        # Prefer container, fallback to app.state for backward compatibility
+        connection_manager = None
+        if app and hasattr(app.state, "container") and app.state.container:
+            connection_manager = app.state.container.connection_manager
+        elif app:
+            connection_manager = getattr(app.state, "connection_manager", None)
 
         lookup_name = player_name or get_username_from_user(current_user)
         player = await _get_player_for_logout(request, persistence, lookup_name)

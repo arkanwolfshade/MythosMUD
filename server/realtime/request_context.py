@@ -77,11 +77,17 @@ class WebSocketRequestContext:
 
     def get_persistence(self) -> Any:
         """Get the persistence layer from the request context."""
-        return self.app.state.persistence
+        # Prefer container, fallback to app.state for backward compatibility
+        if hasattr(self.app.state, "container") and self.app.state.container:
+            return self.app.state.container.async_persistence
+        return getattr(self.app.state, "persistence", None)
 
     def get_event_bus(self) -> Any | None:
         """Get the event bus from the request context."""
-        return self.app.state.event_bus
+        # Prefer container, fallback to app.state for backward compatibility
+        if hasattr(self.app.state, "container") and self.app.state.container:
+            return self.app.state.container.event_bus
+        return getattr(self.app.state, "event_bus", None)
 
     def get_alias_storage(self) -> Any | None:
         """Get the alias storage from the request context."""

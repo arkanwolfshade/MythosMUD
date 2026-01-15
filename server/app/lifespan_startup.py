@@ -36,71 +36,15 @@ logger = get_logger("server.lifespan.startup")
 
 
 async def initialize_container_and_legacy_services(app: FastAPI, container: ApplicationContainer) -> None:
-    """Initialize container and set up legacy compatibility services on app.state.
+    """Initialize container and set up container reference on app.state.
 
-    DEPRECATED: This function maintains backward compatibility by copying services
-    to app.state. New code should use dependency injection via container instead.
-    This dual storage pattern will be removed in a future version.
+    Services are now accessed exclusively via app.state.container.* or dependency injection.
+    The dual storage pattern has been removed - all services are in the container only.
     """
     ApplicationContainer.set_instance(container)
 
     app.state.container = container
     logger.info("ApplicationContainer initialized and added to app.state")
-
-    # DEPRECATED: Copying services to app.state for backward compatibility.
-    # New code should use app.state.container.* or dependency injection.
-    # This dual storage pattern will be removed after full migration.
-    logger.warning(
-        "Using deprecated dual storage pattern - services copied to app.state for backward compatibility. "
-        "Migrate to use app.state.container.* or dependency injection.",
-        deprecation=True,
-    )
-
-    # Core services (already in container)
-    app.state.task_registry = container.task_registry
-    app.state.event_bus = container.event_bus
-    app.state.event_handler = container.real_time_event_handler
-    app.state.persistence = container.async_persistence
-    app.state.connection_manager = container.connection_manager
-    app.state.player_service = container.player_service
-    app.state.room_service = container.room_service
-    app.state.user_manager = container.user_manager
-    app.state.container_service = container.container_service
-    app.state.holiday_service = container.holiday_service
-    app.state.schedule_service = container.schedule_service
-    app.state.room_cache_service = container.room_cache_service
-    app.state.profession_cache_service = container.profession_cache_service
-    app.state.prototype_registry = container.item_prototype_registry
-    app.state.item_factory = container.item_factory
-
-    # Combat services (now in container)
-    app.state.player_combat_service = container.player_combat_service
-    app.state.player_death_service = container.player_death_service
-    app.state.player_respawn_service = container.player_respawn_service
-    app.state.combat_service = container.combat_service
-    app.state.catatonia_registry = container.catatonia_registry
-    app.state.passive_lucidity_flux_service = container.passive_lucidity_flux_service
-
-    # Magic services (now in container)
-    app.state.magic_service = container.magic_service
-    app.state.spell_registry = container.spell_registry
-    app.state.spell_targeting_service = container.spell_targeting_service
-    app.state.spell_effects = container.spell_effects
-    app.state.spell_learning_service = container.spell_learning_service
-    app.state.mp_regeneration_service = container.mp_regeneration_service
-
-    # NPC services (now in container)
-    app.state.npc_lifecycle_manager = container.npc_lifecycle_manager
-    app.state.npc_spawning_service = container.npc_spawning_service
-    app.state.npc_population_controller = container.npc_population_controller
-
-    # Other services (now in container)
-    app.state.chat_service = container.chat_service
-    app.state.mythos_time_consumer = container.mythos_time_consumer
-
-    # NATS services (already in container, but also need to be in app.state for backward compatibility)
-    app.state.nats_service = container.nats_service
-    app.state.nats_message_handler = container.nats_message_handler
 
     if container.item_factory is None:
         logger.warning("Item factory unavailable during startup; summon command will be disabled")

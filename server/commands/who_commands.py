@@ -225,7 +225,12 @@ async def handle_who_command(
     filter_term = command_data.get("target_player", "")
 
     app = request.app if request else None
-    persistence = app.state.persistence if app else None
+    # Prefer container, fallback to app.state for backward compatibility
+    persistence = None
+    if app and hasattr(app.state, "container") and app.state.container:
+        persistence = app.state.container.async_persistence
+    elif app:
+        persistence = getattr(app.state, "persistence", None)
 
     if not persistence:
         logger.warning("Who command failed - no persistence layer")

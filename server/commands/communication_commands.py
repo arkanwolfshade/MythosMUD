@@ -180,7 +180,12 @@ async def handle_pose_command(
     logger.debug("Processing pose command", player_name=player_name, command_data=command_data)
 
     app = request.app if request else None
-    persistence = app.state.persistence if app else None
+    # Prefer container, fallback to app.state for backward compatibility
+    persistence = None
+    if app and hasattr(app.state, "container") and app.state.container:
+        persistence = app.state.container.async_persistence
+    elif app:
+        persistence = getattr(app.state, "persistence", None)
 
     if not persistence:
         logger.warning("Pose command failed - no persistence layer", player_name=player_name)
@@ -404,8 +409,7 @@ async def handle_system_command(
 
     # Get app state services for broadcasting (prefer container, fallback to app.state)
     app = request.app if request else None
-    player_service, chat_service, _ = _get_services_from_container(app)
-    user_manager = app.state.user_manager if app else None
+    player_service, chat_service, user_manager = _get_services_from_container(app)
 
     if not player_service:
         logger.warning("System command failed - no player service", player_name=player_name)

@@ -171,7 +171,12 @@ async def handle_status_command(
     logger.debug("Processing status command", player=player_name)
 
     app = request.app if request else None
-    persistence = app.state.persistence if app else None
+    # Prefer container, fallback to app.state for backward compatibility
+    persistence = None
+    if app and hasattr(app.state, "container") and app.state.container:
+        persistence = app.state.container.async_persistence
+    elif app:
+        persistence = getattr(app.state, "persistence", None)
 
     if not persistence:
         logger.warning("Status command failed - no persistence layer", player=player_name)

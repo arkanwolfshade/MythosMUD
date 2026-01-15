@@ -188,11 +188,19 @@ async def prepare_initial_room_data(room, connection_manager) -> dict[str, Any]:
 
 def get_event_handler_for_initial_state(connection_manager, websocket: WebSocket) -> Any:
     """Get event handler from connection manager or websocket app state."""
+    # Prefer container, fallback to app.state for backward compatibility
+    event_handler = None
     if hasattr(connection_manager, "app") and connection_manager.app:
-        return getattr(connection_manager.app.state, "event_handler", None)
-    if hasattr(websocket, "app") and websocket.app:
-        return getattr(websocket.app.state, "event_handler", None)
-    return None
+        if hasattr(connection_manager.app.state, "container") and connection_manager.app.state.container:
+            event_handler = connection_manager.app.state.container.real_time_event_handler
+        else:
+            event_handler = getattr(connection_manager.app.state, "event_handler", None)
+    if not event_handler and hasattr(websocket, "app") and websocket.app:
+        if hasattr(websocket.app.state, "container") and websocket.app.state.container:
+            event_handler = websocket.app.state.container.real_time_event_handler
+        else:
+            event_handler = getattr(websocket.app.state, "event_handler", None)
+    return event_handler
 
 
 async def send_occupants_snapshot_if_needed(

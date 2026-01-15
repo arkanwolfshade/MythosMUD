@@ -24,7 +24,12 @@ async def _setup_go_command(
 ) -> tuple[Any, Any, Any, Any, str] | None:
     """Setup and validate go command prerequisites."""
     app = request.app if request else None
-    persistence = app.state.persistence if app else None
+    # Prefer container, fallback to app.state for backward compatibility
+    persistence = None
+    if app and hasattr(app.state, "container") and app.state.container:
+        persistence = app.state.container.async_persistence
+    elif app:
+        persistence = getattr(app.state, "persistence", None)
 
     if not persistence:
         logger.warning("Go command failed - no persistence layer", player=player_name)
@@ -125,11 +130,19 @@ async def _execute_movement(  # pylint: disable=too-many-arguments,too-many-posi
 ) -> dict[str, Any]:
     """Execute player movement using movement service."""
     try:
-        player_combat_service = getattr(app.state, "player_combat_service", None) if app else None
-        event_bus = getattr(app.state, "event_bus", None) if app else None
+        # Prefer container, fallback to app.state for backward compatibility
+        player_combat_service = None
+        event_bus = None
+        if app and hasattr(app.state, "container") and app.state.container:
+            player_combat_service = app.state.container.player_combat_service
+            event_bus = app.state.container.event_bus
+        elif app:
+            player_combat_service = getattr(app.state, "player_combat_service", None)
+            event_bus = getattr(app.state, "event_bus", None)
 
         # Get MovementService from container
-        if app and hasattr(app.state, "container"):
+        movement_service = None
+        if app and hasattr(app.state, "container") and app.state.container:
             movement_service = app.state.container.movement_service
         else:
             # Fallback for tests or other environments where container might not be fully initialized
@@ -199,7 +212,12 @@ async def handle_go_command(  # pylint: disable=too-many-arguments,too-many-loca
         return {"result": posture_message}
 
     # Check if player is resting and interrupt rest
-    connection_manager = getattr(app.state, "connection_manager", None) if app else None
+    # Prefer container, fallback to app.state for backward compatibility
+    connection_manager = None
+    if app and hasattr(app.state, "container") and app.state.container:
+        connection_manager = app.state.container.connection_manager
+    elif app:
+        connection_manager = getattr(app.state, "connection_manager", None)
     if connection_manager:
         player_id = uuid.UUID(player.player_id) if isinstance(player.player_id, str) else player.player_id
 

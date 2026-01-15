@@ -4,28 +4,28 @@ overview: Create a comprehensive Playwright test suite to validate the app.state
 todos:
   - id: test-setup
     content: Create test file structure and configuration in client/tests/e2e/di-migration-validation.spec.ts
-    status: pending
+    status: completed
   - id: test-helpers
     content: Implement helper functions for service verification, API testing, command testing, and game tick testing
-    status: pending
+    status: completed
   - id: suite1-core-services
     content: "Implement Suite 1: Core Service Functionality Tests (container, combat, magic, NPC, chat, other services)"
-    status: pending
+    status: completed
   - id: suite2-api-endpoints
     content: "Implement Suite 2: API Endpoint Validation Tests (metrics API and dependency injection verification)"
-    status: pending
+    status: completed
   - id: suite3-commands
     content: "Implement Suite 3: Command Handler Validation Tests (status, communication, magic, combat, NPC admin, shutdown)"
-    status: pending
+    status: completed
   - id: suite4-game-tick
     content: "Implement Suite 4: Game Tick and Background Task Tests (tick processing, service access verification)"
-    status: pending
+    status: completed
   - id: suite5-websocket
     content: "Implement Suite 5: WebSocket and Real-time Communication Tests (connection, broadcasting, request context)"
-    status: pending
+    status: completed
   - id: suite6-integration
     content: "Implement Suite 6: Integration Tests (service interactions, multi-service workflows, backward compatibility)"
-    status: pending
+    status: completed
   - id: test-execution
     content: Run test suite and verify all tests pass
     status: pending

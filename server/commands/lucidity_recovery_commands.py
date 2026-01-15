@@ -25,7 +25,12 @@ async def _validate_recovery_context(
 ) -> tuple[Any, Any, Any, dict[str, str] | None]:
     """Validate persistence and player for recovery action."""
     app = getattr(request, "app", None)
-    persistence = getattr(app.state, "persistence", None) if app else None
+    # Prefer container, fallback to app.state for backward compatibility
+    persistence = None
+    if app and hasattr(app.state, "container") and app.state.container:
+        persistence = app.state.container.async_persistence
+    elif app:
+        persistence = getattr(app.state, "persistence", None)
     if not persistence:
         logger.error("Recovery command invoked without persistence", action=action_code, player=player_name)
         return None, None, None, {"result": "The ritual falters; the ley lines are inaccessible."}
