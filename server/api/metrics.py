@@ -12,6 +12,7 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 
 from ..auth.users import get_current_user
+from ..dependencies import NatsMessageHandlerDep
 from ..exceptions import LoggedHTTPException
 from ..middleware.metrics_collector import metrics_collector
 from ..models.user import User
@@ -73,7 +74,11 @@ def verify_admin_access(request: Request, current_user: User | None = Depends(ge
 
 
 @router.get("", response_model=MetricsResponse)
-async def get_metrics(request: Request, current_user: User = Depends(verify_admin_access)) -> MetricsResponse:
+async def get_metrics(
+    request: Request,
+    current_user: User = Depends(verify_admin_access),
+    nats_message_handler: Any = NatsMessageHandlerDep,
+) -> MetricsResponse:
     """
     Get comprehensive system metrics.
 
@@ -88,10 +93,6 @@ async def get_metrics(request: Request, current_user: User = Depends(verify_admi
     AI: For monitoring dashboards and alerting systems.
     """
     try:
-        # AI Agent: Access nats_message_handler via app.state.container (no longer a global)
-        from ..main import app
-
-        nats_message_handler = app.state.container.nats_message_handler
         from ..services.nats_service import nats_service
 
         # Get base metrics from collector
@@ -127,8 +128,10 @@ async def get_metrics(request: Request, current_user: User = Depends(verify_admi
 
 @router.get("/summary", response_model=MetricsSummaryResponse)
 async def get_metrics_summary(
-    request: Request, _current_user: User = Depends(verify_admin_access)
-) -> MetricsSummaryResponse:  # pylint: disable=unused-argument  # Required by Depends for auth
+    request: Request,
+    _current_user: User = Depends(verify_admin_access),  # pylint: disable=unused-argument  # Required by Depends for auth
+    nats_message_handler: Any = NatsMessageHandlerDep,
+) -> MetricsSummaryResponse:
     """
     Get concise metrics summary.
 
@@ -146,10 +149,6 @@ async def get_metrics_summary(
         summary = metrics_collector.get_summary()
 
         # Add DLQ count
-        # AI Agent: Access nats_message_handler via app.state.container (no longer a global)
-        from ..main import app
-
-        nats_message_handler = app.state.container.nats_message_handler
 
         dlq_pending = None
         circuit_state = None
@@ -202,7 +201,10 @@ async def reset_metrics(request: Request, current_user: User = Depends(verify_ad
 
 @router.get("/dlq", response_model=DLQMessagesResponse)
 async def get_dlq_messages(
-    request: Request, limit: int = 100, current_user: User = Depends(verify_admin_access)
+    request: Request,
+    limit: int = 100,
+    current_user: User = Depends(verify_admin_access),
+    nats_message_handler: Any = NatsMessageHandlerDep,
 ) -> DLQMessagesResponse:
     """
     Get messages from dead letter queue.
@@ -220,11 +222,6 @@ async def get_dlq_messages(
     AI: For incident investigation and manual message replay.
     """
     try:
-        # AI Agent: Access nats_message_handler via app.state.container (no longer a global)
-        from ..main import app
-
-        nats_message_handler = app.state.container.nats_message_handler
-
         if not nats_message_handler:
             return DLQMessagesResponse(messages=[], count=0, total_in_dlq=0)
 
@@ -246,7 +243,9 @@ async def get_dlq_messages(
 
 @router.post("/circuit-breaker/reset", response_model=StatusMessageResponse)
 async def reset_circuit_breaker(
-    request: Request, current_user: User = Depends(verify_admin_access)
+    request: Request,
+    current_user: User = Depends(verify_admin_access),
+    nats_message_handler: Any = NatsMessageHandlerDep,
 ) -> StatusMessageResponse:
     """
     Manually reset circuit breaker to CLOSED state.
@@ -261,11 +260,6 @@ async def reset_circuit_breaker(
     AI: Emergency admin action - use when you know service is healthy.
     """
     try:
-        # AI Agent: Access nats_message_handler via app.state.container (no longer a global)
-        from ..main import app
-
-        nats_message_handler = app.state.container.nats_message_handler
-
         if not nats_message_handler:
             context = create_context_from_request(request)
             context.user_id = str(current_user.id) if current_user else None
@@ -391,15 +385,18 @@ def _handle_replay_error(replay_error: Exception, filepath: str, current_user: U
     return DLQReplayResponse(status="failed", message="Replay failed. Message remains in DLQ.", filepath=filepath)
 
 
-def _get_nats_handler() -> Any:
-    """Get NATS message handler from app state.
+def _get_nats_handler(nats_message_handler: Any | None) -> Any:
+    """Get NATS message handler, raising exception if not available.
+
+    Args:
+        nats_message_handler: The NATS message handler from dependency injection
 
     Returns:
-        NATSMessageHandler: The NATS message handler instance (raises HTTPException if not available).
-    """
-    from ..main import app
+        NATSMessageHandler: The NATS message handler instance
 
-    nats_message_handler = app.state.container.nats_message_handler
+    Raises:
+        HTTPException: If handler is not available
+    """
     if not nats_message_handler:
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="NATS handler not available")
     return nats_message_handler
@@ -407,7 +404,10 @@ def _get_nats_handler() -> Any:
 
 @router.post("/dlq/{filepath:path}/replay", response_model=DLQReplayResponse)
 async def replay_dlq_message(
-    filepath: str, request: Request, current_user: User = Depends(verify_admin_access)
+    filepath: str,
+    request: Request,
+    current_user: User = Depends(verify_admin_access),
+    nats_message_handler: Any = NatsMessageHandlerDep,
 ) -> DLQReplayResponse:
     """
     Replay a message from the Dead Letter Queue.
@@ -425,7 +425,7 @@ async def replay_dlq_message(
     AI: For manual incident recovery - use after fixing underlying issue.
     """
     try:
-        nats_message_handler = _get_nats_handler()
+        nats_message_handler = _get_nats_handler(nats_message_handler)
         dlq_path = nats_message_handler.dead_letter_queue.storage_dir / filepath
         message_data = await _load_dlq_message(dlq_path)
 
@@ -454,7 +454,10 @@ async def replay_dlq_message(
 
 @router.delete("/dlq/{filepath:path}", response_model=StatusMessageResponse)
 async def delete_dlq_message(
-    filepath: str, request: Request, current_user: User = Depends(verify_admin_access)
+    filepath: str,
+    request: Request,
+    current_user: User = Depends(verify_admin_access),
+    nats_message_handler: Any = NatsMessageHandlerDep,
 ) -> StatusMessageResponse:
     """
     Delete a message from the Dead Letter Queue without replaying.
@@ -472,11 +475,6 @@ async def delete_dlq_message(
     AI: For discarding permanently failed or invalid messages.
     """
     try:
-        # AI Agent: Access nats_message_handler via app.state.container (no longer a global)
-        from ..main import app
-
-        nats_message_handler = app.state.container.nats_message_handler
-
         if not nats_message_handler:
             context = create_context_from_request(request)
             context.user_id = str(current_user.id) if current_user else None

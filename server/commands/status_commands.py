@@ -62,7 +62,13 @@ async def _get_combat_status(app: Any, player: Any) -> bool:
     Returns:
         bool: True if player is in combat, False otherwise
     """
-    combat_service = app.state.combat_service if app else None
+    # Prefer container, fallback to app.state for backward compatibility
+    combat_service = None
+    if app and hasattr(app.state, "container") and app.state.container:
+        combat_service = app.state.container.combat_service
+    elif app:
+        combat_service = getattr(app.state, "combat_service", None)
+
     if not combat_service:
         logger.debug("No combat service available")
         return False

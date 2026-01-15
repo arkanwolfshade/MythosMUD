@@ -36,12 +36,27 @@ logger = get_logger("server.lifespan.startup")
 
 
 async def initialize_container_and_legacy_services(app: FastAPI, container: ApplicationContainer) -> None:
-    """Initialize container and set up legacy compatibility services on app.state."""
+    """Initialize container and set up legacy compatibility services on app.state.
+
+    DEPRECATED: This function maintains backward compatibility by copying services
+    to app.state. New code should use dependency injection via container instead.
+    This dual storage pattern will be removed in a future version.
+    """
     ApplicationContainer.set_instance(container)
 
     app.state.container = container
     logger.info("ApplicationContainer initialized and added to app.state")
 
+    # DEPRECATED: Copying services to app.state for backward compatibility.
+    # New code should use app.state.container.* or dependency injection.
+    # This dual storage pattern will be removed after full migration.
+    logger.warning(
+        "Using deprecated dual storage pattern - services copied to app.state for backward compatibility. "
+        "Migrate to use app.state.container.* or dependency injection.",
+        deprecation=True,
+    )
+
+    # Core services (already in container)
     app.state.task_registry = container.task_registry
     app.state.event_bus = container.event_bus
     app.state.event_handler = container.real_time_event_handler
@@ -57,6 +72,35 @@ async def initialize_container_and_legacy_services(app: FastAPI, container: Appl
     app.state.profession_cache_service = container.profession_cache_service
     app.state.prototype_registry = container.item_prototype_registry
     app.state.item_factory = container.item_factory
+
+    # Combat services (now in container)
+    app.state.player_combat_service = container.player_combat_service
+    app.state.player_death_service = container.player_death_service
+    app.state.player_respawn_service = container.player_respawn_service
+    app.state.combat_service = container.combat_service
+    app.state.catatonia_registry = container.catatonia_registry
+    app.state.passive_lucidity_flux_service = container.passive_lucidity_flux_service
+
+    # Magic services (now in container)
+    app.state.magic_service = container.magic_service
+    app.state.spell_registry = container.spell_registry
+    app.state.spell_targeting_service = container.spell_targeting_service
+    app.state.spell_effects = container.spell_effects
+    app.state.spell_learning_service = container.spell_learning_service
+    app.state.mp_regeneration_service = container.mp_regeneration_service
+
+    # NPC services (now in container)
+    app.state.npc_lifecycle_manager = container.npc_lifecycle_manager
+    app.state.npc_spawning_service = container.npc_spawning_service
+    app.state.npc_population_controller = container.npc_population_controller
+
+    # Other services (now in container)
+    app.state.chat_service = container.chat_service
+    app.state.mythos_time_consumer = container.mythos_time_consumer
+
+    # NATS services (already in container, but also need to be in app.state for backward compatibility)
+    app.state.nats_service = container.nats_service
+    app.state.nats_message_handler = container.nats_message_handler
 
     if container.item_factory is None:
         logger.warning("Item factory unavailable during startup; summon command will be disabled")
@@ -98,7 +142,13 @@ async def setup_connection_manager(app: FastAPI, container: ApplicationContainer
 
 
 async def initialize_npc_services(app: FastAPI, container: ApplicationContainer) -> None:
-    """Initialize NPC services and load definitions."""
+    """
+    Initialize NPC services and load definitions.
+
+    DEPRECATED: This function is no longer called. NPC services are now initialized
+    in ApplicationContainer.initialize() via _initialize_npc_services().
+    This function is kept for backward compatibility but should not be used.
+    """
     if container.event_bus is None:
         raise RuntimeError("EventBus must be initialized")
     app.state.npc_spawning_service = NPCSpawningService(container.event_bus, None)
@@ -163,7 +213,13 @@ async def initialize_npc_services(app: FastAPI, container: ApplicationContainer)
 
 
 async def initialize_combat_services(app: FastAPI, container: ApplicationContainer) -> None:
-    """Initialize combat-related services."""
+    """
+    Initialize combat-related services.
+
+    DEPRECATED: This function is no longer called. Combat services are now initialized
+    in ApplicationContainer.initialize() via _initialize_combat_services().
+    This function is kept for backward compatibility but should not be used.
+    """
     app.state.player_combat_service = PlayerCombatService(container.persistence, container.event_bus)
     if container.connection_manager is not None:
         container.connection_manager.set_player_combat_service(app.state.player_combat_service)
@@ -240,7 +296,13 @@ async def initialize_combat_services(app: FastAPI, container: ApplicationContain
 
 
 async def initialize_mythos_time_consumer(app: FastAPI, container: ApplicationContainer) -> None:
-    """Initialize Mythos time event consumer."""
+    """
+    Initialize Mythos time event consumer.
+
+    DEPRECATED: This function is no longer called. Mythos time consumer is now initialized
+    in ApplicationContainer.initialize() via _initialize_mythos_time_consumer().
+    This function is kept for backward compatibility but should not be used.
+    """
     if (
         container.event_bus
         and container.holiday_service
@@ -288,7 +350,13 @@ async def initialize_npc_startup_spawning(_app: FastAPI) -> None:
 
 
 async def initialize_nats_and_combat_services(app: FastAPI, container: ApplicationContainer) -> None:
-    """Initialize NATS-dependent services including combat service."""
+    """
+    Initialize NATS-dependent services including combat service.
+
+    DEPRECATED: This function is no longer called. NATS and combat services are now initialized
+    in ApplicationContainer.initialize() via _initialize_nats_combat_service().
+    This function is kept for backward compatibility but should not be used.
+    """
     if container.config is None:
         raise RuntimeError("Config must be initialized")
     is_testing = container.config.logging.environment in ("unit_test", "e2e_test")
@@ -341,7 +409,13 @@ async def initialize_nats_and_combat_services(app: FastAPI, container: Applicati
 
 
 async def initialize_chat_service(app: FastAPI, container: ApplicationContainer) -> None:
-    """Initialize chat service."""
+    """
+    Initialize chat service.
+
+    DEPRECATED: This function is no longer called. Chat service is now initialized
+    in ApplicationContainer.initialize() via _initialize_chat_service().
+    This function is kept for backward compatibility but should not be used.
+    """
     if container.config is None:
         raise RuntimeError("Config must be initialized")
     is_testing = container.config.logging.environment in ("unit_test", "e2e_test")
@@ -374,7 +448,13 @@ async def initialize_chat_service(app: FastAPI, container: ApplicationContainer)
 
 
 async def initialize_magic_services(app: FastAPI, container: ApplicationContainer) -> None:  # pylint: disable=too-many-locals  # Reason: Service initialization requires many intermediate variables for dependency setup
-    """Initialize magic system services and wire them to app.state."""
+    """
+    Initialize magic system services and wire them to app.state.
+
+    DEPRECATED: This function is no longer called. Magic services are now initialized
+    in ApplicationContainer.initialize() via _initialize_magic_services().
+    This function is kept for backward compatibility but should not be used.
+    """
     # Import here to avoid circular imports: spell_targeting -> combat_service -> lifespan -> lifespan_startup
     # pylint: disable=import-outside-toplevel  # Reason: Circular import avoidance - spell_targeting imports CombatService which imports from lifespan
     from ..game.magic.magic_service import MagicService

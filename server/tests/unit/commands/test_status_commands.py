@@ -102,10 +102,9 @@ async def test_get_combat_status_no_combat_service():
     """Test _get_combat_status returns False when no combat service."""
     mock_app = MagicMock()
     mock_app.state = MagicMock()
-    # Use hasattr check - if combat_service doesn't exist, accessing it returns None
-    # The code does: app.state.combat_service if app else None
-    # So we need to ensure app.state.combat_service is None/doesn't exist
-    type(mock_app.state).combat_service = None  # Set to None
+    # Prefer container, but test fallback to app.state
+    mock_app.state.container = None  # No container
+    type(mock_app.state).combat_service = None  # Set to None for fallback
     mock_player = MagicMock()
     mock_player.player_id = "test-player-id"
 
@@ -132,7 +131,10 @@ async def test_get_combat_status_player_in_combat():
     mock_combat_service.get_combat_by_participant = AsyncMock(return_value=mock_combat)
     mock_app = MagicMock()
     mock_app.state = MagicMock()
-    mock_app.state.combat_service = mock_combat_service
+    # Prefer container, fallback to app.state
+    mock_container = MagicMock()
+    mock_container.combat_service = mock_combat_service
+    mock_app.state.container = mock_container
     mock_player = MagicMock()
     mock_player.player_id = "test-player-id"
 
@@ -283,6 +285,11 @@ async def test_handle_status_command_player_not_found():
     mock_persistence.get_player_by_name = AsyncMock(return_value=None)
     mock_app = MagicMock()
     mock_app.state = MagicMock()
+    # Prefer container, fallback to app.state for backward compatibility
+    mock_container = MagicMock()
+    mock_container.persistence = mock_persistence
+    mock_app.state.container = mock_container
+    # Backward compatibility: also set in app.state
     mock_app.state.persistence = mock_persistence
     mock_request = MagicMock()
     mock_request.app = mock_app
@@ -318,6 +325,12 @@ async def test_handle_status_command_success():
     mock_combat_service.get_combat_by_participant = AsyncMock(return_value=None)
     mock_app = MagicMock()
     mock_app.state = MagicMock()
+    # Prefer container, fallback to app.state for backward compatibility
+    mock_container = MagicMock()
+    mock_container.persistence = mock_persistence
+    mock_container.combat_service = mock_combat_service
+    mock_app.state.container = mock_container
+    # Backward compatibility: also set in app.state
     mock_app.state.persistence = mock_persistence
     mock_app.state.combat_service = mock_combat_service
     mock_request = MagicMock()

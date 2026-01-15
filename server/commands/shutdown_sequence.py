@@ -48,9 +48,18 @@ async def _persist_all_players(app: Any) -> None:
 async def _despawn_all_npcs(app: Any) -> None:
     """Phase 2: Despawn all NPCs."""
     logger.info("Phase 2: Despawning all NPCs")
-    if hasattr(app.state, "npc_spawning_service") and app.state.npc_spawning_service:
+    # Prefer container, fallback to app.state for backward compatibility
+    npc_spawning_service = None
+    npc_lifecycle_manager = None
+    if app and hasattr(app.state, "container") and app.state.container:
+        npc_spawning_service = app.state.container.npc_spawning_service
+        npc_lifecycle_manager = app.state.container.npc_lifecycle_manager
+    else:
+        npc_spawning_service = getattr(app.state, "npc_spawning_service", None)
+        npc_lifecycle_manager = getattr(app.state, "npc_lifecycle_manager", None)
+
+    if npc_spawning_service:
         try:
-            npc_lifecycle_manager = getattr(app.state, "npc_lifecycle_manager", None)
             if npc_lifecycle_manager:
                 active_npcs = list(npc_lifecycle_manager.active_npcs.keys())
                 logger.info("Despawning active NPCs", count=len(active_npcs))

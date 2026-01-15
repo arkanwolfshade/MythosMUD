@@ -69,7 +69,13 @@ async def _restore_mp_for_action(app: Any, action_code: str, player: Any) -> str
     if action_code not in ("meditate", "pray"):
         return ""
 
-    mp_regeneration_service = getattr(app.state, "mp_regeneration_service", None) if app else None
+    # Prefer container, fallback to app.state for backward compatibility
+    mp_regeneration_service = None
+    if app and hasattr(app.state, "container") and app.state.container:
+        mp_regeneration_service = app.state.container.mp_regeneration_service
+    elif app:
+        mp_regeneration_service = getattr(app.state, "mp_regeneration_service", None)
+
     if not mp_regeneration_service:
         return ""
 

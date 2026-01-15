@@ -42,6 +42,9 @@ def is_shutdown_pending(app: Any) -> bool:
         True if shutdown is pending, False otherwise
     """
     try:
+        if hasattr(app.state, "container") and app.state.container:
+            return app.state.container.server_shutdown_pending
+        # Fallback to app.state for backward compatibility
         return getattr(app.state, "server_shutdown_pending", False)
     except (AttributeError, OSError):
         return False
@@ -165,6 +168,140 @@ async def broadcast_shutdown_notification(connection_manager: Any, seconds_remai
         return False
 
 
+async def _cancel_existing_shutdown_task(app: Any) -> None:
+    """
+    Cancel existing shutdown task if present.
+
+    Args:
+        app: FastAPI application instance
+    """
+    if not getattr(app.state, "server_shutdown_pending", False):
+        return
+
+    existing_shutdown = getattr(app.state, "shutdown_data", None)
+    if not existing_shutdown or not existing_shutdown.get("task"):
+        return
+
+    logger.info("Cancelling existing shutdown to start new one")
+    existing_task = existing_shutdown["task"]
+    existing_task.cancel()
+    try:
+        # Only await if it's actually a coroutine/task
+        if asyncio.iscoroutine(existing_task) or asyncio.isfuture(existing_task):
+            await existing_task
+    except (asyncio.CancelledError, RuntimeError):
+        # Task was cancelled or already finished
+        pass
+
+
+def _set_shutdown_pending_flag(app: Any) -> None:
+    """
+    Set shutdown pending flag in container and app.state.
+
+    Args:
+        app: FastAPI application instance
+    """
+    if hasattr(app.state, "container") and app.state.container:
+        app.state.container.server_shutdown_pending = True
+    # Backward compatibility: also set in app.state
+    app.state.server_shutdown_pending = True
+
+
+async def _create_countdown_task(app: Any, countdown_coro: Any) -> asyncio.Task:
+    """
+    Create countdown task from coroutine, handling task registry if available.
+
+    Args:
+        app: FastAPI application instance
+        countdown_coro: Countdown coroutine to wrap in task
+
+    Returns:
+        asyncio.Task: The created countdown task
+
+    Raises:
+        RuntimeError: If no running event loop is available
+    """
+    try:
+        # Try to get the running event loop first
+        loop = asyncio.get_running_loop()
+
+        # Try to register with task_registry if available
+        if hasattr(app.state, "task_registry") and app.state.task_registry:
+            try:
+                countdown_task = app.state.task_registry.register_task(
+                    countdown_coro,
+                    "shutdown_countdown",
+                    "system",
+                )
+                # Verify that register_task actually returned a task
+                if not isinstance(countdown_task, asyncio.Task):
+                    # If register_task didn't create a task (e.g., it's a mock), create one
+                    countdown_task = loop.create_task(countdown_coro)
+                return countdown_task
+            except (AttributeError, RuntimeError, TypeError):
+                # register_task failed or is a mock that doesn't handle coroutines
+                return loop.create_task(countdown_coro)
+        else:
+            # No task_registry available, create task directly
+            return loop.create_task(countdown_coro)
+    except RuntimeError:
+        # No running event loop - this shouldn't happen in normal operation
+        # but can occur in tests. Create task when loop becomes available.
+        # Note: asyncio.create_task requires a running loop, so this will raise
+        # but at least we tried. The coroutine will be garbage collected with a warning.
+        try:
+            return asyncio.create_task(countdown_coro)
+        except RuntimeError:
+            # Still no loop - log warning and raise error
+            # The caller should ensure there's a running loop
+            logger.error("Cannot create countdown task: no running event loop")
+            raise RuntimeError("Cannot create countdown task: no running event loop") from None
+
+
+def _store_shutdown_data(
+    app: Any, countdown_seconds: int, admin_username: str, countdown_task: asyncio.Task
+) -> dict[str, Any]:
+    """
+    Store shutdown data in container and app.state.
+
+    Args:
+        app: FastAPI application instance
+        countdown_seconds: Countdown duration in seconds
+        admin_username: Username of admin initiating shutdown
+        countdown_task: The countdown task
+
+    Returns:
+        dict: The shutdown data dictionary
+    """
+    shutdown_data = {
+        "countdown_seconds": countdown_seconds,
+        "start_time": time.time(),
+        "end_time": time.time() + countdown_seconds,
+        "admin_username": admin_username,
+        "task": countdown_task,
+    }
+    if hasattr(app.state, "container") and app.state.container:
+        app.state.container.shutdown_data = shutdown_data
+    # Backward compatibility: also set in app.state
+    app.state.shutdown_data = shutdown_data
+    return shutdown_data
+
+
+def _clear_shutdown_state(app: Any) -> None:
+    """
+    Clear shutdown state in container and app.state.
+
+    Args:
+        app: FastAPI application instance
+    """
+    if hasattr(app.state, "container") and app.state.container:
+        app.state.container.server_shutdown_pending = False
+        app.state.container.shutdown_data = None
+    # Backward compatibility: also clear in app.state
+    app.state.server_shutdown_pending = False
+    app.state.shutdown_data = None
+
+
 async def countdown_loop(app: Any, countdown_seconds: int, admin_username: str) -> None:
     """
     Main countdown loop that sends notifications and executes shutdown.
@@ -239,73 +376,17 @@ async def initiate_shutdown_countdown(app: Any, countdown_seconds: int, admin_us
     """
     try:
         # Cancel existing shutdown if present (superseding logic)
-        if getattr(app.state, "server_shutdown_pending", False):
-            existing_shutdown = getattr(app.state, "shutdown_data", None)
-            if existing_shutdown and existing_shutdown.get("task"):
-                logger.info("Cancelling existing shutdown to start new one")
-                existing_task = existing_shutdown["task"]
-                existing_task.cancel()
-                try:
-                    # Only await if it's actually a coroutine/task
-                    if asyncio.iscoroutine(existing_task) or asyncio.isfuture(existing_task):
-                        await existing_task
-                except (asyncio.CancelledError, RuntimeError):
-                    # Task was cancelled or already finished
-                    pass
+        await _cancel_existing_shutdown_task(app)
 
-        # Set shutdown pending flag
-        app.state.server_shutdown_pending = True
+        # Set shutdown pending flag in container
+        _set_shutdown_pending_flag(app)
 
-        # Create countdown coroutine
+        # Create countdown coroutine and task
         countdown_coro = countdown_loop(app, countdown_seconds, admin_username)
+        countdown_task = await _create_countdown_task(app, countdown_coro)
 
-        # Create countdown task - ensure coroutine is always turned into a task
-        # to avoid "coroutine was never awaited" warnings
-        # We must always create a task from the coroutine, even if register_task fails
-        # This is critical to prevent RuntimeWarnings during garbage collection
-        try:
-            # Try to get the running event loop first
-            loop = asyncio.get_running_loop()
-
-            # Try to register with task_registry if available
-            if hasattr(app.state, "task_registry") and app.state.task_registry:
-                try:
-                    countdown_task = app.state.task_registry.register_task(
-                        countdown_coro,
-                        "shutdown_countdown",
-                        "system",
-                    )
-                    # Verify that register_task actually returned a task
-                    if not isinstance(countdown_task, asyncio.Task):
-                        # If register_task didn't create a task (e.g., it's a mock), create one
-                        countdown_task = loop.create_task(countdown_coro)
-                except (AttributeError, RuntimeError, TypeError):
-                    # register_task failed or is a mock that doesn't handle coroutines
-                    countdown_task = loop.create_task(countdown_coro)
-            else:
-                # No task_registry available, create task directly
-                countdown_task = loop.create_task(countdown_coro)
-        except RuntimeError:
-            # No running event loop - this shouldn't happen in normal operation
-            # but can occur in tests. Create task when loop becomes available.
-            # Note: asyncio.create_task requires a running loop, so this will raise
-            # but at least we tried. The coroutine will be garbage collected with a warning.
-            try:
-                countdown_task = asyncio.create_task(countdown_coro)
-            except RuntimeError:
-                # Still no loop - log warning and store coroutine
-                # The caller should ensure there's a running loop
-                logger.error("Cannot create countdown task: no running event loop")
-                raise RuntimeError("Cannot create countdown task: no running event loop") from None
-
-        # Store shutdown data
-        app.state.shutdown_data = {
-            "countdown_seconds": countdown_seconds,
-            "start_time": time.time(),
-            "end_time": time.time() + countdown_seconds,
-            "admin_username": admin_username,
-            "task": countdown_task,
-        }
+        # Store shutdown data in container
+        shutdown_data = _store_shutdown_data(app, countdown_seconds, admin_username, countdown_task)
 
         # Log to audit trail
         admin_logger.log_admin_command(
@@ -314,7 +395,7 @@ async def initiate_shutdown_countdown(app: Any, countdown_seconds: int, admin_us
             success=True,
             additional_data={
                 "countdown_seconds": countdown_seconds,
-                "scheduled_time": app.state.shutdown_data["end_time"],
+                "scheduled_time": shutdown_data["end_time"],
             },
         )
 
@@ -329,9 +410,74 @@ async def initiate_shutdown_countdown(app: Any, countdown_seconds: int, admin_us
     except OSError as e:
         logger.error("Error initiating shutdown countdown", error=str(e), exc_info=True)
         # Clean up on failure
-        app.state.server_shutdown_pending = False
-        app.state.shutdown_data = None
+        _clear_shutdown_state(app)
         return False
+
+
+def _get_shutdown_state(app: Any) -> tuple[bool, dict[str, Any] | None]:
+    """
+    Get shutdown state from container or app.state.
+
+    Args:
+        app: FastAPI application instance
+
+    Returns:
+        tuple: (shutdown_pending, shutdown_data)
+    """
+    if hasattr(app.state, "container") and app.state.container:
+        return (
+            app.state.container.server_shutdown_pending,
+            app.state.container.shutdown_data,
+        )
+    # Fallback to app.state for backward compatibility
+    return (
+        getattr(app.state, "server_shutdown_pending", False),
+        getattr(app.state, "shutdown_data", None),
+    )
+
+
+async def _cancel_countdown_task(countdown_task: Any) -> None:
+    """
+    Cancel countdown task if it's not already done.
+
+    Args:
+        countdown_task: The countdown task to cancel
+    """
+    if not countdown_task:
+        return
+
+    # Check if task is actually done before trying to cancel
+    is_done = False
+    try:
+        is_done = countdown_task.done() if hasattr(countdown_task, "done") else False
+    except (AttributeError, RuntimeError) as e:
+        logger.error("Error checking countdown task status", error=str(e), error_type=type(e).__name__)
+
+    if not is_done:
+        countdown_task.cancel()
+        try:
+            # Only await if it's actually a coroutine/task
+            if asyncio.iscoroutine(countdown_task) or asyncio.isfuture(countdown_task):
+                await countdown_task
+        except (asyncio.CancelledError, RuntimeError):
+            # Task was cancelled or already finished
+            pass
+
+
+async def _broadcast_shutdown_cancellation(connection_manager: Any) -> None:
+    """
+    Broadcast shutdown cancellation notification.
+
+    Args:
+        connection_manager: Connection manager for broadcasting
+    """
+    cancellation_message = "The scheduled server shutdown has been cancelled. The stars are right once more."
+    event_data = {
+        "message": cancellation_message,
+        "channel": "system",
+    }
+
+    await connection_manager.broadcast_global_event("shutdown_cancelled", event_data)
 
 
 async def cancel_shutdown_countdown(app: Any, admin_username: str) -> bool:
@@ -346,15 +492,15 @@ async def cancel_shutdown_countdown(app: Any, admin_username: str) -> bool:
         True if cancellation successful, False if no active shutdown
     """
     try:
-        # Check if shutdown is active
-        if not getattr(app.state, "server_shutdown_pending", False):
+        # Check if shutdown is active (prefer container, fallback to app.state)
+        shutdown_pending, shutdown_data = _get_shutdown_state(app)
+
+        if not shutdown_pending:
             logger.info("No active shutdown to cancel", admin_username=admin_username)
             return False
-
-        shutdown_data = getattr(app.state, "shutdown_data", None)
         if not shutdown_data:
             logger.warning("Shutdown pending flag set but no shutdown_data found")
-            app.state.server_shutdown_pending = False
+            _clear_shutdown_state(app)
             return False
 
         # Calculate remaining time for audit log
@@ -362,36 +508,13 @@ async def cancel_shutdown_countdown(app: Any, admin_username: str) -> bool:
 
         # Cancel the countdown task
         countdown_task = shutdown_data.get("task")
-        if countdown_task:
-            # Check if task is actually done before trying to cancel
-            is_done = False
-            try:
-                is_done = countdown_task.done() if hasattr(countdown_task, "done") else False
-            except (AttributeError, RuntimeError) as e:
-                logger.error("Error checking countdown task status", error=str(e), error_type=type(e).__name__)
+        await _cancel_countdown_task(countdown_task)
 
-            if not is_done:
-                countdown_task.cancel()
-                try:
-                    # Only await if it's actually a coroutine/task
-                    if asyncio.iscoroutine(countdown_task) or asyncio.isfuture(countdown_task):
-                        await countdown_task
-                except (asyncio.CancelledError, RuntimeError):
-                    # Task was cancelled or already finished
-                    pass
-
-        # Clear shutdown state
-        app.state.server_shutdown_pending = False
-        app.state.shutdown_data = None
+        # Clear shutdown state in container
+        _clear_shutdown_state(app)
 
         # Broadcast cancellation notification
-        cancellation_message = "The scheduled server shutdown has been cancelled. The stars are right once more."
-        event_data = {
-            "message": cancellation_message,
-            "channel": "system",
-        }
-
-        await app.state.connection_manager.broadcast_global_event("shutdown_cancelled", event_data)
+        await _broadcast_shutdown_cancellation(app.state.connection_manager)
 
         # Log to audit trail
         admin_logger.log_admin_command(

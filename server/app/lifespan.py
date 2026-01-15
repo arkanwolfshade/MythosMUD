@@ -33,13 +33,7 @@ from ..time.time_service import get_mythos_chronicle
 from .game_tick_processing import game_tick_loop, get_current_tick, reset_current_tick
 from .lifespan_shutdown import shutdown_services
 from .lifespan_startup import (
-    initialize_chat_service,
-    initialize_combat_services,
     initialize_container_and_legacy_services,
-    initialize_magic_services,
-    initialize_mythos_time_consumer,
-    initialize_nats_and_combat_services,
-    initialize_npc_services,
     initialize_npc_startup_spawning,
     setup_connection_manager,
 )
@@ -94,9 +88,7 @@ async def _startup_application(app: FastAPI) -> ApplicationContainer:
     await container.initialize()
     await initialize_container_and_legacy_services(app, container)
     await setup_connection_manager(app, container)
-    await initialize_npc_services(app, container)
-    await initialize_combat_services(app, container)
-    await initialize_mythos_time_consumer(app, container)
+    # NPC, combat, magic, chat, and mythos time services are now initialized in container.initialize()
     await initialize_npc_startup_spawning(app)
 
     # Enhance logging system with PlayerGuidFormatter now that player service is available
@@ -116,15 +108,14 @@ async def _startup_application(app: FastAPI) -> ApplicationContainer:
 
     logger.info("Real-time event handler initialized")
 
-    await initialize_nats_and_combat_services(app, container)
-    await initialize_chat_service(app, container)
-    await initialize_magic_services(app, container)
+    # NATS, combat, chat, and magic services are now initialized in container.initialize()
 
     # Start the game tick loop using TaskRegistry from container
     if container.task_registry is None:
         raise RuntimeError("TaskRegistry must be initialized")
     tick_task = container.task_registry.register_task(game_tick_loop(app), "lifecycle/game_tick_loop", "lifecycle")
-    app.state.tick_task = tick_task
+    container.tick_task = tick_task
+    app.state.tick_task = tick_task  # Backward compatibility
     logger.info("MythosMUD server started successfully with ApplicationContainer")
     return container
 

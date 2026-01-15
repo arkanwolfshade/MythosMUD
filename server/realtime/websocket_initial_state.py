@@ -155,10 +155,16 @@ async def add_npc_occupants_to_list(
     """Add NPC occupants to the occupant names list."""
     if not hasattr(connection_manager, "app"):
         return
-    if not hasattr(connection_manager.app.state, "npc_lifecycle_manager"):
-        return
 
-    npc_lifecycle_manager = connection_manager.app.state.npc_lifecycle_manager
+    # Prefer container, fallback to app.state for backward compatibility
+    npc_lifecycle_manager = None
+    if hasattr(connection_manager.app.state, "container") and connection_manager.app.state.container:
+        npc_lifecycle_manager = connection_manager.app.state.container.npc_lifecycle_manager
+    elif hasattr(connection_manager.app.state, "npc_lifecycle_manager"):
+        npc_lifecycle_manager = connection_manager.app.state.npc_lifecycle_manager
+
+    if not npc_lifecycle_manager:
+        return
     npc_ids = room.get_npcs()
     for npc_id in npc_ids:
         npc = npc_lifecycle_manager.active_npcs.get(npc_id)
