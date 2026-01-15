@@ -384,7 +384,13 @@ class GameStateProvider:
         try:
             app = self.get_app()
             app_state = getattr(app, "state", None) if app else None
-            player_service = getattr(app_state, "player_service", None) if app_state else None
+
+            # Prefer container, fallback to app.state for backward compatibility
+            player_service = None
+            if app_state and hasattr(app_state, "container") and app_state.container:
+                player_service = getattr(app_state.container, "player_service", None)
+            elif app_state:
+                player_service = getattr(app_state, "player_service", None)
 
             if player_service:
                 complete_player_data = await player_service.convert_player_to_schema(player)

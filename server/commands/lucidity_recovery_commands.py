@@ -123,7 +123,12 @@ async def _perform_recovery_action(
     if validation_error:
         return validation_error
 
-    catatonia_observer = getattr(app.state, "catatonia_registry", None) if app else None
+    # Prefer container, fallback to app.state for backward compatibility
+    catatonia_observer = None
+    if app and hasattr(app.state, "container") and app.state.container:
+        catatonia_observer = app.state.container.catatonia_registry
+    elif app:
+        catatonia_observer = getattr(app.state, "catatonia_registry", None)
 
     async for session in get_async_session():
         service = ActiveLucidityService(session, catatonia_observer=catatonia_observer)

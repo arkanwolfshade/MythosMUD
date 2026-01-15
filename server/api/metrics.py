@@ -301,7 +301,7 @@ async def _load_dlq_message(dlq_path) -> dict[str, Any]:
     """
     import json
 
-    import aiofiles  # type: ignore[import-untyped]  # Reason: types-aiofiles stubs installed but may not be resolved in pre-commit mypy environment
+    import aiofiles  # type: ignore[import-untyped]  # Reason: types-aiofiles installed but mypy may not resolve it in pre-commit environment
 
     if not dlq_path.exists():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"DLQ file not found: {dlq_path}")

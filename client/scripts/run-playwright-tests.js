@@ -17,10 +17,12 @@ if (!existsSync(testsDir)) {
 }
 
 // Run Playwright tests
-// Using shell: false for security - spawn with array arguments doesn't require shell
+// On Windows, we need shell: true to resolve npx from PATH
+// On Unix systems, we can use shell: false for better security
+const isWindows = process.platform === 'win32';
 const playwright = spawn('npx', ['playwright', 'test'], {
   stdio: 'inherit',
-  shell: false,
+  shell: isWindows, // Use shell on Windows to resolve npx from PATH
   cwd: clientRoot,
 });
 

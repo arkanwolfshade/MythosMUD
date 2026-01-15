@@ -111,11 +111,19 @@ def convert_uuids_to_strings(obj: Any) -> Any:
 
 
 def get_player_service_from_connection_manager(connection_manager) -> Any:
-    """Extract player service from connection manager."""
+    """Extract player service from connection manager using container pattern."""
     app_state = None
     if hasattr(connection_manager, "app") and connection_manager.app:
         app_state = getattr(connection_manager.app, "state", None)
-    return getattr(app_state, "player_service", None) if app_state else None
+
+    if not app_state:
+        return None
+
+    # Prefer container, fallback to app.state for backward compatibility
+    if hasattr(app_state, "container") and app_state.container:
+        return getattr(app_state.container, "player_service", None)
+
+    return getattr(app_state, "player_service", None)
 
 
 def convert_schema_to_dict(complete_player_data: Any) -> dict[str, Any]:

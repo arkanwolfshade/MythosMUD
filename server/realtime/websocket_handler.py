@@ -553,8 +553,16 @@ async def process_websocket_command(cmd: str, args: list, player_id: str, connec
     request_context.set_alias_storage(alias_storage)
 
     # Verify app state services are available (they should already be in the real app state)
-    player_service = getattr(app_state, "player_service", None)
-    user_manager = getattr(app_state, "user_manager", None)
+    # Prefer container, fallback to app.state for backward compatibility
+    player_service = None
+    user_manager = None
+    if app_state and hasattr(app_state, "container") and app_state.container:
+        player_service = getattr(app_state.container, "player_service", None)
+        user_manager = getattr(app_state.container, "user_manager", None)
+    elif app_state:
+        player_service = getattr(app_state, "player_service", None)
+        user_manager = getattr(app_state, "user_manager", None)
+
     logger.debug("App state services available", player_service=player_service, user_manager=user_manager)
 
     if not player_service or not user_manager:

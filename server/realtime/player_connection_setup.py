@@ -112,7 +112,14 @@ async def _send_room_occupants_update_after_connection(player_id: uuid.UUID, roo
     try:
         event_handler = None
         if manager.app and hasattr(manager.app, "state"):
-            event_handler = getattr(manager.app.state, "event_handler", None)
+            app_state = manager.app.state
+            # Prefer container, fallback to app.state for backward compatibility
+            if hasattr(app_state, "container") and app_state.container:
+                # Use real_time_event_handler to match container registration
+                event_handler = getattr(app_state.container, "real_time_event_handler", None)
+            else:
+                # Fallback to app.state for backward compatibility
+                event_handler = getattr(app_state, "event_handler", None)
 
         if event_handler and hasattr(event_handler, "send_room_occupants_update"):
             logger.debug(

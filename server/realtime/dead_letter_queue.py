@@ -13,7 +13,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-import aiofiles  # type: ignore[import-untyped]  # Reason: types-aiofiles stubs installed but may not be resolved in pre-commit mypy environment
+import aiofiles  # type: ignore[import-untyped]  # Reason: types-aiofiles installed but mypy may not resolve it in pre-commit environment
 
 from ..config import get_config
 from ..structured_logging.enhanced_logging_config import get_logger
