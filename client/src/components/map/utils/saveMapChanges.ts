@@ -103,7 +103,13 @@ export async function saveNodePositions(
     // #endregion
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ detail: 'Unknown error' }));
+      let errorData: Record<string, unknown> = { detail: 'Unknown error' };
+      try {
+        const rawData: unknown = await response.json();
+        errorData = typeof rawData === 'object' && rawData !== null ? (rawData as Record<string, unknown>) : errorData;
+      } catch {
+        // Use default error data if JSON parsing fails
+      }
       // #region agent log
       if (typeof window !== 'undefined') {
         // Intentional debug logging to localhost endpoint (127.0.0.1) for development only

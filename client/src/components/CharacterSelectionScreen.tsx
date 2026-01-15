@@ -1,5 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import type { CharacterInfo } from '../types/auth';
+import { isServerCharacterResponseArray } from '../utils/apiTypeGuards';
+import { getErrorMessage, isErrorResponse } from '../utils/errorHandler';
 import { logger } from '../utils/logger';
 import './CharacterSelectionScreen.css';
 
@@ -36,15 +38,33 @@ export const CharacterSelectionScreen: React.FC<CharacterSelectionScreenProps> =
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        const errorMessage = errorData.detail?.message || errorData.detail || 'Failed to load characters';
+        let errorMessage = 'Failed to load characters';
+        try {
+          const rawData: unknown = await response.json();
+          if (isErrorResponse(rawData)) {
+            errorMessage = getErrorMessage(rawData);
+          } else if (typeof rawData === 'object' && rawData !== null) {
+            const errorData = rawData as Record<string, unknown>;
+            errorMessage =
+              typeof errorData.detail === 'object' && errorData.detail !== null && 'message' in errorData.detail
+                ? String((errorData.detail as Record<string, unknown>).message)
+                : typeof errorData.detail === 'string'
+                  ? errorData.detail
+                  : errorMessage;
+          }
+        } catch {
+          // Use default error message if JSON parsing fails
+        }
         throw new Error(errorMessage);
       }
 
-      const data = await response.json();
+      const rawData: unknown = await response.json();
+      if (!isServerCharacterResponseArray(rawData)) {
+        throw new Error('Invalid API response: expected ServerCharacterResponse[]');
+      }
       // Note: The parent component should update the characters prop
       // This is just for refreshing if needed
-      logger.info('CharacterSelectionScreen', 'Characters refreshed', { count: data.length });
+      logger.info('CharacterSelectionScreen', 'Characters refreshed', { count: rawData.length });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       logger.error('CharacterSelectionScreen', 'Failed to refresh characters', { error: errorMessage });

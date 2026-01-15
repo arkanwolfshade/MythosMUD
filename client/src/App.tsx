@@ -1,9 +1,22 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import './App.css';
+import {
+  assertLoginResponse,
+  assertServerCharacterResponseArray,
+  isServerCharacterResponse,
+  isServerCharacterResponseArray,
+  type ServerCharacterResponse,
+} from './utils/apiTypeGuards';
 import { API_BASE_URL } from './utils/config';
+import { getErrorMessage, isErrorResponse } from './utils/errorHandler';
 import { logoutHandler } from './utils/logoutHandler';
 import { memoryMonitor } from './utils/memoryMonitor';
 import { inputSanitizer, secureTokenStorage } from './utils/security';
+
+// Helper function to check if value is an object
+function isObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
 
 // Lazy load screen components for code splitting
 // AI: Lazy loading reduces initial bundle size by ~30-50% and improves initial page load time
@@ -28,7 +41,7 @@ const CharacterSelectionScreen = lazy(() =>
 
 // Import types that are needed for props
 import type { Profession } from './components/ProfessionCard';
-import type { CharacterInfo, LoginResponse } from './types/auth';
+import type { CharacterInfo } from './types/auth';
 
 // Import the Stats interface from StatsRollingScreen
 interface Stats {
@@ -40,17 +53,7 @@ interface Stats {
   charisma: number;
 }
 
-// Server response character type (server returns 'id', client expects 'player_id')
-interface ServerCharacterResponse {
-  id?: string;
-  player_id?: string;
-  name: string;
-  profession_id: number;
-  profession_name?: string;
-  level: number;
-  created_at: string;
-  last_active: string;
-}
+// ServerCharacterResponse is now imported from apiTypeGuards.ts
 
 // Loading fallback component for lazy-loaded screens
 // Defined at module level to prevent recreation on every render
@@ -144,9 +147,13 @@ function App() {
           Authorization: `Bearer ${existingToken}`,
         },
       })
-        .then(response => {
+        .then(async response => {
           if (response.ok) {
-            return response.json();
+            const rawData: unknown = await response.json();
+            if (!isServerCharacterResponseArray(rawData)) {
+              throw new Error('Invalid API response: expected ServerCharacterResponse[]');
+            }
+            return rawData;
           }
           // If 401, token is invalid - clear it
           if (response.status === 401) {
@@ -157,18 +164,18 @@ function App() {
           return null;
         })
         .then(charactersList => {
-          if (Array.isArray(charactersList) && charactersList.length > 0) {
+          if (charactersList && charactersList.length > 0) {
             // Map server response to client interface
             // Server returns PlayerRead which has player_id as the ID field
             const mappedCharacters = charactersList.map(
-              (c: { player_id?: string; id?: string; name?: string; [key: string]: unknown }): CharacterInfo => ({
+              (c: ServerCharacterResponse): CharacterInfo => ({
                 player_id: c.player_id || c.id || '',
-                name: c.name || '',
-                profession_id: (c as { profession_id?: number }).profession_id || 0,
-                profession_name: (c as { profession_name?: string }).profession_name || undefined,
-                level: (c as { level?: number }).level || 1,
-                created_at: (c as { created_at?: string }).created_at || new Date().toISOString(),
-                last_active: (c as { last_active?: string }).last_active || new Date().toISOString(),
+                name: c.name,
+                profession_id: c.profession_id,
+                profession_name: c.profession_name,
+                level: c.level,
+                created_at: c.created_at,
+                last_active: c.last_active,
               })
             );
             setCharacters(mappedCharacters);
@@ -185,7 +192,7 @@ function App() {
               // Multiple characters - show selection screen
               setShowCharacterSelection(true);
             }
-          } else if (Array.isArray(charactersList) && charactersList.length === 0) {
+          } else if (charactersList && charactersList.length === 0) {
             // No characters - user needs to create one
             setShowProfessionSelection(true);
             setShowCharacterSelection(false);
@@ -221,18 +228,28 @@ function App() {
       if (!response.ok) {
         let message = `Login failed (${response.status})`;
         try {
-          const data = await response.json();
-          message = data?.error?.message || data?.detail || message;
+          const rawData: unknown = await response.json();
+          if (isErrorResponse(rawData)) {
+            message = getErrorMessage(rawData);
+          } else if (isObject(rawData)) {
+            const data = rawData as Record<string, unknown>;
+            message =
+              typeof data.error === 'object' && data.error !== null && 'message' in data.error
+                ? String((data.error as Record<string, unknown>).message)
+                : typeof data.detail === 'string'
+                  ? data.detail
+                  : message;
+          }
         } catch {
           // Ignore JSON parsing errors, use default message
         }
         throw new Error(message);
       }
-      const data = await response.json();
-      const token = data?.access_token as string | undefined;
-      const refreshToken = data?.refresh_token as string | undefined;
+      const rawData: unknown = await response.json();
+      const data = assertLoginResponse(rawData, 'Invalid login response from server');
 
-      if (!token) throw new Error('No access_token in response');
+      const token = data.access_token;
+      const refreshToken = data.refresh_token;
 
       // Store tokens securely with username-specific keys (prevents tab conflicts)
       secureTokenStorage.setToken(token, sanitizedUsername);
@@ -243,8 +260,7 @@ function App() {
       setAuthToken(token);
       setIsAuthenticated(true);
       // MULTI-CHARACTER: Update to use characters array
-      const loginData = data as LoginResponse;
-      const charactersList = loginData?.characters || [];
+      const charactersList = data.characters || [];
       // Map server response (id) to client interface (player_id)
       const mappedCharacters = charactersList.map(
         (c: ServerCharacterResponse): CharacterInfo => ({
@@ -295,18 +311,28 @@ function App() {
       if (!response.ok) {
         let message = `Registration failed (${response.status})`;
         try {
-          const data = await response.json();
-          message = data?.error?.message || data?.detail || message;
+          const rawData: unknown = await response.json();
+          if (isErrorResponse(rawData)) {
+            message = getErrorMessage(rawData);
+          } else if (isObject(rawData)) {
+            const data = rawData as Record<string, unknown>;
+            message =
+              typeof data.error === 'object' && data.error !== null && 'message' in data.error
+                ? String((data.error as Record<string, unknown>).message)
+                : typeof data.detail === 'string'
+                  ? data.detail
+                  : message;
+          }
         } catch {
           // Ignore JSON parsing errors, use default message
         }
         throw new Error(message);
       }
-      const data = await response.json();
-      const token = data?.access_token as string | undefined;
-      const refreshToken = data?.refresh_token as string | undefined;
+      const rawData: unknown = await response.json();
+      const data = assertLoginResponse(rawData, 'Invalid registration response from server');
 
-      if (!token) throw new Error('No access_token in response');
+      const token = data.access_token;
+      const refreshToken = data.refresh_token;
 
       // Store tokens securely with username-specific keys (prevents tab conflicts)
       secureTokenStorage.setToken(token, sanitizedUsername);
@@ -317,8 +343,7 @@ function App() {
       setAuthToken(token);
       setIsAuthenticated(true);
       // MULTI-CHARACTER: Update to use characters array
-      const registerData = data as LoginResponse;
-      const charactersList = registerData?.characters || [];
+      const charactersList = data.characters || [];
       // Map server response (id) to client interface (player_id)
       const mappedCharacters = charactersList.map(
         (c: ServerCharacterResponse): CharacterInfo => ({
@@ -383,12 +408,21 @@ function App() {
       });
 
       if (response.ok) {
-        const charactersList = (await response.json()) as ServerCharacterResponse[];
+        const rawData: unknown = await response.json();
+        const charactersList = assertServerCharacterResponseArray(
+          rawData,
+          'Invalid API response: expected ServerCharacterResponse[]'
+        );
         // Map server response (id) to client interface (player_id)
         const mappedCharacters = charactersList.map(
           (c: ServerCharacterResponse): CharacterInfo => ({
-            ...c,
-            player_id: c.id || c.player_id || '', // Server returns 'id', client expects 'player_id'
+            player_id: c.player_id || c.id || '',
+            name: c.name,
+            profession_id: c.profession_id,
+            profession_name: c.profession_name,
+            level: c.level,
+            created_at: c.created_at,
+            last_active: c.last_active,
           })
         );
         setCharacters(mappedCharacters);
@@ -400,9 +434,23 @@ function App() {
         setShowCharacterSelection(true);
       } else {
         // Response was not OK - handle as error
-        const errorData = await response.json().catch(() => ({}));
-        const errorMessage =
-          errorData.detail?.message || errorData.detail || 'Character created, but failed to refresh character list';
+        let errorMessage = 'Character created, but failed to refresh character list';
+        try {
+          const rawData: unknown = await response.json();
+          if (isErrorResponse(rawData)) {
+            errorMessage = getErrorMessage(rawData);
+          } else if (isObject(rawData)) {
+            const errorData = rawData as Record<string, unknown>;
+            errorMessage =
+              typeof errorData.detail === 'object' && errorData.detail !== null && 'message' in errorData.detail
+                ? String((errorData.detail as Record<string, unknown>).message)
+                : typeof errorData.detail === 'string'
+                  ? errorData.detail
+                  : errorMessage;
+          }
+        } catch {
+          // Use default error message if JSON parsing fails
+        }
         console.error('Failed to refresh characters list:', errorMessage);
         setError('Character created, but failed to refresh character list. Please refresh the page.');
         // Reset character creation state to allow retry
@@ -447,15 +495,44 @@ function App() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        const errorMessage = errorData.detail?.message || errorData.detail || 'Failed to select character';
+        let errorMessage = 'Failed to select character';
+        try {
+          const rawData: unknown = await response.json();
+          if (isErrorResponse(rawData)) {
+            errorMessage = getErrorMessage(rawData);
+          } else if (isObject(rawData)) {
+            const errorData = rawData as Record<string, unknown>;
+            errorMessage =
+              typeof errorData.detail === 'object' && errorData.detail !== null && 'message' in errorData.detail
+                ? String((errorData.detail as Record<string, unknown>).message)
+                : typeof errorData.detail === 'string'
+                  ? errorData.detail
+                  : errorMessage;
+          }
+        } catch {
+          // Use default error message if JSON parsing fails
+        }
         setError(errorMessage);
         return;
       }
 
-      const characterData = await response.json();
-      const selectedId = characterData.id || characterData.player_id || characterId;
-      setSelectedCharacterName(characterData.name || '');
+      const rawData: unknown = await response.json();
+      // Character selection response may be a single character or a simple response
+      // Validate as ServerCharacterResponse if possible, otherwise extract fields safely
+      let selectedId = characterId;
+      let selectedName = '';
+      if (isServerCharacterResponse(rawData)) {
+        selectedId = rawData.player_id || rawData.id || characterId;
+        selectedName = rawData.name;
+      } else if (isObject(rawData)) {
+        const characterData = rawData as Record<string, unknown>;
+        selectedId =
+          (typeof characterData.id === 'string' ? characterData.id : null) ||
+          (typeof characterData.player_id === 'string' ? characterData.player_id : null) ||
+          characterId;
+        selectedName = typeof characterData.name === 'string' ? characterData.name : '';
+      }
+      setSelectedCharacterName(selectedName);
       // Store the selected character ID for WebSocket connection
       setSelectedCharacterId(selectedId);
       setShowCharacterSelection(false);
@@ -479,8 +556,23 @@ function App() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        const errorMessage = errorData.detail?.message || errorData.detail || 'Failed to delete character';
+        let errorMessage = 'Failed to delete character';
+        try {
+          const rawData: unknown = await response.json();
+          if (isErrorResponse(rawData)) {
+            errorMessage = getErrorMessage(rawData);
+          } else if (isObject(rawData)) {
+            const errorData = rawData as Record<string, unknown>;
+            errorMessage =
+              typeof errorData.detail === 'object' && errorData.detail !== null && 'message' in errorData.detail
+                ? String((errorData.detail as Record<string, unknown>).message)
+                : typeof errorData.detail === 'string'
+                  ? errorData.detail
+                  : errorMessage;
+          }
+        } catch {
+          // Use default error message if JSON parsing fails
+        }
         throw new Error(errorMessage);
       }
 
@@ -494,12 +586,21 @@ function App() {
       });
 
       if (charactersResponse.ok) {
-        const charactersList = (await charactersResponse.json()) as ServerCharacterResponse[];
+        const rawData: unknown = await charactersResponse.json();
+        const charactersList = assertServerCharacterResponseArray(
+          rawData,
+          'Invalid API response: expected ServerCharacterResponse[]'
+        );
         // Map server response (id) to client interface (player_id)
         const mappedCharacters = charactersList.map(
           (c: ServerCharacterResponse): CharacterInfo => ({
-            ...c,
-            player_id: c.id || c.player_id || '', // Server returns 'id', client expects 'player_id'
+            player_id: c.player_id || c.id || '',
+            name: c.name,
+            profession_id: c.profession_id,
+            profession_name: c.profession_name,
+            level: c.level,
+            created_at: c.created_at,
+            last_active: c.last_active,
           })
         );
         setCharacters(mappedCharacters);
@@ -512,9 +613,23 @@ function App() {
         }
       } else {
         // Character was deleted but refresh failed - log error and show message
-        const errorData = await charactersResponse.json().catch(() => ({}));
-        const errorMessage =
-          errorData.detail?.message || errorData.detail || 'Character deleted, but failed to refresh character list';
+        let errorMessage = 'Character deleted, but failed to refresh character list';
+        try {
+          const rawData: unknown = await charactersResponse.json();
+          if (isErrorResponse(rawData)) {
+            errorMessage = getErrorMessage(rawData);
+          } else if (isObject(rawData)) {
+            const errorData = rawData as Record<string, unknown>;
+            errorMessage =
+              typeof errorData.detail === 'object' && errorData.detail !== null && 'message' in errorData.detail
+                ? String((errorData.detail as Record<string, unknown>).message)
+                : typeof errorData.detail === 'string'
+                  ? errorData.detail
+                  : errorMessage;
+          }
+        } catch {
+          // Use default error message if JSON parsing fails
+        }
         console.error('Failed to refresh characters list after deletion:', errorMessage);
         setError(errorMessage);
         // Still throw to indicate partial failure
@@ -565,8 +680,20 @@ function App() {
 
         if (!response.ok) {
           // Log error but don't block game entry - grace period is best effort
-          const errorData = await response.json().catch(() => ({}));
-          console.warn('Failed to start login grace period:', errorData.detail || 'Unknown error');
+          try {
+            const rawData: unknown = await response.json();
+            if (isErrorResponse(rawData)) {
+              console.warn('Failed to start login grace period:', getErrorMessage(rawData));
+            } else if (isObject(rawData)) {
+              const errorData = rawData as Record<string, unknown>;
+              const detail = typeof errorData.detail === 'string' ? errorData.detail : 'Unknown error';
+              console.warn('Failed to start login grace period:', detail);
+            } else {
+              console.warn('Failed to start login grace period: Unknown error');
+            }
+          } catch {
+            console.warn('Failed to start login grace period: Unknown error');
+          }
         }
       } catch (error) {
         // Log error but don't block game entry - grace period is best effort
@@ -951,4 +1078,4 @@ function App() {
   );
 }
 
-export default App;
+export { App };

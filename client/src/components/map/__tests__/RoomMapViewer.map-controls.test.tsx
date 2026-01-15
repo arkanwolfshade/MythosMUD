@@ -5,6 +5,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Room } from '../../../stores/gameStore';
+import type { MapControlsProps } from '../MapControls';
 import { RoomMapViewer } from '../RoomMapViewer';
 import { useMapLayout } from '../hooks/useMapLayout';
 import { useRoomMapData } from '../hooks/useRoomMapData';
@@ -26,9 +27,7 @@ vi.mock('reactflow', () => ({
 
 // Mock MapControls and RoomDetailsPanel
 vi.mock('../MapControls', () => ({
-  // Mock component props use any type for test flexibility
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  MapControls: ({ searchQuery, onSearchChange }: any) => (
+  MapControls: ({ searchQuery, onSearchChange }: Pick<MapControlsProps, 'searchQuery' | 'onSearchChange'>) => (
     <div data-testid="map-controls">
       <input data-testid="search-input" value={searchQuery} onChange={e => onSearchChange(e.target.value)} />
     </div>

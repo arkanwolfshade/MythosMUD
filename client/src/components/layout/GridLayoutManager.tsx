@@ -165,4 +165,4 @@ export const GridLayoutManager: React.FC<GridLayoutManagerProps> = ({ panels, on
   );
 };
 
-export default GridLayoutManager;
+// Named export - GridLayoutManager is already exported above

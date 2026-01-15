@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import App from '../App';
+import { App } from '../App';
 
 // Mock fetch globally
 const mockFetch = vi.fn();
@@ -35,6 +35,33 @@ vi.mock('../utils/security', () => ({
 describe('Profession Selection - Different Profession Choices', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  // Helper function to create a valid LoginResponse mock
+  const createMockLoginResponse = (
+    characters: Array<{
+      id?: string;
+      player_id: string;
+      name: string;
+      profession_id: number;
+      profession_name?: string;
+      level: number;
+      created_at: string;
+      last_active: string;
+    }> = []
+  ) => ({
+    access_token: 'mock-token',
+    token_type: 'Bearer',
+    user_id: 'test-user-id',
+    characters: characters.map(char => ({
+      player_id: char.player_id,
+      name: char.name,
+      profession_id: char.profession_id,
+      profession_name: char.profession_name,
+      level: char.level,
+      created_at: char.created_at,
+      last_active: char.last_active,
+    })),
   });
 
   const createMockProfessions = () => [
@@ -88,11 +115,7 @@ describe('Profession Selection - Different Profession Choices', () => {
   const setupBasicMocks = () => {
     const registrationResponse = {
       ok: true,
-      json: vi.fn().mockResolvedValue({
-        access_token: 'mock-token',
-        has_character: false,
-        character_name: '',
-      }),
+      json: vi.fn().mockResolvedValue(createMockLoginResponse([])),
     };
 
     const professionsResponse = {
@@ -109,9 +132,13 @@ describe('Profession Selection - Different Profession Choices', () => {
           strength: 12,
           dexterity: 14,
           constitution: 10,
+          size: 55,
           intelligence: 16,
+          power: 50,
+          education: 40,
           wisdom: 8,
           charisma: 13,
+          luck: 50,
         },
         stat_summary: {
           total: 73,

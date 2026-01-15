@@ -199,4 +199,4 @@ export const useGridLayout = (): UseGridLayoutReturn => {
   };
 };
 
-export default useGridLayout;
+// Named export - useGridLayout is already exported above

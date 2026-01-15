@@ -5,7 +5,9 @@
  */
 
 import { render, screen } from '@testing-library/react';
+import type { ReactFlowProps } from 'reactflow';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { MapControlsProps } from '../MapControls';
 import { RoomMapViewer } from '../RoomMapViewer';
 import { useMapLayout } from '../hooks/useMapLayout';
 import { useRoomMapData } from '../hooks/useRoomMapData';
@@ -19,9 +21,7 @@ vi.mock('../utils/mapUtils');
 
 // Mock React Flow
 vi.mock('reactflow', () => ({
-  // Mock component props use any type for test flexibility
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  default: ({ children, nodes, edges }: any) => (
+  default: ({ children, nodes, edges }: Pick<ReactFlowProps, 'children' | 'nodes' | 'edges'>) => (
     <div data-testid="react-flow">
       {children}
       <div data-testid="nodes">{nodes?.length || 0} nodes</div>
@@ -35,9 +35,7 @@ vi.mock('reactflow', () => ({
 
 // Mock MapControls and RoomDetailsPanel
 vi.mock('../MapControls', () => ({
-  // Mock component props use any type for test flexibility
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  MapControls: ({ searchQuery, onSearchChange }: any) => (
+  MapControls: ({ searchQuery, onSearchChange }: Pick<MapControlsProps, 'searchQuery' | 'onSearchChange'>) => (
     <div data-testid="map-controls">
       <input data-testid="search-input" value={searchQuery} onChange={e => onSearchChange(e.target.value)} />
     </div>

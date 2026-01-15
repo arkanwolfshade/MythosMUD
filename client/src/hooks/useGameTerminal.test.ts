@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useCommandStore, useConnectionStore, useGameStore, useSessionStore } from '../stores';
@@ -383,26 +382,26 @@ describe('useGameTerminal', () => {
           websocketConnected: true,
           connectionHealth: 'connected' as const,
         }),
-      } as any);
+      } as Partial<ReturnType<typeof useConnectionStore>>);
       vi.mocked(useGameStore).mockReturnValue({
         player: null,
         room: null,
         chatMessages: [],
         gameLog: [],
-      } as any);
+      } as Partial<ReturnType<typeof useGameStore>>);
       vi.mocked(useSessionStore).mockReturnValue({
         playerName: 'TestPlayer',
         characterName: 'TestCharacter',
         isAuthenticated: true,
         hasCharacter: true,
-      } as any);
+      } as Partial<ReturnType<typeof useSessionStore>>);
       vi.mocked(useCommandStore).mockReturnValue({
         commandHistory: [],
         currentCommand: '',
         isExecuting: false,
         executeCommand: mockExecuteCommand,
         clearHistory: vi.fn(),
-      } as any);
+      } as Partial<ReturnType<typeof useCommandStore>>);
 
       const { result } = renderHook(() => useGameTerminal());
 
@@ -427,7 +426,7 @@ describe('useGameTerminal', () => {
           websocketConnected: true,
           connectionHealth: 'connected' as const,
         }),
-      } as any);
+      } as Partial<ReturnType<typeof useConnectionStore>>);
       vi.mocked(useGameStore).mockReturnValue({
         player: null,
         room: null,
@@ -435,14 +434,14 @@ describe('useGameTerminal', () => {
         gameLog: [],
         addChatMessage: mockAddChatMessage,
         clearChatMessages: vi.fn(),
-      } as any);
+      } as Partial<ReturnType<typeof useGameStore>>);
 
       vi.mocked(useSessionStore).mockReturnValue({
         playerName: 'TestPlayer',
         characterName: 'TestCharacter',
         isAuthenticated: true,
         hasCharacter: true,
-      } as any);
+      } as Partial<ReturnType<typeof useSessionStore>>);
 
       const { result } = renderHook(() => useGameTerminal());
 
@@ -473,7 +472,7 @@ describe('useGameTerminal', () => {
           websocketConnected: true,
           connectionHealth: 'connected' as const,
         }),
-      } as any);
+      } as Partial<ReturnType<typeof useConnectionStore>>);
       vi.mocked(useGameStore).mockReturnValue({
         player: null,
         room: null,
@@ -481,14 +480,14 @@ describe('useGameTerminal', () => {
         gameLog: [],
         addChatMessage: mockAddChatMessage,
         clearChatMessages: vi.fn(),
-      } as any);
+      } as Partial<ReturnType<typeof useGameStore>>);
 
       vi.mocked(useSessionStore).mockReturnValue({
         playerName: 'TestPlayer',
         characterName: '',
         isAuthenticated: true,
         hasCharacter: false,
-      } as any);
+      } as Partial<ReturnType<typeof useSessionStore>>);
 
       const { result } = renderHook(() => useGameTerminal());
 
@@ -517,7 +516,7 @@ describe('useGameTerminal', () => {
           websocketConnected: true,
           connectionHealth: 'connected' as const,
         }),
-      } as any);
+      } as Partial<ReturnType<typeof useConnectionStore>>);
       vi.mocked(useGameStore).mockReturnValue({
         player: null,
         room: null,
@@ -525,20 +524,20 @@ describe('useGameTerminal', () => {
         gameLog: [],
         addGameLogEntry: vi.fn(),
         clearChatMessages: mockClearChatMessages,
-      } as any);
+      } as Partial<ReturnType<typeof useGameStore>>);
       vi.mocked(useSessionStore).mockReturnValue({
         playerName: 'TestPlayer',
         characterName: 'TestCharacter',
         isAuthenticated: true,
         hasCharacter: true,
-      } as any);
+      } as Partial<ReturnType<typeof useSessionStore>>);
       vi.mocked(useCommandStore).mockReturnValue({
         commandHistory: [],
         currentCommand: '',
         isExecuting: false,
         executeCommand: vi.fn(),
         clearHistory: vi.fn(),
-      } as any);
+      } as Partial<ReturnType<typeof useCommandStore>>);
 
       const { result } = renderHook(() => useGameTerminal());
 
@@ -563,26 +562,26 @@ describe('useGameTerminal', () => {
           websocketConnected: true,
           connectionHealth: 'connected' as const,
         }),
-      } as any);
+      } as Partial<ReturnType<typeof useConnectionStore>>);
       vi.mocked(useGameStore).mockReturnValue({
         player: null,
         room: null,
         chatMessages: [],
         gameLog: [],
-      } as any);
+      } as Partial<ReturnType<typeof useGameStore>>);
       vi.mocked(useSessionStore).mockReturnValue({
         playerName: 'TestPlayer',
         characterName: 'TestCharacter',
         isAuthenticated: true,
         hasCharacter: true,
-      } as any);
+      } as Partial<ReturnType<typeof useSessionStore>>);
       vi.mocked(useCommandStore).mockReturnValue({
         commandHistory: [],
         currentCommand: '',
         isExecuting: false,
         executeCommand: vi.fn(),
         clearHistory: mockClearHistory,
-      } as any);
+      } as Partial<ReturnType<typeof useCommandStore>>);
 
       const { result } = renderHook(() => useGameTerminal());
 
@@ -610,7 +609,7 @@ describe('useGameTerminal', () => {
           websocketConnected: true,
           connectionHealth: 'connected' as const,
         }),
-      } as any);
+      } as Partial<ReturnType<typeof useConnectionStore>>);
       vi.mocked(useGameStore).mockReturnValue({
         player: null,
         room: null,
@@ -618,21 +617,21 @@ describe('useGameTerminal', () => {
         gameLog: mockGameLog,
         addGameLogEntry: vi.fn(),
         clearChatMessages: vi.fn(),
-      } as any);
+      } as Partial<ReturnType<typeof useGameStore>>);
 
       vi.mocked(useSessionStore).mockReturnValue({
         playerName: 'TestPlayer',
         characterName: 'TestCharacter',
         isAuthenticated: true,
         hasCharacter: true,
-      } as any);
+      } as Partial<ReturnType<typeof useSessionStore>>);
       vi.mocked(useCommandStore).mockReturnValue({
         commandHistory: mockCommandHistory,
         currentCommand: '',
         isExecuting: false,
         executeCommand: vi.fn(),
         clearHistory: vi.fn(),
-      } as any);
+      } as Partial<ReturnType<typeof useCommandStore>>);
 
       const { result } = renderHook(() => useGameTerminal());
 
@@ -667,7 +666,7 @@ describe('useGameTerminal', () => {
           websocketConnected: true,
           connectionHealth: 'connected' as const,
         }),
-      } as any);
+      } as Partial<ReturnType<typeof useConnectionStore>>);
       vi.mocked(useGameStore).mockReturnValue({
         player: null,
         room: null,
@@ -681,20 +680,20 @@ describe('useGameTerminal', () => {
           },
         ],
         gameLog: [],
-      } as any);
+      } as Partial<ReturnType<typeof useGameStore>>);
       vi.mocked(useSessionStore).mockReturnValue({
         playerName: 'TestPlayer',
         characterName: 'TestCharacter',
         isAuthenticated: true,
         hasCharacter: true,
-      } as any);
+      } as Partial<ReturnType<typeof useSessionStore>>);
       vi.mocked(useCommandStore).mockReturnValue({
         commandHistory: [],
         currentCommand: '',
         isExecuting: false,
         executeCommand: vi.fn(),
         clearHistory: vi.fn(),
-      } as any);
+      } as Partial<ReturnType<typeof useCommandStore>>);
 
       const { result } = renderHook(() => useGameTerminal());
 
@@ -718,7 +717,7 @@ describe('useGameTerminal', () => {
           websocketConnected: true,
           connectionHealth: 'connected' as const,
         }),
-      } as any);
+      } as Partial<ReturnType<typeof useConnectionStore>>);
       vi.mocked(useGameStore).mockReturnValue({
         player: null,
         room: null,
@@ -732,20 +731,20 @@ describe('useGameTerminal', () => {
           },
         ],
         gameLog: [],
-      } as any);
+      } as Partial<ReturnType<typeof useGameStore>>);
       vi.mocked(useSessionStore).mockReturnValue({
         playerName: 'TestPlayer',
         characterName: 'TestCharacter',
         isAuthenticated: true,
         hasCharacter: true,
-      } as any);
+      } as Partial<ReturnType<typeof useSessionStore>>);
       vi.mocked(useCommandStore).mockReturnValue({
         commandHistory: [],
         currentCommand: '',
         isExecuting: false,
         executeCommand: vi.fn(),
         clearHistory: vi.fn(),
-      } as any);
+      } as Partial<ReturnType<typeof useCommandStore>>);
 
       const { result } = renderHook(() => useGameTerminal());
 
@@ -768,7 +767,7 @@ describe('useGameTerminal', () => {
           websocketConnected: true,
           connectionHealth: 'connected' as const,
         }),
-      } as any);
+      } as Partial<ReturnType<typeof useConnectionStore>>);
       vi.mocked(useGameStore).mockReturnValue({
         player: null,
         room: null,
@@ -782,20 +781,20 @@ describe('useGameTerminal', () => {
           },
         ],
         gameLog: [],
-      } as any);
+      } as Partial<ReturnType<typeof useGameStore>>);
       vi.mocked(useSessionStore).mockReturnValue({
         playerName: 'TestPlayer',
         characterName: 'TestCharacter',
         isAuthenticated: true,
         hasCharacter: true,
-      } as any);
+      } as Partial<ReturnType<typeof useSessionStore>>);
       vi.mocked(useCommandStore).mockReturnValue({
         commandHistory: [],
         currentCommand: '',
         isExecuting: false,
         executeCommand: vi.fn(),
         clearHistory: vi.fn(),
-      } as any);
+      } as Partial<ReturnType<typeof useCommandStore>>);
 
       const { result } = renderHook(() => useGameTerminal());
 
@@ -823,7 +822,7 @@ describe('useGameTerminal', () => {
           websocketConnected: true,
           connectionHealth: 'connected' as const,
         }),
-      } as any);
+      } as Partial<ReturnType<typeof useConnectionStore>>);
       vi.mocked(useGameStore).mockReturnValue({
         player: null,
         room: null,
@@ -837,20 +836,20 @@ describe('useGameTerminal', () => {
           },
         ],
         gameLog: [],
-      } as any);
+      } as Partial<ReturnType<typeof useGameStore>>);
       vi.mocked(useSessionStore).mockReturnValue({
         playerName: 'TestPlayer',
         characterName: 'TestCharacter',
         isAuthenticated: true,
         hasCharacter: true,
-      } as any);
+      } as Partial<ReturnType<typeof useSessionStore>>);
       vi.mocked(useCommandStore).mockReturnValue({
         commandHistory: [],
         currentCommand: '',
         isExecuting: false,
         executeCommand: vi.fn(),
         clearHistory: vi.fn(),
-      } as any);
+      } as Partial<ReturnType<typeof useCommandStore>>);
 
       const { result } = renderHook(() => useGameTerminal());
 
@@ -873,7 +872,7 @@ describe('useGameTerminal', () => {
           websocketConnected: true,
           connectionHealth: 'connected' as const,
         }),
-      } as any);
+      } as Partial<ReturnType<typeof useConnectionStore>>);
       vi.mocked(useGameStore).mockReturnValue({
         player: null,
         room: null,
@@ -887,7 +886,7 @@ describe('useGameTerminal', () => {
           },
         ],
         gameLog: [],
-      } as any);
+      } as Partial<ReturnType<typeof useGameStore>>);
 
       const { result } = renderHook(() => useGameTerminal());
 
@@ -909,7 +908,7 @@ describe('useGameTerminal', () => {
           websocketConnected: true,
           connectionHealth: 'connected' as const,
         }),
-      } as any);
+      } as Partial<ReturnType<typeof useConnectionStore>>);
       vi.mocked(useGameStore).mockReturnValue({
         player: null,
         room: null,
@@ -922,7 +921,7 @@ describe('useGameTerminal', () => {
           },
         ],
         gameLog: [],
-      } as any);
+      } as Partial<ReturnType<typeof useGameStore>>);
 
       const { result } = renderHook(() => useGameTerminal());
 
@@ -951,20 +950,20 @@ describe('useGameTerminal', () => {
           websocketConnected: true,
           connectionHealth: 'connected' as const,
         }),
-      } as any);
+      } as Partial<ReturnType<typeof useGameStore>>);
       vi.mocked(useSessionStore).mockReturnValue({
         playerName: 'TestPlayer',
         characterName: 'TestCharacter',
         isAuthenticated: true,
         hasCharacter: true,
-      } as any);
+      } as Partial<ReturnType<typeof useSessionStore>>);
       vi.mocked(useCommandStore).mockReturnValue({
         commandHistory: initialHistory,
         currentCommand: '',
         isExecuting: false,
         executeCommand: vi.fn(),
         clearHistory: vi.fn(),
-      } as any);
+      } as Partial<ReturnType<typeof useCommandStore>>);
 
       const { result } = renderHook(() => useGameTerminal());
 

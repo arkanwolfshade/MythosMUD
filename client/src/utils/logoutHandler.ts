@@ -97,7 +97,8 @@ async function sendLogoutCommandToServer(authToken: string, timeout: number): Pr
     if (!response.ok) {
       let errorMessage = `Server logout failed (${response.status})`;
       try {
-        const errorData = await response.json();
+        const rawData: unknown = await response.json();
+        const errorData = typeof rawData === 'object' && rawData !== null ? (rawData as Record<string, unknown>) : {};
         errorMessage = errorData?.error?.message || errorData?.detail || errorMessage;
       } catch {
         // Ignore JSON parsing errors, use default message
@@ -105,7 +106,9 @@ async function sendLogoutCommandToServer(authToken: string, timeout: number): Pr
       throw new Error(errorMessage);
     }
 
-    const data = await response.json();
+    const rawData: unknown = await response.json();
+    // Logout response may be empty or contain a simple message
+    const data = typeof rawData === 'object' && rawData !== null ? (rawData as Record<string, unknown>) : {};
     logger.info('logoutHandler', 'Server logout command successful', {
       success: data.success,
       message: data.message,

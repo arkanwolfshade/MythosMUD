@@ -7,7 +7,7 @@
 
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import App from './App';
+import { App } from './App';
 
 // Lazy load MapPage for code splitting
 const MapPage = lazy(() => import('./pages/MapPage').then(m => ({ default: m.MapPage })));

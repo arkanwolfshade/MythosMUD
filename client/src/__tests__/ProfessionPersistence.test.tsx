@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import App from '../App';
+import { App } from '../App';
 
 // Mock fetch globally
 const mockFetch = vi.fn();
