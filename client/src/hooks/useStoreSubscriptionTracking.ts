@@ -6,7 +6,7 @@
  */
 
 import { useEffect } from 'react';
-import { getClientMetricsCollector } from '../utils/clientMetricsCollector';
+import { getClientMetricsCollector } from '../utils/clientMetricsCollector.js';
 
 /**
  * Hook to track Zustand store subscription
@@ -21,7 +21,7 @@ export function useStoreSubscriptionTracking<T>(storeName: string, store: T): vo
   const collector = getClientMetricsCollector();
 
   useEffect(() => {
-    if (process.env.NODE_ENV !== 'development') {
+    if (!import.meta.env.DEV) {
       return;
     }
 

@@ -3,8 +3,8 @@
  * Handles server-side logout command, client-side state cleanup, and graceful error handling
  */
 
-import { logger } from './logger';
-import { secureTokenStorage } from './security';
+import { logger } from './logger.js';
+import { secureTokenStorage } from './security.js';
 
 export interface LogoutHandlerOptions {
   /** Authentication token for server logout command */
@@ -79,7 +79,7 @@ async function sendLogoutCommandToServer(authToken: string, timeout: number): Pr
   }, timeout);
 
   try {
-    const response = await fetch('/commands/logout', {
+    const response = await fetch('/command', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -99,7 +99,17 @@ async function sendLogoutCommandToServer(authToken: string, timeout: number): Pr
       try {
         const rawData: unknown = await response.json();
         const errorData = typeof rawData === 'object' && rawData !== null ? (rawData as Record<string, unknown>) : {};
-        errorMessage = errorData?.error?.message || errorData?.detail || errorMessage;
+        // Type-safe error message extraction
+        const errorObj = errorData?.error;
+        const errorMessageFromError =
+          typeof errorObj === 'object' &&
+          errorObj !== null &&
+          'message' in errorObj &&
+          typeof errorObj.message === 'string'
+            ? errorObj.message
+            : undefined;
+        const detailMessage = typeof errorData?.detail === 'string' ? errorData.detail : undefined;
+        errorMessage = errorMessageFromError || detailMessage || errorMessage;
       } catch {
         // Ignore JSON parsing errors, use default message
       }

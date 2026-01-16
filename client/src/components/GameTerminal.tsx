@@ -1,19 +1,22 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 
-import { DEFAULT_CHANNEL } from '../config/channels';
-import type { HealthStatus } from '../types/health';
-import { determineDpTier } from '../types/health';
-import type { HallucinationMessage, LucidityStatus, RescueState } from '../types/lucidity';
-import type { MythosTimeState } from '../types/mythosTime';
-import { debugLogger } from '../utils/debugLogger';
-import { DraggablePanel } from './DraggablePanel';
-import { HolidayBanner, MythosTimeHud } from './MythosTimeHud';
-import { RoomInfoPanel } from './RoomInfoPanel';
-import { HealthMeter, IncapacitatedBanner } from './health';
-import { HallucinationTicker, LucidityMeter, RescueStatusBanner } from './lucidity';
-import { ChatPanel } from './panels/ChatPanel';
-import { CommandPanel } from './panels/CommandPanel';
-import { GameLogPanel } from './panels/GameLogPanel';
+import { DEFAULT_CHANNEL } from '../config/channels.js';
+import type { HealthStatus } from '../types/health.js';
+import { determineDpTier } from '../types/health.js';
+import type { HallucinationMessage, LucidityStatus, RescueState } from '../types/lucidity.js';
+import type { MythosTimeState } from '../types/mythosTime.js';
+import { debugLogger } from '../utils/debugLogger.js';
+import { DraggablePanel } from './DraggablePanel.jsx';
+import { HolidayBanner, MythosTimeHud } from './MythosTimeHud.jsx';
+import { RoomInfoPanel } from './RoomInfoPanel.jsx';
+import { HealthMeter } from './health/HealthMeter.jsx';
+import { IncapacitatedBanner } from './health/IncapacitatedBanner.jsx';
+import { HallucinationTicker } from './lucidity/HallucinationTicker.jsx';
+import { LucidityMeter } from './lucidity/LucidityMeter.jsx';
+import { RescueStatusBanner } from './lucidity/RescueStatusBanner.jsx';
+import { ChatPanel } from './panels/ChatPanel.jsx';
+import { CommandPanel } from './panels/CommandPanel.jsx';
+import { GameLogPanel } from './panels/GameLogPanel.jsx';
 
 const formatPosture = (value?: string): string => {
   if (!value) {

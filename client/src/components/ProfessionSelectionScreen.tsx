@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { assertProfessionArray } from '../utils/apiTypeGuards';
-import { getErrorMessage, isErrorResponse } from '../utils/errorHandler';
-import { logger } from '../utils/logger';
-import { Profession, ProfessionCard } from './ProfessionCard';
+import { assertProfessionArray } from '../utils/apiTypeGuards.js';
+import { getErrorMessage, isErrorResponse } from '../utils/errorHandler.js';
+import { logger } from '../utils/logger.js';
+import { Profession, ProfessionCard } from './ProfessionCard.jsx';
 
 interface ProfessionSelectionScreenProps {
   characterName?: string; // MULTI-CHARACTER: Made optional - character name is now entered later

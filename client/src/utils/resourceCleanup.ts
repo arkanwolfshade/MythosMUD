@@ -169,7 +169,7 @@ export const useResourceCleanup = (): ResourceManager => {
     // Periodic logging of resource stats (every 5 minutes in development)
     const logInterval = setInterval(
       () => {
-        if (process.env.NODE_ENV === 'development') {
+        if (import.meta.env.DEV) {
           const stats = resourceManager.getResourceStats();
           console.log('[ResourceManager] Periodic stats:', stats);
         }

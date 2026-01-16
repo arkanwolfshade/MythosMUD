@@ -17,18 +17,11 @@ export default defineConfig(({ mode }) => ({
     // ...(mode === 'production' ? [removeConsolePlugin()] : []),
   ],
 
-  // ARCHITECTURE FIX Phase 3.2: Path resolution for TypeScript path aliases
+  // Path alias: Only '@' is used in the codebase (in test files)
+  // Per Vite best practices, minimize path aliases - prefer explicit relative imports
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      '@components': path.resolve(__dirname, './src/components'),
-      '@hooks': path.resolve(__dirname, './src/hooks'),
-      '@stores': path.resolve(__dirname, './src/stores'),
-      '@utils': path.resolve(__dirname, './src/utils'),
-      '@styles': path.resolve(__dirname, './src/styles'),
-      '@types': path.resolve(__dirname, './src/types'),
-      '@api': path.resolve(__dirname, './src/api'),
-      '@lib': path.resolve(__dirname, './src/lib'),
     },
   },
 

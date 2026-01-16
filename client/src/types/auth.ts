@@ -19,4 +19,5 @@ export interface LoginResponse {
   token_type: string;
   user_id: string;
   characters: CharacterInfo[];
+  refresh_token?: string;
 }

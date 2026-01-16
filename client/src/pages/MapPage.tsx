@@ -9,10 +9,11 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { RoomMapEditor, RoomMapViewer } from '../components/map';
-import { API_BASE_URL } from '../utils/config';
-import { logger } from '../utils/logger';
-import { secureTokenStorage } from '../utils/security';
+import { RoomMapEditor } from '../components/map/RoomMapEditor.jsx';
+import { RoomMapViewer } from '../components/map/RoomMapViewer.jsx';
+import { API_BASE_URL } from '../utils/config.js';
+import { logger } from '../utils/logger.js';
+import { secureTokenStorage } from '../utils/security.js';
 
 interface RoomData {
   id: string;

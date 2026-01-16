@@ -6,7 +6,7 @@
  */
 
 import { useEffect, useRef } from 'react';
-import { getClientMetricsCollector } from '../utils/clientMetricsCollector';
+import { getClientMetricsCollector } from '../utils/clientMetricsCollector.js';
 
 interface UseComponentLifecycleTrackingOptions {
   componentName: string;
@@ -20,7 +20,7 @@ export function useComponentLifecycleTracking(options: UseComponentLifecycleTrac
   hasCleanup: boolean;
   setCleanup: (cleanup: () => void) => void;
 } {
-  const { componentName, enabled = process.env.NODE_ENV === 'development' } = options;
+  const { componentName, enabled = import.meta.env.DEV } = options;
   const cleanupRef = useRef<(() => void) | null>(null);
   const collector = getClientMetricsCollector();
 

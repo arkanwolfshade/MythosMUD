@@ -1,10 +1,13 @@
 import { renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { useCommandStore, useConnectionStore, useGameStore, useSessionStore } from '../stores';
-import { useGameTerminal } from './useGameTerminal';
+import { useCommandStore } from '../stores/commandStore.js';
+import { useConnectionStore } from '../stores/connectionStore.js';
+import { useGameStore } from '../stores/gameStore.js';
+import { useSessionStore } from '../stores/sessionStore.js';
+import { useGameTerminal } from './useGameTerminal.js';
 
-// Mock the stores
-vi.mock('../stores', () => ({
+// Mock the stores individually (barrel file was removed)
+vi.mock('../stores/connectionStore.js', () => ({
   useConnectionStore: vi.fn(() => ({
     isFullyConnected: vi.fn().mockReturnValue(true),
     isConnecting: false,
@@ -20,6 +23,9 @@ vi.mock('../stores', () => ({
       connectionHealth: 'connected' as const,
     }),
   })),
+}));
+
+vi.mock('../stores/gameStore.js', () => ({
   useGameStore: vi.fn(() => ({
     player: {
       id: 'player-1',
@@ -47,13 +53,22 @@ vi.mock('../stores', () => ({
       },
     ],
     gameLog: [],
+    addChatMessage: vi.fn(),
+    clearChatMessages: vi.fn(),
+    addGameLogEntry: vi.fn(),
   })),
+}));
+
+vi.mock('../stores/sessionStore.js', () => ({
   useSessionStore: vi.fn(() => ({
     playerName: 'TestPlayer',
     characterName: 'TestCharacter',
     isAuthenticated: true,
     hasCharacter: true,
   })),
+}));
+
+vi.mock('../stores/commandStore.js', () => ({
   useCommandStore: vi.fn(() => ({
     commandHistory: [
       { command: 'look', timestamp: Date.now(), success: true },
@@ -62,6 +77,8 @@ vi.mock('../stores', () => ({
     ],
     currentCommand: '',
     isExecuting: false,
+    executeCommand: vi.fn(),
+    clearHistory: vi.fn(),
   })),
 }));
 
@@ -950,6 +967,15 @@ describe('useGameTerminal', () => {
           websocketConnected: true,
           connectionHealth: 'connected' as const,
         }),
+      } as Partial<ReturnType<typeof useConnectionStore>>);
+      vi.mocked(useGameStore).mockReturnValue({
+        player: null,
+        room: null,
+        chatMessages: [],
+        gameLog: [],
+        addChatMessage: vi.fn(),
+        clearChatMessages: vi.fn(),
+        addGameLogEntry: vi.fn(),
       } as Partial<ReturnType<typeof useGameStore>>);
       vi.mocked(useSessionStore).mockReturnValue({
         playerName: 'TestPlayer',

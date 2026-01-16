@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from 'react';
-import type { CharacterInfo } from '../types/auth';
-import { isServerCharacterResponseArray } from '../utils/apiTypeGuards';
-import { getErrorMessage, isErrorResponse } from '../utils/errorHandler';
-import { logger } from '../utils/logger';
+import type { CharacterInfo } from '../types/auth.js';
+import { isServerCharacterResponseArray } from '../utils/apiTypeGuards.js';
+import { getErrorMessage, isErrorResponse } from '../utils/errorHandler.js';
+import { logger } from '../utils/logger.js';
 import './CharacterSelectionScreen.css';
 
 interface CharacterSelectionScreenProps {

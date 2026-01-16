@@ -8,8 +8,8 @@
  * then narrow with type guards before use.
  */
 
-import type { CharacterInfo, LoginResponse } from '../types/auth';
-import type { Profession } from '../components/ProfessionCard';
+import type { Profession } from '../components/ProfessionCard.jsx';
+import type { CharacterInfo, LoginResponse } from '../types/auth.js';
 
 /**
  * Server response character type (server may return 'id' or 'player_id').
@@ -27,6 +27,7 @@ export interface ServerCharacterResponse {
 
 /**
  * Stats roll response from the server.
+ * Note: Server Stats model does NOT include 'wisdom' - it was removed/never existed.
  */
 export interface StatsRollResponse {
   stats: {
@@ -37,7 +38,6 @@ export interface StatsRollResponse {
     intelligence: number;
     power: number;
     education: number;
-    wisdom: number;
     charisma: number;
     luck: number;
   };
@@ -47,8 +47,8 @@ export interface StatsRollResponse {
     highest: number;
     lowest: number;
   };
-  profession_id: number;
-  meets_requirements: boolean;
+  profession_id?: number | null;
+  meets_requirements?: boolean | null;
   method_used: string;
 }
 
@@ -169,7 +169,34 @@ export function isLoginResponse(value: unknown): value is LoginResponse {
     isString(value.token_type) &&
     isString(value.user_id) &&
     isArray(value.characters) &&
-    value.characters.every((char: unknown) => isCharacterInfo(char))
+    value.characters.every((char: unknown) => isCharacterInfo(char)) &&
+    (value.refresh_token === undefined || isString(value.refresh_token))
+  );
+}
+
+/**
+ * Type guard: Check if value is a StatRequirement object.
+ */
+function isStatRequirement(value: unknown): value is { stat: string; minimum: number } {
+  if (!isObject(value)) {
+    return false;
+  }
+  return isString(value.stat) && isNumber(value.minimum);
+}
+
+/**
+ * Type guard: Check if value is a MechanicalEffect object.
+ */
+function isMechanicalEffect(
+  value: unknown
+): value is { effect_type: string; value: number | string; description?: string | null } {
+  if (!isObject(value)) {
+    return false;
+  }
+  return (
+    isString(value.effect_type) &&
+    (isNumber(value.value) || isString(value.value)) &&
+    (value.description === undefined || value.description === null || isString(value.description))
   );
 }
 
@@ -181,15 +208,27 @@ function isProfession(value: unknown): value is Profession {
     return false;
   }
 
+  // Check stat_requirements is an array of StatRequirement objects
+  if (!isArray(value.stat_requirements)) {
+    return false;
+  }
+  if (!value.stat_requirements.every((item: unknown) => isStatRequirement(item))) {
+    return false;
+  }
+
+  // Check mechanical_effects is an array of MechanicalEffect objects
+  if (!isArray(value.mechanical_effects)) {
+    return false;
+  }
+  if (!value.mechanical_effects.every((item: unknown) => isMechanicalEffect(item))) {
+    return false;
+  }
+
   return (
     isNumber(value.id) &&
     isString(value.name) &&
     isString(value.description) &&
-    isString(value.flavor_text) &&
-    isObject(value.stat_requirements) &&
-    Object.values(value.stat_requirements).every((v: unknown) => isNumber(v)) &&
-    isObject(value.mechanical_effects) &&
-    Object.values(value.mechanical_effects).every((v: unknown) => isNumber(v)) &&
+    (value.flavor_text === null || isString(value.flavor_text)) &&
     typeof value.is_available === 'boolean'
   );
 }
@@ -219,6 +258,9 @@ export function isStatsRollResponse(value: unknown): value is StatsRollResponse 
   }
 
   const stats = value.stats as Record<string, unknown>;
+  // Server Stats model includes: strength, dexterity, constitution, size, intelligence,
+  // power, education, charisma, luck
+  // Note: wisdom is NOT in the server Stats model - it was removed/never existed
   const requiredStats = [
     'strength',
     'dexterity',
@@ -227,7 +269,6 @@ export function isStatsRollResponse(value: unknown): value is StatsRollResponse 
     'intelligence',
     'power',
     'education',
-    'wisdom',
     'charisma',
     'luck',
   ];
@@ -250,7 +291,13 @@ export function isStatsRollResponse(value: unknown): value is StatsRollResponse 
     return false;
   }
 
-  return isNumber(value.profession_id) && typeof value.meets_requirements === 'boolean' && isString(value.method_used);
+  return (
+    (value.profession_id === undefined || value.profession_id === null || isNumber(value.profession_id)) &&
+    (value.meets_requirements === undefined ||
+      value.meets_requirements === null ||
+      typeof value.meets_requirements === 'boolean') &&
+    isString(value.method_used)
+  );
 }
 
 /**

@@ -5,7 +5,7 @@
  * to help identify memory leaks in the client application.
  */
 
-import { ResourceManager } from './resourceCleanup';
+import { ResourceManager } from './resourceCleanup.js';
 
 interface StoreSubscriptionMetrics {
   storeName: string;
@@ -62,7 +62,7 @@ class ClientMetricsCollector {
     existing.lastSubscriptionTime = Date.now();
     this.storeSubscriptions.set(storeName, existing);
 
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.DEV) {
       console.log(`[Metrics] Store subscription: ${storeName}`, {
         subscriptionCount: existing.subscriptionCount,
       });
@@ -78,7 +78,7 @@ class ClientMetricsCollector {
       existing.lastUnsubscriptionTime = Date.now();
       this.storeSubscriptions.set(storeName, existing);
 
-      if (process.env.NODE_ENV === 'development') {
+      if (import.meta.env.DEV) {
         console.log(`[Metrics] Store unsubscription: ${storeName}`, {
           subscriptionCount: existing.subscriptionCount,
         });
@@ -143,7 +143,7 @@ class ClientMetricsCollector {
    * Log metrics to console (for development)
    */
   logMetrics(): void {
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.DEV) {
       const metrics = this.getMetrics();
       console.log('[Client Metrics]', metrics);
     }

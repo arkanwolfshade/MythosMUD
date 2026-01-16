@@ -1,14 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { DEFAULT_CHANNEL } from '../../config/channels';
 import { extractChannelFromMessage, isChatContent } from '../../utils/messageTypeUtils';
-import {
-  ChannelActivityIndicators,
-  ChannelSelectorSection,
-  ChatHeader,
-  ChatHistoryToggle,
-  ChatMessagesList,
-  ChatStatistics,
-} from './chat';
+import { ChannelActivityIndicators } from './chat/ChannelActivityIndicators.jsx';
+import { ChannelSelectorSection } from './chat/ChannelSelectorSection.jsx';
+import { ChatHeader } from './chat/ChatHeader.jsx';
+import { ChatHistoryToggle } from './chat/ChatHistoryToggle.jsx';
+import { ChatMessagesList } from './chat/ChatMessagesList.jsx';
+import { ChatStatistics } from './chat/ChatStatistics.jsx';
 
 interface ChatMessage {
   text: string;

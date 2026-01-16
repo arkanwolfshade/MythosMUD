@@ -6,12 +6,12 @@ import {
   isServerCharacterResponse,
   isServerCharacterResponseArray,
   type ServerCharacterResponse,
-} from './utils/apiTypeGuards';
-import { API_BASE_URL } from './utils/config';
-import { getErrorMessage, isErrorResponse } from './utils/errorHandler';
-import { logoutHandler } from './utils/logoutHandler';
-import { memoryMonitor } from './utils/memoryMonitor';
-import { inputSanitizer, secureTokenStorage } from './utils/security';
+} from './utils/apiTypeGuards.js';
+import { API_BASE_URL } from './utils/config.js';
+import { getErrorMessage, isErrorResponse } from './utils/errorHandler.js';
+import { logoutHandler } from './utils/logoutHandler.js';
+import { memoryMonitor } from './utils/memoryMonitor.js';
+import { inputSanitizer, secureTokenStorage } from './utils/security.js';
 
 // Helper function to check if value is an object
 function isObject(value: unknown): value is Record<string, unknown> {
@@ -21,36 +21,40 @@ function isObject(value: unknown): value is Record<string, unknown> {
 // Lazy load screen components for code splitting
 // AI: Lazy loading reduces initial bundle size by ~30-50% and improves initial page load time
 const EldritchEffectsDemo = lazy(() =>
-  import('./components/EldritchEffectsDemo').then(m => ({ default: m.EldritchEffectsDemo }))
+  import('./components/EldritchEffectsDemo.jsx').then(m => ({ default: m.EldritchEffectsDemo }))
 );
 const GameClientV2Container = lazy(() =>
-  import('./components/ui-v2/GameClientV2Container').then(m => ({ default: m.GameClientV2Container }))
+  import('./components/ui-v2/GameClientV2Container.jsx').then(m => ({ default: m.GameClientV2Container }))
 );
 const MotdInterstitialScreen = lazy(() =>
-  import('./components/MotdInterstitialScreen').then(m => ({ default: m.MotdInterstitialScreen }))
+  import('./components/MotdInterstitialScreen.jsx').then(m => ({ default: m.MotdInterstitialScreen }))
 );
 const ProfessionSelectionScreen = lazy(() =>
-  import('./components/ProfessionSelectionScreen').then(m => ({ default: m.ProfessionSelectionScreen }))
+  import('./components/ProfessionSelectionScreen.jsx').then(m => ({ default: m.ProfessionSelectionScreen }))
 );
 const StatsRollingScreen = lazy(() =>
-  import('./components/StatsRollingScreen').then(m => ({ default: m.StatsRollingScreen }))
+  import('./components/StatsRollingScreen.jsx').then(m => ({ default: m.StatsRollingScreen }))
 );
 const CharacterSelectionScreen = lazy(() =>
-  import('./components/CharacterSelectionScreen').then(m => ({ default: m.CharacterSelectionScreen }))
+  import('./components/CharacterSelectionScreen.jsx').then(m => ({ default: m.CharacterSelectionScreen }))
 );
 
 // Import types that are needed for props
-import type { Profession } from './components/ProfessionCard';
-import type { CharacterInfo } from './types/auth';
+import type { Profession } from './components/ProfessionCard.jsx';
+import type { CharacterInfo } from './types/auth.js';
 
 // Import the Stats interface from StatsRollingScreen
+// Note: Server Stats model does NOT include 'wisdom' - it was removed/never existed
 interface Stats {
   strength: number;
   dexterity: number;
   constitution: number;
+  size: number;
   intelligence: number;
-  wisdom: number;
+  power: number;
+  education: number;
   charisma: number;
+  luck: number;
 }
 
 // ServerCharacterResponse is now imported from apiTypeGuards.ts
@@ -181,17 +185,22 @@ function App() {
             setCharacters(mappedCharacters);
 
             // If only one character, auto-select it (common case after remount)
-            if (mappedCharacters.length === 1) {
+            // BUT: Don't auto-select if we're in character creation flow
+            const inCharacterCreation = showProfessionSelection || selectedProfession !== undefined;
+
+            if (mappedCharacters.length === 1 && !inCharacterCreation) {
               const singleChar = mappedCharacters[0];
               setSelectedCharacterId(singleChar.player_id);
               setSelectedCharacterName(singleChar.name);
               // Skip character selection and MOTD, go straight to game
               setShowCharacterSelection(false);
               setShowMotd(false);
-            } else if (mappedCharacters.length > 1) {
-              // Multiple characters - show selection screen
+            } else if (mappedCharacters.length > 1 && !inCharacterCreation) {
+              // Multiple characters - show selection screen (only if not in character creation)
               setShowCharacterSelection(true);
             }
+            // If in character creation, don't change the flow - let character creation continue
+            return;
           } else if (charactersList && charactersList.length === 0) {
             // No characters - user needs to create one
             setShowProfessionSelection(true);
@@ -206,7 +215,8 @@ function App() {
           setAuthToken('');
         });
     }
-  }, []); // Only run on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run on mount - dependencies intentionally omitted to prevent re-running on state changes
 
   const handleLoginClick = async () => {
     // Sanitize inputs
@@ -647,6 +657,9 @@ function App() {
     setSelectedProfession(undefined);
     setShowCharacterSelection(false);
     setShowProfessionSelection(true);
+    // Clear selected character to prevent auto-entry into game
+    setSelectedCharacterName('');
+    setSelectedCharacterId('');
   };
 
   const handleMotdContinue = async () => {
@@ -974,6 +987,13 @@ function App() {
     }
 
     // Show stats rolling screen after profession selection
+    // Defensive check: if selectedProfession is undefined here, something went wrong
+    if (!selectedProfession) {
+      // Reset to profession selection if profession is missing
+      setShowProfessionSelection(true);
+      return null;
+    }
+
     return (
       <div className="App">
         <Suspense fallback={<LoadingFallback />}>
@@ -983,8 +1003,8 @@ function App() {
             onBack={handleStatsRollingBack}
             baseUrl={API_BASE_URL}
             authToken={authToken}
-            professionId={selectedProfession?.id}
-            profession={selectedProfession as Profession | undefined}
+            professionId={selectedProfession.id}
+            profession={selectedProfession}
           />
         </Suspense>
       </div>
@@ -1030,6 +1050,16 @@ function App() {
   }
 
   // If authenticated and has character, show MOTD screen or game terminal
+  // BUT: Don't show game terminal if we're in character creation flow
+  // This is a defensive check - character creation should have been handled above
+  // but if we somehow reach here during character creation, prevent game terminal from rendering
+  const inCharacterCreation = showProfessionSelection || !!selectedProfession;
+  if (inCharacterCreation) {
+    // Return null to prevent rendering - character creation flow should handle this
+    // This should not normally be reached, but protects against state inconsistencies
+    return null;
+  }
+
   if (showMotd) {
     return (
       <div className="App">

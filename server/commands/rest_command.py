@@ -301,6 +301,36 @@ def is_player_resting(player_id: uuid.UUID, connection_manager: Any) -> bool:
     return player_id in connection_manager.resting_players
 
 
+async def _get_services_from_app(app: Any) -> tuple[Any, Any]:
+    """
+    Get persistence and connection_manager services from app state.
+
+    Args:
+        app: FastAPI app instance
+
+    Returns:
+        Tuple of (persistence, connection_manager) or (None, None) if unavailable
+    """
+    if not app:
+        return None, None
+
+    # Prefer container, fallback to app.state for backward compatibility
+    persistence = None
+    if hasattr(app.state, "container") and app.state.container:
+        persistence = app.state.container.async_persistence
+    else:
+        persistence = getattr(app.state, "persistence", None)
+
+    # Prefer container, fallback to app.state for backward compatibility
+    connection_manager = None
+    if hasattr(app.state, "container") and app.state.container:
+        connection_manager = app.state.container.connection_manager
+    else:
+        connection_manager = getattr(app.state, "connection_manager", None)
+
+    return persistence, connection_manager
+
+
 async def handle_rest_command(
     command_data: dict,
     _current_user: dict,  # Unused: player_name parameter is used instead
@@ -338,8 +368,7 @@ async def handle_rest_command(
     if not app:
         return {"result": "System error: application not available."}
 
-    persistence = getattr(app.state, "persistence", None)
-    connection_manager = getattr(app.state, "connection_manager", None)
+    persistence, connection_manager = await _get_services_from_app(app)
 
     if not persistence:
         return {"result": "System error: persistence layer not available."}

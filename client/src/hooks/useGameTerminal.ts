@@ -1,5 +1,8 @@
 import { useCallback } from 'react';
-import { useCommandStore, useConnectionStore, useGameStore, useSessionStore } from '../stores';
+import { useCommandStore } from '../stores/commandStore.js';
+import { useConnectionStore } from '../stores/connectionStore.js';
+import { useGameStore } from '../stores/gameStore.js';
+import { useSessionStore } from '../stores/sessionStore.js';
 
 export interface GameTerminalState {
   // Connection state

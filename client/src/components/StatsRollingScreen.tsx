@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { assertStatsRollResponse } from '../utils/apiTypeGuards';
-import { getErrorMessage, isErrorResponse } from '../utils/errorHandler';
-import { logger } from '../utils/logger';
+import { assertStatsRollResponse } from '../utils/apiTypeGuards.js';
+import { getErrorMessage, isErrorResponse } from '../utils/errorHandler.js';
+import { logger } from '../utils/logger.js';
+import type { Profession } from './ProfessionCard.jsx';
 import './StatsRollingScreen.css';
 
 interface Stats {
@@ -12,19 +13,8 @@ interface Stats {
   intelligence: number;
   power: number;
   education: number;
-  wisdom: number;
   charisma: number;
   luck: number;
-}
-
-interface Profession {
-  id: number;
-  name: string;
-  description: string;
-  flavor_text: string;
-  stat_requirements: Record<string, number>;
-  mechanical_effects: Record<string, number>;
-  is_available: boolean;
 }
 
 interface StatsRollingScreenProps {
@@ -106,10 +96,9 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
               errorData.detail !== null &&
               'retry_after' in errorData.detail
             ) {
-              retryAfter =
-                typeof (errorData.detail as Record<string, unknown>).retry_after === 'number'
-                  ? (errorData.detail as Record<string, unknown>).retry_after
-                  : 60;
+              const detail = errorData.detail as Record<string, unknown>;
+              const retryAfterValue = detail.retry_after;
+              retryAfter = typeof retryAfterValue === 'number' ? retryAfterValue : 60;
             }
           }
         } catch {
@@ -207,10 +196,9 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
               errorData.detail !== null &&
               'retry_after' in errorData.detail
             ) {
-              retryAfter =
-                typeof (errorData.detail as Record<string, unknown>).retry_after === 'number'
-                  ? (errorData.detail as Record<string, unknown>).retry_after
-                  : 60;
+              const detail = errorData.detail as Record<string, unknown>;
+              const retryAfterValue = detail.retry_after;
+              retryAfter = typeof retryAfterValue === 'number' ? retryAfterValue : 60;
             }
           }
         } catch {
