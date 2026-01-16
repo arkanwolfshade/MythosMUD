@@ -271,3 +271,76 @@ groups:
     annotations:
       summary: "WebSocket message delivery failures detected"
       description: "WebSocket message failure rate is {{ $value }} failures per second"
+
+- name: mythos_memory_leak_alerts
+  rules:
+  # Memory Leak Detection Alerts
+  - alert: HighClosedWebsocketsCount
+    expr: mythos_closed_websockets_count > 5000
+    for: 5m
+    labels:
+      severity: warning
+      service: mythos-memory-leaks
+    annotations:
+      summary: "High closed websockets count detected (potential memory leak)"
+      description: "Closed websockets count is {{ $value }} (threshold: 5000)"
+
+  - alert: CriticalClosedWebsocketsCount
+    expr: mythos_closed_websockets_count > 10000
+    for: 2m
+    labels:
+      severity: critical
+      service: mythos-memory-leaks
+    annotations:
+      summary: "Critical closed websockets count detected (memory leak)"
+      description: "Closed websockets count is {{ $value }} (threshold: 10000)"
+
+  - alert: HighSubscriberGrowthRate
+    expr: mythos_subscriber_growth_rate > 0.1
+    for: 5m
+    labels:
+      severity: warning
+      service: mythos-memory-leaks
+    annotations:
+      summary: "High subscriber growth rate detected (potential memory leak)"
+      description: "Subscriber growth rate is {{ $value }} (threshold: 10% per period)"
+
+  - alert: HighCacheCapacityUtilization
+    expr: mythos_cache_capacity_utilization > 1.1
+    for: 5m
+    labels:
+      severity: warning
+      service: mythos-memory-leaks
+    annotations:
+      summary: "Cache capacity exceeded (potential memory leak)"
+      description: "Cache capacity utilization is {{ $value }} (threshold: 110%)"
+
+  - alert: HighTaskGrowthRate
+    expr: mythos_task_growth_rate > 0.2
+    for: 5m
+    labels:
+      severity: warning
+      service: mythos-memory-leaks
+    annotations:
+      summary: "High task growth rate detected (potential memory leak)"
+      description: "Task growth rate is {{ $value }} (threshold: 20% per period)"
+
+  - alert: OrphanedConnectionsDetected
+    expr: mythos_orphaned_connections > 10
+    for: 5m
+    labels:
+      severity: warning
+      service: mythos-memory-leaks
+    annotations:
+      summary: "Orphaned connections detected (potential memory leak)"
+      description: "Orphaned connections count is {{ $value }}"
+
+  - alert: OrphanedTasksDetected
+    expr: mythos_orphaned_task_count > 5
+    for: 5m
+    labels:
+      severity: warning
+      service: mythos-memory-leaks
+    annotations:
+      summary: "Orphaned tasks detected (potential memory leak)"
+      description: "Orphaned tasks count is {{ $value }}"

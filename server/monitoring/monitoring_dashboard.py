@@ -19,6 +19,7 @@ from server.structured_logging.enhanced_logging_config import get_logger, log_wi
 from server.structured_logging.log_aggregator import LogAggregationStats, get_log_aggregator
 
 from .exception_tracker import ExceptionStats, get_exception_tracker
+from .memory_leak_metrics import MemoryLeakMetricsCollector
 from .performance_monitor import PerformanceStats, get_performance_monitor
 
 logger = get_logger(__name__)
@@ -79,6 +80,7 @@ class MonitoringDashboard:
         self.performance_monitor = get_performance_monitor()
         self.exception_tracker = get_exception_tracker()
         self.log_aggregator = get_log_aggregator()
+        self.memory_leak_collector = MemoryLeakMetricsCollector()
 
         # Alert system
         self.alerts: list[Alert] = []
@@ -486,7 +488,34 @@ class MonitoringDashboard:
                 for alert in summary.alerts
             ],
             "recommendations": summary.recommendations,
+            "memory_leak_metrics": self._get_memory_leak_metrics(),
         }
+
+    def _get_memory_leak_metrics(self) -> dict[str, Any]:
+        """
+        Get memory leak metrics from collector.
+
+        Returns:
+            Dictionary with memory leak metrics
+        """
+        try:
+            metrics = self.memory_leak_collector.collect_all_metrics()
+            growth_rates = self.memory_leak_collector.calculate_growth_rates()
+            alerts = self.memory_leak_collector.check_alerts(metrics)
+
+            return {
+                "connection": metrics.get("connection", {}),
+                "event": metrics.get("event", {}),
+                "cache": metrics.get("cache", {}),
+                "task": metrics.get("task", {}),
+                "nats": metrics.get("nats", {}),
+                "growth_rates": growth_rates,
+                "alerts": alerts,
+                "timestamp": metrics.get("timestamp", 0.0),
+            }
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Memory leak metrics errors should not fail dashboard export
+            logger.warning("Failed to collect memory leak metrics for dashboard", error=str(e))
+            return {"error": "Failed to collect metrics"}
 
     def _calculate_performance_score(self, perf_stats: dict[str, PerformanceStats]) -> float:
         """Calculate overall performance score (0-100)."""

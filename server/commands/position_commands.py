@@ -50,10 +50,16 @@ async def _handle_position_change(  # pylint: disable=too-many-arguments,too-man
 ) -> dict[str, Any]:
     """Shared entry point for posture-changing commands."""
     app = getattr(request, "app", None) if request else None
-    state = getattr(app, "state", None) if app else None
 
-    persistence = getattr(state, "persistence", None) if state else None
-    connection_manager = getattr(state, "connection_manager", None) if state else None
+    # Prefer container, fallback to app.state for backward compatibility
+    persistence = None
+    connection_manager = None
+    if app and hasattr(app.state, "container") and app.state.container:
+        persistence = app.state.container.async_persistence
+        connection_manager = app.state.container.connection_manager
+    elif app:
+        persistence = getattr(app.state, "persistence", None)
+        connection_manager = getattr(app.state, "connection_manager", None)
 
     target_player_name = player_name or get_username_from_user(current_user)
 

@@ -107,6 +107,28 @@ async def _shutdown_task_registry(container: ApplicationContainer) -> None:
         logger.error("TaskRegistry shutdown coordination error", error=str(e))
 
 
+async def _shutdown_event_bus(container: ApplicationContainer) -> None:
+    """Shutdown event bus and clean up all service subscriptions."""
+    if not container.event_bus:
+        return
+
+    logger.info("Shutting down EventBus and cleaning up service subscriptions")
+    try:
+        # Get subscriber stats before shutdown for logging
+        stats = container.event_bus.get_subscriber_stats()
+        logger.info(
+            "EventBus subscriber stats before shutdown",
+            total_subscribers=stats.get("total_subscribers", 0),
+            services_tracked=stats.get("services_tracked", 0),
+        )
+
+        # Shutdown will automatically clean up all service subscriptions
+        await container.event_bus.shutdown()
+        logger.info("EventBus shutdown complete")
+    except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
+        logger.error("Error shutting down EventBus", error=str(e))
+
+
 async def shutdown_services(app: FastAPI, container: ApplicationContainer) -> None:
     """Handle graceful shutdown of all services."""
     await _shutdown_mythos_chronicle()
@@ -114,6 +136,8 @@ async def shutdown_services(app: FastAPI, container: ApplicationContainer) -> No
     await _shutdown_connection_manager(app)
     await _shutdown_mythos_tick_scheduler(app)
     await _shutdown_task_registry(container)
+    # Shutdown EventBus before container to ensure service subscriptions are cleaned up
+    await _shutdown_event_bus(container)
 
     logger.info("Shutting down ApplicationContainer")
     await container.shutdown()

@@ -84,6 +84,50 @@ export interface ConnectionSelectors {
 type ConnectionStore = ConnectionState & ConnectionActions & ConnectionSelectors;
 
 /**
+ * **Zustand Store Cleanup Patterns:**
+ *
+ * Zustand stores automatically handle subscription lifecycle - components do not need to
+ * manually unsubscribe. However, components should follow these patterns:
+ *
+ * 1. **Use store actions, not direct state manipulation:**
+ *    - Use setConnecting(), setWebsocketConnected(), etc. instead of directly modifying state
+ *    - This ensures proper state updates and prevents memory leaks from stale references
+ *
+ * 2. **Reset store state when appropriate:**
+ *    - Call reset() on logout, session expiration, or component unmount
+ *    - This clears all state and prevents memory leaks from accumulated data
+ *
+ * 3. **Use selectors for computed values:**
+ *    - Use isFullyConnected(), hasAnyConnection(), getConnectionInfo() selectors
+ *    - These are memoized and prevent unnecessary re-renders
+ *
+ * 4. **No manual subscription cleanup needed:**
+ *    - Zustand's useStore hook automatically handles subscription/unsubscription
+ *    - Components using useConnectionStore() don't need useEffect cleanup for store subscriptions
+ *    - Only cleanup needed is for external resources (WebSocket connections, timers, etc.)
+ *
+ * Example usage:
+ *
+ * ```tsx
+ * function MyComponent() {
+ *   const { isConnected, reset } = useConnectionStore();
+ *
+ *   useEffect(() => {
+ *     // Component-specific setup
+ *     return () => {
+ *       // Cleanup external resources only (not store subscriptions)
+ *       // Store subscriptions are automatically cleaned up by Zustand
+ *     };
+ *   }, []);
+ *
+ *   const handleLogout = () => {
+ *     reset(); // Clear store state on logout
+ *   };
+ * }
+ * ```
+ */
+
+/**
  * Generate a cryptographically secure session ID.
  * Human reader: uses Web Crypto API instead of Math.random() for security.
  * AI reader: session IDs must be unpredictable to prevent session hijacking.
@@ -233,7 +277,7 @@ export const useConnectionStore = create<ConnectionStore>()(
     }),
     {
       name: 'connection-store',
-      partialize: state => ({
+      partialize: (state: ConnectionStore) => ({
         sessionId: state.sessionId,
         connectionHealth: state.connectionHealth,
         connectionMetadata: state.connectionMetadata,

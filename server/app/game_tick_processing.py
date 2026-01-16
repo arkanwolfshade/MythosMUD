@@ -80,7 +80,7 @@ def _validate_app_state_for_status_effects(app: FastAPI) -> tuple[bool, "Applica
 
 
 async def _process_damage_over_time_effect(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Effect processing requires many parameters for game state and effect context
-    app: FastAPI, container: "ApplicationContainer", player: "Player", effect: dict, remaining: int, player_id: str
+    _app: FastAPI, container: "ApplicationContainer", player: "Player", effect: dict, remaining: int, player_id: str
 ) -> bool:
     """Process a damage over time effect.
 

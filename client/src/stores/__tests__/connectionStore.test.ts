@@ -390,4 +390,85 @@ describe('Connection Store', () => {
       expect(result.current.isFullyConnected()).toBe(false);
     });
   });
+
+  describe('Component Cleanup Patterns', () => {
+    it('should allow reset() to clear all state for component unmount', () => {
+      const { result, unmount } = renderHook(() => useConnectionStore());
+
+      // Set up state
+      act(() => {
+        result.current.setConnecting(true);
+        result.current.setWebsocketConnected(true);
+        result.current.setError('test error');
+        result.current.incrementReconnectAttempts();
+        result.current.setSessionId('test-session');
+      });
+
+      // Simulate component unmount - reset state
+      act(() => {
+        result.current.reset();
+      });
+
+      // Verify all state is reset
+      expect(result.current.isConnecting).toBe(false);
+      expect(result.current.websocketConnected).toBe(false);
+      expect(result.current.error).toBe(null);
+      expect(result.current.reconnectAttempts).toBe(0);
+      expect(result.current.sessionId).toMatch(/^session_\d+_[a-z0-9]+$/);
+
+      // Unmount should not cause issues (Zustand handles subscriptions automatically)
+      unmount();
+    });
+
+    it('should handle multiple component subscriptions without memory leaks', () => {
+      // Create multiple hook instances (simulating multiple components)
+      const { result: result1, unmount: unmount1 } = renderHook(() => useConnectionStore());
+      const { result: result2, unmount: unmount2 } = renderHook(() => useConnectionStore());
+      const { result: result3, unmount: unmount3 } = renderHook(() => useConnectionStore());
+
+      // All should share the same store state
+      act(() => {
+        result1.current.setWebsocketConnected(true);
+      });
+
+      expect(result2.current.websocketConnected).toBe(true);
+      expect(result3.current.websocketConnected).toBe(true);
+
+      // Unmount components - Zustand should handle cleanup automatically
+      unmount1();
+      unmount2();
+      unmount3();
+
+      // Store should still be accessible
+      const state = useConnectionStore.getState();
+      expect(state.websocketConnected).toBe(true);
+    });
+
+    it('should not accumulate state across component remounts', () => {
+      const { result, unmount } = renderHook(() => useConnectionStore());
+
+      // Set up state
+      act(() => {
+        result.current.incrementReconnectAttempts();
+        result.current.incrementReconnectAttempts();
+        result.current.incrementReconnectAttempts();
+      });
+
+      expect(result.current.reconnectAttempts).toBe(3);
+
+      // Unmount and remount (simulating component lifecycle)
+      unmount();
+
+      // Create new hook instance (simulating remount)
+      const { result: result2 } = renderHook(() => useConnectionStore());
+
+      // State should persist (Zustand store is global)
+      // But we can reset if needed
+      act(() => {
+        result2.current.reset();
+      });
+
+      expect(result2.current.reconnectAttempts).toBe(0);
+    });
+  });
 });

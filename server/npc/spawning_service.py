@@ -164,8 +164,9 @@ class NPCSpawningService:
         # The population controller is the sole authority for spawn decisions
         # self.event_bus.subscribe(PlayerEnteredRoom, self._handle_player_entered_room)
         # self.event_bus.subscribe(PlayerLeftRoom, self._handle_player_left_room)
-        self.event_bus.subscribe(NPCEnteredRoom, self._handle_npc_entered_room)
-        self.event_bus.subscribe(NPCLeftRoom, self._handle_npc_left_room)
+        # Use service_id for tracking and cleanup (Task 2: Event Subscriber Cleanup)
+        self.event_bus.subscribe(NPCEnteredRoom, self._handle_npc_entered_room, service_id="npc_spawning_service")
+        self.event_bus.subscribe(NPCLeftRoom, self._handle_npc_left_room, service_id="npc_spawning_service")
 
     def _handle_player_entered_room(self, event: PlayerEnteredRoom) -> None:
         """Handle player entering a room - trigger spawn checks."""

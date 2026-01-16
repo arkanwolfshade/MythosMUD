@@ -18,11 +18,12 @@ from ..api.containers import container_router
 from ..api.game import game_router
 from ..api.maps import map_router
 from ..api.metrics import router as metrics_router
-from ..api.monitoring import monitoring_router, system_monitoring_router
+from ..api.monitoring import monitoring_router
 from ..api.players import player_router
 from ..api.professions import profession_router
 from ..api.real_time import realtime_router
 from ..api.rooms import room_router
+from ..api.system_monitoring import system_monitoring_router
 from ..auth.endpoints import UserCreate, UserRead, UserUpdate, auth_router
 from ..auth.users import auth_backend, fastapi_users
 from ..command_handler_unified import router as command_router

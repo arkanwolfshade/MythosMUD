@@ -131,7 +131,36 @@ export interface GameSelectors {
 
 type GameStore = GameState & GameActions & GameSelectors;
 
+/**
+ * Maximum number of chat messages to keep in memory.
+ *
+ * **Memory Leak Prevention:**
+ * This limit prevents unbounded growth of the chatMessages array during long-running sessions.
+ * When the limit is reached, older messages are automatically trimmed (FIFO - oldest removed first).
+ *
+ * **Cleanup Pattern:**
+ * Components using this store should not need to manually clean up subscriptions as Zustand
+ * automatically handles subscription lifecycle. However, components should:
+ * - Use the store's built-in actions (addChatMessage, clearChatMessages) rather than
+ *   directly manipulating the array
+ * - Call clearChatMessages() when appropriate (e.g., on logout, session reset)
+ */
 const MAX_CHAT_MESSAGES = 100;
+
+/**
+ * Maximum number of game log entries to keep in memory.
+ *
+ * **Memory Leak Prevention:**
+ * This limit prevents unbounded growth of the gameLog array during long-running sessions.
+ * When the limit is reached, older entries are automatically trimmed (FIFO - oldest removed first).
+ *
+ * **Cleanup Pattern:**
+ * Components using this store should not need to manually clean up subscriptions as Zustand
+ * automatically handles subscription lifecycle. However, components should:
+ * - Use the store's built-in actions (addGameLogEntry, clearGameLog) rather than
+ *   directly manipulating the array
+ * - Call clearGameLog() when appropriate (e.g., on logout, session reset)
+ */
 const MAX_GAME_LOG_ENTRIES = 100;
 
 const createInitialState = (): GameState => ({

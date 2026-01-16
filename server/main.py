@@ -53,7 +53,8 @@ def setup_monitoring_endpoints(app: FastAPI) -> None:  # pylint: disable=redefin
     and are now registered via the monitoring_router. This function registers
     the routers for testing purposes.
     """
-    from server.api.monitoring import monitoring_router, system_monitoring_router
+    from server.api.monitoring import monitoring_router
+    from server.api.system_monitoring import system_monitoring_router
 
     app.include_router(monitoring_router)
     app.include_router(system_monitoring_router)

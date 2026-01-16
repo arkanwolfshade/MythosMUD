@@ -110,6 +110,14 @@ async def get_metrics(
         # Add NATS connection state machine stats
         if nats_service:
             base_metrics["nats_connection"] = nats_service.get_connection_stats()
+            # Add subscription metrics
+            base_metrics["nats_subscriptions"] = {
+                "active_subscriptions": nats_service.get_active_subscriptions(),
+                "subscription_count": len(nats_service.get_active_subscriptions()),
+                "last_cleanup_time": getattr(nats_service, "_last_cleanup_time", None),
+                "subscription_count_total": getattr(nats_service, "_subscription_count", 0),
+                "unsubscription_count_total": getattr(nats_service, "_unsubscription_count", 0),
+            }
 
         logger.info("Metrics retrieved", admin_user=current_user.username)
 
@@ -301,7 +309,7 @@ async def _load_dlq_message(dlq_path) -> dict[str, Any]:
     """
     import json
 
-    import aiofiles  # type: ignore[import-untyped]  # Reason: types-aiofiles installed but mypy may not resolve it in pre-commit environment
+    import aiofiles
 
     if not dlq_path.exists():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"DLQ file not found: {dlq_path}")

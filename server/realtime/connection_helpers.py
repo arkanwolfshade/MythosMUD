@@ -9,7 +9,7 @@ for various operations like UUID conversion, sequence numbers, and deprecated me
 
 from typing import Any
 
-import aiofiles  # type: ignore[import-untyped]  # pylint: disable=import-error  # Reason: types-aiofiles installed but mypy may not resolve it in pre-commit environment
+import aiofiles  # pylint: disable=import-error
 
 from ..exceptions import DatabaseError
 from ..structured_logging.enhanced_logging_config import get_logger

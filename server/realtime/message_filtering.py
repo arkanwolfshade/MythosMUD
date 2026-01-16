@@ -188,23 +188,66 @@ class MessageFilteringHelper:
         Get player's current room ID from online players cache.
 
         Args:
-            player_id: Player ID to look up
+            player_id: Player ID to look up (as string from room_subscriptions)
 
         Returns:
             Player's room ID if found, None otherwise
         """
         online_players = getattr(self.connection_manager, "online_players", {})
-        if player_id not in online_players:
-            return None
 
-        player_info = online_players[player_id]
-        if not isinstance(player_info, dict):
-            return None
+        # CRITICAL FIX: online_players uses UUID objects as keys, but room_subscriptions uses strings
+        # Normalize player_id to UUID to match online_players dict keys
+        # This fixes Bug #2 where AW cannot see Ithaqua's messages due to player ID format mismatch
+        try:
+            player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
 
-        player_room_id = player_info.get("current_room_id")
-        if isinstance(player_room_id, str) and player_room_id:
-            return player_room_id
+            # Try UUID lookup first (most common case)
+            if player_id_uuid in online_players:
+                player_info = online_players[player_id_uuid]
+                if isinstance(player_info, dict):
+                    player_room_id = player_info.get("current_room_id")
+                    if isinstance(player_room_id, str) and player_room_id:
+                        logger.info(
+                            "Player room found via UUID lookup",
+                            player_id=player_id,
+                            player_id_uuid=player_id_uuid,
+                            room_id=player_room_id,
+                        )
+                        return player_room_id
+            else:
+                logger.info(
+                    "Player ID not found in online_players via UUID lookup",
+                    player_id=player_id,
+                    player_id_uuid=player_id_uuid,
+                    online_players_keys_sample=list(online_players.keys())[:5] if online_players else [],
+                )
+        except (ValueError, TypeError, AttributeError) as e:
+            # Fallback: try string lookup for backward compatibility
+            logger.info(
+                "UUID conversion failed, trying string lookup",
+                player_id=player_id,
+                error=str(e),
+            )
 
+        # Fallback to string lookup (for backward compatibility if some entries use strings)
+        if player_id in online_players:
+            player_info = online_players[player_id]
+            if isinstance(player_info, dict):
+                player_room_id = player_info.get("current_room_id")
+                if isinstance(player_room_id, str) and player_room_id:
+                    logger.info(
+                        "Player room found via string lookup fallback",
+                        player_id=player_id,
+                        room_id=player_room_id,
+                    )
+                    return player_room_id
+
+        logger.warning(
+            "Player room not found in online_players (UUID or string lookup failed)",
+            player_id=player_id,
+            online_players_count=len(online_players),
+            online_players_keys_sample=list(online_players.keys())[:5] if online_players else [],
+        )
         return None
 
     async def get_player_room_from_persistence(self, player_id: str) -> str | None:

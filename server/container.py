@@ -859,7 +859,7 @@ class ApplicationContainer:  # pylint: disable=too-many-instance-attributes  # R
 
         logger.debug("Initializing NATS and combat service...")
 
-        is_testing = self.config.logging.environment in ("unit_test", "e2e_test")
+        is_testing = self.config.logging.environment in ("unit_test", "e2e_test")  # pylint: disable=no-member  # Reason: Pydantic model field access - pylint doesn't recognize dynamic field access on Pydantic models
 
         if self.nats_service is not None and self.nats_service.is_connected():
             logger.info("NATS service available from container")
@@ -998,7 +998,7 @@ class ApplicationContainer:  # pylint: disable=too-many-instance-attributes  # R
         from .game.chat_service import ChatService
         from .services.nats_subject_manager import nats_subject_manager
 
-        is_testing = self.config.logging.environment in ("unit_test", "e2e_test")
+        is_testing = self.config.logging.environment in ("unit_test", "e2e_test")  # pylint: disable=no-member  # Reason: Pydantic model field access - pylint doesn't recognize dynamic field access on Pydantic models
 
         subject_manager = None
         nats_service = self.nats_service

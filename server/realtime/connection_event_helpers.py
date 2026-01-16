@@ -22,8 +22,9 @@ async def subscribe_to_room_events_impl(manager: Any) -> None:
     try:
         from ..events.event_types import PlayerEnteredRoom, PlayerLeftRoom
 
-        event_bus.subscribe(PlayerEnteredRoom, manager._handle_player_entered_room)  # pylint: disable=protected-access  # Reason: Accessing internal event handler methods for room movement events, these are guaranteed to exist on the manager
-        event_bus.subscribe(PlayerLeftRoom, manager._handle_player_left_room)  # pylint: disable=protected-access  # Reason: Accessing internal event handler methods for room movement events, these are guaranteed to exist on the manager
+        # Use service_id for tracking and cleanup (Task 2: Event Subscriber Cleanup)
+        event_bus.subscribe(PlayerEnteredRoom, manager._handle_player_entered_room, service_id="connection_manager")  # pylint: disable=protected-access  # Reason: Accessing internal event handler methods for room movement events, these are guaranteed to exist on the manager
+        event_bus.subscribe(PlayerLeftRoom, manager._handle_player_left_room, service_id="connection_manager")  # pylint: disable=protected-access  # Reason: Accessing internal event handler methods for room movement events, these are guaranteed to exist on the manager
         logger.info("Successfully subscribed to room movement events")
     except (DatabaseError, AttributeError) as e:
         logger.error("Error subscribing to room events", error=str(e), exc_info=True)

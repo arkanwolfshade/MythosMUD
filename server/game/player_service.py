@@ -120,7 +120,9 @@ class PlayerService:
         Raises:
             ValueError: If player name already exists
         """
-        return await self._creation_service.create_player_with_stats(name, stats, profession_id, starting_room_id, user_id)
+        return await self._creation_service.create_player_with_stats(
+            name, stats, profession_id, starting_room_id, user_id
+        )
 
     async def get_player_by_id(self, player_id: uuid.UUID) -> PlayerRead | None:
         """

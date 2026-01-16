@@ -15,12 +15,14 @@ This module also integrates enhanced logging and monitoring systems.
 import asyncio
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
+from datetime import UTC, datetime
 from typing import Any
 
 from fastapi import FastAPI
 
 from ..container import ApplicationContainer
 from ..monitoring.exception_tracker import get_exception_tracker
+from ..monitoring.memory_leak_metrics import MemoryLeakMetricsCollector
 from ..monitoring.monitoring_dashboard import get_monitoring_dashboard
 from ..monitoring.performance_monitor import get_performance_monitor
 from ..structured_logging.enhanced_logging_config import (
@@ -42,6 +44,39 @@ logger = get_logger("server.lifespan")
 
 # Re-export tick functions for backward compatibility
 __all__ = ["lifespan", "get_current_tick", "reset_current_tick"]
+
+# Global metrics collector instance
+_metrics_collector: MemoryLeakMetricsCollector | None = None  # pylint: disable=invalid-name  # Reason: Module-level singleton pattern uses underscore prefix to indicate private module variable, not a constant
+_startup_metrics: dict[str, Any] | None = None  # pylint: disable=invalid-name  # Reason: Module-level singleton pattern uses underscore prefix to indicate private module variable, not a constant
+
+
+async def _log_memory_metrics_periodically(collector: MemoryLeakMetricsCollector, interval_seconds: int = 300) -> None:
+    """
+    Log memory leak metrics periodically.
+
+    Args:
+        collector: MemoryLeakMetricsCollector instance
+        interval_seconds: Interval between metric logs (default 5 minutes)
+    """
+    try:
+        while True:
+            await asyncio.sleep(interval_seconds)
+            metrics = collector.collect_all_metrics()
+            alerts = collector.check_alerts(metrics)
+            growth_rates = collector.calculate_growth_rates()
+
+            logger.info(
+                "Memory leak metrics (periodic)",
+                metrics=metrics,
+                alerts=alerts,
+                growth_rates=growth_rates,
+                interval_seconds=interval_seconds,
+            )
+    except asyncio.CancelledError:
+        logger.debug("Periodic memory metrics logging cancelled")
+        raise
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Periodic logging errors unpredictable, must not crash lifespan
+        logger.error("Error in periodic memory metrics logging", error=str(e), exc_info=True)
 
 
 async def _initialize_enhanced_systems() -> Any:
@@ -116,6 +151,21 @@ async def _startup_application(app: FastAPI) -> ApplicationContainer:
     tick_task = container.task_registry.register_task(game_tick_loop(app), "lifecycle/game_tick_loop", "lifecycle")
     container.tick_task = tick_task
     app.state.tick_task = tick_task  # Backward compatibility
+
+    # Initialize memory leak metrics collector and start periodic logging
+    global _metrics_collector, _startup_metrics  # pylint: disable=global-statement  # Reason: Global collector instance for lifespan lifecycle tracking
+    _metrics_collector = MemoryLeakMetricsCollector()
+    _startup_metrics = _metrics_collector.collect_all_metrics()
+    logger.info("Memory leak metrics collector initialized", startup_metrics=_startup_metrics)
+
+    # Start periodic metrics logging task (5 minute interval)
+    container.task_registry.register_task(
+        _log_memory_metrics_periodically(_metrics_collector, interval_seconds=300),
+        "lifecycle/memory_metrics_logging",
+        "lifecycle",
+    )
+    logger.info("Periodic memory metrics logging started (5 minute interval)")
+
     logger.info("MythosMUD server started successfully with ApplicationContainer")
     return container
 
@@ -131,6 +181,54 @@ async def _shutdown_with_error_handling(app: FastAPI, container: ApplicationCont
     logger.info("Shutting down MythosMUD server...")
 
     try:
+        # Log final memory metrics and calculate delta
+        if _metrics_collector is not None:
+            shutdown_metrics = _metrics_collector.collect_all_metrics()
+            alerts = _metrics_collector.check_alerts(shutdown_metrics)
+
+            # Calculate metrics delta over application lifetime
+            metrics_delta: dict[str, Any] = {}
+            if _startup_metrics is not None:
+                # Calculate deltas for key metrics
+                if "connection" in shutdown_metrics and "connection" in _startup_metrics:
+                    conn_delta = {}
+                    conn_shutdown = shutdown_metrics["connection"]
+                    conn_startup = _startup_metrics["connection"]
+                    for key in ["closed_websockets_count", "active_websockets_count"]:
+                        if key in conn_shutdown and key in conn_startup:
+                            conn_delta[key] = conn_shutdown[key] - conn_startup[key]
+                    metrics_delta["connection"] = conn_delta
+
+            logger.info(
+                "Memory leak metrics (shutdown)",
+                shutdown_metrics=shutdown_metrics,
+                startup_metrics=_startup_metrics,
+                metrics_delta=metrics_delta,
+                alerts=alerts,
+            )
+
+            # Optional: Persist metrics to file (JSON format)
+            try:
+                import json
+                from pathlib import Path
+
+                metrics_file = Path("logs/local/memory_leak_metrics.json")
+                metrics_file.parent.mkdir(parents=True, exist_ok=True)
+
+                metrics_data = {
+                    "startup_metrics": _startup_metrics,
+                    "shutdown_metrics": shutdown_metrics,
+                    "metrics_delta": metrics_delta,
+                    "alerts": alerts,
+                    "timestamp": datetime.now(UTC).isoformat(),
+                }
+
+                with metrics_file.open("w", encoding="utf-8") as f:
+                    json.dump(metrics_data, f, indent=2, default=str)
+                logger.info("Memory leak metrics persisted to file", file_path=str(metrics_file))
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Metrics persistence errors should not fail shutdown
+                logger.warning("Failed to persist metrics to file", error=str(e))
+
         await shutdown_services(app, container)
         logger.info("MythosMUD server shutdown complete")
     except (asyncio.CancelledError, KeyboardInterrupt) as e:

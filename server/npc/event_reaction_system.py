@@ -155,7 +155,8 @@ class NPCEventReactionSystem:
         ]
 
         for event_type in event_types:
-            self.event_bus.subscribe(event_type, self._handle_event)
+            # Use service_id for tracking and cleanup (Task 2: Event Subscriber Cleanup)
+            self.event_bus.subscribe(event_type, self._handle_event, service_id="npc_event_reaction_system")
             self._event_subscriptions[event_type] = set()
             logger.debug("Subscribed to event type", event_type=event_type.__name__)
 

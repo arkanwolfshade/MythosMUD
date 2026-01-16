@@ -58,6 +58,14 @@ scrape_configs:
     scrape_interval: 10s
     scrape_timeout: 5s
 
+  # MythosMUD Memory Leak Metrics
+  - job_name: 'mythos-memory-leaks'
+    static_configs:
+      - targets: ['localhost:8000']
+    metrics_path: '/monitoring/memory-leaks'
+    scrape_interval: 60s
+    scrape_timeout: 10s
+
   # System Metrics (Node Exporter)
   - job_name: 'node-exporter'
     static_configs:
@@ -85,13 +93,10 @@ remote_write:
     queue_config:
       max_samples_per_send: 1000
       batch_send_deadline: 5s
-      max_retries: 10
       min_backoff: 30ms
       max_backoff: 100ms
 
-# Storage configuration
-storage:
-  tsdb:
-    retention.time: 30d
-    retention.size: 10GB
-    wal-compression: true
+# Storage configuration (set via command-line flags):
+# --storage.tsdb.retention.time=30d
+# --storage.tsdb.retention.size=10GB
+# --storage.tsdb.wal-compression

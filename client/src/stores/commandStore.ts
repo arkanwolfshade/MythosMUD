@@ -98,6 +98,7 @@ export interface CommandSelectors {
 type CommandStore = CommandState & CommandActions & CommandSelectors;
 
 const MAX_COMMAND_HISTORY = 100;
+const MAX_COMMAND_QUEUE = 50; // Limit command queue to prevent unbounded growth (Task 5: Zustand Store Cleanup)
 
 const createInitialState = (): CommandState => ({
   currentCommand: '',
@@ -214,7 +215,16 @@ export const useCommandStore = create<CommandStore>()(
 
       // Command queue actions
       addToQueue: (command: string) =>
-        set(state => ({ commandQueue: [...state.commandQueue, command] }), false, 'addToQueue'),
+        set(
+          state => {
+            const newQueue = [...state.commandQueue, command];
+            // Limit queue size to prevent unbounded growth (Task 5: Zustand Store Cleanup)
+            const limitedQueue = newQueue.slice(-MAX_COMMAND_QUEUE);
+            return { commandQueue: limitedQueue };
+          },
+          false,
+          'addToQueue'
+        ),
 
       processNextCommand: () => {
         const state = get();

@@ -6,12 +6,11 @@ replacing the previous Redis-based implementation with a more lightweight
 and Windows-native solution.
 """
 
-# pylint: disable=too-many-instance-attributes,too-many-lines  # Reason: NATS service requires many state tracking and configuration attributes. NATS service requires extensive NATS integration logic for comprehensive real-time messaging system.
+# pylint: disable=too-many-instance-attributes, too-many-lines # Reason: NATS service requires many state tracking and configuration attributes. NATS service requires extensive NATS integration logic for comprehensive real-time messaging system.
 
 import asyncio
 import json
 import ssl
-from collections import deque
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
@@ -28,96 +27,10 @@ from .nats_exceptions import (
     NATSSubscribeError,
     NATSUnsubscribeError,
 )
+from .nats_metrics import NATSMetrics
 from .nats_subject_manager import NATSSubjectManager, SubjectValidationError
 
 logger = get_logger("nats")
-
-
-class NATSMetrics:  # pylint: disable=too-many-instance-attributes  # Reason: Metrics class requires many fields to capture complete NATS metrics
-    """NATS-specific metrics collection for monitoring and alerting."""
-
-    def __init__(self) -> None:
-        self.publish_count = 0
-        self.publish_errors = 0
-        self.subscribe_count = 0
-        self.subscribe_errors = 0
-        # Use deque with maxlen for automatic rotation - more memory efficient than list slicing
-        self.message_processing_times: deque[float] = deque(maxlen=1000)
-        self.connection_health_score = 100.0
-        self.batch_flush_count = 0
-        self.batch_flush_errors = 0
-        self.pool_utilization = 0.0
-        # Acknowledgment metrics (for manual ack mode)
-        self.ack_success_count = 0
-        self.ack_failure_count = 0
-        self.nak_count = 0
-
-    def record_publish(self, success: bool, processing_time: float):
-        """Record publish operation metrics."""
-        self.publish_count += 1
-        if not success:
-            self.publish_errors += 1
-        # Deque automatically rotates when maxlen is reached - no manual slicing needed
-        self.message_processing_times.append(processing_time)
-
-    def record_subscribe(self, success: bool):
-        """Record subscribe operation metrics."""
-        self.subscribe_count += 1
-        if not success:
-            self.subscribe_errors += 1
-
-    def record_batch_flush(self, success: bool, _message_count: int):
-        """Record batch flush operation metrics."""
-        self.batch_flush_count += 1
-        if not success:
-            self.batch_flush_errors += 1
-
-    def update_connection_health(self, health_score: float):
-        """Update connection health score (0-100)."""
-        self.connection_health_score = max(0.0, min(100.0, health_score))
-
-    def update_pool_utilization(self, utilization: float):
-        """Update connection pool utilization (0-1)."""
-        self.pool_utilization = max(0.0, min(1.0, utilization))
-
-    def record_ack_success(self):
-        """Record successful message acknowledgment."""
-        self.ack_success_count += 1
-
-    def record_ack_failure(self):
-        """Record failed message acknowledgment."""
-        self.ack_failure_count += 1
-
-    def record_nak(self):
-        """Record negative acknowledgment (message requeued)."""
-        self.nak_count += 1
-
-    def get_metrics(self) -> dict[str, Any]:
-        """Get comprehensive NATS metrics."""
-        # Deque supports len() and iteration like a list
-        avg_processing_time = (
-            sum(self.message_processing_times) / len(self.message_processing_times)
-            if self.message_processing_times
-            else 0
-        )
-
-        return {
-            "publish_count": self.publish_count,
-            "publish_error_rate": self.publish_errors / max(self.publish_count, 1),
-            "subscribe_count": self.subscribe_count,
-            "subscribe_error_rate": self.subscribe_errors / max(self.subscribe_count, 1),
-            "avg_processing_time_ms": avg_processing_time * 1000,
-            "connection_health": self.connection_health_score,
-            "pool_utilization": self.pool_utilization,
-            "batch_flush_count": self.batch_flush_count,
-            "batch_flush_error_rate": self.batch_flush_errors / max(self.batch_flush_count, 1),
-            "processing_time_samples": len(self.message_processing_times),
-            # Acknowledgment metrics
-            "ack_success_count": self.ack_success_count,
-            "ack_failure_count": self.ack_failure_count,
-            "ack_failure_rate": self.ack_failure_count / max(self.ack_success_count + self.ack_failure_count, 1),
-            "nak_count": self.nak_count,
-        }
 
 
 class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NATS service requires many state tracking and configuration attributes
@@ -210,6 +123,15 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             # Create subject manager with configuration
             subject_manager = NATSSubjectManager(strict_validation=self.config.strict_subject_validation)
         self.subject_manager = subject_manager
+
+        # Subscription lifecycle tracking for metrics
+
+        self._subscription_timestamps: list[tuple[str, float]] = []  # (subject, timestamp)
+        self._unsubscription_timestamps: list[tuple[str, float]] = []  # (subject, timestamp)
+        self._subscription_count = 0
+        self._unsubscription_count = 0
+        self._last_cleanup_time: float | None = None
+        self._max_timestamp_history = 1000  # Keep only last N timestamps
 
     def _check_connection_allowed(self) -> bool:
         """Check if connection attempt is allowed by state machine."""
@@ -350,6 +272,66 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
 
             return False
 
+    async def _drain_subscriptions(self) -> None:
+        """Drain in-flight messages from all subscriptions."""
+        for subject, subscription in self.subscriptions.items():
+            try:
+                await subscription.drain()  # Wait for in-flight messages
+                logger.debug("Subscription drained", subject=subject)
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Subscription drain errors unpredictable, must not fail cleanup
+                logger.warning("Error draining subscription", subject=subject, error=str(e))
+
+    async def _close_all_subscriptions(self) -> None:
+        """Close and unsubscribe from all subscriptions."""
+        import time
+
+        for subject, subscription in self.subscriptions.items():
+            try:
+                await subscription.unsubscribe()
+                # Track unsubscription for metrics
+                self._unsubscription_count += 1
+                self._unsubscription_timestamps.append((subject, time.time()))
+                # Keep only last N timestamps to prevent unbounded growth
+                if len(self._unsubscription_timestamps) > self._max_timestamp_history:
+                    self._unsubscription_timestamps = self._unsubscription_timestamps[-self._max_timestamp_history :]
+                logger.debug("Unsubscribed from NATS subject", subject=subject)
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Unsubscribe errors unpredictable, must not fail cleanup
+                logger.warning("Error unsubscribing from subject", subject=subject, error=str(e))
+
+    def _verify_subscription_cleanup(self, subscriptions_before_cleanup: list[str]) -> None:
+        """Verify all subscriptions were cleaned up and log warnings if any remain."""
+        import time
+
+        self._last_cleanup_time = time.time()
+        remaining_subscriptions = list(self.subscriptions.keys())
+        if remaining_subscriptions:
+            logger.warning(
+                "Subscriptions remain after cleanup",
+                remaining_subscriptions=remaining_subscriptions,
+                total_before=len(subscriptions_before_cleanup),
+            )
+        else:
+            logger.info(
+                "All NATS subscriptions cleaned up successfully",
+                total_cleaned=len(subscriptions_before_cleanup),
+            )
+
+    async def _close_nats_connection(self) -> None:
+        """Close NATS connection and transition to disconnected state."""
+        if self.nc is None:
+            return
+
+        await self.nc.close()
+        self.nc = None
+        self.subscriptions.clear()
+        self._running = False
+
+        # Transition to disconnected state
+        if self.state_machine.current_state.id in ["connected", "degraded"]:
+            self.state_machine.disconnect()
+
+        logger.info("Disconnected from NATS server", state=self.state_machine.current_state.id)
+
     async def disconnect(self):
         """
         Disconnect from NATS with graceful shutdown and message draining.
@@ -367,33 +349,25 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
                 await self._flush_batch()
 
             if self.nc:
+                # Track subscriptions before cleanup for verification (Task 4: NATS Subscription Cleanup)
+                subscriptions_before_cleanup = list(self.subscriptions.keys())
+                logger.info(
+                    "Starting NATS subscription cleanup",
+                    active_subscriptions=len(subscriptions_before_cleanup),
+                    subscription_subjects=subscriptions_before_cleanup,
+                )
+
                 # Drain in-flight messages before closing subscriptions
-                for subject, subscription in self.subscriptions.items():
-                    try:
-                        await subscription.drain()  # Wait for in-flight messages
-                        logger.debug("Subscription drained", subject=subject)
-                    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Subscription drain errors unpredictable, must not fail cleanup
-                        logger.warning("Error draining subscription", subject=subject, error=str(e))
+                await self._drain_subscriptions()
 
                 # Close all subscriptions
-                for subject, subscription in self.subscriptions.items():
-                    try:
-                        await subscription.unsubscribe()
-                        logger.debug("Unsubscribed from NATS subject", subject=subject)
-                    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Unsubscribe errors unpredictable, must not fail cleanup
-                        logger.warning("Error unsubscribing from subject", subject=subject, error=str(e))
+                await self._close_all_subscriptions()
+
+                # Verify all subscriptions were cleaned up
+                self._verify_subscription_cleanup(subscriptions_before_cleanup)
 
                 # Close NATS connection
-                await self.nc.close()
-                self.nc = None
-                self.subscriptions.clear()
-                self._running = False
-
-                # Transition to disconnected state
-                if self.state_machine.current_state.id in ["connected", "degraded"]:
-                    self.state_machine.disconnect()
-
-                logger.info("Disconnected from NATS server", state=self.state_machine.current_state.id)
+                await self._close_nats_connection()
 
             # Clean up connection pool
             if self._pool_initialized:
@@ -682,6 +656,14 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
                         await self._negatively_acknowledge_message(msg, subject)
 
             subscription = await self.nc.subscribe(subject, cb=message_handler)
+            # Track subscription for metrics
+            import time
+
+            self._subscription_count += 1
+            self._subscription_timestamps.append((subject, time.time()))
+            # Keep only last N timestamps to prevent unbounded growth
+            if len(self._subscription_timestamps) > self._max_timestamp_history:
+                self._subscription_timestamps = self._subscription_timestamps[-self._max_timestamp_history :]
             self.subscriptions[subject] = subscription
 
             self.metrics.record_subscribe(True)
@@ -700,6 +682,18 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             error_msg = f"Failed to subscribe to NATS subject: {str(e)}"
             logger.error("Failed to subscribe to NATS subject", error=str(e), subject=subject)
             raise NATSSubscribeError(error_msg, subject=subject, error=e) from e
+
+    def get_active_subscriptions(self) -> list[str]:
+        """
+        Get list of all active NATS subscription subjects.
+
+        Returns:
+            List of subject names that are currently subscribed
+
+        This method is used for monitoring and verification during shutdown
+        to ensure all subscriptions are properly cleaned up.
+        """
+        return list(self.subscriptions.keys())
 
     async def unsubscribe(self, subject: str) -> None:
         """
@@ -828,6 +822,25 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
                 return False
 
         return True
+
+    def verify_subscription_cleanup(self) -> dict[str, Any]:
+        """
+        Verify that all subscriptions are properly cleaned up.
+
+        Returns:
+            Dictionary with cleanup verification status
+        """
+        active_subscriptions = self.get_active_subscriptions()
+        cleanup_verified = not active_subscriptions  # pylint: disable=use-implicit-booleaness-not-comparison-to-zero  # Reason: Empty list is falsy, explicit comparison unnecessary
+
+        return {
+            "cleanup_verified": cleanup_verified,
+            "active_subscriptions_count": len(active_subscriptions),
+            "active_subscriptions": active_subscriptions,
+            "last_cleanup_time": getattr(self, "_last_cleanup_time", None),
+            "subscription_count_total": getattr(self, "_subscription_count", 0),
+            "unsubscription_count_total": getattr(self, "_unsubscription_count", 0),
+        }
 
     def get_subscription_count(self) -> int:
         """

@@ -35,40 +35,75 @@ from ..time.time_service import get_mythos_chronicle
 logger = get_logger("server.lifespan.startup")
 
 
+async def _get_item_prototype_count(registry) -> int:
+    """Get count of item prototypes from registry."""
+    prototype_count = 0
+    if registry is not None:
+        all_method = getattr(registry, "all", None)
+        if callable(all_method):
+            entries = all_method()
+            if asyncio.iscoroutine(entries):
+                try:
+                    entries = await entries
+                except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Startup code must handle all exceptions gracefully to prevent application failure during initialization. Item registry errors are non-critical and should not block startup.
+                    entries = None
+            if isinstance(entries, Iterable):
+                prototype_count = sum(1 for _ in entries)
+            elif entries is not None:
+                try:
+                    prototype_count = len(entries)
+                except TypeError:
+                    logger.debug("Item registry returned non-iterable entries; defaulting prototype count to zero")
+        else:
+            logger.debug("Item prototype registry missing 'all' method; defaulting prototype count to zero")
+    return prototype_count
+
+
+async def _set_legacy_services(app: FastAPI, container: ApplicationContainer) -> None:
+    """Set services on app.state for backward compatibility."""
+    if container.player_service is not None:
+        app.state.player_service = container.player_service
+        logger.debug("Player service set on app.state for backward compatibility")
+    else:
+        logger.warning("Player service not available in container during initialization")
+
+    if container.user_manager is not None:
+        app.state.user_manager = container.user_manager
+        logger.debug("User manager set on app.state for backward compatibility")
+    else:
+        logger.warning("User manager not available in container during initialization")
+
+    if container.persistence is not None:
+        app.state.persistence = container.persistence
+        logger.debug("Persistence set on app.state for backward compatibility")
+    else:
+        logger.warning("Persistence not available in container during initialization")
+
+
 async def initialize_container_and_legacy_services(app: FastAPI, container: ApplicationContainer) -> None:
     """Initialize container and set up container reference on app.state.
 
     Services are now accessed exclusively via app.state.container.* or dependency injection.
     The dual storage pattern has been removed - all services are in the container only.
+
+    However, some legacy command handlers still expect services directly on app.state,
+    so we set them here for backward compatibility.
     """
     ApplicationContainer.set_instance(container)
 
     app.state.container = container
     logger.info("ApplicationContainer initialized and added to app.state")
 
+    # Set services on app.state for backward compatibility with legacy command handlers
+    # that access app.state.user_manager and app.state.player_service directly
+    # This fixes Bugs #1 and #3 where State object was missing these attributes
+    await _set_legacy_services(app, container)
+
     if container.item_factory is None:
         logger.warning("Item factory unavailable during startup; summon command will be disabled")
     else:
-        prototype_count = 0
         registry = container.item_prototype_registry
-        if registry is not None:
-            all_method = getattr(registry, "all", None)
-            if callable(all_method):
-                entries = all_method()
-                if asyncio.iscoroutine(entries):
-                    try:
-                        entries = await entries
-                    except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Startup code must handle all exceptions gracefully to prevent application failure during initialization. Item registry errors are non-critical and should not block startup.
-                        entries = None
-                if isinstance(entries, Iterable):
-                    prototype_count = sum(1 for _ in entries)
-                elif entries is not None:
-                    try:
-                        prototype_count = len(entries)
-                    except TypeError:
-                        logger.debug("Item registry returned non-iterable entries; defaulting prototype count to zero")
-            else:
-                logger.debug("Item prototype registry missing 'all' method; defaulting prototype count to zero")
+        prototype_count = await _get_item_prototype_count(registry)
         logger.info("Item services ready", prototype_count=prototype_count)
 
 

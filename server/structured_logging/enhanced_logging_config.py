@@ -136,7 +136,7 @@ def configure_enhanced_structlog(
             # Strip ANSI escape sequences
             ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
             return ansi_escape.sub("", formatted)
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Logging renderer can fail in various ways (regex errors, encoding issues, etc.), and we must return a safe error message to prevent logging failures from crashing the application
             # Graceful fallback: if rendering fails, return a safe error message
             # This prevents logging failures from crashing the application
             return f"Logging renderer error: {type(e).__name__}: {str(e)}"
@@ -149,7 +149,7 @@ def configure_enhanced_structlog(
             wrapper_class=BoundLogger,
             cache_logger_on_first_use=False,
         )
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: structlog.configure can fail for various reasons (import errors, configuration errors, etc.), and we must fall back to basic configuration to ensure logging still works
         # Fallback to basic structlog configuration if enhanced setup fails
         # This ensures logging still works even if enhanced features fail
         logger.warning(

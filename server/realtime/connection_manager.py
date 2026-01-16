@@ -11,6 +11,7 @@ and testability.
 import asyncio
 import time
 import uuid
+from collections import deque
 from typing import Any
 
 from anyio import Lock
@@ -204,6 +205,14 @@ class ConnectionManager:
             "cleanups_performed": 0,
             "memory_cleanups": 0,
             "time_cleanups": 0,
+            "cleanup_operation_counts": {
+                "dead_connections": 0,
+                "orphaned_data": 0,
+                "ghost_players": 0,
+                "force_cleanup": 0,
+                "check_and_cleanup": 0,
+            },
+            "cleanup_operation_timestamps": [],
         }
 
         # Initialize modular components
@@ -233,7 +242,8 @@ class ConnectionManager:
         self.session_connections: dict[str, list[str]] = {}  # session_id -> list of connection_ids
 
         # Track safely closed websocket objects to avoid duplicate closes
-        self._closed_websockets: set[int] = set()
+        # Use deque with maxlen to prevent unbounded growth (maxlen=1000)
+        self._closed_websockets: deque[int] = deque(maxlen=1000)
 
         # Background executor for disconnect processing when no event loop is available
         self._disconnect_executor: Any | None = None
@@ -263,7 +273,13 @@ class ConnectionManager:
 
     def mark_websocket_closed(self, ws_id: int) -> None:
         """Mark a WebSocket ID as closed."""
-        self._closed_websockets.add(ws_id)
+        # Use append() instead of add() for deque
+        # Note: deque automatically evicts oldest entries when maxlen is reached
+        self._closed_websockets.append(ws_id)
+
+    def get_closed_websockets_count(self) -> int:
+        """Get the count of closed WebSocket IDs being tracked."""
+        return len(self._closed_websockets)
 
     async def _safe_close_websocket(
         self, websocket: WebSocket, code: int = 1000, reason: str = "Connection closed"

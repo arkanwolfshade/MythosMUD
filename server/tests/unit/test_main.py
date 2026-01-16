@@ -99,6 +99,8 @@ class TestMonitoringEndpoints:
 
         @dataclass
         class MockMonitoringSummary:
+            """Mock monitoring summary dataclass for testing."""
+
             timestamp: datetime
             system_health: Any
             performance_stats: dict
@@ -123,30 +125,30 @@ class TestMonitoringEndpoints:
         return dashboard
 
     @pytest.mark.asyncio
-    async def test_health_check_success(self, mock_app, mock_dashboard):
+    async def test_health_check_success(self, mock_dashboard):
         """Test health check endpoint returns system health."""
         from fastapi import Request
 
-        from server.api.monitoring import get_system_health  # noqa: E402
+        from server.api.system_monitoring import get_system_health  # noqa: E402
 
         mock_request = MagicMock(spec=Request)
 
-        with patch("server.api.monitoring.get_monitoring_dashboard", return_value=mock_dashboard):
+        with patch("server.api.system_monitoring.get_monitoring_dashboard", return_value=mock_dashboard):
             result = await get_system_health(mock_request)
             assert result.status == "healthy"
             assert result.timestamp is not None
             assert result.performance_score == 0.95
 
     @pytest.mark.asyncio
-    async def test_health_check_failure(self, mock_app):
+    async def test_health_check_failure(self):
         """Test health check endpoint handles errors."""
         from fastapi import Request
 
-        from server.api.monitoring import get_system_health  # noqa: E402
+        from server.api.system_monitoring import get_system_health  # noqa: E402
 
         mock_request = MagicMock(spec=Request)
 
-        with patch("server.api.monitoring.get_monitoring_dashboard", side_effect=Exception("Dashboard error")):
+        with patch("server.api.system_monitoring.get_monitoring_dashboard", side_effect=Exception("Dashboard error")):
             # Should raise LoggedHTTPException
             with pytest.raises(LoggedHTTPException) as exc_info:
                 await get_system_health(mock_request)
@@ -154,134 +156,134 @@ class TestMonitoringEndpoints:
             assert exc_info.value.status_code == 503
 
     @pytest.mark.asyncio
-    async def test_get_metrics_success(self, mock_app, mock_dashboard):
+    async def test_get_metrics_success(self, mock_dashboard):
         """Test metrics endpoint returns monitoring data."""
         from fastapi import Request
 
-        from server.api.monitoring import get_system_metrics  # noqa: E402
+        from server.api.system_monitoring import get_system_metrics  # noqa: E402
 
         mock_request = MagicMock(spec=Request)
 
-        with patch("server.api.monitoring.get_monitoring_dashboard", return_value=mock_dashboard):
+        with patch("server.api.system_monitoring.get_monitoring_dashboard", return_value=mock_dashboard):
             result = await get_system_metrics(mock_request)
             assert isinstance(result, dict) or hasattr(result, "model_dump")
             result_dict = result.model_dump() if hasattr(result, "model_dump") else result
             assert "metrics" in result_dict or result_dict == {"metrics": "data"}
 
     @pytest.mark.asyncio
-    async def test_get_metrics_failure(self, mock_app):
+    async def test_get_metrics_failure(self):
         """Test metrics endpoint handles errors."""
         from fastapi import Request
 
-        from server.api.monitoring import get_system_metrics  # noqa: E402
+        from server.api.system_monitoring import get_system_metrics  # noqa: E402
 
         mock_request = MagicMock(spec=Request)
 
-        with patch("server.api.monitoring.get_monitoring_dashboard", side_effect=Exception("Dashboard error")):
+        with patch("server.api.system_monitoring.get_monitoring_dashboard", side_effect=Exception("Dashboard error")):
             with pytest.raises(LoggedHTTPException) as exc_info:
                 await get_system_metrics(mock_request)
 
             assert exc_info.value.status_code == 500
 
     @pytest.mark.asyncio
-    async def test_get_monitoring_summary_success(self, mock_app, mock_dashboard):
+    async def test_get_monitoring_summary_success(self, mock_dashboard):
         """Test monitoring summary endpoint returns summary data."""
         from fastapi import Request
 
-        from server.api.monitoring import get_system_monitoring_summary  # noqa: E402
+        from server.api.system_monitoring import get_system_monitoring_summary  # noqa: E402
 
         mock_request = MagicMock(spec=Request)
 
-        with patch("server.api.monitoring.get_monitoring_dashboard", return_value=mock_dashboard):
+        with patch("server.api.system_monitoring.get_monitoring_dashboard", return_value=mock_dashboard):
             result = await get_system_monitoring_summary(mock_request)
             assert isinstance(result, dict) or hasattr(result, "model_dump")
 
     @pytest.mark.asyncio
-    async def test_get_monitoring_summary_failure(self, mock_app):
+    async def test_get_monitoring_summary_failure(self):
         """Test monitoring summary endpoint handles errors."""
         from fastapi import Request
 
-        from server.api.monitoring import get_system_monitoring_summary  # noqa: E402
+        from server.api.system_monitoring import get_system_monitoring_summary  # noqa: E402
 
         mock_request = MagicMock(spec=Request)
 
-        with patch("server.api.monitoring.get_monitoring_dashboard", side_effect=Exception("Dashboard error")):
+        with patch("server.api.system_monitoring.get_monitoring_dashboard", side_effect=Exception("Dashboard error")):
             with pytest.raises(LoggedHTTPException) as exc_info:
                 await get_system_monitoring_summary(mock_request)
 
             assert exc_info.value.status_code == 500
 
     @pytest.mark.asyncio
-    async def test_get_alerts_success(self, mock_app, mock_dashboard):
+    async def test_get_alerts_success(self, mock_dashboard):
         """Test alerts endpoint returns alert data."""
         from fastapi import Request
 
-        from server.api.monitoring import get_system_monitoring_alerts  # noqa: E402
+        from server.api.system_monitoring import get_system_monitoring_alerts  # noqa: E402
 
         mock_request = MagicMock(spec=Request)
 
-        with patch("server.api.monitoring.get_monitoring_dashboard", return_value=mock_dashboard):
+        with patch("server.api.system_monitoring.get_monitoring_dashboard", return_value=mock_dashboard):
             result = await get_system_monitoring_alerts(mock_request)
             assert isinstance(result, dict) or hasattr(result, "model_dump")
             result_dict = result.model_dump() if hasattr(result, "model_dump") else result
             assert "alerts" in result_dict
 
     @pytest.mark.asyncio
-    async def test_get_alerts_failure(self, mock_app):
+    async def test_get_alerts_failure(self):
         """Test alerts endpoint handles errors."""
         from fastapi import Request
 
-        from server.api.monitoring import get_system_monitoring_alerts  # noqa: E402
+        from server.api.system_monitoring import get_system_monitoring_alerts  # noqa: E402
 
         mock_request = MagicMock(spec=Request)
 
-        with patch("server.api.monitoring.get_monitoring_dashboard", side_effect=Exception("Dashboard error")):
+        with patch("server.api.system_monitoring.get_monitoring_dashboard", side_effect=Exception("Dashboard error")):
             with pytest.raises(LoggedHTTPException) as exc_info:
                 await get_system_monitoring_alerts(mock_request)
 
             assert exc_info.value.status_code == 500
 
     @pytest.mark.asyncio
-    async def test_resolve_alert_success(self, mock_app, mock_dashboard):
+    async def test_resolve_alert_success(self, mock_dashboard):
         """Test resolve alert endpoint succeeds."""
         from fastapi import Request
 
-        from server.api.monitoring import resolve_system_alert  # noqa: E402
+        from server.api.system_monitoring import resolve_system_alert  # noqa: E402
 
         mock_request = MagicMock(spec=Request)
 
-        with patch("server.api.monitoring.get_monitoring_dashboard", return_value=mock_dashboard):
+        with patch("server.api.system_monitoring.get_monitoring_dashboard", return_value=mock_dashboard):
             result = await resolve_system_alert("alert_123", mock_request)
             assert isinstance(result, dict) or hasattr(result, "model_dump")
             result_dict = result.model_dump() if hasattr(result, "model_dump") else result
             assert "message" in result_dict
 
     @pytest.mark.asyncio
-    async def test_resolve_alert_not_found(self, mock_app, mock_dashboard):
+    async def test_resolve_alert_not_found(self, mock_dashboard):
         """Test resolve alert endpoint returns 404 when alert not found."""
         from fastapi import Request
 
-        from server.api.monitoring import resolve_system_alert  # noqa: E402
+        from server.api.system_monitoring import resolve_system_alert  # noqa: E402
 
         mock_request = MagicMock(spec=Request)
         mock_dashboard.resolve_alert = Mock(return_value=False)
 
-        with patch("server.api.monitoring.get_monitoring_dashboard", return_value=mock_dashboard):
+        with patch("server.api.system_monitoring.get_monitoring_dashboard", return_value=mock_dashboard):
             with pytest.raises(LoggedHTTPException) as exc_info:
                 await resolve_system_alert("nonexistent_alert", mock_request)
 
             assert exc_info.value.status_code == 404
 
     @pytest.mark.asyncio
-    async def test_resolve_alert_failure(self, mock_app):
+    async def test_resolve_alert_failure(self):
         """Test resolve alert endpoint handles errors."""
         from fastapi import Request
 
-        from server.api.monitoring import resolve_system_alert  # noqa: E402
+        from server.api.system_monitoring import resolve_system_alert  # noqa: E402
 
         mock_request = MagicMock(spec=Request)
 
-        with patch("server.api.monitoring.get_monitoring_dashboard", side_effect=Exception("Dashboard error")):
+        with patch("server.api.system_monitoring.get_monitoring_dashboard", side_effect=Exception("Dashboard error")):
             with pytest.raises(LoggedHTTPException) as exc_info:
                 await resolve_system_alert("alert_123", mock_request)
 

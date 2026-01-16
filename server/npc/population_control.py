@@ -122,10 +122,13 @@ class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  
     def _subscribe_to_events(self) -> None:
         """Subscribe to relevant game events."""
         logger.info("NPC Population Controller subscribing to game events")
-        self.event_bus.subscribe(PlayerEnteredRoom, self._handle_player_entered_room)
-        self.event_bus.subscribe(PlayerLeftRoom, self._handle_player_left_room)
-        self.event_bus.subscribe(NPCEnteredRoom, self._handle_npc_entered_room)
-        self.event_bus.subscribe(NPCLeftRoom, self._handle_npc_left_room)
+        # Use service_id for tracking and cleanup (Task 2: Event Subscriber Cleanup)
+        self.event_bus.subscribe(
+            PlayerEnteredRoom, self._handle_player_entered_room, service_id="npc_population_control"
+        )
+        self.event_bus.subscribe(PlayerLeftRoom, self._handle_player_left_room, service_id="npc_population_control")
+        self.event_bus.subscribe(NPCEnteredRoom, self._handle_npc_entered_room, service_id="npc_population_control")
+        self.event_bus.subscribe(NPCLeftRoom, self._handle_npc_left_room, service_id="npc_population_control")
         logger.info("NPC Population Controller event subscriptions completed")
 
     def _handle_player_entered_room(self, event: PlayerEnteredRoom) -> None:

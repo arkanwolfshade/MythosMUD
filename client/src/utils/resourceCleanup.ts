@@ -166,7 +166,19 @@ export const useResourceCleanup = (): ResourceManager => {
 
   // Cleanup on unmount
   useEffect(() => {
+    // Periodic logging of resource stats (every 5 minutes in development)
+    const logInterval = setInterval(
+      () => {
+        if (process.env.NODE_ENV === 'development') {
+          const stats = resourceManager.getResourceStats();
+          console.log('[ResourceManager] Periodic stats:', stats);
+        }
+      },
+      5 * 60 * 1000
+    ); // 5 minutes
+
     return () => {
+      clearInterval(logInterval);
       resourceManager.cleanup();
     };
   }, [resourceManager]);

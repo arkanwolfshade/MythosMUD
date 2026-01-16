@@ -480,6 +480,55 @@ async def handle_game_command(
         await websocket.send_json(error_response)
 
 
+async def _validate_player_and_persistence(connection_manager, player_id: str) -> tuple[Any | None, str | None]:
+    """Validate player and persistence availability."""
+    logger.debug("Getting player for ID", player_id=player_id, player_id_type=type(player_id))
+    player = await connection_manager.get_player(player_id)
+    logger.debug("Player object", player=player, player_type=type(player))
+    if not player:
+        logger.warning("Player not found", player_id=player_id)
+        return None, "Player not found"
+
+    if not hasattr(player, "current_room_id"):
+        logger.error("Player object is not a Player instance", player_type=type(player))
+        return None, "Player data error"
+
+    async_persistence = connection_manager.async_persistence
+    if not async_persistence:
+        logger.warning("Async persistence layer not available")
+        return None, "Game system unavailable"
+
+    return player, None
+
+
+def _resolve_and_setup_app_state_services(app_state, request_context) -> tuple[object | None, object | None]:
+    """Resolve and setup app state services from container or app.state."""
+    player_service = None
+    user_manager = None
+    if app_state and hasattr(app_state, "container") and app_state.container:
+        player_service = getattr(app_state.container, "player_service", None)
+        user_manager = getattr(app_state.container, "user_manager", None)
+
+        if player_service and (not hasattr(app_state, "player_service") or not app_state.player_service):
+            app_state.player_service = player_service
+            logger.debug("Player service set on app.state from container")
+        if user_manager and (not hasattr(app_state, "user_manager") or not app_state.user_manager):
+            app_state.user_manager = user_manager
+            logger.debug("User manager set on app.state from container")
+    elif app_state:
+        player_service = getattr(app_state, "player_service", None)
+        user_manager = getattr(app_state, "user_manager", None)
+
+    if player_service and user_manager:
+        request_context.set_app_state_services(player_service, user_manager)
+
+    logger.debug("App state services available", player_service=player_service, user_manager=user_manager)
+    if not player_service or not user_manager:
+        logger.warning("Missing required app state services - player_service or user_manager not available")
+
+    return player_service, user_manager
+
+
 async def process_websocket_command(cmd: str, args: list, player_id: str, connection_manager=None) -> dict:
     """
     Process a command for WebSocket connections.
@@ -501,24 +550,10 @@ async def process_websocket_command(cmd: str, args: list, player_id: str, connec
 
         connection_manager = app.state.container.connection_manager
 
-    # Get player from connection manager
-    logger.debug("Getting player for ID", player_id=player_id, player_id_type=type(player_id))
-    player = await connection_manager.get_player(player_id)
-    logger.debug("Player object", player=player, player_type=type(player))
-    if not player:
-        logger.warning("Player not found", player_id=player_id)
-        return {"result": "Player not found"}
-
-    # Check if player is actually a Player object
-    if not hasattr(player, "current_room_id"):
-        logger.error("Player object is not a Player instance", player_type=type(player))
-        return {"result": "Player data error"}
-
-    # Get async persistence from connection manager
-    async_persistence = connection_manager.async_persistence
-    if not async_persistence:
-        logger.warning("Async persistence layer not available")
-        return {"result": "Game system unavailable"}
+    # Validate player and persistence
+    player, error_result = await _validate_player_and_persistence(connection_manager, player_id)
+    if error_result:
+        return {"result": error_result}
 
     # CRITICAL FIX: Removed special case for "go" command
     # The unified command handler (called below) will handle "go" commands
@@ -554,19 +589,10 @@ async def process_websocket_command(cmd: str, args: list, player_id: str, connec
 
     # Verify app state services are available (they should already be in the real app state)
     # Prefer container, fallback to app.state for backward compatibility
-    player_service = None
-    user_manager = None
-    if app_state and hasattr(app_state, "container") and app_state.container:
-        player_service = getattr(app_state.container, "player_service", None)
-        user_manager = getattr(app_state.container, "user_manager", None)
-    elif app_state:
-        player_service = getattr(app_state, "player_service", None)
-        user_manager = getattr(app_state, "user_manager", None)
-
-    logger.debug("App state services available", player_service=player_service, user_manager=user_manager)
-
-    if not player_service or not user_manager:
-        logger.warning("Missing required app state services - player_service or user_manager not available")
+    # CRITICAL FIX: Set services on app.state if they're in container but not on app.state
+    # This ensures command handlers can access app.state.user_manager and app.state.player_service
+    # This fixes Bugs #1 and #3 where State object was missing user_manager and player_service
+    _resolve_and_setup_app_state_services(app_state, request_context)
 
     # Process the command using the unified command handler
     command_line = f"{cmd} {' '.join(args)}".strip()
