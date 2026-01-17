@@ -45,6 +45,9 @@ def mock_app_with_services():
     """Create a mock app with all required services."""
     app = MagicMock()
     app.state = MagicMock()
+    # Ensure container is None so _get_services_from_app uses app.state.persistence
+    # instead of trying to get it from app.state.container.async_persistence
+    app.state.container = None
     return app
 
 
@@ -68,11 +71,35 @@ def mock_connection_manager_full():
     return manager
 
 
+class MockPersistenceFull:
+    """Mock persistence layer with async methods for integration tests."""
+
+    def __init__(self):
+        self._get_player_by_name_mock = AsyncMock(return_value=None)
+        self._get_room_by_id_mock = MagicMock(return_value=None)
+
+    async def get_player_by_name(self, name):
+        """Mock async method that uses configured mock."""
+        return await self._get_player_by_name_mock(name)
+
+    def get_room_by_id(self, room_id):
+        """Mock method that uses configured mock."""
+        return self._get_room_by_id_mock(room_id)
+
+    def __setattr__(self, name, value):
+        """Allow setting get_player_by_name and get_room_by_id to mocks."""
+        if name == "get_player_by_name":
+            object.__setattr__(self, "_get_player_by_name_mock", value)
+        elif name == "get_room_by_id":
+            object.__setattr__(self, "_get_room_by_id_mock", value)
+        else:
+            super().__setattr__(name, value)
+
+
 @pytest.fixture
 def mock_persistence_full():
     """Create a fully configured mock persistence layer."""
-    persistence = AsyncMock()
-    return persistence
+    return MockPersistenceFull()
 
 
 @pytest.mark.asyncio

@@ -27,6 +27,9 @@ def mock_app():
     """Create a mock FastAPI app."""
     app = MagicMock()
     app.state = MagicMock()
+    # Ensure container is None so _get_services_from_app uses app.state.persistence
+    # instead of trying to get it from app.state.container.async_persistence
+    app.state.container = None
     return app
 
 
@@ -38,11 +41,35 @@ def mock_request(mock_app):  # pylint: disable=redefined-outer-name  # Reason: F
     return request
 
 
+class MockPersistence:
+    """Mock persistence layer with async methods."""
+
+    def __init__(self):
+        self._get_player_by_name_mock = AsyncMock(return_value=None)
+        self._get_room_by_id_mock = MagicMock(return_value=None)
+
+    async def get_player_by_name(self, name):
+        """Mock async method that uses configured mock."""
+        return await self._get_player_by_name_mock(name)
+
+    def get_room_by_id(self, room_id):
+        """Mock method that uses configured mock."""
+        return self._get_room_by_id_mock(room_id)
+
+    def __setattr__(self, name, value):
+        """Allow setting get_player_by_name and get_room_by_id to mocks."""
+        if name == "get_player_by_name":
+            object.__setattr__(self, "_get_player_by_name_mock", value)
+        elif name == "get_room_by_id":
+            object.__setattr__(self, "_get_room_by_id_mock", value)
+        else:
+            super().__setattr__(name, value)
+
+
 @pytest.fixture
 def mock_persistence():
     """Create a mock persistence layer."""
-    persistence = AsyncMock()
-    return persistence
+    return MockPersistence()
 
 
 @pytest.fixture
@@ -92,6 +119,7 @@ async def test_handle_rest_command_no_connection_manager(mock_request, mock_pers
     """Test handle_rest_command() handles missing connection manager."""
     mock_request.app.state.persistence = mock_persistence
     mock_request.app.state.connection_manager = None
+    # Note: mock_persistence fixture now has get_player_by_name configured by default
 
     result = await handle_rest_command({}, {}, mock_request, None, "TestPlayer")
 
