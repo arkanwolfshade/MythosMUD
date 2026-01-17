@@ -1,19 +1,10 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { CommandPanel } from '../CommandPanel';
 
 // Mock the dependencies
 vi.mock('../src/components/ui/EldritchIcon', () => ({
-  EldritchIcon: ({
-    name,
-    _size,
-    _variant,
-    className,
-  }: {
-    name: string;
-    _size?: number;
-    _variant?: string;
-    className?: string;
-  }) => (
+  EldritchIcon: ({ name, className }: { name: string; className?: string }) => (
     <span data-testid={`icon-${name}`} className={className}>
       {name}
     </span>
@@ -425,7 +416,9 @@ describe('CommandPanel', () => {
     });
 
     it('handles malformed command history', () => {
-      const malformedHistory = ['valid', null, undefined, '', 'another valid'];
+      const malformedHistory = ['valid', null, undefined, '', 'another valid'].filter(
+        (item): item is string => typeof item === 'string'
+      );
 
       render(<CommandPanel {...defaultProps} commandHistory={malformedHistory} />);
 

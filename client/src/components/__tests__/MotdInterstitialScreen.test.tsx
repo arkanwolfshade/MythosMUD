@@ -1,7 +1,6 @@
-import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 import { MotdInterstitialScreen } from '../MotdInterstitialScreen';
-import React from 'react';
 
 // Mock MotdContent component
 vi.mock('../MotdContent', () => ({

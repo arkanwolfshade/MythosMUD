@@ -14,25 +14,40 @@ import { BackpackTab } from '../BackpackTab';
 import { CorpseOverlay } from '../CorpseOverlay';
 import type { ContainerComponent } from '../../../stores/containerStore';
 
-// Mock stores
-const mockGetContainer = vi.fn();
-const mockGetMutationToken = vi.fn();
-const mockIsContainerOpen = vi.fn();
-const mockGetWearableContainersForPlayer = vi.fn();
+// Mock container store state
+let mockOpenContainers: Record<string, ContainerComponent> = {};
+let mockMutationTokens: Record<string, string> = {};
+let mockIsLoading = false;
 const mockSelectContainer = vi.fn();
-const mockGetCorpseContainersInRoom = vi.fn();
 const mockOpenContainer = vi.fn();
 
 vi.mock('../../../stores/containerStore', () => ({
   useContainerStore: (selector: (state: unknown) => unknown) => {
     const mockState = {
-      getContainer: mockGetContainer,
-      getMutationToken: mockGetMutationToken,
-      isContainerOpen: mockIsContainerOpen,
-      getWearableContainersForPlayer: mockGetWearableContainersForPlayer,
-      selectContainer: mockSelectContainer,
-      getCorpseContainersInRoom: mockGetCorpseContainersInRoom,
+      openContainers: mockOpenContainers,
+      mutationTokens: mockMutationTokens,
+      isLoading: mockIsLoading,
+      selectedContainerId: null,
       openContainer: mockOpenContainer,
+      closeContainer: vi.fn(),
+      updateContainer: vi.fn(),
+      handleContainerDecayed: vi.fn(),
+      selectContainer: mockSelectContainer,
+      deselectContainer: vi.fn(),
+      setLoading: vi.fn(),
+      reset: vi.fn(),
+      getContainer: (id: string) => mockOpenContainers[id] || null,
+      getMutationToken: (id: string) => mockMutationTokens[id] || null,
+      getOpenContainerIds: () => Object.keys(mockOpenContainers),
+      isContainerOpen: (id: string) => id in mockOpenContainers,
+      getWearableContainersForPlayer: (playerId: string) =>
+        Object.values(mockOpenContainers).filter(
+          container => container.source_type === 'equipment' && container.entity_id === playerId
+        ),
+      getCorpseContainersInRoom: (roomId: string) =>
+        Object.values(mockOpenContainers).filter(
+          container => container.source_type === 'corpse' && container.room_id === roomId
+        ),
     };
     return selector(mockState);
   },
@@ -62,6 +77,27 @@ vi.mock('../../../stores/gameStore', () => ({
     const mockState = {
       player: mockPlayer,
       room: mockRoom,
+      chatMessages: [],
+      gameLog: [],
+      isLoading: false,
+      lastUpdate: null,
+      setPlayer: vi.fn(),
+      updatePlayerStats: vi.fn(),
+      clearPlayer: vi.fn(),
+      setRoom: vi.fn(),
+      updateRoomOccupants: vi.fn(),
+      clearRoom: vi.fn(),
+      addChatMessage: vi.fn(),
+      clearChatMessages: vi.fn(),
+      addGameLogEntry: vi.fn(),
+      clearGameLog: vi.fn(),
+      setLoading: vi.fn(),
+      updateLastUpdate: vi.fn(),
+      reset: vi.fn(),
+      getPlayerStats: vi.fn(),
+      getRoomOccupantsCount: vi.fn(),
+      getRecentChatMessages: vi.fn(),
+      getRecentGameLogEntries: vi.fn(),
     };
     return selector(mockState);
   },
@@ -94,9 +130,13 @@ describe('Container Keyboard Accessibility', () => {
     };
 
     beforeEach(() => {
-      mockGetContainer.mockReturnValue(mockContainer);
-      mockGetMutationToken.mockReturnValue('token-1');
-      mockIsContainerOpen.mockReturnValue(true);
+      mockOpenContainers = {
+        'container-1': mockContainer,
+      };
+      mockMutationTokens = {
+        'container-1': 'token-1',
+      };
+      mockIsLoading = false;
     });
 
     it('should support Tab navigation between items', async () => {
@@ -207,8 +247,11 @@ describe('Container Keyboard Accessibility', () => {
     };
 
     beforeEach(() => {
-      mockGetWearableContainersForPlayer.mockReturnValue([mockWearableContainer]);
-      mockSelectContainer.mockReturnValue(null);
+      mockOpenContainers = {
+        [mockWearableContainer.container_id]: mockWearableContainer,
+      };
+      mockMutationTokens = {};
+      mockIsLoading = false;
     });
 
     it('should support Tab navigation between tabs', async () => {
@@ -218,7 +261,10 @@ describe('Container Keyboard Accessibility', () => {
         container_id: 'backpack-2',
         metadata: { item_name: 'Bandolier' },
       };
-      mockGetWearableContainersForPlayer.mockReturnValue([mockWearableContainer, container2]);
+      mockOpenContainers = {
+        [mockWearableContainer.container_id]: mockWearableContainer,
+        [container2.container_id]: container2,
+      };
 
       render(<BackpackTab />);
 
@@ -259,7 +305,10 @@ describe('Container Keyboard Accessibility', () => {
         container_id: 'backpack-2',
         metadata: { item_name: 'Bandolier' },
       };
-      mockGetWearableContainersForPlayer.mockReturnValue([mockWearableContainer, container2]);
+      mockOpenContainers = {
+        [mockWearableContainer.container_id]: mockWearableContainer,
+        [container2.container_id]: container2,
+      };
 
       render(<BackpackTab />);
 
@@ -280,7 +329,10 @@ describe('Container Keyboard Accessibility', () => {
         container_id: 'backpack-2',
         metadata: { item_name: 'Bandolier' },
       };
-      mockGetWearableContainersForPlayer.mockReturnValue([mockWearableContainer, container2]);
+      mockOpenContainers = {
+        [mockWearableContainer.container_id]: mockWearableContainer,
+        [container2.container_id]: container2,
+      };
 
       render(<BackpackTab />);
 
@@ -321,7 +373,9 @@ describe('Container Keyboard Accessibility', () => {
     beforeEach(() => {
       // Reset player to default
       mockPlayer.id = 'player-1';
-      mockGetCorpseContainersInRoom.mockReturnValue([mockCorpse]);
+      mockOpenContainers = {
+        [mockCorpse.container_id]: mockCorpse,
+      };
       // Mock fetch for API call
       global.fetch = vi.fn().mockResolvedValue({
         ok: true,
@@ -338,7 +392,9 @@ describe('Container Keyboard Accessibility', () => {
         ...mockCorpse,
         owner_id: 'player-1',
       };
-      mockGetCorpseContainersInRoom.mockReturnValue([enabledCorpse]);
+      mockOpenContainers = {
+        [enabledCorpse.container_id]: enabledCorpse,
+      };
 
       render(<CorpseOverlay />);
 
@@ -377,7 +433,9 @@ describe('Container Keyboard Accessibility', () => {
         ...mockCorpse,
         owner_id: 'other-player',
       };
-      mockGetCorpseContainersInRoom.mockReturnValue([gracePeriodCorpse]);
+      mockOpenContainers = {
+        [gracePeriodCorpse.container_id]: gracePeriodCorpse,
+      };
       mockPlayer.id = 'current-player';
 
       render(<CorpseOverlay />);
@@ -399,7 +457,9 @@ describe('Container Keyboard Accessibility', () => {
         ...mockCorpse,
         owner_id: 'player-1',
       };
-      mockGetCorpseContainersInRoom.mockReturnValue([enabledCorpse]);
+      mockOpenContainers = {
+        [enabledCorpse.container_id]: enabledCorpse,
+      };
 
       render(<CorpseOverlay />);
 
@@ -433,9 +493,13 @@ describe('Container Keyboard Accessibility', () => {
         metadata: {},
       };
 
-      mockGetContainer.mockReturnValue(mockContainer);
-      mockGetMutationToken.mockReturnValue('token-1');
-      mockIsContainerOpen.mockReturnValue(true);
+      mockOpenContainers = {
+        'container-1': mockContainer,
+      };
+      mockMutationTokens = {
+        'container-1': 'token-1',
+      };
+      mockIsLoading = false;
 
       const triggerButton = document.createElement('button');
       triggerButton.textContent = 'Open Container';
@@ -481,9 +545,13 @@ describe('Container Keyboard Accessibility', () => {
         metadata: {},
       };
 
-      mockGetContainer.mockReturnValue(mockContainer);
-      mockGetMutationToken.mockReturnValue('token-1');
-      mockIsContainerOpen.mockReturnValue(true);
+      mockOpenContainers = {
+        'container-1': mockContainer,
+      };
+      mockMutationTokens = {
+        'container-1': 'token-1',
+      };
+      mockIsLoading = false;
 
       render(<ContainerSplitPane containerId="container-1" modal={true} onTransfer={vi.fn()} />);
 

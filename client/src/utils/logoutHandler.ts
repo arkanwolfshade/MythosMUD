@@ -79,7 +79,7 @@ async function sendLogoutCommandToServer(authToken: string, timeout: number): Pr
   }, timeout);
 
   try {
-    const response = await fetch('/command', {
+    const response = await fetch('/commands/logout', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -1,5 +1,5 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { useGameConnection } from './useGameConnection';
 
 // Mock WebSocket
@@ -9,6 +9,8 @@ const mockWebSocket = {
   addEventListener: vi.fn(),
   removeEventListener: vi.fn(),
   readyState: 0,
+  onerror: null as ((event: Event) => void) | null,
+  onopen: null as ((event: Event) => void) | null,
 };
 
 // Mock WebSocket constructor
@@ -46,7 +48,6 @@ describe('useGameConnection', () => {
     const { result } = renderHook(() =>
       useGameConnection({
         authToken: 'test-token',
-        playerName: 'test-player',
       })
     );
 
@@ -103,7 +104,6 @@ describe('useGameConnection', () => {
     const { result } = renderHook(() =>
       useGameConnection({
         authToken: 'test-token',
-        playerName: 'test-player',
       })
     );
 
@@ -130,7 +130,6 @@ describe('useGameConnection', () => {
     const { result } = renderHook(() =>
       useGameConnection({
         authToken: 'test-token',
-        playerName: 'test-player',
       })
     );
 
@@ -146,7 +145,6 @@ describe('useGameConnection', () => {
     const { result } = renderHook(() =>
       useGameConnection({
         authToken: 'test-token',
-        playerName: 'test-player',
       })
     );
 
@@ -158,7 +156,6 @@ describe('useGameConnection', () => {
     const { result } = renderHook(() =>
       useGameConnection({
         authToken: 'test-token',
-        playerName: 'test-player',
       })
     );
 
@@ -170,7 +167,6 @@ describe('useGameConnection', () => {
     const { result } = renderHook(() =>
       useGameConnection({
         authToken: 'test-token',
-        playerName: 'test-player',
       })
     );
 
@@ -190,7 +186,6 @@ describe('useGameConnection', () => {
       const { result } = renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
         })
       );
 
@@ -204,7 +199,6 @@ describe('useGameConnection', () => {
       const { result } = renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
           sessionId: customSessionId,
         })
       );
@@ -216,7 +210,6 @@ describe('useGameConnection', () => {
       const { result } = renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
         })
       );
 
@@ -230,7 +223,6 @@ describe('useGameConnection', () => {
       const { result } = renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
         })
       );
 
@@ -245,7 +237,6 @@ describe('useGameConnection', () => {
       const { result } = renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
         })
       );
 
@@ -256,7 +247,6 @@ describe('useGameConnection', () => {
       const { result } = renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
         })
       );
 
@@ -267,7 +257,6 @@ describe('useGameConnection', () => {
       const { result } = renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
         })
       );
 
@@ -278,7 +267,6 @@ describe('useGameConnection', () => {
       const { result } = renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
         })
       );
 
@@ -303,7 +291,6 @@ describe('useGameConnection', () => {
       const { result } = renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
         })
       );
 
@@ -322,7 +309,6 @@ describe('useGameConnection', () => {
       const { result } = renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
         })
       );
 
@@ -345,7 +331,6 @@ describe('useGameConnection', () => {
       const { result } = renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
           onSessionChange,
         })
       );
@@ -362,7 +347,6 @@ describe('useGameConnection', () => {
       renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
           onConnectionHealthUpdate,
         })
       );
@@ -377,7 +361,6 @@ describe('useGameConnection', () => {
       renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
           sessionId: customSessionId,
         })
       );
@@ -390,7 +373,7 @@ describe('useGameConnection', () => {
       );
 
       // Verify the token is also in the URL
-      const calls = (global.WebSocket as unknown as jest.Mock).mock.calls;
+      const calls = (global.WebSocket as unknown as Mock).mock.calls;
       const lastCall = calls[calls.length - 1];
       expect(lastCall[0]).toContain('token=test-token');
     });
@@ -399,7 +382,6 @@ describe('useGameConnection', () => {
       const { result } = renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
         })
       );
 

@@ -7,6 +7,7 @@
  */
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import type { InventoryStack } from '../../stores/containerStore';
 import { useContainerStore } from '../../stores/containerStore';
 import { useGameStore } from '../../stores/gameStore';
@@ -42,11 +43,17 @@ export const ContainerSplitPane: React.FC<ContainerSplitPaneProps> = ({
   modal = false,
   className = '',
 }) => {
-  const container = useContainerStore(state => state.getContainer(containerId));
-  const mutationToken = useContainerStore(state => state.getMutationToken(containerId));
-  const isContainerOpen = useContainerStore(state => state.isContainerOpen(containerId));
+  // Access state directly instead of calling selector functions
+  // Use shallow comparison for object selectors to prevent unnecessary re-renders
+  const { openContainers } = useContainerStore(useShallow(state => ({ openContainers: state.openContainers })));
+  const { mutationTokens } = useContainerStore(useShallow(state => ({ mutationTokens: state.mutationTokens })));
   const isLoading = useContainerStore(state => state.isLoading);
-  const player = useGameStore(state => state.player);
+  const { player } = useGameStore(useShallow(state => ({ player: state.player })));
+
+  // Compute derived values using useMemo
+  const container = useMemo(() => openContainers[containerId] || null, [openContainers, containerId]);
+  const mutationToken = useMemo(() => mutationTokens[containerId] || null, [mutationTokens, containerId]);
+  const isContainerOpen = useMemo(() => containerId in openContainers, [openContainers, containerId]);
 
   const playerInventory = useMemo(() => {
     // Type assertion: player.inventory may have a different type definition in gameStore,

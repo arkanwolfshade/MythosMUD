@@ -5,13 +5,35 @@ import { ChatMessage } from '../../../stores/gameStore';
 import { ChatPanelRefactored } from '../ChatPanelRefactored';
 
 // Mock the chat sub-components
-vi.mock('../chat', () => ({
+// Mock individual files to match the component's import paths
+vi.mock('../chat/ChatStatistics.tsx', () => ({
+  ChatStatistics: ({
+    selectedChannel,
+    currentChannelMessages,
+    unreadCounts,
+  }: {
+    selectedChannel: string;
+    currentChannelMessages: number;
+    unreadCounts: Record<string, number>;
+  }) => (
+    <div data-testid="chat-statistics">
+      <span>Channel: {selectedChannel}</span>
+      <span>Messages: {currentChannelMessages}</span>
+      <span>Unread: {Object.values(unreadCounts).reduce((a: number, b: number) => a + b, 0)}</span>
+    </div>
+  ),
+}));
+
+vi.mock('../chat/ChatHeader.tsx', () => ({
   ChatHeader: ({ onClearMessages, onDownloadLogs }: { onClearMessages?: () => void; onDownloadLogs?: () => void }) => (
     <div data-testid="chat-header">
       <button onClick={onClearMessages}>Clear Messages</button>
       <button onClick={onDownloadLogs}>Download Logs</button>
     </div>
   ),
+}));
+
+vi.mock('../chat/ChannelSelectorSection.tsx', () => ({
   ChannelSelectorSection: ({
     selectedChannel,
     onChannelSelect,
@@ -42,6 +64,9 @@ vi.mock('../chat', () => ({
       </button>
     </div>
   ),
+}));
+
+vi.mock('../chat/ChannelActivityIndicators.tsx', () => ({
   ChannelActivityIndicators: ({
     selectedChannel: _selectedChannel,
     unreadCounts,
@@ -64,6 +89,9 @@ vi.mock('../chat', () => ({
       ))}
     </div>
   ),
+}));
+
+vi.mock('../chat/ChatHistoryToggle.tsx', () => ({
   ChatHistoryToggle: ({
     showChatHistory,
     onToggleHistory,
@@ -97,6 +125,9 @@ vi.mock('../chat', () => ({
       <span>Messages: {currentChannelMessages}</span>
     </div>
   ),
+}));
+
+vi.mock('../chat/ChatMessagesList.tsx', () => ({
   ChatMessagesList: ({ messages }: { messages: ChatMessage[] }) => (
     <div data-testid="chat-messages-list">
       {messages.map((message: { text: string }, index: number) => (
@@ -104,21 +135,6 @@ vi.mock('../chat', () => ({
           {message.text}
         </div>
       ))}
-    </div>
-  ),
-  ChatStatistics: ({
-    selectedChannel,
-    currentChannelMessages,
-    unreadCounts,
-  }: {
-    selectedChannel: string;
-    currentChannelMessages: number;
-    unreadCounts: Record<string, number>;
-  }) => (
-    <div data-testid="chat-statistics">
-      <span>Channel: {selectedChannel}</span>
-      <span>Messages: {currentChannelMessages}</span>
-      <span>Unread: {Object.values(unreadCounts).reduce((a: number, b: number) => a + b, 0)}</span>
     </div>
   ),
 }));
@@ -164,7 +180,10 @@ describe('ChatPanelRefactored', () => {
       const mockOnChannelSelect = vi.fn();
       render(<ChatPanelRefactored {...defaultProps} selectedChannel="local" onChannelSelect={mockOnChannelSelect} />);
 
-      fireEvent.click(screen.getByText('Global'));
+      // Find the Global button in the channel selector (not the activity indicator)
+      const channelSelector = screen.getByTestId('channel-selector');
+      const globalButton = within(channelSelector).getByText('Global');
+      fireEvent.click(globalButton);
       expect(mockOnChannelSelect).toHaveBeenCalledWith('global');
     });
 
@@ -276,7 +295,8 @@ describe('ChatPanelRefactored', () => {
       render(<ChatPanelRefactored {...defaultProps} messages={messages} selectedChannel="local" />);
 
       // Change filter to "all"
-      fireEvent.change(screen.getByRole('combobox'), { target: { value: 'all' } });
+      const historyToggle = screen.getByTestId('chat-history-toggle');
+      fireEvent.change(within(historyToggle).getByRole('combobox'), { target: { value: 'all' } });
 
       const messageList = screen.getByTestId('chat-messages-list');
       expect(within(messageList).getByText('Local message')).toBeInTheDocument();
@@ -288,20 +308,22 @@ describe('ChatPanelRefactored', () => {
     it('should toggle chat history visibility', () => {
       render(<ChatPanelRefactored {...defaultProps} />);
 
-      const toggleButton = screen.getByText('Show History');
+      const historyToggle = screen.getByTestId('chat-history-toggle');
+      const toggleButton = within(historyToggle).getByText('Show History');
       expect(toggleButton).toBeInTheDocument();
 
       fireEvent.click(toggleButton);
-      expect(screen.getByText('Hide History')).toBeInTheDocument();
+      expect(within(historyToggle).getByText('Hide History')).toBeInTheDocument();
 
-      fireEvent.click(screen.getByText('Hide History'));
-      expect(screen.getByText('Show History')).toBeInTheDocument();
+      fireEvent.click(within(historyToggle).getByText('Hide History'));
+      expect(within(historyToggle).getByText('Show History')).toBeInTheDocument();
     });
 
     it('should update filter when changed', () => {
       render(<ChatPanelRefactored {...defaultProps} />);
 
-      const filterSelect = screen.getByRole('combobox');
+      const historyToggle = screen.getByTestId('chat-history-toggle');
+      const filterSelect = within(historyToggle).getByRole('combobox');
       expect(filterSelect).toHaveValue('current');
 
       fireEvent.change(filterSelect, { target: { value: 'all' } });
@@ -337,8 +359,10 @@ describe('ChatPanelRefactored', () => {
 
       render(<ChatPanelRefactored {...defaultProps} messages={messages} selectedChannel="local" />);
 
-      // Use more specific selectors to avoid ambiguity
+      // ChatStatistics should be rendered as it's always present in ChatPanelRefactored
+      // Check for the statistics section with the expected content
       const statisticsSection = screen.getByTestId('chat-statistics');
+      expect(statisticsSection).toBeInTheDocument();
       expect(statisticsSection).toHaveTextContent('Messages: 2');
       expect(statisticsSection).toHaveTextContent('Unread: 1');
     });
@@ -349,7 +373,9 @@ describe('ChatPanelRefactored', () => {
       const mockOnClearMessages = vi.fn();
       render(<ChatPanelRefactored {...defaultProps} onClearMessages={mockOnClearMessages} />);
 
-      fireEvent.click(screen.getByText('Clear Messages'));
+      const chatHeader = screen.getByTestId('chat-header');
+      const clearButton = within(chatHeader).getByText('Clear Messages');
+      fireEvent.click(clearButton);
       expect(mockOnClearMessages).toHaveBeenCalled();
     });
 
@@ -357,7 +383,9 @@ describe('ChatPanelRefactored', () => {
       const mockOnDownloadLogs = vi.fn();
       render(<ChatPanelRefactored {...defaultProps} onDownloadLogs={mockOnDownloadLogs} />);
 
-      fireEvent.click(screen.getByText('Download Logs'));
+      const chatHeader = screen.getByTestId('chat-header');
+      const downloadButton = within(chatHeader).getByText('Download Logs');
+      fireEvent.click(downloadButton);
       expect(mockOnDownloadLogs).toHaveBeenCalled();
     });
   });
@@ -374,7 +402,8 @@ describe('ChatPanelRefactored', () => {
     it('should have proper disabled state', () => {
       render(<ChatPanelRefactored {...defaultProps} disabled={true} />);
 
-      const localButton = screen.getByText('Local');
+      const channelSelector = screen.getByTestId('channel-selector');
+      const localButton = within(channelSelector).getByRole('button', { name: 'Local' });
       expect(localButton).toBeDisabled();
     });
   });

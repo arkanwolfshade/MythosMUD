@@ -70,8 +70,8 @@ describe('Profession Selection - Different Profession Choices', () => {
       name: 'Tramp',
       description: 'A wandering soul with no particular skills or connections.',
       flavor_text: 'You have spent your days drifting from place to place, learning to survive on your wits alone.',
-      stat_requirements: {},
-      mechanical_effects: {},
+      stat_requirements: [],
+      mechanical_effects: [],
       is_available: true,
     },
     {
@@ -79,8 +79,8 @@ describe('Profession Selection - Different Profession Choices', () => {
       name: 'Gutter Rat',
       description: 'A street-smart survivor from the urban underbelly.',
       flavor_text: 'The alleys and gutters have been your home, teaching you the harsh realities of city life.',
-      stat_requirements: {},
-      mechanical_effects: {},
+      stat_requirements: [],
+      mechanical_effects: [],
       is_available: true,
     },
     {
@@ -88,8 +88,11 @@ describe('Profession Selection - Different Profession Choices', () => {
       name: 'Scholar',
       description: 'A learned individual with high intelligence and wisdom.',
       flavor_text: 'Your mind is your greatest weapon, filled with knowledge of the arcane and mundane.',
-      stat_requirements: { intelligence: 14, wisdom: 12 },
-      mechanical_effects: {},
+      stat_requirements: [
+        { stat: 'intelligence', minimum: 14 },
+        { stat: 'wisdom', minimum: 12 },
+      ],
+      mechanical_effects: [],
       is_available: true,
     },
     {
@@ -97,8 +100,11 @@ describe('Profession Selection - Different Profession Choices', () => {
       name: 'Soldier',
       description: 'A disciplined warrior with combat training.',
       flavor_text: 'You have served in conflicts and know the art of war and survival.',
-      stat_requirements: { strength: 13, constitution: 12 },
-      mechanical_effects: {},
+      stat_requirements: [
+        { stat: 'strength', minimum: 13 },
+        { stat: 'constitution', minimum: 12 },
+      ],
+      mechanical_effects: [],
       is_available: true,
     },
     {
@@ -106,8 +112,12 @@ describe('Profession Selection - Different Profession Choices', () => {
       name: 'Detective',
       description: 'A sharp-eyed investigator with keen perception.',
       flavor_text: 'You have a talent for noticing details others miss and solving mysteries.',
-      stat_requirements: { intelligence: 12, wisdom: 13, dexterity: 11 },
-      mechanical_effects: {},
+      stat_requirements: [
+        { stat: 'intelligence', minimum: 12 },
+        { stat: 'wisdom', minimum: 13 },
+        { stat: 'dexterity', minimum: 11 },
+      ],
+      mechanical_effects: [],
       is_available: true,
     },
   ];

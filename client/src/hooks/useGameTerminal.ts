@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { useCommandStore } from '../stores/commandStore.js';
 import { useConnectionStore } from '../stores/connectionStore.js';
 import { useGameStore } from '../stores/gameStore.js';
@@ -85,14 +86,39 @@ export interface GameTerminalState {
  * making it more testable and reusable.
  */
 export const useGameTerminal = (): GameTerminalState => {
-  // Get state from stores
-  const connectionState = useConnectionStore();
-  const gameState = useGameStore();
-  const sessionState = useSessionStore();
-  const commandState = useCommandStore();
+  // Connection state - only subscribe to needed fields
+  const isConnecting = useConnectionStore(state => state.isConnecting);
+  const error = useConnectionStore(state => state.error);
+  const reconnectAttempts = useConnectionStore(state => state.reconnectAttempts);
+  const websocketConnected = useConnectionStore(state => state.websocketConnected);
+
+  // Session state - only subscribe to needed fields
+  const playerName = useSessionStore(state => state.playerName);
+  const characterName = useSessionStore(state => state.characterName);
+  const isAuthenticated = useSessionStore(state => state.isAuthenticated);
+  const hasCharacter = useSessionStore(state => state.hasCharacter);
+
+  // Game state - use selectors for arrays/objects with shallow comparison
+  const { chatMessages, gameLog, player, room } = useGameStore(
+    useShallow(state => ({
+      chatMessages: state.chatMessages,
+      gameLog: state.gameLog,
+      player: state.player,
+      room: state.room,
+    }))
+  );
+
+  // Command state - only subscribe to needed fields with shallow comparison for arrays
+  const { commandHistory } = useCommandStore(useShallow(state => ({ commandHistory: state.commandHistory })));
+
+  // Extract actions separately
+  const executeCommand = useCommandStore(state => state.executeCommand);
+  const addChatMessage = useGameStore(state => state.addChatMessage);
+  const clearChatMessages = useGameStore(state => state.clearChatMessages);
+  const clearHistory = useCommandStore(state => state.clearHistory);
 
   // Transform chat messages to match component interface
-  const transformedMessages = gameState.chatMessages.map(msg => {
+  const transformedMessages = chatMessages.map(msg => {
     type AliasChainItem = {
       original: string;
       expanded: string;
@@ -133,7 +159,7 @@ export const useGameTerminal = (): GameTerminalState => {
     return base;
   });
 
-  let transformedCommandHistory = commandState.commandHistory.map(entry => entry.command);
+  let transformedCommandHistory = commandHistory.map(entry => entry.command);
 
   if (import.meta.env.MODE === 'test') {
     const internalState = useGameTerminal as unknown as {
@@ -160,9 +186,9 @@ export const useGameTerminal = (): GameTerminalState => {
   // Event handlers
   const onSendCommand = useCallback(
     (command: string) => {
-      commandState.executeCommand(command);
+      executeCommand(command);
     },
-    [commandState]
+    [executeCommand]
   );
 
   const onSendChatMessage = useCallback(
@@ -179,52 +205,52 @@ export const useGameTerminal = (): GameTerminalState => {
         party: 'say',
       };
 
-      gameState.addChatMessage({
+      addChatMessage({
         text: message,
         timestamp: new Date().toISOString(),
         isHtml: false,
         type: channelTypeMap[channel] || 'say',
         channel: channel as 'local' | 'global' | 'party' | 'tell' | 'system' | 'game',
-        sender: sessionState.characterName || sessionState.playerName,
+        sender: characterName || playerName,
       });
     },
-    [gameState, sessionState]
+    [addChatMessage, characterName, playerName]
   );
 
   const onClearMessages = useCallback(() => {
-    gameState.clearChatMessages();
-  }, [gameState]);
+    clearChatMessages();
+  }, [clearChatMessages]);
 
   const onClearHistory = useCallback(() => {
-    commandState.clearHistory();
-  }, [commandState]);
+    clearHistory();
+  }, [clearHistory]);
 
   const onDownloadLogs = useCallback(() => {
     // This would typically trigger a download of the game logs
     // For now, we'll just log to console
     console.log('Downloading logs...', {
-      chatMessages: gameState.chatMessages,
-      gameLog: gameState.gameLog,
-      commandHistory: commandState.commandHistory,
+      chatMessages,
+      gameLog,
+      commandHistory,
     });
-  }, [gameState, commandState]);
+  }, [chatMessages, gameLog, commandHistory]);
 
   return {
     // Connection state
-    isConnected: connectionState.isFullyConnected(),
-    isConnecting: connectionState.isConnecting,
-    error: connectionState.error,
-    reconnectAttempts: connectionState.reconnectAttempts,
+    isConnected: websocketConnected,
+    isConnecting,
+    error,
+    reconnectAttempts,
 
     // Session state
-    playerName: sessionState.playerName,
-    characterName: sessionState.characterName,
-    isAuthenticated: sessionState.isAuthenticated,
-    hasCharacter: sessionState.hasCharacter,
+    playerName,
+    characterName,
+    isAuthenticated,
+    hasCharacter,
 
     // Game state
-    player: gameState.player,
-    room: gameState.room,
+    player,
+    room,
     messages: transformedMessages,
     commandHistory: transformedCommandHistory,
 

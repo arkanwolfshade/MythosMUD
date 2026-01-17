@@ -97,6 +97,53 @@ export interface CommandSelectors {
 
 type CommandStore = CommandState & CommandActions & CommandSelectors;
 
+/**
+ * **Zustand Store Usage Patterns:**
+ *
+ * **CORRECT Usage Examples:**
+ *
+ * ```tsx
+ * // ✅ GOOD: Using selectors with shallow comparison for arrays
+ * import { shallow } from 'zustand/shallow';
+ *
+ * function CommandHistory() {
+ *   const commandHistory = useCommandStore(state => state.commandHistory, shallow);
+ *   const executeCommand = useCommandStore(state => state.executeCommand);
+ *
+ *   return <div>{commandHistory.map(cmd => <div key={cmd.timestamp}>{cmd.command}</div>)}</div>;
+ * }
+ *
+ * // ✅ GOOD: Using selectors for specific fields
+ * function CommandInput() {
+ *   const currentCommand = useCommandStore(state => state.currentCommand);
+ *   const setCurrentCommand = useCommandStore(state => state.setCurrentCommand);
+ *   return <input value={currentCommand} onChange={e => setCurrentCommand(e.target.value)} />;
+ * }
+ * ```
+ *
+ * **INCORRECT Usage Examples (Anti-patterns):**
+ *
+ * ```tsx
+ * // ❌ BAD: Subscribing to entire store
+ * function MyComponent() {
+ *   const commandState = useCommandStore(); // Don't do this!
+ *   return <div>{commandState.currentCommand}</div>;
+ * }
+ *
+ * // ❌ BAD: Calling selector functions inside selectors
+ * function MyComponent() {
+ *   const recent = useCommandStore(state => state.getRecentCommands(10)); // Don't do this!
+ *   // Instead, use: const history = useCommandStore(state => state.commandHistory, shallow);
+ *   // Then compute: const recent = useMemo(() => history.slice(-10), [history]);
+ * }
+ * ```
+ *
+ * **Note on Selector Functions:**
+ * - Selector functions like `getRecentCommands()`, `getSuccessfulCommands()`, `getCommandStatistics()`
+ *   are kept for backward compatibility but should NOT be called inside component selectors.
+ * - Instead, access the underlying state directly and compute derived values in components using `useMemo`.
+ */
+
 const MAX_COMMAND_HISTORY = 100;
 const MAX_COMMAND_QUEUE = 50; // Limit command queue to prevent unbounded growth (Task 5: Zustand Store Cleanup)
 
@@ -393,6 +440,7 @@ export const useCommandStore = create<CommandStore>()(
     }),
     {
       name: 'command-store',
+      enabled: import.meta.env.MODE === 'development',
       partialize: (state: CommandStore) => ({
         commandHistory: state.commandHistory,
         aliases: state.aliases,

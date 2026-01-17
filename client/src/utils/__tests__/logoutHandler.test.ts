@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { createLogoutHandler, logoutHandler } from '../logoutHandler';
 
 // Mock dependencies
@@ -54,7 +54,7 @@ describe('logoutHandler', () => {
         }),
       };
 
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
 
       await logoutHandler(defaultOptions);
 
@@ -85,7 +85,7 @@ describe('logoutHandler', () => {
         }),
       };
 
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
 
       await logoutHandler(defaultOptions);
 
@@ -98,7 +98,7 @@ describe('logoutHandler', () => {
   describe('Timeout Handling', () => {
     it('should proceed with client-side logout after timeout', async () => {
       // Mock fetch to throw AbortError after timeout
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockImplementation(() =>
+      (global.fetch as Mock<typeof fetch>).mockImplementation(() =>
         Promise.reject(new DOMException('The operation was aborted.', 'AbortError'))
       );
 
@@ -111,7 +111,7 @@ describe('logoutHandler', () => {
 
     it('should handle abort errors gracefully', async () => {
       // Mock fetch to throw AbortError
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockImplementation(() =>
+      (global.fetch as Mock<typeof fetch>).mockImplementation(() =>
         Promise.reject(new DOMException('The operation was aborted.', 'AbortError'))
       );
 
@@ -128,7 +128,7 @@ describe('logoutHandler', () => {
       const abortError = new Error('Operation aborted');
       abortError.name = 'AbortError';
 
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockImplementation(() => Promise.reject(abortError));
+      (global.fetch as Mock<typeof fetch>).mockImplementation(() => Promise.reject(abortError));
 
       await logoutHandler(defaultOptions);
 
@@ -141,7 +141,7 @@ describe('logoutHandler', () => {
 
   describe('Network Error Handling', () => {
     it('should proceed with client-side logout on network error', async () => {
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockRejectedValueOnce(new Error('Network error'));
+      (global.fetch as Mock<typeof fetch>).mockRejectedValueOnce(new Error('Network error'));
 
       await logoutHandler(defaultOptions);
 
@@ -151,7 +151,7 @@ describe('logoutHandler', () => {
     });
 
     it('should proceed with client-side logout on fetch rejection', async () => {
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockRejectedValueOnce('Connection failed');
+      (global.fetch as Mock<typeof fetch>).mockRejectedValueOnce('Connection failed');
 
       await logoutHandler(defaultOptions);
 
@@ -168,7 +168,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
 
       await logoutHandler(defaultOptions);
 
@@ -181,7 +181,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
 
       await logoutHandler(defaultOptions);
 
@@ -194,7 +194,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
 
       await logoutHandler(defaultOptions);
 
@@ -212,7 +212,7 @@ describe('logoutHandler', () => {
         }),
       };
 
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
 
       await logoutHandler(defaultOptions);
 
@@ -223,7 +223,7 @@ describe('logoutHandler', () => {
     });
 
     it('should log network errors but still proceed with logout', async () => {
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockRejectedValueOnce(new Error('Network timeout'));
+      (global.fetch as Mock<typeof fetch>).mockRejectedValueOnce(new Error('Network timeout'));
 
       await logoutHandler(defaultOptions);
 
@@ -235,9 +235,7 @@ describe('logoutHandler', () => {
 
     it('should handle non-Error rejection in sendLogoutCommandToServer', async () => {
       // Reject with a non-Error value (string) - tests the String(error) branch
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockImplementation(() =>
-        Promise.reject('String rejection value')
-      );
+      (global.fetch as Mock<typeof fetch>).mockImplementation(() => Promise.reject('String rejection value'));
 
       await logoutHandler(defaultOptions);
 
@@ -251,7 +249,7 @@ describe('logoutHandler', () => {
   describe('Custom Timeout Configuration', () => {
     it('should use custom timeout value', async () => {
       // Mock fetch to throw AbortError (simulating timeout)
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockImplementation(() =>
+      (global.fetch as Mock<typeof fetch>).mockImplementation(() =>
         Promise.reject(new DOMException('The operation was aborted.', 'AbortError'))
       );
 
@@ -295,7 +293,7 @@ describe('logoutHandler', () => {
         }),
       };
 
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
 
       await logoutHandler(defaultOptions);
 
@@ -316,7 +314,7 @@ describe('logoutHandler', () => {
         }),
       };
 
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
 
       await logoutHandler(defaultOptions);
 
@@ -332,7 +330,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockRejectedValue(new Error('Invalid JSON')),
       };
 
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
 
       await logoutHandler(defaultOptions);
 
@@ -355,7 +353,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
 
       await logoutHandler(defaultOptions);
 
@@ -380,7 +378,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
 
       await logoutHandler(optionsWithError);
 
@@ -404,7 +402,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
 
       await logoutHandler(optionsWithError);
 
@@ -427,7 +425,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
 
       // Navigation errors are caught and logged, not thrown
       // The function should complete even if navigation fails
@@ -452,7 +450,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
 
       await logoutHandler(optionsWithError);
 
@@ -480,7 +478,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
 
       // Should not throw - error is caught and logged
       await logoutHandler(optionsWithError);
@@ -507,7 +505,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
 
       // Should not throw - error is caught and logged
       await logoutHandler(optionsWithError);
@@ -525,7 +523,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
 
       await logoutHandler(defaultOptions);
 
@@ -550,7 +548,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
 
       await logoutHandler(optionsWithError);
 
@@ -574,7 +572,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
 
       await logoutHandler(optionsWithError);
 
@@ -598,7 +596,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
 
       // Navigation errors are re-thrown from performClientSideCleanup
       // This should trigger the outer catch block which then tries navigation again
@@ -613,21 +611,23 @@ describe('logoutHandler', () => {
     it('should abort request after timeout duration', async () => {
       let abortSignal: AbortSignal | null = null;
 
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockImplementation((url, options) => {
+      (global.fetch as Mock<typeof fetch>).mockImplementation((_url, options) => {
         if (options?.signal) {
           abortSignal = options.signal as AbortSignal;
 
           // Listen for abort and reject the promise when aborted
-          return new Promise((resolve, reject) => {
+          return new Promise((_resolve, reject) => {
             const onAbort = () => {
-              abortSignal?.removeEventListener('abort', onAbort);
+              if (abortSignal) {
+                abortSignal.removeEventListener('abort', onAbort);
+              }
               reject(new DOMException('The operation was aborted.', 'AbortError'));
             };
 
-            if (abortSignal.aborted) {
+            if (abortSignal && abortSignal.aborted) {
               // Already aborted, reject immediately
               reject(new DOMException('The operation was aborted.', 'AbortError'));
-            } else {
+            } else if (abortSignal) {
               abortSignal.addEventListener('abort', onAbort);
             }
           });
@@ -649,7 +649,8 @@ describe('logoutHandler', () => {
       await timeoutPromise;
 
       // Verify abort happened
-      expect(abortSignal?.aborted).toBe(true);
+      expect(abortSignal).not.toBeNull();
+      expect(abortSignal!.aborted).toBe(true);
 
       expect(mockDisconnect).toHaveBeenCalled();
       expect(mockClearState).toHaveBeenCalled();
@@ -670,7 +671,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
 
       const handler = createLogoutHandler('test-token', mockDisconnect, mockClearState, mockNavigateToLogin);
 
@@ -691,7 +692,7 @@ describe('logoutHandler', () => {
     });
 
     it('should allow custom timeout when calling created handler', async () => {
-      (global.fetch as jest.MockedFunction<typeof fetch>).mockImplementation(() =>
+      (global.fetch as Mock<typeof fetch>).mockImplementation(() =>
         Promise.reject(new DOMException('The operation was aborted.', 'AbortError'))
       );
 

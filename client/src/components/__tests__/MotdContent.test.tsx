@@ -1,7 +1,6 @@
-import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
 import { MotdContent } from '../MotdContent';
-import React from 'react';
 
 describe('MotdContent', () => {
   it('should render title', () => {

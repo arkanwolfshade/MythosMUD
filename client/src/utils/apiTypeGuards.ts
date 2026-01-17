@@ -104,7 +104,7 @@ function isCharacterInfo(value: unknown): value is CharacterInfo {
     isNumber(value.level) &&
     isString(value.created_at) &&
     isString(value.last_active) &&
-    (value.profession_name === undefined || isString(value.profession_name))
+    (value.profession_name === undefined || value.profession_name === null || isString(value.profession_name))
   );
 }
 

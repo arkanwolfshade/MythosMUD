@@ -76,6 +76,56 @@ export interface SessionSelectors {
 
 type SessionStore = SessionState & SessionActions & SessionSelectors;
 
+/**
+ * **Zustand Store Usage Patterns:**
+ *
+ * **CORRECT Usage Examples:**
+ *
+ * ```tsx
+ * // ✅ GOOD: Using selectors for specific fields
+ * function AuthComponent() {
+ *   const isAuthenticated = useSessionStore(state => state.isAuthenticated);
+ *   const playerName = useSessionStore(state => state.playerName);
+ *   const logout = useSessionStore(state => state.logout);
+ *
+ *   return isAuthenticated ? <div>Welcome {playerName}</div> : <LoginForm />;
+ * }
+ *
+ * // ✅ GOOD: Using computed selectors (but prefer direct state access)
+ * function SessionStatus() {
+ *   const lastActivity = useSessionStore(state => state.lastActivity);
+ *   const sessionTimeout = useSessionStore(state => state.sessionTimeout);
+ *   // Prefer computing in component over: const isExpired = useSessionStore(state => state.isSessionExpired());
+ *   const isExpired = useMemo(() => {
+ *     if (!lastActivity) return false;
+ *     return Date.now() - lastActivity > sessionTimeout;
+ *   }, [lastActivity, sessionTimeout]);
+ * }
+ * ```
+ *
+ * **INCORRECT Usage Examples (Anti-patterns):**
+ *
+ * ```tsx
+ * // ❌ BAD: Subscribing to entire store
+ * function MyComponent() {
+ *   const sessionState = useSessionStore(); // Don't do this!
+ *   return <div>{sessionState.playerName}</div>;
+ * }
+ *
+ * // ❌ BAD: Calling selector functions inside selectors
+ * function MyComponent() {
+ *   const isValid = useSessionStore(state => state.isValidToken()); // Don't do this!
+ *   // Instead, use: const authToken = useSessionStore(state => state.authToken);
+ *   // Then compute: const isValid = useMemo(() => authToken.length > 0, [authToken]);
+ * }
+ * ```
+ *
+ * **Note on Selector Functions:**
+ * - Selector functions like `isValidToken()`, `isValidInviteCode()`, `isSessionExpired()`, etc.
+ *   are kept for backward compatibility but should NOT be called inside component selectors.
+ * - Instead, access the underlying state directly and compute derived values in components using `useMemo`.
+ */
+
 const DEFAULT_SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
 
 const createInitialState = (): SessionState => ({
@@ -248,7 +298,8 @@ export const useSessionStore = create<SessionStore>()(
     }),
     {
       name: 'session-store',
-      partialize: state => ({
+      enabled: import.meta.env.MODE === 'development',
+      partialize: (state: SessionStore) => ({
         isAuthenticated: state.isAuthenticated,
         hasCharacter: state.hasCharacter,
         characterName: state.characterName,

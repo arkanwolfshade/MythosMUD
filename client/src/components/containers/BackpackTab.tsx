@@ -7,6 +7,7 @@
  */
 
 import React, { useMemo } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import type { ContainerComponent } from '../../stores/containerStore';
 import { useContainerStore } from '../../stores/containerStore';
 import { useGameStore } from '../../stores/gameStore';
@@ -33,7 +34,8 @@ export const BackpackTab: React.FC<BackpackTabProps> = ({ onSelect, className = 
   const selectContainer = useContainerStore(state => state.selectContainer);
   const deselectContainer = useContainerStore(state => state.deselectContainer);
   const selectedContainerId = useContainerStore(state => state.selectedContainerId);
-  const player = useGameStore(state => state.player);
+  // Use shallow comparison for object selector to prevent unnecessary re-renders
+  const { player } = useGameStore(useShallow(state => ({ player: state.player })));
 
   const wearableContainers = useMemo(() => {
     if (!player?.id) {

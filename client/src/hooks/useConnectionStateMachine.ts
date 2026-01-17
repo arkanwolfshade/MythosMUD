@@ -67,9 +67,14 @@ export interface ConnectionContext {
  *
  * AI: FSM ensures deterministic behavior and testable transitions.
  */
+export interface ConnectionMachineInput {
+  maxReconnectAttempts?: number;
+}
+
 export const connectionMachine = setup({
   types: {
     context: {} as ConnectionContext,
+    input: {} as ConnectionMachineInput,
     events: {} as ConnectionEvent,
   },
   actions: {
@@ -173,15 +178,15 @@ export const connectionMachine = setup({
 }).createMachine({
   id: 'connection',
   initial: 'disconnected',
-  context: {
+  context: ({ input }) => ({
     sessionId: null,
     reconnectAttempts: 0,
-    maxReconnectAttempts: 5,
+    maxReconnectAttempts: input?.maxReconnectAttempts ?? 5,
     lastError: null,
     connectionStartTime: null,
     lastConnectedTime: null,
     wsUrl: null,
-  },
+  }),
   states: {
     disconnected: {
       entry: 'resetConnection',

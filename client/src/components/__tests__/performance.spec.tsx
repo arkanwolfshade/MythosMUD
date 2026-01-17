@@ -1,21 +1,14 @@
 import { expect } from '@playwright/test';
 import { render } from '@testing-library/react';
 import { beforeEach, describe, it, vi } from 'vitest';
-import { PerformanceTester } from '../src/utils/performanceTester';
+import { PerformanceTester, type PerformanceTestResult } from '../../utils/performanceTester';
+import { ChatPanel } from '../panels/ChatPanel';
+import { CommandPanel } from '../panels/CommandPanel';
+import { GameLogPanel } from '../panels/GameLogPanel';
 
 // Mock the dependencies
 vi.mock('../src/components/ui/EldritchIcon', () => ({
-  EldritchIcon: ({
-    name,
-    _size,
-    _variant,
-    className,
-  }: {
-    name: string;
-    _size?: number;
-    _variant?: string;
-    className?: string;
-  }) => (
+  EldritchIcon: ({ name, className }: { name: string; className?: string }) => (
     <span data-testid={`icon-${name}`} className={className}>
       {name}
     </span>
@@ -459,7 +452,7 @@ describe('Performance Tests', () => {
       expect(averages.totalTests).toBeGreaterThan(0);
 
       // Individual test results should meet benchmarks
-      results.forEach(result => {
+      results.forEach((result: PerformanceTestResult) => {
         if (result.name.includes('Render')) {
           expect(result.averageTime).toBeLessThan(100); // Render tests under 100ms
         }

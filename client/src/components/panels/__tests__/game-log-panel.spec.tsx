@@ -1,19 +1,11 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { ChatMessage } from '../../../stores/gameStore';
+import { GameLogPanel } from '../GameLogPanel';
 
 // Mock the dependencies
 vi.mock('../src/components/ui/EldritchIcon', () => ({
-  EldritchIcon: ({
-    name,
-    _size,
-    _variant,
-    className,
-  }: {
-    name: string;
-    _size?: number;
-    _variant?: string;
-    className?: string;
-  }) => (
+  EldritchIcon: ({ name, className }: { name: string; className?: string }) => (
     <span data-testid={`icon-${name}`} className={className}>
       {name}
     </span>
@@ -390,9 +382,9 @@ describe('GameLogPanel', () => {
           messageType: 'chat',
         },
         {
-          // Missing required fields
+          // Missing required fields - intentionally malformed for testing
           text: 'Invalid message',
-        },
+        } as ChatMessage,
       ];
 
       render(<GameLogPanel {...defaultProps} messages={malformedMessages} />);

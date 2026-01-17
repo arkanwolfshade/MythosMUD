@@ -1,19 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { GameTerminal } from '../GameTerminal';
 
 // Mock the dependencies
 vi.mock('../src/components/ui/EldritchIcon', () => ({
-  EldritchIcon: ({
-    name,
-    _size,
-    _variant,
-    className,
-  }: {
-    name: string;
-    _size?: number;
-    _variant?: string;
-    className?: string;
-  }) => (
+  EldritchIcon: ({ name, className }: { name: string; className?: string }) => (
     <span data-testid={`icon-${name}`} className={className}>
       {name}
     </span>
@@ -142,15 +133,32 @@ describe('GameTerminal Integration', () => {
   const mockCommandHistory = ['look', 'go north', 'inventory', 'say hello', 'who'];
 
   const defaultProps = {
+    playerName: 'TestPlayer',
+    isConnected: true,
+    isConnecting: false,
+    error: null,
+    reconnectAttempts: 0,
+    room: {
+      id: 'room-1',
+      name: 'Test Room',
+      description: 'A test room',
+      exits: {},
+    },
+    player: null,
     messages: mockMessages,
     commandHistory: mockCommandHistory,
+    lucidityStatus: null,
+    healthStatus: null,
+    hallucinations: [],
+    rescueState: null,
+    onConnect: vi.fn(),
+    onDisconnect: vi.fn(),
+    onLogout: vi.fn(),
+    onDownloadLogs: vi.fn(),
     onSendCommand: vi.fn(),
     onSendChatMessage: vi.fn(),
     onClearMessages: vi.fn(),
     onClearHistory: vi.fn(),
-    onDownloadLogs: vi.fn(),
-    disabled: false,
-    isConnected: true,
   };
 
   beforeEach(() => {
@@ -312,7 +320,28 @@ describe('GameTerminal Integration', () => {
 
     it('handles missing props gracefully', () => {
       const { container } = render(
-        <GameTerminal messages={[]} commandHistory={[]} onSendCommand={vi.fn()} onSendChatMessage={vi.fn()} />
+        <GameTerminal
+          playerName="TestPlayer"
+          isConnected={false}
+          isConnecting={false}
+          error={null}
+          reconnectAttempts={0}
+          room={null}
+          player={null}
+          messages={[]}
+          commandHistory={[]}
+          lucidityStatus={null}
+          hallucinations={[]}
+          rescueState={null}
+          onConnect={vi.fn()}
+          onDisconnect={vi.fn()}
+          onLogout={vi.fn()}
+          onDownloadLogs={vi.fn()}
+          onSendCommand={vi.fn()}
+          onSendChatMessage={vi.fn()}
+          onClearMessages={vi.fn()}
+          onClearHistory={vi.fn()}
+        />
       );
 
       expect(container).toBeInTheDocument();

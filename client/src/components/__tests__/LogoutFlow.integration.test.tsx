@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import { describe, vi, type Mock } from 'vitest';
-import App from '../../App';
+import { App } from '../../App';
 
 /**
  * NOTE: These integration tests are currently skipped because they test full

@@ -15,7 +15,7 @@ describe('Connection State Machine', () => {
   let actor: ReturnType<typeof createActor<typeof connectionMachine>>;
 
   beforeEach(() => {
-    actor = createActor(connectionMachine);
+    actor = createActor(connectionMachine, { input: {} });
     actor.start();
   });
 
@@ -109,7 +109,7 @@ describe('Connection State Machine', () => {
     actor.send({ type: 'DISCONNECT' });
     expect(actor.getSnapshot().value).toBe('disconnected');
 
-    actor = createActor(connectionMachine);
+    actor = createActor(connectionMachine, { input: {} });
     actor.start();
     actor.send({ type: 'CONNECT' });
     actor.send({ type: 'WS_CONNECTED' });
@@ -138,29 +138,22 @@ describe('Connection State Machine', () => {
   it('should transition to failed when max reconnect attempts reached', () => {
     // Set max attempts to 1 for testing
     actor.stop();
-    actor = createActor(
-      connectionMachine.provide({
-        context: {
-          sessionId: null,
-          reconnectAttempts: 0,
-          maxReconnectAttempts: 1,
-          lastError: null,
-          connectionStartTime: null,
-          lastConnectedTime: null,
-          wsUrl: null,
-        },
-      })
-    );
+    actor = createActor(connectionMachine, {
+      input: {
+        maxReconnectAttempts: 1,
+      },
+    });
     actor.start();
 
     actor.send({ type: 'CONNECT' });
     actor.send({ type: 'WS_FAILED', error: 'WebSocket failed' });
 
-    // Should transition to reconnecting first
-    expect(actor.getSnapshot().value).toBe('reconnecting');
-
-    // After delay, should check max attempts and go to failed
-    // Note: In actual implementation, this would happen after RECONNECT_DELAY
+    // After WS_FAILED, reconnectAttempts becomes 1, which equals maxReconnectAttempts (1)
+    // The 'always' transition in reconnecting state should immediately check maxAttemptsReached
+    // and transition to 'failed'
+    expect(actor.getSnapshot().value).toBe('failed');
+    expect(actor.getSnapshot().context.reconnectAttempts).toBe(1);
+    expect(actor.getSnapshot().context.lastError).toBe('WebSocket failed');
   });
 
   it('should verify resetConnection action resets all connection metadata', () => {

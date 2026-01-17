@@ -69,9 +69,8 @@ export function useConnectionState(options?: {
   onStateChange?: (state: string) => void;
 }): UseConnectionStateResult {
   const [state, send] = useMachine(connectionMachine, {
-    context: {
-      ...connectionMachine.context,
-      maxReconnectAttempts: options?.maxReconnectAttempts ?? 5,
+    input: {
+      maxReconnectAttempts: options?.maxReconnectAttempts,
     },
   });
 

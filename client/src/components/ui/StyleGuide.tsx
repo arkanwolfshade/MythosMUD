@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
-import { buildClasses } from './designTokens';
+import type { Channel } from './ChannelSelector';
+import { ChannelSelector } from './ChannelSelector';
+import { EldritchIcon } from './EldritchIcon';
+import { MythosPanel } from './MythosPanel';
 import {
   AllStats,
-  Channel,
-  ChannelSelector,
   ConnectionStatus,
-  EldritchIcon,
   HealthStat,
   LucidityStat,
   MessagesCount,
-  MythosPanel,
   PlayerName,
   StatusPanel,
-  TerminalButton,
-  TerminalCard,
-  TerminalInput,
-} from './index';
+} from './StatusPanel';
+import { TerminalButton } from './TerminalButton';
+import { TerminalCard } from './TerminalCard';
+import { TerminalInput } from './TerminalInput';
+import { buildClasses } from './designTokens';
 
 /**
  * Style Guide Component
@@ -162,14 +162,14 @@ export const StyleGuide: React.FC = () => {
                 <TerminalInput
                   placeholder="Enter text..."
                   value={inputValue}
-                  onChange={e => {
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setInputValue(e.target.value);
                   }}
                 />
                 <TerminalInput
                   placeholder="Disabled input"
                   value={disabledInputValue}
-                  onChange={e => {
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setDisabledInputValue(e.target.value);
                   }}
                   disabled
@@ -177,7 +177,7 @@ export const StyleGuide: React.FC = () => {
                 <TerminalInput
                   placeholder="Error state"
                   value={errorInputValue}
-                  onChange={e => {
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setErrorInputValue(e.target.value);
                   }}
                   className="border-red-500 focus:border-red-500 focus:ring-red-500"
@@ -193,7 +193,7 @@ export const StyleGuide: React.FC = () => {
                   size="sm"
                   placeholder="Small input"
                   value={sizeSmValue}
-                  onChange={e => {
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setSizeSmValue(e.target.value);
                   }}
                 />
@@ -201,7 +201,7 @@ export const StyleGuide: React.FC = () => {
                   size="md"
                   placeholder="Medium input"
                   value={sizeMdValue}
-                  onChange={e => {
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setSizeMdValue(e.target.value);
                   }}
                 />
@@ -209,7 +209,7 @@ export const StyleGuide: React.FC = () => {
                   size="lg"
                   placeholder="Large input"
                   value={sizeLgValue}
-                  onChange={e => {
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setSizeLgValue(e.target.value);
                   }}
                 />
@@ -323,14 +323,14 @@ export const StyleGuide: React.FC = () => {
                 <TerminalInput
                   placeholder="Player name"
                   value={inputValue}
-                  onChange={e => {
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setInputValue(e.target.value);
                   }}
                 />
                 <TerminalInput
                   placeholder="Character name"
                   value={formInputValue}
-                  onChange={e => {
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setFormInputValue(e.target.value);
                   }}
                 />

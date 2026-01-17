@@ -7,6 +7,7 @@
  */
 
 import React, { useMemo } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import type { ContainerComponent } from '../../stores/containerStore';
 import { useContainerStore } from '../../stores/containerStore';
 import { useGameStore } from '../../stores/gameStore';
@@ -104,19 +105,24 @@ const isGracePeriodActive = (corpse: ContainerComponent): boolean => {
  * - Keyboard accessible
  */
 export const CorpseOverlay: React.FC<CorpseOverlayProps> = ({ onOpen, className = '' }) => {
-  const getCorpseContainersInRoom = useContainerStore(state => state.getCorpseContainersInRoom);
+  // Access state directly instead of calling selector functions
+  const { openContainers } = useContainerStore(useShallow(state => ({ openContainers: state.openContainers })));
   const openContainer = useContainerStore(state => state.openContainer);
-  const player = useGameStore(state => state.player);
-  const room = useGameStore(state => state.room);
+  // Use shallow comparison for object selectors to prevent unnecessary re-renders
+  const { player, room } = useGameStore(useShallow(state => ({ player: state.player, room: state.room })));
 
   // Note: Time-based updates are handled by the store, not needed here
 
+  // Compute derived values using useMemo
   const corpseContainers = useMemo(() => {
     if (!room?.id) {
       return [];
     }
-    return getCorpseContainersInRoom(room.id);
-  }, [getCorpseContainersInRoom, room]);
+    // Filter open containers to only corpse containers in this room
+    return Object.values(openContainers).filter(
+      container => container.source_type === 'corpse' && container.room_id === room.id
+    );
+  }, [openContainers, room]);
 
   // Don't render if no corpses
   if (corpseContainers.length === 0) {

@@ -70,8 +70,8 @@ describe('Profession System Error Handling and Edge Cases', () => {
       name: 'Tramp',
       description: 'A wandering soul with no particular skills or connections.',
       flavor_text: 'You have spent your days drifting from place to place, learning to survive on your wits alone.',
-      stat_requirements: {},
-      mechanical_effects: {},
+      stat_requirements: [],
+      mechanical_effects: [],
       is_available: true,
     },
     {
@@ -79,8 +79,8 @@ describe('Profession System Error Handling and Edge Cases', () => {
       name: 'Gutter Rat',
       description: 'A street-smart survivor from the urban underbelly.',
       flavor_text: 'The alleys and gutters have been your home, teaching you the harsh realities of city life.',
-      stat_requirements: {},
-      mechanical_effects: {},
+      stat_requirements: [],
+      mechanical_effects: [],
       is_available: true,
     },
   ];
