@@ -148,7 +148,7 @@ async def handle_summon_command(
     # Persist the item instance to the database to ensure referential integrity
     # This is required for container operations and other systems that reference item_instances
     try:
-        persistence.create_item_instance(
+        await persistence.create_item_instance(
             item_instance_id=item_instance.item_instance_id,
             prototype_id=item_instance.prototype_id,
             owner_type="room",

@@ -29,7 +29,7 @@ def _get_ground_services(request: Any) -> tuple[Any, Any]:
     return persistence, registry
 
 
-def _validate_ground_context(
+async def _validate_ground_context(
     persistence: Any, current_user: dict, player_name: str
 ) -> tuple[Any, dict[str, str] | None]:
     """Validate ground command context and get rescuer. Returns (rescuer, error_dict)."""
@@ -38,7 +38,7 @@ def _validate_ground_context(
         return None, {"result": "The rescue falters; no anchor to reality can be found."}
 
     rescuer_username = get_username_from_user(current_user)
-    rescuer = persistence.get_player_by_name(rescuer_username)
+    rescuer = await persistence.get_player_by_name(rescuer_username)
     if not rescuer:
         logger.error("Ground command missing rescuer record", username=rescuer_username)
         return None, {"result": "Your identity drifts; regain your bearings before aiding another."}
@@ -46,13 +46,15 @@ def _validate_ground_context(
     return rescuer, None
 
 
-def _validate_ground_target(persistence: Any, command_data: dict, rescuer: Any) -> tuple[Any, dict[str, str] | None]:
+async def _validate_ground_target(
+    persistence: Any, command_data: dict, rescuer: Any
+) -> tuple[Any, dict[str, str] | None]:
     """Validate ground target and check same room. Returns (target, error_dict)."""
     target_name = command_data.get("target_player") or command_data.get("target")
     if not target_name:
         return None, {"result": "Ground whom? Specify an ally whose mind has shattered."}
 
-    target = persistence.get_player_by_name(target_name)
+    target = await persistence.get_player_by_name(target_name)
     if not target:
         return None, {"result": f"No echoes of '{target_name}' answer your call."}
 
@@ -216,14 +218,14 @@ async def handle_ground_command(  # pylint: disable=too-many-arguments,too-many-
 
     persistence, registry = _get_ground_services(request)
 
-    rescuer, error_result = _validate_ground_context(persistence, current_user, player_name)
+    rescuer, error_result = await _validate_ground_context(persistence, current_user, player_name)
     if error_result:
         return error_result
 
     rescuer_username: str = get_username_from_user(current_user)
     rescuer_room = getattr(rescuer, "current_room_id", None)
 
-    target, error_result = _validate_ground_target(persistence, command_data, rescuer)
+    target, error_result = await _validate_ground_target(persistence, command_data, rescuer)
     if error_result:
         return error_result
 

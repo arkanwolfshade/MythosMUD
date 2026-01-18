@@ -11,8 +11,8 @@
  */
 
 import { expect, test } from '@playwright/test';
-import { createMultiPlayerContexts, cleanupMultiPlayerContexts } from '../fixtures/multiplayer';
 import { executeCommand, waitForMessage } from '../fixtures/auth';
+import { cleanupMultiPlayerContexts, createMultiPlayerContexts } from '../fixtures/multiplayer';
 
 test.describe('Wearable Container Management', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
@@ -31,10 +31,10 @@ test.describe('Wearable Container Management', () => {
     const awContext = contexts[0];
 
     // AW equips wearable container (if available)
-    await executeCommand(awContext.page, 'wear backpack');
+    await executeCommand(awContext.page, 'equip backpack');
 
     // Wait for equip confirmation
-    await waitForMessage(awContext.page, 'wear', 10000).catch(() => {
+    await waitForMessage(awContext.page, 'equip', 10000).catch(() => {
       // Item may or may not exist
     });
 

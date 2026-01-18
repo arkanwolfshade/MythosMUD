@@ -42,12 +42,14 @@ def _get_catatonia_registry_from_app(app: Any) -> Any:
     return None
 
 
-def _validate_debrief_context(persistence: Any, username: str, player_name: str) -> tuple[Any, dict[str, str] | None]:
+async def _validate_debrief_context(
+    persistence: Any, username: str, player_name: str
+) -> tuple[Any, dict[str, str] | None]:
     """Validate persistence and player existence for debrief command."""
     if not persistence:
         logger.error("Debrief command invoked without persistence", player=player_name)
         return None, {"result": "The sanitarium records are inaccessible. The ley lines waver."}
-    player = persistence.get_player_by_name(username)
+    player = await persistence.get_player_by_name(username)
     if not player:
         logger.error("Debrief command failed to locate player", username=username)
         return None, {"result": "Your identity wavers in the void. Try again after stabilizing your presence."}
@@ -144,7 +146,7 @@ async def handle_debrief_command(
     app = getattr(request, "app", None)
     persistence = _get_persistence_from_app(app)
     username = get_username_from_user(current_user)
-    player, context_error = _validate_debrief_context(persistence, username, player_name)
+    player, context_error = await _validate_debrief_context(persistence, username, player_name)
     if context_error:
         return context_error
     catatonia_observer = _get_catatonia_registry_from_app(app)

@@ -210,10 +210,10 @@ async def handle_quit_command(
 
     if persistence:
         try:
-            player = persistence.get_player_by_name(get_username_from_user(current_user))
+            player = await persistence.get_player_by_name(get_username_from_user(current_user))
             if player:
                 player.last_active = datetime.now(UTC)
-                persistence.save_player(player)
+                await persistence.save_player(player)
                 logger.info("Player quit - updated last active")
         except (OSError, ValueError, TypeError, Exception) as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Exception catch-all for last active update errors, must handle gracefully
             logger.error("Error updating last active on quit", error=str(e), error_type=type(e).__name__)
