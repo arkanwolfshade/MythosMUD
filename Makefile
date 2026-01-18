@@ -25,7 +25,7 @@ PYTEST_COV_OPTS := --cov=server --cov-report=html --cov-report=term-missing --co
 .PHONY: trivy lizard
 .PHONY: codacy-tools
 .PHONY: setup-test-env check-postgresql setup-postgresql-test-db verify-schema
-.PHONY: test test-coverage test-client test-client-e2e test-client-coverage test-server test-server-coverage test-ci
+.PHONY: test test-coverage test-client test-client-e2e test-playwright test-client-coverage test-server test-server-coverage test-ci
 .PHONY: coverage all
 
 # ============================================================================
@@ -71,6 +71,7 @@ help:
 	@echo "  test-coverage         - Run all tests with coverage"
 	@echo "  test-client           - Run client unit tests only (no coverage)"
 	@echo "  test-client-e2e       - Run client E2E tests (Playwright)"
+	@echo "  test-playwright   - Run client E2E runtime tests (Playwright CLI)"
 	@echo "  test-client-coverage  - Run client unit tests with coverage"
 	@echo "  test-server           - Run server tests only (no coverage)"
 	@echo "  test-server-coverage  - Run server tests with coverage"
@@ -189,6 +190,10 @@ test-client:
 test-client-e2e:
 	@echo "Running client E2E tests (Playwright)..."
 	cd $(PROJECT_ROOT)/client && npm run test
+
+test-playwright:
+	@echo "Running client E2E runtime tests (Playwright CLI)..."
+	cd $(PROJECT_ROOT)/client && npm run test:e2e:runtime
 
 test-client-coverage:
 	@echo "Running client unit tests with coverage..."

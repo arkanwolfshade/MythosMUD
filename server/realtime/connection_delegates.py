@@ -60,24 +60,42 @@ async def cleanup_dead_websocket_impl(
             if websocket is None:
                 del manager.active_websockets[connection_id]
                 return
-            logger.info("Closing dead WebSocket", connection_id=connection_id, player_id=player_id)
-            try:
-                import asyncio
 
-                await asyncio.wait_for(websocket.close(code=1000, reason="Connection cleaned up"), timeout=2.0)
-                logger.info("Successfully closed dead WebSocket", connection_id=connection_id, player_id=player_id)
-            except (TimeoutError, RuntimeError, ConnectionError) as e:
-                error_message = str(e)
-                if (
-                    "close message has been sent" not in error_message.lower()
-                    and "cannot call" not in error_message.lower()
-                ):
-                    logger.warning(
-                        "Error closing dead WebSocket",
-                        connection_id=connection_id,
-                        player_id=player_id,
-                        error=error_message,
-                    )
+            # Check if WebSocket is still connected before attempting to close
+            # This prevents "Unexpected ASGI message 'websocket.close'" errors
+            is_connected = False
+            try:
+                is_connected = websocket.client_state.name == "CONNECTED"
+            except (AttributeError, ValueError, TypeError):
+                # If we can't determine state, assume it's disconnected
+                is_connected = False
+
+            if is_connected:
+                logger.info("Closing dead WebSocket", connection_id=connection_id, player_id=player_id)
+                try:
+                    import asyncio
+
+                    await asyncio.wait_for(websocket.close(code=1000, reason="Connection cleaned up"), timeout=2.0)
+                    logger.info("Successfully closed dead WebSocket", connection_id=connection_id, player_id=player_id)
+                except (TimeoutError, RuntimeError, ConnectionError) as e:
+                    error_message = str(e)
+                    # Suppress warnings for expected errors when WebSocket is already closed
+                    if (
+                        "close message has been sent" not in error_message.lower()
+                        and "cannot call" not in error_message.lower()
+                        and "unexpected asgi message 'websocket.close'" not in error_message.lower()
+                        and "response already completed" not in error_message.lower()
+                    ):
+                        logger.warning(
+                            "Error closing dead WebSocket",
+                            connection_id=connection_id,
+                            player_id=player_id,
+                            error=error_message,
+                        )
+            else:
+                logger.debug(
+                    "WebSocket already closed, skipping close call", connection_id=connection_id, player_id=player_id
+                )
             del manager.active_websockets[connection_id]
 
         # Remove from player's connection list

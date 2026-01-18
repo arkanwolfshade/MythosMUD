@@ -4,133 +4,133 @@ overview: Convert all 33 e2e test scenarios from MCP format to runnable Playwrig
 todos:
   - id: verify-infrastructure
     content: Verify existing test infrastructure files exist (playwright.runtime.config.ts, fixtures, global-setup/teardown)
-    status: pending
+    status: completed
   - id: create-missing-infrastructure
     content: Create any missing infrastructure files (playwright.runtime.config.ts, global-setup.ts, global-teardown.ts, fixtures)
-    status: pending
+    status: completed
   - id: create-multiplayer-fixture
     content: Create multiplayer.ts fixture with multi-context helper functions (createMultiPlayerContext, waitForCrossPlayerMessage, cleanupMultiPlayerContexts)
-    status: pending
+    status: completed
   - id: update-playwright-config
     content: Update playwright.runtime.config.ts to support multi-context testing with proper timeout configuration
-    status: pending
+    status: completed
   - id: verify-test-database
     content: Verify test database setup works correctly with proper seeding and isolation
-    status: pending
+    status: completed
   - id: verify-existing-error-tests
     content: Verify existing error-handling tests exist and are working (scenarios 11, 14, 15, 20)
-    status: pending
+    status: completed
   - id: verify-existing-accessibility-tests
     content: Verify existing accessibility tests exist and are working (scenario 21)
-    status: pending
+    status: completed
   - id: verify-existing-integration-tests
     content: Verify existing integration tests exist (scenarios 07, 12, 17, 18, 19) and determine if migration needed
-    status: pending
+    status: completed
   - id: convert-scenario-01
     content: Convert scenario-01-basic-connection.md to connection/basic-connection.spec.ts (multi-context)
-    status: pending
+    status: completed
   - id: convert-scenario-02
     content: Convert scenario-02-clean-game-state.md to connection/clean-game-state.spec.ts (multi-context)
-    status: pending
+    status: completed
   - id: convert-scenario-03
     content: Convert scenario-03-movement-between-rooms.md to movement/movement-between-rooms.spec.ts (multi-context)
-    status: pending
+    status: completed
   - id: convert-scenario-04
     content: Convert scenario-04-muting-system-emotes.md to muting/muting-system-emotes.spec.ts (multi-context)
-    status: pending
+    status: completed
   - id: convert-scenario-05
     content: Convert scenario-05-chat-messages.md to communication/chat-messages.spec.ts (multi-context)
-    status: pending
+    status: completed
   - id: convert-scenario-06
     content: Convert scenario-06-admin-teleportation.md to admin/admin-teleportation.spec.ts (multi-context)
-    status: pending
+    status: completed
   - id: convert-scenario-07
     content: Convert scenario-07-who-command.md to commands/who-command.spec.ts (verify/migrate if exists)
-    status: pending
+    status: completed
   - id: convert-scenario-08
     content: Convert scenario-08-local-channel-basic.md to communication/local-channel-basic.spec.ts (multi-context)
-    status: pending
+    status: completed
   - id: convert-scenario-09
     content: Convert scenario-09-local-channel-isolation.md to communication/local-channel-isolation.spec.ts (multi-context)
-    status: pending
+    status: completed
   - id: convert-scenario-10
     content: Convert scenario-10-local-channel-movement.md to movement/local-channel-movement.spec.ts (multi-context)
-    status: pending
+    status: completed
   - id: convert-scenario-12
     content: Convert scenario-12-local-channel-integration.md to communication/local-channel-integration.spec.ts (verify/migrate if exists)
-    status: pending
+    status: completed
   - id: convert-scenario-13
     content: Convert scenario-13-whisper-basic.md to communication/whisper-basic.spec.ts (multi-context)
-    status: pending
+    status: completed
   - id: convert-scenario-16
     content: Convert scenario-16-whisper-movement.md to communication/whisper-movement.spec.ts (multi-context)
-    status: pending
+    status: completed
   - id: convert-scenario-17
     content: Convert scenario-17-whisper-integration.md to communication/whisper-integration.spec.ts (verify/migrate if exists)
-    status: pending
+    status: completed
   - id: convert-scenario-18
     content: Convert scenario-18-whisper-logging.md to admin/whisper-logging.spec.ts (verify/migrate if exists)
-    status: pending
+    status: completed
   - id: convert-scenario-22
     content: Convert scenario-22-summon-command.md to admin/summon-command.spec.ts (multi-context)
-    status: pending
+    status: completed
   - id: convert-scenario-23
     content: Convert scenario-23-container-multi-user-looting.md to containers/container-multi-user-looting.spec.ts (multi-context)
-    status: pending
+    status: completed
   - id: convert-scenario-24
     content: Convert scenario-24-container-environmental-interactions.md to containers/container-environmental-interactions.spec.ts (multi-context)
-    status: pending
+    status: completed
   - id: convert-scenario-25
     content: Convert scenario-25-container-wearable-management.md to containers/container-wearable-management.spec.ts (multi-context)
-    status: pending
+    status: completed
   - id: convert-scenario-26
     content: Convert scenario-26-container-corpse-looting.md to containers/container-corpse-looting.spec.ts (multi-context)
-    status: pending
+    status: completed
   - id: convert-scenario-27
     content: Convert scenario-27-character-selection.md to character/character-selection.spec.ts (single-player)
-    status: pending
+    status: completed
   - id: convert-scenario-28
     content: Convert scenario-28-multi-character-creation.md to character/multi-character-creation.spec.ts (single-player)
-    status: pending
+    status: completed
   - id: convert-scenario-29
     content: Convert scenario-29-character-deletion.md to character/character-deletion.spec.ts (single-player)
-    status: pending
+    status: completed
   - id: convert-scenario-30
     content: Convert scenario-30-character-name-uniqueness.md to character/character-name-uniqueness.spec.ts (multi-context)
-    status: pending
+    status: completed
   - id: convert-scenario-31
     content: Convert scenario-31-admin-set-stat-command.md to admin/admin-set-stat-command.spec.ts (multi-context)
-    status: pending
+    status: completed
   - id: convert-scenario-32
     content: Convert scenario-32-disconnect-grace-period.md to commands/disconnect-grace-period.spec.ts (multi-context)
-    status: pending
+    status: completed
   - id: convert-scenario-33
     content: Convert scenario-33-rest-command.md to commands/rest-command.spec.ts (multi-context)
-    status: pending
+    status: completed
   - id: convert-lucidity-01
     content: Convert lucidity-system-expansion/scenario-01-catatonia-grounding.md to lucidity/catatonia-grounding.spec.ts (multi-context)
-    status: pending
+    status: completed
   - id: convert-lucidity-02
     content: Convert lucidity-system-expansion/scenario-02-sanitarium-failover.md to lucidity/sanitarium-failover.spec.ts (multi-context)
-    status: pending
+    status: completed
   - id: run-full-test-suite
     content: Run full test suite to identify failures and timing issues
-    status: pending
+    status: in_progress
   - id: fix-test-failures
     content: Fix any test execution failures, timing issues, and race conditions
-    status: pending
+    status: in_progress
   - id: update-makefile
     content: Update Makefile with test-client-runtime target if needed
-    status: pending
+    status: completed
   - id: update-package-json
     content: Update package.json scripts for test:e2e:runtime if needed
-    status: pending
+    status: completed
   - id: document-limitations
     content: Document any scenarios that couldn't be fully automated or require manual verification steps
-    status: pending
+    status: completed
   - id: verify-test-organization
     content: Verify all test files are properly organized in logical directories
-    status: pending
+    status: completed
   - id: final-test-execution
     content: Execute final test run to ensure all 33 scenarios are converted and passing
     status: pending

@@ -211,19 +211,21 @@ def create_aggregator_handler(
         handler.addFilter(WarningOnlyFilter())
 
     # Create formatter - use PlayerGuidFormatter if player_service is available
+    # Note: Using %(message)s only since structlog already includes all metadata (timestamp, logger name, level)
+    # in the rendered message. Adding %(asctime)s - %(name)s - %(levelname)s would cause duplication.
     formatter: logging.Formatter
     if player_service is not None:
         from server.structured_logging.player_guid_formatter import PlayerGuidFormatter
 
         formatter = PlayerGuidFormatter(
             player_service=player_service,
-            fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S",
+            fmt="%(message)s",
+            datefmt=None,
         )
     else:
         formatter = logging.Formatter(
-            "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S",
+            "%(message)s",
+            datefmt=None,
         )
     handler.setFormatter(formatter)
 

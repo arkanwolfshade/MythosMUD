@@ -201,19 +201,21 @@ def _setup_console_handler(
     console_handler.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
 
     # Use enhanced formatter for console handler
+    # Note: Using %(message)s only since structlog already includes all metadata (timestamp, logger name, level)
+    # in the rendered message. Adding %(asctime)s - %(name)s - %(levelname)s would cause duplication.
     console_formatter: logging.Formatter
     if player_service is not None:
         from server.structured_logging.player_guid_formatter import PlayerGuidFormatter
 
         console_formatter = PlayerGuidFormatter(
             player_service=player_service,
-            fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S",
+            fmt="%(message)s",
+            datefmt=None,
         )
     else:
         console_formatter = logging.Formatter(
-            "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S",
+            "%(message)s",
+            datefmt=None,
         )
     console_handler.setFormatter(console_formatter)
 
@@ -314,17 +316,19 @@ def _convert_max_size_to_bytes(max_size_str: str | int) -> int:
 
 def _create_formatter(player_service: Any | None) -> logging.Formatter:
     """Create formatter (with or without PlayerGuidFormatter)."""
+    # Note: Using %(message)s only since structlog already includes all metadata (timestamp, logger name, level)
+    # in the rendered message. Adding %(asctime)s - %(name)s - %(levelname)s would cause duplication.
     if player_service is not None:
         from server.structured_logging.player_guid_formatter import PlayerGuidFormatter
 
         return PlayerGuidFormatter(
             player_service=player_service,
-            fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S",
+            fmt="%(message)s",
+            datefmt=None,
         )
     return logging.Formatter(
-        "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
+        "%(message)s",
+        datefmt=None,
     )
 
 

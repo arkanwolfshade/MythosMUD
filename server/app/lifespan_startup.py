@@ -79,6 +79,24 @@ async def _set_legacy_services(app: FastAPI, container: ApplicationContainer) ->
     else:
         logger.warning("Persistence not available in container during initialization")
 
+    if container.item_factory is not None:
+        app.state.item_factory = container.item_factory
+        logger.debug("Item factory set on app.state for backward compatibility")
+    else:
+        logger.warning("Item factory not available in container during initialization")
+
+    if container.item_prototype_registry is not None:
+        app.state.prototype_registry = container.item_prototype_registry
+        logger.debug("Prototype registry set on app.state for backward compatibility")
+    else:
+        logger.warning("Prototype registry not available in container during initialization")
+
+    if container.connection_manager is not None:
+        app.state.connection_manager = container.connection_manager
+        logger.debug("Connection manager set on app.state for backward compatibility")
+    else:
+        logger.warning("Connection manager not available in container during initialization")
+
 
 async def initialize_container_and_legacy_services(app: FastAPI, container: ApplicationContainer) -> None:
     """Initialize container and set up container reference on app.state.

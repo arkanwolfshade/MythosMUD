@@ -328,10 +328,12 @@ def update_logging_with_player_service(player_service: Any) -> None:
     set_global_player_service(player_service)
 
     # Create the enhanced formatter
+    # Note: Using %(message)s only since structlog already includes all metadata (timestamp, logger name, level)
+    # in the rendered message. Adding %(asctime)s - %(name)s - %(levelname)s would cause duplication.
     enhanced_formatter = PlayerGuidFormatter(
         player_service=player_service,
-        fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
+        fmt="%(message)s",
+        datefmt=None,
     )
 
     # Update all existing handlers with the enhanced formatter
