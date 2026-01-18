@@ -15,7 +15,8 @@ const mockWebSocket = {
 
 // Mock WebSocket constructor
 global.WebSocket = vi.fn(function WebSocket() {
-  // Simulate connection failure by triggering onerror after a short delay
+  // LEGITIMATE: Using setTimeout to simulate WebSocket connection failure timing
+  // This tests timer-based behavior in the WebSocket mock, not polling
   setTimeout(() => {
     if (mockWebSocket.onerror) {
       mockWebSocket.onerror(new Event('error'));
@@ -398,14 +399,17 @@ describe('useGameConnection', () => {
       const newSessionId = 'new-session-999';
 
       await act(async () => {
-        await new Promise(resolve => setTimeout(resolve, 20));
         result.current.switchToSession(newSessionId);
-        await new Promise(resolve => setTimeout(resolve, 20));
       });
 
-      // The session ID should be updated in the state
-      expect(result.current.sessionId).toBeDefined();
-      expect(result.current.sessionId).toBe(newSessionId);
+      // Wait for session ID to be updated using vi.waitFor
+      await vi.waitFor(
+        () => {
+          expect(result.current.sessionId).toBeDefined();
+          expect(result.current.sessionId).toBe(newSessionId);
+        },
+        { timeout: 1000 }
+      );
     });
   });
 });

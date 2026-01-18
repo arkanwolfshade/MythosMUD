@@ -135,9 +135,14 @@ describe('StatsRollingScreen', () => {
       await act(async () => {
         resolveFetch(mockResponse);
         await fetchPromise;
-        // Wait a bit for state updates to complete
-        await new Promise(resolve => setTimeout(resolve, 0));
       });
+      // Wait for state updates to complete using vi.waitFor
+      await vi.waitFor(
+        () => {
+          expect(screen.queryByText("Rolling your character's stats...")).not.toBeInTheDocument();
+        },
+        { timeout: 1000 }
+      );
     });
   });
 

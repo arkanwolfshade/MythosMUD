@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { App } from './App';
 
 // Mock the child components
@@ -59,9 +59,12 @@ vi.mock('./components/StatsRollingScreen', () => ({
   },
 }));
 
-// Mock fetch globally
-const mockFetch = vi.fn();
-global.fetch = mockFetch;
+vi.mock('./utils/logoutHandler', () => ({
+  logoutHandler: vi.fn(),
+}));
+
+// Mock fetch globally using vi.spyOn for proper cleanup
+const fetchSpy = vi.spyOn(global, 'fetch');
 
 describe('App', () => {
   // Helper function to create a valid LoginResponse mock
@@ -93,8 +96,15 @@ describe('App', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    fetchSpy.mockClear();
     // Reset localStorage
     localStorage.clear();
+  });
+
+  afterEach(() => {
+    // Use mockReset instead of mockRestore to keep the spy active across tests
+    // This prevents issues where mockRestore might restore an undefined/broken fetch implementation
+    fetchSpy.mockReset();
   });
 
   describe('Login Flow', () => {
@@ -150,7 +160,7 @@ describe('App', () => {
           ])
         ),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+      fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
       render(<App />);
 
@@ -163,7 +173,7 @@ describe('App', () => {
       fireEvent.click(loginButton);
 
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledWith('/auth/login', {
+        expect(fetchSpy).toHaveBeenCalledWith('/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username: 'testuser', password: 'testpass' }),
@@ -181,7 +191,7 @@ describe('App', () => {
         status: 401,
         json: vi.fn().mockResolvedValue({ detail: 'Invalid credentials' }),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+      fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
       render(<App />);
 
@@ -203,7 +213,7 @@ describe('App', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({}),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+      fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
       render(<App />);
 
@@ -291,11 +301,12 @@ describe('App', () => {
         }),
       };
 
-      mockFetch.mockImplementation(url => {
-        if (url.includes('/auth/register')) {
-          return Promise.resolve(mockResponse);
-        } else if (url.includes('/professions')) {
-          return Promise.resolve(mockProfessionsResponse);
+      fetchSpy.mockImplementation((url: string | URL | Request) => {
+        const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url;
+        if (urlString.includes('/auth/register')) {
+          return Promise.resolve(mockResponse as unknown as Response);
+        } else if (urlString.includes('/professions')) {
+          return Promise.resolve(mockProfessionsResponse as unknown as Response);
         }
         return Promise.reject(new Error('Unexpected URL'));
       });
@@ -317,7 +328,7 @@ describe('App', () => {
       fireEvent.click(registerButton);
 
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledWith('/auth/register', {
+        expect(fetchSpy).toHaveBeenCalledWith('/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -339,7 +350,7 @@ describe('App', () => {
         status: 400,
         json: vi.fn().mockResolvedValue({ detail: 'Invalid invite code' }),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+      fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
       render(<App />);
 
@@ -388,11 +399,12 @@ describe('App', () => {
         }),
       };
 
-      mockFetch.mockImplementation(url => {
-        if (url.includes('/auth/login')) {
-          return Promise.resolve(mockResponse);
-        } else if (url.includes('/professions')) {
-          return Promise.resolve(mockProfessionsResponse);
+      fetchSpy.mockImplementation((url: string | URL | Request) => {
+        const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url;
+        if (urlString.includes('/auth/login')) {
+          return Promise.resolve(mockResponse as unknown as Response);
+        } else if (urlString.includes('/professions')) {
+          return Promise.resolve(mockProfessionsResponse as unknown as Response);
         }
         return Promise.reject(new Error('Unexpected URL'));
       });
@@ -438,11 +450,12 @@ describe('App', () => {
         }),
       };
 
-      mockFetch.mockImplementation(url => {
-        if (url.includes('/auth/login')) {
-          return Promise.resolve(mockResponse);
-        } else if (url.includes('/professions')) {
-          return Promise.resolve(mockProfessionsResponse);
+      fetchSpy.mockImplementation((url: string | URL | Request) => {
+        const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url;
+        if (urlString.includes('/auth/login')) {
+          return Promise.resolve(mockResponse as unknown as Response);
+        } else if (urlString.includes('/professions')) {
+          return Promise.resolve(mockProfessionsResponse as unknown as Response);
         }
         return Promise.reject(new Error('Unexpected URL'));
       });
@@ -507,11 +520,12 @@ describe('App', () => {
         }),
       };
 
-      mockFetch.mockImplementation(url => {
-        if (url.includes('/auth/login')) {
-          return Promise.resolve(mockResponse);
-        } else if (url.includes('/professions')) {
-          return Promise.resolve(mockProfessionsResponse);
+      fetchSpy.mockImplementation((url: string | URL | Request) => {
+        const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url;
+        if (urlString.includes('/auth/login')) {
+          return Promise.resolve(mockResponse as unknown as Response);
+        } else if (urlString.includes('/professions')) {
+          return Promise.resolve(mockProfessionsResponse as unknown as Response);
         }
         return Promise.reject(new Error('Unexpected URL'));
       });
@@ -544,13 +558,14 @@ describe('App', () => {
       });
 
       // Mock an error response for character creation
-      mockFetch.mockImplementation(url => {
-        if (url.includes('/auth/login')) {
+      fetchSpy.mockImplementation((url: string | URL | Request) => {
+        const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url;
+        if (urlString.includes('/auth/login')) {
           return Promise.resolve({
             ok: true,
             json: vi.fn().mockResolvedValue(createMockLoginResponse([])),
-          });
-        } else if (url.includes('/professions')) {
+          } as unknown as Response);
+        } else if (urlString.includes('/professions')) {
           return Promise.resolve({
             ok: true,
             json: vi.fn().mockResolvedValue([
@@ -565,8 +580,8 @@ describe('App', () => {
                 is_available: true,
               },
             ]),
-          });
-        } else if (url.includes('/players/roll-stats')) {
+          } as unknown as Response);
+        } else if (urlString.includes('/players/roll-stats')) {
           return Promise.resolve({
             ok: true,
             json: vi.fn().mockResolvedValue({
@@ -588,13 +603,13 @@ describe('App', () => {
               meets_requirements: true,
               method_used: '3d6',
             }),
-          });
-        } else if (url.includes('/players/create-character')) {
+          } as unknown as Response);
+        } else if (urlString.includes('/players/create-character')) {
           return Promise.resolve({
             ok: false,
             status: 500,
             json: vi.fn().mockResolvedValue({ detail: 'Character creation failed' }),
-          });
+          } as unknown as Response);
         }
         return Promise.reject(new Error('Unexpected URL'));
       });
@@ -663,7 +678,7 @@ describe('App', () => {
           ])
         ),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+      fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
       render(<App />);
 
@@ -677,7 +692,7 @@ describe('App', () => {
       fireEvent.keyDown(passwordInput, { key: 'Enter', code: 'Enter' });
 
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledWith('/auth/login', expect.any(Object));
+        expect(fetchSpy).toHaveBeenCalledWith('/auth/login', expect.any(Object));
       });
     });
 
@@ -704,11 +719,12 @@ describe('App', () => {
         }),
       };
 
-      mockFetch.mockImplementation(url => {
-        if (url.includes('/auth/register')) {
-          return Promise.resolve(mockResponse);
-        } else if (url.includes('/professions')) {
-          return Promise.resolve(mockProfessionsResponse);
+      fetchSpy.mockImplementation((url: string | URL | Request) => {
+        const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url;
+        if (urlString.includes('/auth/register')) {
+          return Promise.resolve(mockResponse as unknown as Response);
+        } else if (urlString.includes('/professions')) {
+          return Promise.resolve(mockProfessionsResponse as unknown as Response);
         }
         return Promise.reject(new Error('Unexpected URL'));
       });
@@ -731,7 +747,7 @@ describe('App', () => {
       fireEvent.keyDown(inviteInput, { key: 'Enter', code: 'Enter' });
 
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledWith('/auth/register', expect.any(Object));
+        expect(fetchSpy).toHaveBeenCalledWith('/auth/register', expect.any(Object));
       });
     });
 
@@ -753,7 +769,7 @@ describe('App', () => {
       fireEvent.keyDown(passwordInput, { key: 'Enter', code: 'Enter' });
 
       // Should not make any API calls
-      expect(mockFetch).not.toHaveBeenCalled();
+      expect(fetchSpy).not.toHaveBeenCalled();
     });
 
     it('should not submit if username or password is empty', () => {
@@ -768,7 +784,7 @@ describe('App', () => {
       fireEvent.keyDown(usernameInput, { key: 'Enter', code: 'Enter' });
 
       // Should not make any API calls
-      expect(mockFetch).not.toHaveBeenCalled();
+      expect(fetchSpy).not.toHaveBeenCalled();
     });
 
     it('should ignore non-Enter keys', () => {
@@ -784,7 +800,7 @@ describe('App', () => {
       fireEvent.keyDown(passwordInput, { key: 'a', code: 'KeyA' });
 
       // Should not make any API calls
-      expect(mockFetch).not.toHaveBeenCalled();
+      expect(fetchSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -837,13 +853,6 @@ describe('App', () => {
   });
 
   describe('Logout Error Handling', () => {
-    beforeEach(() => {
-      // Mock logoutHandler module
-      vi.mock('./utils/logoutHandler', () => ({
-        logoutHandler: vi.fn(),
-      }));
-    });
-
     it('should handle logout failure gracefully', async () => {
       const { logoutHandler: mockLogoutHandler } = await import('./utils/logoutHandler');
       (mockLogoutHandler as ReturnType<typeof vi.fn>).mockRejectedValue(new Error('Logout failed'));
@@ -864,7 +873,7 @@ describe('App', () => {
           ])
         ),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+      fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
       render(<App />);
 
@@ -906,7 +915,7 @@ describe('App', () => {
           ])
         ),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+      fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
       render(<App />);
 
@@ -951,7 +960,7 @@ describe('App', () => {
           ],
         }),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+      fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
       render(<App />);
 
@@ -991,7 +1000,7 @@ describe('App', () => {
           ])
         ),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+      fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
       render(<App />);
 
@@ -1038,7 +1047,7 @@ describe('App', () => {
         }),
       };
 
-      mockFetch.mockResolvedValue(mockResponse);
+      fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
       render(<App />);
 
@@ -1093,7 +1102,7 @@ describe('App', () => {
           ])
         ),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+      fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
       render(<App />);
 
@@ -1151,7 +1160,7 @@ describe('App', () => {
           ])
         ),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+      fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
       render(<App />);
 
@@ -1181,11 +1190,13 @@ describe('App', () => {
           ])
         ),
       };
-      mockFetch.mockImplementation(
+      // LEGITIMATE: Using setTimeout to simulate network delay for testing loading states
+      // This is not polling - it's simulating async behavior in the mock
+      fetchSpy.mockImplementation(
         () =>
-          new Promise(resolve =>
+          new Promise<Response>(resolve =>
             setTimeout(() => {
-              resolve(mockResponse);
+              resolve(mockResponse as unknown as Response);
             }, 100)
           )
       );
@@ -1234,15 +1245,18 @@ describe('App', () => {
         }),
       };
 
-      mockFetch.mockImplementation(url => {
-        if (url.includes('/auth/register')) {
-          return new Promise(resolve =>
+      // LEGITIMATE: Using setTimeout to simulate network delay for testing loading states
+      // This is not polling - it's simulating async behavior in the mock
+      fetchSpy.mockImplementation((url: string | URL | Request) => {
+        const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url;
+        if (urlString.includes('/auth/register')) {
+          return new Promise<Response>(resolve =>
             setTimeout(() => {
-              resolve(mockResponse);
+              resolve(mockResponse as unknown as Response);
             }, 100)
           );
-        } else if (url.includes('/professions')) {
-          return Promise.resolve(mockProfessionsResponse);
+        } else if (urlString.includes('/professions')) {
+          return Promise.resolve(mockProfessionsResponse as unknown as Response);
         }
         return Promise.reject(new Error('Unexpected URL'));
       });

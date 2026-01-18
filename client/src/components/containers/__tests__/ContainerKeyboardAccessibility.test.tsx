@@ -6,13 +6,16 @@
  * container systems regardless of input method.
  */
 
-import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ContainerSplitPane } from '../ContainerSplitPane';
-import { BackpackTab } from '../BackpackTab';
-import { CorpseOverlay } from '../CorpseOverlay';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ContainerComponent } from '../../../stores/containerStore';
+import { BackpackTab } from '../BackpackTab';
+import { ContainerSplitPane } from '../ContainerSplitPane';
+import { CorpseOverlay } from '../CorpseOverlay';
+
+// Mock fetch globally using vi.spyOn for proper cleanup
+const fetchSpy = vi.spyOn(global, 'fetch');
 
 // Mock container store state
 let mockOpenContainers: Record<string, ContainerComponent> = {};
@@ -106,6 +109,13 @@ vi.mock('../../../stores/gameStore', () => ({
 describe('Container Keyboard Accessibility', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    fetchSpy.mockClear();
+  });
+
+  afterEach(() => {
+    // Use mockReset instead of mockRestore to keep the spy active across tests
+    // This prevents issues where mockRestore might restore an undefined/broken fetch implementation
+    fetchSpy.mockReset();
   });
 
   describe('ContainerSplitPane', () => {
@@ -377,13 +387,13 @@ describe('Container Keyboard Accessibility', () => {
         [mockCorpse.container_id]: mockCorpse,
       };
       // Mock fetch for API call
-      global.fetch = vi.fn().mockResolvedValue({
+      fetchSpy.mockResolvedValue({
         ok: true,
         json: async () => ({
           container: mockCorpse,
           mutation_token: 'token-1',
         }),
-      });
+      } as Response);
     });
 
     it('should support Tab navigation to open button', async () => {

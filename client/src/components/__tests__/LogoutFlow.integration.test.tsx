@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
-import { describe, vi, type Mock } from 'vitest';
+import { afterEach, beforeEach, describe, vi, type Mock } from 'vitest';
 import { App } from '../../App';
 
 /**
@@ -177,15 +177,23 @@ vi.mock('../../components/DraggablePanel', () => ({
   ),
 }));
 
+// Mock fetch globally using vi.spyOn for proper cleanup
+const fetchSpy = vi.spyOn(global, 'fetch');
+
 describe.skip('Logout Flow Integration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    fetchSpy.mockClear();
+  });
+
+  afterEach(() => {
+    fetchSpy.mockRestore();
   });
 
   describe('Complete Logout Flow', () => {
     it('should complete full logout flow from authenticated state', async () => {
       // Mock successful login
-      global.fetch = vi.fn().mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           access_token: 'mock-token',
@@ -193,7 +201,7 @@ describe.skip('Logout Flow Integration', () => {
           has_character: true,
           character_name: 'TestPlayer',
         }),
-      });
+      } as unknown as Response);
 
       render(<App />);
 
@@ -252,7 +260,7 @@ describe.skip('Logout Flow Integration', () => {
 
     it('should show loading state during logout process', async () => {
       // Mock successful login
-      global.fetch = vi.fn().mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           access_token: 'mock-token',
@@ -260,7 +268,7 @@ describe.skip('Logout Flow Integration', () => {
           has_character: true,
           character_name: 'TestPlayer',
         }),
-      });
+      } as unknown as Response);
 
       // Mock logout handler with delay
       const { logoutHandler } = await import('../../utils/logoutHandler');
@@ -311,7 +319,7 @@ describe.skip('Logout Flow Integration', () => {
 
     it('should handle logout errors gracefully and still return to login', async () => {
       // Mock successful login
-      global.fetch = vi.fn().mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           access_token: 'mock-token',
@@ -319,7 +327,7 @@ describe.skip('Logout Flow Integration', () => {
           has_character: true,
           character_name: 'TestPlayer',
         }),
-      });
+      } as unknown as Response);
 
       // Mock logout handler to throw error
       const { logoutHandler } = await import('../../utils/logoutHandler');
@@ -369,7 +377,7 @@ describe.skip('Logout Flow Integration', () => {
   describe('Logout Button States', () => {
     it('should disable logout button when disconnected', async () => {
       // Mock successful login
-      global.fetch = vi.fn().mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           access_token: 'mock-token',
@@ -377,7 +385,7 @@ describe.skip('Logout Flow Integration', () => {
           has_character: true,
           character_name: 'TestPlayer',
         }),
-      });
+      } as unknown as Response);
 
       render(<App />);
 
@@ -401,7 +409,7 @@ describe.skip('Logout Flow Integration', () => {
 
     it('should disable logout button during logout process', async () => {
       // Mock successful login
-      global.fetch = vi.fn().mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           access_token: 'mock-token',
@@ -409,7 +417,7 @@ describe.skip('Logout Flow Integration', () => {
           has_character: true,
           character_name: 'TestPlayer',
         }),
-      });
+      } as unknown as Response);
 
       // Mock logout handler with delay
       const { logoutHandler } = await import('../../utils/logoutHandler');
@@ -457,7 +465,7 @@ describe.skip('Logout Flow Integration', () => {
   describe('State Cleanup', () => {
     it('should clear all authentication state during logout', async () => {
       // Mock successful login
-      global.fetch = vi.fn().mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           access_token: 'mock-token',
@@ -465,7 +473,7 @@ describe.skip('Logout Flow Integration', () => {
           has_character: true,
           character_name: 'TestPlayer',
         }),
-      });
+      } as unknown as Response);
 
       const { secureTokenStorage } = await import('../../utils/security');
 

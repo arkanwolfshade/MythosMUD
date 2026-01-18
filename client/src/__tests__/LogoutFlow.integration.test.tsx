@@ -64,33 +64,34 @@ vi.mock('../hooks/useGameConnectionRefactored', () => ({
   })),
 }));
 
-// Mock fetch for authentication
-const mockFetch = vi.fn();
-global.fetch = mockFetch;
+// Mock fetch for authentication using vi.spyOn for proper cleanup
+const fetchSpy = vi.spyOn(global, 'fetch');
 
 // SKIPPED: This is an E2E test that should use Playwright, not Vitest
 // These tests require full App logout flows and should be in client/tests/
 describe.skip('Complete Logout Flow Integration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    fetchSpy.mockClear();
     mockLogoutHandler.mockResolvedValue(undefined);
   });
 
   afterEach(() => {
+    fetchSpy.mockRestore();
     vi.restoreAllMocks();
   });
 
   describe('Successful Logout Flow', () => {
     it('should complete full logout flow from button click to login screen', async () => {
       // Setup: User is authenticated with character
-      mockFetch.mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           access_token: 'test-token',
           has_character: true,
           character_name: 'TestPlayer',
         }),
-      });
+      } as unknown as Response);
 
       render(<App />);
 
@@ -113,7 +114,8 @@ describe.skip('Complete Logout Flow Integration', () => {
       let navigateToLoginCalled = false;
 
       mockLogoutHandler.mockImplementation(async ({ disconnect, clearState, navigateToLogin }) => {
-        // Simulate server logout command
+        // LEGITIMATE: Using setTimeout to simulate server logout command delay
+        // This is not polling - it's simulating async behavior in the mock
         await new Promise(resolve => setTimeout(resolve, 100));
 
         // Simulate disconnect callback
@@ -168,14 +170,14 @@ describe.skip('Complete Logout Flow Integration', () => {
 
     it('should handle logout with server communication failure gracefully', async () => {
       // Setup: User is authenticated with character
-      mockFetch.mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           access_token: 'test-token',
           has_character: true,
           character_name: 'TestPlayer',
         }),
-      });
+      } as unknown as Response);
 
       render(<App />);
 
@@ -208,14 +210,14 @@ describe.skip('Complete Logout Flow Integration', () => {
 
     it('should prevent multiple logout attempts during logout process', async () => {
       // Setup: User is authenticated with character
-      mockFetch.mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           access_token: 'test-token',
           has_character: true,
           character_name: 'TestPlayer',
         }),
-      });
+      } as unknown as Response);
 
       render(<App />);
 
@@ -280,14 +282,14 @@ describe.skip('Complete Logout Flow Integration', () => {
   describe('State Management Integration', () => {
     it('should maintain proper state transitions during complete logout flow', async () => {
       // Setup: User is authenticated with character
-      mockFetch.mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           access_token: 'test-token',
           has_character: true,
           character_name: 'TestPlayer',
         }),
-      });
+      } as unknown as Response);
 
       render(<App />);
 
@@ -374,11 +376,12 @@ describe.skip('Complete Logout Flow Integration', () => {
         ],
       };
 
-      mockFetch.mockImplementation(url => {
-        if (url.includes('/auth/login')) {
-          return Promise.resolve(mockLoginResponse);
-        } else if (url.includes('/professions')) {
-          return Promise.resolve(mockProfessionsResponse);
+      fetchSpy.mockImplementation((url: string | URL | Request) => {
+        const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url;
+        if (urlString.includes('/auth/login')) {
+          return Promise.resolve(mockLoginResponse as unknown as Response);
+        } else if (urlString.includes('/professions')) {
+          return Promise.resolve(mockProfessionsResponse as unknown as Response);
         }
         return Promise.reject(new Error('Unexpected URL'));
       });
@@ -414,14 +417,14 @@ describe.skip('Complete Logout Flow Integration', () => {
   describe('Focus Management Integration', () => {
     it('should properly manage focus during complete logout flow', async () => {
       // Setup: User is authenticated with character
-      mockFetch.mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           access_token: 'test-token',
           has_character: true,
           character_name: 'TestPlayer',
         }),
-      });
+      } as unknown as Response);
 
       render(<App />);
 
@@ -466,14 +469,14 @@ describe.skip('Complete Logout Flow Integration', () => {
   describe('Error Handling Integration', () => {
     it('should handle network errors during logout gracefully', async () => {
       // Setup: User is authenticated with character
-      mockFetch.mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           access_token: 'test-token',
           has_character: true,
           character_name: 'TestPlayer',
         }),
-      });
+      } as unknown as Response);
 
       render(<App />);
 
@@ -506,14 +509,14 @@ describe.skip('Complete Logout Flow Integration', () => {
 
     it('should handle timeout errors during logout gracefully', async () => {
       // Setup: User is authenticated with character
-      mockFetch.mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           access_token: 'test-token',
           has_character: true,
           character_name: 'TestPlayer',
         }),
-      });
+      } as unknown as Response);
 
       render(<App />);
 

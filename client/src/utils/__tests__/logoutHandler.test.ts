@@ -17,8 +17,8 @@ vi.mock('../logger', () => ({
   },
 }));
 
-// Mock fetch
-global.fetch = vi.fn();
+// Mock fetch globally using vi.spyOn for proper cleanup
+const fetchSpy = vi.spyOn(global, 'fetch');
 
 describe('logoutHandler', () => {
   const mockDisconnect = vi.fn();
@@ -35,10 +35,14 @@ describe('logoutHandler', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    fetchSpy.mockClear();
     vi.useFakeTimers();
   });
 
   afterEach(() => {
+    // Use mockReset instead of mockRestore to keep the spy active across tests
+    // This prevents issues where mockRestore might restore an undefined/broken fetch implementation
+    fetchSpy.mockReset();
     vi.useRealTimers();
   });
 
@@ -54,7 +58,7 @@ describe('logoutHandler', () => {
         }),
       };
 
-      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
+      fetchSpy.mockResolvedValueOnce(mockResponse as unknown as Response);
 
       await logoutHandler(defaultOptions);
 
@@ -85,7 +89,7 @@ describe('logoutHandler', () => {
         }),
       };
 
-      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
+      fetchSpy.mockResolvedValueOnce(mockResponse as unknown as Response);
 
       await logoutHandler(defaultOptions);
 
@@ -168,7 +172,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
+      fetchSpy.mockResolvedValueOnce(mockResponse as unknown as Response);
 
       await logoutHandler(defaultOptions);
 
@@ -181,7 +185,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
+      fetchSpy.mockResolvedValueOnce(mockResponse as unknown as Response);
 
       await logoutHandler(defaultOptions);
 
@@ -194,7 +198,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
+      fetchSpy.mockResolvedValueOnce(mockResponse as unknown as Response);
 
       await logoutHandler(defaultOptions);
 
@@ -212,7 +216,7 @@ describe('logoutHandler', () => {
         }),
       };
 
-      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
+      fetchSpy.mockResolvedValueOnce(mockResponse as unknown as Response);
 
       await logoutHandler(defaultOptions);
 
@@ -293,7 +297,7 @@ describe('logoutHandler', () => {
         }),
       };
 
-      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
+      fetchSpy.mockResolvedValueOnce(mockResponse as unknown as Response);
 
       await logoutHandler(defaultOptions);
 
@@ -314,7 +318,7 @@ describe('logoutHandler', () => {
         }),
       };
 
-      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
+      fetchSpy.mockResolvedValueOnce(mockResponse as unknown as Response);
 
       await logoutHandler(defaultOptions);
 
@@ -330,7 +334,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockRejectedValue(new Error('Invalid JSON')),
       };
 
-      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
+      fetchSpy.mockResolvedValueOnce(mockResponse as unknown as Response);
 
       await logoutHandler(defaultOptions);
 
@@ -353,7 +357,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
+      fetchSpy.mockResolvedValueOnce(mockResponse as unknown as Response);
 
       await logoutHandler(defaultOptions);
 
@@ -378,7 +382,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
+      fetchSpy.mockResolvedValueOnce(mockResponse as unknown as Response);
 
       await logoutHandler(optionsWithError);
 
@@ -402,7 +406,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
+      fetchSpy.mockResolvedValueOnce(mockResponse as unknown as Response);
 
       await logoutHandler(optionsWithError);
 
@@ -425,7 +429,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
+      fetchSpy.mockResolvedValueOnce(mockResponse as unknown as Response);
 
       // Navigation errors are caught and logged, not thrown
       // The function should complete even if navigation fails
@@ -450,7 +454,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
+      fetchSpy.mockResolvedValueOnce(mockResponse as unknown as Response);
 
       await logoutHandler(optionsWithError);
 
@@ -478,7 +482,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
+      fetchSpy.mockResolvedValueOnce(mockResponse as unknown as Response);
 
       // Should not throw - error is caught and logged
       await logoutHandler(optionsWithError);
@@ -505,7 +509,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
+      fetchSpy.mockResolvedValueOnce(mockResponse as unknown as Response);
 
       // Should not throw - error is caught and logged
       await logoutHandler(optionsWithError);
@@ -523,7 +527,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
+      fetchSpy.mockResolvedValueOnce(mockResponse as unknown as Response);
 
       await logoutHandler(defaultOptions);
 
@@ -548,7 +552,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
+      fetchSpy.mockResolvedValueOnce(mockResponse as unknown as Response);
 
       await logoutHandler(optionsWithError);
 
@@ -572,7 +576,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
+      fetchSpy.mockResolvedValueOnce(mockResponse as unknown as Response);
 
       await logoutHandler(optionsWithError);
 
@@ -596,7 +600,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
+      fetchSpy.mockResolvedValueOnce(mockResponse as unknown as Response);
 
       // Navigation errors are re-thrown from performClientSideCleanup
       // This should trigger the outer catch block which then tries navigation again
@@ -671,7 +675,7 @@ describe('logoutHandler', () => {
         json: vi.fn().mockResolvedValue({ success: true }),
       };
 
-      (global.fetch as Mock).mockResolvedValueOnce(mockResponse);
+      fetchSpy.mockResolvedValueOnce(mockResponse as unknown as Response);
 
       const handler = createLogoutHandler('test-token', mockDisconnect, mockClearState, mockNavigateToLogin);
 

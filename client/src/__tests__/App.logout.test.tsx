@@ -56,16 +56,20 @@ vi.mock('../components/EldritchEffectsDemo', () => ({
   EldritchEffectsDemo: () => <div data-testid="eldritch-effects-demo">Eldritch Effects Demo</div>,
 }));
 
-// Mock fetch for authentication
-const mockFetch = vi.fn();
-global.fetch = mockFetch;
+// Mock fetch for authentication using vi.spyOn for proper cleanup
+const fetchSpy = vi.spyOn(global, 'fetch');
 
 // SKIPPED: This is an E2E test that should use Playwright, not Vitest
 // These tests require full App flows and should be in client/tests/
 describe.skip('App.tsx Logout State Management', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    fetchSpy.mockClear();
     mockLogoutHandler.mockResolvedValue(undefined);
+  });
+
+  afterEach(() => {
+    fetchSpy.mockRestore();
   });
 
   afterEach(() => {
@@ -75,7 +79,7 @@ describe.skip('App.tsx Logout State Management', () => {
   describe('Logout Flow', () => {
     it('should handle successful logout and reset all state', async () => {
       // Setup: User is authenticated with character
-      mockFetch
+      fetchSpy
         .mockResolvedValueOnce({
           ok: true,
           json: async () => ({
@@ -83,7 +87,7 @@ describe.skip('App.tsx Logout State Management', () => {
             has_character: true,
             character_name: 'TestPlayer',
           }),
-        })
+        } as unknown as Response)
         .mockResolvedValueOnce({
           ok: true,
           json: async () => ({
@@ -91,7 +95,7 @@ describe.skip('App.tsx Logout State Management', () => {
             has_character: true,
             character_name: 'TestPlayer',
           }),
-        });
+        } as unknown as Response);
 
       render(<App />);
 
@@ -127,14 +131,14 @@ describe.skip('App.tsx Logout State Management', () => {
 
     it('should handle logout with loading state', async () => {
       // Setup: User is authenticated with character
-      mockFetch.mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           access_token: 'test-token',
           has_character: true,
           character_name: 'TestPlayer',
         }),
-      });
+      } as unknown as Response);
 
       render(<App />);
 
@@ -175,14 +179,14 @@ describe.skip('App.tsx Logout State Management', () => {
 
     it('should prevent multiple logout attempts', async () => {
       // Setup: User is authenticated with character
-      mockFetch.mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           access_token: 'test-token',
           has_character: true,
           character_name: 'TestPlayer',
         }),
-      });
+      } as unknown as Response);
 
       render(<App />);
 
@@ -223,14 +227,14 @@ describe.skip('App.tsx Logout State Management', () => {
 
     it('should handle logout handler failure gracefully', async () => {
       // Setup: User is authenticated with character
-      mockFetch.mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           access_token: 'test-token',
           has_character: true,
           character_name: 'TestPlayer',
         }),
-      });
+      } as unknown as Response);
 
       render(<App />);
 
@@ -262,14 +266,14 @@ describe.skip('App.tsx Logout State Management', () => {
 
     it('should clear all authentication state on logout', async () => {
       // Setup: User is authenticated with character
-      mockFetch.mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           access_token: 'test-token',
           has_character: true,
           character_name: 'TestPlayer',
         }),
-      });
+      } as unknown as Response);
 
       render(<App />);
 
@@ -306,14 +310,14 @@ describe.skip('App.tsx Logout State Management', () => {
   describe('State Management Integration', () => {
     it('should maintain proper state transitions during logout', async () => {
       // Setup: User is authenticated with character
-      mockFetch.mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           access_token: 'test-token',
           has_character: true,
           character_name: 'TestPlayer',
         }),
-      });
+      } as unknown as Response);
 
       render(<App />);
 
@@ -379,11 +383,12 @@ describe.skip('App.tsx Logout State Management', () => {
         ],
       };
 
-      mockFetch.mockImplementation(url => {
-        if (url.includes('/auth/login')) {
-          return Promise.resolve(mockLoginResponse);
-        } else if (url.includes('/professions')) {
-          return Promise.resolve(mockProfessionsResponse);
+      fetchSpy.mockImplementation((url: string | URL | Request) => {
+        const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url;
+        if (urlString.includes('/auth/login')) {
+          return Promise.resolve(mockLoginResponse as unknown as Response);
+        } else if (urlString.includes('/professions')) {
+          return Promise.resolve(mockProfessionsResponse as unknown as Response);
         }
         return Promise.reject(new Error('Unexpected URL'));
       });
@@ -419,14 +424,14 @@ describe.skip('App.tsx Logout State Management', () => {
 
     it('should reset error state on successful logout', async () => {
       // Setup: User is authenticated with character
-      mockFetch.mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           access_token: 'test-token',
           has_character: true,
           character_name: 'TestPlayer',
         }),
-      });
+      } as unknown as Response);
 
       render(<App />);
 
@@ -458,14 +463,14 @@ describe.skip('App.tsx Logout State Management', () => {
 
     it('should show error message on logout failure', async () => {
       // Setup: User is authenticated with character
-      mockFetch.mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           access_token: 'test-token',
           has_character: true,
           character_name: 'TestPlayer',
         }),
-      });
+      } as unknown as Response);
 
       render(<App />);
 
@@ -496,14 +501,14 @@ describe.skip('App.tsx Logout State Management', () => {
   describe('Focus Management', () => {
     it('should return focus to login form after logout', async () => {
       // Setup: User is authenticated with character
-      mockFetch.mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           access_token: 'test-token',
           has_character: true,
           character_name: 'TestPlayer',
         }),
-      });
+      } as unknown as Response);
 
       render(<App />);
 

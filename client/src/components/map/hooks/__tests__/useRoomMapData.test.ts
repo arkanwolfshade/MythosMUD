@@ -6,20 +6,23 @@
  */
 
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
-import { useRoomMapData } from '../useRoomMapData';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Room } from '../../../../stores/gameStore';
+import { useRoomMapData } from '../useRoomMapData';
 
-// Mock fetch globally
-const mockFetch = vi.fn();
-global.fetch = mockFetch;
+// Mock fetch globally using vi.spyOn for proper cleanup
+const fetchSpy = vi.spyOn(global, 'fetch');
 
 describe('useRoomMapData', () => {
   beforeEach(() => {
-    mockFetch.mockClear();
+    fetchSpy.mockClear();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
+    // Use mockReset instead of mockRestore to keep the spy active across tests
+    // This prevents issues where mockRestore might restore an undefined/broken fetch implementation
+    fetchSpy.mockReset();
     vi.clearAllMocks();
   });
 
@@ -36,7 +39,7 @@ describe('useRoomMapData', () => {
       },
     ];
 
-    mockFetch.mockResolvedValueOnce({
+    fetchSpy.mockResolvedValueOnce({
       ok: true,
       json: async () => ({
         rooms: mockRooms,
@@ -44,7 +47,7 @@ describe('useRoomMapData', () => {
         plane: 'earth',
         zone: 'arkhamcity',
       }),
-    });
+    } as unknown as Response);
 
     const { result } = renderHook(() =>
       useRoomMapData({
@@ -63,7 +66,7 @@ describe('useRoomMapData', () => {
     expect(result.current.rooms).toEqual(mockRooms);
     expect(result.current.total).toBe(1);
     expect(result.current.error).toBeNull();
-    expect(mockFetch).toHaveBeenCalledWith(
+    expect(fetchSpy).toHaveBeenCalledWith(
       expect.stringContaining('/api/rooms/list?plane=earth&zone=arkhamcity&include_exits=true'),
       expect.objectContaining({
         method: 'GET',
@@ -75,7 +78,7 @@ describe('useRoomMapData', () => {
   });
 
   it('should include subZone in query when provided', async () => {
-    mockFetch.mockResolvedValueOnce({
+    fetchSpy.mockResolvedValueOnce({
       ok: true,
       json: async () => ({
         rooms: [],
@@ -84,7 +87,7 @@ describe('useRoomMapData', () => {
         zone: 'arkhamcity',
         sub_zone: 'campus',
       }),
-    });
+    } as unknown as Response);
 
     const { result } = renderHook(() =>
       useRoomMapData({
@@ -98,17 +101,17 @@ describe('useRoomMapData', () => {
       expect(result.current.isLoading).toBe(false);
     });
 
-    expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('sub_zone=campus'), expect.any(Object));
+    expect(fetchSpy).toHaveBeenCalledWith(expect.stringContaining('sub_zone=campus'), expect.any(Object));
   });
 
   it('should handle includeExits parameter', async () => {
-    mockFetch.mockResolvedValueOnce({
+    fetchSpy.mockResolvedValueOnce({
       ok: true,
       json: async () => ({
         rooms: [],
         total: 0,
       }),
-    });
+    } as unknown as Response);
 
     const { result } = renderHook(() =>
       useRoomMapData({
@@ -122,17 +125,17 @@ describe('useRoomMapData', () => {
       expect(result.current.isLoading).toBe(false);
     });
 
-    expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('include_exits=false'), expect.any(Object));
+    expect(fetchSpy).toHaveBeenCalledWith(expect.stringContaining('include_exits=false'), expect.any(Object));
   });
 
   it('should handle API errors', async () => {
-    mockFetch.mockResolvedValueOnce({
+    fetchSpy.mockResolvedValueOnce({
       ok: false,
       status: 500,
       json: async () => ({
         detail: 'Internal server error',
       }),
-    });
+    } as unknown as Response);
 
     const { result } = renderHook(() =>
       useRoomMapData({
@@ -151,7 +154,7 @@ describe('useRoomMapData', () => {
   });
 
   it('should handle network errors', async () => {
-    mockFetch.mockRejectedValueOnce(new Error('Network error'));
+    fetchSpy.mockRejectedValueOnce(new Error('Network error'));
 
     const { result } = renderHook(() =>
       useRoomMapData({
@@ -181,17 +184,17 @@ describe('useRoomMapData', () => {
     });
 
     expect(result.current.error).toBe('Plane and zone are required');
-    expect(mockFetch).not.toHaveBeenCalled();
+    expect(fetchSpy).not.toHaveBeenCalled();
   });
 
   it('should include auth token in headers when provided', async () => {
-    mockFetch.mockResolvedValueOnce({
+    fetchSpy.mockResolvedValueOnce({
       ok: true,
       json: async () => ({
         rooms: [],
         total: 0,
       }),
-    });
+    } as unknown as Response);
 
     const { result } = renderHook(() =>
       useRoomMapData({
@@ -205,7 +208,7 @@ describe('useRoomMapData', () => {
       expect(result.current.isLoading).toBe(false);
     });
 
-    expect(mockFetch).toHaveBeenCalledWith(
+    expect(fetchSpy).toHaveBeenCalledWith(
       expect.any(String),
       expect.objectContaining({
         headers: expect.objectContaining({
@@ -216,13 +219,13 @@ describe('useRoomMapData', () => {
   });
 
   it('should provide refetch function', async () => {
-    mockFetch.mockResolvedValue({
+    fetchSpy.mockResolvedValue({
       ok: true,
       json: async () => ({
         rooms: [],
         total: 0,
       }),
-    });
+    } as unknown as Response);
 
     const { result } = renderHook(() =>
       useRoomMapData({
@@ -235,7 +238,7 @@ describe('useRoomMapData', () => {
       expect(result.current.isLoading).toBe(false);
     });
 
-    expect(mockFetch).toHaveBeenCalledTimes(1);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
 
     // Call refetch
     await act(async () => {
@@ -246,17 +249,17 @@ describe('useRoomMapData', () => {
       expect(result.current.isLoading).toBe(false);
     });
 
-    expect(mockFetch).toHaveBeenCalledTimes(2);
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
   });
 
   it('should include filter_explored parameter when filterExplored is true', async () => {
-    mockFetch.mockResolvedValueOnce({
+    fetchSpy.mockResolvedValueOnce({
       ok: true,
       json: async () => ({
         rooms: [],
         total: 0,
       }),
-    });
+    } as unknown as Response);
 
     const { result } = renderHook(() =>
       useRoomMapData({
@@ -271,17 +274,17 @@ describe('useRoomMapData', () => {
       expect(result.current.isLoading).toBe(false);
     });
 
-    expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('filter_explored=true'), expect.any(Object));
+    expect(fetchSpy).toHaveBeenCalledWith(expect.stringContaining('filter_explored=true'), expect.any(Object));
   });
 
   it('should not include filter_explored parameter when filterExplored is false', async () => {
-    mockFetch.mockResolvedValueOnce({
+    fetchSpy.mockResolvedValueOnce({
       ok: true,
       json: async () => ({
         rooms: [],
         total: 0,
       }),
-    });
+    } as unknown as Response);
 
     const { result } = renderHook(() =>
       useRoomMapData({
@@ -295,6 +298,6 @@ describe('useRoomMapData', () => {
       expect(result.current.isLoading).toBe(false);
     });
 
-    expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('filter_explored=false'), expect.any(Object));
+    expect(fetchSpy).toHaveBeenCalledWith(expect.stringContaining('filter_explored=false'), expect.any(Object));
   });
 });

@@ -12,6 +12,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ContainerComponent } from '../../../stores/containerStore';
 import { CorpseOverlay } from '../CorpseOverlay';
 
+// Mock fetch globally using vi.spyOn for proper cleanup
+const fetchSpy = vi.spyOn(global, 'fetch');
+
 // Mock container store state
 let mockOpenContainers: Record<string, ContainerComponent> = {};
 const mockOpenContainer = vi.fn();
@@ -132,6 +135,9 @@ describe('CorpseOverlay', () => {
   });
 
   afterEach(() => {
+    // Use mockReset instead of mockRestore to keep the spy active across tests
+    // This prevents issues where mockRestore might restore an undefined/broken fetch implementation
+    fetchSpy.mockReset();
     vi.clearAllTimers();
   });
 
@@ -341,14 +347,13 @@ describe('CorpseOverlay', () => {
       mockOpenContainers = { [corpse.container_id]: corpse };
       mockPlayer = { id: 'player-1', name: 'TestPlayer' };
       // Mock fetch for API call
-      const mockFetch = vi.fn().mockResolvedValue({
+      fetchSpy.mockResolvedValue({
         ok: true,
         json: async () => ({
           container: corpse,
           mutation_token: 'token-1',
         }),
-      });
-      global.fetch = mockFetch;
+      } as Response);
       // Mock localStorage
       const localStorageMock = {
         getItem: vi.fn().mockReturnValue('test-token'),
@@ -363,7 +368,7 @@ describe('CorpseOverlay', () => {
       const openButton = screen.getByRole('button', { name: /open corpse/i });
       fireEvent.click(openButton);
 
-      expect(mockFetch).toHaveBeenCalled();
+      expect(fetchSpy).toHaveBeenCalled();
     });
 
     it('should disable open button during grace period for non-owner', () => {
@@ -435,14 +440,13 @@ describe('CorpseOverlay', () => {
       mockOpenContainers = { [corpse.container_id]: corpse };
       mockPlayer = { id: 'player-1', name: 'TestPlayer' };
       // Mock fetch for API call
-      const mockFetch = vi.fn().mockResolvedValue({
+      fetchSpy.mockResolvedValue({
         ok: true,
         json: async () => ({
           container: corpse,
           mutation_token: 'token-1',
         }),
-      });
-      global.fetch = mockFetch;
+      } as Response);
       // Mock localStorage
       const localStorageMock = {
         getItem: vi.fn().mockReturnValue('test-token'),
@@ -464,7 +468,7 @@ describe('CorpseOverlay', () => {
       // Wait for async API call
       await waitFor(
         () => {
-          expect(mockFetch).toHaveBeenCalled();
+          expect(fetchSpy).toHaveBeenCalled();
         },
         { timeout: 3000 }
       );

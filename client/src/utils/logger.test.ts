@@ -279,29 +279,22 @@ describe('ClientLogger', () => {
       logger.info('Test', 'Message');
       const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-      // Mock URL.createObjectURL to throw an error
-      const originalCreateObjectURL = URL.createObjectURL;
-      Object.defineProperty(URL, 'createObjectURL', {
-        value: () => {
-          throw new Error('Failed to create object URL');
-        },
-        writable: true,
-        configurable: true,
+      // Mock URL.createObjectURL to throw an error using vi.spyOn
+      // Object.defineProperty doesn't work in happy-dom because createObjectURL is not configurable
+      const createObjectURLSpy = vi.spyOn(URL, 'createObjectURL').mockImplementation(() => {
+        throw new Error('Failed to create object URL');
       });
 
-      // Act
-      logger.flushLogs();
+      // Act - Access private method for testing using type assertion
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (logger as any).flushLogs();
 
       // Assert - should handle error gracefully
       expect(consoleErrorSpy).toHaveBeenCalled();
       expect(consoleErrorSpy.mock.calls.some(call => call[0]?.includes('Failed to flush logs'))).toBe(true);
 
       // Restore
-      Object.defineProperty(URL, 'createObjectURL', {
-        value: originalCreateObjectURL,
-        writable: true,
-        configurable: true,
-      });
+      createObjectURLSpy.mockRestore();
       consoleErrorSpy.mockRestore();
     });
 
@@ -310,8 +303,9 @@ describe('ClientLogger', () => {
       logger.clearLogs();
       const createObjectURLSpy = vi.spyOn(URL, 'createObjectURL');
 
-      // Act
-      logger.flushLogs();
+      // Act - Access private method for testing using type assertion
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (logger as any).flushLogs();
 
       // Assert - should not create object URL if buffer is empty
       // Note: clearLogs() adds a "Log buffer cleared" message, so buffer might not be empty
