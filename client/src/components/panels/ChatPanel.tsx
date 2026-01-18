@@ -454,9 +454,8 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
     // 3. escapedQuery can only contain: literal characters (a-z, 0-9, etc.) or escaped sequences (\., \*, etc.)
     // 4. No dangerous regex patterns can be constructed after escaping
     // This pattern is safe because the escaped query is treated as a literal string, not a regex pattern
-    // nosemgrep: typescript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
+    // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
     const regex = new RegExp(`(${escapedQuery})`, 'gi');
-    // nosemgrep: typescript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
     // nosemgrep: typescript.lang.security.audit.xss.xss
     const result = escapedText.replace(regex, '<mark class="bg-yellow-500 text-black font-semibold">$1</mark>');
 

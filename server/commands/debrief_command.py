@@ -68,7 +68,7 @@ async def _check_debrief_availability(lucidity_service: LucidityService, player_
     return None
 
 
-async def _perform_therapy_if_requested(
+async def _perform_therapy_if_requested(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Therapy session execution requires 6 parameters for decision flag, player data, database session, observer, and message accumulation; extracting into a class or dataclass would add unnecessary complexity
     wants_therapy: bool,
     player: Any,
     player_id_uuid: Any,

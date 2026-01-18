@@ -69,6 +69,8 @@ async function setupAuthStorage(
   } catch (error) {
     // Log error with more context
     const errorMsg = error instanceof Error ? error.message : String(error);
+    // nosemgrep: javascript.lang.security.audit.unsafe-formatstring.unsafe-formatstring
+    // Test logging with username from test configuration, not user input
     console.error(`Failed to setup auth storage for ${username}:`, errorMsg);
     throw error;
   } finally {

@@ -63,6 +63,8 @@ class ClientMetricsCollector {
     this.storeSubscriptions.set(storeName, existing);
 
     if (import.meta.env.DEV) {
+      // Internal development logging with store name from internal state, not user input
+      // nosemgrep: javascript.lang.security.audit.unsafe-formatstring.unsafe-formatstring
       console.log(`[Metrics] Store subscription: ${storeName}`, {
         subscriptionCount: existing.subscriptionCount,
       });
@@ -79,6 +81,8 @@ class ClientMetricsCollector {
       this.storeSubscriptions.set(storeName, existing);
 
       if (import.meta.env.DEV) {
+        // Internal development logging with store name from internal state, not user input
+        // nosemgrep: javascript.lang.security.audit.unsafe-formatstring.unsafe-formatstring
         console.log(`[Metrics] Store unsubscription: ${storeName}`, {
           subscriptionCount: existing.subscriptionCount,
         });

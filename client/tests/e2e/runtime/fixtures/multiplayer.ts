@@ -83,6 +83,8 @@ export async function waitForCrossPlayerMessage(
     await playerContext.page.waitForFunction(
       ({ source, flags }) => {
         const messages = Array.from(document.querySelectorAll('[data-message-text]'));
+        // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
+        // This is a test fixture. The RegExp source and flags come from expectedText (a test constant), not user input
         const patternRegex = new RegExp(source, flags);
         return messages.some(msg => {
           const text = (msg.getAttribute('data-message-text') || '').trim();

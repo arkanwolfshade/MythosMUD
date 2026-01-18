@@ -101,7 +101,7 @@ class ApplicationContainer:  # pylint: disable=too-many-instance-attributes  # R
     _instance: "ApplicationContainer | None" = None
     _lock: threading.Lock = threading.Lock()
 
-    def __init__(self) -> None:
+    def __init__(self) -> None:  # pylint: disable=too-many-statements  # Reason: Container initialization requires many attribute declarations (56 statements) for all service references; breaking this into smaller functions would reduce clarity and is not standard Python practice for __init__
         """
         Initialize the container.
 
@@ -651,6 +651,61 @@ class ApplicationContainer:  # pylint: disable=too-many-instance-attributes  # R
             logger.warning("Failed to decode JSON column; using default value", column_value=value)
             return expected_type()
 
+    async def _sanitarium_failover_callback(self, player_id: str, current_lcd: int) -> None:
+        """Failover callback that relocates catatonic players to the sanitarium."""
+        import uuid as uuid_lib
+
+        from anyio import sleep
+
+        from .services.lucidity_service import LucidityService
+
+        # 10-second fade before transport per spec
+        await sleep(10.0)
+
+        if self.database_manager is None:
+            logger.error("Database manager not available for catatonia failover", player_id=player_id)
+            return
+
+        try:
+            session_maker = self.database_manager.get_session_maker()
+        except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as exc:
+            logger.error(
+                "Failed to get session maker for catatonia failover",
+                player_id=player_id,
+                error=str(exc),
+                exc_info=True,
+            )
+            return
+
+        async with session_maker() as session:
+            try:
+                # Clear all active hallucination timers per spec requirement
+                player_id_uuid = uuid_lib.UUID(player_id) if isinstance(player_id, str) else player_id
+                lucidity_service = LucidityService(session)
+                timers_cleared = await lucidity_service.clear_hallucination_timers(player_id_uuid)
+                logger.debug(
+                    "Hallucination timers cleared in failover",
+                    player_id=player_id,
+                    timers_cleared=timers_cleared,
+                )
+
+                if self.player_respawn_service is None:
+                    logger.error("PlayerRespawnService not available for catatonia failover", player_id=player_id)
+                    return
+
+                await self.player_respawn_service.move_player_to_limbo(player_id, "catatonia_failover", session)
+                await self.player_respawn_service.respawn_player_from_sanitarium(player_id, session)
+                logger.info("Catatonia failover completed", player_id=player_id, lcd=current_lcd)
+            except (
+                ValueError,
+                TypeError,
+                AttributeError,
+                KeyError,
+                RuntimeError,
+            ) as exc:  # pragma: no cover - defensive
+                logger.error("Catatonia failover failed", player_id=player_id, error=str(exc), exc_info=True)
+                await session.rollback()
+
     async def _initialize_combat_services(self) -> None:  # pylint: disable=too-many-locals  # Reason: Combat service initialization requires many intermediate variables for dependency setup
         """Initialize combat-related services."""
         if self.persistence is None:
@@ -660,12 +715,7 @@ class ApplicationContainer:  # pylint: disable=too-many-instance-attributes  # R
 
         logger.debug("Initializing combat services...")
 
-        import uuid as uuid_lib
-
-        from anyio import sleep
-
         from .services.catatonia_registry import CatatoniaRegistry
-        from .services.lucidity_service import LucidityService
         from .services.passive_lucidity_flux_service import PassiveLucidityFluxService
         from .services.player_combat_service import PlayerCombatService
         from .services.player_death_service import PlayerDeathService
@@ -694,56 +744,7 @@ class ApplicationContainer:  # pylint: disable=too-many-instance-attributes  # R
         logger.info("Player respawn service initialized")
 
         # Initialize CatatoniaRegistry with failover callback
-        async def _sanitarium_failover(player_id: str, current_lcd: int) -> None:
-            """Failover callback that relocates catatonic players to the sanitarium."""
-            # 10-second fade before transport per spec
-            await sleep(10.0)
-
-            if self.database_manager is None:
-                logger.error("Database manager not available for catatonia failover", player_id=player_id)
-                return
-
-            try:
-                session_maker = self.database_manager.get_session_maker()
-            except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as exc:
-                logger.error(
-                    "Failed to get session maker for catatonia failover",
-                    player_id=player_id,
-                    error=str(exc),
-                    exc_info=True,
-                )
-                return
-
-            async with session_maker() as session:
-                try:
-                    # Clear all active hallucination timers per spec requirement
-                    player_id_uuid = uuid_lib.UUID(player_id) if isinstance(player_id, str) else player_id
-                    lucidity_service = LucidityService(session)
-                    timers_cleared = await lucidity_service.clear_hallucination_timers(player_id_uuid)
-                    logger.debug(
-                        "Hallucination timers cleared in failover",
-                        player_id=player_id,
-                        timers_cleared=timers_cleared,
-                    )
-
-                    if self.player_respawn_service is None:
-                        logger.error("PlayerRespawnService not available for catatonia failover", player_id=player_id)
-                        return
-
-                    await self.player_respawn_service.move_player_to_limbo(player_id, "catatonia_failover", session)
-                    await self.player_respawn_service.respawn_player_from_sanitarium(player_id, session)
-                    logger.info("Catatonia failover completed", player_id=player_id, lcd=current_lcd)
-                except (
-                    ValueError,
-                    TypeError,
-                    AttributeError,
-                    KeyError,
-                    RuntimeError,
-                ) as exc:  # pragma: no cover - defensive
-                    logger.error("Catatonia failover failed", player_id=player_id, error=str(exc), exc_info=True)
-                    await session.rollback()
-
-        self.catatonia_registry = CatatoniaRegistry(failover_callback=_sanitarium_failover)
+        self.catatonia_registry = CatatoniaRegistry(failover_callback=self._sanitarium_failover_callback)
         logger.info("Catatonia registry initialized")
 
         # Initialize PassiveLucidityFluxService

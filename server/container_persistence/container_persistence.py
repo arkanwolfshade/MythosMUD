@@ -671,8 +671,12 @@ def update_container(  # pylint: disable=too-many-locals  # Reason: Container up
                 RETURNING container_instance_id
             """).format(set_clauses)
 
-            # nosemgrep: python.lang.security.audit.sql-injection.sql-injection
+            # Using psycopg2.sql.SQL.format() for safe SQL construction. Column names in set_clauses
+            # are hardcoded constants from the update_fields dict keys, not user input. Values are
+            # parameterized via params tuple, preventing SQL injection.
             # nosec B608: Using psycopg2.sql.SQL for safe SQL construction (column names are hardcoded)
+            # nosemgrep: python.lang.security.audit.sql-injection.sql-injection
+            # nosemgrep: python.sqlalchemy.security.sqlalchemy-execute-raw-query.sqlalchemy-execute-raw-query
             cursor.execute(query, params)
             row = cursor.fetchone()
         else:

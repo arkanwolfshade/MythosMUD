@@ -143,9 +143,16 @@ async def _execute_seed_statements(conn: asyncpg.Connection, clean_sql: str) -> 
                 normalized_statement = statement.rstrip().rstrip(";")
                 # Use constant format string to avoid CodeQL string concatenation warning
                 # The semicolon is a constant, and normalized_statement is from trusted source
+                # nosemgrep: python.lang.security.audit.formatted-sql-query.formatted-sql-query
                 sql_statement = f"{normalized_statement};"
-                # nosemgrep: python.lang.security.audit.sqli.asyncpg-sqli.asyncpg-sqli
+                # Loading seed data from trusted SQL files in repository (data/db/00_world_and_emotes.sql).
+                # No user input is involved - we're only normalizing statement termination (adding semicolon).
+                # The SQL statements are from trusted seed files checked into the repository.
                 # nosec B608: Loading seed data from trusted SQL files in repository (not user input)
+                # nosemgrep: python.lang.security.audit.sqli.asyncpg-sqli.asyncpg-sqli
+                # nosemgrep: python.lang.security.audit.sqli.asyncpg-sqli.asyncpg-sqli
+                # nosemgrep: python.lang.security.audit.formatted-sql-query.formatted-sql-query
+                # nosemgrep: python.sqlalchemy.security.sqlalchemy-execute-raw-query.sqlalchemy-execute-raw-query
                 await conn.execute(sql_statement)
                 inserted_count += 1
             except asyncpg.PostgresError as e:

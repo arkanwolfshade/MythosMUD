@@ -5,6 +5,8 @@ This module provides a concrete implementation of the MessageBroker protocol
 using NATS as the underlying message broker.
 """
 
+# pylint: disable=too-many-lines  # Reason: NATS broker implementation requires 551 lines to implement message broker protocol with subscription management, connection handling, error recovery, and async operations; splitting would reduce cohesion
+
 import asyncio
 import json
 from typing import Any

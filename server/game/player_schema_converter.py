@@ -137,7 +137,7 @@ class PlayerSchemaConverter:
             )
             return PositionState.STANDING
 
-    async def create_player_read_from_object(
+    async def create_player_read_from_object(  # pylint: disable=too-many-locals  # Reason: Player schema conversion requires 16 local variables for unpacking profession data, extracting player data, model conversion, and PlayerRead construction; refactoring would reduce clarity
         self, player: Any, in_combat: bool, profession_data: tuple[int, str | None, str | None, str | None]
     ) -> PlayerRead:
         """Create PlayerRead schema from player object."""

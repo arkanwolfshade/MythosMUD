@@ -20,6 +20,10 @@ if (!existsSync(testsDir)) {
 // On Windows, we need shell: true to resolve npx from PATH
 // On Unix systems, we can use shell: false for better security
 const isWindows = process.platform === 'win32';
+// Shell is only enabled on Windows to resolve npx from PATH. The command ('npx') and
+// arguments (['playwright', 'test']) are hardcoded constants with no user input, so
+// shell injection is not possible. This is a build script, not user-facing code.
+// nosemgrep: javascript.lang.security.audit.spawn-shell-true.spawn-shell-true
 const playwright = spawn('npx', ['playwright', 'test'], {
   stdio: 'inherit',
   shell: isWindows, // Use shell on Windows to resolve npx from PATH

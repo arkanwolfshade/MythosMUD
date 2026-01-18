@@ -202,7 +202,7 @@ async def _resolve_target_player(
     return target_player_id, None
 
 
-async def _execute_lucidity_change(
+async def _execute_lucidity_change(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Lucidity change execution requires 6 parameters for player ID, LCD value, observer, and audit tracking (player name, current user, target player); combining into a dataclass would add unnecessary complexity for a helper function
     target_player_id: uuid.UUID,
     lcd_value_int: int,
     catatonia_observer: Any | None,

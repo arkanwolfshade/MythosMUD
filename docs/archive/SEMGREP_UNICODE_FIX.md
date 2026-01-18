@@ -39,7 +39,8 @@ result = subprocess.run(
 
 **Changes:**
 - Created PowerShell script that sets `PYTHONUTF8=1` and `PYTHONIOENCODING=utf-8`
-- Runs `semgrep scan --config=auto --autofix .`
+- Runs `semgrep scan --config=auto --autofix .` with optional additional arguments
+- Accepts additional semgrep arguments (e.g., `--verbose`) passed through to semgrep
 - Added `make semgrep-autofix` target to Makefile
 
 ## Usage
@@ -67,7 +68,14 @@ semgrep scan --config=auto .
 
 **Alternative (using the wrapper):**
 ```powershell
+# Basic usage
 .\scripts\semgrep-autofix.ps1
+
+# With additional arguments (e.g., --verbose)
+.\scripts\semgrep-autofix.ps1 --verbose
+
+# With output redirection
+.\scripts\semgrep-autofix.ps1 --verbose | tee semgrep-output.txt
 ```
 
 ## Root Cause

@@ -20,7 +20,7 @@ K = TypeVar("K")
 V = TypeVar("V")
 
 
-class LRUCache[K, V]:
+class LRUCache[K, V]:  # pylint: disable=too-many-instance-attributes  # Reason: LRU cache requires 8 instance attributes for configuration (max_size, ttl_seconds), storage (_cache), thread safety (_lock), and metrics tracking (_hits, _misses, _evictions, _expired_count); extracting metrics into a separate object would add unnecessary complexity
     """
     Thread-safe LRU (Least Recently Used) cache implementation.
 

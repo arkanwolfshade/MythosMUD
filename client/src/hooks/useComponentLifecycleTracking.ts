@@ -42,6 +42,8 @@ export function useComponentLifecycleTracking(options: UseComponentLifecycleTrac
         try {
           cleanupRef.current();
         } catch (error) {
+          // Internal logging with component name from React component props, not user input
+          // nosemgrep: javascript.lang.security.audit.unsafe-formatstring.unsafe-formatstring
           console.error(`[ComponentLifecycle] Error in cleanup for ${componentName}:`, error);
         }
       }

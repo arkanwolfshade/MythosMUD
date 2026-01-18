@@ -43,7 +43,7 @@ class TaskMetadata:  # pylint: disable=too-few-public-methods  # Reason: Data cl
         return f"TaskMetadata({self.task_name}, {self.task_type}, {status})"
 
 
-class TaskRegistry:
+class TaskRegistry:  # pylint: disable=too-many-instance-attributes  # Reason: Task registry requires 13 instance attributes for task collections, shutdown coordination, lifecycle tracking, metrics collection, and service tracking; extracting into nested objects would reduce clarity
     """
     Centralized asyncio task registry for lifecycle-tracking with timeout management.
 

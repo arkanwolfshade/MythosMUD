@@ -50,6 +50,56 @@ _metrics_collector: MemoryLeakMetricsCollector | None = None  # pylint: disable=
 _startup_metrics: dict[str, Any] | None = None  # pylint: disable=invalid-name  # Reason: Module-level singleton pattern uses underscore prefix to indicate private module variable, not a constant
 
 
+def _calculate_metrics_delta(
+    shutdown_metrics: dict[str, Any], startup_metrics: dict[str, Any] | None
+) -> dict[str, Any]:
+    """Calculate metrics delta between startup and shutdown."""
+    metrics_delta: dict[str, Any] = {}
+    if startup_metrics is None:
+        return metrics_delta
+
+    # Calculate deltas for key metrics
+    if "connection" in shutdown_metrics and "connection" in startup_metrics:
+        conn_delta = {}
+        conn_shutdown = shutdown_metrics["connection"]
+        conn_startup = startup_metrics["connection"]
+        for key in ["closed_websockets_count", "active_websockets_count"]:
+            if key in conn_shutdown and key in conn_startup:
+                conn_delta[key] = conn_shutdown[key] - conn_startup[key]
+        metrics_delta["connection"] = conn_delta
+
+    return metrics_delta
+
+
+def _persist_metrics_to_file(
+    startup_metrics: dict[str, Any] | None,
+    shutdown_metrics: dict[str, Any],
+    metrics_delta: dict[str, Any],
+    alerts: list[Any],
+) -> None:
+    """Persist metrics to file in JSON format."""
+    try:
+        import json
+        from pathlib import Path
+
+        metrics_file = Path("logs/local/memory_leak_metrics.json")
+        metrics_file.parent.mkdir(parents=True, exist_ok=True)
+
+        metrics_data = {
+            "startup_metrics": startup_metrics,
+            "shutdown_metrics": shutdown_metrics,
+            "metrics_delta": metrics_delta,
+            "alerts": alerts,
+            "timestamp": datetime.now(UTC).isoformat(),
+        }
+
+        with metrics_file.open("w", encoding="utf-8") as f:
+            json.dump(metrics_data, f, indent=2, default=str)
+        logger.info("Memory leak metrics persisted to file", file_path=str(metrics_file))
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Metrics persistence errors should not fail shutdown
+        logger.warning("Failed to persist metrics to file", error=str(e))
+
+
 async def _log_memory_metrics_periodically(collector: MemoryLeakMetricsCollector, interval_seconds: int = 300) -> None:
     """
     Log memory leak metrics periodically.
@@ -187,17 +237,7 @@ async def _shutdown_with_error_handling(app: FastAPI, container: ApplicationCont
             alerts = _metrics_collector.check_alerts(shutdown_metrics)
 
             # Calculate metrics delta over application lifetime
-            metrics_delta: dict[str, Any] = {}
-            if _startup_metrics is not None:
-                # Calculate deltas for key metrics
-                if "connection" in shutdown_metrics and "connection" in _startup_metrics:
-                    conn_delta = {}
-                    conn_shutdown = shutdown_metrics["connection"]
-                    conn_startup = _startup_metrics["connection"]
-                    for key in ["closed_websockets_count", "active_websockets_count"]:
-                        if key in conn_shutdown and key in conn_startup:
-                            conn_delta[key] = conn_shutdown[key] - conn_startup[key]
-                    metrics_delta["connection"] = conn_delta
+            metrics_delta = _calculate_metrics_delta(shutdown_metrics, _startup_metrics)
 
             logger.info(
                 "Memory leak metrics (shutdown)",
@@ -208,26 +248,7 @@ async def _shutdown_with_error_handling(app: FastAPI, container: ApplicationCont
             )
 
             # Optional: Persist metrics to file (JSON format)
-            try:
-                import json
-                from pathlib import Path
-
-                metrics_file = Path("logs/local/memory_leak_metrics.json")
-                metrics_file.parent.mkdir(parents=True, exist_ok=True)
-
-                metrics_data = {
-                    "startup_metrics": _startup_metrics,
-                    "shutdown_metrics": shutdown_metrics,
-                    "metrics_delta": metrics_delta,
-                    "alerts": alerts,
-                    "timestamp": datetime.now(UTC).isoformat(),
-                }
-
-                with metrics_file.open("w", encoding="utf-8") as f:
-                    json.dump(metrics_data, f, indent=2, default=str)
-                logger.info("Memory leak metrics persisted to file", file_path=str(metrics_file))
-            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Metrics persistence errors should not fail shutdown
-                logger.warning("Failed to persist metrics to file", error=str(e))
+            _persist_metrics_to_file(_startup_metrics, shutdown_metrics, metrics_delta, alerts)
 
         await shutdown_services(app, container)
         logger.info("MythosMUD server shutdown complete")

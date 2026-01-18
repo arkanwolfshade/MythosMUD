@@ -5,7 +5,7 @@ This module handles all player-related business logic including
 creation, retrieval, validation, and state management.
 """
 
-# pylint: disable=wrong-import-position  # Reason: Imports after TYPE_CHECKING block are intentional to avoid circular dependencies.
+# pylint: disable=wrong-import-position,too-many-lines  # Reason: Imports after TYPE_CHECKING block are intentional to avoid circular dependencies. Player service requires 650 lines to implement comprehensive player operations (CRUD, state management, combat integration, search, creation, validation); splitting would reduce cohesion and increase coupling between player-related concerns
 
 import uuid
 from typing import TYPE_CHECKING, Any
@@ -32,7 +32,7 @@ from .player_state_service import PlayerStateService
 logger = get_logger(__name__)
 
 
-class PlayerService:
+class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-public-methods  # Reason: PlayerService requires 8 instance attributes for persistence, combat services, and sub-service composition (schema_converter, creation_service, search_service, state_service, respawn_wrapper); it exposes 24 public methods for comprehensive player operations (CRUD, state management, combat integration, search) which is necessary for the service's role as the primary player API
     """Service class for player-related business operations."""
 
     def __init__(self, persistence, combat_service=None, player_combat_service=None):

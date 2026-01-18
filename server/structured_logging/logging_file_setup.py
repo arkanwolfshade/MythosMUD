@@ -5,7 +5,7 @@ This module provides the setup function for configuring file-based logging handl
 with proper categorization, rotation, and Windows safety.
 """
 
-# pylint: disable=too-few-public-methods,too-many-locals,too-many-statements  # Reason: File setup class with focused responsibility, minimal public interface, and complex setup logic requiring many intermediate variables. File setup legitimately requires many statements for comprehensive logging configuration.
+# pylint: disable=too-few-public-methods,too-many-locals,too-many-statements,too-many-lines  # Reason: File setup class with focused responsibility, minimal public interface, and complex setup logic requiring many intermediate variables. File setup legitimately requires many statements for comprehensive logging configuration. Module requires 648 lines to implement comprehensive logging setup with category handlers, aggregator handlers, console handlers, Windows safety, async support, and configuration management; splitting would reduce cohesion
 
 import logging
 import queue
@@ -39,7 +39,7 @@ def _get_or_create_log_queue() -> queue.Queue[logging.LogRecord]:
         return _log_queue
 
 
-def _setup_category_handlers(
+def _setup_category_handlers(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Log handler setup requires 10 parameters for categories, directory paths, handler configuration, async settings, and environment context; combining into a config object would add unnecessary abstraction layer
     log_categories: dict[str, list[str]],
     env_log_dir: Path,
     handler_class: type,
@@ -82,7 +82,7 @@ def _setup_category_handlers(
     return all_file_handlers
 
 
-def _setup_aggregator_handlers(
+def _setup_aggregator_handlers(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Aggregator handler setup requires 7 parameters for directory paths, handler configuration, async settings, and logger reference; extracting into a config object would reduce clarity
     env_log_dir: Path,
     max_bytes: int,
     backup_count: int,
@@ -134,7 +134,7 @@ def _setup_aggregator_handlers(
     return all_file_handlers
 
 
-def _setup_console_handler(
+def _setup_console_handler(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Console handler setup requires 10 parameters for directory paths, handler types (Windows-safe and base), async settings, and logger reference; extracting into a config object would reduce clarity for a helper function
     env_log_dir: Path,
     max_bytes: int,
     backup_count: int,

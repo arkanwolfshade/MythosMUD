@@ -164,6 +164,10 @@ def populate_database(target_url: str, database_name: str, npc_definitions_data,
                     # Convert rows to dictionaries for parameterized insertion
                     for row in npc_definitions:
                         row_dict = dict(zip(def_columns, row, strict=False))
+                        # Using text() with parameterized queries (row_dict contains :column placeholders).
+                        # All values are from trusted CSV data files, not user input. Column names are
+                        # hardcoded, and values are bound via parameterized queries, preventing SQL injection.
+                        # nosemgrep: python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text
                         conn.execute(text(insert_def_sql), row_dict)
                     conn.commit()
                     print(f"  [OK] Inserted {len(npc_definitions)} NPC definitions")
@@ -181,6 +185,10 @@ def populate_database(target_url: str, database_name: str, npc_definitions_data,
                     # Convert rows to dictionaries for parameterized insertion
                     for row in npc_spawn_rules:
                         row_dict = dict(zip(spawn_columns, row, strict=False))
+                        # Using text() with parameterized queries (row_dict contains :column placeholders).
+                        # All values are from trusted CSV data files, not user input. Column names are
+                        # hardcoded, and values are bound via parameterized queries, preventing SQL injection.
+                        # nosemgrep: python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text
                         conn.execute(text(insert_rule_sql), row_dict)
                     conn.commit()
                     print(f"  [OK] Inserted {len(npc_spawn_rules)} NPC spawn rules")

@@ -8,6 +8,8 @@ As noted in the Pnakotic Manuscripts, proper monitoring APIs
 are essential for maintaining oversight of our eldritch systems.
 """
 
+# pylint: disable=too-many-lines  # Reason: Monitoring module requires 659 lines to implement comprehensive monitoring endpoints (movement metrics, system alerts, performance stats, memory stats, connection health, event bus metrics, cache metrics, task metrics, health checks); splitting would reduce cohesion and increase module coupling
+
 from __future__ import annotations
 
 from datetime import UTC, datetime
@@ -559,7 +561,7 @@ async def get_memory_leak_metrics(request: Request) -> MemoryLeakMetricsResponse
 
 
 @monitoring_router.get("/health", response_model=HealthResponse)
-async def get_health_status(request: Request) -> HealthResponse | JSONResponse:
+async def get_health_status(request: Request) -> HealthResponse | JSONResponse:  # pylint: disable=too-many-locals  # Reason: Health check endpoint requires 17 local variables for component health validation, response construction, and error handling; extracting logic would reduce clarity and increase complexity
     """
     Get comprehensive system health status with timeout protection.
 

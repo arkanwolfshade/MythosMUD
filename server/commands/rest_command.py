@@ -13,10 +13,7 @@ proper rest requires tranquility and freedom from disturbance.
 # pylint: disable=too-many-return-statements  # Reason: Rest command handler requires multiple return statements for early validation returns (combat checks, rest location validation, error handling)
 
 import asyncio
-import json
-import time
 import uuid
-from pathlib import Path
 from typing import Any
 
 from ..alias_storage import AliasStorage
@@ -27,11 +24,6 @@ from .rest_countdown_task import create_rest_countdown_task
 logger = get_logger(__name__)
 
 REST_COUNTDOWN_DURATION = 10.0  # 10 seconds
-
-# #region agent log
-# Debug log path for agent logging (non-critical, suppressed on errors)
-LOG_PATH = Path(__file__).parent.parent.parent / ".cursor" / "debug.log"
-# #endregion
 
 
 async def _check_player_in_combat(player_id: uuid.UUID, app: Any) -> bool:
@@ -135,33 +127,6 @@ async def _start_rest_countdown(
     task = create_rest_countdown_task(
         player_id, player_name, connection_manager, persistence, _disconnect_player_intentionally
     )
-    # #region agent log
-    store_time = time.time()
-    had_existing_task = player_id in connection_manager.resting_players
-    try:
-        with open(LOG_PATH, "a", encoding="utf-8") as f:
-            f.write(
-                json.dumps(
-                    {
-                        "sessionId": "debug-session",
-                        "runId": "run1",
-                        "hypothesisId": "A",
-                        "location": "rest_command.py:130",
-                        "message": "storing task in resting_players",
-                        "data": {
-                            "player_id": str(player_id),
-                            "had_existing_task": had_existing_task,
-                            "task_done": task.done(),
-                        },
-                        "timestamp": store_time * 1000,
-                    }
-                )
-                + "\n"
-            )
-    except OSError:
-        # Suppress file I/O errors for debug logging - this is non-critical agent logging
-        pass
-    # #endregion
     connection_manager.resting_players[player_id] = task
 
 
@@ -173,62 +138,13 @@ async def _cancel_rest_countdown(player_id: uuid.UUID, connection_manager: Any) 
         player_id: The player's ID
         connection_manager: ConnectionManager instance
     """
-    # #region agent log
-    cancel_start_time = time.time()
-    was_in_dict = player_id in connection_manager.resting_players
-    try:
-        with open(LOG_PATH, "a", encoding="utf-8") as f:
-            f.write(
-                json.dumps(
-                    {
-                        "sessionId": "debug-session",
-                        "runId": "run1",
-                        "hypothesisId": "A",
-                        "location": "rest_command.py:189",
-                        "message": "cancel_rest_countdown called",
-                        "data": {"player_id": str(player_id), "was_in_dict": was_in_dict},
-                        "timestamp": cancel_start_time * 1000,
-                    }
-                )
-                + "\n"
-            )
-    except OSError:
-        # Suppress file I/O errors for debug logging - this is non-critical agent logging
-        pass
-    # #endregion
     if player_id not in connection_manager.resting_players:
         return
 
     logger.info("Cancelling rest countdown", player_id=player_id)
 
     task = connection_manager.resting_players[player_id]
-    task_was_done = task.done()
     task.cancel()
-    # #region agent log
-    try:
-        with open(LOG_PATH, "a", encoding="utf-8") as f:
-            f.write(
-                json.dumps(
-                    {
-                        "sessionId": "debug-session",
-                        "runId": "run1",
-                        "hypothesisId": "A",
-                        "location": "rest_command.py:197",
-                        "message": "task cancelled",
-                        "data": {
-                            "player_id": str(player_id),
-                            "task_was_done": task_was_done,
-                            "task_cancelled": task.cancelled(),
-                        },
-                        "timestamp": time.time() * 1000,
-                    }
-                )
-                + "\n"
-            )
-    except OSError:
-        # Suppress file I/O errors for debug logging - this is non-critical agent logging
-        pass
-    # #endregion
 
     try:
         await task
@@ -237,50 +153,7 @@ async def _cancel_rest_countdown(player_id: uuid.UUID, connection_manager: Any) 
     except (AttributeError, RuntimeError, ValueError, TypeError) as e:
         logger.error("Error cancelling rest countdown task", player_id=player_id, error=str(e), exc_info=True)
     finally:
-        # #region agent log
-        finally_was_in = player_id in connection_manager.resting_players
-        try:
-            with open(LOG_PATH, "a", encoding="utf-8") as f:
-                f.write(
-                    json.dumps(
-                        {
-                            "sessionId": "debug-session",
-                            "runId": "run1",
-                            "hypothesisId": "A",
-                            "location": "rest_command.py:207",
-                            "message": "cancel_rest_countdown finally block",
-                            "data": {"player_id": str(player_id), "was_in_dict": finally_was_in},
-                            "timestamp": time.time() * 1000,
-                        }
-                    )
-                    + "\n"
-                )
-        except OSError:
-            # Suppress file I/O errors for debug logging - this is non-critical agent logging
-            pass
-        # #endregion
         if player_id in connection_manager.resting_players:
-            # #region agent log
-            try:
-                with open(LOG_PATH, "a", encoding="utf-8") as f:
-                    f.write(
-                        json.dumps(
-                            {
-                                "sessionId": "debug-session",
-                                "runId": "run1",
-                                "hypothesisId": "A",
-                                "location": "rest_command.py:210",
-                                "message": "removing from resting_players in cancel",
-                                "data": {"player_id": str(player_id)},
-                                "timestamp": time.time() * 1000,
-                            }
-                        )
-                        + "\n"
-                    )
-            except OSError:
-                # Suppress file I/O errors for debug logging - this is non-critical agent logging
-                pass
-            # #endregion
             del connection_manager.resting_players[player_id]
 
 

@@ -141,28 +141,6 @@ class ExplorationCommandFactory:
     @staticmethod
     def create_go_command(args: list[str]) -> GoCommand:
         """Create GoCommand from arguments."""
-        # #region agent log
-        import json
-
-        try:
-            with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8") as f:
-                f.write(
-                    json.dumps(
-                        {
-                            "sessionId": "debug-session",
-                            "runId": "run1",
-                            "hypothesisId": "E",
-                            "location": "command_factories_exploration.py:142",
-                            "message": "create_go_command entry",
-                            "data": {"args": args},
-                            "timestamp": int(__import__("time").time() * 1000),
-                        }
-                    )
-                    + "\n"
-                )
-        except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904, E722  # Reason: Debug logging must not fail, catch all exceptions to prevent failures
-            pass
-        # #endregion
         if not args:
             context = create_error_context()
             context.metadata = {"args": args}
@@ -171,26 +149,6 @@ class ExplorationCommandFactory:
             )
         # Convert to lowercase for case-insensitive matching
         direction = args[0].lower()
-        # #region agent log
-        try:
-            with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8") as f:
-                f.write(
-                    json.dumps(
-                        {
-                            "sessionId": "debug-session",
-                            "runId": "run1",
-                            "hypothesisId": "E",
-                            "location": "command_factories_exploration.py:151",
-                            "message": "Before GoCommand creation",
-                            "data": {"direction": direction, "args": args},
-                            "timestamp": int(__import__("time").time() * 1000),
-                        }
-                    )
-                    + "\n"
-                )
-        except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904, E722  # Reason: Debug logging must not fail, catch all exceptions to prevent failures
-            pass
-        # #endregion
         return GoCommand(direction=direction)
 
     @staticmethod
