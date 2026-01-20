@@ -16,7 +16,9 @@ query-filters:
 # Path-based exclusions for files containing intentional test credentials
 # Example files are templates showing what secrets are needed, not actual secrets
 # Workflow files contain test passwords for CI environment setup
+# Dockerfile contains test passwords for CI container setup
 paths-ignore:
   - '.github/workflows/ci.yml'
+  - 'Dockerfile.github-runner'
   - '**/*.example'
   - 'env.*.example'
