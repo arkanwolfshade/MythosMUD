@@ -8,15 +8,17 @@
 SET client_min_messages = WARNING;
 SET search_path = public;
 
--- noqa: disable=RAC_TABLE_REQUIRED
--- Reason: Migration file updates calendar_npc_schedules table (not RAC_* table), which is a valid migration operation
 -- Update calendar_npc_schedules.days array values
 -- Map: Primus→Monday, Secundus→Tuesday, Tertius→Wednesday, Quartus→Thursday, Quintus→Friday, Sextus→Saturday
 -- Note: 6-day week becomes 7-day week - schedules that had all 6 days now get Saturday only
 --       (Sunday is not added by default, as schedules may have intentionally excluded it)
 
+-- codacy:ignore=sql:RAC_TABLE_REQUIRED
+-- Reason: Migration file updates calendar_npc_schedules table (not RAC_* table), which is a valid migration operation
 UPDATE calendar_npc_schedules
 SET days = (
+    -- codacy:ignore=sql:RAC_TABLE_REQUIRED
+    -- Reason: Subquery within UPDATE statement for calendar_npc_schedules migration
     SELECT array_agg(
         CASE
             WHEN day_value = 'Primus' THEN 'Monday'
@@ -42,15 +44,16 @@ SET days = (
     OR day_value NOT IN ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')
 )
 WHERE days && ARRAY['Primus', 'Secundus', 'Tertius', 'Quartus', 'Quintus', 'Sextus']::text [];
--- noqa: enable=RAC_TABLE_REQUIRED
 
 -- Verify the migration
--- noqa: disable=RAC_TABLE_REQUIRED
+-- codacy:ignore=sql:RAC_TABLE_REQUIRED
 -- Reason: PostgreSQL anonymous block for verification, not a data query targeting RAC_* tables
 DO $$
 DECLARE
     remaining_old_weekdays int;
 BEGIN
+    -- codacy:ignore=sql:RAC_TABLE_REQUIRED
+    -- Reason: Verification query in DO block checks migration success, not a data query targeting RAC_* tables
     SELECT COUNT(*) INTO remaining_old_weekdays
     FROM calendar_npc_schedules
     WHERE days && ARRAY['Primus', 'Secundus', 'Tertius', 'Quartus', 'Quintus', 'Sextus']::text [];
@@ -61,4 +64,3 @@ BEGIN
         RAISE NOTICE 'Migration successful: All weekday names converted to standard format';
     END IF;
 END $$;
--- noqa: enable=RAC_TABLE_REQUIRED
