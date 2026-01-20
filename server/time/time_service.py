@@ -38,7 +38,6 @@ MYTHOS_FREEZE_COUNTER = Counter(
     "Total number of freeze events captured for deterministic resume operations",
 )
 
-_MYTHOS_WEEKDAY_NAMES = ["Primus", "Secundus", "Tertius", "Quartus", "Quintus", "Sextus"]
 _SEASON_BY_MONTH = {
     12: "winter",
     1: "winter",
@@ -204,8 +203,12 @@ class MythosChronicle:
 
         normalized = _ensure_utc(mythos_dt or self.get_current_mythos_datetime())
         day_of_month = normalized.day
-        week_of_month = ((day_of_month - 1) // 6) + 1
-        day_of_week = (day_of_month - 1) % 6
+        # Calculate week of month using standard calendar (first week starts on day 1)
+        first_day_weekday = calendar.monthrange(normalized.year, normalized.month)[0]
+        # Adjust: calendar.monthrange returns 0=Monday, so we need to align with day_of_month
+        week_of_month = ((day_of_month - 1 + first_day_weekday) // 7) + 1
+        # Use standard Python datetime.weekday() (0=Monday, 6=Sunday)
+        day_of_week = normalized.weekday()
         components = MythosCalendarComponents(
             mythos_datetime=normalized,
             year=normalized.year,
@@ -214,7 +217,7 @@ class MythosChronicle:
             day_of_month=day_of_month,
             week_of_month=week_of_month,
             day_of_week=day_of_week,
-            day_name=_MYTHOS_WEEKDAY_NAMES[day_of_week],
+            day_name=calendar.day_name[day_of_week],
             season=_season_for_month(normalized.month),
             is_daytime=self.is_daytime(normalized),
             is_witching_hour=self.is_witching_hour(normalized),
@@ -301,7 +304,16 @@ class MythosChronicle:
             return self._last_freeze_state
 
     def _load_state(self) -> ChronicleState:
-        """Load the chronicle state from disk or initialize from config defaults."""
+        """Load the chronicle state from disk or initialize from config defaults.
+
+        Includes migration logic to detect and convert old state files from the previous
+        system (1930 epoch, 9.6 compression ratio) to the new system (1920 epoch, 4.0 ratio).
+        """
+
+        old_epoch = datetime(1930, 1, 1, tzinfo=UTC)
+        old_compression_ratio = 9.6
+        new_epoch = _ensure_utc(self._config.mythos_epoch)
+        new_compression_ratio = self._config.compression_ratio
 
         if self._state_file.exists():
             try:
@@ -309,6 +321,49 @@ class MythosChronicle:
                     payload = json.load(handle)
                 real = _ensure_utc(datetime.fromisoformat(payload["real_timestamp"]))
                 mythos = _ensure_utc(datetime.fromisoformat(payload["mythos_timestamp"]))
+
+                # Check if this is an old state file (mythos_timestamp using old epoch)
+                # We detect old state by checking if mythos_timestamp is close to old_epoch
+                # (within a reasonable threshold of a few years)
+                time_from_old_epoch = abs((mythos - old_epoch).total_seconds())
+                time_from_new_epoch = abs((mythos - new_epoch).total_seconds())
+
+                # If closer to old epoch than new epoch, this is an old state file
+                if time_from_old_epoch < time_from_new_epoch and time_from_old_epoch < (
+                    365 * 24 * 3600 * 5
+                ):  # Within 5 years of old epoch
+                    logger.info(
+                        "Detected old chronicle state file, migrating to new system",
+                        old_mythos_timestamp=mythos.isoformat(),
+                        old_epoch=old_epoch.isoformat(),
+                        new_epoch=new_epoch.isoformat(),
+                        old_ratio=old_compression_ratio,
+                        new_ratio=new_compression_ratio,
+                    )
+
+                    # Convert old state to new system
+                    # Formula: new_mythos_time = new_epoch + (old_mythos_time - old_epoch) * (new_ratio / old_ratio)
+                    time_delta_from_old_epoch = mythos - old_epoch
+                    converted_delta = timedelta(
+                        seconds=time_delta_from_old_epoch.total_seconds()
+                        * (new_compression_ratio / old_compression_ratio)
+                    )
+                    new_mythos = new_epoch + converted_delta
+
+                    # Create new state with converted timestamp
+                    migrated_state = ChronicleState(real_timestamp=real, mythos_timestamp=new_mythos)
+
+                    # Persist the migrated state
+                    self._persist_state(migrated_state)
+
+                    logger.info(
+                        "Chronicle state migration complete",
+                        new_mythos_timestamp=new_mythos.isoformat(),
+                    )
+
+                    return migrated_state
+
+                # Not an old state file, return as-is
                 return ChronicleState(real_timestamp=real, mythos_timestamp=mythos)
             except (OSError, KeyError, ValueError) as error:
                 logger.error(
@@ -316,9 +371,10 @@ class MythosChronicle:
                     error=str(error),
                     state_file=str(self._state_file),
                 )
+        # No state file exists, initialize with new defaults
         return ChronicleState(
             real_timestamp=_ensure_utc(self._config.real_epoch_utc),
-            mythos_timestamp=_ensure_utc(self._config.mythos_epoch),
+            mythos_timestamp=new_epoch,
         )
 
     def _persist_state(self, state: ChronicleState) -> None:

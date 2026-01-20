@@ -18,7 +18,7 @@ from pydantic import BaseModel, Field, field_validator
 
 _TRADITIONS = {"catholic", "islamic", "jewish", "neo_pagan", "mythos"}
 _SEASONS = {"winter", "spring", "summer", "autumn"}
-_MYTHOS_WEEKDAYS = ["Primus", "Secundus", "Tertius", "Quartus", "Quintus", "Sextus"]
+_MYTHOS_WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
 
 class HolidayEntry(BaseModel):
@@ -135,10 +135,10 @@ class ScheduleEntry(BaseModel):
     def validate_days(cls, value: Sequence[str]) -> list[str]:
         """Validate schedule entry days."""
         if not value:
-            raise ValueError("days must contain at least one Mythos weekday")
+            raise ValueError("days must contain at least one weekday")
         invalid = [day for day in value if day not in _MYTHOS_WEEKDAYS]
         if invalid:
-            raise ValueError(f"invalid Mythos weekdays: {', '.join(invalid)}")
+            raise ValueError(f"invalid weekdays: {', '.join(invalid)}")
         return list(value)
 
     @field_validator("applies_to", "effects")

@@ -489,14 +489,14 @@ class ChatConfig(BaseSettings):
 class TimeConfig(BaseSettings):
     """Temporal compression configuration for the MythosChronicle."""
 
-    compression_ratio: float = Field(default=9.6, description="Mythos hours per real hour")
+    compression_ratio: float = Field(default=4.0, description="Mythos hours per real hour")
     real_epoch_utc: datetime = Field(
         default_factory=lambda: datetime(2025, 1, 1, tzinfo=UTC),
         description="Reference UTC timestamp anchoring real time calculations",
     )
     mythos_epoch: datetime = Field(
-        default_factory=lambda: datetime(1930, 1, 1, tzinfo=UTC),
-        description="Reference Mythos timestamp paired with the real epoch",
+        default_factory=lambda: datetime(1920, 1, 1, tzinfo=UTC),
+        description="Reference Mythos timestamp paired with the real epoch (uses real-world Gregorian calendar)",
     )
     state_file: str = Field(
         default="data/system/time_state.json",
