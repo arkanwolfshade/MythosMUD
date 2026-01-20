@@ -297,18 +297,57 @@ else:
     ACT_RUNNER_IMAGE = "mythosmud-gha-runner:latest"
     ACT_RUNNER_DOCKERFILE = "Dockerfile.github-runner"
 
-    safe_run_static(
-        "docker",
-        "build",
-        "--pull",
-        "-t",
-        ACT_RUNNER_IMAGE,
-        "-f",
-        ACT_RUNNER_DOCKERFILE,
-        ".",
-        cwd=PROJECT_ROOT,
-        check=True,
-    )
+    # Try building with cache first for speed
+    # If cache corruption error occurs, retry with --no-cache
+    # Use explicit UTF-8 encoding to handle Docker output on Windows
+    try:
+        result = safe_run_static(
+            "docker",
+            "build",
+            "--pull",
+            "-t",
+            ACT_RUNNER_IMAGE,
+            "-f",
+            ACT_RUNNER_DOCKERFILE,
+            ".",
+            cwd=PROJECT_ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+        )
+    except subprocess.CalledProcessError as e:
+        # Check if error is due to corrupted Docker build cache
+        # Error message typically contains "parent snapshot" and "does not exist"
+        error_output = ""
+        if e.stderr:
+            error_output += str(e.stderr)
+        if e.stdout:
+            error_output += str(e.stdout)
+        if hasattr(e, "output") and e.output:
+            error_output += str(e.output)
+
+        if "parent snapshot" in error_output and "does not exist" in error_output:
+            print("Docker build cache appears corrupted. Retrying with --no-cache...")
+            safe_run_static(
+                "docker",
+                "build",
+                "--pull",
+                "--no-cache",
+                "-t",
+                ACT_RUNNER_IMAGE,
+                "-f",
+                ACT_RUNNER_DOCKERFILE,
+                ".",
+                cwd=PROJECT_ROOT,
+                check=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+        else:
+            # Re-raise if it's a different error
+            raise
 
     print("Running CI test suite in Docker (coverage enforced)...")
     print("Starting PostgreSQL service in container...")
@@ -334,15 +373,16 @@ else:
         "mkdir -p /workspace/client/coverage && "
         "find /workspace/client/coverage -mindepth 1 -delete 2>/dev/null || true && "
         "cd /workspace/client && npm run test:coverage && "
-        "cd /workspace/client && npm run test && "
-        # Use .venv from Docker volume (preserved from build, not overwritten by mount)
+        # Playwright E2E tests are excluded from test-ci (run separately in CI workflow)
+        # "cd /workspace/client && npm run test && "
+        # Use .venv-ci from Docker volume (preserved from build, not overwritten by mount)
         # Ensure pytest-mock and pytest-xdist are installed in the venv before running tests
         # pytest-xdist is required for -n auto in pytest.ini
-        "cd /workspace && source .venv/bin/activate && "
+        "cd /workspace && source .venv-ci/bin/activate && "
         "uv pip install pytest-mock>=3.14.0 pytest-xdist>=3.8.0 && "
         "PYTHONUNBUFFERED=1 pytest server/tests/ --cov=server --cov-report=xml --cov-report=html "
         "--cov-config=.coveragerc -v --tb=short && "
-        "uv run python scripts/check_coverage_thresholds.py"
+        "python scripts/check_coverage_thresholds.py"
     )
 
     # Mount workspace from host, but use Docker volumes to override dependencies and caches
@@ -359,6 +399,11 @@ else:
             "docker",
             "run",
             "--rm",
+            # Set CI environment variables for proper test behavior (headless mode, etc.)
+            "-e",
+            "CI=1",
+            "-e",
+            "GITHUB_ACTIONS=1",
             # Mount workspace (source code only - dependencies overridden by volumes below)
             "-v",
             f"{PROJECT_ROOT}:/workspace",
@@ -366,7 +411,7 @@ else:
             "-v",
             "mythosmud-node-modules:/workspace/client/node_modules",
             "-v",
-            "mythosmud-venv:/workspace/.venv",
+            "mythosmud-venv-ci:/workspace/.venv-ci",
             # Override host caches and build artifacts with Docker volumes
             "-v",
             "mythosmud-npm-cache:/root/.npm",
