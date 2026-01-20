@@ -57,6 +57,10 @@ async def test_cleanup_dead_websocket_impl_success():
     connection_id = "conn_123"
     mock_manager = MagicMock()
     mock_websocket = AsyncMock()
+    # Mock client_state to indicate the websocket is connected (so close() is called)
+    mock_client_state = MagicMock()
+    mock_client_state.name = "CONNECTED"
+    mock_websocket.client_state = mock_client_state
     mock_manager.active_websockets = {connection_id: mock_websocket}
     # Use a real dict so we can test deletion - key must match player_id type
     player_websockets_dict = {player_id: [connection_id]}
