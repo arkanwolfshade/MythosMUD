@@ -28,7 +28,7 @@ class HolidayEntry(BaseModel):
     name: str
     tradition: str
     month: int = Field(ge=1, le=12)
-    day: int = Field(ge=1, le=30)
+    day: int = Field(ge=1, le=31)
     duration_hours: int = Field(default=24, ge=1, le=48)
     season: str
     bonus_tags: list[str] = Field(default_factory=list)

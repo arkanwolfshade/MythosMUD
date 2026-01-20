@@ -650,10 +650,27 @@ async def cleanup_decayed_corpses(app: FastAPI, tick_count: int) -> None:
 
 async def broadcast_tick_event(app: FastAPI, tick_count: int) -> None:
     """Broadcast game tick event to all connected players."""
+    # Get current mythos time for UI updates
+    chronicle = get_mythos_chronicle()
+    mythos_dt = chronicle.get_current_mythos_datetime()
+    components = chronicle.get_calendar_components(mythos_dt)
+    mythos_clock = chronicle.format_clock(mythos_dt)
+
     tick_data = {
         "tick_number": tick_count,
         "timestamp": datetime.datetime.now(datetime.UTC).isoformat(),
         "active_players": len(app.state.container.connection_manager.player_websockets),
+        # Include mythos time data for UI updates
+        "mythos_datetime": mythos_dt.isoformat(),
+        "mythos_clock": mythos_clock,
+        "month_name": components.month_name,
+        "day_of_month": components.day_of_month,
+        "day_name": components.day_name,
+        "week_of_month": components.week_of_month,
+        "season": components.season,
+        "daypart": components.daypart,
+        "is_daytime": components.is_daytime,
+        "is_witching_hour": components.is_witching_hour,
     }
     logger.debug(
         "Broadcasting game tick",

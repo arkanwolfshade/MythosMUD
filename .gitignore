@@ -213,16 +213,16 @@ tsconfig.tsbuildinfo
 .idea/
 
 # Visual Studio Code
+#  NOTE: The `.vscode/` directory is INTENTIONALLY TRACKED in this repository.
+#  Project-specific VS Code settings (settings.json, launch.json, extensions.json) are
+#  committed to version control for team consistency.
 #  Visual Studio Code specific template is maintained in a separate VisualStudioCode.gitignore
 #  that can be found at https://github.com/github/gitignore/blob/main/Global/VisualStudioCode.gitignore
-#  and can be added to the global gitignore or merged into this file. However, if you prefer,
-#  you could uncomment the following to ignore the entire vscode folder
-# .vscode/
 
 # Cursor
-#  Cursor is an AI-powered code editor. `.cursorignore` specifies files/directories to
-#  exclude from AI features like autocomplete and code analysis. Recommended for sensitive data
-#  refer to https://docs.cursor.com/context/ignore-files
+#  NOTE: The `.cursor/` directory is INTENTIONALLY TRACKED in this repository.
+#  Project-specific Cursor configuration (rules, plans, commands) are committed to version control.
+#  Only the following Cursor configuration files at the root are ignored:
 .cursorignore
 .cursorindexingignore
 .cursorrules

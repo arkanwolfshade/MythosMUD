@@ -269,8 +269,14 @@ class EventPublisher:
 
             # Generate event data
             current_time = datetime.now()
+            # Use tick_number from additional_metadata if available, otherwise use sequence number
+            tick_number = (
+                additional_metadata.get("tick_number")
+                if additional_metadata and "tick_number" in additional_metadata
+                else self.sequence_number + 1
+            )
             event_data = {
-                "tick_number": self.sequence_number + 1,  # Use next sequence number as tick number
+                "tick_number": tick_number,
                 "server_time": current_time.isoformat(),
             }
 

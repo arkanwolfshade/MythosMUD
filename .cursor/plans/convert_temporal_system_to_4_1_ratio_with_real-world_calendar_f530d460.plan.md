@@ -26,6 +26,7 @@ todos:
   - id: verify-client
     content: Verify client correctly displays real-world calendar dates and weekdays
     status: completed
+isProject: false
 ---
 
 # Convert Temporal System to 4:1 Ratio with Real-World Calendar

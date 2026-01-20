@@ -303,7 +303,7 @@ class MythosChronicle:
         with self._state_lock:
             return self._last_freeze_state
 
-    def _load_state(self) -> ChronicleState:
+    def _load_state(self) -> ChronicleState:  # pylint: disable=too-many-locals  # Reason: Migration logic requires multiple variables for epoch detection, time calculations, and state conversion
         """Load the chronicle state from disk or initialize from config defaults.
 
         Includes migration logic to detect and convert old state files from the previous

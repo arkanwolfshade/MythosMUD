@@ -37,7 +37,7 @@ SET days = (
     WHERE day_value IN ('Primus', 'Secundus', 'Tertius', 'Quartus', 'Quintus', 'Sextus')
     OR day_value NOT IN ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')
 )
-WHERE days && ARRAY['Primus', 'Secundus', 'Tertius', 'Quartus', 'Quintus', 'Sextus']::text[];
+WHERE days && ARRAY['Primus', 'Secundus', 'Tertius', 'Quartus', 'Quintus', 'Sextus']::text [];
 
 -- Verify the migration
 DO $$
@@ -46,7 +46,7 @@ DECLARE
 BEGIN
     SELECT COUNT(*) INTO remaining_old_weekdays
     FROM calendar_npc_schedules
-    WHERE days && ARRAY['Primus', 'Secundus', 'Tertius', 'Quartus', 'Quintus', 'Sextus']::text[];
+    WHERE days && ARRAY['Primus', 'Secundus', 'Tertius', 'Quartus', 'Quintus', 'Sextus']::text [];
 
     IF remaining_old_weekdays > 0 THEN
         RAISE WARNING 'Migration incomplete: % schedule(s) still contain old weekday names', remaining_old_weekdays;
