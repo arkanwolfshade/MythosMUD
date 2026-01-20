@@ -303,7 +303,66 @@ class MythosChronicle:
         with self._state_lock:
             return self._last_freeze_state
 
-    def _load_state(self) -> ChronicleState:  # pylint: disable=too-many-locals  # Reason: Migration logic requires multiple variables for epoch detection, time calculations, and state conversion
+    def _migrate_old_state_file(
+        self,
+        real: datetime,
+        mythos: datetime,
+        old_epoch: datetime,
+        new_epoch: datetime,
+        old_ratio: float,
+        new_ratio: float,
+    ) -> ChronicleState | None:
+        """Migrate old state file from previous system (1930 epoch, 9.6 ratio) to new system (1920 epoch, 4.0 ratio).
+
+        Args:
+            real: Real timestamp from state file
+            mythos: Mythos timestamp from state file
+            old_epoch: Old epoch (1930-01-01)
+            new_epoch: New epoch (1920-01-01)
+            old_ratio: Old compression ratio (9.6)
+            new_ratio: New compression ratio (4.0)
+
+        Returns:
+            Migrated ChronicleState if migration needed, None otherwise
+        """
+        # Check if this is an old state file (mythos_timestamp using old epoch)
+        # We detect old state by checking if mythos_timestamp is close to old_epoch
+        # (within a reasonable threshold of a few years)
+        time_from_old_epoch = abs((mythos - old_epoch).total_seconds())
+        time_from_new_epoch = abs((mythos - new_epoch).total_seconds())
+
+        # If closer to old epoch than new epoch, this is an old state file
+        if time_from_old_epoch < time_from_new_epoch and time_from_old_epoch < (
+            365 * 24 * 3600 * 5
+        ):  # Within 5 years of old epoch
+            logger.info(
+                "Detected old chronicle state file, migrating to new system",
+                old_mythos_timestamp=mythos.isoformat(),
+                old_epoch=old_epoch.isoformat(),
+                new_epoch=new_epoch.isoformat(),
+                old_ratio=old_ratio,
+                new_ratio=new_ratio,
+            )
+
+            # Convert old state to new system
+            # Formula: new_mythos_time = new_epoch + (old_mythos_time - old_epoch) * (new_ratio / old_ratio)
+            time_delta_from_old_epoch = mythos - old_epoch
+            converted_delta = timedelta(seconds=time_delta_from_old_epoch.total_seconds() * (new_ratio / old_ratio))
+            new_mythos = new_epoch + converted_delta
+
+            # Create new state with converted timestamp
+            migrated_state = ChronicleState(real_timestamp=real, mythos_timestamp=new_mythos)
+
+            # Persist the migrated state
+            self._persist_state(migrated_state)
+
+            logger.info("Chronicle state migration complete", new_mythos_timestamp=new_mythos.isoformat())
+
+            return migrated_state
+
+        return None
+
+    def _load_state(self) -> ChronicleState:
         """Load the chronicle state from disk or initialize from config defaults.
 
         Includes migration logic to detect and convert old state files from the previous
@@ -322,45 +381,11 @@ class MythosChronicle:
                 real = _ensure_utc(datetime.fromisoformat(payload["real_timestamp"]))
                 mythos = _ensure_utc(datetime.fromisoformat(payload["mythos_timestamp"]))
 
-                # Check if this is an old state file (mythos_timestamp using old epoch)
-                # We detect old state by checking if mythos_timestamp is close to old_epoch
-                # (within a reasonable threshold of a few years)
-                time_from_old_epoch = abs((mythos - old_epoch).total_seconds())
-                time_from_new_epoch = abs((mythos - new_epoch).total_seconds())
-
-                # If closer to old epoch than new epoch, this is an old state file
-                if time_from_old_epoch < time_from_new_epoch and time_from_old_epoch < (
-                    365 * 24 * 3600 * 5
-                ):  # Within 5 years of old epoch
-                    logger.info(
-                        "Detected old chronicle state file, migrating to new system",
-                        old_mythos_timestamp=mythos.isoformat(),
-                        old_epoch=old_epoch.isoformat(),
-                        new_epoch=new_epoch.isoformat(),
-                        old_ratio=old_compression_ratio,
-                        new_ratio=new_compression_ratio,
-                    )
-
-                    # Convert old state to new system
-                    # Formula: new_mythos_time = new_epoch + (old_mythos_time - old_epoch) * (new_ratio / old_ratio)
-                    time_delta_from_old_epoch = mythos - old_epoch
-                    converted_delta = timedelta(
-                        seconds=time_delta_from_old_epoch.total_seconds()
-                        * (new_compression_ratio / old_compression_ratio)
-                    )
-                    new_mythos = new_epoch + converted_delta
-
-                    # Create new state with converted timestamp
-                    migrated_state = ChronicleState(real_timestamp=real, mythos_timestamp=new_mythos)
-
-                    # Persist the migrated state
-                    self._persist_state(migrated_state)
-
-                    logger.info(
-                        "Chronicle state migration complete",
-                        new_mythos_timestamp=new_mythos.isoformat(),
-                    )
-
+                # Attempt migration if this is an old state file
+                migrated_state = self._migrate_old_state_file(
+                    real, mythos, old_epoch, new_epoch, old_compression_ratio, new_compression_ratio
+                )
+                if migrated_state is not None:
                     return migrated_state
 
                 # Not an old state file, return as-is

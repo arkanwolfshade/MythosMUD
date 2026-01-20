@@ -133,8 +133,8 @@ export const handleGameTick: EventHandler = (event, context, appendMessage) => {
       week_of_month: (data.week_of_month as number) || 1,
       season: (data.season as string) || '',
       daypart: (data.daypart as string) || '',
-      is_daytime: (data.is_daytime as boolean) ?? true,
-      is_witching_hour: (data.is_witching_hour as boolean) ?? false,
+      is_daytime: typeof data.is_daytime === 'boolean' ? data.is_daytime : true,
+      is_witching_hour: typeof data.is_witching_hour === 'boolean' ? data.is_witching_hour : false,
       server_timestamp: (data.timestamp as string) || event.timestamp,
       active_holidays: Array.isArray(data.active_holidays)
         ? (data.active_holidays as MythosTimePayload['active_holidays'])

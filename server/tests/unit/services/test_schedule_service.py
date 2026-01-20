@@ -23,7 +23,7 @@ class TestScheduleService:
         service = ScheduleService(collections=collections, environment="test")
         assert not service.entries
         # Accessing protected member to verify initialization state
-        assert service._environment == "test"  # pylint: disable=protected-access
+        assert service._environment == "test"  # pylint: disable=protected-access  # nosec B101  # Reason: pytest uses assert statements for test assertions, not removed in optimized bytecode
 
     def test_init_without_persistence_raises(self):
         """Test ScheduleService initialization without persistence raises ValueError."""
@@ -52,8 +52,8 @@ class TestScheduleService:
                 )
             ]
             service = ScheduleService(async_persistence=mock_persistence, environment="test")
-            assert len(service.entries) == 1
-            assert service.entries[0].id == "test_schedule_1"
+            assert len(service.entries) == 1  # nosec B101  # Reason: pytest uses assert statements for test assertions
+            assert service.entries[0].id == "test_schedule_1"  # nosec B101  # Reason: pytest uses assert statements for test assertions
 
     def test_get_active_entries_no_matches(self):
         """Test get_active_entries returns empty list when no matches."""
@@ -173,10 +173,10 @@ class TestScheduleService:
         service._entries = [entry]  # pylint: disable=protected-access
 
         entries = service.entries
-        assert entries == [entry]
+        assert entries == [entry]  # nosec B101  # Reason: pytest uses assert statements for test assertions
         # Verify it's a copy, not the same list
         # Accessing protected member to verify property returns a copy
-        assert entries is not service._entries  # pylint: disable=protected-access
+        assert entries is not service._entries  # pylint: disable=protected-access  # nosec B101  # Reason: pytest uses assert statements for test assertions
 
     def test_entry_count_property(self):
         """Test entry_count property returns count."""
