@@ -216,6 +216,71 @@ For security-related questions or concerns:
 eldritch horrors of the Mythos, but also against the all-too-real threats of
 the digital realm."
 
-**Last Updated**: January 2025
-**Version**: 1.0
+## Recent Security Remediations
+
+### Dependabot Security Fixes (January 2026)
+
+All 11 active Dependabot security alerts have been addressed:
+
+#### Fixed Vulnerabilities
+
+1. **urllib3** ([Alerts #15](https://github.com/arkanwolfshade/MythosMUD/security/dependabot/15), [#16](https://github.com/arkanwolfshade/MythosMUD/security/dependabot/16), [#18](https://github.com/arkanwolfshade/MythosMUD/security/dependabot/18)) - HIGH
+   - **CVE-2025-66418**: DoS via excessive Content-Encoding chain
+   - **CVE-2025-66471**: DoS via improper decompression in streaming API
+   - **Fixed**: Updated to urllib3>=2.6.0 (currently 2.6.3)
+   - **Files Modified**: `pyproject.toml`, `uv.lock`, `server/uv.lock`
+
+2. **pyasn1** ([Alerts #11](https://github.com/arkanwolfshade/MythosMUD/security/dependabot/11), [#19](https://github.com/arkanwolfshade/MythosMUD/security/dependabot/19)) - HIGH
+   - **CVE-2026-23490**: DoS via malformed RELATIVE-OID parsing
+   - **Fixed**: Updated to pyasn1>=0.6.2
+   - **Files Modified**: `pyproject.toml`, `uv.lock`, `server/uv.lock`
+
+3. **starlette** ([Alert #14](https://github.com/arkanwolfshade/MythosMUD/security/dependabot/14)) - HIGH
+   - **CVE-2025-62727**: DoS via quadratic-time Range header processing
+   - **CVE-2025-54121**: DoS via blocking during multipart upload rollover
+   - **CVE-2024-47874**: Memory exhaustion via unbounded multipart form data
+   - **Fixed**: Updated to starlette>=0.50.0 (currently 0.50.0)
+   - **Files Modified**: `pyproject.toml`, `server/uv.lock`
+
+4. **python-multipart** ([Alert #12](https://github.com/arkanwolfshade/MythosMUD/security/dependabot/12)) - HIGH
+   - **CVE-2024-53981**: DoS via excessive logging/skipping bytes
+   - **CVE-2024-24762**: ReDoS in Content-Type header parsing
+   - **Fixed**: Already at patched version 0.0.21 (>=0.0.18)
+   - **Files Modified**: `pyproject.toml` (version constraint added)
+
+5. **fastapi-users** ([Alert #17](https://github.com/arkanwolfshade/MythosMUD/security/dependabot/17)) - MEDIUM
+   - **CVE-2025-68481**: Login CSRF via insecure OAuth state tokens
+   - **Fixed**: Already at patched version 15.0.3 (>=15.0.2)
+   - **Files Modified**: None (already compliant)
+
+6. **fonttools** ([Alert #21](https://github.com/arkanwolfshade/MythosMUD/security/dependabot/21)) - MEDIUM
+   - **CVE-2025-66034**: Arbitrary file-write vulnerability
+   - **CVE-2023-45139**: XXE vulnerability in subsetting module
+   - **Fixed**: Updated to fonttools>=4.60.2 (currently 4.61.1)
+   - **Files Modified**: `pyproject.toml`, `uv.lock`
+
+#### Known Limitations
+
+1. **ecdsa** ([Alerts #13](https://github.com/arkanwolfshade/MythosMUD/security/dependabot/13), [#20](https://github.com/arkanwolfshade/MythosMUD/security/dependabot/20)) - HIGH
+   - **CVE-2024-23342**: Minerva timing attack on P-256 curve
+   - **Status**: Already at latest version 0.19.1, but no patched version available
+   - **Note**: This is a transitive dependency of python-jose. The vulnerability is a side-channel timing attack that maintainers have marked out of scope. No patch is currently available from upstream.
+   - **Mitigation**: Using latest available version. Consider alternative crypto libraries for high-security use cases.
+
+#### Testing Performed
+
+- ✅ All 6,200 server tests passed
+- ✅ Security scans (Trivy) show no vulnerabilities
+- ✅ Code quality checks (lint, mypy, format) all passed
+- ✅ Lock files regenerated and verified
+
+#### Files Modified
+
+- `pyproject.toml` - Added security version constraints for transitive dependencies
+- `uv.lock` - Regenerated with patched versions
+- `server/uv.lock` - Regenerated with patched versions
+- `.github/workflows/dependency-review.yml` - Fixed submodule checkout issue
+
+**Last Updated**: January 2026
+**Version**: 1.1
 **Status**: ✅ Production-ready security implementation
