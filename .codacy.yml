@@ -127,6 +127,14 @@ ignore_patterns:
   - pattern_id: 'Pylint_consider-using-in'
     file_paths:
       - 'scripts/run_test_ci.py'
+  # SQL: RAC_TABLE_REQUIRED false positives in migration file
+  # Pattern for "All queries must target RAC_* tables" - false positives for:
+  # - PostgreSQL configuration commands (SET)
+  # - Comment lines
+  # - DO blocks for verification (not data queries)
+  - pattern_id: 'sql:RAC_TABLE_REQUIRED'
+    file_paths:
+      - 'db/migrations/020_migrate_weekday_names.sql'
   # # Lizard CCN: Ignore cyclomatic complexity warnings for complexity <= 10
   # # We want to only report complexity > 10, but Codacy doesn't support custom CCN thresholds
   # # So we suppress the medium severity warnings (which report complexity > 8)

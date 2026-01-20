@@ -8,12 +8,10 @@
 SET client_min_messages = WARNING;
 SET search_path = public;
 
--- codacy:ignore=sql:RAC_TABLE_REQUIRED
--- Reason: Comment line, not a SQL query
+-- noqa: disable=RAC_TABLE_REQUIRED
+-- Reason: Migration file updates calendar_npc_schedules table (not RAC_* table), which is a valid migration operation
 -- Update calendar_npc_schedules.days array values
 -- Map: Primus→Monday, Secundus→Tuesday, Tertius→Wednesday, Quartus→Thursday, Quintus→Friday, Sextus→Saturday
--- codacy:ignore=sql:RAC_TABLE_REQUIRED
--- Reason: Comment line, not a SQL query
 -- Note: 6-day week becomes 7-day week - schedules that had all 6 days now get Saturday only
 --       (Sunday is not added by default, as schedules may have intentionally excluded it)
 
@@ -44,9 +42,10 @@ SET days = (
     OR day_value NOT IN ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')
 )
 WHERE days && ARRAY['Primus', 'Secundus', 'Tertius', 'Quartus', 'Quintus', 'Sextus']::text [];
+-- noqa: enable=RAC_TABLE_REQUIRED
 
 -- Verify the migration
--- codacy:ignore=sql:RAC_TABLE_REQUIRED
+-- noqa: disable=RAC_TABLE_REQUIRED
 -- Reason: PostgreSQL anonymous block for verification, not a data query targeting RAC_* tables
 DO $$
 DECLARE
@@ -62,3 +61,4 @@ BEGIN
         RAISE NOTICE 'Migration successful: All weekday names converted to standard format';
     END IF;
 END $$;
+-- noqa: enable=RAC_TABLE_REQUIRED
