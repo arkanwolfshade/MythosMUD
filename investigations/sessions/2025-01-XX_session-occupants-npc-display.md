@@ -3,17 +3,23 @@
 **Investigation Date**: 2025-01-XX
 **Investigator**: AI Assistant (GPT-4)
 **Session ID**: 2025-01-XX_session-occupants-npc-display
-**Bug Report**: mob/npcs are not listed in the Occupants panel. The Occupants panel should show both players and NPCs/mobs, in separate columns.
+**Bug Report**: mob/npcs are not listed in the Occupants panel. The Occupants panel should show both players and
+ NPCs/mobs, in separate columns.
 
 ---
 
 ## EXECUTIVE SUMMARY
 
-**Root Cause Identified**: The server-side code correctly retrieves NPCs and resolves their names, but the `_send_room_occupants_update` method in `event_handler.py` flattens players and NPCs into a single list of names, losing the player/NPC distinction. The client-side `OccupantsPanel` component then displays all occupants in a single list without separate columns for players and NPCs.
+**Root Cause Identified**: The server-side code correctly retrieves NPCs and resolves their names, but the
+ `_send_room_occupants_update` method in `event_handler.py` flattens players and NPCs into a single list of names,
+ losing the player/NPC distinction. The client-side `OccupantsPanel` component then displays all occupants in a
+  single list without separate columns for players and NPCs.
 
-**System Impact**: **HIGH** - Core UI feature not functioning as specified. Players cannot distinguish between players and NPCs in the Occupants panel, and NPCs may not be visible at all if the data transformation loses them.
+**System Impact**: **HIGH** - Core UI feature not functioning as specified. Players cannot distinguish between
+ players and NPCs in the Occupants panel, and NPCs may not be visible at all if the data transformation loses them.
 
-**Severity**: **MEDIUM-HIGH** - Feature is partially working (NPCs are retrieved server-side) but UI requirement (separate columns) is not implemented.
+**Severity**: **MEDIUM-HIGH** - Feature is partially working (NPCs are retrieved server-side) but UI requirement
+ (separate columns) is not implemented.
 
 ---
 
@@ -23,9 +29,12 @@
 
 **Bug Description Parsed**:
 
-- **Issue**: NPCs/mobs are not listed in the Occupants panel
-- **Expected Behavior**: Occupants panel should show both players and NPCs/mobs in separate columns
-- **Affected Component**: Client-side Occupants panel UI
+**Issue**: NPCs/mobs are not listed in the Occupants panel
+
+**Expected Behavior**: Occupants panel should show both players and NPCs/mobs in separate columns
+
+**Affected Component**: Client-side Occupants panel UI
+
 - **Related Systems**: Server-side room occupants retrieval, WebSocket event handling, client-side state management
 
 **Affected Systems Identified**:
@@ -78,12 +87,14 @@ The `get_room_occupants` method correctly retrieves both players and NPCs:
             # If it's a Room object, use its methods
             # AI Agent: Fixed bug where NPCs were not included in room occupants
             #           Previously only returned players, now returns both players and NPCs
+
             if hasattr(room, "get_players"):
                 players = room.get_players()
                 npcs = room.get_npcs() if hasattr(room, "get_npcs") else []
                 occupants = players + npcs
             else:
                 # If it's a dictionary, check for occupants field
+
                 occupants = room.get("occupants", [])
 
             logger.debug(
@@ -96,6 +107,7 @@ The `get_room_occupants` method correctly retrieves both players and NPCs:
             return occupants
         else:
             # Fallback to direct persistence call
+
             room = await self.persistence.async_get_room(room_id)
             if not room:
                 logger.debug("Room not found for occupant lookup", room_id=room_id)
@@ -103,12 +115,14 @@ The `get_room_occupants` method correctly retrieves both players and NPCs:
 
             # AI Agent: CRITICAL FIX - Include NPCs in fallback path to match cached path behavior
             #           Previously only returned players, causing NPCs to not appear when cache unavailable
+
             if hasattr(room, "get_players"):
                 players = room.get_players()
                 npcs = room.get_npcs() if hasattr(room, "get_npcs") else []
                 occupants = players + npcs
             else:
                 # If it's a dictionary, check for occupants field
+
                 occupants = room.get("occupants", [])
 
             logger.debug(
@@ -146,6 +160,7 @@ The `_get_room_occupants` method correctly retrieves both players and NPCs, and 
 
         try:
             # Get room from persistence
+
             persistence = self.connection_manager.persistence
             if not persistence:
                 return occupants
@@ -155,12 +170,15 @@ The `_get_room_occupants` method correctly retrieves both players and NPCs, and 
                 return occupants
 
             # Get player IDs in the room
+
             player_ids = room.get_players()
 
             # OPTIMIZATION: Batch load all players at once to eliminate N+1 queries
+
             players = self.connection_manager._get_players_batch(list(player_ids))
 
             # Convert to occupant information using batch-loaded players
+
             for player_id in player_ids:
                 player = players.get(player_id)
                 if player:
@@ -173,12 +191,15 @@ The `_get_room_occupants` method correctly retrieves both players and NPCs, and 
                     occupants.append(occupant_info)
 
             # Get NPC IDs in the room
+
             npc_ids = room.get_npcs()
 
             # OPTIMIZATION: Batch load all NPC names at once to eliminate N+1 queries
+
             npc_names = self.connection_manager._get_npcs_batch(list(npc_ids))
 
             # Convert NPCs to occupant information using batch-loaded names
+
             for npc_id in npc_ids:
                 npc_name = npc_names.get(npc_id, npc_id.split("_")[0].replace("_", " ").title())
                 occupant_info = {
@@ -194,7 +215,8 @@ The `_get_room_occupants` method correctly retrieves both players and NPCs, and 
         return occupants
 ```
 
-**Status**: ✅ **WORKING CORRECTLY** - NPCs are retrieved, names are resolved, and structured data is created with `npc_name` and `type: "npc"` fields
+**Status**: ✅ **WORKING CORRECTLY** - NPCs are retrieved, names are resolved, and structured data is created with
+ `npc_name` and `type: "npc"` fields
 
 ---
 
@@ -202,7 +224,8 @@ The `_get_room_occupants` method correctly retrieves both players and NPCs, and 
 
 **Location**: `server/realtime/event_handler.py:477-515`
 
-**🔴 CRITICAL ISSUE IDENTIFIED**: The `_send_room_occupants_update` method flattens the structured occupant data (which includes player/NPC distinction) into a single list of names:
+**🔴 CRITICAL ISSUE IDENTIFIED**: The `_send_room_occupants_update` method flattens the structured occupant data
+ (which includes player/NPC distinction) into a single list of names:
 
 ```477:515:server/realtime/event_handler.py
     async def _send_room_occupants_update(self, room_id: str, exclude_player: str | None = None) -> None:
@@ -215,9 +238,11 @@ The `_get_room_occupants` method correctly retrieves both players and NPCs, and 
         """
         try:
             # Get room occupants
+
             occupants_info: list[dict[str, Any] | str] = self._get_room_occupants(room_id)
 
             # Transform to list of names for client UI consistency
+
             occupant_names: list[str] = []
             for occ in occupants_info or []:
                 if isinstance(occ, dict):
@@ -229,6 +254,7 @@ The `_get_room_occupants` method correctly retrieves both players and NPCs, and 
 
             # Create occupants update message
             # Convert room_id to string for JSON serialization
+
             room_id_str = str(room_id) if room_id else ""
 
             message = {
@@ -240,6 +266,7 @@ The `_get_room_occupants` method correctly retrieves both players and NPCs, and 
             }
 
             # Send to room occupants
+
             await self.connection_manager.broadcast_to_room(room_id, message, exclude_player=exclude_player)
 
         except Exception as e:
@@ -277,7 +304,8 @@ The client correctly receives and stores the occupants data:
           }
 ```
 
-**Status**: ✅ **WORKING** - Client correctly receives and stores the data, but data structure doesn't include player/NPC distinction
+**Status**: ✅ **WORKING** - Client correctly receives and stores the data, but data structure doesn't include
+ player/NPC distinction
 
 ---
 
@@ -383,7 +411,9 @@ However, the spec doesn't explicitly mention "separate columns" - this is a new 
 
 **Location**: `server/realtime/event_handler.py:489-497`
 
-The `_send_room_occupants_update` method flattens structured occupant data (which includes player/NPC distinction) into a single list of names before sending to the client. This data transformation loses critical information needed for the UI to display players and NPCs in separate columns.
+The `_send_room_occupants_update` method flattens structured occupant data (which includes player/NPC distinction)
+ into a single list of names before sending to the client. This data transformation loses critical information
+  needed for the UI to display players and NPCs in separate columns.
 
 **Technical Details**:
 
@@ -393,9 +423,11 @@ The `_send_room_occupants_update` method flattens structured occupant data (whic
 
 ### Secondary Issues
 
-1. **Client-Side UI Limitation**: The `OccupantsPanel` component doesn't support separate columns for players and NPCs, even if the data structure included type information
+1. **Client-Side UI Limitation**: The `OccupantsPanel` component doesn't support separate columns for players and
+ NPCs, even if the data structure included type information
 
-2. **Data Structure Mismatch**: The client-side `Room` type likely only includes `occupants?: string[]`, not a structured format that distinguishes players from NPCs
+2. **Data Structure Mismatch**: The client-side `Room` type likely only includes `occupants?: string[]`, not a
+ structured format that distinguishes players from NPCs
 
 ---
 
@@ -405,16 +437,20 @@ The `_send_room_occupants_update` method flattens structured occupant data (whic
 
 **Affected Components**:
 
-- ✅ Server-side NPC retrieval: **WORKING**
-- ✅ Server-side NPC name resolution: **WORKING**
-- ❌ Server-side data transmission: **LOSING DATA** (flattening)
+✅ Server-side NPC retrieval: **WORKING**
+
+✅ Server-side NPC name resolution: **WORKING**
+
+❌ Server-side data transmission: **LOSING DATA** (flattening)
+
 - ✅ Client-side event handling: **WORKING** (but receiving incomplete data)
 - ❌ Client-side UI display: **MISSING FEATURE** (no separate columns)
 
 **User Impact**:
 
-- **HIGH**: Players cannot see NPCs in the Occupants panel (or cannot distinguish them from players)
-- **MEDIUM**: Feature doesn't match specified requirement (separate columns)
+**HIGH**: Players cannot see NPCs in the Occupants panel (or cannot distinguish them from players)
+
+**MEDIUM**: Feature doesn't match specified requirement (separate columns)
 
 **Functional Impact**:
 
@@ -442,6 +478,7 @@ The `_send_room_occupants_update` method flattens structured occupant data (whic
 ```python
 # server/realtime/event_handler.py:489-497
 # Transform to list of names for client UI consistency
+
 occupant_names: list[str] = []
 for occ in occupants_info or []:
     if isinstance(occ, dict):
@@ -543,24 +580,30 @@ case 'room_occupants': {
 Fix the Occupants panel to display NPCs in separate columns from players.
 
 The issue is that:
-1. Server-side code correctly retrieves NPCs and resolves their names, but the `_send_room_occupants_update` method in `server/realtime/event_handler.py` flattens the structured data (which includes player/NPC distinction) into a single list of names, losing the type information.
+1. Server-side code correctly retrieves NPCs and resolves their names, but the `_send_room_occupants_update` method
+ in `server/realtime/event_handler.py` flattens the structured data (which includes player/NPC distinction) into a
+  single list of names, losing the type information.
 
-2. The client-side `OccupantsPanel` component in `client/src/components/ui-v2/panels/OccupantsPanel.tsx` displays all occupants in a single list without separate columns for players and NPCs.
+2. The client-side `OccupantsPanel` component in `client/src/components/ui-v2/panels/OccupantsPanel.tsx` displays
+ all occupants in a single list without separate columns for players and NPCs.
 
 Required changes:
-1. Modify `_send_room_occupants_update` in `server/realtime/event_handler.py` to preserve player/NPC distinction in the event data (send structured data instead of flat list of names)
+1. Modify `_send_room_occupants_update` in `server/realtime/event_handler.py` to preserve player/NPC distinction in
+ the event data (send structured data instead of flat list of names)
 2. Update the `Room` type in `client/src/components/ui-v2/types.ts` to support structured occupant data with type information
 3. Enhance `OccupantsPanel` component to display players and NPCs in separate columns/sections
 4. Ensure backward compatibility if needed
 
-The server-side `_get_room_occupants` method already creates structured data with `player_name`, `npc_name`, and `type` fields - we just need to preserve this structure when sending to the client.
+The server-side `_get_room_occupants` method already creates structured data with `player_name`, `npc_name`, and
+ `type` fields - we just need to preserve this structure when sending to the client.
 ```
 
 ---
 
 ## INVESTIGATION COMPLETION CHECKLIST
 
-- [x] All investigation steps completed as written
+[x] All investigation steps completed as written
+
 - [x] Comprehensive evidence collected and documented
 - [x] Root cause analysis completed
 - [x] System impact assessed

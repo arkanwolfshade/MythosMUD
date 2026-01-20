@@ -141,6 +141,7 @@ event_data = {
 **Technical Details**:
 
 1. Server sends correct data structure:
+
    - `turn_order`: `["9bcee4bf-...", "d839d857-..."]`
    - `participants`: `{"9bcee4bf-...": {"name": "ArkanWolfshade", ...}, "d839d857-...": {"name": "Ithaqua", ...}}`
 
@@ -173,9 +174,11 @@ But the message generation code does not:
 
 **Impact**:
 
-- **Readability**: UUIDs are not human-readable, making it difficult for players to understand turn order
-- **Immersion**: Breaks game immersion by exposing technical identifiers
-- **Usability**: Players cannot easily identify which combatant acts next
+**Readability**: UUIDs are not human-readable, making it difficult for players to understand turn order
+
+**Immersion**: Breaks game immersion by exposing technical identifiers
+
+**Usability**: Players cannot easily identify which combatant acts next
 
 **Affected Users**: All players engaged in combat
 
@@ -258,11 +261,13 @@ These tests check for the message text "Combat has begun!" but do not verify the
 **Priority**: High
 
 1. **Fix Message Generation** (NOT INVESTIGATION - REMEDIATION ONLY)
+
    - Modify line 1540 in `GameTerminalWithPanels.tsx` to map UUIDs to names using `participants` dict
    - Add error handling for missing participant data
    - Consider fallback display if participant name is not available
 
 2. **Add Validation**
+
    - Verify `participants` dict is available before generating message
    - Handle edge cases where participant UUID might not be in dict
 
@@ -271,10 +276,12 @@ These tests check for the message text "Combat has begun!" but do not verify the
 **Priority**: Medium
 
 1. **Unit Tests**
+
    - Add test case for combat start message with participant name conversion
    - Test edge cases (missing participants, empty turn order, etc.)
 
 2. **Integration Tests**
+
    - Verify combat start message displays names correctly in E2E scenarios
    - Test with multiple combat participants
 
@@ -283,10 +290,12 @@ These tests check for the message text "Combat has begun!" but do not verify the
 **Priority**: Low
 
 1. **Review Similar Patterns**
+
    - Check other event handlers for similar UUID-to-name conversion needs
    - Consider creating helper function for UUID-to-name conversion if pattern repeats
 
 2. **Documentation**
+
    - Add comments explaining the UUID-to-name mapping logic
    - Document expected event data structure
 
@@ -311,8 +320,11 @@ const message = `Combat has begun! Turn order: ${turnOrder.join(', ')}`;
 **Required Changes**:
 
 1. Map each UUID in `turnOrder` to the corresponding participant name using the `participants` dictionary
+
 2. Use the `name` property from each participant object
+
 3. Handle edge cases:
+
    - Missing participant in dict (fallback to UUID or "Unknown")
    - Missing name property (fallback to UUID or "Unknown")
    - Empty or undefined participants dict (fallback to UUID display)
@@ -343,7 +355,8 @@ const message = `Combat has begun! Turn order: ${participantNames.join(', ')}`;
 
 ## Investigation Completion Checklist
 
-- [x] All investigation steps completed as written
+[x] All investigation steps completed as written
+
 - [x] Comprehensive evidence collected and documented
 - [x] Root cause analysis completed
 - [x] System impact assessed

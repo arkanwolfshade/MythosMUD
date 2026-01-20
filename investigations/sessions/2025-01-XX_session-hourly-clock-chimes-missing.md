@@ -8,9 +8,13 @@
 
 ## EXECUTIVE SUMMARY
 
-Hourly clock chime messages are not appearing in the Game Info panel feed because the client-side `mythos_time_update` event handler only creates messages when the daypart changes (e.g., morning → afternoon), not on every hourly tick. While the server correctly publishes hourly tick events and broadcasts `mythos_time_update` events, the client does not generate user-visible clock chime messages from these events.
+Hourly clock chime messages are not appearing in the Game Info panel feed because the client-side
+ `mythos_time_update` event handler only creates messages when the daypart changes (e.g., morning → afternoon), not
+  on every hourly tick. While the server correctly publishes hourly tick events and broadcasts `mythos_time_update`
+   events, the client does not generate user-visible clock chime messages from these events.
 
-**Root Cause**: Missing clock chime message generation logic in client-side `mythos_time_update` event handler. The handler only creates messages for daypart transitions, not for every hourly tick.
+**Root Cause**: Missing clock chime message generation logic in client-side `mythos_time_update` event handler. The
+ handler only creates messages for daypart transitions, not for every hourly tick.
 
 **Severity**: Medium - Feature not working as intended, but does not break core functionality.
 
@@ -41,12 +45,15 @@ The server's Mythos time system is functioning properly:
 ```
 
 **Log Evidence**: Events log shows hourly tick events being published:
+
 ```
 2025-11-28 13:15:59 - EventBus - DEBUG - event_type='MythosHourTickEvent' event='Published event'
 2025-11-28 13:16:15 - EventBus - DEBUG - event_type='MythosHourTickEvent' event='Published event'
 ```
 
-**Key Finding**: The server broadcasts `mythos_time_update` events with time data including `mythos_clock` (formatted time string), but these events are intended for HUD clock display updates, not for generating user-visible messages.
+**Key Finding**: The server broadcasts `mythos_time_update` events with time data including `mythos_clock`
+ (formatted time string), but these events are intended for HUD clock display updates, not for generating
+  user-visible messages.
 
 ### 2. Client-Side Event Reception
 
@@ -82,6 +89,7 @@ The client correctly receives and processes `mythos_time_update` events:
 ```
 
 **Evidence**:
+
 - Events are received and processed correctly
 - Time state is updated (`setMythosTime(nextState)`)
 - **BUT**: Messages are only created when `previousDaypart !== nextState.daypart` (daypart transitions)
@@ -95,15 +103,21 @@ The client correctly receives and processes `mythos_time_update` events:
 
 **The Problem**:
 
-The `mythos_time_update` event handler only creates messages when daypart changes (e.g., "morning" → "afternoon"), not on every hourly tick. There is no logic to create clock chime messages like "The clock chimes 14:00" on every hour.
+The `mythos_time_update` event handler only creates messages when daypart changes (e.g., "morning" → "afternoon"),
+ not on every hourly tick. There is no logic to create clock chime messages like "The clock chimes 14:00" on every
+  hour.
 
 **Current Behavior**:
-- ✅ Receives `mythos_time_update` events every hour
-- ✅ Updates HUD clock display
-- ✅ Creates messages when daypart changes (e.g., dawn, dusk)
+✅ Receives `mythos_time_update` events every hour
+
+✅ Updates HUD clock display
+
+✅ Creates messages when daypart changes (e.g., dawn, dusk)
+
 - ❌ **DOES NOT** create clock chime messages on every hourly tick
 
 **Expected Behavior** (based on user report):
+
 - Should create clock chime messages like "The clock chimes 14:00" on every hourly tick
 - These messages should appear in the Game Info panel
 
@@ -137,6 +151,7 @@ The Game Info panel correctly displays system messages:
 ```
 
 **Evidence**:
+
 - Panel correctly filters and displays messages
 - Excludes chat messages (as intended)
 - Accepts `messageType: 'system'` messages (which clock chimes should use)
@@ -193,6 +208,7 @@ The server's `MythosTimeEventConsumer` does not create user-visible clock chime 
 ```
 
 **Evidence**:
+
 - Server only broadcasts time data via `broadcast_game_event("mythos_time_update", payload)`
 - No clock chime message creation on server side
 - No `broadcast_game_event()` or `send_room_event()` calls that create user-visible messages
@@ -202,10 +218,12 @@ The server's `MythosTimeEventConsumer` does not create user-visible clock chime 
 **Status**: ✅ **NO CLOCK CHIME LOGIC FOUND**
 
 **Search Patterns Used**:
+
 - `clock.*chime|chime|hourly.*message|time.*chime` (case-insensitive)
 - No matches found in server codebase
 
 **Conclusion**: Clock chime message generation logic does not exist in the current codebase. This functionality was either:
+
 1. Never implemented in the current architecture
 2. Removed during a previous refactor
 3. Implemented differently than expected
@@ -216,31 +234,38 @@ The server's `MythosTimeEventConsumer` does not create user-visible clock chime 
 
 ### Primary Root Cause
 
-**Missing Client-Side Clock Chime Logic**: The client-side `mythos_time_update` event handler in `GameClientV2Container.tsx` does not generate clock chime messages on every hourly tick. It only creates messages when daypart transitions occur.
+**Missing Client-Side Clock Chime Logic**: The client-side `mythos_time_update` event handler in
+ `GameClientV2Container.tsx` does not generate clock chime messages on every hourly tick. It only creates messages
+  when daypart transitions occur.
 
 **Technical Details**:
 
 1. **Server Flow** (Working):
+
    - `MythosTickScheduler` publishes `MythosHourTickEvent` every hour
    - `MythosTimeEventConsumer` receives event and broadcasts `mythos_time_update` via SSE
    - Event payload includes `mythos_clock` (formatted time string like "14:00 Mythos")
 
 2. **Client Flow** (Incomplete):
+
    - Client receives `mythos_time_update` events correctly
    - Handler updates HUD clock display (`setMythosTime(nextState)`)
    - Handler checks for daypart changes and creates messages only then
    - **MISSING**: No logic to create clock chime messages on every hourly tick
 
 3. **Message Format**:
+
    - Expected format: "The clock chimes 14:00" or similar
    - Should use `messageType: 'system'` to appear in Game Info panel
    - Should use `channel: 'system'` for proper routing
 
 ### Secondary Issues
 
-1. **No Server-Side Message Generation**: The server does not create clock chime messages either. All message generation would need to happen client-side.
+1. **No Server-Side Message Generation**: The server does not create clock chime messages either. All message
+ generation would need to happen client-side.
 
-2. **Event Payload Available**: The `mythos_time_update` payload includes `mythos_clock` field with formatted time, which can be used for clock chime messages.
+2. **Event Payload Available**: The `mythos_time_update` payload includes `mythos_clock` field with formatted time,
+ which can be used for clock chime messages.
 
 ---
 
@@ -248,22 +273,27 @@ The server's `MythosTimeEventConsumer` does not create user-visible clock chime 
 
 ### Scope
 
-- **Affected Component**: Client-side event processing (`GameClientV2Container.tsx`)
-- **Affected Feature**: Hourly clock chime message display in Game Info panel
-- **User Impact**: Users cannot see hourly clock chimes that previously appeared
+**Affected Component**: Client-side event processing (`GameClientV2Container.tsx`)
+
+**Affected Feature**: Hourly clock chime message display in Game Info panel
+
+**User Impact**: Users cannot see hourly clock chimes that previously appeared
 
 ### Severity
 
-- **Severity Level**: Medium
-- **Reasoning**:
-  - Feature is non-functional but does not break core game functionality
-  - No data loss or security implications
-  - Affects user experience and immersion
-  - Easy to fix (add missing message generation logic in client handler)
+**Severity Level**: Medium
+
+**Reasoning**:
+
+- Feature is non-functional but does not break core game functionality
+- No data loss or security implications
+- Affects user experience and immersion
+- Easy to fix (add missing message generation logic in client handler)
 
 ### Dependencies
 
-- No other systems depend on clock chime message display
+No other systems depend on clock chime message display
+
 - Fix will not affect other event processing
 - No database or persistence changes required
 - No server-side changes required (can be fixed client-side only)
@@ -275,18 +305,21 @@ The server's `MythosTimeEventConsumer` does not create user-visible clock chime 
 ### Code References
 
 1. **Server Broadcast** (Working):
+
    - File: `server/time/time_event_consumer.py`
    - Lines: 75-79
    - Function: `_handle_tick()`
    - Evidence: `await broadcast_game_event("mythos_time_update", payload)`
 
 2. **Client Event Reception** (Working):
+
    - File: `client/src/components/ui-v2/GameClientV2Container.tsx`
    - Lines: 570-589
    - Function: `processEventQueue()` → `case 'mythos_time_update':`
    - Evidence: Events are received and time state is updated
 
 3. **Client Message Generation** (Missing Logic):
+
    - File: `client/src/components/ui-v2/GameClientV2Container.tsx`
    - Lines: 574-586
    - Function: `processEventQueue()` → `case 'mythos_time_update':`
@@ -294,11 +327,13 @@ The server's `MythosTimeEventConsumer` does not create user-visible clock chime 
    - **MISSING**: No logic to create clock chime messages on every hourly tick
 
 4. **Game Info Panel** (Working):
+
    - File: `client/src/components/ui-v2/panels/GameInfoPanel.tsx`
    - Lines: 59-76
    - Evidence: Panel correctly displays system messages when provided
 
 5. **Time Formatting** (Available):
+
    - File: `server/time/time_service.py`
    - Lines: 177-183
    - Function: `format_clock()`
@@ -307,6 +342,7 @@ The server's `MythosTimeEventConsumer` does not create user-visible clock chime 
 ### Log Evidence
 
 **Server Logs** (from `logs/local/events.log`):
+
 ```
 2025-11-28 13:15:59 - EventBus - DEBUG - event_type='MythosHourTickEvent' event='Published event'
 2025-11-28 13:16:15 - EventBus - DEBUG - event_type='MythosHourTickEvent' event='Published event'
@@ -325,6 +361,7 @@ The server's `MythosTimeEventConsumer` does not create user-visible clock chime 
 **Action**: Add clock chime message creation logic in the `mythos_time_update` event handler in `GameClientV2Container.tsx`
 
 **Requirements**:
+
 1. Track the last hour that generated a clock chime message (use a ref similar to `lastDaypartRef`)
 2. On every `mythos_time_update` event, check if the hour has changed
 3. If hour changed, create a clock chime message using the `mythos_clock` value from the payload
@@ -333,6 +370,7 @@ The server's `MythosTimeEventConsumer` does not create user-visible clock chime 
 6. Add message via `appendMessage()` helper function
 
 **Implementation Location**:
+
 - File: `client/src/components/ui-v2/GameClientV2Container.tsx`
 - Function: `processEventQueue()` → `case 'mythos_time_update':`
 - Around lines: 570-589
@@ -342,6 +380,7 @@ The server's `MythosTimeEventConsumer` does not create user-visible clock chime 
 **Action**: Determine the preferred clock chime message format
 
 **Options**:
+
 1. Simple format: `The clock chimes 14:00`
 2. Mythos-themed format: `The clock chimes 14:00 Mythos`
 3. Descriptive format: `[Time] The clock chimes 14:00 Mythos`
@@ -353,6 +392,7 @@ The server's `MythosTimeEventConsumer` does not create user-visible clock chime 
 **Action**: Test clock chime message generation
 
 **Requirements**:
+
 1. Verify messages appear in Game Info panel on every hourly tick
 2. Verify messages do not duplicate when daypart messages are shown
 3. Verify message format matches expected style
@@ -367,7 +407,8 @@ The server's `MythosTimeEventConsumer` does not create user-visible clock chime 
 ```
 Fix missing hourly clock chime messages in Game Info panel
 
-Hourly clock chime messages are not appearing in the Game Info panel feed. The client receives mythos_time_update events every hour but only creates messages when daypart changes, not on every hourly tick.
+Hourly clock chime messages are not appearing in the Game Info panel feed. The client receives mythos_time_update
+ events every hour but only creates messages when daypart changes, not on every hourly tick.
 
 Requirements:
 1. Add a ref to track the last hour that generated a clock chime (similar to lastDaypartRef)
@@ -392,7 +433,8 @@ This is a client-side fix only - no server changes needed.
 
 ## INVESTIGATION COMPLETION CHECKLIST
 
-- [x] All investigation steps completed as written
+[x] All investigation steps completed as written
+
 - [x] Comprehensive evidence collected and documented
 - [x] Root cause analysis completed
 - [x] System impact assessed
@@ -404,7 +446,9 @@ This is a client-side fix only - no server changes needed.
 
 ---
 
-*"In the restricted archives of Miskatonic University, we learn that proper investigation requires systematic methodology, comprehensive evidence collection, and thorough analysis. The truth lies not in hasty conclusions, but in methodical examination of all available evidence."*
+*"In the restricted archives of Miskatonic University, we learn that proper investigation requires systematic
+ methodology, comprehensive evidence collection, and thorough analysis. The truth lies not in hasty conclusions,
+  but in methodical examination of all available evidence."*
 
 **Investigation Status**: ✅ **COMPLETE**
 **Root Cause**: ✅ **IDENTIFIED**

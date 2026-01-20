@@ -18,12 +18,14 @@
 
 ### Key Findings
 
-**Test Value Distribution:**
+### Test Value Distribution
 
-- **🔴 CRITICAL (High-Value):** ~1,250-1,500 tests (25-30%) — **~7-10
+**🔴 CRITICAL (High-Value):** ~1,250-1,500 tests (25-30%) — **~7-10
   minutes**
-- **🟡 IMPORTANT (Medium-Value):** ~2,500-3,000 tests (50-60%) — **~15-18 minutes**
-- **🟢 LOW-VALUE:** ~500-750 tests (10-15%) — **~3-5 minutes**
+
+### 🟡 IMPORTANT (Medium-Value):**~2,500-3,000 tests (50-60%) —**~15-18 minutes
+
+**🟢 LOW-VALUE:** ~500-750 tests (10-15%) — **~3-5 minutes**
 
 **Bottom Line:** Approximately **25-30% of tests provide critical regression
 protection**, another 50-60% provide important behavioral validation, and
@@ -70,8 +72,10 @@ and coverage-driven tests (command_handler_coverage).
 
 **Infrastructure Tests:** 454 tests (9.1% of suite, 12% of unit tests)
 
-**Files:**
-- `test_dependency_injection_functions.py` (291 lines)
+### Files
+
+`test_dependency_injection_functions.py` (291 lines)
+
 - `test_dependency_injection.py` (774 lines)
 - `test_dependency_functions.py` (332 lines)
 - `test_app_factory.py`, `test_database.py`, `test_lifespan.py`, etc.
@@ -82,6 +86,7 @@ and coverage-driven tests (command_handler_coverage).
 **Assessment:** Many infrastructure tests verify that dependency injection
 returns the correct type or that objects have expected attributes. These are
 **low-value** because:
+
 - They would fail immediately at runtime if broken
 - They test Python/FastAPI framework behavior, not our business logic
 - They have high maintenance cost (break on refactoring)
@@ -93,9 +98,11 @@ returns the correct type or that objects have expected attributes. These are
 ### 2.1 Regression Test Audit (★★★★★ HIGH VALUE)
 
 **Count:** 31 tests across 6 files
-**Estimated Value:** **100% HIGH-VALUE**
 
-**Files Audited:**
+### Estimated Value:****100% HIGH-VALUE
+
+### Files Audited
+
 1. `test_self_message_bug.py` (5 tests) - Players seeing own movement messages
 2. `test_unknown_room_fix.py` (4 tests) - Players in non-existent rooms
 3. `test_npc_spawn_fix.py` (3 tests) - NPC spawn condition handling
@@ -103,7 +110,8 @@ returns the correct type or that objects have expected attributes. These are
 5. `test_infinite_loop_debug.py` (2 tests) - Async fixture deadlock
 6. `test_unresolved_bugs.py` (10 tests) - Known ongoing issues
 
-**Assessment:**
+### Assessment
+
 ✅ Each test verifies a specific bug that actually occurred
 ✅ Tests document the exact scenario that caused the bug
 ✅ Tests would fail if the bug regressed
@@ -114,21 +122,31 @@ returns the correct type or that objects have expected attributes. These are
 ### 2.2 Integration Test Analysis (★★★★☆ HIGH-MEDIUM VALUE)
 
 **Count:** 554 tests across 41 files
-**Estimated Value:** **70% HIGH-VALUE, 30% MEDIUM-VALUE**
 
-**High-Value Integration Tests (Est. 390 tests):**
-- **API Integration** (`integration/api/`) - Player creation, game API, monitoring
-- **Chat Integration** (`integration/chat/`) - Whisper, mute workflows, messaging
-- **Movement Integration** (`integration/movement/`) - Room synchronization, movement flow
-- **Event Integration** (`integration/events/`) - Event broadcasting, WebSocket events
+### Estimated Value:****70% HIGH-VALUE, 30% MEDIUM-VALUE
+
+### High-Value Integration Tests (Est. 390 tests)
+
+**API Integration** (`integration/api/`) - Player creation, game API, monitoring
+
+**Chat Integration** (`integration/chat/`) - Whisper, mute workflows, messaging
+
+**Movement Integration** (`integration/movement/`) - Room synchronization, movement flow
+
+**Event Integration** (`integration/events/`) - Event broadcasting, WebSocket events
+
 - **NPC Integration** (`integration/npc/`) - NPC spawning, combat, admin commands
 
-**Medium-Value Integration Tests (Est. 164 tests):**
-- **NATS Integration** (`integration/nats/`) - Message broker patterns (less user-facing)
-- **Services Integration** (`integration/services/`) - Service layer interactions
+### Medium-Value Integration Tests (Est. 164 tests)
 
-**Assessment:**
-- Integration tests verify component interactions (where bugs hide)
+**NATS Integration** (`integration/nats/`) - Message broker patterns (less user-facing)
+
+**Services Integration** (`integration/services/`) - Service layer interactions
+
+### Assessment
+
+Integration tests verify component interactions (where bugs hide)
+
 - Most test critical user workflows (chat, movement, combat)
 - Some test infrastructure patterns (NATS, services) - less user impact
 
@@ -137,10 +155,13 @@ returns the correct type or that objects have expected attributes. These are
 ### 2.3 Coverage Test Review (★★☆☆☆ MEDIUM-LOW VALUE)
 
 **Count:** 126 tests across 7 files
-**Estimated Value:** **30% MEDIUM-VALUE, 70% LOW-VALUE**
 
-**Files:**
-- `test_command_handler_coverage.py` (1,039 lines, ~50 tests)
+### Estimated Value:****30% MEDIUM-VALUE, 70% LOW-VALUE
+
+### Files
+
+`test_command_handler_coverage.py` (1,039 lines, ~50 tests)
+
 - `test_error_logging_coverage.py` (691 lines, ~30 tests)
 - `test_command_rate_limiter_coverage.py` (~12 tests)
 - `test_comprehensive_logging_coverage.py` (~5 tests)
@@ -148,12 +169,15 @@ returns the correct type or that objects have expected attributes. These are
 - `test_simple_coverage_gaps.py` (empty file)
 - `test_system_commands_coverage.py` (~5 tests)
 
-**Explicit Coverage Goals:**
-- "to achieve 80%+ code coverage"
+### Explicit Coverage Goals
+
+"to achieve 80%+ code coverage"
+
 - "to improve coverage"
 - "Tests the error path (lines 54-58, 107) to improve coverage"
 
-**Assessment:**
+### Assessment
+
 ❌ Written to hit coverage metrics, not verify behavior
 ⚠️ Some test meaningful edge cases (medium value)
 ❌ Many test trivial error messages or logging (low value)
@@ -167,7 +191,7 @@ returns the correct type or that objects have expected attributes. These are
 **Average Mocks Per Test:** 0.74
 **Trivial Assertions:** 40 instances of `assert True` / `# Placeholder`
 
-**Breakdown by Subdomain:**
+### Breakdown by Subdomain
 
 | Subdomain              | Estimated Tests | Value Assessment                    |
 | ---------------------- | --------------- | ----------------------------------- |
@@ -182,7 +206,8 @@ returns the correct type or that objects have expected attributes. These are
 | **Services**           | ~200            | ★★★☆☆ MEDIUM (business logic)       |
 | **Models**             | ~100            | ★★☆☆☆ LOW (trivial getters/setters) |
 
-**Assessment:**
+### Assessment
+
 ✅ Most unit tests verify business logic and user-facing behavior
 ⚠️ Infrastructure tests (454) verify framework behavior (low value)
 ⚠️ Model tests likely test trivial properties (low value)
@@ -193,15 +218,19 @@ returns the correct type or that objects have expected attributes. These are
 ### 2.5 Infrastructure Test Review (★☆☆☆☆ LOW VALUE)
 
 **Count:** 454 tests (12% of unit tests)
-**Estimated Value:** **20% MEDIUM-VALUE, 80% LOW-VALUE**
 
-**Pattern Analysis:**
-- 112 instances of `assert isinstance` / `assert hasattr` / `assert callable`
+### Estimated Value:****20% MEDIUM-VALUE, 80% LOW-VALUE
+
+### Pattern Analysis
+
+112 instances of `assert isinstance` / `assert hasattr` / `assert callable`
+
 - Testing that dependency injection returns correct types
 - Testing that objects have expected attributes
 - Testing that functions are callable (trivial)
 
-**Example Low-Value Tests:**
+### Example Low-Value Tests
+
 ```python
 def test_get_player_service_function():
     service = get_player_service(mock_request)
@@ -209,7 +238,8 @@ def test_get_player_service_function():
     assert hasattr(service, "persistence")     # Would fail at runtime immediately
 ```
 
-**Assessment:**
+### Assessment
+
 ❌ Tests Python/FastAPI framework behavior, not our code
 ❌ Would fail immediately at runtime if broken (no regression protection)
 ❌ High maintenance cost (break on every refactoring)
@@ -220,17 +250,21 @@ def test_get_player_service_function():
 ### 2.6 E2E Test Analysis (★★★★★ HIGH VALUE)
 
 **Count:** 67 tests across 6 files
-**Estimated Value:** **100% HIGH-VALUE**
 
-**Files:**
-- `test_multiplayer_integration.py` - Multi-player real-time interactions
+### Estimated Value:****100% HIGH-VALUE
+
+### Files
+
+`test_multiplayer_integration.py` - Multi-player real-time interactions
+
 - `test_logout_integration.py` - Complete logout workflow
 - `test_combat_scenarios.py` - Combat workflows
 - `test_game_mechanics.py` - Core game mechanics
 - `test_dual_connection_testing_strategy.py` - Connection handling
 - `test_multiplayer_connection_messaging.py` - Real-time messaging
 
-**Assessment:**
+### Assessment
+
 ✅ Tests complete user workflows end-to-end
 ✅ Tests real-time multiplayer interactions
 ✅ High user impact if these fail
@@ -241,9 +275,11 @@ def test_get_player_service_function():
 ### 2.7 Security Test Analysis (★★★★★ HIGH VALUE)
 
 **Count:** 121 tests across 7 files
-**Estimated Value:** **100% HIGH-VALUE**
 
-**Assessment:**
+### Estimated Value:****100% HIGH-VALUE
+
+### Assessment
+
 ✅ Tests security vulnerabilities (XSS, injection, etc.)
 ✅ Tests authentication/authorization bypass attempts
 ✅ Tests file containment and path traversal
@@ -288,7 +324,9 @@ def test_get_player_service_function():
 Based on scoring matrix and test counts:
 
 #### 🔴 CRITICAL VALUE TESTS (Score ≥75): **1,272 tests (25.6%)**
-- Regression: 31 tests (100%)
+
+Regression: 31 tests (100%)
+
 - Security: 121 tests (100%)
 - E2E: 67 tests (100%)
 - Integration (critical paths): 390 tests (70% of 554)
@@ -299,7 +337,9 @@ Based on scoring matrix and test counts:
 **Estimated Time:** ~8-10 minutes
 
 #### 🟡 IMPORTANT VALUE TESTS (Score 50-74): **2,943 tests (59.3%)**
-- Integration (secondary): 164 tests (30% of 554)
+
+Integration (secondary): 164 tests (30% of 554)
+
 - Unit (Commands - edge cases): 180 tests (30% of ~600)
 - Unit (Chat - edge cases): 150 tests (30% of ~500)
 - Unit (Player - edge cases): 120 tests (30% of ~400)
@@ -316,7 +356,9 @@ Based on scoring matrix and test counts:
 **Estimated Time:** ~17-18 minutes
 
 #### 🟢 LOW VALUE TESTS (Score <50): **750 tests (15.1%)**
-- Unit (Infrastructure): 454 tests (100%)
+
+Unit (Infrastructure): 454 tests (100%)
+
 - Unit (Models): ~100 tests (trivial property tests)
 - Unit (Realtime - framework tests): 120 tests (30% of ~400)
 - Coverage (metric-driven): 88 tests (70% of 126)
@@ -330,57 +372,77 @@ Based on scoring matrix and test counts:
 ### 4.1 Pruning Candidates (750 tests, ~5 minutes savings)
 
 #### HIGH-PRIORITY PRUNE (454 tests, ~3 minutes)
+
 **Target:** `server/tests/unit/infrastructure/`
 
-**Specific Files to Remove/Drastically Reduce:**
+### Specific Files to Remove/Drastically Reduce
+
 1. **`test_dependency_injection_functions.py`** (291 lines)
-   - **Tests:** Verifying `isinstance`, `hasattr`, `callable`
-   - **Why Prune:** Tests framework behavior, would fail at runtime
+
+   **Tests:** Verifying `isinstance`, `hasattr`, `callable`
+
+   **Why Prune:** Tests framework behavior, would fail at runtime
    - **Recommendation:** Keep 2-3 integration tests, remove 15+ trivial tests
 
 2. **`test_dependency_injection.py`** (774 lines)
-   - **Tests:** Similar DI verification tests
-   - **Why Prune:** Duplicates `test_dependency_functions.py`
+
+   **Tests:** Similar DI verification tests
+
+   **Why Prune:** Duplicates `test_dependency_functions.py`
    - **Recommendation:** Merge with `test_dependency_functions.py`, remove duplicates
 
 3. **`test_dependency_functions.py`** (332 lines)
-   - **Tests:** More DI verification
-   - **Why Prune:** Same pattern as above
+
+   **Tests:** More DI verification
+
+   **Why Prune:** Same pattern as above
    - **Recommendation:** Keep 5-10 most meaningful tests, remove rest
 
 4. **`test_app_factory.py`**
-   - **Tests:** CORS middleware configuration assertions
-   - **Why Prune:** Tests FastAPI middleware behavior
+
+   **Tests:** CORS middleware configuration assertions
+
+   **Why Prune:** Tests FastAPI middleware behavior
    - **Recommendation:** Keep 3-5 configuration tests, remove trivia
 
 **Estimated Savings:** ~350 tests removed, ~3 minutes saved, ~100 tests kept for real DI verification
 
 #### MEDIUM-PRIORITY PRUNE (88 tests, ~1 minute)
+
 **Target:** `server/tests/coverage/`
 
-**Specific Files to Review:**
+### Specific Files to Review
+
 1. **`test_command_handler_coverage.py`** (1,039 lines, ~50 tests)
-   - **Keep:** Tests for command validation edge cases
-   - **Remove:** Tests that just execute code without assertions
+
+   **Keep:** Tests for command validation edge cases
+
+   **Remove:** Tests that just execute code without assertions
    - **Recommendation:** Reduce by 30-40% (remove pure metric tests)
 
 2. **`test_error_logging_coverage.py`** (691 lines, ~30 tests)
-   - **Keep:** Tests verifying error handling behavior
-   - **Remove:** Tests that just verify logs were written
+
+   **Keep:** Tests verifying error handling behavior
+
+   **Remove:** Tests that just verify logs were written
    - **Recommendation:** Reduce by 50% (logging is nice-to-have)
 
 **Estimated Savings:** ~60 tests removed, ~1 minute saved
 
 #### LOW-PRIORITY PRUNE (100+ tests, ~1 minute)
+
 **Target:** Unit tests for trivial model properties
 
-**Specific Patterns to Remove:**
-- Tests that verify getters return values
+### Specific Patterns to Remove
+
+Tests that verify getters return values
+
 - Tests that verify setters assign values
 - Tests that verify `__repr__` returns string
 - Tests that verify default values
 
-**Example Low-Value Pattern:**
+### Example Low-Value Pattern
+
 ```python
 def test_player_name_property():
     player = Player(name="Test")
@@ -392,12 +454,15 @@ def test_player_name_property():
 ### 4.2 Consolidation Opportunities
 
 #### Parametrization Opportunities
+
 **Current:** 0 uses of `@pytest.mark.parametrize`
 **Opportunity:** Consolidate similar tests using parametrization
 
-**Example Consolidation:**
+### Example Consolidation
+
 ```python
 # BEFORE: 10 separate tests (10x code)
+
 def test_say_with_no_message(): ...
 def test_say_with_empty_message(): ...
 def test_emote_with_no_message(): ...
@@ -405,6 +470,7 @@ def test_emote_with_empty_message(): ...
 # ... etc
 
 # AFTER: 1 parametrized test (1x code, same coverage)
+
 @pytest.mark.parametrize("command,args,expected_error", [
     ("say", [], "requires a message"),
     ("say", [""], "requires a message"),
@@ -425,44 +491,58 @@ def test_command_validation_errors(command, args, expected_error):
 Based on the organization structure, potential gaps:
 
 1. **Domain Layer** (`server/domain/`)
-   - **Current:** Domain layer just created, no tests yet
-   - **Gap:** 0 tests for domain entities, value objects, repositories
+
+   **Current:** Domain layer just created, no tests yet
+
+   **Gap:** 0 tests for domain entities, value objects, repositories
    - **Recommendation:** Add integration tests when domain migrations occur
 
 2. **Message Broker Abstraction** (`server/infrastructure/message_broker.py`)
-   - **Current:** New abstraction created, minimal tests
-   - **Gap:** No tests verifying MessageBroker protocol compliance
+
+   **Current:** New abstraction created, minimal tests
+
+   **Gap:** No tests verifying MessageBroker protocol compliance
    - **Recommendation:** Add 10-15 integration tests
 
 3. **ApplicationContainer** (`server/container.py`)
-   - **Current:** Container just created, only infrastructure tests
-   - **Gap:** No integration tests verifying container lifecycle
+
+   **Current:** Container just created, only infrastructure tests
+
+   **Gap:** No integration tests verifying container lifecycle
    - **Recommendation:** Add 5-10 integration tests for initialization/shutdown
 
 4. **Error Recovery Paths**
-   - **Observation:** Most tests focus on happy paths
-   - **Gap:** Limited tests for error recovery and graceful degradation
+
+   **Observation:** Most tests focus on happy paths
+
+   **Gap:** Limited tests for error recovery and graceful degradation
    - **Recommendation:** Add targeted error scenario tests
 
 ### 4.4 Optimization Recommendations
 
 #### Immediate Actions (High ROI)
 
-**1. Prune Infrastructure Tests (Save ~3 minutes, Remove ~350 tests)**
-- Remove trivial `assert isinstance` / `assert hasattr` tests
+### 1. Prune Infrastructure Tests (Save ~3 minutes, Remove ~350 tests)
+
+Remove trivial `assert isinstance` / `assert hasattr` tests
+
 - Keep only 5-10 meaningful DI integration tests
 - **Files:** `test_dependency_injection*.py` (3 files)
 - **Impact:** 7% fewer tests, 10% time savings, NO loss of coverage
 
-**2. Consolidate Coverage Tests (Save ~1 minute, Reduce ~60 tests)**
-- Remove pure metric-driven tests
+### 2. Consolidate Coverage Tests (Save ~1 minute, Reduce ~60 tests)
+
+Remove pure metric-driven tests
+
 - Keep meaningful edge case tests
 - Merge remaining into relevant domain test files
 - **Files:** `test_*_coverage.py` (7 files)
 - **Impact:** 1.2% fewer tests, 3% time savings, minimal coverage loss
 
-**3. Parametrize Repetitive Tests (Save ~1 minute, Reduce ~300 tests)**
-- Convert 500 similar tests into 200 parametrized tests
+### 3. Parametrize Repetitive Tests (Save ~1 minute, Reduce ~300 tests)
+
+Convert 500 similar tests into 200 parametrized tests
+
 - Focus on command validation, error messages, edge cases
 - **Files:** All test files with repetitive patterns
 - **Impact:** 6% fewer tests, 3% time savings, SAME coverage, better maintainability
@@ -471,26 +551,34 @@ Based on the organization structure, potential gaps:
 
 #### Medium-Term Actions
 
-**4. Migrate Model Tests to Property-Based Testing**
-- Replace ~100 trivial property tests with 5-10 property-based tests using Hypothesis
-- **Impact:** 2% fewer tests, better edge case coverage
+### 4. Migrate Model Tests to Property-Based Testing
 
-**5. Add Critical Integration Tests for New Architecture**
-- ApplicationContainer lifecycle: 10 tests
+Replace ~100 trivial property tests with 5-10 property-based tests using Hypothesis
+
+**Impact:** 2% fewer tests, better edge case coverage
+
+### 5. Add Critical Integration Tests for New Architecture
+
+ApplicationContainer lifecycle: 10 tests
+
 - MessageBroker abstraction: 15 tests
 - Domain layer (when migrated): 20 tests
 - **Impact:** +45 tests, +0.3 minutes, close coverage gaps
 
 #### Long-Term Actions
 
-**6. Continuous Test Quality Review**
-- Establish rule: New tests must justify their value
+### 6. Continuous Test Quality Review
+
+Establish rule: New tests must justify their value
+
 - Reject tests that only verify framework behavior
 - Require all new tests to follow AAA pattern
 - Monthly review of test suite metrics
 
-**7. Test Performance Optimization**
-- Identify and optimize slowest 100 tests
+### 7. Test Performance Optimization
+
+Identify and optimize slowest 100 tests
+
 - Consider parallel test execution for independent tests
 - **Potential:** Additional 5-10 minute savings
 
@@ -499,25 +587,41 @@ Based on the organization structure, potential gaps:
 ## Summary: Test Quality Metrics
 
 ### Current State
-- **Total Tests:** 4,965
-- **Execution Time:** ~30 minutes
-- **Critical Tests:** ~1,272 (25.6%)
-- **Important Tests:** ~2,943 (59.3%)
-- **Low-Value Tests:** ~750 (15.1%)
+
+**Total Tests:** 4,965
+
+**Execution Time:** ~30 minutes
+
+**Critical Tests:** ~1,272 (25.6%)
+
+**Important Tests:** ~2,943 (59.3%)
+
+**Low-Value Tests:** ~750 (15.1%)
 
 ### Optimized State (After Pruning)
-- **Total Tests:** 4,255 (-710 tests, -14%)
-- **Execution Time:** ~25 minutes (-5 minutes, -17%)
-- **Critical Tests:** ~1,272 (29.9%, +4.3%)
-- **Important Tests:** ~2,943 (69.2%, +9.9%)
-- **Low-Value Tests:** ~40 (0.9%, -14.2%)
+
+**Total Tests:** 4,255 (-710 tests, -14%)
+
+**Execution Time:** ~25 minutes (-5 minutes, -17%)
+
+**Critical Tests:** ~1,272 (29.9%, +4.3%)
+
+**Important Tests:** ~2,943 (69.2%, +9.9%)
+
+**Low-Value Tests:** ~40 (0.9%, -14.2%)
 
 ### Value Proposition
-**By removing 15% of tests, we:**
-- ✅ Save 17% execution time (~5 minutes)
-- ✅ Maintain 100% of critical coverage
-- ✅ Improve signal-to-noise ratio significantly
-- ✅ Reduce maintenance burden
+
+### By removing 15% of tests, we
+
+✅ Save 17% execution time (~5 minutes)
+
+✅ Maintain 100% of critical coverage
+
+✅ Improve signal-to-noise ratio significantly
+
+✅ Reduce maintenance burden
+
 - ✅ Make test failures more meaningful
 
 ---
@@ -536,19 +640,19 @@ Based on the organization structure, potential gaps:
 
 ### Phase B: Medium Effort (4-8 hours effort)
 
-6. **Parametrize:** Command validation tests (consolidate ~100 tests into ~30)
-7. **Parametrize:** Error message tests (consolidate ~80 tests into ~25)
-8. **Review and prune:** Model property tests (~50 tests)
-9. **Merge:** Coverage tests into domain test files
+1. **Parametrize:** Command validation tests (consolidate ~100 tests into ~30)
+2. **Parametrize:** Error message tests (consolidate ~80 tests into ~25)
+3. **Review and prune:** Model property tests (~50 tests)
+4. **Merge:** Coverage tests into domain test files
 
 **Impact:** -300 tests, -2 minutes, 6 hours effort
 
 ### Phase C: Strategic Enhancements (8-16 hours effort)
 
-10. **Add:** ApplicationContainer integration tests (10 tests)
-11. **Add:** MessageBroker protocol tests (15 tests)
-12. **Add:** Error recovery scenario tests (20 tests)
-13. **Convert:** Property tests to Hypothesis-based tests (reduce 100 to 10)
+1. **Add:** ApplicationContainer integration tests (10 tests)
+2. **Add:** MessageBroker protocol tests (15 tests)
+3. **Add:** Error recovery scenario tests (20 tests)
+4. **Convert:** Property tests to Hypothesis-based tests (reduce 100 to 10)
 
 **Impact:** -55 tests, maintain time, close critical gaps, 12 hours effort
 
@@ -556,29 +660,37 @@ Based on the organization structure, potential gaps:
 
 ## Conclusion
 
-**Answer to Your Question:**
+### Answer to Your Question
 
 > "What percentage of our tests provide critical coverage and protection from regression bugs?"
 
-**~25-30% (1,250-1,500 tests) provide CRITICAL protection.**
+### ~25-30% (1,250-1,500 tests) provide CRITICAL protection
 
 These are:
-- **100% of Regression tests** (31 tests) — Proven bug protection
-- **100% of Security tests** (121 tests) — Vulnerability prevention
-- **100% of E2E tests** (67 tests) — User workflow validation
-- **70% of Integration tests** (390 tests) — Critical path verification
-- **70% of User-Facing Unit tests** (640-840 tests) — Core business logic
+**100% of Regression tests** (31 tests) — Proven bug protection
 
-**The remaining 70-75% provide:**
-- **50-60%:** Important behavioral validation (worth keeping)
-- **10-15%:** Low value (candidates for pruning)
+**100% of Security tests** (121 tests) — Vulnerability prevention
 
-**Recommended Action:**
+**100% of E2E tests** (67 tests) — User workflow validation
 
-Focus on the **Quick Wins (Phase A)** to remove ~200 low-value tests and save 2 minutes execution time with minimal effort. This will improve the test suite's signal-to-noise ratio from 85% to 96% valuable tests.
+**70% of Integration tests** (390 tests) — Critical path verification
+
+**70% of User-Facing Unit tests** (640-840 tests) — Core business logic
+
+### The remaining 70-75% provide
+
+**50-60%:** Important behavioral validation (worth keeping)
+
+**10-15%:** Low value (candidates for pruning)
+
+### Recommended Action
+
+Focus on the **Quick Wins (Phase A)** to remove ~200 low-value tests and save 2 minutes execution time with minimal
+effort. This will improve the test suite's signal-to-noise ratio from 85% to 96% valuable tests.
 
 ---
 
-*"The path to test enlightenment lies not in the quantity of tests, but in their quality and purpose. A small suite of meaningful tests guards the codebase better than a vast library of ceremonial validations."*
+*"The path to test enlightenment lies not in the quantity of tests, but in their quality and purpose. A small suite of
+meaningful tests guards the codebase better than a vast library of ceremonial validations."*
 
 — From the Pnakotic Manuscripts of Software Quality, Volume VII

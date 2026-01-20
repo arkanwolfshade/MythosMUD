@@ -7,35 +7,41 @@
 The MythosMUD server currently uses Pydantic v2 with inconsistent patterns:
 
 ```python
-# Current problematic patterns found:
+# Current problematic patterns found
 
 # 1. Inconsistent configuration
+
 class SomeModel(BaseModel):
     # No model_config - security risk
 
 # 2. Unsafe Any types
+
 class PlayerCreate(BaseModel):
     stats: dict[str, Any]  # Type safety risk
 
 # 3. Duplicate validation logic
+
 class SayCommand(BaseCommand):
     @field_validator("message")
     def validate_message(cls, v):
         # Duplicated validation logic
 
 # 4. Poor error handling
+
 try:
     model = SomeModel(**data)
 except ValidationError:
     # Generic error handling
+
 ```
 
 ### Target Architecture
 
 ```python
-# Target secure patterns:
+# Target secure patterns
 
 # 1. Consistent base classes
+
 class SecureBaseModel(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
@@ -47,22 +53,26 @@ class SecureBaseModel(BaseModel):
     )
 
 # 2. Proper typing
+
 class StatsModel(SecureBaseModel):
     strength: int = Field(ge=1, le=20)
     dexterity: int = Field(ge=1, le=20)
     # ... other fields with proper types
 
 # 3. Centralized validation
+
 class MessageValidator:
     @staticmethod
     def validate_message(v: str) -> str:
         # Centralized validation logic
 
 # 4. Structured error handling
+
 class ValidationErrorHandler:
     @staticmethod
     def handle_validation_error(error: ValidationError) -> dict:
         # Structured error responses
+
 ```
 
 ## Security Implementation
@@ -78,9 +88,11 @@ class InputSanitizer:
     """Centralized input sanitization for security."""
 
     # Dangerous character patterns
+
     DANGEROUS_CHARS = ["<", ">", "&", '"', "'", ";", "|", "`", "$", "(", ")"]
 
     # Injection patterns
+
     INJECTION_PATTERNS = [
         r"\b(and|or)\s*=\s*['\"]?\w+",  # SQL injection
         r"__import__\(|eval\(|exec\(|system\(|os\.",  # Python injection
@@ -94,15 +106,18 @@ class InputSanitizer:
             raise ValueError("Input must be a string")
 
         # Length validation
+
         if len(text) > max_length:
             raise ValueError(f"Input too long: {len(text)} > {max_length}")
 
         # Dangerous character check
+
         found_chars = [char for char in cls.DANGEROUS_CHARS if char in text]
         if found_chars:
             raise ValueError(f"Dangerous characters detected: {found_chars}")
 
         # Injection pattern check
+
         for pattern in cls.INJECTION_PATTERNS:
             if re.search(pattern, text, re.IGNORECASE):
                 raise ValueError("Injection pattern detected")
@@ -140,6 +155,7 @@ class SecureBaseModel(BaseModel):
 
     model_config = ConfigDict(
         # Security settings
+
         extra="forbid",  # Prevent field injection
         validate_assignment=True,  # Runtime validation
         use_enum_values=True,  # Enum validation
@@ -148,6 +164,7 @@ class SecureBaseModel(BaseModel):
         arbitrary_types_allowed=False,  # Type safety
 
         # Performance settings
+
         from_attributes=True,  # ORM compatibility
         populate_by_name=True,  # Field alias support
     )
@@ -175,6 +192,7 @@ class ValidatedModel(SecureBaseModel):
     def validate_all_fields(cls, values: dict[str, Any]) -> dict[str, Any]:
         """Validate all fields with security checks."""
         # Apply common validations
+
         for key, value in values.items():
             if isinstance(value, str):
                 values[key] = InputSanitizer.sanitize_text(value)
@@ -208,6 +226,7 @@ class BaseCommand(SecureBaseModel):
     """Base class for all commands with security features."""
 
     # Common validation mixin
+
     _validator = MessageValidator()
 
 class MessageCommand(BaseCommand):
@@ -231,6 +250,7 @@ class PlayerCommand(BaseCommand):
         return PlayerCommand._validator.validate_player_name(v)
 
 # Specific command implementations
+
 class SayCommand(MessageCommand):
     """Command for saying something to other players."""
     command_type: Literal[CommandType.SAY] = CommandType.SAY
@@ -299,25 +319,30 @@ class StatsModel(SecureBaseModel):
     """Character statistics with proper validation."""
 
     # Physical Attributes
+
     strength: int = Field(ge=1, le=20, description="Physical power and combat damage")
     dexterity: int = Field(ge=1, le=20, description="Agility, reflexes, and speed")
     constitution: int = Field(ge=1, le=20, description="Health, stamina, and resistance")
 
     # Mental Attributes
+
     intelligence: int = Field(ge=1, le=20, description="Problem-solving and magical aptitude")
     wisdom: int = Field(ge=1, le=20, description="Perception, common sense, and willpower")
     charisma: int = Field(ge=1, le=20, description="Social skills and influence")
 
     # Horror-Specific Attributes
+
     lucidity: int = Field(ge=0, le=100, default=100, description="Mental stability")
     occult_knowledge: int = Field(ge=0, le=100, default=0, description="Knowledge of forbidden lore")
     fear: int = Field(ge=0, le=100, default=0, description="Susceptibility to terror")
 
     # Special Attributes
+
     corruption: int = Field(ge=0, le=100, default=0, description="Taint from dark forces")
     cult_affiliation: int = Field(ge=0, le=100, default=0, description="Cult ties")
 
     # Current health
+
     current_health: int = Field(ge=0, default=100, description="Current health points")
 
     @computed_field
@@ -353,6 +378,7 @@ class InventoryItemModel(SecureBaseModel):
     @classmethod
     def validate_custom_properties(cls, v: Dict[str, Any]) -> Dict[str, Any]:
         # Validate custom properties don't contain dangerous content
+
         for key, value in v.items():
             if isinstance(value, str):
                 v[key] = InputSanitizer.sanitize_text(value, max_length=1000)
@@ -371,10 +397,12 @@ class PlayerModel(SecureBaseModel):
     last_active: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     # Game state
+
     experience_points: int = Field(ge=0, default=0)
     level: int = Field(ge=1, default=1)
 
     # Admin privileges
+
     is_admin: bool = Field(default=False)
 
     @field_validator("name")
@@ -422,6 +450,7 @@ class UserCreate(UserBase):
     @classmethod
     def validate_password(cls, v: str) -> str:
         # Basic password strength validation
+
         if len(v) < 8:
             raise ValueError("Password must be at least 8 characters long")
         if not re.search(r"[A-Z]", v):
@@ -442,6 +471,7 @@ class UserRead(UserBase):
     model_config = ConfigDict(
         from_attributes=True,
         # Exclude sensitive fields from serialization
+
         json_schema_extra={"exclude": ["password"]}
     )
 
@@ -520,6 +550,7 @@ class PlayerRead(PlayerBase):
         from_attributes=True,
         populate_by_name=True,
         # Exclude sensitive fields
+
         json_schema_extra={"exclude": ["user_id"]}
     )
 
@@ -568,6 +599,7 @@ class ValidationErrorHandler:
         """Convert ValidationError to secure error response."""
 
         # Log the error for debugging (without sensitive data)
+
         logger.warning(
             "Validation error occurred",
             error_count=len(error.errors()),
@@ -575,6 +607,7 @@ class ValidationErrorHandler:
         )
 
         # Create secure error response
+
         response = {
             "error": "Validation failed",
             "detail": "One or more fields failed validation",
@@ -582,6 +615,7 @@ class ValidationErrorHandler:
         }
 
         # Process individual field errors
+
         for error_detail in error.errors():
             field_error = {
                 "field": error_detail.get("loc", ["unknown"])[-1],
@@ -592,6 +626,7 @@ class ValidationErrorHandler:
             }
 
             # Add input value if safe to do so
+
             if "input" in error_detail:
                 input_value = error_detail["input"]
                 if isinstance(input_value, (str, int, float, bool)):
@@ -606,6 +641,7 @@ class ValidationErrorHandler:
         """Sanitize error messages to prevent information leakage."""
 
         # Remove potentially sensitive information
+
         sensitive_patterns = [
             r"password",
             r"secret",
@@ -661,6 +697,7 @@ class PerformanceModel(SecureBaseModel):
 
     model_config = ConfigDict(
         # Performance settings
+
         validate_assignment=False,  # Disable runtime validation for performance
         validate_default=False,     # Disable default validation
         extra="ignore",             # Allow extra fields for flexibility
@@ -668,6 +705,7 @@ class PerformanceModel(SecureBaseModel):
 
     def __init__(self, **data):
         # Only validate on initialization
+
         super().__init__(**data)
 ```
 
@@ -719,11 +757,13 @@ class SecurityTestSuite:
         """Test rate limiting validation."""
 
         # Test rapid validation attempts
+
         for i in range(1000):
             try:
                 SayCommand(message=f"test message {i}")
             except ValidationError:
                 # Expected after rate limit exceeded
+
                 break
 
     @staticmethod
@@ -736,6 +776,7 @@ class SecurityTestSuite:
         error_response = ValidationErrorHandler.handle_validation_error(exc_info.value)
 
         # Ensure no sensitive information in error messages
+
         assert "password" not in str(error_response)
         assert "secret" not in str(error_response)
 ```
@@ -753,10 +794,12 @@ class MigrationHelper:
         """Migrate old player data to new model format."""
 
         # Convert old stats dict to StatsModel
+
         if isinstance(old_data.get("stats"), dict):
             old_data["stats"] = StatsModel(**old_data["stats"])
 
         # Convert old inventory list to InventoryItemModel list
+
         if isinstance(old_data.get("inventory"), list):
             old_data["inventory"] = [
                 InventoryItemModel(**item) if isinstance(item, dict) else item
@@ -764,6 +807,7 @@ class MigrationHelper:
             ]
 
         # Convert old status effects
+
         if isinstance(old_data.get("status_effects"), list):
             old_data["status_effects"] = [
                 StatusEffectModel(**effect) if isinstance(effect, dict) else effect
@@ -777,6 +821,7 @@ class MigrationHelper:
         """Validate that migration was successful."""
         try:
             # Ensure new model can be serialized and deserialized
+
             serialized = new_model.model_dump()
             deserialized = new_model.__class__(**serialized)
             return True

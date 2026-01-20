@@ -22,30 +22,37 @@
 
 **Session**: `2025-12-03_session-002_room-occupants-display`
 **Problems**:
+
 1. NPCs displayed as UUIDs instead of display names
 2. NPCs listed twice (duplicates)
 3. Current player missing from Players list
 
 **Root Causes**:
+
 1. `room_subscription_manager.get_room_occupants()` was setting `"player_name": npc_id` instead of actual NPC display name
 2. NPCs were being queried TWICE (once from room_manager, once from lifecycle manager directly)
 3. Current player was excluded from occupants list (incorrect exclusion logic)
 
 **Solutions**:
+
 1. **Fix NPC Display Names** (`room_subscription_manager.py` lines 347-369):
+
    - Resolve NPC display name from lifecycle_manager.active_npcs[npc_id].name
    - Use display name instead of npc_id in occupant dict
 
 2. **Remove Duplicate NPC Querying** (`connection_manager.py` lines 3291-3320):
+
    - Removed redundant NPC lifecycle manager query
    - Now relies solely on room_manager.get_room_occupants() which already includes NPCs
 
 3. **Include Current Player** (`connection_manager.py` lines 3307-3318):
+
    - Changed logic to include current player in structured lists
    - Separated occupants into player_names_list and npc_names_list based on is_npc flag
    - Populate room_data["players"] and room_data["npcs"] for new UI
 
 **Files Modified**:
+
 - `server/realtime/room_subscription_manager.py`
 - `server/realtime/connection_manager.py`
 
@@ -63,9 +70,11 @@
 **anyio.mdc**: 7/7 criteria passed
 
 **Key Findings**:
-- ✅ All 48 blocking persistence calls properly wrapped in asyncio.to_thread()
-- ✅ No anti-patterns introduced
-- ✅ Consistent pattern application throughout
+✅ All 48 blocking persistence calls properly wrapped in asyncio.to_thread()
+
+✅ No anti-patterns introduced
+
+✅ Consistent pattern application throughout
 - ✅ Comprehensive error handling preserved
 - ✅ Resource management verified
 - ✅ Production-ready code quality
@@ -83,6 +92,7 @@
 **Average Time to Root Cause**: ~15-30 minutes per bug
 
 **Key Practices**:
+
 1. Generate 3-5 precise hypotheses before instrumenting
 2. Add minimal, targeted debug logs to test hypotheses
 3. Analyze runtime logs to confirm/reject each hypothesis
@@ -90,6 +100,7 @@
 5. Verify fix with post-fix logs before removing instrumentation
 
 **Tools Used**:
+
 - NDJSON debug logging to `.cursor/debug.log`
 - Structured server logging to `logs/local/`
 - Runtime evidence analysis
@@ -102,6 +113,7 @@
 ### **Production Code Changes**
 
 1. **`server/realtime/connection_manager.py`**
+
    - Added PlayerService integration for complete player data in game_state
    - Fixed occupant list building to avoid NPC duplicates
    - Added structured player_names_list and npc_names_list
@@ -109,27 +121,32 @@
    - Include current player in occupants display
 
 2. **`server/realtime/room_subscription_manager.py`**
+
    - Fixed NPC occupant dict to use display name instead of npc_id
    - Added name resolution from lifecycle_manager.active_npcs
 
 ### **Documentation Created**
 
 1. **`docs/ASYNC_CODE_REVIEW_POST_MIGRATION.md`**
+
    - Comprehensive review of async migration against best practices
    - 100% compliance verification
    - Best practice examples and recommendations
 
 2. **`investigations/sessions/2025-12-03_session-001_character-info-panel.md`**
+
    - Complete investigation report for Character Info panel bug
    - Root cause analysis with runtime evidence
    - Fix verification and impact assessment
 
 3. **`investigations/sessions/2025-12-03_session-002_room-occupants-display.md`**
+
    - Investigation report for Room Occupants panel issues
    - Multiple hypothesis testing and failed attempts documented
    - Final solution with holistic architecture analysis
 
 4. **`investigations/sessions/2025-12-03_FINAL_SUMMARY.md`**
+
    - Executive summary of all work completed
    - Code quality review results
    - Investigation methodology documentation
@@ -165,9 +182,11 @@
 
 ### **All Panels Working**
 
-- ✅ **Character Info**: Shows complete stats, health, lucidity, profession
-- ✅ **Location**: Displays room location correctly
-- ✅ **Room Description**: Shows room description
+✅ **Character Info**: Shows complete stats, health, lucidity, profession
+
+✅ **Location**: Displays room location correctly
+
+✅ **Room Description**: Shows room description
 - ✅ **Occupants**:
   - Players column shows "ArkanWolfshade"
   - NPCs column shows display names (no UUIDs)
@@ -176,9 +195,11 @@
 
 ### **System Stability**
 
-- ✅ Authentication works (no hanging)
-- ✅ Websocket connections establish successfully
-- ✅ Game ticks functioning
+✅ Authentication works (no hanging)
+
+✅ Websocket connections establish successfully
+
+✅ Game ticks functioning
 - ✅ All async migration changes operational
 - ✅ No linting errors
 - ✅ No runtime errors

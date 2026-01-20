@@ -22,36 +22,42 @@ This document explains the conversion of E2E test scenarios from AI Agent + Play
 **Converted Scenarios**:
 
 1. **Scenario 11: Local Channel Errors**
+
    - Original: MCP scenario requiring manual execution
    - Converted to: 8 automated tests in `error-handling/local-channel-errors.spec.ts`
    - **Why**: Tests error conditions with single player - no multi-player coordination needed
    - **Benefit**: Runs in <1 minute, fully automated in CI/CD
 
 2. **Scenario 14: Whisper Errors**
+
    - Original: MCP scenario with manual error testing
    - Converted to: 10 automated tests in `error-handling/whisper-errors.spec.ts`
    - **Why**: Error validation doesn't require actual message delivery to second player
    - **Benefit**: Tests run automatically, catch regressions early
 
 3. **Scenario 15: Whisper Rate Limiting**
+
    - Original: MCP scenario with 60-second wait
    - Converted to: 9 automated tests in `error-handling/whisper-rate-limiting.spec.ts`
    - **Why**: Rate limiting is per-player, testable without second player
    - **Benefit**: Consistent rate limit enforcement testing
 
 4. **Scenario 18: Whisper Logging**
+
    - Original: MCP scenario testing admin log access
    - Converted to: 9 automated tests in `admin/whisper-logging.spec.ts`
    - **Why**: Log access is single-player, privacy testing doesn't need real second player
    - **Benefit**: Admin permission system tested automatically
 
 5. **Scenario 20: Logout Errors**
+
    - Original: MCP scenario for logout error conditions
    - Converted to: 9 automated tests in `error-handling/logout-errors.spec.ts`
    - **Why**: Error conditions are client-side, don't require multi-player verification
    - **Benefit**: Network error simulation and recovery testing automated
 
 6. **Scenario 21: Logout Accessibility**
+
    - Original: MCP scenario for accessibility testing
    - Converted to: 25 automated tests in `accessibility/logout-accessibility.spec.ts`
    - **Why**: Accessibility features are UI-focused, no multi-player needed
@@ -63,27 +69,35 @@ This document explains the conversion of E2E test scenarios from AI Agent + Play
 
 **Converted Scenarios**:
 
-7. **Scenario 7: Who Command**
-   - **Automated**: 10 tests for command format, single-player visibility, response time
-   - **MCP Remains**: Multi-player list verification, real-time updates
+1. **Scenario 7: Who Command**
+
+   **Automated**: 10 tests for command format, single-player visibility, response time
+
+   **MCP Remains**: Multi-player list verification, real-time updates
    - **Split Ratio**: 70% automated, 30% MCP
    - **Benefit**: Core who command functionality tested automatically
 
-8. **Scenario 19: Logout Button**
-   - **Automated**: 13 tests for UI functionality, state changes, re-login
-   - **MCP Remains**: Logout message broadcasting to other players
+2. **Scenario 19: Logout Button**
+
+   **Automated**: 13 tests for UI functionality, state changes, re-login
+
+   **MCP Remains**: Logout message broadcasting to other players
    - **Split Ratio**: 80% automated, 20% MCP
    - **Benefit**: UI and state management fully automated
 
-9. **Scenario 12: Local Channel Integration**
-   - **Automated**: 11 tests for integration points (auth, location, errors)
-   - **MCP Remains**: Message broadcasting verification
+3. **Scenario 12: Local Channel Integration**
+
+   **Automated**: 11 tests for integration points (auth, location, errors)
+
+   **MCP Remains**: Message broadcasting verification
    - **Split Ratio**: 65% automated, 35% MCP
    - **Benefit**: Integration point failures caught early
 
-10. **Scenario 17: Whisper Integration**
-    - **Automated**: 12 tests for system integration, rate limiting, performance
-    - **MCP Remains**: Cross-player message delivery
+4. **Scenario 17: Whisper Integration**
+
+    **Automated**: 12 tests for system integration, rate limiting, performance
+
+    **MCP Remains**: Cross-player message delivery
     - **Split Ratio**: 70% automated, 30% MCP
     - **Benefit**: Integration and performance tested automatically
 
@@ -94,43 +108,55 @@ This document explains the conversion of E2E test scenarios from AI Agent + Play
 **Scenarios Remaining in MCP**:
 
 1. **Scenario 1: Basic Connection/Disconnection**
-   - **Why MCP**: Requires verifying connection messages broadcast to other players in real-time
+
+   **Why MCP**: Requires verifying connection messages broadcast to other players in real-time
 
 2. **Scenario 2: Clean Game State**
-   - **Why MCP**: Requires verifying multi-player state isolation
+
+   **Why MCP**: Requires verifying multi-player state isolation
 
 3. **Scenario 3: Movement Between Rooms**
-   - **Why MCP**: Requires verifying movement messages broadcast to other players
+
+   **Why MCP**: Requires verifying movement messages broadcast to other players
 
 4. **Scenario 4: Muting System/Emotes**
-   - **Why MCP**: Requires verifying muted player's messages are blocked for specific player
+
+   **Why MCP**: Requires verifying muted player's messages are blocked for specific player
 
 5. **Scenario 5: Chat Messages**
-   - **Why MCP**: Requires bidirectional chat message verification
+
+   **Why MCP**: Requires bidirectional chat message verification
 
 6. **Scenario 6: Admin Teleportation**
-   - **Why MCP**: Requires verifying teleportation effects on multiple players
+
+   **Why MCP**: Requires verifying teleportation effects on multiple players
 
 7. **Scenario 8: Local Channel Basic**
-   - **Why MCP**: Requires verifying same sub-zone message delivery
+
+   **Why MCP**: Requires verifying same sub-zone message delivery
 
 8. **Scenario 9: Local Channel Isolation**
-   - **Why MCP**: Requires verifying different sub-zone message isolation
+
+   **Why MCP**: Requires verifying different sub-zone message isolation
 
 9. **Scenario 10: Local Channel Movement**
-   - **Why MCP**: Requires verifying movement-based message routing
+
+   **Why MCP**: Requires verifying movement-based message routing
 
 10. **Scenario 13: Whisper Basic**
-    - **Why MCP**: Requires private message delivery verification between players
+
+    **Why MCP**: Requires private message delivery verification between players
 
 11. **Scenario 16: Whisper Movement**
-    - **Why MCP**: Requires cross-location whisper delivery verification
+
+    **Why MCP**: Requires cross-location whisper delivery verification
 
 ## Before & After Comparison
 
 ### Before Conversion
 
 **Testing Process**:
+
 1. Start server manually
 2. Invoke AI Agent to execute MCP scenario
 3. AI Agent coordinates multiple browser tabs via MCP
@@ -140,9 +166,11 @@ This document explains the conversion of E2E test scenarios from AI Agent + Play
 **Time**: 5-10 minutes per scenario × 21 scenarios = **105-210 minutes total**
 
 **Challenges**:
-- ❌ No CI/CD integration
-- ❌ Manual execution required
-- ❌ Expensive AI Agent resources
+❌ No CI/CD integration
+
+❌ Manual execution required
+
+❌ Expensive AI Agent resources
 - ❌ Slow feedback loop
 - ❌ No automated regression detection
 
@@ -151,6 +179,7 @@ This document explains the conversion of E2E test scenarios from AI Agent + Play
 **Testing Process**:
 
 **Automated Tests** (10 scenarios):
+
 ```bash
 make test-client-runtime
 ```
@@ -158,15 +187,18 @@ make test-client-runtime
 **Time**: <5 minutes for all automated tests
 
 **MCP Scenarios** (11 scenarios):
+
 - Still require manual AI Agent execution
 - Time: 5-8 minutes per scenario × 11 scenarios = **55-88 minutes**
 
 **Total Time**: ~60-93 minutes (vs 105-210 minutes before)
 
 **Benefits**:
-- ✅ 47% of scenarios automated
-- ✅ Full CI/CD integration
-- ✅ Immediate feedback on PRs
+✅ 47% of scenarios automated
+
+✅ Full CI/CD integration
+
+✅ Immediate feedback on PRs
 - ✅ ~50% time reduction
 - ✅ ~50% AI Agent cost reduction
 - ✅ Automated regression detection
@@ -207,14 +239,17 @@ make test-client-runtime
 Ask these questions:
 
 1. **Does it require real-time verification of message broadcasting to multiple players?**
+
    - Yes → MCP Only (Category C)
    - No → Continue to question 2
 
 2. **Does it test error conditions, accessibility, or single-player integration points?**
+
    - Yes → Full Automation (Category A)
    - No → Continue to question 3
 
 3. **Does it have both single-player and multi-player aspects?**
+
    - Yes → Partial Conversion (Category B)
    - No → MCP Only (Category C)
 
@@ -223,6 +258,7 @@ Ask these questions:
 **Category A**: Create automated test in `client/tests/e2e/runtime/`
 
 **Category B**:
+
 1. Create automated test for single-player aspects
 2. Update MCP scenario to focus only on multi-player aspects
 
@@ -237,6 +273,7 @@ Add entry to this guide explaining the categorization decision.
 ### Example 1: Full Conversion (Local Channel Errors)
 
 **Original MCP Steps** (from scenario-11):
+
 ```javascript
 // Step 1: Both players logged in
 // Step 2: AW sends empty local message
@@ -249,6 +286,7 @@ await mcp_playwright_browser_tab_select({index: 1});
 ```
 
 **Converted Automated Test**:
+
 ```typescript
 test('should reject empty local messages', async ({ page }) => {
   await loginAsPlayer(page, TEST_PLAYERS.ARKAN_WOLFSHADE.username, TEST_PLAYERS.ARKAN_WOLFSHADE.password);
@@ -267,6 +305,7 @@ test('should reject empty local messages', async ({ page }) => {
 ### Example 2: Partial Conversion (Who Command)
 
 **Automated Portion** (single-player aspects):
+
 ```typescript
 test('should display command output with proper format', async ({ page }) => {
   await loginAsPlayer(page, TEST_PLAYERS.ARKAN_WOLFSHADE.username, TEST_PLAYERS.ARKAN_WOLFSHADE.password);
@@ -281,6 +320,7 @@ test('should display command output with proper format', async ({ page }) => {
 ```
 
 **MCP Portion** (multi-player verification):
+
 - Verify multiple online players appear in list
 - Verify real-time updates when players connect/disconnect
 
@@ -312,9 +352,11 @@ test('should display command output with proper format', async ({ page }) => {
 
 The conversion from MCP scenarios to automated Playwright CLI tests has achieved:
 
-- **47% automation** of previously manual scenarios
-- **~50% time reduction** in total E2E test execution
-- **~50% cost reduction** in AI Agent resource usage
+**47% automation** of previously manual scenarios
+
+**~50% time reduction** in total E2E test execution
+
+**~50% cost reduction** in AI Agent resource usage
 - **100% CI/CD integration** for automated scenarios
 - **Improved reliability** through consistent test execution
 - **Faster feedback loops** for developers
@@ -326,6 +368,7 @@ The remaining 11 MCP scenarios focus on true multi-player coordination that cann
 **Document Version**: 1.0
 **Last Updated**: 2025-10-08
 **Related Documents**:
+
 - [E2E Testing Guide](./E2E_TESTING_GUIDE.md)
 - [Multiplayer Test Rules](../e2e-tests/MULTIPLAYER_TEST_RULES.md)
 - [Spec Document](../.agent-os/specs/2025-10-08-e2e-playwright-cli-conversion/spec.md)

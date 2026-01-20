@@ -12,18 +12,23 @@ Player **ArkanWolfshade** was forcibly disconnected from the game server while f
 
 ### Symptoms
 
-- **Player**: ArkanWolfshade
-- **Location**: Main Foyer (earth_arkhamcity_sanitarium_room_foyer_001)
-- **Combat**: Against Dr. Francis Morgan
+**Player**: ArkanWolfshade
+
+**Location**: Main Foyer (earth_arkhamcity_sanitarium_room_foyer_001)
+
+**Combat**: Against Dr. Francis Morgan
+
 - **Combat ID**: `7d314455-36af-49fb-98f2-41414cbd3064`
 - **Timing**: Disconnection occurred just as the killing blow would have been delivered
 - **NPC HP at disconnect**: 10 HP (exactly 10 damage needed for death)
 
 ### User Impact
 
-- **Severity**: High - Player loses progress, combat state, and potential rewards
-- **Frequency**: Unknown - First reported instance
-- **Reproducibility**: Not yet reproduced
+**Severity**: High - Player loses progress, combat state, and potential rewards
+
+**Frequency**: Unknown - First reported instance
+
+**Reproducibility**: Not yet reproduced
 
 ## Timeline Analysis
 
@@ -46,9 +51,12 @@ Based on `logs/local/combat.log`:
 
 Based on `logs/local/chat_system_2025-11-21.log`:
 
-- **04:17:33 UTC** (21:17:33 EST) - Player joined room
-- **04:19:08 UTC** (21:19:08 EST) - Player left room (disconnected)
-- **Duration in room**: ~1 minute 35 seconds
+**04:17:33 UTC** (21:17:33 EST) - Player joined room
+
+**04:19:08 UTC** (21:19:08 EST) - Player left room (disconnected)
+
+**Duration in room**: ~1 minute 35 seconds
+
 - **Disconnection timing**: 7 seconds BEFORE the final attack that would have killed the NPC
 
 ### Server Log Analysis
@@ -78,10 +86,12 @@ The critical issue is that the player was **disconnected 7 seconds BEFORE** the 
    ```
 
 2. **Persistence Layer** (persistence.log:131-136):
+
    - Shows "Room has 1 players in memory" until 21:19:08
    - After 21:19:08, no more room queries from this player
 
 3. **Combat System** (combat.log:32-33):
+
    - Last combat event at 21:19:15 (NPC at 10 HP)
    - No further combat events after player disconnection
 
@@ -178,16 +188,19 @@ When broadcasting to room:
 
 ### Immediate Impact
 
-- Player loses combat progress
+Player loses combat progress
+
 - NPC may not be properly despawned
 - XP rewards may not be awarded
 - Combat state may be left in inconsistent state
 
 ### Broader Impact
 
-- **Player Experience**: Significant frustration, loss of progress
-- **Combat System**: Potential for orphaned combat instances
-- **Database State**: Possible inconsistency between combat state and player state
+**Player Experience**: Significant frustration, loss of progress
+
+**Combat System**: Potential for orphaned combat instances
+
+**Database State**: Possible inconsistency between combat state and player state
 
 ## Evidence Collection
 
@@ -202,7 +215,8 @@ When broadcasting to room:
 
 ### Key Log Entries
 
-- Combat log line 32: NPC at 10 HP (final recorded state)
+Combat log line 32: NPC at 10 HP (final recorded state)
+
 - Server log line 2822-2827: `targets=set()` - no players found
 - Server log line 2829: `player_count=0` - connection lost
 
@@ -211,16 +225,19 @@ When broadcasting to room:
 ### Priority 1: Code Review
 
 1. **Review NPC death handling** (`server/services/npc_combat_integration_service.py:356-437`)
+
    - Check for unhandled exceptions
    - Verify async operation error handling
    - Ensure connection state is preserved during operations
 
 2. **Review combat end processing** (`server/services/combat_service.py:766-819`)
+
    - Check for exceptions during combat end
    - Verify event publishing error handling
    - Ensure player connections are not closed prematurely
 
 3. **Review connection manager** (`server/realtime/connection_manager.py`)
+
    - Check health check logic
    - Verify connection cleanup doesn't interfere with combat
    - Ensure connection state synchronization
@@ -272,7 +289,8 @@ When broadcasting to room:
 
 ## Related Files
 
-- `server/services/combat_service.py` - Combat processing
+`server/services/combat_service.py` - Combat processing
+
 - `server/services/npc_combat_integration_service.py` - NPC combat integration
 - `server/realtime/connection_manager.py` - Connection management
 - `server/services/combat_event_publisher.py` - Event publishing
@@ -294,26 +312,35 @@ Added comprehensive logging and defensive exception handling to prevent player d
 #### Changes Made
 
 1. **NPC Combat Integration Service** (`server/services/npc_combat_integration_service.py`):
-   - ✅ Added connection state checks before NPC death handling
-   - ✅ Added defensive exception handling around `handle_npc_death()` call
-   - ✅ Enhanced logging in `handle_npc_death()` method
+
+   ✅ Added connection state checks before NPC death handling
+
+   ✅ Added defensive exception handling around `handle_npc_death()` call
+
+   ✅ Enhanced logging in `handle_npc_death()` method
    - ✅ Added connection state checks before XP award operations
    - ✅ Added defensive exception handling around NPC despawn operations
    - ✅ All NPC death operations now catch and log exceptions without disconnecting players
 
 2. **Combat Service** (`server/services/combat_service.py`):
-   - ✅ Added connection state checks before NPC death event publishing
-   - ✅ Added defensive exception handling around NPC death event publishing
-   - ✅ Enhanced logging around NPC death operations
+
+   ✅ Added connection state checks before NPC death event publishing
+
+   ✅ Added defensive exception handling around NPC death event publishing
+
+   ✅ Enhanced logging around NPC death operations
    - ✅ Added defensive exception handling around XP award operations
    - ✅ Added defensive exception handling around combat end operations
    - ✅ All combat end operations now catch and log exceptions without disconnecting players
 
 #### Key Improvements
 
-- **Connection State Monitoring**: Checks player connection state before critical operations
-- **Defensive Exception Handling**: All NPC death operations wrapped in try-except blocks
-- **Enhanced Logging**: Detailed logging at every step of NPC death handling
+**Connection State Monitoring**: Checks player connection state before critical operations
+
+**Defensive Exception Handling**: All NPC death operations wrapped in try-except blocks
+
+**Enhanced Logging**: Detailed logging at every step of NPC death handling
+
 - **Graceful Degradation**: Operations continue even if some steps fail
 - **Player Protection**: Exceptions are logged but not raised, preventing disconnections
 
@@ -338,20 +365,25 @@ This ensures that even if NPC death handling encounters errors, the player remai
 ### Test Setup
 
 1. **Player State**:
+
    - Player: ArkanWolfshade
    - Initial State: Dead (0 HP, in limbo)
    - Action: Respawned via UI ("Rejoin the earthly plane" button)
    - Post-Respawn: 100/150 HP, Main Foyer location
 
 2. **Test Environment**:
+
    - Server: Running on localhost:54731
    - Client: Browser connected via WebSocket and SSE
    - Connection Status: Fully connected throughout test
 
 3. **Test Sequence**:
-   - ✅ Player respawned successfully
-   - ✅ Player navigated to Main Foyer (earth_arkhamcity_sanitarium_room_foyer_001)
-   - ✅ Player HP verified at 100/150 (full health)
+
+   ✅ Player respawned successfully
+
+   ✅ Player navigated to Main Foyer (earth_arkhamcity_sanitarium_room_foyer_001)
+
+   ✅ Player HP verified at 100/150 (full health)
    - ✅ Attack command sent: "attack Dr. Francis Morgan"
    - ✅ Command processed successfully
 
@@ -359,37 +391,48 @@ This ensures that even if NPC death handling encounters errors, the player remai
 
 #### Connection Stability
 
-- **Connection Status**: Player remained connected throughout all operations
-- **No Disconnections**: No forced disconnections observed during test
-- **Connection State**: Status showed "Connected" at all times
+**Connection Status**: Player remained connected throughout all operations
+
+**No Disconnections**: No forced disconnections observed during test
+
+**Connection State**: Status showed "Connected" at all times
+
 - **WebSocket/SSE**: Both connections maintained throughout test
 
 #### Combat System Response
 
-- **Attack Command**: Successfully processed by server
-- **Response Time**: Normal response time observed
-- **Combat State**: Attack command acknowledged ("You attack Dr. Francis Morgan!")
+**Attack Command**: Successfully processed by server
+
+**Response Time**: Normal response time observed
+
+**Combat State**: Attack command acknowledged ("You attack Dr. Francis Morgan!")
+
 - **NPC Presence**: NPC may not have been spawned in room (occupant count showed 0)
 
 #### Logging Verification
 
-- **Enhanced Logging**: Server logs show detailed logging around combat operations
-- **Exception Handling**: No exceptions observed in test scenario
-- **Connection Checks**: Connection state checks functioning as expected
+**Enhanced Logging**: Server logs show detailed logging around combat operations
+
+**Exception Handling**: No exceptions observed in test scenario
+
+**Connection Checks**: Connection state checks functioning as expected
 
 ### Test Limitations
 
 1. **NPC Spawn Status**:
+
    - Dr. Francis Morgan may not have been spawned in Main Foyer at test time
    - Room occupant count showed 0 players/NPCs
    - Full NPC death scenario could not be tested without NPC presence
 
 2. **Combat Completion**:
+
    - Attack command was sent and processed
    - No combat progression observed (likely due to NPC not being present)
    - Full combat-to-death scenario not completed
 
 3. **Timing**:
+
    - Test occurred after server restart
    - NPC spawning may require time or specific conditions
    - Server logs show NPC spawning service initialized, but specific NPC spawn not confirmed
@@ -413,16 +456,19 @@ This ensures that even if NPC death handling encounters errors, the player remai
 ### Recommendations
 
 1. **NPC Spawn Verification**:
+
    - Verify NPC spawning mechanism for Main Foyer
    - Ensure Dr. Francis Morgan spawns correctly
    - Test with admin commands to force NPC spawn if needed
 
 2. **Full Combat Test**:
+
    - Once NPC is confirmed spawned, repeat test with full combat progression
    - Monitor logs during NPC death to verify enhanced logging
    - Verify no disconnections occur at NPC death moment
 
 3. **Production Monitoring**:
+
    - Monitor production logs for similar disconnection patterns
    - Track NPC death operations for any exceptions
    - Verify connection stability during combat operations

@@ -1,0 +1,18 @@
+# Markdownlint ignore patterns
+# These directories are excluded from markdownlint checks
+
+# Dependencies and build artifacts
+**/node_modules/**
+**/dist/**
+**/build/**
+**/.git/**
+
+# Project-specific exclusions
+**/investigations/**
+**/.agent-os/**
+**/docs/archive/**
+
+# Test and report directories
+**/test-results/**
+**/playwright-report/**
+**/playwright-report-data/**

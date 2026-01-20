@@ -2,11 +2,12 @@
 
 ## Tasks
 
-- [ ] 1. Import Organization Analysis and Configuration
-  - [ ] 1.1 Write tests for import validation functionality
-  - [ ] 1.2 Add explicit isort configuration to pyproject.toml
-  - [ ] 1.3 Document current import issues and establish standards
-  - [ ] 1.4 Verify all tests pass
+[ ] 1. Import Organization Analysis and Configuration
+
+- [ ] 1.1 Write tests for import validation functionality
+- [ ] 1.2 Add explicit isort configuration to pyproject.toml
+- [ ] 1.3 Document current import issues and establish standards
+- [ ] 1.4 Verify all tests pass
 
 - [ ] 2. Duplicate Import Removal
   - [ ] 2.1 Write tests to verify import functionality after cleanup

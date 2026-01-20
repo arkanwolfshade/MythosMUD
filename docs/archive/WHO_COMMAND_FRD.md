@@ -26,53 +26,65 @@ The current "who" command implementation provides basic functionality but lacks 
 
 #### **R1: Standard Information Display**
 
-- **Requirement**: Display player name, level, and location for all online players
-- **Format**: `PlayerName [Level] - Zone: Sub-zone: Room`
-- **Example**: `Alice [5] - Arkham: University: Library`
+**Requirement**: Display player name, level, and location for all online players
+
+**Format**: `PlayerName [Level] - Zone: Sub-zone: Room`
+
+**Example**: `Alice [5] - Arkham: University: Library`
 
 #### **R2: Basic Filtering**
 
-- **Requirement**: Support `who <name>` for searching specific players
-- **Behavior**: Case-insensitive partial matching
-- **Example**: `who al` finds "Alice", "Albert", "Malcolm"
+**Requirement**: Support `who <name>` for searching specific players
+
+**Behavior**: Case-insensitive partial matching
+
+**Example**: `who al` finds "Alice", "Albert", "Malcolm"
 
 #### **R3: Admin Indicators**
 
-- **Requirement**: Show admin status for administrators
-- **Format**: `PlayerName [Level] [ADMIN] - Zone: Sub-zone: Room`
-- **Example**: `Alice [5] [ADMIN] - Arkham: University: Library`
+**Requirement**: Show admin status for administrators
+
+**Format**: `PlayerName [Level] [ADMIN] - Zone: Sub-zone: Room`
+
+**Example**: `Alice [5] [ADMIN] - Arkham: University: Library`
 
 #### **R4: Helpful Error Messages**
 
-- **Requirement**: Provide guidance when no matches found
-- **Format**: "No players found matching 'xyz'. Try 'who' to see all online players."
+**Requirement**: Provide guidance when no matches found
+
+**Format**: "No players found matching 'xyz'. Try 'who' to see all online players."
 
 #### **R5: Simple List Format**
 
-- **Requirement**: Display results in a clean, comma-separated list
-- **Format**: `Online players (3): Alice [5] - Arkham: University: Library, Bob [3] - Miskatonic: River: Bridge`
+**Requirement**: Display results in a clean, comma-separated list
+
+**Format**: `Online players (3): Alice [5] - Arkham: University: Library, Bob [3] - Miskatonic: River: Bridge`
 
 ### **Technical Requirements**
 
 #### **TR1: Performance**
 
-- **Requirement**: Response time under 100ms for up to 100 online players
-- **Constraint**: Must not impact other game systems
+**Requirement**: Response time under 100ms for up to 100 online players
+
+**Constraint**: Must not impact other game systems
 
 #### **TR2: Data Consistency**
 
-- **Requirement**: Use real-time player data from persistence layer
-- **Constraint**: Must handle concurrent player updates
+**Requirement**: Use real-time player data from persistence layer
+
+**Constraint**: Must handle concurrent player updates
 
 #### **TR3: Error Handling**
 
-- **Requirement**: Graceful handling of persistence layer failures
-- **Fallback**: Return appropriate error message
+**Requirement**: Graceful handling of persistence layer failures
+
+**Fallback**: Return appropriate error message
 
 #### **TR4: Security**
 
-- **Requirement**: No sensitive player information exposure
-- **Constraint**: Only show publicly visible information
+**Requirement**: No sensitive player information exposure
+
+**Constraint**: Only show publicly visible information
 
 ---
 
@@ -82,22 +94,26 @@ The current "who" command implementation provides basic functionality but lacks 
 
 ```python
 # Current basic implementation in server/commands/utility_commands.py
+
 async def handle_who_command(args, current_user, request, alias_storage, player_name):
     # Basic online player listing
     # 5-minute activity threshold
     # Simple comma-separated output
+
 ```
 
 ### **Enhanced Implementation**
 
 ```python
 # Enhanced implementation with filtering and formatting
+
 async def handle_who_command(args, current_user, request, alias_storage, player_name):
     # Parse filter arguments
     # Apply case-insensitive partial matching
     # Format with level and location
     # Add admin indicators
     # Return formatted results
+
 ```
 
 ### **Data Flow**
@@ -155,12 +171,14 @@ No players are currently online.
 
 #### **Primary Changes**
 
-- `server/commands/utility_commands.py` - Enhanced who command handler
+`server/commands/utility_commands.py` - Enhanced who command handler
+
 - `server/help/help_content.py` - Add who command documentation
 
 #### **Supporting Changes**
 
-- `server/tests/test_utility_commands.py` - Enhanced test coverage
+`server/tests/test_utility_commands.py` - Enhanced test coverage
+
 - `server/utils/command_parser.py` - Update command parsing if needed
 
 ### **Key Functions**
@@ -236,7 +254,8 @@ class PlayerInfo:
 
 #### **Core Functionality**
 
-- Test basic who command (no filter)
+Test basic who command (no filter)
+
 - Test filtering with exact matches
 - Test filtering with partial matches
 - Test case-insensitive matching
@@ -244,20 +263,23 @@ class PlayerInfo:
 
 #### **Edge Cases**
 
-- Test empty filter results
+Test empty filter results
+
 - Test special characters in names
 - Test very long player lists
 - Test persistence layer failures
 
 #### **Performance Tests**
 
-- Test with 100+ online players
+Test with 100+ online players
+
 - Test response time under load
 - Test memory usage
 
 ### **Integration Tests**
 
-- Test with real player data
+Test with real player data
+
 - Test concurrent player updates
 - Test with admin privileges
 
@@ -267,7 +289,8 @@ class PlayerInfo:
 
 ### **Functional Criteria**
 
-- [ ] `who` command displays all online players with level and location
+[ ] `who` command displays all online players with level and location
+
 - [ ] `who <name>` filters players by case-insensitive partial matching
 - [ ] Admin players show [ADMIN] indicator
 - [ ] Helpful error messages for no matches
@@ -275,13 +298,15 @@ class PlayerInfo:
 
 ### **Performance Criteria**
 
-- [ ] Response time under 100ms for typical usage
+[ ] Response time under 100ms for typical usage
+
 - [ ] No impact on other game systems
 - [ ] Graceful handling of persistence failures
 
 ### **Quality Criteria**
 
-- [ ] 100% test coverage for new functionality
+[ ] 100% test coverage for new functionality
+
 - [ ] No regression in existing who command behavior
 - [ ] Proper error handling and logging
 - [ ] Documentation updated
@@ -317,19 +342,22 @@ class PlayerInfo:
 
 ### **Information Exposure**
 
-- Only display publicly visible player information
+Only display publicly visible player information
+
 - No sensitive stats or personal data
 - Admin status is intentionally visible for transparency
 
 ### **Input Validation**
 
-- Validate filter terms for injection attempts
+Validate filter terms for injection attempts
+
 - Sanitize output to prevent XSS
 - Rate limit who command usage
 
 ### **Privacy**
 
-- Respect player privacy settings (future enhancement)
+Respect player privacy settings (future enhancement)
+
 - Log who command usage for moderation purposes
 
 ---
@@ -338,13 +366,15 @@ class PlayerInfo:
 
 ### **Related Documents**
 
-- `docs/COMMAND_HANDLER_PATTERNS.md` - Command system patterns
+`docs/COMMAND_HANDLER_PATTERNS.md` - Command system patterns
+
 - `docs/COMMAND_SECURITY_GUIDE.md` - Security guidelines
 - `server/commands/utility_commands.py` - Current implementation
 
 ### **Technical References**
 
-- FastAPI command handling patterns
+FastAPI command handling patterns
+
 - Pydantic data validation
 - SQLite persistence layer documentation
 
@@ -354,14 +384,16 @@ class PlayerInfo:
 
 ### **Future Enhancements**
 
-- Status effect indicators (AFK, Busy, etc.)
+Status effect indicators (AFK, Busy, etc.)
+
 - Advanced filtering (by level, zone, etc.)
 - Player titles and achievements
 - Guild/clan affiliations
 
 ### **Performance Considerations**
 
-- Consider caching for large player lists
+Consider caching for large player lists
+
 - Optimize database queries for filtering
 - Monitor memory usage with many online players
 

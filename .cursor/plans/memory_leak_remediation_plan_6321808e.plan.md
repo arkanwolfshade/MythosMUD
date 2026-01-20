@@ -2,196 +2,324 @@
 name: Memory Leak Remediation Plan
 overview: Comprehensive plan to remediate all memory leak findings identified in the audit report, including fixes for unbounded set growth, event subscriber cleanup, cache expiration handling, and monitoring implementation.
 todos:
+
   - id: task1-1
+
     content: Replace _closed_websockets set with collections.deque(maxlen=1000) in ConnectionManager.__init__()
     status: completed
+
   - id: task1-2
+
     content: Update mark_websocket_closed() to use deque.append() instead of set.add()
     status: completed
+
   - id: task1-3
+
     content: Update is_websocket_closed() to check membership in deque (O(n) but acceptable with maxlen=1000)
     status: completed
+
   - id: task1-4
+
     content: Add import for collections.deque at top of connection_manager.py
     status: completed
+
   - id: task1-5
+
     content: Write unit test to verify closed websocket tracking works with deque
     status: completed
+
   - id: task1-6
+
     content: Write integration test with 10,000+ connection cycles to verify bounded growth
     status: completed
+
   - id: task2-1
+
     content: Add _subscriber_tracking dict to EventBus.__init__() to track subscribers by service
     status: completed
+
   - id: task2-2
+
     content: Update EventBus.subscribe() to optionally accept service_id parameter for tracking
     status: completed
+
   - id: task2-3
+
     content: "Implement unsubscribe_all_for_service(service_id: str) method in EventBus"
     status: completed
+
   - id: task2-4
+
     content: Add get_subscriber_stats() method to EventBus for monitoring subscriber counts
     status: completed
+
   - id: task2-5
+
     content: Review server/app/lifespan_shutdown.py to identify shutdown hook integration point
     status: completed
+
   - id: task2-6
+
     content: Add EventBus cleanup call in shutdown lifecycle before service destruction
     status: completed
+
   - id: task2-7
+
     content: Add logging of subscriber counts on shutdown for verification
     status: completed
+
   - id: task2-8
+
     content: Document service cleanup pattern for event subscriptions
     status: completed
+
   - id: task2-9
+
     content: Write unit test to verify subscribers are removed on service shutdown
     status: completed
+
   - id: task2-10
+
     content: Write integration test with multiple services subscribing to same events
     status: completed
+
   - id: task3-1
+
     content: Add _evict_expired_entries() helper method to LRUCache class
     status: completed
+
   - id: task3-2
+
     content: Implement expiration check logic in _evict_expired_entries() (iterate cache, check TTL, remove expired)
     status: completed
+
   - id: task3-3
+
     content: Update LRUCache.put() to call _evict_expired_entries() before checking cache capacity
     status: completed
+
   - id: task3-4
+
     content: Ensure LRU eviction only happens if cache still full after removing expired entries
     status: completed
+
   - id: task3-5
+
     content: Add optimization to only check expiration if ttl_seconds is not None
     status: completed
+
   - id: task3-6
+
     content: Consider limiting expiration check to when cache is 90% full for performance
     status: completed
+
   - id: task3-7
+
     content: Track count of expired entries evicted in _evict_expired_entries()
     status: completed
+
   - id: task3-8
+
     content: Add expired entry count to LRUCache.get_stats() return value
     status: completed
+
   - id: task3-9
+
     content: Write unit test with TTL-enabled cache to verify expired entries removed before LRU eviction
     status: completed
+
   - id: task3-10
+
     content: Write performance test to measure impact of expiration checking
     status: completed
+
   - id: task3-11
+
     content: Verify cache size stays within bounds after expiration cleanup
     status: completed
+
   - id: task4-1
+
     content: Audit all places where nats_service.subscribe() is called in codebase
     status: completed
+
   - id: task4-2
+
     content: Document subscription lifecycle for each service that creates NATS subscriptions
     status: completed
+
   - id: task4-3
+
     content: Verify NATSService.disconnect() properly unsubscribes all subscriptions
     status: completed
+
   - id: task4-4
+
     content: Verify NATSMessageHandler cleanup on shutdown removes all subscriptions
     status: completed
+
   - id: task4-5
+
     content: Add get_active_subscriptions() method to NATSService returning list of active subscription subjects
     status: completed
+
   - id: task4-6
+
     content: Add logging in NATSService.disconnect() to log active subscriptions before cleanup
     status: completed
+
   - id: task4-7
+
     content: Add warning log if subscriptions remain after cleanup in disconnect()
     status: completed
+
   - id: task4-8
+
     content: Verify NATS service cleanup is called in shutdown lifecycle
     status: completed
+
   - id: task4-9
+
     content: "Ensure cleanup order: unsubscribe subscriptions, then disconnect connection"
     status: completed
+
   - id: task4-10
+
     content: Write test to verify all subscriptions removed on service shutdown
     status: completed
+
   - id: task4-11
+
     content: Write test to verify service restart doesn't create duplicate subscriptions
     status: completed
+
   - id: task5-1
+
     content: Audit all components using Zustand stores (connectionStore, gameStore)
     status: completed
+
   - id: task5-2
+
     content: Verify all components have useEffect cleanup functions that unsubscribe from stores
     status: completed
+
   - id: task5-3
+
     content: Identify components that subscribe but don't unsubscribe
     status: completed
+
   - id: task5-4
+
     content: Review event history arrays in stores for size limits
     status: completed
+
   - id: task5-5
+
     content: Review message arrays in stores for unbounded growth
     status: completed
+
   - id: task5-6
+
     content: Implement max size limits for event history arrays if missing
     status: completed
+
   - id: task5-7
+
     content: Add trimming logic to keep arrays bounded (remove oldest entries when limit reached)
     status: completed
+
   - id: task5-8
+
     content: Consider using circular buffers for fixed-size history if appropriate
     status: completed
+
   - id: task5-9
+
     content: Document cleanup patterns for store subscriptions in code comments
     status: completed
+
   - id: task5-10
+
     content: Write test to verify component unmount cleans up store subscriptions
     status: completed
+
   - id: task5-11
+
     content: Write test to verify arrays don't grow unbounded with long-running sessions
     status: completed
+
   - id: task6-1
+
     content: Create new file server/monitoring/memory_leak_monitor.py
     status: completed
+
   - id: task6-2
+
     content: Implement MemoryLeakMonitor class with methods to query metrics from ConnectionManager
     status: completed
+
   - id: task6-3
+
     content: Add method to query EventBus subscriber counts per event type
     status: completed
+
   - id: task6-4
+
     content: Add method to query cache sizes and expiration rates from CacheManager
     status: completed
+
   - id: task6-5
+
     content: Add method to query TaskRegistry active task counts
     status: completed
+
   - id: task6-6
+
     content: Add method to query connection manager dict sizes
     status: completed
+
   - id: task6-7
+
     content: Implement periodic logging task (every 5-10 minutes) using TaskRegistry
     status: completed
+
   - id: task6-8
+
     content: Add alerting threshold for _closed_websockets (warn if exceeds 5000 entries)
     status: completed
+
   - id: task6-9
+
     content: Add alerting threshold for subscriber count growth (warn if grows unexpectedly)
     status: completed
+
   - id: task6-10
+
     content: Add alerting threshold for cache sizes (warn if exceeds expected bounds)
     status: completed
+
   - id: task6-11
+
     content: Integrate memory leak metrics into server/api/metrics.py if it exists
     status: completed
+
   - id: task6-12
+
     content: Add memory leak metrics to connection statistics endpoints
     status: completed
+
   - id: task6-13
+
     content: Write unit tests to verify metrics are accurate
     status: completed
+
   - id: task6-14
+
     content: Write test to verify alerting thresholds trigger correctly
     status: completed
+
   - id: task6-15
+
     content: Verify metrics collection doesn't impact performance
     status: completed
 ---
@@ -361,11 +489,14 @@ def put(self, key: K, value: V) -> None:
         # ... existing update logic ...
 
         # Evict expired entries before checking capacity
+
         expired_count = self._evict_expired_entries()
 
         # If cache is still full after removing expired entries, evict LRU
+
         if len(self._cache) >= self.max_size:
             # ... existing LRU eviction ...
+
 ```
 
 **Testing**:
@@ -540,7 +671,8 @@ For each fix:
 
 ## Success Criteria
 
-- `_closed_websockets` set size remains bounded (< 1000 entries)
+`_closed_websockets` set size remains bounded (< 1000 entries)
+
 - Event subscribers are cleaned up on service shutdown
 - Expired cache entries are removed proactively
 - NATS subscriptions are verified to clean up properly
@@ -549,7 +681,8 @@ For each fix:
 
 ## Notes
 
-- All fixes should maintain backward compatibility
+All fixes should maintain backward compatibility
+
 - Consider performance impact of expiration checks
 - Monitoring should be lightweight to avoid overhead
 - Document cleanup patterns for future development

@@ -37,7 +37,8 @@ The UI renders a Mythos clock, banner notifications for active holidays, and ico
 
 ## Out of Scope
 
-- Retrofitting legacy timed content that will be rebuilt on top of the new chronicle.
+Retrofitting legacy timed content that will be rebuilt on top of the new chronicle.
+
 - Implementing real-world time displays or localization for calendar labels.
 
 ## Expected Deliverable

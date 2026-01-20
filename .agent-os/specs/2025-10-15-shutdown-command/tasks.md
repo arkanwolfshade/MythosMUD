@@ -2,15 +2,16 @@
 
 ## Tasks
 
-- [x] 1. Implement Command Handler and Authorization
-  - [x] 1.1 Write tests for shutdown command parsing and authorization checks
-  - [x] 1.2 Create `server/commands/admin_shutdown_command.py` with command handler function
-  - [x] 1.3 Implement permission checking using `validate_admin_permission()` from admin_auth_service
-  - [x] 1.4 Add thematic denial message for non-admin players
-  - [x] 1.5 Register `shutdown` command handler in `CommandService.command_handlers` dictionary
-  - [x] 1.6 Implement basic parameter parsing for seconds (integer) and "cancel" (string)
-  - [x] 1.7 Add parameter validation with default value of 10 seconds
-  - [x] 1.8 Verify all tests pass for command parsing and authorization
+[x] 1. Implement Command Handler and Authorization
+
+- [x] 1.1 Write tests for shutdown command parsing and authorization checks
+- [x] 1.2 Create `server/commands/admin_shutdown_command.py` with command handler function
+- [x] 1.3 Implement permission checking using `validate_admin_permission()` from admin_auth_service
+- [x] 1.4 Add thematic denial message for non-admin players
+- [x] 1.5 Register `shutdown` command handler in `CommandService.command_handlers` dictionary
+- [x] 1.6 Implement basic parameter parsing for seconds (integer) and "cancel" (string)
+- [x] 1.7 Add parameter validation with default value of 10 seconds
+- [x] 1.8 Verify all tests pass for command parsing and authorization
 
 - [x] 2. Implement Shutdown State Management and Countdown System
   - [x] 2.1 Write tests for state management and countdown notification frequency

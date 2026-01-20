@@ -18,14 +18,17 @@ During Scenario 15 execution, discovered that **per-recipient whisper rate limit
 
 ## What Exists
 
-- ✅ Global whisper rate limit: 5 messages/min per player
-- ✅ Rate limit configuration and tracking working correctly
+✅ Global whisper rate limit: 5 messages/min per player
+
+✅ Rate limit configuration and tracking working correctly
 
 ## What's Missing
 
-- ❌ Per-recipient rate limit: 3 whispers/min to same player
-- ❌ Tracking of whisper counts per individual recipient
-- ❌ Differentiated error messages for global vs per-recipient limits
+❌ Per-recipient rate limit: 3 whispers/min to same player
+
+❌ Tracking of whisper counts per individual recipient
+
+❌ Differentiated error messages for global vs per-recipient limits
 
 ## Impact
 
@@ -41,7 +44,8 @@ During Scenario 15 execution, discovered that **per-recipient whisper rate limit
 
 ## Documentation Created
 
-- `SCENARIO_15_RATE_LIMITING_BLOCKED.md` - Full technical details and implementation plan
+`SCENARIO_15_RATE_LIMITING_BLOCKED.md` - Full technical details and implementation plan
+
 - Investigation report updated with blocker details
 - Remaining work summary updated with scenario status
 
@@ -58,4 +62,5 @@ Mark as known limitation and return to it later
 
 ---
 
-**Recommendation:** Continue with Scenarios 16-18 first, then decide whether to implement per-recipient rate limiting based on priority.
+**Recommendation:** Continue with Scenarios 16-18 first, then decide whether to implement per-recipient rate limiting
+based on priority.

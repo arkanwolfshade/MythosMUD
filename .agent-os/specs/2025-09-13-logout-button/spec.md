@@ -31,7 +31,8 @@ The logout button should support full keyboard navigation including tab order po
 
 ## Out of Scope
 
-- Confirmation dialogs before logout
+Confirmation dialogs before logout
+
 - Session persistence or state preservation during logout
 - Multiple logout methods or alternative logout locations
 - Server-side session timeout handling (existing functionality)

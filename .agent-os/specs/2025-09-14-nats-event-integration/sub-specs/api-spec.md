@@ -51,13 +51,16 @@ All real-time events follow this standardized format:
 
 ## NATS Subject Patterns
 
-- `events.player_entered.{room_id}` - Player enters a room
+`events.player_entered.{room_id}` - Player enters a room
+
 - `events.player_left.{room_id}` - Player leaves a room
 - `events.game_tick` - Global game heartbeat (10 second intervals)
 
 ## Integration Points
 
-- **EventPublisher**: Publishes events to NATS subjects
-- **NATSMessageHandler**: Subscribes to NATS subjects and routes to WebSocket clients
-- **ConnectionManager**: Manages WebSocket connections and room subscriptions
+**EventPublisher**: Publishes events to NATS subjects
+
+**NATSMessageHandler**: Subscribes to NATS subjects and routes to WebSocket clients
+
+**ConnectionManager**: Manages WebSocket connections and room subscriptions
 - **Game Tick Loop**: Publishes periodic game state updates

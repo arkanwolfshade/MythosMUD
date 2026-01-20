@@ -23,9 +23,11 @@ The NATS message handler had broad exception catching without recovery mechanism
 
 ## Decision Drivers
 
-- **Message Reliability**: Must prevent message loss
-- **Resilience**: Must handle transient and persistent failures gracefully
-- **Observability**: Must provide visibility into failure patterns
+**Message Reliability**: Must prevent message loss
+
+**Resilience**: Must handle transient and persistent failures gracefully
+
+**Observability**: Must provide visibility into failure patterns
 - **Performance**: Must not significantly impact message delivery performance
 - **Simplicity**: Should be understandable and maintainable
 - **Infrastructure Requirements**: Must work without additional infrastructure
@@ -35,11 +37,13 @@ The NATS message handler had broad exception catching without recovery mechanism
 ## Considered Options
 
 ### Option 1: Circuit Breaker + DLQ + Retry (Custom Implementation)
-- **Pros**:
-  - Tailored to our exact needs
-  - No external dependencies
-  - Full control over behavior
-  - File-based DLQ (no additional infrastructure)
+
+**Pros**:
+
+- Tailored to our exact needs
+- No external dependencies
+- Full control over behavior
+- File-based DLQ (no additional infrastructure)
 - **Cons**:
   - Must implement all patterns ourselves
   - Higher maintenance burden
@@ -48,10 +52,12 @@ The NATS message handler had broad exception catching without recovery mechanism
 - **Infrastructure**: None required
 
 ### Option 2: resilience4j + External Message Queue
-- **Pros**:
-  - Battle-tested patterns
-  - Comprehensive features
-  - Large community
+
+**Pros**:
+
+- Battle-tested patterns
+- Comprehensive features
+- Large community
 - **Cons**:
   - JVM-based (not Python native)
   - Requires external message queue (RabbitMQ, etc.)
@@ -61,10 +67,12 @@ The NATS message handler had broad exception catching without recovery mechanism
 - **Infrastructure**: RabbitMQ/Kafka required
 
 ### Option 3: Python retry libraries (tenacity, backoff)
-- **Pros**:
-  - Simple retry logic
-  - Exponential backoff built-in
-  - Mature libraries
+
+**Pros**:
+
+- Simple retry logic
+- Exponential backoff built-in
+- Mature libraries
 - **Cons**:
   - No circuit breaker
   - No DLQ
@@ -90,6 +98,7 @@ The NATS message handler had broad exception catching without recovery mechanism
 7. **Integration**: Seamlessly integrates with existing code
 
 **Trade-offs Accepted**:
+
 - Custom implementation maintenance (offset by comprehensive tests)
 - No off-the-shelf solution (acceptable - our needs are specific)
 
@@ -125,6 +134,7 @@ class CircuitBreaker:
     # Opens after 5 failures
     # Resets after 60s timeout
     # Closes after 2 successful recoveries
+
 ```
 
 **Thresholds**: 5 failures → OPEN, 60s timeout, 2 successes → CLOSED
@@ -137,6 +147,7 @@ class DeadLetterQueue:
     # Automatic cleanup after 7 days
     # Statistics by error type
     # Admin API for retrieval/replay
+
 ```
 
 **Storage**: `logs/dlq/nats/dlq_YYYYMMDD_HHMMSS_µs.json`
@@ -149,6 +160,7 @@ class MetricsCollector:
     # Processing time statistics
     # Circuit breaker state changes
     # Thread-safe concurrent updates
+
 ```
 
 ### 5. Integration
@@ -158,11 +170,13 @@ class NATSMessageHandler:
     async def _handle_nats_message(self, message_data):
         try:
             # Circuit Breaker → Retry Handler → Processing → DLQ
+
             await self.circuit_breaker.call(
                 self._process_message_with_retry, message_data
             )
         except CircuitBreakerOpen:
             # Add to DLQ immediately when circuit open
+
             await self.dead_letter_queue.enqueue(message_data, ...)
 ```
 
@@ -195,9 +209,11 @@ class NATSMessageHandler:
 
 ## Validation
 
-- ✅ All 60 NATS error boundary tests passing (100%)
-- ✅ Retry handler: 13/13 tests passing
-- ✅ Dead Letter Queue: 13/13 tests passing
+✅ All 60 NATS error boundary tests passing (100%)
+
+✅ Retry handler: 13/13 tests passing
+
+✅ Dead Letter Queue: 13/13 tests passing
 - ✅ Circuit Breaker: 16/16 tests passing
 - ✅ Metrics Collector: 18/18 tests passing
 - ✅ No performance regression
@@ -210,6 +226,7 @@ class NATSMessageHandler:
 ### Monitoring
 
 Monitor these metrics for health:
+
 - `messages_in_dlq` - Should stay near zero
 - `circuit_open_count` - Indicates service degradation
 - `success_rate_percent` - Should stay >99%
@@ -217,13 +234,15 @@ Monitor these metrics for health:
 ### Alerting
 
 Alert on:
+
 - DLQ size > 100 messages
 - Circuit breaker opens
 - Success rate < 95%
 
 ### DLQ Management
 
-- Automatic cleanup after 7 days (configurable)
+Automatic cleanup after 7 days (configurable)
+
 - Admin endpoint: `GET /api/metrics/dlq` for investigation
 - Manual replay: `POST /api/metrics/dlq/{id}/replay` (future enhancement)
 
@@ -231,7 +250,8 @@ Alert on:
 
 ## References
 
-- [Martin Fowler - Circuit Breaker](https://martinfowler.com/bliki/CircuitBreaker.html)
+[Martin Fowler - Circuit Breaker](https://martinfowler.com/bliki/CircuitBreaker.html)
+
 - [AWS - Dead Letter Queues](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html)
 - Implementation:
   - `server/realtime/nats_retry_handler.py`
@@ -245,6 +265,7 @@ Alert on:
 
 ## Related ADRs
 
-- ADR-001: XState for Frontend Connection FSM
+ADR-001: XState for Frontend Connection FSM
+
 - ADR-002: python-statemachine for Backend Connection FSM
 - ADR-003: Pydantic Configuration Management

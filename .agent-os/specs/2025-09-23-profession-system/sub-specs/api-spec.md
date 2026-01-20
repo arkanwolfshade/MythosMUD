@@ -10,7 +10,6 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-09-
 **Parameters:** None
 **Response:**
 
-
 ```json
 {
   "professions": [
@@ -32,12 +31,11 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-09-
 
 ### GET /api/professions/{id}
 
-
 **Purpose:** Retrieve specific profession details by ID
 **Parameters:**
 
-
 - `id` (path parameter): Profession ID
+
 **Response:**
 
 ```json
@@ -65,7 +63,6 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-09-
 **Purpose:** Roll character stats with profession requirements validation
 
 **Parameters:**
-
 
 ```json
 {
@@ -95,7 +92,6 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-09-
 
 **Errors:**
 
-
 - 400 Bad Request if profession_id is invalid or profession doesn't exist
 - 500 Internal Server Error if stat rolling algorithm fails
 
@@ -103,14 +99,16 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-09-
 
 ### ProfessionController
 
-- **get_all_professions()**: Query professions table filtering by is_available=true
-- **get_profession_by_id(id)**: Query professions table by ID with existence validation
-- **validate_profession_exists(id)**: Helper method to check profession existence and availability
+**get_all_professions()**: Query professions table filtering by is_available=true
 
+**get_profession_by_id(id)**: Query professions table by ID with existence validation
+
+**validate_profession_exists(id)**: Helper method to check profession existence and availability
 
 ### CharacterController (Modified)
 
-- **roll_stats_with_profession(profession_id)**: Modified stat rolling logic that:
+**roll_stats_with_profession(profession_id)**: Modified stat rolling logic that:
+
   1. Validates profession exists and is available
   2. Retrieves profession stat requirements
   3. Implements weighted probability stat rolling
@@ -123,30 +121,34 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-09-
 
 ### Stat Rolling Algorithm
 
-
 1. **Validation**: Ensure profession_id exists and profession is available
 2. **Requirements Retrieval**: Parse stat_requirements JSON from profession data
 3. **Weighted Rolling**: Roll stats with probabilities favoring valid combinations
 4. **Validation Loop**: Check rolled stats against requirements, re-roll if invalid
 5. **Response**: Return valid stat combination with profession_id and validation flag
 
-
 ### Error Handling
 
-- **Invalid Profession**: Return 400 with descriptive error message
-- **Database Errors**: Return 500 with generic error message (log details server-side)
-- **Stat Rolling Failures**: Implement retry logic with maximum attempts before failing
+**Invalid Profession**: Return 400 with descriptive error message
+
+**Database Errors**: Return 500 with generic error message (log details server-side)
+
+**Stat Rolling Failures**: Implement retry logic with maximum attempts before failing
 
 ## Integration Points
 
 ### Database Integration
 
-- **Professions Table**: Primary data source for profession information
-- **Players Table**: Future integration for storing player profession choices
-- **Caching**: Cache profession data to minimize database queries during stat rolling
+**Professions Table**: Primary data source for profession information
+
+**Players Table**: Future integration for storing player profession choices
+
+**Caching**: Cache profession data to minimize database queries during stat rolling
 
 ### Frontend Integration
 
-- **Character Creation Flow**: API calls integrated into profession selection and stat rolling screens
-- **Error Handling**: Proper error display for invalid profession selections and stat rolling failures
-- **Loading States**: Appropriate loading indicators during API calls
+**Character Creation Flow**: API calls integrated into profession selection and stat rolling screens
+
+**Error Handling**: Proper error display for invalid profession selections and stat rolling failures
+
+**Loading States**: Appropriate loading indicators during API calls

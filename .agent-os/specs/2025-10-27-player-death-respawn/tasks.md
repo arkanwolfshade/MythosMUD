@@ -2,13 +2,14 @@
 
 ## Tasks
 
-- [x] 1. Database Schema and Player Model Updates
-  - [x] 1.1 Write tests for `respawn_room_id` field in Player model
-  - [x] 1.2 Add `respawn_room_id` column to players table schema
-  - [x] 1.3 Create and run migration script for local and test databases
-  - [x] 1.4 Update `Player` model in `server/models/player.py` to include `respawn_room_id` field
-  - [x] 1.5 Add methods: `get_health_state()`, `is_mortally_wounded()`, `is_dead()` to Player model
-  - [x] 1.6 Verify all tests pass
+[x] 1. Database Schema and Player Model Updates
+
+- [x] 1.1 Write tests for `respawn_room_id` field in Player model
+- [x] 1.2 Add `respawn_room_id` column to players table schema
+- [x] 1.3 Create and run migration script for local and test databases
+- [x] 1.4 Update `Player` model in `server/models/player.py` to include `respawn_room_id` field
+- [x] 1.5 Add methods: `get_health_state()`, `is_mortally_wounded()`, `is_dead()` to Player model
+- [x] 1.6 Verify all tests pass
 
 - [x] 2. Player Death Service Implementation
   - [x] 2.1 Write tests for `PlayerDeathService` (HP decay, mortally wounded detection, death detection)

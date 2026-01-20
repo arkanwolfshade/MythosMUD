@@ -30,7 +30,8 @@ As a system maintainer, I want to ensure the codebase is compatible with future 
 
 ## Out of Scope
 
-- Changes to model field definitions or validation logic
+Changes to model field definitions or validation logic
+
 - Updates to other Pydantic features beyond Config migration
 - Performance optimizations unrelated to configuration
 - Changes to API endpoints or business logic

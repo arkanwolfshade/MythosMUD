@@ -4,7 +4,8 @@
 
 ## Migration Status Legend
 
-- ⏳ **Pending**: Not yet started
+⏳ **Pending**: Not yet started
+
 - 🔄 **In Progress**: Currently being migrated
 - ✅ **Complete**: Successfully migrated and validated
 - 🔀 **Merged**: Consolidated with another test file
@@ -367,6 +368,7 @@
 ### Total Files: 204
 
 **By Action:**
+
 - ⏳ Pending: 159 files
 - 🔀 To Merge: 35 files (into 20 consolidated files)
 - 🗑️ To Remove: 1 file
@@ -374,12 +376,14 @@
 - 🔄 In Progress: 0 files
 
 **Net Result:**
+
 - Starting: 204 files
 - Removing: 1 file
 - Merging: 35 → 20 files (15 file reduction)
 - **Final Count: ~168 test files** (18% reduction)
 
 **By Category:**
+
 - Unit Tests: ~110 files
 - Integration Tests: ~30 files
 - E2E Tests: ~5 files

@@ -23,18 +23,22 @@ Adopt XState 4.x as the state machine library for frontend connection management
 **Considered Alternatives:**
 
 1. **XState** (Selected)
+
    - Pros: Industry standard, TypeScript support, visualization tools, testing utilities
    - Cons: 50KB bundle size, learning curve
 
 2. **Robot**
+
    - Pros: Lightweight (2KB), simple API
    - Cons: Limited features, no visualization, smaller community
 
 3. **Custom FSM**
+
    - Pros: No dependencies, full control
    - Cons: Maintenance burden, no tooling, reinventing the wheel
 
 4. **Enhanced useReducer**
+
    - Pros: No new dependencies, familiar pattern
    - Cons: Still manual timer management, no visualization, prone to bugs
 
@@ -76,10 +80,12 @@ Adopt python-statemachine 2.x for backend state management.
 **Considered Alternatives:**
 
 1. **python-statemachine** (Selected)
+
    - Pros: Native async/await, excellent type hints, Pythonic API, clean syntax
    - Cons: Smaller community than transitions
 
 2. **transitions**
+
    - Pros: More mature, larger community, better visualization
    - Cons: More verbose API, less type-safe, async support as addon
 
@@ -114,14 +120,17 @@ Refactor configuration to use Pydantic BaseSettings with explicit validation and
 **Considered Alternatives:**
 
 1. **Pydantic BaseSettings** (Selected)
+
    - Pros: Type-safe, validation built-in, environment variable support, no hardcoded secrets
    - Cons: Breaking change, requires all configs to be explicit
 
 2. **dynaconf**
+
    - Pros: Supports multiple config sources, validation, secrets management
    - Cons: Another dependency, more complex than needed
 
 3. **Refactor existing config_loader**
+
    - Pros: No breaking changes
    - Cons: Doesn't solve validation or security issues
 
@@ -135,7 +144,8 @@ Refactor configuration to use Pydantic BaseSettings with explicit validation and
 
 **Consequences:**
 
-- **Breaking Change:** YAML configs no longer supported, must use `.env` files
+**Breaking Change:** YAML configs no longer supported, must use `.env` files
+
 - Positive: Configuration errors caught at startup, type-safe config access
 - Negative: Deployment scripts must be updated
 - Neutral: All environments must have explicit configuration
@@ -165,26 +175,32 @@ Implement three-layer error boundary: Retry with exponential backoff → Circuit
 **Considered Alternatives:**
 
 1. **Circuit Breaker + DLQ + Retry** (Selected)
+
    - Pros: Comprehensive error handling, prevents cascading failures, preserves failed messages
    - Cons: Added complexity, requires monitoring
 
 2. **Retry Only**
+
    - Pros: Simple, handles transient failures
    - Cons: No protection against persistent failures, can overwhelm failing systems
 
 3. **Circuit Breaker Only**
+
    - Pros: Protects against cascading failures
    - Cons: No message preservation, no retry for transient failures
 
 4. **Logging Only** (Current)
+
    - Pros: Simple
    - Cons: Silent message loss, no recovery
 
 **Rationale:**
 
-- **Retry Logic:** Handles transient network issues (80% of failures)
-- **Circuit Breaker:** Protects server from cascading NATS failures
-- **Dead Letter Queue:** Preserves messages for forensics and manual recovery
+**Retry Logic:** Handles transient network issues (80% of failures)
+
+**Circuit Breaker:** Protects server from cascading NATS failures
+
+**Dead Letter Queue:** Preserves messages for forensics and manual recovery
 - **Three layers** provide defense in depth
 
 **Implementation Details:**

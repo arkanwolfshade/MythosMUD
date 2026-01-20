@@ -4,7 +4,8 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 
 ## Technical Requirements
 
-- Model additions extend player persistence structures (likely `server/models/player.py` or equivalent) to store a fixed-length 20-slot inventory, equipped-slot map keyed by slot type, and stack counts without accommodating legacy save formats.
+Model additions extend player persistence structures (likely `server/models/player.py` or equivalent) to store a fixed-length 20-slot inventory, equipped-slot map keyed by slot type, and stack counts without accommodating legacy save formats.
+
 - Implement robust item duplication safeguards as a first-class requirement: atomic inventory mutations, idempotent command handling, cross-checks against concurrent requests, and defensive logging to flag anomalies.
 - Introduce an inventory service module that centralizes stacking, capacity enforcement, slot validation, auto-swap logic, and room drop management; expose functions usable by command handlers and room systems.
 - Maintain in-memory room state for dropped items (non-persistent) by augmenting room objects or caches so drop/pickup actions update a shared structure accessible to description rendering.

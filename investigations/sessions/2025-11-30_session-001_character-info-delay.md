@@ -24,10 +24,15 @@ The Character Info panel experiences a significant delay (approximately 600ms) w
 **Location:** `server/services/combat_service.py`
 
 **Flow Analysis:**
+
 1. `process_attack()` is called when damage is applied (line 520)
+
 2. Damage is applied to the combat participant's `current_hp` (line 570)
+
 3. If target is a player, `_persist_player_hp()` is called (line 587)
+
 4. `_persist_player_hp()` performs:
+
    - Database read: `async_get_player()` (line 1122)
    - Stats update (line 1140)
    - Database save: `async_save_player()` (line 1168)
@@ -35,10 +40,12 @@ The Character Info panel experiences a significant delay (approximately 600ms) w
    - **THEN** publishes HP update event (line 1195)
 
 **Evidence from Logs:**
+
 ```
 2025-11-30 14:48:43.411733 - _persist_player_hp called
 2025-11-30 14:48:44.078102 - Published PlayerHPUpdated event
 ```
+
 **Delay:** ~667ms between damage application and event publication
 
 ### 2. Event Publishing Mechanism
@@ -46,16 +53,19 @@ The Character Info panel experiences a significant delay (approximately 600ms) w
 **Location:** `server/services/combat_service.py:1236-1285`
 
 The `_publish_player_hp_update_event` method:
+
 - Creates a `PlayerHPUpdated` event
 - Publishes to the event bus via `self._player_combat_service._event_bus.publish()`
 - Event is then handled by `RealTimeEventHandler._handle_player_hp_updated`
 
 **Evidence from Logs:**
+
 ```
 2025-11-30 14:48:43.616565 - EventBus: Published event to queue (PlayerHPUpdated)
 2025-11-30 14:48:43.619071 - EventBus: Processing event for subscribers
 2025-11-30 14:48:44.240043 - EventBus: Async subscriber completed successfully
 ```
+
 **Additional Delay:** ~620ms for event bus processing and WebSocket transmission
 
 ### 3. Client-Side Event Processing
@@ -63,12 +73,14 @@ The `_publish_player_hp_update_event` method:
 **Location:** `client/src/components/ui-v2/GameClientV2Container.tsx`
 
 **Event Queue Processing:**
+
 - Events are queued when received via WebSocket (line 894)
 - Queue processing is triggered with a 10ms timeout (line 897-900)
 - `player_hp_updated` events are handled in `processEventQueue()` (line 377-413)
 - `setHealthStatus()` is called immediately when processing the event (line 398)
 
 **Potential Client-Side Delay:**
+
 - 10ms minimum timeout before queue processing
 - Additional delay if queue is already being processed
 - React state batching may cause minor rendering delays
@@ -78,12 +90,14 @@ The `_publish_player_hp_update_event` method:
 **Location:** `client/src/components/ui-v2/GameClientV2.tsx`
 
 **Health Status Derivation:**
+
 - `derivedHealthStatus` is computed via `useMemo` (line 72-87)
 - Depends on `healthStatus` and `player` props
 - If `healthStatus` is set, it's used directly (line 73-74)
 - Otherwise, falls back to `player.stats.current_health` (line 76-84)
 
 **Rendering:**
+
 - `CharacterInfoPanel` receives `derivedHealthStatus` as prop (line 307)
 - Panel should update immediately when `healthStatus` state changes
 
@@ -112,6 +126,7 @@ The `_persist_player_hp` method in `CombatService` performs a **synchronous data
 ### Why This Design Exists
 
 The current design ensures **data consistency** by:
+
 - Verifying the database save succeeded before notifying the client
 - Preventing race conditions where the UI shows incorrect HP if the save fails
 - Maintaining a single source of truth (database) for player state
@@ -125,21 +140,25 @@ However, this comes at the cost of **real-time responsiveness**.
 ### Severity: HIGH
 
 **Affected Systems:**
+
 - Combat system (damage application)
 - Real-time UI updates (Character Info panel)
 - User experience during active combat
 
 **User Impact:**
+
 - Players experience noticeable delay (600ms+) between taking damage and seeing HP update
 - Reduces sense of real-time combat feedback
 - May cause confusion during fast-paced combat scenarios
 
 **Technical Impact:**
+
 - Database load from verification reads
 - Event bus queue processing overhead
 - Client-side event queue potential backlog
 
 **Scope:**
+
 - Affects all players in combat
 - Only affects HP display, not actual damage calculation
 - Does not affect combat mechanics or game state
@@ -151,29 +170,35 @@ However, this comes at the cost of **real-time responsiveness**.
 ### Server Log Evidence
 
 **Combat Damage Application:**
+
 ```
 2025-11-30 14:48:43.411157 - Processing attack (damage=10)
 2025-11-30 14:48:43.411733 - _persist_player_hp called (current_hp=-10)
 2025-11-30 14:48:44.078102 - Published PlayerHPUpdated event
 ```
+
 **Delay:** 667ms
 
 **Event Bus Processing:**
+
 ```
 2025-11-30 14:48:43.616565 - EventBus: Published event to queue
 2025-11-30 14:48:43.619071 - EventBus: Processing event for subscribers
 2025-11-30 14:48:44.240043 - EventBus: Async subscriber completed
 ```
+
 **Delay:** 624ms
 
 ### Code References
 
 **Server-Side:**
+
 - `server/services/combat_service.py:1101-1196` - `_persist_player_hp` method
 - `server/services/combat_service.py:1236-1285` - `_publish_player_hp_update_event` method
 - `server/realtime/event_handler.py:1669-1764` - `_handle_player_hp_updated` method
 
 **Client-Side:**
+
 - `client/src/components/ui-v2/GameClientV2Container.tsx:377-413` - `player_hp_updated` event handling
 - `client/src/components/ui-v2/GameClientV2Container.tsx:891-904` - Event queue processing
 - `client/src/components/ui-v2/GameClientV2.tsx:72-87` - Health status derivation
@@ -185,16 +210,19 @@ However, this comes at the cost of **real-time responsiveness**.
 ### Priority 1: Immediate Actions (NOT FIXES - Investigation Only)
 
 1. **Measure Actual Delays:**
+
    - Add timing instrumentation to `_persist_player_hp` to measure each database operation
    - Log WebSocket transmission times
    - Measure client-side event processing times
 
 2. **Verify Event Delivery:**
+
    - Confirm WebSocket messages are being sent immediately after event publication
    - Check for any WebSocket message queuing or batching
    - Verify client is receiving events in correct order
 
 3. **Database Performance Analysis:**
+
    - Profile database read/write operations during combat
    - Check for database connection pool exhaustion
    - Analyze database query performance
@@ -202,16 +230,19 @@ However, this comes at the cost of **real-time responsiveness**.
 ### Priority 2: Further Investigation
 
 1. **Event Bus Performance:**
+
    - Analyze event bus queue processing times
    - Check for event bus backlog during high combat activity
    - Measure async subscriber execution times
 
 2. **Client-Side Performance:**
+
    - Profile React rendering times for CharacterInfoPanel
    - Check for unnecessary re-renders
    - Analyze useMemo dependency tracking
 
 3. **Alternative Update Mechanisms:**
+
    - Investigate if `game_state` events also update HP (potential duplicate updates)
    - Check if combat messages include HP information that could be used for immediate UI feedback
 
@@ -255,7 +286,8 @@ TESTING REQUIREMENTS:
 
 ## INVESTIGATION COMPLETION CHECKLIST
 
-- [x] All investigation steps completed as written
+[x] All investigation steps completed as written
+
 - [x] Comprehensive evidence collected and documented
 - [x] Root cause analysis completed
 - [x] System impact assessed
@@ -284,6 +316,7 @@ The current design prioritizes **data consistency** over **real-time responsiven
 ### Related Issues
 
 This investigation may be related to:
+
 - General combat system performance
 - Database persistence performance
 - Event bus processing performance

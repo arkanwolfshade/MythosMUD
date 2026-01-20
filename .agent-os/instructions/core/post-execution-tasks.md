@@ -34,8 +34,11 @@ Use the test-runner subagent to run the ALL tests in the application's test suit
 
 <test_execution>
   <order>
+
     1. Run entire test suite
+
     2. Fix any failures
+
   </order>
   <requirement>100% pass rate</requirement>
 </test_execution>
@@ -56,10 +59,15 @@ Use the git-workflow subagent to create git commit, push to GitHub, and create p
 <instructions>
   ACTION: Use git-workflow subagent
   REQUEST: "Complete git workflow for [SPEC_NAME] feature:
+
             - Spec: [SPEC_FOLDER_PATH]
+
             - Changes: All modified files
+
             - Target: main branch
+
             - Description: [SUMMARY_OF_IMPLEMENTED_FEATURES]"
+
   WAIT: For workflow completion
   PROCESS: Save PR URL for summary
 </instructions>
@@ -90,8 +98,11 @@ Use the project-manager subagent to read the current spec's tasks.md file and ve
 <instructions>
   ACTION: Use project-manager subagent
   REQUEST: "Verify that all tasks have been marked with their outcome:
+
             - Read [SPEC_FOLDER_PATH]/tasks.md
+
             - Check all tasks are marked complete with [x] or (in rare cases) a documented blocking issue."
+
   WAIT: For task verification analysis
   PROCESS: Update task status as needed
 </instructions>
@@ -117,9 +128,13 @@ Use the project-manager subagent to read @.agent-os/product/roadmap.md and mark 
 
 <roadmap_criteria>
   <update_when>
+
     - spec fully implements roadmap feature
+
     - all related tasks completed
+
     - tests passing
+
   </update_when>
 </roadmap_criteria>
 
@@ -141,24 +156,30 @@ Use the project-manager subagent to create a recap document in .agent-os/recaps/
 <instructions>
   ACTION: Use project-manager subagent
   REQUEST: "Create recap document for current spec:
+
             - Create file: .agent-os/recaps/[SPEC_FOLDER_NAME].md
+
             - Use template format with completed features summary
+
             - Include context from spec-lite.md
+
             - Document: [SPEC_FOLDER_PATH]"
+
   WAIT: For recap document creation
   PROCESS: Verify file is created with proper content
 </instructions>
 
 <recap_template>
-  # [yyyy-mm-dd] Recap: Feature Name
+
+# [yyyy-mm-dd] Recap: Feature Name
 
   This recaps what was built for the spec documented at .agent-os/specs/[spec-folder-name]/spec.md.
 
-  ## Recap
+## Recap
 
   [1 paragraph summary plus short bullet list of what was completed]
 
-  ## Context
+## Context
 
   [Copy the summary found in spec-lite.md to provide concise context of what the initial goal for this spec was]
 </recap_template>
@@ -184,35 +205,44 @@ Use the project-manager subagent to create a recap document in .agent-os/recaps/
 Use the project-manager subagent to create a structured summary message with emojis showing what was done, any issues, testing instructions, and PR link.
 
 <summary_template>
-  ## ✅ What's been done
+
+## ✅ What's been done
 
   1. **[FEATURE_1]** - [ONE_SENTENCE_DESCRIPTION]
   2. **[FEATURE_2]** - [ONE_SENTENCE_DESCRIPTION]
 
-  ## ⚠️ Issues encountered
+## ⚠️ Issues encountered
 
   [ONLY_IF_APPLICABLE]
-  - **[ISSUE_1]** - [DESCRIPTION_AND_REASON]
 
-  ## 👀 Ready to test in browser
+**[ISSUE_1]** - [DESCRIPTION_AND_REASON]
+
+## 👀 Ready to test in browser
 
   [ONLY_IF_APPLICABLE]
+
   1. [STEP_1_TO_TEST]
   2. [STEP_2_TO_TEST]
 
-  ## 📦 Pull Request
+## 📦 Pull Request
 
   View PR: [GITHUB_PR_URL]
 </summary_template>
 
 <summary_sections>
   <required>
+
     - functionality recap
+
     - pull request info
+
   </required>
   <conditional>
+
     - issues encountered (if any)
+
     - testing instructions (if testable in browser)
+
   </conditional>
 </summary_sections>
 

@@ -4,88 +4,90 @@
 
 ## Summary
 
-- **Critical files below threshold**: 15
-- **Normal files below 70%**: 324
-- **Files meeting thresholds**: 78
+**Critical files below threshold**: 15
+
+**Normal files below 70%**: 324
+
+**Files meeting thresholds**: 78
 
 ## Critical Files Below Threshold
 
-| File | Current Coverage | Required | Gap | Lines | Branches |
-|------|-----------------|----------|-----|--------|----------|
-| `server/persistence/container_persistence.py` | 9.16% | 90% | 80.84% | 0/0 | 0/0 |
-| `server/container_persistence/container_persistence.py` | 10.53% | 90% | 79.47% | 0/0 | 0/0 |
-| `server/database.py` | 13.87% | 90% | 76.13% | 0/0 | 0/0 |
-| `server/validators/security_validator.py` | 14.55% | 90% | 75.45% | 0/0 | 0/0 |
-| `server/security_utils.py` | 19.15% | 90% | 70.85% | 0/0 | 0/0 |
-| `server/middleware/security_headers.py` | 20.90% | 90% | 69.10% | 0/0 | 0/0 |
-| `server/validators/optimized_security_validator.py` | 21.23% | 90% | 68.77% | 0/0 | 0/0 |
-| `server/auth/endpoints.py` | 22.87% | 90% | 67.13% | 0/0 | 0/0 |
-| `server/async_persistence.py` | 24.08% | 90% | 65.92% | 0/0 | 0/0 |
-| `server/services/inventory_mutation_guard.py` | 24.57% | 90% | 65.43% | 0/0 | 0/0 |
-| `server/auth_utils.py` | 25.35% | 90% | 64.65% | 0/0 | 0/0 |
-| `server/auth/argon2_utils.py` | 20.72% | 85% | 64.28% | 0/0 | 0/0 |
-| `server/services/admin_auth_service.py` | 37.09% | 90% | 52.91% | 0/0 | 0/0 |
-| `server/auth/dependencies.py` | 43.48% | 90% | 46.52% | 0/0 | 0/0 |
-| `server/auth/users.py` | 45.35% | 90% | 44.65% | 0/0 | 0/0 |
+| File                                                    | Current Coverage | Required | Gap    | Lines | Branches |
+| ------------------------------------------------------- | ---------------- | -------- | ------ | ----- | -------- |
+| `server/persistence/container_persistence.py`           | 9.16%            | 90%      | 80.84% | 0/0   | 0/0      |
+| `server/container_persistence/container_persistence.py` | 10.53%           | 90%      | 79.47% | 0/0   | 0/0      |
+| `server/database.py`                                    | 13.87%           | 90%      | 76.13% | 0/0   | 0/0      |
+| `server/validators/security_validator.py`               | 14.55%           | 90%      | 75.45% | 0/0   | 0/0      |
+| `server/security_utils.py`                              | 19.15%           | 90%      | 70.85% | 0/0   | 0/0      |
+| `server/middleware/security_headers.py`                 | 20.90%           | 90%      | 69.10% | 0/0   | 0/0      |
+| `server/validators/optimized_security_validator.py`     | 21.23%           | 90%      | 68.77% | 0/0   | 0/0      |
+| `server/auth/endpoints.py`                              | 22.87%           | 90%      | 67.13% | 0/0   | 0/0      |
+| `server/async_persistence.py`                           | 24.08%           | 90%      | 65.92% | 0/0   | 0/0      |
+| `server/services/inventory_mutation_guard.py`           | 24.57%           | 90%      | 65.43% | 0/0   | 0/0      |
+| `server/auth_utils.py`                                  | 25.35%           | 90%      | 64.65% | 0/0   | 0/0      |
+| `server/auth/argon2_utils.py`                           | 20.72%           | 85%      | 64.28% | 0/0   | 0/0      |
+| `server/services/admin_auth_service.py`                 | 37.09%           | 90%      | 52.91% | 0/0   | 0/0      |
+| `server/auth/dependencies.py`                           | 43.48%           | 90%      | 46.52% | 0/0   | 0/0      |
+| `server/auth/users.py`                                  | 45.35%           | 90%      | 44.65% | 0/0   | 0/0      |
 
 ## Normal Files Below 70% Threshold
 
-*Showing top 50 files with largest coverage gaps*
+### Showing top 50 files with largest coverage gaps
 
-| File | Current Coverage | Required | Gap | Lines | Branches |
-|------|-----------------|----------|-----|--------|----------|
-| `server/domain/__init__.py` | 0.00% | 70% | 70.00% | 0/0 | 0/0 |
-| `server/domain/entities/__init__.py` | 0.00% | 70% | 70.00% | 0/0 | 0/0 |
-| `server/domain/events/__init__.py` | 0.00% | 70% | 70.00% | 0/0 | 0/0 |
-| `server/domain/exceptions/__init__.py` | 0.00% | 70% | 70.00% | 0/0 | 0/0 |
-| `server/domain/repositories/__init__.py` | 0.00% | 70% | 70.00% | 0/0 | 0/0 |
-| `server/domain/services/__init__.py` | 0.00% | 70% | 70.00% | 0/0 | 0/0 |
-| `server/domain/value_objects/__init__.py` | 0.00% | 70% | 70.00% | 0/0 | 0/0 |
-| `server/persistence/utils/__init__.py` | 0.00% | 70% | 70.00% | 0/0 | 0/0 |
-| `server/realtime/message_handlers.py` | 0.00% | 70% | 70.00% | 0/0 | 0/0 |
-| `server/schemas/websocket_messages.py` | 0.00% | 70% | 70.00% | 0/0 | 0/0 |
-| `server/services/corpse_lifecycle_service.py` | 0.00% | 70% | 70.00% | 0/0 | 0/0 |
-| `server/services/exploration_service.py` | 0.00% | 70% | 70.00% | 0/0 | 0/0 |
-| `server/services/npc_startup_service.py` | 0.00% | 70% | 70.00% | 0/0 | 0/0 |
-| `server/commands/inventory_commands.py` | 4.44% | 70% | 65.56% | 0/0 | 0/0 |
-| `server/commands/admin_commands.py` | 4.64% | 70% | 65.36% | 0/0 | 0/0 |
-| `server/commands/communication_commands.py` | 4.89% | 70% | 65.11% | 0/0 | 0/0 |
-| `server/commands/admin_shutdown_command.py` | 6.22% | 70% | 63.78% | 0/0 | 0/0 |
-| `server/commands/npc_admin_commands.py` | 6.52% | 70% | 63.48% | 0/0 | 0/0 |
-| `server/app/lifespan_startup.py` | 6.88% | 70% | 63.12% | 0/0 | 0/0 |
-| `server/game/chat_service.py` | 7.12% | 70% | 62.88% | 0/0 | 0/0 |
-| `server/commands/read_command.py` | 7.14% | 70% | 62.86% | 0/0 | 0/0 |
-| `server/game/movement_service.py` | 7.26% | 70% | 62.74% | 0/0 | 0/0 |
-| `server/commands/alias_commands.py` | 7.53% | 70% | 62.47% | 0/0 | 0/0 |
-| `server/game/player_service.py` | 8.30% | 70% | 61.70% | 0/0 | 0/0 |
-| `server/npc/idle_movement.py` | 8.43% | 70% | 61.57% | 0/0 | 0/0 |
-| `server/services/combat_turn_processor.py` | 8.53% | 70% | 61.47% | 0/0 | 0/0 |
-| `server/realtime/integration/game_state_provider.py` | 8.72% | 70% | 61.28% | 0/0 | 0/0 |
-| `server/realtime/websocket_room_updates.py` | 8.96% | 70% | 61.05% | 0/0 | 0/0 |
-| `server/events/event_bus.py` | 9.12% | 70% | 60.88% | 0/0 | 0/0 |
-| `server/game/magic/spell_effects.py` | 9.35% | 70% | 60.65% | 0/0 | 0/0 |
-| `server/commands/look_item.py` | 9.38% | 70% | 60.62% | 0/0 | 0/0 |
-| `server/realtime/room_subscription_manager.py` | 9.43% | 70% | 60.57% | 0/0 | 0/0 |
-| `server/realtime/npc_event_handlers.py` | 9.43% | 70% | 60.57% | 0/0 | 0/0 |
-| `server/services/user_manager.py` | 9.95% | 70% | 60.05% | 0/0 | 0/0 |
-| `server/commands/who_commands.py` | 10.00% | 70% | 60.00% | 0/0 | 0/0 |
-| `server/services/target_resolution_service.py` | 10.00% | 70% | 60.00% | 0/0 | 0/0 |
-| `server/realtime/maintenance/connection_cleaner.py` | 10.30% | 70% | 59.70% | 0/0 | 0/0 |
-| `server/realtime/monitoring/health_monitor.py` | 10.39% | 70% | 59.61% | 0/0 | 0/0 |
-| `server/services/player_preferences_service.py` | 10.41% | 70% | 59.59% | 0/0 | 0/0 |
-| `server/realtime/monitoring/statistics_aggregator.py` | 10.43% | 70% | 59.57% | 0/0 | 0/0 |
-| `server/services/combat_event_publisher.py` | 10.43% | 70% | 59.57% | 0/0 | 0/0 |
-| `server/container.py` | 10.44% | 70% | 59.56% | 0/0 | 0/0 |
-| `server/realtime/connection_helpers.py` | 10.61% | 70% | 59.39% | 0/0 | 0/0 |
-| `server/commands/look_container.py` | 10.99% | 70% | 59.01% | 0/0 | 0/0 |
-| `server/utils/command_factories_inventory.py` | 11.05% | 70% | 58.95% | 0/0 | 0/0 |
-| `server/realtime/message_filtering.py` | 11.27% | 70% | 58.73% | 0/0 | 0/0 |
-| `server/realtime/event_publisher.py` | 11.28% | 70% | 58.72% | 0/0 | 0/0 |
-| `server/realtime/messaging/message_broadcaster.py` | 11.30% | 70% | 58.70% | 0/0 | 0/0 |
-| `server/realtime/connection_disconnection.py` | 11.46% | 70% | 58.54% | 0/0 | 0/0 |
-| `server/realtime/websocket_handler.py` | 11.59% | 70% | 58.41% | 0/0 | 0/0 |
+| File                                                  | Current Coverage | Required | Gap    | Lines | Branches |
+| ----------------------------------------------------- | ---------------- | -------- | ------ | ----- | -------- |
+| `server/domain/__init__.py`                           | 0.00%            | 70%      | 70.00% | 0/0   | 0/0      |
+| `server/domain/entities/__init__.py`                  | 0.00%            | 70%      | 70.00% | 0/0   | 0/0      |
+| `server/domain/events/__init__.py`                    | 0.00%            | 70%      | 70.00% | 0/0   | 0/0      |
+| `server/domain/exceptions/__init__.py`                | 0.00%            | 70%      | 70.00% | 0/0   | 0/0      |
+| `server/domain/repositories/__init__.py`              | 0.00%            | 70%      | 70.00% | 0/0   | 0/0      |
+| `server/domain/services/__init__.py`                  | 0.00%            | 70%      | 70.00% | 0/0   | 0/0      |
+| `server/domain/value_objects/__init__.py`             | 0.00%            | 70%      | 70.00% | 0/0   | 0/0      |
+| `server/persistence/utils/__init__.py`                | 0.00%            | 70%      | 70.00% | 0/0   | 0/0      |
+| `server/realtime/message_handlers.py`                 | 0.00%            | 70%      | 70.00% | 0/0   | 0/0      |
+| `server/schemas/websocket_messages.py`                | 0.00%            | 70%      | 70.00% | 0/0   | 0/0      |
+| `server/services/corpse_lifecycle_service.py`         | 0.00%            | 70%      | 70.00% | 0/0   | 0/0      |
+| `server/services/exploration_service.py`              | 0.00%            | 70%      | 70.00% | 0/0   | 0/0      |
+| `server/services/npc_startup_service.py`              | 0.00%            | 70%      | 70.00% | 0/0   | 0/0      |
+| `server/commands/inventory_commands.py`               | 4.44%            | 70%      | 65.56% | 0/0   | 0/0      |
+| `server/commands/admin_commands.py`                   | 4.64%            | 70%      | 65.36% | 0/0   | 0/0      |
+| `server/commands/communication_commands.py`           | 4.89%            | 70%      | 65.11% | 0/0   | 0/0      |
+| `server/commands/admin_shutdown_command.py`           | 6.22%            | 70%      | 63.78% | 0/0   | 0/0      |
+| `server/commands/npc_admin_commands.py`               | 6.52%            | 70%      | 63.48% | 0/0   | 0/0      |
+| `server/app/lifespan_startup.py`                      | 6.88%            | 70%      | 63.12% | 0/0   | 0/0      |
+| `server/game/chat_service.py`                         | 7.12%            | 70%      | 62.88% | 0/0   | 0/0      |
+| `server/commands/read_command.py`                     | 7.14%            | 70%      | 62.86% | 0/0   | 0/0      |
+| `server/game/movement_service.py`                     | 7.26%            | 70%      | 62.74% | 0/0   | 0/0      |
+| `server/commands/alias_commands.py`                   | 7.53%            | 70%      | 62.47% | 0/0   | 0/0      |
+| `server/game/player_service.py`                       | 8.30%            | 70%      | 61.70% | 0/0   | 0/0      |
+| `server/npc/idle_movement.py`                         | 8.43%            | 70%      | 61.57% | 0/0   | 0/0      |
+| `server/services/combat_turn_processor.py`            | 8.53%            | 70%      | 61.47% | 0/0   | 0/0      |
+| `server/realtime/integration/game_state_provider.py`  | 8.72%            | 70%      | 61.28% | 0/0   | 0/0      |
+| `server/realtime/websocket_room_updates.py`           | 8.96%            | 70%      | 61.05% | 0/0   | 0/0      |
+| `server/events/event_bus.py`                          | 9.12%            | 70%      | 60.88% | 0/0   | 0/0      |
+| `server/game/magic/spell_effects.py`                  | 9.35%            | 70%      | 60.65% | 0/0   | 0/0      |
+| `server/commands/look_item.py`                        | 9.38%            | 70%      | 60.62% | 0/0   | 0/0      |
+| `server/realtime/room_subscription_manager.py`        | 9.43%            | 70%      | 60.57% | 0/0   | 0/0      |
+| `server/realtime/npc_event_handlers.py`               | 9.43%            | 70%      | 60.57% | 0/0   | 0/0      |
+| `server/services/user_manager.py`                     | 9.95%            | 70%      | 60.05% | 0/0   | 0/0      |
+| `server/commands/who_commands.py`                     | 10.00%           | 70%      | 60.00% | 0/0   | 0/0      |
+| `server/services/target_resolution_service.py`        | 10.00%           | 70%      | 60.00% | 0/0   | 0/0      |
+| `server/realtime/maintenance/connection_cleaner.py`   | 10.30%           | 70%      | 59.70% | 0/0   | 0/0      |
+| `server/realtime/monitoring/health_monitor.py`        | 10.39%           | 70%      | 59.61% | 0/0   | 0/0      |
+| `server/services/player_preferences_service.py`       | 10.41%           | 70%      | 59.59% | 0/0   | 0/0      |
+| `server/realtime/monitoring/statistics_aggregator.py` | 10.43%           | 70%      | 59.57% | 0/0   | 0/0      |
+| `server/services/combat_event_publisher.py`           | 10.43%           | 70%      | 59.57% | 0/0   | 0/0      |
+| `server/container.py`                                 | 10.44%           | 70%      | 59.56% | 0/0   | 0/0      |
+| `server/realtime/connection_helpers.py`               | 10.61%           | 70%      | 59.39% | 0/0   | 0/0      |
+| `server/commands/look_container.py`                   | 10.99%           | 70%      | 59.01% | 0/0   | 0/0      |
+| `server/utils/command_factories_inventory.py`         | 11.05%           | 70%      | 58.95% | 0/0   | 0/0      |
+| `server/realtime/message_filtering.py`                | 11.27%           | 70%      | 58.73% | 0/0   | 0/0      |
+| `server/realtime/event_publisher.py`                  | 11.28%           | 70%      | 58.72% | 0/0   | 0/0      |
+| `server/realtime/messaging/message_broadcaster.py`    | 11.30%           | 70%      | 58.70% | 0/0   | 0/0      |
+| `server/realtime/connection_disconnection.py`         | 11.46%           | 70%      | 58.54% | 0/0   | 0/0      |
+| `server/realtime/websocket_handler.py`                | 11.59%           | 70%      | 58.41% | 0/0   | 0/0      |
 
-*... and 274 more files*
+#### ... and 274 more files
 
 ## Priority Recommendations
 
@@ -101,13 +103,13 @@
 
 Focus on files with largest gaps and highest usage:
 
-1. **server/domain/__init__.py** - 0.00% (needs 70.00% more)
-2. **server/domain/entities/__init__.py** - 0.00% (needs 70.00% more)
-3. **server/domain/events/__init__.py** - 0.00% (needs 70.00% more)
-4. **server/domain/exceptions/__init__.py** - 0.00% (needs 70.00% more)
-5. **server/domain/repositories/__init__.py** - 0.00% (needs 70.00% more)
-6. **server/domain/services/__init__.py** - 0.00% (needs 70.00% more)
-7. **server/domain/value_objects/__init__.py** - 0.00% (needs 70.00% more)
-8. **server/persistence/utils/__init__.py** - 0.00% (needs 70.00% more)
+1. **server/domain/**init**.py** - 0.00% (needs 70.00% more)
+2. **server/domain/entities/**init**.py** - 0.00% (needs 70.00% more)
+3. **server/domain/events/**init**.py** - 0.00% (needs 70.00% more)
+4. **server/domain/exceptions/**init**.py** - 0.00% (needs 70.00% more)
+5. **server/domain/repositories/**init**.py** - 0.00% (needs 70.00% more)
+6. **server/domain/services/**init**.py** - 0.00% (needs 70.00% more)
+7. **server/domain/value_objects/**init**.py** - 0.00% (needs 70.00% more)
+8. **server/persistence/utils/**init**.py** - 0.00% (needs 70.00% more)
 9. **server/realtime/message_handlers.py** - 0.00% (needs 70.00% more)
 10. **server/schemas/websocket_messages.py** - 0.00% (needs 70.00% more)

@@ -26,13 +26,20 @@ Use the context-fetcher subagent to identify spec initiation method by either fi
 
 <option_a_flow>
   <trigger_phrases>
+
     - "what's next?"
+
   </trigger_phrases>
   <actions>
+
     1. CHECK @.agent-os/product/roadmap.md
+
     2. FIND next uncompleted item
+
     3. SUGGEST item to user
+
     4. WAIT for approval
+
   </actions>
 </option_a_flow>
 
@@ -56,8 +63,11 @@ Use the context-fetcher subagent to read @.agent-os/product/mission-lite.md and 
     PROCEED to step 3
   ELSE:
     READ only files not already in context:
+
       - mission-lite.md (if not in context)
+
       - tech-stack.md (if not in context)
+
     CONTINUE with context analysis
 </conditional_logic>
 
@@ -76,13 +86,20 @@ Use the context-fetcher subagent to clarify scope boundaries and technical consi
 
 <clarification_areas>
   <scope>
+
     - in_scope: what is included
+
     - out_of_scope: what is excluded (optional)
+
   </scope>
   <technical>
+
     - functionality specifics
+
     - UI/UX requirements
+
     - integration points
+
   </technical>
 </clarification_areas>
 
@@ -120,16 +137,24 @@ Use kebab-case for spec name. Maximum 5 words in name.
   <format>YYYY-MM-DD-spec-name</format>
   <date>use stored date from step 4</date>
   <name_constraints>
+
     - max_words: 5
+
     - style: kebab-case
+
     - descriptive: true
+
   </name_constraints>
 </folder_naming>
 
 <example_names>
-  - 2025-03-15-password-reset-flow
-  - 2025-03-16-user-profile-dashboard
-  - 2025-03-17-api-rate-limiting
+
+- 2025-03-15-password-reset-flow
+
+- 2025-03-16-user-profile-dashboard
+
+- 2025-03-17-api-rate-limiting
+
 </example_names>
 
 </step>
@@ -148,11 +173,17 @@ Use the file-creator subagent to create the file: .agent-os/specs/YYYY-MM-DD-spe
     > Created: [CURRENT_DATE]
   </header>
   <required_sections>
+
     - Overview
+
     - User Stories
+
     - Spec Scope
+
     - Out of Scope
+
     - Expected Deliverable
+
   </required_sections>
 </file_template>
 
@@ -163,8 +194,11 @@ Use the file-creator subagent to create the file: .agent-os/specs/YYYY-MM-DD-spe
     [1-2_SENTENCE_GOAL_AND_OBJECTIVE]
   </template>
   <constraints>
+
     - length: 1-2 sentences
+
     - content: goal and objective
+
   </constraints>
   <example>
     Implement a secure password reset functionality that allows users to regain account access through email verification. This feature will reduce support ticket volume and improve user experience by providing self-service account recovery.
@@ -182,9 +216,13 @@ Use the file-creator subagent to create the file: .agent-os/specs/YYYY-MM-DD-spe
     [DETAILED_WORKFLOW_DESCRIPTION]
   </template>
   <constraints>
+
     - count: 1-3 stories
+
     - include: workflow and problem solved
+
     - format: title + story + details
+
   </constraints>
 </section>
 
@@ -193,12 +231,18 @@ Use the file-creator subagent to create the file: .agent-os/specs/YYYY-MM-DD-spe
     ## Spec Scope
 
     1. **[FEATURE_NAME]** - [ONE_SENTENCE_DESCRIPTION]
+
     2. **[FEATURE_NAME]** - [ONE_SENTENCE_DESCRIPTION]
+
   </template>
   <constraints>
+
     - count: 1-5 features
+
     - format: numbered list
+
     - description: one sentence each
+
   </constraints>
 </section>
 
@@ -206,8 +250,10 @@ Use the file-creator subagent to create the file: .agent-os/specs/YYYY-MM-DD-spe
   <template>
     ## Out of Scope
 
-    - [EXCLUDED_FUNCTIONALITY_1]
+    [EXCLUDED_FUNCTIONALITY_1]
+
     - [EXCLUDED_FUNCTIONALITY_2]
+
   </template>
   <purpose>explicitly exclude functionalities</purpose>
 </section>
@@ -217,11 +263,16 @@ Use the file-creator subagent to create the file: .agent-os/specs/YYYY-MM-DD-spe
     ## Expected Deliverable
 
     1. [TESTABLE_OUTCOME_1]
+
     2. [TESTABLE_OUTCOME_2]
+
   </template>
   <constraints>
+
     - count: 1-3 expectations
+
     - focus: browser-testable outcomes
+
   </constraints>
 </section>
 
@@ -236,14 +287,19 @@ Use the file-creator subagent to create the file: .agent-os/specs/YYYY-MM-DD-spe
 <file_template>
   <header>
     # Spec Summary (Lite)
+
   </header>
 </file_template>
 
 <content_structure>
   <spec_summary>
+
     - source: Step 6 spec.md overview section
+
     - length: 1-3 sentences
+
     - content: core goal and objective of the feature
+
   </spec_summary>
 </content_structure>
 
@@ -273,30 +329,45 @@ Use the file-creator subagent to create the file: sub-specs/technical-spec.md us
 
 <spec_sections>
   <technical_requirements>
+
     - functionality details
+
     - UI/UX specifications
+
     - integration requirements
+
     - performance criteria
+
   </technical_requirements>
   <external_dependencies_conditional>
+
     - only include if new dependencies needed
+
     - new libraries/packages
+
     - justification for each
+
     - version requirements
+
   </external_dependencies_conditional>
 </spec_sections>
 
 <example_template>
-  ## Technical Requirements
 
-  - [SPECIFIC_TECHNICAL_REQUIREMENT]
-  - [SPECIFIC_TECHNICAL_REQUIREMENT]
+## Technical Requirements
 
-  ## External Dependencies (Conditional)
+  [SPECIFIC_TECHNICAL_REQUIREMENT]
+
+- [SPECIFIC_TECHNICAL_REQUIREMENT]
+
+## External Dependencies (Conditional)
 
   [ONLY_IF_NEW_DEPENDENCIES_NEEDED]
-  - **[LIBRARY_NAME]** - [PURPOSE]
-  - **Justification:** [REASON_FOR_INCLUSION]
+
+**[LIBRARY_NAME]** - [PURPOSE]
+
+**Justification:** [REASON_FOR_INCLUSION]
+
 </example_template>
 
 <conditional_logic>
@@ -331,20 +402,33 @@ Use the file-creator subagent to create the file: sub-specs/database-schema.md O
 
 <schema_sections>
   <changes>
+
     - new tables
+
     - new columns
+
     - modifications
+
     - migrations
+
   </changes>
   <specifications>
+
     - exact SQL or migration syntax
+
     - indexes and constraints
+
     - foreign key relationships
+
   </specifications>
   <rationale>
+
     - reason for each change
+
     - performance considerations
+
     - data integrity rules
+
   </rationale>
 </schema_sections>
 
@@ -373,26 +457,39 @@ Use the file-creator subagent to create file: sub-specs/api-spec.md ONLY IF API 
 
 <api_sections>
   <routes>
+
     - HTTP method
+
     - endpoint path
+
     - parameters
+
     - response format
+
   </routes>
   <controllers>
+
     - action names
+
     - business logic
+
     - error handling
+
   </controllers>
   <purpose>
+
     - endpoint rationale
+
     - integration with features
+
   </purpose>
 </api_sections>
 
 <endpoint_template>
-  ## Endpoints
 
-  ### [HTTP_METHOD] [ENDPOINT_PATH]
+## Endpoints
+
+### [HTTP_METHOD] [ENDPOINT_PATH]
 
   **Purpose:** [DESCRIPTION]
   **Parameters:** [LIST]
@@ -411,9 +508,12 @@ Request user review of spec.md and all sub-specs files, waiting for approval or 
 <review_request>
   I've created the spec documentation:
 
-  - Spec Requirements: @.agent-os/specs/YYYY-MM-DD-spec-name/spec.md
-  - Spec Summary: @.agent-os/specs/YYYY-MM-DD-spec-name/spec-lite.md
-  - Technical Spec: @.agent-os/specs/YYYY-MM-DD-spec-name/sub-specs/technical-spec.md
+- Spec Requirements: @.agent-os/specs/YYYY-MM-DD-spec-name/spec.md
+
+- Spec Summary: @.agent-os/specs/YYYY-MM-DD-spec-name/spec-lite.md
+
+- Technical Spec: @.agent-os/specs/YYYY-MM-DD-spec-name/sub-specs/technical-spec.md
+
   [LIST_OTHER_CREATED_SPECS]
 
   Please review and let me know if any changes are needed.

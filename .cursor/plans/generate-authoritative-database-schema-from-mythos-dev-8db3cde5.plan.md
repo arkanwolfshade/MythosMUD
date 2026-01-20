@@ -7,16 +7,18 @@ Replace the current multi-file schema approach (4 separate SQL files) with a sin
 
 ## Current State
 
-- Dockerfile applies 4 schema files sequentially: `01_world_and_calendar.sql`, `02_items_and_npcs.sql`, `03_identity_and_moderation.sql`, `04_runtime_tables.sql`
+Dockerfile applies 4 schema files sequentially: `01_world_and_calendar.sql`, `02_items_and_npcs.sql`, `03_identity_and_moderation.sql`, `04_runtime_tables.sql`
+
 - CI workflow applies the same 4 files
 - Schema files are manually maintained and can drift from actual database structure
 - Migration scripts exist but may not reflect current state
 
 ## Directory Structure Convention
 
-- **DDL (Data Definition Language)**:
-  - `db/authoritative_schema.sql` - Baseline authoritative schema (committed to git)
-  - `db/migrations/*.sql` - DDL migration scripts for new database setups
+**DDL (Data Definition Language)**:
+
+- `db/authoritative_schema.sql` - Baseline authoritative schema (committed to git)
+- `db/migrations/*.sql` - DDL migration scripts for new database setups
 - **DML (Data Manipulation Language)**:
   - `data/db/*.sql` - DML baseline scripts (seed data, initial data loads)
   - `data/db/migrations/*.sql` - DML migration scripts (INSERT, UPDATE, DELETE operations for existing databases)
@@ -59,8 +61,8 @@ Replace the current multi-file schema approach (4 separate SQL files) with a sin
 
 `su postgres -c "psql -d mythos_unit -f /workspace/db/authoritative_schema.sql"`
 
-   - Apply same change for `mythos_e2e` database
-   - Update verification commands to check for expected tables
+- Apply same change for `mythos_e2e` database
+- Update verification commands to check for expected tables
 
 ### Phase 4: Update CI Workflow
 
@@ -155,7 +157,8 @@ pg_dump -h localhost -U postgres -d mythos_dev \
 
 ### Schema Ordering
 
-- Custom types/enums first
+Custom types/enums first
+
 - Tables in dependency order (users before players, etc.)
 - Indexes after tables
 - Foreign key constraints after all tables exist
@@ -184,13 +187,14 @@ Add to Makefile:
 
 ```makefile
 verify-schema:
-	@echo "Verifying authoritative_schema.sql matches mythos_dev..."
-	@./scripts/verify_schema_match.sh
+ @echo "Verifying authoritative_schema.sql matches mythos_dev..."
+ @./scripts/verify_schema_match.sh
 ```
 
 ## Success Criteria
 
-- Single authoritative schema file generated from `mythos_dev` in `/db/` directory
+Single authoritative schema file generated from `mythos_dev` in `/db/` directory
+
 - Schema file committed to git repository
 - Docker container creates databases matching `mythos_dev` structure
 - CI workflow uses authoritative schema

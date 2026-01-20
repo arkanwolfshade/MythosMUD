@@ -11,11 +11,18 @@
 
 **Root Cause Identified**: This is actually TWO separate issues:
 
-1. **Display Issue (FIXED)**: The `RoomInfoPanel` component was only using a flat `occupants` array instead of the structured `players` and `npcs` arrays sent by the server. This has been fixed - the component now displays NPCs in a separate section.
+1. **Display Issue (FIXED)**: The `RoomInfoPanel` component was only using a flat `occupants` array instead of the
+ structured `players` and `npcs` arrays sent by the server. This has been fixed - the component now displays NPCs
+  in a separate section.
 
-2. **Spawning/Visibility Issue (IDENTIFIED)**: NPCs ARE spawning correctly at server startup in their configured rooms (e.g., `earth_arkhamcity_sanitarium_room_foyer_001`), but they are NOT spawning when players enter OTHER rooms in the same sub-zone (e.g., `earth_arkhamcity_sanitarium_room_foyer_entrance_001`). Additionally, NPCs that ARE in rooms are not appearing in the occupants list - the server sends `npcs=[]` even though NPCs exist in the sanitarium.
+2. **Spawning/Visibility Issue (IDENTIFIED)**: NPCs ARE spawning correctly at server startup in their configured
+ rooms (e.g., `earth_arkhamcity_sanitarium_room_foyer_001`), but they are NOT spawning when players enter OTHER
+  rooms in the same sub-zone (e.g., `earth_arkhamcity_sanitarium_room_foyer_entrance_001`). Additionally, NPCs that
+   ARE in rooms are not appearing in the occupants list - the server sends `npcs=[]` even though NPCs exist in the
+    sanitarium.
 
-**System Impact**: **HIGH** - Core game feature not functioning. Players cannot see NPCs in their current room, and NPCs are not spawning dynamically when players enter rooms.
+**System Impact**: **HIGH** - Core game feature not functioning. Players cannot see NPCs in their current room, and
+ NPCs are not spawning dynamically when players enter rooms.
 
 **Severity**: **HIGH** - Both spawning and display functionality are affected.
 
@@ -26,9 +33,12 @@
 ### Phase 1: Initial Bug Report Analysis
 
 **Bug Description Parsed**:
-- **Issue**: NPCs/mobs are not appearing in the Occupants panel
-- **Question**: Are they not spawning, or just not displaying?
-- **Expected Behavior**: NPCs should spawn in rooms and appear in the occupants list
+**Issue**: NPCs/mobs are not appearing in the Occupants panel
+
+**Question**: Are they not spawning, or just not displaying?
+
+**Expected Behavior**: NPCs should spawn in rooms and appear in the occupants list
+
 - **Affected Component**: Both server-side spawning and client-side display
 
 ---
@@ -40,26 +50,33 @@
 **Log Analysis Results**:
 
 1. **NPC Population Controller Initialized**: ✅
+
    - Log shows: `NPC Population Controller initialized` with `zones_loaded=18`
    - Event subscriptions working: `NPC Population Controller event subscriptions completed`
 
 2. **NPC Definitions Loaded**: ✅
+
    - Log shows: `NPC definitions loaded` with `count=10`
    - Spawn rules loaded: `NPC spawn rules loaded` with `count=10`
 
 3. **NPCs Spawning at Startup**: ✅
-   - Log shows: `Spawned NPC: dr._francis_morgan_earth_arkhamcity_sanitarium_room_foyer_001_... (Dr. Francis Morgan, quest_giver) in earth_arkhamcity_sanitarium_room_foyer_001`
+
+   - Log shows: `Spawned NPC: dr._francis_morgan_earth_arkhamcity_sanitarium_room_foyer_001_... (Dr. Francis
+    Morgan, quest_giver) in earth_arkhamcity_sanitarium_room_foyer_001`
    - Multiple NPCs spawned in various rooms
 
 4. **Spawn Checks Running**: ✅
+
    - Log shows: `NPC Population Controller received PlayerEnteredRoom event`
    - Log shows: `Checking spawn requirements for room`
    - Log shows: `Checking NPC definitions for spawn requirements` with `npc_count=10`
 
 5. **NPCs Being Added to Rooms**: ✅
+
    - Log shows: `NPC entered room` events for multiple NPCs
 
 6. **Occupants Update Shows Empty NPCs**: ❌
+
    - Warning log shows: `npcs=[] all_occupants=['ArkanWolfshade'] npcs_count=0`
    - Room ID: `earth_arkhamcity_sanitarium_room_foyer_entrance_001`
 
@@ -70,6 +87,7 @@
 #### Finding 1: NPCs Are Spawning at Startup (WORKING)
 
 **Evidence**:
+
 - Logs confirm NPCs are spawned during server startup
 - Dr. Francis Morgan spawned in `earth_arkhamcity_sanitarium_room_foyer_001`
 - NPC entered room event published correctly
@@ -83,6 +101,7 @@
 **Location**: `server/npc/population_control.py:564-611`
 
 **What Happens**:
+
 1. Player enters room: `earth_arkhamcity_sanitarium_room_foyer_entrance_001`
 2. Population controller receives `PlayerEnteredRoom` event
 3. Spawn check runs: `_check_spawn_requirements_for_room(room_id)`
@@ -92,12 +111,15 @@
 7. Spawn is blocked: "NPC should not spawn"
 
 **The Problem**:
+
 - NPC was already spawned in a DIFFERENT room (`room_foyer_001`)
 - Player is in a DIFFERENT room (`room_foyer_entrance_001`)
 - Population tracking is by sub-zone, not by room
 - System thinks sanitarium already has this NPC, so doesn't spawn another
 
-**Root Cause**: Population limits are enforced at the sub-zone level, but NPCs can be in different rooms within the same sub-zone. When checking if NPCs should spawn in a room, it correctly blocks if the sub-zone already has the max population, but this prevents NPCs from appearing in rooms where they should be visible.
+**Root Cause**: Population limits are enforced at the sub-zone level, but NPCs can be in different rooms within the
+ same sub-zone. When checking if NPCs should spawn in a room, it correctly blocks if the sub-zone already has the
+  max population, but this prevents NPCs from appearing in rooms where they should be visible.
 
 **Status**: ⚠️ **WORKING AS DESIGNED BUT MAYBE WRONG DESIGN**
 
@@ -108,14 +130,17 @@
 **Location**: `server/realtime/event_handler.py:654-892`
 
 **Evidence**:
+
 - Warning log shows: `npcs=[]` when sending room occupants update
 - Room ID: `earth_arkhamcity_sanitarium_room_foyer_entrance_001`
 - Code calls `room.get_npcs()` at line 874
 
 **The Problem**:
-The `_get_room_occupants` method calls `room.get_npcs()`, which should return NPCs in that specific room. But the log shows it's returning an empty list, even though NPCs exist in the sanitarium sub-zone.
+The `_get_room_occupants` method calls `room.get_npcs()`, which should return NPCs in that specific room. But the
+ log shows it's returning an empty list, even though NPCs exist in the sanitarium sub-zone.
 
 **Possible Causes**:
+
 1. NPCs are in a DIFFERENT room (`room_foyer_001`) than the one being queried (`room_foyer_entrance_001`)
 2. Room objects retrieved from persistence don't have NPC data persisted
 3. Room cache is not synchronized with NPC spawn data
@@ -132,6 +157,7 @@ The `_get_room_occupants` method calls `room.get_npcs()`, which should return NP
 **Location**: `client/src/components/RoomInfoPanel.tsx`
 
 **What Was Fixed**:
+
 - Updated to handle structured occupant data (`players` and `npcs` arrays)
 - Added separate sections for Players and NPCs
 - Maintained backward compatibility with flat `occupants` array
@@ -145,16 +171,19 @@ The `_get_room_occupants` method calls `room.get_npcs()`, which should return NP
 **Code Evidence**:
 
 1. **NPC Spawning** (server/npc/spawning_service.py:416):
+
 ```python
 room.npc_entered(npc_id)  # Adds NPC to room's _npcs set
 ```
 
-2. **NPC Retrieval** (server/realtime/event_handler.py:874):
+1. **NPC Retrieval** (server/realtime/event_handler.py:874):
+
 ```python
 npc_ids = room.get_npcs()  # Returns list(self._npcs)
 ```
 
-3. **Population Check Blocking Spawn** (server/npc/population_control.py:632-643):
+1. **Population Check Blocking Spawn** (server/npc/population_control.py:632-643):
+
 ```python
 current_count = stats.npcs_by_definition.get(int(definition.id), 0)
 if not definition.can_spawn(current_count):  # current_count=1, max_population=1
@@ -164,21 +193,27 @@ if not definition.can_spawn(current_count):  # current_count=1, max_population=1
 **Log Evidence**:
 
 1. **NPC Spawned at Startup**:
+
 ```
-2025-11-27 21:25:54 - Spawned NPC: dr._francis_morgan_earth_arkhamcity_sanitarium_room_foyer_001_... (Dr. Francis Morgan, quest_giver) in earth_arkhamcity_sanitarium_room_foyer_001
+2025-11-27 21:25:54 - Spawned NPC: dr._francis_morgan_earth_arkhamcity_sanitarium_room_foyer_001_... (Dr. Francis
+ Morgan, quest_giver) in earth_arkhamcity_sanitarium_room_foyer_001
 ```
 
-2. **NPC Entered Room Event**:
+1. **NPC Entered Room Event**:
+
 ```
-2025-11-27 21:25:54 - Room(earth_arkhamcity_sanitarium_room_foyer_001) - DEBUG - npc_id='dr._francis_morgan_...' event='NPC entered room'
+2025-11-27 21:25:54 - Room(earth_arkhamcity_sanitarium_room_foyer_001) - DEBUG - npc_id='dr._francis_morgan_...'
+ event='NPC entered room'
 ```
 
-3. **Player Entered Different Room**:
+1. **Player Entered Different Room**:
+
 ```
 2025-11-27 21:26:49 - room_id='earth_arkhamcity_sanitarium_room_foyer_entrance_001' npcs=[] players=['ArkanWolfshade']
 ```
 
-4. **Spawn Check Results**:
+1. **Spawn Check Results**:
+
 ```
 2025-11-27 21:22:08 - npc_id=14 current_count=1 event='Current count for NPC in zone'
 2025-11-27 21:22:08 - npc_id=14 event='NPC should not spawn'
@@ -195,11 +230,17 @@ if not definition.can_spawn(current_count):  # current_count=1, max_population=1
 **The Issue**:
 NPCs ARE spawning correctly, but there are TWO separate problems:
 
-1. **NPCs in Different Rooms**: NPCs spawn in their configured rooms (e.g., `room_foyer_001`) but players enter different rooms (e.g., `room_foyer_entrance_001`). The occupants check queries the player's current room, which doesn't have NPCs, so it returns an empty list.
+1. **NPCs in Different Rooms**: NPCs spawn in their configured rooms (e.g., `room_foyer_001`) but players enter
+ different rooms (e.g., `room_foyer_entrance_001`). The occupants check queries the player's current room, which
+  doesn't have NPCs, so it returns an empty list.
 
-2. **Population Limits Block Dynamic Spawning**: When a player enters a room, the spawn check correctly identifies that NPCs exist in the sub-zone, but since they're already at max population, it doesn't spawn them in the new room. However, the system design may require NPCs to spawn in EVERY room a player enters, not just their configured room.
+2. **Population Limits Block Dynamic Spawning**: When a player enters a room, the spawn check correctly identifies
+ that NPCs exist in the sub-zone, but since they're already at max population, it doesn't spawn them in the new
+  room. However, the system design may require NPCs to spawn in EVERY room a player enters, not just their
+   configured room.
 
 **Technical Details**:
+
 - NPCs are tracked by sub-zone in population stats
 - Room objects track NPCs via `_npcs` set
 - When querying occupants, `room.get_npcs()` is called for the specific room
@@ -212,17 +253,21 @@ NPCs ARE spawning correctly, but there are TWO separate problems:
 ### Scope
 
 **Affected Components**:
-- ✅ NPC spawning at startup: **WORKING**
+✅ NPC spawning at startup: **WORKING**
+
 - ⚠️ NPC spawning on player entry: **BLOCKED BY POPULATION LIMITS**
 - ❌ NPC occupants retrieval: **RETURNING EMPTY LIST**
 - ✅ Client-side display: **FIXED**
 
 **User Impact**:
-- **HIGH**: Players cannot see NPCs that exist in the game world
-- **HIGH**: NPCs don't spawn dynamically when players enter rooms
-- **MEDIUM**: NPCs spawn at startup but are in different rooms than players
+**HIGH**: Players cannot see NPCs that exist in the game world
+
+**HIGH**: NPCs don't spawn dynamically when players enter rooms
+
+**MEDIUM**: NPCs spawn at startup but are in different rooms than players
 
 **Functional Impact**:
+
 - NPCs are correctly spawned and tracked
 - NPCs are added to Room objects correctly
 - NPCs are not visible in occupants list for rooms they're not in
@@ -231,6 +276,7 @@ NPCs ARE spawning correctly, but there are TWO separate problems:
 ### Severity
 
 **HIGH**:
+
 - Core game feature not functioning
 - Players cannot interact with NPCs
 - NPCs may be spawning but invisible to players
@@ -242,12 +288,15 @@ NPCs ARE spawning correctly, but there are TWO separate problems:
 ### Critical Log Entries
 
 **NPC Spawned at Startup**:
+
 ```
 2025-11-27 21:25:54 - server.npc.population_control - INFO -
-event='Spawned NPC: dr._francis_morgan_earth_arkhamcity_sanitarium_room_foyer_001_1764303954_2580 (Dr. Francis Morgan, quest_giver) in earth_arkhamcity_sanitarium_room_foyer_001 (arkhamcity/sanitarium)'
+event='Spawned NPC: dr._francis_morgan_earth_arkhamcity_sanitarium_room_foyer_001_1764303954_2580 (Dr. Francis
+ Morgan, quest_giver) in earth_arkhamcity_sanitarium_room_foyer_001 (arkhamcity/sanitarium)'
 ```
 
 **NPC Entered Room**:
+
 ```
 2025-11-27 21:25:54 - Room(earth_arkhamcity_sanitarium_room_foyer_001) - DEBUG -
 npc_id='dr._francis_morgan_earth_arkhamcity_sanitarium_room_foyer_001_1764303954_2580'
@@ -255,6 +304,7 @@ event='NPC entered room'
 ```
 
 **Player in Different Room - Empty NPCs**:
+
 ```
 2025-11-27 21:26:49 - RealTimeEventHandler - WARNING -
 room_id='earth_arkhamcity_sanitarium_room_foyer_entrance_001'
@@ -262,6 +312,7 @@ players=['ArkanWolfshade'] npcs=[] all_occupants=['ArkanWolfshade']
 ```
 
 **Spawn Check Blocked**:
+
 ```
 2025-11-27 21:22:08 - server.npc.population_control - INFO -
 npc_id=14 npc_name='Dr. Francis Morgan' current_count=1 event='Current count for NPC in zone'
@@ -280,6 +331,7 @@ npc_id=14 event='NPC should not spawn'
 **Location**: `server/models/room.py`, `server/persistence/`
 
 **Questions to Answer**:
+
 1. When `room.npc_entered(npc_id)` is called, is the NPC added to the in-memory Room object only, or also persisted?
 2. When `persistence.get_room(room_id)` is called, does it return a Room object with NPCs?
 3. Are Room objects cached, and if so, is the cache updated when NPCs are added?
@@ -291,6 +343,7 @@ npc_id=14 event='NPC should not spawn'
 **Location**: `server/persistence/`, `server/game/room_cache_service.py`
 
 **Questions to Answer**:
+
 1. Does each room have its own Room instance, or are rooms shared?
 2. If rooms are cached, how is the cache synchronized with NPC spawns?
 3. When a player enters a room, which Room instance is used for occupant queries?
@@ -302,6 +355,7 @@ npc_id=14 event='NPC should not spawn'
 **Location**: `server/npc/lifecycle_manager.py`, NPC instance tracking
 
 **Questions to Answer**:
+
 1. Do NPC instances track their current_room_id correctly?
 2. When an NPC is spawned, is it immediately added to the Room's `_npcs` set?
 3. Are there multiple Room instances for the same room_id?
@@ -313,6 +367,7 @@ npc_id=14 event='NPC should not spawn'
 **Location**: `server/realtime/event_handler.py:874`
 
 **Required Changes**:
+
 - Add logging before `npc_ids = room.get_npcs()`
 - Log room object identity/hash
 - Log NPC count returned
@@ -328,9 +383,11 @@ npc_id=14 event='NPC should not spawn'
 Investigate and fix the issue where NPCs are not appearing in the room occupants list.
 
 The investigation found that:
-1. NPCs ARE spawning correctly at server startup in their configured rooms (e.g., earth_arkhamcity_sanitarium_room_foyer_001)
+1. NPCs ARE spawning correctly at server startup in their configured rooms (e.g.,
+ earth_arkhamcity_sanitarium_room_foyer_001)
 2. NPCs ARE being added to Room objects via room.npc_entered(npc_id)
-3. BUT when querying occupants for a room (e.g., earth_arkhamcity_sanitarium_room_foyer_entrance_001), room.get_npcs() returns an empty list
+3. BUT when querying occupants for a room (e.g., earth_arkhamcity_sanitarium_room_foyer_entrance_001),
+ room.get_npcs() returns an empty list
 
 The warning log shows: npcs=[] when sending room occupants update, even though NPCs exist in the sanitarium sub-zone.
 
@@ -356,7 +413,8 @@ If NPCs are in different rooms, we need to decide:
 
 ## INVESTIGATION COMPLETION CHECKLIST
 
-- [x] All investigation steps completed as written
+[x] All investigation steps completed as written
+
 - [x] Comprehensive evidence collected and documented
 - [x] Root cause analysis completed
 - [x] System impact assessed

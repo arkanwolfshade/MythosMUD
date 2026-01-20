@@ -31,7 +31,8 @@ As a teammate, I want to loot a fallen ally or foe once an ownership timer expir
 
 ## Out of Scope
 
-- Crafting or enchanting new container item types beyond backpacks already in game data.
+Crafting or enchanting new container item types beyond backpacks already in game data.
+
 - Any monetization or cosmetic systems tied to container skins or capacity boosts.
 
 ## Expected Deliverable

@@ -28,6 +28,7 @@ Players with lucidity <= 0 (catatonic state) are able to perform movement action
 **ACTUAL ROOT CAUSE IDENTIFIED**: The WebSocket command handler (`server/realtime/websocket_handler.py`) had a special case for "go" commands that bypassed the unified command handler entirely, skipping all validation including the catatonia check.
 
 **Location**:
+
 - Primary: `server/realtime/websocket_handler.py`, function `process_websocket_command()` (lines 674-751)
 - Secondary: `server/command_handler_unified.py`, function `_check_catatonia_block()` (lines 639-715)
 
@@ -87,14 +88,17 @@ def resolve_tier(lucidity_value: int) -> Tier:
 ### Evidence
 
 1. **Code Reference**: `server/command_handler_unified.py:686-687`
+
    - Only checks `current_tier == "catatonic"`
    - Does not check `current_san <= 0`
 
 2. **Tier Resolution Logic**: `server/services/lucidity_service.py:44-54`
+
    - Confirms that `lucidity_value <= 0` should result in "catatonic" tier
    - But tier updates may be asynchronous
 
 3. **Command Processing Flow**: `server/command_handler_unified.py:320-325`
+
    - Movement commands (north, south, east, west, etc.) are NOT in `CATATONIA_ALLOWED_COMMANDS`
    - Therefore, they should be blocked by `_check_catatonia_block()`
    - But the check is incomplete
@@ -111,9 +115,11 @@ def resolve_tier(lucidity_value: int) -> Tier:
 
 ### System Impact
 
-- **Severity**: HIGH
-- **Scope**: All players with lucidity <= 0
-- **Impact**: Game balance violation - catatonic players should be immobile
+**Severity**: HIGH
+
+**Scope**: All players with lucidity <= 0
+
+**Impact**: Game balance violation - catatonic players should be immobile
 - **Security**: Low (gameplay issue, not security vulnerability)
 
 ---
@@ -142,17 +148,20 @@ After moving south from "sanitarium main foyer" to "sanitarium foyer entrance", 
 **Code Flow Analysis**:
 
 1. **Command Processing** (`server/commands/exploration_commands.py:handle_go_command()`):
+
    - Line 231-235: Gets `exits = room.exits` and checks `target_room_id = exits.get(direction)`
    - If `target_room_id` is None or falsy, returns "You can't go that way"
    - Line 237-240: If `target_room` doesn't exist, returns "You can't go that way"
    - Line 252: Calls `movement_service.move_player()`
 
 2. **Movement Service Validation** (`server/game/movement_service.py`):
+
    - Line 159: Calls `_validate_movement()` which calls `_validate_exit()` at line 445
    - Line 451-475: `_validate_exit()` checks if any exit in `from_room.exits` has `target_id == to_room_id`
    - This is a **bidirectional validation** - it checks if the exit exists in the source room's exit dictionary
 
 3. **Exit Display Logic** (`server/commands/exploration_commands.py:handle_look_command()`):
+
    - Line 144-145: Filters exits to only show those with non-None room IDs: `valid_exits = [direction for direction, room_id in exits.items() if room_id is not None]`
    - This means the UI shows exits that have a direction key, even if the room_id value might be invalid
 
@@ -178,12 +187,14 @@ However, movement fails because:
 ### Evidence Collected
 
 1. **Code References**:
+
    - Exit validation: `server/commands/exploration_commands.py:231-240`
    - Movement service: `server/game/movement_service.py:451-475`
    - Exit display: `server/commands/exploration_commands.py:144-145`
    - Room loading: `server/persistence.py:643-654` (includes debug logging for foyer room)
 
 2. **Database Exit Loading** (`server/persistence.py:524-631`):
+
    - Exits are loaded from `room_links` table
    - Room IDs are generated using `generate_room_id()` function
    - Exits are stored in `exits_by_room` dictionary keyed by room_id
@@ -195,9 +206,11 @@ However, movement fails because:
 
 From `earth_arkhamcity_sanitarium_room_foyer_entrance_001` (Sanitarium Entrance):
 
-- **North**: ❌ FAILED - "You can't go that way" (exit is displayed but movement fails)
-- **South**: ❌ FAILED - "You can't go that way" (exit is displayed but movement fails)
-- **East**: ✅ SUCCESS - Successfully moved to "Eastern Hallway - Section 1" (`earth_arkhamcity_sanitarium_room_hallway_001`)
+**North**: ❌ FAILED - "You can't go that way" (exit is displayed but movement fails)
+
+**South**: ❌ FAILED - "You can't go that way" (exit is displayed but movement fails)
+
+**East**: ✅ SUCCESS - Successfully moved to "Eastern Hallway - Section 1" (`earth_arkhamcity_sanitarium_room_hallway_001`)
 
 **Conclusion**: The issue is specific to the **north and south exits** from "Sanitarium Entrance". The east exit works correctly, indicating:
 
@@ -223,9 +236,11 @@ From `earth_arkhamcity_sanitarium_room_foyer_entrance_001` (Sanitarium Entrance)
 
 ### System Impact
 
-- **Severity**: MEDIUM
-- **Scope**: Specific room pair (sanitarium foyer rooms)
-- **Impact**: Player navigation blocked, potential game progression issue
+**Severity**: MEDIUM
+
+**Scope**: Specific room pair (sanitarium foyer rooms)
+
+**Impact**: Player navigation blocked, potential game progression issue
 - **Security**: None
 
 ---
@@ -246,14 +261,16 @@ From `earth_arkhamcity_sanitarium_room_foyer_entrance_001` (Sanitarium Entrance)
 
 ### Tools Used
 
-- PowerShell file system searches
+PowerShell file system searches
+
 - Code pattern matching (grep/Select-String)
 - File content examination
 - Code reference analysis
 
 ### Limitations
 
-- Some file operations timed out (likely due to large codebase)
+Some file operations timed out (likely due to large codebase)
+
 - Movement command handlers not located (may be in different location)
 - Room data files not directly examined (need specific file paths)
 - Exit validation logic not found (may be in persistence layer)
@@ -265,7 +282,9 @@ From `earth_arkhamcity_sanitarium_room_foyer_entrance_001` (Sanitarium Entrance)
 ### Immediate Actions
 
 1. **Fix Bug #1**: Update `_check_catatonia_block()` to check both `current_tier == "catatonic"` AND `current_san <= 0`
+
 2. **Investigate Bug #2**:
+
    - Locate room JSON files for sanitarium foyer rooms
    - Verify bidirectional exit definitions
    - Review movement command handler exit validation
@@ -344,15 +363,18 @@ Please:
 
 ## Investigation History
 
-- **2025-01-XX**: Initial investigation of both bugs
-- **2025-01-XX**: Root cause identified for Bug #1
-- **2025-01-XX**: Bug #2 requires additional room data examination
+**2025-01-XX**: Initial investigation of both bugs
+
+**2025-01-XX**: Root cause identified for Bug #1
+
+**2025-01-XX**: Bug #2 requires additional room data examination
 
 ---
 
 ## Notes
 
-- The investigation followed the MYTHOSMUD_DEBUGGING_AGENT methodology
+The investigation followed the MYTHOSMUD_DEBUGGING_AGENT methodology
+
 - All findings are evidence-based
 - No fixes were attempted (investigation only, per protocol)
 - Remediation prompts provided for developer implementation
@@ -363,29 +385,34 @@ Please:
 
 **Investigation Status**:
 
-- **Bug #1**: ✅ FIXED - Updated `_check_catatonia_block()` to check both `current_tier == "catatonic"` OR `current_san <= 0`
-- **Bug #2**: 🔧 FIXED - Enhanced exit validation logging to identify room ID mismatches. Root cause likely in database exit data or room ID generation inconsistency.
+**Bug #1**: ✅ FIXED - Updated `_check_catatonia_block()` to check both `current_tier == "catatonic"` OR `current_san <= 0`
+
+**Bug #2**: 🔧 FIXED - Enhanced exit validation logging to identify room ID mismatches. Root cause likely in database exit data or room ID generation inconsistency.
 
 ## Fixes Applied
 
 ### Bug #2 Fix - Database Schema Constraint (COMPLETE)
 
 **Files Modified**:
+
 1. `server/models/player.py` - Updated `current_room_id` column definition
 2. `server/sql/migrations/008_increase_current_room_id_length.sql` - Created migration script
 
 **Changes**:
 
 1. **Updated Player Model** (`server/models/player.py:76`):
+
    - Changed `current_room_id` from `String(length=50)` to `String(length=255)`
    - Added comment explaining the fix: hierarchical room IDs can exceed 50 characters
 
 2. **Created Database Migration** (`server/sql/migrations/008_increase_current_room_id_length.sql`):
+
    - Migration script to alter `players.current_room_id` column from `VARCHAR(50)` to `VARCHAR(255)`
    - Includes safety checks to only apply if column is currently VARCHAR(50)
    - Migration applied successfully on 2025-11-19
 
 **Verification**:
+
 - Database column verified: `current_room_id` is now `VARCHAR(255)`
 - Room ID `earth_arkhamcity_sanitarium_room_foyer_entrance_001` (54 chars) now fits within constraint
 
@@ -394,32 +421,39 @@ Please:
 ### Bug #1 Fix - COMPLETE
 
 **Files Modified**:
+
 1. `server/realtime/websocket_handler.py` - Removed special case for "go" commands
 2. `server/command_handler_unified.py` - Enhanced catatonia check and added diagnostic logging
 
 **Changes**:
 
 1. **Removed WebSocket Bypass** (`server/realtime/websocket_handler.py`):
+
    - Removed the special case `elif cmd == "go":` block (lines 674-751)
    - All commands now go through the unified command handler
    - This ensures catatonia checks are applied to all movement commands
 
 2. **Enhanced Catatonia Check** (`server/command_handler_unified.py`):
+
    ```python
    # Before: Only checked current_tier == "catatonic"
+
    if lucidity_record and lucidity_record.current_tier == "catatonic":
 
    # After: Checks both tier and lucidity value
+
    if lucidity_record and (lucidity_record.current_tier == "catatonic" or lucidity_record.current_san <= 0):
    ```
 
 3. **Added Diagnostic Logging**:
+
    - Enhanced logging in `_check_catatonia_block()` to track lucidity record retrieval
    - Added logging in command processing to track catatonia check results
    - This will help identify any future issues with the catatonia blocking system
 
 **Testing Status**:
-- ✅ Code changes applied
+✅ Code changes applied
+
 - ⏳ Server restarted with fixes
 - ⏳ Testing pending (connection issues during test session)
 

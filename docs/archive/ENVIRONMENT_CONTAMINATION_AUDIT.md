@@ -12,10 +12,12 @@ Professor Wolfshade, I have completed a thorough investigation of our codebase f
 
 ```python
 # Check if running under pytest
+
 if "pytest" in sys.modules or "pytest" in sys.argv[0]:
     return "test"
 
 # Check if test configuration is being used
+
 if os.getenv("MYTHOSMUD_TEST_MODE"):
     return "test"
 ```
@@ -91,10 +93,12 @@ The following patterns are **NOT** environment contamination:
 ```python
 def detect_environment() -> str:
     # Check if running under pytest
+
     if "pytest" in sys.modules or "pytest" in sys.argv[0]:
         return "test"
 
     # Check if test configuration is being used
+
     if os.getenv("MYTHOSMUD_TEST_MODE"):
         return "test"
 ```
@@ -117,11 +121,13 @@ def detect_environment() -> str:
         Environment name: "development", "staging", or "production"
     """
     # Only use explicit environment variable
+
     env = os.getenv("MYTHOSMUD_ENV")
     if env:
         return env
 
     # Default to development
+
     return "development"
 ```
 

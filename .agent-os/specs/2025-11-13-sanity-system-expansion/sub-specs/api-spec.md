@@ -56,12 +56,15 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-11-
 
 ### WebSocket Topic: `lucidity.events`
 
-- **Payload:** `{ "type": "lucidity_change" | "hallucination" | "command_misfire" | "catatonia" | "rescue_update", ... }`
-- **Purpose:** Push immediate feedback for SAN adjustments, hallucination prompts, involuntary actions, and rescue progress.
-- **Error Handling:** Disconnect client on malformed payload; attempt auto-resubscribe with exponential backoff.
+**Payload:** `{ "type": "lucidity_change" | "hallucination" | "command_misfire" | "catatonia" | "rescue_update", ... }`
+
+**Purpose:** Push immediate feedback for SAN adjustments, hallucination prompts, involuntary actions, and rescue progress.
+
+**Error Handling:** Disconnect client on malformed payload; attempt auto-resubscribe with exponential backoff.
 
 ## Controller Notes
 
-- Lucidity controllers must enforce rate limiting and consult cooldown table before accepting recovery requests.
+Lucidity controllers must enforce rate limiting and consult cooldown table before accepting recovery requests.
+
 - Rescue controller (`ground`) locks target to single rescuer at a time and cancels on movement/damage.
 - SSE/WebSocket services hook into existing session context to include COPPA-compliant metadata only.

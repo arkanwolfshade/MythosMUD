@@ -36,7 +36,8 @@ Outline event generation, weighting, and client delivery for hallucinated mobs, 
 
 ## Out of Scope
 
-- Full balancing pass for individual SAN values beyond initial defaults
+Full balancing pass for individual SAN values beyond initial defaults
+
 - Visual redesign of the web terminal or HUD components
 
 ## Expected Deliverable

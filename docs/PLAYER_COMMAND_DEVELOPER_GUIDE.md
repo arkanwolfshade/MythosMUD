@@ -22,11 +22,14 @@
 
 ## Introduction
 
-Welcome, junior researcher! You've been assigned to the forbidden task of implementing player commands for MythosMUD. Fear not - this guide will illuminate the dark corners of our command system and prepare you for the eldritch knowledge that lies ahead.
+Welcome, junior researcher! You've been assigned to the forbidden task of implementing player commands for MythosMUD.
+Fear not - this guide will illuminate the dark corners of our command system and prepare you for the eldritch knowledge
+that lies ahead.
 
 ### What You'll Learn
 
-- How to implement new player commands from scratch
+How to implement new player commands from scratch
+
 - Understanding the command processing pipeline
 - Writing secure, testable command code
 - Using AI to accelerate your development
@@ -34,7 +37,8 @@ Welcome, junior researcher! You've been assigned to the forbidden task of implem
 
 ### Prerequisites
 
-- Basic Python knowledge (functions, classes, async/await)
+Basic Python knowledge (functions, classes, async/await)
+
 - Familiarity with FastAPI concepts (optional, we'll explain as we go)
 - Understanding of the MythosMUD project structure
 - A healthy respect for the unknown
@@ -43,7 +47,8 @@ Welcome, junior researcher! You've been assigned to the forbidden task of implem
 
 ## Command System Overview
 
-The MythosMUD command system is built on a multi-layered architecture that ensures security, maintainability, and extensibility. Here's how it all fits together:
+The MythosMUD command system is built on a multi-layered architecture that ensures security, maintainability, and
+extensibility. Here's how it all fits together:
 
 ### Architecture Layers
 
@@ -88,7 +93,8 @@ The MythosMUD command system is built on a multi-layered architecture that ensur
 
 ## Quick Start: Your First Command
 
-Let's implement a simple `dance` command to get you started. This command will make the player perform a dance and notify others in the room.
+Let's implement a simple `dance` command to get you started. This command will make the player perform a dance and
+notify others in the room.
 
 ### Step 1: Define the Command Model
 
@@ -164,6 +170,7 @@ async def handle_dance_command(
     logger.debug("Processing dance command", player=player_name, args=command_data)
 
     # Get the persistence layer
+
     app = request.app if request else None
     persistence = app.state.persistence if app else None
 
@@ -172,26 +179,32 @@ async def handle_dance_command(
         return {"result": "You can't dance right now."}
 
     # Get the player
+
     player = persistence.get_player_by_name(get_username_from_user(current_user))
     if not player:
         logger.warning("Dance command failed - player not found", player=player_name)
         return {"result": "You can't dance right now."}
 
     # Get dance style from command data
+
     dance_style = command_data.get("dance_style", "wildly")
 
     # Create the dance message
+
     dance_message = f"{player_name} dances {dance_style}!"
 
     # Get other players in the room
+
     room_id = player.current_room_id
     room_players = persistence.get_players_in_room(room_id)
 
     # Send message to all players in the room
+
     for room_player in room_players:
         if room_player.username != player_name:  # Don't send to self
             # In a real implementation, you'd use the event system
             # For now, we'll just return a message
+
             pass
 
     logger.info(f"Player {player_name} danced {dance_style} in room {room_id}")
@@ -223,6 +236,7 @@ def _create_command_object(self, command: str, args: list[str]) -> Command:
         dance_style = " ".join(args) if args else None
         return DanceCommand(dance_style=dance_style)
     # ... existing commands ...
+
 ```
 
 ### Step 5: Test Your Command
@@ -247,6 +261,7 @@ class TestDanceCommand:
     async def test_dance_command_basic(self):
         """Test basic dance command without style."""
         # Mock dependencies
+
         mock_request = Mock()
         mock_app = Mock()
         mock_persistence = Mock()
@@ -255,22 +270,26 @@ class TestDanceCommand:
         mock_player.current_room_id = "room_001"
 
         # Setup mocks
+
         mock_request.app = mock_app
         mock_app.state.persistence = mock_persistence
         mock_persistence.get_player_by_name.return_value = mock_player
         mock_persistence.get_players_in_room.return_value = []
 
         # Test data
+
         command_data = {"command_type": "dance", "dance_style": None}
         current_user = {"username": "testuser"}
         alias_storage = Mock()
 
         # Execute command
+
         result = await handle_dance_command(
             command_data, current_user, mock_request, alias_storage, "testuser"
         )
 
         # Verify result
+
         assert "result" in result
         assert "testuser dances wildly!" in result["result"]
 
@@ -278,6 +297,7 @@ class TestDanceCommand:
     async def test_dance_command_with_style(self):
         """Test dance command with specific style."""
         # Mock dependencies
+
         mock_request = Mock()
         mock_app = Mock()
         mock_persistence = Mock()
@@ -286,22 +306,26 @@ class TestDanceCommand:
         mock_player.current_room_id = "room_001"
 
         # Setup mocks
+
         mock_request.app = mock_app
         mock_app.state.persistence = mock_persistence
         mock_persistence.get_player_by_name.return_value = mock_player
         mock_persistence.get_players_in_room.return_value = []
 
         # Test data
+
         command_data = {"command_type": "dance", "dance_style": "elegantly"}
         current_user = {"username": "testuser"}
         alias_storage = Mock()
 
         # Execute command
+
         result = await handle_dance_command(
             command_data, current_user, mock_request, alias_storage, "testuser"
         )
 
         # Verify result
+
         assert "result" in result
         assert "testuser dances elegantly!" in result["result"]
 ```
@@ -312,7 +336,8 @@ class TestDanceCommand:
 make test
 ```
 
-Congratulations! You've implemented your first command. This basic example shows the fundamental pattern for all commands in MythosMUD.
+Congratulations! You've implemented your first command. This basic example shows the fundamental pattern for all
+commands in MythosMUD.
 
 ---
 
@@ -365,6 +390,7 @@ async def handle_your_command(
         dict: Command result with 'result' key
     """
     # Your command logic here
+
     return {"result": "Success!"}
 ```
 
@@ -374,6 +400,7 @@ async def handle_your_command(
 
 ```python
 # In command_service.py
+
 "your_command": handle_your_command,
 ```
 
@@ -383,6 +410,7 @@ async def handle_your_command(
 
 ```python
 # In command_parser.py
+
 if command == "your_command":
     param1 = args[0] if args else None
     param2 = args[1] if len(args) > 1 else None
@@ -412,10 +440,13 @@ Before writing code, ask yourself:
 async def test_your_command_success(self):
     """Test successful command execution."""
     # Arrange
+
     command_data = {"command_type": "your_command", "param1": "value"}
     # Act
+
     result = await handle_your_command(...)
     # Assert
+
     assert result["result"] == "Expected output"
 ```
 
@@ -432,12 +463,15 @@ Follow the pattern from the Quick Start section:
 
 ```bash
 # Run all tests
+
 make test
 
 # Run specific test file
+
 python -m pytest server/tests/test_your_commands.py -v
 
 # Run with coverage
+
 make coverage
 ```
 
@@ -445,9 +479,11 @@ make coverage
 
 ```bash
 # Check code quality
+
 make lint
 
 # Run security checks
+
 make security
 ```
 
@@ -490,16 +526,19 @@ class TestYourCommand:
     async def test_your_command_unauthorized(self):
         """Test command with unauthorized user."""
         # Test implementation
+
 ```
 
 ### Mocking Dependencies
 
 ```python
 # Mock the persistence layer
+
 mock_persistence = Mock()
 mock_persistence.get_player_by_name.return_value = mock_player
 
 # Mock the request object
+
 mock_request = Mock()
 mock_request.app = Mock()
 mock_request.app.state.persistence = mock_persistence
@@ -511,10 +550,12 @@ mock_request.app.state.persistence = mock_persistence
 def test_your_command_validation(self):
     """Test command model validation."""
     # Valid command
+
     valid_cmd = YourCommand(parameter1="valid", parameter2="optional")
     assert valid_cmd.parameter1 == "valid"
 
     # Invalid command
+
     with pytest.raises(ValidationError):
         YourCommand(parameter1="")  # Empty required field
 ```
@@ -529,11 +570,13 @@ Commands that affect the current room:
 
 ```python
 # Get player's current room
+
 player = persistence.get_player_by_name(get_username_from_user(current_user))
 room_id = player.current_room_id
 room = persistence.get_room(room_id)
 
 # Get other players in room
+
 room_players = persistence.get_players_in_room(room_id)
 ```
 
@@ -568,6 +611,7 @@ Commands that trigger game events:
 from ..game.events import GameEvent, EventType
 
 # Create and publish event
+
 event = GameEvent(
     event_type=EventType.PLAYER_ACTION,
     player_id=str(player.player_id),
@@ -581,6 +625,7 @@ persistence._event_bus.publish(event)
 
 ```python
 # In your command model
+
 @field_validator("parameter")
 @classmethod
 def validate_parameter(cls, v):
@@ -605,6 +650,7 @@ Always validate user input:
 
 ```python
 # Use Pydantic models for automatic validation
+
 class SafeCommand(BaseCommand):
     parameter: str = Field(..., min_length=1, max_length=100)
 
@@ -612,6 +658,7 @@ class SafeCommand(BaseCommand):
     @classmethod
     def validate_parameter(cls, v):
         # Custom validation logic
+
         if any(char in v for char in ["<", ">", "&", '"', "'"]):
             raise ValueError("Invalid characters in parameter")
         return v
@@ -623,10 +670,12 @@ Check permissions before executing commands:
 
 ```python
 # Check if user is admin
+
 if not current_user.get("is_admin", False):
     return {"result": "Insufficient permissions."}
 
 # Check if user is muted
+
 if current_user.get("is_muted", False):
     return {"result": "You are currently muted."}
 ```
@@ -637,6 +686,7 @@ Consider implementing rate limiting for commands:
 
 ```python
 # Example rate limiting (implement as needed)
+
 from ..utils.rate_limiter import RateLimiter
 
 rate_limiter = RateLimiter()
@@ -692,7 +742,8 @@ Can you help me implement this command following the project's patterns?
 
 ### AI Code Review Checklist
 
-- [ ] Follows project naming conventions
+[ ] Follows project naming conventions
+
 - [ ] Includes proper error handling
 - [ ] Has appropriate logging
 - [ ] Includes security validation
@@ -762,18 +813,25 @@ For detailed information on specific aspects of command development, see:
 
 You now have the foundational knowledge to implement commands in MythosMUD! Remember:
 
-- **Start Simple**: Begin with basic commands and add complexity gradually
-- **Test First**: Write tests before implementing features
-- **Follow Patterns**: Use the established patterns for consistency
-- **Security First**: Always validate input and check permissions
-- **Document Everything**: Good documentation helps everyone
+**Start Simple**: Begin with basic commands and add complexity gradually
 
-The command system is designed to be extensible and maintainable. As you become more familiar with the patterns, you'll be able to implement increasingly complex commands that enhance the MythosMUD experience.
+**Test First**: Write tests before implementing features
 
-*"The most merciful thing in the world, I think, is the inability of the human brain to correlate all its contents."* - H.P. Lovecraft
+**Follow Patterns**: Use the established patterns for consistency
+
+**Security First**: Always validate input and check permissions
+
+**Document Everything**: Good documentation helps everyone
+
+The command system is designed to be extensible and maintainable. As you become more familiar with the patterns, you'll
+be able to implement increasingly complex commands that enhance the MythosMUD experience.
+
+*"The most merciful thing in the world, I think, is the inability of the human brain to correlate all its contents."* -
+H.P. Lovecraft
 
 Good luck with your eldritch coding endeavors!
 
 ---
 
-*This guide is a living document. As the codebase evolves, so too will this guide. Please contribute improvements and corrections as you discover them.*
+*This guide is a living document. As the codebase evolves, so too will this guide. Please contribute improvements and
+corrections as you discover them.*

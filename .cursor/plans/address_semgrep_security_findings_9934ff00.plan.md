@@ -2,25 +2,39 @@
 name: Address Semgrep Security Findings
 overview: "Fix 73 semgrep security findings across the codebase. Most findings are already suppressed with nosemgrep comments (68 instances), but 5 legitimate security issues need attention: shell spawn vulnerability, non-literal RegExp in test fixtures, SQL injection concerns, unsafe format strings, and missing suppressions for test code."
 todos:
+
   - id: shell-spawn-fix
+
     content: Fix shell spawn vulnerability in client/scripts/run-playwright-tests.js - evaluate necessity and add validation or nosemgrep comment
     status: completed
+
   - id: regexp-suppression
+
     content: Add nosemgrep comment to non-literal RegExp in client/tests/e2e/runtime/fixtures/multiplayer.ts
     status: completed
+
   - id: sql-injection-review
+
     content: Review and add nosemgrep comments to all Python SQL injection flagged locations (6 files)
     status: completed
+
   - id: format-strings-suppression
+
     content: Add nosemgrep comments to unsafe format string instances in console.log/error/warn calls (10+ files)
     status: completed
+
   - id: missing-suppressions
+
     content: Add missing nosemgrep comments to useCommandHandlers.ts HTTP requests and documentation example
     status: completed
+
   - id: python36-suppression
+
     content: Add nosemgrep comment for Python 3.6 compatibility warnings in run_test_ci.py
     status: completed
+
   - id: verify-fixes
+
     content: Re-run semgrep scan and verify all legitimate issues are addressed
     status: completed
 ---
@@ -29,9 +43,11 @@ todos:
 
 ## Summary
 
-- **Total Findings**: 73
-- **Already Suppressed**: 68 (intentional via nosemgrep comments)
-- **Require Action**: 5 categories of legitimate issues
+**Total Findings**: 73
+
+**Already Suppressed**: 68 (intentional via nosemgrep comments)
+
+**Require Action**: 5 categories of legitimate issues
 
 ## Findings Categories
 
@@ -169,23 +185,23 @@ const patternRegex = new RegExp(source, flags);
 
 ### Phase 2: Medium Priority
 
-3. **Add suppression for test fixture RegExp**
+1. **Add suppression for test fixture RegExp**
 
    - Add `nosemgrep` comment with justification
 
-4. **Add missing suppressions**
+2. **Add missing suppressions**
 
    - Add `nosemgrep` to useCommandHandlers.ts HTTP requests
    - Add comment to documentation example
 
 ### Phase 3: Low Priority / Cleanup
 
-5. **Add suppressions for unsafe format strings**
+1. **Add suppressions for unsafe format strings**
 
    - Add `nosemgrep` comments to all console.log instances
    - Document why each is safe (internal logging, trusted input)
 
-6. **Add Python 3.6 compatibility suppression**
+2. **Add Python 3.6 compatibility suppression**
 
    - Add `nosemgrep` comment (Python 3.12+ required)
 
@@ -212,7 +228,8 @@ After fixes:
 
 ## Notes
 
-- Most findings (68/73) are already suppressed and intentional
+Most findings (68/73) are already suppressed and intentional
+
 - Focus on legitimate security issues, not false positives
 - All `nosemgrep` comments should include clear justification
 - Follow existing patterns for suppression comments in the codebase

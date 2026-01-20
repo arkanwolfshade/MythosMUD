@@ -12,20 +12,23 @@ Renamed `server/error_handlers.py` to `server/legacy_error_handlers.py` to elimi
 
 ### Files Renamed
 
-- `server/error_handlers.py` → `server/legacy_error_handlers.py`
+`server/error_handlers.py` → `server/legacy_error_handlers.py`
 
 ### Files Updated
 
 1. **server/tests/test_error_handlers.py**
+
    - Updated import: `from server.legacy_error_handlers import ...`
    - Fixed test expectations for Pydantic ValidationError status codes (422 instead of 400)
    - Updated to import `register_error_handlers` from `server.middleware.error_handling_middleware`
 
 2. **server/error_handlers/**init**.py**
+
    - Updated documentation to clarify the relationship between the new package and legacy module
    - Documented proper import patterns for both new and legacy code
 
 3. **server/error_handlers/standardized_responses.py**
+
    - Fixed import: Changed `from ..error_handlers.pydantic_error_handler import` to `from .pydantic_error_handler import`
 
 ## Import Patterns

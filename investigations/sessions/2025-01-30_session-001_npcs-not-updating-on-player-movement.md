@@ -51,30 +51,36 @@ player moves
 When a player moves to a new room:
 
 1. **PlayerEnteredRoom Event Published**:
+
    - Triggered by `Room.player_entered()` in `server/models/room.py:72-96`
    - Published via EventBus
 
 2. **Event Handler Processes Entry**:
+
    - `_handle_player_entered()` is called (line 408)
    - Processes event with room synchronization service
    - Gets player information
 
 3. **Room Occupants Update Sent**:
+
    - Line 469: `await self._send_room_occupants_update(room_id_str, exclude_player=exclude_player_id)`
    - **CRITICAL**: This broadcasts to all players in the room EXCEPT the entering player
    - Line 478: `await self._send_occupants_snapshot_to_player(player_id_for_personal, room_id_str)`
    - This sends a personal message to the entering player
 
 4. **PlayerLeftRoom Event Published**:
+
    - Triggered by `Room.player_left()` in `server/models/room.py:98-115`
    - Published via EventBus
 
 5. **Event Handler Processes Exit**:
+
    - `_handle_player_left()` is called (line 493)
    - Line 552: `await self._send_room_occupants_update(room_id_str, exclude_player=exclude_player_id)`
    - This broadcasts to remaining players in the OLD room
 
 **Code Reference**:
+
 ```617:733:server/realtime/event_handler.py
     async def _send_room_occupants_update(self, room_id: str, exclude_player: str | None = None) -> None:
         """
@@ -89,9 +95,11 @@ When a player moves to a new room:
         """
         try:
             # Get room occupants with structured data (includes player_name, npc_name, type)
+
             occupants_info: list[dict[str, Any] | str] = self._get_room_occupants(room_id)
 
             # Separate players and NPCs while maintaining backward compatibility
+
             players: list[str] = []
             npcs: list[str] = []
             all_occupants: list[str] = []  # Flat list for backward compatibility
@@ -99,11 +107,14 @@ When a player moves to a new room:
             for occ in occupants_info or []:
                 if isinstance(occ, dict):
                     # Check if it's a player
+
                     if "player_name" in occ:
                         player_name = occ.get("player_name")
                         # Validate that player_name is not a UUID string
+
                         if player_name and isinstance(player_name, str):
                             # Skip if it looks like a UUID (36 chars, 4 dashes, hex)
+
                             if not (
                                 len(player_name) == 36
                                 and player_name.count("-") == 4
@@ -118,11 +129,14 @@ When a player moves to a new room:
                                     room_id=room_id,
                                 )
                     # Check if it's an NPC
+
                     elif "npc_name" in occ:
                         npc_name = occ.get("npc_name")
                         # Validate that npc_name is not a UUID string
+
                         if npc_name and isinstance(npc_name, str):
                             # Skip if it looks like a UUID
+
                             if not (
                                 len(npc_name) == 36
                                 and npc_name.count("-") == 4
@@ -137,10 +151,12 @@ When a player moves to a new room:
                                     room_id=room_id,
                                 )
                     # Fallback for other formats
+
                     else:
                         name = occ.get("name")
                         if name and isinstance(name, str):
                             # Skip if it looks like a UUID
+
                             if not (
                                 len(name) == 36
                                 and name.count("-") == 4
@@ -150,6 +166,7 @@ When a player moves to a new room:
                 elif isinstance(occ, str):
                     # Legacy format: just a name string
                     # Validate it's not a UUID
+
                     if not (
                         len(occ) == 36 and occ.count("-") == 4 and all(c in "0123456789abcdefABCDEF-" for c in occ)
                     ):
@@ -163,9 +180,11 @@ When a player moves to a new room:
 
             # Create occupants update message with structured data
             # Convert room_id to string for JSON serialization
+
             room_id_str = str(room_id) if room_id else ""
 
             # CRITICAL DEBUG: Log what we're about to send
+
             self._logger.debug(
                 "Sending room_occupants event",
                 room_id=room_id_str,
@@ -183,15 +202,18 @@ When a player moves to a new room:
                 "room_id": room_id_str,
                 "data": {
                     # Structured data for new UI (separate columns)
+
                     "players": players,
                     "npcs": npcs,
                     # Backward compatibility: flat list for legacy clients
+
                     "occupants": all_occupants,
                     "count": len(all_occupants),
                 },
             }
 
             # Send to room occupants
+
             await self.connection_manager.broadcast_to_room(room_id, message, exclude_player=exclude_player)
 ```
 
@@ -202,8 +224,10 @@ When a player moves to a new room:
 The `_get_room_occupants` method queries NPCs from the lifecycle manager:
 
 **Code Reference**:
+
 ```1012:1037:server/realtime/event_handler.py
                             # Check both current_room and current_room_id for compatibility
+
                             current_room = getattr(npc_instance, "current_room", None)
                             current_room_id = getattr(npc_instance, "current_room_id", None)
                             npc_room_id = current_room or current_room_id
@@ -232,6 +256,7 @@ The `_get_room_occupants` method queries NPCs from the lifecycle manager:
 ```
 
 **NPC Room Tracking**:
+
 - NPCs are tracked in `lifecycle_manager.active_npcs[npc_id]`
 - NPC instances should have `current_room` or `current_room_id` attributes
 - Previous investigation (2025-01-29) found that NPC instances need these attributes set during spawning
@@ -244,6 +269,7 @@ The `_get_room_occupants` method queries NPCs from the lifecycle manager:
 The client processes `room_occupants` events:
 
 **Code Reference**:
+
 ```499:587:client/src/components/ui-v2/GameClientV2Container.tsx
           case 'room_occupants': {
             // Support both new structured format (players/npcs) and legacy format (occupants)
@@ -337,13 +363,15 @@ The client processes `room_occupants` events:
           }
 ```
 
-The client correctly processes `room_occupants` events and updates the room state with NPCs. The issue is likely on the server side.
+The client correctly processes `room_occupants` events and updates the room state with NPCs. The issue is likely on
+ the server side.
 
 ### 5. Previous Investigation Context
 
 **Reference**: `investigations/sessions/2025-01-29_session-001_npc-occupants-display-issue.md`
 
 A previous investigation found that:
+
 - NPCs were spawning correctly
 - NPCs were being added to Room objects
 - BUT Room objects retrieved from persistence didn't have NPC data
@@ -364,15 +392,18 @@ The root cause is a **dual update mechanism issue** combined with potential **NP
 When a player enters a room:
 
 1. **Broadcast Update** (Line 469):
+
    - `_send_room_occupants_update(room_id_str, exclude_player=exclude_player_id)` is called
    - This broadcasts to all players in the room EXCEPT the entering player
    - If the entering player is the ONLY player in the room, they don't receive this broadcast
 
 2. **Personal Message** (Line 478):
+
    - `_send_occupants_snapshot_to_player()` is called to send a personal message to the entering player
    - This should work, but there may be a timing issue or the NPCs may not be properly queried
 
 **The Problem**:
+
 - The entering player relies on the personal message (`_send_occupants_snapshot_to_player`)
 - If there's any issue with the personal message (timing, NPC query, etc.), the entering player won't see NPCs
 - The broadcast update excludes the entering player, so they can't fall back to that
@@ -380,11 +411,13 @@ When a player enters a room:
 ### Secondary Issue: NPC Room Tracking
 
 The NPC query mechanism relies on:
+
 - NPC instances having `current_room` or `current_room_id` attributes set correctly
 - NPC instances being in `lifecycle_manager.active_npcs`
 - NPC room IDs matching the queried room ID exactly
 
 **Potential Edge Cases**:
+
 - NPC instances may not have `current_room` set if they were spawned before the fix
 - NPC instances may have incorrect room IDs if they moved but the attribute wasn't updated
 - Room ID format mismatches (string vs canonical ID)
@@ -394,34 +427,46 @@ The NPC query mechanism relies on:
 **When a player moves to a room with NPCs**:
 
 1. `PlayerEnteredRoom` event is published
+
 2. `_handle_player_entered()` is called
+
 3. `_send_room_occupants_update()` is called with `exclude_player=entering_player_id`
+
    - This queries NPCs via `_get_room_occupants()`
+
    - NPCs are queried from lifecycle manager by checking `npc_instance.current_room == room_id`
+
    - If NPCs are found, they're included in the broadcast
+
    - BUT the entering player is excluded from the broadcast
+
 4. `_send_occupants_snapshot_to_player()` is called
+
    - This also queries NPCs via `_get_room_occupants()`
    - If NPCs are found, they're included in the personal message
    - BUT if there's any issue (timing, NPC query, etc.), the entering player won't see NPCs
 
-**The Bug**: If `_send_occupants_snapshot_to_player()` fails to include NPCs (due to query issues, timing, etc.), the entering player has no fallback because they're excluded from the broadcast.
+**The Bug**: If `_send_occupants_snapshot_to_player()` fails to include NPCs (due to query issues, timing, etc.),
+ the entering player has no fallback because they're excluded from the broadcast.
 
 ---
 
 ## SYSTEM IMPACT ASSESSMENT
 
 **Severity**: MEDIUM-HIGH
+
 - Core gameplay feature affected (NPC visibility in occupants)
 - Affects player immersion and interaction with NPCs
 - Workaround: Players can use `look` command to see NPCs, but they won't appear in the Occupants panel
 
 **Scope**:
+
 - Affects ALL players moving between rooms
 - Affects ALL rooms with NPCs
 - Affects the entering player specifically (other players in the room receive the broadcast update)
 
 **User Impact**:
+
 - Players cannot see NPCs in the Occupants panel when they enter a room
 - Players may not know NPCs are present in rooms
 - Reduces game immersion and functionality
@@ -434,18 +479,22 @@ The NPC query mechanism relies on:
 ### Code References
 
 1. **Player Entry Handler**: `server/realtime/event_handler.py:408-491`
+
    - Line 469: `_send_room_occupants_update()` called with `exclude_player`
    - Line 478: `_send_occupants_snapshot_to_player()` called for entering player
 
 2. **NPC Query Mechanism**: `server/realtime/event_handler.py:738-1128`
+
    - Lines 1012-1037: NPC room matching logic
    - Queries `npc_instance.current_room` or `npc_instance.current_room_id`
 
 3. **Client Processing**: `client/src/components/ui-v2/GameClientV2Container.tsx:499-587`
+
    - Processes `room_occupants` events correctly
    - Updates room state with NPCs from structured data
 
 4. **Previous Fix**: `server/npc/lifecycle_manager.py:418-422`
+
    - Sets `current_room` when spawning NPCs
    - May not cover all edge cases (NPCs spawned before fix, NPCs that moved)
 
@@ -454,11 +503,13 @@ The NPC query mechanism relies on:
 **No specific error logs found** in `logs/local/errors.log` related to NPC occupants or room updates.
 
 **Expected Log Entries** (if working correctly):
+
 - "Sending room_occupants event" with `npcs` array populated
 - "Found NPC in room" when NPCs match room ID
 - "Completed NPC query from lifecycle manager" with `npc_count > 0`
 
 **Missing Log Entries** (indicating potential issue):
+
 - No logs showing NPC queries being executed during player movement
 - No logs showing NPCs being found in rooms when players enter
 
@@ -473,6 +524,7 @@ The NPC query mechanism relies on:
 **Location**: `server/realtime/event_handler.py:738-1128`
 
 **Required Investigation**:
+
 1. Add logging to verify NPC query is executed during player movement
 2. Check if NPCs are found in the lifecycle manager query
 3. Verify NPC instances have `current_room` or `current_room_id` set correctly
@@ -485,6 +537,7 @@ The NPC query mechanism relies on:
 **Location**: `server/realtime/event_handler.py:319-406`
 
 **Required Investigation**:
+
 1. Add logging to verify personal message is sent to entering player
 2. Check if NPCs are included in the personal message
 3. Verify timing of personal message vs broadcast update
@@ -497,6 +550,7 @@ The NPC query mechanism relies on:
 **Location**: `server/realtime/event_handler.py:408-491`
 
 **Required Investigation**:
+
 1. Test scenario: Player enters room with NPCs (only player in room)
 2. Test scenario: Player enters room with NPCs (other players present)
 3. Verify both broadcast and personal message include NPCs
@@ -509,6 +563,7 @@ The NPC query mechanism relies on:
 **Location**: `server/npc/lifecycle_manager.py` and `server/npc/movement_integration.py`
 
 **Required Investigation**:
+
 1. Verify all NPC instances have `current_room` or `current_room_id` set
 2. Check if NPC room tracking is updated when NPCs move
 3. Verify room ID format consistency (string vs canonical ID)
@@ -562,7 +617,8 @@ EVIDENCE:
 
 ## INVESTIGATION COMPLETION CHECKLIST
 
-- [x] All investigation steps completed as written
+[x] All investigation steps completed as written
+
 - [x] Comprehensive evidence collected and documented
 - [x] Root cause analysis completed
 - [x] System impact assessed

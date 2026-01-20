@@ -37,7 +37,8 @@ As a developer writing tests, I want to ensure that removing dead code doesn't i
 
 ## Out of Scope
 
-- Refactoring of working code that is currently in use
+Refactoring of working code that is currently in use
+
 - Changes to the core game logic or functionality
 - Modifications to the testing framework or test files
 - Updates to external dependencies or package management

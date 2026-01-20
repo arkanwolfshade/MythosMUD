@@ -2,28 +2,34 @@
 
 ## Overview
 
-Tests whisper channel rate limiting and spam prevention functionality. This scenario verifies that the whisper system properly implements rate limiting to prevent spam, that rate limits are enforced per player and per recipient, and that the system provides appropriate feedback when rate limits are exceeded.
+Tests whisper channel rate limiting and spam prevention functionality. This scenario verifies that the whisper system
+properly implements rate limiting to prevent spam, that rate limits are enforced per player and per recipient, and that
+the system provides appropriate feedback when rate limits are exceeded.
 
 ## Prerequisites
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
 2. **Server Running**: Development server is running on port 54731
 3. **Client Accessible**: Client is accessible on port 5173
 4. **Both Players Connected**: AW and Ithaqua are both logged in and in the same room
 
-**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
+### ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE
 
 **Reference**: See @MULTIPLAYER_TEST_RULES.md for complete prerequisite verification procedures.
 
 ## Test Configuration
 
-- **Test Players**: ArkanWolfshade (AW) and Ithaqua
-- **Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
-- **Testing Approach**: Playwright MCP (multi-tab interaction required)
-- **Timeout Settings**: Use configurable timeouts from master rules
-- **Rate Limit Settings**: 5 whispers per minute per player, 3 whispers per minute per recipient
+**Test Players**: ArkanWolfshade (AW) and Ithaqua
+
+**Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
+
+**Testing Approach**: Playwright MCP (multi-tab interaction required)
+
+**Timeout Settings**: Use configurable timeouts from master rules
+
+**Rate Limit Settings**: 5 whispers per minute per player, 3 whispers per minute per recipient
 
 ## Execution Steps
 
@@ -32,6 +38,7 @@ Tests whisper channel rate limiting and spam prevention functionality. This scen
 **Purpose**: Ensure both players are ready for rate limiting testing
 
 **Commands**:
+
 ```javascript
 // Ensure both players are logged in from previous scenario
 // AW should be on tab 0, Ithaqua on tab 1
@@ -45,12 +52,14 @@ Tests whisper channel rate limiting and spam prevention functionality. This scen
 **Purpose**: Test that normal whisper rate works correctly
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
 
 // Send first whisper message
-await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "whisper Ithaqua Rate limit test message 1"});
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "whisper Ithaqua Rate
+limit test message 1"});
 await mcp_playwright_browser_press_key({key: "Enter"});
 
 // Wait for confirmation
@@ -69,6 +78,7 @@ console.log('AW sees first message:', seesFirstMessage);
 **Purpose**: Test that multiple whispers within rate limit work correctly
 
 **Commands**:
+
 ```javascript
 // Send second whisper message
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "whisper Ithaqua Rate limit test message 2"});
@@ -97,6 +107,7 @@ console.log('AW sees multiple messages:', seesMultipleMessages);
 **Purpose**: Test that rate limit is enforced when exceeded
 
 **Commands**:
+
 ```javascript
 // Send fourth whisper message (should trigger rate limit)
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "whisper Ithaqua Rate limit test message 4"});
@@ -106,7 +117,8 @@ await mcp_playwright_browser_press_key({key: "Enter"});
 await mcp_playwright_browser_wait_for({text: "Rate limit exceeded. You can only send 3 whispers per minute to the same player."});
 
 // Verify error message appears
-const awMessagesRateLimit = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const awMessagesRateLimit = await mcp_playwright_browser_evaluate({function: "() =>
+Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
 const seesRateLimitError = awMessagesRateLimit.some(msg => msg.includes('Rate limit exceeded. You can only send 3 whispers per minute to the same player.'));
 console.log('AW sees rate limit error:', seesRateLimitError);
 console.log('AW messages:', awMessagesRateLimit);
@@ -119,6 +131,7 @@ console.log('AW messages:', awMessagesRateLimit);
 **Purpose**: Test that rate limit is per recipient, not global
 
 **Commands**:
+
 ```javascript
 // Try to whisper to a different player (should work if rate limit is per recipient)
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "whisper NonExistentPlayer Test different recipient"});
@@ -140,6 +153,7 @@ console.log('AW sees different error (not rate limit):', seesDifferentError);
 **Purpose**: Test that rate limiting works for both players
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
@@ -185,6 +199,7 @@ console.log('Ithaqua sees rate limit error:', seesIthaquaRateLimitError);
 **Purpose**: Test that rate limit resets after time period
 
 **Commands**:
+
 ```javascript
 // Wait for rate limit to reset (60 seconds)
 console.log('Waiting for rate limit to reset...');
@@ -225,6 +240,7 @@ if (awMessagesReset.length === 0) {
 **Purpose**: Test that rate limit is enforced per player globally
 
 **Commands**:
+
 ```javascript
 // Send multiple whispers to test global rate limit
 for (let i = 1; i <= 5; i++) {
@@ -253,6 +269,7 @@ console.log('AW sees global rate limit error:', seesGlobalRateLimitError);
 **Purpose**: Test that rate limit error messages are clear and informative
 
 **Commands**:
+
 ```javascript
 // Check for different types of rate limit error messages
 const awMessagesErrors = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
@@ -276,6 +293,7 @@ console.log('✅ All verification steps completed successfully');
 console.log('✅ System functionality verified as working correctly');
 console.log('✅ Test results documented and validated');
 console.log('📋 PROCEEDING TO SCENARIO 16: Whisper Across Player Locations');
+
 ```
 
 **Expected Result**:  Both types of rate limit error messages are present
@@ -308,20 +326,24 @@ console.log('➡️ READY FOR SCENARIO 16: Whisper Across Player Locations');
 **Purpose**: Test that the system remains stable after rate limiting
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
 
 // Send a valid whisper to test system stability
-await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "whisper ArkanWolfshade System stability test"});
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "whisper ArkanWolfshade
+System stability test"});
 await mcp_playwright_browser_press_key({key: "Enter"});
 
 // Wait for confirmation
 await mcp_playwright_browser_wait_for({text: "You whisper to ArkanWolfshade: System stability test"});
 
 // Verify message appears
-const ithaquaMessagesStability = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
-const seesStabilityMessage = ithaquaMessagesStability.some(msg => msg.includes('You whisper to ArkanWolfshade: System stability test'));
+const ithaquaMessagesStability = await mcp_playwright_browser_evaluate({function: "() =>
+Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const seesStabilityMessage = ithaquaMessagesStability.some(msg => msg.includes('You whisper to ArkanWolfshade: System
+stability test'));
 console.log('Ithaqua sees stability message:', seesStabilityMessage);
 ```
 
@@ -329,11 +351,16 @@ console.log('Ithaqua sees stability message:', seesStabilityMessage);
 
 ## Expected Results
 
-- ✅ Normal whisper rate works correctly
-- ✅ Multiple whispers within rate limit work correctly
-- ✅ Rate limit is enforced when exceeded
-- ✅ Rate limit is per recipient, not global
-- ✅ Rate limiting works for both players
+✅ Normal whisper rate works correctly
+
+✅ Multiple whispers within rate limit work correctly
+
+✅ Rate limit is enforced when exceeded
+
+✅ Rate limit is per recipient, not global
+
+✅ Rate limiting works for both players
+
 - ✅ Rate limit resets after time period
 - ✅ Global rate limit is enforced per player
 - ✅ Rate limit error messages are clear and informative
@@ -341,7 +368,8 @@ console.log('Ithaqua sees stability message:', seesStabilityMessage);
 
 ## Success Criteria Checklist
 
-- [ ] Normal whisper rate works correctly
+[ ] Normal whisper rate works correctly
+
 - [ ] Multiple whispers within rate limit work correctly
 - [ ] Rate limit is enforced when exceeded
 - [ ] Rate limit is per recipient, not global
@@ -359,20 +387,25 @@ console.log('Ithaqua sees stability message:', seesStabilityMessage);
 ## Cleanup
 
 Execute standard cleanup procedures from @CLEANUP.md:
+
 1. Close all browser tabs
 2. Stop development server
 3. Verify clean shutdown
 
 ## Status
 
-**✅ SCENARIO COMPLETION LOGIC FIXED**
+### ✅ SCENARIO COMPLETION LOGIC FIXED
 
 The whisper rate limiting system is working correctly. The scenario now includes proper completion logic to prevent infinite loops:
 
-- **Fixed**: Added completion step with explicit scenario completion and cleanup procedures
-- **Fixed**: Added clear decision points for handling verification results
-- **Fixed**: Added explicit progression to next scenario
-- **Verified**: System functionality works as expected and meets all requirements
+**Fixed**: Added completion step with explicit scenario completion and cleanup procedures
+
+**Fixed**: Added clear decision points for handling verification results
+
+**Fixed**: Added explicit progression to next scenario
+
+**Verified**: System functionality works as expected and meets all requirements
+
 ---
 
 **Document Version**: 1.0 (Modular E2E Test Suite)

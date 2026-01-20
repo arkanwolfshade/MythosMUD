@@ -7,6 +7,7 @@
 ### **Current State Analysis**
 
 The `api/players.py` file contains **15 API endpoints** covering:
+
 - Basic CRUD operations (create, read, list, delete)
 - Player effects (lucidity, fear, corruption, occult knowledge, healing, damage)
 - Character creation with stats generation
@@ -19,6 +20,7 @@ The `api/players.py` file contains **15 API endpoints** covering:
 ### **Comprehensive Testing Strategy**
 
 #### **1. Test File Structure**
+
 ```
 server/tests/test_api_players.py
 ├── Test fixtures and mocks
@@ -32,6 +34,7 @@ server/tests/test_api_players.py
 #### **2. Critical Code Paths to Cover**
 
 **A. Basic CRUD Operations (4 endpoints)**
+
 - `create_player()` - Success and validation failure paths
 - `list_players()` - Success with empty and populated lists
 - `get_player()` - Success, player not found (404)
@@ -39,6 +42,7 @@ server/tests/test_api_players.py
 - `delete_player()` - Success, player not found (404)
 
 **B. Player Effects (6 endpoints)**
+
 - `apply_lucidity_loss()` - Success, player not found
 - `apply_fear()` - Success, player not found
 - `apply_corruption()` - Success, player not found
@@ -47,6 +51,7 @@ server/tests/test_api_players.py
 - `damage_player()` - Success, player not found
 
 **C. Character Creation & Stats (5 endpoints)**
+
 - `roll_character_stats()` - Success, rate limiting, authentication failure, validation errors
 - `create_character_with_stats()` - Success, rate limiting, validation errors, authentication
 - `validate_character_stats()` - Success, invalid stats format
@@ -56,6 +61,7 @@ server/tests/test_api_players.py
 #### **3. Mock Strategy**
 
 **Required Mocks:**
+
 - `PlayerService` - Mock all service methods
 - `StatsGenerator` - Mock stats generation and validation
 - `persistence` - Mock database operations
@@ -66,11 +72,13 @@ server/tests/test_api_players.py
 #### **4. Test Categories**
 
 **A. Happy Path Tests**
+
 - All endpoints with valid inputs return expected responses
 - Proper HTTP status codes (200, 201)
 - Correct response models and data structures
 
 **B. Error Handling Tests**
+
 - Invalid input validation (400 errors)
 - Player not found scenarios (404 errors)
 - Authentication failures (401 errors)
@@ -78,12 +86,14 @@ server/tests/test_api_players.py
 - Internal server errors (500 errors)
 
 **C. Edge Cases**
+
 - Empty player lists
 - Invalid stats formats
 - Missing required fields
 - Boundary conditions for numeric values
 
 **D. Integration Tests**
+
 - End-to-end character creation flow
 - Stats validation with class requirements
 - Rate limiting integration
@@ -91,11 +101,14 @@ server/tests/test_api_players.py
 #### **5. Coverage Targets**
 
 **Line Coverage Goals:**
-- **80% minimum** (project requirement)
-- **90% target** for comprehensive coverage
+
+**80% minimum** (project requirement)
+
+**90% target** for comprehensive coverage
 - **100%** for critical error handling paths
 
 **Branch Coverage Goals:**
+
 - All conditional statements (if/else blocks)
 - Exception handling paths
 - Rate limiting logic branches
@@ -103,6 +116,7 @@ server/tests/test_api_players.py
 #### **6. Test Implementation Plan**
 
 **Phase 1: Basic CRUD Tests**
+
 ```python
 class TestPlayerCRUD:
     def test_create_player_success()
@@ -118,6 +132,7 @@ class TestPlayerCRUD:
 ```
 
 **Phase 2: Player Effects Tests**
+
 ```python
 class TestPlayerEffects:
     def test_apply_lucidity_loss_success()
@@ -135,6 +150,7 @@ class TestPlayerEffects:
 ```
 
 **Phase 3: Character Creation Tests**
+
 ```python
 class TestCharacterCreation:
     def test_roll_stats_success()
@@ -149,6 +165,7 @@ class TestCharacterCreation:
 ```
 
 **Phase 4: Stats Validation Tests**
+
 ```python
 class TestStatsValidation:
     def test_validate_stats_success()
@@ -161,6 +178,7 @@ class TestStatsValidation:
 #### **7. Fixtures and Setup**
 
 **Required Fixtures:**
+
 ```python
 @pytest.fixture
 def mock_player_service()
@@ -181,11 +199,13 @@ def sample_stats_data()
 #### **8. Quality Assurance**
 
 **Pre-Implementation Checks:**
+
 - Verify no existing test file conflicts
 - Review dependency injection patterns
 - Confirm mock strategy aligns with project patterns
 
 **Post-Implementation Validation:**
+
 - Run coverage report: `pytest --cov=api.players --cov-report=term-missing`
 - Ensure all critical paths are tested
 - Verify error handling coverage
@@ -201,6 +221,7 @@ def sample_stats_data()
 ### **Dependencies and Imports to Mock**
 
 From `api/players.py`:
+
 ```python
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
@@ -218,6 +239,7 @@ from ..utils.rate_limiter import character_creation_limiter, stats_roll_limiter
 ### **Testing Patterns from Project**
 
 Based on existing test files:
+
 - Use `TestClient` from FastAPI for endpoint testing
 - Mock dependencies using `unittest.mock`
 - Follow project's fixture patterns from `conftest.py`

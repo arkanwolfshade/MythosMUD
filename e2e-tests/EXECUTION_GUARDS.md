@@ -2,7 +2,8 @@
 
 ## Overview
 
-This document defines execution guards and decision points to prevent infinite loops during scenario execution. These guards ensure that the AI executor cannot get stuck repeating the same steps indefinitely.
+This document defines execution guards and decision points to prevent infinite loops during scenario execution. These
+guards ensure that the AI executor cannot get stuck repeating the same steps indefinitely.
 
 ## Critical Execution Guards
 
@@ -38,7 +39,8 @@ while (stepAttempts < MAX_STEP_ATTEMPTS) {
 
 ```javascript
 // EXECUTION GUARD: Handle empty results gracefully
-const messages = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const messages = await mcp_playwright_browser_evaluate({function: "() =>
+Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
 
 // Empty results are VALID - do not retry
 if (messages.length === 0) {
@@ -192,15 +194,20 @@ If an infinite loop is detected:
 
 ## Success Metrics
 
-- ✅ No step repeated more than 3 times
-- ✅ All scenarios complete within reasonable time
-- ✅ Clear progression between scenarios
-- ✅ Proper cleanup between scenarios
-- ✅ No infinite retry loops
+✅ No step repeated more than 3 times
+
+✅ All scenarios complete within reasonable time
+
+✅ Clear progression between scenarios
+
+✅ Proper cleanup between scenarios
+
+✅ No infinite retry loops
 
 ## 🚫 Real-World AI Execution Failures
 
-These are actual failure patterns observed during AI execution of scenarios. Study these carefully to avoid repeating these mistakes.
+These are actual failure patterns observed during AI execution of scenarios. Study these carefully to avoid repeating
+these mistakes.
 
 ### ❌ FAILURE PATTERN 1: "Helpful" Step Addition
 

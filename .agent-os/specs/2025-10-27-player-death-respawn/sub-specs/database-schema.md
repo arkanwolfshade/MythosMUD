@@ -9,20 +9,24 @@ This is the database schema implementation for the spec detailed in @.agent-os/s
 **Table:** `players`
 
 **New Column:**
+
 ```sql
 ALTER TABLE players
 ADD COLUMN respawn_room_id VARCHAR(100) DEFAULT 'earth_arkhamcity_sanitarium_room_foyer_001';
 ```
 
 **Column Specifications:**
-- **Name:** `respawn_room_id`
-- **Type:** `VARCHAR(100)`
+
+**Name:** `respawn_room_id`
+
+**Type:** `VARCHAR(100)`
 - **Nullable:** `YES` (NULL means use default)
 - **Default:** `'earth_arkhamcity_sanitarium_room_foyer_001'`
 - **Purpose:** Store player's chosen respawn location
 - **Index:** Not required initially (can add if respawn queries become frequent)
 
 **Rationale:**
+
 - Allows future feature: players choosing custom respawn points
 - Defaults to Arkham Sanitarium for thematic appropriateness
 - VARCHAR(100) accommodates current room ID format with room for growth
@@ -33,6 +37,7 @@ ADD COLUMN respawn_room_id VARCHAR(100) DEFAULT 'earth_arkhamcity_sanitarium_roo
 **Column:** `players.stats` (JSON Text field)
 
 **Current Structure:**
+
 ```json
 {
   "strength": 10,
@@ -53,6 +58,7 @@ ADD COLUMN respawn_room_id VARCHAR(100) DEFAULT 'earth_arkhamcity_sanitarium_roo
 **No Schema Change Required** - `current_health` already supports negative values as an integer field
 
 **Application-Level Enforcement:**
+
 - Minimum HP: -10 (enforced in `CombatService._apply_damage()`)
 - Maximum HP: 100 (current maximum, enforced by game mechanics)
 - Mortally Wounded Range: 0 to -10 (exclusive)
@@ -110,9 +116,13 @@ COMMIT;
 Since the project uses SQLite with manual schema management:
 
 1. Update `server/database/schema.sql` to include `respawn_room_id` field
+
 2. Run migration script on existing databases:
+
    - `data/local/players/local_players.db`
+
    - `data/unit_test/players/unit_test_players.db`
+
 3. Update `Player` model in `server/models/player.py` to include field
 4. Update test fixtures to include `respawn_room_id` in sample data
 
@@ -132,18 +142,22 @@ REFERENCES rooms(room_id);
 ```
 
 **Decision:** NOT implementing for initial version
-- **Reason:** Room data stored in JSON files, not database
-- **Alternative:** Application-level validation in `PlayerRespawnService`
+
+**Reason:** Room data stored in JSON files, not database
+
+**Alternative:** Application-level validation in `PlayerRespawnService`
 
 ### Default Value Handling
 
 **Strategy:**
+
 - NULL `respawn_room_id` → use `DEFAULT_RESPAWN_ROOM` constant
 - Invalid `respawn_room_id` → fallback to `DEFAULT_RESPAWN_ROOM` with warning log
 - Missing respawn room file → fallback to `DEFAULT_RESPAWN_ROOM` with error log
 
 ## Backward Compatibility
 
-- Existing players without `respawn_room_id` will use default (sanitarium)
+Existing players without `respawn_room_id` will use default (sanitarium)
+
 - No data migration required for existing player records
 - Column can be added via `ALTER TABLE` without rebuilding database

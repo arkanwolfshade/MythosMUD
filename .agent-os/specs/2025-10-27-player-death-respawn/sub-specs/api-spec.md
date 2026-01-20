@@ -13,6 +13,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-10-
 **Trigger:** Player HP reaches 0 (but above -10)
 
 **Payload to Player:**
+
 ```json
 {
   "event_type": "player_mortally_wounded",
@@ -30,6 +31,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-10-
 ```
 
 **Payload to Room (other players):**
+
 ```json
 {
   "event_type": "player_mortally_wounded",
@@ -51,6 +53,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-10-
 **Trigger:** Game tick while player is mortally wounded
 
 **Payload:**
+
 ```json
 {
   "event_type": "player_hp_decay",
@@ -72,6 +75,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-10-
 **Trigger:** Player HP reaches -10
 
 **Payload to All in Room:**
+
 ```json
 {
   "event_type": "player_died",
@@ -94,6 +98,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-10-
 **Trigger:** Immediately after `player_died` event
 
 **Payload:**
+
 ```json
 {
   "event_type": "show_death_interstitial",
@@ -114,6 +119,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-10-
 **Trigger:** Player clicks "Rejoin the earthly plane" button
 
 **Payload to Respawn Room:**
+
 ```json
 {
   "event_type": "player_respawned",
@@ -138,6 +144,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-10-
 **Authentication:** Required (JWT token)
 
 **Request:**
+
 ```json
 {
   "player_id": "player_123"
@@ -145,6 +152,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-10-
 ```
 
 **Response (Success - 200):**
+
 ```json
 {
   "success": true,
@@ -165,6 +173,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-10-
 ```
 
 **Response (Error - 400):**
+
 ```json
 {
   "success": false,
@@ -174,6 +183,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-10-
 ```
 
 **Response (Error - 404):**
+
 ```json
 {
   "success": false,
@@ -185,6 +195,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-10-
 **Rate Limiting:** 1 request per 5 seconds per player (prevent spam)
 
 **Validation:**
+
 - Player must be dead (HP <= -10)
 - Respawn room must exist
 - Player must not already be in respawn process
@@ -193,7 +204,8 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-10-
 
 ### Published Subjects
 
-- `events.player.mortally_wounded.<room_id>` - Room-scoped mortally wounded events
+`events.player.mortally_wounded.<room_id>` - Room-scoped mortally wounded events
+
 - `events.player.died.<room_id>` - Room-scoped death events
 - `events.player.respawned.<room_id>` - Room-scoped respawn events
 - `events.player.hp_decay.<player_id>` - Player-scoped HP decay (personal message)
@@ -203,6 +215,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-10-
 **File:** `server/realtime/nats_message_handler.py`
 
 Add subscriptions to:
+
 - `events.player.mortally_wounded.*`
 - `events.player.died.*`
 - `events.player.respawned.*`
@@ -212,17 +225,22 @@ Add subscriptions to:
 
 ### Combat Service Errors
 
-- **HP Calculation Error:** Log warning, cap at -10, continue
-- **Death Handler Error:** Log error, force respawn to prevent player being stuck
-- **Respawn Room Missing:** Log error, use hardcoded default sanitarium room
+**HP Calculation Error:** Log warning, cap at -10, continue
+
+**Death Handler Error:** Log error, force respawn to prevent player being stuck
+
+**Respawn Room Missing:** Log error, use hardcoded default sanitarium room
 
 ### Death Service Errors
 
-- **HP Decay Processing Error:** Log error, skip player for this tick, continue with others
-- **Event Publishing Error:** Log error, continue processing (don't block game ticks)
+**HP Decay Processing Error:** Log error, skip player for this tick, continue with others
+
+**Event Publishing Error:** Log error, continue processing (don't block game ticks)
 
 ### Respawn Service Errors
 
-- **Database Update Error:** Log error, retry once, then force update with default values
-- **Room Transfer Error:** Log critical error, force player to sanitarium
-- **Limbo Room Missing:** Log warning, create temporary limbo state in memory
+**Database Update Error:** Log error, retry once, then force update with default values
+
+**Room Transfer Error:** Log critical error, force player to sanitarium
+
+**Limbo Room Missing:** Log warning, create temporary limbo state in memory

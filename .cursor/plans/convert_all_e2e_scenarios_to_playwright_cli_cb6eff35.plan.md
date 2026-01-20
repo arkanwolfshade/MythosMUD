@@ -2,136 +2,224 @@
 name: Convert All E2E Scenarios to Playwright CLI
 overview: Convert all 33 e2e test scenarios from MCP format to runnable Playwright CLI tests, using Playwright's multi-context feature for multiplayer scenarios. This will create a comprehensive automated test suite that can run without AI agent coordination.
 todos:
+
   - id: verify-infrastructure
+
     content: Verify existing test infrastructure files exist (playwright.runtime.config.ts, fixtures, global-setup/teardown)
     status: completed
+
   - id: create-missing-infrastructure
+
     content: Create any missing infrastructure files (playwright.runtime.config.ts, global-setup.ts, global-teardown.ts, fixtures)
     status: completed
+
   - id: create-multiplayer-fixture
+
     content: Create multiplayer.ts fixture with multi-context helper functions (createMultiPlayerContext, waitForCrossPlayerMessage, cleanupMultiPlayerContexts)
     status: completed
+
   - id: update-playwright-config
+
     content: Update playwright.runtime.config.ts to support multi-context testing with proper timeout configuration
     status: completed
+
   - id: verify-test-database
+
     content: Verify test database setup works correctly with proper seeding and isolation
     status: completed
+
   - id: verify-existing-error-tests
+
     content: Verify existing error-handling tests exist and are working (scenarios 11, 14, 15, 20)
     status: completed
+
   - id: verify-existing-accessibility-tests
+
     content: Verify existing accessibility tests exist and are working (scenario 21)
     status: completed
+
   - id: verify-existing-integration-tests
+
     content: Verify existing integration tests exist (scenarios 07, 12, 17, 18, 19) and determine if migration needed
     status: completed
+
   - id: convert-scenario-01
+
     content: Convert scenario-01-basic-connection.md to connection/basic-connection.spec.ts (multi-context)
     status: completed
+
   - id: convert-scenario-02
+
     content: Convert scenario-02-clean-game-state.md to connection/clean-game-state.spec.ts (multi-context)
     status: completed
+
   - id: convert-scenario-03
+
     content: Convert scenario-03-movement-between-rooms.md to movement/movement-between-rooms.spec.ts (multi-context)
     status: completed
+
   - id: convert-scenario-04
+
     content: Convert scenario-04-muting-system-emotes.md to muting/muting-system-emotes.spec.ts (multi-context)
     status: completed
+
   - id: convert-scenario-05
+
     content: Convert scenario-05-chat-messages.md to communication/chat-messages.spec.ts (multi-context)
     status: completed
+
   - id: convert-scenario-06
+
     content: Convert scenario-06-admin-teleportation.md to admin/admin-teleportation.spec.ts (multi-context)
     status: completed
+
   - id: convert-scenario-07
+
     content: Convert scenario-07-who-command.md to commands/who-command.spec.ts (verify/migrate if exists)
     status: completed
+
   - id: convert-scenario-08
+
     content: Convert scenario-08-local-channel-basic.md to communication/local-channel-basic.spec.ts (multi-context)
     status: completed
+
   - id: convert-scenario-09
+
     content: Convert scenario-09-local-channel-isolation.md to communication/local-channel-isolation.spec.ts (multi-context)
     status: completed
+
   - id: convert-scenario-10
+
     content: Convert scenario-10-local-channel-movement.md to movement/local-channel-movement.spec.ts (multi-context)
     status: completed
+
   - id: convert-scenario-12
+
     content: Convert scenario-12-local-channel-integration.md to communication/local-channel-integration.spec.ts (verify/migrate if exists)
     status: completed
+
   - id: convert-scenario-13
+
     content: Convert scenario-13-whisper-basic.md to communication/whisper-basic.spec.ts (multi-context)
     status: completed
+
   - id: convert-scenario-16
+
     content: Convert scenario-16-whisper-movement.md to communication/whisper-movement.spec.ts (multi-context)
     status: completed
+
   - id: convert-scenario-17
+
     content: Convert scenario-17-whisper-integration.md to communication/whisper-integration.spec.ts (verify/migrate if exists)
     status: completed
+
   - id: convert-scenario-18
+
     content: Convert scenario-18-whisper-logging.md to admin/whisper-logging.spec.ts (verify/migrate if exists)
     status: completed
+
   - id: convert-scenario-22
+
     content: Convert scenario-22-summon-command.md to admin/summon-command.spec.ts (multi-context)
     status: completed
+
   - id: convert-scenario-23
+
     content: Convert scenario-23-container-multi-user-looting.md to containers/container-multi-user-looting.spec.ts (multi-context)
     status: completed
+
   - id: convert-scenario-24
+
     content: Convert scenario-24-container-environmental-interactions.md to containers/container-environmental-interactions.spec.ts (multi-context)
     status: completed
+
   - id: convert-scenario-25
+
     content: Convert scenario-25-container-wearable-management.md to containers/container-wearable-management.spec.ts (multi-context)
     status: completed
+
   - id: convert-scenario-26
+
     content: Convert scenario-26-container-corpse-looting.md to containers/container-corpse-looting.spec.ts (multi-context)
     status: completed
+
   - id: convert-scenario-27
+
     content: Convert scenario-27-character-selection.md to character/character-selection.spec.ts (single-player)
     status: completed
+
   - id: convert-scenario-28
+
     content: Convert scenario-28-multi-character-creation.md to character/multi-character-creation.spec.ts (single-player)
     status: completed
+
   - id: convert-scenario-29
+
     content: Convert scenario-29-character-deletion.md to character/character-deletion.spec.ts (single-player)
     status: completed
+
   - id: convert-scenario-30
+
     content: Convert scenario-30-character-name-uniqueness.md to character/character-name-uniqueness.spec.ts (multi-context)
     status: completed
+
   - id: convert-scenario-31
+
     content: Convert scenario-31-admin-set-stat-command.md to admin/admin-set-stat-command.spec.ts (multi-context)
     status: completed
+
   - id: convert-scenario-32
+
     content: Convert scenario-32-disconnect-grace-period.md to commands/disconnect-grace-period.spec.ts (multi-context)
     status: completed
+
   - id: convert-scenario-33
+
     content: Convert scenario-33-rest-command.md to commands/rest-command.spec.ts (multi-context)
     status: completed
+
   - id: convert-lucidity-01
+
     content: Convert lucidity-system-expansion/scenario-01-catatonia-grounding.md to lucidity/catatonia-grounding.spec.ts (multi-context)
     status: completed
+
   - id: convert-lucidity-02
+
     content: Convert lucidity-system-expansion/scenario-02-sanitarium-failover.md to lucidity/sanitarium-failover.spec.ts (multi-context)
     status: completed
+
   - id: run-full-test-suite
+
     content: Run full test suite to identify failures and timing issues
     status: in_progress
+
   - id: fix-test-failures
+
     content: Fix any test execution failures, timing issues, and race conditions
     status: in_progress
+
   - id: update-makefile
+
     content: Update Makefile with test-client-runtime target if needed
     status: completed
+
   - id: update-package-json
+
     content: Update package.json scripts for test:e2e:runtime if needed
     status: completed
+
   - id: document-limitations
+
     content: Document any scenarios that couldn't be fully automated or require manual verification steps
     status: completed
+
   - id: verify-test-organization
+
     content: Verify all test files are properly organized in logical directories
     status: completed
+
   - id: final-test-execution
+
     content: Execute final test run to ensure all 33 scenarios are converted and passing
     status: pending
 ---
@@ -144,9 +232,11 @@ Convert all 33 scenarios in `e2e-tests/scenarios/` to automated Playwright CLI t
 
 ## Current State
 
-- **Total Scenarios**: 33 scenarios in `e2e-tests/scenarios/`
-- **Multiplayer Scenarios**: 29 marked as `[REQUIRES MULTI-PLAYER]`
-- **Single-Player Scenarios**: 4 scenarios (scenarios 11, 14, 18, 20, 21)
+**Total Scenarios**: 33 scenarios in `e2e-tests/scenarios/`
+
+**Multiplayer Scenarios**: 29 marked as `[REQUIRES MULTI-PLAYER]`
+
+**Single-Player Scenarios**: 4 scenarios (scenarios 11, 14, 18, 20, 21)
 - **Existing Infrastructure**: Documentation references exist but test files may need to be created/verified
 
 ## Infrastructure Setup
@@ -285,19 +375,23 @@ await page1.locator('[data-testid="command-input"]').press('Enter');
 
 ### Connection Scenarios (2)
 
-- **scenario-01-basic-connection.md** → `connection/basic-connection.spec.ts`
-- **scenario-02-clean-game-state.md** → `connection/clean-game-state.spec.ts`
+**scenario-01-basic-connection.md** → `connection/basic-connection.spec.ts`
+
+**scenario-02-clean-game-state.md** → `connection/clean-game-state.spec.ts`
 
 ### Movement Scenarios (2)
 
-- **scenario-03-movement-between-rooms.md** → `movement/movement-between-rooms.spec.ts`
-- **scenario-10-local-channel-movement.md** → `movement/local-channel-movement.spec.ts`
+**scenario-03-movement-between-rooms.md** → `movement/movement-between-rooms.spec.ts`
+
+**scenario-10-local-channel-movement.md** → `movement/local-channel-movement.spec.ts`
 
 ### Communication Scenarios (7)
 
-- **scenario-05-chat-messages.md** → `communication/chat-messages.spec.ts`
-- **scenario-08-local-channel-basic.md** → `communication/local-channel-basic.spec.ts`
-- **scenario-09-local-channel-isolation.md** → `communication/local-channel-isolation.spec.ts`
+**scenario-05-chat-messages.md** → `communication/chat-messages.spec.ts`
+
+**scenario-08-local-channel-basic.md** → `communication/local-channel-basic.spec.ts`
+
+**scenario-09-local-channel-isolation.md** → `communication/local-channel-isolation.spec.ts`
 - **scenario-12-local-channel-integration.md** → `communication/local-channel-integration.spec.ts` (may exist)
 - **scenario-13-whisper-basic.md** → `communication/whisper-basic.spec.ts`
 - **scenario-16-whisper-movement.md** → `communication/whisper-movement.spec.ts`
@@ -305,50 +399,61 @@ await page1.locator('[data-testid="command-input"]').press('Enter');
 
 ### Admin Scenarios (4)
 
-- **scenario-06-admin-teleportation.md** → `admin/admin-teleportation.spec.ts`
-- **scenario-22-summon-command.md** → `admin/summon-command.spec.ts`
-- **scenario-31-admin-set-stat-command.md** → `admin/admin-set-stat-command.spec.ts`
+**scenario-06-admin-teleportation.md** → `admin/admin-teleportation.spec.ts`
+
+**scenario-22-summon-command.md** → `admin/summon-command.spec.ts`
+
+**scenario-31-admin-set-stat-command.md** → `admin/admin-set-stat-command.spec.ts`
 - **scenario-18-whisper-logging.md** → `admin/whisper-logging.spec.ts` (may exist)
 
 ### Character Scenarios (4)
 
-- **scenario-27-character-selection.md** → `character/character-selection.spec.ts`
-- **scenario-28-multi-character-creation.md** → `character/multi-character-creation.spec.ts`
-- **scenario-29-character-deletion.md** → `character/character-deletion.spec.ts`
+**scenario-27-character-selection.md** → `character/character-selection.spec.ts`
+
+**scenario-28-multi-character-creation.md** → `character/multi-character-creation.spec.ts`
+
+**scenario-29-character-deletion.md** → `character/character-deletion.spec.ts`
 - **scenario-30-character-name-uniqueness.md** → `character/character-name-uniqueness.spec.ts`
 
 ### Container Scenarios (4)
 
-- **scenario-23-container-multi-user-looting.md** → `containers/container-multi-user-looting.spec.ts`
-- **scenario-24-container-environmental-interactions.md** → `containers/container-environmental-interactions.spec.ts`
-- **scenario-25-container-wearable-management.md** → `containers/container-wearable-management.spec.ts`
+**scenario-23-container-multi-user-looting.md** → `containers/container-multi-user-looting.spec.ts`
+
+**scenario-24-container-environmental-interactions.md** → `containers/container-environmental-interactions.spec.ts`
+
+**scenario-25-container-wearable-management.md** → `containers/container-wearable-management.spec.ts`
 - **scenario-26-container-corpse-looting.md** → `containers/container-corpse-looting.spec.ts`
 
 ### Command Scenarios (3)
 
-- **scenario-07-who-command.md** → `commands/who-command.spec.ts` (may exist in integration/)
-- **scenario-32-disconnect-grace-period.md** → `commands/disconnect-grace-period.spec.ts`
-- **scenario-33-rest-command.md** → `commands/rest-command.spec.ts`
+**scenario-07-who-command.md** → `commands/who-command.spec.ts` (may exist in integration/)
+
+**scenario-32-disconnect-grace-period.md** → `commands/disconnect-grace-period.spec.ts`
+
+**scenario-33-rest-command.md** → `commands/rest-command.spec.ts`
 
 ### Muting Scenarios (1)
 
-- **scenario-04-muting-system-emotes.md** → `muting/muting-system-emotes.spec.ts`
+**scenario-04-muting-system-emotes.md** → `muting/muting-system-emotes.spec.ts`
 
 ### Lucidity Scenarios (2)
 
-- **scenario-01-catatonia-grounding.md** → `lucidity/catatonia-grounding.spec.ts`
-- **scenario-02-sanitarium-failover.md** → `lucidity/sanitarium-failover.spec.ts`
+**scenario-01-catatonia-grounding.md** → `lucidity/catatonia-grounding.spec.ts`
+
+**scenario-02-sanitarium-failover.md** → `lucidity/sanitarium-failover.spec.ts`
 
 ### Error Handling (Already Converted - 4)
 
-- **scenario-11-local-channel-errors.md** → `error-handling/local-channel-errors.spec.ts` (exists)
-- **scenario-14-whisper-errors.md** → `error-handling/whisper-errors.spec.ts` (exists)
-- **scenario-15-whisper-rate-limiting.md** → `error-handling/whisper-rate-limiting.spec.ts` (exists)
+**scenario-11-local-channel-errors.md** → `error-handling/local-channel-errors.spec.ts` (exists)
+
+**scenario-14-whisper-errors.md** → `error-handling/whisper-errors.spec.ts` (exists)
+
+**scenario-15-whisper-rate-limiting.md** → `error-handling/whisper-rate-limiting.spec.ts` (exists)
 - **scenario-20-logout-errors.md** → `error-handling/logout-errors.spec.ts` (exists)
 
 ### Accessibility (Already Converted - 1)
 
-- **scenario-21-logout-accessibility.md** → `accessibility/logout-accessibility.spec.ts` (exists)
+**scenario-21-logout-accessibility.md** → `accessibility/logout-accessibility.spec.ts` (exists)
 
 ## Implementation Steps
 
@@ -465,13 +570,15 @@ For cross-context message verification, use Playwright's `expect` with appropria
 
 ### Test Data Management
 
-- Use existing `TEST_PLAYERS` constants from `test-data.ts`
+Use existing `TEST_PLAYERS` constants from `test-data.ts`
+
 - Ensure test database is properly seeded before tests
 - Reset player positions between tests if needed
 
 ## Success Criteria
 
-- All 33 scenarios converted to Playwright CLI tests
+All 33 scenarios converted to Playwright CLI tests
+
 - Tests can run without AI agent coordination
 - Multiplayer scenarios use multi-context feature
 - All tests pass consistently
@@ -481,15 +588,18 @@ For cross-context message verification, use Playwright's `expect` with appropria
 
 ## Estimated Timeline
 
-- **Total Estimated Time**: 25-35 hours
-- **Infrastructure Setup**: 1-2 hours
-- **Test Conversion**: 20-28 hours
+**Total Estimated Time**: 25-35 hours
+
+**Infrastructure Setup**: 1-2 hours
+
+**Test Conversion**: 20-28 hours
 - **Integration & Testing**: 2-3 hours
 - **Documentation**: 1-2 hours
 
 ## Dependencies
 
-- Existing Playwright infrastructure (verify/create)
+Existing Playwright infrastructure (verify/create)
+
 - Test database setup working
 - Server running on port 54731
 - Client accessible on port 5173
@@ -497,7 +607,8 @@ For cross-context message verification, use Playwright's `expect` with appropria
 
 ## Notes
 
-- Some scenarios may already be converted (verify first)
+Some scenarios may already be converted (verify first)
+
 - Multi-context tests may be slower than single-context tests
 - Some scenarios may need simplification for automation
 - Document any limitations or manual verification steps needed

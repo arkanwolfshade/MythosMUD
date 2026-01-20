@@ -35,8 +35,11 @@ attack commands fail immediately with an internal error.
 **Symptoms**:
 
 - Attack commands (`/attack`, `/punch`, `/kick`, etc.) fail immediately
+
 - Error messages appear in Game Info panel: "An error occurred during combat:
+
   'coroutine' object has no attribute 'current_room_id'"
+
 - Combat cannot be initiated with NPCs or other players
 
 **Expected Behavior**: Attack commands should successfully initiate combat
@@ -135,20 +138,27 @@ if that code path is executed.
 1. **Async Method Not Awaited**:
 
    - `persistence.get_player_by_name()` is an async method (coroutine function)
+
    - Line 160 calls it without `await`, returning a coroutine object instead of
+
      a Player object
+
    - When code attempts to access `player.current_room_id` on line 169, Python
+
      raises `AttributeError` because coroutine objects don't have a
      `current_room_id` attribute
 
 2. **Type Mismatch**:
+
    - Expected: `Player` object with `current_room_id` attribute
    - Actual: `coroutine` object (result of calling async function without await)
 
 3. **Inconsistency with Other Commands**:
 
    - Other command handlers (`exploration_commands.py`) correctly use `await`
+
      when calling `get_player_by_name`
+
    - Combat command handler is inconsistent with established patterns
 
 ### Execution Flow Analysis
@@ -163,11 +173,15 @@ if that code path is executed.
 
 ### Why This Wasn't Caught Earlier
 
-- The code compiles/runs without syntax errors (missing await is a runtime
+The code compiles/runs without syntax errors (missing await is a runtime
   issue)
+
 - The error only occurs when the code path is executed (attack command used)
+
 - Type checking may not have caught this if async/await patterns weren't fully
+
   enforced
+
 - The method signature suggests async, but the call site doesn't reflect that
 
 ---
@@ -208,23 +222,30 @@ if that code path is executed.
 
 ### Primary Component
 
-- **File**: `server/commands/combat.py`
-- **Method**: `CombatCommandHandler.handle_attack_command()`
-- **Line**: 160 (missing await)
+**File**: `server/commands/combat.py`
+
+**Method**: `CombatCommandHandler.handle_attack_command()`
+
+**Line**: 160 (missing await)
 - **Line**: 169 (error location)
 
 ### Secondary Component
 
-- **File**: `server/commands/combat.py`
-- **Method**: `CombatCommandHandler._execute_combat_action()`
-- **Line**: 299 (missing await - same issue, different code path)
+**File**: `server/commands/combat.py`
+
+**Method**: `CombatCommandHandler._execute_combat_action()`
+
+**Line**: 299 (missing await - same issue, different code path)
 
 ### Related Components
 
-- `server/async_persistence.py` - Provides the async `get_player_by_name`
+`server/async_persistence.py` - Provides the async `get_player_by_name`
   method
+
 - `server/persistence/repositories/player_repository.py` - Implements the
+
   async method
+
 - Error handling system - Correctly catches and logs the error
 
 ---
@@ -234,27 +255,41 @@ if that code path is executed.
 ### Immediate Priorities
 
 1. **Fix Missing Await (Line 160)**: Add `await` keyword before
+
    `persistence.get_player_by_name()` call
+
 2. **Fix Missing Await (Line 299)**: Add `await` keyword before
+
    `self.persistence.get_player_by_name()` call in `_execute_combat_action`
+
 3. **Verify Room Retrieval**: Check if `persistence.get_room()` on line 178
+
    also needs `await` (may be sync method, needs verification)
 
 ### Code Quality Improvements
 
 1. **Add Type Checking**: Consider adding mypy or similar to catch
+
    async/await mismatches
+
 2. **Code Review Process**: Ensure async methods are always awaited
+
 3. **Unit Tests**: Add tests that verify async methods are properly awaited
+
 4. **Linting Rules**: Add linting rules to detect missing await on async
+
    calls
 
 ### Testing Recommendations
 
 1. **Test Combat Initiation**: Verify attack commands work after fix
+
 2. **Test All Attack Types**: Verify all combat command variants work
+
 3. **Test Error Handling**: Ensure proper error messages if player/target not
+
    found
+
 4. **Integration Tests**: Add integration tests for combat command flow
 
 ---
@@ -302,7 +337,8 @@ addition of `await` keywords to properly handle the async method calls.
 
 ## Investigation Checklist
 
-- [x] Error logs analyzed
+[x] Error logs analyzed
+
 - [x] Code paths traced
 - [x] Root cause identified
 - [x] Evidence collected and documented

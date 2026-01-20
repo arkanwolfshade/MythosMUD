@@ -18,19 +18,21 @@ This document outlines the plan for cleaning up dead code identified in the Myth
 
 ### Low Risk Items
 
-- Completely unused files with no imports
+Completely unused files with no imports
+
 - Explicitly deprecated classes
 - Functions used only in tests but not in production
 
 ### Medium Risk Items
 
-- Legacy files with partial usage
+Legacy files with partial usage
+
 - Classes that might be used in future features
 - Utility functions that could be needed for debugging
 
 ### High Risk Items
 
-- None identified in this cleanup
+None identified in this cleanup
 
 ## Cleanup Phases
 
@@ -41,32 +43,40 @@ This document outlines the plan for cleaning up dead code identified in the Myth
 
 #### 1.1 Remove `server/check_routes.py` ✅ **COMPLETED**
 
-- **Reason**: Standalone utility script with no imports
-- **Action**: Delete file entirely
-- **Verification**: Run test suite to ensure no impact
+**Reason**: Standalone utility script with no imports
+
+**Action**: Delete file entirely
+
+**Verification**: Run test suite to ensure no impact
 - **Files to modify**: None (deletion only)
 - **Status**: ✅ Completed - File and associated test file deleted, all tests pass
 
 #### 1.2 Remove `server/check_invites.py`
 
-- **Reason**: Standalone utility script with no imports
-- **Action**: Delete file entirely
-- **Verification**: Run test suite to ensure no impact
+**Reason**: Standalone utility script with no imports
+
+**Action**: Delete file entirely
+
+**Verification**: Run test suite to ensure no impact
 - **Files to modify**: None (deletion only)
 - **Status**: ✅ Completed - File deleted, all tests pass
 
 #### 1.3 Remove `server/test_integration.py`
 
-- **Reason**: Unused integration test script
-- **Action**: Delete file entirely
-- **Verification**: Run test suite to ensure no impact
+**Reason**: Unused integration test script
+
+**Action**: Delete file entirely
+
+**Verification**: Run test suite to ensure no impact
 - **Files to modify**: None (deletion only)
 
 #### 1.4 Remove `server/player_manager.py`
 
-- **Reason**: Explicitly deprecated class that raises NotImplementedError
-- **Action**: Delete file entirely
-- **Verification**: Run test suite to ensure no impact
+**Reason**: Explicitly deprecated class that raises NotImplementedError
+
+**Action**: Delete file entirely
+
+**Verification**: Run test suite to ensure no impact
 - **Files to modify**: None (deletion only)
 
 ### Phase 2: Medium Priority - Extract and Remove Legacy Code
@@ -76,12 +86,18 @@ This document outlines the plan for cleaning up dead code identified in the Myth
 
 #### 2.1 Refactor `server/real_time.py` ✅ **COMPLETED**
 
-- **Current State**: Legacy file with only `load_motd()` function used
-- **Action**:
+**Current State**: Legacy file with only `load_motd()` function used
+
+**Action**:
+
   1. Create `server/utils/motd_loader.py` for the `load_motd()` function
+
   2. Update imports in files that use `load_motd()`
+
   3. Remove `server/real_time.py`
-- **Files to modify**:
+
+**Files to modify**:
+
   - Create: `server/utils/motd_loader.py`
   - Update: `server/api/__init__.py` (if imports real_time)
   - Update: `server/tests/test_real_time.py` (rename to test_motd_loader.py)
@@ -95,17 +111,21 @@ This document outlines the plan for cleaning up dead code identified in the Myth
 
 #### 3.1 Remove `MultiFileHandler` class from `server/logging_config.py` ✅ **COMPLETED**
 
-- **Reason**: Defined but never used
-- **Action**: Remove class definition
-- **Verification**: Run test suite to ensure no impact
+**Reason**: Defined but never used
+
+**Action**: Remove class definition
+
+**Verification**: Run test suite to ensure no impact
 - **Files to modify**: `server/logging_config.py`
 - **Status**: ✅ Completed - Class removed, all tests pass, no linting errors
 
 #### 3.3 Remove `benchmark_hash_time()` function from `server/auth/argon2_utils.py` ✅ **COMPLETED**
 
-- **Reason**: Used only in tests, not in production
-- **Action**: Remove function definition and related tests
-- **Verification**: Run test suite to ensure no impact
+**Reason**: Used only in tests, not in production
+
+**Action**: Remove function definition and related tests
+
+**Verification**: Run test suite to ensure no impact
 - **Files to modify**:
   - `server/auth/argon2_utils.py`
   - `server/tests/test_argon2_utils.py` (remove benchmark tests)
@@ -115,21 +135,24 @@ This document outlines the plan for cleaning up dead code identified in the Myth
 
 ### Functional Requirements
 
-- [ ] All existing functionality remains intact
+[ ] All existing functionality remains intact
+
 - [ ] Test suite passes with no regressions
 - [ ] Code coverage remains at or above current levels
 - [ ] No new linting errors introduced
 
 ### Quality Requirements
 
-- [ ] Reduced codebase size by removing dead code
+[ ] Reduced codebase size by removing dead code
+
 - [ ] Improved code maintainability
 - [ ] Reduced cognitive load for developers
 - [ ] Cleaner project structure
 
 ### Documentation Requirements
 
-- [ ] Update any documentation that referenced removed files
+[ ] Update any documentation that referenced removed files
+
 - [ ] Document any new utility modules created
 - [ ] Update this planning document with lessons learned
 
@@ -145,13 +168,15 @@ If issues are discovered during cleanup:
 
 ### Internal Communication
 
-- Update `TASKS.local.md` with cleanup progress
+Update `TASKS.local.md` with cleanup progress
+
 - Document any issues or unexpected findings
 - Update team on completion status
 
 ### External Communication
 
-- Update GitHub Issues if any were related to dead code
+Update GitHub Issues if any were related to dead code
+
 - Update project documentation if needed
 - Consider blog post about code cleanup process (optional)
 
@@ -159,32 +184,37 @@ If issues are discovered during cleanup:
 
 ### Monitoring
 
-- Set up automated dead code detection in CI/CD pipeline
+Set up automated dead code detection in CI/CD pipeline
+
 - Regular code reviews to identify new dead code
 - Periodic cleanup sprints
 
 ### Prevention
 
-- Implement stricter import policies
+Implement stricter import policies
+
 - Add linting rules for unused imports
 - Regular code audits
 
 ### Documentation
 
-- Maintain this planning document for future cleanup efforts
+Maintain this planning document for future cleanup efforts
+
 - Document patterns that lead to dead code
 - Create guidelines for preventing dead code accumulation
 
 ## Resources Required
 
-- Development environment access
+Development environment access
+
 - Test database access
 - Git repository access
 - Code review from team members
 
 ## Dependencies
 
-- No external dependencies
+No external dependencies
+
 - Requires approval for production deployment
 - May require coordination with other developers if they're working on affected files
 

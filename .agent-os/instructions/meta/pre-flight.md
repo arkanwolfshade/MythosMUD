@@ -8,7 +8,7 @@ encoding: UTF-8
 
 # Pre-Flight Rules
 
-- IMPORTANT: For any step that specifies a subagent in the subagent="" XML attribute you MUST use the specified subagent to perform the instructions for that step.
+IMPORTANT: For any step that specifies a subagent in the subagent="" XML attribute you MUST use the specified subagent to perform the instructions for that step.
 
 - Process XML blocks sequentially
 

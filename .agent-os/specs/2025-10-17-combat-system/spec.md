@@ -14,6 +14,7 @@ Implement a comprehensive turn-based combat system for MythosMUD that allows pla
 As a player, I want to attack NPCs in my current room using the `attack <target>` command, so that I can engage in tactical combat and earn experience points.
 
 **Detailed Workflow:**
+
 1. Player uses `attack <target>` command to initiate combat
 2. System validates target exists and is attackable
 3. Combat begins with dexterity-based turn order
@@ -29,6 +30,7 @@ As a player, I want to attack NPCs in my current room using the `attack <target>
 As a player, I want to receive immersive, Cthulhu Mythos-themed combat messages that vary based on my perspective (attacker/defender/observer), so that combat feels engaging and atmospheric.
 
 **Detailed Workflow:**
+
 1. Player attacks NPC and sees "You swing your fist at the rat and hit for 1 damage (9/10 HP remaining)"
 2. Other players see "Ithaqua swings their fist at the rat and hits for 1 damage (9/10 HP remaining)"
 3. NPC performs non-combat action: "The rat darts around nervously, trying to avoid your blows"
@@ -41,6 +43,7 @@ As a player, I want to receive immersive, Cthulhu Mythos-themed combat messages 
 As a player, I want combat to persist even if I disconnect temporarily, so that I can resume combat when I reconnect within the timeout period.
 
 **Detailed Workflow:**
+
 1. Player initiates combat with NPC
 2. Player disconnects during combat
 3. Combat state is maintained for timeout period
@@ -63,7 +66,8 @@ As a player, I want combat to persist even if I disconnect temporarily, so that 
 
 ## Out of Scope
 
-- Player vs Player combat
+Player vs Player combat
+
 - Weapon and equipment integration
 - Status effect integration
 - Room environment effects

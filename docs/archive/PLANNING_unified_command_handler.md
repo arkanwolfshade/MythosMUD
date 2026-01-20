@@ -53,21 +53,24 @@ Both HTTP and WebSocket requests will use the same unified command handler, ensu
 
 #### 1.1 Audit Current Command Handler
 
-- [ ] Document all commands supported by `command_handler_v2.py`
+[ ] Document all commands supported by `command_handler_v2.py`
+
 - [ ] Document all commands supported by `websocket_handler.py`
 - [ ] Identify any WebSocket-specific commands that don't exist in HTTP
 - [ ] Map command signatures and expected parameters
 
 #### 1.2 Analyze Request Context Requirements
 
-- [ ] Document what `command_handler_v2.py` expects from `Request` object
+[ ] Document what `command_handler_v2.py` expects from `Request` object
+
 - [ ] Identify required `app.state` attributes (persistence, event_bus)
 - [ ] Document authentication context requirements
 - [ ] Map error response formats
 
 #### 1.3 Create Test Suite
 
-- [ ] Create comprehensive tests for current HTTP command behavior
+[ ] Create comprehensive tests for current HTTP command behavior
+
 - [ ] Create comprehensive tests for current WebSocket command behavior
 - [ ] Establish baseline for regression testing
 
@@ -77,6 +80,7 @@ Both HTTP and WebSocket requests will use the same unified command handler, ensu
 
 ```python
 # New file: server/realtime/request_context.py
+
 class WebSocketRequestContext:
     """Creates FastAPI Request-like objects for WebSocket commands"""
 
@@ -97,10 +101,13 @@ class WebSocketRequestContext:
 ```python
 async def process_websocket_command(cmd: str, args: list, player_id: str) -> dict:
     # Direct implementation of commands
+
     if cmd == "look":
         # Custom look logic
+
     elif cmd == "go":
         # Custom go logic
+
 ```
 
 **Target:**
@@ -108,9 +115,11 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
 ```python
 async def process_websocket_command(cmd: str, args: list, player_id: str) -> dict:
     # Create proper request context
+
     request = WebSocketRequestContext(persistence, event_bus, user)
 
     # Delegate to unified command handler
+
     from ..command_handler_v2 import process_command
     result = await process_command(request, cmd, args, player_id)
 
@@ -119,7 +128,8 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
 
 #### 2.3 Update Error Handling
 
-- [ ] Ensure WebSocket error responses match HTTP error format
+[ ] Ensure WebSocket error responses match HTTP error format
+
 - [ ] Implement proper error propagation from unified handler
 - [ ] Maintain WebSocket-specific error handling where needed
 
@@ -127,13 +137,15 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
 
 #### 3.1 User Context Management
 
-- [ ] Ensure WebSocket connections maintain proper user authentication
+[ ] Ensure WebSocket connections maintain proper user authentication
+
 - [ ] Create user objects compatible with `command_handler_v2.py` expectations
 - [ ] Handle session management consistently
 
 #### 3.2 Permission and Authorization
 
-- [ ] Verify that WebSocket commands respect the same authorization rules
+[ ] Verify that WebSocket commands respect the same authorization rules
+
 - [ ] Implement proper permission checking in unified context
 - [ ] Handle authentication failures gracefully
 
@@ -141,21 +153,24 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
 
 #### 4.1 Functional Testing
 
-- [ ] Test all commands via both HTTP and WebSocket
+[ ] Test all commands via both HTTP and WebSocket
+
 - [ ] Verify identical behavior between interfaces
 - [ ] Test error conditions and edge cases
 - [ ] Validate command responses and side effects
 
 #### 4.2 Performance Testing
 
-- [ ] Benchmark command processing performance
+[ ] Benchmark command processing performance
+
 - [ ] Ensure no significant performance degradation
 - [ ] Test under load conditions
 - [ ] Monitor memory usage and resource consumption
 
 #### 4.3 Integration Testing
 
-- [ ] Test full game flow (login → command → response)
+[ ] Test full game flow (login → command → response)
+
 - [ ] Verify real-time updates work correctly
 - [ ] Test concurrent user scenarios
 - [ ] Validate event bus integration
@@ -164,13 +179,15 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
 
 #### 5.1 Code Cleanup
 
-- [ ] Remove duplicate command logic from `websocket_handler.py`
+[ ] Remove duplicate command logic from `websocket_handler.py`
+
 - [ ] Clean up any unused imports or functions
 - [ ] Update code comments and documentation
 
 #### 5.2 Documentation Updates
 
-- [ ] Update API documentation to reflect unified architecture
+[ ] Update API documentation to reflect unified architecture
+
 - [ ] Document the new request context pattern
 - [ ] Update development guidelines
 - [ ] Create architectural decision record (ADR)
@@ -183,6 +200,7 @@ The unified `command_handler_v2.py` expects:
 
 ```python
 # Required Request object structure
+
 request.app.state.persistence  # Database access layer
 request.app.state.event_bus    # Event bus for inter-service communication
 request.user                   # Authenticated user object
@@ -196,6 +214,7 @@ Ensure consistent error responses:
 
 ```python
 # HTTP Error Response
+
 {
     "error": {
         "type": "validation_error",
@@ -205,6 +224,7 @@ Ensure consistent error responses:
 }
 
 # WebSocket Error Response (should match)
+
 {
     "type": "error",
     "error": {
@@ -221,6 +241,7 @@ All commands must maintain the same signature:
 
 ```python
 # Unified command signature
+
 async def process_command(
     request: Request,
     command: str,
@@ -228,6 +249,7 @@ async def process_command(
     player_id: str
 ) -> Dict[str, Any]:
     # Command processing logic
+
     pass
 ```
 
@@ -251,14 +273,16 @@ async def process_command(
 
 ### Functional Requirements
 
-- [ ] All existing commands work identically via HTTP and WebSocket
+[ ] All existing commands work identically via HTTP and WebSocket
+
 - [ ] No regression in game functionality
 - [ ] Error responses are consistent between interfaces
 - [ ] Authentication and authorization work correctly
 
 ### Non-Functional Requirements
 
-- [ ] Performance is maintained or improved
+[ ] Performance is maintained or improved
+
 - [ ] Code duplication is eliminated
 - [ ] Test coverage is comprehensive
 - [ ] Documentation is updated and accurate
@@ -267,9 +291,11 @@ async def process_command(
 
 **Total Estimated Time: 7-11 days**
 
-- **Phase 1**: Analysis and Preparation (1-2 days)
-- **Phase 2**: WebSocket Handler Refactoring (2-3 days)
-- **Phase 3**: Authentication Context (1-2 days)
+**Phase 1**: Analysis and Preparation (1-2 days)
+
+**Phase 2**: WebSocket Handler Refactoring (2-3 days)
+
+**Phase 3**: Authentication Context (1-2 days)
 - **Phase 4**: Testing and Validation (2-3 days)
 - **Phase 5**: Cleanup and Documentation (1 day)
 
@@ -277,14 +303,15 @@ async def process_command(
 
 ### Prerequisites
 
-- [ ] TailwindCSS migration completed and stable
+[ ] TailwindCSS migration completed and stable
+
 - [ ] Current WebSocket functionality working correctly
 - [ ] Comprehensive test suite in place
 - [ ] Development environment stable
 
 ### Blocking Issues
 
-- None identified at this time
+None identified at this time
 
 ## Future Considerations
 

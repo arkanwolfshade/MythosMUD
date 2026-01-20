@@ -35,6 +35,7 @@ Comprehensive remediation prompt generated.
 **Expected Behavior**:
 
 - When player's lucidity reaches -10, they should:
+
   1. See a delirium respawn screen (different from death respawn screen)
   2. After acknowledging delirium, respawn in Sanitarium
   3. Have lucidity set to 10 after respawn
@@ -55,9 +56,13 @@ Comprehensive remediation prompt generated.
 **Findings**:
 
 - Lucidity is stored in `player_lucidity` table with `current_lcd` field
+
 - Range: -100 to 100 (database constraint: `CHECK (current_lcd BETWEEN -100
+
   AND 100)`)
+
 - Current tier system: `lucid` (>=70), `uneasy` (>=40), `fractured` (>=20),
+
   `deranged` (>=1), `catatonic` (<=0)
 
 **Code Reference**:
@@ -86,9 +91,11 @@ def resolve_tier(lucidity_value: int) -> Tier:
 
 **Findings**:
 
-- **-100 Threshold Check EXISTS**: Line 306 checks for `new_lcd <= -100` and
+**-100 Threshold Check EXISTS**: Line 306 checks for `new_lcd <= -100` and
   triggers "sanitarium failover"
-- **-10 Threshold Check MISSING**: No check exists for lucidity <= -10 to
+
+**-10 Threshold Check MISSING**: No check exists for lucidity <= -10 to
+
   trigger delirium respawn
 
 **Code Reference**:
@@ -121,9 +128,11 @@ but not for -10 threshold (delirium respawn trigger).
 
 **Findings**:
 
-- **Death Respawn Screen EXISTS**: `DeathInterstitial` component handles death
+**Death Respawn Screen EXISTS**: `DeathInterstitial` component handles death
   respawn
-- **Delirium Respawn Screen MISSING**: No `DeliriumInterstitial` component
+
+**Delirium Respawn Screen MISSING**: No `DeliriumInterstitial` component
+
   exists
 
 **Code Reference**:
@@ -195,9 +204,11 @@ export const DeathInterstitial: React.FC<DeathInterstitialProps> = ({
 
 **Findings**:
 
-- **Death Detection EXISTS**: Lines 1260-1287 check for HP <= -10 to show
+**Death Detection EXISTS**: Lines 1260-1287 check for HP <= -10 to show
   death screen
-- **Delirium Detection MISSING**: No check for lucidity <= -10 to show
+
+**Delirium Detection MISSING**: No check for lucidity <= -10 to show
+
   delirium screen
 
 **Code Reference**:
@@ -242,14 +253,17 @@ for delirium state (lucidity <= -10).
 
 **Findings**:
 
-- **Death Respawn EXISTS**: `respawn_player()` method handles death respawn
-- **Delirium Respawn MISSING**: No method exists for delirium respawn
-- **Default Respawn Room**: `DEFAULT_RESPAWN_ROOM = "earth_arkhamcity_sanitarium_room_foyer_001"`
+**Death Respawn EXISTS**: `respawn_player()` method handles death respawn
+
+**Delirium Respawn MISSING**: No method exists for delirium respawn
+
+**Default Respawn Room**: `DEFAULT_RESPAWN_ROOM = "earth_arkhamcity_sanitarium_room_foyer_001"`
 
 **Code Reference**:
 
 ```21:22:server/services/player_respawn_service.py
 # Default respawn location (Arkham Sanitarium foyer)
+
 DEFAULT_RESPAWN_ROOM = "earth_arkhamcity_sanitarium_room_foyer_001"
 ```
 
@@ -272,15 +286,18 @@ DEFAULT_RESPAWN_ROOM = "earth_arkhamcity_sanitarium_room_foyer_001"
         """
         try:
             # Retrieve player from database using async API
+
             player = await session.get(Player, player_id)
             if not player:
                 logger.warning("Player not found for respawn", player_id=player_id)
                 return False
 
             # Get respawn room using async API
+
             respawn_room = await self.get_respawn_room(player_id, session)
 
             # Get current stats and restore HP to max health
+
             stats = player.get_stats()
             old_hp = stats.get("current_health", -10)
             max_hp = stats.get("max_health", 100)  # Default to 100 if max_health not found
@@ -289,9 +306,11 @@ DEFAULT_RESPAWN_ROOM = "earth_arkhamcity_sanitarium_room_foyer_001"
             # BUGFIX: Restore posture to standing when player respawns
             # As documented in "Resurrection and Corporeal Restoration" - Dr. Armitage, 1930
             # Upon resurrection, the body is restored to full function including upright posture
+
             stats["position"] = PositionState.STANDING
 
             # Update player stats and location
+
             player.set_stats(stats)
             old_room = player.current_room_id
             player.current_room_id = respawn_room  # type: ignore[assignment]
@@ -305,18 +324,21 @@ delirium respawn logic exists (lucidity restoration to 10).
 #### Missing Components Summary
 
 1. **Server-Side**:
+
    - No check for lucidity <= -10 in `LucidityService.apply_lucidity_adjustment()`
    - No delirium respawn method in `PlayerRespawnService`
    - No delirium respawn API endpoint
    - No delirium state tracking (similar to death state)
 
 2. **Client-Side**:
+
    - No `DeliriumInterstitial` component
    - No delirium state detection in `GameClientV2Container`
    - No delirium respawn event handling
    - No delirium state management
 
 3. **Database**:
+
    - No delirium-specific fields or tracking
    - Lucidity can go negative (down to -100) but no special handling at -10
 
@@ -347,23 +369,33 @@ The codebase contains:
 **SECONDARY ISSUES**:
 
 1. **Missing Threshold Check**: No code checks for lucidity <= -10 to trigger
+
    delirium respawn
+
 2. **Missing UI Component**: No delirium-specific respawn screen exists
+
 3. **Missing Server Logic**: No method to handle delirium respawn (move to
+
    Sanitarium, set lucidity to 10)
+
 4. **Missing Client Detection**: Client doesn't detect delirium state
+
    (lucidity <= -10)
+
 5. **Missing API Endpoint**: No API endpoint for delirium respawn
+
    acknowledgment
 
 ## System Impact Assessment
 
 **Scope**:
 
-- **Affected Systems**: Lucidity system, respawn system, client UI, game
+**Affected Systems**: Lucidity system, respawn system, client UI, game
   state management
-- **Affected Players**: All players who reach -10 lucidity
-- **Severity**: High - Missing critical game mechanic
+
+**Affected Players**: All players who reach -10 lucidity
+
+**Severity**: High - Missing critical game mechanic
 
 **Impact**:
 
@@ -375,7 +407,9 @@ The codebase contains:
 **Dependencies**:
 
 - Requires changes to: `LucidityService`, `PlayerRespawnService`, client
+
   components, API endpoints
+
 - Must integrate with existing respawn system
 - Must follow same patterns as death respawn system
 
@@ -384,31 +418,39 @@ The codebase contains:
 ### Code References
 
 1. **Lucidity Service** - Missing -10 check:
+
    - File: `server/services/lucidity_service.py`
    - Lines: 238-378 (apply_lucidity_adjustment method)
    - Issue: Only checks for -100 threshold, not -10
 
 2. **Respawn Service** - Missing delirium respawn:
+
    - File: `server/services/player_respawn_service.py`
    - Lines: 136-178 (respawn_player method)
    - Issue: Only handles death respawn, not delirium respawn
 
 3. **Client Container** - Missing delirium detection:
+
    - File: `client/src/components/ui-v2/GameClientV2Container.tsx`
    - Lines: 1260-1287 (death detection useEffect)
    - Issue: Only checks for death state, not delirium state
 
 4. **Death Interstitial** - Only death screen exists:
+
    - File: `client/src/components/DeathInterstitial.tsx`
    - Lines: 4-58 (component definition)
    - Issue: No delirium-specific screen component
 
 ### Database Schema
 
-- **Table**: `player_lucidity`
-- **Field**: `current_lcd` (INTEGER, range: -100 to 100)
-- **Constraint**: `CHECK (current_lcd BETWEEN -100 AND 100)`
-- **Issue**: Schema supports negative lucidity but no special handling at
+**Table**: `player_lucidity`
+
+**Field**: `current_lcd` (INTEGER, range: -100 to 100)
+
+**Constraint**: `CHECK (current_lcd BETWEEN -100 AND 100)`
+
+**Issue**: Schema supports negative lucidity but no special handling at
+
   -10
 
 ## Investigation Recommendations
@@ -416,21 +458,25 @@ The codebase contains:
 **PRIORITY 1 - Critical**:
 
 1. Implement delirium threshold check in
+
    `LucidityService.apply_lucidity_adjustment()`
+
 2. Create `DeliriumInterstitial` component (similar to `DeathInterstitial`)
 3. Add delirium respawn method to `PlayerRespawnService`
 4. Add delirium state detection in `GameClientV2Container`
 
 **PRIORITY 2 - High**:
-5. Create delirium respawn API endpoint
-6. Add delirium respawn event types
-7. Integrate with existing respawn system
-8. Add tests for delirium respawn flow
+
+1. Create delirium respawn API endpoint
+2. Add delirium respawn event types
+3. Integrate with existing respawn system
+4. Add tests for delirium respawn flow
 
 **PRIORITY 3 - Medium**:
-9. Add delirium state tracking (similar to death state)
-10. Update documentation for delirium respawn mechanic
-11. Add logging for delirium respawn events
+
+1. Add delirium state tracking (similar to death state)
+2. Update documentation for delirium respawn mechanic
+3. Add logging for delirium respawn events
 
 ## Remediation Prompt
 
@@ -444,7 +490,7 @@ in the Sanitarium with 10 lucidity.
 
 REQUIREMENTS:
 1. Server-Side:
-   - Add lucidity <= -10 check in
+   Add lucidity <= -10 check in
      LucidityService.apply_lucidity_adjustment()
    - Create delirium respawn method in PlayerRespawnService (similar to
      respawn_player but sets lucidity to 10)
@@ -454,7 +500,7 @@ REQUIREMENTS:
    - Set lucidity to 10 after delirium respawn acknowledgment
 
 2. Client-Side:
-   - Create DeliriumInterstitial component (similar to DeathInterstitial but
+   Create DeliriumInterstitial component (similar to DeathInterstitial but
      with delirium-specific narrative)
    - Add delirium state detection in GameClientV2Container (check lucidity
      <= -10)

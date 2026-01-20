@@ -8,8 +8,11 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-01-
 
 **Purpose:** Process combat commands through existing command system
 **Parameters:**
+
 - `command` (string): Combat command (e.g., "attack rat", "punch goblin")
+
 **Response:**
+
 ```json
 {
   "result": "You swing your fist at the rat and hit for 1 damage (9/10 HP remaining)",
@@ -24,7 +27,9 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-01-
   }
 }
 ```
+
 **Errors:**
+
 - `INVALID_TARGET`: Target not found or not attackable
 - `COMBAT_ERROR`: Combat system error
 - `RATE_LIMIT_EXCEEDED`: Command rate limit exceeded
@@ -36,6 +41,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-01-
 **Event Type:** `combat_event`
 **Purpose:** Broadcast combat actions to room occupants
 **Data Structure:**
+
 ```json
 {
   "event_type": "combat_event",
@@ -58,6 +64,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-01-
 **Event Type:** `combat_started`
 **Purpose:** Notify when combat begins
 **Data Structure:**
+
 ```json
 {
   "event_type": "combat_started",
@@ -78,6 +85,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-01-
 **Event Type:** `npc_non_combat_action`
 **Purpose:** Notify when NPC performs non-combat action during their turn
 **Data Structure:**
+
 ```json
 {
   "event_type": "npc_non_combat_action",
@@ -96,6 +104,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-01-
 **Event Type:** `combat_ended`
 **Purpose:** Notify when combat ends
 **Data Structure:**
+
 ```json
 {
   "event_type": "combat_ended",
@@ -116,6 +125,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-01-
 **Event Type:** `npc_attacked` (Extended)
 **Purpose:** NPC attacked event with combat data
 **Data Structure:**
+
 ```json
 {
   "event_type": "npc_attacked",
@@ -135,6 +145,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-01-
 **Event Type:** `npc_took_damage` (Extended)
 **Purpose:** NPC damage event with combat data
 **Data Structure:**
+
 ```json
 {
   "event_type": "npc_took_damage",
@@ -153,6 +164,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-01-
 **Event Type:** `npc_died` (Extended)
 **Purpose:** NPC death event with combat data
 **Data Structure:**
+
 ```json
 {
   "event_type": "npc_died",
@@ -174,12 +186,14 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-01-
 ### Combat Command Validation
 
 **Input Validation:**
+
 - Command format: `attack <target>` or `punch <target>`
 - Target validation: Target must exist in current room
 - Combat state validation: Player can only be in one combat at a time
 - Rate limiting: Existing command rate limiting applies
 
 **Target Resolution:**
+
 - Use existing room occupant targeting logic
 - Case-insensitive target matching
 - Partial name matching support
@@ -188,12 +202,14 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-01-
 ### Combat State Management
 
 **State Storage:**
+
 - In-memory combat state tracking
 - Combat participants and turn order
 - Current combat target and status
 - Combat timeout and cleanup
 
 **State Transitions:**
+
 - `idle` → `combat_started` (on first attack)
 - `combat_started` → `combat_ended` (on target death or timeout)
 - `combat_ended` → `idle` (after cleanup)
@@ -203,6 +219,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-01-
 ### Combat-Specific Errors
 
 **Error Types:**
+
 - `TARGET_NOT_FOUND`: Target not found in current room
 - `TARGET_DEAD`: Target is already dead
 - `TARGET_NOT_ATTACKABLE`: Target cannot be attacked
@@ -211,6 +228,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-01-
 - `INVALID_COMBAT_STATE`: Combat state is invalid
 
 **Error Responses:**
+
 ```json
 {
   "result": "You don't see a 'dragon' here. Perhaps it exists only in your fevered imagination?",
@@ -225,14 +243,17 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-01-
 ### Thematic Error Messages
 
 **Target Not Found:**
+
 - "You don't see a '{target}' here. Perhaps it exists only in your fevered imagination?"
 - "The shadows reveal no '{target}' to strike at."
 
 **Target Dead:**
+
 - "The {target} is already dead. Your blows strike only lifeless flesh."
 - "You cannot harm what is already beyond the veil."
 
 **Invalid Target:**
+
 - "You cannot attack that. The very thought fills you with dread."
 - "Your instincts warn against such a foolish action."
 
@@ -241,8 +262,10 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-01-
 ### Existing Command System
 
 **Command Registration:**
+
 ```python
 # In command_service.py
+
 self.command_handlers.update({
     "attack": handle_attack_command,
     "punch": handle_attack_command,  # Alias
@@ -252,6 +275,7 @@ self.command_handlers.update({
 ```
 
 **Command Processing:**
+
 - Use existing command validation pipeline
 - Extend with combat-specific validation rules
 - Leverage existing rate limiting and security measures
@@ -260,8 +284,10 @@ self.command_handlers.update({
 ### Event System Integration
 
 **Event Publishing:**
+
 ```python
 # Publish combat events through existing NATS system
+
 await event_publisher.publish_combat_event(
     event_type="combat_started",
     player_id=player_id,
@@ -271,6 +297,7 @@ await event_publisher.publish_combat_event(
 ```
 
 **Event Subscribers:**
+
 - Real-time event handler for combat message broadcasting
 - Room occupant updates for combat state changes
 - Player service integration for XP rewards
@@ -279,16 +306,20 @@ await event_publisher.publish_combat_event(
 ### Database Integration
 
 **NPC Data Access:**
+
 ```python
 # Access combat data from existing NPC definitions
+
 npc_definition = get_npc_definition(npc_id)
 combat_stats = npc_definition.base_stats
 combat_messages = npc_definition.behavior_config.get('combat_messages', {})
 ```
 
 **Player Data Updates:**
+
 ```python
 # Update player XP through existing player service
+
 await player_service.award_experience(player_id, xp_amount)
 ```
 
@@ -296,21 +327,24 @@ await player_service.award_experience(player_id, xp_amount)
 
 ### Event Publishing Optimization
 
-- Batch combat events when possible
+Batch combat events when possible
+
 - Use efficient JSON serialization
 - Minimize event payload size
 - Cache frequently accessed combat data
 
 ### State Management Efficiency
 
-- Use appropriate data structures for combat state
+Use appropriate data structures for combat state
+
 - Implement efficient cleanup procedures
 - Minimize memory usage for combat state
 - Optimize turn order calculations
 
 ### Database Query Optimization
 
-- Cache NPC combat data in memory
+Cache NPC combat data in memory
+
 - Minimize database queries during combat
 - Use efficient JSON field queries
 - Implement query result caching
@@ -319,21 +353,24 @@ await player_service.award_experience(player_id, xp_amount)
 
 ### Input Validation
 
-- Comprehensive target validation
+Comprehensive target validation
+
 - Command injection prevention
 - Rate limiting for combat commands
 - Input sanitization for combat messages
 
 ### State Security
 
-- Combat state isolation between players
+Combat state isolation between players
+
 - Secure combat state cleanup
 - Protection against state manipulation
 - Audit logging for combat actions
 
 ### Event Security
 
-- Secure event publishing
+Secure event publishing
+
 - Event payload validation
 - Protection against event flooding
 - Secure event subscription management

@@ -23,9 +23,11 @@ Before executing any scenario, you MUST type:
 
 **CRITICAL FAILURE MODES TO AVOID:**
 
-- ❌ **Infinite Loops**: Retrying steps when first result is valid (even if empty)
-- ❌ **Step Skipping**: Omitting steps that seem "obvious" or "redundant"
-- ❌ **Step Addition**: Adding "helpful" verification or logging steps
+❌ **Infinite Loops**: Retrying steps when first result is valid (even if empty)
+
+❌ **Step Skipping**: Omitting steps that seem "obvious" or "redundant"
+
+❌ **Step Addition**: Adding "helpful" verification or logging steps
 - ❌ **Step Modification**: Changing command syntax or parameters
 - ❌ **Premature Continuation**: Continuing past scenario completion markers
 
@@ -62,7 +64,8 @@ Before executing any scenario, you MUST type:
 
 ## 🎯 AVAILABLE SCENARIOS
 
-- `scenario-01-basic-connection.md` - Basic connection/disconnection flow
+`scenario-01-basic-connection.md` - Basic connection/disconnection flow
+
 - `scenario-02-clean-game-state.md` - Clean game state on connection
 - `scenario-03-movement-between-rooms.md` - Movement between rooms
 - `scenario-04-muting-system-emotes.md` - Muting system and emotes
@@ -86,7 +89,8 @@ Before executing any scenario, you MUST type:
 
 ## 🔧 TESTING APPROACH
 
-- All scenarios use Playwright MCP for multi-tab coordination
+All scenarios use Playwright MCP for multi-tab coordination
+
 - All scenarios require real-time interaction verification
 - All scenarios test message broadcasting between players
 - All scenarios verify state synchronization across multiple players
@@ -100,7 +104,8 @@ Before executing any scenario, you MUST type:
 
 ## 🔄 BACKWARD COMPATIBILITY
 
-- Original `MULTIPLAYER_SCENARIOS_PLAYBOOK.md` remains available
+Original `MULTIPLAYER_SCENARIOS_PLAYBOOK.md` remains available
+
 - New modular structure provides same functionality
 - All original scenarios are preserved in individual files
 - All original execution procedures are maintained

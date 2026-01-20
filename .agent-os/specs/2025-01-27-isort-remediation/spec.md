@@ -14,6 +14,7 @@ Implement comprehensive import organization improvements across the MythosMUD se
 As a developer working on the MythosMUD server, I want consistent and well-organized import statements, so that I can quickly understand module dependencies and avoid import-related bugs.
 
 **Detailed Workflow:**
+
 - Developers can easily identify standard library, third-party, and local imports
 - Import statements follow a consistent alphabetical ordering
 - Complex import patterns are simplified and documented
@@ -24,6 +25,7 @@ As a developer working on the MythosMUD server, I want consistent and well-organ
 As a code reviewer, I want automated import validation and consistent formatting, so that I can focus on business logic rather than import organization issues.
 
 **Detailed Workflow:**
+
 - Automated isort checks catch import organization violations
 - Pre-commit hooks ensure consistent import formatting
 - Import-related linting errors are minimized
@@ -39,7 +41,8 @@ As a code reviewer, I want automated import validation and consistent formatting
 
 ## Out of Scope
 
-- Client-side import organization (React/TypeScript imports)
+Client-side import organization (React/TypeScript imports)
+
 - Database schema changes
 - API endpoint modifications
 - Performance optimization unrelated to imports

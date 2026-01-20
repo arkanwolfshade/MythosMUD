@@ -1,30 +1,38 @@
 # Error Handling Guide for MythosMUD
 
-*As documented in the restricted archives of Miskatonic University, proper error handling is not merely a technical exercise, but a critical component of maintaining the delicate balance between order and chaos in our digital realm.*
+*As documented in the restricted archives of Miskatonic University, proper error handling is not merely a technical
+exercise, but a critical component of maintaining the delicate balance between order and chaos in our digital realm.*
 
 ## Overview
 
-This guide provides comprehensive instructions for implementing proper error handling throughout the MythosMUD codebase. Our structured error logging system ensures that every anomaly, every exception, and every error is properly catalogued for posterity and analysis.
+This guide provides comprehensive instructions for implementing proper error handling throughout the MythosMUD codebase.
+Our structured error logging system ensures that every anomaly, every exception, and every error is properly catalogued
+for posterity and analysis.
 
 ## Core Principles
 
 ### 1. **Enhanced Structured Logging First**
 
-All errors must be logged with the enhanced structured logging system before being raised or returned. This ensures complete traceability and analysis capabilities.
+All errors must be logged with the enhanced structured logging system before being raised or returned. This ensures
+complete traceability and analysis capabilities.
 
 **Required Import:**
+
 ```python
 from server.logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 ```
 
 **Forbidden Patterns:**
+
 ```python
 # ❌ WRONG - Will cause failures
+
 import logging
 logger = logging.getLogger(__name__)
 
 # ❌ WRONG - Deprecated context parameter
+
 logger.error("Error occurred", context={"key": "value"})
 ```
 
@@ -44,7 +52,8 @@ Errors exposed to users must be clear, actionable, and free of technical jargon 
 
 ### 4. **Security by Design**
 
-Never log sensitive data such as passwords, tokens, or personal information. Our error logging system automatically filters such data.
+Never log sensitive data such as passwords, tokens, or personal information. Our error logging system automatically
+filters such data.
 
 ## Error Types and Usage
 
@@ -59,6 +68,7 @@ from server.logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 # Basic usage with enhanced logging
+
 try:
     result = database.save_player(player_data)
 except Exception as e:
@@ -91,6 +101,7 @@ from server.exceptions import ValidationError
 from server.utils.error_logging import log_and_raise, create_error_context
 
 # In a service method
+
 def create_player(name: str, room_id: str) -> Player:
     if not name or len(name.strip()) < 2:
         context = create_error_context(
@@ -106,6 +117,7 @@ def create_player(name: str, room_id: str) -> Player:
         )
 
     # Check for existing player
+
     if player_exists(name):
         context = create_error_context(
             operation="create_player",
@@ -120,6 +132,7 @@ def create_player(name: str, room_id: str) -> Player:
         )
 
     # Continue with player creation...
+
 ```
 
 ### DatabaseError
@@ -133,6 +146,7 @@ from server.utils.error_logging import log_and_raise
 def save_player_data(player: Player) -> None:
     try:
         # Database operation
+
         db.save(player)
     except sqlite3.Error as e:
         context = create_error_context(
@@ -189,6 +203,7 @@ Always provide meaningful context when creating errors:
 from server.utils.error_logging import create_error_context
 
 # Good: Comprehensive context
+
 context = create_error_context(
     operation="process_movement_command",
     user_id=str(player.id),
@@ -202,6 +217,7 @@ context = create_error_context(
 )
 
 # Bad: Minimal context
+
 context = create_error_context(operation="move")
 ```
 
@@ -211,6 +227,7 @@ Include relevant metadata that will help with debugging:
 
 ```python
 # For player operations
+
 metadata = {
     "player_id": str(player.id),
     "player_name": player.name,
@@ -219,6 +236,7 @@ metadata = {
 }
 
 # For API operations
+
 metadata = {
     "endpoint": "/api/players",
     "method": "POST",
@@ -227,6 +245,7 @@ metadata = {
 }
 
 # For database operations
+
 metadata = {
     "table": "players",
     "operation": "INSERT",
@@ -244,6 +263,7 @@ The `log_and_raise` utility is the preferred way to log and raise errors:
 from server.utils.error_logging import log_and_raise
 
 # Simple error
+
 log_and_raise(
     ValidationError,
     "Invalid input provided",
@@ -251,6 +271,7 @@ log_and_raise(
 )
 
 # Error with context
+
 log_and_raise(
     DatabaseError,
     "Failed to retrieve player data",
@@ -369,6 +390,7 @@ async def move_player(
         return {"success": True, "result": result}
     except ValidationError as e:
         # ValidationError is already logged by the service
+
         context = create_context_from_request(request)
         context.user_id = str(current_user.id)
         context.metadata.update({
@@ -383,6 +405,7 @@ async def move_player(
         ) from None
     except DatabaseError as e:
         # DatabaseError is already logged by the service
+
         context = create_context_from_request(request)
         context.user_id = str(current_user.id)
         context.metadata.update({
@@ -431,9 +454,11 @@ def test_validate_player_name_too_short():
 def test_create_player_duplicate_name():
     """Test creating player with duplicate name."""
     # Create first player
+
     player1 = player_service.create_player("TestPlayer", "arkham_001")
 
     # Try to create second player with same name
+
     with pytest.raises(ValidationError) as exc_info:
         player_service.create_player("TestPlayer", "arkham_001")
 
@@ -450,12 +475,15 @@ Our log analysis tools help identify patterns and trends in errors:
 
 ```bash
 # Generate comprehensive error report
+
 python scripts/analyze_error_logs.py --log-dir logs/development --report
 
 # Analyze error patterns
+
 python scripts/analyze_error_logs.py --log-dir logs/development --patterns
 
 # Monitor errors in real-time
+
 python scripts/error_monitoring.py --log-dir logs/development --monitor --interval 30
 ```
 
@@ -463,11 +491,16 @@ python scripts/error_monitoring.py --log-dir logs/development --monitor --interv
 
 Our system automatically categorizes errors:
 
-- **Database**: SQL errors, connection failures, query timeouts
-- **Network**: WebSocket issues, connection timeouts, network failures
-- **Authentication**: Login failures, token validation, authorization errors
-- **Validation**: Input validation, business rule violations
-- **File System**: File access errors, permission issues
+**Database**: SQL errors, connection failures, query timeouts
+
+**Network**: WebSocket issues, connection timeouts, network failures
+
+**Authentication**: Login failures, token validation, authorization errors
+
+**Validation**: Input validation, business rule violations
+
+**File System**: File access errors, permission issues
+
 - **Game Logic**: Player actions, room interactions, command processing
 - **System**: Memory issues, resource exhaustion, system errors
 
@@ -477,6 +510,7 @@ Our system automatically categorizes errors:
 
 ```python
 # Bad: Generic error without context
+
 try:
     player = get_player(player_id)
 except Exception as e:
@@ -484,12 +518,14 @@ except Exception as e:
     raise
 
 # Bad: Exposing internal details to users
+
 try:
     result = complex_operation()
 except Exception as e:
     return {"error": f"Database error: {e}"}
 
 # Bad: Not logging errors
+
 def risky_operation():
     try:
         return dangerous_call()
@@ -501,6 +537,7 @@ def risky_operation():
 
 ```python
 # Good: Structured error with context
+
 try:
     player = get_player(player_id)
 except Exception as e:
@@ -517,6 +554,7 @@ except Exception as e:
     )
 
 # Good: User-friendly error messages
+
 try:
     result = complex_operation()
 except Exception as e:
@@ -530,6 +568,7 @@ except Exception as e:
     )
 
 # Good: Proper error logging
+
 def risky_operation():
     try:
         return dangerous_call()
@@ -552,6 +591,7 @@ Our error logging system automatically filters sensitive data, but you should st
 
 ```python
 # Good: No sensitive data in context
+
 context = create_error_context(
     operation="authenticate_user",
     metadata={
@@ -561,6 +601,7 @@ context = create_error_context(
 )
 
 # Bad: Sensitive data in context
+
 context = create_error_context(
     operation="authenticate_user",
     metadata={
@@ -574,6 +615,7 @@ context = create_error_context(
 
 ```python
 # Good: Sanitized error message
+
 log_and_raise(
     ValidationError,
     "Invalid input provided",
@@ -582,6 +624,7 @@ log_and_raise(
 )
 
 # Bad: Exposing internal details
+
 log_and_raise(
     ValidationError,
     f"Regex pattern {pattern} failed to match {input_value}",
@@ -603,6 +646,7 @@ Our error logging system is designed for minimal performance impact:
 
 ```python
 # Good: Create context once and reuse
+
 def process_multiple_operations(operations):
     base_context = create_error_context(operation="batch_processing")
 
@@ -611,6 +655,7 @@ def process_multiple_operations(operations):
             process_operation(op)
         except Exception as e:
             # Reuse base context with operation-specific metadata
+
             op_context = base_context.copy()
             op_context.metadata["operation"] = op.name
             log_and_raise(
@@ -621,12 +666,14 @@ def process_multiple_operations(operations):
             )
 
 # Bad: Creating new context for each operation
+
 def process_multiple_operations(operations):
     for op in operations:
         try:
             process_operation(op)
         except Exception as e:
             # Inefficient: new context for each error
+
             context = create_error_context(
                 operation="batch_processing",
                 metadata={"operation": op.name}
@@ -654,31 +701,40 @@ def process_multiple_operations(operations):
 ## Enhanced Logging Best Practices for Error Handling
 
 ### **CRITICAL: Enhanced Logging Requirements for Error Handling**
+
 All error handling MUST use the enhanced logging system for proper observability and debugging.
 
 #### **Required Import Pattern**
+
 ```python
 # ✅ CORRECT - Enhanced logging import (MANDATORY)
+
 from server.logging.enhanced_logging_config import get_logger, bind_request_context
 logger = get_logger(__name__)
 ```
 
 #### **Forbidden Patterns**
+
 ```python
 # ❌ FORBIDDEN - Will cause import failures and system crashes
+
 import logging
 logger = logging.getLogger(__name__)
 
 # ❌ FORBIDDEN - Deprecated context parameter (causes TypeError)
+
 logger.error("Error occurred", context={"key": "value"})
 
 # ❌ FORBIDDEN - String formatting breaks structured logging
+
 logger.error(f"Error in {operation} for user {user_id}")
 ```
 
 #### **Correct Error Logging Patterns**
+
 ```python
 # ✅ CORRECT - Error logging with enhanced context
+
 logger.error("Database operation failed",
              operation="player_save",
              user_id=user.id,
@@ -688,6 +744,7 @@ logger.error("Database operation failed",
              retry_count=3)
 
 # ✅ CORRECT - Request context binding for error tracking
+
 bind_request_context(correlation_id=req_id, user_id=user.id, session_id=session.id)
 logger.error("Authentication failed",
              user_id=user.id,
@@ -695,6 +752,7 @@ logger.error("Authentication failed",
              error_code="AUTH_INVALID_CREDENTIALS")
 
 # ✅ CORRECT - Performance logging with error context
+
 with measure_performance("database_query", user_id=user.id):
     try:
         result = database.query("SELECT * FROM players")
@@ -707,26 +765,36 @@ with measure_performance("database_query", user_id=user.id):
 ```
 
 #### **Error Logging Best Practices**
-- **Structured Logging**: Always use key-value pairs for log data
-- **Error Context**: Include operation, user_id, and error details
-- **Correlation IDs**: Use request context binding for error tracking
-- **Performance Tracking**: Log performance metrics with error context
-- **Security**: Never log sensitive data (automatic sanitization helps)
+
+**Structured Logging**: Always use key-value pairs for log data
+
+**Error Context**: Include operation, user_id, and error details
+
+**Correlation IDs**: Use request context binding for error tracking
+
+**Performance Tracking**: Log performance metrics with error context
+
+**Security**: Never log sensitive data (automatic sanitization helps)
 
 #### **Error Logging Validation**
+
 ```python
 # ✅ CORRECT - Validate error logging behavior
+
 def test_error_logging():
     """Test that errors are logged correctly."""
     with patch.object(enhanced_logging, 'get_logger') as mock_logger:
         # Setup mock logger
+
         mock_logger.return_value.error = MagicMock()
 
         # Trigger error
+
         with pytest.raises(ValidationError):
             validate_player_name("")
 
         # Verify error logging occurred
+
         mock_logger.return_value.error.assert_called_with(
             "Validation failed",
             operation="validate_player_name",
@@ -736,13 +804,17 @@ def test_error_logging():
 ```
 
 #### **Documentation References**
-- **Complete Guide**: [LOGGING_BEST_PRACTICES.md](LOGGING_BEST_PRACTICES.md)
-- **Quick Reference**: [LOGGING_QUICK_REFERENCE.md](LOGGING_QUICK_REFERENCE.md)
-- **Error Handling Examples**: [docs/examples/logging/](examples/logging/)
+
+**Complete Guide**: [LOGGING_BEST_PRACTICES.md](LOGGING_BEST_PRACTICES.md)
+
+**Quick Reference**: [LOGGING_QUICK_REFERENCE.md](LOGGING_QUICK_REFERENCE.md)
+
+**Error Handling Examples**: [docs/examples/logging/](examples/logging/)
 
 ## Conclusion
 
-Proper error handling is essential for maintaining a robust and reliable system. By following these guidelines and using our structured error logging system, you ensure that:
+Proper error handling is essential for maintaining a robust and reliable system. By following these guidelines and using
+our structured error logging system, you ensure that:
 
 - All errors are properly logged and analyzed
 - Users receive clear, actionable error messages
@@ -750,8 +822,10 @@ Proper error handling is essential for maintaining a robust and reliable system.
 - System security is maintained
 - Performance impact is minimized
 
-Remember: *As the Pnakotic Manuscripts teach us, the proper cataloguing of anomalies is not merely an academic exercise, but a fundamental requirement for understanding the deeper patterns that govern our digital realm.*
+Remember: *As the Pnakotic Manuscripts teach us, the proper cataloguing of anomalies is not merely an academic exercise,
+but a fundamental requirement for understanding the deeper patterns that govern our digital realm.*
 
 ---
 
-*This guide is maintained by the Department of Occult Studies, Miskatonic University. For questions or clarifications, consult the restricted archives or contact the system administrators.*
+*This guide is maintained by the Department of Occult Studies, Miskatonic University. For questions or clarifications,
+consult the restricted archives or contact the system administrators.*

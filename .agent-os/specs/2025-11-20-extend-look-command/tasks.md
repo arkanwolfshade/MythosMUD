@@ -2,10 +2,11 @@
 
 ## Tasks
 
-- [x] 1. Command Model Extensions
-  - [x] 1.1 Write tests for LookCommand model with new fields (target_type, look_in, instance_number)
-  - [x] 1.2 Update LookCommand model in server/models/command.py to add target_type, look_in, and instance_number fields
-  - [x] 1.3 Verify all LookCommand model tests pass
+[x] 1. Command Model Extensions
+
+- [x] 1.1 Write tests for LookCommand model with new fields (target_type, look_in, instance_number)
+- [x] 1.2 Update LookCommand model in server/models/command.py to add target_type, look_in, and instance_number fields
+- [x] 1.3 Verify all LookCommand model tests pass
 
 - [x] 2. Command Parser Updates
   - [x] 2.1 Write tests for explicit syntax parsing (/look player <name>, /look item <name>, /look container <name>)

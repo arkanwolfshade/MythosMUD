@@ -11,7 +11,8 @@
 
 **Overall Assessment**: ✅ **EXCELLENT** - All changes follow async best practices
 
-The migration successfully implements proper async patterns without introducing anti-patterns. All changes comply with the guidelines from `.cursor/rules/anyio.mdc` and `.cursor/rules/asyncio.mdc`.
+The migration successfully implements proper async patterns without introducing anti-patterns. All changes comply with
+the guidelines from `.cursor/rules/anyio.mdc` and `.cursor/rules/asyncio.mdc`.
 
 **Compliance Score**: 🟢 **A (95/100)**
 
@@ -23,11 +24,14 @@ The migration successfully implements proper async patterns without introducing 
 
 ### 1. Blocking the Event Loop (asyncio.mdc Section 2.3)
 
-**Rule**: "Avoid using blocking functions like `time.sleep` or `requests` in coroutines. Use `asyncio.sleep` and `aiohttp` instead."
+**Rule**: "Avoid using blocking functions like `time.sleep` or `requests` in coroutines. Use `asyncio.sleep` and
+`aiohttp` instead."
 
 **Our Changes**:
+
 ```python
 # ✅ CORRECT - All blocking persistence calls wrapped
+
 player = await asyncio.to_thread(self.persistence.get_player, player_id)
 ```
 
@@ -40,8 +44,10 @@ player = await asyncio.to_thread(self.persistence.get_player, player_id)
 **Rule**: "Use `anyio.to_thread.run_sync()` to run blocking code in a separate thread to avoid blocking the event loop."
 
 **Our Changes** (using asyncio equivalent):
+
 ```python
 # ✅ CORRECT - Using asyncio.to_thread() (asyncio equivalent)
+
 room = await asyncio.to_thread(persistence.get_room, room_id)
 ```
 
@@ -54,8 +60,10 @@ room = await asyncio.to_thread(persistence.get_room, room_id)
 **Rule**: "If a function uses `await`, it must be defined with `async def`"
 
 **Our Changes**:
+
 ```python
 # ✅ CORRECT - Methods using await are async
+
 async def open_container(self, container_id: UUID, player_id: UUID) -> dict[str, Any]:
     container_data = await asyncio.to_thread(self.persistence.get_container, container_id)
 ```
@@ -69,8 +77,10 @@ async def open_container(self, container_id: UUID, player_id: UUID) -> dict[str,
 **Rule**: "Use `try-except` blocks to catch and handle exceptions within coroutines."
 
 **Our Changes**:
+
 ```python
 # ✅ CORRECT - Exception handling preserved
+
 try:
     player = await asyncio.to_thread(self.persistence.get_player, player_id)
 except Exception as e:
@@ -86,8 +96,10 @@ except Exception as e:
 **Rule**: "Use `async with` statements for managing resources to ensure proper cleanup."
 
 **Our Changes**:
+
 ```python
 # ✅ CORRECT - Async context managers used where appropriate
+
 async for session in get_async_session():
     service = ActiveLucidityService(session)
     await service.apply_encounter_lucidity_loss(...)
@@ -103,8 +115,10 @@ async for session in get_async_session():
 **Rule**: "Use task groups (`anyio.create_task_group()`) for structured concurrency."
 
 **Our Code** (using asyncio equivalent):
+
 ```python
 # ✅ CORRECT - Using asyncio.gather with return_exceptions=True (asyncio equivalent)
+
 results = await asyncio.gather(*tasks, return_exceptions=True)
 ```
 
@@ -117,11 +131,14 @@ results = await asyncio.gather(*tasks, return_exceptions=True)
 **Rule**: "Avoid calling `asyncio.run()` from within library code; use it only in entry points."
 
 **Our Changes**:
+
 ```python
 # ✅ CORRECT - Removed asyncio.run() from exploration_service.py
+
 except RuntimeError:
     logger.warning("No event loop available for exploration tracking (skipped)")
     # No longer using asyncio.run() here!
+
 ```
 
 **Compliance**: ✅ **PASS** - asyncio.run() eliminated from library code
@@ -133,8 +150,10 @@ except RuntimeError:
 **Rule**: "Use immutable data structures whenever possible to avoid race conditions."
 
 **Our Changes**:
+
 ```python
 # ✅ CORRECT - Room cache uses dataclass with proper typing
+
 @dataclass
 class CachedRoom:
     room: Any
@@ -152,8 +171,10 @@ self._room_cache: dict[str, CachedRoom] = {}
 **Rule**: "Implement connection pooling for database connections or other network resources to reduce overhead."
 
 **Our Changes**:
+
 ```python
 # ✅ CORRECT - Connection pooling verified in container shutdown
+
 if self.async_persistence is not None:
     await self.async_persistence.close()  # Closes pool
 ```
@@ -167,8 +188,10 @@ if self.async_persistence is not None:
 **Rule**: "Log exceptions with detailed information for debugging purposes."
 
 **Our Changes**:
+
 ```python
 # ✅ CORRECT - Structured logging with context
+
 except Exception as e:
     logger.error(
         "Error in async subscriber",
@@ -190,6 +213,7 @@ except Exception as e:
 **Location**: `user_manager.py::add_admin()`, `remove_admin()`
 
 **Current**:
+
 ```python
 async def add_admin(self, player_id: uuid.UUID | str, player_name: str | None = None):
     player = await asyncio.to_thread(persistence.get_player, player_id_uuid)
@@ -229,7 +253,8 @@ with measure_performance("persistence_call", operation="get_player"):
 **Finding**: All 48 instances follow the exact same pattern
 
 ```python
-# Pattern used consistently across all files:
+# Pattern used consistently across all files
+
 data = await asyncio.to_thread(self.persistence.get_method, arg1, arg2)
 ```
 
@@ -242,12 +267,15 @@ data = await asyncio.to_thread(self.persistence.get_method, arg1, arg2)
 **Finding**: When a method is made async, all callers are updated
 
 **Example**:
+
 ```python
 # Service method made async
+
 async def open_container(...) -> dict:
     container = await asyncio.to_thread(self.persistence.get_container, id)
 
 # API route updated to await
+
 @container_router.post("/open")
 async def open_container(...):
     result = await container_service.open_container(...)  # ✅ Updated
@@ -262,6 +290,7 @@ async def open_container(...):
 **Finding**: All existing exception handling maintained during migration
 
 **Example**:
+
 ```python
 try:
     player = await asyncio.to_thread(self.persistence.get_player, player_id)
@@ -280,8 +309,10 @@ except Exception as e:
 **Finding**: All resource cleanup patterns maintained
 
 **Example**:
+
 ```python
 # ✅ Connection pool cleanup still happens
+
 async def shutdown(self):
     if self.async_persistence is not None:
         await self.async_persistence.close()  # Pool closed
@@ -296,8 +327,10 @@ async def shutdown(self):
 **Finding**: All asyncio imports added at correct location
 
 **Example**:
+
 ```python
 # ✅ CORRECT - Import order follows isort rules
+
 from __future__ import annotations
 
 import asyncio  # ✅ Stdlib import
@@ -316,6 +349,7 @@ from ..logging.enhanced_logging_config import get_logger  # ✅ Local import
 **Finding**: Migration notes added to affected files
 
 **Example**:
+
 ```python
 """
 ASYNC MIGRATION (Phase 2):
@@ -373,7 +407,8 @@ All persistence calls wrapped in asyncio.to_thread() to prevent event loop block
 
 ### asyncio.mdc Compliance
 
-- [x] No blocking I/O in async functions (Section 2.3)
+[x] No blocking I/O in async functions (Section 2.3)
+
 - [x] All await statements present (Section 6.1)
 - [x] Proper exception handling (Section 2.5)
 - [x] No `asyncio.run()` in library code (Section 6.1)
@@ -386,7 +421,8 @@ All persistence calls wrapped in asyncio.to_thread() to prevent event loop block
 
 ### anyio.mdc Compliance
 
-- [x] Blocking operations offloaded to threads (Section 2.2)
+[x] Blocking operations offloaded to threads (Section 2.2)
+
 - [x] Async with statements for resources (Section 2.1)
 - [x] Structured concurrency patterns (Section 2.1)
 - [x] Proper exception handling (Section 2.5)
@@ -425,11 +461,15 @@ All persistence calls wrapped in asyncio.to_thread() to prevent event loop block
 **Changes**: 6 persistence calls → asyncio.to_thread, 4 methods → async
 
 **Review**:
-- ✅ All `await` statements present
-- ✅ Methods properly made async
-- ✅ Exception handling maintained
-- ✅ Structured logging used
-- ✅ No anti-patterns detected
+✅ All `await` statements present
+
+✅ Methods properly made async
+
+✅ Exception handling maintained
+
+✅ Structured logging used
+
+✅ No anti-patterns detected
 
 **Compliance**: 100%
 
@@ -440,10 +480,13 @@ All persistence calls wrapped in asyncio.to_thread() to prevent event loop block
 **Changes**: 5 persistence calls → asyncio.to_thread, 3 methods → async
 
 **Review**:
-- ✅ Admin operations now async
-- ✅ Proper await usage
-- ✅ Error handling comprehensive
-- ✅ File I/O operations thread-pooled
+✅ Admin operations now async
+
+✅ Proper await usage
+
+✅ Error handling comprehensive
+
+✅ File I/O operations thread-pooled
 
 **Compliance**: 100%
 
@@ -454,10 +497,13 @@ All persistence calls wrapped in asyncio.to_thread() to prevent event loop block
 **Changes**: 4 persistence calls → asyncio.to_thread, 6 methods → async
 
 **Review**:
-- ✅ Cleanup operations now async
-- ✅ Proper await chaining (cleanup_all calls get_all)
-- ✅ Exception handling in loops
-- ✅ No resource leaks
+✅ Cleanup operations now async
+
+✅ Proper await chaining (cleanup_all calls get_all)
+
+✅ Exception handling in loops
+
+✅ No resource leaks
 
 **Compliance**: 100%
 
@@ -468,11 +514,15 @@ All persistence calls wrapped in asyncio.to_thread() to prevent event loop block
 **Changes**: 15 persistence calls → asyncio.to_thread, 8 methods → async
 
 **Review**:
-- ✅ All container operations non-blocking
-- ✅ API routes updated with await
-- ✅ Command handlers updated
-- ✅ Mutation guards still functional
-- ✅ Audit logging preserved
+✅ All container operations non-blocking
+
+✅ API routes updated with await
+
+✅ Command handlers updated
+
+✅ Mutation guards still functional
+
+✅ Audit logging preserved
 
 **Compliance**: 100%
 
@@ -483,10 +533,13 @@ All persistence calls wrapped in asyncio.to_thread() to prevent event loop block
 **Changes**: 7 persistence calls → asyncio.to_thread, 5 methods → async
 
 **Review**:
-- ✅ Equipment operations non-blocking
-- ✅ Nested container handling proper
-- ✅ Capacity validation maintained
-- ✅ Inventory spill logic preserved
+✅ Equipment operations non-blocking
+
+✅ Nested container handling proper
+
+✅ Capacity validation maintained
+
+✅ Inventory spill logic preserved
 
 **Compliance**: 100%
 
@@ -497,9 +550,12 @@ All persistence calls wrapped in asyncio.to_thread() to prevent event loop block
 **Changes**: 1 persistence call → asyncio.to_thread
 
 **Review**:
-- ✅ Death event publication non-blocking
-- ✅ Room name lookup thread-pooled
-- ✅ Conditional execution handled correctly:
+✅ Death event publication non-blocking
+
+✅ Room name lookup thread-pooled
+
+✅ Conditional execution handled correctly:
+
   ```python
   room = await asyncio.to_thread(persistence.get_room, death_location) if death_location else None
   ```
@@ -513,11 +569,15 @@ All persistence calls wrapped in asyncio.to_thread() to prevent event loop block
 **Changes**: Room caching added, async_get_room usage
 
 **Review**:
-- ✅ **EXCELLENT**: Added TTL caching (60s)
-- ✅ Cache invalidation logic correct
-- ✅ Thread-safe cache access
-- ✅ Fallback handling for cache misses
-- ✅ Performance optimization achieved
+✅ **EXCELLENT**: Added TTL caching (60s)
+
+✅ Cache invalidation logic correct
+
+✅ Thread-safe cache access
+
+✅ Fallback handling for cache misses
+
+✅ Performance optimization achieved
 
 **Special Note**: This is a **best practice example** of caching implementation
 
@@ -530,10 +590,13 @@ All persistence calls wrapped in asyncio.to_thread() to prevent event loop block
 **Changes**: Removed asyncio.run() fallback
 
 **Review**:
-- ✅ No longer uses asyncio.run()
-- ✅ Proper fire-and-forget pattern
-- ✅ Graceful handling when no loop available
-- ✅ Logging informative
+✅ No longer uses asyncio.run()
+
+✅ Proper fire-and-forget pattern
+
+✅ Graceful handling when no loop available
+
+✅ Logging informative
 
 **Compliance**: 100%
 
@@ -544,11 +607,16 @@ All persistence calls wrapped in asyncio.to_thread() to prevent event loop block
 **Changes**: Added exception handling for engine creation
 
 **Review**:
-- ✅ **EXCELLENT**: Comprehensive exception handling
-- ✅ Handles ValueError, TypeError (config errors)
-- ✅ Handles ConnectionError, OSError (network errors)
-- ✅ Catch-all for other errors
-- ✅ Proper error context and logging
+✅ **EXCELLENT**: Comprehensive exception handling
+
+✅ Handles ValueError, TypeError (config errors)
+
+✅ Handles ConnectionError, OSError (network errors)
+
+✅ Catch-all for other errors
+
+✅ Proper error context and logging
+
 - ✅ User-friendly error messages
 
 **Special Note**: This is a **best practice example** of exception handling
@@ -562,10 +630,13 @@ All persistence calls wrapped in asyncio.to_thread() to prevent event loop block
 **Changes**: Fixed async_get_room, async_save_room, async_list_rooms
 
 **Review**:
-- ✅ All async wrappers use asyncio.to_thread()
-- ✅ Comprehensive docstrings added
-- ✅ Deprecation notes included
-- ✅ Migration path documented
+✅ All async wrappers use asyncio.to_thread()
+
+✅ Comprehensive docstrings added
+
+✅ Deprecation notes included
+
+✅ Migration path documented
 
 **Compliance**: 100%
 
@@ -639,18 +710,18 @@ All concurrent operations use asyncio.gather or tracked tasks ✅
 
 ## 📊 Compliance Scorecard
 
-| Best Practice | Status | Details |
-|---------------|--------|---------|
-| No Blocking I/O | ✅ PASS | All wrapped in asyncio.to_thread |
-| Proper Async/Await | ✅ PASS | All methods correctly async |
-| Exception Handling | ✅ PASS | Comprehensive try-except |
-| Resource Cleanup | ✅ PASS | Pool closure verified |
-| No asyncio.run() | ✅ PASS | Eliminated from library code |
-| Structured Concurrency | ✅ PASS | Gather with return_exceptions |
-| State Management | ✅ PASS | Room cache with TTL |
-| Error Logging | ✅ PASS | Structured logging throughout |
-| Import Organization | ✅ PASS | Follows isort rules |
-| Documentation | ✅ PASS | Migration notes added |
+| Best Practice          | Status | Details                          |
+| ---------------------- | ------ | -------------------------------- |
+| No Blocking I/O        | ✅ PASS | All wrapped in asyncio.to_thread |
+| Proper Async/Await     | ✅ PASS | All methods correctly async      |
+| Exception Handling     | ✅ PASS | Comprehensive try-except         |
+| Resource Cleanup       | ✅ PASS | Pool closure verified            |
+| No asyncio.run()       | ✅ PASS | Eliminated from library code     |
+| Structured Concurrency | ✅ PASS | Gather with return_exceptions    |
+| State Management       | ✅ PASS | Room cache with TTL              |
+| Error Logging          | ✅ PASS | Structured logging throughout    |
+| Import Organization    | ✅ PASS | Follows isort rules              |
+| Documentation          | ✅ PASS | Migration notes added            |
 
 **Total Score**: 10/10 = 100% ✅
 
@@ -664,11 +735,14 @@ All concurrent operations use asyncio.gather or tracked tasks ✅
 
 ```python
 # ✅ EXCELLENT PATTERN
+
 async def open_container(self, container_id: UUID, player_id: UUID) -> dict[str, Any]:
     # Blocking database calls offloaded to thread pool
+
     container_data = await asyncio.to_thread(self.persistence.get_container, container_id)
     player = await asyncio.to_thread(self.persistence.get_player, player_id)
     # Rest of logic non-blocking
+
 ```
 
 **Why Excellent**: Prevents event loop blocking while maintaining sync persistence compatibility
@@ -681,16 +755,19 @@ async def open_container(self, container_id: UUID, player_id: UUID) -> dict[str,
 
 ```python
 # ✅ EXCELLENT PATTERN
+
 async def _get_room_cached(self, room_id: str) -> Any | None:
     current_time = time.time()
 
     # Check cache first
+
     if room_id in self._room_cache:
         cached_entry = self._room_cache[room_id]
         if current_time - cached_entry.timestamp < self._room_cache_ttl:
             return cached_entry.room
 
     # Cache miss - fetch and cache
+
     room = await self._persistence.async_get_room(room_id)
     if room is not None:
         self._room_cache[room_id] = CachedRoom(room=room, timestamp=current_time)
@@ -707,16 +784,20 @@ async def _get_room_cached(self, room_id: str) -> Any | None:
 
 ```python
 # ✅ EXCELLENT PATTERN
+
 try:
     self.engine = create_async_engine(...)
 except (ValueError, TypeError) as e:
     # Configuration errors
+
     log_and_raise(ValidationError, ..., user_friendly="Check DATABASE_URL")
 except (ConnectionError, OSError) as e:
     # Network errors
+
     log_and_raise(DatabaseError, ..., user_friendly="Database server unreachable")
 except Exception as e:
     # Catch-all
+
     log_and_raise(DatabaseError, ..., user_friendly="Connection failed")
 ```
 
@@ -730,11 +811,13 @@ except Exception as e:
 
 ```python
 # ✅ EXCELLENT PATTERN
+
 try:
     loop = asyncio.get_running_loop()
     loop.create_task(_mark_explored_async())  # Fire and forget
 except RuntimeError:
     # No loop - log and skip (not asyncio.run()!)
+
     logger.warning("No event loop available (skipped)")
 ```
 
@@ -784,17 +867,21 @@ except RuntimeError:
 
 ### Before Migration
 
-- 🔴 48 blocking operations
+🔴 48 blocking operations
+
 - 🔴 17-second delays in passive lucidity flux
 - 🔴 Event loop starvation
 - 🔴 No caching
 
 ### After Migration
 
-- ✅ 0 blocking operations
-- ✅ <1s expected delays
-- ✅ Event loop flows freely
-- ✅ Room cache reduces DB calls >80%
+✅ 0 blocking operations
+
+✅ <1s expected delays
+
+✅ Event loop flows freely
+
+✅ Room cache reduces DB calls >80%
 
 **Expected Improvement**: ~1,700% performance gain
 
@@ -805,6 +892,7 @@ except RuntimeError:
 ### Code Quality: ✅ EXCELLENT (A)
 
 **Reasoning**:
+
 1. All changes follow asyncio/anyio best practices
 2. No anti-patterns introduced
 3. Consistent pattern application
@@ -817,17 +905,21 @@ except RuntimeError:
 ### Recommendations for Deployment
 
 **Immediate**:
-- ✅ Code ready for deployment
-- ✅ Linting passed
+✅ Code ready for deployment
+
+✅ Linting passed
+
 - ⏭️ Run full test suite
 - ⏭️ Manual testing in dev environment
 
 **Short-Term**:
+
 - Performance monitoring in production
 - Metrics for thread pool usage
 - Cache hit rate monitoring
 
 **Long-Term**:
+
 - Gradual migration to AsyncPersistenceLayer
 - Eliminate thread pool overhead
 - Further performance optimizations
@@ -838,7 +930,8 @@ except RuntimeError:
 
 Professor Wolfshade,
 
-After careful review against the sacred texts of async best practices (anyio.mdc and asyncio.mdc), I can confidently declare:
+After careful review against the sacred texts of async best practices (anyio.mdc and asyncio.mdc), I can confidently
+declare:
 
 **The migration is of the highest quality.**
 
@@ -847,9 +940,11 @@ After careful review against the sacred texts of async best practices (anyio.mdc
 ✅ **Consistent implementation throughout**
 ✅ **Ready for production deployment**
 
-The only minor recommendations are for future enhancements (performance monitoring, potential admin caching), not corrections of existing code.
+The only minor recommendations are for future enhancements (performance monitoring, potential admin caching), not
+corrections of existing code.
 
-As documented in the Pnakotic Manuscripts: *"Code that flows in harmony with the async covenant shall prosper in production."*
+As documented in the Pnakotic Manuscripts: *"Code that flows in harmony with the async covenant shall prosper in
+production."*
 
 Our code now flows in perfect harmony.
 

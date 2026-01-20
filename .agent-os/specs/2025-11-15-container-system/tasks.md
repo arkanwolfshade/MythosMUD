@@ -2,13 +2,14 @@
 
 ## Tasks
 
-- [x] 1. Database Schema and Persistence Foundation
-  - [x] 1.1 Write tests for containers table creation and migration
-  - [x] 1.2 Create PostgreSQL migration script for containers table
-  - [x] 1.3 Update inventory payload JSON schema to support nested inner_container
-  - [x] 1.4 Implement container persistence layer (create, read, update, delete)
-  - [x] 1.5 Write tests for container persistence operations
-  - [x] 1.6 Verify all persistence tests pass
+[x] 1. Database Schema and Persistence Foundation
+
+- [x] 1.1 Write tests for containers table creation and migration
+- [x] 1.2 Create PostgreSQL migration script for containers table
+- [x] 1.3 Update inventory payload JSON schema to support nested inner_container
+- [x] 1.4 Implement container persistence layer (create, read, update, delete)
+- [x] 1.5 Write tests for container persistence operations
+- [x] 1.6 Verify all persistence tests pass
 
 - [x] 2. ContainerComponent Data Model
   - [x] 2.1 Write tests for ContainerComponent validation and serialization

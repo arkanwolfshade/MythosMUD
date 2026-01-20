@@ -1,6 +1,7 @@
 # 🐙 MythosMUD Command Testing Guide
 
-*"In the realm of eldritch coding, the only truth is that which can be tested and verified."* - Dr. Francis Wayland Thurston, Miskatonic University
+*"In the realm of eldritch coding, the only truth is that which can be tested and verified."* - Dr. Francis Wayland
+Thurston, Miskatonic University
 
 ---
 
@@ -23,15 +24,20 @@
 
 ## Overview
 
-Testing is crucial for maintaining the reliability and security of MythosMUD commands. This guide provides comprehensive strategies for testing command handlers, models, and integration points.
+Testing is crucial for maintaining the reliability and security of MythosMUD commands. This guide provides comprehensive
+strategies for testing command handlers, models, and integration points.
 
 ### Testing Goals
 
-- **Reliability**: Ensure commands work correctly under all conditions
-- **Security**: Verify commands handle malicious input safely
-- **Performance**: Confirm commands meet performance requirements
-- **Maintainability**: Make tests easy to understand and modify
-- **Coverage**: Test all code paths and edge cases
+**Reliability**: Ensure commands work correctly under all conditions
+
+**Security**: Verify commands handle malicious input safely
+
+**Performance**: Confirm commands meet performance requirements
+
+**Maintainability**: Make tests easy to understand and modify
+
+**Coverage**: Test all code paths and edge cases
 
 ### Testing Pyramid
 
@@ -58,11 +64,15 @@ Testing is crucial for maintaining the reliability and security of MythosMUD com
 
 ### Testing Principles
 
-- **Fast**: Tests should run quickly for immediate feedback
-- **Isolated**: Tests should not depend on each other
-- **Repeatable**: Tests should produce the same results every time
-- **Self-Validating**: Tests should clearly pass or fail
-- **Timely**: Write tests as you write code, not after
+**Fast**: Tests should run quickly for immediate feedback
+
+**Isolated**: Tests should not depend on each other
+
+**Repeatable**: Tests should produce the same results every time
+
+**Self-Validating**: Tests should clearly pass or fail
+
+**Timely**: Write tests as you write code, not after
 
 ---
 
@@ -113,6 +123,7 @@ class TestCommandName:
         # Arrange
         # Act
         # Assert
+
 ```
 
 ---
@@ -129,6 +140,7 @@ async def test_handle_simple_command():
     """Test basic command handler functionality."""
 
     # Arrange
+
     mock_request = Mock()
     mock_app = Mock()
     mock_persistence = Mock()
@@ -136,20 +148,24 @@ async def test_handle_simple_command():
     mock_alias_storage = Mock()
 
     # Setup mocks
+
     mock_request.app = mock_app
     mock_app.state.persistence = mock_persistence
     mock_persistence.get_player_by_name.return_value = mock_player
 
     # Test data
+
     command_data = {"command_type": "simple", "param1": "value1"}
     current_user = {"username": "testuser"}
 
     # Act
+
     result = await handle_simple_command(
         command_data, current_user, mock_request, mock_alias_storage, "testuser"
     )
 
     # Assert
+
     assert "result" in result
     assert "success" in result["result"]
     mock_persistence.get_player_by_name.assert_called_once_with("testuser")
@@ -163,24 +179,29 @@ async def test_handle_command_persistence_error():
     """Test command handler when persistence layer is unavailable."""
 
     # Arrange
+
     mock_request = Mock()
     mock_app = Mock()
     mock_alias_storage = Mock()
 
     # Setup mocks for error condition
+
     mock_request.app = mock_app
     mock_app.state.persistence = None  # Simulate missing persistence
 
     # Test data
+
     command_data = {"command_type": "simple"}
     current_user = {"username": "testuser"}
 
     # Act
+
     result = await handle_simple_command(
         command_data, current_user, mock_request, mock_alias_storage, "testuser"
     )
 
     # Assert
+
     assert "result" in result
     assert "can't perform" in result["result"]
 ```
@@ -193,6 +214,7 @@ async def test_handle_command_missing_parameter():
     """Test command handler with missing required parameter."""
 
     # Arrange
+
     mock_request = Mock()
     mock_app = Mock()
     mock_persistence = Mock()
@@ -200,20 +222,24 @@ async def test_handle_command_missing_parameter():
     mock_alias_storage = Mock()
 
     # Setup mocks
+
     mock_request.app = mock_app
     mock_app.state.persistence = mock_persistence
     mock_persistence.get_player_by_name.return_value = mock_player
 
     # Test data with missing parameter
+
     command_data = {"command_type": "simple"}  # Missing param1
     current_user = {"username": "testuser"}
 
     # Act
+
     result = await handle_simple_command(
         command_data, current_user, mock_request, mock_alias_storage, "testuser"
     )
 
     # Assert
+
     assert "result" in result
     assert "Missing required parameter" in result["result"]
 ```
@@ -227,19 +253,23 @@ def test_command_model_validation():
     """Test command model validation rules."""
 
     # Test valid command
+
     valid_cmd = SimpleCommand(param1="valid", param2="optional")
     assert valid_cmd.param1 == "valid"
     assert valid_cmd.param2 == "optional"
 
     # Test missing required parameter
+
     with pytest.raises(ValidationError):
         SimpleCommand(param2="optional")  # Missing param1
 
     # Test invalid parameter type
+
     with pytest.raises(ValidationError):
         SimpleCommand(param1=123, param2="optional")  # param1 should be string
 
     # Test parameter length limits
+
     with pytest.raises(ValidationError):
         SimpleCommand(param1="a" * 101, param2="optional")  # Too long
 ```
@@ -251,18 +281,22 @@ def test_command_model_field_validation():
     """Test specific field validation rules."""
 
     # Test empty string validation
+
     with pytest.raises(ValidationError, match="cannot be empty"):
         SimpleCommand(param1="", param2="optional")
 
     # Test whitespace-only validation
+
     with pytest.raises(ValidationError, match="cannot be empty"):
         SimpleCommand(param1="   ", param2="optional")
 
     # Test special character validation
+
     with pytest.raises(ValidationError, match="contains invalid characters"):
         SimpleCommand(param1="test<script>", param2="optional")
 
     # Test valid input
+
     valid_cmd = SimpleCommand(param1="valid_input", param2="optional")
     assert valid_cmd.param1 == "valid_input"
 ```
@@ -276,21 +310,25 @@ def test_command_parser_basic():
     """Test basic command parsing functionality."""
 
     # Test valid command
+
     result = parse_command("simple value1 value2")
     assert result.command_type == "simple"
     assert result.param1 == "value1"
     assert result.param2 == "value2"
 
     # Test command with slash prefix
+
     result = parse_command("/simple value1")
     assert result.command_type == "simple"
     assert result.param1 == "value1"
 
     # Test empty command
+
     with pytest.raises(ValueError, match="Empty command"):
         parse_command("")
 
     # Test unknown command
+
     with pytest.raises(ValueError, match="Unknown command"):
         parse_command("unknown_command")
 ```
@@ -307,17 +345,21 @@ async def test_command_end_to_end():
     """Test complete command execution flow."""
 
     # Arrange
+
     app = create_test_app()
     client = TestClient(app)
 
     # Create test data
+
     test_player = create_test_player("testuser")
     test_room = create_test_room("test_room_001")
 
     # Setup test environment
+
     await setup_test_environment(app, test_player, test_room)
 
     # Act
+
     response = await client.post(
         "/command",
         json={"command": "simple value1"},
@@ -325,6 +367,7 @@ async def test_command_end_to_end():
     )
 
     # Assert
+
     assert response.status_code == 200
     result = response.json()
     assert "result" in result
@@ -339,23 +382,29 @@ async def test_command_database_integration():
     """Test command interaction with database."""
 
     # Arrange
+
     async with get_test_database() as db:
         # Create test data
+
         player = await create_test_player_in_db(db, "testuser")
         room = await create_test_room_in_db(db, "test_room_001")
 
         # Setup command handler with real database
+
         handler = CommandHandler(db)
 
         # Act
+
         result = await handler.handle_command(
             "simple value1", player, room
         )
 
         # Assert
+
         assert result["success"] is True
 
         # Verify database state
+
         updated_player = await db.get_player("testuser")
         assert updated_player.last_command == "simple"
 ```
@@ -368,14 +417,17 @@ async def test_command_event_integration():
     """Test command interaction with event system."""
 
     # Arrange
+
     event_bus = MockEventBus()
     persistence = MockPersistence(event_bus)
 
     # Create test player and room
+
     player = create_test_player("testuser")
     room = create_test_room("test_room_001")
 
     # Act
+
     result = await handle_event_command(
         {"command_type": "event", "action": "test_action"},
         {"username": "testuser"},
@@ -385,9 +437,11 @@ async def test_command_event_integration():
     )
 
     # Assert
+
     assert result["result"] == "Event triggered"
 
     # Verify event was published
+
     published_events = event_bus.get_published_events()
     assert len(published_events) == 1
     assert published_events[0].event_type == "PLAYER_ACTION"
@@ -407,6 +461,7 @@ def setup_standard_mocks():
     """Setup standard mocks for command testing."""
 
     # Create mocks
+
     mock_request = Mock()
     mock_app = Mock()
     mock_persistence = Mock()
@@ -414,11 +469,13 @@ def setup_standard_mocks():
     mock_alias_storage = Mock()
 
     # Configure mocks
+
     mock_request.app = mock_app
     mock_app.state.persistence = mock_persistence
     mock_persistence.get_player_by_name.return_value = mock_player
 
     # Configure player mock
+
     mock_player.username = "testuser"
     mock_player.current_room_id = "test_room_001"
     mock_player.is_admin = False
@@ -442,12 +499,14 @@ def mock_command_environment():
     mocks = setup_standard_mocks()
 
     # Additional setup
+
     mocks["persistence"].get_room.return_value = create_mock_room()
     mocks["persistence"].get_players_in_room.return_value = []
 
     yield mocks
 
     # Cleanup (if needed)
+
     pass
 
 @pytest.mark.asyncio
@@ -455,10 +514,12 @@ async def test_command_with_fixture(mock_command_environment):
     """Test command using fixture-based mocking."""
 
     # Arrange
+
     command_data = {"command_type": "simple", "param1": "value1"}
     current_user = {"username": "testuser"}
 
     # Act
+
     result = await handle_simple_command(
         command_data,
         current_user,
@@ -468,6 +529,7 @@ async def test_command_with_fixture(mock_command_environment):
     )
 
     # Assert
+
     assert "result" in result
     assert "success" in result["result"]
 ```
@@ -480,11 +542,13 @@ async def test_command_mock_verification():
     """Test that mocks are called correctly."""
 
     # Arrange
+
     mocks = setup_standard_mocks()
     command_data = {"command_type": "simple", "param1": "value1"}
     current_user = {"username": "testuser"}
 
     # Act
+
     await handle_simple_command(
         command_data,
         current_user,
@@ -494,10 +558,12 @@ async def test_command_mock_verification():
     )
 
     # Assert - verify mocks were called correctly
+
     mocks["persistence"].get_player_by_name.assert_called_once_with("testuser")
     mocks["persistence"].get_room.assert_called_once_with("test_room_001")
 
     # Verify no unexpected calls
+
     mocks["persistence"].get_players_in_room.assert_not_called()
 ```
 
@@ -576,6 +642,7 @@ async def test_command_sql_injection_prevention():
     """Test that commands prevent SQL injection."""
 
     # Arrange
+
     mocks = setup_standard_mocks()
     malicious_input = "'; DROP TABLE players; --"
 
@@ -583,6 +650,7 @@ async def test_command_sql_injection_prevention():
     current_user = {"username": "testuser"}
 
     # Act
+
     result = await handle_simple_command(
         command_data,
         current_user,
@@ -592,10 +660,12 @@ async def test_command_sql_injection_prevention():
     )
 
     # Assert
+
     assert "result" in result
     assert "invalid" in result["result"].lower()
 
     # Verify no database calls were made with malicious input
+
     mocks["persistence"].execute_raw_sql.assert_not_called()
 
 @pytest.mark.asyncio
@@ -603,6 +673,7 @@ async def test_command_xss_prevention():
     """Test that commands prevent XSS attacks."""
 
     # Arrange
+
     mocks = setup_standard_mocks()
     malicious_input = "<script>alert('xss')</script>"
 
@@ -610,6 +681,7 @@ async def test_command_xss_prevention():
     current_user = {"username": "testuser"}
 
     # Act
+
     result = await handle_simple_command(
         command_data,
         current_user,
@@ -619,6 +691,7 @@ async def test_command_xss_prevention():
     )
 
     # Assert
+
     assert "result" in result
     assert "<script>" not in result["result"]
 ```
@@ -631,13 +704,16 @@ async def test_command_admin_authorization():
     """Test admin-only command authorization."""
 
     # Arrange
+
     mocks = setup_standard_mocks()
     command_data = {"command_type": "admin", "action": "test"}
 
     # Test non-admin user
+
     current_user = {"username": "testuser", "is_admin": False}
 
     # Act
+
     result = await handle_admin_command(
         command_data,
         current_user,
@@ -647,13 +723,16 @@ async def test_command_admin_authorization():
     )
 
     # Assert
+
     assert "result" in result
     assert "permission" in result["result"].lower()
 
     # Test admin user
+
     current_user = {"username": "admin", "is_admin": True}
 
     # Act
+
     result = await handle_admin_command(
         command_data,
         current_user,
@@ -663,6 +742,7 @@ async def test_command_admin_authorization():
     )
 
     # Assert
+
     assert "result" in result
     assert "success" in result["result"].lower()
 ```
@@ -675,11 +755,13 @@ async def test_command_rate_limiting():
     """Test command rate limiting functionality."""
 
     # Arrange
+
     mocks = setup_standard_mocks()
     command_data = {"command_type": "rate_limited"}
     current_user = {"username": "testuser"}
 
     # Act - first call should succeed
+
     result1 = await handle_rate_limited_command(
         command_data,
         current_user,
@@ -689,10 +771,12 @@ async def test_command_rate_limiting():
     )
 
     # Assert - first call successful
+
     assert "result" in result1
     assert "completed" in result1["result"]
 
     # Act - second call should be rate limited
+
     result2 = await handle_rate_limited_command(
         command_data,
         current_user,
@@ -702,6 +786,7 @@ async def test_command_rate_limiting():
     )
 
     # Assert - second call rate limited
+
     assert "result" in result2
     assert "too frequently" in result2["result"]
 ```
@@ -718,11 +803,13 @@ async def test_command_response_time():
     """Test that commands respond within acceptable time limits."""
 
     # Arrange
+
     mocks = setup_standard_mocks()
     command_data = {"command_type": "simple", "param1": "value1"}
     current_user = {"username": "testuser"}
 
     # Act
+
     start_time = time.time()
     result = await handle_simple_command(
         command_data,
@@ -734,6 +821,7 @@ async def test_command_response_time():
     end_time = time.time()
 
     # Assert
+
     response_time = end_time - start_time
     assert response_time < 0.1  # Should respond within 100ms
     assert "result" in result
@@ -750,15 +838,18 @@ async def test_command_memory_usage():
     import os
 
     # Arrange
+
     mocks = setup_standard_mocks()
     command_data = {"command_type": "simple", "param1": "value1"}
     current_user = {"username": "testuser"}
 
     # Get initial memory usage
+
     process = psutil.Process(os.getpid())
     initial_memory = process.memory_info().rss
 
     # Act - run command multiple times
+
     for _ in range(100):
         result = await handle_simple_command(
             command_data,
@@ -770,10 +861,12 @@ async def test_command_memory_usage():
         assert "result" in result
 
     # Get final memory usage
+
     final_memory = process.memory_info().rss
     memory_increase = final_memory - initial_memory
 
     # Assert - memory increase should be minimal
+
     assert memory_increase < 1024 * 1024  # Less than 1MB increase
 ```
 
@@ -785,6 +878,7 @@ async def test_command_memory_usage():
 
 ```python
 # pytest.ini configuration
+
 [tool:pytest]
 minversion = 6.0
 addopts =
@@ -821,6 +915,7 @@ def test_command_coverage():
 
     # The actual coverage is measured by pytest-cov
     # This test serves as a reminder to maintain coverage
+
     assert True  # Placeholder for coverage requirements
 ```
 
@@ -832,6 +927,7 @@ def test_command_coverage():
 
 ```python
 # Good - organized test structure
+
 class TestWhisperCommand:
     """Test the whisper command functionality."""
 
@@ -851,12 +947,15 @@ class TestWhisperCommand:
         # Test implementation
 
 # Bad - disorganized tests
+
 def test_whisper_1():
     # Mixed test scenarios
+
     pass
 
 def test_whisper_2():
     # Unclear what this tests
+
     pass
 ```
 
@@ -864,6 +963,7 @@ def test_whisper_2():
 
 ```python
 # Good - descriptive test names
+
 async def test_whisper_command_sends_message_only_to_target_player():
     """Test that whisper messages are only sent to the target player."""
     pass
@@ -873,6 +973,7 @@ async def test_whisper_command_returns_error_for_non_existent_player():
     pass
 
 # Bad - unclear test names
+
 async def test_whisper_1():
     pass
 
@@ -884,15 +985,18 @@ async def test_whisper_error():
 
 ```python
 # Good - comprehensive assertions
+
 async def test_whisper_command_comprehensive():
     """Test whisper command with comprehensive assertions."""
 
     # Arrange
+
     mocks = setup_standard_mocks()
     command_data = {"command_type": "whisper", "target": "targetuser", "message": "Hello"}
     current_user = {"username": "testuser"}
 
     # Act
+
     result = await handle_whisper_command(
         command_data,
         current_user,
@@ -902,15 +1006,18 @@ async def test_whisper_command_comprehensive():
     )
 
     # Assert - comprehensive checks
+
     assert "result" in result
     assert "Hello" in result["result"]
     assert "targetuser" in result["result"]
 
     # Verify mocks were called correctly
+
     mocks["persistence"].get_player_by_name.assert_called()
     mocks["persistence"].get_players_in_room.assert_called()
 
 # Bad - minimal assertions
+
 async def test_whisper_command_minimal():
     result = await handle_whisper_command(...)
     assert result is not None  # Too vague
@@ -920,29 +1027,36 @@ async def test_whisper_command_minimal():
 
 ```python
 # Good - isolated tests
+
 @pytest.mark.asyncio
 async def test_whisper_command_isolated():
     """Test whisper command in isolation."""
 
     # Each test creates its own mocks
+
     mocks = setup_standard_mocks()
 
     # Test implementation
+
     result = await handle_whisper_command(...)
 
     # Verify only expected calls were made
+
     mocks["persistence"].get_player_by_name.assert_called_once()
     mocks["persistence"].get_players_in_room.assert_called_once()
 
 # Bad - shared state
+
 shared_mocks = setup_standard_mocks()  # Shared between tests
 
 async def test_whisper_1():
     # Uses shared mocks - can affect other tests
+
     pass
 
 async def test_whisper_2():
     # Uses same shared mocks - state from test_whisper_1 affects this
+
     pass
 ```
 
@@ -964,11 +1078,13 @@ async def test_command_parameterized(input_data, expected_result):
     """Test command with various input parameters."""
 
     # Arrange
+
     mocks = setup_standard_mocks()
     command_data = {"command_type": "simple", **input_data}
     current_user = {"username": "testuser"}
 
     # Act
+
     result = await handle_simple_command(
         command_data,
         current_user,
@@ -978,6 +1094,7 @@ async def test_command_parameterized(input_data, expected_result):
     )
 
     # Assert
+
     assert expected_result in result["result"]
 ```
 
@@ -989,11 +1106,13 @@ async def test_command_error_conditions():
     """Test command error handling."""
 
     # Arrange
+
     mocks = setup_standard_mocks()
     command_data = {"command_type": "simple"}
     current_user = {"username": "testuser"}
 
     # Test persistence layer unavailable
+
     mocks["app"].state.persistence = None
     result = await handle_simple_command(
         command_data, current_user, mocks["request"], mocks["alias_storage"], "testuser"
@@ -1001,6 +1120,7 @@ async def test_command_error_conditions():
     assert "can't perform" in result["result"]
 
     # Test player not found
+
     mocks["app"].state.persistence = mocks["persistence"]
     mocks["persistence"].get_player_by_name.return_value = None
     result = await handle_simple_command(
@@ -1009,6 +1129,7 @@ async def test_command_error_conditions():
     assert "can't perform" in result["result"]
 
     # Test room not found
+
     mocks["persistence"].get_player_by_name.return_value = mocks["player"]
     mocks["persistence"].get_room.return_value = None
     result = await handle_simple_command(
@@ -1025,14 +1146,17 @@ async def test_command_async_operations():
     """Test command with async operations."""
 
     # Arrange
+
     mocks = setup_standard_mocks()
     command_data = {"command_type": "async", "param1": "value1"}
     current_user = {"username": "testuser"}
 
     # Mock async operations
+
     mocks["persistence"].async_operation = AsyncMock(return_value="result")
 
     # Act
+
     result = await handle_async_command(
         command_data,
         current_user,
@@ -1042,6 +1166,7 @@ async def test_command_async_operations():
     )
 
     # Assert
+
     assert "result" in result
     mocks["persistence"].async_operation.assert_awaited_once()
 ```
@@ -1051,63 +1176,85 @@ async def test_command_async_operations():
 ## Enhanced Logging in Command Tests
 
 ### **CRITICAL: Enhanced Logging Requirements**
+
 All command tests MUST use the enhanced logging system for proper observability and debugging.
 
 #### **Required Import Pattern**
+
 ```python
 # ✅ CORRECT - Enhanced logging import (MANDATORY)
+
 from server.logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 ```
 
 #### **Forbidden Patterns**
+
 ```python
 # ❌ FORBIDDEN - Will cause import failures and system crashes
+
 import logging
 logger = logging.getLogger(__name__)
 
 # ❌ FORBIDDEN - Deprecated context parameter (causes TypeError)
+
 logger.info("Test started", context={"test_name": "example"})
 
 # ❌ FORBIDDEN - String formatting breaks structured logging
+
 logger.info(f"Test {test_name} started")
 ```
 
 #### **Correct Logging Patterns in Tests**
+
 ```python
 # ✅ CORRECT - Test setup logging
+
 logger.info("Command test started", test_name="test_whisper_command", command="whisper", test_file="test_communication_commands.py")
 
 # ✅ CORRECT - Test step logging
+
 logger.debug("Test step executed", step="setup_mock_data", command="whisper", target_user="testuser")
 
 # ✅ CORRECT - Error logging in tests
+
 logger.error("Test assertion failed", assertion="command_success", expected=True, actual=False, test_step="verify_command_execution")
 
 # ✅ CORRECT - Performance logging
+
 logger.info("Test performance metrics", test_duration_ms=250, command="whisper", assertions_passed=5)
 ```
 
 #### **Test Logging Best Practices**
-- **Structured Logging**: Always use key-value pairs for log data
-- **Test Context**: Include test name, command, and step information
-- **Error Context**: Log sufficient context for debugging test failures
-- **Performance Tracking**: Log test execution times and metrics
-- **Security**: Never log sensitive test data (passwords, tokens)
+
+**Structured Logging**: Always use key-value pairs for log data
+
+**Test Context**: Include test name, command, and step information
+
+**Error Context**: Log sufficient context for debugging test failures
+
+**Performance Tracking**: Log test execution times and metrics
+
+**Security**: Never log sensitive test data (passwords, tokens)
 
 #### **Logging Validation in Tests**
+
 ```python
 # ✅ CORRECT - Validate logging behavior in tests
+
 def test_command_logging():
     """Test that commands log correctly."""
     with patch.object(enhanced_logging, 'get_logger') as mock_logger:
         # Setup mock logger
+
         mock_logger.return_value.info = MagicMock()
 
         # Execute command
+
         result = await handle_whisper_command(command_data, current_user, request, alias_storage, "testuser")
 
         # Verify logging occurred
+
         mock_logger.return_value.info.assert_called_with(
             "Command executed",
             command="whisper",
@@ -1117,13 +1264,17 @@ def test_command_logging():
 ```
 
 #### **Documentation References**
-- **Complete Guide**: [LOGGING_BEST_PRACTICES.md](LOGGING_BEST_PRACTICES.md)
-- **Quick Reference**: [LOGGING_QUICK_REFERENCE.md](LOGGING_QUICK_REFERENCE.md)
-- **Testing Examples**: [docs/examples/logging/testing_examples.py](examples/logging/testing_examples.py)
+
+**Complete Guide**: [LOGGING_BEST_PRACTICES.md](LOGGING_BEST_PRACTICES.md)
+
+**Quick Reference**: [LOGGING_QUICK_REFERENCE.md](LOGGING_QUICK_REFERENCE.md)
+
+**Testing Examples**: [docs/examples/logging/testing_examples.py](examples/logging/testing_examples.py)
 
 ## Conclusion
 
-Comprehensive testing is essential for maintaining the reliability and security of MythosMUD commands. By following these patterns and best practices, you can ensure that:
+Comprehensive testing is essential for maintaining the reliability and security of MythosMUD commands. By following
+these patterns and best practices, you can ensure that:
 
 - Commands work correctly under all conditions
 - Security vulnerabilities are caught early
@@ -1132,6 +1283,7 @@ Comprehensive testing is essential for maintaining the reliability and security 
 - Documentation stays accurate and up-to-date
 
 Remember to:
+
 - Write tests before implementing features (TDD)
 - Maintain high test coverage
 - Test both success and error paths

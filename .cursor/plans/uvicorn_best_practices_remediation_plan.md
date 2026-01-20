@@ -20,6 +20,7 @@ This review identified **8 critical issues**, **12 high-priority issues**, and *
 ### 1. Global State Anti-Pattern (`app.state` Usage)
 
 **Location**: Multiple files (51+ instances found)
+
 - `server/app/game_tick_processing.py` - Extensive `app.state.*` access
 - `server/commands/communication_commands.py` - Direct `app.state` access
 - `server/realtime/websocket_handler.py` - Global app import pattern
@@ -28,14 +29,17 @@ This review identified **8 critical issues**, **12 high-priority issues**, and *
 **Issue**: Violates Uvicorn best practice: "Avoid global state in ASGI applications"
 
 **Current Pattern**:
+
 ```python
 # ❌ ANTI-PATTERN - Direct app.state access
+
 app = request.app
 player_service = app.state.player_service
 connection_manager = app.state.connection_manager
 ```
 
 **Problems**:
+
 - Makes testing difficult (requires full app context)
 - Creates hidden dependencies
 - Violates dependency injection principles
@@ -43,13 +47,17 @@ connection_manager = app.state.connection_manager
 - Can lead to race conditions
 
 **Impact**:
-- **Testability**: Poor - requires full FastAPI app context for unit tests
-- **Maintainability**: Low - hidden dependencies throughout codebase
-- **Performance**: Medium - indirect access patterns
+**Testability**: Poor - requires full FastAPI app context for unit tests
+
+**Maintainability**: Low - hidden dependencies throughout codebase
+
+**Performance**: Medium - indirect access patterns
 
 **Remediation**:
+
 ```python
 # ✅ CORRECT - Use dependency injection
+
 from fastapi import Depends
 from server.dependencies import get_player_service, get_connection_manager
 
@@ -58,6 +66,7 @@ async def my_endpoint(
     connection_manager: ConnectionManager = Depends(get_connection_manager)
 ):
     # Use injected services
+
 ```
 
 **Files Affected**: ~30 files across commands, realtime, and app modules
@@ -70,6 +79,7 @@ async def my_endpoint(
 ### 2. Blocking Synchronous File I/O in Async Contexts
 
 **Location**: Multiple files (150+ instances found)
+
 - `server/utils/command_parser.py` - `open()` calls in async contexts
 - `server/structured_logging/log_aggregator.py` - File writes without `aiofiles`
 - `server/realtime/dead_letter_queue.py` - Synchronous file operations
@@ -79,27 +89,34 @@ async def my_endpoint(
 **Issue**: Violates Uvicorn best practice: "Avoid blocking operations in async functions"
 
 **Current Pattern**:
+
 ```python
 # ❌ BLOCKS EVENT LOOP
+
 async def process_something():
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(data)  # BLOCKS EVENT LOOP
 ```
 
 **Problems**:
+
 - Blocks entire event loop during file I/O
 - Prevents other async operations from executing
 - Degrades performance under load
 - Can cause timeouts in concurrent requests
 
 **Impact**:
-- **Performance**: High - blocks event loop
-- **Scalability**: High - worsens with concurrent operations
-- **User Experience**: Medium - can cause request timeouts
+**Performance**: High - blocks event loop
+
+**Scalability**: High - worsens with concurrent operations
+
+**User Experience**: Medium - can cause request timeouts
 
 **Remediation**:
+
 ```python
 # ✅ CORRECT - Use aiofiles for async file I/O
+
 import aiofiles
 
 async def process_something():
@@ -117,6 +134,7 @@ async def process_something():
 ### 3. Blocking `time.sleep()` in Async Functions
 
 **Location**: Multiple files
+
 - `server/utils/retry.py:176` - `time.sleep()` in retry logic
 - `server/commands/shutdown_process_termination.py` - Multiple `time.sleep()` calls
 - `server/structured_logging/logging_utilities.py:207` - Sleep in retry logic
@@ -125,15 +143,19 @@ async def process_something():
 **Issue**: Violates Uvicorn best practice: "Avoid blocking operations in async functions"
 
 **Current Pattern**:
+
 ```python
 # ❌ BLOCKS EVENT LOOP
+
 async def retry_operation():
     time.sleep(delay)  # BLOCKS EVENT LOOP
 ```
 
 **Remediation**:
+
 ```python
 # ✅ CORRECT - Use asyncio.sleep()
+
 async def retry_operation():
     await asyncio.sleep(delay)  # Non-blocking
 ```
@@ -151,20 +173,25 @@ async def retry_operation():
 **Issue**: Creates app instance at module level, which can cause issues with testing and reloading
 
 **Current Code**:
+
 ```python
 # ❌ ANTI-PATTERN - Module-level app creation
+
 app = create_app()
 ```
 
 **Problems**:
+
 - App created at import time
 - Difficult to test with different configurations
 - Can cause issues with uvicorn reload
 - Violates factory pattern principles
 
 **Remediation**:
+
 ```python
 # ✅ CORRECT - Lazy app creation
+
 def get_app() -> FastAPI:
     """Get or create the FastAPI application instance."""
     if not hasattr(get_app, '_app'):
@@ -187,15 +214,19 @@ app = get_app()  # For uvicorn compatibility
 **Issue**: CORS middleware configured twice - once in factory, once in main.py
 
 **Current Pattern**:
+
 ```python
 # ❌ DUPLICATE - CORS configured in factory
+
 app.add_middleware(CORSMiddleware, **cors_kwargs)
 
 # ❌ DUPLICATE - CORS configured again in main.py
+
 app.add_middleware(CORSMiddleware, **cors_kwargs)
 ```
 
 **Problems**:
+
 - Redundant middleware execution
 - Potential configuration conflicts
 - Unclear which configuration takes precedence
@@ -215,8 +246,10 @@ app.add_middleware(CORSMiddleware, **cors_kwargs)
 **Issue**: Complex lifespan composition with potential for errors
 
 **Current Pattern**:
+
 ```python
 # ❌ COMPLEX - Multiple lifespan contexts
+
 original_lifespan = app.router.lifespan_context
 
 @asynccontextmanager
@@ -229,6 +262,7 @@ app.router.lifespan_context = composed_lifespan
 ```
 
 **Problems**:
+
 - Modifies router.lifespan_context after app creation
 - Complex nesting can hide errors
 - Unclear initialization order
@@ -248,6 +282,7 @@ app.router.lifespan_context = composed_lifespan
 **Issue**: Health check endpoint exists but doesn't validate all critical components
 
 **Current Implementation**:
+
 - Checks connection manager
 - Checks health service
 - But doesn't validate:
@@ -270,8 +305,10 @@ app.router.lifespan_context = composed_lifespan
 **Issue**: Some exception handlers create error context after logging, losing context
 
 **Current Pattern**:
+
 ```python
 # ❌ INCONSISTENT - Context created after logging
+
 except Exception as e:
     logger.error("Error", error=str(e))  # No context
     context = create_context_from_request(request)  # Too late
@@ -294,12 +331,15 @@ except Exception as e:
 **Issue**: Routers included without clear organization by domain
 
 **Current Pattern**:
+
 ```python
 # ❌ FLAT - All routers at same level
+
 app.include_router(auth_router)
 app.include_router(command_router)
 app.include_router(player_router)
 # ... 15+ routers
+
 ```
 
 **Remediation**: Organize routers by domain with clear prefixes
@@ -316,6 +356,7 @@ app.include_router(player_router)
 **Issue**: Rate limiting exists but not applied to all endpoints
 
 **Current State**:
+
 - Command rate limiting: ✅ Implemented
 - Chat rate limiting: ✅ Implemented
 - API endpoint rate limiting: ⚠️ Partial (only stats rolling)
@@ -334,6 +375,7 @@ app.include_router(player_router)
 **Issue**: Some endpoints don't validate all inputs comprehensively
 
 **Current State**:
+
 - Command validation: ✅ Comprehensive
 - Security validator: ✅ Exists
 - But some API endpoints accept raw dicts without Pydantic models
@@ -352,8 +394,10 @@ app.include_router(player_router)
 **Issue**: Some code still uses f-string logging instead of structured logging
 
 **Current Pattern**:
+
 ```python
 # ❌ F-STRING LOGGING
+
 logger.info(f"Processing player {player_name} with ID {player_id}")
 ```
 
@@ -537,28 +581,33 @@ logger.info(f"Processing player {player_name} with ID {player_id}")
 **Goal**: Fix all critical issues that impact production readiness
 
 1. **Fix Blocking Operations** (Week 1)
+
    - Replace `time.sleep()` with `asyncio.sleep()` (4-6 hours)
    - Migrate file I/O to `aiofiles` (24-32 hours)
    - Total: 28-38 hours
 
 2. **Fix App State Anti-Pattern** (Week 1-2)
+
    - Migrate to dependency injection (40-60 hours)
    - Update all command handlers
    - Update all API endpoints
    - Total: 40-60 hours
 
 3. **Fix Lifespan Composition** (Week 2)
+
    - Consolidate lifespan logic (8-12 hours)
    - Remove duplicate CORS configuration (1-2 hours)
    - Fix module-level app creation (2-4 hours)
    - Total: 11-18 hours
 
 4. **Enhance Health Checks** (Week 2)
+
    - Add comprehensive component validation (8-12 hours)
    - Add timeout handling (2-4 hours)
    - Total: 10-16 hours
 
 5. **Fix Error Context Creation** (Week 2)
+
    - Standardize error context patterns (6-10 hours)
 
 **Phase 1 Total**: 95-142 hours (~3-4 weeks for 1 developer)
@@ -570,21 +619,27 @@ logger.info(f"Processing player {player_name} with ID {player_id}")
 **Goal**: Address high-priority issues affecting maintainability and security
 
 1. **Router Organization** (Week 3)
+
    - Reorganize routers by domain (4-6 hours)
 
 2. **Rate Limiting** (Week 3)
+
    - Apply rate limiting to all endpoints (8-12 hours)
 
 3. **Input Validation** (Week 3-4)
+
    - Ensure all endpoints use Pydantic models (12-16 hours)
 
 4. **Structured Logging** (Week 4)
+
    - Fix remaining f-string logging (8-12 hours)
 
 5. **Connection Pool Optimization** (Week 4)
+
    - Optimize pool settings (4-6 hours + load testing)
 
 6. **Security Enhancements** (Week 4)
+
    - Comprehensive security headers (2-4 hours)
    - Request timeout configuration (2-4 hours)
 
@@ -597,17 +652,21 @@ logger.info(f"Processing player {player_name} with ID {player_id}")
 **Goal**: Improve code quality and maintainability
 
 1. **Type Hints** (Week 5)
+
    - Add comprehensive type hints (16-24 hours)
 
 2. **Documentation** (Week 5-6)
+
    - Add ADRs (8-12 hours)
    - Document middleware order (1-2 hours)
 
 3. **Testing** (Week 6)
+
    - Add async test coverage (16-24 hours)
    - Add error path testing (12-16 hours)
 
 4. **Monitoring** (Week 6)
+
    - Add middleware performance monitoring (6-8 hours)
    - Add connection leak detection (6-8 hours)
 
@@ -619,21 +678,27 @@ logger.info(f"Processing player {player_name} with ID {player_id}")
 
 ### Issues by Priority
 
-- **Critical**: 8 issues (95-142 hours)
-- **High Priority**: 12 issues (40-60 hours)
-- **Medium Priority**: 15 issues (65-94 hours)
+**Critical**: 8 issues (95-142 hours)
+
+**High Priority**: 12 issues (40-60 hours)
+
+**Medium Priority**: 15 issues (65-94 hours)
 
 ### Total Estimated Effort
 
-- **Minimum**: 200 hours (~5 weeks for 1 developer)
-- **Maximum**: 296 hours (~7-8 weeks for 1 developer)
-- **Recommended**: 250 hours (~6-7 weeks for 1 developer)
+**Minimum**: 200 hours (~5 weeks for 1 developer)
+
+**Maximum**: 296 hours (~7-8 weeks for 1 developer)
+
+**Recommended**: 250 hours (~6-7 weeks for 1 developer)
 
 ### Risk Assessment
 
-- **Production Readiness**: ⚠️ **NOT READY** - Critical issues must be fixed
-- **Performance Impact**: 🔴 **HIGH** - Blocking operations impact scalability
-- **Security Impact**: 🟡 **MODERATE** - Some gaps in validation and rate limiting
+**Production Readiness**: ⚠️ **NOT READY** - Critical issues must be fixed
+
+**Performance Impact**: 🔴 **HIGH** - Blocking operations impact scalability
+
+**Security Impact**: 🟡 **MODERATE** - Some gaps in validation and rate limiting
 - **Maintainability**: 🟡 **MODERATE** - Global state patterns make testing difficult
 
 ---
@@ -641,21 +706,25 @@ logger.info(f"Processing player {player_name} with ID {player_id}")
 ## 🎯 RECOMMENDED APPROACH
 
 1. **Immediate Actions** (This Week):
+
    - Fix blocking `time.sleep()` calls
    - Fix duplicate CORS configuration
    - Fix module-level app creation
 
 2. **Short-term** (Next 2 Weeks):
+
    - Migrate file I/O to `aiofiles`
    - Begin app.state migration to dependency injection
    - Enhance health checks
 
 3. **Medium-term** (Weeks 3-6):
+
    - Complete dependency injection migration
    - Apply rate limiting consistently
    - Improve input validation
 
 4. **Long-term** (Ongoing):
+
    - Add comprehensive type hints
    - Improve test coverage
    - Add performance monitoring
@@ -664,7 +733,8 @@ logger.info(f"Processing player {player_name} with ID {player_id}")
 
 ## 📚 REFERENCES
 
-- [Uvicorn Best Practices](.cursor/rules/uvicorn.mdc)
+[Uvicorn Best Practices](.cursor/rules/uvicorn.mdc)
+
 - [FastAPI Best Practices](https://fastapi.tiangolo.com/tutorial/)
 - [Python asyncio Documentation](https://docs.python.org/3/library/asyncio.html)
 - [Previous Uvicorn Review](docs/UVICORN_CODE_REVIEW.md)

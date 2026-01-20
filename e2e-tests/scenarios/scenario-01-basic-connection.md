@@ -2,45 +2,59 @@
 
 ## Overview
 
-Tests basic multiplayer connection and disconnection messaging between two players. This scenario verifies that players can connect to the game, see each other's connection/disconnection events, and that the messaging system works correctly.
+Tests basic multiplayer connection and disconnection messaging between two players. This scenario verifies that players
+can connect to the game, see each other's connection/disconnection events, and that the messaging system works
+correctly.
 
-**This is a core multi-player scenario** that requires real-time verification of message broadcasting. No automated alternative is available.
+**This is a core multi-player scenario** that requires real-time verification of message broadcasting. No automated
+alternative is available.
 
-**⚠️ TIMING ARTIFACT NOTICE**: This scenario may fail due to a known timing issue where the first player may not be properly subscribed to the room when the second player connects. This prevents connection messages from being received. The connection message broadcasting system is working correctly, but there's a race condition in room subscription timing.
+**⚠️ TIMING ARTIFACT NOTICE**: This scenario may fail due to a known timing issue where the first player may not be
+properly subscribed to the room when the second player connects. This prevents connection messages from being received.
+The connection message broadcasting system is working correctly, but there's a race condition in room subscription
+timing.
 
 ## Prerequisites
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
 2. **Server Running**: Development server is running on port 54731
 3. **Client Accessible**: Client is accessible on port 5173
 4. **No Previous Sessions**: Browser is clean with no existing game sessions
 
-**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
+### ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE
 
 **Reference**: See @MULTIPLAYER_TEST_RULES.md for complete prerequisite verification procedures.
 
 ## Test Configuration
 
-- **Test Players**: ArkanWolfshade (AW) and Ithaqua
-- **Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
-- **Testing Approach**: Playwright MCP (multi-tab interaction required)
-- **Timeout Settings**: Use configurable timeouts from master rules
+**Test Players**: ArkanWolfshade (AW) and Ithaqua
+
+**Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
+
+**Testing Approach**: Playwright MCP (multi-tab interaction required)
+
+**Timeout Settings**: Use configurable timeouts from master rules
 
 ## Testing Approach Rationale
 
-**Why Playwright MCP is Required:**
+### Why Playwright MCP is Required
 
-- **Multi-tab Coordination**: Requires 2+ browser tabs for multiplayer testing
-- **Real-time Interaction**: Must verify connection/disconnection events in real-time
-- **Message Broadcasting**: Must test that connection messages are broadcast to other players
-- **State Synchronization**: Must verify player state consistency across multiple tabs
-- **Complex User Flows**: Involves complex multiplayer interaction patterns
+**Multi-tab Coordination**: Requires 2+ browser tabs for multiplayer testing
 
-**Standard Playwright Not Suitable:**
+**Real-time Interaction**: Must verify connection/disconnection events in real-time
 
-- Cannot handle multiple browser tabs simultaneously
+**Message Broadcasting**: Must test that connection messages are broadcast to other players
+
+**State Synchronization**: Must verify player state consistency across multiple tabs
+
+**Complex User Flows**: Involves complex multiplayer interaction patterns
+
+### Standard Playwright Not Suitable
+
+Cannot handle multiple browser tabs simultaneously
+
 - Cannot verify real-time message broadcasting
 - Cannot test multiplayer state synchronization
 
@@ -66,7 +80,8 @@ await mcp_playwright_browser_wait_for({time: 10});
 
 **Purpose**: First player connects and enters the game world
 
-**MULTI-CHARACTER NOTE**: If the user has multiple characters, a character selection screen will appear after login. Select the appropriate character before proceeding.
+**MULTI-CHARACTER NOTE**: If the user has multiple characters, a character selection screen will appear after login.
+Select the appropriate character before proceeding.
 
 **Commands**:
 
@@ -182,7 +197,8 @@ try {
 }
 
 // EXECUTION GUARD: Single verification attempt - do not retry
-const awMessages = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const awMessages = await mcp_playwright_browser_evaluate({function: "() =>
+Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
 const hasIthaquaEntered = awMessages.some(msg => msg.includes('Ithaqua has entered the game'));
 console.log('AW sees Ithaqua entered:', hasIthaquaEntered);
 
@@ -308,13 +324,18 @@ console.log('➡️ READY FOR SCENARIO 2: Clean Game State on Connection');
 
 ## Expected Results
 
-- ✅ AW sees "Ithaqua has entered the game." (may fail due to timing artifact)
-- ✅ Ithaqua sees NO enters/leaves messages
-- ✅ AW sees "Ithaqua has left the game." (may fail due to timing artifact)
+✅ AW sees "Ithaqua has entered the game." (may fail due to timing artifact)
+
+✅ Ithaqua sees NO enters/leaves messages
+
+✅ AW sees "Ithaqua has left the game." (may fail due to timing artifact)
 
 ## Known Issues
 
-**⚠️ TIMING ARTIFACT**: Due to a race condition in room subscription timing, the first player may not be properly subscribed to the room when the second player connects. This prevents connection messages from being received by the first player. The connection message broadcasting system is working correctly on the server side, but there's a timing issue between:
+**⚠️ TIMING ARTIFACT**: Due to a race condition in room subscription timing, the first player may not be properly
+subscribed to the room when the second player connects. This prevents connection messages from being received by the
+first player. The connection message broadcasting system is working correctly on the server side, but there's a timing
+issue between:
 
 1. Player connection and room subscription
 2. Connection message broadcasting
@@ -328,7 +349,8 @@ console.log('➡️ READY FOR SCENARIO 2: Clean Game State on Connection');
 
 ## Success Criteria Checklist
 
-- [ ] AW successfully logs in and enters the game
+[ ] AW successfully logs in and enters the game
+
 - [ ] Ithaqua successfully logs in and enters the game
 - [ ] AW sees Ithaqua entered message (or timing artifact is documented)
 - [ ] Ithaqua sees no unwanted connection messages
@@ -349,14 +371,20 @@ Execute standard cleanup procedures from @CLEANUP.md:
 
 ## Status
 
-**✅ SCENARIO COMPLETION LOGIC FIXED**
+### ✅ SCENARIO COMPLETION LOGIC FIXED
 
-The basic connection/disconnection flow works correctly. The scenario now includes proper completion logic to prevent infinite loops:
+The basic connection/disconnection flow works correctly. The scenario now includes proper completion logic to prevent
+infinite loops:
 
-- **Fixed**: Added Step 8 with explicit scenario completion and cleanup procedures
-- **Fixed**: Added clear decision points for handling timing artifacts
-- **Fixed**: Added explicit progression to next scenario
-- **Known Issue**: Timing artifact in room subscription may prevent connection messages from being received by the first player (server-side issue, doesn't affect core functionality)
+**Fixed**: Added Step 8 with explicit scenario completion and cleanup procedures
+
+**Fixed**: Added clear decision points for handling timing artifacts
+
+**Fixed**: Added explicit progression to next scenario
+
+**Known Issue**: Timing artifact in room subscription may prevent connection messages from being received by the first
+
+  player (server-side issue, doesn't affect core functionality)
 
 ---
 

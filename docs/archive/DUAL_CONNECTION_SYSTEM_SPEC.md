@@ -58,11 +58,13 @@ The following scenarios should NOT result in connection termination:
 
 ```python
 # Current structure
+
 self.active_websockets: dict[str, WebSocket] = {}  # connection_id -> websocket
 self.player_websockets: dict[str, str] = {}        # player_id -> connection_id
 self.active_sse_connections: dict[str, str] = {}   # player_id -> connection_id
 
 # New structure
+
 self.active_websockets: dict[str, WebSocket] = {}  # connection_id -> websocket
 self.player_websockets: dict[str, list[str]] = {}  # player_id -> [connection_ids]
 self.active_sse_connections: dict[str, list[str]] = {}  # player_id -> [connection_ids]
@@ -175,6 +177,7 @@ async def send_personal_message(self, player_id: str, event: dict[str, Any]) -> 
     total_connections = 0
 
     # Try WebSocket connections
+
     if player_id in self.player_websockets:
         for connection_id in self.player_websockets[player_id]:
             total_connections += 1
@@ -188,10 +191,12 @@ async def send_personal_message(self, player_id: str, event: dict[str, Any]) -> 
                     await self._cleanup_dead_websocket(player_id, connection_id)
 
     # Try SSE connections (via pending messages)
+
     if player_id in self.active_sse_connections:
         for connection_id in self.active_sse_connections[player_id]:
             total_connections += 1
             # Add to pending messages for SSE delivery
+
             if player_id not in self.message_queue.pending_messages:
                 self.message_queue.pending_messages[player_id] = []
             self.message_queue.pending_messages[player_id].append(event)
@@ -205,11 +210,13 @@ async def send_personal_message(self, player_id: str, event: dict[str, Any]) -> 
 ### Phase 1: Data Structure Updates
 
 1. **Update Connection Tracking**
+
    - Modify `player_websockets` to support multiple connections
    - Modify `active_sse_connections` to support multiple connections
    - Add `connection_metadata` tracking
 
 2. **Update Connection Methods**
+
    - Modify `connect_websocket()` to support multiple connections
    - Modify `connect_sse()` to support multiple connections
    - Add session tracking for new game client sessions
@@ -217,11 +224,13 @@ async def send_personal_message(self, player_id: str, event: dict[str, Any]) -> 
 ### Phase 2: Message Delivery Enhancement
 
 1. **Multi-Connection Message Delivery**
+
    - Update `send_personal_message()` to deliver to all connections
    - Implement connection health checking
    - Add dead connection cleanup
 
 2. **Connection Health Management**
+
    - Implement health check system
    - Add automatic dead connection cleanup
    - Update presence tracking logic
@@ -229,11 +238,13 @@ async def send_personal_message(self, player_id: str, event: dict[str, Any]) -> 
 ### Phase 3: Disconnection Logic
 
 1. **New Game Session Handling**
+
    - Implement `handle_new_game_session()` method
    - Add session-based connection termination
    - Update API endpoints to pass session information
 
 2. **Fatal Error Handling**
+
    - Enhance error detection and handling
    - Implement connection-specific error handling
    - Add error logging and monitoring
@@ -241,11 +252,13 @@ async def send_personal_message(self, player_id: str, event: dict[str, Any]) -> 
 ### Phase 4: Testing and Validation
 
 1. **Unit Tests**
+
    - Test dual connection establishment
    - Test message delivery to multiple connections
    - Test disconnection scenarios
 
 2. **Integration Tests**
+
    - Test client-side dual connection handling
    - Test server-side connection management
    - Test error scenarios and recovery
@@ -257,11 +270,13 @@ async def send_personal_message(self, player_id: str, event: dict[str, Any]) -> 
 The client-side `useGameConnection` hook already supports tracking both WebSocket and SSE connections separately. The following enhancements may be needed:
 
 1. **Connection State Management**
+
    - Ensure both connections can be active simultaneously
    - Handle connection-specific error states
    - Implement proper reconnection logic
 
 2. **Message Handling**
+
    - Handle duplicate messages from multiple connections
    - Implement message deduplication if needed
    - Ensure proper event handling across connections
@@ -269,6 +284,7 @@ The client-side `useGameConnection` hook already supports tracking both WebSocke
 ### API Integration
 
 1. **Session Management**
+
    - Pass session identifiers to connection endpoints
    - Handle new game session notifications
    - Implement proper session cleanup
@@ -278,11 +294,13 @@ The client-side `useGameConnection` hook already supports tracking both WebSocke
 ### Authentication and Authorization
 
 1. **Connection Validation**
+
    - Ensure all connections are properly authenticated
    - Validate session identifiers
    - Implement connection-specific security checks
 
 2. **Rate Limiting**
+
    - Apply rate limiting per connection type
    - Implement per-player rate limiting across all connections
    - Add connection-specific rate limiting
@@ -290,6 +308,7 @@ The client-side `useGameConnection` hook already supports tracking both WebSocke
 ### Data Protection
 
 1. **Message Security**
+
    - Ensure messages are only delivered to authenticated connections
    - Implement connection-specific message filtering
    - Add message integrity checks
@@ -299,11 +318,13 @@ The client-side `useGameConnection` hook already supports tracking both WebSocke
 ### Connection Monitoring
 
 1. **Connection Metrics**
+
    - Track active connections per player
    - Monitor connection health
    - Log connection establishment and termination
 
 2. **Performance Monitoring**
+
    - Monitor message delivery performance
    - Track connection error rates
    - Monitor resource usage
@@ -311,11 +332,13 @@ The client-side `useGameConnection` hook already supports tracking both WebSocke
 ### Logging Enhancements
 
 1. **Connection Events**
+
    - Log all connection establishment events
    - Log connection termination events
    - Log connection health check results
 
 2. **Error Tracking**
+
    - Log connection-specific errors
    - Track fatal error occurrences
    - Monitor error recovery attempts
@@ -325,11 +348,13 @@ The client-side `useGameConnection` hook already supports tracking both WebSocke
 ### Backward Compatibility
 
 1. **API Compatibility**
+
    - Maintain existing API endpoints
    - Add optional session parameters
    - Ensure existing clients continue to work
 
 2. **Data Migration**
+
    - Migrate existing connection data structures
    - Update connection tracking logic
    - Ensure smooth transition
@@ -337,16 +362,19 @@ The client-side `useGameConnection` hook already supports tracking both WebSocke
 ### Rollout Plan
 
 1. **Development Environment**
+
    - Implement and test in development
    - Validate all functionality
    - Perform comprehensive testing
 
 2. **Staging Environment**
+
    - Deploy to staging environment
    - Perform integration testing
    - Validate client compatibility
 
 3. **Production Deployment**
+
    - Deploy with feature flags
    - Monitor system performance
    - Gradual rollout to users
@@ -356,11 +384,13 @@ The client-side `useGameConnection` hook already supports tracking both WebSocke
 ### Functional Success
 
 1. **Dual Connection Support**
+
    - Players can maintain both WebSocket and SSE connections
    - Messages are delivered to all active connections
    - Connections persist as specified
 
 2. **Disconnection Rules**
+
    - Connections are only terminated under specified conditions
    - New game sessions properly terminate existing connections
    - Fatal errors are handled appropriately
@@ -368,11 +398,13 @@ The client-side `useGameConnection` hook already supports tracking both WebSocke
 ### Performance Success
 
 1. **Message Delivery**
+
    - Messages are delivered efficiently to all connections
    - No significant performance degradation
    - Proper error handling and recovery
 
 2. **Resource Usage**
+
    - Memory usage remains within acceptable limits
    - Connection overhead is minimized
    - System remains stable under load
@@ -382,24 +414,29 @@ The client-side `useGameConnection` hook already supports tracking both WebSocke
 ### Technical Risks
 
 1. **Connection Management Complexity**
+
    - Risk: Increased complexity in connection management
    - Mitigation: Comprehensive testing and monitoring
 
 2. **Message Delivery Issues**
+
    - Risk: Duplicate or lost messages
    - Mitigation: Implement message deduplication and delivery confirmation
 
 3. **Resource Usage**
+
    - Risk: Increased memory and CPU usage
    - Mitigation: Implement connection limits and monitoring
 
 ### Operational Risks
 
 1. **Client Compatibility**
+
    - Risk: Existing clients may not work properly
    - Mitigation: Maintain backward compatibility and gradual rollout
 
 2. **System Stability**
+
    - Risk: System instability due to increased complexity
    - Mitigation: Comprehensive testing and monitoring
 

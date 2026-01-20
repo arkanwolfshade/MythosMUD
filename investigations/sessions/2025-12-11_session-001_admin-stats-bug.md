@@ -33,17 +33,24 @@ regular gameplay.
 
 **Bug Description**:
 
-- **Command**: `/look <mob>` (e.g., `/look dr` for "Dr. Francis Morgan")
-- **User Type**: Admin user
-- **Expected Behavior**: Admin stats section should display NPC information
-- **Actual Behavior**: Error message "Error retrieving stats" appears, admin
+**Command**: `/look <mob>` (e.g., `/look dr` for "Dr. Francis Morgan")
+
+**User Type**: Admin user
+
+**Expected Behavior**: Admin stats section should display NPC information
+
+**Actual Behavior**: Error message "Error retrieving stats" appears, admin
+
   stats section is missing
 
 **Affected Systems**:
 
 1. `server/commands/look_npc.py` - Command handler for looking at NPCs
+
 2. `server/services/npc_instance_service.py` - Service responsible for
+
    retrieving NPC stats
+
 3. Admin display functionality in the look command
 
 ### Phase 2: System State Investigation
@@ -93,6 +100,7 @@ invoke it with `()`. However, based on codebase analysis:
    ```
 
 2. **Usage Patterns Throughout Codebase**:
+
    - `npc_instance.is_alive = True` (direct assignment)
    - `getattr(npc_instance, "is_alive", True)` (property access, not callable)
    - Tests use `npc_instance.is_alive = True/False` (boolean assignment)
@@ -116,12 +124,19 @@ file:
 **Execution Flow**:
 
 1. User executes `/look dr` command
+
 2. `look_npc._format_single_npc_result()` is called
+
 3. For admin users, `_format_npc_stats_for_admin()` is invoked
+
 4. `npc_instance_service.get_npc_stats()` is called
+
 5. Line 330 attempts: `getattr(npc_instance, "is_alive", lambda: True)()`
+
 6. If `is_alive` exists and is `True` or `False` (boolean), Python tries to
+
    call it
+
 7. Error: `'bool' object is not callable`
 8. Exception is caught in `_format_npc_stats_for_admin()` and returns error message
 
@@ -129,14 +144,18 @@ file:
 
 **Code Evidence**:
 
-- **File**: `server/services/npc_instance_service.py`
-- **Line 330**: `"is_alive": getattr(npc_instance, "is_alive", lambda: True)(),`
-- **Line 278**: `"is_alive": getattr(npc_instance, "is_alive", lambda: True)(),`
+**File**: `server/services/npc_instance_service.py`
+
+**Line 330**: `"is_alive": getattr(npc_instance, "is_alive", lambda: True)(),`
+
+**Line 278**: `"is_alive": getattr(npc_instance, "is_alive", lambda: True)(),`
+
   (same issue)
 
 **Type Definition Evidence**:
-- **File**: `server/npc/npc_base.py:47`
-- **Definition**: `self.is_alive = True` (boolean property)
+**File**: `server/npc/npc_base.py:47`
+
+**Definition**: `self.is_alive = True` (boolean property)
 
 **Usage Pattern Evidence** (from grep results):
 
@@ -148,6 +167,7 @@ file:
 **Test Evidence**:
 
 - `server/tests/unit/services/test_npc_instance_service.py:340`:
+
   `mock_npc.is_alive = lambda: True` (test mocks it as callable, but real
   implementation is boolean)
 
@@ -170,24 +190,33 @@ as a boolean property. When `getattr()` retrieves the boolean value (`True` or
 **Why This Happened**:
 
 1. **Inconsistent API Design**: Players use `is_alive()` as a method, NPCs use
+
    `is_alive` as a property
+
 2. **Copy-Paste Error**: The code pattern may have been copied from
+
    player-related code where `is_alive()` is callable
+
 3. **Test Mocks**: Tests mock `is_alive` as `lambda: True`, which may have
+
    misled developers about the actual implementation
 
 **Impact Assessment**:
 
-- **Scope**: Affects all admin users attempting to view NPC stats via `/look`
+**Scope**: Affects all admin users attempting to view NPC stats via `/look`
   command
-- **Severity**: Medium - Admin functionality broken, but regular gameplay unaffected
-- **Frequency**: 100% reproduction rate when admin uses `/look <npc>` command
+
+**Severity**: Medium - Admin functionality broken, but regular gameplay unaffected
+
+**Frequency**: 100% reproduction rate when admin uses `/look <npc>` command
 - **User Impact**: Admins cannot view detailed NPC statistics through the look command
 
 **Affected Components**:
 
 1. `server/services/npc_instance_service.py` - `get_npc_stats()` method (lines
+
    278, 330)
+
 2. `server/commands/look_npc.py` - Admin stats display functionality
 3. Any code path that calls `get_npc_stats()` for admin display
 
@@ -197,9 +226,11 @@ as a boolean property. When `getattr()` retrieves the boolean value (`True` or
 
 **Functional Impact**:
 
-- ✅ Regular player look functionality: **Unaffected**
-- ❌ Admin stats display: **Broken**
-- ✅ NPC lifecycle and combat: **Unaffected** (uses property directly)
+✅ Regular player look functionality: **Unaffected**
+
+❌ Admin stats display: **Broken**
+
+✅ NPC lifecycle and combat: **Unaffected** (uses property directly)
 - ✅ Other admin commands: **Unaffected**
 
 **Performance Impact**: None - error occurs immediately, no resource leaks
@@ -215,14 +246,18 @@ as a boolean property. When `getattr()` retrieves the boolean value (`True` or
 ### Immediate Actions Required
 
 1. **Fix Type Mismatch**: Update `npc_instance_service.py` to treat `is_alive`
+
    as a property, not a callable
+
 2. **Fix Both Occurrences**: Update both line 278 and line 330
 3. **Update Tests**: Review and update tests that mock `is_alive` as callable
 
 ### Code Quality Improvements
 
 1. **Standardize API**: Consider standardizing `is_alive` usage across Player
+
    and NPC models
+
 2. **Type Hints**: Add type hints to clarify expected types
 3. **Documentation**: Document that NPC `is_alive` is a property, not a method
 
@@ -250,6 +285,7 @@ The problematic code:
 ```
 
 Should be changed to:
+
 ```python
 "is_alive": getattr(npc_instance, "is_alive", True),
 ```
@@ -285,7 +321,8 @@ gameplay or system stability.
 
 ## Appendix: Related Files
 
-- `server/services/npc_instance_service.py` - Primary bug location
+`server/services/npc_instance_service.py` - Primary bug location
+
 - `server/commands/look_npc.py` - Error handling location
 - `server/npc/npc_base.py` - NPC base class with `is_alive` property definition
 - `server/models/player.py` - Player model with `is_alive()` method (for comparison)

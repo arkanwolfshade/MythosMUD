@@ -82,12 +82,14 @@ The UI panels in the MythosMUD game client do not automatically adjust their siz
    **Finding:** The `maximizedSize` calculation only depends on `isMaximized`, not on window dimensions. When the window resizes, this value is not recalculated.
 
 3. **`client/src/components/ui-v2/PanelSystem/PanelContainer.tsx`** (Lines 172-194)
+
    - Uses `react-rnd` (`Rnd` component) for drag and resize functionality
    - `react-rnd` handles manual resizing via drag handles
    - `react-rnd` does NOT automatically adjust panel sizes when window resizes
    - Panel positions and sizes are stored in state and persisted to localStorage
 
 4. **`client/src/components/ui-v2/PanelSystem/PanelManager.tsx`**
+
    - Manages panel state (position, size, visibility, etc.)
    - Persists panel layout to localStorage
    - No resize event handling or automatic layout recalculation
@@ -98,17 +100,21 @@ The UI panels in the MythosMUD game client do not automatically adjust their siz
 
 **Test 1: Resize to 800x600**
 
-- **Initial Viewport:** 1920x1080
-- **Resized Viewport:** 800x600
-- **Result:** Panels maintained original size and position
+**Initial Viewport:** 1920x1080
+
+**Resized Viewport:** 800x600
+
+**Result:** Panels maintained original size and position
 - **Screenshot:** `investigations/sessions/2025-01-XX_session-ui-panel-resize-800x600.png`
 - **Observation:** Panels did not adjust to fit the smaller viewport. Large empty space on right side.
 
 **Test 2: Resize back to 1920x1080**
 
-- **Resized Viewport:** 1920x1080
-- **Result:** Panels maintained size from 800x600 test
-- **Screenshot:** `investigations/sessions/2025-01-XX_session-ui-panel-resize-1920x1080.png`
+**Resized Viewport:** 1920x1080
+
+**Result:** Panels maintained size from 800x600 test
+
+**Screenshot:** `investigations/sessions/2025-01-XX_session-ui-panel-resize-1920x1080.png`
 - **Observation:** Panels did not expand to utilize the larger viewport.
 
 **DOM Analysis:**
@@ -175,9 +181,11 @@ The UI panels do not autoscale on browser resize due to two main issues:
 
 **Technical Impact:**
 
-- **User Experience:** Poor usability on different screen sizes and window configurations
-- **Responsive Design:** UI does not adapt to viewport changes
-- **Accessibility:** May cause issues for users with different screen sizes or window configurations
+**User Experience:** Poor usability on different screen sizes and window configurations
+
+**Responsive Design:** UI does not adapt to viewport changes
+
+**Accessibility:** May cause issues for users with different screen sizes or window configurations
 - **Functionality:** Panels may become inaccessible or overlap when window is resized to smaller sizes
 
 ---
@@ -218,13 +226,15 @@ The UI panels do not autoscale on browser resize due to two main issues:
 
 ### Code References
 
-- `client/src/components/ui-v2/GameClientV2.tsx:104-111` - Empty resize handler
+`client/src/components/ui-v2/GameClientV2.tsx:104-111` - Empty resize handler
+
 - `client/src/components/ui-v2/PanelSystem/PanelContainer.tsx:54-63` - Static maximized size calculation
 - `client/src/components/ui-v2/PanelSystem/PanelManager.tsx` - Panel state management (no resize handling)
 
 ### Test Results
 
-- Browser resize test: Confirmed panels do not autoscale
+Browser resize test: Confirmed panels do not autoscale
+
 - DOM analysis: Panels use fixed dimensions from state
 - Event listener: Resize handler registered but empty
 
@@ -293,7 +303,8 @@ Implementation approach:
 
 ## Investigation Completion Checklist
 
-- [x] All investigation steps completed as written
+[x] All investigation steps completed as written
+
 - [x] Comprehensive evidence collected and documented
 - [x] Root cause analysis completed
 - [x] System impact assessed

@@ -6,15 +6,16 @@ Based on the Environment Contamination Audit Report, the following tasks are req
 
 ## Tasks
 
-- [ ] 1. **CRITICAL: Remove Environment Detection from Logging System**
-  - [ ] 1.1 Write tests for logging environment detection removal
-  - [ ] 1.2 Remove pytest detection logic from `detect_environment()` function
-  - [ ] 1.3 Remove `MYTHOSMUD_TEST_MODE` environment variable detection
-  - [ ] 1.4 Update `detect_environment()` to use only `MYTHOSMUD_ENV` variable
-  - [ ] 1.5 Update function documentation to reflect new behavior
-  - [ ] 1.6 Verify all logging tests pass with new environment detection
-  - [ ] 1.7 Test logging system in different environment configurations
-  - [ ] 1.8 Verify no environment-specific behavior remains
+[ ] 1. **CRITICAL: Remove Environment Detection from Logging System**
+
+- [ ] 1.1 Write tests for logging environment detection removal
+- [ ] 1.2 Remove pytest detection logic from `detect_environment()` function
+- [ ] 1.3 Remove `MYTHOSMUD_TEST_MODE` environment variable detection
+- [ ] 1.4 Update `detect_environment()` to use only `MYTHOSMUD_ENV` variable
+- [ ] 1.5 Update function documentation to reflect new behavior
+- [ ] 1.6 Verify all logging tests pass with new environment detection
+- [ ] 1.7 Test logging system in different environment configurations
+- [ ] 1.8 Verify no environment-specific behavior remains
 
 - [ ] 2. **Update Test Configuration for Explicit Environment Control**
   - [ ] 2.1 Write tests for test environment configuration
@@ -64,7 +65,8 @@ Task 1 is **CRITICAL** and must be completed immediately as it represents a fund
 
 ### Dependencies
 
-- Task 2 depends on Task 1 completion
+Task 2 depends on Task 1 completion
+
 - Task 3 can be developed in parallel with Task 2
 - Task 4 should be implemented after Tasks 1-3 are complete
 - Task 5 is the final verification step
@@ -80,7 +82,8 @@ Each task follows Test-Driven Development (TDD) approach:
 
 ### Success Criteria
 
-- All production code is environment-agnostic
+All production code is environment-agnostic
+
 - No conditional logic based on execution context
 - Explicit environment configuration only
 - Comprehensive test coverage for environment scenarios

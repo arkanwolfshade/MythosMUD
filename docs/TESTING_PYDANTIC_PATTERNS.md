@@ -4,7 +4,8 @@
 
 ### Problem
 
-When accessing nested Pydantic model attributes in tests, Pylint reports `E1101:no-member` errors because it sees nested fields as `FieldInfo` instances rather than the actual config/model objects.
+When accessing nested Pydantic model attributes in tests, Pylint reports `E1101:no-member` errors because it sees nested
+fields as `FieldInfo` instances rather than the actual config/model objects.
 
 **Example Error:**
 
@@ -16,7 +17,8 @@ Instance of 'FieldInfo' has no 'admin_password' member
 
 ### Root Cause
 
-Pydantic uses `Field()` descriptors for nested models. Type checkers (Pylint, mypy) cannot always infer that accessing `config.database` returns a `DatabaseConfig` instance rather than a `FieldInfo` descriptor.
+Pydantic uses `Field()` descriptors for nested models. Type checkers (Pylint, mypy) cannot always infer that accessing
+`config.database` returns a `DatabaseConfig` instance rather than a `FieldInfo` descriptor.
 
 ### Solution Pattern
 
@@ -28,6 +30,7 @@ Pydantic uses `Field()` descriptors for nested models. Type checkers (Pylint, my
 def test_config_access():
     config = AppConfig()
     # Direct nested access triggers FieldInfo errors
+
     assert config.database.url == "postgresql://..."
     assert config.security.admin_password == "password"
     assert config.cors.allow_origins == ["http://localhost:5173"]
@@ -40,6 +43,7 @@ def test_config_access():
     config = AppConfig()
     # Extract nested configs to avoid type checker FieldInfo issues
     # Pylint sees nested Pydantic fields as FieldInfo instances rather than the actual config objects
+
     database_config = config.database
     security_config = config.security
     cors_config = config.cors
@@ -65,13 +69,16 @@ In production code, you may see:
 
 ```python
 # pylint: disable=no-member
+
 database = self.database
 if database.url:
     # ...
 # pylint: enable=no-member
+
 ```
 
-**Why not recommended for tests:** Suppression comments hide the issue rather than fixing it. Extracting the nested config is clearer and more maintainable.
+**Why not recommended for tests:** Suppression comments hide the issue rather than fixing it. Extracting the nested
+config is clearer and more maintainable.
 
 #### Option 2: Type Annotations (Advanced)
 
@@ -106,7 +113,8 @@ When writing new tests that access nested Pydantic models:
 
 ### Related Issues
 
-- Pydantic v2 Field descriptors
+Pydantic v2 Field descriptors
+
 - Type inference limitations in static analysis tools
 - Nested model access patterns
 

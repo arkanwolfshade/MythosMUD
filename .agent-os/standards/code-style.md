@@ -14,27 +14,41 @@ ELSE:
 ## General Formatting
 
 ### Indentation
-- Use 2 spaces for indentation (never tabs)
+
+Use 2 spaces for indentation (never tabs)
+
 - Maintain consistent indentation throughout files
 - Align nested structures for readability
 
 ### Naming Conventions
-- **Methods and Variables**: Use snake_case (e.g., `user_profile`, `calculate_total`)
-- **Classes and Modules**: Use PascalCase (e.g., `UserProfile`, `PaymentProcessor`)
-- **Constants**: Use UPPER_SNAKE_CASE (e.g., `MAX_RETRY_COUNT`)
+
+**Methods and Variables**: Use snake_case (e.g., `user_profile`, `calculate_total`)
+
+**Classes and Modules**: Use PascalCase (e.g., `UserProfile`, `PaymentProcessor`)
+
+**Constants**: Use UPPER_SNAKE_CASE (e.g., `MAX_RETRY_COUNT`)
 
 ### String Formatting
-- Use single quotes for strings: `'Hello World'`
+
+Use single quotes for strings: `'Hello World'`
+
 - Use double quotes only when interpolation is needed
 - Use template literals for multi-line strings or complex interpolation
 
 ### Code Comments
-- Add brief comments above non-obvious business logic
+
+Add brief comments above non-obvious business logic
+
 - Document complex algorithms or calculations
+
 - Explain the "why" behind implementation choices
+
 - Never remove existing comments unless removing the associated code
+
 - Update comments when modifying code to maintain accuracy
+
 - Keep comments concise and relevant
+
 </conditional-block>
 
 <conditional-block task-condition="html-css-tailwind" context-check="html-css-style">
@@ -51,8 +65,11 @@ IF current task involves writing or updating HTML, CSS, or TailwindCSS:
         PROCESS: Returned style rules
       ELSE:
         READ the following style guides (only if not already in context):
+
         - @.agent-os/standards/code-style/html-style.md (if not in context)
+
         - @.agent-os/standards/code-style/css-style.md (if not in context)
+
     </context_fetcher_strategy>
 ELSE:
   SKIP: HTML/CSS style guides not relevant to current task

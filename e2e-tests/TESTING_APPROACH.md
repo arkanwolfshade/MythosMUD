@@ -2,7 +2,9 @@
 
 ## Overview
 
-This document explains the testing approach rationale for the MythosMUD E2E test suite. All 21 scenarios use **Playwright MCP** as the primary testing tool due to the multiplayer nature of the application and the complex real-time interaction requirements.
+This document explains the testing approach rationale for the MythosMUD E2E test suite. All 21 scenarios use
+**Playwright MCP** as the primary testing tool due to the multiplayer nature of the application and the complex
+real-time interaction requirements.
 
 ## Testing Tool Selection
 
@@ -29,40 +31,66 @@ This document explains the testing approach rationale for the MythosMUD E2E test
 ## Scenario-by-Scenario Analysis
 
 ### Scenarios 1-2: Basic Connection and Game State
-- **Complexity**: Low-Medium
-- **Multi-tab Required**: Yes (2 players)
-- **Real-time Interaction**: Yes (connection/disconnection events)
-- **Testing Approach**: **Playwright MCP** - Requires multi-tab coordination and real-time event verification
+
+**Complexity**: Low-Medium
+
+**Multi-tab Required**: Yes (2 players)
+
+**Real-time Interaction**: Yes (connection/disconnection events)
+
+**Testing Approach**: **Playwright MCP** - Requires multi-tab coordination and real-time event verification
 
 ### Scenarios 3-5: Movement and Communication
-- **Complexity**: Medium
-- **Multi-tab Required**: Yes (2 players)
-- **Real-time Interaction**: Yes (movement messages, chat, emotes)
-- **Testing Approach**: **Playwright MCP** - Requires multi-tab coordination for message broadcasting verification
+
+**Complexity**: Medium
+
+**Multi-tab Required**: Yes (2 players)
+
+**Real-time Interaction**: Yes (movement messages, chat, emotes)
+
+**Testing Approach**: **Playwright MCP** - Requires multi-tab coordination for message broadcasting verification
 
 ### Scenarios 6-7: Admin and Command
-- **Complexity**: Medium-High
-- **Multi-tab Required**: Yes (2 players, admin vs non-admin)
-- **Real-time Interaction**: Yes (admin commands, player listings)
-- **Testing Approach**: **Playwright MCP** - Requires multi-tab coordination and privilege testing
+
+**Complexity**: Medium-High
+
+**Multi-tab Required**: Yes (2 players, admin vs non-admin)
+
+**Real-time Interaction**: Yes (admin commands, player listings)
+
+**Testing Approach**: **Playwright MCP** - Requires multi-tab coordination and privilege testing
 
 ### Scenarios 8-12: Local Channel
-- **Complexity**: High
-- **Multi-tab Required**: Yes (2 players, sub-zone testing)
-- **Real-time Interaction**: Yes (local channel routing, isolation testing)
-- **Testing Approach**: **Playwright MCP** - Complex multi-tab coordination required for sub-zone routing
+
+**Complexity**: High
+
+**Multi-tab Required**: Yes (2 players, sub-zone testing)
+
+**Real-time Interaction**: Yes (local channel routing, isolation testing)
+
+**Testing Approach**: **Playwright MCP** - Complex multi-tab coordination required for sub-zone routing
 
 ### Scenarios 13-18: Whisper Channel
-- **Complexity**: High
-- **Multi-tab Required**: Yes (2 players, private messaging)
-- **Real-time Interaction**: Yes (whisper delivery, rate limiting, logging)
-- **Testing Approach**: **Playwright MCP** - Complex multi-tab coordination required for privacy and rate limiting testing
+
+**Complexity**: High
+
+**Multi-tab Required**: Yes (2 players, private messaging)
+
+**Real-time Interaction**: Yes (whisper delivery, rate limiting, logging)
+
+**Testing Approach**: **Playwright MCP** - Complex multi-tab coordination required for privacy and rate limiting
+
+  testing
 
 ### Scenarios 19-21: Logout Button
-- **Complexity**: Medium
-- **Multi-tab Required**: Yes (2 players, logout broadcasting)
-- **Real-time Interaction**: Yes (logout messages, session management)
-- **Testing Approach**: **Playwright MCP** - Requires multi-tab coordination for logout message broadcasting
+
+**Complexity**: Medium
+
+**Multi-tab Required**: Yes (2 players, logout broadcasting)
+
+**Real-time Interaction**: Yes (logout messages, session management)
+
+**Testing Approach**: **Playwright MCP** - Requires multi-tab coordination for logout message broadcasting
 
 ## Hybrid Approach Considerations
 
@@ -71,10 +99,15 @@ This document explains the testing approach rationale for the MythosMUD E2E test
 While all scenarios require multiplayer testing, some components could potentially be unit-tested separately:
 
 **Potential Unit Test Candidates:**
-- **Scenario 2**: Clean game state verification (single-player component)
-- **Scenario 4**: Emote functionality (single-player component)
-- **Scenario 5**: Chat message sending (single-player component)
-- **Scenario 7**: Who command execution (single-player component)
+
+**Scenario 2**: Clean game state verification (single-player component)
+
+**Scenario 4**: Emote functionality (single-player component)
+
+**Scenario 5**: Chat message sending (single-player component)
+
+**Scenario 7**: Who command execution (single-player component)
+
 - **Scenario 8**: Local channel message sending (single-player component)
 - **Scenario 11**: Local channel error handling (single-player component)
 - **Scenario 13**: Whisper message sending (single-player component)
@@ -137,15 +170,21 @@ Each scenario includes:
 
 ## Conclusion
 
-The MythosMUD E2E test suite uses **Playwright MCP exclusively** due to the multiplayer nature of the application. This approach provides:
+The MythosMUD E2E test suite uses **Playwright MCP exclusively** due to the multiplayer nature of the application. This
+approach provides:
 
-- **Comprehensive Coverage**: All multiplayer scenarios are fully tested
-- **Real-time Verification**: Message broadcasting and state synchronization are verified
-- **Complex Interaction Testing**: Admin commands, movement, and communication are thoroughly tested
-- **Consistent Approach**: All scenarios use the same testing methodology
-- **Maintainable Structure**: Easy to maintain and extend test scenarios
+**Comprehensive Coverage**: All multiplayer scenarios are fully tested
 
-While standard Playwright could be used for unit testing individual components, the core E2E testing requires Playwright MCP for proper multiplayer functionality verification.
+**Real-time Verification**: Message broadcasting and state synchronization are verified
+
+**Complex Interaction Testing**: Admin commands, movement, and communication are thoroughly tested
+
+**Consistent Approach**: All scenarios use the same testing methodology
+
+**Maintainable Structure**: Easy to maintain and extend test scenarios
+
+While standard Playwright could be used for unit testing individual components, the core E2E testing requires Playwright
+MCP for proper multiplayer functionality verification.
 
 ---
 

@@ -35,9 +35,11 @@ PostgreSQL best practices explicitly state: "Avoid using `SELECT *` and specify 
 
 ```python
 # ❌ WRONG - server/async_persistence.py:123
+
 row = await conn.fetchrow("SELECT * FROM players WHERE name = $1", name)
 
 # ✅ CORRECT
+
 row = await conn.fetchrow(
     "SELECT player_id, user_id, name, current_room_id, profession_id, "
     "experience_points, level, stats, inventory, status_effects, "
@@ -100,6 +102,7 @@ Every database operation creates a new connection and closes it immediately. Thi
 
 ```python
 # ❌ WRONG - Creates new connection for EVERY operation
+
 async def get_player_by_name(self, name: str) -> Player | None:
     url = self.db_path.replace("postgresql+asyncpg://", "postgresql://")
     conn = await asyncpg.connect(url)  # New connection
@@ -154,6 +157,7 @@ class AsyncPersistenceLayer:
         async with pool.acquire() as conn:
             row = await conn.fetchrow("SELECT ... FROM players WHERE name = $1", name)
             # Connection automatically returned to pool
+
 ```
 
 ---
@@ -184,6 +188,7 @@ async def save_players(self, players: list[Player]) -> None:
         async with conn.transaction():  # Explicit transaction
             for player in players:
                 # Save operations
+
 ```
 
 ---
@@ -232,12 +237,14 @@ Use PostgreSQL's `COPY` or batch insert with `executemany()`:
 
 ```python
 # Option 1: Use executemany for batch operations
+
 await conn.executemany(
     "INSERT INTO players ... ON CONFLICT ...",
     [player_data_1, player_data_2, ...]
 )
 
 # Option 2: Use asyncpg's copy_records_to_table for large batches
+
 ```
 
 ---
@@ -272,8 +279,10 @@ PostgreSQL automatically creates indexes on primary keys, but foreign keys shoul
 
 **Current State:**
 
-- ✅ `user_id` has index: `idx_players_user_id`
-- ✅ `profession_id` has index: `idx_players_profession_id`
+✅ `user_id` has index: `idx_players_user_id`
+
+✅ `profession_id` has index: `idx_players_profession_id`
+
 - ❓ Need to verify all foreign keys have indexes
 
 **Recommendation:**
@@ -359,6 +368,7 @@ Add comments to complex queries explaining business logic:
 ```python
 # Get all players in a room for broadcasting messages
 # Uses index on current_room_id for optimal performance
+
 rows = await conn.fetch("SELECT ... FROM players WHERE current_room_id = $1", room_id)
 ```
 
@@ -376,9 +386,11 @@ Use asyncpg's prepared statement support for frequently executed queries:
 
 ```python
 # Prepare statement once
+
 stmt = await conn.prepare("SELECT ... FROM players WHERE name = $1")
 
 # Reuse prepared statement
+
 row = await stmt.fetchrow(name)
 ```
 
@@ -395,18 +407,18 @@ row = await stmt.fetchrow(name)
 
 ### High Priority
 
-5. ✅ Add index on `respawn_room_id` (proactive)
-6. ✅ Optimize `save_players()` to use batch operations
-7. ✅ Add query performance monitoring
+1. ✅ Add index on `respawn_room_id` (proactive)
+2. ✅ Optimize `save_players()` to use batch operations
+3. ✅ Add query performance monitoring
 
 ### Medium Priority
 
-8. ✅ Audit and add indexes for all foreign keys
-9. ✅ Make connection pool size configurable
-10. ✅ Add connection timeout configuration
-11. ✅ Standardize error handling patterns
-12. ✅ Add query comments for complex operations
-13. ✅ Implement prepared statement caching
+1. ✅ Audit and add indexes for all foreign keys
+2. ✅ Make connection pool size configurable
+3. ✅ Add connection timeout configuration
+4. ✅ Standardize error handling patterns
+5. ✅ Add query comments for complex operations
+6. ✅ Implement prepared statement caching
 
 ---
 
@@ -433,6 +445,7 @@ After implementing fixes, test:
 
 ## References
 
-- PostgreSQL Best Practices: `.cursor/rules/postgresql.mdc`
+PostgreSQL Best Practices: `.cursor/rules/postgresql.mdc`
+
 - SQLAlchemy Async Best Practices: `docs/SQLALCHEMY_ASYNC_BEST_PRACTICES.md`
 - Connection Pooling: PostgreSQL documentation on connection pooling

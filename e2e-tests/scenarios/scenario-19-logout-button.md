@@ -2,9 +2,12 @@
 
 ## Overview
 
-Tests logout message broadcasting to other players. This scenario verifies that when a player logs out, other players in the game see the logout notification message in real-time.
+Tests logout message broadcasting to other players. This scenario verifies that when a player logs out, other players in
+the game see the logout notification message in real-time.
 
-**⚠️ AUTOMATED TESTS AVAILABLE**: Logout button functionality is tested in automated Playwright CLI tests. See `client/tests/e2e/runtime/integration/logout-button.spec.ts` for:
+**⚠️ AUTOMATED TESTS AVAILABLE**: Logout button functionality is tested in automated Playwright CLI tests. See
+`client/tests/e2e/runtime/integration/logout-button.spec.ts` for:
+
 - Button visibility and accessibility
 - Click functionality and UI state changes
 - Logout confirmation message
@@ -16,35 +19,45 @@ This MCP scenario focuses ONLY on logout message broadcasting that requires real
 
 ## Prerequisites
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
 2. **Server Running**: Development server is running on port 54731
 3. **Client Accessible**: Client is accessible on port 5173
 4. **Both Players Connected**: AW and Ithaqua are both logged in and in the same room
 
-**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
+### ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE
 
 **Reference**: See @MULTIPLAYER_TEST_RULES.md for complete prerequisite verification procedures.
 
 ## Test Configuration
 
-- **Test Players**: ArkanWolfshade (AW) and Ithaqua
-- **Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
-- **Testing Approach**: Playwright MCP (multi-tab interaction required)
-- **Timeout Settings**: Use configurable timeouts from master rules
+**Test Players**: ArkanWolfshade (AW) and Ithaqua
+
+**Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
+
+**Testing Approach**: Playwright MCP (multi-tab interaction required)
+
+**Timeout Settings**: Use configurable timeouts from master rules
 
 ## Testing Approach Rationale
 
-**Why Playwright MCP is Required:**
-- **Multi-tab Coordination**: Requires 2+ browser tabs for logout message broadcasting testing
-- **Real-time Interaction**: Must verify logout messages are broadcast to other players in real-time
-- **Session Management**: Must test session termination and cleanup across multiple players
-- **Message Broadcasting**: Must verify logout messages are delivered to other players
+### Why Playwright MCP is Required
+
+**Multi-tab Coordination**: Requires 2+ browser tabs for logout message broadcasting testing
+
+**Real-time Interaction**: Must verify logout messages are broadcast to other players in real-time
+
+**Session Management**: Must test session termination and cleanup across multiple players
+
+**Message Broadcasting**: Must verify logout messages are delivered to other players
+
 - **Complex User Flows**: Involves complex session management interaction patterns
 
-**Standard Playwright Not Suitable:**
-- Cannot handle multiple browser tabs simultaneously
+### Standard Playwright Not Suitable
+
+Cannot handle multiple browser tabs simultaneously
+
 - Cannot verify real-time logout message broadcasting
 - Cannot test multiplayer session management
 
@@ -55,6 +68,7 @@ This MCP scenario focuses ONLY on logout message broadcasting that requires real
 **Purpose**: Ensure both players are ready for logout testing
 
 **Commands**:
+
 ```javascript
 // Ensure both players are logged in from previous scenario
 // AW should be on tab 0, Ithaqua on tab 1
@@ -68,6 +82,7 @@ This MCP scenario focuses ONLY on logout message broadcasting that requires real
 **Purpose**: Test that logout button is visible and accessible
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -88,6 +103,7 @@ console.log('Logout button text:', logoutButtonText);
 **Purpose**: Test that logout button can be clicked
 
 **Commands**:
+
 ```javascript
 // Click logout button
 await mcp_playwright_browser_click({element: "Logout button", ref: "logout-button"});
@@ -109,6 +125,7 @@ console.log('AW messages:', awMessages);
 **Purpose**: Test that other players see logout messages
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
@@ -130,6 +147,7 @@ console.log('Ithaqua messages:', ithaquaMessages);
 **Purpose**: Test that Ithaqua can also logout
 
 **Commands**:
+
 ```javascript
 // Click logout button for Ithaqua
 await mcp_playwright_browser_click({element: "Logout button", ref: "logout-button"});
@@ -150,6 +168,7 @@ console.log('Ithaqua sees logout message:', seesIthaquaLogout);
 **Purpose**: Test that logout button is not accessible after logout
 
 **Commands**:
+
 ```javascript
 // Check if logout button is still visible after logout
 const logoutButtonAfter = await mcp_playwright_browser_evaluate({function: "() => document.querySelector('button[data-testid=\"logout-button\"]') || document.querySelector('.logout-button') || document.querySelector('button:contains(\"Logout\")')"});
@@ -171,6 +190,7 @@ console.log('Login form found:', loginForm !== null);
 **Purpose**: Test that users can log back in after logout
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -209,6 +229,7 @@ if (awLoginForm) {
 **Purpose**: Test that logout button works after re-login
 
 **Commands**:
+
 ```javascript
 // EXECUTION GUARD: Single verification attempt - do not retry
 const logoutButtonAfterRelogin = await mcp_playwright_browser_evaluate({function: "() => document.querySelector('button[data-testid=\"logout-button\"]') || document.querySelector('.logout-button') || document.querySelector('button:contains(\"Logout\")')"});
@@ -243,6 +264,7 @@ if (logoutButtonAfterRelogin) {
 **Purpose**: Test that logout button provides proper feedback
 
 **Commands**:
+
 ```javascript
 // Check logout button functionality
 const logoutButtonFunctionality = await mcp_playwright_browser_evaluate({function: "() => { const btn = document.querySelector('button[data-testid=\"logout-button\"]') || document.querySelector('.logout-button') || document.querySelector('button:contains(\"Logout\")'); return btn ? { disabled: btn.disabled, text: btn.textContent, visible: btn.offsetParent !== null } : null; }"});
@@ -257,6 +279,7 @@ console.log('✅ All verification steps completed successfully');
 console.log('✅ System functionality verified as working correctly');
 console.log('✅ Test results documented and validated');
 console.log('📋 PROCEEDING TO SCENARIO 20: Logout Error Handling');
+
 ```
 
 **Expected Result**:  Logout button works correctly after re-login
@@ -289,9 +312,14 @@ console.log('➡️ READY FOR SCENARIO 20: Logout Error Handling');
 **Purpose**: Test that logout button has proper styling
 
 **Commands**:
+
 ```javascript
 // Check logout button styling
-const logoutButtonStyling = await mcp_playwright_browser_evaluate({function: "() => { const btn = document.querySelector('button[data-testid=\"logout-button\"]') || document.querySelector('.logout-button') || document.querySelector('button:contains(\"Logout\")'); return btn ? { backgroundColor: window.getComputedStyle(btn).backgroundColor, color: window.getComputedStyle(btn).color, fontSize: window.getComputedStyle(btn).fontSize } : null; }"});
+const logoutButtonStyling = await mcp_playwright_browser_evaluate({function: "() => { const btn =
+document.querySelector('button[data-testid=\"logout-button\"]') || document.querySelector('.logout-button') ||
+document.querySelector('button:contains(\"Logout\")'); return btn ? { backgroundColor:
+window.getComputedStyle(btn).backgroundColor, color: window.getComputedStyle(btn).color, fontSize:
+window.getComputedStyle(btn).fontSize } : null; }"});
 console.log('Logout button styling:', logoutButtonStyling);
 ```
 
@@ -299,11 +327,16 @@ console.log('Logout button styling:', logoutButtonStyling);
 
 ## Expected Results
 
-- ✅ Logout button is visible and accessible
-- ✅ Logout button can be clicked
-- ✅ AW sees logout confirmation message
-- ✅ Ithaqua sees AW's logout message
-- ✅ Ithaqua can logout successfully
+✅ Logout button is visible and accessible
+
+✅ Logout button can be clicked
+
+✅ AW sees logout confirmation message
+
+✅ Ithaqua sees AW's logout message
+
+✅ Ithaqua can logout successfully
+
 - ✅ Logout button is not accessible after logout
 - ✅ User is redirected to login page after logout
 - ✅ User can log back in after logout
@@ -312,7 +345,8 @@ console.log('Logout button styling:', logoutButtonStyling);
 
 ## Success Criteria Checklist
 
-- [ ] Logout button is visible and accessible
+[ ] Logout button is visible and accessible
+
 - [ ] Logout button can be clicked
 - [ ] AW sees logout confirmation message
 - [ ] Ithaqua sees AW's logout message
@@ -331,13 +365,14 @@ console.log('Logout button styling:', logoutButtonStyling);
 ## Cleanup
 
 Execute standard cleanup procedures from @CLEANUP.md:
+
 1. Close all browser tabs
 2. Stop development server
 3. Verify clean shutdown
 
 ## Status
 
-**✅ READY FOR TESTING**
+### ✅ READY FOR TESTING
 
 The basic logout button functionality is working correctly. Users can properly log out of their sessions, logout confirmation is provided, and the logout system works correctly for multiplayer interaction.
 

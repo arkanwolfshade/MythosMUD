@@ -11,6 +11,7 @@ This directory contains PostgreSQL role (user) creation scripts.
 ### `roles.sql`
 
 Creates PostgreSQL roles (users) for different environments:
+
 - `mythos_owner_dev` - Database owner for development
 - `mythos_app_dev` - Application user for development
 - `mythos_owner_unit` - Database owner for unit tests
@@ -28,6 +29,7 @@ This script is executed **before** database creation and schema application:
 ## Execution Order
 
 The correct order is:
+
 1. `db/roles/roles.sql` - Create roles (users)
 2. `db/databases/databases.sql` - Create databases with owners
 3. `db/authoritative_schema.sql` - Apply schema
@@ -35,7 +37,8 @@ The correct order is:
 
 ## Security
 
-- Roles use least-privilege principles
+Roles use least-privilege principles
+
 - Application roles have only necessary permissions
 - Owner roles have full access to their respective databases
 - No public access granted

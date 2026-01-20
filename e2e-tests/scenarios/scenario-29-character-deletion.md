@@ -8,20 +8,22 @@ Tests soft deletion of characters, including deletion confirmation, list updates
 
 ## Prerequisites
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Test user has at least 2 active characters
 2. **Server Running**: Development server is running on port 54731
 3. **Client Accessible**: Client is accessible on port 5173
 4. **No Previous Sessions**: Browser is clean with no existing game sessions
 
-**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
+### ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE
 
 ## Test Configuration
 
-- **Test Player**: ArkanWolfshade (with multiple characters)
-- **Testing Approach**: Playwright MCP
-- **Timeout Settings**: Use configurable timeouts from master rules
+**Test Player**: ArkanWolfshade (with multiple characters)
+
+**Testing Approach**: Playwright MCP
+
+**Timeout Settings**: Use configurable timeouts from master rules
 
 ## Execution Steps
 
@@ -142,14 +144,18 @@ await mcp_playwright_browser_wait_for({text: "Select Your Character", time: 30})
 
 ## Failure Modes
 
-- **Delete button not visible**: UI may not be rendering correctly
-- **Confirmation dialog doesn't appear**: Deletion flow may have issues
-- **Character not removed from list**: Soft delete may not be working
-- **Name reuse fails**: Uniqueness check may not exclude deleted characters
+**Delete button not visible**: UI may not be rendering correctly
+
+**Confirmation dialog doesn't appear**: Deletion flow may have issues
+
+**Character not removed from list**: Soft delete may not be working
+
+**Name reuse fails**: Uniqueness check may not exclude deleted characters
 
 ## Notes
 
-- Characters are soft-deleted (hidden but data preserved)
+Characters are soft-deleted (hidden but data preserved)
+
 - Deleted characters cannot be restored by players
 - Deleted character names can be reused immediately
 - Character limit is based on active characters only

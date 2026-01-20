@@ -1,18 +1,26 @@
 # NATS Subject Pattern Management
 
-> *As noted in the restricted archives of Miskatonic University, proper subject naming conventions are essential for maintaining the integrity of our messaging infrastructure across dimensional boundaries.*
+> *As noted in the restricted archives of Miskatonic University, proper subject naming conventions are essential for
+maintaining the integrity of our messaging infrastructure across dimensional boundaries.*
 
 ## Overview
 
-The NATS Subject Manager provides centralized management of NATS subject naming conventions for MythosMUD's real-time messaging system. It eliminates hardcoded subject strings, provides validation, and enables dynamic pattern registration.
+The NATS Subject Manager provides centralized management of NATS subject naming conventions for MythosMUD's real-time
+messaging system. It eliminates hardcoded subject strings, provides validation, and enables dynamic pattern
+registration.
 
 ### Key Features
 
-- **Centralized Pattern Management**: All subject patterns defined in one location
-- **Type-Safe Subject Building**: Compile-time parameter validation
-- **Performance Monitoring**: Built-in metrics for all operations
-- **Caching**: Automatic caching of validation results
-- **Dynamic Registration**: Runtime pattern registration without code changes
+**Centralized Pattern Management**: All subject patterns defined in one location
+
+**Type-Safe Subject Building**: Compile-time parameter validation
+
+**Performance Monitoring**: Built-in metrics for all operations
+
+**Caching**: Automatic caching of validation results
+
+**Dynamic Registration**: Runtime pattern registration without code changes
+
 - **Admin API**: REST endpoints for pattern management and monitoring
 
 ## Architecture
@@ -26,6 +34,7 @@ Subject patterns follow a hierarchical structure:
 ```
 
 **Components:**
+
 - `service`: Top-level service category (chat, events, combat)
 - `channel`: Communication channel or event type (say, local, attack)
 - `scope`: Scope of the message (room, subzone, player)
@@ -50,6 +59,7 @@ combat.attack.{room_id}           # Combat attack events
 from server.services.nats_subject_manager import nats_subject_manager
 
 # Build a subject for room-level say message
+
 subject = nats_subject_manager.build_subject(
     "chat_say_room",
     room_id="arkham_university_library"
@@ -57,8 +67,10 @@ subject = nats_subject_manager.build_subject(
 # Result: "chat.say.room.arkham_university_library"
 
 # Validate a subject
+
 is_valid = nats_subject_manager.validate_subject("chat.say.room.test_room")
 # Result: True
+
 ```
 
 ### Publishing Messages
@@ -68,12 +80,14 @@ from server.services.nats_service import nats_service
 from server.services.nats_subject_manager import nats_subject_manager
 
 # Build subject using pattern
+
 subject = nats_subject_manager.build_subject(
     "chat_say_room",
     room_id=player.current_room_id
 )
 
 # Publish message
+
 await nats_service.publish(subject, {
     "message_id": message_id,
     "sender_id": player.player_id,
@@ -90,13 +104,16 @@ await nats_service.publish(subject, {
 from server.services.nats_subject_manager import nats_subject_manager
 
 # Get subscription pattern with wildcards
+
 subscription_pattern = nats_subject_manager.get_subscription_pattern("chat_say_room")
 # Result: "chat.say.room.*"
 
 # Subscribe to pattern
+
 await nats_service.subscribe(subscription_pattern, message_handler)
 
 # Or get all chat subscription patterns
+
 chat_patterns = nats_subject_manager.get_chat_subscription_patterns()
 for pattern in chat_patterns:
     await nats_service.subscribe(pattern, message_handler)
@@ -106,38 +123,38 @@ for pattern in chat_patterns:
 
 ### Chat Patterns
 
-| Pattern Name | Subject Template | Parameters | Description |
-|---|---|---|---|
-| `chat_say_room` | `chat.say.room.{room_id}` | room_id | Room-level say messages |
-| `chat_local_subzone` | `chat.local.subzone.{subzone}` | subzone | Subzone-level local messages |
-| `chat_global` | `chat.global` | - | Global chat messages |
-| `chat_whisper_player` | `chat.whisper.player.{target_id}` | target_id | Player-to-player whispers |
-| `chat_system` | `chat.system` | - | System-wide messages |
-| `chat_emote_room` | `chat.emote.room.{room_id}` | room_id | Room-level emote messages |
-| `chat_pose_room` | `chat.pose.room.{room_id}` | room_id | Room-level pose messages |
+| Pattern Name          | Subject Template                  | Parameters | Description                  |
+| --------------------- | --------------------------------- | ---------- | ---------------------------- |
+| `chat_say_room`       | `chat.say.room.{room_id}`         | room_id    | Room-level say messages      |
+| `chat_local_subzone`  | `chat.local.subzone.{subzone}`    | subzone    | Subzone-level local messages |
+| `chat_global`         | `chat.global`                     | -          | Global chat messages         |
+| `chat_whisper_player` | `chat.whisper.player.{target_id}` | target_id  | Player-to-player whispers    |
+| `chat_system`         | `chat.system`                     | -          | System-wide messages         |
+| `chat_emote_room`     | `chat.emote.room.{room_id}`       | room_id    | Room-level emote messages    |
+| `chat_pose_room`      | `chat.pose.room.{room_id}`        | room_id    | Room-level pose messages     |
 
 ### Event Patterns
 
-| Pattern Name | Subject Template | Parameters | Description |
-|---|---|---|---|
-| `event_player_entered` | `events.player_entered.{room_id}` | room_id | Player entered room events |
-| `event_player_left` | `events.player_left.{room_id}` | room_id | Player left room events |
-| `event_game_tick` | `events.game_tick` | - | Global game tick events |
-| `event_player_mortally_wounded` | `events.player_mortally_wounded.{room_id}` | room_id | Player mortally wounded |
-| `event_player_hp_decay` | `events.player_hp_decay.{room_id}` | room_id | Player HP decay events |
-| `event_player_died` | `events.player_died.{room_id}` | room_id | Player death events |
-| `event_player_respawned` | `events.player_respawned.{room_id}` | room_id | Player respawn events |
+| Pattern Name                    | Subject Template                           | Parameters | Description                |
+| ------------------------------- | ------------------------------------------ | ---------- | -------------------------- |
+| `event_player_entered`          | `events.player_entered.{room_id}`          | room_id    | Player entered room events |
+| `event_player_left`             | `events.player_left.{room_id}`             | room_id    | Player left room events    |
+| `event_game_tick`               | `events.game_tick`                         | -          | Global game tick events    |
+| `event_player_mortally_wounded` | `events.player_mortally_wounded.{room_id}` | room_id    | Player mortally wounded    |
+| `event_player_hp_decay`         | `events.player_hp_decay.{room_id}`         | room_id    | Player HP decay events     |
+| `event_player_died`             | `events.player_died.{room_id}`             | room_id    | Player death events        |
+| `event_player_respawned`        | `events.player_respawned.{room_id}`        | room_id    | Player respawn events      |
 
 ### Combat Patterns
 
-| Pattern Name | Subject Template | Parameters | Description |
-|---|---|---|---|
-| `combat_attack` | `combat.attack.{room_id}` | room_id | Combat attack events |
-| `combat_npc_attacked` | `combat.npc_attacked.{room_id}` | room_id | NPC attacked events |
-| `combat_npc_action` | `combat.npc_action.{room_id}` | room_id | NPC action events |
-| `combat_started` | `combat.started.{room_id}` | room_id | Combat started events |
-| `combat_ended` | `combat.ended.{room_id}` | room_id | Combat ended events |
-| `combat_npc_died` | `combat.npc_died.{room_id}` | room_id | NPC death events |
+| Pattern Name          | Subject Template                | Parameters | Description           |
+| --------------------- | ------------------------------- | ---------- | --------------------- |
+| `combat_attack`       | `combat.attack.{room_id}`       | room_id    | Combat attack events  |
+| `combat_npc_attacked` | `combat.npc_attacked.{room_id}` | room_id    | NPC attacked events   |
+| `combat_npc_action`   | `combat.npc_action.{room_id}`   | room_id    | NPC action events     |
+| `combat_started`      | `combat.started.{room_id}`      | room_id    | Combat started events |
+| `combat_ended`        | `combat.ended.{room_id}`        | room_id    | Combat ended events   |
+| `combat_npc_died`     | `combat.npc_died.{room_id}`     | room_id    | NPC death events      |
 
 ## Dynamic Pattern Registration
 
@@ -171,11 +188,13 @@ manager.register_pattern(
 The subject manager implements two levels of caching:
 
 1. **Validation Result Caching**: Caches subject validation results
+
    - Provides 5-8x speedup for repeated validations
    - Automatic cache invalidation when patterns change
    - Configurable via `enable_cache` parameter
 
 2. **Pattern Compilation Caching**: Pre-compiles regex patterns
+
    - Used for component validation
    - Eliminates runtime compilation overhead
 
@@ -186,7 +205,8 @@ The subject manager tracks comprehensive performance metrics:
 ```python
 metrics = manager.get_performance_metrics()
 
-# Returns:
+# Returns
+
 {
     "validation": {
         "total_count": 1000,
@@ -222,11 +242,16 @@ metrics = manager.get_performance_metrics()
 
 Established performance baselines:
 
-- **Build Subject**: < 0.01ms per operation (100,000+ ops/sec)
-- **Validate Subject (no cache)**: < 0.05ms per operation (20,000+ ops/sec)
-- **Validate Subject (cached)**: < 0.01ms per operation (100,000+ ops/sec)
-- **Cache Speedup**: 5-8x for repeated validations
-- **Metrics Overhead**: < 30% performance impact
+**Build Subject**: < 0.01ms per operation (100,000+ ops/sec)
+
+**Validate Subject (no cache)**: < 0.05ms per operation (20,000+ ops/sec)
+
+**Validate Subject (cached)**: < 0.01ms per operation (100,000+ ops/sec)
+
+**Cache Speedup**: 5-8x for repeated validations
+
+**Metrics Overhead**: < 30% performance impact
+
 - **Concurrent Operations**: Thread-safe, supports concurrent access
 
 ## Admin API Reference
@@ -236,6 +261,7 @@ Established performance baselines:
 Get subject management statistics and health status.
 
 **Response:**
+
 ```json
 {
     "status": "healthy",
@@ -251,6 +277,7 @@ Get subject management statistics and health status.
 Validate a NATS subject against registered patterns.
 
 **Request:**
+
 ```json
 {
     "subject": "chat.say.room.arkham_1"
@@ -258,6 +285,7 @@ Validate a NATS subject against registered patterns.
 ```
 
 **Response:**
+
 ```json
 {
     "subject": "chat.say.room.arkham_1",
@@ -272,6 +300,7 @@ Validate a NATS subject against registered patterns.
 Get all registered subject patterns.
 
 **Response:**
+
 ```json
 {
     "patterns": {
@@ -292,6 +321,7 @@ Get all registered subject patterns.
 Register a new subject pattern (admin-only).
 
 **Request:**
+
 ```json
 {
     "name": "chat_party_group",
@@ -302,6 +332,7 @@ Register a new subject pattern (admin-only).
 ```
 
 **Response:**
+
 ```json
 {
     "success": true,
@@ -315,15 +346,19 @@ Register a new subject pattern (admin-only).
 ### Migrating from Hardcoded Subjects
 
 **Before** (hardcoded subject strings):
+
 ```python
 # Old approach - error-prone hardcoded strings
+
 subject = f"chat.say.{room_id}"  # Risk of typos and inconsistency
 await nats_service.publish(subject, data)
 ```
 
 **After** (standardized patterns):
+
 ```python
 # New approach - type-safe pattern-based subjects
+
 subject = nats_subject_manager.build_subject(
     "chat_say_room",  # Pattern name prevents typos
     room_id=room_id
@@ -342,14 +377,18 @@ await nats_service.publish(subject, data)
 ### ChatService Migration Example
 
 **Before:**
+
 ```python
 # Hardcoded subject construction
+
 subject = f"chat.say.{room_id}"
 ```
 
 **After:**
+
 ```python
 # Pattern-based subject construction
+
 subject = self.subject_manager.build_subject(
     "chat_say_room",
     room_id=room_id
@@ -407,11 +446,13 @@ In strict mode, parameter values cannot contain underscores:
 ```python
 manager = NATSSubjectManager(strict_validation=True)
 
-# This will fail in strict mode:
+# This will fail in strict mode
+
 manager.build_subject("chat_say_room", room_id="room_with_underscore")
 # SubjectValidationError: only letters, numbers, and hyphens allowed
 
-# This works in strict mode:
+# This works in strict mode
+
 manager.build_subject("chat_say_room", room_id="room-with-hyphens")
 ```
 
@@ -421,9 +462,11 @@ manager.build_subject("chat_say_room", room_id="room-with-hyphens")
 
 ```python
 # GOOD: Use pattern names
+
 subject = manager.build_subject("chat_say_room", room_id=room_id)
 
 # BAD: Hardcoded strings
+
 subject = f"chat.say.room.{room_id}"
 ```
 
@@ -431,6 +474,7 @@ subject = f"chat.say.room.{room_id}"
 
 ```python
 # Validate custom subjects before use
+
 if manager.validate_subject(custom_subject):
     await nats_service.publish(custom_subject, data)
 else:
@@ -441,11 +485,13 @@ else:
 
 ```python
 # GOOD: Use helper methods for subscription patterns
+
 chat_patterns = manager.get_chat_subscription_patterns()
 for pattern in chat_patterns:
     await nats_service.subscribe(pattern, handler)
 
 # BAD: Hardcoded subscription patterns
+
 await nats_service.subscribe("chat.say.*", handler)  # Missing hierarchy level
 ```
 
@@ -453,6 +499,7 @@ await nats_service.subscribe("chat.say.*", handler)  # Missing hierarchy level
 
 ```python
 # Periodically check performance metrics
+
 metrics = manager.get_performance_metrics()
 
 if metrics["cache"]["hit_rate"] < 0.8:
@@ -476,6 +523,7 @@ try:
 except PatternNotFoundError:
     logger.error("Unknown pattern", pattern_name=pattern_name)
     # Fall back to legacy subject construction
+
 except MissingParameterError as e:
     logger.error("Missing parameters", error=str(e), pattern_name=pattern_name)
     raise
@@ -509,9 +557,11 @@ def test_cache_performance():
     subject = "chat.say.room.test"
 
     # Prime cache
+
     manager.validate_subject(subject)
 
     # Measure cached performance
+
     start = time.perf_counter()
     for _ in range(1000):
         manager.validate_subject(subject)
@@ -529,6 +579,7 @@ GET /api/admin/nats/subjects/health
 ```
 
 Returns comprehensive statistics for monitoring:
+
 - Validation success/failure rates
 - Cache hit rates
 - Average and P95 latencies
@@ -543,11 +594,13 @@ Access metrics programmatically:
 metrics = manager.get_performance_metrics()
 
 # Monitor critical metrics
+
 cache_hit_rate = metrics["cache"]["hit_rate"]
 validation_success_rate = metrics["validation"]["success_rate"]
 avg_validation_time = metrics["validation"]["avg_time_ms"]
 
 # Set up alerts
+
 if cache_hit_rate < 0.7:
     alert("Low cache hit rate", hit_rate=cache_hit_rate)
 
@@ -564,6 +617,7 @@ if avg_validation_time > 1.0:
 **Problem**: `metrics["validation"]["failure_count"]` is high
 
 **Solutions**:
+
 1. Check for subjects that don't match any registered patterns
 2. Review recent pattern changes
 3. Check for malformed subjects in application code
@@ -573,6 +627,7 @@ if avg_validation_time > 1.0:
 **Problem**: `metrics["cache"]["hit_rate"]` < 0.5
 
 **Solutions**:
+
 1. Check if subjects are being dynamically generated with unique IDs
 2. Consider registering more specific patterns
 3. Review application message flow for caching opportunities
@@ -582,17 +637,23 @@ if avg_validation_time > 1.0:
 **Problem**: `PatternNotFoundError` exceptions
 
 **Solutions**:
+
 1. Verify pattern name spelling
 2. Check if pattern was registered (call `get_all_patterns()`)
 3. Register missing pattern via Admin API
 
 ## Future Enhancements
 
-- **Pattern Namespaces**: Organize patterns by feature area
-- **Pattern Versioning**: Support multiple versions of patterns
-- **Pattern Migration Tools**: Automated migration from old to new patterns
-- **Advanced Validation Rules**: Custom validation logic per pattern
-- **Pattern Analytics**: Usage statistics per pattern
+**Pattern Namespaces**: Organize patterns by feature area
+
+**Pattern Versioning**: Support multiple versions of patterns
+
+**Pattern Migration Tools**: Automated migration from old to new patterns
+
+**Advanced Validation Rules**: Custom validation logic per pattern
+
+**Pattern Analytics**: Usage statistics per pattern
+
 - **Pattern Deprecation**: Mark patterns as deprecated with warnings
 
 ## Migration Status
@@ -601,15 +662,20 @@ if avg_validation_time > 1.0:
 
 The following components have been successfully migrated to use the standardized subject manager:
 
-- **ChatService** (`server/game/chat_service.py`) - All chat channels use standardized patterns
-- **EventPublisher** (`server/realtime/event_publisher.py`) - Player movement events migrated
-- **CombatEventPublisher** (`server/services/combat_event_publisher.py`) - All 8 combat event types migrated
-- **NATSMessageHandler** (`server/realtime/nats_message_handler.py`) - Subscription patterns updated
-- **NATSService** (`server/services/nats_service.py`) - Pre-publish validation integrated
+**ChatService** (`server/game/chat_service.py`) - All chat channels use standardized patterns
+
+**EventPublisher** (`server/realtime/event_publisher.py`) - Player movement events migrated
+
+**CombatEventPublisher** (`server/services/combat_event_publisher.py`) - All 8 combat event types migrated
+
+**NATSMessageHandler** (`server/realtime/nats_message_handler.py`) - Subscription patterns updated
+
+**NATSService** (`server/services/nats_service.py`) - Pre-publish validation integrated
 
 ### 🔄 Backward Compatibility
 
 All migrations include backward-compatible fallbacks:
+
 - Components function without subject_manager injection (legacy mode)
 - Fallback paths log warnings for monitoring deprecated usage
 - Tests continue to work without modifications
@@ -617,28 +683,35 @@ All migrations include backward-compatible fallbacks:
 
 ### 📊 Migration Impact
 
-- **3 new combat patterns added**: `combat_damage`, `combat_turn`, `combat_timeout`
-- **20+ total patterns** now managed centrally
-- **5 production files** migrated to standardized patterns
-- **100% backward compatibility** maintained
-- **Zero breaking changes** to existing functionality
+**3 new combat patterns added**: `combat_damage`, `combat_turn`, `combat_timeout`
+
+**20+ total patterns** now managed centrally
+
+**5 production files** migrated to standardized patterns
+
+**100% backward compatibility** maintained
+
+**Zero breaking changes** to existing functionality
 
 ### ⚠️ Deprecated Utilities
 
 The following utility functions are marked as deprecated:
+
 - `server/utils/room_utils.get_local_channel_subject()` - Emits DeprecationWarning
 - Only used in tests, safe to use but not recommended for new code
 
 ## Related Documentation
 
-- [NATS Integration Guide](./NATS_INTEGRATION_GUIDE.md) - NATS setup and configuration
+[NATS Integration Guide](./NATS_INTEGRATION_GUIDE.md) - NATS setup and configuration
+
 - [Chat Service Documentation](./CHAT_SERVICE_GUIDE.md) - Chat system architecture
 - [Real-Time Architecture](./REAL_TIME_ARCHITECTURE.md) - Overall real-time system design
 - [Enhanced Logging Guide](./ENHANCED_LOGGING_GUIDE.md) - Structured logging practices
 
 ## References
 
-- [NATS Subject-Based Messaging](https://docs.nats.io/nats-concepts/subjects)
+[NATS Subject-Based Messaging](https://docs.nats.io/nats-concepts/subjects)
+
 - [NATS Best Practices](https://docs.nats.io/running-a-nats-service/nats_admin/best_practices)
 - Source: `server/services/nats_subject_manager.py`
 - Tests: `server/tests/test_nats_subject_manager.py`

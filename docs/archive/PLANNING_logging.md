@@ -11,11 +11,13 @@ This document outlines the plan for implementing a configurable Structlog-based 
 ### Existing Logging Implementation to Remove
 
 1. **Files to be removed/modified:**
+
    - `server/logging_config.py` - Current basic logging setup
    - `server/uvicorn_logging.ini` - Uvicorn logging configuration
    - Environment variables: `PERSIST_LOG`, `SERVER_LOG`, `LOG_LEVEL`
 
 2. **Code locations using current logging:**
+
    - `server/main.py` - Server startup/shutdown logging
    - `server/persistence.py` - Database operations logging
    - `server/real_time.py` - MOTD loading errors
@@ -78,12 +80,14 @@ logs/
 ### Logfile Content Categories
 
 1. **server.log**
+
    - Server startup/shutdown events
    - Configuration loading
    - Health checks
    - Performance metrics
 
 2. **persistence.log**
+
    - Database connection events
    - SQL query execution
    - Transaction commits/rollbacks
@@ -91,6 +95,7 @@ logs/
    - Data migration events
 
 3. **authentication.log**
+
    - User registration attempts
    - Login/logout events
    - Password reset requests
@@ -98,6 +103,7 @@ logs/
    - Security events (failed logins, suspicious activity)
 
 4. **world.log**
+
    - Room loading events
    - Zone configuration loading
    - World initialization
@@ -105,6 +111,7 @@ logs/
    - World state changes
 
 5. **communications.log**
+
    - WebSocket connection events
    - SSE stream creation/destruction
    - Message routing
@@ -112,6 +119,7 @@ logs/
    - Connection timeouts
 
 6. **commands.log**
+
    - Player command execution
    - Game mechanic events
    - Combat actions
@@ -119,12 +127,14 @@ logs/
    - Player movement
 
 7. **errors.log**
+
    - All ERROR level events from all loggers
    - Exception stack traces
    - System failures
    - Critical errors
 
 8. **access.log**
+
    - HTTP request/response logging
    - API endpoint access
    - Rate limiting events
@@ -135,20 +145,25 @@ logs/
 ### Configuration-Based Environment Detection
 
 1. **Environment Detection Logic:**
+
    ```python
    # Detect environment based on:
    # - pytest running (test environment)
    # - MYTHOSMUD_ENV environment variable
    # - Configuration file loaded (server_config.yaml vs test_server_config.yaml)
+
    ```
 
 2. **Log Directory Structure:**
-   - **Production:** `logs/production/`
-   - **Development:** `logs/development/`
+
+   **Production:** `logs/production/`
+
+   **Development:** `logs/development/`
    - **Staging:** `logs/staging/`
    - **Test:** `logs/test/`
 
 3. **Cross-Contamination Prevention:**
+
    - Environment-specific log directories
    - Separate configuration files per environment
    - Environment variable overrides
@@ -158,6 +173,7 @@ logs/
 
 ```yaml
 # server_config.yaml
+
 logging:
   environment: production  # or development, staging, test
   level: INFO
@@ -180,30 +196,35 @@ logging:
 ## Implementation Plan
 
 ### Phase 1: Remove Current Logging
+
 1. Remove `server/logging_config.py`
 2. Remove `server/uvicorn_logging.ini`
 3. Remove logging-related environment variables from `server/env.example`
 4. Update all imports to use new Structlog-based logging
 
 ### Phase 2: Install and Configure Structlog
+
 1. Add Structlog to `server/requirements.txt`
 2. Create new `server/logging_config.py` with Structlog configuration
 3. Implement environment detection logic
 4. Create log directory structure
 
 ### Phase 3: Implement Multi-Logfile System
+
 1. Create Structlog processors for different log types
 2. Implement log rotation and compression
 3. Configure different output formats per environment
 4. Set up error aggregation to `errors.log`
 
 ### Phase 4: Update All Logging Calls
+
 1. Replace all `get_logger()` calls with Structlog
 2. Update logging calls to use structured logging
 3. Add context information to log entries
 4. Implement proper error logging with stack traces
 
 ### Phase 5: Testing and Validation
+
 1. Test all environments (test, development, staging, production)
 2. Verify log file separation
 3. Test log rotation and compression
@@ -216,6 +237,7 @@ logging:
 
 ```python
 # server/logging_config.py
+
 import structlog
 from structlog.stdlib import LoggerFactory
 from structlog.processors import JSONRenderer, TimeStamper, add_log_level
@@ -225,6 +247,7 @@ def configure_structlog(environment: str, log_level: str):
     """Configure Structlog based on environment."""
 
     # Base processors
+
     processors = [
         structlog.stdlib.filter_by_level,
         structlog.stdlib.add_logger_name,
@@ -234,6 +257,7 @@ def configure_structlog(environment: str, log_level: str):
     ]
 
     # Environment-specific processors
+
     if environment == "production":
         processors.append(JSONRenderer())
     else:
@@ -264,6 +288,7 @@ class MultiFileHandler:
     def get_handler(self, logger_name: str):
         """Get appropriate handler based on logger name."""
         # Map logger names to log files
+
         logger_mapping = {
             "server": "server",
             "persistence": "persistence",
@@ -276,6 +301,7 @@ class MultiFileHandler:
         }
 
         # Determine log file based on logger name
+
         log_file = "server"  # default
         for prefix, file_type in logger_mapping.items():
             if logger_name.startswith(prefix):
@@ -288,12 +314,14 @@ class MultiFileHandler:
 ## Migration Strategy
 
 ### Backward Compatibility
+
 1. Maintain existing log message formats during transition
 2. Provide migration script for existing log files
 3. Keep existing environment variable support temporarily
 4. Gradual rollout with feature flags
 
 ### Testing Strategy
+
 1. Unit tests for new logging configuration
 2. Integration tests for multi-logfile functionality
 3. Environment separation tests
@@ -312,17 +340,23 @@ class MultiFileHandler:
 ## Risk Assessment
 
 ### Low Risk
-- Environment separation (well-defined directory structure)
+
+Environment separation (well-defined directory structure)
+
 - Log rotation (standard Structlog feature)
 - Configuration management (YAML-based)
 
 ### Medium Risk
-- Performance impact of structured logging
+
+Performance impact of structured logging
+
 - Migration of existing logging calls
 - Test environment compatibility
 
 ### High Risk
-- Log file permissions and security
+
+Log file permissions and security
+
 - Cross-platform compatibility (Windows/Linux)
 - Integration with existing monitoring systems
 

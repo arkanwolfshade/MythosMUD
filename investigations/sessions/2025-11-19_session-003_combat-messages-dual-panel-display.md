@@ -24,10 +24,12 @@ Combat messages are incorrectly displaying in both the Game Info panel (GameLogP
 **User Report**: Combat messages are printing in both the Game Info panel and the Chat panel. It should not print in the Chat panel. It should only print in the Game Info panel.
 
 **Expected Behavior**:
+
 - Combat messages should appear ONLY in the Game Info panel
 - Combat messages should NOT appear in the Chat panel
 
 **Actual Behavior**:
+
 - Combat messages appear in BOTH panels simultaneously
 - This creates duplicate message display and visual clutter
 
@@ -40,34 +42,42 @@ Combat messages are incorrectly displaying in both the Game Info panel (GameLogP
 **Combat Message Creation Patterns**:
 
 1. **Combat Start/End Events** (lines 1557-1558, 1604-1605):
+
    - `messageType: 'system'`
    - `channel: 'combat'`
 
 2. **Player Attack Events** (line 1299):
+
    - `messageType: 'combat'`
    - `channel: 'combat'`
 
 3. **NPC Attack Events** (line 1357):
+
    - `messageType: 'combat'`
    - `channel: 'game'`
 
 4. **NPC Took Damage Events** (line 1404):
+
    - `messageType: 'combat'`
    - `channel: 'game'`
 
 5. **Player Mortally Wounded Events** (line 1643):
+
    - `messageType: 'combat'`
    - `channel: 'combat'`
 
 6. **Player XP Updated Events** (line 1442):
+
    - `messageType: 'combat'`
    - `channel: 'game'`
 
 7. **NPC Died Events** (line 1468):
+
    - `messageType: 'combat'`
    - `channel: 'game'`
 
 **Key Finding**: Combat messages use either:
+
 - `messageType: 'combat'` with `channel: 'combat'` or `channel: 'game'`
 - `messageType: 'system'` with `channel: 'combat'` (for combat_started/combat_ended)
 
@@ -117,9 +127,11 @@ Combat messages are incorrectly displaying in both the Game Info panel (GameLogP
 ```
 
 **Filter Exclusions**:
-- ✅ Excludes messages with `channel === 'game-log'` (line 87)
-- ✅ Excludes messages with `messageType === 'system'` (line 91)
-- ✅ Excludes messages with `messageType === 'command'` (line 99)
+✅ Excludes messages with `channel === 'game-log'` (line 87)
+
+✅ Excludes messages with `messageType === 'system'` (line 91)
+
+✅ Excludes messages with `messageType === 'command'` (line 99)
 - ❌ **DOES NOT exclude messages with `messageType === 'combat'`**
 
 **Critical Issue**: When `isAllChannelSelected` is `true` (line 95), the filter returns `true` for ALL messages that aren't excluded, including combat messages. This causes combat messages to appear in the Chat panel when viewing "All" channels.
@@ -178,9 +190,11 @@ Combat messages are incorrectly displaying in both the Game Info panel (GameLogP
 ```
 
 **Analysis**: GameLogPanel correctly:
-- ✅ Excludes chat messages (line 92)
-- ✅ Includes all other message types including combat messages
-- ✅ Properly displays combat messages in the Game Info panel
+✅ Excludes chat messages (line 92)
+
+✅ Includes all other message types including combat messages
+
+✅ Properly displays combat messages in the Game Info panel
 
 #### 2.4 Message Type Definitions
 
@@ -222,6 +236,7 @@ Combat messages are incorrectly displaying in both the Game Info panel (GameLogP
 1. **Combat messages are created with `messageType: 'combat'`** (or `messageType: 'system'` for combat_started/combat_ended events)
 
 2. **ChatPanel excludes**:
+
    - `messageType === 'system'` ✅ (line 91) - This excludes combat_started/combat_ended messages
    - But **DOES NOT exclude** `messageType === 'combat'` ❌ - This allows most combat messages through
 
@@ -234,11 +249,13 @@ Combat messages are incorrectly displaying in both the Game Info panel (GameLogP
 **For Combat Messages with `messageType: 'combat'`**:
 
 1. ChatPanel filter checks:
+
    - `channel === 'game-log'`? ❌ (combat messages have `channel: 'combat'` or `channel: 'game'`)
    - `messageType === 'system'`? ❌ (combat messages have `messageType: 'combat'`)
    - `isAllChannelSelected`? ✅ **If true, returns `true` immediately** - **THIS IS THE PROBLEM**
 
 2. If `isAllChannelSelected` is `false`:
+
    - `messageType === 'command'`? ❌ (combat messages have `messageType: 'combat'`)
    - Checks if `isChatMessage` (line 109)
    - For combat messages, `messageType === 'chat'` is false and `isChatContent(message.text)` likely returns false
@@ -257,9 +274,11 @@ The ChatPanel filter should exclude combat messages similar to how it excludes s
 **Severity**: Medium
 
 **Impact**:
-- **Visual Clutter**: Duplicate messages create unnecessary visual noise
-- **UI Confusion**: Users may not understand why combat messages appear in the Chat panel
-- **Separation of Concerns**: Violates the intended separation between game system messages (Game Info) and player communications (Chat)
+**Visual Clutter**: Duplicate messages create unnecessary visual noise
+
+**UI Confusion**: Users may not understand why combat messages appear in the Chat panel
+
+**Separation of Concerns**: Violates the intended separation between game system messages (Game Info) and player communications (Chat)
 - **Message Overload**: Combat-heavy sessions will fill the Chat panel with irrelevant messages
 
 **Affected Users**: All players engaged in combat
@@ -269,6 +288,7 @@ The ChatPanel filter should exclude combat messages similar to how it excludes s
 **Severity**: Low
 
 **Impact**:
+
 - Core functionality is unaffected - messages still display correctly in Game Info panel
 - Only display routing is affected
 - No data loss or system errors
@@ -276,9 +296,11 @@ The ChatPanel filter should exclude combat messages similar to how it excludes s
 #### 4.3 Code Impact
 
 **Affected Files**:
+
 - `client/src/components/panels/ChatPanel.tsx` (lines 85-120)
 
 **Dependencies**:
+
 - No other components depend on this filtering behavior
 - Fix is localized to ChatPanel filtering logic
 - No breaking changes required
@@ -354,11 +376,13 @@ The ChatPanel filter should exclude combat messages similar to how it excludes s
 #### 5.2 Message Type Patterns
 
 **Combat Messages Use**:
+
 - `messageType: 'combat'` (most combat events)
 - `messageType: 'system'` (combat_started, combat_ended)
 - `channel: 'combat'` or `channel: 'game'`
 
 **ChatPanel Excludes**:
+
 - `messageType: 'system'` ✅
 - `messageType: 'command'` ✅
 - `channel: 'game-log'` ✅
@@ -367,6 +391,7 @@ The ChatPanel filter should exclude combat messages similar to how it excludes s
 #### 5.3 Related Components
 
 **GameLogPanel** (correctly handles combat messages):
+
 - Excludes chat messages
 - Includes combat messages with appropriate styling
 - Properly displays combat events in Game Info panel
@@ -378,11 +403,13 @@ The ChatPanel filter should exclude combat messages similar to how it excludes s
 **Priority**: High
 
 1. **Fix ChatPanel Filtering** (NOT INVESTIGATION - REMEDIATION ONLY)
+
    - Add exclusion for `messageType === 'combat'` in ChatPanel filtering logic
    - Ensure combat messages are excluded regardless of channel selection
    - Test with both "All" channel view and specific channel views
 
 2. **Verify All Combat Message Types**
+
    - Confirm all combat-related events use appropriate message types
    - Ensure consistency in message type assignment
    - Consider standardizing combat message channel to 'combat' instead of mixing 'combat' and 'game'
@@ -392,16 +419,19 @@ The ChatPanel filter should exclude combat messages similar to how it excludes s
 **Priority**: Medium
 
 1. **Unit Tests**
+
    - Add test case for ChatPanel filtering to verify combat messages are excluded
    - Test with various channel selections (All, specific channels)
    - Test edge cases (empty messages, missing messageType, etc.)
 
 2. **Integration Tests**
+
    - Verify combat messages appear only in Game Info panel during combat scenarios
    - Test with multiple combat events (player_attacked, npc_attacked, combat_started, etc.)
    - Verify Chat panel remains clean during combat
 
 3. **E2E Tests**
+
    - Test full combat flow with multiple players/NPCs
    - Verify message display separation between panels
    - Test with different channel selections in Chat panel
@@ -411,15 +441,18 @@ The ChatPanel filter should exclude combat messages similar to how it excludes s
 **Priority**: Low
 
 1. **Review Message Type Usage**
+
    - Audit all message types to ensure consistent usage
    - Consider creating a message type enum/constant for type safety
    - Document message type conventions
 
 2. **Channel Standardization**
+
    - Consider standardizing combat message channels to 'combat' instead of mixing 'combat' and 'game'
    - Review channel naming conventions for consistency
 
 3. **Filter Documentation**
+
    - Add comments explaining filtering logic and exclusion criteria
    - Document which message types belong in which panels
 
@@ -515,7 +548,8 @@ Fix the ChatPanel filtering logic to exclude combat messages from the Chat panel
 
 ## Investigation Completion Checklist
 
-- [x] All investigation steps completed as written
+[x] All investigation steps completed as written
+
 - [x] Comprehensive evidence collected and documented
 - [x] Root cause analysis completed
 - [x] System impact assessed

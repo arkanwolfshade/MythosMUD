@@ -8,7 +8,10 @@
 
 ## Executive Summary
 
-This review examined the codebase for NumPy usage, anti-patterns, and opportunities for numerical computing improvements. **No actual NumPy usage was found initially**, despite NumPy being listed as an optional dev dependency. Several areas were identified where NumPy could provide performance benefits and code clarity improvements. **All recommended improvements have been successfully implemented.**
+This review examined the codebase for NumPy usage, anti-patterns, and opportunities for numerical computing
+improvements. **No actual NumPy usage was found initially**, despite NumPy being listed as an optional dev dependency.
+Several areas were identified where NumPy could provide performance benefits and code clarity improvements. **All
+recommended improvements have been successfully implemented.**
 
 ## Findings
 
@@ -26,9 +29,11 @@ This review examined the codebase for NumPy usage, anti-patterns, and opportunit
 
 **Impact**:
 
-- ✅ Performance optimizations implemented
-- ✅ Code clarity improved with vectorized operations
-- ✅ Consistent with best practices for numerical computing
+✅ Performance optimizations implemented
+
+✅ Code clarity improved with vectorized operations
+
+✅ Consistent with best practices for numerical computing
 
 ---
 
@@ -84,10 +89,13 @@ return PerformanceStats(
 
 **Benefits Achieved**:
 
-- ✅ Single pass for mean calculation
-- ✅ Explicit dtype specification
-- ✅ More readable statistical operations
-- ✅ Better performance for large datasets
+✅ Single pass for mean calculation
+
+✅ Explicit dtype specification
+
+✅ More readable statistical operations
+
+✅ Better performance for large datasets
 
 ---
 
@@ -116,9 +124,14 @@ websocket_times = [
 **Anti-patterns**:
 
 1. **Multiple list comprehensions**: Filtering and extracting in separate steps
+
 2. **Repeated calculations**: `sum()` and `len()` called separately when mean could be calculated directly
+
 3. **No vectorization**: Using Python loops and comprehensions instead of NumPy operations
-4. **Repeated pattern**: Same pattern repeated for multiple metrics (websocket_times, message_times, disconnection_times, etc.)
+
+4. **Repeated pattern**: Same pattern repeated for multiple metrics (websocket_times, message_times,
+
+   disconnection_times, etc.)
 
 **NumPy Improvement**: ✅ **IMPLEMENTED**
 
@@ -126,6 +139,7 @@ websocket_times = [
 import numpy as np
 
 # Filter and convert to NumPy arrays with explicit dtype for efficient statistical operations
+
 websocket_times = np.array(
     [
         duration
@@ -136,6 +150,7 @@ websocket_times = np.array(
 )
 
 # Helper function to safely calculate stats from NumPy array
+
 def _calculate_stats(times: np.ndarray) -> dict[str, float]:
     """Calculate statistical measures from a NumPy array of times."""
     if times.size > 0:
@@ -149,10 +164,13 @@ def _calculate_stats(times: np.ndarray) -> dict[str, float]:
 
 **Benefits Achieved**:
 
-- ✅ More concise code with helper function eliminating duplication
-- ✅ Better performance for large datasets
-- ✅ Consistent handling of empty arrays
-- ✅ Explicit dtype specification
+✅ More concise code with helper function eliminating duplication
+
+✅ Better performance for large datasets
+
+✅ Consistent handling of empty arrays
+
+✅ Explicit dtype specification
 
 ---
 
@@ -169,6 +187,7 @@ def roll_4d6_drop_lowest() -> int:
     rolls = [random.randint(1, 6) for _ in range(4)]  # nosec B311
     rolls.remove(min(rolls))
     # Scale from 3-18 range to 15-90 range (multiply by 5)
+
     return sum(rolls) * 5
 ```
 
@@ -185,18 +204,23 @@ import numpy as np
 
 def roll_4d6_drop_lowest() -> int:
     # Roll 4d6 using NumPy for efficient array operations
+
     rolls = np.random.randint(1, 7, size=4, dtype=np.int32)  # nosec B311: Game mechanics dice roll, not cryptographic
     # Drop lowest by sorting and taking last 3, then sum
+
     result = np.sum(np.sort(rolls)[1:])  # Sort and take last 3 (drop lowest)
     # Scale from 3-18 range to 15-90 range (multiply by 5)
+
     return int(result * 5)
 ```
 
 **Benefits Achieved**:
 
-- ✅ More efficient array operations
-- ✅ Clearer intent with vectorized operations
-- ✅ Better performance for dice rolling operations
+✅ More efficient array operations
+
+✅ Clearer intent with vectorized operations
+
+✅ Better performance for dice rolling operations
 
 ---
 
@@ -248,6 +272,7 @@ def roll_4d6_drop_lowest() -> int:
 import numpy as np
 
 # Use NumPy array to eliminate code duplication and improve efficiency
+
 stat_values = np.array(
     [
         stats.strength or 50,
@@ -269,10 +294,13 @@ summary["average_stat"] = float(np.mean(stat_values))
 
 **Benefits Achieved**:
 
-- ✅ Eliminates code duplication
-- ✅ Single array creation
-- ✅ More efficient calculations
-- ✅ Clearer intent
+✅ Eliminates code duplication
+
+✅ Single array creation
+
+✅ More efficient calculations
+
+✅ Clearer intent
 
 ---
 
@@ -323,11 +351,14 @@ def calculate_stats(durations: np.ndarray) -> Tuple[float, float, float]:
 ### Completed Actions
 
 1. ✅ **NumPy Added to Main Dependencies**: Moved from optional dev to main dependencies (`numpy>=2.4.1`)
+
 2. ✅ **Performance Monitoring**: Converted statistics calculations to use NumPy
+
    - `server/monitoring/performance_monitor.py` - ✅ Implemented
    - `server/realtime/monitoring/performance_tracker.py` - ✅ Implemented
 
 3. ✅ **Stats Generator**: Implemented NumPy improvements
+
    - `server/game/stats_generator.py:_roll_4d6_drop_lowest()` - ✅ Implemented
    - `server/game/stats_generator.py:get_stat_summary()` - ✅ Implemented
 
@@ -366,15 +397,21 @@ def test_performance_stats_calculation():
 
 ## Conclusion
 
-✅ **All NumPy improvements have been successfully implemented.** The codebase now uses NumPy for statistical calculations in performance monitoring and stats generation, following best practices from `.cursor/rules/numpy.mdc`.
+✅ **All NumPy improvements have been successfully implemented.** The codebase now uses NumPy for statistical
+calculations in performance monitoring and stats generation, following best practices from `.cursor/rules/numpy.mdc`.
 
 **Implementation Summary**:
 
-- ✅ NumPy added to main dependencies (`numpy>=2.4.1`)
-- ✅ Performance monitoring code uses NumPy for efficient statistical operations
-- ✅ Stats generator uses NumPy for dice rolling and summary calculations
-- ✅ All code follows NumPy best practices (explicit dtype, vectorization, type safety)
-- ✅ All linting and tests pass
+✅ NumPy added to main dependencies (`numpy>=2.4.1`)
+
+✅ Performance monitoring code uses NumPy for efficient statistical operations
+
+✅ Stats generator uses NumPy for dice rolling and summary calculations
+
+✅ All code follows NumPy best practices (explicit dtype, vectorization, type safety)
+
+✅ All linting and tests pass
+
 - ✅ No regressions introduced
 
 **Benefits Realized**:

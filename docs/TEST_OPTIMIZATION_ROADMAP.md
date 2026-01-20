@@ -1,8 +1,10 @@
 # Test Suite Optimization Roadmap
 
-> *"As catalogued in the Pnakotic Manuscripts, the path to test enlightenment requires not random pruning, but systematic optimization guided by empirical measurement and scholarly reasoning."*
+> *"As catalogued in the Pnakotic Manuscripts, the path to test enlightenment requires not random pruning, but
+systematic optimization guided by empirical measurement and scholarly reasoning."*
 
-**Goal:** Optimize test suite from 4,965 tests / 30 minutes to ~4,255 tests / 25 minutes while maintaining or improving critical coverage.
+**Goal:** Optimize test suite from 4,965 tests / 30 minutes to ~4,255 tests / 25 minutes while maintaining or improving
+critical coverage.
 
 ---
 
@@ -18,11 +20,16 @@
 
 ### Success Metrics
 
-- ✅ Reduce test count by 10-15% (~500-710 tests)
-- ✅ Reduce execution time by 15-20% (~5-6 minutes)
-- ✅ Maintain ≥80% code coverage
-- ✅ Maintain 100% of critical code coverage
-- ✅ Improve test maintainability
+✅ Reduce test count by 10-15% (~500-710 tests)
+
+✅ Reduce execution time by 15-20% (~5-6 minutes)
+
+✅ Maintain ≥80% code coverage
+
+✅ Maintain 100% of critical code coverage
+
+✅ Improve test maintainability
+
 - ✅ Reduce false-positive test failures
 
 ---
@@ -37,24 +44,31 @@
 **Action:** Remove all tests with `assert True` / `# Placeholder` assertions
 
 **Command:**
+
 ```bash
 # Find placeholder tests
+
 grep -r "assert True  # Placeholder" server/tests
 grep -r "pass  # Placeholder" server/tests
 ```
 
 **Files Affected:**
+
 - ~40 tests across 23 files
 
 **Verification:**
+
 ```bash
 # Before
+
 make test-comprehensive | tee test_before.log
 
 # After removal
+
 make test-comprehensive | tee test_after.log
 
 # Verify same pass count
+
 diff test_before.log test_after.log
 ```
 
@@ -67,6 +81,7 @@ diff test_before.log test_after.log
 **Action:** Remove tests that only verify `isinstance` or `hasattr` with no business logic
 
 **Pattern to Remove:**
+
 ```python
 def test_service_is_correct_type():
     service = get_service()
@@ -75,10 +90,12 @@ def test_service_is_correct_type():
 ```
 
 **Files to Review:**
+
 - `server/tests/unit/infrastructure/test_dependency_injection_functions.py`
 - `server/tests/unit/infrastructure/test_dependency_injection.py`
 
 **Specific Tests to Remove:**
+
 1. `test_dependency_functions_are_callable` (tests Python basics)
 2. `test_dependency_function_type_annotations` (mypy's job)
 3. `test_service_instances_are_properly_configured` (trivial assertions)
@@ -93,15 +110,19 @@ def test_service_is_correct_type():
 **Action:** Identify and remove duplicate tests that test the same code path
 
 **Investigation:**
+
 ```bash
 # Find tests with similar names
+
 find server/tests -name "test_*.py" -exec basename {} \; | sort | uniq -d
 
 # Find tests with identical assertions
+
 grep -r "assert.*persistence.*container" server/tests/unit/infrastructure
 ```
 
 **Likely Duplicates:**
+
 - `test_dependency_injection.py` vs `test_dependency_functions.py` (similar DI tests)
 - Multiple "service uses correct persistence" tests
 
@@ -114,6 +135,7 @@ grep -r "assert.*persistence.*container" server/tests/unit/infrastructure
 **Action:** Delete `server/tests/coverage/test_simple_coverage_gaps.py` (empty file)
 
 **Command:**
+
 ```bash
 rm server/tests/coverage/test_simple_coverage_gaps.py
 ```
@@ -138,6 +160,7 @@ rm server/tests/coverage/test_simple_coverage_gaps.py
 **File:** `server/tests/unit/infrastructure/test_dependency_injection_functions.py`
 
 **REMOVE (9 tests):**
+
 - `test_dependency_functions_are_callable`
 - `test_dependency_function_type_annotations`
 - `test_dependency_functions_performance` (non-failing benchmark)
@@ -149,6 +172,7 @@ rm server/tests/coverage/test_simple_coverage_gaps.py
 - `test_dependency_functions_with_testing_function` (meta-testing)
 
 **KEEP (6 tests):**
+
 - `test_get_player_service_function` (container DI integration)
 - `test_get_room_service_function` (container DI integration)
 - `test_dependency_functions_return_same_instances` (singleton verification)
@@ -165,6 +189,7 @@ rm server/tests/coverage/test_simple_coverage_gaps.py
 **Action:** Merge 3 similar test files into 1 comprehensive file
 
 **Files to Merge:**
+
 1. `test_dependency_injection_functions.py` (keep 6 tests)
 2. `test_dependency_injection.py` (keep 7 tests)
 3. `test_dependency_functions.py` (keep 10 tests)
@@ -184,10 +209,12 @@ rm server/tests/coverage/test_simple_coverage_gaps.py
 **File:** `server/tests/unit/infrastructure/test_app_factory.py`
 
 **REMOVE (Estimate 3-5 tests):**
+
 - Tests that middleware is added (FastAPI behavior)
 - Tests that headers exist (library behavior)
 
 **KEEP:**
+
 - Tests for custom CORS configuration logic
 - Tests for security header configuration
 
@@ -202,6 +229,7 @@ rm server/tests/coverage/test_simple_coverage_gaps.py
 **File:** `server/tests/unit/infrastructure/test_lifespan.py`
 
 **Review Criteria:**
+
 - Keep tests verifying container initialization
 - Keep tests verifying NATS enable/disable
 - Remove tests verifying service attribute existence
@@ -226,16 +254,20 @@ rm server/tests/coverage/test_simple_coverage_gaps.py
 **File:** `server/tests/coverage/test_command_handler_coverage.py` (1,039 lines, ~50 tests)
 
 **Pattern to Remove:**
+
 ```python
 # REMOVE: Just executes code with trivial assertion
+
 def test_command_returns_result():
     result = await process_command("say", ["hello"], ...)
     assert "result" in result  # Trivial assertion
 ```
 
 **Pattern to Keep:**
+
 ```python
 # KEEP: Verifies meaningful behavior
+
 def test_command_validation_prevents_empty_message():
     result = await process_command("say", [], ...)
     assert "requires a message" in result["result"].lower()
@@ -252,8 +284,10 @@ def test_command_validation_prevents_empty_message():
 **File:** `server/tests/coverage/test_error_logging_coverage.py` (691 lines, ~30 tests)
 
 **Pattern to Remove:**
+
 ```python
 # REMOVE: Just verifies logger.error was called
+
 def test_error_is_logged():
     with patch('logger.error') as mock_logger:
         do_something()
@@ -261,8 +295,10 @@ def test_error_is_logged():
 ```
 
 **Pattern to Keep:**
+
 ```python
 # KEEP: Verifies error handling behavior
+
 def test_error_returns_correct_response():
     response = do_something_that_errors()
     assert response.status_code == 500
@@ -278,12 +314,14 @@ def test_error_returns_correct_response():
 **Action:** Move valuable coverage tests into relevant domain test files, delete coverage directory
 
 **Steps:**
+
 1. Review each coverage test file
 2. Move meaningful tests to domain files (e.g., `test_command_handler_coverage.py` → `test_command_handler.py`)
 3. Delete pure metric tests
 4. Delete coverage test directory if empty
 
 **Files:**
+
 - `test_command_rate_limiter_coverage.py` → merge into `test_rate_limiter.py`
 - `test_help_content_coverage.py` → merge into `test_help_commands.py`
 - `test_system_commands_coverage.py` → merge into `test_system_commands.py`
@@ -308,11 +346,13 @@ def test_error_returns_correct_response():
 **Current State:** ~100 separate tests testing command validation with different inputs
 
 **Target Files:**
+
 - `server/tests/unit/commands/test_command_handler.py`
 - `server/tests/coverage/test_command_handler_coverage.py`
 - `server/tests/unit/commands/test_admin_commands.py`
 
 **Example Consolidation:**
+
 ```python
 @pytest.mark.parametrize("command,args,expected_error", [
     ("say", [], "requires a message"),
@@ -323,6 +363,7 @@ def test_error_returns_correct_response():
     ("go", [], "requires a direction"),
     ("teleport", [], "requires admin permission"),
     # ... 50+ more cases
+
 ])
 @pytest.mark.asyncio
 async def test_command_validation_errors(command, args, expected_error, mock_request):
@@ -341,11 +382,13 @@ async def test_command_validation_errors(command, args, expected_error, mock_req
 **Current State:** ~80 separate tests testing different error responses
 
 **Target Files:**
+
 - `server/tests/unit/api/test_players.py`
 - `server/tests/unit/api/test_professions.py`
 - `server/tests/integration/api/test_api_players_integration.py`
 
 **Example Consolidation:**
+
 ```python
 @pytest.mark.parametrize("endpoint,method,data,expected_status,expected_error", [
     ("/api/players/", "POST", {}, 422, "validation error"),
@@ -353,6 +396,7 @@ async def test_command_validation_errors(command, args, expected_error, mock_req
     ("/api/players/999", "GET", None, 404, "not found"),
     ("/api/rooms/invalid", "GET", None, 404, "room not found"),
     # ... 40+ more cases
+
 ])
 def test_api_error_responses(endpoint, method, data, expected_status, expected_error, client):
     response = make_request(client, method, endpoint, data)
@@ -371,10 +415,12 @@ def test_api_error_responses(endpoint, method, data, expected_status, expected_e
 **Current State:** ~50 tests testing different permission scenarios
 
 **Target Files:**
+
 - `server/tests/security/test_admin_teleport_security.py`
 - `server/tests/unit/commands/test_admin_commands.py`
 
 **Example Consolidation:**
+
 ```python
 @pytest.mark.parametrize("user_role,command,expected_status", [
     ("user", "teleport player1 room1", 403),
@@ -384,6 +430,7 @@ def test_api_error_responses(endpoint, method, data, expected_status, expected_e
     ("user", "add_admin other_user", 403),
     ("admin", "add_admin other_user", 200),
     # ... 30+ more cases
+
 ])
 @pytest.mark.asyncio
 async def test_admin_command_authorization(user_role, command, expected_status):
@@ -403,10 +450,12 @@ async def test_admin_command_authorization(user_role, command, expected_status):
 **Target:** NPC integration tests (2 large files with overlapping coverage)
 
 **Files:**
+
 - `test_npc_integration.py` (959 lines)
 - `test_npc_admin_commands_integration.py` (958 lines)
 
 **Review for:**
+
 - Duplicate setup/fixtures
 - Overlapping test scenarios
 - Opportunities to parametrize
@@ -431,6 +480,7 @@ async def test_admin_command_authorization(user_role, command, expected_status):
 **New File:** `server/tests/integration/infrastructure/test_message_broker_integration.py`
 
 **Tests to Add:** 15 tests
+
 1. `test_message_broker_protocol_compliance`
 2. `test_nats_broker_connection_lifecycle`
 3. `test_nats_broker_publish_message`
@@ -458,6 +508,7 @@ async def test_admin_command_authorization(user_role, command, expected_status):
 **New File:** `server/tests/integration/infrastructure/test_container_lifecycle.py`
 
 **Tests to Add:** 10 tests
+
 1. `test_container_initialization_order`
 2. `test_container_service_dependencies_resolved`
 3. `test_container_shutdown_cleanup`
@@ -480,6 +531,7 @@ async def test_admin_command_authorization(user_role, command, expected_status):
 **New File:** `server/tests/integration/infrastructure/test_database_migrations.py`
 
 **Tests to Add:** 10 tests
+
 1. `test_migration_adds_missing_column`
 2. `test_migration_preserves_existing_data`
 3. `test_migration_handles_corrupted_schema`
@@ -502,6 +554,7 @@ async def test_admin_command_authorization(user_role, command, expected_status):
 **New File:** `server/tests/integration/realtime/test_websocket_edge_cases.py`
 
 **Tests to Add:** 15 tests
+
 1. `test_websocket_handles_simultaneous_disconnect`
 2. `test_websocket_handles_slow_client`
 3. `test_websocket_handles_message_queue_overflow`
@@ -529,6 +582,7 @@ async def test_admin_command_authorization(user_role, command, expected_status):
 **New File:** `server/tests/integration/comprehensive/test_error_recovery.py`
 
 **Tests to Add:** 20 tests
+
 1. `test_game_continues_on_database_error`
 2. `test_game_continues_on_nats_unavailable`
 3. `test_player_moved_to_default_room_on_invalid_room`
@@ -568,6 +622,7 @@ async def test_admin_command_authorization(user_role, command, expected_status):
 **Implementation:** Update pre-commit hooks and CI/CD
 
 **New Rules:**
+
 1. **No Placeholder Assertions:** Reject tests with `assert True` without justification
 2. **No Framework Behavior Tests:** Reject tests verifying library/framework behavior
 3. **Meaningful Assertions Required:** All tests must have behavioral assertions
@@ -575,10 +630,12 @@ async def test_admin_command_authorization(user_role, command, expected_status):
 5. **Test Justification Required:** New tests must have docstring explaining value
 
 **Implementation:**
+
 ```python
 # Add to pre-commit configuration
 # .pre-commit-config.yaml
-  - repo: local
+
+  repo: local
     hooks:
       - id: check-test-quality
         name: Check Test Quality
@@ -588,20 +645,25 @@ async def test_admin_command_authorization(user_role, command, expected_status):
 ```
 
 **Script:** `scripts/check_test_quality.py`
+
 ```python
 # Reject tests with common anti-patterns
+
 def check_test_quality(file_path):
     content = read_file(file_path)
 
     # Check for placeholder assertions
+
     if "assert True  # Placeholder" in content:
         raise ValueError(f"{file_path}: Placeholder assertion found")
 
     # Check for trivial isinstance without behavior
+
     if has_only_isinstance_assertions(content):
         warn(f"{file_path}: Consider testing behavior, not types")
 
     # More checks...
+
 ```
 
 ---
@@ -611,6 +673,7 @@ def check_test_quality(file_path):
 **Implementation:** Scheduled review process
 
 **Monthly Tasks:**
+
 1. Review slowest 10 tests for optimization opportunities
 2. Review most frequently failing tests for fragility
 3. Review newest tests for quality
@@ -618,6 +681,7 @@ def check_test_quality(file_path):
 5. Update this roadmap with findings
 
 **Metrics to Track:**
+
 - Total test count
 - Test execution time
 - Test failure rate
@@ -631,15 +695,18 @@ def check_test_quality(file_path):
 **Investigation:** Profile slowest tests
 
 **Approach:**
+
 ```bash
 # Identify slowest tests
+
 uv run pytest server/tests --durations=50
 
-# For each slow test, investigate:
+# For each slow test, investigate
 # - Is it doing unnecessary I/O?
 # - Is it creating too much test data?
 # - Can fixtures be optimized?
 # - Can database operations be mocked?
+
 ```
 
 **Target:** Optimize top 20 slowest tests
@@ -653,15 +720,19 @@ uv run pytest server/tests --durations=50
 **Goal:** Run independent tests in parallel
 
 **Approach:**
+
 ```bash
 # Install pytest-xdist
+
 uv pip install pytest-xdist
 
 # Run tests in parallel
+
 uv run pytest server/tests -n auto
 ```
 
 **Considerations:**
+
 - Database tests must remain serial (per current config)
 - WebSocket tests may have port conflicts
 - Fixtures may need thread-safety review
@@ -673,25 +744,36 @@ uv run pytest server/tests -n auto
 ## Implementation Timeline
 
 ### Month 1: Pruning and Quick Wins
-- **Week 1:** Phase 1 (Quick Wins) - Remove placeholder and trivial tests
-- **Week 2:** Phase 2 (Infrastructure) - Reduce DI and framework tests
-- **Week 3:** Phase 3 (Coverage) - Optimize coverage-driven tests
-- **Week 4:** Review and verify no coverage regression
+
+**Week 1:** Phase 1 (Quick Wins) - Remove placeholder and trivial tests
+
+**Week 2:** Phase 2 (Infrastructure) - Reduce DI and framework tests
+
+**Week 3:** Phase 3 (Coverage) - Optimize coverage-driven tests
+
+**Week 4:** Review and verify no coverage regression
 
 **Outcome:** -200 tests, -4 minutes, 12-18 hours effort
 
 ### Month 2: Consolidation and Additions
-- **Week 5:** Phase 4 (Consolidation) - Parametrize repetitive tests
-- **Week 6:** Phase 5 (Additions) - Add critical gap tests (MessageBroker, Container)
-- **Week 7:** Phase 5 (Additions) - Add reliability tests (WebSocket, Error Recovery)
-- **Week 8:** Phase 5 (Additions) - Add migration and configuration tests
+
+**Week 5:** Phase 4 (Consolidation) - Parametrize repetitive tests
+
+**Week 6:** Phase 5 (Additions) - Add critical gap tests (MessageBroker, Container)
+
+**Week 7:** Phase 5 (Additions) - Add reliability tests (WebSocket, Error Recovery)
+
+**Week 8:** Phase 5 (Additions) - Add migration and configuration tests
 
 **Outcome:** -170 consolidated, +70 added, +2 minutes, 20-30 hours effort
 
 ### Month 3+: Continuous Improvement
-- **Ongoing:** Phase 6 (Quality Gates) - Prevent low-value test additions
-- **Monthly:** Phase 6 (Reviews) - Identify new optimization opportunities
-- **Quarterly:** Phase 6 (Performance) - Optimize slowest tests
+
+**Ongoing:** Phase 6 (Quality Gates) - Prevent low-value test additions
+
+**Monthly:** Phase 6 (Reviews) - Identify new optimization opportunities
+
+**Quarterly:** Phase 6 (Performance) - Optimize slowest tests
 
 **Outcome:** Sustained quality improvement
 
@@ -700,25 +782,40 @@ uv run pytest server/tests -n auto
 ## Net Impact Projection
 
 ### After Month 1 (Pruning Phase)
-- **Tests:** 4,965 → 4,765 (-200, -4%)
-- **Time:** 30 min → 26 min (-4 min, -13%)
-- **Coverage:** 82% → 81.5% (-0.5%)
-- **Critical Coverage:** 95% → 95% (maintained)
-- **Test Quality Score:** 85% → 93% (+8%)
+
+**Tests:** 4,965 → 4,765 (-200, -4%)
+
+**Time:** 30 min → 26 min (-4 min, -13%)
+
+**Coverage:** 82% → 81.5% (-0.5%)
+
+**Critical Coverage:** 95% → 95% (maintained)
+
+**Test Quality Score:** 85% → 93% (+8%)
 
 ### After Month 2 (Consolidation + Additions)
-- **Tests:** 4,765 → 4,665 (-170 consolidated, +70 added)
-- **Time:** 26 min → 24 min (-2 min, but +2 for additions = 26 min net)
-- **Coverage:** 81.5% → 82.5% (+1%, gaps filled)
-- **Critical Coverage:** 95% → 98% (+3%, critical gaps filled)
-- **Test Quality Score:** 93% → 96% (+3%)
+
+**Tests:** 4,765 → 4,665 (-170 consolidated, +70 added)
+
+**Time:** 26 min → 24 min (-2 min, but +2 for additions = 26 min net)
+
+**Coverage:** 81.5% → 82.5% (+1%, gaps filled)
+
+**Critical Coverage:** 95% → 98% (+3%, critical gaps filled)
+
+**Test Quality Score:** 93% → 96% (+3%)
 
 ### After Month 3+ (Continuous Improvement)
-- **Tests:** ~4,500-4,700 (stable, quality-focused)
-- **Time:** ~22-25 min (optimized, possible parallel execution)
-- **Coverage:** ~82-85% (high-value coverage)
-- **Critical Coverage:** ~98-99% (comprehensive)
-- **Test Quality Score:** ~96-98% (sustained high quality)
+
+**Tests:** ~4,500-4,700 (stable, quality-focused)
+
+**Time:** ~22-25 min (optimized, possible parallel execution)
+
+**Coverage:** ~82-85% (high-value coverage)
+
+**Critical Coverage:** ~98-99% (comprehensive)
+
+**Test Quality Score:** ~96-98% (sustained high quality)
 
 ---
 
@@ -727,14 +824,17 @@ uv run pytest server/tests -n auto
 ### Safety Measures
 
 **1. Coverage Baseline:**
+
 ```bash
 # Capture current coverage
+
 make coverage > baseline_coverage.txt
 git add baseline_coverage.txt
 git commit -m "Test optimization baseline"
 ```
 
 **2. Incremental Removal:**
+
 - Remove max 20 tests per commit
 - Run full test suite after each commit
 - Verify coverage after each commit
@@ -742,12 +842,14 @@ git commit -m "Test optimization baseline"
 
 **3. Test Removal Log:**
 Create `TEST_REMOVAL_LOG.md` to track:
+
 - Which test was removed
 - Why it was removed
 - Coverage impact
 - Commit hash for rollback
 
 **4. Staged Rollout:**
+
 - Implement on feature branch
 - Review with team before merging
 - Monitor for 1 week after merge
@@ -761,14 +863,14 @@ Create `TEST_REMOVAL_LOG.md` to track:
 
 Track these metrics weekly during optimization:
 
-| Metric | Week 0 (Baseline) | Target | Actual |
-|--------|-------------------|--------|--------|
-| Total Tests | 4,965 | 4,665 | ? |
-| Execution Time | 30 min | 25 min | ? |
-| Test Failures | ~10 | <10 | ? |
-| Code Coverage | 82% | 81%+ | ? |
-| Critical Coverage | 95% | 95%+ | ? |
-| False Positives | ? | Reduced | ? |
+| Metric            | Week 0 (Baseline) | Target  | Actual |
+| ----------------- | ----------------- | ------- | ------ |
+| Total Tests       | 4,965             | 4,665   | ?      |
+| Execution Time    | 30 min            | 25 min  | ?      |
+| Test Failures     | ~10               | <10     | ?      |
+| Code Coverage     | 82%               | 81%+    | ?      |
+| Critical Coverage | 95%               | 95%+    | ?      |
+| False Positives   | ?                 | Reduced | ?      |
 
 ### Monthly Review Questions
 
@@ -784,19 +886,27 @@ Track these metrics weekly during optimization:
 
 ### Quantitative Goals
 
-- ✅ Remove ≥200 low-value tests (10% reduction)
-- ✅ Save ≥4 minutes execution time (13% faster)
-- ✅ Maintain ≥80% code coverage
-- ✅ Maintain ≥95% critical code coverage
-- ✅ Add ≥50 tests for critical gaps
+✅ Remove ≥200 low-value tests (10% reduction)
+
+✅ Save ≥4 minutes execution time (13% faster)
+
+✅ Maintain ≥80% code coverage
+
+✅ Maintain ≥95% critical code coverage
+
+✅ Add ≥50 tests for critical gaps
 
 ### Qualitative Goals
 
-- ✅ Improve test signal-to-noise ratio from 85% to 95%+
-- ✅ Reduce test maintenance burden
-- ✅ Make test failures more actionable
-- ✅ Improve team confidence in test suite
-- ✅ Establish sustainable test quality process
+✅ Improve test signal-to-noise ratio from 85% to 95%+
+
+✅ Reduce test maintenance burden
+
+✅ Make test failures more actionable
+
+✅ Improve team confidence in test suite
+
+✅ Establish sustainable test quality process
 
 ---
 
@@ -806,15 +916,19 @@ Track these metrics weekly during optimization:
 
 ```bash
 # Identify which commit caused drop
+
 git log --oneline TEST_REMOVAL_LOG.md
 
 # Revert the problematic commit
+
 git revert <commit-hash>
 
 # Re-run coverage
+
 make coverage
 
 # Document in TEST_REMOVAL_LOG.md why revert was needed
+
 ```
 
 **If critical bug missed:**
@@ -838,26 +952,27 @@ make coverage
 
 **Then (High Confidence):**
 
-5. ✅ Reduce DI function tests (25 tests, 5% risk)
-6. ✅ Consolidate DI test files (35 tests, 10% risk)
-7. ✅ Reduce coverage tests (40 tests, 10% risk)
+1. ✅ Reduce DI function tests (25 tests, 5% risk)
+2. ✅ Consolidate DI test files (35 tests, 10% risk)
+3. ✅ Reduce coverage tests (40 tests, 10% risk)
 
 **Then (Medium Confidence):**
 
-8. ✅ Parametrize command validation (70 consolidated, 5% risk)
-9. ✅ Parametrize error responses (55 consolidated, 5% risk)
-10. ✅ Parametrize permission tests (35 consolidated, 5% risk)
+1. ✅ Parametrize command validation (70 consolidated, 5% risk)
+2. ✅ Parametrize error responses (55 consolidated, 5% risk)
+3. ✅ Parametrize permission tests (35 consolidated, 5% risk)
 
 **Finally (Strategic):**
 
-11. ✅ Add MessageBroker tests (15 added, 0% risk)
-12. ✅ Add Container tests (10 added, 0% risk)
-13. ✅ Add migration tests (10 added, 0% risk)
-14. ✅ Add WebSocket edge cases (15 added, 0% risk)
-15. ✅ Add error recovery tests (20 added, 0% risk)
+1. ✅ Add MessageBroker tests (15 added, 0% risk)
+2. ✅ Add Container tests (10 added, 0% risk)
+3. ✅ Add migration tests (10 added, 0% risk)
+4. ✅ Add WebSocket edge cases (15 added, 0% risk)
+5. ✅ Add error recovery tests (20 added, 0% risk)
 
 ---
 
-*"Optimization is not the enemy of quality — it is quality's closest ally, removing the noise so the signal may be heard clearly."*
+*"Optimization is not the enemy of quality — it is quality's closest ally, removing the noise so the signal may be heard
+clearly."*
 
 — From the Necronomicon of Software Engineering, Chapter on Test Suite Hygiene

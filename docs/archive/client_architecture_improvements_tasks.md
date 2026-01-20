@@ -2,15 +2,16 @@
 
 ## Tasks
 
-- [x] 1. Remove Debug Code and Implement Proper Logging
-  - [x] 1.1 Write tests for debug utility and logging system
-  - [x] 1.2 Create debug utility with environment-based logging levels
-  - [x] 1.3 Replace all console.error debug statements in useGameConnection.ts
-  - [x] 1.4 Replace all console.error debug statements in GameTerminal.tsx
-  - [x] 1.5 Implement log level configuration (DEBUG, INFO, WARN, ERROR)
-  - [x] 1.6 Add build-time debug code removal for production builds
-  - [x] 1.7 Update existing logger utility to use new debug system
-  - [x] 1.8 Verify all tests pass and debug code is properly removed
+[x] 1. Remove Debug Code and Implement Proper Logging
+
+- [x] 1.1 Write tests for debug utility and logging system
+- [x] 1.2 Create debug utility with environment-based logging levels
+- [x] 1.3 Replace all console.error debug statements in useGameConnection.ts
+- [x] 1.4 Replace all console.error debug statements in GameTerminal.tsx
+- [x] 1.5 Implement log level configuration (DEBUG, INFO, WARN, ERROR)
+- [x] 1.6 Add build-time debug code removal for production builds
+- [x] 1.7 Update existing logger utility to use new debug system
+- [x] 1.8 Verify all tests pass and debug code is properly removed
 
 - [x] 2. Security Hardening and Token Management
   - [x] 2.1 Write tests for secure token storage and session management

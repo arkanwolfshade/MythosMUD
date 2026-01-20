@@ -15,8 +15,9 @@ We implemented a simple and clean environment separation system using configurat
 ### 1. Configuration-Based Separation
 
 The system uses two separate configuration files:
-- **Production**: `server/server_config.yaml`
-- **Test**: `server/test_server_config.yaml`
+**Production**: `server/server_config.yaml`
+
+**Test**: `server/test_server_config.yaml`
 
 ### 2. Automatic Test Detection
 
@@ -26,17 +27,20 @@ The config loader automatically detects when running under pytest and uses the t
 def _get_config_path() -> str:
     """Determine the appropriate config file path based on environment."""
     # Check if we're running under pytest
+
     import sys
     if "pytest" in sys.modules:
         if os.path.exists(_TEST_CONFIG_PATH):
             return _TEST_CONFIG_PATH
 
     # Check for explicit test mode environment variable
+
     if os.environ.get("MYTHOSMUD_TEST_MODE"):
         if os.path.exists(_TEST_CONFIG_PATH):
             return _TEST_CONFIG_PATH
 
     # Default to production config
+
     return _CONFIG_PATH
 ```
 
@@ -50,9 +54,11 @@ def _ensure_logging_initialized():
     global _logging_initialized
     if not _logging_initialized:
         # Get config to determine logging settings
+
         config = get_config()
 
         # Check if we should disable logging (for tests)
+
         disable_logging = config.get("disable_logging", False)
 
         if disable_logging:
@@ -65,32 +71,39 @@ def _ensure_logging_initialized():
 
 ### 4. Configuration Files
 
-- **Production**: `server/server_config.yaml`
-  - Port: 54731
-  - Host: 0.0.0.0
-  - Database: `../data/players/local_players.db`
-  - Logging: Enabled (`disable_logging: false`)
+**Production**: `server/server_config.yaml`
 
-- **Test**: `server/test_server_config.yaml`
-  - Port: 4999
-  - Host: 127.0.0.1
-  - Database: `server/tests/data/players/unit_test_players.db`
-  - Logging: Disabled (`disable_logging: true`)
+- Port: 54731
+- Host: 0.0.0.0
+- Database: `../data/players/local_players.db`
+- Logging: Enabled (`disable_logging: false`)
+
+**Test**: `server/test_server_config.yaml`
+
+- Port: 4999
+- Host: 127.0.0.1
+- Database: `server/tests/data/players/unit_test_players.db`
+- Logging: Disabled (`disable_logging: true`)
 
 ## Usage
 
 ### Production Environment
+
 ```bash
 # Normal server startup (uses production config)
+
 python -m uvicorn server.main:app --host 0.0.0.0 --port 54731
 ```
 
 ### Test Environment
+
 ```bash
 # Automatic detection when running under pytest
+
 python -m pytest
 
 # Manual test mode
+
 MYTHOSMUD_TEST_MODE=1 python -m uvicorn server.main:app
 ```
 
@@ -104,7 +117,8 @@ MYTHOSMUD_TEST_MODE=1 python -m uvicorn server.main:app
 
 ## Files Modified
 
-- `server/main.py`: Simplified to use config-driven logging
+`server/main.py`: Simplified to use config-driven logging
+
 - `server/config_loader.py`: Added automatic test config detection
 - `server/server_config.yaml`: Added `disable_logging: false`
 - `server/test_server_config.yaml`: Added `disable_logging: true`
@@ -112,7 +126,7 @@ MYTHOSMUD_TEST_MODE=1 python -m uvicorn server.main:app
 
 ## Environment Variables
 
-- `MYTHOSMUD_TEST_MODE`: Set to "1" to force test mode
+`MYTHOSMUD_TEST_MODE`: Set to "1" to force test mode
 
 ## Notes
 

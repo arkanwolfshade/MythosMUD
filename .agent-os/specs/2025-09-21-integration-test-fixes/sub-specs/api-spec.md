@@ -8,9 +8,13 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-09-
 
 **Purpose:** Mock authentication endpoint for integration tests
 **Parameters:**
+
 - username (string): Test username
+
 - password (string): Test password (ignored in mock)
+
 **Response:**
+
 ```json
 {
   "access_token": "test-token",
@@ -19,6 +23,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-09-
   "refresh_token": "test-refresh-token"
 }
 ```
+
 **Errors:** None (always succeeds in mock)
 
 ### GET /motd
@@ -26,12 +31,14 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-09-
 **Purpose:** Mock MOTD (Message of the Day) endpoint for integration tests
 **Parameters:** None
 **Response:**
+
 ```json
 {
   "title": "Welcome to MythosMUD",
   "content": "Welcome to the realm of eldritch knowledge..."
 }
 ```
+
 **Errors:** None (always succeeds in mock)
 
 ### GET /api/game/state
@@ -39,6 +46,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-09-
 **Purpose:** Mock initial game state endpoint for integration tests
 **Parameters:** None
 **Response:**
+
 ```json
 {
   "player": {
@@ -60,14 +68,18 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-09-
   }
 }
 ```
+
 **Errors:** None (always succeeds in mock)
 
 ### POST /api/commands/move
 
 **Purpose:** Mock movement command endpoint for integration tests
 **Parameters:**
+
 - direction (string): Movement direction (north, south, east, west)
+
 **Response:**
+
 ```json
 {
   "success": true,
@@ -81,20 +93,25 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-09-
   }
 }
 ```
+
 **Errors:** None (always succeeds in mock)
 
 ### POST /api/commands/say
 
 **Purpose:** Mock chat command endpoint for integration tests
 **Parameters:**
+
 - message (string): Chat message content
+
 **Response:**
+
 ```json
 {
   "success": true,
   "message": "You say: Hello world"
 }
 ```
+
 **Errors:** None (always succeeds in mock)
 
 ### POST /api/commands/who
@@ -102,6 +119,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-09-
 **Purpose:** Mock who command endpoint for integration tests
 **Parameters:** None
 **Response:**
+
 ```json
 {
   "success": true,
@@ -117,11 +135,13 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-09-
   ]
 }
 ```
+
 **Errors:** None (always succeeds in mock)
 
 ## Mock Implementation Strategy
 
 ### Route Interception
+
 All API endpoints will be intercepted using Playwright's `page.route()` method to provide consistent mock responses:
 
 ```typescript
@@ -135,13 +155,17 @@ await page.route('**/auth/login', async route => {
 ```
 
 ### Response Consistency
-- All mock responses return HTTP 200 status
+
+All mock responses return HTTP 200 status
+
 - Content-Type is always 'application/json'
 - Response structure matches actual server responses
 - No authentication required for mock endpoints
 
 ### Test Isolation
-- Each test sets up its own mock routes
+
+Each test sets up its own mock routes
+
 - Mock responses are isolated per test context
 - No shared state between test runs
 - Cleanup of routes after each test

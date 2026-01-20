@@ -38,7 +38,8 @@ Detailed Workflow: Upon database initialization, seed scripts populate each envi
 
 ## Out of Scope
 
-- Economy balancing, loot drop rate tuning, and faction-specific modifiers.
+Economy balancing, loot drop rate tuning, and faction-specific modifiers.
+
 - Final NPC summoning behaviors beyond placeholder stubs.
 - Fully reimagined visual theme overhaul beyond incremental inventory updates.
 

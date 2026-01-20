@@ -55,9 +55,11 @@ As a **player**, I want to reliably receive all chat messages and game events, s
 
 ## Out of Scope
 
-- **Monitoring Infrastructure** - No Prometheus/Grafana deployment; will use built-in FastAPI metrics only
-- **Database Migration** - PostgreSQL migration deferred to future sprints
-- **Distributed Tracing** - OpenTelemetry integration deferred to future work
+**Monitoring Infrastructure** - No Prometheus/Grafana deployment; will use built-in FastAPI metrics only
+
+**Database Migration** - PostgreSQL migration deferred to future sprints
+
+**Distributed Tracing** - OpenTelemetry integration deferred to future work
 - **Rate Limiting Middleware** - API-level rate limiting (HIGH-3) deferred to next initiative
 - **Backward Compatibility** - Breaking changes acceptable; no migration scripts for old configurations or aliases
 - **UI/UX Changes** - No visual design changes except connection status indicators
@@ -67,6 +69,7 @@ As a **player**, I want to reliably receive all chat messages and game events, s
 ## Expected Deliverable
 
 1. **Sprint 1 Completion (Week 1):**
+
    - Configuration system refactored to Pydantic BaseSettings with full validation
    - Command security hardening implemented with circular dependency detection and rate limiting
    - NATS message handler updated with retry logic and error boundaries
@@ -75,6 +78,7 @@ As a **player**, I want to reliably receive all chat messages and game events, s
    - Backend deployable to staging environment
 
 2. **Sprint 2 Completion (Week 2):**
+
    - XState connection state machine implemented for frontend with clear visual indicators
    - python-statemachine integrated for backend connection lifecycle management
    - Integration tests verifying end-to-end connection recovery scenarios
@@ -83,6 +87,7 @@ As a **player**, I want to reliably receive all chat messages and game events, s
    - Full system deployable to production
 
 3. **Post-Implementation:**
+
    - Architecture Decision Records (ADRs) documenting state machine choices and configuration strategy
    - Updated deployment documentation reflecting new configuration requirements
    - Security audit log demonstrating command validation protection

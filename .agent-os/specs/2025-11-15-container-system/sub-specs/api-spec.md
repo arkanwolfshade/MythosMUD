@@ -34,14 +34,18 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-11-
 
 ## WebSocket Events
 
-- **container.opened**: `{ "container": {...}, "owner_id": "string", "expires_at": "timestamp" }`
-- **container.updated**: `{ "container_id": "string", "diff": {...}, "actor_id": "string" }`
-- **container.closed**: `{ "container_id": "string" }`
+**container.opened**: `{ "container": {...}, "owner_id": "string", "expires_at": "timestamp" }`
+
+**container.updated**: `{ "container_id": "string", "diff": {...}, "actor_id": "string" }`
+
+**container.closed**: `{ "container_id": "string" }`
 - **container.decayed**: `{ "container_id": "string", "room_id": "string" }`
 
 ## Controllers & Business Logic
 
-- **ContainerController**: validates proximity, ACLs, and lock/key requirements before delegating to `ContainerService`.
-- **ContainerService**: wraps `InventoryService` stack operations, applies grace-period logic for corpses, and records telemetry via enhanced logging.
-- **Rate Limiting**: apply per-player plus per-container throttles (existing rate limiter middleware) to avoid spam interactions.
+**ContainerController**: validates proximity, ACLs, and lock/key requirements before delegating to `ContainerService`.
+
+**ContainerService**: wraps `InventoryService` stack operations, applies grace-period logic for corpses, and records telemetry via enhanced logging.
+
+**Rate Limiting**: apply per-player plus per-container throttles (existing rate limiter middleware) to avoid spam interactions.
 - **Error Handling**: map domain exceptions (`InventoryCapacityError`, `ContainerLockedError`, `MutationConflictError`) to HTTP/WS error payloads with actionable codes/messages.

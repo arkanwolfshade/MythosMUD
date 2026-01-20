@@ -22,9 +22,11 @@ This guide explains how to use the comprehensive memory leak monitoring system i
 
 ```powershell
 # Start the development environment
+
 ./scripts/start_local.ps1
 
 # Or just the server
+
 ./scripts/start_server.ps1
 ```
 
@@ -34,9 +36,11 @@ The server runs on `http://localhost:54731` by default.
 
 ```powershell
 # Quick health check
+
 ./scripts/quick_metrics_check.ps1
 
 # Or manually
+
 Invoke-RestMethod -Uri "http://localhost:54731/monitoring/memory-leaks" | ConvertTo-Json -Depth 10
 ```
 
@@ -50,15 +54,18 @@ The primary endpoint aggregates all metrics from all sources:
 
 ```powershell
 # PowerShell
+
 Invoke-RestMethod -Uri "http://localhost:54731/monitoring/memory-leaks" | ConvertTo-Json -Depth 10
 
 # Browser
+
 http://localhost:54731/monitoring/memory-leaks
 ```
 
-**Response includes:**
+### Response includes
 
-- Connection metrics (websockets, metadata, orphaned connections)
+Connection metrics (websockets, metadata, orphaned connections)
+
 - Event system metrics (subscribers, tasks, churn rates)
 - Cache metrics (sizes, expiration, utilization)
 - Task metrics (counts, lifecycle, orphaned tasks)
@@ -82,7 +89,8 @@ Returns connection statistics including active websockets, closed websockets cou
 Invoke-RestMethod -Uri "http://localhost:54731/monitoring/eventbus" | ConvertTo-Json
 ```
 
-Returns subscriber counts by event type, active task count, and subscription churn rate. Useful for detecting event subscription leaks.
+Returns subscriber counts by event type, active task count, and subscription churn rate. Useful for detecting event
+subscription leaks.
 
 #### Cache Metrics
 
@@ -90,7 +98,8 @@ Returns subscriber counts by event type, active task count, and subscription chu
 Invoke-RestMethod -Uri "http://localhost:54731/monitoring/caches" | ConvertTo-Json
 ```
 
-Returns cache sizes, hit rates, expired entry counts, expiration rates, and capacity utilization. Helps identify cache-related memory leaks.
+Returns cache sizes, hit rates, expired entry counts, expiration rates, and capacity utilization. Helps identify
+cache-related memory leaks.
 
 #### Task Metrics
 
@@ -98,7 +107,8 @@ Returns cache sizes, hit rates, expired entry counts, expiration rates, and capa
 Invoke-RestMethod -Uri "http://localhost:54731/monitoring/tasks" | ConvertTo-Json
 ```
 
-Returns active task counts, task lifecycle metrics, and service-level breakdown. Tracks orphaned tasks and task growth rates.
+Returns active task counts, task lifecycle metrics, and service-level breakdown. Tracks orphaned tasks and task growth
+rates.
 
 ---
 
@@ -106,17 +116,21 @@ Returns active task counts, task lifecycle metrics, and service-level breakdown.
 
 The system automatically logs memory leak metrics:
 
-- **Every 5 minutes**: Periodic metrics logged to structured logs
-- **On startup**: Initial metrics captured for baseline comparison
-- **On shutdown**: Final metrics with delta calculations
+**Every 5 minutes**: Periodic metrics logged to structured logs
+
+**On startup**: Initial metrics captured for baseline comparison
+
+**On shutdown**: Final metrics with delta calculations
 
 ### Viewing Logs
 
 ```powershell
 # View structured logs
+
 Get-Content logs/local/app.log -Tail 50 | Select-String "Memory leak metrics"
 
 # Or check the metrics file
+
 Get-Content logs/local/memory_leak_metrics.json | ConvertFrom-Json | ConvertTo-Json -Depth 10
 ```
 
@@ -138,23 +152,28 @@ This file contains:
 
 #### `closed_websockets_count`
 
-- **Normal**: < 1000
-- **Warning**: > 5000
-- **Critical**: > 10000
+**Normal**: < 1000
 
-This indicates WebSocket connections that were closed but their IDs are still being tracked. High values suggest cleanup issues.
+**Warning**: > 5000
+
+**Critical**: > 10000
+
+This indicates WebSocket connections that were closed but their IDs are still being tracked. High values suggest cleanup
+issues.
 
 #### `active_to_player_ratio`
 
-- **Normal**: 0.8-1.2 (approximately one connection per player)
-- **Abnormal**: > 2.0 (multiple connections per player)
+**Normal**: 0.8-1.2 (approximately one connection per player)
+
+**Abnormal**: > 2.0 (multiple connections per player)
 
 High ratios indicate players have multiple active connections, which can lead to memory leaks.
 
 #### `orphaned_connections`
 
-- **Normal**: 0
-- **Warning**: > 10
+**Normal**: 0
+
+**Warning**: > 10
 
 Connections without associated active players indicate cleanup failures.
 
@@ -162,15 +181,17 @@ Connections without associated active players indicate cleanup failures.
 
 #### `subscription_churn_rate`
 
-- **Normal**: < 0.1 (10% growth per period)
-- **Abnormal**: > 0.2 (20% growth per period)
+**Normal**: < 0.1 (10% growth per period)
+
+**Abnormal**: > 0.2 (20% growth per period)
 
 High churn rates indicate subscriptions are being created faster than they're being cleaned up.
 
 #### `active_task_count`
 
-- **Should remain relatively stable**
-- **Growing count indicates leaks**
+### Should remain relatively stable
+
+### Growing count indicates leaks
 
 EventBus tasks that aren't completing or being cleaned up properly.
 
@@ -178,29 +199,33 @@ EventBus tasks that aren't completing or being cleaned up properly.
 
 #### `capacity_utilization`
 
-- **Normal**: < 100%
-- **Warning**: > 110% (cache exceeded max_size)
+**Normal**: < 100%
+
+**Warning**: > 110% (cache exceeded max_size)
 
 Caches exceeding their configured maximum size indicate potential memory leaks.
 
 #### `expiration_rates`
 
-- **High rates**: TTL working correctly (entries expiring as expected)
-- **Low rates with high sizes**: Potential leak (entries not expiring)
+**High rates**: TTL working correctly (entries expiring as expected)
+
+**Low rates with high sizes**: Potential leak (entries not expiring)
 
 ### Task Leaks
 
 #### `orphaned_task_count`
 
-- **Normal**: 0
-- **Warning**: > 5
+**Normal**: 0
+
+**Warning**: > 5
 
 Tasks that are done but not cleaned up from the registry.
 
 #### `task_growth_rate`
 
-- **Normal**: < 0.2 (20% per period)
-- **Abnormal**: > 0.3 (30% growth)
+**Normal**: < 0.2 (20% per period)
+
+**Abnormal**: > 0.3 (30% growth)
 
 Tasks being created faster than they complete.
 
@@ -208,13 +233,15 @@ Tasks being created faster than they complete.
 
 #### `subscription_count`
 
-- **Should match expected service subscriptions**
-- **Growing count indicates leaks**
+### Should match expected service subscriptions
+
+### Growing count indicates leaks
 
 #### Subscriptions After Cleanup
 
-- **Normal**: 0
-- **Warning**: > 0
+**Normal**: 0
+
+**Warning**: > 0
 
 Subscriptions remaining after service shutdown indicate cleanup failures.
 
@@ -277,26 +304,29 @@ Open browser DevTools console (development mode only):
 
 ### Prerequisites
 
-- Docker Desktop installed and running
+Docker Desktop installed and running
+
 - Docker Compose available
 - **MythosMUD server should be running** (or start it after monitoring stack)
 
 ### Startup Order
 
-**Recommended Order:**
+### Recommended Order
 
 1. **Start the MythosMUD server first** (`./scripts/start_server.ps1` or `./scripts/start_local.ps1`)
 2. **Then start the monitoring stack** (`./scripts/start_monitoring.ps1`)
 
-**Why?**
+### Why?
 
-- The server exposes metrics endpoints that Prometheus scrapes
+The server exposes metrics endpoints that Prometheus scrapes
+
 - Starting the server first ensures metrics are immediately available when Prometheus starts
 - Prometheus will show targets as "down" if the server isn't running yet (not a problem, but less ideal)
 
-**Alternative:**
+### Alternative
 
-- You can start them in either order - they're independent
+You can start them in either order - they're independent
+
 - If you start monitoring first, Prometheus will just show the server target as down until the server starts
 - Once the server starts, Prometheus will automatically begin collecting metrics
 
@@ -304,36 +334,43 @@ Open browser DevTools console (development mode only):
 
 ```powershell
 # Check Docker status
+
 docker version
 
-# If Docker is not running, start Docker Desktop:
+# If Docker is not running, start Docker Desktop
 # 1. Open Docker Desktop from Start Menu
 # 2. Wait for it to fully start (whale icon in system tray)
 # 3. Verify: docker ps
+
 ```
 
 ### Step 2: Start Monitoring Stack
 
 ```powershell
 # Use the helper script (recommended - includes Docker check)
+
 ./scripts/start_monitoring.ps1
 
 # Or use the full deployment script
+
 ./scripts/deploy_monitoring.ps1
 
 # Or manually (only if Docker is confirmed running)
+
 cd monitoring
 docker-compose -f docker-compose.monitoring.yml up -d
 ```
 
-**Note**: The `start_monitoring.ps1` script will automatically check if Docker Desktop is running and provide clear instructions if it's not.
+**Note**: The `start_monitoring.ps1` script will automatically check if Docker Desktop is running and provide clear
+instructions if it's not.
 
 ### Step 3: Access Services
 
 Once started, access the monitoring services:
 
-- **Prometheus**: <http://localhost:9090>
-  - View metrics, run queries, check targets
+**Prometheus**: <http://localhost:9090>
+
+- View metrics, run queries, check targets
 - **Grafana**: <http://localhost:3000>
   - Default credentials: `admin` / `admin`
   - View dashboards with memory leak visualizations
@@ -355,9 +392,11 @@ The Grafana dashboard includes panels for:
 
 ```powershell
 # Use the helper script (recommended)
+
 ./scripts/stop_monitoring.ps1
 
 # Or manually
+
 cd monitoring
 docker-compose -f docker-compose.monitoring.yml down
 ```
@@ -372,21 +411,23 @@ Alerts are configured in `monitoring/mythos_alerts.yml` and trigger when:
 
 #### Connection Alerts
 
-- **HighClosedWebsocketsCount**: > 5000 (warning), > 10000 (critical)
-- **OrphanedConnectionsDetected**: > 10 connections
+**HighClosedWebsocketsCount**: > 5000 (warning), > 10000 (critical)
+
+**OrphanedConnectionsDetected**: > 10 connections
 
 #### Event System Alerts
 
-- **HighSubscriberGrowthRate**: > 10% growth per period
+**HighSubscriberGrowthRate**: > 10% growth per period
 
 #### Cache Alerts
 
-- **HighCacheCapacityUtilization**: > 110% of max_size
+**HighCacheCapacityUtilization**: > 110% of max_size
 
 #### Task Alerts
 
-- **HighTaskGrowthRate**: > 20% growth per period
-- **OrphanedTasksDetected**: > 5 orphaned tasks
+**HighTaskGrowthRate**: > 20% growth per period
+
+**OrphanedTasksDetected**: > 5 orphaned tasks
 
 ### Viewing Alerts
 
@@ -415,29 +456,33 @@ _alert_thresholds = {
 
 ```powershell
 # Check if server is running
+
 Invoke-WebRequest -Uri "http://localhost:54731/monitoring/health"
 
 # Check server logs
+
 Get-Content logs/local/app.log -Tail 50
 ```
 
 ### Docker Issues
 
-**Error: "Docker Desktop is not running"**
+### Error: "Docker Desktop is not running"
 
 1. Start Docker Desktop application from Start Menu
 2. Wait for full startup (check system tray icon - whale should be steady, not animating)
 3. Verify: `docker ps`
 4. Use `./scripts/start_monitoring.ps1` which will check Docker status automatically
 
-**Error: "version is obsolete"**
+### Error: "version is obsolete"
 
-- This has been fixed - the `version: '3.8'` line has been removed from `monitoring/docker-compose.monitoring.yml`
+This has been fixed - the `version: '3.8'` line has been removed from `monitoring/docker-compose.monitoring.yml`
+
 - If you still see this error, ensure you have the latest version of the file
 
-**Error: "unable to get image" or "cannot find the file specified"**
+### Error: "unable to get image" or "cannot find the file specified"
 
-- This means Docker Desktop is not running
+This means Docker Desktop is not running
+
 - Use `./scripts/start_monitoring.ps1` which provides clear error messages and instructions
 
 ### Metrics Not Appearing
@@ -463,12 +508,15 @@ The system logs metrics on startup and shutdown. Compare:
 
 ```powershell
 # Get startup metrics (from logs/local/memory_leak_metrics.json)
+
 $startup = (Get-Content logs/local/memory_leak_metrics.json | ConvertFrom-Json).startup_metrics
 
 # Get current metrics
+
 $current = Invoke-RestMethod -Uri "http://localhost:54731/monitoring/memory-leaks"
 
 # Compare closed websockets
+
 Write-Host "Startup: $($startup.connection.closed_websockets_count)"
 Write-Host "Current: $($current.connection.closed_websockets_count)"
 Write-Host "Growth: $($current.connection.closed_websockets_count - $startup.connection.closed_websockets_count)"
@@ -488,12 +536,16 @@ Or create your own custom check:
 
 ```powershell
 # Custom metrics check
+
 $metrics = Invoke-RestMethod -Uri "http://localhost:54731/monitoring/memory-leaks"
 
 Write-Host "=== Memory Leak Metrics ===" -ForegroundColor Cyan
-Write-Host "Closed WebSockets: $($metrics.connection.closed_websockets_count)" -ForegroundColor $(if ($metrics.connection.closed_websockets_count -gt 5000) { "Red" } else { "Green" })
-Write-Host "Active/Player Ratio: $($metrics.connection.active_to_player_ratio)" -ForegroundColor $(if ($metrics.connection.active_to_player_ratio -gt 2.0) { "Red" } else { "Green" })
-Write-Host "Orphaned Connections: $($metrics.connection.orphaned_connections)" -ForegroundColor $(if ($metrics.connection.orphaned_connections -gt 10) { "Red" } else { "Green" })
+Write-Host "Closed WebSockets: $($metrics.connection.closed_websockets_count)" -ForegroundColor $(if
+($metrics.connection.closed_websockets_count -gt 5000) { "Red" } else { "Green" })
+Write-Host "Active/Player Ratio: $($metrics.connection.active_to_player_ratio)" -ForegroundColor $(if
+($metrics.connection.active_to_player_ratio -gt 2.0) { "Red" } else { "Green" })
+Write-Host "Orphaned Connections: $($metrics.connection.orphaned_connections)" -ForegroundColor $(if
+($metrics.connection.orphaned_connections -gt 10) { "Red" } else { "Green" })
 Write-Host "Active Tasks: $($metrics.task.active_task_count)"
 Write-Host "Orphaned Tasks: $($metrics.task.orphaned_task_count)" -ForegroundColor $(if ($metrics.task.orphaned_task_count -gt 5) { "Red" } else { "Green" })
 
@@ -519,10 +571,13 @@ if ($metrics.alerts.Count -gt 0) {
 
 ## Additional Resources
 
-- **API Documentation**: See `server/README.md` for detailed endpoint documentation
-- **Memory Leak Audit Report**: `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **Remediation Plan**: `.cursor/plans/memory_leak_remediation_plan_6321808e.plan.md`
-- **Metrics Collection Plan**: `.cursor/plans/memory_leak_metrics_collection_plan_a4707e8b.plan.md`
+**API Documentation**: See `server/README.md` for detailed endpoint documentation
+
+**Memory Leak Audit Report**: `docs/MEMORY_LEAK_AUDIT_REPORT.md`
+
+**Remediation Plan**: `.cursor/plans/memory_leak_remediation_plan_6321808e.plan.md`
+
+**Metrics Collection Plan**: `.cursor/plans/memory_leak_metrics_collection_plan_a4707e8b.plan.md`
 
 ---
 
@@ -530,11 +585,16 @@ if ($metrics.alerts.Count -gt 0) {
 
 The memory leak metrics system provides comprehensive monitoring across:
 
-- ✅ Connection management
-- ✅ Event subscriptions
-- ✅ Cache utilization
-- ✅ Task lifecycle
-- ✅ NATS subscriptions
+✅ Connection management
+
+✅ Event subscriptions
+
+✅ Cache utilization
+
+✅ Task lifecycle
+
+✅ NATS subscriptions
+
 - ✅ Client-side resources
 
 All metrics are:

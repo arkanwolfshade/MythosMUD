@@ -31,10 +31,15 @@ multi-word spell names.
 **User-Reported Symptoms**:
 
 - Attempted `/cast heal` - Result: "Spell 'heal' not found."
+
 - Attempted `/cast basic heal` - Result: "Spell 'basic' not found."
+
 - Player successfully learned "Basic Heal" using `/learn basic_heal`
+
 - Player has full MP (15/15) and is wounded (17/27 HP), making healing
+
   attempt logical
+
 - Player is not in combat, so combat restrictions don't apply
 
 **Error Messages from UI**:
@@ -54,6 +59,7 @@ def create_cast_command(args: list[str]) -> CastCommand:
     """Create CastCommand from arguments."""
     if not args:
         # ... error handling ...
+
     spell_name = args[0]  # ❌ Only takes first word!
     target = " ".join(args[1:]) if len(args) > 1 else None
     return CastCommand(spell_name=spell_name, target=target)
@@ -72,6 +78,7 @@ def create_learn_command(args: list[str]) -> LearnCommand:
     """Create LearnCommand from arguments."""
     if not args:
         # ... error handling ...
+
     spell_name = " ".join(args)  # ✅ Correctly handles multi-word names
     return LearnCommand(spell_name=spell_name)
 ```
@@ -85,9 +92,11 @@ spell name, allowing multi-word spell names like "Basic Heal".
 
 ```python
 # Get spell from registry
+
 spell = self.spell_registry.get_spell(spell_id)
 if not spell:
     # Try by name
+
     spell = self.spell_registry.get_spell_by_name(spell_id)
     if not spell:
         return {"success": False, "message": f"Spell '{spell_id}' not found."}
@@ -121,6 +130,7 @@ matches are not supported.
 
 ```python
 # Extract spell name and optional target
+
 spell_name = command_data.get("spell_name") or command_data.get("spell")
 target_name = command_data.get("target")
 ```
@@ -182,8 +192,11 @@ target = " ".join(args[1:])  # "heal" (treated as target, not part of spell name
 **User Impact**:
 
 - Players cannot cast any spell with a multi-word name
+
 - This likely affects most spells in the game (e.g., "Basic Heal", "Greater
+
   Healing", "Fire Bolt", etc.)
+
 - Single-word spell names may work, but multi-word names will always fail
 - Creates inconsistent user experience (learning works, but casting doesn't)
 
@@ -234,10 +247,15 @@ target = " ".join(args[1:])  # "heal" (treated as target, not part of spell name
 **Action Items:**
 
 1. Update `create_cast_command` factory method to join all arguments as the
+
    spell name (like `create_learn_command`)
+
 2. Handle target parsing separately - targets should be specified explicitly
+
    or use a different syntax
+
 3. Consider adding a separator (e.g., `@` or `on`) to distinguish spell name
+
    from target: `/cast basic heal @ target`
 
 ### Priority 2: Improve Spell Name Matching
@@ -294,7 +312,8 @@ correct implementation.
 
 ## INVESTIGATION COMPLETION CHECKLIST
 
-- [x] All investigation steps completed as written
+[x] All investigation steps completed as written
+
 - [x] Comprehensive evidence collected and documented
 - [x] Root cause analysis completed
 - [x] System impact assessed

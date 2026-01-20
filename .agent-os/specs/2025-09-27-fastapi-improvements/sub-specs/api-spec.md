@@ -17,6 +17,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-09-
 **Purpose:** Add comprehensive security headers to all HTTP responses
 **Implementation:** Custom middleware class that adds security headers to response objects
 **Headers Added:**
+
 - Strict-Transport-Security: max-age=31536000; includeSubDomains
 - X-Frame-Options: DENY
 - X-Content-Type-Options: nosniff
@@ -27,12 +28,15 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-09-
 
 **Purpose:** Replace permissive CORS configuration with secure, environment-based settings
 **Current Configuration:**
+
 ```python
 allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"]
 allow_methods=["*"]
 allow_headers=["*"]
 ```
+
 **New Configuration:**
+
 ```python
 allow_origins=os.getenv("ALLOWED_ORIGINS", "http://localhost:5173").split(",")
 allow_methods=["GET", "POST", "PUT", "DELETE"]
@@ -45,6 +49,7 @@ allow_headers=["Authorization", "Content-Type"]
 
 **Purpose:** Replace direct database access with proper service layer dependency injection
 **Current Pattern:**
+
 ```python
 @player_router.post("/{player_id}/heal")
 def heal_player(player_id: str, amount: int, request: Request = None):
@@ -53,6 +58,7 @@ def heal_player(player_id: str, amount: int, request: Request = None):
 ```
 
 **New Pattern:**
+
 ```python
 @player_router.post("/{player_id}/heal")
 async def heal_player(

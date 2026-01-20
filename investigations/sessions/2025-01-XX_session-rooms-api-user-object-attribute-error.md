@@ -37,6 +37,7 @@ method='GET'
 ```
 
 **Key Observations**:
+
 - Error occurs in `server.api.rooms` module
 - Error type: `AttributeError`
 - Error message: `'User' object has no attribute 'get'`
@@ -73,11 +74,13 @@ async def list_rooms(
 2. **Incorrect Attribute Access**: Line 81 attempts to use `current_user.get("id", "")`, which is dictionary-style access. `User` objects have an `id` attribute (not a method), so this should be `current_user.id`.
 
 3. **Evidence from User Model**:
+
    - `server/models/user.py` shows `User` extends `SQLAlchemyBaseUserTableUUID`
    - The `id` field is provided by the base class as a UUID attribute
    - User objects have attributes like `id`, `username`, `is_active`, etc., not dictionary keys
 
 4. **Correct Usage Pattern**: Other files in the codebase correctly access `current_user.id`:
+
    - `server/api/players.py`: Uses `current_user.id` (attribute access)
    - `server/api/game.py`: Uses `current_user.id` and `current_user.username` (attribute access)
    - `server/auth/endpoints.py`: Uses `current_user.id` (attribute access)
@@ -87,17 +90,21 @@ async def list_rooms(
 **Additional Files with Similar Problems**:
 
 1. **`server/api/metrics.py`** (lines 39, 42):
+
    ```python
    is_admin = current_user.get("is_admin", False) or current_user.get("is_superuser", False)
    username=current_user.get("username")
    ```
+
    - Same issue: treating `User` object as dictionary
    - Should use: `current_user.is_admin`, `current_user.is_superuser`, `current_user.username`
 
 2. **`server/api/admin/npc.py`** (multiple lines):
+
    ```python
    user=current_user.get("username")
    ```
+
    - Same issue: treating `User` object as dictionary
    - Should use: `current_user.username`
 
@@ -116,12 +123,14 @@ def get_username(self, current_user: Any) -> str:
         return "unknown"
 
     # Try to get username from User object
+
     if hasattr(current_user, "username"):
         result = current_user.username
         assert isinstance(result, str)
         return result
 
     # Try to get username from dictionary
+
     if hasattr(current_user, "get"):
         result = current_user.get("username", "unknown")
         assert isinstance(result, str)
@@ -135,20 +144,24 @@ However, since `get_current_user` always returns a `User` object (or `None`), th
 ### 5. System Impact Assessment
 
 **Scope**:
-- **Primary Impact**: `/api/rooms/list` endpoint with `filter_explored=true` parameter
-- **Secondary Impact**: Potential issues in `metrics.py` and `admin/npc.py` if those endpoints are used
+**Primary Impact**: `/api/rooms/list` endpoint with `filter_explored=true` parameter
+
+**Secondary Impact**: Potential issues in `metrics.py` and `admin/npc.py` if those endpoints are used
 
 **Severity**:
-- **Medium**: Feature non-functional but graceful fallback exists
-- **Security Consideration**: Exploration filtering is a privacy/security feature - when it fails, all rooms are returned, potentially exposing unexplored room data
+**Medium**: Feature non-functional but graceful fallback exists
+
+**Security Consideration**: Exploration filtering is a privacy/security feature - when it fails, all rooms are returned, potentially exposing unexplored room data
 
 **User Experience**:
+
 - API request succeeds (does not return 500 error)
 - Warning logged but user may not be aware
 - Exploration filtering silently fails
 - All rooms returned instead of filtered list
 
 **Data Integrity**:
+
 - No data corruption
 - No database issues
 - Only affects API response filtering
@@ -160,6 +173,7 @@ However, since `get_current_user` always returns a `User` object (or `None`), th
 ```python
 except Exception as e:
     # Log error but don't fail the request - just return all rooms
+
     logger.warning(
         "Error filtering by explored rooms, returning all rooms",
         error=str(e),
@@ -168,8 +182,10 @@ except Exception as e:
 ```
 
 **Assessment**:
-- ✅ Error is caught and logged
-- ✅ Request does not fail (graceful degradation)
+✅ Error is caught and logged
+
+✅ Request does not fail (graceful degradation)
+
 - ⚠️ Feature silently fails (user may not know filtering didn't work)
 - ⚠️ Security/privacy concern: unexplored rooms may be exposed
 
@@ -200,6 +216,7 @@ The root cause is a **type annotation mismatch** combined with **incorrect attri
 1. **FastAPI Users Documentation**: `fastapi_users.current_user(optional=True)` returns a `User` model instance, not a dictionary.
 
 2. **Codebase Evidence**:
+
    - `server/auth/users.py` line 155: `get_current_user = fastapi_users.current_user(optional=True)`
    - `server/models/user.py`: `User` class extends `SQLAlchemyBaseUserTableUUID` with `id` as an attribute
    - Other API files correctly use `current_user.id` (attribute access)
@@ -213,20 +230,24 @@ The root cause is a **type annotation mismatch** combined with **incorrect attri
 ### Affected Components
 
 1. **Primary**: `server/api/rooms.py` - `/api/rooms/list` endpoint
+
    - Impact: Exploration filtering non-functional
    - Frequency: Every request with `filter_explored=true`
 
 2. **Secondary**: `server/api/metrics.py` - Metrics endpoints
+
    - Impact: Admin checks may fail (if not already failing)
    - Frequency: Unknown (depends on usage)
 
 3. **Tertiary**: `server/api/admin/npc.py` - NPC admin endpoints
+
    - Impact: Username logging may fail
    - Frequency: Unknown (depends on usage)
 
 ### Security Implications
 
 **Privacy Concern**: When exploration filtering fails, the API returns all rooms instead of only explored rooms. This could expose:
+
 - Room names and descriptions for unexplored areas
 - Room coordinates and map data
 - Exit information for unexplored rooms
@@ -235,9 +256,11 @@ The root cause is a **type annotation mismatch** combined with **incorrect attri
 
 ### Performance Impact
 
-- **Minimal**: Error handling adds negligible overhead
-- **No Database Impact**: Error occurs before database queries
-- **No Memory Leaks**: Error is properly caught and handled
+**Minimal**: Error handling adds negligible overhead
+
+**No Database Impact**: Error occurs before database queries
+
+**No Memory Leaks**: Error is properly caught and handled
 
 ---
 
@@ -246,8 +269,10 @@ The root cause is a **type annotation mismatch** combined with **incorrect attri
 ### Log Evidence
 
 **File**: `logs/local/warnings.log`
-- **Timestamp**: 2025-11-27 19:57:38
-- **Error**: `'User' object has no attribute 'get'`
+
+**Timestamp**: 2025-11-27 19:57:38
+
+**Error**: `'User' object has no attribute 'get'`
 - **Error Type**: `AttributeError`
 - **Location**: `server.api.rooms`
 - **Endpoint**: `/api/rooms/list`
@@ -257,26 +282,36 @@ The root cause is a **type annotation mismatch** combined with **incorrect attri
 ### Code Evidence
 
 **File**: `server/api/rooms.py`
-- **Line 45**: Incorrect type annotation: `current_user: dict | None`
-- **Line 81**: Incorrect attribute access: `current_user.get("id", "")`
+
+**Line 45**: Incorrect type annotation: `current_user: dict | None`
+
+**Line 81**: Incorrect attribute access: `current_user.get("id", "")`
 
 **File**: `server/auth/users.py`
-- **Line 155**: `get_current_user = fastapi_users.current_user(optional=True)`
+
+**Line 155**: `get_current_user = fastapi_users.current_user(optional=True)`
+
 - Returns: `User | None` (SQLAlchemy model, not dict)
 
 **File**: `server/models/user.py`
-- **Line 28**: `class User(SQLAlchemyBaseUserTableUUID, Base)`
-- **Line 86**: `id` property provided by base class as attribute
+
+**Line 28**: `class User(SQLAlchemyBaseUserTableUUID, Base)`
+
+**Line 86**: `id` property provided by base class as attribute
 
 ### Reference Evidence (Correct Usage)
 
 **File**: `server/api/players.py`
-- **Line 133**: `context.user_id = str(current_user.id)` ✅
-- **Line 382**: `user_id=current_user.id` ✅
+
+**Line 133**: `context.user_id = str(current_user.id)` ✅
+
+**Line 382**: `user_id=current_user.id` ✅
 
 **File**: `server/api/game.py`
-- **Line 63**: `admin_id=str(current_user.id)` ✅
-- **Line 77**: `broadcaster_id=str(current_user.id)` ✅
+
+**Line 63**: `admin_id=str(current_user.id)` ✅
+
+**Line 77**: `broadcaster_id=str(current_user.id)` ✅
 
 ---
 
@@ -289,6 +324,7 @@ The root cause is a **type annotation mismatch** combined with **incorrect attri
 2. **Fix Type Annotation**: Update `server/api/rooms.py` line 45 to use correct type: `current_user: User | None`
 
 3. **Audit Similar Issues**: Check and fix similar issues in:
+
    - `server/api/metrics.py`
    - `server/api/admin/npc.py`
 
@@ -333,7 +369,8 @@ After fixing, verify that:
 
 ## Investigation Completion Checklist
 
-- [x] All investigation steps completed as written
+[x] All investigation steps completed as written
+
 - [x] Comprehensive evidence collected and documented
 - [x] Root cause analysis completed
 - [x] System impact assessed
@@ -352,6 +389,7 @@ After fixing, verify that:
 ### Pattern Detection
 
 This investigation revealed a **recurring pattern** of type annotation mismatches:
+
 - Multiple files incorrectly annotate `current_user` as `dict | None`
 - Multiple files use dictionary-style `.get()` access on `User` objects
 - This suggests a systematic issue that should be addressed across the codebase
@@ -359,9 +397,11 @@ This investigation revealed a **recurring pattern** of type annotation mismatche
 ### Knowledge Base Update
 
 **Pattern to Watch For**: When using `get_current_user` from FastAPI Users:
-- ✅ Correct: `current_user: User | None = Depends(get_current_user)`
-- ✅ Correct: `current_user.id`, `current_user.username` (attribute access)
-- ❌ Incorrect: `current_user: dict | None` (wrong type)
+✅ Correct: `current_user: User | None = Depends(get_current_user)`
+
+✅ Correct: `current_user.id`, `current_user.username` (attribute access)
+
+❌ Incorrect: `current_user: dict | None` (wrong type)
 - ❌ Incorrect: `current_user.get("id")` (dictionary access on object)
 
 ---

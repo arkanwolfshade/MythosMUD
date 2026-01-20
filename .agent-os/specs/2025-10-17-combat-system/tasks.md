@@ -2,18 +2,21 @@
 
 ## Progress Summary
 
-- **Completed**: Tasks 1-10 (Database Schema & Migration, Core Combat State Management, Combat Command System, Event System Integration, Combat Messaging System, NPC Combat Integration, Player Combat Integration, Security & Validation, Testing & Quality Assurance, Configuration)
-- **In Progress**: Tasks 11-14 (Auto-Progression Combat System, NPC Passive Behavior System, Health Tracking System, Auto-Progression Integration & Testing) - **IMPLEMENTED BUT NOT INTEGRATED INTO LIVE SERVER**
-- **Remaining**: Task 15 - Live Server Integration & Verification
+**Completed**: Tasks 1-10 (Database Schema & Migration, Core Combat State Management, Combat Command System, Event System Integration, Combat Messaging System, NPC Combat Integration, Player Combat Integration, Security & Validation, Testing & Quality Assurance, Configuration)
+
+**In Progress**: Tasks 11-14 (Auto-Progression Combat System, NPC Passive Behavior System, Health Tracking System, Auto-Progression Integration & Testing) - **IMPLEMENTED BUT NOT INTEGRATED INTO LIVE SERVER**
+
+**Remaining**: Task 15 - Live Server Integration & Verification
 
 ## Tasks
 
-- [x] 1. Database Schema & Migration
-  - [x] 1.1 Write tests for database schema validation and migration scripts
-  - [x] 1.2 Extend NPC definitions JSON schema for combat data (base_stats, behavior_config)
-  - [x] 1.3 Create data migration script to add default combat data to existing NPCs
-  - [x] 1.4 Implement JSON schema validation for combat data fields
-  - [x] 1.5 Verify all database tests pass and migration works correctly
+[x] 1. Database Schema & Migration
+
+- [x] 1.1 Write tests for database schema validation and migration scripts
+- [x] 1.2 Extend NPC definitions JSON schema for combat data (base_stats, behavior_config)
+- [x] 1.3 Create data migration script to add default combat data to existing NPCs
+- [x] 1.4 Implement JSON schema validation for combat data fields
+- [x] 1.5 Verify all database tests pass and migration works correctly
 
 - [x] 2. Core Combat State Management
   - [x] 2.1 Write tests for combat state management and turn order system

@@ -1,14 +1,16 @@
 # Test Coverage Strategy
 
-This document outlines our tiered approach to test coverage, focusing testing effort on the most critical code while maintaining reasonable standards across the codebase.
+This document outlines our tiered approach to test coverage, focusing testing effort on the most critical code while
+maintaining reasonable standards across the codebase.
 
 ## Coverage Targets by Category
 
 ### 🔴 Critical Code: 90%
 
-**Security, authentication, data handling, event processing, and state management**
+#### Security, Authentication, Data Handling, Event Processing, and State Management
 
-These files require high test coverage due to their critical role in application security, data integrity, and game state management:
+These files require high test coverage due to their critical role in application security, data integrity, and game
+state management:
 
 **Security and Authentication:**
 
@@ -39,11 +41,12 @@ These files require high test coverage due to their critical role in application
 - `src/components/ui-v2/utils/messageUtils.ts` - Message sanitization and processing
 - `src/components/ui-v2/utils/roomMergeUtils.ts` - Room state merging logic
 
-**Rationale**: These areas handle sensitive data, authentication, critical system state, event processing, and game state management. Bugs here can lead to security vulnerabilities, data loss, system failures, or incorrect game state.
+**Rationale**: These areas handle sensitive data, authentication, critical system state, event processing, and game
+state management. Bugs here can lead to security vulnerabilities, data loss, system failures, or incorrect game state.
 
 ### 🟡 Core Business Logic: 85%+
 
-**Game state, connections, and stores**
+#### Game State, Connections, and Stores
 
 Core business logic that drives game functionality:
 
@@ -56,18 +59,20 @@ Core business logic that drives game functionality:
 - `src/contexts/GameTerminalContext.tsx` - Game terminal context
 - `src/contexts/PanelContext.tsx` - Panel management context
 
-**Rationale**: These files contain the core game logic. High coverage ensures game functionality works correctly and state is managed properly.
+**Rationale**: These files contain the core game logic. High coverage ensures game functionality works correctly and
+state is managed properly.
 
 ### 🟢 UI Components: 70-80%
 
-**Focus on behavior, not every render path**
+#### Focus on Behavior, Not Every Render Path
 
 All files in:
 
 - `src/components/**/*.tsx`
 - `src/pages/**/*.tsx`
 
-**Rationale**: UI components should be tested for user interactions and behavior, not every possible render path. Focus on:
+**Rationale**: UI components should be tested for user interactions and behavior, not every possible render path. Focus
+on:
 
 - User interactions (clicks, inputs, navigation)
 - Component behavior (state changes, prop handling)
@@ -78,7 +83,7 @@ All files in:
 
 ### 🔵 Utilities: 60-70%
 
-**Test the important ones**
+#### Test the Important Ones
 
 All files in:
 
@@ -97,15 +102,18 @@ All files in:
 
 ## Global Threshold
 
-The global minimum threshold is set to **70%** for all metrics (statements, branches, functions, lines) to ensure overall code quality while allowing flexibility for different code categories.
+The global minimum threshold is set to **70%** for all metrics (statements, branches, functions, lines) to ensure
+overall code quality while allowing flexibility for different code categories.
 
 ## Implementation
 
 ### Vitest Configuration
 
-Per-file thresholds are configured in `vitest.config.ts` for critical and core business logic files. UI components and utilities use the global threshold as a baseline.
+Per-file thresholds are configured in `vitest.config.ts` for critical and core business logic files. UI components and
+utilities use the global threshold as a baseline.
 
-**Note**: Vitest requires exact file paths for per-file thresholds (glob patterns are not supported). Critical and core files are explicitly listed.
+**Note**: Vitest requires exact file paths for per-file thresholds (glob patterns are not supported). Critical and core
+files are explicitly listed.
 
 ### Monitoring Coverage
 
@@ -113,9 +121,11 @@ Run coverage reports to monitor progress:
 
 ```bash
 # Full coverage report
+
 make test-client
 
 # Coverage report only
+
 cd client && npm run test:coverage
 ```
 
@@ -123,7 +133,10 @@ cd client && npm run test:coverage
 
 When adding new files:
 
-1. **Critical code**: Add to the 90% threshold list in `vitest.config.ts` (security, auth, event handlers, state utilities)
+1. **Critical code**: Add to the 90% threshold list in `vitest.config.ts` (security, auth, event handlers, state
+
+   utilities)
+
 2. **Core business logic**: Add to the 85% threshold list in `vitest.config.ts` (game state, stores, contexts)
 3. **UI components**: Will use the global 70% threshold
 4. **Utilities**: Will use the global 70% threshold (adjust if critical)
@@ -138,10 +151,13 @@ When adding new files:
 
 ## Coverage Goals
 
-- **Overall**: Maintain 70%+ global coverage
-- **Critical**: Achieve and maintain 90% coverage
-- **Core**: Achieve and maintain 85%+ coverage
-- **UI/Utilities**: Maintain 60-80% coverage (focus on behavior)
+**Overall**: Maintain 70%+ global coverage
+
+**Critical**: Achieve and maintain 90% coverage
+
+**Core**: Achieve and maintain 85%+ coverage
+
+**UI/Utilities**: Maintain 60-80% coverage (focus on behavior)
 
 ## Rationale
 
@@ -155,5 +171,6 @@ This tiered approach:
 
 ## References
 
-- [Vitest Coverage Documentation](https://vitest.dev/guide/coverage.html)
+[Vitest Coverage Documentation](https://vitest.dev/guide/coverage.html)
+
 - [Testing Best Practices](../.cursor/rules/vitest.mdc)

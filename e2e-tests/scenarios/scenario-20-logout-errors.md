@@ -2,27 +2,32 @@
 
 ## Overview
 
-Tests logout button error handling and fallback mechanisms. This scenario verifies that the logout system properly handles various error conditions, that fallback mechanisms work correctly, that error messages are clear and informative, and that the system remains stable during error conditions.
+Tests logout button error handling and fallback mechanisms. This scenario verifies that the logout system properly
+handles various error conditions, that fallback mechanisms work correctly, that error messages are clear and
+informative, and that the system remains stable during error conditions.
 
 ## Prerequisites
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
 2. **Server Running**: Development server is running on port 54731
 3. **Client Accessible**: Client is accessible on port 5173
 4. **Both Players Connected**: AW and Ithaqua are both logged in and in the same room
 
-**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
+### ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE
 
 **Reference**: See @MULTIPLAYER_TEST_RULES.md for complete prerequisite verification procedures.
 
 ## Test Configuration
 
-- **Test Players**: ArkanWolfshade (AW) and Ithaqua
-- **Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
-- **Testing Approach**: Playwright MCP (multi-tab interaction required)
-- **Timeout Settings**: Use configurable timeouts from master rules
+**Test Players**: ArkanWolfshade (AW) and Ithaqua
+
+**Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
+
+**Testing Approach**: Playwright MCP (multi-tab interaction required)
+
+**Timeout Settings**: Use configurable timeouts from master rules
 
 ## Execution Steps
 
@@ -31,6 +36,7 @@ Tests logout button error handling and fallback mechanisms. This scenario verifi
 **Purpose**: Ensure both players are ready for logout error testing
 
 **Commands**:
+
 ```javascript
 // Ensure both players are logged in from previous scenario
 // AW should be on tab 0, Ithaqua on tab 1
@@ -44,12 +50,15 @@ Tests logout button error handling and fallback mechanisms. This scenario verifi
 **Purpose**: Test that logout button handles errors gracefully
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
 
 // Check logout button state
-const logoutButton = await mcp_playwright_browser_evaluate({function: "() => document.querySelector('button[data-testid=\"logout-button\"]') || document.querySelector('.logout-button') || document.querySelector('button:contains(\"Logout\")')"});
+const logoutButton = await mcp_playwright_browser_evaluate({function: "() =>
+document.querySelector('button[data-testid=\"logout-button\"]') || document.querySelector('.logout-button') ||
+document.querySelector('button:contains(\"Logout\")')"});
 console.log('Logout button found:', logoutButton !== null);
 
 // Test logout button click
@@ -71,6 +80,7 @@ console.log('AW sees logout message:', seesLogoutMessage);
 **Purpose**: Test logout error handling during network issues
 
 **Commands**:
+
 ```javascript
 // Simulate network issues by disconnecting
 await mcp_playwright_browser_evaluate({function: "() => { window.navigator.onLine = false; window.dispatchEvent(new Event('offline')); }"});
@@ -94,6 +104,7 @@ console.log('AW sees network error:', seesNetworkError);
 **Purpose**: Test that logout system recovers from errors
 
 **Commands**:
+
 ```javascript
 // Restore network connection
 await mcp_playwright_browser_evaluate({function: "() => { window.navigator.onLine = true; window.dispatchEvent(new Event('online')); }"});
@@ -117,6 +128,7 @@ console.log('AW sees logout recovery:', seesLogoutRecovery);
 **Purpose**: Test logout error handling during server issues
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
@@ -143,6 +155,7 @@ console.log('Ithaqua sees server error:', seesServerError);
 **Purpose**: Test that logout system has proper fallback mechanisms
 
 **Commands**:
+
 ```javascript
 // Restore fetch function
 await mcp_playwright_browser_evaluate({function: "() => { window.fetch = originalFetch; }"});
@@ -166,6 +179,7 @@ console.log('Ithaqua sees logout fallback:', seesLogoutFallback);
 **Purpose**: Test logout error handling during session expiry
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -192,6 +206,7 @@ console.log('AW sees session error:', seesSessionError);
 **Purpose**: Test that logout system recovers after session expiry
 
 **Commands**:
+
 ```javascript
 // Restore session
 await mcp_playwright_browser_evaluate({function: "() => { localStorage.setItem('authToken', 'test-token'); sessionStorage.setItem('userSession', 'test-session'); }"});
@@ -227,6 +242,7 @@ if (awMessagesSessionRecovery.length === 0) {
 **Purpose**: Test logout error handling during multiple logout attempts
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
@@ -253,6 +269,7 @@ console.log('Ithaqua sees logout multiple:', seesLogoutMultiple);
 **Purpose**: Test logout error handling during concurrent logout attempts
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -277,6 +294,7 @@ console.log('AW sees logout concurrent:', seesLogoutConcurrent);
 **Purpose**: Test logout error handling during system load
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
@@ -304,6 +322,7 @@ console.log('✅ All verification steps completed successfully');
 console.log('✅ System functionality verified as working correctly');
 console.log('✅ Test results documented and validated');
 console.log('📋 PROCEEDING TO SCENARIO 21: Logout Accessibility Features');
+
 ```
 
 **Expected Result**:  AW sees logout confirmation after concurrent attempts
@@ -336,6 +355,7 @@ console.log('➡️ READY FOR SCENARIO 21: Logout Accessibility Features');
 **Purpose**: Test that logout system remains stable during error conditions
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -347,7 +367,8 @@ await mcp_playwright_browser_click({element: "Logout button", ref: "logout-butto
 await mcp_playwright_browser_wait_for({text: "You have been logged out"});
 
 // Verify logout message appears
-const awMessagesStability = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const awMessagesStability = await mcp_playwright_browser_evaluate({function: "() =>
+Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
 const seesLogoutStability = awMessagesStability.some(msg => msg.includes('You have been logged out'));
 console.log('AW sees logout stability:', seesLogoutStability);
 ```
@@ -356,11 +377,16 @@ console.log('AW sees logout stability:', seesLogoutStability);
 
 ## Expected Results
 
-- ✅ Logout button handles errors gracefully
-- ✅ Network errors are properly handled with clear error messages
-- ✅ Logout system recovers from network errors
-- ✅ Server errors are properly handled with clear error messages
-- ✅ Logout system has proper fallback mechanisms
+✅ Logout button handles errors gracefully
+
+✅ Network errors are properly handled with clear error messages
+
+✅ Logout system recovers from network errors
+
+✅ Server errors are properly handled with clear error messages
+
+✅ Logout system has proper fallback mechanisms
+
 - ✅ Session expiry errors are properly handled
 - ✅ Logout system recovers after session expiry
 - ✅ Multiple logout attempts are handled correctly
@@ -370,7 +396,8 @@ console.log('AW sees logout stability:', seesLogoutStability);
 
 ## Success Criteria Checklist
 
-- [ ] Logout button handles errors gracefully
+[ ] Logout button handles errors gracefully
+
 - [ ] Network errors are properly handled
 - [ ] Logout system recovers from network errors
 - [ ] Server errors are properly handled
@@ -390,20 +417,25 @@ console.log('AW sees logout stability:', seesLogoutStability);
 ## Cleanup
 
 Execute standard cleanup procedures from @CLEANUP.md:
+
 1. Close all browser tabs
 2. Stop development server
 3. Verify clean shutdown
 
 ## Status
 
-**✅ SCENARIO COMPLETION LOGIC FIXED**
+### ✅ SCENARIO COMPLETION LOGIC FIXED
 
 The logout errors system is working correctly. The scenario now includes proper completion logic to prevent infinite loops:
 
-- **Fixed**: Added completion step with explicit scenario completion and cleanup procedures
-- **Fixed**: Added clear decision points for handling verification results
-- **Fixed**: Added explicit progression to next scenario
-- **Verified**: System functionality works as expected and meets all requirements
+**Fixed**: Added completion step with explicit scenario completion and cleanup procedures
+
+**Fixed**: Added clear decision points for handling verification results
+
+**Fixed**: Added explicit progression to next scenario
+
+**Verified**: System functionality works as expected and meets all requirements
+
 ---
 
 **Document Version**: 1.0 (Modular E2E Test Suite)

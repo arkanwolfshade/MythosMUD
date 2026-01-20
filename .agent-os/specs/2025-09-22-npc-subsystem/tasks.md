@@ -4,9 +4,11 @@
 
 ### ✅ Database Separation and Environment Configuration (Completed)
 
-- **NPC Database Separation**: Successfully separated NPC data into dedicated `npcs.db` database
-- **Production Database**: Created `/data/npcs/npcs.db` with complete schema and all indexes
-- **Test Database**: Created `/server/tests/data/npcs/test_npcs.db` with same schema
+**NPC Database Separation**: Successfully separated NPC data into dedicated `npcs.db` database
+
+**Production Database**: Created `/data/npcs/npcs.db` with complete schema and all indexes
+
+**Test Database**: Created `/server/tests/data/npcs/test_npcs.db` with same schema
 - **Database Models**: Updated NPC models to use separate database metadata and session management
 - **Environment Configuration**: Added `NPC_DATABASE_URL` to both production and test configurations
 - **IDE Configuration**: Updated Cursor workspace settings to allow access to non-production environment files
@@ -16,22 +18,25 @@
 
 ### Database Architecture
 
-- **Tables**: `npc_definitions`, `npc_spawn_rules`, `npc_relationships`
-- **Indexes**: Complete indexing strategy for performance optimization
-- **Constraints**: Foreign key relationships and unique constraints properly enforced
+**Tables**: `npc_definitions`, `npc_spawn_rules`, `npc_relationships`
+
+**Indexes**: Complete indexing strategy for performance optimization
+
+**Constraints**: Foreign key relationships and unique constraints properly enforced
 - **Environment Variables**:
   - Production: `NPC_DATABASE_URL=sqlite+aiosqlite:///../../data/npcs/npcs.db`
   - Tests: `NPC_DATABASE_URL=sqlite+aiosqlite:///server/tests/data/npcs/test_npcs.db`
 
 ## Tasks
 
-- [x] 1. Database Schema and NPC Data Models ✅ COMPLETED
-  - [x] 1.1 Write tests for NPC database models and schema validation ✅
-  - [x] 1.2 Create SQL DDL files for NPC tables (npc_definitions, npc_spawn_rules, npc_relationships) ✅
-  - [x] 1.3 Implement NPC database models and repository classes ✅
-  - [x] 1.4 Create database initialization and verification scripts ✅
-  - [x] 1.5 Add sample NPC data for testing and development ✅
-  - [x] 1.6 Verify all database tests pass ✅
+[x] 1. Database Schema and NPC Data Models ✅ COMPLETED
+
+- [x] 1.1 Write tests for NPC database models and schema validation ✅
+- [x] 1.2 Create SQL DDL files for NPC tables (npc_definitions, npc_spawn_rules, npc_relationships) ✅
+- [x] 1.3 Implement NPC database models and repository classes ✅
+- [x] 1.4 Create database initialization and verification scripts ✅
+- [x] 1.5 Add sample NPC data for testing and development ✅
+- [x] 1.6 Verify all database tests pass ✅
 
 - [x] 2. NPC Threading and Message Queue Infrastructure ✅ COMPLETED
   - [x] 2.1 Write tests for NPC thread management and message queue operations ✅

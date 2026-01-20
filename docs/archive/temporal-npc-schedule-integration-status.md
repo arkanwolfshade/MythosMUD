@@ -19,12 +19,14 @@ NPC schedules define when NPCs (particularly shopkeepers) should be active based
 ### ✅ Completed (Infrastructure)
 
 1. **Schedule Data Storage**
+
    - Database table: `calendar_npc_schedules` (defined in `db/schema/01_world_and_calendar.sql`)
    - Schedule data files: `data/{environment}/calendar/schedules/npc.json`
    - Schedule model: `server/models/calendar.py` (`NPCScheduleModel`)
    - Schedule schema: `server/schemas/calendar.py` (`ScheduleEntry`)
 
 2. **Schedule Service**
+
    - `server/services/schedule_service.py` - Loads schedules from database
    - `get_active_entries()` method - Determines which schedules are active at given time
    - Schedules include:
@@ -34,12 +36,14 @@ NPC schedules define when NPCs (particularly shopkeepers) should be active based
      - `effects` - Effects when active (e.g., ["shops_open", "discount_minor"])
 
 3. **Time Event Integration**
+
    - `server/time/time_event_consumer.py` - `MythosTimeEventConsumer` class
    - `_handle_tick()` method calls:
      - `schedule_service.get_active_entries()` to get active schedules
      - `npc_lifecycle_manager.apply_schedule_state(active_schedules)` to update NPC state
 
 4. **NPC Lifecycle Manager Integration**
+
    - `server/npc/lifecycle_manager.py` - `NPCLifecycleManager.apply_schedule_state()` method
    - Stores active schedule IDs in `self.active_schedule_ids`
    - Logs schedule state updates
@@ -47,11 +51,13 @@ NPC schedules define when NPCs (particularly shopkeepers) should be active based
 ### ❌ Not Yet Implemented (NPC Response)
 
 1. **NPC Schedule Checking**
+
    - NPCs (specifically `ShopkeeperNPC`) do not check if they should be active based on schedules
    - No logic to determine if a shopkeeper should be "open" or "closed"
    - No response to schedule effects like "shops_open"
 
 2. **Shop Open/Close Behavior**
+
    - `server/npc/shopkeeper_npc.py` - `ShopkeeperNPC` class exists but:
      - Does not check schedule state
      - Does not have "open" / "closed" state
@@ -59,6 +65,7 @@ NPC schedules define when NPCs (particularly shopkeepers) should be active based
      - No logic to prevent transactions when shop is "closed"
 
 3. **Schedule Effect Processing**
+
    - Schedule effects (e.g., "shops_open", "discount_minor") are defined but not used
    - No system to map schedule effects to NPC behaviors
    - No effect handlers or processors
@@ -129,12 +136,14 @@ class ShopkeeperNPC(NPCBase):
         """Check if shop is currently open based on schedule."""
         # Check schedule state via lifecycle manager or schedule service
         # Return True if "shops_open" effect is active for shopkeeper type
+
         pass
 
     def buy_from_player(self, player_id: str, item: dict[str, Any]) -> bool:
         """Buy item from player."""
         if not self.is_shop_open():
             # Return False or send message to player
+
             return False
         # ... existing buy logic ...
 
@@ -142,8 +151,10 @@ class ShopkeeperNPC(NPCBase):
         """Sell item to player."""
         if not self.is_shop_open():
             # Return False or send message to player
+
             return False
         # ... existing sell logic ...
+
 ```
 
 ### 3. Schedule Effect Processing
@@ -152,6 +163,7 @@ System to process schedule effects:
 
 ```python
 # In NPCLifecycleManager or separate service
+
 def process_schedule_effects(active_schedules: list[ScheduleEntry]) -> dict[str, set[str]]:
     """
     Process schedule effects grouped by applies_to type.
@@ -209,15 +221,18 @@ NPCs need periodic updates to check schedule state:
 ### Unit Tests
 
 1. **Schedule Service**
+
    - Test `get_active_entries()` with various times
    - Test schedule matching (hours, days, applies_to)
 
 2. **Shopkeeper NPC**
+
    - Test `is_shop_open()` returns correct state
    - Test buy/sell blocked when closed
    - Test buy/sell allowed when open
 
 3. **Schedule Effect Processing**
+
    - Test effect grouping by NPC type
    - Test multiple effects per NPC type
    - Test effect activation/deactivation
@@ -225,6 +240,7 @@ NPCs need periodic updates to check schedule state:
 ### Integration Tests
 
 1. **Time-Based Shop State**
+
    - Spawn shopkeeper NPC
    - Advance time past schedule end
    - Verify shop becomes closed
@@ -232,6 +248,7 @@ NPCs need periodic updates to check schedule state:
    - Verify shop becomes open
 
 2. **Player Transactions**
+
    - Player attempts to buy when shop closed
    - Verify transaction fails with appropriate message
    - Player attempts to buy when shop open
@@ -243,12 +260,14 @@ NPCs need periodic updates to check schedule state:
 
 ### Database/Schema
 
-- `db/schema/01_world_and_calendar.sql` - `calendar_npc_schedules` table
+`db/schema/01_world_and_calendar.sql` - `calendar_npc_schedules` table
+
 - `data/{environment}/calendar/schedules/npc.json` - Schedule data files
 
 ### Server-Side
 
-- `server/services/schedule_service.py` - Schedule service (infrastructure complete)
+`server/services/schedule_service.py` - Schedule service (infrastructure complete)
+
 - `server/time/time_event_consumer.py` - Time event consumer (calls apply_schedule_state)
 - `server/npc/lifecycle_manager.py` - NPC lifecycle manager (stores schedule state)
 - `server/npc/shopkeeper_npc.py` - Shopkeeper NPC (needs schedule integration)
@@ -267,7 +286,8 @@ NPCs need periodic updates to check schedule state:
 
 ## References
 
-- `docs/TEMPORAL_SYSTEM_RESEARCH.md` - Temporal system documentation
+`docs/TEMPORAL_SYSTEM_RESEARCH.md` - Temporal system documentation
+
 - `server/services/schedule_service.py` - Schedule service implementation
 - `server/npc/shopkeeper_npc.py` - Shopkeeper NPC implementation
 - `server/npc/lifecycle_manager.py` - NPC lifecycle manager

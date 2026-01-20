@@ -2,7 +2,7 @@
 
 ## 🤖 MANDATORY AI EXECUTION CONTRACT 🤖
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST
 
 1. ✅ Read this ENTIRE scenario file from start to finish
 2. ✅ Execute EVERY step in EXACT order (Step 1, 2, 3...)
@@ -13,34 +13,41 @@
 7. ✅ Never modify steps, even if you think there's a better way
 8. ✅ Stop IMMEDIATELY when you see "SCENARIO 23 COMPLETED"
 
-**EXECUTION AFFIRMATION (Type this before proceeding):**
-"I will execute Scenario 23: Multi-User Container Looting exactly as written without modification, addition, or omission"
+### EXECUTION AFFIRMATION (Type this before proceeding)
 
-**CONFIRMATION CHECKLIST:**
-- [ ] I have read the entire scenario file
+"I will execute Scenario 23: Multi-User Container Looting exactly as written without modification, addition, or
+omission"
+
+### CONFIRMATION CHECKLIST
+
+[ ] I have read the entire scenario file
+
 - [ ] I understand that I must execute every step exactly as written
 - [ ] I will not skip, add, or modify any steps
 - [ ] I will stop at scenario completion marker
 - [ ] I understand that VIOLATION = COMPLETE FAILURE
 
-**⚠️ VIOLATION = COMPLETE FAILURE**
+### ⚠️ VIOLATION = COMPLETE FAILURE
 
 ---
 
 ## Overview
 
-Tests multi-user container looting scenarios where multiple players interact with the same container simultaneously. This scenario verifies:
+Tests multi-user container looting scenarios where multiple players interact with the same container simultaneously.
+This scenario verifies:
+
 - Multiple players can open the same environmental container
 - Container state updates are synchronized across all players
 - Item transfers are visible to all players in real-time
 - Container capacity and locking work correctly with concurrent access
 - Mutation tokens prevent race conditions
 
-**This is a core multi-player scenario** that requires real-time verification of container state synchronization. No automated alternative is available.
+**This is a core multi-player scenario** that requires real-time verification of container state synchronization. No
+automated alternative is available.
 
 ## Prerequisites
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
 2. **Server Running**: Development server is running on port 54731
@@ -48,37 +55,47 @@ Tests multi-user container looting scenarios where multiple players interact wit
 4. **Environmental Container**: Room has at least one environmental container with items
 5. **Both Players Connected**: Both players are logged in and in the same room
 
-**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
+### ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE
 
 **Reference**: See @MULTIPLAYER_TEST_RULES.md for complete prerequisite verification procedures.
 
 ## Test Configuration
 
-- **Test Players**: ArkanWolfshade (AW) and Ithaqua
-- **Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
-- **Testing Approach**: Playwright MCP (multi-tab interaction required)
-- **Timeout Settings**: Use configurable timeouts from master rules
+**Test Players**: ArkanWolfshade (AW) and Ithaqua
+
+**Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
+
+**Testing Approach**: Playwright MCP (multi-tab interaction required)
+
+**Timeout Settings**: Use configurable timeouts from master rules
 
 ## Testing Approach Rationale
 
-**Why Playwright MCP is Required:**
+### Why Playwright MCP is Required
 
-- **Multi-tab Coordination**: Requires 2+ browser tabs for multiplayer testing
-- **Real-time Interaction**: Must verify container state updates in real-time
-- **State Synchronization**: Must test that container changes are synchronized across players
-- **Concurrent Access**: Must verify mutation tokens prevent race conditions
-- **Message Broadcasting**: Must test that container events are broadcast to all players
+**Multi-tab Coordination**: Requires 2+ browser tabs for multiplayer testing
 
-**Standard Playwright Not Suitable:**
+**Real-time Interaction**: Must verify container state updates in real-time
 
-- Cannot handle multiple browser tabs simultaneously
+**State Synchronization**: Must test that container changes are synchronized across players
+
+**Concurrent Access**: Must verify mutation tokens prevent race conditions
+
+**Message Broadcasting**: Must test that container events are broadcast to all players
+
+### Standard Playwright Not Suitable
+
+Cannot handle multiple browser tabs simultaneously
+
 - Cannot verify real-time container state synchronization
 - Cannot test concurrent container access patterns
 
 ## Execution Steps
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 1 of 8: Open Browser and Navigate to Client
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: Initialize browser session and navigate to the game client
@@ -97,18 +114,24 @@ await mcp_playwright_browser_wait_for({time: 10});
 
 **Expected Result**: Browser opens and navigates to client login page
 
-**✅ Step 1 Completion Checklist:**
-- [ ] Browser navigated to client
+### ✅ Step 1 Completion Checklist
+
+[ ] Browser navigated to client
+
 - [ ] Page loaded successfully
 - [ ] Ready to proceed to Step 2
 
-**🚫 STOP! Before proceeding:**
+### 🚫 STOP! Before proceeding
+
 Did you complete ALL items above? (Yes/No)
+
 - If No: Document the issue and STOP
 - If Yes: Proceed IMMEDIATELY to Step 2
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 2 of 8: AW Enters the Game
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: First player connects and enters the game world
@@ -145,18 +168,24 @@ await mcp_playwright_browser_wait_for({time: 10});
 
 **Expected Result**: AW successfully logs in and enters the game world
 
-**✅ Step 2 Completion Checklist:**
-- [ ] AW logged in successfully
+### ✅ Step 2 Completion Checklist
+
+[ ] AW logged in successfully
+
 - [ ] Game interface loaded
 - [ ] Ready to proceed to Step 3
 
-**🚫 STOP! Before proceeding:**
+### 🚫 STOP! Before proceeding
+
 Did you complete ALL items above? (Yes/No)
+
 - If No: Document the issue and STOP
 - If Yes: Proceed IMMEDIATELY to Step 3
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 3 of 8: Open Second Browser Tab for Ithaqua
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: Second player connects to test multiplayer container interaction
@@ -205,19 +234,25 @@ await mcp_playwright_browser_wait_for({time: 10});
 
 **Expected Result**: Ithaqua successfully logs in and enters the game world in a separate tab
 
-**✅ Step 3 Completion Checklist:**
-- [ ] Second tab created
+### ✅ Step 3 Completion Checklist
+
+[ ] Second tab created
+
 - [ ] Ithaqua logged in successfully
 - [ ] Both players in game
 - [ ] Ready to proceed to Step 4
 
-**🚫 STOP! Before proceeding:**
+### 🚫 STOP! Before proceeding
+
 Did you complete ALL items above? (Yes/No)
+
 - If No: Document the issue and STOP
 - If Yes: Proceed IMMEDIATELY to Step 4
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 4 of 8: AW Opens Environmental Container
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: First player opens an environmental container to test container state synchronization
@@ -239,7 +274,9 @@ const snapshotAW = await mcp_playwright_browser_snapshot();
 // Look for environmental container in room (may appear as overlay or in room description)
 // First, check if there's a container visible in the UI
 const containerElements = await mcp_playwright_browser_evaluate({
-  function: "() => Array.from(document.querySelectorAll('[data-testid*=\"container\"], [aria-label*=\"container\"], [aria-label*=\"Container\"]')).map(el => ({ tag: el.tagName, text: el.textContent?.substring(0, 50), testId: el.getAttribute('data-testid'), ariaLabel: el.getAttribute('aria-label') }))"
+  function: "() => Array.from(document.querySelectorAll('[data-testid*=\"container\"], [aria-label*=\"container\"],
+  [aria-label*=\"Container\"]')).map(el => ({ tag: el.tagName, text: el.textContent?.substring(0, 50), testId:
+  el.getAttribute('data-testid'), ariaLabel: el.getAttribute('aria-label') }))"
 });
 
 console.log('Container elements found:', JSON.stringify(containerElements, null, 2));
@@ -259,18 +296,24 @@ await mcp_playwright_browser_wait_for({time: 5});
 
 **Expected Result**: AW opens an environmental container, container UI appears
 
-**✅ Step 4 Completion Checklist:**
-- [ ] AW attempted to open container
+### ✅ Step 4 Completion Checklist
+
+[ ] AW attempted to open container
+
 - [ ] Container UI appeared (or error documented)
 - [ ] Ready to proceed to Step 5
 
-**🚫 STOP! Before proceeding:**
+### 🚫 STOP! Before proceeding
+
 Did you complete ALL items above? (Yes/No)
+
 - If No: Document the issue and STOP
 - If Yes: Proceed IMMEDIATELY to Step 5
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 5 of 8: Verify Container State Synchronization
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: Verify that container state is synchronized across both players
@@ -312,18 +355,24 @@ console.log('🚫 DO NOT: Retry this verification');
 
 **Expected Result**: Container state is synchronized (or differences documented)
 
-**✅ Step 5 Completion Checklist:**
-- [ ] Container state checked in both tabs
+### ✅ Step 5 Completion Checklist
+
+[ ] Container state checked in both tabs
+
 - [ ] Results documented
 - [ ] Ready to proceed to Step 6
 
-**🚫 STOP! Before proceeding:**
+### 🚫 STOP! Before proceeding
+
 Did you complete ALL items above? (Yes/No)
+
 - If No: Document the issue and STOP
 - If Yes: Proceed IMMEDIATELY to Step 6
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 6 of 8: Ithaqua Attempts to Open Same Container
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: Test concurrent container access and mutation token handling
@@ -358,18 +407,24 @@ console.log('Container open response:', JSON.stringify(containerResponse, null, 
 
 **Expected Result**: Ithaqua either opens container or receives appropriate error/message
 
-**✅ Step 6 Completion Checklist:**
-- [ ] Ithaqua attempted to open container
+### ✅ Step 6 Completion Checklist
+
+[ ] Ithaqua attempted to open container
+
 - [ ] Response received and documented
 - [ ] Ready to proceed to Step 7
 
-**🚫 STOP! Before proceeding:**
+### 🚫 STOP! Before proceeding
+
 Did you complete ALL items above? (Yes/No)
+
 - If No: Document the issue and STOP
 - If Yes: Proceed IMMEDIATELY to Step 7
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 7 of 8: AW Transfers Item from Container
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: Test that item transfers are visible to all players in real-time
@@ -411,18 +466,24 @@ console.log('Transfer result:', JSON.stringify(transferResult, null, 2));
 
 **Expected Result**: AW transfers item from container, transfer is visible in UI
 
-**✅ Step 7 Completion Checklist:**
-- [ ] AW attempted item transfer
+### ✅ Step 7 Completion Checklist
+
+[ ] AW attempted item transfer
+
 - [ ] Transfer result documented
 - [ ] Ready to proceed to Step 8
 
-**🚫 STOP! Before proceeding:**
+### 🚫 STOP! Before proceeding
+
 Did you complete ALL items above? (Yes/No)
+
 - If No: Document the issue and STOP
 - If Yes: Proceed IMMEDIATELY to Step 8
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 8 of 8: Verify Real-time Update in Ithaqua's Tab
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: Verify that container state updates are synchronized in real-time
@@ -459,18 +520,24 @@ console.log('🚫 DO NOT: Retry this verification');
 
 **Expected Result**: Container state updated in Ithaqua's tab (or differences documented)
 
-**✅ Step 8 Completion Checklist:**
-- [ ] Container state checked in Ithaqua's tab
+### ✅ Step 8 Completion Checklist
+
+[ ] Container state checked in Ithaqua's tab
+
 - [ ] Real-time update verified or documented
 - [ ] Ready to proceed to scenario completion
 
-**🚫 STOP! Before proceeding:**
+### 🚫 STOP! Before proceeding
+
 Did you complete ALL items above? (Yes/No)
+
 - If No: Document the issue and STOP
 - If Yes: Proceed IMMEDIATELY to Scenario Completion
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 9: Scenario Completion
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: Finalize scenario execution and prepare for next scenario
@@ -518,27 +585,34 @@ console.log('➡️ READY FOR: Next container scenario');
 
 **Expected Result**: All browser tabs closed, scenario marked as complete, ready for next scenario
 
-**✅ Scenario Completion Verification:**
-- [ ] All browser tabs closed
+### ✅ Scenario Completion Verification
+
+[ ] All browser tabs closed
+
 - [ ] Scenario completion logged
 - [ ] No additional verification performed
 - [ ] Ready for cleanup procedures
 
-**🛑 EXECUTION ENDS HERE - DO NOT PROCEED FURTHER**
+### 🛑 EXECUTION ENDS HERE - DO NOT PROCEED FURTHER
 
 ---
 
 ## Expected Results
 
-- ✅ Both players can see environmental containers in the room
-- ✅ Container state is synchronized across all players
-- ✅ Item transfers are visible to all players in real-time
-- ✅ Mutation tokens prevent race conditions
-- ✅ Container capacity and locking work correctly with concurrent access
+✅ Both players can see environmental containers in the room
+
+✅ Container state is synchronized across all players
+
+✅ Item transfers are visible to all players in real-time
+
+✅ Mutation tokens prevent race conditions
+
+✅ Container capacity and locking work correctly with concurrent access
 
 ## Success Criteria Checklist
 
-- [ ] Both players successfully connected to game
+[ ] Both players successfully connected to game
+
 - [ ] Environmental container visible/accessible to both players
 - [ ] Container state synchronized across players
 - [ ] Item transfers visible in real-time
@@ -551,13 +625,14 @@ console.log('➡️ READY FOR: Next container scenario');
 ## Cleanup
 
 Execute standard cleanup procedures from @CLEANUP.md:
+
 1. Close all browser tabs (completed above)
 2. Stop development server
 3. Verify clean shutdown
 
 ## Status
 
-**✅ SCENARIO FILE CREATED**
+### ✅ SCENARIO FILE CREATED
 
 This scenario tests multi-user container looting functionality with real-time state synchronization.
 

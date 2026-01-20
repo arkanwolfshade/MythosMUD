@@ -4,11 +4,15 @@
 
 All infrastructure is in place:
 
-- ✅ 114 automated Playwright tests created
-- ✅ Test database seeding configured
-- ✅ E2E test configuration file created
-- ✅ UI elements have proper test IDs
-- ✅ Playwright browsers installed
+✅ 114 automated Playwright tests created
+
+✅ Test database seeding configured
+
+✅ E2E test configuration file created
+
+✅ UI elements have proper test IDs
+
+✅ Playwright browsers installed
 
 ## Step 1: Start the E2E Test Server
 
@@ -31,9 +35,11 @@ This will:
 
 ```powershell
 # Set the E2E test config
+
 $env:MYTHOSMUD_CONFIG_PATH = "E:\projects\GitHub\MythosMUD\server\server_config.e2e_test.yaml"
 
 # Start server
+
 .\scripts\start_e2e_test.ps1 -Environment test
 ```
 
@@ -121,6 +127,7 @@ After tests complete:
 
 ```powershell
 # Open HTML report
+
 npx playwright show-report client/playwright-report/runtime
 ```
 

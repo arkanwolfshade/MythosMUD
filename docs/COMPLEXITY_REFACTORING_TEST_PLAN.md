@@ -8,6 +8,7 @@
 ### 1. Application Startup & CORS (create_app)
 
 **Test Cases:**
+
 - [ ] **Server Startup**: Start server and verify it initializes without errors
 - [ ] **CORS Configuration**:
   - [ ] Test with default CORS settings (localhost:5173)
@@ -18,6 +19,7 @@
 - [ ] **Error Handling**: Verify graceful fallback when config is unavailable
 
 **Expected Results:**
+
 - Server starts successfully
 - CORS headers match configuration
 - Environment variables take precedence over config file
@@ -27,6 +29,7 @@
 ### 2. WebSocket Connections
 
 **Test Cases:**
+
 - [ ] **Modern WebSocket Route** (`/api/ws`):
   - [ ] Connect with JWT token via subprotocol header
   - [ ] Connect with JWT token via query parameter (fallback)
@@ -46,6 +49,7 @@
   - [ ] Receive real-time updates via WebSocket
 
 **Expected Results:**
+
 - All connection methods work correctly
 - Token parsing handles all supported formats
 - Proper error messages when connection fails
@@ -55,6 +59,7 @@
 ### 3. Room Operations
 
 **Test Cases:**
+
 - [ ] **Room Listing** (`GET /api/rooms?plane=X&zone=Y`):
   - [ ] List rooms without filtering
   - [ ] List rooms with `filter_explored=true` as non-admin user
@@ -74,6 +79,7 @@
   - [ ] Verify exit directions match room data
 
 **Expected Results:**
+
 - Room listing works with all parameter combinations
 - Exploration filtering works for non-admins, skipped for admins
 - Coordinates generate automatically when missing
@@ -84,6 +90,7 @@
 ### 4. Container Operations
 
 **Test Cases:**
+
 - [ ] **Loot All Items** (`POST /api/containers/loot-all`):
   - [ ] Loot all items from a container with valid mutation token
   - [ ] Test with container that has multiple item stacks
@@ -98,6 +105,7 @@
   - [ ] Test rate limiting (20 requests per 60 seconds)
 
 **Expected Results:**
+
 - Successful looting transfers all eligible items
 - Proper error codes for all failure scenarios
 - Container and inventory states update correctly
@@ -108,6 +116,7 @@
 ### 5. Player Respawn
 
 **Test Cases:**
+
 - [ ] **Normal Respawn** (`POST /api/players/respawn`):
   - [ ] Respawn a dead player (DP <= -10)
   - [ ] Verify player moves to respawn location
@@ -124,6 +133,7 @@
   - [ ] Test rate limiting (1 request per 5 seconds)
 
 **Expected Results:**
+
 - Successful respawns restore player state correctly
 - Proper validation prevents invalid respawns
 - Error messages are clear and helpful
@@ -133,6 +143,7 @@
 ### 6. Game Tick Processing
 
 **Test Cases:**
+
 - [ ] **Status Effects Processing**:
   - [ ] Apply damage-over-time effect to player
   - [ ] Apply heal-over-time effect to player
@@ -155,6 +166,7 @@
   - [ ] Verify cleanup logging
 
 **Expected Results:**
+
 - Status effects process correctly each tick
 - MP regenerates at expected rate
 - Corpses are cleaned up after decay period
@@ -165,6 +177,7 @@
 ### 7. Integration Tests
 
 **Test Cases:**
+
 - [ ] **Full Gameplay Flow**:
   - [ ] Login → Connect WebSocket → Move between rooms → View map
   - [ ] Open container → Loot items → Check inventory
@@ -181,6 +194,7 @@
   - [ ] Verify error messages are user-friendly
 
 **Expected Results:**
+
 - All gameplay flows work end-to-end
 - Multi-player scenarios handle correctly
 - Error recovery is graceful
@@ -190,33 +204,45 @@
 ## 🔍 Specific Edge Cases to Test
 
 ### CORS Configuration
-- Empty environment variables
+
+Empty environment variables
+
 - Malformed JSON in environment variables
 - Multiple CORS origin formats
 
 ### WebSocket Token Parsing
-- Token with extra whitespace
+
+Token with extra whitespace
+
 - Token in different header formats
 - Missing token (should fall back gracefully)
 
 ### Room Operations
-- Rooms with no exits
+
+Rooms with no exits
+
 - Rooms with missing coordinates
 - Empty zone/subzone
 - Non-existent plane/zone
 
 ### Container Operations
-- Container with 0 items
+
+Container with 0 items
+
 - Container with items that exceed capacity
 - Container in different room states
 
 ### Respawn Operations
-- Respawn while already at respawn location
+
+Respawn while already at respawn location
+
 - Respawn with invalid user state
 - Concurrent respawn requests
 
 ### Game Tick Processing
-- Player logs out during status effect processing
+
+Player logs out during status effect processing
+
 - Multiple effects expiring simultaneously
 - MP regeneration at maximum MP
 - Corpse cleanup with no decayed corpses
@@ -225,7 +251,8 @@
 
 ## 📊 Performance Checks
 
-- [ ] Server startup time (should be similar to before)
+[ ] Server startup time (should be similar to before)
+
 - [ ] WebSocket connection time (should be < 1 second)
 - [ ] Room listing response time (should be < 500ms)
 - [ ] Container loot-all operation time (should be < 1 second)
@@ -236,17 +263,22 @@
 ## ✅ Success Criteria
 
 All tests should pass with:
-- ✅ No new errors in server logs
-- ✅ No regressions in functionality
-- ✅ Response times similar to or better than before
-- ✅ Error messages are clear and helpful
-- ✅ All edge cases handled gracefully
+✅ No new errors in server logs
+
+✅ No regressions in functionality
+
+✅ Response times similar to or better than before
+
+✅ Error messages are clear and helpful
+
+✅ All edge cases handled gracefully
 
 ---
 
 ## 🚨 Red Flags to Watch For
 
-- Server fails to start
+Server fails to start
+
 - WebSocket connections fail
 - CORS errors in browser console
 - Missing room data or exits
@@ -261,7 +293,8 @@ All tests should pass with:
 
 ## 📝 Notes
 
-- Test with both admin and non-admin accounts
+Test with both admin and non-admin accounts
+
 - Test with multiple browser sessions
 - Monitor server logs during all tests
 - Test with various game states (healthy, injured, dead, delirious)

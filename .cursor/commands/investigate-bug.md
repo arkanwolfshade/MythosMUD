@@ -11,9 +11,11 @@ alwaysApply: false
 
 **CURSOR AI CONFIGURATION:**
 
-- **MUST USE GPT-4**: This investigation command requires GPT-4 level reasoning and systematic analysis
-- **DO NOT USE**: GPT-3.5, Claude, or other LLMs for investigation execution
-- **REASON**: Complex bug investigation requires advanced reasoning capabilities and systematic analysis
+**MUST USE GPT-4**: This investigation command requires GPT-4 level reasoning and systematic analysis
+
+**DO NOT USE**: GPT-3.5, Claude, or other LLMs for investigation execution
+
+**REASON**: Complex bug investigation requires advanced reasoning capabilities and systematic analysis
 - **VERIFICATION**: Confirm you are using GPT-4 before proceeding with any investigation
 
 **MANDATORY RULE REFERENCES:**
@@ -40,8 +42,9 @@ This command activates and requires adherence to:
 
 **Test Players:**
 
-- **ArkanWolfshade** (AW) - password: Cthulhu1
-- **Ithaqua** - password: Cthulhu1
+**ArkanWolfshade** (AW) - password: Cthulhu1
+
+**Ithaqua** - password: Cthulhu1
 
 **NEVER use random or assumed credentials** - Always use these exact test accounts for all investigations involving login, authentication, or multiplayer scenarios.
 
@@ -116,30 +119,37 @@ Before starting ANY investigation, confirm:
 
 ### Codebase Analysis Tools
 
-- **codebase_search**: Semantic search for code patterns and functionality
-- **grep**: Exact string/regex searches across the codebase
-- **read_file**: Read and analyze specific files
+**codebase_search**: Semantic search for code patterns and functionality
+
+**grep**: Exact string/regex searches across the codebase
+
+**read_file**: Read and analyze specific files
 - **glob_file_search**: Find files by patterns
 - **list_dir**: Explore directory structures
 
 ### System Analysis Tools
 
-- **run_terminal_cmd**: Execute system commands for investigation
-- **read_lints**: Check for code quality issues
-- **web_search**: Research external information if needed
+**run_terminal_cmd**: Execute system commands for investigation
+
+**read_lints**: Check for code quality issues
+
+**web_search**: Research external information if needed
 
 ### Testing and Validation Tools
 
-- **mcp_playwright_browser_***: Browser automation for client-side testing
-- **todo_write**: Track investigation progress and findings
+**mcp_playwright_browser_***: Browser automation for client-side testing
+
+**todo_write**: Track investigation progress and findings
 
 ### Browser Testing Credential Requirements
 
 When using browser automation tools for investigation:
 
-- **ALWAYS use official test credentials**: ArkanWolfshade / Cthulhu1 or Ithaqua / Cthulhu1
-- **NEVER attempt to create new accounts** during investigation
-- **NEVER use random or assumed credentials**
+**ALWAYS use official test credentials**: ArkanWolfshade / Cthulhu1 or Ithaqua / Cthulhu1
+
+**NEVER attempt to create new accounts** during investigation
+
+**NEVER use random or assumed credentials**
 
 ## 🚀 INVESTIGATION SCENARIOS
 
@@ -247,18 +257,22 @@ When using browser automation tools for investigation:
 
 ### Evidence Collection Standards
 
-- **Timestamp All Evidence**: Include precise timestamps for all findings
-- **Document Command Output**: Record exact command results
-- **Include Code References**: Provide specific file and line references
+**Timestamp All Evidence**: Include precise timestamps for all findings
+
+**Document Command Output**: Record exact command results
+
+**Include Code References**: Provide specific file and line references
 - **Log Entry Documentation**: Include full log entries with context
 - **System State Snapshots**: Document current system configuration
 - **Screenshots**: Capture relevant UI states and error messages
 
 ### Analysis Quality Standards
 
-- **Systematic Approach**: Follow investigation methodology consistently
-- **Comprehensive Coverage**: Address all relevant system components
-- **Technical Depth**: Provide detailed technical analysis
+**Systematic Approach**: Follow investigation methodology consistently
+
+**Comprehensive Coverage**: Address all relevant system components
+
+**Technical Depth**: Provide detailed technical analysis
 - **Evidence-Based Conclusions**: Base all conclusions on collected evidence
 - **Clear Documentation**: Ensure findings are clearly documented and traceable
 
@@ -266,9 +280,11 @@ When using browser automation tools for investigation:
 
 ### Session Creation
 
-- **Unique Session ID**: Generate timestamped session identifier (e.g., `2025-01-XX_session-001_auth-issue`)
-- **Session Documentation**: Create investigation session file in `investigations/sessions/`
-- **Pattern Tracking**: Update pattern detection files if recurring issues found
+**Unique Session ID**: Generate timestamped session identifier (e.g., `2025-01-XX_session-001_auth-issue`)
+
+**Session Documentation**: Create investigation session file in `investigations/sessions/`
+
+**Pattern Tracking**: Update pattern detection files if recurring issues found
 
 ### Session Structure
 
@@ -359,6 +375,7 @@ The client UI is not displaying chat messages correctly. Messages appear in the 
 
 ```powershell
 # Check server status
+
 ./scripts/stop_server.ps1
 netstat -an | findstr :54731
 netstat -an | findstr :5173
@@ -369,6 +386,7 @@ netstat -an | findstr :5173
 
 ```powershell
 # Check recent logs
+
 Get-Content logs/development/server.log -Tail 100
 Get-Content logs/development/client.log -Tail 100
 Get-Content logs/local/errors.log -Tail 100
@@ -378,6 +396,7 @@ Get-Content logs/local/errors.log -Tail 100
 
 ```powershell
 # Check database integrity
+
 sqlite3 data/players/local_players.db "PRAGMA integrity_check;"
 sqlite3 data/players/local_players.db "SELECT * FROM players;"
 ```

@@ -41,6 +41,7 @@ This document captures all clarifying questions and answers from the spec review
 
 **Q:** How should admin and player views work?
 **A:**
+
 - Admins see all rooms regardless of view type
 - Players only see the "player_view" layout (only explored rooms)
 - Admin view is the only editable view
@@ -51,6 +52,7 @@ This document captures all clarifying questions and answers from the spec review
 
 **Q:** What should the player_exploration table structure be?
 **A:**
+
 - Separate `id` column as primary key
 - Unique constraint on `(player_id, room_id)`
 - Index on `player_id` for fast lookups of all explored rooms for a player
@@ -66,6 +68,7 @@ This document captures all clarifying questions and answers from the spec review
 
 **Q:** How should admins create/edit exits?
 **A:** Use a modal dialog that appears when clicking an edge or a "Create Exit" button. The form should:
+
 - Pre-select the source room as the currently selected/clicked room
 - Select the target room from a searchable/filterable dropdown
 - Show a preview of the exit relationship on the map while editing
@@ -101,6 +104,7 @@ This document captures all clarifying questions and answers from the spec review
 
 **Q:** What validation rules should be enforced for exit creation/editing?
 **A:** All of the following:
+
 - Validate that the target room exists in the database
 - Validate that the direction is valid (north, south, east, west, up, down)
 - Validate that bidirectional exits are properly paired (warning, not requirement - one-way exits are allowed)
@@ -120,6 +124,7 @@ This document captures all clarifying questions and answers from the spec review
 
 **Q:** How should admin edits be saved?
 **A:**
+
 - Saved only when the admin clicks a "Save" button
 - Saved with a confirmation dialog to prevent accidental saves
 - Positions only saved when admin clicks "Save" (along with other changes)
@@ -130,6 +135,7 @@ This document captures all clarifying questions and answers from the spec review
 
 **Q:** Which room properties should be editable?
 **A:** All room properties from the room schema should be editable. The form should:
+
 - Allow editing all properties at once, or have tabs/sections for different property groups
 - Show validation errors inline (e.g., "Room ID format invalid")
 - Appear when clicking an "Edit Room" button in the room details panel
@@ -138,6 +144,7 @@ This document captures all clarifying questions and answers from the spec review
 
 **Q:** What functionality should custom node components provide?
 **A:**
+
 - Use React Flow's built-in node customization features (Handle, custom shapes)
 - Support click events to open the room details panel
 
@@ -145,6 +152,7 @@ This document captures all clarifying questions and answers from the spec review
 
 **Q:** What controls should be included?
 **A:**
+
 - Use React Flow's built-in controls
 - Include a "Reset View" button to return to default zoom/position
 
@@ -167,6 +175,7 @@ This document captures all clarifying questions and answers from the spec review
 
 **Q:** How should node position changes be handled in the edit workflow?
 **A:**
+
 - Only save positions when the admin clicks "Save" (along with other changes)
 - Show visual indicator that position has changed but not been saved yet
 - Allow admins to reset positions to auto-layout if they don't like manual positioning
@@ -180,6 +189,7 @@ This document captures all clarifying questions and answers from the spec review
 
 **Q:** What should be the default behavior and response format?
 **A:**
+
 - Require filter parameters of `plane` and `zone`, with `subzone` optional
 - Return room data in the same format as existing room endpoints (for consistency)
 - Include exit relationships in a format that's easy to convert to React Flow edges

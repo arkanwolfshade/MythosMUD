@@ -8,7 +8,11 @@
 
 ## EXECUTIVE SUMMARY
 
-The 10-second game tick messages are not appearing in the Game Info panel because the client-side event processing logic lacks a handler for `game_tick` events. While the server correctly broadcasts these events every 10 seconds (actually every 1 second based on `TICK_INTERVAL = 1.0`), the client receives them but does not convert them into displayable messages. The events fall through to the default case in the event processor, which only logs them as "Unhandled event type" without creating any UI messages.
+The 10-second game tick messages are not appearing in the Game Info panel because the client-side event processing
+ logic lacks a handler for `game_tick` events. While the server correctly broadcasts these events every 10 seconds
+  (actually every 1 second based on `TICK_INTERVAL = 1.0`), the client receives them but does not convert them into
+   displayable messages. The events fall through to the default case in the event processor, which only logs them
+    as "Unhandled event type" without creating any UI messages.
 
 **Root Cause**: Missing `game_tick` event handler in `GameClientV2Container.tsx` event processing switch statement.
 
@@ -42,6 +46,7 @@ async def game_tick_loop(app: FastAPI):
 
             # Broadcast game tick to all connected players
             # AI Agent: Use container instance instead of global singleton
+
             tick_data = {
                 "tick_number": tick_count,
                 "timestamp": datetime.datetime.now(datetime.UTC).isoformat(),
@@ -59,12 +64,15 @@ async def game_tick_loop(app: FastAPI):
 ```
 
 **Evidence**:
+
 - Game tick loop runs continuously
 - `broadcast_game_event("game_tick", tick_data)` is called every tick (every 1 second based on `TICK_INTERVAL = 1.0`)
 - Tick data includes: `tick_number`, `timestamp`, and `active_players`
 - Server logs indicate successful broadcasting
 
-**Note**: The tick interval is set to 1.0 seconds (`TICK_INTERVAL = 1.0` at line 28), not 10 seconds. However, the user report mentions "10-second game tick messages", which may refer to a different interval or a display frequency (e.g., showing every 10th tick).
+**Note**: The tick interval is set to 1.0 seconds (`TICK_INTERVAL = 1.0` at line 28), not 10 seconds. However, the
+ user report mentions "10-second game tick messages", which may refer to a different interval or a display
+  frequency (e.g., showing every 10th tick).
 
 ### 2. Client-Side Event Reception
 
@@ -92,6 +100,7 @@ The client correctly receives and queues game events:
 ```
 
 **Evidence**:
+
 - Events are received via `handleGameEvent` callback
 - Events are queued in `eventQueue.current`
 - Event processing is triggered via timeout mechanism
@@ -186,7 +195,9 @@ The `processEventQueue` function processes various event types but **does not in
 ```
 
 **Evidence**:
-- Switch statement handles: `game_state`, `room_update`, `room_state`, `lucidity_change`, `player_hp_updated`, `command_response`, `chat_message`, `room_occupants`, `mythos_time_update`
+
+- Switch statement handles: `game_state`, `room_update`, `room_state`, `lucidity_change`, `player_hp_updated`,
+ `command_response`, `chat_message`, `room_occupants`, `mythos_time_update`
 - **NO case for `'game_tick'`**
 - `game_tick` events fall through to `default` case
 - Default case only logs "Unhandled event type" - does not create any UI messages
@@ -242,6 +253,7 @@ export const ConnectionPanel: React.FC<ConnectionPanelProps> = ({ placeholderTex
 ```
 
 **Evidence**:
+
 - Setting is stored in `localStorage` as `'showTickVerbosity'`
 - UI checkbox exists to toggle the setting
 - Label indicates "Show Game Tick Verbosity (every 10th tick)"
@@ -282,6 +294,7 @@ export const GameInfoPanel: React.FC<GameInfoPanelProps> = ({ messages, onClearM
 ```
 
 **Evidence**:
+
 - Panel correctly filters and displays messages
 - Excludes chat messages (as intended)
 - Supports message type filtering
@@ -293,9 +306,11 @@ export const GameInfoPanel: React.FC<GameInfoPanelProps> = ({ messages, onClearM
 
 ### Primary Root Cause
 
-**Missing Event Handler**: The client-side event processing logic in `GameClientV2Container.tsx` does not include a case handler for `'game_tick'` events in the `processEventQueue` function's switch statement.
+**Missing Event Handler**: The client-side event processing logic in `GameClientV2Container.tsx` does not include a
+ case handler for `'game_tick'` events in the `processEventQueue` function's switch statement.
 
 **Technical Details**:
+
 1. Server broadcasts `game_tick` events every 1 second (via `TICK_INTERVAL = 1.0`)
 2. Client receives events and queues them correctly
 3. Event processing switch statement handles many event types but **omits `'game_tick'`**
@@ -306,29 +321,40 @@ export const GameInfoPanel: React.FC<GameInfoPanelProps> = ({ messages, onClearM
 
 ### Secondary Issues
 
-1. **Unused Setting**: The `showTickVerbosity` setting exists but is never checked during event processing, so it has no effect.
+1. **Unused Setting**: The `showTickVerbosity` setting exists but is never checked during event processing, so it
+ has no effect.
 
-2. **Tick Interval Confusion**: The server tick interval is 1.0 seconds, but the UI label mentions "every 10th tick". This suggests the display logic should filter ticks (e.g., only show every 10th tick) when `showTickVerbosity` is enabled.
+2. **Tick Interval Confusion**: The server tick interval is 1.0 seconds, but the UI label mentions
+ "every 10th tick". This suggests the display logic should filter ticks (e.g., only show every 10th tick) when
+  `showTickVerbosity` is enabled.
 
 ---
 
 ## SYSTEM IMPACT ASSESSMENT
 
 ### Scope
-- **Affected Component**: Client-side event processing (`GameClientV2Container.tsx`)
-- **Affected Feature**: Game tick message display in Game Info panel
-- **User Impact**: Users cannot see game tick messages that should appear every 10 seconds (or every 10 ticks)
+
+**Affected Component**: Client-side event processing (`GameClientV2Container.tsx`)
+
+**Affected Feature**: Game tick message display in Game Info panel
+
+**User Impact**: Users cannot see game tick messages that should appear every 10 seconds (or every 10 ticks)
 
 ### Severity
-- **Severity Level**: Medium
-- **Reasoning**:
-  - Feature is non-functional but does not break core game functionality
-  - No data loss or security implications
-  - Affects user experience and debugging capabilities
-  - Easy to fix (add missing event handler)
+
+**Severity Level**: Medium
+
+**Reasoning**:
+
+- Feature is non-functional but does not break core game functionality
+- No data loss or security implications
+- Affects user experience and debugging capabilities
+- Easy to fix (add missing event handler)
 
 ### Dependencies
-- No other systems depend on game tick message display
+
+No other systems depend on game tick message display
+
 - Fix will not affect other event processing
 - No database or persistence changes required
 
@@ -339,29 +365,34 @@ export const GameInfoPanel: React.FC<GameInfoPanelProps> = ({ messages, onClearM
 ### Code References
 
 1. **Server Broadcast** (Working):
+
    - File: `server/app/lifespan.py`
    - Lines: 763-776
    - Function: `game_tick_loop()`
    - Evidence: `await broadcast_game_event("game_tick", tick_data)`
 
 2. **Client Event Reception** (Working):
+
    - File: `client/src/components/ui-v2/GameClientV2Container.tsx`
    - Lines: 494-507
    - Function: `handleGameEvent()`
    - Evidence: Events are queued correctly
 
 3. **Client Event Processing** (Missing Handler):
+
    - File: `client/src/components/ui-v2/GameClientV2Container.tsx`
    - Lines: 254-468
    - Function: `processEventQueue()`
    - Evidence: No `case 'game_tick':` in switch statement
 
 4. **Tick Verbosity Setting** (Unused):
+
    - File: `client/src/components/panels/ConnectionPanel.tsx`
    - Lines: 7-44
    - Evidence: Setting exists but not checked in event processing
 
 5. **Game Info Panel** (Working):
+
    - File: `client/src/components/ui-v2/panels/GameInfoPanel.tsx`
    - Lines: 15-76
    - Evidence: Panel correctly displays messages when provided
@@ -369,6 +400,7 @@ export const GameInfoPanel: React.FC<GameInfoPanelProps> = ({ messages, onClearM
 ### Log Evidence
 
 Based on code analysis, expected log entries would show:
+
 - Server: `"Broadcasting game tick"` (every tick)
 - Client: `"Received game event"` with `event_type: "game_tick"`
 - Client: `"Processing event"` with `event_type: "game_tick"`
@@ -383,6 +415,7 @@ Based on code analysis, expected log entries would show:
 **Action**: Add a `case 'game_tick':` handler in `processEventQueue()` function in `GameClientV2Container.tsx`
 
 **Requirements**:
+
 1. Check `showTickVerbosity` setting from `localStorage`
 2. If enabled, check if tick number is divisible by 10 (for "every 10th tick" display)
 3. Create a message with appropriate formatting
@@ -394,15 +427,18 @@ Based on code analysis, expected log entries would show:
 **Action**: Read `showTickVerbosity` setting during event processing
 
 **Requirements**:
+
 1. Access `localStorage.getItem('showTickVerbosity')` in event handler
 2. Only create tick messages when setting is enabled
 3. Respect "every 10th tick" logic when displaying
 
 ### Priority 3: Clarify Tick Interval Documentation
 
-**Action**: Document the relationship between server tick interval (1 second) and display frequency (every 10 ticks = every 10 seconds)
+**Action**: Document the relationship between server tick interval (1 second) and display frequency (every 10 ticks
+ = every 10 seconds)
 
 **Requirements**:
+
 1. Update code comments to clarify tick interval vs display frequency
 2. Ensure UI labels match actual behavior
 
@@ -415,7 +451,8 @@ Based on code analysis, expected log entries would show:
 ```
 Fix the missing game_tick event handler in GameClientV2Container.tsx
 
-The 10-second game tick messages are not appearing in the Game Info panel because the client-side event processing logic lacks a handler for `game_tick` events.
+The 10-second game tick messages are not appearing in the Game Info panel because the client-side event processing
+ logic lacks a handler for `game_tick` events.
 
 Requirements:
 1. Add a `case 'game_tick':` handler in the `processEventQueue()` function's switch statement (around line 285-468)
@@ -437,7 +474,8 @@ The server is already broadcasting game_tick events correctly, so this is purely
 
 ## INVESTIGATION COMPLETION CHECKLIST
 
-- [x] All investigation steps completed as written
+[x] All investigation steps completed as written
+
 - [x] Comprehensive evidence collected and documented
 - [x] Root cause analysis completed
 - [x] System impact assessed
@@ -449,7 +487,9 @@ The server is already broadcasting game_tick events correctly, so this is purely
 
 ---
 
-*"In the restricted archives of Miskatonic University, we learn that proper investigation requires systematic methodology, comprehensive evidence collection, and thorough analysis. The truth lies not in hasty conclusions, but in methodical examination of all available evidence."*
+*"In the restricted archives of Miskatonic University, we learn that proper investigation requires systematic
+ methodology, comprehensive evidence collection, and thorough analysis. The truth lies not in hasty conclusions,
+  but in methodical examination of all available evidence."*
 
 **Investigation Status**: ✅ **COMPLETE**
 **Root Cause**: ✅ **IDENTIFIED**

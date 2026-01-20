@@ -2,52 +2,84 @@
 name: Tailwind CSS Anti-Pattern Remediation
 overview: Remediate Tailwind CSS anti-patterns, semantic issues, and bad code across the codebase by replacing arbitrary values with design tokens, fixing accessibility issues with outline-none, improving class ordering, and identifying component abstraction opportunities.
 todos:
+
   - id: extend-tailwind-config
+
     content: Extend tailwind.config.js with design tokens for arbitrary values (font sizes, spacing, heights, max-heights, letter spacing)
     status: completed
+
   - id: fix-outline-none-core
+
     content: Replace outline-none with outline-hidden in core UI components (TerminalInput.tsx, TerminalButton.tsx, designTokens.ts, LogoutButton.tsx)
     status: completed
+
   - id: fix-outline-none-feature
+
     content: Replace outline-none with outline-hidden in feature components (RescueStatusBanner, HallucinationTicker, IncapacitatedBanner, RoomEditModal, ChatPanel, FeedbackForm, BackpackTab)
     status: completed
+
   - id: replace-arbitrary-font-sizes
+
     content: Replace arbitrary font size values (text-[10px], text-[11px]) with design tokens in RescueStatusBanner, HallucinationTicker, MythosTimeHud, HeaderBar
     status: completed
+
   - id: replace-arbitrary-spacing
+
     content: Replace arbitrary spacing values (min-w-[140px], min-w-[200px], min-w-[16px]) with design tokens in ChannelSelector, ChatPanel
     status: completed
+
   - id: replace-arbitrary-heights
+
     content: Replace arbitrary height values (min-h-[150px], min-h-[300px], min-h-[44px]) with design tokens in CommandPanel, GameLogPanel, GameInfoPanel, CommandHistoryPanel, LogoutButton
     status: completed
+
   - id: replace-arbitrary-max-heights
+
     content: Replace arbitrary max-height values (max-h-[90vh], max-h-[80vh]) with design tokens in RoomEditModal, EdgeCreationModal, FeedbackForm, RoomDetailsPanel, EdgeDetailsPanel
     status: completed
+
   - id: replace-arbitrary-tracking
+
     content: Replace arbitrary letter spacing (tracking-[0.3em]) with design token in MythosTimeHud
     status: completed
+
   - id: reorder-classes-core
+
     content: Improve class ordering in high-priority core components (App.tsx, TerminalInput.tsx, TerminalButton.tsx)
     status: completed
+
   - id: reorder-classes-feature
+
     content: Improve class ordering in high-traffic feature components (FeedbackForm.tsx, ChatPanel.tsx)
     status: completed
+
   - id: create-dismiss-button
+
     content: Create reusable DismissButton component and replace instances in RescueStatusBanner, HallucinationTicker, IncapacitatedBanner
     status: completed
+
   - id: create-modal-container
+
     content: Create reusable ModalContainer component and refactor RoomEditModal, EdgeCreationModal, FeedbackForm to use it
     status: completed
+
   - id: audit-terminal-input-usage
+
     content: Audit components to ensure they use TerminalInput instead of raw input elements
     status: completed
+
   - id: update-test-files
+
     content: Update test files that check for outline-none classes (TerminalButton.test.tsx, LogoutButton.test.tsx, and others)
     status: completed
+
   - id: run-codacy-analysis
+
     content: Run Codacy analysis on all modified files to ensure code quality
     status: completed
+
   - id: verify-visual-regressions
+
     content: Verify no visual regressions and that accessibility is maintained after all changes
     status: completed
 ---
@@ -94,7 +126,7 @@ This plan addresses multiple categories of Tailwind CSS issues found in the code
 - Max heights: `max-h-modal` (90vh), `max-h-panel` (80vh)
 - Letter spacing: `tracking-eldritch` (0.3em)
 
-2. Replace all arbitrary values with these tokens
+1. Replace all arbitrary values with these tokens
 
 ### 2. Accessibility: outline-none Usage (20 instances)
 
@@ -173,18 +205,20 @@ This plan addresses multiple categories of Tailwind CSS issues found in the code
 
 ### Configuration
 
-- `client/tailwind.config.js` - Add design tokens
+`client/tailwind.config.js` - Add design tokens
 
 ### Core Components (High Priority)
 
-- `client/src/components/ui/TerminalInput.tsx`
+`client/src/components/ui/TerminalInput.tsx`
+
 - `client/src/components/ui/TerminalButton.tsx`
 - `client/src/components/ui/designTokens.ts`
 - `client/src/components/ui/LogoutButton.tsx`
 
 ### Feature Components
 
-- `client/src/components/lucidity/RescueStatusBanner.tsx`
+`client/src/components/lucidity/RescueStatusBanner.tsx`
+
 - `client/src/components/lucidity/HallucinationTicker.tsx`
 - `client/src/components/health/IncapacitatedBanner.tsx`
 - `client/src/components/MythosTimeHud.tsx`
@@ -204,9 +238,10 @@ This plan addresses multiple categories of Tailwind CSS issues found in the code
 
 ### New Components to Create
 
-- `client/src/components/ui/DismissButton.tsx`
+`client/src/components/ui/DismissButton.tsx`
+
 - `client/src/components/ui/ModalContainer.tsx`
 
 ### Test Files
 
-- Update test files that check for `outline-none` classes
+Update test files that check for `outline-none` classes

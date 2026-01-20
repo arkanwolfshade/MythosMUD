@@ -14,6 +14,7 @@ Migrate legacy error handling functions from `server/legacy_error_handlers.py` t
 As a developer, I want all error handling to use the new modular system, so that I have a single, consistent approach to error handling throughout the codebase without confusion about which functions to use.
 
 **Detailed Workflow:**
+
 - Developer needs to handle errors and looks for the appropriate utilities
 - All error handling functions are clearly organized in the new modular structure
 - No confusion about whether to use legacy or new functions
@@ -24,6 +25,7 @@ As a developer, I want all error handling to use the new modular system, so that
 As a maintainer, I want sanitization utilities separated from error handling logic, so that I can more easily locate and modify security-critical sanitization code.
 
 **Detailed Workflow:**
+
 - Security review requires examining all HTML sanitization code
 - All sanitization functions are in a dedicated, easily-located module
 - Clear separation between sanitization utilities and error response generation
@@ -34,6 +36,7 @@ As a maintainer, I want sanitization utilities separated from error handling log
 As a system architect, I want to remove all legacy error handlers that have been superseded by the new middleware system, so that the codebase reflects the current architecture without dead code or deprecated patterns.
 
 **Detailed Workflow:**
+
 - Remove old exception handler functions that are no longer called
 - Remove the `ErrorResponse` class that duplicates functionality
 - Update all tests to use the new error handling infrastructure
@@ -49,7 +52,8 @@ As a system architect, I want to remove all legacy error handlers that have been
 
 ## Out of Scope
 
-- Creating new error handling functionality (only migrating existing code)
+Creating new error handling functionality (only migrating existing code)
+
 - Changing the behavior of existing error handling (maintain exact same functionality)
 - Modifying the new modular error handlers created during Pydantic audit
 - Performance optimization of error handling (focus is on code organization)

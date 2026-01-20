@@ -2,7 +2,9 @@
 
 ## Overview
 
-The unified container system provides secure storage for environmental props, wearable gear, and corpse containers. All container operations are audited for security and compliance, with proper access control, rate limiting, and mutation guards.
+The unified container system provides secure storage for environmental props, wearable gear, and corpse containers. All
+container operations are audited for security and compliance, with proper access control, rate limiting, and mutation
+guards.
 
 ## Table of Contents
 
@@ -21,9 +23,11 @@ All container endpoints are prefixed with `/api/containers` and require authenti
 
 **Endpoint**: `POST /api/containers/open`
 
-**Purpose**: Open a container for interaction. Returns container data and a mutation token required for subsequent operations.
+**Purpose**: Open a container for interaction. Returns container data and a mutation token required for subsequent
+operations.
 
 **Request Body**:
+
 ```json
 {
   "container_id": "550e8400-e29b-41d4-a716-446655440000"
@@ -31,6 +35,7 @@ All container endpoints are prefixed with `/api/containers` and require authenti
 ```
 
 **Response** (200 OK):
+
 ```json
 {
   "container": {
@@ -60,6 +65,7 @@ All container endpoints are prefixed with `/api/containers` and require authenti
 ```
 
 **Errors**:
+
 - `401 Unauthorized`: Authentication required
 - `404 Not Found`: Container not found
 - `403 Forbidden`: Access denied (not in same room, wrong role, grace period active)
@@ -76,6 +82,7 @@ All container endpoints are prefixed with `/api/containers` and require authenti
 **Purpose**: Transfer items from player inventory to container.
 
 **Request Body**:
+
 ```json
 {
   "container_id": "550e8400-e29b-41d4-a716-446655440000",
@@ -94,6 +101,7 @@ All container endpoints are prefixed with `/api/containers` and require authenti
 ```
 
 **Response** (200 OK):
+
 ```json
 {
   "container": {
@@ -105,6 +113,7 @@ All container endpoints are prefixed with `/api/containers` and require authenti
 ```
 
 **Errors**:
+
 - `401 Unauthorized`: Authentication required
 - `404 Not Found`: Container not found or not open
 - `400 Bad Request`: Invalid mutation token or container not open
@@ -121,6 +130,7 @@ All container endpoints are prefixed with `/api/containers` and require authenti
 **Purpose**: Transfer items from container to player inventory.
 
 **Request Body**:
+
 ```json
 {
   "container_id": "550e8400-e29b-41d4-a716-446655440000",
@@ -139,6 +149,7 @@ All container endpoints are prefixed with `/api/containers` and require authenti
 ```
 
 **Response** (200 OK):
+
 ```json
 {
   "container": {
@@ -160,6 +171,7 @@ All container endpoints are prefixed with `/api/containers` and require authenti
 **Purpose**: Close a container and release the mutation guard.
 
 **Request Body**:
+
 ```json
 {
   "container_id": "550e8400-e29b-41d4-a716-446655440000",
@@ -168,6 +180,7 @@ All container endpoints are prefixed with `/api/containers` and require authenti
 ```
 
 **Response** (200 OK):
+
 ```json
 {
   "success": true,
@@ -176,6 +189,7 @@ All container endpoints are prefixed with `/api/containers` and require authenti
 ```
 
 **Errors**:
+
 - `401 Unauthorized`: Authentication required
 - `404 Not Found`: Container not found or not open
 - `400 Bad Request`: Invalid mutation token
@@ -191,6 +205,7 @@ All container endpoints are prefixed with `/api/containers` and require authenti
 **Purpose**: Transfer all eligible items from container to player inventory in a single operation.
 
 **Request Body**:
+
 ```json
 {
   "container_id": "550e8400-e29b-41d4-a716-446655440000",
@@ -199,6 +214,7 @@ All container endpoints are prefixed with `/api/containers` and require authenti
 ```
 
 **Response** (200 OK):
+
 ```json
 {
   "container": {
@@ -222,6 +238,7 @@ The container system emits real-time WebSocket events for container state change
 Emitted when a container is opened by a player.
 
 **Event Data**:
+
 ```json
 {
   "type": "container.opened",
@@ -241,6 +258,7 @@ Emitted when a container is opened by a player.
 Emitted when container contents are modified.
 
 **Event Data**:
+
 ```json
 {
   "type": "container.updated",
@@ -263,6 +281,7 @@ Emitted when container contents are modified.
 Emitted when a container is closed.
 
 **Event Data**:
+
 ```json
 {
   "type": "container.closed",
@@ -279,6 +298,7 @@ Emitted when a container is closed.
 Emitted when a corpse container decays and is cleaned up.
 
 **Event Data**:
+
 ```json
 {
   "type": "container.decayed",
@@ -302,6 +322,7 @@ Authorization: Bearer <JWT_TOKEN>
 All container endpoints are rate limited to **20 requests per 60 seconds per player**.
 
 When rate limit is exceeded, the API returns:
+
 - Status Code: `429 Too Many Requests`
 - Response: `{"detail": "Rate limit exceeded. Retry after <seconds> seconds"}`
 
@@ -322,7 +343,8 @@ All errors follow the standard error response format:
 
 ### Common Error Codes
 
-- `CONTAINER_NOT_FOUND`: Container does not exist
+`CONTAINER_NOT_FOUND`: Container does not exist
+
 - `CONTAINER_LOCKED`: Container is locked and player doesn't have key
 - `CONTAINER_ACCESS_DENIED`: Player doesn't have access (wrong room, role, or grace period)
 - `CONTAINER_CAPACITY_EXCEEDED`: Container is full
@@ -399,7 +421,8 @@ await fetch('/api/containers/close', {
 
 ## Security and Compliance
 
-- All container operations are **audit logged** for security and compliance
+All container operations are **audit logged** for security and compliance
+
 - Container metadata is validated to ensure **COPPA compliance** (no personal data)
 - All operations use **mutation guards** to prevent race conditions
 - **Rate limiting** prevents abuse and DoS attacks

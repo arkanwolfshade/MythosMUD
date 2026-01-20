@@ -1,13 +1,27 @@
 # Mythos Holiday Candidates
 
-> Research log for Professor Wolfshade — prospective in-game observances drawn from Lovecraftian and wider Mythos lore. All dates assume alignment with the Mythos chronicle’s compressed calendar; “Needs Alignment” indicates the source text gives only a season or circumstance.
+> Research log for Professor Wolfshade — prospective in-game observances drawn from Lovecraftian and wider Mythos lore.
+All dates assume alignment with the Mythos chronicle’s compressed calendar; “Needs Alignment” indicates the source text
+gives only a season or circumstance.
 
 ## Canonical & Derived Observances
 
-| Observance                          | Mythos Date (Gregorian anchor)                                                | Source & Citation                                                                                            | Notes                                                                                                                                            | Date Certainty           |
-| ----------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------ |
-| Kingsport Yule Procession           | Winter Solstice (≈ 21 Dec)                                                    | H. P. Lovecraft, “The Festival,” *Weird Tales* (Jan 1925)                                                    | Ancestor-led descent beneath Kingsport during the ancient Yuletide rite older than Christmas.                                                    | Explicit (solstice)      |
-| Cthulhu Cult – Feast of the Equinox | Spring Equinox (23 Mar 1925 in text)                                          | Lovecraft, “The Call of Cthulhu,” Section III “The Madness from the Sea,” *Weird Tales* (Feb 1928)           | Alert’s log and cult testimony tie the awakening attempt to the equinox; ideal for equinoctial storms and tide surges.                           | Explicit (equinox)       |
+| Observance                          | Mythos Date (Gregorian anchor)                                                |
+Source & Citation                                                                                            | Notes
+| Date Certainty           |
+| ----------------------------------- | ----------------------------------------------------------------------------- |
+------------------------------------------------------------------------------------------------------------ |
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+| ------------------------ |
+| Kingsport Yule Procession           | Winter Solstice (≈ 21 Dec)                                                    |
+H. P. Lovecraft, “The Festival,” *Weird Tales* (Jan 1925)                                                    |
+Ancestor-led descent beneath Kingsport during the ancient Yuletide rite older than Christmas.
+| Explicit (solstice)      |
+| Cthulhu Cult – Feast of the Equinox | Spring Equinox (23 Mar 1925 in text)                                          |
+Lovecraft, “The Call of Cthulhu,” Section III “The Madness from the Sea,” *Weird Tales* (Feb 1928)           | Alert’s
+log and cult testimony tie the awakening attempt to the equinox; ideal for equinoctial storms and tide surges.
+| Explicit (equinox)       |
 | Cthulhu Cult – All-Hallows Vigil    | All-Hallows (1 Nov)                                                           | Lovecraft, “The Call of Cthulhu,” Section II “The Tale of Inspector Legrasse”                                | New Orleans raid broke up an annual swamp rite held on All-Halloween; works as an autumn sacrifice cycle.                                        | Explicit (calendar date) |
 | Dunwich May-Eve Sabbat              | Walpurgis Night (30 Apr–1 May)                                                | Lovecraft, “The Dunwich Horror,” *Weird Tales* (Apr 1929)                                                    | Wizard Whateley opens Yog-Sothoth’s gateway on May-Eve; villagers hear the Sabbath on Sentinel Hill.                                             | Explicit (May-Eve)       |
 | Dunwich Lammas Convergence          | Lammas (1 Aug)                                                                | Lovecraft, “The Dunwich Horror”                                                                              | The 1928 barn-breaking occurs on Lammas Night when the Whateleys attempt the final summoning.                                                    | Explicit (Lammas)        |
@@ -21,19 +35,40 @@
 
 ## Implementation Notes
 
-- **Overlap Management:** Walpurgis (30 Apr) appears twice (Arkham witches, Dunwich sabbat). Treat as region-specific variants sharing buff templates with localized flavor.
-- **Duration Constraints:** For compliance with the two-day holiday cap, keep each observance to ≤48 Mythos hours even if the lore implies longer revels.
-- **Event Hooks:** Map rituals to gameplay beats (e.g., cult raids, NPC migrations, lucidity effects). Use `tradition` values (`kingsport`, `cthulhu_cult`, `witch_cult`, etc.) in holiday JSON for filtering.
-- **Needs Alignment Entries:** propose alignment during design sprint—e.g., tie Innsmouth offerings to the first spring tide after the Vernal Equinox and the autumn equinox supermoon.
+**Overlap Management:** Walpurgis (30 Apr) appears twice (Arkham witches, Dunwich sabbat). Treat as region-specific
+variants sharing buff templates with localized flavor.
+
+**Duration Constraints:** For compliance with the two-day holiday cap, keep each observance to ≤48 Mythos hours even
+  if the lore implies longer revels.
+
+**Event Hooks:** Map rituals to gameplay beats (e.g., cult raids, NPC migrations, lucidity effects). Use `tradition`
+  values (`kingsport`, `cthulhu_cult`, `witch_cult`, etc.) in holiday JSON for filtering.
+
+**Needs Alignment Entries:** propose alignment during design sprint—e.g., tie Innsmouth offerings to the first spring
+
+  tide after the Vernal Equinox and the autumn equinox supermoon.
 
 ### Narrative Flavor Seeds
 
-- **Sevenfold Tide Offering (Innsmouth):** One week after Easter, Innsmouth’s foghorns fall silent as Deep One processions slip from Shadow Alley to the reef. Fishing hauls double, but townsfolk whisper of wet footprints leading back inland. Players assisting the Order gain rare pearls at the cost of mounting suspicion.
-- **Equinox Serpent Vigil (Feast of Yig):** On the eve of the autumn equinox, prairie winds carry a rattling susurrus. Snake effigies decorate crossroads; offending reptiles must be placated with fresh milk and braided corn dolls. Travelers who ignore the rites risk waking to scales etched into their skin and lucidity erosion.
-- **Ghoulmarket Convocation (24 Oct):** A week before Halloween, catacomb doors grind open beneath Arkham and Kingsport. Ghouls arrange a neutral-market parley where human artisans trade grave goods for rare alchemical reagents. Surface dwellers who prove respectful may secure forbidden lore—so long as they stomach the banquet.
+**Sevenfold Tide Offering (Innsmouth):** One week after Easter, Innsmouth’s foghorns fall silent as Deep One processions
+slip from Shadow Alley to the reef. Fishing hauls double, but townsfolk whisper of wet footprints leading back inland.
+Players assisting the Order gain rare pearls at the cost of mounting suspicion.
+
+**Equinox Serpent Vigil (Feast of Yig):** On the eve of the autumn equinox, prairie winds carry a rattling susurrus.
+  Snake effigies decorate crossroads; offending reptiles must be placated with fresh milk and braided corn dolls.
+  Travelers who ignore the rites risk waking to scales etched into their skin and lucidity erosion.
+
+**Ghoulmarket Convocation (24 Oct):** A week before Halloween, catacomb doors grind open beneath Arkham and Kingsport.
+  Ghouls arrange a neutral-market parley where human artisans trade grave goods for rare alchemical reagents. Surface
+  dwellers who prove respectful may secure forbidden lore—so long as they stomach the banquet.
 
 ## Opportunities for Expansion
 
-- **Chaosium Supplements:** Review Call of Cthulhu RPG materials (e.g., *Arkham Unveiled*, *Secrets of Innsmouth*) for additional cult calendars once licensing considerations are cleared.
-- **Regional Variants:** Create derivative observances (e.g., Innsmouth “Gilman Night” boat festival, Kingsport “Harbor Mist Vigil”) to fill calendar gaps without canon conflict.
-- **Dynamic Star Alignments:** Leverage the MythosChronicle to schedule “star right” anomalies using astronomical calculations for bonus unpredictable events.
+**Chaosium Supplements:** Review Call of Cthulhu RPG materials (e.g., *Arkham Unveiled*, *Secrets of Innsmouth*) for
+additional cult calendars once licensing considerations are cleared.
+
+**Regional Variants:** Create derivative observances (e.g., Innsmouth “Gilman Night” boat festival, Kingsport “Harbor
+  Mist Vigil”) to fill calendar gaps without canon conflict.
+
+**Dynamic Star Alignments:** Leverage the MythosChronicle to schedule “star right” anomalies using astronomical
+  calculations for bonus unpredictable events.

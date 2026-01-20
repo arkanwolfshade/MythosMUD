@@ -9,12 +9,14 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-11-
 **Purpose:** Fetch bulk room data optimized for map visualization with optional filtering by zone/subzone.
 
 **Parameters:**
+
 - `plane` (required, query string): Filter rooms by plane identifier
 - `zone` (required, query string): Filter rooms by zone identifier
 - `sub_zone` (optional, query string): Filter rooms by sub-zone identifier
 - `include_exits` (optional, boolean, default: true): Include exit relationship data in response
 
 **Response Format:**
+
 ```json
 {
   "rooms": [
@@ -44,6 +46,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-11-
 ```
 
 **Errors:**
+
 - `400 Bad Request`: Invalid filter parameters (missing required plane/zone parameters)
 - `500 Internal Server Error`: Server error during data fetch
 
@@ -56,6 +59,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-11-
 **Purpose:** Save node positions and layout data for map visualization.
 
 **Request Body:**
+
 ```json
 {
   "layout_id": "default",
@@ -69,6 +73,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-11-
 ```
 
 **Response Format:**
+
 ```json
 {
   "success": true,
@@ -78,6 +83,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-11-
 ```
 
 **Errors:**
+
 - `400 Bad Request`: Invalid position data or missing required fields
 - `403 Forbidden`: Not authorized (admin only)
 - `500 Internal Server Error`: Server error during save
@@ -89,11 +95,13 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-11-
 **Purpose:** Retrieve saved layout positions for map visualization.
 
 **Parameters:**
+
 - `layout_id` (optional, query string): Specific layout to retrieve (default: "default")
 - `zone` (optional, query string): Filter layout by zone
 - `sub_zone` (optional, query string): Filter layout by sub-zone
 
 **Response Format:**
+
 ```json
 {
   "layout_id": "default",
@@ -106,6 +114,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-11-
 ```
 
 **Errors:**
+
 - `404 Not Found`: Layout not found
 - `500 Internal Server Error`: Server error during retrieval
 
@@ -113,7 +122,8 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-11-
 
 ## Implementation Notes
 
-- The `/api/rooms/list` endpoint should leverage existing room caching infrastructure for performance
+The `/api/rooms/list` endpoint should leverage existing room caching infrastructure for performance
+
 - Layout persistence stores positions in `rooms` table columns (`map_x`, `map_y`) - positions are included in response if they exist
 - Exit relationships should be included in response to enable edge creation without additional queries
 - Response format matches existing room endpoints for consistency

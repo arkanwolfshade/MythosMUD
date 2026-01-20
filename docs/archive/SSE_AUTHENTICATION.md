@@ -15,9 +15,11 @@ The Server-Sent Events (SSE) authentication system provides secure, real-time co
 
 ### Components
 
-- **Token Validation**: `validate_sse_token()` function in `auth.py`
-- **Security Headers**: `get_sse_auth_headers()` function in `auth.py`
-- **Rate Limiting**: Built into `ConnectionManager` class in `real_time.py`
+**Token Validation**: `validate_sse_token()` function in `auth.py`
+
+**Security Headers**: `get_sse_auth_headers()` function in `auth.py`
+
+**Rate Limiting**: Built into `ConnectionManager` class in `real_time.py`
 - **SSE Endpoint**: `/events/{player_id}` with token validation
 - **WebSocket Endpoint**: `/ws/{player_id}` with token validation
 
@@ -32,6 +34,7 @@ SSE and WebSocket connections require valid JWT tokens that can be provided in t
 
 ```python
 # Token validation example
+
 def validate_sse_token(token: str, users_file: str = None) -> dict:
     """
     Validate JWT token for SSE and WebSocket connections.
@@ -52,13 +55,16 @@ def validate_sse_token(token: str, users_file: str = None) -> dict:
 
 #### Rate Limiting
 
-- **Max Attempts**: 5 connection attempts per minute per player
-- **Time Window**: 60 seconds
-- **Per-Player**: Rate limits are tracked separately for each player
+**Max Attempts**: 5 connection attempts per minute per player
+
+**Time Window**: 60 seconds
+
+**Per-Player**: Rate limits are tracked separately for each player
 - **Automatic Reset**: Limits reset after the time window expires
 
 ```python
 # Rate limiting configuration
+
 self.max_connection_attempts = 5  # Max attempts per minute
 self.connection_window = 60  # Time window in seconds
 ```
@@ -90,19 +96,24 @@ def get_sse_auth_headers() -> dict:
 **Authentication**: Required via token parameter or Authorization header
 
 **Parameters**:
+
 - `player_id` (path): The player ID to connect for
 - `token` (query): JWT authentication token
 
 **Headers**:
+
 - `Accept: text/event-stream` (required)
 - `Authorization: Bearer <token>` (alternative to query parameter)
 
 **Response**:
-- **200 OK**: Connection established, SSE stream begins
-- **401 Unauthorized**: Invalid or missing token
-- **403 Forbidden**: Token doesn't match player ID
+**200 OK**: Connection established, SSE stream begins
+
+**401 Unauthorized**: Invalid or missing token
+
+**403 Forbidden**: Token doesn't match player ID
 
 **Example**:
+
 ```bash
 curl -H "Accept: text/event-stream" \
      "http://localhost:54731/events/testuser?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
@@ -115,16 +126,20 @@ curl -H "Accept: text/event-stream" \
 **Authentication**: Required via token query parameter
 
 **Parameters**:
+
 - `player_id` (path): The player ID to connect for
 - `token` (query): JWT authentication token
 
 **Response**:
-- **Connection Established**: Valid token and matching player ID
-- **4001 Close Code**: Missing authentication token
-- **4001 Close Code**: Invalid authentication token
+**Connection Established**: Valid token and matching player ID
+
+**4001 Close Code**: Missing authentication token
+
+**4001 Close Code**: Invalid authentication token
 - **4003 Close Code**: Token doesn't match player ID
 
 **Example**:
+
 ```javascript
 const ws = new WebSocket(
     `ws://localhost:54731/ws/testuser?token=${jwtToken}`
@@ -135,9 +150,11 @@ const ws = new WebSocket(
 
 ### Authentication Errors
 
-- **No Token**: Returns 401 with "Authentication token required"
-- **Invalid Token**: Returns 401 with "Invalid authentication token"
-- **Token Mismatch**: Returns 403 with "Access denied: token does not match player ID"
+**No Token**: Returns 401 with "Authentication token required"
+
+**Invalid Token**: Returns 401 with "Invalid authentication token"
+
+**Token Mismatch**: Returns 403 with "Access denied: token does not match player ID"
 
 ### Rate Limiting Errors
 
@@ -168,18 +185,22 @@ When rate limits are exceeded, SSE connections return an error event:
 
 The SSE authentication system includes comprehensive tests:
 
-- **Token Validation**: Tests for valid, invalid, and missing tokens
-- **Security Headers**: Verification of all security headers
-- **Rate Limiting**: Tests for rate limit enforcement and reset
+**Token Validation**: Tests for valid, invalid, and missing tokens
+
+**Security Headers**: Verification of all security headers
+
+**Rate Limiting**: Tests for rate limit enforcement and reset
 - **Integration**: End-to-end authentication flow testing
 
 ### Running Tests
 
 ```bash
 # Run all SSE authentication tests
+
 python -m pytest tests/test_sse_auth.py -v
 
 # Run specific test categories
+
 python -m pytest tests/test_sse_auth.py::TestSSETokenValidation -v
 python -m pytest tests/test_sse_auth.py::TestRateLimiting -v
 python -m pytest tests/test_sse_auth.py::TestSSEEndpointAuthentication -v
@@ -189,16 +210,20 @@ python -m pytest tests/test_sse_auth.py::TestSSEEndpointAuthentication -v
 
 ### Token Security
 
-- **Expiration**: JWT tokens expire after 60 minutes
-- **Algorithm**: Uses HS256 for token signing
-- **Secret Key**: Stored in environment variable `MYTHOSMUD_SECRET_KEY`
+**Expiration**: JWT tokens expire after 60 minutes
+
+**Algorithm**: Uses HS256 for token signing
+
+**Secret Key**: Stored in environment variable `MYTHOSMUD_SECRET_KEY`
 - **Validation**: Tokens are validated on every connection attempt
 
 ### Connection Security
 
-- **HTTPS Required**: Production deployments should use HTTPS
-- **CORS**: Configured for specific origins only
-- **Rate Limiting**: Prevents connection flooding attacks
+**HTTPS Required**: Production deployments should use HTTPS
+
+**CORS**: Configured for specific origins only
+
+**Rate Limiting**: Prevents connection flooding attacks
 - **Security Headers**: Comprehensive protection against common attacks
 
 ### Best Practices
@@ -213,10 +238,11 @@ python -m pytest tests/test_sse_auth.py::TestSSEEndpointAuthentication -v
 
 ### Dependencies
 
-- **python-jose**: JWT token handling
-- **argon2-cffi**: Password hashing and verification
+**python-jose**: JWT token handling
 
-- **fastapi**: Web framework with WebSocket support
+**argon2-cffi**: Password hashing and verification
+
+**fastapi**: Web framework with WebSocket support
 
 ### Configuration
 
@@ -224,10 +250,12 @@ Key configuration values can be adjusted in the code:
 
 ```python
 # In auth_utils.py
+
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 ALGORITHM = "HS256"
 
 # In real_time.py
+
 self.max_connection_attempts = 5
 self.connection_window = 60
 ```
@@ -261,7 +289,8 @@ logging.getLogger('server.real_time').setLevel(logging.DEBUG)
 
 ## References
 
-- [JWT RFC 7519](https://tools.ietf.org/html/rfc7519)
+[JWT RFC 7519](https://tools.ietf.org/html/rfc7519)
+
 - [Server-Sent Events W3C Specification](https://www.w3.org/TR/eventsource/)
 - [WebSocket RFC 6455](https://tools.ietf.org/html/rfc6455)
 - [OWASP Security Headers](https://owasp.org/www-project-secure-headers/)

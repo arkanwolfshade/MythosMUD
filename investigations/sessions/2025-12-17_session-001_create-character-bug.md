@@ -22,6 +22,7 @@ The bug is caused by a **rendering logic gap** in `client/src/App.tsx`. When a u
 ### 1. Bug Behavior Analysis
 
 **Expected Behavior**:
+
 - User clicks "Create New Character (1/3)" button
 - Application navigates to `ProfessionSelectionScreen`
 - User selects profession
@@ -29,6 +30,7 @@ The bug is caused by a **rendering logic gap** in `client/src/App.tsx`. When a u
 - User creates new character
 
 **Actual Behavior**:
+
 - User clicks "Create New Character (1/3)" button
 - Application immediately renders `GameClientV2Container`
 - User is logged into the game with existing character (ArkanWolfshade)
@@ -39,6 +41,7 @@ The bug is caused by a **rendering logic gap** in `client/src/App.tsx`. When a u
 #### File: `client/src/App.tsx`
 
 **Handler Function (Lines 359-362)**:
+
 ```typescript
 const handleCreateCharacter = () => {
   setShowCharacterSelection(false);
@@ -47,6 +50,7 @@ const handleCreateCharacter = () => {
 ```
 
 **Analysis**: The handler correctly sets the state flags:
+
 - `showCharacterSelection = false` (hides character selection screen)
 - `showProfessionSelection = true` (should show profession selection screen)
 
@@ -55,22 +59,27 @@ const handleCreateCharacter = () => {
 The rendering logic follows this order:
 
 1. **Line 618**: `if (isAuthenticated && showCharacterSelection && characters.length > 0)`
+
    - Shows `CharacterSelectionScreen`
    - **Fails** when `showCharacterSelection` is false (after clicking Create New Character)
 
 2. **Line 637**: `if (isAuthenticated && characters.length === 0)`
+
    - Shows character creation flow (ProfessionSelectionScreen or StatsRollingScreen)
    - **Fails** when user has existing characters (`characters.length > 0`)
 
 3. **Line 639**: `if (showProfessionSelection)` (inside the `characters.length === 0` block)
+
    - Shows `ProfessionSelectionScreen`
    - **Never reached** when `characters.length > 0` because it's inside the wrong conditional block
 
 4. **Line 675**: `if (showMotd)`
+
    - Shows MOTD screen
    - **Fails** (MOTD not set)
 
 5. **Line 706**: Default fallthrough
+
    - Renders `GameClientV2Container` with existing character
    - **This is where the bug manifests**
 
@@ -82,6 +91,7 @@ The rendering logic follows this order:
 - When `characters.length > 0`: Character creation flow is inaccessible because the condition at line 637 fails, and the code falls through to the game client
 
 **Evidence**:
+
 - Line 637: `if (isAuthenticated && characters.length === 0)` - Only triggers for users with no characters
 - Line 639: `if (showProfessionSelection)` - Nested inside the above condition, so never reached when user has characters
 - Line 706: Default rendering - Falls through when all conditions fail, rendering game client
@@ -89,6 +99,7 @@ The rendering logic follows this order:
 ### 3. State Flow Analysis
 
 **Initial State** (User logged in with 1 character):
+
 - `isAuthenticated = true`
 - `characters.length = 1`
 - `showCharacterSelection = true`
@@ -96,6 +107,7 @@ The rendering logic follows this order:
 - `showMotd = false`
 
 **After Clicking "Create New Character"**:
+
 - `isAuthenticated = true` (unchanged)
 - `characters.length = 1` (unchanged)
 - `showCharacterSelection = false` (set by handler)
@@ -103,6 +115,7 @@ The rendering logic follows this order:
 - `showMotd = false` (unchanged)
 
 **Rendering Decision**:
+
 1. Line 618: `true && false && true` = **FALSE** (fails)
 2. Line 637: `true && false` = **FALSE** (fails - characters.length is 1, not 0)
 3. Line 675: `false` = **FALSE** (fails)
@@ -111,11 +124,13 @@ The rendering logic follows this order:
 ### 4. Component Dependencies
 
 **CharacterSelectionScreen** (`client/src/components/CharacterSelectionScreen.tsx`):
+
 - Line 190: Button correctly calls `onCreateCharacter` prop
 - Line 9: Prop interface correctly defined
 - **No issues found in this component**
 
 **App.tsx Integration**:
+
 - Line 625: `onCreateCharacter={handleCreateCharacter}` - Correctly wired
 - **Issue is in rendering logic, not component wiring**
 
@@ -123,6 +138,7 @@ The rendering logic follows this order:
 
 **Similar Pattern** (Line 637-671):
 The character creation flow is correctly implemented for users with no characters:
+
 ```typescript
 if (isAuthenticated && characters.length === 0) {
   if (showProfessionSelection) {
@@ -144,6 +160,7 @@ There is no equivalent rendering block for users with existing characters who wa
 The rendering logic in `App.tsx` has a **conditional structure gap**. The character creation flow (`showProfessionSelection` check) is only accessible when `characters.length === 0`, but users with existing characters also need access to this flow.
 
 **Specific Issue**:
+
 - The `showProfessionSelection` flag is set correctly by `handleCreateCharacter()`
 - However, the rendering condition that checks `showProfessionSelection` is nested inside `if (isAuthenticated && characters.length === 0)`
 - When `characters.length > 0`, this entire block is skipped, and the code falls through to the default game client rendering
@@ -151,6 +168,7 @@ The rendering logic in `App.tsx` has a **conditional structure gap**. The charac
 ### Why This Happens
 
 The code was likely structured to handle two distinct flows:
+
 1. **New users** (no characters) → Direct to character creation
 2. **Existing users** (has characters) → Character selection screen
 
@@ -158,9 +176,11 @@ However, the requirement for **existing users to create additional characters** 
 
 ### Impact on User Experience
 
-- **High Impact**: Users with existing characters cannot create additional characters
-- **Workaround**: None - feature is completely blocked
-- **User Confusion**: Clicking "Create New Character" unexpectedly logs them into the game
+**High Impact**: Users with existing characters cannot create additional characters
+
+**Workaround**: None - feature is completely blocked
+
+**User Confusion**: Clicking "Create New Character" unexpectedly logs them into the game
 
 ---
 
@@ -169,27 +189,34 @@ However, the requirement for **existing users to create additional characters** 
 ### Affected Components
 
 1. **Client-Side Rendering** (`client/src/App.tsx`)
+
    - Rendering logic for character creation flow
    - Impact: **Critical** - Blocks character creation
 
 2. **Character Selection Screen** (`client/src/components/CharacterSelectionScreen.tsx`)
+
    - Impact: **None** - Component works correctly
 
 3. **Character Creation Flow** (`ProfessionSelectionScreen`, `StatsRollingScreen`)
+
    - Impact: **None** - Components work correctly when accessible
 
 ### User Impact
 
-- **Severity**: High
-- **Frequency**: 100% - Affects all users with existing characters
-- **User Base Affected**: All users who have already created at least one character
+**Severity**: High
+
+**Frequency**: 100% - Affects all users with existing characters
+
+**User Base Affected**: All users who have already created at least one character
 - **Feature Blocked**: Multi-character creation (core feature)
 
 ### System State
 
-- **Server**: No issues detected
-- **Database**: No issues detected
-- **Client State Management**: State flags set correctly, but rendering logic doesn't respect them
+**Server**: No issues detected
+
+**Database**: No issues detected
+
+**Client State Management**: State flags set correctly, but rendering logic doesn't respect them
 
 ---
 
@@ -200,6 +227,7 @@ However, the requirement for **existing users to create additional characters** 
 **File**: `client/src/App.tsx`
 
 **Line 359-362** (Handler - Correct):
+
 ```typescript
 const handleCreateCharacter = () => {
   setShowCharacterSelection(false);
@@ -208,6 +236,7 @@ const handleCreateCharacter = () => {
 ```
 
 **Line 618** (Rendering Condition 1 - Fails when showCharacterSelection is false):
+
 ```typescript
 if (isAuthenticated && showCharacterSelection && characters.length > 0) {
   return <CharacterSelectionScreen ... />;
@@ -215,6 +244,7 @@ if (isAuthenticated && showCharacterSelection && characters.length > 0) {
 ```
 
 **Line 637** (Rendering Condition 2 - Fails when characters.length > 0):
+
 ```typescript
 if (isAuthenticated && characters.length === 0) {
   // Character creation flow is nested here
@@ -226,6 +256,7 @@ if (isAuthenticated && characters.length === 0) {
 ```
 
 **Line 706** (Default Fallthrough - Bug Manifestation):
+
 ```typescript
 return (
   <GameClientV2Container
@@ -242,6 +273,7 @@ return (
 > "clicking create a new character logs ArkanWolfshade into the game, it does not take me to the new character creation screen"
 
 **Reproduction Steps** (Inferred):
+
 1. User logs in with account that has existing character (ArkanWolfshade)
 2. Character selection screen is displayed
 3. User clicks "Create New Character (1/3)" button
@@ -283,6 +315,7 @@ if (isAuthenticated && showProfessionSelection && characters.length > 0) {
 **Action**: Test the complete flow for users with existing characters creating additional characters
 
 **Test Cases**:
+
 1. User with 1 character creates 2nd character
 2. User with 2 characters creates 3rd character
 3. User with 3 characters (verify button is hidden)
@@ -320,7 +353,8 @@ Test the fix by:
 
 ## INVESTIGATION COMPLETION CHECKLIST
 
-- [x] All investigation steps completed as written
+[x] All investigation steps completed as written
+
 - [x] Comprehensive evidence collected and documented
 - [x] Root cause analysis completed
 - [x] System impact assessed

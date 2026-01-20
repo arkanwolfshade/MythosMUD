@@ -32,7 +32,8 @@ As a player, I want to look inside containers to see what items they contain, th
 
 ## Out of Scope
 
-- Looking at room features or environmental objects beyond containers.
+Looking at room features or environmental objects beyond containers.
+
 - Looking at items inside other players' inventories or equipped gear (only visible equipment shown).
 - Looking at detailed item statistics beyond name and description.
 - Container manipulation (opening/closing) via look command - that remains separate functionality.

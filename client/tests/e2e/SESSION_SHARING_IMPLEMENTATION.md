@@ -2,7 +2,8 @@
 
 ## Overview
 
-Implemented Playwright's `storageState` feature to share authentication sessions across tests, dramatically reducing test execution time.
+Implemented Playwright's `storageState` feature to share authentication sessions across tests, dramatically reducing
+test execution time.
 
 ## Key Changes
 
@@ -13,7 +14,10 @@ Implemented Playwright's `storageState` feature to share authentication sessions
 
 **Implementation**:
 
-- Created `setupAuthStorage()` function that logs in once and saves the browser context's storage state (cookies, localStorage, sessionStorage)
+- Created `setupAuthStorage()` function that logs in once and saves the browser context's storage state (cookies,
+
+  localStorage, sessionStorage)
+
 - Modified `authenticatedTest` and `adminTest` fixtures to:
   1. Create a temporary context for authentication
   2. Login and save storage state to `.auth/user-auth.json` or `.auth/admin-auth.json`
@@ -30,7 +34,10 @@ Implemented Playwright's `storageState` feature to share authentication sessions
 
 **Removed**:
 
-- All `waitForLoadState('networkidle')` calls - these wait for 500ms of no network activity, which is extremely slow with WebSockets and background requests
+- All `waitForLoadState('networkidle')` calls - these wait for 500ms of no network activity, which is extremely slow
+
+  with WebSockets and background requests
+
 - Redundant `waitForFunction` calls
 - Excessive timeout values
 
@@ -61,15 +68,19 @@ client/tests/e2e/
 
 ### Before
 
-- **Login time per test**: 3-4 minutes
-- **Total login time for 75 tests**: ~225-300 minutes (3.75-5 hours)
-- **Total suite time**: 4+ hours
+**Login time per test**: 3-4 minutes
+
+**Total login time for 75 tests**: ~225-300 minutes (3.75-5 hours)
+
+**Total suite time**: 4+ hours
 
 ### After (Expected)
 
-- **Login time per worker**: ~30 seconds (once)
-- **Subsequent tests**: Start immediately with authenticated state
-- **Total suite time**: ~30-60 minutes (estimated 85-90% reduction)
+**Login time per worker**: ~30 seconds (once)
+
+**Subsequent tests**: Start immediately with authenticated state
+
+**Total suite time**: ~30-60 minutes (estimated 85-90% reduction)
 
 ## Usage
 
@@ -84,16 +95,20 @@ authenticatedTest('My Test', async ({ page }) => {
 
 ## Storage State Management
 
-- **Location**: `client/tests/e2e/.auth/`
-- **Lifetime**: Storage state is valid for 1 hour (can be adjusted in `setupAuthStorage`)
-- **Refresh**: Storage state is automatically recreated if:
-  - It doesn't exist
-  - It's older than 1 hour
-  - Authentication verification fails
+**Location**: `client/tests/e2e/.auth/`
+
+**Lifetime**: Storage state is valid for 1 hour (can be adjusted in `setupAuthStorage`)
+
+**Refresh**: Storage state is automatically recreated if:
+
+- It doesn't exist
+- It's older than 1 hour
+- Authentication verification fails
 
 ## Security Notes
 
-- Storage state files contain session cookies and should never be committed to version control
+Storage state files contain session cookies and should never be committed to version control
+
 - Added `.auth/` directory to `.gitignore`
 - Storage state is local to the test environment only
 

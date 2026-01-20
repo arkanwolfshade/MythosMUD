@@ -2,25 +2,29 @@
 
 ## Overview
 
-The room validator test suite provides comprehensive testing for all components of the validation system. As of the latest run, **91 tests passed and 8 tests failed**.
+The room validator test suite provides comprehensive testing for all components of the validation system. As of the
+latest run, **91 tests passed and 8 tests failed**.
 
 ## Test Coverage
 
 ### Core Components Tested
 
 1. **Room Loader** (`test_room_loader.py`)
+
    - File discovery and parsing
    - JSON validation and error handling
    - Database building and zone management
    - File structure validation
 
 2. **Schema Validator** (`test_schema_validator.py`)
+
    - JSON schema validation
    - Exit format normalization (legacy vs new format)
    - Exit flag handling (one_way, self_reference)
    - Error reporting and file validation
 
 3. **Path Validator** (`test_path_validator.py`)
+
    - Graph building and traversal
    - Connectivity analysis
    - Dead end detection
@@ -29,12 +33,14 @@ The room validator test suite provides comprehensive testing for all components 
    - Statistics generation
 
 4. **Reporter** (`test_reporter.py`)
+
    - Output formatting
    - Color handling
    - JSON generation
    - Console output methods
 
 5. **Integration Tests** (`test_validator_integration.py`)
+
    - Full validation pipeline
    - Component integration
    - Edge cases and error conditions
@@ -43,15 +49,20 @@ The room validator test suite provides comprehensive testing for all components 
 
 ### ✅ Passing Tests (91/99)
 
-- **Room Loader**: 12/13 tests passed
-- **Schema Validator**: 15/15 tests passed
-- **Path Validator**: 15/21 tests passed
-- **Reporter**: 15/16 tests passed
+**Room Loader**: 12/13 tests passed
+
+**Schema Validator**: 15/15 tests passed
+
+**Path Validator**: 15/21 tests passed
+
+**Reporter**: 15/16 tests passed
+
 - **Integration**: 34/34 tests passed
 
 ### ❌ Failing Tests (8/99)
 
 1. **Path Validator Issues**:
+
    - `test_build_graph_with_nonexistent_targets`: Graph building logic needs review
    - `test_find_unreachable_rooms_some_unreachable`: Unreachable room detection
    - `test_find_dead_ends_some_exist`: Dead end detection with fixture data
@@ -59,12 +70,15 @@ The room validator test suite provides comprehensive testing for all components 
    - `test_get_room_connectivity_stats`: Statistics calculation
 
 2. **Reporter Issues**:
+
    - `test_colorize_output_unknown_color`: Color handling for unknown colors
 
 3. **Room Loader Issues**:
+
    - `test_validate_file_structure_unusual_names`: File structure validation
 
 4. **Integration Issues**:
+
    - `test_room_with_nonexistent_exit_targets`: Graph building with invalid exits
 
 ## Key Findings
@@ -88,6 +102,7 @@ The room validator test suite provides comprehensive testing for all components 
 ## Test Data
 
 The test suite uses comprehensive fixtures including:
+
 - Valid room databases with proper connectivity
 - Invalid room data for error testing
 - Edge cases (dead ends, unreachable rooms, self-references)
@@ -106,21 +121,28 @@ The test suite uses comprehensive fixtures including:
 
 ```bash
 # Run all tests
+
 python -m pytest tests/ -v
 
 # Run specific test file
+
 python -m pytest tests/test_path_validator.py -v
 
 # Run with coverage
+
 python -m pytest tests/ --cov=core --cov-report=html
 ```
 
 ## Test Configuration
 
-- **Framework**: pytest
-- **Configuration**: `pytest.ini`
-- **Fixtures**: `tests/conftest.py`
-- **Test Discovery**: Automatic discovery in `tests/` directory
+**Framework**: pytest
+
+**Configuration**: `pytest.ini`
+
+**Fixtures**: `tests/conftest.py`
+
+**Test Discovery**: Automatic discovery in `tests/` directory
+
 - **Output**: Verbose with short tracebacks
 
 ## Future Enhancements

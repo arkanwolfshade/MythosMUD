@@ -9,12 +9,13 @@
 
 ### Phase 1: Local Channel Implementation
 
-- [x] 1. **Database Schema and Player Preferences**
-  - [x] 1.1 Write tests for player channel preferences table
-  - [x] 1.2 Create database migration script for player_channel_preferences table
-  - [x] 1.3 Implement PlayerPreferencesService for managing channel preferences
-  - [x] 1.4 Write integration tests for preferences persistence
-  - [x] 1.5 Verify all tests pass
+[x] 1. **Database Schema and Player Preferences**
+
+- [x] 1.1 Write tests for player channel preferences table
+- [x] 1.2 Create database migration script for player_channel_preferences table
+- [x] 1.3 Implement PlayerPreferencesService for managing channel preferences
+- [x] 1.4 Write integration tests for preferences persistence
+- [x] 1.5 Verify all tests pass
 
 - [x] 2. **Local Channel Core Implementation**
   - [x] 2.1 Write tests for local channel functionality
@@ -49,13 +50,14 @@
 
 ### Phase 2: Global Channel Implementation
 
-- [x] 6. **Global Channel Access Control** ✅ **COMPLETED**
-  - [x] 6.1 Write tests for level-based access control
-  - [x] 6.2 Implement GlobalChannelStrategy with level restrictions
-  - [x] 6.3 Add global channel configuration to server_config.yaml
-  - [x] 6.4 Extend rate limiter for global channel limits
-  - [x] 6.5 Write integration tests for access control
-  - [x] 6.6 Verify all tests pass
+[x] 6. **Global Channel Access Control** ✅ **COMPLETED**
+
+- [x] 6.1 Write tests for level-based access control
+- [x] 6.2 Implement GlobalChannelStrategy with level restrictions
+- [x] 6.3 Add global channel configuration to server_config.yaml
+- [x] 6.4 Extend rate limiter for global channel limits
+- [x] 6.5 Write integration tests for access control
+- [x] 6.6 Verify all tests pass
 
 - [x] 7. **Global Channel NATS Integration** ✅ **COMPLETED**
   - [x] 7.1 Write tests for global channel NATS subject
@@ -84,13 +86,14 @@
 
 ### Phase 3: Whisper Channel Implementation
 
-- [ ] 10. **Whisper Channel Core**
-  - [ ] 10.1 Write tests for WhisperChannelStrategy
-  - [ ] 10.2 Implement WhisperChannelStrategy with player-to-player messaging
-  - [ ] 10.3 Add whisper NATS subject patterns
-  - [ ] 10.4 Implement last whisper tracking for reply functionality
-  - [ ] 10.5 Write integration tests for whisper messaging
-  - [ ] 10.6 Verify all tests pass
+[ ] 10. **Whisper Channel Core**
+
+- [ ] 10.1 Write tests for WhisperChannelStrategy
+- [ ] 10.2 Implement WhisperChannelStrategy with player-to-player messaging
+- [ ] 10.3 Add whisper NATS subject patterns
+- [ ] 10.4 Implement last whisper tracking for reply functionality
+- [ ] 10.5 Write integration tests for whisper messaging
+- [ ] 10.6 Verify all tests pass
 
 - [ ] 11. **Whisper Commands and Reply System**
   - [ ] 11.1 Write tests for whisper command parsing
@@ -110,13 +113,14 @@
 
 ### Phase 4: Channel Management and UI
 
-- [ ] 13. **Channel Management Commands**
-  - [ ] 13.1 Write tests for channel management commands
-  - [ ] 13.2 Implement `/channel`, `/mute`, `/unmute`, `/mutes` commands
-  - [ ] 13.3 Add channel management to command processor
-  - [ ] 13.4 Integrate with existing JSON-based mute system
-  - [ ] 13.5 Write integration tests for channel management
-  - [ ] 13.6 Verify all tests pass
+[ ] 13. **Channel Management Commands**
+
+- [ ] 13.1 Write tests for channel management commands
+- [ ] 13.2 Implement `/channel`, `/mute`, `/unmute`, `/mutes` commands
+- [ ] 13.3 Add channel management to command processor
+- [ ] 13.4 Integrate with existing JSON-based mute system
+- [ ] 13.5 Write integration tests for channel management
+- [ ] 13.6 Verify all tests pass
 
 - [ ] 14. **Enhanced UI Components**
   - [ ] 14.1 Write tests for enhanced channel selector
@@ -138,13 +142,14 @@
 
 ### Phase 5: Admin Moderation and Integration
 
-- [ ] 16. **Admin Moderation Tools**
-  - [ ] 16.1 Write tests for admin moderation service
-  - [ ] 16.2 Implement AdminModerationService using existing UserManager
-  - [ ] 16.3 Add admin commands for channel muting
-  - [ ] 16.4 Implement system announcement functionality
-  - [ ] 16.5 Write integration tests for admin features
-  - [ ] 16.6 Verify all tests pass
+[ ] 16. **Admin Moderation Tools**
+
+- [ ] 16.1 Write tests for admin moderation service
+- [ ] 16.2 Implement AdminModerationService using existing UserManager
+- [ ] 16.3 Add admin commands for channel muting
+- [ ] 16.4 Implement system announcement functionality
+- [ ] 16.5 Write integration tests for admin features
+- [ ] 16.6 Verify all tests pass
 
 - [ ] 17. **Integration with Existing Systems**
   - [ ] 17.1 Write tests for integration with existing chat system
@@ -164,13 +169,14 @@
 
 ### Phase 6: Documentation and Final Testing
 
-- [ ] 19. **Documentation**
-  - [ ] 19.1 Write API documentation for new endpoints
-  - [ ] 19.2 Create user guide for channel usage
-  - [ ] 19.3 Write admin guide for moderation tools
-  - [ ] 19.4 Document technical implementation notes
-  - [ ] 19.5 Update help system with new commands
-  - [ ] 19.6 Verify documentation completeness
+[ ] 19. **Documentation**
+
+- [ ] 19.1 Write API documentation for new endpoints
+- [ ] 19.2 Create user guide for channel usage
+- [ ] 19.3 Write admin guide for moderation tools
+- [ ] 19.4 Document technical implementation notes
+- [ ] 19.5 Update help system with new commands
+- [ ] 19.6 Verify documentation completeness
 
 - [ ] 20. **Final Testing and Validation**
   - [ ] 20.1 Run complete test suite
@@ -184,14 +190,16 @@
 
 ### Dependencies
 
-- Existing NATS service must be running
+Existing NATS service must be running
+
 - Existing UserManager for mute functionality
 - Existing rate limiting system
 - Existing command processor
 
 ### Testing Strategy
 
-- Unit tests for each component
+Unit tests for each component
+
 - Integration tests for NATS messaging
 - UI tests for client interface
 - Performance tests for high volume scenarios
@@ -199,7 +207,8 @@
 
 ### Success Criteria
 
-- All channels function reliably
+All channels function reliably
+
 - Player preferences persist across sessions
 - Admin moderation tools work effectively
 - System integrates seamlessly with existing infrastructure
@@ -207,7 +216,8 @@
 
 ### Risk Mitigation
 
-- Phased implementation reduces risk
+Phased implementation reduces risk
+
 - Comprehensive testing at each phase
 - Fallback to existing "say" system if needed
 - Gradual rollout with monitoring

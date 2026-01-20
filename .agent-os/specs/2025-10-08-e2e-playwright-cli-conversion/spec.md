@@ -53,7 +53,8 @@ As a **test automation engineer**, I want to focus Playwright MCP scenarios on o
 
 ## Out of Scope
 
-- Converting any scenarios that require true multi-player real-time coordination (11 scenarios remain in MCP)
+Converting any scenarios that require true multi-player real-time coordination (11 scenarios remain in MCP)
+
 - Changes to server-side code or API endpoints
 - Modifications to existing Playwright MCP infrastructure
 - Performance optimization of test execution speed

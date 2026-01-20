@@ -25,21 +25,27 @@ The `/shutdown` administrative command has been successfully implemented, tested
 ## Feature Completeness Checklist
 
 ### Core Functionality
-- [x] `/shutdown [seconds]` command with customizable countdown
+
+[x] `/shutdown [seconds]` command with customizable countdown
+
 - [x] Default 10-second countdown if no parameter provided
 - [x] `/shutdown cancel` to abort active shutdowns
 - [x] Admin-only access via `is_admin` database flag
 - [x] Thematic denial messages for non-admin players
 
 ### Countdown System
-- [x] Periodic notifications (every 10s above 10s, every 1s for final 10s)
+
+[x] Periodic notifications (every 10s above 10s, every 1s for final 10s)
+
 - [x] Notifications sent to Announcements channel (unignorable)
 - [x] Proper singular/plural formatting ("1 second" vs "2 seconds")
 - [x] Superseding logic (new shutdown replaces old)
 - [x] Task management via `TaskRegistry`
 
 ### Login Blocking
-- [x] `/auth/login` endpoint blocks with HTTP 503
+
+[x] `/auth/login` endpoint blocks with HTTP 503
+
 - [x] `/auth/register` endpoint blocks with HTTP 503
 - [x] `/players/roll-stats` endpoint blocks with HTTP 503
 - [x] `/players/create-character` endpoint blocks with HTTP 503
@@ -47,7 +53,9 @@ The `/shutdown` administrative command has been successfully implemented, tested
 - [x] Context-specific error messages
 
 ### Graceful Shutdown Sequence
-- [x] Phase 1: Persist all active player data
+
+[x] Phase 1: Persist all active player data
+
 - [x] Phase 2: Despawn all NPCs (turn off AI)
 - [x] Phase 3: Disconnect all players gracefully
 - [x] Phase 4: Stop NATS message handler
@@ -58,14 +66,18 @@ The `/shutdown` administrative command has been successfully implemented, tested
 - [x] Comprehensive logging for monitoring
 
 ### Audit Logging
-- [x] Log shutdown initiation events
+
+[x] Log shutdown initiation events
+
 - [x] Log shutdown cancellation events
 - [x] Include countdown duration and timestamps
 - [x] Log to `commands.log` via `AdminActionsLogger`
 - [x] Exclude unauthorized attempts from audit trail
 
 ### Testing
-- [x] Unit tests for command parsing
+
+[x] Unit tests for command parsing
+
 - [x] Unit tests for authorization
 - [x] Unit tests for countdown notifications
 - [x] Unit tests for state management
@@ -78,7 +90,9 @@ The `/shutdown` administrative command has been successfully implemented, tested
 ## Files Summary
 
 ### New Implementation Files
+
 1. **`server/commands/admin_shutdown_command.py`** (280 lines)
+
    - Main command implementation
    - State management functions
    - Countdown loop with notification system
@@ -86,52 +100,67 @@ The `/shutdown` administrative command has been successfully implemented, tested
    - Audit logging integration
 
 ### New Test Files
+
 1. **`server/tests/unit/commands/test_admin_shutdown_command.py`**
+
    - Command parsing and validation tests
    - Authorization and permission tests
 
 2. **`server/tests/unit/commands/test_shutdown_countdown.py`**
+
    - Notification timing calculation tests
    - Countdown initiation and superseding tests
    - Cancellation logic tests
 
 3. **`server/tests/unit/commands/test_shutdown_login_blocking.py`**
+
    - Helper function tests
    - Endpoint blocking validation
 
 4. **`server/tests/unit/commands/test_shutdown_graceful_sequence.py`**
+
    - Complete shutdown sequence tests
    - Phase ordering verification
    - Error handling tests
 
 5. **`server/tests/unit/commands/test_shutdown_audit_logging.py`**
+
    - Audit log verification for initiation
    - Audit log verification for cancellation
    - Unauthorized attempt handling
 
 ### Modified Files
+
 1. **`server/commands/command_service.py`**
+
    - Added `shutdown` command registration
 
 2. **`server/auth/endpoints.py`**
+
    - Added shutdown checks to login/register
 
 3. **`server/api/players.py`**
+
    - Added shutdown checks to character creation
 
 4. **`server/realtime/websocket_handler.py`**
+
    - Added shutdown check to WebSocket connections
 
 5. **`server/tests/unit/api/test_players.py`**
+
    - Updated mock fixtures for shutdown state
 
 6. **`server/tests/unit/realtime/test_websocket_handler.py`**
+
    - Updated mock fixtures for shutdown state
 
 7. **`server/tests/integration/events/test_websocket_connection_events.py`**
+
    - Updated mock fixtures for shutdown state
 
 ### Documentation Files
+
 1. `.agent-os/specs/2025-10-15-shutdown-command/spec.md`
 2. `.agent-os/specs/2025-10-15-shutdown-command/spec-lite.md`
 3. `.agent-os/specs/2025-10-15-shutdown-command/sub-specs/technical-spec.md`
@@ -150,9 +179,12 @@ Server tests passed!
 ```
 
 ### Test Categories Breakdown
-- **Command Parsing & Authorization**: 8 tests
-- **Countdown & Notifications**: 12 tests
-- **Login Blocking**: 10 tests
+
+**Command Parsing & Authorization**: 8 tests
+
+**Countdown & Notifications**: 12 tests
+
+**Login Blocking**: 10 tests
 - **Shutdown Sequence**: 5 tests
 - **Audit Logging**: 7 tests
 - **Existing Tests**: 4,051 tests (all still passing)
@@ -160,64 +192,84 @@ Server tests passed!
 ## Implementation Quality
 
 ### Code Quality Metrics
-- ✅ No linter errors
-- ✅ Follows asyncio best practices
-- ✅ Comprehensive error handling
+
+✅ No linter errors
+
+✅ Follows asyncio best practices
+
+✅ Comprehensive error handling
 - ✅ Structured logging throughout
 - ✅ Type hints for all functions
 - ✅ Docstrings for all public functions
 - ✅ Thematic comments and messages
 
 ### Security & Safety
-- ✅ Admin-only access enforced
-- ✅ Audit trail for all shutdown events
-- ✅ Data integrity guaranteed (persist before disconnect)
+
+✅ Admin-only access enforced
+
+✅ Audit trail for all shutdown events
+
+✅ Data integrity guaranteed (persist before disconnect)
 - ✅ Graceful degradation on errors
 - ✅ No hardcoded values (configurable countdown)
 - ✅ Proper exception handling
 
 ### Maintainability
-- ✅ Modular design with single-responsibility functions
-- ✅ Clear separation of concerns
-- ✅ Well-documented code
+
+✅ Modular design with single-responsibility functions
+
+✅ Clear separation of concerns
+
+✅ Well-documented code
 - ✅ Comprehensive test coverage
 - ✅ Consistent with existing codebase patterns
 
 ## Usage Examples
 
 ### Basic Shutdown (10 second default)
+
 ```
 /shutdown
 ```
+
 **Response**: "Server shutdown initiated. Shutting down in 10 seconds..."
 
 ### Custom Countdown
+
 ```
 /shutdown 60
 ```
+
 **Response**: "Server shutdown initiated. Shutting down in 60 seconds..."
 
 ### Cancel Active Shutdown
+
 ```
 /shutdown cancel
 ```
+
 **Response**: "Shutdown cancelled. Server will continue normal operation."
 
 ### Supersede Existing Shutdown
+
 ```
 /shutdown 120
 ```
+
 **Response** (if shutdown already active): "Previous shutdown cancelled. Server will now shut down in 120 seconds..."
 
 ### Unauthorized Attempt
+
 ```
 /shutdown 30
 ```
+
 **Response** (non-admin): "You lack the proper authorization to invoke such rituals. Only those with the appropriate clearances may command these mechanisms."
 
 ## Notification Timeline Example
 
 ### 60-Second Countdown
+
 ```
 T=0:   /shutdown 60
 T=0:   "The server will be shutting down in 60 seconds"
@@ -272,19 +324,23 @@ None identified. All acceptance criteria met.
 ## Future Enhancement Opportunities
 
 1. **Extended Parameters**
+
    - Add `--reason` parameter for custom shutdown messages
    - Add `--no-notify` flag to skip countdown notifications
    - Add `--force` flag to bypass some safety checks
 
 2. **Scheduled Shutdowns**
+
    - Add `/shutdown at <time>` for scheduled shutdowns
    - Add `/shutdown in <duration>` for natural language durations
 
 3. **Automatic Restart**
+
    - Add `--restart` flag to automatically restart after shutdown
    - Integration with process manager (systemd, supervisor)
 
 4. **Enhanced Notifications**
+
    - Multi-language support for shutdown messages
    - Role-specific messages (different for admins vs players)
    - Email notifications to admins when shutdown initiated
@@ -320,6 +376,7 @@ None identified. All acceptance criteria met.
 **Implementation Status**: ✅ **READY FOR PRODUCTION USE**
 
 **Recommended Next Steps**:
+
 1. Manual E2E testing with multiple connected players
 2. Load testing to verify shutdown under high player counts
 3. Documentation update in main README.md

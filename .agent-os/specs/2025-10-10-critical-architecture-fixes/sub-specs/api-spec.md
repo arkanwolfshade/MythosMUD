@@ -51,6 +51,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-10-
 
 ```bash
 # Get current system metrics
+
 curl -H "Authorization: Bearer <admin_token>" http://localhost:54731/api/metrics
 ```
 
@@ -72,19 +73,23 @@ curl -H "Authorization: Bearer <admin_token>" http://localhost:54731/api/metrics
 **New Behavior:**
 
 1. **Rate Limiting Check** (Before processing)
+
    - Validates player has not exceeded 10 commands/second
    - Returns error with wait time if rate limit exceeded
 
 2. **Alias Cycle Detection** (Before expansion)
+
    - Checks for circular alias dependencies
    - Returns error with cycle path if detected
 
 3. **Command Validation** (Before execution)
+
    - Validates expanded command content for dangerous patterns
    - Blocks commands with shell injection patterns
    - Enforces maximum expanded command length (10,000 chars)
 
 4. **Audit Logging** (For admin commands)
+
    - Logs all admin/system commands to `logs/audit.log`
    - Includes timestamp, player, IP address, success status
 
@@ -169,16 +174,20 @@ curl -H "Authorization: Bearer <admin_token>" http://localhost:54731/api/metrics
 
 ```bash
 # Server Configuration
+
 SERVER_PORT=54731  # Previously had default, now required
 
 # Database Configuration
+
 DATABASE_URL=sqlite:///data/local/local_players.db  # Previously could be undefined
 NPC_DATABASE_URL=sqlite:///data/local/npcs.db  # Previously could be undefined
 
 # Security Configuration
+
 MYTHOSMUD_ADMIN_PASSWORD=<secure_password>  # Previously had weak default
 
 # Logging Configuration
+
 LOGGING_ENVIRONMENT=local  # Required: local|unit_test|e2e_test|production
 ```
 
@@ -201,9 +210,11 @@ port
 
 **Breaking Changes:**
 
-- **No YAML config files** - Must use `.env` or environment variables
-- **No default passwords** - Must provide explicit admin password
-- **No fallback configs** - Missing required fields cause startup failure
+**No YAML config files** - Must use `.env` or environment variables
+
+**No default passwords** - Must provide explicit admin password
+
+**No fallback configs** - Missing required fields cause startup failure
 
 ---
 
@@ -284,9 +295,11 @@ port
 
 **For Existing Players:**
 
-- **Aliases:** Existing aliases will be validated on first use
-- **Circular aliases will be flagged** and must be fixed manually
-- **No data loss** - Only validation added
+**Aliases:** Existing aliases will be validated on first use
+
+**Circular aliases will be flagged** and must be fixed manually
+
+**No data loss** - Only validation added
 
 ---
 
@@ -321,9 +334,11 @@ port
 
 ### Alerting Thresholds
 
-- **Critical:** Circuit breaker open >5 minutes
-- **Critical:** DLQ messages >100
-- **Warning:** Connection success rate <95%
+**Critical:** Circuit breaker open >5 minutes
+
+**Critical:** DLQ messages >100
+
+**Warning:** Connection success rate <95%
 - **Warning:** Message delivery rate <99%
 - **Info:** Admin command executed
 
@@ -351,7 +366,8 @@ Sprint 2:
 
 ### Parallel Work Opportunities
 
-- Configuration tests can be written while updating imports
+Configuration tests can be written while updating imports
+
 - Frontend XState work can begin while backend NATS work continues
 - Documentation can be written throughout both sprints
 

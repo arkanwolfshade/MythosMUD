@@ -2,11 +2,13 @@
 
 ## Overview
 
-Tests the `/rest` command functionality including 10-second countdown, combat blocking, rest location instant disconnect, and interruption logic. This scenario verifies that players can cleanly disconnect using `/rest` with proper countdown and interruption handling.
+Tests the `/rest` command functionality including 10-second countdown, combat blocking, rest location instant
+disconnect, and interruption logic. This scenario verifies that players can cleanly disconnect using `/rest` with proper
+countdown and interruption handling.
 
 ## Prerequisites
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
 2. **Server Running**: Development server is running on port 54731
@@ -14,31 +16,40 @@ Tests the `/rest` command functionality including 10-second countdown, combat bl
 4. **Both Players Connected**: AW and Ithaqua are both logged in and in the same room
 5. **No Active Rest Countdowns**: No players currently resting
 
-**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
+### ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE
 
 **Reference**: See @MULTIPLAYER_TEST_RULES.md for complete prerequisite verification procedures.
 
 ## Test Configuration
 
-- **Test Players**: ArkanWolfshade (AW) and Ithaqua
-- **Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
-- **Testing Approach**: Playwright MCP (multi-tab interaction required)
-- **Timeout Settings**: Use configurable timeouts from master rules
-- **Rest Countdown Duration**: 10 seconds
+**Test Players**: ArkanWolfshade (AW) and Ithaqua
+
+**Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
+
+**Testing Approach**: Playwright MCP (multi-tab interaction required)
+
+**Timeout Settings**: Use configurable timeouts from master rules
+
+**Rest Countdown Duration**: 10 seconds
 
 ## Testing Approach Rationale
 
-**Why Playwright MCP is Required:**
+### Why Playwright MCP is Required
 
-- **Multi-tab Coordination**: Requires 2+ browser tabs to test rest interruption and message broadcasting
-- **Real-time Interaction**: Must verify rest countdown messages and interruption behavior
-- **Combat Testing**: Must test combat blocking and interruption
-- **Movement Testing**: Must test movement interruption
-- **State Verification**: Must verify player position changes (sitting) and disconnect behavior
+**Multi-tab Coordination**: Requires 2+ browser tabs to test rest interruption and message broadcasting
 
-**Standard Playwright Not Suitable:**
+**Real-time Interaction**: Must verify rest countdown messages and interruption behavior
 
-- Cannot handle multiple browser tabs simultaneously
+**Combat Testing**: Must test combat blocking and interruption
+
+**Movement Testing**: Must test movement interruption
+
+**State Verification**: Must verify player position changes (sitting) and disconnect behavior
+
+### Standard Playwright Not Suitable
+
+Cannot handle multiple browser tabs simultaneously
+
 - Cannot verify real-time state changes across players
 - Cannot test complex interruption scenarios
 
@@ -89,7 +100,8 @@ await mcp_playwright_browser_wait_for({time: 1});
 
 // Check response message
 const restResponse = await mcp_playwright_browser_evaluate({
-    function: "() => { const messages = Array.from(document.querySelectorAll('.message')).slice(-2); return messages.map(m => m.textContent.trim()).join('\\n'); }"
+    function: "() => { const messages = Array.from(document.querySelectorAll('.message')).slice(-2); return messages.map(m
+    => m.textContent.trim()).join('\\n'); }"
 });
 console.log('Rest command response:', restResponse);
 
@@ -426,7 +438,8 @@ console.log('AW visible during rest (non-interrupt):', hasAWDuringRest);
 
 ### Success Criteria Checklist
 
-- [ ] **Step 1**: Both players connected and in same room
+[ ] **Step 1**: Both players connected and in same room
+
 - [ ] **Step 2**: `/rest` command blocked during combat
 - [ ] **Step 3**: `/rest` command starts 10-second countdown, player position changes to sitting
 - [ ] **Step 4**: Movement interrupts rest countdown
@@ -448,11 +461,15 @@ console.log('AW visible during rest (non-interrupt):', hasAWDuringRest);
 
 ## Notes
 
-- **Combat Restriction**: `/rest` cannot be used to escape combat
-- **Interrupt Conditions**: Movement, spellcasting, and being attacked interrupt rest
-- **Non-Interrupt Actions**: Chat, look, inventory management do NOT interrupt
-- **Intentional Disconnect**: `/rest` is an intentional disconnect (no grace period)
-- **Rest Locations**: Inns/hotels/motels provide instant disconnect when not in combat
+**Combat Restriction**: `/rest` cannot be used to escape combat
+
+**Interrupt Conditions**: Movement, spellcasting, and being attacked interrupt rest
+
+**Non-Interrupt Actions**: Chat, look, inventory management do NOT interrupt
+
+**Intentional Disconnect**: `/rest` is an intentional disconnect (no grace period)
+
+**Rest Locations**: Inns/hotels/motels provide instant disconnect when not in combat
 
 ## Cleanup
 

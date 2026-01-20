@@ -2,23 +2,35 @@
 
 ## Overview
 
-Validates the `admin set` administrative command from end to end: parser recognition, permission gating, stat modification, DP/MP maximum warnings, error handling, and audit logging. Confirms non-admin rejection flow and validates all stat types.
+Validates the `admin set` administrative command from end to end: parser recognition, permission gating, stat
+modification, DP/MP maximum warnings, error handling, and audit logging. Confirms non-admin rejection flow and validates
+all stat types.
 
-**This is a core multi-player ritual** that demands two live clients to observe stat modifications and permissions simultaneously. Automation shortcuts are forbidden per the Master Rules.
+**This is a core multi-player ritual** that demands two live clients to observe stat modifications and permissions
+simultaneously. Automation shortcuts are forbidden per the Master Rules.
 
 ## Prerequisites
 
 **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
 
 1. **Database State**
+
    - Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
+
 2. **Server Status**
+
    - Development server running via `./scripts/start_local.ps1` (One Server Rule enforced)
+
    - Client accessible on port **5173**
+
 3. **Player Setup**
+
    - `ArkanWolfshade` (AW) logged in and flagged `is_admin = true`
+
    - `Ithaqua` logged in (non-admin) in the **Main Foyer** `earth_arkhamcity_sanitarium_room_foyer_001`
+
 4. **Browser Harness**
+
    - Playwright MCP session using the GPT-4 agent per multiplayer rules
    - Two browser tabs already authenticated (Tab 0 = AW / Tab 1 = Ithaqua)
 
@@ -27,9 +39,10 @@ Reference `@MULTIPLAYER_TEST_RULES.md` for full verification ritual.
 
 ## Test Configuration
 
-- **Test Players**:
-  - Tab 0: `ArkanWolfshade` (Admin)
-  - Tab 1: `Ithaqua` (Non-Admin)
+**Test Players**:
+
+- Tab 0: `ArkanWolfshade` (Admin)
+- Tab 1: `Ithaqua` (Non-Admin)
 - **Starting Room**: `earth_arkhamcity_sanitarium_room_foyer_001`
 - **Testing Approach**: Playwright MCP (multi-tab)
 - **Timeouts**: Use global defaults from Master Rules (no ad-hoc overrides)
@@ -129,7 +142,8 @@ await mcp_playwright_browser_wait_for({text: "Set Ithaqua's LCD"});
 **Purpose**: Validate occult and corruption stat setting.
 
 ```javascript
-await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "admin set Occult Ithaqua 25"});
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "admin set Occult Ithaqua
+25"});
 await mcp_playwright_browser_press_key({key: "Enter"});
 await mcp_playwright_browser_wait_for({text: "Set Ithaqua's Occult"});
 
@@ -316,11 +330,17 @@ console.log('🎯 SCENARIO 31 STATUS: COMPLETED SUCCESSFULLY');
 
 ## Expected Results
 
-- ✅ Admin privileges confirmed prior to stat setting
-- ✅ All stat types can be set successfully (STR, CON, INT, EDU, LUCK, DEX, SIZ, POW, CHA, DP, MP, LCD, Occult, Corruption)
-- ✅ DP/MP maximum warnings appear when values exceed calculated maximums
-- ✅ Value range warnings appear for out-of-range values (but commands succeed)
-- ✅ Case-insensitive stat names work (uppercase, lowercase, full names)
+✅ Admin privileges confirmed prior to stat setting
+
+✅ All stat types can be set successfully (STR, CON, INT, EDU, LUCK, DEX, SIZ, POW, CHA, DP, MP, LCD, Occult,
+  Corruption)
+
+✅ DP/MP maximum warnings appear when values exceed calculated maximums
+
+✅ Value range warnings appear for out-of-range values (but commands succeed)
+
+✅ Case-insensitive stat names work (uppercase, lowercase, full names)
+
 - ✅ Non-admin set attempt denied with permission error
 - ✅ Invalid stat names return appropriate error messages
 - ✅ Invalid values return appropriate error messages
@@ -330,7 +350,8 @@ console.log('🎯 SCENARIO 31 STATUS: COMPLETED SUCCESSFULLY');
 
 ## Success Criteria Checklist
 
-- [ ] Admin status verified for AW
+[ ] Admin status verified for AW
+
 - [ ] `admin set` command succeeds for all stat types
 - [ ] DP/MP maximum warnings appear when appropriate
 - [ ] Value range warnings appear for out-of-range values
@@ -356,7 +377,8 @@ Execute standard cleanup from `@CLEANUP.md`:
 
 ## Status
 
-**Drafted for Implementation** — Execute once the above prerequisites are prepared and record the outcome per project protocol.
+**Drafted for Implementation** — Execute once the above prerequisites are prepared and record the outcome per project
+protocol.
 
 ---
 
