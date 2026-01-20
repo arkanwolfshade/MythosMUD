@@ -16,6 +16,7 @@ from ..error_types import ErrorMessages
 from ..exceptions import LoggedHTTPException, ValidationError
 from ..game.player_service import PlayerService
 from ..models.user import User
+from ..schemas.player_effects import EffectResponse
 from ..schemas.player_requests import (
     CorruptionRequest,
     DamageRequest,
@@ -31,117 +32,103 @@ from .players import player_router
 logger = get_logger(__name__)
 
 
-@player_router.post("/{player_id}/lucidity-loss")
+@player_router.post("/{player_id}/lucidity-loss", response_model=EffectResponse)
 async def apply_lucidity_loss(
     player_id: uuid.UUID,
     request_data: LucidityLossRequest,
     request: FastAPIRequest,
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
-) -> dict[str, str]:
+) -> EffectResponse:
     """Apply lucidity loss to a player."""
     try:
         result = await player_service.apply_lucidity_loss(player_id, request_data.amount, request_data.source)
-        if not isinstance(result, dict):
-            raise RuntimeError(f"Expected dict from player_service.apply_lucidity_loss(), got {type(result).__name__}")
-        return result
+        return EffectResponse(**result)
     except ValidationError as e:
         context = create_error_context(request, current_user, requested_player_id=player_id)
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
-@player_router.post("/{player_id}/fear")
+@player_router.post("/{player_id}/fear", response_model=EffectResponse)
 async def apply_fear(
     player_id: uuid.UUID,
     request_data: FearRequest,
     request: FastAPIRequest,
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
-) -> dict[str, str]:
+) -> EffectResponse:
     """Apply fear to a player."""
     try:
         result = await player_service.apply_fear(player_id, request_data.amount, request_data.source)
-        if not isinstance(result, dict):
-            raise RuntimeError(f"Expected dict from player_service.apply_fear(), got {type(result).__name__}")
-        return result
+        return EffectResponse(**result)
     except ValidationError as e:
         context = create_error_context(request, current_user, requested_player_id=player_id)
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
-@player_router.post("/{player_id}/corruption")
+@player_router.post("/{player_id}/corruption", response_model=EffectResponse)
 async def apply_corruption(
     player_id: uuid.UUID,
     request_data: CorruptionRequest,
     request: FastAPIRequest,
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
-) -> dict[str, str]:
+) -> EffectResponse:
     """Apply corruption to a player."""
     try:
         result = await player_service.apply_corruption(player_id, request_data.amount, request_data.source)
-        if not isinstance(result, dict):
-            raise RuntimeError(f"Expected dict from player_service.apply_corruption(), got {type(result).__name__}")
-        return result
+        return EffectResponse(**result)
     except ValidationError as e:
         context = create_error_context(request, current_user, requested_player_id=player_id)
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
-@player_router.post("/{player_id}/occult-knowledge")
+@player_router.post("/{player_id}/occult-knowledge", response_model=EffectResponse)
 async def gain_occult_knowledge(
     player_id: uuid.UUID,
     request_data: OccultKnowledgeRequest,
     request: FastAPIRequest,
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
-) -> dict[str, str]:
+) -> EffectResponse:
     """Gain occult knowledge (with lucidity loss)."""
     try:
         result = await player_service.gain_occult_knowledge(player_id, request_data.amount, request_data.source)
-        if not isinstance(result, dict):
-            raise RuntimeError(
-                f"Expected dict from player_service.gain_occult_knowledge(), got {type(result).__name__}"
-            )
-        return result
+        return EffectResponse(**result)
     except ValidationError as e:
         context = create_error_context(request, current_user, requested_player_id=player_id)
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
-@player_router.post("/{player_id}/heal")
+@player_router.post("/{player_id}/heal", response_model=EffectResponse)
 async def heal_player(
     player_id: uuid.UUID,
     request_data: HealRequest,
     request: FastAPIRequest,
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
-) -> dict[str, str]:
+) -> EffectResponse:
     """Heal a player's health."""
     try:
         result = await player_service.heal_player(player_id, request_data.amount)
-        if not isinstance(result, dict):
-            raise RuntimeError(f"Expected dict from player_service.heal_player(), got {type(result).__name__}")
-        return result
+        return EffectResponse(**result)
     except ValidationError as e:
         context = create_error_context(request, current_user, requested_player_id=player_id)
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
-@player_router.post("/{player_id}/damage")
+@player_router.post("/{player_id}/damage", response_model=EffectResponse)
 async def damage_player(
     player_id: uuid.UUID,
     request_data: DamageRequest,
     request: FastAPIRequest,
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
-) -> dict[str, str]:
+) -> EffectResponse:
     """Damage a player's health."""
     try:
         result = await player_service.damage_player(player_id, request_data.amount, request_data.damage_type)
-        if not isinstance(result, dict):
-            raise RuntimeError(f"Expected dict from player_service.damage_player(), got {type(result).__name__}")
-        return result
+        return EffectResponse(**result)
     except ValidationError as e:
         context = create_error_context(request, current_user, requested_player_id=player_id)
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e

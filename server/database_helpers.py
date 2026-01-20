@@ -5,6 +5,8 @@ This module provides module-level utility functions for database operations,
 including session management and initialization helpers.
 """
 
+# pylint: disable=unused-import  # Reason: Model imports required for SQLAlchemy side effects (model registration), not directly used
+
 from collections.abc import AsyncGenerator
 from pathlib import Path
 
@@ -100,9 +102,7 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
             # not database errors. They're already logged by LoggedHTTPException,
             # so we should not log them as database errors. Just re-raise.
             raise
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904            # JUSTIFICATION: This is a top-level dependency handler for database sessions. We must
-            # catch any exception during session usage to perform a safety rollback before the
-            # session is automatically closed, ensuring data integrity for any partial operations.
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Top-level dependency handler for database sessions must catch any exception during session usage to perform safety rollback before session is automatically closed, ensuring data integrity for any partial operations
             # Only log actual database-related exceptions
             context.metadata["error_type"] = type(e).__name__
             context.metadata["error_message"] = str(e)
@@ -115,9 +115,7 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
             try:
                 await session.rollback()
                 logger.debug("Database session rolled back after error")
-            except Exception as rollback_error:  # pylint: disable=broad-exception-caught  # noqa: B904                # JUSTIFICATION: This is a safety catch during error handling. If the session rollback
-                # itself fails, we log the failure but must re-raise the original exception that
-                # triggered the rollback attempt, to avoid masking the initial root cause.
+            except Exception as rollback_error:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Safety catch during error handling, if session rollback itself fails we log the failure but must re-raise the original exception to avoid masking the initial root cause
                 logger.error(
                     "Failed to rollback database session",
                     context=context.to_dict(),
@@ -160,15 +158,21 @@ async def init_db() -> None:
         # This allows SQLAlchemy to resolve string references in relationships
         # Do NOT import NPC models here - they use npc_metadata, not metadata
         # These imports are required for side effects (model registration) but appear unused
-        from server.models.invite import Invite  # noqa: F401  # pylint: disable=unused-import
-        from server.models.lucidity import (  # noqa: F401  # pylint: disable=unused-import
+        from server.models.invite import (
+            Invite,  # noqa: F401  # pylint: disable=unused-import  # Reason: Import required for SQLAlchemy model registration side effects, not directly used
+        )
+        from server.models.lucidity import (  # noqa: F401  # pylint: disable=unused-import  # Reason: Imports required for SQLAlchemy model registration side effects, not directly used
             LucidityAdjustmentLog,
             LucidityCooldown,
             LucidityExposureState,
             PlayerLucidity,
         )
-        from server.models.player import Player  # noqa: F401  # pylint: disable=unused-import
-        from server.models.user import User  # noqa: F401  # pylint: disable=unused-import
+        from server.models.player import (
+            Player,  # noqa: F401  # pylint: disable=unused-import  # Reason: Import required for SQLAlchemy model registration side effects, not directly used
+        )
+        from server.models.user import (
+            User,  # noqa: F401  # pylint: disable=unused-import  # Reason: Import required for SQLAlchemy model registration side effects, not directly used
+        )
 
         logger.debug("Configuring SQLAlchemy mappers")
         # ARCHITECTURE FIX Phase 3.1: Relationships now defined directly in models
@@ -184,9 +188,7 @@ async def init_db() -> None:
             logger.info("Database connection verified successfully")
 
         logger.info("Database initialization complete - DDL must be applied separately via SQL scripts")
-    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904        # JUSTIFICATION: This is the top-level initialization for the main database. We catch Exception
-        # to ensure any failure during mapper configuration or connectivity checks is logged with
-        # structured context before the application fails to start.
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Top-level database initialization must catch any exception to ensure failures during mapper configuration or connectivity checks are logged with structured context before application fails to start
         context.metadata["error_type"] = type(e).__name__
         context.metadata["error_message"] = str(e)
         logger.error(
@@ -210,8 +212,7 @@ async def close_db() -> None:
         _ = db_manager.get_engine()
         await db_manager.close()
         logger.info("Database connections closed")
-    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904        # JUSTIFICATION: This global database closure function must catch any error during resource
-        # cleanup to ensure failures are logged with structured context. It re-raises a
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Global database closure function must catch any error during resource cleanup to ensure failures are logged with structured context, then re-raises
         # RuntimeError as expected by the application's lifecycle management.
         context.metadata["error_type"] = type(e).__name__
         context.metadata["error_message"] = str(e)

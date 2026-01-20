@@ -1,6 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { DEFAULT_CHANNEL } from '../../../config/channels';
+import type { ChatMessage } from '../../../stores/gameStore';
+import { ChatPanel } from '../ChatPanel';
 
 // Mock the dependencies
 vi.mock('../src/config/channels', () => {
@@ -21,17 +23,7 @@ vi.mock('../src/config/channels', () => {
 });
 
 vi.mock('../src/components/ui/EldritchIcon', () => ({
-  EldritchIcon: ({
-    name,
-    _size,
-    _variant,
-    className,
-  }: {
-    name: string;
-    _size?: number;
-    _variant?: string;
-    className?: string;
-  }) => (
+  EldritchIcon: ({ name, className }: { name: string; className?: string }) => (
     <span data-testid={`icon-${name}`} className={className}>
       {name}
     </span>
@@ -443,9 +435,9 @@ describe('ChatPanel', () => {
           isHtml: false,
         },
         {
-          // Missing required fields
+          // Missing required fields - intentionally malformed for testing
           text: 'Invalid message',
-        },
+        } as ChatMessage,
       ];
 
       render(<ChatPanel {...defaultProps} messages={malformedMessages} />);

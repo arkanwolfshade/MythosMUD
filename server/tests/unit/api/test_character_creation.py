@@ -3,7 +3,7 @@ Unit tests for character creation API endpoints.
 
 Tests roll stats, create character, and validate stats endpoints.
 """
-# pylint: disable=redefined-outer-name
+# pylint: disable=redefined-outer-name  # Reason: Pytest fixtures are injected as function parameters, which pylint incorrectly flags as redefining names from outer scope, this is standard pytest usage
 # Pytest fixtures are injected as function parameters, which triggers
 # "redefined-outer-name" warnings. This is standard pytest pattern.
 
@@ -65,6 +65,13 @@ def mock_stats_generator():
     return generator
 
 
+@pytest.fixture
+def mock_profession_service():
+    """Create a mock profession service."""
+    service = AsyncMock()
+    return service
+
+
 class TestRollCharacterStats:
     """Test roll_character_stats() endpoint."""
 
@@ -72,9 +79,12 @@ class TestRollCharacterStats:
     async def test_roll_character_stats_shutdown_pending(self, mock_request, mock_user, mock_stats_generator):
         """Test roll_character_stats() blocks when server is shutting down."""
         # Lazy import to avoid circular import
-        from server.api.character_creation import roll_character_stats  # noqa: E402
+        from server.api.character_creation import (
+            roll_character_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         request_data = RollStatsRequest(method="4d6")
+        mock_profession_service = AsyncMock()
         with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=True):
             with patch("server.commands.admin_shutdown_command.get_shutdown_blocking_message", return_value="Shutdown"):
                 with pytest.raises(LoggedHTTPException) as exc_info:
@@ -83,6 +93,7 @@ class TestRollCharacterStats:
                         request=mock_request,
                         current_user=mock_user,
                         stats_generator=mock_stats_generator,
+                        profession_service=mock_profession_service,
                     )
                 assert exc_info.value.status_code == 503
 
@@ -90,9 +101,12 @@ class TestRollCharacterStats:
     async def test_roll_character_stats_not_authenticated(self, mock_request, mock_stats_generator):
         """Test roll_character_stats() requires authentication."""
         # Lazy import to avoid circular import
-        from server.api.character_creation import roll_character_stats  # noqa: E402
+        from server.api.character_creation import (
+            roll_character_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         request_data = RollStatsRequest(method="4d6")
+        mock_profession_service = AsyncMock()
         with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
             with pytest.raises(LoggedHTTPException) as exc_info:
                 await roll_character_stats(
@@ -100,6 +114,7 @@ class TestRollCharacterStats:
                     request=mock_request,
                     current_user=None,
                     stats_generator=mock_stats_generator,
+                    profession_service=mock_profession_service,
                 )
                 assert exc_info.value.status_code == 401
 
@@ -107,9 +122,12 @@ class TestRollCharacterStats:
     async def test_roll_character_stats_rate_limit(self, mock_request, mock_user, mock_stats_generator):
         """Test roll_character_stats() enforces rate limiting."""
         # Lazy import to avoid circular import
-        from server.api.character_creation import roll_character_stats  # noqa: E402
+        from server.api.character_creation import (
+            roll_character_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         request_data = RollStatsRequest(method="4d6")
+        mock_profession_service = AsyncMock()
         with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
             with patch("server.api.character_creation.stats_roll_limiter") as mock_limiter:
                 mock_limiter.enforce_rate_limit.side_effect = RateLimitError("Rate limit exceeded", retry_after=60)
@@ -119,6 +137,7 @@ class TestRollCharacterStats:
                         request=mock_request,
                         current_user=mock_user,
                         stats_generator=mock_stats_generator,
+                        profession_service=mock_profession_service,
                     )
                 assert exc_info.value.status_code == 429
 
@@ -128,67 +147,17 @@ class TestRollCharacterStats:
     ):
         """Test roll_character_stats() with profession_id."""
         # Lazy import to avoid circular import
-        from server.api.character_creation import roll_character_stats  # noqa: E402
+        from server.api.character_creation import (
+            roll_character_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         request_data = RollStatsRequest(method="4d6", profession_id=1)
         mock_profession = MagicMock()
         mock_stats_generator.roll_stats_with_profession = Mock(return_value=(mock_stats, True))
-        mock_stats_generator.get_stat_summary = Mock(return_value={"total": 60})
+        mock_stats_generator.get_stat_summary = Mock(return_value={"total_points": 60, "average_stat": 10.0})
 
-        with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
-            with patch("server.api.character_creation.stats_roll_limiter") as mock_limiter:
-                mock_limiter.enforce_rate_limit.return_value = None
-                with patch("server.async_persistence.get_async_persistence") as mock_get_persistence:
-                    mock_persistence = AsyncMock()
-                    mock_persistence.get_profession_by_id = AsyncMock(return_value=mock_profession)
-                    mock_get_persistence.return_value = mock_persistence
-
-                    result = await roll_character_stats(
-                        request_data=request_data,
-                        request=mock_request,
-                        current_user=mock_user,
-                        stats_generator=mock_stats_generator,
-                    )
-
-                    assert "stats" in result
-                    assert "profession_id" in result
-                    assert result["meets_requirements"] is True
-
-    @pytest.mark.asyncio
-    async def test_roll_character_stats_profession_not_found(self, mock_request, mock_user, mock_stats_generator):
-        """Test roll_character_stats() when profession not found."""
-        # Lazy import to avoid circular import
-        from server.api.character_creation import roll_character_stats  # noqa: E402
-
-        profession_id = 999
-        request_data = RollStatsRequest(method="4d6", profession_id=profession_id)
-
-        with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
-            with patch("server.api.character_creation.stats_roll_limiter") as mock_limiter:
-                mock_limiter.enforce_rate_limit.return_value = None
-                with patch("server.async_persistence.get_async_persistence") as mock_get_persistence:
-                    mock_persistence = AsyncMock()
-                    mock_persistence.get_profession_by_id = AsyncMock(return_value=None)
-                    mock_get_persistence.return_value = mock_persistence
-
-                    with pytest.raises(LoggedHTTPException) as exc_info:
-                        await roll_character_stats(
-                            request_data=request_data,
-                            request=mock_request,
-                            current_user=mock_user,
-                            stats_generator=mock_stats_generator,
-                        )
-                    assert exc_info.value.status_code == 404
-
-    @pytest.mark.asyncio
-    async def test_roll_character_stats_with_class(self, mock_request, mock_user, mock_stats_generator, mock_stats):
-        """Test roll_character_stats() with required_class."""
-        # Lazy import to avoid circular import
-        from server.api.character_creation import roll_character_stats  # noqa: E402
-
-        request_data = RollStatsRequest(method="4d6", required_class="warrior")
-        mock_stats_generator.roll_stats_with_validation = Mock(return_value=(mock_stats, ["warrior", "mage"]))
-        mock_stats_generator.get_stat_summary = Mock(return_value={"total": 60})
+        mock_profession_service = AsyncMock()
+        mock_profession_service.validate_and_get_profession = AsyncMock(return_value=mock_profession)
 
         with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
             with patch("server.api.character_creation.stats_roll_limiter") as mock_limiter:
@@ -199,32 +168,100 @@ class TestRollCharacterStats:
                     request=mock_request,
                     current_user=mock_user,
                     stats_generator=mock_stats_generator,
+                    profession_service=mock_profession_service,
                 )
 
-                assert "stats" in result
-                assert "available_classes" in result
-                assert result["meets_class_requirements"] is True
+                assert result.stats is not None
+                assert result.profession_id == 1
+                assert result.meets_requirements is True
+
+    @pytest.mark.asyncio
+    async def test_roll_character_stats_profession_not_found(self, mock_request, mock_user, mock_stats_generator):
+        """Test roll_character_stats() when profession not found."""
+        # Lazy import to avoid circular import
+        from server.api.character_creation import (
+            roll_character_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
+
+        profession_id = 999
+        request_data = RollStatsRequest(method="4d6", profession_id=profession_id)
+
+        mock_profession_service = AsyncMock()
+        from server.exceptions import ValidationError
+
+        mock_profession_service.validate_and_get_profession = AsyncMock(
+            side_effect=ValidationError("Profession not found")
+        )
+
+        with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
+            with patch("server.api.character_creation.stats_roll_limiter") as mock_limiter:
+                mock_limiter.enforce_rate_limit.return_value = None
+
+                with pytest.raises(LoggedHTTPException) as exc_info:
+                    await roll_character_stats(
+                        request_data=request_data,
+                        request=mock_request,
+                        current_user=mock_user,
+                        stats_generator=mock_stats_generator,
+                        profession_service=mock_profession_service,
+                    )
+                assert exc_info.value.status_code == 404
+
+    @pytest.mark.asyncio
+    async def test_roll_character_stats_with_class(self, mock_request, mock_user, mock_stats_generator, mock_stats):
+        """Test roll_character_stats() with required_class."""
+        # Lazy import to avoid circular import
+        from server.api.character_creation import (
+            roll_character_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
+
+        request_data = RollStatsRequest(method="4d6", required_class="warrior")
+        mock_stats_generator.roll_stats_with_validation = Mock(return_value=(mock_stats, ["warrior", "mage"]))
+        mock_stats_generator.get_stat_summary = Mock(return_value={"total_points": 60, "average_stat": 10.0})
+
+        mock_profession_service = AsyncMock()
+
+        with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
+            with patch("server.api.character_creation.stats_roll_limiter") as mock_limiter:
+                mock_limiter.enforce_rate_limit.return_value = None
+
+                result = await roll_character_stats(
+                    request_data=request_data,
+                    request=mock_request,
+                    current_user=mock_user,
+                    stats_generator=mock_stats_generator,
+                    profession_service=mock_profession_service,
+                )
+
+                assert result.stats is not None
+                assert result.available_classes == ["warrior", "mage"]
+                assert result.meets_class_requirements is True
 
     @pytest.mark.asyncio
     async def test_roll_character_stats_persistence_not_available(self, mock_request, mock_user, mock_stats_generator):
         """Test roll_character_stats() when persistence not available."""
         # Lazy import to avoid circular import
-        from server.api.character_creation import roll_character_stats  # noqa: E402
+        from server.api.character_creation import (
+            roll_character_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         request_data = RollStatsRequest(method="4d6", profession_id=1)
+        mock_profession_service = AsyncMock()
+        mock_profession_service.validate_and_get_profession = AsyncMock(side_effect=Exception("Persistence error"))
 
         with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
             with patch("server.api.character_creation.stats_roll_limiter") as mock_limiter:
                 mock_limiter.enforce_rate_limit.return_value = None
-                with patch("server.async_persistence.get_async_persistence", return_value=None):
-                    with pytest.raises(LoggedHTTPException) as exc_info:
-                        await roll_character_stats(
-                            request_data=request_data,
-                            request=mock_request,
-                            current_user=mock_user,
-                            stats_generator=mock_stats_generator,
-                        )
-                    assert exc_info.value.status_code == 500
+
+                with pytest.raises(LoggedHTTPException) as exc_info:
+                    await roll_character_stats(
+                        request_data=request_data,
+                        request=mock_request,
+                        current_user=mock_user,
+                        stats_generator=mock_stats_generator,
+                        profession_service=mock_profession_service,
+                    )
+                assert exc_info.value.status_code == 500
 
 
 class TestCreateCharacterWithStats:
@@ -234,7 +271,9 @@ class TestCreateCharacterWithStats:
     async def test_create_character_shutdown_pending(self, mock_request, mock_user):
         """Test create_character_with_stats() blocks when server is shutting down."""
         # Lazy import to avoid circular import
-        from server.api.character_creation import create_character_with_stats  # noqa: E402
+        from server.api.character_creation import (
+            create_character_with_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         request_data = CreateCharacterRequest(
             name="TestCharacter",
@@ -264,7 +303,9 @@ class TestCreateCharacterWithStats:
     async def test_create_character_not_authenticated(self, mock_request):
         """Test create_character_with_stats() requires authentication."""
         # Lazy import to avoid circular import
-        from server.api.character_creation import create_character_with_stats  # noqa: E402
+        from server.api.character_creation import (
+            create_character_with_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         request_data = CreateCharacterRequest(
             name="TestCharacter",
@@ -293,7 +334,9 @@ class TestCreateCharacterWithStats:
     async def test_create_character_rate_limit(self, mock_request, mock_user):
         """Test create_character_with_stats() enforces rate limiting."""
         # Lazy import to avoid circular import
-        from server.api.character_creation import create_character_with_stats  # noqa: E402
+        from server.api.character_creation import (
+            create_character_with_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         request_data = CreateCharacterRequest(
             name="TestCharacter",
@@ -324,7 +367,9 @@ class TestCreateCharacterWithStats:
     async def test_create_character_success(self, mock_request, mock_user):
         """Test create_character_with_stats() successfully creates character."""
         # Lazy import to avoid circular import
-        from server.api.character_creation import create_character_with_stats  # noqa: E402
+        from server.api.character_creation import (
+            create_character_with_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         request_data = CreateCharacterRequest(
             name="TestCharacter",
@@ -337,8 +382,28 @@ class TestCreateCharacterWithStats:
                 "cha": 10,
             },
         )
-        mock_player = MagicMock()
-        mock_player.model_dump = Mock(return_value={"name": "TestCharacter", "player_id": str(uuid.uuid4())})
+        from datetime import UTC, datetime
+
+        from server.schemas.player import PlayerRead, PositionState
+
+        mock_player = PlayerRead(
+            id=uuid.uuid4(),
+            name="TestCharacter",
+            user_id=mock_user.id,
+            profession_id=0,
+            profession_name=None,
+            profession_description=None,
+            profession_flavor_text=None,
+            stats={"str": 10, "int": 10, "wis": 10, "dex": 10, "con": 10, "cha": 10},
+            inventory=[],
+            status_effects=[],
+            created_at=datetime.now(UTC),
+            last_active=datetime.now(UTC),
+            is_admin=False,
+            in_combat=False,
+            position=PositionState.STANDING,
+            current_room_id="earth_arkhamcity_room",
+        )
         mock_player_service = MagicMock()
         mock_player_service.create_player_with_stats = AsyncMock(return_value=mock_player)
 
@@ -357,7 +422,7 @@ class TestCreateCharacterWithStats:
                         player_service=mock_player_service,
                     )
 
-                    assert "name" in result
+                    assert result.player is not None
                     mock_player_service.create_player_with_stats.assert_awaited_once()
 
 
@@ -368,7 +433,9 @@ class TestValidateCharacterStats:
     async def test_validate_stats_with_class(self, mock_user, mock_stats_generator):
         """Test validate_character_stats() with class_name."""
         # Lazy import to avoid circular import
-        from server.api.character_creation import validate_character_stats  # noqa: E402
+        from server.api.character_creation import (
+            validate_character_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         stats = {
             "str": 15,
@@ -388,15 +455,17 @@ class TestValidateCharacterStats:
             stats_generator=mock_stats_generator,
         )
 
-        assert result["meets_prerequisites"] is True
-        assert result["requested_class"] == "warrior"
-        assert "available_classes" in result
+        assert result.meets_prerequisites is True
+        assert result.requested_class == "warrior"
+        assert result.available_classes == ["warrior", "mage"]
 
     @pytest.mark.asyncio
     async def test_validate_stats_without_class(self, mock_user, mock_stats_generator):
         """Test validate_character_stats() without class_name."""
         # Lazy import to avoid circular import
-        from server.api.character_creation import validate_character_stats  # noqa: E402
+        from server.api.character_creation import (
+            validate_character_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         stats = {
             "str": 10,
@@ -416,14 +485,16 @@ class TestValidateCharacterStats:
             stats_generator=mock_stats_generator,
         )
 
-        assert "available_classes" in result
-        assert "stat_summary" in result
+        assert result.available_classes == ["warrior", "mage"]
+        assert result.stat_summary == {"total": 60}
 
     @pytest.mark.asyncio
     async def test_validate_stats_invalid_input(self, mock_user, mock_stats_generator):
         """Test validate_character_stats() handles invalid stats."""
         # Lazy import to avoid circular import
-        from server.api.character_creation import validate_character_stats  # noqa: E402
+        from server.api.character_creation import (
+            validate_character_stats,  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+        )
 
         # Stats requires numeric values, passing a non-numeric string should trigger validation error
         invalid_stats = {"strength": "not_a_number", "intelligence": 10, "wisdom": 10}

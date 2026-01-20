@@ -74,30 +74,33 @@ def test_websocket_request_context_get_persistence():
     """Test WebSocketRequestContext.get_persistence()."""
     mock_app_state = MagicMock()
     mock_persistence = MagicMock()
-    mock_app_state.persistence = mock_persistence
+    mock_app_state.container = MagicMock()
+    mock_app_state.container.async_persistence = mock_persistence
 
     context = WebSocketRequestContext(mock_app_state)
 
     result = context.get_persistence()
-    assert result == mock_persistence
+    assert result is mock_persistence
 
 
 def test_websocket_request_context_get_event_bus():
     """Test WebSocketRequestContext.get_event_bus()."""
     mock_app_state = MagicMock()
     mock_event_bus = MagicMock()
-    mock_app_state.event_bus = mock_event_bus
+    mock_app_state.container = MagicMock()
+    mock_app_state.container.event_bus = mock_event_bus
 
     context = WebSocketRequestContext(mock_app_state)
 
     result = context.get_event_bus()
-    assert result == mock_event_bus
+    assert result is mock_event_bus
 
 
 def test_websocket_request_context_get_event_bus_none():
     """Test WebSocketRequestContext.get_event_bus() when event_bus is None."""
     mock_app_state = MagicMock()
-    mock_app_state.event_bus = None
+    mock_app_state.container = MagicMock()
+    mock_app_state.container.event_bus = None
 
     context = WebSocketRequestContext(mock_app_state)
 

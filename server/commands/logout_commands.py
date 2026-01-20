@@ -201,14 +201,19 @@ async def handle_quit_command(
 
     # Update last active timestamp before quitting
     app = request.app if request else None
-    persistence = app.state.persistence if app else None
+    # Prefer container, fallback to app.state for backward compatibility
+    persistence = None
+    if app and hasattr(app.state, "container") and app.state.container:
+        persistence = app.state.container.async_persistence
+    elif app:
+        persistence = getattr(app.state, "persistence", None)
 
     if persistence:
         try:
-            player = persistence.get_player_by_name(get_username_from_user(current_user))
+            player = await persistence.get_player_by_name(get_username_from_user(current_user))
             if player:
                 player.last_active = datetime.now(UTC)
-                persistence.save_player(player)
+                await persistence.save_player(player)
                 logger.info("Player quit - updated last active")
         except (OSError, ValueError, TypeError, Exception) as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Exception catch-all for last active update errors, must handle gracefully
             logger.error("Error updating last active on quit", error=str(e), error_type=type(e).__name__)
@@ -261,8 +266,18 @@ async def handle_logout_command(
 
     try:
         app = request.app if request else None
-        persistence = app.state.persistence if app else None
-        connection_manager = app.state.connection_manager if app else None
+        # Prefer container, fallback to app.state for backward compatibility
+        persistence = None
+        if app and hasattr(app.state, "container") and app.state.container:
+            persistence = app.state.container.async_persistence
+        elif app:
+            persistence = getattr(app.state, "persistence", None)
+        # Prefer container, fallback to app.state for backward compatibility
+        connection_manager = None
+        if app and hasattr(app.state, "container") and app.state.container:
+            connection_manager = app.state.container.connection_manager
+        elif app:
+            connection_manager = getattr(app.state, "connection_manager", None)
 
         lookup_name = player_name or get_username_from_user(current_user)
         player = await _get_player_for_logout(request, persistence, lookup_name)

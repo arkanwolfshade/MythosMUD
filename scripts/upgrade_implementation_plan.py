@@ -88,7 +88,6 @@ uv pip install exceptiongroup@1.3.0
 uv pip install pytest@8.4.2
 uv pip install pytest-cov@6.3.0
 uv pip install python-dotenv@1.1.1
-uv pip install requests@2.32.5
 uv pip install ruff@0.12.12
 uv pip install tomli@2.2.1
 ```

@@ -58,7 +58,7 @@ def player_participant():
 @pytest.mark.asyncio
 async def test_apply_damage_blocked_during_grace_period(
     mock_combat_service, player_participant, mock_connection_manager
-):  # pylint: disable=redefined-outer-name
+):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
     """Test that damage is blocked when target is in login grace period."""
     # Start grace period for player
     await start_login_grace_period(player_participant.participant_id, mock_connection_manager)
@@ -85,7 +85,7 @@ async def test_apply_damage_blocked_during_grace_period(
         assert target_mortally_wounded is False
 
 
-def test_apply_damage_allowed_after_grace_period(mock_combat_service, player_participant, mock_connection_manager):  # pylint: disable=redefined-outer-name
+def test_apply_damage_allowed_after_grace_period(mock_combat_service, player_participant, mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
     """Test that damage is applied normally after grace period."""
     # Don't start grace period
 
@@ -111,7 +111,7 @@ def test_apply_damage_allowed_after_grace_period(mock_combat_service, player_par
         assert target_mortally_wounded is False  # Should not be mortally wounded from 30 damage
 
 
-def test_apply_damage_fails_open_on_error(mock_combat_service, player_participant):  # pylint: disable=redefined-outer-name
+def test_apply_damage_fails_open_on_error(mock_combat_service, player_participant):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
     """Test that damage application fails open if grace period check errors."""
     # Create attack handler
     handler = CombatAttackHandler(mock_combat_service)
@@ -127,7 +127,7 @@ def test_apply_damage_fails_open_on_error(mock_combat_service, player_participan
 
 
 @pytest.mark.asyncio
-async def test_npc_damage_blocked_during_grace_period(mock_connection_manager):  # pylint: disable=redefined-outer-name
+async def test_npc_damage_blocked_during_grace_period(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test that NPC damage is blocked when target is in login grace period."""
     player_id = str(uuid.uuid4())
     await start_login_grace_period(uuid.UUID(player_id), mock_connection_manager)
@@ -159,7 +159,7 @@ async def test_npc_damage_blocked_during_grace_period(mock_connection_manager): 
 
 
 @pytest.mark.asyncio
-async def test_negative_status_effect_blocked_during_grace_period(mock_connection_manager):  # pylint: disable=redefined-outer-name
+async def test_negative_status_effect_blocked_during_grace_period(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test that negative status effects are blocked during grace period."""
     player_id = uuid.uuid4()
     await start_login_grace_period(player_id, mock_connection_manager)
@@ -200,7 +200,7 @@ async def test_negative_status_effect_blocked_during_grace_period(mock_connectio
         mock_get_config.return_value = mock_config
 
         # Try to apply negative status effect
-        result = await processor._process_status_effect(mock_spell, target, 1.0)  # pylint: disable=protected-access  # Reason: Testing internal status effect processing logic
+        result = await processor._process_status_effect(mock_spell, target, 1.0)  # pylint: disable=protected-access  # Reason: Testing internal status effect processing logic for grace period blocking
 
         # Effect should be blocked
         assert result["success"] is False
@@ -209,7 +209,7 @@ async def test_negative_status_effect_blocked_during_grace_period(mock_connectio
 
 
 @pytest.mark.asyncio
-async def test_positive_status_effect_allowed_during_grace_period(mock_connection_manager):  # pylint: disable=redefined-outer-name
+async def test_positive_status_effect_allowed_during_grace_period(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test that positive status effects (buffs) are allowed during grace period."""
     player_id = uuid.uuid4()
     await start_login_grace_period(player_id, mock_connection_manager)

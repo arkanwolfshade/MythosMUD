@@ -35,7 +35,7 @@ export const RoomDetailsPanel: React.FC<RoomDetailsPanelProps> = ({
   isAdmin = false,
 }) => {
   return (
-    <div className="absolute top-4 right-4 w-80 bg-mythos-terminal-background border border-mythos-terminal-border rounded shadow-lg p-4 z-20 max-h-[80vh] overflow-y-auto">
+    <div className="absolute top-4 right-4 w-80 bg-mythos-terminal-background border border-mythos-terminal-border rounded shadow-lg p-4 z-20 max-h-panel overflow-y-auto">
       {/* Header */}
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-lg font-bold text-mythos-terminal-text">{room.name}</h3>

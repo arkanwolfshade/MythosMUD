@@ -75,8 +75,9 @@ class RoomEventHandler:
         try:
             from ...events.event_types import PlayerEnteredRoom, PlayerLeftRoom
 
-            event_bus.subscribe(PlayerEnteredRoom, self.handle_player_entered_room)
-            event_bus.subscribe(PlayerLeftRoom, self.handle_player_left_room)
+            # Use service_id for tracking and cleanup (Task 2: Event Subscriber Cleanup)
+            event_bus.subscribe(PlayerEnteredRoom, self.handle_player_entered_room, service_id="room_event_handler")
+            event_bus.subscribe(PlayerLeftRoom, self.handle_player_left_room, service_id="room_event_handler")
             logger.info("Successfully subscribed to room movement events")
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Event subscription errors unpredictable, must handle gracefully
             logger.error("Error subscribing to room events", error=str(e), exc_info=True)

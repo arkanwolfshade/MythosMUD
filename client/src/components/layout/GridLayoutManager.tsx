@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
+import { Layout, Responsive, WidthProvider } from 'react-grid-layout/legacy';
 import 'react-resizable/css/styles.css';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -40,13 +40,13 @@ interface PanelComponent {
 
 interface GridLayoutManagerProps {
   panels: PanelComponent[];
-  onLayoutChange?: (layout: Layout[]) => void;
+  onLayoutChange?: (layout: Layout) => void;
   className?: string;
 }
 
 export const GridLayoutManager: React.FC<GridLayoutManagerProps> = ({ panels, onLayoutChange, className = '' }) => {
   // State for current layout - initialize from localStorage to avoid setState in effect
-  const [currentLayout, setCurrentLayout] = useState<Layout[]>(() => {
+  const [currentLayout, setCurrentLayout] = useState<Layout>(() => {
     try {
       const savedLayout = localStorage.getItem('mythosMUD-panel-layout');
       if (savedLayout) {
@@ -72,7 +72,7 @@ export const GridLayoutManager: React.FC<GridLayoutManagerProps> = ({ panels, on
 
   // Handle layout changes
   const handleLayoutChange = useCallback(
-    (layout: Layout[], _allLayouts: Record<string, Layout[]>) => {
+    (layout: Layout, _allLayouts: Partial<Record<string, Layout>>) => {
       setCurrentLayout(layout);
       onLayoutChange?.(layout);
     },
@@ -81,7 +81,7 @@ export const GridLayoutManager: React.FC<GridLayoutManagerProps> = ({ panels, on
 
   // Save layout to localStorage
   const saveLayout = useCallback(
-    (layout: Layout[]) => {
+    (layout: Layout) => {
       try {
         localStorage.setItem('mythosMUD-panel-layout', JSON.stringify(layout));
         localStorage.setItem('mythosMUD-panel-breakpoint', breakpoint);
@@ -97,7 +97,7 @@ export const GridLayoutManager: React.FC<GridLayoutManagerProps> = ({ panels, on
 
   // Reset layout to default
   const resetLayout = useCallback(() => {
-    const defaultLayout = layoutConfig[breakpoint as keyof typeof layoutConfig] || layoutConfig.lg;
+    const defaultLayout = (layoutConfig[breakpoint as keyof typeof layoutConfig] || layoutConfig.lg) as Layout;
     setCurrentLayout(defaultLayout);
     localStorage.removeItem('mythosMUD-panel-layout');
     localStorage.removeItem('mythosMUD-panel-breakpoint');
@@ -113,7 +113,7 @@ export const GridLayoutManager: React.FC<GridLayoutManagerProps> = ({ panels, on
   // Handle breakpoint change
   const handleBreakpointChange = useCallback((newBreakpoint: string) => {
     setBreakpoint(newBreakpoint);
-    const newLayout = layoutConfig[newBreakpoint as keyof typeof layoutConfig] || layoutConfig.lg;
+    const newLayout = (layoutConfig[newBreakpoint as keyof typeof layoutConfig] || layoutConfig.lg) as Layout;
     setCurrentLayout(newLayout);
   }, []);
 
@@ -165,4 +165,4 @@ export const GridLayoutManager: React.FC<GridLayoutManagerProps> = ({ panels, on
   );
 };
 
-export default GridLayoutManager;
+// Named export - GridLayoutManager is already exported above

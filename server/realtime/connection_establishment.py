@@ -191,7 +191,7 @@ async def _setup_player_and_room(player_id: uuid.UUID, manager: Any) -> tuple[bo
     Returns:
         tuple: (success: bool, player: Any | None)
     """
-    player = await manager._get_player(player_id)  # pylint: disable=protected-access
+    player = await manager._get_player(player_id)  # pylint: disable=protected-access  # Reason: Accessing internal manager method for player retrieval during connection establishment, manager is guaranteed to have this method
     if not player:
         if manager.async_persistence is None:
             logger.warning("Persistence not available, connecting without player tracking", player_id=player_id)
@@ -216,13 +216,13 @@ async def _track_player_presence(player_id: uuid.UUID, player: Any, manager: Any
         manager: ConnectionManager instance
     """
     if player_id not in manager.online_players:
-        await manager._track_player_connected(player_id, player, "websocket")  # pylint: disable=protected-access
+        await manager._track_player_connected(player_id, player, "websocket")  # pylint: disable=protected-access  # Reason: Accessing internal manager method for player presence tracking during connection, manager is guaranteed to have this method
     else:
         logger.info(
             "Player already tracked as online, but broadcasting connection message for WebSocket",
             player_id=player_id,
         )
-        await manager._broadcast_connection_message(player_id, player)  # pylint: disable=protected-access
+        await manager._broadcast_connection_message(player_id, player)  # pylint: disable=protected-access  # Reason: Accessing internal manager method for connection message broadcasting, manager is guaranteed to have this method
 
 
 def _cleanup_failed_connection(connection_id: str | None, player_id: uuid.UUID, manager: Any) -> None:

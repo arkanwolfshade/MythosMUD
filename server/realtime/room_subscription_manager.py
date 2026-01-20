@@ -297,7 +297,7 @@ class RoomSubscriptionManager:
                 npc_name = getattr(npc_instance, "name", None)
                 if npc_name:
                     return npc_name
-        except Exception:  # pylint: disable=broad-exception-caught  # nosec B110: NPC attribute access errors unpredictable, optional metadata  # noqa: B904
+        except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC attribute access errors unpredictable, optional metadata access may fail in various ways, must handle gracefully
             pass
         logger.warning("NPC name not found, using ID as fallback", npc_id=npc_id)
         return npc_id

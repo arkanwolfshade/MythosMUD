@@ -5,9 +5,8 @@ This module handles all player-related business logic including
 creation, retrieval, validation, and state management.
 """
 
-# pylint: disable=too-many-lines,wrong-import-position,too-many-public-methods  # Reason: Player service requires extensive functionality for comprehensive player management operations across all game systems. Imports after TYPE_CHECKING block are intentional to avoid circular dependencies. Player service legitimately requires many public methods for comprehensive player management.
+# pylint: disable=wrong-import-position,too-many-lines  # Reason: Imports after TYPE_CHECKING block are intentional to avoid circular dependencies. Player service requires 650 lines to implement comprehensive player operations (CRUD, state management, combat integration, search, creation, validation); splitting would reduce cohesion and increase coupling between player-related concerns
 
-import datetime
 import uuid
 from typing import TYPE_CHECKING, Any
 
@@ -21,16 +20,19 @@ if TYPE_CHECKING:
 from ..config import get_config
 from ..exceptions import DatabaseError, ValidationError
 from ..models import Stats
-from ..models.game import PositionState
-from ..models.player import Player
 from ..schemas.player import PlayerRead
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.enhanced_error_logging import create_error_context, log_and_raise_enhanced
+from .player_creation_service import PlayerCreationService
+from .player_respawn_wrapper import PlayerRespawnWrapper
+from .player_schema_converter import PlayerSchemaConverter
+from .player_search_service import PlayerSearchService
+from .player_state_service import PlayerStateService
 
 logger = get_logger(__name__)
 
 
-class PlayerService:
+class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-public-methods  # Reason: PlayerService requires 8 instance attributes for persistence, combat services, and sub-service composition (schema_converter, creation_service, search_service, state_service, respawn_wrapper); it exposes 24 public methods for comprehensive player operations (CRUD, state management, combat integration, search) which is necessary for the service's role as the primary player API
     """Service class for player-related business operations."""
 
     def __init__(self, persistence, combat_service=None, player_combat_service=None):
@@ -38,6 +40,12 @@ class PlayerService:
         self.persistence = persistence
         self.combat_service = combat_service
         self.player_combat_service = player_combat_service
+        # Initialize sub-services (order matters - schema_converter needed by creation_service)
+        self._schema_converter = PlayerSchemaConverter(persistence, player_combat_service)
+        self._creation_service = PlayerCreationService(persistence, self._schema_converter)
+        self._search_service = PlayerSearchService(self)
+        self._state_service = PlayerStateService(persistence)
+        self._respawn_wrapper = PlayerRespawnWrapper(persistence)
         logger.info("PlayerService initialized")
 
     async def create_player(
@@ -62,57 +70,31 @@ class PlayerService:
         Raises:
             ValueError: If player name already exists
         """
-        logger.info(
-            "Creating new player",
-            name=name,
-            profession_id=profession_id,
-            starting_room_id=starting_room_id,
-            user_id=user_id,
-        )
+        return await self._creation_service.create_player(name, profession_id, starting_room_id, user_id)
 
-        # Check if player already exists
-        existing_player = await self.persistence.get_player_by_name(name)
-        if existing_player:
-            logger.warning("Player creation failed - name already exists")
-            context = create_error_context()
-            context.metadata["player_name"] = name
-            context.metadata["operation"] = "create_player"
-            log_and_raise_enhanced(
-                ValidationError,
-                "Player name already exists",
-                context=context,
-                details={"player_name": name, "existing_player_id": str(existing_player.player_id)},
-                user_friendly="A player with this name already exists",
-            )
+    def get_default_starting_room(self, requested_room_id: str | None = None) -> str:
+        """
+        Get the default starting room for new characters.
 
-        # Generate user_id if not provided
-        if user_id is None:
-            user_id = uuid.uuid4()
-            logger.debug("Generated user_id for new player")
+        Returns the requested room ID if provided, otherwise returns the configured
+        default starting room. Falls back to a hardcoded default if configuration is unavailable.
 
-        # Use naive UTC datetime for PostgreSQL TIMESTAMP WITHOUT TIME ZONE compatibility
-        from datetime import UTC
+        Args:
+            requested_room_id: Optional room ID from request, takes precedence over config
 
-        current_time = datetime.datetime.now(UTC).replace(tzinfo=None)
-        # Generate UUID for player_id - Player model now uses UUID type
-        player = Player(
-            player_id=uuid.uuid4(),
-            user_id=user_id,
-            name=name,
-            current_room_id=starting_room_id,
-            profession_id=profession_id,
-            experience_points=0,
-            level=1,
-            created_at=current_time,
-            last_active=current_time,
-        )
+        Returns:
+            str: Starting room ID to use
+        """
+        if requested_room_id:
+            return requested_room_id
 
-        # Save player to persistence
-        await self.persistence.save_player(player)
-        logger.info("Player created successfully", player_id=player.player_id)
-
-        # Convert to schema format
-        return await self._convert_player_to_schema(player)
+        try:
+            default_start_room = get_config().game.default_player_room
+            return default_start_room
+        except (ImportError, AttributeError, ValueError) as e:
+            logger.error("Error getting default start room config", error=str(e), error_type=type(e).__name__)
+            # Fallback to hardcoded default
+            return "earth_arkhamcity_northside_intersection_derby_high"
 
     async def create_player_with_stats(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Player creation requires many parameters for stats and configuration
         self,
@@ -138,89 +120,9 @@ class PlayerService:
         Raises:
             ValueError: If player name already exists
         """
-        logger.info(
-            "Creating new player with stats",
-            name=name,
-            profession_id=profession_id,
-            starting_room_id=starting_room_id,
-            user_id=user_id,
+        return await self._creation_service.create_player_with_stats(
+            name, stats, profession_id, starting_room_id, user_id
         )
-
-        # MULTI-CHARACTER: Check character limit if user_id is provided
-        if user_id is not None:
-            active_characters = await self.persistence.get_active_players_by_user_id(str(user_id))
-            if len(active_characters) >= 3:
-                logger.warning("Character creation failed - character limit reached", user_id=user_id)
-                context = create_error_context()
-                context.metadata["user_id"] = str(user_id)
-                context.metadata["operation"] = "create_player_with_stats"
-                context.metadata["active_character_count"] = len(active_characters)
-                log_and_raise_enhanced(
-                    ValidationError,
-                    "Character limit reached",
-                    context=context,
-                    details={"user_id": str(user_id), "active_character_count": len(active_characters)},
-                    user_friendly="You have reached the maximum number of characters (3). Please delete a character to create a new one.",
-                )
-
-        # MULTI-CHARACTER: Check if character name already exists (case-insensitive, active characters only)
-        # get_player_by_name now excludes deleted characters and uses case-insensitive comparison
-        existing_player = await self.persistence.get_player_by_name(name)
-        if existing_player:
-            logger.warning("Character creation failed - name already exists", name=name)
-            context = create_error_context()
-            context.metadata["player_name"] = name
-            context.metadata["operation"] = "create_player_with_stats"
-            log_and_raise_enhanced(
-                ValidationError,
-                "Character name already exists",
-                context=context,
-                details={"player_name": name, "existing_player_id": str(existing_player.player_id)},
-                user_friendly="A character with this name already exists (names are case-insensitive)",
-            )
-
-        # Generate user_id if not provided
-        if user_id is None:
-            user_id = uuid.uuid4()
-            logger.debug("Generated user_id for new player")
-
-        # Use naive UTC datetime for PostgreSQL TIMESTAMP WITHOUT TIME ZONE compatibility
-        from datetime import UTC
-
-        current_time = datetime.datetime.now(UTC).replace(tzinfo=None)
-        # Generate UUID for player_id - Player model now uses UUID type
-        player = Player(
-            player_id=uuid.uuid4(),
-            user_id=user_id,
-            name=name,
-            current_room_id=starting_room_id,
-            profession_id=profession_id,
-            experience_points=0,
-            level=1,
-            created_at=current_time,
-            last_active=current_time,
-        )
-
-        # Set the player's stats
-        if hasattr(stats, "model_dump"):
-            # Stats object
-            player.set_stats(stats.model_dump())
-        else:
-            # Dictionary
-            player.set_stats(stats)  # type: ignore[arg-type]  # Reason: Type narrowing from hasattr check doesn't satisfy mypy. After checking that stats doesn't have model_dump, we know it's a dict, but mypy can't infer this pattern.
-
-        # Ensure JSONB fields are initialized (PostgreSQL NOT NULL constraints)
-        if not getattr(player, "inventory", None):
-            player.set_inventory([])
-        if not getattr(player, "status_effects", None):
-            player.set_status_effects([])
-
-        # Save player to persistence
-        await self.persistence.save_player(player)
-        logger.info("Player created successfully with stats", player_id=player.player_id)
-
-        # Convert to schema format
-        return await self._convert_player_to_schema(player)
 
     async def get_player_by_id(self, player_id: uuid.UUID) -> PlayerRead | None:
         """
@@ -241,7 +143,7 @@ class PlayerService:
             return None
 
         logger.debug("Player found by ID")
-        return await self._convert_player_to_schema(player)
+        return await self._schema_converter.convert_player_to_schema(player)
 
     async def get_player_by_name(self, player_name: str) -> PlayerRead | None:
         """
@@ -261,7 +163,7 @@ class PlayerService:
             return None
 
         logger.debug("Player found by name")
-        return await self._convert_player_to_schema(player)
+        return await self._schema_converter.convert_player_to_schema(player)
 
     async def list_players(self) -> list[PlayerRead]:
         """
@@ -274,7 +176,7 @@ class PlayerService:
         players = await self.persistence.list_players()
         result = []
         for player in players:
-            result.append(await self._convert_player_to_schema(player))
+            result.append(await self._schema_converter.convert_player_to_schema(player))
         logger.debug("Finished listing all players")
         return result
 
@@ -291,54 +193,7 @@ class PlayerService:
         Returns:
             PlayerRead: The player data, or None if not found
         """
-        logger.debug("Resolving player name")
-
-        if not player_name or not player_name.strip():
-            logger.debug("Empty player name provided")
-            return None
-
-        # Clean the input
-        clean_name = player_name.strip()
-
-        # First try exact match (case-sensitive)
-        player = await self.get_player_by_name(clean_name)
-        if player:
-            logger.debug("Exact match found", player_name=clean_name)
-            return player
-
-        # Try case-insensitive exact match
-        all_players = await self.list_players()
-        for player_data in all_players:
-            if player_data.name.lower() == clean_name.lower():
-                logger.debug(
-                    "Case-insensitive exact match found",
-                    input_name=clean_name,
-                    actual_name=player_data.name,
-                )
-                return player_data
-
-        # Try partial match (starts with)
-        for player_data in all_players:
-            if player_data.name.lower().startswith(clean_name.lower()):
-                logger.debug(
-                    "Partial match found (starts with)",
-                    input_name=clean_name,
-                    actual_name=player_data.name,
-                )
-                return player_data
-
-        # Try contains match (if no starts-with match found)
-        for player_data in all_players:
-            if clean_name.lower() in player_data.name.lower():
-                logger.debug(
-                    "Partial match found (contains)",
-                    input_name=clean_name,
-                    actual_name=player_data.name,
-                )
-                return player_data
-
-        logger.debug("No player name match found", player_name=clean_name)
-        return None
+        return await self._search_service.resolve_player_name(player_name)
 
     async def get_online_players(self) -> list[PlayerRead]:
         """
@@ -351,10 +206,7 @@ class PlayerService:
         Returns:
             List[PlayerRead]: List of online players
         """
-        logger.debug("Getting online players")
-        # For now, return all players. In a real implementation,
-        # this would filter by connection status
-        return await self.list_players()
+        return await self._search_service.get_online_players()
 
     async def search_players_by_name(self, search_term: str, limit: int = 10) -> list[PlayerRead]:
         """
@@ -370,48 +222,7 @@ class PlayerService:
         Returns:
             List[PlayerRead]: List of matching players
         """
-        logger.debug("Searching players by name")
-
-        if not search_term or not search_term.strip():
-            logger.debug("Empty search term provided")
-            return []
-
-        clean_term = search_term.strip().lower()
-        all_players = await self.list_players()
-        matches = []
-
-        # Score-based matching
-        scored_matches = []
-        for player in all_players:
-            player_name_lower = player.name.lower()
-            score = 0
-
-            # Exact match gets highest score
-            if player_name_lower == clean_term:
-                score = 100
-            # Starts with gets high score
-            elif player_name_lower.startswith(clean_term):
-                score = 50
-            # Contains gets medium score
-            elif clean_term in player_name_lower:
-                score = 25
-            else:
-                continue
-
-            scored_matches.append((score, player))
-
-        # Sort by score (highest first) and then by name
-        scored_matches.sort(key=lambda x: (-x[0], x[1].name.lower()))
-
-        # Return top matches up to limit
-        matches = [player for score, player in scored_matches[:limit]]
-
-        logger.debug(
-            "Player search completed",
-            search_term=search_term,
-            matches_found=len(matches),
-        )
-        return matches
+        return await self._search_service.search_players_by_name(search_term, limit)
 
     async def validate_player_name(self, player_name: str) -> tuple[bool, str]:
         """
@@ -425,32 +236,7 @@ class PlayerService:
         Returns:
             tuple[bool, str]: (is_valid, error_message)
         """
-        logger.debug("Validating player name")
-
-        if not player_name or not player_name.strip():
-            return False, "Player name cannot be empty"
-
-        clean_name = player_name.strip()
-
-        # Check length
-        if len(clean_name) < 2:
-            return False, "Player name must be at least 2 characters long"
-
-        if len(clean_name) > 20:
-            return False, "Player name must be 20 characters or less"
-
-        # Check for invalid characters
-        invalid_chars = ["<", ">", "&", '"', "'", "\\", "/", "|", ":", ";", "*", "?"]
-        for char in invalid_chars:
-            if char in clean_name:
-                return False, f"Player name cannot contain '{char}'"
-
-        # Check if player exists
-        player = await self.resolve_player_name(clean_name)
-        if not player:
-            return False, f"Player '{clean_name}' not found"
-
-        return True, "Valid player name"
+        return await self._search_service.validate_player_name(player_name)
 
     async def delete_player(self, player_id: uuid.UUID) -> tuple[bool, str]:
         """
@@ -519,7 +305,46 @@ class PlayerService:
         """
         logger.debug("Getting user characters", user_id=user_id)
         players = await self.persistence.get_active_players_by_user_id(str(user_id))
-        return [await self._convert_player_to_schema(player) for player in players]
+        return [await self._schema_converter.convert_player_to_schema(player) for player in players]
+
+    async def validate_character_access(
+        self, character_id: uuid.UUID, user_id: uuid.UUID
+    ) -> tuple[bool, PlayerRead | None, str]:
+        """
+        Validate that a character exists, belongs to the user, and is not deleted.
+
+        Args:
+            character_id: Character UUID to validate
+            user_id: User UUID that should own the character
+
+        Returns:
+            Tuple of (is_valid, character, error_message)
+            - is_valid: True if character is valid and accessible
+            - character: PlayerRead object if valid, None otherwise
+            - error_message: Error message if validation failed, empty string if valid
+        """
+        logger.debug("Validating character access", character_id=character_id, user_id=user_id)
+
+        # Get character from player service
+        character = await self.get_player_by_id(character_id)
+        if not character:
+            return False, None, "Character not found"
+
+        # Get the actual Player object to check is_deleted and user_id
+        player = await self.persistence.get_player_by_id(character_id)
+        if not player:
+            return False, None, "Character not found"
+
+        # Validate character belongs to user
+        if str(player.user_id) != str(user_id):
+            return False, None, "Character does not belong to user"
+
+        # Validate character is not deleted
+        if player.is_deleted:
+            return False, None, "Character has been deleted"
+
+        logger.debug("Character access validated successfully", character_id=character_id, user_id=user_id)
+        return True, character, ""
 
     async def soft_delete_character(self, player_id: uuid.UUID, user_id: uuid.UUID) -> tuple[bool, str]:
         """
@@ -660,25 +485,7 @@ class PlayerService:
         Raises:
             ValidationError: If player not found
         """
-        logger.info("Applying lucidity loss", player_id=player_id, amount=amount, source=source)
-
-        player = await self.persistence.get_player_by_id(player_id)
-        if not player:
-            logger.warning("Player not found for lucidity loss", player_id=player_id)
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["operation"] = "apply_lucidity_loss"
-            log_and_raise_enhanced(
-                ValidationError,
-                f"Player not found: {player_id}",
-                context=context,
-                details={"player_id": player_id},
-                user_friendly="Player not found",
-            )
-
-        await self.persistence.apply_lucidity_loss(player, amount, source)
-        logger.info("Lucidity loss applied successfully", player_id=player_id, amount=amount, source=source)
-        return {"message": f"Applied {amount} lucidity loss to {player.name}"}
+        return await self._state_service.apply_lucidity_loss(player_id, amount, source)
 
     async def apply_fear(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict:
         """
@@ -695,25 +502,7 @@ class PlayerService:
         Raises:
             ValidationError: If player not found
         """
-        logger.info("Applying fear", player_id=player_id, amount=amount, source=source)
-
-        player = await self.persistence.get_player_by_id(player_id)
-        if not player:
-            logger.warning("Player not found for fear application", player_id=player_id)
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["operation"] = "apply_fear"
-            log_and_raise_enhanced(
-                ValidationError,
-                f"Player not found: {player_id}",
-                context=context,
-                details={"player_id": player_id},
-                user_friendly="Player not found",
-            )
-
-        await self.persistence.apply_fear(player, amount, source)
-        logger.info("Fear applied successfully", player_id=player_id, amount=amount, source=source)
-        return {"message": f"Applied {amount} fear to {player.name}"}
+        return await self._state_service.apply_fear(player_id, amount, source)
 
     async def apply_corruption(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict:
         """
@@ -730,25 +519,7 @@ class PlayerService:
         Raises:
             ValidationError: If player not found
         """
-        logger.info("Applying corruption", player_id=player_id, amount=amount, source=source)
-
-        player = await self.persistence.get_player_by_id(player_id)
-        if not player:
-            logger.warning("Player not found for corruption application", player_id=player_id)
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["operation"] = "apply_corruption"
-            log_and_raise_enhanced(
-                ValidationError,
-                f"Player not found: {player_id}",
-                context=context,
-                details={"player_id": player_id},
-                user_friendly="Player not found",
-            )
-
-        await self.persistence.apply_corruption(player, amount, source)
-        logger.info("Corruption applied successfully", player_id=player_id, amount=amount, source=source)
-        return {"message": f"Applied {amount} corruption to {player.name}"}
+        return await self._state_service.apply_corruption(player_id, amount, source)
 
     async def gain_occult_knowledge(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict:
         """
@@ -765,25 +536,7 @@ class PlayerService:
         Raises:
             ValidationError: If player not found
         """
-        logger.info("Gaining occult knowledge", player_id=player_id, amount=amount, source=source)
-
-        player = await self.persistence.get_player_by_id(player_id)
-        if not player:
-            logger.warning("Player not found for occult knowledge gain", player_id=player_id)
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["operation"] = "gain_occult_knowledge"
-            log_and_raise_enhanced(
-                ValidationError,
-                f"Player not found: {player_id}",
-                context=context,
-                details={"player_id": player_id},
-                user_friendly="Player not found",
-            )
-
-        await self.persistence.async_gain_occult_knowledge(player, amount, source)
-        logger.info("Occult knowledge gained successfully", player_id=player_id, amount=amount, source=source)
-        return {"message": f"Gained {amount} occult knowledge for {player.name}"}
+        return await self._state_service.gain_occult_knowledge(player_id, amount, source)
 
     async def heal_player(self, player_id: uuid.UUID, amount: int) -> dict:
         """
@@ -799,25 +552,7 @@ class PlayerService:
         Raises:
             ValidationError: If player not found
         """
-        logger.info("Healing player", player_id=player_id, amount=amount)
-
-        player = await self.persistence.get_player_by_id(player_id)
-        if not player:
-            logger.warning("Player not found for healing", player_id=player_id)
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["operation"] = "heal_player"
-            log_and_raise_enhanced(
-                ValidationError,
-                f"Player not found: {player_id}",
-                context=context,
-                details={"player_id": player_id},
-                user_friendly="Player not found",
-            )
-
-        await self.persistence.async_heal_player(player, amount)
-        logger.info("Player healed successfully", player_id=player_id, amount=amount)
-        return {"message": f"Healed {player.name} for {amount} health"}
+        return await self._state_service.heal_player(player_id, amount)
 
     async def damage_player(self, player_id: uuid.UUID, amount: int, damage_type: str = "physical") -> dict:
         """
@@ -834,25 +569,7 @@ class PlayerService:
         Raises:
             ValidationError: If player not found
         """
-        logger.info("Damaging player", player_id=player_id, amount=amount, damage_type=damage_type)
-
-        player = await self.persistence.get_player_by_id(player_id)
-        if not player:
-            logger.warning("Player not found for damage", player_id=player_id)
-            context = create_error_context()
-            context.metadata["player_id"] = player_id
-            context.metadata["operation"] = "damage_player"
-            log_and_raise_enhanced(
-                ValidationError,
-                f"Player not found: {player_id}",
-                context=context,
-                details={"player_id": player_id},
-                user_friendly="Player not found",
-            )
-
-        await self.persistence.async_damage_player(player, amount, damage_type)
-        logger.info("Player damaged successfully", player_id=player_id, amount=amount, damage_type=damage_type)
-        return {"message": f"Damaged {player.name} for {amount} {damage_type} damage"}
+        return await self._state_service.damage_player(player_id, amount, damage_type)
 
     async def respawn_player_by_user_id(  # pylint: disable=too-many-locals  # Reason: Respawn requires many intermediate variables for complex respawn logic
         self,
@@ -883,111 +600,7 @@ class PlayerService:
         Raises:
             ValidationError: If player not found or not dead
         """
-        from sqlalchemy import select
-        from sqlalchemy.orm import selectinload
-
-        # MULTI-CHARACTER: Get all active players for user, then find the dead one
-        # Look up all active players by user_id (not primary key player_id)
-        # Eagerly load user relationship to prevent N+1 queries
-        stmt = (
-            select(Player)
-            .options(selectinload(Player.user))
-            .where(Player.user_id == user_id)
-            .where(Player.is_deleted.is_(False))  # Use is_() for SQLAlchemy boolean comparison
-        )
-        result = await session.execute(stmt)
-        all_players = list(result.scalars().all())
-
-        if not all_players:
-            context = create_error_context()
-            context.metadata["operation"] = "respawn_player_by_user_id"
-            context.metadata["user_id"] = user_id
-            log_and_raise_enhanced(
-                ValidationError,
-                "Player not found for respawn",
-                context=context,
-                details={"user_id": user_id},
-                user_friendly="Player not found",
-            )
-
-        # MULTI-CHARACTER: Find the dead player(s) among active characters
-        # Filter to players that are dead (DP <= -10)
-        dead_players = [p for p in all_players if p.is_dead()]
-
-        if not dead_players:
-            # No dead players found - check if any players exist to give better error message
-            context = create_error_context()
-            context.metadata["operation"] = "respawn_player_by_user_id"
-            context.metadata["user_id"] = user_id
-            if all_players:
-                context.metadata["player_dp"] = all_players[0].get_stats().get("current_dp", 0)
-            log_and_raise_enhanced(
-                ValidationError,
-                "Player must be dead to respawn (DP must be -10 or below)",
-                context=context,
-                details={
-                    "user_id": user_id,
-                    "player_dp": all_players[0].get_stats().get("current_dp", 0) if all_players else None,
-                },
-                user_friendly="Player must be dead to respawn",
-            )
-
-        # MULTI-CHARACTER: If multiple dead players, select the most recently active one
-        if len(dead_players) > 1:
-            # Sort by last_active descending (most recent first) and take the first
-            dead_players.sort(key=lambda p: p.last_active if p.last_active else datetime.datetime.min, reverse=True)
-
-        player = dead_players[0]
-
-        # Respawn the player
-        # Convert player.player_id to UUID (handles SQLAlchemy Column[str])
-        # SQLAlchemy Column[str] returns UUID at runtime, but mypy sees it as Column[str]
-        # Always convert to string first, then to UUID
-        player_id_value = player.player_id
-        player_id_uuid = uuid.UUID(str(player_id_value))
-        success = await respawn_service.respawn_player(player_id_uuid, session)
-        if not success:
-            logger.error("Respawn failed", player_id=player.player_id)
-            context = create_error_context()
-            context.metadata["operation"] = "respawn_player_by_user_id"
-            context.metadata["user_id"] = user_id
-            # Structlog handles UUID objects automatically, no need to convert to string
-            context.metadata["player_id"] = player.player_id
-            log_and_raise_enhanced(
-                ValidationError,
-                "Failed to respawn player",
-                context=context,
-                # Structlog handles UUID objects automatically, no need to convert to string
-                details={"user_id": user_id, "player_id": player.player_id},
-                user_friendly="Respawn failed",
-            )
-
-        # Get respawn room data
-        respawn_room_id = player.current_room_id  # Updated by respawn_player
-        room = persistence.get_room_by_id(str(respawn_room_id))
-        if not room:
-            logger.warning("Respawn room not found", respawn_room_id=respawn_room_id)
-            room_data = {"id": respawn_room_id, "name": "Unknown Room"}
-        else:
-            room_data = room.to_dict()
-
-        # Get updated player state
-        updated_stats = player.get_stats()
-
-        logger.info("Player respawned successfully", player_id=player.player_id, respawn_room=respawn_room_id)
-
-        return {
-            "success": True,
-            "player": {
-                "id": player.player_id,
-                "name": player.name,
-                "dp": updated_stats.get("current_dp", 100),
-                "max_dp": updated_stats.get("max_dp", 100),
-                "current_room_id": respawn_room_id,
-            },
-            "room": room_data,
-            "message": "You have been resurrected and returned to the waking world",
-        }
+        return await self._respawn_wrapper.respawn_player_by_user_id(user_id, session, respawn_service, persistence)
 
     async def respawn_player_from_delirium_by_user_id(  # pylint: disable=too-many-locals  # Reason: Delirium respawn requires many intermediate variables for complex respawn logic
         self,
@@ -1018,102 +631,11 @@ class PlayerService:
         Raises:
             ValidationError: If player not found or not delirious
         """
-        from sqlalchemy import select
-        from sqlalchemy.orm import selectinload
-
-        from ..models.lucidity import PlayerLucidity
-
-        # Look up player by user_id (not primary key player_id)
-        # Eagerly load user relationship to prevent N+1 queries
-        stmt = select(Player).options(selectinload(Player.user)).where(Player.user_id == user_id)
-        result = await session.execute(stmt)
-        player = result.scalar_one_or_none()
-        if not player:
-            context = create_error_context()
-            context.metadata["operation"] = "respawn_player_from_delirium_by_user_id"
-            context.metadata["user_id"] = user_id
-            log_and_raise_enhanced(
-                ValidationError,
-                "Player not found for delirium respawn",
-                context=context,
-                details={"user_id": user_id},
-                user_friendly="Player not found",
-            )
-
-        # Verify player is delirious (lucidity <= -10)
-        lucidity_record = await session.get(PlayerLucidity, player.player_id)
-        if not lucidity_record or lucidity_record.current_lcd > -10:
-            context = create_error_context()
-            context.metadata["operation"] = "respawn_player_from_delirium_by_user_id"
-            context.metadata["user_id"] = user_id
-            current_lucidity = lucidity_record.current_lcd if lucidity_record else None
-            context.metadata["player_lucidity"] = current_lucidity
-            log_and_raise_enhanced(
-                ValidationError,
-                "Player must be delirious to respawn (lucidity must be -10 or below)",
-                context=context,
-                details={"user_id": user_id, "player_lucidity": current_lucidity},
-                user_friendly="Player must be delirious to respawn",
-            )
-
-        # Respawn the player from delirium
-        # Convert player.player_id to UUID (handles SQLAlchemy Column[str])
-        player_id_value = player.player_id
-        player_id_uuid = uuid.UUID(str(player_id_value))
-        success = await respawn_service.respawn_player_from_delirium(player_id_uuid, session)
-        if not success:
-            logger.error("Delirium respawn failed", player_id=player.player_id)
-            context = create_error_context()
-            context.metadata["operation"] = "respawn_player_from_delirium_by_user_id"
-            context.metadata["user_id"] = user_id
-            context.metadata["player_id"] = player.player_id
-            log_and_raise_enhanced(
-                ValidationError,
-                "Failed to respawn player from delirium",
-                context=context,
-                details={"user_id": user_id, "player_id": player.player_id},
-                user_friendly="Delirium respawn failed",
-            )
-
-        # Get respawn room data
-        respawn_room_id = player.current_room_id  # Updated by respawn_player_from_delirium
-        room = persistence.get_room_by_id(str(respawn_room_id))
-
-        if not room:
-            logger.warning("Respawn room not found", respawn_room_id=respawn_room_id)
-            room_data = {"id": respawn_room_id, "name": "Unknown Room"}
-        else:
-            room_data = room.to_dict()
-
-        # Get updated player state
-        updated_stats = player.get_stats()
-
-        # Get updated lucidity
-        await session.refresh(lucidity_record)
-        updated_lucidity = lucidity_record.current_lcd
-
-        logger.info(
-            "Player respawned from delirium successfully",
-            player_id=player.player_id,
-            respawn_room=respawn_room_id,
-            new_lucidity=updated_lucidity,
+        return await self._respawn_wrapper.respawn_player_from_delirium_by_user_id(
+            user_id, session, respawn_service, persistence
         )
 
-        return {
-            "success": True,
-            "player": {
-                "id": player.player_id,
-                "name": player.name,
-                "dp": updated_stats.get("current_dp", 100),
-                "max_dp": updated_stats.get("max_dp", 100),
-                "lucidity": updated_lucidity,
-                "current_room_id": respawn_room_id,
-            },
-            "room": room_data,
-            "message": "You have been restored to lucidity and returned to the Sanitarium",
-        }
-
-    async def convert_player_to_schema(self, player) -> PlayerRead:
+    async def convert_player_to_schema(self, player: Any) -> PlayerRead:
         """
         Convert a player object to PlayerRead schema.
 
@@ -1125,198 +647,4 @@ class PlayerService:
         Returns:
             PlayerRead: The player data in schema format
         """
-        return await self._convert_player_to_schema(player)
-
-    async def _check_player_combat_state(self, player: Any) -> bool:
-        """Check if player is in combat."""
-        in_combat = False
-        if (
-            hasattr(self, "player_combat_service")
-            and self.player_combat_service
-            and not hasattr(self.player_combat_service, "__class__")
-            or "Mock" not in str(self.player_combat_service.__class__)
-        ):
-            if hasattr(player, "player_id"):
-                try:
-                    if hasattr(self.player_combat_service, "is_player_in_combat"):
-                        in_combat = await self.player_combat_service.is_player_in_combat(player.player_id)
-                except (DatabaseError, AttributeError) as e:
-                    logger.warning("Failed to check combat state for player", player_id=player.player_id, error=str(e))
-        return in_combat
-
-    async def _get_profession_details(self, player: Any) -> tuple[int, str | None, str | None, str | None]:
-        """Get profession information for player."""
-        player_profession_id = 0
-        profession_name = None
-        profession_description = None
-        profession_flavor_text = None
-
-        if hasattr(player, "profession_id"):
-            player_profession_id = player.profession_id
-        elif isinstance(player, dict):
-            player_profession_id = player.get("profession_id", 0)
-
-        if player_profession_id is not None:
-            try:
-                profession = await self.persistence.get_profession_by_id(player_profession_id)
-                if profession:
-                    profession_name = profession.name
-                    profession_description = profession.description
-                    profession_flavor_text = profession.flavor_text
-            except (DatabaseError, AttributeError) as e:
-                logger.warning("Failed to fetch profession", profession_id=player_profession_id, error=str(e))
-
-        return player_profession_id, profession_name, profession_description, profession_flavor_text
-
-    async def _get_player_data_methods(
-        self, player: Any
-    ) -> tuple[dict[str, Any], list[dict[str, Any]], list[dict[str, Any]]]:
-        """Get stats, inventory, and status_effects from player, handling async methods."""
-        stats = player.get_stats()
-        inventory = player.get_inventory()
-        status_effects = player.get_status_effects()
-
-        # If these are coroutines (from AsyncMock), await them
-        if hasattr(stats, "__await__"):
-            stats = await stats
-        if hasattr(inventory, "__await__"):
-            inventory = await inventory
-        if hasattr(status_effects, "__await__"):
-            status_effects = await status_effects
-
-        return stats, inventory, status_effects
-
-    def _compute_derived_stats_fields(self, stats: dict[str, Any]) -> None:
-        """Compute derived stats fields (max_dp, max_magic_points, max_lucidity)."""
-        try:
-            import math
-
-            con = stats.get("constitution", 50)
-            siz = stats.get("size", 50)
-            pow_val = stats.get("power", 50)
-            edu = stats.get("education", 50)
-
-            if "max_dp" not in stats:
-                stats["max_dp"] = (con + siz) // 5
-            if "max_magic_points" not in stats:
-                stats["max_magic_points"] = math.ceil(pow_val * 0.2)
-            if "max_lucidity" not in stats:
-                stats["max_lucidity"] = edu
-
-            # Initialize magic_points to max if it's 0 (full MP at character creation)
-            if not stats.get("magic_points", 0) and stats.get("max_magic_points", 0) > 0:
-                stats["magic_points"] = stats["max_magic_points"]
-            # Cap lucidity to max_lucidity if it exceeds max
-            max_lucidity_val = stats.get("max_lucidity", edu)
-            if stats.get("lucidity", 100) > max_lucidity_val:
-                stats["lucidity"] = max_lucidity_val
-        except (DatabaseError, AttributeError) as e:
-            logger.error(
-                "Error adding computed fields to stats",
-                player_id=stats.get("player_id"),
-                error=str(e),
-                exc_info=True,
-            )
-
-    def _get_position_state(self, position_value: int, player_id: Any = None) -> PositionState:
-        """Get PositionState from position value, with fallback to STANDING."""
-        try:
-            return PositionState(position_value)
-        except ValueError:
-            logger.warning(
-                "Invalid position value on player stats, defaulting to standing",
-                player_id=player_id,
-                position_value=position_value,
-            )
-            return PositionState.STANDING
-
-    async def _create_player_read_from_object(
-        self, player: Any, in_combat: bool, profession_data: tuple[int, str | None, str | None, str | None]
-    ) -> PlayerRead:
-        """Create PlayerRead schema from player object."""
-        player_profession_id, profession_name, profession_description, profession_flavor_text = profession_data
-
-        stats, inventory, status_effects = await self._get_player_data_methods(player)
-
-        position_value = stats.get("position", PositionState.STANDING.value)
-        position_state = self._get_position_state(position_value, getattr(player, "player_id", None))
-
-        self._compute_derived_stats_fields(stats)
-
-        return PlayerRead(
-            id=player.player_id,
-            user_id=player.user_id,
-            name=player.name,
-            profession_id=player_profession_id,
-            profession_name=profession_name,
-            profession_description=profession_description,
-            profession_flavor_text=profession_flavor_text,
-            current_room_id=player.current_room_id,
-            experience_points=player.experience_points,
-            level=player.level,
-            stats=stats,
-            inventory=inventory,
-            status_effects=status_effects,
-            created_at=player.created_at,
-            last_active=player.last_active,
-            is_admin=bool(player.is_admin),  # Convert integer to boolean
-            in_combat=in_combat,
-            position=position_state,
-        )
-
-    def _create_player_read_from_dict(
-        self, player: dict[str, Any], in_combat: bool, profession_data: tuple[int, str | None, str | None, str | None]
-    ) -> PlayerRead:
-        """Create PlayerRead schema from player dictionary."""
-        player_profession_id, profession_name, profession_description, profession_flavor_text = profession_data
-
-        stats_data = player["stats"]
-        position_value = stats_data.get("position", PositionState.STANDING.value)
-        position_state = self._get_position_state(position_value, player.get("player_id"))
-
-        return PlayerRead(
-            id=player["player_id"],
-            user_id=player["user_id"],
-            name=player["name"],
-            profession_id=player_profession_id,
-            profession_name=profession_name,
-            profession_description=profession_description,
-            profession_flavor_text=profession_flavor_text,
-            current_room_id=player["current_room_id"],
-            experience_points=player["experience_points"],
-            level=player["level"],
-            stats=player["stats"],
-            inventory=player["inventory"],
-            status_effects=player["status_effects"],
-            created_at=player["created_at"],
-            last_active=player["last_active"],
-            is_admin=bool(player.get("is_admin", 0)),  # Convert integer to boolean with default
-            in_combat=in_combat,
-            position=position_state,
-        )
-
-    async def _convert_player_to_schema(self, player) -> PlayerRead:
-        """
-        Convert a player object to PlayerRead schema.
-
-        Args:
-            player: Player object or dictionary
-
-        Returns:
-            PlayerRead: The player data in schema format
-        """
-        # Check if player is in combat
-        in_combat = await self._check_player_combat_state(player)
-
-        # Get profession information
-        profession_data = await self._get_profession_details(player)
-
-        if hasattr(player, "player_id"):  # Player object
-            return await self._create_player_read_from_object(player, in_combat, profession_data)
-
-        # Dictionary
-        # Check if player is a Mock by checking for MagicMock type
-        if "Mock" in str(type(player).__name__):
-            # In tests, return the Mock directly
-            return player
-        return self._create_player_read_from_dict(player, in_combat, profession_data)
+        return await self._schema_converter.convert_player_to_schema(player)

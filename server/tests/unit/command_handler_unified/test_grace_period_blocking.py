@@ -22,7 +22,7 @@ def mock_request():
 
 
 @pytest.mark.asyncio
-async def test_check_grace_period_block_blocks_commands(mock_request):  # pylint: disable=redefined-outer-name
+async def test_check_grace_period_block_blocks_commands(mock_request):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test _check_grace_period_block() blocks commands for grace period players."""
     player_id = uuid.uuid4()
     player_name = "TestPlayer"
@@ -48,7 +48,7 @@ async def test_check_grace_period_block_blocks_commands(mock_request):  # pylint
 
 
 @pytest.mark.asyncio
-async def test_check_grace_period_block_allows_commands_when_not_in_grace_period(mock_request):  # pylint: disable=redefined-outer-name
+async def test_check_grace_period_block_allows_commands_when_not_in_grace_period(mock_request):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test _check_grace_period_block() allows commands when player not in grace period."""
     player_id = uuid.uuid4()
     player_name = "TestPlayer"
@@ -72,7 +72,7 @@ async def test_check_grace_period_block_allows_commands_when_not_in_grace_period
 
 
 @pytest.mark.asyncio
-async def test_check_grace_period_block_handles_missing_services(mock_request):  # pylint: disable=redefined-outer-name
+async def test_check_grace_period_block_handles_missing_services(mock_request):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test _check_grace_period_block() handles missing services gracefully."""
     player_name = "TestPlayer"
     mock_request.app.state.connection_manager = None
@@ -83,7 +83,7 @@ async def test_check_grace_period_block_handles_missing_services(mock_request): 
 
 
 @pytest.mark.asyncio
-async def test_check_grace_period_block_handles_player_not_found(mock_request):  # pylint: disable=redefined-outer-name
+async def test_check_grace_period_block_handles_player_not_found(mock_request):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test _check_grace_period_block() handles player not found gracefully."""
     player_name = "TestPlayer"
 

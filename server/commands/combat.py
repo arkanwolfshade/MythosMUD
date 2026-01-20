@@ -175,7 +175,12 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
         self, request_app: Any, current_user: dict
     ) -> tuple[Any, Any, dict[str, str] | None]:
         """Get player data and room, returning error dict if any step fails."""
-        persistence = request_app.state.persistence if request_app else None
+        # Prefer container, fallback to app.state for backward compatibility
+        persistence = None
+        if request_app and hasattr(request_app.state, "container") and request_app.state.container:
+            persistence = request_app.state.container.async_persistence
+        elif request_app:
+            persistence = getattr(request_app.state, "persistence", None)
         if not persistence:
             return None, None, {"result": "The cosmic forces are unreachable."}
 

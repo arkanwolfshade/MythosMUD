@@ -58,10 +58,11 @@ async def test_handle_say_command_player_not_found():
     mock_request = MagicMock()
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
+    mock_request.app.state.container = MagicMock()
     mock_player_service = AsyncMock()
     mock_player_service.resolve_player_name = AsyncMock(return_value=None)
-    mock_request.app.state.player_service = mock_player_service
-    mock_request.app.state.chat_service = AsyncMock()
+    mock_request.app.state.container.player_service = mock_player_service
+    mock_request.app.state.container.chat_service = AsyncMock()
 
     result = await handle_say_command(
         command_data={"message": "Hello"},
@@ -80,6 +81,7 @@ async def test_handle_say_command_success():
     mock_request = MagicMock()
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
+    mock_request.app.state.container = MagicMock()
     mock_chat_service = AsyncMock()
     mock_chat_service.send_say_message = AsyncMock(return_value={"success": True, "message": {"id": "123"}})
     mock_player_service = AsyncMock()
@@ -87,8 +89,8 @@ async def test_handle_say_command_success():
     mock_player.current_room_id = "test_room"
     mock_player.id = uuid.uuid4()
     mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.chat_service = mock_chat_service
-    mock_request.app.state.player_service = mock_player_service
+    mock_request.app.state.container.chat_service = mock_chat_service
+    mock_request.app.state.container.player_service = mock_player_service
 
     result = await handle_say_command(
         command_data={"message": "Hello"},
@@ -153,9 +155,10 @@ async def test_handle_pose_command_player_not_found():
     mock_request = MagicMock()
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
+    mock_request.app.state.container = MagicMock()
     mock_persistence = AsyncMock()
     mock_persistence.get_player_by_name = AsyncMock(return_value=None)
-    mock_request.app.state.persistence = mock_persistence
+    mock_request.app.state.container.async_persistence = mock_persistence
 
     result = await handle_pose_command(
         command_data={"pose": "standing tall"},
@@ -174,12 +177,13 @@ async def test_handle_pose_command_clear_pose():
     mock_request = MagicMock()
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
+    mock_request.app.state.container = MagicMock()
     mock_persistence = AsyncMock()
     mock_player = MagicMock()
     mock_player.pose = "old pose"
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_persistence.save_player = AsyncMock()
-    mock_request.app.state.persistence = mock_persistence
+    mock_request.app.state.container.async_persistence = mock_persistence
 
     result = await handle_pose_command(
         command_data={},
@@ -200,11 +204,12 @@ async def test_handle_pose_command_set_pose():
     mock_request = MagicMock()
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
+    mock_request.app.state.container = MagicMock()
     mock_persistence = AsyncMock()
     mock_player = MagicMock()
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_persistence.save_player = AsyncMock()
-    mock_request.app.state.persistence = mock_persistence
+    mock_request.app.state.container.async_persistence = mock_persistence
 
     result = await handle_pose_command(
         command_data={"pose": "standing tall"},
@@ -256,6 +261,7 @@ async def test_handle_local_command_success():
     mock_request = MagicMock()
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
+    mock_request.app.state.container = MagicMock()
     mock_chat_service = AsyncMock()
     mock_chat_service.send_local_message = AsyncMock(return_value={"success": True, "message": {"id": "123"}})
     mock_player_service = AsyncMock()
@@ -263,8 +269,8 @@ async def test_handle_local_command_success():
     mock_player.current_room_id = "test_room"
     mock_player.id = uuid.uuid4()
     mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.chat_service = mock_chat_service
-    mock_request.app.state.player_service = mock_player_service
+    mock_request.app.state.container.chat_service = mock_chat_service
+    mock_request.app.state.container.player_service = mock_player_service
 
     result = await handle_local_command(
         command_data={"message": "Hello"},
@@ -315,12 +321,13 @@ async def test_handle_global_command_level_too_low():
     mock_request = MagicMock()
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
+    mock_request.app.state.container = MagicMock()
     mock_player_service = AsyncMock()
     mock_player = MagicMock()
     mock_player.level = 0  # Too low for global chat
     mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.player_service = mock_player_service
-    mock_request.app.state.chat_service = AsyncMock()
+    mock_request.app.state.container.player_service = mock_player_service
+    mock_request.app.state.container.chat_service = AsyncMock()
 
     result = await handle_global_command(
         command_data={"message": "Hello"},
@@ -339,6 +346,7 @@ async def test_handle_global_command_success():
     mock_request = MagicMock()
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
+    mock_request.app.state.container = MagicMock()
     mock_chat_service = AsyncMock()
     mock_chat_service.send_global_message = AsyncMock(return_value={"success": True, "message": {"id": "123"}})
     mock_player_service = AsyncMock()
@@ -346,8 +354,8 @@ async def test_handle_global_command_success():
     mock_player.id = uuid.uuid4()
     mock_player.level = 1  # Required for global chat
     mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.chat_service = mock_chat_service
-    mock_request.app.state.player_service = mock_player_service
+    mock_request.app.state.container.chat_service = mock_chat_service
+    mock_request.app.state.container.player_service = mock_player_service
 
     result = await handle_global_command(
         command_data={"message": "Hello"},
@@ -398,6 +406,7 @@ async def test_handle_system_command_not_admin():
     mock_request = MagicMock()
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
+    mock_request.app.state.container = MagicMock()
     mock_player_service = AsyncMock()
     mock_player = MagicMock()
     player_id = uuid.uuid4()
@@ -405,9 +414,9 @@ async def test_handle_system_command_not_admin():
     mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
     mock_user_manager = MagicMock()
     mock_user_manager.is_admin = MagicMock(return_value=False)  # Not admin
-    mock_request.app.state.player_service = mock_player_service
-    mock_request.app.state.chat_service = AsyncMock()
-    mock_request.app.state.user_manager = mock_user_manager
+    mock_request.app.state.container.player_service = mock_player_service
+    mock_request.app.state.container.chat_service = AsyncMock()
+    mock_request.app.state.container.user_manager = mock_user_manager
 
     result = await handle_system_command(
         command_data={"message": "Hello"},
@@ -426,6 +435,7 @@ async def test_handle_system_command_success():
     mock_request = MagicMock()
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
+    mock_request.app.state.container = MagicMock()
     mock_chat_service = AsyncMock()
     mock_chat_service.send_system_message = AsyncMock(return_value={"success": True, "message": {"id": "123"}})
     mock_player_service = AsyncMock()
@@ -435,9 +445,9 @@ async def test_handle_system_command_success():
     mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
     mock_user_manager = MagicMock()
     mock_user_manager.is_admin = MagicMock(return_value=True)  # Admin check
-    mock_request.app.state.chat_service = mock_chat_service
-    mock_request.app.state.player_service = mock_player_service
-    mock_request.app.state.user_manager = mock_user_manager
+    mock_request.app.state.container.chat_service = mock_chat_service
+    mock_request.app.state.container.player_service = mock_player_service
+    mock_request.app.state.container.user_manager = mock_user_manager
 
     result = await handle_system_command(
         command_data={"message": "Hello"},
@@ -503,12 +513,13 @@ async def test_handle_whisper_command_target_not_found():
     mock_request = MagicMock()
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
+    mock_request.app.state.container = MagicMock()
     mock_player_service = AsyncMock()
     mock_sender = MagicMock()
     mock_sender.id = uuid.uuid4()
     mock_player_service.resolve_player_name = AsyncMock(side_effect=[mock_sender, None])
-    mock_request.app.state.player_service = mock_player_service
-    mock_request.app.state.chat_service = AsyncMock()
+    mock_request.app.state.container.player_service = mock_player_service
+    mock_request.app.state.container.chat_service = AsyncMock()
 
     result = await handle_whisper_command(
         command_data={"target": "OtherPlayer", "message": "Hello"},
@@ -527,13 +538,14 @@ async def test_handle_whisper_command_whisper_to_self():
     mock_request = MagicMock()
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
+    mock_request.app.state.container = MagicMock()
     mock_player_service = AsyncMock()
     mock_player = MagicMock()
     player_id = uuid.uuid4()
     mock_player.id = player_id
     mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.player_service = mock_player_service
-    mock_request.app.state.chat_service = AsyncMock()
+    mock_request.app.state.container.player_service = mock_player_service
+    mock_request.app.state.container.chat_service = AsyncMock()
 
     result = await handle_whisper_command(
         command_data={"target": "TestPlayer", "message": "Hello"},
@@ -552,6 +564,7 @@ async def test_handle_whisper_command_success():
     mock_request = MagicMock()
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
+    mock_request.app.state.container = MagicMock()
     mock_chat_service = AsyncMock()
     mock_chat_service.send_whisper_message = AsyncMock(return_value={"success": True, "message": {"id": "123"}})
     mock_player_service = AsyncMock()
@@ -560,8 +573,8 @@ async def test_handle_whisper_command_success():
     mock_target = MagicMock()
     mock_target.id = uuid.uuid4()
     mock_player_service.resolve_player_name = AsyncMock(side_effect=[mock_sender, mock_target])
-    mock_request.app.state.chat_service = mock_chat_service
-    mock_request.app.state.player_service = mock_player_service
+    mock_request.app.state.container.chat_service = mock_chat_service
+    mock_request.app.state.container.player_service = mock_player_service
 
     result = await handle_whisper_command(
         command_data={"target": "OtherPlayer", "message": "Hello"},
@@ -612,14 +625,15 @@ async def test_handle_reply_command_no_last_whisper_sender():
     mock_request = MagicMock()
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
+    mock_request.app.state.container = MagicMock()
     mock_chat_service = MagicMock()
     mock_chat_service.get_last_whisper_sender = MagicMock(return_value=None)
     mock_player_service = AsyncMock()
     mock_player = MagicMock()
     mock_player.id = uuid.uuid4()
     mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.chat_service = mock_chat_service
-    mock_request.app.state.player_service = mock_player_service
+    mock_request.app.state.container.chat_service = mock_chat_service
+    mock_request.app.state.container.player_service = mock_player_service
 
     result = await handle_reply_command(
         command_data={"message": "Hello"},
@@ -638,6 +652,7 @@ async def test_handle_reply_command_success():
     mock_request = MagicMock()
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
+    mock_request.app.state.container = MagicMock()
     mock_chat_service = AsyncMock()
     mock_chat_service.get_last_whisper_sender = MagicMock(return_value="OtherPlayer")
     mock_chat_service.send_whisper_message = AsyncMock(return_value={"success": True, "message": {"id": "123"}})
@@ -647,8 +662,8 @@ async def test_handle_reply_command_success():
     mock_target = MagicMock()
     mock_target.id = uuid.uuid4()
     mock_player_service.resolve_player_name = AsyncMock(side_effect=[mock_sender, mock_target])
-    mock_request.app.state.chat_service = mock_chat_service
-    mock_request.app.state.player_service = mock_player_service
+    mock_request.app.state.container.chat_service = mock_chat_service
+    mock_request.app.state.container.player_service = mock_player_service
 
     result = await handle_reply_command(
         command_data={"message": "Hello"},
@@ -668,13 +683,14 @@ async def test_handle_say_command_no_room():
     mock_request = MagicMock()
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
+    mock_request.app.state.container = MagicMock()
     mock_player_service = AsyncMock()
     mock_player = MagicMock()
     mock_player.current_room_id = None
     mock_player.id = uuid.uuid4()
     mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.player_service = mock_player_service
-    mock_request.app.state.chat_service = AsyncMock()
+    mock_request.app.state.container.player_service = mock_player_service
+    mock_request.app.state.container.chat_service = AsyncMock()
 
     result = await handle_say_command(
         command_data={"message": "Hello"},
@@ -693,14 +709,15 @@ async def test_handle_say_command_no_player_id():
     mock_request = MagicMock()
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
+    mock_request.app.state.container = MagicMock()
     mock_player_service = AsyncMock()
     mock_player = MagicMock()
     mock_player.current_room_id = "test_room"
     mock_player.id = None
     mock_player.player_id = None
     mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.player_service = mock_player_service
-    mock_request.app.state.chat_service = AsyncMock()
+    mock_request.app.state.container.player_service = mock_player_service
+    mock_request.app.state.container.chat_service = AsyncMock()
 
     result = await handle_say_command(
         command_data={"message": "Hello"},
@@ -719,6 +736,7 @@ async def test_handle_say_command_chat_service_failure():
     mock_request = MagicMock()
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
+    mock_request.app.state.container = MagicMock()
     mock_chat_service = AsyncMock()
     mock_chat_service.send_say_message = AsyncMock(return_value={"success": False, "error": "Service unavailable"})
     mock_player_service = AsyncMock()
@@ -726,8 +744,8 @@ async def test_handle_say_command_chat_service_failure():
     mock_player.current_room_id = "test_room"
     mock_player.id = uuid.uuid4()
     mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.chat_service = mock_chat_service
-    mock_request.app.state.player_service = mock_player_service
+    mock_request.app.state.container.chat_service = mock_chat_service
+    mock_request.app.state.container.player_service = mock_player_service
 
     result = await handle_say_command(
         command_data={"message": "Hello"},
@@ -746,10 +764,11 @@ async def test_handle_say_command_exception():
     mock_request = MagicMock()
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
+    mock_request.app.state.container = MagicMock()
     mock_player_service = AsyncMock()
     mock_player_service.resolve_player_name = AsyncMock(side_effect=RuntimeError("Database error"))
-    mock_request.app.state.player_service = mock_player_service
-    mock_request.app.state.chat_service = AsyncMock()
+    mock_request.app.state.container.player_service = mock_player_service
+    mock_request.app.state.container.chat_service = AsyncMock()
 
     result = await handle_say_command(
         command_data={"message": "Hello"},
@@ -768,13 +787,14 @@ async def test_handle_local_command_no_room():
     mock_request = MagicMock()
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
+    mock_request.app.state.container = MagicMock()
     mock_player_service = AsyncMock()
     mock_player = MagicMock()
     mock_player.current_room_id = None
     mock_player.id = uuid.uuid4()
     mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.player_service = mock_player_service
-    mock_request.app.state.chat_service = AsyncMock()
+    mock_request.app.state.container.player_service = mock_player_service
+    mock_request.app.state.container.chat_service = AsyncMock()
 
     result = await handle_local_command(
         command_data={"message": "Hello"},
@@ -793,10 +813,11 @@ async def test_handle_global_command_player_not_found():
     mock_request = MagicMock()
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
+    mock_request.app.state.container = MagicMock()
     mock_player_service = AsyncMock()
     mock_player_service.resolve_player_name = AsyncMock(return_value=None)
-    mock_request.app.state.player_service = mock_player_service
-    mock_request.app.state.chat_service = AsyncMock()
+    mock_request.app.state.container.player_service = mock_player_service
+    mock_request.app.state.container.chat_service = AsyncMock()
 
     result = await handle_global_command(
         command_data={"message": "Hello"},
@@ -815,6 +836,7 @@ async def test_handle_whisper_command_chat_service_failure():
     mock_request = MagicMock()
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock()
+    mock_request.app.state.container = MagicMock()
     mock_chat_service = AsyncMock()
     mock_chat_service.send_whisper_message = AsyncMock(return_value={"success": False, "error": "Target offline"})
     mock_player_service = AsyncMock()
@@ -823,8 +845,8 @@ async def test_handle_whisper_command_chat_service_failure():
     mock_target = MagicMock()
     mock_target.id = uuid.uuid4()
     mock_player_service.resolve_player_name = AsyncMock(side_effect=[mock_sender, mock_target])
-    mock_request.app.state.chat_service = mock_chat_service
-    mock_request.app.state.player_service = mock_player_service
+    mock_request.app.state.container.chat_service = mock_chat_service
+    mock_request.app.state.container.player_service = mock_player_service
 
     result = await handle_whisper_command(
         command_data={"target": "OtherPlayer", "message": "Hello"},

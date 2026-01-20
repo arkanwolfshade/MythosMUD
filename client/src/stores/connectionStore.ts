@@ -84,6 +84,72 @@ export interface ConnectionSelectors {
 type ConnectionStore = ConnectionState & ConnectionActions & ConnectionSelectors;
 
 /**
+ * **Zustand Store Usage Patterns:**
+ *
+ * Zustand stores automatically handle subscription lifecycle - components do not need to
+ * manually unsubscribe. However, components should follow these patterns:
+ *
+ * 1. **Use store actions, not direct state manipulation:**
+ *    - Use setConnecting(), setWebsocketConnected(), etc. instead of directly modifying state
+ *    - This ensures proper state updates and prevents memory leaks from stale references
+ *
+ * 2. **Reset store state when appropriate:**
+ *    - Call reset() on logout, session expiration, or component unmount
+ *    - This clears all state and prevents memory leaks from accumulated data
+ *
+ * 3. **Use selectors for performance:**
+ *    - Always use selectors to subscribe only to needed state fields
+ *    - This prevents unnecessary re-renders when unrelated state changes
+ *
+ * 4. **No manual subscription cleanup needed:**
+ *    - Zustand's useStore hook automatically handles subscription/unsubscription
+ *    - Components using useConnectionStore() don't need useEffect cleanup for store subscriptions
+ *    - Only cleanup needed is for external resources (WebSocket connections, timers, etc.)
+ *
+ * **CORRECT Usage Examples:**
+ *
+ * ```tsx
+ * // ✅ GOOD: Using selectors to subscribe only to needed fields
+ * function MyComponent() {
+ *   const isConnecting = useConnectionStore(state => state.isConnecting);
+ *   const error = useConnectionStore(state => state.error);
+ *   const reset = useConnectionStore(state => state.reset);
+ *
+ *   return <div>{isConnecting ? 'Connecting...' : 'Connected'}</div>;
+ * }
+ *
+ * // ✅ GOOD: Using selector functions for computed values (but prefer direct state access)
+ * function StatusComponent() {
+ *   const websocketConnected = useConnectionStore(state => state.websocketConnected);
+ *   // Prefer: const isConnected = websocketConnected;
+ *   // Over: const isConnected = useConnectionStore(state => state.isFullyConnected());
+ * }
+ * ```
+ *
+ * **INCORRECT Usage Examples (Anti-patterns):**
+ *
+ * ```tsx
+ * // ❌ BAD: Subscribing to entire store causes re-renders on any state change
+ * function MyComponent() {
+ *   const connectionState = useConnectionStore(); // Don't do this!
+ *   return <div>{connectionState.isConnecting ? 'Connecting...' : 'Connected'}</div>;
+ * }
+ *
+ * // ❌ BAD: Calling selector functions inside selectors still subscribes to entire store
+ * function MyComponent() {
+ *   const isConnected = useConnectionStore(state => state.isFullyConnected()); // Don't do this!
+ *   // Instead, use: const isConnected = useConnectionStore(state => state.websocketConnected);
+ * }
+ * ```
+ *
+ * **Note on Selector Functions:**
+ * - Selector functions like `isFullyConnected()`, `hasAnyConnection()`, and `getConnectionInfo()`
+ *   are kept for backward compatibility but should NOT be called inside component selectors.
+ * - Instead, access the underlying state directly (e.g., use `websocketConnected` instead of `isFullyConnected()`).
+ * - These functions can still be useful for non-React code or when you need to access state outside of components.
+ */
+
+/**
  * Generate a cryptographically secure session ID.
  * Human reader: uses Web Crypto API instead of Math.random() for security.
  * AI reader: session IDs must be unpredictable to prevent session hijacking.
@@ -233,7 +299,8 @@ export const useConnectionStore = create<ConnectionStore>()(
     }),
     {
       name: 'connection-store',
-      partialize: state => ({
+      enabled: import.meta.env.MODE === 'development',
+      partialize: (state: ConnectionStore) => ({
         sessionId: state.sessionId,
         connectionHealth: state.connectionHealth,
         connectionMetadata: state.connectionMetadata,

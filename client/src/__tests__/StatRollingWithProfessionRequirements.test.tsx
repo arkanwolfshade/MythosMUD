@@ -1,10 +1,10 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import App from '../App';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { App } from '../App';
 
 // Mock fetch globally
-const mockFetch = vi.fn();
-global.fetch = mockFetch;
+const fetchSpy = vi.fn();
+global.fetch = fetchSpy;
 
 // Mock the logger
 vi.mock('../utils/logger', () => ({
@@ -34,6 +34,11 @@ vi.mock('../utils/security', () => ({
 describe.skip('Stat Rolling with Profession Requirements Validation', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    fetchSpy.mockClear();
+  });
+
+  afterEach(() => {
+    fetchSpy.mockRestore();
   });
 
   const createMockProfessions = () => [
@@ -112,7 +117,7 @@ describe.skip('Stat Rolling with Profession Requirements Validation', () => {
       }),
     };
 
-    mockFetch.mockImplementation(url => {
+    fetchSpy.mockImplementation(url => {
       if (url.includes('/auth/register')) {
         return Promise.resolve(registrationResponse);
       } else if (url.includes('/professions')) {
@@ -151,7 +156,7 @@ describe.skip('Stat Rolling with Profession Requirements Validation', () => {
       }),
     };
 
-    mockFetch.mockImplementation(url => {
+    fetchSpy.mockImplementation(url => {
       if (url.includes('/auth/register')) {
         return Promise.resolve({
           ok: true,
@@ -258,7 +263,7 @@ describe.skip('Stat Rolling with Profession Requirements Validation', () => {
       }),
     };
 
-    mockFetch.mockImplementation(url => {
+    fetchSpy.mockImplementation(url => {
       if (url.includes('/auth/register')) {
         return Promise.resolve({
           ok: true,
@@ -365,7 +370,7 @@ describe.skip('Stat Rolling with Profession Requirements Validation', () => {
       }),
     };
 
-    mockFetch.mockImplementation(url => {
+    fetchSpy.mockImplementation(url => {
       if (url.includes('/auth/register')) {
         return Promise.resolve({
           ok: true,
@@ -473,7 +478,7 @@ describe.skip('Stat Rolling with Profession Requirements Validation', () => {
       }),
     };
 
-    mockFetch.mockImplementation(url => {
+    fetchSpy.mockImplementation(url => {
       if (url.includes('/auth/register')) {
         return Promise.resolve({
           ok: true,
@@ -581,7 +586,7 @@ describe.skip('Stat Rolling with Profession Requirements Validation', () => {
       }),
     };
 
-    mockFetch.mockImplementation(url => {
+    fetchSpy.mockImplementation(url => {
       if (url.includes('/auth/register')) {
         return Promise.resolve({
           ok: true,
@@ -717,7 +722,7 @@ describe.skip('Stat Rolling with Profession Requirements Validation', () => {
       },
     ];
 
-    mockFetch.mockImplementation(url => {
+    fetchSpy.mockImplementation(url => {
       if (url.includes('/auth/register')) {
         return Promise.resolve({
           ok: true,

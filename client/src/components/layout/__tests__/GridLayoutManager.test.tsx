@@ -6,21 +6,37 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { GridLayoutManager } from '../GridLayoutManager';
 
+// Mock IntersectionObserver
+global.IntersectionObserver = class IntersectionObserver {
+  constructor() {}
+  observe() {
+    return null;
+  }
+  disconnect() {
+    return null;
+  }
+  unobserve() {
+    return null;
+  }
+} as unknown as typeof IntersectionObserver;
+
 // Mock react-grid-layout
-vi.mock('react-grid-layout', () => ({
+vi.mock('react-grid-layout/legacy', () => ({
   Responsive: ({
     children,
     onLayoutChange,
     onBreakpointChange,
+    layouts: _layouts,
   }: {
     children: React.ReactNode;
-    onLayoutChange?: (layout: unknown[]) => void;
+    onLayoutChange?: (layout: unknown[], allLayouts: unknown) => void;
     onBreakpointChange?: (breakpoint: string) => void;
+    layouts?: unknown;
   }) => (
     <div
       data-testid="responsive-grid-layout"
       onClick={() => {
-        onLayoutChange?.([]);
+        onLayoutChange?.([], {});
         onBreakpointChange?.('md');
       }}
     >
@@ -93,10 +109,13 @@ describe('GridLayoutManager', () => {
   });
 
   it('should handle invalid localStorage data gracefully', () => {
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     localStorage.setItem('mythosMUD-panel-layout', 'invalid-json');
     render(<GridLayoutManager panels={mockPanels} />);
     // Should not crash and use default layout
     expect(screen.getByTestId('responsive-grid-layout')).toBeInTheDocument();
+    expect(consoleSpy).toHaveBeenCalled();
+    consoleSpy.mockRestore();
   });
 
   it('should call onLayoutChange when layout changes', () => {

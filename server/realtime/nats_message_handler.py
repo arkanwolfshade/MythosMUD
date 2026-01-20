@@ -276,17 +276,21 @@ class NATSMessageHandler:
             # Re-raise to propagate error
             raise
 
-    async def _unsubscribe_from_subject(self, subject: str):
-        """Unsubscribe from a specific NATS subject."""
+    async def _unsubscribe_from_subject(self, subject: str) -> bool:
+        """
+        Unsubscribe from a specific NATS subject.
+
+        Returns:
+            True if unsubscribed successfully, False if error occurred
+
+        AI: Handles NATSUnsubscribeError exceptions and returns False for backward compatibility.
+        """
         try:
-            success = await self.nats_service.unsubscribe(subject)
-            if success:
-                if subject in self.subscriptions:
-                    del self.subscriptions[subject]
-                logger.info("Unsubscribed from NATS subject")
-                return True
-            logger.error("Failed to unsubscribe from NATS subject")
-            return False
+            await self.nats_service.unsubscribe(subject)
+            if subject in self.subscriptions:
+                del self.subscriptions[subject]
+            logger.info("Unsubscribed from NATS subject", subject=subject)
+            return True
         except (NATSError, RuntimeError) as e:
             logger.error("Error unsubscribing from NATS subject", subject=subject, error=str(e))
             return False
@@ -348,7 +352,7 @@ class NATSMessageHandler:
                 exc_info=True,
             )
 
-            # Add to DLQ as last resort
+            # Add to DLQ as last resort (use async version to avoid blocking)
             dlq_message = DeadLetterMessage(
                 subject=channel,
                 data=message_data,
@@ -357,7 +361,7 @@ class NATSMessageHandler:
                 retry_count=0,
                 original_headers={"reason": "unhandled_exception"},
             )
-            self.dead_letter_queue.enqueue(dlq_message)
+            await self.dead_letter_queue.enqueue_async(dlq_message)
 
             self.metrics.record_message_failed(channel, type(e).__name__)
 
@@ -397,7 +401,7 @@ class NATSMessageHandler:
                 retry_count=self.retry_handler.max_retries,
                 original_headers={"channel": channel},
             )
-            self.dead_letter_queue.enqueue(dlq_message)
+            await self.dead_letter_queue.enqueue_async(dlq_message)
 
             self.metrics.record_message_dlq(channel)
             self.metrics.record_message_failed(channel, type(result).__name__)

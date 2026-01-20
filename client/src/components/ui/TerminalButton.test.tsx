@@ -111,7 +111,7 @@ describe('TerminalButton', () => {
       'border',
       'rounded',
       'transition-eldritch',
-      'focus:outline-none',
+      'focus:outline-hidden',
       'focus:ring-2'
     );
   });

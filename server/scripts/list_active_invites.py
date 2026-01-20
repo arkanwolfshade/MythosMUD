@@ -1,8 +1,8 @@
 """List active invite codes."""
 
-import asyncio
 from pathlib import Path
 
+from anyio import run
 from dotenv import load_dotenv
 from sqlalchemy import text
 
@@ -26,6 +26,6 @@ async def list_active():
 
 
 if __name__ == "__main__":
-    code = asyncio.run(list_active())
+    code = run(list_active)
     if code:
         print(f"\nUsing invite code: {code}")

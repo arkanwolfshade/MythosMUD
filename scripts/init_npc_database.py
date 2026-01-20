@@ -127,6 +127,10 @@ def populate_npc_data(engine, npc_data, npc_spawn_data):
             # Convert rows to dictionaries
             for row in npc_definitions:
                 row_dict = dict(zip(def_columns, row, strict=False))
+                # Using text() with parameterized queries (row_dict contains :column placeholders).
+                # All values are from trusted CSV data files, not user input. Column names are
+                # hardcoded, and values are bound via parameterized queries, preventing SQL injection.
+                # nosemgrep: python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text
                 conn.execute(text(insert_def_sql), row_dict)
             conn.commit()
 
@@ -142,6 +146,10 @@ def populate_npc_data(engine, npc_data, npc_spawn_data):
             # Convert rows to dictionaries
             for row in npc_spawn_rules:
                 row_dict = dict(zip(spawn_columns, row, strict=False))
+                # Using text() with parameterized queries (row_dict contains :column placeholders).
+                # All values are from trusted CSV data files, not user input. Column names are
+                # hardcoded, and values are bound via parameterized queries, preventing SQL injection.
+                # nosemgrep: python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text
                 conn.execute(text(insert_rule_sql), row_dict)
             conn.commit()
 

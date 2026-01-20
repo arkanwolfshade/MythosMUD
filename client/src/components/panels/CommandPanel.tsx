@@ -32,6 +32,8 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
 }) => {
   const [commandInput, setCommandInput] = useState('');
   const isControlled = onChannelSelect !== undefined;
+
+  // Uncontrolled mode state variable, setter intentionally unused in controlled mode
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [uncontrolledChannel, _setUncontrolledChannel] = useState(selectedChannel ?? DEFAULT_CHANNEL);
   const currentChannel = isControlled ? (selectedChannel ?? DEFAULT_CHANNEL) : uncontrolledChannel;
@@ -189,7 +191,7 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
       </div>
 
       {/* Command History */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-1 min-h-[150px]" style={{ minHeight: '150px' }}>
+      <div className="flex-1 overflow-y-auto p-3 space-y-1 min-h-panel-sm" style={{ minHeight: '150px' }}>
         <div className="flex items-center justify-between mb-2">
           <h4 className="text-sm font-bold text-mythos-terminal-primary">Recent Commands</h4>
           {onClearHistory && commandHistory.length > 0 && (

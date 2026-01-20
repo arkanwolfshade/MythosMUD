@@ -4,11 +4,56 @@
  * As documented in the restricted archives of Miskatonic University, container
  * state management requires careful orchestration to ensure proper handling
  * of investigator artifacts across environmental props, wearable gear, and corpses.
+ *
+ * **Zustand Store Usage Patterns:**
+ *
+ * **CORRECT Usage Examples:**
+ *
+ * ```tsx
+ * // ✅ GOOD: Accessing state directly with shallow comparison
+ * import { shallow } from 'zustand/shallow';
+ *
+ * function ContainerComponent({ containerId }: { containerId: string }) {
+ *   const openContainers = useContainerStore(state => state.openContainers, shallow);
+ *   const container = useMemo(() => openContainers[containerId] || null, [openContainers, containerId]);
+ *   return <div>{container?.items.length} items</div>;
+ * }
+ *
+ * // ✅ GOOD: Using selectors for specific fields
+ * function ContainerList() {
+ *   const selectedContainerId = useContainerStore(state => state.selectedContainerId);
+ *   const selectContainer = useContainerStore(state => state.selectContainer);
+ *   return <div>Selected: {selectedContainerId}</div>;
+ * }
+ * ```
+ *
+ * **INCORRECT Usage Examples (Anti-patterns):**
+ *
+ * ```tsx
+ * // ❌ BAD: Calling selector functions inside selectors
+ * function MyComponent({ containerId }: { containerId: string }) {
+ *   const container = useContainerStore(state => state.getContainer(containerId)); // Don't do this!
+ *   // Instead, use: const openContainers = useContainerStore(state => state.openContainers, shallow);
+ *   // Then: const container = useMemo(() => openContainers[containerId] || null, [openContainers, containerId]);
+ * }
+ *
+ * // ❌ BAD: Subscribing to entire store
+ * function MyComponent() {
+ *   const containerState = useContainerStore(); // Don't do this!
+ *   return <div>{containerState.selectedContainerId}</div>;
+ * }
+ * ```
+ *
+ * **Note on Selector Functions:**
+ * - Selector functions like `getContainer()`, `getMutationToken()`, `isContainerOpen()`, etc.
+ *   are kept for backward compatibility but should NOT be called inside component selectors.
+ * - Instead, access the underlying state directly
+ *   (e.g., use `openContainers[containerId]` instead of `getContainer(containerId)`).
+ * - Use `useMemo` to compute derived values from the state.
  */
 
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import type { StateCreator } from 'zustand';
 
 // Container types matching server-side definitions
 export type ContainerSourceType = 'environment' | 'equipment' | 'corpse';
@@ -101,12 +146,8 @@ const createInitialState = (): ContainerState => ({
   isLoading: false,
 });
 
-const withDevtools: <T>(fn: StateCreator<T, [], []>) => StateCreator<T, [], []> = import.meta.env.DEV
-  ? (devtools as unknown as <T>(fn: StateCreator<T, [], []>) => StateCreator<T, [], []>)
-  : fn => fn;
-
 export const useContainerStore = create<ContainerStore>()(
-  withDevtools(
+  devtools(
     (set, get) => ({
       ...createInitialState(),
 
@@ -130,8 +171,10 @@ export const useContainerStore = create<ContainerStore>()(
       closeContainer: (containerId: string) =>
         set(
           state => {
+            // Destructuring removes containerId from state, _removed variable intentionally unused
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { [containerId]: _removed, ...remainingContainers } = state.openContainers;
+            // Destructuring removes containerId token from state, _removedToken variable intentionally unused
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { [containerId]: _removedToken, ...remainingTokens } = state.mutationTokens;
             return {
@@ -211,7 +254,8 @@ export const useContainerStore = create<ContainerStore>()(
     }),
     {
       name: 'container-store',
-      partialize: state => ({
+      enabled: import.meta.env.MODE === 'development',
+      partialize: (state: ContainerStore) => ({
         openContainers: state.openContainers,
         selectedContainerId: state.selectedContainerId,
       }),

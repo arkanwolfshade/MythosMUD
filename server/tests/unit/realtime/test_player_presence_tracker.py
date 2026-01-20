@@ -377,8 +377,8 @@ async def test_track_player_disconnected_impl_success():
     mock_player = MagicMock()
     mock_player.current_room_id = "room_123"
     # Accessing protected members is necessary to mock the methods used by player_presence_tracker implementation
-    mock_manager._get_player = AsyncMock(return_value=mock_player)  # pylint: disable=protected-access
-    mock_manager._cleanup_ghost_players = MagicMock()  # pylint: disable=protected-access
+    mock_manager._get_player = AsyncMock(return_value=mock_player)  # pylint: disable=protected-access  # Reason: Accessing protected members is necessary to mock the methods used by player_presence_tracker implementation
+    mock_manager._cleanup_ghost_players = MagicMock()  # pylint: disable=protected-access  # Reason: Accessing protected members is necessary to mock the methods used by player_presence_tracker implementation
 
     with patch("server.realtime.player_presence_tracker._should_skip_disconnect", return_value=False):
         with patch("server.realtime.player_presence_tracker._acquire_disconnect_lock", return_value=True):
@@ -402,7 +402,7 @@ async def test_track_player_disconnected_impl_success():
                                     mock_remove.assert_called_once()
                                     mock_cleanup.assert_called_once()
                                     # Accessing protected member is necessary to verify the method was called
-                                    mock_manager._cleanup_ghost_players.assert_called_once()  # pylint: disable=protected-access
+                                    mock_manager._cleanup_ghost_players.assert_called_once()  # pylint: disable=protected-access  # Reason: Accessing protected member is necessary to verify the method was called
                                     # Check for intentional disconnect log message
                                     assert any(
                                         "intentional" in str(call).lower() or "disconnected" in str(call).lower()
@@ -455,8 +455,8 @@ async def test_track_player_disconnected_impl_no_player():
     # Mark as intentional so handle_player_disconnect_broadcast is called
     mock_manager.intentional_disconnects = {player_id}
     # Accessing protected members is necessary to mock the methods used by player_presence_tracker implementation
-    mock_manager._get_player = AsyncMock(return_value=None)  # pylint: disable=protected-access
-    mock_manager._cleanup_ghost_players = MagicMock()  # pylint: disable=protected-access
+    mock_manager._get_player = AsyncMock(return_value=None)  # pylint: disable=protected-access  # Reason: Accessing protected members is necessary to mock the methods used by player_presence_tracker implementation
+    mock_manager._cleanup_ghost_players = MagicMock()  # pylint: disable=protected-access  # Reason: Accessing protected members is necessary to mock the methods used by player_presence_tracker implementation
 
     with patch("server.realtime.player_presence_tracker._should_skip_disconnect", return_value=False):
         with patch("server.realtime.player_presence_tracker._acquire_disconnect_lock", return_value=True):
@@ -490,8 +490,8 @@ async def test_track_player_disconnected_impl_error():
     # Mark as intentional so _get_player is called and exception is raised
     mock_manager.intentional_disconnects = {player_id}
     # Accessing protected members is necessary to mock the methods used by player_presence_tracker implementation
-    mock_manager._get_player = AsyncMock(side_effect=DatabaseError("DB error"))  # pylint: disable=protected-access
-    mock_manager._cleanup_ghost_players = MagicMock()  # pylint: disable=protected-access
+    mock_manager._get_player = AsyncMock(side_effect=DatabaseError("DB error"))  # pylint: disable=protected-access  # Reason: Accessing protected members is necessary to mock the methods used by player_presence_tracker implementation
+    mock_manager._cleanup_ghost_players = MagicMock()  # pylint: disable=protected-access  # Reason: Accessing protected members is necessary to mock the methods used by player_presence_tracker implementation
 
     with patch("server.realtime.player_presence_tracker.logger") as mock_logger:
         with patch("server.realtime.player_presence_tracker._should_skip_disconnect", return_value=False):
@@ -517,8 +517,8 @@ async def test_track_player_disconnected_impl_finally_cleanup():
     mock_manager.intentional_disconnects = {player_id}
     # Raise DatabaseError which is caught, but finally block should still execute
     # Accessing protected members is necessary to mock the methods used by player_presence_tracker implementation
-    mock_manager._get_player = AsyncMock(side_effect=DatabaseError("Test error"))  # pylint: disable=protected-access
-    mock_manager._cleanup_ghost_players = MagicMock()  # pylint: disable=protected-access
+    mock_manager._get_player = AsyncMock(side_effect=DatabaseError("Test error"))  # pylint: disable=protected-access  # Reason: Accessing protected members is necessary to mock the methods used by player_presence_tracker implementation
+    mock_manager._cleanup_ghost_players = MagicMock()  # pylint: disable=protected-access  # Reason: Accessing protected members is necessary to mock the methods used by player_presence_tracker implementation
 
     # The function will add player to disconnecting_players in _acquire_disconnect_lock
     # Then raise exception (which is caught), then finally block removes it

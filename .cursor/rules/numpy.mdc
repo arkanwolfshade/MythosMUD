@@ -8,9 +8,9 @@ NumPy is the bedrock of numerical computing in Python. To fully leverage its pow
 
 ## Core Principles
 
-1.  **Vectorize Everything**: Eliminate Python loops over arrays. NumPy operations are implemented in C and are orders of magnitude faster.
-2.  **Be Explicit with `dtype`**: Always specify array data types to prevent unexpected casting and optimize memory/performance.
-3.  **Embrace GPU Acceleration**: Utilize CuPy-compatible calls for critical, large-scale computations.
+1. **Vectorize Everything**: Eliminate Python loops over arrays. NumPy operations are implemented in C and are orders of magnitude faster.
+2. **Be Explicit with `dtype`**: Always specify array data types to prevent unexpected casting and optimize memory/performance.
+3. **Embrace GPU Acceleration**: Utilize CuPy-compatible calls for critical, large-scale computations.
 
 ## Code Organization and Structure
 
@@ -21,6 +21,7 @@ Organize NumPy-heavy logic into dedicated, well-named functions and modules.
 Isolate numerical operations into functions that accept and return NumPy arrays. This improves testability and reusability.
 
 ❌ BAD: Monolithic script
+
 ```python
 import numpy as np
 
@@ -35,6 +36,7 @@ def process_data_script(data_path):
 ```
 
 ✅ GOOD: Modular functions
+
 ```python
 import numpy as np
 
@@ -65,6 +67,7 @@ def process_pipeline(data_path: str) -> np.ndarray:
 Adhere to PEP 8 for variable and function names (`snake_case`). Use comprehensive docstrings (PEP 257) for all public functions, classes, and modules, especially for complex numerical logic.
 
 ❌ BAD: Ambiguous names, no docs
+
 ```python
 def calc(a, b):
     # What does 'a' mean? What does 'b' mean?
@@ -73,6 +76,7 @@ def calc(a, b):
 ```
 
 ✅ GOOD: Descriptive names, clear docstrings
+
 ```python
 import numpy as np
 
@@ -105,6 +109,7 @@ def calculate_covariance_matrix(data_matrix: np.ndarray) -> np.ndarray:
 **Always** prefer NumPy's vectorized operations and broadcasting over explicit Python `for` loops when working with arrays.
 
 ❌ BAD: Element-wise loop
+
 ```python
 import numpy as np
 
@@ -115,6 +120,7 @@ for i in range(len(data)):
 ```
 
 ✅ GOOD: Vectorized operation
+
 ```python
 import numpy as np
 
@@ -127,6 +133,7 @@ result = data * 2 + 5 # Fast and concise
 Leverage broadcasting for operations between arrays of different shapes. It's efficient and avoids unnecessary memory allocation.
 
 ❌ BAD: Manual tiling or explicit loops for scalar/vector operations
+
 ```python
 import numpy as np
 
@@ -139,6 +146,7 @@ for i in range(matrix.shape[0]):
 ```
 
 ✅ GOOD: Broadcasting
+
 ```python
 import numpy as np
 
@@ -154,6 +162,7 @@ result = matrix + scalar # NumPy handles this efficiently
 **Always** specify `dtype` when creating arrays or performing operations that might change types. This prevents unexpected memory usage and performance penalties from implicit type conversions.
 
 ❌ BAD: Implicit `dtype`
+
 ```python
 import numpy as np
 
@@ -164,6 +173,7 @@ result = arr / 2.0
 ```
 
 ✅ GOOD: Explicit `dtype`
+
 ```python
 import numpy as np
 
@@ -218,6 +228,7 @@ if _has_cupy:
 When filling an array iteratively (e.g., in a loop where vectorization isn't fully possible), pre-allocate the array with `np.empty` or `np.zeros` to avoid costly reallocations.
 
 ❌ BAD: Appending to a list then converting
+
 ```python
 import numpy as np
 
@@ -228,6 +239,7 @@ final_array = np.array(results) # Inefficient for many appends
 ```
 
 ✅ GOOD: Pre-allocation
+
 ```python
 import numpy as np
 
@@ -245,6 +257,7 @@ for i in range(num_iterations):
 NumPy operations are strict about array shapes. Understand broadcasting rules and use `reshape`, `transpose`, `newaxis`, or `squeeze` explicitly.
 
 ❌ BAD: Implicit shape assumptions
+
 ```python
 import numpy as np
 
@@ -255,6 +268,7 @@ matrix = np.array([[10, 20, 30], [40, 50, 60]]) # (2, 3)
 ```
 
 ✅ GOOD: Explicit shape handling
+
 ```python
 import numpy as np
 
@@ -274,6 +288,7 @@ result = matrix + vec_col # (2,3) + (3,1) -> (2,3)
 Understand when NumPy returns a view (modifying it changes the original array) versus a copy. Operations like slicing often return views. Use `.copy()` explicitly when you need an independent array.
 
 ❌ BAD: Unintended modification
+
 ```python
 import numpy as np
 
@@ -284,6 +299,7 @@ print(original_data) # Output: [ 0  1 99 99 99  5  6  7  8  9] - DANGER!
 ```
 
 ✅ GOOD: Explicitly create a copy when needed
+
 ```python
 import numpy as np
 
@@ -332,11 +348,13 @@ high_values, low_values = process_sensor_data(data, threshold=0.7)
 **Always** use virtual environments (`venv` or `conda`) for every project. This isolates dependencies and prevents version conflicts.
 
 ❌ BAD: Installing packages globally
+
 ```bash
 pip install numpy scipy pandas # Pollutes global Python environment
 ```
 
 ✅ GOOD: Using a virtual environment
+
 ```bash
 # For venv
 python -m venv .venv
@@ -377,6 +395,7 @@ build-backend = "setuptools.build_meta"
 Use `numpy.testing` functions (e.g., `assert_allclose`, `assert_array_equal`) for comparing arrays, as standard equality checks can fail due to floating-point inaccuracies.
 
 ❌ BAD: Direct equality for floats
+
 ```python
 import numpy as np
 
@@ -386,6 +405,7 @@ assert a == b # Fails due to floating point precision
 ```
 
 ✅ GOOD: `numpy.testing.assert_allclose`
+
 ```python
 import numpy as np
 from numpy.testing import assert_allclose

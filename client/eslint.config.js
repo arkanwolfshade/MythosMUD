@@ -6,7 +6,7 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config([
-  globalIgnores(['dist', 'playwright.config.ts']),
+  globalIgnores(['dist', 'playwright.config.ts', 'playwright-report/**']),
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {

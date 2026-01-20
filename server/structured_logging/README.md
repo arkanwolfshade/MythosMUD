@@ -37,6 +37,32 @@ bind_request_context(
 
 ## Architecture
 
+### Module Organization
+
+The structured logging system follows best practices from `.cursor/rules/structlog.mdc`:
+
+```
+server/structured_logging/
+├── __init__.py                    # Public API exports
+├── enhanced_logging_config.py     # Main configuration and setup
+├── logging_context.py             # Context management (MDC, correlation IDs)
+├── logging_processors.py         # Event processors (sanitization, enhancement)
+├── logging_file_setup.py          # File handler configuration
+├── logging_handlers.py            # Custom handler classes
+├── logging_utilities.py           # Directory management, path resolution
+├── player_guid_formatter.py      # Custom formatter for player IDs
+├── log_aggregator.py              # Aggregator handlers (warnings.log, errors.log)
+├── windows_safe_rotation.py       # Windows-specific rotation handling
+└── README.md                      # This file
+```
+
+**Separation of Concerns:**
+- **Configuration**: `enhanced_logging_config.py` - Centralized logging setup
+- **Processors**: `logging_processors.py` - Event processing logic
+- **Handlers**: `logging_handlers.py`, `logging_file_setup.py` - Output destinations
+- **Formatters**: `player_guid_formatter.py` - Output formatting
+- **Utilities**: `logging_utilities.py`, `logging_context.py` - Helper functions
+
 ### Core Components
 
 1. **Enhanced Logging Config** (`enhanced_logging_config.py`)
@@ -44,10 +70,13 @@ bind_request_context(
    - Security sanitization processor
    - Correlation ID management
    - Performance monitoring integration
+   - Async logging support via QueueHandler/QueueListener
 
-2. **Custom Processors**
+2. **Custom Processors** (`logging_processors.py`)
    - `sanitize_sensitive_data`: Automatically redacts passwords, tokens, secrets
    - `add_correlation_id`: Ensures all logs have correlation IDs
+   - `add_request_context`: Adds request context information
+   - `enhance_player_ids`: Converts player UUIDs to names for readability
    - `add_request_context`: Adds request metadata
    - `enhance_player_ids`: Converts GUIDs to human-readable format
 

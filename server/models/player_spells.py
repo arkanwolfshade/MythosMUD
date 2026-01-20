@@ -9,7 +9,7 @@ and their mastery level with each spell.
 
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, text
+from sqlalchemy import BigInteger, Column, DateTime, ForeignKey, Integer, String, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, relationship
 
@@ -31,7 +31,7 @@ class PlayerSpell(Base):
     __tablename__ = "player_spells"
     __table_args__ = {"extend_existing": True}
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
     player_id = Column(
         UUID(as_uuid=False), ForeignKey("players.player_id", ondelete="CASCADE"), nullable=False, index=True
     )

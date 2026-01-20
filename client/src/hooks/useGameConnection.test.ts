@@ -1,5 +1,5 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { useGameConnection } from './useGameConnection';
 
 // Mock WebSocket
@@ -9,11 +9,14 @@ const mockWebSocket = {
   addEventListener: vi.fn(),
   removeEventListener: vi.fn(),
   readyState: 0,
+  onerror: null as ((event: Event) => void) | null,
+  onopen: null as ((event: Event) => void) | null,
 };
 
 // Mock WebSocket constructor
 global.WebSocket = vi.fn(function WebSocket() {
-  // Simulate connection failure by triggering onerror after a short delay
+  // LEGITIMATE: Using setTimeout to simulate WebSocket connection failure timing
+  // This tests timer-based behavior in the WebSocket mock, not polling
   setTimeout(() => {
     if (mockWebSocket.onerror) {
       mockWebSocket.onerror(new Event('error'));
@@ -46,7 +49,6 @@ describe('useGameConnection', () => {
     const { result } = renderHook(() =>
       useGameConnection({
         authToken: 'test-token',
-        playerName: 'test-player',
       })
     );
 
@@ -103,7 +105,6 @@ describe('useGameConnection', () => {
     const { result } = renderHook(() =>
       useGameConnection({
         authToken: 'test-token',
-        playerName: 'test-player',
       })
     );
 
@@ -130,7 +131,6 @@ describe('useGameConnection', () => {
     const { result } = renderHook(() =>
       useGameConnection({
         authToken: 'test-token',
-        playerName: 'test-player',
       })
     );
 
@@ -146,7 +146,6 @@ describe('useGameConnection', () => {
     const { result } = renderHook(() =>
       useGameConnection({
         authToken: 'test-token',
-        playerName: 'test-player',
       })
     );
 
@@ -158,7 +157,6 @@ describe('useGameConnection', () => {
     const { result } = renderHook(() =>
       useGameConnection({
         authToken: 'test-token',
-        playerName: 'test-player',
       })
     );
 
@@ -170,7 +168,6 @@ describe('useGameConnection', () => {
     const { result } = renderHook(() =>
       useGameConnection({
         authToken: 'test-token',
-        playerName: 'test-player',
       })
     );
 
@@ -190,7 +187,6 @@ describe('useGameConnection', () => {
       const { result } = renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
         })
       );
 
@@ -204,7 +200,6 @@ describe('useGameConnection', () => {
       const { result } = renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
           sessionId: customSessionId,
         })
       );
@@ -216,7 +211,6 @@ describe('useGameConnection', () => {
       const { result } = renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
         })
       );
 
@@ -230,7 +224,6 @@ describe('useGameConnection', () => {
       const { result } = renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
         })
       );
 
@@ -245,7 +238,6 @@ describe('useGameConnection', () => {
       const { result } = renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
         })
       );
 
@@ -256,7 +248,6 @@ describe('useGameConnection', () => {
       const { result } = renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
         })
       );
 
@@ -267,7 +258,6 @@ describe('useGameConnection', () => {
       const { result } = renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
         })
       );
 
@@ -278,7 +268,6 @@ describe('useGameConnection', () => {
       const { result } = renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
         })
       );
 
@@ -303,7 +292,6 @@ describe('useGameConnection', () => {
       const { result } = renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
         })
       );
 
@@ -322,7 +310,6 @@ describe('useGameConnection', () => {
       const { result } = renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
         })
       );
 
@@ -345,7 +332,6 @@ describe('useGameConnection', () => {
       const { result } = renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
           onSessionChange,
         })
       );
@@ -362,7 +348,6 @@ describe('useGameConnection', () => {
       renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
           onConnectionHealthUpdate,
         })
       );
@@ -377,7 +362,6 @@ describe('useGameConnection', () => {
       renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
           sessionId: customSessionId,
         })
       );
@@ -390,7 +374,7 @@ describe('useGameConnection', () => {
       );
 
       // Verify the token is also in the URL
-      const calls = (global.WebSocket as unknown as jest.Mock).mock.calls;
+      const calls = (global.WebSocket as unknown as Mock).mock.calls;
       const lastCall = calls[calls.length - 1];
       expect(lastCall[0]).toContain('token=test-token');
     });
@@ -399,7 +383,6 @@ describe('useGameConnection', () => {
       const { result } = renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
-          playerName: 'test-player',
         })
       );
 
@@ -416,14 +399,17 @@ describe('useGameConnection', () => {
       const newSessionId = 'new-session-999';
 
       await act(async () => {
-        await new Promise(resolve => setTimeout(resolve, 20));
         result.current.switchToSession(newSessionId);
-        await new Promise(resolve => setTimeout(resolve, 20));
       });
 
-      // The session ID should be updated in the state
-      expect(result.current.sessionId).toBeDefined();
-      expect(result.current.sessionId).toBe(newSessionId);
+      // Wait for session ID to be updated using vi.waitFor
+      await vi.waitFor(
+        () => {
+          expect(result.current.sessionId).toBeDefined();
+          expect(result.current.sessionId).toBe(newSessionId);
+        },
+        { timeout: 1000 }
+      );
     });
   });
 });

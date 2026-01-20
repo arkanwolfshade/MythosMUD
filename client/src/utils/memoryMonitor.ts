@@ -266,7 +266,7 @@ export class MemoryMonitor {
    */
   private handleMemoryWarning(message: string, snapshot: MemorySnapshot): void {
     // nosemgrep: javascript.lang.security.audit.unsafe-formatstring.unsafe-formatstring
-    // This is internal logging with controlled string values, not user input
+    // Internal logging with controlled string values, not user input
     console.warn(`[MemoryMonitor] ${message}`, snapshot);
 
     // Could send to analytics or logging service
@@ -285,6 +285,8 @@ export class MemoryMonitor {
    * Handle critical memory usage
    */
   private handleMemoryCritical(message: string, snapshot: MemorySnapshot): void {
+    // nosemgrep: javascript.lang.security.audit.unsafe-formatstring.unsafe-formatstring
+    // Internal logging with controlled string values, not user input
     console.error(`[MemoryMonitor] ${message}`, snapshot);
 
     // Could send to analytics or logging service
@@ -303,6 +305,8 @@ export class MemoryMonitor {
    * Handle component memory warning
    */
   private handleComponentMemoryWarning(componentName: string, message: string, snapshot: MemorySnapshot): void {
+    // nosemgrep: javascript.lang.security.audit.unsafe-formatstring.unsafe-formatstring
+    // Internal logging with component name from React component props, not user input
     console.warn(`[MemoryMonitor:${componentName}] ${message}`, snapshot);
   }
 
@@ -310,6 +314,8 @@ export class MemoryMonitor {
    * Handle component memory critical
    */
   private handleComponentMemoryCritical(componentName: string, message: string, snapshot: MemorySnapshot): void {
+    // nosemgrep: javascript.lang.security.audit.unsafe-formatstring.unsafe-formatstring
+    // Internal logging with component name from React component props, not user input
     console.error(`[MemoryMonitor:${componentName}] ${message}`, snapshot);
   }
 

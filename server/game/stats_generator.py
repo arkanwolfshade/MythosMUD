@@ -10,6 +10,8 @@ import random
 import time
 from typing import Any
 
+import numpy as np
+
 from ..models import AttributeType, Stats
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -144,10 +146,12 @@ class StatsGenerator:
         """Roll stats using 4d6 drop lowest method (more generous, scaled to 15-90 range)."""
 
         def roll_4d6_drop_lowest() -> int:
-            rolls = [random.randint(1, 6) for _ in range(4)]  # nosec B311: Game mechanics dice roll, not cryptographic
-            rolls.remove(min(rolls))
+            # Roll 4d6 using NumPy for efficient array operations
+            rolls = np.random.randint(1, 7, size=4, dtype=np.int32)  # nosec B311: Game mechanics dice roll, not cryptographic
+            # Drop lowest by sorting and taking last 3, then sum
+            result = np.sum(np.sort(rolls)[1:])  # Sort and take last 3 (drop lowest)
             # Scale from 3-18 range to 15-90 range (multiply by 5)
-            return sum(rolls) * 5
+            return int(result * 5)
 
         return Stats(
             strength=roll_4d6_drop_lowest(),
@@ -500,33 +504,25 @@ class StatsGenerator:
                 "max_magic_points": stats.max_magic_points,
                 "max_lucidity": stats.max_lucidity,
             },
-            "total_points": sum(
-                [
-                    stats.strength or 50,
-                    stats.dexterity or 50,
-                    stats.constitution or 50,
-                    stats.size or 50,
-                    stats.intelligence or 50,
-                    stats.power or 50,
-                    stats.education or 50,
-                    stats.charisma or 50,
-                    stats.luck or 50,
-                ]
-            ),
-            "average_stat": sum(
-                [
-                    stats.strength or 50,
-                    stats.dexterity or 50,
-                    stats.constitution or 50,
-                    stats.size or 50,
-                    stats.intelligence or 50,
-                    stats.power or 50,
-                    stats.education or 50,
-                    stats.charisma or 50,
-                    stats.luck or 50,
-                ]
-            )
-            / 9,
         }
+
+        # Use NumPy array to eliminate code duplication and improve efficiency
+        stat_values = np.array(
+            [
+                stats.strength or 50,
+                stats.dexterity or 50,
+                stats.constitution or 50,
+                stats.size or 50,
+                stats.intelligence or 50,
+                stats.power or 50,
+                stats.education or 50,
+                stats.charisma or 50,
+                stats.luck or 50,
+            ],
+            dtype=np.int32,
+        )
+
+        summary["total_points"] = int(np.sum(stat_values))
+        summary["average_stat"] = float(np.mean(stat_values))
 
         return summary

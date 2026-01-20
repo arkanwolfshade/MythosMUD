@@ -206,7 +206,11 @@ def connect_postgres(database_url: str) -> PostgresConnection:
 
 
 def convert_sqlite_to_postgres_query(query: str) -> str:
-    """Convert SQLite query syntax to PostgreSQL syntax."""
+    """Convert legacy SQLite query syntax to PostgreSQL syntax.
+
+    Note: This function is maintained for historical migration scripts only.
+    The project now uses PostgreSQL exclusively.
+    """
     # Replace ? with %s for parameter placeholders
     query = query.replace("?", "%s")
     # Replace INSERT OR REPLACE with PostgreSQL UPSERT

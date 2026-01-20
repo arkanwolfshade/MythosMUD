@@ -29,7 +29,7 @@ from server.services.combat_event_publisher import CombatEventPublisher
 from server.services.combat_flee_handler import check_involuntary_flee
 from server.services.combat_initialization import CombatInitializer
 from server.services.combat_persistence_handler import CombatPersistenceHandler
-from server.services.combat_service_state import (  # noqa: PLC0415
+from server.services.combat_service_state import (  # noqa: PLC0415  # Reason: Lazy import would break circular dependency resolution, this import must be at module level for service state management
     COMBAT_SERVICE,
     get_combat_service,
     set_combat_service,
@@ -509,7 +509,7 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
             # Set up next turn tick for auto-progression
             # Lazy import to avoid circular dependency with game_tick_processing
             from server.app.game_tick_processing import (
-                get_current_tick,  # noqa: E402  # pylint: disable=wrong-import-position
+                get_current_tick,  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Lazy import inside function to avoid circular import chain during module initialization, wrong import position is intentional
             )
 
             combat.next_turn_tick = get_current_tick() + combat.turn_interval_ticks

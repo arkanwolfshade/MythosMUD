@@ -125,12 +125,13 @@ class RealTimeEventHandler:
 
     def _subscribe_to_events(self) -> None:
         """Subscribe to relevant game events."""
-        self.event_bus.subscribe(PlayerEnteredRoom, self._handle_player_entered)
-        self.event_bus.subscribe(PlayerLeftRoom, self._handle_player_left)
-        self.event_bus.subscribe(NPCEnteredRoom, self._handle_npc_entered)
-        self.event_bus.subscribe(NPCLeftRoom, self._handle_npc_left)
-        self.event_bus.subscribe(PlayerXPAwardEvent, self._handle_player_xp_awarded)
-        self.event_bus.subscribe(PlayerDPUpdated, self._handle_player_dp_updated)
+        # Use service_id for tracking and cleanup (Task 2: Event Subscriber Cleanup)
+        self.event_bus.subscribe(PlayerEnteredRoom, self._handle_player_entered, service_id="event_handler")
+        self.event_bus.subscribe(PlayerLeftRoom, self._handle_player_left, service_id="event_handler")
+        self.event_bus.subscribe(NPCEnteredRoom, self._handle_npc_entered, service_id="event_handler")
+        self.event_bus.subscribe(NPCLeftRoom, self._handle_npc_left, service_id="event_handler")
+        self.event_bus.subscribe(PlayerXPAwardEvent, self._handle_player_xp_awarded, service_id="event_handler")
+        self.event_bus.subscribe(PlayerDPUpdated, self._handle_player_dp_updated, service_id="event_handler")
 
         # Log subscription for debugging
         self._logger.info(

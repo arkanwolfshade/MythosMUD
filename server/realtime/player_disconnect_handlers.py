@@ -5,9 +5,10 @@ This module handles broadcasting disconnect events and managing
 player removal from rooms and tracking systems.
 """
 
-import asyncio
 import uuid
 from typing import Any
+
+from anyio import sleep
 
 from ..structured_logging.enhanced_logging_config import get_logger
 from .player_presence_utils import extract_player_name
@@ -38,7 +39,7 @@ async def handle_player_disconnect_broadcast(
                 logger.debug("Calling room.player_left() before disconnect cleanup", player=player_id, room_id=room_id)
                 room.player_left(player_id_str)
                 # CRITICAL FIX: Wait for PlayerLeftRoom event to be processed
-                await asyncio.sleep(0)  # Yield to event loop
+                await sleep(0)  # Yield to event loop
 
     # Notify current room that player left the game
     if room_id:

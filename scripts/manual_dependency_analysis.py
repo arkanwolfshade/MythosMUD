@@ -51,7 +51,6 @@ class ManualDependencyAnalyzer:
             "pytest-asyncio": {"current": "0.24.0", "latest": "1.1.0"},
             "pytest-cov": {"current": "6.2.1", "latest": "6.3.0"},
             "python-dotenv": {"current": "1.0.0", "latest": "1.1.1"},
-            "requests": {"current": "2.32.4", "latest": "2.32.5"},
             "rich": {"current": "13.5.3", "latest": "14.1.0"},
             "ruff": {"current": "0.12.5", "latest": "0.12.12"},
             "tomli": {"current": "2.0.2", "latest": "2.2.1"},
@@ -119,7 +118,7 @@ class ManualDependencyAnalyzer:
         high_risk_packages = ["fastapi", "pydantic", "sqlalchemy", "uvicorn", "pytest", "pytest-asyncio", "structlog"]
 
         # Medium-risk packages
-        medium_risk_packages = ["requests", "httpx", "python-jose", "argon2-cffi", "fastapi-users", "click", "nats-py"]
+        medium_risk_packages = ["httpx", "python-jose", "argon2-cffi", "fastapi-users", "click", "nats-py"]
 
         if update_type == "major":
             return "HIGH"
@@ -286,7 +285,16 @@ class ManualDependencyAnalyzer:
         overall_risk = self._determine_overall_risk(breaking_changes)
 
         return self._build_analysis_dict(
-            npm_deps, python_deps, all_deps, update_counts, risk_counts, strategy, priority, breaking_changes, overall_risk, priority_order
+            npm_deps,
+            python_deps,
+            all_deps,
+            update_counts,
+            risk_counts,
+            strategy,
+            priority,
+            breaking_changes,
+            overall_risk,
+            priority_order,
         )
 
     def generate_report(self, analysis: dict[str, Any]) -> str:

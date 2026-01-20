@@ -93,13 +93,18 @@ def test_get_cpu_usage_error(mock_cpu_percent, health_service):
 def test_check_database_health_healthy(mock_container_class, health_service):
     """Test check_database_health returns healthy status."""
     mock_container = MagicMock()
-    mock_container.room_service = MagicMock()
+    # Mock async_persistence with a pool that has size > 0
+    mock_pool = MagicMock()
+    mock_pool._size = 5  # Pool size > 0
+    mock_async_persistence = MagicMock()
+    mock_async_persistence._pool = mock_pool
+    mock_container.async_persistence = mock_async_persistence
     mock_container_class.get_instance.return_value = mock_container
 
-    with patch("time.time", side_effect=[0, 0.05]):  # 50ms query time
+    with patch("time.time", side_effect=[0, 0.05]):  # 50ms query time (< 100ms = healthy)
         result = health_service.check_database_health()
         assert result["status"] == HealthStatus.HEALTHY
-        assert result["connection_count"] == 0
+        assert result["connection_count"] == 5
         assert result["last_query_time_ms"] == 50.0
 
 
@@ -107,12 +112,18 @@ def test_check_database_health_healthy(mock_container_class, health_service):
 def test_check_database_health_degraded(mock_container_class, health_service):
     """Test check_database_health returns degraded status."""
     mock_container = MagicMock()
-    mock_container.room_service = MagicMock()
+    # Mock async_persistence with a pool that has size > 0
+    mock_pool = MagicMock()
+    mock_pool._size = 3  # Pool size > 0
+    mock_async_persistence = MagicMock()
+    mock_async_persistence._pool = mock_pool
+    mock_container.async_persistence = mock_async_persistence
     mock_container_class.get_instance.return_value = mock_container
 
-    with patch("time.time", side_effect=[0, 0.5]):  # 500ms query time
+    with patch("time.time", side_effect=[0, 0.5]):  # 500ms query time (between 100ms and timeout = degraded)
         result = health_service.check_database_health()
         assert result["status"] == HealthStatus.DEGRADED
+        assert result["connection_count"] == 3
         assert result["last_query_time_ms"] == 500.0
 
 
@@ -120,12 +131,18 @@ def test_check_database_health_degraded(mock_container_class, health_service):
 def test_check_database_health_unhealthy(mock_container_class, health_service):
     """Test check_database_health returns unhealthy status."""
     mock_container = MagicMock()
-    mock_container.room_service = MagicMock()
+    # Mock async_persistence with a pool that has size = 0 (unhealthy)
+    mock_pool = MagicMock()
+    mock_pool._size = 0  # Pool size = 0 = unhealthy
+    mock_async_persistence = MagicMock()
+    mock_async_persistence._pool = mock_pool
+    mock_container.async_persistence = mock_async_persistence
     mock_container_class.get_instance.return_value = mock_container
 
     with patch("time.time", side_effect=[0, 1.5]):  # 1500ms query time
         result = health_service.check_database_health()
         assert result["status"] == HealthStatus.UNHEALTHY
+        assert result["connection_count"] == 0
         assert result["last_query_time_ms"] == 1500.0
 
 
@@ -250,13 +267,18 @@ def test_get_server_component_health_unhealthy(mock_cpu, mock_process, health_se
 def test_get_database_component_health(mock_container_class, health_service):
     """Test get_database_component_health returns database component."""
     mock_container = MagicMock()
-    mock_container.room_service = MagicMock()
+    # Mock async_persistence with a pool that has size > 0
+    mock_pool = MagicMock()
+    mock_pool._size = 5  # Pool size > 0
+    mock_async_persistence = MagicMock()
+    mock_async_persistence._pool = mock_pool
+    mock_container.async_persistence = mock_async_persistence
     mock_container_class.get_instance.return_value = mock_container
 
-    with patch("time.time", side_effect=[0, 0.05]):
+    with patch("time.time", side_effect=[0, 0.05]):  # 50ms query time (< 100ms = healthy)
         component = health_service.get_database_component_health()
         assert component.status == HealthStatus.HEALTHY
-        assert component.connection_count == 0
+        assert component.connection_count == 5
         assert component.last_query_time_ms == 50.0
 
 
@@ -373,6 +395,12 @@ def test_get_health_status_success(
     mock_cpu.return_value = 50.0
 
     mock_container_instance = MagicMock()
+    # Mock async_persistence with a pool that has size > 0
+    mock_pool = MagicMock()
+    mock_pool._size = 5  # Pool size > 0
+    mock_async_persistence = MagicMock()
+    mock_async_persistence._pool = mock_pool
+    mock_container_instance.async_persistence = mock_async_persistence
     mock_container_instance.room_service = MagicMock()
     mock_container.get_instance.return_value = mock_container_instance
 

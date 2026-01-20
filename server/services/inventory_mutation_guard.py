@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import asyncio
 import inspect
 import threading
 from collections import OrderedDict
@@ -11,6 +10,8 @@ from contextlib import asynccontextmanager, contextmanager
 from dataclasses import dataclass, field
 from time import monotonic
 from typing import cast
+
+from anyio import Lock
 
 from server.middleware.metrics_collector import metrics_collector
 from server.monitoring.monitoring_dashboard import get_monitoring_dashboard
@@ -39,13 +40,13 @@ class _PlayerGuardState:
 class _AsyncPlayerGuardState:
     """Internal state tracking per-player mutation metadata for async contexts."""
 
-    lock: asyncio.Lock | None = None
+    lock: Lock | None = None
     recent_tokens: OrderedDict[str, float] = field(default_factory=OrderedDict)
 
-    def get_lock(self) -> asyncio.Lock:
+    def get_lock(self) -> Lock:
         """Get or create the async lock (lazy initialization)."""
         if self.lock is None:
-            self.lock = asyncio.Lock()
+            self.lock = Lock()
         return self.lock
 
 
@@ -67,14 +68,14 @@ class InventoryMutationGuard:
         self._token_ttl = token_ttl_seconds
         self._max_tokens = max_tokens
         self._global_lock = threading.Lock()
-        self._async_global_lock: asyncio.Lock | None = None
+        self._async_global_lock: Lock | None = None
         self._states: dict[str, _PlayerGuardState] = {}
         self._async_states: dict[str, _AsyncPlayerGuardState] = {}
 
-    def _get_async_global_lock(self) -> asyncio.Lock:
+    def _get_async_global_lock(self) -> Lock:
         """Get or create the async global lock (lazy initialization)."""
         if self._async_global_lock is None:
-            self._async_global_lock = asyncio.Lock()
+            self._async_global_lock = Lock()
         return self._async_global_lock
 
     @contextmanager
@@ -126,10 +127,10 @@ class InventoryMutationGuard:
                         except (TypeError, ValueError):
                             parameters = cast(Mapping[str, inspect.Parameter], {})
                         # After callable() check and cast, we know record_custom_alert is callable
-                        # pylint: disable=not-callable
+                        # pylint: disable=not-callable  # Reason: Dynamic callable check with cast ensures function is callable, but pylint cannot infer this from runtime checks
                         try:
                             if "message" in parameters:
-                                record_custom_alert(  # pylint: disable=not-callable
+                                record_custom_alert(  # pylint: disable=not-callable  # Reason: Verified callable via callable() check and cast above, but pylint cannot infer from runtime checks
                                     "inventory_duplicate",
                                     severity="warning",
                                     message=f"Duplicate inventory mutation suppressed for player {player_id}",
@@ -137,7 +138,7 @@ class InventoryMutationGuard:
                                 )
                             else:
                                 # Legacy signature compatibility: (alert_type, *, severity=..., metadata=...)
-                                record_custom_alert(  # pylint: disable=not-callable
+                                record_custom_alert(  # pylint: disable=not-callable  # Reason: Verified callable via callable() check and cast above, but pylint cannot infer from runtime checks
                                     "inventory_duplicate",
                                     severity="warning",
                                     metadata=alert_metadata,
@@ -145,7 +146,7 @@ class InventoryMutationGuard:
                         except TypeError:
                             # Fallback to safest keyword invocation if signature introspection was misleading
                             try:
-                                record_custom_alert(  # pylint: disable=not-callable
+                                record_custom_alert(  # pylint: disable=not-callable  # Reason: Verified callable via callable() check and cast above, but pylint cannot infer from runtime checks
                                     "inventory_duplicate",
                                     severity="warning",
                                     metadata=alert_metadata,
@@ -215,10 +216,10 @@ class InventoryMutationGuard:
                         except (TypeError, ValueError):
                             parameters = cast(Mapping[str, inspect.Parameter], {})
                         # After callable() check and cast, we know record_custom_alert is callable
-                        # pylint: disable=not-callable
+                        # pylint: disable=not-callable  # Reason: Dynamic callable check with cast ensures function is callable, but pylint cannot infer this from runtime checks
                         try:
                             if "message" in parameters:
-                                record_custom_alert(  # pylint: disable=not-callable
+                                record_custom_alert(  # pylint: disable=not-callable  # Reason: Verified callable via callable() check and cast above, but pylint cannot infer from runtime checks
                                     "inventory_duplicate",
                                     severity="warning",
                                     message=f"Duplicate inventory mutation suppressed for player {player_id}",
@@ -226,7 +227,7 @@ class InventoryMutationGuard:
                                 )
                             else:
                                 # Legacy signature compatibility: (alert_type, *, severity=..., metadata=...)
-                                record_custom_alert(  # pylint: disable=not-callable
+                                record_custom_alert(  # pylint: disable=not-callable  # Reason: Verified callable via callable() check and cast above, but pylint cannot infer from runtime checks
                                     "inventory_duplicate",
                                     severity="warning",
                                     metadata=alert_metadata,
@@ -234,7 +235,7 @@ class InventoryMutationGuard:
                         except TypeError:
                             # Fallback to safest keyword invocation if signature introspection was misleading
                             try:
-                                record_custom_alert(  # pylint: disable=not-callable
+                                record_custom_alert(  # pylint: disable=not-callable  # Reason: Verified callable via callable() check and cast above, but pylint cannot infer from runtime checks
                                     "inventory_duplicate",
                                     severity="warning",
                                     metadata=alert_metadata,
@@ -256,10 +257,36 @@ class InventoryMutationGuard:
                 await self._cleanup_async_state(player_id)
 
     def _get_state(self, player_id: str) -> _PlayerGuardState:
+        """
+        Get or create per-player guard state for sync contexts.
+
+        Uses thread-safe dictionary access with the global lock to ensure state creation
+        is atomic. The setdefault pattern ensures only one state object exists per player_id.
+
+        Args:
+            player_id: Identifier for the player
+
+        Returns:
+            Guard state for the player, creating it if it doesn't exist
+        """
         with self._global_lock:
             return self._states.setdefault(player_id, _PlayerGuardState())
 
     async def _get_async_state(self, player_id: str) -> _AsyncPlayerGuardState:
+        """
+        Get or create per-player guard state for async contexts.
+
+        Uses async lock to ensure thread-safe state creation. The async global lock
+        prevents race conditions when multiple async contexts access the states dict
+        concurrently. The per-player lock (stored in the state) is used for serializing
+        mutations for that specific player.
+
+        Args:
+            player_id: Identifier for the player
+
+        Returns:
+            Guard state for the player, creating it if it doesn't exist
+        """
         async_lock = self._get_async_global_lock()
         async with async_lock:
             if player_id not in self._async_states:
@@ -267,6 +294,21 @@ class InventoryMutationGuard:
             return self._async_states[player_id]
 
     def _cleanup_state(self, player_id: str) -> None:
+        """
+        Clean up per-player guard state when no longer needed (sync context).
+
+        Removes the player's state from the states dictionary if:
+        1. The state exists
+        2. No recent tokens are cached (state is idle)
+        3. The per-player lock is available (not currently held)
+
+        The non-blocking lock acquisition prevents cleanup from blocking if a mutation
+        is in progress. If the lock is held, cleanup is skipped and will be retried
+        on the next idle period.
+
+        Args:
+            player_id: Identifier for the player whose state should be cleaned up
+        """
         with self._global_lock:
             state = self._states.get(player_id)
             if state and not state.recent_tokens:
@@ -279,6 +321,24 @@ class InventoryMutationGuard:
                         state.lock.release()
 
     async def _cleanup_async_state(self, player_id: str) -> None:
+        """
+        Clean up per-player guard state when no longer needed (async context).
+
+        Removes the player's state from the async_states dictionary if:
+        1. The state exists
+        2. No recent tokens are cached (state is idle)
+        3. The per-player async lock is available (not currently held)
+
+        Uses lock.locked() check instead of non-blocking acquire because asyncio.Lock
+        doesn't support non-blocking acquisition. If the lock is held, cleanup is
+        skipped and will be retried on the next idle period.
+
+        The defensive exception handling for lock.locked() ensures cleanup doesn't fail
+        if the lock implementation changes or is in an unexpected state.
+
+        Args:
+            player_id: Identifier for the player whose state should be cleaned up
+        """
         async_lock = self._get_async_global_lock()
         async with async_lock:
             state = self._async_states.get(player_id)
@@ -300,6 +360,17 @@ class InventoryMutationGuard:
                     self._async_states.pop(player_id, None)
 
     def _prune_tokens(self, state: _PlayerGuardState, now: float) -> None:
+        """
+        Remove expired idempotency tokens from the guard state (sync context).
+
+        Tokens older than token_ttl_seconds are removed to prevent unbounded memory growth.
+        This is called before checking for duplicates to ensure the token cache doesn't
+        retain stale entries indefinitely.
+
+        Args:
+            state: Guard state for the player
+            now: Current monotonic time for expiration comparison
+        """
         if self._token_ttl <= 0:
             return
 
@@ -309,6 +380,17 @@ class InventoryMutationGuard:
             state.recent_tokens.pop(token, None)
 
     def _prune_tokens_async(self, state: _AsyncPlayerGuardState, now: float) -> None:
+        """
+        Remove expired idempotency tokens from the guard state (async context).
+
+        Tokens older than token_ttl_seconds are removed to prevent unbounded memory growth.
+        This is called before checking for duplicates to ensure the token cache doesn't
+        retain stale entries indefinitely.
+
+        Args:
+            state: Guard state for the player
+            now: Current monotonic time for expiration comparison
+        """
         if self._token_ttl <= 0:
             return
 
@@ -318,10 +400,30 @@ class InventoryMutationGuard:
             state.recent_tokens.pop(token, None)
 
     def _enforce_limit(self, state: _PlayerGuardState) -> None:
+        """
+        Enforce maximum token cache size by removing oldest entries (sync context).
+
+        Uses OrderedDict's FIFO ordering (popitem(last=False)) to remove the oldest
+        token when the cache exceeds max_tokens. This prevents unbounded memory growth
+        while preserving recent duplicate detection capability.
+
+        Args:
+            state: Guard state for the player
+        """
         while len(state.recent_tokens) > self._max_tokens:
             state.recent_tokens.popitem(last=False)
 
     def _enforce_limit_async(self, state: _AsyncPlayerGuardState) -> None:
+        """
+        Enforce maximum token cache size by removing oldest entries (async context).
+
+        Uses OrderedDict's FIFO ordering (popitem(last=False)) to remove the oldest
+        token when the cache exceeds max_tokens. This prevents unbounded memory growth
+        while preserving recent duplicate detection capability.
+
+        Args:
+            state: Guard state for the player
+        """
         while len(state.recent_tokens) > self._max_tokens:
             state.recent_tokens.popitem(last=False)
 

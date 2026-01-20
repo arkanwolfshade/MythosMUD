@@ -13,6 +13,7 @@ from .monitoring import monitoring_router
 from .players import player_router
 from .real_time import realtime_router
 from .rooms import room_router
+from .system_monitoring import system_monitoring_router
 
 __all__ = [
     "admin_npc_router",
@@ -20,6 +21,7 @@ __all__ = [
     "container_router",
     "game_router",
     "monitoring_router",
+    "system_monitoring_router",
     "player_router",
     "realtime_router",
     "room_router",

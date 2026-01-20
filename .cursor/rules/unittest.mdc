@@ -11,24 +11,29 @@ This guide establishes the definitive best practices for writing `unittest` test
 Organize tests logically within a dedicated `tests/` directory, mirroring your application's module structure.
 
 ### Test File Naming
+
 Name test files clearly to enable automatic discovery and indicate their purpose.
 
 ❌ BAD:
+
 ```python
 # my_app/tests/users.py
 # my_app/tests/test_user_logic.py
 ```
 
 ✅ GOOD:
+
 ```python
 # my_app/tests/test_users.py
 # my_app/tests/test_auth_service.py
 ```
 
 ### Test Class Naming
+
 All test classes *must* inherit from `unittest.TestCase` and start with `Test`.
 
 ❌ BAD:
+
 ```python
 import unittest
 
@@ -37,6 +42,7 @@ class UserServiceTests(unittest.TestCase):
 ```
 
 ✅ GOOD:
+
 ```python
 import unittest
 
@@ -45,9 +51,11 @@ class TestUserService(unittest.TestCase):
 ```
 
 ### Test Method Naming
+
 Each test method *must* start with `test_` and describe the specific scenario and expected outcome.
 
 ❌ BAD:
+
 ```python
 class TestUserService(unittest.TestCase):
     def create_user(self): # Not a test method, but might be mistaken for one
@@ -57,6 +65,7 @@ class TestUserService(unittest.TestCase):
 ```
 
 ✅ GOOD:
+
 ```python
 class TestUserService(unittest.TestCase):
     def test_create_user_with_valid_data_returns_user_object(self):
@@ -66,6 +75,7 @@ class TestUserService(unittest.TestCase):
 ```
 
 ### Running Tests
+
 Always include the standard `if __name__ == '__main__':` block for direct execution and discovery.
 
 ```python
@@ -84,6 +94,7 @@ if __name__ == '__main__':
 Each test method should focus on verifying *one logical outcome*. This makes tests easier to understand and debug.
 
 ❌ BAD:
+
 ```python
 class TestCalculator(unittest.TestCase):
     def test_add_and_subtract(self) -> None:
@@ -93,6 +104,7 @@ class TestCalculator(unittest.TestCase):
 ```
 
 ✅ GOOD:
+
 ```python
 class TestCalculator(unittest.TestCase):
     def test_add_returns_correct_sum(self) -> None:
@@ -105,9 +117,11 @@ class TestCalculator(unittest.TestCase):
 ```
 
 ### Use Specific Assert Methods
+
 Leverage `unittest`'s rich set of assert methods for clarity and better error messages.
 
 ❌ BAD:
+
 ```python
 class TestUser(unittest.TestCase):
     def test_user_is_active(self) -> None:
@@ -117,6 +131,7 @@ class TestUser(unittest.TestCase):
 ```
 
 ✅ GOOD:
+
 ```python
 class TestUser(unittest.TestCase):
     def test_user_is_active(self) -> None:
@@ -133,6 +148,7 @@ class TestUser(unittest.TestCase):
 Use fixtures to establish a clean, isolated state for tests.
 
 ### `setUp` and `tearDown` (Per Test Method)
+
 Use `setUp` to prepare resources *before each test method* and `tearDown` to clean up *after each test method*.
 
 ```python
@@ -154,6 +170,7 @@ class TestDatabaseOperations(unittest.TestCase):
 ```
 
 ### `setUpClass` and `tearDownClass` (Per Test Class)
+
 Use `setUpClass` to prepare resources *once for all test methods in the class* and `tearDownClass` to clean up *once after all test methods*. This is suitable for expensive, shared resources.
 
 ```python
@@ -182,6 +199,7 @@ class TestExpensiveResource(unittest.TestCase):
 Isolate the unit under test by replacing external dependencies with `MagicMock` objects.
 
 ### Use `patch` Decorator
+
 For simple patching, the `@patch` decorator is concise.
 
 ```python
@@ -206,6 +224,7 @@ class TestMyService(unittest.TestCase):
 ```
 
 ### Use `patch` as a Context Manager
+
 For patching within a specific block of code, use `with patch(...)`.
 
 ```python
@@ -222,9 +241,11 @@ class TestMyService(unittest.TestCase):
 ```
 
 ### Avoid Over-Mocking
+
 Only mock external boundaries or complex dependencies. Do not mock internal logic or objects that are part of the unit under test.
 
 ❌ BAD:
+
 ```python
 # Testing a 'User' class where 'is_admin' is a simple property
 class TestUser(unittest.TestCase):
@@ -236,6 +257,7 @@ class TestUser(unittest.TestCase):
 ```
 
 ✅ GOOD:
+
 ```python
 # Testing a 'User' class where 'is_admin' is a simple property
 class TestUser(unittest.TestCase):
@@ -249,12 +271,15 @@ class TestUser(unittest.TestCase):
 Fast tests encourage frequent execution.
 
 ### Isolate Tests
+
 Ensure tests are independent and don't rely on the order of execution or shared mutable state. Use `setUp`/`tearDown` to reset state.
 
 ### Mock Slow I/O
+
 Replace database calls, network requests, and file system operations with mocks to avoid performance bottlenecks.
 
 ### Separate Integration Tests
+
 If a test *must* interact with a real external system (e.g., a database), mark it as an integration test and run it separately from fast unit tests. `unittest` doesn't have built-in marking like `pytest`, so use naming conventions (e.g., `test_integration_*.py` files).
 
 ## 6. Type Hints in Tests
@@ -288,6 +313,7 @@ class TestDatabaseOperations(unittest.TestCase):
 While `unittest` doesn't provide coverage tools, integrate `coverage.py` to ensure thorough testing.
 
 ### Enforce Coverage Thresholds
+
 Configure `coverage.py` in `pyproject.toml` or `setup.cfg` to fail CI builds if coverage drops below a set percentage.
 
 ```toml
@@ -301,4 +327,5 @@ show_missing = true
 ```
 
 ### Focus on Branches and Statements
+
 Prioritize covering critical paths, edge cases, and error handling over simply reaching 100% line coverage.

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Check the schema of the users table."""
 
-import asyncio
 import os
 import sys
 from pathlib import Path
 
+from anyio import run
 from dotenv import load_dotenv
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine
@@ -44,4 +44,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    run(main)

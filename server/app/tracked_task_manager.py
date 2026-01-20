@@ -181,7 +181,8 @@ class TrackedTaskManager:
         # Report audit diagnostics
         if audit_orphan_count:
             self._logger.warning(
-                f"TaskOrphanMonitor reports: {audit_orphan_count} undocumented resource consumers detected"
+                "TaskOrphanMonitor reports undocumented resource consumers detected",
+                audit_orphan_count=audit_orphan_count,
             )
         else:
             self._logger.debug("Memory boundary hygiene: No orphan task contamination detected")

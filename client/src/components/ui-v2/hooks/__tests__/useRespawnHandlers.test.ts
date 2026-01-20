@@ -1,5 +1,5 @@
 import { renderHook, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useRespawnHandlers } from '../useRespawnHandlers';
 
 // Mock dependencies
@@ -14,8 +14,8 @@ vi.mock('../utils/messageUtils', () => ({
   sanitizeChatMessageForState: (message: unknown) => message,
 }));
 
-// Mock fetch
-global.fetch = vi.fn();
+// Mock fetch using vi.spyOn for proper cleanup
+const fetchSpy = vi.spyOn(global, 'fetch');
 
 describe('useRespawnHandlers', () => {
   const mockSetGameState = vi.fn();
@@ -36,6 +36,7 @@ describe('useRespawnHandlers', () => {
   };
 
   beforeEach(() => {
+    fetchSpy.mockClear();
     vi.clearAllMocks();
     mockSetGameState.mockImplementation((updater: unknown) => {
       if (typeof updater === 'function') {
@@ -55,10 +56,10 @@ describe('useRespawnHandlers', () => {
         room: { id: 'room2', name: 'Hospital', description: 'Hospital room', exits: {} },
       };
 
-      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: true,
         json: async () => mockRespawnData,
-      });
+      } as unknown as Response);
 
       const { result } = renderHook(() => useRespawnHandlers(defaultParams));
 
@@ -84,11 +85,11 @@ describe('useRespawnHandlers', () => {
     it('should handle respawn API error', async () => {
       const errorData = { detail: 'Respawn failed' };
 
-      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: false,
         status: 400,
         json: async () => errorData,
-      });
+      } as unknown as Response);
 
       const { result } = renderHook(() => useRespawnHandlers(defaultParams));
 
@@ -102,7 +103,7 @@ describe('useRespawnHandlers', () => {
     });
 
     it('should handle network error during respawn', async () => {
-      (global.fetch as ReturnType<typeof vi.fn>).mockRejectedValueOnce(new Error('Network error'));
+      fetchSpy.mockRejectedValueOnce(new Error('Network error'));
 
       const { result } = renderHook(() => useRespawnHandlers(defaultParams));
 
@@ -121,10 +122,10 @@ describe('useRespawnHandlers', () => {
         room: { id: 'room2', name: 'Hospital', description: 'Hospital room', exits: {} },
       };
 
-      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: true,
         json: async () => mockRespawnData,
-      });
+      } as unknown as Response);
 
       const { result } = renderHook(() => useRespawnHandlers(defaultParams));
 
@@ -144,10 +145,10 @@ describe('useRespawnHandlers', () => {
         message: 'You have been restored to lucidity',
       };
 
-      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: true,
         json: async () => mockRespawnData,
-      });
+      } as unknown as Response);
 
       const { result } = renderHook(() => useRespawnHandlers(defaultParams));
 
@@ -172,11 +173,11 @@ describe('useRespawnHandlers', () => {
     it('should handle delirium respawn API error', async () => {
       const errorData = { detail: 'Delirium respawn failed' };
 
-      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: false,
         status: 400,
         json: async () => errorData,
-      });
+      } as unknown as Response);
 
       const { result } = renderHook(() => useRespawnHandlers(defaultParams));
 
@@ -190,7 +191,7 @@ describe('useRespawnHandlers', () => {
     });
 
     it('should handle network error during delirium respawn', async () => {
-      (global.fetch as ReturnType<typeof vi.fn>).mockRejectedValueOnce(new Error('Network error'));
+      fetchSpy.mockRejectedValueOnce(new Error('Network error'));
 
       const { result } = renderHook(() => useRespawnHandlers(defaultParams));
 
@@ -209,10 +210,10 @@ describe('useRespawnHandlers', () => {
         room: { id: 'room3', name: 'Sanitarium', description: 'Sanitarium room', exits: {} },
       };
 
-      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: true,
         json: async () => mockRespawnData,
-      });
+      } as unknown as Response);
 
       const { result } = renderHook(() => useRespawnHandlers(defaultParams));
 
@@ -229,10 +230,10 @@ describe('useRespawnHandlers', () => {
         room: { id: 'room3', name: 'Sanitarium', description: 'Sanitarium room', exits: {} },
       };
 
-      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: true,
         json: async () => mockRespawnData,
-      });
+      } as unknown as Response);
 
       const { result } = renderHook(() => useRespawnHandlers(defaultParams));
 
@@ -248,11 +249,11 @@ describe('useRespawnHandlers', () => {
     it('should handle error without detail field', async () => {
       const errorData = {};
 
-      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: false,
         status: 400,
         json: async () => errorData,
-      });
+      } as unknown as Response);
 
       const { result } = renderHook(() => useRespawnHandlers(defaultParams));
 
@@ -264,13 +265,13 @@ describe('useRespawnHandlers', () => {
     });
 
     it('should handle JSON parse error', async () => {
-      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      fetchSpy.mockResolvedValueOnce({
         ok: false,
         status: 400,
         json: async () => {
           throw new Error('Invalid JSON');
         },
-      });
+      } as unknown as Response);
 
       const { result } = renderHook(() => useRespawnHandlers(defaultParams));
 
@@ -282,5 +283,11 @@ describe('useRespawnHandlers', () => {
         expect(mockSetGameState).toHaveBeenCalled();
       });
     });
+  });
+
+  afterEach(() => {
+    // Use mockReset instead of mockRestore to keep the spy active across tests
+    // This prevents issues where mockRestore might restore an undefined/broken fetch implementation
+    fetchSpy.mockReset();
   });
 });

@@ -27,6 +27,9 @@ from .users import UserManager, get_user_manager
 
 logger = get_logger("auth.endpoints")
 
+# Maximum password length to prevent DoS attacks (matches argon2_utils.py)
+MAX_PASSWORD_LENGTH = 1024
+
 # Create router for auth endpoints
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -55,13 +58,18 @@ class UserCreate(BaseModel):
     invite_code: str | None = None
     email: str | None = None
 
-    # Add password validation to reject empty passwords
+    # Add password validation to reject empty passwords and enforce length limits
     @field_validator("password")
     @classmethod
-    def validate_password_not_empty(cls, v: str) -> str:
-        """Validate that password is not empty."""
+    def validate_password(cls, v: str) -> str:
+        """Validate password length and content."""
         if not v or not v.strip():
             raise ValueError("Password cannot be empty")
+        if len(v) < 8:
+            raise ValueError("Password must be at least 8 characters long")
+        # Enforce maximum length to prevent DoS attacks (matches argon2_utils.py)
+        if len(v) > MAX_PASSWORD_LENGTH:
+            raise ValueError(f"Password must not exceed {MAX_PASSWORD_LENGTH} characters")  # pylint: disable=redefined-outer-name  # Reason: MAX_PASSWORD_LENGTH is a module-level constant, not being redefined; Pylint false positive
         return v
 
 

@@ -21,6 +21,8 @@ from dataclasses import asdict, dataclass
 from enum import Enum
 from typing import Any
 
+from anyio import Lock, sleep
+
 from ..models.npc import NPCDefinition
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -203,7 +205,7 @@ class NPCThreadManager:
         self.npc_definitions: dict[str, NPCDefinition] = {}
         self.message_queue = NPCMessageQueue()
         self.is_running = False
-        self._lock = asyncio.Lock()
+        self._lock = Lock()
 
         logger.info("NPC thread manager initialized")
 
@@ -386,7 +388,7 @@ class NPCThreadManager:
                 await self._execute_npc_behavior(npc_id, npc_definition)
 
                 # Sleep to prevent busy waiting
-                await asyncio.sleep(0.1)
+                await sleep(0.1)
 
         except asyncio.CancelledError:
             logger.info("NPC thread worker cancelled", npc_id=npc_id)
@@ -524,8 +526,8 @@ class NPCCommunicationBridge:
         """Initialize the communication bridge."""
         self.outgoing_messages: list[dict[str, Any]] = []
         self.incoming_messages: dict[str, list[dict[str, Any]]] = defaultdict(list)
-        self._outgoing_lock = asyncio.Lock()
-        self._incoming_lock = asyncio.Lock()
+        self._outgoing_lock = Lock()
+        self._incoming_lock = Lock()
 
         logger.info("NPC communication bridge initialized")
 

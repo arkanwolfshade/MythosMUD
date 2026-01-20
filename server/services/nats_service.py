@@ -6,94 +6,31 @@ replacing the previous Redis-based implementation with a more lightweight
 and Windows-native solution.
 """
 
-# pylint: disable=too-many-instance-attributes,too-many-lines  # Reason: NATS service requires many state tracking and configuration attributes. NATS service requires extensive NATS integration logic for comprehensive real-time messaging system.
+# pylint: disable=too-many-instance-attributes, too-many-lines # Reason: NATS service requires many state tracking and configuration attributes. NATS service requires extensive NATS integration logic for comprehensive real-time messaging system.
 
 import asyncio
 import json
 import ssl
-from collections import deque
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
 import nats
+from anyio import sleep
 
 from ..config.models import NATSConfig
 from ..realtime.connection_state_machine import NATSConnectionStateMachine
 from ..structured_logging.enhanced_logging_config import get_logger
 from .nats_exceptions import (
     NATSPublishError,
+    NATSRequestError,
     NATSSubscribeError,
+    NATSUnsubscribeError,
 )
+from .nats_metrics import NATSMetrics
 from .nats_subject_manager import NATSSubjectManager, SubjectValidationError
 
 logger = get_logger("nats")
-
-
-class NATSMetrics:  # pylint: disable=too-many-instance-attributes  # Reason: Metrics class requires many fields to capture complete NATS metrics
-    """NATS-specific metrics collection for monitoring and alerting."""
-
-    def __init__(self) -> None:
-        self.publish_count = 0
-        self.publish_errors = 0
-        self.subscribe_count = 0
-        self.subscribe_errors = 0
-        # Use deque with maxlen for automatic rotation - more memory efficient than list slicing
-        self.message_processing_times: deque[float] = deque(maxlen=1000)
-        self.connection_health_score = 100.0
-        self.batch_flush_count = 0
-        self.batch_flush_errors = 0
-        self.pool_utilization = 0.0
-
-    def record_publish(self, success: bool, processing_time: float):
-        """Record publish operation metrics."""
-        self.publish_count += 1
-        if not success:
-            self.publish_errors += 1
-        # Deque automatically rotates when maxlen is reached - no manual slicing needed
-        self.message_processing_times.append(processing_time)
-
-    def record_subscribe(self, success: bool):
-        """Record subscribe operation metrics."""
-        self.subscribe_count += 1
-        if not success:
-            self.subscribe_errors += 1
-
-    def record_batch_flush(self, success: bool, _message_count: int):
-        """Record batch flush operation metrics."""
-        self.batch_flush_count += 1
-        if not success:
-            self.batch_flush_errors += 1
-
-    def update_connection_health(self, health_score: float):
-        """Update connection health score (0-100)."""
-        self.connection_health_score = max(0.0, min(100.0, health_score))
-
-    def update_pool_utilization(self, utilization: float):
-        """Update connection pool utilization (0-1)."""
-        self.pool_utilization = max(0.0, min(1.0, utilization))
-
-    def get_metrics(self) -> dict[str, Any]:
-        """Get comprehensive NATS metrics."""
-        # Deque supports len() and iteration like a list
-        avg_processing_time = (
-            sum(self.message_processing_times) / len(self.message_processing_times)
-            if self.message_processing_times
-            else 0
-        )
-
-        return {
-            "publish_count": self.publish_count,
-            "publish_error_rate": self.publish_errors / max(self.publish_count, 1),
-            "subscribe_count": self.subscribe_count,
-            "subscribe_error_rate": self.subscribe_errors / max(self.subscribe_count, 1),
-            "avg_processing_time_ms": avg_processing_time * 1000,
-            "connection_health": self.connection_health_score,
-            "pool_utilization": self.pool_utilization,
-            "batch_flush_count": self.batch_flush_count,
-            "batch_flush_error_rate": self.batch_flush_errors / max(self.batch_flush_count, 1),
-            "processing_time_samples": len(self.message_processing_times),
-        }
 
 
 class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NATS service requires many state tracking and configuration attributes
@@ -151,6 +88,9 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
         self.batch_size = getattr(self.config, "batch_size", 100)
         self.batch_timeout = getattr(self.config, "batch_timeout", 0.1)  # 100ms
         self._batch_task: asyncio.Task | None = None
+        # Failed batch queue for messages that couldn't be flushed after retries
+        self._failed_batch_queue: list[tuple[str, dict[str, Any]]] = []
+        self._max_batch_retries = getattr(self.config, "max_batch_retries", 3)
 
         # NATS metrics collection
         self.metrics = NATSMetrics()
@@ -183,6 +123,15 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             # Create subject manager with configuration
             subject_manager = NATSSubjectManager(strict_validation=self.config.strict_subject_validation)
         self.subject_manager = subject_manager
+
+        # Subscription lifecycle tracking for metrics
+
+        self._subscription_timestamps: list[tuple[str, float]] = []  # (subject, timestamp)
+        self._unsubscription_timestamps: list[tuple[str, float]] = []  # (subject, timestamp)
+        self._subscription_count = 0
+        self._unsubscription_count = 0
+        self._last_cleanup_time: float | None = None
+        self._max_timestamp_history = 1000  # Keep only last N timestamps
 
     def _check_connection_allowed(self) -> bool:
         """Check if connection attempt is allowed by state machine."""
@@ -323,6 +272,66 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
 
             return False
 
+    async def _drain_subscriptions(self) -> None:
+        """Drain in-flight messages from all subscriptions."""
+        for subject, subscription in self.subscriptions.items():
+            try:
+                await subscription.drain()  # Wait for in-flight messages
+                logger.debug("Subscription drained", subject=subject)
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Subscription drain errors unpredictable, must not fail cleanup
+                logger.warning("Error draining subscription", subject=subject, error=str(e))
+
+    async def _close_all_subscriptions(self) -> None:
+        """Close and unsubscribe from all subscriptions."""
+        import time
+
+        for subject, subscription in self.subscriptions.items():
+            try:
+                await subscription.unsubscribe()
+                # Track unsubscription for metrics
+                self._unsubscription_count += 1
+                self._unsubscription_timestamps.append((subject, time.time()))
+                # Keep only last N timestamps to prevent unbounded growth
+                if len(self._unsubscription_timestamps) > self._max_timestamp_history:
+                    self._unsubscription_timestamps = self._unsubscription_timestamps[-self._max_timestamp_history :]
+                logger.debug("Unsubscribed from NATS subject", subject=subject)
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Unsubscribe errors unpredictable, must not fail cleanup
+                logger.warning("Error unsubscribing from subject", subject=subject, error=str(e))
+
+    def _verify_subscription_cleanup(self, subscriptions_before_cleanup: list[str]) -> None:
+        """Verify all subscriptions were cleaned up and log warnings if any remain."""
+        import time
+
+        self._last_cleanup_time = time.time()
+        remaining_subscriptions = list(self.subscriptions.keys())
+        if remaining_subscriptions:
+            logger.warning(
+                "Subscriptions remain after cleanup",
+                remaining_subscriptions=remaining_subscriptions,
+                total_before=len(subscriptions_before_cleanup),
+            )
+        else:
+            logger.info(
+                "All NATS subscriptions cleaned up successfully",
+                total_cleaned=len(subscriptions_before_cleanup),
+            )
+
+    async def _close_nats_connection(self) -> None:
+        """Close NATS connection and transition to disconnected state."""
+        if self.nc is None:
+            return
+
+        await self.nc.close()
+        self.nc = None
+        self.subscriptions.clear()
+        self._running = False
+
+        # Transition to disconnected state
+        if self.state_machine.current_state.id in ["connected", "degraded"]:
+            self.state_machine.disconnect()
+
+        logger.info("Disconnected from NATS server", state=self.state_machine.current_state.id)
+
     async def disconnect(self):
         """
         Disconnect from NATS with graceful shutdown and message draining.
@@ -340,33 +349,25 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
                 await self._flush_batch()
 
             if self.nc:
+                # Track subscriptions before cleanup for verification (Task 4: NATS Subscription Cleanup)
+                subscriptions_before_cleanup = list(self.subscriptions.keys())
+                logger.info(
+                    "Starting NATS subscription cleanup",
+                    active_subscriptions=len(subscriptions_before_cleanup),
+                    subscription_subjects=subscriptions_before_cleanup,
+                )
+
                 # Drain in-flight messages before closing subscriptions
-                for subject, subscription in self.subscriptions.items():
-                    try:
-                        await subscription.drain()  # Wait for in-flight messages
-                        logger.debug("Subscription drained", subject=subject)
-                    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Subscription drain errors unpredictable, must not fail cleanup
-                        logger.warning("Error draining subscription", subject=subject, error=str(e))
+                await self._drain_subscriptions()
 
                 # Close all subscriptions
-                for subject, subscription in self.subscriptions.items():
-                    try:
-                        await subscription.unsubscribe()
-                        logger.debug("Unsubscribed from NATS subject", subject=subject)
-                    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Unsubscribe errors unpredictable, must not fail cleanup
-                        logger.warning("Error unsubscribing from subject", subject=subject, error=str(e))
+                await self._close_all_subscriptions()
+
+                # Verify all subscriptions were cleaned up
+                self._verify_subscription_cleanup(subscriptions_before_cleanup)
 
                 # Close NATS connection
-                await self.nc.close()
-                self.nc = None
-                self.subscriptions.clear()
-                self._running = False
-
-                # Transition to disconnected state
-                if self.state_machine.current_state.id in ["connected", "degraded"]:
-                    self.state_machine.disconnect()
-
-                logger.info("Disconnected from NATS server", state=self.state_machine.current_state.id)
+                await self._close_nats_connection()
 
             # Clean up connection pool
             if self._pool_initialized:
@@ -432,7 +433,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
                     # Give them a brief moment to cancel
                     try:
                         await asyncio.wait_for(asyncio.gather(*pending, return_exceptions=True), timeout=0.5)
-                    except (TimeoutError, Exception):  # pylint: disable=broad-exception-caught  # Abandon remaining tasks on any error  # noqa: B904
+                    except (TimeoutError, Exception):  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Task cancellation errors unpredictable, must abandon remaining tasks on any error during shutdown
                         pass  # Abandon remaining tasks
 
             except (RuntimeError, asyncio.CancelledError) as e:
@@ -459,7 +460,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
 
         while self._running:
             try:
-                await asyncio.sleep(health_check_interval)
+                await sleep(health_check_interval)
 
                 if not self.nc or not self._running:
                     break
@@ -492,7 +493,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Health check errors unpredictable, must continue loop
                 logger.error("Error in health check loop", error=str(e))
                 self._consecutive_health_failures += 1
-                await asyncio.sleep(health_check_interval)  # Wait before retrying
+                await sleep(health_check_interval)  # Wait before retrying
 
     async def _perform_health_check(self) -> bool:
         """
@@ -562,12 +563,17 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             callback(message_data)
 
     async def _acknowledge_message(self, msg: Any, subject: str, message_data: dict[str, Any]) -> bool:
-        """Acknowledge message if manual ack is enabled. Returns True if acknowledged."""
+        """
+        Acknowledge message if manual ack is enabled. Returns True if acknowledged.
+
+        AI: Records metrics for acknowledgment success/failure for monitoring.
+        """
         if not hasattr(msg, "ack"):
             return False
 
         try:
             await msg.ack()
+            self.metrics.record_ack_success()
             logger.debug(
                 "Message acknowledged",
                 subject=subject,
@@ -575,6 +581,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             )
             return True
         except Exception as ack_error:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Message ack errors unpredictable, must log but continue
+            self.metrics.record_ack_failure()
             logger.error(
                 "Failed to acknowledge message",
                 error=str(ack_error),
@@ -584,12 +591,18 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             return False
 
     async def _negatively_acknowledge_message(self, msg: Any, subject: str) -> None:
-        """Negatively acknowledge message if manual ack is enabled."""
+        """
+        Negatively acknowledge message if manual ack is enabled.
+
+        AI: Records metrics for negative acknowledgments (requeue requests).
+        """
         if not hasattr(msg, "nak"):
             return
 
         try:
             await msg.nak()
+            self.metrics.record_nak()
+            logger.debug("Message negatively acknowledged (requeued)", subject=subject)
         except Exception as nak_error:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Message nak errors unpredictable, must log but continue
             logger.error("Failed to negatively acknowledge message", error=str(nak_error), subject=subject)
 
@@ -643,6 +656,14 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
                         await self._negatively_acknowledge_message(msg, subject)
 
             subscription = await self.nc.subscribe(subject, cb=message_handler)
+            # Track subscription for metrics
+            import time
+
+            self._subscription_count += 1
+            self._subscription_timestamps.append((subject, time.time()))
+            # Keep only last N timestamps to prevent unbounded growth
+            if len(self._subscription_timestamps) > self._max_timestamp_history:
+                self._subscription_timestamps = self._subscription_timestamps[-self._max_timestamp_history :]
             self.subscriptions[subject] = subscription
 
             self.metrics.record_subscribe(True)
@@ -662,33 +683,50 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             logger.error("Failed to subscribe to NATS subject", error=str(e), subject=subject)
             raise NATSSubscribeError(error_msg, subject=subject, error=e) from e
 
-    async def unsubscribe(self, subject: str) -> bool:
+    def get_active_subscriptions(self) -> list[str]:
+        """
+        Get list of all active NATS subscription subjects.
+
+        Returns:
+            List of subject names that are currently subscribed
+
+        This method is used for monitoring and verification during shutdown
+        to ensure all subscriptions are properly cleaned up.
+        """
+        return list(self.subscriptions.keys())
+
+    async def unsubscribe(self, subject: str) -> None:
         """
         Unsubscribe from a NATS subject.
 
         Args:
             subject: NATS subject name to unsubscribe from
 
-        Returns:
-            True if unsubscribed successfully, False otherwise
+        Raises:
+            NATSUnsubscribeError: If unsubscribe fails or subject is not subscribed
+
+        AI: Raises exceptions instead of returning False for better error handling.
         """
         try:
             if subject not in self.subscriptions:
+                error_msg = f"Not subscribed to NATS subject: {subject}"
                 logger.warning("Not subscribed to NATS subject", subject=subject)
-                return False
+                raise NATSUnsubscribeError(error_msg, subject=subject)
 
             subscription = self.subscriptions[subject]
             await subscription.unsubscribe()
             del self.subscriptions[subject]
 
             logger.info("Unsubscribed from NATS subject", subject=subject)
-            return True
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Unsubscribe errors unpredictable, must return False
+        except NATSUnsubscribeError:
+            raise
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Unsubscribe errors unpredictable, must handle and raise
+            error_msg = f"Failed to unsubscribe from NATS subject: {str(e)}"
             logger.error("Failed to unsubscribe from NATS subject", error=str(e), subject=subject)
-            return False
+            raise NATSUnsubscribeError(error_msg, subject=subject, error=e) from e
 
-    async def request(self, subject: str, data: dict[str, Any], timeout: float = 5.0) -> dict[str, Any] | None:
+    async def request(self, subject: str, data: dict[str, Any], timeout: float = 5.0) -> dict[str, Any]:
         """
         Send a request to a NATS subject and wait for a response.
 
@@ -698,12 +736,18 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             timeout: Timeout in seconds for the response
 
         Returns:
-            Response data if successful, None otherwise
+            Response data if successful
+
+        Raises:
+            NATSRequestError: If request fails, times out, or client is not connected
+
+        AI: Raises exceptions instead of returning None for better error handling.
         """
         try:
             if not self.nc or not self._running:
+                error_msg = "NATS client not connected"
                 logger.error("NATS client not connected")
-                return None
+                raise NATSRequestError(error_msg, subject=subject)
 
             # Serialize request data using thread pool
             loop = asyncio.get_running_loop()
@@ -724,12 +768,16 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
 
             return response_json
 
-        except TimeoutError:
+        except TimeoutError as e:
+            error_msg = f"Request timeout after {timeout}s"
             logger.warning("Request timeout", subject=subject, timeout=timeout)
-            return None
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Request errors unpredictable, must return None
+            raise NATSRequestError(error_msg, subject=subject, timeout=timeout, error=e) from e
+        except NATSRequestError:
+            raise
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Request errors unpredictable, must handle and raise
+            error_msg = f"Failed to send request: {str(e)}"
             logger.error("Failed to send request", error=str(e), subject=subject)
-            return None
+            raise NATSRequestError(error_msg, subject=subject, timeout=timeout, error=e) from e
 
     def is_connected(self) -> bool:
         """
@@ -774,6 +822,25 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
                 return False
 
         return True
+
+    def verify_subscription_cleanup(self) -> dict[str, Any]:
+        """
+        Verify that all subscriptions are properly cleaned up.
+
+        Returns:
+            Dictionary with cleanup verification status
+        """
+        active_subscriptions = self.get_active_subscriptions()
+        cleanup_verified = not active_subscriptions  # pylint: disable=use-implicit-booleaness-not-comparison-to-zero  # Reason: Empty list is falsy, explicit comparison unnecessary
+
+        return {
+            "cleanup_verified": cleanup_verified,
+            "active_subscriptions_count": len(active_subscriptions),
+            "active_subscriptions": active_subscriptions,
+            "last_cleanup_time": getattr(self, "_last_cleanup_time", None),
+            "subscription_count_total": getattr(self, "_subscription_count", 0),
+            "unsubscription_count_total": getattr(self, "_unsubscription_count", 0),
+        }
 
     def get_subscription_count(self) -> int:
         """
@@ -934,12 +1001,19 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             "last_health_check": self._last_health_check if self._last_health_check > 0 else None,
             "time_since_last_check": time_since_last_check,
             "consecutive_health_failures": self._consecutive_health_failures,
+            "failed_batch_queue_size": len(self._failed_batch_queue),
+            "current_batch_size": len(self.message_batch),
             **self.state_machine.get_stats(),
             **self.metrics.get_metrics(),
         }
 
     async def _initialize_connection_pool(self) -> None:
-        """Initialize connection pool for high-throughput scenarios."""
+        """
+        Initialize connection pool for high-throughput scenarios.
+
+        AI: Tracks successful vs failed connections and reports partial failures.
+            Continues with partial pool if some connections succeed.
+        """
         if self._pool_initialized:
             return
 
@@ -976,19 +1050,58 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
 
                 connect_options["tls"] = ssl_context
 
-            # Create pool connections
-            for _i in range(self.pool_size):
-                connection = await nats.connect(nats_url, **connect_options)
-                self.connection_pool.append(connection)
-                await self.available_connections.put(connection)
+            # Create pool connections with error tracking
+            successful_connections = 0
+            failed_connections = 0
+            connection_errors: list[str] = []
 
-            self._pool_initialized = True
+            for i in range(self.pool_size):
+                try:
+                    connection = await nats.connect(nats_url, **connect_options)
+                    self.connection_pool.append(connection)
+                    await self.available_connections.put(connection)
+                    successful_connections += 1
+                    logger.debug("Connection pool connection created", connection_index=i + 1, pool_size=self.pool_size)
+                except Exception as conn_error:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Individual connection failures must not stop pool initialization
+                    failed_connections += 1
+                    error_msg = f"Connection {i + 1}: {str(conn_error)}"
+                    connection_errors.append(error_msg)
+                    logger.warning(
+                        "Failed to create connection pool connection",
+                        connection_index=i + 1,
+                        pool_size=self.pool_size,
+                        error=str(conn_error),
+                    )
 
-            logger.info(
-                "NATS connection pool initialized",
-                pool_size=self.pool_size,
-                url=nats_url,
-            )
+            # Determine pool initialization status
+            if not successful_connections:
+                # No connections succeeded, disable pool
+                self._pool_initialized = False
+                logger.error(
+                    "Failed to initialize NATS connection pool - no connections succeeded",
+                    pool_size=self.pool_size,
+                    failed_connections=failed_connections,
+                    errors=connection_errors,
+                )
+            elif successful_connections < self.pool_size:
+                # Partial success - pool initialized but smaller than configured
+                self._pool_initialized = True
+                logger.warning(
+                    "NATS connection pool initialized with partial success",
+                    pool_size=self.pool_size,
+                    successful_connections=successful_connections,
+                    failed_connections=failed_connections,
+                    actual_pool_size=len(self.connection_pool),
+                    errors=connection_errors,
+                )
+            else:
+                # Full success
+                self._pool_initialized = True
+                logger.info(
+                    "NATS connection pool initialized successfully",
+                    pool_size=self.pool_size,
+                    url=nats_url,
+                )
 
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Pool initialization errors unpredictable, must handle gracefully
             logger.error(
@@ -1186,7 +1299,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
     async def _batch_timeout(self):
         """Handle batch timeout for low-traffic scenarios."""
         try:
-            await asyncio.sleep(self.batch_timeout)
+            await sleep(self.batch_timeout)
             await self._flush_batch()
         except asyncio.CancelledError:
             # Task was cancelled, which is expected
@@ -1195,50 +1308,179 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             self._batch_task = None
 
     async def _flush_batch(self) -> None:
-        """Flush all batched messages efficiently."""
+        """
+        Flush all batched messages efficiently with retry and partial flush support.
+
+        AI: Implements partial flush - successful groups are published, failed groups are retried.
+            After max retries, failed messages are added to failed batch queue for manual recovery.
+        """
         if not self.message_batch:
             return
 
-        try:
-            # Group messages by subject for efficient publishing
-            grouped_messages: dict[str, list[Any]] = {}
-            for subject, data in self.message_batch:
-                if subject not in grouped_messages:
-                    grouped_messages[subject] = []
-                grouped_messages[subject].append(data)
+        # Group messages by subject for efficient publishing
+        grouped_messages: dict[str, list[Any]] = {}
+        for subject, data in self.message_batch:
+            if subject not in grouped_messages:
+                grouped_messages[subject] = []
+            grouped_messages[subject].append(data)
 
-            # Publish each group using connection pool
-            for subject, messages in grouped_messages.items():
-                batch_data = {
-                    "messages": messages,
-                    "count": len(messages),
-                    "batch_timestamp": asyncio.get_running_loop().time(),
-                }
+        # Track successful and failed groups for partial flush
+        successful_groups: list[str] = []
+        failed_groups: dict[str, list[Any]] = {}
 
+        # Try to publish each group
+        for subject, messages in grouped_messages.items():
+            batch_data = {
+                "messages": messages,
+                "count": len(messages),
+                "batch_timestamp": asyncio.get_running_loop().time(),
+            }
+
+            try:
                 # Use connection pool for batch publishing
                 await self.publish_with_pool(subject, batch_data)
+                successful_groups.append(subject)
+                logger.debug("Batch group published successfully", subject=subject, message_count=len(messages))
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Individual group failures must not stop other groups
+                failed_groups[subject] = messages
+                logger.warning(
+                    "Failed to publish batch group",
+                    subject=subject,
+                    message_count=len(messages),
+                    error=str(e),
+                )
 
-            # Record batch flush metrics
-            self.metrics.record_batch_flush(True, len(self.message_batch))
+        # Retry failed groups
+        if failed_groups:
+            await self._retry_failed_batch_groups(failed_groups)
 
+        # Record batch flush metrics
+        total_messages = len(self.message_batch)
+        successful_messages = sum(len(grouped_messages[subject]) for subject in successful_groups)
+        failed_messages = total_messages - successful_messages
+
+        if not failed_messages:
+            self.metrics.record_batch_flush(True, total_messages)
             logger.info(
-                "Message batch flushed",
-                total_messages=len(self.message_batch),
+                "Message batch flushed successfully",
+                total_messages=total_messages,
+                unique_subjects=len(grouped_messages),
+            )
+        else:
+            # Partial success
+            self.metrics.record_batch_flush(False, total_messages)
+            logger.warning(
+                "Message batch flushed with partial success",
+                total_messages=total_messages,
+                successful_messages=successful_messages,
+                failed_messages=failed_messages,
                 unique_subjects=len(grouped_messages),
             )
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Batch flush errors unpredictable, must handle gracefully
+        # Clear batch and cancel timeout task
+        self.message_batch.clear()
+        if self._batch_task and not self._batch_task.done():
+            self._batch_task.cancel()
+            self._batch_task = None
+
+    async def _retry_failed_batch_groups(self, failed_groups: dict[str, list[Any]], retry_count: int = 0) -> None:
+        """
+        Retry failed batch groups with exponential backoff.
+
+        Args:
+            failed_groups: Dictionary of subject -> messages that failed to publish
+            retry_count: Current retry attempt number
+
+        AI: Retries failed groups up to max_batch_retries times with exponential backoff.
+            After max retries, messages are added to failed batch queue.
+        """
+        if not failed_groups or retry_count >= self._max_batch_retries:
+            # Max retries reached, add to failed batch queue
+            for subject, messages in failed_groups.items():
+                for message in messages:
+                    self._failed_batch_queue.append((subject, message))
             logger.error(
-                "Failed to flush message batch",
-                error=str(e),
-                batch_size=len(self.message_batch),
+                "Batch groups failed after max retries, added to failed queue",
+                failed_groups=len(failed_groups),
+                total_failed_messages=sum(len(msgs) for msgs in failed_groups.values()),
+                retry_count=retry_count,
             )
-        finally:
-            # Clear batch and cancel timeout task
-            self.message_batch.clear()
-            if self._batch_task and not self._batch_task.done():
-                self._batch_task.cancel()
-                self._batch_task = None
+            return
+
+        # Exponential backoff: 100ms, 200ms, 400ms
+        backoff_delay = 0.1 * (2**retry_count)
+        await sleep(backoff_delay)
+
+        # Retry failed groups
+        still_failed: dict[str, list[Any]] = {}
+        for subject, messages in failed_groups.items():
+            batch_data = {
+                "messages": messages,
+                "count": len(messages),
+                "batch_timestamp": asyncio.get_running_loop().time(),
+            }
+
+            try:
+                await self.publish_with_pool(subject, batch_data)
+                logger.info(
+                    "Batch group published successfully on retry",
+                    subject=subject,
+                    message_count=len(messages),
+                    retry_count=retry_count + 1,
+                )
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Retry failures must be tracked
+                still_failed[subject] = messages
+                logger.warning(
+                    "Batch group failed on retry",
+                    subject=subject,
+                    message_count=len(messages),
+                    retry_count=retry_count + 1,
+                    error=str(e),
+                )
+
+        # Recursively retry still-failed groups
+        if still_failed:
+            await self._retry_failed_batch_groups(still_failed, retry_count + 1)
+
+    async def recover_failed_batches(self) -> int:
+        """
+        Attempt to recover messages from the failed batch queue.
+
+        Returns:
+            Number of messages successfully recovered
+
+        AI: Provides manual recovery mechanism for messages that failed after max retries.
+        """
+        if not self._failed_batch_queue:
+            return 0
+
+        # Move failed messages back to batch for retry
+        recovered_count = 0
+        failed_messages = self._failed_batch_queue.copy()
+        self._failed_batch_queue.clear()
+
+        for subject, data in failed_messages:
+            try:
+                # Try to publish individually (not batched)
+                await self.publish_with_pool(subject, data)
+                recovered_count += 1
+                logger.debug("Recovered failed batch message", subject=subject, message_id=data.get("message_id"))
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Recovery failures must be logged but not fail
+                # Add back to failed queue if recovery fails
+                self._failed_batch_queue.append((subject, data))
+                logger.warning(
+                    "Failed to recover batch message",
+                    subject=subject,
+                    message_id=data.get("message_id"),
+                    error=str(e),
+                )
+
+        if recovered_count > 0:
+            logger.info(
+                "Recovered failed batch messages", recovered_count=recovered_count, total_attempted=len(failed_messages)
+            )
+
+        return recovered_count
 
 
 # Global NATS service instance

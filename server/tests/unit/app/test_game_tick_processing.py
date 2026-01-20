@@ -76,8 +76,8 @@ def test_validate_app_state_for_status_effects_no_connection_manager():
     app.state = MagicMock()
     mock_container = MagicMock()
     mock_container.async_persistence = MagicMock()
+    mock_container.connection_manager = None  # Set connection_manager to None
     app.state.container = mock_container
-    del app.state.connection_manager  # Remove connection_manager attribute
 
     is_valid, container = _validate_app_state_for_status_effects(app)
     assert is_valid is False
@@ -90,8 +90,8 @@ def test_validate_app_state_for_status_effects_valid():
     app.state = MagicMock()
     mock_container = MagicMock()
     mock_container.async_persistence = MagicMock()
+    mock_container.connection_manager = MagicMock()
     app.state.container = mock_container
-    app.state.connection_manager = MagicMock()
 
     is_valid, container = _validate_app_state_for_status_effects(app)
     assert is_valid is True
@@ -115,8 +115,8 @@ def test_validate_app_state_for_status_effects_connection_manager_is_none():
     app.state = MagicMock()
     mock_container = MagicMock()
     mock_container.async_persistence = MagicMock()
+    mock_container.connection_manager = None  # Set connection_manager to None in container
     app.state.container = mock_container
-    app.state.connection_manager = None
 
     is_valid, container = _validate_app_state_for_status_effects(app)
     assert is_valid is False

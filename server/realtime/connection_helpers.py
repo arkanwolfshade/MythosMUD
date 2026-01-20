@@ -9,6 +9,8 @@ for various operations like UUID conversion, sequence numbers, and deprecated me
 
 from typing import Any
 
+import aiofiles  # pylint: disable=import-error
+
 from ..exceptions import DatabaseError
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -120,7 +122,7 @@ async def _send_to_websockets(
                 error=str(ws_error),
             )
             delivery_status["websocket_failed"] += 1
-            await manager._cleanup_dead_websocket(player_id, connection_id)  # pylint: disable=protected-access
+            await manager._cleanup_dead_websocket(player_id, connection_id)  # pylint: disable=protected-access  # Reason: Accessing protected method _cleanup_dead_websocket is necessary for connection cleanup, this is part of the connection manager internal API
 
     return had_connection_attempts
 
@@ -277,8 +279,8 @@ async def handle_new_login_impl(player_id: Any, manager: Any) -> None:
         login_log_path = login_log_dir / "new_logins.log"
 
         try:
-            with open(login_log_path, "a", encoding="utf-8") as f:
-                f.write(json.dumps(login_log_entry) + "\n")
+            async with aiofiles.open(login_log_path, "a", encoding="utf-8") as f:
+                await f.write(json.dumps(login_log_entry) + "\n")
         except (OSError, PermissionError) as log_error:
             # Log but don't fail - login logging is non-critical
             logger.debug("Could not write login log", error=str(log_error), log_path=str(login_log_path))

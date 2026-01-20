@@ -16,6 +16,8 @@ import time
 from collections import defaultdict
 from typing import Any, TypeAlias, TypeVar
 
+from anyio import Lock
+
 from ..events.event_types import BaseEvent
 from ..structured_logging.enhanced_logging_config import get_logger
 from .room_data_cache import RoomDataCache
@@ -27,8 +29,8 @@ T = TypeVar("T", bound=BaseEvent)
 
 # Type aliases for better readability
 # Using TypeAlias instead of 'type' keyword for Pylint compatibility (Pylint 3.3.6 doesn't support Python 3.12+ 'type' keyword)
-RoomData: TypeAlias = dict[str, Any]  # noqa: UP040
-EventSequence: TypeAlias = dict[str, int]  # noqa: UP040
+RoomData: TypeAlias = dict[str, Any]  # noqa: UP040  # Reason: Using TypeAlias instead of Python 3.12+ 'type' keyword for Pylint compatibility, dict syntax is clearer for type annotations
+EventSequence: TypeAlias = dict[str, int]  # noqa: UP040  # Reason: Using TypeAlias instead of Python 3.12+ 'type' keyword for Pylint compatibility, dict syntax is clearer for type annotations
 
 logger = get_logger(__name__)
 
@@ -50,7 +52,7 @@ class RoomSyncService:  # pylint: disable=too-many-instance-attributes  # Reason
             room_service: Optional RoomService instance for fetching fresh room data
         """
         self._event_sequence_counter: int = 0
-        self._room_update_locks: dict[str, asyncio.Lock] = defaultdict(asyncio.Lock)
+        self._room_update_locks: dict[str, Lock] = defaultdict(Lock)
         self._processing_queue: asyncio.Queue[BaseEvent] = asyncio.Queue()
         self._freshness_threshold_seconds: int = 5  # Default 5 seconds
         self._room_service: Any | None = room_service

@@ -219,6 +219,10 @@ class ExperienceRepository:
                     )
                     WHERE player_id = :player_id
                     """
+                # Using text() with parameterized queries. Field name is validated against whitelist (line 189),
+                # array_literal is from hardcoded FIELD_NAME_TO_ARRAY dictionary. All user-provided values
+                # (field_name, delta, player_id) are bound via parameterized queries, preventing SQL injection.
+                # nosemgrep: python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text
                 update_query = text(query_str)
 
                 result = await session.execute(

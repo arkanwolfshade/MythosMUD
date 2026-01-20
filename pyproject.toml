@@ -13,8 +13,6 @@ dependencies = [
     "uvicorn[standard]>=0.40.0",
     "pydantic>=2.12.5",
     "pydantic-settings>=2.12.0",
-    "requests>=2.32.5",
-    "httpx>=0.28.1",
     "argon2-cffi>=25.1.0",
     "python-jose>=3.5.0",
     "PyJWT>=2.10.1",  # Required by fastapi-users for JWT token handling
@@ -29,6 +27,7 @@ dependencies = [
     "pytest-cov>=7.0.0",
     "pytest-mock>=3.15.1",
     "psycopg2-binary>=2.9.11",
+    "anyio>=4.0.0",  # Unified async API for backend-agnostic code
     "asyncpg>=0.31.0",
     "pytest-asyncio>=1.3.0",
     "jsonschema>=4.25.1,<4.26.0",
@@ -46,6 +45,8 @@ dependencies = [
     "networkx>=3.6.1", # Graph analysis for alias cycle detection (CRITICAL-3 fix)
     "python-statemachine>=2.5.0",
     "prometheus-client>=0.23.1",
+    "numpy>=2.4.1", # Numerical computing for performance monitoring and statistical calculations
+    "aiofiles>=24.1.0", # Async file I/O to prevent blocking the event loop
 ]
 
 [project.optional-dependencies]
@@ -55,13 +56,11 @@ dev = [
     "pytest-xdist>=3.8.0",  # Parallel test execution (required for -n auto in pytest.ini)
     "networkx>=3.6.1",
     "matplotlib>=3.10.8",
-    "numpy>=2.4.0",
     "pytest-asyncio>=1.3.0",
     "debugpy>=1.8.19",
     "ruff>=0.14.10",
     "pre-commit>=4.5.1",
     "mypy>=1.19.1",  # Static type checking
-    "types-requests>=2.32.4.20260107",  # Type stubs for requests
     "types-python-dateutil>=2.9.0.20251115",  # Type stubs for dateutil
     "types-bleach>=6.3.0.20251115",  # Type stubs for bleach
     "semgrep>=1.146.0",  # Static analysis for security and best practices
@@ -121,8 +120,6 @@ known_third_party = [
     "fastapi",
     "pydantic",
     "uvicorn",
-    "requests",
-    "httpx",
     "argon2",
     "jose",
     "faker",
@@ -344,7 +341,6 @@ ignore_missing_imports = true
 dev = [
     "ruff>=0.14.10",
     "mypy>=1.19.1", # Static type checking
-    "types-requests>=2.32.4.20260107", # Type stubs for requests
     "types-python-dateutil>=2.9.0.20251115", # Type stubs for dateutil
     "semgrep>=1.146.0", # Static analysis for security and best practices
     "websocket-client>=1.9.0", # WebSocket client for testing connection termination
@@ -359,6 +355,7 @@ dev = [
     "pylint-per-file-ignores>=3.2.0", # Per-file ignore support for pylint (matches ruff per-file-ignores)
     "sqlfluff>=3.5.0", # SQL linting and formatting
     "lizard>=1.19.0", # Code complexity analyzer (used by Codacy)
+    "pytest-xdist>=3.8.0", # Parallel test execution (required for -n auto in pytest.ini)
     # sqlint>=0.2.1 - REMOVED: Conflicts with click>=8.1.8 (sqlint requires click==7.0)
     # Use sqlfluff instead, which provides comprehensive SQL linting
 ]

@@ -13,6 +13,8 @@ from collections.abc import Callable
 from functools import wraps
 from typing import Any, TypeVar
 
+from anyio import sleep
+
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -135,13 +137,13 @@ def _create_async_wrapper[F: Callable[..., Any]](  # pylint: disable=too-many-ar
 
                 delay = _calculate_retry_delay(attempt, initial_delay, max_delay, exponential_base)
                 _log_retry_attempt(func.__name__, attempt, max_attempts, delay, e)
-                await asyncio.sleep(delay)
+                await sleep(delay)
 
         if last_error:
             raise last_error
         raise RuntimeError("Retry logic failed unexpectedly")
 
-    return async_wrapper  # type: ignore[return-value]
+    return async_wrapper  # type: ignore[return-value]  # Reason: Generic function wrapper preserves input function type F, but mypy cannot verify type preservation through wrapper function
 
 
 def _create_sync_wrapper[F: Callable[..., Any]](  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Retry wrapper creation requires many parameters for complete retry configuration
@@ -177,7 +179,7 @@ def _create_sync_wrapper[F: Callable[..., Any]](  # pylint: disable=too-many-arg
             raise last_error
         raise RuntimeError("Retry logic failed unexpectedly")
 
-    return sync_wrapper  # type: ignore[return-value]
+    return sync_wrapper  # type: ignore[return-value]  # Reason: Generic function wrapper preserves input function type F, but mypy cannot verify type preservation through wrapper function
 
 
 def retry_with_backoff[F: Callable[..., Any]](

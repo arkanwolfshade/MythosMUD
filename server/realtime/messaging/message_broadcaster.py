@@ -270,7 +270,7 @@ class MessageBroadcaster:
                         global_stats["delivery_details"][player_id] = {"success": False, "error": str(result)}
                         global_stats["failed_deliveries"] += 1
                     else:
-                        delivery_status: dict[str, Any] = result  # type: ignore[assignment]
+                        delivery_status: dict[str, Any] = result  # type: ignore[assignment]  # Reason: After isinstance(result, Exception) check, result must be dict[str, Any] from send_personal_message, but mypy cannot verify this type narrowing
                         global_stats["delivery_details"][player_id] = delivery_status
                         if delivery_status["success"]:
                             global_stats["successful_deliveries"] += 1

@@ -31,8 +31,12 @@ if not os.environ.get("DATABASE_NPC_URL"):
 os.environ.setdefault("GAME_ALIASES_DIR", "data/unit_test/players/aliases")
 
 # Imports must come after environment variables to prevent config loading failures
-from server.config import reset_config  # noqa: E402
-from server.structured_logging.enhanced_logging_config import get_logger  # noqa: E402
+from server.config import (
+    reset_config,  # noqa: E402  # Reason: Import must come after environment variables to prevent config loading failures during test setup
+)
+from server.structured_logging.enhanced_logging_config import (
+    get_logger,  # noqa: E402  # Reason: Import must come after environment variables to prevent config loading failures during test setup
+)
 
 logger = get_logger(__name__)
 
@@ -101,7 +105,7 @@ def configure_event_loop_policy() -> Generator[None, None, None]:
         policy: asyncio.AbstractEventLoopPolicy = windows_policy()
     else:
         try:
-            import uvloop  # type: ignore[import-not-found]  # uvloop is optional and may not have type stubs
+            import uvloop  # type: ignore[import-not-found]  # Reason: uvloop is optional dependency and may not have type stubs, import-not-found is expected when uvloop is not installed
 
             policy = uvloop.EventLoopPolicy()
         except ImportError:
@@ -119,7 +123,7 @@ def test_logger() -> Any:
     return get_logger(__name__)
 
 
-def pytest_collection_modifyitems(config: Any, items: list[Any]) -> None:  # noqa: ARG001, pylint: disable=unused-argument
+def pytest_collection_modifyitems(config: Any, items: list[Any]) -> None:  # noqa: ARG001  # Reason: Pytest hook signature requires config parameter even if unused  # pylint: disable=unused-argument  # Reason: Pytest hook signature requires config parameter even if unused
     """
     Auto-mark tests based on their file path.
 

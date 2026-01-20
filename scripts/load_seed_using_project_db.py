@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Load seed data using project's database connection."""
 
-import asyncio
 import sys
 from pathlib import Path
+
+from anyio import run
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -33,7 +34,7 @@ async def load_seed_data():
                     continue
 
                 print(f"Loading {seed_file}...")
-                sql = file_path.read_text(encoding='utf-8')
+                sql = file_path.read_text(encoding="utf-8")
 
                 try:
                     # Execute SQL file
@@ -67,5 +68,6 @@ async def load_seed_data():
             await session.rollback()
             raise
 
+
 if __name__ == "__main__":
-    asyncio.run(load_seed_data())
+    run(load_seed_data)

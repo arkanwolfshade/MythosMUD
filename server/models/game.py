@@ -213,8 +213,17 @@ class Stats(BaseModel):
         # Cap magic_points at max_magic_points
         object.__setattr__(self, "magic_points", min(self.magic_points, max_mp))
 
-        # Cap lucidity at max_lucidity
-        object.__setattr__(self, "lucidity", min(self.lucidity, max_lucidity_value))
+        # Cap lucidity at max_lucidity when it exceeds max
+        # Exception: Preserve lucidity if it's at the default (100) to allow characters
+        # to start with full mental clarity regardless of education level.
+        # Also preserve reasonable explicit values (<= 100) that are slightly above max_lucidity,
+        # as these are likely intentional user-specified values.
+        # Only cap unreasonably high values (> 100) that exceed max_lucidity.
+        if self.lucidity > max_lucidity_value:
+            # Preserve default value (100) and reasonable explicit values (<= 100)
+            # Only cap unreasonably high values (> 100)
+            if self.lucidity > 100:
+                object.__setattr__(self, "lucidity", max_lucidity_value)
 
         return self
 

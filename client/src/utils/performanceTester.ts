@@ -52,7 +52,7 @@ export class PerformanceTester {
         // Don't record warmup times
       } catch (error) {
         // nosemgrep: javascript.lang.security.audit.unsafe-formatstring.unsafe-formatstring
-        // This is internal test logging with controlled iteration number, not user input
+        // Internal test logging with controlled iteration number, not user input
         console.warn(`Warmup iteration ${i} failed:`, error);
       }
     }
@@ -71,6 +71,8 @@ export class PerformanceTester {
         const testEnd = performance.now();
         times.push(testEnd - testStart);
       } catch (error) {
+        // nosemgrep: javascript.lang.security.audit.unsafe-formatstring.unsafe-formatstring
+        // Internal test logging with controlled iteration number, not user input
         console.warn(`Test iteration ${i} failed:`, error);
       }
     }

@@ -9,8 +9,10 @@ cleanup and shutdown coordination with timeout boundaries.
 # pylint: disable=too-many-return-statements  # Reason: Task registry methods require multiple return statements for different task states and lifecycle conditions
 
 import asyncio
-from collections.abc import Coroutine
+from collections.abc import Callable, Coroutine
 from typing import Any
+
+from anyio import Event
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -41,7 +43,7 @@ class TaskMetadata:  # pylint: disable=too-few-public-methods  # Reason: Data cl
         return f"TaskMetadata({self.task_name}, {self.task_type}, {status})"
 
 
-class TaskRegistry:
+class TaskRegistry:  # pylint: disable=too-many-instance-attributes  # Reason: Task registry requires 13 instance attributes for task collections, shutdown coordination, lifecycle tracking, metrics collection, and service tracking; extracting into nested objects would reduce clarity
     """
     Centralized asyncio task registry for lifecycle-tracking with timeout management.
 
@@ -57,10 +59,99 @@ class TaskRegistry:
         self._task_names: dict[str, asyncio.Task[Any]] = {}  # For name-based lookup
         self._shutdown_timeout: float = 5.0  # Default timeout for graceful shutdown
         self._lifecycle_tasks: set[asyncio.Task[Any]] = set()  # Critical system tasks
-        self._shutdown_semaphore = asyncio.Event()
+        self._shutdown_semaphore = Event()
         self._shutdown_in_progress = False
 
+        # Task lifecycle tracking for metrics
+
+        self._task_creation_count = 0
+        self._task_completion_count = 0
+        self._task_cancellation_count = 0
+        self._task_creation_timestamps: list[float] = []
+        self._task_completion_timestamps: list[float] = []
+        self._max_timestamp_history = 1000  # Keep only last N timestamps
+        self._task_service_tracking: dict[str, int] = {}  # Track tasks by service/component
+
         logger.info("TaskRegistry initialized - it is watched by eyes of unmeaning")
+
+    def _ensure_unique_task_name(self, task_name: str) -> str:
+        """Ensure task name is unique by appending timestamp if needed."""
+        if task_name in self._task_names:
+            logger.debug("Warning: Task name already exists, appending timestamp", task_name=task_name)
+            task_name = f"{task_name}_{asyncio.get_event_loop().time()}"
+        return task_name
+
+    def _track_task_creation_metrics(self) -> None:
+        """Track task creation for metrics."""
+        import time
+
+        self._task_creation_count += 1
+        self._task_creation_timestamps.append(time.time())
+        # Keep only last N timestamps to prevent unbounded growth
+        if len(self._task_creation_timestamps) > self._max_timestamp_history:
+            self._task_creation_timestamps = self._task_creation_timestamps[-self._max_timestamp_history :]
+
+    def _extract_service_name(self, task_name: str, task_type: str) -> str:
+        """Extract service name from task name or use task type."""
+        # Format: service_name:task_name or just task_name
+        if ":" in task_name:
+            return task_name.split(":")[0]
+        if task_type != "unknown":
+            return task_type
+        return "unknown"
+
+    def _create_task_completion_callback(self, task_name: str) -> Callable[[asyncio.Task[Any]], None]:
+        """Create callback function for task completion cleanup."""
+
+        def task_completion_callback(completed_task: asyncio.Task[Any]) -> None:
+            """Automatic cleanup when task completes."""
+            try:
+                if completed_task in self._active_tasks:
+                    del self._active_tasks[completed_task]
+                if completed_task in self._lifecycle_tasks:
+                    self._lifecycle_tasks.discard(completed_task)
+                if task_name in self._task_names and self._task_names[task_name] == completed_task:
+                    del self._task_names[task_name]
+
+                # Track task completion for metrics
+                import time
+
+                self._task_completion_count += 1
+                self._task_completion_timestamps.append(time.time())
+                # Keep only last N timestamps to prevent unbounded growth
+                if len(self._task_completion_timestamps) > self._max_timestamp_history:
+                    self._task_completion_timestamps = self._task_completion_timestamps[-self._max_timestamp_history :]
+
+                # Track cancellation if task was cancelled
+                if completed_task.cancelled():
+                    self._task_cancellation_count += 1
+
+                logger.debug("Task completed and cleaned up", task_name=task_name)
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Task cleanup errors unpredictable, must not fail task completion
+                logger.error("Error during task completion cleanup", task_name=task_name, error=str(e))
+
+        return task_completion_callback
+
+    def _setup_task_tracking(
+        self, task: asyncio.Task[Any], metadata: TaskMetadata, task_name: str, task_type: str
+    ) -> None:
+        """Set up tracking for a newly created task."""
+        self._active_tasks[task] = metadata
+        self._task_names[task_name] = task
+
+        # Track lifecycle tasks separately for prioritized shutdown coordination
+        if metadata.is_lifecycle or task_type == "lifecycle":
+            self._lifecycle_tasks.add(task)
+
+        # Set up completion/cleanup callback
+        task.add_done_callback(self._create_task_completion_callback(task_name))
+
+        # Track task creation for metrics
+        self._track_task_creation_metrics()
+
+        # Track tasks by service/component
+        service_name = self._extract_service_name(task_name, task_type)
+        self._task_service_tracking[service_name] = self._task_service_tracking.get(service_name, 0) + 1
 
     def register_task(  # pylint: disable=keyword-arg-before-vararg  # Reason: task_type has default value, *args follows for flexibility
         self, coro: Coroutine[Any, Any, Any], task_name: str, task_type: str = "unknown", *args
@@ -81,37 +172,14 @@ class TaskRegistry:
             logger.warning("Attempting to register task during shutdown - denied", task_name=task_name)
             raise RuntimeError("Task registration denied during shutdown")
 
-        if task_name in self._task_names:
-            logger.debug("Warning: Task name already exists, appending timestamp", task_name=task_name)
-            task_name = f"{task_name}_{asyncio.get_event_loop().time()}"
+        task_name = self._ensure_unique_task_name(task_name)
 
         try:
             # Create the task with enhanced metadata
             task: asyncio.Task[Any] = asyncio.create_task(coro, *args)
             metadata = TaskMetadata(task, task_name, task_type)
 
-            self._active_tasks[task] = metadata
-            self._task_names[task_name] = task
-
-            # Track lifecycle tasks separately for prioritized shutdown coordination
-            if metadata.is_lifecycle or task_type == "lifecycle":
-                self._lifecycle_tasks.add(task)
-
-            # Set up completion/cleanup callback
-            def task_completion_callback(completed_task: asyncio.Task[Any]):
-                """Automatic cleanup when task completes."""
-                try:
-                    if completed_task in self._active_tasks:
-                        del self._active_tasks[completed_task]
-                    if completed_task in self._lifecycle_tasks:
-                        self._lifecycle_tasks.discard(completed_task)
-                    if task_name in self._task_names and self._task_names[task_name] == completed_task:
-                        del self._task_names[task_name]
-                    logger.debug("Task completed and cleaned up", task_name=task_name)
-                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Task cleanup errors unpredictable, must not fail task completion
-                    logger.error("Error during task completion cleanup", task_name=task_name, error=str(e))
-
-            task.add_done_callback(task_completion_callback)
+            self._setup_task_tracking(task, metadata, task_name, task_type)
 
             logger.debug("Registered task", task_name=task_name, task_type=task_type)
             return task
@@ -316,7 +384,7 @@ class TaskRegistry:
             self._cleanup_registry_collections()
 
         self._shutdown_in_progress = False
-        self._shutdown_semaphore.clear()
+        self._shutdown_semaphore = Event()  # anyio.Event doesn't have clear(), create new instance
 
         full_success = not self._active_tasks
         if not full_success:
@@ -339,6 +407,52 @@ class TaskRegistry:
             "completed_tasks": completed,
             "lifecycle_tasks": len(self._lifecycle_tasks),
             "registry_shutdown_in_progress": self._shutdown_in_progress,
+        }
+
+    def get_active_task_count(self) -> int:
+        """Get count of active tasks."""
+        return len([m for m in self._active_tasks.values() if not m.task.done()])
+
+    def get_task_stats_by_type(self) -> dict[str, int]:
+        """Get task breakdown by type."""
+        task_types: dict[str, int] = {}
+        for metadata in self._active_tasks.values():
+            if not metadata.task.done():
+                task_types[metadata.task_type] = task_types.get(metadata.task_type, 0) + 1
+        return task_types
+
+    def get_task_lifecycle_metrics(self) -> dict[str, Any]:
+        """Get task lifecycle metrics including creation and completion rates."""
+        import time
+
+        now = time.time()
+        # Calculate rates based on recent activity (last hour)
+        one_hour_ago = now - 3600
+        recent_creations = [ts for ts in self._task_creation_timestamps if ts > one_hour_ago]
+        recent_completions = [ts for ts in self._task_completion_timestamps if ts > one_hour_ago]
+
+        # Calculate creation and completion rates (per hour)
+        task_creation_rate = len(recent_creations)
+        task_completion_rate = len(recent_completions)
+
+        # Count orphaned tasks (done but not cleaned up, or active but no metadata)
+        orphaned_count = 0
+        for task, _metadata in list(self._active_tasks.items()):
+            if task.done() and task not in self._lifecycle_tasks:
+                # Task is done but still in registry - might be orphaned
+                orphaned_count += 1
+
+        return {
+            "active_task_count": self.get_active_task_count(),
+            "task_creation_count": self._task_creation_count,
+            "task_completion_count": self._task_completion_count,
+            "task_cancellation_count": self._task_cancellation_count,
+            "tasks_by_type": self.get_task_stats_by_type(),
+            "tasks_by_service": dict(self._task_service_tracking),
+            "task_creation_rate": task_creation_rate,  # Per hour
+            "task_completion_rate": task_completion_rate,  # Per hour
+            "orphaned_task_count": orphaned_count,
+            "lifecycle_tasks_count": len(self._lifecycle_tasks),
         }
 
 

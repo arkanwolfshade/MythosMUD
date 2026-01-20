@@ -11,6 +11,8 @@ Performance tracking is now a focused, independently testable component.
 import time
 from typing import Any, TypedDict
 
+import numpy as np
+
 from ...structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -132,8 +134,8 @@ class PerformanceTracker:
         Args:
             metric_key: Key in performance_stats to trim
         """
-        if len(self.performance_stats[metric_key]) > self.max_samples:  # type: ignore[literal-required]
-            self.performance_stats[metric_key] = self.performance_stats[metric_key][-self.max_samples :]  # type: ignore[literal-required]
+        if len(self.performance_stats[metric_key]) > self.max_samples:  # type: ignore[literal-required]  # Reason: TypedDict access with variable key, mypy cannot verify key exists or value type, but _trim_samples is only called with known list keys
+            self.performance_stats[metric_key] = self.performance_stats[metric_key][-self.max_samples :]  # type: ignore[literal-required]  # Reason: TypedDict access with variable key, mypy cannot verify key exists or value type, but _trim_samples is only called with known list keys
 
     def get_stats(self) -> dict[str, Any]:
         """
@@ -143,64 +145,80 @@ class PerformanceTracker:
             dict: Performance statistics including timing data and averages
         """
         try:
-            # Calculate averages for connection establishment times
-            websocket_times = [
-                duration
-                for conn_type, duration in self.performance_stats["connection_establishment_times"]
-                if conn_type == "websocket"
-            ]
+            # Filter and convert to NumPy arrays with explicit dtype for efficient statistical operations
+            websocket_times = np.array(
+                [
+                    duration
+                    for conn_type, duration in self.performance_stats["connection_establishment_times"]
+                    if conn_type == "websocket"
+                ],
+                dtype=np.float32,
+            )
 
             # Calculate averages for message delivery times
-            message_times = [duration for msg_type, duration in self.performance_stats["message_delivery_times"]]
+            message_times = np.array(
+                [duration for msg_type, duration in self.performance_stats["message_delivery_times"]], dtype=np.float32
+            )
 
             # Calculate averages for disconnection times
-            disconnection_times = [duration for conn_type, duration in self.performance_stats["disconnection_times"]]
+            disconnection_times = np.array(
+                [duration for conn_type, duration in self.performance_stats["disconnection_times"]], dtype=np.float32
+            )
 
             # Get session switch times
-            session_switch_times = self.performance_stats["session_switch_times"]
+            session_switch_times = np.array(self.performance_stats["session_switch_times"], dtype=np.float32)
 
             # Get health check times
-            health_check_times = self.performance_stats["health_check_times"]
+            health_check_times = np.array(self.performance_stats["health_check_times"], dtype=np.float32)
+
+            # Helper function to safely calculate stats from NumPy array
+            def _calculate_stats(times: np.ndarray) -> dict[str, float]:
+                """Calculate statistical measures from a NumPy array of times."""
+                if times.size > 0:
+                    return {
+                        "avg": float(np.mean(times)),
+                        "max": float(np.max(times)),
+                        "min": float(np.min(times)),
+                    }
+                return {"avg": 0.0, "max": 0.0, "min": 0.0}
+
+            websocket_stats = _calculate_stats(websocket_times)
+            message_stats = _calculate_stats(message_times)
+            disconnection_stats = _calculate_stats(disconnection_times)
+            session_switch_stats = _calculate_stats(session_switch_times)
+            health_check_stats = _calculate_stats(health_check_times)
 
             return {
                 "connection_establishment": {
                     "total_connections": self.performance_stats["total_connections_established"],
-                    "websocket_connections": len(websocket_times),
-                    "avg_websocket_establishment_ms": sum(websocket_times) / len(websocket_times)
-                    if websocket_times
-                    else 0,
-                    "max_websocket_establishment_ms": max(websocket_times) if websocket_times else 0,
-                    "min_websocket_establishment_ms": min(websocket_times) if websocket_times else 0,
+                    "websocket_connections": websocket_times.size,
+                    "avg_websocket_establishment_ms": websocket_stats["avg"],
+                    "max_websocket_establishment_ms": websocket_stats["max"],
+                    "min_websocket_establishment_ms": websocket_stats["min"],
                 },
                 "message_delivery": {
                     "total_messages": self.performance_stats["total_messages_delivered"],
-                    "avg_delivery_time_ms": sum(message_times) / len(message_times) if message_times else 0,
-                    "max_delivery_time_ms": max(message_times) if message_times else 0,
-                    "min_delivery_time_ms": min(message_times) if message_times else 0,
+                    "avg_delivery_time_ms": message_stats["avg"],
+                    "max_delivery_time_ms": message_stats["max"],
+                    "min_delivery_time_ms": message_stats["min"],
                 },
                 "disconnections": {
                     "total_disconnections": self.performance_stats["total_disconnections"],
-                    "avg_disconnection_time_ms": sum(disconnection_times) / len(disconnection_times)
-                    if disconnection_times
-                    else 0,
-                    "max_disconnection_time_ms": max(disconnection_times) if disconnection_times else 0,
-                    "min_disconnection_time_ms": min(disconnection_times) if disconnection_times else 0,
+                    "avg_disconnection_time_ms": disconnection_stats["avg"],
+                    "max_disconnection_time_ms": disconnection_stats["max"],
+                    "min_disconnection_time_ms": disconnection_stats["min"],
                 },
                 "session_management": {
                     "total_session_switches": self.performance_stats["total_session_switches"],
-                    "avg_session_switch_time_ms": sum(session_switch_times) / len(session_switch_times)
-                    if session_switch_times
-                    else 0,
-                    "max_session_switch_time_ms": max(session_switch_times) if session_switch_times else 0,
-                    "min_session_switch_time_ms": min(session_switch_times) if session_switch_times else 0,
+                    "avg_session_switch_time_ms": session_switch_stats["avg"],
+                    "max_session_switch_time_ms": session_switch_stats["max"],
+                    "min_session_switch_time_ms": session_switch_stats["min"],
                 },
                 "health_monitoring": {
                     "total_health_checks": self.performance_stats["total_health_checks"],
-                    "avg_health_check_time_ms": sum(health_check_times) / len(health_check_times)
-                    if health_check_times
-                    else 0,
-                    "max_health_check_time_ms": max(health_check_times) if health_check_times else 0,
-                    "min_health_check_time_ms": min(health_check_times) if health_check_times else 0,
+                    "avg_health_check_time_ms": health_check_stats["avg"],
+                    "max_health_check_time_ms": health_check_stats["max"],
+                    "min_health_check_time_ms": health_check_stats["min"],
                 },
                 "timestamp": time.time(),
             }

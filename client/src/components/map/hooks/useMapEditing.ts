@@ -9,9 +9,9 @@
  * of our eldritch architecture.
  */
 
-import React, { useCallback, useRef, useState, useEffect, startTransition } from 'react';
-import type { Node, Edge } from 'reactflow';
-import type { RoomNodeData, ExitEdgeData } from '../types';
+import { startTransition, useCallback, useEffect, useRef, useState } from 'react';
+import type { Edge, Node } from 'reactflow';
+import type { ExitEdgeData, RoomNodeData } from '../types';
 
 export interface UseMapEditingOptions {
   /** Initial nodes */
@@ -100,27 +100,6 @@ export function useMapEditing(options: UseMapEditingOptions): UseMapEditingResul
   const { nodes: initialNodes, edges: initialEdges, onSave } = options;
 
   const [nodes, setNodes] = useState<Node<RoomNodeData>[]>(initialNodes);
-  // #region agent log
-  React.useEffect(() => {
-    if (typeof window !== 'undefined') {
-      // Intentional debug logging to localhost endpoint (127.0.0.1) for development only
-      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-        // nosemgrep: typescript.react.security.react-insecure-request.react-insecure-request
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          location: 'useMapEditing.ts:103',
-          message: 'useMapEditing nodes state',
-          data: { nodesCount: nodes.length, firstNodeId: nodes[0]?.id, firstNodePos: nodes[0]?.position },
-          timestamp: Date.now(),
-          sessionId: 'debug-session',
-          runId: 'run1',
-          hypothesisId: 'D',
-        }),
-      }).catch(() => {});
-    }
-  }, [nodes]);
-  // #endregion
   const [edges, setEdges] = useState<Edge<ExitEdgeData>[]>(initialEdges);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [canUndo, setCanUndo] = useState(false);
@@ -184,30 +163,6 @@ export function useMapEditing(options: UseMapEditingOptions): UseMapEditingResul
       initialEdges.some((e, i) => e.id !== prevInitialEdgesRef.current[i]?.id);
 
     if (nodesChanged || edgesChanged) {
-      // #region agent log
-      if (typeof window !== 'undefined') {
-        // Intentional debug logging to localhost endpoint (127.0.0.1) for development only
-        fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-          // nosemgrep: typescript.react.security.react-insecure-request.react-insecure-request
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            location: 'useMapEditing.ts:155',
-            message: 'Syncing state from initialNodes change',
-            data: {
-              initialNodesCount: initialNodes.length,
-              prevNodesCount: prevInitialNodesRef.current.length,
-              nodesChanged,
-              edgesChanged,
-            },
-            timestamp: Date.now(),
-            sessionId: 'debug-session',
-            runId: 'post-fix',
-            hypothesisId: 'D',
-          }),
-        }).catch(() => {});
-      }
-      // #endregion
       // Use startTransition to avoid cascading renders from synchronous setState in effect
       startTransition(() => {
         setNodes(initialNodes);
@@ -443,25 +398,6 @@ export function useMapEditing(options: UseMapEditingOptions): UseMapEditingResul
   // Save changes
   const save = useCallback(async () => {
     if (!onSave) {
-      // #region agent log
-      if (typeof window !== 'undefined') {
-        // Intentional debug logging to localhost endpoint (127.0.0.1) for development only
-        fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-          // nosemgrep: typescript.react.security.react-insecure-request.react-insecure-request
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            location: 'useMapEditing.ts:396',
-            message: 'save called but no onSave callback',
-            data: {},
-            timestamp: Date.now(),
-            sessionId: 'debug-session',
-            runId: 'run1',
-            hypothesisId: 'E',
-          }),
-        }).catch(() => {});
-      }
-      // #endregion
       return;
     }
 
@@ -473,80 +409,15 @@ export function useMapEditing(options: UseMapEditingOptions): UseMapEditingResul
       roomUpdates: roomUpdatesRef.current,
     };
 
-    // #region agent log
-    if (typeof window !== 'undefined') {
-      // Intentional debug logging to localhost endpoint (127.0.0.1) for development only
-      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-        // nosemgrep: typescript.react.security.react-insecure-request.react-insecure-request
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          location: 'useMapEditing.ts:408',
-          message: 'save calling onSave',
-          data: {
-            nodePositionsCount: changes.nodePositions.size,
-            firstNodePosition: Array.from(changes.nodePositions.entries())[0],
-          },
-          timestamp: Date.now(),
-          sessionId: 'debug-session',
-          runId: 'run1',
-          hypothesisId: 'E',
-        }),
-      }).catch(() => {});
-    }
-    // #endregion
+    await onSave(changes);
 
-    try {
-      await onSave(changes);
-      // #region agent log
-      if (typeof window !== 'undefined') {
-        // Intentional debug logging to localhost endpoint (127.0.0.1) for development only
-        fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-          // nosemgrep: typescript.react.security.react-insecure-request.react-insecure-request
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            location: 'useMapEditing.ts:415',
-            message: 'save completed successfully',
-            data: {},
-            timestamp: Date.now(),
-            sessionId: 'debug-session',
-            runId: 'run1',
-            hypothesisId: 'E',
-          }),
-        }).catch(() => {});
-      }
-      // #endregion
-
-      // Clear change tracking after successful save
-      nodePositionChangesRef.current.clear();
-      newEdgesRef.current = [];
-      deletedEdgeIdsRef.current.clear();
-      edgeUpdatesRef.current.clear();
-      roomUpdatesRef.current.clear();
-      setHasUnsavedChanges(false);
-    } catch (error) {
-      // #region agent log
-      if (typeof window !== 'undefined') {
-        // Intentional debug logging to localhost endpoint (127.0.0.1) for development only
-        fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-          // nosemgrep: typescript.react.security.react-insecure-request.react-insecure-request
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            location: 'useMapEditing.ts:427',
-            message: 'save failed with error',
-            data: { error: error instanceof Error ? error.message : String(error) },
-            timestamp: Date.now(),
-            sessionId: 'debug-session',
-            runId: 'run1',
-            hypothesisId: 'E',
-          }),
-        }).catch(() => {});
-      }
-      // #endregion
-      throw error; // Re-throw so UI can handle it
-    }
+    // Clear change tracking after successful save
+    nodePositionChangesRef.current.clear();
+    newEdgesRef.current = [];
+    deletedEdgeIdsRef.current.clear();
+    edgeUpdatesRef.current.clear();
+    roomUpdatesRef.current.clear();
+    setHasUnsavedChanges(false);
   }, [onSave]);
 
   // Reset to initial state

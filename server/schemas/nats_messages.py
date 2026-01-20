@@ -11,7 +11,7 @@ AI: Schema validation prevents malformed messages and provides clear error messa
 from datetime import datetime
 from typing import Any
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class BaseMessageSchema(BaseModel):
@@ -32,11 +32,25 @@ class BaseMessageSchema(BaseModel):
             raise ValueError("Timestamp must be valid ISO format") from err
         return v
 
-    model_config = {"extra": "forbid", "strict": True}
+    model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
+        strict=True,
+    )
 
 
 class ChatMessageSchema(BaseMessageSchema):
     """Schema for chat messages."""
+
+    model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
+        strict=True,
+    )
 
     channel: str = Field(..., description="Chat channel (say, local, global, whisper, etc.)")
     content: str = Field(..., description="Message content", min_length=1, max_length=10000)
@@ -57,6 +71,14 @@ class ChatMessageSchema(BaseMessageSchema):
 
 class EventMessageSchema(BaseMessageSchema):
     """Schema for event messages."""
+
+    model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
+        strict=True,
+    )
 
     event_type: str = Field(..., description="Event type identifier")
     event_data: dict[str, Any] = Field(..., description="Event-specific data")

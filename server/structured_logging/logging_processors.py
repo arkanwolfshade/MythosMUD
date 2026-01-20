@@ -57,6 +57,7 @@ def sanitize_sensitive_data(_logger: Any, _name: str, event_dict: dict[str, Any]
     """
     # Sensitive patterns that should be redacted
     # These patterns match whole words or specific suffixes/prefixes
+    # Expanded to include additional sensitive data types per structlog.mdc best practices
     sensitive_patterns = [
         r"\bpassword\b",
         r"\btoken\b",
@@ -69,6 +70,20 @@ def sanitize_sensitive_data(_logger: Any, _name: str, event_dict: dict[str, Any]
         r"\bjwt\b",
         r"\bbearer\b",
         r"\bauthorization\b",
+        r"\bssn\b",  # Social Security Number
+        r"\bsocial_security\b",
+        r"\bcredit_card\b",
+        r"\bcard_number\b",
+        r"\bcvv\b",  # Card Verification Value
+        r"\bcvc\b",  # Card Verification Code
+        r"\bpin\b",  # Personal Identification Number
+        r"\bapi_key\b",
+        r"\bprivate_key\b",
+        r"\baccess_token\b",
+        r"\brefresh_token\b",
+        r"\bsession_id\b",  # May contain sensitive session data
+        r"\bcookie\b",
+        r"\bcsrf\b",  # CSRF token
     ]
 
     # Safe field names that should never be redacted even if they match patterns
@@ -190,7 +205,7 @@ def enhance_player_ids(_logger: Any, _name: str, event_dict: dict[str, Any]) -> 
                         # Define a local exception type alias for optional dependency
                         try:
                             from server.exceptions import (
-                                DatabaseError as _ImportedDatabaseError,  # noqa: F401  # pylint: disable=unused-import
+                                DatabaseError as _ImportedDatabaseError,  # noqa: F401  # pylint: disable=unused-import  # Reason: Imported for type alias assignment, unused but required for type annotation
                             )
 
                             _DatabaseErrorType: type[BaseException] = _ImportedDatabaseError

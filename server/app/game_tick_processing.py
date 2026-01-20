@@ -4,11 +4,14 @@ This module handles all game tick processing logic, including status effects,
 combat, death processing, and periodic maintenance tasks.
 """
 
+# pylint: disable=too-many-lines  # Reason: Game tick processing module requires extensive logic for status effects, MP regeneration, corpse cleanup, death processing, and all periodic game maintenance tasks
+
 import asyncio
 import datetime
 import uuid
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
+from anyio import sleep
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -43,7 +46,7 @@ def get_current_tick() -> int:
 
 def reset_current_tick() -> None:
     """Reset the current tick for testing."""
-    global _current_tick  # pylint: disable=global-statement
+    global _current_tick  # pylint: disable=global-statement  # Reason: Module-level tick counter must be mutable for testing and game state tracking
     _current_tick = 0
 
 
@@ -70,14 +73,14 @@ def _validate_app_state_for_status_effects(app: FastAPI) -> tuple[bool, "Applica
     if not container.async_persistence:
         return False, None
 
-    if not (hasattr(app.state, "connection_manager") and app.state.connection_manager):
+    if not container.connection_manager:
         return False, None
 
     return True, container
 
 
 async def _process_damage_over_time_effect(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Effect processing requires many parameters for game state and effect context
-    app: FastAPI, container: "ApplicationContainer", player: "Player", effect: dict, remaining: int, player_id: str
+    _app: FastAPI, container: "ApplicationContainer", player: "Player", effect: dict, remaining: int, player_id: str
 ) -> bool:
     """Process a damage over time effect.
 
@@ -89,10 +92,9 @@ async def _process_damage_over_time_effect(  # pylint: disable=too-many-argument
 
     # Check if player is in login grace period - block negative effects
     try:
-        connection_manager = getattr(app.state, "connection_manager", None)
-        if connection_manager:
+        if container.connection_manager:
             player_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
-            if is_player_in_login_grace_period(player_uuid, connection_manager):
+            if is_player_in_login_grace_period(player_uuid, container.connection_manager):
                 logger.debug(
                     "Damage over time effect blocked - player in login grace period",
                     player_id=player_id,
@@ -104,7 +106,7 @@ async def _process_damage_over_time_effect(  # pylint: disable=too-many-argument
         logger.debug("Could not check login grace period for damage over time", player_id=player_id, error=str(e))
 
     damage = effect.get("damage", 0)
-    if damage > 0 and hasattr(app.state, "player_death_service") and container.async_persistence:
+    if damage > 0 and container.async_persistence:
         await container.async_persistence.damage_player(player, damage, "status_effect")
         logger.debug("Applied damage over time", player_id=player_id, damage=damage, effect_type=effect.get("type", ""))
         return True
@@ -179,6 +181,66 @@ async def _update_player_status_effects(
     return False
 
 
+async def _validate_and_get_player(
+    container: "ApplicationContainer", player_id: str
+) -> tuple["Player | None", uuid.UUID | None]:
+    """
+    Validate container and retrieve player by ID.
+
+    Args:
+        container: Application container
+        player_id: Player ID as string
+
+    Returns:
+        Tuple of (player object or None, player_uuid or None)
+    """
+    if not container.async_persistence:
+        return None, None
+
+    # Convert player_id from str to UUID
+    try:
+        player_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+    except (ValueError, AttributeError):
+        logger.warning("Invalid player_id format", player_id=player_id)
+        return None, None
+
+    player = await container.async_persistence.get_player_by_id(player_uuid)
+    return player, player_uuid
+
+
+async def _process_all_status_effects(
+    app: FastAPI, container: "ApplicationContainer", player: "Player", player_id: str
+) -> tuple[list[dict], bool, int]:
+    """
+    Process all status effects for a player.
+
+    Args:
+        app: FastAPI application
+        container: Application container
+        player: Player object
+        player_id: Player ID as string
+
+    Returns:
+        Tuple of (updated_effects list, effect_applied bool, original_count int)
+    """
+    status_effects = player.get_status_effects()
+    if not status_effects:
+        return [], False, 0
+
+    updated_effects = []
+    effect_applied = False
+    original_count = len(status_effects)
+
+    for effect in status_effects:
+        updated_effect, was_applied = await _process_single_effect(app, container, player, effect, player_id)
+        if updated_effect is not None:
+            updated_effects.append(updated_effect)
+        if was_applied:
+            effect_applied = True
+
+    return updated_effects, effect_applied, original_count
+
+
 async def _process_player_status_effects(app: FastAPI, container: "ApplicationContainer", player_id: str) -> bool:
     """Process status effects for a single player.
 
@@ -186,32 +248,13 @@ async def _process_player_status_effects(app: FastAPI, container: "ApplicationCo
         True if player was processed and updated, False otherwise.
     """
     try:
-        if not container.async_persistence:
-            return False
-        # Convert player_id from str to UUID
-        try:
-            player_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
-        except (ValueError, AttributeError):
-            logger.warning("Invalid player_id format", player_id=player_id)
-            return False
-        player = await container.async_persistence.get_player_by_id(player_uuid)
+        player, _ = await _validate_and_get_player(container, player_id)
         if not player:
             return False
 
-        status_effects = player.get_status_effects()
-        if not status_effects:
-            return False
-
-        updated_effects = []
-        effect_applied = False
-        original_count = len(status_effects)
-
-        for effect in status_effects:
-            updated_effect, was_applied = await _process_single_effect(app, container, player, effect, player_id)
-            if updated_effect is not None:
-                updated_effects.append(updated_effect)
-            if was_applied:
-                effect_applied = True
+        updated_effects, effect_applied, original_count = await _process_all_status_effects(
+            app, container, player, player_id
+        )
 
         return await _update_player_status_effects(container, player, updated_effects, original_count, effect_applied)
     except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
@@ -222,19 +265,20 @@ async def _process_player_status_effects(app: FastAPI, container: "ApplicationCo
 async def process_status_effects(app: FastAPI, tick_count: int) -> None:
     """Process status effects for online players."""
     is_valid, container = _validate_app_state_for_status_effects(app)
-    if not is_valid:
+    if not is_valid or not container or not container.connection_manager:
         return
 
     try:
-        online_player_ids = list(app.state.connection_manager.online_players.keys())
+        online_player_ids = list(container.connection_manager.online_players.keys())
         if not online_player_ids:
             return
 
         processed_count = 0
-        if container:
-            for player_id in online_player_ids:
-                if await _process_player_status_effects(app, container, player_id):
-                    processed_count += 1
+        for player_id in online_player_ids:
+            # Convert player_id to string (online_players.keys() returns UUIDs)
+            player_id_str = str(player_id)
+            if await _process_player_status_effects(app, container, player_id_str):
+                processed_count += 1
 
         if processed_count > 0:
             logger.debug("Processed status effects", tick_count=tick_count, players_processed=processed_count)
@@ -244,31 +288,40 @@ async def process_status_effects(app: FastAPI, tick_count: int) -> None:
 
 async def process_combat_tick(app: FastAPI, tick_count: int) -> None:
     """Process combat auto-progression."""
-    if hasattr(app.state, "combat_service"):
-        try:
-            await app.state.combat_service.process_game_tick(tick_count)
-        except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
-            logger.error("Error processing combat tick", tick_count=tick_count, error=str(e))
+    if not (hasattr(app.state, "container") and app.state.container and app.state.container.combat_service):
+        return
+
+    try:
+        await app.state.container.combat_service.process_game_tick(tick_count)
+    except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
+        logger.error("Error processing combat tick", tick_count=tick_count, error=str(e))
 
 
 async def process_casting_progress(app: FastAPI, tick_count: int) -> None:
     """Process casting progress for all active spell castings."""
-    if hasattr(app.state, "magic_service") and app.state.magic_service:
-        try:
-            await app.state.magic_service.check_casting_progress(tick_count)
-        except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
-            logger.error("Error processing casting progress", tick_count=tick_count, error=str(e))
+    if not (hasattr(app.state, "container") and app.state.container and app.state.container.magic_service):
+        return
+
+    try:
+        await app.state.container.magic_service.check_casting_progress(tick_count)
+    except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
+        logger.error("Error processing casting progress", tick_count=tick_count, error=str(e))
 
 
-async def _process_mortally_wounded_player(app: FastAPI, player: "Player", session: AsyncSession) -> None:
+async def _process_mortally_wounded_player(
+    container: "ApplicationContainer", player: "Player", session: AsyncSession
+) -> None:
     """Process a single mortally wounded player's DP decay and death check."""
-    await app.state.player_death_service.process_mortally_wounded_tick(player.player_id, session)
+    if not container.player_death_service:
+        return
+
+    await container.player_death_service.process_mortally_wounded_tick(player.player_id, session)
 
     await session.refresh(player)
     stats = player.get_stats()
     new_dp = stats.get("current_dp", 0)
 
-    if hasattr(app.state, "combat_service"):
+    if container.combat_service:
         await combat_messaging_integration.send_dp_decay_message(str(player.player_id), new_dp)
 
     if new_dp <= -10:
@@ -279,16 +332,24 @@ async def _process_mortally_wounded_player(app: FastAPI, player: "Player", sessi
             current_dp=new_dp,
         )
 
-        await app.state.player_death_service.handle_player_death(
+        if not container.player_respawn_service:
+            return
+
+        await container.player_death_service.handle_player_death(
             player.player_id, player.current_room_id, None, session
         )
 
-        await app.state.player_respawn_service.move_player_to_limbo(player.player_id, player.current_room_id, session)
+        await container.player_respawn_service.move_player_to_limbo(player.player_id, player.current_room_id, session)
 
 
-async def _process_mortally_wounded_players(app: FastAPI, session: AsyncSession, tick_count: int) -> None:
+async def _process_mortally_wounded_players(
+    container: "ApplicationContainer", session: AsyncSession, tick_count: int
+) -> None:
     """Process all mortally wounded players."""
-    mortally_wounded = await app.state.player_death_service.get_mortally_wounded_players(session)
+    if not container.player_death_service:
+        return
+
+    mortally_wounded = await container.player_death_service.get_mortally_wounded_players(session)
 
     if not mortally_wounded:
         return
@@ -300,47 +361,78 @@ async def _process_mortally_wounded_players(app: FastAPI, session: AsyncSession,
     )
 
     for player in mortally_wounded:
-        await _process_mortally_wounded_player(app, player, session)
+        await _process_mortally_wounded_player(container, player, session)
 
 
-async def _process_passive_lucidity_flux(app: FastAPI, session: AsyncSession, tick_count: int) -> None:
+async def _process_passive_lucidity_flux(
+    container: "ApplicationContainer", session: AsyncSession, tick_count: int
+) -> None:
     """Process passive lucidity flux service if available."""
-    if not hasattr(app.state, "passive_lucidity_flux_service"):
+    if not container.passive_lucidity_flux_service:
         return
 
     try:
-        await app.state.passive_lucidity_flux_service.process_tick(
+        await container.passive_lucidity_flux_service.process_tick(
             session=session, tick_count=tick_count, now=datetime.datetime.now(datetime.UTC)
         )
     except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as lcd_flux_error:
         logger.error("Error processing passive LCD flux", tick_count=tick_count, error=str(lcd_flux_error))
 
 
-async def _process_mp_regeneration(app: FastAPI, _session: AsyncSession, tick_count: int) -> None:
-    """Process MP regeneration for online players."""
-    if not hasattr(app.state, "mp_regeneration_service"):
-        return
+def _validate_mp_regeneration_services(container: "ApplicationContainer") -> bool:
+    """
+    Validate that required services exist for MP regeneration.
 
-    if not hasattr(app.state, "connection_manager"):
+    Args:
+        container: Application container
+
+    Returns:
+        True if services are available, False otherwise
+    """
+    return container.mp_regeneration_service is not None and container.connection_manager is not None
+
+
+async def _process_single_player_mp_regeneration(mp_service: Any, player_id_str: str) -> bool:
+    """
+    Process MP regeneration for a single player.
+
+    Args:
+        mp_service: MP regeneration service instance
+        player_id_str: Player ID as string
+
+    Returns:
+        True if MP was restored, False otherwise
+    """
+    try:
+        player_uuid = uuid.UUID(player_id_str) if isinstance(player_id_str, str) else player_id_str
+        result = await mp_service.process_tick_regeneration(player_uuid)
+        return result.get("mp_restored", 0) > 0
+    except (ValueError, AttributeError, TypeError) as e:
+        logger.warning("Error processing MP regeneration for player", player_id=player_id_str, error=str(e))
+        return False
+
+
+async def _process_mp_regeneration(container: "ApplicationContainer", _session: AsyncSession, tick_count: int) -> None:
+    """Process MP regeneration for online players."""
+    if not _validate_mp_regeneration_services(container) or not container.connection_manager:
         return
 
     try:
-        online_player_ids = list(app.state.connection_manager.online_players.keys())
+        online_player_ids = list(container.connection_manager.online_players.keys())
         if not online_player_ids:
             return
 
-        mp_service = app.state.mp_regeneration_service
+        mp_service = container.mp_regeneration_service
+        if not mp_service:
+            return
+
         processed_count = 0
 
-        for player_id_str in online_player_ids:
-            try:
-                player_uuid = uuid.UUID(player_id_str) if isinstance(player_id_str, str) else player_id_str
-                result = await mp_service.process_tick_regeneration(player_uuid)
-                if result.get("mp_restored", 0) > 0:
-                    processed_count += 1
-            except (ValueError, AttributeError, TypeError) as e:
-                logger.warning("Error processing MP regeneration for player", player_id=player_id_str, error=str(e))
-                continue
+        for player_id in online_player_ids:
+            # Convert player_id to string (online_players.keys() returns UUIDs)
+            player_id_str = str(player_id)
+            if await _process_single_player_mp_regeneration(mp_service, player_id_str):
+                processed_count += 1
 
         if processed_count > 0:
             logger.debug("Processed MP regeneration", tick_count=tick_count, players_processed=processed_count)
@@ -348,9 +440,12 @@ async def _process_mp_regeneration(app: FastAPI, _session: AsyncSession, tick_co
         logger.error("Error processing MP regeneration", tick_count=tick_count, error=str(mp_regen_error))
 
 
-async def _process_dead_players(app: FastAPI, session: AsyncSession) -> None:
+async def _process_dead_players(container: "ApplicationContainer", session: AsyncSession) -> None:
     """Process dead players and move them to limbo if needed."""
-    dead_players = await app.state.player_death_service.get_dead_players(session)
+    if not container.player_death_service or not container.player_respawn_service:
+        return
+
+    dead_players = await container.player_death_service.get_dead_players(session)
 
     if not dead_players:
         return
@@ -366,28 +461,34 @@ async def _process_dead_players(app: FastAPI, session: AsyncSession) -> None:
                 current_room_id=player.current_room_id,
             )
 
-            await app.state.player_respawn_service.move_player_to_limbo(
+            await container.player_respawn_service.move_player_to_limbo(
                 player.player_id, player.current_room_id, session
             )
 
 
-async def _process_session_dp_decay_and_death(app: FastAPI, session: AsyncSession, tick_count: int) -> None:
+async def _process_session_dp_decay_and_death(
+    container: "ApplicationContainer", session: AsyncSession, tick_count: int
+) -> None:
     """Process DP decay and death for a single database session."""
-    await _process_mortally_wounded_players(app, session, tick_count)
-    await _process_passive_lucidity_flux(app, session, tick_count)
-    await _process_mp_regeneration(app, session, tick_count)
-    await _process_dead_players(app, session)
+    await _process_mortally_wounded_players(container, session, tick_count)
+    await _process_passive_lucidity_flux(container, session, tick_count)
+    await _process_mp_regeneration(container, session, tick_count)
+    await _process_dead_players(container, session)
 
 
 async def process_dp_decay_and_death(app: FastAPI, tick_count: int) -> None:
     """Process DP decay for mortally wounded players and handle deaths."""
-    if not hasattr(app.state, "player_death_service"):
+    if not (hasattr(app.state, "container") and app.state.container):
+        return
+
+    container = app.state.container
+    if not container.player_death_service:
         return
 
     try:
         async for session in get_async_session():
             try:
-                await _process_session_dp_decay_and_death(app, session, tick_count)
+                await _process_session_dp_decay_and_death(container, session, tick_count)
             except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
                 logger.error("Error in DP decay processing", tick_count=tick_count, error=str(e))
     except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
@@ -396,18 +497,118 @@ async def process_dp_decay_and_death(app: FastAPI, tick_count: int) -> None:
 
 async def process_npc_maintenance(app: FastAPI, tick_count: int) -> None:
     """Process NPC lifecycle maintenance (every 60 ticks = 1 minute)."""
-    if NPCMaintenanceConfig.should_run_maintenance(tick_count) and hasattr(app.state, "npc_lifecycle_manager"):
-        try:
-            logger.debug(
-                "Running NPC maintenance",
-                tick_count=tick_count,
-                has_lifecycle_manager=True,
-                respawn_queue_size=len(app.state.npc_lifecycle_manager.respawn_queue),
+    if not (hasattr(app.state, "container") and app.state.container and app.state.container.npc_lifecycle_manager):
+        return
+
+    if not NPCMaintenanceConfig.should_run_maintenance(tick_count):
+        return
+
+    try:
+        npc_lifecycle_manager = app.state.container.npc_lifecycle_manager
+        logger.debug(
+            "Running NPC maintenance",
+            tick_count=tick_count,
+            has_lifecycle_manager=True,
+            respawn_queue_size=len(npc_lifecycle_manager.respawn_queue),
+        )
+        maintenance_results = npc_lifecycle_manager.periodic_maintenance()
+        logger.info("NPC maintenance completed", tick_count=tick_count, **maintenance_results)
+    except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
+        logger.error("Error during NPC maintenance", tick_count=tick_count, error=str(e))
+
+
+def _create_corpse_lifecycle_service(app: FastAPI) -> CorpseLifecycleService | None:
+    """
+    Create and initialize CorpseLifecycleService.
+
+    Args:
+        app: FastAPI application
+
+    Returns:
+        CorpseLifecycleService instance or None if persistence is unavailable
+    """
+    persistence = app.state.container.persistence
+    if persistence is None:
+        return None
+
+    connection_manager = app.state.container.connection_manager
+    time_service = get_mythos_chronicle()
+
+    return CorpseLifecycleService(
+        persistence=persistence,
+        connection_manager=connection_manager,
+        time_service=time_service,
+    )
+
+
+async def _cleanup_single_decayed_corpse(
+    corpse_service: CorpseLifecycleService,
+    connection_manager: Any,
+    corpse: Any,
+    tick_count: int,
+) -> bool:
+    """
+    Cleanup a single decayed corpse.
+
+    Args:
+        corpse_service: Corpse lifecycle service instance
+        connection_manager: Connection manager instance
+        corpse: Decayed corpse container object
+        tick_count: Current game tick count
+
+    Returns:
+        True if cleanup was successful, False otherwise
+    """
+    try:
+        if connection_manager and corpse.room_id:
+            await emit_container_decayed(
+                connection_manager=connection_manager,
+                container_id=corpse.container_id,
+                room_id=corpse.room_id,
             )
-            maintenance_results = app.state.npc_lifecycle_manager.periodic_maintenance()
-            logger.info("NPC maintenance completed", tick_count=tick_count, **maintenance_results)
-        except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
-            logger.error("Error during NPC maintenance", tick_count=tick_count, error=str(e))
+
+        await corpse_service.cleanup_decayed_corpse(corpse.container_id)
+        logger.debug(
+            "Cleaned up decayed corpse",
+            tick_count=tick_count,
+            container_id=str(corpse.container_id),
+            room_id=corpse.room_id,
+        )
+        return True
+    except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as cleanup_error:
+        logger.error(
+            "Error cleaning up individual decayed corpse",
+            error=str(cleanup_error),
+            container_id=str(corpse.container_id),
+            tick_count=tick_count,
+            exc_info=True,
+        )
+        return False
+
+
+def _log_cleanup_results(tick_count: int, cleaned_count: int, total_decayed: int) -> None:
+    """
+    Log the results of corpse cleanup.
+
+    Args:
+        tick_count: Current game tick count
+        cleaned_count: Number of corpses successfully cleaned
+        total_decayed: Total number of decayed corpses found
+    """
+    if cleaned_count > 0:
+        logger.info(
+            "Decayed corpses cleaned up",
+            tick_count=tick_count,
+            cleaned_count=cleaned_count,
+            total_decayed=total_decayed,
+        )
+    elif total_decayed > 0:
+        logger.warning(
+            "Found decayed corpses but none were cleaned",
+            tick_count=tick_count,
+            total_decayed=total_decayed,
+            cleaned_count=cleaned_count,
+        )
 
 
 async def cleanup_decayed_corpses(app: FastAPI, tick_count: int) -> None:
@@ -418,19 +619,10 @@ async def cleanup_decayed_corpses(app: FastAPI, tick_count: int) -> None:
     logger.debug("Running decayed corpse cleanup check", tick_count=tick_count)
 
     try:
-        persistence = app.state.container.persistence
-        connection_manager = app.state.container.connection_manager
-        time_service = get_mythos_chronicle()
-
-        if persistence is None:
+        corpse_service = _create_corpse_lifecycle_service(app)
+        if corpse_service is None:
             logger.warning("Persistence layer not available for corpse cleanup", tick_count=tick_count)
             return
-
-        corpse_service = CorpseLifecycleService(
-            persistence=persistence,
-            connection_manager=connection_manager,
-            time_service=time_service,
-        )
 
         decayed = await corpse_service.get_all_decayed_corpses()
         logger.debug(
@@ -440,48 +632,13 @@ async def cleanup_decayed_corpses(app: FastAPI, tick_count: int) -> None:
         )
 
         cleaned_count = 0
+        connection_manager = app.state.container.connection_manager
 
         for corpse in decayed:
-            try:
-                if connection_manager and corpse.room_id:
-                    await emit_container_decayed(
-                        connection_manager=connection_manager,
-                        container_id=corpse.container_id,
-                        room_id=corpse.room_id,
-                    )
-
-                await corpse_service.cleanup_decayed_corpse(corpse.container_id)
+            if await _cleanup_single_decayed_corpse(corpse_service, connection_manager, corpse, tick_count):
                 cleaned_count += 1
-                logger.debug(
-                    "Cleaned up decayed corpse",
-                    tick_count=tick_count,
-                    container_id=str(corpse.container_id),
-                    room_id=corpse.room_id,
-                )
-            except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as cleanup_error:
-                logger.error(
-                    "Error cleaning up individual decayed corpse",
-                    error=str(cleanup_error),
-                    container_id=str(corpse.container_id),
-                    tick_count=tick_count,
-                    exc_info=True,
-                )
-                continue
 
-        if cleaned_count > 0:
-            logger.info(
-                "Decayed corpses cleaned up",
-                tick_count=tick_count,
-                cleaned_count=cleaned_count,
-                total_decayed=len(decayed),
-            )
-        elif len(decayed) > 0:
-            logger.warning(
-                "Found decayed corpses but none were cleaned",
-                tick_count=tick_count,
-                total_decayed=len(decayed),
-                cleaned_count=cleaned_count,
-            )
+        _log_cleanup_results(tick_count, cleaned_count, len(decayed))
     except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as corpse_cleanup_error:
         logger.error(
             "Error during decayed corpse cleanup",
@@ -513,7 +670,7 @@ async def game_tick_loop(app: FastAPI):
     This function runs continuously and handles periodic game updates,
     including broadcasting tick information to connected players.
     """
-    global _current_tick  # pylint: disable=global-statement
+    global _current_tick  # pylint: disable=global-statement  # Reason: Module-level tick counter must be mutable for game state tracking and synchronization
     tick_count = 0
     tick_interval = get_tick_interval()
     logger.info("Game tick loop started", tick_interval=tick_interval)
@@ -533,7 +690,7 @@ async def game_tick_loop(app: FastAPI):
                 await broadcast_tick_event(app, tick_count)
 
             # Sleep for tick interval
-            await asyncio.sleep(tick_interval)
+            await sleep(tick_interval)
             tick_count += 1
         except asyncio.CancelledError:
             logger.info("Game tick loop cancelled")
@@ -541,7 +698,7 @@ async def game_tick_loop(app: FastAPI):
         except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
             logger.error("Error in game tick loop", tick_count=tick_count, error=str(e), exc_info=True)
             try:
-                await asyncio.sleep(tick_interval)
+                await sleep(tick_interval)
             except asyncio.CancelledError:
                 logger.info("Game tick loop cancelled during error recovery")
                 break

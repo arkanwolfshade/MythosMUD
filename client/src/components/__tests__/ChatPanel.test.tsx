@@ -506,6 +506,7 @@ describe('ChatPanel', () => {
     });
 
     it('should not show action buttons when callbacks are not provided', () => {
+      // Destructuring removes callback props from defaultProps, variables intentionally unused
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { onClearMessages, onDownloadLogs, ...propsWithoutActions } = defaultProps;
       render(<ChatPanel {...propsWithoutActions} />);

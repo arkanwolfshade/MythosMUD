@@ -16,6 +16,10 @@ from pathlib import Path
 
 import structlog
 
+# NOTE: Infrastructure files may use structlog.get_logger() directly to avoid
+# circular imports during logging system initialization. This is acceptable
+# for internal logging infrastructure code only. All other modules must use
+# get_logger() from enhanced_logging_config.
 logger = structlog.get_logger(__name__)
 
 # Thread-safe directory creation locks (one lock per directory path)
@@ -187,7 +191,8 @@ def rotate_log_files(env_log_dir: Path) -> None:
                         log_file.rename(rotated_path)
 
                     # Log the rotation (this will go to the new log file)
-                    # Use structlog directly to avoid circular import
+                    # NOTE: Using structlog directly here to avoid circular import.
+                    # This is acceptable for infrastructure code during log rotation.
                     rotation_logger = structlog.get_logger("server.structured_logging")
                     rotation_logger.info(
                         "Rotated log file",
@@ -203,7 +208,8 @@ def rotate_log_files(env_log_dir: Path) -> None:
                         retry_delay *= 2  # Exponential backoff
                     else:
                         # Final attempt failed, log the error
-                        # Use structlog directly to avoid circular import
+                        # NOTE: Using structlog directly here to avoid circular import.
+                        # This is acceptable for infrastructure code during log rotation.
                         rotation_logger = structlog.get_logger("server.structured_logging")
                         rotation_logger.warning(
                             "Could not rotate log file after retries",

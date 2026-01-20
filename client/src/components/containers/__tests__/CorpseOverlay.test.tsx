@@ -6,32 +6,78 @@
  * decay timers and grace period countdowns for fallen investigators.
  */
 
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { CorpseOverlay } from '../CorpseOverlay';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ContainerComponent } from '../../../stores/containerStore';
+import { CorpseOverlay } from '../CorpseOverlay';
 
-// Mock the stores
-const mockGetCorpseContainers = vi.fn();
-const mockOpenContainerStore = vi.fn();
-const mockGetPlayer = vi.fn();
+// Mock fetch globally using vi.spyOn for proper cleanup
+const fetchSpy = vi.spyOn(global, 'fetch');
+
+// Mock container store state
+let mockOpenContainers: Record<string, ContainerComponent> = {};
+const mockOpenContainer = vi.fn();
 
 vi.mock('../../../stores/containerStore', () => ({
   useContainerStore: (selector: (state: unknown) => unknown) => {
     const mockState = {
-      getCorpseContainersInRoom: mockGetCorpseContainers,
-      openContainer: mockOpenContainerStore,
+      openContainers: mockOpenContainers,
+      mutationTokens: {},
+      isLoading: false,
+      selectedContainerId: null,
+      openContainer: mockOpenContainer,
+      closeContainer: vi.fn(),
+      updateContainer: vi.fn(),
+      handleContainerDecayed: vi.fn(),
+      selectContainer: vi.fn(),
+      deselectContainer: vi.fn(),
+      setLoading: vi.fn(),
+      reset: vi.fn(),
+      getContainer: (id: string) => mockOpenContainers[id] || null,
+      getMutationToken: (_id: string) => null,
+      getOpenContainerIds: () => Object.keys(mockOpenContainers),
+      isContainerOpen: (id: string) => id in mockOpenContainers,
+      getWearableContainersForPlayer: vi.fn(),
+      getCorpseContainersInRoom: (roomId: string) =>
+        Object.values(mockOpenContainers).filter(
+          container => container.source_type === 'corpse' && container.room_id === roomId
+        ),
     };
     return selector(mockState);
   },
 }));
 
+// Mock game store state
+let mockPlayer: { id: string; name: string } | null = null;
+let mockRoom: { id: string; name: string } | null = null;
+
 vi.mock('../../../stores/gameStore', () => ({
   useGameStore: (selector: (state: unknown) => unknown) => {
     const mockState = {
-      player: mockGetPlayer(),
-      room: mockGetPlayer()?.currentRoom || null,
+      player: mockPlayer,
+      room: mockRoom,
+      chatMessages: [],
+      gameLog: [],
+      isLoading: false,
+      lastUpdate: null,
+      setPlayer: vi.fn(),
+      updatePlayerStats: vi.fn(),
+      clearPlayer: vi.fn(),
+      setRoom: vi.fn(),
+      updateRoomOccupants: vi.fn(),
+      clearRoom: vi.fn(),
+      addChatMessage: vi.fn(),
+      clearChatMessages: vi.fn(),
+      addGameLogEntry: vi.fn(),
+      clearGameLog: vi.fn(),
+      setLoading: vi.fn(),
+      updateLastUpdate: vi.fn(),
+      reset: vi.fn(),
+      getPlayerStats: vi.fn(),
+      getRoomOccupantsCount: vi.fn(),
+      getRecentChatMessages: vi.fn(),
+      getRecentGameLogEntries: vi.fn(),
     };
     return selector(mockState);
   },
@@ -41,15 +87,6 @@ vi.mock('../../../stores/gameStore', () => ({
 vi.useFakeTimers();
 
 describe('CorpseOverlay', () => {
-  const mockPlayer = {
-    id: 'player-1',
-    name: 'TestPlayer',
-    currentRoom: {
-      id: 'test-room-1',
-      name: 'Test Room',
-    },
-  };
-
   const createCorpseContainer = (overrides?: Partial<ContainerComponent>): ContainerComponent => {
     const now = new Date();
     const decayAt = new Date(now.getTime() + 60 * 60 * 1000); // 1 hour from now
@@ -86,17 +123,27 @@ describe('CorpseOverlay', () => {
     vi.clearAllMocks();
     vi.setSystemTime(new Date('2025-01-01T12:00:00Z'));
 
-    mockGetPlayer.mockReturnValue(mockPlayer);
-    mockGetCorpseContainers.mockReturnValue([]);
+    mockPlayer = {
+      id: 'player-1',
+      name: 'TestPlayer',
+    };
+    mockRoom = {
+      id: 'test-room-1',
+      name: 'Test Room',
+    };
+    mockOpenContainers = {};
   });
 
   afterEach(() => {
+    // Use mockReset instead of mockRestore to keep the spy active across tests
+    // This prevents issues where mockRestore might restore an undefined/broken fetch implementation
+    fetchSpy.mockReset();
     vi.clearAllTimers();
   });
 
   describe('Rendering', () => {
     it('should not render when no corpse containers in room', () => {
-      mockGetCorpseContainers.mockReturnValue([]);
+      mockOpenContainers = {};
 
       const { container } = render(<CorpseOverlay />);
       expect(container.firstChild).toBeNull();
@@ -104,7 +151,7 @@ describe('CorpseOverlay', () => {
 
     it('should render when corpse container is present', () => {
       const corpse = createCorpseContainer();
-      mockGetCorpseContainers.mockReturnValue([corpse]);
+      mockOpenContainers = { [corpse.container_id]: corpse };
 
       render(<CorpseOverlay />);
 
@@ -113,7 +160,7 @@ describe('CorpseOverlay', () => {
 
     it('should display corpse owner information', () => {
       const corpse = createCorpseContainer({ owner_id: 'dead-player-1' });
-      mockGetCorpseContainers.mockReturnValue([corpse]);
+      mockOpenContainers = { [corpse.container_id]: corpse };
 
       render(<CorpseOverlay />);
 
@@ -133,7 +180,7 @@ describe('CorpseOverlay', () => {
           },
         ],
       });
-      mockGetCorpseContainers.mockReturnValue([corpse]);
+      mockOpenContainers = { [corpse.container_id]: corpse };
 
       render(<CorpseOverlay />);
 
@@ -151,7 +198,7 @@ describe('CorpseOverlay', () => {
           grace_period_seconds: 300,
         },
       });
-      mockGetCorpseContainers.mockReturnValue([corpse]);
+      mockOpenContainers = { [corpse.container_id]: corpse };
 
       render(<CorpseOverlay />);
 
@@ -173,7 +220,7 @@ describe('CorpseOverlay', () => {
           grace_period_seconds: 300, // 5 minutes
         },
       });
-      mockGetCorpseContainers.mockReturnValue([corpse1]);
+      mockOpenContainers = { [corpse1.container_id]: corpse1 };
       const { unmount } = render(<CorpseOverlay />);
 
       // Initial: 5 minutes remaining
@@ -188,7 +235,7 @@ describe('CorpseOverlay', () => {
           grace_period_seconds: 300,
         },
       });
-      mockGetCorpseContainers.mockReturnValue([corpse2]);
+      mockOpenContainers = { [corpse2.container_id]: corpse2 };
       render(<CorpseOverlay />);
 
       // Should show 4 minutes remaining (or close to it, accounting for formatting)
@@ -208,7 +255,7 @@ describe('CorpseOverlay', () => {
           grace_period_seconds: 300, // 5 minutes
         },
       });
-      mockGetCorpseContainers.mockReturnValue([corpse]);
+      mockOpenContainers = { [corpse.container_id]: corpse };
 
       render(<CorpseOverlay />);
 
@@ -224,7 +271,7 @@ describe('CorpseOverlay', () => {
       const corpse = createCorpseContainer({
         decay_at: decayAt.toISOString(),
       });
-      mockGetCorpseContainers.mockReturnValue([corpse]);
+      mockOpenContainers = { [corpse.container_id]: corpse };
 
       render(<CorpseOverlay />);
 
@@ -242,7 +289,7 @@ describe('CorpseOverlay', () => {
       const corpse1 = createCorpseContainer({
         decay_at: decayAt.toISOString(),
       });
-      mockGetCorpseContainers.mockReturnValue([corpse1]);
+      mockOpenContainers = { [corpse1.container_id]: corpse1 };
       const { unmount } = render(<CorpseOverlay />);
 
       // Initial: 1 hour remaining
@@ -254,7 +301,7 @@ describe('CorpseOverlay', () => {
       const corpse2 = createCorpseContainer({
         decay_at: decayAt.toISOString(),
       });
-      mockGetCorpseContainers.mockReturnValue([corpse2]);
+      mockOpenContainers = { [corpse2.container_id]: corpse2 };
       render(<CorpseOverlay />);
 
       // Should show approximately 30 minutes remaining (allow for small precision differences)
@@ -269,7 +316,7 @@ describe('CorpseOverlay', () => {
       const corpse = createCorpseContainer({
         decay_at: pastDecay.toISOString(),
       });
-      mockGetCorpseContainers.mockReturnValue([corpse]);
+      mockOpenContainers = { [corpse.container_id]: corpse };
 
       render(<CorpseOverlay />);
 
@@ -282,7 +329,10 @@ describe('CorpseOverlay', () => {
       const corpse1 = createCorpseContainer({ container_id: 'corpse-1', owner_id: 'player-1' });
       const corpse2 = createCorpseContainer({ container_id: 'corpse-2', owner_id: 'player-2' });
 
-      mockGetCorpseContainers.mockReturnValue([corpse1, corpse2]);
+      mockOpenContainers = {
+        [corpse1.container_id]: corpse1,
+        [corpse2.container_id]: corpse2,
+      };
 
       render(<CorpseOverlay />);
 
@@ -294,17 +344,16 @@ describe('CorpseOverlay', () => {
   describe('Interaction', () => {
     it('should call openContainer when open button is clicked', () => {
       const corpse = createCorpseContainer({ owner_id: 'player-1' });
-      mockGetCorpseContainers.mockReturnValue([corpse]);
-      mockGetPlayer.mockReturnValue({ ...mockPlayer, id: 'player-1' });
+      mockOpenContainers = { [corpse.container_id]: corpse };
+      mockPlayer = { id: 'player-1', name: 'TestPlayer' };
       // Mock fetch for API call
-      const mockFetch = vi.fn().mockResolvedValue({
+      fetchSpy.mockResolvedValue({
         ok: true,
         json: async () => ({
           container: corpse,
           mutation_token: 'token-1',
         }),
-      });
-      global.fetch = mockFetch;
+      } as Response);
       // Mock localStorage
       const localStorageMock = {
         getItem: vi.fn().mockReturnValue('test-token'),
@@ -319,7 +368,7 @@ describe('CorpseOverlay', () => {
       const openButton = screen.getByRole('button', { name: /open corpse/i });
       fireEvent.click(openButton);
 
-      expect(mockFetch).toHaveBeenCalled();
+      expect(fetchSpy).toHaveBeenCalled();
     });
 
     it('should disable open button during grace period for non-owner', () => {
@@ -330,10 +379,8 @@ describe('CorpseOverlay', () => {
           grace_period_seconds: 300,
         },
       });
-      mockGetCorpseContainers.mockReturnValue([corpse]);
-      // Update mockPlayer to be a different player
-      mockPlayer.id = 'current-player';
-      mockGetPlayer.mockReturnValue({ ...mockPlayer, id: 'current-player' });
+      mockOpenContainers = { [corpse.container_id]: corpse };
+      mockPlayer = { id: 'current-player', name: 'TestPlayer' };
 
       render(<CorpseOverlay />);
 
@@ -352,8 +399,8 @@ describe('CorpseOverlay', () => {
           grace_period_seconds: 300,
         },
       });
-      mockGetCorpseContainers.mockReturnValue([corpse]);
-      mockGetPlayer.mockReturnValue({ ...mockPlayer, id: 'player-1' });
+      mockOpenContainers = { [corpse.container_id]: corpse };
+      mockPlayer = { id: 'player-1', name: 'TestPlayer' };
 
       render(<CorpseOverlay />);
 
@@ -365,7 +412,7 @@ describe('CorpseOverlay', () => {
   describe('Accessibility', () => {
     it('should have proper ARIA labels', () => {
       const corpse = createCorpseContainer();
-      mockGetCorpseContainers.mockReturnValue([corpse]);
+      mockOpenContainers = { [corpse.container_id]: corpse };
 
       render(<CorpseOverlay />);
 
@@ -375,8 +422,8 @@ describe('CorpseOverlay', () => {
 
     it('should support keyboard navigation', () => {
       const corpse = createCorpseContainer({ owner_id: 'player-1' });
-      mockGetCorpseContainers.mockReturnValue([corpse]);
-      mockGetPlayer.mockReturnValue({ ...mockPlayer, id: 'player-1' });
+      mockOpenContainers = { [corpse.container_id]: corpse };
+      mockPlayer = { id: 'player-1', name: 'TestPlayer' };
 
       render(<CorpseOverlay />);
 
@@ -390,17 +437,16 @@ describe('CorpseOverlay', () => {
       vi.useRealTimers();
 
       const corpse = createCorpseContainer({ owner_id: 'player-1' });
-      mockGetCorpseContainers.mockReturnValue([corpse]);
-      mockGetPlayer.mockReturnValue({ ...mockPlayer, id: 'player-1' });
+      mockOpenContainers = { [corpse.container_id]: corpse };
+      mockPlayer = { id: 'player-1', name: 'TestPlayer' };
       // Mock fetch for API call
-      const mockFetch = vi.fn().mockResolvedValue({
+      fetchSpy.mockResolvedValue({
         ok: true,
         json: async () => ({
           container: corpse,
           mutation_token: 'token-1',
         }),
-      });
-      global.fetch = mockFetch;
+      } as Response);
       // Mock localStorage
       const localStorageMock = {
         getItem: vi.fn().mockReturnValue('test-token'),
@@ -422,7 +468,7 @@ describe('CorpseOverlay', () => {
       // Wait for async API call
       await waitFor(
         () => {
-          expect(mockFetch).toHaveBeenCalled();
+          expect(fetchSpy).toHaveBeenCalled();
         },
         { timeout: 3000 }
       );
@@ -440,7 +486,7 @@ describe('CorpseOverlay', () => {
       const corpse = createCorpseContainer({
         decay_at: decayAt.toISOString(),
       });
-      mockGetCorpseContainers.mockReturnValue([corpse]);
+      mockOpenContainers = { [corpse.container_id]: corpse };
 
       render(<CorpseOverlay />);
 
@@ -455,7 +501,7 @@ describe('CorpseOverlay', () => {
       const corpse = createCorpseContainer({
         decay_at: decayAt.toISOString(),
       });
-      mockGetCorpseContainers.mockReturnValue([corpse]);
+      mockOpenContainers = { [corpse.container_id]: corpse };
 
       render(<CorpseOverlay />);
 

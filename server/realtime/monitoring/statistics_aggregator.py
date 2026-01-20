@@ -69,6 +69,8 @@ class StatisticsAggregator:
         session_connections: dict[str, list[str]],
         online_players: dict[uuid.UUID, dict[str, Any]],
         last_seen: dict[uuid.UUID, float],
+        closed_websockets_count: int,
+        connection_metadata: dict[str, Any],
     ) -> dict[str, Any]:
         """
         Get comprehensive memory and connection statistics.
@@ -82,6 +84,8 @@ class StatisticsAggregator:
             session_connections: Session to connection mapping
             online_players: Online player tracking
             last_seen: Last seen timestamps
+            closed_websockets_count: Count of closed WebSocket IDs being tracked
+            connection_metadata: Connection metadata dictionary
 
         Returns:
             dict: Comprehensive memory and connection statistics
@@ -100,19 +104,45 @@ class StatisticsAggregator:
             total_sessions = len(player_sessions)
             total_session_connections = sum(len(conn_ids) for conn_ids in session_connections.values())
 
+            # Active player count
+            active_player_count = len(online_players)
+
+            # Calculate active_to_player_ratio
+            active_websockets_count = len(active_websockets)
+            active_to_player_ratio = active_websockets_count / active_player_count if active_player_count > 0 else 0.0
+
+            # Calculate orphaned connections (connections without active players)
+            orphaned_connections = 0
+            for conn_id in active_websockets.keys():
+                # Check if this connection is associated with any online player
+                is_orphaned = True
+                for player_id, conn_ids in player_websockets.items():
+                    if conn_id in conn_ids and player_id in online_players:
+                        is_orphaned = False
+                        break
+                if is_orphaned:
+                    orphaned_connections += 1
+
             return {
                 "memory": memory_stats,
                 "connections": {
-                    "active_websockets": len(active_websockets),
-                    "total_connections": len(active_websockets),
+                    "active_websockets": active_websockets_count,
+                    "active_websockets_count": active_websockets_count,
+                    "total_connections": active_websockets_count,
                     "player_websockets": len(player_websockets),
+                    "player_websockets_count": len(player_websockets),
                     "connection_timestamps": len(connection_timestamps),
+                    "connection_metadata_count": len(connection_metadata),
+                    "closed_websockets_count": closed_websockets_count,
                     # Connection metrics
                     "total_websocket_connections": total_websocket_connections,
                     "players_with_multiple_connections": players_with_multiple_connections,
                     "avg_connections_per_player": total_websocket_connections / len(player_websockets)
                     if player_websockets
                     else 0,
+                    # New metrics for memory leak detection
+                    "active_to_player_ratio": active_to_player_ratio,
+                    "orphaned_connections": orphaned_connections,
                 },
                 "sessions": {
                     "total_sessions": total_sessions,

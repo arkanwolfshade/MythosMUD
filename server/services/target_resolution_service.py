@@ -244,7 +244,7 @@ class TargetResolutionService:  # pylint: disable=too-few-public-methods  # Reas
                 # Use async method directly (no thread pool needed, no lock blocking)
                 logger.debug("_search_players_in_room: Using async method", room_id=room_id)
                 # Protocol defines method as sync, but runtime check confirms it's async
-                players_in_room = await method(room_id)  # type: ignore[misc]
+                players_in_room = await method(room_id)  # type: ignore[misc]  # Reason: Protocol defines method as sync, but runtime check confirms it's async, type checker cannot infer runtime behavior
                 logger.debug("_search_players_in_room: Async method completed", room_id=room_id)
             else:
                 # Use sync method in thread pool to avoid blocking event loop

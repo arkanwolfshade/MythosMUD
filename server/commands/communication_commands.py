@@ -15,6 +15,36 @@ from ..utils.command_parser import get_username_from_user
 logger = get_logger(__name__)
 
 
+def _get_services_from_container(app: Any) -> tuple[Any, Any, Any]:
+    """
+    Get services from container with backward compatibility fallback.
+
+    Args:
+        app: FastAPI app instance
+
+    Returns:
+        Tuple of (player_service, chat_service, user_manager)
+    """
+    if not app:
+        return None, None, None
+
+    # Prefer container, fallback to app.state for backward compatibility
+    if hasattr(app.state, "container") and app.state.container:
+        container = app.state.container
+        return (
+            container.player_service,
+            container.chat_service,
+            container.user_manager,
+        )
+
+    # Fallback to app.state
+    return (
+        getattr(app.state, "player_service", None),
+        getattr(app.state, "chat_service", None),
+        getattr(app.state, "user_manager", None),
+    )
+
+
 async def handle_say_command(
     command_data: dict, _current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:
@@ -42,10 +72,9 @@ async def handle_say_command(
     # message is already a complete string from the validation system
     logger.debug("Player saying message", player_name=player_name, message=message)
 
-    # Get app state services for broadcasting
+    # Get app state services for broadcasting (prefer container, fallback to app.state)
     app = request.app if request else None
-    player_service = app.state.player_service if app else None
-    chat_service = app.state.chat_service if app else None
+    player_service, chat_service, _ = _get_services_from_container(app)
 
     if not player_service:
         logger.warning("Say command failed - no player service", player_name=player_name)
@@ -151,7 +180,12 @@ async def handle_pose_command(
     logger.debug("Processing pose command", player_name=player_name, command_data=command_data)
 
     app = request.app if request else None
-    persistence = app.state.persistence if app else None
+    # Prefer container, fallback to app.state for backward compatibility
+    persistence = None
+    if app and hasattr(app.state, "container") and app.state.container:
+        persistence = app.state.container.async_persistence
+    elif app:
+        persistence = getattr(app.state, "persistence", None)
 
     if not persistence:
         logger.warning("Pose command failed - no persistence layer", player_name=player_name)
@@ -209,10 +243,9 @@ async def handle_local_command(
     # message is already a complete string from the validation system
     logger.debug("Player saying local message", player_name=player_name, message=message)
 
-    # Get app state services for broadcasting
+    # Get app state services for broadcasting (prefer container, fallback to app.state)
     app = request.app if request else None
-    player_service = app.state.player_service if app else None
-    chat_service = app.state.chat_service if app else None
+    player_service, chat_service, _ = _get_services_from_container(app)
 
     if not player_service:
         logger.warning("Local command failed - no player service", player_name=player_name)
@@ -296,10 +329,9 @@ async def handle_global_command(
     # message is already a complete string from the validation system
     logger.debug("Player saying global message", player_name=player_name, message=message)
 
-    # Get app state services for broadcasting
+    # Get app state services for broadcasting (prefer container, fallback to app.state)
     app = request.app if request else None
-    player_service = app.state.player_service if app else None
-    chat_service = app.state.chat_service if app else None
+    player_service, chat_service, _ = _get_services_from_container(app)
 
     if not player_service:
         logger.warning("Global command failed - no player service", player_name=player_name)
@@ -375,11 +407,9 @@ async def handle_system_command(
     # message is already a complete string from the validation system
     logger.debug("Player sending system message", player_name=player_name, message=message)
 
-    # Get app state services for broadcasting
+    # Get app state services for broadcasting (prefer container, fallback to app.state)
     app = request.app if request else None
-    player_service = app.state.player_service if app else None
-    chat_service = app.state.chat_service if app else None
-    user_manager = app.state.user_manager if app else None
+    player_service, chat_service, user_manager = _get_services_from_container(app)
 
     if not player_service:
         logger.warning("System command failed - no player service", player_name=player_name)
@@ -460,10 +490,9 @@ async def handle_whisper_command(
         )
         return {"result": "Say what? Usage: whisper <player> <message>"}
 
-    # Get app state services for broadcasting
+    # Get app state services for broadcasting (prefer container, fallback to app.state)
     app = request.app if request else None
-    player_service = app.state.player_service if app else None
-    chat_service = app.state.chat_service if app else None
+    player_service, chat_service, _ = _get_services_from_container(app)
 
     if not player_service:
         logger.warning("Whisper command failed - no player service", player_name=player_name)
@@ -545,10 +574,9 @@ async def handle_reply_command(
     # message is already a complete string from the validation system
     logger.debug("Player replying to last whisper", player_name=player_name, message=message)
 
-    # Get app state services for broadcasting
+    # Get app state services for broadcasting (prefer container, fallback to app.state)
     app = request.app if request else None
-    player_service = app.state.player_service if app else None
-    chat_service = app.state.chat_service if app else None
+    player_service, chat_service, _ = _get_services_from_container(app)
 
     if not player_service:
         logger.warning("Reply command failed - no player service", player_name=player_name)

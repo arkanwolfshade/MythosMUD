@@ -118,3 +118,44 @@ class SubjectValidator:
             # Only validate parameters that are actually used in the pattern
             if f"{{{param_name}}}" in pattern:
                 self.validate_parameter_value(param_name, param_value)
+
+    def validate_subscription_pattern(self, pattern: str) -> bool:
+        """
+        Validate that a subscription pattern is not overly broad.
+
+        Prevents patterns like:
+        - `*.*.*.*` (too many wildcards)
+        - `chat.*.*` (too broad)
+        - `*` (single wildcard for entire subject)
+
+        Args:
+            pattern: Subscription pattern to validate (may contain wildcards)
+
+        Returns:
+            True if pattern is appropriately scoped, False if too broad
+
+        AI: Prevents overly broad subscriptions that could receive unintended messages.
+        """
+        if not pattern:
+            return False
+
+        components = pattern.split(".")
+        wildcard_count = sum(1 for comp in components if comp in ("*", ">"))
+
+        # Reject patterns with too many wildcards (more than 2)
+        if wildcard_count > 2:
+            return False
+
+        # Reject single-component wildcard patterns (e.g., "*", ">")
+        if len(components) == 1 and wildcard_count == 1:
+            return False
+
+        # Reject patterns where all components are wildcards (e.g., "*.*", "*.*.*")
+        if wildcard_count == len(components) and len(components) > 1:
+            return False
+
+        # Reject patterns starting with wildcard (e.g., "*.chat.say")
+        if components[0] in ("*", ">"):
+            return False
+
+        return True

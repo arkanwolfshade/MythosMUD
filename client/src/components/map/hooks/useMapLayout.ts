@@ -236,38 +236,10 @@ export function useMapLayout(options: UseMapLayoutOptions): UseMapLayoutResult {
       }
       return true;
     }).length;
-
-    // #region agent log
-    if (typeof window !== 'undefined') {
-      // Intentional debug logging to localhost endpoint (127.0.0.1) for development only
-      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-        // nosemgrep: typescript.react.security.react-insecure-request.react-insecure-request
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          location: 'useMapLayout.ts:122',
-          message: 'useMapLayout layoutNodes computed',
-          data: {
-            nodesCount: initialNodes.length,
-            initialNodesCount: initialNodes.length,
-            useStoredCoordinates,
-            layoutAlgorithm,
-            edgesCount: edges.length,
-            nodesNeedingLayoutCount,
-            layoutNodesCount: layoutNodes.length,
-            firstNodePos: layoutNodes[0]?.position,
-            resultCount: layoutNodes.length,
-            firstResultNodeId: layoutNodes[0]?.id,
-            firstResultNodePos: layoutNodes[0]?.position,
-          },
-          timestamp: Date.now(),
-          sessionId: 'debug-session',
-          runId: 'run1',
-          hypothesisId: 'A',
-        }),
-      }).catch(() => {});
+    // Debug logging: log count of nodes needing layout
+    if (process.env.NODE_ENV === 'development') {
+      console.debug(`[useMapLayout] Nodes needing layout: ${nodesNeedingLayoutCount} of ${layoutNodes.length}`);
     }
-    // #endregion
   }, [layoutNodes, initialNodes.length, useStoredCoordinates, layoutAlgorithm, edges.length]);
 
   // Apply auto layout to all nodes

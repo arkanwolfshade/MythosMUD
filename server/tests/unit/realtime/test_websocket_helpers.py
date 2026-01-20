@@ -141,22 +141,34 @@ async def test_check_shutdown_and_reject_websocket_disconnect():
         assert result is False
 
 
-def test_load_player_mute_data_success():
+@pytest.mark.asyncio
+async def test_load_player_mute_data_success():
     """Test load_player_mute_data() successfully loads mute data."""
     player_id_str = "player_123"
 
     with patch("server.services.user_manager.user_manager") as mock_user_manager:
-        load_player_mute_data(player_id_str)
-        mock_user_manager.load_player_mutes.assert_called_once_with(player_id_str)
+        mock_user_manager.load_player_mutes_async = AsyncMock(return_value=True)
+        await load_player_mute_data(player_id_str)
+        mock_user_manager.load_player_mutes_async.assert_called_once_with(player_id_str)
 
 
-def test_load_player_mute_data_import_error():
+@pytest.mark.asyncio
+async def test_load_player_mute_data_import_error():
     """Test load_player_mute_data() handles ImportError."""
+    import sys
+
     player_id_str = "player_123"
 
-    with patch("server.services.user_manager.user_manager", side_effect=ImportError("No module")):
-        # Should not raise
-        load_player_mute_data(player_id_str)
+    # Temporarily remove the module from sys.modules to simulate ImportError
+    # Save the original module if it exists
+    original_module = sys.modules.pop("server.services.user_manager", None)
+    try:
+        # Should not raise, just log error
+        await load_player_mute_data(player_id_str)
+    finally:
+        # Restore the module if it was there
+        if original_module is not None:
+            sys.modules["server.services.user_manager"] = original_module
 
 
 def test_validate_occupant_name_valid():
@@ -271,7 +283,8 @@ def test_get_player_service_from_connection_manager_success():
     """Test get_player_service_from_connection_manager() returns player service."""
     mock_player_service = MagicMock()
     mock_app_state = MagicMock()
-    mock_app_state.player_service = mock_player_service
+    mock_app_state.container = MagicMock()
+    mock_app_state.container.player_service = mock_player_service
     mock_app = MagicMock()
     mock_app.state = mock_app_state
     mock_connection_manager = MagicMock()
@@ -395,7 +408,7 @@ async def test_prepare_player_data_with_service():
     mock_player.name = "TestPlayer"
     player_id = uuid.uuid4()
 
-    mock_player_service = MagicMock()
+    mock_player_service = AsyncMock()
     mock_complete_data = MagicMock()
     mock_complete_data.model_dump.return_value = {"name": "TestPlayer", "experience_points": 1000}
     mock_player_service.convert_player_to_schema = AsyncMock(return_value=mock_complete_data)
@@ -403,7 +416,8 @@ async def test_prepare_player_data_with_service():
     mock_connection_manager = MagicMock()
     mock_connection_manager.app = MagicMock()
     mock_connection_manager.app.state = MagicMock()
-    mock_connection_manager.app.state.player_service = mock_player_service
+    mock_connection_manager.app.state.container = MagicMock()
+    mock_connection_manager.app.state.container.player_service = mock_player_service
 
     result = await prepare_player_data(mock_player, player_id, mock_connection_manager)
     assert result["name"] == "TestPlayer"
@@ -434,13 +448,14 @@ async def test_prepare_player_data_service_error():
     mock_player.get_stats.return_value = {"hp": 100}
     player_id = uuid.uuid4()
 
-    mock_player_service = MagicMock()
+    mock_player_service = AsyncMock()
     mock_player_service.convert_player_to_schema = AsyncMock(side_effect=RuntimeError("Service error"))
 
     mock_connection_manager = MagicMock()
     mock_connection_manager.app = MagicMock()
     mock_connection_manager.app.state = MagicMock()
-    mock_connection_manager.app.state.player_service = mock_player_service
+    mock_connection_manager.app.state.container = MagicMock()
+    mock_connection_manager.app.state.container.player_service = mock_player_service
 
     result = await prepare_player_data(mock_player, player_id, mock_connection_manager)
     assert result["name"] == "TestPlayer"
@@ -537,4 +552,5 @@ async def test_get_player_and_room_adds_player_to_room():
         player, room, canonical_room_id = await get_player_and_room(player_id, player_id_str, mock_connection_manager)
         assert player == mock_player
         assert room == mock_room
+        assert canonical_room_id == room_id
         mock_room.player_entered.assert_called_once_with(player_id_str)

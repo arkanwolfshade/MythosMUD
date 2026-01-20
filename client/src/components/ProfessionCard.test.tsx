@@ -1,25 +1,28 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { ProfessionCard } from './ProfessionCard';
+import { ProfessionCard, type Profession } from './ProfessionCard';
 
 describe('ProfessionCard', () => {
-  const mockProfession = {
+  const mockProfession: Profession = {
     id: 0,
     name: 'Tramp',
     description: 'A wandering soul with no particular skills or connections.',
     flavor_text: 'You have spent your days drifting from place to place, learning to survive on your wits alone.',
-    stat_requirements: {},
-    mechanical_effects: {},
+    stat_requirements: [],
+    mechanical_effects: [],
     is_available: true,
   };
 
-  const mockProfessionWithRequirements = {
+  const mockProfessionWithRequirements: Profession = {
     id: 2,
     name: 'Scholar',
     description: 'A learned individual with high intelligence.',
     flavor_text: 'Your mind is your greatest weapon.',
-    stat_requirements: { intelligence: 14, wisdom: 12 },
-    mechanical_effects: {},
+    stat_requirements: [
+      { stat: 'intelligence', minimum: 14 },
+      { stat: 'wisdom', minimum: 12 },
+    ],
+    mechanical_effects: [],
     is_available: true,
   };
 

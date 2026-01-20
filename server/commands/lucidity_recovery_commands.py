@@ -25,7 +25,12 @@ async def _validate_recovery_context(
 ) -> tuple[Any, Any, Any, dict[str, str] | None]:
     """Validate persistence and player for recovery action."""
     app = getattr(request, "app", None)
-    persistence = getattr(app.state, "persistence", None) if app else None
+    # Prefer container, fallback to app.state for backward compatibility
+    persistence = None
+    if app and hasattr(app.state, "container") and app.state.container:
+        persistence = app.state.container.async_persistence
+    elif app:
+        persistence = getattr(app.state, "persistence", None)
     if not persistence:
         logger.error("Recovery command invoked without persistence", action=action_code, player=player_name)
         return None, None, None, {"result": "The ritual falters; the ley lines are inaccessible."}
@@ -69,7 +74,13 @@ async def _restore_mp_for_action(app: Any, action_code: str, player: Any) -> str
     if action_code not in ("meditate", "pray"):
         return ""
 
-    mp_regeneration_service = getattr(app.state, "mp_regeneration_service", None) if app else None
+    # Prefer container, fallback to app.state for backward compatibility
+    mp_regeneration_service = None
+    if app and hasattr(app.state, "container") and app.state.container:
+        mp_regeneration_service = app.state.container.mp_regeneration_service
+    elif app:
+        mp_regeneration_service = getattr(app.state, "mp_regeneration_service", None)
+
     if not mp_regeneration_service:
         return ""
 
@@ -112,7 +123,12 @@ async def _perform_recovery_action(
     if validation_error:
         return validation_error
 
-    catatonia_observer = getattr(app.state, "catatonia_registry", None) if app else None
+    # Prefer container, fallback to app.state for backward compatibility
+    catatonia_observer = None
+    if app and hasattr(app.state, "container") and app.state.container:
+        catatonia_observer = app.state.container.catatonia_registry
+    elif app:
+        catatonia_observer = getattr(app.state, "catatonia_registry", None)
 
     async for session in get_async_session():
         service = ActiveLucidityService(session, catatonia_observer=catatonia_observer)

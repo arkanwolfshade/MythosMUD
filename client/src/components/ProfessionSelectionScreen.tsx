@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { logger } from '../utils/logger';
-import { Profession, ProfessionCard } from './ProfessionCard';
+import { assertProfessionArray } from '../utils/apiTypeGuards.js';
+import { getErrorMessage, isErrorResponse } from '../utils/errorHandler.js';
+import { logger } from '../utils/logger.js';
+import { Profession, ProfessionCard } from './ProfessionCard.jsx';
 
 interface ProfessionSelectionScreenProps {
   characterName?: string; // MULTI-CHARACTER: Made optional - character name is now entered later
@@ -38,30 +40,54 @@ export const ProfessionSelectionScreen: React.FC<ProfessionSelectionScreenProps>
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
         let errorMessage = 'Failed to load professions';
-
-        if (errorData.detail) {
-          if (Array.isArray(errorData.detail)) {
-            errorMessage = errorData.detail
-              .map((err: { msg?: string; message?: string }) => err.msg || err.message || 'Validation error')
-              .join(', ');
-          } else if (typeof errorData.detail === 'string') {
-            errorMessage = errorData.detail;
-          } else if (errorData.detail.message) {
-            errorMessage = errorData.detail.message;
+        try {
+          const rawData: unknown = await response.json();
+          if (isErrorResponse(rawData)) {
+            errorMessage = getErrorMessage(rawData);
+          } else if (typeof rawData === 'object' && rawData !== null) {
+            const errorData = rawData as Record<string, unknown>;
+            if (errorData.detail) {
+              if (Array.isArray(errorData.detail)) {
+                errorMessage = (errorData.detail as Array<Record<string, unknown>>)
+                  .map((err: Record<string, unknown>) =>
+                    typeof err.msg === 'string'
+                      ? err.msg
+                      : typeof err.message === 'string'
+                        ? err.message
+                        : 'Validation error'
+                  )
+                  .join(', ');
+              } else if (typeof errorData.detail === 'object' && errorData.detail !== null) {
+                const detail = errorData.detail as Record<string, unknown>;
+                errorMessage = typeof detail.message === 'string' ? detail.message : 'Validation error';
+              } else if (typeof errorData.detail === 'string') {
+                errorMessage = errorData.detail;
+              }
+            }
           }
+        } catch {
+          // Use default error message if JSON parsing fails
         }
-
         throw new Error(errorMessage);
       }
 
-      const data = await response.json();
-      setProfessions(data.professions || []);
+      const rawData: unknown = await response.json();
+      // API may return { professions: Profession[] } or Profession[] directly
+      let professionsArray: Profession[];
+      if (Array.isArray(rawData)) {
+        professionsArray = assertProfessionArray(rawData, 'Invalid API response: expected Profession[]');
+      } else if (typeof rawData === 'object' && rawData !== null && 'professions' in rawData) {
+        const data = rawData as { professions: unknown };
+        professionsArray = assertProfessionArray(data.professions, 'Invalid API response: expected professions array');
+      } else {
+        throw new Error('Invalid API response: expected Profession[] or { professions: Profession[] }');
+      }
+      setProfessions(professionsArray);
 
       logger.info('ProfessionSelectionScreen', 'Professions loaded successfully', {
-        count: (data.professions || []).length,
-        professions: (data.professions || []).map((p: Profession) => p.name),
+        count: professionsArray.length,
+        professions: professionsArray.map((p: Profession) => p.name),
       });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';

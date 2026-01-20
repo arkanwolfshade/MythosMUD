@@ -30,7 +30,7 @@ async def _disconnect_all_websockets(connection_ids: list[str], player_id: uuid.
                 del manager.active_websockets[connection_id]
                 return
             logger.info("DEBUG: Closing WebSocket", connection_id=connection_id, player_id=player_id)
-            await manager._safe_close_websocket(websocket, code=1000, reason="Connection closed")  # pylint: disable=protected-access
+            await manager._safe_close_websocket(websocket, code=1000, reason="Connection closed")  # pylint: disable=protected-access  # Reason: Accessing protected member _safe_close_websocket is necessary for connection disconnection implementation, this is part of the internal API
             logger.info("Successfully closed WebSocket", connection_id=connection_id, player_id=player_id)
             del manager.active_websockets[connection_id]
 
@@ -193,7 +193,7 @@ async def disconnect_connection_by_id_impl(
                     del manager.active_websockets[connection_id]
                     return False
                 logger.info("DEBUG: Closing WebSocket by connection ID", connection_id=connection_id)
-                await manager._safe_close_websocket(websocket, code=1000, reason="Connection closed")  # pylint: disable=protected-access
+                await manager._safe_close_websocket(websocket, code=1000, reason="Connection closed")  # pylint: disable=protected-access  # Reason: Accessing protected member _safe_close_websocket is necessary for connection disconnection implementation, this is part of the internal API
                 logger.info("DEBUG: Successfully closed WebSocket by connection ID", connection_id=connection_id)
                 del manager.active_websockets[connection_id]
 

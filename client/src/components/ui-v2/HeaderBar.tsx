@@ -90,7 +90,7 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
 
       <div className="flex items-center gap-4">
         <div className="flex flex-col items-end text-xs text-mythos-terminal-text-secondary">
-          <span className="text-[10px] uppercase tracking-wide">Mythos Time</span>
+          <span className="text-xs-2 uppercase tracking-wide">Mythos Time</span>
           <span className="text-sm text-mythos-terminal-primary">{timeDisplay}</span>
         </div>
         <div className="w-32">

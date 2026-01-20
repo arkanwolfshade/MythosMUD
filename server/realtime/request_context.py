@@ -62,26 +62,48 @@ class WebSocketRequestContext:
             player_service: Player service instance
             user_manager: User manager instance
         """
+        # CRITICAL FIX: Always set services on app.state if provided, even if they exist
+        # This ensures command handlers can access app.state.user_manager and app.state.player_service
+        # This fixes Bugs #1 and #3 where State object was missing these attributes
+        if player_service is not None:
+            self.app.state.player_service = player_service
+            logger.debug("Player service set on app.state in request context")
+        elif hasattr(self.app.state, "container") and self.app.state.container:
+            # Fallback: get from container if not provided
+            container_service = getattr(self.app.state.container, "player_service", None)
+            if container_service:
+                self.app.state.player_service = container_service
+                logger.debug("Player service set on app.state from container in request context")
+
+        if user_manager is not None:
+            self.app.state.user_manager = user_manager
+            logger.debug("User manager set on app.state in request context")
+        elif hasattr(self.app.state, "container") and self.app.state.container:
+            # Fallback: get from container if not provided
+            container_manager = getattr(self.app.state.container, "user_manager", None)
+            if container_manager:
+                self.app.state.user_manager = container_manager
+                logger.debug("User manager set on app.state from container in request context")
+
         logger.debug(
-            "App state services already available",
+            "App state services verified in request context",
             player_service_available=self.app.state.player_service is not None,
             user_manager_available=self.app.state.user_manager is not None,
         )
-        # Services should already be available in the real app state
-        # Only override if explicitly provided and different
-        if player_service is not None:
-            self.app.state.player_service = player_service
-        if user_manager is not None:
-            self.app.state.user_manager = user_manager
-        logger.debug("App state services verified in request context")
 
     def get_persistence(self) -> Any:
         """Get the persistence layer from the request context."""
-        return self.app.state.persistence
+        # Prefer container, fallback to app.state for backward compatibility
+        if hasattr(self.app.state, "container") and self.app.state.container:
+            return self.app.state.container.async_persistence
+        return getattr(self.app.state, "persistence", None)
 
     def get_event_bus(self) -> Any | None:
         """Get the event bus from the request context."""
-        return self.app.state.event_bus
+        # Prefer container, fallback to app.state for backward compatibility
+        if hasattr(self.app.state, "container") and self.app.state.container:
+            return self.app.state.container.event_bus
+        return getattr(self.app.state, "event_bus", None)
 
     def get_alias_storage(self) -> Any | None:
         """Get the alias storage from the request context."""

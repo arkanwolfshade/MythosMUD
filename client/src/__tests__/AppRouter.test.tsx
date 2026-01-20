@@ -9,7 +9,7 @@ vi.mock('../pages/MapPage', () => ({
 }));
 
 vi.mock('../App', () => ({
-  default: () => <div>Main App</div>,
+  App: () => <div>Main App</div>,
 }));
 
 describe('AppRouter', () => {

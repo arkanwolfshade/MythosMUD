@@ -23,6 +23,43 @@ describe('StatsRollingScreen', () => {
     authToken: 'mock-token',
   };
 
+  // Helper function to create a valid StatsRollResponse mock
+  const createMockStatsResponse = (stats: {
+    strength: number;
+    dexterity: number;
+    constitution: number;
+    size: number;
+    intelligence: number;
+    power: number;
+    education: number;
+    charisma: number;
+    luck: number;
+    wisdom?: number;
+  }) => {
+    const allStats = {
+      ...stats,
+      wisdom: stats.wisdom ?? 50, // Default wisdom if not provided
+    };
+    const statValues = Object.values(allStats);
+    const total = statValues.reduce((sum, val) => sum + val, 0);
+    const average = total / statValues.length;
+    const highest = Math.max(...statValues);
+    const lowest = Math.min(...statValues);
+
+    return {
+      stats: allStats,
+      stat_summary: {
+        total,
+        average,
+        highest,
+        lowest,
+      },
+      profession_id: 1,
+      meets_requirements: true,
+      method_used: '3d6',
+    };
+  };
+
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -35,8 +72,8 @@ describe('StatsRollingScreen', () => {
     it('should render with character name', async () => {
       const mockResponse = {
         ok: true,
-        json: vi.fn().mockResolvedValue({
-          stats: {
+        json: vi.fn().mockResolvedValue(
+          createMockStatsResponse({
             strength: 60,
             dexterity: 70,
             constitution: 50,
@@ -46,8 +83,8 @@ describe('StatsRollingScreen', () => {
             education: 40,
             charisma: 65,
             luck: 50,
-          },
-        }),
+          })
+        ),
       };
       mockFetch.mockResolvedValue(mockResponse);
 
@@ -70,8 +107,8 @@ describe('StatsRollingScreen', () => {
 
       const mockResponse = {
         ok: true,
-        json: vi.fn().mockResolvedValue({
-          stats: {
+        json: vi.fn().mockResolvedValue(
+          createMockStatsResponse({
             strength: 60,
             dexterity: 70,
             constitution: 50,
@@ -81,8 +118,8 @@ describe('StatsRollingScreen', () => {
             education: 40,
             charisma: 65,
             luck: 50,
-          },
-        }),
+          })
+        ),
       } as unknown as Response;
 
       // Mock fetch to return our controlled promise
@@ -98,9 +135,14 @@ describe('StatsRollingScreen', () => {
       await act(async () => {
         resolveFetch(mockResponse);
         await fetchPromise;
-        // Wait a bit for state updates to complete
-        await new Promise(resolve => setTimeout(resolve, 0));
       });
+      // Wait for state updates to complete using vi.waitFor
+      await vi.waitFor(
+        () => {
+          expect(screen.queryByText("Rolling your character's stats...")).not.toBeInTheDocument();
+        },
+        { timeout: 1000 }
+      );
     });
   });
 
@@ -108,8 +150,8 @@ describe('StatsRollingScreen', () => {
     it('should roll stats on mount when authToken is available', async () => {
       const mockResponse = {
         ok: true,
-        json: vi.fn().mockResolvedValue({
-          stats: {
+        json: vi.fn().mockResolvedValue(
+          createMockStatsResponse({
             strength: 60,
             dexterity: 70,
             constitution: 50,
@@ -119,8 +161,8 @@ describe('StatsRollingScreen', () => {
             education: 40,
             charisma: 65,
             luck: 50,
-          },
-        }),
+          })
+        ),
       };
       mockFetch.mockResolvedValue(mockResponse);
 
@@ -182,8 +224,8 @@ describe('StatsRollingScreen', () => {
     it('should handle successful stats rolling', async () => {
       const mockResponse = {
         ok: true,
-        json: vi.fn().mockResolvedValue({
-          stats: {
+        json: vi.fn().mockResolvedValue(
+          createMockStatsResponse({
             strength: 75,
             dexterity: 60,
             constitution: 70,
@@ -193,8 +235,8 @@ describe('StatsRollingScreen', () => {
             education: 65,
             charisma: 55,
             luck: 50,
-          },
-        }),
+          })
+        ),
       };
       mockFetch.mockResolvedValue(mockResponse);
 
@@ -284,8 +326,8 @@ describe('StatsRollingScreen', () => {
       // Mock the initial stats rolling
       const mockStatsResponse = {
         ok: true,
-        json: vi.fn().mockResolvedValue({
-          stats: {
+        json: vi.fn().mockResolvedValue(
+          createMockStatsResponse({
             strength: 60,
             dexterity: 70,
             constitution: 50,
@@ -295,8 +337,8 @@ describe('StatsRollingScreen', () => {
             education: 40,
             charisma: 65,
             luck: 50,
-          },
-        }),
+          })
+        ),
       };
 
       // Mock the character creation API call
@@ -335,6 +377,7 @@ describe('StatsRollingScreen', () => {
             intelligence: 80,
             power: 65,
             education: 40,
+            wisdom: 50,
             charisma: 65,
             luck: 50,
           },
@@ -348,8 +391,8 @@ describe('StatsRollingScreen', () => {
     it('should allow rerolling stats', async () => {
       const mockResponse = {
         ok: true,
-        json: vi.fn().mockResolvedValue({
-          stats: {
+        json: vi.fn().mockResolvedValue(
+          createMockStatsResponse({
             strength: 60,
             dexterity: 70,
             constitution: 50,
@@ -359,8 +402,8 @@ describe('StatsRollingScreen', () => {
             education: 40,
             charisma: 65,
             luck: 50,
-          },
-        }),
+          })
+        ),
       };
       mockFetch.mockResolvedValue(mockResponse);
 

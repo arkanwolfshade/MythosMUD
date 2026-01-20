@@ -11,7 +11,7 @@ import json
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, cast
 
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Text, event, text
+from sqlalchemy import BigInteger, Boolean, Column, DateTime, ForeignKey, Integer, String, Text, event, text
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.ext.mutable import MutableDict, MutableList
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -107,7 +107,7 @@ class Player(Base):
     )
 
     # Profession - add index for queries filtering by profession
-    profession_id: Mapped[int] = mapped_column(Integer(), default=0, nullable=False, index=True)
+    profession_id: Mapped[int] = mapped_column(BigInteger(), default=0, nullable=False, index=True)
 
     # MULTI-CHARACTER: Soft deletion support
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, index=True)
@@ -143,7 +143,7 @@ class Player(Base):
             if isinstance(self.stats, dict):
                 # JSONB column returns dict directly
                 stats = self.stats
-            elif isinstance(self.stats, str):  # type: ignore[unreachable]
+            elif isinstance(self.stats, str):  # type: ignore[unreachable]  # Reason: isinstance check ensures str branch for backward compatibility, but mypy infers dict type from column definition and marks this branch as unreachable
                 # Fallback for TEXT column (backward compatibility during migration)
                 stats = json.loads(self.stats)
             else:
@@ -462,8 +462,8 @@ def _convert_legacy_stats_string(target: Player, _context: Any) -> None:
         target: The Player instance being loaded
         _context: SQLAlchemy query context (unused but required by event signature)
     """
-    if isinstance(target.stats, str):  # type: ignore[unreachable]
-        try:  # type: ignore[unreachable]
+    if isinstance(target.stats, str):  # type: ignore[unreachable]  # Reason: isinstance check ensures str branch for backward compatibility, but mypy infers dict type from column definition and marks this branch as unreachable
+        try:  # type: ignore[unreachable]  # Reason: try block is reachable at runtime when stats is str, but mypy infers dict type and marks this as unreachable
             # Parse JSON string to dict
             # MutableDict will automatically wrap this dict
             target.stats = json.loads(target.stats)

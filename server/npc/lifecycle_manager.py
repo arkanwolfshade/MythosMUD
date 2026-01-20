@@ -280,9 +280,10 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
 
     def _subscribe_to_events(self) -> None:
         """Subscribe to relevant game events."""
-        self.event_bus.subscribe(NPCEnteredRoom, self._handle_npc_entered_room)
-        self.event_bus.subscribe(NPCLeftRoom, self._handle_npc_left_room)
-        self.event_bus.subscribe(NPCDied, self._handle_npc_died)
+        # Use service_id for tracking and cleanup (Task 2: Event Subscriber Cleanup)
+        self.event_bus.subscribe(NPCEnteredRoom, self._handle_npc_entered_room, service_id="npc_lifecycle_manager")
+        self.event_bus.subscribe(NPCLeftRoom, self._handle_npc_left_room, service_id="npc_lifecycle_manager")
+        self.event_bus.subscribe(NPCDied, self._handle_npc_died, service_id="npc_lifecycle_manager")
 
     def _handle_npc_entered_room(self, event: NPCEnteredRoom) -> None:
         """Handle NPC entering a room."""

@@ -309,6 +309,9 @@ test-results/
 .cache/
 .playwright-mcp/
 
+# Playwright authentication storage state (contains session cookies)
+client/tests/e2e/.auth/
+
 # Coverage reports
 .nyc_output/
 *.lcov
@@ -362,3 +365,5 @@ pylint_output.txt
 *.bak
 *.backup
 *.orig
+client/.auth/admin-auth.json
+client/.auth/user-auth.json

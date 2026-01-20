@@ -26,7 +26,12 @@ logger = get_logger(__name__)
 def _get_app_and_persistence(request: Any) -> tuple[Any, Any]:
     """Extract app and persistence from request."""
     app = request.app if request else None
-    persistence = app.state.persistence if app else None
+    # Prefer container, fallback to app.state for backward compatibility
+    persistence = None
+    if app and hasattr(app.state, "container") and app.state.container:
+        persistence = app.state.container.async_persistence
+    elif app:
+        persistence = getattr(app.state, "persistence", None)
     return app, persistence
 
 
@@ -58,7 +63,13 @@ def _get_room_drops(app: Any, room_id: int, player_name: str) -> list[dict[str, 
     if not app:
         return room_drops
 
-    connection_manager = getattr(app.state, "connection_manager", None)
+    # Prefer container, fallback to app.state for backward compatibility
+    connection_manager = None
+    if hasattr(app.state, "container") and app.state.container:
+        connection_manager = app.state.container.connection_manager
+    else:
+        connection_manager = getattr(app.state, "connection_manager", None)
+
     if not connection_manager:
         return room_drops
 
@@ -103,7 +114,12 @@ async def _try_explicit_player_look(  # pylint: disable=too-many-arguments,too-m
     """Try to handle explicit player look."""
     if target_type == "player" and target:
         target_lower = target.lower()
-        connection_manager = getattr(app.state, "connection_manager", None) if app else None
+        # Prefer container, fallback to app.state for backward compatibility
+        connection_manager = None
+        if app and hasattr(app.state, "container") and app.state.container:
+            connection_manager = app.state.container.connection_manager
+        elif app:
+            connection_manager = getattr(app.state, "connection_manager", None)
         result = await _handle_player_look(
             target, target_lower, instance_number, room, persistence, player_name, connection_manager
         )
@@ -125,7 +141,12 @@ async def _try_explicit_item_look(  # pylint: disable=too-many-arguments,too-man
     """Try to handle explicit item look."""
     if target_type == "item" and target:
         target_lower = target.lower()
-        prototype_registry = getattr(app.state, "prototype_registry", None) if app else None
+        # Prefer container, fallback to app.state for backward compatibility
+        prototype_registry = None
+        if app and hasattr(app.state, "container") and app.state.container:
+            prototype_registry = app.state.container.item_prototype_registry
+        elif app:
+            prototype_registry = getattr(app.state, "prototype_registry", None)
         result = await _handle_item_look(
             target, target_lower, instance_number, room_drops, player, prototype_registry, command_data, player_name
         )
@@ -149,7 +170,12 @@ async def _try_explicit_container_look(  # pylint: disable=too-many-arguments,to
     """Try to handle explicit container look or container inspection."""
     if (target_type == "container" or command_data.get("look_in", False)) and target:
         target_lower = target.lower()
-        prototype_registry = getattr(app.state, "prototype_registry", None) if app else None
+        # Prefer container, fallback to app.state for backward compatibility
+        prototype_registry = None
+        if app and hasattr(app.state, "container") and app.state.container:
+            prototype_registry = app.state.container.item_prototype_registry
+        elif app:
+            prototype_registry = getattr(app.state, "prototype_registry", None)
         result = await _handle_container_look(
             target,
             target_lower,
@@ -185,7 +211,12 @@ async def _handle_implicit_target_lookup(  # pylint: disable=too-many-arguments,
         return None  # Will be handled as direction
 
     # Priority 1: Try players
-    connection_manager = getattr(app.state, "connection_manager", None) if app else None
+    # Prefer container, fallback to app.state for backward compatibility
+    connection_manager = None
+    if app and hasattr(app.state, "container") and app.state.container:
+        connection_manager = app.state.container.connection_manager
+    elif app:
+        connection_manager = getattr(app.state, "connection_manager", None)
     result = await _try_lookup_player_implicit(
         target, target_lower, instance_number, room, persistence, player_name, connection_manager
     )
@@ -198,7 +229,12 @@ async def _handle_implicit_target_lookup(  # pylint: disable=too-many-arguments,
         return result
 
     # Priority 3: Try items
-    prototype_registry = getattr(app.state, "prototype_registry", None) if app else None
+    # Prefer container, fallback to app.state for backward compatibility
+    prototype_registry = None
+    if app and hasattr(app.state, "container") and app.state.container:
+        prototype_registry = app.state.container.item_prototype_registry
+    elif app:
+        prototype_registry = getattr(app.state, "prototype_registry", None)
     result = await _try_lookup_item_implicit(target_lower, instance_number, room_drops, player, prototype_registry)
     if result:
         return result

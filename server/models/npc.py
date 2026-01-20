@@ -13,6 +13,7 @@ from enum import Enum
 from typing import Any, cast
 
 from sqlalchemy import (
+    BigInteger,
     Boolean,
     CheckConstraint,
     Column,
@@ -61,7 +62,7 @@ class NPCDefinition(Base):
     )
 
     # Primary key
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
 
     # Basic information
     name = Column(String(100), nullable=False, index=True)
@@ -118,7 +119,7 @@ class NPCDefinition(Base):
 
     def set_base_stats(self, stats: dict[str, Any]) -> None:
         """Set base stats from dictionary."""
-        self.base_stats = json.dumps(stats)  # type: ignore[assignment]
+        self.base_stats = json.dumps(stats)  # type: ignore[assignment]  # Reason: SQLAlchemy Text column accepts str, but mypy infers dict[str, Any] from parameter type, json.dumps returns str at runtime
 
     def get_behavior_config(self) -> dict[str, Any]:
         """Get behavior configuration as dictionary."""
@@ -129,7 +130,7 @@ class NPCDefinition(Base):
 
     def set_behavior_config(self, config: dict[str, Any]) -> None:
         """Set behavior configuration from dictionary."""
-        self.behavior_config = json.dumps(config)  # type: ignore[assignment]
+        self.behavior_config = json.dumps(config)  # type: ignore[assignment]  # Reason: SQLAlchemy Text column accepts str, but mypy infers dict[str, Any] from parameter type, json.dumps returns str at runtime
 
     def get_ai_integration_stub(self) -> dict[str, Any]:
         """Get AI integration stub configuration as dictionary."""
@@ -140,7 +141,7 @@ class NPCDefinition(Base):
 
     def set_ai_integration_stub(self, stub: dict[str, Any]) -> None:
         """Set AI integration stub configuration from dictionary."""
-        self.ai_integration_stub = json.dumps(stub)  # type: ignore[assignment]
+        self.ai_integration_stub = json.dumps(stub)  # type: ignore[assignment]  # Reason: SQLAlchemy Text column accepts str, but mypy infers dict[str, Any] from parameter type, json.dumps returns str at runtime
 
     def is_required(self) -> bool:
         """Check if this NPC is required to spawn."""
@@ -165,7 +166,7 @@ class NPCSpawnRule(Base):
     __tablename__ = "npc_spawn_rules"
 
     # Primary key
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
 
     # Foreign key to NPC definition
     npc_definition_id = Column(
@@ -200,7 +201,7 @@ class NPCSpawnRule(Base):
 
     def set_spawn_conditions(self, conditions: dict[str, Any]) -> None:
         """Set spawn conditions from dictionary."""
-        self.spawn_conditions = json.dumps(conditions)  # type: ignore[assignment]
+        self.spawn_conditions = json.dumps(conditions)  # type: ignore[assignment]  # Reason: SQLAlchemy Text column accepts str, but mypy infers dict[str, Any] from parameter type, json.dumps returns str at runtime
 
     def can_spawn_with_population(self, current_population: int) -> bool:
         """Check if this rule allows spawning given current NPC population."""
@@ -298,11 +299,11 @@ class NPCRelationship(Base):
     )
 
     # Primary key
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
 
     # Foreign keys to NPC definitions
-    npc_id_1 = Column(Integer, ForeignKey("npc_definitions.id", ondelete="CASCADE"), nullable=False)
-    npc_id_2 = Column(Integer, ForeignKey("npc_definitions.id", ondelete="CASCADE"), nullable=False)
+    npc_id_1 = Column(BigInteger, ForeignKey("npc_definitions.id", ondelete="CASCADE"), nullable=False)
+    npc_id_2 = Column(BigInteger, ForeignKey("npc_definitions.id", ondelete="CASCADE"), nullable=False)
 
     # Relationship information
     relationship_type = Column(String(20), nullable=False)

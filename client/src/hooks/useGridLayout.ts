@@ -42,10 +42,10 @@ export interface PanelState {
 
 // Hook return interface
 export interface UseGridLayoutReturn {
-  currentLayout: Layout[];
+  currentLayout: Layout;
   currentBreakpoint: string;
   panelStates: Record<string, PanelState>;
-  onLayoutChange: (layout: Layout[]) => void;
+  onLayoutChange: (layout: Layout) => void;
   onBreakpointChange: (breakpoint: string) => void;
   resetLayout: () => void;
   togglePanelState: (panelId: string, state: keyof PanelState) => void;
@@ -55,7 +55,7 @@ export interface UseGridLayoutReturn {
 
 export const useGridLayout = (): UseGridLayoutReturn => {
   // State management - initialize from localStorage to avoid setState in effect
-  const [currentLayout, setCurrentLayout] = useState<Layout[]>(() => {
+  const [currentLayout, setCurrentLayout] = useState<Layout>(() => {
     try {
       const savedLayout = localStorage.getItem(STORAGE_KEYS.LAYOUT);
       if (savedLayout) {
@@ -132,20 +132,20 @@ export const useGridLayout = (): UseGridLayoutReturn => {
   }, []);
 
   // Handle layout changes
-  const onLayoutChange = useCallback((layout: Layout[]) => {
+  const onLayoutChange = useCallback((layout: Layout) => {
     setCurrentLayout(layout);
   }, []);
 
   // Handle breakpoint changes
   const onBreakpointChange = useCallback((breakpoint: string) => {
     setCurrentBreakpoint(breakpoint);
-    const newLayout = layoutConfig[breakpoint as keyof typeof layoutConfig] || layoutConfig.lg;
+    const newLayout = (layoutConfig[breakpoint as keyof typeof layoutConfig] || layoutConfig.lg) as Layout;
     setCurrentLayout(newLayout);
   }, []);
 
   // Reset layout to default
   const resetLayout = useCallback(() => {
-    const defaultLayout = layoutConfig[currentBreakpoint as keyof typeof layoutConfig] || layoutConfig.lg;
+    const defaultLayout = (layoutConfig[currentBreakpoint as keyof typeof layoutConfig] || layoutConfig.lg) as Layout;
     setCurrentLayout(defaultLayout);
 
     // Reset panel states
@@ -199,4 +199,4 @@ export const useGridLayout = (): UseGridLayoutReturn => {
   };
 };
 
-export default useGridLayout;
+// Named export - useGridLayout is already exported above

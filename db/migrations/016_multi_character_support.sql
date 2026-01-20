@@ -48,6 +48,7 @@ END $$;
 
 -- Step 3: Drop unique constraint on players.name (will be replaced
 -- with case-insensitive partial index)
+-- Handle both possible constraint names: players_name_key and players_new_name_key
 DO $$
 BEGIN
     IF EXISTS (
@@ -56,6 +57,14 @@ BEGIN
     ) THEN
         ALTER TABLE players
         DROP CONSTRAINT players_name_key;
+    END IF;
+
+    IF EXISTS (
+        SELECT 1 FROM pg_constraint
+        WHERE conname = 'players_new_name_key'
+    ) THEN
+        ALTER TABLE players
+        DROP CONSTRAINT players_new_name_key;
     END IF;
 END $$;
 

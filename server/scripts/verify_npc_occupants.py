@@ -7,10 +7,11 @@ This script verifies:
 3. NPCs have correct room assignments
 """
 
-import asyncio
 import sys
 from pathlib import Path
 from typing import Any
+
+from anyio import run
 
 # Add server directory to path
 server_dir = Path(__file__).parent.parent
@@ -201,4 +202,4 @@ async def verify_npcs_in_lifecycle_manager() -> None:
 
 
 if __name__ == "__main__":
-    asyncio.run(verify_npcs_in_lifecycle_manager())
+    run(verify_npcs_in_lifecycle_manager)

@@ -1,56 +1,71 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import './App.css';
-import { API_BASE_URL } from './utils/config';
-import { logoutHandler } from './utils/logoutHandler';
-import { memoryMonitor } from './utils/memoryMonitor';
-import { inputSanitizer, secureTokenStorage } from './utils/security';
+import {
+  assertLoginResponse,
+  assertServerCharacterResponseArray,
+  isServerCharacterResponse,
+  isServerCharacterResponseArray,
+  type ServerCharacterResponse,
+} from './utils/apiTypeGuards.js';
+import { API_BASE_URL } from './utils/config.js';
+import { getErrorMessage, isErrorResponse } from './utils/errorHandler.js';
+import { logoutHandler } from './utils/logoutHandler.js';
+import { memoryMonitor } from './utils/memoryMonitor.js';
+import { inputSanitizer, secureTokenStorage } from './utils/security.js';
+
+// Helper function to check if value is an object
+function isObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
 
 // Lazy load screen components for code splitting
 // AI: Lazy loading reduces initial bundle size by ~30-50% and improves initial page load time
 const EldritchEffectsDemo = lazy(() =>
-  import('./components/EldritchEffectsDemo').then(m => ({ default: m.EldritchEffectsDemo }))
+  import('./components/EldritchEffectsDemo.jsx').then(m => ({ default: m.EldritchEffectsDemo }))
 );
 const GameClientV2Container = lazy(() =>
-  import('./components/ui-v2/GameClientV2Container').then(m => ({ default: m.GameClientV2Container }))
+  import('./components/ui-v2/GameClientV2Container.jsx').then(m => ({ default: m.GameClientV2Container }))
 );
 const MotdInterstitialScreen = lazy(() =>
-  import('./components/MotdInterstitialScreen').then(m => ({ default: m.MotdInterstitialScreen }))
+  import('./components/MotdInterstitialScreen.jsx').then(m => ({ default: m.MotdInterstitialScreen }))
 );
 const ProfessionSelectionScreen = lazy(() =>
-  import('./components/ProfessionSelectionScreen').then(m => ({ default: m.ProfessionSelectionScreen }))
+  import('./components/ProfessionSelectionScreen.jsx').then(m => ({ default: m.ProfessionSelectionScreen }))
 );
 const StatsRollingScreen = lazy(() =>
-  import('./components/StatsRollingScreen').then(m => ({ default: m.StatsRollingScreen }))
+  import('./components/StatsRollingScreen.jsx').then(m => ({ default: m.StatsRollingScreen }))
 );
 const CharacterSelectionScreen = lazy(() =>
-  import('./components/CharacterSelectionScreen').then(m => ({ default: m.CharacterSelectionScreen }))
+  import('./components/CharacterSelectionScreen.jsx').then(m => ({ default: m.CharacterSelectionScreen }))
 );
 
 // Import types that are needed for props
-import type { Profession } from './components/ProfessionCard';
-import type { CharacterInfo, LoginResponse } from './types/auth';
+import type { Profession } from './components/ProfessionCard.jsx';
+import type { CharacterInfo } from './types/auth.js';
 
 // Import the Stats interface from StatsRollingScreen
+// Note: Server Stats model does NOT include 'wisdom' - it was removed/never existed
 interface Stats {
   strength: number;
   dexterity: number;
   constitution: number;
+  size: number;
   intelligence: number;
-  wisdom: number;
+  power: number;
+  education: number;
   charisma: number;
+  luck: number;
 }
 
-// Server response character type (server returns 'id', client expects 'player_id')
-interface ServerCharacterResponse {
-  id?: string;
-  player_id?: string;
-  name: string;
-  profession_id: number;
-  profession_name?: string;
-  level: number;
-  created_at: string;
-  last_active: string;
-}
+// ServerCharacterResponse is now imported from apiTypeGuards.ts
+
+// Loading fallback component for lazy-loaded screens
+// Defined at module level to prevent recreation on every render
+const LoadingFallback = () => (
+  <div className="App flex items-center justify-center min-h-screen bg-mythos-terminal-background">
+    <div className="text-mythos-terminal-text font-mono">Loading...</div>
+  </div>
+);
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -95,6 +110,10 @@ function App() {
   // NOTE: This only runs for the main app route, not for /map route
   // FIX: Use sessionStorage flag to prevent clearing tokens on component remount
   // (e.g., when Playwright switches tabs). Only clear on actual page load.
+
+  // Dependencies intentionally omitted: API_BASE_URL and secureTokenStorage are stable module-level
+  // references that never change. All setState functions are stable references from useState.
+  // This effect should only run once on mount to check for existing authentication state.
   useEffect(() => {
     // Check if a valid token already exists before clearing
     // This prevents clearing tokens on component remount when user is already authenticated
@@ -132,9 +151,13 @@ function App() {
           Authorization: `Bearer ${existingToken}`,
         },
       })
-        .then(response => {
+        .then(async response => {
           if (response.ok) {
-            return response.json();
+            const rawData: unknown = await response.json();
+            if (!isServerCharacterResponseArray(rawData)) {
+              throw new Error('Invalid API response: expected ServerCharacterResponse[]');
+            }
+            return rawData;
           }
           // If 401, token is invalid - clear it
           if (response.status === 401) {
@@ -145,35 +168,40 @@ function App() {
           return null;
         })
         .then(charactersList => {
-          if (Array.isArray(charactersList) && charactersList.length > 0) {
+          if (charactersList && charactersList.length > 0) {
             // Map server response to client interface
             // Server returns PlayerRead which has player_id as the ID field
             const mappedCharacters = charactersList.map(
-              (c: { player_id?: string; id?: string; name?: string; [key: string]: unknown }): CharacterInfo => ({
+              (c: ServerCharacterResponse): CharacterInfo => ({
                 player_id: c.player_id || c.id || '',
-                name: c.name || '',
-                profession_id: (c as { profession_id?: number }).profession_id || 0,
-                profession_name: (c as { profession_name?: string }).profession_name || undefined,
-                level: (c as { level?: number }).level || 1,
-                created_at: (c as { created_at?: string }).created_at || new Date().toISOString(),
-                last_active: (c as { last_active?: string }).last_active || new Date().toISOString(),
+                name: c.name,
+                profession_id: c.profession_id,
+                profession_name: c.profession_name,
+                level: c.level,
+                created_at: c.created_at,
+                last_active: c.last_active,
               })
             );
             setCharacters(mappedCharacters);
 
             // If only one character, auto-select it (common case after remount)
-            if (mappedCharacters.length === 1) {
+            // BUT: Don't auto-select if we're in character creation flow
+            const inCharacterCreation = showProfessionSelection || selectedProfession !== undefined;
+
+            if (mappedCharacters.length === 1 && !inCharacterCreation) {
               const singleChar = mappedCharacters[0];
               setSelectedCharacterId(singleChar.player_id);
               setSelectedCharacterName(singleChar.name);
               // Skip character selection and MOTD, go straight to game
               setShowCharacterSelection(false);
               setShowMotd(false);
-            } else if (mappedCharacters.length > 1) {
-              // Multiple characters - show selection screen
+            } else if (mappedCharacters.length > 1 && !inCharacterCreation) {
+              // Multiple characters - show selection screen (only if not in character creation)
               setShowCharacterSelection(true);
             }
-          } else if (Array.isArray(charactersList) && charactersList.length === 0) {
+            // If in character creation, don't change the flow - let character creation continue
+            return;
+          } else if (charactersList && charactersList.length === 0) {
             // No characters - user needs to create one
             setShowProfessionSelection(true);
             setShowCharacterSelection(false);
@@ -187,7 +215,8 @@ function App() {
           setAuthToken('');
         });
     }
-  }, []); // Only run on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run on mount - dependencies intentionally omitted to prevent re-running on state changes
 
   const handleLoginClick = async () => {
     // Sanitize inputs
@@ -209,18 +238,28 @@ function App() {
       if (!response.ok) {
         let message = `Login failed (${response.status})`;
         try {
-          const data = await response.json();
-          message = data?.error?.message || data?.detail || message;
+          const rawData: unknown = await response.json();
+          if (isErrorResponse(rawData)) {
+            message = getErrorMessage(rawData);
+          } else if (isObject(rawData)) {
+            const data = rawData as Record<string, unknown>;
+            message =
+              typeof data.error === 'object' && data.error !== null && 'message' in data.error
+                ? String((data.error as Record<string, unknown>).message)
+                : typeof data.detail === 'string'
+                  ? data.detail
+                  : message;
+          }
         } catch {
           // Ignore JSON parsing errors, use default message
         }
         throw new Error(message);
       }
-      const data = await response.json();
-      const token = data?.access_token as string | undefined;
-      const refreshToken = data?.refresh_token as string | undefined;
+      const rawData: unknown = await response.json();
+      const data = assertLoginResponse(rawData, 'Invalid login response from server');
 
-      if (!token) throw new Error('No access_token in response');
+      const token = data.access_token;
+      const refreshToken = data.refresh_token;
 
       // Store tokens securely with username-specific keys (prevents tab conflicts)
       secureTokenStorage.setToken(token, sanitizedUsername);
@@ -231,8 +270,7 @@ function App() {
       setAuthToken(token);
       setIsAuthenticated(true);
       // MULTI-CHARACTER: Update to use characters array
-      const loginData = data as LoginResponse;
-      const charactersList = loginData?.characters || [];
+      const charactersList = data.characters || [];
       // Map server response (id) to client interface (player_id)
       const mappedCharacters = charactersList.map(
         (c: ServerCharacterResponse): CharacterInfo => ({
@@ -283,18 +321,28 @@ function App() {
       if (!response.ok) {
         let message = `Registration failed (${response.status})`;
         try {
-          const data = await response.json();
-          message = data?.error?.message || data?.detail || message;
+          const rawData: unknown = await response.json();
+          if (isErrorResponse(rawData)) {
+            message = getErrorMessage(rawData);
+          } else if (isObject(rawData)) {
+            const data = rawData as Record<string, unknown>;
+            message =
+              typeof data.error === 'object' && data.error !== null && 'message' in data.error
+                ? String((data.error as Record<string, unknown>).message)
+                : typeof data.detail === 'string'
+                  ? data.detail
+                  : message;
+          }
         } catch {
           // Ignore JSON parsing errors, use default message
         }
         throw new Error(message);
       }
-      const data = await response.json();
-      const token = data?.access_token as string | undefined;
-      const refreshToken = data?.refresh_token as string | undefined;
+      const rawData: unknown = await response.json();
+      const data = assertLoginResponse(rawData, 'Invalid registration response from server');
 
-      if (!token) throw new Error('No access_token in response');
+      const token = data.access_token;
+      const refreshToken = data.refresh_token;
 
       // Store tokens securely with username-specific keys (prevents tab conflicts)
       secureTokenStorage.setToken(token, sanitizedUsername);
@@ -305,8 +353,7 @@ function App() {
       setAuthToken(token);
       setIsAuthenticated(true);
       // MULTI-CHARACTER: Update to use characters array
-      const registerData = data as LoginResponse;
-      const charactersList = registerData?.characters || [];
+      const charactersList = data.characters || [];
       // Map server response (id) to client interface (player_id)
       const mappedCharacters = charactersList.map(
         (c: ServerCharacterResponse): CharacterInfo => ({
@@ -371,12 +418,21 @@ function App() {
       });
 
       if (response.ok) {
-        const charactersList = (await response.json()) as ServerCharacterResponse[];
+        const rawData: unknown = await response.json();
+        const charactersList = assertServerCharacterResponseArray(
+          rawData,
+          'Invalid API response: expected ServerCharacterResponse[]'
+        );
         // Map server response (id) to client interface (player_id)
         const mappedCharacters = charactersList.map(
           (c: ServerCharacterResponse): CharacterInfo => ({
-            ...c,
-            player_id: c.id || c.player_id || '', // Server returns 'id', client expects 'player_id'
+            player_id: c.player_id || c.id || '',
+            name: c.name,
+            profession_id: c.profession_id,
+            profession_name: c.profession_name,
+            level: c.level,
+            created_at: c.created_at,
+            last_active: c.last_active,
           })
         );
         setCharacters(mappedCharacters);
@@ -388,9 +444,23 @@ function App() {
         setShowCharacterSelection(true);
       } else {
         // Response was not OK - handle as error
-        const errorData = await response.json().catch(() => ({}));
-        const errorMessage =
-          errorData.detail?.message || errorData.detail || 'Character created, but failed to refresh character list';
+        let errorMessage = 'Character created, but failed to refresh character list';
+        try {
+          const rawData: unknown = await response.json();
+          if (isErrorResponse(rawData)) {
+            errorMessage = getErrorMessage(rawData);
+          } else if (isObject(rawData)) {
+            const errorData = rawData as Record<string, unknown>;
+            errorMessage =
+              typeof errorData.detail === 'object' && errorData.detail !== null && 'message' in errorData.detail
+                ? String((errorData.detail as Record<string, unknown>).message)
+                : typeof errorData.detail === 'string'
+                  ? errorData.detail
+                  : errorMessage;
+          }
+        } catch {
+          // Use default error message if JSON parsing fails
+        }
         console.error('Failed to refresh characters list:', errorMessage);
         setError('Character created, but failed to refresh character list. Please refresh the page.');
         // Reset character creation state to allow retry
@@ -435,15 +505,44 @@ function App() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        const errorMessage = errorData.detail?.message || errorData.detail || 'Failed to select character';
+        let errorMessage = 'Failed to select character';
+        try {
+          const rawData: unknown = await response.json();
+          if (isErrorResponse(rawData)) {
+            errorMessage = getErrorMessage(rawData);
+          } else if (isObject(rawData)) {
+            const errorData = rawData as Record<string, unknown>;
+            errorMessage =
+              typeof errorData.detail === 'object' && errorData.detail !== null && 'message' in errorData.detail
+                ? String((errorData.detail as Record<string, unknown>).message)
+                : typeof errorData.detail === 'string'
+                  ? errorData.detail
+                  : errorMessage;
+          }
+        } catch {
+          // Use default error message if JSON parsing fails
+        }
         setError(errorMessage);
         return;
       }
 
-      const characterData = await response.json();
-      const selectedId = characterData.id || characterData.player_id || characterId;
-      setSelectedCharacterName(characterData.name || '');
+      const rawData: unknown = await response.json();
+      // Character selection response may be a single character or a simple response
+      // Validate as ServerCharacterResponse if possible, otherwise extract fields safely
+      let selectedId = characterId;
+      let selectedName = '';
+      if (isServerCharacterResponse(rawData)) {
+        selectedId = rawData.player_id || rawData.id || characterId;
+        selectedName = rawData.name;
+      } else if (isObject(rawData)) {
+        const characterData = rawData as Record<string, unknown>;
+        selectedId =
+          (typeof characterData.id === 'string' ? characterData.id : null) ||
+          (typeof characterData.player_id === 'string' ? characterData.player_id : null) ||
+          characterId;
+        selectedName = typeof characterData.name === 'string' ? characterData.name : '';
+      }
+      setSelectedCharacterName(selectedName);
       // Store the selected character ID for WebSocket connection
       setSelectedCharacterId(selectedId);
       setShowCharacterSelection(false);
@@ -467,8 +566,23 @@ function App() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        const errorMessage = errorData.detail?.message || errorData.detail || 'Failed to delete character';
+        let errorMessage = 'Failed to delete character';
+        try {
+          const rawData: unknown = await response.json();
+          if (isErrorResponse(rawData)) {
+            errorMessage = getErrorMessage(rawData);
+          } else if (isObject(rawData)) {
+            const errorData = rawData as Record<string, unknown>;
+            errorMessage =
+              typeof errorData.detail === 'object' && errorData.detail !== null && 'message' in errorData.detail
+                ? String((errorData.detail as Record<string, unknown>).message)
+                : typeof errorData.detail === 'string'
+                  ? errorData.detail
+                  : errorMessage;
+          }
+        } catch {
+          // Use default error message if JSON parsing fails
+        }
         throw new Error(errorMessage);
       }
 
@@ -482,12 +596,21 @@ function App() {
       });
 
       if (charactersResponse.ok) {
-        const charactersList = (await charactersResponse.json()) as ServerCharacterResponse[];
+        const rawData: unknown = await charactersResponse.json();
+        const charactersList = assertServerCharacterResponseArray(
+          rawData,
+          'Invalid API response: expected ServerCharacterResponse[]'
+        );
         // Map server response (id) to client interface (player_id)
         const mappedCharacters = charactersList.map(
           (c: ServerCharacterResponse): CharacterInfo => ({
-            ...c,
-            player_id: c.id || c.player_id || '', // Server returns 'id', client expects 'player_id'
+            player_id: c.player_id || c.id || '',
+            name: c.name,
+            profession_id: c.profession_id,
+            profession_name: c.profession_name,
+            level: c.level,
+            created_at: c.created_at,
+            last_active: c.last_active,
           })
         );
         setCharacters(mappedCharacters);
@@ -500,9 +623,23 @@ function App() {
         }
       } else {
         // Character was deleted but refresh failed - log error and show message
-        const errorData = await charactersResponse.json().catch(() => ({}));
-        const errorMessage =
-          errorData.detail?.message || errorData.detail || 'Character deleted, but failed to refresh character list';
+        let errorMessage = 'Character deleted, but failed to refresh character list';
+        try {
+          const rawData: unknown = await charactersResponse.json();
+          if (isErrorResponse(rawData)) {
+            errorMessage = getErrorMessage(rawData);
+          } else if (isObject(rawData)) {
+            const errorData = rawData as Record<string, unknown>;
+            errorMessage =
+              typeof errorData.detail === 'object' && errorData.detail !== null && 'message' in errorData.detail
+                ? String((errorData.detail as Record<string, unknown>).message)
+                : typeof errorData.detail === 'string'
+                  ? errorData.detail
+                  : errorMessage;
+          }
+        } catch {
+          // Use default error message if JSON parsing fails
+        }
         console.error('Failed to refresh characters list after deletion:', errorMessage);
         setError(errorMessage);
         // Still throw to indicate partial failure
@@ -520,6 +657,9 @@ function App() {
     setSelectedProfession(undefined);
     setShowCharacterSelection(false);
     setShowProfessionSelection(true);
+    // Clear selected character to prevent auto-entry into game
+    setSelectedCharacterName('');
+    setSelectedCharacterId('');
   };
 
   const handleMotdContinue = async () => {
@@ -553,8 +693,20 @@ function App() {
 
         if (!response.ok) {
           // Log error but don't block game entry - grace period is best effort
-          const errorData = await response.json().catch(() => ({}));
-          console.warn('Failed to start login grace period:', errorData.detail || 'Unknown error');
+          try {
+            const rawData: unknown = await response.json();
+            if (isErrorResponse(rawData)) {
+              console.warn('Failed to start login grace period:', getErrorMessage(rawData));
+            } else if (isObject(rawData)) {
+              const errorData = rawData as Record<string, unknown>;
+              const detail = typeof errorData.detail === 'string' ? errorData.detail : 'Unknown error';
+              console.warn('Failed to start login grace period:', detail);
+            } else {
+              console.warn('Failed to start login grace period: Unknown error');
+            }
+          } catch {
+            console.warn('Failed to start login grace period: Unknown error');
+          }
         }
       } catch (error) {
         // Log error but don't block game entry - grace period is best effort
@@ -691,13 +843,6 @@ function App() {
       }
     }
   };
-
-  // Loading fallback component for lazy-loaded screens
-  const LoadingFallback = () => (
-    <div className="App flex items-center justify-center min-h-screen bg-mythos-terminal-background">
-      <div className="text-mythos-terminal-text font-mono">Loading...</div>
-    </div>
-  );
 
   if (showDemo) {
     return (
@@ -842,6 +987,13 @@ function App() {
     }
 
     // Show stats rolling screen after profession selection
+    // Defensive check: if selectedProfession is undefined here, something went wrong
+    if (!selectedProfession) {
+      // Reset to profession selection if profession is missing
+      setShowProfessionSelection(true);
+      return null;
+    }
+
     return (
       <div className="App">
         <Suspense fallback={<LoadingFallback />}>
@@ -851,8 +1003,8 @@ function App() {
             onBack={handleStatsRollingBack}
             baseUrl={API_BASE_URL}
             authToken={authToken}
-            professionId={selectedProfession?.id}
-            profession={selectedProfession as Profession | undefined}
+            professionId={selectedProfession.id}
+            profession={selectedProfession}
           />
         </Suspense>
       </div>
@@ -898,6 +1050,16 @@ function App() {
   }
 
   // If authenticated and has character, show MOTD screen or game terminal
+  // BUT: Don't show game terminal if we're in character creation flow
+  // This is a defensive check - character creation should have been handled above
+  // but if we somehow reach here during character creation, prevent game terminal from rendering
+  const inCharacterCreation = showProfessionSelection || !!selectedProfession;
+  if (inCharacterCreation) {
+    // Return null to prevent rendering - character creation flow should handle this
+    // This should not normally be reached, but protects against state inconsistencies
+    return null;
+  }
+
   if (showMotd) {
     return (
       <div className="App">
@@ -946,4 +1108,4 @@ function App() {
   );
 }
 
-export default App;
+export { App };

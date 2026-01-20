@@ -13,6 +13,8 @@ import asyncio
 import uuid
 from typing import Any
 
+from anyio import sleep
+
 from ..structured_logging.enhanced_logging_config import get_logger
 from .player_disconnect_handlers import (
     _cleanup_player_references,
@@ -55,7 +57,7 @@ async def start_grace_period(
     async def grace_period_task() -> None:
         try:
             # Wait for grace period duration
-            await asyncio.sleep(GRACE_PERIOD_DURATION)
+            await sleep(GRACE_PERIOD_DURATION)
 
             # Check if player reconnected (task may have been cancelled)
             if player_id not in manager.grace_period_players:
@@ -66,7 +68,7 @@ async def start_grace_period(
             logger.info("Grace period expired, performing disconnect cleanup", player_id=player_id)
 
             # Resolve player
-            pl = await manager._get_player(player_id)  # pylint: disable=protected-access
+            pl = await manager._get_player(player_id)  # pylint: disable=protected-access  # Reason: Accessing protected member _get_player is necessary for disconnect grace period implementation, this is part of the internal API
             room_id: str | None = getattr(pl, "current_room_id", None) if pl else None
             player_name: str = extract_player_name(pl, player_id) if pl else "Unknown Player"
 
@@ -80,7 +82,7 @@ async def start_grace_period(
             _remove_player_from_online_tracking(keys_to_remove, keys_to_remove_str, manager)
 
             # Clean up ghost players
-            manager._cleanup_ghost_players()  # pylint: disable=protected-access
+            manager._cleanup_ghost_players()  # pylint: disable=protected-access  # Reason: Accessing protected member _cleanup_ghost_players is necessary for disconnect grace period implementation, this is part of the internal API
 
             # Clean up remaining references
             _cleanup_player_references(player_id, manager)

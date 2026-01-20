@@ -182,7 +182,7 @@ export const animations = {
   hoverSubtle: 'hover:bg-opacity-80',
 
   // Focus effects
-  focus: 'focus:outline-none focus:ring-2 focus:ring-mythos-terminal-primary focus:ring-opacity-50',
+  focus: 'focus:outline-hidden focus:ring-2 focus:ring-mythos-terminal-primary focus:ring-opacity-50',
 
   // Loading states
   loading: 'animate-pulse',
@@ -248,7 +248,7 @@ export const buildClasses = {
    */
   button: (variant: keyof typeof variants.button, size: keyof typeof sizes.button, disabled = false) => {
     const baseClasses =
-      'inline-flex items-center justify-center font-medium border rounded transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2';
+      'inline-flex items-center justify-center font-medium border rounded transition-colors duration-200 focus:outline-hidden focus:ring-2 focus:ring-offset-2';
     const variantClasses = variants.button[variant];
     const sizeClasses = sizes.button[size];
     const disabledClasses = disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer';
@@ -260,7 +260,7 @@ export const buildClasses = {
    * Build input classes based on variant and size
    */
   input: (variant: keyof typeof variants.input, size: keyof typeof sizes.input, disabled = false) => {
-    const baseClasses = 'block w-full rounded transition-colors duration-200 focus:outline-none';
+    const baseClasses = 'block w-full rounded transition-colors duration-200 focus:outline-hidden';
     const variantClasses = variants.input[variant];
     const sizeClasses = sizes.input[size];
     const disabledClasses = disabled ? 'opacity-50 cursor-not-allowed' : '';

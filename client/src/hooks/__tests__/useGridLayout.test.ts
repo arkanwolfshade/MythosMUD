@@ -1,7 +1,7 @@
-import { describe, expect, it, beforeEach, vi } from 'vitest';
-import { renderHook, act } from '@testing-library/react';
-import { useGridLayout } from '../useGridLayout';
+import { act, renderHook } from '@testing-library/react';
 import type { Layout } from 'react-grid-layout';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { useGridLayout } from '../useGridLayout';
 
 describe('useGridLayout', () => {
   beforeEach(() => {
@@ -21,7 +21,7 @@ describe('useGridLayout', () => {
 
   it('should load layout from localStorage', () => {
     // Arrange
-    const savedLayout: Layout[] = [
+    const savedLayout: Layout = [
       { i: 'chat', x: 0, y: 0, w: 6, h: 8 },
       { i: 'gameLog', x: 6, y: 0, w: 6, h: 8 },
     ];
@@ -46,7 +46,7 @@ describe('useGridLayout', () => {
   it('should handle layout changes', () => {
     // Arrange
     const { result } = renderHook(() => useGridLayout());
-    const newLayout: Layout[] = [
+    const newLayout: Layout = [
       { i: 'chat', x: 0, y: 0, w: 8, h: 6 },
       { i: 'gameLog', x: 8, y: 0, w: 4, h: 6 },
     ];
@@ -143,7 +143,7 @@ describe('useGridLayout', () => {
   it('should save layout to localStorage', () => {
     // Arrange
     const { result } = renderHook(() => useGridLayout());
-    const newLayout: Layout[] = [{ i: 'chat', x: 0, y: 0, w: 8, h: 6 }];
+    const newLayout: Layout = [{ i: 'chat', x: 0, y: 0, w: 8, h: 6 }];
 
     // Act
     act(() => {
@@ -160,7 +160,7 @@ describe('useGridLayout', () => {
 
   it('should load layout from localStorage', () => {
     // Arrange
-    const savedLayout: Layout[] = [{ i: 'chat', x: 5, y: 5, w: 7, h: 7 }];
+    const savedLayout: Layout = [{ i: 'chat', x: 5, y: 5, w: 7, h: 7 }];
     localStorage.setItem('mythosMUD-panel-layout', JSON.stringify(savedLayout));
     localStorage.setItem('mythosMUD-panel-breakpoint', 'sm');
 
@@ -201,7 +201,9 @@ describe('useGridLayout', () => {
   it('should handle localStorage errors when loading breakpoint', () => {
     // Arrange - Test line 77: breakpoint load error branch
     const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    const getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(key => {
+    // Spy directly on localStorage.getItem instead of Storage.prototype.getItem
+    // to ensure we intercept the actual call
+    const getItemSpy = vi.spyOn(localStorage, 'getItem').mockImplementation(key => {
       if (key === 'mythosMUD-panel-breakpoint') {
         throw new Error('Storage error');
       }
@@ -223,7 +225,8 @@ describe('useGridLayout', () => {
   it('should handle localStorage errors when loading panel states', () => {
     // Arrange - Test line 89: panel states load error branch
     const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    const getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(key => {
+    // Spy directly on localStorage.getItem instead of Storage.prototype.getItem
+    const getItemSpy = vi.spyOn(localStorage, 'getItem').mockImplementation(key => {
       if (key === 'mythosMUD-panel-states') {
         throw new Error('Storage error');
       }
@@ -247,11 +250,12 @@ describe('useGridLayout', () => {
     // Arrange - Test line 107: save layout error branch
     const { result } = renderHook(() => useGridLayout());
     const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+    // Spy directly on localStorage.setItem instead of Storage.prototype.setItem
+    const setItemSpy = vi.spyOn(localStorage, 'setItem').mockImplementation(() => {
       throw new Error('Storage quota exceeded');
     });
 
-    const newLayout: Layout[] = [{ i: 'chat', x: 0, y: 0, w: 8, h: 6 }];
+    const newLayout: Layout = [{ i: 'chat', x: 0, y: 0, w: 8, h: 6 }];
 
     // Act
     act(() => {
@@ -270,7 +274,8 @@ describe('useGridLayout', () => {
   it('should handle localStorage errors when loading layout', () => {
     // Arrange - Test line 130: load layout error branch
     const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    const getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+    // Spy directly on localStorage.getItem instead of Storage.prototype.getItem
+    const getItemSpy = vi.spyOn(localStorage, 'getItem').mockImplementation(() => {
       throw new Error('Storage error');
     });
 
@@ -292,7 +297,7 @@ describe('useGridLayout', () => {
   it('should auto-save layout when it changes', () => {
     // Arrange
     const { result } = renderHook(() => useGridLayout());
-    const newLayout: Layout[] = [{ i: 'chat', x: 0, y: 0, w: 8, h: 6 }];
+    const newLayout: Layout = [{ i: 'chat', x: 0, y: 0, w: 8, h: 6 }];
 
     // Clear localStorage first
     localStorage.removeItem('mythosMUD-panel-layout');
@@ -344,7 +349,7 @@ describe('useGridLayout', () => {
 
   it('should reset to default layout and clear custom localStorage', () => {
     // Arrange
-    const customLayout: Layout[] = [{ i: 'test', x: 0, y: 0, w: 1, h: 1 }];
+    const customLayout: Layout = [{ i: 'test', x: 0, y: 0, w: 1, h: 1 }];
     localStorage.setItem('mythosMUD-panel-layout', JSON.stringify(customLayout));
     localStorage.setItem('mythosMUD-panel-breakpoint', 'md');
     localStorage.setItem('mythosMUD-panel-states', JSON.stringify({ test: {} }));

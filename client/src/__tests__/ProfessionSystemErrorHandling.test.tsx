@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import App from '../App';
+import { App } from '../App';
 
 // Mock fetch globally
 const mockFetch = vi.fn();
@@ -37,14 +37,41 @@ describe('Profession System Error Handling and Edge Cases', () => {
     vi.clearAllMocks();
   });
 
+  // Helper function to create a valid LoginResponse mock
+  const createMockLoginResponse = (
+    characters: Array<{
+      id?: string;
+      player_id: string;
+      name: string;
+      profession_id: number;
+      profession_name?: string;
+      level: number;
+      created_at: string;
+      last_active: string;
+    }> = []
+  ) => ({
+    access_token: 'mock-token',
+    token_type: 'Bearer',
+    user_id: 'test-user-id',
+    characters: characters.map(char => ({
+      player_id: char.player_id,
+      name: char.name,
+      profession_id: char.profession_id,
+      profession_name: char.profession_name,
+      level: char.level,
+      created_at: char.created_at,
+      last_active: char.last_active,
+    })),
+  });
+
   const createMockProfessions = () => [
     {
       id: 0,
       name: 'Tramp',
       description: 'A wandering soul with no particular skills or connections.',
       flavor_text: 'You have spent your days drifting from place to place, learning to survive on your wits alone.',
-      stat_requirements: {},
-      mechanical_effects: {},
+      stat_requirements: [],
+      mechanical_effects: [],
       is_available: true,
     },
     {
@@ -52,8 +79,8 @@ describe('Profession System Error Handling and Edge Cases', () => {
       name: 'Gutter Rat',
       description: 'A street-smart survivor from the urban underbelly.',
       flavor_text: 'The alleys and gutters have been your home, teaching you the harsh realities of city life.',
-      stat_requirements: {},
-      mechanical_effects: {},
+      stat_requirements: [],
+      mechanical_effects: [],
       is_available: true,
     },
   ];
@@ -61,10 +88,7 @@ describe('Profession System Error Handling and Edge Cases', () => {
   const setupBasicMocks = () => {
     const registrationResponse = {
       ok: true,
-      json: vi.fn().mockResolvedValue({
-        access_token: 'mock-token',
-        characters: [], // MULTI-CHARACTER: New format uses characters array
-      }),
+      json: vi.fn().mockResolvedValue(createMockLoginResponse([])),
     };
 
     const professionsResponse = {
@@ -81,9 +105,13 @@ describe('Profession System Error Handling and Edge Cases', () => {
           strength: 12,
           dexterity: 14,
           constitution: 10,
+          size: 55,
           intelligence: 16,
+          power: 50,
+          education: 40,
           wisdom: 8,
           charisma: 13,
+          luck: 50,
         },
         stat_summary: {
           total: 73,
@@ -129,10 +157,7 @@ describe('Profession System Error Handling and Edge Cases', () => {
         if (url.includes('/auth/register')) {
           return Promise.resolve({
             ok: true,
-            json: vi.fn().mockResolvedValue({
-              access_token: 'mock-token',
-              characters: [], // MULTI-CHARACTER: New format uses characters array
-            }),
+            json: vi.fn().mockResolvedValue(createMockLoginResponse([])),
           });
         } else if (url.includes('/professions')) {
           return Promise.reject(new Error('Network error'));
@@ -176,10 +201,7 @@ describe('Profession System Error Handling and Edge Cases', () => {
         if (url.includes('/auth/register')) {
           return Promise.resolve({
             ok: true,
-            json: vi.fn().mockResolvedValue({
-              access_token: 'mock-token',
-              characters: [], // MULTI-CHARACTER: New format uses characters array
-            }),
+            json: vi.fn().mockResolvedValue(createMockLoginResponse([])),
           });
         } else if (url.includes('/professions')) {
           return Promise.resolve({
@@ -219,10 +241,7 @@ describe('Profession System Error Handling and Edge Cases', () => {
         if (url.includes('/auth/register')) {
           return Promise.resolve({
             ok: true,
-            json: vi.fn().mockResolvedValue({
-              access_token: 'mock-token',
-              characters: [], // MULTI-CHARACTER: New format uses characters array
-            }),
+            json: vi.fn().mockResolvedValue(createMockLoginResponse([])),
           });
         } else if (url.includes('/professions')) {
           return Promise.resolve({
@@ -256,9 +275,10 @@ describe('Profession System Error Handling and Edge Cases', () => {
       fireEvent.change(inviteCodeInput, { target: { value: 'INVITE123' } });
       fireEvent.click(registerButton);
 
-      // Should handle malformed data gracefully
+      // Should handle malformed data gracefully by showing error
       await waitFor(() => {
-        expect(screen.getByText('Choose Your Profession')).toBeInTheDocument();
+        expect(screen.getByText('Error Loading Professions')).toBeInTheDocument();
+        expect(screen.getByText(/Invalid API response: expected Profession\[\]/)).toBeInTheDocument();
       });
     });
   });
@@ -272,10 +292,7 @@ describe('Profession System Error Handling and Edge Cases', () => {
         if (url.includes('/auth/register')) {
           return Promise.resolve({
             ok: true,
-            json: vi.fn().mockResolvedValue({
-              access_token: 'mock-token',
-              characters: [], // MULTI-CHARACTER: New format uses characters array
-            }),
+            json: vi.fn().mockResolvedValue(createMockLoginResponse([])),
           });
         } else if (url.includes('/professions')) {
           return Promise.resolve({
@@ -331,10 +348,7 @@ describe('Profession System Error Handling and Edge Cases', () => {
         if (url.includes('/auth/register')) {
           return Promise.resolve({
             ok: true,
-            json: vi.fn().mockResolvedValue({
-              access_token: 'mock-token',
-              characters: [], // MULTI-CHARACTER: New format uses characters array
-            }),
+            json: vi.fn().mockResolvedValue(createMockLoginResponse([])),
           });
         } else if (url.includes('/professions')) {
           return Promise.resolve({
@@ -396,10 +410,7 @@ describe('Profession System Error Handling and Edge Cases', () => {
         if (url.includes('/auth/register')) {
           return Promise.resolve({
             ok: true,
-            json: vi.fn().mockResolvedValue({
-              access_token: 'mock-token',
-              characters: [], // MULTI-CHARACTER: New format uses characters array
-            }),
+            json: vi.fn().mockResolvedValue(createMockLoginResponse([])),
           });
         } else if (url.includes('/professions')) {
           return Promise.resolve({
@@ -464,10 +475,7 @@ describe('Profession System Error Handling and Edge Cases', () => {
         if (url.includes('/auth/register')) {
           return Promise.resolve({
             ok: true,
-            json: vi.fn().mockResolvedValue({
-              access_token: 'mock-token',
-              characters: [], // MULTI-CHARACTER: New format uses characters array
-            }),
+            json: vi.fn().mockResolvedValue(createMockLoginResponse([])),
           });
         } else if (url.includes('/professions')) {
           return Promise.resolve({
@@ -484,9 +492,13 @@ describe('Profession System Error Handling and Edge Cases', () => {
                 strength: 12,
                 dexterity: 14,
                 constitution: 10,
+                size: 55,
                 intelligence: 16,
+                power: 50,
+                education: 40,
                 wisdom: 8,
                 charisma: 13,
+                luck: 50,
               },
               stat_summary: {
                 total: 73,
@@ -574,10 +586,7 @@ describe('Profession System Error Handling and Edge Cases', () => {
         if (url.includes('/auth/register')) {
           return Promise.resolve({
             ok: true,
-            json: vi.fn().mockResolvedValue({
-              access_token: 'mock-token',
-              characters: [], // MULTI-CHARACTER: New format uses characters array
-            }),
+            json: vi.fn().mockResolvedValue(createMockLoginResponse([])),
           });
         } else if (url.includes('/professions')) {
           return Promise.resolve({
@@ -594,9 +603,13 @@ describe('Profession System Error Handling and Edge Cases', () => {
                 strength: 12,
                 dexterity: 14,
                 constitution: 10,
+                size: 55,
                 intelligence: 16,
+                power: 50,
+                education: 40,
                 wisdom: 8,
                 charisma: 13,
+                luck: 50,
               },
               stat_summary: {
                 total: 73,

@@ -8,7 +8,7 @@
  * modifications is essential for maintaining the integrity of our eldritch architecture.
  */
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import ReactFlow, {
   Background,
   Controls,
@@ -107,48 +107,6 @@ export const RoomMapEditor: React.FC<RoomMapEditorProps> = ({
     return filtered;
   }, [rooms, searchQuery]);
 
-  // Debug logging for filteredRooms computation (moved to useEffect to avoid calling Date.now during render)
-  useEffect(() => {
-    if (!searchQuery.trim()) {
-      // #region agent log
-      // Intentional debug logging to localhost endpoint (127.0.0.1) for development only
-      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-        // nosemgrep: typescript.react.security.react-insecure-request.react-insecure-request
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          location: 'RoomMapEditor.tsx:93',
-          message: 'filteredRooms computed (no search)',
-          data: { roomsCount: rooms.length, filteredCount: filteredRooms.length },
-          timestamp: Date.now(),
-          sessionId: 'debug-session',
-          runId: 'run1',
-          hypothesisId: 'C',
-        }),
-      }).catch(() => {});
-      // #endregion
-    } else {
-      const query = searchQuery.toLowerCase();
-      // #region agent log
-      // Intentional debug logging to localhost endpoint (127.0.0.1) for development only
-      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-        // nosemgrep: typescript.react.security.react-insecure-request.react-insecure-request
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          location: 'RoomMapEditor.tsx:107',
-          message: 'filteredRooms computed (with search)',
-          data: { roomsCount: rooms.length, filteredCount: filteredRooms.length, searchQuery: query },
-          timestamp: Date.now(),
-          sessionId: 'debug-session',
-          runId: 'run1',
-          hypothesisId: 'C',
-        }),
-      }).catch(() => {});
-      // #endregion
-    }
-  }, [rooms.length, filteredRooms.length, searchQuery]);
-
   // Convert rooms to nodes and edges
   const { nodes: rawNodes, edges: rawEdges } = useMemo(() => {
     if (filteredRooms.length === 0) {
@@ -161,82 +119,11 @@ export const RoomMapEditor: React.FC<RoomMapEditorProps> = ({
     return { nodes, edges };
   }, [filteredRooms, currentRoomId]);
 
-  // Debug logging for rawNodes computation (moved to useEffect to avoid calling Date.now during render)
-  useEffect(() => {
-    if (filteredRooms.length === 0) {
-      // #region agent log
-      // Intentional debug logging to localhost endpoint (127.0.0.1) for development only
-      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-        // nosemgrep: typescript.react.security.react-insecure-request.react-insecure-request
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          location: 'RoomMapEditor.tsx:112',
-          message: 'rawNodes empty (no filteredRooms)',
-          data: { filteredRoomsCount: 0 },
-          timestamp: Date.now(),
-          sessionId: 'debug-session',
-          runId: 'run1',
-          hypothesisId: 'B',
-        }),
-      }).catch(() => {});
-      // #endregion
-    } else {
-      // #region agent log
-      // Intentional debug logging to localhost endpoint (127.0.0.1) for development only
-      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-        // nosemgrep: typescript.react.security.react-insecure-request.react-insecure-request
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          location: 'RoomMapEditor.tsx:118',
-          message: 'rawNodes computed',
-          data: {
-            filteredRoomsCount: filteredRooms.length,
-            rawNodesCount: rawNodes.length,
-            firstNodeId: rawNodes[0]?.id,
-            firstNodePos: rawNodes[0]?.position,
-          },
-          timestamp: Date.now(),
-          sessionId: 'debug-session',
-          runId: 'run1',
-          hypothesisId: 'B',
-        }),
-      }).catch(() => {});
-      // #endregion
-    }
-  }, [filteredRooms.length, rawNodes.length, rawNodes, rawEdges]);
-
   // Apply layout to nodes
   const { layoutNodes: initialLayoutNodes } = useMapLayout({
     nodes: rawNodes,
     useStoredCoordinates: true,
   });
-
-  // #region agent log
-  React.useEffect(() => {
-    // Intentional debug logging to localhost endpoint (127.0.0.1) for development only
-    fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-      // nosemgrep: typescript.react.security.react-insecure-request.react-insecure-request
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        location: 'RoomMapEditor.tsx:126',
-        message: 'initialLayoutNodes from useMapLayout',
-        data: {
-          rawNodesCount: rawNodes.length,
-          layoutNodesCount: initialLayoutNodes.length,
-          firstLayoutNodeId: initialLayoutNodes[0]?.id,
-          firstLayoutNodePos: initialLayoutNodes[0]?.position,
-        },
-        timestamp: Date.now(),
-        sessionId: 'debug-session',
-        runId: 'run1',
-        hypothesisId: 'A',
-      }),
-    }).catch(() => {});
-  }, [initialLayoutNodes, rawNodes]);
-  // #endregion
 
   // Standard exit directions
   const availableDirections = useMemo(
@@ -289,31 +176,6 @@ export const RoomMapEditor: React.FC<RoomMapEditorProps> = ({
       }
     },
   });
-
-  // #region agent log
-  React.useEffect(() => {
-    // Intentional debug logging to localhost endpoint (127.0.0.1) for development only
-    fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-      // nosemgrep: typescript.react.security.react-insecure-request.react-insecure-request
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        location: 'RoomMapEditor.tsx:200',
-        message: 'editedNodes from useMapEditing',
-        data: {
-          initialLayoutNodesCount: initialLayoutNodes.length,
-          editedNodesCount: editedNodes.length,
-          firstEditedNodeId: editedNodes[0]?.id,
-          firstEditedNodePos: editedNodes[0]?.position,
-        },
-        timestamp: Date.now(),
-        sessionId: 'debug-session',
-        runId: 'post-fix',
-        hypothesisId: 'D',
-      }),
-    }).catch(() => {});
-  }, [editedNodes, initialLayoutNodes]);
-  // #endregion
 
   // Handle React Flow node changes (drag, position updates)
   const onNodesChange = useCallback(

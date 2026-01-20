@@ -1,10 +1,9 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ProfessionSelectionScreen } from './ProfessionSelectionScreen';
 
-// Mock fetch globally
-const mockFetch = vi.fn();
-global.fetch = mockFetch;
+// Mock fetch globally using vi.spyOn for proper cleanup
+const fetchSpy = vi.spyOn(global, 'fetch');
 
 // Mock the logger
 vi.mock('../utils/logger', () => ({
@@ -30,8 +29,8 @@ describe('ProfessionSelectionScreen', () => {
       name: 'Tramp',
       description: 'A wandering soul with no particular skills or connections.',
       flavor_text: 'You have spent your days drifting from place to place, learning to survive on your wits alone.',
-      stat_requirements: {},
-      mechanical_effects: {},
+      stat_requirements: [],
+      mechanical_effects: [],
       is_available: true,
     },
     {
@@ -39,14 +38,21 @@ describe('ProfessionSelectionScreen', () => {
       name: 'Gutter Rat',
       description: 'A street-smart survivor from the urban underbelly.',
       flavor_text: 'The alleys and gutters have been your home, teaching you the harsh realities of city life.',
-      stat_requirements: {},
-      mechanical_effects: {},
+      stat_requirements: [],
+      mechanical_effects: [],
       is_available: true,
     },
   ];
 
   beforeEach(() => {
     vi.clearAllMocks();
+    fetchSpy.mockClear();
+  });
+
+  afterEach(() => {
+    // Use mockReset instead of mockRestore to keep the spy active across tests
+    // This prevents issues where mockRestore might restore an undefined/broken fetch implementation
+    fetchSpy.mockReset();
   });
 
   describe('Initial Rendering', () => {
@@ -57,7 +63,7 @@ describe('ProfessionSelectionScreen', () => {
           professions: mockProfessions,
         }),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+      fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
       render(<ProfessionSelectionScreen {...defaultProps} />);
 
@@ -74,7 +80,7 @@ describe('ProfessionSelectionScreen', () => {
           professions: mockProfessions,
         }),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+      fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
       render(<ProfessionSelectionScreen {...defaultProps} />);
 
@@ -93,7 +99,7 @@ describe('ProfessionSelectionScreen', () => {
           professions: mockProfessions,
         }),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+      fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
       render(<ProfessionSelectionScreen {...defaultProps} />);
 
@@ -110,7 +116,7 @@ describe('ProfessionSelectionScreen', () => {
           professions: mockProfessions,
         }),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+      fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
       render(<ProfessionSelectionScreen {...defaultProps} />);
 
@@ -127,7 +133,7 @@ describe('ProfessionSelectionScreen', () => {
           professions: mockProfessions,
         }),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+      fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
       render(<ProfessionSelectionScreen {...defaultProps} />);
 
@@ -146,7 +152,7 @@ describe('ProfessionSelectionScreen', () => {
           professions: mockProfessions,
         }),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+      fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
       render(<ProfessionSelectionScreen {...defaultProps} />);
 
@@ -171,7 +177,7 @@ describe('ProfessionSelectionScreen', () => {
           professions: mockProfessions,
         }),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+      fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
       render(<ProfessionSelectionScreen {...defaultProps} />);
 
@@ -195,7 +201,7 @@ describe('ProfessionSelectionScreen', () => {
           professions: mockProfessions,
         }),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+      fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
       render(<ProfessionSelectionScreen {...defaultProps} />);
 
@@ -233,7 +239,7 @@ describe('ProfessionSelectionScreen', () => {
           professions: mockProfessions,
         }),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+      fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
       render(<ProfessionSelectionScreen {...defaultProps} />);
 
@@ -255,7 +261,7 @@ describe('ProfessionSelectionScreen', () => {
           professions: mockProfessions,
         }),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+      fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
       render(<ProfessionSelectionScreen {...defaultProps} />);
 
@@ -289,12 +295,12 @@ describe('ProfessionSelectionScreen', () => {
           professions: mockProfessions,
         }),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+      fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
       render(<ProfessionSelectionScreen {...defaultProps} />);
 
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledWith(
+        expect(fetchSpy).toHaveBeenCalledWith(
           `${defaultProps.baseUrl}/professions`,
           expect.objectContaining({
             headers: expect.objectContaining({
@@ -311,7 +317,7 @@ describe('ProfessionSelectionScreen', () => {
         status: 500,
         json: vi.fn().mockResolvedValue({ detail: 'Internal server error' }),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+      fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
       render(<ProfessionSelectionScreen {...defaultProps} />);
 
@@ -321,7 +327,7 @@ describe('ProfessionSelectionScreen', () => {
     });
 
     it('should handle network errors', async () => {
-      mockFetch.mockRejectedValue(new Error('Network error'));
+      fetchSpy.mockRejectedValue(new Error('Network error'));
 
       render(<ProfessionSelectionScreen {...defaultProps} />);
 
@@ -334,7 +340,7 @@ describe('ProfessionSelectionScreen', () => {
   describe('Loading States', () => {
     it('should show loading state while fetching professions', () => {
       // Don't resolve the fetch immediately
-      mockFetch.mockImplementation(() => new Promise(() => {}));
+      fetchSpy.mockImplementation(() => new Promise(() => {}));
 
       render(<ProfessionSelectionScreen {...defaultProps} />);
 
@@ -348,7 +354,7 @@ describe('ProfessionSelectionScreen', () => {
           professions: mockProfessions,
         }),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+      fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
       render(<ProfessionSelectionScreen {...defaultProps} />);
 
@@ -366,8 +372,11 @@ describe('ProfessionSelectionScreen', () => {
         name: 'Scholar',
         description: 'A learned individual with high intelligence.',
         flavor_text: 'Your mind is your greatest weapon.',
-        stat_requirements: { intelligence: 14, wisdom: 12 },
-        mechanical_effects: {},
+        stat_requirements: [
+          { stat: 'intelligence', minimum: 14 },
+          { stat: 'wisdom', minimum: 12 },
+        ],
+        mechanical_effects: [],
         is_available: true,
       },
     ];
@@ -379,7 +388,7 @@ describe('ProfessionSelectionScreen', () => {
           professions: professionsWithRequirements,
         }),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+      fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
       render(<ProfessionSelectionScreen {...defaultProps} />);
 
@@ -395,7 +404,7 @@ describe('ProfessionSelectionScreen', () => {
           professions: professionsWithRequirements,
         }),
       };
-      mockFetch.mockResolvedValue(mockResponse);
+      fetchSpy.mockResolvedValue(mockResponse as unknown as Response);
 
       render(<ProfessionSelectionScreen {...defaultProps} />);
 

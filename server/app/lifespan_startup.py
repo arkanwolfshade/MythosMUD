@@ -8,6 +8,7 @@ import asyncio
 import uuid as uuid_lib
 from collections.abc import Iterable
 
+from anyio import sleep
 from fastapi import FastAPI
 
 from ..container import ApplicationContainer
@@ -34,52 +35,93 @@ from ..time.time_service import get_mythos_chronicle
 logger = get_logger("server.lifespan.startup")
 
 
+async def _get_item_prototype_count(registry) -> int:
+    """Get count of item prototypes from registry."""
+    prototype_count = 0
+    if registry is not None:
+        all_method = getattr(registry, "all", None)
+        if callable(all_method):
+            entries = all_method()
+            if asyncio.iscoroutine(entries):
+                try:
+                    entries = await entries
+                except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Startup code must handle all exceptions gracefully to prevent application failure during initialization. Item registry errors are non-critical and should not block startup.
+                    entries = None
+            if isinstance(entries, Iterable):
+                prototype_count = sum(1 for _ in entries)
+            elif entries is not None:
+                try:
+                    prototype_count = len(entries)
+                except TypeError:
+                    logger.debug("Item registry returned non-iterable entries; defaulting prototype count to zero")
+        else:
+            logger.debug("Item prototype registry missing 'all' method; defaulting prototype count to zero")
+    return prototype_count
+
+
+async def _set_legacy_services(app: FastAPI, container: ApplicationContainer) -> None:
+    """Set services on app.state for backward compatibility."""
+    if container.player_service is not None:
+        app.state.player_service = container.player_service
+        logger.debug("Player service set on app.state for backward compatibility")
+    else:
+        logger.warning("Player service not available in container during initialization")
+
+    if container.user_manager is not None:
+        app.state.user_manager = container.user_manager
+        logger.debug("User manager set on app.state for backward compatibility")
+    else:
+        logger.warning("User manager not available in container during initialization")
+
+    if container.persistence is not None:
+        app.state.persistence = container.persistence
+        logger.debug("Persistence set on app.state for backward compatibility")
+    else:
+        logger.warning("Persistence not available in container during initialization")
+
+    if container.item_factory is not None:
+        app.state.item_factory = container.item_factory
+        logger.debug("Item factory set on app.state for backward compatibility")
+    else:
+        logger.warning("Item factory not available in container during initialization")
+
+    if container.item_prototype_registry is not None:
+        app.state.prototype_registry = container.item_prototype_registry
+        logger.debug("Prototype registry set on app.state for backward compatibility")
+    else:
+        logger.warning("Prototype registry not available in container during initialization")
+
+    if container.connection_manager is not None:
+        app.state.connection_manager = container.connection_manager
+        logger.debug("Connection manager set on app.state for backward compatibility")
+    else:
+        logger.warning("Connection manager not available in container during initialization")
+
+
 async def initialize_container_and_legacy_services(app: FastAPI, container: ApplicationContainer) -> None:
-    """Initialize container and set up legacy compatibility services on app.state."""
+    """Initialize container and set up container reference on app.state.
+
+    Services are now accessed exclusively via app.state.container.* or dependency injection.
+    The dual storage pattern has been removed - all services are in the container only.
+
+    However, some legacy command handlers still expect services directly on app.state,
+    so we set them here for backward compatibility.
+    """
     ApplicationContainer.set_instance(container)
 
     app.state.container = container
     logger.info("ApplicationContainer initialized and added to app.state")
 
-    app.state.task_registry = container.task_registry
-    app.state.event_bus = container.event_bus
-    app.state.event_handler = container.real_time_event_handler
-    app.state.persistence = container.async_persistence
-    app.state.connection_manager = container.connection_manager
-    app.state.player_service = container.player_service
-    app.state.room_service = container.room_service
-    app.state.user_manager = container.user_manager
-    app.state.container_service = container.container_service
-    app.state.holiday_service = container.holiday_service
-    app.state.schedule_service = container.schedule_service
-    app.state.room_cache_service = container.room_cache_service
-    app.state.profession_cache_service = container.profession_cache_service
-    app.state.prototype_registry = container.item_prototype_registry
-    app.state.item_factory = container.item_factory
+    # Set services on app.state for backward compatibility with legacy command handlers
+    # that access app.state.user_manager and app.state.player_service directly
+    # This fixes Bugs #1 and #3 where State object was missing these attributes
+    await _set_legacy_services(app, container)
 
     if container.item_factory is None:
         logger.warning("Item factory unavailable during startup; summon command will be disabled")
     else:
-        prototype_count = 0
         registry = container.item_prototype_registry
-        if registry is not None:
-            all_method = getattr(registry, "all", None)
-            if callable(all_method):
-                entries = all_method()
-                if asyncio.iscoroutine(entries):
-                    try:
-                        entries = await entries
-                    except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Startup code must handle all exceptions gracefully to prevent application failure during initialization. Item registry errors are non-critical and should not block startup.
-                        entries = None
-                if isinstance(entries, Iterable):
-                    prototype_count = sum(1 for _ in entries)
-                elif entries is not None:
-                    try:
-                        prototype_count = len(entries)
-                    except TypeError:
-                        logger.debug("Item registry returned non-iterable entries; defaulting prototype count to zero")
-            else:
-                logger.debug("Item prototype registry missing 'all' method; defaulting prototype count to zero")
+        prototype_count = await _get_item_prototype_count(registry)
         logger.info("Item services ready", prototype_count=prototype_count)
 
 
@@ -97,7 +139,13 @@ async def setup_connection_manager(app: FastAPI, container: ApplicationContainer
 
 
 async def initialize_npc_services(app: FastAPI, container: ApplicationContainer) -> None:
-    """Initialize NPC services and load definitions."""
+    """
+    Initialize NPC services and load definitions.
+
+    DEPRECATED: This function is no longer called. NPC services are now initialized
+    in ApplicationContainer.initialize() via _initialize_npc_services().
+    This function is kept for backward compatibility but should not be used.
+    """
     if container.event_bus is None:
         raise RuntimeError("EventBus must be initialized")
     app.state.npc_spawning_service = NPCSpawningService(container.event_bus, None)
@@ -149,7 +197,7 @@ async def initialize_npc_services(app: FastAPI, container: ApplicationContainer)
             if hasattr(app.state.npc_lifecycle_manager, "_pending_thread_starts"):
                 # Accessing protected member via getattr() for internal state initialization
                 # This is safe as we check existence first and handle gracefully
-                pending_starts = getattr(app.state.npc_lifecycle_manager, "_pending_thread_starts", [])  # pylint: disable=protected-access
+                pending_starts = getattr(app.state.npc_lifecycle_manager, "_pending_thread_starts", [])  # pylint: disable=protected-access  # Reason: Accessing internal state for startup initialization, existence checked first and handled gracefully
                 for npc_id, definition in pending_starts:
                     try:
                         await app.state.npc_lifecycle_manager.thread_manager.start_npc_thread(npc_id, definition)
@@ -162,7 +210,13 @@ async def initialize_npc_services(app: FastAPI, container: ApplicationContainer)
 
 
 async def initialize_combat_services(app: FastAPI, container: ApplicationContainer) -> None:
-    """Initialize combat-related services."""
+    """
+    Initialize combat-related services.
+
+    DEPRECATED: This function is no longer called. Combat services are now initialized
+    in ApplicationContainer.initialize() via _initialize_combat_services().
+    This function is kept for backward compatibility but should not be used.
+    """
     app.state.player_combat_service = PlayerCombatService(container.persistence, container.event_bus)
     if container.connection_manager is not None:
         container.connection_manager.set_player_combat_service(app.state.player_combat_service)
@@ -185,7 +239,7 @@ async def initialize_combat_services(app: FastAPI, container: ApplicationContain
     async def _sanitarium_failover(player_id: str, current_lcd: int) -> None:
         """Failover callback that relocates catatonic players to the sanitarium."""
         # 10-second fade before transport per spec
-        await asyncio.sleep(10.0)
+        await sleep(10.0)
 
         if container.database_manager is None:
             logger.error("Database manager not available for catatonia failover", player_id=player_id)
@@ -239,7 +293,13 @@ async def initialize_combat_services(app: FastAPI, container: ApplicationContain
 
 
 async def initialize_mythos_time_consumer(app: FastAPI, container: ApplicationContainer) -> None:
-    """Initialize Mythos time event consumer."""
+    """
+    Initialize Mythos time event consumer.
+
+    DEPRECATED: This function is no longer called. Mythos time consumer is now initialized
+    in ApplicationContainer.initialize() via _initialize_mythos_time_consumer().
+    This function is kept for backward compatibility but should not be used.
+    """
     if (
         container.event_bus
         and container.holiday_service
@@ -287,7 +347,13 @@ async def initialize_npc_startup_spawning(_app: FastAPI) -> None:
 
 
 async def initialize_nats_and_combat_services(app: FastAPI, container: ApplicationContainer) -> None:
-    """Initialize NATS-dependent services including combat service."""
+    """
+    Initialize NATS-dependent services including combat service.
+
+    DEPRECATED: This function is no longer called. NATS and combat services are now initialized
+    in ApplicationContainer.initialize() via _initialize_nats_combat_service().
+    This function is kept for backward compatibility but should not be used.
+    """
     if container.config is None:
         raise RuntimeError("Config must be initialized")
     is_testing = container.config.logging.environment in ("unit_test", "e2e_test")
@@ -297,7 +363,7 @@ async def initialize_nats_and_combat_services(app: FastAPI, container: Applicati
         app.state.nats_service = container.nats_service
 
         # Lazy import to avoid circular dependency with combat_service
-        from ..services.combat_service import (  # noqa: E402  # pylint: disable=wrong-import-position
+        from ..services.combat_service import (  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Lazy import required to avoid circular dependency with combat_service module
             CombatService,
             set_combat_service,
         )
@@ -340,7 +406,13 @@ async def initialize_nats_and_combat_services(app: FastAPI, container: Applicati
 
 
 async def initialize_chat_service(app: FastAPI, container: ApplicationContainer) -> None:
-    """Initialize chat service."""
+    """
+    Initialize chat service.
+
+    DEPRECATED: This function is no longer called. Chat service is now initialized
+    in ApplicationContainer.initialize() via _initialize_chat_service().
+    This function is kept for backward compatibility but should not be used.
+    """
     if container.config is None:
         raise RuntimeError("Config must be initialized")
     is_testing = container.config.logging.environment in ("unit_test", "e2e_test")
@@ -373,10 +445,15 @@ async def initialize_chat_service(app: FastAPI, container: ApplicationContainer)
 
 
 async def initialize_magic_services(app: FastAPI, container: ApplicationContainer) -> None:  # pylint: disable=too-many-locals  # Reason: Service initialization requires many intermediate variables for dependency setup
-    """Initialize magic system services and wire them to app.state."""
+    """
+    Initialize magic system services and wire them to app.state.
+
+    DEPRECATED: This function is no longer called. Magic services are now initialized
+    in ApplicationContainer.initialize() via _initialize_magic_services().
+    This function is kept for backward compatibility but should not be used.
+    """
     # Import here to avoid circular imports: spell_targeting -> combat_service -> lifespan -> lifespan_startup
-    # pylint: disable=import-outside-toplevel
-    # Reason: Circular import avoidance - spell_targeting imports CombatService which imports from lifespan
+    # pylint: disable=import-outside-toplevel  # Reason: Circular import avoidance - spell_targeting imports CombatService which imports from lifespan
     from ..game.magic.magic_service import MagicService
     from ..game.magic.mp_regeneration_service import MPRegenerationService
     from ..game.magic.spell_effects import SpellEffects
@@ -396,7 +473,7 @@ async def initialize_magic_services(app: FastAPI, container: ApplicationContaine
     # Initialize SpellRegistry and load spells
     spell_registry = SpellRegistry(spell_repository)
     await spell_registry.load_spells()
-    spell_count = len(spell_registry._spells)  # pylint: disable=protected-access
+    spell_count = len(spell_registry._spells)  # pylint: disable=protected-access  # Reason: Accessing internal spell dictionary for initialization logging, SpellRegistry manages this as internal state
     app.state.spell_registry = spell_registry
     logger.info("SpellRegistry initialized and loaded", spell_count=spell_count)
 
@@ -408,7 +485,7 @@ async def initialize_magic_services(app: FastAPI, container: ApplicationContaine
     # TargetResolutionService accepts both sync and async persistence layers
     # The protocol is too strict for mypy, but the service handles both at runtime
     target_resolution_service = TargetResolutionService(
-        persistence=container.async_persistence,  # type: ignore[arg-type]
+        persistence=container.async_persistence,  # type: ignore[arg-type]  # Reason: TargetResolutionService accepts both sync and async persistence at runtime, but mypy protocol is too strict
         player_service=container.player_service,
     )
     spell_targeting_service = SpellTargetingService(

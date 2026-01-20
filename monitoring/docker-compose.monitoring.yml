@@ -1,7 +1,5 @@
 # Docker Compose for MythosMUD Monitoring Stack
 
-version: '3.8'
-
 services:
   # Prometheus - Metrics collection and storage
   prometheus:

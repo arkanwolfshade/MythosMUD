@@ -104,7 +104,7 @@ class PersonalMessageSender:
     ) -> bool:
         """Send message to a single WebSocket connection. Returns True if successful."""
         if websocket is None:
-            delivery_status["websocket_failed"] += 1  # type: ignore[unreachable]
+            delivery_status["websocket_failed"] += 1  # type: ignore[unreachable]  # Reason: Function signature says websocket is non-optional, but runtime can have None during cleanup/race conditions, this is defensive programming
             await self.cleanup_dead_websocket(player_id, connection_id)
             return False
 

@@ -28,6 +28,11 @@ MEMORY_COST = int(os.getenv("ARGON2_MEMORY_COST", "65536"))  # 64MB
 PARALLELISM = int(os.getenv("ARGON2_PARALLELISM", "1"))
 HASH_LENGTH = int(os.getenv("ARGON2_HASH_LENGTH", "32"))  # 256 bits
 
+# Maximum password length to prevent DoS attacks
+# 1024 characters is a reasonable limit that prevents resource exhaustion
+# while allowing for passphrases and complex passwords
+MAX_PASSWORD_LENGTH = 1024
+
 # Validate parameters are within safe ranges
 if TIME_COST < 1 or TIME_COST > 10:
     raise ValueError(f"ARGON2_TIME_COST must be between 1 and 10, got {TIME_COST}")
@@ -105,19 +110,29 @@ def hash_password(password: str) -> str:
     in the restricted archives of Miskatonic University.
 
     Args:
-        password: Plaintext password. Should be reasonable length (< 1MB)
-                  to prevent DoS attacks. Argon2 handles arbitrary input safely.
+        password: Plaintext password. Must be between 1 and 1024 characters
+                  to prevent DoS attacks. Argon2 handles arbitrary input safely,
+                  but we limit length to prevent resource exhaustion.
 
     Returns:
         Argon2id hash string in format: $argon2id$v=19$m=65536,t=3,p=1$...
 
     Raises:
-        AuthenticationError: If password is not a string or hashing fails
+        AuthenticationError: If password is not a string, is empty, exceeds maximum length, or hashing fails
     """
     # Runtime type validation (defensive programming - catches incorrect calls at runtime)
     if not isinstance(password, str):
-        logger.error("Password must be a string", password_type=type(password).__name__)  # type: ignore[unreachable]
+        logger.error("Password must be a string", password_type=type(password).__name__)  # type: ignore[unreachable]  # Reason: Runtime type validation catches incorrect calls, but mypy infers str from function signature and marks this branch as unreachable
         raise AuthenticationError("Password must be a string")
+
+    # Enforce maximum password length to prevent DoS attacks
+    if len(password) > MAX_PASSWORD_LENGTH:
+        logger.error("Password exceeds maximum length", password_length=len(password), max_length=MAX_PASSWORD_LENGTH)
+        raise AuthenticationError(f"Password must not exceed {MAX_PASSWORD_LENGTH} characters")  # pylint: disable=redefined-outer-name  # Reason: MAX_PASSWORD_LENGTH is a module-level constant, not being redefined; Pylint false positive
+
+    if not password:
+        logger.error("Password cannot be empty")
+        raise AuthenticationError("Password cannot be empty")
 
     logger.debug("Hashing password with Argon2id")
     try:
@@ -160,11 +175,11 @@ def verify_password(password: str, hashed: str) -> bool:
     """
     # Runtime type validation (defensive programming - catches incorrect calls at runtime)
     if not isinstance(password, str):
-        logger.warning("Password verification failed - password not a string", password_type=type(password).__name__)  # type: ignore[unreachable]
+        logger.warning("Password verification failed - password not a string", password_type=type(password).__name__)  # type: ignore[unreachable]  # Reason: Runtime type validation catches incorrect calls, but mypy infers str from function signature and marks this branch as unreachable
         return False
 
     if not isinstance(hashed, str):
-        logger.warning("Password verification failed - hash not a string", hash_type=type(hashed).__name__)  # type: ignore[unreachable]
+        logger.warning("Password verification failed - hash not a string", hash_type=type(hashed).__name__)  # type: ignore[unreachable]  # Reason: Runtime type validation catches incorrect calls, but mypy infers str from function signature and marks this branch as unreachable
         return False
 
     if not hashed:
@@ -215,10 +230,12 @@ def get_hash_info(hashed: str | None) -> dict[str, str | int] | None:
     if not is_argon2_hash(hashed):
         return None
 
+    # Type guard: is_argon2_hash returns True only if hashed is a str
+    if hashed is None:
+        return None
+
     try:
         # Parse the hash format: $argon2id$v=19$m=65536,t=3,p=1$salt$hash
-        if hashed is None:
-            raise ValueError("Hash cannot be None")
         parts = hashed.split("$")
         if len(parts) < 5:
             return None

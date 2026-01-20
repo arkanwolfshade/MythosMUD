@@ -27,7 +27,7 @@ def patch_container_dependencies():
 
     mock_config = MagicMock()
     mock_config.logging.environment = "test"
-    mock_config.nats.enabled = False  # Disable NATS to avoid connection issues
+    mock_config.nats.enabled = True  # Enable NATS for tests
 
     # Create mock database manager with proper async methods
     mock_db_manager = MagicMock()
@@ -47,18 +47,39 @@ def patch_container_dependencies():
     mock_result.scalars = Mock(return_value=mock_scalars_result)
     mock_session.execute = AsyncMock(return_value=mock_result)
 
+    # Mock async generator for get_npc_session
+    async def mock_get_npc_session():
+        mock_npc_session = AsyncMock()
+        # Configure session.execute to return a result with scalars().all() chain
+        mock_npc_result = MagicMock()
+        mock_npc_scalars = MagicMock()
+        mock_npc_scalars.all.return_value = []
+        mock_npc_result.scalars.return_value = mock_npc_scalars
+        mock_npc_session.execute = AsyncMock(return_value=mock_npc_result)
+        yield mock_npc_session
+
     patches = [
         ("server.config.get_config", {"return_value": mock_config}),
         ("server.database.DatabaseManager.get_instance", {"return_value": mock_db_manager}),
         ("server.database.init_db", {"new_callable": AsyncMock}),
         ("server.npc_database.init_npc_db", {"new_callable": AsyncMock}),
+        ("server.npc_database.get_npc_session", {"new_callable": lambda: mock_get_npc_session}),
         ("server.app.task_registry.TaskRegistry", {}),
         ("server.app.tracked_task_manager.TrackedTaskManager", {}),
         (
             "server.events.event_bus.EventBus",
-            {"new_callable": lambda: type("MockEventBus", (), {"shutdown": AsyncMock()})},
+            {
+                "new_callable": lambda: type(
+                    "MockEventBus",
+                    (),
+                    {"shutdown": AsyncMock(), "subscribe": MagicMock()},
+                )
+            },
         ),
-        ("server.async_persistence.AsyncPersistenceLayer", {}),
+        (
+            "server.async_persistence.AsyncPersistenceLayer",
+            {"new_callable": lambda: (lambda *args, **kwargs: MagicMock(close=AsyncMock()))},
+        ),
         ("server.services.exploration_service.ExplorationService", {}),
         ("server.game.movement_service.MovementService", {}),
         ("server.utils.project_paths.get_calendar_paths_for_environment", {}),
@@ -69,7 +90,18 @@ def patch_container_dependencies():
         ("server.realtime.event_handler.RealTimeEventHandler", {}),
         (
             "server.services.nats_service.NATSService",
-            {"new_callable": lambda: type("MockNATSService", (), {"connect": AsyncMock(), "disconnect": AsyncMock()})},
+            {
+                "new_callable": lambda: type(
+                    "MockNATSService",
+                    (),
+                    {
+                        "__init__": lambda self, *args, **kwargs: None,
+                        "connect": AsyncMock(),
+                        "disconnect": AsyncMock(),
+                        "is_connected": lambda self: True,
+                    },
+                )
+            },
         ),
         ("server.game.player_service.PlayerService", {}),
         ("server.game.room_service.RoomService", {}),
@@ -295,7 +327,7 @@ class TestContainerItemServices:
         mock_session.execute = AsyncMock(return_value=mock_result)
 
         # Testing protected method _initialize_item_services is necessary for unit test coverage
-        await container._initialize_item_services()  # pylint: disable=protected-access
+        await container._initialize_item_services()  # pylint: disable=protected-access  # Reason: Testing protected method is necessary for unit test coverage
         # Should complete without error
 
     @pytest.mark.asyncio
@@ -305,7 +337,7 @@ class TestContainerItemServices:
         container.database_manager = None
 
         # Testing protected method _initialize_item_services is necessary for unit test coverage
-        await container._initialize_item_services()  # pylint: disable=protected-access
+        await container._initialize_item_services()  # pylint: disable=protected-access  # Reason: Testing protected method is necessary for unit test coverage
         assert container.item_prototype_registry is None
         assert container.item_factory is None
 
@@ -313,7 +345,7 @@ class TestContainerItemServices:
         """Test _decode_json_column() with None value."""
         container = ApplicationContainer()
         # Testing protected method _decode_json_column is necessary for unit test coverage
-        result = container._decode_json_column(None, list)  # pylint: disable=protected-access
+        result = container._decode_json_column(None, list)  # pylint: disable=protected-access  # Reason: Testing protected method is necessary for unit test coverage
         assert result == []
 
     def test_decode_json_column_already_list(self):
@@ -321,7 +353,7 @@ class TestContainerItemServices:
         container = ApplicationContainer()
         value = [1, 2, 3]
         # Testing protected method _decode_json_column is necessary for unit test coverage
-        result = container._decode_json_column(value, list)  # pylint: disable=protected-access
+        result = container._decode_json_column(value, list)  # pylint: disable=protected-access  # Reason: Testing protected method is necessary for unit test coverage
         assert result == value
 
     def test_decode_json_column_json_string(self):
@@ -331,12 +363,12 @@ class TestContainerItemServices:
         container = ApplicationContainer()
         value = json.dumps([1, 2, 3])
         # Testing protected method _decode_json_column is necessary for unit test coverage
-        result = container._decode_json_column(value, list)  # pylint: disable=protected-access
+        result = container._decode_json_column(value, list)  # pylint: disable=protected-access  # Reason: Testing protected method is necessary for unit test coverage
         assert result == [1, 2, 3]
 
     def test_decode_json_column_invalid_json(self):
         """Test _decode_json_column() handles invalid JSON."""
         container = ApplicationContainer()
         # Testing protected method _decode_json_column is necessary for unit test coverage
-        result = container._decode_json_column("invalid json", list)  # pylint: disable=protected-access
+        result = container._decode_json_column("invalid json", list)  # pylint: disable=protected-access  # Reason: Testing protected method is necessary for unit test coverage
         assert result == []

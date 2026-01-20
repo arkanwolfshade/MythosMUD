@@ -127,9 +127,7 @@ def reset_config() -> None:
     This is primarily used for testing to force configuration reload.
     Should not be called in production code.
     """
-    global _config_instance  # pylint: disable=global-statement
-    # JUSTIFICATION: Global statement required for thread-safe singleton pattern.
-    # The _config_instance must be reset across function calls for test isolation.
+    global _config_instance  # pylint: disable=global-statement  # Reason: Global statement required for thread-safe singleton pattern, _config_instance must be reset across function calls for test isolation
 
     if _is_test_mode():
         # In test mode, get_config() always returns fresh instances

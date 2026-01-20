@@ -137,7 +137,7 @@ describe('LogoutButton', () => {
       render(<LogoutButton {...defaultProps} />);
 
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('focus:outline-none');
+      expect(button).toHaveClass('focus:outline-hidden');
       expect(button).toHaveClass('focus:ring-2');
       expect(button).toHaveClass('focus:ring-offset-2');
       expect(button).toHaveClass('focus:ring-mythos-terminal-error');

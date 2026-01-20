@@ -124,6 +124,7 @@ WORKDIR /workspace
 # AI reader: PostgreSQL must be self-contained in Docker image for CI workflows (no host dependency).
 # All operations in single RUN to keep service running during execution.
 # Note: Running as root in Docker, use su to execute as postgres user.
+# codeql[hardcoded-credential]: Test password for CI Docker container setup only, not used in production
 # hadolint ignore=DL3009
 ARG POSTGRES_PASSWORD=Cthulhu1
 # Note: service command required to start PostgreSQL in Ubuntu container for CI workflows.
@@ -158,6 +159,7 @@ RUN service postgresql start && \
 #   docker build --build-arg MYTHOSMUD_SECRET_KEY="${{ secrets.MYTHOSMUD_SECRET_KEY }}" ...
 #
 # For local development, test defaults are used automatically.
+# codeql[hardcoded-credential]: Test secret defaults for CI Docker container only, not used in production
 # hadolint ignore=DL3009
 ARG MYTHOSMUD_ADMIN_PASSWORD=test-admin-password
 ARG MYTHOSMUD_SECRET_KEY=test-secret-key-for-ci-workflow

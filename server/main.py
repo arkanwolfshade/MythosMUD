@@ -12,23 +12,16 @@ and chaos. This server implementation follows those ancient principles.
 """
 
 import warnings
-from collections.abc import AsyncGenerator
-from contextlib import asynccontextmanager
-from typing import Any
+from collections.abc import Callable
 
 from fastapi import Depends, FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer
 
 from .app.factory import create_app
 from .auth.users import get_current_user
 from .config import get_config
 from .middleware.correlation_middleware import CorrelationMiddleware
-from .monitoring.exception_tracker import get_exception_tracker
-from .monitoring.monitoring_dashboard import get_monitoring_dashboard
-from .monitoring.performance_monitor import get_performance_monitor
-from .structured_logging.enhanced_logging_config import get_logger, log_exception_once, setup_enhanced_logging
-from .structured_logging.log_aggregator import get_log_aggregator
+from .structured_logging.enhanced_logging_config import get_logger, setup_enhanced_logging
 
 # Suppress passlib deprecation warning about pkg_resources
 # Note: We keep passlib for fastapi-users compatibility but use our own Argon2 implementation
@@ -41,175 +34,30 @@ setup_enhanced_logging(config.to_legacy_dict())
 
 # Get logger - now created AFTER logging is set up
 logger = get_logger(__name__)
-logger.info("Logging setup completed", environment=config.logging.environment)  # pylint: disable=no-member  # Pydantic FieldInfo dynamic attribute
+logger.info("Logging setup completed", environment=config.logging.environment)  # pylint: disable=no-member  # Reason: Pydantic model fields are dynamically accessible, pylint cannot detect them statically but they exist at runtime
 
 
 # ErrorLoggingMiddleware has been replaced by ComprehensiveLoggingMiddleware
 # which provides the same functionality plus request/response logging and better organization
 
-
-@asynccontextmanager
-async def enhanced_lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:  # pylint: disable=redefined-outer-name,unused-argument  # noqa: F811  # Reason: Parameter name matches FastAPI convention, prefixed to avoid unused-argument
-    """Enhanced lifespan with comprehensive monitoring and logging."""
-    logger = get_logger("server.enhanced_main")  # pylint: disable=redefined-outer-name  # noqa: F811  # Reason: Context-specific logger instance
-    log_aggregator = None
-
-    try:
-        get_performance_monitor()
-        get_exception_tracker()
-        get_monitoring_dashboard()
-        log_aggregator = get_log_aggregator()
-
-        logger.info(
-            "Enhanced logging and monitoring systems initialized",
-            performance_monitoring=True,
-            exception_tracking=True,
-            log_aggregation=True,
-            monitoring_dashboard=True,
-        )
-
-        yield
-
-    except Exception as error:
-        log_exception_once(
-            logger,
-            "error",
-            "Failed to initialize enhanced systems",
-            exc=error,
-            lifespan_phase="startup",
-            exc_info=True,
-        )
-        raise
-    finally:
-        try:
-            if log_aggregator is not None:
-                log_aggregator.shutdown()
-                logger.info("Enhanced systems shutdown complete")
-        except Exception as error:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Lifespan cleanup must not fail, catch all errors
-            log_exception_once(
-                logger,
-                "error",
-                "Error during enhanced systems shutdown",
-                exc=error,
-                lifespan_phase="shutdown",
-                exc_info=True,
-            )
+# Handler functions moved to server/api/monitoring.py
+# These are kept for backward compatibility but are no longer used
 
 
-async def _handle_health_check() -> dict[str, Any]:
-    """Handle health check endpoint logic."""
-    from fastapi import HTTPException
+# Monitoring endpoints have been moved to server/api/monitoring.py
+# This function is kept for backward compatibility but is now a no-op
+def setup_monitoring_endpoints(app: FastAPI) -> None:  # pylint: disable=redefined-outer-name  # noqa: F811  # Reason: Parameter name matches FastAPI convention, kept for backward compatibility
+    """Setup monitoring and health check endpoints.
 
-    try:
-        dashboard = get_monitoring_dashboard()
-        system_health = dashboard.get_system_health()
+    NOTE: Monitoring endpoints have been moved to server/api/monitoring.py
+    and are now registered via the monitoring_router. This function registers
+    the routers for testing purposes.
+    """
+    from server.api.monitoring import monitoring_router
+    from server.api.system_monitoring import system_monitoring_router
 
-        return {
-            "status": system_health.status,
-            "timestamp": system_health.timestamp.isoformat(),
-            "performance_score": system_health.performance_score,
-            "error_rate": system_health.error_rate,
-            "warning_rate": system_health.warning_rate,
-            "active_users": system_health.active_users,
-        }
-    except Exception as error:
-        logger = get_logger("server.health")  # pylint: disable=redefined-outer-name  # noqa: F811  # Reason: Context-specific logger instance
-        logger.error("Health check failed", error=str(error), exc_info=True)
-        raise HTTPException(status_code=503, detail="Health check failed") from error
-
-
-async def _handle_get_metrics() -> dict[str, Any]:
-    """Handle metrics endpoint logic."""
-    from fastapi import HTTPException
-
-    try:
-        dashboard = get_monitoring_dashboard()
-        result = dashboard.export_monitoring_data()
-        if not isinstance(result, dict):
-            raise TypeError("export_monitoring_data must return a dict")
-        return result
-    except Exception as error:
-        logger = get_logger("server.metrics")  # pylint: disable=redefined-outer-name  # noqa: F811  # Reason: Context-specific logger instance
-        logger.error("Metrics retrieval failed", error=str(error), exc_info=True)
-        raise HTTPException(status_code=500, detail="Metrics retrieval failed") from error
-
-
-async def _handle_get_monitoring_summary() -> dict[str, Any]:
-    """Handle monitoring summary endpoint logic."""
-    from fastapi import HTTPException
-
-    try:
-        dashboard = get_monitoring_dashboard()
-        result = dashboard.get_monitoring_summary()
-        if not isinstance(result, dict):
-            raise TypeError("get_monitoring_summary must return a dict")
-        return result
-    except Exception as error:
-        logger = get_logger("server.monitoring")  # pylint: disable=redefined-outer-name  # noqa: F811  # Reason: Context-specific logger instance
-        logger.error("Monitoring summary failed", error=str(error), exc_info=True)
-        raise HTTPException(status_code=500, detail="Monitoring summary failed") from error
-
-
-async def _handle_get_alerts() -> dict[str, Any]:
-    """Handle alerts endpoint logic."""
-    from fastapi import HTTPException
-
-    try:
-        dashboard = get_monitoring_dashboard()
-        alerts = dashboard.check_alerts()
-        return {"alerts": [alert.to_dict() if hasattr(alert, "to_dict") else alert for alert in alerts]}
-    except Exception as error:
-        logger = get_logger("server.alerts")  # pylint: disable=redefined-outer-name  # noqa: F811  # Reason: Context-specific logger instance
-        logger.error("Alert retrieval failed", error=str(error), exc_info=True)
-        raise HTTPException(status_code=500, detail="Alert retrieval failed") from error
-
-
-async def _handle_resolve_alert(alert_id: str) -> dict[str, str]:
-    """Handle resolve alert endpoint logic."""
-    from fastapi import HTTPException
-
-    try:
-        dashboard = get_monitoring_dashboard()
-        success = dashboard.resolve_alert(alert_id)
-
-        if success:
-            return {"message": f"Alert {alert_id} resolved"}
-        raise HTTPException(status_code=404, detail="Alert not found")
-    except HTTPException:
-        raise
-    except Exception as error:
-        logger = get_logger("server.alerts")  # pylint: disable=redefined-outer-name  # noqa: F811  # Reason: Context-specific logger instance
-        logger.error("Alert resolution failed", error=str(error), exc_info=True)
-        raise HTTPException(status_code=500, detail="Alert resolution failed") from error
-
-
-def setup_monitoring_endpoints(app: FastAPI) -> None:  # pylint: disable=redefined-outer-name  # noqa: F811  # Reason: Parameter name matches FastAPI convention
-    """Setup monitoring and health check endpoints."""
-
-    @app.get("/health")
-    async def health_check() -> dict[str, Any]:
-        """Enhanced health check endpoint."""
-        return await _handle_health_check()
-
-    @app.get("/metrics")
-    async def get_metrics() -> dict[str, Any]:
-        """Get system metrics."""
-        return await _handle_get_metrics()
-
-    @app.get("/monitoring/summary")
-    async def get_monitoring_summary() -> dict[str, Any]:
-        """Get comprehensive monitoring summary."""
-        return await _handle_get_monitoring_summary()
-
-    @app.get("/monitoring/alerts")
-    async def get_alerts() -> dict[str, Any]:
-        """Get system alerts."""
-        return await _handle_get_alerts()
-
-    @app.post("/monitoring/alerts/{alert_id}/resolve")
-    async def resolve_alert(alert_id: str) -> dict[str, str]:
-        """Resolve a system alert."""
-        return await _handle_resolve_alert(alert_id)
+    app.include_router(monitoring_router)
+    app.include_router(system_monitoring_router)
 
 
 def main() -> FastAPI:
@@ -218,57 +66,48 @@ def main() -> FastAPI:
     app = create_app()  # pylint: disable=redefined-outer-name  # noqa: F811  # Reason: Module-level app instance for main entry point
 
     # Error logging is now handled by ComprehensiveLoggingMiddleware in the factory
+    # Lifespan (including enhanced logging/monitoring) is configured in factory
 
     logger.info("MythosMUD server started successfully")
     return app
 
 
-# Create the FastAPI application
-app = create_app()
-
-# Compose lifespans: run enhanced_lifespan around the app's existing lifespan
-original_lifespan = app.router.lifespan_context
-
-
-@asynccontextmanager
-async def composed_lifespan(application: FastAPI):
-    """Compose multiple lifespan contexts for application startup/shutdown.
-
-    This function combines the enhanced logging/monitoring lifespan with
-    the factory/app lifespan (DB init, persistence binding, etc.).
-
-    Args:
-        application: The FastAPI application instance
-
-    Yields:
-        None: Control is yielded to the application
+def _create_get_app() -> Callable[[], FastAPI]:
     """
-    # Outer: enhanced logging/monitoring
-    async with enhanced_lifespan(application):
-        # Inner: factory/app lifespan (DB init, persistence binding, etc.)
-        async with original_lifespan(application):
-            yield
+    Factory function that creates the get_app function with encapsulated cache.
+
+    This closure pattern avoids global variables while maintaining lazy initialization.
+    """
+    app_instance: FastAPI | None = None
+
+    def _app_getter() -> FastAPI:
+        """
+        Get or create the FastAPI application instance.
+
+        This function provides lazy app creation for better testability and
+        uvicorn reload compatibility. The app is created on first access.
+
+        Returns:
+            FastAPI: The configured FastAPI application instance
+        """
+        nonlocal app_instance
+        if app_instance is None:
+            app_instance = create_app()
+        return app_instance
+
+    return _app_getter
 
 
-app.router.lifespan_context = composed_lifespan
+get_app = _create_get_app()
 
+
+# Create the FastAPI application for uvicorn compatibility
+# Note: This is created at module level for uvicorn's "server.main:app" reference
+# but uses lazy initialization pattern internally
+app = get_app()
+
+# Add correlation middleware (CORS is already configured in factory)
 app.add_middleware(CorrelationMiddleware, correlation_header="X-Correlation-ID")
-
-# pylint: disable=no-member  # Pydantic FieldInfo dynamic attributes
-cors_kwargs = {
-    "allow_origins": config.cors.allow_origins,
-    "allow_credentials": config.cors.allow_credentials,
-    "allow_methods": config.cors.allow_methods,
-    "allow_headers": config.cors.allow_headers,
-    "max_age": config.cors.max_age,
-}
-
-if config.cors.expose_headers:
-    cors_kwargs["expose_headers"] = config.cors.expose_headers
-
-# The trusted origins list keeps our gateways as secure as the wards at the Arkham Library.
-# CORSMiddleware uses **kwargs which mypy can't validate against strict Starlette signatures
-app.add_middleware(CORSMiddleware, **cors_kwargs)  # type: ignore[arg-type]
 
 setup_monitoring_endpoints(app)
 
@@ -299,7 +138,7 @@ if __name__ == "__main__":
     uvicorn.run(
         "server.main:app",  # Use the correct module path from project root
         host=config.server.host,
-        port=config.server.port,  # pylint: disable=no-member  # Pydantic FieldInfo dynamic attribute
+        port=config.server.port,  # pylint: disable=no-member  # Reason: Pydantic model fields are dynamically accessible, pylint cannot detect them statically but they exist at runtime
         reload=False,  # Hot reloading disabled due to client compatibility issues
         # Use our StructLog system for all logging
         access_log=True,

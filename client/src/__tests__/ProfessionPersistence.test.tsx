@@ -1,10 +1,9 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import App from '../App';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { App } from '../App';
 
-// Mock fetch globally
-const mockFetch = vi.fn();
-global.fetch = mockFetch;
+// Mock fetch globally using vi.spyOn for proper cleanup
+const fetchSpy = vi.spyOn(global, 'fetch');
 
 // Mock the logger
 vi.mock('../utils/logger', () => ({
@@ -34,6 +33,11 @@ vi.mock('../utils/security', () => ({
 describe.skip('Profession Choice Persistence to Database', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    fetchSpy.mockClear();
+  });
+
+  afterEach(() => {
+    fetchSpy.mockRestore();
   });
 
   const createMockProfessions = () => [
@@ -108,15 +112,16 @@ describe.skip('Profession Choice Persistence to Database', () => {
       }),
     };
 
-    mockFetch.mockImplementation(url => {
-      if (url.includes('/auth/register')) {
-        return Promise.resolve(registrationResponse);
-      } else if (url.includes('/professions')) {
-        return Promise.resolve(professionsResponse);
-      } else if (url.includes('/players/roll-stats')) {
-        return Promise.resolve(statsResponse);
-      } else if (url.includes('/players/create-character')) {
-        return Promise.resolve(characterCreationResponse);
+    fetchSpy.mockImplementation((url: string | URL | Request) => {
+      const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url;
+      if (urlString.includes('/auth/register')) {
+        return Promise.resolve(registrationResponse as unknown as Response);
+      } else if (urlString.includes('/professions')) {
+        return Promise.resolve(professionsResponse as unknown as Response);
+      } else if (urlString.includes('/players/roll-stats')) {
+        return Promise.resolve(statsResponse as unknown as Response);
+      } else if (urlString.includes('/players/create-character')) {
+        return Promise.resolve(characterCreationResponse as unknown as Response);
       }
       return Promise.reject(new Error('Unknown endpoint'));
     });
@@ -162,7 +167,7 @@ describe.skip('Profession Choice Persistence to Database', () => {
 
       // Verify that the character creation API was called with the correct profession_id
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledWith(
+        expect(fetchSpy).toHaveBeenCalledWith(
           expect.stringContaining('/players/create-character'),
           expect.objectContaining({
             method: 'POST',
@@ -219,7 +224,7 @@ describe.skip('Profession Choice Persistence to Database', () => {
 
       // Verify that the character creation API was called with the correct profession_id
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledWith(
+        expect(fetchSpy).toHaveBeenCalledWith(
           expect.stringContaining('/players/create-character'),
           expect.objectContaining({
             method: 'POST',
@@ -280,7 +285,7 @@ describe.skip('Profession Choice Persistence to Database', () => {
 
       // Verify that the character creation API was called with the correct profession_id (Gutter Rat)
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledWith(
+        expect(fetchSpy).toHaveBeenCalledWith(
           expect.stringContaining('/players/create-character'),
           expect.objectContaining({
             method: 'POST',
@@ -357,7 +362,7 @@ describe.skip('Profession Choice Persistence to Database', () => {
 
       // Verify that the character creation API was called with the correct profession_id (Gutter Rat)
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledWith(
+        expect(fetchSpy).toHaveBeenCalledWith(
           expect.stringContaining('/players/create-character'),
           expect.objectContaining({
             method: 'POST',
@@ -420,7 +425,7 @@ describe.skip('Profession Choice Persistence to Database', () => {
 
       // Verify that the character creation API was called with the correct profession_id
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledWith(
+        expect(fetchSpy).toHaveBeenCalledWith(
           expect.stringContaining('/players/create-character'),
           expect.objectContaining({
             method: 'POST',
@@ -440,8 +445,9 @@ describe.skip('Profession Choice Persistence to Database', () => {
 
     it('should persist profession choice with malformed profession data', async () => {
       // Mock malformed profession data
-      mockFetch.mockImplementation(url => {
-        if (url.includes('/auth/register')) {
+      fetchSpy.mockImplementation((url: string | URL | Request) => {
+        const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url;
+        if (urlString.includes('/auth/register')) {
           return Promise.resolve({
             ok: true,
             json: vi.fn().mockResolvedValue({
@@ -449,8 +455,8 @@ describe.skip('Profession Choice Persistence to Database', () => {
               has_character: false,
               character_name: '',
             }),
-          });
-        } else if (url.includes('/professions')) {
+          } as unknown as Response);
+        } else if (urlString.includes('/professions')) {
           return Promise.resolve({
             ok: true,
             json: vi.fn().mockResolvedValue({
@@ -463,8 +469,8 @@ describe.skip('Profession Choice Persistence to Database', () => {
                 },
               ],
             }),
-          });
-        } else if (url.includes('/players/roll-stats')) {
+          } as unknown as Response);
+        } else if (urlString.includes('/players/roll-stats')) {
           return Promise.resolve({
             ok: true,
             json: vi.fn().mockResolvedValue({
@@ -486,8 +492,8 @@ describe.skip('Profession Choice Persistence to Database', () => {
               meets_requirements: true,
               method_used: '3d6',
             }),
-          });
-        } else if (url.includes('/players/create-character')) {
+          } as unknown as Response);
+        } else if (urlString.includes('/players/create-character')) {
           return Promise.resolve({
             ok: true,
             json: vi.fn().mockResolvedValue({
@@ -497,7 +503,7 @@ describe.skip('Profession Choice Persistence to Database', () => {
                 profession_id: 0,
               },
             }),
-          });
+          } as unknown as Response);
         }
         return Promise.reject(new Error('Unknown endpoint'));
       });
@@ -539,7 +545,7 @@ describe.skip('Profession Choice Persistence to Database', () => {
 
       // Verify that the character creation API was called with the correct profession_id
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledWith(
+        expect(fetchSpy).toHaveBeenCalledWith(
           expect.stringContaining('/players/create-character'),
           expect.objectContaining({
             method: 'POST',

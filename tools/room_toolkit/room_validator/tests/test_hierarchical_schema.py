@@ -8,10 +8,10 @@ This module tests the new hierarchical room structure including:
 - Invalid configuration detection
 """
 
-import json
 import os
 import sys
 import unittest
+from typing import Any
 
 # Add the room_validator directory to the path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
@@ -19,27 +19,43 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from core.schema_validator import SchemaValidator
 
 
+class ValidationResult:
+    """Simple wrapper to match test expectations."""
+
+    def __init__(self, errors: list[str]) -> None:
+        """Initialize with list of validation errors."""
+        self.errors = errors
+        self.is_valid = len(errors) == 0
+
+
 class TestHierarchicalSchema(unittest.TestCase):
     """Test the hierarchical room schema validation."""
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up test fixtures."""
         # Schema file paths
         self.room_schema_path = os.path.join(os.path.dirname(__file__), "..", "schemas", "room_hierarchy_schema.json")
         self.zone_schema_path = os.path.join(os.path.dirname(__file__), "..", "schemas", "zone_schema.json")
         self.subzone_schema_path = os.path.join(os.path.dirname(__file__), "..", "schemas", "subzone_schema.json")
 
-        # Load schemas
-        with open(self.room_schema_path) as f:
-            self.room_schema = json.load(f)
-        with open(self.zone_schema_path) as f:
-            self.zone_schema = json.load(f)
-        with open(self.subzone_schema_path) as f:
-            self.subzone_schema = json.load(f)
+        # Create validators for each schema type
+        self.room_validator = SchemaValidator(self.room_schema_path)
+        self.zone_validator = SchemaValidator(self.zone_schema_path)
+        self.subzone_validator = SchemaValidator(self.subzone_schema_path)
 
-        self.validator = SchemaValidator()
+    def _validate_room(self, room_data: dict[str, Any], schema_type: str = "room") -> ValidationResult:
+        """Validate room data and return wrapped result."""
+        if schema_type == "room":
+            errors = self.room_validator.validate_room(room_data)
+        elif schema_type == "zone":
+            errors = self.zone_validator.validate_room(room_data)
+        elif schema_type == "subzone":
+            errors = self.subzone_validator.validate_room(room_data)
+        else:
+            raise ValueError(f"Unknown schema type: {schema_type}")
+        return ValidationResult(errors)
 
-    def test_valid_hierarchical_room(self):
+    def test_valid_hierarchical_room(self) -> None:
         """Test that a valid hierarchical room passes validation."""
         room_data = {
             "id": "earth_arkhamcity_french_hill_S_Garrison_St_001",
@@ -52,23 +68,36 @@ class TestHierarchicalSchema(unittest.TestCase):
             "exits": {"north": "earth_arkhamcity_french_hill_S_Garrison_St_002", "south": None},
         }
 
-        result = self.validator.validate_room(room_data, self.room_schema)
+        result = self._validate_room(room_data, "room")
         self.assertTrue(result.is_valid, f"Validation failed: {result.errors}")
 
-    def test_invalid_room_missing_required_fields(self):
-        """Test that rooms missing required fields fail validation."""
+    def test_invalid_room_missing_description_field(self) -> None:
+        """Test that rooms missing description field fail validation."""
         room_data = {
             "id": "test_room",
             "name": "Test Room",
-            # Missing description and exits
+            "exits": {},
+            # Missing description
         }
 
-        result = self.validator.validate_room(room_data, self.room_schema)
+        result = self._validate_room(room_data, "room")
         self.assertFalse(result.is_valid)
         self.assertIn("description", str(result.errors))
+
+    def test_invalid_room_missing_exits_field(self) -> None:
+        """Test that rooms missing exits field fail validation."""
+        room_data = {
+            "id": "test_room",
+            "name": "Test Room",
+            "description": "A test room.",
+            # Missing exits
+        }
+
+        result = self._validate_room(room_data, "room")
+        self.assertFalse(result.is_valid)
         self.assertIn("exits", str(result.errors))
 
-    def test_invalid_environment_value(self):
+    def test_invalid_environment_value(self) -> None:
         """Test that invalid environment values fail validation."""
         room_data = {
             "id": "test_room",
@@ -81,11 +110,11 @@ class TestHierarchicalSchema(unittest.TestCase):
             "exits": {},
         }
 
-        result = self.validator.validate_room(room_data, self.room_schema)
+        result = self._validate_room(room_data, "room")
         self.assertFalse(result.is_valid)
         self.assertIn("environment", str(result.errors))
 
-    def test_valid_zone_config(self):
+    def test_valid_zone_config(self) -> None:
         """Test that a valid zone configuration passes validation."""
         zone_config = {
             "zone_type": "city",
@@ -95,10 +124,10 @@ class TestHierarchicalSchema(unittest.TestCase):
             "special_rules": {"lucidity_drain_rate": 0.1, "npc_spawn_modifier": 1.2},
         }
 
-        result = self.validator.validate_room(zone_config, self.zone_schema)
+        result = self._validate_room(zone_config, "zone")
         self.assertTrue(result.is_valid, f"Validation failed: {result.errors}")
 
-    def test_invalid_zone_type(self):
+    def test_invalid_zone_type(self) -> None:
         """Test that invalid zone types fail validation."""
         zone_config = {
             "zone_type": "invalid_type",  # Invalid zone type
@@ -106,11 +135,11 @@ class TestHierarchicalSchema(unittest.TestCase):
             "description": "A test zone",
         }
 
-        result = self.validator.validate_room(zone_config, self.zone_schema)
+        result = self._validate_room(zone_config, "zone")
         self.assertFalse(result.is_valid)
         self.assertIn("zone_type", str(result.errors))
 
-    def test_valid_subzone_config(self):
+    def test_valid_subzone_config(self) -> None:
         """Test that a valid sub-zone configuration passes validation."""
         subzone_config = {
             "environment": "indoors",
@@ -118,45 +147,62 @@ class TestHierarchicalSchema(unittest.TestCase):
             "special_rules": {"lucidity_drain_rate": 0.05, "npc_spawn_modifier": 0.8},
         }
 
-        result = self.validator.validate_room(subzone_config, self.subzone_schema)
+        result = self._validate_room(subzone_config, "subzone")
         self.assertTrue(result.is_valid, f"Validation failed: {result.errors}")
 
-    def test_invalid_subzone_environment(self):
+    def test_invalid_subzone_environment(self) -> None:
         """Test that invalid sub-zone environment values fail validation."""
         subzone_config = {
             "environment": "invalid_environment",  # Invalid value
             "description": "A test sub-zone",
         }
 
-        result = self.validator.validate_room(subzone_config, self.subzone_schema)
+        result = self._validate_room(subzone_config, "subzone")
         self.assertFalse(result.is_valid)
         self.assertIn("environment", str(result.errors))
 
-    def test_room_id_pattern_validation(self):
-        """Test that room IDs follow the correct pattern."""
+    def test_valid_room_id_patterns(self) -> None:
+        """Test that valid room ID patterns pass validation."""
         valid_ids = [
             "earth_arkhamcity_french_hill_S_Garrison_St_001",
             "yeng_katmandu_palace_palace_ground_001",
         ]
 
+        for room_id in valid_ids:
+            room_data = {
+                "id": room_id,
+                "name": "Test Room",
+                "description": "A test room.",
+                "plane": "earth",
+                "zone": "test_zone",
+                "sub_zone": "test_subzone",
+                "exits": {},
+            }
+            result = self._validate_room(room_data, "room")
+            self.assertTrue(result.is_valid, f"Valid ID '{room_id}' failed validation")
+
+    def test_invalid_room_id_patterns(self) -> None:
+        """Test that invalid room ID patterns fail validation."""
         invalid_ids = [
             "earth-arkham-city",  # Contains hyphens
             "earth.arkham.city",  # Contains dots
-            "Earth_Arkham_City",  # Contains uppercase
             "",  # Empty string
         ]
 
-        for room_id in valid_ids:
-            room_data = {"id": room_id, "name": "Test Room", "description": "A test room.", "exits": {}}
-            result = self.validator.validate_room(room_data, self.room_schema)
-            self.assertTrue(result.is_valid, f"Valid ID '{room_id}' failed validation")
-
         for room_id in invalid_ids:
-            room_data = {"id": room_id, "name": "Test Room", "description": "A test room.", "exits": {}}
-            result = self.validator.validate_room(room_data, self.room_schema)
+            room_data = {
+                "id": room_id,
+                "name": "Test Room",
+                "description": "A test room.",
+                "plane": "earth",
+                "zone": "test_zone",
+                "sub_zone": "test_subzone",
+                "exits": {},
+            }
+            result = self._validate_room(room_data, "room")
             self.assertFalse(result.is_valid, f"Invalid ID '{room_id}' passed validation")
 
-    def test_exit_validation(self):
+    def test_exit_validation(self) -> None:
         """Test that room exits are properly validated."""
         valid_exits = {
             "north": "target_room_id",
@@ -173,16 +219,24 @@ class TestHierarchicalSchema(unittest.TestCase):
         }
 
         # Test valid exits
-        room_data = {"id": "test_room", "name": "Test Room", "description": "A test room.", "exits": valid_exits}
-        result = self.validator.validate_room(room_data, self.room_schema)
+        room_data = {
+            "id": "test_room",
+            "name": "Test Room",
+            "description": "A test room.",
+            "plane": "earth",
+            "zone": "test_zone",
+            "sub_zone": "test_subzone",
+            "exits": valid_exits,
+        }
+        result = self._validate_room(room_data, "room")
         self.assertTrue(result.is_valid, f"Valid exits failed validation: {result.errors}")
 
         # Test invalid exits
         room_data["exits"] = invalid_exits
-        result = self.validator.validate_room(room_data, self.room_schema)
+        result = self._validate_room(room_data, "room")
         self.assertFalse(result.is_valid)
 
-    def test_environment_inheritance_logic(self):
+    def test_environment_inheritance_logic(self) -> None:
         """Test that environment inheritance follows the correct priority chain."""
         # This test validates the logic, not the schema itself
         # The actual inheritance is handled by the world loader
@@ -199,28 +253,30 @@ class TestHierarchicalSchema(unittest.TestCase):
             "exits": {},
         }
 
-        result = self.validator.validate_room(room_data, self.room_schema)
+        result = self._validate_room(room_data, "room")
         self.assertTrue(result.is_valid, f"Room-level environment failed validation: {result.errors}")
 
-    def test_zone_type_enum_validation(self):
-        """Test that zone types are properly validated against the enum."""
+    def test_valid_zone_type_values(self) -> None:
+        """Test that valid zone type values pass validation."""
         valid_zone_types = ["city", "countryside", "mountains", "swamp", "tundra", "desert"]
-        invalid_zone_types = ["invalid", "town", "village", "forest"]
 
         for zone_type in valid_zone_types:
             zone_config = {"zone_type": zone_type, "environment": "outdoors", "description": "A test zone"}
-            result = self.validator.validate_room(zone_config, self.zone_schema)
+            result = self._validate_room(zone_config, "zone")
             self.assertTrue(result.is_valid, f"Valid zone type '{zone_type}' failed validation")
+
+    def test_invalid_zone_type_values(self) -> None:
+        """Test that invalid zone type values fail validation."""
+        invalid_zone_types = ["invalid", "town", "village", "forest"]
 
         for zone_type in invalid_zone_types:
             zone_config = {"zone_type": zone_type, "environment": "outdoors", "description": "A test zone"}
-            result = self.validator.validate_room(zone_config, self.zone_schema)
+            result = self._validate_room(zone_config, "zone")
             self.assertFalse(result.is_valid, f"Invalid zone type '{zone_type}' passed validation")
 
-    def test_environment_enum_validation(self):
-        """Test that environment values are properly validated against the enum."""
+    def test_valid_environment_values(self) -> None:
+        """Test that valid environment values pass validation."""
         valid_environments = ["indoors", "outdoors", "underwater"]
-        invalid_environments = ["inside", "outside", "water", "underground"]
 
         for env in valid_environments:
             room_data = {
@@ -233,8 +289,12 @@ class TestHierarchicalSchema(unittest.TestCase):
                 "environment": env,
                 "exits": {},
             }
-            result = self.validator.validate_room(room_data, self.room_schema)
+            result = self._validate_room(room_data, "room")
             self.assertTrue(result.is_valid, f"Valid environment '{env}' failed validation")
+
+    def test_invalid_environment_values(self) -> None:
+        """Test that invalid environment values fail validation."""
+        invalid_environments = ["inside", "outside", "water", "underground"]
 
         for env in invalid_environments:
             room_data = {
@@ -247,7 +307,7 @@ class TestHierarchicalSchema(unittest.TestCase):
                 "environment": env,
                 "exits": {},
             }
-            result = self.validator.validate_room(room_data, self.room_schema)
+            result = self._validate_room(room_data, "room")
             self.assertFalse(result.is_valid, f"Invalid environment '{env}' passed validation")
 
 

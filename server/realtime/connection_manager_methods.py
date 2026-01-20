@@ -38,6 +38,8 @@ def get_memory_stats_impl(manager: Any) -> dict[str, Any]:
         session_connections=manager.session_connections,
         online_players=manager.online_players,
         last_seen=manager.last_seen,
+        closed_websockets_count=manager.get_closed_websockets_count(),
+        connection_metadata=manager.connection_metadata,
     )
 
 

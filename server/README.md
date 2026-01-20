@@ -197,6 +197,151 @@ The game features a comprehensive stats system with Lovecraftian horror elements
 - `GET /players/name/{player_name}` - Get player by name
 - `DELETE /players/{player_id}` - Delete a player
 
+### Memory Leak Monitoring Endpoints
+
+The server provides comprehensive memory leak monitoring endpoints for detecting and tracking resource leaks:
+
+#### Memory Leak Metrics Endpoints
+
+- `GET /monitoring/memory-leaks` - Get comprehensive memory leak metrics from all sources
+  - Returns aggregated metrics from connections, events, caches, tasks, and NATS
+  - Includes growth rates, alerts, and trend data
+  - Response includes: connection metrics, event metrics, cache metrics, task metrics, NATS metrics, growth rates, and alerts
+
+- `GET /monitoring/eventbus` - Get EventBus subscriber and task metrics
+  - Returns subscriber counts by event type, active task count, subscription churn rate
+  - Useful for detecting event subscription leaks
+
+- `GET /monitoring/caches` - Get cache metrics with expiration tracking
+  - Returns cache sizes, hit rates, expired entry counts, expiration rates, capacity utilization
+  - Helps identify cache-related memory leaks
+
+- `GET /monitoring/tasks` - Get TaskRegistry metrics
+  - Returns active task counts, task lifecycle metrics, service-level breakdown
+  - Tracks orphaned tasks and task growth rates
+
+#### Memory Leak Metrics Documentation
+
+**Connection Metrics:**
+
+- `active_websockets_count`: Number of active WebSocket connections
+- `connection_metadata_count`: Number of connection metadata entries
+- `player_websockets_count`: Number of players with WebSocket connections
+- `closed_websockets_count`: Number of closed WebSocket IDs being tracked (potential leak indicator)
+- `active_to_player_ratio`: Ratio of active connections to active players (normal: ~1.0, high indicates leaks)
+- `orphaned_connections`: Connections without associated active players (indicates cleanup issues)
+
+**Normal vs Abnormal Values:**
+
+- `closed_websockets_count`: Normal < 1000, Warning > 5000, Critical > 10000
+- `active_to_player_ratio`: Normal 0.8-1.2, Abnormal > 2.0 (multiple connections per player)
+- `orphaned_connections`: Normal 0, Warning > 10
+
+**Event Metrics:**
+
+- `total_subscribers`: Total number of event subscribers across all event types
+- `active_task_count`: Number of active async tasks in EventBus
+- `subscription_churn_rate`: Rate of unsubscriptions vs subscriptions (normal: < 0.1, high indicates leaks)
+
+**Normal vs Abnormal Values:**
+
+- `subscription_churn_rate`: Normal < 0.1 (10%), Abnormal > 0.2 (20% growth per period)
+- `active_task_count`: Should remain relatively stable, growing count indicates leaks
+
+**Cache Metrics:**
+
+- `cache_sizes`: Current size of each cache
+- `capacity_utilization`: Percentage of max_size used (normal: < 100%, warning: > 110%)
+- `expired_entry_counts`: Number of entries expired due to TTL
+- `expiration_rates`: Rate of expiration vs total operations
+
+**Normal vs Abnormal Values:**
+
+- `capacity_utilization`: Normal < 100%, Warning > 110% (cache exceeded max_size)
+- `expiration_rates`: High rates indicate TTL working correctly, low rates with high sizes indicate leaks
+
+**Task Metrics:**
+
+- `active_task_count`: Current number of active tasks
+- `task_creation_rate`: Tasks created per hour
+- `task_completion_rate`: Tasks completed per hour
+- `orphaned_task_count`: Tasks that are done but not cleaned up
+
+**Normal vs Abnormal Values:**
+
+- `task_growth_rate`: Normal < 0.2 (20% per period), Abnormal > 0.3 (30% growth)
+- `orphaned_task_count`: Normal 0, Warning > 5
+
+**NATS Metrics:**
+
+- `subscription_count`: Number of active NATS subscriptions
+- `last_cleanup_time`: Timestamp of last subscription cleanup
+- `active_subscriptions`: List of active subscription subjects
+
+**Normal vs Abnormal Values:**
+
+- `subscription_count`: Should match expected service subscriptions, growing count indicates leaks
+- Subscriptions remaining after cleanup: Normal 0, Warning > 0
+
+#### Example Memory Leak Metrics Response
+
+```json
+{
+  "connection": {
+    "active_websockets_count": 45,
+    "connection_metadata_count": 45,
+    "player_websockets_count": 42,
+    "closed_websockets_count": 1234,
+    "active_to_player_ratio": 1.07,
+    "orphaned_connections": 3
+  },
+  "event": {
+    "subscriber_counts_by_type": {
+      "PlayerEnteredRoom": 2,
+      "PlayerLeftRoom": 2
+    },
+    "total_subscribers": 4,
+    "active_task_count": 1,
+    "subscription_churn_rate": 0.05
+  },
+  "cache": {
+    "cache_sizes": {
+      "rooms": 1234,
+      "players": 42
+    },
+    "capacity_utilization": {
+      "rooms": 0.25,
+      "players": 0.84
+    },
+    "expired_entry_counts": {
+      "players": 156
+    }
+  },
+  "task": {
+    "active_task_count": 12,
+    "tasks_by_type": {
+      "lifecycle": 3,
+      "websocket": 5
+    },
+    "task_creation_rate": 24,
+    "task_completion_rate": 22,
+    "orphaned_task_count": 0
+  },
+  "nats": {
+    "active_subscriptions": ["chat.global", "chat.local"],
+    "subscription_count": 2,
+    "last_cleanup_time": 1704067200.0
+  },
+  "growth_rates": {
+    "closed_websockets": 0.02,
+    "subscribers": 0.0,
+    "tasks": 0.05
+  },
+  "alerts": [],
+  "timestamp": 1704067200.0
+}
+```
+
 ### Player Stats & Effects
 
 - `POST /players/{player_id}/lucidity-loss` - Apply lucidity loss

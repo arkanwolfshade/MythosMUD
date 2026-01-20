@@ -96,14 +96,14 @@ export class MemoryLeakDetector {
     if (usedMB > this.options.criticalThreshold) {
       const message = `CRITICAL: Memory usage is ${usedMB.toFixed(2)}MB (${totalMB.toFixed(2)}MB total)`;
       // nosemgrep: javascript.lang.security.audit.unsafe-formatstring.unsafe-formatstring
-      // This is internal logging with controlled numeric values, not user input
-      console.error(message, snapshot);
+      console.error(message, snapshot); // Internal logging with controlled numeric values, not user input
       this.onCritical?.(message, snapshot);
     }
     // Check for warning memory usage
     else if (usedMB > this.options.warningThreshold) {
       const message = `WARNING: Memory usage is ${usedMB.toFixed(2)}MB (${totalMB.toFixed(2)}MB total)`;
-      console.warn(message, snapshot);
+      // nosemgrep: javascript.lang.security.audit.unsafe-formatstring.unsafe-formatstring
+      console.warn(message, snapshot); // Internal logging with controlled numeric values, not user input
       this.onWarning?.(message, snapshot);
     }
 
@@ -122,7 +122,8 @@ export class MemoryLeakDetector {
     if (growthRate > 0.1) {
       // 10% growth per check interval
       const message = `POTENTIAL MEMORY LEAK: Memory growing at ${(growthRate * 100).toFixed(2)}% per interval`;
-      console.warn(message, recentSnapshots);
+      // nosemgrep: javascript.lang.security.audit.unsafe-formatstring.unsafe-formatstring
+      console.warn(message, recentSnapshots); // Internal logging with controlled numeric values, not user input
       this.onWarning?.(message, recentSnapshots[recentSnapshots.length - 1]);
     }
   }
@@ -195,9 +196,13 @@ export const useMemoryLeakDetector = (componentName: string, options?: Partial<M
       detectorRef.current = new MemoryLeakDetector(options);
       detectorRef.current.setCallbacks({
         onWarning: (message, snapshot) => {
+          // nosemgrep: javascript.lang.security.audit.unsafe-formatstring.unsafe-formatstring
+          // Internal logging with component name from React component props, not user input
           console.warn(`[${componentName}] ${message}`, snapshot);
         },
         onCritical: (message, snapshot) => {
+          // nosemgrep: javascript.lang.security.audit.unsafe-formatstring.unsafe-formatstring
+          // Internal logging with component name from React component props, not user input
           console.error(`[${componentName}] ${message}`, snapshot);
         },
       });

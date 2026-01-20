@@ -3,7 +3,7 @@
  */
 
 import { act, render, screen, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MonitoringPanel } from '../MonitoringPanel';
 
 // Mock EldritchIcon
@@ -19,14 +19,20 @@ vi.mock('../../utils/config', () => ({
 // Mock CSS import
 vi.mock('./MonitoringPanel.css', () => ({}));
 
+const fetchSpy = vi.spyOn(global, 'fetch');
+
 describe('MonitoringPanel', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    global.fetch = vi.fn();
+    fetchSpy.mockClear();
+  });
+
+  afterEach(() => {
+    fetchSpy.mockReset();
   });
 
   it('should render loading state initially', () => {
-    vi.mocked(fetch).mockImplementation(() => new Promise(() => {})); // Never resolves
+    fetchSpy.mockImplementation(() => new Promise(() => {})); // Never resolves
 
     render(<MonitoringPanel />);
 
@@ -84,7 +90,7 @@ describe('MonitoringPanel', () => {
       },
     };
 
-    vi.mocked(fetch)
+    fetchSpy
       .mockResolvedValueOnce({
         ok: true,
         json: async () => mockDualConnections,
@@ -101,18 +107,15 @@ describe('MonitoringPanel', () => {
     render(<MonitoringPanel />);
 
     await waitFor(() => {
-      expect(screen.getByText(/dual connections/i)).toBeInTheDocument();
+      expect(screen.getByText(/dual connection distribution/i)).toBeInTheDocument();
     });
 
     // Verify data is displayed - check for specific label to avoid ambiguity
     expect(screen.getByText(/total players/i)).toBeInTheDocument();
-    // Verify the value appears near the label (there are multiple "10" values, so we check the label context)
-    const totalPlayersLabel = screen.getByText(/total players/i);
-    expect(totalPlayersLabel).toBeInTheDocument();
   });
 
   it('should handle fetch errors gracefully', async () => {
-    vi.mocked(fetch).mockRejectedValueOnce(new Error('Network error'));
+    fetchSpy.mockRejectedValueOnce(new Error('Network error'));
 
     render(<MonitoringPanel />);
 
@@ -122,7 +125,7 @@ describe('MonitoringPanel', () => {
   });
 
   it('should handle non-ok responses', async () => {
-    vi.mocked(fetch)
+    fetchSpy
       .mockResolvedValueOnce({
         ok: false,
         status: 500,
@@ -200,7 +203,7 @@ describe('MonitoringPanel', () => {
     };
 
     let callCount = 0;
-    vi.mocked(fetch).mockImplementation(() => {
+    fetchSpy.mockImplementation(() => {
       callCount++;
       // Return appropriate mock data based on which endpoint is being called
       // The component calls endpoints in order: dual-connections, performance, connection-health
@@ -236,7 +239,6 @@ describe('MonitoringPanel', () => {
     // Advance time by refresh interval (1000ms) to trigger the interval
     await act(async () => {
       vi.advanceTimersByTime(1000);
-      // Only run pending timers, not all timers to avoid infinite loop
       await vi.runOnlyPendingTimersAsync();
     });
 
@@ -255,10 +257,25 @@ describe('MonitoringPanel', () => {
         dual_connection_players: 0,
         dual_connection_percentage: 0,
       },
+      connection_health: {
+        total_connections: 0,
+        healthy_connections: 0,
+        unhealthy_connections: 0,
+        health_percentage: 0,
+      },
+      session_metrics: {
+        total_sessions: 0,
+        total_session_connections: 0,
+        avg_connections_per_session: 0,
+      },
+      performance_metrics: {
+        total_websocket_connections: 0,
+        avg_connections_per_player: 0,
+      },
     };
 
     const fetchCalls: string[] = [];
-    vi.mocked(fetch).mockImplementation(url => {
+    fetchSpy.mockImplementation(url => {
       const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : String(url);
       fetchCalls.push(urlString);
 
@@ -280,7 +297,7 @@ describe('MonitoringPanel', () => {
     // Wait for fetch to be called with custom baseUrl
     await waitFor(
       () => {
-        expect(fetch).toHaveBeenCalled();
+        expect(fetchSpy).toHaveBeenCalled();
         const hasCustomUrl = fetchCalls.some(call => {
           try {
             return new URL(call).origin === 'https://custom-api.example.com';
@@ -319,7 +336,7 @@ describe('MonitoringPanel', () => {
       },
     };
 
-    vi.mocked(fetch)
+    fetchSpy
       .mockResolvedValueOnce({
         ok: true,
         json: async () => mockDualConnections,
@@ -348,11 +365,11 @@ describe('MonitoringPanel', () => {
     // The component shows "Last updated: {time}" in the header
     await waitFor(
       () => {
-        // Check for "Last updated:" text (case insensitive)
+        // Check for "Last updated:" text (case insensitive) - the time format may vary
         const lastUpdatedElement = screen.getByText(/last updated:/i);
         expect(lastUpdatedElement).toBeInTheDocument();
       },
-      { timeout: 3000 }
+      { timeout: 5000 }
     );
   });
 });

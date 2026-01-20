@@ -20,7 +20,7 @@ K = TypeVar("K")
 V = TypeVar("V")
 
 
-class LRUCache[K, V]:
+class LRUCache[K, V]:  # pylint: disable=too-many-instance-attributes  # Reason: LRU cache requires 8 instance attributes for configuration (max_size, ttl_seconds), storage (_cache), thread safety (_lock), and metrics tracking (_hits, _misses, _evictions, _expired_count); extracting metrics into a separate object would add unnecessary complexity
     """
     Thread-safe LRU (Least Recently Used) cache implementation.
 
@@ -43,6 +43,7 @@ class LRUCache[K, V]:
         self._hits = 0
         self._misses = 0
         self._evictions = 0
+        self._expired_count = 0  # Track expired entries for metrics
 
         logger.info("LRU Cache initialized", max_size=max_size, ttl_seconds=ttl_seconds)
 
@@ -69,6 +70,7 @@ class LRUCache[K, V]:
                 if time.time() - timestamp > self.ttl_seconds:
                     del self._cache[key]
                     self._misses += 1
+                    self._expired_count += 1  # Track expiration for metrics
                     logger.debug("Cache miss due to TTL expiration", key=key, age=time.time() - timestamp)
                     return None
 
@@ -77,6 +79,38 @@ class LRUCache[K, V]:
             self._hits += 1
             logger.debug("Cache hit", key=key)
             return value
+
+    def _evict_expired_entries(self) -> int:
+        """
+        Remove expired entries from cache.
+
+        Returns:
+            Count of expired entries removed
+        """
+        if self.ttl_seconds is None:
+            return 0
+
+        current_time = time.time()
+        expired_keys: list[K] = []
+
+        # Collect expired keys
+        for key, (_value, timestamp) in self._cache.items():
+            if current_time - timestamp > self.ttl_seconds:
+                expired_keys.append(key)
+
+        # Remove expired entries
+        for key in expired_keys:
+            del self._cache[key]
+            self._expired_count += 1
+
+        if expired_keys:
+            logger.debug(
+                "Evicted expired cache entries",
+                expired_count=len(expired_keys),
+                cache_size=len(self._cache),
+            )
+
+        return len(expired_keys)
 
     def put(self, key: K, value: V) -> None:
         """
@@ -96,11 +130,19 @@ class LRUCache[K, V]:
                 logger.debug("Cache update", key=key)
                 return
 
-            # If cache is full, remove least recently used item
+            # Evict expired entries before checking capacity (Task 3: Proactive Expiration)
+            expired_count = self._evict_expired_entries()
+
+            # If cache is still full after removing expired entries, evict LRU
             if len(self._cache) >= self.max_size:
                 oldest_key, _ = self._cache.popitem(last=False)
                 self._evictions += 1
-                logger.debug("Cache eviction", evicted_key=oldest_key, cache_size=len(self._cache))
+                logger.debug(
+                    "Cache eviction",
+                    evicted_key=oldest_key,
+                    cache_size=len(self._cache),
+                    expired_removed=expired_count,
+                )
 
             # Add new item
             self._cache[key] = (value, current_time)
@@ -142,7 +184,7 @@ class LRUCache[K, V]:
         with self._lock:
             return len(self._cache) >= self.max_size
 
-    def get_stats(self) -> dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:  # pylint: disable=too-many-locals  # Reason: Stats calculation requires multiple intermediate variables for comprehensive metrics
         """
         Get cache statistics.
 
@@ -153,6 +195,20 @@ class LRUCache[K, V]:
             total_requests = self._hits + self._misses
             hit_rate = (self._hits / total_requests) if total_requests > 0 else 0.0
 
+            # Calculate expiration metrics
+            expiration_rate = (self._expired_count / total_requests) if total_requests > 0 else 0.0
+            total_evictions = self._evictions + self._expired_count
+            expired_vs_lru_ratio = (
+                self._expired_count / self._evictions
+                if self._evictions > 0
+                else float("inf")
+                if self._expired_count > 0
+                else 0.0
+            )
+
+            # Calculate capacity utilization
+            capacity_utilization = (len(self._cache) / self.max_size) if self.max_size > 0 else 0.0
+
             return {
                 "size": len(self._cache),
                 "max_size": self.max_size,
@@ -161,6 +217,11 @@ class LRUCache[K, V]:
                 "evictions": self._evictions,
                 "hit_rate": hit_rate,
                 "ttl_seconds": self.ttl_seconds,
+                "expired_count": self._expired_count,
+                "expiration_rate": expiration_rate,
+                "expired_vs_lru_ratio": expired_vs_lru_ratio,
+                "total_evictions": total_evictions,
+                "capacity_utilization": capacity_utilization,
             }
 
     def get_or_set(self, key: K, factory: Callable[[], V]) -> V:

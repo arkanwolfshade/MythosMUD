@@ -31,7 +31,7 @@ def mock_connection_manager():
 
 
 @pytest.mark.asyncio
-async def test_start_login_grace_period(mock_connection_manager):  # pylint: disable=redefined-outer-name
+async def test_start_login_grace_period(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test starting a login grace period for a player."""
     player_id = uuid.uuid4()
 
@@ -49,7 +49,7 @@ async def test_start_login_grace_period(mock_connection_manager):  # pylint: dis
 
 
 @pytest.mark.asyncio
-async def test_start_login_grace_period_already_active(mock_connection_manager):  # pylint: disable=redefined-outer-name
+async def test_start_login_grace_period_already_active(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test starting grace period when already active (should not duplicate)."""
     player_id = uuid.uuid4()
 
@@ -68,7 +68,7 @@ async def test_start_login_grace_period_already_active(mock_connection_manager):
 
 
 @pytest.mark.asyncio
-async def test_start_login_grace_period_expires(mock_connection_manager):  # pylint: disable=redefined-outer-name
+async def test_start_login_grace_period_expires(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test that grace period expires after duration."""
     player_id = uuid.uuid4()
 
@@ -83,7 +83,7 @@ async def test_start_login_grace_period_expires(mock_connection_manager):  # pyl
 
 
 @pytest.mark.asyncio
-async def test_cancel_login_grace_period(mock_connection_manager):  # pylint: disable=redefined-outer-name
+async def test_cancel_login_grace_period(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test cancelling an active grace period."""
     player_id = uuid.uuid4()
 
@@ -98,7 +98,7 @@ async def test_cancel_login_grace_period(mock_connection_manager):  # pylint: di
 
 
 @pytest.mark.asyncio
-async def test_cancel_login_grace_period_not_active(mock_connection_manager):  # pylint: disable=redefined-outer-name
+async def test_cancel_login_grace_period_not_active(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test cancelling grace period when not active (should not error)."""
     player_id = uuid.uuid4()
 
@@ -108,7 +108,7 @@ async def test_cancel_login_grace_period_not_active(mock_connection_manager):  #
     assert player_id not in mock_connection_manager.login_grace_period_players
 
 
-def test_is_player_in_login_grace_period_active(mock_connection_manager):  # pylint: disable=redefined-outer-name
+def test_is_player_in_login_grace_period_active(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test checking if player is in grace period when active."""
     player_id = uuid.uuid4()
     mock_connection_manager.login_grace_period_players[player_id] = MagicMock()
@@ -116,7 +116,7 @@ def test_is_player_in_login_grace_period_active(mock_connection_manager):  # pyl
     assert is_player_in_login_grace_period(player_id, mock_connection_manager) is True
 
 
-def test_is_player_in_login_grace_period_not_active(mock_connection_manager):  # pylint: disable=redefined-outer-name
+def test_is_player_in_login_grace_period_not_active(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test checking if player is in grace period when not active."""
     player_id = uuid.uuid4()
 
@@ -132,7 +132,7 @@ def test_is_player_in_login_grace_period_no_manager_attribute():
     assert is_player_in_login_grace_period(player_id, manager) is False
 
 
-def test_get_login_grace_period_remaining_active(mock_connection_manager):  # pylint: disable=redefined-outer-name
+def test_get_login_grace_period_remaining_active(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test getting remaining time for active grace period."""
     player_id = uuid.uuid4()
     start_time = time.time() - 3.0  # Started 3 seconds ago
@@ -145,7 +145,7 @@ def test_get_login_grace_period_remaining_active(mock_connection_manager):  # py
     assert 6.5 < remaining < 7.5  # Allow some tolerance for timing
 
 
-def test_get_login_grace_period_remaining_not_active(mock_connection_manager):  # pylint: disable=redefined-outer-name
+def test_get_login_grace_period_remaining_not_active(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test getting remaining time when not in grace period."""
     player_id = uuid.uuid4()
 
@@ -154,7 +154,7 @@ def test_get_login_grace_period_remaining_not_active(mock_connection_manager):  
     assert remaining == 0.0
 
 
-def test_get_login_grace_period_remaining_no_start_time(mock_connection_manager):  # pylint: disable=redefined-outer-name
+def test_get_login_grace_period_remaining_no_start_time(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test getting remaining time when start time not found."""
     player_id = uuid.uuid4()
     mock_connection_manager.login_grace_period_players[player_id] = MagicMock()
@@ -177,7 +177,7 @@ def test_get_login_grace_period_remaining_no_manager_attribute():
 
 
 @pytest.mark.asyncio
-async def test_multiple_players_grace_periods(mock_connection_manager):  # pylint: disable=redefined-outer-name
+async def test_multiple_players_grace_periods(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test multiple players can have grace periods simultaneously."""
     player1_id = uuid.uuid4()
     player2_id = uuid.uuid4()
@@ -197,7 +197,7 @@ async def test_multiple_players_grace_periods(mock_connection_manager):  # pylin
 
 
 @pytest.mark.asyncio
-async def test_grace_period_task_cancellation_cleanup(mock_connection_manager):  # pylint: disable=redefined-outer-name
+async def test_grace_period_task_cancellation_cleanup(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test that cancelled tasks properly clean up tracking."""
     player_id = uuid.uuid4()
 

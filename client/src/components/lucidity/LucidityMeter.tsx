@@ -124,7 +124,7 @@ export const LucidityMeter = memo<LucidityMeterProps>(({ status, className }) =>
                 {status.liabilities.map(liability => (
                   <li
                     key={liability}
-                    className="rounded bg-mythos-terminal-background px-2 py-1 text-[11px] uppercase tracking-wide text-mythos-terminal-warning"
+                    className="rounded bg-mythos-terminal-background px-2 py-1 text-xs-3 uppercase tracking-wide text-mythos-terminal-warning"
                   >
                     {liability.replace(/_/g, ' ')}
                   </li>

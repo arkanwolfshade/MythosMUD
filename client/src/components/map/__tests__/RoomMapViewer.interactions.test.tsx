@@ -5,7 +5,9 @@
  */
 
 import { render, screen, waitFor } from '@testing-library/react';
+import type { ReactFlowProps } from 'reactflow';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { RoomDetailsPanelProps } from '../RoomDetailsPanel';
 import { RoomMapViewer } from '../RoomMapViewer';
 import { useMapLayout } from '../hooks/useMapLayout';
 import { createEdgesFromRooms, roomsToNodes } from '../utils/mapUtils';
@@ -18,13 +20,18 @@ vi.mock('../utils/mapUtils');
 
 // Mock React Flow
 vi.mock('reactflow', () => ({
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  default: ({ children, nodes, edges, onNodeClick }: any) => {
+  default: ({
+    children,
+    nodes,
+    edges,
+    onNodeClick,
+  }: Pick<ReactFlowProps, 'children' | 'nodes' | 'edges' | 'onNodeClick'>) => {
     const handleClick = () => {
-      if (onNodeClick) {
-        const mockNode = nodes?.[0] || { data: { id: 'test-room', name: 'Test Room' } };
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        onNodeClick({ target: {} } as any, mockNode as any);
+      if (onNodeClick && nodes && nodes.length > 0) {
+        const mockNode = nodes[0];
+        // Create a minimal mock event for testing
+        const mockEvent = { target: {} } as React.MouseEvent;
+        onNodeClick(mockEvent, mockNode);
       }
     };
 
@@ -48,8 +55,7 @@ vi.mock('../MapControls', () => ({
 }));
 
 vi.mock('../RoomDetailsPanel', () => ({
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  RoomDetailsPanel: ({ room, onClose }: any) => (
+  RoomDetailsPanel: ({ room, onClose }: Pick<RoomDetailsPanelProps, 'room' | 'onClose'>) => (
     <div data-testid="room-details-panel">
       <div>{room.name}</div>
       <button onClick={onClose}>Close</button>
@@ -72,8 +78,10 @@ describe('RoomMapViewer - Interactions', () => {
       },
     ];
 
+    // Mock function requires any type for vi.mock type casting
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (roomsToNodes as any).mockReturnValue(mockNodes);
+    // Mock hook requires any type for vi.mock type casting
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMapLayout as any).mockReturnValue({
       layoutNodes: mockNodes,
@@ -106,8 +114,10 @@ describe('RoomMapViewer - Interactions', () => {
       },
     ];
 
+    // Mock function requires any type for vi.mock type casting
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (roomsToNodes as any).mockReturnValue(mockNodes);
+    // Mock hook requires any type for vi.mock type casting
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMapLayout as any).mockReturnValue({
       layoutNodes: mockNodes,
@@ -138,8 +148,10 @@ describe('RoomMapViewer - Interactions', () => {
       },
     ];
 
+    // Mock function requires any type for vi.mock type casting
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (roomsToNodes as any).mockReturnValue(mockNodes);
+    // Mock hook requires any type for vi.mock type casting
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMapLayout as any).mockReturnValue({
       layoutNodes: mockNodes,
@@ -177,8 +189,10 @@ describe('RoomMapViewer - Interactions', () => {
       },
     ];
 
+    // Mock function requires any type for vi.mock type casting
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (roomsToNodes as any).mockReturnValue(mockNodes);
+    // Mock hook requires any type for vi.mock type casting
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMapLayout as any).mockReturnValue({
       layoutNodes: mockNodes,
@@ -209,8 +223,10 @@ describe('RoomMapViewer - Interactions', () => {
       },
     ];
 
+    // Mock function requires any type for vi.mock type casting
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (roomsToNodes as any).mockReturnValue(mockNodes);
+    // Mock hook requires any type for vi.mock type casting
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMapLayout as any).mockReturnValue({
       layoutNodes: mockNodes,
@@ -241,8 +257,10 @@ describe('RoomMapViewer - Interactions', () => {
       },
     ];
 
+    // Mock function requires any type for vi.mock type casting
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (roomsToNodes as any).mockReturnValue(mockNodes);
+    // Mock hook requires any type for vi.mock type casting
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMapLayout as any).mockReturnValue({
       layoutNodes: mockNodes,
@@ -265,10 +283,13 @@ describe('RoomMapViewer - Interactions', () => {
 
   it('should handle selectedRoom null when selectedRoomId is null', () => {
     const mockNodes = createMockNodes(1);
+    // Mock function requires any type for vi.mock type casting
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (roomsToNodes as any).mockReturnValue(mockNodes);
+    // Mock function requires any type for vi.mock type casting
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (createEdgesFromRooms as any).mockReturnValue([]);
+    // Mock hook requires any type for vi.mock type casting
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMapLayout as any).mockReturnValue({
       layoutNodes: mockNodes,
@@ -294,10 +315,13 @@ describe('RoomMapViewer - Interactions', () => {
       },
     ];
 
+    // Mock function requires any type for vi.mock type casting
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (roomsToNodes as any).mockReturnValue(mockNodes);
+    // Mock function requires any type for vi.mock type casting
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (createEdgesFromRooms as any).mockReturnValue([]);
+    // Mock hook requires any type for vi.mock type casting
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMapLayout as any).mockReturnValue({
       layoutNodes: mockNodes,

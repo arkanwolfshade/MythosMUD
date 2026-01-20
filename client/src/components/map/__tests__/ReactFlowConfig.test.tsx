@@ -9,14 +9,13 @@
  * awareness across the eldritch architecture.
  */
 
-import { describe, expect, it } from 'vitest';
-import React from 'react';
 import { render } from '@testing-library/react';
-import { ReactFlow, ReactFlowProvider, Handle, Position, MarkerType } from 'reactflow';
-import { RoomNode } from '../nodes/RoomNode';
-import { IntersectionNode } from '../nodes/IntersectionNode';
+import { Handle, MarkerType, Position, ReactFlow, ReactFlowProvider } from 'reactflow';
+import { describe, expect, it } from 'vitest';
+import { getEdgeTypes, getNodeTypes } from '../config';
 import { ExitEdge } from '../edges/ExitEdge';
-import { getNodeTypes, getEdgeTypes } from '../config';
+import { IntersectionNode } from '../nodes/IntersectionNode';
+import { RoomNode } from '../nodes/RoomNode';
 
 describe('React Flow Installation and Configuration', () => {
   it('should be able to import ReactFlow', () => {

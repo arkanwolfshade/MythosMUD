@@ -179,7 +179,7 @@ class GameStateProvider:
                     user = getattr(player_obj, "user", None)
                     if user:
                         player_name = getattr(user, "username", None) or getattr(user, "display_name", None)
-                except Exception:  # pylint: disable=broad-exception-caught  # nosec B110: Graceful fallback if user attributes are unavailable  # noqa: B904
+                except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: User attribute access errors unpredictable, graceful fallback if user attributes are unavailable, must continue processing
                     pass
 
         # Validate name is not UUID
@@ -384,7 +384,13 @@ class GameStateProvider:
         try:
             app = self.get_app()
             app_state = getattr(app, "state", None) if app else None
-            player_service = getattr(app_state, "player_service", None) if app_state else None
+
+            # Prefer container, fallback to app.state for backward compatibility
+            player_service = None
+            if app_state and hasattr(app_state, "container") and app_state.container:
+                player_service = getattr(app_state.container, "player_service", None)
+            elif app_state:
+                player_service = getattr(app_state, "player_service", None)
 
             if player_service:
                 complete_player_data = await player_service.convert_player_to_schema(player)

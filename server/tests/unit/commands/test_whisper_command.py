@@ -15,10 +15,12 @@ def mock_request():
     """Create a mock request object."""
     app = MagicMock()
     state = MagicMock()
-    player_service = MagicMock()
-    chat_service = MagicMock()
-    state.player_service = player_service
-    state.chat_service = chat_service
+    container = MagicMock()
+    player_service = AsyncMock()
+    chat_service = AsyncMock()
+    container.player_service = player_service
+    container.chat_service = chat_service
+    state.container = container
     app.state = state
     request = MagicMock()
     request.app = app
@@ -46,7 +48,7 @@ def mock_target():
 
 
 @pytest.mark.asyncio
-async def test_whisper_command_missing_target(mock_request):  # pylint: disable=redefined-outer-name
+async def test_whisper_command_missing_target(mock_request):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test whisper command with missing target."""
     result = await handle_whisper_command(
         command_data={"message": "hello"},
@@ -60,7 +62,7 @@ async def test_whisper_command_missing_target(mock_request):  # pylint: disable=
 
 
 @pytest.mark.asyncio
-async def test_whisper_command_missing_message(mock_request):  # pylint: disable=redefined-outer-name
+async def test_whisper_command_missing_message(mock_request):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test whisper command with missing message."""
     result = await handle_whisper_command(
         command_data={"target": "target"},
@@ -74,9 +76,9 @@ async def test_whisper_command_missing_message(mock_request):  # pylint: disable
 
 
 @pytest.mark.asyncio
-async def test_whisper_command_no_player_service(mock_request):  # pylint: disable=redefined-outer-name
+async def test_whisper_command_no_player_service(mock_request):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test whisper command when player service is unavailable."""
-    mock_request.app.state.player_service = None
+    mock_request.app.state.container.player_service = None
 
     result = await handle_whisper_command(
         command_data={"target": "target", "message": "hello"},
@@ -90,9 +92,9 @@ async def test_whisper_command_no_player_service(mock_request):  # pylint: disab
 
 
 @pytest.mark.asyncio
-async def test_whisper_command_sender_not_found(mock_request):  # pylint: disable=redefined-outer-name
+async def test_whisper_command_sender_not_found(mock_request):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test whisper command when sender not found."""
-    mock_request.app.state.player_service.resolve_player_name = AsyncMock(return_value=None)
+    mock_request.app.state.container.player_service.resolve_player_name = AsyncMock(return_value=None)
 
     result = await handle_whisper_command(
         command_data={"target": "target", "message": "hello"},
@@ -106,9 +108,9 @@ async def test_whisper_command_sender_not_found(mock_request):  # pylint: disabl
 
 
 @pytest.mark.asyncio
-async def test_whisper_command_target_not_found(mock_request, mock_sender):  # pylint: disable=redefined-outer-name
+async def test_whisper_command_target_not_found(mock_request, mock_sender):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
     """Test whisper command when target not found."""
-    mock_request.app.state.player_service.resolve_player_name = AsyncMock(side_effect=[mock_sender, None])
+    mock_request.app.state.container.player_service.resolve_player_name = AsyncMock(side_effect=[mock_sender, None])
 
     result = await handle_whisper_command(
         command_data={"target": "nonexistent", "message": "hello"},
@@ -122,9 +124,9 @@ async def test_whisper_command_target_not_found(mock_request, mock_sender):  # p
 
 
 @pytest.mark.asyncio
-async def test_whisper_command_whisper_to_self(mock_request, mock_sender):  # pylint: disable=redefined-outer-name
+async def test_whisper_command_whisper_to_self(mock_request, mock_sender):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
     """Test whisper command when trying to whisper to self."""
-    mock_request.app.state.player_service.resolve_player_name = AsyncMock(return_value=mock_sender)
+    mock_request.app.state.container.player_service.resolve_player_name = AsyncMock(return_value=mock_sender)
 
     result = await handle_whisper_command(
         command_data={"target": "sender", "message": "hello"},
@@ -138,10 +140,12 @@ async def test_whisper_command_whisper_to_self(mock_request, mock_sender):  # py
 
 
 @pytest.mark.asyncio
-async def test_whisper_command_success(mock_request, mock_sender, mock_target):  # pylint: disable=redefined-outer-name
+async def test_whisper_command_success(mock_request, mock_sender, mock_target):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
     """Test successful whisper command."""
-    mock_request.app.state.player_service.resolve_player_name = AsyncMock(side_effect=[mock_sender, mock_target])
-    mock_request.app.state.chat_service.send_whisper_message = AsyncMock(
+    mock_request.app.state.container.player_service.resolve_player_name = AsyncMock(
+        side_effect=[mock_sender, mock_target]
+    )
+    mock_request.app.state.container.chat_service.send_whisper_message = AsyncMock(
         return_value={"success": True, "message": {"id": "msg123"}}
     )
 

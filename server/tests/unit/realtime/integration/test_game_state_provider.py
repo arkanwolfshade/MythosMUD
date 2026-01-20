@@ -4,8 +4,7 @@ Unit tests for game state provider.
 Tests the GameStateProvider class.
 """
 
-# pylint: disable=redefined-outer-name
-# Fixtures are injected as parameters by pytest, which is the standard pattern.
+# pylint: disable=redefined-outer-name  # Reason: Fixtures are injected as parameters by pytest, which is the standard pattern, suppression applied at module level since all test functions use fixtures
 # This suppression is applied at module level since all test functions use fixtures.
 
 import uuid

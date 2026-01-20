@@ -92,8 +92,9 @@ class PlayerGuidFormatter(logging.Formatter):
 
             if player_name:
                 return f"<{player_name}>: {guid}"
-            # Log the lookup failure and return fallback format
-            self._log_lookup_failure(guid)
+            # Return fallback format without logging warning
+            # Failed lookups are expected for deleted players and non-player GUIDs,
+            # and the synchronous formatter cannot use async persistence methods
             return f"<UNKNOWN>: {guid}"
 
         # Replace all UUID patterns in the message
@@ -184,10 +185,16 @@ class PlayerGuidFormatter(logging.Formatter):
 
         Returns:
             Player name if found, None otherwise
+
+        Note:
+            This method is synchronous and cannot use async persistence methods.
+            Failed lookups are expected for deleted players and non-player GUIDs.
         """
         try:
             # Use the persistence layer directly to avoid async/sync mismatch
             # This is the primary method for player lookup in the formatter
+            # Note: The persistence layer only has async methods (get_player_by_id),
+            # so synchronous lookups will always fail. This is expected behavior.
             if hasattr(self.player_service, "persistence") and hasattr(self.player_service.persistence, "get_player"):
                 player = self.player_service.persistence.get_player(guid)
                 if player and hasattr(player, "name"):
@@ -195,7 +202,7 @@ class PlayerGuidFormatter(logging.Formatter):
                 # If persistence layer returns None, return None (no fallback)
                 return None
 
-            # If persistence layer is not available, return None
+            # If persistence layer is not available or doesn't have get_player, return None
             # This ensures we don't fall back to async methods that cause issues
             return None
 
@@ -204,28 +211,3 @@ class PlayerGuidFormatter(logging.Formatter):
             # If any exception occurs during lookup, return None
             # This ensures logging continues even if player lookup fails
             return None
-
-    def _log_lookup_failure(self, guid: str) -> None:
-        """
-        Log GUID lookup failure to errors.log.
-
-        Args:
-            guid: The GUID that failed to resolve
-        """
-        try:
-            # Write directly to stderr to completely bypass the logging system
-            # This prevents any formatter processing and infinite loops
-            import sys
-            from datetime import datetime
-
-            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            error_message = f"{timestamp} - errors - WARNING - Failed to resolve player name for GUID: {guid}\n"
-
-            # Write directly to stderr without going through any logging system
-            sys.stderr.write(error_message)
-            sys.stderr.flush()
-
-        except (OSError, UnicodeEncodeError):
-            # If error logging itself fails, silently continue
-            # This prevents infinite loops or system crashes
-            pass

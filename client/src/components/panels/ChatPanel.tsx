@@ -85,6 +85,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   // This enables controlled mode (prop-driven) while maintaining uncontrolled mode (user-initiated changes)
   useEffect(() => {
     if (selectedChannel !== undefined) {
+      // Sync local state with prop changes, controlled mode requires state update when prop changes
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setCurrentChannel(prev => (prev === selectedChannel ? prev : selectedChannel));
     }
@@ -453,9 +454,8 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
     // 3. escapedQuery can only contain: literal characters (a-z, 0-9, etc.) or escaped sequences (\., \*, etc.)
     // 4. No dangerous regex patterns can be constructed after escaping
     // This pattern is safe because the escaped query is treated as a literal string, not a regex pattern
-    // nosemgrep: typescript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
+    // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
     const regex = new RegExp(`(${escapedQuery})`, 'gi');
-    // nosemgrep: typescript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
     // nosemgrep: typescript.lang.security.audit.xss.xss
     const result = escapedText.replace(regex, '<mark class="bg-yellow-500 text-black font-semibold">$1</mark>');
 
@@ -534,7 +534,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                     {channel.name}
                   </span>
                   {unreadCount > 0 && (
-                    <div className="bg-mythos-terminal-error text-white text-xs rounded-full px-1 min-w-[16px] h-4 flex items-center justify-center animate-bounce">
+                    <div className="bg-mythos-terminal-error text-white text-xs rounded-full px-1 min-w-badge h-4 flex items-center justify-center animate-bounce">
                       {unreadCount > 99 ? '99+' : unreadCount}
                     </div>
                   )}
@@ -569,7 +569,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 
         {/* Search Controls */}
         <div className="mt-2 flex items-center gap-2 flex-wrap">
-          <div className="flex items-center gap-1 flex-1 min-w-[200px]">
+          <div className="flex items-center gap-1 flex-1 min-w-input">
             <EldritchIcon name={MythosIcons.search} size={14} variant="primary" />
             <input
               type="text"
@@ -578,7 +578,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
               onChange={e => {
                 handleSearchChange(e.target.value);
               }}
-              className="flex-1 text-xs bg-mythos-terminal-surface border border-gray-700 rounded px-2 py-1 text-mythos-terminal-text focus:outline-none focus:border-mythos-terminal-primary"
+              className="flex-1 text-xs bg-mythos-terminal-surface border border-gray-700 rounded px-2 py-1 text-mythos-terminal-text focus:outline-hidden focus:border-mythos-terminal-primary"
               disabled={disabled}
             />
             {searchQuery && (

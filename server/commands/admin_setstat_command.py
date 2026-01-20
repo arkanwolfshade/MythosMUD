@@ -241,7 +241,7 @@ async def _resolve_admin_services_and_permissions(
         return {"result": "Current player not found."}
 
     current_user_id = str(current_player_obj.id)
-    if not user_manager.is_admin(current_user_id):
+    if not await user_manager.is_admin(current_user_id):
         logger.warning("Admin set command denied - not admin", player_name=player_name)
         return {"result": "You do not have permission to use this command."}
 

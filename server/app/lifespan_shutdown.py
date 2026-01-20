@@ -29,12 +29,19 @@ async def _shutdown_mythos_chronicle() -> None:
 
 async def _shutdown_nats_handler(app: FastAPI) -> None:
     """Shutdown NATS message handler if present."""
-    if not (hasattr(app.state, "nats_message_handler") and app.state.nats_message_handler):
+    # Prefer container, fallback to app.state for backward compatibility
+    nats_message_handler = None
+    if hasattr(app.state, "container") and app.state.container:
+        nats_message_handler = app.state.container.nats_message_handler
+    elif hasattr(app.state, "nats_message_handler"):
+        nats_message_handler = app.state.nats_message_handler
+
+    if not nats_message_handler:
         return
 
     logger.info("Stopping NATS message handler")
     try:
-        await app.state.nats_message_handler.stop()
+        await nats_message_handler.stop()
         logger.info("NATS message handler stopped successfully")
     except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
         logger.error("Error stopping NATS message handler", error=str(e))
@@ -42,30 +49,44 @@ async def _shutdown_nats_handler(app: FastAPI) -> None:
 
 async def _shutdown_connection_manager(app: FastAPI) -> None:
     """Shutdown connection manager if present."""
-    if not (hasattr(app.state, "connection_manager") and app.state.connection_manager):
+    # Prefer container, fallback to app.state for backward compatibility
+    connection_manager = None
+    if hasattr(app.state, "container") and app.state.container:
+        connection_manager = app.state.container.connection_manager
+    elif hasattr(app.state, "connection_manager"):
+        connection_manager = app.state.connection_manager
+
+    if not connection_manager:
         return
 
     logger.info("Stopping connection manager health checks")
     try:
-        app.state.connection_manager.stop_health_checks()
+        connection_manager.stop_health_checks()
     except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
         logger.error("Error stopping connection manager health checks", error=str(e))
 
     logger.info("Cleaning up connection manager tasks")
     try:
-        await app.state.connection_manager.force_cleanup()
+        await connection_manager.force_cleanup()
     except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
         logger.error("Error during connection manager cleanup", error=str(e))
 
 
 async def _shutdown_mythos_tick_scheduler(app: FastAPI) -> None:
     """Shutdown mythos tick scheduler if present."""
-    if not (hasattr(app.state, "mythos_tick_scheduler") and app.state.mythos_tick_scheduler):
+    # Prefer container, fallback to app.state for backward compatibility
+    mythos_tick_scheduler = None
+    if hasattr(app.state, "container") and app.state.container:
+        mythos_tick_scheduler = app.state.container.mythos_tick_scheduler
+    elif hasattr(app.state, "mythos_tick_scheduler"):
+        mythos_tick_scheduler = app.state.mythos_tick_scheduler
+
+    if not mythos_tick_scheduler:
         return
 
     logger.info("Stopping Mythos tick scheduler")
     try:
-        await app.state.mythos_tick_scheduler.stop()
+        await mythos_tick_scheduler.stop()
     except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
         logger.error("Error stopping Mythos tick scheduler", error=str(e))
 
@@ -86,6 +107,28 @@ async def _shutdown_task_registry(container: ApplicationContainer) -> None:
         logger.error("TaskRegistry shutdown coordination error", error=str(e))
 
 
+async def _shutdown_event_bus(container: ApplicationContainer) -> None:
+    """Shutdown event bus and clean up all service subscriptions."""
+    if not container.event_bus:
+        return
+
+    logger.info("Shutting down EventBus and cleaning up service subscriptions")
+    try:
+        # Get subscriber stats before shutdown for logging
+        stats = container.event_bus.get_subscriber_stats()
+        logger.info(
+            "EventBus subscriber stats before shutdown",
+            total_subscribers=stats.get("total_subscribers", 0),
+            services_tracked=stats.get("services_tracked", 0),
+        )
+
+        # Shutdown will automatically clean up all service subscriptions
+        await container.event_bus.shutdown()
+        logger.info("EventBus shutdown complete")
+    except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
+        logger.error("Error shutting down EventBus", error=str(e))
+
+
 async def shutdown_services(app: FastAPI, container: ApplicationContainer) -> None:
     """Handle graceful shutdown of all services."""
     await _shutdown_mythos_chronicle()
@@ -93,6 +136,8 @@ async def shutdown_services(app: FastAPI, container: ApplicationContainer) -> No
     await _shutdown_connection_manager(app)
     await _shutdown_mythos_tick_scheduler(app)
     await _shutdown_task_registry(container)
+    # Shutdown EventBus before container to ensure service subscriptions are cleaned up
+    await _shutdown_event_bus(container)
 
     logger.info("Shutting down ApplicationContainer")
     await container.shutdown()

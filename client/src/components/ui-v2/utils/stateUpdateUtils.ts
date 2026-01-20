@@ -62,6 +62,7 @@ export const applyRoomUpdate = (
 };
 
 // Helper function to apply message updates
+// Uses immutable patterns: creates new arrays instead of mutating existing ones
 export const applyMessageUpdates = (
   eventUpdates: GameStateUpdates,
   updates: Partial<GameState>,
@@ -71,10 +72,9 @@ export const applyMessageUpdates = (
     return;
   }
 
-  if (!updates.messages) {
-    updates.messages = [...currentMessages];
-  }
-  updates.messages.push(...eventUpdates.messages);
+  // Create new array by spreading existing messages and new messages
+  // This ensures we don't mutate the original currentMessages array
+  updates.messages = [...(updates.messages || currentMessages), ...eventUpdates.messages];
 };
 
 // Helper function to apply grace period updates

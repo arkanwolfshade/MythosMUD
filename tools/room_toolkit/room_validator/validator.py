@@ -20,18 +20,6 @@ from core.room_loader import RoomLoader
 from core.schema_validator import SchemaValidator
 
 
-@click.command()
-@click.option("--zone", help="Validate specific zone only")
-@click.option("--verbose", "-v", is_flag=True, help="Detailed output")
-@click.option("--schema-only", is_flag=True, help="Only validate JSON schema")
-@click.option("--validate-configs", is_flag=True, help="Also validate configuration files")
-@click.option("--output-format", type=click.Choice(["console", "json"]), default="console")
-@click.option("--base-path", default="./data/local/rooms", help="Base directory for room files")
-@click.option("--no-colors", is_flag=True, help="Disable colored output")
-@click.option("--fix", is_flag=True, help="Automatically fix issues (use with caution)")
-@click.option("--backup", is_flag=True, help="Create backup files before fixing")
-@click.option("--minimap", is_flag=True, help="Generate mini-map visualization")
-@click.option("--minimap-depth", default=3, help="Maximum depth for mini-map (default: 3)")
 def _initialize_validator_components(
     base_path: str, no_colors: bool, fix: bool
 ) -> tuple[Reporter, RoomLoader, SchemaValidator, PathValidator, RoomFixer | None]:
@@ -49,7 +37,7 @@ def _load_and_filter_rooms(
 ) -> tuple[dict[str, Any], list[str]]:
     """Load rooms and filter by zone if specified."""
     reporter.print_header()
-    print(f"📁 Scanning {base_path}...")
+    click.echo(f"📁 Scanning {base_path}...")
 
     reporter.print_progress("Processing rooms...")
     room_database = room_loader.build_room_database(show_progress=verbose)
@@ -69,7 +57,7 @@ def _load_and_filter_rooms(
             reporter.print_error(f"Zone '{zone}' not found")
             sys.exit(1)
         room_database = room_loader.get_rooms_by_zone(zone)
-        print(f"🔍 Validating zone: {zone} ({len(room_database)} rooms)")
+        click.echo(f"🔍 Validating zone: {zone} ({len(room_database)} rooms)")
 
     return room_database, zones
 
@@ -199,12 +187,12 @@ def _apply_automatic_fixes(
     if fix_summary["fixes_applied"] > 0:
         reporter.print_success(f"Applied {fix_summary['fixes_applied']} fixes")
         for applied_fix in fix_summary["applied_fixes"]:
-            print(f"  ✅ {applied_fix}")
+            click.echo(f"  ✅ {applied_fix}")
 
     if fix_summary["fixes_failed"] > 0:
         reporter.print_warning(f"{fix_summary['fixes_failed']} fixes failed")
         for failed_fix in fix_summary["failed_fixes"]:
-            print(f"  ⚠️  {failed_fix}")
+            click.secho(f"  ⚠️  {failed_fix}", fg="yellow")
 
 
 def _validate_config_files(
@@ -265,17 +253,17 @@ def _generate_minimap(path_validator: PathValidator, room_database: dict[str, An
     minimap_data = path_validator.generate_minimap_graph(room_database, minimap_depth)
     minimap_renderer = MinimapRenderer()
 
-    print("\n" + "=" * 80)
-    print("🗺️  MINI-MAP VISUALIZATION")
-    print("=" * 80)
+    click.echo("\n" + "=" * 80)
+    click.echo("🗺️  MINI-MAP VISUALIZATION")
+    click.echo("=" * 80)
 
     ascii_map = minimap_renderer.render_ascii_map(minimap_data)
-    print(ascii_map)
+    click.echo(ascii_map)
 
     stats_map = minimap_renderer.render_connectivity_stats(minimap_data)
-    print("\n" + stats_map)
+    click.echo("\n" + stats_map)
 
-    print("=" * 80)
+    click.echo("=" * 80)
 
 
 def _report_results(
@@ -310,20 +298,42 @@ def _report_results(
                 f.write(f"🏠 {error['room_id']}\n")
                 f.write(f"  ❌ {error['type'].title()}: {error['message']}\n")
                 f.write(f"     💡 Suggestion: {error['suggestion']}\n\n")
-        print(f"📝 Errors logged to {error_log_path}")
+        click.echo(f"📝 Errors logged to {error_log_path}")
 
     if output_format == "json":
         json_output = reporter.generate_json_output(stats, errors, warnings)
-        print(json_output)
+        click.echo(json_output)
     else:
         if errors:
-            print(f"❌ {len(errors)} errors found (see error.log for details)")
+            click.secho(f"❌ {len(errors)} errors found (see error.log for details)", fg="red")
         else:
             reporter.print_success("All validations passed!")
         reporter.print_validation_warnings(warnings)
         reporter.print_summary(stats)
 
 
+@click.command()
+@click.option("--zone", type=str, default=None, help="Validate specific zone only")
+@click.option("--verbose", "-v", is_flag=True, help="Detailed output")
+@click.option("--schema-only", is_flag=True, help="Only validate JSON schema")
+@click.option("--validate-configs", is_flag=True, help="Also validate configuration files")
+@click.option(
+    "--output-format",
+    type=click.Choice(["console", "json"], case_sensitive=False),
+    default="console",
+    help="Output format: console or json",
+)
+@click.option(
+    "--base-path",
+    type=click.Path(exists=False, file_okay=False, dir_okay=True),
+    default="./data/local/rooms",
+    help="Base directory for room files",
+)
+@click.option("--no-colors", is_flag=True, help="Disable colored output")
+@click.option("--fix", is_flag=True, help="Automatically fix issues (use with caution)")
+@click.option("--backup", is_flag=True, help="Create backup files before fixing")
+@click.option("--minimap", is_flag=True, help="Generate mini-map visualization")
+@click.option("--minimap-depth", type=int, default=3, help="Maximum depth for mini-map (default: 3)")
 # pylint: disable=too-many-arguments
 def main(
     zone: str | None,
@@ -337,12 +347,26 @@ def main(
     backup: bool,
     minimap: bool,
     minimap_depth: int,
-):
+) -> None:
     """
     Validate room connectivity and structure in the MythosMUD world.
 
     This validator checks for path consistency, validates JSON structure,
     and ensures proper connectivity between rooms organized in zones.
+
+    Examples:
+        \b
+        # Validate all rooms
+        validator --base-path ./data/local/rooms
+
+        # Validate specific zone
+        validator --zone arkham_city --verbose
+
+        # Generate JSON output
+        validator --output-format json > results.json
+
+        # Auto-fix issues with backup
+        validator --fix --backup
     """
     try:
         # Initialize components
@@ -351,25 +375,11 @@ def main(
         )
 
         # Load and filter rooms
-        room_database, zones = _load_and_filter_rooms(reporter, room_loader, base_path, verbose, zone)
+        room_database, _ = _load_and_filter_rooms(reporter, room_loader, base_path, verbose, zone)
 
         # Validation phase
         errors = _collect_parsing_errors(room_loader)
         warnings: list[dict[str, Any]] = []
-
-        if not schema_only:
-            # Schema validation
-            reporter.print_progress("Validating JSON schema...")
-            schema_errors, missing_returns = _validate_room_connectivity(
-                schema_validator, path_validator, room_database, errors
-            )
-
-            # Apply fixes if requested
-            if fix and fixer and errors:
-                self_references = path_validator.find_self_references(room_database)
-                _apply_automatic_fixes(
-                    fixer, reporter, room_database, schema_errors, missing_returns, self_references, backup
-                )
 
         if not schema_only:
             # Schema validation
@@ -404,10 +414,9 @@ def main(
     except Exception as e:  # pylint: disable=broad-except  # CLI tool needs to catch all errors for user-friendly output
         if verbose:
             raise
-        print(f"❌ Error: {e}")
+        click.secho(f"❌ Error: {e}", fg="red", err=True)
         sys.exit(1)
 
 
 if __name__ == "__main__":
-    # Click automatically handles argument parsing and calls main() with the parsed arguments
-    main()  # pylint: disable=no-value-for-parameter
+    main()  # pylint: disable=no-value-for-parameter  # click.command() decorator handles argument parsing from sys.argv

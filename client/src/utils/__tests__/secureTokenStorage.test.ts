@@ -45,9 +45,9 @@ describe('Secure Token Storage', () => {
     });
 
     it('should validate token format', () => {
-      // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
       // This is test data for JWT validation, not a real secret
       const validToken =
+        // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
       const invalidToken = 'invalid-token';
 
@@ -88,8 +88,8 @@ describe('Secure Token Storage', () => {
 
       localStorageMock.getItem.mockReturnValue('test-refresh-token');
 
-      // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
       const token =
+        // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyNDI2MjJ9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
 
       await secureTokenStorage.refreshTokenIfNeeded(token);
@@ -113,8 +113,8 @@ describe('Secure Token Storage', () => {
 
       localStorageMock.getItem.mockReturnValue('test-refresh-token');
 
-      // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
       const token =
+        // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyNDI2MjJ9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
       const result = await secureTokenStorage.refreshTokenIfNeeded(token);
 
@@ -124,6 +124,7 @@ describe('Secure Token Storage', () => {
     it('should return true if token is valid and not expired', async () => {
       // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
       const futureExp = Math.floor(new Date('2099-12-31').getTime() / 1000);
+      // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
       const header = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';
       const payload = btoa(JSON.stringify({ exp: futureExp }))
         .replace(/\+/g, '-')
@@ -143,6 +144,7 @@ describe('Secure Token Storage', () => {
 
     it('should return true if token is valid but expired check fails', async () => {
       const futureExp = Math.floor(new Date('2099-12-31').getTime() / 1000);
+      // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
       const header = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';
       const payload = btoa(JSON.stringify({ exp: futureExp }))
         .replace(/\+/g, '-')
@@ -162,8 +164,8 @@ describe('Secure Token Storage', () => {
 
       localStorageMock.getItem.mockReturnValue('test-refresh-token');
 
-      // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
       const token =
+        // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjF9.signature';
       const result = await secureTokenStorage.refreshTokenIfNeeded(token);
 
@@ -175,8 +177,8 @@ describe('Secure Token Storage', () => {
       const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
       localStorageMock.getItem.mockReturnValue(null);
 
-      // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
       const token =
+        // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjF9.signature';
       const result = await secureTokenStorage.refreshTokenIfNeeded(token);
 
@@ -193,8 +195,8 @@ describe('Secure Token Storage', () => {
 
       localStorageMock.getItem.mockReturnValue('test-refresh-token');
 
-      // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
       const token =
+        // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjF9.signature';
       const result = await secureTokenStorage.refreshTokenIfNeeded(token);
 
@@ -216,8 +218,8 @@ describe('Secure Token Storage', () => {
 
       localStorageMock.getItem.mockReturnValue('test-refresh-token');
 
-      // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
       const token =
+        // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjF9.signature';
 
       const result = await secureTokenStorage.refreshTokenIfNeeded(token);
@@ -348,6 +350,7 @@ describe('Secure Token Storage', () => {
 
     it('should treat valid non-expired tokens as not expired', () => {
       const futureExp = Math.floor(new Date('2099-12-31').getTime() / 1000);
+      // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
       const header = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';
       const payload = btoa(JSON.stringify({ exp: futureExp }))
         .replace(/\+/g, '-')
@@ -359,6 +362,7 @@ describe('Secure Token Storage', () => {
     });
 
     it('should treat tokens without exp as not expired', () => {
+      // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
       const header = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';
       const payload = btoa(JSON.stringify({ sub: '123' }))
         .replace(/\+/g, '-')
@@ -372,6 +376,7 @@ describe('Secure Token Storage', () => {
 
     it('should handle token with exp equal to current time', () => {
       const currentTime = Math.floor(Date.now() / 1000);
+      // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
       const header = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';
       const payload = btoa(JSON.stringify({ exp: currentTime }))
         .replace(/\+/g, '-')
@@ -385,6 +390,7 @@ describe('Secure Token Storage', () => {
 
     it('should handle token with exp greater than current time', () => {
       const futureTime = Math.floor(Date.now() / 1000) + 3600;
+      // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
       const header = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';
       const payload = btoa(JSON.stringify({ exp: futureTime }))
         .replace(/\+/g, '-')
@@ -403,6 +409,7 @@ describe('Secure Token Storage', () => {
     });
 
     it('should handle base64url decoding errors gracefully', () => {
+      // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
       const header = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';
       const invalidPayload = '!!!invalid-base64!!!';
       const signature = 'signature';
@@ -414,6 +421,7 @@ describe('Secure Token Storage', () => {
   describe('Token Expiry - Edge Cases', () => {
     it('should handle token with exp exactly at current time', () => {
       const currentTime = Math.floor(Date.now() / 1000);
+      // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
       const header = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';
       const payload = btoa(JSON.stringify({ exp: currentTime }))
         .replace(/\+/g, '-')
@@ -426,6 +434,7 @@ describe('Secure Token Storage', () => {
     });
 
     it('should handle token with malformed payload (invalid JSON)', () => {
+      // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
       const header = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';
       const invalidPayload = btoa('not valid json').replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
       const signature = 'signature';
@@ -435,6 +444,7 @@ describe('Secure Token Storage', () => {
     });
 
     it('should handle token with missing exp field', () => {
+      // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
       const header = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';
       const payload = btoa(JSON.stringify({ sub: '123', iat: 1234567890 }))
         .replace(/\+/g, '-')

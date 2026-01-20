@@ -108,7 +108,7 @@ async def test_handle_ground_command_no_target():
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock(persistence=MagicMock())
     mock_persistence = mock_request.app.state.persistence
-    mock_persistence.get_player_by_name = MagicMock(return_value=MagicMock())  # Not async
+    mock_persistence.get_player_by_name = AsyncMock(return_value=MagicMock())
     result = await handle_ground_command({}, {"username": "TestPlayer"}, mock_request, None, "TestPlayer")
     assert "result" in result
     assert "whom" in result["result"].lower() or "target" in result["result"].lower()
@@ -121,7 +121,7 @@ async def test_handle_ground_command_rescuer_not_found():
     mock_request.app = MagicMock()
     mock_request.app.state = MagicMock(persistence=MagicMock())
     mock_persistence = mock_request.app.state.persistence
-    mock_persistence.get_player_by_name = MagicMock(return_value=None)  # Not async
+    mock_persistence.get_player_by_name = AsyncMock(return_value=None)
     result = await handle_ground_command(
         {"target": "OtherPlayer"}, {"username": "TestPlayer"}, mock_request, None, "TestPlayer"
     )
@@ -138,7 +138,7 @@ async def test_handle_ground_command_target_not_found():
     mock_persistence = mock_request.app.state.persistence
     mock_rescuer = MagicMock()
     mock_rescuer.current_room_id = uuid.uuid4()
-    mock_persistence.get_player_by_name = MagicMock(side_effect=[mock_rescuer, None])  # Not async
+    mock_persistence.get_player_by_name = AsyncMock(side_effect=[mock_rescuer, None])
     result = await handle_ground_command(
         {"target": "OtherPlayer"}, {"username": "TestPlayer"}, mock_request, None, "TestPlayer"
     )
@@ -157,7 +157,7 @@ async def test_handle_ground_command_different_rooms():
     mock_rescuer.current_room_id = uuid.uuid4()
     mock_target = MagicMock()
     mock_target.current_room_id = uuid.uuid4()  # Different room
-    mock_persistence.get_player_by_name = MagicMock(side_effect=[mock_rescuer, mock_target])  # Not async
+    mock_persistence.get_player_by_name = AsyncMock(side_effect=[mock_rescuer, mock_target])
     result = await handle_ground_command(
         {"target": "OtherPlayer"}, {"username": "TestPlayer"}, mock_request, None, "TestPlayer"
     )
@@ -176,7 +176,7 @@ async def test_handle_ground_command_no_rescuer_room():
     mock_rescuer.current_room_id = None
     mock_target = MagicMock()
     mock_target.current_room_id = uuid.uuid4()
-    mock_persistence.get_player_by_name = MagicMock(side_effect=[mock_rescuer, mock_target])  # Not async
+    mock_persistence.get_player_by_name = AsyncMock(side_effect=[mock_rescuer, mock_target])
     result = await handle_ground_command(
         {"target": "OtherPlayer"}, {"username": "TestPlayer"}, mock_request, None, "TestPlayer"
     )
@@ -197,7 +197,7 @@ async def test_handle_ground_command_lucidity_record_not_found():
     mock_target = MagicMock()
     mock_target.player_id = uuid.uuid4()
     mock_target.current_room_id = mock_rescuer.current_room_id
-    mock_persistence.get_player_by_name = MagicMock(side_effect=[mock_rescuer, mock_target])  # Not async
+    mock_persistence.get_player_by_name = AsyncMock(side_effect=[mock_rescuer, mock_target])
     mock_session = MagicMock()
     mock_session.get = AsyncMock(return_value=None)
     with patch("server.commands.rescue_commands.get_async_session") as mock_session_factory:
@@ -226,7 +226,7 @@ async def test_handle_ground_command_not_catatonic():
     mock_target = MagicMock()
     mock_target.player_id = uuid.uuid4()
     mock_target.current_room_id = mock_rescuer.current_room_id
-    mock_persistence.get_player_by_name = MagicMock(side_effect=[mock_rescuer, mock_target])  # Not async
+    mock_persistence.get_player_by_name = AsyncMock(side_effect=[mock_rescuer, mock_target])
     mock_lucidity_record = MagicMock(spec=PlayerLucidity)
     mock_lucidity_record.current_tier = "stable"  # Not catatonic
     mock_session = MagicMock()
@@ -257,7 +257,7 @@ async def test_handle_ground_command_success():
     mock_target = MagicMock()
     mock_target.player_id = uuid.uuid4()
     mock_target.current_room_id = mock_rescuer.current_room_id
-    mock_persistence.get_player_by_name = MagicMock(side_effect=[mock_rescuer, mock_target])  # Not async
+    mock_persistence.get_player_by_name = AsyncMock(side_effect=[mock_rescuer, mock_target])
     mock_lucidity_record = MagicMock(spec=PlayerLucidity)
     mock_lucidity_record.current_tier = "catatonic"
     mock_lucidity_record.current_lcd = 0.0
@@ -296,7 +296,7 @@ async def test_handle_ground_command_target_player_key():
     mock_target = MagicMock()
     mock_target.player_id = uuid.uuid4()
     mock_target.current_room_id = mock_rescuer.current_room_id
-    mock_persistence.get_player_by_name = MagicMock(side_effect=[mock_rescuer, mock_target])  # Not async
+    mock_persistence.get_player_by_name = AsyncMock(side_effect=[mock_rescuer, mock_target])
     mock_lucidity_record = MagicMock(spec=PlayerLucidity)
     mock_lucidity_record.current_tier = "catatonic"
     mock_lucidity_record.current_lcd = 0.0
@@ -335,7 +335,7 @@ async def test_handle_ground_command_apply_lucidity_error():
     mock_target = MagicMock()
     mock_target.player_id = uuid.uuid4()
     mock_target.current_room_id = mock_rescuer.current_room_id
-    mock_persistence.get_player_by_name = MagicMock(side_effect=[mock_rescuer, mock_target])  # Not async
+    mock_persistence.get_player_by_name = AsyncMock(side_effect=[mock_rescuer, mock_target])
     mock_lucidity_record = MagicMock(spec=PlayerLucidity)
     mock_lucidity_record.current_tier = "catatonic"
     mock_lucidity_record.current_lcd = 0.0

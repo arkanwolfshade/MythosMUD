@@ -11,6 +11,8 @@ import pytest
 
 from server.realtime.monitoring.statistics_aggregator import StatisticsAggregator
 
+# pylint: disable=redefined-outer-name  # Reason: pytest fixtures are used as function parameters, which triggers this warning
+
 
 @pytest.fixture
 def mock_memory_monitor():
@@ -70,7 +72,7 @@ def test_statistics_aggregator_init(statistics_aggregator, mock_memory_monitor, 
     assert statistics_aggregator.rate_limiter == mock_rate_limiter
 
 
-def test_get_memory_stats(statistics_aggregator, mock_memory_monitor):
+def test_get_memory_stats(statistics_aggregator, mock_memory_monitor):  # pylint: disable=unused-argument  # Reason: Fixture parameter needed for dependency injection but not directly used in test
     """Test get_memory_stats() returns comprehensive statistics."""
     active_websockets = {"ws_001": MagicMock(), "ws_002": MagicMock()}
     player_websockets = {uuid.uuid4(): ["ws_001"], uuid.uuid4(): ["ws_002"]}
@@ -80,6 +82,8 @@ def test_get_memory_stats(statistics_aggregator, mock_memory_monitor):
     session_connections = {"session_001": ["ws_001"]}
     online_players = {uuid.uuid4(): {"name": "Player1"}}
     last_seen = {uuid.uuid4(): 3000.0}
+    closed_websockets_count = 0
+    connection_metadata = {}
     result = statistics_aggregator.get_memory_stats(
         active_websockets,
         player_websockets,
@@ -89,6 +93,8 @@ def test_get_memory_stats(statistics_aggregator, mock_memory_monitor):
         session_connections,
         online_players,
         last_seen,
+        closed_websockets_count,
+        connection_metadata,
     )
     assert "memory" in result
     assert "connections" in result

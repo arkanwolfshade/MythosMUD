@@ -7,6 +7,7 @@
  */
 
 import React, { useMemo } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import type { ContainerComponent } from '../../stores/containerStore';
 import { useContainerStore } from '../../stores/containerStore';
 import { useGameStore } from '../../stores/gameStore';
@@ -33,7 +34,8 @@ export const BackpackTab: React.FC<BackpackTabProps> = ({ onSelect, className = 
   const selectContainer = useContainerStore(state => state.selectContainer);
   const deselectContainer = useContainerStore(state => state.deselectContainer);
   const selectedContainerId = useContainerStore(state => state.selectedContainerId);
-  const player = useGameStore(state => state.player);
+  // Use shallow comparison for object selector to prevent unnecessary re-renders
+  const { player } = useGameStore(useShallow(state => ({ player: state.player })));
 
   const wearableContainers = useMemo(() => {
     if (!player?.id) {
@@ -114,7 +116,7 @@ export const BackpackTab: React.FC<BackpackTabProps> = ({ onSelect, className = 
             className={`
               flex items-center gap-2 px-3 py-2 rounded border font-mono text-sm
               transition-eldritch duration-eldritch ease-eldritch
-              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mythos-terminal-primary
+              focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-mythos-terminal-primary
               ${
                 isSelected
                   ? 'bg-mythos-terminal-primary text-mythos-terminal-background border-mythos-terminal-primary hover:bg-mythos-terminal-primary/90'

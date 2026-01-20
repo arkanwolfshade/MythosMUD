@@ -38,6 +38,7 @@ jobs:
         uses: github/codeql-action/init@ba454b8ab46733eb6145342877cd148270bb77ab # codeql-bundle-v2.23.5
         with:
           languages: ${{ matrix.language }}
+          config-file: ./.github/codeql/codeql-config.yml
       - name: Autobuild
         uses: github/codeql-action/autobuild@ba454b8ab46733eb6145342877cd148270bb77ab # codeql-bundle-v2.23.5
       - name: Perform CodeQL Analysis

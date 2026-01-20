@@ -12,17 +12,34 @@ import { ContainerSplitPane } from '../ContainerSplitPane';
 import type { ContainerComponent, InventoryStack } from '../../../stores/containerStore';
 
 // Mock stores
-const mockGetContainer = vi.fn();
-const mockGetMutationToken = vi.fn();
-const mockIsContainerOpen = vi.fn();
 const mockOnTransfer = vi.fn();
+
+// Mock container store state
+let mockOpenContainers: Record<string, ContainerComponent> = {};
+let mockMutationTokens: Record<string, string> = {};
+let mockIsLoading = false;
 
 vi.mock('../../../stores/containerStore', () => ({
   useContainerStore: (selector: (state: unknown) => unknown) => {
     const mockState = {
-      getContainer: mockGetContainer,
-      getMutationToken: mockGetMutationToken,
-      isContainerOpen: mockIsContainerOpen,
+      openContainers: mockOpenContainers,
+      mutationTokens: mockMutationTokens,
+      isLoading: mockIsLoading,
+      selectedContainerId: null,
+      openContainer: vi.fn(),
+      closeContainer: vi.fn(),
+      updateContainer: vi.fn(),
+      handleContainerDecayed: vi.fn(),
+      selectContainer: vi.fn(),
+      deselectContainer: vi.fn(),
+      setLoading: vi.fn(),
+      reset: vi.fn(),
+      getContainer: (id: string) => mockOpenContainers[id] || null,
+      getMutationToken: (id: string) => mockMutationTokens[id] || null,
+      getOpenContainerIds: () => Object.keys(mockOpenContainers),
+      isContainerOpen: (id: string) => id in mockOpenContainers,
+      getWearableContainersForPlayer: vi.fn(),
+      getCorpseContainersInRoom: vi.fn(),
     };
     return selector(mockState);
   },
@@ -53,6 +70,28 @@ vi.mock('../../../stores/gameStore', () => ({
   useGameStore: (selector: (state: unknown) => unknown) => {
     const mockState = {
       player: mockPlayer,
+      room: null,
+      chatMessages: [],
+      gameLog: [],
+      isLoading: false,
+      lastUpdate: null,
+      setPlayer: vi.fn(),
+      updatePlayerStats: vi.fn(),
+      clearPlayer: vi.fn(),
+      setRoom: vi.fn(),
+      updateRoomOccupants: vi.fn(),
+      clearRoom: vi.fn(),
+      addChatMessage: vi.fn(),
+      clearChatMessages: vi.fn(),
+      addGameLogEntry: vi.fn(),
+      clearGameLog: vi.fn(),
+      setLoading: vi.fn(),
+      updateLastUpdate: vi.fn(),
+      reset: vi.fn(),
+      getPlayerStats: vi.fn(),
+      getRoomOccupantsCount: vi.fn(),
+      getRecentChatMessages: vi.fn(),
+      getRecentGameLogEntries: vi.fn(),
     };
     return selector(mockState);
   },
@@ -81,9 +120,14 @@ describe('Container Drag and Drop', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockGetContainer.mockReturnValue(mockContainer);
-    mockGetMutationToken.mockReturnValue('token-1');
-    mockIsContainerOpen.mockReturnValue(true);
+    // Reset store state
+    mockOpenContainers = {
+      'container-1': mockContainer,
+    };
+    mockMutationTokens = {
+      'container-1': 'token-1',
+    };
+    mockIsLoading = false;
   });
 
   describe('Drag from Player Inventory to Container', () => {
@@ -317,7 +361,7 @@ describe('Container Drag and Drop', () => {
 
   describe('Edge Cases', () => {
     it('should not allow drag when mutation token is missing', () => {
-      mockGetMutationToken.mockReturnValue(null);
+      mockMutationTokens = {};
       render(<ContainerSplitPane containerId="container-1" onTransfer={mockOnTransfer} />);
 
       const playerItem = screen.getByText('Test Item').closest('[role="listitem"]');

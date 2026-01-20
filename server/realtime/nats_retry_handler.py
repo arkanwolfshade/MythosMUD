@@ -7,12 +7,13 @@ and exponential backoff to handle transient failures.
 AI: Exponential backoff prevents overwhelming a recovering service.
 """
 
-import asyncio
 import random
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
+
+from anyio import sleep
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -158,7 +159,7 @@ class NATSRetryHandler:
 
         # Wait for backoff
         if delay > 0:
-            await asyncio.sleep(delay)
+            await sleep(delay)
 
         # Increment attempt counter
         message.attempt += 1
@@ -235,7 +236,7 @@ class NATSRetryHandler:
                         error_type=type(e).__name__,
                     )
 
-                    await asyncio.sleep(delay)
+                    await sleep(delay)
                 else:
                     logger.error(
                         "Function failed after all retries",

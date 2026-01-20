@@ -39,9 +39,9 @@ def _get_wearable_container_service(request: Any) -> WearableContainerService:
         if async_persistence is None:
             raise ValueError("async_persistence is required but not available from container")
 
-        _get_wearable_container_service.cached_instance = WearableContainerService(persistence=async_persistence)  # type: ignore[attr-defined]
+        _get_wearable_container_service.cached_instance = WearableContainerService(persistence=async_persistence)  # type: ignore[attr-defined]  # Reason: Function attribute dynamically added for caching pattern, mypy cannot detect it statically
 
-    return _get_wearable_container_service.cached_instance  # type: ignore[attr-defined]
+    return _get_wearable_container_service.cached_instance  # type: ignore[attr-defined]  # Reason: Function attribute dynamically added for caching pattern, mypy cannot detect it statically
 
 
 def _parse_instance_number(target: str) -> tuple[str, int | None]:

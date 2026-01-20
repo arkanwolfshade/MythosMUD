@@ -2,7 +2,7 @@
   "dashboard": {
     "id": null,
     "title": "MythosMUD Dual Connection System",
-    "tags": ["mythos", "connections", "performance"],
+    "tags": ["mythos", "connections", "performance", "memory-leaks"],
     "style": "dark",
     "timezone": "browser",
     "panels": [
@@ -313,6 +313,174 @@
           }
         ],
         "gridPos": {"h": 8, "w": 12, "x": 12, "y": 40}
+      },
+      {
+        "id": 15,
+        "title": "Closed WebSockets Count (Memory Leak Indicator)",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "mythos_closed_websockets_count",
+            "legendFormat": "Closed WebSockets",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 5000},
+                {"color": "red", "value": 10000}
+              ]
+            },
+            "unit": "short"
+          }
+        },
+        "yAxes": [
+          {
+            "label": "Count",
+            "min": 0
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 48}
+      },
+      {
+        "id": 16,
+        "title": "Active to Player Ratio",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "mythos_active_to_player_ratio",
+            "legendFormat": "Active/Player Ratio",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 2.0},
+                {"color": "red", "value": 3.0}
+              ]
+            },
+            "unit": "short"
+          }
+        },
+        "yAxes": [
+          {
+            "label": "Ratio",
+            "min": 0
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 48}
+      },
+      {
+        "id": 17,
+        "title": "EventBus Subscriber Count",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "mythos_eventbus_total_subscribers",
+            "legendFormat": "Total Subscribers",
+            "refId": "A"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Count",
+            "min": 0
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 56}
+      },
+      {
+        "id": 18,
+        "title": "Cache Capacity Utilization",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "mythos_cache_capacity_utilization",
+            "legendFormat": "{{cache_name}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 1.0},
+                {"color": "red", "value": 1.1}
+              ]
+            },
+            "unit": "percentunit"
+          }
+        },
+        "yAxes": [
+          {
+            "label": "Utilization",
+            "min": 0,
+            "max": 1.5
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 56}
+      },
+      {
+        "id": 19,
+        "title": "Active Tasks Count",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "mythos_task_registry_active_tasks",
+            "legendFormat": "Active Tasks",
+            "refId": "A"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Count",
+            "min": 0
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 64}
+      },
+      {
+        "id": 20,
+        "title": "Orphaned Resources",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "mythos_orphaned_connections",
+            "legendFormat": "Orphaned Connections",
+            "refId": "A"
+          },
+          {
+            "expr": "mythos_orphaned_task_count",
+            "legendFormat": "Orphaned Tasks",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 5},
+                {"color": "red", "value": 10}
+              ]
+            },
+            "unit": "short"
+          }
+        },
+        "yAxes": [
+          {
+            "label": "Count",
+            "min": 0
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 64}
       }
     ],
     "time": {

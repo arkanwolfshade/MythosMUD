@@ -14,6 +14,7 @@ from collections.abc import AsyncGenerator
 from pathlib import Path
 from typing import Any
 
+from anyio import sleep
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -290,9 +291,9 @@ async def init_npc_db():
         # Import all NPC models to ensure they're registered with metadata
         from sqlalchemy.orm import configure_mappers
 
-        # pylint: disable=unused-import  # noqa: F401  # Imported for side effects (SQLAlchemy mapper registration)
+        # pylint: disable=unused-import  # noqa: F401  # Reason: Imported for side effects (SQLAlchemy mapper registration)
         from server.models.npc import (
-            NPCDefinition,  # noqa: F401  # pylint: disable=unused-import
+            NPCDefinition,  # noqa: F401  # pylint: disable=unused-import  # Reason: Imported for side effects (SQLAlchemy mapper registration), unused but required for ORM setup
         )
 
         logger.debug("Configuring NPC SQLAlchemy mappers")
@@ -359,7 +360,7 @@ async def close_npc_db():
                 try:
                     # Step 1: Wait for any pending operations to complete
                     # This gives time for any in-flight queries to finish
-                    await asyncio.sleep(0.3)
+                    await sleep(0.3)
 
                     # Step 2: Shield disposal from cancellation to ensure cleanup completes
                     # This prevents Connection._cancel coroutines from being interrupted during cleanup
@@ -368,7 +369,7 @@ async def close_npc_db():
                         # Wait a bit more to ensure all asyncpg cleanup coroutines complete
                         # This helps prevent Connection._cancel coroutines from being garbage collected
                         # before they're awaited
-                        await asyncio.sleep(0.2)
+                        await sleep(0.2)
 
                     # Shield the disposal to prevent cancellation from interrupting cleanup
                     await asyncio.wait_for(asyncio.shield(_dispose_engine()), timeout=3.0)
@@ -473,8 +474,7 @@ def ensure_npc_database_directory():
     For PostgreSQL, database directories are managed by the PostgreSQL server,
     not by the application.
     """
-    # pylint: disable=assignment-from-none  # Function returns Path | None, not always None
-    db_path = get_npc_database_path()
+    db_path = get_npc_database_path()  # pylint: disable=assignment-from-none  # Reason: Function returns Path | None, but with PostgreSQL it always returns None, assignment is effectively a no-op but pylint flags it
     # PostgreSQL always returns None, so this is effectively a no-op
     if db_path is not None:
         db_path.parent.mkdir(parents=True, exist_ok=True)

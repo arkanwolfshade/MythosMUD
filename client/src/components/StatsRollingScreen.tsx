@@ -1,5 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { logger } from '../utils/logger';
+import { assertStatsRollResponse } from '../utils/apiTypeGuards.js';
+import { getErrorMessage, isErrorResponse } from '../utils/errorHandler.js';
+import { logger } from '../utils/logger.js';
+import type { Profession } from './ProfessionCard.jsx';
 import './StatsRollingScreen.css';
 
 interface Stats {
@@ -10,19 +13,8 @@ interface Stats {
   intelligence: number;
   power: number;
   education: number;
-  wisdom: number;
   charisma: number;
   luck: number;
-}
-
-interface Profession {
-  id: number;
-  name: string;
-  description: string;
-  flavor_text: string;
-  stat_requirements: Record<string, number>;
-  mechanical_effects: Record<string, number>;
-  is_available: boolean;
 }
 
 interface StatsRollingScreenProps {
@@ -75,7 +67,8 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
       });
 
       if (response.ok) {
-        const data = await response.json();
+        const rawData: unknown = await response.json();
+        const data = assertStatsRollResponse(rawData, 'Invalid stats roll response from server');
         setCurrentStats(data.stats);
 
         // Handle timeout message for profession requirements
@@ -93,13 +86,44 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
         });
       } else if (response.status === 429) {
         // Rate limit exceeded
-        const errorData = await response.json();
-        const retryAfter = errorData.detail?.retry_after || 60;
+        let retryAfter = 60;
+        try {
+          const rawData: unknown = await response.json();
+          if (typeof rawData === 'object' && rawData !== null) {
+            const errorData = rawData as Record<string, unknown>;
+            if (
+              typeof errorData.detail === 'object' &&
+              errorData.detail !== null &&
+              'retry_after' in errorData.detail
+            ) {
+              const detail = errorData.detail as Record<string, unknown>;
+              const retryAfterValue = detail.retry_after;
+              retryAfter = typeof retryAfterValue === 'number' ? retryAfterValue : 60;
+            }
+          }
+        } catch {
+          // Use default retry after if JSON parsing fails
+        }
         setError(`Rate limit exceeded. Please wait ${retryAfter} seconds before trying again.`);
         setRerollCooldown(retryAfter);
       } else {
-        const errorData = await response.json();
-        const errorMessage = errorData.detail?.message || errorData.detail || 'Failed to roll stats';
+        let errorMessage = 'Failed to roll stats';
+        try {
+          const rawData: unknown = await response.json();
+          if (isErrorResponse(rawData)) {
+            errorMessage = getErrorMessage(rawData);
+          } else if (typeof rawData === 'object' && rawData !== null) {
+            const errorData = rawData as Record<string, unknown>;
+            errorMessage =
+              typeof errorData.detail === 'object' && errorData.detail !== null && 'message' in errorData.detail
+                ? String((errorData.detail as Record<string, unknown>).message)
+                : typeof errorData.detail === 'string'
+                  ? errorData.detail
+                  : errorMessage;
+          }
+        } catch {
+          // Use default error message if JSON parsing fails
+        }
         setError(errorMessage);
         logger.error('StatsRollingScreen', 'Failed to roll stats', { error: errorMessage });
       }
@@ -156,18 +180,50 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
       });
 
       if (response.ok) {
-        const data = await response.json();
+        const rawData: unknown = await response.json();
+        const data = assertStatsRollResponse(rawData, 'Invalid stats reroll response from server');
         setCurrentStats(data.stats);
         logger.info('StatsRollingScreen', 'Stats rerolled successfully', { stats: data.stats });
       } else if (response.status === 429) {
         // Rate limit exceeded
-        const errorData = await response.json();
-        const retryAfter = errorData.detail?.retry_after || 60;
+        let retryAfter = 60;
+        try {
+          const rawData: unknown = await response.json();
+          if (typeof rawData === 'object' && rawData !== null) {
+            const errorData = rawData as Record<string, unknown>;
+            if (
+              typeof errorData.detail === 'object' &&
+              errorData.detail !== null &&
+              'retry_after' in errorData.detail
+            ) {
+              const detail = errorData.detail as Record<string, unknown>;
+              const retryAfterValue = detail.retry_after;
+              retryAfter = typeof retryAfterValue === 'number' ? retryAfterValue : 60;
+            }
+          }
+        } catch {
+          // Use default retry after if JSON parsing fails
+        }
         setError(`Rate limit exceeded. Please wait ${retryAfter} seconds before trying again.`);
         setRerollCooldown(retryAfter);
       } else {
-        const errorData = await response.json();
-        const errorMessage = errorData.detail?.message || errorData.detail || 'Failed to reroll stats';
+        let errorMessage = 'Failed to reroll stats';
+        try {
+          const rawData: unknown = await response.json();
+          if (isErrorResponse(rawData)) {
+            errorMessage = getErrorMessage(rawData);
+          } else if (typeof rawData === 'object' && rawData !== null) {
+            const errorData = rawData as Record<string, unknown>;
+            errorMessage =
+              typeof errorData.detail === 'object' && errorData.detail !== null && 'message' in errorData.detail
+                ? String((errorData.detail as Record<string, unknown>).message)
+                : typeof errorData.detail === 'string'
+                  ? errorData.detail
+                  : errorMessage;
+          }
+        } catch {
+          // Use default error message if JSON parsing fails
+        }
         setError(errorMessage);
         logger.error('StatsRollingScreen', 'Failed to reroll stats', { error: errorMessage });
       }
@@ -217,37 +273,56 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
       });
 
       if (response.ok) {
-        const data = await response.json();
+        const rawData: unknown = await response.json();
+        // Character creation response may be a simple success response or character data
+        // Extract player ID safely
+        let playerId: string | undefined;
+        if (typeof rawData === 'object' && rawData !== null) {
+          const data = rawData as Record<string, unknown>;
+          playerId =
+            (typeof data.id === 'string' ? data.id : null) ||
+            (typeof data.player_id === 'string' ? data.player_id : undefined);
+        }
         logger.info('StatsRollingScreen', 'Character created successfully', {
           characterName: trimmedName,
-          playerId: data.id || data.player_id,
+          playerId: playerId || 'unknown',
         });
         onStatsAccepted(currentStats, trimmedName);
       } else {
-        const errorData = await response.json();
         let errorMessage = 'Failed to create character';
-
-        // Handle different error response formats
-        if (errorData.detail) {
-          if (Array.isArray(errorData.detail)) {
-            // FastAPI validation errors - array of error objects
-            errorMessage = errorData.detail
-              .map((err: { msg?: string; message?: string }) => err.msg || err.message || 'Validation error')
-              .join(', ');
-          } else if (typeof errorData.detail === 'string') {
-            // Simple string error
-            errorMessage = errorData.detail;
-          } else if (errorData.detail.message) {
-            // Object with message property
-            errorMessage = errorData.detail.message;
+        try {
+          const rawData: unknown = await response.json();
+          if (isErrorResponse(rawData)) {
+            errorMessage = getErrorMessage(rawData);
+          } else if (typeof rawData === 'object' && rawData !== null) {
+            const errorData = rawData as Record<string, unknown>;
+            // Handle different error response formats
+            if (errorData.detail) {
+              if (Array.isArray(errorData.detail)) {
+                // FastAPI validation errors - array of error objects
+                errorMessage = (errorData.detail as Array<Record<string, unknown>>)
+                  .map((err: Record<string, unknown>) =>
+                    typeof err.msg === 'string'
+                      ? err.msg
+                      : typeof err.message === 'string'
+                        ? err.message
+                        : 'Validation error'
+                  )
+                  .join(', ');
+              } else if (typeof errorData.detail === 'object' && errorData.detail !== null) {
+                const detail = errorData.detail as Record<string, unknown>;
+                errorMessage = typeof detail.message === 'string' ? detail.message : 'Validation error';
+              } else if (typeof errorData.detail === 'string') {
+                errorMessage = errorData.detail;
+              }
+            }
           }
-        } else if (errorData.error?.message) {
-          // Custom error format
-          errorMessage = errorData.error.message;
+        } catch {
+          // Use default error message if JSON parsing fails
         }
 
         setError(errorMessage);
-        logger.error('StatsRollingScreen', 'Failed to create character', { error: errorData });
+        logger.error('StatsRollingScreen', 'Failed to create character', { error: errorMessage });
       }
     } catch (error) {
       const errorMessage = 'Failed to connect to server';

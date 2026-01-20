@@ -10,7 +10,7 @@ from datetime import UTC, datetime
 import pytest
 from pydantic import ValidationError
 
-from server.models.game import PositionState
+from server.models.game import PositionState, Stats
 from server.schemas.player import CharacterInfo, PlayerBase, PlayerCreate, PlayerRead, PlayerUpdate
 
 
@@ -37,7 +37,13 @@ def test_player_create():
 
     assert player.name == "TestPlayer"
     assert player.user_id == user_id
-    assert player.stats == {"health": 100, "lucidity": 100, "strength": 50}
+    assert isinstance(player.stats, Stats)
+    # Stats() generates random core stats, but lucidity defaults to 100
+    # Type checker doesn't properly infer Stats from Field(default_factory=Stats)
+    # Access via getattr to avoid FieldInfo type inference issue
+    stats_value = getattr(player, "stats")  # noqa: B009  # Reason: Using getattr to work around Pydantic Field typing limitation
+    assert isinstance(stats_value, Stats)
+    assert stats_value.lucidity == 100
     assert player.inventory == []
     assert player.status_effects == []
 
@@ -45,13 +51,18 @@ def test_player_create():
 def test_player_create_custom_stats():
     """Test PlayerCreate can have custom stats."""
     user_id = uuid.uuid4()
+    custom_stats = Stats(lucidity=90, strength=50)
     player = PlayerCreate(
         name="TestPlayer",
         user_id=user_id,
-        stats={"health": 80, "lucidity": 90},
+        stats=custom_stats,
     )
 
-    assert player.stats == {"health": 80, "lucidity": 90}
+    assert isinstance(player.stats, Stats)
+    # Access via getattr to avoid FieldInfo type inference issue
+    stats_value = getattr(player, "stats")  # noqa: B009  # Reason: Using getattr to work around Pydantic Field typing limitation
+    assert isinstance(stats_value, Stats)
+    assert stats_value.lucidity == 90
 
 
 def test_player_read():
@@ -65,7 +76,7 @@ def test_player_read():
         id=player_id,
         user_id=user_id,
         name="TestPlayer",
-        stats={},
+        stats=Stats(),
         inventory=[],
         status_effects=[],
         created_at=created_at,
@@ -91,7 +102,7 @@ def test_player_read_defaults():
         id=player_id,
         user_id=user_id,
         name="TestPlayer",
-        stats={},
+        stats=Stats(),
         inventory=[],
         status_effects=[],
         created_at=created_at,
@@ -153,3 +164,16 @@ def test_player_update_all_optional():
     assert player.name is None
     assert player.current_room_id is None
     assert player.stats is None
+
+
+def test_player_base_rejects_extra_fields():
+    """Test PlayerBase rejects extra fields (extra='forbid')."""
+    with pytest.raises(ValidationError):
+        PlayerBase(name="TestPlayer", extra_field="should_fail")
+
+
+def test_player_create_rejects_extra_fields():
+    """Test PlayerCreate rejects extra fields (extra='forbid')."""
+    user_id = uuid.uuid4()
+    with pytest.raises(ValidationError):
+        PlayerCreate(name="TestPlayer", user_id=user_id, extra_field="should_fail")

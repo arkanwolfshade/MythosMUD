@@ -480,6 +480,7 @@ describe('CommandPanel', () => {
     });
 
     it('should not show clear button when onClearHistory is not provided', () => {
+      // Destructuring removes onClearHistory from props, variable intentionally unused
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { onClearHistory, ...propsWithoutClear } = defaultProps;
       render(<CommandPanel {...propsWithoutClear} />);
@@ -514,6 +515,7 @@ describe('CommandPanel', () => {
     });
 
     it('should not show logout button when onLogout is not provided', () => {
+      // Destructuring removes onLogout from props, variable intentionally unused
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { onLogout, ...propsWithoutLogout } = defaultProps;
       render(<CommandPanel {...propsWithoutLogout} />);

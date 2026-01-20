@@ -7,11 +7,12 @@ that simulates I/O latency. Outputs JSON metrics to artifacts/perf/cache_bench.j
 
 from __future__ import annotations
 
-import asyncio
 import json
 import os
 import time
 from typing import Any
+
+from anyio import run, sleep
 
 
 class _FakePersistence:
@@ -21,7 +22,7 @@ class _FakePersistence:
         self._latency = latency_ms / 1000.0
 
     async def async_get_room(self, room_id: str) -> dict[str, Any] | None:
-        await asyncio.sleep(self._latency)
+        await sleep(self._latency)
         # Return a minimal room dict
         return {
             "id": room_id,
@@ -62,7 +63,7 @@ async def bench_room_cache() -> dict[str, Any]:
 
 
 def main() -> None:
-    metrics = asyncio.run(bench_room_cache())
+    metrics = run(bench_room_cache)
 
     out_dir = os.path.join("artifacts", "perf")
     os.makedirs(out_dir, exist_ok=True)

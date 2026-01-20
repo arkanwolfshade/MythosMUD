@@ -254,21 +254,52 @@ class MovementMonitor:  # pylint: disable=too-many-instance-attributes  # Reason
             self._last_validation_time = None
             self._logger.info("Movement metrics reset")
 
+    def get_performance_summary(self) -> dict[str, Any]:
+        """
+        Get a formatted performance summary for API responses.
+
+        This method encapsulates the logic for formatting metrics into a
+        human-readable summary, centralizing business logic that was
+        previously in the API endpoint.
+
+        Returns:
+            dict[str, Any]: Formatted performance summary with summary dict, alerts list, and timestamp
+        """
+        metrics = self.get_metrics()
+        alerts = self.get_alerts()
+
+        summary = {
+            "summary": {
+                "total_movements": metrics["total_movements"],
+                "success_rate": f"{metrics['success_rate']:.2%}",
+                "avg_movement_time": f"{metrics['avg_movement_time_ms']:.2f}ms",
+                "current_concurrent": metrics["current_concurrent_movements"],
+                "max_concurrent": metrics["max_concurrent_movements"],
+                "integrity_rate": f"{metrics['integrity_rate']:.2%}",
+                "uptime": f"{metrics['uptime_seconds']:.1f}s",
+                "alert_count": len(alerts),
+            },
+            "alerts": alerts,
+            "timestamp": metrics["timestamp"].isoformat(),
+        }
+
+        return summary
+
     def log_performance_summary(self):
         """Log a comprehensive performance summary."""
         metrics = self.get_metrics()
         alerts = self.get_alerts()
 
         self._logger.info(
-            f"Movement Performance Summary:\n"
-            f"  Total Movements: {metrics['total_movements']}\n"
-            f"  Success Rate: {metrics['success_rate']:.2%}\n"
-            f"  Avg Movement Time: {metrics['avg_movement_time_ms']:.2f}ms\n"
-            f"  Current Concurrent: {metrics['current_concurrent_movements']}\n"
-            f"  Max Concurrent: {metrics['max_concurrent_movements']}\n"
-            f"  Integrity Rate: {metrics['integrity_rate']:.2%}\n"
-            f"  Uptime: {metrics['uptime_seconds']:.1f}s\n"
-            f"  Alerts: {len(alerts)}"
+            "Movement performance summary",
+            total_movements=metrics["total_movements"],
+            success_rate=f"{metrics['success_rate']:.2%}",
+            avg_movement_time_ms=metrics["avg_movement_time_ms"],
+            current_concurrent=metrics["current_concurrent_movements"],
+            max_concurrent=metrics["max_concurrent_movements"],
+            integrity_rate=f"{metrics['integrity_rate']:.2%}",
+            uptime_seconds=metrics["uptime_seconds"],
+            alert_count=len(alerts),
         )
 
         if alerts:

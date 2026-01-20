@@ -32,11 +32,12 @@ async def test_setup_go_command_no_persistence():
 @pytest.mark.asyncio
 async def test_setup_go_command_player_not_found():
     """Test _setup_go_command returns None when player not found."""
-    mock_persistence = MagicMock()
+    mock_persistence = AsyncMock()
     mock_persistence.get_player_by_name = AsyncMock(return_value=None)
     mock_app = MagicMock()
     mock_app.state = MagicMock()
-    mock_app.state.persistence = mock_persistence
+    mock_app.state.container = MagicMock()
+    mock_app.state.container.async_persistence = mock_persistence
     mock_request = MagicMock()
     mock_request.app = mock_app
 
@@ -50,12 +51,13 @@ async def test_setup_go_command_room_not_found():
     """Test _setup_go_command returns None when room not found."""
     mock_player = MagicMock()
     mock_player.current_room_id = "test_room"
-    mock_persistence = MagicMock()
+    mock_persistence = AsyncMock()
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_persistence.get_room_by_id = MagicMock(return_value=None)
     mock_app = MagicMock()
     mock_app.state = MagicMock()
-    mock_app.state.persistence = mock_persistence
+    mock_app.state.container = MagicMock()
+    mock_app.state.container.async_persistence = mock_persistence
     mock_request = MagicMock()
     mock_request.app = mock_app
 
@@ -71,12 +73,13 @@ async def test_setup_go_command_success():
     mock_player.current_room_id = "test_room"
     mock_room = MagicMock()
     mock_room.id = "test_room"
-    mock_persistence = MagicMock()
+    mock_persistence = AsyncMock()
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_persistence.get_room_by_id = MagicMock(return_value=mock_room)
     mock_app = MagicMock()
     mock_app.state = MagicMock()
-    mock_app.state.persistence = mock_persistence
+    mock_app.state.container = MagicMock()
+    mock_app.state.container.async_persistence = mock_persistence
     mock_request = MagicMock()
     mock_request.app = mock_app
 
@@ -98,12 +101,13 @@ async def test_setup_go_command_room_id_mismatch():
     mock_player.current_room_id = "player_room_id"
     mock_room = MagicMock()
     mock_room.id = "room_object_id"
-    mock_persistence = MagicMock()
+    mock_persistence = AsyncMock()
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_persistence.get_room_by_id = MagicMock(return_value=mock_room)
     mock_app = MagicMock()
     mock_app.state = MagicMock()
-    mock_app.state.persistence = mock_persistence
+    mock_app.state.container = MagicMock()
+    mock_app.state.container.async_persistence = mock_persistence
     mock_request = MagicMock()
     mock_request.app = mock_app
 
@@ -343,12 +347,13 @@ async def test_handle_go_command_invalid_posture():
     mock_player.get_stats = MagicMock(return_value={"position": "sitting"})
     mock_room = MagicMock()
     mock_room.id = "test_room"
-    mock_persistence = MagicMock()
+    mock_persistence = AsyncMock()
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_persistence.get_room_by_id = MagicMock(return_value=mock_room)
     mock_app = MagicMock()
     mock_app.state = MagicMock()
-    mock_app.state.persistence = mock_persistence
+    mock_app.state.container = MagicMock()
+    mock_app.state.container.async_persistence = mock_persistence
     mock_request = MagicMock()
     mock_request.app = mock_app
 
@@ -367,12 +372,13 @@ async def test_handle_go_command_no_exit():
     mock_room = MagicMock()
     mock_room.id = "test_room"
     mock_room.exits = {}
-    mock_persistence = MagicMock()
+    mock_persistence = AsyncMock()
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_persistence.get_room_by_id = MagicMock(return_value=mock_room)
     mock_app = MagicMock()
     mock_app.state = MagicMock()
-    mock_app.state.persistence = mock_persistence
+    mock_app.state.container = MagicMock()
+    mock_app.state.container.async_persistence = mock_persistence
     mock_request = MagicMock()
     mock_request.app = mock_app
 
@@ -393,7 +399,7 @@ async def test_handle_go_command_success():
     mock_room.id = "test_room"
     mock_room.exits = {"north": "north_room"}
     mock_target_room = MagicMock()
-    mock_persistence = MagicMock()
+    mock_persistence = AsyncMock()
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_persistence.get_room_by_id = MagicMock(
         side_effect=lambda rid: mock_target_room if rid == "north_room" else mock_room
@@ -402,8 +408,8 @@ async def test_handle_go_command_success():
     mock_movement_service = MagicMock()
     mock_movement_service.move_player = AsyncMock(return_value=True)
     mock_state = MagicMock()
-    mock_state.persistence = mock_persistence
     mock_state.container = MagicMock()
+    mock_state.container.async_persistence = mock_persistence
     mock_state.container.movement_service = mock_movement_service
     mock_app = MagicMock()
     mock_app.state = mock_state

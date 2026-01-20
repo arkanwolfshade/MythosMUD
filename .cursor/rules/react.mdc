@@ -11,6 +11,7 @@ This guide outlines the non-negotiable standards for building React applications
 Components and Hooks **must be pure**. They should always return the same output given the same inputs (props, state, context) and not cause side effects during rendering. Obey the [Rules of Hooks](https://react.dev/reference/rules/rules-of-hooks) without exception.
 
 ### ❌ BAD: Impure component / Side effect in render
+
 ```tsx
 function ProductList({ products }) {
   // ❌ Modifies external data during render
@@ -28,6 +29,7 @@ function MyComponent() {
 ```
 
 ### ✅ GOOD: Pure component / Correct Hook usage
+
 ```tsx
 import { useMemo, useState } from 'react';
 
@@ -52,14 +54,15 @@ function MyComponent() {
 
 Organize code by **feature** using the `bulletproof-react` pattern. Use TypeScript (`.tsx`) for all components.
 
-*   **One Component Per File**: Except for small, pure, stateless components closely related to a parent.
-*   **Naming**:
-    *   Components: `PascalCase` (e.g., `UserProfile.tsx`)
-    *   Custom Hooks: `use` prefix + `PascalCase` (e.g., `useAuth.ts`)
-    *   Functions/Variables: `camelCase`
-    *   CSS Classes: `kebab-case` (via CSS Modules or utility classes)
+* **One Component Per File**: Except for small, pure, stateless components closely related to a parent.
+* **Naming**:
+  * Components: `PascalCase` (e.g., `UserProfile.tsx`)
+  * Custom Hooks: `use` prefix + `PascalCase` (e.g., `useAuth.ts`)
+  * Functions/Variables: `camelCase`
+  * CSS Classes: `kebab-case` (via CSS Modules or utility classes)
 
 ### ✅ GOOD: Feature-based structure
+
 ```
 src/
 ├── features/
@@ -86,6 +89,7 @@ src/
 Prioritize **function components with Hooks**. Separate concerns into "smart" (data/logic) and "dumb" (presentational) components.
 
 ### ❌ BAD: Class components / Mixed concerns
+
 ```tsx
 // ❌ Class component (avoid)
 class UserProfile extends React.Component { /* ... */ }
@@ -99,6 +103,7 @@ function ProductPage() {
 ```
 
 ### ✅ GOOD: Function components / Separation of concerns
+
 ```tsx
 // ✅ Use function components with hooks
 function UserProfile({ user }) { /* ... */ }
@@ -125,6 +130,7 @@ function ProductList({ products }) {
 Start with **local state (`useState`, `useReducer`)**. Lift state up when necessary. Use **Context API** for global state that rarely changes. For complex global state, use dedicated libraries (e.g., Zustand, Jotai, Redux Toolkit). **Avoid prop drilling.**
 
 ### ❌ BAD: Prop drilling
+
 ```tsx
 function Grandparent() {
   const [theme, setTheme] = useState('dark');
@@ -139,6 +145,7 @@ function Child({ theme, setTheme }) {
 ```
 
 ### ✅ GOOD: Context API for global state
+
 ```tsx
 import { createContext, useContext, useState, ReactNode } from 'react';
 
@@ -177,6 +184,7 @@ function MyComponent() {
 Optimize only when profiling indicates a bottleneck. Use `React.memo`, `useCallback`, `useMemo` judiciously.
 
 ### ❌ BAD: Premature optimization / Incorrect memoization
+
 ```tsx
 // ❌ Memoizing a component that re-renders frequently or has no expensive props
 const MyButton = React.memo(({ onClick, children }) => <button onClick={onClick}>{children}</button>);
@@ -192,6 +200,7 @@ function Parent() {
 ```
 
 ### ✅ GOOD: Targeted optimization / Correct dependencies
+
 ```tsx
 import React, { useCallback, useMemo, useState } from 'react';
 
@@ -231,12 +240,13 @@ const Child = React.memo(({ onClick }: { onClick: () => void }) => {
 
 ## 6. Common Pitfalls
 
-*   **Never mutate props or state directly.** Always create new objects/arrays.
-*   **Never call component functions directly.** Use JSX.
-*   **Ensure `useEffect` cleanup functions are always provided** for subscriptions or timers.
-*   **Correct `useEffect` dependency arrays** are critical to avoid infinite loops or stale closures.
+* **Never mutate props or state directly.** Always create new objects/arrays.
+* **Never call component functions directly.** Use JSX.
+* **Ensure `useEffect` cleanup functions are always provided** for subscriptions or timers.
+* **Correct `useEffect` dependency arrays** are critical to avoid infinite loops or stale closures.
 
 ### ❌ BAD: Direct mutation / Calling component as function
+
 ```tsx
 function MyComponent({ items }) {
   // ❌ Mutating props directly
@@ -253,6 +263,7 @@ function MyComponent({ items }) {
 ```
 
 ### ✅ GOOD: Immutable updates / JSX usage
+
 ```tsx
 function MyComponent({ items }) {
   const [data, setData] = useState({ value: 1 });
@@ -272,12 +283,13 @@ function MyComponent({ items }) {
 
 Build for accessibility from the start. Test components as a user would.
 
-*   **Semantic HTML**: Use native HTML elements (`<button>`, `<input>`, `<a>`) whenever possible.
-*   **ARIA Attributes**: Use `aria-*` attributes only when semantic HTML is insufficient.
-*   **Keyboard Navigation**: Ensure all interactive elements are keyboard accessible and have proper focus management.
-*   **React Testing Library**: Use `RTL` to test component behavior, not implementation details.
+* **Semantic HTML**: Use native HTML elements (`<button>`, `<input>`, `<a>`) whenever possible.
+* **ARIA Attributes**: Use `aria-*` attributes only when semantic HTML is insufficient.
+* **Keyboard Navigation**: Ensure all interactive elements are keyboard accessible and have proper focus management.
+* **React Testing Library**: Use `RTL` to test component behavior, not implementation details.
 
 ### ❌ BAD: Non-semantic HTML / Untestable implementation
+
 ```tsx
 // ❌ Div acting as a button, missing keyboard interaction
 function MyButton() {
@@ -292,6 +304,7 @@ test('MyComponent sets count to 1', () => {
 ```
 
 ### ✅ GOOD: Semantic HTML / User-centric testing
+
 ```tsx
 import { render, screen, fireEvent } from '@testing-library/react';
 

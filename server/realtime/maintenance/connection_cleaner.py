@@ -216,10 +216,10 @@ class ConnectionCleaner:
                     try:
                         websocket = active_websockets[connection_id]
                         # Guard against None websocket (can happen during cleanup)
-                        # JUSTIFICATION: Type annotation says dict[str, WebSocket], but runtime can have None
+                        # Type annotation says dict[str, WebSocket], but runtime can have None
                         # values during cleanup/race conditions. This is defensive programming.
                         if websocket is None:
-                            del active_websockets[connection_id]  # type: ignore[unreachable]
+                            del active_websockets[connection_id]  # type: ignore[unreachable]  # Reason: Type annotation says dict[str, WebSocket], but runtime can have None values during cleanup/race conditions, mypy cannot verify this defensive check
                             continue
                         logger.info("DEBUG: Closing stale WebSocket due to timeout", connection_id=connection_id)
                         await websocket.close(code=1000, reason="Connection timeout")

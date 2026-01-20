@@ -1,11 +1,11 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { MythosTimeState } from '../../../types/mythosTime';
 import { HeaderBar } from '../HeaderBar';
-import type { MythosTimeState } from '../../types/mythosTime';
 
 // Mock the dependencies
 vi.mock('../ui/EldritchIcon', () => ({
-  EldritchIcon: ({ name, _size }: { name: string; size: number }) => <div data-testid="eldritch-icon">{name}</div>,
+  EldritchIcon: ({ name }: { name: string; size?: number }) => <div data-testid="eldritch-icon">{name}</div>,
   MythosIcons: {
     minimize: 'minimize',
     maximize: 'maximize',
@@ -31,13 +31,20 @@ describe('HeaderBar', () => {
   };
 
   const mockMythosTime: MythosTimeState = {
+    mythos_datetime: '1928-01-01T12:00:00Z',
     mythos_clock: '12:00:00',
-    formatted_date: 'January 1, 1928',
-    day_of_week: 'Sunday',
+    month_name: 'January',
+    day_of_month: 1,
+    day_name: 'Sunday',
+    week_of_month: 1,
     season: 'Winter',
-    year: 1928,
-    month: 1,
-    day: 1,
+    daypart: 'midday',
+    is_daytime: true,
+    is_witching_hour: false,
+    server_timestamp: '2025-01-01T12:00:00Z',
+    active_holidays: [],
+    upcoming_holidays: [],
+    formatted_date: 'January 1, 1928',
   };
 
   beforeEach(() => {

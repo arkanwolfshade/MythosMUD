@@ -26,6 +26,7 @@ export const MotdInterstitialScreen: React.FC<MotdInterstitialScreenProps> = ({ 
         >
           <button
             onClick={onReturnToLogin}
+            data-testid="motd-return-to-login"
             className="px-6 py-3 bg-mythos-terminal-surface border border-mythos-terminal-border text-mythos-terminal-text hover:bg-mythos-terminal-surface-hover transition-colors rounded"
             style={{
               background: 'linear-gradient(45deg, #d4af37, #b8941f)',
@@ -47,6 +48,7 @@ export const MotdInterstitialScreen: React.FC<MotdInterstitialScreenProps> = ({ 
           </button>
           <button
             onClick={onContinue}
+            data-testid="motd-enter-realm"
             className="px-6 py-3 bg-mythos-terminal-primary text-black hover:bg-mythos-terminal-primary-hover transition-colors rounded font-semibold"
             style={{
               background: 'linear-gradient(45deg, #d4af37, #b8941f)',

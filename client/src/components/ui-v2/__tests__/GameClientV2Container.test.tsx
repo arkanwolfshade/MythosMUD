@@ -25,12 +25,12 @@ global.URL = vi.fn().mockImplementation((url: string, base?: string) => {
   return new originalURL(url, base);
 }) as unknown as typeof URL;
 
-// Mock fetch for API calls
-global.fetch = vi.fn().mockResolvedValue({
+// Mock fetch for API calls using vi.spyOn for proper cleanup
+const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValue({
   ok: true,
   json: async () => ({}),
   text: async () => '',
-}) as unknown as typeof fetch;
+} as Response);
 
 // Mock all dependencies
 vi.mock('../GameClientV2', () => ({
@@ -157,11 +157,13 @@ describe('GameClientV2Container', () => {
   };
 
   beforeEach(() => {
+    fetchSpy.mockClear();
     vi.clearAllMocks();
     vi.useFakeTimers();
   });
 
   afterEach(() => {
+    fetchSpy.mockRestore();
     vi.useRealTimers();
   });
 

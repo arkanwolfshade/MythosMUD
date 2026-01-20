@@ -527,4 +527,195 @@ describe('Game Store', () => {
       expect(result.current.getRoomOccupantsCount()).toBe(0);
     });
   });
+
+  describe('Memory Leak Prevention - Array Bounds', () => {
+    it('should prevent chatMessages array from growing unbounded during long session', () => {
+      const { result } = renderHook(() => useGameStore());
+
+      act(() => {
+        // Simulate long-running session with many messages
+        for (let i = 0; i < 1000; i++) {
+          result.current.addChatMessage({
+            text: `Message ${i}`,
+            timestamp: `2024-01-01T12:${(i % 60).toString().padStart(2, '0')}:00Z`,
+            isHtml: false,
+            type: 'say' as const,
+            channel: 'local' as const,
+            sender: 'TestPlayer',
+          });
+        }
+      });
+
+      // Array should be bounded at MAX_CHAT_MESSAGES (100)
+      expect(result.current.chatMessages.length).toBe(100);
+      // Oldest messages should be removed (FIFO)
+      expect(result.current.chatMessages[0].text).toBe('Message 900');
+      expect(result.current.chatMessages[99].text).toBe('Message 999');
+    });
+
+    it('should prevent gameLog array from growing unbounded during long session', () => {
+      const { result } = renderHook(() => useGameStore());
+
+      act(() => {
+        // Simulate long-running session with many log entries
+        for (let i = 0; i < 1000; i++) {
+          result.current.addGameLogEntry({
+            text: `Log entry ${i}`,
+            timestamp: `2024-01-01T12:${(i % 60).toString().padStart(2, '0')}:00Z`,
+            isHtml: false,
+            type: 'system' as const,
+          });
+        }
+      });
+
+      // Array should be bounded at MAX_GAME_LOG_ENTRIES (100)
+      expect(result.current.gameLog.length).toBe(100);
+      // Oldest entries should be removed (FIFO)
+      expect(result.current.gameLog[0].text).toBe('Log entry 900');
+      expect(result.current.gameLog[99].text).toBe('Log entry 999');
+    });
+
+    it('should maintain array bounds when adding messages rapidly', () => {
+      const { result } = renderHook(() => useGameStore());
+
+      act(() => {
+        // Add messages rapidly in batches
+        for (let batch = 0; batch < 10; batch++) {
+          for (let i = 0; i < 50; i++) {
+            result.current.addChatMessage({
+              text: `Batch ${batch} Message ${i}`,
+              timestamp: `2024-01-01T12:00:00Z`,
+              isHtml: false,
+              type: 'say' as const,
+              channel: 'local' as const,
+              sender: 'TestPlayer',
+            });
+          }
+        }
+      });
+
+      // Should still be bounded
+      expect(result.current.chatMessages.length).toBe(100);
+    });
+  });
+
+  describe('Component Cleanup Patterns', () => {
+    it('should allow reset() to clear all state for component unmount', () => {
+      const { result, unmount } = renderHook(() => useGameStore());
+
+      // Set up state
+      act(() => {
+        result.current.setPlayer({
+          id: 'player-123',
+          name: 'TestPlayer',
+          stats: { current_dp: 100, lucidity: 80 },
+        });
+        result.current.setRoom({
+          id: 'room-123',
+          name: 'Test Room',
+          description: 'A test room',
+          exits: {},
+        });
+        for (let i = 0; i < 50; i++) {
+          result.current.addChatMessage({
+            text: `Message ${i}`,
+            timestamp: '2024-01-01T12:00:00Z',
+            isHtml: false,
+            type: 'say' as const,
+            channel: 'local' as const,
+            sender: 'TestPlayer',
+          });
+        }
+      });
+
+      // Simulate component unmount - reset state
+      act(() => {
+        result.current.reset();
+      });
+
+      // Verify all state is cleared
+      expect(result.current.player).toBe(null);
+      expect(result.current.room).toBe(null);
+      expect(result.current.chatMessages).toEqual([]);
+      expect(result.current.gameLog).toEqual([]);
+
+      // Unmount should not cause issues (Zustand handles subscriptions automatically)
+      unmount();
+    });
+
+    it('should handle multiple component subscriptions without memory leaks', () => {
+      // Create multiple hook instances (simulating multiple components)
+      const { result: result1, unmount: unmount1 } = renderHook(() => useGameStore());
+      const { result: result2, unmount: unmount2 } = renderHook(() => useGameStore());
+      const { result: result3, unmount: unmount3 } = renderHook(() => useGameStore());
+
+      // All should share the same store state
+      act(() => {
+        result1.current.setPlayer({
+          id: 'player-123',
+          name: 'TestPlayer',
+          stats: { current_dp: 100, lucidity: 80 },
+        });
+      });
+
+      expect(result2.current.player?.id).toBe('player-123');
+      expect(result3.current.player?.id).toBe('player-123');
+
+      // Unmount components - Zustand should handle cleanup automatically
+      unmount1();
+      unmount2();
+      unmount3();
+
+      // Store should still be accessible
+      const state = useGameStore.getState();
+      expect(state.player?.id).toBe('player-123');
+    });
+
+    it('should verify component unmount automatically cleans up store subscriptions', () => {
+      /**
+       * Test that Zustand automatically handles subscription cleanup on component unmount.
+       *
+       * This test verifies that when a component using useGameStore() unmounts,
+       * Zustand automatically removes the subscription without requiring manual cleanup.
+       * This prevents memory leaks from orphaned subscriptions.
+       */
+      const { result, unmount } = renderHook(() => useGameStore());
+
+      // Subscribe to store and modify state
+      act(() => {
+        result.current.setPlayer({
+          id: 'player-123',
+          name: 'TestPlayer',
+          stats: { current_dp: 100, lucidity: 80 },
+        });
+        for (let i = 0; i < 10; i++) {
+          result.current.addChatMessage({
+            text: `Message ${i}`,
+            timestamp: '2024-01-01T12:00:00Z',
+            isHtml: false,
+            type: 'say' as const,
+            channel: 'local' as const,
+            sender: 'TestPlayer',
+          });
+        }
+      });
+
+      // Verify state is set
+      expect(result.current.player).not.toBe(null);
+      expect(result.current.chatMessages.length).toBe(10);
+
+      // Unmount component - Zustand automatically cleans up subscription
+      unmount();
+
+      // Store should still be accessible (Zustand store persists)
+      const state = useGameStore.getState();
+      expect(state.player).not.toBe(null);
+      expect(state.chatMessages.length).toBe(10);
+
+      // Create new component instance - should work without issues
+      const { result: result2, unmount: unmount2 } = renderHook(() => useGameStore());
+      expect(result2.current.player).not.toBe(null);
+      unmount2();
+    });
+  });
 });

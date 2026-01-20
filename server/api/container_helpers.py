@@ -19,11 +19,6 @@ from ..services.container_service import (
     ContainerService,
     ContainerServiceError,
 )
-from ..services.container_websocket_events import (
-    emit_container_opened,
-    emit_container_opened_to_room,
-    emit_container_updated,
-)
 from ..services.inventory_service import InventoryStack
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import create_context_from_request
@@ -81,21 +76,19 @@ async def get_player_id_from_user(current_user: User, persistence: Any) -> UUID:
     return UUID(str(player.player_id))
 
 
-def get_container_service(persistence: Any | None = None, request: Request | None = None) -> ContainerService:
+def get_container_service(persistence: Any) -> ContainerService:
     """
     Get ContainerService instance.
 
     Args:
-        persistence: Async persistence layer instance (optional, will get from request if not provided)
-        request: FastAPI Request object (required if persistence is None)
+        persistence: Async persistence layer instance
 
     Returns:
         ContainerService: Container service instance
+
+    AI: Updated to require persistence parameter instead of accessing app.state.
+        This enables proper dependency injection and testability.
     """
-    if persistence is None:
-        if request is None:
-            raise ValueError("Either persistence or request must be provided")
-        persistence = request.app.state.persistence  # Now async_persistence
     return ContainerService(persistence=persistence)
 
 
@@ -121,47 +114,6 @@ def apply_rate_limiting_for_open_container(current_user: User, request: Request)
             detail=f"Rate limit exceeded. Retry after {e.retry_after} seconds",
             context=context,
         ) from e
-
-
-async def emit_container_opened_events(
-    request: Request, result: dict[str, Any], player_id: UUID, container_id: UUID
-) -> None:
-    """Emit WebSocket events for container opening."""
-    try:
-        connection_manager = request.app.state.connection_manager
-        if connection_manager:
-            from datetime import UTC, datetime, timedelta
-
-            container = ContainerComponent.model_validate(result["container"])
-            mutation_token = result["mutation_token"]
-            expires_at = (
-                datetime.now(UTC) + timedelta(minutes=5)
-            )  # TODO: Get actual expiry from mutation guard  # pylint: disable=fixme  # Reason: Placeholder until mutation guard expiry API is implemented
-
-            await emit_container_opened(
-                connection_manager=connection_manager,
-                container=container,
-                player_id=player_id,
-                mutation_token=mutation_token,
-                expires_at=expires_at,
-            )
-
-            if container.room_id:
-                await emit_container_opened_to_room(
-                    connection_manager=connection_manager,
-                    container=container,
-                    room_id=container.room_id,
-                    actor_id=player_id,
-                    mutation_token=mutation_token,
-                    expires_at=expires_at,
-                )
-    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Event emission errors unpredictable, must not fail request
-        logger.warning(
-            "Failed to emit container.opened event",
-            error=str(e),
-            container_id=str(container_id),
-            player_id=str(player_id),
-        )
 
 
 def validate_user_for_transfer(current_user: User | None, request: Request) -> None:
@@ -212,45 +164,30 @@ async def execute_transfer(
     )
 
 
-async def emit_transfer_event(
-    request: Request, request_data: TransferContainerRequest, result: dict[str, Any], player_id: UUID
-) -> None:
-    """Emit WebSocket event for transfer operation."""
-    try:
-        connection_manager = request.app.state.connection_manager
-        if connection_manager and result.get("container"):
-            container = ContainerComponent.model_validate(result["container"])
-            if container.room_id:
-                diff = {
-                    "items": {
-                        "direction": request_data.direction,
-                        "stack": request_data.stack,
-                        "quantity": request_data.quantity,
-                    },
-                }
-                await emit_container_updated(
-                    connection_manager=connection_manager,
-                    container_id=request_data.container_id,
-                    room_id=container.room_id,
-                    diff=diff,
-                    actor_id=player_id,
-                )
-    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Event emission errors unpredictable, must not fail request
-        logger.warning(
-            "Failed to emit container.updated event",
-            error=str(e),
-            container_id=str(request_data.container_id),
-            player_id=str(player_id),
-        )
-
-
 def handle_container_service_error(
-    e: ContainerServiceError, request: Request, current_user: User, request_data: TransferContainerRequest
+    e: ContainerServiceError,
+    request: Request,
+    current_user: User,
+    request_data: TransferContainerRequest | None = None,
+    container_id: UUID | None = None,
 ) -> None:
-    """Handle ContainerServiceError with appropriate status codes."""
-    context = create_error_context(
-        request, current_user, container_id=str(request_data.container_id), operation="transfer_items"
+    """
+    Handle ContainerServiceError with appropriate status codes.
+
+    Args:
+        e: ContainerServiceError exception
+        request: FastAPI Request object
+        current_user: Current authenticated user
+        request_data: Transfer request data (optional, for backward compatibility)
+        container_id: Container UUID (optional, used if request_data is None)
+
+    Raises:
+        LoggedHTTPException: With appropriate status code based on error message
+    """
+    container_id_str = (
+        str(request_data.container_id) if request_data else (str(container_id) if container_id else "unknown")
     )
+    context = create_error_context(request, current_user, container_id=container_id_str, operation="transfer_items")
     error_str = str(e).lower()
     if "stale" in error_str or "token" in error_str or "mutation" in error_str:
         raise LoggedHTTPException(
@@ -388,36 +325,3 @@ async def transfer_all_items_from_container(
             continue
 
     return container_data, updated_inventory
-
-
-async def emit_loot_all_event(
-    request: Request,
-    request_data: LootAllRequest,
-    final_container: ContainerComponent,
-    player_id: UUID,
-    container: ContainerComponent,
-) -> None:
-    """Emit WebSocket event for loot_all operation."""
-    try:
-        connection_manager = request.app.state.connection_manager
-        if connection_manager and final_container.room_id:
-            diff = {
-                "items": {
-                    "loot_all": True,
-                    "items_removed": len(container.items) - len(final_container.items),
-                },
-            }
-            await emit_container_updated(
-                connection_manager=connection_manager,
-                container_id=request_data.container_id,
-                room_id=final_container.room_id,
-                diff=diff,
-                actor_id=player_id,
-            )
-    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Event emission errors unpredictable, must not fail request
-        logger.warning(
-            "Failed to emit container.updated event for loot-all",
-            error=str(e),
-            container_id=str(request_data.container_id),
-            player_id=str(player_id),
-        )

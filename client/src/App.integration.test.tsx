@@ -1,10 +1,9 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import App from './App';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { App } from './App';
 
-// Mock fetch globally
-const mockFetch = vi.fn();
-global.fetch = mockFetch;
+// Mock fetch globally using vi.spyOn for proper cleanup
+const fetchSpy = vi.spyOn(global, 'fetch');
 
 // Mock the logger
 vi.mock('./utils/logger', () => ({
@@ -37,6 +36,11 @@ vi.mock('./utils/security', () => ({
 describe.skip('App - Character Creation Flow Integration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    fetchSpy.mockClear();
+  });
+
+  afterEach(() => {
+    fetchSpy.mockRestore();
   });
 
   describe('Complete Character Creation Flow', () => {
@@ -116,15 +120,16 @@ describe.skip('App - Character Creation Flow Integration', () => {
       };
 
       // Set up fetch mock to return different responses based on URL
-      mockFetch.mockImplementation(url => {
-        if (url.includes('/auth/register')) {
-          return Promise.resolve(registrationResponse);
-        } else if (url.includes('/professions')) {
-          return Promise.resolve(professionsResponse);
-        } else if (url.includes('/players/roll-stats')) {
-          return Promise.resolve(statsResponse);
-        } else if (url.includes('/players/create-character')) {
-          return Promise.resolve(characterCreationResponse);
+      fetchSpy.mockImplementation((url: string | URL | Request) => {
+        const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url;
+        if (urlString.includes('/auth/register')) {
+          return Promise.resolve(registrationResponse as unknown as Response);
+        } else if (urlString.includes('/professions')) {
+          return Promise.resolve(professionsResponse as unknown as Response);
+        } else if (urlString.includes('/players/roll-stats')) {
+          return Promise.resolve(statsResponse as unknown as Response);
+        } else if (urlString.includes('/players/create-character')) {
+          return Promise.resolve(characterCreationResponse as unknown as Response);
         }
         return Promise.reject(new Error('Unexpected URL'));
       });
@@ -236,13 +241,14 @@ describe.skip('App - Character Creation Flow Integration', () => {
         }),
       };
 
-      mockFetch.mockImplementation(url => {
-        if (url.includes('/auth/register')) {
-          return Promise.resolve(registrationResponse);
-        } else if (url.includes('/professions')) {
-          return Promise.resolve(professionsResponse);
-        } else if (url.includes('/players/roll-stats')) {
-          return Promise.resolve(statsResponse);
+      fetchSpy.mockImplementation((url: string | URL | Request) => {
+        const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url;
+        if (urlString.includes('/auth/register')) {
+          return Promise.resolve(registrationResponse as unknown as Response);
+        } else if (urlString.includes('/professions')) {
+          return Promise.resolve(professionsResponse as unknown as Response);
+        } else if (urlString.includes('/players/roll-stats')) {
+          return Promise.resolve(statsResponse as unknown as Response);
         }
         return Promise.reject(new Error('Unexpected URL'));
       });
@@ -309,11 +315,12 @@ describe.skip('App - Character Creation Flow Integration', () => {
         json: vi.fn().mockResolvedValue({ detail: 'Internal server error' }),
       };
 
-      mockFetch.mockImplementation(url => {
-        if (url.includes('/auth/register')) {
-          return Promise.resolve(registrationResponse);
-        } else if (url.includes('/professions')) {
-          return Promise.resolve(professionsErrorResponse);
+      fetchSpy.mockImplementation((url: string | URL | Request) => {
+        const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url;
+        if (urlString.includes('/auth/register')) {
+          return Promise.resolve(registrationResponse as unknown as Response);
+        } else if (urlString.includes('/professions')) {
+          return Promise.resolve(professionsErrorResponse as unknown as Response);
         }
         return Promise.reject(new Error('Unexpected URL'));
       });
@@ -408,15 +415,16 @@ describe.skip('App - Character Creation Flow Integration', () => {
         }),
       };
 
-      mockFetch.mockImplementation(url => {
-        if (url.includes('/auth/register')) {
-          return Promise.resolve(registrationResponse);
-        } else if (url.includes('/professions')) {
-          return Promise.resolve(professionsResponse);
-        } else if (url.includes('/players/roll-stats')) {
-          return Promise.resolve(statsResponse);
-        } else if (url.includes('/players/create-character')) {
-          return Promise.resolve(characterCreationResponse);
+      fetchSpy.mockImplementation((url: string | URL | Request) => {
+        const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url;
+        if (urlString.includes('/auth/register')) {
+          return Promise.resolve(registrationResponse as unknown as Response);
+        } else if (urlString.includes('/professions')) {
+          return Promise.resolve(professionsResponse as unknown as Response);
+        } else if (urlString.includes('/players/roll-stats')) {
+          return Promise.resolve(statsResponse as unknown as Response);
+        } else if (urlString.includes('/players/create-character')) {
+          return Promise.resolve(characterCreationResponse as unknown as Response);
         }
         return Promise.reject(new Error('Unexpected URL'));
       });

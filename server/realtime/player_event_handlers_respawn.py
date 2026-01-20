@@ -4,10 +4,10 @@ Player respawn event handlers.
 This module handles player respawn and delirium respawn events.
 """
 
-import asyncio
 import uuid
 from typing import Any
 
+from anyio import sleep
 from sqlalchemy.exc import SQLAlchemyError
 
 from .player_event_handlers_utils import PlayerEventHandlerUtils
@@ -150,7 +150,7 @@ class PlayerRespawnEventHandler:
             has_websocket = player_id_uuid in self.connection_manager.player_websockets
 
             if not has_websocket:
-                await asyncio.sleep(poll_interval)
+                await sleep(poll_interval)
                 continue
 
             # Connection available - try sending immediately
@@ -167,7 +167,7 @@ class PlayerRespawnEventHandler:
                 return
 
             # Wait before next poll
-            await asyncio.sleep(poll_interval)
+            await sleep(poll_interval)
 
     async def handle_player_respawned(self, event: Any) -> None:
         """

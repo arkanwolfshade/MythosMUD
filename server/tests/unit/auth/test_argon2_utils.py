@@ -41,17 +41,15 @@ def test_verify_password_failure():
 
 
 def test_hash_password_empty_string():
-    """Test hashing empty password."""
-    hashed = hash_password("")
-    assert isinstance(hashed, str)
-    assert len(hashed) > 0
+    """Test hashing empty password raises AuthenticationError."""
+    with pytest.raises(AuthenticationError, match="Password cannot be empty"):
+        hash_password("")
 
 
 def test_verify_password_empty_string():
-    """Test verifying empty password."""
-    hashed = hash_password("")
-    result = verify_password("", hashed)
-    assert result is True
+    """Test verifying empty password - cannot hash empty password."""
+    with pytest.raises(AuthenticationError, match="Password cannot be empty"):
+        hash_password("")
 
 
 def test_create_hasher_with_params_valid():

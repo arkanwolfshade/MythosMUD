@@ -157,7 +157,7 @@ async def _handle_special_command_routing(  # pylint: disable=too-many-arguments
 
 async def process_command_unified(
     command_line: str,
-    current_user: dict,
+    current_user: Any,
     request: Request,
     alias_storage: AliasStorage | None = None,
     player_name: str | None = None,

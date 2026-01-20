@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { EldritchIcon, MythosIcons } from './EldritchIcon';
 
 export interface Channel {
@@ -47,6 +47,30 @@ export const ChannelSelector: React.FC<ChannelSelectorProps> = ({
     setIsOpen(false);
   };
 
+  const handleBackdropKeyDown = (e: React.KeyboardEvent) => {
+    // Close dropdown on ESC key press
+    if (e.key === 'Escape') {
+      e.stopPropagation();
+      setIsOpen(false);
+    }
+  };
+
+  // Handle ESC key to close dropdown when open
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isOpen]);
+
   return (
     <div className={`relative ${className}`}>
       <select
@@ -66,7 +90,17 @@ export const ChannelSelector: React.FC<ChannelSelectorProps> = ({
       </select>
 
       {/* Backdrop to close dropdown when clicking outside - positioned BEFORE dropdown */}
-      {isOpen && <div className="fixed inset-0 z-10" onClick={handleBackdropClick} data-testid="dropdown-backdrop" />}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-10"
+          onClick={handleBackdropClick}
+          onKeyDown={handleBackdropKeyDown}
+          role="button"
+          aria-label="Close dropdown"
+          tabIndex={0}
+          data-testid="dropdown-backdrop"
+        />
+      )}
 
       {/* Channel Selector Button */}
       <button
@@ -74,7 +108,7 @@ export const ChannelSelector: React.FC<ChannelSelectorProps> = ({
         disabled={disabled}
         className={`
           relative z-20 flex items-center gap-2 px-3 py-2 bg-mythos-terminal-surface border border-gray-700 rounded
-          text-sm font-mono transition-all duration-200 min-w-[140px]
+          text-sm font-mono transition-all duration-200 min-w-button
           ${
             disabled
               ? 'opacity-50 cursor-not-allowed'

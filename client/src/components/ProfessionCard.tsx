@@ -1,12 +1,23 @@
 import React from 'react';
 
+export interface StatRequirement {
+  stat: string;
+  minimum: number;
+}
+
+export interface MechanicalEffect {
+  effect_type: string;
+  value: number | string;
+  description?: string | null;
+}
+
 export interface Profession {
   id: number;
   name: string;
   description: string;
-  flavor_text: string;
-  stat_requirements: Record<string, number>;
-  mechanical_effects: Record<string, number>; // Game mechanics like bonuses (e.g., combat_bonus, social_bonus)
+  flavor_text: string | null;
+  stat_requirements: StatRequirement[];
+  mechanical_effects: MechanicalEffect[];
   is_available: boolean;
 }
 
@@ -28,19 +39,19 @@ export const ProfessionCard: React.FC<ProfessionCardProps> = ({ profession, isSe
     }
   };
 
-  const formatStatRequirements = (requirements: Record<string, number>): string => {
-    if (!requirements || Object.keys(requirements).length === 0) {
+  const formatStatRequirements = (requirements: StatRequirement[]): string => {
+    if (!requirements || requirements.length === 0) {
       return 'No requirements';
     }
 
-    const formattedRequirements = Object.entries(requirements)
-      .map(([stat, value]) => `${stat.charAt(0).toUpperCase() + stat.slice(1)} ${value}`)
+    const formattedRequirements = requirements
+      .map(req => `${req.stat.charAt(0).toUpperCase() + req.stat.slice(1)} ${req.minimum}`)
       .join(', ');
 
     return `Minimum: ${formattedRequirements}`;
   };
 
-  const hasRequirements = profession.stat_requirements && Object.keys(profession.stat_requirements).length > 0;
+  const hasRequirements = profession.stat_requirements && profession.stat_requirements.length > 0;
 
   return (
     <div
@@ -59,7 +70,7 @@ export const ProfessionCard: React.FC<ProfessionCardProps> = ({ profession, isSe
       <div className="profession-content">
         <p className="profession-description">{profession.description}</p>
 
-        <p className="profession-flavor-text">{profession.flavor_text}</p>
+        {profession.flavor_text && <p className="profession-flavor-text">{profession.flavor_text}</p>}
 
         <div className="profession-requirements">
           <span className={`stat-requirements ${hasRequirements ? 'highlighted' : ''}`}>

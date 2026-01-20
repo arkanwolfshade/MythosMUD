@@ -97,7 +97,55 @@ export interface CommandSelectors {
 
 type CommandStore = CommandState & CommandActions & CommandSelectors;
 
+/**
+ * **Zustand Store Usage Patterns:**
+ *
+ * **CORRECT Usage Examples:**
+ *
+ * ```tsx
+ * // ✅ GOOD: Using selectors with shallow comparison for arrays
+ * import { shallow } from 'zustand/shallow';
+ *
+ * function CommandHistory() {
+ *   const commandHistory = useCommandStore(state => state.commandHistory, shallow);
+ *   const executeCommand = useCommandStore(state => state.executeCommand);
+ *
+ *   return <div>{commandHistory.map(cmd => <div key={cmd.timestamp}>{cmd.command}</div>)}</div>;
+ * }
+ *
+ * // ✅ GOOD: Using selectors for specific fields
+ * function CommandInput() {
+ *   const currentCommand = useCommandStore(state => state.currentCommand);
+ *   const setCurrentCommand = useCommandStore(state => state.setCurrentCommand);
+ *   return <input value={currentCommand} onChange={e => setCurrentCommand(e.target.value)} />;
+ * }
+ * ```
+ *
+ * **INCORRECT Usage Examples (Anti-patterns):**
+ *
+ * ```tsx
+ * // ❌ BAD: Subscribing to entire store
+ * function MyComponent() {
+ *   const commandState = useCommandStore(); // Don't do this!
+ *   return <div>{commandState.currentCommand}</div>;
+ * }
+ *
+ * // ❌ BAD: Calling selector functions inside selectors
+ * function MyComponent() {
+ *   const recent = useCommandStore(state => state.getRecentCommands(10)); // Don't do this!
+ *   // Instead, use: const history = useCommandStore(state => state.commandHistory, shallow);
+ *   // Then compute: const recent = useMemo(() => history.slice(-10), [history]);
+ * }
+ * ```
+ *
+ * **Note on Selector Functions:**
+ * - Selector functions like `getRecentCommands()`, `getSuccessfulCommands()`, `getCommandStatistics()`
+ *   are kept for backward compatibility but should NOT be called inside component selectors.
+ * - Instead, access the underlying state directly and compute derived values in components using `useMemo`.
+ */
+
 const MAX_COMMAND_HISTORY = 100;
+const MAX_COMMAND_QUEUE = 50; // Limit command queue to prevent unbounded growth (Task 5: Zustand Store Cleanup)
 
 const createInitialState = (): CommandState => ({
   currentCommand: '',
@@ -214,7 +262,16 @@ export const useCommandStore = create<CommandStore>()(
 
       // Command queue actions
       addToQueue: (command: string) =>
-        set(state => ({ commandQueue: [...state.commandQueue, command] }), false, 'addToQueue'),
+        set(
+          state => {
+            const newQueue = [...state.commandQueue, command];
+            // Limit queue size to prevent unbounded growth (Task 5: Zustand Store Cleanup)
+            const limitedQueue = newQueue.slice(-MAX_COMMAND_QUEUE);
+            return { commandQueue: limitedQueue };
+          },
+          false,
+          'addToQueue'
+        ),
 
       processNextCommand: () => {
         const state = get();
@@ -310,10 +367,10 @@ export const useCommandStore = create<CommandStore>()(
                 return false; // Pattern contains dangerous nested quantifiers
               }
 
-              // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
               // ReDoS protection is in place: pattern validation above (checks for dangerous nested quantifiers)
               // and 100ms timeout below. The trigger.pattern comes from user configuration but is validated
               // before use to prevent ReDoS attacks.
+              // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
               const regex = new RegExp(trigger.pattern, trigger.caseSensitive ? 'g' : 'gi');
 
               // Add timeout protection for regex execution
@@ -383,6 +440,7 @@ export const useCommandStore = create<CommandStore>()(
     }),
     {
       name: 'command-store',
+      enabled: import.meta.env.MODE === 'development',
       partialize: (state: CommandStore) => ({
         commandHistory: state.commandHistory,
         aliases: state.aliases,

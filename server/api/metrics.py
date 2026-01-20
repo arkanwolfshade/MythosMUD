@@ -9,48 +9,76 @@ AI: Metrics are essential for observability and incident response.
 
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 
 from ..auth.users import get_current_user
+from ..dependencies import NatsMessageHandlerDep
+from ..exceptions import LoggedHTTPException
 from ..middleware.metrics_collector import metrics_collector
 from ..models.user import User
+from ..schemas.metrics import (
+    DLQMessagesResponse,
+    DLQReplayResponse,
+    MetricsResponse,
+    MetricsSummaryResponse,
+    StatusMessageResponse,
+)
 from ..structured_logging.enhanced_logging_config import get_logger
+from ..utils.error_logging import create_context_from_request
 
 logger = get_logger(__name__)
 
 router = APIRouter(prefix="/metrics", tags=["metrics"])
 
 
-def verify_admin_access(current_user: User | None = Depends(get_current_user)) -> User:
+def verify_admin_access(request: Request, current_user: User | None = Depends(get_current_user)) -> User:
     """
     Verify user has admin access to metrics.
 
     Args:
+        request: FastAPI request object for error context
         current_user: Current authenticated user
 
     Returns:
         Current user if admin
 
     Raises:
-        HTTPException: If user is not admin or not authenticated
+        LoggedHTTPException: If user is not admin or not authenticated
 
     AI: Metrics may contain sensitive operational data - admin only.
     """
     if not current_user:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication required for metrics")
+        context = create_context_from_request(request)
+        context.metadata["operation"] = "verify_admin_access"
+        raise LoggedHTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication required for metrics", context=context
+        )
 
     # Check if user is admin
     is_admin = current_user.is_admin or current_user.is_superuser
 
     if not is_admin:
-        logger.warning("Non-admin user attempted to access metrics", username=current_user.username)
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin access required for metrics")
+        # Create context before logging to ensure full context in logs
+        context = create_context_from_request(request)
+        context.user_id = str(current_user.id)
+        context.metadata["operation"] = "verify_admin_access"
+        context.metadata["username"] = current_user.username
+        logger.warning(
+            "Non-admin user attempted to access metrics", username=current_user.username, context=context.to_dict()
+        )
+        raise LoggedHTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="Admin access required for metrics", context=context
+        )
 
     return current_user
 
 
-@router.get("")
-async def get_metrics(current_user: User = Depends(verify_admin_access)) -> dict[str, Any]:
+@router.get("", response_model=MetricsResponse)
+async def get_metrics(
+    request: Request,
+    current_user: User = Depends(verify_admin_access),
+    nats_message_handler: Any = NatsMessageHandlerDep,
+) -> MetricsResponse:
     """
     Get comprehensive system metrics.
 
@@ -65,10 +93,6 @@ async def get_metrics(current_user: User = Depends(verify_admin_access)) -> dict
     AI: For monitoring dashboards and alerting systems.
     """
     try:
-        # AI Agent: Access nats_message_handler via app.state.container (no longer a global)
-        from ..main import app
-
-        nats_message_handler = app.state.container.nats_message_handler
         from ..services.nats_service import nats_service
 
         # Get base metrics from collector
@@ -86,20 +110,36 @@ async def get_metrics(current_user: User = Depends(verify_admin_access)) -> dict
         # Add NATS connection state machine stats
         if nats_service:
             base_metrics["nats_connection"] = nats_service.get_connection_stats()
+            # Add subscription metrics
+            base_metrics["nats_subscriptions"] = {
+                "active_subscriptions": nats_service.get_active_subscriptions(),
+                "subscription_count": len(nats_service.get_active_subscriptions()),
+                "last_cleanup_time": getattr(nats_service, "_last_cleanup_time", None),
+                "subscription_count_total": getattr(nats_service, "_subscription_count", 0),
+                "unsubscription_count_total": getattr(nats_service, "_unsubscription_count", 0),
+            }
 
         logger.info("Metrics retrieved", admin_user=current_user.username)
 
         if not isinstance(base_metrics, dict):
             raise TypeError("base_metrics must be a dict")
-        return base_metrics
+        return MetricsResponse(metrics=base_metrics)
 
     except Exception as e:
-        logger.error("Error retrieving metrics", error=str(e), exc_info=True)
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving metrics") from e
+        context = create_context_from_request(request)
+        context.user_id = str(current_user.id) if current_user else None
+        context.metadata["operation"] = "get_metrics"
+        raise LoggedHTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving metrics", context=context
+        ) from e
 
 
-@router.get("/summary")
-async def get_metrics_summary(_current_user: User = Depends(verify_admin_access)) -> dict[str, Any]:  # pylint: disable=unused-argument  # Required by Depends for auth
+@router.get("/summary", response_model=MetricsSummaryResponse)
+async def get_metrics_summary(
+    request: Request,
+    _current_user: User = Depends(verify_admin_access),  # pylint: disable=unused-argument  # Required by Depends for auth
+    nats_message_handler: Any = NatsMessageHandlerDep,
+) -> MetricsSummaryResponse:
     """
     Get concise metrics summary.
 
@@ -117,27 +157,28 @@ async def get_metrics_summary(_current_user: User = Depends(verify_admin_access)
         summary = metrics_collector.get_summary()
 
         # Add DLQ count
-        # AI Agent: Access nats_message_handler via app.state.container (no longer a global)
-        from ..main import app
 
-        nats_message_handler = app.state.container.nats_message_handler
-
+        dlq_pending = None
+        circuit_state = None
         if nats_message_handler:
-            dlq_count = nats_message_handler.dead_letter_queue.get_statistics().get("total_messages", 0)
-            summary["dlq_pending"] = dlq_count
-            summary["circuit_state"] = nats_message_handler.circuit_breaker.get_state().value
+            dlq_pending = nats_message_handler.dead_letter_queue.get_statistics().get("total_messages", 0)
+            circuit_state = nats_message_handler.circuit_breaker.get_state().value
 
         if not isinstance(summary, dict):
             raise TypeError("summary must be a dict")
-        return summary
+        return MetricsSummaryResponse(summary=summary, dlq_pending=dlq_pending, circuit_state=circuit_state)
 
     except Exception as e:
-        logger.error("Error retrieving metrics summary", error=str(e))
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving metrics") from e
+        context = create_context_from_request(request)
+        context.user_id = str(_current_user.id) if _current_user else None
+        context.metadata["operation"] = "get_metrics_summary"
+        raise LoggedHTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving metrics", context=context
+        ) from e
 
 
-@router.post("/reset")
-async def reset_metrics(current_user: User = Depends(verify_admin_access)) -> dict[str, str]:
+@router.post("/reset", response_model=StatusMessageResponse)
+async def reset_metrics(request: Request, current_user: User = Depends(verify_admin_access)) -> StatusMessageResponse:
     """
     Reset metrics counters.
 
@@ -155,15 +196,24 @@ async def reset_metrics(current_user: User = Depends(verify_admin_access)) -> di
 
         logger.warning("Metrics reset by admin", admin_user=current_user.username)
 
-        return {"status": "success", "message": "Metrics counters reset"}
+        return StatusMessageResponse(status="success", message="Metrics counters reset")
 
     except Exception as e:
-        logger.error("Error resetting metrics", error=str(e))
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error resetting metrics") from e
+        context = create_context_from_request(request)
+        context.user_id = str(current_user.id) if current_user else None
+        context.metadata["operation"] = "reset_metrics"
+        raise LoggedHTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error resetting metrics", context=context
+        ) from e
 
 
-@router.get("/dlq")
-async def get_dlq_messages(limit: int = 100, current_user: User = Depends(verify_admin_access)) -> dict[str, Any]:
+@router.get("/dlq", response_model=DLQMessagesResponse)
+async def get_dlq_messages(
+    request: Request,
+    limit: int = 100,
+    current_user: User = Depends(verify_admin_access),
+    nats_message_handler: Any = NatsMessageHandlerDep,
+) -> DLQMessagesResponse:
     """
     Get messages from dead letter queue.
 
@@ -180,30 +230,31 @@ async def get_dlq_messages(limit: int = 100, current_user: User = Depends(verify
     AI: For incident investigation and manual message replay.
     """
     try:
-        # AI Agent: Access nats_message_handler via app.state.container (no longer a global)
-        from ..main import app
-
-        nats_message_handler = app.state.container.nats_message_handler
-
         if not nats_message_handler:
-            return {"messages": [], "count": 0}
+            return DLQMessagesResponse(messages=[], count=0, total_in_dlq=0)
 
         messages = nats_message_handler.dead_letter_queue.list_messages(limit=limit)
         total_count = nats_message_handler.dead_letter_queue.get_statistics().get("total_messages", 0)
 
         logger.info("DLQ messages retrieved", count=len(messages), total=total_count, admin_user=current_user.username)
 
-        return {"messages": messages, "count": len(messages), "total_in_dlq": total_count}
+        return DLQMessagesResponse(messages=messages, count=len(messages), total_in_dlq=total_count)
 
     except Exception as e:
-        logger.error("Error retrieving DLQ messages", error=str(e))
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving DLQ messages"
+        context = create_context_from_request(request)
+        context.user_id = str(current_user.id) if current_user else None
+        context.metadata["operation"] = "get_dlq_messages"
+        raise LoggedHTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving DLQ messages", context=context
         ) from e
 
 
-@router.post("/circuit-breaker/reset")
-async def reset_circuit_breaker(current_user: User = Depends(verify_admin_access)) -> dict[str, str]:
+@router.post("/circuit-breaker/reset", response_model=StatusMessageResponse)
+async def reset_circuit_breaker(
+    request: Request,
+    current_user: User = Depends(verify_admin_access),
+    nats_message_handler: Any = NatsMessageHandlerDep,
+) -> StatusMessageResponse:
     """
     Manually reset circuit breaker to CLOSED state.
 
@@ -217,33 +268,35 @@ async def reset_circuit_breaker(current_user: User = Depends(verify_admin_access
     AI: Emergency admin action - use when you know service is healthy.
     """
     try:
-        # AI Agent: Access nats_message_handler via app.state.container (no longer a global)
-        from ..main import app
-
-        nats_message_handler = app.state.container.nats_message_handler
-
         if not nats_message_handler:
-            raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="NATS handler not available")
+            context = create_context_from_request(request)
+            context.user_id = str(current_user.id) if current_user else None
+            context.metadata["operation"] = "reset_circuit_breaker"
+            raise LoggedHTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="NATS handler not available", context=context
+            )
 
         nats_message_handler.circuit_breaker.reset()
 
         logger.warning("Circuit breaker manually reset", admin_user=current_user.username)
 
-        return {"status": "success", "message": "Circuit breaker reset to CLOSED state"}
+        return StatusMessageResponse(status="success", message="Circuit breaker reset to CLOSED state")
 
     except HTTPException:
         # Re-raise HTTPExceptions (like 503 SERVICE_UNAVAILABLE) without wrapping
         raise
     except Exception as e:
-        logger.error("Error resetting circuit breaker", error=str(e))
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error resetting circuit breaker"
+        context = create_context_from_request(request)
+        context.user_id = str(current_user.id) if current_user else None
+        context.metadata["operation"] = "reset_circuit_breaker"
+        raise LoggedHTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error resetting circuit breaker", context=context
         ) from e
 
 
-def _load_dlq_message(dlq_path) -> dict[str, Any]:
+async def _load_dlq_message(dlq_path) -> dict[str, Any]:
     """
-    Load and validate DLQ message data from file.
+    Load and validate DLQ message data from file (async version using aiofiles).
 
     Args:
         dlq_path: Path to the DLQ file
@@ -256,11 +309,14 @@ def _load_dlq_message(dlq_path) -> dict[str, Any]:
     """
     import json
 
+    import aiofiles
+
     if not dlq_path.exists():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"DLQ file not found: {dlq_path}")
 
-    with open(dlq_path, encoding="utf-8") as f:
-        dlq_entry = json.load(f)
+    async with aiofiles.open(dlq_path, encoding="utf-8") as f:
+        content = await f.read()
+        dlq_entry = json.loads(content)
 
     # DeadLetterQueue stores entries via DeadLetterMessage.to_dict(),
     # where the original message is under the "data" key (not "message").
@@ -277,7 +333,7 @@ def _load_dlq_message(dlq_path) -> dict[str, Any]:
 
 async def _replay_message_safely(
     nats_message_handler, message_data: dict[str, Any], dlq_path, filepath: str, current_user: User
-) -> dict[str, Any]:
+) -> DLQReplayResponse:
     """
     Attempt to replay a DLQ message and handle errors safely.
 
@@ -306,10 +362,12 @@ async def _replay_message_safely(
         admin_user=current_user.username,
     )
 
-    return {"status": "success", "message": f"Message replayed and removed from DLQ: {filepath}"}
+    return DLQReplayResponse(
+        status="success", message=f"Message replayed and removed from DLQ: {filepath}", filepath=filepath
+    )
 
 
-def _handle_replay_error(replay_error: Exception, filepath: str, current_user: User) -> dict[str, Any]:
+def _handle_replay_error(replay_error: Exception, filepath: str, current_user: User) -> DLQReplayResponse:
     """
     Handle replay errors and return safe error response.
 
@@ -332,24 +390,33 @@ def _handle_replay_error(replay_error: Exception, filepath: str, current_user: U
     # AI reader: never expose stack traces in API responses, only in logs.
     # Human reader: CodeQL requires no exception information exposure to external users.
     # AI reader: return generic error message to prevent information leakage.
-    return {
-        "status": "failed",
-        "message": "Replay failed. Message remains in DLQ.",
-    }
+    return DLQReplayResponse(status="failed", message="Replay failed. Message remains in DLQ.", filepath=filepath)
 
 
-def _get_nats_handler():
-    """Get NATS message handler from app state."""
-    from ..main import app
+def _get_nats_handler(nats_message_handler: Any | None) -> Any:
+    """Get NATS message handler, raising exception if not available.
 
-    nats_message_handler = app.state.container.nats_message_handler
+    Args:
+        nats_message_handler: The NATS message handler from dependency injection
+
+    Returns:
+        NATSMessageHandler: The NATS message handler instance
+
+    Raises:
+        HTTPException: If handler is not available
+    """
     if not nats_message_handler:
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="NATS handler not available")
     return nats_message_handler
 
 
-@router.post("/dlq/{filepath:path}/replay")
-async def replay_dlq_message(filepath: str, current_user: User = Depends(verify_admin_access)) -> dict[str, Any]:
+@router.post("/dlq/{filepath:path}/replay", response_model=DLQReplayResponse)
+async def replay_dlq_message(
+    filepath: str,
+    request: Request,
+    current_user: User = Depends(verify_admin_access),
+    nats_message_handler: Any = NatsMessageHandlerDep,
+) -> DLQReplayResponse:
     """
     Replay a message from the Dead Letter Queue.
 
@@ -366,9 +433,9 @@ async def replay_dlq_message(filepath: str, current_user: User = Depends(verify_
     AI: For manual incident recovery - use after fixing underlying issue.
     """
     try:
-        nats_message_handler = _get_nats_handler()
+        nats_message_handler = _get_nats_handler(nats_message_handler)
         dlq_path = nats_message_handler.dead_letter_queue.storage_dir / filepath
-        message_data = _load_dlq_message(dlq_path)
+        message_data = await _load_dlq_message(dlq_path)
 
         # Attempt to replay message
         try:
@@ -376,9 +443,7 @@ async def replay_dlq_message(filepath: str, current_user: User = Depends(verify_
         except (ValueError, RuntimeError, OSError, AttributeError) as replay_error:
             # Catch specific exceptions that can occur during message replay
             return _handle_replay_error(replay_error, filepath, current_user)
-        except Exception as replay_error:  # pylint: disable=broad-except
-            # Catch any other unexpected exceptions during replay
-            # This is necessary because message processing can fail for various reasons
+        except Exception as replay_error:  # pylint: disable=broad-except  # Reason: Message replay errors unpredictable, must catch all exceptions to handle various failure modes during message processing
             # (network errors, processing errors, etc.) and we want to handle all of them
             # the same way (log and return generic error to user)
             return _handle_replay_error(replay_error, filepath, current_user)
@@ -386,14 +451,22 @@ async def replay_dlq_message(filepath: str, current_user: User = Depends(verify_
     except HTTPException:
         raise
     except Exception as e:
-        logger.error("Error replaying DLQ message", filepath=filepath, error=str(e))
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error replaying DLQ message"
+        context = create_context_from_request(request)
+        context.user_id = str(current_user.id) if current_user else None
+        context.metadata["operation"] = "replay_dlq_message"
+        context.metadata["filepath"] = filepath
+        raise LoggedHTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error replaying DLQ message", context=context
         ) from e
 
 
-@router.delete("/dlq/{filepath:path}")
-async def delete_dlq_message(filepath: str, current_user: User = Depends(verify_admin_access)) -> dict[str, str]:
+@router.delete("/dlq/{filepath:path}", response_model=StatusMessageResponse)
+async def delete_dlq_message(
+    filepath: str,
+    request: Request,
+    current_user: User = Depends(verify_admin_access),
+    nats_message_handler: Any = NatsMessageHandlerDep,
+) -> StatusMessageResponse:
     """
     Delete a message from the Dead Letter Queue without replaying.
 
@@ -410,27 +483,36 @@ async def delete_dlq_message(filepath: str, current_user: User = Depends(verify_
     AI: For discarding permanently failed or invalid messages.
     """
     try:
-        # AI Agent: Access nats_message_handler via app.state.container (no longer a global)
-        from ..main import app
-
-        nats_message_handler = app.state.container.nats_message_handler
-
         if not nats_message_handler:
-            raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="NATS handler not available")
+            context = create_context_from_request(request)
+            context.user_id = str(current_user.id) if current_user else None
+            context.metadata["operation"] = "delete_dlq_message"
+            raise LoggedHTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="NATS handler not available", context=context
+            )
 
         dlq_path = nats_message_handler.dead_letter_queue.storage_dir / filepath
 
         if not dlq_path.exists():
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"DLQ file not found: {filepath}")
+            context = create_context_from_request(request)
+            context.user_id = str(current_user.id) if current_user else None
+            context.metadata["operation"] = "delete_dlq_message"
+            context.metadata["filepath"] = filepath
+            raise LoggedHTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail=f"DLQ file not found: {filepath}", context=context
+            )
 
         nats_message_handler.dead_letter_queue.delete_message(str(dlq_path))
         logger.warning("DLQ message deleted by admin", filepath=filepath, admin_user=current_user.username)
-        return {"status": "success", "message": f"DLQ message deleted: {filepath}"}
+        return StatusMessageResponse(status="success", message=f"DLQ message deleted: {filepath}")
 
-    except HTTPException:
+    except LoggedHTTPException:
         raise
     except Exception as e:
-        logger.error("Error deleting DLQ message", filepath=filepath, error=str(e))
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error deleting DLQ message"
+        context = create_context_from_request(request)
+        context.user_id = str(current_user.id) if current_user else None
+        context.metadata["operation"] = "delete_dlq_message"
+        context.metadata["filepath"] = filepath
+        raise LoggedHTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error deleting DLQ message", context=context
         ) from e

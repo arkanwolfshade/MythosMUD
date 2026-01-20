@@ -64,7 +64,7 @@ def test_alias_equality_with_non_alias():
 
     assert alias != "not an alias"
     assert alias != {"name": "test", "command": "look"}
-    assert alias != None  # noqa: E711
+    assert alias != None  # noqa: E711  # Reason: Explicit None comparison required for equality test, E711 checks for != None which is valid in this context
 
 
 def test_alias_hash_same_name_and_command():

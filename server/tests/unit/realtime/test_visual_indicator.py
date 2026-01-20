@@ -113,7 +113,7 @@ def test_player_occupant_processor_adds_linkdead_indicator():
 
     with patch("server.realtime.player_occupant_processor.is_player_in_grace_period", return_value=True):
         # Accessing protected member is necessary to test the method used by PlayerOccupantProcessor implementation
-        result = processor._create_player_occupant_info(player_id, str(player_id), mock_player)  # pylint: disable=protected-access
+        result = processor._create_player_occupant_info(player_id, str(player_id), mock_player)  # pylint: disable=protected-access  # Reason: Accessing protected member is necessary to test the method used by PlayerOccupantProcessor implementation
 
         assert result is not None
         assert "(linkdead)" in result["player_name"]
@@ -135,7 +135,7 @@ def test_player_occupant_processor_no_linkdead_when_not_in_grace_period():
 
     with patch("server.realtime.player_occupant_processor.is_player_in_grace_period", return_value=False):
         # Accessing protected member is necessary to test the method used by PlayerOccupantProcessor implementation
-        result = processor._create_player_occupant_info(player_id, str(player_id), mock_player)  # pylint: disable=protected-access
+        result = processor._create_player_occupant_info(player_id, str(player_id), mock_player)  # pylint: disable=protected-access  # Reason: Accessing protected member is necessary to test the method used by PlayerOccupantProcessor implementation
 
         assert result is not None
         assert "(linkdead)" not in result["player_name"]

@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """Load seed data using asyncpg through project database connection."""
 
-import asyncio
 import os
 from pathlib import Path
 
 import asyncpg
+from anyio import run
 from dotenv import load_dotenv
 
 load_dotenv()
+
 
 async def load_seed_data():
     """Load all seed data files."""
@@ -40,7 +41,7 @@ async def load_seed_data():
                 continue
 
             print(f"Loading {seed_file}...")
-            sql = file_path.read_text(encoding='utf-8')
+            sql = file_path.read_text(encoding="utf-8")
 
             try:
                 await conn.execute(sql)
@@ -64,5 +65,6 @@ async def load_seed_data():
     finally:
         await conn.close()
 
+
 if __name__ == "__main__":
-    asyncio.run(load_seed_data())
+    run(load_seed_data)

@@ -13,6 +13,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+import aiofiles
+
 from ..config import get_config
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -111,9 +113,9 @@ class DeadLetterQueue:
 
         logger.info("DeadLetterQueue initialized", storage_dir=str(self.storage_dir))
 
-    def enqueue(self, message: DeadLetterMessage) -> Path:
+    async def enqueue_async(self, message: DeadLetterMessage) -> Path:
         """
-        Add failed message to dead letter queue.
+        Add failed message to dead letter queue (async version).
 
         Args:
             message: Dead letter message to enqueue
@@ -121,7 +123,41 @@ class DeadLetterQueue:
         Returns:
             Path to stored DLQ file
 
-        AI: Synchronous version for compatibility with tests.
+        AI: Async version using aiofiles to prevent blocking the event loop.
+        """
+        # Create unique filename
+        filename = f"dlq_{datetime.now(UTC).strftime('%Y%m%d_%H%M%S_%f')}.json"
+        filepath = self.storage_dir / filename
+
+        # Write message to file using aiofiles (non-blocking)
+        message_dict = message.to_dict()
+        message_json = json.dumps(message_dict, indent=2, ensure_ascii=False)
+
+        async with aiofiles.open(filepath, "w", encoding="utf-8") as f:
+            await f.write(message_json)
+
+        logger.error(
+            "Message added to dead letter queue",
+            filepath=str(filepath),
+            subject=message.subject,
+            error=message.error,
+            retry_count=message.retry_count,
+        )
+
+        return filepath
+
+    def enqueue(self, message: DeadLetterMessage) -> Path:
+        """
+        Add failed message to dead letter queue (sync version).
+
+        Args:
+            message: Dead letter message to enqueue
+
+        Returns:
+            Path to stored DLQ file
+
+        AI: Synchronous version for compatibility with tests and sync contexts.
+        For async contexts, use enqueue_async() instead.
         """
         # Create unique filename
         filename = f"dlq_{datetime.now(UTC).strftime('%Y%m%d_%H%M%S_%f')}.json"
@@ -141,14 +177,44 @@ class DeadLetterQueue:
 
         return filepath
 
+    async def dequeue_async(self) -> dict[str, Any] | None:
+        """
+        Retrieve and remove oldest message from DLQ (async version).
+
+        Returns:
+            Message data or None if queue is empty
+
+        AI: FIFO processing of failed messages using aiofiles to prevent blocking.
+        """
+        dlq_files = sorted(self.storage_dir.glob("dlq_*.json"))
+
+        if not dlq_files:
+            return None
+
+        oldest_file = dlq_files[0]
+
+        try:
+            async with aiofiles.open(oldest_file, encoding="utf-8") as f:
+                content = await f.read()
+                data = json.loads(content)
+
+            # Remove file after reading
+            oldest_file.unlink()
+
+            return data
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: DLQ dequeue errors unpredictable, must return None
+            logger.error("Error dequeuing DLQ message", filepath=str(oldest_file), error=str(e))
+            return None
+
     def dequeue(self) -> dict[str, Any] | None:
         """
-        Retrieve and remove oldest message from DLQ.
+        Retrieve and remove oldest message from DLQ (sync version).
 
         Returns:
             Message data or None if queue is empty
 
         AI: FIFO processing of failed messages.
+        For async contexts, use dequeue_async() instead.
         """
         dlq_files = sorted(self.storage_dir.glob("dlq_*.json"))
 

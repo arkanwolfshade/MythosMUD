@@ -204,8 +204,7 @@ async def test_get_last_whisper_sender():
     mock_room_service = MagicMock()
     mock_player_service = MagicMock()
     service = ChatService(mock_persistence, mock_room_service, mock_player_service)
-    # pylint: disable=protected-access
-    # Accessing protected member to set up test state for whisper tracking functionality
+    # pylint: disable=protected-access  # Reason: Accessing protected member to set up test state for whisper tracking functionality
     service._whisper_tracker._last_senders["TestPlayer"] = "OtherPlayer"
     result = service.get_last_whisper_sender("TestPlayer")
     assert result == "OtherPlayer"
@@ -247,8 +246,7 @@ def test_chat_service_normalize_player_id():
     mock_player_service = MagicMock()
     service = ChatService(mock_persistence, mock_room_service, mock_player_service)
     player_id = uuid.uuid4()
-    # pylint: disable=protected-access
-    # Accessing protected method to test UUID normalization utility
+    # pylint: disable=protected-access  # Reason: Accessing protected method to test UUID normalization utility
     result = service._normalize_player_id(player_id)
     assert isinstance(result, str)
     assert result == str(player_id)
@@ -260,8 +258,7 @@ def test_chat_service_normalize_player_id_string():
     mock_room_service = MagicMock()
     mock_player_service = MagicMock()
     service = ChatService(mock_persistence, mock_room_service, mock_player_service)
-    # pylint: disable=protected-access
-    # Accessing protected method to test string ID normalization utility
+    # pylint: disable=protected-access  # Reason: Accessing protected method to test string ID normalization utility
     result = service._normalize_player_id("player_001")
     assert result == "player_001"
 
@@ -331,8 +328,7 @@ def test_get_room_messages():
     service = ChatService(mock_persistence, mock_room_service, mock_player_service)
     player_id = uuid.uuid4()
     message = ChatMessage(player_id, "TestPlayer", "say", "Hello")
-    # pylint: disable=protected-access
-    # Accessing protected member to set up test state for message history
+    # pylint: disable=protected-access  # Reason: Accessing protected member to set up test state for message history
     service._room_messages["room_001"] = [message]
     result = service.get_room_messages("room_001")
     assert len(result) == 1
@@ -355,8 +351,7 @@ def test_clear_last_whisper_sender():
     mock_room_service = MagicMock()
     mock_player_service = MagicMock()
     service = ChatService(mock_persistence, mock_room_service, mock_player_service)
-    # pylint: disable=protected-access
-    # Accessing protected member to set up test state and verify whisper tracking cleanup
+    # pylint: disable=protected-access  # Reason: Accessing protected member to set up test state and verify whisper tracking cleanup
     service._whisper_tracker._last_senders["TestPlayer"] = "OtherPlayer"
     service.clear_last_whisper_sender("TestPlayer")
     assert "TestPlayer" not in service._whisper_tracker._last_senders
@@ -369,8 +364,7 @@ def test_store_last_whisper_sender():
     mock_player_service = MagicMock()
     service = ChatService(mock_persistence, mock_room_service, mock_player_service)
     service.store_last_whisper_sender("TestPlayer", "OtherPlayer")
-    # pylint: disable=protected-access
-    # Accessing protected member to verify whisper tracking state was updated correctly
+    # pylint: disable=protected-access  # Reason: Accessing protected member to verify whisper tracking state was updated correctly
     assert service._whisper_tracker._last_senders["TestPlayer"] == "OtherPlayer"
 
 
@@ -381,8 +375,7 @@ def test_get_player_pose():
     mock_player_service = MagicMock()
     service = ChatService(mock_persistence, mock_room_service, mock_player_service)
     player_id = uuid.uuid4()
-    # pylint: disable=protected-access
-    # Accessing protected member to set up test state for pose management
+    # pylint: disable=protected-access  # Reason: Accessing protected member to set up test state for pose management
     service._pose_manager._poses[str(player_id)] = "standing tall"
     result = service.get_player_pose(player_id)
     assert result == "standing tall"
@@ -405,8 +398,7 @@ def test_clear_player_pose():
     mock_player_service = MagicMock()
     service = ChatService(mock_persistence, mock_room_service, mock_player_service)
     player_id = uuid.uuid4()
-    # pylint: disable=protected-access
-    # Accessing protected member to set up test state and verify pose cleanup
+    # pylint: disable=protected-access  # Reason: Accessing protected member to set up test state and verify pose cleanup
     service._pose_manager._poses[str(player_id)] = "standing tall"
     result = service.clear_player_pose(player_id)
     assert result is True

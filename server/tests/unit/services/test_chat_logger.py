@@ -20,7 +20,7 @@ def temp_log_dir():
 
 
 @pytest.fixture
-def chat_logger(temp_log_dir):  # pylint: disable=redefined-outer-name
+def chat_logger(temp_log_dir):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Create a ChatLogger instance with temp directory."""
     logger = ChatLogger(log_dir=temp_log_dir)
     yield logger
@@ -28,17 +28,16 @@ def chat_logger(temp_log_dir):  # pylint: disable=redefined-outer-name
     logger.shutdown()
 
 
-def test_chat_logger_initialization_with_directory(temp_log_dir):  # pylint: disable=redefined-outer-name
+def test_chat_logger_initialization_with_directory(temp_log_dir):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test ChatLogger initialization with explicit directory."""
     logger = ChatLogger(log_dir=temp_log_dir)
     assert logger.log_dir == Path(temp_log_dir)
-    # pylint: disable=protected-access
-    # Accessing protected member for test verification of internal state
+    # pylint: disable=protected-access  # Reason: Accessing protected member for test verification of internal state
     assert logger._writer_thread is not None
     logger.shutdown()
 
 
-def test_log_chat_message(chat_logger, temp_log_dir):  # pylint: disable=redefined-outer-name
+def test_log_chat_message(chat_logger, temp_log_dir):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
     """Test log_chat_message writes entry."""
     chat_logger.log_chat_message(
         {
@@ -58,7 +57,7 @@ def test_log_chat_message(chat_logger, temp_log_dir):  # pylint: disable=redefin
     assert len(log_files) > 0
 
 
-def test_log_moderation_event(chat_logger, temp_log_dir):  # pylint: disable=redefined-outer-name
+def test_log_moderation_event(chat_logger, temp_log_dir):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
     """Test log_moderation_event writes entry."""
     chat_logger.log_moderation_event(
         event_type="mute",
@@ -78,7 +77,7 @@ def test_log_moderation_event(chat_logger, temp_log_dir):  # pylint: disable=red
     assert len(log_files) > 0
 
 
-def test_log_system_event(chat_logger, temp_log_dir):  # pylint: disable=redefined-outer-name
+def test_log_system_event(chat_logger, temp_log_dir):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
     """Test log_system_event writes entry."""
     chat_logger.log_system_event(
         event_type="player_join",
@@ -96,10 +95,9 @@ def test_log_system_event(chat_logger, temp_log_dir):  # pylint: disable=redefin
     assert len(log_files) > 0
 
 
-def test_shutdown(chat_logger):  # pylint: disable=redefined-outer-name
+def test_shutdown(chat_logger):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test shutdown stops writer thread."""
-    # pylint: disable=protected-access
-    # Accessing protected members for test verification of internal state
+    # pylint: disable=protected-access  # Reason: Accessing protected members for test verification of internal state
     assert chat_logger._writer_thread is not None
     assert chat_logger._writer_thread.is_alive()
 
@@ -111,10 +109,10 @@ def test_shutdown(chat_logger):  # pylint: disable=redefined-outer-name
     time.sleep(0.1)
 
     # Thread should be stopped (or stopping)
-    assert not chat_logger._shutdown_event.is_set() or not chat_logger._writer_thread.is_alive()  # pylint: disable=protected-access
+    assert not chat_logger._shutdown_event.is_set() or not chat_logger._writer_thread.is_alive()  # pylint: disable=protected-access  # Reason: Accessing protected members for test verification of thread state
 
 
-def test_log_player_muted(chat_logger, temp_log_dir):  # pylint: disable=redefined-outer-name
+def test_log_player_muted(chat_logger, temp_log_dir):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
     """Test log_player_muted writes entry."""
     chat_logger.log_player_muted(
         muter_id="admin123",
@@ -133,7 +131,7 @@ def test_log_player_muted(chat_logger, temp_log_dir):  # pylint: disable=redefin
     assert len(log_files) > 0
 
 
-def test_log_player_unmuted(chat_logger, temp_log_dir):  # pylint: disable=redefined-outer-name
+def test_log_player_unmuted(chat_logger, temp_log_dir):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
     """Test log_player_unmuted writes entry."""
     chat_logger.log_player_unmuted(
         unmuter_id="admin123",
@@ -150,7 +148,7 @@ def test_log_player_unmuted(chat_logger, temp_log_dir):  # pylint: disable=redef
     assert len(log_files) > 0
 
 
-def test_log_player_joined_room(chat_logger, temp_log_dir):  # pylint: disable=redefined-outer-name
+def test_log_player_joined_room(chat_logger, temp_log_dir):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
     """Test log_player_joined_room writes entry."""
     chat_logger.log_player_joined_room(
         player_id="player123",
@@ -167,7 +165,7 @@ def test_log_player_joined_room(chat_logger, temp_log_dir):  # pylint: disable=r
     assert len(log_files) > 0
 
 
-def test_log_rate_limit_violation(chat_logger, temp_log_dir):  # pylint: disable=redefined-outer-name
+def test_log_rate_limit_violation(chat_logger, temp_log_dir):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
     """Test log_rate_limit_violation writes entry."""
     chat_logger.log_rate_limit_violation(
         player_id="player123",
@@ -185,7 +183,7 @@ def test_log_rate_limit_violation(chat_logger, temp_log_dir):  # pylint: disable
     assert len(log_files) > 0
 
 
-def test_get_log_file_paths(chat_logger):  # pylint: disable=redefined-outer-name
+def test_get_log_file_paths(chat_logger):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test get_log_file_paths returns correct paths."""
     paths = chat_logger.get_log_file_paths()
 
@@ -195,7 +193,7 @@ def test_get_log_file_paths(chat_logger):  # pylint: disable=redefined-outer-nam
     assert isinstance(paths["chat"], Path)
 
 
-def test_get_log_stats(chat_logger):  # pylint: disable=redefined-outer-name
+def test_get_log_stats(chat_logger):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test get_log_stats returns statistics."""
     stats = chat_logger.get_log_stats()
 
@@ -205,7 +203,7 @@ def test_get_log_stats(chat_logger):  # pylint: disable=redefined-outer-name
     assert isinstance(stats["chat"], dict)
 
 
-def test_log_whisper_channel_message(chat_logger, temp_log_dir):  # pylint: disable=redefined-outer-name
+def test_log_whisper_channel_message(chat_logger, temp_log_dir):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
     """Test log_whisper_channel_message writes entry."""
     chat_logger.log_whisper_channel_message(
         {

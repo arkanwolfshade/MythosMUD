@@ -5,14 +5,21 @@ This module handles all room-related business logic including
 room information retrieval and room state management.
 """
 
+# pylint: disable=too-many-lines  # Reason: Room service module requires extensive functionality for room retrieval, filtering, exploration tracking, coordinate management, and all room-related business logic
+
+import uuid
 from collections.abc import Sequence
 from typing import TYPE_CHECKING, Any, cast
+
+from sqlalchemy import bindparam, text
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
     from ..async_persistence import AsyncPersistenceLayer
     from ..caching.cache_service import RoomCacheService
+    from ..services.exploration_service import ExplorationService
 
 logger = get_logger(__name__)
 
@@ -431,6 +438,69 @@ class RoomService:
             count=len(filtered_rooms),
         )
         return filtered_rooms
+
+    async def filter_rooms_by_exploration(
+        self,
+        rooms: list[dict[str, Any]],
+        player_id: uuid.UUID,
+        exploration_service: "ExplorationService",
+        session: AsyncSession,
+    ) -> list[dict[str, Any]]:
+        """
+        Filter rooms to only include those explored by the player.
+
+        Args:
+            rooms: List of room dictionaries to filter
+            player_id: UUID of the player
+            exploration_service: ExplorationService instance for getting explored rooms
+            session: Database session for querying room stable_ids
+
+        Returns:
+            Filtered list of rooms that the player has explored
+        """
+        logger.debug("Filtering rooms by exploration", player_id=str(player_id), total_rooms=len(rooms))
+
+        try:
+            # Get explored room UUIDs from ExplorationService
+            explored_room_ids = await exploration_service.get_explored_rooms(player_id, session)
+
+            if not explored_room_ids:
+                logger.debug("Player has explored no rooms, returning empty list", player_id=str(player_id))
+                return []
+
+            # Convert explored room UUIDs to stable_ids for filtering
+            # We need to look up stable_ids from room UUIDs
+            # Convert string UUIDs to UUID objects for proper PostgreSQL type handling
+            room_uuid_list = [uuid.UUID(rid) for rid in explored_room_ids]
+
+            # Use IN clause with expanding parameters for proper array handling
+            # This avoids mixing parameter syntax with casting syntax that causes asyncpg errors
+            lookup_query = text("SELECT stable_id FROM rooms WHERE id IN :room_ids").bindparams(
+                bindparam("room_ids", expanding=True)
+            )
+            result = await session.execute(lookup_query, {"room_ids": room_uuid_list})
+            explored_stable_ids = {row[0] for row in result.fetchall()}
+
+            # Filter rooms to only include explored ones
+            filtered_rooms = [room for room in rooms if room.get("id") in explored_stable_ids]
+
+            logger.debug(
+                "Filtered rooms by exploration",
+                player_id=str(player_id),
+                explored_count=len(explored_stable_ids),
+                filtered_count=len(filtered_rooms),
+            )
+
+            return filtered_rooms
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Exploration filter errors unpredictable, fallback to all rooms
+            # Log error but don't fail - return all rooms as fallback
+            logger.warning(
+                "Error filtering by explored rooms, returning all rooms",
+                player_id=str(player_id),
+                error=str(e),
+                error_type=type(e).__name__,
+            )
+            return rooms
 
     async def get_room_info(self, room_id: str) -> dict[str, Any] | None:
         """

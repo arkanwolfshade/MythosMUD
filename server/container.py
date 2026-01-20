@@ -31,7 +31,6 @@ USAGE:
 
 # pylint: disable=too-many-return-statements,too-many-lines,wrong-import-position  # Reason: Container methods require multiple return statements for service resolution logic (type checking, initialization states, error handling). Container requires extensive service registration and lifecycle management code. Imports after TYPE_CHECKING block are intentional to avoid circular dependencies.
 
-import asyncio
 import json
 import threading
 from datetime import datetime
@@ -40,6 +39,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse
 
+from anyio import Lock
 from pydantic import ValidationError
 
 if TYPE_CHECKING:
@@ -101,7 +101,7 @@ class ApplicationContainer:  # pylint: disable=too-many-instance-attributes  # R
     _instance: "ApplicationContainer | None" = None
     _lock: threading.Lock = threading.Lock()
 
-    def __init__(self) -> None:
+    def __init__(self) -> None:  # pylint: disable=too-many-statements  # Reason: Container initialization requires many attribute declarations (56 statements) for all service references; breaking this into smaller functions would reduce clarity and is not standard Python practice for __init__
         """
         Initialize the container.
 
@@ -163,9 +163,43 @@ class ApplicationContainer:  # pylint: disable=too-many-instance-attributes  # R
         self.item_prototype_registry: PrototypeRegistry | None = None
         self.item_factory: ItemFactory | None = None
 
+        # Combat services
+        self.player_combat_service: Any | None = None  # PlayerCombatService type hint would create circular import
+        self.player_death_service: Any | None = None  # PlayerDeathService type hint would create circular import
+        self.player_respawn_service: Any | None = None  # PlayerRespawnService type hint would create circular import
+        self.combat_service: Any | None = None  # CombatService type hint would create circular import
+
+        # Magic services
+        self.magic_service: Any | None = None  # MagicService type hint would create circular import
+        self.spell_registry: Any | None = None  # SpellRegistry type hint would create circular import
+        self.spell_targeting_service: Any | None = None  # SpellTargetingService type hint would create circular import
+        self.spell_effects: Any | None = None  # SpellEffects type hint would create circular import
+        self.spell_learning_service: Any | None = None  # SpellLearningService type hint would create circular import
+        self.mp_regeneration_service: Any | None = None  # MPRegenerationService type hint would create circular import
+
+        # NPC services
+        self.npc_lifecycle_manager: Any | None = None  # NPCLifecycleManager type hint would create circular import
+        self.npc_spawning_service: Any | None = None  # NPCSpawningService type hint would create circular import
+        self.npc_population_controller: Any | None = (
+            None  # NPCPopulationController type hint would create circular import
+        )
+
+        # Other services
+        self.catatonia_registry: Any | None = None  # CatatoniaRegistry type hint would create circular import
+        self.passive_lucidity_flux_service: Any | None = (
+            None  # PassiveLucidityFluxService type hint would create circular import
+        )
+        self.mythos_time_consumer: Any | None = None  # MythosTimeEventConsumer type hint would create circular import
+        self.chat_service: Any | None = None  # ChatService type hint would create circular import
+
+        # State flags
+        self.server_shutdown_pending: bool = False
+        self.shutdown_data: dict[str, Any] | None = None
+        self.tick_task: Any | None = None  # Task reference from TaskRegistry
+
         # Initialization state
         self._initialized: bool = False
-        self._initialization_lock = asyncio.Lock()
+        self._initialization_lock = Lock()
         self._project_root: Path | None = None
 
         logger.info("ApplicationContainer created (not yet initialized)")
@@ -367,7 +401,7 @@ class ApplicationContainer:  # pylint: disable=too-many-instance-attributes  # R
                 from .services.nats_service import NATSService
 
                 # Initialize NATS service if enabled
-                if self.config.nats.enabled:  # pylint: disable=no-member  # Pydantic FieldInfo dynamic attribute
+                if self.config.nats.enabled:  # pylint: disable=no-member  # Reason: Pydantic model fields are dynamically accessible after validation, pylint cannot detect them statically
                     self.nats_service = NATSService(config=self.config.nats)
                     await self.nats_service.connect()
                     logger.info("NATS service connected")
@@ -473,6 +507,24 @@ class ApplicationContainer:  # pylint: disable=too-many-instance-attributes  # R
                 self.log_aggregator = LogAggregator()
                 logger.info("Monitoring services initialized")
 
+                # Phase 10: Combat services (depends on persistence, event_bus, connection_manager, movement_service)
+                await self._initialize_combat_services()
+
+                # Phase 11: NPC services (depends on event_bus, persistence, async_persistence)
+                await self._initialize_npc_services()
+
+                # Phase 12: NATS and combat service (depends on nats_service, combat services)
+                await self._initialize_nats_combat_service()
+
+                # Phase 13: Magic services (depends on player_service, combat_service, player_combat_service)
+                await self._initialize_magic_services()
+
+                # Phase 14: Chat service (depends on persistence, player_service, nats_service, user_manager)
+                await self._initialize_chat_service()
+
+                # Phase 15: Mythos time consumer (depends on event_bus, holiday_service, schedule_service, room_service, npc_lifecycle_manager)
+                await self._initialize_mythos_time_consumer()
+
                 self._initialized = True
                 logger.info(
                     "ApplicationContainer initialization complete",
@@ -488,6 +540,11 @@ class ApplicationContainer:  # pylint: disable=too-many-instance-attributes  # R
                         "room_service",
                         "user_manager",
                         "monitoring",
+                        "combat_services",
+                        "npc_services",
+                        "magic_services",
+                        "chat_service",
+                        "mythos_time_consumer",
                     ],
                 )
 
@@ -590,9 +647,409 @@ class ApplicationContainer:  # pylint: disable=too-many-instance-attributes  # R
             if expected_type is dict:
                 return dict(decoded)
             return decoded
-        except JSONDecodeError:  # noqa: BLE001
+        except JSONDecodeError:  # noqa: BLE001  # Reason: JSON decode errors are expected for malformed data, caught explicitly to return default value, no security risk from logging
             logger.warning("Failed to decode JSON column; using default value", column_value=value)
             return expected_type()
+
+    async def _sanitarium_failover_callback(self, player_id: str, current_lcd: int) -> None:
+        """Failover callback that relocates catatonic players to the sanitarium."""
+        import uuid as uuid_lib
+
+        from anyio import sleep
+
+        from .services.lucidity_service import LucidityService
+
+        # 10-second fade before transport per spec
+        await sleep(10.0)
+
+        if self.database_manager is None:
+            logger.error("Database manager not available for catatonia failover", player_id=player_id)
+            return
+
+        try:
+            session_maker = self.database_manager.get_session_maker()
+        except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as exc:
+            logger.error(
+                "Failed to get session maker for catatonia failover",
+                player_id=player_id,
+                error=str(exc),
+                exc_info=True,
+            )
+            return
+
+        async with session_maker() as session:
+            try:
+                # Clear all active hallucination timers per spec requirement
+                player_id_uuid = uuid_lib.UUID(player_id) if isinstance(player_id, str) else player_id
+                lucidity_service = LucidityService(session)
+                timers_cleared = await lucidity_service.clear_hallucination_timers(player_id_uuid)
+                logger.debug(
+                    "Hallucination timers cleared in failover",
+                    player_id=player_id,
+                    timers_cleared=timers_cleared,
+                )
+
+                if self.player_respawn_service is None:
+                    logger.error("PlayerRespawnService not available for catatonia failover", player_id=player_id)
+                    return
+
+                await self.player_respawn_service.move_player_to_limbo(player_id, "catatonia_failover", session)
+                await self.player_respawn_service.respawn_player_from_sanitarium(player_id, session)
+                logger.info("Catatonia failover completed", player_id=player_id, lcd=current_lcd)
+            except (
+                ValueError,
+                TypeError,
+                AttributeError,
+                KeyError,
+                RuntimeError,
+            ) as exc:  # pragma: no cover - defensive
+                logger.error("Catatonia failover failed", player_id=player_id, error=str(exc), exc_info=True)
+                await session.rollback()
+
+    async def _initialize_combat_services(self) -> None:  # pylint: disable=too-many-locals  # Reason: Combat service initialization requires many intermediate variables for dependency setup
+        """Initialize combat-related services."""
+        if self.persistence is None:
+            raise RuntimeError("Persistence must be initialized before combat services")
+        if self.event_bus is None:
+            raise RuntimeError("EventBus must be initialized before combat services")
+
+        logger.debug("Initializing combat services...")
+
+        from .services.catatonia_registry import CatatoniaRegistry
+        from .services.passive_lucidity_flux_service import PassiveLucidityFluxService
+        from .services.player_combat_service import PlayerCombatService
+        from .services.player_death_service import PlayerDeathService
+        from .services.player_respawn_service import PlayerRespawnService
+
+        # Initialize PlayerCombatService
+        self.player_combat_service = PlayerCombatService(self.persistence, self.event_bus)
+        if self.connection_manager is not None:
+            self.connection_manager.set_player_combat_service(self.player_combat_service)
+        # Update MovementService with combat service if it exists
+        if self.movement_service is not None:
+            self.movement_service.set_player_combat_service(self.player_combat_service)
+            logger.info("MovementService updated with player_combat_service")
+        logger.info("Player combat service initialized")
+
+        # Initialize PlayerDeathService
+        self.player_death_service = PlayerDeathService(
+            event_bus=self.event_bus, player_combat_service=self.player_combat_service
+        )
+        logger.info("Player death service initialized")
+
+        # Initialize PlayerRespawnService
+        self.player_respawn_service = PlayerRespawnService(
+            event_bus=self.event_bus, player_combat_service=self.player_combat_service
+        )
+        logger.info("Player respawn service initialized")
+
+        # Initialize CatatoniaRegistry with failover callback
+        self.catatonia_registry = CatatoniaRegistry(failover_callback=self._sanitarium_failover_callback)
+        logger.info("Catatonia registry initialized")
+
+        # Initialize PassiveLucidityFluxService
+        if self.performance_monitor is None:
+            raise RuntimeError("PerformanceMonitor must be initialized before passive_lucidity_flux_service")
+        self.passive_lucidity_flux_service = PassiveLucidityFluxService(
+            persistence=self.async_persistence,
+            performance_monitor=self.performance_monitor,
+            catatonia_observer=self.catatonia_registry,
+        )
+        logger.info("Passive lucidity flux service initialized")
+
+        logger.info("All combat services initialized")
+
+    async def _initialize_npc_services(self) -> None:
+        """Initialize NPC services and load definitions."""
+        if self.event_bus is None:
+            raise RuntimeError("EventBus must be initialized before NPC services")
+        if self.persistence is None:
+            raise RuntimeError("Persistence must be initialized before NPC services")
+        if self.async_persistence is None:
+            raise RuntimeError("AsyncPersistence must be initialized before NPC services")
+
+        logger.debug("Initializing NPC services...")
+
+        from .npc.lifecycle_manager import NPCLifecycleManager
+        from .npc.population_control import NPCPopulationController
+        from .npc.spawning_service import NPCSpawningService
+        from .npc_database import get_npc_session
+        from .services.npc_instance_service import initialize_npc_instance_service
+        from .services.npc_service import NPCService
+
+        # Initialize NPCSpawningService
+        self.npc_spawning_service = NPCSpawningService(self.event_bus, None)
+
+        # Initialize NPCLifecycleManager
+        self.npc_lifecycle_manager = NPCLifecycleManager(
+            event_bus=self.event_bus,
+            population_controller=None,
+            spawning_service=self.npc_spawning_service,
+            persistence=self.persistence,
+        )
+
+        # Initialize NPCPopulationController
+        self.npc_population_controller = NPCPopulationController(
+            self.event_bus,
+            self.npc_spawning_service,
+            self.npc_lifecycle_manager,
+            async_persistence=self.async_persistence,
+        )
+
+        # Wire up circular dependencies
+        self.npc_spawning_service.population_controller = self.npc_population_controller
+        self.npc_lifecycle_manager.population_controller = self.npc_population_controller
+
+        # Initialize NPC instance service
+        initialize_npc_instance_service(
+            lifecycle_manager=self.npc_lifecycle_manager,
+            spawning_service=self.npc_spawning_service,
+            population_controller=self.npc_population_controller,
+            event_bus=self.event_bus,
+        )
+
+        # Load NPC definitions and spawn rules
+        npc_service = NPCService()
+        async for npc_session in get_npc_session():
+            try:
+                definitions = await npc_service.get_npc_definitions(npc_session)
+                self.npc_population_controller.load_npc_definitions(definitions)
+                logger.info("NPC definitions loaded", count=len(definitions))
+
+                spawn_rules = await npc_service.get_spawn_rules(npc_session)
+                self.npc_population_controller.load_spawn_rules(spawn_rules)
+                logger.info("NPC spawn rules loaded", count=len(spawn_rules))
+            except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as e:
+                logger.error("Error loading NPC definitions and spawn rules", error=str(e))
+            break
+
+        logger.info("NPC services initialized")
+
+        # Start NPC thread manager if available
+        if hasattr(self.npc_lifecycle_manager, "thread_manager"):
+            try:
+                await self.npc_lifecycle_manager.thread_manager.start()
+                logger.info("NPC thread manager started")
+
+                if hasattr(self.npc_lifecycle_manager, "_pending_thread_starts"):
+                    # Accessing protected member via getattr() for internal state initialization
+                    # This is safe as we check existence first and handle gracefully
+                    pending_starts = getattr(self.npc_lifecycle_manager, "_pending_thread_starts", [])  # pylint: disable=protected-access  # Reason: Accessing internal state for startup initialization, existence checked first and handled gracefully
+                    for npc_id, definition in pending_starts:
+                        try:
+                            await self.npc_lifecycle_manager.thread_manager.start_npc_thread(npc_id, definition)
+                            logger.debug("Started queued NPC thread", npc_id=npc_id)
+                        except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as e:
+                            logger.warning("Failed to start queued NPC thread", npc_id=npc_id, error=str(e))
+                    pending_starts.clear()
+            except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as e:
+                logger.error("Failed to start NPC thread manager", error=str(e))
+
+    async def _initialize_nats_combat_service(self) -> None:
+        """Initialize NATS-dependent services including combat service."""
+        if self.config is None:
+            raise RuntimeError("Config must be initialized before NATS combat service")
+        if self.player_combat_service is None:
+            raise RuntimeError("PlayerCombatService must be initialized before combat service")
+        if self.player_death_service is None:
+            raise RuntimeError("PlayerDeathService must be initialized before combat service")
+        if self.player_respawn_service is None:
+            raise RuntimeError("PlayerRespawnService must be initialized before combat service")
+        if self.event_bus is None:
+            raise RuntimeError("EventBus must be initialized before combat service")
+
+        logger.debug("Initializing NATS and combat service...")
+
+        is_testing = self.config.logging.environment in ("unit_test", "e2e_test")  # pylint: disable=no-member  # Reason: Pydantic model field access - pylint doesn't recognize dynamic field access on Pydantic models
+
+        if self.nats_service is not None and self.nats_service.is_connected():
+            logger.info("NATS service available from container")
+
+            # Lazy import to avoid circular dependency with combat_service
+            from .services.combat_service import CombatService, set_combat_service
+
+            self.combat_service = CombatService(
+                self.player_combat_service,
+                self.nats_service,
+                player_death_service=self.player_death_service,
+                player_respawn_service=self.player_respawn_service,
+                event_bus=self.event_bus,
+            )
+
+            set_combat_service(self.combat_service)
+
+            if self.player_service is None:
+                raise RuntimeError("PlayerService must be initialized")
+            self.player_service.combat_service = self.combat_service
+            self.player_service.player_combat_service = self.player_combat_service
+            logger.info("Combat service initialized")
+
+            # Start NATS message handler if available
+            try:
+                if self.nats_message_handler:
+                    await self.nats_message_handler.start()
+                    logger.info("NATS message handler started successfully from container")
+                else:
+                    logger.warning("NATS message handler not available in container (NATS disabled or failed)")
+            except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as e:
+                logger.error("Error starting NATS message handler", error=str(e))
+        else:
+            if is_testing:
+                logger.warning("NATS service not available in test environment - using mock NATS service")
+                self.combat_service = None
+            else:
+                logger.error("NATS service not available - NATS is required for chat functionality")
+                raise RuntimeError("NATS connection failed - NATS is mandatory for chat system")
+
+    async def _initialize_magic_services(self) -> None:  # pylint: disable=too-many-locals  # Reason: Magic service initialization requires many intermediate variables for dependency setup
+        """Initialize magic system services."""
+        if self.async_persistence is None:
+            raise RuntimeError("async_persistence must be initialized before magic services")
+        if self.player_service is None:
+            raise RuntimeError("player_service must be initialized before magic services")
+
+        logger.debug("Initializing magic services...")
+
+        # Import here to avoid circular imports: spell_targeting -> combat_service -> lifespan -> lifespan_startup
+        from .game.magic.magic_service import MagicService
+        from .game.magic.mp_regeneration_service import MPRegenerationService
+        from .game.magic.spell_effects import SpellEffects
+        from .game.magic.spell_learning_service import SpellLearningService
+        from .game.magic.spell_registry import SpellRegistry
+        from .game.magic.spell_targeting import SpellTargetingService
+        from .persistence.repositories.player_spell_repository import PlayerSpellRepository
+        from .persistence.repositories.spell_repository import SpellRepository as SpellRepositoryClass
+        from .services.target_resolution_service import TargetResolutionService
+
+        logger.info("Initializing magic system services...")
+
+        # Initialize repositories
+        spell_repository = SpellRepositoryClass()
+        player_spell_repository = PlayerSpellRepository()
+        logger.info("Spell repositories initialized")
+
+        # Initialize SpellRegistry and load spells
+        self.spell_registry = SpellRegistry(spell_repository)
+        await self.spell_registry.load_spells()
+        spell_count = len(self.spell_registry._spells)  # pylint: disable=protected-access  # Reason: Accessing internal spell dictionary for initialization logging, SpellRegistry manages this as internal state
+        logger.info("SpellRegistry initialized and loaded", spell_count=spell_count)
+
+        # Initialize SpellTargetingService (needs TargetResolutionService, CombatService, PlayerCombatService)
+        # TargetResolutionService accepts both sync and async persistence layers
+        # The protocol is too strict for mypy, but the service handles both at runtime
+        target_resolution_service = TargetResolutionService(
+            persistence=self.async_persistence,  # type: ignore[arg-type]  # Reason: TargetResolutionService accepts both sync and async persistence at runtime, but mypy protocol is too strict
+            player_service=self.player_service,
+        )
+        self.spell_targeting_service = SpellTargetingService(
+            target_resolution_service=target_resolution_service,
+            combat_service=self.combat_service,
+            player_combat_service=self.player_combat_service,
+        )
+        logger.info("SpellTargetingService initialized")
+
+        # Initialize SpellEffects (needs PlayerService)
+        self.spell_effects = SpellEffects(player_service=self.player_service)
+        logger.info("SpellEffects initialized")
+
+        # Initialize SpellLearningService (needs SpellRegistry, PlayerService, PlayerSpellRepository)
+        self.spell_learning_service = SpellLearningService(
+            spell_registry=self.spell_registry,
+            player_service=self.player_service,
+            player_spell_repository=player_spell_repository,
+        )
+        logger.info("SpellLearningService initialized")
+
+        # Initialize MPRegenerationService (needs PlayerService)
+        self.mp_regeneration_service = MPRegenerationService(player_service=self.player_service)
+        logger.info("MPRegenerationService initialized")
+
+        # Initialize MagicService (needs all of the above)
+        self.magic_service = MagicService(
+            spell_registry=self.spell_registry,
+            player_service=self.player_service,
+            spell_targeting_service=self.spell_targeting_service,
+            spell_effects=self.spell_effects,
+            player_spell_repository=player_spell_repository,
+            spell_learning_service=self.spell_learning_service,
+            combat_service=self.combat_service,
+        )
+
+        # Set magic_service reference in combat_service if available
+        if self.combat_service:
+            self.combat_service.magic_service = self.magic_service
+            logger.info("MagicService linked to CombatService")
+
+        logger.info("MagicService initialized")
+        logger.info("All magic system services initialized")
+
+    async def _initialize_chat_service(self) -> None:
+        """Initialize chat service."""
+        if self.config is None:
+            raise RuntimeError("Config must be initialized before chat service")
+        if self.persistence is None:
+            raise RuntimeError("Persistence must be initialized before chat service")
+        if self.player_service is None:
+            raise RuntimeError("PlayerService must be initialized before chat service")
+        if self.user_manager is None:
+            raise RuntimeError("UserManager must be initialized before chat service")
+
+        logger.debug("Initializing chat service...")
+
+        from .game.chat_service import ChatService
+        from .services.nats_subject_manager import nats_subject_manager
+
+        is_testing = self.config.logging.environment in ("unit_test", "e2e_test")  # pylint: disable=no-member  # Reason: Pydantic model field access - pylint doesn't recognize dynamic field access on Pydantic models
+
+        subject_manager = None
+        nats_service = self.nats_service
+        if nats_service and getattr(nats_service, "subject_manager", None):
+            subject_manager = nats_service.subject_manager
+        else:
+            subject_manager = nats_subject_manager
+
+        self.chat_service = ChatService(
+            persistence=self.persistence,
+            room_service=self.persistence,
+            player_service=self.player_service,
+            nats_service=nats_service,
+            user_manager_instance=self.user_manager,
+            subject_manager=subject_manager,
+        )
+
+        if self.chat_service.nats_service and self.chat_service.nats_service.is_connected():
+            logger.info("Chat service NATS connection verified")
+        elif is_testing:
+            logger.info("Chat service running in test mode without NATS connection")
+        else:
+            logger.error("Chat service NATS connection failed")
+            raise RuntimeError("Chat service NATS connection failed - NATS is mandatory for chat system")
+
+        logger.info("Chat service initialized")
+
+    async def _initialize_mythos_time_consumer(self) -> None:
+        """Initialize Mythos time event consumer."""
+        if (
+            self.event_bus
+            and self.holiday_service
+            and self.schedule_service
+            and self.room_service
+            and self.npc_lifecycle_manager
+        ):
+            from .time.time_event_consumer import MythosTimeEventConsumer
+            from .time.time_service import get_mythos_chronicle
+
+            self.mythos_time_consumer = MythosTimeEventConsumer(
+                event_bus=self.event_bus,
+                chronicle=get_mythos_chronicle(),
+                holiday_service=self.holiday_service,
+                schedule_service=self.schedule_service,
+                room_service=self.room_service,
+                npc_lifecycle_manager=self.npc_lifecycle_manager,
+            )
+            logger.info("Mythos time consumer initialized and subscribed to hour ticks")
+        else:
+            logger.warning("Mythos time consumer not initialized due to missing dependencies")
 
     def _normalize_path_from_url_or_path(self, raw: str, project_root: Path) -> Path | None:
         """

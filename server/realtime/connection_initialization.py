@@ -19,7 +19,7 @@ from .monitoring.health_monitor import HealthMonitor
 def initialize_health_monitor(manager: Any) -> None:
     """Initialize the health monitor with required callbacks."""
     # Accessing protected members is necessary for initialization
-    # pylint: disable=protected-access
+    # pylint: disable=protected-access  # Reason: Initialization requires access to internal manager methods (_is_websocket_open, _validate_token, etc.) for callback setup, manager is guaranteed to have these methods
     manager.health_monitor = HealthMonitor(
         is_websocket_open_callback=manager._is_websocket_open,
         validate_token_callback=manager._validate_token,
@@ -49,7 +49,7 @@ def initialize_error_handler(manager: Any) -> None:
 def initialize_connection_cleaner(manager: Any) -> None:
     """Initialize the connection cleaner with required callbacks."""
     # Accessing protected members is necessary for initialization
-    # pylint: disable=protected-access
+    # pylint: disable=protected-access  # Reason: Initialization requires access to internal manager method (_cleanup_dead_websocket) for callback setup, manager is guaranteed to have this method
     manager.connection_cleaner = ConnectionCleaner(
         memory_monitor=manager.memory_monitor,
         rate_limiter=manager.rate_limiter,
@@ -74,7 +74,7 @@ def initialize_game_state_provider(manager: Any) -> None:
 def initialize_messaging(manager: Any) -> None:
     """Initialize messaging components with required callbacks."""
     # Accessing protected members is necessary for initialization
-    # pylint: disable=protected-access
+    # pylint: disable=protected-access  # Reason: Initialization requires access to internal manager methods (_cleanup_dead_websocket, _convert_uuids_to_strings) for callback setup, manager is guaranteed to have these methods
     manager.personal_message_sender = PersonalMessageSender(
         message_queue=manager.message_queue,
         cleanup_dead_websocket_callback=manager._cleanup_dead_websocket,
@@ -89,7 +89,7 @@ def initialize_messaging(manager: Any) -> None:
 def initialize_room_event_handler(manager: Any) -> None:
     """Initialize the room event handler with required callbacks."""
     # Accessing protected members is necessary for initialization
-    # pylint: disable=protected-access
+    # pylint: disable=protected-access  # Reason: Initialization requires access to internal manager method (_event_bus) for callback setup, manager is guaranteed to have this method
     manager.room_event_handler = RoomEventHandler(
         room_manager=manager.room_manager,
         get_event_bus=lambda: manager._event_bus,

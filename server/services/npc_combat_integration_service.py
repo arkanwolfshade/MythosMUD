@@ -126,7 +126,9 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
             # Only create a new CombatService if one was not provided
             # (this is primarily for testing)
             # Lazy import to avoid circular dependency with combat_service
-            from .combat_service import CombatService  # noqa: E402  # pylint: disable=wrong-import-position
+            from .combat_service import (
+                CombatService,  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Lazy import inside function to avoid circular import chain during module initialization, wrong import position is intentional
+            )
 
             self._combat_service = CombatService(self._player_combat_service, npc_combat_integration_service=self)
 
@@ -434,7 +436,9 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
             Combat result
         """
         # Lazy import to avoid circular dependency with lifespan
-        from ..app.lifespan import get_current_tick  # noqa: E402  # pylint: disable=wrong-import-position
+        from ..app.lifespan import (
+            get_current_tick,  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Lazy import inside function to avoid circular import chain during module initialization, wrong import position is intentional
+        )
 
         current_tick = get_current_tick()
 

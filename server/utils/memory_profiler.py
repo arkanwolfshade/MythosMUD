@@ -67,7 +67,7 @@ class MemoryProfiler:
                 instances.append(instance)
 
             # Measure memory usage (memory_after triggers measurement snapshot)
-            _memory_after = self.get_current_memory_usage()  # noqa: F841  # pylint: disable=unused-variable  # pylint: disable=unused-variable
+            _memory_after = self.get_current_memory_usage()  # noqa: F841  # pylint: disable=unused-variable  # Reason: Variable assignment triggers internal measurement snapshot, value not used directly but side effect is required for profiling
             memory_delta = self.get_memory_delta()
             memory_per_instance = memory_delta / iterations if iterations > 0 else 0
 
@@ -115,7 +115,7 @@ class MemoryProfiler:
                 serialized_data.append(instance.model_dump())
 
         # Measure memory usage (memory_after triggers measurement snapshot)
-        _memory_after = self.get_current_memory_usage()  # noqa: F841  # pylint: disable=unused-variable
+        _memory_after = self.get_current_memory_usage()  # noqa: F841  # pylint: disable=unused-variable  # Reason: Variable assignment triggers internal measurement snapshot, value not used directly but side effect is required for profiling
         memory_delta = self.get_memory_delta()
         memory_per_serialization = memory_delta / (len(instances) * iterations) if iterations > 0 else 0
 
@@ -159,7 +159,7 @@ class MemoryProfiler:
                 deserialized_instances.append(instance)
 
         # Measure memory usage (memory_after triggers measurement snapshot)
-        _memory_after = self.get_current_memory_usage()  # noqa: F841  # pylint: disable=unused-variable
+        _memory_after = self.get_current_memory_usage()  # noqa: F841  # pylint: disable=unused-variable  # Reason: Variable assignment triggers internal measurement snapshot, value not used directly but side effect is required for profiling
         memory_delta = self.get_memory_delta()
         memory_per_deserialization = memory_delta / (len(serialized_data) * iterations) if iterations > 0 else 0
 
@@ -330,7 +330,7 @@ def benchmark_model_memory_usage() -> dict[str, Any]:
 
     # Compare memory usage
     model_classes = [Alias, SayCommand, LookCommand, Stats, StatusEffect, HealthResponse]
-    results = profiler.compare_models_memory_usage(model_classes, iterations=1000, **test_data)  # type: ignore[arg-type]
+    results = profiler.compare_models_memory_usage(model_classes, iterations=1000, **test_data)  # type: ignore[arg-type]  # Reason: mypy cannot infer that test_data dict keys match model class field names, but runtime validation ensures compatibility
 
     profiler.print_comparison_results(results)
     profiler.print_memory_summary()

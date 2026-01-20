@@ -3,12 +3,9 @@ Unit tests for NATS service.
 
 Tests the NATSService class and NATSMetrics.
 """
-# pylint: disable=too-many-lines
-# Test file exceeds 550 lines but contains comprehensive test coverage for NATS service
-# pylint: disable=redefined-outer-name
-# Pytest fixtures are injected as function parameters, which triggers this warning
-# pylint: disable=protected-access
-# Tests need to access protected members to verify internal state
+# pylint: disable=too-many-lines  # Reason: Test file exceeds 550 lines but contains comprehensive test coverage for NATS service, splitting would reduce cohesion
+# pylint: disable=redefined-outer-name  # Reason: Pytest fixtures are injected as function parameters, which triggers this warning but is the standard pytest pattern
+# pylint: disable=protected-access  # Reason: Tests need to access protected members to verify internal state and behavior
 
 import asyncio
 import json
@@ -20,7 +17,8 @@ import pytest
 from server.config.models import NATSConfig
 from server.realtime.connection_state_machine import NATSConnectionStateMachine
 from server.services.nats_exceptions import NATSPublishError, NATSSubscribeError
-from server.services.nats_service import NATSMetrics, NATSService
+from server.services.nats_metrics import NATSMetrics
+from server.services.nats_service import NATSService
 from server.services.nats_subject_manager import NATSSubjectManager
 
 
@@ -419,31 +417,35 @@ async def test_subscribe_with_manual_ack(nats_service):
 @pytest.mark.asyncio
 async def test_unsubscribe_success(nats_service):
     """Test unsubscribe() successfully unsubscribes."""
+
     mock_subscription = MagicMock()
     mock_subscription.unsubscribe = AsyncMock()
     nats_service.subscriptions = {"test.subject": mock_subscription}
-    result = await nats_service.unsubscribe("test.subject")
-    assert result is True
+    await nats_service.unsubscribe("test.subject")
     assert "test.subject" not in nats_service.subscriptions
     mock_subscription.unsubscribe.assert_awaited_once()
 
 
 @pytest.mark.asyncio
 async def test_unsubscribe_not_found(nats_service):
-    """Test unsubscribe() returns False when subscription not found."""
+    """Test unsubscribe() raises NATSUnsubscribeError when subscription not found."""
+    from server.services.nats_exceptions import NATSUnsubscribeError
+
     nats_service.subscriptions = {}
-    result = await nats_service.unsubscribe("test.subject")
-    assert result is False
+    with pytest.raises(NATSUnsubscribeError):
+        await nats_service.unsubscribe("test.subject")
 
 
 @pytest.mark.asyncio
 async def test_unsubscribe_error(nats_service):
-    """Test unsubscribe() handles unsubscribe errors."""
+    """Test unsubscribe() raises NATSUnsubscribeError on unsubscribe errors."""
+    from server.services.nats_exceptions import NATSUnsubscribeError
+
     mock_subscription = MagicMock()
     mock_subscription.unsubscribe = AsyncMock(side_effect=Exception("Unsubscribe error"))
     nats_service.subscriptions = {"test.subject": mock_subscription}
-    result = await nats_service.unsubscribe("test.subject")
-    assert result is False
+    with pytest.raises(NATSUnsubscribeError):
+        await nats_service.unsubscribe("test.subject")
 
 
 @pytest.mark.asyncio
@@ -463,32 +465,42 @@ async def test_request_success(nats_service):
 
 @pytest.mark.asyncio
 async def test_request_not_connected(nats_service):
-    """Test request() returns None when not connected."""
+    """Test request() raises NATSRequestError when not connected."""
+    from server.services.nats_exceptions import NATSRequestError
+
     nats_service.nc = None
-    reply = await nats_service.request("test.subject", {"request": "data"})
-    assert reply is None
+    with pytest.raises(NATSRequestError):
+        await nats_service.request("test.subject", {"request": "data"})
 
 
 @pytest.mark.asyncio
 async def test_request_timeout(nats_service):
-    """Test request() handles timeout."""
+    """Test request() raises NATSRequestError on timeout."""
+    from server.services.nats_exceptions import NATSRequestError
+
     mock_client = MagicMock()
     mock_client.is_connected = True
     mock_client.request = AsyncMock(side_effect=TimeoutError())
     nats_service.nc = mock_client
-    reply = await nats_service.request("test.subject", {"request": "data"}, timeout=0.1)
-    assert reply is None
+    nats_service._running = True
+    nats_service.config.health_check_interval = 0  # Disable health check for simpler test
+    with pytest.raises(NATSRequestError):
+        await nats_service.request("test.subject", {"request": "data"}, timeout=0.1)
 
 
 @pytest.mark.asyncio
 async def test_request_error(nats_service):
-    """Test request() handles errors."""
+    """Test request() raises NATSRequestError on errors."""
+    from server.services.nats_exceptions import NATSRequestError
+
     mock_client = MagicMock()
     mock_client.is_connected = True
     mock_client.request = AsyncMock(side_effect=Exception("Request error"))
     nats_service.nc = mock_client
-    reply = await nats_service.request("test.subject", {"request": "data"})
-    assert reply is None
+    nats_service._running = True
+    nats_service.config.health_check_interval = 0  # Disable health check for simpler test
+    with pytest.raises(NATSRequestError):
+        await nats_service.request("test.subject", {"request": "data"})
 
 
 @pytest.mark.asyncio
@@ -659,3 +671,103 @@ def test_get_connection_stats(nats_service):
     # Metrics from state machine and metrics objects
     assert "publish_count" in stats  # From metrics
     assert "connection_health" in stats  # From metrics
+
+
+@pytest.mark.asyncio
+async def test_disconnect_removes_all_subscriptions(nats_service):
+    """
+    Test that disconnect() removes all subscriptions on service shutdown.
+
+    Task 4-10: Verify all subscriptions are removed on service shutdown.
+    """
+    mock_client = MagicMock()
+    mock_client.close = AsyncMock()
+    mock_sub1 = MagicMock()
+    mock_sub1.drain = AsyncMock()
+    mock_sub1.unsubscribe = AsyncMock()
+    mock_sub2 = MagicMock()
+    mock_sub2.drain = AsyncMock()
+    mock_sub2.unsubscribe = AsyncMock()
+
+    nats_service.nc = mock_client
+    nats_service.subscriptions = {
+        "test.subject1": mock_sub1,
+        "test.subject2": mock_sub2,
+    }
+    nats_service._running = True
+    nats_service._background_tasks = set()
+
+    # Track subscriptions before cleanup
+    subscriptions_before = list(nats_service.subscriptions.keys())
+    assert len(subscriptions_before) == 2
+
+    with patch.object(nats_service, "_cancel_background_tasks", new_callable=AsyncMock):
+        with patch.object(nats_service, "_cleanup_connection_pool", new_callable=AsyncMock):
+            with patch.object(nats_service, "_stop_health_monitoring", new_callable=AsyncMock):
+                await nats_service.disconnect()
+
+    # Verify all subscriptions were unsubscribed
+    assert mock_sub1.unsubscribe.await_count == 1
+    assert mock_sub2.unsubscribe.await_count == 1
+
+    # Verify subscriptions dict is cleared
+    assert len(nats_service.subscriptions) == 0
+    assert nats_service.get_active_subscriptions() == []
+
+
+@pytest.mark.asyncio
+async def test_service_restart_no_duplicate_subscriptions(nats_service):
+    """
+    Test that service restart does not create duplicate subscriptions.
+
+    Task 4-11: Verify service restart doesn't create duplicate subscriptions.
+    """
+    mock_client = MagicMock()
+    mock_client.close = AsyncMock()
+
+    # Create a function that returns a new mock subscription each time
+    def create_mock_subscription(*args, **kwargs):
+        return MagicMock()
+
+    mock_client.subscribe = AsyncMock(side_effect=create_mock_subscription)
+
+    nats_service.nc = mock_client
+    nats_service._running = True
+    nats_service.subscriptions = {}
+
+    # First subscription
+    async def callback1(_msg):  # pylint: disable=unused-argument  # Reason: Callback parameter required by NATS subscription signature but not used in this test
+        pass
+
+    await nats_service.subscribe("test.subject", callback1)
+    assert len(nats_service.subscriptions) == 1
+    assert "test.subject" in nats_service.subscriptions
+    first_subscription = nats_service.subscriptions["test.subject"]
+
+    # Disconnect (simulate shutdown)
+    nats_service.subscriptions["test.subject"].drain = AsyncMock()
+    nats_service.subscriptions["test.subject"].unsubscribe = AsyncMock()
+    nats_service._background_tasks = set()
+    with patch.object(nats_service, "_cancel_background_tasks", new_callable=AsyncMock):
+        with patch.object(nats_service, "_cleanup_connection_pool", new_callable=AsyncMock):
+            with patch.object(nats_service, "_stop_health_monitoring", new_callable=AsyncMock):
+                await nats_service.disconnect()
+
+    # Verify subscriptions cleared
+    assert len(nats_service.subscriptions) == 0
+
+    # Reconnect (simulate restart)
+    nats_service.nc = mock_client
+    nats_service._running = True
+
+    # Subscribe again to same subject
+    async def callback2(_msg):  # pylint: disable=unused-argument  # Reason: Callback parameter required by NATS subscription signature but not used in this test
+        pass
+
+    await nats_service.subscribe("test.subject", callback2)
+
+    # Verify only one subscription exists (no duplicates)
+    assert len(nats_service.subscriptions) == 1
+    assert "test.subject" in nats_service.subscriptions
+    # Verify it's a new subscription object (not the old one)
+    assert nats_service.subscriptions["test.subject"] is not first_subscription

@@ -131,7 +131,88 @@ export interface GameSelectors {
 
 type GameStore = GameState & GameActions & GameSelectors;
 
+/**
+ * **Zustand Store Usage Patterns:**
+ *
+ * **CORRECT Usage Examples:**
+ *
+ * ```tsx
+ * // ✅ GOOD: Using selectors with shallow comparison for arrays/objects
+ * import { shallow } from 'zustand/shallow';
+ *
+ * function ChatComponent() {
+ *   const chatMessages = useGameStore(state => state.chatMessages, shallow);
+ *   const player = useGameStore(state => state.player, shallow);
+ *   const addChatMessage = useGameStore(state => state.addChatMessage);
+ *
+ *   return <div>{chatMessages.map(msg => <div key={msg.id}>{msg.text}</div>)}</div>;
+ * }
+ *
+ * // ✅ GOOD: Using selectors for specific fields
+ * function PlayerStats() {
+ *   const playerStats = useGameStore(state => state.player?.stats);
+ *   return <div>DP: {playerStats?.current_dp}</div>;
+ * }
+ * ```
+ *
+ * **INCORRECT Usage Examples (Anti-patterns):**
+ *
+ * ```tsx
+ * // ❌ BAD: Subscribing to entire store
+ * function MyComponent() {
+ *   const gameState = useGameStore(); // Don't do this!
+ *   return <div>{gameState.player?.name}</div>;
+ * }
+ *
+ * // ❌ BAD: Calling selector functions inside selectors
+ * function MyComponent() {
+ *   const stats = useGameStore(state => state.getPlayerStats()); // Don't do this!
+ *   // Instead, use: const stats = useGameStore(state => state.player?.stats);
+ * }
+ *
+ * // ❌ BAD: Not using shallow for arrays/objects (causes unnecessary re-renders)
+ * function MyComponent() {
+ *   const chatMessages = useGameStore(state => state.chatMessages); // Missing shallow!
+ *   // Should be: const chatMessages = useGameStore(state => state.chatMessages, shallow);
+ * }
+ * ```
+ *
+ * **Note on Selector Functions:**
+ * - Selector functions like `getPlayerStats()`, `getRoomOccupantsCount()`, etc.
+ *   are kept for backward compatibility but should NOT be called inside component selectors.
+ * - Instead, access the underlying state directly (e.g., use `player?.stats` instead of `getPlayerStats()`).
+ */
+
+/**
+ * Maximum number of chat messages to keep in memory.
+ *
+ * **Memory Leak Prevention:**
+ * This limit prevents unbounded growth of the chatMessages array during long-running sessions.
+ * When the limit is reached, older messages are automatically trimmed (FIFO - oldest removed first).
+ *
+ * **Cleanup Pattern:**
+ * Components using this store should not need to manually clean up subscriptions as Zustand
+ * automatically handles subscription lifecycle. However, components should:
+ * - Use the store's built-in actions (addChatMessage, clearChatMessages) rather than
+ *   directly manipulating the array
+ * - Call clearChatMessages() when appropriate (e.g., on logout, session reset)
+ */
 const MAX_CHAT_MESSAGES = 100;
+
+/**
+ * Maximum number of game log entries to keep in memory.
+ *
+ * **Memory Leak Prevention:**
+ * This limit prevents unbounded growth of the gameLog array during long-running sessions.
+ * When the limit is reached, older entries are automatically trimmed (FIFO - oldest removed first).
+ *
+ * **Cleanup Pattern:**
+ * Components using this store should not need to manually clean up subscriptions as Zustand
+ * automatically handles subscription lifecycle. However, components should:
+ * - Use the store's built-in actions (addGameLogEntry, clearGameLog) rather than
+ *   directly manipulating the array
+ * - Call clearGameLog() when appropriate (e.g., on logout, session reset)
+ */
 const MAX_GAME_LOG_ENTRIES = 100;
 
 const createInitialState = (): GameState => ({
@@ -245,6 +326,7 @@ export const useGameStore = create<GameStore>()(
     }),
     {
       name: 'game-store',
+      enabled: import.meta.env.MODE === 'development',
       partialize: (state: GameStore) => ({
         player: state.player,
         room: state.room,
