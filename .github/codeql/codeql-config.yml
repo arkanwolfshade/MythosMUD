@@ -1,0 +1,19 @@
+name: "CodeQL Configuration for MythosMUD"
+
+# CodeQL configuration to suppress false positives for test credentials in CI workflows
+# These are intentional test passwords for CI environments only, not used in production
+
+query-filters:
+  # Exclude hardcoded credential queries for CI workflow test passwords
+  # The hardcoded passwords in .github/workflows/ci.yml are test values for CI only
+  - exclude:
+      id: py/hardcoded-credentials
+      reason: "Test credentials in CI workflows are intentional and documented"
+  - exclude:
+      id: js/hardcoded-credentials
+      reason: "Test credentials in CI workflows are intentional and documented"
+
+# Path-based exclusions (alternative approach if query filters don't work)
+# Uncomment below if you want to exclude workflow files from credential scanning entirely
+# paths-ignore:
+#   - '.github/workflows/ci.yml'

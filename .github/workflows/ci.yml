@@ -25,7 +25,9 @@ jobs:
       NODE_OPTIONS: --no-deprecation
       # Database password is test value for CI (self-contained PostgreSQL setup)
       # For production deployments, use GitHub Secrets: ${{ secrets.POSTGRES_PASSWORD }}
+      # codeql[hardcoded-credential]: Test password for CI environment only, not used in production
       DATABASE_URL: postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit
+      # codeql[hardcoded-credential]: Test password for CI environment only, not used in production
       DATABASE_NPC_URL: postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit
       # Using GitHub Secrets for application secrets (CI-specific naming convention)
       # Provide test defaults if secrets are not set (empty secrets become empty strings in GitHub Actions)
@@ -101,6 +103,7 @@ jobs:
           pg_isready -U postgres || (sleep 3 && pg_isready -U postgres)
           # Set postgres user password to match DATABASE_URL
           # Use su postgres instead of sudo -u postgres for Docker container compatibility
+          # codeql[hardcoded-credential]: Test password for CI PostgreSQL setup, matches DATABASE_URL above
           su postgres -c "psql -c \"ALTER USER postgres PASSWORD 'Cthulhu1';\"" || \
           (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'Cthulhu1';")
           # Initialize database schema and apply migrations
