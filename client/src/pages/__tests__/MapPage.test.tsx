@@ -60,7 +60,9 @@ describe('MapPage', () => {
       render(<MapPage />);
       // Allow microtask to complete
       await new Promise<void>(resolve => {
-        queueMicrotask(() => resolve());
+        queueMicrotask(() => {
+          resolve();
+        });
       });
     });
 
