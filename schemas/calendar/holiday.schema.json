@@ -48,7 +48,7 @@
         "day": {
           "type": "integer",
           "minimum": 1,
-          "maximum": 30
+          "maximum": 31
         },
         "duration_hours": {
           "type": "integer",

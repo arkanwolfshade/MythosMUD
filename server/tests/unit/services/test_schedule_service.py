@@ -21,8 +21,9 @@ class TestScheduleService:
         """Test ScheduleService initialization with collections parameter."""
         collections = []
         service = ScheduleService(collections=collections, environment="test")
-        assert service._entries == []
-        assert service._environment == "test"
+        assert not service.entries
+        # Accessing protected member to verify initialization state
+        assert service._environment == "test"  # pylint: disable=protected-access  # nosec B101  # Reason: pytest uses assert statements for test assertions, not removed in optimized bytecode
 
     def test_init_without_persistence_raises(self):
         """Test ScheduleService initialization without persistence raises ValueError."""
@@ -44,21 +45,21 @@ class TestScheduleService:
                     category="npc",
                     start_hour=9,
                     end_hour=17,
-                    days=["Primus", "Secundus"],
+                    days=["Monday", "Tuesday"],
                     applies_to=[],
                     effects=[],
                     notes="Test notes",
                 )
             ]
             service = ScheduleService(async_persistence=mock_persistence, environment="test")
-            assert len(service._entries) == 1
-            assert service._entries[0].id == "test_schedule_1"
+            assert len(service.entries) == 1  # nosec B101  # Reason: pytest uses assert statements for test assertions
+            assert service.entries[0].id == "test_schedule_1"  # nosec B101  # Reason: pytest uses assert statements for test assertions
 
     def test_get_active_entries_no_matches(self):
         """Test get_active_entries returns empty list when no matches."""
         service = ScheduleService(collections=[], environment="test")
-        mythos_dt = datetime(2024, 1, 1, 12, 0, 0)  # Primus, noon
-        active = service.get_active_entries(mythos_dt=mythos_dt, day_name="Primus")
+        mythos_dt = datetime(2024, 1, 1, 12, 0, 0)  # Monday, noon
+        active = service.get_active_entries(mythos_dt=mythos_dt, day_name="Monday")
         assert active == []
 
     def test_get_active_entries_with_matches(self):
@@ -69,7 +70,7 @@ class TestScheduleService:
             category="npc",
             start_hour=9,
             end_hour=12,
-            days=["Primus"],
+            days=["Monday"],
             applies_to=[],
             effects=[],
             notes="",
@@ -80,23 +81,24 @@ class TestScheduleService:
             category="npc",
             start_hour=12,
             end_hour=17,
-            days=["Primus"],
+            days=["Monday"],
             applies_to=[],
             effects=[],
             notes="",
         )
         service = ScheduleService(collections=[], environment="test")
-        service._entries = [entry1, entry2]
+        # Accessing protected member to inject test data
+        service._entries = [entry1, entry2]  # pylint: disable=protected-access
 
         # Test at 10:00 (should match entry1)
-        mythos_dt = datetime(2024, 1, 1, 10, 0, 0)  # Primus, 10 AM
-        active = service.get_active_entries(mythos_dt=mythos_dt, day_name="Primus")
+        mythos_dt = datetime(2024, 1, 1, 10, 0, 0)  # Monday, 10 AM
+        active = service.get_active_entries(mythos_dt=mythos_dt, day_name="Monday")
         assert len(active) == 1
         assert active[0].id == "schedule_1"
 
         # Test at 15:00 (should match entry2)
-        mythos_dt = datetime(2024, 1, 1, 15, 0, 0)  # Primus, 3 PM
-        active = service.get_active_entries(mythos_dt=mythos_dt, day_name="Primus")
+        mythos_dt = datetime(2024, 1, 1, 15, 0, 0)  # Monday, 3 PM
+        active = service.get_active_entries(mythos_dt=mythos_dt, day_name="Monday")
         assert len(active) == 1
         assert active[0].id == "schedule_2"
 
@@ -108,27 +110,28 @@ class TestScheduleService:
             category="npc",
             start_hour=9,
             end_hour=17,
-            days=["Primus"],
+            days=["Monday"],
             applies_to=[],
             effects=[],
             notes="",
         )
         service = ScheduleService(collections=[], environment="test")
-        service._entries = [entry]
+        # Accessing protected member to inject test data
+        service._entries = [entry]  # pylint: disable=protected-access
 
         # Test at start hour (should match)
         mythos_dt = datetime(2024, 1, 1, 9, 0, 0)
-        active = service.get_active_entries(mythos_dt=mythos_dt, day_name="Primus")
+        active = service.get_active_entries(mythos_dt=mythos_dt, day_name="Monday")
         assert len(active) == 1
 
         # Test at end hour (should NOT match - end is exclusive)
         mythos_dt = datetime(2024, 1, 1, 17, 0, 0)
-        active = service.get_active_entries(mythos_dt=mythos_dt, day_name="Primus")
+        active = service.get_active_entries(mythos_dt=mythos_dt, day_name="Monday")
         assert len(active) == 0
 
         # Test just before end hour (should match)
         mythos_dt = datetime(2024, 1, 1, 16, 59, 0)
-        active = service.get_active_entries(mythos_dt=mythos_dt, day_name="Primus")
+        active = service.get_active_entries(mythos_dt=mythos_dt, day_name="Monday")
         assert len(active) == 1
 
     def test_get_active_entries_wrong_day(self):
@@ -139,16 +142,17 @@ class TestScheduleService:
             category="npc",
             start_hour=9,
             end_hour=17,
-            days=["Primus"],
+            days=["Monday"],
             applies_to=[],
             effects=[],
             notes="",
         )
         service = ScheduleService(collections=[], environment="test")
-        service._entries = [entry]
+        # Accessing protected member to inject test data
+        service._entries = [entry]  # pylint: disable=protected-access
 
-        mythos_dt = datetime(2024, 1, 1, 12, 0, 0)  # Primus, but querying Secundus
-        active = service.get_active_entries(mythos_dt=mythos_dt, day_name="Secundus")
+        mythos_dt = datetime(2024, 1, 1, 12, 0, 0)  # Monday, but querying Tuesday
+        active = service.get_active_entries(mythos_dt=mythos_dt, day_name="Tuesday")
         assert active == []
 
     def test_entries_property(self):
@@ -159,18 +163,20 @@ class TestScheduleService:
             category="npc",
             start_hour=9,
             end_hour=17,
-            days=["Primus"],
+            days=["Monday"],
             applies_to=[],
             effects=[],
             notes="",
         )
         service = ScheduleService(collections=[], environment="test")
-        service._entries = [entry]
+        # Accessing protected member to inject test data
+        service._entries = [entry]  # pylint: disable=protected-access
 
         entries = service.entries
-        assert entries == [entry]
+        assert entries == [entry]  # nosec B101  # Reason: pytest uses assert statements for test assertions
         # Verify it's a copy, not the same list
-        assert entries is not service._entries
+        # Accessing protected member to verify property returns a copy
+        assert entries is not service._entries  # pylint: disable=protected-access  # nosec B101  # Reason: pytest uses assert statements for test assertions
 
     def test_entry_count_property(self):
         """Test entry_count property returns count."""
@@ -180,7 +186,7 @@ class TestScheduleService:
             category="npc",
             start_hour=9,
             end_hour=17,
-            days=["Primus"],
+            days=["Monday"],
             applies_to=[],
             effects=[],
             notes="",
@@ -191,11 +197,12 @@ class TestScheduleService:
             category="npc",
             start_hour=9,
             end_hour=17,
-            days=["Secundus"],
+            days=["Tuesday"],
             applies_to=[],
             effects=[],
             notes="",
         )
         service = ScheduleService(collections=[], environment="test")
-        service._entries = [entry1, entry2]
+        # Accessing protected member to inject test data
+        service._entries = [entry1, entry2]  # pylint: disable=protected-access
         assert service.entry_count == 2

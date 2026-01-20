@@ -4,28 +4,29 @@ overview: Convert the temporal system from 9.6:1 compression ratio to 4:1 ratio 
 todos:
   - id: update-config
     content: "Update TimeConfig defaults: compression_ratio 9.6→4.0, mythos_epoch 1930→1920"
-    status: pending
+    status: completed
   - id: update-weekdays
     content: Replace custom weekday calculation with standard Python calendar.weekday() and day_name
-    status: pending
+    status: completed
   - id: update-schemas
     content: Update calendar schemas to use standard weekday names (Monday-Sunday)
-    status: pending
+    status: completed
   - id: migrate-schedules
     content: Migrate all schedule JSON files and database records from Primus-Sextus to Monday-Sunday
-    status: pending
+    status: completed
   - id: migrate-state
     content: Add state file migration logic or reset to new epoch
-    status: pending
+    status: completed
   - id: update-tests
     content: Update all time-related tests for new ratio and calendar
-    status: pending
+    status: completed
   - id: update-docs
     content: Update TEMPORAL_SYSTEM_RESEARCH.md with new calculations and calendar description
-    status: pending
+    status: completed
   - id: verify-client
     content: Verify client correctly displays real-world calendar dates and weekdays
-    status: pending
+    status: completed
+isProject: false
 ---
 
 # Convert Temporal System to 4:1 Ratio with Real-World Calendar

@@ -116,12 +116,73 @@ export const handleMythosTimeUpdate: EventHandler = (event, context, appendMessa
   }
 };
 
-export const handleGameTick: EventHandler = (event, _context, appendMessage) => {
+export const handleGameTick: EventHandler = (event, context, appendMessage) => {
   const tickNumber = typeof event.data.tick_number === 'number' ? event.data.tick_number : 0;
 
-  // Display every 10th received tick message (10 seconds)
-  // Server broadcasts every 10 ticks (1 second), so we display every 100th tick (10 seconds)
-  if (tickNumber % 100 === 0 && tickNumber >= 0) {
+  // Update Mythos Time UI on each heartbeat/gametick if mythos time data is present
+  const data = event.data as Record<string, unknown>;
+  if (data.mythos_clock && data.mythos_datetime) {
+    // Build a complete MythosTimePayload from game_tick event data
+    // Provide defaults for optional fields that may not be in game_tick events
+    const mythosPayload: MythosTimePayload = {
+      mythos_datetime: data.mythos_datetime as string,
+      mythos_clock: data.mythos_clock as string,
+      month_name: (data.month_name as string) || '',
+      day_of_month: (data.day_of_month as number) || 1,
+      day_name: (data.day_name as string) || '',
+      week_of_month: (data.week_of_month as number) || 1,
+      season: (data.season as string) || '',
+      daypart: (data.daypart as string) || '',
+      is_daytime: typeof data.is_daytime === 'boolean' ? data.is_daytime : true,
+      is_witching_hour: typeof data.is_witching_hour === 'boolean' ? data.is_witching_hour : false,
+      server_timestamp: (data.timestamp as string) || event.timestamp,
+      active_holidays: Array.isArray(data.active_holidays)
+        ? (data.active_holidays as MythosTimePayload['active_holidays'])
+        : [],
+      upcoming_holidays: Array.isArray(data.upcoming_holidays)
+        ? (data.upcoming_holidays as MythosTimePayload['upcoming_holidays'])
+        : [],
+      active_schedules: Array.isArray(data.active_schedules)
+        ? (data.active_schedules as MythosTimePayload['active_schedules'])
+        : undefined,
+    };
+    const nextState = buildMythosTimeState(mythosPayload);
+    context.setMythosTime(nextState);
+
+    // Check for quarter-hour clock chimes (00, 15, 30, 45 minutes past the hour)
+    try {
+      const mythosDate = new Date(mythosPayload.mythos_datetime);
+      const currentMinute = mythosDate.getUTCMinutes();
+      const isQuarterHour = currentMinute % 15 === 0;
+
+      if (isQuarterHour) {
+        const previousQuarterHour = context.lastQuarterHourRef.current;
+
+        // Create chime message if this is a new quarter-hour boundary
+        if (previousQuarterHour !== currentMinute) {
+          const formattedClock = formatMythosTime12Hour(mythosPayload.mythos_clock);
+          appendMessage(
+            sanitizeChatMessageForState({
+              text: `[Time] The clock chimes ${formattedClock} Mythos`,
+              timestamp: event.timestamp,
+              messageType: 'system',
+              channel: 'system',
+              isHtml: false,
+            })
+          );
+          context.lastQuarterHourRef.current = currentMinute;
+        }
+      }
+    } catch (error) {
+      logger.error('systemHandlers', 'Failed to parse mythos_datetime for quarter-hour chime', {
+        error: error instanceof Error ? error.message : String(error),
+        mythos_datetime: data.mythos_datetime,
+      });
+    }
+  }
+
+  // Display every 15 in-game minutes (23 ticks at 10 seconds per tick = 230 real seconds ≈ 15.3 in-game minutes)
+  if (tickNumber % 23 === 0 && tickNumber >= 0) {
     appendMessage(
       sanitizeChatMessageForState({
         text: `[Tick ${tickNumber}]`,

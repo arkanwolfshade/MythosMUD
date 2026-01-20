@@ -15,23 +15,24 @@
 
 ## 2. Mythos Time Model Draft
 
-- **Compression ratio** – Anchor 9.6 in-game hours per real hour (as configured in `server/config/models.py`). Outcomes:
-  - 1 in-game hour = 1/9.6 = 0.10417 real hours = 6.25 real minutes.
-  - 1 in-game day (24 hours) = 24/9.6 = 2.5 real hours = 150 real minutes (2h30m), nudging daily landmarks forward by 2h30m each real day so no cohort monopolizes midnight festivals.
+- **Compression ratio** – Anchor 4.0 in-game hours per real hour (as configured in `server/config/models.py`). Outcomes:
+  - 1 in-game hour = 1/4.0 = 0.25 real hours = 15 real minutes.
+  - 1 in-game day (24 hours) = 24/4.0 = 6 real hours, nudging daily landmarks forward by 6 hours each real day so no cohort monopolizes midnight festivals.
 - **Calendar structure**
   - The implementation uses standard Python `datetime`, which means standard Gregorian calendar (365/366 days per year).
-  - 6 Mythos days per week to echo hexadic occult numerology (calculated from day-of-month).
+  - Standard 7-day week (Monday-Sunday) using real-world weekday names.
   - Standard month lengths (28-31 days) as per Gregorian calendar.
-  - 12 months per Mythos year; full year (365 days) elapses in 365 × 2.5 = 912.5 real hours (~38 real days).
+  - 12 months per Mythos year; full year (365 days) elapses in 365 × 6 = 2190 real hours (~91.25 real days).
+  - The calendar starts at January 1, 1920 (using real-world Gregorian calendar).
 - **Holiday mirroring**
   - Retain Gregorian month names and holiday labels, but allow them to recur whenever that month/day combination rolls around. Real-world December 25th becomes the canonical “anchor”; every time Mythos calendar hits `December 25`, trigger the Yuletide events—even though it may happen multiple times per real month.
   - Maintain a real-world scheduler mapping actual dates to “spotlight” holiday runs so we can optionally mark one cycle per real year as the “prime” celebration with extra spectacle.
 - **Day-night cadence**
-  - Dawn at 06:00 Mythos (6 × 6.25 = 37.5 real minutes into each cycle); dusk at 18:00 Mythos (18 × 6.25 = 112.5 real minutes).
+  - Dawn at 06:00 Mythos (6 × 15 = 90 real minutes into each cycle); dusk at 18:00 Mythos (18 × 15 = 270 real minutes = 4.5 real hours).
   - Environmental descriptions: adjust room lighting text, ambient audio cues, and lucidity mechanics around thresholds (pre-dawn haze, witching hour 23:00–01:00 Mythos).
   - NPC behaviors: shops staffed 08:00–20:00 Mythos, night watch patrols 20:00–04:00, eldritch phenomena peaking during the witching hour.
 - **Seasonal beats**
-  - Standard Gregorian months inherit real-world season of their anchor (e.g., March = vernal rites). With the accelerated cycle, players encounter seasonal content roughly every 38 real days (one in-game year).
+  - Standard Gregorian months inherit real-world season of their anchor (e.g., March = vernal rites). With the accelerated cycle, players encounter seasonal content roughly every 91.25 real days (one in-game year).
   - Introduce season-locked systems (farm plots, migration events, cult ceremonies) to showcase accelerated cycles without overwhelming players—cap availability windows to a minimum of two real hours.
 
 ### Major religious observances
@@ -88,7 +89,7 @@
 ## 3. Implementation Blueprint
 
 - **Core services**
-  - Introduce `server/time/time_service.py` housing a `MythosChronicle` singleton for deterministic conversions between UTC timestamps and Mythos calendar units (year, month, day, hour, minute) using the 1:9.6 scale.
+  - Introduce `server/time/time_service.py` housing a `MythosChronicle` singleton for deterministic conversions between UTC timestamps and Mythos calendar units (year, month, day, hour, minute) using the 4.0:1 scale (4 in-game hours per real hour).
   - Provide utility APIs:
     - `get_current_mythos_datetime()`
     - `to_mythos_datetime(dt: datetime)`
@@ -96,7 +97,7 @@
     - `advance_mythos(duration: MythosDelta)`
   - Expose formatted strings for UI (`format_mythos_clock`, `format_mythos_calendar`).
 - **Configuration & persistence**
-  - Persist epoch anchor (e.g., 2025-01-01 00:00 UTC ↔ Mythos Year 100, January 1 00:00) in config to keep deployments deterministic.
+  - Persist epoch anchor (e.g., 2025-01-01 00:00 UTC ↔ Mythos Year 1920, January 1 00:00) in config to keep deployments deterministic.
 - Store holiday metadata in `data/<environment>/calendar/holidays.json` (e.g., `data/local/calendar/holidays.json`), capturing Gregorian anchor date, Mythos month/day names, recurrence flags, and optional “prime cycle” decorators.
   - Cache frequently used conversions with structlog-aware tracing (`get_logger` from enhanced logging).
 - **Integration points**

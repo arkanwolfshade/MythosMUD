@@ -114,6 +114,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   const rescueStateRef = useRef<RescueState | null>(null);
   const lastDaypartRef = useRef<string | null>(null);
   const lastHourRef = useRef<number | null>(null);
+  const lastQuarterHourRef = useRef<number | null>(null);
   const lastHolidayIdsRef = useRef<string[]>([]);
   const rescueTimeoutRef = useRef<number | null>(null);
   const lastRoomUpdateTime = useRef<number>(0);
@@ -155,6 +156,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
     lucidityStatusRef,
     lastDaypartRef,
     lastHourRef,
+    lastQuarterHourRef,
     lastHolidayIdsRef,
     lastRoomUpdateTime,
     setDpStatus: setDpStatus,

@@ -57,6 +57,7 @@ describe('systemHandlers', () => {
     lucidityStatusRef: { current: null },
     lastDaypartRef: { current: null },
     lastHourRef: { current: null },
+    lastQuarterHourRef: { current: null },
     lastHolidayIdsRef: { current: [] },
     lastRoomUpdateTime: { current: 0 },
     setDpStatus: vi.fn(),
@@ -77,6 +78,7 @@ describe('systemHandlers', () => {
     vi.clearAllMocks();
     mockContext.lastDaypartRef.current = null;
     mockContext.lastHourRef.current = null;
+    mockContext.lastQuarterHourRef.current = null;
     vi.useFakeTimers();
   });
 
@@ -523,37 +525,73 @@ describe('systemHandlers', () => {
       );
       expect(mockContext.lastDaypartRef.current).toBe('midnight');
     });
+
+    it('should not append daypart change message when previousDaypart is empty string', () => {
+      mockContext.lastDaypartRef.current = '';
+      const event = {
+        event_type: 'mythos_time_update',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { mythos_clock: '12:00 PM', daypart: 'afternoon' },
+      };
+      handleMythosTimeUpdate(event, mockContext, mockAppendMessage);
+      // Empty string is falsy, so should not append daypart change message
+      expect(mockAppendMessage).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          text: expect.stringContaining('The Mythos clock shifts'),
+        })
+      );
+      expect(mockContext.lastDaypartRef.current).toBe('afternoon');
+    });
+
+    it('should handle when previousDaypart is undefined', () => {
+      mockContext.lastDaypartRef.current = undefined as unknown as string | null;
+      const event = {
+        event_type: 'mythos_time_update',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { mythos_clock: '12:00 PM', daypart: 'afternoon' },
+      };
+      handleMythosTimeUpdate(event, mockContext, mockAppendMessage);
+      // undefined is falsy, so should not append daypart change message
+      expect(mockAppendMessage).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          text: expect.stringContaining('The Mythos clock shifts'),
+        })
+      );
+      expect(mockContext.lastDaypartRef.current).toBe('afternoon');
+    });
   });
 
   describe('handleGameTick', () => {
-    it('should append message for every 100th tick', () => {
+    it('should append message for every 23rd tick', () => {
       const event = {
         event_type: 'game_tick',
         timestamp: new Date().toISOString(),
         sequence_number: 1,
-        data: { tick_number: 100 },
+        data: { tick_number: 23 },
       };
       handleGameTick(event, mockContext, mockAppendMessage);
       expect(mockAppendMessage).toHaveBeenCalledWith(
         expect.objectContaining({
-          text: '[Tick 100]',
+          text: '[Tick 23]',
           messageType: 'system',
         })
       );
     });
 
-    it('should append message for 200th tick', () => {
+    it('should append message for 46th tick', () => {
       const event = {
         event_type: 'game_tick',
         timestamp: new Date().toISOString(),
         sequence_number: 1,
-        data: { tick_number: 200 },
+        data: { tick_number: 46 },
       };
       handleGameTick(event, mockContext, mockAppendMessage);
       expect(mockAppendMessage).toHaveBeenCalled();
     });
 
-    it('should not append message for non-100th ticks', () => {
+    it('should not append message for non-23rd ticks', () => {
       const event = {
         event_type: 'game_tick',
         timestamp: new Date().toISOString(),
@@ -603,6 +641,486 @@ describe('systemHandlers', () => {
       };
       handleGameTick(event, mockContext, mockAppendMessage);
       expect(mockAppendMessage).not.toHaveBeenCalled();
+    });
+
+    it('should update mythos time when mythos time data is present', () => {
+      const event = {
+        event_type: 'game_tick',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          tick_number: 10,
+          mythos_clock: '14:00 Mythos',
+          mythos_datetime: '1920-01-01T14:00:00Z',
+          month_name: 'January',
+          day_of_month: 1,
+          day_name: 'Wednesday',
+          week_of_month: 1,
+          season: 'winter',
+          daypart: 'afternoon',
+          is_daytime: true,
+          is_witching_hour: false,
+        },
+      };
+      handleGameTick(event, mockContext, mockAppendMessage);
+      expect(mockContext.setMythosTime).toHaveBeenCalled();
+    });
+
+    it('should append quarter-hour chime message at :00 minutes', () => {
+      mockContext.lastQuarterHourRef.current = null;
+      const event = {
+        event_type: 'game_tick',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          tick_number: 10,
+          mythos_clock: '14:00 Mythos',
+          mythos_datetime: '1920-01-01T14:00:00Z', // Minute 0
+          month_name: 'January',
+          day_of_month: 1,
+          day_name: 'Wednesday',
+          week_of_month: 1,
+          season: 'winter',
+          daypart: 'afternoon',
+          is_daytime: true,
+          is_witching_hour: false,
+        },
+      };
+      handleGameTick(event, mockContext, mockAppendMessage);
+      expect(mockAppendMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          text: expect.stringContaining('The clock chimes'),
+        })
+      );
+      expect(mockContext.lastQuarterHourRef.current).toBe(0);
+    });
+
+    it('should append quarter-hour chime message at :15 minutes', () => {
+      mockContext.lastQuarterHourRef.current = 0;
+      const event = {
+        event_type: 'game_tick',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          tick_number: 10,
+          mythos_clock: '14:15 Mythos',
+          mythos_datetime: '1920-01-01T14:15:00Z', // Minute 15
+          month_name: 'January',
+          day_of_month: 1,
+          day_name: 'Wednesday',
+          week_of_month: 1,
+          season: 'winter',
+          daypart: 'afternoon',
+          is_daytime: true,
+          is_witching_hour: false,
+        },
+      };
+      handleGameTick(event, mockContext, mockAppendMessage);
+      expect(mockAppendMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          text: expect.stringContaining('The clock chimes'),
+        })
+      );
+      expect(mockContext.lastQuarterHourRef.current).toBe(15);
+    });
+
+    it('should append quarter-hour chime message at :30 minutes', () => {
+      mockContext.lastQuarterHourRef.current = 15;
+      const event = {
+        event_type: 'game_tick',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          tick_number: 10,
+          mythos_clock: '14:30 Mythos',
+          mythos_datetime: '1920-01-01T14:30:00Z', // Minute 30
+          month_name: 'January',
+          day_of_month: 1,
+          day_name: 'Wednesday',
+          week_of_month: 1,
+          season: 'winter',
+          daypart: 'afternoon',
+          is_daytime: true,
+          is_witching_hour: false,
+        },
+      };
+      handleGameTick(event, mockContext, mockAppendMessage);
+      expect(mockAppendMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          text: expect.stringContaining('The clock chimes'),
+        })
+      );
+      expect(mockContext.lastQuarterHourRef.current).toBe(30);
+    });
+
+    it('should append quarter-hour chime message at :45 minutes', () => {
+      mockContext.lastQuarterHourRef.current = 30;
+      const event = {
+        event_type: 'game_tick',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          tick_number: 10,
+          mythos_clock: '14:45 Mythos',
+          mythos_datetime: '1920-01-01T14:45:00Z', // Minute 45
+          month_name: 'January',
+          day_of_month: 1,
+          day_name: 'Wednesday',
+          week_of_month: 1,
+          season: 'winter',
+          daypart: 'afternoon',
+          is_daytime: true,
+          is_witching_hour: false,
+        },
+      };
+      handleGameTick(event, mockContext, mockAppendMessage);
+      expect(mockAppendMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          text: expect.stringContaining('The clock chimes'),
+        })
+      );
+      expect(mockContext.lastQuarterHourRef.current).toBe(45);
+    });
+
+    it('should not append duplicate quarter-hour chime for same minute', () => {
+      mockContext.lastQuarterHourRef.current = 0;
+      const event = {
+        event_type: 'game_tick',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          tick_number: 10,
+          mythos_clock: '14:00 Mythos',
+          mythos_datetime: '1920-01-01T14:00:00Z', // Minute 0, same as lastQuarterHourRef
+          month_name: 'January',
+          day_of_month: 1,
+          day_name: 'Wednesday',
+          week_of_month: 1,
+          season: 'winter',
+          daypart: 'afternoon',
+          is_daytime: true,
+          is_witching_hour: false,
+        },
+      };
+      vi.clearAllMocks();
+      handleGameTick(event, mockContext, mockAppendMessage);
+      // Should not append chime since it's the same quarter-hour
+      expect(mockAppendMessage).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          text: expect.stringContaining('The clock chimes'),
+        })
+      );
+    });
+
+    it('should not append quarter-hour chime for non-quarter-hour minutes', () => {
+      mockContext.lastQuarterHourRef.current = 0;
+      const event = {
+        event_type: 'game_tick',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          tick_number: 10,
+          mythos_clock: '14:10 Mythos',
+          mythos_datetime: '1920-01-01T14:10:00Z', // Minute 10, not a quarter-hour
+          month_name: 'January',
+          day_of_month: 1,
+          day_name: 'Wednesday',
+          week_of_month: 1,
+          season: 'winter',
+          daypart: 'afternoon',
+          is_daytime: true,
+          is_witching_hour: false,
+        },
+      };
+      vi.clearAllMocks();
+      handleGameTick(event, mockContext, mockAppendMessage);
+      expect(mockAppendMessage).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          text: expect.stringContaining('The clock chimes'),
+        })
+      );
+    });
+
+    it('should handle invalid mythos_datetime gracefully in quarter-hour check', () => {
+      const event = {
+        event_type: 'game_tick',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          tick_number: 10,
+          mythos_clock: '14:00 Mythos',
+          mythos_datetime: 'invalid-date',
+          month_name: 'January',
+          day_of_month: 1,
+          day_name: 'Wednesday',
+          week_of_month: 1,
+          season: 'winter',
+          daypart: 'afternoon',
+          is_daytime: true,
+          is_witching_hour: false,
+        },
+      };
+      handleGameTick(event, mockContext, mockAppendMessage);
+      expect(mockContext.setMythosTime).toHaveBeenCalled();
+      // Should not throw error
+    });
+
+    it('should not update mythos time when mythos_clock is missing', () => {
+      const event = {
+        event_type: 'game_tick',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          tick_number: 10,
+          mythos_datetime: '1920-01-01T14:00:00Z',
+        },
+      };
+      handleGameTick(event, mockContext, mockAppendMessage);
+      expect(mockContext.setMythosTime).not.toHaveBeenCalled();
+    });
+
+    it('should not update mythos time when mythos_datetime is missing', () => {
+      const event = {
+        event_type: 'game_tick',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          tick_number: 10,
+          mythos_clock: '14:00 Mythos',
+        },
+      };
+      handleGameTick(event, mockContext, mockAppendMessage);
+      expect(mockContext.setMythosTime).not.toHaveBeenCalled();
+    });
+
+    it('should handle active_holidays when it is an array', () => {
+      const event = {
+        event_type: 'game_tick',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          tick_number: 10,
+          mythos_clock: '14:00 Mythos',
+          mythos_datetime: '1920-01-01T14:00:00Z',
+          active_holidays: [{ name: 'New Year', date: '1920-01-01' }],
+        },
+      };
+      handleGameTick(event, mockContext, mockAppendMessage);
+      expect(mockContext.setMythosTime).toHaveBeenCalled();
+    });
+
+    it('should handle active_holidays when it is not an array', () => {
+      const event = {
+        event_type: 'game_tick',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          tick_number: 10,
+          mythos_clock: '14:00 Mythos',
+          mythos_datetime: '1920-01-01T14:00:00Z',
+          active_holidays: 'not-an-array',
+        },
+      };
+      handleGameTick(event, mockContext, mockAppendMessage);
+      expect(mockContext.setMythosTime).toHaveBeenCalled();
+    });
+
+    it('should handle upcoming_holidays when it is an array', () => {
+      const event = {
+        event_type: 'game_tick',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          tick_number: 10,
+          mythos_clock: '14:00 Mythos',
+          mythos_datetime: '1920-01-01T14:00:00Z',
+          upcoming_holidays: [{ name: 'Valentine', date: '1920-02-14' }],
+        },
+      };
+      handleGameTick(event, mockContext, mockAppendMessage);
+      expect(mockContext.setMythosTime).toHaveBeenCalled();
+    });
+
+    it('should handle upcoming_holidays when it is not an array', () => {
+      const event = {
+        event_type: 'game_tick',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          tick_number: 10,
+          mythos_clock: '14:00 Mythos',
+          mythos_datetime: '1920-01-01T14:00:00Z',
+          upcoming_holidays: 'not-an-array',
+        },
+      };
+      handleGameTick(event, mockContext, mockAppendMessage);
+      expect(mockContext.setMythosTime).toHaveBeenCalled();
+    });
+
+    it('should handle active_schedules when it is an array', () => {
+      const event = {
+        event_type: 'game_tick',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          tick_number: 10,
+          mythos_clock: '14:00 Mythos',
+          mythos_datetime: '1920-01-01T14:00:00Z',
+          active_schedules: [{ npc_id: 'npc1', schedule_id: 'schedule1' }],
+        },
+      };
+      handleGameTick(event, mockContext, mockAppendMessage);
+      expect(mockContext.setMythosTime).toHaveBeenCalled();
+    });
+
+    it('should handle active_schedules when it is not an array', () => {
+      const event = {
+        event_type: 'game_tick',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          tick_number: 10,
+          mythos_clock: '14:00 Mythos',
+          mythos_datetime: '1920-01-01T14:00:00Z',
+          active_schedules: 'not-an-array',
+        },
+      };
+      handleGameTick(event, mockContext, mockAppendMessage);
+      expect(mockContext.setMythosTime).toHaveBeenCalled();
+    });
+
+    it('should use data.timestamp when available for server_timestamp', () => {
+      const customTimestamp = '1920-01-01T12:00:00Z';
+      const event = {
+        event_type: 'game_tick',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          tick_number: 10,
+          mythos_clock: '14:00 Mythos',
+          mythos_datetime: '1920-01-01T14:00:00Z',
+          timestamp: customTimestamp,
+        },
+      };
+      handleGameTick(event, mockContext, mockAppendMessage);
+      expect(mockContext.setMythosTime).toHaveBeenCalled();
+    });
+
+    it('should use event.timestamp when data.timestamp is missing', () => {
+      const eventTimestamp = new Date().toISOString();
+      const event = {
+        event_type: 'game_tick',
+        timestamp: eventTimestamp,
+        sequence_number: 1,
+        data: {
+          tick_number: 10,
+          mythos_clock: '14:00 Mythos',
+          mythos_datetime: '1920-01-01T14:00:00Z',
+        },
+      };
+      handleGameTick(event, mockContext, mockAppendMessage);
+      expect(mockContext.setMythosTime).toHaveBeenCalled();
+    });
+
+    it('should use default is_daytime when it is undefined', () => {
+      const event = {
+        event_type: 'game_tick',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          tick_number: 10,
+          mythos_clock: '14:00 Mythos',
+          mythos_datetime: '1920-01-01T14:00:00Z',
+          // is_daytime is undefined, should default to true
+        },
+      };
+      handleGameTick(event, mockContext, mockAppendMessage);
+      expect(mockContext.setMythosTime).toHaveBeenCalled();
+    });
+
+    it('should use false for is_daytime when explicitly set to false', () => {
+      const event = {
+        event_type: 'game_tick',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          tick_number: 10,
+          mythos_clock: '14:00 Mythos',
+          mythos_datetime: '1920-01-01T14:00:00Z',
+          is_daytime: false,
+        },
+      };
+      handleGameTick(event, mockContext, mockAppendMessage);
+      expect(mockContext.setMythosTime).toHaveBeenCalled();
+    });
+
+    it('should use default is_witching_hour when it is undefined', () => {
+      const event = {
+        event_type: 'game_tick',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          tick_number: 10,
+          mythos_clock: '14:00 Mythos',
+          mythos_datetime: '1920-01-01T14:00:00Z',
+          // is_witching_hour is undefined, should default to false
+        },
+      };
+      handleGameTick(event, mockContext, mockAppendMessage);
+      expect(mockContext.setMythosTime).toHaveBeenCalled();
+    });
+
+    it('should use true for is_witching_hour when explicitly set to true', () => {
+      const event = {
+        event_type: 'game_tick',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          tick_number: 10,
+          mythos_clock: '14:00 Mythos',
+          mythos_datetime: '1920-01-01T14:00:00Z',
+          is_witching_hour: true,
+        },
+      };
+      handleGameTick(event, mockContext, mockAppendMessage);
+      expect(mockContext.setMythosTime).toHaveBeenCalled();
+    });
+
+    it('should handle error that is not an Error instance in quarter-hour check', () => {
+      // Mock Date constructor to throw a non-Error object when parsing mythos_datetime
+      const originalDate = global.Date;
+      let callCount = 0;
+      const DateConstructor = function (this: Date, ...args: unknown[]) {
+        callCount++;
+        // On the call for mythos_datetime (second Date construction), throw non-Error
+        if (callCount === 2 && args[0] === 'test-throw-non-error') {
+          throw 'string error'; // Not an Error instance
+        }
+        return new originalDate(...(args as Parameters<typeof Date>));
+      };
+      DateConstructor.prototype = originalDate.prototype;
+      DateConstructor.now = originalDate.now;
+      DateConstructor.parse = originalDate.parse;
+      DateConstructor.UTC = originalDate.UTC;
+      global.Date = DateConstructor as unknown as typeof Date;
+
+      try {
+        const event = {
+          event_type: 'game_tick',
+          timestamp: new Date().toISOString(),
+          sequence_number: 1,
+          data: {
+            tick_number: 10,
+            mythos_clock: '14:00 Mythos',
+            mythos_datetime: 'test-throw-non-error', // Will trigger non-Error exception
+          },
+        };
+        handleGameTick(event, mockContext, mockAppendMessage);
+        expect(mockContext.setMythosTime).toHaveBeenCalled();
+      } finally {
+        // Always restore Date, even if test fails
+        global.Date = originalDate;
+      }
     });
   });
 

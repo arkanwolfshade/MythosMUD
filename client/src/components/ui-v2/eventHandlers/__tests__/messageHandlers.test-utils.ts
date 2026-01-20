@@ -39,6 +39,7 @@ export const createMockContext = (overrides: Partial<EventHandlerContext> = {}):
   lucidityStatusRef: { current: null },
   lastDaypartRef: { current: null },
   lastHourRef: { current: null },
+  lastQuarterHourRef: { current: null },
   lastHolidayIdsRef: { current: [] },
   lastRoomUpdateTime: { current: 0 },
   setDpStatus: function (_status: HealthStatus): void {

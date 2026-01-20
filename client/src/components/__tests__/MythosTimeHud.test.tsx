@@ -5,11 +5,11 @@ import type { MythosTimeState } from '../../types/mythosTime';
 import { HolidayBanner, MythosTimeHud } from '../MythosTimeHud';
 
 const mythosState: MythosTimeState = {
-  mythos_datetime: '1930-01-05T14:00:00Z',
+  mythos_datetime: '1920-01-05T14:00:00Z',
   mythos_clock: '14:00 Mythos',
   month_name: 'January',
   day_of_month: 5,
-  day_name: 'Tertius',
+  day_name: 'Sunday',
   week_of_month: 1,
   season: 'winter',
   daypart: 'afternoon',
@@ -29,7 +29,7 @@ const mythosState: MythosTimeState = {
   ],
   upcoming_holidays: [],
   active_schedules: [],
-  formatted_date: 'Tertius, January 5',
+  formatted_date: 'Sunday, January 5',
 };
 
 describe('MythosTimeHud', () => {
@@ -41,7 +41,7 @@ describe('MythosTimeHud', () => {
   it('renders formatted Mythos time details', () => {
     render(<MythosTimeHud mythosTime={mythosState} />);
     expect(screen.getByText('2:00 PM')).toBeVisible();
-    expect(screen.getByText('Tertius, January 5')).toBeVisible();
+    expect(screen.getByText('Sunday, January 5')).toBeVisible();
     expect(screen.getByText(/afternoon/i)).toBeVisible();
     expect(screen.getByText('Feast of Yig')).toBeVisible();
   });

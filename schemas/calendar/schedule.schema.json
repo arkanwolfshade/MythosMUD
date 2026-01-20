@@ -54,7 +54,7 @@
           "minItems": 1,
           "items": {
             "type": "string",
-            "enum": ["Primus", "Secundus", "Tertius", "Quartus", "Quintus", "Sextus"]
+            "enum": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
           }
         },
         "applies_to": {
