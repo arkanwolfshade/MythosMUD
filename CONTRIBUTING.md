@@ -300,8 +300,6 @@ uv run pytest --cov=. --cov-report=html
 # Run linting
 make lint
 
-# Run security analysis
-make semgrep
 ```
 
 **Test Requirements**:
@@ -364,7 +362,6 @@ Fixes #456
 
 - Format code with ruff (Python) and Prettier (TypeScript)
 - Run linters (ruff, ESLint)
-- Check for security issues with Semgrep
 - Validate commit message format
 
 If hooks fail, fix the issues and try again:
@@ -691,7 +688,6 @@ See [docs/LOGGING_BEST_PRACTICES.md](docs/LOGGING_BEST_PRACTICES.md) for compreh
 - [ ] Rate limiting implemented where needed
 - [ ] Error messages don't expose sensitive data
 - [ ] Security tests included
-- [ ] Semgrep scan passes
 
 See [SECURITY.md](SECURITY.md) for comprehensive security policies.
 

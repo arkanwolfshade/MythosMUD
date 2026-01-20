@@ -100,7 +100,7 @@ async function sendLogoutCommandToServer(authToken: string, timeout: number): Pr
         const rawData: unknown = await response.json();
         const errorData = typeof rawData === 'object' && rawData !== null ? (rawData as Record<string, unknown>) : {};
         // Type-safe error message extraction
-        const errorObj = errorData?.error;
+        const errorObj = errorData.error;
         const errorMessageFromError =
           typeof errorObj === 'object' &&
           errorObj !== null &&
@@ -108,7 +108,7 @@ async function sendLogoutCommandToServer(authToken: string, timeout: number): Pr
           typeof errorObj.message === 'string'
             ? errorObj.message
             : undefined;
-        const detailMessage = typeof errorData?.detail === 'string' ? errorData.detail : undefined;
+        const detailMessage = typeof errorData.detail === 'string' ? errorData.detail : undefined;
         errorMessage = errorMessageFromError || detailMessage || errorMessage;
       } catch {
         // Ignore JSON parsing errors, use default message

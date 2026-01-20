@@ -49,7 +49,9 @@ export const LoginGracePeriodBanner = memo<LoginGracePeriodBannerProps>(({ remai
       });
     }, 1000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+    };
   }, [remainingSeconds]);
 
   // Don't render if grace period has expired

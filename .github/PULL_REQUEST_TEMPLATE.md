@@ -42,7 +42,6 @@
 - [ ] SQL queries use parameterized statements
 - [ ] Enhanced logging used (no f-strings, no `context=`)
 - [ ] No sensitive data in logs
-- [ ] `make semgrep` passes
 
 **Security impact**: [ ] None [ ] Low [ ] Medium [ ] High
 

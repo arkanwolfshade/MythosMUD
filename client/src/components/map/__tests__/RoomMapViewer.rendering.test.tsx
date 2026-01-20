@@ -37,7 +37,13 @@ vi.mock('reactflow', () => ({
 vi.mock('../MapControls', () => ({
   MapControls: ({ searchQuery, onSearchChange }: Pick<MapControlsProps, 'searchQuery' | 'onSearchChange'>) => (
     <div data-testid="map-controls">
-      <input data-testid="search-input" value={searchQuery} onChange={e => onSearchChange(e.target.value)} />
+      <input
+        data-testid="search-input"
+        value={searchQuery}
+        onChange={e => {
+          onSearchChange(e.target.value);
+        }}
+      />
     </div>
   ),
 }));

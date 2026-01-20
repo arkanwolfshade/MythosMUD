@@ -654,7 +654,9 @@ describe('logoutHandler', () => {
 
       // Verify abort happened
       expect(abortSignal).not.toBeNull();
-      expect(abortSignal!.aborted).toBe(true);
+      // TypeScript doesn't narrow after expect, so we assert the type is non-null
+      const signal = abortSignal!;
+      expect(signal.aborted).toBe(true);
 
       expect(mockDisconnect).toHaveBeenCalled();
       expect(mockClearState).toHaveBeenCalled();

@@ -45,6 +45,18 @@ export default tseslint.config([
     },
   },
   {
+    files: ['src/test/**/*.js'],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: {
+        ...globals.node,
+        ...globals.browser,
+        window: 'readonly',
+        Element: 'readonly',
+      },
+    },
+  },
+  {
     files: ['playwright.config.ts'],
     rules: {
       // Suppress Playwright connection errors during linting - these are false positives

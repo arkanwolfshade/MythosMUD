@@ -135,7 +135,7 @@ export const handleGameTick: EventHandler = (event, _context, appendMessage) => 
 };
 
 export const handleIntentionalDisconnect: EventHandler = (event, context, appendMessage) => {
-  const message = (event.data as { message?: string })?.message || 'You have disconnected from the game.';
+  const message = (event.data as { message?: string }).message || 'You have disconnected from the game.';
 
   // Add message to chat
   appendMessage(

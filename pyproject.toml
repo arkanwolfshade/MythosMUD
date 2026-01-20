@@ -33,7 +33,7 @@ dependencies = [
     "jsonschema>=4.25.1,<4.26.0",
     "bleach>=6.3.0",
     "tqdm>=4.67.1",
-    "click>=8.1.8,<8.2.0", # Command line interface for command parsing and validation (constrained by semgrep)
+    "click>=8.1.8,<8.2.0", # Command line interface for command parsing and validation
     "defusedxml>=0.7.1", # Secure XML parsing for coverage reports
     "pwdlib[bcrypt]>=0.3.0", # Required by fastapi-users (we override the hashing)
     "nats-py>=2.12.0", # NATS Python client for messaging
@@ -47,6 +47,7 @@ dependencies = [
     "prometheus-client>=0.23.1",
     "numpy>=2.4.1", # Numerical computing for performance monitoring and statistical calculations
     "aiofiles>=24.1.0", # Async file I/O to prevent blocking the event loop
+    "virtualenv==20.36.1",
 ]
 
 [project.optional-dependencies]
@@ -63,7 +64,6 @@ dev = [
     "mypy>=1.19.1",  # Static type checking
     "types-python-dateutil>=2.9.0.20251115",  # Type stubs for dateutil
     "types-bleach>=6.3.0.20251115",  # Type stubs for bleach
-    "semgrep>=1.146.0",  # Static analysis for security and best practices
     "websocket-client>=1.9.0",  # WebSocket client for testing connection termination
     "bandit>=1.9.2",  # Python security linter
     "pylint>=4.0.4",  # Python code quality linter
@@ -342,7 +342,6 @@ dev = [
     "ruff>=0.14.10",
     "mypy>=1.19.1", # Static type checking
     "types-python-dateutil>=2.9.0.20251115", # Type stubs for dateutil
-    "semgrep>=1.146.0", # Static analysis for security and best practices
     "websocket-client>=1.9.0", # WebSocket client for testing connection termination
     "types-bleach>=6.3.0.20251115",
     "types-psutil>=7.2.1.20251231",

@@ -59,7 +59,9 @@ describe('MapPage', () => {
     await act(async () => {
       render(<MapPage />);
       // Allow microtask to complete
-      await new Promise<void>(resolve => queueMicrotask(() => resolve()));
+      await new Promise<void>(resolve => {
+        queueMicrotask(() => resolve());
+      });
     });
 
     // Assert - Component should eventually render the map viewer

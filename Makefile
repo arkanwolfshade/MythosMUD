@@ -18,7 +18,6 @@ PYTEST_COV_OPTS := --cov=server --cov-report=html --cov-report=term-missing --co
 # PHONY targets
 .PHONY: help clean install build run
 .PHONY: lint lint-sqlalchemy format mypy
-.PHONY: semgrep semgrep-autofix
 .PHONY: bandit pylint ruff sqlfluff sqlint
 .PHONY: hadolint shellcheck psscriptanalyzer
 .PHONY: stylelint markdownlint jackson-linter
@@ -40,8 +39,6 @@ help:
 	@echo "  lint-sqlalchemy - Run SQLAlchemy async pattern linter"
 	@echo "  format          - Run ruff format (Python) and Prettier (Node)"
 	@echo "  mypy            - Run mypy static type checking"
-	@echo "  semgrep         - Run Semgrep security analysis"
-	@echo "  semgrep-autofix - Run Semgrep with autofix"
 	@echo ""
 	@echo "Codacy Tools (Python):"
 	@echo "  bandit          - Python security linter"
@@ -105,12 +102,6 @@ mypy:
 
 format:
 	$(PYTHON) scripts/format.py
-
-semgrep:
-	$(PYTHON) scripts/semgrep.py
-
-semgrep-autofix:
-	$(POWERSHELL) scripts/semgrep-autofix.ps1
 
 # ============================================================================
 # CODACY TOOLS - Python
@@ -243,4 +234,4 @@ run:
 # COMPOSITE TARGETS
 # ============================================================================
 
-all: format mypy lint lint-sqlalchemy codacy-tools semgrep-autofix codacy-tools build test-coverage
+all: format mypy lint lint-sqlalchemy codacy-tools build test-coverage

@@ -109,7 +109,7 @@ let isClearing = false;
 const mockedClearInterval = vi.fn((id: number) => {
   if (isClearing) {
     // Recursion detected - use original
-    return originalClearInterval(id);
+    originalClearInterval(id);
   }
   isClearing = true;
   try {
@@ -1171,7 +1171,7 @@ describe('useWebSocketConnection', () => {
         .reverse()
         .find((call: unknown[]) => typeof call[0] === 'function' && call[1] === 30000);
       expect(intervalCall).toBeDefined();
-      const intervalHandler = intervalCall![0] as () => Promise<void>;
+      const intervalHandler = intervalCall?.[0] as () => Promise<void>;
       expect(typeof intervalHandler).toBe('function');
 
       // Verify DEV mode is enabled in test environment
@@ -1227,7 +1227,7 @@ describe('useWebSocketConnection', () => {
         .reverse()
         .find((call: unknown[]) => typeof call[0] === 'function' && call[1] === 30000);
       expect(intervalCall).toBeDefined();
-      const intervalHandler = intervalCall![0] as () => Promise<void>;
+      const intervalHandler = intervalCall?.[0] as () => Promise<void>;
       expect(typeof intervalHandler).toBe('function');
 
       // Verify DEV mode is enabled in test environment
@@ -1283,7 +1283,7 @@ describe('useWebSocketConnection', () => {
         .reverse()
         .find((call: unknown[]) => typeof call[0] === 'function' && call[1] === 30000);
       expect(intervalCall).toBeDefined();
-      const intervalHandler = intervalCall![0] as () => Promise<void>;
+      const intervalHandler = intervalCall?.[0] as () => Promise<void>;
       expect(typeof intervalHandler).toBe('function');
 
       // Verify DEV mode is enabled in test environment

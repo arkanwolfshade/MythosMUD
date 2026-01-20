@@ -4,7 +4,7 @@ A text-based, browser-accessible Multi-User Dungeon (MUD) inspired by the Cthulh
 
 ## Status Badges
 
-[![CI](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/ci.yml/badge.svg)](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/ci.yml) [![CodeQL](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/codeql.yml/badge.svg)](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/codeql.yml) [![Semgrep](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/semgrep.yml/badge.svg)](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/semgrep.yml) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/0c361cf70a234b86b1b0f058ffd00549)](https://app.codacy.com/gh/arkanwolfshade/MythosMUD/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![CI](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/ci.yml/badge.svg)](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/ci.yml) [![CodeQL](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/codeql.yml/badge.svg)](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/codeql.yml) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/0c361cf70a234b86b1b0f058ffd00549)](https://app.codacy.com/gh/arkanwolfshade/MythosMUD/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
 ## Table of Contents
 
@@ -275,7 +275,7 @@ MythosMUD/
 │   ├── stop_server.ps1        # Server shutdown
 │   ├── start_server.ps1       # Server-only startup
 │   ├── start_client.ps1       # Client-only startup
-│   └── [other utilities]      # Testing, linting, formatting, semgrep
+│   └── [other utilities]      # Testing, linting, formatting
 │
 ├── e2e-tests/                 # End-to-end testing framework
 │   ├── scenarios/             # 21 multiplayer test scenarios
@@ -298,7 +298,7 @@ MythosMUD/
 │   ├── invite_tools/          # Invite management utilities
 │   └── room_toolkit/          # Room validation and tools
 │
-├── .github/                   # GitHub Actions workflows (CI, CodeQL, Semgrep)
+├── .github/                   # GitHub Actions workflows (CI, CodeQL)
 ├── .cursor/                   # Cursor IDE configuration
 ├── .agent-os/                 # AI agent specifications and tasks
 ├── PLANNING.md                # Comprehensive project planning
@@ -333,7 +333,6 @@ The `scripts/` directory contains PowerShell and Python utility scripts for mana
 - `scripts/test.py` - Run tests (server, client, or both)
 - `scripts/lint.py` - Lint code with ruff
 - `scripts/format.py` - Format code with ruff
-- `scripts/semgrep.py` - Run security analysis with Semgrep
 
 **Test Setup Scripts:**
 
@@ -348,7 +347,6 @@ The `scripts/` directory contains PowerShell and Python utility scripts for mana
 - `make test-client-e2e` - Run automated E2E tests (Playwright)
 - `make lint` - Run linting for both server and client
 - `make format` - Format code for both server and client
-- `make semgrep` - Run security analysis
 
 For multiplayer E2E scenarios, see [e2e-tests/MULTIPLAYER_TEST_RULES.md](e2e-tests/MULTIPLAYER_TEST_RULES.md)
 
@@ -376,7 +374,6 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
   - **CRITICAL**: Always use `make test` from project root, NEVER from `/server/` directory
   - See [Test Setup Guide](server/tests/SETUP.md) for detailed setup instructions
 - **Security:**
-  - Semgrep static analysis for security vulnerabilities
   - COPPA compliance verification
   - Comprehensive input validation and XSS protection
 - **AI Agents:**
