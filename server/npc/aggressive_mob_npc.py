@@ -80,7 +80,7 @@ class AggressiveMobNPC(NPCBase):
     def attack_target(self, target_id: str) -> bool:
         """Attack a specific target."""
         try:
-            attack_damage = self._behavior_config.get("attack_damage", 20)
+            attack_damage = self._behavior_config.get("attack_damage", 1)
             logger.info("NPC attacked target", npc_id=self.npc_id, target_id=target_id, damage=attack_damage)
 
             # Use combat integration for attack handling
