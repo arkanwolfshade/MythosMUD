@@ -37,9 +37,21 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     user creation and validation logic with Argon2 password hashing.
     """
 
-    # Use environment variables for all secrets - CRITICAL: Must be set in production
-    reset_password_token_secret = os.getenv("MYTHOSMUD_RESET_TOKEN_SECRET", "dev-reset-secret")
-    verification_token_secret = os.getenv("MYTHOSMUD_VERIFICATION_TOKEN_SECRET", "dev-verification-secret")
+    def __init__(self, user_db: SQLAlchemyUserDatabase):
+        """Initialize UserManager with validated secrets."""
+        super().__init__(user_db)
+        # Validate and set token secrets from environment
+        reset_secret = os.getenv("MYTHOSMUD_RESET_TOKEN_SECRET")
+        if not reset_secret or reset_secret.startswith("dev-"):
+            raise ValueError("MYTHOSMUD_RESET_TOKEN_SECRET must be set to a secure value (not starting with 'dev-')")
+        self.reset_password_token_secret = reset_secret
+
+        verification_secret = os.getenv("MYTHOSMUD_VERIFICATION_TOKEN_SECRET")
+        if not verification_secret or verification_secret.startswith("dev-"):
+            raise ValueError(
+                "MYTHOSMUD_VERIFICATION_TOKEN_SECRET must be set to a secure value (not starting with 'dev-')"
+            )
+        self.verification_token_secret = verification_secret
 
     def _hash_password(self, password: str) -> str:
         """Hash password using Argon2 instead of bcrypt."""
@@ -92,6 +104,27 @@ async def get_user_manager(user_db: SQLAlchemyUserDatabase = Depends(get_user_db
     yield UserManager(user_db)
 
 
+def _validate_jwt_secret() -> str:
+    """
+    Validate and return JWT secret from environment.
+
+    Raises ValueError if secret is not set or starts with "dev-".
+    """
+    jwt_secret = os.getenv("MYTHOSMUD_JWT_SECRET")
+    if not jwt_secret:
+        raise ValueError(
+            "MYTHOSMUD_JWT_SECRET environment variable must be set. "
+            "Generate a secure random key for production deployment."
+        )
+    if jwt_secret.startswith("dev-"):
+        raise ValueError(
+            "MYTHOSMUD_JWT_SECRET must not start with 'dev-'. "
+            "This indicates an insecure development secret. "
+            "Generate a secure random key for production deployment."
+        )
+    return jwt_secret
+
+
 def get_auth_backend() -> AuthenticationBackend:
     """Get authentication backend configuration."""
 
@@ -100,8 +133,8 @@ def get_auth_backend() -> AuthenticationBackend:
 
     # JWT strategy - return a function that creates the strategy
     def get_jwt_strategy() -> JWTStrategy:
-        # Use environment variable for JWT secret - CRITICAL: Must be set in production
-        jwt_secret = os.getenv("MYTHOSMUD_JWT_SECRET", "dev-jwt-secret")
+        # Validate JWT secret - CRITICAL: Must be set in production
+        jwt_secret = _validate_jwt_secret()
         return JWTStrategy(
             secret=jwt_secret,
             lifetime_seconds=3600,  # 1 hour
@@ -135,8 +168,8 @@ def get_username_auth_backend() -> UsernameAuthenticationBackend:
 
     # JWT strategy - return a function that creates the strategy
     def get_jwt_strategy() -> JWTStrategy:
-        # Use environment variable for JWT secret - CRITICAL: Must be set in production
-        jwt_secret = os.getenv("MYTHOSMUD_JWT_SECRET", "dev-jwt-secret")
+        # Validate JWT secret - CRITICAL: Must be set in production
+        jwt_secret = _validate_jwt_secret()
         return JWTStrategy(
             secret=jwt_secret,
             lifetime_seconds=3600,  # 1 hour

@@ -330,6 +330,18 @@ class ApplicationContainer:  # pylint: disable=too-many-instance-attributes  # R
                 self.persistence = self.async_persistence
                 logger.info("Persistence layer initialized (async only)")
 
+                # Phase 5.1: Warm up room cache and connection pool
+                logger.debug("Warming up room cache and connection pool...")
+                try:
+                    await self.async_persistence.warmup_room_cache()
+                    logger.info("Room cache warmed up successfully")
+                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Room cache warmup errors should not block server startup, log and continue
+                    logger.warning(
+                        "Room cache warmup failed, will load on first access",
+                        error=str(e),
+                        error_type=type(e).__name__,
+                    )
+
                 # Phase 5.2: Gameplay services
                 logger.debug("Initializing gameplay services...")
                 from .game.movement_service import MovementService

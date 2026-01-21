@@ -84,43 +84,35 @@ class GameStateProvider:
         """
         Get multiple players from the persistence layer in a single batch operation.
 
-        This method optimizes room occupant lookups by reducing N+1 queries to a single
-        batch operation.
+        This method optimizes room occupant lookups by using a single database query
+        with IN clause instead of N individual queries, eliminating N+1 query pattern.
 
         Args:
             player_ids: List of player IDs to retrieve (UUIDs)
 
         Returns:
             dict: Mapping of player_id to Player object (only includes found players)
-
-        AI: Batch loading eliminates N+1 queries when getting room occupants.
         """
         async_persistence = self.get_async_persistence()
         if async_persistence is None:
             logger.warning("Persistence layer not initialized for batch player lookup", player_count=len(player_ids))
             return {}
 
-        players: dict[uuid.UUID, Player] = {}
         if not player_ids:
+            return {}
+
+        # Use async_persistence batch method which uses single query with IN clause
+        try:
+            players = await async_persistence.get_players_batch(player_ids)
+            logger.debug(
+                "Batch loaded players",
+                requested_count=len(player_ids),
+                loaded_count=len(players),
+            )
             return players
-
-        # Load players in batch - iterate through IDs and get each one
-        # Note: If persistence layer supports batch operations in the future, this can be optimized further
-        for player_id in player_ids:
-            try:
-                player = await async_persistence.get_player_by_id(player_id)
-                if player:
-                    players[player_id] = player
-            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Player batch loading errors unpredictable, must continue processing
-                # Structlog handles UUID objects automatically, no need to convert to string
-                logger.debug("Error loading player in batch", player_id=player_id, error=str(e))
-
-        logger.debug(
-            "Batch loaded players",
-            requested_count=len(player_ids),
-            loaded_count=len(players),
-        )
-        return players
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Player batch loading errors unpredictable, must continue processing
+            logger.debug("Error loading players in batch", player_count=len(player_ids), error=str(e))
+            return {}
 
     def get_npcs_batch(self, npc_ids: list[str]) -> dict[str, str]:
         """

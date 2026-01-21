@@ -11,6 +11,7 @@ Personal message delivery is now a focused, independently testable component.
 # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Message sending requires many parameters for context and message routing
 
 import uuid
+from collections import deque
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
@@ -148,7 +149,9 @@ class PersonalMessageSender:
         if not delivery_status["active_connections"]:
             player_id_str = str(player_id)
             if player_id_str not in self.message_queue.pending_messages:
-                self.message_queue.pending_messages[player_id_str] = []
+                self.message_queue.pending_messages[player_id_str] = deque(
+                    maxlen=self.message_queue.max_messages_per_player
+                )
             self.message_queue.pending_messages[player_id_str].append(serializable_event)
             logger.debug(
                 "No active connections, queued message for later delivery",
