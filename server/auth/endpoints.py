@@ -16,6 +16,7 @@ from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..database import get_async_session
+from ..dependencies import get_container
 from ..exceptions import LoggedHTTPException
 from ..models.user import User
 from ..schemas.invite import InviteRead
@@ -394,12 +395,10 @@ async def _authenticate_user_credentials(
         raise LoggedHTTPException(status_code=401, detail="Invalid credentials", context=context) from None
 
 
-async def _get_user_characters(user: User) -> list[dict[str, Any]]:
+async def _get_user_characters(user: User, async_persistence) -> list[dict[str, Any]]:
     """Get all active characters for user."""
-    from ..async_persistence import get_async_persistence
     from ..schemas.player import CharacterInfo
 
-    async_persistence = get_async_persistence()
     active_players = await async_persistence.get_active_players_by_user_id(str(user.id))
 
     characters = []
@@ -433,6 +432,7 @@ async def login_user(
     http_request: Request,
     user_manager: UserManager = Depends(get_user_manager),
     session: AsyncSession = Depends(get_async_session),
+    container=Depends(get_container),
 ) -> LoginResponse:
     """
     Authenticate a user and return an access token.
@@ -450,7 +450,7 @@ async def login_user(
 
     access_token = _generate_jwt_token(user)
 
-    characters = await _get_user_characters(user)
+    characters = await _get_user_characters(user, container.async_persistence)
 
     logger.info("Login successful for user", username=user.username, character_count=len(characters))
 

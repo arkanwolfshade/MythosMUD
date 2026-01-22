@@ -14,6 +14,9 @@ from server.exceptions import DatabaseError
 from server.models.player import Player
 from server.persistence.repositories.player_repository import PlayerRepository
 
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+
 
 @pytest.fixture
 def player_repository():
@@ -35,9 +38,11 @@ def mock_player():
 
 def test_player_repository_initialization():
     """Test PlayerRepository initializes correctly."""
-    repo = PlayerRepository()
+    # PlayerRepository now requires room_cache to not be None
+    room_cache = {}
+    repo = PlayerRepository(room_cache=room_cache)
 
-    assert repo._room_cache == {}
+    assert repo._room_cache == room_cache
     assert repo._event_bus is None
 
 
@@ -51,9 +56,12 @@ def test_player_repository_initialization_with_cache():
 
 def test_player_repository_initialization_with_event_bus():
     """Test PlayerRepository initializes with event bus."""
+    # PlayerRepository now requires room_cache to not be None
+    room_cache = {}
     event_bus = MagicMock()
-    repo = PlayerRepository(event_bus=event_bus)
+    repo = PlayerRepository(room_cache=room_cache, event_bus=event_bus)
 
+    assert repo._room_cache == room_cache
     assert repo._event_bus == event_bus
 
 

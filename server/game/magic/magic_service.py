@@ -188,12 +188,15 @@ class MagicService:  # pylint: disable=too-many-instance-attributes  # Reason: M
             "mastery": mastery,
         }
 
-    def _calculate_initiative_tick(self, combat: Any, current_tick: int, player_id: uuid.UUID) -> int | None:
-        """Calculate next initiative tick for combat casting."""
-        current_participant = combat.get_current_turn_participant()
-        if current_participant and current_participant.participant_id == player_id:
-            return None  # It's their turn, start casting immediately
+    def _calculate_initiative_tick(self, combat: Any, current_tick: int) -> int | None:
+        """
+        Calculate next initiative tick for combat casting.
 
+        In round-based combat, spells complete casting and are queued for the next round.
+        This method returns the next round tick when the spell will execute.
+        """
+        # In round-based combat, spells are queued for the next round when casting completes
+        # Return the next round tick
         next_initiative_tick = combat.next_turn_tick
         if next_initiative_tick is None or next_initiative_tick <= current_tick:
             next_initiative_tick = current_tick + combat.turn_interval_ticks
@@ -210,7 +213,7 @@ class MagicService:  # pylint: disable=too-many-instance-attributes  # Reason: M
             combat = await self.combat_service.get_combat_by_participant(player_id)
             if combat:
                 combat_id = combat.combat_id
-                next_initiative_tick = self._calculate_initiative_tick(combat, current_tick, player_id)
+                next_initiative_tick = self._calculate_initiative_tick(combat, current_tick)
 
         target_type_str = target.target_type.value if hasattr(target.target_type, "value") else str(target.target_type)
 
@@ -440,6 +443,24 @@ class MagicService:  # pylint: disable=too-many-instance-attributes  # Reason: M
 
         return effect_result
 
+    async def send_spell_execution_notifications(
+        self, player_id: uuid.UUID, spell_id: str, effect_result: dict[str, Any], room_id: str
+    ) -> None:
+        """
+        Send notifications after spell execution (completion messages and healing events).
+
+        This public method should be used when executing spells outside the normal casting flow,
+        such as when executing queued spells in combat.
+
+        Args:
+            player_id: ID of the player who cast the spell
+            spell_id: ID of the spell that was executed
+            effect_result: Result dictionary from spell effect processing
+            room_id: ID of the room where the spell was executed
+        """
+        await self._send_spell_completion_message(player_id, spell_id, effect_result)
+        await self._send_healing_update_event(player_id, effect_result, spell_id, room_id)
+
     async def _send_spell_completion_message(
         self, player_id: uuid.UUID, spell_id: str, effect_result: dict[str, Any]
     ) -> None:
@@ -547,6 +568,9 @@ class MagicService:  # pylint: disable=too-many-instance-attributes  # Reason: M
         """
         Complete a casting and apply spell effects.
 
+        In combat, spells are queued for execution in the next round.
+        Outside combat, spells execute immediately.
+
         Args:
             player_id: Player ID
             casting_state: The casting state to complete
@@ -563,6 +587,55 @@ class MagicService:  # pylint: disable=too-many-instance-attributes  # Reason: M
             target = self._recreate_target_from_state(casting_state, player_id, player, room_id)
             self.casting_state_manager.complete_casting(player_id)
 
+            # Check if player is in combat - if so, queue spell execution for next round
+            if self.combat_service:
+                combat = await self.combat_service.get_combat_by_participant(player_id)
+                if combat:
+                    # Apply costs now (part of completing the cast)
+                    # Note: Spell cast recording and mastery increase happen when effects are applied in the round
+                    await self.spell_costs_service.apply_costs(player_id, spell)
+
+                    # Queue spell action for next round (effects will be applied then)
+                    target_id = None
+                    if casting_state.target_id:
+                        try:
+                            from uuid import UUID  # noqa: PLC0415  # Reason: Local import to avoid circular dependency
+
+                            target_id = (
+                                UUID(casting_state.target_id)
+                                if isinstance(casting_state.target_id, str)
+                                else casting_state.target_id
+                            )
+                        except (ValueError, TypeError):
+                            logger.warning("Invalid target_id in casting state", target_id=casting_state.target_id)
+
+                    queued = await self.combat_service.queue_combat_action(
+                        combat_id=combat.combat_id,
+                        participant_id=player_id,
+                        action_type="spell",
+                        target_id=target_id,
+                        spell_id=spell.spell_id,
+                        spell_name=spell.name,
+                    )
+
+                    if queued:
+                        logger.info(
+                            "Spell queued for combat round (costs paid, effects queued)",
+                            player_id=player_id,
+                            spell_id=spell.spell_id,
+                            spell_name=spell.name,
+                            combat_id=combat.combat_id,
+                            round=combat.combat_round + 1,
+                        )
+                        # Costs paid, effects will be applied when round executes
+                        return
+
+                    # Fallback to immediate execution if queuing failed
+                    logger.warning(
+                        "Failed to queue spell, executing immediately", player_id=player_id, spell_id=spell.spell_id
+                    )
+
+            # Not in combat or queuing failed - execute immediately
             effect_result = await self._apply_spell_costs_and_effects(player_id, spell, target, casting_state)
 
             logger.info(

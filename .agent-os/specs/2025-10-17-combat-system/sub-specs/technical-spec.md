@@ -23,11 +23,15 @@ server/events/
 
 ### Core Combat Mechanics
 
-**Turn-Based System**: Combat rounds based on 6-second game ticks with automatic progression
+**Round-Based System**: Combat rounds last 100 server ticks (10 realtime seconds) with automatic progression
 
-**Auto-Progression**: Combat automatically continues through rounds every 6 seconds until completion
+**Auto-Progression**: Combat automatically continues through rounds every 10 seconds (100 ticks) until completion
 
-**Turn Order**: Dexterity-based turn order (descending dexterity values)
+**Round Execution**: All combatants act in each round, executing actions sequentially in initiative order
+ (dexterity-based, highest first)
+
+**Action Queuing**: Commands and spells can be queued for execution in the next round
+
 - **Damage System**: Fixed 1 damage per attack for MVP
 - **Health Tracking**: Real-time health display during combat with on-demand status checking
 - **Combat State**: In-memory state management with automatic cleanup and turn progression
@@ -41,6 +45,7 @@ server/events/
 **Aliases**: `punch`, `kick`, `strike` (all do 1 damage)
 
 **Validation**: Extended validation with combat-specific rules
+
 - **Rate Limiting**: Leverage existing command rate limiting system
 - **Security**: Use existing security measures plus combat-specific validation
 
@@ -51,6 +56,7 @@ server/events/
 **New Combat Events**: `CombatStarted`, `CombatEnded`, `PlayerAttacked`
 
 **Event Publishing**: Use existing NATS event publishing system
+
 - **Event Broadcasting**: Combat messages to Game Info panel via existing event system
 
 ### Database Integration
@@ -83,12 +89,14 @@ server/events/
 
 **In-Memory Storage**: Combat state stored in memory using dictionaries/lists
 
-**Turn Progression**: Automatic turn advancement every 6 seconds with combat state updates
+**Round Progression**: Automatic round advancement every 10 seconds (100 ticks) with all participants acting each round
 
 **State Cleanup**: Automatic cleanup of stale combat states (timeout-based)
+
 - **Player Disconnection**: Combat continues with timeout-based cleanup
 - **Server Restart**: All combat states cleared on server restart
-- **Health Tracking**: Real-time health updates stored in combat state (NPC health in-memory only, player health persisted to database)
+- **Health Tracking**: Real-time health updates stored in combat state (NPC health in-memory only, player health
+ persisted to database)
 
 ### Messaging System
 
@@ -97,6 +105,7 @@ server/events/
 **Perspective-Based**: Different messages for attacker/defender/other players with health updates
 
 **Thematic Content**: Cthulhu Mythos-themed messages including NPC non-combat actions
+
 - **Broadcasting**: Real-time messages to all room occupants with automatic turn progression
 - **Message Storage**: Combat messages in Game Info panel with health tracking
 - **Health Display**: Real-time health updates in combat messages (e.g., "9/10 HP remaining")
@@ -108,6 +117,7 @@ server/events/
 **Player Service**: Integrate with existing player XP and stats system, persist player health changes to database
 
 **NPC Service**: Extend existing NPC behaviors and lifecycle management, track NPC health in memory only
+
 - **Event System**: Full integration with existing event bus architecture
 - **Command System**: Extend existing command validation and processing
 - **Security System**: Leverage existing rate limiting and input validation
@@ -119,6 +129,7 @@ server/events/
 **Minimal Database Queries**: Cache combat data in memory
 
 **Event Optimization**: Efficient event publishing and handling
+
 - **Memory Management**: Automatic cleanup of stale combat states
 
 ### Error Handling
@@ -128,6 +139,7 @@ server/events/
 **Graceful Degradation**: Combat ends cleanly on errors
 
 **Thematic Error Messages**: Cthulhu Mythos-themed error messages
+
 - **Error Recovery**: Basic error recovery with combat state cleanup
 
 ### Testing Requirements
@@ -137,6 +149,7 @@ server/events/
 **Integration Tests**: Test integration with NPC, event, and messaging systems
 
 **Comprehensive Coverage**: Test all combat functionality including edge cases
+
 - **Performance Tests**: Basic performance benchmarks to ensure no server degradation
 
 ### Configuration Management
@@ -146,6 +159,7 @@ server/events/
 **Database Configuration**: NPC-level combat settings in database JSON fields
 
 **Runtime Changes**: Support for runtime configuration changes
+
 - **Feature Flags**: Combat system enable/disable via feature flags
 
 ### Security Requirements
@@ -155,6 +169,7 @@ server/events/
 **Rate Limiting**: Leverage existing command rate limiting
 
 **Input Validation**: Comprehensive input validation for combat commands
+
 - **Audit Logging**: Combat actions logged for security monitoring
 
 ### Deployment Strategy
@@ -164,6 +179,7 @@ server/events/
 **Direct Deployment**: Deploy directly to production with feature flag
 
 **Rollback Strategy**: Simple rollback via feature flag disable
+
 - **Basic Monitoring**: Essential combat metrics and error alerting
 
 ## External Dependencies

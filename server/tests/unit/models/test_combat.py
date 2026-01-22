@@ -2,7 +2,7 @@
 Unit tests for combat models.
 
 Tests the combat system models including enums, dataclasses, and their methods.
-"""
+"""  # pylint: disable=too-many-lines  # Reason: Comprehensive test suite for combat models - splitting would reduce cohesion and make related tests harder to find
 
 from datetime import UTC, datetime
 from unittest.mock import patch
@@ -235,8 +235,8 @@ def test_combat_instance_default_values():
 
     assert isinstance(instance.combat_id, UUID)
     assert instance.room_id == ""
-    assert instance.participants == {}
-    assert instance.turn_order == []
+    assert not instance.participants
+    assert not instance.turn_order
     assert instance.current_turn == 0
     assert instance.status == CombatStatus.ACTIVE
     assert instance.start_tick == 0
@@ -244,8 +244,10 @@ def test_combat_instance_default_values():
     assert isinstance(instance.last_activity, datetime)
     assert instance.combat_round == 0
     assert instance.auto_progression_enabled is True
-    assert instance.turn_interval_ticks == 6
+    assert instance.turn_interval_ticks == 100  # Round interval (100 ticks = 10 seconds)
     assert instance.next_turn_tick == 0
+    assert not instance.queued_actions
+    assert not instance.round_actions
 
 
 def test_combat_instance_get_current_turn_participant_with_valid_turn():
@@ -426,43 +428,175 @@ def test_combat_instance_update_activity():
 
 
 def test_combat_instance_advance_turn():
-    """Test advance_turn increments current_turn and updates next_turn_tick."""
+    """Test advance_turn increments combat_round and updates next_turn_tick."""
     participant_id = uuid4()
     instance = CombatInstance()
     instance.turn_order = [participant_id, uuid4()]
     instance.current_turn = 0
     instance.next_turn_tick = 0
-    instance.turn_interval_ticks = 6
-
-    instance.advance_turn(current_tick=10)
-
-    assert instance.current_turn == 1
-    assert instance.next_turn_tick == 16  # 10 + 6
-
-
-def test_combat_instance_advance_turn_wraps_around():
-    """Test advance_turn wraps around when reaching end of turn order."""
-    participant1_id = uuid4()
-    participant2_id = uuid4()
-    instance = CombatInstance()
-    instance.turn_order = [participant1_id, participant2_id]
-    instance.current_turn = 1  # Last in turn order
-    instance.next_turn_tick = 10
-
-    instance.advance_turn(current_tick=20)
-
-    assert instance.current_turn == 0  # Wrapped around
-    assert instance.combat_round == 1  # Incremented
-
-
-def test_combat_instance_advance_turn_increments_round():
-    """Test advance_turn increments combat_round when wrapping around."""
-    participant_id = uuid4()
-    instance = CombatInstance()
-    instance.turn_order = [participant_id]
-    instance.current_turn = 0
+    instance.turn_interval_ticks = 100
     instance.combat_round = 0
 
     instance.advance_turn(current_tick=10)
 
-    assert instance.combat_round == 1
+    assert instance.combat_round == 1  # Round increments
+    assert instance.current_turn == 0  # Reset to 0 (may be repurposed)
+    assert instance.next_turn_tick == 110  # 10 + 100
+
+
+def test_combat_instance_advance_turn_increments_round():
+    """Test advance_turn increments combat_round (round-based system)."""
+    participant1_id = uuid4()
+    participant2_id = uuid4()
+    instance = CombatInstance()
+    instance.turn_order = [participant1_id, participant2_id]
+    instance.current_turn = 1
+    instance.combat_round = 0
+    instance.next_turn_tick = 10
+    instance.turn_interval_ticks = 100
+
+    instance.advance_turn(current_tick=20)
+
+    assert instance.combat_round == 1  # Round increments
+    assert instance.current_turn == 0  # Reset to 0
+    assert instance.next_turn_tick == 120  # 20 + 100
+
+
+def test_combat_instance_advance_turn_always_increments_round():
+    """Test advance_turn always increments combat_round in round-based system."""
+    participant_id = uuid4()
+    instance = CombatInstance()
+    instance.turn_order = [participant_id]
+    instance.current_turn = 0
+    instance.combat_round = 5
+    instance.turn_interval_ticks = 100
+
+    instance.advance_turn(current_tick=1000)
+
+    assert instance.combat_round == 6  # Round increments
+    assert instance.current_turn == 0  # Reset to 0
+    assert instance.next_turn_tick == 1100  # 1000 + 100
+
+
+def test_combat_instance_queue_action():
+    """Test queue_action queues an action for the next round."""
+    from server.models.combat import CombatAction
+
+    participant_id = uuid4()
+    instance = CombatInstance()
+    instance.combat_round = 5
+    instance.participants[participant_id] = CombatParticipant(
+        participant_id=participant_id,
+        participant_type=CombatParticipantType.PLAYER,
+        name="TestPlayer",
+        current_dp=50,
+        max_dp=100,
+        dexterity=10,
+    )
+
+    action = CombatAction(action_type="attack", damage=10)
+    instance.queue_action(participant_id, action)
+
+    assert len(instance.queued_actions[participant_id]) == 1
+    assert instance.queued_actions[participant_id][0] == action
+    assert action.round == 6  # Next round (5 + 1)
+    assert action.queued is True
+
+
+def test_combat_instance_get_queued_actions():
+    """Test get_queued_actions returns queued actions for a participant."""
+    from server.models.combat import CombatAction
+
+    participant_id = uuid4()
+    instance = CombatInstance()
+    action1 = CombatAction(action_type="attack", damage=10)
+    action2 = CombatAction(action_type="spell", spell_name="heal")
+
+    instance.queue_action(participant_id, action1)
+    instance.queue_action(participant_id, action2)
+
+    queued = instance.get_queued_actions(participant_id)
+    assert len(queued) == 2
+    assert action1 in queued
+    assert action2 in queued
+
+
+def test_combat_instance_clear_queued_actions():
+    """Test clear_queued_actions clears actions for a participant."""
+    from server.models.combat import CombatAction
+
+    participant_id = uuid4()
+    instance = CombatInstance()
+    action = CombatAction(action_type="attack", damage=10)
+    instance.queue_action(participant_id, action)
+
+    instance.clear_queued_actions(participant_id)
+
+    assert participant_id not in instance.queued_actions
+    assert instance.get_queued_actions(participant_id) == []
+
+
+def test_combat_instance_clear_queued_actions_specific_round():
+    """Test clear_queued_actions clears only actions for a specific round."""
+    from server.models.combat import CombatAction
+
+    participant_id = uuid4()
+    instance = CombatInstance()
+    instance.combat_round = 5
+    action1 = CombatAction(action_type="attack", damage=10)
+    action2 = CombatAction(action_type="spell", spell_name="heal")
+    instance.queue_action(participant_id, action1)  # Queued for round 6
+    instance.combat_round = 6
+    instance.queue_action(participant_id, action2)  # Queued for round 7
+
+    instance.clear_queued_actions(participant_id, round_number=6)
+
+    queued = instance.get_queued_actions(participant_id)
+    assert len(queued) == 1
+    assert action2 in queued  # Only action2 remains (round 7)
+    assert action1 not in queued  # action1 cleared (round 6)
+
+
+def test_combat_instance_get_participants_by_initiative():
+    """Test get_participants_by_initiative returns participants sorted by dexterity."""
+    participant1_id = uuid4()
+    participant1 = CombatParticipant(
+        participant_id=participant1_id,
+        participant_type=CombatParticipantType.PLAYER,
+        name="LowDex",
+        current_dp=50,
+        max_dp=100,
+        dexterity=30,
+    )
+
+    participant2_id = uuid4()
+    participant2 = CombatParticipant(
+        participant_id=participant2_id,
+        participant_type=CombatParticipantType.NPC,
+        name="HighDex",
+        current_dp=50,
+        max_dp=100,
+        dexterity=90,
+    )
+
+    participant3_id = uuid4()
+    participant3 = CombatParticipant(
+        participant_id=participant3_id,
+        participant_type=CombatParticipantType.PLAYER,
+        name="MidDex",
+        current_dp=50,
+        max_dp=100,
+        dexterity=60,
+    )
+
+    instance = CombatInstance()
+    instance.participants[participant1_id] = participant1
+    instance.participants[participant2_id] = participant2
+    instance.participants[participant3_id] = participant3
+
+    result = instance.get_participants_by_initiative()
+
+    assert len(result) == 3
+    assert result[0] == participant2  # Highest dexterity (90)
+    assert result[1] == participant3  # Mid dexterity (60)
+    assert result[2] == participant1  # Lowest dexterity (30)

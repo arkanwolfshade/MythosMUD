@@ -72,8 +72,8 @@ async def test_get_players_batch(game_state_provider, mock_get_async_persistence
     mock_player1 = MagicMock()
     mock_player2 = MagicMock()
     mock_persistence = MagicMock()
-    # get_players_batch calls get_player_by_id for each player_id, not get_players_batch
-    mock_persistence.get_player_by_id = AsyncMock(side_effect=[mock_player1, mock_player2])
+    # get_players_batch calls async_persistence.get_players_batch() which returns a dict
+    mock_persistence.get_players_batch = AsyncMock(return_value={player_id1: mock_player1, player_id2: mock_player2})
     mock_get_async_persistence.return_value = mock_persistence
     result = await game_state_provider.get_players_batch([player_id1, player_id2])
     assert player_id1 in result
@@ -104,8 +104,8 @@ async def test_get_players_batch_player_not_found(game_state_provider, mock_get_
     player_id2 = uuid.uuid4()
     mock_player1 = MagicMock()
     mock_persistence = MagicMock()
-    # One player found, one not found
-    mock_persistence.get_player_by_id = AsyncMock(side_effect=[mock_player1, None])
+    # get_players_batch returns dict with only found players
+    mock_persistence.get_players_batch = AsyncMock(return_value={player_id1: mock_player1})
     mock_get_async_persistence.return_value = mock_persistence
     result = await game_state_provider.get_players_batch([player_id1, player_id2])
     assert player_id1 in result

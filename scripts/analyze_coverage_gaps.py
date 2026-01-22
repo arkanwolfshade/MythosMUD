@@ -14,6 +14,7 @@ CRITICAL_FILES = {
     "server/security_utils.py": 90,
     "server/validators/security_validator.py": 90,
     "server/validators/optimized_security_validator.py": 90,
+    "server/validators/combat_validator.py": 90,
     "server/auth/dependencies.py": 90,
     "server/auth/endpoints.py": 90,
     "server/auth/users.py": 90,
@@ -24,6 +25,34 @@ CRITICAL_FILES = {
     "server/async_persistence.py": 90,
     "server/services/admin_auth_service.py": 90,
     "server/services/inventory_mutation_guard.py": 90,
+    # Command factories - critical for command processing
+    "server/utils/command_factories.py": 90,
+    "server/utils/command_factories_combat.py": 90,
+    "server/utils/command_factories_communication.py": 90,
+    "server/utils/command_factories_exploration.py": 90,
+    "server/utils/command_factories_inventory.py": 90,
+    "server/utils/command_factories_moderation.py": 90,
+    "server/utils/command_factories_player_state.py": 90,
+    "server/utils/command_factories_utility.py": 90,
+    # Combat services - critical for game combat mechanics
+    "server/services/wearable_container_service.py": 90,
+    "server/services/player_combat_service.py": 90,
+    "server/services/npc_combat_integration_service.py": 90,
+    "server/services/npc_combat_handlers.py": 90,
+    "server/services/container_websocket_events.py": 90,
+    "server/services/combat_persistence_handler.py": 90,
+    "server/services/combat_monitoring_service.py": 90,
+    "server/services/combat_messaging_integration.py": 90,
+    "server/services/combat_cleanup_handler.py": 90,
+    "server/services/combat_attack_handler.py": 90,
+    # Realtime services - critical for WebSocket and real-time game state
+    "server/realtime/websocket_handler.py": 90,
+    "server/realtime/room_subscription_manager.py": 90,
+    "server/realtime/room_occupant_manager.py": 90,
+    "server/realtime/room_id_utils.py": 90,
+    "server/realtime/player_occupant_processor.py": 90,
+    "server/realtime/player_disconnect_handlers.py": 90,
+    "server/realtime/nats_message_handler.py": 90,
 }
 
 NORMAL_THRESHOLD = 70

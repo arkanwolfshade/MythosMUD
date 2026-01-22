@@ -514,7 +514,14 @@ class WearableContainerService:
         # Update player inventory if items were added
         if spilled_items:
             player.set_inventory(player_inventory)
-            await self.persistence.save_player(player)
+            try:
+                await self.persistence.save_player(player)
+            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Save errors unpredictable, must log but continue
+                logger.error(
+                    "Error saving player after container overflow",
+                    player_id=str(player_id),
+                    error=str(e),
+                )
 
         # Create ground container for dropped items if any
         if ground_items:

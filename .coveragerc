@@ -26,6 +26,6 @@ exclude_lines =
 
 # Coverage policy
 # - Critical codepaths (documented in TESTING.md) are required to meet or exceed 90% coverage.
-# - All other code must meet or exceed 50% coverage.
+# - All other code must meet or exceed 60% coverage.
 # Per-path enforcement is validated in CI; this config preserves the global floor.
-fail_under = 50
+fail_under = 63

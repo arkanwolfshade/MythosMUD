@@ -204,32 +204,33 @@ class CombatMessagingIntegration:
             room_id, attack_event, exclude_player=attacker_id
         )
 
-        # Send personal message to the attacker
-        personal_message = messages.get(
-            "attack_attacker",
-            f"You {action_type} {target_name} for {damage} damage.",
-        )
-        personal_event = build_event(
-            "combat_attack_personal",
-            {
-                "combat_id": combat_id,
-                "target_name": target_name,
-                "damage": damage,
-                "action_type": action_type,
-                "message": personal_message,
-            },
-            room_id=room_id,
-            player_id=attacker_id,
-        )
-
-        try:
-            await self.connection_manager.send_personal_message(attacker_id, personal_event)
-        except (ConnectionError, OSError, RuntimeError, ValueError) as e:
-            logger.warning(
-                "Failed to send personal combat message to attacker",
-                attacker_id=attacker_id,
-                error=str(e),
+        # Send personal message to the attacker (if attacker_id is provided)
+        if attacker_id:
+            personal_message = messages.get(
+                "attack_attacker",
+                f"You {action_type} {target_name} for {damage} damage.",
             )
+            personal_event = build_event(
+                "combat_attack_personal",
+                {
+                    "combat_id": combat_id,
+                    "target_name": target_name,
+                    "damage": damage,
+                    "action_type": action_type,
+                    "message": personal_message,
+                },
+                room_id=room_id,
+                player_id=attacker_id,
+            )
+
+            try:
+                await self.connection_manager.send_personal_message(attacker_id, personal_event)
+            except (ConnectionError, OSError, RuntimeError, ValueError) as e:
+                logger.warning(
+                    "Failed to send personal combat message to attacker",
+                    attacker_id=attacker_id,
+                    error=str(e),
+                )
 
         logger.debug(
             "Combat attack broadcast completed",
@@ -384,7 +385,15 @@ class CombatMessagingIntegration:
         )
 
         # Send personal message to the player
-        delivery_status = await self.connection_manager.send_personal_message(player_id, error_event)
+        try:
+            delivery_status = await self.connection_manager.send_personal_message(player_id, error_event)
+        except (ConnectionError, OSError, RuntimeError, ValueError) as e:
+            logger.warning(
+                "Failed to send combat error message to player",
+                player_id=player_id,
+                error=str(e),
+            )
+            delivery_status = {"success": False, "error": str(e)}
 
         logger.debug(
             "Combat error broadcast completed",

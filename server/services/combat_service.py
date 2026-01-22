@@ -96,7 +96,7 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
             raise
         # Auto-progression configuration
         self._auto_progression_enabled = True
-        # Get combat tick interval from config (defaults to 6 seconds = 1 Mythos minute)
+        # Get combat round interval from config (defaults to 10 seconds = 100 ticks)
         config = get_config()
         self._turn_interval_seconds = config.game.combat_tick_interval
 
@@ -514,6 +514,69 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
 
             combat.next_turn_tick = get_current_tick() + combat.turn_interval_ticks
             logger.debug("Combat attack processed, auto-progression enabled", combat_id=combat.combat_id)
+
+    async def queue_combat_action(
+        self,
+        combat_id: UUID,
+        participant_id: UUID,
+        action_type: str,
+        target_id: UUID | None = None,
+        damage: int | None = None,
+        spell_id: str | None = None,
+        spell_name: str | None = None,
+    ) -> bool:
+        """
+        Queue a combat action for a participant to execute in the next round.
+
+        Args:
+            combat_id: ID of the combat instance
+            participant_id: ID of the participant queuing the action
+            action_type: Type of action ("attack", "spell", etc.)
+            target_id: Optional target ID for the action
+            damage: Optional damage value for attack actions
+            spell_id: Optional spell ID for spell actions
+            spell_name: Optional spell name for spell actions
+
+        Returns:
+            True if action was queued successfully, False otherwise
+        """
+        combat = self._active_combats.get(combat_id)
+        if not combat:
+            logger.warning("Combat not found for action queuing", combat_id=combat_id, participant_id=participant_id)
+            return False
+
+        if participant_id not in combat.participants:
+            logger.warning(
+                "Participant not in combat", combat_id=combat_id, participant_id=participant_id, action_type=action_type
+            )
+            return False
+
+        # Create combat action
+        from server.models.combat import (
+            CombatAction,  # noqa: PLC0415  # Reason: Local import to avoid circular dependency
+        )
+
+        action = CombatAction(
+            combat_id=combat_id,
+            attacker_id=participant_id,
+            target_id=target_id or UUID("00000000-0000-0000-0000-000000000000"),
+            action_type=action_type,
+            damage=damage or 10,
+            spell_id=spell_id,
+            spell_name=spell_name,
+        )
+
+        # Queue the action
+        combat.queue_action(participant_id, action)
+        logger.info(
+            "Combat action queued",
+            combat_id=combat_id,
+            participant_id=participant_id,
+            action_type=action_type,
+            round=action.round,
+        )
+
+        return True
 
     async def process_attack(  # pylint: disable=too-many-locals  # Reason: Attack processing requires many intermediate variables for complex combat logic
         self, attacker_id: UUID, target_id: UUID, damage: int = 10, is_initial_attack: bool = False

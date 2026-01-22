@@ -51,10 +51,12 @@ class PlayerRepository:
         Initialize the player repository.
 
         Args:
-            room_cache: Shared room cache for room validation
+            room_cache: Shared room cache for room validation (must not be None)
             event_bus: Optional EventBus for publishing player events
         """
-        self._room_cache = room_cache or {}
+        if room_cache is None:
+            raise ValueError("room_cache must not be None - PlayerRepository requires a shared cache reference")
+        self._room_cache = room_cache  # Preserve reference - do not create new dict
         self._event_bus = event_bus
         self._logger = get_logger(__name__)
 

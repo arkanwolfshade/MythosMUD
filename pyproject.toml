@@ -114,6 +114,7 @@ max-complexity = 11
 "tests/**/*" = ["B011"]
 "docs/**/*" = ["F821", "F841", "F811", "B904", "E402"]
 "server/stubs/**/*.pyi" = ["UP046"]  # Stub files use old Generic syntax for compatibility
+"server/main.py" = ["E402"]  # Reason: Imports must come after load_dotenv() to ensure env vars are loaded before any modules that depend on them are imported
 
 [tool.isort]
 profile = "black"
@@ -213,7 +214,7 @@ exclude_lines = [
     "if __name__ == .__main__.:",
     "@(abc\\.)?abstractmethod",
 ]
-fail_under = 50
+fail_under = 63
 
 [tool.mypy]
 python_version = "3.12"
@@ -222,7 +223,7 @@ plugins = ["sqlalchemy.ext.mypy.plugin", "pydantic.mypy"]
 mypy_path = "server/stubs"
 
 # Gradual strictness: Enable checks incrementally for established codebase
-# NOTE: Full strict = true revealed 962 errors. Enabling selectively instead.
+# Full strict = true # NOTE: revealed 962 errors. Enabling selectively instead.
 warn_unused_configs = true
 warn_redundant_casts = true
 warn_unused_ignores = true
@@ -267,6 +268,7 @@ exclude = [
     "^server/time/",  # Exclude server/time to avoid conflict with stdlib time module
     ".*[\\\\/]time[\\\\/]__init__\\.py$",  # Also exclude time/__init__.py specifically (Windows and Unix paths)
     "^server/persistence/__init__\\.py$",  # Exclude to avoid duplicate module conflict (matches pre-commit exclude)
+    ".*[\\\\/]conftest\\.py$",  # Exclude all conftest.py files to avoid duplicate module conflicts (pytest-specific, don't need type checking)
 ]
 
 # Per-module options - Third-party libraries without stubs or with incomplete stubs

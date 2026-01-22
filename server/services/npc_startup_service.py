@@ -282,6 +282,20 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
                 logger.error("Persistence layer not available for room validation")
                 return None
 
+            # Ensure room cache is loaded before accessing rooms (lazy loading after commit a9fd435)
+            # Room cache may not be loaded if warmup_room_cache failed or hasn't completed yet
+            # warmup_room_cache is idempotent - safe to call multiple times
+            await async_persistence.warmup_room_cache()
+
+            # Verify cache was loaded - if empty, log warning but continue (may be intentional in some environments)
+            cache_size = len(async_persistence._room_cache)  # pylint: disable=protected-access  # Reason: Need to verify cache was loaded for room validation
+            if not cache_size:
+                logger.warning(
+                    "Room cache is empty - room validation will fail",
+                    npc_name=npc_def.name,
+                    cache_size=cache_size,
+                )
+
             persistence = async_persistence
 
             # If NPC has a specific room_id, verify it exists

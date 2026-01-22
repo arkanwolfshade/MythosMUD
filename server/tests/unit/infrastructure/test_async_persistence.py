@@ -4,6 +4,11 @@ Unit tests for async persistence layer.
 Tests the AsyncPersistenceLayer class and related functions.
 """
 
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+# pylint: disable=too-many-lines  # Reason: Comprehensive test file for AsyncPersistenceLayer requires extensive test coverage across many scenarios
+
+import asyncio
 import uuid
 from datetime import UTC, datetime
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -30,7 +35,7 @@ def mock_event_bus():
 
 
 @pytest.fixture
-def async_persistence_layer(mock_event_bus):
+def async_persistence_layer(mock_event_bus):  # pylint: disable=redefined-outer-name  # Reason: pytest fixture parameter injection - parameter names must match fixture names
     """Create an AsyncPersistenceLayer instance with skipped room cache."""
     return AsyncPersistenceLayer(event_bus=mock_event_bus, _skip_room_cache=True)
 
@@ -40,7 +45,7 @@ def test_async_persistence_layer_init_skip_room_cache(mock_event_bus):
     layer = AsyncPersistenceLayer(event_bus=mock_event_bus, _skip_room_cache=True)
 
     assert layer._event_bus == mock_event_bus
-    assert layer._room_cache == {}
+    assert not layer._room_cache
     assert layer._room_repo is not None
     assert layer._player_repo is not None
     assert layer._profession_repo is not None
@@ -51,10 +56,15 @@ def test_async_persistence_layer_init_skip_room_cache(mock_event_bus):
 
 
 def test_async_persistence_layer_init_with_room_cache(mock_event_bus):
-    """Test AsyncPersistenceLayer initialization with room cache loading."""
-    with patch.object(AsyncPersistenceLayer, "_load_room_cache") as mock_load:
-        _layer = AsyncPersistenceLayer(event_bus=mock_event_bus, _skip_room_cache=False)
-        mock_load.assert_called_once()
+    """Test AsyncPersistenceLayer initialization - room cache is now loaded lazily, not during init."""
+    # Room cache loading is now lazy (loaded on first access or via warmup_room_cache())
+    # The _skip_room_cache parameter is deprecated but kept for backward compatibility
+    layer = AsyncPersistenceLayer(event_bus=mock_event_bus, _skip_room_cache=False)
+
+    # Verify initialization succeeds and room cache is empty (not loaded yet)
+    assert layer._event_bus == mock_event_bus
+    assert not layer._room_cache
+    assert layer._room_cache_loaded is False  # Cache not loaded during init
 
 
 def test_async_persistence_layer_init_deprecated_params(mock_event_bus):
@@ -92,6 +102,8 @@ async def test_get_player_by_name_delegates(async_persistence_layer):
 @pytest.mark.asyncio
 async def test_get_player_by_name_not_found(async_persistence_layer):
     """Test get_player_by_name when player not found."""
+    # Mock _ensure_room_cache_loaded to avoid database operations
+    async_persistence_layer._ensure_room_cache_loaded = AsyncMock()
     async_persistence_layer._player_repo.get_player_by_name = AsyncMock(return_value=None)
 
     result = await async_persistence_layer.get_player_by_name("NonExistent")
@@ -102,6 +114,8 @@ async def test_get_player_by_name_not_found(async_persistence_layer):
 @pytest.mark.asyncio
 async def test_get_player_by_id_delegates(async_persistence_layer):
     """Test get_player_by_id delegates to PlayerRepository."""
+    # Mock _ensure_room_cache_loaded to avoid database operations
+    async_persistence_layer._ensure_room_cache_loaded = AsyncMock()
     player_id = uuid.uuid4()
     mock_player = MagicMock(spec=Player)
     async_persistence_layer._player_repo.get_player_by_id = AsyncMock(return_value=mock_player)
@@ -115,6 +129,8 @@ async def test_get_player_by_id_delegates(async_persistence_layer):
 @pytest.mark.asyncio
 async def test_get_players_by_user_id_delegates(async_persistence_layer):
     """Test get_players_by_user_id delegates to PlayerRepository."""
+    # Mock _ensure_room_cache_loaded to avoid database operations
+    async_persistence_layer._ensure_room_cache_loaded = AsyncMock()
     user_id = str(uuid.uuid4())
     mock_players = [MagicMock(spec=Player), MagicMock(spec=Player)]
     async_persistence_layer._player_repo.get_players_by_user_id = AsyncMock(return_value=mock_players)
@@ -128,6 +144,8 @@ async def test_get_players_by_user_id_delegates(async_persistence_layer):
 @pytest.mark.asyncio
 async def test_get_active_players_by_user_id_delegates(async_persistence_layer):
     """Test get_active_players_by_user_id delegates to PlayerRepository."""
+    # Mock _ensure_room_cache_loaded to avoid database operations
+    async_persistence_layer._ensure_room_cache_loaded = AsyncMock()
     user_id = str(uuid.uuid4())
     mock_players = [MagicMock(spec=Player)]
     async_persistence_layer._player_repo.get_active_players_by_user_id = AsyncMock(return_value=mock_players)
@@ -214,6 +232,8 @@ async def test_save_player_delegates(async_persistence_layer):
 @pytest.mark.asyncio
 async def test_list_players_delegates(async_persistence_layer):
     """Test list_players delegates to PlayerRepository."""
+    # Mock _ensure_room_cache_loaded to avoid database operations
+    async_persistence_layer._ensure_room_cache_loaded = AsyncMock()
     mock_players = [MagicMock(spec=Player), MagicMock(spec=Player)]
     async_persistence_layer._player_repo.list_players = AsyncMock(return_value=mock_players)
 
@@ -269,6 +289,8 @@ async def test_async_list_rooms_delegates(async_persistence_layer):
 @pytest.mark.asyncio
 async def test_get_players_in_room_delegates(async_persistence_layer):
     """Test get_players_in_room delegates to PlayerRepository."""
+    # Mock _ensure_room_cache_loaded to avoid database operations
+    async_persistence_layer._ensure_room_cache_loaded = AsyncMock()
     mock_players = [MagicMock(spec=Player)]
     async_persistence_layer._player_repo.get_players_in_room = AsyncMock(return_value=mock_players)
 
@@ -365,7 +387,7 @@ async def test_get_professions_empty(async_persistence_layer):
     with patch("server.async_persistence.get_async_session", side_effect=mock_get_async_session):
         result = await async_persistence_layer.get_professions()
 
-    assert result == []
+    assert not result
     mock_session.execute.assert_awaited_once()
 
 
@@ -777,6 +799,8 @@ async def test_soft_delete_player_delegates(async_persistence_layer):
 @pytest.mark.asyncio
 async def test_get_player_by_user_id_delegates(async_persistence_layer):
     """Test get_player_by_user_id delegates to PlayerRepository."""
+    # Mock _ensure_room_cache_loaded to avoid database operations
+    async_persistence_layer._ensure_room_cache_loaded = AsyncMock()
     user_id = str(uuid.uuid4())
     mock_player = MagicMock(spec=Player)
     async_persistence_layer._player_repo.get_player_by_user_id = AsyncMock(return_value=mock_player)
@@ -787,149 +811,19 @@ async def test_get_player_by_user_id_delegates(async_persistence_layer):
     async_persistence_layer._player_repo.get_player_by_user_id.assert_awaited_once_with(user_id)
 
 
-def test_get_database_url_success(async_persistence_layer):
-    """Test _get_database_url returns database URL from environment."""
-    import os
-
-    with patch.dict(os.environ, {"DATABASE_URL": "postgresql://user:pass@localhost/db"}):
-        result = async_persistence_layer._get_database_url()
-        assert result == "postgresql://user:pass@localhost/db"
-
-
-def test_get_database_url_not_set(async_persistence_layer):
-    """Test _get_database_url raises ValueError when DATABASE_URL not set."""
-    import os
-
-    with patch.dict(os.environ, {}, clear=False):
-        if "DATABASE_URL" in os.environ:
-            del os.environ["DATABASE_URL"]
-        with pytest.raises(ValueError, match="DATABASE_URL environment variable not set"):
-            async_persistence_layer._get_database_url()
-
-
-def test_get_database_url_converts_asyncpg_format(async_persistence_layer):
-    """Test _get_database_url converts postgresql+asyncpg:// to postgresql://."""
-    import os
-
-    with patch.dict(os.environ, {"DATABASE_URL": "postgresql+asyncpg://user:pass@localhost/db"}):
-        result = async_persistence_layer._get_database_url()
-        assert result == "postgresql://user:pass@localhost/db"
-        assert not result.startswith("postgresql+asyncpg://")
-
-
-@pytest.mark.asyncio
-async def test_query_rooms_from_db_success(async_persistence_layer):
-    """Test _query_rooms_from_db successfully queries rooms."""
-    mock_conn = AsyncMock()
-    mock_rows = [
-        {"stable_id": "room_001", "name": "Test Room", "description": "A test room"},
-        {"stable_id": "room_002", "name": "Another Room", "description": "Another test room"},
-    ]
-    mock_conn.fetch = AsyncMock(return_value=mock_rows)
-
-    result = await async_persistence_layer._query_rooms_from_db(mock_conn)
-
-    assert result == mock_rows
-    mock_conn.fetch.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_query_rooms_from_db_table_not_found(async_persistence_layer):
-    """Test _query_rooms_from_db handles table not found error."""
-    mock_conn = AsyncMock()
-    mock_conn.fetch = AsyncMock(side_effect=Exception("relation 'rooms' does not exist"))
-
-    with patch.object(async_persistence_layer, "_logger") as mock_logger:
-        result = await async_persistence_layer._query_rooms_from_db(mock_conn)
-
-    assert result == []
-    mock_logger.warning.assert_called_once()
-
-
-@pytest.mark.asyncio
-async def test_query_rooms_from_db_relation_error(async_persistence_layer):
-    """Test _query_rooms_from_db handles relation error."""
-    mock_conn = AsyncMock()
-    mock_conn.fetch = AsyncMock(side_effect=Exception("relation does not exist"))
-
-    with patch.object(async_persistence_layer, "_logger") as mock_logger:
-        result = await async_persistence_layer._query_rooms_from_db(mock_conn)
-
-    assert result == []
-    mock_logger.warning.assert_called_once()
-
-
-@pytest.mark.asyncio
-async def test_query_rooms_from_db_other_error(async_persistence_layer):
-    """Test _query_rooms_from_db raises other errors."""
-    mock_conn = AsyncMock()
-    mock_conn.fetch = AsyncMock(side_effect=Exception("Connection failed"))
-
-    with pytest.raises(Exception, match="Connection failed"):
-        await async_persistence_layer._query_rooms_from_db(mock_conn)
-
-
-@pytest.mark.asyncio
-async def test_query_exits_from_db_success(async_persistence_layer):
-    """Test _query_exits_from_db successfully queries exits."""
-    mock_conn = AsyncMock()
-    mock_rows = [
-        {
-            "from_room_stable_id": "room_001",
-            "to_room_stable_id": "room_002",
-            "direction": "north",
-            "from_subzone_stable_id": "subzone_1",
-            "from_zone_stable_id": "plane/zone",
-            "to_subzone_stable_id": "subzone_2",
-            "to_zone_stable_id": "plane/zone",
-        }
-    ]
-    mock_conn.fetch = AsyncMock(return_value=mock_rows)
-
-    result = await async_persistence_layer._query_exits_from_db(mock_conn)
-
-    assert result == mock_rows
-    mock_conn.fetch.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_query_exits_from_db_table_not_found(async_persistence_layer):
-    """Test _query_exits_from_db handles table not found error."""
-    mock_conn = AsyncMock()
-    mock_conn.fetch = AsyncMock(side_effect=Exception("relation 'room_links' does not exist"))
-
-    with patch.object(async_persistence_layer, "_logger") as mock_logger:
-        result = await async_persistence_layer._query_exits_from_db(mock_conn)
-
-    assert result == []
-    mock_logger.warning.assert_called_once()
-
-
-@pytest.mark.asyncio
-async def test_query_exits_from_db_other_error(async_persistence_layer):
-    """Test _query_exits_from_db raises other errors."""
-    mock_conn = AsyncMock()
-    mock_conn.fetch = AsyncMock(side_effect=Exception("Connection failed"))
-
-    with pytest.raises(Exception, match="Connection failed"):
-        await async_persistence_layer._query_exits_from_db(mock_conn)
-
-
 def test_process_room_rows_with_full_room_id(async_persistence_layer):
     """Test _process_room_rows with stable_id that already contains full hierarchical path."""
-    from unittest.mock import MagicMock
-
-    mock_row = MagicMock()
-    mock_row.__getitem__ = lambda self, key: {
+    # Use real dictionary instead of MagicMock - implementation uses .get() method
+    row = {
         "stable_id": "earth_arkhamcity_subzone_room_001",
         "name": "Test Room",
         "description": "A test room",
         "attributes": {"environment": "indoors"},
         "subzone_stable_id": "subzone",
         "zone_stable_id": "earth/arkhamcity",
-    }[key]
+    }
 
-    rows = [mock_row]
+    rows = [row]
 
     with patch("server.world_loader.generate_room_id") as mock_generate:
         result = async_persistence_layer._process_room_rows(rows)
@@ -942,19 +836,17 @@ def test_process_room_rows_with_full_room_id(async_persistence_layer):
 
 def test_process_room_rows_with_partial_room_id(async_persistence_layer):
     """Test _process_room_rows with stable_id that needs room ID generation."""
-    from unittest.mock import MagicMock
-
-    mock_row = MagicMock()
-    mock_row.__getitem__ = lambda self, key: {
+    # Use real dictionary instead of MagicMock - implementation uses .get() method
+    row = {
         "stable_id": "room_001",
         "name": "Test Room",
         "description": "A test room",
         "attributes": {"environment": "indoors"},
         "subzone_stable_id": "subzone",
         "zone_stable_id": "earth/arkhamcity",
-    }[key]
+    }
 
-    rows = [mock_row]
+    rows = [row]
 
     with patch(
         "server.world_loader.generate_room_id", return_value="earth_arkhamcity_subzone_room_001"
@@ -968,19 +860,17 @@ def test_process_room_rows_with_partial_room_id(async_persistence_layer):
 
 def test_process_room_rows_with_none_attributes(async_persistence_layer):
     """Test _process_room_rows handles None attributes."""
-    from unittest.mock import MagicMock
-
-    mock_row = MagicMock()
-    mock_row.__getitem__ = lambda self, key: {
+    # Use real dictionary instead of MagicMock - implementation uses .get() method
+    row = {
         "stable_id": "room_001",
         "name": "Test Room",
         "description": "A test room",
         "attributes": None,
         "subzone_stable_id": "subzone",
         "zone_stable_id": "earth/arkhamcity",
-    }[key]
+    }
 
-    rows = [mock_row]
+    rows = [row]
 
     with patch("server.world_loader.generate_room_id", return_value="earth_arkhamcity_subzone_room_001"):
         result = async_persistence_layer._process_room_rows(rows)
@@ -991,19 +881,17 @@ def test_process_room_rows_with_none_attributes(async_persistence_layer):
 
 def test_process_room_rows_zone_without_slash(async_persistence_layer):
     """Test _process_room_rows handles zone_stable_id without slash."""
-    from unittest.mock import MagicMock
-
-    mock_row = MagicMock()
-    mock_row.__getitem__ = lambda self, key: {
+    # Use real dictionary instead of MagicMock - implementation uses .get() method
+    row = {
         "stable_id": "room_001",
         "name": "Test Room",
         "description": "A test room",
         "attributes": {},
         "subzone_stable_id": "subzone",
         "zone_stable_id": "earth_arkhamcity",  # No slash
-    }[key]
+    }
 
-    rows = [mock_row]
+    rows = [row]
 
     with patch("server.world_loader.generate_room_id", return_value="earth_arkhamcity_subzone_room_001"):
         result = async_persistence_layer._process_room_rows(rows)
@@ -1015,10 +903,8 @@ def test_process_room_rows_zone_without_slash(async_persistence_layer):
 
 def test_process_exit_rows_with_full_room_ids(async_persistence_layer):
     """Test _process_exit_rows with stable_ids that already contain full hierarchical path."""
-    from unittest.mock import MagicMock
-
-    mock_row = MagicMock()
-    mock_row.__getitem__ = lambda self, key: {
+    # Use real dictionary instead of MagicMock - implementation uses .get() method
+    row = {
         "from_room_stable_id": "earth_arkhamcity_subzone_room_001",
         "to_room_stable_id": "earth_arkhamcity_subzone_room_002",
         "direction": "north",
@@ -1026,9 +912,9 @@ def test_process_exit_rows_with_full_room_ids(async_persistence_layer):
         "from_zone_stable_id": "earth/arkhamcity",
         "to_subzone_stable_id": "subzone",
         "to_zone_stable_id": "earth/arkhamcity",
-    }[key]
+    }
 
-    rows = [mock_row]
+    rows = [row]
 
     with patch("server.world_loader.generate_room_id") as mock_generate:
         result = async_persistence_layer._process_exit_rows(rows)
@@ -1041,10 +927,8 @@ def test_process_exit_rows_with_full_room_ids(async_persistence_layer):
 
 def test_process_exit_rows_with_partial_room_ids(async_persistence_layer):
     """Test _process_exit_rows with stable_ids that need room ID generation."""
-    from unittest.mock import MagicMock
-
-    mock_row = MagicMock()
-    mock_row.__getitem__ = lambda self, key: {
+    # Use real dictionary instead of MagicMock - implementation uses .get() method
+    row = {
         "from_room_stable_id": "room_001",
         "to_room_stable_id": "room_002",
         "direction": "north",
@@ -1052,9 +936,9 @@ def test_process_exit_rows_with_partial_room_ids(async_persistence_layer):
         "from_zone_stable_id": "earth/arkhamcity",
         "to_subzone_stable_id": "subzone",
         "to_zone_stable_id": "earth/arkhamcity",
-    }[key]
+    }
 
-    rows = [mock_row]
+    rows = [row]
 
     with patch(
         "server.world_loader.generate_room_id",
@@ -1069,10 +953,8 @@ def test_process_exit_rows_with_partial_room_ids(async_persistence_layer):
 
 def test_process_exit_rows_debug_logging(async_persistence_layer):
     """Test _process_exit_rows logs debug info for specific room."""
-    from unittest.mock import MagicMock
-
-    mock_row = MagicMock()
-    mock_row.__getitem__ = lambda self, key: {
+    # Use real dictionary instead of MagicMock - implementation uses .get() method
+    row = {
         "from_room_stable_id": "earth_arkhamcity_sanitarium_room_foyer_001",
         "to_room_stable_id": "room_002",
         "direction": "north",
@@ -1080,9 +962,9 @@ def test_process_exit_rows_debug_logging(async_persistence_layer):
         "from_zone_stable_id": "earth/arkhamcity",
         "to_subzone_stable_id": "subzone",
         "to_zone_stable_id": "earth/arkhamcity",
-    }[key]
+    }
 
-    rows = [mock_row]
+    rows = [row]
 
     with patch("server.world_loader.generate_room_id", return_value="earth_arkhamcity_sanitarium_room_foyer_001"):
         with patch.object(async_persistence_layer, "_logger") as mock_logger:
@@ -1093,8 +975,6 @@ def test_process_exit_rows_debug_logging(async_persistence_layer):
 
 def test_build_room_objects_success(async_persistence_layer):
     """Test _build_room_objects successfully builds room objects."""
-    from unittest.mock import MagicMock
-
     room_data_list = [
         {
             "room_id": "earth_arkhamcity_subzone_room_001",
@@ -1121,8 +1001,6 @@ def test_build_room_objects_success(async_persistence_layer):
 
 def test_build_room_objects_with_non_dict_attributes(async_persistence_layer):
     """Test _build_room_objects handles non-dict attributes."""
-    from unittest.mock import MagicMock
-
     room_data_list = [
         {
             "room_id": "earth_arkhamcity_subzone_room_001",
@@ -1150,8 +1028,6 @@ def test_build_room_objects_with_non_dict_attributes(async_persistence_layer):
 
 def test_build_room_objects_debug_logging(async_persistence_layer):
     """Test _build_room_objects logs debug info for specific room."""
-    from unittest.mock import MagicMock
-
     room_data_list = [
         {
             "room_id": "earth_arkhamcity_sanitarium_room_foyer_001",
@@ -1174,121 +1050,6 @@ def test_build_room_objects_debug_logging(async_persistence_layer):
     mock_logger.info.assert_called()
 
 
-@pytest.mark.asyncio
-async def test_load_rooms_data_success(async_persistence_layer):
-    """Test _load_rooms_data successfully loads room data."""
-    mock_conn = AsyncMock()
-    mock_rooms = [MagicMock()]
-    mock_exits = [MagicMock()]
-
-    async_persistence_layer._query_rooms_from_db = AsyncMock(return_value=mock_rooms)
-    async_persistence_layer._query_exits_from_db = AsyncMock(return_value=mock_exits)
-    async_persistence_layer._process_room_rows = MagicMock(return_value=[])
-    async_persistence_layer._process_exit_rows = MagicMock(return_value={})
-    async_persistence_layer._build_room_objects = MagicMock()
-
-    result_container = {"rooms": {}}
-    await async_persistence_layer._load_rooms_data(mock_conn, result_container)
-
-    async_persistence_layer._query_rooms_from_db.assert_awaited_once()
-    async_persistence_layer._query_exits_from_db.assert_awaited_once()
-    async_persistence_layer._process_room_rows.assert_called_once_with(mock_rooms)
-    async_persistence_layer._process_exit_rows.assert_called_once_with(mock_exits)
-    async_persistence_layer._build_room_objects.assert_called_once()
-
-
-@pytest.mark.asyncio
-async def test_load_rooms_data_table_not_found(async_persistence_layer):
-    """Test _load_rooms_data handles table not found error."""
-    mock_conn = AsyncMock()
-    mock_rooms = []
-
-    async_persistence_layer._query_rooms_from_db = AsyncMock(return_value=mock_rooms)
-    async_persistence_layer._query_exits_from_db = AsyncMock(side_effect=DatabaseError("relation does not exist"))
-
-    result_container = {"rooms": {}}
-
-    with patch.object(async_persistence_layer, "_logger") as mock_logger:
-        await async_persistence_layer._load_rooms_data(mock_conn, result_container)
-
-    assert result_container["rooms"] == {}
-    mock_logger.warning.assert_called()
-
-
-@pytest.mark.asyncio
-async def test_load_rooms_data_empty_rooms(async_persistence_layer):
-    """Test _load_rooms_data handles empty rooms list."""
-    mock_conn = AsyncMock()
-    mock_rooms = []
-
-    async_persistence_layer._query_rooms_from_db = AsyncMock(return_value=mock_rooms)
-    async_persistence_layer._query_exits_from_db = AsyncMock(side_effect=DatabaseError("error"))
-
-    result_container = {"rooms": {}}
-
-    with patch.object(async_persistence_layer, "_logger") as mock_logger:
-        await async_persistence_layer._load_rooms_data(mock_conn, result_container)
-
-    assert result_container["rooms"] == {}
-    mock_logger.warning.assert_called()
-
-
-@pytest.mark.asyncio
-async def test_load_rooms_data_other_error(async_persistence_layer):
-    """Test _load_rooms_data handles other errors by logging warning when rooms_rows is empty."""
-    mock_conn = AsyncMock()
-
-    # When query fails and rooms_rows is empty, it logs warning instead of raising
-    async_persistence_layer._query_rooms_from_db = AsyncMock(return_value=[])  # Empty rooms_rows
-    async_persistence_layer._query_exits_from_db = AsyncMock(side_effect=ConnectionError("Connection failed"))
-
-    result_container = {"rooms": {}, "error": None}
-
-    # Should not raise, but log warning and set empty rooms
-    with patch.object(async_persistence_layer, "_logger") as mock_logger:
-        await async_persistence_layer._load_rooms_data(mock_conn, result_container)
-
-    assert result_container["rooms"] == {}
-    mock_logger.warning.assert_called()
-
-
-@pytest.mark.asyncio
-async def test_async_load_room_cache_success(async_persistence_layer):
-    """Test _async_load_room_cache successfully loads room cache."""
-    mock_conn = AsyncMock()
-    mock_conn.close = AsyncMock()
-
-    async_persistence_layer._get_database_url = MagicMock(return_value="postgresql://localhost/db")
-    async_persistence_layer._connect_to_database = AsyncMock(return_value=mock_conn)
-    async_persistence_layer._load_rooms_data = AsyncMock()
-
-    result_container = {"rooms": {}}
-    await async_persistence_layer._async_load_room_cache(result_container)
-
-    async_persistence_layer._connect_to_database.assert_awaited_once()
-    async_persistence_layer._load_rooms_data.assert_awaited_once_with(mock_conn, result_container)
-    mock_conn.close.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_async_load_room_cache_error(async_persistence_layer):
-    """Test _async_load_room_cache handles errors and closes connection."""
-    mock_conn = AsyncMock()
-    mock_conn.close = AsyncMock()
-
-    async_persistence_layer._get_database_url = MagicMock(return_value="postgresql://localhost/db")
-    async_persistence_layer._connect_to_database = AsyncMock(return_value=mock_conn)
-    async_persistence_layer._load_rooms_data = AsyncMock(side_effect=DatabaseError("DB error"))
-
-    result_container = {"rooms": {}}
-
-    with pytest.raises(DatabaseError):
-        await async_persistence_layer._async_load_room_cache(result_container)
-
-    # Connection should be closed even on error
-    mock_conn.close.assert_awaited_once()
-
-
 def test_load_room_cache_success(async_persistence_layer):
     """Test _load_room_cache successfully loads rooms."""
     async_persistence_layer._async_load_room_cache = AsyncMock()
@@ -1309,117 +1070,6 @@ def test_load_room_cache_success(async_persistence_layer):
             mock_async.side_effect = mock_async_load
 
             # We can't easily test threading, so let's test the error handling paths instead
-            pass
-
-
-def test_load_room_cache_error_handling(async_persistence_layer):
-    """Test _load_room_cache handles errors gracefully by logging and setting empty cache."""
-    with patch("threading.Thread") as mock_thread_class:
-        mock_thread = MagicMock()
-
-        def mock_start():
-            # Simulate error in thread - _load_room_cache catches DatabaseError and logs error
-            result_container = {"rooms": {}, "error": DatabaseError("DB error")}
-            error = result_container.get("error")
-            if error is not None:
-                if isinstance(error, BaseException):
-                    # Simulate the error handling in _load_room_cache
-                    async_persistence_layer._logger.error(
-                        "Room cache load failed",
-                        error=str(error),
-                        error_type=type(error).__name__,
-                        operation="load_room_cache",
-                    )
-                    async_persistence_layer._room_cache = {}
-
-        mock_thread.start = mock_start
-        mock_thread.join = MagicMock()
-        mock_thread_class.return_value = mock_thread
-
-        # Should not raise, but log error and set empty cache
-        with patch.object(async_persistence_layer, "_logger") as mock_logger:
-            async_persistence_layer._load_room_cache()
-
-        assert async_persistence_layer._room_cache == {}
-        mock_logger.error.assert_called()
-
-
-def test_load_room_cache_error_type_runtime_error(async_persistence_layer):
-    """Test _load_room_cache handles RuntimeError for unexpected error type by logging."""
-    with patch("threading.Thread") as mock_thread_class:
-        mock_thread = MagicMock()
-
-        def mock_start():
-            # Simulate non-Exception error type - _load_room_cache catches RuntimeError and logs error
-            result_container = {"rooms": {}, "error": "string error"}
-            error = result_container.get("error")
-            if error is not None:
-                if isinstance(error, BaseException):
-                    raise error
-                # Simulate the error handling in _load_room_cache
-                async_persistence_layer._logger.error(
-                    "Room cache load failed",
-                    error=f"Unexpected error type: {type(error)}",
-                    error_type="RuntimeError",
-                    operation="load_room_cache",
-                )
-                async_persistence_layer._room_cache = {}
-
-        mock_thread.start = mock_start
-        mock_thread.join = MagicMock()
-        mock_thread_class.return_value = mock_thread
-
-        # Should not raise, but log error and set empty cache
-        with patch.object(async_persistence_layer, "_logger") as mock_logger:
-            async_persistence_layer._load_room_cache()
-
-        assert async_persistence_layer._room_cache == {}
-        mock_logger.error.assert_called()
-
-
-def test_load_room_cache_rooms_not_dict(async_persistence_layer):
-    """Test _load_room_cache handles case where rooms is not a dict."""
-    with patch("threading.Thread") as mock_thread_class:
-        mock_thread = MagicMock()
-
-        def mock_start():
-            # Simulate rooms not being a dict
-            result_container = {"rooms": "not a dict", "error": None}
-            rooms = result_container.get("rooms")
-            if rooms is not None and isinstance(rooms, dict):
-                async_persistence_layer._room_cache = rooms
-            else:
-                async_persistence_layer._room_cache = {}
-
-        mock_thread.start = mock_start
-        mock_thread.join = MagicMock()
-        mock_thread_class.return_value = mock_thread
-
-        async_persistence_layer._load_room_cache()
-        assert async_persistence_layer._room_cache == {}
-
-
-def test_load_room_cache_exception_handling(async_persistence_layer):
-    """Test _load_room_cache handles DatabaseError, OSError, RuntimeError exceptions."""
-    with patch("threading.Thread", side_effect=OSError("OS error")):
-        with patch.object(async_persistence_layer, "_logger") as mock_logger:
-            async_persistence_layer._load_room_cache()
-
-    assert async_persistence_layer._room_cache == {}
-    mock_logger.error.assert_called_once()
-
-
-@pytest.mark.asyncio
-async def test_connect_to_database(async_persistence_layer):
-    """Test _connect_to_database creates asyncpg connection."""
-    with patch("asyncpg.connect") as mock_connect:
-        mock_conn = AsyncMock()
-        mock_connect.return_value = mock_conn
-
-        result = await async_persistence_layer._connect_to_database("postgresql://localhost/db")
-
-        assert result == mock_conn
-        mock_connect.assert_awaited_once_with("postgresql://localhost/db")
 
 
 def test_load_room_cache_with_rooms_logs_sample_ids(async_persistence_layer):
@@ -1449,21 +1099,19 @@ def test_load_room_cache_with_rooms_logs_sample_ids(async_persistence_layer):
 def test_process_room_rows_empty_list(async_persistence_layer):
     """Test _process_room_rows with empty list."""
     result = async_persistence_layer._process_room_rows([])
-    assert result == []
+    assert not result
 
 
 def test_process_exit_rows_empty_list(async_persistence_layer):
     """Test _process_exit_rows with empty list."""
     result = async_persistence_layer._process_exit_rows([])
-    assert result == {}
+    assert not result
 
 
 def test_process_exit_rows_multiple_exits_same_room(async_persistence_layer):
     """Test _process_exit_rows with multiple exits from same room."""
-    from unittest.mock import MagicMock
-
-    mock_row1 = MagicMock()
-    mock_row1.__getitem__ = lambda self, key: {
+    # Use real dictionaries instead of MagicMock - implementation uses .get() method
+    row1 = {
         "from_room_stable_id": "room_001",
         "to_room_stable_id": "room_002",
         "direction": "north",
@@ -1471,10 +1119,9 @@ def test_process_exit_rows_multiple_exits_same_room(async_persistence_layer):
         "from_zone_stable_id": "earth/arkhamcity",
         "to_subzone_stable_id": "subzone",
         "to_zone_stable_id": "earth/arkhamcity",
-    }[key]
+    }
 
-    mock_row2 = MagicMock()
-    mock_row2.__getitem__ = lambda self, key: {
+    row2 = {
         "from_room_stable_id": "room_001",
         "to_room_stable_id": "room_003",
         "direction": "south",
@@ -1482,9 +1129,9 @@ def test_process_exit_rows_multiple_exits_same_room(async_persistence_layer):
         "from_zone_stable_id": "earth/arkhamcity",
         "to_subzone_stable_id": "subzone",
         "to_zone_stable_id": "earth/arkhamcity",
-    }[key]
+    }
 
-    rows = [mock_row1, mock_row2]
+    rows = [row1, row2]
 
     with patch("server.world_loader.generate_room_id", side_effect=["room_001", "room_002", "room_001", "room_003"]):
         result = async_persistence_layer._process_exit_rows(rows)
@@ -1498,19 +1145,17 @@ def test_process_exit_rows_multiple_exits_same_room(async_persistence_layer):
 
 def test_process_room_rows_zone_single_part(async_persistence_layer):
     """Test _process_room_rows with zone_stable_id that has only one part (no slash)."""
-    from unittest.mock import MagicMock
-
-    mock_row = MagicMock()
-    mock_row.__getitem__ = lambda self, key: {
+    # Use real dictionary instead of MagicMock - implementation uses .get() method
+    row = {
         "stable_id": "room_001",
         "name": "Test Room",
         "description": "A test room",
         "attributes": {},
         "subzone_stable_id": "subzone",
         "zone_stable_id": "earth",  # Single part, no slash
-    }[key]
+    }
 
-    rows = [mock_row]
+    rows = [row]
 
     with patch("server.world_loader.generate_room_id", return_value="earth_earth_subzone_room_001"):
         result = async_persistence_layer._process_room_rows(rows)
@@ -1522,10 +1167,8 @@ def test_process_room_rows_zone_single_part(async_persistence_layer):
 
 def test_process_exit_rows_zone_single_part(async_persistence_layer):
     """Test _process_exit_rows with zone_stable_id that has only one part."""
-    from unittest.mock import MagicMock
-
-    mock_row = MagicMock()
-    mock_row.__getitem__ = lambda self, key: {
+    # Use real dictionary instead of MagicMock - implementation uses .get() method
+    row = {
         "from_room_stable_id": "room_001",
         "to_room_stable_id": "room_002",
         "direction": "north",
@@ -1533,21 +1176,19 @@ def test_process_exit_rows_zone_single_part(async_persistence_layer):
         "from_zone_stable_id": "earth",  # Single part
         "to_subzone_stable_id": "subzone",
         "to_zone_stable_id": "earth",  # Single part
-    }[key]
+    }
 
-    rows = [mock_row]
+    rows = [row]
 
     with patch("server.world_loader.generate_room_id", side_effect=["room_001", "room_002"]):
-        result = async_persistence_layer._process_exit_rows(rows)
+        result = async_persistence_layer._process_exit_rows(rows)  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test requires access to protected method for unit testing
 
     assert "room_001" in result
     assert result["room_001"]["north"] == "room_002"
 
 
-def test_build_room_objects_with_exits(async_persistence_layer):
+def test_build_room_objects_with_exits(async_persistence_layer):  # pylint: disable=redefined-outer-name  # Reason: pytest fixture parameter injection - parameter names must match fixture names
     """Test _build_room_objects includes exits in room data."""
-    from unittest.mock import MagicMock
-
     room_data_list = [
         {
             "room_id": "earth_arkhamcity_subzone_room_001",
@@ -1571,16 +1212,14 @@ def test_build_room_objects_with_exits(async_persistence_layer):
     with patch("server.models.room.Room") as mock_room_class:
         mock_room_instance = MagicMock()
         mock_room_class.return_value = mock_room_instance
-        async_persistence_layer._build_room_objects(room_data_list, exits_by_room, result_container)
+        async_persistence_layer._build_room_objects(room_data_list, exits_by_room, result_container)  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test requires access to protected method for unit testing
 
     call_args = mock_room_class.call_args[0][0]
     assert call_args["exits"] == exits_by_room["earth_arkhamcity_subzone_room_001"]
 
 
-def test_build_room_objects_with_dict_attributes(async_persistence_layer):
+def test_build_room_objects_with_dict_attributes(async_persistence_layer):  # pylint: disable=redefined-outer-name  # Reason: pytest fixture parameter injection - parameter names must match fixture names
     """Test _build_room_objects uses environment from attributes dict."""
-    from unittest.mock import MagicMock
-
     room_data_list = [
         {
             "room_id": "earth_arkhamcity_subzone_room_001",
@@ -1599,7 +1238,7 @@ def test_build_room_objects_with_dict_attributes(async_persistence_layer):
     with patch("server.models.room.Room") as mock_room_class:
         mock_room_instance = MagicMock()
         mock_room_class.return_value = mock_room_instance
-        async_persistence_layer._build_room_objects(room_data_list, exits_by_room, result_container)
+        async_persistence_layer._build_room_objects(room_data_list, exits_by_room, result_container)  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test requires access to protected method for unit testing
 
     call_args = mock_room_class.call_args[0][0]
     assert call_args["resolved_environment"] == "indoors"
@@ -1607,8 +1246,6 @@ def test_build_room_objects_with_dict_attributes(async_persistence_layer):
 
 def test_build_room_objects_without_environment_in_attributes(async_persistence_layer):
     """Test _build_room_objects defaults to outdoors when environment not in attributes."""
-    from unittest.mock import MagicMock
-
     room_data_list = [
         {
             "room_id": "earth_arkhamcity_subzone_room_001",
@@ -1627,42 +1264,575 @@ def test_build_room_objects_without_environment_in_attributes(async_persistence_
     with patch("server.models.room.Room") as mock_room_class:
         mock_room_instance = MagicMock()
         mock_room_class.return_value = mock_room_instance
-        async_persistence_layer._build_room_objects(room_data_list, exits_by_room, result_container)
+        async_persistence_layer._build_room_objects(room_data_list, exits_by_room, result_container)  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test requires access to protected method for unit testing
 
     call_args = mock_room_class.call_args[0][0]
     assert call_args["resolved_environment"] == "outdoors"
 
 
+# Error handling tests for improved coverage
+
+
 @pytest.mark.asyncio
-async def test_load_rooms_data_generic_exception_with_relation_error(async_persistence_layer):
-    """Test _load_rooms_data handles generic Exception with relation error."""
-    mock_conn = AsyncMock()
-    mock_rooms = []
+async def test_ensure_room_cache_loaded_already_loaded(async_persistence_layer):
+    """Test _ensure_room_cache_loaded returns early when cache is already loaded."""
+    # Set cache as already loaded
+    async_persistence_layer._room_cache_loaded = True
 
-    async_persistence_layer._query_rooms_from_db = AsyncMock(return_value=mock_rooms)
-    async_persistence_layer._query_exits_from_db = AsyncMock(side_effect=Exception("relation 'rooms' does not exist"))
+    # Should return immediately without calling _load_room_cache_async
+    await async_persistence_layer._ensure_room_cache_loaded()
 
-    result_container = {"rooms": {}}
+    # Verify cache is still marked as loaded
+    assert async_persistence_layer._room_cache_loaded is True
+
+
+@pytest.mark.asyncio
+async def test_ensure_room_cache_loaded_concurrent_load(async_persistence_layer):
+    """Test _ensure_room_cache_loaded handles concurrent load scenario (double-check pattern)."""
+    # Simulate cache being loaded between outer check and lock acquisition
+    async_persistence_layer._room_cache_loaded = False
+    async_persistence_layer._room_cache_loading = asyncio.Lock()
+
+    # Mock _load_room_cache_async to set cache as loaded during execution
+    async def mock_load():
+        async_persistence_layer._room_cache_loaded = True
+
+    async_persistence_layer._load_room_cache_async = AsyncMock(side_effect=mock_load)
+
+    await async_persistence_layer._ensure_room_cache_loaded()
+
+    # Verify cache is marked as loaded
+    assert async_persistence_layer._room_cache_loaded is True
+
+
+@pytest.mark.asyncio
+async def test_ensure_room_cache_loaded_database_error(async_persistence_layer):
+    """Test _ensure_room_cache_loaded handles DatabaseError gracefully."""
+    async_persistence_layer._room_cache_loaded = False
+    async_persistence_layer._load_room_cache_async = AsyncMock(side_effect=DatabaseError("Database error"))
+
+    await async_persistence_layer._ensure_room_cache_loaded()
+
+    # Should mark cache as loaded even on error (to prevent retries)
+    assert async_persistence_layer._room_cache_loaded is True
+    # Cache should be cleared on error
+    assert not async_persistence_layer._room_cache
+
+
+@pytest.mark.asyncio
+async def test_ensure_room_cache_loaded_os_error(async_persistence_layer):
+    """Test _ensure_room_cache_loaded handles OSError gracefully."""
+    async_persistence_layer._room_cache_loaded = False
+    async_persistence_layer._load_room_cache_async = AsyncMock(side_effect=OSError("Connection error"))
+
+    await async_persistence_layer._ensure_room_cache_loaded()
+
+    # Should mark cache as loaded even on error (to prevent retries)
+    assert async_persistence_layer._room_cache_loaded is True
+    # Cache should be cleared on error
+    assert not async_persistence_layer._room_cache
+
+
+@pytest.mark.asyncio
+async def test_ensure_room_cache_loaded_runtime_error(async_persistence_layer):
+    """Test _ensure_room_cache_loaded handles RuntimeError gracefully."""
+    async_persistence_layer._room_cache_loaded = False
+    async_persistence_layer._load_room_cache_async = AsyncMock(side_effect=RuntimeError("Runtime error"))
+
+    await async_persistence_layer._ensure_room_cache_loaded()
+
+    # Should mark cache as loaded even on error (to prevent retries)
+    assert async_persistence_layer._room_cache_loaded is True
+    # Cache should be cleared on error
+    assert not async_persistence_layer._room_cache
+
+
+@pytest.mark.asyncio
+async def test_load_room_cache_async_rooms_none(async_persistence_layer):
+    """Test _load_room_cache_async handles case when rooms is None."""
+    mock_session = AsyncMock()
+    mock_result = MagicMock()
+    mock_result.fetchall.return_value = []
+    mock_session.execute = AsyncMock(return_value=mock_result)
+
+    async def mock_get_async_session():
+        yield mock_session
+
+    async_persistence_layer._query_rooms_with_exits_async = AsyncMock(return_value=[])
+    async_persistence_layer._process_combined_rows = MagicMock(return_value=([], {}))
+    # Mock _build_room_objects to set rooms to None
+    original_build = async_persistence_layer._build_room_objects
+
+    def mock_build(room_data, exits, container):
+        original_build(room_data, exits, container)
+        container["rooms"] = None
+
+    async_persistence_layer._build_room_objects = MagicMock(side_effect=mock_build)
+
+    with patch("server.async_persistence.get_async_session", side_effect=mock_get_async_session):
+        await async_persistence_layer._load_room_cache_async()
+
+    # Cache should be cleared when rooms is None
+    assert not async_persistence_layer._room_cache
+
+
+@pytest.mark.asyncio
+async def test_load_room_cache_async_table_not_found(async_persistence_layer):
+    """Test _load_room_cache_async handles table not found error."""
+    from sqlalchemy.exc import SQLAlchemyError
+
+    mock_session = AsyncMock()
+    mock_session.execute = AsyncMock(side_effect=SQLAlchemyError("relation 'rooms' does not exist", None, None))
+
+    async def mock_get_async_session():
+        yield mock_session
+
+    with patch("server.async_persistence.get_async_session", side_effect=mock_get_async_session):
+        await async_persistence_layer._load_room_cache_async()
+
+    # Should clear cache and not raise
+    assert not async_persistence_layer._room_cache
+
+
+@pytest.mark.asyncio
+async def test_load_room_cache_async_other_error_raises(async_persistence_layer):
+    """Test _load_room_cache_async raises other errors."""
+    from sqlalchemy.exc import SQLAlchemyError
+
+    mock_session = AsyncMock()
+    mock_session.execute = AsyncMock(side_effect=SQLAlchemyError("Other database error", None, None))
+
+    async def mock_get_async_session():
+        yield mock_session
+
+    with patch("server.async_persistence.get_async_session", side_effect=mock_get_async_session):
+        with pytest.raises(SQLAlchemyError):
+            await async_persistence_layer._load_room_cache_async()
+
+
+@pytest.mark.asyncio
+async def test_query_rooms_with_exits_async_table_not_found(async_persistence_layer):
+    """Test _query_rooms_with_exits_async handles table not found error."""
+    mock_session = AsyncMock()
+    mock_session.execute = AsyncMock(side_effect=Exception("relation 'rooms' does not exist"))
+
+    result = await async_persistence_layer._query_rooms_with_exits_async(mock_session)
+
+    # Should return empty list on table not found
+    assert result == []
+
+
+@pytest.mark.asyncio
+async def test_query_rooms_with_exits_async_other_error_raises(async_persistence_layer):
+    """Test _query_rooms_with_exits_async raises other errors."""
+    mock_session = AsyncMock()
+    mock_session.execute = AsyncMock(side_effect=Exception("Other database error"))
+
+    with pytest.raises(Exception, match="Other database error"):
+        await async_persistence_layer._query_rooms_with_exits_async(mock_session)
+
+
+@pytest.mark.asyncio
+async def test_get_user_by_username_case_insensitive_no_session(async_persistence_layer):
+    """Test get_user_by_username_case_insensitive when no session is yielded."""
+
+    async def mock_get_async_session():
+        # Don't yield anything - simulate empty generator
+        if False:  # pylint: disable=using-constant-test  # Reason: Intentional - ensures generator doesn't yield
+            yield
+
+    with patch("server.async_persistence.get_async_session", side_effect=mock_get_async_session):
+        result = await async_persistence_layer.get_user_by_username_case_insensitive("testuser")
+
+    # Should return None when no session is yielded
+    assert result is None
+
+
+@pytest.mark.asyncio
+async def test_get_professions_no_session(async_persistence_layer):
+    """Test get_professions when no session is yielded."""
+
+    async def mock_get_async_session():
+        # Don't yield anything - simulate empty generator
+        if False:  # pylint: disable=using-constant-test  # Reason: Intentional - ensures generator doesn't yield
+            yield
+
+    with patch("server.async_persistence.get_async_session", side_effect=mock_get_async_session):
+        result = await async_persistence_layer.get_professions()
+
+    # Should return empty list when no session is yielded
+    assert result == []
+
+
+@pytest.mark.asyncio
+async def test_get_players_batch_empty_list(async_persistence_layer):
+    """Test get_players_batch with empty list."""
+    # Mock _ensure_room_cache_loaded to avoid database operations
+    async_persistence_layer._ensure_room_cache_loaded = AsyncMock()
+
+    result = await async_persistence_layer.get_players_batch([])
+
+    # Should return empty dict immediately
+    assert result == {}
+
+
+@pytest.mark.asyncio
+async def test_get_players_batch_with_players(async_persistence_layer):
+    """Test get_players_batch with actual players (UUID conversion)."""
+    # Mock _ensure_room_cache_loaded to avoid database operations
+    async_persistence_layer._ensure_room_cache_loaded = AsyncMock()
+
+    player_id1 = uuid.uuid4()
+    player_id2 = uuid.uuid4()
+    mock_player1 = MagicMock(spec=Player)
+    mock_player1.player_id = str(player_id1)
+    mock_player2 = MagicMock(spec=Player)
+    mock_player2.player_id = str(player_id2)
+
+    async_persistence_layer._player_repo.get_players_batch = AsyncMock(return_value=[mock_player1, mock_player2])
+
+    result = await async_persistence_layer.get_players_batch([player_id1, player_id2])
+
+    # Should return dict with UUID keys
+    assert len(result) == 2
+    assert player_id1 in result
+    assert player_id2 in result
+    assert result[player_id1] == mock_player1
+    assert result[player_id2] == mock_player2
+
+
+def test_generate_room_id_from_zone_data_with_prefix(async_persistence_layer):
+    """Test _generate_room_id_from_zone_data when stable_id already has full path."""
+    zone_stable_id = "earth/arkhamcity"
+    subzone_stable_id = "northside"
+    stable_id = "earth_arkhamcity_northside_room_001"
+
+    result = async_persistence_layer._generate_room_id_from_zone_data(zone_stable_id, subzone_stable_id, stable_id)
+
+    # Should return stable_id as-is since it already has the prefix
+    assert result == stable_id
+
+
+def test_generate_room_id_from_zone_data_needs_generation(async_persistence_layer):
+    """Test _generate_room_id_from_zone_data when room ID needs generation."""
+    with patch(
+        "server.world_loader.generate_room_id", return_value="earth_arkhamcity_northside_room_002"
+    ) as mock_generate:
+        result = async_persistence_layer._generate_room_id_from_zone_data("earth/arkhamcity", "northside", "room_002")
+
+        assert result == "earth_arkhamcity_northside_room_002"
+        mock_generate.assert_called_once_with("earth", "arkhamcity", "northside", "room_002")
+
+
+def test_generate_room_id_from_zone_data_none_values(async_persistence_layer):
+    """Test _generate_room_id_from_zone_data with None values."""
+    with patch("server.world_loader.generate_room_id", return_value="generated_id") as mock_generate:
+        result = async_persistence_layer._generate_room_id_from_zone_data(None, None, None)
+
+        assert result == "generated_id"
+        mock_generate.assert_called_once_with("", "", "", "")
+
+
+def test_parse_exits_json_string_valid(async_persistence_layer):
+    """Test _parse_exits_json with valid JSON string."""
+    exits_json = '[{"direction": "north", "to_room_stable_id": "room_002"}]'
+
+    result = async_persistence_layer._parse_exits_json(exits_json)
+
+    assert len(result) == 1
+    assert result[0]["direction"] == "north"
+    assert result[0]["to_room_stable_id"] == "room_002"
+
+
+def test_parse_exits_json_string_invalid(async_persistence_layer):
+    """Test _parse_exits_json with invalid JSON string."""
+    exits_json = "invalid json"
+
+    result = async_persistence_layer._parse_exits_json(exits_json)
+
+    # Should return empty list on JSON decode error
+    assert result == []
+
+
+def test_parse_exits_json_list(async_persistence_layer):
+    """Test _parse_exits_json with list."""
+    exits_json = [{"direction": "south", "to_room_stable_id": "room_003"}]
+
+    result = async_persistence_layer._parse_exits_json(exits_json)
+
+    assert result == exits_json
+
+
+def test_parse_exits_json_other_type(async_persistence_layer):
+    """Test _parse_exits_json with non-string, non-list value."""
+    result = async_persistence_layer._parse_exits_json({})
+
+    # Should return empty list
+    assert result == []
+
+
+def test_process_exits_for_room_with_direction(async_persistence_layer):
+    """Test _process_exits_for_room processes exits with direction."""
+    room_id = "room_001"
+    exits_list = [
+        {
+            "direction": "north",
+            "to_room_stable_id": "room_002",
+            "to_subzone_stable_id": "subzone",
+            "to_zone_stable_id": "earth/arkhamcity",
+        }
+    ]
+    exits_by_room = {}
+
+    with patch.object(async_persistence_layer, "_generate_room_id_from_zone_data", return_value="room_002_full_id"):
+        async_persistence_layer._process_exits_for_room(room_id, exits_list, exits_by_room)
+
+    assert room_id in exits_by_room
+    assert exits_by_room[room_id]["north"] == "room_002_full_id"
+
+
+def test_process_exits_for_room_no_direction(async_persistence_layer):
+    """Test _process_exits_for_room skips exits without direction."""
+    room_id = "room_001"
+    exits_list = [{"to_room_stable_id": "room_002"}]  # No direction
+    exits_by_room = {}
+
+    async_persistence_layer._process_exits_for_room(room_id, exits_list, exits_by_room)
+
+    # Should not add anything when direction is missing
+    assert room_id not in exits_by_room or not exits_by_room[room_id]
+
+
+def test_process_exits_for_room_multiple_exits(async_persistence_layer):
+    """Test _process_exits_for_room handles multiple exits."""
+    room_id = "room_001"
+    exits_list = [
+        {
+            "direction": "north",
+            "to_room_stable_id": "room_002",
+            "to_subzone_stable_id": "sub",
+            "to_zone_stable_id": "earth/zone",
+        },
+        {
+            "direction": "south",
+            "to_room_stable_id": "room_003",
+            "to_subzone_stable_id": "sub",
+            "to_zone_stable_id": "earth/zone",
+        },
+    ]
+    exits_by_room = {}
+
+    with patch.object(
+        async_persistence_layer, "_generate_room_id_from_zone_data", side_effect=["room_002_id", "room_003_id"]
+    ):
+        async_persistence_layer._process_exits_for_room(room_id, exits_list, exits_by_room)
+
+    assert room_id in exits_by_room
+    assert "north" in exits_by_room[room_id]
+    assert "south" in exits_by_room[room_id]
+
+
+def test_process_combined_rows_with_exits(async_persistence_layer):
+    """Test _process_combined_rows processes rows with exits JSON."""
+    combined_rows = [
+        {
+            "stable_id": "room_001",
+            "name": "Test Room",
+            "description": "A test room",
+            "attributes": {},
+            "subzone_stable_id": "subzone",
+            "zone_stable_id": "earth/arkhamcity",
+            "exits": '[{"direction": "north", "to_room_stable_id": "room_002", "to_subzone_stable_id": "sub", "to_zone_stable_id": "earth/zone"}]',
+        }
+    ]
+
+    with patch.object(
+        async_persistence_layer, "_generate_room_id_from_zone_data", side_effect=["room_001_id", "room_002_id"]
+    ):
+        room_data_list, exits_by_room = async_persistence_layer._process_combined_rows(combined_rows)
+
+    assert len(room_data_list) == 1
+    assert room_data_list[0]["room_id"] == "room_001_id"
+    assert "room_001_id" in exits_by_room
+    assert "north" in exits_by_room["room_001_id"]
+
+
+def test_process_combined_rows_no_exits(async_persistence_layer):
+    """Test _process_combined_rows processes rows without exits."""
+    combined_rows = [
+        {
+            "stable_id": "room_001",
+            "name": "Test Room",
+            "description": "A test room",
+            "attributes": {},
+            "subzone_stable_id": "subzone",
+            "zone_stable_id": "earth/arkhamcity",
+            "exits": None,
+        }
+    ]
+
+    with patch.object(async_persistence_layer, "_generate_room_id_from_zone_data", return_value="room_001_id"):
+        room_data_list, exits_by_room = async_persistence_layer._process_combined_rows(combined_rows)
+
+    assert len(room_data_list) == 1
+    assert not exits_by_room
+
+
+def test_process_room_rows_with_none_zone_stable_id(async_persistence_layer):
+    """Test _process_room_rows handles None zone_stable_id."""
+    rooms_rows = [{"stable_id": "room_001", "zone_stable_id": None}]
 
     with patch.object(async_persistence_layer, "_logger") as mock_logger:
-        await async_persistence_layer._load_rooms_data(mock_conn, result_container)
+        result = async_persistence_layer._process_room_rows(rooms_rows)
 
-    assert result_container["rooms"] == {}
+    assert not result
+    mock_logger.warning.assert_called()
+
+
+def test_process_room_rows_with_none_stable_id(async_persistence_layer):
+    """Test _process_room_rows handles None stable_id."""
+    rooms_rows = [{"stable_id": None, "zone_stable_id": "earth/arkhamcity"}]
+
+    with patch.object(async_persistence_layer, "_logger") as mock_logger:
+        result = async_persistence_layer._process_room_rows(rooms_rows)
+
+    assert not result
+    mock_logger.warning.assert_called()
+
+
+def test_process_exit_rows_missing_direction(async_persistence_layer):
+    """Test _process_exit_rows handles missing direction."""
+    exit_rows = [
+        {
+            "from_room_stable_id": "room_001",
+            "to_room_stable_id": "room_002",
+            "direction": None,  # Missing direction
+            "from_subzone_stable_id": "sub",
+            "from_zone_stable_id": "earth/zone",
+            "to_subzone_stable_id": "sub",
+            "to_zone_stable_id": "earth/zone",
+        }
+    ]
+
+    with patch.object(async_persistence_layer, "_logger") as mock_logger:
+        result = async_persistence_layer._process_exit_rows(exit_rows)
+
+    assert not result
+    mock_logger.warning.assert_called()
+
+
+def test_process_exit_rows_missing_zone(async_persistence_layer):
+    """Test _process_exit_rows handles missing zone data."""
+    exit_rows = [
+        {
+            "from_room_stable_id": "room_001",
+            "to_room_stable_id": "room_002",
+            "direction": "north",
+            "from_subzone_stable_id": "sub",
+            "from_zone_stable_id": None,  # Missing zone
+            "to_subzone_stable_id": "sub",
+            "to_zone_stable_id": "earth/zone",
+        }
+    ]
+
+    with patch.object(async_persistence_layer, "_logger") as mock_logger:
+        result = async_persistence_layer._process_exit_rows(exit_rows)
+
+    assert not result
+    mock_logger.warning.assert_called()
+
+
+def test_process_exit_rows_missing_stable_id(async_persistence_layer):
+    """Test _process_exit_rows handles missing stable_id."""
+    exit_rows = [
+        {
+            "from_room_stable_id": None,  # Missing stable_id
+            "to_room_stable_id": "room_002",
+            "direction": "north",
+            "from_subzone_stable_id": "sub",
+            "from_zone_stable_id": "earth/zone",
+            "to_subzone_stable_id": "sub",
+            "to_zone_stable_id": "earth/zone",
+        }
+    ]
+
+    with patch.object(async_persistence_layer, "_logger") as mock_logger:
+        result = async_persistence_layer._process_exit_rows(exit_rows)
+
+    assert not result
     mock_logger.warning.assert_called()
 
 
 @pytest.mark.asyncio
-async def test_load_rooms_data_generic_exception_other_error(async_persistence_layer):
-    """Test _load_rooms_data raises generic Exception for other errors."""
-    mock_conn = AsyncMock()
-    mock_rooms = [MagicMock()]  # Non-empty
+async def test_load_room_cache_async_warning_logging(async_persistence_layer):
+    """Test _load_room_cache_async logs warning when table not found."""
+    from sqlalchemy.exc import SQLAlchemyError
 
-    async_persistence_layer._query_rooms_from_db = AsyncMock(return_value=mock_rooms)
-    async_persistence_layer._query_exits_from_db = AsyncMock(side_effect=Exception("Unexpected error"))
+    mock_session = AsyncMock()
+    mock_session.execute = AsyncMock(side_effect=SQLAlchemyError("relation 'rooms' does not exist", None, None))
 
-    result_container = {"rooms": {}, "error": None}
+    async def mock_get_async_session():
+        yield mock_session
 
-    with pytest.raises(Exception, match="Unexpected error"):
-        await async_persistence_layer._load_rooms_data(mock_conn, result_container)
+    with patch("server.async_persistence.get_async_session", side_effect=mock_get_async_session):
+        with patch.object(async_persistence_layer, "_logger") as mock_logger:
+            await async_persistence_layer._load_room_cache_async()
 
-    assert result_container["error"] is not None
+    # Should log warning when table not found
+    mock_logger.warning.assert_called()
+
+
+@pytest.mark.asyncio
+async def test_warmup_room_cache(async_persistence_layer):
+    """Test warmup_room_cache calls _ensure_room_cache_loaded."""
+    async_persistence_layer._ensure_room_cache_loaded = AsyncMock()
+
+    await async_persistence_layer.warmup_room_cache()
+
+    async_persistence_layer._ensure_room_cache_loaded.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_load_room_cache_async_success_with_rooms_logs_sample_ids(async_persistence_layer):
+    """Test _load_room_cache_async logs sample room IDs when rooms are loaded successfully."""
+    mock_session = AsyncMock()
+    mock_result = MagicMock()
+    mock_result.fetchall.return_value = []
+    mock_session.execute = AsyncMock(return_value=mock_result)
+
+    async def mock_get_async_session():
+        yield mock_session
+
+    # Mock successful room loading with rooms in cache
+    mock_room1 = MagicMock()
+    mock_room2 = MagicMock()
+    mock_room3 = MagicMock()
+    mock_room4 = MagicMock()
+    mock_room5 = MagicMock()
+    mock_room6 = MagicMock()
+
+    async_persistence_layer._query_rooms_with_exits_async = AsyncMock(return_value=[])
+    async_persistence_layer._process_combined_rows = MagicMock(return_value=([], {}))
+
+    # Mock _build_room_objects to populate cache with rooms
+    def mock_build_rooms(room_data, exits, container):  # pylint: disable=unused-argument  # Reason: Mock function signature must match original, but we only need container parameter
+        container["rooms"] = {
+            "room_001": mock_room1,
+            "room_002": mock_room2,
+            "room_003": mock_room3,
+            "room_004": mock_room4,
+            "room_005": mock_room5,
+            "room_006": mock_room6,
+        }
+
+    async_persistence_layer._build_room_objects = MagicMock(side_effect=mock_build_rooms)
+
+    with patch("server.async_persistence.get_async_session", side_effect=mock_get_async_session):
+        with patch.object(async_persistence_layer, "_logger") as mock_logger:
+            await async_persistence_layer._load_room_cache_async()
+
+    # Verify logging was called with sample room IDs
+    mock_logger.debug.assert_called_once()
+    call_kwargs = mock_logger.debug.call_args[1]
+    assert "sample_room_ids" in call_kwargs
+    assert len(call_kwargs["sample_room_ids"]) == 5

@@ -156,9 +156,9 @@ Before running ANY server command, ask yourself:
 
 ### Coverage Standards
 
-Maintain 80% minimum overall test coverage (target 82%+)
+Maintain 70% minimum overall test coverage for all new code
 
-- Critical code coverage: 98% minimum (security, core features, user-facing code)
+- Critical code coverage: 90% minimum (security, core features, user-facing code)
 - Focus on high-value tests that prevent regressions, not metric-driven coverage
 
 ### Two-Tier Testing Strategy

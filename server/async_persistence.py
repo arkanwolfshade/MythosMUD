@@ -139,7 +139,7 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
                     operation="load_room_cache",
                 )
                 # Fallback to empty cache on error to avoid startup failure
-                self._room_cache = {}
+                self._room_cache.clear()
                 self._room_cache_loaded = True  # Mark as loaded even if empty to prevent retries
 
     async def _load_room_cache_async(self) -> None:
@@ -158,10 +158,12 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
 
                 rooms = result_container.get("rooms")
                 if rooms is not None and isinstance(rooms, dict):
-                    self._room_cache = rooms
+                    # Update existing dict instead of reassigning to preserve reference
+                    # RoomRepository was initialized with self._room_cache reference
+                    self._room_cache.clear()
+                    self._room_cache.update(rooms)
                 else:
-                    self._room_cache = {}
-
+                    self._room_cache.clear()
                 self._logger.info(
                     "Loaded rooms into cache from PostgreSQL database",
                     room_count=len(self._room_cache),
@@ -176,7 +178,8 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
                 error_msg = str(e).lower()
                 if "does not exist" in error_msg or "relation" in error_msg:
                     # Tables don't exist or are empty - initialize empty cache
-                    self._room_cache = {}
+                    # Use clear() instead of reassignment to preserve reference
+                    self._room_cache.clear()
                     self._logger.warning(
                         "Room tables not found or empty, initializing with empty cache",
                         error=str(e),
@@ -324,7 +327,7 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
                 exits_by_room[room_id] = {}
             exits_by_room[room_id][direction] = to_room_id
 
-    def _process_combined_rows(
+    def _process_combined_rows(  # pylint: disable=too-many-locals  # Reason: Method processes complex database rows with many fields - refactoring would reduce readability
         self, combined_rows: list[dict[str, Any]]
     ) -> tuple[list[dict[str, Any]], dict[str, dict[str, str]]]:
         """
@@ -579,22 +582,32 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
 
     async def get_player_by_name(self, name: str) -> Player | None:
         """Get a player by name. Delegates to PlayerRepository."""
+        # Ensure room cache is loaded before validation (validate_and_fix_player_room checks cache)
+        await self._ensure_room_cache_loaded()
         return await self._player_repo.get_player_by_name(name)
 
     async def get_player_by_id(self, player_id: uuid.UUID) -> Player | None:
         """Get a player by ID. Delegates to PlayerRepository."""
+        # Ensure room cache is loaded before validation (validate_and_fix_player_room checks cache)
+        await self._ensure_room_cache_loaded()
         return await self._player_repo.get_player_by_id(player_id)
 
     async def get_players_by_user_id(self, user_id: str) -> list[Player]:
         """Get all players (including deleted) for a user ID. Delegates to PlayerRepository."""
+        # Ensure room cache is loaded before validation (validate_and_fix_player_room checks cache)
+        await self._ensure_room_cache_loaded()
         return await self._player_repo.get_players_by_user_id(user_id)
 
     async def get_active_players_by_user_id(self, user_id: str) -> list[Player]:
         """Get active (non-deleted) players for a user ID. Delegates to PlayerRepository."""
+        # Ensure room cache is loaded before validation (validate_and_fix_player_room checks cache)
+        await self._ensure_room_cache_loaded()
         return await self._player_repo.get_active_players_by_user_id(user_id)
 
     async def get_player_by_user_id(self, user_id: str) -> Player | None:
         """Get the first active player by user ID (backward compatibility). Delegates to PlayerRepository."""
+        # Ensure room cache is loaded before validation (validate_and_fix_player_room checks cache)
+        await self._ensure_room_cache_loaded()
         return await self._player_repo.get_player_by_user_id(user_id)
 
     async def soft_delete_player(self, player_id: uuid.UUID) -> bool:
@@ -645,6 +658,8 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
 
     async def list_players(self) -> list[Player]:
         """List all players. Delegates to PlayerRepository."""
+        # Ensure room cache is loaded before validation (validate_and_fix_player_room checks cache)
+        await self._ensure_room_cache_loaded()
         return await self._player_repo.list_players()
 
     def get_room_by_id(self, room_id: str) -> "Room | None":
@@ -691,9 +706,11 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
 
     async def get_players_in_room(self, room_id: str) -> list[Player]:
         """Get all players in a specific room. Delegates to PlayerRepository."""
+        # Ensure room cache is loaded before validation (validate_and_fix_player_room checks cache)
+        await self._ensure_room_cache_loaded()
         return await self._player_repo.get_players_in_room(room_id)
 
-    async def get_players_batch(self, player_ids: list[uuid.UUID]) -> dict[str, Player]:
+    async def get_players_batch(self, player_ids: list[uuid.UUID]) -> dict[uuid.UUID, Player]:
         """
         Get multiple players by IDs in a single batch query.
 
@@ -704,16 +721,18 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
             player_ids: List of player UUIDs to retrieve
 
         Returns:
-            dict: Mapping of player_id (as string) to Player object (only includes found players)
+            dict: Mapping of player_id (as UUID) to Player object (only includes found players)
         """
+        # Ensure room cache is loaded before validation (validate_and_fix_player_room checks cache)
+        await self._ensure_room_cache_loaded()
         if not player_ids:
             return {}
 
         # Use repository batch method which uses single query with IN clause
         players_list = await self._player_repo.get_players_batch(player_ids)
 
-        # Convert list to dict keyed by player_id (Player.player_id is str type)
-        return {player.player_id: player for player in players_list}
+        # Convert list to dict keyed by UUID (Player.player_id is str type, convert to UUID for dict key)
+        return {uuid.UUID(player.player_id): player for player in players_list}
 
     async def save_players(self, players: list[Player]) -> None:
         """Save multiple players in a single transaction. Delegates to PlayerRepository."""

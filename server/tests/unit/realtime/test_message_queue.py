@@ -5,7 +5,7 @@ Tests the message_queue module classes and functions.
 """
 
 import time
-from datetime import UTC
+from datetime import UTC, datetime, timedelta
 from unittest.mock import patch
 
 from server.realtime.message_queue import MessageQueue
@@ -15,8 +15,8 @@ def test_message_queue_init_defaults():
     """Test MessageQueue.__init__() with default values."""
     queue = MessageQueue()
 
-    assert queue.max_messages_per_player == 1000
-    assert queue.pending_messages == {}
+    assert queue.max_messages_per_player == 100  # Default changed from 1000 to 100
+    assert not queue.pending_messages
 
 
 def test_message_queue_init_custom():
@@ -24,7 +24,7 @@ def test_message_queue_init_custom():
     queue = MessageQueue(max_messages_per_player=500)
 
     assert queue.max_messages_per_player == 500
-    assert queue.pending_messages == {}
+    assert not queue.pending_messages
 
 
 def test_message_queue_add_message():
@@ -141,6 +141,8 @@ def test_message_queue_get_messages_error():
 
     # Force an error by making del raise an exception
     class ErrorDict(dict):
+        """Test dict subclass that raises KeyError when deleting items."""
+
         def __delitem__(self, key):
             raise KeyError("Test error")
 
@@ -234,6 +236,8 @@ def test_message_queue_remove_player_messages_error():
 
     # Create a custom dict-like object that raises an error on deletion
     class ErrorDict(dict):
+        """Test dict subclass that raises KeyError when deleting items."""
+
         def __delitem__(self, key):
             raise KeyError("Test error")
 
@@ -292,8 +296,6 @@ def test_message_queue_cleanup_old_messages_string_timestamp():
     player_id = "player_123"
 
     # Add message with ISO string timestamp
-    from datetime import datetime, timedelta
-
     # Create an old timestamp (at least 2 hours ago to ensure it's older than max_age_seconds=3600)
     old_dt = datetime.now(UTC) - timedelta(hours=2)
     old_iso = old_dt.isoformat()
@@ -336,6 +338,8 @@ def test_message_queue_cleanup_old_messages_error():
 
     # Create a custom dict-like object that raises an error
     class ErrorDict(dict):
+        """Test dict subclass that raises ValueError when items() is called."""
+
         def items(self):
             raise ValueError("Test error")
 
@@ -361,8 +365,8 @@ def test_message_queue_cleanup_large_structures():
     with patch("server.realtime.message_queue.logger") as mock_logger:
         queue.cleanup_large_structures(max_entries=1000)
 
-        # Should be trimmed to 1000 most recent
-        assert len(queue.pending_messages[player_id]) == 1000
+        # Should be trimmed to max_messages_per_player (100) most recent, not max_entries
+        assert len(queue.pending_messages[player_id]) == 100
         mock_logger.debug.assert_called_once()
 
 
@@ -373,6 +377,8 @@ def test_message_queue_cleanup_large_structures_error():
 
     # Create a custom dict-like object that raises an error
     class ErrorDict(dict):
+        """Test dict subclass that raises TypeError when items() is called."""
+
         def items(self):
             raise TypeError("Test error")
 
@@ -400,7 +406,7 @@ def test_message_queue_get_stats():
 
     assert stats["total_queues"] == 2
     assert stats["total_messages"] == 3
-    assert stats["max_messages_per_player"] == 1000
+    assert stats["max_messages_per_player"] == 100  # Default changed from 1000 to 100
     assert len(stats["largest_queues"]) == 2
     assert stats["average_queue_size"] == 1.5
 
@@ -422,6 +428,8 @@ def test_message_queue_get_stats_error():
 
     # Create a custom dict-like object that raises an error
     class ErrorDict(dict):
+        """Test dict subclass that raises KeyError when items() is called."""
+
         def items(self):
             raise KeyError("Test error")
 
@@ -432,5 +440,5 @@ def test_message_queue_get_stats_error():
     with patch("server.realtime.message_queue.logger") as mock_logger:
         stats = queue.get_stats()
 
-        assert stats == {}
+        assert not stats
         mock_logger.error.assert_called_once()

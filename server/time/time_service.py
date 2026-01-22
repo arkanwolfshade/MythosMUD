@@ -303,7 +303,7 @@ class MythosChronicle:
         with self._state_lock:
             return self._last_freeze_state
 
-    def _migrate_old_state_file(
+    def _migrate_old_state_file(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Migration method requires all parameters for state conversion - refactoring would require a dataclass that adds unnecessary complexity for internal method
         self,
         real: datetime,
         mythos: datetime,

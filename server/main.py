@@ -11,6 +11,22 @@ knowledge is essential for maintaining the delicate balance between order
 and chaos. This server implementation follows those ancient principles.
 """
 
+# Load environment variables from .env.local FIRST, before any other imports
+# This ensures environment variables are available regardless of how the server is started
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+project_root = Path(__file__).parent.parent  # server/main.py -> server/ -> project root
+env_local_path = project_root / ".env.local"
+if env_local_path.exists():
+    load_dotenv(env_local_path, override=False)  # override=False to respect already-set env vars
+
+# These imports must come after load_dotenv() to ensure environment variables are loaded first
+# This is necessary because some imported modules depend on environment variables being set
+# Note: E402 (module level import not at top of file) is ignored for this file via pyproject.toml
+# because these imports must come after load_dotenv() to ensure env vars are loaded first
+# pylint: disable=wrong-import-position,wrong-import-order  # Reason: Imports must come after load_dotenv() to ensure environment variables are loaded first
 import warnings
 from collections.abc import Callable
 

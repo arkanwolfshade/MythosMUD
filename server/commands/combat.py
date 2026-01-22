@@ -436,16 +436,15 @@ def get_combat_command_handler(app: Any = None) -> CombatCommandHandler:
     if _combat_command_handler is None:
         if app is None:
             raise RuntimeError("Cannot initialize combat command handler without app instance")
-        combat_service = getattr(app.state, "combat_service", None)
-        event_bus = getattr(app.state, "event_bus", None)
-        player_combat_service = getattr(app.state, "player_combat_service", None)
-        # CRITICAL FIX: Get connection_manager from container to pass to CombatMessagingIntegration
-        connection_manager = None
-        async_persistence = None
+        # CRITICAL FIX: Get services from container, not app.state (container has the correct instances)
         container = getattr(app.state, "container", None)
-        if container:
-            connection_manager = getattr(container, "connection_manager", None)
-            async_persistence = getattr(container, "async_persistence", None)
+        if not container:
+            raise RuntimeError("Cannot initialize combat command handler without container")
+        combat_service = getattr(container, "combat_service", None)
+        event_bus = getattr(container, "event_bus", None)
+        player_combat_service = getattr(container, "player_combat_service", None)
+        connection_manager = getattr(container, "connection_manager", None)
+        async_persistence = getattr(container, "async_persistence", None)
         _combat_command_handler = CombatCommandHandler(
             combat_service=combat_service,
             event_bus=event_bus,
