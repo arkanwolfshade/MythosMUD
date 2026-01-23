@@ -1,3 +1,7 @@
+# pylint: disable=pointless-string-statement,missing-module-docstring  # Reason: Module docstring must come after from __future__ imports per Python spec, but Pylint incorrectly flags it
+
+from __future__ import annotations
+
 """
 Magic command handlers for spellcasting.
 
@@ -5,19 +9,21 @@ This module implements the /cast, /spells, and /spell commands.
 """
 
 # pylint: disable=too-many-arguments  # Reason: Magic commands require many parameters for spell context and validation
+# pylint: disable=wrong-import-position  # Reason: Imports must come after from __future__ and docstring per Python spec
+# ruff: noqa: E402, I001  # Reason: from __future__ imports must come before module docstring per Python spec, so imports come after docstring
 
-import uuid
-from typing import TYPE_CHECKING, Any
+import uuid  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Import must come after from __future__ and docstring per Python spec
+from typing import TYPE_CHECKING, Any  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Import must come after from __future__ and docstring per Python spec
 
-from server.alias_storage import AliasStorage
-from server.commands.rest_command import _cancel_rest_countdown, is_player_resting
-from server.game.magic.magic_service import MagicService
-from server.game.magic.spell_registry import SpellRegistry
-from server.persistence.repositories.player_spell_repository import PlayerSpellRepository
-from server.structured_logging.enhanced_logging_config import get_logger
+from server.alias_storage import AliasStorage  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Import must come after from __future__ and docstring per Python spec
+from server.commands.rest_command import _cancel_rest_countdown, is_player_resting  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Import must come after from __future__ and docstring per Python spec
+from server.game.magic.spell_registry import SpellRegistry  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Import must come after from __future__ and docstring per Python spec
+from server.persistence.repositories.player_spell_repository import PlayerSpellRepository  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Import must come after from __future__ and docstring per Python spec
+from server.structured_logging.enhanced_logging_config import get_logger  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Import must come after from __future__ and docstring per Python spec
 
 if TYPE_CHECKING:
     from server.game.chat_service import ChatService
+    from server.game.magic.magic_service import MagicService
     from server.game.magic.spell_learning_service import SpellLearningService
 
 logger = get_logger(__name__)
@@ -35,8 +41,8 @@ class MagicCommandHandler:
         magic_service: MagicService,
         spell_registry: SpellRegistry,
         player_spell_repository: PlayerSpellRepository | None = None,
-        spell_learning_service: "SpellLearningService | None" = None,
-        chat_service: "ChatService | None" = None,
+        spell_learning_service: SpellLearningService | None = None,
+        chat_service: ChatService | None = None,
     ):
         """
         Initialize the magic command handler.

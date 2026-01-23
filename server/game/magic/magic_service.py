@@ -9,7 +9,7 @@ spell validation, casting rolls, and cost application.
 
 import random
 import uuid
-from typing import Any
+from typing import TYPE_CHECKING, Any, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -25,6 +25,10 @@ from server.models.spell import Spell
 from server.persistence.repositories.player_spell_repository import PlayerSpellRepository
 from server.schemas.target_resolution import TargetMatch
 from server.structured_logging.enhanced_logging_config import get_logger
+
+if TYPE_CHECKING:
+    from server.game.magic.spell_learning_service import SpellLearningService
+    from server.services.combat_service import CombatService
 
 logger = get_logger(__name__)
 
@@ -44,12 +48,12 @@ class MagicService:  # pylint: disable=too-many-instance-attributes  # Reason: M
         spell_targeting_service: SpellTargetingService,
         spell_effects: SpellEffects,
         player_spell_repository: PlayerSpellRepository | None = None,
-        spell_learning_service=None,
+        spell_learning_service: "SpellLearningService | None" = None,
         casting_state_manager: CastingStateManager | None = None,
-        combat_service=None,
+        combat_service: "CombatService | None" = None,
         spell_costs_service: SpellCostsService | None = None,
         spell_materials_service: SpellMaterialsService | None = None,
-    ):
+    ) -> None:
         """
         Initialize the magic service.
 
@@ -200,7 +204,7 @@ class MagicService:  # pylint: disable=too-many-instance-attributes  # Reason: M
         next_initiative_tick = combat.next_turn_tick
         if next_initiative_tick is None or next_initiative_tick <= current_tick:
             next_initiative_tick = current_tick + combat.turn_interval_ticks
-        return next_initiative_tick
+        return cast(int | None, next_initiative_tick)
 
     async def _start_delayed_cast(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Delayed cast requires many parameters for spell context and timing
         self, player_id: uuid.UUID, spell: Any, target: Any, mastery: int, current_tick: int
@@ -327,7 +331,7 @@ class MagicService:  # pylint: disable=too-many-instance-attributes  # Reason: M
         base_chance = intelligence + mastery
         roll = random.randint(1, 100)  # nosec B311: Game mechanics dice roll, not cryptographic
 
-        success = roll <= base_chance
+        success: bool = roll <= base_chance
         logger.debug(
             "Casting roll",
             player_id=player_id,
@@ -716,7 +720,7 @@ class MagicService:  # pylint: disable=too-many-instance-attributes  # Reason: M
         luck = stats.get("luck", 50)
         roll = random.randint(1, 100)  # nosec B311: Game mechanics dice roll, not cryptographic
 
-        success = roll <= luck
+        success: bool = roll <= luck
         logger.debug(
             "LUCK check",
             player_id=player_id,

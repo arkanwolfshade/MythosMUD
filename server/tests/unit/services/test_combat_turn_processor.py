@@ -4,6 +4,7 @@ Unit tests for combat turn processor.
 Tests the CombatTurnProcessor class.
 """
 
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -34,7 +35,7 @@ def test_combat_turn_processor_init(combat_turn_processor):  # pylint: disable=r
 @pytest.mark.asyncio
 async def test_process_game_tick_disabled(combat_turn_processor):  # pylint: disable=redefined-outer-name  # Reason: pytest fixture parameter injection - parameter name must match fixture name
     """Test process_game_tick() returns early when auto-progression is disabled."""
-    active_combats = {}
+    active_combats: dict[str, Any] = {}
     await combat_turn_processor.process_game_tick(100, active_combats, auto_progression_enabled=False)
     # Should return early without processing
 
@@ -42,7 +43,7 @@ async def test_process_game_tick_disabled(combat_turn_processor):  # pylint: dis
 @pytest.mark.asyncio
 async def test_process_game_tick_no_combats(combat_turn_processor):  # pylint: disable=redefined-outer-name  # Reason: pytest fixture parameter injection - parameter name must match fixture name
     """Test process_game_tick() with no active combats."""
-    active_combats = {}
+    active_combats: dict[str, Any] = {}
     await combat_turn_processor.process_game_tick(100, active_combats, auto_progression_enabled=True)
     # Should complete without errors
 
@@ -52,7 +53,7 @@ async def test_process_game_tick_inactive_combat(combat_turn_processor):  # pyli
     """Test process_game_tick() skips inactive combats."""
     inactive_combat = MagicMock()
     inactive_combat.status = CombatStatus.ENDED
-    active_combats = {"combat_001": inactive_combat}
+    active_combats: dict[str, Any] = {"combat_001": inactive_combat}
     await combat_turn_processor.process_game_tick(100, active_combats, auto_progression_enabled=True)
     # Should skip inactive combat
 
@@ -85,7 +86,7 @@ async def test_process_game_tick_combat_auto_progression_disabled(combat_turn_pr
     """Test process_game_tick() when combat auto-progression is disabled."""
     mock_combat.status = CombatStatus.ACTIVE
     mock_combat.auto_progression_enabled = False
-    active_combats = {"combat_001": mock_combat}
+    active_combats: dict[str, Any] = {"combat_001": mock_combat}
     await combat_turn_processor.process_game_tick(100, active_combats, True)
     # Should skip combats with auto-progression disabled
 
@@ -96,7 +97,7 @@ async def test_process_game_tick_tick_not_reached(combat_turn_processor, mock_co
     mock_combat.status = CombatStatus.ACTIVE
     mock_combat.auto_progression_enabled = True
     mock_combat.next_turn_tick = 200
-    active_combats = {"combat_001": mock_combat}
+    active_combats: dict[str, Any] = {"combat_001": mock_combat}
     await combat_turn_processor.process_game_tick(100, active_combats, True)
     # Should not advance turn yet
 
@@ -151,7 +152,7 @@ async def test_execute_round_with_participants(combat_turn_processor, mock_comba
 async def test_process_npc_turn_npc_dead(combat_turn_processor, mock_combat):  # pylint: disable=redefined-outer-name  # Reason: pytest fixture parameter injection - parameter names must match fixture names
     """Test _process_npc_turn() when NPC is dead (DP <= 0)."""
     npc = CombatParticipant(
-        participant_id="npc_001",
+        participant_id="npc_001",  # type: ignore[arg-type]
         participant_type=CombatParticipantType.NPC,
         name="TestNPC",
         current_dp=-5,
@@ -166,7 +167,7 @@ async def test_process_npc_turn_npc_dead(combat_turn_processor, mock_combat):  #
 async def test_process_npc_turn_no_target(combat_turn_processor, mock_combat):  # pylint: disable=redefined-outer-name  # Reason: pytest fixture parameter injection - parameter names must match fixture names
     """Test _process_npc_turn() when no target found."""
     npc = CombatParticipant(
-        participant_id="npc_001",
+        participant_id="npc_001",  # type: ignore[arg-type]
         participant_type=CombatParticipantType.NPC,
         name="TestNPC",
         current_dp=50,
@@ -192,7 +193,7 @@ async def test_process_npc_turn_no_participant_id(combat_turn_processor, mock_co
 async def test_process_player_turn_player_unconscious(combat_turn_processor, mock_combat):  # pylint: disable=redefined-outer-name  # Reason: pytest fixture parameter injection - parameter names must match fixture names
     """Test _process_player_turn() when player is unconscious (DP <= 0)."""
     player = CombatParticipant(
-        participant_id="player_001",
+        participant_id="player_001",  # type: ignore[arg-type]
         participant_type=CombatParticipantType.PLAYER,
         name="TestPlayer",
         current_dp=-5,
@@ -207,7 +208,7 @@ async def test_process_player_turn_player_unconscious(combat_turn_processor, moc
 async def test_process_player_turn_no_target(combat_turn_processor, mock_combat):  # pylint: disable=redefined-outer-name  # Reason: pytest fixture parameter injection - parameter names must match fixture names
     """Test _process_player_turn() when no target found."""
     player = CombatParticipant(
-        participant_id="player_001",
+        participant_id="player_001",  # type: ignore[arg-type]
         participant_type=CombatParticipantType.PLAYER,
         name="TestPlayer",
         current_dp=50,
@@ -233,7 +234,7 @@ async def test_process_player_turn_no_participant_id(combat_turn_processor, mock
 async def test_process_player_turn_casting_spell(combat_turn_processor, mock_combat):  # pylint: disable=redefined-outer-name  # Reason: pytest fixture parameter injection - parameter names must match fixture names
     """Test _process_player_turn() when player is casting a spell."""
     player = CombatParticipant(
-        participant_id="player_001",
+        participant_id="player_001",  # type: ignore[arg-type]
         participant_type=CombatParticipantType.PLAYER,
         name="TestPlayer",
         current_dp=50,

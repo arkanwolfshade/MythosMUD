@@ -5,6 +5,8 @@ This module provides async database operations for profession queries
 using SQLAlchemy ORM with PostgreSQL.
 """
 
+from typing import cast
+
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -81,7 +83,8 @@ class ProfessionRepository:
                 stmt = select(Profession).where(Profession.id == profession_id)
                 result = await session.execute(stmt)
                 profession = result.scalar_one_or_none()
-                return profession
+                result_profession: Profession | None = cast(Profession | None, profession)
+                return result_profession
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,

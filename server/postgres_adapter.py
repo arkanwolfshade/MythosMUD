@@ -6,6 +6,7 @@ using psycopg2 for synchronous database operations.
 """
 
 import threading
+from collections.abc import Iterator
 from contextlib import contextmanager
 from typing import Any
 
@@ -172,7 +173,7 @@ class PostgresConnectionPool:
 
     @classmethod
     @contextmanager
-    def get_connection(cls, database_url: str):
+    def get_connection(cls, database_url: str) -> Iterator["PostgresConnection"]:
         """Get a connection from the pool."""
         pool_instance = cls.get_pool(database_url)
         conn = pool_instance.getconn()

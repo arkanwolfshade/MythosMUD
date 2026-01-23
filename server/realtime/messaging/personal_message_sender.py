@@ -13,7 +13,7 @@ Personal message delivery is now a focused, independently testable component.
 import uuid
 from collections import deque
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from fastapi import WebSocketDisconnect
 
@@ -93,7 +93,8 @@ class PersonalMessageSender:
         if event.get("event_type") == "game_state":
             logger.info("Sending game_state event", player_id=player_id, event_data=serializable_event)
 
-        return serializable_event
+        result: dict[str, Any] = cast(dict[str, Any], serializable_event)
+        return result
 
     async def _send_to_websocket(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: WebSocket sending requires many parameters for context and message routing
         self,

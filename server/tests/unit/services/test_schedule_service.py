@@ -19,7 +19,9 @@ class TestScheduleService:
 
     def test_init_with_collections(self):
         """Test ScheduleService initialization with collections parameter."""
-        collections = []
+        from typing import Any
+
+        collections: list[Any] = []
         service = ScheduleService(collections=collections, environment="test")
         assert not service.entries
         # Accessing protected member to verify initialization state

@@ -17,8 +17,10 @@ def test_look_command_default_values():
     """Test LookCommand has correct default values."""
     command = LookCommand()
 
-    assert command.command_type == "look"
-    assert command.direction is None
+    # Reason: Enum values (str enums) are comparable to strings at runtime
+    assert command.command_type == "look"  # type: ignore[comparison-overlap]
+    # Reason: Testing default value - mypy may see as unreachable but validates at runtime
+    assert command.direction is None  # type: ignore[unreachable]
     assert command.target is None
     assert command.target_type is None
     assert command.look_in is False
@@ -89,8 +91,11 @@ def test_go_command_required_direction():
     """Test GoCommand requires direction field."""
     command = GoCommand(direction=Direction.EAST)
 
-    assert command.command_type == "go"
-    assert command.direction == Direction.EAST
+    # Reason: Enum values (str enums) are comparable to strings at runtime
+    # Reason: Testing str enum direct comparison - valid at runtime for str enums, but mypy sees as non-overlapping
+    assert command.command_type == "go"  # type: ignore[comparison-overlap]
+    # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+    assert command.direction == Direction.EAST  # type: ignore[unreachable]
 
 
 def test_go_command_validate_direction_valid():
@@ -119,4 +124,5 @@ def test_go_command_all_directions():
 def test_go_command_missing_direction():
     """Test GoCommand requires direction (cannot be None)."""
     with pytest.raises(ValidationError):
-        GoCommand()  # Missing required direction
+        # Reason: Intentionally testing Pydantic validation with missing required field
+        GoCommand()  # type: ignore[call-arg]  # Missing required direction

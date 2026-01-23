@@ -97,12 +97,13 @@ def test_should_spawn_npc_spawn_rule_passes(mock_npc_definition, mock_zone_confi
     spawn_rule.max_population = 10
     spawn_rules = {1: [spawn_rule]}
     with patch("random.random", return_value=0.3):  # Below 0.5 probability
+        # Reason: Using MagicMock(spec=NPCSpawnRule) for testing - compatible at runtime
         result = should_spawn_npc(
             definition=mock_npc_definition,
             zone_config=mock_zone_config,
             _room_id="room-123",
             population_stats=mock_population_stats,
-            spawn_rules=spawn_rules,
+            spawn_rules=spawn_rules,  # type: ignore[arg-type]
             current_game_state={},
         )
         assert result is True
@@ -114,12 +115,13 @@ def test_should_spawn_npc_spawn_rule_fails_population(mock_npc_definition, mock_
     spawn_rule = MagicMock(spec=NPCSpawnRule)
     spawn_rule.can_spawn_with_population = MagicMock(return_value=False)
     spawn_rules = {1: [spawn_rule]}
+    # Reason: Using MagicMock(spec=NPCSpawnRule) for testing - compatible at runtime
     result = should_spawn_npc(
         definition=mock_npc_definition,
         zone_config=mock_zone_config,
         _room_id="room-123",
         population_stats=mock_population_stats,
-        spawn_rules=spawn_rules,
+        spawn_rules=spawn_rules,  # type: ignore[arg-type]
         current_game_state={},
     )
     # Should continue to check other conditions (required NPC)
@@ -133,12 +135,13 @@ def test_should_spawn_npc_spawn_rule_fails_conditions(mock_npc_definition, mock_
     spawn_rule.can_spawn_with_population = MagicMock(return_value=True)
     spawn_rule.check_spawn_conditions = MagicMock(return_value=False)
     spawn_rules = {1: [spawn_rule]}
+    # Reason: Using MagicMock(spec=NPCSpawnRule) for testing - compatible at runtime
     result = should_spawn_npc(
         definition=mock_npc_definition,
         zone_config=mock_zone_config,
         _room_id="room-123",
         population_stats=mock_population_stats,
-        spawn_rules=spawn_rules,
+        spawn_rules=spawn_rules,  # type: ignore[arg-type]
         current_game_state={},
     )
     # Should continue to check other conditions
@@ -153,12 +156,13 @@ def test_should_spawn_npc_spawn_rule_fails_probability(mock_npc_definition, mock
     spawn_rule.check_spawn_conditions = MagicMock(return_value=True)
     spawn_rules = {1: [spawn_rule]}
     with patch("random.random", return_value=0.9):  # Above 0.5 probability
+        # Reason: Using MagicMock(spec=NPCSpawnRule) for testing - compatible at runtime
         result = should_spawn_npc(
             definition=mock_npc_definition,
             zone_config=mock_zone_config,
             _room_id="room-123",
             population_stats=mock_population_stats,
-            spawn_rules=spawn_rules,
+            spawn_rules=spawn_rules,  # type: ignore[arg-type]
             current_game_state={},
         )
         # Should continue to check other conditions (required NPC)
@@ -206,12 +210,13 @@ def test_should_spawn_npc_multiple_rules_first_passes(mock_npc_definition, mock_
     rule2.check_spawn_conditions = MagicMock(return_value=True)
     spawn_rules = {1: [rule1, rule2]}
     with patch("random.random", return_value=0.3):
+        # Reason: Using MagicMock(spec=NPCSpawnRule) for testing - compatible at runtime
         result = should_spawn_npc(
             definition=mock_npc_definition,
             zone_config=mock_zone_config,
             _room_id="room-123",
             population_stats=mock_population_stats,
-            spawn_rules=spawn_rules,
+            spawn_rules=spawn_rules,  # type: ignore[arg-type]
             current_game_state={},
         )
         assert result is True
@@ -229,12 +234,13 @@ def test_should_spawn_npc_multiple_rules_second_passes(mock_npc_definition, mock
     rule2.check_spawn_conditions = MagicMock(return_value=True)
     spawn_rules = {1: [rule1, rule2]}
     with patch("random.random", return_value=0.3):
+        # Reason: Using MagicMock(spec=NPCSpawnRule) for testing - compatible at runtime
         result = should_spawn_npc(
             definition=mock_npc_definition,
             zone_config=mock_zone_config,
             _room_id="room-123",
             population_stats=mock_population_stats,
-            spawn_rules=spawn_rules,
+            spawn_rules=spawn_rules,  # type: ignore[arg-type]
             current_game_state={},
         )
         assert result is True
@@ -252,12 +258,13 @@ def test_should_spawn_npc_uses_zone_effective_probability(mock_npc_definition, m
     spawn_rule.check_spawn_conditions = MagicMock(return_value=True)
     spawn_rules = {1: [spawn_rule]}
     with patch("random.random", return_value=0.75):  # Between 0.5 and 0.8
+        # Reason: Using MagicMock(spec=NPCSpawnRule) for testing - compatible at runtime
         result = should_spawn_npc(
             definition=mock_npc_definition,
             zone_config=mock_zone_config,
             _room_id="room-123",
             population_stats=mock_population_stats,
-            spawn_rules=spawn_rules,
+            spawn_rules=spawn_rules,  # type: ignore[arg-type]
             current_game_state={},
         )
         assert result is True
@@ -274,12 +281,13 @@ def test_should_spawn_npc_population_stats_npcs_by_definition(mock_npc_definitio
     spawn_rule.check_spawn_conditions = MagicMock(return_value=True)
     spawn_rules = {1: [spawn_rule]}
     with patch("random.random", return_value=0.3):
+        # Reason: Using MagicMock(spec=NPCSpawnRule) for testing - compatible at runtime
         should_spawn_npc(
             definition=mock_npc_definition,
             zone_config=mock_zone_config,
             _room_id="room-123",
             population_stats=stats,
-            spawn_rules=spawn_rules,
+            spawn_rules=spawn_rules,  # type: ignore[arg-type]
             current_game_state={},
         )
         # Should pass current count to rule

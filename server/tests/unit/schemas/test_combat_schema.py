@@ -4,6 +4,7 @@ Unit tests for combat_schema validation functions.
 Tests the validation functions in combat_schema.py module.
 """
 
+from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
@@ -122,7 +123,7 @@ def test_add_default_combat_data_to_stats_preserves_existing():
 
 def test_add_default_combat_data_to_config():
     """Test add_default_combat_data_to_config() adds defaults."""
-    config = {}
+    config: dict[str, Any] = {}
 
     result = add_default_combat_data_to_config(config)
 

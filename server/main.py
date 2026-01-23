@@ -123,7 +123,8 @@ get_app = _create_get_app()
 app = get_app()
 
 # Add correlation middleware (CORS is already configured in factory)
-app.add_middleware(CorrelationMiddleware, correlation_header="X-Correlation-ID")
+# Starlette's add_middleware type annotation doesn't properly handle BaseHTTPMiddleware subclasses
+app.add_middleware(CorrelationMiddleware, correlation_header="X-Correlation-ID")  # type: ignore[arg-type]
 
 setup_monitoring_endpoints(app)
 

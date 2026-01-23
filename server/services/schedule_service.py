@@ -11,10 +11,14 @@ import threading
 from collections.abc import Sequence
 from datetime import datetime
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from server.schemas.calendar import ScheduleCollection, ScheduleEntry
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.project_paths import get_calendar_paths_for_environment, normalize_environment
+
+if TYPE_CHECKING:
+    from server.async_persistence import AsyncPersistenceLayer
 
 logger = get_logger(__name__)
 
@@ -28,7 +32,7 @@ class ScheduleService:
         schedule_dir: Path | str | None = None,
         collections: Sequence[tuple[Path, ScheduleCollection]] | None = None,
         environment: str | None = None,
-        async_persistence=None,
+        async_persistence: AsyncPersistenceLayer | None = None,
     ) -> None:
         self._environment = normalize_environment(environment)
         self._async_persistence = async_persistence

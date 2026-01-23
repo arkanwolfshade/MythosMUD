@@ -6,11 +6,15 @@ Tests the ConnectionCleaner class.
 
 import time
 import uuid
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
 from server.realtime.maintenance.connection_cleaner import ConnectionCleaner
+
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
 
 
 @pytest.fixture
@@ -85,15 +89,15 @@ def test_connection_cleaner_init(connection_cleaner, mock_memory_monitor, mock_r
     assert connection_cleaner.rate_limiter == mock_rate_limiter
 
 
-def test_prune_stale_players(connection_cleaner, mock_room_manager):
+def test_prune_stale_players(connection_cleaner):
     """Test prune_stale_players() removes stale players."""
     now = time.time()
     player_id = uuid.uuid4()
     last_seen = {player_id: now - 200}  # 200 seconds ago
     online_players = {player_id: {"name": "Player1"}}
-    player_websockets = {player_id: []}
-    active_websockets = {}
-    last_active_update_times = {}
+    player_websockets: dict[uuid.UUID, list[str]] = {player_id: []}
+    active_websockets: dict[str, Any] = {}
+    last_active_update_times: dict[uuid.UUID, float] = {}
     connection_cleaner.prune_stale_players(
         last_seen, online_players, player_websockets, active_websockets, last_active_update_times, max_age_seconds=90
     )
@@ -101,15 +105,15 @@ def test_prune_stale_players(connection_cleaner, mock_room_manager):
     assert player_id not in online_players
 
 
-def test_prune_stale_players_not_stale(connection_cleaner, mock_room_manager):
+def test_prune_stale_players_not_stale(connection_cleaner):
     """Test prune_stale_players() does not remove recent players."""
     now = time.time()
     player_id = uuid.uuid4()
     last_seen = {player_id: now - 30}  # 30 seconds ago (within threshold)
     online_players = {player_id: {"name": "Player1"}}
-    player_websockets = {player_id: []}
-    active_websockets = {}
-    last_active_update_times = {}
+    player_websockets: dict[uuid.UUID, list[str]] = {player_id: []}
+    active_websockets: dict[str, Any] = {}
+    last_active_update_times: dict[uuid.UUID, float] = {}
     connection_cleaner.prune_stale_players(
         last_seen, online_players, player_websockets, active_websockets, last_active_update_times, max_age_seconds=90
     )
@@ -117,7 +121,7 @@ def test_prune_stale_players_not_stale(connection_cleaner, mock_room_manager):
     assert player_id in online_players
 
 
-def test_prune_stale_players_with_websockets(connection_cleaner, mock_room_manager, mock_has_websocket_connection):
+def test_prune_stale_players_with_websockets(connection_cleaner, mock_has_websocket_connection):
     """Test prune_stale_players() preserves players with active websockets."""
     now = time.time()
     player_id = uuid.uuid4()
@@ -125,7 +129,7 @@ def test_prune_stale_players_with_websockets(connection_cleaner, mock_room_manag
     online_players = {player_id: {"name": "Player1"}}
     player_websockets = {player_id: ["ws_001"]}
     active_websockets = {"ws_001": MagicMock()}
-    last_active_update_times = {}
+    last_active_update_times: dict[uuid.UUID, float] = {}
     # has_websocket_connection callback determines if player is preserved
     mock_has_websocket_connection.return_value = True  # Player has websocket connection
     connection_cleaner.prune_stale_players(
@@ -138,7 +142,7 @@ def test_prune_stale_players_with_websockets(connection_cleaner, mock_room_manag
 
 
 @pytest.mark.asyncio
-async def test_cleanup_orphaned_data(connection_cleaner, mock_rate_limiter, mock_message_queue, mock_room_manager):
+async def test_cleanup_orphaned_data(connection_cleaner):
     """Test cleanup_orphaned_data() cleans up orphaned data."""
     connection_timestamps = {"ws_001": time.time()}
     active_websockets = {"ws_001": MagicMock()}
@@ -150,11 +154,11 @@ async def test_cleanup_orphaned_data(connection_cleaner, mock_rate_limiter, mock
 
 
 @pytest.mark.asyncio
-async def test_cleanup_dead_connections(connection_cleaner, mock_cleanup_dead_websocket):
+async def test_cleanup_dead_connections(connection_cleaner):
     """Test cleanup_dead_connections() cleans up dead connections."""
     active_websockets = {"ws_001": MagicMock()}
     player_websockets = {uuid.uuid4(): ["ws_001"]}
-    connection_metadata = {}
+    connection_metadata: dict[str, Any] = {}
     await connection_cleaner.cleanup_dead_connections(active_websockets, player_websockets, connection_metadata)
     # Should not raise
     assert True  # If we get here, it succeeded
@@ -180,7 +184,7 @@ async def test_force_cleanup(connection_cleaner):
     async def cleanup_orphaned_callback():
         pass
 
-    def prune_callback(max_age):
+    def prune_callback(_max_age):
         pass
 
     await connection_cleaner.force_cleanup(cleanup_stats, cleanup_orphaned_callback, prune_callback)
@@ -192,9 +196,9 @@ async def test_force_cleanup(connection_cleaner):
 async def test_check_and_cleanup(connection_cleaner):
     """Test check_and_cleanup() performs cleanup check."""
     player_websockets = {uuid.uuid4(): ["ws_001"]}
-    online_players = {}
-    last_seen = {}
-    last_active_update_times = {}
+    online_players: dict[uuid.UUID, dict[str, Any]] = {}
+    last_seen: dict[uuid.UUID, float] = {}
+    last_active_update_times: dict[uuid.UUID, float] = {}
     active_websockets = {"ws_001": MagicMock()}
     connection_timestamps = {"ws_001": time.time()}
     cleanup_stats = {"memory_cleanups": 0, "last_cleanup": 0, "cleanups_performed": 0}

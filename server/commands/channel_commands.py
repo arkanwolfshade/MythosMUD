@@ -4,7 +4,7 @@ Channel management commands for Advanced Chat Channels.
 This module provides handlers for channel management commands like /channel.
 """
 
-from typing import Any
+from typing import Any, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -72,7 +72,7 @@ def _extract_channel_from_command(command_data: dict, player_name: str) -> str |
         )
         return None
 
-    return channel.lower().strip()
+    return cast(str | None, channel.lower().strip())
 
 
 async def _handle_default_channel_setting(command_data: dict, player: Any, player_name: str) -> dict[str, str] | None:

@@ -50,7 +50,9 @@ async def test_ping_message_handler_handle():
     """Test PingMessageHandler.handle() calls handle_ping_message."""
     mock_websocket = AsyncMock()
     player_id = "player_123"
-    data = {}
+    from typing import Any
+
+    data: dict[str, Any] = {}
 
     with patch("server.realtime.message_handlers.handle_ping_message") as mock_handle:
         handler = PingMessageHandler()
@@ -133,7 +135,9 @@ async def test_message_handler_factory_handle_message_no_type():
     factory = MessageHandlerFactory()
     mock_websocket = AsyncMock()
     player_id = "player_123"
-    message = {"data": {}}
+    from typing import Any
+
+    message: dict[str, Any] = {"data": {}}
 
     await factory.handle_message(mock_websocket, player_id, message)
 

@@ -5,6 +5,7 @@ Tests the IdleMovementHandler class.
 """
 
 import uuid
+from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -129,7 +130,7 @@ def test_get_valid_exits_empty_room(idle_movement_handler):
     """Test get_valid_exits() with room having no exits."""
     npc_definition = MagicMock()
     npc_definition.sub_zone_id = "subzone_001"
-    behavior_config = {}
+    behavior_config: dict[str, Any] = {}
     mock_room = MagicMock()
     mock_room.exits = {}
     idle_movement_handler.movement_integration.get_available_exits = MagicMock(return_value={})
@@ -141,7 +142,7 @@ def test_get_valid_exits_no_subzone(idle_movement_handler):
     """Test get_valid_exits() when NPC definition has no sub_zone_id."""
     npc_definition = MagicMock()
     npc_definition.sub_zone_id = None
-    behavior_config = {}
+    behavior_config: dict[str, Any] = {}
     result = idle_movement_handler.get_valid_exits("room_001", npc_definition, behavior_config)
     assert len(result) == 0
 

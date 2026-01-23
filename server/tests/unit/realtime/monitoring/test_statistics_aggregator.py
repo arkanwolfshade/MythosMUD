@@ -5,11 +5,29 @@ Tests the StatisticsAggregator class.
 """
 
 import uuid
+import warnings
+from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
 
-from server.realtime.monitoring.statistics_aggregator import StatisticsAggregator
+# Suppress RuntimeWarning about unawaited coroutines from HealthMonitor.periodic_health_check_task
+# This warning occurs when unittest.mock inspects the HealthMonitor class during test discovery
+# The warning is benign - the coroutine is only called at runtime, not during test setup
+warnings.filterwarnings(
+    "ignore",
+    message=".*coroutine.*periodic_health_check_task.*was never awaited",
+    category=RuntimeWarning,
+)
+# Also catch the more general pattern that unittest.mock uses
+warnings.filterwarnings(
+    "ignore",
+    message=".*coroutine.*was never awaited",
+    category=RuntimeWarning,
+    module="unittest.mock",
+)
+
+from server.realtime.monitoring.statistics_aggregator import StatisticsAggregator  # noqa: E402, I001  # pylint: disable=wrong-import-position  # Reason: Warning filter must be configured before import to suppress RuntimeWarning from HealthMonitor inspection, import order intentionally after filter setup
 
 # pylint: disable=redefined-outer-name  # Reason: pytest fixtures are used as function parameters, which triggers this warning
 
@@ -83,7 +101,7 @@ def test_get_memory_stats(statistics_aggregator, mock_memory_monitor):  # pylint
     online_players = {uuid.uuid4(): {"name": "Player1"}}
     last_seen = {uuid.uuid4(): 3000.0}
     closed_websockets_count = 0
-    connection_metadata = {}
+    connection_metadata: dict[str, Any] = {}
     result = statistics_aggregator.get_memory_stats(
         active_websockets,
         player_websockets,
@@ -108,7 +126,7 @@ def test_get_connection_stats(statistics_aggregator):
     mock_metadata = MagicMock()
     mock_metadata.is_healthy = True
     connection_metadata = {"ws_001": mock_metadata, "ws_002": mock_metadata}
-    session_connections = {}
+    session_connections: dict[str, list[str]] = {}
     player_sessions = {uuid.uuid4(): "session_001"}
     # get_connection_stats takes (player_websockets, connection_metadata, session_connections, player_sessions)
     result = statistics_aggregator.get_connection_stats(
@@ -120,7 +138,7 @@ def test_get_connection_stats(statistics_aggregator):
 
 def test_get_connection_health_stats(statistics_aggregator):
     """Test get_connection_health_stats() returns health statistics."""
-    connection_metadata = {}
+    connection_metadata: dict[str, Any] = {}
     result = statistics_aggregator.get_connection_health_stats(connection_metadata)
     assert isinstance(result, dict)
 

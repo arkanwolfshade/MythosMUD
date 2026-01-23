@@ -5,11 +5,15 @@ Tests the HealthMonitor class.
 """
 
 import uuid
-from unittest.mock import AsyncMock, MagicMock
+from typing import Any
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 from server.realtime.monitoring.health_monitor import HealthMonitor
+
+# pylint: disable=redefined-outer-name  # Reason: Test fixtures need to be redefined for each test
+# pylint: disable=protected-access  # Reason: Test code needs to access protected members
 
 
 @pytest.fixture
@@ -72,8 +76,8 @@ async def test_check_player_connection_health(health_monitor, mock_is_websocket_
 async def test_check_player_connection_health_no_websockets(health_monitor):
     """Test check_player_connection_health() when player has no websockets."""
     player_id = uuid.uuid4()
-    player_websockets = {}
-    active_websockets = {}
+    player_websockets: dict[uuid.UUID, list[str]] = {}
+    active_websockets: dict[str, Any] = {}
     result = await health_monitor.check_player_connection_health(player_id, player_websockets, active_websockets)
     assert result["websocket_healthy"] == 0
     assert result["overall_health"] == "no_connections"
@@ -96,7 +100,7 @@ async def test_check_all_connections_health(health_monitor, mock_is_websocket_op
     """Test check_all_connections_health() checks all connections."""
     player_websockets = {uuid.uuid4(): ["ws_001"], uuid.uuid4(): ["ws_002"]}
     active_websockets = {"ws_001": MagicMock(), "ws_002": MagicMock()}
-    connection_metadata = {}
+    connection_metadata: dict[str, Any] = {}
     mock_is_websocket_open.return_value = True
     # check_all_connections_health takes (active_websockets, connection_metadata, player_websockets)
     await health_monitor.check_all_connections_health(active_websockets, connection_metadata, player_websockets)
@@ -127,9 +131,18 @@ async def test_start_periodic_checks(health_monitor):
     """Test start_periodic_checks() starts periodic checks."""
     # start_periodic_checks takes (active_websockets, connection_metadata, player_websockets)
     # It needs a running event loop to create tasks
-    health_monitor.start_periodic_checks({}, {}, {})
-    # Task may be None if creation fails (no event loop), but should not raise
-    assert health_monitor._health_check_task is None or health_monitor._health_check_task is not None
+    # Mock the tracked_task_manager import to prevent import errors
+    # Patch at the source module since the import happens inside the method
+    with patch("server.app.tracked_task_manager.get_global_tracked_manager") as mock_get_manager:
+        mock_manager = MagicMock()
+        mock_task = MagicMock()
+        mock_task.done.return_value = False
+        mock_manager.create_tracked_task.return_value = mock_task
+        mock_get_manager.return_value = mock_manager
+
+        health_monitor.start_periodic_checks({}, {}, {})
+        # Task should be set if manager is available
+        assert health_monitor._health_check_task is not None
 
 
 @pytest.mark.asyncio

@@ -5,6 +5,7 @@ Tests the PlayerRoomEventHandler class.
 """
 
 import uuid
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -325,7 +326,7 @@ async def test_query_room_occupants_snapshot(player_room_event_handler, mock_occ
     """Test query_room_occupants_snapshot() queries occupants."""
     player_id = uuid.uuid4()
     room_id = "room_001"
-    mock_occupants = [{"player_name": "Player1"}, {"npc_name": "NPC1"}]
+    mock_occupants: list[dict[str, Any]] = [{"player_name": "Player1"}, {"npc_name": "NPC1"}]
     mock_occupant_manager.get_room_occupants = AsyncMock(return_value=mock_occupants)
     result = await player_room_event_handler.query_room_occupants_snapshot(player_id, room_id)
     assert result == mock_occupants
@@ -358,7 +359,7 @@ async def test_send_occupants_snapshot_to_player_string_id(
     """Test send_occupants_snapshot_to_player() handles string player_id."""
     player_id_str = str(uuid.uuid4())
     room_id = "room_001"
-    mock_occupants = []
+    mock_occupants: list[dict[str, Any]] = []
     mock_occupant_manager.get_room_occupants = AsyncMock(return_value=mock_occupants)
     mock_connection_manager.send_personal_message = AsyncMock()
     with patch.object(

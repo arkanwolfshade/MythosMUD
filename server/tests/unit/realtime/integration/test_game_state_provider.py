@@ -8,6 +8,7 @@ Tests the GameStateProvider class.
 # This suppression is applied at module level since all test functions use fixtures.
 
 import uuid
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -148,7 +149,7 @@ async def test_convert_room_uuids_to_names(game_state_provider, mock_get_async_p
 async def test_get_room_occupants(game_state_provider, mock_room_manager):
     """Test get_room_occupants() returns room occupants."""
     room_id = "room_001"
-    online_players = {}
+    online_players: dict[uuid.UUID, dict[str, Any]] = {}
     # get_room_occupants calls room_manager.get_room_occupants which is async
     mock_room_manager.get_room_occupants = AsyncMock(return_value=[])
     # get_room_occupants takes (room_id, online_players)
@@ -163,7 +164,7 @@ async def test_send_initial_game_state(game_state_provider):
     mock_player = MagicMock()
     mock_player.current_room_id = "room_001"
     room_id = "room_001"
-    online_players = {}
+    online_players: dict[uuid.UUID, dict[str, Any]] = {}
     # send_initial_game_state takes (player_id, player, room_id, online_players)
     await game_state_provider.send_initial_game_state(player_id, mock_player, room_id, online_players)
     # Should not raise
@@ -193,7 +194,7 @@ def test_get_npcs_batch_none_ids(game_state_provider):
 @pytest.mark.asyncio
 async def test_convert_room_uuids_to_names_empty_room_data(game_state_provider):
     """Test convert_room_uuids_to_names() with empty room_data."""
-    room_data = {}
+    room_data: dict[str, Any] = {}
     result = await game_state_provider.convert_room_uuids_to_names(room_data)
     assert isinstance(result, dict)
 
@@ -232,7 +233,7 @@ async def test_convert_room_uuids_to_names_player_not_found(game_state_provider,
 async def test_get_room_occupants_empty_online_players(game_state_provider, mock_room_manager):
     """Test get_room_occupants() with empty online_players."""
     room_id = "room_001"
-    online_players = {}
+    online_players: dict[uuid.UUID, dict[str, Any]] = {}
     mock_room_manager.get_room_occupants = AsyncMock(return_value=[])
     result = await game_state_provider.get_room_occupants(room_id, online_players)
     assert isinstance(result, list)
@@ -253,7 +254,7 @@ async def test_send_initial_game_state_no_player(game_state_provider):
     """Test send_initial_game_state() handles None player."""
     player_id = uuid.uuid4()
     room_id = "room_001"
-    online_players = {}
+    online_players: dict[uuid.UUID, dict[str, Any]] = {}
     # Should handle None player gracefully
     await game_state_provider.send_initial_game_state(player_id, None, room_id, online_players)
     # Should not raise
@@ -266,7 +267,7 @@ async def test_send_initial_game_state_send_fails(game_state_provider, mock_send
     mock_player = MagicMock()
     mock_player.current_room_id = "room_001"
     room_id = "room_001"
-    online_players = {}
+    online_players: dict[uuid.UUID, dict[str, Any]] = {}
     mock_send_personal_message.side_effect = Exception("Send failed")
     # Should handle exception gracefully
     await game_state_provider.send_initial_game_state(player_id, mock_player, room_id, online_players)

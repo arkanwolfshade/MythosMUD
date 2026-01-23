@@ -7,7 +7,8 @@ for user authentication and management.
 
 import os
 import uuid
-from typing import Any
+from collections.abc import AsyncGenerator
+from typing import Any, cast
 
 from fastapi import Depends, HTTPException, Request
 from fastapi_users import BaseUserManager, FastAPIUsers, UUIDIDMixin
@@ -61,7 +62,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         """Verify password using Argon2 instead of bcrypt."""
         return verify_password(plain_password, hashed_password)
 
-    async def on_after_register(self, user: User, request: Request | None = None):
+    async def on_after_register(self, user: User, request: Request | None = None) -> None:
         """Handle post-registration logic."""
         logger.info("User has registered", username=user.username)
 
@@ -70,11 +71,11 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
             user.is_verified = True
             logger.info("Auto-verified bogus email for user", username=user.username, email=user.email)
 
-    async def on_after_forgot_password(self, user: User, token: str, request: Request | None = None):
+    async def on_after_forgot_password(self, user: User, token: str, request: Request | None = None) -> None:
         """Handle forgot password logic."""
         logger.info("User has forgot their password", username=user.username, reset_token=token)
 
-    async def on_after_request_verify(self, user: User, token: str, request: Request | None = None):
+    async def on_after_request_verify(self, user: User, token: str, request: Request | None = None) -> None:
         """Handle username verification logic."""
         logger.info("Verification requested for user", username=user.username, verification_token=token)
 
@@ -94,12 +95,16 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
             raise InvalidID() from err
 
 
-async def get_user_db(session: AsyncSession = Depends(get_async_session)):
+async def get_user_db(
+    session: AsyncSession = Depends(get_async_session),
+) -> AsyncGenerator[SQLAlchemyUserDatabase, None]:
     """Get user database dependency."""
     yield SQLAlchemyUserDatabase(session, User)
 
 
-async def get_user_manager(user_db: SQLAlchemyUserDatabase = Depends(get_user_db)):
+async def get_user_manager(
+    user_db: SQLAlchemyUserDatabase = Depends(get_user_db),
+) -> AsyncGenerator[UserManager, None]:
     """Get user manager dependency."""
     yield UserManager(user_db)
 
@@ -151,7 +156,7 @@ def get_auth_backend() -> AuthenticationBackend:
 class UsernameAuthenticationBackend(AuthenticationBackend):
     """Custom authentication backend that uses username instead of email."""
 
-    def __init__(self, name: str, transport, get_strategy):
+    def __init__(self, name: str, transport: Any, get_strategy: Any) -> None:
         super().__init__(name, transport, get_strategy)
 
     async def login(self, strategy: Any, user: Any) -> Any:
@@ -218,7 +223,8 @@ def get_current_user_with_logging():
             else:
                 logger.warning("Authentication failed: No user returned from get_current_user")
 
-            return user
+            result: dict[Any, Any] | None = cast(dict[Any, Any] | None, user)
+            return result
         except HTTPException as e:
             logger.warning("Authentication HTTP error", status_code=e.status_code, detail=e.detail)
             return None

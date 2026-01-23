@@ -398,7 +398,8 @@ class TestErrorHandlers:
         request.url.__str__ = Mock(return_value="http://test.com/api")
         request.method = "GET"
 
-        result = await http_exception_handler(request, error)
+        # Reason: Testing with starlette HTTPException to verify compatibility
+        result = await http_exception_handler(request, error)  # type: ignore[arg-type]
         assert isinstance(result, JSONResponse)
         assert result.status_code == 404
 

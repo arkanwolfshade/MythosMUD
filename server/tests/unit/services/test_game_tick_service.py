@@ -320,18 +320,43 @@ class TestGameTickService:
         """Test _tick_loop handles exceptions and continues."""
         event_publisher = AsyncMock()
         event_publisher.publish_game_tick_event = AsyncMock(side_effect=ValueError("Test error"))
-        service = GameTickService(event_publisher, tick_interval=0.1)
+        service = GameTickService(event_publisher, tick_interval=0.05)  # Faster interval for test
         service.is_running = True
 
         # Start the loop and let it run briefly
         task = asyncio.create_task(service._tick_loop())
-        await asyncio.sleep(0.15)  # Wait for at least one tick
-        service.is_running = False
-        task.cancel()
         try:
-            await task
-        except asyncio.CancelledError:
-            pass
+            # Wait for at least one tick to occur (0.05 * 3 = 0.15 seconds should give us multiple ticks)
+            await asyncio.sleep(0.2)
+
+            # Verify exception was handled and loop continued
+            initial_tick_count = service.tick_count
+            assert initial_tick_count > 0, "Tick loop should have processed at least one tick despite exception"
+
+            # Stop the service - this will cause the loop to exit on next iteration
+            service.is_running = False
+
+            # Wait for task to complete (should exit when is_running becomes False)
+            # Use timeout to prevent hanging
+            try:
+                await asyncio.wait_for(task, timeout=0.3)
+            except TimeoutError:
+                # If timeout, cancel the task
+                task.cancel()
+                try:
+                    await task
+                except asyncio.CancelledError:
+                    pass
+        except Exception:
+            # Ensure cleanup on any error
+            service.is_running = False
+            if not task.done():
+                task.cancel()
+                try:
+                    await asyncio.wait_for(task, timeout=0.1)
+                except (TimeoutError, asyncio.CancelledError):
+                    pass
+            raise
 
         # Should have continued despite exception
         assert service.tick_count > 0

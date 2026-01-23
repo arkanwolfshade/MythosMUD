@@ -14,7 +14,7 @@ proper rest requires tranquility and freedom from disturbance.
 
 import asyncio
 import uuid
-from typing import Any
+from typing import Any, cast
 
 from ..alias_storage import AliasStorage
 from ..services.player_position_service import PlayerPositionService
@@ -66,7 +66,7 @@ async def _check_rest_location(room_id: str | None, persistence: Any) -> bool:
     try:
         room = persistence.get_room_by_id(room_id)
         if room and hasattr(room, "rest_location"):
-            return room.rest_location
+            return cast(bool, room.rest_location)
     except (AttributeError, TypeError) as e:
         logger.debug("Error checking rest location", room_id=room_id, error=str(e))
 

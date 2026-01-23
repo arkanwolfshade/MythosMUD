@@ -11,9 +11,9 @@ and Windows-native solution.
 import asyncio
 import json
 import ssl
-from collections.abc import Callable
+from collections.abc import Callable, Coroutine
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import nats
 from anyio import sleep
@@ -58,7 +58,9 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
               on top of our application-level pooling for optimal performance.
     """
 
-    def __init__(self, config: NATSConfig | dict[str, Any] | None = None, subject_manager=None):
+    def __init__(
+        self, config: NATSConfig | dict[str, Any] | None = None, subject_manager: NATSSubjectManager | None = None
+    ) -> None:
         """
         Initialize NATS service with state machine and connection pooling.
 
@@ -766,7 +768,8 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
                 response_size=len(response.data),
             )
 
-            return response_json
+            result: dict[str, Any] = cast(dict[str, Any], response_json)
+            return result
 
         except TimeoutError as e:
             error_msg = f"Request timeout after {timeout}s"
@@ -852,7 +855,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
         return len(self.subscriptions)
 
     def _create_tracked_task(
-        self, coro, task_name: str = "nats_background", task_type: str = "background"
+        self, coro: Coroutine[Any, Any, Any], task_name: str = "nats_background", task_type: str = "background"
     ) -> asyncio.Task:
         """
         Create a tracked background task with proper lifecycle management.
@@ -1125,7 +1128,7 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             raise NATSPublishError("No available connections in pool", subject="")
         return await self.available_connections.get()
 
-    async def _return_connection(self, connection: nats.NATS):
+    async def _return_connection(self, connection: nats.NATS) -> None:
         """Return connection to pool."""
         if self._pool_initialized and connection in self.connection_pool:
             await self.available_connections.put(connection)

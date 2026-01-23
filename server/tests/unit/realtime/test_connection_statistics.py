@@ -5,6 +5,7 @@ Tests the connection_statistics module functions.
 """
 
 import uuid
+from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -134,7 +135,7 @@ def test_validate_player_presence_impl_connection_count_mismatch():
     """Test validate_player_presence_impl() fixes connection count mismatch."""
     player_id = uuid.uuid4()
     mock_manager = MagicMock()
-    player_info = {"total_connections": 5}
+    player_info: dict[str, Any] = {"total_connections": 5}
     mock_manager.online_players = {player_id: player_info}
     mock_manager.has_websocket_connection = MagicMock(return_value=True)
     mock_manager.player_websockets = {player_id: ["conn_1", "conn_2"]}  # Only 2 actual connections
@@ -233,7 +234,7 @@ def test_get_online_player_by_display_name_impl_no_name():
     """Test get_online_player_by_display_name_impl() handles player with no name."""
     player_id = uuid.uuid4()
     display_name = "TestPlayer"
-    player_info = {}  # No player_name
+    player_info: dict[str, Any] = {}  # No player_name
     mock_manager = MagicMock()
     mock_manager.online_players = {player_id: player_info}
 

@@ -19,8 +19,9 @@ def test_alias_command_required_fields():
     with patch("server.models.command_alias.validate_alias_name", return_value="testalias"):
         command = AliasCommand(alias_name="testalias")
 
-        assert command.command_type == "alias"
-        assert command.alias_name == "testalias"
+        assert command.command_type == "alias"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+        # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+        assert command.alias_name == "testalias"  # type: ignore[unreachable]
         assert command.command is None
 
 
@@ -97,7 +98,7 @@ def test_aliases_command_no_fields():
     """Test AliasesCommand has no required fields."""
     command = AliasesCommand()
 
-    assert command.command_type == "aliases"
+    assert command.command_type == "aliases"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
 
 
 # --- Tests for UnaliasCommand ---
@@ -108,8 +109,9 @@ def test_unalias_command_required_fields():
     with patch("server.models.command_alias.validate_alias_name", return_value="testalias"):
         command = UnaliasCommand(alias_name="testalias")
 
-        assert command.command_type == "unalias"
-        assert command.alias_name == "testalias"
+        assert command.command_type == "unalias"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+        # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+        assert command.alias_name == "testalias"  # type: ignore[unreachable]
 
 
 def test_unalias_command_validate_alias_name_calls_validator():

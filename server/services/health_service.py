@@ -13,6 +13,7 @@ and chaos in our digital realm.
 
 import time
 from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 
 import psutil
 
@@ -27,6 +28,8 @@ from ..models.health import (
 from ..realtime.connection_manager import resolve_connection_manager
 from ..structured_logging.enhanced_logging_config import get_logger
 
+if TYPE_CHECKING:
+    from ..realtime.connection_manager import ConnectionManager
 logger = get_logger(__name__)
 
 
@@ -423,7 +426,7 @@ class HealthService:
 _health_service: HealthService | None = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
 
 
-def get_health_service(connection_manager=None) -> HealthService:
+def get_health_service(connection_manager: "ConnectionManager | None" = None) -> HealthService:
     """
     Get the global health service instance.
 

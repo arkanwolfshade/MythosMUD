@@ -9,7 +9,7 @@ crucial for understanding the flow of events through our eldritch systems.
 
 import logging
 import re
-from typing import Any
+from typing import Any, cast
 
 from .enhanced_logging_config import get_logger
 
@@ -82,7 +82,7 @@ class PlayerGuidFormatter(logging.Formatter):
 
         def replace_guid(match: re.Match) -> str:
             """Replace a single GUID with enhanced format."""
-            guid = match.group(0)
+            guid: str = cast(str, match.group(0))
 
             # Only process GUIDs that are likely to be player IDs
             if not self._is_likely_player_id(guid, message):
@@ -198,7 +198,8 @@ class PlayerGuidFormatter(logging.Formatter):
             if hasattr(self.player_service, "persistence") and hasattr(self.player_service.persistence, "get_player"):
                 player = self.player_service.persistence.get_player(guid)
                 if player and hasattr(player, "name"):
-                    return player.name
+                    result: str = cast(str, player.name)
+                    return result
                 # If persistence layer returns None, return None (no fallback)
                 return None
 

@@ -112,7 +112,8 @@ class TestRollCharacterStats:
                 await roll_character_stats(
                     request_data=request_data,
                     request=mock_request,
-                    current_user=None,
+                    # Reason: Intentionally passing None to test unauthenticated scenario
+                    current_user=None,  # type: ignore[arg-type]
                     stats_generator=mock_stats_generator,
                     profession_service=mock_profession_service,
                 )
@@ -325,7 +326,8 @@ class TestCreateCharacterWithStats:
                 await create_character_with_stats(
                     request_data=request_data,
                     request=mock_request,
-                    current_user=None,
+                    # Reason: Intentionally passing None to test unauthenticated scenario
+                    current_user=None,  # type: ignore[arg-type]
                     player_service=mock_player_service,
                 )
                 assert exc_info.value.status_code == 401

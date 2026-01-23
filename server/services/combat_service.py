@@ -7,6 +7,7 @@ turn order calculation, and combat resolution.
 
 # pylint: disable=too-many-instance-attributes,too-many-arguments,too-many-positional-arguments,too-many-locals,too-many-lines  # Reason: Combat service requires many state tracking attributes and complex combat logic. Combat service requires extensive combat logic for comprehensive combat system management.
 
+from typing import TYPE_CHECKING, Any
 from uuid import UUID
 
 from server.commands.rest_command import _cancel_rest_countdown, is_player_resting
@@ -37,9 +38,14 @@ from server.services.combat_service_state import (  # noqa: PLC0415  # Reason: L
 from server.services.combat_turn_processor import CombatTurnProcessor
 from server.services.combat_types import CombatParticipantData
 from server.services.nats_exceptions import NATSError
+from server.services.nats_service import NATSService
 from server.services.nats_subject_manager import NATSSubjectManager
 from server.services.player_combat_service import PlayerCombatService
 from server.structured_logging.enhanced_logging_config import get_logger
+
+if TYPE_CHECKING:
+    from server.npc.combat_integration import NPCCombatIntegration
+    from server.services.npc_combat_integration_service import NPCCombatIntegrationService
 
 logger = get_logger(__name__)
 
@@ -55,14 +61,14 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
     def __init__(
         self,
         player_combat_service: PlayerCombatService | None = None,
-        nats_service=None,
-        npc_combat_integration_service=None,
-        subject_manager=None,
-        player_death_service=None,
-        player_respawn_service=None,
-        event_bus=None,
-        magic_service=None,
-    ):
+        nats_service: NATSService | None = None,
+        npc_combat_integration_service: "NPCCombatIntegration | NPCCombatIntegrationService | None" = None,
+        subject_manager: NATSSubjectManager | None = None,
+        player_death_service: Any = None,
+        player_respawn_service: Any = None,
+        event_bus: EventBus | None = None,
+        magic_service: Any = None,
+    ) -> None:
         """Initialize the combat service."""
         self._active_combats: dict[UUID, CombatInstance] = {}
         self._player_combats: dict[UUID, UUID] = {}  # player_id -> combat_id

@@ -10,7 +10,7 @@ until another player helps them recover.
 # pylint: disable=too-many-return-statements  # Reason: Catatonia checking requires multiple return statements for different command validation states and permission checks
 
 import uuid
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from ..database import get_async_session
 from ..models.lucidity import PlayerLucidity
@@ -82,7 +82,8 @@ async def _fetch_lucidity_record(session: Any, player_id_uuid: uuid.UUID, player
         current_lcd=lucidity_record.current_lcd if lucidity_record else None,
         current_tier=lucidity_record.current_tier if lucidity_record else None,
     )
-    return lucidity_record
+    result: PlayerLucidity | None = cast(PlayerLucidity | None, lucidity_record)
+    return result
 
 
 async def _query_lucidity_record(player_id_uuid: uuid.UUID, player_name: str) -> PlayerLucidity | None:

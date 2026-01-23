@@ -86,7 +86,7 @@ class Alias(BaseModel):
         # Future enhancement: could support argument substitution
         return self.command
 
-    def model_dump(self, **_kwargs) -> dict[str, Any]:  # pylint: disable=unused-argument  # Reason: Parameter required for Pydantic compatibility
+    def model_dump(self, **_kwargs: Any) -> dict[str, Any]:  # pylint: disable=unused-argument  # Reason: Parameter required for Pydantic compatibility
         """Convert alias to dictionary for JSON serialization."""
         return {
             "id": self.id,

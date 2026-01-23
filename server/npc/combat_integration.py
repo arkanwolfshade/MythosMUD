@@ -11,8 +11,9 @@ entities they encounter.
 """
 
 import uuid
-from typing import Any
+from typing import Any, cast
 
+from ..async_persistence import AsyncPersistenceLayer
 from ..config import get_config
 from ..events import EventBus
 from ..events.event_types import NPCAttacked
@@ -35,7 +36,7 @@ class NPCCombatIntegration:
     game mechanics service for lucidity, fear, and corruption effects.
     """
 
-    def __init__(self, event_bus: EventBus | None = None, async_persistence=None):
+    def __init__(self, event_bus: EventBus | None = None, async_persistence: AsyncPersistenceLayer | None = None):
         """
         Initialize the NPC combat integration.
 
@@ -83,7 +84,7 @@ class NPCCombatIntegration:
             # Apply target's constitution for damage reduction
             target_con = target_stats.get("constitution", 50)
             damage_reduction = max(0, (target_con - 50) // 4)
-            final_damage = max(1, base_damage - damage_reduction)
+            final_damage = cast(int, max(1, base_damage - damage_reduction))
 
             logger.debug(
                 "Damage calculated", base_damage=base_damage, final_damage=final_damage, damage_type=damage_type
@@ -255,7 +256,7 @@ class NPCCombatIntegration:
                 # If we can't check grace period, proceed with attack (fail open)
                 logger.debug("Could not check login grace period for NPC attack", target_id=target_id, error=str(e))
 
-            target_stats = self._get_target_stats(target_id)
+            target_stats = await self._get_target_stats(target_id)
             npc_stats = self._get_npc_stats(npc_stats)
             actual_damage = self.calculate_damage(npc_stats, target_stats, attack_damage, attack_type)
             await self.apply_combat_effects(target_id, actual_damage, attack_type, npc_id)
@@ -268,12 +269,15 @@ class NPCCombatIntegration:
             logger.error("Error handling NPC attack", npc_id=npc_id, target_id=target_id, error=str(e))
             return False
 
-    def _get_target_stats(self, target_id: str) -> dict[str, Any]:
+    async def _get_target_stats(self, target_id: str) -> dict[str, Any]:
         """Get target stats from player or use defaults."""
         target_id_uuid = uuid.UUID(target_id) if isinstance(target_id, str) else target_id
-        player = self._persistence.get_player(target_id_uuid)
+        player = await self._persistence.get_player_by_id(target_id_uuid)
         if player:
-            return player.stats.model_dump()
+            # player.stats is already a dict[str, Any], no need for model_dump()
+            stats = player.get_stats() if hasattr(player, "get_stats") else player.stats
+            result: dict[str, Any] = stats  # stats is already dict[str, Any], no cast needed
+            return result
         # For NPC vs NPC combat, we'd need the target NPC stats
         # This is a limitation of the current design
         return {"constitution": 50}  # Default stats
@@ -356,11 +360,13 @@ class NPCCombatIntegration:
         """Calculate max_dp from stats with fallbacks."""
         max_dp = stats.get("max_dp")
         if max_dp is not None:
-            return max_dp
+            result: int = cast(int, max_dp)
+            return result
 
         max_dp = stats.get("max_health")
         if max_dp is not None:
-            return max_dp
+            result2: int = cast(int, max_dp)
+            return result2
 
         con = stats.get("constitution", 50)
         siz = stats.get("size", 50)
@@ -392,7 +398,7 @@ class NPCCombatIntegration:
                 normalized_stats["hp"] = hp_value
         return normalized_stats
 
-    def get_combat_stats(self, entity_id: str, npc_stats: dict[str, Any] | None = None) -> dict[str, Any]:
+    async def get_combat_stats(self, entity_id: str, npc_stats: dict[str, Any] | None = None) -> dict[str, Any]:
         """
         Get combat-relevant stats for an entity.
 
@@ -405,10 +411,11 @@ class NPCCombatIntegration:
         """
         try:
             entity_id_uuid = uuid.UUID(entity_id) if isinstance(entity_id, str) else entity_id
-            player = self._persistence.get_player(entity_id_uuid)
+            player = await self._persistence.get_player_by_id(entity_id_uuid)
             if player:
-                stats = player.stats.model_dump()
-                return self._get_player_combat_stats(stats)
+                # player.stats is already a dict[str, Any], no need for model_dump()
+                stats = player.get_stats() if hasattr(player, "get_stats") else player.stats
+                return self._get_player_combat_stats(stats)  # stats is already dict[str, Any], no cast needed
 
             if npc_stats:
                 return self._normalize_npc_stats(npc_stats)

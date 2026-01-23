@@ -7,7 +7,7 @@ Tests the ItemPrototype, ItemInstance, and ItemComponentState models.
 from server.models.item import ItemComponentState, ItemInstance, ItemPrototype
 
 
-def test_item_prototype_primary_slot_with_slots():
+def test_item_prototype_primary_slot_with_slots() -> None:
     """Test primary_slot returns first wear slot when slots exist."""
     prototype = ItemPrototype()
     prototype.wear_slots = ["head", "neck", "back"]
@@ -17,7 +17,7 @@ def test_item_prototype_primary_slot_with_slots():
     assert result == "head"
 
 
-def test_item_prototype_primary_slot_single_slot():
+def test_item_prototype_primary_slot_single_slot() -> None:
     """Test primary_slot returns the slot when only one exists."""
     prototype = ItemPrototype()
     prototype.wear_slots = ["hand"]
@@ -27,7 +27,7 @@ def test_item_prototype_primary_slot_single_slot():
     assert result == "hand"
 
 
-def test_item_prototype_primary_slot_empty():
+def test_item_prototype_primary_slot_empty() -> None:
     """Test primary_slot returns None when no wear slots."""
     prototype = ItemPrototype()
     prototype.wear_slots = []
@@ -37,7 +37,7 @@ def test_item_prototype_primary_slot_empty():
     assert result is None
 
 
-def test_item_prototype_primary_slot_none():
+def test_item_prototype_primary_slot_none() -> None:
     """Test primary_slot returns None when wear_slots is None (edge case)."""
     prototype = ItemPrototype()
     # Don't set wear_slots, it should default to empty list
@@ -49,7 +49,7 @@ def test_item_prototype_primary_slot_none():
     assert result is None
 
 
-def test_item_instance_apply_flag_new_flag():
+def test_item_instance_apply_flag_new_flag() -> None:
     """Test apply_flag adds a new flag to flags_override."""
     instance = ItemInstance()
     instance.flags_override = []
@@ -60,7 +60,7 @@ def test_item_instance_apply_flag_new_flag():
     assert len(instance.flags_override) == 1
 
 
-def test_item_instance_apply_flag_existing_flag():
+def test_item_instance_apply_flag_existing_flag() -> None:
     """Test apply_flag does not duplicate existing flags (idempotent)."""
     instance = ItemInstance()
     instance.flags_override = ["test_flag"]
@@ -71,7 +71,7 @@ def test_item_instance_apply_flag_existing_flag():
     assert len(instance.flags_override) == 1
 
 
-def test_item_instance_apply_flag_multiple_flags():
+def test_item_instance_apply_flag_multiple_flags() -> None:
     """Test apply_flag adds flag when other flags exist."""
     instance = ItemInstance()
     instance.flags_override = ["flag1", "flag2"]
@@ -84,7 +84,7 @@ def test_item_instance_apply_flag_multiple_flags():
     assert "flag2" in instance.flags_override
 
 
-def test_item_instance_apply_flag_preserves_order():
+def test_item_instance_apply_flag_preserves_order() -> None:
     """Test apply_flag preserves existing flag order."""
     instance = ItemInstance()
     instance.flags_override = ["flag1", "flag2"]
@@ -94,7 +94,7 @@ def test_item_instance_apply_flag_preserves_order():
     assert instance.flags_override == ["flag1", "flag2", "flag3"]
 
 
-def test_item_component_state_unique_key():
+def test_item_component_state_unique_key() -> None:
     """Test unique_key returns tuple of instance_id and component_id."""
     result = ItemComponentState.unique_key("instance123", "component456")
 
@@ -103,7 +103,7 @@ def test_item_component_state_unique_key():
     assert len(result) == 2
 
 
-def test_item_component_state_unique_key_different_values():
+def test_item_component_state_unique_key_different_values() -> None:
     """Test unique_key returns different tuples for different inputs."""
     result1 = ItemComponentState.unique_key("instance1", "component1")
     result2 = ItemComponentState.unique_key("instance2", "component2")
@@ -113,7 +113,7 @@ def test_item_component_state_unique_key_different_values():
     assert result2 == ("instance2", "component2")
 
 
-def test_item_component_state_unique_key_same_instance_different_component():
+def test_item_component_state_unique_key_same_instance_different_component() -> None:
     """Test unique_key returns different tuples for same instance, different component."""
     result1 = ItemComponentState.unique_key("instance1", "component1")
     result2 = ItemComponentState.unique_key("instance1", "component2")
@@ -123,7 +123,7 @@ def test_item_component_state_unique_key_same_instance_different_component():
     assert result1[1] != result2[1]  # Different component_id
 
 
-def test_item_component_state_unique_key_different_instance_same_component():
+def test_item_component_state_unique_key_different_instance_same_component() -> None:
     """Test unique_key returns different tuples for different instance, same component."""
     result1 = ItemComponentState.unique_key("instance1", "component1")
     result2 = ItemComponentState.unique_key("instance2", "component1")
@@ -133,7 +133,7 @@ def test_item_component_state_unique_key_different_instance_same_component():
     assert result1[1] == result2[1]  # Same component_id
 
 
-def test_item_component_state_unique_key_empty_strings():
+def test_item_component_state_unique_key_empty_strings() -> None:
     """Test unique_key handles empty strings."""
     result = ItemComponentState.unique_key("", "")
 
@@ -141,7 +141,7 @@ def test_item_component_state_unique_key_empty_strings():
     assert isinstance(result, tuple)
 
 
-def test_item_component_state_unique_key_static_method():
+def test_item_component_state_unique_key_static_method() -> None:
     """Test unique_key is a static method (can be called without instance)."""
     # Should be callable on the class itself
     result = ItemComponentState.unique_key("test_instance", "test_component")

@@ -11,7 +11,7 @@ the grace period provides a brief window of protection for newly arrived charact
 import asyncio
 import time
 import uuid
-from typing import Any
+from typing import Any, cast
 
 from anyio import sleep
 
@@ -162,6 +162,6 @@ def get_login_grace_period_remaining(player_id: uuid.UUID, manager: Any) -> floa
 
     start_time = manager.login_grace_period_start_times[player_id]
     elapsed = time.time() - start_time
-    remaining = max(0.0, LOGIN_GRACE_PERIOD_DURATION - elapsed)
+    remaining: float = cast(float, max(0.0, LOGIN_GRACE_PERIOD_DURATION - elapsed))
 
     return remaining

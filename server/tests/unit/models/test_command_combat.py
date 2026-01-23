@@ -18,8 +18,9 @@ def test_attack_command_default_values():
     """Test AttackCommand has correct default values."""
     command = AttackCommand()
 
-    assert command.command_type == "attack"
-    assert command.target is None
+    assert command.command_type == "attack"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+    # Reason: Testing default value - mypy may see as unreachable but validates at runtime
+    assert command.target is None  # type: ignore[unreachable]
 
 
 def test_attack_command_with_target():
@@ -68,8 +69,9 @@ def test_punch_command_default_values():
     """Test PunchCommand has correct default values."""
     command = PunchCommand()
 
-    assert command.command_type == "punch"
-    assert command.target is None
+    assert command.command_type == "punch"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+    # Reason: Testing default value - mypy may see as unreachable but validates at runtime
+    assert command.target is None  # type: ignore[unreachable]
 
 
 def test_punch_command_with_target():
@@ -118,8 +120,9 @@ def test_kick_command_default_values():
     """Test KickCommand has correct default values."""
     command = KickCommand()
 
-    assert command.command_type == "kick"
-    assert command.target is None
+    assert command.command_type == "kick"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+    # Reason: Testing default value - mypy may see as unreachable but validates at runtime
+    assert command.target is None  # type: ignore[unreachable]
 
 
 def test_kick_command_with_target():
@@ -168,8 +171,9 @@ def test_strike_command_default_values():
     """Test StrikeCommand has correct default values."""
     command = StrikeCommand()
 
-    assert command.command_type == "strike"
-    assert command.target is None
+    assert command.command_type == "strike"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+    # Reason: Testing default value - mypy may see as unreachable but validates at runtime
+    assert command.target is None  # type: ignore[unreachable]
 
 
 def test_strike_command_with_target():

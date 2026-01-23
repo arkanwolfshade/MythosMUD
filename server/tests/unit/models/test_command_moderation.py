@@ -27,8 +27,9 @@ def test_mute_command_required_fields():
     with patch("server.models.command_moderation.validate_player_name", return_value="TestPlayer"):
         command = MuteCommand(player_name="TestPlayer")
 
-        assert command.command_type == "mute"
-        assert command.player_name == "TestPlayer"
+        assert command.command_type == "mute"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+        # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+        assert command.player_name == "TestPlayer"  # type: ignore[unreachable]
         assert command.duration_minutes is None
         assert command.reason is None
 
@@ -111,8 +112,9 @@ def test_unmute_command_required_fields():
     with patch("server.models.command_moderation.validate_player_name", return_value="TestPlayer"):
         command = UnmuteCommand(player_name="TestPlayer")
 
-        assert command.command_type == "unmute"
-        assert command.player_name == "TestPlayer"
+        assert command.command_type == "unmute"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+        # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+        assert command.player_name == "TestPlayer"  # type: ignore[unreachable]
 
 
 def test_unmute_command_validate_player_name_calls_validator():
@@ -132,8 +134,9 @@ def test_mute_global_command_required_fields():
     with patch("server.models.command_moderation.validate_player_name", return_value="TestPlayer"):
         command = MuteGlobalCommand(player_name="TestPlayer")
 
-        assert command.command_type == "mute_global"
-        assert command.player_name == "TestPlayer"
+        assert command.command_type == "mute_global"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+        # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+        assert command.player_name == "TestPlayer"  # type: ignore[unreachable]
         assert command.duration_minutes is None
         assert command.reason is None
 
@@ -189,8 +192,9 @@ def test_unmute_global_command_required_fields():
     with patch("server.models.command_moderation.validate_player_name", return_value="TestPlayer"):
         command = UnmuteGlobalCommand(player_name="TestPlayer")
 
-        assert command.command_type == "unmute_global"
-        assert command.player_name == "TestPlayer"
+        assert command.command_type == "unmute_global"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+        # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+        assert command.player_name == "TestPlayer"  # type: ignore[unreachable]
 
 
 def test_unmute_global_command_validate_player_name_calls_validator():
@@ -210,8 +214,9 @@ def test_add_admin_command_required_fields():
     with patch("server.models.command_moderation.validate_player_name", return_value="TestPlayer"):
         command = AddAdminCommand(player_name="TestPlayer")
 
-        assert command.command_type == "add_admin"
-        assert command.player_name == "TestPlayer"
+        assert command.command_type == "add_admin"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+        # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+        assert command.player_name == "TestPlayer"  # type: ignore[unreachable]
 
 
 def test_add_admin_command_validate_player_name_calls_validator():
@@ -230,7 +235,8 @@ def test_mutes_command_no_fields():
     """Test MutesCommand has no required fields."""
     command = MutesCommand()
 
-    assert command.command_type == "mutes"
+    # Reason: Testing str enum direct comparison - valid at runtime for str enums, but mypy sees as non-overlapping
+    assert command.command_type == "mutes"  # type: ignore[comparison-overlap]
 
 
 # --- Tests for AdminCommand ---
@@ -240,8 +246,9 @@ def test_admin_command_required_fields():
     """Test AdminCommand requires subcommand."""
     command = AdminCommand(subcommand="status")
 
-    assert command.command_type == "admin"
-    assert command.subcommand == "status"
+    assert command.command_type == "admin"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+    # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+    assert command.subcommand == "status"  # type: ignore[unreachable]
     assert command.args == []
 
 

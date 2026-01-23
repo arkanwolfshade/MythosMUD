@@ -185,7 +185,8 @@ def test_windows_safe_rotating_file_handler_do_rollover_no_stream(temp_log_dir):
     """Test doRollover() handles case when stream is None."""
     log_file = os.path.join(temp_log_dir, "test.log")
     handler = WindowsSafeRotatingFileHandler(log_file, maxBytes=10, backupCount=1)
-    handler.stream = None
+    # Reason: Intentionally setting stream to None to test error handling path
+    handler.stream = None  # type: ignore[assignment]
     handler.doRollover()
     # Should not raise
     handler.close()

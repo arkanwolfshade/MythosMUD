@@ -10,11 +10,15 @@ stats management, inventory, communication, and basic behavior framework.
 import json
 import time
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import TYPE_CHECKING, Any, cast
 
 from ..models.npc import NPCDefinition
 from ..structured_logging.enhanced_logging_config import get_logger
 from .behavior_engine import BehaviorEngine
+
+if TYPE_CHECKING:
+    from ..events import EventBus
+    from .event_reaction_system import NPCEventReactionSystem
 
 logger = get_logger(__name__)
 
@@ -27,7 +31,13 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
     inventory, communication, and basic behavior framework.
     """
 
-    def __init__(self, definition: Any, npc_id: str, event_bus=None, event_reaction_system=None):
+    def __init__(
+        self,
+        definition: Any,
+        npc_id: str,
+        event_bus: "EventBus | None" = None,
+        event_reaction_system: "NPCEventReactionSystem | None" = None,
+    ):
         """
         Initialize the NPC base class.
 
@@ -260,7 +270,8 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
             self._stats["dp"] = new_dp
         if "determination_points" in self._stats:
             self._stats["determination_points"] = new_dp
-        return new_dp
+        result: int = cast(int, new_dp)
+        return result
 
     def _publish_damage_event(self, damage: int, damage_type: str, source_id: str | None) -> None:
         """
@@ -464,13 +475,21 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
             if hasattr(self, "communication_integration") and self.communication_integration:
                 if target_id and channel == "whisper":
                     # Send whisper to specific target
-                    return self.communication_integration.send_whisper_to_player(
-                        self.npc_id, target_id, message, self.current_room
+                    result: bool = cast(
+                        bool,
+                        self.communication_integration.send_whisper_to_player(
+                            self.npc_id, target_id, message, self.current_room
+                        ),
                     )
+                    return result
                 # Send message to room
-                return self.communication_integration.send_message_to_room(
-                    self.npc_id, self.current_room, message, channel
+                result2: bool = cast(
+                    bool,
+                    self.communication_integration.send_message_to_room(
+                        self.npc_id, self.current_room, message, channel
+                    ),
                 )
+                return result2
             # Fallback to direct event publishing
             if self.event_bus:
                 from ..events.event_types import NPCSpoke
@@ -497,9 +516,13 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
 
             # Use communication integration if available
             if hasattr(self, "communication_integration") and self.communication_integration:
-                return self.communication_integration.handle_player_message(
-                    self.npc_id, speaker_id, message, self.current_room, channel
+                result: bool = cast(
+                    bool,
+                    self.communication_integration.handle_player_message(
+                        self.npc_id, speaker_id, message, self.current_room, channel
+                    ),
                 )
+                return result
 
             # Fallback to direct event publishing
             if self.event_bus:

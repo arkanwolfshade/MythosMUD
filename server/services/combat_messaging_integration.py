@@ -12,7 +12,7 @@ must reach all who bear witness to the cosmic horror unfolding.
 
 # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Messaging integration requires many parameters for context and message routing
 
-from typing import Any
+from typing import Any, cast
 
 from server.realtime.envelope import build_event
 from server.services.combat_messaging_service import CombatMessagingService
@@ -141,7 +141,8 @@ class CombatMessagingIntegration:
             broadcast_stats=broadcast_stats,
         )
 
-        return broadcast_stats
+        result: dict[str, Any] = cast(dict[str, Any], broadcast_stats)
+        return result
 
     async def broadcast_combat_attack(
         self,
@@ -239,7 +240,8 @@ class CombatMessagingIntegration:
             broadcast_stats=broadcast_stats,
         )
 
-        return broadcast_stats
+        result: dict[str, Any] = cast(dict[str, Any], broadcast_stats)
+        return result
 
     async def broadcast_combat_death(
         self,
@@ -296,7 +298,8 @@ class CombatMessagingIntegration:
             broadcast_stats=broadcast_stats,
         )
 
-        return broadcast_stats
+        result: dict[str, Any] = cast(dict[str, Any], broadcast_stats)
+        return result
 
     async def broadcast_combat_end(
         self,
@@ -348,7 +351,8 @@ class CombatMessagingIntegration:
             broadcast_stats=broadcast_stats,
         )
 
-        return broadcast_stats
+        result: dict[str, Any] = cast(dict[str, Any], broadcast_stats)
+        return result
 
     async def broadcast_combat_error(
         self,
@@ -402,7 +406,8 @@ class CombatMessagingIntegration:
             delivery_status=delivery_status,
         )
 
-        return delivery_status
+        result: dict[str, Any] = cast(dict[str, Any], delivery_status)
+        return result
 
     async def broadcast_player_mortally_wounded(
         self,
@@ -477,7 +482,8 @@ class CombatMessagingIntegration:
 
         logger.debug("Player mortally wounded broadcast completed", room_id=room_id, broadcast_stats=broadcast_stats)
 
-        return broadcast_stats
+        result: dict[str, Any] = cast(dict[str, Any], broadcast_stats)
+        return result
 
     async def broadcast_player_death(
         self,
@@ -545,7 +551,8 @@ class CombatMessagingIntegration:
 
         logger.debug("Player death broadcast completed", room_id=room_id, broadcast_stats=broadcast_stats)
 
-        return broadcast_stats
+        result: dict[str, Any] = cast(dict[str, Any], broadcast_stats)
+        return result
 
     async def broadcast_player_respawn(
         self,
@@ -604,7 +611,8 @@ class CombatMessagingIntegration:
 
         logger.debug("Player respawn broadcast completed", room_id=room_id, broadcast_stats=broadcast_stats)
 
-        return broadcast_stats
+        result: dict[str, Any] = cast(dict[str, Any], broadcast_stats)
+        return result
 
     async def send_dp_decay_message(
         self,
@@ -646,7 +654,8 @@ class CombatMessagingIntegration:
 
         logger.debug("DP decay message sent", player_id=player_id, delivery_status=delivery_status)
 
-        return delivery_status
+        result: dict[str, Any] = cast(dict[str, Any], delivery_status)
+        return result
 
 
 # Global combat messaging integration instance

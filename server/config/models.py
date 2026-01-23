@@ -196,7 +196,7 @@ class NATSConfig(BaseSettings):
 
     @field_validator("tls_cert_file", "tls_key_file", "tls_ca_file")
     @classmethod
-    def validate_tls_files(cls, v: str | None, info) -> str | None:
+    def validate_tls_files(cls, v: str | None, info: Any) -> str | None:
         """Validate TLS file paths exist when TLS is enabled."""
         # Only validate if TLS is enabled and file is provided
         # We can't access other fields in field_validator, so we'll do full validation in model_validator

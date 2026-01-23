@@ -13,7 +13,7 @@ lurk in the shadows of our world.
 # pylint: disable=too-many-return-statements,too-many-lines  # Reason: Command handlers require multiple return statements for early validation returns (input validation, permission checks, error handling). NPC admin commands require extensive handlers for comprehensive NPC management operations.
 
 import inspect
-from typing import Any
+from typing import TYPE_CHECKING, Any, cast
 
 from ..alias_storage import AliasStorage
 from ..models.npc import NPCDefinitionType
@@ -21,13 +21,15 @@ from ..services.npc_instance_service import get_npc_instance_service
 from ..services.npc_service import npc_service
 from ..structured_logging.enhanced_logging_config import get_logger
 
+if TYPE_CHECKING:
+    from ..models.player import Player
 logger = get_logger(__name__)
 
 
 # --- Permission Validation ---
 
 
-def validate_npc_admin_permission(player, player_name: str) -> bool:
+def validate_npc_admin_permission(player: "Player | Any", player_name: str) -> bool:
     """
     Validate that a player has NPC admin permissions.
 
@@ -143,8 +145,8 @@ async def handle_npc_command(
         handler = subcommand_map.get(subcommand)
         if handler:
             if subcommand == "help":
-                return handler()  # type: ignore[operator]  # Handler is a callable from the map with unknown signature
-            return await handler(command_data, current_user, request, alias_storage, player_name)  # type: ignore[operator]  # Handler is a callable from the map with unknown signature
+                return cast(dict[str, str], handler())  # type: ignore[operator]  # Handler is a callable from the map with unknown signature
+            return cast(dict[str, str], await handler(command_data, current_user, request, alias_storage, player_name))  # type: ignore[operator]  # Handler is a callable from the map with unknown signature
         return {"result": f"Unknown NPC command: {subcommand}. Use 'npc help' for available commands."}
 
     return await _route_npc_subcommand()

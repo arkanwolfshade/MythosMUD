@@ -5,6 +5,7 @@ Tests the ContainerComponent model including enums, validation, and methods.
 """
 
 from datetime import UTC, datetime, timedelta
+from typing import cast
 from uuid import uuid4
 
 import pytest
@@ -15,6 +16,7 @@ from server.models.container import (
     ContainerLockState,
     ContainerSourceType,
 )
+from server.services.inventory_service import InventoryStack
 
 # --- Tests for ContainerSourceType enum ---
 
@@ -153,7 +155,8 @@ def test_container_component_has_capacity_when_full():
         capacity_slots=2,
     )
     # Fill items to capacity
-    container.items = [{"id": "item1"}, {"id": "item2"}]
+    # Test uses simplified item structure, not full InventoryStack TypedDict
+    container.items = cast(list[InventoryStack], [{"id": "item1"}, {"id": "item2"}])
 
     assert container.has_capacity() is False
 
@@ -166,7 +169,8 @@ def test_container_component_get_used_slots():
         room_id="room123",
         capacity_slots=10,
     )
-    container.items = [{"id": "item1"}, {"id": "item2"}, {"id": "item3"}]
+    # Test uses simplified item structure, not full InventoryStack TypedDict
+    container.items = cast(list[InventoryStack], [{"id": "item1"}, {"id": "item2"}, {"id": "item3"}])
 
     result = container.get_used_slots()
 
@@ -196,7 +200,8 @@ def test_container_component_get_available_slots():
         room_id="room123",
         capacity_slots=10,
     )
-    container.items = [{"id": "item1"}, {"id": "item2"}]  # 2 used
+    # Test uses simplified item structure, not full InventoryStack TypedDict
+    container.items = cast(list[InventoryStack], [{"id": "item1"}, {"id": "item2"}])  # 2 used
 
     result = container.get_available_slots()
 
@@ -211,7 +216,10 @@ def test_container_component_get_available_slots_full():
         room_id="room123",
         capacity_slots=5,
     )
-    container.items = [{"id": "item1"}, {"id": "item2"}, {"id": "item3"}, {"id": "item4"}, {"id": "item5"}]  # Full
+    # Test uses simplified item structure, not full InventoryStack TypedDict
+    container.items = cast(
+        list[InventoryStack], [{"id": "item1"}, {"id": "item2"}, {"id": "item3"}, {"id": "item4"}, {"id": "item5"}]
+    )  # Full
 
     result = container.get_available_slots()
 
@@ -285,7 +293,8 @@ def test_container_component_is_decayed_when_no_decay_time():
 def test_container_component_rejects_extra_fields():
     """Test ContainerComponent rejects unknown fields (extra='forbid')."""
     with pytest.raises(ValidationError) as exc_info:
-        ContainerComponent(
+        # Reason: Intentionally testing Pydantic validation with extra='forbid' - extra fields should be rejected
+        ContainerComponent(  # type: ignore[call-arg]
             container_id=uuid4(),
             source_type=ContainerSourceType.ENVIRONMENT,
             room_id="room123",

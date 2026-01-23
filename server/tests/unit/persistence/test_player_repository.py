@@ -5,6 +5,7 @@ Tests the PlayerRepository class which handles player persistence operations.
 """
 
 import uuid
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -22,7 +23,8 @@ from server.persistence.repositories.player_repository import PlayerRepository
 def player_repository():
     """Create a PlayerRepository instance."""
     room_cache = {"arkham_square": MagicMock(), "room1": MagicMock()}
-    return PlayerRepository(room_cache=room_cache)
+    # Reason: Using MagicMock for Room objects in tests - compatible at runtime
+    return PlayerRepository(room_cache=room_cache)  # type: ignore[arg-type]
 
 
 @pytest.fixture
@@ -39,7 +41,7 @@ def mock_player():
 def test_player_repository_initialization():
     """Test PlayerRepository initializes correctly."""
     # PlayerRepository now requires room_cache to not be None
-    room_cache = {}
+    room_cache: dict[str, Any] = {}
     repo = PlayerRepository(room_cache=room_cache)
 
     assert repo._room_cache == room_cache
@@ -49,7 +51,8 @@ def test_player_repository_initialization():
 def test_player_repository_initialization_with_cache():
     """Test PlayerRepository initializes with room cache."""
     room_cache = {"room1": MagicMock(), "room2": MagicMock()}
-    repo = PlayerRepository(room_cache=room_cache)
+    # Reason: Using MagicMock for Room objects in tests - compatible at runtime
+    repo = PlayerRepository(room_cache=room_cache)  # type: ignore[arg-type]
 
     assert repo._room_cache == room_cache
 
@@ -57,7 +60,7 @@ def test_player_repository_initialization_with_cache():
 def test_player_repository_initialization_with_event_bus():
     """Test PlayerRepository initializes with event bus."""
     # PlayerRepository now requires room_cache to not be None
-    room_cache = {}
+    room_cache: dict[str, Any] = {}
     event_bus = MagicMock()
     repo = PlayerRepository(room_cache=room_cache, event_bus=event_bus)
 
@@ -378,7 +381,7 @@ async def test_save_players_success(player_repository, mock_player):
     """Test save_players successfully saves multiple players."""
     mock_player2 = MagicMock(spec=Player)
     mock_player2.is_admin = False
-    players = [mock_player, mock_player2]
+    players: list[Any] = [mock_player, mock_player2]
 
     mock_session = AsyncMock()
     mock_session.merge = AsyncMock()

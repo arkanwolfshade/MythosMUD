@@ -4,6 +4,7 @@ Unit tests for look command helper functions.
 Tests utility functions used by the look command system.
 """
 
+from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
@@ -119,7 +120,7 @@ def test_get_lucidity_label_mad():
 
 def test_get_lucidity_label_no_lucidity():
     """Test _get_lucidity_label when lucidity is missing."""
-    stats = {}
+    stats: dict[str, Any] = {}
     label = _get_lucidity_label(stats)
     assert label == "mad"  # Defaults to 0 lucidity, which is mad
 

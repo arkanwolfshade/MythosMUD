@@ -1191,7 +1191,7 @@ class ApplicationContainer:  # pylint: disable=too-many-instance-attributes  # R
             self._project_root = get_project_root()
         return self._project_root
 
-    def get_service(self, service_name: str):
+    def get_service(self, service_name: str) -> Any:
         """
         Get a service by name.
 

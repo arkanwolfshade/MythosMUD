@@ -725,7 +725,7 @@ def resolve_container_id(container_found: Any, container_id: UUID | None) -> UUI
         return container_id
 
     if hasattr(container_found, "container_instance_id"):
-        return container_found.container_instance_id
+        return cast("UUID | None", container_found.container_instance_id)
 
     if isinstance(container_found, dict):
         return UUID(container_found.get("container_id"))

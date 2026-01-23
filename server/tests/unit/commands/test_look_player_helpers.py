@@ -23,7 +23,7 @@ def test_select_target_player_single_match():
 
 def test_select_target_player_no_match():
     """Test _select_target_player() returns error when no match."""
-    matching_players = []
+    matching_players: list = []
 
     target_player, error_result = _select_target_player(matching_players, "player1", None, "CurrentPlayer")
 

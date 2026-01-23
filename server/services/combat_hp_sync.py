@@ -10,6 +10,7 @@ coordination between in-memory combat state and persistent database storage.
 
 # pylint: disable=too-few-public-methods,too-many-arguments,too-many-positional-arguments  # Reason: HP sync module has focused responsibility with minimal public interface, and requires many parameters for synchronization logic
 
+from typing import TYPE_CHECKING
 from uuid import UUID
 
 from ..events.event_bus import EventBus
@@ -17,6 +18,9 @@ from ..events.event_types import PlayerDPUpdated
 from ..exceptions import DatabaseError
 from ..models.game import PositionState
 from ..structured_logging.enhanced_logging_config import get_logger
+
+if TYPE_CHECKING:
+    from ..async_persistence import AsyncPersistenceLayer
 
 logger = get_logger(__name__)
 
@@ -133,7 +137,7 @@ class CombatDPSync:  # pylint: disable=too-few-public-methods  # Reason: DP sync
                 error_type=type(e).__name__,
             )
 
-    def _get_persistence(self, player_id: UUID):
+    def _get_persistence(self, player_id: UUID) -> "AsyncPersistenceLayer | None":
         """
         Get persistence layer from application container.
 
@@ -177,7 +181,7 @@ class CombatDPSync:  # pylint: disable=too-few-public-methods  # Reason: DP sync
             stats["position"] = PositionState.LYING
 
     async def _verify_player_save(
-        self, persistence, player_id: UUID, player_name: str, old_dp: int, current_dp: int
+        self, persistence: "AsyncPersistenceLayer", player_id: UUID, player_name: str, old_dp: int, current_dp: int
     ) -> None:
         """
         Verify that player DP was successfully saved to database.
@@ -235,7 +239,9 @@ class CombatDPSync:  # pylint: disable=too-few-public-methods  # Reason: DP sync
                 dp=current_dp,
             )
 
-    async def _update_and_save_player_dp(self, persistence, player_id: UUID, current_dp: int) -> tuple | None:
+    async def _update_and_save_player_dp(
+        self, persistence: "AsyncPersistenceLayer", player_id: UUID, current_dp: int
+    ) -> tuple | None:
         """
         Update player DP and save to database.
 

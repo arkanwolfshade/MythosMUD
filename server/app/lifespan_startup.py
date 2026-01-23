@@ -8,6 +8,7 @@ including container initialization, service setup, and dependency wiring.
 import asyncio
 import uuid as uuid_lib
 from collections.abc import Iterable
+from typing import Any
 
 from anyio import sleep
 from fastapi import FastAPI
@@ -36,7 +37,7 @@ from ..time.time_service import get_mythos_chronicle
 logger = get_logger("server.lifespan.startup")
 
 
-async def _get_item_prototype_count(registry) -> int:
+async def _get_item_prototype_count(registry: Any) -> int:
     """Get count of item prototypes from registry."""
     prototype_count = 0
     if registry is not None:

@@ -267,9 +267,10 @@ async def test_handle_player_attack_on_npc_login_grace_period_blocked(integratio
     npc_instance = MagicMock()
     npc_instance.is_alive = True
 
-    with patch("server.services.npc_combat_integration_service.get_config") as mock_get_config, patch(
-        "server.services.npc_combat_integration_service.is_player_in_login_grace_period"
-    ) as mock_grace_period:
+    with (
+        patch("server.services.npc_combat_integration_service.get_config") as mock_get_config,
+        patch("server.services.npc_combat_integration_service.is_player_in_login_grace_period") as mock_grace_period,
+    ):
         mock_config = MagicMock()
         mock_app = MagicMock()
         mock_connection_manager = MagicMock()

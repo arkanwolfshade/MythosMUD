@@ -30,7 +30,7 @@ from ..utils.error_logging import create_context_from_request, create_context_fr
 realtime_router = APIRouter(prefix="/api", tags=["realtime"])
 
 
-def _resolve_connection_manager_from_state(state) -> Any:
+def _resolve_connection_manager_from_state(state: Any) -> Any:
     container = getattr(state, "container", None)
     candidate = None
     if container is not None:

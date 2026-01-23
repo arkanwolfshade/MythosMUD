@@ -28,6 +28,10 @@ from server.realtime.websocket_handler import (
     send_system_message,
 )
 
+# Test UUID constant for player IDs
+TEST_PLAYER_ID = uuid.UUID("12345678-1234-5678-1234-567812345678")
+TEST_PLAYER_ID_STR = str(TEST_PLAYER_ID)
+
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice
 
 
@@ -41,7 +45,7 @@ def test_is_websocket_disconnected():
 @pytest.mark.asyncio
 async def test_check_rate_limit_no_connection_id(mock_websocket, mock_ws_connection_manager):
     """Test _check_rate_limit returns True when no connection_id."""
-    result = await _check_rate_limit(mock_websocket, None, "player_001", mock_ws_connection_manager)
+    result = await _check_rate_limit(mock_websocket, None, TEST_PLAYER_ID_STR, mock_ws_connection_manager)
     assert result is True
     mock_websocket.send_json.assert_not_awaited()
 
@@ -52,7 +56,7 @@ async def test_check_rate_limit_passed(mock_websocket, mock_ws_connection_manage
     mock_rate_limiter = MagicMock()
     mock_rate_limiter.check_message_rate_limit = MagicMock(return_value=True)
     mock_ws_connection_manager.rate_limiter = mock_rate_limiter
-    result = await _check_rate_limit(mock_websocket, "conn_001", "player_001", mock_ws_connection_manager)
+    result = await _check_rate_limit(mock_websocket, "conn_001", TEST_PLAYER_ID_STR, mock_ws_connection_manager)
     assert result is True
     mock_websocket.send_json.assert_not_awaited()
 
@@ -64,7 +68,7 @@ async def test_check_rate_limit_exceeded(mock_websocket, mock_ws_connection_mana
     mock_rate_limiter.check_message_rate_limit = MagicMock(return_value=False)
     mock_rate_limiter.get_message_rate_limit_info = MagicMock(return_value={"max_attempts": 10, "reset_time": 1000})
     mock_ws_connection_manager.rate_limiter = mock_rate_limiter
-    result = await _check_rate_limit(mock_websocket, "conn_001", "player_001", mock_ws_connection_manager)
+    result = await _check_rate_limit(mock_websocket, "conn_001", TEST_PLAYER_ID_STR, mock_ws_connection_manager)
     assert result is False
     mock_websocket.send_json.assert_awaited_once()
 
@@ -75,7 +79,7 @@ async def test_validate_message_success(mock_websocket):
     mock_validator = MagicMock()
     mock_message = {"type": "test"}
     mock_validator.parse_and_validate = MagicMock(return_value=mock_message)
-    result = await _validate_message(mock_websocket, '{"type": "test"}', "player_001", mock_validator)
+    result = await _validate_message(mock_websocket, '{"type": "test"}', TEST_PLAYER_ID_STR, mock_validator)
     assert result == mock_message
     mock_websocket.send_json.assert_not_awaited()
 
@@ -86,9 +90,9 @@ async def test_validate_message_validation_error(mock_websocket):
     from server.realtime.message_validator import MessageValidationError
 
     mock_validator = MagicMock()
-    mock_error = MessageValidationError("Invalid message", ErrorType.INVALID_FORMAT)
+    mock_error = MessageValidationError("Invalid message", ErrorType.INVALID_FORMAT.value)
     mock_validator.parse_and_validate = MagicMock(side_effect=mock_error)
-    result = await _validate_message(mock_websocket, "invalid", "player_001", mock_validator)
+    result = await _validate_message(mock_websocket, "invalid", TEST_PLAYER_ID_STR, mock_validator)
     assert result is None
     mock_websocket.send_json.assert_awaited_once()
 
@@ -129,20 +133,20 @@ async def test_send_error_response_runtime_error_other(mock_websocket):
 
 def test_handle_websocket_disconnect():
     """Test _handle_websocket_disconnect returns True."""
-    result = _handle_websocket_disconnect("player_001", "conn_001")
+    result = _handle_websocket_disconnect(TEST_PLAYER_ID_STR, "conn_001")
     assert result is True
 
 
 def test_handle_websocket_disconnect_no_connection_id():
     """Test _handle_websocket_disconnect handles None connection_id."""
-    result = _handle_websocket_disconnect("player_001", None)
+    result = _handle_websocket_disconnect(TEST_PLAYER_ID_STR, None)
     assert result is True
 
 
 def test_handle_runtime_error_disconnected():
     """Test _handle_runtime_error returns (True, False) for disconnected error."""
     error = RuntimeError("WebSocket is not connected")
-    should_break, should_raise = _handle_runtime_error(error, "player_001", "conn_001")
+    should_break, should_raise = _handle_runtime_error(error, TEST_PLAYER_ID_STR, "conn_001")
     assert should_break is True
     assert should_raise is False
 
@@ -150,7 +154,7 @@ def test_handle_runtime_error_disconnected():
 def test_handle_runtime_error_other():
     """Test _handle_runtime_error returns (False, True) for other runtime error."""
     error = RuntimeError("Some other runtime error")
-    should_break, should_raise = _handle_runtime_error(error, "player_001", "conn_001")
+    should_break, should_raise = _handle_runtime_error(error, TEST_PLAYER_ID_STR, "conn_001")
     assert should_break is False
     assert should_raise is True
 
@@ -165,7 +169,7 @@ async def test_process_exception_in_message_loop(mock_websocket):
         return_value=(False, False),
     ):
         should_break, should_raise = await _process_exception_in_message_loop(
-            mock_websocket, error, uuid.uuid4(), "player_001", "conn_001"
+            mock_websocket, error, uuid.uuid4(), TEST_PLAYER_ID_STR, "conn_001"
         )
         assert isinstance(should_break, bool)
         assert isinstance(should_raise, bool)
@@ -196,7 +200,7 @@ async def test_validate_player_and_persistence_no_current_room_id(mock_ws_connec
     mock_player = MagicMock()
     del mock_player.current_room_id
     mock_ws_connection_manager.get_player = AsyncMock(return_value=mock_player)
-    player, error = await _validate_player_and_persistence(mock_ws_connection_manager, "player_001")
+    player, error = await _validate_player_and_persistence(mock_ws_connection_manager, TEST_PLAYER_ID_STR)
     assert player is None
     assert error is not None
 
@@ -205,7 +209,7 @@ async def test_validate_player_and_persistence_no_current_room_id(mock_ws_connec
 async def test_handle_chat_message_no_player(mock_websocket, mock_ws_connection_manager):
     """Test handle_chat_message handles player not found."""
     mock_ws_connection_manager.get_player = AsyncMock(return_value=None)
-    await handle_chat_message(mock_websocket, "player_001", "Hello", mock_ws_connection_manager)
+    await handle_chat_message(mock_websocket, TEST_PLAYER_ID_STR, "Hello", mock_ws_connection_manager)
 
 
 @pytest.mark.asyncio
@@ -226,7 +230,7 @@ async def test_handle_chat_message_error(mock_websocket, mock_ws_connection_mana
             raise WebSocketDisconnect(1000)
 
     mock_websocket.send_json = AsyncMock(side_effect=mock_send_json)
-    await handle_chat_message(mock_websocket, "player_001", "Hello", mock_ws_connection_manager)
+    await handle_chat_message(mock_websocket, TEST_PLAYER_ID_STR, "Hello", mock_ws_connection_manager)
 
 
 @pytest.mark.asyncio
@@ -240,7 +244,7 @@ async def test_handle_game_command_with_broadcast(mock_websocket, mock_ws_connec
         new_callable=AsyncMock,
         return_value={"result": "ok", "broadcast": "message", "broadcast_type": "say"},
     ):
-        await handle_game_command(mock_websocket, "player_001", "say Hello", None, mock_ws_connection_manager)
+        await handle_game_command(mock_websocket, TEST_PLAYER_ID_STR, "say Hello", None, mock_ws_connection_manager)
         mock_ws_connection_manager.broadcast_to_room.assert_awaited()
 
 
@@ -253,7 +257,7 @@ async def test_handle_game_command_broadcast_no_player(mock_websocket, mock_ws_c
         new_callable=AsyncMock,
         return_value={"result": "ok", "broadcast": "message", "broadcast_type": "say"},
     ):
-        await handle_game_command(mock_websocket, "player_001", "say Hello", None, mock_ws_connection_manager)
+        await handle_game_command(mock_websocket, TEST_PLAYER_ID_STR, "say Hello", None, mock_ws_connection_manager)
 
 
 @pytest.mark.asyncio
@@ -267,7 +271,7 @@ async def test_handle_game_command_broadcast_no_current_room_id(mock_websocket, 
         new_callable=AsyncMock,
         return_value={"result": "ok", "broadcast": "message", "broadcast_type": "say"},
     ):
-        await handle_game_command(mock_websocket, "player_001", "say Hello", None, mock_ws_connection_manager)
+        await handle_game_command(mock_websocket, TEST_PLAYER_ID_STR, "say Hello", None, mock_ws_connection_manager)
 
 
 @pytest.mark.asyncio
@@ -278,7 +282,7 @@ async def test_handle_game_command_with_args(mock_websocket, mock_ws_connection_
         new_callable=AsyncMock,
         return_value={"result": "ok"},
     ):
-        await handle_game_command(mock_websocket, "player_001", "look", ["north"], mock_ws_connection_manager)
+        await handle_game_command(mock_websocket, TEST_PLAYER_ID_STR, "look", ["north"], mock_ws_connection_manager)
         mock_websocket.send_json.assert_awaited_once()
 
 
@@ -301,7 +305,7 @@ async def test_handle_game_command_error(mock_websocket, mock_ws_connection_mana
         new_callable=AsyncMock,
         return_value={"result": "ok"},
     ):
-        await handle_game_command(mock_websocket, "player_001", "look", None, mock_ws_connection_manager)
+        await handle_game_command(mock_websocket, TEST_PLAYER_ID_STR, "look", None, mock_ws_connection_manager)
 
 
 @pytest.mark.asyncio
@@ -322,7 +326,7 @@ async def test_handle_websocket_message_error(mock_websocket):
     mock_websocket.send_json = AsyncMock(side_effect=mock_send_json)
     with patch("server.realtime.message_handler_factory.message_handler_factory") as mock_factory:
         mock_factory.handle_message = AsyncMock(side_effect=RuntimeError("Error"))
-        await handle_websocket_message(mock_websocket, "player_001", message)
+        await handle_websocket_message(mock_websocket, TEST_PLAYER_ID_STR, message)
 
 
 @pytest.mark.asyncio
@@ -341,6 +345,6 @@ async def test_process_websocket_command_player_no_current_room_id(mock_ws_conne
     del mock_player.current_room_id
     mock_player.name = "TestPlayer"
     mock_ws_connection_manager.get_player = AsyncMock(return_value=mock_player)
-    result = await process_websocket_command("look", [], "player_001", mock_ws_connection_manager)
+    result = await process_websocket_command("look", [], TEST_PLAYER_ID_STR, mock_ws_connection_manager)
     assert isinstance(result, dict)
     assert "result" in result

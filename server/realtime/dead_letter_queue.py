@@ -11,7 +11,7 @@ import json
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import aiofiles
 
@@ -201,7 +201,8 @@ class DeadLetterQueue:
             # Remove file after reading
             oldest_file.unlink()
 
-            return data
+            result: dict[str, Any] = cast(dict[str, Any], data)
+            return result
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: DLQ dequeue errors unpredictable, must return None
             logger.error("Error dequeuing DLQ message", filepath=str(oldest_file), error=str(e))
             return None
@@ -230,7 +231,8 @@ class DeadLetterQueue:
             # Remove file after reading
             oldest_file.unlink()
 
-            return data
+            result: dict[str, Any] = cast(dict[str, Any], data)
+            return result
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: DLQ dequeue errors unpredictable, must return None
             logger.error("Error dequeuing DLQ message", filepath=str(oldest_file), error=str(e))
             return None
@@ -319,7 +321,8 @@ class DeadLetterQueue:
 
         logger.info("Message replayed from DLQ", filepath=filepath)
 
-        return data
+        result: dict[str, Any] = cast(dict[str, Any], data)
+        return result
 
     def delete_message(self, filepath: str) -> None:
         """

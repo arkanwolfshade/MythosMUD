@@ -9,6 +9,7 @@ for real-time distribution to clients and other systems.
 
 import uuid
 from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 
 from ..events.combat_events import (
     CombatEndedEvent,
@@ -24,6 +25,9 @@ from ..structured_logging.enhanced_logging_config import get_logger
 from .nats_exceptions import NATSPublishError
 from .nats_subject_manager import NATSSubjectManager
 
+if TYPE_CHECKING:
+    from .nats_service import NATSService
+
 logger = get_logger("services.combat_event_publisher")
 
 
@@ -35,7 +39,9 @@ class CombatEventPublisher:
     system to provide real-time combat updates to clients and other systems.
     """
 
-    def __init__(self, nats_service=None, subject_manager: NATSSubjectManager | None = None):
+    def __init__(
+        self, nats_service: "NATSService | None" = None, subject_manager: NATSSubjectManager | None = None
+    ) -> None:
         """
         Initialize combat event publisher.
 

@@ -7,7 +7,7 @@ formatting NPC descriptions, and handling NPC look requests.
 
 import json
 from datetime import datetime
-from typing import Any
+from typing import Any, cast
 
 from ..services.npc_instance_service import get_npc_instance_service
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -47,14 +47,14 @@ def _format_npc_description(npc: Any) -> str:
         description = getattr(definition, "desc", None)
     if not description or not description.strip():
         return "You see nothing remarkable about them."
-    return description
+    return cast(str, description)
 
 
 def _parse_npc_stats_dict(npc_stats: Any) -> dict[str, Any]:
     """Parse NPC stats dictionary, handling both dict and JSON string formats."""
     if isinstance(npc_stats, str):
         try:
-            return json.loads(npc_stats)
+            return cast(dict[str, Any], json.loads(npc_stats))
         except (json.JSONDecodeError, TypeError):
             return {}
     if isinstance(npc_stats, dict):

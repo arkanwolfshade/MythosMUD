@@ -167,7 +167,8 @@ async def test_create_player_preferences_integrity_error(preferences_service, mo
     result_mock = MagicMock(spec=Result)
     result_mock.scalar_one_or_none = MagicMock(return_value=None)
     mock_session.execute.return_value = result_mock
-    mock_session.commit.side_effect = IntegrityError("Integrity error", None, None)
+    orig_exc = Exception("duplicate key")
+    mock_session.commit.side_effect = IntegrityError("Integrity error", None, orig_exc)
 
     result = await preferences_service.create_player_preferences(mock_session, sample_player_id)
 

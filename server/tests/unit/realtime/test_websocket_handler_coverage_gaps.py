@@ -19,6 +19,10 @@ from server.realtime.websocket_handler import (
     process_websocket_command,
 )
 
+# Test UUID constant for player IDs
+TEST_PLAYER_ID = uuid.UUID("12345678-1234-5678-1234-567812345678")
+TEST_PLAYER_ID_STR = str(TEST_PLAYER_ID)
+
 
 @pytest.mark.asyncio
 async def test_message_loop_should_raise_exception(mock_websocket, mock_ws_connection_manager):
@@ -72,9 +76,7 @@ async def test_handle_websocket_connection_full_flow(mock_websocket, mock_ws_con
 
                             # Verify cleanup was called in finally block (line 374)
                             # If cleanup is called, the try block (line 371-372) must have executed
-                            mock_cleanup.assert_awaited_once_with(
-                                player_id, str(player_id), mock_ws_connection_manager
-                            )
+                            mock_cleanup.assert_awaited_once_with(player_id, str(player_id), mock_ws_connection_manager)
 
 
 @pytest.mark.asyncio
@@ -90,7 +92,7 @@ async def test_handle_game_command_resolve_connection_manager_from_app(mock_webs
             new_callable=AsyncMock,
             return_value={"result": "ok"},
         ):
-            await handle_game_command(mock_websocket, "player_001", "look", None, None)
+            await handle_game_command(mock_websocket, TEST_PLAYER_ID_STR, "look", None, None)
             mock_websocket.send_json.assert_awaited_once()
 
 
@@ -103,7 +105,7 @@ async def test_handle_game_command_exception_handling(mock_websocket, mock_ws_co
         new_callable=AsyncMock,
         side_effect=error,
     ):
-        await handle_game_command(mock_websocket, "player_001", "look", None, mock_ws_connection_manager)
+        await handle_game_command(mock_websocket, TEST_PLAYER_ID_STR, "look", None, mock_ws_connection_manager)
         # Should send error response
         mock_websocket.send_json.assert_awaited_once()
 
@@ -117,7 +119,7 @@ async def test_handle_game_command_runtime_error_handling(mock_websocket, mock_w
         new_callable=AsyncMock,
         side_effect=error,
     ):
-        await handle_game_command(mock_websocket, "player_001", "look", None, mock_ws_connection_manager)
+        await handle_game_command(mock_websocket, TEST_PLAYER_ID_STR, "look", None, mock_ws_connection_manager)
         # Should send error response
         mock_websocket.send_json.assert_awaited_once()
 
@@ -145,7 +147,7 @@ async def test_process_websocket_command_resolve_connection_manager_from_app():
             return_value={"result": "ok"},
         ):
             with patch("server.realtime.websocket_handler._resolve_and_setup_app_state_services"):
-                result = await process_websocket_command("look", [], "player_001", None)
+                result = await process_websocket_command("look", [], TEST_PLAYER_ID_STR, None)
                 assert isinstance(result, dict)
                 assert "result" in result
 
@@ -163,7 +165,7 @@ async def test_handle_chat_message_resolve_connection_manager_from_app(mock_webs
     mock_app.state.container.connection_manager = mock_connection_manager
 
     with patch("server.main.app", mock_app):
-        await handle_chat_message(mock_websocket, "player_001", "Hello", None)
+        await handle_chat_message(mock_websocket, TEST_PLAYER_ID_STR, "Hello", None)
         # Should send confirmation
         mock_websocket.send_json.assert_awaited_once()
 
@@ -174,7 +176,7 @@ async def test_handle_chat_message_exception_handling(mock_websocket, mock_ws_co
     error = WebSocketDisconnect(1000)
     mock_ws_connection_manager.get_player = AsyncMock(side_effect=error)
 
-    await handle_chat_message(mock_websocket, "player_001", "Hello", mock_ws_connection_manager)
+    await handle_chat_message(mock_websocket, TEST_PLAYER_ID_STR, "Hello", mock_ws_connection_manager)
     # Should send error response
     mock_websocket.send_json.assert_awaited_once()
 
@@ -185,7 +187,7 @@ async def test_handle_chat_message_runtime_error_handling(mock_websocket, mock_w
     error = RuntimeError("Connection lost")
     mock_ws_connection_manager.get_player = AsyncMock(side_effect=error)
 
-    await handle_chat_message(mock_websocket, "player_001", "Hello", mock_ws_connection_manager)
+    await handle_chat_message(mock_websocket, TEST_PLAYER_ID_STR, "Hello", mock_ws_connection_manager)
     # Should send error response
     mock_websocket.send_json.assert_awaited_once()
 

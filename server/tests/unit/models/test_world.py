@@ -17,7 +17,7 @@ from server.models.world import (
 # --- Tests for Zone model ---
 
 
-def test_zone_creation():
+def test_zone_creation() -> None:
     """Test Zone can be instantiated with required fields."""
     zone_id = str(uuid4())
     zone = Zone(
@@ -41,7 +41,7 @@ def test_zone_creation():
     assert zone.special_rules == {}
 
 
-def test_zone_with_optional_fields_none():
+def test_zone_with_optional_fields_none() -> None:
     """Test Zone can have None for optional fields."""
     zone_id = str(uuid4())
     zone = Zone(
@@ -62,12 +62,12 @@ def test_zone_with_optional_fields_none():
     assert zone.special_rules is None
 
 
-def test_zone_table_name():
+def test_zone_table_name() -> None:
     """Test Zone has correct table name."""
     assert Zone.__tablename__ == "zones"
 
 
-def test_zone_repr():
+def test_zone_repr() -> None:
     """Test Zone __repr__ method."""
     zone_id = str(uuid4())
     zone = Zone(
@@ -88,7 +88,7 @@ def test_zone_repr():
 # --- Tests for Subzone model ---
 
 
-def test_subzone_creation():
+def test_subzone_creation() -> None:
     """Test Subzone can be instantiated with required fields."""
     zone_id = str(uuid4())
     subzone_id = str(uuid4())
@@ -111,7 +111,7 @@ def test_subzone_creation():
     assert subzone.special_rules == {}
 
 
-def test_subzone_with_optional_fields_none():
+def test_subzone_with_optional_fields_none() -> None:
     """Test Subzone can have None for optional fields."""
     zone_id = str(uuid4())
     subzone_id = str(uuid4())
@@ -130,12 +130,12 @@ def test_subzone_with_optional_fields_none():
     assert subzone.special_rules is None
 
 
-def test_subzone_table_name():
+def test_subzone_table_name() -> None:
     """Test Subzone has correct table name."""
     assert Subzone.__tablename__ == "subzones"
 
 
-def test_subzone_repr():
+def test_subzone_repr() -> None:
     """Test Subzone __repr__ method."""
     zone_id = str(uuid4())
     subzone_id = str(uuid4())
@@ -156,7 +156,7 @@ def test_subzone_repr():
 # --- Tests for RoomModel ---
 
 
-def test_room_model_creation():
+def test_room_model_creation() -> None:
     """Test RoomModel can be instantiated with required fields."""
     subzone_id = str(uuid4())
     room_id = str(uuid4())
@@ -177,7 +177,7 @@ def test_room_model_creation():
     assert room.attributes == {}
 
 
-def test_room_model_with_attributes():
+def test_room_model_with_attributes() -> None:
     """Test RoomModel can have attributes dictionary."""
     subzone_id = str(uuid4())
     room_id = str(uuid4())
@@ -193,12 +193,12 @@ def test_room_model_with_attributes():
     assert room.attributes == {"light": "bright", "temperature": "warm"}
 
 
-def test_room_model_table_name():
+def test_room_model_table_name() -> None:
     """Test RoomModel has correct table name."""
     assert RoomModel.__tablename__ == "rooms"
 
 
-def test_room_model_repr():
+def test_room_model_repr() -> None:
     """Test RoomModel __repr__ method."""
     subzone_id = str(uuid4())
     room_id = str(uuid4())
@@ -218,7 +218,7 @@ def test_room_model_repr():
 # --- Tests for RoomLink ---
 
 
-def test_room_link_creation():
+def test_room_link_creation() -> None:
     """Test RoomLink can be instantiated with required fields."""
     link_id = str(uuid4())
     from_room_id = str(uuid4())
@@ -238,7 +238,7 @@ def test_room_link_creation():
     assert link.attributes == {}
 
 
-def test_room_link_different_directions():
+def test_room_link_different_directions() -> None:
     """Test RoomLink can have different directions."""
     link_id = str(uuid4())
     from_room_id = str(uuid4())
@@ -254,7 +254,7 @@ def test_room_link_different_directions():
     assert link.direction == "east"
 
 
-def test_room_link_with_attributes():
+def test_room_link_with_attributes() -> None:
     """Test RoomLink can have attributes dictionary."""
     link_id = str(uuid4())
     from_room_id = str(uuid4())
@@ -270,12 +270,12 @@ def test_room_link_with_attributes():
     assert link.attributes == {"locked": True, "key_required": "master_key"}
 
 
-def test_room_link_table_name():
+def test_room_link_table_name() -> None:
     """Test RoomLink has correct table name."""
     assert RoomLink.__tablename__ == "room_links"
 
 
-def test_room_link_repr():
+def test_room_link_repr() -> None:
     """Test RoomLink __repr__ method."""
     link_id = str(uuid4())
     from_room_id = str(uuid4())
@@ -295,7 +295,7 @@ def test_room_link_repr():
 # --- Tests for ZoneConfigurationMapping ---
 
 
-def test_zone_configuration_mapping_creation():
+def test_zone_configuration_mapping_creation() -> None:
     """Test ZoneConfigurationMapping can be instantiated with required fields."""
     zone_id = str(uuid4())
     subzone_id = str(uuid4())
@@ -311,12 +311,12 @@ def test_zone_configuration_mapping_creation():
     assert mapping.subzone_id == subzone_id
 
 
-def test_zone_configuration_mapping_table_name():
+def test_zone_configuration_mapping_table_name() -> None:
     """Test ZoneConfigurationMapping has correct table name."""
     assert ZoneConfigurationMapping.__tablename__ == "zone_configurations"
 
 
-def test_zone_configuration_mapping_repr():
+def test_zone_configuration_mapping_repr() -> None:
     """Test ZoneConfigurationMapping __repr__ method."""
     zone_id = str(uuid4())
     subzone_id = str(uuid4())

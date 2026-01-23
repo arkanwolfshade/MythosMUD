@@ -8,7 +8,7 @@ This module handles player room entry/exit events and room occupant management.
 
 import uuid
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -178,7 +178,7 @@ class PlayerRoomEventHandler:
             room_data.pop("npcs", None)
             room_data.pop("occupants", None)
             room_data.pop("occupant_count", None)
-        return room_data
+        return cast(dict[str, Any], room_data)
 
     async def send_room_update_to_player(self, player_id: uuid.UUID | str, room_id: str) -> None:
         """

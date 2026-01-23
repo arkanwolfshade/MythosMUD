@@ -229,13 +229,13 @@ warn_redundant_casts = true
 warn_unused_ignores = true
 strict_equality = true
 strict_optional = true
-no_implicit_optional = true  # This one we've already fixed
-warn_return_any = false  # Too many false positives in current codebase
+no_implicit_optional = true
+warn_return_any = true
 warn_unreachable = true  # Best practice: enable, use inline # type: ignore[unreachable] where needed
-check_untyped_defs = false  # Would require 300+ fixes
-disallow_untyped_defs = false  # Would require 200+ fixes
-disallow_incomplete_defs = false  # Gradually enable per-module
-no_implicit_reexport = false  # Low priority for now
+check_untyped_defs = true
+# disallow_untyped_defs = true
+disallow_incomplete_defs = true
+no_implicit_reexport = true
 
 # Performance optimizations (best practices)
 cache_dir = ".mypy_cache"
@@ -286,6 +286,7 @@ module = [
     "jose.*",
     "psutil.*",
     "networkx.*",
+    "pytest_mock.*",
 ]
 ignore_missing_imports = true
 
@@ -342,10 +343,8 @@ module = [
 disallow_untyped_defs = false
 check_untyped_defs = false
 
-# pytest-mock type annotations not found by mypy in pre-commit environment despite being available in pytest-mock 3.15.1+
-[[tool.mypy.overrides]]
-module = ["pytest_mock.*"]
-ignore_missing_imports = true
+# pytest-mock types are now available in pytest-mock 3.15.1+, override no longer needed
+# Removed unused override section that was causing mypy warnings
 
 [dependency-groups]
 dev = [
@@ -368,3 +367,8 @@ dev = [
     # sqlint>=0.2.1 - REMOVED: Conflicts with click>=8.1.8 (sqlint requires click==7.0)
     # Use sqlfluff instead, which provides comprehensive SQL linting
 ]
+
+[tool.uv]
+# Suppress hardlink warning on Windows when cache and project are on different filesystems
+# Using "copy" mode ensures files are always copied instead of hardlinked
+link-mode = "copy"

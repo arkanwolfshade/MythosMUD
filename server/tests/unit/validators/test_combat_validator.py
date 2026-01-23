@@ -4,6 +4,8 @@ Unit tests for combat validator.
 Tests the CombatValidator class for combat command validation with thematic error messages.
 """
 
+from typing import Any
+
 import pytest
 
 from server.validators.combat_validator import CombatValidator
@@ -31,7 +33,7 @@ def test_combat_validator_init(combat_validator):
 def test_validate_combat_command_valid(combat_validator):
     """Test validate_combat_command with valid command."""
     command_data = {"command_type": "attack", "args": ["target"]}
-    player_context = {}
+    player_context: dict[str, Any] = {}
 
     is_valid, error_msg, warning_msg = combat_validator.validate_combat_command(command_data, player_context)
 
@@ -43,7 +45,7 @@ def test_validate_combat_command_valid(combat_validator):
 def test_validate_combat_command_invalid_command_type(combat_validator):
     """Test validate_combat_command with invalid command type."""
     command_data = {"command_type": "invalid_command", "args": ["target"]}
-    player_context = {}
+    player_context: dict[str, Any] = {}
 
     is_valid, error_msg, warning_msg = combat_validator.validate_combat_command(command_data, player_context)
 
@@ -56,7 +58,7 @@ def test_validate_combat_command_invalid_command_type(combat_validator):
 def test_validate_combat_command_no_target(combat_validator):
     """Test validate_combat_command with no target."""
     command_data = {"command_type": "attack", "args": []}
-    player_context = {}
+    player_context: dict[str, Any] = {}
 
     is_valid, error_msg, warning_msg = combat_validator.validate_combat_command(command_data, player_context)
 
@@ -69,7 +71,7 @@ def test_validate_combat_command_no_target(combat_validator):
 def test_validate_combat_command_invalid_target_name(combat_validator):
     """Test validate_combat_command with invalid target name format."""
     command_data = {"command_type": "attack", "args": ["target<script>"]}
-    player_context = {}
+    player_context: dict[str, Any] = {}
 
     is_valid, error_msg, warning_msg = combat_validator.validate_combat_command(command_data, player_context)
 
@@ -84,7 +86,7 @@ def test_validate_combat_command_suspicious_patterns(combat_validator):
     # But we can test that the suspicious pattern check exists and works if format check somehow passes
     # The format check is very restrictive, so suspicious patterns are typically caught earlier
     command_data = {"command_type": "attack", "args": ["target<script>"]}
-    player_context = {}
+    player_context: dict[str, Any] = {}
 
     is_valid, error_msg, _warning_msg = combat_validator.validate_combat_command(command_data, player_context)
 
@@ -102,7 +104,7 @@ def test_validate_combat_command_target_too_long(combat_validator):
     # So line 161 is unreachable for length > 50, but we test that length > 50 is caught
     long_target = "a" * 51
     command_data = {"command_type": "attack", "args": [long_target]}
-    player_context = {}
+    player_context: dict[str, Any] = {}
 
     is_valid, error_msg, _warning_msg = combat_validator.validate_combat_command(command_data, player_context)
 
@@ -115,7 +117,7 @@ def test_validate_combat_command_target_too_long(combat_validator):
 def test_validate_combat_command_rate_limited(combat_validator):
     """Test validate_combat_command when rate limited."""
     command_data = {"command_type": "attack", "args": ["target"]}
-    player_context = {"rate_limited": True}
+    player_context: dict[str, Any] = {"rate_limited": True}
 
     # Mock rate limiting to return True
     combat_validator._is_rate_limited = lambda ctx: ctx.get("rate_limited", False)
@@ -131,7 +133,7 @@ def test_validate_combat_command_rate_limited(combat_validator):
 def test_validate_combat_command_exception_handling(combat_validator):
     """Test validate_combat_command handles exceptions gracefully."""
     command_data = None  # Invalid data to cause exception
-    player_context = {}
+    player_context: dict[str, Any] = {}
 
     is_valid, error_msg, warning_msg = combat_validator.validate_combat_command(command_data, player_context)
 
@@ -369,7 +371,7 @@ def test_contains_suspicious_patterns_clean(combat_validator):
 
 def test_is_rate_limited(combat_validator):
     """Test _is_rate_limited (currently always returns False)."""
-    player_context = {}
+    player_context: dict[str, Any] = {}
     assert combat_validator._is_rate_limited(player_context) is False
 
 
@@ -495,7 +497,7 @@ def test_validate_combat_command_all_attack_aliases(combat_validator):
     """Test validate_combat_command accepts all attack aliases."""
     for alias in combat_validator.attack_aliases:
         command_data = {"command_type": alias, "args": ["target"]}
-        player_context = {}
+        player_context: dict[str, Any] = {}
 
         is_valid, error_msg, warning_msg = combat_validator.validate_combat_command(command_data, player_context)
 
@@ -524,7 +526,7 @@ def test_validate_combat_command_suspicious_patterns_with_mock(combat_validator)
     from unittest.mock import patch
 
     command_data = {"command_type": "attack", "args": ["target<script>"]}
-    player_context = {}
+    player_context: dict[str, Any] = {}
 
     with patch.object(combat_validator, "_is_valid_target_name", return_value=True):
         is_valid, error_msg, warning_msg = combat_validator.validate_combat_command(command_data, player_context)
@@ -543,7 +545,7 @@ def test_validate_combat_command_target_too_long_with_mock(combat_validator):
 
     long_target = "a" * 51
     command_data = {"command_type": "attack", "args": [long_target]}
-    player_context = {}
+    player_context: dict[str, Any] = {}
 
     with patch.object(combat_validator, "_is_valid_target_name", return_value=True):
         with patch.object(combat_validator, "_contains_suspicious_patterns", return_value=False):

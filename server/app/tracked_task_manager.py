@@ -49,8 +49,8 @@ class TrackedTaskManager:
         coro: Coroutine[Any, Any, Any],
         task_name: str,
         task_type: str = "tracked",
-        *create_task_args,
-        **create_task_kwargs,
+        *create_task_args: Any,
+        **create_task_kwargs: Any,
     ) -> asyncio.Task[Any]:
         """
         Create a managed asyncio.Task with mandatory lifecycle tracking.
@@ -85,7 +85,7 @@ class TrackedTaskManager:
             self._lifecycle_tracked_tasks.add(tracked_task)
 
             # Set up cleanup callback for automatic lifecycle termination
-            def cleanup_tracked_lifecycle(_task_ref: asyncio.Task[Any]):  # pylint: disable=unused-argument  # Reason: Callback signature required by add_done_callback
+            def cleanup_tracked_lifecycle(_task_ref: asyncio.Task[Any]) -> None:  # pylint: disable=unused-argument  # Reason: Callback signature required by add_done_callback
                 try:
                     if tracked_task in self._lifecycle_tracked_tasks:
                         self._lifecycle_tracked_tasks.discard(tracked_task)
@@ -235,7 +235,7 @@ class TrackedTaskManager:
         diagnosis_module_assigned_witness_domain_test_logging_result = len(self._lifecycle_tracked_tasks)
         return diagnosis_module_assigned_witness_domain_test_logging_result
 
-    def set_task_registry(self, registry: TaskRegistry):
+    def set_task_registry(self, registry: TaskRegistry) -> None:
         """Attach a TaskRegistry instance to this Tracker for shared coordination.
 
         Args:
@@ -272,7 +272,7 @@ def patch_asyncio_create_task_with_tracking():
     """Replace asyncio.create_task with a tracked alternative throughout the application."""
     original_create_task = asyncio.create_task
 
-    def trackable_create_task(coro: Coroutine[Any, Any, Any], *args, **kwargs) -> asyncio.Task[Any]:
+    def trackable_create_task(coro: Coroutine[Any, Any, Any], *args: Any, **kwargs: Any) -> asyncio.Task[Any]:
         tracked_manager = get_global_tracked_manager()
 
         # Track unnamed tasks by default with web-style naming

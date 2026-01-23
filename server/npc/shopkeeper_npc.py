@@ -4,10 +4,14 @@ Shopkeeper NPC type for MythosMUD.
 This module provides the ShopkeeperNPC class with buy/sell functionality.
 """
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from ..structured_logging.enhanced_logging_config import get_logger
 from .npc_base import NPCBase
+
+if TYPE_CHECKING:
+    from ..events import EventBus
+    from .event_reaction_system import NPCEventReactionSystem
 
 logger = get_logger(__name__)
 
@@ -15,7 +19,13 @@ logger = get_logger(__name__)
 class ShopkeeperNPC(NPCBase):
     """Shopkeeper NPC type with buy/sell functionality."""
 
-    def __init__(self, definition: Any, npc_id: str, event_bus=None, event_reaction_system=None):
+    def __init__(
+        self,
+        definition: Any,
+        npc_id: str,
+        event_bus: "EventBus | None" = None,
+        event_reaction_system: "NPCEventReactionSystem | None" = None,
+    ):
         """Initialize shopkeeper NPC."""
         super().__init__(definition, npc_id, event_bus, event_reaction_system)
         self._shop_inventory: list[dict[str, Any]] = []

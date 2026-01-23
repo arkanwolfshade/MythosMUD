@@ -5,7 +5,7 @@ This module provides helper functions for retrieving statistics
 and reporting information from the connection manager.
 """
 
-from typing import Any
+from typing import Any, cast
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -116,7 +116,8 @@ def get_online_player_by_display_name_impl(display_name: str, manager: Any) -> d
     for player_id, player_info in manager.online_players.items():
         if player_info.get("player_name", "").lower() == display_name_lower:
             logger.debug("Found online player", display_name=display_name, player_id=player_id)
-            return player_info
+            result: dict[str, Any] = cast(dict[str, Any], player_info)
+            return result
 
     logger.debug("Online player not found", display_name=display_name)
     return None

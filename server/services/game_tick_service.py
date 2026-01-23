@@ -5,11 +5,15 @@ Handles the game tick system that runs at regular intervals.
 
 import asyncio
 from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 
 from anyio import sleep
 
 from ..app.tracked_task_manager import get_global_tracked_manager
 from ..structured_logging.enhanced_logging_config import get_logger
+
+if TYPE_CHECKING:
+    from ..realtime.event_publisher import EventPublisher
 
 logger = get_logger("services.game_tick_service")
 
@@ -22,7 +26,7 @@ class GameTickService:
     and publishes game_tick events via the EventPublisher.
     """
 
-    def __init__(self, event_publisher, tick_interval: float = 10.0):
+    def __init__(self, event_publisher: "EventPublisher", tick_interval: float = 10.0) -> None:
         """
         Initialize the GameTickService.
 

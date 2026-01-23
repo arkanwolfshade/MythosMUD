@@ -9,7 +9,7 @@ from uuid import uuid4
 from server.models.player import Player
 
 
-def test_player_creation():
+def test_player_creation() -> None:
     """Test Player can be instantiated with required fields."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -24,7 +24,7 @@ def test_player_creation():
     assert player.name == "TestPlayer"
 
 
-def test_player_defaults():
+def test_player_defaults() -> None:
     """Test Player has correct default values."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -38,7 +38,7 @@ def test_player_defaults():
     assert player.is_admin == 0 or player.is_admin is None
 
 
-def test_player_get_stats():
+def test_player_get_stats() -> None:
     """Test Player.get_stats() returns stats dictionary."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -57,7 +57,7 @@ def test_player_get_stats():
     assert "position" in stats
 
 
-def test_player_get_stats_default():
+def test_player_get_stats_default() -> None:
     """Test Player.get_stats() returns default stats if not set."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -70,7 +70,7 @@ def test_player_get_stats_default():
     assert "strength" in stats or stats == {}
 
 
-def test_player_set_stats():
+def test_player_set_stats() -> None:
     """Test Player.set_stats() updates stats dictionary."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -86,7 +86,7 @@ def test_player_set_stats():
     assert "position" in stats
 
 
-def test_player_get_inventory():
+def test_player_get_inventory() -> None:
     """Test Player.get_inventory() parses JSON inventory."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -102,7 +102,7 @@ def test_player_get_inventory():
     assert inventory == [{"id": "item1", "name": "Sword"}]
 
 
-def test_player_get_inventory_empty():
+def test_player_get_inventory_empty() -> None:
     """Test Player.get_inventory() handles empty inventory."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -118,7 +118,7 @@ def test_player_get_inventory_empty():
     assert inventory == []
 
 
-def test_player_set_inventory():
+def test_player_set_inventory() -> None:
     """Test Player.set_inventory() serializes to JSON."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -130,7 +130,7 @@ def test_player_set_inventory():
     assert player.get_inventory() == new_inventory
 
 
-def test_player_get_status_effects():
+def test_player_get_status_effects() -> None:
     """Test Player.get_status_effects() parses JSON status effects."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -146,7 +146,7 @@ def test_player_get_status_effects():
     assert effects == [{"type": "poisoned", "duration": 10}]
 
 
-def test_player_set_status_effects():
+def test_player_set_status_effects() -> None:
     """Test Player.set_status_effects() serializes to JSON."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -158,7 +158,7 @@ def test_player_set_status_effects():
     assert player.get_status_effects() == new_effects
 
 
-def test_player_get_equipped_items():
+def test_player_get_equipped_items() -> None:
     """Test Player.get_equipped_items() returns equipped items from _equipped_items attribute."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -172,7 +172,7 @@ def test_player_get_equipped_items():
     assert equipped == {"weapon": "sword", "armor": "leather"}
 
 
-def test_player_get_equipped_items_empty():
+def test_player_get_equipped_items_empty() -> None:
     """Test Player.get_equipped_items() returns empty dict if no equipped items."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -188,7 +188,7 @@ def test_player_get_equipped_items_empty():
     assert equipped == {}
 
 
-def test_player_set_equipped_items():
+def test_player_set_equipped_items() -> None:
     """Test Player.set_equipped_items() updates equipped items in stats."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -200,7 +200,7 @@ def test_player_set_equipped_items():
     assert player.get_equipped_items() == new_equipped
 
 
-def test_player_add_experience():
+def test_player_add_experience() -> None:
     """Test Player.add_experience() increases experience points."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -216,7 +216,7 @@ def test_player_add_experience():
     assert player.experience_points == 150
 
 
-def test_player_add_experience_zero():
+def test_player_add_experience_zero() -> None:
     """Test Player.add_experience() handles zero experience."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -232,7 +232,7 @@ def test_player_add_experience_zero():
     assert player.experience_points == 100
 
 
-def test_player_is_alive():
+def test_player_is_alive() -> None:
     """Test Player.is_alive() returns True when current_dp > 0."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -246,7 +246,7 @@ def test_player_is_alive():
     assert player.is_alive() is True
 
 
-def test_player_is_alive_false():
+def test_player_is_alive_false() -> None:
     """Test Player.is_alive() returns False when current_dp <= 0."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -260,7 +260,7 @@ def test_player_is_alive_false():
     assert player.is_alive() is False
 
 
-def test_player_is_mortally_wounded():
+def test_player_is_mortally_wounded() -> None:
     """Test Player.is_mortally_wounded() returns True when current_dp < 0."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -274,7 +274,7 @@ def test_player_is_mortally_wounded():
     assert player.is_mortally_wounded() is True
 
 
-def test_player_is_mortally_wounded_false():
+def test_player_is_mortally_wounded_false() -> None:
     """Test Player.is_mortally_wounded() returns False when current_dp >= 0."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -288,7 +288,7 @@ def test_player_is_mortally_wounded_false():
     assert player.is_mortally_wounded() is False
 
 
-def test_player_is_dead():
+def test_player_is_dead() -> None:
     """Test Player.is_dead() returns True when current_dp <= -10."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -302,7 +302,7 @@ def test_player_is_dead():
     assert player.is_dead() is True
 
 
-def test_player_is_dead_false():
+def test_player_is_dead_false() -> None:
     """Test Player.is_dead() returns False when current_dp > -10."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -316,7 +316,7 @@ def test_player_is_dead_false():
     assert player.is_dead() is False
 
 
-def test_player_get_health_state():
+def test_player_get_health_state() -> None:
     """Test Player.get_health_state() returns correct state."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -349,7 +349,7 @@ def test_player_get_health_state():
     assert player3.get_health_state() == "dead"
 
 
-def test_player_is_admin_user():
+def test_player_is_admin_user() -> None:
     """Test Player.is_admin_user() returns True when is_admin > 0."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -363,7 +363,7 @@ def test_player_is_admin_user():
     assert player.is_admin_user() is True
 
 
-def test_player_is_admin_user_false():
+def test_player_is_admin_user_false() -> None:
     """Test Player.is_admin_user() returns False when is_admin == 0."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -377,7 +377,7 @@ def test_player_is_admin_user_false():
     assert player.is_admin_user() is False
 
 
-def test_player_set_admin_status():
+def test_player_set_admin_status() -> None:
     """Test Player.set_admin_status() updates is_admin."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -394,7 +394,7 @@ def test_player_set_admin_status():
     assert player.is_admin_user() is True
 
 
-def test_player_set_admin_status_false():
+def test_player_set_admin_status_false() -> None:
     """Test Player.set_admin_status(False) sets is_admin to 0."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -411,7 +411,7 @@ def test_player_set_admin_status_false():
     assert player.is_admin_user() is False
 
 
-def test_player_get_health_percentage():
+def test_player_get_health_percentage() -> None:
     """Test Player.get_health_percentage() calculates percentage correctly."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -427,7 +427,7 @@ def test_player_get_health_percentage():
     assert percentage == 50.0
 
 
-def test_player_get_health_percentage_full():
+def test_player_get_health_percentage_full() -> None:
     """Test Player.get_health_percentage() returns 100.0 when at full health."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -443,7 +443,7 @@ def test_player_get_health_percentage_full():
     assert percentage == 100.0
 
 
-def test_player_get_health_percentage_zero():
+def test_player_get_health_percentage_zero() -> None:
     """Test Player.get_health_percentage() returns 0.0 when current_dp is 0."""
     player_id = str(uuid4())
     user_id = str(uuid4())
@@ -459,12 +459,12 @@ def test_player_get_health_percentage_zero():
     assert percentage == 0.0
 
 
-def test_player_table_name():
+def test_player_table_name() -> None:
     """Test Player has correct table name."""
     assert Player.__tablename__ == "players"
 
 
-def test_player_repr():
+def test_player_repr() -> None:
     """Test Player __repr__ method."""
     player_id = str(uuid4())
     user_id = str(uuid4())

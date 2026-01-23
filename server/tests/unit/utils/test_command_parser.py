@@ -3,6 +3,8 @@ Unit tests for command parser.
 
 Tests the CommandParser class which provides secure command parsing and validation.
 """
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
 
 from unittest.mock import MagicMock, patch
 
@@ -183,7 +185,7 @@ def test_create_command_object_handles_alias_w(command_parser):
     mock_command = MagicMock(spec=Command)
     original_method = command_parser._command_factory.get("whisper")
 
-    def mock_create_whisper(args):
+    def mock_create_whisper(_args):
         return mock_command
 
     command_parser._command_factory["whisper"] = mock_create_whisper
@@ -191,8 +193,9 @@ def test_create_command_object_handles_alias_w(command_parser):
 
     assert result == mock_command
 
-    # Restore original
-    command_parser._command_factory["whisper"] = original_method
+    # Restore original (only if we successfully retrieved it)
+    if original_method is not None:
+        command_parser._command_factory["whisper"] = original_method
 
 
 def test_create_command_object_handles_alias_l(command_parser):
@@ -202,7 +205,7 @@ def test_create_command_object_handles_alias_l(command_parser):
     mock_command = MagicMock(spec=Command)
     original_method = command_parser._command_factory.get("local")
 
-    def mock_create_local(args):
+    def mock_create_local(_args):
         return mock_command
 
     command_parser._command_factory["local"] = mock_create_local
@@ -210,8 +213,9 @@ def test_create_command_object_handles_alias_l(command_parser):
 
     assert result == mock_command
 
-    # Restore original
-    command_parser._command_factory["local"] = original_method
+    # Restore original (only if we successfully retrieved it)
+    if original_method is not None:
+        command_parser._command_factory["local"] = original_method
 
 
 def test_create_command_object_handles_alias_g(command_parser):
@@ -241,11 +245,13 @@ def test_create_command_object_unsupported_command(command_parser):
     assert "Unsupported command" in str(exc_info.value)
 
 
-def test_create_command_object_pydantic_validation_error(command_parser) -> None:
+def test_create_command_object_pydantic_validation_error(command_parser: CommandParser) -> None:
     """Test _create_command_object handles Pydantic validation errors."""
     from pydantic import BaseModel
 
     class TestModel(BaseModel):
+        """Test model for triggering Pydantic validation errors."""
+
         field: int
 
     # Create a validation error
@@ -262,7 +268,7 @@ def test_create_command_object_pydantic_validation_error(command_parser) -> None
                 {
                     "type": "int_parsing",
                     "loc": ("field",),
-                    "msg": "Input should be a valid integer",
+                    "msg": "Input should be a valid integer",  # type: ignore[typeddict-unknown-key]  # Pydantic's from_exception_data uses "msg" key, not "message"
                     "input": "not_an_int",
                 }
             ],
@@ -277,8 +283,9 @@ def test_create_command_object_pydantic_validation_error(command_parser) -> None
 
     assert "Invalid command format" in str(exc_info.value)
 
-    # Restore original
-    command_parser._command_factory["look"] = original_method
+    # Restore original (only if we successfully retrieved it)
+    if original_method is not None:
+        command_parser._command_factory["look"] = original_method
 
 
 def test_create_command_object_value_error(command_parser):
@@ -296,8 +303,9 @@ def test_create_command_object_value_error(command_parser):
 
     assert "Failed to create command" in str(exc_info.value)
 
-    # Restore original
-    command_parser._command_factory["look"] = original_method
+    # Restore original (only if we successfully retrieved it)
+    if original_method is not None:
+        command_parser._command_factory["look"] = original_method
 
 
 def test_create_command_object_type_error(command_parser):
@@ -315,8 +323,9 @@ def test_create_command_object_type_error(command_parser):
 
     assert "Failed to create command" in str(exc_info.value)
 
-    # Restore original
-    command_parser._command_factory["look"] = original_method
+    # Restore original (only if we successfully retrieved it)
+    if original_method is not None:
+        command_parser._command_factory["look"] = original_method
 
 
 def test_create_command_object_attribute_error(command_parser):
@@ -334,8 +343,9 @@ def test_create_command_object_attribute_error(command_parser):
 
     assert "Failed to create command" in str(exc_info.value)
 
-    # Restore original
-    command_parser._command_factory["look"] = original_method
+    # Restore original (only if we successfully retrieved it)
+    if original_method is not None:
+        command_parser._command_factory["look"] = original_method
 
 
 def test_create_command_object_key_error(command_parser):
@@ -353,8 +363,9 @@ def test_create_command_object_key_error(command_parser):
 
     assert "Failed to create command" in str(exc_info.value)
 
-    # Restore original
-    command_parser._command_factory["look"] = original_method
+    # Restore original (only if we successfully retrieved it)
+    if original_method is not None:
+        command_parser._command_factory["look"] = original_method
 
 
 def test_create_command_object_runtime_error(command_parser):
@@ -372,8 +383,9 @@ def test_create_command_object_runtime_error(command_parser):
 
     assert "Failed to create command" in str(exc_info.value)
 
-    # Restore original
-    command_parser._command_factory["look"] = original_method
+    # Restore original (only if we successfully retrieved it)
+    if original_method is not None:
+        command_parser._command_factory["look"] = original_method
 
 
 def test_create_command_object_re_raises_mythos_validation_error(command_parser):
@@ -393,8 +405,9 @@ def test_create_command_object_re_raises_mythos_validation_error(command_parser)
     with pytest.raises(MythosValidationError):
         command_parser._create_command_object("look", [])
 
-    # Restore original
-    command_parser._command_factory["look"] = original_method
+    # Restore original (only if we successfully retrieved it)
+    if original_method is not None:
+        command_parser._command_factory["look"] = original_method
 
 
 def test_get_command_help_specific(command_parser):

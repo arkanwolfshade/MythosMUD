@@ -7,7 +7,7 @@ and disconnections, extracting common logic from ConnectionManager.
 
 import time
 import uuid
-from typing import Any
+from typing import Any, cast
 
 from ..exceptions import DatabaseError
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -90,9 +90,9 @@ def _resolve_room_id(player: Any, manager: Any) -> str | None:
 
     room = manager.async_persistence.get_room_by_id(room_id)
     if room and getattr(room, "id", None):
-        return room.id
+        return cast(str, room.id)
 
-    return room_id
+    return cast(str | None, room_id)
 
 
 async def track_player_connected_impl(

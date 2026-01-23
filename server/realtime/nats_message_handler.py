@@ -19,7 +19,7 @@ from ..realtime.dead_letter_queue import DeadLetterMessage, DeadLetterQueue
 from ..realtime.envelope import build_event
 from ..realtime.nats_retry_handler import NATSRetryHandler
 from ..schemas.nats_messages import validate_message
-from ..services.nats_exceptions import NATSError
+from ..services.nats_exceptions import NATSError, NATSSubscribeError
 from ..structured_logging.enhanced_logging_config import get_logger
 from .connection_manager import resolve_connection_manager as _resolve_connection_manager
 from .event_handlers import EventHandler
@@ -29,6 +29,9 @@ from .message_formatters import format_message_content
 logger = get_logger("communications.nats_message_handler")
 
 if TYPE_CHECKING:
+    from ..realtime.connection_manager import ConnectionManager
+    from ..services.nats_service import NATSService
+    from ..services.nats_subject_manager import NATSSubjectManager
     from ..services.user_manager import UserManager
 
 
@@ -73,11 +76,11 @@ class NATSMessageHandler:
 
     def __init__(
         self,
-        nats_service,
-        subject_manager=None,
-        connection_manager=None,
+        nats_service: "NATSService | None" = None,
+        subject_manager: "NATSSubjectManager | None" = None,
+        connection_manager: "ConnectionManager | None" = None,
         user_manager: "UserManager | None" = None,
-    ):
+    ) -> None:
         """
         Initialize NATS message handler with error boundaries.
 
@@ -131,14 +134,22 @@ class NATSMessageHandler:
         """
         # Prefer explicitly injected manager
         if self._connection_manager is not None:
-            resolved = _resolve_connection_manager(self._connection_manager)
-            if resolved is not None:
-                return resolved
+            try:
+                resolved = _resolve_connection_manager(self._connection_manager)
+                if resolved is not None:
+                    return resolved
+            except (RuntimeError, AttributeError):
+                # Resolution error - fall through to fallback
+                pass
 
         # Try to resolve from container as fallback
-        fallback = _resolve_connection_manager(None)
-        if fallback is not None:
-            return fallback
+        try:
+            fallback = _resolve_connection_manager(None)
+            if fallback is not None:
+                return fallback
+        except (RuntimeError, AttributeError):
+            # Resolution error - fall through to legacy stub
+            pass
 
         # No concrete manager available; return the stub so patched methods remain usable
         return _LEGACY_CONNECTION_MANAGER_STUB
@@ -153,7 +164,7 @@ class NATSMessageHandler:
         if hasattr(self, "_event_handler"):
             self._event_handler.connection_manager = value
 
-    async def start(self, enable_event_subscriptions: bool = True):
+    async def start(self, enable_event_subscriptions: bool = True) -> bool:
         """
         Start the NATS message handler and subscribe to subjects.
 
@@ -232,6 +243,8 @@ class NATSMessageHandler:
         )
 
         # Get standardized chat subscription patterns from subject manager
+        if self.subject_manager is None:
+            raise RuntimeError("NATSSubjectManager is required for chat subject subscriptions")
         subscription_patterns = self.subject_manager.get_chat_subscription_patterns()
 
         logger.info(
@@ -255,7 +268,7 @@ class NATSMessageHandler:
 
         logger.info("Finished _subscribe_to_standardized_chat_subjects", debug=True)
 
-    async def _subscribe_to_subject(self, subject: str):
+    async def _subscribe_to_subject(self, subject: str) -> bool:
         """
         Subscribe to a specific NATS subject.
 
@@ -267,14 +280,21 @@ class NATSMessageHandler:
         """
         try:
             logger.info("Attempting to subscribe to NATS subject", subject=subject, debug=True)
+            if self.nats_service is None:
+                logger.error("NATSService is required for subscriptions", subject=subject)
+                return False
             # subscribe() now raises exceptions instead of returning False
-            await self.nats_service.subscribe(subject, self._handle_nats_message)
+            # Reason: NATS service accepts async callbacks at runtime despite sync type signature
+            await self.nats_service.subscribe(subject, self._handle_nats_message)  # type: ignore[arg-type]
             self.subscriptions[subject] = True
             logger.info("Successfully subscribed to NATS subject", subject=subject, debug=True)
+            return True
+        except NATSSubscribeError:
+            # Re-raise NATSSubscribeError as documented in docstring
+            raise
         except (NATSError, RuntimeError) as e:
             logger.error("Error subscribing to NATS subject", subject=subject, error=str(e), debug=True)
-            # Re-raise to propagate error
-            raise
+            return False
 
     async def _unsubscribe_from_subject(self, subject: str) -> bool:
         """
@@ -286,6 +306,9 @@ class NATSMessageHandler:
         AI: Handles NATSUnsubscribeError exceptions and returns False for backward compatibility.
         """
         try:
+            if self.nats_service is None:
+                logger.error("NATSService is required for unsubscriptions", subject=subject)
+                return False
             await self.nats_service.unsubscribe(subject)
             if subject in self.subscriptions:
                 del self.subscriptions[subject]
@@ -295,7 +318,7 @@ class NATSMessageHandler:
             logger.error("Error unsubscribing from NATS subject", subject=subject, error=str(e))
             return False
 
-    async def _handle_nats_message(self, message_data: dict[str, Any]):
+    async def _handle_nats_message(self, message_data: dict[str, Any]) -> None:
         """
         Handle incoming NATS message with error boundaries.
 
@@ -343,12 +366,14 @@ class NATSMessageHandler:
 
             self.metrics.record_message_dlq(channel)
 
-        except (NATSError, RuntimeError) as e:
-            # Unexpected error - should not happen if retry logic works correctly
-            logger.critical(
-                "Unhandled error in message processing - this indicates a bug!",
+        except (ValueError, NATSError, RuntimeError, AttributeError) as e:
+            # Handle validation errors and other unexpected errors
+            # Validation errors from validate_message should be caught and handled gracefully
+            logger.error(
+                "Error in message processing",
                 message_id=message_id,
                 error=str(e),
+                error_type=type(e).__name__,
                 exc_info=True,
             )
 
@@ -365,7 +390,7 @@ class NATSMessageHandler:
 
             self.metrics.record_message_failed(channel, type(e).__name__)
 
-    async def _process_message_with_retry(self, message_data: dict[str, Any]):
+    async def _process_message_with_retry(self, message_data: dict[str, Any]) -> None:
         """
         Process message with retry logic.
 
@@ -409,7 +434,7 @@ class NATSMessageHandler:
             # Re-raise to trigger circuit breaker
             raise result
 
-    async def _process_single_message(self, message_data: dict[str, Any]):
+    async def _process_single_message(self, message_data: dict[str, Any]) -> None:
         """
         Process a single NATS message (original logic, can raise exceptions).
 
@@ -430,8 +455,8 @@ class NATSMessageHandler:
             message_keys=list(message_data.keys()) if isinstance(message_data, dict) else None,
         )
 
-        # Check if this is an event message
-        if message_data.get("event_type"):
+        # Check if this is an event message (either event_type or event_data indicates event message)
+        if message_data.get("event_type") or message_data.get("event_data"):
             await self._event_handler.handle_event_message(message_data)
             return
 
@@ -576,12 +601,12 @@ class NATSMessageHandler:
     async def _broadcast_by_channel_type(
         self,
         channel: str,
-        chat_event: dict,
+        chat_event: dict[str, Any],
         room_id: str,
         party_id: str,
         target_player_id: uuid.UUID | None,
         sender_id: uuid.UUID,
-    ):
+    ) -> None:
         """
         Broadcast message based on channel type using strategy pattern.
 
@@ -803,7 +828,9 @@ class NATSMessageHandler:
                 error=str(echo_error),
             )
 
-    async def _broadcast_to_room_with_filtering(self, room_id: str, chat_event: dict, sender_id: str, channel: str):
+    async def _broadcast_to_room_with_filtering(
+        self, room_id: str, chat_event: dict[str, Any], sender_id: str, channel: str
+    ) -> None:
         """
         Broadcast room-based messages with server-side filtering.
 
@@ -1026,14 +1053,14 @@ class NATSMessageHandler:
         return self._filtering_helper.is_player_muted_by_receiver(receiver_id, sender_id)
 
     async def _is_player_muted_by_receiver_with_user_manager(
-        self, user_manager, receiver_id: str, sender_id: str
+        self, user_manager: "UserManager", receiver_id: str, sender_id: str
     ) -> bool:
         """Check if a receiving player has muted the sender using a provided UserManager instance."""
         return await self._filtering_helper.is_player_muted_by_receiver_with_user_manager(
             user_manager, receiver_id, sender_id
         )
 
-    async def subscribe_to_room(self, room_id: str):
+    async def subscribe_to_room(self, room_id: str) -> None:
         """
         Subscribe to chat messages for a specific room.
 
@@ -1058,7 +1085,7 @@ class NATSMessageHandler:
             if subject not in self.subscriptions:
                 await self._subscribe_to_subject(subject)
 
-    async def unsubscribe_from_room(self, room_id: str):
+    async def unsubscribe_from_room(self, room_id: str) -> None:
         """
         Unsubscribe from chat messages for a specific room.
 
@@ -1390,19 +1417,19 @@ class NATSMessageHandler:
         """Validate that event message has required fields."""
         return self._event_handler.validate_event_message(event_type, data)
 
-    async def _handle_event_message(self, message_data: dict[str, Any]):
+    async def _handle_event_message(self, message_data: dict[str, Any]) -> None:
         """Handle incoming event messages from NATS."""
         await self._event_handler.handle_event_message(message_data)
 
-    async def _handle_player_entered_event(self, data: dict[str, Any]):
+    async def _handle_player_entered_event(self, data: dict[str, Any]) -> None:
         """Handle player_entered event."""
         await self._event_handler.handle_player_entered_event(data)
 
-    async def _handle_player_left_event(self, data: dict[str, Any]):
+    async def _handle_player_left_event(self, data: dict[str, Any]) -> None:
         """Handle player_left event."""
         await self._event_handler.handle_player_left_event(data)
 
-    async def _handle_game_tick_event(self, data: dict[str, Any]):
+    async def _handle_game_tick_event(self, data: dict[str, Any]) -> None:
         """Handle game_tick event."""
         await self._event_handler.handle_game_tick_event(data)
 
@@ -1438,27 +1465,27 @@ class NATSMessageHandler:
         """
         return subject in self.subscriptions
 
-    async def _handle_combat_started_event(self, data: dict[str, Any]):
+    async def _handle_combat_started_event(self, data: dict[str, Any]) -> None:
         """Handle combat_started event."""
         await self._event_handler.handle_combat_started_event(data)
 
-    async def _handle_combat_ended_event(self, data: dict[str, Any]):
+    async def _handle_combat_ended_event(self, data: dict[str, Any]) -> None:
         """Handle combat_ended event."""
         await self._event_handler.handle_combat_ended_event(data)
 
-    async def _handle_player_attacked_event(self, data: dict[str, Any]):
+    async def _handle_player_attacked_event(self, data: dict[str, Any]) -> None:
         """Handle player_attacked event."""
         await self._event_handler.handle_player_attacked_event(data)
 
-    async def _handle_npc_attacked_event(self, data: dict[str, Any]):
+    async def _handle_npc_attacked_event(self, data: dict[str, Any]) -> None:
         """Handle npc_attacked event."""
         await self._event_handler.handle_npc_attacked_event(data)
 
-    async def _handle_npc_took_damage_event(self, data: dict[str, Any]):
+    async def _handle_npc_took_damage_event(self, data: dict[str, Any]) -> None:
         """Handle npc_took_damage event."""
         await self._event_handler.handle_npc_took_damage_event(data)
 
-    async def _handle_npc_died_event(self, data: dict[str, Any]):
+    async def _handle_npc_died_event(self, data: dict[str, Any]) -> None:
         """Handle npc_died event - NATS to EventBus bridge pattern."""
         await self._event_handler.handle_npc_died_event(data)
 

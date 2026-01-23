@@ -212,9 +212,9 @@ def test_extract_occupant_names_none(player_event_handler_utils):
 def test_add_valid_name_to_lists_player(player_event_handler_utils, mock_name_extractor):
     """Test add_valid_name_to_lists() adds player name."""
     mock_name_extractor.is_valid_name_for_occupant.return_value = True
-    players = []
-    npcs = []
-    all_occupants = []
+    players: list[str] = []
+    npcs: list[str] = []
+    all_occupants: list[str] = []
     player_event_handler_utils.add_valid_name_to_lists("TestPlayer", players, npcs, all_occupants, is_player=True)
     assert "TestPlayer" in players
     assert "TestPlayer" in all_occupants
@@ -224,9 +224,9 @@ def test_add_valid_name_to_lists_player(player_event_handler_utils, mock_name_ex
 def test_add_valid_name_to_lists_npc(player_event_handler_utils, mock_name_extractor):
     """Test add_valid_name_to_lists() adds NPC name."""
     mock_name_extractor.is_valid_name_for_occupant.return_value = True
-    players = []
-    npcs = []
-    all_occupants = []
+    players: list[str] = []
+    npcs: list[str] = []
+    all_occupants: list[str] = []
     player_event_handler_utils.add_valid_name_to_lists("TestNPC", players, npcs, all_occupants, is_player=False)
     assert "TestNPC" in npcs
     assert "TestNPC" in all_occupants
@@ -236,9 +236,9 @@ def test_add_valid_name_to_lists_npc(player_event_handler_utils, mock_name_extra
 def test_add_valid_name_to_lists_invalid_name(player_event_handler_utils, mock_name_extractor):
     """Test add_valid_name_to_lists() skips invalid name."""
     mock_name_extractor.is_valid_name_for_occupant.return_value = False
-    players = []
-    npcs = []
-    all_occupants = []
+    players: list[str] = []
+    npcs: list[str] = []
+    all_occupants: list[str] = []
     player_event_handler_utils.add_valid_name_to_lists("InvalidUUID", players, npcs, all_occupants, is_player=True)
     assert len(players) == 0
     assert len(npcs) == 0
@@ -247,9 +247,9 @@ def test_add_valid_name_to_lists_invalid_name(player_event_handler_utils, mock_n
 
 def test_add_valid_name_to_lists_none_name(player_event_handler_utils):
     """Test add_valid_name_to_lists() skips None name."""
-    players = []
-    npcs = []
-    all_occupants = []
+    players: list[str] = []
+    npcs: list[str] = []
+    all_occupants: list[str] = []
     player_event_handler_utils.add_valid_name_to_lists(None, players, npcs, all_occupants, is_player=True)
     assert len(players) == 0
     assert len(npcs) == 0
@@ -260,9 +260,9 @@ def test_process_dict_occupant_with_player_name(player_event_handler_utils, mock
     """Test process_dict_occupant() processes player occupant."""
     mock_name_extractor.is_valid_name_for_occupant.return_value = True
     occ = {"player_name": "TestPlayer"}
-    players = []
-    npcs = []
-    all_occupants = []
+    players: list[str] = []
+    npcs: list[str] = []
+    all_occupants: list[str] = []
     player_event_handler_utils.process_dict_occupant(occ, players, npcs, all_occupants)
     assert "TestPlayer" in players
     assert "TestPlayer" in all_occupants
@@ -272,9 +272,9 @@ def test_process_dict_occupant_with_npc_name(player_event_handler_utils, mock_na
     """Test process_dict_occupant() processes NPC occupant."""
     mock_name_extractor.is_valid_name_for_occupant.return_value = True
     occ = {"npc_name": "TestNPC"}
-    players = []
-    npcs = []
-    all_occupants = []
+    players: list[str] = []
+    npcs: list[str] = []
+    all_occupants: list[str] = []
     player_event_handler_utils.process_dict_occupant(occ, players, npcs, all_occupants)
     assert "TestNPC" in npcs
     assert "TestNPC" in all_occupants
@@ -284,9 +284,9 @@ def test_process_dict_occupant_with_name(player_event_handler_utils, mock_name_e
     """Test process_dict_occupant() processes generic name."""
     mock_name_extractor.is_valid_name_for_occupant.return_value = True
     occ = {"name": "TestName"}
-    players = []
-    npcs = []
-    all_occupants = []
+    players: list[str] = []
+    npcs: list[str] = []
+    all_occupants: list[str] = []
     player_event_handler_utils.process_dict_occupant(occ, players, npcs, all_occupants)
     assert "TestName" in all_occupants
     assert "TestName" not in players
@@ -297,9 +297,9 @@ def test_process_dict_occupant_invalid_name(player_event_handler_utils, mock_nam
     """Test process_dict_occupant() skips invalid name."""
     mock_name_extractor.is_valid_name_for_occupant.return_value = False
     occ = {"name": "InvalidUUID"}
-    players = []
-    npcs = []
-    all_occupants = []
+    players: list[str] = []
+    npcs: list[str] = []
+    all_occupants: list[str] = []
     player_event_handler_utils.process_dict_occupant(occ, players, npcs, all_occupants)
     assert len(all_occupants) == 0
 

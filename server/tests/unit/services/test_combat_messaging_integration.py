@@ -120,6 +120,7 @@ async def test_broadcast_combat_death(messaging_integration, mock_connection_man
 async def test_broadcast_combat_ended(messaging_integration, mock_connection_manager):
     """Test broadcast_combat_ended broadcasts combat ended event."""
     # Note: broadcast_combat_ended doesn't exist, using broadcast_combat_end instead
+    # Reason: Intentionally testing error handling with None input
     result = await messaging_integration.broadcast_combat_end("room_001", "combat_001", None)
     assert isinstance(result, dict)
     mock_connection_manager.broadcast_to_room.assert_awaited_once()

@@ -12,12 +12,13 @@ This is now a facade that delegates to focused async repositories.
 import asyncio
 import uuid
 from datetime import datetime
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from sqlalchemy import select, text
 from sqlalchemy.exc import SQLAlchemyError
 
 from .database import get_async_session
+from .events import EventBus
 from .exceptions import DatabaseError, ValidationError
 from .models.player import Player
 from .models.profession import Profession
@@ -63,7 +64,11 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
     """
 
     def __init__(
-        self, _db_path: str | None = None, _log_path: str | None = None, event_bus=None, _skip_room_cache: bool = False
+        self,
+        _db_path: str | None = None,
+        _log_path: str | None = None,
+        event_bus: EventBus | None = None,
+        _skip_room_cache: bool = False,
     ):
         """
         Initialize the async persistence layer.
@@ -120,7 +125,6 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
             # In concurrent execution, another coroutine may have loaded the cache
             # between the outer check and lock acquisition, so we check again here.
             # Use cast to help mypy understand this can change in async context
-            from typing import cast
 
             cache_loaded = cast(bool, self._room_cache_loaded)
             if cache_loaded:
@@ -291,7 +295,8 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
 
         if isinstance(exits_json, str):
             try:
-                return json.loads(exits_json)
+                result: list[dict[str, Any]] = cast(list[dict[str, Any]], json.loads(exits_json))
+                return result
             except json.JSONDecodeError:
                 return []
         if isinstance(exits_json, list):
@@ -756,7 +761,7 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
                 # SQLAlchemy Column: use .is_(True) for boolean comparisons
                 # At runtime, Profession.is_available is a Column, not a bool
                 # SQLAlchemy Column objects have .is_() method at runtime, but mypy sees it as bool
-                stmt = select(Profession).where(Profession.is_available.is_(True)).order_by(Profession.id)  # type: ignore[attr-defined]  # Reason: SQLAlchemy Column objects have .is_() method at runtime for boolean comparisons, but mypy infers bool type and cannot see the method
+                stmt = select(Profession).where(Profession.is_available.is_(True)).order_by(Profession.id)
                 result = await session.execute(stmt)
                 professions = list(result.scalars().all())
                 return professions

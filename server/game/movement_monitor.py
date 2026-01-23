@@ -64,7 +64,7 @@ class MovementMonitor:  # pylint: disable=too-many-instance-attributes  # Reason
 
     def record_movement_attempt(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Movement monitoring requires many parameters to track complete movement state
         self, player_id: uuid.UUID | str, from_room_id: str, to_room_id: str, success: bool, duration_ms: float
-    ):
+    ) -> None:
         """Record a movement attempt with metrics."""
         with self._lock:
             self._movement_count += 1
@@ -96,13 +96,13 @@ class MovementMonitor:  # pylint: disable=too-many-instance-attributes  # Reason
             # Check for alerts
             self._check_alerts()
 
-    def record_concurrent_movement(self, count: int):
+    def record_concurrent_movement(self, count: int) -> None:
         """Record concurrent movement count."""
         with self._lock:
             self._concurrent_movements = count
             self._max_concurrent_movements = max(self._max_concurrent_movements, count)
 
-    def record_integrity_check(self, violation_found: bool):
+    def record_integrity_check(self, violation_found: bool) -> None:
         """Record an integrity check result."""
         with self._lock:
             self._integrity_checks += 1

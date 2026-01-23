@@ -3,6 +3,7 @@ Unit tests for who commands.
 """
 
 from datetime import UTC, datetime, timedelta
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -96,7 +97,8 @@ def test_format_player_location_invalid():
 
 def test_format_player_location_none():
     """Test formatting None location."""
-    result = format_player_location(None)
+    # Reason: Intentionally testing error handling with None input
+    result = format_player_location(None)  # type: ignore[arg-type]
     assert result == "Unknown Location"
 
 
@@ -296,7 +298,7 @@ def test_format_who_result_with_players_and_filter():
 
 def test_get_players_for_who_no_filter():
     """Test get_players_for_who without filter."""
-    players = [MagicMock(name="Alice"), MagicMock(name="Bob")]
+    players: list[Any] = [MagicMock(name="Alice"), MagicMock(name="Bob")]
     result_players, filter_term = get_players_for_who(players, "")
 
     assert result_players == players
@@ -309,7 +311,7 @@ def test_get_players_for_who_with_filter():
     alice.name = "Alice"
     bob = MagicMock()
     bob.name = "Bob"
-    players = [alice, bob]
+    players: list[Any] = [alice, bob]
 
     result_players, filter_term = get_players_for_who(players, "al")
 
@@ -460,7 +462,8 @@ def test_format_player_location_short_format():
 
 def test_format_player_location_non_string():
     """Test format_player_location() with non-string input."""
-    result = format_player_location(123)
+    # Reason: Intentionally testing error handling with invalid type (int instead of str)
+    result = format_player_location(123)  # type: ignore[arg-type]
     assert result == "Unknown Location"
 
 

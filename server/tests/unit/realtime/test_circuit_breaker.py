@@ -12,6 +12,9 @@ import pytest
 
 from server.realtime.circuit_breaker import CircuitBreaker, CircuitBreakerOpen, CircuitState
 
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+
 
 def test_circuit_breaker_init():
     """Test CircuitBreaker initialization."""
@@ -69,7 +72,8 @@ async def test_call_opens_circuit_after_threshold():
     with pytest.raises(ValueError):
         await cb.call(mock_func)
     assert cb.failure_count == 2
-    assert cb.state == CircuitState.OPEN
+    # Reason: Testing enum comparison - valid at runtime but mypy sees as non-overlapping due to type narrowing
+    assert cb.state == CircuitState.OPEN  # type: ignore[comparison-overlap]
 
 
 @pytest.mark.asyncio
@@ -102,7 +106,8 @@ async def test_call_transitions_to_half_open_after_timeout():
     mock_func.return_value = "success"
     result = await cb.call(mock_func)
     assert result == "success"
-    assert cb.state == CircuitState.HALF_OPEN
+    # Reason: Testing enum comparison - valid at runtime but mypy sees as non-overlapping
+    assert cb.state == CircuitState.HALF_OPEN  # type: ignore[comparison-overlap]
 
 
 @pytest.mark.asyncio
@@ -113,6 +118,7 @@ async def test_call_closes_from_half_open_on_success():
     # Trigger open
     with pytest.raises(ValueError):
         await cb.call(mock_func)
+    # Reason: Testing enum comparison - valid at runtime but mypy sees as non-overlapping
     assert cb.state == CircuitState.OPEN
     # Wait for timeout
     await asyncio.sleep(0.15)
@@ -121,8 +127,10 @@ async def test_call_closes_from_half_open_on_success():
     mock_func.return_value = "success"
     result = await cb.call(mock_func)
     assert result == "success"
-    assert cb.state == CircuitState.HALF_OPEN
-    assert cb.success_count == 1
+    # Reason: Testing enum comparison - valid at runtime but mypy sees as non-overlapping
+    assert cb.state == CircuitState.HALF_OPEN  # type: ignore[comparison-overlap]
+    # Reason: Testing field value - mypy sees as unreachable but valid at runtime
+    assert cb.success_count == 1  # type: ignore[unreachable]
     # Second success - should close
     result = await cb.call(mock_func)
     assert result == "success"
@@ -167,7 +175,8 @@ def test_on_success_increments_success_count_half_open():
     # Second success should close
     cb._on_success()
     assert cb.success_count == 0
-    assert cb.state == CircuitState.CLOSED
+    # Reason: Testing enum comparison - valid at runtime but mypy sees as non-overlapping
+    assert cb.state == CircuitState.CLOSED  # type: ignore[comparison-overlap]
 
 
 def test_on_failure_increments_failure_count():
@@ -186,8 +195,10 @@ def test_on_failure_opens_circuit_at_threshold():
     cb._on_failure()
     assert cb.state == CircuitState.CLOSED
     cb._on_failure()
-    assert cb.state == CircuitState.OPEN
-    assert cb.failure_count == 2
+    # Reason: Testing enum comparison - valid at runtime but mypy sees as non-overlapping due to type narrowing
+    assert cb.state == CircuitState.OPEN  # type: ignore[comparison-overlap]
+    # Reason: Testing field value - mypy sees as unreachable but valid at runtime
+    assert cb.failure_count == 2  # type: ignore[unreachable]
 
 
 def test_on_failure_resets_success_count():

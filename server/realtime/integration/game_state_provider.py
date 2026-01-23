@@ -11,7 +11,7 @@ Game state generation is now a focused, independently testable component.
 import json
 import uuid
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from ...models import Player
 from ...services.npc_instance_service import get_npc_instance_service
@@ -78,7 +78,7 @@ class GameStateProvider:
         """
         async_persistence = self.get_async_persistence()
         player = await async_persistence.get_player_by_id(player_id)
-        return player
+        return cast("Player | None", player)
 
     async def get_players_batch(self, player_ids: list[uuid.UUID]) -> dict[uuid.UUID, Player]:
         """
@@ -109,7 +109,7 @@ class GameStateProvider:
                 requested_count=len(player_ids),
                 loaded_count=len(players),
             )
-            return players
+            return cast("dict[uuid.UUID, Player]", players)
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Player batch loading errors unpredictable, must continue processing
             logger.debug("Error loading players in batch", player_count=len(player_ids), error=str(e))
             return {}
@@ -171,8 +171,10 @@ class GameStateProvider:
                     user = getattr(player_obj, "user", None)
                     if user:
                         player_name = getattr(user, "username", None) or getattr(user, "display_name", None)
-                except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: User attribute access errors unpredictable, graceful fallback if user attributes are unavailable, must continue processing
-                    pass
+                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: User attribute access errors unpredictable, graceful fallback if user attributes are unavailable, must continue processing
+                    # nosec B110 - Intentional silent handling: User attribute access errors are unpredictable,
+                    # and we must gracefully fallback if user attributes are unavailable
+                    logger.debug("Failed to access user attributes, using fallback", exc_info=e)
 
         # Validate name is not UUID
         if player_name and isinstance(player_name, str) and player_name.strip():
@@ -400,7 +402,7 @@ class GameStateProvider:
                 )
                 if "experience_points" in player_data_for_client:
                     player_data_for_client["xp"] = player_data_for_client["experience_points"]
-                return player_data_for_client
+                return cast(dict[str, Any], player_data_for_client)
             logger.warning(
                 "PlayerService not available in game_state_provider, using basic player data",
                 player_id=player_id,

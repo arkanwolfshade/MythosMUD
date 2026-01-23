@@ -7,6 +7,7 @@ and mastery tracking using SQLAlchemy ORM with PostgreSQL.
 
 import uuid
 from datetime import UTC, datetime
+from typing import cast
 
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
@@ -91,7 +92,8 @@ class PlayerSpellRepository:
                     PlayerSpell.player_id == str(player_id), PlayerSpell.spell_id == spell_id
                 )
                 result = await session.execute(stmt)
-                return result.scalar_one_or_none()
+                spell_result: PlayerSpell | None = cast(PlayerSpell | None, result.scalar_one_or_none())
+                return spell_result
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,
@@ -134,7 +136,8 @@ class PlayerSpellRepository:
 
                 if existing:
                     self._logger.warning("Player already knows spell", player_id=str(player_id), spell_id=spell_id)
-                    return existing
+                    result_existing: PlayerSpell = cast(PlayerSpell, existing)
+                    return result_existing
 
                 # Create new player spell
                 player_spell = PlayerSpell(
@@ -203,7 +206,8 @@ class PlayerSpellRepository:
                 self._logger.debug(
                     "Updated spell mastery", player_id=str(player_id), spell_id=spell_id, mastery=new_mastery
                 )
-                return player_spell
+                result_spell: PlayerSpell | None = cast(PlayerSpell | None, player_spell)
+                return result_spell
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,
@@ -250,7 +254,8 @@ class PlayerSpellRepository:
                 await session.commit()
                 await session.refresh(player_spell)
                 self._logger.debug("Recorded spell cast", player_id=str(player_id), spell_id=spell_id)
-                return player_spell
+                result_spell: PlayerSpell | None = cast(PlayerSpell | None, player_spell)
+                return result_spell
         except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,

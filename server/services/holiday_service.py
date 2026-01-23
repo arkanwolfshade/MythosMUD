@@ -14,6 +14,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
+from server.async_persistence import AsyncPersistenceLayer
 from server.schemas.calendar import HolidayCollection, HolidayEntry
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.time.time_service import ChronicleLike
@@ -38,7 +39,7 @@ class HolidayService:
         data_path: Path | str | None = None,
         collection: HolidayCollection | None = None,
         environment: str | None = None,
-        async_persistence=None,
+        async_persistence: AsyncPersistenceLayer | None = None,
     ) -> None:
         self._chronicle = chronicle
         self._environment = normalize_environment(environment)

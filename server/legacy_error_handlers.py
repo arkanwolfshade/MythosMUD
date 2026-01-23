@@ -9,6 +9,7 @@ face of eldritch horrors, we must maintain order and structure.
 # pylint: disable=too-many-return-statements,too-many-lines  # Reason: Error handlers require multiple return statements for different error type handling and response generation. Error handling module requires comprehensive coverage of all error scenarios.
 
 import traceback
+from collections.abc import Iterator
 from contextlib import contextmanager
 from datetime import datetime
 from typing import Any
@@ -368,7 +369,7 @@ async def http_exception_handler(request: Request, exc: HTTPException) -> JSONRe
 
 
 @contextmanager
-def graceful_degradation(fallback_value: Any, error_type: str = "unknown"):
+def graceful_degradation(fallback_value: Any, error_type: str = "unknown") -> Iterator[None]:
     """
     Context manager for graceful degradation.
 
@@ -587,7 +588,7 @@ def _sanitize_detail_value(value: Any) -> Any:
     return _sanitize_detail_value(str_value)
 
 
-def _sanitize_context(context) -> dict[str, Any] | None:
+def _sanitize_context(context: Any) -> dict[str, Any] | None:
     """
     Sanitize error context to prevent information exposure.
 

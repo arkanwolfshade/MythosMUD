@@ -10,7 +10,7 @@ As documented in "Identity Protection Protocols" - Dr. Armitage, 1928
 # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Name extraction requires many parameters for context and validation
 
 import uuid
-from typing import Any
+from typing import Any, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -77,7 +77,8 @@ class PlayerNameExtractor:
             Player name string or None if not found
         """
         if hasattr(player, "name"):
-            return player.name
+            result: str = cast(str, player.name)
+            return result
         return getattr(player, "name", None)
 
     def _try_player_username(self, player: Any) -> str | None:
@@ -91,13 +92,14 @@ class PlayerNameExtractor:
             Username string or None if not found
         """
         if hasattr(player, "username"):
-            username = player.username
+            username: str | None = cast(str | None, player.username)
             if self._is_valid_name_string(username):
                 return username
 
         username = getattr(player, "username", None)
         if self._is_valid_name_string(username):
-            return username
+            result: str | None = cast(str | None, username)
+            return result
 
         return None
 
@@ -113,11 +115,13 @@ class PlayerNameExtractor:
         """
         # Try username first
         if hasattr(user, "username") and user.username:
-            return user.username
+            result: str = cast(str, user.username)
+            return result
 
         # Try display_name
         if hasattr(user, "display_name") and user.display_name:
-            return user.display_name
+            result2: str = cast(str, user.display_name)
+            return result2
 
         # Fallback to getattr
         return getattr(user, "username", None) or getattr(user, "display_name", None)

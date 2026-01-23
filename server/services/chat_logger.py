@@ -90,7 +90,7 @@ class ChatLogger:
 
         logger.debug("ChatLogger writer thread stopped")
 
-    def _process_log_entry(self, log_entry: dict[str, Any]):
+    def _process_log_entry(self, log_entry: dict[str, Any]) -> None:
         """
         Process a log entry from the queue and write it to the appropriate file.
 
@@ -137,7 +137,7 @@ class ChatLogger:
 
         logger.info("ChatLogger shutdown complete")
 
-    def wait_for_queue_processing(self, _timeout: float = 5.0):  # pylint: disable=unused-argument  # Reason: Parameter reserved for future timeout-based queue processing
+    def wait_for_queue_processing(self, _timeout: float = 5.0) -> bool:  # pylint: disable=unused-argument  # Reason: Parameter reserved for future timeout-based queue processing
         """
         Wait for all queued log entries to be processed.
 
@@ -154,7 +154,7 @@ class ChatLogger:
             logger.error("Error waiting for queue processing", error=str(e))
             return False
 
-    def _queue_log_entry(self, log_type: str, file_path: Path, content: str):
+    def _queue_log_entry(self, log_type: str, file_path: Path, content: str) -> None:
         """
         Queue a log entry for writing by the background thread.
 
@@ -196,7 +196,7 @@ class ChatLogger:
         filename = f"chat_{log_type}_{today}.log"
         return self.log_dir / filename
 
-    def _write_log_entry(self, log_type: str, entry: dict[str, Any]):
+    def _write_log_entry(self, log_type: str, entry: dict[str, Any]) -> None:
         """
         Write a log entry to the appropriate log file.
 
@@ -218,7 +218,7 @@ class ChatLogger:
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Log entry queueing errors unpredictable, must handle gracefully
             logger.error("Failed to queue log entry", error=str(e), log_type=log_type, entry=entry)
 
-    def log_chat_message(self, message_data: dict[str, Any]):
+    def log_chat_message(self, message_data: dict[str, Any]) -> None:
         """
         Log a chat message for AI processing.
 
@@ -250,7 +250,7 @@ class ChatLogger:
         self._write_log_entry("chat", entry)
         logger.debug("Chat message logged", message_id=message_data.get("message_id"))
 
-    def log_moderation_event(self, event_type: str, event_data: dict[str, Any]):
+    def log_moderation_event(self, event_type: str, event_data: dict[str, Any]) -> None:
         """
         Log a moderation event for AI training and processing.
 
@@ -270,7 +270,7 @@ class ChatLogger:
         confidence: float = 0.0,
         ai_model: str = "content_filter_v1",
         action_taken: str = "none",
-    ):
+    ) -> None:
         """
         Log a flagged message for AI moderation.
 
@@ -302,7 +302,7 @@ class ChatLogger:
         mute_type: str,
         duration_minutes: int | None = None,
         reason: str = "",
-    ):
+    ) -> None:
         """
         Log a player mute action.
 
@@ -331,7 +331,7 @@ class ChatLogger:
         self._write_log_entry("moderation", entry)
         logger.info("Player mute logged", target_id=target_id_str, mute_type=mute_type)
 
-    def log_player_unmuted(self, unmuter_id: str, target_id: str, target_name: str, mute_type: str):
+    def log_player_unmuted(self, unmuter_id: str, target_id: str, target_name: str, mute_type: str) -> None:
         """
         Log a player unmute action.
 
@@ -356,7 +356,7 @@ class ChatLogger:
         self._write_log_entry("moderation", entry)
         logger.info("Player unmute logged", target_id=target_id_str, mute_type=mute_type)
 
-    def log_system_event(self, event_type: str, event_data: dict[str, Any]):
+    def log_system_event(self, event_type: str, event_data: dict[str, Any]) -> None:
         """
         Log a system event for AI context.
 
@@ -369,7 +369,7 @@ class ChatLogger:
         self._write_log_entry("system", entry)
         logger.debug("System event logged", event_type=event_type)
 
-    def log_player_joined_room(self, player_id: str, player_name: str, room_id: str, room_name: str):
+    def log_player_joined_room(self, player_id: str, player_name: str, room_id: str, room_name: str) -> None:
         """
         Log when a player joins a room.
 
@@ -389,7 +389,7 @@ class ChatLogger:
 
         self._write_log_entry("system", entry)
 
-    def log_player_left_room(self, player_id: str, player_name: str, room_id: str, room_name: str):
+    def log_player_left_room(self, player_id: str, player_name: str, room_id: str, room_name: str) -> None:
         """
         Log when a player leaves a room.
 
@@ -409,7 +409,9 @@ class ChatLogger:
 
         self._write_log_entry("system", entry)
 
-    def log_rate_limit_violation(self, player_id: str, player_name: str, channel: str, message_count: int, limit: int):  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Chat logging requires many parameters for complete logging context
+    def log_rate_limit_violation(
+        self, player_id: str, player_name: str, channel: str, message_count: int, limit: int
+    ) -> None:  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Chat logging requires many parameters for complete logging context
         """
         Log a rate limit violation.
 
@@ -467,7 +469,7 @@ class ChatLogger:
 
         return stats
 
-    def log_local_channel_message(self, message_data: dict[str, Any]):
+    def log_local_channel_message(self, message_data: dict[str, Any]) -> None:
         """
         Log a local channel message to sub-zone specific file.
 
@@ -528,7 +530,7 @@ class ChatLogger:
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Local channel logging errors unpredictable, must handle gracefully
             logger.error("Failed to log local channel message", error=str(e), message_data=message_data)
 
-    def log_global_channel_message(self, message_data: dict[str, Any]):
+    def log_global_channel_message(self, message_data: dict[str, Any]) -> None:
         """
         Log a global channel message to global.log file.
 
@@ -584,7 +586,7 @@ class ChatLogger:
         today = datetime.now(UTC).strftime("%Y-%m-%d")
         return self.log_dir / f"chat_global_{today}.log"
 
-    def log_system_channel_message(self, message_data: dict[str, Any]):
+    def log_system_channel_message(self, message_data: dict[str, Any]) -> None:
         """
         Log a system channel message to system.log file.
 
@@ -630,7 +632,7 @@ class ChatLogger:
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: System channel logging errors unpredictable, must handle gracefully
             logger.error("Failed to log system channel message", error=str(e), message_data=message_data)
 
-    def log_whisper_channel_message(self, message_data: dict[str, Any]):
+    def log_whisper_channel_message(self, message_data: dict[str, Any]) -> None:
         """
         Log a whisper channel message to whisper.log file.
 

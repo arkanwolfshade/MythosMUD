@@ -13,7 +13,7 @@ during the closure of arcane gateways.
 
 import asyncio
 import time
-from typing import Any
+from typing import Any, cast
 
 from anyio import sleep
 
@@ -43,7 +43,7 @@ def is_shutdown_pending(app: Any) -> bool:
     """
     try:
         if hasattr(app.state, "container") and app.state.container:
-            return app.state.container.server_shutdown_pending
+            return cast(bool, app.state.container.server_shutdown_pending)
         # Fallback to app.state for backward compatibility
         return getattr(app.state, "server_shutdown_pending", False)
     except (AttributeError, OSError):

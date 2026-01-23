@@ -4,7 +4,7 @@ Player schema conversion utilities.
 This module handles conversion of Player objects and dictionaries to PlayerRead schemas.
 """
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from ..exceptions import DatabaseError
 from ..models import Stats
@@ -258,5 +258,5 @@ class PlayerSchemaConverter:
         # Check if player is a Mock by checking for MagicMock type
         if "Mock" in str(type(player).__name__):
             # In tests, return the Mock directly
-            return player
+            return cast(PlayerRead, player)
         return self.create_player_read_from_dict(player, in_combat, profession_data)

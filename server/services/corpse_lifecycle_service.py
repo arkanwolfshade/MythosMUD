@@ -39,7 +39,8 @@ def _get_enum_value(enum_or_str: Any) -> str:
         String value of the enum
     """
     if hasattr(enum_or_str, "value"):
-        return enum_or_str.value
+        result: str = cast(str, enum_or_str.value)
+        return result
     return str(enum_or_str)
 
 

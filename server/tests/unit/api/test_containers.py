@@ -139,7 +139,8 @@ class TestHelperFunctions:
         )
 
         with pytest.raises(TypeError, match="missing 1 required positional argument"):
-            get_container_service()
+            # Reason: Intentionally calling without required argument to test error handling
+            get_container_service()  # type: ignore[call-arg]
 
 
 class TestOpenContainer:
@@ -159,7 +160,8 @@ class TestOpenContainer:
             await open_container(
                 request_data=request_data,
                 request=mock_request,
-                current_user=None,
+                # Reason: Intentionally passing None to test unauthenticated scenario
+                current_user=None,  # type: ignore[arg-type]
                 persistence=AsyncMock(),
                 connection_manager=MagicMock(),
             )
@@ -372,7 +374,8 @@ class TestTransferItems:
             await transfer_items(
                 request_data=request_data,
                 request=mock_request,
-                current_user=None,
+                # Reason: Intentionally passing None to test unauthenticated scenario
+                current_user=None,  # type: ignore[arg-type]
                 persistence=AsyncMock(),
                 connection_manager=MagicMock(),
             )
@@ -424,7 +427,9 @@ class TestTransferItems:
             quantity=1,
         )
         player_id = uuid.uuid4()
-        mock_result = {"container": {}, "player_inventory": []}
+        from typing import Any
+
+        mock_result: dict[str, Any] = {"container": {}, "player_inventory": []}
 
         mock_player = MagicMock()
         mock_player.player_id = player_id
@@ -466,7 +471,9 @@ class TestTransferItems:
             quantity=1,
         )
         player_id = uuid.uuid4()
-        mock_result = {"container": {}, "player_inventory": []}
+        from typing import Any
+
+        mock_result: dict[str, Any] = {"container": {}, "player_inventory": []}
 
         mock_player = MagicMock()
         mock_player.player_id = player_id
@@ -594,7 +601,8 @@ class TestCloseContainer:
             await close_container(
                 request_data=request_data,
                 request=mock_request,
-                current_user=None,
+                # Reason: Intentionally passing None to test unauthenticated scenario
+                current_user=None,  # type: ignore[arg-type]
                 persistence=AsyncMock(),
                 connection_manager=MagicMock(),
             )

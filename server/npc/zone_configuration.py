@@ -5,7 +5,7 @@ This module provides the ZoneConfiguration class for managing zone and sub-zone
 configuration data, including spawn modifiers and access requirements.
 """
 
-from typing import Any
+from typing import Any, cast
 
 
 class ZoneConfiguration:  # pylint: disable=too-many-instance-attributes  # Reason: Zone configuration requires many fields to capture complete zone configuration
@@ -25,11 +25,11 @@ class ZoneConfiguration:  # pylint: disable=too-many-instance-attributes  # Reas
         self.special_rules = config_data.get("special_rules", {})
 
         # Extract NPC-related modifiers
-        self.npc_spawn_modifier = self.special_rules.get("npc_spawn_modifier", 1.0)
-        self.lucidity_drain_rate = self.special_rules.get("lucidity_drain_rate", 0.0)
-        self.combat_modifier = self.special_rules.get("combat_modifier", 1.0)
-        self.exploration_bonus = self.special_rules.get("exploration_bonus", 0.0)
-        self.access_requirements = self.special_rules.get("access_requirements", [])
+        self.npc_spawn_modifier: float = cast(float, self.special_rules.get("npc_spawn_modifier", 1.0))
+        self.lucidity_drain_rate: float = cast(float, self.special_rules.get("lucidity_drain_rate", 0.0))
+        self.combat_modifier: float = cast(float, self.special_rules.get("combat_modifier", 1.0))
+        self.exploration_bonus: float = cast(float, self.special_rules.get("exploration_bonus", 0.0))
+        self.access_requirements: list[str] = cast(list[str], self.special_rules.get("access_requirements", []))
 
     def get_effective_spawn_probability(self, base_probability: float) -> float:
         """
@@ -41,7 +41,8 @@ class ZoneConfiguration:  # pylint: disable=too-many-instance-attributes  # Reas
         Returns:
             Effective spawn probability adjusted for zone modifiers
         """
-        return min(1.0, base_probability * self.npc_spawn_modifier)
+        result: float = min(1.0, base_probability * self.npc_spawn_modifier)
+        return result
 
     def can_access(self, player_requirements: list[str]) -> bool:
         """

@@ -4,6 +4,8 @@ Unit tests for equipment service.
 Tests the EquipmentService class for equip/unequip operations.
 """
 
+from typing import Any
+
 import pytest
 
 from server.services.equipment_service import (
@@ -38,7 +40,7 @@ def test_equip_from_inventory_success(equipment_service):
             "quantity": 1,
         }
     ]
-    equipped = {}
+    equipped: dict[str, Any] = {}
 
     new_inventory, new_equipped = equipment_service.equip_from_inventory(inventory, equipped, slot_index=0)
 
@@ -50,7 +52,7 @@ def test_equip_from_inventory_success(equipment_service):
 def test_equip_from_inventory_invalid_slot_index(equipment_service):
     """Test equip_from_inventory with invalid slot index."""
     inventory = [{"item_name": "sword", "slot_type": "main_hand", "quantity": 1}]
-    equipped = {}
+    equipped: dict[str, Any] = {}
 
     with pytest.raises(SlotValidationError, match="invalid"):
         equipment_service.equip_from_inventory(inventory, equipped, slot_index=10)
@@ -59,7 +61,7 @@ def test_equip_from_inventory_invalid_slot_index(equipment_service):
 def test_equip_from_inventory_no_slot_type(equipment_service):
     """Test equip_from_inventory with item missing slot_type."""
     inventory = [{"item_name": "sword", "quantity": 1}]
-    equipped = {}
+    equipped: dict[str, Any] = {}
 
     with pytest.raises(SlotValidationError, match="slot_type"):
         equipment_service.equip_from_inventory(inventory, equipped, slot_index=0)
@@ -77,7 +79,7 @@ def test_equip_from_inventory_slot_mismatch(equipment_service):
             "quantity": 1,
         }
     ]
-    equipped = {}
+    equipped: dict[str, Any] = {}
 
     with pytest.raises(SlotValidationError, match="does not match"):
         equipment_service.equip_from_inventory(inventory, equipped, slot_index=0, target_slot="off_hand")
@@ -95,7 +97,7 @@ def test_equip_from_inventory_quantity_split(equipment_service):
             "quantity": 5,
         }
     ]
-    equipped = {}
+    equipped: dict[str, Any] = {}
 
     new_inventory, new_equipped = equipment_service.equip_from_inventory(inventory, equipped, slot_index=0)
 
@@ -175,7 +177,7 @@ def test_equip_from_inventory_capacity_error(equipment_service):
 
 def test_unequip_to_inventory_success(equipment_service):
     """Test unequip_to_inventory successful unequip."""
-    inventory = []
+    inventory: list[dict[str, Any]] = []
     equipped = {
         "main_hand": {
             "item_instance_id": "inst1",
@@ -196,8 +198,8 @@ def test_unequip_to_inventory_success(equipment_service):
 
 def test_unequip_to_inventory_empty_slot(equipment_service):
     """Test unequip_to_inventory with empty slot."""
-    inventory = []
-    equipped = {}
+    inventory: list[dict[str, Any]] = []
+    equipped: dict[str, Any] = {}
 
     with pytest.raises(SlotValidationError, match="No equipped item"):
         equipment_service.unequip_to_inventory(inventory, equipped, slot_type="main_hand")
@@ -205,8 +207,8 @@ def test_unequip_to_inventory_empty_slot(equipment_service):
 
 def test_unequip_to_inventory_no_slot_type(equipment_service):
     """Test unequip_to_inventory with no slot type."""
-    inventory = []
-    equipped = {}
+    inventory: list[dict[str, Any]] = []
+    equipped: dict[str, Any] = {}
 
     with pytest.raises(SlotValidationError, match="must be provided"):
         equipment_service.unequip_to_inventory(inventory, equipped, slot_type="")

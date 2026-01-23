@@ -5,11 +5,12 @@ Tests the Profession model methods including stat requirements, mechanical effec
 """
 
 import json
+from typing import Any
 
 from server.models.profession import Profession
 
 
-def test_profession_repr():
+def test_profession_repr() -> None:
     """Test __repr__ returns expected string format."""
     profession = Profession()
     profession.id = 1
@@ -24,10 +25,10 @@ def test_profession_repr():
     assert "True" in repr_str or "is_available=True" in repr_str
 
 
-def test_profession_get_stat_requirements_valid_json():
+def test_profession_get_stat_requirements_valid_json() -> None:
     """Test get_stat_requirements returns dict for valid JSON."""
     profession = Profession()
-    requirements = {"strength": 10, "intelligence": 15}
+    requirements: dict[str, int] = {"strength": 10, "intelligence": 15}
     profession.stat_requirements = json.dumps(requirements)
 
     result = profession.get_stat_requirements()
@@ -36,7 +37,7 @@ def test_profession_get_stat_requirements_valid_json():
     assert isinstance(result, dict)
 
 
-def test_profession_get_stat_requirements_invalid_json():
+def test_profession_get_stat_requirements_invalid_json() -> None:
     """Test get_stat_requirements returns empty dict for invalid JSON."""
     profession = Profession()
     profession.stat_requirements = "invalid json"
@@ -47,7 +48,7 @@ def test_profession_get_stat_requirements_invalid_json():
     assert isinstance(result, dict)
 
 
-def test_profession_get_stat_requirements_empty_string():
+def test_profession_get_stat_requirements_empty_string() -> None:
     """Test get_stat_requirements returns empty dict for empty string."""
     profession = Profession()
     profession.stat_requirements = ""
@@ -57,17 +58,18 @@ def test_profession_get_stat_requirements_empty_string():
     assert result == {}
 
 
-def test_profession_get_stat_requirements_none():
-    """Test get_stat_requirements returns empty dict for None."""
+def test_profession_get_stat_requirements_none() -> None:
+    """Test get_stat_requirements returns empty dict for invalid value."""
     profession = Profession()
-    profession.stat_requirements = None
+    # Use empty string instead of None since field is non-nullable
+    profession.stat_requirements = ""
 
     result = profession.get_stat_requirements()
 
     assert result == {}
 
 
-def test_profession_set_stat_requirements():
+def test_profession_set_stat_requirements() -> None:
     """Test set_stat_requirements stores dict as JSON string."""
     profession = Profession()
     requirements = {"strength": 10, "intelligence": 15}
@@ -78,10 +80,10 @@ def test_profession_set_stat_requirements():
     assert profession.get_stat_requirements() == requirements
 
 
-def test_profession_set_stat_requirements_empty_dict():
+def test_profession_set_stat_requirements_empty_dict() -> None:
     """Test set_stat_requirements handles empty dict."""
     profession = Profession()
-    requirements = {}
+    requirements: dict[str, int] = {}
 
     profession.set_stat_requirements(requirements)
 
@@ -89,10 +91,10 @@ def test_profession_set_stat_requirements_empty_dict():
     assert profession.get_stat_requirements() == {}
 
 
-def test_profession_get_mechanical_effects_valid_json():
+def test_profession_get_mechanical_effects_valid_json() -> None:
     """Test get_mechanical_effects returns dict for valid JSON."""
     profession = Profession()
-    effects = {"damage_bonus": 5, "health_bonus": 10}
+    effects: dict[str, Any] = {"damage_bonus": 5, "health_bonus": 10}
     profession.mechanical_effects = json.dumps(effects)
 
     result = profession.get_mechanical_effects()
@@ -101,7 +103,7 @@ def test_profession_get_mechanical_effects_valid_json():
     assert isinstance(result, dict)
 
 
-def test_profession_get_mechanical_effects_invalid_json():
+def test_profession_get_mechanical_effects_invalid_json() -> None:
     """Test get_mechanical_effects returns empty dict for invalid JSON."""
     profession = Profession()
     profession.mechanical_effects = "invalid json"
@@ -112,7 +114,7 @@ def test_profession_get_mechanical_effects_invalid_json():
     assert isinstance(result, dict)
 
 
-def test_profession_get_mechanical_effects_empty_string():
+def test_profession_get_mechanical_effects_empty_string() -> None:
     """Test get_mechanical_effects returns empty dict for empty string."""
     profession = Profession()
     profession.mechanical_effects = ""
@@ -122,20 +124,21 @@ def test_profession_get_mechanical_effects_empty_string():
     assert result == {}
 
 
-def test_profession_get_mechanical_effects_none():
-    """Test get_mechanical_effects returns empty dict for None."""
+def test_profession_get_mechanical_effects_none() -> None:
+    """Test get_mechanical_effects returns empty dict for invalid value."""
     profession = Profession()
-    profession.mechanical_effects = None
+    # Use empty string instead of None since field is non-nullable
+    profession.mechanical_effects = ""
 
     result = profession.get_mechanical_effects()
 
     assert result == {}
 
 
-def test_profession_set_mechanical_effects():
+def test_profession_set_mechanical_effects() -> None:
     """Test set_mechanical_effects stores dict as JSON string."""
     profession = Profession()
-    effects = {"damage_bonus": 5, "health_bonus": 10}
+    effects: dict[str, Any] = {"damage_bonus": 5, "health_bonus": 10}
 
     profession.set_mechanical_effects(effects)
 
@@ -143,10 +146,10 @@ def test_profession_set_mechanical_effects():
     assert profession.get_mechanical_effects() == effects
 
 
-def test_profession_set_mechanical_effects_empty_dict():
+def test_profession_set_mechanical_effects_empty_dict() -> None:
     """Test set_mechanical_effects handles empty dict."""
     profession = Profession()
-    effects = {}
+    effects: dict[str, Any] = {}
 
     profession.set_mechanical_effects(effects)
 
@@ -154,7 +157,7 @@ def test_profession_set_mechanical_effects_empty_dict():
     assert profession.get_mechanical_effects() == {}
 
 
-def test_profession_meets_stat_requirements_all_met():
+def test_profession_meets_stat_requirements_all_met() -> None:
     """Test meets_stat_requirements returns True when all requirements are met."""
     profession = Profession()
     profession.stat_requirements = json.dumps({"strength": 10, "intelligence": 15})
@@ -165,7 +168,7 @@ def test_profession_meets_stat_requirements_all_met():
     assert result is True
 
 
-def test_profession_meets_stat_requirements_exact_match():
+def test_profession_meets_stat_requirements_exact_match() -> None:
     """Test meets_stat_requirements returns True when stats exactly match requirements."""
     profession = Profession()
     profession.stat_requirements = json.dumps({"strength": 10, "intelligence": 15})
@@ -176,7 +179,7 @@ def test_profession_meets_stat_requirements_exact_match():
     assert result is True
 
 
-def test_profession_meets_stat_requirements_one_not_met():
+def test_profession_meets_stat_requirements_one_not_met() -> None:
     """Test meets_stat_requirements returns False when one requirement is not met."""
     profession = Profession()
     profession.stat_requirements = json.dumps({"strength": 10, "intelligence": 15})
@@ -187,7 +190,7 @@ def test_profession_meets_stat_requirements_one_not_met():
     assert result is False
 
 
-def test_profession_meets_stat_requirements_multiple_not_met():
+def test_profession_meets_stat_requirements_multiple_not_met() -> None:
     """Test meets_stat_requirements returns False when multiple requirements are not met."""
     profession = Profession()
     profession.stat_requirements = json.dumps({"strength": 10, "intelligence": 15, "wisdom": 12})
@@ -198,7 +201,7 @@ def test_profession_meets_stat_requirements_multiple_not_met():
     assert result is False
 
 
-def test_profession_meets_stat_requirements_missing_stat():
+def test_profession_meets_stat_requirements_missing_stat() -> None:
     """Test meets_stat_requirements returns False when required stat is missing."""
     profession = Profession()
     profession.stat_requirements = json.dumps({"strength": 10, "intelligence": 15})
@@ -209,7 +212,7 @@ def test_profession_meets_stat_requirements_missing_stat():
     assert result is False
 
 
-def test_profession_meets_stat_requirements_empty_requirements():
+def test_profession_meets_stat_requirements_empty_requirements() -> None:
     """Test meets_stat_requirements returns True when requirements are empty."""
     profession = Profession()
     profession.stat_requirements = json.dumps({})
@@ -220,7 +223,7 @@ def test_profession_meets_stat_requirements_empty_requirements():
     assert result is True
 
 
-def test_profession_meets_stat_requirements_invalid_json():
+def test_profession_meets_stat_requirements_invalid_json() -> None:
     """Test meets_stat_requirements returns True when stat_requirements is invalid JSON (treated as empty)."""
     profession = Profession()
     profession.stat_requirements = "invalid json"
@@ -232,7 +235,7 @@ def test_profession_meets_stat_requirements_invalid_json():
     assert result is True
 
 
-def test_profession_meets_stat_requirements_extra_stats():
+def test_profession_meets_stat_requirements_extra_stats() -> None:
     """Test meets_stat_requirements returns True when stats exceed requirements."""
     profession = Profession()
     profession.stat_requirements = json.dumps({"strength": 10})
@@ -243,7 +246,7 @@ def test_profession_meets_stat_requirements_extra_stats():
     assert result is True
 
 
-def test_profession_is_available_for_selection_true():
+def test_profession_is_available_for_selection_true() -> None:
     """Test is_available_for_selection returns True when is_available is True."""
     profession = Profession()
     profession.is_available = True
@@ -253,7 +256,7 @@ def test_profession_is_available_for_selection_true():
     assert result is True
 
 
-def test_profession_is_available_for_selection_false():
+def test_profession_is_available_for_selection_false() -> None:
     """Test is_available_for_selection returns False when is_available is False."""
     profession = Profession()
     profession.is_available = False
@@ -263,7 +266,7 @@ def test_profession_is_available_for_selection_false():
     assert result is False
 
 
-def test_profession_get_requirement_display_text_no_requirements():
+def test_profession_get_requirement_display_text_no_requirements() -> None:
     """Test get_requirement_display_text returns 'No requirements' when empty."""
     profession = Profession()
     profession.stat_requirements = json.dumps({})
@@ -273,7 +276,7 @@ def test_profession_get_requirement_display_text_no_requirements():
     assert result == "No requirements"
 
 
-def test_profession_get_requirement_display_text_single_requirement():
+def test_profession_get_requirement_display_text_single_requirement() -> None:
     """Test get_requirement_display_text formats single requirement correctly."""
     profession = Profession()
     profession.stat_requirements = json.dumps({"strength": 10})
@@ -283,7 +286,7 @@ def test_profession_get_requirement_display_text_single_requirement():
     assert result == "Minimum: Strength 10"
 
 
-def test_profession_get_requirement_display_text_multiple_requirements():
+def test_profession_get_requirement_display_text_multiple_requirements() -> None:
     """Test get_requirement_display_text formats multiple requirements correctly."""
     profession = Profession()
     profession.stat_requirements = json.dumps({"strength": 10, "intelligence": 15, "wisdom": 12})
@@ -298,7 +301,7 @@ def test_profession_get_requirement_display_text_multiple_requirements():
     assert result.count(",") == 2
 
 
-def test_profession_get_requirement_display_text_capitalizes_stat_names():
+def test_profession_get_requirement_display_text_capitalizes_stat_names() -> None:
     """Test get_requirement_display_text capitalizes stat names."""
     profession = Profession()
     profession.stat_requirements = json.dumps({"strength": 10, "dexterity": 12})

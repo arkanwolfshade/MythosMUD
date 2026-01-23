@@ -4,6 +4,7 @@ Unit tests for command service.
 Tests the CommandService class which handles command routing, validation, and execution.
 """
 
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -49,7 +50,7 @@ async def test_process_validated_command_success(command_service, mock_request, 
 @pytest.mark.asyncio
 async def test_process_validated_command_no_command_type(command_service, mock_request, mock_user):
     """Test process_validated_command handles missing command_type."""
-    command_data = {}
+    command_data: dict[str, Any] = {}
     result = await command_service.process_validated_command(command_data, mock_user, mock_request, None, "TestPlayer")
 
     assert result == {"result": "Invalid command format"}
@@ -58,7 +59,7 @@ async def test_process_validated_command_no_command_type(command_service, mock_r
 @pytest.mark.asyncio
 async def test_process_validated_command_unknown_command(command_service, mock_request, mock_user):
     """Test process_validated_command handles unknown command type."""
-    command_data = {"command_type": "unknown_command"}
+    command_data: dict[str, Any] = {"command_type": "unknown_command"}
     result = await command_service.process_validated_command(command_data, mock_user, mock_request, None, "TestPlayer")
 
     assert result == {"result": "Unknown command: unknown_command"}
@@ -96,7 +97,7 @@ async def test_process_validated_command_logging_error(command_service, mock_req
 
     # Mock traceback.format_exc to raise an error
     with patch("server.commands.command_service.traceback.format_exc", side_effect=ValueError("Logging error")):
-        command_data = {"command_type": "test_command"}
+        command_data: dict[str, Any] = {"command_type": "test_command"}
         result = await command_service.process_validated_command(
             command_data, mock_user, mock_request, None, "TestPlayer"
         )
@@ -182,7 +183,7 @@ def test_extract_parsed_fields_basic(command_service):
     """Test _extract_parsed_fields extracts basic fields."""
     mock_parsed = MagicMock()
     mock_parsed.model_dump = MagicMock(return_value={"args": ["arg1"], "pipe_target": None})
-    command_data = {}
+    command_data: dict[str, Any] = {}
 
     result = command_service._extract_parsed_fields(mock_parsed, "look", "TestPlayer", command_data)
 
@@ -194,7 +195,7 @@ def test_extract_parsed_fields_with_pipe_target(command_service):
     """Test _extract_parsed_fields includes pipe_target."""
     mock_parsed = MagicMock()
     mock_parsed.model_dump = MagicMock(return_value={"args": [], "pipe_target": "inventory"})
-    command_data = {}
+    command_data: dict[str, Any] = {}
 
     result = command_service._extract_parsed_fields(mock_parsed, "look", "TestPlayer", command_data)
 
@@ -207,7 +208,7 @@ def test_extract_parsed_fields_handles_missing_attributes(command_service):
     mock_parsed.model_dump = MagicMock(side_effect=AttributeError("No model_dump"))
     # Mock dir() to return some attributes
     mock_parsed.field1 = "value1"
-    command_data = {}
+    command_data: dict[str, Any] = {}
 
     with patch("builtins.dir", return_value=["field1", "__class__", "__init__"]):
         result = command_service._extract_parsed_fields(mock_parsed, "look", "TestPlayer", command_data)
@@ -222,7 +223,7 @@ async def test_execute_command_handler_success(command_service, mock_request, mo
     mock_handler = AsyncMock(return_value={"result": "Success"})
     mock_parsed = MagicMock()
 
-    command_data = {"command_type": "test", "args": []}
+    command_data: dict[str, Any] = {"command_type": "test", "args": []}
     result = await command_service._execute_command_handler(
         mock_handler, command_data, mock_parsed, mock_user, mock_request, None, "TestPlayer", "test"
     )
@@ -237,7 +238,7 @@ async def test_execute_command_handler_error(command_service, mock_request, mock
     mock_handler = AsyncMock(side_effect=ValueError("Handler error"))
     mock_parsed = MagicMock()
 
-    command_data = {"command_type": "test"}
+    command_data: dict[str, Any] = {"command_type": "test"}
     result = await command_service._execute_command_handler(
         mock_handler, command_data, mock_parsed, mock_user, mock_request, None, "TestPlayer", "test"
     )
@@ -349,7 +350,7 @@ async def test_execute_command_handler_returns_non_dict(command_service, mock_re
     mock_handler = AsyncMock(return_value="string result")
     mock_parsed = MagicMock()
 
-    command_data = {"command_type": "test"}
+    command_data: dict[str, Any] = {"command_type": "test"}
 
     # The code catches TypeError and returns an error dict instead of raising
     result = await command_service._execute_command_handler(

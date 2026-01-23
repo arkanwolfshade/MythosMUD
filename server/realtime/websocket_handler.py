@@ -10,7 +10,7 @@ and real-time updates for the game.
 import json
 import time
 import uuid
-from typing import Any
+from typing import TYPE_CHECKING, Any, cast
 
 from fastapi import WebSocket, WebSocketDisconnect
 
@@ -24,6 +24,11 @@ from .websocket_initial_state import (
     send_initial_room_state,
 )
 from .websocket_room_updates import broadcast_room_update
+
+if TYPE_CHECKING:
+    from .connection_manager import ConnectionManager
+    from .message_validator import WebSocketMessageValidator
+    from .request_context import WebSocketRequestContext
 
 # AI Agent: Don't import app at module level - causes circular import!
 #           Import locally in functions instead
@@ -49,7 +54,7 @@ def _is_websocket_disconnected(error_message: str) -> bool:
 
 
 async def _check_rate_limit(
-    websocket: WebSocket, connection_id: str | None, player_id_str: str, connection_manager
+    websocket: WebSocket, connection_id: str | None, player_id_str: str, connection_manager: "ConnectionManager"
 ) -> bool:
     """
     Check rate limit and send error response if exceeded.
@@ -79,7 +84,9 @@ async def _check_rate_limit(
     return False
 
 
-async def _validate_message(websocket: WebSocket, data: str, player_id_str: str, validator) -> dict | None:
+async def _validate_message(
+    websocket: WebSocket, data: str, player_id_str: str, validator: "WebSocketMessageValidator"
+) -> dict | None:
     """
     Validate message and send error response if validation fails.
 
@@ -91,7 +98,7 @@ async def _validate_message(websocket: WebSocket, data: str, player_id_str: str,
     try:
         csrf_token = None
         message = validator.parse_and_validate(data=data, player_id=player_id_str, schema=None, csrf_token=csrf_token)
-        return message
+        return cast("dict[Any, Any] | None", message)
     except MessageValidationError as e:
         logger.warning(
             "Message validation failed",
@@ -212,8 +219,8 @@ async def _process_message(  # pylint: disable=too-many-arguments,too-many-posit
     player_id: uuid.UUID,
     player_id_str: str,
     connection_id: str | None,
-    connection_manager,
-    validator,
+    connection_manager: "ConnectionManager",
+    validator: "WebSocketMessageValidator",
 ) -> bool:
     """
     Process a single WebSocket message.
@@ -271,13 +278,15 @@ async def _process_exception_in_message_loop(
 
 
 async def _handle_websocket_message_loop(
-    websocket: WebSocket, player_id: uuid.UUID, player_id_str: str, connection_manager
+    websocket: WebSocket, player_id: uuid.UUID, player_id_str: str, connection_manager: "ConnectionManager"
 ) -> None:
     """Handle the main WebSocket message loop."""
     from .message_validator import get_message_validator
 
     validator = get_message_validator()
     connection_id = connection_manager.get_connection_id_from_websocket(websocket)
+    # connection_id can be None if websocket is not connected, use empty string as fallback
+    connection_id_str = connection_id if connection_id is not None else ""
 
     while True:
         try:
@@ -289,7 +298,7 @@ async def _handle_websocket_message_loop(
             # Handle all exceptions uniformly through the exception handler
             # This consolidates multiple exception handlers into one to reduce complexity
             should_break, should_raise = await _process_exception_in_message_loop(
-                websocket, e, player_id, player_id_str, connection_id
+                websocket, e, player_id, player_id_str, connection_id_str
             )
             if should_break:
                 break
@@ -297,7 +306,9 @@ async def _handle_websocket_message_loop(
                 raise
 
 
-async def _cleanup_connection(player_id: uuid.UUID, player_id_str: str, connection_manager) -> None:
+async def _cleanup_connection(
+    player_id: uuid.UUID, player_id_str: str, connection_manager: "ConnectionManager"
+) -> None:
     """Clean up connection and player mute data on disconnect."""
     try:
         await connection_manager.disconnect_websocket(player_id)
@@ -317,7 +328,7 @@ async def handle_websocket_connection(
     websocket: WebSocket,
     player_id: uuid.UUID,
     session_id: str | None = None,
-    connection_manager=None,
+    connection_manager: "ConnectionManager | None" = None,
     token: str | None = None,
 ) -> None:
     """
@@ -332,6 +343,11 @@ async def handle_websocket_connection(
     AI Agent: connection_manager now injected as parameter instead of global import
     """
     if await check_shutdown_and_reject(websocket, player_id):
+        return
+
+    if connection_manager is None:
+        logger.error("ConnectionManager not available for WebSocket connection", player_id=player_id)
+        await websocket.close(code=1008, reason="Server configuration error")
         return
 
     success = await connection_manager.connect_websocket(websocket, player_id, session_id, token=token)
@@ -405,7 +421,7 @@ async def handle_game_command(
     player_id: str,
     command: str,
     args: list[Any] | None = None,
-    connection_manager=None,
+    connection_manager: "ConnectionManager | None" = None,
 ) -> None:
     """
     Handle a game command from a player.
@@ -447,7 +463,8 @@ async def handle_game_command(
         # Handle broadcasting if the command result includes broadcast data
         if result.get("broadcast") and result.get("broadcast_type"):
             logger.debug("Broadcasting message to room", broadcast_type=result.get("broadcast_type"), player=player_id)
-            player = await connection_manager.get_player(player_id)
+            player_id_uuid = uuid.UUID(player_id)
+            player = await connection_manager.get_player(player_id_uuid)
             if player and hasattr(player, "current_room_id"):
                 room_id = player.current_room_id
                 broadcast_event = build_event("command_response", {"result": result["broadcast"]}, player_id=player_id)
@@ -480,10 +497,13 @@ async def handle_game_command(
         await websocket.send_json(error_response)
 
 
-async def _validate_player_and_persistence(connection_manager, player_id: str) -> tuple[Any | None, str | None]:
+async def _validate_player_and_persistence(
+    connection_manager: "ConnectionManager", player_id: str
+) -> tuple[Any | None, str | None]:
     """Validate player and persistence availability."""
     logger.debug("Getting player for ID", player_id=player_id, player_id_type=type(player_id))
-    player = await connection_manager.get_player(player_id)
+    player_id_uuid = uuid.UUID(player_id)
+    player = await connection_manager.get_player(player_id_uuid)
     logger.debug("Player object", player=player, player_type=type(player))
     if not player:
         logger.warning("Player not found", player_id=player_id)
@@ -501,7 +521,9 @@ async def _validate_player_and_persistence(connection_manager, player_id: str) -
     return player, None
 
 
-def _resolve_and_setup_app_state_services(app_state, request_context) -> tuple[object | None, object | None]:
+def _resolve_and_setup_app_state_services(
+    app_state: Any, request_context: "WebSocketRequestContext"
+) -> tuple[object | None, object | None]:
     """Resolve and setup app state services from container or app.state."""
     player_service = None
     user_manager = None
@@ -529,7 +551,9 @@ def _resolve_and_setup_app_state_services(app_state, request_context) -> tuple[o
     return player_service, user_manager
 
 
-async def process_websocket_command(cmd: str, args: list, player_id: str, connection_manager=None) -> dict:
+async def process_websocket_command(
+    cmd: str, args: list, player_id: str, connection_manager: "ConnectionManager | None" = None
+) -> dict:
     """
     Process a command for WebSocket connections.
 
@@ -628,7 +652,9 @@ Directions: north, south, east, west
 """
 
 
-async def handle_chat_message(websocket: WebSocket, player_id: str, message: str, connection_manager=None) -> None:
+async def handle_chat_message(
+    websocket: WebSocket, player_id: str, message: str, connection_manager: "ConnectionManager | None" = None
+) -> None:
     """
     Handle a chat message from a player.
 
@@ -653,7 +679,8 @@ async def handle_chat_message(websocket: WebSocket, player_id: str, message: str
         )
 
         # Broadcast to room
-        player = await connection_manager.get_player(player_id)
+        player_id_uuid = uuid.UUID(player_id)
+        player = await connection_manager.get_player(player_id_uuid)
         if player:
             await connection_manager.broadcast_to_room(
                 str(player.current_room_id), chat_event, exclude_player=player_id

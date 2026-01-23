@@ -7,7 +7,7 @@ with defensive error handling to prevent player disconnections.
 
 # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Combat handlers require many parameters for context and combat processing
 
-from typing import Any
+from typing import Any, cast
 from uuid import UUID, uuid4
 
 from sqlalchemy.exc import SQLAlchemyError
@@ -118,14 +118,14 @@ class NPCCombatHandlers:
                 message=combat_result.message,
             )
 
-            return combat_result.success
+            return cast(bool, combat_result.success)
         logger.warning(
             "Combat attack failed",
             player_id=player_id,
             npc_id=npc_id,
             message=combat_result.message,
         )
-        return combat_result.success
+        return cast(bool, combat_result.success)
 
     async def _handle_npc_death_on_combat_end(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: NPC death handling requires many parameters for context and death processing
         self, player_id: str, npc_id: str, room_id: str, combat_result: Any, handle_npc_death_callback: Any

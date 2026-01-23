@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from copy import deepcopy
-from typing import Any
+from typing import Any, cast
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -296,9 +296,12 @@ class RoomSubscriptionManager:
                 npc_instance = lifecycle_manager.active_npcs[npc_id]
                 npc_name = getattr(npc_instance, "name", None)
                 if npc_name:
-                    return npc_name
-        except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC attribute access errors unpredictable, optional metadata access may fail in various ways, must handle gracefully
-            pass
+                    result: str = cast(str, npc_name)
+                    return result
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC attribute access errors unpredictable, optional metadata access may fail in various ways, must handle gracefully
+            # nosec B110 - Intentional silent handling: NPC attribute access errors are unpredictable,
+            # optional metadata access may fail in various ways, must handle gracefully
+            logger.debug("Failed to access NPC name, using ID as fallback", npc_id=npc_id, exc_info=e)
         logger.warning("NPC name not found, using ID as fallback", npc_id=npc_id)
         return npc_id
 
@@ -530,7 +533,8 @@ class RoomSubscriptionManager:
         try:
             room = self.async_persistence.get_room_by_id(room_id)  # Sync method, uses cache
             if room is not None and getattr(room, "id", None):
-                return room.id
+                result: str = cast(str, room.id)
+                return result
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Room resolution errors unpredictable, fallback to original id
             logger.error("Error resolving canonical room id", room_id=room_id, error=str(e))
         return room_id

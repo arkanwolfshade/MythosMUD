@@ -6,6 +6,7 @@ are in login grace period.
 """
 
 import uuid
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -75,7 +76,7 @@ async def test_attack_command_blocked_during_grace_period(mock_request, mock_con
     handler = CombatCommandHandler(async_persistence=async_persistence)
 
     # Try to execute attack command
-    command_data = {"command_type": "attack", "target_player": "TargetPlayer"}
+    command_data: dict[str, Any] = {"command_type": "attack", "target_player": "TargetPlayer"}
     current_user = {"username": player_name}
 
     result = await handler.handle_attack_command(
@@ -115,12 +116,13 @@ async def test_attack_command_allowed_after_grace_period(mock_request):  # pylin
     handler = CombatCommandHandler(async_persistence=async_persistence)
 
     # Try to execute attack command
-    command_data = {"command_type": "attack", "target_player": "TargetPlayer"}
+    command_data: dict[str, Any] = {"command_type": "attack", "target_player": "TargetPlayer"}
     current_user = {"username": player_name}
 
     # Mock the NPC combat service to allow the attack to proceed
     # The handler's npc_combat_service is created during initialization
-    handler.npc_combat_service.handle_player_attack_on_npc = AsyncMock(return_value=True)
+    # Reason: Standard test mocking practice - replacing method with AsyncMock for testing
+    handler.npc_combat_service.handle_player_attack_on_npc = AsyncMock(return_value=True)  # type: ignore[method-assign]
 
     # The command should proceed (we're just testing the grace period check)
     # In a real scenario, this would continue to combat logic
@@ -163,11 +165,12 @@ async def test_attack_command_works_when_not_in_grace_period(mock_request, mock_
     handler = CombatCommandHandler(async_persistence=async_persistence)
 
     # Try to execute attack command
-    command_data = {"command_type": "attack", "target_player": "TargetPlayer"}
+    command_data: dict[str, Any] = {"command_type": "attack", "target_player": "TargetPlayer"}
     current_user = {"username": player_name}
 
     # Mock the NPC combat service to allow the attack to proceed
-    handler.npc_combat_service.handle_player_attack_on_npc = AsyncMock(return_value=True)
+    # Reason: Standard test mocking practice - replacing method with AsyncMock for testing
+    handler.npc_combat_service.handle_player_attack_on_npc = AsyncMock(return_value=True)  # type: ignore[method-assign]
 
     # The command should not be blocked by grace period check
     # (it may fail for other reasons like target not found, but not grace period)

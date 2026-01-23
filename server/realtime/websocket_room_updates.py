@@ -5,7 +5,7 @@ This module handles room updates and broadcasting to players.
 """
 
 import uuid
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from ..async_persistence import get_async_persistence
 from ..services.npc_instance_service import get_npc_instance_service
@@ -16,10 +16,14 @@ from .envelope import build_event
 from .login_grace_period import is_player_in_login_grace_period
 from .websocket_helpers import convert_uuids_to_strings, get_npc_name_from_instance
 
+if TYPE_CHECKING:
+    from ..models.room import Room
+    from .connection_manager import ConnectionManager
+
 logger = get_logger(__name__)
 
 
-async def get_player_occupants(connection_manager, room_id: str) -> list[str]:
+async def get_player_occupants(connection_manager: "ConnectionManager | Any", room_id: str) -> list[str]:
     """
     Get player occupant names from room.
 
@@ -97,7 +101,7 @@ async def get_npc_occupants_from_lifecycle_manager(room_id: str) -> list[str]:
     return occupant_names
 
 
-async def get_npc_occupants_fallback(room, room_id: str) -> list[str]:
+async def get_npc_occupants_fallback(room: "Room | Any", room_id: str) -> list[str]:
     """Get NPC occupant names using fallback method (room.get_npcs())."""
     occupant_names = []
     room_npc_ids = room.get_npcs()
@@ -129,7 +133,11 @@ async def get_npc_occupants_fallback(room, room_id: str) -> list[str]:
 
 
 async def build_room_update_event(
-    room, room_id: str, player_id: str, occupant_names: list[str], connection_manager
+    room: "Room | Any",
+    room_id: str,
+    player_id: str,
+    occupant_names: list[str],
+    connection_manager: "ConnectionManager | Any",
 ) -> dict[str, Any]:
     """Build room update event with room data and occupants."""
     room_data = room.to_dict() if hasattr(room, "to_dict") else room
@@ -170,23 +178,28 @@ async def build_room_update_event(
     )
 
 
-async def update_player_room_subscription(connection_manager, player_id: str, room_id: str) -> None:
+async def update_player_room_subscription(
+    connection_manager: "ConnectionManager | Any", player_id: str, room_id: str
+) -> None:
     """Update player's room subscription and current room."""
-    player = await connection_manager.get_player(player_id)
+    player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+    player = await connection_manager.get_player(player_id_uuid)
     if not player:
         return
 
     if hasattr(player, "current_room_id") and player.current_room_id and player.current_room_id != room_id:
-        await connection_manager.unsubscribe_from_room(player_id, str(player.current_room_id))
+        await connection_manager.unsubscribe_from_room(player_id_uuid, str(player.current_room_id))
         logger.debug("Player unsubscribed from old room", player_id=player_id, old_room_id=player.current_room_id)
 
-    await connection_manager.subscribe_to_room(player_id, room_id)
+    await connection_manager.subscribe_to_room(player_id_uuid, room_id)
     logger.debug("Player subscribed to new room", player_id=player_id, new_room_id=room_id)
 
     player.current_room_id = room_id
 
 
-async def broadcast_room_update(player_id: str, room_id: str, connection_manager=None) -> None:
+async def broadcast_room_update(
+    player_id: str, room_id: str, connection_manager: "ConnectionManager | None" = None
+) -> None:
     """
     Broadcast a room update to all players in the room.
 

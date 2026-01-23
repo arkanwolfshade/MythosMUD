@@ -9,7 +9,7 @@ combat, death processing, and periodic maintenance tasks.
 import asyncio
 import datetime
 import uuid
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from anyio import sleep
 from fastapi import FastAPI
@@ -406,7 +406,7 @@ async def _process_single_player_mp_regeneration(mp_service: Any, player_id_str:
     try:
         player_uuid = uuid.UUID(player_id_str) if isinstance(player_id_str, str) else player_id_str
         result = await mp_service.process_tick_regeneration(player_uuid)
-        return result.get("mp_restored", 0) > 0
+        return cast(bool, result.get("mp_restored", 0) > 0)
     except (ValueError, AttributeError, TypeError) as e:
         logger.warning("Error processing MP regeneration for player", player_id=player_id_str, error=str(e))
         return False
@@ -681,7 +681,7 @@ async def broadcast_tick_event(app: FastAPI, tick_count: int) -> None:
     logger.debug("Game tick broadcast completed", tick_count=tick_count)
 
 
-async def game_tick_loop(app: FastAPI):
+async def game_tick_loop(app: FastAPI) -> None:
     """Main game tick loop.
 
     This function runs continuously and handles periodic game updates,

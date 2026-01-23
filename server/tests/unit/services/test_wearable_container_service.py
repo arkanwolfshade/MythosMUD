@@ -5,6 +5,7 @@ Tests the WearableContainerService class for managing wearable container operati
 """
 
 import uuid
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -696,7 +697,7 @@ async def test_handle_container_overflow_empty_overflow(wearable_service, mock_p
     mock_player.inventory = []
     mock_player.current_room_id = "room_001"
     mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    overflow_items = []
+    overflow_items: list[dict[str, Any]] = []
     result = await wearable_service.handle_container_overflow(player_id, container_id, overflow_items)
     assert len(result["spilled_items"]) == 0
     assert len(result["ground_items"]) == 0

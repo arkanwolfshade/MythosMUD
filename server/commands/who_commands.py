@@ -6,9 +6,12 @@ This module contains the who command handler and related helper functions.
 
 # pylint: disable=too-many-locals,too-many-return-statements  # Reason: Who commands require many intermediate variables for complex player listing logic and multiple return statements for early validation returns
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from ..structured_logging.enhanced_logging_config import get_logger
+
+if TYPE_CHECKING:
+    from ..models.player import Player
 
 logger = get_logger(__name__)
 
@@ -69,7 +72,7 @@ def format_player_location(room_id: str) -> str:
         return "Unknown Location"
 
 
-def format_player_entry(player) -> str:
+def format_player_entry(player: "Player") -> str:
     """
     Format a single player entry for the who command output.
 

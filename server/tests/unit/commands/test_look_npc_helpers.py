@@ -5,6 +5,7 @@ Tests the helper functions in look_npc.py module.
 """
 
 from datetime import datetime
+from typing import Any
 from unittest.mock import MagicMock
 
 from server.commands.look_npc import (
@@ -74,11 +75,11 @@ def test_format_core_attributes():
 
 def test_format_core_attributes_empty():
     """Test _format_core_attributes() returns empty list when no core attributes."""
-    npc_stats = {}
+    npc_stats: dict[str, Any] = {}
 
     result = _format_core_attributes(npc_stats)
 
-    assert result == []
+    assert not result
 
 
 def test_format_other_stats():
@@ -107,7 +108,7 @@ def test_format_other_stats_empty():
 
     result = _format_other_stats(npc_stats)
 
-    assert result == []
+    assert not result
 
 
 def test_parse_stat_datetime_from_datetime():
@@ -174,11 +175,11 @@ def test_format_lifecycle_info():
 
 def test_format_lifecycle_info_no_lifecycle_state():
     """Test _format_lifecycle_info() returns empty list when no lifecycle_state."""
-    stats = {}
+    stats: dict[str, Any] = {}
 
     result = _format_lifecycle_info(stats)
 
-    assert result == []
+    assert not result
 
 
 def test_format_npc_description():

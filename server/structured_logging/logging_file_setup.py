@@ -13,7 +13,7 @@ import sys
 import threading
 from logging.handlers import QueueHandler, QueueListener, RotatingFileHandler
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from server.structured_logging.logging_handlers import SafeRotatingFileHandler, create_aggregator_handler
 from server.structured_logging.logging_utilities import ensure_log_directory, resolve_log_base, rotate_log_files
@@ -436,7 +436,8 @@ def _create_handler_for_category(
         handler.setLevel(logging.DEBUG)
         formatter = _create_formatter(player_service)
         handler.setFormatter(formatter)
-        return handler
+        result: logging.Handler = cast(logging.Handler, handler)
+        return result
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Defensive fallback for handler creation failures, must catch all exceptions to prevent logging setup from crashing the application
         # Graceful fallback: if handler creation fails, use NullHandler
         # This prevents logging setup failures from crashing the application

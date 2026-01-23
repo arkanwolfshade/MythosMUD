@@ -4,10 +4,14 @@ Aggressive mob NPC type for MythosMUD.
 This module provides the AggressiveMobNPC class with hunting and territorial behaviors.
 """
 
-from typing import Any
+from typing import TYPE_CHECKING, Any, cast
 
 from ..structured_logging.enhanced_logging_config import get_logger
 from .npc_base import NPCBase
+
+if TYPE_CHECKING:
+    from ..events import EventBus
+    from .event_reaction_system import NPCEventReactionSystem
 
 logger = get_logger(__name__)
 
@@ -15,7 +19,13 @@ logger = get_logger(__name__)
 class AggressiveMobNPC(NPCBase):
     """Aggressive mob NPC type with hunting and territorial behaviors."""
 
-    def __init__(self, definition: Any, npc_id: str, event_bus=None, event_reaction_system=None):
+    def __init__(
+        self,
+        definition: Any,
+        npc_id: str,
+        event_bus: "EventBus | None" = None,
+        event_reaction_system: "NPCEventReactionSystem | None" = None,
+    ):
         """Initialize aggressive mob NPC."""
         super().__init__(definition, npc_id, event_bus, event_reaction_system)
         self._targets: list[str] = []
@@ -101,10 +111,18 @@ class AggressiveMobNPC(NPCBase):
                 except RuntimeError:
                     # No running loop - use asyncio.run() if possible
                     try:
-                        success = asyncio.run(
-                            self.combat_integration.handle_npc_attack(
-                                self.npc_id, target_id, self.current_room, attack_damage, "physical", self.get_stats()
-                            )
+                        success = cast(
+                            bool,
+                            asyncio.run(
+                                self.combat_integration.handle_npc_attack(
+                                    self.npc_id,
+                                    target_id,
+                                    self.current_room,
+                                    attack_damage,
+                                    "physical",
+                                    self.get_stats(),
+                                )
+                            ),
                         )
                         return success
                     except (RuntimeError, TypeError, AttributeError) as e:

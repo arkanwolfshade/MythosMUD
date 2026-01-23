@@ -10,7 +10,7 @@ import uuid
 from server.realtime.connection_models import ConnectionMetadata
 
 
-def test_connection_metadata_init():
+def test_connection_metadata_init() -> None:
     """Test ConnectionMetadata.__init__() creates metadata with required fields."""
     connection_id = "conn_123"
     player_id = uuid.uuid4()
@@ -36,7 +36,7 @@ def test_connection_metadata_init():
     assert metadata.last_token_validation is None
 
 
-def test_connection_metadata_with_optional_fields():
+def test_connection_metadata_with_optional_fields() -> None:
     """Test ConnectionMetadata.__init__() with optional fields."""
     connection_id = "conn_123"
     player_id = uuid.uuid4()
@@ -61,7 +61,7 @@ def test_connection_metadata_with_optional_fields():
     assert metadata.last_token_validation == current_time
 
 
-def test_connection_metadata_dataclass_fields():
+def test_connection_metadata_dataclass_fields() -> None:
     """Test ConnectionMetadata has all expected dataclass fields."""
     connection_id = "conn_123"
     player_id = uuid.uuid4()
@@ -88,7 +88,7 @@ def test_connection_metadata_dataclass_fields():
     assert hasattr(metadata, "last_token_validation")
 
 
-def test_connection_metadata_equality():
+def test_connection_metadata_equality() -> None:
     """Test ConnectionMetadata equality comparison."""
     connection_id = "conn_123"
     player_id = uuid.uuid4()
@@ -115,7 +115,7 @@ def test_connection_metadata_equality():
     assert metadata1 == metadata2
 
 
-def test_connection_metadata_inequality():
+def test_connection_metadata_inequality() -> None:
     """Test ConnectionMetadata inequality comparison."""
     connection_id = "conn_123"
     player_id = uuid.uuid4()

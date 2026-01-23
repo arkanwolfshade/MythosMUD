@@ -5,6 +5,7 @@ Tests the message_queue module classes and functions.
 """
 
 import time
+from collections import deque
 from datetime import UTC, datetime, timedelta
 from unittest.mock import patch
 
@@ -137,7 +138,7 @@ def test_message_queue_get_messages_error():
     """Test MessageQueue.get_messages() handles errors."""
     queue = MessageQueue()
     player_id = "player_123"
-    queue.pending_messages[player_id] = [{"type": "chat"}]
+    queue.pending_messages[player_id] = deque([{"type": "chat"}])
 
     # Force an error by making del raise an exception
     class ErrorDict(dict):
@@ -179,7 +180,7 @@ def test_message_queue_has_messages_empty_list():
     """Test MessageQueue.has_messages() returns False for empty list."""
     queue = MessageQueue()
     player_id = "player_123"
-    queue.pending_messages[player_id] = []
+    queue.pending_messages[player_id] = deque()
 
     assert queue.has_messages(player_id) is False
 
@@ -259,10 +260,12 @@ def test_message_queue_cleanup_old_messages():
     # Add old and recent messages
     old_time = time.time() - 7200  # 2 hours ago
     recent_time = time.time() - 30  # 30 seconds ago
-    queue.pending_messages[player_id] = [
-        {"type": "chat", "content": "Old", "timestamp": old_time},
-        {"type": "chat", "content": "Recent", "timestamp": recent_time},
-    ]
+    queue.pending_messages[player_id] = deque(
+        [
+            {"type": "chat", "content": "Old", "timestamp": old_time},
+            {"type": "chat", "content": "Recent", "timestamp": recent_time},
+        ]
+    )
 
     with patch("server.realtime.message_queue.logger") as mock_logger:
         queue.cleanup_old_messages(max_age_seconds=3600)
@@ -280,7 +283,7 @@ def test_message_queue_cleanup_old_messages_removes_empty():
 
     # Add only old messages
     old_time = time.time() - 7200
-    queue.pending_messages[player_id] = [{"type": "chat", "content": "Old", "timestamp": old_time}]
+    queue.pending_messages[player_id] = deque([{"type": "chat", "content": "Old", "timestamp": old_time}])
 
     with patch("server.realtime.message_queue.logger") as mock_logger:
         queue.cleanup_old_messages(max_age_seconds=3600)
@@ -301,10 +304,12 @@ def test_message_queue_cleanup_old_messages_string_timestamp():
     old_iso = old_dt.isoformat()
     recent_time = time.time() - 30
 
-    queue.pending_messages[player_id] = [
-        {"type": "chat", "content": "Old", "timestamp": old_iso},
-        {"type": "chat", "content": "Recent", "timestamp": recent_time},
-    ]
+    queue.pending_messages[player_id] = deque(
+        [
+            {"type": "chat", "content": "Old", "timestamp": old_iso},
+            {"type": "chat", "content": "Recent", "timestamp": recent_time},
+        ]
+    )
 
     queue.cleanup_old_messages(max_age_seconds=3600)
 
@@ -319,10 +324,12 @@ def test_message_queue_cleanup_old_messages_invalid_timestamp():
     player_id = "player_123"
 
     # Add message with invalid timestamp
-    queue.pending_messages[player_id] = [
-        {"type": "chat", "content": "Invalid", "timestamp": "not-a-timestamp"},
-        {"type": "chat", "content": "Recent", "timestamp": time.time()},
-    ]
+    queue.pending_messages[player_id] = deque(
+        [
+            {"type": "chat", "content": "Invalid", "timestamp": "not-a-timestamp"},
+            {"type": "chat", "content": "Recent", "timestamp": time.time()},
+        ]
+    )
 
     queue.cleanup_old_messages(max_age_seconds=3600)
 
@@ -360,7 +367,7 @@ def test_message_queue_cleanup_large_structures():
 
     # Create a large queue
     large_list = [{"type": "chat", "content": f"Message {i}", "timestamp": time.time()} for i in range(2000)]
-    queue.pending_messages[player_id] = large_list
+    queue.pending_messages[player_id] = deque(large_list)
 
     with patch("server.realtime.message_queue.logger") as mock_logger:
         queue.cleanup_large_structures(max_entries=1000)

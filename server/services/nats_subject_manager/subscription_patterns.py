@@ -6,7 +6,7 @@ This module provides utilities for generating subscription patterns with wildcar
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from .exceptions import SubjectValidationError
 
@@ -31,10 +31,10 @@ def get_subscription_pattern(pattern_info: dict[str, Any], validator: SubjectVal
     AI: Validates that generated subscription patterns are not too broad to prevent
         unintended message subscriptions.
     """
-    pattern = pattern_info["pattern"]
+    pattern: str = cast(str, pattern_info["pattern"])
 
     # Replace all parameter placeholders with wildcards
-    subscription_pattern = pattern
+    subscription_pattern: str = pattern
     for param in pattern_info["required_params"]:
         placeholder = f"{{{param}}}"
         subscription_pattern = subscription_pattern.replace(placeholder, "*")

@@ -4,7 +4,7 @@ Emote command handlers for MythosMUD.
 This module contains handlers for the emote command.
 """
 
-from typing import Any
+from typing import Any, cast
 
 from ..alias_storage import AliasStorage
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -24,11 +24,11 @@ def _extract_emote_action(command_data: dict) -> str | None:
     """
     action = command_data.get("action")
     if action:
-        return action
+        return cast(str | None, action)
 
     parsed_command = command_data.get("parsed_command")
     if parsed_command is not None and hasattr(parsed_command, "action"):
-        return parsed_command.action
+        return cast(str | None, parsed_command.action)
 
     return None
 

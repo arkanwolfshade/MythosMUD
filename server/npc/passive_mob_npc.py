@@ -5,10 +5,14 @@ This module provides the PassiveMobNPC class with wandering and response behavio
 """
 
 import time
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from ..structured_logging.enhanced_logging_config import get_logger
 from .npc_base import NPCBase
+
+if TYPE_CHECKING:
+    from ..events import EventBus
+    from .event_reaction_system import NPCEventReactionSystem
 
 logger = get_logger(__name__)
 
@@ -16,7 +20,13 @@ logger = get_logger(__name__)
 class PassiveMobNPC(NPCBase):
     """Passive mob NPC type with wandering and response behaviors."""
 
-    def __init__(self, definition: Any, npc_id: str, event_bus=None, event_reaction_system=None):
+    def __init__(
+        self,
+        definition: Any,
+        npc_id: str,
+        event_bus: "EventBus | None" = None,
+        event_reaction_system: "NPCEventReactionSystem | None" = None,
+    ):
         """Initialize passive mob NPC."""
         super().__init__(definition, npc_id, event_bus, event_reaction_system)
         self._setup_passive_mob_behavior_rules()

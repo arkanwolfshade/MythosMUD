@@ -9,7 +9,7 @@ import json
 import os
 from datetime import datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Optional, cast
 
 from .models import Alias
 from .structured_logging.enhanced_logging_config import get_logger
@@ -97,7 +97,7 @@ class AliasStorage:
                 )
                 return {"version": "1.0", "aliases": []}
 
-            return data
+            return cast(dict[Any, Any], data)
         except (OSError, json.JSONDecodeError) as e:
             # Log error and return default structure
             logger.error("Error loading alias data", player_name=player_name, error=str(e))

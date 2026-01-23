@@ -154,7 +154,7 @@ class TaskRegistry:  # pylint: disable=too-many-instance-attributes  # Reason: T
         self._task_service_tracking[service_name] = self._task_service_tracking.get(service_name, 0) + 1
 
     def register_task(  # pylint: disable=keyword-arg-before-vararg  # Reason: task_type has default value, *args follows for flexibility
-        self, coro: Coroutine[Any, Any, Any], task_name: str, task_type: str = "unknown", *args
+        self, coro: Coroutine[Any, Any, Any], task_name: str, task_type: str = "unknown", *args: Any
     ) -> asyncio.Task[Any]:
         """
         Register and create a tracked asyncio.Task.

@@ -5,7 +5,7 @@ This module handles XP calculation and rewards for NPC combat,
 including defensive error handling to prevent player disconnections.
 """
 
-from typing import Any
+from typing import Any, cast
 from uuid import UUID
 
 from sqlalchemy.exc import SQLAlchemyError
@@ -46,7 +46,7 @@ class NPCCombatRewards:
         base_stats = npc_definition.get_base_stats()
         if isinstance(base_stats, dict):
             # Use xp_value from the database (not xp_reward)
-            return base_stats.get("xp_value", 0)
+            return cast(int, base_stats.get("xp_value", 0))
         return 0
 
     async def check_player_connection_state(self, player_id: str) -> None:

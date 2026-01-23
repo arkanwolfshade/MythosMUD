@@ -114,7 +114,7 @@ async def test_register_user_integrity_error(mock_request, mock_session):
     )
 
     # Mock IntegrityError
-    integrity_error = IntegrityError("statement", "params", "orig")
+    integrity_error = IntegrityError("statement", "params", Exception("duplicate key value violates unique constraint"))
     integrity_error.orig = Exception("duplicate key value violates unique constraint")
 
     from sqlalchemy.engine import Result
@@ -958,8 +958,8 @@ async def test_register_user_email_constraint_violation(mock_request, mock_sessi
     mock_invite_manager = MagicMock()
 
     # Mock IntegrityError with email constraint
-    integrity_error = IntegrityError("statement", "params", "orig")
-    integrity_error.orig = Exception("duplicate key value violates unique constraint users_email_key")
+    orig_exception = Exception("duplicate key value violates unique constraint users_email_key")
+    integrity_error = IntegrityError("statement", "params", orig_exception)
 
     from sqlalchemy.engine import Result
 
@@ -1127,8 +1127,8 @@ async def test_register_user_username_constraint_violation(mock_request, mock_se
     mock_invite_manager = MagicMock()
 
     # Mock IntegrityError with username constraint
-    integrity_error = IntegrityError("statement", "params", "orig")
-    integrity_error.orig = Exception("duplicate key value violates unique constraint users_username_key")
+    orig_exception = Exception("duplicate key value violates unique constraint users_username_key")
+    integrity_error = IntegrityError("statement", "params", orig_exception)
 
     from sqlalchemy.engine import Result
 
@@ -1162,8 +1162,8 @@ async def test_register_user_generic_constraint_violation(mock_request, mock_ses
     mock_invite_manager = MagicMock()
 
     # Mock IntegrityError with generic constraint
-    integrity_error = IntegrityError("statement", "params", "orig")
-    integrity_error.orig = Exception("duplicate key value violates unique constraint")
+    orig_exception = Exception("duplicate key value violates unique constraint")
+    integrity_error = IntegrityError("statement", "params", orig_exception)
 
     from sqlalchemy.engine import Result
 

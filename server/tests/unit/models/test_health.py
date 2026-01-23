@@ -55,7 +55,8 @@ def test_server_component_creation():
 def test_server_component_rejects_extra_fields():
     """Test ServerComponent rejects unknown fields (extra='forbid')."""
     with pytest.raises(ValidationError) as exc_info:
-        ServerComponent(
+        # Reason: Intentionally testing Pydantic validation with extra='forbid' - extra fields should be rejected
+        ServerComponent(  # type: ignore[call-arg]
             status=HealthStatus.HEALTHY,
             uptime_seconds=100.0,
             memory_usage_mb=100.0,
@@ -77,7 +78,8 @@ def test_server_component_frozen():
     )
 
     with pytest.raises(ValidationError):
-        component.status = HealthStatus.DEGRADED
+        # Reason: Testing frozen Pydantic model - assignment to read-only property raises ValidationError at runtime
+        component.status = HealthStatus.DEGRADED  # type: ignore[misc]
 
 
 # --- Tests for DatabaseComponent model ---
@@ -110,7 +112,8 @@ def test_database_component_without_last_query_time():
 def test_database_component_rejects_extra_fields():
     """Test DatabaseComponent rejects unknown fields."""
     with pytest.raises(ValidationError):
-        DatabaseComponent(
+        # Reason: Intentionally testing Pydantic validation with extra='forbid' - extra fields should be rejected
+        DatabaseComponent(  # type: ignore[call-arg]
             status=HealthStatus.HEALTHY,
             connection_count=5,
             last_query_time_ms=10.0,
@@ -139,7 +142,8 @@ def test_connections_component_creation():
 def test_connections_component_rejects_extra_fields():
     """Test ConnectionsComponent rejects unknown fields."""
     with pytest.raises(ValidationError):
-        ConnectionsComponent(
+        # Reason: Intentionally testing Pydantic validation with extra='forbid' - extra fields should be rejected
+        ConnectionsComponent(  # type: ignore[call-arg]
             status=HealthStatus.HEALTHY,
             active_connections=3,
             max_connections=100,
@@ -199,7 +203,8 @@ def test_health_components_rejects_extra_fields():
     )
 
     with pytest.raises(ValidationError):
-        HealthComponents(server=server, database=database, connections=connections, unknown_field="value")
+        # Reason: Intentionally testing Pydantic validation with extra='forbid' - extra fields should be rejected
+        HealthComponents(server=server, database=database, connections=connections, unknown_field="value")  # type: ignore[call-arg]
 
 
 # --- Tests for HealthResponse model ---
@@ -329,7 +334,8 @@ def test_health_error_response_creation():
 def test_health_error_response_rejects_extra_fields():
     """Test HealthErrorResponse rejects unknown fields."""
     with pytest.raises(ValidationError):
-        HealthErrorResponse(
+        # Reason: Intentionally testing Pydantic validation with extra='forbid' - extra fields should be rejected
+        HealthErrorResponse(  # type: ignore[call-arg]
             error="Test error",
             detail="Test detail",
             timestamp="2025-08-27T15:30:45.123456Z",
@@ -346,4 +352,5 @@ def test_health_error_response_frozen():
     )
 
     with pytest.raises(ValidationError):
-        response.error = "Modified error"
+        # Reason: Testing frozen Pydantic model - assignment to read-only property raises ValidationError at runtime
+        response.error = "Modified error"  # type: ignore[misc]

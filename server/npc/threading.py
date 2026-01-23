@@ -364,7 +364,7 @@ class NPCThreadManager:
         """Get NPC definition for a specific NPC."""
         return self.npc_definitions.get(npc_id)
 
-    async def _npc_thread_worker(self, npc_id: str, npc_definition: NPCDefinition):
+    async def _npc_thread_worker(self, npc_id: str, npc_definition: NPCDefinition) -> None:
         """
         Worker function for individual NPC threads.
 
@@ -397,7 +397,7 @@ class NPCThreadManager:
         finally:
             logger.info("NPC thread worker ended", npc_id=npc_id)
 
-    async def _process_npc_message(self, npc_id: str, message: dict[str, Any]):
+    async def _process_npc_message(self, npc_id: str, message: dict[str, Any]) -> None:
         """Process a message for an NPC."""
         try:
             message_type = message.get("type")
@@ -412,7 +412,7 @@ class NPCThreadManager:
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Message processing errors unpredictable, must handle gracefully
             logger.error("Error processing NPC message", npc_id=npc_id, error=str(e))
 
-    async def _process_wander_action(self, npc_id: str, _message: dict[str, Any]):  # pylint: disable=unused-argument  # Reason: Parameter required for action signature, message content not used
+    async def _process_wander_action(self, npc_id: str, _message: dict[str, Any]) -> None:  # pylint: disable=unused-argument  # Reason: Parameter required for action signature, message content not used
         """
         Process a WANDER action for idle movement.
 
@@ -482,7 +482,7 @@ class NPCThreadManager:
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: WANDER action processing errors unpredictable, must handle gracefully
             logger.error("Error processing WANDER action", npc_id=npc_id, error=str(e))
 
-    async def _execute_npc_behavior(self, npc_id: str, _npc_definition: NPCDefinition):  # pylint: disable=unused-argument  # Reason: Parameter reserved for future definition-based behavior execution
+    async def _execute_npc_behavior(self, npc_id: str, _npc_definition: NPCDefinition) -> None:  # pylint: disable=unused-argument  # Reason: Parameter reserved for future definition-based behavior execution
         """Execute NPC behavior based on its type and configuration."""
         try:
             # Get NPC instance from lifecycle manager

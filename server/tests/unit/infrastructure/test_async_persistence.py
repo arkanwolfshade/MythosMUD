@@ -11,6 +11,7 @@ Tests the AsyncPersistenceLayer class and related functions.
 import asyncio
 import uuid
 from datetime import UTC, datetime
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -132,7 +133,7 @@ async def test_get_players_by_user_id_delegates(async_persistence_layer):
     # Mock _ensure_room_cache_loaded to avoid database operations
     async_persistence_layer._ensure_room_cache_loaded = AsyncMock()
     user_id = str(uuid.uuid4())
-    mock_players = [MagicMock(spec=Player), MagicMock(spec=Player)]
+    mock_players: list[Any] = [MagicMock(spec=Player), MagicMock(spec=Player)]
     async_persistence_layer._player_repo.get_players_by_user_id = AsyncMock(return_value=mock_players)
 
     result = await async_persistence_layer.get_players_by_user_id(user_id)
@@ -147,7 +148,7 @@ async def test_get_active_players_by_user_id_delegates(async_persistence_layer):
     # Mock _ensure_room_cache_loaded to avoid database operations
     async_persistence_layer._ensure_room_cache_loaded = AsyncMock()
     user_id = str(uuid.uuid4())
-    mock_players = [MagicMock(spec=Player)]
+    mock_players: list[Any] = [MagicMock(spec=Player)]
     async_persistence_layer._player_repo.get_active_players_by_user_id = AsyncMock(return_value=mock_players)
 
     result = await async_persistence_layer.get_active_players_by_user_id(user_id)
@@ -234,7 +235,7 @@ async def test_list_players_delegates(async_persistence_layer):
     """Test list_players delegates to PlayerRepository."""
     # Mock _ensure_room_cache_loaded to avoid database operations
     async_persistence_layer._ensure_room_cache_loaded = AsyncMock()
-    mock_players = [MagicMock(spec=Player), MagicMock(spec=Player)]
+    mock_players: list[Any] = [MagicMock(spec=Player), MagicMock(spec=Player)]
     async_persistence_layer._player_repo.list_players = AsyncMock(return_value=mock_players)
 
     result = await async_persistence_layer.list_players()
@@ -291,7 +292,7 @@ async def test_get_players_in_room_delegates(async_persistence_layer):
     """Test get_players_in_room delegates to PlayerRepository."""
     # Mock _ensure_room_cache_loaded to avoid database operations
     async_persistence_layer._ensure_room_cache_loaded = AsyncMock()
-    mock_players = [MagicMock(spec=Player)]
+    mock_players: list[Any] = [MagicMock(spec=Player)]
     async_persistence_layer._player_repo.get_players_in_room = AsyncMock(return_value=mock_players)
 
     result = await async_persistence_layer.get_players_in_room("test_room_id")
@@ -303,7 +304,7 @@ async def test_get_players_in_room_delegates(async_persistence_layer):
 @pytest.mark.asyncio
 async def test_save_players_delegates(async_persistence_layer):
     """Test save_players delegates to PlayerRepository."""
-    mock_players = [MagicMock(spec=Player), MagicMock(spec=Player)]
+    mock_players: list[Any] = [MagicMock(spec=Player), MagicMock(spec=Player)]
     async_persistence_layer._player_repo.save_players = AsyncMock()
 
     await async_persistence_layer.save_players(mock_players)
@@ -606,7 +607,7 @@ async def test_get_container_delegates(async_persistence_layer):
 @pytest.mark.asyncio
 async def test_get_containers_by_room_id_delegates(async_persistence_layer):
     """Test get_containers_by_room_id delegates to ContainerRepository."""
-    mock_containers = [{"container_id": str(uuid.uuid4())}, {"container_id": str(uuid.uuid4())}]
+    mock_containers: list[dict[str, Any]] = [{"container_id": str(uuid.uuid4())}, {"container_id": str(uuid.uuid4())}]
     async_persistence_layer._container_repo.get_containers_by_room_id = AsyncMock(return_value=mock_containers)
 
     result = await async_persistence_layer.get_containers_by_room_id("test_room")
@@ -619,7 +620,7 @@ async def test_get_containers_by_room_id_delegates(async_persistence_layer):
 async def test_get_containers_by_entity_id_delegates(async_persistence_layer):
     """Test get_containers_by_entity_id delegates to ContainerRepository."""
     entity_id = uuid.uuid4()
-    mock_containers = [{"container_id": str(uuid.uuid4())}]
+    mock_containers: list[dict[str, Any]] = [{"container_id": str(uuid.uuid4())}]
     async_persistence_layer._container_repo.get_containers_by_entity_id = AsyncMock(return_value=mock_containers)
 
     result = await async_persistence_layer.get_containers_by_entity_id(entity_id)
@@ -648,7 +649,7 @@ async def test_update_container_delegates(async_persistence_layer):
 async def test_get_decayed_containers_delegates(async_persistence_layer):
     """Test get_decayed_containers delegates to ContainerRepository."""
     current_time = datetime.now(UTC)
-    mock_containers = [{"container_id": str(uuid.uuid4())}]
+    mock_containers: list[dict[str, Any]] = [{"container_id": str(uuid.uuid4())}]
     async_persistence_layer._container_repo.get_decayed_containers = AsyncMock(return_value=mock_containers)
 
     result = await async_persistence_layer.get_decayed_containers(current_time)
@@ -660,7 +661,7 @@ async def test_get_decayed_containers_delegates(async_persistence_layer):
 @pytest.mark.asyncio
 async def test_get_decayed_containers_none_time(async_persistence_layer):
     """Test get_decayed_containers with None time."""
-    mock_containers = []
+    mock_containers: list[Any] = []
     async_persistence_layer._container_repo.get_decayed_containers = AsyncMock(return_value=mock_containers)
 
     result = await async_persistence_layer.get_decayed_containers(None)
@@ -987,8 +988,10 @@ def test_build_room_objects_success(async_persistence_layer):
             "sub_zone": "subzone",
         }
     ]
-    exits_by_room = {"earth_arkhamcity_subzone_room_001": {"north": "earth_arkhamcity_subzone_room_002"}}
-    result_container = {"rooms": {}}
+    exits_by_room: dict[str, dict[str, str]] = {
+        "earth_arkhamcity_subzone_room_001": {"north": "earth_arkhamcity_subzone_room_002"}
+    }
+    result_container: dict[str, Any] = {"rooms": {}}
 
     with patch("server.models.room.Room") as mock_room_class:
         mock_room_instance = MagicMock()
@@ -1013,8 +1016,8 @@ def test_build_room_objects_with_non_dict_attributes(async_persistence_layer):
             "sub_zone": "subzone",
         }
     ]
-    exits_by_room = {}
-    result_container = {"rooms": {}}
+    exits_by_room: dict[str, dict[str, str]] = {}
+    result_container: dict[str, Any] = {"rooms": {}}
 
     with patch("server.models.room.Room") as mock_room_class:
         mock_room_instance = MagicMock()
@@ -1040,8 +1043,8 @@ def test_build_room_objects_debug_logging(async_persistence_layer):
             "sub_zone": "sanitarium",
         }
     ]
-    exits_by_room = {}
-    result_container = {"rooms": {}}
+    exits_by_room: dict[str, dict[str, str]] = {}
+    result_container: dict[str, Any] = {"rooms": {}}
 
     with patch("server.models.room.Room", return_value=MagicMock()):
         with patch.object(async_persistence_layer, "_logger") as mock_logger:
@@ -1201,13 +1204,13 @@ def test_build_room_objects_with_exits(async_persistence_layer):  # pylint: disa
             "sub_zone": "subzone",
         }
     ]
-    exits_by_room = {
+    exits_by_room: dict[str, dict[str, str]] = {
         "earth_arkhamcity_subzone_room_001": {
             "north": "earth_arkhamcity_subzone_room_002",
             "south": "earth_arkhamcity_subzone_room_003",
         }
     }
-    result_container = {"rooms": {}}
+    result_container: dict[str, Any] = {"rooms": {}}
 
     with patch("server.models.room.Room") as mock_room_class:
         mock_room_instance = MagicMock()
@@ -1232,8 +1235,8 @@ def test_build_room_objects_with_dict_attributes(async_persistence_layer):  # py
             "sub_zone": "subzone",
         }
     ]
-    exits_by_room = {}
-    result_container = {"rooms": {}}
+    exits_by_room: dict[str, dict[str, str]] = {}
+    result_container: dict[str, Any] = {"rooms": {}}
 
     with patch("server.models.room.Room") as mock_room_class:
         mock_room_instance = MagicMock()
@@ -1258,8 +1261,8 @@ def test_build_room_objects_without_environment_in_attributes(async_persistence_
             "sub_zone": "subzone",
         }
     ]
-    exits_by_room = {}
-    result_container = {"rooms": {}}
+    exits_by_room: dict[str, dict[str, str]] = {}
+    result_container: dict[str, Any] = {"rooms": {}}
 
     with patch("server.models.room.Room") as mock_room_class:
         mock_room_instance = MagicMock()
@@ -1439,7 +1442,7 @@ async def test_get_user_by_username_case_insensitive_no_session(async_persistenc
     async def mock_get_async_session():
         # Don't yield anything - simulate empty generator
         if False:  # pylint: disable=using-constant-test  # Reason: Intentional - ensures generator doesn't yield
-            yield
+            yield  # type: ignore[unreachable]  # Reason: Intentional unreachable code to create empty generator
 
     with patch("server.async_persistence.get_async_session", side_effect=mock_get_async_session):
         result = await async_persistence_layer.get_user_by_username_case_insensitive("testuser")
@@ -1455,7 +1458,7 @@ async def test_get_professions_no_session(async_persistence_layer):
     async def mock_get_async_session():
         # Don't yield anything - simulate empty generator
         if False:  # pylint: disable=using-constant-test  # Reason: Intentional - ensures generator doesn't yield
-            yield
+            yield  # type: ignore[unreachable]  # Reason: Intentional unreachable code to create empty generator
 
     with patch("server.async_persistence.get_async_session", side_effect=mock_get_async_session):
         result = await async_persistence_layer.get_professions()
@@ -1582,7 +1585,7 @@ def test_process_exits_for_room_with_direction(async_persistence_layer):
             "to_zone_stable_id": "earth/arkhamcity",
         }
     ]
-    exits_by_room = {}
+    exits_by_room: dict[str, dict[str, str]] = {}
 
     with patch.object(async_persistence_layer, "_generate_room_id_from_zone_data", return_value="room_002_full_id"):
         async_persistence_layer._process_exits_for_room(room_id, exits_list, exits_by_room)
@@ -1595,7 +1598,7 @@ def test_process_exits_for_room_no_direction(async_persistence_layer):
     """Test _process_exits_for_room skips exits without direction."""
     room_id = "room_001"
     exits_list = [{"to_room_stable_id": "room_002"}]  # No direction
-    exits_by_room = {}
+    exits_by_room: dict[str, dict[str, str]] = {}
 
     async_persistence_layer._process_exits_for_room(room_id, exits_list, exits_by_room)
 
@@ -1620,7 +1623,7 @@ def test_process_exits_for_room_multiple_exits(async_persistence_layer):
             "to_zone_stable_id": "earth/zone",
         },
     ]
-    exits_by_room = {}
+    exits_by_room: dict[str, dict[str, str]] = {}
 
     with patch.object(
         async_persistence_layer, "_generate_room_id_from_zone_data", side_effect=["room_002_id", "room_003_id"]
@@ -1634,7 +1637,7 @@ def test_process_exits_for_room_multiple_exits(async_persistence_layer):
 
 def test_process_combined_rows_with_exits(async_persistence_layer):
     """Test _process_combined_rows processes rows with exits JSON."""
-    combined_rows = [
+    combined_rows: list[dict[str, Any]] = [
         {
             "stable_id": "room_001",
             "name": "Test Room",
@@ -1659,7 +1662,7 @@ def test_process_combined_rows_with_exits(async_persistence_layer):
 
 def test_process_combined_rows_no_exits(async_persistence_layer):
     """Test _process_combined_rows processes rows without exits."""
-    combined_rows = [
+    combined_rows: list[dict[str, Any]] = [
         {
             "stable_id": "room_001",
             "name": "Test Room",

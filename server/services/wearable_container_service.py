@@ -40,7 +40,7 @@ def _get_enum_value(enum_or_str: Any) -> str:
         String value of the enum
     """
     if hasattr(enum_or_str, "value"):
-        return enum_or_str.value
+        return cast(str, enum_or_str.value)
     return str(enum_or_str)
 
 
@@ -370,7 +370,7 @@ class WearableContainerService:
                 user_friendly="Failed to update container",
             )
 
-        return updated_data
+        return cast(dict[str, Any], updated_data)
 
     async def update_wearable_container_items(
         self, player_id: UUID, container_id: UUID, items: list[dict[str, Any]]
@@ -456,7 +456,7 @@ class WearableContainerService:
                 user_friendly="Failed to update container",
             )
 
-        return updated_data
+        return cast(dict[str, Any], updated_data)
 
     async def handle_container_overflow(
         self, player_id: UUID, container_id: UUID, overflow_items: list[dict[str, Any]]

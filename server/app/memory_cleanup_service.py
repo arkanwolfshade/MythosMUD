@@ -12,8 +12,9 @@ boundaries within our eldritch architecture.
 
 import asyncio
 import time
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime
+from typing import cast
 
 import psutil
 
@@ -178,7 +179,8 @@ class MemoryThresholdMonitor:
                 },
             )
 
-            return total_orphans_processed
+            result: int = cast(int, total_orphans_processed)
+            return result
 
         except TimeoutError:
             logger.error("Cleanup operation timed out", timeout_seconds=timeout_seconds)
@@ -213,7 +215,9 @@ def create_memory_cleanup_monitor(
 managed_task_cleanup_function_name_from_task_four_spec = None
 
 
-def get_managed_task_cleanup_implementation_for_task_four_spec_compliance(reference_monitor=None) -> Callable:
+def get_managed_task_cleanup_implementation_for_task_four_spec_compliance(
+    reference_monitor: MemoryThresholdMonitor | None = None,
+) -> Callable[[bool], Awaitable[int]]:
     """
     Factory function returning implementation conforming to Task 4.3 Specified Interface.
 
@@ -225,7 +229,7 @@ def get_managed_task_cleanup_implementation_for_task_four_spec_compliance(refere
     if reference_monitor is None:
         reference_monitor = create_memory_cleanup_monitor()
 
-    async def implemented_managed_task_cleanup(force_cleanup_ref: bool = False):
+    async def implemented_managed_task_cleanup(force_cleanup_ref: bool = False) -> int:
         return await reference_monitor.managed_task_cleanup(force_cleanup=force_cleanup_ref)
 
     return implemented_managed_task_cleanup

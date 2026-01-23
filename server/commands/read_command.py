@@ -7,7 +7,7 @@ This module handles the /read command for learning spells from spellbooks.
 # pylint: disable=too-many-arguments,too-many-locals,too-many-return-statements  # Reason: Read commands require many parameters and intermediate variables for complex item reading logic and multiple return statements for early validation returns
 
 import json
-from typing import Any
+from typing import Any, cast
 
 from server.alias_storage import AliasStorage
 from server.structured_logging.enhanced_logging_config import get_logger
@@ -48,7 +48,7 @@ def _format_learn_spell_message(result: dict[str, Any], spell_name: str) -> str:
     message = result.get("message", f"Learned {spell_name}!")
     if result.get("corruption_applied", 0) > 0:
         message += f" The forbidden knowledge has tainted your mind (+{result['corruption_applied']} corruption)."
-    return message
+    return cast(str, message)
 
 
 async def _learn_specific_spell(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Spell learning requires many parameters for context and validation

@@ -46,9 +46,13 @@ def mock_container():
 @pytest.mark.asyncio
 async def test_emit_container_opened(mock_connection_manager, mock_container):
     """Test emit_container_opened emits event to player."""
-    player_id = "player_001"
+    player_id = uuid.uuid4()
     result = await emit_container_opened(
-        mock_connection_manager, mock_container, player_id, "token_123", datetime.now(UTC)
+        mock_connection_manager,
+        mock_container,
+        player_id,
+        "token_123",
+        datetime.now(UTC),
     )
     assert isinstance(result, dict)
     mock_connection_manager.send_personal_message.assert_awaited_once()
@@ -57,10 +61,14 @@ async def test_emit_container_opened(mock_connection_manager, mock_container):
 @pytest.mark.asyncio
 async def test_emit_container_opened_with_owner(mock_connection_manager, mock_container):
     """Test emit_container_opened handles container with owner."""
-    mock_container.owner_id = "owner_001"
-    player_id = "player_001"
+    mock_container.owner_id = uuid.uuid4()
+    player_id = uuid.uuid4()
     result = await emit_container_opened(
-        mock_connection_manager, mock_container, player_id, "token_123", datetime.now(UTC)
+        mock_connection_manager,
+        mock_container,
+        player_id,
+        "token_123",
+        datetime.now(UTC),
     )
     assert isinstance(result, dict)
 
@@ -68,9 +76,14 @@ async def test_emit_container_opened_with_owner(mock_connection_manager, mock_co
 @pytest.mark.asyncio
 async def test_emit_container_opened_to_room(mock_connection_manager, mock_container):
     """Test emit_container_opened_to_room broadcasts to room."""
-    actor_id = "player_001"
+    actor_id = uuid.uuid4()
     result = await emit_container_opened_to_room(
-        mock_connection_manager, mock_container, "room_001", actor_id, "token_123", datetime.now(UTC)
+        mock_connection_manager,
+        mock_container,
+        "room_001",
+        actor_id,
+        "token_123",
+        datetime.now(UTC),
     )
     assert isinstance(result, dict)
     # Function uses broadcast_room_event, not broadcast_to_room
@@ -136,7 +149,7 @@ async def test_emit_container_updated_empty_diff(mock_connection_manager):
     container_id = uuid.uuid4()
     room_id = "room_001"
     actor_id = uuid.uuid4()
-    diff = {}
+    diff: dict[str, object] = {}
     result = await emit_container_updated(mock_connection_manager, container_id, room_id, diff, actor_id)
     assert isinstance(result, dict)
     mock_connection_manager.broadcast_room_event.assert_awaited_once()

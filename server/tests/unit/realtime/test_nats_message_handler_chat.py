@@ -208,6 +208,7 @@ async def test_broadcast_by_channel_type_exception(nats_message_handler):
         "server.realtime.channel_broadcasting_strategies.channel_strategy_factory.get_strategy",
         side_effect=ValueError("Error"),
     ):
+        # Reason: Intentionally testing error handling - party_id can be empty string in error cases
         await nats_message_handler._broadcast_by_channel_type("say", chat_event, "room_001", "", None, uuid.uuid4())
 
 

@@ -29,6 +29,9 @@ from server.realtime.websocket_handler import (
     send_system_message,
 )
 
+# Test UUID constant for player IDs
+TEST_PLAYER_ID = uuid.UUID("12345678-1234-5678-1234-567812345678")
+TEST_PLAYER_ID_STR = str(TEST_PLAYER_ID)
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice
 
 
@@ -140,7 +143,7 @@ async def test_validate_player_and_persistence_success(mock_ws_connection_manage
     mock_player = MagicMock()
     mock_player.current_room_id = "room_001"
     mock_ws_connection_manager.get_player = AsyncMock(return_value=mock_player)
-    player, error = await _validate_player_and_persistence(mock_ws_connection_manager, "player_001")
+    player, error = await _validate_player_and_persistence(mock_ws_connection_manager, TEST_PLAYER_ID_STR)
     assert player == mock_player
     assert error is None
 
@@ -149,7 +152,7 @@ async def test_validate_player_and_persistence_success(mock_ws_connection_manage
 async def test_validate_player_and_persistence_not_found(mock_ws_connection_manager):
     """Test _validate_player_and_persistence handles player not found."""
     mock_ws_connection_manager.get_player = AsyncMock(return_value=None)
-    player, error = await _validate_player_and_persistence(mock_ws_connection_manager, "player_001")
+    player, error = await _validate_player_and_persistence(mock_ws_connection_manager, TEST_PLAYER_ID_STR)
     assert player is None
     assert error is not None
 
@@ -161,7 +164,7 @@ async def test_validate_player_and_persistence_no_persistence(mock_ws_connection
     mock_player.current_room_id = "room_001"
     mock_ws_connection_manager.get_player = AsyncMock(return_value=mock_player)
     mock_ws_connection_manager.async_persistence = None
-    player, error = await _validate_player_and_persistence(mock_ws_connection_manager, "player_001")
+    player, error = await _validate_player_and_persistence(mock_ws_connection_manager, TEST_PLAYER_ID_STR)
     assert player is None
     assert error is not None
 
@@ -193,7 +196,7 @@ async def test_handle_chat_message(mock_websocket, mock_ws_connection_manager):
         new_callable=AsyncMock,
         return_value={"result": "ok"},
     ):
-        await handle_chat_message(mock_websocket, "player_001", "say Hello", mock_ws_connection_manager)
+        await handle_chat_message(mock_websocket, TEST_PLAYER_ID_STR, "say Hello", mock_ws_connection_manager)
         mock_websocket.send_json.assert_awaited_once()
 
 
@@ -205,21 +208,21 @@ async def test_handle_game_command(mock_websocket, mock_ws_connection_manager):
         new_callable=AsyncMock,
         return_value={"result": "ok"},
     ):
-        await handle_game_command(mock_websocket, "player_001", "look", None, mock_ws_connection_manager)
+        await handle_game_command(mock_websocket, TEST_PLAYER_ID_STR, "look", None, mock_ws_connection_manager)
         mock_websocket.send_json.assert_awaited_once()
 
 
 @pytest.mark.asyncio
 async def test_handle_game_command_empty_command(mock_websocket, mock_ws_connection_manager):
     """Test handle_game_command handles empty command."""
-    await handle_game_command(mock_websocket, "player_001", "", None, mock_ws_connection_manager)
+    await handle_game_command(mock_websocket, TEST_PLAYER_ID_STR, "", None, mock_ws_connection_manager)
     mock_websocket.send_json.assert_awaited_once()
 
 
 @pytest.mark.asyncio
 async def test_handle_game_command_whitespace_only(mock_websocket, mock_ws_connection_manager):
     """Test handle_game_command handles whitespace-only command."""
-    await handle_game_command(mock_websocket, "player_001", "   ", None, mock_ws_connection_manager)
+    await handle_game_command(mock_websocket, TEST_PLAYER_ID_STR, "   ", None, mock_ws_connection_manager)
     mock_websocket.send_json.assert_awaited_once()
 
 
@@ -231,7 +234,7 @@ async def test_handle_game_command_single_word_no_args(mock_websocket, mock_ws_c
         new_callable=AsyncMock,
         return_value={"result": "ok"},
     ):
-        await handle_game_command(mock_websocket, "player_001", "look", None, mock_ws_connection_manager)
+        await handle_game_command(mock_websocket, TEST_PLAYER_ID_STR, "look", None, mock_ws_connection_manager)
         mock_websocket.send_json.assert_awaited_once()
 
 
@@ -243,7 +246,7 @@ async def test_handle_game_command_with_provided_args(mock_websocket, mock_ws_co
         new_callable=AsyncMock,
         return_value={"result": "ok"},
     ):
-        await handle_game_command(mock_websocket, "player_001", "go", ["north"], mock_ws_connection_manager)
+        await handle_game_command(mock_websocket, TEST_PLAYER_ID_STR, "go", ["north"], mock_ws_connection_manager)
         mock_websocket.send_json.assert_awaited_once()
 
 
@@ -253,7 +256,7 @@ async def test_handle_websocket_message(mock_websocket):
     message = {"type": "command", "command": "look"}
     with patch("server.realtime.message_handler_factory.message_handler_factory") as mock_factory:
         mock_factory.handle_message = AsyncMock()
-        await handle_websocket_message(mock_websocket, "player_001", message)
+        await handle_websocket_message(mock_websocket, TEST_PLAYER_ID_STR, message)
         mock_factory.handle_message.assert_awaited_once()
 
 
@@ -262,7 +265,7 @@ async def test_handle_websocket_message_chat(mock_websocket):
     """Test handle_websocket_message routes chat message."""
     message = {"type": "chat", "message": "Hello"}
     with patch("server.realtime.websocket_handler.handle_chat_message", new_callable=AsyncMock) as mock_chat:
-        await handle_websocket_message(mock_websocket, "player_001", message)
+        await handle_websocket_message(mock_websocket, TEST_PLAYER_ID_STR, message)
         mock_chat.assert_awaited_once()
 
 
@@ -271,7 +274,7 @@ async def test_handle_websocket_message_command(mock_websocket):
     """Test handle_websocket_message routes command message."""
     message = {"type": "command", "command": "look"}
     with patch("server.realtime.websocket_handler.handle_game_command", new_callable=AsyncMock) as mock_cmd:
-        await handle_websocket_message(mock_websocket, "player_001", message)
+        await handle_websocket_message(mock_websocket, TEST_PLAYER_ID_STR, message)
         mock_cmd.assert_awaited_once()
 
 
@@ -285,7 +288,7 @@ async def test_process_websocket_command(mock_ws_connection_manager):
     with patch(
         "server.command_handler_unified.process_command_unified", new_callable=AsyncMock, return_value={"result": "ok"}
     ):
-        result = await process_websocket_command("look", [], "player_001", mock_ws_connection_manager)
+        result = await process_websocket_command("look", [], TEST_PLAYER_ID_STR, mock_ws_connection_manager)
         assert isinstance(result, dict)
 
 
@@ -293,7 +296,7 @@ async def test_process_websocket_command(mock_ws_connection_manager):
 async def test_process_websocket_command_no_player(mock_ws_connection_manager):
     """Test process_websocket_command handles player not found."""
     mock_ws_connection_manager.get_player = AsyncMock(return_value=None)
-    result = await process_websocket_command("look", [], "player_001", mock_ws_connection_manager)
+    result = await process_websocket_command("look", [], TEST_PLAYER_ID_STR, mock_ws_connection_manager)
     assert isinstance(result, dict)
     assert "result" in result
 
@@ -306,7 +309,7 @@ async def test_process_websocket_command_no_app_state(mock_ws_connection_manager
     mock_player.name = "TestPlayer"
     mock_ws_connection_manager.get_player = AsyncMock(return_value=mock_player)
     mock_ws_connection_manager.app = None
-    result = await process_websocket_command("look", [], "player_001", mock_ws_connection_manager)
+    result = await process_websocket_command("look", [], TEST_PLAYER_ID_STR, mock_ws_connection_manager)
     assert isinstance(result, dict)
     assert "result" in result
     assert "Server configuration error" in result["result"]
@@ -320,7 +323,7 @@ async def test_process_websocket_command_no_app_in_connection_manager(mock_ws_co
     mock_player.name = "TestPlayer"
     mock_ws_connection_manager.get_player = AsyncMock(return_value=mock_player)
     del mock_ws_connection_manager.app
-    result = await process_websocket_command("look", [], "player_001", mock_ws_connection_manager)
+    result = await process_websocket_command("look", [], TEST_PLAYER_ID_STR, mock_ws_connection_manager)
     assert isinstance(result, dict)
     assert "result" in result
     assert "Server configuration error" in result["result"]
@@ -340,7 +343,7 @@ async def test_process_websocket_command_type_error(mock_ws_connection_manager):
         "server.command_handler_unified.process_command_unified", new_callable=AsyncMock, return_value="not a dict"
     ):
         with pytest.raises(TypeError, match="Command handler must return a dict"):
-            await process_websocket_command("look", [], "player_001", mock_ws_connection_manager)
+            await process_websocket_command("look", [], TEST_PLAYER_ID_STR, mock_ws_connection_manager)
 
 
 @pytest.mark.asyncio
@@ -362,7 +365,7 @@ async def test_process_websocket_command_no_aliases_dir(mock_ws_connection_manag
             new_callable=AsyncMock,
             return_value={"result": "ok"},
         ):
-            result = await process_websocket_command("look", [], "player_001", mock_ws_connection_manager)
+            result = await process_websocket_command("look", [], TEST_PLAYER_ID_STR, mock_ws_connection_manager)
             assert isinstance(result, dict)
 
 

@@ -19,7 +19,10 @@ from __future__ import annotations
 import json
 import uuid
 from datetime import UTC, datetime
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from server.realtime.connection_manager import ConnectionManager
 
 
 class UUIDEncoder(json.JSONEncoder):
@@ -61,7 +64,7 @@ def build_event(  # pylint: disable=too-many-arguments,too-many-positional-argum
     room_id: str | None = None,
     player_id: uuid.UUID | str | None = None,
     sequence_number: int | None = None,
-    connection_manager=None,
+    connection_manager: ConnectionManager | None = None,
 ) -> dict[str, Any]:
     """
     Create a normalized event envelope.

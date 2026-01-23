@@ -126,7 +126,8 @@ async def _roll_stats_with_profession(
     # Validate and get profession using ProfessionService
     try:
         # After None check, profession_id is guaranteed to be non-None
-        assert request_data.profession_id is not None, "profession_id should not be None for profession-based rolling"
+        if request_data.profession_id is None:
+            raise ValueError("profession_id should not be None for profession-based rolling")
         profession_id: int = request_data.profession_id
 
         profession = await profession_service.validate_and_get_profession(profession_id)

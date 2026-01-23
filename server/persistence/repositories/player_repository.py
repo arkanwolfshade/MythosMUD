@@ -24,6 +24,7 @@ from server.utils.error_logging import create_error_context, log_and_raise
 from server.utils.retry import retry_with_backoff
 
 if TYPE_CHECKING:
+    from server.events import EventBus
     from server.models.room import Room
 
 logger = get_logger(__name__)
@@ -46,7 +47,7 @@ class PlayerRepository:
     Uses async SQLAlchemy ORM for non-blocking database access.
     """
 
-    def __init__(self, room_cache: dict[str, "Room"] | None = None, event_bus=None):
+    def __init__(self, room_cache: dict[str, "Room"] | None = None, event_bus: "EventBus | None" = None):
         """
         Initialize the player repository.
 
@@ -117,7 +118,8 @@ class PlayerRepository:
                 player = result.scalar_one_or_none()
                 if player:
                     self.validate_and_fix_player_room(player)
-                    return player
+                    result_player: Player | None = cast(Player | None, player)
+                    return result_player
         except (DatabaseError, SQLAlchemyError) as e:
             log_and_raise(
                 DatabaseError,
@@ -157,7 +159,8 @@ class PlayerRepository:
                 player = result.scalar_one_or_none()
                 if player:
                     self.validate_and_fix_player_room(player)
-                    return player
+                    result_player: Player | None = cast(Player | None, player)
+                    return result_player
         except (DatabaseError, SQLAlchemyError) as e:
             log_and_raise(
                 DatabaseError,

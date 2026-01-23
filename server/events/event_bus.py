@@ -670,8 +670,10 @@ class EventBus:  # pylint: disable=too-many-instance-attributes  # Reason: Event
                     if exception:
                         task_info["exception"] = str(exception)
                         task_info["exception_type"] = type(exception).__name__
-                except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Task exception retrieval can fail unpredictably
-                    pass
+                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Task exception retrieval can fail unpredictably
+                    # nosec B110 - Intentional silent handling: Task exception retrieval can fail unpredictably,
+                    # and we must continue processing other tasks even if one fails
+                    logger.debug("Failed to retrieve task exception during task details collection", exc_info=e)
             task_details.append(task_info)
         return task_details
 

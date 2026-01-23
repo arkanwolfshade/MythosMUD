@@ -41,7 +41,8 @@ class MessageFilteringHelper:
     def _get_user_manager(self) -> "UserManager":
         """Return the user manager instance to use for mute lookups."""
         if self.user_manager is not None:
-            return self.user_manager
+            result: UserManager = cast("UserManager", self.user_manager)
+            return result
 
         from ..services.user_manager import user_manager as global_user_manager
 
@@ -621,7 +622,8 @@ class MessageFilteringHelper:
                 sender_id=sender_id,
                 is_muted=is_muted,
             )
-            return is_muted
+            result: bool = cast(bool, is_muted)
+            return result
 
         logger.info(
             "=== MUTE FILTERING: Calling is_player_muted_by_receiver_with_user_manager ===",

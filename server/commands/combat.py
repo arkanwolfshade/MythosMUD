@@ -29,7 +29,11 @@ from server.utils.command_parser import get_username_from_user
 from server.validators.combat_validator import CombatValidator
 
 if TYPE_CHECKING:
+    from server.async_persistence import AsyncPersistenceLayer
+    from server.events.event_bus import EventBus
+    from server.realtime.connection_manager import ConnectionManager
     from server.services.combat_service import CombatService
+    from server.services.player_combat_service import PlayerCombatService
 
 logger = get_logger(__name__)
 
@@ -72,11 +76,11 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
     def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Command handler initialization requires many service dependencies
         self,
         combat_service: "CombatService | None" = None,
-        event_bus=None,
-        player_combat_service=None,
-        connection_manager=None,
-        async_persistence=None,
-    ):
+        event_bus: "EventBus | None" = None,
+        player_combat_service: "PlayerCombatService | None" = None,
+        connection_manager: "ConnectionManager | None" = None,
+        async_persistence: "AsyncPersistenceLayer | None" = None,
+    ) -> None:
         """
         Initialize the combat command handler.
 
@@ -113,7 +117,13 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
         self.combat_validator = CombatValidator()
         # Initialize target resolution service
         # Use async persistence for target resolution and player service
-        self.target_resolution_service = TargetResolutionService(async_persistence, PlayerService(async_persistence))
+        # Type ignore: TargetResolutionService accepts PersistenceProtocol (sync methods),
+        # but AsyncPersistenceLayer has async methods. The service handles both at runtime
+        # by checking if methods are coroutines (see _get_player_from_persistence).
+        self.target_resolution_service = TargetResolutionService(
+            async_persistence,  # type: ignore[arg-type]
+            PlayerService(async_persistence),
+        )
 
     async def _check_and_interrupt_rest(
         self, request_app: Any, player_name: str, current_user: dict
@@ -278,8 +288,6 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
             # After validation, target_name is guaranteed to be non-None
             if target_name is None:
                 return {"result": "Target name is required for attack command."}
-
-            assert target_name is not None, "target_name should not be None after validation"
 
             # Get player and room
             player, _, player_error = await self._get_player_and_room(request_app, current_user)

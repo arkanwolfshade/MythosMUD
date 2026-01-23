@@ -10,7 +10,7 @@ of our systems is essential for maintaining their stability and efficiency.
 
 import time
 from collections import defaultdict, deque
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from typing import Any
@@ -277,7 +277,7 @@ def get_performance_monitor() -> PerformanceMonitor:
 @contextmanager
 def measure_performance(
     operation: str, metadata: dict[str, Any] | None = None, monitor: PerformanceMonitor | None = None
-):
+) -> Iterator[None]:
     """
     Context manager for measuring operation performance.
 

@@ -19,6 +19,8 @@ from typing import TYPE_CHECKING, Any
 from uuid import UUID, uuid4
 
 if TYPE_CHECKING:
+    from ..async_persistence import AsyncPersistenceLayer
+    from ..realtime.connection_manager import ConnectionManager
     from .combat_service import CombatService
 
 from sqlalchemy.exc import SQLAlchemyError
@@ -56,10 +58,10 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
         self,
         event_bus: EventBus | None = None,
         combat_service: "CombatService | None" = None,
-        player_combat_service=None,
-        connection_manager=None,
-        async_persistence=None,
-    ):
+        player_combat_service: PlayerCombatService | None = None,
+        connection_manager: "ConnectionManager | None" = None,
+        async_persistence: "AsyncPersistenceLayer | None" = None,
+    ) -> None:
         """
         Initialize the NPC combat integration service.
 
@@ -143,7 +145,8 @@ class NPCCombatIntegrationService:  # pylint: disable=too-many-instance-attribut
         # CRITICAL FIX: Pass connection_manager to CombatMessagingIntegration
         # If not provided, it will try to lazy-load from container (for backward compatibility)
         self._messaging_integration = CombatMessagingIntegration(connection_manager=connection_manager)
-        self._event_publisher = CombatEventPublisher(event_bus)
+        # CombatEventPublisher expects NATSService, not EventBus. Pass None to use global NATSService.
+        self._event_publisher = CombatEventPublisher(nats_service=None)
 
         # Initialize combat handlers
         self._handlers = NPCCombatHandlers(

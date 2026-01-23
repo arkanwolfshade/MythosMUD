@@ -10,7 +10,7 @@ for maintaining the integrity of our eldritch dimensional architecture.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from ..events import EventBus, NPCEnteredRoom, NPCLeftRoom
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -19,6 +19,7 @@ from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.room_utils import extract_subzone_from_room_id
 
 if TYPE_CHECKING:
+    from ..async_persistence import AsyncPersistenceLayer
     from ..game.movement_service import MovementService
 
 logger = get_logger(__name__)
@@ -32,7 +33,7 @@ class NPCMovementIntegration:
     with the existing MovementService and event system.
     """
 
-    def __init__(self, event_bus: EventBus | None = None, persistence=None):
+    def __init__(self, event_bus: EventBus | None = None, persistence: AsyncPersistenceLayer | None = None):
         """
         Initialize NPC movement integration.
 
@@ -203,7 +204,7 @@ class NPCMovementIntegration:
             logger.error("Error moving NPC", npc_id=npc_id, error=str(e))
             return False
 
-    def _publish_movement_events(self, npc_id: str, from_room_id: str, to_room_id: str):
+    def _publish_movement_events(self, npc_id: str, from_room_id: str, to_room_id: str) -> None:
         """
         Publish NPC movement events.
 
@@ -268,7 +269,7 @@ class NPCMovementIntegration:
         try:
             room = self.persistence.get_room_by_id(room_id)
             if room:
-                return room.get_npcs()
+                return list(room.get_npcs())
             return []
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Room NPC retrieval errors unpredictable, must return empty list
             logger.error("Error getting room NPCs", room_id=room_id, error=str(e))
@@ -321,7 +322,8 @@ class NPCMovementIntegration:
         try:
             room = self.persistence.get_room_by_id(room_id)
             if room:
-                return room.exits
+                result: dict[str, str] = cast(dict[str, str], room.exits)
+                return result
             return {}
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Room exit retrieval errors unpredictable, must return empty dict
             logger.error("Error getting room exits", room_id=room_id, error=str(e))

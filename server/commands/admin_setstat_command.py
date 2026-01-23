@@ -327,8 +327,10 @@ async def _handle_admin_set_stat_command(  # pylint: disable=too-many-arguments,
         return {"result": "Target player is required for set command."}
 
     # After validation, stat_name_input and target_player are guaranteed to be non-None
-    assert stat_name_input is not None, "stat_name_input should not be None after validation"
-    assert target_player is not None, "target_player should not be None after validation"
+    if stat_name_input is None:
+        raise ValueError("stat_name_input should not be None after validation")
+    if target_player is None:
+        raise ValueError("target_player should not be None after validation")
 
     # Resolve services and check permissions
     service_result = await _resolve_admin_services_and_permissions(app, player_name, target_player)

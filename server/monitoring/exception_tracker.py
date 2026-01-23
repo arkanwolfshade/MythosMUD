@@ -408,8 +408,8 @@ def track_exception(  # pylint: disable=too-many-arguments,too-many-positional-a
 
 def track_exception_with_context(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Exception tracking requires many parameters for complete exception context
     exception: Exception,
-    request=None,
-    websocket=None,
+    request: Any = None,
+    websocket: Any = None,
     user_id: str | None = None,
     session_id: str | None = None,
     severity: str = "error",

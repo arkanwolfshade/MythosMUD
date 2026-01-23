@@ -19,7 +19,7 @@ from __future__ import annotations
 import uuid
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
-from typing import Any
+from typing import Any, cast
 from uuid import UUID
 
 from ..exceptions import MythosMUDError, ValidationError
@@ -47,7 +47,7 @@ def _get_enum_value(enum_or_str: Any) -> str:
         String value of the enum
     """
     if hasattr(enum_or_str, "value"):
-        return enum_or_str.value
+        return cast(str, enum_or_str.value)
     return str(enum_or_str)
 
 
@@ -1167,7 +1167,7 @@ class ContainerService:
             "Container locked", container_id=str(container_id), player_id=str(player_id), lock_state=lock_state.value
         )
 
-        return updated
+        return cast(dict[str, Any], updated)
 
     async def unlock_container(self, container_id: UUID, player_id: UUID) -> dict[str, Any]:
         """
@@ -1241,4 +1241,4 @@ class ContainerService:
 
         logger.info("Container unlocked", container_id=str(container_id), player_id=str(player_id))
 
-        return updated
+        return cast(dict[str, Any], updated)

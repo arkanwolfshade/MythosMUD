@@ -16,12 +16,16 @@ All persistence calls wrapped in asyncio.to_thread() to prevent event loop block
 
 import asyncio
 import random
-from typing import Any
+from typing import TYPE_CHECKING, Any, cast
 
 from ..npc_database import get_npc_session
 from ..services.npc_instance_service import get_npc_instance_service
 from ..services.npc_service import npc_service
 from ..structured_logging.enhanced_logging_config import get_logger
+
+if TYPE_CHECKING:
+    from ..models.npc import NPCDefinition
+    from ..services.npc_instance_service import NPCInstanceService
 
 logger = get_logger(__name__)
 
@@ -132,7 +136,9 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
             startup_results["errors"].append(error_msg)
             return startup_results
 
-    async def _spawn_required_npcs(self, required_npcs: list, npc_instance_service) -> dict[str, Any]:
+    async def _spawn_required_npcs(
+        self, required_npcs: list["NPCDefinition"], npc_instance_service: "NPCInstanceService"
+    ) -> dict[str, Any]:
         """
         Spawn all required NPCs.
 
@@ -194,7 +200,9 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
         logger.info("Required NPC spawning completed", spawned=results["spawned"], attempted=results["attempted"])
         return results
 
-    async def _spawn_optional_npcs(self, optional_npcs: list, npc_instance_service) -> dict[str, Any]:
+    async def _spawn_optional_npcs(
+        self, optional_npcs: list["NPCDefinition"], npc_instance_service: "NPCInstanceService"
+    ) -> dict[str, Any]:
         """
         Spawn optional NPCs based on spawn probability.
 
@@ -213,7 +221,7 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
         for npc_def in optional_npcs:
             # Check spawn probability
             spawn_probability = getattr(npc_def, "spawn_probability", 1.0)
-            if random.random() > spawn_probability:
+            if random.random() > spawn_probability:  # nosec B311 - Game mechanics, not security-critical
                 logger.debug("Skipping optional NPC", npc_name=npc_def.name, probability=spawn_probability)
                 continue
 
@@ -262,7 +270,7 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
         logger.info("Optional NPC spawning completed", spawned=results["spawned"], attempted=results["attempted"])
         return results
 
-    async def _determine_spawn_room(self, npc_def) -> str | None:
+    async def _determine_spawn_room(self, npc_def: "NPCDefinition") -> str | None:
         """
         Determine the appropriate room for spawning an NPC.
 
@@ -305,7 +313,7 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
                 room = persistence.get_room_by_id(room_id)
                 if room:
                     logger.debug("Using specific room for NPC", npc_name=npc_def.name, room_id=room_id)
-                    return room_id
+                    return cast(str | None, room_id)
                 logger.warning(
                     "NPC room_id not found in database",
                     npc_name=npc_def.name,

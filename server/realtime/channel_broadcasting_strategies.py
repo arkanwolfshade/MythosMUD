@@ -11,6 +11,7 @@ O(1) lookup and eliminates the need for repetitive conditional logic.
 
 import uuid
 from abc import ABC, abstractmethod
+from typing import Any
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -23,12 +24,12 @@ class ChannelBroadcastingStrategy(ABC):
     @abstractmethod
     async def broadcast(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Broadcasting requires many parameters for context and message routing
         self,
-        chat_event: dict,
+        chat_event: dict[str, Any],
         room_id: str,
         party_id: str,
         target_player_id: uuid.UUID | None,
         sender_id: uuid.UUID,
-        nats_handler,
+        nats_handler: Any,
     ) -> None:
         """
         Broadcast message according to channel strategy.
@@ -57,12 +58,12 @@ class RoomBasedChannelStrategy(ChannelBroadcastingStrategy):  # pylint: disable=
 
     async def broadcast(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Broadcasting requires many parameters for context and message routing
         self,
-        chat_event: dict,
+        chat_event: dict[str, Any],
         room_id: str,
         party_id: str,
         target_player_id: uuid.UUID | None,
         sender_id: uuid.UUID,
-        nats_handler,
+        nats_handler: Any,
     ) -> None:
         """Broadcast room-based message with server-side filtering."""
         if room_id:
@@ -86,12 +87,12 @@ class GlobalChannelStrategy(ChannelBroadcastingStrategy):  # pylint: disable=too
 
     async def broadcast(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Broadcasting requires many parameters for context and message routing
         self,
-        chat_event: dict,
+        chat_event: dict[str, Any],
         room_id: str,
         party_id: str,
         target_player_id: uuid.UUID | None,
         sender_id: uuid.UUID,
-        nats_handler,
+        nats_handler: Any,
     ) -> None:
         """Broadcast global message to all connected players."""
         # AI Agent: Use connection_manager from nats_handler (injected dependency)
@@ -106,12 +107,12 @@ class PartyChannelStrategy(ChannelBroadcastingStrategy):  # pylint: disable=too-
 
     async def broadcast(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Broadcasting requires many parameters for context and message routing
         self,
-        chat_event: dict,
+        chat_event: dict[str, Any],
         room_id: str,
         party_id: str,
         target_player_id: uuid.UUID | None,
         sender_id: uuid.UUID,
-        nats_handler,
+        nats_handler: Any,
     ) -> None:
         """Broadcast party message to party members."""
         if party_id:
@@ -126,12 +127,12 @@ class WhisperChannelStrategy(ChannelBroadcastingStrategy):  # pylint: disable=to
 
     async def broadcast(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Broadcasting requires many parameters for context and message routing
         self,
-        chat_event: dict,
+        chat_event: dict[str, Any],
         room_id: str,
         party_id: str,
         target_player_id: uuid.UUID | None,
         sender_id: uuid.UUID,
-        nats_handler,
+        nats_handler: Any,
     ) -> None:
         """Send whisper message to specific player with communication dampening."""
         if target_player_id:
@@ -164,12 +165,12 @@ class SystemAdminChannelStrategy(ChannelBroadcastingStrategy):  # pylint: disabl
 
     async def broadcast(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Broadcasting requires many parameters for context and message routing
         self,
-        chat_event: dict,
+        chat_event: dict[str, Any],
         room_id: str,
         party_id: str,
         target_player_id: uuid.UUID | None,
         sender_id: uuid.UUID,
-        nats_handler,
+        nats_handler: Any,
     ) -> None:
         """Broadcast system/admin message to all players."""
         # AI Agent: Use connection_manager from nats_handler (injected dependency)
@@ -193,12 +194,12 @@ class UnknownChannelStrategy(ChannelBroadcastingStrategy):  # pylint: disable=to
 
     async def broadcast(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Broadcasting requires many parameters for context and message routing
         self,
-        chat_event: dict,
+        chat_event: dict[str, Any],
         room_id: str,
         party_id: str,
         target_player_id: uuid.UUID | None,
         sender_id: uuid.UUID,
-        nats_handler,
+        nats_handler: Any,
     ) -> None:
         """Handle unknown channel type."""
         logger.warning("Unknown channel type")

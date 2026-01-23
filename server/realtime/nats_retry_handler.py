@@ -11,7 +11,7 @@ import random
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any
+from typing import Any, cast
 
 from anyio import sleep
 
@@ -127,7 +127,8 @@ class NATSRetryHandler:
         jitter = delay * 0.25
         delay = delay + random.uniform(-jitter, jitter)  # nosec B311: Retry jitter calculation, not cryptographic
 
-        return max(0, delay)
+        result: float = cast(float, max(0, delay))
+        return result
 
     async def should_retry(self, message: RetryableMessage, _error: Exception) -> bool:  # pylint: disable=unused-argument  # Reason: Parameter reserved for future error-based retry logic
         """
@@ -184,7 +185,7 @@ class NATSRetryHandler:
             "max_delay": self.max_delay,
         }
 
-    async def retry_with_backoff(self, func: Callable, *args, **kwargs) -> tuple[bool, Any]:
+    async def retry_with_backoff(self, func: Callable[..., Any], *args: Any, **kwargs: Any) -> tuple[bool, Any]:
         """
         Retry async function with exponential backoff.
 
@@ -258,7 +259,7 @@ class NATSRetryHandler:
         """
         return self.config
 
-    def update_config(self, **kwargs) -> None:
+    def update_config(self, **kwargs: Any) -> None:
         """
         Update retry configuration dynamically.
 

@@ -10,7 +10,7 @@ is essential for detecting dimensional drift and preventing resource leaks.
 
 import time
 from collections import deque
-from typing import Any
+from typing import Any, cast
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -232,7 +232,8 @@ class MemoryLeakMetricsCollector:
         curr_count = category_current.get(metric_key, 0)
 
         if prev_count > 0:
-            return (curr_count - prev_count) / prev_count
+            result: float | None = cast(float | None, (curr_count - prev_count) / prev_count)
+            return result
         return float("inf") if curr_count > 0 else 0.0
 
     def calculate_growth_rates(self) -> dict[str, float]:

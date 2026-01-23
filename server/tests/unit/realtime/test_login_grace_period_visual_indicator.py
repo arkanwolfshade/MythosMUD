@@ -165,6 +165,7 @@ async def test_warded_indicator_removed_after_expiration(mock_connection_manager
 
     # Process player occupant - should have "(warded)"
     occupant_info = processor._create_player_occupant_info(player_id, str(player_id), mock_player)  # pylint: disable=protected-access  # Reason: Testing internal player occupant creation logic for grace period indicator
+    assert occupant_info is not None
     assert "(warded)" in occupant_info["player_name"]
 
     # Cancel grace period (simulating expiration)
@@ -172,6 +173,7 @@ async def test_warded_indicator_removed_after_expiration(mock_connection_manager
 
     # Process again - should not have "(warded)"
     occupant_info = processor._create_player_occupant_info(player_id, str(player_id), mock_player)  # pylint: disable=protected-access  # Reason: Testing internal player occupant creation logic for grace period indicator
+    assert occupant_info is not None
     assert "(warded)" not in occupant_info["player_name"]
 
 
@@ -193,6 +195,7 @@ async def test_warded_indicator_not_shown_for_reconnections(mock_connection_mana
 
     # Process player occupant - should not have "(warded)"
     occupant_info = processor._create_player_occupant_info(player_id, str(player_id), mock_player)  # pylint: disable=protected-access  # Reason: Testing internal player occupant creation logic for grace period indicator
+    assert occupant_info is not None
     assert "(warded)" not in occupant_info["player_name"]
 
 
@@ -228,5 +231,6 @@ async def test_both_linkdead_and_warded_indicators(mock_connection_manager):  # 
 
     # Process player occupant - should have both indicators
     occupant_info = processor._create_player_occupant_info(player_id, str(player_id), mock_player)  # pylint: disable=protected-access  # Reason: Testing internal player occupant creation logic for grace period indicator
+    assert occupant_info is not None
     assert "(linkdead)" in occupant_info["player_name"]
     assert "(warded)" in occupant_info["player_name"]

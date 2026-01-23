@@ -7,7 +7,7 @@ This module handles the go command for player movement.
 # pylint: disable=too-many-arguments,too-many-locals  # Reason: Movement commands require many parameters and intermediate variables for complex movement logic
 
 import uuid
-from typing import Any
+from typing import Any, cast
 
 from ..alias_storage import AliasStorage
 from ..commands.rest_command import _cancel_rest_countdown, is_player_resting
@@ -116,7 +116,7 @@ def _validate_exit(direction: str, room: Any, persistence: Any, player_name: str
         logger.warning("Go command failed - target room not found", player=player_name, target_room_id=target_room_id)
         return None
 
-    return target_room_id
+    return cast(str | None, target_room_id)
 
 
 async def _execute_movement(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Movement execution requires many parameters and intermediate variables for complex movement logic

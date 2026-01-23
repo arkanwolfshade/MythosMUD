@@ -9,21 +9,21 @@ from datetime import UTC, datetime
 from server.models.lucidity import _utc_now
 
 
-def test_utc_now_returns_datetime():
+def test_utc_now_returns_datetime() -> None:
     """Test _utc_now returns a datetime object."""
     result = _utc_now()
 
     assert isinstance(result, datetime)
 
 
-def test_utc_now_returns_naive_datetime():
+def test_utc_now_returns_naive_datetime() -> None:
     """Test _utc_now returns naive datetime (tzinfo=None)."""
     result = _utc_now()
 
     assert result.tzinfo is None
 
 
-def test_utc_now_returns_utc_time():
+def test_utc_now_returns_utc_time() -> None:
     """Test _utc_now returns time close to current UTC time."""
     before = datetime.now(UTC)
     result = _utc_now()
@@ -37,7 +37,7 @@ def test_utc_now_returns_utc_time():
     assert before <= result_utc <= after
 
 
-def test_utc_now_returns_different_times():
+def test_utc_now_returns_different_times() -> None:
     """Test _utc_now returns different times on subsequent calls."""
     result1 = _utc_now()
     result2 = _utc_now()
