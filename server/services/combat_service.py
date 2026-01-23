@@ -64,10 +64,10 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         nats_service: NATSService | None = None,
         npc_combat_integration_service: "NPCCombatIntegration | NPCCombatIntegrationService | None" = None,
         subject_manager: NATSSubjectManager | None = None,
-        player_death_service: Any = None,
-        player_respawn_service: Any = None,
+        player_death_service: Any | None = None,
+        player_respawn_service: Any | None = None,
         event_bus: EventBus | None = None,
-        magic_service: Any = None,
+        magic_service: Any | None = None,
     ) -> None:
         """Initialize the combat service."""
         self._active_combats: dict[UUID, CombatInstance] = {}

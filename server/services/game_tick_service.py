@@ -92,7 +92,7 @@ class GameTickService:
             logger.error("Failed to stop GameTickService", error=str(e))
             return False
 
-    async def _tick_loop(self):
+    async def _tick_loop(self) -> None:
         """
         Main tick loop that runs at the specified interval.
         """

@@ -430,7 +430,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
 _combat_command_handler: CombatCommandHandler | None = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
 
 
-def get_combat_command_handler(app: Any = None) -> CombatCommandHandler:
+def get_combat_command_handler(app: Any | None = None) -> CombatCommandHandler:
     """
     Get the global combat command handler instance, creating it if needed.
 

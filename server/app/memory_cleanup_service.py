@@ -14,7 +14,6 @@ import asyncio
 import time
 from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime
-from typing import cast
 
 import psutil
 
@@ -85,7 +84,7 @@ class MemoryThresholdMonitor:
             logger.error("Failed to access active task count", error=str(loop_access_failure))
             return 0
 
-    def _flush_memory_indexes_cache(self):
+    def _flush_memory_indexes_cache(self) -> None:
         """Flush persistent in-memory indexes associated with cached memory residency."""
         try:
             import gc
@@ -154,7 +153,7 @@ class MemoryThresholdMonitor:
             tracked_manager = get_global_tracked_manager()
 
             # Execute primary cleanup function via timeout mechanism
-            async def cleanup_with_boundaries():
+            async def cleanup_with_boundaries() -> int:
                 orphan_eliminated_count = await tracked_manager.cleanup_orphaned_tasks(force_gc=True)
                 return orphan_eliminated_count
 
@@ -179,8 +178,7 @@ class MemoryThresholdMonitor:
                 },
             )
 
-            result: int = cast(int, total_orphans_processed)
-            return result
+            return total_orphans_processed
 
         except TimeoutError:
             logger.error("Cleanup operation timed out", timeout_seconds=timeout_seconds)

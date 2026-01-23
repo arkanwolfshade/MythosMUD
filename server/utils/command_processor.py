@@ -29,7 +29,7 @@ class CommandProcessor:
     validation system while maintaining compatibility with the existing command handler.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the command processor."""
         self.parser = CommandParser()
         logger.info("CommandProcessor initialized with Pydantic + Click validation")

@@ -125,7 +125,7 @@ class NATSMessageHandler:
         )
 
     @property
-    def connection_manager(self):
+    def connection_manager(self) -> Any:
         """Get the connection manager instance.
 
         Returns:
@@ -155,7 +155,7 @@ class NATSMessageHandler:
         return _LEGACY_CONNECTION_MANAGER_STUB
 
     @connection_manager.setter
-    def connection_manager(self, value):
+    def connection_manager(self, value: Any) -> None:
         self._connection_manager = value
         # Update filtering helper's connection_manager reference
         if hasattr(self, "_filtering_helper"):
@@ -193,7 +193,7 @@ class NATSMessageHandler:
             logger.error("Failed to start NATS message handler", error=str(e))
             return False
 
-    async def stop(self):
+    async def stop(self) -> bool:
         """
         Stop the NATS message handler and unsubscribe from subjects.
 
@@ -210,7 +210,7 @@ class NATSMessageHandler:
             logger.error("Error stopping NATS message handler", error=str(e))
             return False
 
-    async def _subscribe_to_chat_subjects(self):
+    async def _subscribe_to_chat_subjects(self) -> None:
         """
         Subscribe to all chat-related NATS subjects using NATSSubjectManager patterns.
 
@@ -227,7 +227,7 @@ class NATSMessageHandler:
         # Use NATSSubjectManager for standardized subscription patterns
         await self._subscribe_to_standardized_chat_subjects()
 
-    async def _subscribe_to_standardized_chat_subjects(self):
+    async def _subscribe_to_standardized_chat_subjects(self) -> None:
         """
         Subscribe to chat subjects using NATSSubjectManager patterns.
 

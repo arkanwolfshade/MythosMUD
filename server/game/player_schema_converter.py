@@ -121,7 +121,7 @@ class PlayerSchemaConverter:
                 exc_info=True,
             )
 
-    def get_position_state(self, position_value: str | int, player_id: Any = None) -> PositionState:
+    def get_position_state(self, position_value: str | int, player_id: Any | None = None) -> PositionState:
         """Get PositionState from position value, with fallback to STANDING."""
         try:
             # PositionState is a str Enum, so convert int to str if needed

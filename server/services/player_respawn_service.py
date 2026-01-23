@@ -51,7 +51,7 @@ class PlayerRespawnService:
     - Clearing combat state when player respawns
     """
 
-    def __init__(self, event_bus: Any = None, player_combat_service: Any = None) -> None:
+    def __init__(self, event_bus: Any | None = None, player_combat_service: Any | None = None) -> None:
         """
         Initialize the player respawn service.
 

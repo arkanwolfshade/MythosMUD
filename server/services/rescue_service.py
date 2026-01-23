@@ -51,7 +51,7 @@ class RescueService:  # pylint: disable=too-few-public-methods  # Reason: Rescue
         persistence: Any,
         session_factory: AsyncSessionFactory,
         *,
-        catatonia_registry: Any = None,
+        catatonia_registry: Any | None = None,
         lucidity_service_factory: LucidityServiceFactory | None = None,
         event_dispatcher: EventDispatcher = send_rescue_update_event,
     ) -> None:

@@ -37,7 +37,7 @@ class TaskMetadata:  # pylint: disable=too-few-public-methods  # Reason: Data cl
         self.created_at = asyncio.get_event_loop().time()
         self.is_lifecycle = task_type in ("lifecycle", "system", "background")
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """String representation of task metadata for logging."""
         status = "done" if self.task.done() else "pending"
         return f"TaskMetadata({self.task_name}, {self.task_type}, {status})"

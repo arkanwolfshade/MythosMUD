@@ -212,7 +212,7 @@ class PeriodicOrphanAuditor:  # pylint: disable=too-many-instance-attributes  # 
             self.audit_running = False
 
 
-def create_lifespan_memory_service():
+def create_lifespan_memory_service() -> "PeriodicOrphanAuditor":
     """
     Create a centralized memory operations coordinator instance targeted for
     application lifespan integration with periodic orphan protection.

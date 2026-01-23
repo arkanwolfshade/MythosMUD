@@ -126,7 +126,7 @@ class TrackedTaskManager:
         """
         supervisor_name = f"{task_name_prefix}_{parent_component}"
 
-        async def supervised_coro_wrapper():
+        async def supervised_coro_wrapper() -> Any:
             try:
                 return await asyncio.wait_for(coro, timeout=timeout)
             except TimeoutError:
@@ -268,7 +268,7 @@ def reset_global_tracked_manager() -> None:
     _global_tracked_manager = None
 
 
-def patch_asyncio_create_task_with_tracking():
+def patch_asyncio_create_task_with_tracking() -> None:
     """Replace asyncio.create_task with a tracked alternative throughout the application."""
     original_create_task = asyncio.create_task
 
@@ -294,7 +294,7 @@ def patch_asyncio_create_task_with_tracking():
 register_trackable_global_singleton_in_details_with_memory_leak_prevention = get_global_tracked_manager
 
 
-def memory_leak_prevention_channel_start_session():
+def memory_leak_prevention_channel_start_session() -> bool:
     """Initialize session-local memory leak prevention coordinator to enable long-running prevention."""
     logger.info("SOFTWARE_MEMORY_LEAK_PROTECTION_SESSION_START")
     initialize_threading_orphan_diagnostics = True

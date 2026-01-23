@@ -10,7 +10,7 @@ coordination between in-memory combat state and persistent database storage.
 
 # pylint: disable=too-few-public-methods,too-many-arguments,too-many-positional-arguments  # Reason: HP sync module has focused responsibility with minimal public interface, and requires many parameters for synchronization logic
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 from uuid import UUID
 
 from ..events.event_bus import EventBus
@@ -28,7 +28,7 @@ logger = get_logger(__name__)
 class CombatDPSync:  # pylint: disable=too-few-public-methods  # Reason: DP sync class with focused responsibility, minimal public interface
     """Handles DP synchronization for combat operations."""
 
-    def __init__(self, combat_service):
+    def __init__(self, combat_service: Any) -> None:
         """Initialize DP sync with reference to parent combat service."""
         self._combat_service = combat_service
         self._nats_service = getattr(combat_service, "_nats_service", None)

@@ -453,7 +453,7 @@ def setup_enhanced_file_logging(  # pylint: disable=too-many-locals  # Reason: F
     environment: str,
     log_config: dict[str, Any],
     log_level: str,
-    player_service: Any = None,
+    player_service: Any | None = None,
     enable_async: bool = True,
 ) -> None:
     """

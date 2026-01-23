@@ -26,7 +26,7 @@ class AsciiMapRenderer:
     symbol assignment and exit representation.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the ASCII map renderer."""
         # Symbol sets for different environments
         self.symbols = {

@@ -825,7 +825,7 @@ class AppConfig(BaseSettings):
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8", "case_sensitive": False, "extra": "ignore"}
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """Initialize configuration and set environment variables for legacy compatibility."""
         try:
             super().__init__(**kwargs)

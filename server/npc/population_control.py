@@ -64,9 +64,9 @@ class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  
     def __init__(
         self,
         event_bus: EventBus,
-        spawning_service: Any = None,
-        lifecycle_manager: Any = None,
-        async_persistence: Any = None,
+        spawning_service: Any | None = None,
+        lifecycle_manager: Any | None = None,
+        async_persistence: Any | None = None,
     ) -> None:
         """
         Initialize the NPC population controller.

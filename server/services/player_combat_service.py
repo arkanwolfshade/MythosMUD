@@ -63,7 +63,7 @@ class PlayerCombatService:
     and integrates with the persistence layer for XP persistence.
     """
 
-    def __init__(self, persistence: Any, event_bus: Any, npc_combat_integration_service: Any = None) -> None:
+    def __init__(self, persistence: Any, event_bus: Any, npc_combat_integration_service: Any | None = None) -> None:
         """
         Initialize the player combat service.
 

@@ -43,7 +43,7 @@ repos:
         # --no-incremental: Disable incremental mode to avoid SQLite cache locking issues in pre-commit hooks
         # Exclude persistence/__init__.py to avoid duplicate module conflict with persistence.py
         # Exclude conftest.py files to avoid duplicate module conflicts (pytest-specific, don't need type checking)
-        exclude: ^(data/|client/|scripts/|docs/|tools/|monitoring/|server/alembic/|server/test_who_command_direct\.py|server/tests/scripts/|server/persistence/__init__\.py|.*conftest\.py$)
+        exclude: ^(data/|client/|scripts/|docs/|tools/|monitoring/|server/alembic/|server/test_who_command_direct\.py|server/tests/|server/tests/scripts/|server/commands/__tests__/|server/persistence/__init__\.py|.*conftest\.py$)
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0

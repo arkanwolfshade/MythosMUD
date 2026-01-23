@@ -208,7 +208,7 @@ class UnknownChannelStrategy(ChannelBroadcastingStrategy):  # pylint: disable=to
 class ChannelBroadcastingStrategyFactory:
     """Factory for creating channel broadcasting strategies."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the strategy factory."""
         # Pre-create strategies for known channel types
         self._strategies = {

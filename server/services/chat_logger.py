@@ -60,18 +60,18 @@ class ChatLogger:
 
         logger.info("ChatLogger initialized", log_dir=str(self.log_dir))
 
-    def _ensure_log_directories(self):
+    def _ensure_log_directories(self) -> None:
         """Ensure log directory exists."""
         # Only ensure the main environment directory exists
         self.log_dir.mkdir(parents=True, exist_ok=True)
 
-    def _start_writer_thread(self):
+    def _start_writer_thread(self) -> None:
         """Start the background writer thread for thread-safe file writing."""
         self._writer_thread = threading.Thread(target=self._writer_worker, daemon=True)
         self._writer_thread.start()
         logger.debug("ChatLogger writer thread started")
 
-    def _writer_worker(self):
+    def _writer_worker(self) -> None:
         """Background worker thread that handles all file writing operations."""
         while not self._shutdown_event.is_set():
             try:
@@ -125,7 +125,7 @@ class ChatLogger:
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Log processing errors unpredictable, must handle gracefully
             logger.error("Failed to process log entry", error=str(e), log_entry=log_entry)
 
-    def shutdown(self):
+    def shutdown(self) -> None:
         """Shutdown the logger and wait for writer thread to finish."""
         logger.info("Shutting down ChatLogger")
         self._shutdown_event.set()

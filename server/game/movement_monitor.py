@@ -29,7 +29,7 @@ class MovementMonitor:  # pylint: disable=too-many-instance-attributes  # Reason
     - Alert system for anomalies
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the movement monitor with empty metrics."""
         self._logger = get_logger("MovementMonitor")
         self._lock = threading.RLock()
@@ -39,18 +39,18 @@ class MovementMonitor:  # pylint: disable=too-many-instance-attributes  # Reason
         self._failed_movements = 0
         self._concurrent_movements = 0
         self._max_concurrent_movements = 0
-        self._movement_times = []
-        self._room_occupancy = defaultdict(int)
-        self._player_movements = defaultdict(int)
+        self._movement_times: list[float] = []
+        self._room_occupancy: dict[str, int] = defaultdict(int)
+        self._player_movements: dict[str, int] = defaultdict(int)
 
         # Validation tracking
         self._integrity_checks = 0
         self._integrity_violations = 0
-        self._last_validation_time = None
+        self._last_validation_time: datetime | None = None
 
         # Performance tracking
         self._start_time = datetime.now(UTC)
-        self._last_movement_time = None
+        self._last_movement_time: datetime | None = None
 
         # Alert thresholds
         self._alert_thresholds = {
@@ -231,13 +231,13 @@ class MovementMonitor:  # pylint: disable=too-many-instance-attributes  # Reason
 
         return alerts
 
-    def _check_alerts(self):
+    def _check_alerts(self) -> None:
         """Check for alerts and log them."""
         alerts = self.get_alerts()
         if alerts:
             self._logger.warning("Movement system alerts", alerts=alerts)
 
-    def reset_metrics(self):
+    def reset_metrics(self) -> None:
         """Reset all metrics (useful for testing)."""
         with self._lock:
             self._movement_count = 0
@@ -285,7 +285,7 @@ class MovementMonitor:  # pylint: disable=too-many-instance-attributes  # Reason
 
         return summary
 
-    def log_performance_summary(self):
+    def log_performance_summary(self) -> None:
         """Log a comprehensive performance summary."""
         metrics = self.get_metrics()
         alerts = self.get_alerts()
@@ -323,7 +323,7 @@ def get_movement_monitor() -> MovementMonitor:
         return _movement_monitor
 
 
-def reset_movement_monitor():
+def reset_movement_monitor() -> None:
     """Reset the global movement monitor (useful for testing)."""
     global _movement_monitor  # pylint: disable=global-statement  # Reason: Singleton pattern for testing reset
 

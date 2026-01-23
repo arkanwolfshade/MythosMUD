@@ -148,7 +148,7 @@ class ConnectionManager:
     - RoomSubscriptionManager: Room subscriptions and occupant tracking
     """
 
-    def __init__(self, event_publisher: Any = None) -> None:
+    def __init__(self, event_publisher: Any | None = None) -> None:
         """Initialize the connection manager with modular components."""
         # Active WebSocket connections
         self.active_websockets: dict[str, WebSocket] = {}

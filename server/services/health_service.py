@@ -13,7 +13,7 @@ and chaos in our digital realm.
 
 import time
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import psutil
 
@@ -41,7 +41,7 @@ class HealthService:
     including server metrics, database connectivity, and connection statistics.
     """
 
-    def __init__(self, connection_manager=None):
+    def __init__(self, connection_manager: Any | None = None) -> None:
         """
         Initialize the health service.
 
@@ -51,7 +51,7 @@ class HealthService:
         AI Agent: connection_manager injected via constructor to eliminate global singleton
         """
         self.start_time = time.time()
-        self.last_health_check = None
+        self.last_health_check: datetime | None = None
         self.health_check_count = 0
         self.connection_manager = connection_manager  # AI Agent: Injected dependency
 

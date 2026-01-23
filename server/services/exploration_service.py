@@ -36,7 +36,7 @@ class ExplorationService:
     the map viewer to show only explored rooms to players.
     """
 
-    def __init__(self, database_manager: Any = None):
+    def __init__(self, database_manager: Any | None = None):
         """
         Initialize the exploration service.
 
@@ -340,7 +340,7 @@ class ExplorationService:
             )
             raise
 
-    def mark_room_as_explored_sync(self, player_id: UUID, room_id: str, error_handler: Any = None) -> None:
+    def mark_room_as_explored_sync(self, player_id: UUID, room_id: str, error_handler: Any | None = None) -> None:
         """
         Synchronous wrapper for mark_room_as_explored.
 

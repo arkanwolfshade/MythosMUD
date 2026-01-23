@@ -39,10 +39,10 @@ class PostgresRow:
             raise IndexError(f"Column index {key} out of range")
         return self._row_dict[key]
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[Any]:
         return iter(self._row_dict.values())
 
-    def keys(self):
+    def keys(self) -> Any:
         """Return the keys of the row dictionary.
 
         Returns:
@@ -82,7 +82,7 @@ class PostgresConnection:
         cursor.execute(query, params)
         return PostgresCursor(cursor)
 
-    def cursor(self, cursor_factory=None):
+    def cursor(self, cursor_factory: Any | None = None) -> Any:
         """
         Get a cursor from the underlying connection.
 
@@ -112,10 +112,10 @@ class PostgresConnection:
         """Close the connection."""
         self._conn.close()
 
-    def __enter__(self):
+    def __enter__(self) -> "PostgresConnection":
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         if exc_type:
             self.rollback()
         else:

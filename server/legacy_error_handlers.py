@@ -395,7 +395,7 @@ def graceful_degradation(fallback_value: Any, error_type: str = "unknown") -> It
         # Return fallback value (this will be handled by the calling code)
 
 
-def register_error_handlers(app):
+def register_error_handlers(app: Any) -> None:
     """
     Register all error handlers with the FastAPI application.
 
@@ -433,7 +433,7 @@ class CircuitBreaker:  # pylint: disable=too-few-public-methods  # Reason: Utili
         self.last_failure_time: datetime | None = None
         self.state = "CLOSED"  # CLOSED, OPEN, HALF_OPEN
 
-    def call(self, func, *args, **kwargs):
+    def call(self, func: Any, *args: Any, **kwargs: Any) -> Any:
         """
         Execute function with circuit breaker protection.
 
@@ -462,12 +462,12 @@ class CircuitBreaker:  # pylint: disable=too-few-public-methods  # Reason: Utili
             self._on_failure()
             raise exc
 
-    def _on_success(self):
+    def _on_success(self) -> None:
         """Handle successful operation."""
         self.failure_count = 0
         self.state = "CLOSED"
 
-    def _on_failure(self):
+    def _on_failure(self) -> None:
         """Handle failed operation."""
         self.failure_count += 1
         self.last_failure_time = datetime.now()

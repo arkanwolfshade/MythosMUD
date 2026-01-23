@@ -46,7 +46,7 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
     proper population validation and lifecycle tracking.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the NPC startup service."""
         logger.info("NPCStartupService initialized")
 

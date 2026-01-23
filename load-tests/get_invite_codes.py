@@ -22,7 +22,7 @@ from server.database import get_session_maker
 load_dotenv(Path(".env.local"))
 
 
-async def get_10_active_invites():
+async def get_10_active_invites() -> list[str] | None:
     """Get 10 active invite codes from the database."""
     async with get_session_maker()() as session:
         result = await session.execute(
@@ -38,7 +38,7 @@ async def get_10_active_invites():
         return codes
 
 
-async def main():
+async def main() -> None:
     """Main entry point."""
     print("Fetching 10 active invite codes from database...")
 

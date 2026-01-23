@@ -231,9 +231,9 @@ strict_equality = true
 strict_optional = true
 no_implicit_optional = true
 warn_return_any = true
-warn_unreachable = true  # Best practice: enable, use inline # type: ignore[unreachable] where needed
+warn_unreachable = true
 check_untyped_defs = true
-# disallow_untyped_defs = true
+disallow_untyped_defs = true
 disallow_incomplete_defs = true
 no_implicit_reexport = true
 
@@ -262,7 +262,6 @@ exclude = [
     "^monitoring/",
     "^server/alembic/",
     "^alembic/",  # Also exclude root-level alembic if it exists
-    "^server/test_who_command_direct.py$",
     "^server/tests/scripts/",
     "^server/tests/data/",
     "^server/time/",  # Exclude server/time to avoid conflict with stdlib time module
@@ -286,27 +285,8 @@ module = [
     "jose.*",
     "psutil.*",
     "networkx.*",
-    "pytest_mock.*",
 ]
 ignore_missing_imports = true
-
-# Exclude server.time module to avoid conflict with stdlib time module
-# Use follow_imports=skip to prevent mypy from processing this module
-# NOTE: This override is unused because server.time is in the exclude list, but kept for documentation
-# [[tool.mypy.overrides]]
-# module = ["server.time", "server.time.*"]
-# follow_imports = "skip"
-
-# Test files - use default settings (override removed as it matches defaults)
-# Human reader: Test files have many dynamic imports and mocks that confuse mypy
-# AI reader: Test files use extensive mocking and dynamic imports that mypy can't resolve
-# NOTE: Override removed because it matches default settings, making it unused
-# [[tool.mypy.overrides]]
-# module = "server.tests.*"
-# ignore_missing_imports = false
-# disallow_untyped_defs = false
-# disallow_incomplete_defs = false
-# check_untyped_defs = true
 
 # Libraries with local stubs - use our enhanced type definitions
 [[tool.mypy.overrides]]
@@ -343,8 +323,46 @@ module = [
 disallow_untyped_defs = false
 check_untyped_defs = false
 
-# pytest-mock types are now available in pytest-mock 3.15.1+, override no longer needed
-# Removed unused override section that was causing mypy warnings
+# Modules with remaining no-untyped-def violations; relax strictness until fully annotated.
+# Human: Gradual typing; we fix critical paths first, then annotate these modules.
+# AI: Override disallow_untyped_defs for specific server modules with many untyped defs.
+[[tool.mypy.overrides]]
+module = [
+    "server.services.nats_service",
+    "server.persistence.repositories.*",
+    "server.game.player_state_service",
+    "server.game.emote_service",
+    "server.game.mechanics",
+    "server.game.player_respawn_wrapper",
+    "server.game.player_search_service",
+    "server.game.player_schema_converter",
+    "server.game.player_creation_service",
+    "server.game.player_service",
+    "server.services.combat_turn_processor",
+    "server.services.combat_event_handler",
+    "server.services.combat_attack_handler",
+    "server.services.exploration_service",
+    "server.services.schedule_service",
+    "server.services.holiday_service",
+    "server.services.user_manager",
+    "server.services.combat_messaging_integration",
+    "server.services.combat_death_handler",
+    "server.services.combat_cleanup_handler",
+    "server.services.combat_persistence_handler",
+    "server.services.passive_lucidity_flux_service",
+    "server.realtime.event_handlers",
+    "server.realtime.message_filtering",
+    "server.realtime.connection_manager",
+    "server.realtime.connection_manager_utils",
+    "server.npc.npc_base",
+    "server.npc.shopkeeper_npc",
+    "server.npc.passive_mob_npc",
+    "server.npc.idle_movement",
+    "server.npc.aggressive_mob_npc",
+    "server.auth.users",
+]
+disallow_untyped_defs = false
+check_untyped_defs = true
 
 [dependency-groups]
 dev = [

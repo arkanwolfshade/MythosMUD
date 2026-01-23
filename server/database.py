@@ -380,7 +380,7 @@ class DatabaseManager:
 
                     # Step 2: Shield disposal from cancellation to ensure cleanup completes
                     # This prevents Connection._cancel coroutines from being interrupted during cleanup
-                    async def _dispose_engine():
+                    async def _dispose_engine() -> None:
                         await engine.dispose()
                         # Wait a bit more to ensure all asyncpg cleanup coroutines complete
                         # This helps prevent Connection._cancel coroutines from being garbage collected

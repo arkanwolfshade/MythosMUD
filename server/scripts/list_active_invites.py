@@ -12,11 +12,11 @@ from server.database import get_session_maker
 load_dotenv(Path(".env.local"))
 
 
-async def list_active():
+async def list_active() -> str | None:
     """List active invite codes."""
     async with get_session_maker()() as session:
         result = await session.execute(text("SELECT invite_code FROM invites WHERE is_active = true LIMIT 10"))
-        codes = [row[0] for row in result.fetchall()]
+        codes: list[str] = [str(row[0]) for row in result.fetchall()]
         if codes:
             print("Available invite codes:", ", ".join(codes))
             return codes[0]  # Return first available

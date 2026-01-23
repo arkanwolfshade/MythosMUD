@@ -139,7 +139,7 @@ class WebSocketCorrelationMiddleware:  # pylint: disable=too-few-public-methods 
         """
         self.correlation_header = correlation_header
 
-    async def __call__(self, websocket, call_next):
+    async def __call__(self, websocket: Any, call_next: Any) -> Any:
         """
         Process the WebSocket connection with correlation ID.
 
