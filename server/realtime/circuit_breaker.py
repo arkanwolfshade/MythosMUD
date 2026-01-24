@@ -81,7 +81,7 @@ class CircuitBreaker:
         self.timeout = timeout
         self.success_threshold = success_threshold
 
-        self.state = CircuitState.CLOSED
+        self.state: CircuitState = CircuitState.CLOSED
         self.failure_count = 0
         self.success_count = 0
         self.last_failure_time: datetime | None = None
@@ -94,7 +94,7 @@ class CircuitBreaker:
             success_threshold=success_threshold,
         )
 
-    async def call(self, func: Callable, *args, **kwargs) -> Any:
+    async def call(self, func: Callable[..., Any], *args: Any, **kwargs: Any) -> Any:
         """
         Execute function through circuit breaker.
 

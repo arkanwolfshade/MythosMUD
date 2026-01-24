@@ -2,244 +2,404 @@
 name: Memory Leak Metrics Collection Plan
 overview: Plan to implement metrics and telemetry collection to fill analysis gaps identified in the memory leak audit, including runtime metrics for connection management, event subscriptions, caches, tasks, and client-side resources.
 todos:
+
   - id: task1-1
+
     content: Add get_closed_websockets_count() method to ConnectionManager
     status: completed
+
   - id: task1-2
+
     content: Extend get_memory_stats() to include closed_websockets_count, active_websockets_count, connection_metadata_count, player_websockets_count
     status: completed
+
   - id: task1-3
+
     content: Add active_to_player_ratio metric calculation in get_memory_stats()
     status: completed
+
   - id: task1-4
+
     content: Add connection cleanup operation tracking (counts and timestamps)
     status: completed
+
   - id: task1-5
+
     content: Update statistics_aggregator.py to include new connection metrics
     status: completed
+
   - id: task1-6
+
     content: Extend MemoryStatsResponse model to include new connection metrics fields
     status: completed
+
   - id: task2-1
+
     content: Verify get_all_subscriber_counts() method exists in EventBus (line 571)
     status: completed
+
   - id: task2-2
+
     content: Add get_active_task_count() method to EventBus returning len(self._active_tasks)
     status: completed
+
   - id: task2-3
+
     content: Add get_active_task_details() method to EventBus for task debugging
     status: completed
+
   - id: task2-4
+
     content: Add subscriber lifecycle tracking (subscription timestamps, unsubscribe operations)
     status: completed
+
   - id: task2-5
+
     content: Calculate subscriber churn rate metric
     status: completed
+
   - id: task2-6
+
     content: Create EventBusMetricsResponse model in server/api/monitoring.py
     status: completed
+
   - id: task2-7
+
     content: Add /monitoring/eventbus endpoint to expose EventBus metrics
     status: completed
+
   - id: task3-1
+
     content: Add _expired_count counter to LRUCache.__init__()
     status: completed
+
   - id: task3-2
+
     content: Increment _expired_count when entries expire in get() method
     status: completed
+
   - id: task3-3
+
     content: Add expired_count and expiration_rate to LRUCache.get_stats() return value
     status: completed
+
   - id: task3-4
+
     content: Add expiration rate calculation (expired entries per time period)
     status: completed
+
   - id: task3-5
+
     content: Add expired vs LRU evicted ratio tracking
     status: completed
+
   - id: task3-6
+
     content: Add cache capacity utilization metrics to CacheManager
     status: completed
+
   - id: task3-7
+
     content: Create CacheMetricsResponse model in server/api/monitoring.py
     status: completed
+
   - id: task3-8
+
     content: Add /monitoring/caches endpoint to expose cache metrics
     status: completed
+
   - id: task4-1
+
     content: Verify if get_active_task_count() exists in TaskRegistry, add if missing
     status: completed
+
   - id: task4-2
+
     content: Add get_task_stats_by_type() method to TaskRegistry returning task breakdown by type
     status: completed
+
   - id: task4-3
+
     content: Add task lifecycle tracking counters (creation, completion, cancellation)
     status: completed
+
   - id: task4-4
+
     content: Calculate task creation rate and completion rate metrics
     status: completed
+
   - id: task4-5
+
     content: Add service-level task tracking (tasks by service/component identifier)
     status: completed
+
   - id: task4-6
+
     content: Track orphaned tasks count
     status: completed
+
   - id: task4-7
+
     content: Create TaskMetricsResponse model in server/api/monitoring.py
     status: completed
+
   - id: task4-8
+
     content: Add /monitoring/tasks endpoint to expose TaskRegistry metrics
     status: completed
+
   - id: task5-1
+
     content: Add get_active_subscriptions() method to NATSService returning list of subscription subjects
     status: completed
+
   - id: task5-2
+
     content: Track subscription count over time in NATSService
     status: completed
+
   - id: task5-3
+
     content: Track subscription lifecycle events (subscribe/unsubscribe timestamps)
     status: completed
+
   - id: task5-4
+
     content: Add subscription cleanup verification method to NATSService
     status: completed
+
   - id: task5-5
+
     content: Log warnings in disconnect() if subscriptions remain after cleanup
     status: completed
+
   - id: task5-6
+
     content: Track subscription cleanup timestamps
     status: completed
+
   - id: task5-7
+
     content: Extend MetricsResponse model to include subscription metrics
     status: completed
+
   - id: task5-8
+
     content: Add subscription metrics to existing /metrics endpoint
     status: completed
+
   - id: task6-1
+
     content: Verify ResourceManager.getResourceStats() tracks all resource types (timers, intervals, WebSockets, custom)
     status: completed
+
   - id: task6-2
+
     content: Add periodic logging of ResourceManager stats in useResourceCleanup hook
     status: completed
+
   - id: task6-3
+
     content: Add Zustand store subscription tracking in connectionStore.ts and gameStore.ts
     status: completed
+
   - id: task6-4
+
     content: Log subscription/unsubscription events for Zustand stores
     status: completed
+
   - id: task6-5
+
     content: Track active subscriptions per store
     status: completed
+
   - id: task6-6
+
     content: Add component mount/unmount event tracking utility
     status: completed
+
   - id: task6-7
+
     content: Verify cleanup functions are called on component unmount
     status: completed
+
   - id: task6-8
+
     content: Log warnings if cleanup is missing on component unmount
     status: completed
+
   - id: task6-9
+
     content: Create client-side metrics collector utility for development logging
     status: completed
+
   - id: task7-1
+
     content: Create new file server/monitoring/memory_leak_metrics.py
     status: completed
+
   - id: task7-2
+
     content: Implement MemoryLeakMetricsCollector class with initialization
     status: completed
+
   - id: task7-3
+
     content: Implement collect_all_metrics() method aggregating from all sources
     status: completed
+
   - id: task7-4
+
     content: Implement collect_connection_metrics() method
     status: completed
+
   - id: task7-5
+
     content: Implement collect_event_metrics() method
     status: completed
+
   - id: task7-6
+
     content: Implement collect_cache_metrics() method
     status: completed
+
   - id: task7-7
+
     content: Implement collect_task_metrics() method
     status: completed
+
   - id: task7-8
+
     content: Add metrics trend tracking using deque with maxlen=100
     status: completed
+
   - id: task7-9
+
     content: Implement growth rate calculation for metrics
     status: completed
+
   - id: task7-10
+
     content: Add alert threshold configuration (closed_websockets_max, subscriber_growth_rate, cache_size_limit_factor)
     status: completed
+
   - id: task7-11
+
     content: Implement check_alerts() method to check thresholds and return alert list
     status: completed
+
   - id: task7-12
+
     content: Create MemoryLeakMetricsResponse model in server/api/monitoring.py
     status: completed
+
   - id: task7-13
+
     content: Add /monitoring/memory-leaks endpoint to expose all memory leak metrics
     status: completed
+
   - id: task8-1
+
     content: Create _log_memory_metrics_periodically() async function in server/app/lifespan.py
     status: completed
+
   - id: task8-2
+
     content: Register periodic logging task with TaskRegistry (5-10 minute interval)
     status: completed
+
   - id: task8-3
+
     content: Log metrics on application startup in lifespan startup function
     status: completed
+
   - id: task8-4
+
     content: Log metrics on application shutdown in lifespan shutdown function
     status: completed
+
   - id: task8-5
+
     content: Calculate and log metrics delta over application lifetime
     status: completed
+
   - id: task8-6
+
     content: Add optional metrics persistence to file (JSON format)
     status: completed
+
   - id: task9-1
+
     content: Extend /monitoring/memory endpoint to include new memory leak metrics
     status: completed
+
   - id: task9-2
+
     content: Add cache metrics to system metrics endpoint
     status: completed
+
   - id: task9-3
+
     content: Add event metrics to monitoring summary endpoint
     status: completed
+
   - id: task9-4
+
     content: Create MemoryLeakMetricsResponse model with all metric categories
     status: completed
+
   - id: task9-5
+
     content: Create EventBusMetricsResponse model
     status: completed
+
   - id: task9-6
+
     content: Create CacheMetricsResponse model
     status: completed
+
   - id: task9-7
+
     content: Create TaskMetricsResponse model
     status: completed
+
   - id: task9-8
+
     content: Document all metrics in API documentation with meanings and thresholds
     status: completed
+
   - id: task9-9
+
     content: Add examples of normal vs abnormal metric values to documentation
     status: completed
+
   - id: task10-1
+
     content: Check if monitoring_dashboard.py exists and review its structure
     status: completed
+
   - id: task10-2
+
     content: Add memory leak metrics panel to monitoring dashboard if it exists
     status: completed
+
   - id: task10-3
+
     content: Add trend visualization for memory leak metrics
     status: completed
+
   - id: task10-4
+
     content: Check if Prometheus exporter exists, add memory leak metrics if applicable
     status: completed
+
   - id: task10-5
+
     content: Create Grafana dashboard configuration for memory leak metrics (if using Grafana)
     status: completed
+
   - id: task10-6
+
     content: Set up alerting rules in monitoring system for threshold violations
     status: completed
 ---
@@ -383,6 +543,7 @@ def get_active_task_count(self) -> int:
 def get_active_task_details(self) -> list[dict[str, Any]]:
     """Get details of active tasks for debugging."""
     # Implementation
+
 ```
 
 ---
@@ -430,16 +591,20 @@ def get_active_task_details(self) -> list[dict[str, Any]]:
 
 ```python
 # In LRUCache.__init__
+
 self._expired_count = 0
 
 # In get() when entry expires
+
 if time.time() - timestamp > self.ttl_seconds:
     del self._cache[key]
     self._expired_count += 1  # Track expiration
 
 # In get_stats()
+
 return {
     # ... existing stats ...
+
     "expired_count": self._expired_count,
     "expiration_rate": self._expired_count / max(total_requests, 1),
 }
@@ -633,10 +798,12 @@ class MemoryLeakMetricsCollector:
 
     def collect_all_metrics(self) -> dict[str, Any]:
         # Aggregate all metrics
+
         pass
 
     def check_alerts(self, metrics: dict) -> list[str]:
         # Check thresholds and return alerts
+
         pass
 ```
 
@@ -848,7 +1015,8 @@ async def _log_memory_metrics_periodically(collector: MemoryLeakMetricsCollector
 
 ## Success Criteria
 
-- All metrics from audit report are collected
+All metrics from audit report are collected
+
 - Metrics are exposed via API endpoints
 - Metrics are logged periodically
 - Alerts are generated for threshold violations
@@ -859,7 +1027,8 @@ async def _log_memory_metrics_periodically(collector: MemoryLeakMetricsCollector
 
 ## Notes
 
-- Metrics collection should be lightweight to avoid performance impact
+Metrics collection should be lightweight to avoid performance impact
+
 - Use lazy evaluation where possible (calculate metrics on request, not continuously)
 - Consider rate limiting metrics endpoints
 - Document metric meanings and expected ranges

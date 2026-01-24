@@ -453,8 +453,7 @@ describe('debugLogger', () => {
     });
 
     it.skip('should return WARN in production when VITE_LOG_LEVEL is not set', () => {
-      // Skipped: import.meta.env cannot be changed at runtime
-      // This behavior is verified at build time
+      // import.meta.env cannot be reliably overridden at runtime in Vitest; verified at build time.
     });
 
     it('should return DEBUG in development when VITE_LOG_LEVEL is not set', () => {
@@ -463,14 +462,11 @@ describe('debugLogger', () => {
         writable: true,
       });
       const logger = debugLogger('TestComponent');
-
-      // In development, default log level should be DEBUG
       expect(logger.getLogLevel()).toBe('DEBUG');
     });
 
     it.skip('should return custom level from VITE_LOG_LEVEL when valid', () => {
-      // Skipped: import.meta.env cannot be changed at runtime
-      // This behavior is verified at build time
+      // import.meta.env cannot be reliably overridden at runtime in Vitest; verified at build time.
     });
   });
 });

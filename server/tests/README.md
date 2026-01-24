@@ -4,7 +4,8 @@ This is the greenfield test suite for MythosMUD server code.
 
 ## Structure
 
-- `unit/` - Unit tests with mocks/fakes, no real I/O
+`unit/` - Unit tests with mocks/fakes, no real I/O
+
 - `integration/` - Integration tests with real PostgreSQL database
 - `e2e/` - End-to-end tests (placeholder for now)
 - `fixtures/` - Shared test fixtures organized by tier
@@ -15,6 +16,7 @@ This is the greenfield test suite for MythosMUD server code.
 
 ```bash
 # From repo root
+
 make test-server
 ```
 
@@ -22,12 +24,15 @@ make test-server
 
 ```bash
 # Unit tests only
+
 pytest -m unit server/tests
 
 # Integration tests only
+
 pytest -m integration server/tests
 
 # E2E tests only
+
 pytest -m e2e server/tests
 ```
 
@@ -53,37 +58,41 @@ Additional markers:
 
 ## Coverage Policy
 
-- **Critical paths**: 90% minimum coverage
-  - Auth (`server/auth/**`, `server/auth_utils.py`)
-  - Commands (`server/commands/**`, `server/validators/**`)
-  - Services (`server/services/**`)
-  - Persistence (`server/persistence/**`, `server/async_persistence.py`)
-  - Config (`server/config/__init__.py`, `server/config/models.py`)
-  - Events/Realtime (`server/events/**`, `server/realtime/**`)
-  - API (`server/api/**`, `server/routes/**`)
-  - Security (`server/security_utils.py`, `server/exceptions.py`)
+**Critical paths**: 90% minimum coverage
 
-- **All other code**: 70% minimum coverage (global floor)
+- Auth (`server/auth/**`, `server/auth_utils.py`)
+- Commands (`server/commands/**`, `server/validators/**`)
+- Services (`server/services/**`)
+- Persistence (`server/persistence/**`, `server/async_persistence.py`)
+- Config (`server/config/__init__.py`, `server/config/models.py`)
+- Events/Realtime (`server/events/**`, `server/realtime/**`)
+- API (`server/api/**`, `server/routes/**`)
+- Security (`server/security_utils.py`, `server/exceptions.py`)
+
+**All other code**: 70% minimum coverage (global floor)
 
 ## Adding New Tests
 
 ### Unit Tests
 
-- Place in `server/tests/unit/`
+Place in `server/tests/unit/`
+
 - Use `strict_mocker` fixture for mocking (autospec enabled by default)
 - Use `dummy_request` fixture for request objects
 - No real database, network, or filesystem access
 
 ### Integration Tests
 
-- Place in `server/tests/integration/`
+Place in `server/tests/integration/`
+
 - Use `session_factory` fixture for database sessions
 - Use `db_cleanup` fixture for test isolation
 - Real PostgreSQL database required
 
 ### E2E Tests
 
-- Place in `server/tests/e2e/`
+Place in `server/tests/e2e/`
+
 - Full system tests with running server/client
 - Use Playwright MCP for browser automation
 
@@ -91,20 +100,23 @@ Additional markers:
 
 ### Shared Fixtures (`fixtures/shared/`)
 
-- `make_user_dict()` - Create user dictionaries
+`make_user_dict()` - Create user dictionaries
+
 - `make_player_dict()` - Create player dictionaries
 - `fake_clock` - Monotonic time counter
 - `stub_persistence` - Stub persistence layer
 
 ### Unit Fixtures (`fixtures/unit/`)
 
-- `strict_mocker` - Mock helper with autospec=True
+`strict_mocker` - Mock helper with autospec=True
+
 - `dummy_request` - Minimal request object
 - `fakerandom` - Deterministic random seed
 
 ### Integration Fixtures (`fixtures/integration/`)
 
-- `integration_db_url` - Database URL for tests
+`integration_db_url` - Database URL for tests
+
 - `integration_engine` - SQLAlchemy async engine
 - `session_factory` - Async session factory
 - `db_cleanup` - Automatic table truncation after tests

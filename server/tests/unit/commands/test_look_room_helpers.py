@@ -33,7 +33,9 @@ def test_format_items_section():
 
 def test_format_items_section_empty():
     """Test _format_items_section() returns message for empty drops."""
-    room_drops = []
+    from typing import Any
+
+    room_drops: list[Any] = []
 
     result = _format_items_section(room_drops)
 
@@ -84,7 +86,7 @@ def test_format_players_section():
 
 def test_format_players_section_empty():
     """Test _format_players_section() returns empty list for no players."""
-    player_names = []
+    player_names: list[str] = []
 
     result = _format_players_section(player_names)
 
@@ -146,7 +148,9 @@ def test_format_exits_list():
 
 def test_format_exits_list_empty():
     """Test _format_exits_list() handles empty exits."""
-    exits = {}
+    from typing import Any
+
+    exits: dict[str, Any] = {}
 
     result = _format_exits_list(exits)
 

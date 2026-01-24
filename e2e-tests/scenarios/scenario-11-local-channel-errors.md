@@ -2,27 +2,32 @@
 
 ## Overview
 
-Tests local channel error handling and edge cases. This scenario verifies that the local channel system properly handles invalid commands, empty messages, long messages, and other error conditions, while maintaining system stability and providing appropriate error messages.
+Tests local channel error handling and edge cases. This scenario verifies that the local channel system properly handles
+invalid commands, empty messages, long messages, and other error conditions, while maintaining system stability and
+providing appropriate error messages.
 
 ## Prerequisites
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
 2. **Server Running**: Development server is running on port 54731
 3. **Client Accessible**: Client is accessible on port 5173
 4. **Both Players Connected**: AW and Ithaqua are both logged in and in the same room
 
-**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
+### ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE
 
 **Reference**: See @MULTIPLAYER_TEST_RULES.md for complete prerequisite verification procedures.
 
 ## Test Configuration
 
-- **Test Players**: ArkanWolfshade (AW) and Ithaqua
-- **Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
-- **Testing Approach**: Playwright MCP (multi-tab interaction required)
-- **Timeout Settings**: Use configurable timeouts from master rules
+**Test Players**: ArkanWolfshade (AW) and Ithaqua
+
+**Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
+
+**Testing Approach**: Playwright MCP (multi-tab interaction required)
+
+**Timeout Settings**: Use configurable timeouts from master rules
 
 ## Execution Steps
 
@@ -31,6 +36,7 @@ Tests local channel error handling and edge cases. This scenario verifies that t
 **Purpose**: Ensure both players are ready for error testing
 
 **Commands**:
+
 ```javascript
 // Ensure both players are logged in from previous scenario
 // AW should be on tab 0, Ithaqua on tab 1
@@ -44,6 +50,7 @@ Tests local channel error handling and edge cases. This scenario verifies that t
 **Purpose**: Test error handling for empty local messages
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -56,7 +63,8 @@ await mcp_playwright_browser_press_key({key: "Enter"});
 await mcp_playwright_browser_wait_for({text: "You must provide a message to send locally"});
 
 // Verify error message appears
-const awMessages = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const awMessages = await mcp_playwright_browser_evaluate({function: "() =>
+Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
 const seesEmptyMessageError = awMessages.some(msg => msg.includes('You must provide a message to send locally'));
 console.log('AW sees empty message error:', seesEmptyMessageError);
 console.log('AW messages:', awMessages);
@@ -69,6 +77,7 @@ console.log('AW messages:', awMessages);
 **Purpose**: Test error handling for invalid local command syntax
 
 **Commands**:
+
 ```javascript
 // Test invalid local command syntax
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local message with invalid syntax"});
@@ -90,6 +99,7 @@ console.log('AW sees syntax error:', seesSyntaxError);
 **Purpose**: Test error handling for excessively long local messages
 
 **Commands**:
+
 ```javascript
 // Create a very long message (over 500 characters)
 const longMessage = "This is a very long local message that exceeds the maximum allowed length for local channel messages. ".repeat(10);
@@ -112,6 +122,7 @@ console.log('AW sees long message error:', seesLongMessageError);
 **Purpose**: Test error handling for special characters in local messages
 
 **Commands**:
+
 ```javascript
 // Test special characters
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local Message with special chars: !@#$%^&*()"});
@@ -121,7 +132,8 @@ await mcp_playwright_browser_press_key({key: "Enter"});
 await mcp_playwright_browser_wait_for({text: "You say locally: Message with special chars: !@#$%^&*()"});
 
 // Verify message appears
-const awMessagesSpecial = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const awMessagesSpecial = await mcp_playwright_browser_evaluate({function: "() =>
+Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
 const seesSpecialCharsMessage = awMessagesSpecial.some(msg => msg.includes('You say locally: Message with special chars: !@#$%^&*()'));
 console.log('AW sees special chars message:', seesSpecialCharsMessage);
 ```
@@ -133,6 +145,7 @@ console.log('AW sees special chars message:', seesSpecialCharsMessage);
 **Purpose**: Test that special characters are properly handled in message delivery
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
@@ -154,6 +167,7 @@ console.log('Ithaqua messages:', ithaquaMessages);
 **Purpose**: Test error handling for Unicode characters in local messages
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -178,6 +192,7 @@ console.log('AW sees unicode message:', seesUnicodeMessage);
 **Purpose**: Test error handling for local command with no arguments
 
 **Commands**:
+
 ```javascript
 // Test local command with no arguments
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local"});
@@ -199,6 +214,7 @@ console.log('AW sees no args error:', seesNoArgsError);
 **Purpose**: Test error handling for local command with whitespace only
 
 **Commands**:
+
 ```javascript
 // Test local command with whitespace only
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local   "});
@@ -232,6 +248,7 @@ if (awMessagesWhitespace.length === 0) {
 **Purpose**: Test that valid local messages work after error conditions
 
 **Commands**:
+
 ```javascript
 // Send valid local message after errors
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local Valid message after errors"});
@@ -253,6 +270,7 @@ console.log('AW sees valid message:', seesValidMessage);
 **Purpose**: Test that valid messages work after error conditions
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
@@ -275,6 +293,7 @@ console.log('✅ All verification steps completed successfully');
 console.log('✅ System functionality verified as working correctly');
 console.log('✅ Test results documented and validated');
 console.log('📋 PROCEEDING TO SCENARIO 12: Local Channel System Integration');
+
 ```
 
 **Expected Result**:  Ithaqua sees AW's valid local message
@@ -307,19 +326,22 @@ console.log('➡️ READY FOR SCENARIO 12: Local Channel System Integration');
 **Purpose**: Test that the system remains stable after error conditions
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
 
 // Send another valid message to test stability
-await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local System stability test"});
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local System stability
+test"});
 await mcp_playwright_browser_press_key({key: "Enter"});
 
 // Wait for confirmation
 await mcp_playwright_browser_wait_for({text: "You say locally: System stability test"});
 
 // Verify message appears
-const awMessagesStability = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const awMessagesStability = await mcp_playwright_browser_evaluate({function: "() =>
+Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
 const seesStabilityMessage = awMessagesStability.some(msg => msg.includes('You say locally: System stability test'));
 console.log('AW sees stability message:', seesStabilityMessage);
 ```
@@ -328,11 +350,16 @@ console.log('AW sees stability message:', seesStabilityMessage);
 
 ## Expected Results
 
-- ✅ Empty local messages are properly rejected with error message
-- ✅ Invalid local command syntax is properly rejected
-- ✅ Long local messages are properly rejected with error message
-- ✅ Special characters in local messages work correctly
-- ✅ Unicode characters in local messages work correctly
+✅ Empty local messages are properly rejected with error message
+
+✅ Invalid local command syntax is properly rejected
+
+✅ Long local messages are properly rejected with error message
+
+✅ Special characters in local messages work correctly
+
+✅ Unicode characters in local messages work correctly
+
 - ✅ Local command with no arguments is properly rejected
 - ✅ Local command with whitespace only is properly rejected
 - ✅ Valid local messages work after error conditions
@@ -340,7 +367,8 @@ console.log('AW sees stability message:', seesStabilityMessage);
 
 ## Success Criteria Checklist
 
-- [ ] Empty local messages are properly rejected
+[ ] Empty local messages are properly rejected
+
 - [ ] Invalid local command syntax is properly rejected
 - [ ] Long local messages are properly rejected
 - [ ] Special characters in local messages work correctly
@@ -358,20 +386,25 @@ console.log('AW sees stability message:', seesStabilityMessage);
 ## Cleanup
 
 Execute standard cleanup procedures from @CLEANUP.md:
+
 1. Close all browser tabs
 2. Stop development server
 3. Verify clean shutdown
 
 ## Status
 
-**✅ SCENARIO COMPLETION LOGIC FIXED**
+### ✅ SCENARIO COMPLETION LOGIC FIXED
 
 The local channel errors system is working correctly. The scenario now includes proper completion logic to prevent infinite loops:
 
-- **Fixed**: Added completion step with explicit scenario completion and cleanup procedures
-- **Fixed**: Added clear decision points for handling verification results
-- **Fixed**: Added explicit progression to next scenario
-- **Verified**: System functionality works as expected and meets all requirements
+**Fixed**: Added completion step with explicit scenario completion and cleanup procedures
+
+**Fixed**: Added clear decision points for handling verification results
+
+**Fixed**: Added explicit progression to next scenario
+
+**Verified**: System functionality works as expected and meets all requirements
+
 ---
 
 **Document Version**: 1.0 (Modular E2E Test Suite)

@@ -37,9 +37,11 @@ This guide provides comprehensive documentation for monitoring and logging the d
 
 ### Monitoring Stack
 
-- **Metrics Collection**: Prometheus
-- **Visualization**: Grafana
-- **Alerting**: Alertmanager
+**Metrics Collection**: Prometheus
+
+**Visualization**: Grafana
+
+**Alerting**: Alertmanager
 - **Logging**: Structured logging with JSON format
 - **Health Checks**: Custom health endpoints
 
@@ -48,11 +50,13 @@ This guide provides comprehensive documentation for monitoring and logging the d
 ### Health Check Endpoints
 
 **Basic Health Check:**
+
 ```http
 GET /health
 ```
 
 **Response:**
+
 ```json
 {
   "status": "healthy",
@@ -68,11 +72,13 @@ GET /health
 ```
 
 **Detailed Health Check:**
+
 ```http
 GET /health/detailed
 ```
 
 **Response:**
+
 ```json
 {
   "status": "healthy",
@@ -108,11 +114,13 @@ GET /health/detailed
 ### Connection Health Monitoring
 
 **Connection Health Statistics:**
+
 ```http
 GET /monitoring/connection-health
 ```
 
 **Response:**
+
 ```json
 {
   "overall_health": {
@@ -152,6 +160,7 @@ GET /monitoring/connection-health
 
 ```python
 # server/services/health_service.py
+
 import asyncio
 import time
 from typing import Dict, Any
@@ -173,6 +182,7 @@ class HealthService:
         start_time = time.time()
         try:
             # Test database connectivity
+
             await self.database.execute("SELECT 1")
             response_time = (time.time() - start_time) * 1000
             return HealthStatus("healthy", response_time)
@@ -215,6 +225,7 @@ class HealthService:
 
     async def get_overall_health(self) -> Dict[str, Any]:
         # Run all health checks concurrently
+
         db_health, conn_health, mem_health = await asyncio.gather(
             self.check_database_health(),
             self.check_connection_health(),
@@ -222,6 +233,7 @@ class HealthService:
         )
 
         # Determine overall status
+
         statuses = [db_health.status, conn_health.status, mem_health.status]
         if "unhealthy" in statuses:
             overall_status = "unhealthy"
@@ -259,26 +271,32 @@ class HealthService:
 ### Prometheus Metrics
 
 **Connection Metrics:**
+
 ```python
 # server/monitoring/metrics.py
+
 from prometheus_client import Counter, Histogram, Gauge, start_http_server
 
 # Connection metrics
+
 connections_total = Gauge('mythos_connections_total', 'Total number of connections')
 connections_by_type = Gauge('mythos_connections_by_type', 'Connections by type', ['type'])
 connection_health_percentage = Gauge('mythos_connection_health_percentage', 'Connection health percentage')
 connection_establishment_time = Histogram('mythos_connection_establishment_seconds', 'Connection establishment time', ['type'])
 
 # Message metrics
+
 messages_sent_total = Counter('mythos_messages_sent_total', 'Total messages sent', ['type', 'status'])
 message_delivery_time = Histogram('mythos_message_delivery_seconds', 'Message delivery time')
 message_delivery_success_rate = Gauge('mythos_message_delivery_success_rate', 'Message delivery success rate')
 
 # Session metrics
+
 sessions_total = Gauge('mythos_sessions_total', 'Total number of sessions')
 session_connections = Gauge('mythos_session_connections', 'Connections per session', ['session_id'])
 
 # Performance metrics
+
 request_duration = Histogram('mythos_request_duration_seconds', 'Request duration', ['method', 'endpoint'])
 active_connections = Gauge('mythos_active_connections', 'Number of active connections')
 memory_usage = Gauge('mythos_memory_usage_bytes', 'Memory usage in bytes')
@@ -286,8 +304,10 @@ cpu_usage = Gauge('mythos_cpu_usage_percent', 'CPU usage percentage')
 ```
 
 **Metrics Collection:**
+
 ```python
 # server/monitoring/collector.py
+
 import asyncio
 import time
 from prometheus_client import CollectorRegistry, generate_latest
@@ -300,6 +320,7 @@ class MetricsCollector:
 
     def _register_metrics(self):
         # Register all metrics with the registry
+
         self.registry.register(connections_total)
         self.registry.register(connections_by_type)
         self.registry.register(connection_health_percentage)
@@ -308,10 +329,12 @@ class MetricsCollector:
     async def collect_metrics(self):
         """Collect and update all metrics"""
         # Update connection metrics
+
         stats = self.connection_manager.get_dual_connection_stats()
         connections_total.set(stats["connection_distribution"]["total_players"])
 
         # Update connection type metrics
+
         connections_by_type.labels(type='websocket').set(
             stats["connection_distribution"]["websocket_only_players"]
         )
@@ -323,12 +346,14 @@ class MetricsCollector:
         )
 
         # Update health metrics
+
         health_stats = self.connection_manager.get_connection_health_stats()
         connection_health_percentage.set(
             health_stats["overall_health"]["health_percentage"]
         )
 
         # Update performance metrics
+
         perf_stats = self.connection_manager.get_performance_stats()
         # ... update performance metrics
 
@@ -340,11 +365,13 @@ class MetricsCollector:
 ### Performance Monitoring Endpoints
 
 **Performance Statistics:**
+
 ```http
 GET /monitoring/performance
 ```
 
 **Response:**
+
 ```json
 {
   "connection_establishment": {
@@ -382,6 +409,7 @@ GET /monitoring/performance
 
 ```python
 # server/monitoring/performance_monitor.py
+
 import time
 import asyncio
 from collections import deque
@@ -424,6 +452,7 @@ class PerformanceMonitor:
         current_time = time.time()
 
         # Connection establishment stats
+
         ws_times = [t['duration_ms'] for t in self.connection_times if t['type'] == 'websocket']
         sse_times = [t['duration_ms'] for t in self.connection_times if t['type'] == 'sse']
 
@@ -440,6 +469,7 @@ class PerformanceMonitor:
         }
 
         # Message delivery stats
+
         message_times = [t['duration_ms'] for t in self.message_times]
         message_stats = {
             'total_messages_sent': len(message_times),
@@ -469,6 +499,7 @@ class PerformanceMonitor:
 
 ```python
 # server/monitoring/error_tracker.py
+
 from enum import Enum
 from dataclasses import dataclass
 from typing import Dict, List, Optional
@@ -511,10 +542,12 @@ class ErrorTracker:
         self.errors.append(error_event)
 
         # Update error counts
+
         error_key = f"{error_event.error_type.value}_{error_event.severity.value}"
         self.error_counts[error_key] = self.error_counts.get(error_key, 0) + 1
 
         # Update error rates
+
         current_time = time.time()
         minute_key = int(current_time // 60)
         if minute_key not in self.error_rates:
@@ -522,6 +555,7 @@ class ErrorTracker:
         self.error_rates[minute_key][error_key] = self.error_rates[minute_key].get(error_key, 0) + 1
 
         # Clean up old error rates (keep last 60 minutes)
+
         cutoff_time = current_time - 3600
         cutoff_minute = int(cutoff_time // 60)
         self.error_rates = {k: v for k, v in self.error_rates.items() if k > cutoff_minute}
@@ -532,15 +566,18 @@ class ErrorTracker:
         last_hour = current_time - 3600
 
         # Filter errors from last hour
+
         recent_errors = [e for e in self.errors if e.timestamp >= last_hour]
 
         # Count errors by type and severity
+
         error_breakdown = {}
         for error in recent_errors:
             key = f"{error.error_type.value}_{error.severity.value}"
             error_breakdown[key] = error_breakdown.get(key, 0) + 1
 
         # Calculate error rates
+
         total_errors = len(recent_errors)
         error_rate_per_minute = total_errors / 60 if total_errors > 0 else 0
 
@@ -564,11 +601,13 @@ class ErrorTracker:
 ### Error Monitoring Endpoints
 
 **Error Statistics:**
+
 ```http
 GET /monitoring/errors
 ```
 
 **Response:**
+
 ```json
 {
   "total_errors_last_hour": 25,
@@ -604,6 +643,7 @@ GET /monitoring/errors
 
 ```python
 # server/logging_config.py
+
 import structlog
 import logging
 import sys
@@ -613,6 +653,7 @@ def configure_logging(log_level: str = "INFO", log_format: str = "json"):
     """Configure structured logging"""
 
     # Configure structlog
+
     structlog.configure(
         processors=[
             structlog.stdlib.filter_by_level,
@@ -632,6 +673,7 @@ def configure_logging(log_level: str = "INFO", log_format: str = "json"):
     )
 
     # Configure standard library logging
+
     logging.basicConfig(
         format="%(message)s",
         stream=sys.stdout,
@@ -639,6 +681,7 @@ def configure_logging(log_level: str = "INFO", log_format: str = "json"):
     )
 
     # Set up loggers for different components
+
     loggers = {
         'server': logging.getLogger('server'),
         'server.realtime': logging.getLogger('server.realtime'),
@@ -652,6 +695,7 @@ def configure_logging(log_level: str = "INFO", log_format: str = "json"):
     return loggers
 
 # Usage in application
+
 loggers = configure_logging()
 logger = loggers['server.realtime']
 ```
@@ -660,6 +704,7 @@ logger = loggers['server.realtime']
 
 ```python
 # server/realtime/connection_manager.py
+
 import structlog
 
 logger = structlog.get_logger('server.realtime.connection_manager')
@@ -672,6 +717,7 @@ class ConnectionManager:
 
         try:
             # Log connection attempt
+
             logger.info(
                 "WebSocket connection attempt",
                 player_id=player_id,
@@ -681,9 +727,11 @@ class ConnectionManager:
             )
 
             # Establish connection
+
             await websocket.accept()
 
             # Log successful connection
+
             establishment_time = (time.time() - start_time) * 1000
             logger.info(
                 "WebSocket connected",
@@ -699,12 +747,14 @@ class ConnectionManager:
             )
 
             # Record performance metrics
+
             self.performance_monitor.record_connection_establishment('websocket', establishment_time)
 
             return True
 
         except Exception as e:
             # Log connection failure
+
             establishment_time = (time.time() - start_time) * 1000
             logger.error(
                 "WebSocket connection failed",
@@ -717,6 +767,7 @@ class ConnectionManager:
             )
 
             # Record error
+
             self.error_tracker.record_error(ErrorEvent(
                 error_type=ErrorType.CONNECTION_ERROR,
                 severity=ErrorSeverity.MEDIUM,
@@ -747,6 +798,7 @@ async def send_personal_message(self, player_id: str, message: Dict[str, Any]) -
 
     try:
         # Send message logic...
+
         delivery_time = (time.time() - start_time) * 1000
 
         logger.info(
@@ -761,6 +813,7 @@ async def send_personal_message(self, player_id: str, message: Dict[str, Any]) -
         )
 
         # Record performance metrics
+
         self.performance_monitor.record_message_delivery(delivery_time)
 
         return result
@@ -778,6 +831,7 @@ async def send_personal_message(self, player_id: str, message: Dict[str, Any]) -
         )
 
         # Record error
+
         self.error_tracker.record_error(ErrorEvent(
             error_type=ErrorType.MESSAGE_DELIVERY_ERROR,
             severity=ErrorSeverity.MEDIUM,
@@ -795,6 +849,7 @@ async def send_personal_message(self, player_id: str, message: Dict[str, Any]) -
 ### Prometheus Alert Rules
 
 **mythos_alerts.yml:**
+
 ```yaml
 groups:
 - name: mythos_connection_alerts
@@ -859,6 +914,7 @@ groups:
 ### Alertmanager Configuration
 
 **alertmanager.yml:**
+
 ```yaml
 global:
   smtp_smarthost: 'localhost:587'
@@ -914,6 +970,7 @@ receivers:
 ### Grafana Dashboard
 
 **Connection Overview Dashboard:**
+
 ```json
 {
   "dashboard": {
@@ -1110,91 +1167,118 @@ export default MonitoringPanel;
 ### Common Monitoring Issues
 
 **1. Metrics Not Appearing:**
+
 ```bash
 # Check if metrics endpoint is accessible
+
 curl http://localhost:9090/metrics
 
 # Check Prometheus configuration
+
 curl http://localhost:9090/api/v1/targets
 
 # Check if application is exposing metrics
+
 curl http://localhost:8000/monitoring/performance
 ```
 
 **2. High Memory Usage:**
+
 ```bash
 # Check memory usage
+
 ps aux | grep python
 htop
 
 # Check for memory leaks
+
 python -m memory_profiler server/main.py
 
 # Monitor memory metrics
+
 curl http://localhost:8000/monitoring/performance | jq '.system_performance.memory_usage_mb'
 ```
 
 **3. Slow Performance:**
+
 ```bash
 # Check response times
+
 curl -w "@curl-format.txt" -o /dev/null -s http://localhost:8000/health
 
 # Check connection establishment times
+
 curl http://localhost:8000/monitoring/performance | jq '.connection_establishment'
 
 # Check database performance
+
 psql mythos_prod -c "SELECT * FROM pg_stat_activity WHERE state = 'active';"
 ```
 
 ### Log Analysis
 
 **1. Error Analysis:**
+
 ```bash
 # Count errors by type
+
 grep "ERROR" logs/mythos.log | jq -r '.error_type' | sort | uniq -c
 
 # Find recent errors
+
 grep "ERROR" logs/mythos.log | tail -50
 
 # Analyze error patterns
+
 grep "connection_error" logs/mythos.log | jq -r '.player_id' | sort | uniq -c
 ```
 
 **2. Performance Analysis:**
+
 ```bash
 # Check connection establishment times
+
 grep "WebSocket connected" logs/mythos.log | jq -r '.establishment_time_ms' | sort -n
 
 # Check message delivery times
+
 grep "Message delivered" logs/mythos.log | jq -r '.delivery_time_ms' | sort -n
 
 # Check for slow operations
+
 grep "establishment_time_ms" logs/mythos.log | jq 'select(.establishment_time_ms > 1000)'
 ```
 
 **3. Connection Analysis:**
+
 ```bash
 # Count connections by type
+
 grep "connected" logs/mythos.log | jq -r '.connection_type' | sort | uniq -c
 
 # Check dual connection usage
+
 grep "is_dual_connection" logs/mythos.log | jq -r '.is_dual_connection' | sort | uniq -c
 
 # Analyze connection patterns
+
 grep "WebSocket connected" logs/mythos.log | jq -r '.player_id' | sort | uniq -c
 ```
 
 ### Performance Optimization
 
 **1. Connection Pool Tuning:**
+
 ```python
 # Adjust connection pool settings
+
 CONNECTION_POOL_SIZE = 1000  # Increase for high load
 MAX_CONNECTIONS_PER_PLAYER = 2  # Reduce for resource conservation
 CONNECTION_TIMEOUT = 180  # Reduce for faster cleanup
 ```
 
 **2. Database Optimization:**
+
 ```sql
 -- Add indexes for better performance
 CREATE INDEX CONCURRENTLY idx_connections_player_session ON connections(player_id, session_id);
@@ -1205,12 +1289,15 @@ EXPLAIN ANALYZE SELECT * FROM connections WHERE player_id = 'test_player';
 ```
 
 **3. Memory Optimization:**
+
 ```python
 # Adjust metrics collection frequency
+
 METRICS_COLLECTION_INTERVAL = 30  # seconds
 MAX_METRICS_SAMPLES = 1000  # Reduce for memory conservation
 
 # Enable garbage collection
+
 import gc
 gc.set_threshold(700, 10, 10)
 ```

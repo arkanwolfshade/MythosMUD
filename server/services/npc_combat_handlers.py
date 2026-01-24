@@ -7,7 +7,7 @@ with defensive error handling to prevent player disconnections.
 
 # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Combat handlers require many parameters for context and combat processing
 
-from typing import Any
+from typing import Any, cast
 from uuid import UUID, uuid4
 
 from sqlalchemy.exc import SQLAlchemyError
@@ -77,15 +77,31 @@ class NPCCombatHandlers:
         """
         if combat_result.success:
             # Broadcast attack message with health info
-            await self._messaging_integration.broadcast_combat_attack(
-                room_id=room_id,
-                attacker_name=await self._data_provider.get_player_name(player_id),
-                target_name=npc_instance.name,
-                damage=damage,
-                action_type=action_type,
-                combat_id=str(combat_result.combat_id) if combat_result.combat_id else str(uuid4()),
-                attacker_id=player_id,
-            )
+            try:
+                await self._messaging_integration.broadcast_combat_attack(
+                    room_id=room_id,
+                    attacker_name=await self._data_provider.get_player_name(player_id),
+                    target_name=npc_instance.name,
+                    damage=damage,
+                    action_type=action_type,
+                    combat_id=str(combat_result.combat_id) if combat_result.combat_id else str(uuid4()),
+                    attacker_id=player_id,
+                )
+            except (ConnectionError, OSError, RuntimeError, ValueError, AttributeError, TypeError) as e:
+                # Broadcasting is non-critical - catch specific exceptions to prevent combat flow interruption
+                # ConnectionError/OSError: Network/connection issues with message broadcasting
+                # RuntimeError: Runtime issues in connection manager
+                # ValueError: Invalid parameters or data format issues
+                # AttributeError: Missing attributes on npc_instance or data_provider
+                # TypeError: Type mismatches in parameter passing
+                logger.error(
+                    "Error broadcasting combat attack",
+                    player_id=player_id,
+                    npc_id=npc_id,
+                    error=str(e),
+                    error_type=type(e).__name__,
+                    exc_info=True,
+                )
 
             # If combat ended, handle NPC death
             if combat_result.combat_ended:
@@ -102,14 +118,14 @@ class NPCCombatHandlers:
                 message=combat_result.message,
             )
 
-            return combat_result.success
+            return cast(bool, combat_result.success)
         logger.warning(
             "Combat attack failed",
             player_id=player_id,
             npc_id=npc_id,
             message=combat_result.message,
         )
-        return combat_result.success
+        return cast(bool, combat_result.success)
 
     async def _handle_npc_death_on_combat_end(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: NPC death handling requires many parameters for context and death processing
         self, player_id: str, npc_id: str, room_id: str, combat_result: Any, handle_npc_death_callback: Any

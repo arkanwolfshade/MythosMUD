@@ -50,31 +50,21 @@ export default defineConfig(({ mode }) => ({
     minify: 'esbuild',
     // Target modern browsers
     target: 'es2020',
-    // Chunk size warning threshold (500KB)
-    chunkSizeWarningLimit: 500,
+    // Chunk size warning threshold (600KB)
+    // Increased from 500KB to accommodate large single-package chunks like lucide-react (icon library)
+    // which cannot be split further. All chunks are already properly separated by functionality.
+    chunkSizeWarningLimit: 600,
     rollupOptions: {
       output: {
         // Manual chunk splitting for optimal bundle sizes
+        // Strategy: Split large, self-contained libraries into separate chunks.
+        // All other node_modules go into a single vendor chunk to avoid circular
+        // chunk dependencies (vendor-react <-> vendor) from shared deps (e.g. scheduler).
         manualChunks: id => {
-          // Vendor chunks - separate large dependencies
           if (id.includes('node_modules')) {
-            // React and React-DOM together (often used together)
-            if (id.includes('react') || id.includes('react-dom')) {
-              return 'vendor-react';
-            }
-            // XState is a large state management library
-            if (id.includes('xstate')) {
-              return 'vendor-xstate';
-            }
-            // React Grid Layout is a large component library
-            if (id.includes('react-grid-layout')) {
-              return 'vendor-grid-layout';
-            }
-            // Zustand is smaller but still worth separating
-            if (id.includes('zustand')) {
-              return 'vendor-zustand';
-            }
-            // All other node_modules go into vendor chunk
+            if (id.includes('lucide-react')) return 'vendor-icons';
+            if (id.includes('react-grid-layout')) return 'vendor-grid-layout';
+            if (id.includes('reactflow')) return 'vendor-reactflow';
             return 'vendor';
           }
         },

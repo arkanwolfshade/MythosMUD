@@ -2,70 +2,114 @@
 name: Login Grace Period Implementation
 overview: Implement a 10-second login grace period system that provides immunity to damage and negative effects, prevents combat initiation, and makes hostile NPCs ignore players during initial login. The grace period applies only to new logins (through /select-character), not to reconnections after network disconnects.
 todos:
+
   - id: create_login_grace_period_module
+
     content: Create server/realtime/login_grace_period.py with start/cancel/check functions
     status: completed
+
   - id: add_connection_manager_tracking
+
     content: Add login_grace_period_players dict to ConnectionManager.__init__
     status: in_progress
+
   - id: start_grace_period_after_motd
+
     content: Start grace period after MOTD dismissal (not during initial connection setup)
     status: pending
+
   - id: create_grace_period_start_handler
+
     content: Create WebSocket message handler or API endpoint to start grace period when MOTD dismissed
     status: pending
+
   - id: remove_combat_on_login
+
     content: Remove player from combat state if in combat when logging in
     status: pending
+
   - id: block_combat_commands
+
     content: Block combat commands (attack, etc.) during grace period in combat.py
     status: pending
+
   - id: prevent_combat_initiation
+
     content: Prevent combat.start_combat() if either participant is in grace period
     status: pending
+
   - id: block_damage_application
+
     content: Block damage application in combat_attack_handler.py and combat_integration.py
     status: pending
+
   - id: block_negative_effects
+
     content: Block negative status effects in spell_effects.py and game_tick_processing.py
     status: pending
+
   - id: prevent_npc_targeting
+
     content: Prevent NPCs from targeting players in grace period in aggressive_mob_npc.py
     status: pending
+
   - id: prevent_npc_attacks
+
     content: Prevent NPC attacks on players in grace period in npc_combat_integration_service.py
     status: pending
+
   - id: add_visual_indicator_warded
+
     content: Add "(warded)" visual indicator to player names in room lists, look commands, and occupant updates (similar to linkdead)
     status: pending
+
   - id: add_grace_period_to_game_state
+
     content: Include grace period status and remaining time in game state sent to client
     status: pending
+
   - id: add_grace_period_countdown_function
+
     content: Add get_login_grace_period_remaining() function to calculate remaining time
     status: pending
+
   - id: create_client_countdown_banner
+
     content: Create LoginGracePeriodBanner component to display countdown to player
     status: pending
+
   - id: integrate_countdown_in_game_client
+
     content: Integrate grace period countdown banner into GameClientV2Container
     status: pending
+
   - id: add_grace_period_countdown_function
+
     content: Add get_login_grace_period_remaining() function to calculate remaining time
     status: pending
+
   - id: create_client_countdown_banner
+
     content: Create LoginGracePeriodBanner component to display countdown to player
     status: pending
+
   - id: integrate_countdown_in_game_client
+
     content: Integrate grace period countdown banner into GameClientV2Container
     status: pending
+
   - id: write_unit_tests
+
     content: Write unit tests for login grace period functions (must achieve 70%+ coverage)
     status: completed
+
   - id: write_integration_tests
+
     content: Write integration tests for full login grace period flow
     status: completed
+
   - id: verify_test_coverage
+
     content: Verify all new code meets 70% minimum test coverage requirement
     status: pending
 ---
@@ -127,6 +171,7 @@ async def start_login_grace_period(player_id: uuid.UUID, manager: Any) -> None:
 def is_player_in_login_grace_period(player_id: uuid.UUID, manager: Any) -> bool:
     """Check if player is in login grace period."""
     # Check if player_id in manager.login_grace_period_players
+
 ```
 
 ### 2. Connection Manager Initialization
@@ -411,7 +456,8 @@ Create `client/src/components/ui-v2/LoginGracePeriodBanner.tsx`:
 
 ### Coverage Verification
 
-- Run coverage analysis after implementation: `make test` (or equivalent coverage command)
+Run coverage analysis after implementation: `make test` (or equivalent coverage command)
+
 - Verify all new files meet 70% minimum coverage
 - Verify modified files maintain or improve existing coverage
 - Address any coverage gaps before marking implementation complete
@@ -420,7 +466,8 @@ Create `client/src/components/ui-v2/LoginGracePeriodBanner.tsx`:
 
 ### New Files
 
-- `server/realtime/login_grace_period.py` - Grace period management
+`server/realtime/login_grace_period.py` - Grace period management
+
 - `server/tests/unit/realtime/test_login_grace_period.py` - Unit tests
 - `server/tests/integration/test_login_grace_period_flow.py` - Integration tests
 
@@ -468,7 +515,8 @@ Create `client/src/components/ui-v2/LoginGracePeriodBanner.tsx`:
 
 ## Notes
 
-- Grace period duration is hardcoded to 10 seconds (can be made configurable later)
+Grace period duration is hardcoded to 10 seconds (can be made configurable later)
+
 - Grace period is separate from disconnect grace period (they use different tracking dictionaries)
 - Movement is explicitly allowed during grace period (no changes needed to movement commands)
 - Positive effects (healing, buffs) are allowed during grace period

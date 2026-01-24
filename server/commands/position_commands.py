@@ -41,7 +41,7 @@ def _format_room_posture_message(player_name: str, previous_position: str | None
 
 
 async def _handle_position_change(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Position commands require many parameters for context and position logic
-    current_user: dict,
+    current_user: dict[str, Any],
     request: Any,
     alias_storage: AliasStorage | None,
     player_name: str,
@@ -148,8 +148,8 @@ async def _handle_position_change(  # pylint: disable=too-many-arguments,too-man
 
 
 async def handle_sit_command(
-    _command_data: dict,
-    current_user: dict,
+    _command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     alias_storage: AliasStorage | None,
     player_name: str,
@@ -166,8 +166,8 @@ async def handle_sit_command(
 
 
 async def handle_stand_command(
-    _command_data: dict,
-    current_user: dict,
+    _command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     alias_storage: AliasStorage | None,
     player_name: str,
@@ -184,8 +184,8 @@ async def handle_stand_command(
 
 
 async def handle_lie_command(
-    _command_data: dict,
-    current_user: dict,
+    _command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     alias_storage: AliasStorage | None,
     player_name: str,

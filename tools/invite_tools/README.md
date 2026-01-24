@@ -14,18 +14,23 @@ This is the easiest way to use the tools.
 
 ```powershell
 # Generate new invite codes
+
 .\tools\invite_tools\run_invite_tools.ps1 generate
 
 # Generate codes using alternative method
+
 .\tools\invite_tools\run_invite_tools.ps1 generate_db
 
 # List all invite codes
+
 .\tools\invite_tools\run_invite_tools.ps1 list
 
 # Show invite statistics
+
 .\tools\invite_tools\run_invite_tools.ps1 count
 
 # Check specific invite code
+
 .\tools\invite_tools\run_invite_tools.ps1 check "Cthulhu"
 ```
 
@@ -38,6 +43,7 @@ FastAPI Users migration structure.
 
 ```bash
 # Set environment variable first
+
 $env:DATABASE_URL="sqlite+aiosqlite:///./data/local/players/players.db"
 python generate_invites.py
 ```
@@ -57,6 +63,7 @@ Alternative invite generation script using the database storage system.
 
 ```bash
 # Set environment variable first
+
 $env:DATABASE_URL="sqlite+aiosqlite:///./data/local/players/players.db"
 python generate_invites_db.py
 ```
@@ -75,15 +82,19 @@ Utility script to check and list invite codes in the database.
 
 ```bash
 # Set environment variable first
+
 $env:DATABASE_URL="sqlite+aiosqlite:///./data/local/players/players.db"
 
 # List all invite codes
+
 python check_invites.py list
 
 # Show invite statistics
+
 python check_invites.py count
 
 # Check specific invite code
+
 python check_invites.py check <invite_code>
 ```
 
@@ -122,7 +133,8 @@ All generated codes use Mythos-themed words and concepts from:
 
 ## Notes
 
-- Scripts automatically handle path resolution to find the server directory
+Scripts automatically handle path resolution to find the server directory
+
 - All database operations use async/await patterns
 - Codes are generated with expiration dates for security
 - Duplicate prevention ensures unique codes across multiple runs

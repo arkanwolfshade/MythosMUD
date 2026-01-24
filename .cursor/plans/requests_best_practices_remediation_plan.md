@@ -40,9 +40,11 @@ However, several important findings and recommendations have been identified:
 
 **Recommendation**:
 
-- **Option A (Recommended)**: Remove `requests` from dependencies if not needed
-- **Option B**: Keep it if there are plans to use it, but document why in a comment
-- **Option C**: Replace with `httpx` if async HTTP client is needed (better fit for FastAPI/async codebase)
+**Option A (Recommended)**: Remove `requests` from dependencies if not needed
+
+**Option B**: Keep it if there are plans to use it, but document why in a comment
+
+**Option C**: Replace with `httpx` if async HTTP client is needed (better fit for FastAPI/async codebase)
 
 ### 2. Architecture Alignment (Informational)
 
@@ -148,6 +150,7 @@ When implementing HTTP client functionality, ensure:
 1. **Immediate Action**: Review whether `requests` dependency is needed. If not, remove it to reduce dependency bloat.
 
 2. **Future Planning**: If external HTTP API calls are planned:
+
    - Prefer `httpx` over `requests` for async compatibility
    - Follow `.cursor/rules/httpx.mdc` for async HTTP clients
    - If `requests` is chosen, strictly follow `.cursor/rules/requests.mdc`

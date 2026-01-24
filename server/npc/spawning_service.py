@@ -329,7 +329,7 @@ class NPCSpawningService:
             "passive_mob": 30,
             "aggressive_mob": 20,
         }
-        priority += type_priorities.get(str(definition.npc_type.value), 50)
+        priority += type_priorities.get(str(definition.npc_type), 50)
 
         # Required NPCs get higher priority
         if definition.is_required():

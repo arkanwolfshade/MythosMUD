@@ -4,7 +4,10 @@
 
 MythosMUD uses two approaches for E2E testing:
 
-1. **Automated Playwright CLI Tests** - Single-player scenarios testing error handling, accessibility, and integration points
+1. **Automated Playwright CLI Tests** - Single-player scenarios testing error handling, accessibility, and integration
+
+   points
+
 2. **Playwright MCP Scenarios** - Multi-player scenarios requiring real-time coordination and message broadcasting
 
 This guide explains when to use each approach, how to run tests locally, and how to add new test scenarios.
@@ -15,19 +18,24 @@ This guide explains when to use each approach, how to run tests locally, and how
 
 ```bash
 # Run all automated E2E runtime tests
+
 make test-client-runtime
 
 # Or directly with npm
+
 cd client
 npm run test:e2e:runtime
 
 # Run in headed mode (see browser)
+
 npm run test:e2e:runtime:headed
 
 # Run in debug mode
+
 npm run test:e2e:runtime:debug
 
 # Run with UI mode (interactive)
+
 npm run test:e2e:runtime:ui
 ```
 
@@ -38,6 +46,7 @@ For multiplayer scenarios that require AI Agent coordination:
 ```bash
 # See e2e-tests/MULTIPLAYER_TEST_RULES.md for complete instructions
 # These scenarios require Playwright MCP and AI Agent execution
+
 ```
 
 ## Test Categories
@@ -49,62 +58,75 @@ For multiplayer scenarios that require AI Agent coordination:
 #### Category A: Full Conversion (6 Scenarios)
 
 1. **Local Channel Errors** - `error-handling/local-channel-errors.spec.ts`
+
    - Tests: 8 tests covering error conditions and edge cases
    - Runtime: ~1 minute
 
 2. **Whisper Errors** - `error-handling/whisper-errors.spec.ts`
+
    - Tests: 10 tests covering validation and error handling
    - Runtime: ~1 minute
 
 3. **Whisper Rate Limiting** - `error-handling/whisper-rate-limiting.spec.ts`
+
    - Tests: 9 tests including 60-second reset test
    - Runtime: ~2 minutes (includes slow test)
 
 4. **Whisper Logging** - `admin/whisper-logging.spec.ts`
+
    - Tests: 9 tests covering admin access and privacy
    - Runtime: ~1 minute
 
 5. **Logout Errors** - `error-handling/logout-errors.spec.ts`
+
    - Tests: 9 tests covering error conditions and recovery
    - Runtime: ~1 minute
 
 6. **Logout Accessibility** - `accessibility/logout-accessibility.spec.ts`
+
    - Tests: 25 tests covering WCAG compliance
    - Runtime: ~2 minutes
 
 #### Category B: Partial Conversion (4 Scenarios)
 
-7. **Who Command** - `integration/who-command.spec.ts`
+1. **Who Command** - `integration/who-command.spec.ts`
+
    - Automated: 10 tests for single-player functionality
    - MCP: Multi-player visibility (see `e2e-tests/scenarios/scenario-07-who-command.md`)
    - Runtime: ~1 minute
 
-8. **Logout Button** - `integration/logout-button.spec.ts`
+2. **Logout Button** - `integration/logout-button.spec.ts`
+
    - Automated: 13 tests for UI functionality and state
    - MCP: Logout broadcasting (see `e2e-tests/scenarios/scenario-19-logout-button.md`)
    - Runtime: ~1 minute
 
-9. **Local Channel Integration** - `integration/local-channel-integration.spec.ts`
+3. **Local Channel Integration** - `integration/local-channel-integration.spec.ts`
+
    - Automated: 11 tests for system integration points
    - MCP: Message broadcasting (see `e2e-tests/scenarios/scenario-12-local-channel-integration.md`)
    - Runtime: ~1 minute
 
-10. **Whisper Integration** - `integration/whisper-integration.spec.ts`
+4. **Whisper Integration** - `integration/whisper-integration.spec.ts`
+
     - Automated: 12 tests for system integration
     - MCP: Cross-player delivery (see `e2e-tests/scenarios/scenario-17-whisper-integration.md`)
     - Runtime: ~1 minute
 
-11. **Map Viewer** - `integration/map-viewer.spec.ts`
+5. **Map Viewer** - `integration/map-viewer.spec.ts`
+
     - Automated: 9 tests for map viewer functionality
     - Tests: Opening map, displaying rooms, room details, filtering, navigation
     - Runtime: ~2 minutes
 
-12. **Map Admin Edit** - `integration/map-admin-edit.spec.ts`
+6. **Map Admin Edit** - `integration/map-admin-edit.spec.ts`
+
     - Automated: 8 tests for admin edit mode
     - Tests: Node repositioning, edge creation/deletion, room editing, undo/redo
     - Runtime: ~2 minutes
 
-13. **Map Performance** - `performance/map-performance.spec.ts`
+7. **Map Performance** - `performance/map-performance.spec.ts`
+
     - Automated: 6 tests for performance benchmarks
     - Tests: Large room sets (500+), FPS monitoring, viewport optimization, memory usage
     - Runtime: ~3 minutes
@@ -158,15 +180,19 @@ These scenarios require multi-player coordination via Playwright MCP and AI Agen
 
 Automated tests use a separate test database:
 
-- **Location**: `data/players/unit_test_players.db`
-- **Structure**: Matches production database schema
-- **Isolation**: Completely separate from development and production databases
+**Location**: `data/players/unit_test_players.db`
+
+**Structure**: Matches production database schema
+
+**Isolation**: Completely separate from development and production databases
 
 ### Baseline Test Players
 
-The test database is seeded with three baseline players. **MULTI-CHARACTER**: Each player can have multiple characters (up to 3 active characters per user).
+The test database is seeded with three baseline players. **MULTI-CHARACTER**: Each player can have multiple characters
+(up to 3 active characters per user).
 
 1. **ArkanWolfshade** (Admin)
+
    - Username: `ArkanWolfshade`
    - Password: `Cthulhu1`
    - Admin: Yes
@@ -174,6 +200,7 @@ The test database is seeded with three baseline players. **MULTI-CHARACTER**: Ea
    - Starting Room: Main Foyer (per character)
 
 2. **Ithaqua** (Regular Player)
+
    - Username: `Ithaqua`
    - Password: `Cthulhu1`
    - Admin: No
@@ -181,6 +208,7 @@ The test database is seeded with three baseline players. **MULTI-CHARACTER**: Ea
    - Starting Room: Main Foyer (per character)
 
 3. **TestAdmin** (Superuser)
+
    - Username: `TestAdmin`
    - Password: `Cthulhu1`
    - Admin: Yes, Superuser: Yes
@@ -192,17 +220,20 @@ The test database is seeded with three baseline players. **MULTI-CHARACTER**: Ea
 ### Database Lifecycle
 
 1. **Global Setup** (before all tests):
+
    - Backs up existing `unit_test_players.db` if present
    - Creates fresh database with schema
    - Seeds baseline test players (each with their initial character)
 
 2. **Between Tests**:
+
    - Player positions reset to starting rooms (per character)
    - Test-created data cleaned up
    - Baseline players and their characters preserved
    - Soft-deleted characters remain in database but are hidden
 
 3. **Global Teardown** (after all tests):
+
    - Final cleanup performed
    - Test database remains for debugging
    - All characters (active and deleted) are preserved for analysis
@@ -211,10 +242,12 @@ The test database is seeded with three baseline players. **MULTI-CHARACTER**: Ea
 
 ```bash
 # Reset test database manually
+
 cd client
 npx ts-node tests/e2e/runtime/fixtures/database.ts
 
 # Remove test database completely
+
 rm data/players/unit_test_players.db
 ```
 
@@ -230,18 +263,26 @@ When logging in:
 2. If user has no characters → Character Creation Flow appears
 3. User selects character → Game connects with selected character
 
-**Single Character Login**: Users can only be logged in with one character at a time. If a user selects a different character while already logged in with another character, the existing connection will be automatically disconnected before the new character connects.
+**Single Character Login**: Users can only be logged in with one character at a time. If a user selects a different
+character while already logged in with another character, the existing connection will be automatically disconnected
+before the new character connects.
 
 ### Testing Multi-Character Scenarios
 
-- **Character Selection**: Test that users with multiple characters see the selection screen
-- **Character Creation**: Test creating up to 3 characters per user
-- **Character Limit**: Test that 4th character creation is rejected
-- **Character Deletion**: Test soft deletion and name reuse
-- **Case-Insensitive Names**: Test that "Ithaqua" and "ithaqua" are mutually exclusive
+**Character Selection**: Test that users with multiple characters see the selection screen
+
+**Character Creation**: Test creating up to 3 characters per user
+
+**Character Limit**: Test that 4th character creation is rejected
+
+**Character Deletion**: Test soft deletion and name reuse
+
+**Case-Insensitive Names**: Test that "Ithaqua" and "ithaqua" are mutually exclusive
+
 - **Character Switching**: Test selecting different characters in the same session
 
-See `e2e-tests/scenarios/scenario-XX-character-selection.md` and related multi-character scenarios for detailed test procedures.
+See `e2e-tests/scenarios/scenario-XX-character-selection.md` and related multi-character scenarios for detailed test
+procedures.
 
 ## Adding New Automated Tests
 
@@ -315,12 +356,15 @@ Available fixtures:
 cd client
 
 # Run your specific test file
+
 npx playwright test tests/e2e/runtime/error-handling/my-feature-errors.spec.ts
 
 # Run in headed mode to see what's happening
+
 npx playwright test tests/e2e/runtime/error-handling/my-feature-errors.spec.ts --headed
 
 # Run in debug mode
+
 npx playwright test tests/e2e/runtime/error-handling/my-feature-errors.spec.ts --debug
 ```
 
@@ -328,6 +372,7 @@ npx playwright test tests/e2e/runtime/error-handling/my-feature-errors.spec.ts -
 
 ```bash
 # Run all runtime tests to ensure no regressions
+
 npm run test:e2e:runtime
 ```
 
@@ -399,9 +444,11 @@ Then wait 10 seconds for it to initialize before running tests.
 cd client
 
 # Run specific test in debug mode
+
 npx playwright test tests/e2e/runtime/error-handling/local-channel-errors.spec.ts --debug
 
 # Run with Playwright Inspector
+
 PWDEBUG=1 npm run test:e2e:runtime
 ```
 
@@ -503,12 +550,14 @@ export const ERROR_MESSAGES = {
 
 **A**: Ask yourself: "Does this test require real-time verification of message broadcasting to multiple players?"
 
-- **Yes** → Use MCP scenario
-- **No** → Use automated test
+**Yes** → Use MCP scenario
+
+**No** → Use automated test
 
 ### Q: Why are some tests marked as `test.slow()`?
 
-**A**: Tests that take longer than 30 seconds (like the 60-second rate limit reset test) are marked as slow. You can exclude them during development:
+**A**: Tests that take longer than 30 seconds (like the 60-second rate limit reset test) are marked as slow. You can
+exclude them during development:
 
 ```bash
 npx playwright test --grep-invert @slow
@@ -516,7 +565,8 @@ npx playwright test --grep-invert @slow
 
 ### Q: Can I run automated tests without the server running?
 
-**A**: No, the automated tests require the development server to be running. The test configuration can auto-start the server for you in local development, but in CI it's started separately.
+**A**: No, the automated tests require the development server to be running. The test configuration can auto-start the
+server for you in local development, but in CI it's started separately.
 
 ### Q: How do I debug a failing test?
 
@@ -589,11 +639,15 @@ logger.info("Test performance metrics", test_duration_ms=1500, steps_completed=8
 
 #### **Test Logging Best Practices**
 
-- **Structured Logging**: Always use key-value pairs for log data
-- **Test Context**: Include test name, file, and step information
-- **Error Context**: Log sufficient context for debugging test failures
-- **Performance Tracking**: Log test execution times and metrics
-- **Security**: Never log sensitive test data (passwords, tokens)
+**Structured Logging**: Always use key-value pairs for log data
+
+**Test Context**: Include test name, file, and step information
+
+**Error Context**: Log sufficient context for debugging test failures
+
+**Performance Tracking**: Log test execution times and metrics
+
+**Security**: Never log sensitive test data (passwords, tokens)
 
 #### **Logging Validation in Tests**
 
@@ -625,13 +679,16 @@ test('should log user actions correctly', async () => {
 
 #### **Documentation References**
 
-- **Complete Guide**: [LOGGING_BEST_PRACTICES.md](LOGGING_BEST_PRACTICES.md)
-- **Quick Reference**: [LOGGING_QUICK_REFERENCE.md](LOGGING_QUICK_REFERENCE.md)
-- **Testing Examples**: [docs/examples/logging/testing_examples.py](examples/logging/testing_examples.py)
+**Complete Guide**: [LOGGING_BEST_PRACTICES.md](LOGGING_BEST_PRACTICES.md)
+
+**Quick Reference**: [LOGGING_QUICK_REFERENCE.md](LOGGING_QUICK_REFERENCE.md)
+
+**Testing Examples**: [docs/examples/logging/testing_examples.py](examples/logging/testing_examples.py)
 
 ## Additional Resources
 
-- [Playwright Documentation](https://playwright.dev/docs/intro)
+[Playwright Documentation](https://playwright.dev/docs/intro)
+
 - [MCP Scenario Documentation](../e2e-tests/MULTIPLAYER_TEST_RULES.md)
 - [Scenario Conversion Guide](./SCENARIO_CONVERSION_GUIDE.md)
 - [Test Data Constants](../client/tests/e2e/runtime/fixtures/test-data.ts)

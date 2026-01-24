@@ -7,7 +7,7 @@ or equipped items, formatting container displays, and handling container look re
 
 # pylint: disable=too-many-arguments,too-many-locals  # Reason: Container look requires many parameters and intermediate variables for complex display logic
 
-from typing import Any
+from typing import Any, cast
 from uuid import UUID
 
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -287,7 +287,7 @@ def _get_container_description(
     try:
         prototype = prototype_registry.get(prototype_id)
         if prototype and hasattr(prototype, "long_description"):
-            return prototype.long_description
+            return cast(str | None, prototype.long_description)
     except (AttributeError, TypeError, KeyError):
         logger.debug("Failed to get prototype for container", prototype_id=prototype_id)
 
@@ -313,7 +313,7 @@ def _format_container_contents(items: list[dict[str, Any]]) -> list[str]:
 def _format_container_display(
     container_found: dict[str, Any],
     container_description: str | None,
-    command_data: dict,
+    command_data: dict[str, Any],
 ) -> str:
     """Format the complete container display text."""
     container_name = container_found.get("metadata", {}).get(
@@ -351,7 +351,7 @@ async def _handle_container_look(  # pylint: disable=too-many-arguments,too-many
     player: Any,
     persistence: Any,
     prototype_registry: Any,
-    command_data: dict,
+    command_data: dict[str, Any],
     request: Any,
     player_name: str,
 ) -> dict[str, Any] | None:

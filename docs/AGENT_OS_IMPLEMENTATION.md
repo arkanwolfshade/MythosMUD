@@ -2,17 +2,22 @@
 
 ## Overview
 
-We have successfully implemented [Agent OS](https://github.com/buildermethods/agent-os) for the MythosMUD project, providing a structured framework for AI agent development and project management.
+We have successfully implemented [Agent OS](https://github.com/buildermethods/agent-os) for the MythosMUD project,
+providing a structured framework for AI agent development and project management.
 
 ## What is Agent OS?
 
 Agent OS is a system for better planning and executing software development tasks with AI agents. It provides:
 
-- **Structured Workflows**: Templates for planning, spec creation, task execution, and analysis
-- **Development Standards**: Consistent coding standards and best practices
-- **Command Templates**: Pre-built commands for common development tasks
-- **Cursor Integration**: Rules that work directly in Cursor IDE
-- **Claude Code Support**: Commands and agents for Claude Code
+**Structured Workflows**: Templates for planning, spec creation, task execution, and analysis
+
+**Development Standards**: Consistent coding standards and best practices
+
+**Command Templates**: Pre-built commands for common development tasks
+
+**Cursor Integration**: Rules that work directly in Cursor IDE
+
+**Claude Code Support**: Commands and agents for Claude Code
 
 ## Implementation Details
 
@@ -20,31 +25,38 @@ Agent OS is a system for better planning and executing software development task
 
 The Agent OS base installation is located at `.agent-os/` in the project root and includes:
 
-- **Instructions**: Core and meta instructions for AI agents
-- **Standards**: Development standards and best practices
-- **Commands**: Command templates for various tasks
-- **Configuration**: Agent OS configuration file
+**Instructions**: Core and meta instructions for AI agents
+
+**Standards**: Development standards and best practices
+
+**Commands**: Command templates for various tasks
+
+**Configuration**: Agent OS configuration file
 
 ### Project Installation
 
 Agent OS has been installed into the MythosMUD project with:
 
-- **Cursor Rules**: Available as `@` commands in Cursor
-- **Claude Code Commands**: Available as `/` commands in Claude Code
-- **Project-specific Instructions**: Tailored for MythosMUD development
+**Cursor Rules**: Available as `@` commands in Cursor
+
+**Claude Code Commands**: Available as `/` commands in Claude Code
+
+**Project-specific Instructions**: Tailored for MythosMUD development
 
 ## Available Commands
 
 ### Cursor Commands (use `@` prefix)
 
-- `@plan-product` - Set the mission & roadmap for a new product
+`@plan-product` - Set the mission & roadmap for a new product
+
 - `@analyze-product` - Set up the mission and roadmap for an existing product
 - `@create-spec` - Create a spec for a new feature
 - `@execute-tasks` - Build and ship code for a new feature
 
 ### Claude Code Commands (use `/` prefix)
 
-- `/plan-product` - Set the mission & roadmap for a new product
+`/plan-product` - Set the mission & roadmap for a new product
+
 - `/analyze-product` - Set up the mission and roadmap for an existing product
 - `/create-spec` - Create a spec for a new feature
 - `/execute-tasks` - Build and ship code for a new feature
@@ -54,11 +66,13 @@ Agent OS has been installed into the MythosMUD project with:
 We created PowerShell equivalents of the original bash scripts:
 
 ### Base Installation
+
 ```powershell
 .\scripts\agent_os_setup.ps1 -Cursor
 ```
 
 ### Project Installation
+
 ```powershell
 .\scripts\install_agent_os_project.ps1 -Cursor
 ```
@@ -99,13 +113,15 @@ MythosMUD/
 
 ## References
 
-- [Agent OS GitHub Repository](https://github.com/buildermethods/agent-os)
+[Agent OS GitHub Repository](https://github.com/buildermethods/agent-os)
+
 - [Agent OS Documentation](https://buildermethods.com/agent-os)
 - [Original Bash Implementation](https://raw.githubusercontent.com/buildermethods/agent-os/main/setup/base.sh)
 
 ## PowerShell Implementation Notes
 
-The PowerShell scripts provide the same functionality as the original bash scripts but are adapted for Windows environments:
+The PowerShell scripts provide the same functionality as the original bash scripts but are adapted for Windows
+environments:
 
 - Uses `Invoke-WebRequest` instead of `curl`
 - Handles Windows path separators
@@ -113,4 +129,5 @@ The PowerShell scripts provide the same functionality as the original bash scrip
 - Includes error handling and validation
 - Supports all the same parameters as the original scripts
 
-This implementation ensures that Agent OS works seamlessly in our Windows development environment while maintaining full compatibility with the original Agent OS framework.
+This implementation ensures that Agent OS works seamlessly in our Windows development environment while maintaining full
+compatibility with the original Agent OS framework.

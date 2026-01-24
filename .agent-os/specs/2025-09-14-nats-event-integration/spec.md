@@ -37,7 +37,8 @@ The NATS integration will provide guaranteed delivery and enable horizontal scal
 
 ## Out of Scope
 
-- Client-side changes (WebSocket/SSE interface remains unchanged)
+Client-side changes (WebSocket/SSE interface remains unchanged)
+
 - New event types beyond player_entered, player_left, and game_tick
 - NATS server installation or infrastructure setup
 - Performance optimization beyond basic event routing

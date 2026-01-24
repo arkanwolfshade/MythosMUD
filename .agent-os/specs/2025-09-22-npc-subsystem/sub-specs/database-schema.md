@@ -7,6 +7,7 @@ This is the database schema implementation for the spec detailed in @.agent-os/s
 ### New Tables
 
 #### npc_definitions
+
 ```sql
 CREATE TABLE npc_definitions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -27,6 +28,7 @@ CREATE TABLE npc_definitions (
 ```
 
 #### npc_spawn_rules
+
 ```sql
 CREATE TABLE npc_spawn_rules (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -40,6 +42,7 @@ CREATE TABLE npc_spawn_rules (
 ```
 
 #### npc_relationships
+
 ```sql
 CREATE TABLE npc_relationships (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -71,29 +74,44 @@ CREATE UNIQUE INDEX idx_npc_definitions_name_zone ON npc_definitions(name, zone_
 ## Rationale
 
 ### npc_definitions Table
-- **Purpose**: Central repository for all NPC static data and configuration
-- **JSON Fields**: Flexible configuration for stats and behaviors without schema changes
-- **Required NPC Flag**: Ensures critical NPCs (shopkeepers) always spawn
+
+**Purpose**: Central repository for all NPC static data and configuration
+
+**JSON Fields**: Flexible configuration for stats and behaviors without schema changes
+
+**Required NPC Flag**: Ensures critical NPCs (shopkeepers) always spawn
 - **Population Control**: Max population and spawn probability for zone management
 
 ### npc_spawn_rules Table
-- **Purpose**: Fine-grained control over NPC spawning based on player count and conditions
-- **Scalability**: Allows dynamic NPC population based on server load
-- **Flexibility**: JSON conditions field supports complex spawning logic
+
+**Purpose**: Fine-grained control over NPC spawning based on player count and conditions
+
+**Scalability**: Allows dynamic NPC population based on server load
+
+**Flexibility**: JSON conditions field supports complex spawning logic
 
 ### npc_relationships Table
-- **Purpose**: Enables NPC-to-NPC interactions and social dynamics
-- **Performance**: Indexed for fast relationship lookups during NPC decision making
-- **Extensibility**: Relationship strength allows for nuanced NPC behaviors
+
+**Purpose**: Enables NPC-to-NPC interactions and social dynamics
+
+**Performance**: Indexed for fast relationship lookups during NPC decision making
+
+**Extensibility**: Relationship strength allows for nuanced NPC behaviors
 
 ### Performance Considerations
-- **Zone-based Indexes**: Fast lookups for zone-specific NPC operations
-- **Type-based Indexes**: Efficient filtering by NPC type for behavior processing
-- **Relationship Indexes**: Quick access to NPC relationships for social behaviors
+
+**Zone-based Indexes**: Fast lookups for zone-specific NPC operations
+
+**Type-based Indexes**: Efficient filtering by NPC type for behavior processing
+
+**Relationship Indexes**: Quick access to NPC relationships for social behaviors
 - **JSON Storage**: Balances flexibility with query performance for configuration data
 
 ### Data Integrity Rules
-- **Foreign Key Constraints**: Ensures referential integrity between related tables
-- **Check Constraints**: Validates NPC types and relationship types at database level
-- **Unique Constraints**: Prevents duplicate NPC names within zones
+
+**Foreign Key Constraints**: Ensures referential integrity between related tables
+
+**Check Constraints**: Validates NPC types and relationship types at database level
+
+**Unique Constraints**: Prevents duplicate NPC names within zones
 - **Cascade Deletes**: Maintains data consistency when NPCs are removed

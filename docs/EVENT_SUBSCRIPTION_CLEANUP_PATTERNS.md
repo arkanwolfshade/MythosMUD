@@ -1,10 +1,13 @@
 # Event Subscription Cleanup Patterns
 
-This document describes the recommended patterns for managing event subscriptions in MythosMUD services to prevent memory leaks and ensure proper resource cleanup.
+This document describes the recommended patterns for managing event subscriptions in MythosMUD services to prevent
+memory leaks and ensure proper resource cleanup.
 
 ## Overview
 
-The EventBus provides automatic cleanup of service subscriptions during application shutdown, but services should also implement proper cleanup patterns to ensure subscriptions are removed in the correct order and prevent memory leaks during service lifecycle changes.
+The EventBus provides automatic cleanup of service subscriptions during application shutdown, but services should also
+implement proper cleanup patterns to ensure subscriptions are removed in the correct order and prevent memory leaks
+during service lifecycle changes.
 
 ## Core Principles
 
@@ -27,6 +30,7 @@ class MyService:
         self.service_id = "my_service"  # Unique identifier for this service
 
         # Subscribe to events with service_id for tracking
+
         self.event_bus.subscribe(
             MyEventType,
             self.handle_event,
@@ -41,11 +45,13 @@ class MyService:
     async def handle_event(self, event: MyEventType) -> None:
         """Handle MyEventType events."""
         # Process event
+
         pass
 
     async def handle_another_event(self, event: AnotherEventType) -> None:
         """Handle AnotherEventType events."""
         # Process event
+
         pass
 
     async def shutdown(self) -> None:
@@ -58,6 +64,7 @@ class MyService:
         proper order and prevents issues during service restarts.
         """
         # Cleanup all subscriptions for this service
+
         removed_count = self.event_bus.unsubscribe_all_for_service(self.service_id)
         self.logger.info(
             "Service shutdown complete",
@@ -94,11 +101,13 @@ class EventSubscriptionContext:
         """Cleanup all subscriptions when exiting context."""
         self.event_bus.unsubscribe_all_for_service(self.service_id)
 
-# Usage:
+# Usage
+
 async def my_function(event_bus: EventBus):
     async with EventSubscriptionContext(event_bus, "temporary_service") as ctx:
         ctx.subscribe(MyEventType, my_handler)
         # Do work - subscriptions automatically cleaned up on exit
+
         pass
 ```
 
@@ -106,12 +115,14 @@ async def my_function(event_bus: EventBus):
 
 Service IDs should follow these conventions:
 
-- **Format**: `{module_name}_{service_name}` or `{service_name}` for top-level services
-- **Examples**:
-  - `connection_manager` - Connection manager service
-  - `nats_message_handler` - NATS message handler service
-  - `combat_service` - Combat service
-  - `player_service` - Player service
+**Format**: `{module_name}_{service_name}` or `{service_name}` for top-level services
+
+**Examples**:
+
+- `connection_manager` - Connection manager service
+- `nats_message_handler` - NATS message handler service
+- `combat_service` - Combat service
+- `player_service` - Player service
 - **Uniqueness**: Service IDs must be unique within the application
 - **Persistence**: Service IDs should remain constant across service restarts
 
@@ -120,7 +131,10 @@ Service IDs should follow these conventions:
 The recommended cleanup order is:
 
 1. **Service-Level Cleanup**: Services call `unsubscribe_all_for_service()` during their own shutdown
-2. **Application-Level Cleanup**: EventBus automatically cleans up all remaining subscriptions during `EventBus.shutdown()`
+
+2. **Application-Level Cleanup**: EventBus automatically cleans up all remaining subscriptions during
+
+   `EventBus.shutdown()`
 
 This two-phase approach ensures:
 
@@ -134,12 +148,14 @@ The EventBus provides monitoring methods to track subscription health:
 
 ```python
 # Get subscriber statistics
+
 stats = event_bus.get_subscriber_stats()
 print(f"Total subscribers: {stats['total_subscribers']}")
 print(f"Services tracked: {stats['services_tracked']}")
 print(f"Service subscriber counts: {stats['service_subscriber_counts']}")
 
 # Get subscriber counts per event type
+
 counts = event_bus.get_all_subscriber_counts()
 for event_type, count in counts.items():
     print(f"{event_type}: {count} subscribers")
@@ -151,6 +167,7 @@ for event_type, count in counts.items():
 
 ```python
 # BAD: No service_id means subscription won't be tracked for cleanup
+
 event_bus.subscribe(MyEventType, handler)
 ```
 
@@ -158,6 +175,7 @@ event_bus.subscribe(MyEventType, handler)
 
 ```python
 # GOOD: Service_id enables automatic cleanup tracking
+
 event_bus.subscribe(MyEventType, handler, service_id="my_service")
 ```
 
@@ -165,8 +183,10 @@ event_bus.subscribe(MyEventType, handler, service_id="my_service")
 
 ```python
 # BAD: Subscriptions remain after service shutdown
+
 async def shutdown(self):
     # Missing: event_bus.unsubscribe_all_for_service(self.service_id)
+
     pass
 ```
 
@@ -174,6 +194,7 @@ async def shutdown(self):
 
 ```python
 # GOOD: Explicit cleanup ensures proper order
+
 async def shutdown(self):
     self.event_bus.unsubscribe_all_for_service(self.service_id)
 ```
@@ -182,6 +203,7 @@ async def shutdown(self):
 
 ```python
 # BAD: Multiple instances with same service_id causes tracking conflicts
+
 service1 = MyService(event_bus)  # service_id="my_service"
 service2 = MyService(event_bus)  # service_id="my_service" - CONFLICT!
 ```
@@ -190,6 +212,7 @@ service2 = MyService(event_bus)  # service_id="my_service" - CONFLICT!
 
 ```python
 # GOOD: Unique service_id per instance
+
 service1 = MyService(event_bus, instance_id="1")  # service_id="my_service_1"
 service2 = MyService(event_bus, instance_id="2")  # service_id="my_service_2"
 ```
@@ -210,14 +233,17 @@ async def test_service_cleanup_subscriptions(event_bus: EventBus):
     service = MyService(event_bus)
 
     # Verify subscriptions exist
+
     stats = event_bus.get_subscriber_stats()
     assert stats['services_tracked'] == 1
     assert stats['service_subscriber_counts']['my_service'] == 2
 
     # Shutdown service
+
     await service.shutdown()
 
     # Verify subscriptions removed
+
     stats = event_bus.get_subscriber_stats()
     assert stats['services_tracked'] == 0
     assert 'my_service' not in stats['service_subscriber_counts']
@@ -234,6 +260,7 @@ async def _shutdown_event_bus(container: ApplicationContainer) -> None:
         return
 
     # Get stats before shutdown for logging
+
     stats = container.event_bus.get_subscriber_stats()
     logger.info(
         "EventBus subscriber stats before shutdown",
@@ -242,14 +269,17 @@ async def _shutdown_event_bus(container: ApplicationContainer) -> None:
     )
 
     # Shutdown will automatically clean up all service subscriptions
+
     await container.event_bus.shutdown()
 ```
 
-This ensures that even if services fail to clean up their subscriptions, the EventBus will clean them up during application shutdown.
+This ensures that even if services fail to clean up their subscriptions, the EventBus will clean them up during
+application shutdown.
 
 ## Summary
 
-- Always provide a unique `service_id` when subscribing to events
+Always provide a unique `service_id` when subscribing to events
+
 - Explicitly call `unsubscribe_all_for_service()` during service shutdown
 - Use consistent service_id naming conventions
 - Monitor subscription counts using `get_subscriber_stats()`

@@ -22,13 +22,16 @@
 ### Phase 1: Initial Bug Report Analysis
 
 **Bug Description Parsed**:
-- **Issue**: NPCs are not displaying in Occupants list in the client UI
-- **Expected Behavior**: NPCs should appear in the Occupants panel under the "NPCs" section
-- **Actual Behavior**: Occupants panel shows "None" under NPCs even when NPCs are present
+**Issue**: NPCs are not displaying in Occupants list in the client UI
+
+**Expected Behavior**: NPCs should appear in the Occupants panel under the "NPCs" section
+
+**Actual Behavior**: Occupants panel shows "None" under NPCs even when NPCs are present
 - **Affected Component**: Client-side Occupants panel UI, Server-side NPC filtering
 - **Related Systems**: NPC lifecycle management, Room occupants retrieval, is_alive status tracking
 
 **Affected Systems Identified**:
+
 1. **Server-side**: `server/realtime/room_subscription_manager.py` - NPC filtering by is_alive status
 2. **Server-side**: `server/realtime/event_handler.py` - NPC retrieval and filtering in _get_room_occupants
 3. **Server-side**: `server/npc/behaviors.py` - NPC is_alive status initialization and management
@@ -65,6 +68,7 @@ Log entries from `logs/local/server.log` (timestamp: 2025-11-30 11:18:39-46) sho
 ```
 
 **Key Findings from Logs**:
+
 - Multiple NPCs are present in the room (`earth_arkhamcity_sanitarium_room_foyer_001`)
 - ALL NPCs are being skipped with "Skipping dead NPC from occupants"
 - Final NPC count is 0 (`npc_count=0`)
@@ -84,8 +88,10 @@ The `get_room_occupants` method filters out NPCs with `is_alive=False`:
 
 ```python
 # BUGFIX: Filter out dead NPCs (is_alive=False) to prevent showing dead NPCs in occupants
+
 for npc_id, npc_instance in active_npcs_dict.items():
     # Skip dead NPCs
+
     if not getattr(npc_instance, "is_alive", True):
         logger.debug(
             "Skipping dead NPC from occupants",
@@ -109,6 +115,7 @@ NPCs are initialized with `is_alive = True`:
 ```python
 def __init__(self, definition: Any, npc_id: str, event_bus=None, event_reaction_system=None):
     # ...
+
     self.is_alive = True
     self.is_active = True
 ```
@@ -176,6 +183,7 @@ const npcs = room?.npcs ?? [];
 ### Phase 4: Evidence Collection
 
 **Code References Collected**:
+
 1. `server/realtime/room_subscription_manager.py:320-331` - NPC filtering by is_alive (ROOT CAUSE)
 2. `server/realtime/event_handler.py:1001-1010` - NPC filtering in event handler
 3. `server/realtime/connection_manager.py:3577` - NPC filtering in connection manager
@@ -184,11 +192,13 @@ const npcs = room?.npcs ?? [];
 6. `server/npc/behaviors.py:827-832` - NPC death handling
 
 **Log Evidence Collected**:
+
 - Multiple log entries showing "Skipping dead NPC from occupants" for NPCs in room `earth_arkhamcity_sanitarium_room_foyer_001`
 - All NPCs checked are being skipped (Dr. Francis Morgan, Sanitarium patient, etc.)
 - Final NPC count is consistently 0
 
 **Data Flow Analysis**:
+
 1. ✅ NPCs exist in lifecycle manager (`active_npcs`)
 2. ✅ NPCs are in the correct room (checked via `current_room_id`)
 3. ❌ **ALL NPCs have `is_alive=False`** - ROOT CAUSE
@@ -205,12 +215,14 @@ const npcs = room?.npcs ?? [];
 **Location**: NPC `is_alive` status is being incorrectly set to `False` for all NPCs
 
 **Technical Details**:
+
 - NPCs are initialized with `is_alive = True` in `NPCBase.__init__`
 - Something is setting `is_alive = False` for all NPCs after initialization
 - The filtering logic correctly excludes NPCs with `is_alive=False`
 - All NPCs are being filtered out, resulting in empty `npcs` array sent to client
 
 **Possible Causes**:
+
 1. **NPCs are dying immediately after spawning** - NPCs may be taking damage or being killed during initialization
 2. **Death event being triggered incorrectly** - NPCDied events may be firing for all NPCs
 3. **Health/stat initialization issue** - NPCs may be spawning with 0 health, causing immediate death
@@ -218,6 +230,7 @@ const npcs = room?.npcs ?? [];
 5. **Combat system marking NPCs as dead** - Combat system may be incorrectly marking NPCs as dead
 
 **Evidence Supporting Root Cause**:
+
 - Log entries show ALL NPCs in the room are marked as dead
 - NPCs exist in `active_npcs` dictionary (they haven't been despawned)
 - NPCs are in the correct room (room matching logic works)
@@ -236,17 +249,22 @@ const npcs = room?.npcs ?? [];
 ### Scope
 
 **Affected Components**:
-- ❌ NPC visibility in Occupants panel: **COMPLETELY BROKEN** (all NPCs filtered out)
-- ✅ Server-side NPC retrieval: **WORKING** (NPCs are retrieved, but filtered out)
-- ✅ Server-side data transmission: **WORKING** (empty array sent correctly)
+❌ NPC visibility in Occupants panel: **COMPLETELY BROKEN** (all NPCs filtered out)
+
+✅ Server-side NPC retrieval: **WORKING** (NPCs are retrieved, but filtered out)
+
+✅ Server-side data transmission: **WORKING** (empty array sent correctly)
 - ✅ Client-side UI display: **WORKING** (correctly shows "None" when array is empty)
 
 **User Impact**:
-- **CRITICAL**: Players cannot see ANY NPCs in the Occupants panel
-- **HIGH**: Players cannot identify NPCs in the room for interaction
-- **MEDIUM**: Players cannot distinguish between rooms with NPCs and rooms without
+**CRITICAL**: Players cannot see ANY NPCs in the Occupants panel
+
+**HIGH**: Players cannot identify NPCs in the room for interaction
+
+**MEDIUM**: Players cannot distinguish between rooms with NPCs and rooms without
 
 **Functional Impact**:
+
 - NPCs exist in the game world and are tracked by lifecycle manager
 - NPCs are being processed by behavior system (logs show behavior execution)
 - NPCs are in the correct rooms (room matching works)
@@ -255,6 +273,7 @@ const npcs = room?.npcs ?? [];
 ### Severity
 
 **HIGH**:
+
 - Core UI feature completely non-functional
 - Affects ALL NPCs in the game world
 - Prevents players from seeing NPCs for interaction
@@ -267,6 +286,7 @@ const npcs = room?.npcs ?? [];
 ### Log Evidence
 
 **Multiple NPCs Being Skipped**:
+
 ```
 2025-11-30 11:18:39 - server.realtime.room_subscription_manager - DEBUG -
   npc_id='dr._francis_morgan_earth_arkhamcity_sanitarium_room_foyer_001_1764526499_5296'
@@ -291,8 +311,10 @@ const npcs = room?.npcs ?? [];
 ### Code Evidence
 
 **NPC Filtering Logic**:
+
 ```python
 # server/realtime/room_subscription_manager.py:320-331
+
 if not getattr(npc_instance, "is_alive", True):
     logger.debug(
         "Skipping dead NPC from occupants",
@@ -304,14 +326,18 @@ if not getattr(npc_instance, "is_alive", True):
 ```
 
 **NPC Initialization**:
+
 ```python
 # server/npc/behaviors.py:325
+
 self.is_alive = True  # ✅ NPCs start as alive
 ```
 
 **NPC Death Handling**:
+
 ```python
 # server/npc/behaviors.py:829
+
 self.is_alive = False  # ❌ Something is calling this for all NPCs
 ```
 
@@ -335,6 +361,7 @@ self.is_alive = False  # ❌ Something is calling this for all NPCs
 **Location**: `server/npc/behaviors.py:827-832` (death handling)
 
 **Required Changes**:
+
 1. Add detailed logging when `is_alive` is set to `False`
 2. Log the context/reason for death (combat, health, behavior, etc.)
 3. Log stack trace to identify what code path is causing death
@@ -346,6 +373,7 @@ self.is_alive = False  # ❌ Something is calling this for all NPCs
 **Location**: `server/npc/behaviors.py:329` (stats initialization)
 
 **Required Changes**:
+
 1. Add validation logging for NPC health/stats on initialization
 2. Check if NPCs are spawning with 0 health
 3. Verify health calculation is correct
@@ -357,6 +385,7 @@ self.is_alive = False  # ❌ Something is calling this for all NPCs
 **Location**: `server/npc/lifecycle_manager.py:298-343` (death event handling)
 
 **Required Changes**:
+
 1. Add logging to track NPCDied events
 2. Check if events are being fired during NPC initialization
 3. Verify event handlers are not incorrectly marking NPCs as dead
@@ -368,6 +397,7 @@ self.is_alive = False  # ❌ Something is calling this for all NPCs
 **Location**: `server/services/npc_combat_integration_service.py` and related combat files
 
 **Required Changes**:
+
 1. Check if combat system is checking `is_alive` incorrectly
 2. Verify combat initialization doesn't mark NPCs as dead
 3. Check for race conditions between spawn and combat initialization
@@ -379,6 +409,7 @@ self.is_alive = False  # ❌ Something is calling this for all NPCs
 **Location**: `server/npc/behaviors.py:758-797` (behavior execution)
 
 **Required Changes**:
+
 1. Check if behavior rules are triggering death actions
 2. Verify health checks in behavior execution
 3. Check for errors in behavior execution causing death
@@ -417,7 +448,8 @@ Location to start investigation:
 
 ## INVESTIGATION COMPLETION CHECKLIST
 
-- [x] All investigation steps completed as written
+[x] All investigation steps completed as written
+
 - [x] Comprehensive evidence collected and documented
 - [x] Root cause analysis completed (NPCs incorrectly marked as dead)
 - [x] System impact assessed (CRITICAL - all NPCs filtered out)

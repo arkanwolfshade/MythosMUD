@@ -1,7 +1,7 @@
 """Pose management helpers for chat service."""
 
 import uuid
-from typing import Any
+from typing import Any, cast
 
 from ..structured_logging.enhanced_logging_config import get_logger
 from .chat_message import ChatMessage
@@ -105,7 +105,8 @@ def get_player_pose(player_id: uuid.UUID | str, pose_manager: Any) -> str | None
     Returns:
         Current pose description or None if no pose set
     """
-    return pose_manager.get_pose(player_id)
+    result: str | None = cast(str | None, pose_manager.get_pose(player_id))
+    return result
 
 
 def clear_player_pose(player_id: uuid.UUID | str, pose_manager: Any) -> bool:
@@ -119,7 +120,8 @@ def clear_player_pose(player_id: uuid.UUID | str, pose_manager: Any) -> bool:
     Returns:
         True if pose was cleared, False if no pose was set
     """
-    return pose_manager.clear_pose(player_id)
+    result: bool = cast(bool, pose_manager.clear_pose(player_id))
+    return result
 
 
 async def get_room_poses(room_id: str, room_service: Any, player_service: Any, pose_manager: Any) -> dict[str, str]:

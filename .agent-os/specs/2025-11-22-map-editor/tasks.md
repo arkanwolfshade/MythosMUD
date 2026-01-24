@@ -2,13 +2,14 @@
 
 ## Tasks
 
-- [x] 1. React Flow Integration and Setup
-  - [x] 1.1 Write tests for React Flow installation and configuration
-  - [x] 1.2 Install reactflow package (latest stable version ^11.x)
-  - [x] 1.3 Configure React Flow with custom node types using built-in customization (Handle, custom shapes)
-  - [x] 1.4 Configure React Flow with custom edge types (ExitEdge with icon/badge indicators for flags)
-  - [x] 1.5 Set up grid-based layout algorithm (admins can set zone/subzone for nodes)
-  - [x] 1.6 Verify all tests pass
+[x] 1. React Flow Integration and Setup
+
+- [x] 1.1 Write tests for React Flow installation and configuration
+- [x] 1.2 Install reactflow package (latest stable version ^11.x)
+- [x] 1.3 Configure React Flow with custom node types using built-in customization (Handle, custom shapes)
+- [x] 1.4 Configure React Flow with custom edge types (ExitEdge with icon/badge indicators for flags)
+- [x] 1.5 Set up grid-based layout algorithm (admins can set zone/subzone for nodes)
+- [x] 1.6 Verify all tests pass
 
 - [x] 2. Data Transformation Utilities
   - [x] 2.1 Write tests for room data transformation utilities
@@ -68,6 +69,7 @@
   - [x] 6.11 Verify all tests pass
 
 - [x] 7. Route Integration and Navigation
+
   - [x] 7.1 Write tests for /map route integration
   - [x] 7.2 Add /map route to main router configuration (Note: App uses state-based navigation, map integrated via modal)
   - [x] 7.3 Create MapView.tsx component wrapper

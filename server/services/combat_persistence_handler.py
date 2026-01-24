@@ -20,7 +20,7 @@ logger = get_logger(__name__)
 class CombatPersistenceHandler:
     """Handles combat-related persistence operations."""
 
-    def __init__(self, combat_service):
+    def __init__(self, combat_service: Any) -> None:
         """
         Initialize the persistence handler.
 

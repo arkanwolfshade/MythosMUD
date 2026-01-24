@@ -14,7 +14,7 @@ from server.models.npc import (
 # --- Tests for NPCDefinitionType enum ---
 
 
-def test_npc_definition_type_enum_values():
+def test_npc_definition_type_enum_values() -> None:
     """Test NPCDefinitionType enum contains expected values."""
     assert NPCDefinitionType.SHOPKEEPER.value == "shopkeeper"
     assert NPCDefinitionType.QUEST_GIVER.value == "quest_giver"
@@ -22,7 +22,7 @@ def test_npc_definition_type_enum_values():
     assert NPCDefinitionType.AGGRESSIVE_MOB.value == "aggressive_mob"
 
 
-def test_npc_definition_type_enum_all_types():
+def test_npc_definition_type_enum_all_types() -> None:
     """Test NPCDefinitionType enum contains all expected types."""
     expected_types = {"shopkeeper", "quest_giver", "passive_mob", "aggressive_mob"}
     actual_types = {t.value for t in NPCDefinitionType}
@@ -32,7 +32,7 @@ def test_npc_definition_type_enum_all_types():
 # --- Tests for NPCDefinition model ---
 
 
-def test_npc_definition_creation():
+def test_npc_definition_creation() -> None:
     """Test NPCDefinition can be instantiated with required fields."""
     npc = NPCDefinition(
         name="Test NPC",
@@ -51,7 +51,7 @@ def test_npc_definition_creation():
     assert npc.ai_integration_stub == "{}"
 
 
-def test_npc_definition_defaults():
+def test_npc_definition_defaults() -> None:
     """Test NPCDefinition has correct default values."""
     npc = NPCDefinition(
         name="Test NPC",
@@ -60,15 +60,16 @@ def test_npc_definition_defaults():
     )
 
     # SQLAlchemy defaults are applied on DB save, not object instantiation
-    assert npc.required_npc is False or npc.required_npc is None
-    assert npc.max_population == 1 or npc.max_population is None
-    assert npc.spawn_probability == 1.0 or npc.spawn_probability is None
-    assert npc.base_stats == "{}" or npc.base_stats is None
-    assert npc.behavior_config == "{}" or npc.behavior_config is None
-    assert npc.ai_integration_stub == "{}" or npc.ai_integration_stub is None
+    # With Mapped types, non-nullable fields have default values applied
+    assert npc.required_npc is False
+    assert npc.max_population == 1
+    assert npc.spawn_probability == 1.0
+    assert npc.base_stats == "{}"
+    assert npc.behavior_config == "{}"
+    assert npc.ai_integration_stub == "{}"
 
 
-def test_npc_definition_get_base_stats():
+def test_npc_definition_get_base_stats() -> None:
     """Test NPCDefinition.get_base_stats() parses JSON."""
     npc = NPCDefinition(
         name="Test NPC",
@@ -82,7 +83,7 @@ def test_npc_definition_get_base_stats():
     assert stats == {"strength": 50, "dexterity": 40}
 
 
-def test_npc_definition_get_base_stats_empty():
+def test_npc_definition_get_base_stats_empty() -> None:
     """Test NPCDefinition.get_base_stats() handles empty JSON."""
     npc = NPCDefinition(
         name="Test NPC",
@@ -96,7 +97,7 @@ def test_npc_definition_get_base_stats_empty():
     assert stats == {}
 
 
-def test_npc_definition_set_base_stats():
+def test_npc_definition_set_base_stats() -> None:
     """Test NPCDefinition.set_base_stats() serializes to JSON."""
     npc = NPCDefinition(
         name="Test NPC",
@@ -109,7 +110,7 @@ def test_npc_definition_set_base_stats():
     assert npc.base_stats == '{"strength": 60, "constitution": 50}'
 
 
-def test_npc_definition_get_behavior_config():
+def test_npc_definition_get_behavior_config() -> None:
     """Test NPCDefinition.get_behavior_config() parses JSON."""
     npc = NPCDefinition(
         name="Test NPC",
@@ -123,7 +124,7 @@ def test_npc_definition_get_behavior_config():
     assert config == {"aggression_level": 8, "wander_range": 3}
 
 
-def test_npc_definition_set_behavior_config():
+def test_npc_definition_set_behavior_config() -> None:
     """Test NPCDefinition.set_behavior_config() serializes to JSON."""
     npc = NPCDefinition(
         name="Test NPC",
@@ -136,7 +137,7 @@ def test_npc_definition_set_behavior_config():
     assert npc.behavior_config == '{"aggression_level": 5}'
 
 
-def test_npc_definition_get_ai_integration_stub():
+def test_npc_definition_get_ai_integration_stub() -> None:
     """Test NPCDefinition.get_ai_integration_stub() parses JSON."""
     npc = NPCDefinition(
         name="Test NPC",
@@ -150,7 +151,7 @@ def test_npc_definition_get_ai_integration_stub():
     assert stub == {"model": "gpt-4", "temperature": 0.7}
 
 
-def test_npc_definition_set_ai_integration_stub():
+def test_npc_definition_set_ai_integration_stub() -> None:
     """Test NPCDefinition.set_ai_integration_stub() serializes to JSON."""
     npc = NPCDefinition(
         name="Test NPC",
@@ -163,7 +164,7 @@ def test_npc_definition_set_ai_integration_stub():
     assert npc.ai_integration_stub == '{"model": "gpt-3.5"}'
 
 
-def test_npc_definition_is_required():
+def test_npc_definition_is_required() -> None:
     """Test NPCDefinition.is_required() returns correct value."""
     npc1 = NPCDefinition(
         name="Required NPC",
@@ -182,7 +183,7 @@ def test_npc_definition_is_required():
     assert npc2.is_required() is False
 
 
-def test_npc_definition_can_spawn():
+def test_npc_definition_can_spawn() -> None:
     """Test NPCDefinition.can_spawn() checks population limits."""
     npc = NPCDefinition(
         name="Test NPC",
@@ -197,12 +198,12 @@ def test_npc_definition_can_spawn():
     assert npc.can_spawn(current_population=4) is False
 
 
-def test_npc_definition_table_name():
+def test_npc_definition_table_name() -> None:
     """Test NPCDefinition has correct table name."""
     assert NPCDefinition.__tablename__ == "npc_definitions"
 
 
-def test_npc_definition_repr():
+def test_npc_definition_repr() -> None:
     """Test NPCDefinition __repr__ method."""
     npc = NPCDefinition(
         name="Test NPC",
@@ -218,7 +219,7 @@ def test_npc_definition_repr():
 # --- Tests for NPCSpawnRule model ---
 
 
-def test_npc_spawn_rule_creation():
+def test_npc_spawn_rule_creation() -> None:
     """Test NPCSpawnRule can be instantiated with required fields."""
     rule = NPCSpawnRule(
         npc_definition_id=1,
@@ -231,7 +232,7 @@ def test_npc_spawn_rule_creation():
     assert rule.max_population == 5
 
 
-def test_npc_spawn_rule_get_spawn_conditions():
+def test_npc_spawn_rule_get_spawn_conditions() -> None:
     """Test NPCSpawnRule.get_spawn_conditions() parses JSON."""
     rule = NPCSpawnRule(
         npc_definition_id=1,
@@ -244,7 +245,7 @@ def test_npc_spawn_rule_get_spawn_conditions():
     assert conditions == {"time_of_day": "night", "weather": "foggy"}
 
 
-def test_npc_spawn_rule_set_spawn_conditions():
+def test_npc_spawn_rule_set_spawn_conditions() -> None:
     """Test NPCSpawnRule.set_spawn_conditions() serializes to JSON."""
     rule = NPCSpawnRule(
         npc_definition_id=1,
@@ -257,7 +258,7 @@ def test_npc_spawn_rule_set_spawn_conditions():
     assert rule.spawn_conditions == '{"time_of_day": "day", "season": "winter"}'
 
 
-def test_npc_spawn_rule_can_spawn_with_population():
+def test_npc_spawn_rule_can_spawn_with_population() -> None:
     """Test NPCSpawnRule.can_spawn_with_population() checks population limits."""
     rule = NPCSpawnRule(
         npc_definition_id=1,
@@ -271,7 +272,7 @@ def test_npc_spawn_rule_can_spawn_with_population():
     assert rule.can_spawn_with_population(current_population=4) is False
 
 
-def test_npc_spawn_rule_check_spawn_conditions():
+def test_npc_spawn_rule_check_spawn_conditions() -> None:
     """Test NPCSpawnRule.check_spawn_conditions() validates game state."""
     rule = NPCSpawnRule(
         npc_definition_id=1,
@@ -286,7 +287,7 @@ def test_npc_spawn_rule_check_spawn_conditions():
     assert rule.check_spawn_conditions(game_state2) is False
 
 
-def test_npc_spawn_rule_check_spawn_conditions_multiple():
+def test_npc_spawn_rule_check_spawn_conditions_multiple() -> None:
     """Test NPCSpawnRule.check_spawn_conditions() validates multiple conditions."""
     rule = NPCSpawnRule(
         npc_definition_id=1,
@@ -304,12 +305,12 @@ def test_npc_spawn_rule_check_spawn_conditions_multiple():
     assert rule.check_spawn_conditions(game_state3) is False
 
 
-def test_npc_spawn_rule_table_name():
+def test_npc_spawn_rule_table_name() -> None:
     """Test NPCSpawnRule has correct table name."""
     assert NPCSpawnRule.__tablename__ == "npc_spawn_rules"
 
 
-def test_npc_spawn_rule_repr():
+def test_npc_spawn_rule_repr() -> None:
     """Test NPCSpawnRule __repr__ method."""
     rule = NPCSpawnRule(
         npc_definition_id=1,
@@ -324,7 +325,7 @@ def test_npc_spawn_rule_repr():
 # --- Tests for NPCRelationship model ---
 
 
-def test_npc_relationship_creation():
+def test_npc_relationship_creation() -> None:
     """Test NPCRelationship can be instantiated with required fields."""
     relationship = NPCRelationship(
         npc_id_1=1,
@@ -339,12 +340,12 @@ def test_npc_relationship_creation():
     assert relationship.relationship_strength == 0.5
 
 
-def test_npc_relationship_table_name():
+def test_npc_relationship_table_name() -> None:
     """Test NPCRelationship has correct table name."""
     assert NPCRelationship.__tablename__ == "npc_relationships"
 
 
-def test_npc_relationship_repr():
+def test_npc_relationship_repr() -> None:
     """Test NPCRelationship __repr__ method."""
     relationship = NPCRelationship(
         npc_id_1=1,
@@ -357,7 +358,7 @@ def test_npc_relationship_repr():
     assert "NPCRelationship" in repr_str
 
 
-def test_npc_relationship_different_types():
+def test_npc_relationship_different_types() -> None:
     """Test NPCRelationship can have different relationship types."""
     relationship1 = NPCRelationship(
         npc_id_1=1,

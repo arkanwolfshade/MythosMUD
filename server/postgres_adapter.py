@@ -6,6 +6,7 @@ using psycopg2 for synchronous database operations.
 """
 
 import threading
+from collections.abc import Iterator
 from contextlib import contextmanager
 from typing import Any
 
@@ -20,7 +21,7 @@ logger = get_logger(__name__)
 # Register UUID adapters for psycopg2
 # This allows psycopg2 to handle Python uuid.UUID objects directly
 # without manual string conversion
-register_uuid()
+register_uuid()  # type: ignore[no-untyped-call]  # mypy: psycopg2.extras.register_uuid has no stubs
 
 
 class PostgresRow:
@@ -38,10 +39,10 @@ class PostgresRow:
             raise IndexError(f"Column index {key} out of range")
         return self._row_dict[key]
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[Any]:
         return iter(self._row_dict.values())
 
-    def keys(self):
+    def keys(self) -> Any:
         """Return the keys of the row dictionary.
 
         Returns:
@@ -66,7 +67,7 @@ class PostgresConnection:
         self._conn = conn
         self._conn.autocommit = False
 
-    def execute(self, query: str, params: tuple | None = None) -> "PostgresCursor":
+    def execute(self, query: str, params: tuple[Any, ...] | None = None) -> "PostgresCursor":
         """
         Execute a query and return a cursor.
 
@@ -81,7 +82,7 @@ class PostgresConnection:
         cursor.execute(query, params)
         return PostgresCursor(cursor)
 
-    def cursor(self, cursor_factory=None):
+    def cursor(self, cursor_factory: Any | None = None) -> Any:
         """
         Get a cursor from the underlying connection.
 
@@ -111,10 +112,10 @@ class PostgresConnection:
         """Close the connection."""
         self._conn.close()
 
-    def __enter__(self):
+    def __enter__(self) -> "PostgresConnection":
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         if exc_type:
             self.rollback()
         else:
@@ -172,7 +173,7 @@ class PostgresConnectionPool:
 
     @classmethod
     @contextmanager
-    def get_connection(cls, database_url: str):
+    def get_connection(cls, database_url: str) -> Iterator["PostgresConnection"]:
         """Get a connection from the pool."""
         pool_instance = cls.get_pool(database_url)
         conn = pool_instance.getconn()

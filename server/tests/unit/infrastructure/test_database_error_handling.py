@@ -12,6 +12,9 @@ from pydantic import ValidationError as PydanticValidationError
 from server.database import DatabaseManager, reset_database
 from server.exceptions import DatabaseError, ValidationError
 
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+
 
 @pytest.fixture(autouse=True)
 def reset_db_state():
@@ -456,7 +459,8 @@ async def test_close_handles_closed_event_loop():
 
         # Should skip disposal and just reset state
         assert manager.engine is None
-        assert manager._initialized is False
+        # Reason: Testing field value - mypy sees as unreachable but valid at runtime
+        assert manager._initialized is False  # type: ignore[unreachable]
         # Should not have called dispose
         assert not hasattr(mock_engine, "dispose") or not mock_engine.dispose.called
 
@@ -476,7 +480,7 @@ async def test_close_handles_no_running_loop():
         with patch("asyncio.sleep", new_callable=AsyncMock):
             with patch("asyncio.wait_for", new_callable=AsyncMock) as mock_wait:
                 # Mock wait_for to call the dispose function
-                async def mock_wait_for(coro, timeout):
+                async def mock_wait_for(coro, _timeout):
                     await coro
 
                 mock_wait.side_effect = mock_wait_for
@@ -485,7 +489,8 @@ async def test_close_handles_no_running_loop():
 
                 # Should have attempted disposal
                 assert manager.engine is None
-                assert manager._initialized is False
+                # Reason: Testing field value - mypy sees as unreachable but valid at runtime
+                assert manager._initialized is False  # type: ignore[unreachable]
 
 
 @pytest.mark.asyncio
@@ -510,7 +515,7 @@ async def test_close_handles_dispose_timeout():
 
                 # Should have attempted force close via pool
                 assert manager.engine is None
-                assert manager._initialized is False
+                assert manager._initialized is False  # type: ignore[unreachable]  # Reason: close() handles TimeoutError internally, so this code is reachable
 
 
 @pytest.mark.asyncio
@@ -531,7 +536,7 @@ async def test_close_handles_runtime_error_during_dispose():
         with patch("asyncio.sleep", new_callable=AsyncMock):
             with patch("asyncio.wait_for", new_callable=AsyncMock) as mock_wait:
 
-                async def mock_wait_for(coro, timeout):
+                async def mock_wait_for(coro, _timeout):
                     await coro
 
                 mock_wait.side_effect = mock_wait_for
@@ -540,7 +545,7 @@ async def test_close_handles_runtime_error_during_dispose():
                 await manager.close()
 
                 assert manager.engine is None
-                assert manager._initialized is False
+                assert manager._initialized is False  # type: ignore[unreachable]  # Reason: close() handles RuntimeError internally, so this code is reachable
 
 
 @pytest.mark.asyncio
@@ -561,7 +566,7 @@ async def test_close_handles_attribute_error_during_dispose():
         with patch("asyncio.sleep", new_callable=AsyncMock):
             with patch("asyncio.wait_for", new_callable=AsyncMock) as mock_wait:
 
-                async def mock_wait_for(coro, timeout):
+                async def mock_wait_for(coro, _timeout):
                     await coro
 
                 mock_wait.side_effect = mock_wait_for
@@ -570,7 +575,7 @@ async def test_close_handles_attribute_error_during_dispose():
                 await manager.close()
 
                 assert manager.engine is None
-                assert manager._initialized is False
+                assert manager._initialized is False  # type: ignore[unreachable]  # Reason: close() handles RuntimeError internally, so this code is reachable
 
 
 @pytest.mark.asyncio
@@ -591,7 +596,7 @@ async def test_close_handles_generic_exception_during_dispose():
         with patch("asyncio.sleep", new_callable=AsyncMock):
             with patch("asyncio.wait_for", new_callable=AsyncMock) as mock_wait:
 
-                async def mock_wait_for(coro, timeout):
+                async def mock_wait_for(coro, _timeout):
                     await coro
 
                 mock_wait.side_effect = mock_wait_for
@@ -600,7 +605,7 @@ async def test_close_handles_generic_exception_during_dispose():
                 await manager.close()
 
                 assert manager.engine is None
-                assert manager._initialized is False
+                assert manager._initialized is False  # type: ignore[unreachable]  # Reason: close() handles RuntimeError internally, so this code is reachable
 
 
 def test_reset_database_resets_singleton():

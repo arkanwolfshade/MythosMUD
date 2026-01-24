@@ -35,7 +35,7 @@ class AliasGraph:
             alias_storage: Storage backend containing player aliases
         """
         self.alias_storage = alias_storage
-        self.graph: nx.DiGraph = nx.DiGraph()
+        self.graph: nx.DiGraph = nx.DiGraph()  # type: ignore[type-arg]  # mypy: NetworkX DiGraph doesn't support generic type parameters
         logger.debug("AliasGraph initialized")
 
     def build_graph(self, player_name: str) -> None:

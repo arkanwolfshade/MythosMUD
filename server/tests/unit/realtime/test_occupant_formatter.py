@@ -78,7 +78,8 @@ def test_occupant_formatter_is_valid_name_for_occupant_empty():
     result = formatter._is_valid_name_for_occupant("")
 
     # Empty string is falsy, so the function returns False (empty string is falsy)
-    assert result is False or result == ""
+    # Reason: Testing boolean result - mypy sees comparison-overlap between bool and str literal
+    assert result is False or result == ""  # type: ignore[comparison-overlap]
 
 
 def test_occupant_formatter_is_valid_name_for_occupant_none():
@@ -104,8 +105,8 @@ def test_occupant_formatter_is_valid_name_for_occupant_non_string():
 def test_occupant_formatter_add_valid_name_to_lists():
     """Test OccupantFormatter._add_valid_name_to_lists() adds name to both lists."""
     formatter = OccupantFormatter()
-    players = []
-    all_occupants = []
+    players: list[str] = []
+    all_occupants: list[str] = []
 
     formatter._add_valid_name_to_lists("TestPlayer", players, all_occupants)
 
@@ -118,8 +119,8 @@ def test_occupant_formatter_add_valid_name_to_lists():
 def test_occupant_formatter_process_player_name_for_update_valid():
     """Test OccupantFormatter._process_player_name_for_update() adds valid player name."""
     formatter = OccupantFormatter()
-    players = []
-    all_occupants = []
+    players: list[str] = []
+    all_occupants: list[str] = []
     room_id = "room_123"
 
     formatter._process_player_name_for_update("TestPlayer", players, all_occupants, room_id)
@@ -131,8 +132,8 @@ def test_occupant_formatter_process_player_name_for_update_valid():
 def test_occupant_formatter_process_player_name_for_update_uuid():
     """Test OccupantFormatter._process_player_name_for_update() skips UUID player name."""
     formatter = OccupantFormatter()
-    players = []
-    all_occupants = []
+    players: list[str] = []
+    all_occupants: list[str] = []
     room_id = "room_123"
     uuid_string = "123e4567-e89b-12d3-a456-426614174000"
 
@@ -147,8 +148,8 @@ def test_occupant_formatter_process_player_name_for_update_uuid():
 def test_occupant_formatter_process_npc_name_for_update_valid():
     """Test OccupantFormatter._process_npc_name_for_update() adds valid NPC name."""
     formatter = OccupantFormatter()
-    npcs = []
-    all_occupants = []
+    npcs: list[str] = []
+    all_occupants: list[str] = []
     room_id = "room_123"
 
     formatter._process_npc_name_for_update("TestNPC", npcs, all_occupants, room_id)
@@ -160,8 +161,8 @@ def test_occupant_formatter_process_npc_name_for_update_valid():
 def test_occupant_formatter_process_npc_name_for_update_uuid():
     """Test OccupantFormatter._process_npc_name_for_update() skips UUID NPC name."""
     formatter = OccupantFormatter()
-    npcs = []
-    all_occupants = []
+    npcs: list[str] = []
+    all_occupants: list[str] = []
     room_id = "room_123"
     uuid_string = "123e4567-e89b-12d3-a456-426614174000"
 
@@ -176,9 +177,9 @@ def test_occupant_formatter_process_npc_name_for_update_uuid():
 def test_occupant_formatter_process_dict_occupant_for_update_player():
     """Test OccupantFormatter._process_dict_occupant_for_update() processes player dict."""
     formatter = OccupantFormatter()
-    players = []
-    npcs = []
-    all_occupants = []
+    players: list[str] = []
+    npcs: list[str] = []
+    all_occupants: list[str] = []
     room_id = "room_123"
     occ = {"player_name": "TestPlayer"}
 
@@ -192,9 +193,9 @@ def test_occupant_formatter_process_dict_occupant_for_update_player():
 def test_occupant_formatter_process_dict_occupant_for_update_npc():
     """Test OccupantFormatter._process_dict_occupant_for_update() processes NPC dict."""
     formatter = OccupantFormatter()
-    players = []
-    npcs = []
-    all_occupants = []
+    players: list[str] = []
+    npcs: list[str] = []
+    all_occupants: list[str] = []
     room_id = "room_123"
     occ = {"npc_name": "TestNPC"}
 
@@ -208,9 +209,9 @@ def test_occupant_formatter_process_dict_occupant_for_update_npc():
 def test_occupant_formatter_process_dict_occupant_for_update_fallback_name():
     """Test OccupantFormatter._process_dict_occupant_for_update() processes fallback name."""
     formatter = OccupantFormatter()
-    players = []
-    npcs = []
-    all_occupants = []
+    players: list[str] = []
+    npcs: list[str] = []
+    all_occupants: list[str] = []
     room_id = "room_123"
     occ = {"name": "TestOccupant"}
 
@@ -224,7 +225,7 @@ def test_occupant_formatter_process_dict_occupant_for_update_fallback_name():
 def test_occupant_formatter_process_string_occupant_for_update_valid():
     """Test OccupantFormatter._process_string_occupant_for_update() adds valid string."""
     formatter = OccupantFormatter()
-    all_occupants = []
+    all_occupants: list[str] = []
     room_id = "room_123"
 
     formatter._process_string_occupant_for_update("TestOccupant", all_occupants, room_id)
@@ -235,7 +236,7 @@ def test_occupant_formatter_process_string_occupant_for_update_valid():
 def test_occupant_formatter_process_string_occupant_for_update_uuid():
     """Test OccupantFormatter._process_string_occupant_for_update() skips UUID string."""
     formatter = OccupantFormatter()
-    all_occupants = []
+    all_occupants: list[str] = []
     room_id = "room_123"
     uuid_string = "123e4567-e89b-12d3-a456-426614174000"
 
@@ -251,7 +252,8 @@ def test_occupant_formatter_separate_occupants_by_type_dict_players():
     formatter = OccupantFormatter()
     occupants_info = [{"player_name": "Player1"}, {"player_name": "Player2"}]
 
-    players, npcs, all_occupants = formatter.separate_occupants_by_type(occupants_info, "room_123")
+    # Reason: dict[str, str] is compatible with dict[str, Any] | str at runtime, but list is invariant
+    players, npcs, all_occupants = formatter.separate_occupants_by_type(occupants_info, "room_123")  # type: ignore[arg-type]  # type: tuple[list[str], list[str], list[str]]
 
     assert len(players) == 2
     assert "Player1" in players
@@ -265,7 +267,8 @@ def test_occupant_formatter_separate_occupants_by_type_dict_npcs():
     formatter = OccupantFormatter()
     occupants_info = [{"npc_name": "NPC1"}, {"npc_name": "NPC2"}]
 
-    players, npcs, all_occupants = formatter.separate_occupants_by_type(occupants_info, "room_123")
+    # Reason: dict[str, str] is compatible with dict[str, Any] | str at runtime
+    players, npcs, all_occupants = formatter.separate_occupants_by_type(occupants_info, "room_123")  # type: ignore[arg-type]  # type: tuple[list[str], list[str], list[str]]
 
     assert len(npcs) == 2
     assert "NPC1" in npcs
@@ -279,7 +282,8 @@ def test_occupant_formatter_separate_occupants_by_type_strings():
     formatter = OccupantFormatter()
     occupants_info = ["Occupant1", "Occupant2"]
 
-    players, npcs, all_occupants = formatter.separate_occupants_by_type(occupants_info, "room_123")
+    # Reason: list[str] is compatible with list[dict[str, Any] | str] at runtime, but list is invariant
+    players, npcs, all_occupants = formatter.separate_occupants_by_type(occupants_info, "room_123")  # type: ignore[arg-type]  # type: tuple[list[str], list[str], list[str]]
 
     assert len(players) == 0
     assert len(npcs) == 0
@@ -297,7 +301,8 @@ def test_occupant_formatter_separate_occupants_by_type_mixed():
         "Occupant1",
     ]
 
-    players, npcs, all_occupants = formatter.separate_occupants_by_type(occupants_info, "room_123")
+    # Reason: list[str] is compatible with list[dict[str, Any] | str] at runtime, but list is invariant
+    players, npcs, all_occupants = formatter.separate_occupants_by_type(occupants_info, "room_123")  # type: ignore[arg-type]  # type: tuple[list[str], list[str], list[str]]
 
     assert "Player1" in players
     assert "NPC1" in npcs
@@ -309,7 +314,8 @@ def test_occupant_formatter_separate_occupants_by_type_none():
     """Test OccupantFormatter.separate_occupants_by_type() handles None input."""
     formatter = OccupantFormatter()
 
-    players, npcs, all_occupants = formatter.separate_occupants_by_type(None, "room_123")
+    # Reason: Intentionally testing error handling with None input (function handles None internally)
+    players, npcs, all_occupants = formatter.separate_occupants_by_type(None, "room_123")  # type: ignore[arg-type]  # type: tuple[list[str], list[str], list[str]]
 
     assert len(players) == 0
     assert len(npcs) == 0
@@ -320,7 +326,7 @@ def test_occupant_formatter_separate_occupants_by_type_empty():
     """Test OccupantFormatter.separate_occupants_by_type() handles empty list."""
     formatter = OccupantFormatter()
 
-    players, npcs, all_occupants = formatter.separate_occupants_by_type([], "room_123")
+    players, npcs, all_occupants = formatter.separate_occupants_by_type([], "room_123")  # type: tuple[list[str], list[str], list[str]]
 
     assert len(players) == 0
     assert len(npcs) == 0

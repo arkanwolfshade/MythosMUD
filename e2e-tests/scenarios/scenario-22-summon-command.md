@@ -2,24 +2,37 @@
 
 ## Overview
 
-Validates the `/summon` administrative command from end to end: parser recognition, permission gating, item instantiation, room-drop visibility, and audit messaging. Confirms non-admin rejection flow and NPC summon placeholder messaging.
+Validates the `/summon` administrative command from end to end: parser recognition, permission gating, item
+instantiation, room-drop visibility, and audit messaging. Confirms non-admin rejection flow and NPC summon placeholder
+messaging.
 
-**This is a core multi-player ritual** that demands two live clients to observe room updates and permissions simultaneously. Automation shortcuts are forbidden per the Master Rules.
+**This is a core multi-player ritual** that demands two live clients to observe room updates and permissions
+simultaneously. Automation shortcuts are forbidden per the Master Rules.
 
 ## Prerequisites
 
 **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
 
 1. **Database State**
+
    - Item databases are initialized (`scripts/items/init_item_databases.ps1` previously executed)
+
    - Prototype `artifact.miskatonic.codex` exists in the catalog
+
 2. **Server Status**
+
    - Development server running via `./scripts/start_local.ps1` (One Server Rule enforced)
+
    - Client accessible on port **5173**
+
 3. **Player Setup**
+
    - `ArkanWolfshade` (AW) logged in and flagged `is_admin = true`
+
    - `Ithaqua` logged in (non-admin) in the **Main Foyer** `earth_arkhamcity_sanitarium_room_foyer_001`
+
 4. **Browser Harness**
+
    - Playwright MCP session using the GPT-4 agent per multiplayer rules
    - Two browser tabs already authenticated (Tab 0 = AW / Tab 1 = Ithaqua)
 
@@ -28,9 +41,10 @@ Reference `@MULTIPLAYER_TEST_RULES.md` for full verification ritual.
 
 ## Test Configuration
 
-- **Test Players**:
-  - Tab 0: `ArkanWolfshade` (Admin)
-  - Tab 1: `Ithaqua` (Non-Admin)
+**Test Players**:
+
+- Tab 0: `ArkanWolfshade` (Admin)
+- Tab 1: `Ithaqua` (Non-Admin)
 - **Starting Room**: `earth_arkhamcity_sanitarium_room_foyer_001`
 - **Testing Approach**: Playwright MCP (multi-tab)
 - **Timeouts**: Use global defaults from Master Rules (no ad-hoc overrides)
@@ -55,7 +69,8 @@ await mcp_playwright_browser_wait_for({text: "Admin privileges: Active"});
 **Purpose**: Validate happy-path item summoning and room-drop creation.
 
 ```javascript
-await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "/summon artifact.miskatonic.codex 2"});
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "/summon
+artifact.miskatonic.codex 2"});
 await mcp_playwright_browser_press_key({key: "Enter"});
 await mcp_playwright_browser_wait_for({text: "You summon 2x Codex of Whispered Secrets"});
 ```
@@ -138,17 +153,23 @@ console.log("⛭ After scenario, inspect admin_actions_<YYYY-MM-DD>.log for summ
 
 ## Expected Results
 
-- ✅ Admin privileges confirmed prior to summon
-- ✅ Summon success message returned for AW
-- ✅ Room-drop broadcast received by observer
-- ✅ Observer can collect summoned stack without duplication
-- ✅ Non-admin summon attempt rejected with lore-friendly message
+✅ Admin privileges confirmed prior to summon
+
+✅ Summon success message returned for AW
+
+✅ Room-drop broadcast received by observer
+
+✅ Observer can collect summoned stack without duplication
+
+✅ Non-admin summon attempt rejected with lore-friendly message
+
 - ✅ NPC summon returns the documented placeholder
 - ✅ (Optional) Audit log reflects summon invocation
 
 ## Success Criteria Checklist
 
-- [ ] Admin status verified for AW
+[ ] Admin status verified for AW
+
 - [ ] `/summon` command succeeds for item prototype
 - [ ] Room drop displays correct quantity and metadata
 - [ ] Observer inventory updates after pickup
@@ -169,7 +190,8 @@ Execute standard cleanup from `@CLEANUP.md`:
 
 ## Status
 
-**Drafted for Phase 3 Task 4.3** — Execute once the above prerequisites are prepared and record the outcome per project protocol.
+**Drafted for Phase 3 Task 4.3** — Execute once the above prerequisites are prepared and record the outcome per project
+protocol.
 
 ---
 

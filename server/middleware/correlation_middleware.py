@@ -10,7 +10,7 @@ the cosmic flow is essential for understanding the deeper patterns.
 
 import uuid
 from collections.abc import Callable
-from typing import Any
+from typing import TYPE_CHECKING, Any, cast
 
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -20,6 +20,9 @@ from ..structured_logging.enhanced_logging_config import (
     clear_request_context,
     get_logger,
 )
+
+if TYPE_CHECKING:
+    from fastapi import FastAPI
 
 logger = get_logger(__name__)
 
@@ -32,7 +35,7 @@ class CorrelationMiddleware(BaseHTTPMiddleware):  # pylint: disable=too-few-publ
     and sets up the logging context for the request duration.
     """
 
-    def __init__(self, app, correlation_header: str = "X-Correlation-ID"):
+    def __init__(self, app: "FastAPI", correlation_header: str = "X-Correlation-ID") -> None:
         """
         Initialize the correlation middleware.
 
@@ -44,7 +47,7 @@ class CorrelationMiddleware(BaseHTTPMiddleware):  # pylint: disable=too-few-publ
         self.correlation_header = correlation_header
         self.correlation_header = correlation_header
 
-    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+    async def dispatch(self, request: Request, call_next: Callable[[Request], Any]) -> Response:
         """
         Process the request with correlation ID and context.
 
@@ -99,7 +102,8 @@ class CorrelationMiddleware(BaseHTTPMiddleware):  # pylint: disable=too-few-publ
                 response_time_ms="calculated_by_middleware",  # Could be enhanced with timing
             )
 
-            return response
+            result: Response = cast(Response, response)
+            return result
 
         except Exception as e:
             # Log request error
@@ -135,7 +139,7 @@ class WebSocketCorrelationMiddleware:  # pylint: disable=too-few-public-methods 
         """
         self.correlation_header = correlation_header
 
-    async def __call__(self, websocket, call_next):
+    async def __call__(self, websocket: Any, call_next: Any) -> Any:
         """
         Process the WebSocket connection with correlation ID.
 

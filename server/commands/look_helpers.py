@@ -6,7 +6,7 @@ including parsing, formatting, and label generation.
 """
 
 import re
-from typing import Any
+from typing import Any, cast
 
 from ..services.wearable_container_service import WearableContainerService
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -41,7 +41,7 @@ def _get_wearable_container_service(request: Any) -> WearableContainerService:
 
         _get_wearable_container_service.cached_instance = WearableContainerService(persistence=async_persistence)  # type: ignore[attr-defined]  # Reason: Function attribute dynamically added for caching pattern, mypy cannot detect it statically
 
-    return _get_wearable_container_service.cached_instance  # type: ignore[attr-defined]  # Reason: Function attribute dynamically added for caching pattern, mypy cannot detect it statically
+    return cast("WearableContainerService", _get_wearable_container_service.cached_instance)  # type: ignore[attr-defined]  # Reason: Function attribute dynamically added for caching pattern, mypy cannot detect it statically
 
 
 def _parse_instance_number(target: str) -> tuple[str, int | None]:
@@ -76,7 +76,7 @@ def _parse_instance_number(target: str) -> tuple[str, int | None]:
     return (target, None)
 
 
-def _get_health_label(stats: dict) -> str:
+def _get_health_label(stats: dict[str, Any]) -> str:
     """
     Get descriptive health label based on health percentage.
 
@@ -107,7 +107,7 @@ def _get_health_label(stats: dict) -> str:
     return "mortally wounded"
 
 
-def _get_lucidity_label(stats: dict) -> str:
+def _get_lucidity_label(stats: dict[str, Any]) -> str:
     """
     Get descriptive lucidity label based on lucidity percentage.
 
@@ -133,7 +133,7 @@ def _get_lucidity_label(stats: dict) -> str:
     return "mad"
 
 
-def _get_visible_equipment(player: Any) -> dict[str, dict]:
+def _get_visible_equipment(player: Any) -> dict[str, dict[str, Any]]:
     """
     Get visible equipment from player, excluding internal/hidden slots.
 

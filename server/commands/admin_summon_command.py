@@ -20,8 +20,8 @@ logger = get_logger(__name__)
 
 
 async def handle_summon_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     _alias_storage: AliasStorage | None,
     player_name: str,

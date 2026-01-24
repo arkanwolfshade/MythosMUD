@@ -10,16 +10,10 @@ including requirements, effects, and availability status.
 import json
 from typing import Any, cast
 
-from sqlalchemy import BigInteger, Boolean, Column, Index, String, Text
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy import BigInteger, Boolean, Index, String, Text
+from sqlalchemy.orm import Mapped, mapped_column
 
-from ..metadata import metadata
-
-
-class Base(DeclarativeBase):
-    """SQLAlchemy declarative base for profession database models."""
-
-    metadata = metadata
+from .base import Base
 
 
 class Profession(Base):
@@ -37,19 +31,19 @@ class Profession(Base):
     )
 
     # Primary key
-    id = Column(BigInteger, primary_key=True)
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
 
     # Profession information
-    name = Column(String(length=50), unique=True, nullable=False)
-    description = Column(Text(), nullable=False)
-    flavor_text = Column(Text(), nullable=False)
+    name: Mapped[str] = mapped_column(String(length=50), unique=True, nullable=False)
+    description: Mapped[str] = mapped_column(Text(), nullable=False)
+    flavor_text: Mapped[str] = mapped_column(Text(), nullable=False)
 
     # Game mechanics stored as JSON in TEXT fields
-    stat_requirements = Column(Text(), nullable=False, default="{}")
-    mechanical_effects = Column(Text(), nullable=False, default="{}")
+    stat_requirements: Mapped[str] = mapped_column(Text(), nullable=False, default="{}")
+    mechanical_effects: Mapped[str] = mapped_column(Text(), nullable=False, default="{}")
 
     # Availability status
-    is_available: bool = Column(Boolean(), default=True, nullable=False)  # type: ignore[assignment]  # Reason: SQLAlchemy Column returns Column object, but mypy expects bool, runtime type is correct
+    is_available: Mapped[bool] = mapped_column(Boolean(), default=True, nullable=False)
 
     def __repr__(self) -> str:
         """String representation of the profession."""
@@ -58,24 +52,24 @@ class Profession(Base):
     def get_stat_requirements(self) -> dict[str, Any]:
         """Get profession stat requirements as dictionary."""
         try:
-            return cast(dict[str, Any], json.loads(cast(str, self.stat_requirements)))
+            return cast(dict[str, Any], json.loads(self.stat_requirements))
         except (json.JSONDecodeError, TypeError):
             return {}
 
     def set_stat_requirements(self, requirements: dict[str, Any]) -> None:
         """Set profession stat requirements from dictionary."""
-        self.stat_requirements = json.dumps(requirements)  # type: ignore[assignment]  # Reason: SQLAlchemy Text column accepts str, but mypy infers dict[str, Any] from parameter type, json.dumps returns str at runtime
+        self.stat_requirements = json.dumps(requirements)
 
     def get_mechanical_effects(self) -> dict[str, Any]:
         """Get profession mechanical effects as dictionary."""
         try:
-            return cast(dict[str, Any], json.loads(cast(str, self.mechanical_effects)))
+            return cast(dict[str, Any], json.loads(self.mechanical_effects))
         except (json.JSONDecodeError, TypeError):
             return {}
 
     def set_mechanical_effects(self, effects: dict[str, Any]) -> None:
         """Set profession mechanical effects from dictionary."""
-        self.mechanical_effects = json.dumps(effects)  # type: ignore[assignment]  # Reason: SQLAlchemy Text column accepts str, but mypy infers dict[str, Any] from parameter type, json.dumps returns str at runtime
+        self.mechanical_effects = json.dumps(effects)
 
     def meets_stat_requirements(self, stats: dict[str, int]) -> bool:
         """

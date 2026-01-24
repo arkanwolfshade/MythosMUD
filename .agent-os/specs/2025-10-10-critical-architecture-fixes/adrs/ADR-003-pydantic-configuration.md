@@ -23,9 +23,11 @@ The configuration system used a 395-line custom YAML loader (`config_loader.py`)
 
 ## Decision Drivers
 
-- **Type Safety**: Must provide type-checked configuration access
-- **Validation**: Must validate configuration at startup, not runtime
-- **Environment Variables**: Must support environment-specific configuration
+**Type Safety**: Must provide type-checked configuration access
+
+**Validation**: Must validate configuration at startup, not runtime
+
+**Environment Variables**: Must support environment-specific configuration
 - **No Secrets in Code**: Must prevent hardcoded secrets
 - **Developer Experience**: Should be easy to understand and use
 - **Standard Practice**: Should follow Python best practices
@@ -35,24 +37,28 @@ The configuration system used a 395-line custom YAML loader (`config_loader.py`)
 ## Considered Options
 
 ### Option 1: Pydantic BaseSettings
-- **Pros**:
-  - Automatic environment variable loading
-  - Type-safe configuration access
-  - Built-in validation with clear error messages
-  - Nested configuration models
-  - Excellent IDE support (autocomplete, type checking)
-  - Industry standard (used by FastAPI, etc.)
-  - Zero runtime overhead after initial load
+
+**Pros**:
+
+- Automatic environment variable loading
+- Type-safe configuration access
+- Built-in validation with clear error messages
+- Nested configuration models
+- Excellent IDE support (autocomplete, type checking)
+- Industry standard (used by FastAPI, etc.)
+- Zero runtime overhead after initial load
 - **Cons**:
   - Adds pydantic-settings dependency
   - Requires migration from YAML
 - **Migration Effort**: Medium (2 days)
 
 ### Option 2: dataclasses + python-decouple
-- **Pros**:
-  - Lightweight
-  - Uses stdlib dataclasses
-  - Simple API
+
+**Pros**:
+
+- Lightweight
+- Uses stdlib dataclasses
+- Simple API
 - **Cons**:
   - Less validation capabilities
   - Manual type checking required
@@ -61,10 +67,12 @@ The configuration system used a 395-line custom YAML loader (`config_loader.py`)
 - **Migration Effort**: Low (1 day)
 
 ### Option 3: dynaconf
-- **Pros**:
-  - Supports multiple formats (YAML, JSON, TOML, .env)
-  - Environment-aware
-  - Validation via external schemas
+
+**Pros**:
+
+- Supports multiple formats (YAML, JSON, TOML, .env)
+- Environment-aware
+- Validation via external schemas
 - **Cons**:
   - Less type safety
   - More complex API
@@ -88,6 +96,7 @@ The configuration system used a 395-line custom YAML loader (`config_loader.py`)
 6. **FastAPI Integration**: Already using Pydantic for API validation - consistency
 
 **Trade-offs Accepted**:
+
 - Migration effort (2 days - completed)
 - Pydantic dependency (already a dependency for FastAPI)
 - Breaking change (YAML no longer supported - acceptable per requirements)
@@ -100,6 +109,7 @@ The configuration system used a 395-line custom YAML loader (`config_loader.py`)
 
 ```python
 # server/config/models.py
+
 from pydantic import Field
 from pydantic_settings import BaseSettings
 
@@ -118,12 +128,14 @@ class AppConfig(BaseSettings):
     database: DatabaseConfig = Field(default_factory=DatabaseConfig)
     nats: NATSConfig = Field(default_factory=NATSConfig)
     # ...
+
 ```
 
 ### Singleton Access Pattern
 
 ```python
 # server/config/__init__.py
+
 from functools import lru_cache
 
 @lru_cache()
@@ -134,7 +146,8 @@ def get_config() -> AppConfig:
 
 ### Environment Files
 
-- `.env.local.example` - Local development template
+`.env.local.example` - Local development template
+
 - `.env.unit_test.example` - Unit test template
 - `.env.e2e_test.example` - E2E test template
 - `.env.production.example` - Production template
@@ -167,9 +180,11 @@ def get_config() -> AppConfig:
 
 ## Validation
 
-- ✅ All configuration models validated successfully
-- ✅ All environment files updated and documented
-- ✅ 50+ files migrated to new configuration system
+✅ All configuration models validated successfully
+
+✅ All environment files updated and documented
+
+✅ 50+ files migrated to new configuration system
 - ✅ All tests passing (3,226 tests)
 - ✅ No regressions introduced
 - ✅ Configuration tests added and passing
@@ -178,7 +193,8 @@ def get_config() -> AppConfig:
 
 ## References
 
-- [Pydantic Settings Documentation](https://docs.pydantic.dev/latest/concepts/pydantic_settings/)
+[Pydantic Settings Documentation](https://docs.pydantic.dev/latest/concepts/pydantic_settings/)
+
 - [12-Factor App - Config](https://12factor.net/config)
 - Implementation: `server/config/models.py`
 - Tests: `server/tests/test_config.py`
@@ -188,6 +204,7 @@ def get_config() -> AppConfig:
 
 ## Related ADRs
 
-- ADR-001: XState for Frontend Connection FSM
+ADR-001: XState for Frontend Connection FSM
+
 - ADR-002: python-statemachine for Backend Connection FSM
 - ADR-004: Circuit Breaker + Dead Letter Queue for NATS

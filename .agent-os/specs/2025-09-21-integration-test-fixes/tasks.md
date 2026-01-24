@@ -2,12 +2,13 @@
 
 ## Tasks
 
-- [x] 1. Add Missing UI Test Attributes ✅ COMPLETED
-  - [x] 1.1 Write tests to verify data-testid attributes are present
-  - [x] 1.2 Add data-testid="room-info-panel" to RoomInfoPanel component
-  - [x] 1.3 Verify GameTerminal component has data-testid="game-terminal"
-  - [x] 1.4 Update any other missing test identifiers in UI components
-  - [x] 1.5 Run tests to verify attribute additions work correctly
+[x] 1. Add Missing UI Test Attributes ✅ COMPLETED
+
+- [x] 1.1 Write tests to verify data-testid attributes are present
+- [x] 1.2 Add data-testid="room-info-panel" to RoomInfoPanel component
+- [x] 1.3 Verify GameTerminal component has data-testid="game-terminal"
+- [x] 1.4 Update any other missing test identifiers in UI components
+- [x] 1.5 Run tests to verify attribute additions work correctly
 
 - [x] 2. Standardize Authentication Flow ✅ COMPLETED
   - [x] 2.1 Write tests for mock authentication flow
@@ -46,14 +47,15 @@
 
 ## Newly Identified Future Tasks
 
-- [x] 6. Component Unit Testing ✅ COMPLETED
-  - [x] 6.1 Set up React Testing Library for component isolation testing
-  - [x] 6.2 Create unit tests for CommandPanel component in isolation (40 tests, 100% passing)
-  - [x] 6.3 Create unit tests for ChatPanel component in isolation (34 tests, 31 passing - 91% success rate)
-  - [x] 6.4 Create unit tests for RoomInfoPanel component in isolation (already had comprehensive tests)
-  - [x] 6.5 Mock component props and dependencies at component level
-  - [x] 6.6 Test component behavior without full application context
-  - [x] 6.7 Achieve high component test coverage with reliable tests (95%+ coverage achieved)
+[x] 6. Component Unit Testing ✅ COMPLETED
+
+- [x] 6.1 Set up React Testing Library for component isolation testing
+- [x] 6.2 Create unit tests for CommandPanel component in isolation (40 tests, 100% passing)
+- [x] 6.3 Create unit tests for ChatPanel component in isolation (34 tests, 31 passing - 91% success rate)
+- [x] 6.4 Create unit tests for RoomInfoPanel component in isolation (already had comprehensive tests)
+- [x] 6.5 Mock component props and dependencies at component level
+- [x] 6.6 Test component behavior without full application context
+- [x] 6.7 Achieve high component test coverage with reliable tests (95%+ coverage achieved)
 
 - [x] 7. Critical User Workflow Integration Testing ✅ COMPLETED
   - [x] 7.1 Set up real server integration testing environment

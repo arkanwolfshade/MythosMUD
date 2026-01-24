@@ -9,6 +9,7 @@ for real-time distribution to clients and other systems.
 
 import uuid
 from datetime import UTC, datetime
+from typing import TYPE_CHECKING, Any
 
 from ..events.combat_events import (
     CombatEndedEvent,
@@ -24,6 +25,9 @@ from ..structured_logging.enhanced_logging_config import get_logger
 from .nats_exceptions import NATSPublishError
 from .nats_subject_manager import NATSSubjectManager
 
+if TYPE_CHECKING:
+    from .nats_service import NATSService
+
 logger = get_logger("services.combat_event_publisher")
 
 
@@ -35,7 +39,9 @@ class CombatEventPublisher:
     system to provide real-time combat updates to clients and other systems.
     """
 
-    def __init__(self, nats_service=None, subject_manager: NATSSubjectManager | None = None):
+    def __init__(
+        self, nats_service: "NATSService | None" = None, subject_manager: NATSSubjectManager | None = None
+    ) -> None:
         """
         Initialize combat event publisher.
 
@@ -62,11 +68,11 @@ class CombatEventPublisher:
     def _create_event_message(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event message creation requires many parameters for complete event context
         self,
         event_type: str,
-        event_data: dict,
+        event_data: dict[str, Any],
         room_id: str | None = None,
         player_id: str | None = None,
         timestamp: str | None = None,
-    ) -> dict:
+    ) -> dict[str, Any]:
         """
         Create a standardized event message structure matching EventMessageSchema.
 

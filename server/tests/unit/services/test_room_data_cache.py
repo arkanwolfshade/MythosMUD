@@ -62,7 +62,7 @@ class TestRoomDataCache:
     def test_is_room_data_fresh_invalid_input(self):
         """Test is_room_data_fresh handles invalid input."""
         cache = RoomDataCache()
-        assert cache.is_room_data_fresh(None) is False
+        assert cache.is_room_data_fresh(None) is False  # type: ignore[arg-type]
 
     def test_get_cache_not_found(self):
         """Test get_cache returns None for non-existent room."""
@@ -90,7 +90,9 @@ class TestRoomDataCache:
         room_data2 = {"id": "test_room_1", "name": "New Name"}
         cache.set_cache("test_room_1", room_data1)
         cache.set_cache("test_room_1", room_data2)
-        assert cache.get_cache("test_room_1")["name"] == "New Name"
+        cached = cache.get_cache("test_room_1")
+        assert cached is not None
+        assert cached["name"] == "New Name"
 
     def test_clear_cache_specific_room(self):
         """Test clear_cache clears specific room."""
@@ -181,7 +183,7 @@ class TestRoomDataCache:
         """Test merge_room_data handles invalid input."""
         cache = RoomDataCache()
         new_data = {"id": "test_room_1", "name": "Test Room"}
-        result = cache.merge_room_data(None, new_data)
+        result = cache.merge_room_data(None, new_data)  # type: ignore[arg-type]
         assert result == new_data  # Should return new data as fallback
 
     def test_is_newer_data_new_has_timestamp_old_doesnt(self):

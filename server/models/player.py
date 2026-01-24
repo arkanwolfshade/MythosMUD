@@ -11,7 +11,7 @@ import json
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, cast
 
-from sqlalchemy import BigInteger, Boolean, Column, DateTime, ForeignKey, Integer, String, Text, event, text
+from sqlalchemy import BigInteger, Boolean, DateTime, ForeignKey, Integer, String, Text, event, text
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.ext.mutable import MutableDict, MutableList
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -377,7 +377,7 @@ class PlayerChannelPreferences(Base):
     # CRITICAL: Must use UUID(as_uuid=False) to match Player.player_id type
     # Both use UUID(as_uuid=False) which creates UUID column type in PostgreSQL
     # The as_uuid=False parameter only affects Python type handling (strings vs UUID objects)
-    player_id = Column(
+    player_id: Mapped[str] = mapped_column(
         UUID(as_uuid=False),
         ForeignKey("players.player_id", ondelete="CASCADE"),
         primary_key=True,

@@ -4,10 +4,11 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 
 ## Technical Requirements
 
-- **Lucidity Data Model**
-  - Introduce `player_lucidity` table storing current SAN, tier, liability state, and timestamps.
-  - Add `lucidity_exposure_log` table documenting passive/active adjustments with reason codes, correlation IDs, and Mythos exposure flags.
-  - Persist hallucination cooldowns and command misfire weights via JSON field or auxiliary table to survive reconnects.
+**Lucidity Data Model**
+
+- Introduce `player_lucidity` table storing current SAN, tier, liability state, and timestamps.
+- Add `lucidity_exposure_log` table documenting passive/active adjustments with reason codes, correlation IDs, and Mythos exposure flags.
+- Persist hallucination cooldowns and command misfire weights via JSON field or auxiliary table to survive reconnects.
 - **Server Processing**
   - Extend scheduled tick service to apply passive SAN flux (environment, lighting, companions) every in-game minute.
   - Embed SAN adjustment hooks inside combat resolution, encounter discovery, ritual learning, NPC ability handlers, and death flows.

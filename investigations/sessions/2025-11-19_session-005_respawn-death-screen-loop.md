@@ -67,7 +67,9 @@ event='Room not found in cache'
 The persistence layer loads rooms from PostgreSQL and generates room IDs using the following logic:
 
 1. **Room ID Format**: `{plane}_{zone}_{sub_zone}_{stable_id}`
+
 2. **For Limbo Room**:
+
    - Plane: `limbo`
    - Zone: `death`
    - Sub-zone: `void`
@@ -80,9 +82,11 @@ The persistence layer loads rooms from PostgreSQL and generates room IDs using t
 expected_prefix = f"{plane_name}_{zone_name}_{subzone_stable_id}_"
 if stable_id.startswith(expected_prefix):
     # stable_id is already a full hierarchical room ID, use it directly
+
     room_id = stable_id
 else:
     # stable_id is just the room identifier, generate full ID
+
     room_id = generate_room_id(plane_name, zone_name, subzone_stable_id, stable_id)
 ```
 
@@ -141,9 +145,11 @@ if current_hp <= -10 and player.current_room_id != "limbo_death_void":
 
 The error log shows:
 
-- **Requested**: `limbo_death_void`
-- **Available**: `limbo_death_void_limbo_death_void`
-- **Result**: Room not found in cache
+**Requested**: `limbo_death_void`
+
+**Available**: `limbo_death_void_limbo_death_void`
+
+**Result**: Room not found in cache
 
 This confirms the mismatch between code expectations and actual database state.
 
@@ -156,11 +162,13 @@ This confirms the mismatch between code expectations and actual database state.
 **Why This Causes the Bug**:
 
 1. **Death Sequence**:
+
    - Player dies → `move_player_to_limbo()` is called
    - Player's `current_room_id` is set to `limbo_death_void` (invalid ID)
    - Room lookup fails because cache has `limbo_death_void_limbo_death_void`
 
 2. **Respawn Sequence**:
+
    - Player clicks "enter the realm" → `respawn_player()` is called
    - System checks if player is in limbo: `old_room == LIMBO_ROOM_ID`
    - Check fails because player's room ID is `limbo_death_void` but constant is also `limbo_death_void` (but room doesn't exist)
@@ -168,6 +176,7 @@ This confirms the mismatch between code expectations and actual database state.
    - Respawn fails or partially succeeds, leaving player in death state
 
 3. **Loop**:
+
    - Player remains in death state (HP <= -10)
    - Client shows death screen
    - Player clicks respawn again
@@ -209,10 +218,12 @@ This confirms the mismatch between code expectations and actual database state.
 **Change**:
 
 ```python
-# Before:
+# Before
+
 LIMBO_ROOM_ID = "limbo_death_void"
 
-# After:
+# After
+
 LIMBO_ROOM_ID = "limbo_death_void_limbo_death_void"
 ```
 
@@ -223,10 +234,12 @@ LIMBO_ROOM_ID = "limbo_death_void_limbo_death_void"
 **Change**:
 
 ```python
-# Before:
+# Before
+
 if current_hp <= -10 and player.current_room_id != "limbo_death_void":
 
-# After:
+# After
+
 from server.services.player_respawn_service import LIMBO_ROOM_ID
 if current_hp <= -10 and player.current_room_id != LIMBO_ROOM_ID:
 ```
@@ -254,7 +267,8 @@ old room ID. Verify the fix by reproducing the bug scenario with Playwright MCP.
 
 ## Investigation Completion Checklist
 
-- [x] All investigation steps completed as written
+[x] All investigation steps completed as written
+
 - [x] Comprehensive evidence collected and documented
 - [x] Root cause analysis completed
 - [x] System impact assessed

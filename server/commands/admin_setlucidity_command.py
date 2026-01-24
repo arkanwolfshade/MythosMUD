@@ -24,7 +24,7 @@ from ..structured_logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 
-def _extract_command_args(command_data: dict) -> tuple[str | None, int | None]:
+def _extract_command_args(command_data: dict[str, Any]) -> tuple[str | None, int | None]:
     """Extract target_player and lcd_value from command_data."""
     target_player = command_data.get("target_player") or command_data.get("target_name")
     lcd_value = command_data.get("lcd_value") or command_data.get("value")
@@ -250,7 +250,7 @@ async def _execute_lucidity_change(  # pylint: disable=too-many-arguments,too-ma
 
 
 async def _validate_command_context(
-    request: Any, command_data: dict, player_name: str
+    request: Any, command_data: dict[str, Any], player_name: str
 ) -> tuple[Any, str | None, int | None, dict[str, str] | None]:
     """Validate command context and extract arguments, returning error if validation fails."""
     app = request.app if request else None
@@ -290,7 +290,11 @@ async def _setup_command_execution(
 
 
 async def _handle_admin_set_lucidity_command(  # pylint: disable=too-many-arguments  # Reason: Admin command requires many parameters for complex lucidity logic
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
+    request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the admin setlucidity command to set a player's LCD value.

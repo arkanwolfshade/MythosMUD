@@ -6,7 +6,9 @@
 
 ## Executive Summary
 
-The codebase extensively uses `asyncio` directly instead of `anyio`, violating the established best practices. While `anyio` is present as a transitive dependency (via `httpx`), it is not explicitly declared and not used. The codebase should migrate to `anyio` for:
+The codebase extensively uses `asyncio` directly instead of `anyio`, violating the established best practices. While
+`anyio` is present as a transitive dependency (via `httpx`), it is not explicitly declared and not used. The codebase
+should migrate to `anyio` for:
 
 1. **Backend-agnostic async code** - Can run on asyncio or Trio
 2. **Structured concurrency** - Better task lifecycle management
@@ -23,7 +25,8 @@ The codebase extensively uses `asyncio` directly instead of `anyio`, violating t
 
 #### Server Scripts
 
-- `server/scripts/check_invites_schema.py:45`
+`server/scripts/check_invites_schema.py:45`
+
 - `server/scripts/rename_used_to_is_active.py:168`
 - `server/scripts/add_fastapi_users_columns.py:192`
 - `server/scripts/check_invite_status.py:39`
@@ -37,7 +40,8 @@ The codebase extensively uses `asyncio` directly instead of `anyio`, violating t
 
 #### Root Scripts
 
-- `scripts/load_seed_via_asyncpg.py:68`
+`scripts/load_seed_via_asyncpg.py:68`
+
 - `scripts/verify_and_load_seed.py:95`
 - `scripts/add_flavor_text_column.py:53`
 - `scripts/apply_players_migration.py:110`
@@ -54,10 +58,12 @@ The codebase extensively uses `asyncio` directly instead of `anyio`, violating t
 
 ```python
 # ❌ BAD
+
 import asyncio
 asyncio.run(main())
 
 # ✅ GOOD
+
 from anyio import run
 run(main)
 ```
@@ -86,10 +92,12 @@ run(main)
 
 ```python
 # ❌ BAD
+
 import asyncio
 await asyncio.sleep(0.1)
 
 # ✅ GOOD
+
 from anyio import sleep
 await sleep(0.1)
 ```
@@ -109,10 +117,12 @@ await sleep(0.1)
 
 ```python
 # ❌ BAD
+
 import asyncio
 lock = asyncio.Lock()
 
 # ✅ GOOD
+
 from anyio import Lock
 lock = Lock()
 ```
@@ -127,10 +137,12 @@ lock = Lock()
 
 ```python
 # ❌ BAD
+
 import asyncio
 event = asyncio.Event()
 
 # ✅ GOOD
+
 from anyio import Event
 event = Event()
 ```
@@ -147,10 +159,12 @@ event = Event()
 
 ```python
 # ❌ BAD
+
 import asyncio
 queue = asyncio.Queue()
 
 # ✅ GOOD
+
 from anyio import create_memory_object_stream
 send_stream, receive_stream = create_memory_object_stream(max_buffer_size=100)
 ```
@@ -174,10 +188,12 @@ send_stream, receive_stream = create_memory_object_stream(max_buffer_size=100)
 
 ```python
 # ❌ BAD
+
 import asyncio
 result = await asyncio.wait_for(coro, timeout=5.0)
 
 # ✅ GOOD
+
 from anyio import move_on_after, fail_after
 with move_on_after(5.0) as cancel_scope:
     result = await coro
@@ -207,16 +223,19 @@ if cancel_scope.cancelled_caught:
 
 ```python
 # ❌ BAD
+
 import asyncio
 task = asyncio.create_task(coro)
 
 # ✅ GOOD (for fire-and-forget)
+
 from anyio import create_task_group
 async with create_task_group() as tg:
     tg.start_soon(coro)
 
 # ✅ GOOD (for tracked tasks - keep existing pattern but use anyio)
 # Note: The tracked_task_manager pattern is good, but should use anyio.create_task()
+
 ```
 
 #### 3.2 `asyncio.gather()` Usage
@@ -237,10 +256,12 @@ async with create_task_group() as tg:
 
 ```python
 # ❌ BAD
+
 import asyncio
 results = await asyncio.gather(*tasks, return_exceptions=True)
 
 # ✅ GOOD
+
 from anyio import create_task_group
 results = []
 async with create_task_group() as tg:
@@ -252,7 +273,8 @@ async with create_task_group() as tg:
 
 ### 4. Missing Explicit Dependency
 
-**Issue**: `anyio` is not explicitly listed in `pyproject.toml` dependencies, even though it's used transitively (via `httpx`).
+**Issue**: `anyio` is not explicitly listed in `pyproject.toml` dependencies, even though it's used transitively (via
+`httpx`).
 
 **Impact**:
 
@@ -276,7 +298,8 @@ dependencies = [
 
 **File**: `server/main.py:299`
 
-**Status**: ✅ **ACCEPTABLE** - Uvicorn manages its own event loop. The `uvicorn.run()` call is appropriate for the server entry point. Scripts should use `anyio.run()`, but the main server can continue using uvicorn.
+**Status**: ✅ **ACCEPTABLE** - Uvicorn manages its own event loop. The `uvicorn.run()` call is appropriate for the
+server entry point. Scripts should use `anyio.run()`, but the main server can continue using uvicorn.
 
 #### 5.2 Test Files
 
@@ -302,7 +325,8 @@ dependencies = [
 
 **File**: `server/app/tracked_task_manager.py`
 
-**Status**: ⚠️ **PARTIAL** - Good pattern for task tracking, but should use `anyio.create_task()` internally instead of `asyncio.create_task()`.
+**Status**: ⚠️ **PARTIAL** - Good pattern for task tracking, but should use `anyio.create_task()` internally instead of
+`asyncio.create_task()`.
 
 ## Migration Priority
 
@@ -313,20 +337,21 @@ dependencies = [
 
 ### Medium Priority (Core Primitives)
 
-3. **Replace `asyncio.sleep()`** - Straightforward find/replace
+1. **Replace `asyncio.sleep()`** - Straightforward find/replace
 2. **Replace `asyncio.Lock()`** - Straightforward find/replace
 3. **Replace `asyncio.Event()`** - Straightforward find/replace
 4. **Replace `asyncio.wait_for()`** - Requires pattern changes
 
 ### Low Priority (Complex Refactoring)
 
-7. **Replace `asyncio.Queue()`** - Requires significant API changes
+1. **Replace `asyncio.Queue()`** - Requires significant API changes
 2. **Replace `asyncio.gather()`** - Requires TaskGroup pattern adoption
 3. **Replace `asyncio.create_task()`** - May conflict with tracked_task_manager
 
 ## Testing Considerations
 
-- Ensure all tests pass after migration
+Ensure all tests pass after migration
+
 - Verify backend-agnostic behavior (test with both asyncio and Trio backends if possible)
 - Performance testing to ensure no regressions
 - Integration tests for event bus queue migration
@@ -342,7 +367,8 @@ dependencies = [
 
 ## Notes
 
-- The codebase has comments mentioning "AnyIO Pattern" but doesn't actually use anyio
+The codebase has comments mentioning "AnyIO Pattern" but doesn't actually use anyio
+
 - Some patterns (like tracked_task_manager) are good but should use anyio primitives internally
 - Migration can be done incrementally without breaking changes
 - Consider creating a migration guide for developers

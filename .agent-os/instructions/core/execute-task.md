@@ -16,7 +16,6 @@ Execute a specific task along with its sub-tasks systematically following a TDD 
   EXECUTE: @.agent-os/instructions/meta/pre-flight.md
 </pre_flight_check>
 
-
 <process_flow>
 
 <step number="1" name="task_understanding">
@@ -27,10 +26,15 @@ Read and analyze the given parent task and all its sub-tasks from tasks.md to ga
 
 <task_analysis>
   <read_from_tasks_md>
+
     - Parent task description
+
     - All sub-task descriptions
+
     - Task dependencies
+
     - Expected outcomes
+
   </read_from_tasks_md>
 </task_analysis>
 
@@ -52,10 +56,15 @@ Search and extract relevant sections from technical-spec.md to understand the te
 <selective_reading>
   <search_technical_spec>
     FIND sections in technical-spec.md related to:
+
     - Current task functionality
+
     - Implementation approach for this feature
+
     - Integration requirements
+
     - Performance criteria
+
   </search_technical_spec>
 </selective_reading>
 
@@ -77,20 +86,30 @@ Use the context-fetcher subagent to retrieve relevant sections from @.agent-os/s
 <selective_reading>
   <search_best_practices>
     FIND sections relevant to:
+
     - Task's technology stack
+
     - Feature type being implemented
+
     - Testing approaches needed
+
     - Code organization patterns
+
   </search_best_practices>
 </selective_reading>
 
 <instructions>
   ACTION: Use context-fetcher subagent
   REQUEST: "Find best practices sections relevant to:
+
             - Task's technology stack: [CURRENT_TECH]
+
             - Feature type: [CURRENT_FEATURE_TYPE]
+
             - Testing approaches needed
+
             - Code organization patterns"
+
   PROCESS: Returned best practices
   APPLY: Relevant patterns to implementation
 </instructions>
@@ -106,20 +125,30 @@ Use the context-fetcher subagent to retrieve relevant code style rules from @.ag
 <selective_reading>
   <search_code_style>
     FIND style rules for:
+
     - Languages used in this task
+
     - File types being modified
+
     - Component patterns being implemented
+
     - Testing style guidelines
+
   </search_code_style>
 </selective_reading>
 
 <instructions>
   ACTION: Use context-fetcher subagent
   REQUEST: "Find code style rules for:
+
             - Languages: [LANGUAGES_IN_TASK]
+
             - File types: [FILE_TYPES_BEING_MODIFIED]
+
             - Component patterns: [PATTERNS_BEING_IMPLEMENTED]
+
             - Testing style guidelines"
+
   PROCESS: Returned style rules
   APPLY: Relevant formatting and patterns
 </instructions>
@@ -141,40 +170,64 @@ Execute the parent task and all sub-tasks in order using test-driven development
 <execution_order>
   <subtask_1_tests>
     IF sub-task 1 is "Write tests for [feature]":
+
       - Write all tests for the parent feature
+
       - Include unit tests, integration tests, edge cases
+
       - Run tests to ensure they fail appropriately
+
       - Mark sub-task 1 complete
+
   </subtask_1_tests>
 
   <middle_subtasks_implementation>
     FOR each implementation sub-task (2 through n-1):
+
       - Implement the specific functionality
+
       - Make relevant tests pass
+
       - Update any adjacent/related tests if needed
+
       - Refactor while keeping tests green
+
       - Mark sub-task complete
+
   </middle_subtasks_implementation>
 
   <final_subtask_verification>
     IF final sub-task is "Verify all tests pass":
+
       - Run entire test suite
+
       - Fix any remaining failures
+
       - Ensure no regressions
+
       - Mark final sub-task complete
+
   </final_subtask_verification>
 </execution_order>
 
 <test_management>
   <new_tests>
+
     - Written in first sub-task
+
     - Cover all aspects of parent feature
+
     - Include edge cases and error handling
+
   </new_tests>
   <test_updates>
+
     - Made during implementation sub-tasks
+
     - Update expectations for changed behavior
+
     - Maintain backward compatibility
+
   </test_updates>
 </test_management>
 
@@ -196,23 +249,36 @@ Use the test-runner subagent to run and verify only the tests specific to this p
 
 <focused_test_execution>
   <run_only>
+
     - All new tests written for this parent task
+
     - All tests updated during this task
+
     - Tests directly related to this feature
+
   </run_only>
   <skip>
+
     - Full test suite (done later in execute-tasks.md)
+
     - Unrelated test files
+
   </skip>
 </focused_test_execution>
 
 <final_verification>
   IF any test failures:
+
     - Debug and fix the specific issue
+
     - Re-run only the failed tests
+
   ELSE:
+
     - Confirm all task tests passing
+
     - Ready to proceed
+
 </final_verification>
 
 <instructions>
@@ -236,7 +302,9 @@ IMPORTANT: In the tasks.md file, mark this task and its sub-tasks complete by up
   <completed>- [x] Task description</completed>
   <incomplete>- [ ] Task description</incomplete>
   <blocked>
+
     - [ ] Task description
+
     ⚠️ Blocking issue: [DESCRIPTION]
   </blocked>
 </update_format>

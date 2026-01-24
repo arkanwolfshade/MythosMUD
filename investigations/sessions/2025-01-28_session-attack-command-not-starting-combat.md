@@ -6,7 +6,10 @@
 
 ## Executive Summary
 
-The `/attack` slash command is not starting combat when used against NPCs. Investigation reveals a **field mapping issue** in the command data extraction process where `target_player` is not being set correctly in the `command_data` dictionary, causing the attack command handler to receive `None` as the target name and fail silently.
+The `/attack` slash command is not starting combat when used against NPCs. Investigation reveals a **field mapping
+ issue** in the command data extraction process where `target_player` is not being set correctly in the
+  `command_data` dictionary, causing the attack command handler to receive `None` as the target name and fail
+   silently.
 
 ## Bug Description
 
@@ -57,8 +60,10 @@ The `/attack` slash command is not starting combat when used against NPCs. Inves
 
 **Log Analysis:**
 
-- **CRITICAL FINDING**: No "COMBAT DEBUG" log entries found in recent logs
+**CRITICAL FINDING**: No "COMBAT DEBUG" log entries found in recent logs
+
 - This indicates the attack command handler is either:
+
   1. Not being called at all
   2. Failing before reaching the debug logging statements
   3. The command is being rejected at an earlier stage
@@ -73,6 +78,7 @@ The `/attack` slash command is not starting combat when used against NPCs. Inves
 **Command Flow Analysis:**
 
 1. **Client → Server:**
+
    - Client sends `/attack <target>` via WebSocket
    - Command normalized: `/attack` → `attack` (slash removed)
 
@@ -97,25 +103,33 @@ The `/attack` slash command is not starting combat when used against NPCs. Inves
    if hasattr(validated_command, "target"):
        command_data["target"] = validated_command.target
        # For combat commands, also set target_player for compatibility
+
        if command_data["command_type"] in ["attack", "punch", "kick", "strike"]:
            command_data["target_player"] = validated_command.target
    ```
 
-   **Problem:** The condition on line 149 checks if `command_data["command_type"]` is in a list of strings, but `command_data["command_type"]` is set to `validated_command.command_type` which is a `CommandType` enum value. While `CommandType` is a `str, Enum` (so enum values are strings), the comparison should use enum values for type safety and clarity.
+   **Problem:** The condition on line 149 checks if `command_data["command_type"]` is in a list of strings, but
+    `command_data["command_type"]` is set to `validated_command.command_type` which is a `CommandType` enum value.
+     While `CommandType` is a `str, Enum` (so enum values are strings), the comparison should use enum values for
+      type safety and clarity.
 
    **Evidence:**
+
    - Line 134: `"command_type": validated_command.command_type` - This is an enum, not a string
-   - Line 149: `if command_data["command_type"] in ["attack", "punch", "kick", "strike"]:` - This comparison fails because enum != string
+   - Line 149: `if command_data["command_type"] in ["attack", "punch", "kick", "strike"]:` - This comparison fails
+    because enum != string
    - Result: `target_player` is never set in `command_data`
    - Line 104 of `combat.py`: `target_name = command_data.get("target_player")` - Returns `None`
    - Line 126-137: Handler returns error message for missing target, but this may not be reaching the user
 
 4. **AttackCommand Model:**
+
    - Model uses `target` field (line 759 of `server/models/command.py`)
    - Handler expects `target_player` field (line 104 of `server/commands/combat.py`)
    - Extraction function attempts to map `target` → `target_player` but fails due to enum comparison issue
 
 5. **Command Handler Logic:**
+
    - Handler checks for `target_player` in `command_data` (line 104)
    - If `None`, returns error message (lines 126-137)
    - However, the error message may not be properly displayed to the user
@@ -123,7 +137,9 @@ The `/attack` slash command is not starting combat when used against NPCs. Inves
 ## Root Cause Analysis
 
 **Primary Root Cause:**
-Type mismatch in `extract_command_data()` function. The `command_type` field is stored as a `CommandType` enum value, but the code checks against a list of strings, causing the condition to always fail and `target_player` to never be set.
+Type mismatch in `extract_command_data()` function. The `command_type` field is stored as a `CommandType` enum
+ value, but the code checks against a list of strings, causing the condition to always fail and `target_player` to
+  never be set.
 
 **Technical Details:**
 
@@ -143,9 +159,11 @@ Type mismatch in `extract_command_data()` function. The `command_type` field is 
 
 **Scope:**
 
-- **Affected Commands:** All combat commands (`attack`, `punch`, `kick`, `strike`)
-- **Affected Users:** All players attempting to initiate combat
-- **Severity:** HIGH - Core gameplay functionality broken
+**Affected Commands:** All combat commands (`attack`, `punch`, `kick`, `strike`)
+
+**Affected Users:** All players attempting to initiate combat
+
+**Severity:** HIGH - Core gameplay functionality broken
 
 **Impact:**
 
@@ -163,6 +181,7 @@ Type mismatch in `extract_command_data()` function. The `command_type` field is 
    if hasattr(validated_command, "target"):
        command_data["target"] = validated_command.target
        # For combat commands, also set target_player for compatibility
+
        if command_data["command_type"] in ["attack", "punch", "kick", "strike"]:
            command_data["target_player"] = validated_command.target
    ```
@@ -202,15 +221,18 @@ Type mismatch in `extract_command_data()` function. The `command_type` field is 
 
 ### Log Evidence
 
-- **No combat debug logs found** - Indicates handler not reaching debug statements
-- **Server running normally** - No server-side errors
-- **WebSocket connections active** - Communication layer functioning
+**No combat debug logs found** - Indicates handler not reaching debug statements
+
+**Server running normally** - No server-side errors
+
+**WebSocket connections active** - Communication layer functioning
 
 ## Investigation Recommendations
 
 ### Immediate Priorities
 
 1. **Fix the enum comparison issue** in `extract_command_data()`
+
    - Convert enum to string: `validated_command.command_type.value`
    - Or compare against enum values: `CommandType.ATTACK`, etc.
 
@@ -232,9 +254,13 @@ Type mismatch in `extract_command_data()` function. The `command_type` field is 
 **For Cursor Chat:**
 
 ```
-Fix the /attack command not starting combat. The root cause is in server/utils/command_processor.py in the extract_command_data() function. The command_type field is stored as a CommandType enum value, but the code checks against a list of strings on line 149. While CommandType is a str Enum, the comparison should use enum values for type safety.
+Fix the /attack command not starting combat. The root cause is in server/utils/command_processor.py in the
+ extract_command_data() function. The command_type field is stored as a CommandType enum value, but the code checks
+  against a list of strings on line 149. While CommandType is a str Enum, the comparison should use enum values for
+   type safety.
 
-Fix by comparing against CommandType enum values instead of strings. Import CommandType from server.models.command and change the comparison to use CommandType.ATTACK, CommandType.PUNCH, CommandType.KICK, CommandType.STRIKE.
+Fix by comparing against CommandType enum values instead of strings. Import CommandType from server.models.command
+ and change the comparison to use CommandType.ATTACK, CommandType.PUNCH, CommandType.KICK, CommandType.STRIKE.
 
 After fixing, verify that:
 1. All combat commands (attack, punch, kick, strike) work correctly
@@ -252,7 +278,9 @@ Test with: /attack dr, /attack sanitarium, /punch dr, etc.
 **Changes Made:**
 
 1. Added import for `CommandType` enum in `server/utils/command_processor.py`
+
 2. Changed line 149 comparison from string list to enum values:
+
    - Before: `if command_data["command_type"] in ["attack", "punch", "kick", "strike"]:`
    - After: `if command_data["command_type"] in [CommandType.ATTACK, CommandType.PUNCH, CommandType.KICK, CommandType.STRIKE]:`
 
@@ -274,11 +302,12 @@ The `TargetResolutionService._search_npcs_in_room()` method was using `room.get_
 - NPCs are actually tracked in the **lifecycle manager** with their `current_room_id` attribute
 - The event handler correctly queries NPCs from the lifecycle manager, but target resolution was using the stale room instance
 
-### Fix Applied
+### Fix Applied - Target Resolution Service
 
 **File:** `server/services/target_resolution_service.py`
 
-**Change:** Updated `_search_npcs_in_room()` to query NPCs from the lifecycle manager instead of `room.get_npcs()`, matching the approach used in `server/realtime/event_handler.py`.
+**Change:** Updated `_search_npcs_in_room()` to query NPCs from the lifecycle manager instead of `room.get_npcs()`,
+ matching the approach used in `server/realtime/event_handler.py`.
 
 **Status:** FIXED
 
@@ -286,7 +315,8 @@ The `TargetResolutionService._search_npcs_in_room()` method was using `room.get_
 
 ## Investigation Completion Checklist
 
-- [x] All investigation steps completed as written
+[x] All investigation steps completed as written
+
 - [x] Comprehensive evidence collected and documented
 - [x] Root cause analysis completed
 - [x] System impact assessed

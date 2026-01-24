@@ -301,6 +301,9 @@ class LoggedHTTPException(HTTPException, LoggedException):
         if context is None:
             context = create_error_context()
 
+        # Store context as instance attribute for testability
+        self.context = context
+
         # Log the HTTP error with full context
         log_data = {
             "error_type": "LoggedHTTPException",

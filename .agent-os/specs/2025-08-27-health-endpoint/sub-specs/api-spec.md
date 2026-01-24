@@ -114,7 +114,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-08-
 
 **Errors:**
 
-- **500 Internal Server Error**: Health check itself failed
+**500 Internal Server Error**: Health check itself failed
 
   ```json
   {
@@ -129,7 +129,8 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-08-
 
 ### HealthResponse
 
-- `status` (string): Overall health status ("healthy", "degraded", "unhealthy")
+`status` (string): Overall health status ("healthy", "degraded", "unhealthy")
+
 - `timestamp` (string): ISO-8601 timestamp of health check
 
 - `uptime_seconds` (float): Server uptime in seconds
@@ -139,12 +140,14 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-08-
 
 ### ComponentStatus
 
-- `status` (string): Component health status
+`status` (string): Component health status
+
 - Additional fields vary by component type
 
 ### ServerComponent
 
-- `status` (string): Server health status
+`status` (string): Server health status
+
 - `uptime_seconds` (float): Server uptime
 - `memory_usage_mb` (float): Memory usage in MB
 
@@ -152,20 +155,23 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-08-
 
 ### DatabaseComponent
 
-- `status` (string): Database health status
+`status` (string): Database health status
+
 - `connection_count` (integer): Active database connections
 - `last_query_time_ms` (float): Last query response time
 
 ### ConnectionsComponent
 
-- `status` (string): Connection manager health status
+`status` (string): Connection manager health status
+
 - `active_connections` (integer): Current active connections
 - `max_connections` (integer): Maximum allowed connections
 - `connection_rate_per_minute` (float): Connection rate
 
 ## Integration Notes
 
-- Endpoint will be added to the existing monitoring router
+Endpoint will be added to the existing monitoring router
+
 - Leverages existing connection manager and memory monitoring systems
 - Uses existing database connection pool for health checks
 - Integrates with existing logging and error handling systems

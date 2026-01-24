@@ -6,12 +6,15 @@ This module contains utility functions used by the WebSocket handler.
 
 import json
 import uuid
-from typing import Any
+from typing import TYPE_CHECKING, Any, cast
 
 from fastapi import WebSocket, WebSocketDisconnect
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
+if TYPE_CHECKING:
+    from ..models.player import Player
+    from .connection_manager import ConnectionManager
 logger = get_logger(__name__)
 
 
@@ -76,7 +79,7 @@ async def load_player_mute_data(player_id_str: str) -> None:
         logger.error("Error loading mute data", player_id=player_id_str, error=str(e))
 
 
-def validate_occupant_name(name: str) -> bool:
+def validate_occupant_name(name: str | None) -> bool:
     """Validate that a name is not a UUID string."""
     if not name or not isinstance(name, str):
         return False
@@ -110,7 +113,7 @@ def convert_uuids_to_strings(obj: Any) -> Any:
     return obj
 
 
-def get_player_service_from_connection_manager(connection_manager) -> Any:
+def get_player_service_from_connection_manager(connection_manager: "ConnectionManager | Any") -> Any:
     """Extract player service from connection manager using container pattern."""
     app_state = None
     if hasattr(connection_manager, "app") and connection_manager.app:
@@ -129,11 +132,11 @@ def get_player_service_from_connection_manager(connection_manager) -> Any:
 def convert_schema_to_dict(complete_player_data: Any) -> dict[str, Any]:
     """Convert Pydantic schema to dictionary."""
     if hasattr(complete_player_data, "model_dump"):
-        return complete_player_data.model_dump(mode="json")
-    return complete_player_data.dict()
+        return cast(dict[str, Any], complete_player_data.model_dump(mode="json"))
+    return cast(dict[str, Any], complete_player_data.dict())
 
 
-def get_player_stats_data(player) -> dict[str, Any]:
+def get_player_stats_data(player: "Player | Any") -> dict[str, Any]:
     """Get and normalize player stats data."""
     stats_data = player.get_stats() if hasattr(player, "get_stats") else {}
     if isinstance(stats_data, str):
@@ -143,7 +146,7 @@ def get_player_stats_data(player) -> dict[str, Any]:
     return stats_data
 
 
-def build_basic_player_data(player) -> dict[str, Any]:
+def build_basic_player_data(player: "Player | Any") -> dict[str, Any]:
     """Build basic player data dictionary."""
     stats_data = get_player_stats_data(player)
     return {
@@ -154,7 +157,9 @@ def build_basic_player_data(player) -> dict[str, Any]:
     }
 
 
-async def prepare_player_data(player, player_id: uuid.UUID, connection_manager) -> dict[str, Any]:
+async def prepare_player_data(
+    player: "Player | Any", player_id: uuid.UUID, connection_manager: "ConnectionManager | Any"
+) -> dict[str, Any]:
     """Prepare complete player data with profession information for client."""
     try:
         player_service = get_player_service_from_connection_manager(connection_manager)
@@ -174,7 +179,7 @@ async def prepare_player_data(player, player_id: uuid.UUID, connection_manager) 
 
 
 async def get_player_and_room(
-    player_id: uuid.UUID, player_id_str: str, connection_manager
+    player_id: uuid.UUID, player_id_str: str, connection_manager: "ConnectionManager | Any"
 ) -> tuple[Any, Any, str | None]:
     """
     Get and validate player and room for initial game state.

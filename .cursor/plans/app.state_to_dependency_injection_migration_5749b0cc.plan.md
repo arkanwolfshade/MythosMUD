@@ -2,49 +2,79 @@
 name: app.state to dependency injection migration
 overview: Migrate all services from app.state to ApplicationContainer-based dependency injection, eliminating the dual storage pattern and updating all 500+ access points throughout the codebase to use proper dependency injection.
 todos:
+
   - id: phase1-container-extend
+
     content: Extend ApplicationContainer with all missing services (combat, magic, NPC, chat, etc.)
     status: completed
+
   - id: phase1-container-init
+
     content: Move service initialization logic from lifespan_startup.py into container.initialize()
     status: completed
+
   - id: phase1-legacy-compat
+
     content: Update initialize_container_and_legacy_services() to store in container first, then app.state for backward compatibility
     status: completed
+
   - id: phase2-di-functions
+
     content: Create dependency injection functions in dependencies.py for all new services (~18 functions)
     status: completed
+
   - id: phase2-di-aliases
+
     content: Create Depends() aliases for all new dependency functions
     status: completed
+
   - id: phase3-api-routes
+
     content: Migrate API route handlers in server/api/*.py to use dependency injection
     status: completed
+
   - id: phase4-game-tick
+
     content: Migrate game_tick_processing.py to use container instead of app.state
     status: completed
+
   - id: phase4-shutdown-command
+
     content: Migrate admin_shutdown_command.py to use container for shutdown state
     status: completed
+
   - id: phase5-command-handlers
+
     content: Migrate all command handlers in server/commands/*.py to use dependency injection
     status: completed
+
   - id: phase6-websocket-handlers
+
     content: Migrate WebSocket and real-time handlers to use container
     status: completed
+
   - id: phase7-remove-dual-storage
+
     content: Remove dual storage pattern - stop copying services to app.state
     status: completed
+
   - id: phase8-test-fixtures
+
     content: Update test fixtures in conftest.py to use container-based dependency injection
     status: completed
+
   - id: phase8-migrate-tests
+
     content: Migrate all 445+ test instances across 35+ test files to use container
     status: completed
+
   - id: phase9-cleanup
+
     content: Remove deprecated code, update documentation, add linting rules
     status: completed
+
   - id: phase9-verification
+
     content: Run full test suite, verify zero app.state.* access, check coverage
     status: completed
 ---
@@ -59,7 +89,8 @@ This plan addresses the migration from `app.state` global state access to proper
 
 ### Services Currently ONLY in app.state
 
-- Combat services: `player_combat_service`, `player_death_service`, `player_respawn_service`, `combat_service`
+Combat services: `player_combat_service`, `player_death_service`, `player_respawn_service`, `combat_service`
+
 - Magic services: `magic_service`, `spell_registry`, `spell_targeting_service`, `spell_effects`, `spell_learning_service`, `mp_regeneration_service`
 - NPC services: `npc_lifecycle_manager`, `npc_spawning_service`, `npc_population_controller`
 - Other services: `catatonia_registry`, `passive_lucidity_flux_service`, `mythos_time_consumer`, `chat_service`
@@ -68,7 +99,8 @@ This plan addresses the migration from `app.state` global state access to proper
 
 ### Services in BOTH container and app.state (duplicated)
 
-- Core: `container`, `task_registry`, `event_bus`, `event_handler`, `persistence`, `connection_manager`
+Core: `container`, `task_registry`, `event_bus`, `event_handler`, `persistence`, `connection_manager`
+
 - Game: `player_service`, `room_service`, `user_manager`, `container_service`
 - Temporal: `holiday_service`, `schedule_service`
 - Caching: `room_cache_service`, `profession_cache_service`
@@ -76,9 +108,11 @@ This plan addresses the migration from `app.state` global state access to proper
 
 ### Access Patterns
 
-- **502+ instances** of `app.state.` access across production code
-- **274+ instances** of `request.app.state` access in route handlers
-- **Hundreds of test files** mocking `app.state` directly
+**502+ instances** of `app.state.` access across production code
+
+**274+ instances** of `request.app.state` access in route handlers
+
+**Hundreds of test files** mocking `app.state` directly
 - Mixed patterns: some code uses `get_container(request)`, others use direct `app.state` access
 
 ## Migration Strategy
@@ -111,6 +145,7 @@ This plan addresses the migration from `app.state` global state access to proper
 **Goal**: Add DI functions for all services in `server/dependencies.py`
 
 1. **Add dependency functions** for each new service:
+
    ```python
    def get_player_combat_service(request: Request) -> PlayerCombatService:
        container = get_container(request)
@@ -120,6 +155,7 @@ This plan addresses the migration from `app.state` global state access to proper
    ```
 
 2. **Create dependency aliases**:
+
    ```python
    PlayerCombatServiceDep = Depends(get_player_combat_service)
    ```
@@ -143,14 +179,18 @@ This plan addresses the migration from `app.state` global state access to proper
    - WebSocket handlers in `server/realtime/*.py`
 
 2. **Migration pattern**:
+
    ```python
    # BEFORE:
+
    async def some_endpoint(request: Request):
        service = request.app.state.some_service
 
    # AFTER:
+
    async def some_endpoint(service: SomeService = SomeServiceDep):
        # Use service directly
+
    ```
 
 3. **Files to migrate** (priority order):
@@ -186,12 +226,15 @@ This plan addresses the migration from `app.state` global state access to proper
 **Goal**: Update all command handlers to use dependency injection
 
 1. **Command handler pattern migration**:
+
    ```python
    # BEFORE:
+
    async def handle_command(request: Request, ...):
        service = request.app.state.some_service
 
    # AFTER:
+
    async def handle_command(
        service: SomeService = SomeServiceDep,
        ...
@@ -271,14 +314,18 @@ This plan addresses the migration from `app.state` global state access to proper
    - Remove `app.state.*` mocking patterns
 
 2. **Migration pattern for tests**:
+
    ```python
    # BEFORE:
+
    mock_app.state.service = mock_service
 
    # AFTER:
+
    container = app.state.container
    container.service = mock_service
    # OR
+
    container = ApplicationContainer()
    container.service = mock_service
    await container.initialize()
@@ -339,6 +386,7 @@ async def my_endpoint(
     player_service: PlayerService = PlayerServiceDep,
 ):
     # Use injected services
+
     pass
 ```
 
@@ -352,6 +400,7 @@ async def handle_command(
     connection_manager: ConnectionManager = ConnectionManagerDep,
 ) -> dict:
     # Use injected services
+
     pass
 ```
 
@@ -360,6 +409,7 @@ async def handle_command(
 ```python
 async def background_task(container: ApplicationContainer):
     # Access services via container
+
     service = container.some_service
 ```
 
@@ -393,7 +443,8 @@ async def background_task(container: ApplicationContainer):
 
 ## Success Criteria
 
-- Zero direct `app.state.*` access (except `app.state.container`)
+Zero direct `app.state.*` access (except `app.state.container`)
+
 - All services accessible via `ApplicationContainer`
 - All route handlers use dependency injection
 - All tests use container-based dependency injection
@@ -403,9 +454,11 @@ async def background_task(container: ApplicationContainer):
 
 ## Estimated Effort
 
-- **Phase 1**: 8-12 hours
-- **Phase 2**: 4-6 hours
-- **Phase 3**: 12-16 hours
+**Phase 1**: 8-12 hours
+
+**Phase 2**: 4-6 hours
+
+**Phase 3**: 12-16 hours
 - **Phase 4**: 8-10 hours
 - **Phase 5**: 16-20 hours
 - **Phase 6**: 8-10 hours
@@ -417,7 +470,8 @@ async def background_task(container: ApplicationContainer):
 
 ## Dependencies
 
-- ApplicationContainer must be fully initialized before any service access
+ApplicationContainer must be fully initialized before any service access
+
 - All services must be properly typed in container
 - Dependency injection functions must handle None cases gracefully
 - Test fixtures must support both old and new patterns during migration

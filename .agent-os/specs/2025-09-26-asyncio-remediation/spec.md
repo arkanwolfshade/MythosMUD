@@ -37,7 +37,8 @@ As a developer maintaining MythosMUD's test infrastructure, I want standardized 
 
 ## Out of Scope
 
-- Database query optimization with async corridors
+Database query optimization with async corridors
+
 - New real-time messaging protocols beyond current SSE/WebSocket patterns
 - Frontend React asyncio integration modifications
 - Performance optimization for individual async operations

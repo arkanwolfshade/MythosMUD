@@ -13,7 +13,7 @@ import sys
 import threading
 from logging.handlers import QueueHandler, QueueListener, RotatingFileHandler
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from server.structured_logging.logging_handlers import SafeRotatingFileHandler, create_aggregator_handler
 from server.structured_logging.logging_utilities import ensure_log_directory, resolve_log_base, rotate_log_files
@@ -270,14 +270,16 @@ def _setup_async_logging_queue(handlers: list[logging.Handler]) -> None:
             _queue_listener = None
 
 
-def _get_handler_class(_WinSafeHandler: type, _BaseHandler: type) -> type:  # pylint: disable=invalid-name  # Reason: Parameter names match class names for type hints
+def _get_handler_class(
+    win_safe_handler: type[RotatingFileHandler], base_handler: type[RotatingFileHandler]
+) -> type[RotatingFileHandler]:
     """Get the appropriate handler class (Windows-safe or base)."""
-    handler_class = _BaseHandler
+    handler_class = base_handler
     try:
         if sys.platform == "win32":
             # Windows-safe handler also needs directory safety
             # Create a hybrid class that combines both features
-            class SafeWinHandlerCategory(_WinSafeHandler):  # pylint: disable=too-few-public-methods  # Reason: Handler class with focused responsibility, minimal public interface
+            class SafeWinHandlerCategory(win_safe_handler):  # type: ignore[valid-type,misc]  # mypy: parameter as base class; pylint: disable=too-few-public-methods  # Reason: Handler class with focused responsibility, minimal public interface
                 """Windows-safe rotating file handler with directory safety for categorized logs."""
 
                 def shouldRollover(self, record):  # noqa: N802  # pylint: disable=invalid-name  # Reason: Overrides parent class method, must match parent signature
@@ -297,7 +299,7 @@ def _get_handler_class(_WinSafeHandler: type, _BaseHandler: type) -> type:  # py
             handler_class = SafeWinHandlerCategory
     except ImportError:
         # Fallback to safe handler on any detection error
-        handler_class = _BaseHandler
+        handler_class = base_handler  # pylint: disable=undefined-variable  # Reason: base_handler is a function parameter, not _BaseHandler
     return handler_class
 
 
@@ -436,7 +438,8 @@ def _create_handler_for_category(
         handler.setLevel(logging.DEBUG)
         formatter = _create_formatter(player_service)
         handler.setFormatter(formatter)
-        return handler
+        result: logging.Handler = cast(logging.Handler, handler)
+        return result
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Defensive fallback for handler creation failures, must catch all exceptions to prevent logging setup from crashing the application
         # Graceful fallback: if handler creation fails, use NullHandler
         # This prevents logging setup failures from crashing the application
@@ -452,7 +455,7 @@ def setup_enhanced_file_logging(  # pylint: disable=too-many-locals  # Reason: F
     environment: str,
     log_config: dict[str, Any],
     log_level: str,
-    player_service: Any = None,
+    player_service: Any | None = None,
     enable_async: bool = True,
 ) -> None:
     """
@@ -597,7 +600,7 @@ def setup_enhanced_file_logging(  # pylint: disable=too-many-locals  # Reason: F
         log_queue = _get_or_create_log_queue()
 
     # Create handlers for different log categories
-    handler_class = _get_handler_class(_WinSafeHandler, _BaseHandler)
+    handler_class = _get_handler_class(_WinSafeHandler, _BaseHandler)  # pylint: disable=invalid-name  # Reason: Local variable names match imported class names for clarity
     all_file_handlers = _setup_category_handlers(
         log_categories,
         env_log_dir,

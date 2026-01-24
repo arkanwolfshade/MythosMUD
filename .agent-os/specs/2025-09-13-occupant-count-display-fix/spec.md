@@ -29,7 +29,8 @@ When multiple players are in the same room, all connected clients should display
 
 ## Out of Scope
 
-- Modifying the existing UI components (RoomInfoPanel.tsx, RoomInfo.tsx) as they already handle occupant display correctly
+Modifying the existing UI components (RoomInfoPanel.tsx, RoomInfo.tsx) as they already handle occupant display correctly
+
 - Changing the database schema or persistence layer
 - Implementing new occupant-related features beyond fixing the display issue
 - Performance optimizations for high-frequency occupant updates

@@ -71,7 +71,7 @@ STAT_NAME_MAPPING: dict[str, str] = {
 }
 
 
-def _parse_set_stat_args(command_data: dict) -> tuple[str | None, str | None, str | int | None]:
+def _parse_set_stat_args(command_data: dict[str, Any]) -> tuple[str | None, str | None, str | int | None]:
     """Parse stat name, target player, and value from command data."""
     args = command_data.get("args", [])
     stat_name_input = command_data.get("stat_name")
@@ -288,7 +288,11 @@ def _log_admin_set_stat(  # pylint: disable=too-many-arguments,too-many-position
 
 
 async def _handle_admin_set_stat_command(  # pylint: disable=too-many-arguments,too-many-locals  # Reason: Admin command requires many parameters and intermediate variables for complex stat setting logic
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
+    request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the admin set command to set a player's statistic.
@@ -327,8 +331,10 @@ async def _handle_admin_set_stat_command(  # pylint: disable=too-many-arguments,
         return {"result": "Target player is required for set command."}
 
     # After validation, stat_name_input and target_player are guaranteed to be non-None
-    assert stat_name_input is not None, "stat_name_input should not be None after validation"
-    assert target_player is not None, "target_player should not be None after validation"
+    if stat_name_input is None:
+        raise ValueError("stat_name_input should not be None after validation")
+    if target_player is None:
+        raise ValueError("target_player should not be None after validation")
 
     # Resolve services and check permissions
     service_result = await _resolve_admin_services_and_permissions(app, player_name, target_player)

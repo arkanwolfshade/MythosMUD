@@ -14,6 +14,7 @@ Integrate the NPC spawning system with the room occupant tracking system to make
 As a player, I want to see all NPCs present in my current room in the Room Info panel, so that I can be aware of the game world's inhabitants and interact with them appropriately.
 
 **Detailed Workflow:**
+
 1. Player enters a room that contains spawned NPCs
 2. Room Info panel displays both players and NPCs in the occupants list
 3. Player can see NPC names and types (shopkeeper, quest giver, etc.)
@@ -24,6 +25,7 @@ As a player, I want to see all NPCs present in my current room in the Room Info 
 As a player, I want to see NPCs appear in the room occupants list when they spawn, so that the game world feels dynamic and alive.
 
 **Detailed Workflow:**
+
 1. NPC spawns in a room due to server startup or dynamic spawning
 2. NPCEnteredRoom event is processed by the room system
 3. NPC is added to room's occupant tracking
@@ -39,7 +41,8 @@ As a player, I want to see NPCs appear in the room occupants list when they spaw
 
 ## Out of Scope
 
-- NPC movement between rooms (handled by existing movement system)
+NPC movement between rooms (handled by existing movement system)
+
 - NPC interaction commands (separate feature)
 - NPC behavior modifications (existing system sufficient)
 - Room Info panel UI changes (current design accommodates mixed occupants)

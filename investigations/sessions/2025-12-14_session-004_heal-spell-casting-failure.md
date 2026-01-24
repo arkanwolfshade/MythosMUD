@@ -14,6 +14,7 @@ The heal spell (Minor Heal) is not completing its casting cycle despite having a
 **User Report**: "Heal spell is still never finishing casting"
 
 **Observed Behavior**:
+
 - Player casts "Minor Heal" spell
 - Casting begins: "You begin casting Minor Heal... (1 seconds)"
 - Casting never completes - no completion message, no health update
@@ -22,6 +23,7 @@ The heal spell (Minor Heal) is not completing its casting cycle despite having a
 - Player has sufficient MP (15/15)
 
 **Expected Behavior**:
+
 - Spell should complete after 1 second
 - Health should be restored
 - Casting state should be cleared
@@ -34,6 +36,7 @@ The heal spell (Minor Heal) is not completing its casting cycle despite having a
 **Error Location**: `server/persistence/repositories/player_spell_repository.py:202-242` (`record_spell_cast` method)
 
 **Error Message** (from `logs/local/errors.log`):
+
 ```
 Database error recording spell cast: Instance '<PlayerSpell at 0x27b6afa97c0>' is not persistent within this Session
 ```
@@ -47,6 +50,7 @@ Database error recording spell cast: Instance '<PlayerSpell at 0x27b6afa97c0>' i
 3. **Error Propagation**: The error is caught by the exception handler in `_complete_casting` (line 416-424 in `magic_service.py`), which logs the error and clears the casting state in the `finally` block. However, the spell effect has already been processed (line 401), so the healing may have occurred, but the casting state is cleared without proper completion.
 
 4. **Code Flow**:
+
    ```
    _complete_casting()
    → process_effect() [SUCCESS - healing occurs]
@@ -61,6 +65,7 @@ Database error recording spell cast: Instance '<PlayerSpell at 0x27b6afa97c0>' i
 **File**: `server/persistence/repositories/player_spell_repository.py`
 
 **Problematic Code** (lines 202-242):
+
 ```python
 async def record_spell_cast(self, player_id: uuid.UUID, spell_id: str) -> PlayerSpell | None:
     try:
@@ -70,6 +75,7 @@ async def record_spell_cast(self, player_id: uuid.UUID, spell_id: str) -> Player
                 return None
 
             # ❌ Trying to modify object from different session
+
             player_spell.times_cast += 1
             player_spell.last_cast_at = datetime.now(UTC).replace(tzinfo=None)
             await session.commit()  # ❌ Object not in this session
@@ -83,17 +89,20 @@ async def record_spell_cast(self, player_id: uuid.UUID, spell_id: str) -> Player
 ### Severity: HIGH
 
 **Affected Systems**:
+
 - Spell casting completion mechanism
 - Player spell mastery tracking
 - Spell cast history recording
 
 **User Impact**:
+
 - Players cannot complete spell casts
 - Healing spells do not restore health (or restore health but don't complete)
 - Players may be stuck in casting state
 - Spell mastery progression is not recorded
 
 **Data Integrity**:
+
 - Spell effects may be applied (healing occurs) but not recorded
 - Spell cast statistics are not updated
 - Mastery progression tracking is broken
@@ -101,12 +110,15 @@ async def record_spell_cast(self, player_id: uuid.UUID, spell_id: str) -> Player
 ### Affected Components
 
 1. **`server/persistence/repositories/player_spell_repository.py`**
+
    - `record_spell_cast()` method - session management issue
 
 2. **`server/game/magic/magic_service.py`**
+
    - `_complete_casting()` method - error handling catches but doesn't prevent state clearing
 
 3. **`server/app/game_tick_processing.py`**
+
    - `process_casting_progress()` - calls casting completion logic
 
 ## Evidence Collection
@@ -133,6 +145,7 @@ user_friendly='Failed to record spell cast'
 ### User Observation
 
 From game client screenshot:
+
 - Casting message: "You begin casting Minor Heal... (1 seconds)"
 - No completion message
 - Health unchanged: 7/27 (WOUNDED)
@@ -187,6 +200,7 @@ After fixing, verify that:
 ### Session Management Pattern
 
 **Current (Broken) Pattern**:
+
 ```python
 async def record_spell_cast(self, player_id, spell_id):
     async for session in get_async_session():
@@ -195,6 +209,7 @@ async def record_spell_cast(self, player_id, spell_id):
 ```
 
 **Recommended Pattern**:
+
 ```python
 async def record_spell_cast(self, player_id, spell_id):
     async for session in get_async_session():
@@ -209,6 +224,7 @@ async def record_spell_cast(self, player_id, spell_id):
 ### Related Code Patterns
 
 Similar session management issues may exist in:
+
 - `update_mastery()` method (line 155-200) - also calls `get_player_spell()`
 - Other repository methods that call each other across session boundaries
 

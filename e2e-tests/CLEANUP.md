@@ -2,7 +2,9 @@
 
 ## Overview
 
-This document provides standardized cleanup procedures that should be executed after completing any multiplayer test scenario. These procedures ensure a clean state for subsequent test runs and prevent interference between different scenarios.
+This document provides standardized cleanup procedures that should be executed after completing any multiplayer test
+scenario. These procedures ensure a clean state for subsequent test runs and prevent interference between different
+scenarios.
 
 ## Standard Cleanup Sequence
 
@@ -45,9 +47,11 @@ await mcp_playwright_browser_tab_close({index: 0});
 
 ```powershell
 # Check if server port is free
+
 netstat -an | findstr :54731
 
 # Check if client port is free
+
 netstat -an | findstr :5173
 ```
 
@@ -63,9 +67,12 @@ netstat -an | findstr :5173
 
 ```powershell
 # Reset players to starting room
-$env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "UPDATE players SET current_room_id = 'earth_arkhamcity_sanitarium_room_foyer_001' WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
+
+$env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "UPDATE players SET current_room_id =
+'earth_arkhamcity_sanitarium_room_foyer_001' WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
 
 # Verify reset
+
 $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
 ```
 
@@ -81,12 +88,14 @@ $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "SELE
 
 ```powershell
 # Archive server logs (if needed)
+
 if (Test-Path "logs/e2e_test/server.log") {
     $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
     Move-Item "logs/e2e_test/server.log" "logs/e2e_test/server.log.$timestamp"
 }
 
 # Archive client logs (if needed)
+
 if (Test-Path "client/Logs") {
     Get-ChildItem "client/Logs" -Filter "*.log" | ForEach-Object {
         $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
@@ -120,12 +129,15 @@ await mcp_playwright_browser_evaluate({function: "() => { localStorage.clear(); 
 
 ```powershell
 # Force kill any remaining server processes
+
 Get-Process | Where-Object {$_.ProcessName -like "*python*" -and $_.CommandLine -like "*uvicorn*"} | Stop-Process -Force
 
 # Force kill any remaining client processes
+
 Get-Process | Where-Object {$_.ProcessName -like "*node*" -and $_.CommandLine -like "*vite*"} | Stop-Process -Force
 
 # Verify ports are free
+
 netstat -an | findstr :54731
 netstat -an | findstr :5173
 ```
@@ -174,13 +186,15 @@ If automatic cleanup fails:
 
 ### Low-Performance Machines
 
-- Allow extra time for browser tab closure (5-10 seconds between operations)
+Allow extra time for browser tab closure (5-10 seconds between operations)
+
 - Use longer timeouts for server shutdown verification
 - Consider archiving log files more frequently to prevent disk space issues
 
 ### High-Performance Machines
 
-- Standard cleanup procedures should complete quickly
+Standard cleanup procedures should complete quickly
+
 - Can perform more aggressive cleanup (cache clearing, log archiving)
 - May skip some optional cleanup steps for faster test cycles
 

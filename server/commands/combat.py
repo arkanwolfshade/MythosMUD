@@ -29,7 +29,11 @@ from server.utils.command_parser import get_username_from_user
 from server.validators.combat_validator import CombatValidator
 
 if TYPE_CHECKING:
+    from server.async_persistence import AsyncPersistenceLayer
+    from server.events.event_bus import EventBus
+    from server.realtime.connection_manager import ConnectionManager
     from server.services.combat_service import CombatService
+    from server.services.player_combat_service import PlayerCombatService
 
 logger = get_logger(__name__)
 
@@ -72,11 +76,11 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
     def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Command handler initialization requires many service dependencies
         self,
         combat_service: "CombatService | None" = None,
-        event_bus=None,
-        player_combat_service=None,
-        connection_manager=None,
-        async_persistence=None,
-    ):
+        event_bus: "EventBus | None" = None,
+        player_combat_service: "PlayerCombatService | None" = None,
+        connection_manager: "ConnectionManager | None" = None,
+        async_persistence: "AsyncPersistenceLayer | None" = None,
+    ) -> None:
         """
         Initialize the combat command handler.
 
@@ -113,10 +117,16 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
         self.combat_validator = CombatValidator()
         # Initialize target resolution service
         # Use async persistence for target resolution and player service
-        self.target_resolution_service = TargetResolutionService(async_persistence, PlayerService(async_persistence))
+        # Type ignore: TargetResolutionService accepts PersistenceProtocol (sync methods),
+        # but AsyncPersistenceLayer has async methods. The service handles both at runtime
+        # by checking if methods are coroutines (see _get_player_from_persistence).
+        self.target_resolution_service = TargetResolutionService(
+            async_persistence,  # type: ignore[arg-type]
+            PlayerService(async_persistence),
+        )
 
     async def _check_and_interrupt_rest(
-        self, request_app: Any, player_name: str, current_user: dict
+        self, request_app: Any, player_name: str, current_user: dict[str, Any]
     ) -> dict[str, str] | None:
         """Check if player is resting or in login grace period, interrupt rest if needed."""
         if not request_app:
@@ -148,7 +158,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
 
         return None
 
-    def _extract_combat_command_data(self, command_data: dict) -> tuple[str, str | None]:
+    def _extract_combat_command_data(self, command_data: dict[str, Any]) -> tuple[str, str | None]:
         """Extract command type and target name from command_data."""
         command_type = command_data.get("command_type", "attack")
         # Convert enum to string if needed
@@ -172,7 +182,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
         return None
 
     async def _get_player_and_room(
-        self, request_app: Any, current_user: dict
+        self, request_app: Any, current_user: dict[str, Any]
     ) -> tuple[Any, Any, dict[str, str] | None]:
         """Get player data and room, returning error dict if any step fails."""
         # Prefer container, fallback to app.state for backward compatibility
@@ -231,8 +241,8 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
 
     async def handle_attack_command(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Combat command handling requires many parameters and intermediate variables for complex combat logic
         self,
-        command_data: dict,
-        current_user: dict,
+        command_data: dict[str, Any],
+        current_user: dict[str, Any],
         request: Any,
         alias_storage: AliasStorage | None,
         player_name: str,
@@ -278,8 +288,6 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
             # After validation, target_name is guaranteed to be non-None
             if target_name is None:
                 return {"result": "Target name is required for attack command."}
-
-            assert target_name is not None, "target_name should not be None after validation"
 
             # Get player and room
             player, _, player_error = await self._get_player_and_room(request_app, current_user)
@@ -336,7 +344,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
             logger.error("Error getting NPC instance", npc_id=npc_id, error=str(e))
             return None
 
-    async def _validate_combat_action(self, player_name: str, npc_id: str, command: str) -> dict:
+    async def _validate_combat_action(self, player_name: str, npc_id: str, command: str) -> dict[str, Any]:
         """Validate combat action."""
         # Simple validation for now
         if not player_name or not npc_id or not command:
@@ -422,7 +430,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
 _combat_command_handler: CombatCommandHandler | None = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
 
 
-def get_combat_command_handler(app: Any = None) -> CombatCommandHandler:
+def get_combat_command_handler(app: Any | None = None) -> CombatCommandHandler:
     """
     Get the global combat command handler instance, creating it if needed.
 
@@ -436,16 +444,15 @@ def get_combat_command_handler(app: Any = None) -> CombatCommandHandler:
     if _combat_command_handler is None:
         if app is None:
             raise RuntimeError("Cannot initialize combat command handler without app instance")
-        combat_service = getattr(app.state, "combat_service", None)
-        event_bus = getattr(app.state, "event_bus", None)
-        player_combat_service = getattr(app.state, "player_combat_service", None)
-        # CRITICAL FIX: Get connection_manager from container to pass to CombatMessagingIntegration
-        connection_manager = None
-        async_persistence = None
+        # CRITICAL FIX: Get services from container, not app.state (container has the correct instances)
         container = getattr(app.state, "container", None)
-        if container:
-            connection_manager = getattr(container, "connection_manager", None)
-            async_persistence = getattr(container, "async_persistence", None)
+        if not container:
+            raise RuntimeError("Cannot initialize combat command handler without container")
+        combat_service = getattr(container, "combat_service", None)
+        event_bus = getattr(container, "event_bus", None)
+        player_combat_service = getattr(container, "player_combat_service", None)
+        connection_manager = getattr(container, "connection_manager", None)
+        async_persistence = getattr(container, "async_persistence", None)
         _combat_command_handler = CombatCommandHandler(
             combat_service=combat_service,
             event_bus=event_bus,
@@ -458,8 +465,8 @@ def get_combat_command_handler(app: Any = None) -> CombatCommandHandler:
 
 # Individual command handler functions for the command service
 async def handle_attack_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     alias_storage: AliasStorage | None,
     player_name: str,
@@ -471,8 +478,8 @@ async def handle_attack_command(
 
 
 async def handle_punch_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     alias_storage: AliasStorage | None,
     player_name: str,
@@ -487,8 +494,8 @@ async def handle_punch_command(
 
 
 async def handle_kick_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     alias_storage: AliasStorage | None,
     player_name: str,
@@ -503,8 +510,8 @@ async def handle_kick_command(
 
 
 async def handle_strike_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     alias_storage: AliasStorage | None,
     player_name: str,

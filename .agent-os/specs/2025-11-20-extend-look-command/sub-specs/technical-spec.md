@@ -20,7 +20,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 - Update `_create_look_command()` method to:
   - Parse explicit type syntax: `/look player <name>`, `/look item <name>`, `/look container <name>`
   - Parse container inspection: `/look in <container>` sets `look_in=True`
-  - Parse instance targeting: Extract `-N` or ` N` suffix from target string (e.g., `backpack-2` or `backpack 2`)
+  - Parse instance targeting: Extract `-N` or `N` suffix from target string (e.g., `backpack-2` or `backpack 2`)
   - Remove diagonal directions (`northeast`, `northwest`, `southeast`, `southwest`) from direction validation
   - Preserve existing behavior for implicit targeting
 
@@ -29,15 +29,21 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **File:** `server/commands/exploration_commands.py`
 
 **Target Resolution Logic:**
+
 1. If `target_type` is explicitly set, use that type only
 2. Otherwise, try in priority order: Players → NPCs → Items → Containers → Directions
 3. Support instance targeting when multiple matches exist
 
 **Player Look Implementation:**
+
 - Get players in current room via `room.get_players()` and `persistence.get_player_by_id()`
+
 - Match by name (case-insensitive, partial match)
+
 - Support instance targeting for multiple players with same name
+
 - Display format:
+
   ```
   [Player Name]
   [Visible Equipment: head, torso, legs, hands, feet, main_hand, off_hand]
@@ -47,6 +53,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
   ```
 
 **Health/Lucidity Label Functions:**
+
 - `_get_health_label(stats: dict) -> str`:
   - "healthy" if health > 75%
   - "wounded" if health 25-75%
@@ -59,30 +66,47 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
   - "mad" if lucidity <= 0
 
 **Visible Equipment Filter:**
+
 - Include only external slots: `head`, `torso`, `legs`, `hands`, `feet`, `main_hand`, `off_hand`
 - Exclude: `ring`, `amulet`, `belt`, `backpack` (internal/hidden slots)
 
 **Item Look Implementation:**
+
 - Search order: Room drops → Player inventory → Equipped items → Containers
+
 - Use `room_manager.list_room_drops()` for room items
+
 - Use `player.get_inventory()` and `player.get_equipped_items()` for player items
+
 - Search containers via `persistence.get_containers_by_room_id()` and `persistence.get_containers_by_entity_id()`
+
 - Match by `item_name` (case-insensitive, partial match)
+
 - Support instance targeting: `_parse_instance_number(target: str) -> tuple[str, int | None]`
+
 - Retrieve item prototype via `app.state.prototype_registry.get(prototype_id)`
+
 - Display format:
+
   ```
   [Item Name]
   [Long Description from ItemPrototypeModel]
   ```
 
 **Container Look Implementation:**
+
 - Search containers in: Room containers (`persistence.get_containers_by_room_id()`) and wearable containers (`persistence.get_containers_by_entity_id()`)
+
 - Match by container name/description from metadata (case-insensitive, partial match)
+
 - Support instance targeting for multiple containers
+
 - If `look_in=True` or target resolves to container, show contents
+
 - Convert container data to `ContainerComponent` for access to items, capacity, lock state
+
 - Display format:
+
   ```
   [Container Name/Description]
 
@@ -94,6 +118,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
   ```
 
 **Helper Functions:**
+
 - `_get_players_in_room(room: Room, persistence: PersistenceLayer) -> list[Player]`
 - `_get_health_label(stats: dict) -> str`
 - `_get_lucidity_label(stats: dict) -> str`
@@ -109,32 +134,37 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 ### Integration Points
 
 **Item Prototype Registry:**
+
 - Access via `app.state.prototype_registry` (from ApplicationContainer)
 - Use `prototype_registry.get(prototype_id)` to retrieve `ItemPrototypeModel`
 - Extract `long_description` field for item look display
 
 **Container Service:**
+
 - Use `persistence.get_containers_by_room_id(room_id)` for environmental containers
 - Use `persistence.get_containers_by_entity_id(player_id)` for wearable containers
 - Convert raw container data to `ContainerComponent` using `ContainerComponent.model_validate()`
 - Access container properties: `items`, `capacity_slots`, `lock_state`, `metadata`
 
 **Room Manager:**
+
 - Use `room_manager.list_room_drops(room_id)` for room items
 - Access via `app.state.connection_manager.room_manager`
 
 ### Error Handling
 
-- Return appropriate error messages for:
-  - Player not found: "You don't see anyone named '<target>' here."
-  - Item not found: "You don't see any '<target>' here."
-  - Container not found: "You don't see any '<target>' here."
-  - Multiple matches: "You see multiple <type>s matching '<target>': [list]"
-  - Instance out of range: "There aren't that many '<target>' here."
+Return appropriate error messages for:
+
+- Player not found: "You don't see anyone named '<target>' here."
+- Item not found: "You don't see any '<target>' here."
+- Container not found: "You don't see any '<target>' here."
+- Multiple matches: "You see multiple <type>s matching '<target>': [list]"
+- Instance out of range: "There aren't that many '<target>' here."
 
 ### Testing Requirements
 
 **Unit Tests (`server/tests/unit/commands/test_exploration_commands.py`):**
+
 - Test player look with various health/lucidity states
 - Test item look in different locations (room, inventory, equipped, container)
 - Test container look with different lock states
@@ -145,6 +175,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 - Test error cases (not found, multiple matches, instance out of range)
 
 **Integration Tests:**
+
 - Test player look with real players in room
 - Test item look across all locations with real items
 - Test container look with real containers
@@ -156,6 +187,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **File:** `server/help/help_content.py`
 
 Update help text with new examples:
+
 - `look player Armitage` - Look at a player
 - `look item lantern` - Look at an item
 - `look container backpack` - Look at a container
@@ -166,6 +198,7 @@ Update help text with new examples:
 ## External Dependencies
 
 No new external dependencies required. This feature uses existing:
+
 - Item prototype registry (already in ApplicationContainer)
 - Container persistence layer (already implemented)
 - Room manager (already in ConnectionManager)

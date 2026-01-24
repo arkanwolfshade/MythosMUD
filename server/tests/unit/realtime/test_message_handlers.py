@@ -30,7 +30,9 @@ async def test_handle_command_message_no_command():
     """Test handle_command_message() handles missing command."""
     mock_websocket = AsyncMock(spec=WebSocket)
     player_id = "player_123"
-    data = {"args": []}
+    from typing import Any
+
+    data: dict[str, Any] = {"args": []}
 
     with patch("server.realtime.websocket_handler.handle_game_command") as mock_handle:
         await handle_command_message(mock_websocket, player_id, data)
@@ -69,7 +71,9 @@ async def test_handle_chat_message_no_message():
     """Test handle_chat_message() handles missing message."""
     mock_websocket = AsyncMock(spec=WebSocket)
     player_id = "player_123"
-    data = {}
+    from typing import Any
+
+    data: dict[str, Any] = {}
 
     with patch("server.realtime.websocket_handler.handle_chat_message") as mock_handle:
         await handle_chat_message(mock_websocket, player_id, data)
@@ -82,7 +86,9 @@ async def test_handle_ping_message():
     """Test handle_ping_message() sends pong response."""
     mock_websocket = AsyncMock(spec=WebSocket)
     player_id = "player_123"
-    data = {}
+    from typing import Any
+
+    data: dict[str, Any] = {}
 
     with patch("server.realtime.envelope.build_event") as mock_build_event:
         mock_build_event.return_value = {"type": "pong", "data": {}}

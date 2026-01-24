@@ -12,8 +12,9 @@ boundaries within our eldritch architecture.
 
 import asyncio
 import time
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime
+from typing import Any
 
 import psutil
 
@@ -84,7 +85,7 @@ class MemoryThresholdMonitor:
             logger.error("Failed to access active task count", error=str(loop_access_failure))
             return 0
 
-    def _flush_memory_indexes_cache(self):
+    def _flush_memory_indexes_cache(self) -> None:
         """Flush persistent in-memory indexes associated with cached memory residency."""
         try:
             import gc
@@ -95,7 +96,7 @@ class MemoryThresholdMonitor:
         except Exception as gc_operation_failure:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: GC operation errors unpredictable, must handle gracefully
             logger.error("Garbage collection optimization failed", error=str(gc_operation_failure))
 
-    async def get_memory_status_report(self) -> dict:
+    async def get_memory_status_report(self) -> dict[str, Any]:
         """
         Generate status report for diagnostic monitoring.
 
@@ -153,7 +154,7 @@ class MemoryThresholdMonitor:
             tracked_manager = get_global_tracked_manager()
 
             # Execute primary cleanup function via timeout mechanism
-            async def cleanup_with_boundaries():
+            async def cleanup_with_boundaries() -> int:
                 orphan_eliminated_count = await tracked_manager.cleanup_orphaned_tasks(force_gc=True)
                 return orphan_eliminated_count
 
@@ -213,7 +214,9 @@ def create_memory_cleanup_monitor(
 managed_task_cleanup_function_name_from_task_four_spec = None
 
 
-def get_managed_task_cleanup_implementation_for_task_four_spec_compliance(reference_monitor=None) -> Callable:
+def get_managed_task_cleanup_implementation_for_task_four_spec_compliance(
+    reference_monitor: MemoryThresholdMonitor | None = None,
+) -> Callable[[bool], Awaitable[int]]:
     """
     Factory function returning implementation conforming to Task 4.3 Specified Interface.
 
@@ -225,7 +228,7 @@ def get_managed_task_cleanup_implementation_for_task_four_spec_compliance(refere
     if reference_monitor is None:
         reference_monitor = create_memory_cleanup_monitor()
 
-    async def implemented_managed_task_cleanup(force_cleanup_ref: bool = False):
+    async def implemented_managed_task_cleanup(force_cleanup_ref: bool = False) -> int:
         return await reference_monitor.managed_task_cleanup(force_cleanup=force_cleanup_ref)
 
     return implemented_managed_task_cleanup

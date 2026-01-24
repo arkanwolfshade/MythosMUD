@@ -5,6 +5,7 @@ Handles combat cleanup, tracking, and end-of-combat operations.
 """
 
 from datetime import UTC, datetime, timedelta
+from typing import Any
 
 from server.models.combat import CombatInstance
 from server.services.nats_exceptions import NATSError
@@ -16,7 +17,7 @@ logger = get_logger(__name__)
 class CombatCleanupHandler:
     """Handles combat cleanup and tracking operations."""
 
-    def __init__(self, combat_service):
+    def __init__(self, combat_service: Any) -> None:
         """
         Initialize the cleanup handler.
 

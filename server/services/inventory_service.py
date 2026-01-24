@@ -5,10 +5,15 @@ from __future__ import annotations
 import copy
 import uuid
 from collections.abc import Mapping, Sequence
+from contextlib import AbstractContextManager
 from dataclasses import dataclass, field
-from typing import Any, TypedDict, cast
+from typing import (
+    Any,
+    TypedDict,
+    cast,
+)
 
-from .inventory_mutation_guard import InventoryMutationGuard
+from .inventory_mutation_guard import InventoryMutationGuard, MutationDecision
 
 
 class InventoryServiceError(Exception):
@@ -153,7 +158,7 @@ class InventoryService:
         normalized_inventory.insert(slot_index + 1, split_stack)
         return normalized_inventory
 
-    def begin_mutation(self, player_id: uuid.UUID | str, token: str | None):
+    def begin_mutation(self, player_id: uuid.UUID | str, token: str | None) -> AbstractContextManager[MutationDecision]:
         """
         Acquire a guarded mutation context for the given player.
 

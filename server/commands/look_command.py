@@ -36,7 +36,7 @@ def _get_app_and_persistence(request: Any) -> tuple[Any, Any]:
 
 
 async def _validate_look_prerequisites(
-    persistence: Any, current_user: dict, player_name: str
+    persistence: Any, current_user: dict[str, Any], player_name: str
 ) -> tuple[Any, Any] | None:
     """Validate and retrieve player and room for look command."""
     if not persistence:
@@ -87,7 +87,7 @@ def _get_room_drops(app: Any, room_id: int, player_name: str) -> list[dict[str, 
 
 
 async def _setup_look_command(  # pylint: disable=too-many-arguments  # Reason: Look command setup requires many parameters for context and validation
-    request: Any, current_user: dict, player_name: str
+    request: Any, current_user: dict[str, Any], player_name: str
 ) -> tuple[Any, Any, Any, Any, list[dict[str, Any]]] | None:
     """Setup and validate look command prerequisites."""
     app, persistence = _get_app_and_persistence(request)
@@ -135,7 +135,7 @@ async def _try_explicit_item_look(  # pylint: disable=too-many-arguments,too-man
     room_drops: list[dict[str, Any]],
     player: Any,
     app: Any,
-    command_data: dict,
+    command_data: dict[str, Any],
     player_name: str,
 ) -> dict[str, Any] | None:
     """Try to handle explicit item look."""
@@ -163,7 +163,7 @@ async def _try_explicit_container_look(  # pylint: disable=too-many-arguments,to
     player: Any,
     persistence: Any,
     app: Any,
-    command_data: dict,
+    command_data: dict[str, Any],
     request: Any,
     player_name: str,
 ) -> dict[str, Any] | None:
@@ -286,7 +286,7 @@ async def _try_direction_look(
 
 
 async def _route_look_command(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Look command routing requires many parameters for context and target resolution
-    command_data: dict,
+    command_data: dict[str, Any],
     target: str | None,
     target_type: str | None,
     direction: str | None,
@@ -336,8 +336,8 @@ async def _route_look_command(  # pylint: disable=too-many-arguments,too-many-po
 
 
 async def handle_look_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     alias_storage: AliasStorage | None,
     player_name: str,

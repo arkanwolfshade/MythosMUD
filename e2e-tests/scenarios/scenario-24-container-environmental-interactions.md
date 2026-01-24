@@ -2,7 +2,7 @@
 
 ## 🤖 MANDATORY AI EXECUTION CONTRACT 🤖
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST
 
 1. ✅ Read this ENTIRE scenario file from start to finish
 2. ✅ Execute EVERY step in EXACT order (Step 1, 2, 3...)
@@ -13,23 +13,28 @@
 7. ✅ Never modify steps, even if you think there's a better way
 8. ✅ Stop IMMEDIATELY when you see "SCENARIO 24 COMPLETED"
 
-**EXECUTION AFFIRMATION (Type this before proceeding):**
-"I will execute Scenario 24: Environmental Container Interactions exactly as written without modification, addition, or omission"
+### EXECUTION AFFIRMATION (Type this before proceeding)
 
-**CONFIRMATION CHECKLIST:**
-- [ ] I have read the entire scenario file
+"I will execute Scenario 24: Environmental Container Interactions exactly as written without modification, addition, or
+omission"
+
+### CONFIRMATION CHECKLIST
+
+[ ] I have read the entire scenario file
+
 - [ ] I understand that I must execute every step exactly as written
 - [ ] I will not skip, add, or modify any steps
 - [ ] I will stop at scenario completion marker
 - [ ] I understand that VIOLATION = COMPLETE FAILURE
 
-**⚠️ VIOLATION = COMPLETE FAILURE**
+### ⚠️ VIOLATION = COMPLETE FAILURE
 
 ---
 
 ## Overview
 
 Tests environmental container interactions including:
+
 - Opening environmental containers in rooms
 - Viewing container contents
 - Transferring items to/from environmental containers
@@ -37,11 +42,12 @@ Tests environmental container interactions including:
 - Container locking mechanisms
 - Container state persistence
 
-**This is a core multi-player scenario** that requires real-time verification of container state synchronization. No automated alternative is available.
+**This is a core multi-player scenario** that requires real-time verification of container state synchronization. No
+automated alternative is available.
 
 ## Prerequisites
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
 2. **Server Running**: Development server is running on port 54731
@@ -49,31 +55,40 @@ Tests environmental container interactions including:
 4. **Environmental Container**: Room has at least one environmental container with items
 5. **Both Players Connected**: Both players are logged in and in the same room
 
-**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
+### ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE
 
 **Reference**: See @MULTIPLAYER_TEST_RULES.md for complete prerequisite verification procedures.
 
 ## Test Configuration
 
-- **Test Players**: ArkanWolfshade (AW) and Ithaqua
-- **Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
-- **Testing Approach**: Playwright MCP (multi-tab interaction required)
-- **Timeout Settings**: Use configurable timeouts from master rules
+**Test Players**: ArkanWolfshade (AW) and Ithaqua
+
+**Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
+
+**Testing Approach**: Playwright MCP (multi-tab interaction required)
+
+**Timeout Settings**: Use configurable timeouts from master rules
 
 ## Testing Approach Rationale
 
-**Why Playwright MCP is Required:**
+### Why Playwright MCP is Required
 
-- **Multi-tab Coordination**: Requires 2+ browser tabs for multiplayer testing
-- **Real-time Interaction**: Must verify container state updates in real-time
-- **State Synchronization**: Must test that container changes are synchronized across players
-- **UI Interaction**: Must test container UI components (buttons, split-pane, etc.)
-- **API Integration**: Must verify API calls work correctly through UI
+**Multi-tab Coordination**: Requires 2+ browser tabs for multiplayer testing
+
+**Real-time Interaction**: Must verify container state updates in real-time
+
+**State Synchronization**: Must test that container changes are synchronized across players
+
+**UI Interaction**: Must test container UI components (buttons, split-pane, etc.)
+
+**API Integration**: Must verify API calls work correctly through UI
 
 ## Execution Steps
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 1 of 7: Setup - Both Players Connected
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: Ensure both players are connected and in the same room
@@ -118,13 +133,17 @@ await mcp_playwright_browser_wait_for({time: 10});
 
 **Expected Result**: Both players logged in and in game
 
-**✅ Step 1 Completion Checklist:**
-- [ ] Both players logged in
+### ✅ Step 1 Completion Checklist
+
+[ ] Both players logged in
+
 - [ ] Both players in game interface
 - [ ] Ready to proceed to Step 2
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 2 of 7: AW Opens Environmental Container via UI
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: Test opening environmental container through UI
@@ -144,7 +163,10 @@ const snapshotAW = await mcp_playwright_browser_snapshot();
 // Look for environmental container UI (overlay, button, or in room description)
 // Check for container-related UI elements
 const containerUI = await mcp_playwright_browser_evaluate({
-  function: "() => { const containers = Array.from(document.querySelectorAll('[data-testid*=\"container\"], [aria-label*=\"container\"], button[aria-label*=\"open\"], button[aria-label*=\"Container\"]')); return containers.map(el => ({ tag: el.tagName, text: el.textContent?.substring(0, 50), testId: el.getAttribute('data-testid'), ariaLabel: el.getAttribute('aria-label'), visible: el.offsetParent !== null })); }"
+  function: "() => { const containers = Array.from(document.querySelectorAll('[data-testid*=\"container\"],
+  [aria-label*=\"container\"], button[aria-label*=\"open\"], button[aria-label*=\"Container\"]')); return
+  containers.map(el => ({ tag: el.tagName, text: el.textContent?.substring(0, 50), testId: el.getAttribute('data-testid'),
+  ariaLabel: el.getAttribute('aria-label'), visible: el.offsetParent !== null })); }"
 });
 
 console.log('Container UI elements:', JSON.stringify(containerUI, null, 2));
@@ -169,13 +191,17 @@ await mcp_playwright_browser_wait_for({time: 10});
 
 **Expected Result**: Container UI appears showing container contents
 
-**✅ Step 2 Completion Checklist:**
-- [ ] Container UI interaction attempted
+### ✅ Step 2 Completion Checklist
+
+[ ] Container UI interaction attempted
+
 - [ ] Container UI appeared or error documented
 - [ ] Ready to proceed to Step 3
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 3 of 7: Verify Container Contents Display
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: Verify container contents are displayed correctly
@@ -205,13 +231,17 @@ console.log('✅ Proceeding to next step');
 
 **Expected Result**: Container contents displayed in split-pane UI
 
-**✅ Step 3 Completion Checklist:**
-- [ ] Container contents checked
+### ✅ Step 3 Completion Checklist
+
+[ ] Container contents checked
+
 - [ ] Results documented
 - [ ] Ready to proceed to Step 4
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 4 of 7: AW Transfers Item to Container
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: Test item transfer to container via UI
@@ -251,13 +281,17 @@ console.log('Transfer result:', JSON.stringify(transferResult, null, 2));
 
 **Expected Result**: Item transferred to container, UI updated
 
-**✅ Step 4 Completion Checklist:**
-- [ ] Transfer attempted
+### ✅ Step 4 Completion Checklist
+
+[ ] Transfer attempted
+
 - [ ] Transfer result documented
 - [ ] Ready to proceed to Step 5
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 5 of 7: Ithaqua Views Container State
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: Verify container state is synchronized across players
@@ -281,13 +315,17 @@ console.log('Ithaqua container state:', JSON.stringify(containerStateIthaqua, nu
 
 **Expected Result**: Container state synchronized (or differences documented)
 
-**✅ Step 5 Completion Checklist:**
-- [ ] Container state checked in Ithaqua's tab
+### ✅ Step 5 Completion Checklist
+
+[ ] Container state checked in Ithaqua's tab
+
 - [ ] Synchronization verified or documented
 - [ ] Ready to proceed to Step 6
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 6 of 7: Test Container Capacity Limits
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: Verify container capacity limits are enforced
@@ -315,13 +353,17 @@ console.log('Capacity limit testing documented');
 
 **Expected Result**: Container capacity displayed and limits enforced
 
-**✅ Step 6 Completion Checklist:**
-- [ ] Capacity information checked
+### ✅ Step 6 Completion Checklist
+
+[ ] Capacity information checked
+
 - [ ] Capacity limits tested or documented
 - [ ] Ready to proceed to Step 7
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 7 of 7: Scenario Completion
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: Finalize scenario execution
@@ -359,26 +401,33 @@ console.log('🧹 CLEANUP COMPLETE');
 
 **Expected Result**: Scenario completed, tabs closed
 
-**✅ Scenario Completion Verification:**
-- [ ] All browser tabs closed
+### ✅ Scenario Completion Verification
+
+[ ] All browser tabs closed
+
 - [ ] Scenario completion logged
 - [ ] Ready for cleanup procedures
 
-**🛑 EXECUTION ENDS HERE - DO NOT PROCEED FURTHER**
+### 🛑 EXECUTION ENDS HERE - DO NOT PROCEED FURTHER
 
 ---
 
 ## Expected Results
 
-- ✅ Environmental containers accessible via UI
-- ✅ Container contents displayed correctly
-- ✅ Item transfers work via UI
-- ✅ Container state synchronized across players
-- ✅ Container capacity limits enforced
+✅ Environmental containers accessible via UI
+
+✅ Container contents displayed correctly
+
+✅ Item transfers work via UI
+
+✅ Container state synchronized across players
+
+✅ Container capacity limits enforced
 
 ## Success Criteria Checklist
 
-- [ ] Both players successfully connected
+[ ] Both players successfully connected
+
 - [ ] Container UI accessible and functional
 - [ ] Container contents displayed correctly
 - [ ] Item transfers work via UI
@@ -395,7 +444,7 @@ Execute standard cleanup procedures from @CLEANUP.md
 
 ## Status
 
-**✅ SCENARIO FILE CREATED**
+### ✅ SCENARIO FILE CREATED
 
 ---
 

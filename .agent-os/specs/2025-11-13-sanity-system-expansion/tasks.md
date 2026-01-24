@@ -2,11 +2,12 @@
 
 ## Tasks
 
-- [x] 1. Implement lucidity data model and persistence
-  - [x] 1.1 Write database migration tests for new lucidity tables and constraints
-  - [x] 1.2 Add SQLAlchemy models for `player_lucidity`, `lucidity_adjustment_log`, `lucidity_exposure_state`, and `lucidity_cooldowns`
-  - [x] 1.3 Implement repository/service layer for SAN adjustments and liability tracking
-  - [x] 1.4 Verify all tests pass
+[x] 1. Implement lucidity data model and persistence
+
+- [x] 1.1 Write database migration tests for new lucidity tables and constraints
+- [x] 1.2 Add SQLAlchemy models for `player_lucidity`, `lucidity_adjustment_log`, `lucidity_exposure_state`, and `lucidity_cooldowns`
+- [x] 1.3 Implement repository/service layer for SAN adjustments and liability tracking
+- [x] 1.4 Verify all tests pass
 
 - [x] 2. Build passive SAN flux scheduler and telemetry
   - [x] 2.1 Write scheduler unit tests covering passive gain/drain scenarios

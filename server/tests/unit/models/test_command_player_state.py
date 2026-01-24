@@ -25,7 +25,8 @@ def test_quit_command_no_fields():
     """Test QuitCommand has no required fields."""
     command = QuitCommand()
 
-    assert command.command_type == "quit"
+    # Reason: Enum values (str enums) are comparable to strings at runtime
+    assert command.command_type == "quit"  # type: ignore[comparison-overlap]
 
 
 # --- Tests for LogoutCommand ---
@@ -35,7 +36,8 @@ def test_logout_command_no_fields():
     """Test LogoutCommand has no required fields."""
     command = LogoutCommand()
 
-    assert command.command_type == "logout"
+    # Reason: Enum values (str enums) are comparable to strings at runtime
+    assert command.command_type == "logout"  # type: ignore[comparison-overlap]
 
 
 # --- Tests for SitCommand ---
@@ -45,7 +47,7 @@ def test_sit_command_no_fields():
     """Test SitCommand has no required fields."""
     command = SitCommand()
 
-    assert command.command_type == "sit"
+    assert command.command_type == "sit"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
 
 
 # --- Tests for StandCommand ---
@@ -55,7 +57,8 @@ def test_stand_command_no_fields():
     """Test StandCommand has no required fields."""
     command = StandCommand()
 
-    assert command.command_type == "stand"
+    # Reason: Enum values (str enums) are comparable to strings at runtime
+    assert command.command_type == "stand"  # type: ignore[comparison-overlap]
 
 
 # --- Tests for LieCommand ---
@@ -65,8 +68,9 @@ def test_lie_command_default_values():
     """Test LieCommand has correct default values."""
     command = LieCommand()
 
-    assert command.command_type == "lie"
-    assert command.modifier is None
+    assert command.command_type == "lie"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+    # Reason: Testing default value - mypy may see as unreachable but validates at runtime
+    assert command.modifier is None  # type: ignore[unreachable]
 
 
 def test_lie_command_with_modifier_down():
@@ -129,8 +133,10 @@ def test_ground_command_required_fields():
     with patch("server.models.command_player_state.validate_player_name", return_value="TestPlayer"):
         command = GroundCommand(target_player="TestPlayer")
 
-        assert command.command_type == "ground"
-        assert command.target_player == "TestPlayer"
+        # Reason: Enum values (str enums) are comparable to strings at runtime
+        assert command.command_type == "ground"  # type: ignore[comparison-overlap]
+        # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+        assert command.target_player == "TestPlayer"  # type: ignore[unreachable]
 
 
 def test_ground_command_validate_target_player_calls_validator():

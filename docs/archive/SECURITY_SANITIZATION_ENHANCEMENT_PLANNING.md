@@ -10,7 +10,8 @@ This document outlines the implementation plan for enhancing MythosMUD's input *
 
 ### Current State
 
-- Basic injection pattern detection via regex in `security_validator.py`
+Basic injection pattern detection via regex in `security_validator.py`
+
 - Simple whitespace normalization in `command_validator.py`
 - No Unicode normalization or ANSI code handling
 - Limited protection against encoding-based attacks
@@ -32,23 +33,28 @@ This document outlines the implementation plan for enhancing MythosMUD's input *
 
 **Sanitization vs Validation**:
 
-- **Sanitization**: Clean dangerous content while preserving user intent
-- **Validation**: Reject input that doesn't meet specific criteria
+**Sanitization**: Clean dangerous content while preserving user intent
+
+**Validation**: Reject input that doesn't meet specific criteria
 
 **Examples**:
 
-- ✅ **Sanitization**: Remove ANSI codes from "Hello \033[31mWorld\033[0m" → "Hello World"
-- ❌ **Validation**: Reject "Hello \033[31mWorld\033[0m" entirely
-- ✅ **Sanitization**: Fix Unicode "café" (combining characters) → "café" (composed)
+✅ **Sanitization**: Remove ANSI codes from "Hello \033[31mWorld\033[0m" → "Hello World"
+
+❌ **Validation**: Reject "Hello \033[31mWorld\033[0m" entirely
+
+✅ **Sanitization**: Fix Unicode "café" (combining characters) → "café" (composed)
 - ❌ **Validation**: Reject text with combining characters
 
 ### Libraries to Implement
 
 #### 1. ftfy (Fixes Text For You)
 
-- **Purpose**: Fixes common Unicode encoding issues
-- **Version**: `>=6.1.3`
-- **Key Features**:
+**Purpose**: Fixes common Unicode encoding issues
+
+**Version**: `>=6.1.3`
+
+**Key Features**:
   - Mojibake detection and correction
   - Combining character normalization
   - Invisible Unicode character removal
@@ -57,9 +63,11 @@ This document outlines the implementation plan for enhancing MythosMUD's input *
 
 #### 2. strip-ansi
 
-- **Purpose**: Removes ANSI escape codes from text
-- **Version**: `>=0.1.1`
-- **Key Features**:
+**Purpose**: Removes ANSI escape codes from text
+
+**Version**: `>=0.1.1`
+
+**Key Features**:
   - ANSI color code removal
   - Cursor movement code removal
   - Terminal escape sequence cleanup
@@ -76,12 +84,14 @@ This document outlines the implementation plan for enhancing MythosMUD's input *
    ```
 
 2. **Update virtual environment**
+
    - Run `uv sync` to install new dependencies
    - Verify installation with test imports
 
 ### Phase 2: Security Validator Enhancement
 
 1. **Enhance `server/validators/security_validator.py`**
+
    - Add import statements for new libraries
    - Create `sanitize_unicode_input()` function using ftfy
    - Create `strip_ansi_codes()` function using strip-ansi
@@ -105,6 +115,7 @@ This document outlines the implementation plan for enhancing MythosMUD's input *
 ### Phase 3: Command Validator Integration
 
 1. **Update `server/validators/command_validator.py`**
+
    - Import new sanitization functions
    - Modify `clean_command_input()` to use comprehensive sanitization
    - Maintain backward compatibility with existing function signatures
@@ -112,6 +123,7 @@ This document outlines the implementation plan for enhancing MythosMUD's input *
    - **Review validation logic**: Ensure `is_suspicious_input()` focuses on true injection attempts, not legitimate user expression
 
 2. **Integration Points**
+
    - Apply sanitization before command normalization
    - Log sanitization changes for debugging
    - Preserve original input for comparison
@@ -119,6 +131,7 @@ This document outlines the implementation plan for enhancing MythosMUD's input *
 ### Phase 4: Package Export Updates
 
 1. **Update `server/validators/__init__.py`**
+
    - Export new sanitization functions
    - Update `__all__` list
    - Maintain existing API compatibility
@@ -126,6 +139,7 @@ This document outlines the implementation plan for enhancing MythosMUD's input *
 ### Phase 5: Testing Implementation
 
 1. **Create comprehensive test suite**
+
    - Test Unicode normalization scenarios
    - Test ANSI code removal scenarios
    - Test combined sanitization
@@ -135,6 +149,7 @@ This document outlines the implementation plan for enhancing MythosMUD's input *
    - **Test sanitization vs validation**: Verify we're cleaning, not rejecting
 
 2. **Test Scenarios**
+
    - Mojibake text (double-encoded Unicode)
    - Combining characters (e.g., e + combining acute accent)
    - Invisible Unicode characters (zero-width spaces)
@@ -148,11 +163,13 @@ This document outlines the implementation plan for enhancing MythosMUD's input *
 ### Phase 6: Documentation and Validation
 
 1. **Update documentation**
+
    - Add security enhancement notes to relevant docs
    - Document new function APIs
    - Update security guidelines
 
 2. **Performance validation**
+
    - Measure sanitization overhead
    - Test with various input sizes
    - Ensure acceptable performance for real-time use
@@ -163,6 +180,7 @@ This document outlines the implementation plan for enhancing MythosMUD's input *
 
 ```python
 # Recommended ftfy settings for MUD environment
+
 ftfy.fix_text(
     text,
     normalization='NFC',  # Normalize to composed form
@@ -176,6 +194,7 @@ ftfy.fix_text(
 
 ```python
 # Simple ANSI removal
+
 import strip_ansi
 cleaned_text = strip_ansi.strip_ansi(input_text)
 ```
@@ -209,7 +228,8 @@ cleaned_text = strip_ansi.strip_ansi(input_text)
 
 ### Functional Requirements
 
-- [ ] All Unicode encoding issues are properly fixed
+[ ] All Unicode encoding issues are properly fixed
+
 - [ ] ANSI escape codes are completely removed
 - [ ] Control characters are stripped appropriately
 - [ ] Existing command processing continues to work
@@ -220,14 +240,16 @@ cleaned_text = strip_ansi.strip_ansi(input_text)
 
 ### Security Requirements
 
-- [ ] No malicious Unicode sequences can bypass sanitization
+[ ] No malicious Unicode sequences can bypass sanitization
+
 - [ ] ANSI codes cannot hide malicious content
 - [ ] Control character injection is prevented
 - [ ] Input validation remains effective
 
 ### Quality Requirements
 
-- [ ] Comprehensive test coverage (>90%)
+[ ] Comprehensive test coverage (>90%)
+
 - [ ] All existing tests continue to pass
 - [ ] Documentation is updated
 - [ ] Performance benchmarks are met
@@ -236,25 +258,29 @@ cleaned_text = strip_ansi.strip_ansi(input_text)
 
 ### Week 1: Foundation
 
-- Add dependencies and verify installation
+Add dependencies and verify installation
+
 - Create basic sanitization functions
 - Write initial tests
 
 ### Week 2: Integration
 
-- Integrate with command validator
+Integrate with command validator
+
 - Update package exports
 - Complete test suite
 
 ### Week 3: Validation
 
-- Performance testing and optimization
+Performance testing and optimization
+
 - Security validation
 - Documentation updates
 
 ### Week 4: Deployment
 
-- Code review and final testing
+Code review and final testing
+
 - Gradual rollout with monitoring
 - Post-deployment validation
 

@@ -44,20 +44,25 @@ class TestCombatInitializer:
         """Test create_combat_instance creates basic combat instance."""
         room_id = "room_001"
         current_tick = 100
+        turn_interval_seconds = 10
         combat = CombatInitializer.create_combat_instance(
             room_id=room_id,
             attacker=attacker_data,
             target=target_data,
             current_tick=current_tick,
             auto_progression_enabled=True,
-            turn_interval_seconds=6,
+            turn_interval_seconds=turn_interval_seconds,  # 10 seconds = 100 ticks
         )
 
         assert combat.room_id == room_id
         assert combat.auto_progression_enabled is True
         assert combat.start_tick == current_tick
         assert combat.last_activity_tick == current_tick
-        assert combat.next_turn_tick == current_tick + 6
+        # turn_interval_seconds is converted to ticks: 10 seconds * 10 = 100 ticks
+        assert combat.turn_interval_ticks == turn_interval_seconds * 10
+        assert combat.next_turn_tick == current_tick + (turn_interval_seconds * 10)
+        assert not combat.queued_actions
+        assert not combat.round_actions
 
     def test_create_combat_instance_participants(self, attacker_data, target_data):
         """Test create_combat_instance adds participants correctly."""
@@ -161,18 +166,21 @@ class TestCombatInitializer:
     def test_create_combat_instance_different_turn_interval(self, attacker_data, target_data):
         """Test create_combat_instance with different turn interval."""
         current_tick = 100
-        turn_interval = 10
+        turn_interval_seconds = 10
         combat = CombatInitializer.create_combat_instance(
             room_id="room_001",
             attacker=attacker_data,
             target=target_data,
             current_tick=current_tick,
             auto_progression_enabled=True,
-            turn_interval_seconds=turn_interval,
+            turn_interval_seconds=turn_interval_seconds,
         )
 
-        assert combat.turn_interval_ticks == turn_interval
-        assert combat.next_turn_tick == current_tick + turn_interval
+        # turn_interval_seconds is converted to ticks: 10 seconds * 10 = 100 ticks
+        assert combat.turn_interval_ticks == turn_interval_seconds * 10
+        assert combat.next_turn_tick == current_tick + (turn_interval_seconds * 10)
+        assert not combat.queued_actions
+        assert not combat.round_actions
 
     def test_create_combat_instance_damaged_participants(self, attacker_data, target_data):
         """Test create_combat_instance with damaged participants."""
@@ -198,15 +206,20 @@ class TestCombatInitializer:
 
     def test_create_combat_instance_zero_tick(self, attacker_data, target_data):
         """Test create_combat_instance with zero tick."""
+        turn_interval_seconds = 6
         combat = CombatInitializer.create_combat_instance(
             room_id="room_001",
             attacker=attacker_data,
             target=target_data,
             current_tick=0,
             auto_progression_enabled=True,
-            turn_interval_seconds=6,
+            turn_interval_seconds=turn_interval_seconds,
         )
 
         assert combat.start_tick == 0
         assert combat.last_activity_tick == 0
-        assert combat.next_turn_tick == 6
+        # turn_interval_seconds is converted to ticks: 6 seconds * 10 = 60 ticks
+        assert combat.turn_interval_ticks == turn_interval_seconds * 10
+        assert combat.next_turn_tick == turn_interval_seconds * 10
+        assert not combat.queued_actions
+        assert not combat.round_actions

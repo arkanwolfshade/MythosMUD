@@ -11,6 +11,7 @@ encoding: UTF-8
 ## Overview
 
 Execute tasks for a given spec following three distinct phases:
+
 1. Pre-execution setup (Steps 1-3)
 2. Task execution loop (Step 4)
 3. Post-execution tasks (Step 5)
@@ -52,21 +53,30 @@ Use the context-fetcher subagent to gather minimal context for task understandin
 
 <instructions>
   ACTION: Use context-fetcher subagent to:
+
     - REQUEST: "Get product pitch from mission-lite.md"
+
     - REQUEST: "Get spec summary from spec-lite.md"
+
     - REQUEST: "Get technical approach from technical-spec.md"
+
   PROCESS: Returned information
 </instructions>
 
-
 <context_gathering>
   <essential_docs>
+
     - tasks.md for task breakdown
+
   </essential_docs>
   <conditional_docs>
+
     - mission-lite.md for product alignment
+
     - spec-lite.md for feature summary
+
     - technical-spec.md for implementation details
+
   </conditional_docs>
 </context_gathering>
 
@@ -81,9 +91,13 @@ Use the git-workflow subagent to manage git branches to ensure proper isolation 
 <instructions>
   ACTION: Use git-workflow subagent
   REQUEST: "Check and manage branch for spec: [SPEC_FOLDER]
+
             - Create branch if needed
+
             - Switch to correct branch
+
             - Handle any uncommitted changes"
+
   WAIT: For branch setup completion
 </instructions>
 
@@ -91,8 +105,11 @@ Use the git-workflow subagent to manage git branches to ensure proper isolation 
   <source>spec folder name</source>
   <format>exclude date prefix</format>
   <example>
+
     - folder: 2025-03-15-password-reset
+
     - branch: password-reset
+
   </example>
 </branch_naming>
 
@@ -113,8 +130,11 @@ Execute all assigned parent tasks and their subtasks using @.agent-os/instructio
 
   FOR each parent_task assigned in Step 1:
     EXECUTE instructions from execute-task.md with:
+
       - parent_task_number
+
       - all associated subtasks
+
     WAIT for task completion
     UPDATE tasks.md status
   END FOR
@@ -124,13 +144,20 @@ Execute all assigned parent tasks and their subtasks using @.agent-os/instructio
 
 <loop_logic>
   <continue_conditions>
+
     - More unfinished parent tasks exist
+
     - User has not requested stop
+
   </continue_conditions>
   <exit_conditions>
+
     - All assigned tasks marked complete
+
     - User requests early termination
+
     - Blocking issue prevents continuation
+
   </exit_conditions>
 </loop_logic>
 
@@ -169,13 +196,21 @@ After all tasks in tasks.md have been implemented, use @.agent-os/instructions/c
   LOAD: @.agent-os/instructions/core/post-execution-tasks.md once
   ACTION: execute all steps in the post-execution-tasks.md process_flow.
   **IMPORTANT**: This includes:
+
     - Running full test suite
+
     - Git workflow (commit, push, PR)
+
     - Verifying task completion
+
     - Updating roadmap (if applicable)
+
     - Creating recap document
+
     - Generating completion summary
+
     - Playing notification sound
+
 </instructions>
 
 </step>

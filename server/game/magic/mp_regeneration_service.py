@@ -7,7 +7,7 @@ with rest/meditation commands for accelerated recovery.
 
 import math
 import uuid
-from typing import Any
+from typing import Any, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -273,7 +273,7 @@ class MPRegenerationService:
         """
         # Use MagicService.restore_mp if available, otherwise do it directly
         if hasattr(self.player_service, "magic_service") and self.player_service.magic_service:
-            return await self.player_service.magic_service.restore_mp(player_id, amount)
+            return cast(dict[str, Any], await self.player_service.magic_service.restore_mp(player_id, amount))
 
         # Fallback: direct restoration
         player = await self.player_service.persistence.get_player_by_id(player_id)

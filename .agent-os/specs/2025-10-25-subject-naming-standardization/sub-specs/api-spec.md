@@ -9,6 +9,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-10-
 **Purpose:** Get NATS subject pattern statistics and health information
 **Parameters:** None
 **Response:**
+
 ```json
 {
   "subject_patterns": {
@@ -32,13 +33,16 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-10-
   }
 }
 ```
+
 **Errors:**
+
 - 500: Internal server error if subject manager unavailable
 
 ### POST /api/admin/nats/subjects/validate
 
 **Purpose:** Validate a subject pattern and parameters
 **Parameters:**
+
 ```json
 {
   "pattern_name": "chat_say_room",
@@ -47,7 +51,9 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-10-
   }
 }
 ```
+
 **Response:**
+
 ```json
 {
   "valid": true,
@@ -59,7 +65,9 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-10-
   }
 }
 ```
+
 **Errors:**
+
 - 400: Invalid pattern name or missing required parameters
 - 422: Parameter validation failed
 
@@ -68,6 +76,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-10-
 **Purpose:** List all registered subject patterns
 **Parameters:** None
 **Response:**
+
 ```json
 {
   "patterns": [
@@ -81,12 +90,14 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-10-
   ]
 }
 ```
+
 **Errors:** None
 
 ### POST /api/admin/nats/subjects/patterns
 
 **Purpose:** Register a new subject pattern (admin only)
 **Parameters:**
+
 ```json
 {
   "name": "chat_custom_channel",
@@ -95,7 +106,9 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-10-
   "required_params": ["channel", "scope"]
 }
 ```
+
 **Response:**
+
 ```json
 {
   "success": true,
@@ -107,7 +120,9 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-10-
   }
 }
 ```
+
 **Errors:**
+
 - 400: Invalid pattern format or duplicate name
 - 401: Unauthorized (admin required)
 - 422: Pattern validation failed
@@ -119,18 +134,21 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-10-
 **Location:** `server/api/controllers/subject_controller.py`
 
 **Actions:**
+
 - `get_subject_stats()`: Retrieve subject pattern statistics
 - `validate_subject_pattern()`: Validate subject pattern and parameters
 - `list_patterns()`: List all registered patterns
 - `register_pattern()`: Register new subject pattern (admin only)
 
 **Business Logic:**
+
 - Integrate with NATSSubjectManager for pattern operations
 - Provide comprehensive error handling and validation
 - Support admin-only operations for pattern management
 - Cache frequently accessed pattern information
 
 **Error Handling:**
+
 - Validate admin permissions for pattern registration
 - Provide detailed error messages for validation failures
 - Handle NATSSubjectManager exceptions gracefully
@@ -139,21 +157,33 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-10-
 ## Purpose
 
 ### Subject Statistics Endpoint
-- **Rationale**: Monitor subject pattern usage and performance
-- **Integration**: Used by system administrators to track NATS subject health
-- **Benefits**: Provides visibility into subject usage patterns and validation performance
+
+**Rationale**: Monitor subject pattern usage and performance
+
+**Integration**: Used by system administrators to track NATS subject health
+
+**Benefits**: Provides visibility into subject usage patterns and validation performance
 
 ### Subject Validation Endpoint
-- **Rationale**: Allow external validation of subject patterns before use
-- **Integration**: Used by client applications and testing frameworks
-- **Benefits**: Prevents invalid subjects from being constructed and published
+
+**Rationale**: Allow external validation of subject patterns before use
+
+**Integration**: Used by client applications and testing frameworks
+
+**Benefits**: Prevents invalid subjects from being constructed and published
 
 ### Pattern Management Endpoints
-- **Rationale**: Enable dynamic pattern registration and management
-- **Integration**: Used by system administrators to add new subject patterns
-- **Benefits**: Allows system extension without code changes for new subject types
+
+**Rationale**: Enable dynamic pattern registration and management
+
+**Integration**: Used by system administrators to add new subject patterns
+
+**Benefits**: Allows system extension without code changes for new subject types
 
 ### Health Monitoring Integration
-- **Rationale**: Integrate subject health with overall NATS health monitoring
-- **Integration**: Connected to existing NATS health check endpoints
-- **Benefits**: Provides comprehensive NATS system health visibility
+
+**Rationale**: Integrate subject health with overall NATS health monitoring
+
+**Integration**: Connected to existing NATS health check endpoints
+
+**Benefits**: Provides comprehensive NATS system health visibility

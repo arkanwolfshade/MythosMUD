@@ -12,102 +12,132 @@ As an admin, I should be able to teleport any online player to my location or te
 
 ### FR-1: Authentication & Authorization
 
-- **Requirement**: Only users with admin role in the database can use teleport commands
-- **Implementation**: Check user's role field in the database before allowing teleport commands
-- **Validation**: Reject commands from non-admin users with appropriate error message
+**Requirement**: Only users with admin role in the database can use teleport commands
+
+**Implementation**: Check user's role field in the database before allowing teleport commands
+
+**Validation**: Reject commands from non-admin users with appropriate error message
 
 ### FR-2: Command Interface
 
-- **Requirement**: Two primary commands:
-  - `/teleport <display_name>` - Bring target player to admin's location
-  - `/goto <display_name>` - Move admin to target player's location
+**Requirement**: Two primary commands:
+
+- `/teleport <display_name>` - Bring target player to admin's location
+- `/goto <display_name>` - Move admin to target player's location
 - **Implementation**: Parse commands in chat system, validate admin status, then execute teleport logic
 
 ### FR-3: Target Selection
 
-- **Requirement**: Target players by their display name
-- **Implementation**: Look up online players by display name
-- **Validation**: Return error if target player is not found or not online
+**Requirement**: Target players by their display name
+
+**Implementation**: Look up online players by display name
+
+**Validation**: Return error if target player is not found or not online
 
 ### FR-4: Confirmation System
 
-- **Requirement**: Admin must confirm teleport action before execution
-- **Implementation**: Send confirmation prompt to admin after command is issued
-- **UI**: Display confirmation message with target player name and action type
+**Requirement**: Admin must confirm teleport action before execution
+
+**Implementation**: Send confirmation prompt to admin after command is issued
+
+**UI**: Display confirmation message with target player name and action type
 
 ### FR-5: Player Notification
 
-- **Requirement**: Target player must be notified when being teleported
-- **Implementation**: Send notification message to target player before teleport
-- **Message**: Inform player they are being teleported by admin
+**Requirement**: Target player must be notified when being teleported
+
+**Implementation**: Send notification message to target player before teleport
+
+**Message**: Inform player they are being teleported by admin
 
 ### FR-6: Cross-Zone Teleportation
 
-- **Requirement**: Teleportation works across all zones and planes without restrictions
-- **Implementation**: Bypass normal movement validation and zone restrictions
-- **Database**: Update player location in database regardless of zone boundaries
+**Requirement**: Teleportation works across all zones and planes without restrictions
+
+**Implementation**: Bypass normal movement validation and zone restrictions
+
+**Database**: Update player location in database regardless of zone boundaries
 
 ### FR-7: Error Handling
 
-- **Requirement**: Graceful failure when target player goes offline during teleport
-- **Implementation**: Check player online status before executing teleport
-- **Message**: Inform admin of failure reason (player offline, not found, etc.)
+**Requirement**: Graceful failure when target player goes offline during teleport
+
+**Implementation**: Check player online status before executing teleport
+
+**Message**: Inform admin of failure reason (player offline, not found, etc.)
 
 ### FR-8: Restricted Area Access
 
-- **Requirement**: Admins can teleport to players in restricted areas
-- **Implementation**: Bypass area access restrictions for admin teleportation
-- **Validation**: Allow teleport even if normal movement would be blocked
+**Requirement**: Admins can teleport to players in restricted areas
+
+**Implementation**: Bypass area access restrictions for admin teleportation
+
+**Validation**: Allow teleport even if normal movement would be blocked
 
 ### FR-9: Database Persistence
 
-- **Requirement**: All teleport actions must persist to database
-- **Implementation**: Update player location records in database
-- **Validation**: Ensure location changes are saved before completing teleport
+**Requirement**: All teleport actions must persist to database
+
+**Implementation**: Update player location records in database
+
+**Validation**: Ensure location changes are saved before completing teleport
 
 ### FR-10: Visual Effects
 
-- **Requirement**: Teleportation should have visible effects for other players
-- **Implementation**: Display teleport effect messages to players in both source and destination rooms
-- **Message**: Show arrival/departure effects for dramatic impact
+**Requirement**: Teleportation should have visible effects for other players
+
+**Implementation**: Display teleport effect messages to players in both source and destination rooms
+
+**Message**: Show arrival/departure effects for dramatic impact
 
 ### FR-11: Audit Logging
 
-- **Requirement**: All teleport actions logged to admin actions log
-- **Implementation**: Log teleport events with timestamp, admin, target, and action type
-- **Data**: Include source and destination locations for audit trail
+**Requirement**: All teleport actions logged to admin actions log
+
+**Implementation**: Log teleport events with timestamp, admin, target, and action type
+
+**Data**: Include source and destination locations for audit trail
 
 ## Non-Functional Requirements
 
 ### NFR-1: Performance
 
-- **Requirement**: Teleport commands should execute within 1 second
-- **Implementation**: Optimize player lookup and database updates
-- **Monitoring**: Track command execution times
+**Requirement**: Teleport commands should execute within 1 second
+
+**Implementation**: Optimize player lookup and database updates
+
+**Monitoring**: Track command execution times
 
 ### NFR-2: Security
 
-- **Requirement**: Prevent unauthorized access to teleport functionality
-- **Implementation**: Server-side validation of admin role
-- **Audit**: Log all access attempts for security monitoring
+**Requirement**: Prevent unauthorized access to teleport functionality
+
+**Implementation**: Server-side validation of admin role
+
+**Audit**: Log all access attempts for security monitoring
 
 ### NFR-3: Reliability
 
-- **Requirement**: Teleport commands should be atomic operations
-- **Implementation**: Use database transactions for location updates
-- **Recovery**: Rollback changes if teleport fails partway through
+**Requirement**: Teleport commands should be atomic operations
+
+**Implementation**: Use database transactions for location updates
+
+**Recovery**: Rollback changes if teleport fails partway through
 
 ## Technical Specifications
 
 ### Database Schema
 
-- **Player Table**: Ensure `role` field exists for admin identification
-- **Location Tracking**: Update player location records
-- **Audit Table**: Create admin_actions_log table for teleport events
+**Player Table**: Ensure `role` field exists for admin identification
+
+**Location Tracking**: Update player location records
+
+**Audit Table**: Create admin_actions_log table for teleport events
 
 ### API Endpoints
 
-- `POST /api/admin/teleport` - Execute teleport command
+`POST /api/admin/teleport` - Execute teleport command
+
 - `GET /api/admin/online-players` - List online players for admin reference
 
 ### Message Format
@@ -199,31 +229,38 @@ As an admin, I should be able to teleport any online player to my location or te
 
 ### High Risk
 
-- **Database Consistency**: Teleport failures could leave players in invalid states
-- **Mitigation**: Use database transactions and rollback on failure
+**Database Consistency**: Teleport failures could leave players in invalid states
+
+**Mitigation**: Use database transactions and rollback on failure
 
 ### Medium Risk
 
-- **Performance Impact**: Player lookup by display name could be slow with many online players
-- **Mitigation**: Index display names and implement caching
+**Performance Impact**: Player lookup by display name could be slow with many online players
+
+**Mitigation**: Index display names and implement caching
 
 ### Low Risk
 
-- **User Experience**: Confirmation prompts might slow down emergency responses
-- **Mitigation**: Consider optional "emergency mode" for trusted admins
+**User Experience**: Confirmation prompts might slow down emergency responses
+
+**Mitigation**: Consider optional "emergency mode" for trusted admins
 
 ## Success Metrics
 
-- **Functionality**: 100% of teleport commands execute successfully
-- **Performance**: Average teleport time < 1 second
-- **Reliability**: 0% data corruption from teleport operations
+**Functionality**: 100% of teleport commands execute successfully
+
+**Performance**: Average teleport time < 1 second
+
+**Reliability**: 0% data corruption from teleport operations
 - **Security**: 0% unauthorized teleport attempts succeed
 
 ## Future Enhancements
 
-- **Bulk Teleport**: Teleport multiple players at once
-- **Teleport History**: View recent teleport actions
-- **Teleport Restrictions**: Limit teleport frequency or destinations
+**Bulk Teleport**: Teleport multiple players at once
+
+**Teleport History**: View recent teleport actions
+
+**Teleport Restrictions**: Limit teleport frequency or destinations
 - **Emergency Override**: Bypass confirmation for emergency situations
 - **Teleport Zones**: Define safe zones for teleportation
 

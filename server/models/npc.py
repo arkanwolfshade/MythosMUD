@@ -16,7 +16,6 @@ from sqlalchemy import (
     BigInteger,
     Boolean,
     CheckConstraint,
-    Column,
     DateTime,
     Float,
     ForeignKey,
@@ -25,7 +24,7 @@ from sqlalchemy import (
     Text,
     UniqueConstraint,
 )
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from ..npc_metadata import npc_metadata
 
@@ -62,14 +61,14 @@ class NPCDefinition(Base):
     )
 
     # Primary key
-    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
 
     # Basic information
-    name = Column(String(100), nullable=False, index=True)
-    description = Column(Text)
+    name: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
+    description: Mapped[str | None] = mapped_column(Text)
 
     # NPC type and classification
-    npc_type = Column(
+    npc_type: Mapped[str] = mapped_column(
         String(20),
         nullable=False,
         index=True,
@@ -77,34 +76,62 @@ class NPCDefinition(Base):
     )
 
     # Location information
-    sub_zone_id = Column(String(50), nullable=False, index=True)
-    room_id = Column(String(50), nullable=True)
+    sub_zone_id: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
+    room_id: Mapped[str | None] = mapped_column(String(50), nullable=True)
 
     # Population control
-    required_npc = Column(Boolean, default=False, nullable=False, index=True)
-    max_population = Column(Integer, default=1, nullable=False)
-    spawn_probability = Column(Float, default=1.0, nullable=False)
+    required_npc: Mapped[bool] = mapped_column(Boolean, default=lambda: False, nullable=False, index=True)
+    max_population: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
+    spawn_probability: Mapped[float] = mapped_column(Float, default=1.0, nullable=False)
 
     # Configuration stored as JSON
-    base_stats = Column(
+    base_stats: Mapped[str] = mapped_column(
         Text,
         nullable=False,
         default="{}",
         comment="Base statistics for the NPC (DP, MP, attributes, etc.)",
     )
-    behavior_config = Column(
+    behavior_config: Mapped[str] = mapped_column(
         Text, nullable=False, default="{}", comment="Behavior-specific configuration (aggression, wandering, etc.)"
     )
-    ai_integration_stub = Column(Text, nullable=False, default="{}", comment="Future AI integration configuration")
+    ai_integration_stub: Mapped[str] = mapped_column(
+        Text, nullable=False, default="{}", comment="Future AI integration configuration"
+    )
 
     # Timestamps
-    created_at = Column(DateTime, default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False)
-    updated_at = Column(
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime, default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False
+    )
+    updated_at: Mapped[datetime] = mapped_column(
         DateTime,
         default=lambda: datetime.now(UTC).replace(tzinfo=None),
         nullable=False,
         onupdate=lambda: datetime.now(UTC).replace(tzinfo=None),
     )
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        """Initialize NPCDefinition with defaults."""
+        super().__init__(*args, **kwargs)
+        # Apply defaults if not provided (SQLAlchemy may set to None initially)
+        _sentinel = object()
+        required_npc_val = getattr(self, "required_npc", _sentinel)
+        if required_npc_val is _sentinel or required_npc_val is None:
+            object.__setattr__(self, "required_npc", False)
+        max_population_val = getattr(self, "max_population", _sentinel)
+        if max_population_val is _sentinel or max_population_val is None:
+            object.__setattr__(self, "max_population", 1)
+        spawn_probability_val = getattr(self, "spawn_probability", _sentinel)
+        if spawn_probability_val is _sentinel or spawn_probability_val is None:
+            object.__setattr__(self, "spawn_probability", 1.0)
+        base_stats_val = getattr(self, "base_stats", _sentinel)
+        if base_stats_val is _sentinel or base_stats_val is None:
+            object.__setattr__(self, "base_stats", "{}")
+        behavior_config_val = getattr(self, "behavior_config", _sentinel)
+        if behavior_config_val is _sentinel or behavior_config_val is None:
+            object.__setattr__(self, "behavior_config", "{}")
+        ai_integration_stub_val = getattr(self, "ai_integration_stub", _sentinel)
+        if ai_integration_stub_val is _sentinel or ai_integration_stub_val is None:
+            object.__setattr__(self, "ai_integration_stub", "{}")
 
     def __repr__(self) -> str:
         """String representation of the NPC definition."""
@@ -113,35 +140,35 @@ class NPCDefinition(Base):
     def get_base_stats(self) -> dict[str, Any]:
         """Get base stats as dictionary."""
         try:
-            return cast(dict[str, Any], json.loads(cast(str, self.base_stats)))
+            return cast(dict[str, Any], json.loads(self.base_stats))
         except (json.JSONDecodeError, TypeError):
             return {}
 
     def set_base_stats(self, stats: dict[str, Any]) -> None:
         """Set base stats from dictionary."""
-        self.base_stats = json.dumps(stats)  # type: ignore[assignment]  # Reason: SQLAlchemy Text column accepts str, but mypy infers dict[str, Any] from parameter type, json.dumps returns str at runtime
+        self.base_stats = json.dumps(stats)
 
     def get_behavior_config(self) -> dict[str, Any]:
         """Get behavior configuration as dictionary."""
         try:
-            return cast(dict[str, Any], json.loads(cast(str, self.behavior_config)))
+            return cast(dict[str, Any], json.loads(self.behavior_config))
         except (json.JSONDecodeError, TypeError):
             return {}
 
     def set_behavior_config(self, config: dict[str, Any]) -> None:
         """Set behavior configuration from dictionary."""
-        self.behavior_config = json.dumps(config)  # type: ignore[assignment]  # Reason: SQLAlchemy Text column accepts str, but mypy infers dict[str, Any] from parameter type, json.dumps returns str at runtime
+        self.behavior_config = json.dumps(config)
 
     def get_ai_integration_stub(self) -> dict[str, Any]:
         """Get AI integration stub configuration as dictionary."""
         try:
-            return cast(dict[str, Any], json.loads(cast(str, self.ai_integration_stub)))
+            return cast(dict[str, Any], json.loads(self.ai_integration_stub))
         except (json.JSONDecodeError, TypeError):
             return {}
 
     def set_ai_integration_stub(self, stub: dict[str, Any]) -> None:
         """Set AI integration stub configuration from dictionary."""
-        self.ai_integration_stub = json.dumps(stub)  # type: ignore[assignment]  # Reason: SQLAlchemy Text column accepts str, but mypy infers dict[str, Any] from parameter type, json.dumps returns str at runtime
+        self.ai_integration_stub = json.dumps(stub)
 
     def is_required(self) -> bool:
         """Check if this NPC is required to spawn."""
@@ -166,22 +193,22 @@ class NPCSpawnRule(Base):
     __tablename__ = "npc_spawn_rules"
 
     # Primary key
-    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
 
     # Foreign key to NPC definition
-    npc_definition_id = Column(
+    npc_definition_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("npc_definitions.id", ondelete="CASCADE"), nullable=False, index=True
     )
 
     # Sub-zone information
-    sub_zone_id = Column(String(50), nullable=False, index=True)
+    sub_zone_id: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
 
     # NPC population requirements (min/max instances of this NPC type)
-    min_population = Column(Integer, default=0, nullable=False)
-    max_population = Column(Integer, default=999, nullable=False)
+    min_population: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    max_population: Mapped[int] = mapped_column(Integer, default=999, nullable=False)
 
     # Spawn conditions stored as JSON
-    spawn_conditions = Column(
+    spawn_conditions: Mapped[str] = mapped_column(
         Text, nullable=False, default="{}", comment="Environmental and time-based spawn conditions"
     )
 
@@ -195,13 +222,13 @@ class NPCSpawnRule(Base):
     def get_spawn_conditions(self) -> dict[str, Any]:
         """Get spawn conditions as dictionary."""
         try:
-            return cast(dict[str, Any], json.loads(cast(str, self.spawn_conditions)))
+            return cast(dict[str, Any], json.loads(self.spawn_conditions))
         except (json.JSONDecodeError, TypeError):
             return {}
 
     def set_spawn_conditions(self, conditions: dict[str, Any]) -> None:
         """Set spawn conditions from dictionary."""
-        self.spawn_conditions = json.dumps(conditions)  # type: ignore[assignment]  # Reason: SQLAlchemy Text column accepts str, but mypy infers dict[str, Any] from parameter type, json.dumps returns str at runtime
+        self.spawn_conditions = json.dumps(conditions)
 
     def can_spawn_with_population(self, current_population: int) -> bool:
         """Check if this rule allows spawning given current NPC population."""
@@ -250,7 +277,8 @@ class NPCSpawnRule(Base):
         """
         if value == "any":
             return None
-        return game_value == value
+        result: bool = cast(bool, game_value == value)
+        return result
 
     def check_spawn_conditions(self, game_state: dict[str, Any]) -> bool:
         """Check if current game state meets spawn conditions."""
@@ -299,15 +327,19 @@ class NPCRelationship(Base):
     )
 
     # Primary key
-    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
 
     # Foreign keys to NPC definitions
-    npc_id_1 = Column(BigInteger, ForeignKey("npc_definitions.id", ondelete="CASCADE"), nullable=False)
-    npc_id_2 = Column(BigInteger, ForeignKey("npc_definitions.id", ondelete="CASCADE"), nullable=False)
+    npc_id_1: Mapped[int] = mapped_column(
+        BigInteger, ForeignKey("npc_definitions.id", ondelete="CASCADE"), nullable=False
+    )
+    npc_id_2: Mapped[int] = mapped_column(
+        BigInteger, ForeignKey("npc_definitions.id", ondelete="CASCADE"), nullable=False
+    )
 
     # Relationship information
-    relationship_type = Column(String(20), nullable=False)
-    relationship_strength = Column(Float, default=0.5)
+    relationship_type: Mapped[str] = mapped_column(String(20), nullable=False)
+    relationship_strength: Mapped[float] = mapped_column(Float, default=0.5)
 
     def __repr__(self) -> str:
         """String representation of the NPC relationship."""

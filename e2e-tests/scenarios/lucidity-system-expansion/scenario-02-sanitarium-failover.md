@@ -2,7 +2,9 @@
 
 ## Overview
 
-Exercises the automatic sanitarium transfer that fires when a catatonic investigator’s LCD continues to plummet. The test validates that passive flux drives LCD below the floor, the failover hook relocates the player, and both clients surface the `"Sanitarium"` rescue outcome.
+Exercises the automatic sanitarium transfer that fires when a catatonic investigator’s LCD continues to plummet. The
+test validates that passive flux drives LCD below the floor, the failover hook relocates the player, and both clients
+surface the `"Sanitarium"` rescue outcome.
 
 ## Prerequisites
 
@@ -17,17 +19,23 @@ Complete the global prerequisites in `@MULTIPLAYER_TEST_RULES.md` first. Additio
 Prime the victim with dangerously low LCD so passive flux can finish the collapse.
 
 ```powershell
-$env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "UPDATE player_lucidity SET current_san = -95, current_tier = 'catatonic', catatonia_entered_at = NOW() - INTERVAL '10 minutes' WHERE player_id = (SELECT player_id FROM players WHERE name = 'ArkanWolfshade');"
+$env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "UPDATE player_lucidity SET current_san =
+-95, current_tier = 'catatonic', catatonia_entered_at = NOW() - INTERVAL '10 minutes' WHERE player_id = (SELECT
+player_id FROM players WHERE name = 'ArkanWolfshade');"
 ```
 
-**Why -95?** Passive flux in the sanitarium foyer drains roughly 1–2 LCD per server tick for catatonic bodies. This ensures the failover observer fires within ~2 real-time minutes.
+**Why -95?** Passive flux in the sanitarium foyer drains roughly 1–2 LCD per server tick for catatonic bodies. This
+ensures the failover observer fires within ~2 real-time minutes.
 
 ## Test Configuration
 
-- **Players**: Tab 0 – `ArkanWolfshade` (catatonic target), Tab 1 – `Ithaqua` (party observer)
-- **Room**: `earth_arkhamcity_sanitarium_room_foyer_001`
-- **Tools**: Playwright MCP with two tabs, PostgreSQL CLI (psql)
-- **Timeout Guidance**: Allow up to 180 s for the failover transition after both tabs are connected.
+**Players**: Tab 0 – `ArkanWolfshade` (catatonic target), Tab 1 – `Ithaqua` (party observer)
+
+**Room**: `earth_arkhamcity_sanitarium_room_foyer_001`
+
+**Tools**: Playwright MCP with two tabs, PostgreSQL CLI (psql)
+
+**Timeout Guidance**: Allow up to 180 s for the failover transition after both tabs are connected.
 
 ## Execution Steps
 
@@ -44,7 +52,8 @@ await mcp_playwright_browser_click({ element: "Continue button", ref: "e59" });
 await mcp_playwright_browser_wait_for({ text: "Chat", time: 30 });
 ```
 
-**Verification**: `RescueStatusBanner` shows `"Catatonic"` and command attempts (`look`) are rejected with the standard lockout message.
+**Verification**: `RescueStatusBanner` shows `"Catatonic"` and command attempts (`look`) are rejected with the standard
+lockout message.
 
 ### Step 2 – Connect Observer (Tab 1)
 
@@ -68,7 +77,11 @@ Stay in Tab 1; no rescue command should be issued. The objective is to let pas
 **Purpose**: Confirm LCD ticks downward and triggers failover.
 
 1. Keep both tabs idle for up to 3 minutes. Do **not** attempt `ground` or any recovery action.
-2. Optional: Every 30 s, issue `status` from Tab 1 (`/status ArkanWolfshade`) if an admin account is available, or observe the `[lucidity]` system lines on Tab 0. Each passive tick should log `lucidity loses 1 ... → -96/100 (Catatonic)` style entries.
+
+2. Optional: Every 30 s, issue `status` from Tab 1 (`/status ArkanWolfshade`) if an admin account is available, or
+
+   observe the `[lucidity]` system lines on Tab 0. Each passive tick should log `lucidity loses 1 ... → -96/100
+   (Catatonic)` style entries.
 
 ```javascript
 await mcp_playwright_browser_wait_for({ text: "lucidity loses", time: 120 });
@@ -103,7 +116,8 @@ Attempt a simple command (`look`) to ensure normal interaction is restored.
 
 ### Expected Residuals
 
-- Tab 0 game log contains both the failover message and a teleport notification describing arrival at the recovery ward.
+Tab 0 game log contains both the failover message and a teleport notification describing arrival at the recovery ward.
+
 - Tab 1 records the same `[Rescue]` line for party awareness but remains in the foyer.
 
 ## Cleanup
@@ -114,4 +128,5 @@ Reset the victim’s lucidity and room placement to pre-test defaults.
 $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "WITH victim AS (SELECT player_id FROM players WHERE name = 'ArkanWolfshade') UPDATE player_lucidity SET current_san = 100, current_tier = 'lucid', catatonia_entered_at = NULL WHERE player_id = (SELECT player_id FROM victim); UPDATE players SET current_room_id = 'earth_arkhamcity_sanitarium_room_foyer_001' WHERE player_id = (SELECT player_id FROM players WHERE name = 'ArkanWolfshade');"
 ```
 
-Log out both players or close the tabs once verification is complete. Document the LCD tick timing in `TESTING_APPROACH.md` if the failover took longer than 3 minutes so future runs can adjust the wait window.
+Log out both players or close the tabs once verification is complete. Document the LCD tick timing in
+`TESTING_APPROACH.md` if the failover took longer than 3 minutes so future runs can adjust the wait window.

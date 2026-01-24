@@ -4,9 +4,11 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 
 ## Technical Requirements
 
-- **Phase 1 - Pure Asyncio EventBus Implementation:** Replace `server/events/event_bus.py` hybrid threading/async pattern with pure asyncio.Event/@asyncio.lock implementations for subscriber management
-- **Phase 1 - SSE Stream Cancellation Boundaries:** Implement `asyncio.CancelledError` encapsulation within `server/realtime/sse_handler.py` `game_event_stream()` coroutine with proper finally-block cleanup
-- **Phase 1 - Lifespan Task Monitor:** Create centralized task registry in `server/app/lifespan.py` that tracks all created tasks with graceful shutdown timeout (5 second) implementation
+**Phase 1 - Pure Asyncio EventBus Implementation:** Replace `server/events/event_bus.py` hybrid threading/async pattern with pure asyncio.Event/@asyncio.lock implementations for subscriber management
+
+**Phase 1 - SSE Stream Cancellation Boundaries:** Implement `asyncio.CancelledError` encapsulation within `server/realtime/sse_handler.py` `game_event_stream()` coroutine with proper finally-block cleanup
+
+**Phase 1 - Lifespan Task Monitor:** Create centralized task registry in `server/app/lifespan.py` that tracks all created tasks with graceful shutdown timeout (5 second) implementation
 - **Phase 2 - Memory Leak Prevention:** Replace implicit task creation with tracked task references stored in dedicated manager object enabling full lifecycle tracking
 - **Phase 2 - Resource Pool Manager:** Implement connection_pool-style cleanup for NATS subscriptions and WebSocket connection active task tracking with timeout escalations
 - **Phase 2 - Periodic Memory Audit:** Create managed_task_cleanup() function enabling runtime detection of orphaned asyncio.Task references before memory threshold exhaustion
@@ -19,7 +21,9 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 ## External Dependencies (Conditional)
 
 **IF asyncio remediation identifies needs beyond standard library capabilities:**
-- **asyncio-mqtt** - [IF WebSocket persistent connection callback handling upgrades require advanced asyncio queue implementation not covered by basic event loop.]
-- **Justification:** Only needed if Advanced Message Queue Protocol features require extended task handler monitoring
+
+**asyncio-mqtt** - [IF WebSocket persistent connection callback handling upgrades require advanced asyncio queue implementation not covered by basic event loop.]
+
+**Justification:** Only needed if Advanced Message Queue Protocol features require extended task handler monitoring
 - **aiomonitor** - [IF runtime task visibility requirements exceed current development environment monitoring capabilities for orphaned thread detection.]
 - **Justification:** Only if built bare-minimum asyncio tracking demonstrates insufficient garbage collection

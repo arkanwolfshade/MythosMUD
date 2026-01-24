@@ -2,14 +2,15 @@
 
 ## Tasks
 
-- [x] 1. **Client-Side Logout Button Component**
-  - [x] 1.1 Write unit tests for LogoutButton component (rendering, accessibility, interactions)
-  - [x] 1.2 Create LogoutButton component with eldritch styling and portal icon
-  - [x] 1.3 Implement keyboard navigation and Ctrl+Q shortcut functionality
-  - [x] 1.4 Add ARIA labels and screen reader support
-  - [x] 1.5 Integrate LogoutButton into CommandPanel at bottom position
-  - [x] 1.6 Write integration tests for CommandPanel with LogoutButton
-  - [x] 1.7 Verify all tests pass
+[x] 1. **Client-Side Logout Button Component**
+
+- [x] 1.1 Write unit tests for LogoutButton component (rendering, accessibility, interactions)
+- [x] 1.2 Create LogoutButton component with eldritch styling and portal icon
+- [x] 1.3 Implement keyboard navigation and Ctrl+Q shortcut functionality
+- [x] 1.4 Add ARIA labels and screen reader support
+- [x] 1.5 Integrate LogoutButton into CommandPanel at bottom position
+- [x] 1.6 Write integration tests for CommandPanel with LogoutButton
+- [x] 1.7 Verify all tests pass
 
 - [x] 2. **Client-Side Logout Flow Implementation**
   - [x] 2.1 Write unit tests for logout handler functions (timeout, error handling, state cleanup)

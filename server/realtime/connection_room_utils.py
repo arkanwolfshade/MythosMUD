@@ -5,7 +5,7 @@ This module provides helper functions for room-related operations
 and subscription management.
 """
 
-from typing import Any
+from typing import Any, cast
 
 from ..exceptions import DatabaseError
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -32,13 +32,15 @@ def canonical_room_id_impl(room_id: str | None, manager: Any) -> str | None:
         if manager.room_manager.async_persistence is not None:
             room = manager.room_manager.async_persistence.get_room_by_id(room_id)
             if room is not None and getattr(room, "id", None):
-                return room.id
+                result: str = cast(str, room.id)
+                return result
 
         # Fallback to main persistence layer
         if manager.async_persistence is not None:
             room = manager.async_persistence.get_room_by_id(room_id)
             if room is not None and getattr(room, "id", None):
-                return room.id
+                result2: str = cast(str, room.id)
+                return result2
     except (DatabaseError, AttributeError) as e:
         logger.error("Error resolving canonical room id", room_id=room_id, error=str(e))
     return room_id

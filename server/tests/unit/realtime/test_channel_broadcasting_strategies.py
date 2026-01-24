@@ -53,7 +53,7 @@ async def test_room_based_channel_strategy_broadcast_no_room_id():
     target_player_id = None
     sender_id = uuid.uuid4()
 
-    await strategy.broadcast(chat_event, room_id, party_id, target_player_id, sender_id, mock_nats_handler)
+    await strategy.broadcast(chat_event, room_id, party_id, target_player_id, sender_id, mock_nats_handler)  # type: ignore[arg-type]  # Reason: Intentionally testing None handling for room_id
 
     mock_nats_handler._broadcast_to_room_with_filtering.assert_not_called()
 
@@ -104,7 +104,7 @@ async def test_party_channel_strategy_broadcast_no_party_id():
     target_player_id = None
     sender_id = uuid.uuid4()
 
-    await strategy.broadcast(chat_event, room_id, party_id, target_player_id, sender_id, mock_nats_handler)
+    await strategy.broadcast(chat_event, room_id, party_id, target_player_id, sender_id, mock_nats_handler)  # type: ignore[arg-type]  # Reason: Intentionally testing None handling for party_id
 
     # Should not raise, just log warning
 

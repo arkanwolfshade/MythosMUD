@@ -1,6 +1,7 @@
 # MythosMUD UI Component Library
 
-This directory contains a comprehensive UI component library for the MythosMUD client, built with React, TypeScript, and Tailwind CSS. The library follows consistent patterns and provides reusable components for building the game interface.
+This directory contains a comprehensive UI component library for the MythosMUD client, built with React, TypeScript, and
+Tailwind CSS. The library follows consistent patterns and provides reusable components for building the game interface.
 
 ## Design Principles
 
@@ -30,17 +31,22 @@ Full TypeScript support with comprehensive type definitions and interfaces.
 
 Complex components that use the compound pattern for flexible composition:
 
-- **StatusPanel**: Displays player status information with sub-components
-- **RoomInfo**: Shows room details with modular information sections
+**StatusPanel**: Displays player status information with sub-components
+
+**RoomInfo**: Shows room details with modular information sections
 
 ### Basic UI Components
 
 Fundamental building blocks for the interface:
 
-- **TerminalButton**: Styled button component with variants
-- **TerminalInput**: Text input with terminal styling
-- **TerminalCard**: Container component with consistent styling
-- **EldritchIcon**: Icon component with themed variants
+**TerminalButton**: Styled button component with variants
+
+**TerminalInput**: Text input with terminal styling
+
+**TerminalCard**: Container component with consistent styling
+
+**EldritchIcon**: Icon component with themed variants
+
 - **ChannelSelector**: Dropdown for chat channel selection
 - **MythosPanel**: Base panel component with theming
 
@@ -48,8 +54,9 @@ Fundamental building blocks for the interface:
 
 Purpose-built components for specific functionality:
 
-- **FeedbackForm**: User feedback collection form
-- **VirtualizedMessageList**: High-performance message list
+**FeedbackForm**: User feedback collection form
+
+**VirtualizedMessageList**: High-performance message list
 
 ## Usage Patterns
 
@@ -128,9 +135,11 @@ Components use Tailwind CSS classes with custom MythosMUD theme extensions:
 
 Many components support variants for different visual states:
 
-- **Button variants**: `primary`, `secondary`, `error`, `success`, `warning`
-- **Size variants**: `sm`, `md`, `lg`
-- **State variants**: `default`, `hover`, `active`, `disabled`
+**Button variants**: `primary`, `secondary`, `error`, `success`, `warning`
+
+**Size variants**: `sm`, `md`, `lg`
+
+**State variants**: `default`, `hover`, `active`, `disabled`
 
 ## Testing
 
@@ -138,18 +147,23 @@ All components include comprehensive test suites:
 
 ```bash
 # Run component tests
+
 npm run test:unit:run -- src/components/ui/__tests__/
 
 # Run specific component tests
+
 npm run test:unit:run -- src/components/ui/__tests__/StatusPanel.test.tsx
 ```
 
 ### Test Patterns
 
-- **Unit tests**: Test individual component behavior
-- **Integration tests**: Test component interactions
-- **Accessibility tests**: Verify ARIA attributes and keyboard navigation
-- **Visual regression tests**: Ensure consistent styling
+**Unit tests**: Test individual component behavior
+
+**Integration tests**: Test component interactions
+
+**Accessibility tests**: Verify ARIA attributes and keyboard navigation
+
+**Visual regression tests**: Ensure consistent styling
 
 ## Contributing
 
@@ -193,14 +207,16 @@ export const ComponentName: React.FC<ComponentNameProps> = ({
 
 ## Performance Considerations
 
-- Use `React.memo` for components that receive stable props
+Use `React.memo` for components that receive stable props
+
 - Implement proper `useCallback` and `useMemo` for expensive operations
 - Consider virtualization for large lists
 - Optimize re-renders with proper dependency arrays
 
 ## Accessibility Guidelines
 
-- Include proper ARIA labels and roles
+Include proper ARIA labels and roles
+
 - Support keyboard navigation
 - Ensure sufficient color contrast
 - Provide alternative text for images
@@ -208,7 +224,8 @@ export const ComponentName: React.FC<ComponentNameProps> = ({
 
 ## Future Enhancements
 
-- Animation system integration
+Animation system integration
+
 - Dark/light theme switching
 - Component playground/storybook
 - Automated accessibility testing

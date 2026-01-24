@@ -6,6 +6,7 @@ import argparse
 import sqlite3
 from collections.abc import Iterable
 from pathlib import Path
+from typing import cast
 
 from server.structured_logging.enhanced_logging_config import get_logger
 
@@ -49,12 +50,14 @@ def migrate_player_inventories(database_path: str | Path) -> int:
 
         after = conn.execute("SELECT COUNT(*) FROM player_inventories").fetchone()[0]
 
-    inserted = after - before
+    after_count: int = cast(int, after)
+    before_count: int = cast(int, before)
+    inserted: int = after_count - before_count
     logger.info(
         "player_inventories migration completed",
         database=str(db_path),
         inserted=inserted,
-        total=after,
+        total=after_count,
     )
     return inserted
 

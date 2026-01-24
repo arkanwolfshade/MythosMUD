@@ -2,29 +2,34 @@
 
 ## Overview
 
-Tests the muting system and emote functionality across game sessions. This scenario verifies that players can mute and unmute other players, and that muted players' emotes are properly blocked while other communication remains unaffected.
+Tests the muting system and emote functionality across game sessions. This scenario verifies that players can mute and
+unmute other players, and that muted players' emotes are properly blocked while other communication remains unaffected.
 
-**This is a core multi-player scenario** that requires verifying muted player's messages are blocked for specific player while visible to others. No automated alternative is available.
+**This is a core multi-player scenario** that requires verifying muted player's messages are blocked for specific player
+while visible to others. No automated alternative is available.
 
 ## Prerequisites
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
 2. **Server Running**: Development server is running on port 54731
 3. **Client Accessible**: Client is accessible on port 5173
 4. **Both Players Connected**: AW and Ithaqua are both logged in and in the same room
 
-**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
+### ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE
 
 **Reference**: See @MULTIPLAYER_TEST_RULES.md for complete prerequisite verification procedures.
 
 ## Test Configuration
 
-- **Test Players**: ArkanWolfshade (AW) and Ithaqua
-- **Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
-- **Testing Approach**: Playwright MCP (multi-tab interaction required)
-- **Timeout Settings**: Use configurable timeouts from master rules
+**Test Players**: ArkanWolfshade (AW) and Ithaqua
+
+**Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
+
+**Testing Approach**: Playwright MCP (multi-tab interaction required)
+
+**Timeout Settings**: Use configurable timeouts from master rules
 
 ## Execution Steps
 
@@ -33,6 +38,7 @@ Tests the muting system and emote functionality across game sessions. This scena
 **Purpose**: Ensure both players are ready for muting system testing
 
 **Commands**:
+
 ```javascript
 // Ensure both players are logged in from previous scenario
 // AW should be on tab 0, Ithaqua on tab 1
@@ -46,6 +52,7 @@ Tests the muting system and emote functionality across game sessions. This scena
 **Purpose**: Test the muting system functionality
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -61,6 +68,7 @@ await mcp_playwright_browser_wait_for({text: "You have muted Ithaqua permanently
 **VALIDATION**: Did you type "mute Ithaqua" exactly? Did you wait for "You have muted Ithaqua permanently." exactly?
 
 **RESULT DOCUMENTATION**:
+
 - Command executed: "mute Ithaqua"
 - Response received: [document actual response]
 - Expected result: "You have muted Ithaqua permanently."
@@ -73,6 +81,7 @@ await mcp_playwright_browser_wait_for({text: "You have muted Ithaqua permanently
 **Purpose**: Test that emotes are blocked when player is muted
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
@@ -88,6 +97,7 @@ await mcp_playwright_browser_wait_for({text: "You dance like nobody's watching"}
 **VALIDATION**: Did you type "dance" exactly? Did you wait for "You dance like nobody's watching" exactly?
 
 **RESULT DOCUMENTATION**:
+
 - Command executed: "dance"
 - Response received: [document actual response]
 - Expected result: "You dance like nobody's watching"
@@ -100,12 +110,14 @@ await mcp_playwright_browser_wait_for({text: "You dance like nobody's watching"}
 **Purpose**: Test that muted players' emotes are blocked from other players
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
 
 // Check for emote message
-const awMessages = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const awMessages = await mcp_playwright_browser_evaluate({function: "() =>
+Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
 const seesIthaquaEmote = awMessages.some(msg => msg.includes('Ithaqua dances like nobody\'s watching'));
 console.log('AW sees Ithaqua emote (should be false):', !seesIthaquaEmote);
 console.log('AW messages:', awMessages);
@@ -118,6 +130,7 @@ console.log('AW messages:', awMessages);
 **Purpose**: Verify that muting only affects emotes, not other communication
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
@@ -148,6 +161,7 @@ console.log('AW sees Ithaqua say message:', seesSayMessage);
 **Purpose**: Test the unmuting functionality
 
 **Commands**:
+
 ```javascript
 // Type unmute command
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "unmute Ithaqua"});
@@ -164,6 +178,7 @@ await mcp_playwright_browser_wait_for({text: "You have unmuted Ithaqua"});
 **Purpose**: Test that emotes work after unmuting
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
@@ -183,6 +198,7 @@ await mcp_playwright_browser_wait_for({text: "You dance like nobody's watching"}
 **Purpose**: Test that emotes are visible after unmuting
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -224,6 +240,7 @@ console.log('📋 PROCEEDING TO SCENARIO 5: Basic Chat Communication');
 **Purpose**: Finalize scenario execution and prepare for next scenario
 
 **Commands**:
+
 ```javascript
 // Close all browser tabs to prepare for next scenario
 const tabList = await mcp_playwright_browser_tab_list();
@@ -247,6 +264,7 @@ console.log('➡️ READY FOR SCENARIO 5: Basic Chat Communication');
 **Purpose**: Verify that multiple emotes work correctly after unmuting
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
@@ -274,16 +292,22 @@ console.log('AW sees Ithaqua laugh emote:', seesLaughEmote);
 
 ## Expected Results
 
-- ✅ AW successfully mutes Ithaqua
-- ✅ AW does NOT see Ithaqua's emote when muted
-- ✅ AW sees Ithaqua's say message (muting doesn't affect say channel)
-- ✅ AW successfully unmutes Ithaqua
-- ✅ AW sees Ithaqua's emote after unmuting
+✅ AW successfully mutes Ithaqua
+
+✅ AW does NOT see Ithaqua's emote when muted
+
+✅ AW sees Ithaqua's say message (muting doesn't affect say channel)
+
+✅ AW successfully unmutes Ithaqua
+
+✅ AW sees Ithaqua's emote after unmuting
+
 - ✅ Multiple emotes work correctly after unmuting
 
 ## Success Criteria Checklist
 
-- [ ] AW successfully mutes Ithaqua
+[ ] AW successfully mutes Ithaqua
+
 - [ ] Ithaqua can use emotes (sees own confirmation)
 - [ ] AW does not see Ithaqua's emote when muted
 - [ ] Say messages still work when muted
@@ -297,15 +321,18 @@ console.log('AW sees Ithaqua laugh emote:', seesLaughEmote);
 ## Cleanup
 
 Execute standard cleanup procedures from @CLEANUP.md:
+
 1. Close all browser tabs
 2. Stop development server
 3. Verify clean shutdown
 
 ## Status
 
-**✅ FIXES IMPLEMENTED - Ready for Testing**
+### ✅ FIXES IMPLEMENTED - Ready for Testing
 
-The muting system and emote functionality is working correctly. Players can mute and unmute other players, and the muting system properly blocks emotes while allowing other communication channels to continue working. The system correctly restores emote visibility after unmuting.
+The muting system and emote functionality is working correctly. Players can mute and unmute other players, and the
+muting system properly blocks emotes while allowing other communication channels to continue working. The system
+correctly restores emote visibility after unmuting.
 
 ---
 

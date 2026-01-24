@@ -12,13 +12,13 @@ from ..structured_logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 
-def _extract_alias_params(command_data: dict, player_name: str) -> tuple[str | None, str | None]:
+def _extract_alias_params(command_data: dict[str, Any], player_name: str) -> tuple[str | None, str | None]:
     """Extract alias_name and command from command_data. Returns (alias_name, command)."""
     alias_name = command_data.get("alias_name")
     command = command_data.get("command")
 
     if alias_name is None:
-        args: list = command_data.get("args", [])
+        args: list[Any] = command_data.get("args", [])
         logger.debug("Processing alias command from args", player_name=player_name, args=args)
 
         if not args:
@@ -84,7 +84,11 @@ def _create_alias(alias_storage: AliasStorage, player_name: str, alias_name: str
 
 
 async def handle_alias_command(
-    command_data: dict, _current_user: dict, _request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    _request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the alias command for creating and viewing aliases.
@@ -116,7 +120,11 @@ async def handle_alias_command(
 
 
 async def handle_aliases_command(
-    _command_data: dict, _current_user: dict, _request: Any, alias_storage: AliasStorage | None, player_name: str
+    _command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    _request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the aliases command for listing all aliases.
@@ -159,7 +167,11 @@ async def handle_aliases_command(
 
 
 async def handle_unalias_command(
-    command_data: dict, _current_user: dict, _request: Any, alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],
+    _request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the unalias command for removing aliases.
@@ -175,7 +187,7 @@ async def handle_unalias_command(
         dict: Unalias command result
     """
     # Extract args from command_data
-    args: list = command_data.get("args", [])
+    args: list[Any] = command_data.get("args", [])
 
     logger.debug("Processing unalias command", player_name=player_name, args=args)
 

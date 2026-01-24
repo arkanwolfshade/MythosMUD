@@ -171,7 +171,31 @@
     "files.readonlyInclude": {
       ".codacy/codacy.yaml": true
     },
-    "makefile.makefilePath": "E:\\projects\\GitHub\\MythosMUD\\Makefile"
+    "makefile.makefilePath": "E:\\projects\\GitHub\\MythosMUD\\Makefile",
+    "markdownlint.lintWorkspaceGlobs": [
+      "**/*.{md,mkd,mdwn,mdown,markdown,markdn,mdtxt,mdtext,workbook}",
+      "!**/node_modules/**",
+      "!**/bower_components/**",
+      "!**/.git/**",
+      "!**/investigations/**",
+      "!**/.agent-os/**",
+      "!**/docs/archive/**"
+    ],
+    "markdownlint.config": {
+      "default": true,
+      "MD013": {
+        "line_length": 120
+      },
+      "MD033": false,
+      "MD040": false,
+      "MD060": false
+    },
+    "markdownlint.ignore": [
+      "**/investigations/**/*.md",
+      "**/.agent-os/**/*.md",
+      "**/docs/archive/**/*.md"
+    ],
+    "markdownlint.run": "onSave"
   },
   "extensions": {
     "recommendations": [

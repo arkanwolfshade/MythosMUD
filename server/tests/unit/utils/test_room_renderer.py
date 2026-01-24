@@ -185,7 +185,9 @@ def test_clone_room_drops_multiple_drops():
 
 def test_clone_room_drops_nested_structure():
     """Test clone_room_drops deep copies nested structures."""
-    original = [{"item_name": "Ancient Tome", "metadata": {"author": "Lovecraft", "year": 1928}}]
+    from typing import Any
+
+    original: list[dict[str, Any]] = [{"item_name": "Ancient Tome", "metadata": {"author": "Lovecraft", "year": 1928}}]
     cloned = clone_room_drops(original)
 
     assert cloned == original

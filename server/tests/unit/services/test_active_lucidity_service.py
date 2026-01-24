@@ -273,9 +273,9 @@ async def test_perform_recovery_action_naive_datetime_cooldown(mock_session, sam
     # The code converts naive datetime to UTC-aware using .replace(tzinfo=UTC)
     # which treats the naive time as if it were already UTC
     mock_cooldown.cooldown_expires_at = datetime(2024, 1, 15, 11, 59, 0)  # 1 minute before fixed_now
-    service._lucidity_service.get_cooldown = AsyncMock(return_value=mock_cooldown)
-    service._lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
-    service._lucidity_service.set_cooldown = AsyncMock()
+    service._lucidity_service.get_cooldown = AsyncMock(return_value=mock_cooldown)  # type: ignore[method-assign]
+    service._lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)  # type: ignore[method-assign]
+    service._lucidity_service.set_cooldown = AsyncMock()  # type: ignore[method-assign]
 
     # Should convert naive datetime to UTC-aware and allow action since cooldown is expired
     result = await service.perform_recovery_action(sample_player_id, action_code="pray")

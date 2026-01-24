@@ -10,17 +10,21 @@ This document outlines the comprehensive strategy for transforming our existing 
 
 ### Server-Side Testing ✅
 
-- **50+ test files** covering all major systems
-- **Comprehensive coverage** of authentication, movement, chat, game mechanics
-- **SQLite test database** at `/server/tests/data/players/unit_test_players.db`
+**50+ test files** covering all major systems
+
+**Comprehensive coverage** of authentication, movement, chat, game mechanics
+
+**SQLite test database** at `/server/tests/data/players/unit_test_players.db`
 - **Mock-based testing** for isolation and speed
 - **70% minimum coverage** requirement (targeting 80%)
 
 ### Client-Side Testing 🔄
 
-- **3 basic Playwright tests** using mocked WebSocket/SSE
-- **Browser automation** for UI testing
-- **Limited scope** - basic login and help command testing
+**3 basic Playwright tests** using mocked WebSocket/SSE
+
+**Browser automation** for UI testing
+
+**Limited scope** - basic login and help command testing
 - **Mock-based approach** limits real-world validation
 
 ## E2E Testing Strategy
@@ -29,9 +33,11 @@ This document outlines the comprehensive strategy for transforming our existing 
 
 #### 1.1 Unified Test Environment
 
-- **Shared Test Database**: Reuse `/server/tests/data/players/unit_test_players.db`
-- **Test Data Generation**: Create bespoke test data for E2E scenarios
-- **Environment Isolation**: Reuse server instances with strong state validation
+**Shared Test Database**: Reuse `/server/tests/data/players/unit_test_players.db`
+
+**Test Data Generation**: Create bespoke test data for E2E scenarios
+
+**Environment Isolation**: Reuse server instances with strong state validation
 - **Test Orchestration**: Coordinate server/client startup and teardown
 
 #### 1.2 Test Framework Architecture
@@ -135,9 +141,11 @@ tests/
 
 #### 3.1 Performance & Reliability
 
-- **Test Execution Target**: 10 minutes for full suite
-- **Browser Strategy**: Chromium-focused for CI speed
-- **Parallel Execution**: Where possible without interference
+**Test Execution Target**: 10 minutes for full suite
+
+**Browser Strategy**: Chromium-focused for CI speed
+
+**Parallel Execution**: Where possible without interference
 - **Resource Monitoring**: Memory usage, CPU utilization
 
 #### 3.2 Debugging & Failure Analysis
@@ -207,46 +215,57 @@ tests/
 
 ### Test Environment Requirements
 
-- **Server**: FastAPI with SQLite test database
-- **Client**: React/TypeScript with real WebSocket connections
-- **Browser**: Chromium (primary), Firefox/WebKit (secondary)
+**Server**: FastAPI with SQLite test database
+
+**Client**: React/TypeScript with real WebSocket connections
+
+**Browser**: Chromium (primary), Firefox/WebKit (secondary)
 - **Test Runner**: Playwright with custom orchestration
 
 ### Performance Targets
 
-- **Full E2E Suite**: ≤ 10 minutes
-- **Individual Test**: ≤ 30 seconds
-- **Setup/Teardown**: ≤ 5 seconds per test
+**Full E2E Suite**: ≤ 10 minutes
+
+**Individual Test**: ≤ 30 seconds
+
+**Setup/Teardown**: ≤ 5 seconds per test
 - **Memory Usage**: ≤ 512MB per browser instance
 
 ### Quality Gates
 
-- **Test Reliability**: > 95% pass rate
-- **Coverage**: All critical user journeys
-- **Performance**: No regression in test execution time
+**Test Reliability**: > 95% pass rate
+
+**Coverage**: All critical user journeys
+
+**Performance**: No regression in test execution time
 - **Debugging**: Root cause identifiable within 5 minutes
 
 ## Risk Mitigation
 
 ### False Positive Prevention
 
-- **State Validation**: Verify clean state between tests
-- **Isolation Checks**: Validate no cross-test contamination
-- **Deterministic Data**: Use predictable test data
+**State Validation**: Verify clean state between tests
+
+**Isolation Checks**: Validate no cross-test contamination
+
+**Deterministic Data**: Use predictable test data
 - **Timing Controls**: Add appropriate waits and timeouts
 
 ### Test Maintenance
 
-- **Documentation**: Clear test purpose and setup
-- **Modular Design**: Reusable test utilities
-- **Version Control**: Track test data changes
+**Documentation**: Clear test purpose and setup
+
+**Modular Design**: Reusable test utilities
+
+**Version Control**: Track test data changes
 - **Regular Review**: Update tests with feature changes
 
 ## Success Metrics
 
 ### Immediate Goals
 
-- [ ] E2E test suite running in < 10 minutes
+[ ] E2E test suite running in < 10 minutes
+
 - [ ] Authentication flow fully tested
 - [ ] Movement system fully tested
 - [ ] Chat system fully tested
@@ -254,7 +273,8 @@ tests/
 
 ### Long-term Goals
 
-- [ ] 99% test reliability
+[ ] 99% test reliability
+
 - [ ] < 5 minute test execution
 - [ ] Comprehensive debugging capabilities
 - [ ] Performance regression detection
@@ -264,31 +284,36 @@ tests/
 
 ### Week 1-2: Infrastructure
 
-- Set up E2E test framework
+Set up E2E test framework
+
 - Implement test orchestration
 - Create test data utilities
 
 ### Week 3-4: Authentication Testing
 
-- Implement real WebSocket testing
+Implement real WebSocket testing
+
 - Create login/logout scenarios
 - Add failure capture
 
 ### Week 5-6: Movement Testing
 
-- Create test room layouts
+Create test room layouts
+
 - Implement movement scenarios
 - Add state validation
 
 ### Week 7-8: Chat Testing
 
-- Implement multi-user testing
+Implement multi-user testing
+
 - Create chat scenarios
 - Add persistence validation
 
 ### Week 9-10: CI Integration
 
-- Configure GitHub Actions
+Configure GitHub Actions
+
 - Set up reporting
 - Performance optimization
 

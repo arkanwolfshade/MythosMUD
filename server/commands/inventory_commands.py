@@ -56,8 +56,8 @@ logger = get_logger(__name__)
 
 
 async def handle_inventory_command(
-    _command_data: dict,  # pylint: disable=unused-argument  # Reason: Command data not used in this handler
-    current_user: dict,
+    _command_data: dict[str, Any],  # pylint: disable=unused-argument  # Reason: Command data not used in this handler
+    current_user: dict[str, Any],
     request: Any,
     _alias_storage: AliasStorage | None,
     player_name: str,
@@ -96,8 +96,8 @@ async def handle_inventory_command(
 
 
 async def handle_pickup_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     _alias_storage: AliasStorage | None,
     player_name: str,
@@ -203,8 +203,8 @@ async def handle_pickup_command(
 
 
 async def handle_drop_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     _alias_storage: AliasStorage | None,
     player_name: str,
@@ -287,8 +287,8 @@ async def handle_drop_command(
 
 
 async def handle_equip_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     _alias_storage: AliasStorage | None,
     player_name: str,
@@ -405,8 +405,8 @@ async def handle_equip_command(
 
 
 async def handle_unequip_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     _alias_storage: AliasStorage | None,
     player_name: str,
@@ -508,8 +508,8 @@ async def handle_unequip_command(
 
 
 async def handle_put_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     _alias_storage: AliasStorage | None,
     player_name: str,
@@ -592,8 +592,8 @@ async def handle_put_command(
 
 
 async def handle_get_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     _alias_storage: AliasStorage | None,
     player_name: str,

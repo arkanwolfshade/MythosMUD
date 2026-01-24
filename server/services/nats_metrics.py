@@ -28,7 +28,7 @@ class NATSMetrics:  # pylint: disable=too-many-instance-attributes  # Reason: Me
         self.ack_failure_count = 0
         self.nak_count = 0
 
-    def record_publish(self, success: bool, processing_time: float):
+    def record_publish(self, success: bool, processing_time: float) -> None:
         """Record publish operation metrics."""
         self.publish_count += 1
         if not success:
@@ -36,35 +36,35 @@ class NATSMetrics:  # pylint: disable=too-many-instance-attributes  # Reason: Me
         # Deque automatically rotates when maxlen is reached - no manual slicing needed
         self.message_processing_times.append(processing_time)
 
-    def record_subscribe(self, success: bool):
+    def record_subscribe(self, success: bool) -> None:
         """Record subscribe operation metrics."""
         self.subscribe_count += 1
         if not success:
             self.subscribe_errors += 1
 
-    def record_batch_flush(self, success: bool, _message_count: int):
+    def record_batch_flush(self, success: bool, _message_count: int) -> None:
         """Record batch flush operation metrics."""
         self.batch_flush_count += 1
         if not success:
             self.batch_flush_errors += 1
 
-    def update_connection_health(self, health_score: float):
+    def update_connection_health(self, health_score: float) -> None:
         """Update connection health score (0-100)."""
         self.connection_health_score = max(0.0, min(100.0, health_score))
 
-    def update_pool_utilization(self, utilization: float):
+    def update_pool_utilization(self, utilization: float) -> None:
         """Update connection pool utilization (0-1)."""
         self.pool_utilization = max(0.0, min(1.0, utilization))
 
-    def record_ack_success(self):
+    def record_ack_success(self) -> None:
         """Record successful message acknowledgment."""
         self.ack_success_count += 1
 
-    def record_ack_failure(self):
+    def record_ack_failure(self) -> None:
         """Record failed message acknowledgment."""
         self.ack_failure_count += 1
 
-    def record_nak(self):
+    def record_nak(self) -> None:
         """Record negative acknowledgment (message requeued)."""
         self.nak_count += 1
 

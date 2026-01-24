@@ -2,49 +2,79 @@
 name: Disconnect Grace Period and Rest Command
 overview: Implement a 30-second grace period for disconnected players (zombie state with auto-attack), a new `/rest` command with 10-second countdown for clean disconnection, and instant rest functionality in inns/hotels/motels.
 todos:
+
   - id: grace_period_tracker
+
     content: Create disconnect_grace_period.py module to manage 30-second grace period timers and zombie state
     status: completed
+
   - id: connection_manager_grace
+
     content: Add grace_period_players tracking to ConnectionManager
     status: completed
+
   - id: modify_disconnect_tracking
+
     content: Modify player_presence_tracker.py to start grace period instead of immediate removal
     status: completed
+
   - id: zombie_state_utils
+
     content: Add is_player_in_grace_period() utility method
     status: completed
+
   - id: combat_grace_autoattack
+
     content: Modify combat_turn_processor.py to allow auto-attack for grace period players
     status: completed
+
   - id: command_blocking_grace
+
     content: Block commands for grace period players (except auto-attack responses)
     status: completed
+
   - id: reconnect_cancel_grace
+
     content: Handle reconnection during grace period to cancel timer
     status: completed
+
   - id: rewrite_rest_command
+
     content: Rewrite rest_command.py for 10-second countdown disconnect functionality
     status: completed
+
   - id: rest_state_tracking
+
     content: Add resting_players tracking to ConnectionManager
     status: completed
+
   - id: rest_interrupt_handling
+
     content: Implement interrupt logic for combat, movement, and spellcasting
     status: completed
+
   - id: rest_position_setting
+
     content: Set character to sitting position when /rest starts
     status: completed
+
   - id: room_rest_location
+
     content: Add rest_location property to Room model
     status: completed
+
   - id: rest_location_logic
+
     content: Implement instant disconnect logic for rest locations when not in combat
     status: completed
+
   - id: update_room_json
+
     content: "Add rest_location: true to inn/hotel/motel room JSON files"
     status: completed
+
   - id: visual_indicator_implementation
+
     content: Implement (linkdead) visual indicator in room occupant lists and /look command output
     status: pending
 ---
@@ -63,9 +93,11 @@ This plan implements three related features:
 
 Based on industry comparison and requirements:
 
-- **Grace Period Scope**: Only applies to **unintentional disconnects** (connection loss). Intentional disconnects via `/rest` or `/quit` have no grace period.
-- **Auto-Attack During Grace Period**: Normal auto-attack behavior (includes weapons, but no special abilities/skills)
-- **Rest During Combat**: `/rest` command is **blocked entirely during combat** (cannot be used to escape combat)
+**Grace Period Scope**: Only applies to **unintentional disconnects** (connection loss). Intentional disconnects via `/rest` or `/quit` have no grace period.
+
+**Auto-Attack During Grace Period**: Normal auto-attack behavior (includes weapons, but no special abilities/skills)
+
+**Rest During Combat**: `/rest` command is **blocked entirely during combat** (cannot be used to escape combat)
 - **Visual Indicator**: Disconnected characters show "(linkdead)" in both room occupant lists and `/look` command output
 - **Rest Location Regeneration**: Rest locations provide safe logout only (no automatic HP/MP regeneration)
 - **Countdown Duration**: 10 seconds for `/rest` command countdown
@@ -94,8 +126,11 @@ Based on industry comparison and requirements:
 **Key Changes:**
 
 - Replace existing `server/commands/rest_command.py` (currently for MP regeneration)
+
 - New `/rest` command:
-  - **Blocked entirely during combat** (cannot be used to escape combat)
+
+  **Blocked entirely during combat** (cannot be used to escape combat)
+
   - Sets character to sitting position
   - Starts 10-second countdown
   - Interrupts on: movement, spellcasting, being attacked/targeted
@@ -104,7 +139,7 @@ Based on industry comparison and requirements:
 
 **Rest State Tracking:**
 
-- Add `resting_players: dict[uuid.UUID, asyncio.Task] `to `ConnectionManager`
+- Add `resting_players: dict[uuid.UUID, asyncio.Task]`to `ConnectionManager`
 - Track rest countdown state per player
 
 ### Room Rest Location Support
@@ -133,7 +168,8 @@ Based on industry comparison and requirements:
 
 **Grace Period Behavior:**
 
-- **Only applies to unintentional disconnects** (connection loss)
+**Only applies to unintentional disconnects** (connection loss)
+
 - Player remains in room, visible to others
 - Shows "(linkdead)" indicator in room occupant lists and `/look` command output
 - Can be targeted and attacked
@@ -163,6 +199,7 @@ async def handle_rest_command(...):
     # Track rest task in ConnectionManager
     # On interrupt: cancel task, return to normal
     # On completion: clean disconnect (no grace period for intentional disconnect)
+
 ```
 
 **Combat Restriction:**
@@ -255,7 +292,8 @@ In combat?
 
 ## Migration Notes
 
-- Existing `/rest` command (MP regeneration) will be replaced
+Existing `/rest` command (MP regeneration) will be replaced
+
 - Room JSON files need `rest_location` property added for inns/hotels/motels
 - No database schema changes required
 - Grace period is in-memory only (no persistence needed)

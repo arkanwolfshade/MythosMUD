@@ -7,7 +7,7 @@ for various operations like UUID conversion, sequence numbers, and deprecated me
 
 # pylint: disable=too-many-locals  # Reason: Connection helpers require many intermediate variables for complex connection operations
 
-from typing import Any
+from typing import Any, cast
 
 import aiofiles  # pylint: disable=import-error
 
@@ -74,7 +74,8 @@ def _optimize_payload(event: dict[str, Any], player_id: Any) -> dict[str, Any]:
             error=str(opt_error),
         )
 
-    return serializable_event
+    result: dict[str, Any] = cast(dict[str, Any], serializable_event)
+    return result
 
 
 async def _send_to_websockets(
@@ -305,7 +306,8 @@ async def broadcast_room_event_impl(
         from .envelope import build_event
 
         event = build_event(event_type, data)
-        return await manager.broadcast_to_room(room_id, event)
+        result: dict[str, Any] = cast(dict[str, Any], await manager.broadcast_to_room(room_id, event))
+        return result
     except (DBError, AttributeError) as e:
         logger.error("Error broadcasting room event", error=str(e), event_type=event_type, room_id=room_id)
         return {
@@ -332,7 +334,8 @@ async def broadcast_global_event_impl(
         from .envelope import build_event
 
         event = build_event(event_type, data)
-        return await manager.broadcast_global(event)
+        result: dict[str, Any] = cast(dict[str, Any], await manager.broadcast_global(event))
+        return result
     except (DBError, AttributeError) as e:
         logger.error("Error broadcasting global event", error=str(e), event_type=event_type)
         return {

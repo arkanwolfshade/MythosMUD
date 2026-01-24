@@ -6,6 +6,7 @@ including damage, healing, and DP updates using SQLAlchemy ORM with PostgreSQL.
 """
 
 import uuid
+from typing import Any
 
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
@@ -27,7 +28,7 @@ class HealthRepository:
     to prevent race conditions.
     """
 
-    def __init__(self, event_bus=None):
+    def __init__(self, event_bus: Any = None) -> None:
         """
         Initialize the health repository.
 

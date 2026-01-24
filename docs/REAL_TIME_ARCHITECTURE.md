@@ -1,18 +1,26 @@
 # 🚀 MythosMUD Real-Time Architecture
 
-This document describes the real-time architecture implemented for MythosMUD, combining RESTful authentication with WebSocket-based real-time gameplay updates.
+This document describes the real-time architecture implemented for MythosMUD, combining RESTful authentication with
+WebSocket-based real-time gameplay updates.
 
 ## Rationale
 
-**Recommended Architecture**
-- **Frontend**: React + TypeScript
-- **Real-Time Communication**: WebSocket-only architecture
+### Recommended Architecture
 
-**Why WebSocket-Only?**
-- **Simplified Architecture**: Single connection type reduces complexity
-- **Bidirectional Communication**: WebSocket handles both commands and game state updates
-- **Better Performance**: Lower overhead than maintaining dual connections
-- **Easier Debugging**: Single connection simplifies troubleshooting
+**Frontend**: React + TypeScript
+
+**Real-Time Communication**: WebSocket-only architecture
+
+### Why WebSocket-Only?
+
+**Simplified Architecture**: Single connection type reduces complexity
+
+**Bidirectional Communication**: WebSocket handles both commands and game state updates
+
+**Better Performance**: Lower overhead than maintaining dual connections
+
+**Easier Debugging**: Single connection simplifies troubleshooting
+
 - **Battle-Tested**: WebSocket is mature and well-supported
 - **Unified Message Delivery**: All real-time communication through one protocol
 
@@ -37,20 +45,30 @@ This document describes the real-time architecture implemented for MythosMUD, co
 ## Technology Stack
 
 ### **Frontend (React + TypeScript)**
-- **Framework**: React 18+ with TypeScript
-- **State Management**: React hooks (useState, useReducer) and Zustand
-- **Real-time**: Native WebSocket API
-- **Styling**: CSS modules with terminal theme
+
+**Framework**: React 18+ with TypeScript
+
+**State Management**: React hooks (useState, useReducer) and Zustand
+
+**Real-time**: Native WebSocket API
+
+**Styling**: CSS modules with terminal theme
 
 ### **Backend (Python + FastAPI)**
-- **Framework**: FastAPI with async/await
-- **Real-time**: WebSocket support only
-- **Authentication**: JWT tokens with Bearer scheme
-- **Database**: PostgreSQL with SQLAlchemy ORM
+
+**Framework**: FastAPI with async/await
+
+**Real-time**: WebSocket support only
+
+**Authentication**: JWT tokens with Bearer scheme
+
+**Database**: PostgreSQL with SQLAlchemy ORM
 
 ### **Real-time Protocols**
-- **WebSocket**: Bidirectional communication for all real-time features
-- **Message Format**: JSON with sequence numbers
+
+**WebSocket**: Bidirectional communication for all real-time features
+
+**Message Format**: JSON with sequence numbers
 
 ## Implementation Details
 
@@ -73,6 +91,7 @@ const { access_token } = await response.json();
 **Purpose**: Interactive commands, chat, and game state updates
 
 **Server Endpoint**:
+
 ```python
 @app.websocket("/ws/{player_id}")
 async def websocket_endpoint_route(websocket: WebSocket, player_id: str):
@@ -80,6 +99,7 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str):
 ```
 
 **Client Connection (updated)**:
+
 ```typescript
 // Use relative URL behind dev proxy; authenticate via subprotocols
 const websocket = new WebSocket('/api/ws?session_id=' + sessionId, ['bearer', accessToken]);
@@ -118,7 +138,8 @@ All real-time messages follow this structure:
 
 ### **Modular Architecture (Refactored December 2025)**
 
-The ConnectionManager has been refactored into a modular architecture following the Facade pattern. This improves maintainability, testability, and code organization:
+The ConnectionManager has been refactored into a modular architecture following the Facade pattern. This improves
+maintainability, testability, and code organization:
 
 **Component Groups**:
 
@@ -142,6 +163,7 @@ server/realtime/
 ```
 
 **Benefits**:
+
 - Each component has a single, focused responsibility
 - Components can be tested independently
 - Changes are localized to specific modules
@@ -149,12 +171,14 @@ server/realtime/
 - Dependency injection enables flexible configuration
 
 **Core Responsibilities Retained**:
+
 - WebSocket lifecycle management (connect/disconnect)
 - Player presence tracking (online players, last seen)
 - Connection metadata management
 - Component coordination via facade pattern
 
 **Refactoring Metrics**:
+
 - Original: 3,653 lines (monolithic)
 - Current: 2,382 lines (modular facade)
 - Reduction: 35% (1,271 lines extracted)
@@ -172,10 +196,13 @@ See `REFACTORING_SUMMARY.md` for complete details.
 
 ### **Reconnection Strategy**
 
-- **Exponential backoff**: 1s, 2s, 4s, 8s, 16s, 30s max
-- **Maximum attempts**: 5 reconnection attempts
-- **Automatic**: Enabled by default, configurable
-- **State preservation**: Pending messages stored for delivery
+**Exponential backoff**: 1s, 2s, 4s, 8s, 16s, 30s max
+
+**Maximum attempts**: 5 reconnection attempts
+
+**Automatic**: Enabled by default, configurable
+
+**State preservation**: Pending messages stored for delivery
 
 ### **Error Handling**
 
@@ -227,60 +254,76 @@ function handleGameEvent(event: GameEvent) {
 
 ### **Message Ordering**
 
-- **Sequence numbers**: All messages include sequence numbers
-- **Out-of-order handling**: Client can reorder messages if needed
-- **Duplicate detection**: Sequence numbers prevent duplicate processing
+**Sequence numbers**: All messages include sequence numbers
+
+**Out-of-order handling**: Client can reorder messages if needed
+
+**Duplicate detection**: Sequence numbers prevent duplicate processing
 
 ### **Scalability**
 
-- **Connection pooling**: Efficient WebSocket management
-- **Room subscriptions**: Only send updates to relevant players
-- **Message batching**: Combine multiple updates when possible
-- **Heartbeat optimization**: Minimal overhead for connection health
+**Connection pooling**: Efficient WebSocket management
+
+**Room subscriptions**: Only send updates to relevant players
+
+**Message batching**: Combine multiple updates when possible
+
+**Heartbeat optimization**: Minimal overhead for connection health
 
 ### **Memory Management**
 
-- **Message history**: Limited to last 100 messages
-- **Connection cleanup**: Automatic cleanup on disconnect
-- **Event garbage collection**: Old events automatically removed
+**Message history**: Limited to last 100 messages
+
+**Connection cleanup**: Automatic cleanup on disconnect
+
+**Event garbage collection**: Old events automatically removed
 
 ## Security Considerations
 
 ### **Authentication**
 
-- **JWT tokens**: Required for all real-time connections
-- **Token validation**: Server validates tokens on connection
-- **Session management**: Tokens expire and require renewal
+**JWT tokens**: Required for all real-time connections
+
+**Token validation**: Server validates tokens on connection
+
+**Session management**: Tokens expire and require renewal
 
 ### **Input Validation**
 
-- **Command sanitization**: All commands validated server-side
-- **Rate limiting**: Prevent command spam
-- **Injection prevention**: SQL and command injection protection
+**Command sanitization**: All commands validated server-side
+
+**Rate limiting**: Prevent command spam
+
+**Injection prevention**: SQL and command injection protection
 
 ### **Data Privacy**
 
-- **Room-based updates**: Players only see their room's events
-- **Personal data**: Sensitive data filtered from broadcasts
-- **Admin controls**: Separate admin-only events
+**Room-based updates**: Players only see their room's events
+
+**Personal data**: Sensitive data filtered from broadcasts
+
+**Admin controls**: Separate admin-only events
 
 ## Development Workflow
 
 ### **Local Development**
 
 1. **Start server**:
+
    ```bash
    cd server
    uv run uvicorn main:app --reload
    ```
 
 2. **Start client**:
+
    ```bash
    cd client
    npm run dev
    ```
 
 3. **Test connections**:
+
    - Visit `http://localhost:54731/docs` for API documentation
    - Use browser dev tools to monitor WebSocket connections
    - Check server logs for connection events
@@ -323,13 +366,19 @@ ws.onmessage = (event) => {
 
 ### **Debug Tools**
 
-- **Browser DevTools**: Network tab for connection monitoring
-- **Server Logs**: Connection and error logging
-- **WebSocket Inspector**: Browser extension for WS debugging
-- **Postman**: Test REST endpoints
+**Browser DevTools**: Network tab for connection monitoring
+
+**Server Logs**: Connection and error logging
+
+**WebSocket Inspector**: Browser extension for WS debugging
+
+**Postman**: Test REST endpoints
 
 ## Conclusion
 
-This real-time architecture provides a robust foundation for MythosMUD's multiplayer gameplay while maintaining simplicity for development and debugging. The WebSocket-only approach offers reliable state updates and responsive interactive commands through a single, unified connection.
+This real-time architecture provides a robust foundation for MythosMUD's multiplayer gameplay while maintaining
+simplicity for development and debugging. The WebSocket-only approach offers reliable state updates and responsive
+interactive commands through a single, unified connection.
 
-The implementation is designed to be beginner-friendly while supporting the performance and scalability requirements of a multiplayer game. Future enhancements can be added incrementally without disrupting the core architecture.
+The implementation is designed to be beginner-friendly while supporting the performance and scalability requirements of
+a multiplayer game. Future enhancements can be added incrementally without disrupting the core architecture.

@@ -6,6 +6,7 @@ lucidity, fear, corruption, healing, and damage mechanics.
 """
 
 from pathlib import Path  # noqa: F401  # pylint: disable=unused-import  # Reserved for future use
+from typing import Any
 
 from ..exceptions import ValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -17,7 +18,7 @@ logger = get_logger(__name__)
 class GameMechanicsService:
     """Service class for game mechanics operations."""
 
-    def __init__(self, persistence):
+    def __init__(self, persistence: Any) -> None:
         """Initialize the game mechanics service with a persistence layer."""
         self.persistence = persistence
         logger.info("GameMechanicsService initialized")

@@ -2,16 +2,17 @@
 
 ## Tasks
 
-- [ ] 1. **Create Sanitization Module**
-  - [ ] 1.1 Create `server/error_handlers/sanitization.py` with module docstring and imports
-  - [ ] 1.2 Extract and migrate `_is_safe_detail_key()` → `is_safe_detail_key()` with type hints and docstring
-  - [ ] 1.3 Extract and migrate `_sanitize_detail_value()` → `sanitize_detail_value()` with type hints and docstring
-  - [ ] 1.4 Extract and migrate `_sanitize_context()` → `sanitize_context()` with type hints and docstring
-  - [ ] 1.5 Extract and migrate `sanitize_html_content()` with comprehensive docstring and security notes
-  - [ ] 1.6 Extract and migrate `sanitize_text_content()` with comprehensive docstring
-  - [ ] 1.7 Add `__all__` list to sanitization module
-  - [ ] 1.8 Update `server/error_handlers/__init__.py` to import and export sanitization functions
-  - [ ] 1.9 Run tests to verify new module imports correctly: `make test`
+[ ] 1. **Create Sanitization Module**
+
+- [ ] 1.1 Create `server/error_handlers/sanitization.py` with module docstring and imports
+- [ ] 1.2 Extract and migrate `_is_safe_detail_key()` → `is_safe_detail_key()` with type hints and docstring
+- [ ] 1.3 Extract and migrate `_sanitize_detail_value()` → `sanitize_detail_value()` with type hints and docstring
+- [ ] 1.4 Extract and migrate `_sanitize_context()` → `sanitize_context()` with type hints and docstring
+- [ ] 1.5 Extract and migrate `sanitize_html_content()` with comprehensive docstring and security notes
+- [ ] 1.6 Extract and migrate `sanitize_text_content()` with comprehensive docstring
+- [ ] 1.7 Add `__all__` list to sanitization module
+- [ ] 1.8 Update `server/error_handlers/__init__.py` to import and export sanitization functions
+- [ ] 1.9 Run tests to verify new module imports correctly: `make test`
 
 - [ ] 2. **Update Test Imports and Function Calls**
   - [ ] 2.1 Update imports in `server/tests/test_error_handlers.py` to use new sanitization module

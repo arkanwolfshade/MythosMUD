@@ -205,7 +205,8 @@ class SchemaValidator:
         elif isinstance(exit_data, str):
             return []
         elif isinstance(exit_data, dict):
-            return exit_data.get("flags", [])
+            result: list[str] = cast(list[str], exit_data.get("flags", []))
+            return result
         else:
             return []
 

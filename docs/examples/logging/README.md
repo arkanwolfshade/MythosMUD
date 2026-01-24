@@ -5,7 +5,9 @@ This directory contains comprehensive examples of how to use the enhanced loggin
 ## Files Overview
 
 ### `correct_patterns.py`
+
 Demonstrates the **CORRECT** way to use the enhanced logging system. This file shows:
+
 - Proper import statements
 - Structured logging with key-value pairs
 - Error logging with rich context
@@ -20,7 +22,9 @@ Demonstrates the **CORRECT** way to use the enhanced logging system. This file s
 - Batch processing logging
 
 ### `deprecated_patterns.py`
+
 Demonstrates **DEPRECATED** patterns that should **NEVER** be used. This file shows:
+
 - Forbidden import statements (`import logging`)
 - String formatting in logs
 - Deprecated context parameters
@@ -32,7 +36,9 @@ Demonstrates **DEPRECATED** patterns that should **NEVER** be used. This file sh
 - Blocking operations in async context
 
 ### `migration_examples.py`
+
 Shows **before/after** examples of migrating from default logging to enhanced logging:
+
 - Import statement migration
 - Context parameter migration
 - String formatting to structured logging
@@ -50,7 +56,9 @@ Shows **before/after** examples of migrating from default logging to enhanced lo
 - Complete function migration
 
 ### `fastapi_integration.py`
+
 Demonstrates how to integrate enhanced logging with **FastAPI** applications:
+
 - Request context middleware
 - API request/response logging middleware
 - Route handler logging
@@ -63,7 +71,9 @@ Demonstrates how to integrate enhanced logging with **FastAPI** applications:
 - Dependency injection
 
 ### `websocket_integration.py`
+
 Demonstrates how to integrate enhanced logging with **WebSocket** connections:
+
 - Connection management
 - Message handling
 - Authentication
@@ -75,7 +85,9 @@ Demonstrates how to integrate enhanced logging with **WebSocket** connections:
 - Performance monitoring
 
 ### `testing_examples.py`
+
 Demonstrates how to **test** logging behavior in unit tests and integration tests:
+
 - Basic logging tests
 - Error logging tests
 - Context binding tests
@@ -96,6 +108,7 @@ Demonstrates how to **test** logging behavior in unit tests and integration test
 ## Usage Guidelines
 
 ### For Developers
+
 1. **Always** refer to `correct_patterns.py` for proper logging implementation
 2. **Never** use patterns shown in `deprecated_patterns.py`
 3. Use `migration_examples.py` when updating existing code
@@ -104,6 +117,7 @@ Demonstrates how to **test** logging behavior in unit tests and integration test
 6. Use `testing_examples.py` for writing tests
 
 ### For Code Reviews
+
 1. Check that imports use enhanced logging
 2. Verify structured logging with key-value pairs
 3. Ensure no string formatting in log messages
@@ -113,6 +127,7 @@ Demonstrates how to **test** logging behavior in unit tests and integration test
 7. Ensure proper context binding for requests
 
 ### For AI Agents
+
 1. Follow the patterns in `correct_patterns.py`
 2. Avoid all patterns in `deprecated_patterns.py`
 3. Use the migration examples when updating existing code
@@ -122,7 +137,9 @@ Demonstrates how to **test** logging behavior in unit tests and integration test
 ## Key Principles
 
 ### ✅ DO
-- Use `from server.logging.enhanced_logging_config import get_logger`
+
+Use `from server.logging.enhanced_logging_config import get_logger`
+
 - Use structured logging with key-value pairs
 - Include rich context in error logs
 - Use appropriate log levels
@@ -132,7 +149,9 @@ Demonstrates how to **test** logging behavior in unit tests and integration test
 - Test logging behavior
 
 ### ❌ DON'T
-- Use `import logging` or `logging.getLogger()`
+
+Use `import logging` or `logging.getLogger()`
+
 - Use string formatting in log messages
 - Use deprecated `context={"key": "value"}` parameters
 - Log sensitive data
@@ -143,10 +162,13 @@ Demonstrates how to **test** logging behavior in unit tests and integration test
 
 ## Documentation References
 
-- **Complete Guide**: [docs/LOGGING_BEST_PRACTICES.md](../../LOGGING_BEST_PRACTICES.md)
-- **Quick Reference**: [docs/LOGGING_QUICK_REFERENCE.md](../../LOGGING_QUICK_REFERENCE.md)
-- **Development Guide**: [docs/DEVELOPMENT.md](../../DEVELOPMENT.md)
-- **AI Agent Guide**: [docs/DEVELOPMENT_AI.md](../../DEVELOPMENT_AI.md)
+**Complete Guide**: [docs/LOGGING_BEST_PRACTICES.md](../../LOGGING_BEST_PRACTICES.md)
+
+**Quick Reference**: [docs/LOGGING_QUICK_REFERENCE.md](../../LOGGING_QUICK_REFERENCE.md)
+
+**Development Guide**: [docs/DEVELOPMENT.md](../../DEVELOPMENT.md)
+
+**AI Agent Guide**: [docs/DEVELOPMENT_AI.md](../../DEVELOPMENT_AI.md)
 
 ## Examples Usage
 
@@ -157,4 +179,5 @@ To use these examples in your code:
 3. **Follow the testing patterns** from `testing_examples.py`
 4. **Use the migration examples** when updating existing code
 
-Remember: These examples are for reference only. Always adapt them to your specific requirements and follow the enhanced logging system guidelines.
+Remember: These examples are for reference only. Always adapt them to your specific requirements and follow the enhanced
+logging system guidelines.

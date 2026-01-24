@@ -5,6 +5,7 @@ This module handles player state modifications including health, lucidity, fear,
 """
 
 import uuid
+from typing import Any
 
 from ..exceptions import ValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -16,11 +17,11 @@ logger = get_logger(__name__)
 class PlayerStateService:
     """Service for managing player state modifications."""
 
-    def __init__(self, persistence):
+    def __init__(self, persistence: Any) -> None:
         """Initialize with a persistence layer."""
         self.persistence = persistence
 
-    async def apply_lucidity_loss(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict:
+    async def apply_lucidity_loss(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict[str, Any]:
         """
         Apply lucidity loss to a player.
 
@@ -55,7 +56,7 @@ class PlayerStateService:
         logger.info("Lucidity loss applied successfully", player_id=player_id, amount=amount, source=source)
         return {"message": f"Applied {amount} lucidity loss to {player.name}"}
 
-    async def apply_fear(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict:
+    async def apply_fear(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict[str, Any]:
         """
         Apply fear to a player.
 
@@ -90,7 +91,7 @@ class PlayerStateService:
         logger.info("Fear applied successfully", player_id=player_id, amount=amount, source=source)
         return {"message": f"Applied {amount} fear to {player.name}"}
 
-    async def apply_corruption(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict:
+    async def apply_corruption(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict[str, Any]:
         """
         Apply corruption to a player.
 
@@ -125,7 +126,7 @@ class PlayerStateService:
         logger.info("Corruption applied successfully", player_id=player_id, amount=amount, source=source)
         return {"message": f"Applied {amount} corruption to {player.name}"}
 
-    async def gain_occult_knowledge(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict:
+    async def gain_occult_knowledge(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict[str, Any]:
         """
         Gain occult knowledge (with lucidity loss).
 
@@ -160,7 +161,7 @@ class PlayerStateService:
         logger.info("Occult knowledge gained successfully", player_id=player_id, amount=amount, source=source)
         return {"message": f"Gained {amount} occult knowledge for {player.name}"}
 
-    async def heal_player(self, player_id: uuid.UUID, amount: int) -> dict:
+    async def heal_player(self, player_id: uuid.UUID, amount: int) -> dict[str, Any]:
         """
         Heal a player's health.
 
@@ -194,7 +195,7 @@ class PlayerStateService:
         logger.info("Player healed successfully", player_id=player_id, amount=amount)
         return {"message": f"Healed {player.name} for {amount} health"}
 
-    async def damage_player(self, player_id: uuid.UUID, amount: int, damage_type: str = "physical") -> dict:
+    async def damage_player(self, player_id: uuid.UUID, amount: int, damage_type: str = "physical") -> dict[str, Any]:
         """
         Damage a player's health.
 

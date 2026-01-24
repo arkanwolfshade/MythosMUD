@@ -17,7 +17,7 @@ from server.models.lucidity import (
 # --- Tests for PlayerLucidity model ---
 
 
-def test_player_lucidity_creation():
+def test_player_lucidity_creation() -> None:
     """Test PlayerLucidity can be instantiated with required fields."""
     player_id = uuid4()
     lucidity = PlayerLucidity(
@@ -34,20 +34,21 @@ def test_player_lucidity_creation():
     assert lucidity.catatonia_entered_at is None
 
 
-def test_player_lucidity_defaults():
+def test_player_lucidity_defaults() -> None:
     """Test PlayerLucidity has correct default values."""
     player_id = uuid4()
     lucidity = PlayerLucidity(player_id=player_id)
 
     # SQLAlchemy defaults are applied on DB save, not object instantiation
-    assert lucidity.current_lcd == 100 or lucidity.current_lcd is None
-    assert lucidity.current_tier == "lucid" or lucidity.current_tier is None
-    assert lucidity.liabilities == "[]" or lucidity.liabilities is None
-    assert isinstance(lucidity.last_updated_at, datetime) or lucidity.last_updated_at is None
+    # With Mapped types, non-nullable fields have default values applied
+    assert lucidity.current_lcd == 100
+    assert lucidity.current_tier == "lucid"
+    assert lucidity.liabilities == "[]"
+    assert isinstance(lucidity.last_updated_at, datetime)
     assert lucidity.catatonia_entered_at is None
 
 
-def test_player_lucidity_with_catatonia():
+def test_player_lucidity_with_catatonia() -> None:
     """Test PlayerLucidity can have catatonia_entered_at."""
     player_id = uuid4()
     catatonia_time = datetime.now(UTC).replace(tzinfo=None)
@@ -61,12 +62,12 @@ def test_player_lucidity_with_catatonia():
     assert lucidity.catatonia_entered_at == catatonia_time
 
 
-def test_player_lucidity_table_name():
+def test_player_lucidity_table_name() -> None:
     """Test PlayerLucidity has correct table name."""
     assert PlayerLucidity.__tablename__ == "player_lucidity"
 
 
-def test_player_lucidity_repr():
+def test_player_lucidity_repr() -> None:
     """Test PlayerLucidity __repr__ method."""
     player_id = uuid4()
     lucidity = PlayerLucidity(player_id=player_id)
@@ -75,7 +76,7 @@ def test_player_lucidity_repr():
     assert "PlayerLucidity" in repr_str
 
 
-def test_player_lucidity_tiers():
+def test_player_lucidity_tiers() -> None:
     """Test PlayerLucidity can have different tiers."""
     tiers = ["lucid", "uneasy", "fractured", "deranged", "catatonic"]
 
@@ -87,7 +88,7 @@ def test_player_lucidity_tiers():
 # --- Tests for LucidityAdjustmentLog model ---
 
 
-def test_lucidity_adjustment_log_creation():
+def test_lucidity_adjustment_log_creation() -> None:
     """Test LucidityAdjustmentLog can be instantiated with required fields."""
     player_id = uuid4()
     log = LucidityAdjustmentLog(
@@ -103,10 +104,10 @@ def test_lucidity_adjustment_log_creation():
     assert log.metadata_payload == "{}"
     assert log.location_id is None
     # SQLAlchemy defaults are applied on DB save, not object instantiation
-    assert isinstance(log.created_at, datetime) or log.created_at is None
+    assert isinstance(log.created_at, datetime)
 
 
-def test_lucidity_adjustment_log_with_location():
+def test_lucidity_adjustment_log_with_location() -> None:
     """Test LucidityAdjustmentLog can have optional location_id."""
     player_id = uuid4()
     log = LucidityAdjustmentLog(
@@ -120,7 +121,7 @@ def test_lucidity_adjustment_log_with_location():
     assert log.location_id == "room_001"
 
 
-def test_lucidity_adjustment_log_default_metadata():
+def test_lucidity_adjustment_log_default_metadata() -> None:
     """Test LucidityAdjustmentLog defaults metadata_payload to '{}'."""
     player_id = uuid4()
     log = LucidityAdjustmentLog(
@@ -130,15 +131,15 @@ def test_lucidity_adjustment_log_default_metadata():
     )
 
     # SQLAlchemy defaults are applied on DB save, not object instantiation
-    assert log.metadata_payload == "{}" or log.metadata_payload is None
+    assert log.metadata_payload == "{}"
 
 
-def test_lucidity_adjustment_log_table_name():
+def test_lucidity_adjustment_log_table_name() -> None:
     """Test LucidityAdjustmentLog has correct table name."""
     assert LucidityAdjustmentLog.__tablename__ == "lucidity_adjustment_log"
 
 
-def test_lucidity_adjustment_log_repr():
+def test_lucidity_adjustment_log_repr() -> None:
     """Test LucidityAdjustmentLog __repr__ method."""
     player_id = uuid4()
     log = LucidityAdjustmentLog(
@@ -151,7 +152,7 @@ def test_lucidity_adjustment_log_repr():
     assert "LucidityAdjustmentLog" in repr_str
 
 
-def test_lucidity_adjustment_log_positive_delta():
+def test_lucidity_adjustment_log_positive_delta() -> None:
     """Test LucidityAdjustmentLog can have positive delta (gain)."""
     player_id = uuid4()
     log = LucidityAdjustmentLog(
@@ -163,7 +164,7 @@ def test_lucidity_adjustment_log_positive_delta():
     assert log.delta == 15
 
 
-def test_lucidity_adjustment_log_negative_delta():
+def test_lucidity_adjustment_log_negative_delta() -> None:
     """Test LucidityAdjustmentLog can have negative delta (loss)."""
     player_id = uuid4()
     log = LucidityAdjustmentLog(
@@ -178,7 +179,7 @@ def test_lucidity_adjustment_log_negative_delta():
 # --- Tests for LucidityExposureState model ---
 
 
-def test_lucidity_exposure_state_creation():
+def test_lucidity_exposure_state_creation() -> None:
     """Test LucidityExposureState can be instantiated with required fields."""
     player_id = uuid4()
     exposure = LucidityExposureState(
@@ -191,10 +192,11 @@ def test_lucidity_exposure_state_creation():
     assert exposure.entity_archetype == "cthulhu"
     assert exposure.encounter_count == 3
     # SQLAlchemy defaults are applied on DB save, not object instantiation
-    assert isinstance(exposure.last_encounter_at, datetime) or exposure.last_encounter_at is None
+    # With Mapped types, non-nullable fields have default values applied
+    assert isinstance(exposure.last_encounter_at, datetime)
 
 
-def test_lucidity_exposure_state_default_encounter_count():
+def test_lucidity_exposure_state_default_encounter_count() -> None:
     """Test LucidityExposureState defaults encounter_count to 0."""
     player_id = uuid4()
     exposure = LucidityExposureState(
@@ -203,15 +205,15 @@ def test_lucidity_exposure_state_default_encounter_count():
     )
 
     # SQLAlchemy defaults are applied on DB save, not object instantiation
-    assert exposure.encounter_count == 0 or exposure.encounter_count is None
+    assert exposure.encounter_count == 0
 
 
-def test_lucidity_exposure_state_table_name():
+def test_lucidity_exposure_state_table_name() -> None:
     """Test LucidityExposureState has correct table name."""
     assert LucidityExposureState.__tablename__ == "lucidity_exposure_state"
 
 
-def test_lucidity_exposure_state_repr():
+def test_lucidity_exposure_state_repr() -> None:
     """Test LucidityExposureState __repr__ method."""
     player_id = uuid4()
     exposure = LucidityExposureState(
@@ -223,7 +225,7 @@ def test_lucidity_exposure_state_repr():
     assert "LucidityExposureState" in repr_str
 
 
-def test_lucidity_exposure_state_multiple_archetypes():
+def test_lucidity_exposure_state_multiple_archetypes() -> None:
     """Test LucidityExposureState can track multiple archetypes for same player."""
     player_id = uuid4()
     exposure1 = LucidityExposureState(
@@ -244,7 +246,7 @@ def test_lucidity_exposure_state_multiple_archetypes():
 # --- Tests for LucidityCooldown model ---
 
 
-def test_lucidity_cooldown_creation():
+def test_lucidity_cooldown_creation() -> None:
     """Test LucidityCooldown can be instantiated with required fields."""
     player_id = uuid4()
     expires_at = datetime.now(UTC).replace(tzinfo=None)
@@ -259,12 +261,12 @@ def test_lucidity_cooldown_creation():
     assert cooldown.cooldown_expires_at == expires_at
 
 
-def test_lucidity_cooldown_table_name():
+def test_lucidity_cooldown_table_name() -> None:
     """Test LucidityCooldown has correct table name."""
     assert LucidityCooldown.__tablename__ == "lucidity_cooldowns"
 
 
-def test_lucidity_cooldown_repr():
+def test_lucidity_cooldown_repr() -> None:
     """Test LucidityCooldown __repr__ method."""
     player_id = uuid4()
     expires_at = datetime.now(UTC).replace(tzinfo=None)
@@ -278,7 +280,7 @@ def test_lucidity_cooldown_repr():
     assert "LucidityCooldown" in repr_str
 
 
-def test_lucidity_cooldown_different_action_codes():
+def test_lucidity_cooldown_different_action_codes() -> None:
     """Test LucidityCooldown can track different action codes for same player."""
     player_id = uuid4()
     expires_at1 = datetime.now(UTC).replace(tzinfo=None)

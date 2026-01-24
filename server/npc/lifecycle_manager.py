@@ -16,7 +16,7 @@ have proper birth, existence, and eventual return to the void.
 import time
 from collections.abc import Sequence
 from enum import Enum
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from server.events.event_bus import EventBus
 from server.events.event_types import NPCDied, NPCEnteredRoom, NPCLeftRoom
@@ -27,6 +27,10 @@ from server.npc.spawning_service import NPCSpawningService
 from server.schemas.calendar import ScheduleEntry
 
 from ..structured_logging.enhanced_logging_config import get_logger
+
+if TYPE_CHECKING:
+    from ..async_persistence import AsyncPersistenceLayer
+    from .threading import NPCThreadManager
 
 # Removed: from ..persistence import get_persistence - now using async_persistence parameter
 
@@ -182,8 +186,8 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
         event_bus: EventBus,
         population_controller: NPCPopulationController | None,
         spawning_service: NPCSpawningService,
-        persistence=None,
-        thread_manager=None,
+        persistence: "AsyncPersistenceLayer | None" = None,
+        thread_manager: "NPCThreadManager | None" = None,
     ):
         """
         Initialize the NPC lifecycle manager.
@@ -835,11 +839,9 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
             state_counts[state] = state_counts.get(state, 0) + 1
 
         # Count by NPC type
-        # AI Agent note: Use npc_type.value to get string value from enum
-        # str(enum) returns "NPCDefinitionType.SHOPKEEPER", but we need "shopkeeper"
         type_counts: dict[str, int] = {}
         for record in self.lifecycle_records.values():
-            npc_type_str = str(record.definition.npc_type.value)
+            npc_type_str = str(record.definition.npc_type)
             type_counts[npc_type_str] = type_counts.get(npc_type_str, 0) + 1
 
         # Calculate average statistics

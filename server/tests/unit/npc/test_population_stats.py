@@ -9,7 +9,7 @@ import time
 from server.npc.population_stats import PopulationStats
 
 
-def test_population_stats_init():
+def test_population_stats_init() -> None:
     """Test PopulationStats initialization."""
     stats = PopulationStats(zone_id="arkhamcity", sub_zone_id="downtown")
     assert stats.zone_id == "arkhamcity"
@@ -23,7 +23,7 @@ def test_population_stats_init():
     assert stats.last_updated > 0
 
 
-def test_add_npc_required():
+def test_add_npc_required() -> None:
     """Test add_npc() adds required NPC."""
     stats = PopulationStats(zone_id="arkhamcity", sub_zone_id="downtown")
     stats.add_npc(npc_type="aggressive_mob", room_id="room-123", is_required=True, npc_definition_id=1)
@@ -35,7 +35,7 @@ def test_add_npc_required():
     assert stats.optional_npcs == 0
 
 
-def test_add_npc_optional():
+def test_add_npc_optional() -> None:
     """Test add_npc() adds optional NPC."""
     stats = PopulationStats(zone_id="arkhamcity", sub_zone_id="downtown")
     stats.add_npc(npc_type="passive_mob", room_id="room-456", is_required=False, npc_definition_id=2)
@@ -47,7 +47,7 @@ def test_add_npc_optional():
     assert stats.optional_npcs == 1
 
 
-def test_add_npc_multiple_same_type():
+def test_add_npc_multiple_same_type() -> None:
     """Test add_npc() increments count for same type."""
     stats = PopulationStats(zone_id="arkhamcity", sub_zone_id="downtown")
     stats.add_npc(npc_type="aggressive_mob", room_id="room-123", is_required=True, npc_definition_id=1)
@@ -57,7 +57,7 @@ def test_add_npc_multiple_same_type():
     assert stats.npcs_by_definition[1] == 2
 
 
-def test_add_npc_multiple_same_room():
+def test_add_npc_multiple_same_room() -> None:
     """Test add_npc() increments count for same room."""
     stats = PopulationStats(zone_id="arkhamcity", sub_zone_id="downtown")
     stats.add_npc(npc_type="aggressive_mob", room_id="room-123", is_required=True, npc_definition_id=1)
@@ -66,7 +66,7 @@ def test_add_npc_multiple_same_room():
     assert stats.npcs_by_room["room-123"] == 2
 
 
-def test_add_npc_without_definition_id():
+def test_add_npc_without_definition_id() -> None:
     """Test add_npc() handles None definition_id."""
     stats = PopulationStats(zone_id="arkhamcity", sub_zone_id="downtown")
     stats.add_npc(npc_type="aggressive_mob", room_id="room-123", is_required=True, npc_definition_id=None)
@@ -74,7 +74,7 @@ def test_add_npc_without_definition_id():
     assert stats.npcs_by_definition == {}
 
 
-def test_add_npc_updates_timestamp():
+def test_add_npc_updates_timestamp() -> None:
     """Test add_npc() updates last_updated timestamp."""
     stats = PopulationStats(zone_id="arkhamcity", sub_zone_id="downtown")
     initial_time = stats.last_updated
@@ -83,7 +83,7 @@ def test_add_npc_updates_timestamp():
     assert stats.last_updated > initial_time
 
 
-def test_remove_npc_required():
+def test_remove_npc_required() -> None:
     """Test remove_npc() removes required NPC."""
     stats = PopulationStats(zone_id="arkhamcity", sub_zone_id="downtown")
     stats.add_npc(npc_type="aggressive_mob", room_id="room-123", is_required=True, npc_definition_id=1)
@@ -96,7 +96,7 @@ def test_remove_npc_required():
     assert stats.optional_npcs == 0
 
 
-def test_remove_npc_optional():
+def test_remove_npc_optional() -> None:
     """Test remove_npc() removes optional NPC."""
     stats = PopulationStats(zone_id="arkhamcity", sub_zone_id="downtown")
     stats.add_npc(npc_type="passive_mob", room_id="room-456", is_required=False, npc_definition_id=2)
@@ -106,7 +106,7 @@ def test_remove_npc_optional():
     assert stats.optional_npcs == 0
 
 
-def test_remove_npc_partial():
+def test_remove_npc_partial() -> None:
     """Test remove_npc() decrements count when multiple exist."""
     stats = PopulationStats(zone_id="arkhamcity", sub_zone_id="downtown")
     stats.add_npc(npc_type="aggressive_mob", room_id="room-123", is_required=True, npc_definition_id=1)
@@ -117,7 +117,7 @@ def test_remove_npc_partial():
     assert stats.npcs_by_definition[1] == 1
 
 
-def test_remove_npc_not_found():
+def test_remove_npc_not_found() -> None:
     """Test remove_npc() handles removal when NPC not found."""
     stats = PopulationStats(zone_id="arkhamcity", sub_zone_id="downtown")
     # Remove without adding first
@@ -128,7 +128,7 @@ def test_remove_npc_not_found():
     assert stats.required_npcs == 0
 
 
-def test_remove_npc_prevents_negative():
+def test_remove_npc_prevents_negative() -> None:
     """Test remove_npc() prevents negative counts."""
     stats = PopulationStats(zone_id="arkhamcity", sub_zone_id="downtown")
     # Remove multiple times without adding
@@ -139,7 +139,7 @@ def test_remove_npc_prevents_negative():
     assert stats.required_npcs == 0
 
 
-def test_remove_npc_without_definition_id():
+def test_remove_npc_without_definition_id() -> None:
     """Test remove_npc() handles None definition_id."""
     stats = PopulationStats(zone_id="arkhamcity", sub_zone_id="downtown")
     stats.add_npc(npc_type="aggressive_mob", room_id="room-123", is_required=True, npc_definition_id=None)
@@ -147,7 +147,7 @@ def test_remove_npc_without_definition_id():
     assert stats.total_npcs == 0
 
 
-def test_remove_npc_updates_timestamp():
+def test_remove_npc_updates_timestamp() -> None:
     """Test remove_npc() updates last_updated timestamp."""
     stats = PopulationStats(zone_id="arkhamcity", sub_zone_id="downtown")
     stats.add_npc(npc_type="aggressive_mob", room_id="room-123", is_required=True, npc_definition_id=1)
@@ -157,7 +157,7 @@ def test_remove_npc_updates_timestamp():
     assert stats.last_updated > initial_time
 
 
-def test_to_dict():
+def test_to_dict() -> None:
     """Test to_dict() returns complete dictionary."""
     stats = PopulationStats(zone_id="arkhamcity", sub_zone_id="downtown")
     stats.add_npc(npc_type="aggressive_mob", room_id="room-123", is_required=True, npc_definition_id=1)
@@ -174,7 +174,7 @@ def test_to_dict():
     assert result["last_updated"] > 0
 
 
-def test_to_dict_copies():
+def test_to_dict_copies() -> None:
     """Test to_dict() returns copies of dictionaries."""
     stats = PopulationStats(zone_id="arkhamcity", sub_zone_id="downtown")
     stats.add_npc(npc_type="aggressive_mob", room_id="room-123", is_required=True, npc_definition_id=1)
@@ -185,7 +185,7 @@ def test_to_dict_copies():
     assert "new_type" not in stats.npcs_by_type
 
 
-def test_mixed_required_optional():
+def test_mixed_required_optional() -> None:
     """Test population stats with mixed required and optional NPCs."""
     stats = PopulationStats(zone_id="arkhamcity", sub_zone_id="downtown")
     stats.add_npc(npc_type="aggressive_mob", room_id="room-123", is_required=True, npc_definition_id=1)
@@ -196,7 +196,7 @@ def test_mixed_required_optional():
     assert stats.optional_npcs == 1
 
 
-def test_multiple_definitions_same_type():
+def test_multiple_definitions_same_type() -> None:
     """Test tracking multiple NPC definitions of same type."""
     stats = PopulationStats(zone_id="arkhamcity", sub_zone_id="downtown")
     stats.add_npc(npc_type="aggressive_mob", room_id="room-123", is_required=True, npc_definition_id=1)
@@ -206,7 +206,7 @@ def test_multiple_definitions_same_type():
     assert stats.npcs_by_definition[2] == 1
 
 
-def test_remove_npc_different_definition():
+def test_remove_npc_different_definition() -> None:
     """Test remove_npc() correctly removes specific definition."""
     stats = PopulationStats(zone_id="arkhamcity", sub_zone_id="downtown")
     stats.add_npc(npc_type="aggressive_mob", room_id="room-123", is_required=True, npc_definition_id=1)

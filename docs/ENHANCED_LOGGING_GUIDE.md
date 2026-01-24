@@ -2,82 +2,111 @@
 
 ## Overview
 
-The MythosMUD server now features a comprehensive enhanced logging system that addresses all the anti-patterns and security issues identified in the original logging implementation. This guide provides complete documentation for the new system.
+The MythosMUD server now features a comprehensive enhanced logging system that addresses all the anti-patterns and
+security issues identified in the original logging implementation. This guide provides complete documentation for the
+new system.
 
 ## 🔧 **What Was Implemented**
 
 ### **High Priority Items (Completed)**
 
 #### 1. **Fixed Context Parameter Usage** ✅
-- **Problem**: Incorrect usage of `context=` parameter in logger calls
-- **Solution**: Updated all 26 files to use proper structured logging
-- **Migration**: Automated migration script updated the entire codebase
+
+**Problem**: Incorrect usage of `context=` parameter in logger calls
+
+**Solution**: Updated all 26 files to use proper structured logging
+
+**Migration**: Automated migration script updated the entire codebase
 
 #### 2. **Implemented MDC (Mapped Diagnostic Context)** ✅
-- **Location**: `server/logging/enhanced_logging_config.py`
-- **Features**:
-  - Context variables automatically included in all log entries
-  - Request-scoped context binding
-  - Thread-safe context management
+
+**Location**: `server/logging/enhanced_logging_config.py`
+
+**Features**:
+
+- Context variables automatically included in all log entries
+- Request-scoped context binding
+- Thread-safe context management
 
 #### 3. **Added Correlation IDs for Request Tracing** ✅
-- **Location**: `server/middleware/correlation_middleware.py`
-- **Features**:
-  - Automatic correlation ID generation
-  - HTTP header support (`X-Correlation-ID`)
-  - WebSocket correlation support
-  - Request context propagation
+
+**Location**: `server/middleware/correlation_middleware.py`
+
+**Features**:
+
+- Automatic correlation ID generation
+- HTTP header support (`X-Correlation-ID`)
+- WebSocket correlation support
+- Request context propagation
 
 #### 4. **Implemented Security Sanitization** ✅
-- **Location**: `server/logging/enhanced_logging_config.py`
-- **Features**:
-  - Automatic sensitive data redaction
-  - Configurable sensitive key patterns
-  - Recursive dictionary sanitization
+
+**Location**: `server/logging/enhanced_logging_config.py`
+
+**Features**:
+
+- Automatic sensitive data redaction
+- Configurable sensitive key patterns
+- Recursive dictionary sanitization
 
 ### **Medium Priority Items (Completed)**
 
 #### 5. **Performance Optimization with Async Logging** ✅
-- **Location**: `server/monitoring/performance_monitor.py`
-- **Features**:
-  - Async log processing
-  - Performance metrics collection
-  - Background thread processing
-  - Queue-based log handling
+
+**Location**: `server/monitoring/performance_monitor.py`
+
+**Features**:
+
+- Async log processing
+- Performance metrics collection
+- Background thread processing
+- Queue-based log handling
 
 #### 6. **Enhanced Error Handling with Structured Logging** ✅
-- **Location**: `server/utils/enhanced_error_logging.py`
-- **Features**:
-  - Structured error logging
-  - Enhanced context creation
-  - Third-party exception wrapping
-  - Performance metric logging
+
+**Location**: `server/utils/enhanced_error_logging.py`
+
+**Features**:
+
+- Structured error logging
+- Enhanced context creation
+- Third-party exception wrapping
+- Performance metric logging
 
 #### 7. **Log Aggregation and Centralized Collection** ✅
-- **Location**: `server/logging/log_aggregator.py`
-- **Features**:
-  - Centralized log collection
-  - Real-time log processing
-  - Export capabilities (JSON, CSV)
-  - Statistics and analytics
+
+**Location**: `server/logging/log_aggregator.py`
+
+**Features**:
+
+- Centralized log collection
+- Real-time log processing
+- Export capabilities (JSON, CSV)
+- Statistics and analytics
 
 #### 8. **Monitoring Integration with Metrics** ✅
-- **Location**: `server/monitoring/monitoring_dashboard.py`
-- **Features**:
-  - Comprehensive system health monitoring
-  - Alert system with configurable thresholds
-  - Performance metrics dashboard
-  - System recommendations
+
+**Location**: `server/monitoring/monitoring_dashboard.py`
+
+**Features**:
+
+- Comprehensive system health monitoring
+- Alert system with configurable thresholds
+- Performance metrics dashboard
+- System recommendations
 
 ### **Low Priority Items (Completed)**
 
 #### 9. **Error Tracking with 100% Exception Context** ✅
-- **Location**: `server/monitoring/exception_tracker.py`
-- **Features**:
-  - Complete exception tracking
-  - Full context preservation
-  - Exception statistics
-  - Handler system for custom processing
+
+**Location**: `server/monitoring/exception_tracker.py`
+
+**Features**:
+
+- Complete exception tracking
+- Full context preservation
+- Exception statistics
+- Handler system for custom processing
 
 ## 🚀 **How to Use the Enhanced System**
 
@@ -87,9 +116,11 @@ The MythosMUD server now features a comprehensive enhanced logging system that a
 from server.logging.enhanced_logging_config import get_logger
 
 # Get a logger (automatically includes MDC context)
+
 logger = get_logger(__name__)
 
 # Structured logging (no more context= parameter!)
+
 logger.info("User action completed", user_id="123", action="login", success=True)
 logger.error("Database connection failed", error=str(e), database="players")
 ```
@@ -100,6 +131,7 @@ logger.error("Database connection failed", error=str(e), database="players")
 from server.logging.enhanced_logging_config import bind_request_context, clear_request_context
 
 # At the start of a request
+
 bind_request_context(
     correlation_id="req-123",
     user_id="user-456",
@@ -107,9 +139,11 @@ bind_request_context(
 )
 
 # All subsequent log calls automatically include this context
+
 logger.info("Processing request")  # Includes correlation_id, user_id, session_id
 
 # At the end of the request
+
 clear_request_context()
 ```
 
@@ -119,6 +153,7 @@ clear_request_context()
 from server.utils.enhanced_error_logging import log_and_raise_enhanced
 
 # Enhanced error logging with full context
+
 log_and_raise_enhanced(
     ValidationError,
     "Invalid player data provided",
@@ -133,6 +168,7 @@ log_and_raise_enhanced(
 from server.monitoring.performance_monitor import measure_performance
 
 # Automatic performance measurement
+
 with measure_performance("database_query", metadata={"table": "players"}):
     result = database.query("SELECT * FROM players")
 ```
@@ -143,6 +179,7 @@ with measure_performance("database_query", metadata={"table": "players"}):
 from server.monitoring.exception_tracker import track_exception
 
 # Track exceptions with full context
+
 try:
     risky_operation()
 except Exception as e:
@@ -163,6 +200,7 @@ except Exception as e:
 from server.logging.enhanced_logging_config import setup_enhanced_logging
 
 # Configure enhanced logging
+
 config = {
     "logging": {
         "environment": "production",
@@ -180,7 +218,8 @@ setup_enhanced_logging(config)
 
 ### **Logging Exceptions Only Once**
 
-Use `log_exception_once` to avoid duplicate log entries when exceptions are re-raised through the catacombs of control flow:
+Use `log_exception_once` to avoid duplicate log entries when exceptions are re-raised through the catacombs of control
+flow:
 
 ```python
 from server.logging.enhanced_logging_config import get_logger, log_exception_once
@@ -206,6 +245,7 @@ except MythosMUDError as exc:
 from server.monitoring.monitoring_dashboard import get_monitoring_dashboard
 
 # Get system health
+
 dashboard = get_monitoring_dashboard()
 health = dashboard.get_system_health()
 print(f"System status: {health.status}")
@@ -230,14 +270,17 @@ The system automatically redacts sensitive information:
 
 ```python
 # This will be automatically sanitized
+
 logger.info("User login", password="secret123", token="abc123")
 # Output: User login password=[REDACTED] token=[REDACTED]
+
 ```
 
 ### **Configurable Sensitive Keys**
 
 ```python
 # Add custom sensitive keys
+
 sensitive_keys = [
     'password', 'token', 'secret', 'key', 'credential', 'auth',
     'jwt', 'api_key', 'private_key', 'session_token', 'access_token'
@@ -246,11 +289,15 @@ sensitive_keys = [
 
 ## 📈 **Performance Benefits**
 
-- **Async Processing**: Background log processing reduces I/O blocking
-- **Context Variables**: Efficient context propagation without parameter overhead
-- **Structured Data**: Better parsing and analysis capabilities
-- **Correlation IDs**: Easy request tracing and debugging
-- **Aggregation**: Centralized log collection and analysis
+**Async Processing**: Background log processing reduces I/O blocking
+
+**Context Variables**: Efficient context propagation without parameter overhead
+
+**Structured Data**: Better parsing and analysis capabilities
+
+**Correlation IDs**: Easy request tracing and debugging
+
+**Aggregation**: Centralized log collection and analysis
 
 ## 🧪 **Testing**
 
@@ -258,9 +305,11 @@ sensitive_keys = [
 
 ```bash
 # Test the enhanced logging system
+
 python -m pytest server/tests/test_enhanced_logging.py
 
 # Test monitoring components
+
 python -m pytest server/tests/test_monitoring.py
 ```
 
@@ -268,6 +317,7 @@ python -m pytest server/tests/test_monitoring.py
 
 ```bash
 # Verify migration was successful
+
 python server/scripts/migrate_to_enhanced_logging.py
 ```
 
@@ -281,7 +331,8 @@ python server/scripts/migrate_to_enhanced_logging.py
 
 ### **Backward Compatibility**
 
-- Old log files remain readable
+Old log files remain readable
+
 - Existing log formats are preserved
 - Gradual migration is supported
 
@@ -304,7 +355,8 @@ python server/scripts/migrate_to_enhanced_logging.py
 
 ## 📚 **Documentation References**
 
-- [Structlog Documentation](https://www.structlog.org/)
+[Structlog Documentation](https://www.structlog.org/)
+
 - [FastAPI Middleware](https://fastapi.tiangolo.com/tutorial/middleware/)
 - [Python Logging Best Practices](https://docs.python.org/3/howto/logging.html)
 
@@ -331,6 +383,7 @@ When contributing to the logging system:
 
 ```python
 # Enable debug logging
+
 config = {
     "logging": {
         "level": "DEBUG",
@@ -341,4 +394,6 @@ config = {
 
 ---
 
-*As noted in the Pnakotic Manuscripts, proper documentation and understanding of our systems is essential for maintaining their stability and observability. The enhanced logging system provides the foundation for comprehensive system monitoring and debugging.*
+*As noted in the Pnakotic Manuscripts, proper documentation and understanding of our systems is essential for
+maintaining their stability and observability. The enhanced logging system provides the foundation for comprehensive
+system monitoring and debugging.*

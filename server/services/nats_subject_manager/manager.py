@@ -102,7 +102,7 @@ class NATSSubjectManager:  # pylint: disable=too-many-instance-attributes  # Rea
         self._validator = SubjectValidator(max_subject_length, strict_validation)
         self._pattern_matcher = PatternMatcher(strict_validation)
 
-    def build_subject(self, pattern_name: str, **params) -> str:
+    def build_subject(self, pattern_name: str, **params: Any) -> str:
         """
         Build a NATS subject from a pattern and parameters.
 

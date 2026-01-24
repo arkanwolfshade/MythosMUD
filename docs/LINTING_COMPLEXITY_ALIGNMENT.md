@@ -7,10 +7,12 @@
 
 Ruff and Pylint use **fundamentally different approaches** to complexity checking:
 
-- **Ruff (C901)**: Uses **McCabe cyclomatic complexity** - measures decision points in code
-- **Pylint (R0911-R0915)**: Uses **multiple code metrics** - counts various code elements
+**Ruff (C901)**: Uses **McCabe cyclomatic complexity** - measures decision points in code
 
-These are **complementary, not equivalent** metrics. We should use ruff for cyclomatic complexity and suppress pylint's complexity metrics.
+**Pylint (R0911-R0915)**: Uses **multiple code metrics** - counts various code elements
+
+These are **complementary, not equivalent** metrics. We should use ruff for cyclomatic complexity and suppress pylint's
+complexity metrics.
 
 ---
 
@@ -49,13 +51,16 @@ def complex_function(x, y):
     else:              # +1
         return 3
     # Total complexity: 4
+
 ```
 
 ### Why It's Useful
 
-- **Predicts testability**: Higher complexity = more test cases needed
-- **Indicates refactoring needs**: Functions with complexity > 10-15 are harder to maintain
-- **Industry standard**: Widely used metric (McCabe, 1976)
+**Predicts testability**: Higher complexity = more test cases needed
+
+**Indicates refactoring needs**: Functions with complexity > 10-15 are harder to maintain
+
+**Industry standard**: Widely used metric (McCabe, 1976)
 
 ---
 
@@ -100,7 +105,8 @@ Counts executable statements (excluding comments, docstrings, blank lines).
 
 ### Configuration
 
-Pylint does **not** have a configurable threshold for these rules in `.pylintrc`. The thresholds are hardcoded in pylint.
+Pylint does **not** have a configurable threshold for these rules in `.pylintrc`. The thresholds are hardcoded in
+pylint.
 
 **Current Status**: ⚠️ **ENABLED** (by default)
 **Current Findings**: ~935 findings across all R0911-R0915 rules
@@ -139,6 +145,7 @@ def example_function(x, y, z, a, b, c, d):  # 7 args
         return result                       # return 3
     # Total: 4 branches, 3 returns, 7 args, 5 locals, 3 statements
     # Complexity: 4
+
 ```
 
 **Ruff C901**: ✅ Passes (complexity 4 < 11)
@@ -219,7 +226,11 @@ disable=too-many-arguments,too-many-positional-arguments,too-many-locals,too-man
 **Action**: When suppressing complexity:
 
 - Use `# noqa: C901` for ruff
-- Use `# pylint: disable=too-many-arguments,too-many-locals,too-many-statements,too-many-return-statements,too-many-branches` for pylint (if needed)
+
+- Use `# pylint:
+
+  disable=too-many-arguments,too-many-locals,too-many-statements,too-many-return-statements,too-many-branches` for
+  pylint (if needed)
 
 **Note**: Since we're suppressing these globally in `.pylintrc`, inline suppressions are not needed.
 
@@ -268,14 +279,18 @@ Run comparison again to verify:
 
 **Ruff C901** and **Pylint R0911-R0915** measure different aspects of code complexity:
 
-- **Ruff C901**: Cyclomatic complexity (decision points) - **KEEP ENABLED**
-- **Pylint R0911-R0915**: Code metrics (counts) - **SUPPRESS**
+**Ruff C901**: Cyclomatic complexity (decision points) - **KEEP ENABLED**
+
+**Pylint R0911-R0915**: Code metrics (counts) - **SUPPRESS**
 
 This approach:
 
-- ✅ Uses industry-standard cyclomatic complexity (ruff)
-- ✅ Reduces noise from pylint (~935 findings)
-- ✅ Maintains clear complexity checking via ruff
-- ✅ Aligns with project's preference for ruff as primary linter
+✅ Uses industry-standard cyclomatic complexity (ruff)
+
+✅ Reduces noise from pylint (~935 findings)
+
+✅ Maintains clear complexity checking via ruff
+
+✅ Aligns with project's preference for ruff as primary linter
 
 **Status**: Strategy defined, ready for implementation.

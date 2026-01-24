@@ -2,29 +2,35 @@
 
 ## Overview
 
-Tests local channel isolation between different sub-zones. This scenario verifies that local channel messages are properly isolated to their respective sub-zones, that players in different sub-zones cannot see each other's local messages, and that the sub-zone routing system works correctly for local communication.
+Tests local channel isolation between different sub-zones. This scenario verifies that local channel messages are
+properly isolated to their respective sub-zones, that players in different sub-zones cannot see each other's local
+messages, and that the sub-zone routing system works correctly for local communication.
 
-**This is a core multi-player scenario** that requires verifying message isolation between players in different sub-zones. No automated alternative is available.
+**This is a core multi-player scenario** that requires verifying message isolation between players in different
+sub-zones. No automated alternative is available.
 
 ## Prerequisites
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
 2. **Server Running**: Development server is running on port 54731
 3. **Client Accessible**: Client is accessible on port 5173
 4. **Both Players Connected**: AW and Ithaqua are both logged in and in the same room
 
-**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
+### ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE
 
 **Reference**: See @MULTIPLAYER_TEST_RULES.md for complete prerequisite verification procedures.
 
 ## Test Configuration
 
-- **Test Players**: ArkanWolfshade (AW) and Ithaqua
-- **Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
-- **Testing Approach**: Playwright MCP (multi-tab interaction required)
-- **Timeout Settings**: Use configurable timeouts from master rules
+**Test Players**: ArkanWolfshade (AW) and Ithaqua
+
+**Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
+
+**Testing Approach**: Playwright MCP (multi-tab interaction required)
+
+**Timeout Settings**: Use configurable timeouts from master rules
 
 ## Execution Steps
 
@@ -33,6 +39,7 @@ Tests local channel isolation between different sub-zones. This scenario verifie
 **Purpose**: Ensure both players start in the same sub-zone for baseline testing
 
 **Commands**:
+
 ```javascript
 // Ensure both players are logged in from previous scenario
 // AW should be on tab 0, Ithaqua on tab 1
@@ -46,12 +53,14 @@ Tests local channel isolation between different sub-zones. This scenario verifie
 **Purpose**: Verify local messages work within the same sub-zone
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
 
 // Send local message
-await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local Testing same sub-zone communication"});
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local Testing same
+sub-zone communication"});
 await mcp_playwright_browser_press_key({key: "Enter"});
 
 // Wait for confirmation
@@ -64,7 +73,8 @@ await mcp_playwright_browser_tab_select({index: 1});
 await mcp_playwright_browser_wait_for({text: "ArkanWolfshade says locally: Testing same sub-zone communication"});
 
 // Verify message appears
-const ithaquaMessages = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const ithaquaMessages = await mcp_playwright_browser_evaluate({function: "() =>
+Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
 const seesSameSubZoneMessage = ithaquaMessages.some(msg => msg.includes('ArkanWolfshade says locally: Testing same sub-zone communication'));
 console.log('Ithaqua sees same sub-zone message:', seesSameSubZoneMessage);
 ```
@@ -76,6 +86,7 @@ console.log('Ithaqua sees same sub-zone message:', seesSameSubZoneMessage);
 **Purpose**: Move AW to a different sub-zone to test isolation
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -99,6 +110,7 @@ console.log('AW location after movement:', awLocation);
 **Purpose**: Test local message from different sub-zone
 
 **Commands**:
+
 ```javascript
 // Send local message from different sub-zone
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local Testing from different sub-zone"});
@@ -115,6 +127,7 @@ await mcp_playwright_browser_wait_for({text: "You say locally: Testing from diff
 **Purpose**: Test that local messages are isolated between sub-zones
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
@@ -136,6 +149,7 @@ console.log('Ithaqua messages after:', ithaquaMessagesAfter);
 **Purpose**: Test local message from original sub-zone
 
 **Commands**:
+
 ```javascript
 // Send local message from original sub-zone
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local Testing from original sub-zone"});
@@ -152,6 +166,7 @@ await mcp_playwright_browser_wait_for({text: "You say locally: Testing from orig
 **Purpose**: Test that local messages are isolated between sub-zones
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -173,6 +188,7 @@ console.log('AW messages after:', awMessagesAfter);
 **Purpose**: Verify local messages still work within the same sub-zone
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
@@ -215,6 +231,7 @@ if (awMessagesFinal.length === 0) {
 **Purpose**: Test that local messages work again when players are in same sub-zone
 
 **Commands**:
+
 ```javascript
 // Move AW back to original sub-zone
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "go west"});
@@ -249,6 +266,7 @@ console.log('Ithaqua sees return message:', seesReturnMessage);
 **Purpose**: Verify that sub-zone isolation is working correctly
 
 **Commands**:
+
 ```javascript
 // Check final message counts and isolation
 const awFinalMessages = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
@@ -262,7 +280,8 @@ console.log('AW local messages:', awLocalMessages);
 console.log('Ithaqua local messages:', ithaquaLocalMessages);
 
 // Verify isolation worked
-const isolationWorking = !awFinalMessages.some(msg => msg.includes('Ithaqua says locally: Testing from original sub-zone')) &&
+const isolationWorking = !awFinalMessages.some(msg => msg.includes('Ithaqua says locally: Testing from original
+sub-zone')) &&
                         !awFinalMessages.some(msg => msg.includes('Ithaqua says locally: Still in original sub-zone')) &&
                         !ithaquaFinalMessages.some(msg => msg.includes('ArkanWolfshade says locally: Testing from different sub-zone'));
 
@@ -277,6 +296,7 @@ console.log('✅ All verification steps completed successfully');
 console.log('✅ System functionality verified as working correctly');
 console.log('✅ Test results documented and validated');
 console.log('📋 PROCEEDING TO SCENARIO 10: Local Channel Movement Routing');
+
 ```
 
 **Expected Result**:  Sub-zone isolation is working correctly
@@ -306,15 +326,20 @@ console.log('➡️ READY FOR SCENARIO 10: Local Channel Movement Routing');
 
 ## Expected Results
 
-- ✅ Local messages work within same sub-zone
-- ✅ Local messages are isolated between different sub-zones
-- ✅ Players in different sub-zones cannot see each other's local messages
-- ✅ Local messages work again when players return to same sub-zone
-- ✅ Sub-zone routing system works correctly
+✅ Local messages work within same sub-zone
+
+✅ Local messages are isolated between different sub-zones
+
+✅ Players in different sub-zones cannot see each other's local messages
+
+✅ Local messages work again when players return to same sub-zone
+
+✅ Sub-zone routing system works correctly
 
 ## Success Criteria Checklist
 
-- [ ] Local messages work within same sub-zone
+[ ] Local messages work within same sub-zone
+
 - [ ] AW successfully moves to different sub-zone
 - [ ] AW's local message from different sub-zone is not seen by Ithaqua
 - [ ] Ithaqua's local message from original sub-zone is not seen by AW
@@ -330,20 +355,25 @@ console.log('➡️ READY FOR SCENARIO 10: Local Channel Movement Routing');
 ## Cleanup
 
 Execute standard cleanup procedures from @CLEANUP.md:
+
 1. Close all browser tabs
 2. Stop development server
 3. Verify clean shutdown
 
 ## Status
 
-**✅ SCENARIO COMPLETION LOGIC FIXED**
+### ✅ SCENARIO COMPLETION LOGIC FIXED
 
 The local channel isolation system is working correctly. The scenario now includes proper completion logic to prevent infinite loops:
 
-- **Fixed**: Added completion step with explicit scenario completion and cleanup procedures
-- **Fixed**: Added clear decision points for handling verification results
-- **Fixed**: Added explicit progression to next scenario
-- **Verified**: System functionality works as expected and meets all requirements
+**Fixed**: Added completion step with explicit scenario completion and cleanup procedures
+
+**Fixed**: Added clear decision points for handling verification results
+
+**Fixed**: Added explicit progression to next scenario
+
+**Verified**: System functionality works as expected and meets all requirements
+
 ---
 
 **Document Version**: 1.0 (Modular E2E Test Suite)

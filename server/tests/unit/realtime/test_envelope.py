@@ -13,6 +13,9 @@ import pytest
 
 from server.realtime.envelope import UUIDEncoder, build_event, utc_now_z
 
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+
 
 def test_uuid_encoder_handles_uuid():
     """Test UUIDEncoder handles UUID objects."""
@@ -175,13 +178,15 @@ def test_get_next_global_sequence_thread_safe():
     envelope_module._global_sequence_counter = 0
     envelope_module._sequence_lock = None
 
-    results = []
-    errors = []
+    results: list[int] = []
+    errors: list[RuntimeError | AttributeError | OSError] = []
 
     def get_sequence():
         try:
             results.append(envelope_module._get_next_global_sequence())
-        except Exception as e:
+        except (RuntimeError, AttributeError, OSError) as e:
+            # Reason: Threading operations can raise RuntimeError (threading issues),
+            # AttributeError (missing lock/attributes), or OSError (system-level issues)
             errors.append(e)
 
     # Create multiple threads

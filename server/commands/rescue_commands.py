@@ -30,7 +30,7 @@ def _get_ground_services(request: Any) -> tuple[Any, Any]:
 
 
 async def _validate_ground_context(
-    persistence: Any, current_user: dict, player_name: str
+    persistence: Any, current_user: dict[str, Any], player_name: str
 ) -> tuple[Any, dict[str, str] | None]:
     """Validate ground command context and get rescuer. Returns (rescuer, error_dict)."""
     if not persistence:
@@ -47,7 +47,7 @@ async def _validate_ground_context(
 
 
 async def _validate_ground_target(
-    persistence: Any, command_data: dict, rescuer: Any
+    persistence: Any, command_data: dict[str, Any], rescuer: Any
 ) -> tuple[Any, dict[str, str] | None]:
     """Validate ground target and check same room. Returns (target, error_dict)."""
     target_name = command_data.get("target_player") or command_data.get("target")
@@ -180,8 +180,8 @@ async def _send_grounding_success_events(
 
 
 async def handle_rescue_command(
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     _alias_storage: AliasStorage | None,
     player_name: str,
@@ -208,8 +208,8 @@ async def handle_rescue_command(
 
 
 async def handle_ground_command(  # pylint: disable=too-many-arguments,too-many-locals  # Reason: Rescue command requires many parameters and intermediate variables for complex rescue logic
-    command_data: dict,
-    current_user: dict,
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
     request: Any,
     _alias_storage: AliasStorage | None,
     player_name: str,

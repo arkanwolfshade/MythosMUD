@@ -5,6 +5,8 @@ This module provides helper functions used by the connection manager
 for various utility operations.
 """
 
+from typing import cast
+
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -33,7 +35,8 @@ def get_npc_name_from_instance(npc_id: str) -> str | None:
                 npc_instance = lifecycle_manager.active_npcs[npc_id]
                 name = getattr(npc_instance, "name", None)
                 if name:
-                    return name
+                    result: str = cast(str, name)
+                    return result
 
         return None
     except (AttributeError, ValueError, TypeError, RuntimeError) as e:

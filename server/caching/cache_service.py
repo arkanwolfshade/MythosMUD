@@ -21,7 +21,9 @@ logger = get_logger(__name__)
 T = TypeVar("T")
 
 
-def cached(cache_name: str, key_func: Callable[..., str] | None = None, _ttl_seconds: int | None = None) -> Callable:  # pylint: disable=unused-argument  # Reason: Parameter reserved for future TTL implementation
+def cached(
+    cache_name: str, key_func: Callable[..., str] | None = None, _ttl_seconds: int | None = None
+) -> Callable[..., Any]:  # pylint: disable=unused-argument  # Reason: Parameter reserved for future TTL implementation
     """
     Decorator to cache function results.
 
@@ -34,7 +36,7 @@ def cached(cache_name: str, key_func: Callable[..., str] | None = None, _ttl_sec
         Decorated function with caching
     """
 
-    def decorator(func: Callable) -> Callable:
+    def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
         @wraps(func)
         async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
             cache_manager = get_cache_manager()

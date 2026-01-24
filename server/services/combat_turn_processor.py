@@ -1,14 +1,17 @@
 """
 Combat turn processing logic.
 
-Handles turn advancement, NPC turn processing, and player turn processing
-for automatic combat progression.
+Handles round-based combat where all participants act each round in initiative order.
+Processes queued actions and generates default actions for automatic combat progression.
 """
 
 # pylint: disable=too-few-public-methods  # Reason: Turn processor class with focused responsibility, minimal public interface
 
+import uuid
+from typing import Any
+
 from server.config import get_config
-from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType, CombatStatus
+from server.models.combat import CombatAction, CombatInstance, CombatParticipant, CombatParticipantType, CombatStatus
 from server.services.nats_exceptions import NATSError
 from server.structured_logging.enhanced_logging_config import get_logger
 
@@ -18,7 +21,7 @@ logger = get_logger(__name__)
 class CombatTurnProcessor:
     """Handles combat turn processing and auto-progression."""
 
-    def __init__(self, combat_service):
+    def __init__(self, combat_service: Any) -> None:
         """
         Initialize the turn processor.
 
@@ -27,7 +30,9 @@ class CombatTurnProcessor:
         """
         self._combat_service = combat_service
 
-    async def process_game_tick(self, current_tick: int, active_combats: dict, auto_progression_enabled: bool) -> None:
+    async def process_game_tick(
+        self, current_tick: int, active_combats: dict[uuid.UUID, CombatInstance], auto_progression_enabled: bool
+    ) -> None:
         """
         Process game tick for combat auto-progression.
 
@@ -62,110 +67,222 @@ class CombatTurnProcessor:
                 auto_progression_enabled=combat.auto_progression_enabled,
             )
 
-            # Check if it's time for the next turn
+            # Check if it's time for the next round (all participants act each round)
             if current_tick >= combat.next_turn_tick:
-                logger.debug("Auto-progression triggered", combat_id=combat_id, tick=current_tick)
-                await self._advance_turn_automatically(combat, current_tick)
+                logger.debug(
+                    "Round progression triggered", combat_id=combat_id, tick=current_tick, round=combat.combat_round
+                )
+                await self._execute_round(combat, current_tick)
 
-    async def _advance_turn_automatically(self, combat: CombatInstance, current_tick: int) -> None:
+    async def _execute_round(self, combat: CombatInstance, current_tick: int) -> None:
         """
-        Automatically advance combat turn and process NPC actions.
+        Execute all actions for a round - all participants act sequentially in initiative order.
 
         Args:
-            combat: Combat instance to advance
+            combat: Combat instance to process
             current_tick: Current game tick
         """
         # Update activity
         combat.update_activity(current_tick)
 
-        # Advance turn
+        # Load queued actions into round_actions for this round
+        # Actions are queued with round = combat.combat_round + 1 (the round they should execute)
+        # When we're executing a round, combat.combat_round hasn't been incremented yet,
+        # so we check for actions queued for combat.combat_round + 1
+        next_round = combat.combat_round + 1
+        combat.round_actions.clear()
+        for participant_id, queued_actions_list in combat.queued_actions.items():
+            # Get actions queued for this round (next_round)
+            for action in queued_actions_list:
+                if action.round == next_round:
+                    combat.round_actions[participant_id] = action
+                    break  # Only one action per participant per round
+
+        # Get all alive participants sorted by initiative (dexterity, highest first)
+        participants_by_initiative = combat.get_participants_by_initiative()
+
+        if not participants_by_initiative:
+            logger.warning("No alive participants in combat", combat_id=combat.combat_id)
+            await self._combat_service.end_combat(combat.combat_id, "No alive participants")
+            return
+
+        logger.debug(
+            "Executing round",
+            combat_id=combat.combat_id,
+            round=combat.combat_round + 1,
+            participants_count=len(participants_by_initiative),
+            queued_actions_count=len(combat.round_actions),
+        )
+
+        # Execute actions for all participants in initiative order
+        for participant in participants_by_initiative:
+            if not participant.is_alive():
+                continue
+
+            # Check if participant has a queued action for this round
+            if participant.participant_id in combat.round_actions:
+                action = combat.round_actions[participant.participant_id]
+                await self._execute_queued_action(combat, participant, action, current_tick)
+                # Clear only this specific queued action (may have others queued for future rounds)
+                combat.clear_queued_actions(participant.participant_id, round_number=next_round)
+            else:
+                # Generate and execute default action (basic attack)
+                await self._execute_default_action(combat, participant, current_tick)
+
+        # Advance to next round
         combat.advance_turn(current_tick)
 
-        # Get current participant
-        current_participant = combat.get_current_turn_participant()
-        if not current_participant:
-            logger.warning("No current participant for combat", combat_id=combat.combat_id)
-            logger.debug(
-                "Combat state debug",
-                turn_order=combat.turn_order,
-                current_turn=combat.current_turn,
-                participants=list(combat.participants.keys()),
+    async def _execute_queued_action(  # pylint: disable=too-many-locals,too-many-branches,too-many-nested-blocks  # Reason: Method handles complex spell execution with multiple nested conditions - refactoring would reduce clarity of action flow
+        self, combat: CombatInstance, participant: CombatParticipant, action: CombatAction, current_tick: int
+    ) -> None:
+        """
+        Execute a queued action for a participant.
+
+        Args:
+            combat: Combat instance
+            participant: Participant executing the action
+            action: The queued action to execute
+            current_tick: Current game tick
+        """
+        logger.debug(
+            "Executing queued action",
+            combat_id=combat.combat_id,
+            participant_id=participant.participant_id,
+            participant_name=participant.name,
+            action_type=action.action_type,
+        )
+
+        # Handle different action types
+        if action.action_type == "attack":
+            # Process attack - result is not used as process_attack has side effects (updates combat state)
+            await self._combat_service.process_attack(
+                attacker_id=participant.participant_id, target_id=action.target_id, damage=action.damage
             )
-            # Check if the participant ID exists in turn_order but not in participants
-            if combat.turn_order and combat.current_turn < len(combat.turn_order):
-                expected_participant_id = combat.turn_order[combat.current_turn]
-                logger.debug(
-                    "Expected participant lookup",
-                    expected_participant_id=expected_participant_id,
-                    exists_in_participants=expected_participant_id in combat.participants,
-                )
+        elif action.action_type == "spell":
+            # Execute queued spell action via magic service
+            # Note: Spell costs were already paid when casting started, we just apply effects here
+            if hasattr(self._combat_service, "magic_service") and self._combat_service.magic_service:
+                magic_service = self._combat_service.magic_service
+                try:
+                    # Get spell from registry
+                    spell = magic_service.spell_registry.get_spell(action.spell_id) if action.spell_id else None
+                    if not spell:
+                        logger.warning(
+                            "Spell not found for execution", spell_id=action.spell_id, spell_name=action.spell_name
+                        )
+                        participant.last_action_tick = current_tick
+                        return
 
-                # If participant is missing, try to fix the combat state
-                if expected_participant_id not in combat.participants:
+                    # Get player and room for target recreation
+                    config = get_config()
+                    app = getattr(config, "_app_instance", None)
+                    if app and hasattr(app.state, "container"):
+                        player_service = getattr(app.state.container, "player_service", None)
+                        if player_service:
+                            player = await player_service.persistence.get_player_by_id(participant.participant_id)
+                            if player:
+                                room_id = player.current_room_id or combat.room_id
+                                # Recreate target from action data
+                                from server.schemas.target_resolution import (  # noqa: PLC0415  # Reason: Local import
+                                    TargetMatch,
+                                    TargetType,
+                                )
+
+                                target_type = TargetType.NPC if action.target_id else TargetType.PLAYER
+                                target_name = action.spell_name or "target"
+                                target = TargetMatch(
+                                    target_id=str(action.target_id)
+                                    if action.target_id
+                                    else str(participant.participant_id),
+                                    target_name=target_name,
+                                    target_type=target_type,
+                                    room_id=room_id,
+                                )
+
+                                # Get mastery from player spell
+                                player_spell = await magic_service.player_spell_repository.get_player_spell(
+                                    participant.participant_id, spell.spell_id
+                                )
+                                mastery = int(player_spell.mastery) if player_spell else 0
+
+                                # Apply spell effects only (costs already paid when casting completed)
+                                # Use spell_effects directly to avoid applying costs again
+                                effect_result = await magic_service.spell_effects.process_effect(
+                                    spell, target, participant.participant_id, mastery
+                                )
+
+                                # Record spell cast and increase mastery (if not already done)
+                                await magic_service.player_spell_repository.record_spell_cast(
+                                    participant.participant_id, spell.spell_id
+                                )
+                                if magic_service.spell_learning_service:
+                                    await magic_service.spell_learning_service.increase_mastery_on_cast(
+                                        participant.participant_id, spell.spell_id, True
+                                    )
+
+                                # Send completion messages and healing events
+                                await magic_service.send_spell_execution_notifications(
+                                    participant.participant_id, spell.spell_id, effect_result, room_id
+                                )
+
+                                logger.info(
+                                    "Queued spell executed",
+                                    participant_id=participant.participant_id,
+                                    spell_id=action.spell_id,
+                                    spell_name=action.spell_name,
+                                    success=effect_result.get("success", False),
+                                )
+                            else:
+                                logger.warning(
+                                    "Player not found for spell execution", participant_id=participant.participant_id
+                                )
+                        else:
+                            logger.warning("Player service not available for spell execution")
+                    else:
+                        logger.warning("App/container not available for spell execution")
+                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Spell execution errors unpredictable
                     logger.error(
-                        "Participant not found in participants dictionary - combat state corrupted",
-                        participant_id=expected_participant_id,
+                        "Error executing queued spell",
+                        participant_id=participant.participant_id,
+                        spell_id=action.spell_id,
+                        error=str(e),
+                        exc_info=True,
                     )
-                    # Remove the corrupted combat using public method
-                    await self._combat_service.end_combat(
-                        combat.combat_id, "Combat state corrupted - participant missing"
-                    )
-                    return
-
-                # Try to find the participant by matching UUID values
-                found_participant = None
-                for participant_id, participant in combat.participants.items():
-                    if str(participant_id) == str(expected_participant_id):
-                        found_participant = participant
-                        logger.debug("Found participant by UUID string match", participant=participant)
-                        break
-
-                if found_participant:
-                    current_participant = found_participant
-                else:
-                    logger.error(
-                        "Could not find participant even by UUID string match",
-                        participant_id=expected_participant_id,
-                    )
-                    return
             else:
-                return
-
-        # Debug logging to understand participant type
-        debug_participant_id = getattr(current_participant, "participant_id", None)
-        logger.debug(
-            "Current participant type",
-            participant_type=type(current_participant).__name__,
-            participant_id=str(debug_participant_id) if debug_participant_id else "NO_PARTICIPANT_ID",
-        )
-
-        # Additional debugging for the combat state
-        logger.debug(
-            "Combat state debug",
-            turn_order=combat.turn_order,
-            current_turn=combat.current_turn,
-            participants=list(combat.participants.keys()),
-        )
-
-        # Debug the specific participant lookup
-        if combat.turn_order and combat.current_turn < len(combat.turn_order):
-            current_participant_id = combat.turn_order[combat.current_turn]
-            logger.debug(
-                "Participant lookup",
-                looking_for=current_participant_id,
-                available_participants=list(combat.participants.keys()),
-            )
-            found_participant = combat.participants.get(current_participant_id)
-            logger.debug("Participant found", participant=found_participant)
-            logger.debug("current_participant (from get_current_turn_participant)", participant=current_participant)
-            logger.debug("Participant comparison", same=found_participant == current_participant)
-
-        # If it's an NPC's turn, process their action
-        if current_participant.participant_type == CombatParticipantType.NPC:
-            await self._process_npc_turn(combat, current_participant, current_tick)
+                logger.warning("Spell action queued but magic service not available", spell_name=action.spell_name)
         else:
-            # Player's turn - perform automatic basic attack
-            await self._process_player_turn(combat, current_participant, current_tick)
+            logger.warning("Unknown action type", action_type=action.action_type)
+
+        participant.last_action_tick = current_tick
+
+    async def _execute_default_action(
+        self, combat: CombatInstance, participant: CombatParticipant, current_tick: int
+    ) -> None:
+        """
+        Execute default action (basic attack) for a participant.
+
+        Args:
+            combat: Combat instance
+            participant: Participant executing the action
+            current_tick: Current game tick
+        """
+        # Find target (other participant in combat)
+        target = None
+        for p in combat.participants.values():
+            if p.participant_id != participant.participant_id and p.is_alive():
+                target = p
+                break
+
+        if not target:
+            logger.warning("No target found for default action", participant_id=participant.participant_id)
+            participant.last_action_tick = current_tick
+            return
+
+        # Execute based on participant type
+        if participant.participant_type == CombatParticipantType.NPC:
+            await self._process_npc_turn(combat, participant, current_tick)
+        else:
+            await self._process_player_turn(combat, participant, current_tick)
 
     async def _process_npc_turn(self, combat: CombatInstance, npc: CombatParticipant, current_tick: int) -> None:
         """

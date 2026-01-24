@@ -14,7 +14,7 @@ logger = get_logger(__name__)
 
 
 def resolve_equip_item_index(
-    command_data: dict, inventory: list[dict[str, Any]], player: Player, room_id: str
+    command_data: dict[str, Any], inventory: list[dict[str, Any]], player: Player, room_id: str
 ) -> tuple[int | None, dict[str, Any] | None]:
     """Resolve item index from command data for equip command."""
     index = command_data.get("index")
@@ -135,7 +135,7 @@ async def handle_wearable_container_on_equip(
 
 
 def resolve_unequip_slot(
-    command_data: dict, equipped_mapping: dict[str, Any]
+    command_data: dict[str, Any], equipped_mapping: dict[str, Any]
 ) -> tuple[str | None, dict[str, str] | None]:
     """Resolve slot from command data for unequip command."""
     from .inventory_item_matching import match_equipped_item_by_name

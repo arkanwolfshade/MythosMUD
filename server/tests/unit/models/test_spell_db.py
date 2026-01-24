@@ -7,7 +7,7 @@ Tests the SpellDB SQLAlchemy model.
 from server.models.spell_db import SpellDB
 
 
-def test_spell_db_repr():
+def test_spell_db_repr() -> None:
     """Test __repr__ returns expected string format."""
     spell = SpellDB()
     spell.spell_id = "test_spell_123"

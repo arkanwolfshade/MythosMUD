@@ -6,7 +6,7 @@ components, reducing boilerplate in the main ConnectionManager class.
 """
 
 import uuid
-from typing import Any
+from typing import Any, cast
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -37,7 +37,8 @@ async def delegate_error_handler(
         logger.error("Error handler not initialized")
         return default_error
     method = getattr(error_handler, method_name)
-    return await method(*args, **kwargs)
+    result: dict[str, Any] = cast(dict[str, Any], await method(*args, **kwargs))
+    return result
 
 
 async def cleanup_dead_websocket_impl(
@@ -160,9 +161,9 @@ async def validate_token_impl(token: str, player_id: Any, manager: Any) -> bool:
 async def delegate_health_monitor(
     health_monitor: Any,
     method_name: str,
-    active_websockets: dict,
-    connection_metadata: dict,
-    player_websockets: dict,
+    active_websockets: dict[str, Any],
+    connection_metadata: dict[str, Any],
+    player_websockets: dict[str, Any],
 ) -> None:
     """Generic delegate for health monitor methods."""
     if health_monitor is None:
@@ -179,9 +180,9 @@ async def delegate_health_monitor(
 def delegate_health_monitor_sync(
     health_monitor: Any,
     method_name: str,
-    active_websockets: dict,
-    connection_metadata: dict,
-    player_websockets: dict,
+    active_websockets: dict[str, Any],
+    connection_metadata: dict[str, Any],
+    player_websockets: dict[str, Any],
 ) -> None:
     """Generic delegate for synchronous health monitor methods."""
     if health_monitor is None:
@@ -219,7 +220,8 @@ async def delegate_connection_cleaner(
         logger.error("Connection cleaner not initialized")
         return default_error
     method = getattr(connection_cleaner, method_name)
-    return await method(*args, **kwargs)
+    result: dict[str, Any] = cast(dict[str, Any], await method(*args, **kwargs))
+    return result
 
 
 def delegate_connection_cleaner_sync(
@@ -300,7 +302,7 @@ async def delegate_message_broadcaster(
     message_broadcaster: Any,
     method_name: str,
     default_return: dict[str, Any],
-    player_websockets: dict,
+    player_websockets: dict[str, Any],
     *args: Any,
     **kwargs: Any,
 ) -> dict[str, Any]:
@@ -334,7 +336,8 @@ async def delegate_message_broadcaster(
         # Convert exclude_player UUID to string if needed (MessageBroadcaster expects str | None)
         if exclude_player is not None and isinstance(exclude_player, uuid.UUID):
             exclude_player = str(exclude_player)
-        return await method(event, exclude_player, player_websockets)
+        result: dict[str, Any] = cast(dict[str, Any], await method(event, exclude_player, player_websockets))
+        return result
     # Special handling for broadcast_to_room which expects (room_id, event, exclude_player, player_websockets)
     if method_name == "broadcast_to_room":
         # Extract room_id, event, and exclude_player from kwargs
@@ -342,17 +345,19 @@ async def delegate_message_broadcaster(
         event = kwargs.pop("event", None)
         exclude_player = kwargs.pop("exclude_player", None)
         # broadcast_to_room accepts uuid.UUID | str | None, so no conversion needed
-        return await method(room_id, event, exclude_player, player_websockets)
+        result2: dict[str, Any] = cast(dict[str, Any], await method(room_id, event, exclude_player, player_websockets))
+        return result2
     # For other methods, use the standard pattern (player_websockets first)
-    return await method(player_websockets, *args, **kwargs)
+    result3: dict[str, Any] = cast(dict[str, Any], await method(player_websockets, *args, **kwargs))
+    return result3
 
 
 async def delegate_personal_message_sender(
     personal_message_sender: Any,
     method_name: str,
     default_return: dict[str, Any],
-    player_websockets: dict,
-    active_websockets: dict,
+    player_websockets: dict[str, Any],
+    active_websockets: dict[str, Any],
     *args: Any,
     **kwargs: Any,
 ) -> dict[str, Any]:
@@ -380,16 +385,20 @@ async def delegate_personal_message_sender(
         # Extract player_id and event from kwargs
         player_id = kwargs.pop("player_id", None)
         event = kwargs.pop("event", None)
-        return await method(player_id, event, player_websockets, active_websockets)
+        result: dict[str, Any] = cast(
+            dict[str, Any], await method(player_id, event, player_websockets, active_websockets)
+        )
+        return result
     # For other methods, use the standard pattern (player_websockets, active_websockets first)
-    return await method(player_websockets, active_websockets, *args, **kwargs)
+    result2: dict[str, Any] = cast(dict[str, Any], await method(player_websockets, active_websockets, *args, **kwargs))
+    return result2
 
 
 def delegate_personal_message_sender_sync(
     personal_message_sender: Any,
     method_name: str,
     default_return: dict[str, Any],
-    player_websockets: dict,
+    player_websockets: dict[str, Any],
     *args: Any,
     **kwargs: Any,
 ) -> dict[str, Any]:
@@ -411,7 +420,8 @@ def delegate_personal_message_sender_sync(
         logger.error("Personal message sender not initialized")
         return default_return
     method = getattr(personal_message_sender, method_name)
-    return method(player_websockets, *args, **kwargs)
+    result: dict[str, Any] = cast(dict[str, Any], method(player_websockets, *args, **kwargs))
+    return result
 
 
 async def delegate_room_event_handler(

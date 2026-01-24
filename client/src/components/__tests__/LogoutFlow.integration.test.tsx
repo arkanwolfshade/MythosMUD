@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
-import { afterEach, beforeEach, describe, vi, type Mock } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { App } from '../../App';
 
 /**
@@ -70,7 +70,7 @@ vi.mock('../../utils/logoutHandler', () => ({
   }),
 }));
 
-vi.mock('../../hooks/useGameConnection', () => ({
+vi.mock('../../hooks/useGameConnectionRefactored', () => ({
   useGameConnection: vi.fn(() => ({
     isConnected: true,
     isConnecting: false,
@@ -180,7 +180,7 @@ vi.mock('../../components/DraggablePanel', () => ({
 // Mock fetch globally using vi.spyOn for proper cleanup
 const fetchSpy = vi.spyOn(global, 'fetch');
 
-describe.skip('Logout Flow Integration', () => {
+describe('Logout Flow Integration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     fetchSpy.mockClear();
@@ -206,7 +206,7 @@ describe.skip('Logout Flow Integration', () => {
       render(<App />);
 
       // Fill login form
-      const usernameInput = screen.getByPlaceholderText('Username');
+      const usernameInput = await screen.findByPlaceholderText('Username', {}, { timeout: 10000 });
       const passwordInput = screen.getByPlaceholderText('Password');
       const loginButton = screen.getByText('Enter the Void');
 
@@ -277,7 +277,7 @@ describe.skip('Logout Flow Integration', () => {
       render(<App />);
 
       // Login
-      const usernameInput = screen.getByPlaceholderText('Username');
+      const usernameInput = await screen.findByPlaceholderText('Username', {}, { timeout: 10000 });
       const passwordInput = screen.getByPlaceholderText('Password');
       const loginButton = screen.getByText('Enter the Void');
 
@@ -336,7 +336,7 @@ describe.skip('Logout Flow Integration', () => {
       render(<App />);
 
       // Login
-      const usernameInput = screen.getByPlaceholderText('Username');
+      const usernameInput = await screen.findByPlaceholderText('Username', {}, { timeout: 10000 });
       const passwordInput = screen.getByPlaceholderText('Password');
       const loginButton = screen.getByText('Enter the Void');
 
@@ -390,7 +390,7 @@ describe.skip('Logout Flow Integration', () => {
       render(<App />);
 
       // Login
-      const usernameInput = screen.getByPlaceholderText('Username');
+      const usernameInput = await screen.findByPlaceholderText('Username', {}, { timeout: 10000 });
       const passwordInput = screen.getByPlaceholderText('Password');
       const loginButton = screen.getByText('Enter the Void');
 
@@ -426,7 +426,7 @@ describe.skip('Logout Flow Integration', () => {
       render(<App />);
 
       // Login
-      const usernameInput = screen.getByPlaceholderText('Username');
+      const usernameInput = await screen.findByPlaceholderText('Username', {}, { timeout: 10000 });
       const passwordInput = screen.getByPlaceholderText('Password');
       const loginButton = screen.getByText('Enter the Void');
 
@@ -480,7 +480,7 @@ describe.skip('Logout Flow Integration', () => {
       render(<App />);
 
       // Login
-      const usernameInput = screen.getByPlaceholderText('Username');
+      const usernameInput = await screen.findByPlaceholderText('Username', {}, { timeout: 10000 });
       const passwordInput = screen.getByPlaceholderText('Password');
       const loginButton = screen.getByText('Enter the Void');
 

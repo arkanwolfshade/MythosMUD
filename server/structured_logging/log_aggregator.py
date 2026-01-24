@@ -73,7 +73,7 @@ class LogAggregator:
         self.export_path = Path(export_path) if export_path else None
 
         # Log storage
-        self.log_entries: queue.Queue = queue.Queue(maxsize=max_entries)
+        self.log_entries: queue.Queue[LogEntry] = queue.Queue(maxsize=max_entries)
         self.aggregated_logs: list[LogEntry] = []
 
         # Statistics
@@ -89,7 +89,7 @@ class LogAggregator:
         # Processing
         self.processing_thread: threading.Thread | None = None
         self.shutdown_event = threading.Event()
-        self.aggregation_callbacks: list[Callable] = []
+        self.aggregation_callbacks: list[Callable[[LogEntry], None]] = []
 
         # Start processing thread
         self._start_processing_thread()
@@ -303,12 +303,12 @@ class LogAggregator:
 
         return str(export_path)
 
-    def add_aggregation_callback(self, callback: Callable) -> None:
+    def add_aggregation_callback(self, callback: Callable[[LogEntry], None]) -> None:
         """
         Add a callback function for log aggregation events.
 
         Args:
-            callback: Function to call during aggregation
+            callback: Function to call during aggregation with each log entry
         """
         self.aggregation_callbacks.append(callback)
 

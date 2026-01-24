@@ -4,7 +4,7 @@ Channel management commands for Advanced Chat Channels.
 This module provides handlers for channel management commands like /channel.
 """
 
-from typing import Any
+from typing import Any, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -20,7 +20,7 @@ VALID_CHANNELS = {"local", "global", "whisper", "system"}
 
 
 async def _get_persistence_and_player(
-    request: Any, current_user: dict, player_name: str
+    request: Any, current_user: dict[str, Any], player_name: str
 ) -> tuple[Any, Any] | tuple[None, None]:
     """Get persistence and player. Returns (persistence, player) or (None, None) if not found."""
     app = getattr(request, "app", None)
@@ -38,7 +38,7 @@ async def _get_persistence_and_player(
     return persistence, player
 
 
-def _extract_channel_from_command(command_data: dict, player_name: str) -> str | None:
+def _extract_channel_from_command(command_data: dict[str, Any], player_name: str) -> str | None:
     """Extract channel name from command_data. Returns channel name or None."""
     channel = command_data.get("channel") or command_data.get("action")
 
@@ -72,10 +72,12 @@ def _extract_channel_from_command(command_data: dict, player_name: str) -> str |
         )
         return None
 
-    return channel.lower().strip()
+    return cast(str | None, channel.lower().strip())
 
 
-async def _handle_default_channel_setting(command_data: dict, player: Any, player_name: str) -> dict[str, str] | None:
+async def _handle_default_channel_setting(
+    command_data: dict[str, Any], player: Any, player_name: str
+) -> dict[str, str] | None:
     """Handle setting default channel. Returns result dict or None if not a default command."""
     default_channel = command_data.get("action") or command_data.get("channel")
     if not default_channel:
@@ -114,7 +116,11 @@ def _validate_channel_name(channel: str) -> dict[str, str] | None:
 
 
 async def handle_channel_command(
-    command_data: dict, current_user: dict, request: Any, _alias_storage: AliasStorage | None, player_name: str
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
+    request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the channel command for switching channels or setting default channel.

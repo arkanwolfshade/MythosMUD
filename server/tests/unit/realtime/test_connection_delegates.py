@@ -5,6 +5,7 @@ Tests the connection_delegates module functions.
 """
 
 import uuid
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -243,9 +244,9 @@ async def test_delegate_health_monitor_success():
     mock_monitor = MagicMock()
     mock_method = AsyncMock()
     mock_monitor.check_health = mock_method
-    active_websockets = {}
-    connection_metadata = {}
-    player_websockets = {}
+    active_websockets: dict[str, Any] = {}
+    connection_metadata: dict[str, Any] = {}
+    player_websockets: dict[str, Any] = {}
 
     await delegate_health_monitor(
         mock_monitor, "check_health", active_websockets, connection_metadata, player_websockets
@@ -271,9 +272,9 @@ def test_delegate_health_monitor_sync_success():
     mock_monitor = MagicMock()
     mock_method = MagicMock()
     mock_monitor.get_stats = mock_method
-    active_websockets = {}
-    connection_metadata = {}
-    player_websockets = {}
+    active_websockets: dict[str, Any] = {}
+    connection_metadata: dict[str, Any] = {}
+    player_websockets: dict[str, Any] = {}
 
     delegate_health_monitor_sync(mock_monitor, "get_stats", active_websockets, connection_metadata, player_websockets)
 
@@ -339,7 +340,7 @@ async def test_delegate_game_state_provider_success():
     mock_provider = MagicMock()
     mock_method = AsyncMock(return_value={"state": "ready"})
     mock_provider.get_state = mock_method
-    default_return = {"state": "default"}
+    default_return: dict[str, Any] = {"state": "default"}
 
     result = await delegate_game_state_provider(mock_provider, "get_state", default_return, "arg1", key="value")
 
@@ -350,7 +351,7 @@ async def test_delegate_game_state_provider_success():
 @pytest.mark.asyncio
 async def test_delegate_game_state_provider_none():
     """Test delegate_game_state_provider() returns default when provider is None."""
-    default_return = {"state": "default"}
+    default_return: dict[str, Any] = {"state": "default"}
 
     result = await delegate_game_state_provider(None, "get_state", default_return)
 
@@ -362,7 +363,7 @@ def test_delegate_game_state_provider_sync_success():
     mock_provider = MagicMock()
     mock_method = MagicMock(return_value={"state": "ready"})
     mock_provider.get_state_sync = mock_method
-    default_return = {"state": "default"}
+    default_return: dict[str, Any] = {"state": "default"}
 
     result = delegate_game_state_provider_sync(mock_provider, "get_state_sync", default_return, "arg1", key="value")
 
@@ -372,7 +373,7 @@ def test_delegate_game_state_provider_sync_success():
 
 def test_delegate_game_state_provider_sync_none():
     """Test delegate_game_state_provider_sync() returns default when provider is None."""
-    default_return = {"state": "default"}
+    default_return: dict[str, Any] = {"state": "default"}
 
     result = delegate_game_state_provider_sync(None, "get_state_sync", default_return)
 
@@ -386,7 +387,7 @@ async def test_delegate_message_broadcaster_success():
     mock_method = AsyncMock(return_value={"sent": True})
     mock_broadcaster.broadcast = mock_method
     default_return = {"error": "default"}
-    player_websockets = {}
+    player_websockets: dict[str, Any] = {}
 
     result = await delegate_message_broadcaster(
         mock_broadcaster, "broadcast", default_return, player_websockets, "arg1", key="value"
@@ -402,8 +403,8 @@ async def test_delegate_message_broadcaster_broadcast_global():
     mock_broadcaster = MagicMock()
     mock_method = AsyncMock(return_value={"sent": True})
     mock_broadcaster.broadcast_global = mock_method
-    default_return = {}
-    player_websockets = {}
+    default_return: dict[str, Any] = {}
+    player_websockets: dict[str, Any] = {}
     event = {"type": "chat", "message": "Hello"}
     exclude_player = uuid.uuid4()
 
@@ -421,8 +422,8 @@ async def test_delegate_message_broadcaster_broadcast_to_room():
     mock_broadcaster = MagicMock()
     mock_method = AsyncMock(return_value={"sent": True})
     mock_broadcaster.broadcast_to_room = mock_method
-    default_return = {}
-    player_websockets = {}
+    default_return: dict[str, Any] = {}
+    player_websockets: dict[str, Any] = {}
     room_id = "room_123"
     event = {"type": "chat", "message": "Hello"}
     exclude_player = uuid.uuid4()
@@ -458,8 +459,8 @@ async def test_delegate_personal_message_sender_success():
     mock_method = AsyncMock(return_value={"sent": True})
     mock_sender.send = mock_method
     default_return = {"error": "default"}
-    player_websockets = {}
-    active_websockets = {}
+    player_websockets: dict[str, Any] = {}
+    active_websockets: dict[str, Any] = {}
 
     result = await delegate_personal_message_sender(
         mock_sender, "send", default_return, player_websockets, active_websockets, "arg1", key="value"
@@ -475,9 +476,9 @@ async def test_delegate_personal_message_sender_send_message():
     mock_sender = MagicMock()
     mock_method = AsyncMock(return_value={"sent": True})
     mock_sender.send_message = mock_method
-    default_return = {}
-    player_websockets = {}
-    active_websockets = {}
+    default_return: dict[str, Any] = {}
+    player_websockets: dict[str, Any] = {}
+    active_websockets: dict[str, Any] = {}
     player_id = uuid.uuid4()
     event = {"type": "chat", "message": "Hello"}
 
@@ -511,7 +512,7 @@ def test_delegate_personal_message_sender_sync_success():
     mock_method = MagicMock(return_value={"sent": True})
     mock_sender.send_sync = mock_method
     default_return = {"error": "default"}
-    player_websockets = {}
+    player_websockets: dict[str, Any] = {}
 
     result = delegate_personal_message_sender_sync(
         mock_sender, "send_sync", default_return, player_websockets, "arg1", key="value"

@@ -132,7 +132,7 @@ def create_aggregator_handler(
     log_level: int,
     max_bytes: int,
     backup_count: int,
-    player_service: Any = None,
+    player_service: Any | None = None,
 ) -> RotatingFileHandler:
     """
     Create an aggregator handler for warnings.log or errors.log.

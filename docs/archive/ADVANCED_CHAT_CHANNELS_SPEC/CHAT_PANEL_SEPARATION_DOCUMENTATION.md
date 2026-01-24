@@ -38,9 +38,11 @@ GameTerminalWithPanels
 
 Each panel maintains its own local state while sharing common state through props:
 
-- **ChatPanel**: Chat input, channel selection, emotes, formatting, settings
-- **GameLogPanel**: Message filtering, search, grouping, statistics
-- **CommandPanel**: Command input, history, suggestions, quick commands
+**ChatPanel**: Chat input, channel selection, emotes, formatting, settings
+
+**GameLogPanel**: Message filtering, search, grouping, statistics
+
+**CommandPanel**: Command input, history, suggestions, quick commands
 
 ## Components
 
@@ -50,9 +52,11 @@ The ChatPanel is responsible for all chat-related functionality.
 
 #### Features
 
-- **Channel Selection**: Switch between local, global, and other chat channels
-- **Chat Input**: Rich text input with emotes and formatting
-- **Quick Commands**: Pre-defined chat phrases for common interactions
+**Channel Selection**: Switch between local, global, and other chat channels
+
+**Chat Input**: Rich text input with emotes and formatting
+
+**Quick Commands**: Pre-defined chat phrases for common interactions
 - **Activity Indicators**: Visual feedback for channel activity
 - **Emotes**: Click-to-insert emoji and text emotes
 - **Text Formatting**: Markdown-style formatting options
@@ -96,9 +100,11 @@ The GameLogPanel displays all game messages with advanced filtering and search c
 
 #### Features
 
-- **Message Display**: All game messages with timestamps and categorization
-- **Message Filtering**: Filter by type (chat, system, error, move)
-- **Time Filtering**: Filter by time range (last 5 minutes, hour, day, etc.)
+**Message Display**: All game messages with timestamps and categorization
+
+**Message Filtering**: Filter by type (chat, system, error, move)
+
+**Time Filtering**: Filter by time range (last 5 minutes, hour, day, etc.)
 - **Search**: Full-text search with history
 - **Message Grouping**: Group messages by time periods
 - **Statistics**: Message counts and type breakdown
@@ -130,9 +136,11 @@ The CommandPanel handles all game command input and history.
 
 #### Features
 
-- **Command Input**: Text input for game commands
-- **Command History**: Navigable history of previous commands
-- **Quick Commands**: Common game commands as clickable buttons
+**Command Input**: Text input for game commands
+
+**Command History**: Navigable history of previous commands
+
+**Quick Commands**: Common game commands as clickable buttons
 - **Command Suggestions**: Auto-completion based on history
 - **Common Commands**: Categorized common commands (movement, actions)
 
@@ -272,15 +280,19 @@ Performance benchmarking with `performance.spec.ts`:
 
 ```bash
 # Run all tests
+
 npm test
 
 # Run specific test file
+
 npm test chat-panel.spec.ts
 
 # Run performance tests
+
 npm test performance.spec.ts
 
 # Run with coverage
+
 npm run test:coverage
 ```
 
@@ -387,9 +399,11 @@ Responsive design for mobile devices:
 
 ### Breakpoints
 
-- **Mobile**: < 640px
-- **Tablet**: 640px - 1024px
-- **Desktop**: > 1024px
+**Mobile**: < 640px
+
+**Tablet**: 640px - 1024px
+
+**Desktop**: > 1024px
 
 ## Security
 
@@ -447,15 +461,19 @@ const checkRateLimit = (): boolean => {
 
 ```bash
 # Install dependencies
+
 npm install
 
 # Run tests
+
 npm test
 
 # Build for production
+
 npm run build
 
 # Start development server
+
 npm run dev
 ```
 
@@ -463,10 +481,12 @@ npm run dev
 
 ```bash
 # Development
+
 NODE_ENV=development
 VITE_API_URL=http://localhost:8000
 
 # Production
+
 NODE_ENV=production
 VITE_API_URL=https://api.mythosmud.com
 ```
@@ -476,16 +496,19 @@ VITE_API_URL=https://api.mythosmud.com
 ### Common Issues
 
 1. **Performance Issues**
+
    - Check memory usage with `useMemoryLeakDetector`
    - Monitor render times with `usePerformanceMonitor`
    - Enable virtual scrolling for large message lists
 
 2. **Connection Issues**
+
    - Verify WebSocket connection status
    - Check network connectivity
    - Review server logs
 
 3. **UI Issues**
+
    - Clear browser cache
    - Check for CSS conflicts
    - Verify responsive breakpoints
@@ -514,20 +537,24 @@ const memoryStats = useMemoryLeakDetector('ChatPanel', {
 ### Planned Features
 
 1. **Advanced Search**
+
    - Regular expression search
    - Search within specific time ranges
    - Search by user or channel
 
 2. **Message Encryption**
+
    - End-to-end encryption for private messages
    - Secure channel communication
 
 3. **Custom Themes**
+
    - User-defined color schemes
    - Theme marketplace
    - Dark/light mode toggle
 
 4. **Advanced Analytics**
+
    - Usage statistics
    - Performance metrics
    - User behavior analysis

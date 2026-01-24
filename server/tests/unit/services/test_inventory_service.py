@@ -24,7 +24,7 @@ def inventory_service():
 
 def test_add_stack_new_item(inventory_service):
     """Test add_stack adds new item to inventory."""
-    inventory = []
+    inventory: list[dict[str, object]] = []
     new_stack = {
         "item_instance_id": "inst1",
         "item_id": "item1",
@@ -96,7 +96,7 @@ def test_add_stack_capacity_error(inventory_service):
 
 def test_add_stack_validation_error_missing_field(inventory_service):
     """Test add_stack raises InventoryValidationError for missing fields."""
-    inventory = []
+    inventory: list[dict[str, object]] = []
     new_stack = {
         "item_name": "sword",
         # Missing required fields
@@ -108,7 +108,7 @@ def test_add_stack_validation_error_missing_field(inventory_service):
 
 def test_add_stack_validation_error_invalid_quantity(inventory_service):
     """Test add_stack raises InventoryValidationError for invalid quantity."""
-    inventory = []
+    inventory: list[dict[str, object]] = []
     new_stack = {
         "item_instance_id": "inst1",
         "item_id": "item1",

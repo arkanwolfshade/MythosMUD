@@ -374,7 +374,7 @@ class PydanticErrorHandler:
         )
 
     @classmethod
-    def create_handler(cls, **context_kwargs) -> "PydanticErrorHandler":
+    def create_handler(cls, **context_kwargs: Any) -> "PydanticErrorHandler":
         """
         Create a PydanticErrorHandler with specific context.
 
@@ -390,7 +390,7 @@ class PydanticErrorHandler:
 
 # Convenience functions for common use cases
 def handle_pydantic_error(
-    error: ValidationError, model_class: type | None = None, response_type: str = "http", **context_kwargs
+    error: ValidationError, model_class: type | None = None, response_type: str = "http", **context_kwargs: Any
 ) -> dict[str, Any]:
     """
     Convenience function to handle a Pydantic ValidationError.
@@ -409,7 +409,7 @@ def handle_pydantic_error(
 
 
 def convert_pydantic_error(
-    error: ValidationError, model_class: type | None = None, **context_kwargs
+    error: ValidationError, model_class: type | None = None, **context_kwargs: Any
 ) -> MythosValidationError:
     """
     Convenience function to convert a Pydantic ValidationError to MythosValidationError.

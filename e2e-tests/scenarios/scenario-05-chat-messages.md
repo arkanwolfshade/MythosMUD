@@ -2,29 +2,35 @@
 
 ## Overview
 
-Tests chat message broadcasting between players in the same room. This scenario verifies that players can send and receive chat messages, that messages are properly formatted, and that the chat system works correctly for multiplayer communication.
+Tests chat message broadcasting between players in the same room. This scenario verifies that players can send and
+receive chat messages, that messages are properly formatted, and that the chat system works correctly for multiplayer
+communication.
 
-**This is a core multi-player scenario** that requires bidirectional chat message verification between players. No automated alternative is available.
+**This is a core multi-player scenario** that requires bidirectional chat message verification between players. No
+automated alternative is available.
 
 ## Prerequisites
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
 2. **Server Running**: Development server is running on port 54731
 3. **Client Accessible**: Client is accessible on port 5173
 4. **Both Players Connected**: AW and Ithaqua are both logged in and in the same room
 
-**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
+### ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE
 
 **Reference**: See @MULTIPLAYER_TEST_RULES.md for complete prerequisite verification procedures.
 
 ## Test Configuration
 
-- **Test Players**: ArkanWolfshade (AW) and Ithaqua
-- **Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
-- **Testing Approach**: Playwright MCP (multi-tab interaction required)
-- **Timeout Settings**: Use configurable timeouts from master rules
+**Test Players**: ArkanWolfshade (AW) and Ithaqua
+
+**Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
+
+**Testing Approach**: Playwright MCP (multi-tab interaction required)
+
+**Timeout Settings**: Use configurable timeouts from master rules
 
 ## Execution Steps
 
@@ -33,6 +39,7 @@ Tests chat message broadcasting between players in the same room. This scenario 
 **Purpose**: Ensure clean state for chat message testing by clearing any persistent mute state from previous scenarios
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -48,13 +55,15 @@ await mcp_playwright_browser_wait_for({text: "You have unmuted Ithaqua", time: 1
 
 **Expected Result**: AW successfully unmutes Ithaqua, ensuring clean state for chat message testing
 
-**⚠️ CRITICAL**: This step is required because mute state persists across scenarios. Scenario-04 may have left AW muting Ithaqua, which would filter all chat messages.
+**⚠️ CRITICAL**: This step is required because mute state persists across scenarios. Scenario-04 may have left AW muting
+Ithaqua, which would filter all chat messages.
 
 ### Step 2: Both Players in Same Room
 
 **Purpose**: Ensure both players are ready for chat message testing
 
 **Commands**:
+
 ```javascript
 // Ensure both players are logged in from previous scenario
 // AW should be on tab 0, Ithaqua on tab 1
@@ -69,6 +78,7 @@ await mcp_playwright_browser_wait_for({text: "You have unmuted Ithaqua", time: 1
 **Purpose**: Test basic chat message sending
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -88,6 +98,7 @@ await mcp_playwright_browser_wait_for({text: "You say: Hello Ithaqua"});
 **Purpose**: Test that chat messages are properly broadcast to other players
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
@@ -96,7 +107,8 @@ await mcp_playwright_browser_tab_select({index: 1});
 await mcp_playwright_browser_wait_for({text: "ArkanWolfshade says: Hello Ithaqua"});
 
 // Verify message appears
-const ithaquaMessages = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const ithaquaMessages = await mcp_playwright_browser_evaluate({function: "() =>
+Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
 const seesAWMessage = ithaquaMessages.some(msg => msg.includes('ArkanWolfshade says: Hello Ithaqua'));
 console.log('Ithaqua sees AW message:', seesAWMessage);
 console.log('Ithaqua messages:', ithaquaMessages);
@@ -109,6 +121,7 @@ console.log('Ithaqua messages:', ithaquaMessages);
 **Purpose**: Test bidirectional chat communication
 
 **Commands**:
+
 ```javascript
 // Type reply
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "say Greetings ArkanWolfshade"});
@@ -125,6 +138,7 @@ await mcp_playwright_browser_wait_for({text: "You say: Greetings ArkanWolfshade"
 **Purpose**: Test that replies are properly received
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -146,6 +160,7 @@ console.log('AW messages:', awMessages);
 **Purpose**: Test that multiple messages work correctly
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -178,6 +193,7 @@ await mcp_playwright_browser_wait_for({text: "You say: I'm doing well, thank you
 **Purpose**: Verify that messages are properly formatted
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -205,6 +221,7 @@ console.log('Proper message formatting:', properFormatting);
 **Purpose**: Verify that message history is maintained
 
 **Commands**:
+
 ```javascript
 // EXECUTION GUARD: Single verification attempt - do not retry
 const totalMessages = await mcp_playwright_browser_evaluate({function: "() => document.querySelectorAll('.message').length"});
@@ -248,6 +265,7 @@ console.log('📋 PROCEEDING TO SCENARIO 6: Admin Teleportation');
 **Purpose**: Finalize scenario execution and prepare for next scenario
 
 **Commands**:
+
 ```javascript
 // Close all browser tabs to prepare for next scenario
 const tabList = await mcp_playwright_browser_tab_list();
@@ -268,17 +286,23 @@ console.log('➡️ READY FOR SCENARIO 6: Admin Teleportation');
 
 ## Expected Results
 
-- ✅ AW sees "You say: Hello Ithaqua"
-- ✅ Ithaqua sees "ArkanWolfshade says: Hello Ithaqua"
-- ✅ Ithaqua sees "You say: Greetings ArkanWolfshade"
-- ✅ AW sees "Ithaqua says: Greetings ArkanWolfshade"
-- ✅ Multiple messages work correctly
+✅ AW sees "You say: Hello Ithaqua"
+
+✅ Ithaqua sees "ArkanWolfshade says: Hello Ithaqua"
+
+✅ Ithaqua sees "You say: Greetings ArkanWolfshade"
+
+✅ AW sees "Ithaqua says: Greetings ArkanWolfshade"
+
+✅ Multiple messages work correctly
+
 - ✅ Message formatting is consistent
 - ✅ Message history is maintained
 
 ## Success Criteria Checklist
 
-- [ ] AW successfully sends first chat message
+[ ] AW successfully sends first chat message
+
 - [ ] Ithaqua receives AW's message
 - [ ] Ithaqua successfully sends reply
 - [ ] AW receives Ithaqua's reply
@@ -292,15 +316,18 @@ console.log('➡️ READY FOR SCENARIO 6: Admin Teleportation');
 ## Cleanup
 
 Execute standard cleanup procedures from @CLEANUP.md:
+
 1. Close all browser tabs
 2. Stop development server
 3. Verify clean shutdown
 
 ## Status
 
-**✅ FIXES IMPLEMENTED - Ready for Testing**
+### ✅ FIXES IMPLEMENTED - Ready for Testing
 
-The chat message system is working correctly. Players can send and receive chat messages, messages are properly formatted, and the chat system maintains message history correctly. The bidirectional communication works as expected for multiplayer interaction.
+The chat message system is working correctly. Players can send and receive chat messages, messages are properly
+formatted, and the chat system maintains message history correctly. The bidirectional communication works as expected
+for multiplayer interaction.
 
 ---
 

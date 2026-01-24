@@ -3,6 +3,7 @@ Unit tests for authentication utilities.
 """
 
 from datetime import timedelta
+from typing import Any
 
 import pytest
 from jose import JWTError
@@ -270,7 +271,7 @@ def test_verify_password_runtime_error():
 
 def test_create_access_token_with_empty_data():
     """Test create_access_token with empty data dict."""
-    data = {}
+    data: dict[str, Any] = {}
     token = create_access_token(data)
     assert isinstance(token, str)
     assert len(token) > 0

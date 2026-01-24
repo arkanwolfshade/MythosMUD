@@ -86,7 +86,7 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
         except (ValueError, AttributeError, TypeError) as e:
             raise ValueError(f"Invalid player_id format: {player_id}") from e
 
-    async def add_admin(self, player_id: uuid.UUID | str, player_name: str | None = None):
+    async def add_admin(self, player_id: uuid.UUID | str, player_name: str | None = None) -> bool:
         """
         Add a player as an admin.
 
@@ -132,7 +132,7 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             logger.error("Unexpected error adding admin status", error=str(e), error_type=type(e).__name__)
             return False
 
-    async def remove_admin(self, player_id: uuid.UUID | str, player_name: str | None = None):
+    async def remove_admin(self, player_id: uuid.UUID | str, player_name: str | None = None) -> bool:
         """
         Remove a player's admin status.
 
@@ -1117,7 +1117,7 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             if mute_info["expires_at"] and mute_info["expires_at"] < current_time:
                 del self._global_mutes[player_id]
 
-    def _cleanup_expired_mutes(self):
+    def _cleanup_expired_mutes(self) -> None:
         """Clean up expired mutes from all storage."""
         try:
             current_time = datetime.now(UTC)

@@ -66,7 +66,9 @@ preventing mismatches due to string vs canonical ID differences.
 **Changes**:
 
 - Changed from conditional setting to always setting `current_room` and
+
   `current_room_id`
+
 - Added validation to verify room tracking was set correctly
 - Added error logging if room tracking fails
 - Added debug logging when room tracking succeeds
@@ -81,7 +83,9 @@ correctly during spawning.
 **Changes**:
 
 - Enhanced room tracking update to always set both `current_room` and
+
   `current_room_id`
+
 - Added creation of `current_room_id` attribute if it doesn't exist
 - Added validation to verify room tracking was updated correctly
 - Enhanced error logging if room tracking update fails
@@ -99,6 +103,7 @@ The fix adds canonical room ID resolution to ensure consistent comparison:
 
 ```python
 # Get canonical room ID for consistent comparison
+
 canonical_room_id = None
 if hasattr(self.connection_manager, "_canonical_room_id"):
     canonical_room_id = self.connection_manager._canonical_room_id(room_id) or room_id
@@ -123,6 +128,7 @@ NPC instances are now validated to ensure room tracking is set:
 
 ```python
 # CRITICAL: Validate room tracking was set correctly
+
 if not npc_instance.current_room or npc_instance.current_room != room_id:
     logger.error("Failed to set NPC room tracking correctly", ...)
 else:
@@ -147,20 +153,24 @@ All NPC queries now include detailed logging:
 ### Test Scenarios
 
 1. **Player enters room with NPCs**:
+
    - Verify NPCs appear in Occupants panel immediately
    - Check server logs for NPC query execution
    - Verify NPCs are included in personal message
 
 2. **Player moves between rooms with different NPCs**:
+
    - Verify NPCs from old room disappear
    - Verify NPCs in new room appear
    - Check for room ID format consistency
 
 3. **Player enters room with no NPCs**:
+
    - Verify no NPCs are shown (correct behavior)
    - Check logs for proper NPC query execution
 
 4. **NPC moves while player is in room**:
+
    - Verify NPC appears/disappears correctly
    - Check NPC room tracking is updated
 
@@ -188,16 +198,19 @@ Watch for these warning/error logs:
 ## EXPECTED BEHAVIOR AFTER FIX
 
 1. **When player enters room with NPCs**:
+
    - NPCs should appear in Occupants panel immediately
    - Server logs should show NPC query execution
    - Personal message should include NPCs
 
 2. **When player moves between rooms**:
+
    - NPCs from old room should disappear
    - NPCs in new room should appear
    - Room ID matching should work consistently
 
 3. **When NPCs move**:
+
    - NPC room tracking should be updated correctly
    - NPCs should appear in correct room's occupants
 
@@ -206,15 +219,18 @@ Watch for these warning/error logs:
 ## FILES MODIFIED
 
 1. `server/realtime/event_handler.py`
+
    - Enhanced `_handle_player_entered()` with better logging
    - Enhanced `_send_occupants_snapshot_to_player()` with validation
    - Enhanced `_get_room_occupants()` with canonical room ID matching
 
 2. `server/npc/lifecycle_manager.py`
+
    - Enhanced NPC room tracking during spawning
    - Added validation for room tracking
 
 3. `server/npc/movement_integration.py`
+
    - Enhanced NPC room tracking during movement
    - Added validation for room tracking updates
 
@@ -222,8 +238,11 @@ Watch for these warning/error logs:
 
 ## RELATED INVESTIGATIONS
 
-- **2025-01-29_session-001_npc-occupants-display-issue.md**: Previous investigation that fixed NPC room tracking during spawning
-- **2025-01-30_session-001_npcs-not-updating-on-player-movement.md**: Current investigation that identified the dual update mechanism issue
+**2025-01-29_session-001_npc-occupants-display-issue.md**: Previous investigation that fixed NPC room tracking
+ during spawning
+
+**2025-01-30_session-001_npcs-not-updating-on-player-movement.md**: Current investigation that identified the dual
+ update mechanism issue
 
 ---
 

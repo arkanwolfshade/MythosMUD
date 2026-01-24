@@ -2,14 +2,15 @@
 
 ## Tasks
 
-- [x] 1. **Fix Critical ValidationError Namespace Collision** ✅ COMPLETED
-  - [x] 1.1 Write tests for ValidationError import handling and error propagation
-  - [x] 1.2 Update `server/utils/command_processor.py` to use `PydanticValidationError` alias
-  - [x] 1.3 Update `server/utils/command_parser.py` to use `PydanticValidationError` alias
-  - [x] 1.4 Update all other files with conflicting ValidationError imports
-  - [x] 1.5 Standardize error handling patterns across all affected files
-  - [x] 1.6 Add comprehensive integration tests for error handling
-  - [x] 1.7 Verify all tests pass and no import conflicts remain
+[x] 1. **Fix Critical ValidationError Namespace Collision** ✅ COMPLETED
+
+- [x] 1.1 Write tests for ValidationError import handling and error propagation
+- [x] 1.2 Update `server/utils/command_processor.py` to use `PydanticValidationError` alias
+- [x] 1.3 Update `server/utils/command_parser.py` to use `PydanticValidationError` alias
+- [x] 1.4 Update all other files with conflicting ValidationError imports
+- [x] 1.5 Standardize error handling patterns across all affected files
+- [x] 1.6 Add comprehensive integration tests for error handling
+- [x] 1.7 Verify all tests pass and no import conflicts remain
 
 - [x] 2. **Standardize Command Validation Security Patterns** ✅ COMPLETED
   - [x] 2.1 Write tests for centralized security validation functions

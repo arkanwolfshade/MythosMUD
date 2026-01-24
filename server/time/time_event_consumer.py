@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from datetime import UTC, datetime
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from server.events.event_bus import EventBus
 from server.events.event_types import MythosHourTickEvent
@@ -20,6 +20,10 @@ from server.services.holiday_service import HolidayService
 from server.services.schedule_service import ScheduleService
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.time.time_service import ChronicleLike
+
+if TYPE_CHECKING:
+    from server.game.room_service import RoomService
+    from server.npc.lifecycle_manager import NPCLifecycleManager
 
 logger = get_logger(__name__)
 
@@ -34,8 +38,8 @@ class MythosTimeEventConsumer:  # pylint: disable=too-few-public-methods  # Reas
         chronicle: ChronicleLike,
         holiday_service: HolidayService,
         schedule_service: ScheduleService,
-        room_service,
-        npc_lifecycle_manager=None,
+        room_service: RoomService | None,
+        npc_lifecycle_manager: NPCLifecycleManager | None = None,
     ) -> None:
         self._event_bus = event_bus
         self._chronicle = chronicle
@@ -93,7 +97,7 @@ class MythosTimeEventConsumer:  # pylint: disable=too-few-public-methods  # Reas
         ) as exc:  # pragma: no cover - defensive logging
             logger.error("Failed to broadcast Mythos time update", error=str(exc))
 
-    def describe_state(self) -> dict:
+    def describe_state(self) -> dict[str, Any]:
         """Helper for admin diagnostics."""
 
         return {

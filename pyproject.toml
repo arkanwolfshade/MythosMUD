@@ -114,6 +114,7 @@ max-complexity = 11
 "tests/**/*" = ["B011"]
 "docs/**/*" = ["F821", "F841", "F811", "B904", "E402"]
 "server/stubs/**/*.pyi" = ["UP046"]  # Stub files use old Generic syntax for compatibility
+"server/main.py" = ["E402"]  # Reason: Imports must come after load_dotenv() to ensure env vars are loaded before any modules that depend on them are imported
 
 [tool.isort]
 profile = "black"
@@ -213,7 +214,7 @@ exclude_lines = [
     "if __name__ == .__main__.:",
     "@(abc\\.)?abstractmethod",
 ]
-fail_under = 50
+fail_under = 63
 
 [tool.mypy]
 python_version = "3.12"
@@ -222,19 +223,8 @@ plugins = ["sqlalchemy.ext.mypy.plugin", "pydantic.mypy"]
 mypy_path = "server/stubs"
 
 # Gradual strictness: Enable checks incrementally for established codebase
-# NOTE: Full strict = true revealed 962 errors. Enabling selectively instead.
-warn_unused_configs = true
-warn_redundant_casts = true
-warn_unused_ignores = true
-strict_equality = true
-strict_optional = true
-no_implicit_optional = true  # This one we've already fixed
-warn_return_any = false  # Too many false positives in current codebase
-warn_unreachable = true  # Best practice: enable, use inline # type: ignore[unreachable] where needed
-check_untyped_defs = false  # Would require 300+ fixes
-disallow_untyped_defs = false  # Would require 200+ fixes
-disallow_incomplete_defs = false  # Gradually enable per-module
-no_implicit_reexport = false  # Low priority for now
+strict = true # NOTE: revealed 962 errors. Enabling selectively instead.
+warn_unreachable = true
 
 # Performance optimizations (best practices)
 cache_dir = ".mypy_cache"
@@ -261,12 +251,12 @@ exclude = [
     "^monitoring/",
     "^server/alembic/",
     "^alembic/",  # Also exclude root-level alembic if it exists
-    "^server/test_who_command_direct.py$",
     "^server/tests/scripts/",
     "^server/tests/data/",
     "^server/time/",  # Exclude server/time to avoid conflict with stdlib time module
     ".*[\\\\/]time[\\\\/]__init__\\.py$",  # Also exclude time/__init__.py specifically (Windows and Unix paths)
     "^server/persistence/__init__\\.py$",  # Exclude to avoid duplicate module conflict (matches pre-commit exclude)
+    ".*[\\\\/]conftest\\.py$",  # Exclude all conftest.py files to avoid duplicate module conflicts (pytest-specific, don't need type checking)
 ]
 
 # Per-module options - Third-party libraries without stubs or with incomplete stubs
@@ -286,24 +276,6 @@ module = [
     "networkx.*",
 ]
 ignore_missing_imports = true
-
-# Exclude server.time module to avoid conflict with stdlib time module
-# Use follow_imports=skip to prevent mypy from processing this module
-# NOTE: This override is unused because server.time is in the exclude list, but kept for documentation
-# [[tool.mypy.overrides]]
-# module = ["server.time", "server.time.*"]
-# follow_imports = "skip"
-
-# Test files - use default settings (override removed as it matches defaults)
-# Human reader: Test files have many dynamic imports and mocks that confuse mypy
-# AI reader: Test files use extensive mocking and dynamic imports that mypy can't resolve
-# NOTE: Override removed because it matches default settings, making it unused
-# [[tool.mypy.overrides]]
-# module = "server.tests.*"
-# ignore_missing_imports = false
-# disallow_untyped_defs = false
-# disallow_incomplete_defs = false
-# check_untyped_defs = true
 
 # Libraries with local stubs - use our enhanced type definitions
 [[tool.mypy.overrides]]
@@ -340,10 +312,46 @@ module = [
 disallow_untyped_defs = false
 check_untyped_defs = false
 
-# pytest-mock type annotations not found by mypy in pre-commit environment despite being available in pytest-mock 3.15.1+
+# Modules with remaining no-untyped-def violations; relax strictness until fully annotated.
+# Human: Gradual typing; we fix critical paths first, then annotate these modules.
+# AI: Override disallow_untyped_defs for specific server modules with many untyped defs.
 [[tool.mypy.overrides]]
-module = ["pytest_mock.*"]
-ignore_missing_imports = true
+module = [
+    "server.services.nats_service",
+    "server.persistence.repositories.*",
+    "server.game.player_state_service",
+    "server.game.emote_service",
+    "server.game.mechanics",
+    "server.game.player_respawn_wrapper",
+    "server.game.player_search_service",
+    "server.game.player_schema_converter",
+    "server.game.player_creation_service",
+    "server.game.player_service",
+    "server.services.combat_turn_processor",
+    "server.services.combat_event_handler",
+    "server.services.combat_attack_handler",
+    "server.services.exploration_service",
+    "server.services.schedule_service",
+    "server.services.holiday_service",
+    "server.services.user_manager",
+    "server.services.combat_messaging_integration",
+    "server.services.combat_death_handler",
+    "server.services.combat_cleanup_handler",
+    "server.services.combat_persistence_handler",
+    "server.services.passive_lucidity_flux_service",
+    "server.realtime.event_handlers",
+    "server.realtime.message_filtering",
+    "server.realtime.connection_manager",
+    "server.realtime.connection_manager_utils",
+    "server.npc.npc_base",
+    "server.npc.shopkeeper_npc",
+    "server.npc.passive_mob_npc",
+    "server.npc.idle_movement",
+    "server.npc.aggressive_mob_npc",
+    "server.auth.users",
+]
+disallow_untyped_defs = false
+check_untyped_defs = true
 
 [dependency-groups]
 dev = [
@@ -366,3 +374,8 @@ dev = [
     # sqlint>=0.2.1 - REMOVED: Conflicts with click>=8.1.8 (sqlint requires click==7.0)
     # Use sqlfluff instead, which provides comprehensive SQL linting
 ]
+
+[tool.uv]
+# Suppress hardlink warning on Windows when cache and project are on different filesystems
+# Using "copy" mode ensures files are always copied instead of hardlinked
+link-mode = "copy"

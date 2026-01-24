@@ -5,13 +5,17 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 ## Technical Requirements
 
 ### Endpoint Specification
-- **HTTP Method**: GET
-- **Path**: `/health`
-- **Response Format**: JSON
+
+**HTTP Method**: GET
+
+**Path**: `/health`
+
+**Response Format**: JSON
 - **Authentication**: None required (public endpoint)
 - **Rate Limiting**: None (health checks should be lightweight)
 
 ### Response Structure
+
 ```json
 {
   "status": "healthy" | "degraded" | "unhealthy",
@@ -45,35 +49,49 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 ```
 
 ### Health Status Definitions
-- **healthy**: All components operational, no critical issues
-- **degraded**: Some components experiencing issues but server functional
-- **unhealthy**: Critical components failing, server may not be fully operational
+
+**healthy**: All components operational, no critical issues
+
+**degraded**: Some components experiencing issues but server functional
+
+**unhealthy**: Critical components failing, server may not be fully operational
 
 ### HTTP Status Codes
-- **200 OK**: Server is healthy
-- **503 Service Unavailable**: Server is unhealthy or degraded
-- **500 Internal Server Error**: Health check itself failed
+
+**200 OK**: Server is healthy
+
+**503 Service Unavailable**: Server is unhealthy or degraded
+
+**500 Internal Server Error**: Health check itself failed
 
 ### Performance Requirements
-- Response time: < 100ms for healthy server
+
+Response time: < 100ms for healthy server
+
 - Memory overhead: < 1MB per request
 - No database queries that could impact game performance
 - Non-blocking health checks
 
 ### Integration Points
-- Leverage existing monitoring router structure
+
+Leverage existing monitoring router structure
+
 - Use existing connection manager for connection statistics
 - Integrate with existing memory monitoring systems
 - Utilize existing database connection pool for health checks
 
 ### Error Handling
-- Graceful degradation when components are unavailable
+
+Graceful degradation when components are unavailable
+
 - Detailed error messages for debugging
 - Fallback responses when monitoring systems fail
 - Logging of health check failures for analysis
 
 ### Security Considerations
-- No sensitive information in health responses
+
+No sensitive information in health responses
+
 - No authentication bypass through health endpoint
 - Sanitized error messages to prevent information disclosure
 - Rate limiting consideration for production environments

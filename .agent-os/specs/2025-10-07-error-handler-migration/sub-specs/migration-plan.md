@@ -6,7 +6,8 @@ This document outlines the step-by-step migration plan for transitioning from le
 
 ### Step 1.1: Create sanitization.py
 
-- Create `server/error_handlers/sanitization.py`
+Create `server/error_handlers/sanitization.py`
+
 - Copy sanitization functions from legacy file:
   - `_is_safe_detail_key()`
   - `_sanitize_detail_value()`
@@ -24,7 +25,8 @@ This document outlines the step-by-step migration plan for transitioning from le
 
 ### Step 1.2: Update error_handlers/__init__.py
 
-- Import sanitization functions
+Import sanitization functions
+
 - Add to `__all__` list
 - Update module docstring to remove legacy note
 
@@ -32,14 +34,16 @@ This document outlines the step-by-step migration plan for transitioning from le
 
 ### Step 2.1: Update test_error_handlers.py
 
-- Change imports from `server.legacy_error_handlers` to `server.error_handlers.sanitization`
+Change imports from `server.legacy_error_handlers` to `server.error_handlers.sanitization`
+
 - Update function names if they changed (underscore removal)
 - Run tests to verify functionality preserved
 - Fix any assertion failures due to function renames
 
 ### Step 2.2: Search for Other Imports
 
-- Run: `grep -r "from server.legacy_error_handlers import" server/`
+Run: `grep -r "from server.legacy_error_handlers import" server/`
+
 - Run: `grep -r "from .legacy_error_handlers import" server/`
 - Update any found imports to use new modules
 
@@ -67,13 +71,15 @@ From `server/legacy_error_handlers.py`, remove:
 
 ### Step 3.3: Verify No Remaining Usage
 
-- Search for `ErrorResponse(` usage in codebase
+Search for `ErrorResponse(` usage in codebase
+
 - Search for `create_error_response(` usage
 - Ensure all found instances are in files being deleted or updated
 
 ### Step 3.4: Delete Legacy File
 
-- Once all functions are migrated or confirmed unused, delete entire file
+Once all functions are migrated or confirmed unused, delete entire file
+
 - Remove from any `__init__.py` imports
 - Remove from git
 
@@ -81,20 +87,23 @@ From `server/legacy_error_handlers.py`, remove:
 
 ### Step 4.1: Run Test Suite
 
-- Run full test suite: `make test`
+Run full test suite: `make test`
+
 - Verify all tests pass
 - Check for any import errors
 - Verify coverage remains above 80%
 
 ### Step 4.2: Code Quality Checks
 
-- Run linting: `make lint`
+Run linting: `make lint`
+
 - Fix any linting errors
 - Verify formatting is correct
 
 ### Step 4.3: Import Verification
 
-- Run: `grep -r "legacy_error_handlers" server/`
+Run: `grep -r "legacy_error_handlers" server/`
+
 - Should only find references in:
   - This migration spec documentation
   - Git history
@@ -102,7 +111,8 @@ From `server/legacy_error_handlers.py`, remove:
 
 ### Step 4.4: Manual Verification
 
-- Start development server
+Start development server
+
 - Trigger various error conditions
 - Verify error responses use new handlers
 - Check logs for proper error formatting
@@ -111,19 +121,22 @@ From `server/legacy_error_handlers.py`, remove:
 
 ### Step 5.1: Update Module Documentation
 
-- Update `server/error_handlers/__init__.py` docstring
+Update `server/error_handlers/__init__.py` docstring
+
 - Remove notes about legacy migration
 - Add completion date of migration
 
 ### Step 5.2: Update Architecture Documentation
 
-- Update any architecture docs mentioning error handling
+Update any architecture docs mentioning error handling
+
 - Remove references to legacy error handlers
 - Ensure docs point to new modular structure
 
 ### Step 5.3: Git Commit
 
-- Create comprehensive commit message
+Create comprehensive commit message
+
 - Reference this spec in commit
 - Link to any related issues
 - Tag commit with migration completion
@@ -141,9 +154,11 @@ If issues are discovered after migration:
 
 Migration is complete when:
 
-- ✅ All sanitization functions in `server/error_handlers/sanitization.py`
-- ✅ All tests passing with updated imports
-- ✅ No imports from `legacy_error_handlers.py` remain
+✅ All sanitization functions in `server/error_handlers/sanitization.py`
+
+✅ All tests passing with updated imports
+
+✅ No imports from `legacy_error_handlers.py` remain
 - ✅ File `server/legacy_error_handlers.py` deleted
 - ✅ Linting passes
 - ✅ Test coverage remains ≥80%

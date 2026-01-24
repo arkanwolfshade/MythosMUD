@@ -8,20 +8,22 @@ Tests case-insensitive character name uniqueness, including conflict detection a
 
 ## Prerequisites
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Test user has 0-2 active characters
 2. **Server Running**: Development server is running on port 54731
 3. **Client Accessible**: Client is accessible on port 5173
 4. **No Previous Sessions**: Browser is clean with no existing game sessions
 
-**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
+### ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE
 
 ## Test Configuration
 
-- **Test Player**: ArkanWolfshade
-- **Testing Approach**: Playwright MCP
-- **Timeout Settings**: Use configurable timeouts from master rules
+**Test Player**: ArkanWolfshade
+
+**Testing Approach**: Playwright MCP
+
+**Timeout Settings**: Use configurable timeouts from master rules
 
 ## Execution Steps
 
@@ -117,13 +119,16 @@ const snapshot = await mcp_playwright_browser_snapshot();
 
 ## Failure Modes
 
-- **Case-insensitive conflict not detected**: Database index or validation may not be working
-- **Case not preserved**: Name may be normalized incorrectly
-- **Wrong error message**: Error handling may need updates
+**Case-insensitive conflict not detected**: Database index or validation may not be working
+
+**Case not preserved**: Name may be normalized incorrectly
+
+**Wrong error message**: Error handling may need updates
 
 ## Notes
 
-- Character names are stored exactly as entered (case-sensitive storage)
+Character names are stored exactly as entered (case-sensitive storage)
+
 - Uniqueness is enforced case-insensitively
 - First name created wins in case of conflict
 - Same applies to usernames (case-insensitive unique)

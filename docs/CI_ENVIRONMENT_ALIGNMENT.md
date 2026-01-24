@@ -1,15 +1,19 @@
 # CI Environment Alignment
 
-This document describes how we've aligned the Docker, GitHub Actions, and local `make test-ci` environments to ensure consistent test execution across all platforms.
+This document describes how we've aligned the Docker, GitHub Actions, and local `make test-ci` environments to ensure
+consistent test execution across all platforms.
 
 ## Problem
 
 Previously, there were inconsistencies between:
-- **Dockerfile.github-runner**: Used `.venv`, activation-based installation, missing `pytest-xdist`
-- **GitHub Actions workflow**: Used `.venv-ci`, explicit `--python` flag, included `pytest-xdist`
-- **Local `make test-ci`**: Used system Python, no venv detection
+**Dockerfile.github-runner**: Used `.venv`, activation-based installation, missing `pytest-xdist`
+
+**GitHub Actions workflow**: Used `.venv-ci`, explicit `--python` flag, included `pytest-xdist`
+
+**Local `make test-ci`**: Used system Python, no venv detection
 
 This led to:
+
 - Tests passing locally but failing in CI
 - Different dependency versions between environments
 - Difficulty reproducing CI failures locally
@@ -19,6 +23,7 @@ This led to:
 ### 1. Shared Dependency Installation Script
 
 Created `scripts/install_ci_dependencies.sh` that:
+
 - Uses configurable venv name (defaults to `.venv-ci` for CI)
 - Supports both explicit `--python` flag and activation-based installation
 - Verifies pytest installation by checking site-packages
@@ -29,6 +34,7 @@ Created `scripts/install_ci_dependencies.sh` that:
 ### 2. Dockerfile Alignment
 
 **Before:**
+
 ```dockerfile
 RUN uv venv && \
     . .venv/bin/activate && \
@@ -38,11 +44,13 @@ RUN uv venv && \
 ```
 
 **After:**
+
 ```dockerfile
 RUN VENV_NAME=.venv-ci USE_EXPLICIT_PYTHON=true bash scripts/install_ci_dependencies.sh
 ```
 
 **Changes:**
+
 - Uses `.venv-ci` to match GitHub Actions
 - Uses explicit `--python` flag for reliability
 - Includes `pytest-xdist>=3.8.0`
@@ -51,15 +59,18 @@ RUN VENV_NAME=.venv-ci USE_EXPLICIT_PYTHON=true bash scripts/install_ci_dependen
 ### 3. GitHub Actions Alignment
 
 **Before:**
+
 ```yaml
 - name: Install dependencies
   run: |
     uv venv .venv-ci
     uv pip install --python .venv-ci/bin/python -e .
     # ... many lines of verification
+
 ```
 
 **After:**
+
 ```yaml
 - name: Install dependencies
   run: |
@@ -67,6 +78,7 @@ RUN VENV_NAME=.venv-ci USE_EXPLICIT_PYTHON=true bash scripts/install_ci_dependen
 ```
 
 **Changes:**
+
 - Uses shared installation script
 - Same verification logic as Docker
 - Consistent with Docker environment
@@ -74,21 +86,24 @@ RUN VENV_NAME=.venv-ci USE_EXPLICIT_PYTHON=true bash scripts/install_ci_dependen
 ### 4. Makefile Alignment
 
 **Before:**
+
 ```makefile
 test-ci:
-	$(PYTHON) scripts/run_test_ci.py
+ $(PYTHON) scripts/run_test_ci.py
 ```
 
 **After:**
+
 ```makefile
 test-ci:
-	@# run_test_ci.py automatically detects and uses .venv-ci or .venv if available
-	@# This ensures local test-ci matches CI environment behavior
-	$(PYTHON) scripts/run_test_ci.py
+ @# run_test_ci.py automatically detects and uses .venv-ci or .venv if available
+ @# This ensures local test-ci matches CI environment behavior
+ $(PYTHON) scripts/run_test_ci.py
 ```
 
 **Changes:**
-- `run_test_ci.py` already handles venv detection (`.venv-ci` first, then `.venv`)
+`run_test_ci.py` already handles venv detection (`.venv-ci` first, then `.venv`)
+
 - Works on both Windows and Unix
 - Automatically uses venv Python when available
 
@@ -97,6 +112,7 @@ test-ci:
 ### Venv Detection Priority
 
 `scripts/run_test_ci.py` checks for venvs in this order:
+
 1. `.venv-ci` (CI environment)
 2. `.venv` (local development)
 3. Falls back to `sys.executable` if no venv found
@@ -104,12 +120,14 @@ test-ci:
 ### Installation Method
 
 The shared script supports two modes:
-- **Explicit Python flag** (`USE_EXPLICIT_PYTHON=true`): More reliable in CI, used by Docker and GitHub Actions
-- **Venv activation** (`USE_EXPLICIT_PYTHON=false`): Can be used for local development if preferred
+**Explicit Python flag** (`USE_EXPLICIT_PYTHON=true`): More reliable in CI, used by Docker and GitHub Actions
+
+**Venv activation** (`USE_EXPLICIT_PYTHON=false`): Can be used for local development if preferred
 
 ### Verification
 
 All environments verify pytest installation by:
+
 1. Checking if pytest directory exists in venv's site-packages
 2. Attempting to import pytest and print version
 3. Listing site-packages contents if verification fails (for debugging)
@@ -127,9 +145,11 @@ All environments verify pytest installation by:
 
 ```bash
 # Install dependencies (creates .venv-ci to match CI)
+
 VENV_NAME=.venv-ci USE_EXPLICIT_PYTHON=true bash scripts/install_ci_dependencies.sh
 
 # Run tests (automatically uses .venv-ci if available)
+
 make test-ci
 ```
 

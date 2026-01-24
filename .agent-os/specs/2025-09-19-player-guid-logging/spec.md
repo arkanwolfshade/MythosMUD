@@ -14,6 +14,7 @@ Implement a logging formatter that automatically converts player GUIDs to displa
 As a **developer/admin**, I want to see player names alongside GUIDs in log messages, so that I can quickly identify which player is involved in specific events without having to cross-reference GUIDs with player data.
 
 **Detailed Workflow:**
+
 1. When a log message contains a player GUID (UUID format), the logging formatter automatically detects it
 2. The formatter looks up the corresponding player name from in-memory player data
 3. If found, the GUID is replaced with "<player_name>: <GUID>" format
@@ -25,6 +26,7 @@ As a **developer/admin**, I want to see player names alongside GUIDs in log mess
 As a **system administrator**, I want log messages to be more human-readable while preserving technical accuracy, so that I can efficiently troubleshoot player-related issues and monitor system behavior.
 
 **Detailed Workflow:**
+
 1. All existing log files (server.log, world.log, persistence.log, etc.) automatically receive the enhanced formatting
 2. Player-related events become immediately identifiable without external lookups
 3. Failed GUID lookups are tracked separately for system health monitoring
@@ -40,7 +42,8 @@ As a **system administrator**, I want log messages to be more human-readable whi
 
 ## Out of Scope
 
-- Modifying individual logging statements throughout the codebase
+Modifying individual logging statements throughout the codebase
+
 - Creating separate caching mechanisms for player data
 - Changing the underlying logging infrastructure (structlog)
 - Converting non-player GUIDs (database IDs, session IDs, etc.)

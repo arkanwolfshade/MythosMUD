@@ -10,16 +10,19 @@
 ## Executive Summary
 
 **Original Bugs**:
+
 1. ✅ **FIXED**: Character Info panel not populating (Session 001)
 2. 🟡 **IDENTIFIED**: Room Occupants showing NPC duplicates (UUID + display name)
 3. 🟡 **IDENTIFIED**: Players list empty (should show current player)
 
 **Root Causes Identified**:
+
 - `room.to_dict()` returns empty `players` and `npcs` arrays (in-memory sets not persisted)
 - Server sends flat `occupants` list with mixed UUID/name data
 - No `room_occupants` events being sent to populate structured data
 
 **Current Status**:
+
 - Character Info panel: ✅ **WORKING**
 - Room Occupants: 🔴 **Still buggy** - reverted changes due to authentication hang
 
@@ -30,17 +33,21 @@
 ### Working Code (Session 001)
 
 **Character Info Panel Fix** - ✅ **SUCCESSFUL**:
-- **File**: `server/realtime/connection_manager.py::_send_initial_game_state()`
-- **Problem**: Player data missing `stats` field
-- **Solution**: Use PlayerService._convert_player_to_schema() for complete player data
+**File**: `server/realtime/connection_manager.py::_send_initial_game_state()`
+
+**Problem**: Player data missing `stats` field
+
+**Solution**: Use PlayerService._convert_player_to_schema() for complete player data
 - **Verification**: Runtime logs confirm stats now included, panel renders correctly
 
 ### Problematic Code (Session 002)
 
 **Room Occupants Fix Attempts** - 🔴 **REVERTED**:
-- **Files Attempted**: `server/realtime/connection_manager.py`, `server/realtime/websocket_handler.py`
-- **Problem 1**: `room.to_dict()` returns empty `players`/`npcs` arrays
-- **Problem 2**: Attempted to query database for players caused event loop blocking
+**Files Attempted**: `server/realtime/connection_manager.py`, `server/realtime/websocket_handler.py`
+
+**Problem 1**: `room.to_dict()` returns empty `players`/`npcs` arrays
+
+**Problem 2**: Attempted to query database for players caused event loop blocking
 - **Problem 3**: Authentication hung due to blocking operations
 - **Action**: Reverted all occupants-related changes to restore stability
 
@@ -51,6 +58,7 @@
 ### Why Duplicates Occur
 
 **Evidence from Runtime Logs:**
+
 ```json
 {
   "legacyOccupants": [
@@ -104,6 +112,7 @@
 ### Architecture Issue
 
 **Problem**: Room occupant data exists in TWO separate systems:
+
 1. **In-Memory**: `Room._players` set (lost on persistence reload)
 2. **Database**: Players table with `current_room_id` column
 
@@ -122,16 +131,19 @@
 ### Immediate Priorities
 
 1. **Verify Base Functionality** ✅
+
    - Ensure Character Info panel still works after revert
    - Confirm game is playable with current code
    - Test login/authentication works
 
 2. **Create Minimal Occupants Fix** 🔄
+
    - Focus ONLY on the occupants display issue
    - Don't modify authentication or game_state sending
    - Use existing `room_occupants` event system if possible
 
 3. **Test in Isolation** 🔄
+
    - Create unit test for room data structure
    - Test occupants display with mock data
    - Verify fix doesn't break authentication
@@ -149,29 +161,39 @@
 ## Files Modified (Now Reverted)
 
 ### Kept (Working)
-- ✅ `server/realtime/connection_manager.py` - Character Info fix (PlayerService integration)
+
+✅ `server/realtime/connection_manager.py` - Character Info fix (PlayerService integration)
 
 ### Reverted (Caused Issues)
-- ❌ `server/realtime/connection_manager.py` - Occupants changes (reverted)
-- ❌ `server/realtime/websocket_handler.py` - Database query (reverted)
-- ❌ Client debug instrumentation (removed)
+
+❌ `server/realtime/connection_manager.py` - Occupants changes (reverted)
+
+❌ `server/realtime/websocket_handler.py` - Database query (reverted)
+
+❌ Client debug instrumentation (removed)
 
 ---
 
 ## Current System State
 
 ### Working Features ✅
-- Authentication and login
+
+Authentication and login
+
 - Character Info panel (shows stats, health, lucidity)
 - Game ticks and websocket communication
 - All async migration changes from Phase 1 & 2
 
 ### Known Issues 🔴
-- Room Occupants panel shows NPC duplicates (UUID + name)
+
+Room Occupants panel shows NPC duplicates (UUID + name)
+
 - Players list empty (should show current player)
 
 ### Next Investigation Required 🔍
-- Why `room_occupants` events aren't updating the UI
+
+Why `room_occupants` events aren't updating the UI
+
 - How to populate structured player/NPC data without blocking authentication
 - Whether to fix server-side data or rely on events
 

@@ -19,6 +19,7 @@ The `make test-comprehensive` test suite is stalling after `test_async_handler_p
 The test suite appears to stall right after test `test_async_handler_performance_comparison` fails at 98% completion. The test suite doesn't progress to subsequent tests.
 
 **Error Context**:
+
 - Test `test_async_handler_performance_comparison` FAILED at 98% completion
 - Test suite stalls after this failure
 - Next test in sequence: `test_concurrent_request_handling`
@@ -32,6 +33,7 @@ The test suite appears to stall right after test `test_async_handler_performance
 **File**: `server/tests/verification/test_async_route_handlers.py`
 
 **Failing Test**: `test_async_handler_performance_comparison` (line 99-110)
+
 ```python
 def test_async_handler_performance_comparison(self, client):
     """Test performance comparison between sync and async handlers."""
@@ -56,6 +58,7 @@ def test_async_handler_performance_comparison(self, client):
 **Fixture**: `container_test_client` (line 131-295)
 
 **Cleanup Process**:
+
 1. Shuts down container: `loop.run_until_complete(container.shutdown())`
 2. Waits for pending tasks with 2-second timeout
 3. Cancels remaining tasks if timeout occurs
@@ -68,6 +71,7 @@ def test_async_handler_performance_comparison(self, client):
 **Next Test**: `test_concurrent_request_handling` (line 135-169)
 
 **Critical Issue Found**:
+
 ```python
 for thread in threads:
     thread.join()  # NO TIMEOUT - CAN HANG FOREVER
@@ -102,10 +106,12 @@ for thread in threads:
 **Severity**: HIGH
 **Frequency**: Intermittent (depends on test execution timing)
 **Affected Tests**:
+
 - `test_concurrent_request_handling` (immediate impact)
 - Potentially all subsequent tests if suite hangs
 
 **User Impact**:
+
 - Test suite cannot complete
 - CI/CD pipeline may timeout
 - Development workflow blocked
@@ -147,6 +153,7 @@ def test_concurrent_request_handling(self, client):
         thread.start()
 
     # FIX: Add timeout to prevent indefinite hang
+
     for thread in threads:
         thread.join(timeout=10.0)  # 10 second timeout per thread
         if thread.is_alive():
@@ -161,14 +168,17 @@ def test_concurrent_request_handling(self, client):
 
 ```python
 # In cleanup section (around line 257)
+
 try:
     # Shutdown container with timeout
+
     loop.run_until_complete(
         asyncio.wait_for(container.shutdown(), timeout=5.0)
     )
 except TimeoutError:
     logger.error("Container shutdown timed out, forcing cleanup")
     # Force cleanup of resources
+
 ```
 
 ### Fix 3: Ensure Test Isolation
@@ -182,10 +192,13 @@ def test_async_handler_performance_comparison(self, client):
     """Test performance comparison between sync and async handlers."""
     try:
         # ... test code ...
+
     finally:
         # Ensure any lingering connections are closed
+
         if hasattr(client, 'app') and hasattr(client.app.state, 'container'):
             # Force cleanup if needed
+
             pass
 ```
 
@@ -221,7 +234,8 @@ def test_async_handler_performance_comparison(self, client):
 
 ## Related Files
 
-- `server/tests/verification/test_async_route_handlers.py` - Test file with hanging issue
+`server/tests/verification/test_async_route_handlers.py` - Test file with hanging issue
+
 - `server/tests/fixtures/container_fixtures.py` - Fixture with potential cleanup issues
 - `server/tests/conftest.py` - Test configuration and cleanup fixtures
 
@@ -229,7 +243,8 @@ def test_async_handler_performance_comparison(self, client):
 
 ## Notes
 
-- The stall occurs at 98% completion, suggesting most tests pass before the issue manifests
+The stall occurs at 98% completion, suggesting most tests pass before the issue manifests
+
 - The issue is timing-dependent, making it intermittent
 - Thread cleanup is critical for test suite reliability
 
@@ -247,17 +262,21 @@ def test_async_handler_performance_comparison(self, client):
 **Fix**: Added timeout to `thread.join()` in `test_concurrent_request_handling`
 
 **Changes Made**:
+
 - Modified `server/tests/verification/test_async_route_handlers.py`
 - Added `timeout=10.0` parameter to `thread.join()` calls
 - Added timeout error handling to detect and report hanging threads
 
 **Code Change**:
+
 ```python
-# Before:
+# Before
+
 for thread in threads:
     thread.join()
 
-# After:
+# After
+
 for thread in threads:
     thread.join(timeout=10.0)  # 10 second timeout per thread
     if thread.is_alive():
@@ -268,10 +287,12 @@ for thread in threads:
 ```
 
 **Expected Outcome**:
+
 - Test suite will no longer hang indefinitely
 - If threads don't complete, test will fail with clear timeout error
 - Easier to identify resource leaks or hanging operations
 
 **Next Steps**:
+
 - Monitor test suite execution to verify fix resolves stall issue
 - Consider adding similar timeouts to other threading code if needed

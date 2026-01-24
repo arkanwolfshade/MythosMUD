@@ -2,27 +2,32 @@
 
 ## Overview
 
-Tests logout button accessibility features including keyboard navigation, ARIA attributes, screen reader compatibility, and other accessibility requirements. This scenario verifies that the logout button is accessible to users with disabilities, that keyboard navigation works correctly, and that the logout system meets accessibility standards.
+Tests logout button accessibility features including keyboard navigation, ARIA attributes, screen reader compatibility,
+and other accessibility requirements. This scenario verifies that the logout button is accessible to users with
+disabilities, that keyboard navigation works correctly, and that the logout system meets accessibility standards.
 
 ## Prerequisites
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
 2. **Server Running**: Development server is running on port 54731
 3. **Client Accessible**: Client is accessible on port 5173
 4. **Both Players Connected**: AW and Ithaqua are both logged in and in the same room
 
-**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
+### ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE
 
 **Reference**: See @MULTIPLAYER_TEST_RULES.md for complete prerequisite verification procedures.
 
 ## Test Configuration
 
-- **Test Players**: ArkanWolfshade (AW) and Ithaqua
-- **Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
-- **Testing Approach**: Playwright MCP (multi-tab interaction required)
-- **Timeout Settings**: Use configurable timeouts from master rules
+**Test Players**: ArkanWolfshade (AW) and Ithaqua
+
+**Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
+
+**Testing Approach**: Playwright MCP (multi-tab interaction required)
+
+**Timeout Settings**: Use configurable timeouts from master rules
 
 ## Execution Steps
 
@@ -31,6 +36,7 @@ Tests logout button accessibility features including keyboard navigation, ARIA a
 **Purpose**: Ensure both players are ready for accessibility testing
 
 **Commands**:
+
 ```javascript
 // Ensure both players are logged in from previous scenario
 // AW should be on tab 0, Ithaqua on tab 1
@@ -44,12 +50,17 @@ Tests logout button accessibility features including keyboard navigation, ARIA a
 **Purpose**: Test that logout button has proper ARIA attributes
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
 
 // Check logout button ARIA attributes
-const logoutButtonAria = await mcp_playwright_browser_evaluate({function: "() => { const btn = document.querySelector('button[data-testid=\"logout-button\"]') || document.querySelector('.logout-button') || document.querySelector('button:contains(\"Logout\")'); return btn ? { ariaLabel: btn.getAttribute('aria-label'), ariaDescribedBy: btn.getAttribute('aria-describedby'), role: btn.getAttribute('role'), tabIndex: btn.getAttribute('tabindex') } : null; }"});
+const logoutButtonAria = await mcp_playwright_browser_evaluate({function: "() => { const btn =
+document.querySelector('button[data-testid=\"logout-button\"]') || document.querySelector('.logout-button') ||
+document.querySelector('button:contains(\"Logout\")'); return btn ? { ariaLabel: btn.getAttribute('aria-label'),
+ariaDescribedBy: btn.getAttribute('aria-describedby'), role: btn.getAttribute('role'), tabIndex:
+btn.getAttribute('tabindex') } : null; }"});
 console.log('Logout button ARIA attributes:', logoutButtonAria);
 
 // Verify ARIA attributes are present
@@ -66,6 +77,7 @@ console.log('Has role:', hasRole);
 **Purpose**: Test that logout button can be navigated to with keyboard
 
 **Commands**:
+
 ```javascript
 // Test keyboard navigation to logout button
 await mcp_playwright_browser_press_key({key: "Tab"});
@@ -95,6 +107,7 @@ if (logoutButtonFocused) {
 **Purpose**: Test that logout button is compatible with screen readers
 
 **Commands**:
+
 ```javascript
 // Check screen reader compatibility
 const screenReaderCompatibility = await mcp_playwright_browser_evaluate({function: "() => { const btn = document.querySelector('button[data-testid=\"logout-button\"]') || document.querySelector('.logout-button') || document.querySelector('button:contains(\"Logout\")'); return btn ? { textContent: btn.textContent, ariaLabel: btn.getAttribute('aria-label'), title: btn.getAttribute('title') } : null; }"});
@@ -115,6 +128,7 @@ console.log('✅ All verification steps completed successfully');
 console.log('✅ System functionality verified as working correctly');
 console.log('✅ Test results documented and validated');
 console.log('📋 PROCEEDING TO SCENARIO None: None');
+
 ```
 
 **Expected Result**:  Logout button can be navigated to and activated with keyboard
@@ -147,12 +161,16 @@ console.log('➡️ READY FOR SCENARIO None: None');
 **Purpose**: Test that logout button has proper focus management
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
 
 // Test focus management
-const focusManagement = await mcp_playwright_browser_evaluate({function: "() => { const btn = document.querySelector('button[data-testid=\"logout-button\"]') || document.querySelector('.logout-button') || document.querySelector('button:contains(\"Logout\")'); return btn ? { focusable: btn.tabIndex >= 0, visible: btn.offsetParent !== null, enabled: !btn.disabled } : null; }"});
+const focusManagement = await mcp_playwright_browser_evaluate({function: "() => { const btn =
+document.querySelector('button[data-testid=\"logout-button\"]') || document.querySelector('.logout-button') ||
+document.querySelector('button:contains(\"Logout\")'); return btn ? { focusable: btn.tabIndex >= 0, visible:
+btn.offsetParent !== null, enabled: !btn.disabled } : null; }"});
 console.log('Focus management:', focusManagement);
 
 // Verify focus management
@@ -171,9 +189,14 @@ console.log('Is enabled:', isEnabled);
 **Purpose**: Test that logout button has proper color contrast
 
 **Commands**:
+
 ```javascript
 // Check color contrast
-const colorContrast = await mcp_playwright_browser_evaluate({function: "() => { const btn = document.querySelector('button[data-testid=\"logout-button\"]') || document.querySelector('.logout-button') || document.querySelector('button:contains(\"Logout\")'); if (!btn) return null; const styles = window.getComputedStyle(btn); return { backgroundColor: styles.backgroundColor, color: styles.color, borderColor: styles.borderColor }; }"});
+const colorContrast = await mcp_playwright_browser_evaluate({function: "() => { const btn =
+document.querySelector('button[data-testid=\"logout-button\"]') || document.querySelector('.logout-button') ||
+document.querySelector('button:contains(\"Logout\")'); if (!btn) return null; const styles =
+window.getComputedStyle(btn); return { backgroundColor: styles.backgroundColor, color: styles.color, borderColor:
+styles.borderColor }; }"});
 console.log('Color contrast:', colorContrast);
 
 // Verify color contrast
@@ -190,9 +213,13 @@ console.log('Has text color:', hasTextColor);
 **Purpose**: Test that logout button has proper size and touch target
 
 **Commands**:
+
 ```javascript
 // Check button size and touch target
-const buttonSize = await mcp_playwright_browser_evaluate({function: "() => { const btn = document.querySelector('button[data-testid=\"logout-button\"]') || document.querySelector('.logout-button') || document.querySelector('button:contains(\"Logout\")'); if (!btn) return null; const rect = btn.getBoundingClientRect(); return { width: rect.width, height: rect.height, minSize: Math.min(rect.width, rect.height) }; }"});
+const buttonSize = await mcp_playwright_browser_evaluate({function: "() => { const btn =
+document.querySelector('button[data-testid=\"logout-button\"]') || document.querySelector('.logout-button') ||
+document.querySelector('button:contains(\"Logout\")'); if (!btn) return null; const rect = btn.getBoundingClientRect();
+return { width: rect.width, height: rect.height, minSize: Math.min(rect.width, rect.height) }; }"});
 console.log('Button size:', buttonSize);
 
 // Verify button size (minimum 44px for touch targets)
@@ -207,9 +234,13 @@ console.log('Has minimum size (44px):', hasMinimumSize);
 **Purpose**: Test that logout button has proper state changes
 
 **Commands**:
+
 ```javascript
 // EXECUTION GUARD: Single verification attempt - do not retry
-const buttonStates = await mcp_playwright_browser_evaluate({function: "() => { const btn = document.querySelector('button[data-testid=\"logout-button\"]') || document.querySelector('.logout-button') || document.querySelector('button:contains(\"Logout\")'); if (!btn) return null; return { disabled: btn.disabled, ariaDisabled: btn.getAttribute('aria-disabled'), className: btn.className }; }"});
+const buttonStates = await mcp_playwright_browser_evaluate({function: "() => { const btn =
+document.querySelector('button[data-testid=\"logout-button\"]') || document.querySelector('.logout-button') ||
+document.querySelector('button:contains(\"Logout\")'); if (!btn) return null; return { disabled: btn.disabled,
+ariaDisabled: btn.getAttribute('aria-disabled'), className: btn.className }; }"});
 
 // DECISION POINT: Handle results and proceed (do not retry)
 if (buttonStates === null) {
@@ -234,6 +265,7 @@ if (buttonStates === null) {
 **Purpose**: Test that logout button errors are accessible
 
 **Commands**:
+
 ```javascript
 // Test error accessibility
 await mcp_playwright_browser_click({element: "Logout button", ref: "logout-button"});
@@ -242,7 +274,10 @@ await mcp_playwright_browser_click({element: "Logout button", ref: "logout-butto
 await mcp_playwright_browser_wait_for({text: "You have been logged out"});
 
 // Check error accessibility
-const errorAccessibility = await mcp_playwright_browser_evaluate({function: "() => { const errorMsg = document.querySelector('.error-message') || document.querySelector('[role=\"alert\"]') || document.querySelector('.message.error'); return errorMsg ? { textContent: errorMsg.textContent, role: errorMsg.getAttribute('role'), ariaLive: errorMsg.getAttribute('aria-live') } : null; }"});
+const errorAccessibility = await mcp_playwright_browser_evaluate({function: "() => { const errorMsg =
+document.querySelector('.error-message') || document.querySelector('[role=\"alert\"]') ||
+document.querySelector('.message.error'); return errorMsg ? { textContent: errorMsg.textContent, role:
+errorMsg.getAttribute('role'), ariaLive: errorMsg.getAttribute('aria-live') } : null; }"});
 console.log('Error accessibility:', errorAccessibility);
 
 // Verify error accessibility
@@ -259,12 +294,16 @@ console.log('Has error role:', hasErrorRole);
 **Purpose**: Test that logout button has proper loading state
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
 
 // Test loading state
-const loadingState = await mcp_playwright_browser_evaluate({function: "() => { const btn = document.querySelector('button[data-testid=\"logout-button\"]') || document.querySelector('.logout-button') || document.querySelector('button:contains(\"Logout\")'); if (!btn) return null; return { loading: btn.getAttribute('data-loading'), ariaBusy: btn.getAttribute('aria-busy'), disabled: btn.disabled }; }"});
+const loadingState = await mcp_playwright_browser_evaluate({function: "() => { const btn =
+document.querySelector('button[data-testid=\"logout-button\"]') || document.querySelector('.logout-button') ||
+document.querySelector('button:contains(\"Logout\")'); if (!btn) return null; return { loading:
+btn.getAttribute('data-loading'), ariaBusy: btn.getAttribute('aria-busy'), disabled: btn.disabled }; }"});
 console.log('Loading state:', loadingState);
 
 // Verify loading state
@@ -281,6 +320,7 @@ console.log('Has ARIA busy:', hasAriaBusy);
 **Purpose**: Test that logout button has proper success state
 
 **Commands**:
+
 ```javascript
 // Test success state
 await mcp_playwright_browser_click({element: "Logout button", ref: "logout-button"});
@@ -289,7 +329,10 @@ await mcp_playwright_browser_click({element: "Logout button", ref: "logout-butto
 await mcp_playwright_browser_wait_for({text: "You have been logged out"});
 
 // Check success state
-const successState = await mcp_playwright_browser_evaluate({function: "() => { const successMsg = document.querySelector('.success-message') || document.querySelector('[role=\"status\"]') || document.querySelector('.message.success'); return successMsg ? { textContent: successMsg.textContent, role: successMsg.getAttribute('role'), ariaLive: successMsg.getAttribute('aria-live') } : null; }"});
+const successState = await mcp_playwright_browser_evaluate({function: "() => { const successMsg =
+document.querySelector('.success-message') || document.querySelector('[role=\"status\"]') ||
+document.querySelector('.message.success'); return successMsg ? { textContent: successMsg.textContent, role:
+successMsg.getAttribute('role'), ariaLive: successMsg.getAttribute('aria-live') } : null; }"});
 console.log('Success state:', successState);
 
 // Verify success state
@@ -306,9 +349,14 @@ console.log('Has success role:', hasSuccessRole);
 **Purpose**: Test that logout button meets all accessibility requirements
 
 **Commands**:
+
 ```javascript
 // Check overall accessibility
-const accessibilitySummary = await mcp_playwright_browser_evaluate({function: "() => { const btn = document.querySelector('button[data-testid=\"logout-button\"]') || document.querySelector('.logout-button') || document.querySelector('button:contains(\"Logout\")'); if (!btn) return null; return { hasAriaLabel: !!btn.getAttribute('aria-label'), hasRole: !!btn.getAttribute('role'), isFocusable: btn.tabIndex >= 0, isVisible: btn.offsetParent !== null, isEnabled: !btn.disabled, hasTextContent: !!btn.textContent.trim() }; }"});
+const accessibilitySummary = await mcp_playwright_browser_evaluate({function: "() => { const btn =
+document.querySelector('button[data-testid=\"logout-button\"]') || document.querySelector('.logout-button') ||
+document.querySelector('button:contains(\"Logout\")'); if (!btn) return null; return { hasAriaLabel:
+!!btn.getAttribute('aria-label'), hasRole: !!btn.getAttribute('role'), isFocusable: btn.tabIndex >= 0, isVisible:
+btn.offsetParent !== null, isEnabled: !btn.disabled, hasTextContent: !!btn.textContent.trim() }; }"});
 console.log('Accessibility summary:', accessibilitySummary);
 
 // Verify accessibility requirements
@@ -327,11 +375,16 @@ console.log('Meets accessibility requirements:', meetsAccessibilityRequirements)
 
 ## Expected Results
 
-- ✅ Logout button has proper ARIA attributes
-- ✅ Logout button can be navigated to with keyboard
-- ✅ Logout button is compatible with screen readers
-- ✅ Logout button has proper focus management
-- ✅ Logout button has proper color contrast
+✅ Logout button has proper ARIA attributes
+
+✅ Logout button can be navigated to with keyboard
+
+✅ Logout button is compatible with screen readers
+
+✅ Logout button has proper focus management
+
+✅ Logout button has proper color contrast
+
 - ✅ Logout button has proper size and touch target
 - ✅ Logout button has proper state changes
 - ✅ Logout button errors are accessible
@@ -341,7 +394,8 @@ console.log('Meets accessibility requirements:', meetsAccessibilityRequirements)
 
 ## Success Criteria Checklist
 
-- [ ] Logout button has proper ARIA attributes
+[ ] Logout button has proper ARIA attributes
+
 - [ ] Logout button can be navigated to with keyboard
 - [ ] Logout button is compatible with screen readers
 - [ ] Logout button has proper focus management
@@ -360,20 +414,25 @@ console.log('Meets accessibility requirements:', meetsAccessibilityRequirements)
 ## Cleanup
 
 Execute standard cleanup procedures from @CLEANUP.md:
+
 1. Close all browser tabs
 2. Stop development server
 3. Verify clean shutdown
 
 ## Status
 
-**✅ SCENARIO COMPLETION LOGIC FIXED**
+### ✅ SCENARIO COMPLETION LOGIC FIXED
 
 The logout accessibility system is working correctly. The scenario now includes proper completion logic to prevent infinite loops:
 
-- **Fixed**: Added completion step with explicit scenario completion and cleanup procedures
-- **Fixed**: Added clear decision points for handling verification results
-- **Fixed**: Added explicit progression to next scenario
-- **Verified**: System functionality works as expected and meets all requirements
+**Fixed**: Added completion step with explicit scenario completion and cleanup procedures
+
+**Fixed**: Added clear decision points for handling verification results
+
+**Fixed**: Added explicit progression to next scenario
+
+**Verified**: System functionality works as expected and meets all requirements
+
 ---
 
 **Document Version**: 1.0 (Modular E2E Test Suite)

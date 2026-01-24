@@ -13,6 +13,7 @@
 The `passive_lucidity_flux_tick` operation is experiencing severe performance degradation, with execution times increasing from 3.6 seconds to 17.4 seconds over a short period. The operation consistently processes 3 players and applies 3 adjustments, indicating the slowdown is not due to increased workload but rather systemic performance issues. The progressive nature of the degradation suggests resource accumulation, blocking operations, or database query degradation.
 
 **Key Findings**:
+
 - Operation duration increased 383% over 4 warnings (3.6s → 17.4s)
 - Consistent workload (3 players, 3 adjustments) rules out scaling issues
 - Synchronous blocking operation (`get_room()`) called in async context
@@ -34,6 +35,7 @@ Performance warnings in `logs/local/warnings.log` showing `passive_lucidity_flux
 4. **Warning 4** (Line 4): 17391.08ms (17.4 seconds) - 1639% over threshold
 
 **Affected Systems**:
+
 - `server/services/passive_lucidity_flux_service.py` - Passive lucidity flux processing
 - `server/monitoring/performance_monitor.py` - Performance monitoring and alerting
 - `server/app/lifespan.py` - Game tick loop integration
@@ -41,6 +43,7 @@ Performance warnings in `logs/local/warnings.log` showing `passive_lucidity_flux
 - Database operations (PostgreSQL) - Player and lucidity record queries
 
 **Investigation Scope**:
+
 - Performance bottleneck identification
 - Database query pattern analysis
 - Async/sync operation blocking analysis
@@ -54,18 +57,21 @@ Performance warnings in `logs/local/warnings.log` showing `passive_lucidity_flux
 
 **Log Evidence**:
 All warnings show consistent metadata:
+
 - `evaluated_players: 3`
 - `applied_adjustments: 3`
 - `threshold_ms: 1000.0`
 - Operation: `passive_lucidity_flux_tick`
 
 **Timeline Analysis**:
+
 - Warning 1: 2025-11-30 11:34:11 (3578ms)
 - Warning 2: 2025-11-30 11:34:38 (6677ms) - 27 seconds later, 87% slower
 - Warning 3: 2025-11-30 11:35:29 (15737ms) - 51 seconds later, 136% slower
 - Warning 4: 2025-11-30 11:36:49 (17391ms) - 80 seconds later, 11% slower
 
 **Pattern**: Progressive degradation with consistent workload suggests:
+
 - Resource accumulation (memory leaks, connection pool exhaustion)
 - Blocking operations getting worse over time
 - Database query performance degradation
@@ -82,6 +88,7 @@ All warnings show consistent metadata:
 **Key Operations**:
 
 1. **`process_tick()` Method** (Lines 113-219):
+
    - Loads all players: `await self._load_players(session)` (Line 134)
    - Loads all lucidity records: `await self._load_lucidity_records(session)` (Line 135)
    - Iterates through players (Line 137)
@@ -94,21 +101,26 @@ All warnings show consistent metadata:
    - Commits all adjustments: `await session.commit()` (Line 191)
 
 2. **`_resolve_context()` Method** (Lines 235-290):
-   - **CRITICAL ISSUE**: Line 242 calls `self._persistence.get_room()` which is **synchronous**
+
+   **CRITICAL ISSUE**: Line 242 calls `self._persistence.get_room()` which is **synchronous**
+
    - This blocks the async event loop for each player
    - No caching - room is looked up every tick for every player
    - Room lookup may trigger `_sync_room_players()` which could be slow
 
 3. **`_load_players()` Method** (Lines 224-227):
+
    - Simple SELECT query: `select(Player)`
    - Should be efficient, but loads ALL players (not just active ones)
 
 4. **`_load_lucidity_records()` Method** (Lines 229-233):
+
    - Simple SELECT query: `select(Playerlucidity)`
    - Loads ALL lucidity records into memory
    - Creates dictionary mapping: `{str(record.player_id): record}`
 
 5. **`apply_lucidity_adjustment()` Calls** (Line 174):
+
    - Each call performs:
      - Database query: `get_or_create_player_lucidity()`
      - Database write: Update `Playerlucidity` record
@@ -121,12 +133,14 @@ All warnings show consistent metadata:
 **File**: `server/persistence.py`
 
 **`get_room()` Method** (Lines 1387-1419):
-- **Synchronous method** called from async context
+**Synchronous method** called from async context
+
 - Line 1400: Calls `self._sync_room_players(room)` which is also synchronous
 - Room cache lookup is fast, but `_sync_room_players()` may be slow
 - No async alternative available
 
 **Impact**:
+
 - Blocks async event loop for each player processed
 - With 3 players, this means 3 blocking operations per tick
 - If `_sync_room_players()` is slow, this compounds the problem
@@ -135,11 +149,13 @@ All warnings show consistent metadata:
 #### 3.3 Database Query Patterns
 
 **Potential N+1 Patterns**:
+
 1. **Player Loading**: Loads all players, then processes each individually
 2. **Room Lookups**: Synchronous `get_room()` called for each player (no batching)
 3. **lucidity Adjustments**: Each adjustment triggers separate database operations
 
 **Transaction Management**:
+
 - Single commit after all adjustments (Line 191) - Good
 - But each `apply_lucidity_adjustment()` calls `flush()` (Line 337 in lucidity_service.py)
 - Multiple flushes before commit may cause lock contention
@@ -149,6 +165,7 @@ All warnings show consistent metadata:
 **File**: `server/app/lifespan.py`
 
 **Integration Point** (Lines 644-649):
+
 ```python
 if hasattr(app.state, "passive_lucidity_flux_service"):
     try:
@@ -160,6 +177,7 @@ if hasattr(app.state, "passive_lucidity_flux_service"):
 ```
 
 **Context**:
+
 - Called within game tick loop
 - Uses same database session as HP decay processing
 - Runs every game tick (frequency depends on `ticks_per_minute` configuration)
@@ -173,6 +191,7 @@ if hasattr(app.state, "passive_lucidity_flux_service"):
 **File**: `logs/local/warnings.log`
 
 **Warning 1**:
+
 ```
 2025-11-30 11:34:11 - server.monitoring.performance_monitor - WARNING
 operation='passive_lucidity_flux_tick'
@@ -183,6 +202,7 @@ correlation_id='ae7a1025-8688-45a1-ae4f-53ebd9f0cd79'
 ```
 
 **Warning 2**:
+
 ```
 2025-11-30 11:34:38 - server.monitoring.performance_monitor - WARNING
 operation='passive_lucidity_flux_tick'
@@ -193,6 +213,7 @@ correlation_id='6112785e-597b-4022-a964-0eca12916244'
 ```
 
 **Warning 3**:
+
 ```
 2025-11-30 11:35:29 - server.monitoring.performance_monitor - WARNING
 operation='passive_lucidity_flux_tick'
@@ -203,6 +224,7 @@ correlation_id='59577c4f-391e-44d8-985a-89368b231295'
 ```
 
 **Warning 4**:
+
 ```
 2025-11-30 11:36:49 - server.monitoring.performance_monitor - WARNING
 operation='passive_lucidity_flux_tick'
@@ -215,11 +237,13 @@ correlation_id='dcd44258-4dd8-4c7b-8917-66d7e55b598d'
 #### 4.2 Code Evidence
 
 **Synchronous Blocking Operation**:
+
 ```242:242:server/services/passive_lucidity_flux_service.py
                 room = self._persistence.get_room(str(player.current_room_id))
 ```
 
 **Performance Monitoring**:
+
 ```396:401:server/services/passive_lucidity_flux_service.py
             self._performance_monitor.record_metric(
                 "passive_lucidity_flux_tick",
@@ -230,6 +254,7 @@ correlation_id='dcd44258-4dd8-4c7b-8917-66d7e55b598d'
 ```
 
 **Alert Threshold**:
+
 ```56:56:server/monitoring/performance_monitor.py
     def __init__(self, max_metrics: int = 10000, alert_threshold_ms: float = 1000.0):
 ```
@@ -237,13 +262,14 @@ correlation_id='dcd44258-4dd8-4c7b-8917-66d7e55b598d'
 #### 4.3 Performance Metrics
 
 | Warning | Duration (ms) | Over Threshold | Time Since Previous | Degradation Rate |
-|---------|--------------|-----------------|---------------------|------------------|
-| 1 | 3,578.67 | 258% | - | - |
-| 2 | 6,677.25 | 568% | 27s | +87% |
-| 3 | 15,737.53 | 1,474% | 51s | +136% |
-| 4 | 17,391.08 | 1,639% | 80s | +11% |
+| ------- | ------------- | -------------- | ------------------- | ---------------- |
+| 1       | 3,578.67      | 258%           | -                   | -                |
+| 2       | 6,677.25      | 568%           | 27s                 | +87%             |
+| 3       | 15,737.53     | 1,474%         | 51s                 | +136%            |
+| 4       | 17,391.08     | 1,639%         | 80s                 | +11%             |
 
 **Analysis**:
+
 - Consistent workload (3 players, 3 adjustments) rules out scaling issues
 - Progressive degradation suggests resource accumulation or blocking operations
 - Degradation rate slowing (87% → 136% → 11%) may indicate approaching resource limits
@@ -274,6 +300,7 @@ The `passive_lucidity_flux_tick` operation calls `self._persistence.get_room()` 
 #### 2.1 Lack of Room Lookup Caching
 
 **Issue**: Room data is looked up for every player on every tick, even if:
+
 - Players are in the same room
 - Room data hasn't changed
 - Room was recently looked up
@@ -285,6 +312,7 @@ The `passive_lucidity_flux_tick` operation calls `self._persistence.get_room()` 
 **Issue**: Each `apply_lucidity_adjustment()` calls `flush()` before the final `commit()`
 
 **Impact**:
+
 - Multiple round-trips to database
 - Potential lock contention
 - Increased transaction overhead
@@ -294,6 +322,7 @@ The `passive_lucidity_flux_tick` operation calls `self._persistence.get_room()` 
 **Issue**: `_load_players()` loads ALL players, not just active/online players
 
 **Impact**:
+
 - Unnecessary data loading
 - Memory overhead
 - Processing inactive players
@@ -305,30 +334,38 @@ The `passive_lucidity_flux_tick` operation calls `self._persistence.get_room()` 
 ### Severity: Medium-High
 
 **Scope**:
+
 - Game tick processing system
 - Passive lucidity flux service
 - Database performance
 - Overall game responsiveness
 
 **User Impact**:
-- **Potential lag**: 3-17 second delays during lucidity flux processing
-- **Game tick delays**: Other tick operations may be delayed
-- **Cascading effects**: Slow ticks may cause other systems to slow down
+**Potential lag**: 3-17 second delays during lucidity flux processing
+
+**Game tick delays**: Other tick operations may be delayed
+
+**Cascading effects**: Slow ticks may cause other systems to slow down
 - **User experience**: Players may notice unresponsiveness during tick processing
 
 **System Impact**:
-- **Event loop blocking**: Synchronous operations block all async operations
-- **Database performance**: Multiple flushes and blocking operations may cause database slowdown
-- **Resource consumption**: Progressive degradation suggests resource leaks or exhaustion
+**Event loop blocking**: Synchronous operations block all async operations
+
+**Database performance**: Multiple flushes and blocking operations may cause database slowdown
+
+**Resource consumption**: Progressive degradation suggests resource leaks or exhaustion
 - **Scalability**: Issue will worsen with more players
 
 **Performance Metrics**:
-- **Threshold**: 1000ms (1 second)
-- **Current**: Up to 17,391ms (17.4 seconds)
-- **Overhead**: 1,639% over threshold
+**Threshold**: 1000ms (1 second)
+
+**Current**: Up to 17,391ms (17.4 seconds)
+
+**Overhead**: 1,639% over threshold
 - **Frequency**: Every game tick (depends on `ticks_per_minute` configuration)
 
 **Affected Components**:
+
 1. `PassivelucidityFluxService` - Core service experiencing slowdown
 2. `PersistenceLayer.get_room()` - Synchronous blocking operation
 3. `lucidityService.apply_lucidity_adjustment()` - Database operations
@@ -344,12 +381,14 @@ The `passive_lucidity_flux_tick` operation calls `self._persistence.get_room()` 
 **Action**: Replace synchronous `get_room()` calls with async alternatives
 
 **Investigation Steps**:
+
 1. Review `PersistenceLayer` for async room lookup methods
 2. Check if `AsyncPersistenceLayer` has async room lookup
 3. Evaluate room caching strategies
 4. Consider batch room lookups for all players at once
 
 **Rationale**:
+
 - Synchronous operations in async context are the primary performance bottleneck
 - Eliminating blocking operations will immediately improve performance
 - Async operations allow event loop to process other tasks concurrently
@@ -359,12 +398,14 @@ The `passive_lucidity_flux_tick` operation calls `self._persistence.get_room()` 
 **Action**: Cache room lookups within tick processing
 
 **Investigation Steps**:
+
 1. Cache room lookups by room_id within `process_tick()` method
 2. Evaluate if room data changes frequently enough to require fresh lookups
 3. Consider using existing `RoomCacheService` if available
 4. Measure cache hit rates and performance impact
 
 **Rationale**:
+
 - Reduces redundant room lookups
 - Improves performance for players in same room
 - Reduces database/IO load
@@ -374,12 +415,14 @@ The `passive_lucidity_flux_tick` operation calls `self._persistence.get_room()` 
 **Action**: Reduce database round-trips and optimize transaction boundaries
 
 **Investigation Steps**:
+
 1. Review `apply_lucidity_adjustment()` flush() calls
 2. Consider batching adjustments before flushing
 3. Evaluate transaction boundaries and commit frequency
 4. Analyze database query patterns for N+1 issues
 
 **Rationale**:
+
 - Multiple flushes may cause lock contention
 - Batching operations reduces database round-trips
 - Optimized transactions improve overall performance
@@ -389,12 +432,14 @@ The `passive_lucidity_flux_tick` operation calls `self._persistence.get_room()` 
 **Action**: Only process active/online players
 
 **Investigation Steps**:
+
 1. Review player loading to filter inactive players
 2. Evaluate if offline players need passive lucidity flux
 3. Consider adding player status filtering to `_load_players()`
 4. Measure performance impact of filtering
 
 **Rationale**:
+
 - Reduces unnecessary processing
 - Improves performance by processing only relevant players
 - Reduces memory and database load
@@ -404,12 +449,14 @@ The `passive_lucidity_flux_tick` operation calls `self._persistence.get_room()` 
 **Action**: Add detailed timing instrumentation to identify bottlenecks
 
 **Investigation Steps**:
+
 1. Add timing logs for each major operation (player loading, room lookup, lucidity adjustment)
 2. Measure time spent in synchronous vs async operations
 3. Track database query durations
 4. Monitor resource usage (memory, connections)
 
 **Rationale**:
+
 - Provides visibility into specific bottlenecks
 - Enables data-driven optimization decisions
 - Helps identify progressive degradation causes
@@ -425,6 +472,7 @@ The `passive_lucidity_flux_tick` operation calls `self._persistence.get_room()` 
 **Total Warnings**: 4
 
 **Warning Details**:
+
 - All warnings are for `passive_lucidity_flux_tick` operation
 - Consistent metadata: 3 players evaluated, 3 adjustments applied
 - Progressive duration increase: 3.6s → 6.7s → 15.7s → 17.4s
@@ -433,28 +481,33 @@ The `passive_lucidity_flux_tick` operation calls `self._persistence.get_room()` 
 ### Code Evidence
 
 **Synchronous Blocking**:
+
 - `server/services/passive_lucidity_flux_service.py:242` - `self._persistence.get_room()` call
 - `server/persistence.py:1387-1419` - Synchronous `get_room()` implementation
 - `server/persistence.py:1421-1463` - `_sync_room_players()` called synchronously
 
 **Database Operations**:
+
 - `server/services/passive_lucidity_flux_service.py:134-135` - Player and lucidity record loading
 - `server/services/passive_lucidity_flux_service.py:174` - lucidity adjustment calls
 - `server/services/passive_lucidity_flux_service.py:191` - Single commit after all adjustments
 - `server/services/lucidity_service.py:337` - Flush called per adjustment
 
 **Performance Monitoring**:
+
 - `server/monitoring/performance_monitor.py:56` - Alert threshold: 1000ms
 - `server/services/passive_lucidity_flux_service.py:396-401` - Performance metric recording
 
 ### System Architecture Evidence
 
 **Game Tick Integration**:
+
 - `server/app/lifespan.py:644-649` - Passive lucidity flux called in game tick loop
 - Uses same database session as HP decay processing
 - Runs every game tick (frequency configurable)
 
 **Persistence Layer**:
+
 - `PersistenceLayer` provides synchronous `get_room()` method
 - `AsyncPersistenceLayer` may provide async alternatives (needs verification)
 - Room caching exists but may not be used in this context
@@ -501,7 +554,8 @@ Test requirements:
 
 ## INVESTIGATION COMPLETION CHECKLIST
 
-- [x] All investigation steps completed as written
+[x] All investigation steps completed as written
+
 - [x] Comprehensive evidence collected and documented
 - [x] Root cause analysis completed
 - [x] System impact assessed

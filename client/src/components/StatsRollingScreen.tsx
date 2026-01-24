@@ -84,6 +84,12 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
           stats: data.stats,
           meets_requirements: data.meets_requirements,
         });
+      } else if (response.status >= 500 && response.status < 600) {
+        // Server unavailability
+        const errorMessage = 'Server is unavailable. Please try again later.';
+        setError(errorMessage);
+        onError(errorMessage);
+        logger.error('StatsRollingScreen', 'Server unavailable when rolling stats', { status: response.status });
       } else if (response.status === 429) {
         // Rate limit exceeded
         let retryAfter = 60;
@@ -128,12 +134,38 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
         logger.error('StatsRollingScreen', 'Failed to roll stats', { error: errorMessage });
       }
     } catch (error) {
-      const errorMessage = 'Failed to connect to server';
-      setError(errorMessage);
-      onError(errorMessage);
-      logger.error('StatsRollingScreen', 'Network error rolling stats', {
-        error: error instanceof Error ? error.message : String(error),
-      });
+      // Check if error indicates server unavailability
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorLower = errorMessage.toLowerCase();
+      const serverUnavailablePatterns = [
+        'failed to fetch',
+        'network error',
+        'network request failed',
+        'connection refused',
+        'connection reset',
+        'connection closed',
+        'connection timeout',
+        'server is unavailable',
+        'service unavailable',
+        'bad gateway',
+        'gateway timeout',
+      ];
+
+      if (serverUnavailablePatterns.some(pattern => errorLower.includes(pattern))) {
+        const unavailableMessage = 'Server is unavailable. Please try again later.';
+        setError(unavailableMessage);
+        onError(unavailableMessage);
+        logger.error('StatsRollingScreen', 'Server unavailable when rolling stats', {
+          error: errorMessage,
+        });
+      } else {
+        const connectMessage = 'Failed to connect to server';
+        setError(connectMessage);
+        onError(connectMessage);
+        logger.error('StatsRollingScreen', 'Network error rolling stats', {
+          error: errorMessage,
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -184,6 +216,12 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
         const data = assertStatsRollResponse(rawData, 'Invalid stats reroll response from server');
         setCurrentStats(data.stats);
         logger.info('StatsRollingScreen', 'Stats rerolled successfully', { stats: data.stats });
+      } else if (response.status >= 500 && response.status < 600) {
+        // Server unavailability
+        const errorMessage = 'Server is unavailable. Please try again later.';
+        setError(errorMessage);
+        onError(errorMessage);
+        logger.error('StatsRollingScreen', 'Server unavailable when rerolling stats', { status: response.status });
       } else if (response.status === 429) {
         // Rate limit exceeded
         let retryAfter = 60;
@@ -228,12 +266,38 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
         logger.error('StatsRollingScreen', 'Failed to reroll stats', { error: errorMessage });
       }
     } catch (error) {
-      const errorMessage = 'Failed to connect to server';
-      setError(errorMessage);
-      onError(errorMessage);
-      logger.error('StatsRollingScreen', 'Network error rerolling stats', {
-        error: error instanceof Error ? error.message : String(error),
-      });
+      // Check if error indicates server unavailability
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorLower = errorMessage.toLowerCase();
+      const serverUnavailablePatterns = [
+        'failed to fetch',
+        'network error',
+        'network request failed',
+        'connection refused',
+        'connection reset',
+        'connection closed',
+        'connection timeout',
+        'server is unavailable',
+        'service unavailable',
+        'bad gateway',
+        'gateway timeout',
+      ];
+
+      if (serverUnavailablePatterns.some(pattern => errorLower.includes(pattern))) {
+        const unavailableMessage = 'Server is unavailable. Please try again later.';
+        setError(unavailableMessage);
+        onError(unavailableMessage);
+        logger.error('StatsRollingScreen', 'Server unavailable when rerolling stats', {
+          error: errorMessage,
+        });
+      } else {
+        const connectMessage = 'Failed to connect to server';
+        setError(connectMessage);
+        onError(connectMessage);
+        logger.error('StatsRollingScreen', 'Network error rerolling stats', {
+          error: errorMessage,
+        });
+      }
     } finally {
       setIsRerolling(false);
     }
@@ -288,6 +352,12 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
           playerId: playerId || 'unknown',
         });
         onStatsAccepted(currentStats, trimmedName);
+      } else if (response.status >= 500 && response.status < 600) {
+        // Server unavailability
+        const errorMessage = 'Server is unavailable. Please try again later.';
+        setError(errorMessage);
+        onError(errorMessage);
+        logger.error('StatsRollingScreen', 'Server unavailable when creating character', { status: response.status });
       } else {
         let errorMessage = 'Failed to create character';
         try {
@@ -325,12 +395,38 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
         logger.error('StatsRollingScreen', 'Failed to create character', { error: errorMessage });
       }
     } catch (error) {
-      const errorMessage = 'Failed to connect to server';
-      setError(errorMessage);
-      onError(errorMessage);
-      logger.error('StatsRollingScreen', 'Network error creating character', {
-        error: error instanceof Error ? error.message : String(error),
-      });
+      // Check if error indicates server unavailability
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorLower = errorMessage.toLowerCase();
+      const serverUnavailablePatterns = [
+        'failed to fetch',
+        'network error',
+        'network request failed',
+        'connection refused',
+        'connection reset',
+        'connection closed',
+        'connection timeout',
+        'server is unavailable',
+        'service unavailable',
+        'bad gateway',
+        'gateway timeout',
+      ];
+
+      if (serverUnavailablePatterns.some(pattern => errorLower.includes(pattern))) {
+        const unavailableMessage = 'Server is unavailable. Please try again later.';
+        setError(unavailableMessage);
+        onError(unavailableMessage);
+        logger.error('StatsRollingScreen', 'Server unavailable when creating character', {
+          error: errorMessage,
+        });
+      } else {
+        const connectMessage = 'Failed to connect to server';
+        setError(connectMessage);
+        onError(connectMessage);
+        logger.error('StatsRollingScreen', 'Network error creating character', {
+          error: errorMessage,
+        });
+      }
     } finally {
       setIsLoading(false);
     }

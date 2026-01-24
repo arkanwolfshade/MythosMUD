@@ -11,6 +11,10 @@ import pytest
 
 from server.services.game_tick_service import GameTickService
 
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+# ruff: noqa: SLF001  # Reason: Test file - accessing protected members is standard practice for unit testing
+
 
 class TestGameTickService:
     """Test suite for GameTickService class."""
@@ -151,38 +155,77 @@ class TestGameTickService:
         """Test _tick_loop increments tick count."""
         event_publisher = AsyncMock()
         event_publisher.publish_game_tick_event = AsyncMock(return_value=True)
-        service = GameTickService(event_publisher, tick_interval=0.1)
+        service = GameTickService(event_publisher, tick_interval=1.0)
         service.is_running = True
 
-        # Start the loop and let it run briefly
-        task = asyncio.create_task(service._tick_loop())
-        await asyncio.sleep(0.15)  # Wait for at least one tick
-        service.is_running = False
-        task.cancel()
-        try:
-            await task
-        except asyncio.CancelledError:
-            pass
+        # Mock sleep to make the test deterministic and fast
+        tick_count_before = service.tick_count
+        with patch("server.services.game_tick_service.sleep") as mock_sleep:
+            # Make sleep return immediately after first call
+            call_count = 0
 
-        assert service.tick_count > 0
+            async def mock_sleep_side_effect(_duration):
+                nonlocal call_count
+                call_count += 1
+                if call_count >= 1:  # After first tick, stop the loop
+                    service.is_running = False
+                # Use a very short actual sleep to allow the loop to process
+                await asyncio.sleep(0.001)
+
+            mock_sleep.side_effect = mock_sleep_side_effect
+
+            # Start the loop
+            task = asyncio.create_task(service._tick_loop())
+
+            # Wait for task to complete (it will stop after first tick due to mock)
+            try:
+                await asyncio.wait_for(task, timeout=1.0)
+            except TimeoutError:
+                # If it times out, cancel it
+                task.cancel()
+                try:
+                    await task
+                except asyncio.CancelledError:
+                    pass
+
+        assert service.tick_count > tick_count_before
 
     @pytest.mark.asyncio
     async def test_tick_loop_publishes_events(self):
         """Test _tick_loop publishes game tick events."""
         event_publisher = AsyncMock()
         event_publisher.publish_game_tick_event = AsyncMock(return_value=True)
-        service = GameTickService(event_publisher, tick_interval=0.1)
+        service = GameTickService(event_publisher, tick_interval=1.0)
         service.is_running = True
 
-        # Start the loop and let it run briefly
-        task = asyncio.create_task(service._tick_loop())
-        await asyncio.sleep(0.15)  # Wait for at least one tick
-        service.is_running = False
-        task.cancel()
-        try:
-            await task
-        except asyncio.CancelledError:
-            pass
+        # Mock sleep to make the test deterministic and fast
+        with patch("server.services.game_tick_service.sleep") as mock_sleep:
+            # Make sleep return immediately after first call
+            call_count = 0
+
+            async def mock_sleep_side_effect(_duration):
+                nonlocal call_count
+                call_count += 1
+                if call_count >= 1:  # After first tick, stop the loop
+                    service.is_running = False
+                # Use a very short actual sleep to allow the loop to process
+                await asyncio.sleep(0.001)
+
+            mock_sleep.side_effect = mock_sleep_side_effect
+
+            # Start the loop
+            task = asyncio.create_task(service._tick_loop())
+
+            # Wait for task to complete (it will stop after first tick due to mock)
+            try:
+                await asyncio.wait_for(task, timeout=1.0)
+            except TimeoutError:
+                # If it times out, cancel it
+                task.cancel()
+                try:
+                    await task
+                except asyncio.CancelledError:
+                    pass
 
         assert event_publisher.publish_game_tick_event.called
 
@@ -194,14 +237,40 @@ class TestGameTickService:
         service = GameTickService(event_publisher, tick_interval=0.1)
         service.is_running = True
 
-        task = asyncio.create_task(service._tick_loop())
-        await asyncio.sleep(0.05)
-        task.cancel()
+        # Mock sleep to make the test deterministic
+        with patch("server.services.game_tick_service.sleep") as mock_sleep:
+            # Make sleep return immediately and stop the loop after first iteration
+            call_count = 0
 
-        try:
-            await task
-        except asyncio.CancelledError:
-            pass
+            async def mock_sleep_side_effect(_duration):
+                nonlocal call_count
+                call_count += 1
+                if call_count >= 1:  # After first tick, stop the loop
+                    service.is_running = False
+                # Use a very short actual sleep to allow the loop to process
+                await asyncio.sleep(0.001)
+
+            mock_sleep.side_effect = mock_sleep_side_effect
+
+            # Start the loop
+            task = asyncio.create_task(service._tick_loop())
+
+            # Wait briefly then cancel
+            await asyncio.sleep(0.01)
+            task.cancel()
+            service.is_running = False  # Ensure loop stops
+
+            # Wait for cancellation to complete
+            try:
+                await asyncio.wait_for(task, timeout=0.5)
+            except (asyncio.CancelledError, TimeoutError):
+                # If it times out or is cancelled, ensure it's cleaned up
+                if not task.done():
+                    task.cancel()
+                    try:
+                        await task
+                    except asyncio.CancelledError:
+                        pass
 
         # Should have handled cancellation without error
         assert True  # If we get here, cancellation was handled
@@ -214,15 +283,34 @@ class TestGameTickService:
         service = GameTickService(event_publisher, tick_interval=0.1)
         service.is_running = True
 
-        # Start the loop and let it run briefly
-        task = asyncio.create_task(service._tick_loop())
-        await asyncio.sleep(0.15)  # Wait for at least one tick
-        service.is_running = False
-        task.cancel()
-        try:
-            await task
-        except asyncio.CancelledError:
-            pass
+        # Mock sleep to make the test deterministic
+        with patch("server.services.game_tick_service.sleep") as mock_sleep:
+            # Make sleep return immediately after first call
+            call_count = 0
+
+            async def mock_sleep_side_effect(_duration):
+                nonlocal call_count
+                call_count += 1
+                if call_count >= 1:  # After first tick, stop the loop
+                    service.is_running = False
+                # Use a very short actual sleep to allow the loop to process
+                await asyncio.sleep(0.001)
+
+            mock_sleep.side_effect = mock_sleep_side_effect
+
+            # Start the loop
+            task = asyncio.create_task(service._tick_loop())
+
+            # Wait for task to complete (it will stop after first tick due to mock)
+            try:
+                await asyncio.wait_for(task, timeout=1.0)
+            except TimeoutError:
+                # If it times out, cancel it
+                task.cancel()
+                try:
+                    await task
+                except asyncio.CancelledError:
+                    pass
 
         # Should have continued despite publish failure
         assert service.tick_count > 0
@@ -232,18 +320,43 @@ class TestGameTickService:
         """Test _tick_loop handles exceptions and continues."""
         event_publisher = AsyncMock()
         event_publisher.publish_game_tick_event = AsyncMock(side_effect=ValueError("Test error"))
-        service = GameTickService(event_publisher, tick_interval=0.1)
+        service = GameTickService(event_publisher, tick_interval=0.05)  # Faster interval for test
         service.is_running = True
 
         # Start the loop and let it run briefly
         task = asyncio.create_task(service._tick_loop())
-        await asyncio.sleep(0.15)  # Wait for at least one tick
-        service.is_running = False
-        task.cancel()
         try:
-            await task
-        except asyncio.CancelledError:
-            pass
+            # Wait for at least one tick to occur (0.05 * 3 = 0.15 seconds should give us multiple ticks)
+            await asyncio.sleep(0.2)
+
+            # Verify exception was handled and loop continued
+            initial_tick_count = service.tick_count
+            assert initial_tick_count > 0, "Tick loop should have processed at least one tick despite exception"
+
+            # Stop the service - this will cause the loop to exit on next iteration
+            service.is_running = False
+
+            # Wait for task to complete (should exit when is_running becomes False)
+            # Use timeout to prevent hanging
+            try:
+                await asyncio.wait_for(task, timeout=0.3)
+            except TimeoutError:
+                # If timeout, cancel the task
+                task.cancel()
+                try:
+                    await task
+                except asyncio.CancelledError:
+                    pass
+        except Exception:
+            # Ensure cleanup on any error
+            service.is_running = False
+            if not task.done():
+                task.cancel()
+                try:
+                    await asyncio.wait_for(task, timeout=0.1)
+                except (TimeoutError, asyncio.CancelledError):
+                    pass
+            raise
 
         # Should have continued despite exception
         assert service.tick_count > 0

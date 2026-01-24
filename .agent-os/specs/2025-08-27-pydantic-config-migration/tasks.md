@@ -2,11 +2,12 @@
 
 ## Tasks
 
-- [x] 1. Health Model Configuration Migration
-  - [x] 1.1 Write tests to verify current HealthResponse model behavior
-  - [x] 1.2 Update import statement to include ConfigDict
-  - [x] 1.3 Replace class Config with model_config = ConfigDict()
-  - [x] 1.4 Verify all tests pass and deprecation warnings are eliminated
+[x] 1. Health Model Configuration Migration
+
+- [x] 1.1 Write tests to verify current HealthResponse model behavior
+- [x] 1.2 Update import statement to include ConfigDict
+- [x] 1.3 Replace class Config with model_config = ConfigDict()
+- [x] 1.4 Verify all tests pass and deprecation warnings are eliminated
 
 - [x] 2. Code Quality and Validation
   - [x] 2.1 Run linting to ensure code style compliance

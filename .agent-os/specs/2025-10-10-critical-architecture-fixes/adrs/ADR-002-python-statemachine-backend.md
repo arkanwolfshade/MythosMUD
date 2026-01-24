@@ -22,9 +22,11 @@ The backend NATS service had manual connection retry logic with implicit state t
 
 ## Decision Drivers
 
-- **Python Native**: Must work well with Python's async/await
-- **Async Support**: Must support asynchronous state transitions
-- **Simplicity**: Should be easy to understand and maintain
+**Python Native**: Must work well with Python's async/await
+
+**Async Support**: Must support asynchronous state transitions
+
+**Simplicity**: Should be easy to understand and maintain
 - **Testing**: Must be testable with pytest
 - **Documentation**: Should have clear documentation
 - **Active Maintenance**: Should be actively maintained
@@ -34,24 +36,28 @@ The backend NATS service had manual connection retry logic with implicit state t
 ## Considered Options
 
 ### Option 1: python-statemachine
-- **Pros**:
-  - Clean, Pythonic API
-  - Built-in async support
-  - Decorators for state transitions
-  - Good documentation
-  - Active maintenance (last release recent)
-  - pytest compatible
+
+**Pros**:
+
+- Clean, Pythonic API
+- Built-in async support
+- Decorators for state transitions
+- Good documentation
+- Active maintenance (last release recent)
+- pytest compatible
 - **Cons**:
   - Smaller community than transitions
   - Fewer Stack Overflow answers
 - **Complexity**: Low to Medium
 
 ### Option 2: transitions
-- **Pros**:
-  - Larger community
-  - More Stack Overflow answers
-  - Extensive features (nested states, conditional transitions)
-  - Well-established
+
+**Pros**:
+
+- Larger community
+- More Stack Overflow answers
+- Extensive features (nested states, conditional transitions)
+- Well-established
 - **Cons**:
   - Async support is addon/plugin
   - More complex API
@@ -59,9 +65,11 @@ The backend NATS service had manual connection retry logic with implicit state t
 - **Complexity**: Medium to High
 
 ### Option 3: Manual Implementation
-- **Pros**:
-  - Zero dependencies
-  - Complete control
+
+**Pros**:
+
+- Zero dependencies
+- Complete control
 - **Cons**:
   - Must implement all FSM logic
   - Error-prone
@@ -85,6 +93,7 @@ The backend NATS service had manual connection retry logic with implicit state t
 6. **Sufficient Features**: Has everything we need without complexity overhead
 
 **Trade-offs Accepted**:
+
 - Smaller community than transitions (acceptable - library is stable and well-documented)
 - Fewer examples available (offset by excellent official documentation)
 
@@ -97,6 +106,7 @@ The backend NATS service had manual connection retry logic with implicit state t
 ```python
 class NATSConnectionStateMachine(StateMachine):
     # Define states
+
     disconnected = State("Disconnected", initial=True)
     connecting = State("Connecting")
     connected = State("Connected")
@@ -105,10 +115,12 @@ class NATSConnectionStateMachine(StateMachine):
     degraded = State("Degraded")
 
     # Define transitions
+
     connect = disconnected.to(connecting)
     connected_successfully = connecting.to(connected) | reconnecting.to(connected)
     connection_failed = connecting.to(disconnected) | reconnecting.to(disconnected)
     # ... etc
+
 ```
 
 ### Integration with NATS Service
@@ -127,6 +139,7 @@ class NATSService:
 
         self.state_machine.connect()
         # ... actual connection logic
+
         self.state_machine.connected_successfully()
 ```
 
@@ -157,9 +170,11 @@ class NATSService:
 
 ## Validation
 
-- ✅ All 24 backend state machine tests passing
-- ✅ No import errors
-- ✅ No linting errors
+✅ All 24 backend state machine tests passing
+
+✅ No import errors
+
+✅ No linting errors
 - ✅ Successfully integrated with NATS service
 - ✅ State transitions logged for debugging
 - ✅ Circuit breaker integration working
@@ -168,7 +183,8 @@ class NATSService:
 
 ## References
 
-- [python-statemachine Documentation](https://python-statemachine.readthedocs.io/)
+[python-statemachine Documentation](https://python-statemachine.readthedocs.io/)
+
 - [python-statemachine GitHub](https://github.com/fgmacedo/python-statemachine)
 - Implementation: `server/realtime/connection_state_machine.py`
 - Integration: `server/services/nats_service.py`
@@ -178,6 +194,7 @@ class NATSService:
 
 ## Related ADRs
 
-- ADR-001: XState for Frontend Connection FSM
+ADR-001: XState for Frontend Connection FSM
+
 - ADR-003: Pydantic Configuration Management
 - ADR-004: Circuit Breaker + Dead Letter Queue for NATS

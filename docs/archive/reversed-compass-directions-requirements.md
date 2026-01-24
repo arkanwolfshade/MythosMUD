@@ -190,6 +190,7 @@ const lucidityTier = lucidityStatus?.tier || 'lucid';
 ### Unit Tests
 
 1. **Direction Reversal Logic**
+
    - Test all primary directions (north, south, east, west)
    - Test compound directions (northeast, southwest, etc.)
    - Test vertical directions (up, down)
@@ -198,6 +199,7 @@ const lucidityTier = lucidityStatus?.tier || 'lucid';
    - Test inactive tier (returns original direction)
 
 2. **Integration Tests**
+
    - Test direction reversal in RoomInfoPanel
    - Test direction reversal in LocationPanel
    - Test that movement commands still work correctly (server processes original direction)
@@ -216,7 +218,8 @@ const lucidityTier = lucidityStatus?.tier || 'lucid';
 
 ### Client-Side
 
-- `client/src/utils/directionUtils.ts` - **NEW FILE** - Direction reversal utility
+`client/src/utils/directionUtils.ts` - **NEW FILE** - Direction reversal utility
+
 - `client/src/components/RoomInfoPanel.tsx` - Room exits display (needs integration)
 - `client/src/components/ui/RoomInfo.tsx` - RoomExits component (needs integration)
 - `client/src/components/ui-v2/panels/LocationPanel.tsx` - Exits display (needs integration)
@@ -226,7 +229,7 @@ const lucidityTier = lucidityStatus?.tier || 'lucid';
 
 ### Server-Side
 
-- No changes required (tier information already sent to client)
+No changes required (tier information already sent to client)
 
 ---
 
@@ -234,11 +237,12 @@ const lucidityTier = lucidityStatus?.tier || 'lucid';
 
 ### ✅ Completed
 
-- Requirements documentation
+Requirements documentation
 
 ### ❌ Not Yet Implemented
 
-- Client-side direction reversal utility
+Client-side direction reversal utility
+
 - Integration into UI components showing exits
 - Unit tests
 - Manual testing
@@ -247,7 +251,8 @@ const lucidityTier = lucidityStatus?.tier || 'lucid';
 
 ## Notes
 
-- This is a **client-side only** feature - no server-side changes required
+This is a **client-side only** feature - no server-side changes required
+
 - Movement logic remains unchanged - players still move in the correct direction
 - The reversal is purely visual/perceptual (hallucination effect)
 - Should activate/deactivate immediately when tier changes
@@ -257,6 +262,7 @@ const lucidityTier = lucidityStatus?.tier || 'lucid';
 
 ## References
 
-- `docs/lucidity-system.md` - Section 5.1 (Hallucination & Phantom Event Tables)
+`docs/lucidity-system.md` - Section 5.1 (Hallucination & Phantom Event Tables)
+
 - `server/services/lucidity_event_dispatcher.py` - Lucidity change events
 - `client/src/utils/lucidityEventUtils.ts` - Lucidity status handling

@@ -131,6 +131,7 @@ def test_validate_command_format_suspicious():
     """Test validate_command_format returns False for suspicious command."""
     is_valid, error = validate_command_format("'; DROP TABLE users; --")
     assert is_valid is False
+    assert error is not None
     assert "suspicious" in error.lower()
 
 
@@ -139,6 +140,7 @@ def test_validate_command_format_too_long():
     long_command = "a" * 1001
     is_valid, error = validate_command_format(long_command)
     assert is_valid is False
+    assert error is not None
     assert "too long" in error.lower()
 
 
@@ -153,6 +155,7 @@ def test_command_validator_validate_command_content_null_byte():
     """Test CommandValidator.validate_command_content detects null bytes."""
     is_valid, error = CommandValidator.validate_command_content("go\x00north")
     assert is_valid is False
+    assert error is not None
     assert "null bytes" in error.lower()
 
 
@@ -179,6 +182,7 @@ def test_command_validator_validate_command_content_dangerous_pattern():
     for cmd in dangerous_commands:
         is_valid, error = CommandValidator.validate_command_content(cmd)
         assert is_valid is False, f"Should detect danger in: {cmd}"
+        assert error is not None
         assert "dangerous" in error.lower()
 
 
@@ -187,6 +191,7 @@ def test_command_validator_validate_command_content_too_long():
     long_command = "a" * 1001
     is_valid, error = CommandValidator.validate_command_content(long_command)
     assert is_valid is False
+    assert error is not None
     assert "exceeds maximum length" in error.lower()
 
 
@@ -203,6 +208,7 @@ def test_command_validator_validate_command_content_non_printable():
     for cmd in non_printable_commands:
         is_valid, error = CommandValidator.validate_command_content(cmd)
         assert is_valid is False, f"Should detect non-printable in: {repr(cmd)}"
+        assert error is not None
         assert "non-printable" in error.lower()
 
 
@@ -231,6 +237,7 @@ def test_command_validator_validate_expanded_command_inherits_content_validation
     """Test CommandValidator.validate_expanded_command inherits content validation."""
     is_valid, error = CommandValidator.validate_expanded_command("go\x00north")
     assert is_valid is False
+    assert error is not None
     assert "null bytes" in error.lower()
 
 
@@ -244,6 +251,7 @@ def test_command_validator_validate_expanded_command_length_limit():
     is_valid, error = CommandValidator.validate_expanded_command(long_command)
     # This should fail at content validation (1000 limit), not expanded validation
     assert is_valid is False
+    assert error is not None
     assert "exceeds maximum length" in error.lower()
 
 
@@ -267,6 +275,7 @@ def test_command_validator_validate_alias_definition_inherits_content_validation
     """Test CommandValidator.validate_alias_definition inherits content validation."""
     is_valid, error = CommandValidator.validate_alias_definition("go\x00north")
     assert is_valid is False
+    assert error is not None
     assert "null bytes" in error.lower()
 
 
@@ -279,6 +288,7 @@ def test_command_validator_validate_alias_definition_length_limit():
     is_valid, error = CommandValidator.validate_alias_definition(long_alias)
     assert is_valid is False
     # Will fail at content validation first
+    assert error is not None
     assert "exceeds maximum length" in error.lower()
 
 

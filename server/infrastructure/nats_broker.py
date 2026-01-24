@@ -9,7 +9,7 @@ using NATS as the underlying message broker.
 
 import asyncio
 import json
-from typing import Any
+from typing import Any, cast
 from uuid import uuid4
 
 import nats
@@ -71,7 +71,7 @@ class NATSMessageBroker:  # pylint: disable=too-many-instance-attributes  # Reas
         self.subject_manager = subject_manager
 
         # Health monitoring
-        self._health_check_task: asyncio.Task | None = None
+        self._health_check_task: asyncio.Task[Any] | None = None
         self._last_health_check: float = 0.0
         self._consecutive_health_failures = 0
         self._health_check_timeout = 5.0  # seconds
@@ -166,7 +166,8 @@ class NATSMessageBroker:  # pylint: disable=too-many-instance-attributes  # Reas
                 current_time = asyncio.get_running_loop().time()
             except RuntimeError:
                 # No event loop running, can't check time - assume connected if client is connected
-                return self._client.is_connected
+                result: bool = cast(bool, self._client.is_connected)
+                return result
 
             time_since_last_check = current_time - self._last_health_check
 
@@ -385,7 +386,8 @@ class NATSMessageBroker:  # pylint: disable=too-many-instance-attributes  # Reas
 
             self._logger.debug("Received reply", subject=subject)
 
-            return reply_dict
+            result: dict[str, Any] = cast(dict[str, Any], reply_dict)
+            return result
 
         except TimeoutError as e:
             self._logger.warning("Request timeout", subject=subject, timeout=timeout)

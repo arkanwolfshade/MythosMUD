@@ -5,6 +5,7 @@ Tests the helper functions in look_container.py.
 """
 
 import uuid
+from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
@@ -53,7 +54,7 @@ def test_find_container_in_room_instance_number():
 
 def test_find_container_wearable_found():
     """Test _find_container_wearable() finds wearable container."""
-    equipped = {
+    equipped: dict[str, dict[str, Any]] = {
         "back": {"item_name": "backpack", "item_id": "item_001", "inner_container": True},
         "weapon": {"item_name": "sword", "item_id": "item_002"},
     }
@@ -313,7 +314,7 @@ def test_format_container_display_with_look_in():
         "capacity_slots": 10,
         "lock_state": "unlocked",
     }
-    command_data = {"look_in": True}
+    command_data: dict[str, Any] = {"look_in": True}
     result = _format_container_display(container, None, command_data)
     assert "Contents:" in result
     assert "Potion" in result
@@ -328,7 +329,7 @@ def test_format_container_display_with_target_type_container():
         "capacity_slots": 10,
         "lock_state": "unlocked",
     }
-    command_data = {"target_type": "container"}
+    command_data: dict[str, Any] = {"target_type": "container"}
     result = _format_container_display(container, None, command_data)
     assert "Contents:" in result
     assert "Potion" in result

@@ -36,10 +36,12 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
   - `MAX_STAT`: 18 → 90
 
 - Update `generate_random_stats()`:
-  - Change `randint(3, 18)` → `randint(15, 90)` for all six attributes
+
+  Change `randint(3, 18)` → `randint(15, 90)` for all six attributes
 
 - Update `_roll_3d6()`:
-  - Change `randint(3, 18)` → `randint(15, 90)` for all attributes
+
+  Change `randint(3, 18)` → `randint(15, 90)` for all attributes
 
 - Update `_roll_4d6_drop_lowest()`:
   - Modify roll calculation to produce 15-90 range
@@ -52,6 +54,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
   - Adjust maximum stat cap from 18 to 90
 
 - Update `CLASS_PREREQUISITES`:
+
   - Scale all values by 5:
     - 10 → 50
     - 12 → 60
@@ -63,6 +66,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **File:** `server/config/models.py`
 
 - Update `PlayerStatsConfig`:
+
   - Change default values: 10 → 50 for strength, dexterity, constitution, intelligence, wisdom, charisma
   - Update `validate_stat_range()`:
     - Change validation from `1 <= v <= 20` to `1 <= v <= 100`
@@ -77,13 +81,15 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
   - Update JSONB default lambda function
 
 - Update `get_stats()` fallback defaults:
-  - Change all core attributes from 10 to 50 in fallback dictionary
+
+  Change all core attributes from 10 to 50 in fallback dictionary
 
 ### Combat System Updates
 
 **File:** `server/npc/combat_integration.py`
 
 - Update `calculate_damage()` method:
+
   - Strength bonus calculation:
     - Current: `(strength_mod - 10) // 2`
     - New: `(strength_mod - 50) // 2`
@@ -111,13 +117,16 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
   - `1 <= stat <= 20` → `1 <= stat <= 100` (for validation)
 
 - Update `test_stats_max_health_property`:
-  - Change test values and expected results for new formula
+
+  Change test values and expected results for new formula
 
 - Update `test_stats_max_lucidity_property`:
-  - Change test values and expected results for new formula
+
+  Change test values and expected results for new formula
 
 - Update `test_stats_get_attribute_modifier`:
-  - Update test values and expected modifier calculations
+
+  Update test values and expected modifier calculations
 
 **File:** `server/tests/unit/player/test_stats_generator.py`
 
@@ -144,6 +153,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 ### Client-Side Verification
 
 **Files to verify (no changes expected, but verify):**
+
 - `client/src/components/ui/StatusPanel.tsx`
 - `client/src/components/GameTerminalPresentation.tsx`
 - `client/tests/e2e/runtime/fixtures/test-data.ts`

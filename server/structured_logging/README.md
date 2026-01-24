@@ -17,6 +17,7 @@ from server.logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 # Structured logging with key-value pairs
+
 logger.info("User action completed", user_id=user.id, action="login", success=True)
 logger.error("Operation failed", operation="user_creation", error=str(e), retry_count=3)
 ```
@@ -27,12 +28,14 @@ logger.error("Operation failed", operation="user_creation", error=str(e), retry_
 from server.logging.enhanced_logging_config import bind_request_context
 
 # Bind context for request tracing
+
 bind_request_context(
     correlation_id="req-123",
     user_id="user-456",
     session_id="session-789"
 )
 # All subsequent logs automatically include this context
+
 ```
 
 ## Architecture
@@ -56,16 +59,22 @@ server/structured_logging/
 └── README.md                      # This file
 ```
 
-**Separation of Concerns:**
-- **Configuration**: `enhanced_logging_config.py` - Centralized logging setup
-- **Processors**: `logging_processors.py` - Event processing logic
-- **Handlers**: `logging_handlers.py`, `logging_file_setup.py` - Output destinations
-- **Formatters**: `player_guid_formatter.py` - Output formatting
+### Separation of Concerns
+
+**Configuration**: `enhanced_logging_config.py` - Centralized logging setup
+
+**Processors**: `logging_processors.py` - Event processing logic
+
+**Handlers**: `logging_handlers.py`, `logging_file_setup.py` - Output destinations
+
+**Formatters**: `player_guid_formatter.py` - Output formatting
+
 - **Utilities**: `logging_utilities.py`, `logging_context.py` - Helper functions
 
 ### Core Components
 
 1. **Enhanced Logging Config** (`enhanced_logging_config.py`)
+
    - MDC implementation with `structlog.contextvars`
    - Security sanitization processor
    - Correlation ID management
@@ -73,6 +82,7 @@ server/structured_logging/
    - Async logging support via QueueHandler/QueueListener
 
 2. **Custom Processors** (`logging_processors.py`)
+
    - `sanitize_sensitive_data`: Automatically redacts passwords, tokens, secrets
    - `add_correlation_id`: Ensures all logs have correlation IDs
    - `add_request_context`: Adds request context information
@@ -81,6 +91,7 @@ server/structured_logging/
    - `enhance_player_ids`: Converts GUIDs to human-readable format
 
 3. **Custom Formatters**
+
    - `PlayerGuidFormatter`: Converts player GUIDs to `<name>: <GUID>` format
    - Enhanced readability for debugging
 
@@ -89,11 +100,16 @@ server/structured_logging/
 The system automatically routes logs to subsystem-specific files. Each
 subsystem has its own log file for better organization and debugging:
 
-**Core Subsystems:**
-- **server.log**: Core server operations, uvicorn lifecycle
-- **persistence.log**: Database operations, SQL queries, persistence layer
-- **authentication.log**: Authentication, authorization, user management
-- **inventory.log**: Inventory management, containers, equipment
+### Core Subsystems
+
+**server.log**: Core server operations, uvicorn lifecycle
+
+**persistence.log**: Database operations, SQL queries, persistence layer
+
+**authentication.log**: Authentication, authorization, user management
+
+**inventory.log**: Inventory management, containers, equipment
+
 - **npc.log**: NPC services, NPC instances, NPC lifecycle
 - **game.log**: Game mechanics, movement, room services, world loading
 - **api.log**: API endpoints, REST operations
@@ -111,35 +127,46 @@ subsystem has its own log file for better organization and debugging:
 - **access.log**: Access control, permissions, API access
 - **security.log**: Security events, audit trails, security violations
 
-**Aggregator Logs:**
-- **warnings.log**: ALL WARNING level logs from ALL subsystems (dual logging)
-- **errors.log**: ALL ERROR and CRITICAL level logs from ALL subsystems (dual
+### Aggregator Logs
+
+**warnings.log**: ALL WARNING level logs from ALL subsystems (dual logging)
+
+**errors.log**: ALL ERROR and CRITICAL level logs from ALL subsystems (dual
   logging)
-- **console.log**: Console output, general logging
+
+**console.log**: Console output, general logging
 
 ### Dual Logging Behavior
 
 The system implements dual logging for warnings and errors:
 
-- **Warnings**: All WARNING level logs appear in BOTH their subsystem log file AND `warnings.log`
-- **Errors**: All ERROR and CRITICAL level logs appear in BOTH their subsystem log file AND `errors.log`
+**Warnings**: All WARNING level logs appear in BOTH their subsystem log file AND `warnings.log`
+
+**Errors**: All ERROR and CRITICAL level logs appear in BOTH their subsystem log file AND `errors.log`
 
 This enables:
-- **Subsystem-specific debugging**: Find all logs for a specific subsystem in
+
+**Subsystem-specific debugging**: Find all logs for a specific subsystem in
   its dedicated file
-- **Centralized monitoring**: Quickly scan all warnings or errors across the
+
+**Centralized monitoring**: Quickly scan all warnings or errors across the
   entire system
-- **Better observability**: No need to search multiple files to find all
+
+**Better observability**: No need to search multiple files to find all
+
   warnings or errors
 
 Example:
+
 ```python
 # In persistence subsystem
+
 logger.warning("Database connection slow", query_time=1.5)
 # This appears in: persistence.log AND warnings.log
 
 logger.error("Database connection failed", error=str(e))
 # This appears in: persistence.log AND errors.log
+
 ```
 
 ## F-String Logging Anti-Pattern
@@ -149,11 +176,13 @@ logging. This MUST be eliminated:
 
 ```python
 # ❌ WRONG - Destroys structured logging benefits
+
 logger.info(f"Starting combat between {attacker} and {target}")
 logger.error(f"Failed to process: {error}")
 logger.debug(f"Message data: {message_data}")
 
 # ✅ CORRECT - Structured logging enables aggregation and analysis
+
 logger.info("Starting combat", attacker=attacker, target=target,
             room_id=room_id)
 logger.error("Failed to process", error=str(error), operation="combat_start")
@@ -161,11 +190,16 @@ logger.debug("NATS message received", message_data=message_data,
              message_type=type(message_data))
 ```
 
-**Why f-strings are forbidden:**
-- **Breaks log aggregation**: Cannot search by specific fields
-- **Prevents alerting**: Cannot create alerts based on structured data
-- **Reduces performance**: String formatting is slower than structured data
-- **Loses context**: Cannot correlate events across different log entries
+### Why f-strings are forbidden
+
+**Breaks log aggregation**: Cannot search by specific fields
+
+**Prevents alerting**: Cannot create alerts based on structured data
+
+**Reduces performance**: String formatting is slower than structured data
+
+**Loses context**: Cannot correlate events across different log entries
+
 - **Makes debugging harder**: Cannot filter or analyze logs effectively
 
 ## Best Practices
@@ -174,18 +208,22 @@ logger.debug("NATS message received", message_data=message_data,
 
 ```python
 # ✅ Structured logging with key-value pairs
+
 logger.info("User action completed", user_id=user.id, action="login",
             success=True)
 
 # ✅ Error logging with context
+
 logger.error("Operation failed", operation="user_creation", error=str(e),
              retry_count=3)
 
 # ✅ Performance logging
+
 with measure_performance("database_query", user_id=user.id):
     result = database.query("SELECT * FROM players")
 
 # ✅ Request context binding
+
 bind_request_context(correlation_id=req_id, user_id=user.id,
                      session_id=session.id)
 ```
@@ -194,22 +232,27 @@ bind_request_context(correlation_id=req_id, user_id=user.id,
 
 ```python
 # ❌ WRONG - F-string logging destroys structured logging
+
 logger.info(f"User {user_id} performed {action}")
 logger.error(f"Failed to process: {error}")
 logger.debug(f"Message data: {message_data}")
 
 # ❌ WRONG - Deprecated context parameter
+
 logger.info("message", context={"key": "value"})
 
 # ❌ WRONG - Unstructured messages
+
 logger.info("Error occurred")
 
 # ❌ WRONG - String formatting breaks structured logging
+
 logger.info(f"Starting combat between {attacker} and {target}")
 logger.error(f"Failed to process: {error}")
 logger.debug(f"Message data: {message_data}")
 
 # ❌ WRONG - Logging sensitive data
+
 logger.info("Login attempt", username=user, password=password)
 ```
 
@@ -217,10 +260,14 @@ logger.info("Login attempt", username=user, password=password)
 
 F-string logging destroys structured logging benefits:
 
-- **Breaks log aggregation**: Cannot search by specific fields
-- **Prevents alerting**: Cannot create alerts based on structured data
-- **Reduces performance**: String formatting is slower than structured data
-- **Loses context**: Cannot correlate events across different log entries
+**Breaks log aggregation**: Cannot search by specific fields
+
+**Prevents alerting**: Cannot create alerts based on structured data
+
+**Reduces performance**: String formatting is slower than structured data
+
+**Loses context**: Cannot correlate events across different log entries
+
 - **Makes debugging harder**: Cannot filter or analyze logs effectively
 
 ## Security Features
@@ -230,7 +277,7 @@ F-string logging destroys structured logging benefits:
 The system automatically redacts sensitive information:
 
 ```python
-# These fields are automatically sanitized:
+# These fields are automatically sanitized
 # password, token, secret, key, credential, auth, jwt, api_key,
 # private_key, session_token, access_token, refresh_token, bearer, authorization
 
@@ -252,6 +299,7 @@ The system supports asynchronous logging for high-throughput scenarios:
 
 ```python
 # Async logging is automatically enabled in production
+
 logger.info("High-volume operation", operation="batch_processing", count=1000)
 ```
 
@@ -309,6 +357,7 @@ Enable debug logging for development:
 
 ```python
 # In your environment configuration
+
 LOGGING_LEVEL = "DEBUG"
 ```
 
@@ -316,9 +365,11 @@ LOGGING_LEVEL = "DEBUG"
 
 Logs are automatically rotated based on size and time:
 
-- **Size-based**: 10MB default, configurable
-- **Time-based**: Daily rotation
-- **Retention**: 5 backup files by default
+**Size-based**: 10MB default, configurable
+
+**Time-based**: Daily rotation
+
+**Retention**: 5 backup files by default
 
 ## Migration Guide
 
@@ -326,11 +377,13 @@ Logs are automatically rotated based on size and time:
 
 ```python
 # OLD - Standard Python logging
+
 import logging
 logger = logging.getLogger(__name__)
 logger.info(f"User {user_id} performed {action}")
 
 # NEW - Enhanced structured logging
+
 from server.logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 logger.info("User action", user_id=user_id, action=action)
@@ -340,9 +393,11 @@ logger.info("User action", user_id=user_id, action=action)
 
 ```python
 # OLD - Deprecated context parameter
+
 logger.info("message", context={"key": "value"})
 
 # NEW - Direct key-value pairs
+
 logger.info("message", key="value")
 ```
 
@@ -352,6 +407,7 @@ logger.info("message", key="value")
 
 ```bash
 # Logging configuration
+
 LOGGING_LEVEL=INFO
 LOGGING_ENVIRONMENT=local
 LOGGING_BASE=logs
@@ -377,10 +433,13 @@ logging:
 
 Logs are structured for easy aggregation with tools like:
 
-- **ELK Stack** (Elasticsearch, Logstash, Kibana)
-- **Splunk**
-- **Grafana Loki**
-- **CloudWatch Logs**
+**ELK Stack** (Elasticsearch, Logstash, Kibana)
+
+### Splunk
+
+### Grafana Loki
+
+**CloudWatch Logs**
 
 ### Alerting Examples
 
@@ -404,7 +463,8 @@ Logs are structured for easy aggregation with tools like:
 
 ### Core Functions
 
-- `get_logger(name)`: Get enhanced logger instance
+`get_logger(name)`: Get enhanced logger instance
+
 - `bind_request_context(**kwargs)`: Bind request context
 - `clear_request_context()`: Clear current context
 - `get_current_context()`: Get current context
@@ -412,14 +472,15 @@ Logs are structured for easy aggregation with tools like:
 
 ### Processors
 
-- `sanitize_sensitive_data`: Security sanitization
+`sanitize_sensitive_data`: Security sanitization
+
 - `add_correlation_id`: Correlation ID management
 - `add_request_context`: Request context enhancement
 - `enhance_player_ids`: Player GUID formatting
 
 ### Formatters
 
-- `PlayerGuidFormatter`: Player GUID to name conversion
+`PlayerGuidFormatter`: Player GUID to name conversion
 
 ## Contributing
 
@@ -433,11 +494,14 @@ When adding new logging:
 
 ## References
 
-- [Structlog Documentation](https://www.structlog.org/)
+[Structlog Documentation](https://www.structlog.org/)
+
 - [Python Logging Best Practices](https://docs.python.org/3/howto/logging.html)
 - [Observability Patterns](https://microservices.io/patterns/observability/)
 - [Security Logging Guidelines](https://owasp.org/www-project-logging-security-cheat-sheet/)
 
 ---
 
-*As noted in the Pnakotic Manuscripts, proper documentation of our eldritch systems is essential for maintaining their stability. This enhanced logging system provides the foundation for comprehensive system monitoring and debugging, ensuring the continued observability of the MythosMUD server.*
+*As noted in the Pnakotic Manuscripts, proper documentation of our eldritch systems is essential for maintaining their
+stability. This enhanced logging system provides the foundation for comprehensive system monitoring and debugging,
+ensuring the continued observability of the MythosMUD server.*

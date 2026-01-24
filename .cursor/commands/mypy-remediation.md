@@ -14,6 +14,7 @@ alwaysApply: false
 
 ```bash
 # Step 1: Run mypy to get current type checking state
+
 make mypy
 ```
 
@@ -27,30 +28,38 @@ make mypy
 
 #### 🔴 CRITICAL (Fix First - Blocking Issues)
 
-- **Import errors** - Module not found, cannot import name
-- **Name errors** - Name not defined, attribute does not exist
-- **Type errors in function signatures** - Incompatible return types, parameter types
+**Import errors** - Module not found, cannot import name
+
+**Name errors** - Name not defined, attribute does not exist
+
+**Type errors in function signatures** - Incompatible return types, parameter types
 - **Missing type annotations** in critical functions (public APIs)
 
 #### 🟡 HIGH PRIORITY (Fix Second - Core Functionality)
 
-- **Type incompatibility errors** - Assigning wrong types to variables
-- **Missing type annotations** in internal functions
-- **Optional/None handling errors** - Item "None" has no attribute
+**Type incompatibility errors** - Assigning wrong types to variables
+
+**Missing type annotations** in internal functions
+
+**Optional/None handling errors** - Item "None" has no attribute
 - **Type narrowing issues** - Need to add type guards or assertions
 
 #### 🟢 MEDIUM PRIORITY (Fix Third - Enhancement)
 
-- **Unused type: ignore comments** - No longer needed
-- **Redundant casts** - Type is already correct
-- **Missing return statements** - Function with return type doesn't return
+**Unused type: ignore comments** - No longer needed
+
+**Redundant casts** - Type is already correct
+
+**Missing return statements** - Function with return type doesn't return
 - **Incomplete type stubs** - Third-party libraries without stubs
 
 #### 🔵 LOW PRIORITY (Fix Last - Polish)
 
-- **Implicit Any types** - Could be more specific
-- **Overly broad types** - Could use Union or Literal
-- **Missing type annotations** in test files
+**Implicit Any types** - Could be more specific
+
+**Overly broad types** - Could use Union or Literal
+
+**Missing type annotations** in test files
 - **Documentation type hints** - Docstring types don't match annotations
 
 ### Phase 3: Systematic Fixing Process
@@ -73,16 +82,20 @@ make mypy
 
 ```bash
 # REQUIRED: Check all mypy issues
+
 uv run mypy .
 
 # OPTIONAL: Check specific file or directory
+
 uv run mypy path/to/file.py
 uv run mypy path/to/directory/
 
 # OPTIONAL: Check with verbose output
+
 uv run mypy . --show-error-codes --pretty
 
 # OPTIONAL: Show traceback for errors
+
 uv run mypy . --show-traceback
 ```
 
@@ -92,12 +105,15 @@ uv run mypy . --show-traceback
 
 ```bash
 # Get explanation of specific error code
+
 uv run mypy --help-error-code <error-code>
 
 # Example: Understand assignment error
+
 uv run mypy --help-error-code assignment
 
 # Example: Understand union-attr error
+
 uv run mypy --help-error-code union-attr
 ```
 
@@ -111,6 +127,7 @@ uv run mypy --help-error-code union-attr
 # Pattern 1: Fix missing imports
 # BEFORE: error: Name "Optional" is not defined
 # AFTER: Add missing import
+
 from typing import Optional
 
 # Pattern 2: Fix import errors
@@ -121,6 +138,7 @@ from typing import Optional
 # Pattern 3: Fix attribute errors
 # BEFORE: error: Module has no attribute "missing_func"
 # AFTER: Verify module interface or add type: ignore comment
+
 from mymodule import existing_func
 ```
 
@@ -129,30 +147,36 @@ from mymodule import existing_func
 ```python
 # Pattern 1: Fix function return type mismatch
 # BEFORE: error: Incompatible return value type (got "int", expected "str")
+
 def get_name() -> str:
     return 123
 
 # AFTER: Fix return type or implementation
+
 def get_name() -> str:
     return "123"
 
 # Pattern 2: Fix parameter type mismatch
 # BEFORE: error: Argument 1 has incompatible type "str"; expected "int"
+
 def process(value: int) -> None:
     print(value)
 process("hello")
 
 # AFTER: Fix argument or parameter type
+
 def process(value: int) -> None:
     print(value)
 process(123)
 
 # Pattern 3: Fix Optional/None handling
 # BEFORE: error: Item "None" has no attribute "strip"
+
 def process(value: str | None) -> str:
     return value.strip()
 
 # AFTER: Add type guard or assertion
+
 def process(value: str | None) -> str:
     if value is None:
         return ""
@@ -160,15 +184,18 @@ def process(value: str | None) -> str:
 
 # Pattern 4: Add missing type annotations
 # BEFORE: error: Function is missing a return type annotation
+
 def calculate(x, y):
     return x + y
 
 # AFTER: Add complete type annotations
+
 def calculate(x: int, y: int) -> int:
     return x + y
 
 # Pattern 5: Fix type narrowing
 # BEFORE: error: Argument 1 has incompatible type "str | int"; expected "str"
+
 def process_string(s: str) -> None:
     print(s.upper())
 
@@ -176,6 +203,7 @@ value: str | int = get_value()
 process_string(value)
 
 # AFTER: Add type guard
+
 value: str | int = get_value()
 if isinstance(value, str):
     process_string(value)
@@ -185,28 +213,34 @@ if isinstance(value, str):
 
 ```python
 # Pattern 1: Remove unused type: ignore
-# BEFORE:
+# BEFORE
+
 result = calculate(1, 2)  # type: ignore  # unused "type: ignore" comment
-# AFTER:
+# AFTER
+
 result = calculate(1, 2)
 
 # Pattern 2: Fix redundant cast
 # BEFORE: error: Redundant cast to "str"
+
 from typing import cast
 name: str = "hello"
 result = cast(str, name)  # Already str
 
 # AFTER: Remove unnecessary cast
+
 name: str = "hello"
 result = name
 
 # Pattern 3: Fix missing return
 # BEFORE: error: Missing return statement
+
 def get_value() -> int:
     if condition:
         return 42
 
 # AFTER: Add return or make return type Optional
+
 def get_value() -> int:
     if condition:
         return 42
@@ -214,10 +248,12 @@ def get_value() -> int:
 
 # Pattern 4: Add type stubs for third-party
 # BEFORE: error: Library stubs not installed for "requests"
+
 import requests
 
 # AFTER: Install type stubs
 # Run: uv pip install types-requests
+
 import requests
 ```
 
@@ -226,35 +262,42 @@ import requests
 ```python
 # Pattern 1: Replace implicit Any with specific types
 # BEFORE: note: Implicit return value of "Any"
+
 def process(data):
     return data.get("key")
 
 # AFTER: Add explicit types
+
 from typing import Any
 def process(data: dict[str, Any]) -> Any:
     return data.get("key")
 
 # Better: Use specific types
+
 def process(data: dict[str, str]) -> str | None:
     return data.get("key")
 
 # Pattern 2: Use Union/Literal for precision
-# BEFORE:
+# BEFORE
+
 def set_mode(mode: str) -> None:
     pass
 
 # AFTER: Use Literal for limited options
+
 from typing import Literal
 def set_mode(mode: Literal["debug", "release", "test"]) -> None:
     pass
 
 # Pattern 3: Add type annotations in tests
-# BEFORE:
+# BEFORE
+
 def test_feature():
     result = calculate(1, 2)
     assert result == 3
 
-# AFTER:
+# AFTER
+
 def test_feature() -> None:
     result: int = calculate(1, 2)
     assert result == 3
@@ -266,15 +309,19 @@ def test_feature() -> None:
 
 ```bash
 # 1. Verify type checking passes
+
 uv run mypy .
 
 # 2. Check specific file if only one was changed
+
 uv run mypy path/to/changed_file.py
 
 # 3. Verify with error codes shown
+
 uv run mypy . --show-error-codes
 
 # 4. Check for new errors introduced
+
 uv run mypy . --pretty
 ```
 
@@ -335,10 +382,12 @@ uv run mypy . --pretty
 
 ```python
 # BEFORE: error: Name "Optional" is not defined
+
 def get_value(key: str) -> Optional[str]:
     return data.get(key)
 
 # AFTER: Add import
+
 from typing import Optional
 
 def get_value(key: str) -> Optional[str]:
@@ -349,10 +398,12 @@ def get_value(key: str) -> Optional[str]:
 
 ```python
 # BEFORE: error: Incompatible return value type
+
 def calculate(x: int, y: int) -> str:
     return x + y  # Returns int, not str
 
 # AFTER: Fix return type
+
 def calculate(x: int, y: int) -> int:
     return x + y
 ```
@@ -361,16 +412,19 @@ def calculate(x: int, y: int) -> int:
 
 ```python
 # BEFORE: error: Item "None" has no attribute "upper"
+
 def format_name(name: str | None) -> str:
     return name.upper()
 
 # AFTER: Add type guard
+
 def format_name(name: str | None) -> str:
     if name is None:
         return ""
     return name.upper()
 
 # Alternative: Use assertion if None is impossible
+
 def format_name(name: str | None) -> str:
     assert name is not None, "name cannot be None"
     return name.upper()
@@ -380,6 +434,7 @@ def format_name(name: str | None) -> str:
 
 ```python
 # BEFORE: error: Argument has incompatible type "str | int"
+
 def process_string(value: str) -> None:
     print(value.upper())
 
@@ -387,6 +442,7 @@ data: str | int = get_data()
 process_string(data)
 
 # AFTER: Add isinstance check
+
 data: str | int = get_data()
 if isinstance(data, str):
     process_string(data)
@@ -398,10 +454,12 @@ else:
 
 ```python
 # BEFORE: error: Missing type parameters
+
 def get_items() -> list:
     return [1, 2, 3]
 
 # AFTER: Add type parameter
+
 def get_items() -> list[int]:
     return [1, 2, 3]
 ```
@@ -439,18 +497,23 @@ def get_items() -> list[int]:
 
 ```bash
 # Check if mypy is installed
+
 uv run mypy --version
 
 # Check mypy configuration
+
 cat pyproject.toml | grep -A 20 "\[tool.mypy\]"
 
 # Run with verbose output
+
 uv run mypy . --verbose
 
 # Show error codes
+
 uv run mypy . --show-error-codes
 
 # Show traceback for debugging
+
 uv run mypy . --show-traceback
 ```
 
@@ -458,28 +521,34 @@ uv run mypy . --show-traceback
 
 ```bash
 # Get help on specific error code
+
 uv run mypy --help-error-code <error-code>
 
 # Check specific file only
+
 uv run mypy path/to/problematic_file.py
 
 # Ignore specific error temporarily
-# Add to pyproject.toml:
+# Add to pyproject.toml
 # [[tool.mypy.overrides]]
 # module = "problematic_module.*"
 # ignore_errors = true
+
 ```
 
 ### Understanding Type Checker Behavior
 
 ```bash
 # Show inferred types
+
 uv run mypy --show-column-numbers path/to/file.py
 
 # Check what mypy sees
+
 uv run mypy --show-traceback path/to/file.py
 
 # Understand why something fails
+
 uv run mypy --no-error-summary path/to/file.py
 ```
 
@@ -549,28 +618,33 @@ IMPACT: More explicit None handling, prevents runtime AttributeError
 ```bash
 # Error: Library stubs not installed for "requests"
 # Solution: Install type stubs
+
 uv pip install types-requests
 
 # If stubs don't exist, ignore the module
-# Add to pyproject.toml:
+# Add to pyproject.toml
 # [[tool.mypy.overrides]]
 # module = "untyped_library.*"
 # ignore_missing_imports = true
+
 ```
 
 ### Scenario 2: Complex Union Types
 
 ```python
 # Problem: Too many Union combinations
+
 def process(data: str | int | float | bool | None) -> str:
     return str(data)
 
 # Solution: Use broader base type or Any
+
 from typing import Any
 def process(data: Any) -> str:
     return str(data)
 
 # Better: Use Protocol if possible
+
 from typing import Protocol
 class Stringable(Protocol):
     def __str__(self) -> str: ...
@@ -583,10 +657,12 @@ def process(data: Stringable) -> str:
 
 ```python
 # Problem: Recursive type definition
+
 from typing import Union, Dict, List
 JSON = Union[Dict[str, "JSON"], List["JSON"], str, int, float, bool, None]
 
 # Solution: Use proper recursive type
+
 from typing import Any
 JSON = dict[str, Any] | list[Any] | str | int | float | bool | None
 ```

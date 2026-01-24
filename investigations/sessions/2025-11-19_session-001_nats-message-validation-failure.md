@@ -48,6 +48,7 @@ message_data={'message_id': '...', 'timestamp': '...', 'event_type': 'combat_sta
 
 ```python
 # server/schemas/nats_messages.py:57-63
+
 class EventMessageSchema(BaseMessageSchema):
     event_type: str = Field(..., description="Event type identifier")
     event_data: dict[str, Any] = Field(..., description="Event-specific data")  # <-- "event_data"
@@ -58,6 +59,7 @@ class EventMessageSchema(BaseMessageSchema):
 
 ```python
 # server/services/combat_event_publisher.py:89-94
+
 message = {
     "message_id": message_id,
     "timestamp": timestamp,
@@ -70,6 +72,7 @@ message = {
 
 ```python
 # server/realtime/nats_message_handler.py:1532
+
 data = message_data.get("data", {})  # <-- Looking for "data" instead of "event_data"
 ```
 
@@ -114,15 +117,19 @@ data = message_data.get("data", {})  # <-- Looking for "data" instead of "event_
 
 **System Impact**: High
 
-- **Combat Events**: All combat events fail to broadcast to clients
-- **Real-Time Updates**: Clients do not receive combat state updates
-- **User Experience**: Players cannot see combat progress in real-time
+**Combat Events**: All combat events fail to broadcast to clients
+
+**Real-Time Updates**: Clients do not receive combat state updates
+
+**User Experience**: Players cannot see combat progress in real-time
 - **Game Functionality**: Combat system operates but UI doesn't update
 
 **Affected Components**:
 
 1. `NATSMessageHandler._handle_event_message()` - Event routing
+
 2. All combat event handlers:
+
    - `_handle_combat_started_event()`
    - `_handle_player_attacked_event()`
    - `_handle_npc_attacked_event()`
@@ -177,13 +184,15 @@ The `NATSMessageHandler._handle_event_message()` method incorrectly accesses the
 
 ```python
 # server/realtime/nats_message_handler.py:1532
+
 data = message_data.get("data", {})  # ❌ WRONG - should be "event_data"
 ```
 
 **Expected Fix**:
 
 ```python
-# Should be:
+# Should be
+
 data = message_data.get("event_data", {})  # ✅ CORRECT
 ```
 
@@ -236,9 +245,11 @@ This appears to be a legacy code issue where:
 
 ### Performance Impact
 
-- **Minimal**: Handler returns early, avoiding unnecessary processing
-- **Warning Logs**: Frequent warning logs may impact log parsing performance
-- **Circuit Breaker**: If failures accumulate, circuit breaker may open, adding messages to DLQ
+**Minimal**: Handler returns early, avoiding unnecessary processing
+
+**Warning Logs**: Frequent warning logs may impact log parsing performance
+
+**Circuit Breaker**: If failures accumulate, circuit breaker may open, adding messages to DLQ
 
 ---
 
@@ -247,46 +258,56 @@ This appears to be a legacy code issue where:
 ### Immediate Actions Required
 
 1. **Fix Field Name Mismatch**
+
    - Update `NATSMessageHandler._handle_event_message()` to read `event_data` instead of `data`
    - Location: `server/realtime/nats_message_handler.py:1532`
 
 2. **Verify All Event Handlers**
+
    - Check other event message handlers for similar field name mismatches
    - Ensure consistency across all event processing code
 
 3. **Add Regression Tests**
+
    - Create tests that verify event message structure matches handler expectations
    - Test schema validation and handler processing integration
 
 4. **Monitor Error Logs**
+
    - Watch for remaining validation failures after fix
    - Verify combat events successfully process
 
 ### Further Investigation Priorities
 
 1. **Check Other Event Types**
+
    - Verify `game_tick`, `player_entered`, `player_left` events use correct field names
    - Ensure no other handlers have similar mismatches
 
 2. **Review Message Schema Evolution**
+
    - Understand why schema uses `event_data` but handler expected `data`
    - Document field name standards for future reference
 
 3. **Dead Letter Queue Review**
+
    - Check if failed messages accumulated in DLQ
    - Determine if messages need reprocessing after fix
 
 ### Testing Recommendations
 
 1. **Unit Tests**
+
    - Test `_handle_event_message()` with correct `event_data` structure
    - Test handler correctly processes all combat event types
 
 2. **Integration Tests**
+
    - Test end-to-end combat event flow (publisher → NATS → handler → client)
    - Verify combat events broadcast correctly to WebSocket clients
 
 3. **Regression Tests**
+
    - Test all event types to ensure no similar issues exist
    - Verify schema validation and handler processing consistency
 
@@ -346,10 +367,12 @@ async def _handle_event_message(self, message_data: dict[str, Any]):
         logger.info("Handling event message", message_data=message_data)
 
         # Extract event details
+
         event_type = message_data.get("event_type")
         data = message_data.get("data", {})  # ❌ BUG: Should be "event_data"
 
         # Validate required fields
+
         if not event_type or not data:
             logger.warning("Invalid event message - missing required fields", message_data=message_data)
             return
@@ -387,7 +410,8 @@ Fix the field name mismatch in `NATSMessageHandler._handle_event_message()`. The
 
 ## Investigation Completion Checklist
 
-- [x] All investigation steps completed as written
+[x] All investigation steps completed as written
+
 - [x] Comprehensive evidence collected and documented
 - [x] Root cause analysis completed
 - [x] System impact assessed

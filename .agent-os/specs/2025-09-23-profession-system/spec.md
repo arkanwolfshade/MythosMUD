@@ -14,6 +14,7 @@ Implement a character profession selection system that allows players to choose 
 As a new player, I want to select a profession for my character during creation, so that I can specialize my character and understand how it will affect my gameplay experience.
 
 **Detailed Workflow:**
+
 1. Player completes registration
 2. Player is presented with profession selection screen showing available professions
 3. Player can view profession descriptions, flavor text, and stat requirements
@@ -27,6 +28,7 @@ As a new player, I want to select a profession for my character during creation,
 As a player, I want my stat rolls to respect my chosen profession's requirements, so that I always get viable character combinations that work with my profession choice.
 
 **Detailed Workflow:**
+
 1. Player has selected a profession with specific stat requirements
 2. System rolls stats using weighted probabilities to favor valid combinations
 3. System validates rolled stats against profession requirements
@@ -44,7 +46,8 @@ As a player, I want my stat rolls to respect my chosen profession's requirements
 
 ## Out of Scope
 
-- Mechanical effects implementation (bonuses/penalties from professions)
+Mechanical effects implementation (bonuses/penalties from professions)
+
 - Advanced profession requirements beyond minimum stat values
 - Profession-based combat or social mechanics
 - Profession change functionality after character creation

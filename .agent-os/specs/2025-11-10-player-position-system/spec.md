@@ -37,23 +37,35 @@ Both representations pull from the persisted position state, ensuring consistenc
 ## Spec Scope
 
 1. **Slash Commands** - Implement `/sit`, `/stand`, and `/lie` (with optional “down”) commands plus default aliases at
+
    character creation.
+
 2. **State Management** - Track player position in memory and SQLite so reconnects restore posture; ensure standing is
+
    default on creation/login when no value exists.
+
 3. **Movement Restriction** - Block room transitions while sitting or lying with an explicit “stand first” message and
+
    no auto-standing.
+
 4. **Observer Notifications** - Broadcast structured descriptive messages to room occupants when a player changes
+
    position.
+
 5. **Status Display** - Surface current position in `/whoami` output and the Player Information panel using shared data
+
    sourcing.
 
 ## Out of Scope
 
-- Combat or skill modifiers tied to position changes.
+Combat or skill modifiers tied to position changes.
+
 - Animations or audio cues beyond text messaging.
 
 ## Expected Deliverable
 
 1. Demonstrable Playwright scenarios showing players issuing position commands, observers seeing notifications, and
+
    movement being blocked while seated or prone.
+
 2. `/whoami` command output and Player Information panel updates reflecting persisted position across reconnects.

@@ -236,7 +236,10 @@ class CommandParser:
             # Use the factory to get the creation method
             create_method = self._command_factory.get(command)
             if create_method:
-                return create_method(args)
+                from typing import cast
+
+                result: Command = cast(Command, create_method(args))
+                return result
             context = create_error_context()
             context.metadata = {
                 "command": command,

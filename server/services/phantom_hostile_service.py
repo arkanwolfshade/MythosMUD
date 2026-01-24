@@ -64,7 +64,7 @@ class PhantomHostileService:
         """
         if tier == "fractured":
             # Fractured: 15% chance of non-damaging combat
-            return random.random() < 0.15
+            return random.random() < 0.15  # nosec B311 - Game mechanics, not security-critical
         if tier == "deranged":
             # Deranged: Always spawn if hallucination triggers (handled by frequency system)
             # This method just confirms it's a valid tier for phantoms
@@ -78,7 +78,7 @@ class PhantomHostileService:
         Returns:
             Random phantom hostile name
         """
-        return random.choice(PHANTOM_HOSTILE_NAMES)
+        return random.choice(PHANTOM_HOSTILE_NAMES)  # nosec B311 - Game mechanics, not security-critical
 
     def create_phantom_hostile_data(self, player_id: uuid.UUID, room_id: str, tier: str) -> dict[str, Any]:
         """

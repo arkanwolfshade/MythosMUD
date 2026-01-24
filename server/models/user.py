@@ -10,7 +10,7 @@ our custom fields with Mapped[] for better type safety.
 """
 
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID
 from sqlalchemy import Boolean, DateTime, String, event
@@ -104,7 +104,7 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
 # Event listener to ensure display_name defaults to username if not set
 # This handles cases where display_name is not explicitly provided during User creation
 @event.listens_for(User, "before_insert", propagate=True)
-def set_display_name_default(_mapper, _connection, target):  # pylint: disable=unused-argument  # Reason: Parameters required by SQLAlchemy event listener signature
+def set_display_name_default(_mapper: Any, _connection: Any, target: User) -> None:  # pylint: disable=unused-argument  # Reason: Parameters required by SQLAlchemy event listener signature
     """
     Ensure display_name is set to username if not provided or empty.
 

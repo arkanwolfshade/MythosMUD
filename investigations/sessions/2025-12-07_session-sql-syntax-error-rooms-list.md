@@ -77,38 +77,47 @@ result = await session.execute(lookup_query, {"room_ids": explored_room_ids})
 
 ```python
 # Filter by explored rooms if requested and user is authenticated
+
 if filter_explored and current_user:
     try:
         # Get player from user
+
         persistence = request.app.state.persistence
         user_id = str(current_user.id)
         player = await persistence.get_player_by_user_id(user_id)
 
         if player:
             # Get explored rooms for this player
+
             exploration_service = get_exploration_service()
             player_id = uuid.UUID(str(player.player_id))
             explored_room_ids = await exploration_service.get_explored_rooms(player_id, session)
 
             # Convert explored room UUIDs to stable_ids for filtering
             # We need to look up stable_ids from room UUIDs
+
             if explored_room_ids:
                 # Query to get stable_ids from room UUIDs (using PostgreSQL array syntax)
+
                 lookup_query = text("SELECT stable_id FROM rooms WHERE id = ANY(:room_ids::uuid[])")
                 result = await session.execute(lookup_query, {"room_ids": explored_room_ids})
                 explored_stable_ids = {row[0] for row in result.fetchall()}
 
                 # Filter rooms to only include explored ones
+
                 rooms = [room for room in rooms if room.get("id") in explored_stable_ids]
 
                 # ... logging ...
+
             else:
                 # Player has explored no rooms - return empty list
+
                 rooms = []
         else:
             logger.warning("Player not found for user, cannot filter by exploration", user_id=user_id)
     except Exception as e:
         # Log error but don't fail the request - just return all rooms
+
         logger.warning(
             "Error filtering by explored rooms, returning all rooms",
             error=str(e),
@@ -131,28 +140,34 @@ SELECT stable_id FROM rooms WHERE id = ANY(:room_ids::uuid[])
 **Why This Fails**:
 
 1. **SQLAlchemy Parameter Binding**: SQLAlchemy's `text()` function uses
+
    `:parameter_name` syntax for parameterized queries. When executed with
    asyncpg (the async PostgreSQL driver), SQLAlchemy translates this to
    asyncpg's native parameter syntax.
 
 2. **PostgreSQL Casting Syntax**: PostgreSQL uses `::type` for type casting.
+
    However, when this follows immediately after a parameter placeholder
    (`:room_ids::uuid[]`), asyncpg's parameter parser gets confused.
 
 3. **Parser Conflict**: The `::` after the colon (`:room_ids::`) is
+
    interpreted as part of the parameter name or invalid syntax, causing
    asyncpg to throw a `PostgresSyntaxError` with "syntax error at or near :".
 
 4. **Parameter Value Type**: The `explored_room_ids` parameter is passed as a
+
    Python list of UUID strings, which SQLAlchemy/asyncpg needs to convert to
    a PostgreSQL UUID array. The current approach of trying to cast in the SQL
    string conflicts with parameter binding.
 
 **Technical Details**:
 
-- **Database Driver**: asyncpg (async PostgreSQL driver)
-- **ORM Layer**: SQLAlchemy 2.0+ with async support
-- **Query Method**: `text()` wrapper for raw SQL
+**Database Driver**: asyncpg (async PostgreSQL driver)
+
+**ORM Layer**: SQLAlchemy 2.0+ with async support
+
+**Query Method**: `text()` wrapper for raw SQL
 - **Parameter Binding**: Named parameters (`:parameter_name`)
 - **Parameter Value**: Python list of UUID strings
 
@@ -162,20 +177,30 @@ SELECT stable_id FROM rooms WHERE id = ANY(:room_ids::uuid[])
 
 **Scope**:
 
-- **Affected Endpoint**: `/api/rooms/list` (GET)
-- **Affected Feature**: Exploration-based room filtering
+**Affected Endpoint**: `/api/rooms/list` (GET)
+
+**Affected Feature**: Exploration-based room filtering
+
   (`filter_explored=true`)
-- **Affected Users**: Authenticated users attempting to view only explored
+
+**Affected Users**: Authenticated users attempting to view only explored
+
   rooms
 
 **Behavioral Impact**:
 
-- ✅ **No Crash**: Error is caught and handled gracefully
-- ✅ **Fallback Behavior**: API returns all rooms instead of failing
+✅ **No Crash**: Error is caught and handled gracefully
+
+✅ **Fallback Behavior**: API returns all rooms instead of failing
+
 - ⚠️ **Feature Degradation**: Exploration filtering does not work
+
 - ⚠️ **Security Impact**: May expose unexplored room data to clients when
+
   filtering is expected
+
 - ⚠️ **User Experience**: Users see all rooms even when requesting filtered
+
   view
 
 **Performance Impact**: Minimal
@@ -188,21 +213,31 @@ SELECT stable_id FROM rooms WHERE id = ANY(:room_ids::uuid[])
 
 **Error Log Entry**:
 
-- **File**: `logs/local/warnings.log`
-- **Line**: 1
-- **Timestamp**: 2025-12-07 20:30:30 (UTC: 2025-12-08T03:30:30.983824Z)
-- **Request ID**: `78ca82f3-950f-460b-a684-893a019d08af`
-- **Correlation ID**: `396d2c41-2890-44a6-b6d0-247d2cc1fc7d`
-- **Request Path**: `/api/rooms/list`
-- **HTTP Method**: GET
-- **User Agent**: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:145.0)
+**File**: `logs/local/warnings.log`
+
+**Line**: 1
+
+**Timestamp**: 2025-12-07 20:30:30 (UTC: 2025-12-08T03:30:30.983824Z)
+
+**Request ID**: `78ca82f3-950f-460b-a684-893a019d08af`
+
+**Correlation ID**: `396d2c41-2890-44a6-b6d0-247d2cc1fc7d`
+
+**Request Path**: `/api/rooms/list`
+
+**HTTP Method**: GET
+
+**User Agent**: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:145.0)
+
   Gecko/20100101 Firefox/145.0
 
 **Code Location**:
 
-- **File**: `server/api/rooms.py`
-- **Line**: 148
-- **Function**: `list_rooms()` endpoint handler
+**File**: `server/api/rooms.py`
+
+**Line**: 148
+
+**Function**: `list_rooms()` endpoint handler
 - **Code Block**: Exploration filtering logic (lines 130-173)
 
 **SQL Query**:
@@ -228,23 +263,30 @@ SELECT stable_id FROM rooms WHERE id = ANY(:room_ids::uuid[])
 
 **Query Pattern Analysis**:
 
-- ✅ **Correct Pattern** (used elsewhere): Separate casting from parameter binding
-- ❌ **Incorrect Pattern** (current bug): Mixing parameter syntax with casting syntax
+✅ **Correct Pattern** (used elsewhere): Separate casting from parameter binding
+
+❌ **Incorrect Pattern** (current bug): Mixing parameter syntax with casting syntax
 
 ### 7. Investigation Recommendations
 
 **Priority 1 - Immediate**:
 
 - Fix SQL query syntax to properly handle UUID array parameter binding
+
 - Test exploration filtering feature to ensure it works correctly
+
 - Verify that only explored rooms are returned when
+
   `filter_explored=true`
 
 **Priority 2 - Follow-up**:
 
 - Review other SQL queries for similar parameter binding issues
+
 - Consider adding integration tests for exploration filtering
+
 - Document proper pattern for PostgreSQL array parameter binding with
+
   asyncpg
 
 **Priority 3 - Enhancement**:
@@ -258,9 +300,13 @@ SELECT stable_id FROM rooms WHERE id = ANY(:room_ids::uuid[])
 **SQLAlchemy/asyncpg Compatibility**:
 
 - SQLAlchemy 2.0+ supports async operations through asyncpg
+
 - `text()` wrapper is required for raw SQL in async contexts
+
 - Parameter binding syntax is driver-dependent
+
 - asyncpg uses `$1, $2, ...` for positional parameters, but SQLAlchemy
+
   translates named parameters
 
 **PostgreSQL Array Operations**:
@@ -322,7 +368,8 @@ filter_explored=true parameter.
 
 ## Investigation Completion Checklist
 
-- [x] All investigation steps completed as written
+[x] All investigation steps completed as written
+
 - [x] Comprehensive evidence collected and documented
 - [x] Root cause analysis completed
 - [x] System impact assessed

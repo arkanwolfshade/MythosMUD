@@ -88,22 +88,27 @@ WHEN you see "SCENARIO COMPLETE":
 ## ⚠️ Common Traps to Avoid
 
 ### Trap 1: "This step seems unnecessary"
+
 **Thought**: "We already verified this in the previous step"
 **Action**: Execute it anyway. It tests a different edge case.
 
 ### Trap 2: "Empty results must be wrong"
+
 **Thought**: "Let me retry to get the messages"
 **Action**: Empty results are often correct. Accept and proceed.
 
 ### Trap 3: "I should add some debug logging"
+
 **Thought**: "Extra logs would help document what's happening"
 **Action**: Use only the logs in the scenario. Adding logs changes timing.
 
 ### Trap 4: "This command syntax looks wrong"
+
 **Thought**: "I should improve it to make it clearer"
 **Action**: Use exact syntax. The system interprets it correctly.
 
 ### Trap 5: "One more verification wouldn't hurt"
+
 **Thought**: "Let me check one more thing after completion"
 **Action**: Stop immediately at completion. Extra checks change state.
 
@@ -121,7 +126,8 @@ WHEN you see "SCENARIO COMPLETE":
 
 ## 💪 Remember
 
-- You are an **executor**, not an interpreter
+You are an **executor**, not an interpreter
+
 - Your job is to **follow instructions**, not improve them
 - **Exact execution** is more valuable than "optimized" execution
 - **Consistency** matters more than cleverness
@@ -130,6 +136,7 @@ WHEN you see "SCENARIO COMPLETE":
 ## 🔗 Full Documentation
 
 For detailed explanations, see:
+
 - `AI_EXECUTION_IMPROVEMENTS.md` - Complete improvement guide
 - `EXECUTION_GUARDS.md` - Detailed failure patterns
 - `SCENARIO_TEMPLATE.md` - Template with all improvements
@@ -137,7 +144,7 @@ For detailed explanations, see:
 
 ---
 
-**Keep this reference visible during scenario execution**
+### Keep this reference visible during scenario execution
 
 **Version**: 1.0
 **Last Updated**: 2025-10-07

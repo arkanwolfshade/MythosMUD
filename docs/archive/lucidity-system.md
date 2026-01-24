@@ -16,9 +16,11 @@ Implementation notes throughout call out tracking requirements, cooldown expecta
 
 ### 2.1 LCD Track
 
-- **Numeric range:** +100 (utter composure) down to −100 (irrecoverable collapse)
-- **Starting LCD:** 100 for newly created characters (subject to heritage modifiers later)
-- **Floor/ceiling:** LCD cannot exceed 100 and can drop as low as −100
+**Numeric range:** +100 (utter composure) down to −100 (irrecoverable collapse)
+
+**Starting LCD:** 100 for newly created characters (subject to heritage modifiers later)
+
+**Floor/ceiling:** LCD cannot exceed 100 and can drop as low as −100
 - **Negative values:** expose the character to catatonic rescue rules before final institutionalization
 
 ### 2.2 Tier Thresholds
@@ -34,7 +36,8 @@ Implementation notes throughout call out tracking requirements, cooldown expecta
 
 ### 2.3 Catatonic Rescue Window
 
-- Characters between −99 and 0 LCD are considered **catatonic** rather than dead.
+Characters between −99 and 0 LCD are considered **catatonic** rather than dead.
+
 - Allies may use `ground <target>` (working name) to stabilize the victim:
   - 30-second channel that can be interrupted by damage or hallucination events.
   - Success restores the target to LCD 1 (entering Deranged tier) and removes catatonia.
@@ -66,9 +69,11 @@ Passive LCD change is evaluated once per in-game minute. Modifiers stack additiv
 
 ### 3.3 Stabilizing Modifiers
 
-- **Companion presence:** +0.1 LCD/min per lucid/uneasy companion in group (max +0.3). If any companion is Deranged or worse, group bonus flips to −0.2 LCD/min.
-- **Lighting:** Handheld lantern or fixed electric lighting halves ambient drain values (round toward zero).
-- **Adaptive resistance:** For every continuous 10 in-game minutes in the same room, passive drain magnitude drops by 25% (minimum 50% of original) to mitigate AFK griefing while still encouraging movement.
+**Companion presence:** +0.1 LCD/min per lucid/uneasy companion in group (max +0.3). If any companion is Deranged or worse, group bonus flips to −0.2 LCD/min.
+
+**Lighting:** Handheld lantern or fixed electric lighting halves ambient drain values (round toward zero).
+
+**Adaptive resistance:** For every continuous 10 in-game minutes in the same room, passive drain magnitude drops by 25% (minimum 50% of original) to mitigate AFK griefing while still encouraging movement.
 
 ## 4. Active Interactions
 
@@ -97,14 +102,17 @@ Religious magic and folk remedies explicitly avoid LCD penalties.
 
 #### NPC Abilities
 
-- **Mind-rending attacks:** −3 LCD on failed Willpower save; success halves loss.
-- **Eldritch shrieks:** −5 LCD (area), with a 20% chance to trigger involuntary flee for Deranged targets.
-- **Dream invasion (sleep-based):** −8 LCD, bypasses passive recovery until target visits a sanctuary.
+**Mind-rending attacks:** −3 LCD on failed Willpower save; success halves loss.
+
+**Eldritch shrieks:** −5 LCD (area), with a 20% chance to trigger involuntary flee for Deranged targets.
+
+**Dream invasion (sleep-based):** −8 LCD, bypasses passive recovery until target visits a sanctuary.
 
 #### Environmental Events
 
-- **Sudden reality shift (room transforms, temporal jump):** Flat −7 LCD.
-- **Party member death within line of sight:** −4 LCD (−8 if caused by Mythos entity).
+**Sudden reality shift (room transforms, temporal jump):** Flat −7 LCD.
+
+**Party member death within line of sight:** −4 LCD (−8 if caused by Mythos entity).
 
 ### 4.2 Active Recovery Actions
 
@@ -142,18 +150,22 @@ Liabilities persist through death and sanitarium resets unless explicitly cleare
 | Fractured | 25% chance per 30 seconds | Phantom hostile spawns (15% chance of non-damaging combat), fake NPC tells, room text overlays             |
 | Deranged  | 45% chance per 20 seconds | Aggressive phantom mobs (attackable but vanish on hit), reversed compass directions, phantom damage popups |
 
-- **Phantom hostiles:** Share a health bar equal to 1 HP; on attack they dissipate but consume commands, spell slots, and stamina. Combat log marks them as “[Phantom]” only after dismissal.
-- **Muffled comms:** In Fractured tier, 30% of incoming chat lines lose punctuation; in Deranged tier, 10% of syllables are scrambled.
+**Phantom hostiles:** Share a health bar equal to 1 HP; on attack they dissipate but consume commands, spell slots, and stamina. Combat log marks them as “[Phantom]” only after dismissal.
+
+**Muffled comms:** In Fractured tier, 30% of incoming chat lines lose punctuation; in Deranged tier, 10% of syllables are scrambled.
 
 ### 5.2 Command Disruption & Involuntary Actions
 
-- **Misfires:** Starting at Fractured, 10% of complex commands (`cast`, `craft`, `sneak`) fizzle with a LCD warning. Deranged increases misfire chance to 25%.
-- **Involuntary flee:** Deranged characters have a 20% chance to auto-flee when taking >15% max HP damage in one hit; cooldown 2 minutes.
-- **Motor lock:** Catatonic characters cannot move or act until rescued or they hit −100 LCD.
+**Misfires:** Starting at Fractured, 10% of complex commands (`cast`, `craft`, `sneak`) fizzle with a LCD warning. Deranged increases misfire chance to 25%.
+
+**Involuntary flee:** Deranged characters have a 20% chance to auto-flee when taking >15% max HP damage in one hit; cooldown 2 minutes.
+
+**Motor lock:** Catatonic characters cannot move or act until rescued or they hit −100 LCD.
 
 ### 5.3 Communication Dampening
 
-- Whispered speech from Uneasy characters is flagged with `[strained]`.
+Whispered speech from Uneasy characters is flagged with `[strained]`.
+
 - Fractured characters’ outgoing chat has a 20% chance to append Mythos glyphs (purely cosmetic but unsettling).
 - Deranged characters cannot initiate `shout`; attempts instead create an echoing hallucination visible only to nearby Deranged players.
 
@@ -170,16 +182,20 @@ When LCD reaches −100:
 
 ## 6. Tracking & Implementation Notes
 
-- **Exposure ledger:** Store per-character dictionaries keyed by `entity_archetype`, `ritual_id`, and `lore_item_id` to determine first-time vs repeat LCD losses.
-- **Passive loop:** Align LCD tick evaluation with existing stamina/health regen ticks to minimize scheduler load.
-- **Hallucination controller:** Maintain a weighted queue to avoid repeating identical hallucinations within a 5-minute window for the same player.
+**Exposure ledger:** Store per-character dictionaries keyed by `entity_archetype`, `ritual_id`, and `lore_item_id` to determine first-time vs repeat LCD losses.
+
+**Passive loop:** Align LCD tick evaluation with existing stamina/health regen ticks to minimize scheduler load.
+
+**Hallucination controller:** Maintain a weighted queue to avoid repeating identical hallucinations within a 5-minute window for the same player.
 - **Cooldown registry:** Centralize recovery-action cooldowns in player state so effects persist across reconnects.
 - **Logging:** Route all LCD adjustments through the enhanced logging system (`get_logger`) with structured fields `san_change`, `reason`, `tier_before`, `tier_after`.
 
 ## 7. Balancing & Playtesting Roadmap
 
-- **Initial tuning:** Focus on ensuring a typical 30-minute expedition through haunted zones results in net LCD change between −10 and −25 with attentive play.
-- **Playtest milestones:**
+**Initial tuning:** Focus on ensuring a typical 30-minute expedition through haunted zones results in net LCD change between −10 and −25 with attentive play.
+
+**Playtest milestones:**
+
   - Closed-group lucidity dungeon run to observe hallucination cadence
   - Stress test of group solace/therapy loops to prevent trivial farming
   - PvP edge cases (e.g., intentionally griefing others into catatonia)

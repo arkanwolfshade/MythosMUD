@@ -41,7 +41,8 @@ As a **system administrator**, I want to specify NATS server location through en
 
 ## Out of Scope
 
-- Modifying NATS server configuration files (ports, logging, etc.)
+Modifying NATS server configuration files (ports, logging, etc.)
+
 - Changing NATS server startup parameters or behavior
 - Implementing NATS server installation or download functionality
 - Modifying client-side NATS connection logic

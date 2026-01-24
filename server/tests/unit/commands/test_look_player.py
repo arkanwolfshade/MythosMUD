@@ -121,7 +121,7 @@ def test_select_target_player_single_match(mock_player):
 
 def test_select_target_player_no_matches():
     """Test selecting target player when no matches."""
-    matching_players = []
+    matching_players: list = []
     target_player, error_result = _select_target_player(matching_players, "test", None, "TestPlayer")
     assert target_player is None
     assert error_result is not None

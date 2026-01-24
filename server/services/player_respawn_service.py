@@ -51,7 +51,7 @@ class PlayerRespawnService:
     - Clearing combat state when player respawns
     """
 
-    def __init__(self, event_bus: Any = None, player_combat_service: Any = None) -> None:
+    def __init__(self, event_bus: Any | None = None, player_combat_service: Any | None = None) -> None:
         """
         Initialize the player respawn service.
 
@@ -406,7 +406,7 @@ class PlayerRespawnService:
                 lucidity_record.liabilities = encode_liabilities(liabilities)
             else:
                 # No liabilities - roll once on the table
-                liability_code = random.choice(LIABILITY_CATALOG)
+                liability_code = random.choice(LIABILITY_CATALOG)  # nosec B311 - Game mechanics, not security-critical
                 await lucidity_service.add_liability(player_id, liability_code)
 
             # Get respawn room (always Sanitarium for sanitarium failover)

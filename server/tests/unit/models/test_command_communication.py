@@ -28,8 +28,9 @@ def test_say_command_required_fields():
     with patch("server.models.command_communication.validate_message_content", return_value="Hello"):
         command = SayCommand(message="Hello")
 
-        assert command.command_type == "say"
-        assert command.message == "Hello"
+        assert command.command_type == "say"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+        # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+        assert command.message == "Hello"  # type: ignore[unreachable]
 
 
 def test_say_command_validate_message_calls_validator():
@@ -66,8 +67,9 @@ def test_local_command_required_fields():
     with patch("server.models.command_communication.validate_message_content", return_value="Hello"):
         command = LocalCommand(message="Hello")
 
-        assert command.command_type == "local"
-        assert command.message == "Hello"
+        assert command.command_type == "local"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+        # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+        assert command.message == "Hello"  # type: ignore[unreachable]
 
 
 def test_local_command_validate_message_calls_validator():
@@ -104,8 +106,10 @@ def test_system_command_required_fields():
     with patch("server.models.command_communication.validate_message_content", return_value="System message"):
         command = SystemCommand(message="System message")
 
-        assert command.command_type == "system"
-        assert command.message == "System message"
+        # Reason: Testing str enum direct comparison - valid at runtime for str enums, but mypy sees as non-overlapping
+        assert command.command_type == "system"  # type: ignore[comparison-overlap]
+        # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+        assert command.message == "System message"  # type: ignore[unreachable]
 
 
 def test_system_command_validate_message_calls_validator():
@@ -142,8 +146,9 @@ def test_emote_command_required_fields():
     with patch("server.models.command_communication.validate_action_content", return_value="waves"):
         command = EmoteCommand(action="waves")
 
-        assert command.command_type == "emote"
-        assert command.action == "waves"
+        assert command.command_type == "emote"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+        # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+        assert command.action == "waves"  # type: ignore[unreachable]
 
 
 def test_emote_command_validate_action_calls_validator():
@@ -180,8 +185,9 @@ def test_me_command_required_fields():
     with patch("server.models.command_communication.validate_action_content", return_value="waves"):
         command = MeCommand(action="waves")
 
-        assert command.command_type == "me"
-        assert command.action == "waves"
+        assert command.command_type == "me"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+        # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+        assert command.action == "waves"  # type: ignore[unreachable]
 
 
 def test_me_command_validate_action_calls_validator():
@@ -218,8 +224,9 @@ def test_pose_command_required_fields():
     with patch("server.models.command_communication.validate_pose_content", return_value="stands tall"):
         command = PoseCommand(pose="stands tall")
 
-        assert command.command_type == "pose"
-        assert command.pose == "stands tall"
+        assert command.command_type == "pose"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+        # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+        assert command.pose == "stands tall"  # type: ignore[unreachable]
 
 
 def test_pose_command_validate_pose_calls_validator():
@@ -265,8 +272,9 @@ def test_whisper_command_required_fields():
     ):
         command = WhisperCommand(target="player1", message="secret")
 
-        assert command.command_type == "whisper"
-        assert command.target == "player1"
+        assert command.command_type == "whisper"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+        # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+        assert command.target == "player1"  # type: ignore[unreachable]
         assert command.message == "secret"
 
 
@@ -326,8 +334,9 @@ def test_reply_command_required_fields():
     with patch("server.models.command_communication.validate_message_content", return_value="reply"):
         command = ReplyCommand(message="reply")
 
-        assert command.command_type == "reply"
-        assert command.message == "reply"
+        assert command.command_type == "reply"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+        # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+        assert command.message == "reply"  # type: ignore[unreachable]
 
 
 def test_reply_command_validate_message_calls_validator():

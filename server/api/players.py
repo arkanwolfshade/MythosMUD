@@ -7,7 +7,7 @@ This module handles basic player CRUD operations and multi-character management.
 # pylint: disable=too-many-lines  # Reason: Player API requires extensive endpoint handlers for player management, character operations, and state queries
 
 import uuid
-from typing import Any
+from typing import Any, cast
 
 from fastapi import APIRouter, Depends
 from fastapi import Request as FastAPIRequest
@@ -428,7 +428,7 @@ async def select_character(
         if connection_manager:
             await _disconnect_other_characters(character_uuid, current_user, connection_manager, player_service)
 
-        return character
+        return cast("PlayerRead", character)
     except LoggedHTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Character selection errors unpredictable, must create error context

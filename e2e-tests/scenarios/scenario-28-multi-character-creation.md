@@ -8,20 +8,22 @@ Tests creating multiple characters for a single user, including character limit 
 
 ## Prerequisites
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Test user has 0-2 active characters (to test limit)
 2. **Server Running**: Development server is running on port 54731
 3. **Client Accessible**: Client is accessible on port 5173
 4. **No Previous Sessions**: Browser is clean with no existing game sessions
 
-**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
+### ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE
 
 ## Test Configuration
 
-- **Test Player**: ArkanWolfshade
-- **Testing Approach**: Playwright MCP
-- **Timeout Settings**: Use configurable timeouts from master rules
+**Test Player**: ArkanWolfshade
+
+**Testing Approach**: Playwright MCP
+
+**Timeout Settings**: Use configurable timeouts from master rules
 
 ## Execution Steps
 
@@ -151,14 +153,18 @@ await mcp_playwright_browser_wait_for({text: "already exists", time: 30});
 
 ## Failure Modes
 
-- **Character limit not enforced**: Service layer may not be checking limit correctly
-- **Name conflict not detected**: Case-insensitive comparison may not be working
-- **Character creation fails**: API endpoint or validation may have issues
-- **Character not appearing in list**: Character may be soft-deleted or persistence issue
+**Character limit not enforced**: Service layer may not be checking limit correctly
+
+**Name conflict not detected**: Case-insensitive comparison may not be working
+
+**Character creation fails**: API endpoint or validation may have issues
+
+**Character not appearing in list**: Character may be soft-deleted or persistence issue
 
 ## Notes
 
-- Character names must be between 1-50 characters
+Character names must be between 1-50 characters
+
 - Character names are case-insensitive unique among active characters
 - Deleted character names can be reused
 - Maximum 3 active characters per user

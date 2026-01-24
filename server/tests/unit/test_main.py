@@ -166,7 +166,7 @@ class TestMonitoringEndpoints:
 
         with patch("server.api.system_monitoring.get_monitoring_dashboard", return_value=mock_dashboard):
             result = await get_system_metrics(mock_request)
-            assert isinstance(result, dict) or hasattr(result, "model_dump")
+            assert isinstance(result, dict) or hasattr(result, "model_dump")  # type: ignore[unreachable]  # Test checks if result is dict OR has model_dump - both paths are valid at runtime
             result_dict = result.model_dump() if hasattr(result, "model_dump") else result
             assert "metrics" in result_dict or result_dict == {"metrics": "data"}
 
@@ -196,7 +196,7 @@ class TestMonitoringEndpoints:
 
         with patch("server.api.system_monitoring.get_monitoring_dashboard", return_value=mock_dashboard):
             result = await get_system_monitoring_summary(mock_request)
-            assert isinstance(result, dict) or hasattr(result, "model_dump")
+            assert isinstance(result, dict) or hasattr(result, "model_dump")  # type: ignore[unreachable]  # Test checks if result is dict OR has model_dump - both paths are valid at runtime
 
     @pytest.mark.asyncio
     async def test_get_monitoring_summary_failure(self):
@@ -224,7 +224,7 @@ class TestMonitoringEndpoints:
 
         with patch("server.api.system_monitoring.get_monitoring_dashboard", return_value=mock_dashboard):
             result = await get_system_monitoring_alerts(mock_request)
-            assert isinstance(result, dict) or hasattr(result, "model_dump")
+            assert isinstance(result, dict) or hasattr(result, "model_dump")  # type: ignore[unreachable]  # Test checks if result is dict OR has model_dump - both paths are valid at runtime
             result_dict = result.model_dump() if hasattr(result, "model_dump") else result
             assert "alerts" in result_dict
 
@@ -254,7 +254,7 @@ class TestMonitoringEndpoints:
 
         with patch("server.api.system_monitoring.get_monitoring_dashboard", return_value=mock_dashboard):
             result = await resolve_system_alert("alert_123", mock_request)
-            assert isinstance(result, dict) or hasattr(result, "model_dump")
+            assert isinstance(result, dict) or hasattr(result, "model_dump")  # type: ignore[unreachable]  # Test checks if result is dict OR has model_dump - both paths are valid at runtime
             result_dict = result.model_dump() if hasattr(result, "model_dump") else result
             assert "message" in result_dict
 

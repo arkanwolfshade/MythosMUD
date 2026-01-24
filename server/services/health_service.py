@@ -13,6 +13,7 @@ and chaos in our digital realm.
 
 import time
 from datetime import UTC, datetime
+from typing import TYPE_CHECKING, Any
 
 import psutil
 
@@ -27,6 +28,8 @@ from ..models.health import (
 from ..realtime.connection_manager import resolve_connection_manager
 from ..structured_logging.enhanced_logging_config import get_logger
 
+if TYPE_CHECKING:
+    from ..realtime.connection_manager import ConnectionManager
 logger = get_logger(__name__)
 
 
@@ -38,7 +41,7 @@ class HealthService:
     including server metrics, database connectivity, and connection statistics.
     """
 
-    def __init__(self, connection_manager=None):
+    def __init__(self, connection_manager: Any | None = None) -> None:
         """
         Initialize the health service.
 
@@ -48,7 +51,7 @@ class HealthService:
         AI Agent: connection_manager injected via constructor to eliminate global singleton
         """
         self.start_time = time.time()
-        self.last_health_check = None
+        self.last_health_check: datetime | None = None
         self.health_check_count = 0
         self.connection_manager = connection_manager  # AI Agent: Injected dependency
 
@@ -83,7 +86,9 @@ class HealthService:
             logger.warning("Failed to get CPU usage", error=str(e))
             return 0.0
 
-    def _create_health_response(self, status: HealthStatus, connection_count: int, query_time_ms: float | None) -> dict:
+    def _create_health_response(
+        self, status: HealthStatus, connection_count: int, query_time_ms: float | None
+    ) -> dict[str, Any]:
         """Create a standardized health check response dictionary.
 
         Args:
@@ -100,7 +105,7 @@ class HealthService:
             "last_query_time_ms": query_time_ms,
         }
 
-    async def check_database_health_async(self) -> dict:  # pylint: disable=too-many-return-statements  # Reason: Health check function requires multiple return paths for different failure scenarios (no container, no persistence, no pool, timeout, fallback, exception). Extracting all returns would reduce readability.
+    async def check_database_health_async(self) -> dict[str, Any]:  # pylint: disable=too-many-return-statements  # Reason: Health check function requires multiple return paths for different failure scenarios (no container, no persistence, no pool, timeout, fallback, exception). Extracting all returns would reduce readability.
         """
         Check database connectivity and health with actual query validation.
 
@@ -159,7 +164,7 @@ class HealthService:
             logger.warning("Database health check failed", error=str(e))
             return self._create_health_response(HealthStatus.UNHEALTHY, 0, None)
 
-    def check_database_health(self) -> dict:
+    def check_database_health(self) -> dict[str, Any]:
         """
         Check database connectivity and health (sync wrapper).
 
@@ -221,7 +226,7 @@ class HealthService:
                 "last_query_time_ms": None,
             }
 
-    def check_connections_health(self) -> dict:
+    def check_connections_health(self) -> dict[str, Any]:
         """Check connection manager health."""
         try:
             # AI Agent: Use injected connection_manager instead of global import
@@ -423,7 +428,7 @@ class HealthService:
 _health_service: HealthService | None = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
 
 
-def get_health_service(connection_manager=None) -> HealthService:
+def get_health_service(connection_manager: "ConnectionManager | None" = None) -> HealthService:
     """
     Get the global health service instance.
 

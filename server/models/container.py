@@ -14,7 +14,7 @@ from enum import Enum
 from typing import TYPE_CHECKING, Any
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, ValidationInfo, field_validator
 
 if TYPE_CHECKING:
     from ..services.inventory_service import InventoryStack
@@ -195,20 +195,31 @@ class ContainerComponent(BaseModel):
 
     @field_validator("room_id", mode="after")
     @classmethod
-    def validate_room_id(cls, v: str | None, info) -> str | None:
+    def validate_room_id(cls, v: str | None, info: ValidationInfo) -> str | None:
         """Validate that room_id is provided for environment and corpse containers."""
         source_type = info.data.get("source_type")
-        if source_type in (ContainerSourceType.ENVIRONMENT, ContainerSourceType.CORPSE):
+        # Handle both enum and string values during validation
+        if source_type is None:
+            return v
+        source_type_value = source_type.value if hasattr(source_type, "value") else str(source_type)
+        if source_type in (ContainerSourceType.ENVIRONMENT, ContainerSourceType.CORPSE) or source_type_value in (
+            "environment",
+            "corpse",
+        ):
             if not v:
-                raise ValueError(f"{source_type.value} containers must have a room_id")
+                raise ValueError(f"{source_type_value} containers must have a room_id")
         return v
 
     @field_validator("entity_id", mode="after")
     @classmethod
-    def validate_entity_id(cls, v: UUID | None, info) -> UUID | None:
+    def validate_entity_id(cls, v: UUID | None, info: ValidationInfo) -> UUID | None:
         """Validate that entity_id is provided for equipment containers."""
         source_type = info.data.get("source_type")
-        if source_type == ContainerSourceType.EQUIPMENT:
+        # Handle both enum and string values during validation
+        if source_type is None:
+            return v
+        source_type_value = source_type.value if hasattr(source_type, "value") else str(source_type)
+        if source_type == ContainerSourceType.EQUIPMENT or source_type_value == "equipment":
             if not v:
                 raise ValueError("Equipment containers must have an entity_id")
         return v

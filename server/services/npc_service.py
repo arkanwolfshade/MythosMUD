@@ -30,7 +30,7 @@ class NPCService:
     and provides integration with the NPC subsystem.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the NPC service."""
         logger.info("NPCService initialized")
 

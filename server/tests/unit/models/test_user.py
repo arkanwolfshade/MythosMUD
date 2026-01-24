@@ -9,7 +9,7 @@ import uuid
 from server.models.user import User
 
 
-def test_user_repr():
+def test_user_repr() -> None:
     """Test __repr__ returns expected string format."""
     user = User()
     user.id = uuid.uuid4()
@@ -23,7 +23,7 @@ def test_user_repr():
     assert "True" in repr_str or "is_active=True" in repr_str
 
 
-def test_user_is_authenticated_when_active():
+def test_user_is_authenticated_when_active() -> None:
     """Test is_authenticated returns True when user is active."""
     user = User()
     user.is_active = True
@@ -31,7 +31,7 @@ def test_user_is_authenticated_when_active():
     assert user.is_authenticated is True
 
 
-def test_user_is_authenticated_when_inactive():
+def test_user_is_authenticated_when_inactive() -> None:
     """Test is_authenticated returns False when user is inactive."""
     user = User()
     user.is_active = False
@@ -39,7 +39,7 @@ def test_user_is_authenticated_when_inactive():
     assert user.is_authenticated is False
 
 
-def test_user_get_display_name_with_display_name():
+def test_user_get_display_name_with_display_name() -> None:
     """Test get_display_name returns display_name when set."""
     user = User()
     user.display_name = "DisplayName"
@@ -50,7 +50,7 @@ def test_user_get_display_name_with_display_name():
     assert result == "DisplayName"
 
 
-def test_user_get_display_name_with_empty_display_name():
+def test_user_get_display_name_with_empty_display_name() -> None:
     """Test get_display_name falls back to username when display_name is empty."""
     user = User()
     user.display_name = ""
@@ -61,7 +61,7 @@ def test_user_get_display_name_with_empty_display_name():
     assert result == "testuser"
 
 
-def test_user_get_display_name_without_display_name():
+def test_user_get_display_name_without_display_name() -> None:
     """Test get_display_name falls back to username when display_name not set."""
     user = User()
     user.username = "testuser"
@@ -72,7 +72,7 @@ def test_user_get_display_name_without_display_name():
     assert result == "testuser"
 
 
-def test_user_get_display_name_falls_back_to_id():
+def test_user_get_display_name_falls_back_to_id() -> None:
     """Test get_display_name falls back to id when username is not set."""
     user = User()
     user.id = uuid.uuid4()
@@ -83,7 +83,7 @@ def test_user_get_display_name_falls_back_to_id():
     assert result == str(user.id)
 
 
-def test_user_get_display_name_all_empty():
+def test_user_get_display_name_all_empty() -> None:
     """Test get_display_name handles case where all fields are empty/missing."""
     user = User()
     user.id = uuid.uuid4()

@@ -25,8 +25,9 @@ def test_npc_command_default_values():
     """Test NPCCommand has correct default values."""
     command = NPCCommand()
 
-    assert command.command_type == "npc"
-    assert command.subcommand is None
+    assert command.command_type == "npc"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+    # Reason: Testing default value - mypy sees as unreachable but valid at runtime
+    assert command.subcommand is None  # type: ignore[unreachable]
     assert command.args == []
 
 
@@ -64,8 +65,10 @@ def test_summon_command_required_fields():
     """Test SummonCommand requires prototype_id."""
     command = SummonCommand(prototype_id="test_item_123")
 
-    assert command.command_type == "summon"
-    assert command.prototype_id == "test_item_123"
+    # Reason: Testing str enum direct comparison - valid at runtime for str enums, but mypy sees as non-overlapping
+    assert command.command_type == "summon"  # type: ignore[comparison-overlap]
+    # Reason: Testing field value - mypy sees as unreachable but valid at runtime
+    assert command.prototype_id == "test_item_123"  # type: ignore[unreachable]
     assert command.quantity == 1  # Default
     assert command.target_type == "item"  # Default
 
@@ -164,8 +167,9 @@ def test_teleport_command_required_fields():
     with patch("server.models.command_admin.validate_player_name", return_value="TestPlayer"):
         command = TeleportCommand(player_name="TestPlayer")
 
-        assert command.command_type == "teleport"
-        assert command.player_name == "TestPlayer"
+        assert command.command_type == "teleport"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+        # Reason: Testing field value - mypy sees as unreachable but valid at runtime
+        assert command.player_name == "TestPlayer"  # type: ignore[unreachable]
         assert command.direction is None
 
 
@@ -235,8 +239,10 @@ def test_goto_command_required_fields():
     with patch("server.models.command_admin.validate_player_name", return_value="TestPlayer"):
         command = GotoCommand(player_name="TestPlayer")
 
-        assert command.command_type == "goto"
-        assert command.player_name == "TestPlayer"
+        # Reason: Testing str enum direct comparison - valid at runtime for str enums, but mypy sees as non-overlapping
+        assert command.command_type == "goto"  # type: ignore[comparison-overlap]
+        # Reason: Testing field value - mypy sees as unreachable but valid at runtime
+        assert command.player_name == "TestPlayer"  # type: ignore[unreachable]
 
 
 def test_goto_command_validate_player_name_calls_validator():
@@ -270,8 +276,9 @@ def test_shutdown_command_default_values():
     """Test ShutdownCommand has correct default values."""
     command = ShutdownCommand()
 
-    assert command.command_type == "shutdown"
-    assert command.args == []
+    assert command.command_type == "shutdown"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+    # Reason: Testing default value - mypy sees as unreachable but valid at runtime
+    assert command.args == []  # type: ignore[unreachable]
 
 
 def test_shutdown_command_with_args():

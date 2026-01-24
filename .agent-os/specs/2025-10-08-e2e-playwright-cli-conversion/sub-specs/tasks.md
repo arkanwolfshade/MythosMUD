@@ -728,30 +728,38 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 
 ## Estimated Timeline
 
-- **Week 1**: Phase 1 + Phase 2 (Infrastructure + Category A) = 39.5 hours
-- **Week 2**: Phase 3 + Phase 4 (Category B + MCP Refactoring) = 22 hours
-- **Week 3**: Phase 5 + Phase 6 (CI/CD + Documentation) = 18 hours
+**Week 1**: Phase 1 + Phase 2 (Infrastructure + Category A) = 39.5 hours
+
+**Week 2**: Phase 3 + Phase 4 (Category B + MCP Refactoring) = 22 hours
+
+**Week 3**: Phase 5 + Phase 6 (CI/CD + Documentation) = 18 hours
 
 **Total Calendar Time**: ~3 weeks (assuming 40 hours/week development capacity)
 
 ## Risk Factors
 
 1. **Database Seeding Complexity** - Test data seeding may require more effort than estimated if schema is complex
+
    - *Mitigation*: Reuse existing `dual_connection_test_data.py` patterns
 
 2. **Rate Limiting Tests** - 60-second wait times may make tests slow
+
    - *Mitigation*: Configure lower rate limits for testing environment
 
 3. **CI/CD Integration** - GitHub Actions may have environment differences
+
    - *Mitigation*: Test CI workflow early and iterate
 
 4. **Test Flakiness** - Timing-dependent tests may be unreliable
+
    - *Mitigation*: Use proper waits, retries, and increased timeouts
 
 ## Success Metrics
 
-- **Test Coverage**: 47% of scenarios automated (10 of 21)
-- **Execution Time**: <5 minutes for automated tests vs 100+ minutes for all MCP scenarios
-- **CI Integration**: 100% automated tests run in CI/CD
+**Test Coverage**: 47% of scenarios automated (10 of 21)
+
+**Execution Time**: <5 minutes for automated tests vs 100+ minutes for all MCP scenarios
+
+**CI Integration**: 100% automated tests run in CI/CD
 - **Reliability**: >95% test pass rate on repeated runs
 - **Cost Reduction**: ~50% reduction in AI Agent execution time

@@ -117,7 +117,8 @@ async def test_send_say_message_rate_limited():
     mock_player.current_room_id = "room_001"
     mock_player_service.get_player_by_id = AsyncMock(return_value=mock_player)
     service = ChatService(mock_persistence, mock_room_service, mock_player_service)
-    service.rate_limiter.check_rate_limit = MagicMock(return_value=False)
+    # Reason: Standard test mocking practice - replacing method with MagicMock for testing
+    service.rate_limiter.check_rate_limit = MagicMock(return_value=False)  # type: ignore[method-assign]
     result = await service.send_say_message(uuid.uuid4(), "Hello")
     assert result["success"] is False
     assert "rate limit" in result["error"].lower()
@@ -134,7 +135,8 @@ async def test_send_say_message_no_room():
     mock_player.current_room_id = None
     mock_player_service.get_player_by_id = AsyncMock(return_value=mock_player)
     service = ChatService(mock_persistence, mock_room_service, mock_player_service)
-    service.rate_limiter.check_rate_limit = MagicMock(return_value=True)
+    # Reason: Standard test mocking practice - replacing method with MagicMock for testing
+    service.rate_limiter.check_rate_limit = MagicMock(return_value=True)  # type: ignore[method-assign]
     result = await service.send_say_message(uuid.uuid4(), "Hello")
     assert result["success"] is False
     assert "not in a room" in result["error"].lower()
@@ -187,8 +189,10 @@ async def test_send_whisper_message_no_target():
     # First call returns sender, second call (for target) returns None
     mock_player_service.get_player_by_id = AsyncMock(side_effect=[mock_player, None])
     service = ChatService(mock_persistence, mock_room_service, mock_player_service)
-    service.rate_limiter.check_rate_limit = MagicMock(return_value=True)
-    result = await service.send_whisper_message(uuid.uuid4(), None, "Hello")
+    # Reason: Standard test mocking practice - replacing method with MagicMock for testing
+    service.rate_limiter.check_rate_limit = MagicMock(return_value=True)  # type: ignore[method-assign]
+    # Reason: Intentionally testing error handling with None input
+    result = await service.send_whisper_message(uuid.uuid4(), None, "Hello")  # type: ignore[arg-type]
     assert result["success"] is False
     assert (
         "aether" in result["error"].lower()
@@ -274,8 +278,10 @@ async def test_send_say_message_muted():
     mock_player.current_room_id = "room_001"
     mock_player_service.get_player_by_id = AsyncMock(return_value=mock_player)
     service = ChatService(mock_persistence, mock_room_service, mock_player_service)
-    service.rate_limiter.check_rate_limit = MagicMock(return_value=True)
-    service.user_manager.is_channel_muted = MagicMock(return_value=True)
+    # Reason: Standard test mocking practice - replacing method with MagicMock for testing
+    service.rate_limiter.check_rate_limit = MagicMock(return_value=True)  # type: ignore[method-assign]
+    # Reason: Standard test mocking practice - replacing method with MagicMock for testing
+    service.user_manager.is_channel_muted = MagicMock(return_value=True)  # type: ignore[method-assign]
     result = await service.send_say_message(uuid.uuid4(), "Hello")
     assert result["success"] is False
     assert "muted" in result["error"].lower()
@@ -292,9 +298,11 @@ async def test_send_say_message_globally_muted():
     mock_player.current_room_id = "room_001"
     mock_player_service.get_player_by_id = AsyncMock(return_value=mock_player)
     service = ChatService(mock_persistence, mock_room_service, mock_player_service)
-    service.rate_limiter.check_rate_limit = MagicMock(return_value=True)
-    service.user_manager.is_channel_muted = MagicMock(return_value=False)
-    service.user_manager.is_globally_muted = MagicMock(return_value=True)
+    # Reason: Standard test mocking practice - replacing method with MagicMock for testing
+    service.rate_limiter.check_rate_limit = MagicMock(return_value=True)  # type: ignore[method-assign]
+    # Reason: Standard test mocking practice - replacing method with MagicMock for testing
+    service.user_manager.is_channel_muted = MagicMock(return_value=False)  # type: ignore[method-assign]
+    service.user_manager.is_globally_muted = MagicMock(return_value=True)  # type: ignore[method-assign]  # Reason: Standard test mocking practice
     result = await service.send_say_message(uuid.uuid4(), "Hello")
     assert result["success"] is False
     assert "globally muted" in result["error"].lower()
@@ -311,10 +319,14 @@ async def test_send_say_message_cannot_send():
     mock_player.current_room_id = "room_001"
     mock_player_service.get_player_by_id = AsyncMock(return_value=mock_player)
     service = ChatService(mock_persistence, mock_room_service, mock_player_service)
-    service.rate_limiter.check_rate_limit = MagicMock(return_value=True)
-    service.user_manager.is_channel_muted = MagicMock(return_value=False)
-    service.user_manager.is_globally_muted = MagicMock(return_value=False)
-    service.user_manager.can_send_message = MagicMock(return_value=False)
+    # Reason: Standard test mocking practice - replacing method with MagicMock for testing
+    service.rate_limiter.check_rate_limit = MagicMock(return_value=True)  # type: ignore[method-assign]
+    # Reason: Standard test mocking practice - replacing method with MagicMock for testing
+    service.user_manager.is_channel_muted = MagicMock(return_value=False)  # type: ignore[method-assign]
+    # Reason: Standard test mocking practice - replacing method with MagicMock for testing
+    service.user_manager.is_globally_muted = MagicMock(return_value=False)  # type: ignore[method-assign]
+    # Reason: Standard test mocking practice - replacing method with MagicMock for testing
+    service.user_manager.can_send_message = MagicMock(return_value=False)  # type: ignore[method-assign]
     result = await service.send_say_message(uuid.uuid4(), "Hello")
     assert result["success"] is False
     assert "cannot send" in result["error"].lower()

@@ -342,7 +342,8 @@ def test_last_connected_time_set():
     fsm.connect()
     fsm.connected_successfully()
     assert fsm.last_connected_time is not None
-    assert isinstance(fsm.last_connected_time, datetime)
+    # Reason: Testing type check - mypy sees as unreachable but valid at runtime
+    assert isinstance(fsm.last_connected_time, datetime)  # type: ignore[unreachable]
 
 
 def test_last_error_set():

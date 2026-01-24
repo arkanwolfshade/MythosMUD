@@ -22,6 +22,7 @@ This guide provides comprehensive instructions for deploying the dual WebSocket/
 ### System Requirements
 
 **Server Requirements:**
+
 - Python 3.12+
 - Node.js 18+
 - SQLite 3.35+ (or PostgreSQL 13+ for production)
@@ -29,6 +30,7 @@ This guide provides comprehensive instructions for deploying the dual WebSocket/
 - 2+ CPU cores (4+ recommended for production)
 
 **Client Requirements:**
+
 - Modern web browser with WebSocket and EventSource support
 - JavaScript enabled
 - HTTPS connection (required for production)
@@ -36,8 +38,10 @@ This guide provides comprehensive instructions for deploying the dual WebSocket/
 ### Dependencies
 
 **Server Dependencies:**
+
 ```bash
 # Python dependencies
+
 uvicorn>=0.24.0
 fastapi>=0.104.0
 websockets>=12.0
@@ -46,6 +50,7 @@ pydantic>=2.0.0
 sqlalchemy>=2.0.0
 
 # Node.js dependencies (for client)
+
 react>=18.0.0
 typescript>=4.9.0
 vite>=4.0.0
@@ -59,28 +64,33 @@ Create a `.env` file with the following configuration:
 
 ```bash
 # Server Configuration
+
 DATABASE_URL=sqlite:///./data/players/mythos.db
 SECRET_KEY=your-secret-key-here
 DEBUG=false
 LOG_LEVEL=INFO
 
 # Connection Configuration
+
 MAX_CONNECTIONS_PER_PLAYER=4
 CONNECTION_TIMEOUT=300
 HEALTH_CHECK_INTERVAL=30
 CLEANUP_INTERVAL=60
 
 # Performance Configuration
+
 MESSAGE_BATCH_SIZE=100
 CONNECTION_POOL_SIZE=1000
 PERFORMANCE_MONITORING=true
 
 # Security Configuration
+
 CORS_ORIGINS=https://yourdomain.com,https://www.yourdomain.com
 RATE_LIMIT_REQUESTS=100
 RATE_LIMIT_WINDOW=60
 
 # Monitoring Configuration
+
 ENABLE_METRICS=true
 METRICS_PORT=9090
 LOG_FORMAT=json
@@ -90,23 +100,27 @@ LOG_FORMAT=json
 
 ```bash
 # Production-specific settings
+
 DATABASE_URL=postgresql://user:password@localhost:5432/mythos_prod
 SECRET_KEY=your-production-secret-key
 DEBUG=false
 LOG_LEVEL=WARNING
 
 # Enhanced security
+
 CORS_ORIGINS=https://yourdomain.com
 RATE_LIMIT_REQUESTS=50
 RATE_LIMIT_WINDOW=60
 
 # Performance optimization
+
 MAX_CONNECTIONS_PER_PLAYER=2
 CONNECTION_TIMEOUT=180
 HEALTH_CHECK_INTERVAL=15
 CLEANUP_INTERVAL=30
 
 # Monitoring
+
 ENABLE_METRICS=true
 METRICS_PORT=9090
 LOG_FORMAT=json
@@ -118,39 +132,49 @@ SENTRY_DSN=your-sentry-dsn
 ### Docker Deployment
 
 **Dockerfile:**
+
 ```dockerfile
 FROM python:3.12-slim
 
 # Set working directory
+
 WORKDIR /app
 
 # Install system dependencies
+
 RUN apt-get update && apt-get install -y \
     gcc \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install Python dependencies
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
+
 COPY . .
 
 # Create data directory
+
 RUN mkdir -p /app/data/players
 
 # Expose ports
+
 EXPOSE 8000 9090
 
 # Health check
+
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8000/health || exit 1
 
 # Start server
+
 CMD ["uvicorn", "server.main:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
 
 **docker-compose.yml:**
+
 ```yaml
 version: '3.8'
 
@@ -205,11 +229,14 @@ services:
 ### Manual Deployment
 
 **1. Install Dependencies:**
+
 ```bash
 # Install Python dependencies
+
 pip install -r requirements.txt
 
 # Install Node.js dependencies
+
 cd client
 npm install
 npm run build
@@ -217,27 +244,35 @@ cd ..
 ```
 
 **2. Initialize Database:**
+
 ```bash
 # Create database directory
+
 mkdir -p data/players
 
 # Initialize database schema
+
 python server/scripts/init_db.py
 
 # Verify database
+
 python server/scripts/verify_db.py
 ```
 
 **3. Start Server:**
+
 ```bash
 # Development
+
 uvicorn server.main:app --reload --host 0.0.0.0 --port 8000
 
 # Production
+
 uvicorn server.main:app --host 0.0.0.0 --port 8000 --workers 4
 ```
 
 **4. Start Client:**
+
 ```bash
 cd client
 npm run build
@@ -249,6 +284,7 @@ npm run preview
 ### Build Configuration
 
 **vite.config.ts:**
+
 ```typescript
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
@@ -284,8 +320,10 @@ export default defineConfig({
 ### Environment Configuration
 
 **Client Environment Variables:**
+
 ```bash
 # .env.production
+
 REACT_APP_API_URL=https://api.yourdomain.com
 REACT_APP_WS_URL=wss://api.yourdomain.com
 REACT_APP_SSE_URL=https://api.yourdomain.com
@@ -297,10 +335,12 @@ REACT_APP_DEBUG=false
 
 ```bash
 # Build for production
+
 npm run build
 
 # Deploy to static hosting
 # Copy dist/ contents to your web server
+
 ```
 
 ## Database Configuration
@@ -309,27 +349,34 @@ npm run build
 
 ```bash
 # Create database directory
+
 mkdir -p data/players
 
 # Initialize database
+
 python server/scripts/init_db.py
 
 # Verify database
+
 python server/scripts/verify_db.py
 ```
 
 ### PostgreSQL (Production)
 
 **1. Install PostgreSQL:**
+
 ```bash
 # Ubuntu/Debian
+
 sudo apt-get install postgresql postgresql-contrib
 
 # CentOS/RHEL
+
 sudo yum install postgresql-server postgresql-contrib
 ```
 
 **2. Create Database:**
+
 ```sql
 -- Connect to PostgreSQL
 sudo -u postgres psql
@@ -341,12 +388,15 @@ GRANT ALL PRIVILEGES ON DATABASE mythos_prod TO mythos_user;
 ```
 
 **3. Update Configuration:**
+
 ```bash
 # Update .env
+
 DATABASE_URL=postgresql://mythos_user:secure_password@localhost:5432/mythos_prod
 ```
 
 **4. Initialize Database:**
+
 ```bash
 python server/scripts/init_db.py
 ```
@@ -356,6 +406,7 @@ python server/scripts/init_db.py
 ### Prometheus Configuration
 
 **prometheus.yml:**
+
 ```yaml
 global:
   scrape_interval: 15s
@@ -371,6 +422,7 @@ scrape_configs:
 ### Grafana Dashboard
 
 **Dashboard Configuration:**
+
 ```json
 {
   "dashboard": {
@@ -414,6 +466,7 @@ scrape_configs:
 ### Logging Configuration
 
 **log_config.yaml:**
+
 ```yaml
 version: 1
 disable_existing_loggers: false
@@ -460,6 +513,7 @@ root:
 ### Nginx Configuration
 
 **nginx.conf:**
+
 ```nginx
 upstream mythos_backend {
     server 127.0.0.1:8000;
@@ -489,6 +543,7 @@ server {
     ssl_certificate_key /etc/nginx/ssl/key.pem;
 
     # WebSocket proxy
+
     location /ws/ {
         proxy_pass http://mythos_websocket;
         proxy_http_version 1.1;
@@ -502,6 +557,7 @@ server {
     }
 
     # SSE proxy
+
     location /sse/ {
         proxy_pass http://mythos_backend;
         proxy_set_header Host $host;
@@ -513,6 +569,7 @@ server {
     }
 
     # API proxy
+
     location /api/ {
         proxy_pass http://mythos_backend;
         proxy_set_header Host $host;
@@ -522,6 +579,7 @@ server {
     }
 
     # Static files
+
     location / {
         root /var/www/mythos/client/dist;
         try_files $uri $uri/ /index.html;
@@ -532,6 +590,7 @@ server {
 ### Multiple Server Deployment
 
 **docker-compose.prod.yml:**
+
 ```yaml
 version: '3.8'
 
@@ -604,15 +663,19 @@ volumes:
 ### SSL/TLS Setup
 
 **1. Generate SSL Certificate:**
+
 ```bash
 # Using Let's Encrypt
+
 sudo certbot --nginx -d yourdomain.com
 
 # Or using self-signed certificate
+
 openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes
 ```
 
 **2. Update Nginx Configuration:**
+
 ```nginx
 server {
     listen 443 ssl http2;
@@ -632,37 +695,47 @@ server {
 ### Firewall Configuration
 
 **UFW (Ubuntu):**
+
 ```bash
 # Allow SSH
+
 sudo ufw allow ssh
 
 # Allow HTTP and HTTPS
+
 sudo ufw allow 80
 sudo ufw allow 443
 
 # Allow monitoring port (restrict to localhost)
+
 sudo ufw allow from 127.0.0.1 to any port 9090
 
 # Enable firewall
+
 sudo ufw enable
 ```
 
 **iptables:**
+
 ```bash
 # Allow HTTP and HTTPS
+
 iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 iptables -A INPUT -p tcp --dport 443 -j ACCEPT
 
 # Allow monitoring port (localhost only)
+
 iptables -A INPUT -p tcp -s 127.0.0.1 --dport 9090 -j ACCEPT
 
 # Save rules
+
 iptables-save > /etc/iptables/rules.v4
 ```
 
 ### Rate Limiting
 
 **Nginx Rate Limiting:**
+
 ```nginx
 http {
     limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;
@@ -687,8 +760,10 @@ http {
 ### Server Optimization
 
 **1. Connection Pool Configuration:**
+
 ```python
 # server/config.py
+
 CONNECTION_POOL_SIZE = 1000
 MAX_CONNECTIONS_PER_PLAYER = 4
 CONNECTION_TIMEOUT = 300
@@ -697,6 +772,7 @@ CLEANUP_INTERVAL = 60
 ```
 
 **2. Database Optimization:**
+
 ```sql
 -- PostgreSQL optimization
 CREATE INDEX CONCURRENTLY idx_connections_player_id ON connections(player_id);
@@ -709,21 +785,26 @@ ANALYZE sessions;
 ```
 
 **3. Memory Optimization:**
+
 ```python
 # server/main.py
+
 import gc
 import asyncio
 
 # Enable garbage collection
+
 gc.set_threshold(700, 10, 10)
 
 # Optimize asyncio
+
 asyncio.set_event_loop_policy(asyncio.DefaultEventLoopPolicy())
 ```
 
 ### Client Optimization
 
 **1. Connection Management:**
+
 ```typescript
 // client/src/hooks/useGameConnection.ts
 const CONNECTION_RETRY_DELAY = 5000;
@@ -732,6 +813,7 @@ const HEALTH_CHECK_INTERVAL = 30000;
 ```
 
 **2. Message Batching:**
+
 ```typescript
 // Batch messages to reduce network overhead
 const messageBatch: Message[] = [];
@@ -751,58 +833,75 @@ const flushMessages = () => {
 ### Common Deployment Issues
 
 **1. Connection Refused:**
+
 ```bash
 # Check if server is running
+
 netstat -tlnp | grep :8000
 
 # Check server logs
+
 tail -f logs/mythos.log
 
 # Test connectivity
+
 curl -v http://localhost:8000/health
 ```
 
 **2. Database Connection Issues:**
+
 ```bash
 # Check database connectivity
+
 python -c "import sqlite3; print(sqlite3.connect('data/players/mythos.db').execute('SELECT 1').fetchone())"
 
 # For PostgreSQL
+
 psql -h localhost -U mythos_user -d mythos_prod -c "SELECT 1;"
 ```
 
 **3. SSL Certificate Issues:**
+
 ```bash
 # Check certificate validity
+
 openssl x509 -in cert.pem -text -noout
 
 # Test SSL connection
+
 openssl s_client -connect yourdomain.com:443
 ```
 
 ### Performance Issues
 
 **1. High Memory Usage:**
+
 ```bash
 # Monitor memory usage
+
 htop
 ps aux | grep python
 
 # Check for memory leaks
+
 python -m memory_profiler server/main.py
 ```
 
 **2. Slow Connection Establishment:**
+
 ```bash
 # Check network latency
+
 ping yourdomain.com
 traceroute yourdomain.com
 
 # Monitor connection times
+
 curl -w "@curl-format.txt" -o /dev/null -s http://yourdomain.com/api/health
 ```
 
 **3. Database Performance:**
+
 ```sql
 -- Check slow queries
 SELECT query, mean_time, calls
@@ -817,6 +916,7 @@ SELECT count(*) FROM pg_stat_activity;
 ### Monitoring and Alerting
 
 **1. Health Check Endpoint:**
+
 ```python
 @app.get("/health")
 async def health_check():
@@ -829,8 +929,10 @@ async def health_check():
 ```
 
 **2. Alerting Configuration:**
+
 ```yaml
 # alertmanager.yml
+
 route:
   group_by: ['alertname']
   group_wait: 10s
@@ -845,6 +947,7 @@ receivers:
     send_resolved: true
 
 # prometheus.yml
+
 rule_files:
   - "mythos_alerts.yml"
 
@@ -856,14 +959,18 @@ alerting:
 ```
 
 **3. Log Analysis:**
+
 ```bash
 # Monitor error rates
+
 grep "ERROR" logs/mythos.log | tail -100
 
 # Check connection patterns
+
 grep "WebSocket connected" logs/mythos.log | wc -l
 
 # Monitor performance
+
 grep "connection_establishment" logs/mythos.log | tail -50
 ```
 
@@ -872,20 +979,26 @@ grep "connection_establishment" logs/mythos.log | tail -50
 ### Regular Maintenance Tasks
 
 **1. Database Maintenance:**
+
 ```bash
 # Daily database backup
+
 pg_dump mythos_prod > backup_$(date +%Y%m%d).sql
 
 # Weekly database optimization
+
 psql mythos_prod -c "VACUUM ANALYZE;"
 
 # Monthly database cleanup
+
 psql mythos_prod -c "DELETE FROM old_connections WHERE created_at < NOW() - INTERVAL '30 days';"
 ```
 
 **2. Log Rotation:**
+
 ```bash
 # Configure logrotate
+
 cat > /etc/logrotate.d/mythos << EOF
 /var/log/mythos/*.log {
     daily
@@ -903,43 +1016,54 @@ EOF
 ```
 
 **3. Security Updates:**
+
 ```bash
 # Update system packages
+
 sudo apt update && sudo apt upgrade
 
 # Update Python dependencies
+
 pip install --upgrade -r requirements.txt
 
 # Update Node.js dependencies
+
 cd client && npm update
 ```
 
 ### Backup and Recovery
 
 **1. Database Backup:**
+
 ```bash
 #!/bin/bash
 # backup_db.sh
+
 DATE=$(date +%Y%m%d_%H%M%S)
 BACKUP_DIR="/backups/mythos"
 mkdir -p $BACKUP_DIR
 
 # PostgreSQL backup
+
 pg_dump mythos_prod | gzip > $BACKUP_DIR/mythos_$DATE.sql.gz
 
 # Keep only last 30 days
+
 find $BACKUP_DIR -name "mythos_*.sql.gz" -mtime +30 -delete
 ```
 
 **2. Configuration Backup:**
+
 ```bash
 #!/bin/bash
 # backup_config.sh
+
 DATE=$(date +%Y%m%d_%H%M%S)
 BACKUP_DIR="/backups/config"
 mkdir -p $BACKUP_DIR
 
 # Backup configuration files
+
 tar -czf $BACKUP_DIR/config_$DATE.tar.gz \
     /etc/nginx/nginx.conf \
     /etc/nginx/ssl/ \
@@ -948,14 +1072,18 @@ tar -czf $BACKUP_DIR/config_$DATE.tar.gz \
 ```
 
 **3. Recovery Procedures:**
+
 ```bash
 # Database recovery
+
 gunzip -c backup_20250106_120000.sql.gz | psql mythos_prod
 
 # Configuration recovery
+
 tar -xzf config_20250106_120000.tar.gz -C /
 
 # Service restart
+
 systemctl restart mythos
 systemctl restart nginx
 ```

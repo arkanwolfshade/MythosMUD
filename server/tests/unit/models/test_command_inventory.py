@@ -24,7 +24,8 @@ def test_inventory_command_no_fields():
     """Test InventoryCommand has no required fields."""
     command = InventoryCommand()
 
-    assert command.command_type == "inventory"
+    # Reason: Enum values (str enums) are comparable to strings at runtime
+    assert command.command_type == "inventory"  # type: ignore[comparison-overlap]
 
 
 # --- Tests for PickupCommand ---
@@ -34,8 +35,10 @@ def test_pickup_command_with_index():
     """Test PickupCommand can be created with index."""
     command = PickupCommand(index=1)
 
-    assert command.command_type == "pickup"
-    assert command.index == 1
+    # Reason: Testing str enum direct comparison - valid at runtime for str enums, but mypy sees as non-overlapping
+    assert command.command_type == "pickup"  # type: ignore[comparison-overlap]
+    # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+    assert command.index == 1  # type: ignore[unreachable]
     assert command.search_term is None
     assert command.quantity is None
 
@@ -133,8 +136,10 @@ def test_drop_command_required_fields():
     """Test DropCommand requires index."""
     command = DropCommand(index=1)
 
-    assert command.command_type == "drop"
-    assert command.index == 1
+    # Reason: Enum values (str enums) are comparable to strings at runtime
+    assert command.command_type == "drop"  # type: ignore[comparison-overlap]
+    # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+    assert command.index == 1  # type: ignore[unreachable]
     assert command.quantity is None
 
 
@@ -161,7 +166,8 @@ def test_drop_command_quantity_validation_min():
 def test_drop_command_missing_index():
     """Test DropCommand requires index."""
     with pytest.raises(ValidationError):
-        DropCommand()  # Missing required index
+        # Reason: Intentionally testing Pydantic validation with missing required field
+        DropCommand()  # type: ignore[call-arg]  # Missing required index
 
 
 # --- Tests for PutCommand ---
@@ -171,8 +177,10 @@ def test_put_command_required_fields():
     """Test PutCommand requires item and container."""
     command = PutCommand(item="sword", container="backpack")
 
-    assert command.command_type == "put"
-    assert command.item == "sword"
+    # Reason: Testing str enum direct comparison - valid at runtime for str enums, but mypy sees as non-overlapping
+    assert command.command_type == "put"  # type: ignore[comparison-overlap]
+    # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+    assert command.item == "sword"  # type: ignore[unreachable]
     assert command.container == "backpack"
     assert command.quantity is None
 
@@ -209,8 +217,10 @@ def test_get_command_required_fields():
     """Test GetCommand requires item and container."""
     command = GetCommand(item="sword", container="backpack")
 
-    assert command.command_type == "get"
-    assert command.item == "sword"
+    # Reason: Enum values (str enums) are comparable to strings at runtime
+    assert command.command_type == "get"  # type: ignore[comparison-overlap]
+    # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+    assert command.item == "sword"  # type: ignore[unreachable]
     assert command.container == "backpack"
     assert command.quantity is None
 
@@ -247,8 +257,9 @@ def test_equip_command_with_index():
     """Test EquipCommand can be created with index."""
     command = EquipCommand(index=1)
 
-    assert command.command_type == "equip"
-    assert command.index == 1
+    assert command.command_type == "equip"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+    # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+    assert command.index == 1  # type: ignore[unreachable]
     assert command.search_term is None
     assert command.target_slot is None
 
@@ -352,8 +363,10 @@ def test_unequip_command_with_slot():
     """Test UnequipCommand can be created with slot."""
     command = UnequipCommand(slot="hand")
 
-    assert command.command_type == "unequip"
-    assert command.slot == "hand"
+    # Reason: Enum values (str enums) are comparable to strings at runtime
+    assert command.command_type == "unequip"  # type: ignore[comparison-overlap]
+    # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+    assert command.slot == "hand"  # type: ignore[unreachable]
     assert command.search_term is None
 
 

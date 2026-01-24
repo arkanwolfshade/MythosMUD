@@ -17,7 +17,7 @@ if env_file.exists():
     load_dotenv(env_file)
 
 
-async def main():
+async def main() -> None:
     database_url = os.getenv("DATABASE_URL")
     if not database_url:
         print("ERROR: DATABASE_URL not set")

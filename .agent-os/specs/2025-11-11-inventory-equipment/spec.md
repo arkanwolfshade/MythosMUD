@@ -37,7 +37,8 @@ Room descriptions append a concise list of dropped items stored in memory on the
 
 ## Out of Scope
 
-- Non-player inventories such as containers, NPC gear, or shared vaults.
+Non-player inventories such as containers, NPC gear, or shared vaults.
+
 - Item stat modifiers, combat effects, or crafting systems.
 - Persistent room drops surviving server restarts or shard transfers.
 

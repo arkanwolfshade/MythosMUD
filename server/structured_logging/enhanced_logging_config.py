@@ -83,7 +83,7 @@ def configure_enhanced_structlog(
     environment: str | None = None,
     log_level: str = "INFO",
     log_config: dict[str, Any] | None = None,
-    player_service: Any = None,
+    player_service: Any | None = None,
     enable_async: bool = True,
 ) -> None:
     """
@@ -186,7 +186,7 @@ def configure_enhanced_structlog(
 
 def setup_enhanced_logging(
     config: dict[str, Any],
-    player_service: Any = None,
+    player_service: Any | None = None,
     *,
     force_reconfigure: bool = False,
 ) -> None:

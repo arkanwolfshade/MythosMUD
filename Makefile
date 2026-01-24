@@ -51,7 +51,7 @@ help:
 	@echo "  shellcheck     - Shell script linter"
 	@echo "  psscriptanalyzer - PowerShell script linter"
 	@echo "  stylelint      - CSS linter"
-	@echo "  markdownlint   - Markdown linter"
+	@echo "  markdownlint   - Markdown linter (use ARGS='--fix' to auto-fix)"
 	@echo "  jackson-linter - JSON linter"
 	@echo "  trivy          - Dependency security scanner"
 	@echo "  lizard         - Code complexity analyzer"
@@ -136,7 +136,7 @@ stylelint:
 	$(PYTHON) scripts/stylelint.py
 
 markdownlint:
-	$(PYTHON) scripts/markdownlint.py
+	$(PYTHON) scripts/markdownlint.py $(ARGS)
 
 jackson-linter:
 	$(PYTHON) scripts/jackson_linter.py

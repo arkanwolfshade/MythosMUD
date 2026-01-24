@@ -47,12 +47,14 @@ for different machine types.
    ```
 
 5. **Low-Performance Machine Specific**:
+
    - Allow 5-10 minutes for server startup on very slow machines
    - Monitor system resources (CPU/Memory) during startup
    - Close unnecessary applications to free up resources
    - Check available disk space (minimum 2GB free recommended)
 
 6. **High-Performance Machine Specific**:
+
    - Server should start within 30-60 seconds
    - If startup takes longer than 2 minutes, investigate system issues
 
@@ -93,12 +95,14 @@ for different machine types.
    ```
 
 5. **Low-Performance Machine Specific**:
+
    - Use retry logic with 30-second intervals
    - Close other applications to free up system resources
    - Allow 2-3 minutes for initial connection establishment
    - Check browser memory usage and restart if needed
 
 6. **High-Performance Machine Specific**:
+
    - Connections should establish within 5-10 seconds
    - If connections take longer than 30 seconds, investigate network issues
 
@@ -113,6 +117,7 @@ for different machine types.
 **Solutions**:
 
 1. **Wait longer for message delivery**:
+
    - Standard machines: Wait 10-15 seconds
    - Low-performance machines: Wait 30-60 seconds
    - High-performance machines: Wait 3-5 seconds
@@ -138,11 +143,13 @@ for different machine types.
    ```
 
 5. **Low-Performance Machine Specific**:
+
    - Increase all wait_for timeouts to 30+ seconds
    - Add buffer time between critical operations
    - Check for memory pressure affecting message processing
 
 6. **High-Performance Machine Specific**:
+
    - Messages should appear within 1-2 seconds
    - If messages take longer than 5 seconds, investigate server performance
 
@@ -160,21 +167,25 @@ for different machine types.
 
    ```powershell
    # Check current player state
+
    $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c
    "SELECT name, current_room_id, is_admin FROM players WHERE name IN
    ('ArkanWolfshade', 'Ithaqua');"
 
    # Fix player locations
+
    $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c
    "UPDATE players SET current_room_id =
    'earth_arkhamcity_sanitarium_room_foyer_001' WHERE name IN
    ('ArkanWolfshade', 'Ithaqua');"
 
    # Fix admin privileges
+
    $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c
    "UPDATE players SET is_admin = 1 WHERE name = 'ArkanWolfshade';"
 
    # Verify fixes
+
    $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c
    "SELECT name, current_room_id, is_admin FROM players WHERE name IN
    ('ArkanWolfshade', 'Ithaqua');"
@@ -184,6 +195,7 @@ for different machine types.
 
    ```powershell
    # Test database connection
+
    $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c
    "SELECT current_database(), current_user;"
    ```
@@ -194,6 +206,7 @@ for different machine types.
    # If database is corrupted, restore from pg_dump backup
    # Note: Backup/restore procedures should be documented separately
    # Example: pg_restore -h localhost -U postgres -d mythos_e2e backup_file.dump
+
    ```
 
 ### Issue 5: Browser Automation Failures
@@ -230,11 +243,13 @@ for different machine types.
    ```
 
 4. **Low-Performance Machine Specific**:
+
    - Use longer timeouts for all browser operations
    - Add buffer time between tab operations
    - Check browser memory usage and restart if needed
 
 5. **High-Performance Machine Specific**:
+
    - Standard timeouts should be sufficient
    - If browser operations fail, check for system resource issues
 
@@ -255,25 +270,30 @@ for different machine types.
 
    ```powershell
    # Check available memory
+
    Get-WmiObject -Class Win32_OperatingSystem | Select-Object TotalVisibleMemorySize, FreePhysicalMemory
 
    # Close unnecessary applications
+
    Get-Process | Where-Object {$_.WorkingSet -gt 100MB} | Sort-Object WorkingSet -Descending
    ```
 
 2. **Browser Optimization**:
+
    - Use Chrome/Edge with hardware acceleration disabled
    - Close unnecessary browser tabs
    - Restart browser between test scenarios
    - Use incognito/private browsing mode
 
 3. **System Resource Management**:
+
    - Close background applications
    - Disable unnecessary Windows services
    - Ensure minimum 4GB RAM available
    - Check disk space (minimum 5GB free)
 
 4. **Timeout Adjustments**:
+
    - Double all standard timeouts
    - Add 10-15 second buffer between operations
    - Use retry logic for critical operations
@@ -296,11 +316,13 @@ for different machine types.
    ```
 
 2. **Check for Race Conditions**:
+
    - Verify server state before proceeding
    - Add explicit state checks
    - Use proper synchronization
 
 3. **Optimize for Speed**:
+
    - Use shorter timeouts where appropriate
    - Parallel operations where possible
    - Skip unnecessary waits
@@ -311,12 +333,15 @@ for different machine types.
 
 ```powershell
 # Check if server is running
+
 netstat -an | findstr :54731
 
 # Check server logs
+
 Get-Content logs/e2e_test/server.log -Tail 50
 
 # Check server health endpoint
+
 Invoke-WebRequest -Uri "http://localhost:54731/monitoring/health" -UseBasicParsing
 ```
 
@@ -324,9 +349,12 @@ Invoke-WebRequest -Uri "http://localhost:54731/monitoring/health" -UseBasicParsi
 
 ```powershell
 # Check player state
-$env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "SELECT name, current_room_id, is_admin, last_active FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
+
+$env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "SELECT name, current_room_id, is_admin,
+last_active FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
 
 # Check database integrity (PostgreSQL equivalent)
+
 $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "SELECT pg_check_consistency();"
 ```
 
@@ -377,9 +405,11 @@ If all else fails:
 
    ```powershell
    # Wait 3 minutes for startup
+
    Start-Sleep -Seconds 180
 
    # Check server health
+
    Invoke-WebRequest -Uri "http://localhost:54731/monitoring/health" -UseBasicParsing
    ```
 
@@ -388,16 +418,19 @@ If all else fails:
 ### Regular Maintenance
 
 1. **Daily**:
+
    - Check available disk space
    - Monitor system memory usage
    - Review server logs for errors
 
 2. **Weekly**:
+
    - Archive old log files
    - Clean up temporary files
    - Update system if needed
 
 3. **Before Major Test Sessions**:
+
    - Restart system for clean state
    - Close unnecessary applications
    - Verify all dependencies are current

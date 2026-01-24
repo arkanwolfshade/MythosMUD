@@ -5,6 +5,7 @@ Tests the go command for player movement.
 """
 
 import uuid
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -318,7 +319,7 @@ async def test_execute_movement_fallback_service():
 @pytest.mark.asyncio
 async def test_handle_go_command_no_direction():
     """Test handle_go_command returns error when no direction."""
-    command_data = {}
+    command_data: dict[str, Any] = {}
     mock_request = MagicMock()
 
     result = await handle_go_command(command_data, {}, mock_request, None, "testplayer")
@@ -329,7 +330,7 @@ async def test_handle_go_command_no_direction():
 @pytest.mark.asyncio
 async def test_handle_go_command_setup_failure():
     """Test handle_go_command handles setup failure."""
-    command_data = {"direction": "north"}
+    command_data: dict[str, Any] = {"direction": "north"}
     mock_request = MagicMock()
     mock_request.app = None
 
@@ -341,7 +342,7 @@ async def test_handle_go_command_setup_failure():
 @pytest.mark.asyncio
 async def test_handle_go_command_invalid_posture():
     """Test handle_go_command blocks movement when player not standing."""
-    command_data = {"direction": "north"}
+    command_data: dict[str, Any] = {"direction": "north"}
     mock_player = MagicMock()
     mock_player.current_room_id = "test_room"
     mock_player.get_stats = MagicMock(return_value={"position": "sitting"})
@@ -365,7 +366,7 @@ async def test_handle_go_command_invalid_posture():
 @pytest.mark.asyncio
 async def test_handle_go_command_no_exit():
     """Test handle_go_command returns error when exit doesn't exist."""
-    command_data = {"direction": "north"}
+    command_data: dict[str, Any] = {"direction": "north"}
     mock_player = MagicMock()
     mock_player.current_room_id = "test_room"
     mock_player.get_stats = MagicMock(return_value={"position": "standing"})
@@ -390,7 +391,7 @@ async def test_handle_go_command_no_exit():
 @pytest.mark.asyncio
 async def test_handle_go_command_success():
     """Test handle_go_command successfully moves player."""
-    command_data = {"direction": "north"}
+    command_data: dict[str, Any] = {"direction": "north"}
     mock_player = MagicMock()
     mock_player.current_room_id = "test_room"
     mock_player.player_id = uuid.uuid4()

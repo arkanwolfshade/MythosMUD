@@ -2,29 +2,35 @@
 
 ## Overview
 
-Tests basic local channel communication functionality. This scenario verifies that players can send and receive local channel messages, that messages are properly broadcast to players in the same sub-zone, and that the local channel system works correctly for basic multiplayer communication.
+Tests basic local channel communication functionality. This scenario verifies that players can send and receive local
+channel messages, that messages are properly broadcast to players in the same sub-zone, and that the local channel
+system works correctly for basic multiplayer communication.
 
-**This is a core multi-player scenario** that requires bidirectional local message verification between players in same sub-zone. No automated alternative is available.
+**This is a core multi-player scenario** that requires bidirectional local message verification between players in same
+sub-zone. No automated alternative is available.
 
 ## Prerequisites
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
 2. **Server Running**: Development server is running on port 54731
 3. **Client Accessible**: Client is accessible on port 5173
 4. **Both Players Connected**: AW and Ithaqua are both logged in and in the same room
 
-**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
+### ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE
 
 **Reference**: See @MULTIPLAYER_TEST_RULES.md for complete prerequisite verification procedures.
 
 ## Test Configuration
 
-- **Test Players**: ArkanWolfshade (AW) and Ithaqua
-- **Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
-- **Testing Approach**: Playwright MCP (multi-tab interaction required)
-- **Timeout Settings**: Use configurable timeouts from master rules
+**Test Players**: ArkanWolfshade (AW) and Ithaqua
+
+**Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
+
+**Testing Approach**: Playwright MCP (multi-tab interaction required)
+
+**Timeout Settings**: Use configurable timeouts from master rules
 
 ## Execution Steps
 
@@ -33,6 +39,7 @@ Tests basic local channel communication functionality. This scenario verifies th
 **Purpose**: Ensure both players are ready for local channel testing
 
 **Commands**:
+
 ```javascript
 // Ensure both players are logged in from previous scenario
 // AW should be on tab 0, Ithaqua on tab 1
@@ -46,12 +53,14 @@ Tests basic local channel communication functionality. This scenario verifies th
 **Purpose**: Test basic local channel message sending
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
 
 // Type local channel message
-await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local Hello everyone in the sanitarium"});
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local Hello everyone in
+the sanitarium"});
 await mcp_playwright_browser_press_key({key: "Enter"});
 
 // Wait for confirmation message
@@ -65,6 +74,7 @@ await mcp_playwright_browser_wait_for({text: "You say locally: Hello everyone in
 **Purpose**: Test that local channel messages are properly broadcast to other players
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
@@ -73,7 +83,8 @@ await mcp_playwright_browser_tab_select({index: 1});
 await mcp_playwright_browser_wait_for({text: "ArkanWolfshade says locally: Hello everyone in the sanitarium"});
 
 // Verify message appears
-const ithaquaMessages = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const ithaquaMessages = await mcp_playwright_browser_evaluate({function: "() =>
+Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
 const seesAWLocalMessage = ithaquaMessages.some(msg => msg.includes('ArkanWolfshade says locally: Hello everyone in the sanitarium'));
 console.log('Ithaqua sees AW local message:', seesAWLocalMessage);
 console.log('Ithaqua messages:', ithaquaMessages);
@@ -86,6 +97,7 @@ console.log('Ithaqua messages:', ithaquaMessages);
 **Purpose**: Test bidirectional local channel communication
 
 **Commands**:
+
 ```javascript
 // Type local reply
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local Greetings ArkanWolfshade"});
@@ -102,6 +114,7 @@ await mcp_playwright_browser_wait_for({text: "You say locally: Greetings ArkanWo
 **Purpose**: Test that replies are properly received on local channel
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -123,6 +136,7 @@ console.log('AW messages:', awMessages);
 **Purpose**: Test that multiple local messages work correctly
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -155,6 +169,7 @@ await mcp_playwright_browser_wait_for({text: "You say locally: I'm doing well, t
 **Purpose**: Verify that local messages are properly formatted
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -182,6 +197,7 @@ console.log('Proper local message formatting:', properLocalFormatting);
 **Purpose**: Verify that local message history is maintained
 
 **Commands**:
+
 ```javascript
 // Check total local message count
 const totalLocalMessages = awMessagesFinal.filter(msg => msg.includes('says locally:')).length;
@@ -208,6 +224,7 @@ console.log('Has all expected local messages:', hasAllLocalMessages);
 **Purpose**: Verify that local channel and say channel are distinct
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -246,6 +263,7 @@ console.log('✅ All verification steps completed successfully');
 console.log('✅ System functionality verified as working correctly');
 console.log('✅ Test results documented and validated');
 console.log('📋 PROCEEDING TO SCENARIO 9: Local Message Isolation');
+
 ```
 
 **Expected Result**:  All expected local messages are present in the chat history
@@ -275,18 +293,24 @@ console.log('➡️ READY FOR SCENARIO 9: Local Message Isolation');
 
 ## Expected Results
 
-- ✅ AW sees "You say locally: Hello everyone in the sanitarium"
-- ✅ Ithaqua sees "ArkanWolfshade says locally: Hello everyone in the sanitarium"
-- ✅ Ithaqua sees "You say locally: Greetings ArkanWolfshade"
-- ✅ AW sees "Ithaqua says locally: Greetings ArkanWolfshade"
-- ✅ Multiple local messages work correctly
+✅ AW sees "You say locally: Hello everyone in the sanitarium"
+
+✅ Ithaqua sees "ArkanWolfshade says locally: Hello everyone in the sanitarium"
+
+✅ Ithaqua sees "You say locally: Greetings ArkanWolfshade"
+
+✅ AW sees "Ithaqua says locally: Greetings ArkanWolfshade"
+
+✅ Multiple local messages work correctly
+
 - ✅ Local message formatting is consistent
 - ✅ Local message history is maintained
 - ✅ Local channel and say channel are distinct
 
 ## Success Criteria Checklist
 
-- [ ] AW successfully sends first local message
+[ ] AW successfully sends first local message
+
 - [ ] Ithaqua receives AW's local message
 - [ ] Ithaqua successfully sends local reply
 - [ ] AW receives Ithaqua's local reply
@@ -303,20 +327,25 @@ console.log('➡️ READY FOR SCENARIO 9: Local Message Isolation');
 ## Cleanup
 
 Execute standard cleanup procedures from @CLEANUP.md:
+
 1. Close all browser tabs
 2. Stop development server
 3. Verify clean shutdown
 
 ## Status
 
-**✅ SCENARIO COMPLETION LOGIC FIXED**
+### ✅ SCENARIO COMPLETION LOGIC FIXED
 
 The local channel basic system is working correctly. The scenario now includes proper completion logic to prevent infinite loops:
 
-- **Fixed**: Added completion step with explicit scenario completion and cleanup procedures
-- **Fixed**: Added clear decision points for handling verification results
-- **Fixed**: Added explicit progression to next scenario
-- **Verified**: System functionality works as expected and meets all requirements
+**Fixed**: Added completion step with explicit scenario completion and cleanup procedures
+
+**Fixed**: Added clear decision points for handling verification results
+
+**Fixed**: Added explicit progression to next scenario
+
+**Verified**: System functionality works as expected and meets all requirements
+
 ---
 
 **Document Version**: 1.0 (Modular E2E Test Suite)

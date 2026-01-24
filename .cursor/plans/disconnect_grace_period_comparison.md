@@ -10,14 +10,16 @@ After researching common MUD practices, our plan aligns well with industry stand
 
 ### Industry Practices
 
-- **Lineage II**: 15 seconds of auto-attack (no skills)
-- **Ragnarök MUD**: 30 minutes before moving to storage room
-- **Various MUDs**: 30 seconds (common standard)
+**Lineage II**: 15 seconds of auto-attack (no skills)
+
+**Ragnarök MUD**: 30 minutes before moving to storage room
+
+**Various MUDs**: 30 seconds (common standard)
 - **Some MUDs**: No grace period, immediate removal
 
 ### Our Plan
 
-- **30 seconds** grace period
+**30 seconds** grace period
 
 ### Gap Analysis
 
@@ -31,14 +33,17 @@ After researching common MUD practices, our plan aligns well with industry stand
 
 ### Industry Practices
 
-- **Lineage II**: Auto-attack continues for 15 seconds, but **no special skills/abilities**
-- **Many MUDs**: Character becomes completely inactive (no auto-attack)
-- **Some MUDs**: Character continues full combat behavior
+**Lineage II**: Auto-attack continues for 15 seconds, but **no special skills/abilities**
+
+**Many MUDs**: Character becomes completely inactive (no auto-attack)
+
+**Some MUDs**: Character continues full combat behavior
 - **CircleMUD**: Linkdead players remain vulnerable but inactive
 
 ### Our Plan
 
-- **Normal auto-attack** (same as connected player)
+**Normal auto-attack** (same as connected player)
+
 - Only basic attacks, no special abilities
 
 ### Gap Analysis
@@ -57,13 +62,16 @@ After researching common MUD practices, our plan aligns well with industry stand
 
 ### Industry Practices
 
-- **Many MUDs**: Display "linkdead" or "disconnected" status to other players
-- **Some MUDs**: Character appears normal but doesn't respond
-- **Ragnarök**: Character may be moved to storage room after extended period
+**Many MUDs**: Display "linkdead" or "disconnected" status to other players
+
+**Some MUDs**: Character appears normal but doesn't respond
+
+**Ragnarök**: Character may be moved to storage room after extended period
 
 ### Our Plan
 
-- Character remains visible and in room
+Character remains visible and in room
+
 - No explicit mention of "zombie" or "linkdead" status to other players
 
 ### Gap Analysis
@@ -84,14 +92,17 @@ After researching common MUD practices, our plan aligns well with industry stand
 
 ### Industry Practices
 
-- **Many MUDs**: **Cannot quit during combat** (blocked entirely)
-- **Aardwolf**: Cannot quit while affected by certain combat conditions
-- **Some MUDs**: Quit allowed but with penalties (drop items, lose XP)
+**Many MUDs**: **Cannot quit during combat** (blocked entirely)
+
+**Aardwolf**: Cannot quit while affected by certain combat conditions
+
+**Some MUDs**: Quit allowed but with penalties (drop items, lose XP)
 - **7 Degrees of Freedom**: Quit drops all equipment and money
 
 ### Our Plan
 
-- `/rest` command **allowed during combat** but requires 10-second countdown
+`/rest` command **allowed during combat** but requires 10-second countdown
+
 - Can be interrupted by combat actions
 
 ### Gap Analysis
@@ -112,13 +123,15 @@ After researching common MUD practices, our plan aligns well with industry stand
 
 ### Industry Practices
 
-- **Minecraft HCF**: 30-second logout countdown
-- **Various MUDs**: 10-30 seconds
-- **Some MUDs**: Immediate logout in safe zones, countdown elsewhere
+**Minecraft HCF**: 30-second logout countdown
+
+**Various MUDs**: 10-30 seconds
+
+**Some MUDs**: Immediate logout in safe zones, countdown elsewhere
 
 ### Our Plan
 
-- **10 seconds** countdown for `/rest`
+**10 seconds** countdown for `/rest`
 
 ### Gap Analysis
 
@@ -132,14 +145,17 @@ After researching common MUD practices, our plan aligns well with industry stand
 
 ### Industry Practices
 
-- **Many MUDs**: Safe zones allow immediate logout
-- **Some MUDs**: Rest locations provide faster HP/MP regeneration
-- **Abandoned Realms**: Sleeping in safe locations is safer than elsewhere
+**Many MUDs**: Safe zones allow immediate logout
+
+**Some MUDs**: Rest locations provide faster HP/MP regeneration
+
+**Abandoned Realms**: Sleeping in safe locations is safer than elsewhere
 
 ### Our Plan
 
-- **Instant disconnect** in rest locations when not in combat
-- **10-second countdown** if in combat (even in rest location)
+**Instant disconnect** in rest locations when not in combat
+
+**10-second countdown** if in combat (even in rest location)
 
 ### Gap Analysis
 
@@ -156,13 +172,15 @@ After researching common MUD practices, our plan aligns well with industry stand
 
 ### Industry Practices
 
-- **Most MUDs**: Reconnection cancels any disconnect handling
-- **Some MUDs**: Reconnection restores full control immediately
-- **Rare**: Reconnection doesn't cancel (player must wait out timer)
+**Most MUDs**: Reconnection cancels any disconnect handling
+
+**Some MUDs**: Reconnection restores full control immediately
+
+**Rare**: Reconnection doesn't cancel (player must wait out timer)
 
 ### Our Plan
 
-- **Reconnection cancels grace period immediately**
+**Reconnection cancels grace period immediately**
 
 ### Gap Analysis
 
@@ -174,13 +192,15 @@ After researching common MUD practices, our plan aligns well with industry stand
 
 ### Industry Practices
 
-- **Most MUDs**: Grace period only applies to **unintentional** disconnects (connection loss)
-- **Some MUDs**: Grace period applies to all disconnects
-- **Distinction**: `/quit` vs. connection loss handled differently
+**Most MUDs**: Grace period only applies to **unintentional** disconnects (connection loss)
+
+**Some MUDs**: Grace period applies to all disconnects
+
+**Distinction**: `/quit` vs. connection loss handled differently
 
 ### Our Plan
 
-- Grace period applies to **all disconnects** (intentional and unintentional)
+Grace period applies to **all disconnects** (intentional and unintentional)
 
 ### Gap Analysis
 
@@ -199,14 +219,17 @@ After researching common MUD practices, our plan aligns well with industry stand
 
 ### Industry Practices
 
-- **Most MUDs**: Linkdead players cannot execute any commands
-- **Some MUDs**: Linkdead players can only auto-attack (no other actions)
-- **Rare**: Linkdead players retain full command access
+**Most MUDs**: Linkdead players cannot execute any commands
+
+**Some MUDs**: Linkdead players can only auto-attack (no other actions)
+
+**Rare**: Linkdead players retain full command access
 
 ### Our Plan
 
-- **Zombie state**: Cannot move, use commands, or take other actions
-- **Only auto-attacks** when attacked
+**Zombie state**: Cannot move, use commands, or take other actions
+
+**Only auto-attacks** when attacked
 
 ### Gap Analysis
 
@@ -218,13 +241,15 @@ After researching common MUD practices, our plan aligns well with industry stand
 
 ### Industry Practices
 
-- **Most MUDs**: Grace period is in-memory only (no persistence)
-- **Some MUDs**: Server restart loses grace period state
-- **Rare**: Grace period persists across server restarts
+**Most MUDs**: Grace period is in-memory only (no persistence)
+
+**Some MUDs**: Server restart loses grace period state
+
+**Rare**: Grace period persists across server restarts
 
 ### Our Plan
 
-- **In-memory only** (no persistence)
+**In-memory only** (no persistence)
 
 ### Gap Analysis
 
@@ -237,18 +262,22 @@ After researching common MUD practices, our plan aligns well with industry stand
 ### Features We're NOT Implementing (but exist elsewhere)
 
 1. **Extended Idle Handling**:
+
    - Some MUDs move linkdead players to storage rooms after 30+ minutes
    - We only handle immediate disconnects (30 seconds)
 
 2. **Combat Penalties for Disconnect**:
+
    - Some MUDs drop items or lose XP on disconnect during combat
    - We only apply grace period (no penalties)
 
 3. **Visual Status Indicators**:
+
    - Some MUDs show "(linkdead)" in room descriptions
    - We don't plan to show disconnect status to other players
 
 4. **Rest Location Regeneration**:
+
    - Some MUDs provide HP/MP regeneration in rest locations
    - We're removing MP regeneration from `/rest` command
 

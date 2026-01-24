@@ -27,7 +27,7 @@ def resolve_state(request: Any) -> tuple[Any, Any]:
 
 async def resolve_player(
     persistence: Any,
-    current_user: dict,
+    current_user: dict[str, Any],
     fallback_player_name: str,
 ) -> tuple[Player | None, dict[str, str] | None]:
     """Resolve player from persistence and current user."""
@@ -92,7 +92,7 @@ def persist_player(persistence: Any, player: Player) -> dict[str, str] | None:
 
 
 def resolve_pickup_item_index(
-    command_data: dict, drop_list: list[dict[str, Any]], player_name: str, player_id: UUID, room_id: str
+    command_data: dict[str, Any], drop_list: list[dict[str, Any]], player_name: str, player_id: UUID, room_id: str
 ) -> tuple[int | None, int | None, dict[str, str] | None]:
     """Resolve item index for pickup by index or search term."""
     index = command_data.get("index")
@@ -229,7 +229,7 @@ async def build_and_broadcast_inventory_event(
 
 
 async def resolve_state_and_player(
-    request: Any, current_user: dict, player_name: str
+    request: Any, current_user: dict[str, Any], player_name: str
 ) -> tuple[Any, Any, Player | None, dict[str, str] | None]:
     """Resolve state and player, returning (persistence, connection_manager, player, error)."""
     persistence, connection_manager = resolve_state(request)

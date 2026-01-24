@@ -11,7 +11,7 @@ is essential for navigating the eldritch architecture of our world.
 
 # pylint: disable=too-few-public-methods,too-many-locals,too-many-arguments,too-many-positional-arguments  # Reason: Renderer class with focused responsibility, minimal public interface, and complex rendering logic requiring many parameters
 
-from typing import Any
+from typing import Any, cast
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -26,7 +26,7 @@ class AsciiMapRenderer:
     symbol assignment and exit representation.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the ASCII map renderer."""
         # Symbol sets for different environments
         self.symbols = {
@@ -422,7 +422,7 @@ class AsciiMapRenderer:
             ASCII character for the room
         """
         # Use admin-set symbol if available
-        map_symbol = room.get("map_symbol")
+        map_symbol: str | None = cast(str | None, room.get("map_symbol"))
         if map_symbol:
             return map_symbol
 

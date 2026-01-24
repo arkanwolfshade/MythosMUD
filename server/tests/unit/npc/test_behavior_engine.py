@@ -59,7 +59,8 @@ def test_add_rule_handles_exception():
     engine = BehaviorEngine()
     # Invalid rule that causes exception
     rule = None
-    result = engine.add_rule(rule)
+    # Reason: Intentionally testing error handling with None input
+    result = engine.add_rule(rule)  # type: ignore[arg-type]
     assert result is False
 
 
@@ -84,7 +85,8 @@ def test_remove_rule_handles_exception():
     """Test remove_rule() handles exceptions gracefully."""
     engine = BehaviorEngine()
     # Invalid input
-    result = engine.remove_rule(None)
+    # Reason: Intentionally testing error handling with None input
+    result = engine.remove_rule(None)  # type: ignore[arg-type]
     assert result is False
 
 

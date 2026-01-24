@@ -19,7 +19,8 @@ The `server/tests/conftest.py` (621 lines) was built for the legacy YAML-based c
 
 ### ⚠️ Outstanding Issues
 
-- Original conftest.py (line 143) imports deleted `config_loader` module
+Original conftest.py (line 143) imports deleted `config_loader` module
+
 - 55 collection errors when using original conftest.py
 - Test client fixtures need adaptation for new config system
 
@@ -31,10 +32,12 @@ The `server/tests/conftest.py` (621 lines) was built for the legacy YAML-based c
 
 ```python
 # OLD (line 143)
+
 from server import config_loader
 config_loader._config = None
 
 # NEW (line 143-145)
+
 from server.config import reset_config
 reset_config()
 ```
@@ -63,6 +66,7 @@ Original conftest.py sets these via YAML config loading:
 def test_client():
     """Create a test client with properly initialized app state."""
     # ... manual app.state initialization
+
     app.state.event_handler = get_real_time_event_handler()
     app.state.persistence = get_persistence(event_bus=...)
     return TestClient(app)
@@ -81,11 +85,14 @@ The new Pydantic config system initializes `app.state` via **lifespan context ma
        yield client
    ```
 
-   - ✅ Automatic app.state initialization
-   - ✅ Proper NATS handling
+   ✅ Automatic app.state initialization
+
+   ✅ Proper NATS handling
+
    - ⚠️ Requires NATS to be optional in tests
 
 2. **Manual initialization** (Fallback)
+
    - Keep current approach
    - Add NATS mock setup
 
@@ -169,22 +176,33 @@ Remove all YAML config references:
 
 **Test Results After Migration**:
 
-- ✅ 3198 tests PASSING
-- ❌ 4 tests FAILING
+✅ 3198 tests PASSING
+
+❌ 4 tests FAILING
+
 - ⚠️ 49 tests with ERRORS
 - 📊 3262 tests collected (vs 3368 baseline)
 
 ### Changes Applied
 
 1. **Fixed config_loader import** → `reset_config()`
+
 2. **Added required Pydantic env vars**:
+
    - `SERVER_PORT="54731"`
+
    - `SERVER_HOST="127.0.0.1"`
+
    - `MYTHOSMUD_ADMIN_PASSWORD="test-admin-password-for-development"`
+
    - `LOGGING_ENVIRONMENT="unit_test"`
+
    - `GAME_ALIASES_DIR` (absolute path)
+
 3. **Fixed environment variable names**:
+
    - `NPC_DATABASE_URL` → `DATABASE_NPC_URL`
+
 4. **Fixed multiple indentation errors** (lines 164, 375, 741, 743, 761)
 
 ## Recommended Approach
@@ -192,7 +210,9 @@ Remove all YAML config references:
 **CONSERVATIVE MIGRATION**:
 
 1. Keep original conftest.py structure (621 lines)
+
 2. Make ONLY these surgical changes:
+
    - Line 143: Fix config_loader import ✅
    - Add rate_limiter.reset_all() fixture
    - Update test_client to use TestClient(app) with lifespan

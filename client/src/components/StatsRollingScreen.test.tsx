@@ -317,7 +317,7 @@ describe('StatsRollingScreen', () => {
         expect(screen.getByText('Failed to load stats. Please try again.')).toBeInTheDocument();
       });
 
-      expect(defaultProps.onError).toHaveBeenCalledWith('Failed to connect to server');
+      expect(defaultProps.onError).toHaveBeenCalledWith('Server is unavailable. Please try again later.');
     });
   });
 

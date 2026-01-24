@@ -46,71 +46,80 @@ e2e-tests/
 
 ### Master Documentation Files
 
-- **`MULTIPLAYER_TEST_RULES.md`** - Master rules file containing:
-  - Critical AI executor requirements
-  - Mandatory execution order and protocols
-  - Test configuration and player credentials
-  - Server management procedures
-  - Safety checks and prerequisites
-  - Performance optimization settings
+**`MULTIPLAYER_TEST_RULES.md`** - Master rules file containing:
 
-- **`CLEANUP.md`** - Post-scenario cleanup procedures:
-  - Browser tab management
-  - Server shutdown procedures
-  - Clean state verification
-  - Error recovery steps
+- Critical AI executor requirements
+- Mandatory execution order and protocols
+- Test configuration and player credentials
+- Server management procedures
+- Safety checks and prerequisites
+- Performance optimization settings
 
-- **`TROUBLESHOOTING.md`** - Comprehensive error handling guide:
-  - Common issues and solutions
-  - Server startup problems
-  - Connection issues
-  - Database state problems
-  - Low-performance machine optimizations
-  - Debugging commands and procedures
+**`CLEANUP.md`** - Post-scenario cleanup procedures:
 
-- **`TESTING_APPROACH.md`** - Testing methodology documentation:
-  - Playwright MCP vs standard Playwright analysis
-  - Scenario-by-scenario testing approach rationale
-  - Hybrid approach considerations
-  - Future testing enhancements
-  - Implementation guidelines
+- Browser tab management
+- Server shutdown procedures
+- Clean state verification
+- Error recovery steps
 
-- **`EXECUTION_PROTOCOL_CHANGES.md`** - Documentation of refactoring changes:
-  - File structure changes
-  - Execution protocol changes
-  - Cursor rule updates
-  - Backward compatibility analysis
-  - Performance improvements
+**`TROUBLESHOOTING.md`** - Comprehensive error handling guide:
+
+- Common issues and solutions
+- Server startup problems
+- Connection issues
+- Database state problems
+- Low-performance machine optimizations
+- Debugging commands and procedures
+
+**`TESTING_APPROACH.md`** - Testing methodology documentation:
+
+- Playwright MCP vs standard Playwright analysis
+- Scenario-by-scenario testing approach rationale
+- Hybrid approach considerations
+- Future testing enhancements
+- Implementation guidelines
+
+**`EXECUTION_PROTOCOL_CHANGES.md`** - Documentation of refactoring changes:
+
+- File structure changes
+- Execution protocol changes
+- Cursor rule updates
+- Backward compatibility analysis
+- Performance improvements
 
 ### AI Execution Improvement Documentation (NEW)
 
-- **`AI_EXECUTION_IMPROVEMENTS.md`** - Comprehensive guide to improvements:
-  - Overview of changes made
-  - Detailed explanation of each improvement
-  - How improvements prevent failures
-  - Implementation roadmap
-  - How to update existing scenarios
+**`AI_EXECUTION_IMPROVEMENTS.md`** - Comprehensive guide to improvements:
 
-- **`AI_EXECUTOR_QUICK_REFERENCE.md`** - Quick reference card for AI executors:
-  - Seven commandments for execution
-  - Common traps to avoid
-  - Quick decision guides
-  - The golden rule
-  - Keep visible during execution
+- Overview of changes made
+- Detailed explanation of each improvement
+- How improvements prevent failures
+- Implementation roadmap
+- How to update existing scenarios
 
-- **`EXECUTION_GUARDS.md`** - Enhanced with real-world failure patterns:
-  - 8 documented AI execution failures
-  - What went wrong and why
-  - Correct behaviors to follow
-  - Learning from mistakes
-  - Anti-pattern examples
+**`AI_EXECUTOR_QUICK_REFERENCE.md`** - Quick reference card for AI executors:
 
-- **`SCENARIO_TEMPLATE.md`** - Template for creating/updating scenarios:
-  - Mandatory execution contract
-  - Step boundary format
-  - Execution guard examples
-  - Completion checklist format
-  - Unmissable completion markers
+- Seven commandments for execution
+- Common traps to avoid
+- Quick decision guides
+- The golden rule
+- Keep visible during execution
+
+**`EXECUTION_GUARDS.md`** - Enhanced with real-world failure patterns:
+
+- 8 documented AI execution failures
+- What went wrong and why
+- Correct behaviors to follow
+- Learning from mistakes
+- Anti-pattern examples
+
+**`SCENARIO_TEMPLATE.md`** - Template for creating/updating scenarios:
+
+- Mandatory execution contract
+- Step boundary format
+- Execution guard examples
+- Completion checklist format
+- Unmissable completion markers
 
 ### Individual Scenario Files
 
@@ -129,6 +138,7 @@ Each scenario file follows a standardized structure:
 
 ```bash
 # Follow master rules and execute all 21 scenarios in order
+
 1. Read e2e-tests/MULTIPLAYER_TEST_RULES.md for master rules
 2. Execute all scenarios from e2e-tests/scenarios/ in order
 3. Follow cleanup procedures in e2e-tests/CLEANUP.md
@@ -138,6 +148,7 @@ Each scenario file follows a standardized structure:
 
 ```bash
 # Execute a specific scenario
+
 1. Read e2e-tests/MULTIPLAYER_TEST_RULES.md for master rules
 2. Execute the specific scenario from e2e-tests/scenarios/
 3. Follow cleanup procedures in e2e-tests/CLEANUP.md
@@ -147,6 +158,7 @@ Each scenario file follows a standardized structure:
 
 ```bash
 # Execute related scenarios
+
 1. Read e2e-tests/MULTIPLAYER_TEST_RULES.md for master rules
 2. Execute the specific scenarios from e2e-tests/scenarios/
 3. Follow cleanup procedures in e2e-tests/CLEANUP.md
@@ -156,6 +168,7 @@ Each scenario file follows a standardized structure:
 
 ```bash
 # Use the original monolithic playbook
+
 Execute MULTIPLAYER_SCENARIOS_PLAYBOOK.md (preserved unchanged)
 ```
 
@@ -163,29 +176,41 @@ Execute MULTIPLAYER_SCENARIOS_PLAYBOOK.md (preserved unchanged)
 
 **All scenarios use Playwright MCP** for the following reasons:
 
-- **Multi-tab Coordination**: All scenarios require 2+ browser tabs for multiplayer testing
-- **Real-time Interaction**: All scenarios involve real-time message broadcasting and state synchronization
-- **Complex User Flows**: All scenarios require complex multiplayer interaction patterns
-- **State Management**: All scenarios need to verify state consistency across multiple players
-- **Message Broadcasting**: All scenarios test message delivery between players
+**Multi-tab Coordination**: All scenarios require 2+ browser tabs for multiplayer testing
+
+**Real-time Interaction**: All scenarios involve real-time message broadcasting and state synchronization
+
+**Complex User Flows**: All scenarios require complex multiplayer interaction patterns
+
+**State Management**: All scenarios need to verify state consistency across multiple players
+
+**Message Broadcasting**: All scenarios test message delivery between players
 
 ## Key Benefits
 
 ### Modular Structure Benefits
 
-- **Reduced AI Context Load**: Individual files fit within AI context limits
-- **Selective Execution**: Can execute specific scenarios for targeted testing
-- **Parallel Development**: Multiple scenarios can be developed simultaneously
-- **Easier Maintenance**: Individual files are easier to maintain and update
-- **Better Documentation**: Each scenario is self-documenting
+**Reduced AI Context Load**: Individual files fit within AI context limits
+
+**Selective Execution**: Can execute specific scenarios for targeted testing
+
+**Parallel Development**: Multiple scenarios can be developed simultaneously
+
+**Easier Maintenance**: Individual files are easier to maintain and update
+
+**Better Documentation**: Each scenario is self-documenting
 
 ### Backward Compatibility
 
-- **Original Playbook Preserved**: `MULTIPLAYER_SCENARIOS_PLAYBOOK.md` remains unchanged
-- **All Scenarios Preserved**: All 21 scenarios preserved in individual files
-- **All Procedures Preserved**: All execution procedures preserved
-- **All Safety Checks Preserved**: All safety checks preserved
-- **No Breaking Changes**: No existing workflows are broken
+**Original Playbook Preserved**: `MULTIPLAYER_SCENARIOS_PLAYBOOK.md` remains unchanged
+
+**All Scenarios Preserved**: All 21 scenarios preserved in individual files
+
+**All Procedures Preserved**: All execution procedures preserved
+
+**All Safety Checks Preserved**: All safety checks preserved
+
+**No Breaking Changes**: No existing workflows are broken
 
 ## File Size Analysis
 
@@ -199,27 +224,39 @@ Execute MULTIPLAYER_SCENARIOS_PLAYBOOK.md (preserved unchanged)
 
 ### By Category
 
-- **Connection & State**: scenarios 1-2
-- **Movement & Communication**: scenarios 3-5
-- **Admin & Commands**: scenarios 6-7
-- **Local Channel**: scenarios 8-12
-- **Whisper Channel**: scenarios 13-18
+**Connection & State**: scenarios 1-2
+
+**Movement & Communication**: scenarios 3-5
+
+**Admin & Commands**: scenarios 6-7
+
+**Local Channel**: scenarios 8-12
+
+**Whisper Channel**: scenarios 13-18
+
 - **Logout Button**: scenarios 19-21
 
 ### By Complexity
 
-- **Low-Medium**: scenarios 1-2, 4-5, 7, 19
-- **Medium**: scenarios 3, 6, 8, 13, 16, 20
-- **Medium-High**: scenarios 9-10, 14-15, 18, 21
-- **High**: scenarios 11-12, 17
+**Low-Medium**: scenarios 1-2, 4-5, 7, 19
+
+**Medium**: scenarios 3, 6, 8, 13, 16, 20
+
+**Medium-High**: scenarios 9-10, 14-15, 18, 21
+
+**High**: scenarios 11-12, 17
 
 ## Support and Maintenance
 
-- **Master Rules**: Always reference `MULTIPLAYER_TEST_RULES.md` for common procedures
-- **Cleanup**: Always follow `CLEANUP.md` procedures after scenario execution
-- **Troubleshooting**: Use `TROUBLESHOOTING.md` for error resolution
-- **Testing Approach**: See `TESTING_APPROACH.md` for methodology details
-- **Changes**: See `EXECUTION_PROTOCOL_CHANGES.md` for refactoring documentation
+**Master Rules**: Always reference `MULTIPLAYER_TEST_RULES.md` for common procedures
+
+**Cleanup**: Always follow `CLEANUP.md` procedures after scenario execution
+
+**Troubleshooting**: Use `TROUBLESHOOTING.md` for error resolution
+
+**Testing Approach**: See `TESTING_APPROACH.md` for methodology details
+
+**Changes**: See `EXECUTION_PROTOCOL_CHANGES.md` for refactoring documentation
 
 ---
 

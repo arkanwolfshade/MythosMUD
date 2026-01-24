@@ -2,7 +2,7 @@
 
 # pylint: disable=too-many-arguments  # Reason: Teleport helpers require many parameters for context and validation
 
-from typing import Any
+from typing import Any, cast
 
 from ..realtime.websocket_handler import broadcast_room_update
 from ..structured_logging.admin_actions_logger import get_admin_actions_logger
@@ -151,7 +151,7 @@ async def update_teleport_location(  # pylint: disable=too-many-arguments,too-ma
             connection_manager, target_player_identifier, original_room_id, target_room_id, persistence
         )
 
-    return original_room_id
+    return cast("str | dict[str, str]", original_room_id)
 
 
 async def update_player_room_location(

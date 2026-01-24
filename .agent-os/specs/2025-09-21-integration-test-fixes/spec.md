@@ -37,7 +37,8 @@ Currently, the integration test failures prevent proper CI/CD validation, making
 
 ## Out of Scope
 
-- Creating new integration test scenarios (only fixing existing ones)
+Creating new integration test scenarios (only fixing existing ones)
+
 - Modifying the actual game server implementation
 - Changing the core UI components beyond adding data-testid attributes
 - Performance optimization of test execution time

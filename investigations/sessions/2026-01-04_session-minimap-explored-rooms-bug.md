@@ -58,6 +58,7 @@ Non-admin players' mini-maps are not displaying explored rooms due to a data typ
 
 ```python
 # Filter to explored rooms if not admin
+
 if not (current_user.is_admin or current_user.is_superuser):
     container = request.app.state.container
     exploration_service: ExplorationService = container.exploration_service
@@ -121,10 +122,13 @@ async def get_explored_rooms(self, player_id: UUID, session: AsyncSession) -> li
 explored_room_ids = await exploration_service.get_explored_rooms(player_id, session)
 
 # Convert explored room UUIDs to stable_ids for filtering
+
 if explored_room_ids:
     # Convert string UUIDs to UUID objects for proper PostgreSQL type handling
+
     room_uuid_list = [uuid.UUID(rid) for rid in explored_room_ids]
     # Use IN clause with expanding parameters for proper array handling
+
     lookup_query = text("SELECT stable_id FROM rooms WHERE id IN :room_ids").bindparams(
         bindparam("room_ids", expanding=True)
     )
@@ -132,6 +136,7 @@ if explored_room_ids:
     explored_stable_ids = {row[0] for row in result.fetchall()}  # ✅ Correctly converts UUIDs to stable_ids
 
     # Filter rooms to only include explored ones
+
     rooms = [room for room in rooms if room.get("id") in explored_stable_ids]
 ```
 
@@ -157,6 +162,7 @@ if current_user and not (current_user.is_admin or current_user.is_superuser):
         player_id = uuid.UUID(str(player.player_id))
         explored_room_ids = await exploration_service.get_explored_rooms(player_id, session)
         # Filter rooms to only explored ones
+
         explored_stable_ids = set(explored_room_ids)  # ⚠️ SAME BUG: UUIDs treated as stable_ids
         rooms = [
             r for r in rooms if r.get("stable_id") in explored_stable_ids or r.get("id") in explored_stable_ids
@@ -172,18 +178,21 @@ if current_user and not (current_user.is_admin or current_user.is_superuser):
 **Technical Details:**
 
 1. **Data Flow:**
+
    - `player_exploration` table stores `room_id` as UUID (references `rooms.id`)
    - `get_explored_rooms()` returns these UUIDs as strings
    - Room data loaded by `_load_rooms_with_coordinates()` uses `stable_id` (hierarchical string IDs like `"earth_arkhamcity_room1"`)
    - Filtering compares UUIDs with stable_ids, which never match
 
 2. **Why It Fails:**
+
    - UUID format: `"123e4567-e89b-12d3-a456-426614174000"` (36 characters with hyphens)
    - Stable ID format: `"earth_arkhamcity_northside_room1"` (hierarchical string)
    - These are fundamentally different data types and formats
    - Direct set membership check (`in`) will always return `False`
 
 3. **Why Admins Are Unaffected:**
+
    - Admin check happens before filtering: `if not (current_user.is_admin or current_user.is_superuser):`
    - Admins skip the filtering logic entirely, so they see all rooms regardless
 
@@ -193,8 +202,10 @@ if current_user and not (current_user.is_admin or current_user.is_superuser):
 
 **Scope:**
 
-- **Affected Users:** All non-admin players
-- **Affected Features:**
+**Affected Users:** All non-admin players
+
+**Affected Features:**
+
   - Mini-map display (`/api/maps/ascii/minimap`)
   - Full ASCII map display (`/api/maps/ascii`) - same bug exists
   - Room map viewer (`/api/rooms/list`) - correctly implemented, not affected
@@ -232,6 +243,7 @@ if current_user and not (current_user.is_admin or current_user.is_superuser):
 
    ```python
    # Correctly converts UUIDs to stable_ids via database query
+
    room_uuid_list = [uuid.UUID(rid) for rid in explored_room_ids]
    lookup_query = text("SELECT stable_id FROM rooms WHERE id IN :room_ids").bindparams(
        bindparam("room_ids", expanding=True)
@@ -241,6 +253,7 @@ if current_user and not (current_user.is_admin or current_user.is_superuser):
    ```
 
 4. **Exploration Service:** `server/services/exploration_service.py:238-269`
+
    - Returns UUIDs, not stable_ids
    - Documentation could be clearer about return type
 
@@ -254,27 +267,32 @@ if current_user and not (current_user.is_admin or current_user.is_superuser):
 
 ### Priority 1: Fix Mini-Map Endpoint
 
-- Apply the same UUID-to-stable_id conversion logic used in `/api/rooms/list` to `/api/maps/ascii/minimap`
+Apply the same UUID-to-stable_id conversion logic used in `/api/rooms/list` to `/api/maps/ascii/minimap`
+
 - Location: `server/api/maps.py:187-196`
 
 ### Priority 2: Fix ASCII Map Endpoint
 
-- Apply the same fix to `/api/maps/ascii` endpoint
+Apply the same fix to `/api/maps/ascii` endpoint
+
 - Location: `server/api/maps.py:79-92`
 
 ### Priority 3: Code Review
 
-- Review all endpoints that use `get_explored_rooms()` to ensure proper UUID-to-stable_id conversion
+Review all endpoints that use `get_explored_rooms()` to ensure proper UUID-to-stable_id conversion
+
 - Consider adding a helper function to avoid code duplication
 
 ### Priority 4: Documentation
 
-- Update `get_explored_rooms()` documentation to clarify it returns UUIDs, not stable_ids
+Update `get_explored_rooms()` documentation to clarify it returns UUIDs, not stable_ids
+
 - Add comments in filtering code explaining the conversion step
 
 ### Priority 5: Testing
 
-- Add integration tests for minimap endpoint with non-admin players
+Add integration tests for minimap endpoint with non-admin players
+
 - Verify explored rooms appear correctly after fix
 - Test edge cases (no explored rooms, all rooms explored, etc.)
 
@@ -302,7 +320,8 @@ After fixing, verify that:
 
 ## Investigation Completion Checklist
 
-- [x] All investigation steps completed as written
+[x] All investigation steps completed as written
+
 - [x] Comprehensive evidence collected and documented
 - [x] Root cause analysis completed
 - [x] System impact assessed

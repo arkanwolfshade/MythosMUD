@@ -253,7 +253,7 @@ async def test_check_and_send_death_notification_in_limbo(mock_websocket, mock_c
 @pytest.mark.asyncio
 async def test_add_npc_occupants_to_list_success(mock_connection_manager, mock_room):
     """Test add_npc_occupants_to_list() adds NPC names to list."""
-    occupant_names = []
+    occupant_names: list[str] = []
     canonical_room_id = "room_123"
 
     mock_npc1 = MagicMock()
@@ -284,7 +284,7 @@ async def test_add_npc_occupants_to_list_success(mock_connection_manager, mock_r
 @pytest.mark.asyncio
 async def test_add_npc_occupants_to_list_no_app(mock_connection_manager, mock_room):
     """Test add_npc_occupants_to_list() does nothing when no app."""
-    occupant_names = []
+    occupant_names: list[str] = []
     canonical_room_id = "room_123"
 
     # Remove app attribute entirely
@@ -299,7 +299,7 @@ async def test_add_npc_occupants_to_list_no_app(mock_connection_manager, mock_ro
 @pytest.mark.asyncio
 async def test_add_npc_occupants_to_list_filters_dead_npcs(mock_connection_manager, mock_room):
     """Test add_npc_occupants_to_list() includes all NPCs (code doesn't filter dead)."""
-    occupant_names = []
+    occupant_names: list[str] = []
     canonical_room_id = "room_123"
 
     mock_npc_alive = MagicMock()

@@ -1,6 +1,7 @@
 # 🐙 MythosMUD Command Handler Patterns
 
-*"Patterns emerge from chaos, and in those patterns we find the structure of our reality."* - Dr. Henry Armitage, Miskatonic University
+*"Patterns emerge from chaos, and in those patterns we find the structure of our reality."* - Dr. Henry Armitage,
+Miskatonic University
 
 ---
 
@@ -21,7 +22,8 @@
 
 ## Overview
 
-Command handlers in MythosMUD are async functions that process validated command data and interact with the game systems. They follow consistent patterns to ensure maintainability, security, and performance.
+Command handlers in MythosMUD are async functions that process validated command data and interact with the game
+systems. They follow consistent patterns to ensure maintainability, security, and performance.
 
 ### Handler Signature
 
@@ -65,9 +67,11 @@ async def handle_simple_command(
     logger.debug("Processing simple command", player=player_name, args=command_data)
 
     # Extract command parameters
+
     param1 = command_data.get("param1", "default")
 
     # Process command logic
+
     result_message = f"You performed action: {param1}"
 
     logger.info(f"Simple command completed for {player_name}")
@@ -85,6 +89,7 @@ async def handle_standard_command(
     logger.debug("Processing standard command", player=player_name, args=command_data)
 
     # Get persistence layer
+
     app = request.app if request else None
     persistence = app.state.persistence if app else None
 
@@ -93,19 +98,23 @@ async def handle_standard_command(
         return {"result": "You can't perform that action right now."}
 
     # Get player data
+
     player = persistence.get_player_by_name(get_username_from_user(current_user))
     if not player:
         logger.warning("Standard command failed - player not found", player=player_name)
         return {"result": "You can't perform that action right now."}
 
     # Extract command parameters
+
     param1 = command_data.get("param1")
     if not param1:
         return {"result": "Missing required parameter. Usage: command <param1>"}
 
     # Perform command logic
+
     try:
         # Your command logic here
+
         result_message = f"You successfully used {param1}"
 
         logger.info(f"Standard command completed for {player_name}: {param1}")
@@ -133,6 +142,7 @@ async def handle_room_command(
     logger.debug("Processing room command", player=player_name, args=command_data)
 
     # Get persistence layer
+
     app = request.app if request else None
     persistence = app.state.persistence if app else None
 
@@ -141,6 +151,7 @@ async def handle_room_command(
         return {"result": "You can't perform that action right now."}
 
     # Get player and room data
+
     player = persistence.get_player_by_name(get_username_from_user(current_user))
     if not player:
         logger.warning("Room command failed - player not found", player=player_name)
@@ -153,19 +164,24 @@ async def handle_room_command(
         return {"result": "You can't perform that action right now."}
 
     # Get other players in room
+
     room_players = persistence.get_players_in_room(room_id)
 
     # Extract command parameters
+
     action = command_data.get("action", "default")
 
     # Perform room-based action
+
     result_message = f"{player_name} performs {action} in {room.name}"
 
     # Notify other players in room (if needed)
+
     for room_player in room_players:
         if room_player.username != player_name:
             # Send message to other players
             # This would typically use the event system
+
             pass
 
     logger.info(f"Room command completed for {player_name}: {action} in {room_id}")
@@ -185,6 +201,7 @@ async def handle_target_command(
     logger.debug("Processing target command", player=player_name, args=command_data)
 
     # Get persistence layer
+
     app = request.app if request else None
     persistence = app.state.persistence if app else None
 
@@ -193,17 +210,20 @@ async def handle_target_command(
         return {"result": "You can't perform that action right now."}
 
     # Get current player
+
     player = persistence.get_player_by_name(get_username_from_user(current_user))
     if not player:
         logger.warning("Target command failed - player not found", player=player_name)
         return {"result": "You can't perform that action right now."}
 
     # Extract target player
+
     target_player_name = command_data.get("target_player")
     if not target_player_name:
         return {"result": "Target who? Usage: command <player_name>"}
 
     # Validate target player
+
     if target_player_name.lower() == player_name.lower():
         return {"result": "You can't target yourself."}
 
@@ -212,13 +232,16 @@ async def handle_target_command(
         return {"result": "Player not found."}
 
     # Check if target is in same room
+
     if target_player.current_room_id != player.current_room_id:
         return {"result": "That player is not here."}
 
     # Extract action parameter
+
     action = command_data.get("action", "default")
 
     # Perform targeted action
+
     result_message = f"You {action} {target_player_name}"
     target_message = f"{player_name} {action}s you"
 
@@ -242,11 +265,13 @@ async def handle_admin_command(
     logger.debug("Processing admin command", player=player_name, args=command_data)
 
     # Check admin permissions
+
     if not current_user.get("is_admin", False):
         logger.warning("Admin command attempted by non-admin user", player=player_name)
         return {"result": "You don't have permission for that command."}
 
     # Get persistence layer
+
     app = request.app if request else None
     persistence = app.state.persistence if app else None
 
@@ -255,6 +280,7 @@ async def handle_admin_command(
         return {"result": "You can't perform that action right now."}
 
     # Extract command parameters
+
     target = command_data.get("target")
     action = command_data.get("action")
 
@@ -262,8 +288,10 @@ async def handle_admin_command(
         return {"result": "Missing parameters. Usage: command <target> <action>"}
 
     # Perform admin action
+
     try:
         # Admin-specific logic here
+
         result_message = f"Admin action completed: {action} on {target}"
 
         logger.info(f"Admin command completed by {player_name}: {action} on {target}")
@@ -287,6 +315,7 @@ async def handle_event_command(
     logger.debug("Processing event command", player=player_name, args=command_data)
 
     # Get persistence layer
+
     app = request.app if request else None
     persistence = app.state.persistence if app else None
 
@@ -295,16 +324,19 @@ async def handle_event_command(
         return {"result": "You can't perform that action right now."}
 
     # Get player data
+
     player = persistence.get_player_by_name(get_username_from_user(current_user))
     if not player:
         logger.warning("Event command failed - player not found", player=player_name)
         return {"result": "You can't perform that action right now."}
 
     # Extract command parameters
+
     action = command_data.get("action")
     target = command_data.get("target")
 
     # Create and publish event
+
     from ..game.events import GameEvent, EventType
 
     event = GameEvent(
@@ -343,6 +375,7 @@ async def handle_validation_command(
     logger.debug("Processing validation command", player=player_name, args=command_data)
 
     # Get persistence layer
+
     app = request.app if request else None
     persistence = app.state.persistence if app else None
 
@@ -351,16 +384,19 @@ async def handle_validation_command(
         return {"result": "You can't perform that action right now."}
 
     # Get player data
+
     player = persistence.get_player_by_name(get_username_from_user(current_user))
     if not player:
         logger.warning("Validation command failed - player not found", player=player_name)
         return {"result": "You can't perform that action right now."}
 
     # Extract and validate parameters
+
     param1 = command_data.get("param1")
     param2 = command_data.get("param2")
 
     # Complex validation logic
+
     if not param1:
         return {"result": "Missing required parameter 1."}
 
@@ -368,10 +404,12 @@ async def handle_validation_command(
         return {"result": "Parameter 2 too long (max 100 characters)."}
 
     # Business logic validation
+
     if param1.lower() in ["forbidden", "restricted", "banned"]:
         return {"result": "That parameter is not allowed."}
 
     # Perform command logic
+
     result_message = f"Validation successful: {param1}"
     if param2:
         result_message += f" with {param2}"
@@ -388,6 +426,7 @@ async def handle_validation_command(
 
 ```python
 # Get persistence layer
+
 app = request.app if request else None
 persistence = app.state.persistence if app else None
 
@@ -396,6 +435,7 @@ if not persistence:
     return {"result": "You can't perform that action right now."}
 
 # Common persistence operations
+
 player = persistence.get_player_by_name(username)
 room = persistence.get_room(room_id)
 room_players = persistence.get_players_in_room(room_id)
@@ -407,6 +447,7 @@ room_players = persistence.get_players_in_room(room_id)
 from ..game.events import GameEvent, EventType
 
 # Create event
+
 event = GameEvent(
     event_type=EventType.PLAYER_ACTION,
     player_id=str(player.player_id),
@@ -415,6 +456,7 @@ event = GameEvent(
 )
 
 # Publish event
+
 persistence._event_bus.publish(event)
 ```
 
@@ -424,9 +466,11 @@ persistence._event_bus.publish(event)
 from ..game.movement_service import MovementService
 
 # Create movement service
+
 movement_service = MovementService(persistence._event_bus)
 
 # Move player
+
 success = movement_service.move_player(
     str(player.player_id),
     current_room_id,
@@ -448,6 +492,7 @@ async def handle_robust_command(
 
     try:
         # Get persistence layer
+
         app = request.app if request else None
         persistence = app.state.persistence if app else None
 
@@ -456,12 +501,14 @@ async def handle_robust_command(
             return {"result": "You can't perform that action right now."}
 
         # Get player data
+
         player = persistence.get_player_by_name(get_username_from_user(current_user))
         if not player:
             logger.warning("Robust command failed - player not found", player=player_name)
             return {"result": "You can't perform that action right now."}
 
         # Perform command logic
+
         result_message = "Command completed successfully"
 
         logger.info(f"Robust command completed for {player_name}")
@@ -469,16 +516,19 @@ async def handle_robust_command(
 
     except ValueError as e:
         # Handle validation errors
+
         logger.warning(f"Robust command validation error for {player_name}: {str(e)}")
         return {"result": f"Invalid input: {str(e)}"}
 
     except PermissionError as e:
         # Handle permission errors
+
         logger.warning(f"Robust command permission error for {player_name}: {str(e)}")
         return {"result": "You don't have permission for that action."}
 
     except Exception as e:
         # Handle unexpected errors
+
         logger.error(f"Robust command unexpected error for {player_name}: {str(e)}", exc_info=True)
         return {"result": "An unexpected error occurred. Please try again."}
 ```
@@ -492,10 +542,12 @@ async def handle_specific_errors(
     """Handle a command with specific error handling."""
 
     # Check for specific error conditions
+
     if not command_data.get("required_param"):
         return {"result": "Missing required parameter."}
 
     # Get persistence layer with specific error handling
+
     try:
         app = request.app if request else None
         persistence = app.state.persistence if app else None
@@ -508,6 +560,7 @@ async def handle_specific_errors(
         return {"result": "You can't perform that action right now."}
 
     # Get player with specific error handling
+
     try:
         player = persistence.get_player_by_name(get_username_from_user(current_user))
     except KeyError:
@@ -519,6 +572,7 @@ async def handle_specific_errors(
         return {"result": "You can't perform that action right now."}
 
     # Perform command logic
+
     result_message = "Command completed successfully"
 
     logger.info(f"Specific errors command completed for {player_name}")
@@ -538,9 +592,11 @@ async def handle_logged_command(
     """Handle a command with comprehensive logging."""
 
     # Entry logging
+
     logger.debug("Processing logged command", player=player_name, args=command_data)
 
     # Get persistence layer
+
     app = request.app if request else None
     persistence = app.state.persistence if app else None
 
@@ -549,25 +605,30 @@ async def handle_logged_command(
         return {"result": "You can't perform that action right now."}
 
     # Get player data
+
     player = persistence.get_player_by_name(get_username_from_user(current_user))
     if not player:
         logger.warning("Logged command failed - player not found", player=player_name)
         return {"result": "You can't perform that action right now."}
 
     # Extract parameters
+
     action = command_data.get("action")
     target = command_data.get("target")
 
     # Log parameter extraction
+
     logger.debug("Command parameters extracted", player=player_name, action=action, target=target)
 
     # Perform command logic
+
     try:
         result_message = f"Action {action} completed"
         if target:
             result_message += f" on {target}"
 
         # Success logging
+
         logger.info(f"Logged command completed for {player_name}: {action}",
                    player=player_name, action=action, target=target, room_id=player.current_room_id)
 
@@ -575,6 +636,7 @@ async def handle_logged_command(
 
     except Exception as e:
         # Error logging
+
         logger.error(f"Logged command error for {player_name}: {str(e)}",
                     player=player_name, action=action, target=target, error=str(e), exc_info=True)
         return {"result": "An error occurred while processing your command."}
@@ -589,6 +651,7 @@ async def handle_security_logged_command(
     """Handle a command with security-focused logging."""
 
     # Log command attempt
+
     logger.info("Security command attempted",
                player=player_name,
                command_type=command_data.get("command_type"),
@@ -596,6 +659,7 @@ async def handle_security_logged_command(
                user_agent=request.headers.get("user-agent", "unknown") if request else "unknown")
 
     # Check permissions
+
     if not current_user.get("is_admin", False):
         logger.warning("Security command attempted by non-admin user",
                       player=player_name,
@@ -603,6 +667,7 @@ async def handle_security_logged_command(
         return {"result": "You don't have permission for that command."}
 
     # Get persistence layer
+
     app = request.app if request else None
     persistence = app.state.persistence if app else None
 
@@ -611,10 +676,12 @@ async def handle_security_logged_command(
         return {"result": "You can't perform that action right now."}
 
     # Perform security-sensitive action
+
     target = command_data.get("target")
     action = command_data.get("action")
 
     # Log security action
+
     logger.info("Security action performed",
                admin=player_name,
                action=action,
@@ -641,6 +708,7 @@ async def handle_sanitized_command(
     logger.debug("Processing sanitized command", player=player_name, args=command_data)
 
     # Get persistence layer
+
     app = request.app if request else None
     persistence = app.state.persistence if app else None
 
@@ -649,19 +717,23 @@ async def handle_sanitized_command(
         return {"result": "You can't perform that action right now."}
 
     # Get player data
+
     player = persistence.get_player_by_name(get_username_from_user(current_user))
     if not player:
         logger.warning("Sanitized command failed - player not found", player=player_name)
         return {"result": "You can't perform that action right now."}
 
     # Extract and sanitize parameters
+
     raw_input = command_data.get("input", "")
 
     # Sanitize input
+
     import html
     sanitized_input = html.escape(raw_input.strip())
 
     # Additional security checks
+
     dangerous_patterns = ["<script", "javascript:", "onload=", "onerror="]
     for pattern in dangerous_patterns:
         if pattern.lower() in raw_input.lower():
@@ -669,6 +741,7 @@ async def handle_sanitized_command(
             return {"result": "Input contains forbidden content."}
 
     # Perform command logic with sanitized input
+
     result_message = f"Processed: {sanitized_input}"
 
     logger.info(f"Sanitized command completed for {player_name}")
@@ -686,19 +759,23 @@ async def handle_rate_limited_command(
     logger.debug("Processing rate limited command", player=player_name, args=command_data)
 
     # Simple rate limiting (in production, use a proper rate limiter)
+
     command_key = f"{player_name}:rate_limited_command"
     current_time = time.time()
 
     # Check rate limit (example implementation)
+
     last_execution = getattr(request.app.state, f"last_{command_key}", 0)
     if current_time - last_execution < 5:  # 5 second cooldown
         logger.warning("Rate limit exceeded", player=player_name, command="rate_limited_command")
         return {"result": "You're using that command too frequently. Please wait a moment."}
 
     # Update last execution time
+
     setattr(request.app.state, f"last_{command_key}", current_time)
 
     # Get persistence layer
+
     app = request.app if request else None
     persistence = app.state.persistence if app else None
 
@@ -707,6 +784,7 @@ async def handle_rate_limited_command(
         return {"result": "You can't perform that action right now."}
 
     # Perform command logic
+
     result_message = "Rate limited command completed"
 
     logger.info(f"Rate limited command completed for {player_name}")
@@ -728,6 +806,7 @@ async def handle_cached_command(
     logger.debug("Processing cached command", player=player_name, args=command_data)
 
     # Get persistence layer
+
     app = request.app if request else None
     persistence = app.state.persistence if app else None
 
@@ -736,12 +815,14 @@ async def handle_cached_command(
         return {"result": "You can't perform that action right now."}
 
     # Get player data
+
     player = persistence.get_player_by_name(get_username_from_user(current_user))
     if not player:
         logger.warning("Cached command failed - player not found", player=player_name)
         return {"result": "You can't perform that action right now."}
 
     # Check cache (example implementation)
+
     cache_key = f"cached_command:{player_name}:{command_data.get('action')}"
     cached_result = getattr(request.app.state, cache_key, None)
 
@@ -750,9 +831,11 @@ async def handle_cached_command(
         return {"result": cached_result["data"]}
 
     # Perform expensive operation
+
     expensive_result = "Expensive operation result"
 
     # Cache result
+
     setattr(request.app.state, cache_key, {
         "data": expensive_result,
         "timestamp": time.time()
@@ -773,6 +856,7 @@ async def handle_batch_command(
     logger.debug("Processing batch command", player=player_name, args=command_data)
 
     # Get persistence layer
+
     app = request.app if request else None
     persistence = app.state.persistence if app else None
 
@@ -781,25 +865,30 @@ async def handle_batch_command(
         return {"result": "You can't perform that action right now."}
 
     # Get player data
+
     player = persistence.get_player_by_name(get_username_from_user(current_user))
     if not player:
         logger.warning("Batch command failed - player not found", player=player_name)
         return {"result": "You can't perform that action right now."}
 
     # Extract batch parameters
+
     items = command_data.get("items", [])
     if not items:
         return {"result": "No items specified for batch operation."}
 
     # Limit batch size for performance
+
     if len(items) > 100:
         return {"result": "Too many items for batch operation (max 100)."}
 
     # Perform batch operation
+
     results = []
     for item in items:
         try:
             # Process individual item
+
             result = f"Processed: {item}"
             results.append(result)
         except Exception as e:
@@ -824,6 +913,7 @@ async def test_command_handler():
     """Test a command handler with proper mocking."""
 
     # Mock dependencies
+
     mock_request = Mock()
     mock_app = Mock()
     mock_persistence = Mock()
@@ -831,24 +921,29 @@ async def test_command_handler():
     mock_alias_storage = Mock()
 
     # Setup mocks
+
     mock_request.app = mock_app
     mock_app.state.persistence = mock_persistence
     mock_persistence.get_player_by_name.return_value = mock_player
 
     # Test data
+
     command_data = {"command_type": "test_command", "param1": "value1"}
     current_user = {"username": "testuser"}
 
     # Execute command
+
     result = await handle_test_command(
         command_data, current_user, mock_request, mock_alias_storage, "testuser"
     )
 
     # Verify result
+
     assert "result" in result
     assert "success" in result["result"]
 
     # Verify mocks were called correctly
+
     mock_persistence.get_player_by_name.assert_called_once_with("testuser")
 ```
 
@@ -860,25 +955,30 @@ async def test_command_handler_errors():
     """Test command handler error conditions."""
 
     # Mock dependencies
+
     mock_request = Mock()
     mock_app = Mock()
     mock_persistence = Mock()
     mock_alias_storage = Mock()
 
     # Setup mocks for error condition
+
     mock_request.app = mock_app
     mock_app.state.persistence = None  # Simulate missing persistence
 
     # Test data
+
     command_data = {"command_type": "test_command"}
     current_user = {"username": "testuser"}
 
     # Execute command
+
     result = await handle_test_command(
         command_data, current_user, mock_request, mock_alias_storage, "testuser"
     )
 
     # Verify error handling
+
     assert "result" in result
     assert "can't perform" in result["result"]
 ```
@@ -891,12 +991,15 @@ async def test_command_handler_errors():
 
 ```python
 # WRONG - blocking operation in async handler
+
 async def handle_blocking_command(...):
     # This blocks the event loop
+
     time.sleep(5)  # Don't do this!
     return {"result": "Done"}
 
 # RIGHT - use asyncio.sleep for async operations
+
 async def handle_async_command(...):
     await asyncio.sleep(5)  # This is okay
     return {"result": "Done"}
@@ -906,18 +1009,22 @@ async def handle_async_command(...):
 
 ```python
 # WRONG - silently ignoring errors
+
 async def handle_ignored_errors(...):
     try:
         # Command logic
+
         pass
     except Exception:
         pass  # Don't do this!
     return {"result": "Success"}
 
 # RIGHT - proper error handling
+
 async def handle_proper_errors(...):
     try:
         # Command logic
+
         pass
     except Exception as e:
         logger.error(f"Command error: {str(e)}")
@@ -928,11 +1035,13 @@ async def handle_proper_errors(...):
 
 ```python
 # WRONG - hardcoded values
+
 async def handle_hardcoded_command(...):
     if len(param) > 100:  # Magic number
         return {"result": "Too long"}
 
 # RIGHT - use constants
+
 MAX_PARAM_LENGTH = 100
 
 async def handle_constants_command(...):
@@ -944,12 +1053,14 @@ async def handle_constants_command(...):
 
 ```python
 # WRONG - inconsistent logging
+
 async def handle_inconsistent_logging(...):
     logger.info("Command started")  # Different log levels
     logger.debug("Processing")      # for same operation
     logger.warning("Completed")     # Don't do this!
 
 # RIGHT - consistent logging
+
 async def handle_consistent_logging(...):
     logger.debug("Command started")
     logger.debug("Processing")
@@ -960,12 +1071,15 @@ async def handle_consistent_logging(...):
 
 ```python
 # WRONG - no input validation
+
 async def handle_unvalidated_command(...):
     param = command_data.get("param")
     # Use param directly without validation
+
     result = f"Processed: {param}"
 
 # RIGHT - validate input
+
 async def handle_validated_command(...):
     param = command_data.get("param")
     if not param or len(param) > 100:

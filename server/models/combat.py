@@ -88,8 +88,11 @@ class CombatInstance:  # pylint: disable=too-many-instance-attributes  # Reason:
     combat_round: int = 0
     # Auto-progression features
     auto_progression_enabled: bool = True
-    turn_interval_ticks: int = 6
+    turn_interval_ticks: int = 100  # 100 ticks = 10 seconds (round interval)
     next_turn_tick: int = 0
+    # Action queuing for round-based combat
+    queued_actions: dict[UUID, list["CombatAction"]] = field(default_factory=dict)  # Actions queued per participant
+    round_actions: dict[UUID, "CombatAction"] = field(default_factory=dict)  # Actions for current round
 
     def get_current_turn_participant(self) -> CombatParticipant | None:
         """Get the participant whose turn it is."""
@@ -112,13 +115,18 @@ class CombatInstance:  # pylint: disable=too-many-instance-attributes  # Reason:
         return None
 
     def advance_turn(self, current_tick: int) -> None:
-        """Advance to the next turn."""
-        self.current_turn += 1
-        if self.current_turn >= len(self.turn_order):
-            self.current_turn = 0
-            self.combat_round += 1
+        """
+        Advance to the next round - all participants act each round.
 
-        # Update next turn tick for auto-progression
+        In round-based combat, this increments the combat_round counter.
+        All participants act in each round in initiative order (handled by CombatTurnProcessor).
+        """
+        # Increment combat round (all participants act each round)
+        self.combat_round += 1
+        # Reset current_turn (may be repurposed for other timing needs)
+        self.current_turn = 0
+
+        # Update next turn tick for auto-progression (next round starts in turn_interval_ticks)
         if self.auto_progression_enabled:
             self.next_turn_tick = current_tick + self.turn_interval_ticks
 
@@ -136,6 +144,71 @@ class CombatInstance:  # pylint: disable=too-many-instance-attributes  # Reason:
         self.last_activity_tick = current_tick
         self.last_activity = datetime.now(UTC)
 
+    def queue_action(self, participant_id: UUID, action: "CombatAction") -> None:
+        """
+        Queue an action for a participant to execute in the next round.
+
+        Args:
+            participant_id: ID of the participant queuing the action
+            action: The combat action to queue
+        """
+        if participant_id not in self.queued_actions:
+            self.queued_actions[participant_id] = []
+        action.queued = True
+        action.round = self.combat_round + 1  # Execute in next round
+        self.queued_actions[participant_id].append(action)
+        logger.debug(
+            "Action queued",
+            combat_id=self.combat_id,
+            participant_id=participant_id,
+            action_type=action.action_type,
+            round=action.round,
+        )
+
+    def get_queued_actions(self, participant_id: UUID) -> list["CombatAction"]:
+        """
+        Get queued actions for a participant.
+
+        Args:
+            participant_id: ID of the participant
+
+        Returns:
+            List of queued actions for this participant
+        """
+        return self.queued_actions.get(participant_id, [])
+
+    def clear_queued_actions(self, participant_id: UUID, round_number: int | None = None) -> None:
+        """
+        Clear queued actions for a participant after execution.
+
+        Args:
+            participant_id: ID of the participant
+            round_number: Optional round number to clear specific action, or None to clear all
+        """
+        if participant_id not in self.queued_actions:
+            return
+
+        if round_number is None:
+            # Clear all queued actions for this participant
+            del self.queued_actions[participant_id]
+        else:
+            # Clear only the action for the specified round
+            actions = self.queued_actions[participant_id]
+            self.queued_actions[participant_id] = [a for a in actions if a.round != round_number]
+            # Clean up empty lists
+            if not self.queued_actions[participant_id]:
+                del self.queued_actions[participant_id]
+
+    def get_participants_by_initiative(self) -> list[CombatParticipant]:
+        """
+        Get all alive participants sorted by dexterity (highest first) for initiative order.
+
+        Returns:
+            List of participants sorted by dexterity descending
+        """
+        alive = self.get_alive_participants()
+        return sorted(alive, key=lambda p: p.dexterity, reverse=True)
+
 
 @dataclass
 class CombatAction:  # pylint: disable=too-many-instance-attributes  # Reason: Combat action requires many fields to capture complete action state
@@ -148,8 +221,13 @@ class CombatAction:  # pylint: disable=too-many-instance-attributes  # Reason: C
     action_type: str = "attack"
     damage: int = field(default_factory=_get_default_damage)
     tick: int = 0
+    round: int = 0  # Round number when action executes (for queued actions)
     success: bool = True
     message: str = ""
+    # Additional fields for queued actions
+    queued: bool = False  # Whether this action was queued
+    spell_id: str | None = None  # For spell actions
+    spell_name: str | None = None  # For spell actions
 
 
 @dataclass

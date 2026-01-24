@@ -1,6 +1,7 @@
 # Test Suite Quality Audit - Executive Summary
 
-> *"After extensive archaeological investigation of the test chambers, we have mapped the distribution of value and identified both the treasures worth preserving and the ceremonial artifacts consuming resources without purpose."*
+> *"After extensive archaeological investigation of the test chambers, we have mapped the distribution of value and
+identified both the treasures worth preserving and the ceremonial artifacts consuming resources without purpose."*
 
 **Audit Completed:** November 4, 2025
 **Auditor:** Untenured Professor of Occult Studies, Miskatonic University
@@ -15,17 +16,21 @@
 
 ## **25-30% (~1,250-1,500 tests) provide CRITICAL regression protection**
 
-**Breakdown:**
+### Breakdown
 
-- **🔴 CRITICAL (25.6%):** 1,272 tests — Prevents regressions, security issues, user-facing bugs
-- **🟡 IMPORTANT (59.3%):** 2,943 tests — Validates business logic and features
-- **🟢 LOW-VALUE (15.1%):** 750 tests — Tests framework behavior, trivial code, metrics-driven
+**🔴 CRITICAL (25.6%):** 1,272 tests — Prevents regressions, security issues, user-facing bugs
 
-**Translation:**
+**🟡 IMPORTANT (59.3%):** 2,943 tests — Validates business logic and features
 
-- **~8-10 minutes** of testing provides critical protection
-- **~18 minutes** validates important behavior
-- **~4 minutes** tests low-value or trivial code
+**🟢 LOW-VALUE (15.1%):** 750 tests — Tests framework behavior, trivial code, metrics-driven
+
+### Translation
+
+**~8-10 minutes** of testing provides critical protection
+
+**~18 minutes** validates important behavior
+
+**~4 minutes** tests low-value or trivial code
 
 ---
 
@@ -87,14 +92,15 @@ TOTAL            4,965                100%        30 min
 
 ### 1. Infrastructure Tests are the Main Optimization Target
 
-**Problem:**
+### Problem
 
-- 454 tests (9% of suite) in infrastructure testing
+454 tests (9% of suite) in infrastructure testing
+
 - Consume ~3 minutes (10% of time)
 - Mostly test framework behavior (`assert isinstance`, `assert hasattr`)
 - **Value Score: 20/100** (very low)
 
-**Example Low-Value Test:**
+### Example Low-Value Test
 
 ```python
 def test_get_player_service_returns_player_service():
@@ -108,16 +114,18 @@ def test_get_player_service_returns_player_service():
 
 ### 2. Regression Tests are 100% High-Value
 
-**Finding:**
+### Finding
 
-- Only 31 tests (0.6% of suite)
+Only 31 tests (0.6% of suite)
+
 - Each test verifies a real bug that occurred
 - Clear documentation of bug being prevented
 - **Value Score: 100/100** (perfect)
 
-**Examples:**
+### Examples
 
-- Self-message bug (players seeing own movement messages)
+Self-message bug (players seeing own movement messages)
+
 - Unknown room fix (players in non-existent rooms crash)
 - NPC spawn condition fix (spawn logic errors)
 
@@ -127,16 +135,18 @@ def test_get_player_service_returns_player_service():
 
 ### 3. Coverage Tests Written for Metrics, Not Quality
 
-**Problem:**
+### Problem
 
-- 126 tests explicitly written "to improve coverage"
+126 tests explicitly written "to improve coverage"
+
 - 70% test trivial code paths (error logging, message formatting)
 - **Value Score: 29/100** (low)
 
-**Example:**
+### Example
 
 ```python
 # Test written just to hit lines 54-58 in coverage report
+
 def test_error_path():
     with patch('logger.error') as mock:
         trigger_error()
@@ -149,15 +159,17 @@ def test_error_path():
 
 ### 4. No Parametrized Tests (Major Opportunity)
 
-**Finding:**
+### Finding
 
-- 0 uses of `@pytest.mark.parametrize` in entire suite
+0 uses of `@pytest.mark.parametrize` in entire suite
+
 - ~300 tests follow repetitive patterns (same test, different inputs)
 - Could consolidate to ~100 parametrized tests with SAME coverage
 
-**Opportunity:**
+### Opportunity
 
-- Reduce test count by ~200 while maintaining coverage
+Reduce test count by ~200 while maintaining coverage
+
 - Improve maintainability significantly
 - Make it easier to add new test cases
 
@@ -165,9 +177,10 @@ def test_error_path():
 
 ### 5. Critical Gaps in New Architecture
 
-**Finding:**
+### Finding
 
-- ApplicationContainer (400 lines) has mostly trivial tests
+ApplicationContainer (400 lines) has mostly trivial tests
+
 - MessageBroker abstraction (200 lines) has minimal tests
 - Database migration logic (100 lines) under-tested
 
@@ -181,16 +194,18 @@ def test_error_path():
 
 ### Immediate Action (This Week)
 
-**Remove Placeholder Tests (40 tests, 0% risk, 30 min effort)**
+### Remove Placeholder Tests (40 tests, 0% risk, 30 min effort)
 
-**Command:**
+### Command
 
 ```bash
 # Find and review placeholder tests
+
 grep -r "assert True.*# Placeholder" server/tests
 grep -r "pass.*# Placeholder" server/tests
 
 # Remove them (they test nothing)
+
 ```
 
 **Impact:** -40 tests, -0.3 minutes, 0% coverage loss
@@ -201,11 +216,12 @@ grep -r "pass.*# Placeholder" server/tests
 
 ### High-Priority Action (Next 2 Weeks)
 
-**Prune Infrastructure Tests (60 tests, 5% risk, 4 hours effort)**
+### Prune Infrastructure Tests (60 tests, 5% risk, 4 hours effort)
 
-**Files:**
+### Files
 
-- `test_dependency_injection_functions.py` - Remove 15 trivial tests
+`test_dependency_injection_functions.py` - Remove 15 trivial tests
+
 - `test_dependency_injection.py` - Remove 10 framework tests
 - `test_dependency_functions.py` - Remove 10 duplicate tests
 - `test_app_factory.py` - Remove 5 CORS framework tests
@@ -219,11 +235,12 @@ grep -r "pass.*# Placeholder" server/tests
 
 ### Strategic Action (Next Month)
 
-**Parametrize Repetitive Tests (170 → 50, 0% risk, 8 hours effort)**
+### Parametrize Repetitive Tests (170 → 50, 0% risk, 8 hours effort)
 
-**Targets:**
+### Targets
 
-- Command validation tests (~100 tests)
+Command validation tests (~100 tests)
+
 - Error response tests (~50 tests)
 - Permission tests (~30 tests)
 
@@ -235,9 +252,9 @@ grep -r "pass.*# Placeholder" server/tests
 
 ### Critical Gap Action (Month 2)
 
-**Add Missing Integration Tests (70 tests, 0% risk, 10 hours effort)**
+### Add Missing Integration Tests (70 tests, 0% risk, 10 hours effort)
 
-**Priorities:**
+### Priorities
 
 1. MessageBroker integration tests (15 tests) - 🔴 HIGH
 2. ApplicationContainer lifecycle tests (10 tests) - 🔴 HIGH
@@ -255,20 +272,23 @@ grep -r "pass.*# Placeholder" server/tests
 
 ### Time Savings Calculation
 
-**Developer Time Saved:**
+### Developer Time Saved
 
-- 4 minutes per test run × 20 runs per day × 5 developers = **400 minutes/day** = **6.7 hours/day**
+4 minutes per test run × 20 runs per day × 5 developers = **400 minutes/day** = **6.7 hours/day**
+
 - Over 1 month: **6.7 hours × 20 workdays** = **134 hours** = **~3.4 weeks** of saved time
 - **Value:** Significant productivity improvement
 
-**CI/CD Time Saved:**
+### CI/CD Time Saved
 
-- 4 minutes per CI run × 100 runs per day = **400 minutes/day** = **6.7 hours/day**
-- **Cost Savings:** Depends on CI/CD pricing, but significant
+4 minutes per CI run × 100 runs per day = **400 minutes/day** = **6.7 hours/day**
 
-**Maintenance Time Saved:**
+**Cost Savings:** Depends on CI/CD pricing, but significant
 
-- Fewer tests = less maintenance burden
+### Maintenance Time Saved
+
+Fewer tests = less maintenance burden
+
 - Better organized tests = easier debugging
 - Parametrized tests = easier to extend
 - **Estimated:** 2-4 hours/week saved on test maintenance
@@ -293,9 +313,10 @@ grep -r "pass.*# Placeholder" server/tests
 
 ### Option A: Full Optimization (Recommended)
 
-**Commit to full 2-month optimization plan:**
+### Commit to full 2-month optimization plan
 
-- Remove 200 low-value tests
+Remove 200 low-value tests
+
 - Consolidate 170 repetitive tests
 - Add 70 critical gap tests
 - **Net:** -300 tests, -4 minutes, +3% critical coverage
@@ -308,10 +329,11 @@ grep -r "pass.*# Placeholder" server/tests
 
 ### Option B: Quick Wins Only
 
-**Implement only Phase 1 (Quick Wins):**
+### Implement only Phase 1 (Quick Wins)
 
-- Remove 60 obvious low-value tests
-- **Net:** -60 tests, -1 minute
+Remove 60 obvious low-value tests
+
+**Net:** -60 tests, -1 minute
 
 **Effort:** 2-4 hours
 **Benefit:** Quick improvement with minimal effort
@@ -321,9 +343,10 @@ grep -r "pass.*# Placeholder" server/tests
 
 ### Option C: Strategic Focus
 
-**Implement gap filling only (skip pruning):**
+### Implement gap filling only (skip pruning)
 
-- Add 70 critical gap tests
+Add 70 critical gap tests
+
 - Keep all existing tests
 - **Net:** +70 tests, +2 minutes
 
@@ -361,7 +384,7 @@ grep -r "pass.*# Placeholder" server/tests
 
 ## Deliverables Summary
 
-**Created Documents:**
+### Created Documents
 
 1. ✅ **TEST_QUALITY_AUDIT_REPORT.md** - Comprehensive analysis with scoring
 2. ✅ **TEST_VALUE_DISTRIBUTION.md** - Visual breakdown of test value
@@ -380,17 +403,19 @@ grep -r "pass.*# Placeholder" server/tests
 
 # **~25-30% provide CRITICAL coverage**
 
-**Specifically:**
+## Specifically
 
-- **1,272 tests (25.6%)** provide critical regression protection
+**1,272 tests (25.6%)** provide critical regression protection
+
 - These prevent real bugs, security issues, and user-facing failures
 - **Consuming ~10 minutes** of the 30-minute test run
 - **If we could only run 10 minutes of tests**, these would be them
 
-**The other 70-75%:**
+### The other 70-75%
 
-- **59%** provide important behavioral validation (worth keeping)
-- **15%** provide minimal value (optimization targets)
+**59%** provide important behavioral validation (worth keeping)
+
+**15%** provide minimal value (optimization targets)
 
 ---
 
@@ -419,9 +444,11 @@ grep -r "pass.*# Placeholder" server/tests
 
 ---
 
-*"The systematic audit reveals that while our test suite is comprehensive, strategic optimization can improve both efficiency and quality — removing the ceremonial to strengthen the essential."*
+*"The systematic audit reveals that while our test suite is comprehensive, strategic optimization can improve both
+efficiency and quality — removing the ceremonial to strengthen the essential."*
 
-**All supporting documentation is available for your review, Professor Wolfshade. The forbidden knowledge has been properly catalogued and analyzed according to the strictest empirical standards.**
+**All supporting documentation is available for your review, Professor Wolfshade. The forbidden knowledge has been
+properly catalogued and analyzed according to the strictest empirical standards.**
 
 ---
 

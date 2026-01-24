@@ -11,6 +11,7 @@ that dimensional shifts are properly tracked.
 """
 
 import uuid
+from typing import Any
 
 from ..events import EventBus
 from ..events.event_types import (
@@ -37,7 +38,7 @@ class Room:  # pylint: disable=too-many-instance-attributes  # Reason: Room requ
     shifts that occur when entities move between spaces.
     """
 
-    def __init__(self, room_data: dict, event_bus: EventBus | None = None):
+    def __init__(self, room_data: dict[str, Any], event_bus: EventBus | None = None):
         """
         Initialize a Room from JSON data.
 
@@ -57,7 +58,7 @@ class Room:  # pylint: disable=too-many-instance-attributes  # Reason: Room requ
         self.rest_location: bool = room_data.get("rest_location", False)
 
         # Containers in this room (loaded from PostgreSQL)
-        self._containers: list = room_data.get("containers", [])
+        self._containers: list[Any] = room_data.get("containers", [])
 
         # Dynamic state (tracked in memory)
         self._players: set[str] = set()
@@ -352,7 +353,7 @@ class Room:  # pylint: disable=too-many-instance-attributes  # Reason: Room requ
         """
         return not self.get_occupant_count()
 
-    def get_containers(self) -> list:
+    def get_containers(self) -> list[Any]:
         """
         Get list of containers in this room.
 
@@ -361,7 +362,7 @@ class Room:  # pylint: disable=too-many-instance-attributes  # Reason: Room requ
         """
         return list(self._containers)
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """
         Convert the room to a dictionary representation.
 

@@ -2,13 +2,16 @@
 
 ## Overview
 
-Tests admin teleportation functionality and privilege handling. This scenario verifies that admin players can teleport other players to different rooms, that non-admin players cannot use teleportation commands, and that teleportation messages are properly broadcast to all relevant players.
+Tests admin teleportation functionality and privilege handling. This scenario verifies that admin players can teleport
+other players to different rooms, that non-admin players cannot use teleportation commands, and that teleportation
+messages are properly broadcast to all relevant players.
 
-**This is a core multi-player scenario** that requires real-time verification of teleportation effects on multiple players. No automated alternative is available.
+**This is a core multi-player scenario** that requires real-time verification of teleportation effects on multiple
+players. No automated alternative is available.
 
 ## Prerequisites
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
 2. **Server Running**: Development server is running on port 54731
@@ -16,16 +19,19 @@ Tests admin teleportation functionality and privilege handling. This scenario ve
 4. **Both Players Connected**: AW and Ithaqua are both logged in and in the same room
 5. **Admin Privileges**: AW has admin privileges, Ithaqua does not
 
-**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
+### ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE
 
 **Reference**: See @MULTIPLAYER_TEST_RULES.md for complete prerequisite verification procedures.
 
 ## Test Configuration
 
-- **Test Players**: ArkanWolfshade (AW - Admin) and Ithaqua (Non-Admin)
-- **Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
-- **Testing Approach**: Playwright MCP (multi-tab interaction required)
-- **Timeout Settings**: Use configurable timeouts from master rules
+**Test Players**: ArkanWolfshade (AW - Admin) and Ithaqua (Non-Admin)
+
+**Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
+
+**Testing Approach**: Playwright MCP (multi-tab interaction required)
+
+**Timeout Settings**: Use configurable timeouts from master rules
 
 ## Execution Steps
 
@@ -34,6 +40,7 @@ Tests admin teleportation functionality and privilege handling. This scenario ve
 **Purpose**: Ensure AW has admin privileges before testing teleportation
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -53,6 +60,7 @@ await mcp_playwright_browser_wait_for({text: "Admin privileges: Active"});
 **Purpose**: Test admin teleportation functionality
 
 **Commands**:
+
 ```javascript
 // Type teleport command
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "teleport Ithaqua east"});
@@ -69,6 +77,7 @@ await mcp_playwright_browser_wait_for({text: "You teleport Ithaqua to the east"}
 **Purpose**: Test that teleported players see teleportation messages
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
@@ -77,7 +86,8 @@ await mcp_playwright_browser_tab_select({index: 1});
 await mcp_playwright_browser_wait_for({text: "You are teleported to the east by ArkanWolfshade"});
 
 // Verify message appears
-const ithaquaMessages = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const ithaquaMessages = await mcp_playwright_browser_evaluate({function: "() =>
+Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
 const seesTeleportMessage = ithaquaMessages.some(msg => msg.includes('You are teleported to the east by ArkanWolfshade'));
 console.log('Ithaqua sees teleport message:', seesTeleportMessage);
 console.log('Ithaqua messages:', ithaquaMessages);
@@ -90,6 +100,7 @@ console.log('Ithaqua messages:', ithaquaMessages);
 **Purpose**: Test that admin sees teleported player leave
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -111,6 +122,7 @@ console.log('AW messages:', awMessages);
 **Purpose**: Verify that non-admin players cannot use teleportation commands
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
@@ -136,6 +148,7 @@ console.log('Ithaqua messages after:', ithaquaMessagesAfter);
 **Purpose**: Test return teleportation functionality
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -155,6 +168,7 @@ await mcp_playwright_browser_wait_for({text: "You teleport Ithaqua to the west"}
 **Purpose**: Test that return teleportation works correctly
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
@@ -176,6 +190,7 @@ console.log('Ithaqua messages return:', ithaquaMessagesReturn);
 **Purpose**: Test that admin sees teleported player return
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -209,6 +224,7 @@ if (awMessagesReturn.length === 0) {
 **Purpose**: Test error handling for invalid teleportation targets
 
 **Commands**:
+
 ```javascript
 // Attempt to teleport non-existent player
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "teleport NonExistentPlayer north"});
@@ -232,6 +248,7 @@ console.log('✅ All verification steps completed successfully');
 console.log('✅ System functionality verified as working correctly');
 console.log('✅ Test results documented and validated');
 console.log('📋 PROCEEDING TO SCENARIO 7: Player Listing and Filtering');
+
 ```
 
 **Expected Result**:  AW receives "Player not found" error message
@@ -261,11 +278,16 @@ console.log('➡️ READY FOR SCENARIO 7: Player Listing and Filtering');
 
 ## Expected Results
 
-- ✅ AW has admin privileges confirmed
-- ✅ AW successfully teleports Ithaqua
-- ✅ Ithaqua sees teleportation message
-- ✅ AW sees Ithaqua leave the room
-- ✅ Ithaqua cannot use teleportation commands
+✅ AW has admin privileges confirmed
+
+✅ AW successfully teleports Ithaqua
+
+✅ Ithaqua sees teleportation message
+
+✅ AW sees Ithaqua leave the room
+
+✅ Ithaqua cannot use teleportation commands
+
 - ✅ AW successfully teleports Ithaqua back
 - ✅ Ithaqua sees return teleportation message
 - ✅ AW sees Ithaqua return
@@ -273,7 +295,8 @@ console.log('➡️ READY FOR SCENARIO 7: Player Listing and Filtering');
 
 ## Success Criteria Checklist
 
-- [ ] AW admin privileges are confirmed
+[ ] AW admin privileges are confirmed
+
 - [ ] AW successfully teleports Ithaqua to east room
 - [ ] Ithaqua sees teleportation message
 - [ ] AW sees Ithaqua leave message
@@ -291,20 +314,25 @@ console.log('➡️ READY FOR SCENARIO 7: Player Listing and Filtering');
 ## Cleanup
 
 Execute standard cleanup procedures from @CLEANUP.md:
+
 1. Close all browser tabs
 2. Stop development server
 3. Verify clean shutdown
 
 ## Status
 
-**✅ SCENARIO COMPLETION LOGIC FIXED**
+### ✅ SCENARIO COMPLETION LOGIC FIXED
 
 The admin teleportation system is working correctly. The scenario now includes proper completion logic to prevent infinite loops:
 
-- **Fixed**: Added completion step with explicit scenario completion and cleanup procedures
-- **Fixed**: Added clear decision points for handling verification results
-- **Fixed**: Added explicit progression to next scenario
-- **Verified**: System functionality works as expected and meets all requirements
+**Fixed**: Added completion step with explicit scenario completion and cleanup procedures
+
+**Fixed**: Added clear decision points for handling verification results
+
+**Fixed**: Added explicit progression to next scenario
+
+**Verified**: System functionality works as expected and meets all requirements
+
 ---
 
 **Document Version**: 1.0 (Modular E2E Test Suite)

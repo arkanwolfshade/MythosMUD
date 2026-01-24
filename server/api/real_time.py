@@ -30,7 +30,7 @@ from ..utils.error_logging import create_context_from_request, create_context_fr
 realtime_router = APIRouter(prefix="/api", tags=["realtime"])
 
 
-def _resolve_connection_manager_from_state(state) -> Any:
+def _resolve_connection_manager_from_state(state: Any) -> Any:
     container = getattr(state, "container", None)
     candidate = None
     if container is not None:
@@ -233,7 +233,7 @@ async def _resolve_player_id(websocket: WebSocket, token: str | None, logger: An
     # Type narrowing: payload is guaranteed to be a dict with "sub" key at this point
     if payload is None or "sub" not in payload:
         raise ValueError("Invalid payload: missing 'sub' key")
-    return await _resolve_player_id_from_token(websocket, cast(dict[str, Any], payload))
+    return await _resolve_player_id_from_token(websocket, payload)
 
 
 @realtime_router.websocket("/ws")

@@ -14,7 +14,9 @@ The `mute` command fails with a server-side error: `'State' object has no attrib
 
 ### Fix Applied
 
-Services (`user_manager` and `player_service`) are now set on `app.state` during initialization in `initialize_container_and_legacy_services()` and also ensured in `websocket_handler.py` when processing commands. This ensures command handlers can access these services via `app.state.user_manager` and `app.state.player_service`.
+Services (`user_manager` and `player_service`) are now set on `app.state` during initialization in
+`initialize_container_and_legacy_services()` and also ensured in `websocket_handler.py` when processing commands. This
+ensures command handlers can access these services via `app.state.user_manager` and `app.state.player_service`.
 
 ### Error Message
 
@@ -40,13 +42,15 @@ Server error occurs, mute command fails, no confirmation message is displayed.
 
 ### Impact
 
-- Scenario 4 cannot be completed
+Scenario 4 cannot be completed
+
 - Mute functionality is completely broken
 - Users cannot mute other players
 
 ### Notes
 
-- Error occurs on the server side, not in the client
+Error occurs on the server side, not in the client
+
 - The `State` object appears to be missing the `user_manager` attribute
 - This is a backend implementation issue
 
@@ -66,23 +70,36 @@ When Ithaqua sends a chat message, AW does not see it in the chat panel. However
 
 ### Root Cause
 
-Player ID format mismatch between `room_subscriptions` (uses string IDs) and `online_players` dict (uses UUID objects as keys). When filtering target players for message broadcasting, `get_player_room_from_online_players` was looking up player IDs as strings, but the dict keys are UUID objects, causing lookups to fail and players to be filtered out incorrectly.
+Player ID format mismatch between `room_subscriptions` (uses string IDs) and `online_players` dict (uses UUID objects as
+keys). When filtering target players for message broadcasting, `get_player_room_from_online_players` was looking up
+player IDs as strings, but the dict keys are UUID objects, causing lookups to fail and players to be filtered out
+incorrectly.
 
 ### Fix Applied
 
-Modified `get_player_room_from_online_players` in `server/realtime/message_filtering.py` to normalize player ID strings to UUID objects before looking them up in the `online_players` dict. This ensures that player IDs from `room_subscriptions` (strings) can be correctly found in `online_players` (UUID keys).
+Modified `get_player_room_from_online_players` in `server/realtime/message_filtering.py` to normalize player ID strings
+to UUID objects before looking them up in the `online_players` dict. This ensures that player IDs from
+`room_subscriptions` (strings) can be correctly found in `online_players` (UUID keys).
 
 ### Steps to Reproduce
 
 1. Log in as ArkanWolfshade (AW) in tab 0
+
 2. Log in as Ithaqua in tab 1
+
 3. Both players are in the same room (Main Foyer)
+
 4. AW sends: `say Hello Ithaqua`
-   - ✅ AW sees: "You say: Hello Ithaqua"
-   - ✅ Ithaqua sees: "ArkanWolfshade says: Hello Ithaqua"
+
+   ✅ AW sees: "You say: Hello Ithaqua"
+
+   ✅ Ithaqua sees: "ArkanWolfshade says: Hello Ithaqua"
+
 5. Ithaqua sends: `say Greetings ArkanWolfshade`
-   - ✅ Ithaqua sees: "You say: Greetings ArkanWolfshade"
-   - ❌ AW does NOT see: "Ithaqua says: Greetings ArkanWolfshade"
+
+   ✅ Ithaqua sees: "You say: Greetings ArkanWolfshade"
+
+   ❌ AW does NOT see: "Ithaqua says: Greetings ArkanWolfshade"
 
 ### Expected Behavior
 
@@ -94,13 +111,15 @@ AW's chat panel only shows their own message. Ithaqua's reply is not displayed t
 
 ### Impact
 
-- One-way communication issue
+One-way communication issue
+
 - AW cannot see messages from Ithaqua
 - Bidirectional chat verification fails in Scenario 5
 
 ### Notes
 
-- Messages are being sent successfully (Ithaqua sees their own confirmation)
+Messages are being sent successfully (Ithaqua sees their own confirmation)
+
 - Messages are being received by Ithaqua (Ithaqua saw AW's message)
 - The issue appears to be with message display/filtering on AW's side
 - Could be a client-side filtering issue or a server-side message routing problem
@@ -128,7 +147,8 @@ The `teleport` command fails with a server-side error: `'State' object has no at
 
 ### Fix Applied
 
-Same fix as Bug #1 - services are now set on `app.state` during initialization and when processing WebSocket commands. The `player_service` is now available to teleport command handlers.
+Same fix as Bug #1 - services are now set on `app.state` during initialization and when processing WebSocket commands.
+The `player_service` is now available to teleport command handlers.
 
 ### Error Message
 
@@ -154,13 +174,15 @@ Server error occurs, teleport command fails, no confirmation message is displaye
 
 ### Impact
 
-- Scenario 6 cannot be completed
+Scenario 6 cannot be completed
+
 - Admin teleportation functionality is completely broken
 - Admin users cannot teleport other players
 
 ### Notes
 
-- Error occurs on the server side, not in the client
+Error occurs on the server side, not in the client
+
 - The `State` object appears to be missing the `player_service` attribute
 - This is a backend implementation issue, similar to Bug #1
 - Pattern suggests a systemic issue with the `State` object missing required service attributes
@@ -171,19 +193,23 @@ Server error occurs, teleport command fails, no confirmation message is displaye
 
 **Scenarios Completed**: 3/11
 
-- ✅ Scenario 1: Basic Connection
-- ✅ Scenario 2: Clean Game State
-- ✅ Scenario 3: Movement Between Rooms
+✅ Scenario 1: Basic Connection
+
+✅ Scenario 2: Clean Game State
+
+✅ Scenario 3: Movement Between Rooms
 
 **Scenarios Blocked/Partial**: 3/11
 
-- ❌ Scenario 4: Muting System (BLOCKED - Bug #1)
+❌ Scenario 4: Muting System (BLOCKED - Bug #1)
+
 - ⚠️ Scenario 5: Chat Messages (PARTIAL - Bug #2)
 - ❌ Scenario 6: Admin Teleportation (BLOCKED - Bug #3)
 
 **Scenarios Completed (Additional)**: 2/11
 
-- ✅ Scenario 7: Who Command (mostly working - who command functions correctly)
+✅ Scenario 7: Who Command (mostly working - who command functions correctly)
+
 - ⚠️ Scenario 8: Local Channel Basic (PARTIAL - same issue as Bug #2: AW doesn't see Ithaqua's local messages)
 
 **Scenarios Remaining**: 3/11
@@ -194,12 +220,19 @@ Server error occurs, teleport command fails, no confirmation message is displaye
 
 ### Additional Note
 
-Bug #2 (chat messages not displayed to AW) also affects local channel messages. AW cannot see Ithaqua's local channel messages, confirming this is a systemic one-way communication issue affecting both `say` and `local` channels. This suggests a player-specific filtering or routing issue on AW's side.
+Bug #2 (chat messages not displayed to AW) also affects local channel messages. AW cannot see Ithaqua's local channel
+messages, confirming this is a systemic one-way communication issue affecting both `say` and `local` channels. This
+suggests a player-specific filtering or routing issue on AW's side.
 
 ### Pattern Analysis
 
-- **Bugs #1 & #3**: Both involve missing service attributes on the `State` object (`user_manager`, `player_service`). This indicates a systemic backend initialization issue where command handlers are not receiving properly initialized State objects.
-- **Bug #2**: Affects message display for AW specifically. Ithaqua can see all messages (both say and local) from AW, but AW cannot see messages from Ithaqua. This suggests a player-specific issue, possibly related to:
-  - Client-side message filtering (self-message filtering too aggressive)
-  - Server-side message routing (messages not being sent to AW's connection)
-  - Player ID or connection state issue specific to AW's session
+**Bugs #1 & #3**: Both involve missing service attributes on the `State` object (`user_manager`, `player_service`). This
+indicates a systemic backend initialization issue where command handlers are not receiving properly initialized State
+objects.
+
+**Bug #2**: Affects message display for AW specifically. Ithaqua can see all messages (both say and local) from AW,
+  but AW cannot see messages from Ithaqua. This suggests a player-specific issue, possibly related to:
+
+- Client-side message filtering (self-message filtering too aggressive)
+- Server-side message routing (messages not being sent to AW's connection)
+- Player ID or connection state issue specific to AW's session

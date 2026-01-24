@@ -12,7 +12,7 @@ to ensure consistent game state.
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any
+from typing import Any, cast
 from uuid import UUID
 
 from ..models.container import ContainerComponent
@@ -74,7 +74,8 @@ async def emit_container_opened(
         delivery_status=delivery_status,
     )
 
-    return delivery_status
+    result: dict[str, Any] = cast(dict[str, Any], delivery_status)
+    return result
 
 
 async def emit_container_opened_to_room(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: WebSocket event emission requires many parameters for context and event routing
@@ -132,7 +133,8 @@ async def emit_container_opened_to_room(  # pylint: disable=too-many-arguments,t
         delivery_stats=delivery_stats,
     )
 
-    return delivery_stats
+    result: dict[str, Any] = cast(dict[str, Any], delivery_stats)
+    return result
 
 
 async def emit_container_updated(
@@ -183,7 +185,8 @@ async def emit_container_updated(
         delivery_stats=delivery_stats,
     )
 
-    return delivery_stats
+    result: dict[str, Any] = cast(dict[str, Any], delivery_stats)
+    return result
 
 
 async def emit_container_closed(
@@ -230,7 +233,8 @@ async def emit_container_closed(
         delivery_stats=delivery_stats,
     )
 
-    return delivery_stats
+    result: dict[str, Any] = cast(dict[str, Any], delivery_stats)
+    return result
 
 
 async def emit_container_decayed(
@@ -277,4 +281,5 @@ async def emit_container_decayed(
         delivery_stats=delivery_stats,
     )
 
-    return delivery_stats
+    result: dict[str, Any] = cast(dict[str, Any], delivery_stats)
+    return result

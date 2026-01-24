@@ -6,12 +6,15 @@ React + TypeScript + Vite frontend for MythosMUD.
 
 ```bash
 # Install dependencies
+
 npm install
 
 # Start development server
+
 npm run dev
 
 # Build for production
+
 npm run build
 ```
 
@@ -21,12 +24,15 @@ npm run build
 
 ```bash
 # Run unit tests
+
 npm run test:unit
 
 # Run with coverage
+
 npm run test:coverage
 
 # Watch mode
+
 npm run test:unit:watch
 ```
 
@@ -38,15 +44,19 @@ Automated single-player E2E tests that run in CI/CD:
 
 ```bash
 # Run all automated E2E tests
+
 npm run test:e2e:runtime
 
 # Run in headed mode (see browser)
+
 npm run test:e2e:runtime:headed
 
 # Run in debug mode (step through tests)
+
 npm run test:e2e:runtime:debug
 
 # Run in UI mode (interactive)
+
 npm run test:e2e:runtime:ui
 ```
 
@@ -69,9 +79,11 @@ For multi-player scenarios requiring AI Agent coordination:
 
 ```bash
 # Lint code
+
 npm run lint
 
 # Format code
+
 npm run format
 ```
 
@@ -80,8 +92,14 @@ npm run format
 The client implements strict security measures for authentication, transport, and rendering:
 
 - Authentication and transport
-  - SSE: no tokens in URLs. The SSE connection uses cookies only and is created with `withCredentials: true`. The URL may include a `session_id` but never contains a `token` query parameter.
-  - WebSocket: authentication is passed via subprotocols (bearer, <token>). Tokens are never logged and are not embedded into message payloads.
+  - SSE: no tokens in URLs. The SSE connection uses cookies only and is created with `withCredentials: true`. The URL
+
+    may include a `session_id` but never contains a `token` query parameter.
+
+  - WebSocket: authentication is passed via subprotocols (bearer, <token>). Tokens are never logged and are not embedded
+
+    into message payloads.
+
   - Health checks: development-only. Runtime NATS health polling is disabled in production builds.
 
 - Token handling
@@ -91,7 +109,11 @@ The client implements strict security measures for authentication, transport, an
 
 - Rendering and sanitization
   - DOMPurify is configured with SAFE_FOR_TEMPLATES and disallows `style` attributes.
-  - Allowed tags are restricted (e.g., `b`, `i`, `em`, `strong`, `br`, `p`, `span`, `div`). Chat messages use an even tighter set.
+
+  - Allowed tags are restricted (e.g., `b`, `i`, `em`, `strong`, `br`, `p`, `span`, `div`). Chat messages use an even
+
+    tighter set.
+
   - User commands and usernames are sanitized to remove scripts, protocols, and HTML tags.
 
 - Logging hygiene
@@ -102,10 +124,14 @@ These policies support COPPA-style privacy requirements and reduce the risk of t
 
 ## Tech Stack
 
-- **Framework**: React 19
-- **Language**: TypeScript 5.9
-- **Build Tool**: Vite 7
-- **Styling**: TailwindCSS 4
+**Framework**: React 19
+
+**Language**: TypeScript 5.9
+
+**Build Tool**: Vite 7
+
+**Styling**: TailwindCSS 4
+
 - **State**: Zustand
 - **Testing**: Vitest + Playwright
 - **Linting**: ESLint + Prettier

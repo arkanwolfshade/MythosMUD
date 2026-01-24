@@ -55,6 +55,7 @@ WHERE stats IS NOT NULL;
 ### Default Stats Structure
 
 The default stats JSONB structure should be:
+
 ```json
 {
   "strength": 50,
@@ -75,17 +76,18 @@ The default stats JSONB structure should be:
 
 ## Rationale
 
-- **Data Reset Strategy:** All existing player stats are reset to 50 (the new midpoint) rather than scaling, as per user requirements. This ensures a clean slate for the new stat system.
+**Data Reset Strategy:** All existing player stats are reset to 50 (the new midpoint) rather than scaling, as per user requirements. This ensures a clean slate for the new stat system.
 
-- **Preservation of Other Stats:** Lucidity, occult_knowledge, fear, corruption, cult_affiliation, current_health, and position are preserved as-is since they are not part of the core attribute migration.
+**Preservation of Other Stats:** Lucidity, occult_knowledge, fear, corruption, cult_affiliation, current_health, and position are preserved as-is since they are not part of the core attribute migration.
 
-- **JSONB Update:** Using `jsonb_set()` ensures we only update the specific stat fields without affecting other JSONB data in the stats column.
+**JSONB Update:** Using `jsonb_set()` ensures we only update the specific stat fields without affecting other JSONB data in the stats column.
 
-- **Migration Safety:** The WHERE clause ensures we only update rows with existing stats data, preventing errors on NULL values.
+**Migration Safety:** The WHERE clause ensures we only update rows with existing stats data, preventing errors on NULL values.
 
 ## Verification
 
 After migration, verify:
+
 1. All players have core attributes set to 50
 2. Other stats (lucidity, current_health, etc.) are preserved
 3. New player creation uses correct defaults (50 for core attributes)

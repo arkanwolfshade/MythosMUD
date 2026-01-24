@@ -20,7 +20,8 @@ This guide provides comprehensive documentation for integrating the dual WebSock
 
 ### Prerequisites
 
-- React 16.8+ (for hooks support)
+React 16.8+ (for hooks support)
+
 - TypeScript 4.0+ (recommended)
 - Node.js 16+ and npm/yarn
 
@@ -742,24 +743,28 @@ export default ConnectionDashboard;
 ### Common Issues
 
 1. **Connection Not Establishing**
+
    - Check network connectivity
    - Verify server status
    - Validate authentication token
    - Check browser console for errors
 
 2. **Messages Not Received**
+
    - Verify connection state
    - Check message handlers
    - Review server logs
    - Test with different connection types
 
 3. **Session Management Issues**
+
    - Ensure session ID format is correct
    - Check session validation logic
    - Verify session cleanup
    - Review session callbacks
 
 4. **Performance Issues**
+
    - Monitor connection health
    - Check for connection leaks
    - Review message frequency

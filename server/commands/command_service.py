@@ -94,7 +94,7 @@ logger = get_logger(__name__)
 
 # Type alias for command handler functions
 # Note: Return type uses Any for values since handlers may return str, bool, or other types
-CommandHandler = Callable[[dict, dict, Any, AliasStorage | None, str], Awaitable[dict[str, Any]]]
+CommandHandler = Callable[[dict[str, Any], dict[str, Any], Any, AliasStorage | None, str], Awaitable[dict[str, Any]]]
 
 
 class CommandService:
@@ -190,8 +190,8 @@ class CommandService:
 
     async def process_validated_command(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Command processing requires many parameters for context and routing
         self,
-        command_data: dict,
-        current_user: dict,
+        command_data: dict[str, Any],
+        current_user: dict[str, Any],
         request: Any,
         alias_storage: AliasStorage | None,
         player_name: str,
@@ -423,7 +423,7 @@ class CommandService:
         handler: CommandHandler,
         command_data: dict[str, Any],
         parsed_command: Any,
-        current_user: dict,
+        current_user: dict[str, Any],
         request: Any,
         alias_storage: AliasStorage | None,
         player_name: str,
@@ -460,7 +460,7 @@ class CommandService:
     async def process_command(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Command processing requires many parameters for context and routing
         self,
         command: str,
-        current_user: dict,
+        current_user: dict[str, Any],
         request: Any,
         alias_storage: AliasStorage | None,
         player_name: str,

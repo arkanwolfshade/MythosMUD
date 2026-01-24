@@ -87,7 +87,7 @@ async def test_validate_message_failure(mock_websocket, mock_validator):
     from server.realtime.message_validator import MessageValidationError
 
     mock_validator.parse_and_validate = MagicMock(
-        side_effect=MessageValidationError("Invalid message", ErrorType.INVALID_FORMAT)
+        side_effect=MessageValidationError("Invalid message", ErrorType.INVALID_FORMAT.value)
     )
     result = await _validate_message(mock_websocket, "invalid", "player_001", mock_validator)
     assert result is None
@@ -244,7 +244,7 @@ async def test_process_message_validation_failed(mock_websocket, mock_connection
 
     player_id = uuid.uuid4()
     mock_validator.parse_and_validate = MagicMock(
-        side_effect=MessageValidationError("Invalid", ErrorType.INVALID_FORMAT)
+        side_effect=MessageValidationError("Invalid", ErrorType.INVALID_FORMAT.value)
     )
     result = await _process_message(
         mock_websocket,

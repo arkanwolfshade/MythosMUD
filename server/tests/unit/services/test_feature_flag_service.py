@@ -173,9 +173,9 @@ class TestFeatureFlagService:
             assert service._cached_combat_monitoring_enabled is True
             # Clear cache
             service.clear_cache()
-            # Verify cache is cleared
+            # Verify cache is cleared (mypy narrows cache to bool after is_* calls; ignore unreachable)
             assert service._cached_combat_enabled is None
-            assert service._cached_combat_logging_enabled is None
+            assert service._cached_combat_logging_enabled is None  # type: ignore[unreachable]
             assert service._cached_combat_monitoring_enabled is None
 
     def test_validate_combat_requirements_disabled(self):

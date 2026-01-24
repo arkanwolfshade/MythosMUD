@@ -66,7 +66,7 @@ class EmoteService:
         """
         # Keep emote_file_path for backward compatibility but don't use it
         self.emote_file_path = emote_file_path
-        self.emotes: dict[str, dict] = {}
+        self.emotes: dict[str, dict[str, Any]] = {}
         self.alias_to_emote: dict[str, str] = {}
 
         self._load_emotes()
@@ -201,7 +201,7 @@ class EmoteService:
         """
         return command.lower() in self.alias_to_emote
 
-    def get_emote_definition(self, command: str) -> dict | None:
+    def get_emote_definition(self, command: str) -> dict[str, Any] | None:
         """
         Get the emote definition for a command.
 
@@ -249,7 +249,7 @@ class EmoteService:
 
         return self_message, other_message
 
-    def list_available_emotes(self) -> dict[str, list]:
+    def list_available_emotes(self) -> dict[str, list[str]]:
         """
         Get a list of all available emotes and their aliases.
 
@@ -267,7 +267,7 @@ class EmoteService:
         logger.info("Reloading emote definitions")
         self._load_emotes()
 
-    def _validate_emote_payload(self, data: dict) -> list[str]:
+    def _validate_emote_payload(self, data: dict[str, Any]) -> list[str]:
         """
         Validate emote definitions against the shared schema when available.
 

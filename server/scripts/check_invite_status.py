@@ -12,7 +12,7 @@ from server.database import get_session_maker
 load_dotenv(Path(".env.local"))
 
 
-async def check_invite(invite_code: str):
+async def check_invite(invite_code: str) -> None:
     """Check the status of an invite code."""
     async with get_session_maker()() as session:
         result = await session.execute(

@@ -39,9 +39,11 @@ Game masters need the ability to trigger NPC reactions (greet, attack, flee), mo
 
 ## Out of Scope
 
-- **New Feature: Inventory System** - Defer to separate feature spec
-- **New Feature: Status Effects System** - Defer to separate feature spec
-- **Architecture: Async Hooks** - Defer to persistence layer refactoring effort
+**New Feature: Inventory System** - Defer to separate feature spec
+
+**New Feature: Status Effects System** - Defer to separate feature spec
+
+**Architecture: Async Hooks** - Defer to persistence layer refactoring effort
 - **Architecture: Alternate Database Backends** - Defer to production scaling initiative
 - **NPC Movement Implementation** - Deferred (note in npc_instance_service.py:209 is documentation only)
 

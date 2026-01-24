@@ -11,7 +11,7 @@ from server.models.player import PlayerChannelPreferences, PlayerExploration, Pl
 # --- Tests for PlayerChannelPreferences model ---
 
 
-def test_player_channel_preferences_creation():
+def test_player_channel_preferences_creation() -> None:
     """Test PlayerChannelPreferences can be instantiated with required fields."""
     player_id = str(uuid4())
     preferences = PlayerChannelPreferences(
@@ -25,7 +25,7 @@ def test_player_channel_preferences_creation():
     assert preferences.muted_channels == []
 
 
-def test_player_channel_preferences_defaults():
+def test_player_channel_preferences_defaults() -> None:
     """Test PlayerChannelPreferences has correct default values."""
     player_id = str(uuid4())
     preferences = PlayerChannelPreferences(player_id=player_id)
@@ -35,7 +35,7 @@ def test_player_channel_preferences_defaults():
     assert preferences.muted_channels == [] or preferences.muted_channels is None
 
 
-def test_player_channel_preferences_with_muted_channels():
+def test_player_channel_preferences_with_muted_channels() -> None:
     """Test PlayerChannelPreferences can have muted channels."""
     player_id = str(uuid4())
     preferences = PlayerChannelPreferences(
@@ -47,12 +47,12 @@ def test_player_channel_preferences_with_muted_channels():
     assert preferences.muted_channels == ["spam", "ooc"]
 
 
-def test_player_channel_preferences_table_name():
+def test_player_channel_preferences_table_name() -> None:
     """Test PlayerChannelPreferences has correct table name."""
     assert PlayerChannelPreferences.__tablename__ == "player_channel_preferences"
 
 
-def test_player_channel_preferences_repr():
+def test_player_channel_preferences_repr() -> None:
     """Test PlayerChannelPreferences __repr__ method."""
     player_id = str(uuid4())
     preferences = PlayerChannelPreferences(player_id=player_id)
@@ -64,7 +64,7 @@ def test_player_channel_preferences_repr():
 # --- Tests for PlayerInventory model ---
 
 
-def test_player_inventory_creation():
+def test_player_inventory_creation() -> None:
     """Test PlayerInventory can be instantiated with required fields."""
     player_id = str(uuid4())
     inventory = PlayerInventory(
@@ -78,7 +78,7 @@ def test_player_inventory_creation():
     assert inventory.equipped_json == "{}"
 
 
-def test_player_inventory_defaults():
+def test_player_inventory_defaults() -> None:
     """Test PlayerInventory has correct default values."""
     player_id = str(uuid4())
     inventory = PlayerInventory(player_id=player_id)
@@ -88,7 +88,7 @@ def test_player_inventory_defaults():
     assert inventory.equipped_json == "{}" or inventory.equipped_json is None
 
 
-def test_player_inventory_with_data():
+def test_player_inventory_with_data() -> None:
     """Test PlayerInventory can have inventory and equipped data."""
     player_id = str(uuid4())
     inventory = PlayerInventory(
@@ -101,12 +101,12 @@ def test_player_inventory_with_data():
     assert inventory.equipped_json == '{"weapon": "sword"}'
 
 
-def test_player_inventory_table_name():
+def test_player_inventory_table_name() -> None:
     """Test PlayerInventory has correct table name."""
     assert PlayerInventory.__tablename__ == "player_inventories"
 
 
-def test_player_inventory_repr():
+def test_player_inventory_repr() -> None:
     """Test PlayerInventory __repr__ method."""
     player_id = str(uuid4())
     inventory = PlayerInventory(player_id=player_id)
@@ -118,7 +118,7 @@ def test_player_inventory_repr():
 # --- Tests for PlayerExploration model ---
 
 
-def test_player_exploration_creation():
+def test_player_exploration_creation() -> None:
     """Test PlayerExploration can be instantiated with required fields."""
     exploration_id = str(uuid4())
     player_id = str(uuid4())
@@ -134,12 +134,12 @@ def test_player_exploration_creation():
     assert exploration.room_id == room_id
 
 
-def test_player_exploration_table_name():
+def test_player_exploration_table_name() -> None:
     """Test PlayerExploration has correct table name."""
     assert PlayerExploration.__tablename__ == "player_exploration"
 
 
-def test_player_exploration_repr():
+def test_player_exploration_repr() -> None:
     """Test PlayerExploration __repr__ method."""
     exploration_id = str(uuid4())
     player_id = str(uuid4())
@@ -154,7 +154,7 @@ def test_player_exploration_repr():
     assert "PlayerExploration" in repr_str
 
 
-def test_player_exploration_multiple_rooms():
+def test_player_exploration_multiple_rooms() -> None:
     """Test PlayerExploration can track multiple rooms for same player."""
     player_id = str(uuid4())
     room_id1 = str(uuid4())

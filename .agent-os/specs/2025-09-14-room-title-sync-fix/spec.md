@@ -30,7 +30,8 @@ The Room Info panel, game log, and other location-dependent UI elements should a
 
 ## Out of Scope
 
-- Complete rewrite of the event processing system
+Complete rewrite of the event processing system
+
 - Changes to server-side room update logic (server is working correctly)
 - Modifications to other UI panels beyond the Room Info panel
 - Performance optimizations unrelated to the race condition

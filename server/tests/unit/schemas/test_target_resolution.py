@@ -9,9 +9,9 @@ from server.schemas.target_resolution import TargetMatch, TargetResolutionResult
 
 def test_target_type_enum():
     """Test TargetType enum values."""
-    assert TargetType.PLAYER == "player"
-    assert TargetType.NPC == "npc"
-    assert TargetType.ROOM == "room"
+    assert TargetType.PLAYER.value == "player"
+    assert TargetType.NPC.value == "npc"
+    assert TargetType.ROOM.value == "room"
 
 
 def test_target_match():

@@ -4,6 +4,7 @@ Unit tests for status_commands helper functions.
 Tests helper functions in status_commands.py module.
 """
 
+from typing import Any
 from unittest.mock import MagicMock
 
 from server.commands.status_commands import (
@@ -58,7 +59,7 @@ def test_build_base_status_lines_sitting():
 
 def test_add_profession_lines():
     """Test _add_profession_lines() adds profession information."""
-    status_lines = []
+    status_lines: list[str] = []
     profession_info = {"name": "Investigator", "description": "A seeker of truth", "flavor_text": "You investigate"}
 
     _add_profession_lines(status_lines, profession_info)
@@ -71,7 +72,7 @@ def test_add_profession_lines():
 
 def test_add_profession_lines_no_profession():
     """Test _add_profession_lines() does nothing when no profession."""
-    status_lines = []
+    status_lines: list[str] = []
     profession_info = {"name": None, "description": None, "flavor_text": None}
 
     _add_profession_lines(status_lines, profession_info)
@@ -81,8 +82,8 @@ def test_add_profession_lines_no_profession():
 
 def test_add_additional_stats_lines():
     """Test _add_additional_stats_lines() adds additional stats."""
-    status_lines = []
-    stats = {"fear": 10, "corruption": 5, "occult": 20}
+    status_lines: list[str] = []
+    stats: dict[str, Any] = {"fear": 10, "corruption": 5, "occult": 20}
 
     _add_additional_stats_lines(status_lines, stats)
 
@@ -92,8 +93,8 @@ def test_add_additional_stats_lines():
 
 def test_add_additional_stats_lines_empty():
     """Test _add_additional_stats_lines() handles empty stats."""
-    status_lines = []
-    stats = {}
+    status_lines: list[str] = []
+    stats: dict[str, Any] = {}
 
     _add_additional_stats_lines(status_lines, stats)
 
@@ -103,7 +104,7 @@ def test_add_additional_stats_lines_empty():
 
 def test_add_additional_stats_lines_zero_values():
     """Test _add_additional_stats_lines() ignores zero values."""
-    status_lines = []
+    status_lines: list[str] = []
     stats = {"fear": 0, "corruption": 0, "occult": 0}
 
     _add_additional_stats_lines(status_lines, stats)

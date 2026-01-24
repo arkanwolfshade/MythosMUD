@@ -12,7 +12,7 @@ import asyncio
 import time
 import uuid
 from collections import deque
-from typing import Any
+from typing import Any, cast
 
 from anyio import Lock
 from fastapi import WebSocket
@@ -148,7 +148,7 @@ class ConnectionManager:
     - RoomSubscriptionManager: Room subscriptions and occupant tracking
     """
 
-    def __init__(self, event_publisher: Any = None) -> None:
+    def __init__(self, event_publisher: Any | None = None) -> None:
         """Initialize the connection manager with modular components."""
         # Active WebSocket connections
         self.active_websockets: dict[str, WebSocket] = {}
@@ -186,13 +186,13 @@ class ConnectionManager:
         self.processed_disconnects: set[uuid.UUID] = set()
         self.processed_disconnect_lock = Lock()
         # Track players in grace period after unintentional disconnect
-        self.grace_period_players: dict[uuid.UUID, asyncio.Task] = {}
+        self.grace_period_players: dict[uuid.UUID, asyncio.Task[Any]] = {}
         # Track players in login grace period (10-second immunity after login)
-        self.login_grace_period_players: dict[uuid.UUID, asyncio.Task] = {}
+        self.login_grace_period_players: dict[uuid.UUID, asyncio.Task[Any]] = {}
         # Track login grace period start times for remaining time calculation
         self.login_grace_period_start_times: dict[uuid.UUID, float] = {}
         # Track players currently resting (for /rest command countdown)
-        self.resting_players: dict[uuid.UUID, asyncio.Task] = {}
+        self.resting_players: dict[uuid.UUID, asyncio.Task[Any]] = {}
         # Track players intentionally disconnecting (via /rest or /quit) - no grace period
         self.intentional_disconnects: set[uuid.UUID] = set()
 
@@ -303,11 +303,11 @@ class ConnectionManager:
         return get_connection_count_impl(self, player_id)
 
     # Add compatibility methods
-    async def subscribe_to_room(self, player_id: uuid.UUID, room_id: str):
+    async def subscribe_to_room(self, player_id: uuid.UUID, room_id: str) -> None:
         """Subscribe a player to a room (compatibility method)."""
         return await subscribe_to_room_impl(self, player_id, room_id)
 
-    async def unsubscribe_from_room(self, player_id: uuid.UUID, room_id: str):
+    async def unsubscribe_from_room(self, player_id: uuid.UUID, room_id: str) -> None:
         """Unsubscribe a player from a room (compatibility method)."""
         return await unsubscribe_from_room_impl(self, player_id, room_id)
 
@@ -319,15 +319,15 @@ class ConnectionManager:
         """Resolve a room id to the canonical Room.id value (compatibility method)."""
         return canonical_room_id_impl(room_id, self)
 
-    def _reconcile_room_presence(self, room_id: str):
+    def _reconcile_room_presence(self, room_id: str) -> None:
         """Ensure room_occupants only contains currently online players (compatibility method)."""
         reconcile_room_presence_impl(room_id, self)
 
-    def _prune_player_from_all_rooms(self, player_id: uuid.UUID):
+    def _prune_player_from_all_rooms(self, player_id: uuid.UUID) -> None:
         """Remove a player from all room subscriptions and occupant lists (compatibility method)."""
         prune_player_from_all_rooms_impl(player_id, self)
 
-    def set_async_persistence(self, async_persistence):
+    def set_async_persistence(self, async_persistence: Any) -> None:
         """Set the async persistence layer reference for all components."""
         self.async_persistence = async_persistence
         self.room_manager.set_async_persistence(async_persistence)
@@ -339,13 +339,13 @@ class ConnectionManager:
         success, _connection_id = await establish_websocket_connection(websocket, player_id, self, session_id, token)
         return success
 
-    async def disconnect_websocket(self, player_id: uuid.UUID, is_force_disconnect: bool = False):
+    async def disconnect_websocket(self, player_id: uuid.UUID, is_force_disconnect: bool = False) -> None:
         """Disconnect all WebSocket connections for a player."""
         should_track_disconnect = await cleanup_websocket_disconnect(player_id, self, is_force_disconnect)
         if should_track_disconnect:
             await self._track_player_disconnected(player_id)
 
-    async def force_disconnect_player(self, player_id: uuid.UUID):
+    async def force_disconnect_player(self, player_id: uuid.UUID) -> None:
         """Force disconnect a player from all connections (WebSocket only)."""
         await force_disconnect_player_impl(self, player_id)
 
@@ -377,11 +377,11 @@ class ConnectionManager:
         """Get session management statistics."""
         return get_session_stats_impl(self)
 
-    def mark_player_seen(self, player_id: uuid.UUID):
+    def mark_player_seen(self, player_id: uuid.UUID) -> None:
         """Update last-seen timestamp for a player and all their connections."""
         mark_player_seen_impl(player_id, self)
 
-    def prune_stale_players(self, max_age_seconds: int = 90):
+    def prune_stale_players(self, max_age_seconds: int = 90) -> None:
         """Remove players whose presence is stale beyond the threshold."""
         prune_stale_players_impl(self, max_age_seconds)
 
@@ -422,7 +422,7 @@ class ConnectionManager:
         """Clean up dead connections for a specific player or all players."""
         return await cleanup_dead_connections_impl(self, player_id)
 
-    async def _cleanup_dead_websocket(self, player_id: uuid.UUID, connection_id: str):
+    async def _cleanup_dead_websocket(self, player_id: uuid.UUID, connection_id: str) -> None:
         """Clean up a dead WebSocket connection."""
         await cleanup_dead_websocket_impl(player_id, connection_id, self)
 
@@ -477,7 +477,7 @@ class ConnectionManager:
 
     async def _get_player(self, player_id: uuid.UUID) -> Player | None:
         """Get a player from the persistence layer (async version)."""
-        return await get_player_impl(self, player_id)
+        return cast("Player | None", await get_player_impl(self, player_id))
 
     async def get_player(self, player_id: uuid.UUID) -> Player | None:
         """Get a player from the persistence layer (public API)."""
@@ -508,7 +508,9 @@ class ConnectionManager:
         """
         return get_next_sequence_impl(self)
 
-    async def _track_player_connected(self, player_id: uuid.UUID, player: Player, connection_type: str = "unknown"):
+    async def _track_player_connected(
+        self, player_id: uuid.UUID, player: Player, connection_type: str = "unknown"
+    ) -> None:
         """Track when a player connects."""
         await track_player_connected_impl(player_id, player, connection_type, self)
 
@@ -574,11 +576,11 @@ class ConnectionManager:
         """Get error handling statistics."""
         return get_error_statistics_impl(self)
 
-    async def handle_new_login(self, player_id: uuid.UUID):
+    async def handle_new_login(self, player_id: uuid.UUID) -> None:
         """Handle a new login by terminating all existing connections for the player."""
         await handle_new_login_impl(player_id, self)
 
-    async def _check_and_process_disconnect(self, player_id: uuid.UUID):
+    async def _check_and_process_disconnect(self, player_id: uuid.UUID) -> None:
         """Check if disconnect has already been processed for a player and process it if not."""
         async with self.processed_disconnect_lock:
             if player_id not in self.processed_disconnects:
@@ -599,7 +601,7 @@ class ConnectionManager:
         """Get list of occupants in a room."""
         return await get_room_occupants_impl(self, room_id)
 
-    async def _send_initial_game_state(self, player_id: uuid.UUID, player: Player, room_id: str):
+    async def _send_initial_game_state(self, player_id: uuid.UUID, player: Player, room_id: str) -> None:
         """Send initial game_state event to a newly connected player."""
         await send_initial_game_state_impl(self, player_id, player, room_id)
 
@@ -659,11 +661,11 @@ class ConnectionManager:
         """Unsubscribe from room movement events."""
         await unsubscribe_from_room_events_impl(self)
 
-    async def _handle_player_entered_room(self, event_data: dict[str, Any]):
+    async def _handle_player_entered_room(self, event_data: dict[str, Any]) -> None:
         """Handle PlayerEnteredRoom events by broadcasting updated occupant count."""
         await handle_player_entered_room_impl(self, event_data)
 
-    async def _handle_player_left_room(self, event_data: dict[str, Any]):
+    async def _handle_player_left_room(self, event_data: dict[str, Any]) -> None:
         """Handle PlayerLeftRoom events by broadcasting updated occupant count."""
         await handle_player_left_room_impl(self, event_data)
 

@@ -5,7 +5,9 @@
 
 ## Overview
 
-The persistence layer has been fully migrated to async. The legacy `PersistenceLayer` (synchronous shim) has been removed. All code now uses `AsyncPersistenceLayer` with async repositories. This provides a modern async foundation with no legacy sync code.
+The persistence layer has been fully migrated to async. The legacy `PersistenceLayer` (synchronous shim) has been
+removed. All code now uses `AsyncPersistenceLayer` with async repositories. This provides a modern async foundation with
+no legacy sync code.
 
 ## Architecture Diagram
 
@@ -212,6 +214,7 @@ from server.persistence.repositories import PlayerRepository, HealthRepository
 from server.async_persistence import AsyncPersistenceLayer
 
 # Initialize
+
 async_persistence = AsyncPersistenceLayer()
 player_repo = PlayerRepository(
     room_cache=async_persistence._room_cache,
@@ -220,6 +223,7 @@ player_repo = PlayerRepository(
 health_repo = HealthRepository(event_bus=event_bus)
 
 # Use
+
 async def process_combat(attacker_id: UUID, target_id: UUID, damage: int):
     attacker = await player_repo.get_player_by_id(attacker_id)
     target = await player_repo.get_player_by_id(target_id)
@@ -240,11 +244,13 @@ from server.async_persistence import AsyncPersistenceLayer
 router = APIRouter()
 
 # Dependency factory
+
 async def get_player_repo():
     async_persistence = AsyncPersistenceLayer()
     return PlayerRepository(room_cache=async_persistence._room_cache)
 
 # Route handler
+
 @router.get("/players/{player_id}")
 async def get_player(
     player_id: UUID,
@@ -273,9 +279,11 @@ class CombatService:
         damage: int
     ) -> dict:
         # Apply damage
+
         await self.health_repo.damage_player(target, damage, "combat")
 
         # Award XP if target died
+
         if target.get_stats()["current_health"] <= 0:
             await self.xp_repo.gain_experience(attacker, 100, "killed_enemy")
 
@@ -330,6 +338,7 @@ Health and XP repositories use atomic updates:
 
 ```python
 # Update single JSONB field without loading entire object
+
 UPDATE players
 SET stats = jsonb_set(stats, '{current_health}', ...)
 WHERE player_id = :player_id
@@ -346,7 +355,8 @@ WHERE player_id = :player_id
 
 ### Completed ✅
 
-- [x] PlayerRepository extracted
+[x] PlayerRepository extracted
+
 - [x] RoomRepository extracted
 - [x] HealthRepository extracted
 - [x] ExperienceRepository extracted
@@ -359,7 +369,8 @@ WHERE player_id = :player_id
 
 ### Migration Status
 
-- [x] Migrate API endpoints to use async_persistence ✅ **COMPLETE**
+[x] Migrate API endpoints to use async_persistence ✅ **COMPLETE**
+
 - [x] Migrate services to use async_persistence ✅ **COMPLETE**
 - [x] Migrate real-time handlers to use async_persistence ✅ **COMPLETE**
 - [x] Migrate game/NPC systems to use async_persistence ✅ **COMPLETE**
@@ -369,7 +380,10 @@ WHERE player_id = :player_id
 
 ## References
 
-- **Repositories**: `server/persistence/repositories/`
-- **Migration Guide**: `docs/PERSISTENCE_ASYNC_MIGRATION_GUIDE.md`
-- **Migration Plan**: `docs/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Summary**: `PERSISTENCE_REFACTORING_SUMMARY.md`
+**Repositories**: `server/persistence/repositories/`
+
+**Migration Guide**: `docs/PERSISTENCE_ASYNC_MIGRATION_GUIDE.md`
+
+**Migration Plan**: `docs/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+
+**Summary**: `PERSISTENCE_REFACTORING_SUMMARY.md`

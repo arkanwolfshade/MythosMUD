@@ -2,8 +2,10 @@
 
 **Investigation Date:** 2025-10-29
 **Investigator:** Untenured Professor of Occult Studies, Miskatonic University
-**Status:** ✅ **INVESTIGATION COMPLETE | REMEDIATION IN PROGRESS**
-**Severity:** CRITICAL → ✅ **RESOLVED**
+
+## Status:**✅**INVESTIGATION COMPLETE | REMEDIATION IN PROGRESS
+
+### Severity:**CRITICAL → ✅**RESOLVED
 
 ---
 
@@ -20,17 +22,24 @@ logic that prevented all whisper messages from being delivered.
 **Secondary Bug:** ✅ **FIXED** (Commit c87ae0b)
 **E2E Verification:** ✅ **PASSED** (Scenario 13)
 **Code Review:** ✅ **COMPLETE** (Phase 3)
-**Whisper System Status:** ✅ **FULLY OPERATIONAL**
 
-**Key Findings:**
+### Whisper System Status:**✅**FULLY OPERATIONAL
 
-- **Root Cause:** Missing `"player."` segment in whisper NATS subject construction
-- **Location:** `server/game/chat_service.py` line 212
-- **Impact:** 100% whisper functionality failure across all 6 whisper test scenarios
-- **Severity:** CRITICAL - Core multiplayer feature completely non-functional
-- **Fix Applied:** 2025-10-29 (Actual fix time: 2 hours including
+### Key Findings
+
+**Root Cause:** Missing `"player."` segment in whisper NATS subject construction
+
+**Location:** `server/game/chat_service.py` line 212
+
+**Impact:** 100% whisper functionality failure across all 6 whisper test scenarios
+
+**Severity:** CRITICAL - Core multiplayer feature completely non-functional
+
+**Fix Applied:** 2025-10-29 (Actual fix time: 2 hours including
+
   investigation + testing)
-- **Additional Bug Found:** Legacy subscription pattern inconsistency (also fixed)
+
+**Additional Bug Found:** Legacy subscription pattern inconsistency (also fixed)
 
 ---
 
@@ -56,7 +65,7 @@ logic that prevented all whisper messages from being delivered.
 5. [Test Results Summary](#test-results-summary)
 6. [Comprehensive Remediation Plan](#comprehensive-remediation-plan)
 7. [Secondary Issues Discovered](#secondary-issues-discovered)
-8. [Lessons Learned & Recommendations](#lessons-learned--recommendations)
+8. [Lessons Learned & Recommendations](#lessons-learned-recommendations)
 9. [References](#references)
 10. [Remaining Work Summary](#remaining-work-summary)
 
@@ -68,13 +77,14 @@ logic that prevented all whisper messages from being delivered.
 
 **File:** `server/game/chat_service.py`
 **Line:** 212
-**Current Code:**
+
+### Current Code
 
 ```python
 return f"chat.whisper.{target_id}"
 ```
 
-**Expected Code:**
+### Expected Code
 
 ```python
 return f"chat.whisper.player.{target_id}"
@@ -125,7 +135,8 @@ correlation_id=None event='Subject validation failed'
 **Source:** `logs/local/communications.log` line 97
 
 ```log
-2025-10-29 07:40:35 - communications.chat_service - ERROR - message_id='599f41c3-5a0a-418f-b5eb-2347b1c0cabb' subject='chat.whisper.12aed7c5-dc99-488f-a979-28b9d227e858' event='Failed to publish chat message to NATS'
+2025-10-29 07:40:35 - communications.chat_service - ERROR - message_id='599f41c3-5a0a-418f-b5eb-2347b1c0cabb'
+subject='chat.whisper.12aed7c5-dc99-488f-a979-28b9d227e858' event='Failed to publish chat message to NATS'
 ```
 
 **Interpretation:** The NATS client rejected the message due to subject pattern mismatch.
@@ -148,7 +159,8 @@ Error sending whisper: Chat system temporarily unavailable
 {"event_type": "whisper_channel_message", "message_id": "599f41c3-5a0a-418f-b5eb-2347b1c0cabb", "channel": "whisper", "sender_id": "83f3c6af-dd8b-4d53-ad26-30e4167c756d", "sender_name": "ArkanWolfshade", "target_id": "12aed7c5-dc99-488f-a979-28b9d227e858", "target_name": "Ithaqua", "content": "Hello, this is a private message", "filtered": false, "moderation_notes": null, "timestamp": "2025-10-29T14:40:35.206505+00:00"}
 ```
 
-**Interpretation:** The message was successfully logged to the chat log file, confirming that the whisper processing started correctly. However, the NATS publishing failure prevented delivery to the recipient.
+**Interpretation:** The message was successfully logged to the chat log file, confirming that the whisper processing
+started correctly. However, the NATS publishing failure prevented delivery to the recipient.
 
 ### 6. Test Expectations
 
@@ -195,7 +207,7 @@ assert published_subject == f"chat.whisper.player.{target_player_id}"
 
 **Method:** `_determine_subject(chat_message: ChatMessage) -> str`
 
-**Lines 209-215:**
+### Lines 209-215
 
 ```python
 elif chat_message.channel == "whisper":
@@ -206,7 +218,7 @@ elif chat_message.channel == "whisper":
         return "chat.whisper"
 ```
 
-**The Fix:**
+### The Fix
 
 ```python
 elif chat_message.channel == "whisper":
@@ -240,21 +252,24 @@ elif chat_message.channel == "whisper":
 **Status:** FAILED
 **Failure Step:** Step 2 - AW Sends Whisper to Ithaqua
 
-**Expected Behavior:**
+### Expected Behavior
 
-- ArkanWolfshade sends: `whisper Ithaqua Hello, this is a private message`
+ArkanWolfshade sends: `whisper Ithaqua Hello, this is a private message`
+
 - ArkanWolfshade sees: `"You whisper to Ithaqua: Hello, this is a private message"`
 - Ithaqua receives: `"ArkanWolfshade whispers to you: Hello, this is a private message"`
 
-**Actual Behavior:**
+### Actual Behavior
 
-- ArkanWolfshade sends: `whisper Ithaqua Hello, this is a private message`
+ArkanWolfshade sends: `whisper Ithaqua Hello, this is a private message`
+
 - ArkanWolfshade sees: `"Error sending whisper: Chat system temporarily unavailable"`
 - Ithaqua receives: **NOTHING** (message never delivered)
 
-**Evidence:**
+### Evidence
 
-- Command sent successfully via WebSocket
+Command sent successfully via WebSocket
+
 - Server received and parsed command
 - NATS subject constructed incorrectly
 - Subject validation failed
@@ -271,19 +286,22 @@ elif chat_message.channel == "whisper":
 **File:** `server/game/chat_service.py`
 **Line:** 212
 
-**Change Required:**
+### Change Required
 
 ```python
-# BEFORE (Incorrect):
+# BEFORE (Incorrect)
+
 return f"chat.whisper.{target_id}"
 
-# AFTER (Correct):
+# AFTER (Correct)
+
 return f"chat.whisper.player.{target_id}"
 ```
 
-**Validation Points:**
+### Validation Points
 
-- Aligns with test expectations in `test_nats_subject_manager.py` (line 89)
+Aligns with test expectations in `test_nats_subject_manager.py` (line 89)
+
 - Matches integration test assertions in `test_chat_service_subject_migration.py` (line 211)
 - Matches NATS subscription pattern `chat.whisper.player.*`
 
@@ -298,7 +316,7 @@ return f"chat.whisper.player.{target_id}"
 
 **Purpose:** Prevent this specific bug from recurring
 
-**Test Implementation:**
+### Test Implementation
 
 ```python
 """
@@ -333,6 +351,7 @@ async def test_whisper_subject_includes_player_segment():
     Incorrect Pattern: chat.whisper.<player_uuid>
     """
     # Arrange
+
     chat_service = ChatService()
     target_id = "12aed7c5-dc99-488f-a979-28b9d227e858"
     chat_message = ChatMessage(
@@ -346,9 +365,11 @@ async def test_whisper_subject_includes_player_segment():
     )
 
     # Act
+
     subject = chat_service._determine_subject(chat_message)
 
     # Assert
+
     expected_subject = f"chat.whisper.player.{target_id}"
     assert subject == expected_subject, (
         f"Whisper subject must include 'player.' segment. "
@@ -356,6 +377,7 @@ async def test_whisper_subject_includes_player_segment():
     )
 
     # Verify it matches subscription pattern
+
     assert subject.startswith("chat.whisper.player."), (
         "Whisper subject must match subscription pattern 'chat.whisper.player.*'"
     )
@@ -369,6 +391,7 @@ async def test_whisper_subject_without_target_id():
     This is an edge case that should return a generic whisper subject.
     """
     # Arrange
+
     chat_service = ChatService()
     chat_message = ChatMessage(
         message_id="test-msg-id",
@@ -379,9 +402,11 @@ async def test_whisper_subject_without_target_id():
     )
 
     # Act
+
     subject = chat_service._determine_subject(chat_message)
 
     # Assert
+
     assert subject == "chat.whisper", (
         f"Whisper subject without target should be 'chat.whisper'. Got: {subject}"
     )
@@ -394,18 +419,22 @@ async def test_whisper_subject_without_target_id():
 
 #### Task 1.3: Verify Existing Tests - ✅ **COMPLETE**
 
-**Command:**
+### Command
 
 ```bash
 make test
 ```
 
-**Expected Results:**
+### Expected Results
 
-- ✅ `server/tests/unit/realtime/test_nats_subject_manager.py::test_build_subject_with_player_whisper` - PASSES
-- ✅ `server/tests/integration/test_chat_service_subject_migration.py::test_whisper_message_subject_validation` - PASSES
-- ✅ `server/tests/unit/game/test_chat_service_whisper_subject.py::test_whisper_subject_includes_player_segment` - PASSES (NEW)
-- ✅ All other chat service tests - PASSES
+✅ `server/tests/unit/realtime/test_nats_subject_manager.py::test_build_subject_with_player_whisper` - PASSES
+
+✅ `server/tests/integration/test_chat_service_subject_migration.py::test_whisper_message_subject_validation` - PASSES
+
+✅ `server/tests/unit/game/test_chat_service_whisper_subject.py::test_whisper_subject_includes_player_segment` - PASSES
+  (NEW)
+
+✅ All other chat service tests - PASSES
 
 **Estimated Time:** 3 minutes
 **Status:** ✅ **COMPLETED** (All tests verified)
@@ -414,16 +443,17 @@ make test
 
 #### Task 1.4: Run Linting - ✅ **COMPLETE**
 
-**Command:**
+### Command
 
 ```bash
 make lint
 ```
 
-**Expected Results:**
+### Expected Results
 
-- ✅ No linting errors introduced
-- ✅ Code follows project style guidelines
+✅ No linting errors introduced
+
+✅ Code follows project style guidelines
 
 **Estimated Time:** 1 minute
 **Status:** ✅ **COMPLETED** (No linting errors)
@@ -432,7 +462,7 @@ make lint
 
 #### Task 1.5: Commit Fix - ✅ **COMPLETE**
 
-**Commit Message:**
+### Commit Message
 
 ```text
 fix(chat): Add 'player.' segment to whisper NATS subject
@@ -455,7 +485,7 @@ Discovered during: E2E Scenario 13 (Whisper Basic)
 Investigation: e2e-tests/WHISPER_SYSTEM_INVESTIGATION_REPORT.md
 ```
 
-**Commands:**
+### Commands
 
 ```bash
 git add server/game/chat_service.py
@@ -474,13 +504,13 @@ git commit -m "fix(chat): Add 'player.' segment to whisper NATS subject"
 
 **Objective:** Verify the fix resolves the whisper functionality failure
 
-**Pre-requisites:**
+### Pre-requisites
 
 1. Stop any running server instances
 2. Verify database state
 3. Start fresh server with the fix applied
 
-**Execution Steps:**
+### Execution Steps
 
 1. Execute `./scripts/start_local.ps1`
 2. Wait for server initialization (180 seconds)
@@ -488,13 +518,18 @@ git commit -m "fix(chat): Add 'player.' segment to whisper NATS subject"
 4. Execute Scenario 13: Whisper Basic
 5. Verify all 10 steps PASS
 
-**Success Criteria:**
+### Success Criteria
 
-- ✅ Step 2: ArkanWolfshade sends whisper to Ithaqua - PASSES
-- ✅ Step 3: Ithaqua receives whisper - PASSES
-- ✅ Step 4: Whisper format is correct - PASSES
-- ✅ Step 5: Ithaqua replies to ArkanWolfshade - PASSES
-- ✅ Step 6: ArkanWolfshade receives reply - PASSES
+✅ Step 2: ArkanWolfshade sends whisper to Ithaqua - PASSES
+
+✅ Step 3: Ithaqua receives whisper - PASSES
+
+✅ Step 4: Whisper format is correct - PASSES
+
+✅ Step 5: Ithaqua replies to ArkanWolfshade - PASSES
+
+✅ Step 6: ArkanWolfshade receives reply - PASSES
+
 - ✅ Step 7-10: All additional verification steps - PASS
 
 **Estimated Time:** 15-20 minutes
@@ -504,7 +539,7 @@ git commit -m "fix(chat): Add 'player.' segment to whisper NATS subject"
 
 #### Task 2.2: Execute Remaining Whisper Scenarios - 🟡 **IN PROGRESS**
 
-**Execute in Order:**
+### Execute in Order
 
 1. ✅ **Scenario 13:** Whisper Basic (completed in Task 2.1) - **PASSED**
 2. ✅ **Scenario 14:** Whisper Errors - **PASSED** (4/5 tests, 1 limitation documented)
@@ -513,10 +548,12 @@ git commit -m "fix(chat): Add 'player.' segment to whisper NATS subject"
 5. ⏳ **Scenario 17:** Whisper Integration - **PENDING**
 6. ⏳ **Scenario 18:** Whisper Logging - **PENDING**
 
-**Success Criteria:**
+### Success Criteria
 
-- ✅ Scenarios 13-14 PASSED
-- ❌ Scenario 15 BLOCKED (per-recipient rate limiting not implemented)
+✅ Scenarios 13-14 PASSED
+
+❌ Scenario 15 BLOCKED (per-recipient rate limiting not implemented)
+
 - ⏳ Scenarios 16-18 pending execution
 
 **Estimated Time:** 25-35 minutes (for scenarios 16-18 only)
@@ -524,28 +561,32 @@ git commit -m "fix(chat): Add 'player.' segment to whisper NATS subject"
 
 ---
 
-**🔴 BLOCKER DISCOVERED: Scenario 15 - Missing Per-Recipient Rate Limiting**
+### 🔴 BLOCKER DISCOVERED: Scenario 15 - Missing Per-Recipient Rate Limiting
 
 **Date Discovered:** 2025-10-29 09:20 PST
 
-**Summary:** Scenario 15 testing revealed that per-recipient whisper rate limiting (3 whispers/min to same player) is **not implemented**. Only global rate limiting (5 whispers/min total) exists.
+**Summary:** Scenario 15 testing revealed that per-recipient whisper rate limiting (3 whispers/min to same player) is
+**not implemented**. Only global rate limiting (5 whispers/min total) exists.
 
-**Impact:**
+### Impact
 
-- Scenario 15 cannot be completed (6/10 test steps blocked)
+Scenario 15 cannot be completed (6/10 test steps blocked)
+
 - Players can spam individual recipients with up to 5 whispers/min
 - Harassment prevention is only partially effective
 
-**Evidence:**
+### Evidence
 
-- Sent 4 rapid whispers to Ithaqua within 8 seconds
+Sent 4 rapid whispers to Ithaqua within 8 seconds
+
 - All 4 messages succeeded (expected: 4th should fail)
 - Server logs show only global limit tracking (`limit=5`)
 - No per-recipient tracking exists in `RateLimiter` class
 
-**Documentation:**
+### Documentation
 
-- Full details: `e2e-tests/SCENARIO_15_RATE_LIMITING_BLOCKED.md`
+Full details: `e2e-tests/SCENARIO_15_RATE_LIMITING_BLOCKED.md`
+
 - Technical requirements and implementation plan included
 - Estimated implementation effort: 6-8 hours
 
@@ -559,16 +600,17 @@ git commit -m "fix(chat): Add 'player.' segment to whisper NATS subject"
 
 **Objective:** Identify similar bugs in other channel subject construction
 
-**Search Commands:**
+### Search Commands
 
 ```bash
 grep -n 'f"chat\.' server/game/chat_service.py
 grep -n 'return.*chat\.' server/communications/
 ```
 
-**Verify All Channel Patterns:**
+### Verify All Channel Patterns
 
-- `chat.local.subzone.<subzone_id>` ✅ (Expected)
+`chat.local.subzone.<subzone_id>` ✅ (Expected)
+
 - `chat.global` ✅ (Expected)
 - `chat.system` ✅ (Expected)
 - `chat.whisper.player.<player_id>` ❌ **NEEDS FIX** (This bug)
@@ -589,10 +631,11 @@ grep -n 'return.*chat\.' server/communications/
 
 **Alternative Approach:** Use `NATSSubjectManager.build_subject()` method
 
-**Potential Enhancement:**
+### Potential Enhancement
 
 ```python
-# CURRENT (Manual construction):
+# CURRENT (Manual construction)
+
 def _determine_subject(self, chat_message: ChatMessage) -> str:
     if chat_message.channel == "whisper":
         target_id = getattr(chat_message, "target_id", None)
@@ -601,7 +644,8 @@ def _determine_subject(self, chat_message: ChatMessage) -> str:
         else:
             return "chat.whisper"
 
-# ENHANCED (Using Subject Manager):
+# ENHANCED (Using Subject Manager)
+
 def _determine_subject(self, chat_message: ChatMessage) -> str:
     if chat_message.channel == "whisper":
         target_id = getattr(chat_message, "target_id", None)
@@ -611,9 +655,10 @@ def _determine_subject(self, chat_message: ChatMessage) -> str:
             return "chat.whisper"
 ```
 
-**Benefits:**
+### Benefits
 
-- Centralized subject pattern management
+Centralized subject pattern management
+
 - Reduced risk of typos and pattern mismatches
 - Easier to update patterns in the future
 - Better validation and error handling
@@ -646,7 +691,7 @@ def _determine_subject(self, chat_message: ChatMessage) -> str:
 
 **Create/Update:** `docs/nats-subject-patterns.md`
 
-**Content Structure:**
+### Content Structure
 
 ```markdown
 # NATS Subject Patterns
@@ -658,26 +703,30 @@ This document defines all NATS subject patterns used in the MythosMUD messaging 
 ## Chat Channels
 
 ### Local Channel
-- **Pattern:** `chat.local.subzone.<subzone_id>`
+
+**Pattern:** `chat.local.subzone.<subzone_id>`
 - **Subscription:** `chat.local.subzone.*`
 - **Example:** `chat.local.subzone.arkhamcity_sanitarium`
 - **Purpose:** Messages to all players in same sub-zone
 - **Implemented In:** `server/game/chat_service.py` line 204
 
 ### Global Channel
-- **Pattern:** `chat.global`
+
+**Pattern:** `chat.global`
 - **Subscription:** `chat.global`
 - **Purpose:** Broadcast messages to all connected players
 - **Implemented In:** `server/game/chat_service.py` line 206
 
 ### System Channel
-- **Pattern:** `chat.system`
+
+**Pattern:** `chat.system`
 - **Subscription:** `chat.system`
 - **Purpose:** System announcements and notifications
 - **Implemented In:** `server/game/chat_service.py` line 208
 
 ### Whisper Channel
-- **Pattern:** `chat.whisper.player.<player_id>`
+
+**Pattern:** `chat.whisper.player.<player_id>`
 - **Subscription:** `chat.whisper.player.*`
 - **Example:** `chat.whisper.player.12aed7c5-dc99-488f-a979-28b9d227e858`
 - **Purpose:** Private messages to specific player
@@ -695,11 +744,13 @@ This document defines all NATS subject patterns used in the MythosMUD messaging 
 ## Common Patterns
 
 ### Wildcard Subscriptions
-- Single-level: `chat.whisper.player.*` matches `chat.whisper.player.ABC` but not `chat.whisper.player.ABC.DEF`
+
+Single-level: `chat.whisper.player.*` matches `chat.whisper.player.ABC` but not `chat.whisper.player.ABC.DEF`
 - Multi-level: `chat.>` matches `chat.local`, `chat.whisper.player.ABC`, etc.
 
 ### Subject Validation
-- All subjects must pass NATS validation before publishing
+
+All subjects must pass NATS validation before publishing
 - Invalid subjects will be rejected with error log entry
 - Subject validation failures prevent message delivery
 
@@ -722,7 +773,7 @@ Refer to these test files for subject pattern validation:
 
 **Purpose:** Validate NATS subject patterns in code before commit
 
-**Implementation:**
+### Implementation
 
 ```python
 #!/usr/bin/env python3
@@ -759,6 +810,7 @@ def check_file(filepath: Path) -> list[str]:
         content = filepath.read_text(encoding="utf-8")
 
         # Check for invalid whisper pattern
+
         if re.search(INVALID_PATTERNS["whisper_missing_player"], content):
             for line_num, line in enumerate(content.splitlines(), 1):
                 if re.search(INVALID_PATTERNS["whisper_missing_player"], line):
@@ -778,6 +830,7 @@ def main():
     project_root = Path(__file__).parent.parent
 
     # Check chat_service.py specifically
+
     files_to_check = [
         project_root / "server" / "game" / "chat_service.py",
         project_root / "server" / "communications" / "chat_service.py",
@@ -825,14 +878,14 @@ if __name__ == "__main__":
 
 **File:** `server/commands/communication_commands.py`
 
-**Current Error Handling:**
+### Current Error Handling
 
 ```python
 except Exception as e:
     return {"error": "Chat system temporarily unavailable"}
 ```
 
-**Enhanced Error Handling:**
+### Enhanced Error Handling
 
 ```python
 except NATSSubjectValidationError as e:
@@ -852,9 +905,10 @@ except Exception as e:
     return {"error": "An unexpected error occurred - please contact administrator"}
 ```
 
-**Benefits:**
+### Benefits
 
-- Users receive more specific error messages
+Users receive more specific error messages
+
 - Logs distinguish between different failure modes
 - Easier debugging and troubleshooting
 - Better user experience
@@ -883,7 +937,8 @@ except Exception as e:
 
 **Observation:** User receives `"Error sending whisper: Chat system temporarily unavailable"`
 
-**Problem:** This error message doesn't help users understand what went wrong. It's used for all whisper failures, whether due to:
+**Problem:** This error message doesn't help users understand what went wrong. It's used for all whisper failures,
+whether due to:
 
 - NATS connection failure
 - Subject validation failure
@@ -913,21 +968,23 @@ Failed to load resource: the server responded with a status of 404 (Not Found) @
 **Expected Endpoint:** `http://localhost:54731/monitoring/nats/health`
 **Actual Behavior:** 404 Not Found
 
-**Impact:**
+### Impact
 
-- Client cannot verify NATS connectivity
+Client cannot verify NATS connectivity
+
 - Health monitoring incomplete
 - Potential masking of NATS connection issues
 
-**Investigation Needed:**
+### Investigation Needed
 
 1. Verify if endpoint exists in `server/api/monitoring.py`
 2. Check routing configuration
 3. Verify NATS health check implementation
 
-**Recommendation:**
+### Recommendation
 
-- Add `/monitoring/nats/health` endpoint if missing
+Add `/monitoring/nats/health` endpoint if missing
+
 - Implement proper NATS connection health check
 - Return detailed NATS status information
 
@@ -942,17 +999,20 @@ Failed to load resource: the server responded with a status of 404 (Not Found) @
 **Expected Format:** `"ArkanWolfshade says locally: Hello everyone in the sanitarium"`
 **Actual Format:** `"ArkanWolfshade (local): Hello everyone in the sanitarium"`
 
-**Impact:**
+### Impact
 
-- Minor format discrepancy
+Minor format discrepancy
+
 - Scenarios document outdated format
 - Functional impact: NONE (messages delivered correctly)
 
-**Recommendation:**
+### Recommendation
 
-- **Option A:** Update scenario documentation to match actual format
-- **Option B:** Update code to match scenario format (if preferred)
-- **Option C:** Document as accepted format variation
+**Option A:** Update scenario documentation to match actual format
+
+**Option B:** Update code to match scenario format (if preferred)
+
+**Option C:** Document as accepted format variation
 
 **Priority:** 🔵 LOW (cosmetic issue only)
 
@@ -963,22 +1023,26 @@ Failed to load resource: the server responded with a status of 404 (Not Found) @
 ### Technical Lessons
 
 1. **String concatenation for critical patterns is dangerous**
+
    - Manual string construction prone to typos
    - Should use Subject Manager for all subject construction
    - Centralized management prevents pattern drift
 
 2. **Test coverage gaps**
+
    - Integration tests exist but weren't comprehensive enough
    - Unit tests for subject construction exist but chat service wasn't tested directly
    - **Lesson:** Need more granular unit tests for subject construction in ChatService
 
 3. **Error messages need improvement**
+
    - Generic errors mask root cause
    - Difficult for users to self-diagnose
    - Harder for support to troubleshoot
    - **Lesson:** Implement specific error messages for different failure modes
 
 4. **E2E tests caught what unit tests missed**
+
    - Playwright E2E testing proved invaluable
    - Real-world scenario testing revealed critical bug
    - **Lesson:** E2E testing is essential for complex distributed systems
@@ -989,9 +1053,10 @@ Failed to load resource: the server responded with a status of 404 (Not Found) @
 
 **Action:** Create `scripts/validate_nats_subjects.py` to check for common anti-patterns
 
-**Benefits:**
+### Benefits
 
-- Catch subject pattern bugs before commit
+Catch subject pattern bugs before commit
+
 - Prevent similar bugs in future
 - Automated validation in development workflow
 
@@ -999,9 +1064,10 @@ Failed to load resource: the server responded with a status of 404 (Not Found) @
 
 **Action:** Document all NATS subject patterns in `docs/nats-subject-patterns.md`
 
-**Benefits:**
+### Benefits
 
-- Single source of truth for patterns
+Single source of truth for patterns
+
 - Easier onboarding for new developers
 - Reference for debugging subject issues
 
@@ -1009,9 +1075,10 @@ Failed to load resource: the server responded with a status of 404 (Not Found) @
 
 **Action:** Implement granular error messages for different failure modes
 
-**Benefits:**
+### Benefits
 
-- Better user experience
+Better user experience
+
 - Easier troubleshooting
 - Clearer debugging information
 
@@ -1019,9 +1086,10 @@ Failed to load resource: the server responded with a status of 404 (Not Found) @
 
 **Action:** Create integration tests specifically for subject construction in ChatService
 
-**Benefits:**
+### Benefits
 
-- Catch subject construction bugs earlier
+Catch subject construction bugs earlier
+
 - Test real NATS interaction
 - Verify subscription patterns match publish patterns
 
@@ -1033,9 +1101,10 @@ Failed to load resource: the server responded with a status of 404 (Not Found) @
 
 **Enhanced:** Use `NATSSubjectManager.build_subject()` for all channels
 
-**Benefits:**
+### Benefits
 
-- Centralized pattern management
+Centralized pattern management
+
 - Built-in validation
 - Type-safe construction
 - Easier to maintain
@@ -1082,6 +1151,7 @@ throughout the application. They ensure consistency and prevent typos.
 """
 
 # Chat channel patterns
+
 CHAT_LOCAL_SUBZONE = "chat.local.subzone.{subzone_id}"
 CHAT_GLOBAL = "chat.global"
 CHAT_SYSTEM = "chat.system"
@@ -1089,6 +1159,7 @@ CHAT_WHISPER_PLAYER = "chat.whisper.player.{player_id}"
 CHAT_EMOTE_ROOM = "chat.emote.room.{room_id}"
 
 # Subscription patterns
+
 CHAT_LOCAL_SUBZONE_SUB = "chat.local.subzone.*"
 CHAT_GLOBAL_SUB = "chat.global"
 CHAT_SYSTEM_SUB = "chat.system"
@@ -1096,9 +1167,10 @@ CHAT_WHISPER_PLAYER_SUB = "chat.whisper.player.*"
 CHAT_EMOTE_ROOM_SUB = "chat.emote.room.*"
 ```
 
-**Benefits:**
+### Benefits
 
-- Single source of truth
+Single source of truth
+
 - Prevents typos
 - Easy to update
 - Better code completion
@@ -1109,49 +1181,57 @@ CHAT_EMOTE_ROOM_SUB = "chat.emote.room.*"
 
 ### Functional Impact
 
-**Before Fix:**
+### Before Fix
 
-- 🔴 **Complete whisper system failure**
+🔴 **Complete whisper system failure**
+
 - 🔴 **All private messaging non-functional**
 - 🔴 **6 test scenarios (13-18) all fail**
 - 🟡 **Whisper logging still works** (message logged before NATS publish)
 - 🟢 **Other channels unaffected** (local, global, system work correctly)
 
-**After Fix:**
+### After Fix
 
-- ✅ **Complete whisper system restoration**
-- ✅ **All private messaging functional**
-- ✅ **All 6 test scenarios pass**
-- ✅ **Full end-to-end whisper functionality**
+✅ **Complete whisper system restoration**
+
+✅ **All private messaging functional**
+
+✅ **All 6 test scenarios pass**
+
+✅ **Full end-to-end whisper functionality**
 
 ### User Impact
 
-**Before Fix:**
+### Before Fix
 
-- Users cannot send private messages
+Users cannot send private messages
+
 - Users receive confusing error message
 - No way to troubleshoot or self-diagnose
 - Poor user experience
 
-**After Fix:**
+### After Fix
 
-- Users can send private messages normally
+Users can send private messages normally
+
 - Clear success confirmations
 - Proper message delivery
 - Expected user experience
 
 ### System Impact
 
-**Before Fix:**
+### Before Fix
 
-- NATS system is healthy but whispers rejected
+NATS system is healthy but whispers rejected
+
 - Subject validation failures fill error logs
 - Only whisper channel affected
 - Rate limiting, logging, and other features work
 
-**After Fix:**
+### After Fix
 
-- All NATS subjects validate correctly
+All NATS subjects validate correctly
+
 - No subject validation errors
 - Complete messaging system functionality
 - Clean error logs
@@ -1162,10 +1242,13 @@ CHAT_EMOTE_ROOM_SUB = "chat.emote.room.*"
 
 ### Pre-Fix Testing (Already Completed)
 
-- ✅ Scenario 13 executed and documented failure
-- ✅ Root cause identified and confirmed
-- ✅ Log analysis completed
-- ✅ Code review completed
+✅ Scenario 13 executed and documented failure
+
+✅ Root cause identified and confirmed
+
+✅ Log analysis completed
+
+✅ Code review completed
 
 ### Post-Fix Testing (Recommended)
 
@@ -1174,9 +1257,11 @@ CHAT_EMOTE_ROOM_SUB = "chat.emote.room.*"
 ```bash
 # Run all chat service unit tests
 # (Set PYTEST_ADDOPTS="-k test_chat_service" beforehand to scope the run)
+
 make test
 
 # Run specific whisper subject test
+
 pytest server/tests/unit/game/test_chat_service_whisper_subject.py -v
 ```
 
@@ -1184,10 +1269,12 @@ pytest server/tests/unit/game/test_chat_service_whisper_subject.py -v
 
 ```bash
 # Run NATS subject manager integration tests
+
 pytest server/tests/integration/test_chat_service_subject_migration.py -v
 
 # Run full integration test suite
 # (Set PYTEST_ADDOPTS="-k integration" beforehand to scope the run)
+
 make test
 ```
 
@@ -1197,18 +1284,21 @@ make test
 # Execute Scenario 13 manually (as documented)
 # Execute Scenarios 14-18 sequentially
 # Verify all scenarios PASS
+
 ```
 
 #### Level 4: Smoke Testing
 
 ```bash
 # Start server
+
 ./scripts/start_local.ps1
 
 # Connect two players
 # Send bidirectional whispers
 # Verify message delivery
 # Test error cases (invalid player, rate limiting)
+
 ```
 
 ---
@@ -1217,27 +1307,35 @@ make test
 
 ### Milestone 1: Critical Fix Applied
 
-- **Tasks:** Phase 1 (Tasks 1.1-1.5)
-- **Duration:** 15-30 minutes
-- **Success Criteria:** Fix applied, test created, all tests pass, fix committed
+**Tasks:** Phase 1 (Tasks 1.1-1.5)
+
+**Duration:** 15-30 minutes
+
+**Success Criteria:** Fix applied, test created, all tests pass, fix committed
 
 ### Milestone 2: Functionality Validated
 
-- **Tasks:** Phase 2 (Tasks 2.1-2.2)
-- **Duration:** 45-75 minutes
-- **Success Criteria:** All 6 whisper scenarios pass, no new bugs found
+**Tasks:** Phase 2 (Tasks 2.1-2.2)
+
+**Duration:** 45-75 minutes
+
+**Success Criteria:** All 6 whisper scenarios pass, no new bugs found
 
 ### Milestone 3: Code Quality Improved
 
-- **Tasks:** Phase 3 (Tasks 3.1-3.3)
-- **Duration:** 1-2 hours
-- **Success Criteria:** All subject patterns reviewed, documentation complete
+**Tasks:** Phase 3 (Tasks 3.1-3.3)
+
+**Duration:** 1-2 hours
+
+**Success Criteria:** All subject patterns reviewed, documentation complete
 
 ### Milestone 4: Prevention Measures Implemented
 
-- **Tasks:** Phase 4 (Tasks 4.1-4.3)
-- **Duration:** 2-3 hours
-- **Success Criteria:** Documentation complete, pre-commit validation active
+**Tasks:** Phase 4 (Tasks 4.1-4.3)
+
+**Duration:** 2-3 hours
+
+**Success Criteria:** Documentation complete, pre-commit validation active
 
 **Total Timeline:** 4-6 hours (all phases)
 **Critical Path:** 15-30 minutes (Phase 1 only)
@@ -1248,30 +1346,43 @@ make test
 
 ### Immediate Success (Post-Fix)
 
-- ✅ Fix applied to `chat_service.py` line 212
-- ✅ Regression test created and passing
-- ✅ All existing tests pass (`make test`)
-- ✅ No linting errors (`make lint`)
-- ✅ Changes committed to version control
+✅ Fix applied to `chat_service.py` line 212
+
+✅ Regression test created and passing
+
+✅ All existing tests pass (`make test`)
+
+✅ No linting errors (`make lint`)
+
+✅ Changes committed to version control
 
 ### Extended Success (Post-Validation)
 
-- ✅ Scenario 13: Whisper Basic - PASSES
-- ✅ Scenario 14: Whisper Errors - PASSES
-- ✅ Scenario 15: Whisper Rate Limiting - PASSES
-- ✅ Scenario 16: Whisper Movement - PASSES
-- ✅ Scenario 17: Whisper Integration - PASSES
+✅ Scenario 13: Whisper Basic - PASSES
+
+✅ Scenario 14: Whisper Errors - PASSES
+
+✅ Scenario 15: Whisper Rate Limiting - PASSES
+
+✅ Scenario 16: Whisper Movement - PASSES
+
+✅ Scenario 17: Whisper Integration - PASSES
+
 - ✅ Scenario 18: Whisper Logging - PASSES
 - ✅ No new bugs discovered
 - ✅ All whisper functionality verified
 
 ### Long-term Success (Post-Enhancement)
 
-- ✅ All NATS subject patterns documented
-- ✅ Pre-commit validation active
-- ✅ Error messaging improved
-- ✅ Code quality enhanced
-- ✅ Similar bugs prevented
+✅ All NATS subject patterns documented
+
+✅ Pre-commit validation active
+
+✅ Error messaging improved
+
+✅ Code quality enhanced
+
+✅ Similar bugs prevented
 
 ---
 
@@ -1280,44 +1391,53 @@ make test
 ### Log Files Analyzed
 
 1. **communications.log** (lines 85-101)
+
    - NATS subscription confirmation
    - Whisper message processing flow
    - NATS publishing failure
 
 2. **errors.log** (line 11)
+
    - Subject validation failure
    - NATS error details
 
 3. **chat_whisper_2025-10-29.log** (line 1)
+
    - Message logging confirmation
    - Proves message processing started correctly
 
 4. **server.log** (line 310)
+
    - NATS connection status
    - Confirms NATS is healthy and connected
 
 ### Test Files Referenced
 
 1. **server/tests/unit/realtime/test_nats_subject_manager.py**
+
    - Line 89: Expected pattern `chat.whisper.player.player_123`
    - Defines correct subject construction pattern
 
 2. **server/tests/integration/test_chat_service_subject_migration.py**
+
    - Line 211: Assertion `assert published_subject == f"chat.whisper.player.{target_player_id}"`
    - Integration test expects correct pattern
 
 3. **server/tests/performance/test_subject_manager_performance.py**
+
    - Lines 161, 266: Performance test uses `chat.whisper.player.player_123`
    - Confirms pattern used throughout test suite
 
 ### Code Files Analyzed
 
 1. **server/game/chat_service.py**
+
    - Lines 209-215: **BUG LOCATION**
    - Method: `_determine_subject()`
    - Bug: Missing `"player."` segment in whisper subject
 
 2. **server/commands/communication_commands.py**
+
    - Whisper command handler
    - Error handling and user feedback
    - Identified improvement opportunity for error messaging
@@ -1325,26 +1445,32 @@ make test
 ### E2E Test Scenarios
 
 1. **e2e-tests/scenarios/scenario-13-whisper-basic.md**
+
    - Executed and failed at Step 2
    - Documented complete failure details
 
 2. **e2e-tests/scenarios/scenario-14-whisper-errors.md**
+
    - Skipped due to same root cause
    - Would fail at Step 1
 
 3. **e2e-tests/scenarios/scenario-15-whisper-rate-limiting.md**
+
    - Skipped due to same root cause
    - Would fail before rate limiting tested
 
 4. **e2e-tests/scenarios/scenario-16-whisper-movement.md**
+
    - Skipped due to same root cause
    - Would fail at basic whisper test
 
 5. **e2e-tests/scenarios/scenario-17-whisper-integration.md**
+
    - Skipped due to same root cause
    - Would fail at integration points
 
 6. **e2e-tests/scenarios/scenario-18-whisper-logging.md**
+
    - Skipped due to same root cause
    - Logging works but delivery fails
 
@@ -1356,7 +1482,7 @@ make test
 
 **Location:** Lines 209-215
 
-**Before:**
+### Before
 
 ```python
 elif chat_message.channel == "whisper":
@@ -1367,7 +1493,7 @@ elif chat_message.channel == "whisper":
         return "chat.whisper"
 ```
 
-**After:**
+### After
 
 ```python
 elif chat_message.channel == "whisper":
@@ -1400,7 +1526,7 @@ elif chat_message.channel == "whisper":
 
 ### Pattern Structure Analysis
 
-**Working Pattern Example (Local):**
+### Working Pattern Example (Local)
 
 ```text
 chat.local.subzone.arkhamcity_sanitarium
@@ -1411,7 +1537,7 @@ chat.local.subzone.arkhamcity_sanitarium
 +---------------------- Category
 ```
 
-**Broken Pattern (Whisper - Before Fix):**
+### Broken Pattern (Whisper - Before Fix)
 
 ```text
 chat.whisper.12aed7c5-dc99-488f-a979-28b9d227e858
@@ -1422,7 +1548,7 @@ chat.whisper.12aed7c5-dc99-488f-a979-28b9d227e858
                  MISSING: Entity type ("player.")
 ```
 
-**Fixed Pattern (Whisper - After Fix):**
+### Fixed Pattern (Whisper - After Fix)
 
 ```text
 chat.whisper.player.12aed7c5-dc99-488f-a979-28b9d227e858
@@ -1458,22 +1584,25 @@ chat.whisper.player.12aed7c5-dc99-488f-a979-28b9d227e858
 
 ### Evidence Collection
 
-**Log Files:**
+### Log Files
 
-- `logs/local/communications.log` - NATS operations
+`logs/local/communications.log` - NATS operations
+
 - `logs/local/errors.log` - Error tracking
 - `logs/local/chat_whisper_2025-10-29.log` - Whisper message logging
 - `logs/local/server.log` - Server operations
 
-**Browser Evidence:**
+### Browser Evidence
 
-- Console logs showing WebSocket traffic
+Console logs showing WebSocket traffic
+
 - Game terminal showing error messages
 - Chat panel showing no message delivery
 
-**Database Evidence:**
+### Database Evidence
 
-- Player records verified in PostgreSQL database `mythos_e2e`
+Player records verified in PostgreSQL database `mythos_e2e`
+
 - Both players in correct room
 - Correct permissions set
 
@@ -1483,7 +1612,7 @@ chat.whisper.player.12aed7c5-dc99-488f-a979-28b9d227e858
 
 ### Error Sequence (Timestamp: 2025-10-29 07:40:35)
 
-**1. Message Processing Initiated (Line 85-88 of communications.log):**
+### 1. Message Processing Initiated (Line 85-88 of communications.log)
 
 ```log
 2025-10-29 07:40:35 - communications.chat_service - DEBUG - sender_name='ArkanWolfshade' channel='whisper' target_name='Ithaqua' content_length=32 event='send_whisper_message called'
@@ -1491,31 +1620,31 @@ chat.whisper.player.12aed7c5-dc99-488f-a979-28b9d227e858
 2025-10-29 07:40:35 - communications.chat_service - DEBUG - sender_id='83f3c6af-dd8b-4d53-ad26-30e4167c756d' target_id='12aed7c5-dc99-488f-a979-28b9d227e858' channel='whisper' event='Processing whisper message'
 ```
 
-**2. Message Logged Successfully (Line 90-91):**
+### 2. Message Logged Successfully (Line 90-91)
 
 ```log
 2025-10-29 07:40:35 - communications.chat_service - DEBUG - message_id='599f41c3-5a0a-418f-b5eb-2347b1c0cabb' channel='whisper' sender_name='ArkanWolfshade' target_name='Ithaqua' event='Chat message logged successfully'
 ```
 
-**3. Rate Limiting Passed (Line 92-93):**
+### 3. Rate Limiting Passed (Line 92-93)
 
 ```log
 2025-10-29 07:40:35 - communications.chat_service - DEBUG - channel='whisper' sender_id='83f3c6af-dd8b-4d53-ad26-30e4167c756d' within_limit=True event='Rate limit check completed'
 ```
 
-**4. Subject Determined Incorrectly (Line 96):**
+### 4. Subject Determined Incorrectly (Line 96)
 
 ```log
 2025-10-29 07:40:35 - communications.chat_service - DEBUG - subject='chat.whisper.12aed7c5-dc99-488f-a979-28b9d227e858' channel='whisper' room_id=None using_subject_manager=False event='NATS subject determined'
 ```
 
-**5. Subject Validation Failed (errors.log line 11):**
+### 5. Subject Validation Failed (errors.log line 11)
 
 ```log
 2025-10-29 07:40:35 - nats - ERROR - subject='chat.whisper.12aed7c5-dc99-488f-a979-28b9d227e858' message_id='599f41c3-5a0a-418f-b5eb-2347b1c0cabb' correlation_id=None event='Subject validation failed'
 ```
 
-**6. NATS Publishing Failed (Line 97-98):**
+### 6. NATS Publishing Failed (Line 97-98)
 
 ```log
 2025-10-29 07:40:35 - communications.chat_service - ERROR - message_id='599f41c3-5a0a-418f-b5eb-2347b1c0cabb' subject='chat.whisper.12aed7c5-dc99-488f-a979-28b9d227e858' event='Failed to publish chat message to NATS'
@@ -1523,7 +1652,7 @@ chat.whisper.player.12aed7c5-dc99-488f-a979-28b9d227e858
 2025-10-29 07:40:35 - communications.chat_service - ERROR - event='NATS publishing failed - NATS is mandatory for chat functionality'
 ```
 
-**7. Command Failed (errors.log line 14):**
+### 7. Command Failed (errors.log line 14)
 
 ```log
 2025-10-29 07:40:35 - server.commands.communication_commands - WARNING - player_name='ArkanWolfshade' error_msg='Chat system temporarily unavailable' event='Whisper command failed'
@@ -1535,7 +1664,7 @@ chat.whisper.player.12aed7c5-dc99-488f-a979-28b9d227e858
 
 ### Existing Issues
 
-*(To be populated after checking GitHub issues)*
+#### (To be populated after checking GitHub issues)
 
 ### New Issue to Create
 
@@ -1543,7 +1672,7 @@ chat.whisper.player.12aed7c5-dc99-488f-a979-28b9d227e858
 
 **Labels:** `bug`, `critical`, `chat`, `nats`, `whisper`
 
-**Description:**
+### Description
 
 ```markdown
 ## Bug Description
@@ -1552,7 +1681,7 @@ Whisper messages fail to deliver due to incorrect NATS subject construction. The
 
 ## Impact
 
-- **Severity:** CRITICAL
+**Severity:** CRITICAL
 - **Affected Feature:** All whisper/private messaging functionality
 - **User Impact:** Users cannot send private messages
 - **Test Impact:** All 6 whisper E2E scenarios fail
@@ -1586,13 +1715,15 @@ return f"chat.whisper.player.{target_id}"
 
 ## Expected Behavior
 
-- Whisper message should be delivered to target player
+Whisper message should be delivered to target player
+
 - Sender should see: "You whisper to Ithaqua: Hello"
 - Recipient should see: "ArkanWolfshade whispers to you: Hello"
 
 ## Actual Behavior
 
-- Sender receives error: "Error sending whisper: Chat system temporarily unavailable"
+Sender receives error: "Error sending whisper: Chat system temporarily unavailable"
+
 - Recipient receives nothing
 - Error log shows: "Subject validation failed"
 
@@ -1622,8 +1753,10 @@ See investigation report for comprehensive remediation plan including:
 ## Approval and Sign-off
 
 **Prepared by:** Untenured Professor of Occult Studies, Miskatonic University
-**Reviewed by:** *(Pending)*
-**Approved by:** Professor Wolfshade *(Pending)*
+
+### *Reviewed by:***(Pending)
+
+### *Approved by:**Professor Wolfshade*(Pending)
 
 ---
 
@@ -1635,18 +1768,25 @@ See investigation report for comprehensive remediation plan including:
 
 #### Phase 1: Immediate Fix - ✅ **COMPLETE**
 
-- ✅ Task 1.1: Fixed subject construction in chat_service.py (Commit d450cee)
-- ✅ Task 1.2: Created regression test (test_chat_service_whisper_subject.py)
-- ✅ Task 1.3: Verified existing tests (all passing)
-- ✅ Task 1.4: Linting passed (no errors)
-- ✅ Task 1.5: Changes committed to git
+✅ Task 1.1: Fixed subject construction in chat_service.py (Commit d450cee)
+
+✅ Task 1.2: Created regression test (test_chat_service_whisper_subject.py)
+
+✅ Task 1.3: Verified existing tests (all passing)
+
+✅ Task 1.4: Linting passed (no errors)
+
+✅ Task 1.5: Changes committed to git
 
 #### Phase 3: Code Review - ✅ **COMPLETE**
 
-- ✅ Task 3.1: Reviewed all subject construction (20 patterns verified, 1 bug fixed)
-- ✅ Task 3.2: Reviewed Subject Manager usage (architecture validated as excellent)
-- ✅ Task 3.3: Verified documentation (92% quality, comprehensive)
-- ✅ Fixed secondary bug in legacy subscription pattern (Commit c87ae0b)
+✅ Task 3.1: Reviewed all subject construction (20 patterns verified, 1 bug fixed)
+
+✅ Task 3.2: Reviewed Subject Manager usage (architecture validated as excellent)
+
+✅ Task 3.3: Verified documentation (92% quality, comprehensive)
+
+✅ Fixed secondary bug in legacy subscription pattern (Commit c87ae0b)
 
 ---
 
@@ -1654,21 +1794,24 @@ See investigation report for comprehensive remediation plan including:
 
 #### Phase 2: Extended Validation - 🟡 **30% COMPLETE**
 
-- ✅ Task 2.1: Scenario 13 E2E tested and PASSED
-- ✅ Task 2.2a: Scenario 14 E2E tested and PASSED (4/5 tests, 1 test limitation)
-- ❌ Task 2.2b: Scenario 15 **BLOCKED** - Per-recipient rate limiting not implemented (see `SCENARIO_15_RATE_LIMITING_BLOCKED.md`)
+✅ Task 2.1: Scenario 13 E2E tested and PASSED
+
+✅ Task 2.2a: Scenario 14 E2E tested and PASSED (4/5 tests, 1 test limitation)
+
+❌ Task 2.2b: Scenario 15 **BLOCKED** - Per-recipient rate limiting not implemented (see `SCENARIO_15_RATE_LIMITING_BLOCKED.md`)
+
 - ⏳ Task 2.2c-e: Scenarios 16-18 pending (not yet executed)
 
-**Completed Scenarios:**
+### Completed Scenarios
 
 1. ✅ **Scenario 13:** Whisper Basic - 100% PASSED
 2. ✅ **Scenario 14:** Whisper Errors - 4/5 tests PASSED, 1 test limitation documented
 
-**Blocked Scenarios:**
+### Blocked Scenarios
 
 1. ❌ **Scenario 15:** Whisper Rate Limiting - **BLOCKED** (missing per-recipient rate limiting feature)
 
-**Remaining Scenarios:**
+### Remaining Scenarios
 
 1. ⏳ **Scenario 16:** Whisper Movement - Cross-location messaging
 2. ⏳ **Scenario 17:** Whisper Integration - System integration points
@@ -1683,23 +1826,26 @@ See investigation report for comprehensive remediation plan including:
 
 #### Phase 4: Documentation and Prevention - 🔵 **0% COMPLETE**
 
-**Task 4.1: Document NATS Subject Patterns**
+### Task 4.1: Document NATS Subject Patterns
 
-- Status: ⏳ **PENDING** (Documentation exists but could be enhanced)
+Status: ⏳ **PENDING** (Documentation exists but could be enhanced)
+
 - Action: Add whisper bug historical context to troubleshooting section
 - Estimated Time: 15 minutes
 - Priority: 🔵 **OPTIONAL**
 
-**Task 4.2: Add Pre-commit Subject Validation**
+### Task 4.2: Add Pre-commit Subject Validation
 
-- Status: ⏳ **PENDING**
+Status: ⏳ **PENDING**
+
 - Action: Create `scripts/validate_nats_subjects.py` pre-commit hook
 - Estimated Time: 45-60 minutes
 - Priority: 🔵 **OPTIONAL**
 
-**Task 4.3: Improve Error Messaging**
+### Task 4.3: Improve Error Messaging
 
-- Status: ⏳ **PENDING**
+Status: ⏳ **PENDING**
+
 - Action: Replace generic "Chat system temporarily unavailable" with specific errors
 - Estimated Time: 20-30 minutes
 - Priority: 🟡 **RECOMMENDED**
@@ -1727,21 +1873,21 @@ See investigation report for comprehensive remediation plan including:
 
 ### 🎯 Recommended Next Steps
 
-**Option A: Complete Whisper Validation (Recommended)**
+### Option A: Complete Whisper Validation (Recommended)
 
 1. Execute Scenarios 14-18 to fully validate whisper system
 2. Improve error messaging for better UX
 3. Update documentation with historical context
 4. Consider project complete
 
-**Option B: Essential Work Only (Minimal)**
+### Option B: Essential Work Only (Minimal)
 
 1. Consider whisper system complete as-is
 2. Mark investigation as resolved
 3. Move on to other priorities
 4. Return to Scenarios 14-18 if issues arise
 
-**Option C: Full Enhancement Suite (Comprehensive)**
+### Option C: Full Enhancement Suite (Comprehensive)
 
 1. Execute Scenarios 14-18
 2. Improve error messaging
@@ -1752,9 +1898,9 @@ See investigation report for comprehensive remediation plan including:
 
 ---
 
-*"In investigating this whisper system failure, I am reminded of Wilmarth's famous observation: 'Sometimes the most eldritch horrors are not the incomprehensible geometries of non-Euclidean space, but rather the simple omission of a single critical element.' Indeed, the missing 'player.' segment has proven more devastating than any shoggoth could manage."*
+#### "In investigating this whisper system failure, I am reminded of Wilmarth's famous observation: 'Sometimes the most eldritch horrors are not the incomprehensible geometries of non-Euclidean space, but rather the simple omission of a single critical element.' Indeed, the missing 'player.' segment has proven more devastating than any shoggoth could manage."
 
-*-- From the Field Notes of an Untenured Professor*
+#### -- From the Field Notes of an Untenured Professor
 
 ---
 

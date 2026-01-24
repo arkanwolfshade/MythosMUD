@@ -1,6 +1,6 @@
 """
 Unit tests for user management.
-"""
+"""  # pylint: disable=too-many-lines  # Reason: Comprehensive test suite for user management - splitting would reduce cohesion and make related tests harder to find
 
 import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -19,7 +19,7 @@ async def test_user_manager_hash_password():
     manager = UserManager(user_db)
 
     password = "test_password_123"
-    hashed = manager._hash_password(password)
+    hashed = manager._hash_password(password)  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test requires access to protected method for unit testing
 
     assert isinstance(hashed, str)
     assert hashed != password
@@ -33,12 +33,12 @@ async def test_user_manager_verify_password():
     manager = UserManager(user_db)
 
     password = "test_password_123"
-    hashed = manager._hash_password(password)
+    hashed = manager._hash_password(password)  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test requires access to protected method for unit testing
 
-    result = manager._verify_password(password, hashed)
+    result = manager._verify_password(password, hashed)  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test requires access to protected method for unit testing
     assert result is True
 
-    result = manager._verify_password("wrong_password", hashed)
+    result = manager._verify_password("wrong_password", hashed)  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test requires access to protected method for unit testing
     assert result is False
 
 
@@ -272,6 +272,8 @@ def test_user_manager_parse_id_value_error():
 
     # Create an object that raises ValueError when converting to string
     class BadStr:
+        """Test class that raises ValueError when converting to string."""
+
         def __str__(self):
             raise ValueError("Cannot convert to string")
 
@@ -300,8 +302,6 @@ def test_get_username_auth_backend():
 @pytest.mark.asyncio
 async def test_get_user_db():
     """Test getting user database dependency."""
-    from unittest.mock import AsyncMock, MagicMock
-
     mock_session = MagicMock()
     mock_session.execute = AsyncMock()
 
@@ -313,8 +313,6 @@ async def test_get_user_db():
 @pytest.mark.asyncio
 async def test_get_user_manager():
     """Test getting user manager dependency."""
-    from unittest.mock import MagicMock
-
     from fastapi_users.db import SQLAlchemyUserDatabase
 
     mock_user_db = MagicMock(spec=SQLAlchemyUserDatabase)
@@ -361,6 +359,8 @@ def test_user_manager_parse_id_type_error():
 
     # Create an object that raises TypeError when converting to string
     class BadType:
+        """Test class that raises TypeError when converting to string."""
+
         def __str__(self):
             raise TypeError("Cannot convert to string")
 
@@ -377,6 +377,8 @@ def test_user_manager_parse_id_attribute_error():
 
     # Create an object that raises AttributeError when converting to string
     class BadAttr:
+        """Test class that raises AttributeError when converting to string."""
+
         def __str__(self):
             raise AttributeError("Cannot convert to string")
 
@@ -746,50 +748,68 @@ def test_user_manager_reset_password_token_secret_env_var():
     """Test that UserManager uses environment variable for reset password token secret."""
     import os
 
-    # Test with custom env var
-    # Note: Class attributes are evaluated at class definition time, so we need to patch
-    # the class attribute directly after setting the env var
-    with patch.dict(os.environ, {"MYTHOSMUD_RESET_TOKEN_SECRET": "custom-reset-secret"}):
-        # Patch the class attribute directly since it's evaluated at class definition time
-        with patch.object(UserManager, "reset_password_token_secret", "custom-reset-secret"):
-            user_db = MagicMock()
-            manager = UserManager(user_db)
-            assert manager.reset_password_token_secret == "custom-reset-secret"
+    # Test with custom env var - these are instance attributes set in __init__
+    with patch.dict(
+        os.environ,
+        {
+            "MYTHOSMUD_RESET_TOKEN_SECRET": "custom-reset-secret",
+            "MYTHOSMUD_VERIFICATION_TOKEN_SECRET": "custom-verification-secret",
+        },
+    ):
+        user_db = MagicMock()
+        manager = UserManager(user_db)
+        assert manager.reset_password_token_secret == "custom-reset-secret"
 
 
 def test_user_manager_verification_token_secret_env_var():
     """Test that UserManager uses environment variable for verification token secret."""
     import os
 
-    # Test with custom env var
-    # Note: Class attributes are evaluated at class definition time, so we need to patch
-    # the class attribute directly after setting the env var
-    with patch.dict(os.environ, {"MYTHOSMUD_VERIFICATION_TOKEN_SECRET": "custom-verification-secret"}):
-        # Patch the class attribute directly since it's evaluated at class definition time
-        with patch.object(UserManager, "verification_token_secret", "custom-verification-secret"):
-            user_db = MagicMock()
-            manager = UserManager(user_db)
-            assert manager.verification_token_secret == "custom-verification-secret"
+    # Test with custom env var - these are instance attributes set in __init__
+    with patch.dict(
+        os.environ,
+        {
+            "MYTHOSMUD_RESET_TOKEN_SECRET": "custom-reset-secret",
+            "MYTHOSMUD_VERIFICATION_TOKEN_SECRET": "custom-verification-secret",
+        },
+    ):
+        user_db = MagicMock()
+        manager = UserManager(user_db)
+        assert manager.verification_token_secret == "custom-verification-secret"
 
 
 def test_user_manager_reset_password_token_secret_default():
-    """Test that UserManager uses default reset password token secret when env var not set."""
-    # Since reset_password_token_secret is a class attribute evaluated at class definition time,
-    # we need to patch the class attribute directly rather than trying to change the environment variable
+    """Test that UserManager raises ValueError when reset password token secret starts with 'dev-'."""
+    import os
+
+    # UserManager now validates that secrets don't start with 'dev-'
     user_db = MagicMock()
-    with patch.object(UserManager, "reset_password_token_secret", "dev-reset-secret"):
-        manager = UserManager(user_db)
-        assert manager.reset_password_token_secret == "dev-reset-secret"
+    with patch.dict(
+        os.environ,
+        {
+            "MYTHOSMUD_RESET_TOKEN_SECRET": "dev-reset-secret",
+            "MYTHOSMUD_VERIFICATION_TOKEN_SECRET": "test-verification-secret",
+        },
+    ):
+        with pytest.raises(ValueError, match="MYTHOSMUD_RESET_TOKEN_SECRET must be set to a secure value"):
+            UserManager(user_db)
 
 
 def test_user_manager_verification_token_secret_default():
-    """Test that UserManager uses default verification token secret when env var not set."""
-    # Since verification_token_secret is a class attribute evaluated at class definition time,
-    # we need to patch the class attribute directly rather than trying to change the environment variable
+    """Test that UserManager raises ValueError when verification token secret starts with 'dev-'."""
+    import os
+
+    # UserManager now validates that secrets don't start with 'dev-'
     user_db = MagicMock()
-    with patch.object(UserManager, "verification_token_secret", "dev-verification-secret"):
-        manager = UserManager(user_db)
-        assert manager.verification_token_secret == "dev-verification-secret"
+    with patch.dict(
+        os.environ,
+        {
+            "MYTHOSMUD_RESET_TOKEN_SECRET": "test-reset-secret",
+            "MYTHOSMUD_VERIFICATION_TOKEN_SECRET": "dev-verification-secret",
+        },
+    ):
+        with pytest.raises(ValueError, match="MYTHOSMUD_VERIFICATION_TOKEN_SECRET must be set to a secure value"):
+            UserManager(user_db)
 
 
 def test_username_authentication_backend_init():

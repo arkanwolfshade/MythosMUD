@@ -35,7 +35,12 @@ logger = get_logger(__name__)
 class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-public-methods  # Reason: PlayerService requires 8 instance attributes for persistence, combat services, and sub-service composition (schema_converter, creation_service, search_service, state_service, respawn_wrapper); it exposes 24 public methods for comprehensive player operations (CRUD, state management, combat integration, search) which is necessary for the service's role as the primary player API
     """Service class for player-related business operations."""
 
-    def __init__(self, persistence, combat_service=None, player_combat_service=None):
+    def __init__(
+        self,
+        persistence: Any,
+        combat_service: Any = None,
+        player_combat_service: Any = None,
+    ) -> None:
         """Initialize the player service with a persistence layer and optional combat service."""
         self.persistence = persistence
         self.combat_service = combat_service
@@ -470,7 +475,7 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
                 user_friendly="Failed to update player location",
             )
 
-    async def apply_lucidity_loss(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict:
+    async def apply_lucidity_loss(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict[str, Any]:
         """
         Apply lucidity loss to a player.
 
@@ -487,7 +492,7 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
         """
         return await self._state_service.apply_lucidity_loss(player_id, amount, source)
 
-    async def apply_fear(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict:
+    async def apply_fear(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict[str, Any]:
         """
         Apply fear to a player.
 
@@ -504,7 +509,7 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
         """
         return await self._state_service.apply_fear(player_id, amount, source)
 
-    async def apply_corruption(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict:
+    async def apply_corruption(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict[str, Any]:
         """
         Apply corruption to a player.
 
@@ -521,7 +526,7 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
         """
         return await self._state_service.apply_corruption(player_id, amount, source)
 
-    async def gain_occult_knowledge(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict:
+    async def gain_occult_knowledge(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict[str, Any]:
         """
         Gain occult knowledge (with lucidity loss).
 
@@ -538,7 +543,7 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
         """
         return await self._state_service.gain_occult_knowledge(player_id, amount, source)
 
-    async def heal_player(self, player_id: uuid.UUID, amount: int) -> dict:
+    async def heal_player(self, player_id: uuid.UUID, amount: int) -> dict[str, Any]:
         """
         Heal a player's health.
 
@@ -554,7 +559,7 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
         """
         return await self._state_service.heal_player(player_id, amount)
 
-    async def damage_player(self, player_id: uuid.UUID, amount: int, damage_type: str = "physical") -> dict:
+    async def damage_player(self, player_id: uuid.UUID, amount: int, damage_type: str = "physical") -> dict[str, Any]:
         """
         Damage a player's health.
 

@@ -7,6 +7,7 @@ circuit breaker state, and dead letter queue status.
 AI: Metrics are essential for observability and incident response.
 """
 
+from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
@@ -294,7 +295,7 @@ async def reset_circuit_breaker(
         ) from e
 
 
-async def _load_dlq_message(dlq_path) -> dict[str, Any]:
+async def _load_dlq_message(dlq_path: Path) -> dict[str, Any]:
     """
     Load and validate DLQ message data from file (async version using aiofiles).
 
@@ -332,7 +333,7 @@ async def _load_dlq_message(dlq_path) -> dict[str, Any]:
 
 
 async def _replay_message_safely(
-    nats_message_handler, message_data: dict[str, Any], dlq_path, filepath: str, current_user: User
+    nats_message_handler: Any, message_data: dict[str, Any], dlq_path: Path, filepath: str, current_user: User
 ) -> DLQReplayResponse:
     """
     Attempt to replay a DLQ message and handle errors safely.

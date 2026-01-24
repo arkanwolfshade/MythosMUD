@@ -9,6 +9,7 @@ This is the database schema implementation for the spec detailed in @.agent-os/s
 **Purpose**: Prevent invite code reuse by tracking usage status
 
 **New Columns for `invites` table**:
+
 ```sql
 ALTER TABLE invites ADD COLUMN used_at TIMESTAMP NULL;
 ALTER TABLE invites ADD COLUMN used_by_user_id INTEGER NULL;
@@ -20,27 +21,33 @@ CREATE INDEX idx_invites_used_by_user ON invites(used_by_user_id);
 ```
 
 **SQLAlchemy Model Updates**:
+
 ```python
 # In server/models/invite.py (or wherever Invite model is defined)
+
 class Invite(Base):
     # ... existing fields ...
+
     used_at = Column(DateTime, nullable=True)
     used_by_user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     used_by_character_name = Column(String(50), nullable=True)
 ```
 
 **Migration Strategy**:
+
 - Existing invites: `used_at = NULL` indicates unused
 - Apply via SQLite CLI: `sqlite3 data/players/player_data.db < migration.sql`
 - No data loss expected (adding nullable columns)
 
 **Rationale**:
+
 - Prevents invite code sharing and abuse
 - Provides audit trail for invite usage
 - Supports future invite analytics
 - Minimal performance impact (indexed columns)
 
 **Data Integrity Rules**:
+
 - `used_at` must be set atomically with `used_by_user_id`
 - Once set, these fields are immutable
 - Foreign key ensures referential integrity to users table
@@ -52,6 +59,7 @@ class Invite(Base):
 **Note**: This is OPTIONAL - can also use existing stats JSON field
 
 **If implementing as column**:
+
 ```sql
 -- Option A: Add dedicated column
 ALTER TABLE players ADD COLUMN max_health INTEGER DEFAULT 100 NOT NULL;
@@ -61,17 +69,22 @@ ALTER TABLE players ADD CONSTRAINT check_max_health_positive CHECK (max_health >
 ```
 
 **SQLAlchemy Model Updates**:
+
 ```python
 # In server/models/player.py
+
 class Player(Base):
     # ... existing fields ...
+
     max_health = Column(Integer, default=100, nullable=False)
 ```
 
 **Alternative**: Use existing stats JSON field (RECOMMENDED)
+
 ```python
 # No schema change needed
 # Use player.get_stats()["max_health"] with default of 100
+
 stats = player.get_stats()
 max_health = stats.get("max_health", 100)
 ```
@@ -81,6 +94,7 @@ max_health = stats.get("max_health", 100)
 ## No Schema Changes Required For
 
 The following TODOs do not require database schema modifications:
+
 - JWT Secret (configuration only)
 - Admin Role Checking (uses existing role system)
 - CSRF Validation (in-memory token storage)
@@ -106,10 +120,13 @@ The following TODOs do not require database schema modifications:
 ## Rollback Plan
 
 If migration fails:
+
 ```bash
 # Restore backup
+
 cp data/players/player_data.db.backup-YYYYMMDD data/players/player_data.db
 
 # Verify restoration
+
 sqlite3 data/players/player_data.db ".schema invites"
 ```

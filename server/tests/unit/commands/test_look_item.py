@@ -4,6 +4,7 @@ Unit tests for item look functionality.
 Tests the helper functions for looking at items in various locations.
 """
 
+from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
@@ -231,7 +232,7 @@ async def test_handle_item_look_in_room_drops(mock_prototype_registry, sample_ro
     player = MagicMock()
     player.get_inventory.return_value = []
     player.get_equipped_items.return_value = {}
-    command_data = {}
+    command_data: dict[str, Any] = {}
     result = await _handle_item_look(
         "sword", "sword", None, [sample_room_drop], player, mock_prototype_registry, command_data, "TestPlayer"
     )
@@ -246,7 +247,7 @@ async def test_handle_item_look_in_inventory(mock_prototype_registry, sample_inv
     player = MagicMock()
     player.get_inventory.return_value = [sample_inventory_item]
     player.get_equipped_items.return_value = {}
-    command_data = {}
+    command_data: dict[str, Any] = {}
     result = await _handle_item_look(
         "potion", "potion", None, [], player, mock_prototype_registry, command_data, "TestPlayer"
     )
@@ -261,7 +262,7 @@ async def test_handle_item_look_in_equipped(mock_prototype_registry, sample_equi
     player = MagicMock()
     player.get_inventory.return_value = []
     player.get_equipped_items.return_value = {"chest": sample_equipped_item}
-    command_data = {}
+    command_data: dict[str, Any] = {}
     result = await _handle_item_look(
         "armor", "armor", None, [], player, mock_prototype_registry, command_data, "TestPlayer"
     )
@@ -276,7 +277,7 @@ async def test_handle_item_look_not_found(mock_prototype_registry):
     player = MagicMock()
     player.get_inventory.return_value = []
     player.get_equipped_items.return_value = {}
-    command_data = {}
+    command_data: dict[str, Any] = {}
     result = await _handle_item_look(
         "sword", "sword", None, [], player, mock_prototype_registry, command_data, "TestPlayer"
     )
@@ -290,7 +291,7 @@ async def test_handle_item_look_look_in_skips_equipped(mock_prototype_registry, 
     player = MagicMock()
     player.get_inventory.return_value = []
     player.get_equipped_items.return_value = {"chest": sample_equipped_item}
-    command_data = {"look_in": True}
+    command_data: dict[str, Any] = {"look_in": True}
     result = await _handle_item_look(
         "armor", "armor", None, [], player, mock_prototype_registry, command_data, "TestPlayer"
     )
@@ -398,7 +399,7 @@ async def test_handle_item_look_with_instance_number(mock_prototype_registry, sa
     player = MagicMock()
     player.get_inventory.return_value = []
     player.get_equipped_items.return_value = {}
-    command_data = {}
+    command_data: dict[str, Any] = {}
     # Add duplicate items
     room_drops = [sample_room_drop, {**sample_room_drop, "item_id": "weapon_sword_002"}]
     result = await _handle_item_look(
@@ -424,7 +425,7 @@ async def test_handle_item_look_player_no_get_inventory(mock_prototype_registry,
     """Test _handle_item_look() when player has no get_inventory method."""
     player = MagicMock()
     del player.get_inventory
-    command_data = {}
+    command_data: dict[str, Any] = {}
     result = await _handle_item_look(
         "sword", "sword", None, [sample_room_drop], player, mock_prototype_registry, command_data, "TestPlayer"
     )

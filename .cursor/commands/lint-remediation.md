@@ -14,6 +14,7 @@ alwaysApply: false
 
 ```bash
 # Step 1: Run linting to get current state
+
 make lint
 ```
 
@@ -27,30 +28,38 @@ make lint
 
 #### 🔴 CRITICAL (Fix First - Blocking Issues)
 
-- **Python compilation errors** (prevents execution)
-- **TypeScript compilation errors** (prevents build)
-- **Import resolution failures** (breaks module loading)
+**Python compilation errors** (prevents execution)
+
+**TypeScript compilation errors** (prevents build)
+
+**Import resolution failures** (breaks module loading)
 - **Syntax errors** (invalid code structure)
 
 #### 🟡 HIGH PRIORITY (Fix Second - Core Functionality)
 
-- **Unused imports/variables** (code quality issues)
-- **Import sorting violations** (I001, isort issues)
-- **Line length violations** (E501, max-len)
+**Unused imports/variables** (code quality issues)
+
+**Import sorting violations** (I001, isort issues)
+
+**Line length violations** (E501, max-len)
 - **Missing dependencies in hooks** (react-hooks/exhaustive-deps)
 
 #### 🟢 MEDIUM PRIORITY (Fix Third - Enhancement)
 
-- **Unused loop variables** (B007)
-- **Code style violations** (formatting issues)
-- **Deprecated patterns** (UP upgrade suggestions)
+**Unused loop variables** (B007)
+
+**Code style violations** (formatting issues)
+
+**Deprecated patterns** (UP upgrade suggestions)
 - **Performance warnings** (optimization opportunities)
 
 #### 🔵 LOW PRIORITY (Fix Last - Polish)
 
-- **Minor style inconsistencies** (non-functional)
-- **Documentation warnings** (non-blocking)
-- **Optional best practices** (nice-to-have)
+**Minor style inconsistencies** (non-functional)
+
+**Documentation warnings** (non-blocking)
+
+**Optional best practices** (nice-to-have)
 
 ### Phase 3: Systematic Fixing Process
 
@@ -72,6 +81,7 @@ make lint
 
 ```bash
 # REQUIRED: Check specific Ruff issues
+
 uv run ruff check --line-length=120 .
 ```
 
@@ -81,6 +91,7 @@ uv run ruff check --line-length=120 .
 
 ```bash
 # REQUIRED: Check specific ESLint issues
+
 cd client && npx eslint --fix .
 ```
 
@@ -94,11 +105,13 @@ cd client && npx eslint --fix .
 # Pattern 1: Fix missing imports
 # BEFORE: NameError: name 'Component' is not defined
 # AFTER: Add missing import
+
 from .component import Component
 
 # Pattern 2: Fix syntax errors
 # BEFORE: def function(  # Missing closing parenthesis
-# AFTER:  def function():
+# AFTER:  def function()
+
 ```
 
 ```typescript
@@ -129,6 +142,7 @@ interface Props {
 # Pattern 3: Fix line length
 # BEFORE: very_long_line_that_exceeds_120_characters_limit
 # AFTER:  Break into multiple lines
+
 very_long_line_that_exceeds_120_characters_limit = (
     "broken into multiple lines"
 )
@@ -154,6 +168,7 @@ very_long_line_that_exceeds_120_characters_limit = (
 # Pattern 2: Fix deprecated patterns
 # BEFORE: dict.keys()  # UP: use list(dict.keys())
 # AFTER:  list(dict.keys())
+
 ```
 
 ### Phase 6: Verification Protocol
@@ -162,12 +177,15 @@ very_long_line_that_exceeds_120_characters_limit = (
 
 ```bash
 # 1. Verify Python linting
+
 make lint
 
 # 2. Check specific Ruff issues
+
 uv run ruff check --line-length=120 .
 
 # 3. Check specific ESLint issues
+
 cd client && npx eslint --fix .
 ```
 
@@ -228,12 +246,14 @@ cd client && npx eslint --fix .
 
 ```python
 # BEFORE: F401 - imported but unused
+
 import os
 import sys
 def function():
     return "hello"
 
 # AFTER: Remove unused imports
+
 def function():
     return "hello"
 ```
@@ -242,11 +262,13 @@ def function():
 
 ```python
 # BEFORE: I001 - import sorting
+
 import sys
 import os
 from typing import List
 
 # AFTER: Proper import order
+
 import os
 import sys
 
@@ -257,9 +279,11 @@ from typing import List
 
 ```python
 # BEFORE: E501 - line too long
+
 very_long_variable_name = "this is a very long string that exceeds the 120 character limit and needs to be broken down"
 
 # AFTER: Break into multiple lines
+
 very_long_variable_name = (
     "this is a very long string that exceeds the 120 character limit "
     "and needs to be broken down"
@@ -327,18 +351,23 @@ const usedVariable = 'value';
 
 ```bash
 # Check if make command exists
+
 which make
 
 # Check if lint script exists
+
 ls scripts/lint.py
 
 # Run lint script directly
+
 python scripts/lint.py
 
 # Check Ruff installation
+
 uv run ruff --version
 
 # Check ESLint installation
+
 cd client && npx eslint --version
 ```
 
@@ -346,15 +375,19 @@ cd client && npx eslint --version
 
 ```bash
 # Check Ruff configuration
+
 cat pyproject.toml | grep -A 20 "\[tool.ruff\]"
 
 # Check ESLint configuration
+
 cat client/eslint.config.js
 
 # Run Ruff with verbose output
+
 uv run ruff check --line-length=120 . --verbose
 
 # Run ESLint with verbose output
+
 cd client && npx eslint . --debug
 ```
 
@@ -428,6 +461,7 @@ IMPACT: No functional changes, cleaner code
 
 ```bash
 # Step 1: Run linting to get current state
+
 make lint
 ```
 
@@ -441,30 +475,38 @@ make lint
 
 #### 🔴 CRITICAL (Fix First - Blocking Issues)
 
-- **Python compilation errors** (prevents execution)
-- **TypeScript compilation errors** (prevents build)
-- **Import resolution failures** (breaks module loading)
+**Python compilation errors** (prevents execution)
+
+**TypeScript compilation errors** (prevents build)
+
+**Import resolution failures** (breaks module loading)
 - **Syntax errors** (invalid code structure)
 
 #### 🟡 HIGH PRIORITY (Fix Second - Core Functionality)
 
-- **Unused imports/variables** (code quality issues)
-- **Import sorting violations** (I001, isort issues)
-- **Line length violations** (E501, max-len)
+**Unused imports/variables** (code quality issues)
+
+**Import sorting violations** (I001, isort issues)
+
+**Line length violations** (E501, max-len)
 - **Missing dependencies in hooks** (react-hooks/exhaustive-deps)
 
 #### 🟢 MEDIUM PRIORITY (Fix Third - Enhancement)
 
-- **Unused loop variables** (B007)
-- **Code style violations** (formatting issues)
-- **Deprecated patterns** (UP upgrade suggestions)
+**Unused loop variables** (B007)
+
+**Code style violations** (formatting issues)
+
+**Deprecated patterns** (UP upgrade suggestions)
 - **Performance warnings** (optimization opportunities)
 
 #### 🔵 LOW PRIORITY (Fix Last - Polish)
 
-- **Minor style inconsistencies** (non-functional)
-- **Documentation warnings** (non-blocking)
-- **Optional best practices** (nice-to-have)
+**Minor style inconsistencies** (non-functional)
+
+**Documentation warnings** (non-blocking)
+
+**Optional best practices** (nice-to-have)
 
 ### Phase 3: Systematic Fixing Process
 
@@ -486,6 +528,7 @@ make lint
 
 ```bash
 # REQUIRED: Check specific Ruff issues
+
 uv run ruff check --line-length=120 .
 ```
 
@@ -495,6 +538,7 @@ uv run ruff check --line-length=120 .
 
 ```bash
 # REQUIRED: Check specific ESLint issues
+
 cd client && npx eslint --fix .
 ```
 
@@ -508,11 +552,13 @@ cd client && npx eslint --fix .
 # Pattern 1: Fix missing imports
 # BEFORE: NameError: name 'Component' is not defined
 # AFTER: Add missing import
+
 from .component import Component
 
 # Pattern 2: Fix syntax errors
 # BEFORE: def function(  # Missing closing parenthesis
-# AFTER:  def function():
+# AFTER:  def function()
+
 ```
 
 ```typescript
@@ -543,6 +589,7 @@ interface Props {
 # Pattern 3: Fix line length
 # BEFORE: very_long_line_that_exceeds_120_characters_limit
 # AFTER:  Break into multiple lines
+
 very_long_line_that_exceeds_120_characters_limit = (
     "broken into multiple lines"
 )
@@ -568,6 +615,7 @@ very_long_line_that_exceeds_120_characters_limit = (
 # Pattern 2: Fix deprecated patterns
 # BEFORE: dict.keys()  # UP: use list(dict.keys())
 # AFTER:  list(dict.keys())
+
 ```
 
 ### Phase 6: Verification Protocol
@@ -576,12 +624,15 @@ very_long_line_that_exceeds_120_characters_limit = (
 
 ```bash
 # 1. Verify Python linting
+
 make lint
 
 # 2. Check specific Ruff issues
+
 uv run ruff check --line-length=120 .
 
 # 3. Check specific ESLint issues
+
 cd client && npx eslint --fix .
 ```
 
@@ -642,12 +693,14 @@ cd client && npx eslint --fix .
 
 ```python
 # BEFORE: F401 - imported but unused
+
 import os
 import sys
 def function():
     return "hello"
 
 # AFTER: Remove unused imports
+
 def function():
     return "hello"
 ```
@@ -656,11 +709,13 @@ def function():
 
 ```python
 # BEFORE: I001 - import sorting
+
 import sys
 import os
 from typing import List
 
 # AFTER: Proper import order
+
 import os
 import sys
 
@@ -671,9 +726,11 @@ from typing import List
 
 ```python
 # BEFORE: E501 - line too long
+
 very_long_variable_name = "this is a very long string that exceeds the 120 character limit and needs to be broken down"
 
 # AFTER: Break into multiple lines
+
 very_long_variable_name = (
     "this is a very long string that exceeds the 120 character limit "
     "and needs to be broken down"
@@ -741,18 +798,23 @@ const usedVariable = 'value';
 
 ```bash
 # Check if make command exists
+
 which make
 
 # Check if lint script exists
+
 ls scripts/lint.py
 
 # Run lint script directly
+
 python scripts/lint.py
 
 # Check Ruff installation
+
 uv run ruff --version
 
 # Check ESLint installation
+
 cd client && npx eslint --version
 ```
 
@@ -760,15 +822,19 @@ cd client && npx eslint --version
 
 ```bash
 # Check Ruff configuration
+
 cat pyproject.toml | grep -A 20 "\[tool.ruff\]"
 
 # Check ESLint configuration
+
 cat client/eslint.config.js
 
 # Run Ruff with verbose output
+
 uv run ruff check --line-length=120 . --verbose
 
 # Run ESLint with verbose output
+
 cd client && npx eslint . --debug
 ```
 

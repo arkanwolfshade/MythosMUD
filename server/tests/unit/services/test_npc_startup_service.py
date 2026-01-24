@@ -10,6 +10,9 @@ import pytest
 
 from server.services.npc_startup_service import NPCStartupService, get_npc_startup_service
 
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+
 
 @pytest.fixture
 def npc_startup_service():
@@ -161,6 +164,8 @@ async def test_determine_spawn_room_with_room_id(npc_startup_service):
         mock_instance = MagicMock()
         mock_persistence = MagicMock()
         mock_persistence.get_room_by_id = MagicMock(return_value=MagicMock())
+        mock_persistence.warmup_room_cache = AsyncMock()
+        mock_persistence._room_cache = {"room_001": MagicMock()}  # Mock cache
         mock_instance.async_persistence = mock_persistence
         mock_container.get_instance.return_value = mock_instance
         result = await npc_startup_service._determine_spawn_room(mock_npc_def)
@@ -179,6 +184,8 @@ async def test_determine_spawn_room_with_sub_zone(npc_startup_service):
         mock_persistence = MagicMock()
         mock_room = MagicMock()
         mock_persistence.get_room_by_id = MagicMock(return_value=mock_room)
+        mock_persistence.warmup_room_cache = AsyncMock()
+        mock_persistence._room_cache = {}  # Mock cache
         mock_instance.async_persistence = mock_persistence
         mock_container.get_instance.return_value = mock_instance
         with patch("asyncio.to_thread", new_callable=AsyncMock, return_value=mock_room):
@@ -198,6 +205,8 @@ async def test_determine_spawn_room_fallback(npc_startup_service):
         mock_persistence = MagicMock()
         mock_room = MagicMock()
         mock_persistence.get_room_by_id = MagicMock(return_value=None)
+        mock_persistence.warmup_room_cache = AsyncMock()
+        mock_persistence._room_cache = {}  # Mock cache
         mock_instance.async_persistence = mock_persistence
         mock_container.get_instance.return_value = mock_instance
         with patch("asyncio.to_thread", new_callable=AsyncMock, return_value=mock_room):
@@ -324,6 +333,8 @@ async def test_determine_spawn_room_room_id_not_found(npc_startup_service):
         # First call (room_id check) returns None, second call (sub_zone) returns room
         mock_room = MagicMock()
         mock_persistence.get_room_by_id = MagicMock(side_effect=[None, mock_room])
+        mock_persistence.warmup_room_cache = AsyncMock()
+        mock_persistence._room_cache = {}  # Mock cache
         mock_instance.async_persistence = mock_persistence
         mock_container.get_instance.return_value = mock_instance
         with patch("asyncio.to_thread", new_callable=AsyncMock, return_value=mock_room):
@@ -344,6 +355,8 @@ async def test_determine_spawn_room_sub_zone_room_not_found(npc_startup_service)
         # Sub-zone room not found, fallback room found
         mock_room = MagicMock()
         mock_persistence.get_room_by_id = MagicMock(return_value=None)
+        mock_persistence.warmup_room_cache = AsyncMock()
+        mock_persistence._room_cache = {}  # Mock cache
         mock_instance.async_persistence = mock_persistence
         mock_container.get_instance.return_value = mock_instance
         with patch("asyncio.to_thread", new_callable=AsyncMock, side_effect=[None, mock_room]):

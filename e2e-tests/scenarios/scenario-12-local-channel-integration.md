@@ -2,9 +2,12 @@
 
 ## Overview
 
-Tests local channel message broadcasting and real-time delivery to multiple players in the same sub-zone. This scenario verifies that local messages are properly broadcast to all players in the same sub-zone in real-time.
+Tests local channel message broadcasting and real-time delivery to multiple players in the same sub-zone. This scenario
+verifies that local messages are properly broadcast to all players in the same sub-zone in real-time.
 
-**⚠️ AUTOMATED TESTS AVAILABLE**: Local channel integration points are tested in automated Playwright CLI tests. See `client/tests/e2e/runtime/integration/local-channel-integration.spec.ts` for:
+**⚠️ AUTOMATED TESTS AVAILABLE**: Local channel integration points are tested in automated Playwright CLI tests. See
+`client/tests/e2e/runtime/integration/local-channel-integration.spec.ts` for:
+
 - Player management integration
 - Location tracking integration
 - Error handling integration
@@ -15,23 +18,26 @@ This MCP scenario focuses ONLY on message broadcasting verification that require
 
 ## Prerequisites
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
 2. **Server Running**: Development server is running on port 54731
 3. **Client Accessible**: Client is accessible on port 5173
 4. **Both Players Connected**: AW and Ithaqua are both logged in and in the same room
 
-**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
+### ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE
 
 **Reference**: See @MULTIPLAYER_TEST_RULES.md for complete prerequisite verification procedures.
 
 ## Test Configuration
 
-- **Test Players**: ArkanWolfshade (AW) and Ithaqua
-- **Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
-- **Testing Approach**: Playwright MCP (multi-tab interaction required)
-- **Timeout Settings**: Use configurable timeouts from master rules
+**Test Players**: ArkanWolfshade (AW) and Ithaqua
+
+**Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
+
+**Testing Approach**: Playwright MCP (multi-tab interaction required)
+
+**Timeout Settings**: Use configurable timeouts from master rules
 
 ## Execution Steps
 
@@ -40,6 +46,7 @@ This MCP scenario focuses ONLY on message broadcasting verification that require
 **Purpose**: Ensure both players are ready for integration testing
 
 **Commands**:
+
 ```javascript
 // Ensure both players are logged in from previous scenario
 // AW should be on tab 0, Ithaqua on tab 1
@@ -53,12 +60,14 @@ This MCP scenario focuses ONLY on message broadcasting verification that require
 **Purpose**: Test local channel integration with player management system
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
 
 // Send local message to test player management integration
-await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local Testing player management integration"});
+await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local Testing player
+management integration"});
 await mcp_playwright_browser_press_key({key: "Enter"});
 
 // Wait for confirmation
@@ -77,6 +86,7 @@ console.log('AW sees player management message:', seesPlayerMgmtMessage);
 **Purpose**: Test local channel integration with location tracking system
 
 **Commands**:
+
 ```javascript
 // Switch to Ithaqua's tab
 await mcp_playwright_browser_tab_select({index: 1});
@@ -85,7 +95,8 @@ await mcp_playwright_browser_tab_select({index: 1});
 await mcp_playwright_browser_wait_for({text: "ArkanWolfshade says locally: Testing player management integration"});
 
 // Verify message appears
-const ithaquaMessages = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
+const ithaquaMessages = await mcp_playwright_browser_evaluate({function: "() =>
+Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
 const seesPlayerMgmtMessage = ithaquaMessages.some(msg => msg.includes('ArkanWolfshade says locally: Testing player management integration'));
 console.log('Ithaqua sees player management message:', seesPlayerMgmtMessage);
 
@@ -101,6 +112,7 @@ console.log('Ithaqua location:', ithaquaLocation);
 **Purpose**: Test local channel integration with message broadcasting system
 
 **Commands**:
+
 ```javascript
 // Send local message to test message broadcasting integration
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local Testing message broadcasting integration"});
@@ -128,6 +140,7 @@ console.log('AW sees broadcast message:', seesBroadcastMessage);
 **Purpose**: Test local channel integration with movement system
 
 **Commands**:
+
 ```javascript
 // Move AW to test movement system integration
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "go east"});
@@ -162,6 +175,7 @@ console.log('Ithaqua sees movement message (should be false):', !seesMovementMes
 **Purpose**: Test local channel integration with session management system
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -199,6 +213,7 @@ console.log('Ithaqua sees session message:', seesSessionMessage);
 **Purpose**: Test local channel integration with database system
 
 **Commands**:
+
 ```javascript
 // Send local message to test database integration
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local Testing database integration"});
@@ -238,6 +253,7 @@ if (awMessagesDatabase.length === 0) {
 **Purpose**: Test local channel integration with authentication system
 
 **Commands**:
+
 ```javascript
 // Send local message to test authentication integration
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "local Testing authentication integration"});
@@ -265,6 +281,7 @@ console.log('Ithaqua sees auth message:', seesAuthMessage);
 **Purpose**: Test local channel integration with error handling system
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -289,6 +306,7 @@ console.log('AW sees error message:', seesErrorMessage);
 **Purpose**: Test local channel integration with performance monitoring system
 
 **Commands**:
+
 ```javascript
 // Send multiple local messages to test performance integration
 for (let i = 1; i <= 5; i++) {
@@ -319,6 +337,7 @@ console.log('Expected: 5, Received:', performanceMessages.length);
 **Purpose**: Test local channel integration with logging system
 
 **Commands**:
+
 ```javascript
 // Switch to AW's tab
 await mcp_playwright_browser_tab_select({index: 0});
@@ -343,6 +362,7 @@ console.log('AW sees logging message:', seesLoggingMessage);
 **Purpose**: Verify that all system integrations are working correctly
 
 **Commands**:
+
 ```javascript
 // Check final message counts and integration status
 const awFinalMessages = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
@@ -368,6 +388,7 @@ console.log('✅ All verification steps completed successfully');
 console.log('✅ System functionality verified as working correctly');
 console.log('✅ Test results documented and validated');
 console.log('📋 PROCEEDING TO SCENARIO 13: Basic Whisper Functionality');
+
 ```
 
 **Expected Result**:  AW sees confirmation of logging integration message
@@ -397,11 +418,16 @@ console.log('➡️ READY FOR SCENARIO 13: Basic Whisper Functionality');
 
 ## Expected Results
 
-- ✅ Local channel integrates with player management system
-- ✅ Local channel integrates with location tracking system
-- ✅ Local channel integrates with message broadcasting system
-- ✅ Local channel integrates with movement system
-- ✅ Local channel integrates with session management system
+✅ Local channel integrates with player management system
+
+✅ Local channel integrates with location tracking system
+
+✅ Local channel integrates with message broadcasting system
+
+✅ Local channel integrates with movement system
+
+✅ Local channel integrates with session management system
+
 - ✅ Local channel integrates with database system
 - ✅ Local channel integrates with authentication system
 - ✅ Local channel integrates with error handling system
@@ -410,7 +436,8 @@ console.log('➡️ READY FOR SCENARIO 13: Basic Whisper Functionality');
 
 ## Success Criteria Checklist
 
-- [ ] Local channel integrates with player management system
+[ ] Local channel integrates with player management system
+
 - [ ] Local channel integrates with location tracking system
 - [ ] Local channel integrates with message broadcasting system
 - [ ] Local channel integrates with movement system
@@ -429,20 +456,25 @@ console.log('➡️ READY FOR SCENARIO 13: Basic Whisper Functionality');
 ## Cleanup
 
 Execute standard cleanup procedures from @CLEANUP.md:
+
 1. Close all browser tabs
 2. Stop development server
 3. Verify clean shutdown
 
 ## Status
 
-**✅ SCENARIO COMPLETION LOGIC FIXED**
+### ✅ SCENARIO COMPLETION LOGIC FIXED
 
 The local channel integration system is working correctly. The scenario now includes proper completion logic to prevent infinite loops:
 
-- **Fixed**: Added completion step with explicit scenario completion and cleanup procedures
-- **Fixed**: Added clear decision points for handling verification results
-- **Fixed**: Added explicit progression to next scenario
-- **Verified**: System functionality works as expected and meets all requirements
+**Fixed**: Added completion step with explicit scenario completion and cleanup procedures
+
+**Fixed**: Added clear decision points for handling verification results
+
+**Fixed**: Added explicit progression to next scenario
+
+**Verified**: System functionality works as expected and meets all requirements
+
 ---
 
 **Document Version**: 1.0 (Modular E2E Test Suite)

@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 from collections.abc import Iterable
 from pathlib import Path
+from typing import Any
 
 from pydantic import ValidationError
 
@@ -26,7 +27,7 @@ class PrototypeRegistryError(Exception):
 class PrototypeRegistry:
     """In-memory registry for validated item prototypes."""
 
-    def __init__(self, prototypes: dict[str, ItemPrototypeModel], invalid_entries: list[dict]):
+    def __init__(self, prototypes: dict[str, ItemPrototypeModel], invalid_entries: list[dict[str, Any]]):
         self._prototypes = prototypes
         self._invalid_entries = invalid_entries
 
@@ -54,7 +55,7 @@ class PrototypeRegistry:
             raise PrototypeRegistryError(f"Prototype directory not found: {directory_path}")
 
         prototypes: dict[str, ItemPrototypeModel] = {}
-        invalid_entries: list[dict] = []
+        invalid_entries: list[dict[str, Any]] = []
 
         for json_file in sorted(directory_path.glob("*.json")):
             try:
@@ -148,7 +149,7 @@ class PrototypeRegistry:
         """
         return self._prototypes.values()
 
-    def invalid_entries(self) -> list[dict]:
+    def invalid_entries(self) -> list[dict[str, Any]]:
         """Get all invalid entries that failed validation.
 
         Returns:

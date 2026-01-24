@@ -2,7 +2,7 @@
 
 ## 🤖 MANDATORY AI EXECUTION CONTRACT 🤖
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST
 
 1. ✅ Read this ENTIRE scenario file from start to finish
 2. ✅ Execute EVERY step in EXACT order (Step 1, 2, 3...)
@@ -13,17 +13,20 @@
 7. ✅ Never modify steps, even if you think there's a better way
 8. ✅ Stop IMMEDIATELY when you see "SCENARIO X COMPLETED"
 
-**EXECUTION AFFIRMATION (Type this before proceeding):**
+### EXECUTION AFFIRMATION (Type this before proceeding)
+
 "I will execute Scenario X: [Scenario Title] exactly as written without modification, addition, or omission"
 
-**CONFIRMATION CHECKLIST:**
-- [ ] I have read the entire scenario file
+### CONFIRMATION CHECKLIST
+
+[ ] I have read the entire scenario file
+
 - [ ] I understand that I must execute every step exactly as written
 - [ ] I will not skip, add, or modify any steps
 - [ ] I will stop at scenario completion marker
 - [ ] I understand that VIOLATION = COMPLETE FAILURE
 
-**⚠️ VIOLATION = COMPLETE FAILURE**
+### ⚠️ VIOLATION = COMPLETE FAILURE
 
 ---
 
@@ -33,28 +36,33 @@
 
 ## Prerequisites
 
-**BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY:**
+### BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY
 
 1. **Database State**: Both players are in `earth_arkhamcity_sanitarium_room_foyer_001`
 2. **Server Running**: Development server is running on port 54731
 3. **Client Accessible**: Client is accessible on port 5173
 4. **Both Players Connected**: [Additional prerequisites]
 
-**⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE**
+### ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE
 
 **Reference**: See @MULTIPLAYER_TEST_RULES.md for complete prerequisite verification procedures.
 
 ## Test Configuration
 
-- **Test Players**: ArkanWolfshade (AW) and Ithaqua
-- **Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
-- **Testing Approach**: Playwright MCP (multi-tab interaction required)
-- **Timeout Settings**: Use configurable timeouts from master rules
+**Test Players**: ArkanWolfshade (AW) and Ithaqua
+
+**Starting Room**: Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`)
+
+**Testing Approach**: Playwright MCP (multi-tab interaction required)
+
+**Timeout Settings**: Use configurable timeouts from master rules
 
 ## Execution Steps
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 1 of [N]: [Step Title]
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: [Why this step exists]
@@ -73,19 +81,25 @@ await mcp_playwright_browser_[action]({[exact parameters]});
 
 **Expected Result**: [What should happen]
 
-**✅ Step 1 Completion Checklist:**
-- [ ] Commands executed exactly as written
+### ✅ Step 1 Completion Checklist
+
+[ ] Commands executed exactly as written
+
 - [ ] Expected result observed or documented
 - [ ] No errors encountered that require retry
 - [ ] Ready to proceed to Step 2
 
-**🚫 STOP! Before proceeding:**
+### 🚫 STOP! Before proceeding
+
 Did you complete ALL items above? (Yes/No)
+
 - If No: Document the issue and STOP
 - If Yes: Proceed IMMEDIATELY to Step 2
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP 2 of [N]: [Step Title]
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: [Why this step exists]
@@ -120,19 +134,25 @@ if (result.length === 0) {
 
 **Expected Result**: [What should happen]
 
-**✅ Step 2 Completion Checklist:**
-- [ ] Commands executed exactly as written
+### ✅ Step 2 Completion Checklist
+
+[ ] Commands executed exactly as written
+
 - [ ] Expected result observed or documented
 - [ ] No errors encountered that require retry
 - [ ] Ready to proceed to Step 3
 
-**🚫 STOP! Before proceeding:**
+### 🚫 STOP! Before proceeding
+
 Did you complete ALL items above? (Yes/No)
+
 - If No: Document the issue and STOP
 - If Yes: Proceed IMMEDIATELY to Step 3
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ### STEP [N]: Scenario Completion
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **🎯 Purpose**: Finalize scenario execution and prepare for next scenario
@@ -180,25 +200,30 @@ console.log('➡️ READY FOR: [Next Scenario Name]');
 
 **Expected Result**: All browser tabs closed, scenario marked as complete, ready for next scenario
 
-**✅ Scenario Completion Verification:**
-- [ ] All browser tabs closed
+### ✅ Scenario Completion Verification
+
+[ ] All browser tabs closed
+
 - [ ] Scenario completion logged
 - [ ] No additional verification performed
 - [ ] Ready for cleanup procedures
 
-**🛑 EXECUTION ENDS HERE - DO NOT PROCEED FURTHER**
+### 🛑 EXECUTION ENDS HERE - DO NOT PROCEED FURTHER
 
 ---
 
 ## Expected Results
 
-- ✅ [Expected result 1]
-- ✅ [Expected result 2]
-- ✅ [Expected result 3]
+✅ [Expected result 1]
+
+✅ [Expected result 2]
+
+✅ [Expected result 3]
 
 ## Success Criteria Checklist
 
-- [ ] [Success criterion 1]
+[ ] [Success criterion 1]
+
 - [ ] [Success criterion 2]
 - [ ] [Success criterion 3]
 - [ ] All browser operations complete without errors
@@ -209,15 +234,17 @@ console.log('➡️ READY FOR: [Next Scenario Name]');
 ## Cleanup
 
 Execute standard cleanup procedures from @CLEANUP.md:
+
 1. Close all browser tabs (completed above)
 2. Stop development server
 3. Verify clean shutdown
 
 ## Status
 
-**✅ TEMPLATE FILE**
+### ✅ TEMPLATE FILE
 
-This is a template for creating new scenarios or updating existing scenarios with improved execution guards and completion logic.
+This is a template for creating new scenarios or updating existing scenarios with improved execution guards and
+completion logic.
 
 ---
 

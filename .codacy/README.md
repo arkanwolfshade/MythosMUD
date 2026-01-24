@@ -8,15 +8,19 @@ This `.codacy/codacy.yaml` file is **manually managed** and should **NOT** be au
 
 The following Codacy CLI commands will **overwrite** this file and remove manual configurations:
 
-- ❌ `codacy-cli init`
-- ❌ `codacy-cli config discover`
-- ❌ `codacy-cli config reset`
+❌ `codacy-cli init`
+
+❌ `codacy-cli config discover`
+
+❌ `codacy-cli config reset`
 
 ## ✅ Current Configuration
 
-- **Python Version**: 3.12.10 (matches project Python version)
-- **Node Version**: 24.11.0 (matches project Node version from .nvmrc)
-- **Lizard Tool**: Manually added for NLOC and complexity analysis (`lizard@1.17.31`)
+**Python Version**: 3.12.10 (matches project Python version)
+
+**Node Version**: 24.11.0 (matches project Node version from .nvmrc)
+
+**Lizard Tool**: Manually added for NLOC and complexity analysis (`lizard@1.17.31`)
 - **Tools** (aligned with MythosMUD Codacy coding standard):
   - `bandit@1.7.8` - Python security analysis
   - `eslint@9.39.1` - JavaScript/TypeScript linting (ESLint 9)
@@ -56,12 +60,19 @@ The following Codacy CLI commands will **overwrite** this file and remove manual
 If this file is modified by Codacy extension or CLI:
 
 1. **Check workspace settings**: Verify `codacy.autoDiscover` and `codacy.autoSync` are `false`
+
 2. **Check extension**: Disable Codacy extension auto-discovery/sync if enabled
+
 3. **Restore from git**: `git checkout .codacy/codacy.yaml`
+
 4. **Verify tools**: Ensure all tools from the MythosMUD Codacy coding standard are present:
+
    - `lizard@1.17.31`, `semgrep`, `eslint@9.39.1`, `ruff`, `bandit`, `pylint`
+
    - `hadolint`, `jackson-linter`, `markdownlint`, `psscriptanalyzer`
+
    - `shellcheck`, `spectral`, `sqlfluff`, `sqlint`, `stylelint`, `trivy`
+
 5. **Check Python version**: Should be `3.12.10`, not `3.11.11`
 6. **Check Node version**: Should be `24.11.0` (matches `.nvmrc`), not `22.2.0`
 

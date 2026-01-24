@@ -2,13 +2,14 @@
 
 ## Tasks
 
-- [x] 1. Update Core Stats Model
-  - [x] 1.1 Update Stats model Field constraints from `ge=1, le=20` to `ge=1, le=100` for all six core attributes in `server/models/game.py`
-  - [x] 1.2 Update `get_attribute_modifier()` method formula from `(attr_value - 10) // 2` to `(attr_value - 50) // 2` and update default fallback from 10 to 50
-  - [x] 1.3 Update `max_health` computed field from `(self.constitution or 10) * 10` to `(self.constitution or 50)`
-  - [x] 1.4 Update `max_lucidity` computed field from `(self.wisdom or 10) * 5` to `(self.wisdom or 50)`
-  - [x] 1.5 Update tests in `server/tests/unit/models/test_models.py`: update range assertions, max_health test, max_lucidity test, and attribute modifier test
-  - [x] 1.6 Verify all model tests pass (Note: 2 tests will pass after Task 2 updates stats generator)
+[x] 1. Update Core Stats Model
+
+- [x] 1.1 Update Stats model Field constraints from `ge=1, le=20` to `ge=1, le=100` for all six core attributes in `server/models/game.py`
+- [x] 1.2 Update `get_attribute_modifier()` method formula from `(attr_value - 10) // 2` to `(attr_value - 50) // 2` and update default fallback from 10 to 50
+- [x] 1.3 Update `max_health` computed field from `(self.constitution or 10) * 10` to `(self.constitution or 50)`
+- [x] 1.4 Update `max_lucidity` computed field from `(self.wisdom or 10) * 5` to `(self.wisdom or 50)`
+- [x] 1.5 Update tests in `server/tests/unit/models/test_models.py`: update range assertions, max_health test, max_lucidity test, and attribute modifier test
+- [x] 1.6 Verify all model tests pass (Note: 2 tests will pass after Task 2 updates stats generator)
 
 - [x] 2. Update Stats Generator System
   - [x] 2.1 Update `MIN_STAT` and `MAX_STAT` constants from 3/18 to 15/90 in `server/game/stats_generator.py`

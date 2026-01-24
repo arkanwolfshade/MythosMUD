@@ -5,6 +5,7 @@ Tests the lucidity event broadcasting functions.
 """
 
 import uuid
+from typing import Any
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -104,7 +105,7 @@ async def test_send_lucidity_change_event_basic(mock_send_game_event):  # pylint
         call_args = mock_send_game_event.call_args
         assert call_args[0][0] == str(player_id)
         assert call_args[0][1] == "lucidity_change"
-        payload = call_args[0][2]
+        payload: dict[str, Any] = call_args[0][2]
         assert payload["current_lcd"] == 50
         assert payload["delta"] == -5
         assert payload["tier"] == "stable"
@@ -118,7 +119,7 @@ async def test_send_lucidity_change_event_with_max_lcd(mock_send_game_event):  #
     with patch("server.realtime.connection_manager_api.send_game_event", mock_send_game_event):
         await send_lucidity_change_event(player_id, current_lcd=75, delta=10, tier="stable", max_lcd=150)
         call_args = mock_send_game_event.call_args
-        payload = call_args[0][2]
+        payload: dict[str, Any] = call_args[0][2]
         assert payload["max_lcd"] == 150
 
 
@@ -130,7 +131,7 @@ async def test_send_lucidity_change_event_with_liabilities(mock_send_game_event)
     with patch("server.realtime.connection_manager_api.send_game_event", mock_send_game_event):
         await send_lucidity_change_event(player_id, current_lcd=30, delta=-10, tier="unstable", liabilities=liabilities)
         call_args = mock_send_game_event.call_args
-        payload = call_args[0][2]
+        payload: dict[str, Any] = call_args[0][2]
         assert "liabilities" in payload
         assert "nightmare (x2)" in payload["liabilities"]
         assert "hallucination" in payload["liabilities"]
@@ -150,7 +151,7 @@ async def test_send_lucidity_change_event_with_reason_and_source(mock_send_game_
             source="spell_cast",
         )
         call_args = mock_send_game_event.call_args
-        payload = call_args[0][2]
+        payload: dict[str, Any] = call_args[0][2]
         assert payload["reason"] == "combat_damage"
         assert payload["source"] == "spell_cast"
 
@@ -163,7 +164,7 @@ async def test_send_lucidity_change_event_with_metadata(mock_send_game_event):  
     with patch("server.realtime.connection_manager_api.send_game_event", mock_send_game_event):
         await send_lucidity_change_event(player_id, current_lcd=35, delta=-8, tier="unstable", metadata=metadata)
         call_args = mock_send_game_event.call_args
-        payload = call_args[0][2]
+        payload: dict[str, Any] = call_args[0][2]
         assert payload["metadata"] == metadata
 
 
@@ -198,7 +199,7 @@ async def test_send_catatonia_event_basic(mock_send_game_event):  # pylint: disa
         call_args = mock_send_game_event.call_args
         assert call_args[0][0] == str(player_id)
         assert call_args[0][1] == "catatonia"
-        payload = call_args[0][2]
+        payload: dict[str, Any] = call_args[0][2]
         assert payload["status"] == "catatonic"
 
 
@@ -209,7 +210,7 @@ async def test_send_catatonia_event_with_current_lcd(mock_send_game_event):  # p
     with patch("server.realtime.connection_manager_api.send_game_event", mock_send_game_event):
         await send_catatonia_event(player_id, status="catatonic", current_lcd=0)
         call_args = mock_send_game_event.call_args
-        payload = call_args[0][2]
+        payload: dict[str, Any] = call_args[0][2]
         assert payload["current_lcd"] == 0
 
 
@@ -220,7 +221,7 @@ async def test_send_catatonia_event_with_message(mock_send_game_event):  # pylin
     with patch("server.realtime.connection_manager_api.send_game_event", mock_send_game_event):
         await send_catatonia_event(player_id, status="catatonic", message="Your mind shatters")
         call_args = mock_send_game_event.call_args
-        payload = call_args[0][2]
+        payload: dict[str, Any] = call_args[0][2]
         assert payload["message"] == "Your mind shatters"
 
 
@@ -231,7 +232,7 @@ async def test_send_catatonia_event_with_rescuer_and_target(mock_send_game_event
     with patch("server.realtime.connection_manager_api.send_game_event", mock_send_game_event):
         await send_catatonia_event(player_id, status="channeling", rescuer_name="Rescuer", target_name="Target")
         call_args = mock_send_game_event.call_args
-        payload = call_args[0][2]
+        payload: dict[str, Any] = call_args[0][2]
         assert payload["rescuer_name"] == "Rescuer"
         assert payload["target_name"] == "Target"
 
@@ -257,7 +258,7 @@ async def test_send_rescue_update_event_basic(mock_send_game_event):  # pylint: 
         call_args = mock_send_game_event.call_args
         assert call_args[0][0] == str(player_id)
         assert call_args[0][1] == "rescue_update"
-        payload = call_args[0][2]
+        payload: dict[str, Any] = call_args[0][2]
         assert payload["status"] == "channeling"
 
 
@@ -277,7 +278,7 @@ async def test_send_rescue_update_event_with_all_fields(mock_send_game_event):  
             eta_seconds=30.0,
         )
         call_args = mock_send_game_event.call_args
-        payload = call_args[0][2]
+        payload: dict[str, Any] = call_args[0][2]
         assert payload["status"] == "channeling"
         assert payload["current_lcd"] == 1
         assert payload["message"] == "Rescue in progress"
@@ -294,7 +295,7 @@ async def test_send_rescue_update_event_with_progress_only(mock_send_game_event)
     with patch("server.realtime.connection_manager_api.send_game_event", mock_send_game_event):
         await send_rescue_update_event(player_id, status="channeling", progress=25.0)
         call_args = mock_send_game_event.call_args
-        payload = call_args[0][2]
+        payload: dict[str, Any] = call_args[0][2]
         assert payload["progress"] == 25.0
         assert "current_lcd" not in payload
         assert "message" not in payload

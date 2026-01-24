@@ -14,6 +14,7 @@ Fix the critical server-side event broadcasting system that prevents players fro
 As a player in a multiplayer room, I want to see when other players enter or leave the room, so that I can be aware of who is present and engage in collaborative storytelling.
 
 **Detailed Workflow:**
+
 1. Player A is already connected and in a room
 2. Player B connects and enters the same room
 3. Player A should see a message like "Player B has entered the room"
@@ -25,6 +26,7 @@ As a player in a multiplayer room, I want to see when other players enter or lea
 As a player, I want to see real-time updates about room occupancy, so that I know who I can interact with and collaborate with in the game world.
 
 **Detailed Workflow:**
+
 1. Room Info panel should show accurate occupant counts
 2. Chat system should display connection/disconnection messages
 3. Players should be able to see who is currently present in the room
@@ -39,7 +41,8 @@ As a player, I want to see real-time updates about room occupancy, so that I kno
 
 ## Out of Scope
 
-- Client-side changes (already completed)
+Client-side changes (already completed)
+
 - New multiplayer features beyond basic connection messaging
 - UI/UX improvements to the chat system
 - Performance optimizations for event broadcasting

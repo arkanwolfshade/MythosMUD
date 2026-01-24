@@ -28,7 +28,8 @@ As an admin, I want to edit room connections and positions on the map, so that I
 
 ## Out of Scope
 
-- Real-time collaborative editing (multiple admins editing simultaneously)
+Real-time collaborative editing (multiple admins editing simultaneously)
+
 - Pathfinding visualization (shortest path between rooms)
 - Export map as image/PDF functionality
 - 3D visualization or alternative view modes

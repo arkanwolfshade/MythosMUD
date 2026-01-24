@@ -9,6 +9,7 @@ face of eldritch horrors, we must maintain order and structure.
 # pylint: disable=too-many-return-statements,too-many-lines  # Reason: Error handlers require multiple return statements for different error type handling and response generation. Error handling module requires comprehensive coverage of all error scenarios.
 
 import traceback
+from collections.abc import Iterator
 from contextlib import contextmanager
 from datetime import datetime
 from typing import Any
@@ -368,7 +369,7 @@ async def http_exception_handler(request: Request, exc: HTTPException) -> JSONRe
 
 
 @contextmanager
-def graceful_degradation(fallback_value: Any, error_type: str = "unknown"):
+def graceful_degradation(fallback_value: Any, error_type: str = "unknown") -> Iterator[None]:
     """
     Context manager for graceful degradation.
 
@@ -394,7 +395,7 @@ def graceful_degradation(fallback_value: Any, error_type: str = "unknown"):
         # Return fallback value (this will be handled by the calling code)
 
 
-def register_error_handlers(app):
+def register_error_handlers(app: Any) -> None:
     """
     Register all error handlers with the FastAPI application.
 
@@ -432,7 +433,7 @@ class CircuitBreaker:  # pylint: disable=too-few-public-methods  # Reason: Utili
         self.last_failure_time: datetime | None = None
         self.state = "CLOSED"  # CLOSED, OPEN, HALF_OPEN
 
-    def call(self, func, *args, **kwargs):
+    def call(self, func: Any, *args: Any, **kwargs: Any) -> Any:
         """
         Execute function with circuit breaker protection.
 
@@ -461,12 +462,12 @@ class CircuitBreaker:  # pylint: disable=too-few-public-methods  # Reason: Utili
             self._on_failure()
             raise exc
 
-    def _on_success(self):
+    def _on_success(self) -> None:
         """Handle successful operation."""
         self.failure_count = 0
         self.state = "CLOSED"
 
-    def _on_failure(self):
+    def _on_failure(self) -> None:
         """Handle failed operation."""
         self.failure_count += 1
         self.last_failure_time = datetime.now()
@@ -587,7 +588,7 @@ def _sanitize_detail_value(value: Any) -> Any:
     return _sanitize_detail_value(str_value)
 
 
-def _sanitize_context(context) -> dict[str, Any] | None:
+def _sanitize_context(context: Any) -> dict[str, Any] | None:
     """
     Sanitize error context to prevent information exposure.
 

@@ -5,6 +5,7 @@
 ## Executive Summary
 
 The current test suite contains **204 test files** with **519+ test functions/classes** in a relatively flat structure. While functional, the organization makes it difficult to:
+
 - Locate related tests quickly
 - Understand test coverage scope
 - Maintain consistency across test types
@@ -18,25 +19,29 @@ This plan proposes a hierarchical, feature-based reorganization following pytest
 
 Based on analysis of test file patterns:
 
-- **API/Endpoints**: ~15 files (api_*, health_*, monitoring_*)
-- **Commands**: ~20 files (command_*, admin_*, utility_*)
-- **Chat/Communication**: ~25 files (chat_*, whisper_*, local_channel_*, global_channel_*, emote_*)
+**API/Endpoints**: ~15 files (api_*, health_*, monitoring_*)
+
+**Commands**: ~20 files (command_*, admin_*, utility_*)
+
+**Chat/Communication**: ~25 files (chat_*, whisper_*, local_channel_*, global_channel_*, emote_*)
 - **Player Management**: ~15 files (player_*, character_*, auth_*)
 - **NPC System**: ~18 files (npc_*)
 - **Room/World**: ~10 files (room_*, world_*, movement_*)
 - **Events/Real-time**: ~15 files (event_*, websocket_*, sse_*, nats_*)
 - **Infrastructure**: ~20 files (config_*, database_*, persistence_*, security_*)
-- **Integration/E2E**: ~15 files (*_integration, *_e2e, multiplayer_*)
-- **Coverage/Performance**: ~10 files (*_coverage, *_performance, *_benchmarks)
-- **Bug Fixes/Debugging**: ~8 files (*_fix, *_bug, *_debug)
+- **Integration/E2E**: ~15 files (*_integration, **e2e, multiplayer**)
+- **Coverage/Performance**: ~10 files (*_coverage,*_performance, *_benchmarks)
+- **Bug Fixes/Debugging**: ~8 files (*_fix,*_bug, *_debug)
 - **Utilities/Helpers**: ~10 files (utils_*, mock_*, conftest, etc.)
 - **Other**: ~23 files (aliases, stats, models, etc.)
 
 ### Test Type Distribution
 
-- **Unit Tests**: ~40% (isolated component tests)
-- **Integration Tests**: ~30% (component interaction tests)
-- **Coverage Tests**: ~10% (focused coverage improvement)
+**Unit Tests**: ~40% (isolated component tests)
+
+**Integration Tests**: ~30% (component interaction tests)
+
+**Coverage Tests**: ~10% (focused coverage improvement)
 - **Security Tests**: ~5% (security validation)
 - **Performance Tests**: ~3% (benchmark and performance)
 - **E2E Tests**: ~5% (full workflow tests)
@@ -46,21 +51,25 @@ Based on analysis of test file patterns:
 ### Current Issues
 
 1. **Naming Inconsistency**
+
    - Multiple files for same feature (e.g., `test_admin_teleport_commands.py`, `test_admin_teleport_integration.py`, `test_admin_teleport_security.py`)
-   - Unclear suffixes (*_fix, *_bug, *_simple, *_comprehensive, *_demo)
+   - Unclear suffixes (*_fix,*_bug, *_simple,*_comprehensive, *_demo)
    - Mixed naming patterns
 
 2. **Flat Structure**
+
    - All 204 files in single directory
    - No logical grouping
    - Difficult navigation
 
 3. **Test Type Ambiguity**
+
    - Coverage tests mixed with unit tests
    - Integration tests not clearly separated
    - Bug fix tests scattered
 
 4. **Duplication Risk**
+
    - Similar tests across multiple files
    - Unclear which test file to update
    - Potential for inconsistent assertions
@@ -345,16 +354,19 @@ server/tests/
 ### Phase 1: Preparation (Week 1)
 
 1. **Create New Directory Structure**
+
    - Create all directories with `__init__.py` files
    - Set up shared fixtures in `fixtures/` directory
    - Update `conftest.py` with new paths
 
 2. **Document Migration**
+
    - Create migration tracking document
    - Map each existing test to new location
    - Identify tests that need consolidation
 
 3. **Set Up CI/CD Compatibility**
+
    - Ensure pytest can discover tests in new structure
    - Update test running scripts
    - Verify coverage reporting works
@@ -364,12 +376,14 @@ server/tests/
 **Move tests in order of dependency (least to most dependent):**
 
 1. **Fixtures and Utilities**
+
    ```
    server/tests/mock_data.py           → fixtures/mock_data.py
    server/tests/utils/*                → fixtures/
    ```
 
 2. **Unit Tests - Infrastructure**
+
    ```
    test_config.py                      → unit/infrastructure/
    test_database.py                    → unit/infrastructure/
@@ -378,6 +392,7 @@ server/tests/
    ```
 
 3. **Unit Tests - Models and Basic Services**
+
    ```
    test_*_models.py                    → unit/models/
    test_*_service.py                   → unit/services/ or domain-specific
@@ -388,6 +403,7 @@ server/tests/
 **Group related tests by domain:**
 
 1. **Player Domain**
+
    ```
    test_player*.py                     → unit/player/
    test_character*.py                  → unit/player/
@@ -395,11 +411,13 @@ server/tests/
    ```
 
 2. **NPC Domain**
+
    ```
    test_npc*.py                        → unit/npc/ or integration/npc/
    ```
 
 3. **World/Room Domain**
+
    ```
    test_room*.py                       → unit/world/
    test_world*.py                      → unit/world/
@@ -407,6 +425,7 @@ server/tests/
    ```
 
 4. **Communication Domain**
+
    ```
    test_chat*.py                       → unit/chat/
    test_whisper*.py                    → unit/chat/
@@ -417,23 +436,27 @@ server/tests/
 ### Phase 4: Integration and Specialized Tests (Week 4)
 
 1. **Integration Tests**
+
    ```
    test_*_integration.py               → integration/<domain>/
    ```
 
 2. **E2E Tests**
+
    ```
    test_*_e2e*.py                      → e2e/
    test_multiplayer*.py                → e2e/
    ```
 
 3. **Security Tests**
+
    ```
    test_*_security.py                  → security/
    test_*_penetration.py               → security/
    ```
 
 4. **Performance Tests**
+
    ```
    test_*_performance.py               → performance/
    test_*_benchmarks.py                → performance/
@@ -442,17 +465,20 @@ server/tests/
 ### Phase 5: Coverage and Bug Fixes (Week 5)
 
 1. **Coverage Tests**
+
    ```
    test_*_coverage.py                  → coverage/
    ```
 
 2. **Regression Tests**
+
    ```
    test_*_fix.py                       → regression/
    test_*_bug.py                       → regression/
    ```
 
 3. **Consolidation**
+
    - Merge duplicate tests
    - Remove obsolete tests
    - Update test names for clarity
@@ -460,18 +486,21 @@ server/tests/
 ### Phase 6: Validation and Cleanup (Week 6)
 
 1. **Validation**
+
    - Run full test suite
    - Verify coverage metrics maintained/improved
    - Check CI/CD pipeline
    - Performance benchmark comparison
 
 2. **Documentation**
+
    - Update README.md with new structure
    - Document test organization principles
    - Create contributor guide for test writing
    - Update development documentation
 
 3. **Cleanup**
+
    - Remove old test files
    - Archive obsolete tests
    - Clean up conftest.py
@@ -481,6 +510,7 @@ server/tests/
 ### Naming Conventions
 
 **File Names:**
+
 - Unit tests: `test_<component>.py`
 - Integration tests: `test_<feature>_integration.py`
 - E2E tests: `test_<workflow>_e2e.py`
@@ -490,11 +520,13 @@ server/tests/
 - Regression tests: `test_<issue_or_bug>_fix.py`
 
 **Class Names:**
+
 - `TestClassName` (PascalCase)
 - Descriptive of what's being tested
 - Example: `TestAdminTeleportCommands`, `TestPlayerAuthentication`
 
 **Test Method Names:**
+
 - `test_<what>_<condition>_<expected_result>`
 - Examples:
   - `test_login_with_valid_credentials_succeeds`
@@ -504,21 +536,26 @@ server/tests/
 ### Test Structure
 
 **Follow AAA Pattern:**
+
 ```python
 def test_example():
     # Arrange - Set up test data and conditions
+
     player = create_test_player(admin=True)
     target_room = "arkham_001"
 
     # Act - Execute the code being tested
+
     result = teleport_player(player, target_room)
 
     # Assert - Verify the expected outcome
+
     assert result.success
     assert player.current_room_id == target_room
 ```
 
 **Use Fixtures for Common Setup:**
+
 ```python
 @pytest.fixture
 def admin_player():
@@ -527,6 +564,7 @@ def admin_player():
 
 def test_admin_command(admin_player):
     # Test uses the fixture
+
     result = execute_admin_command(admin_player, "teleport")
     assert result.allowed
 ```
@@ -534,12 +572,14 @@ def test_admin_command(admin_player):
 ### When to Create New Test Files
 
 **Create new file when:**
+
 - Testing a distinct component or module
 - Test file exceeds 500 lines
 - Tests serve different purposes (unit vs integration)
 - Tests belong to different domains
 
 **Combine in same file when:**
+
 - Testing closely related functionality
 - Tests share significant setup/fixtures
 - Natural grouping by feature
@@ -548,6 +588,7 @@ def test_admin_command(admin_player):
 ### Coverage Strategy
 
 **Coverage Goals:**
+
 - Critical paths: 95%+ coverage
 - Core business logic: 90%+ coverage
 - API endpoints: 85%+ coverage
@@ -555,6 +596,7 @@ def test_admin_command(admin_player):
 - Overall project: 85%+ coverage
 
 **Focus Areas:**
+
 1. Happy paths (normal operation)
 2. Error conditions (expected failures)
 3. Edge cases (boundary conditions)
@@ -567,6 +609,7 @@ def test_admin_command(admin_player):
 
 ```
 # Infrastructure
+
 test_config.py                          → unit/infrastructure/test_config.py
 test_database.py                        → unit/infrastructure/test_database.py
 test_app_factory.py                     → unit/infrastructure/test_app_factory.py
@@ -574,6 +617,7 @@ test_app_lifespan.py                    → unit/infrastructure/test_lifespan.py
 test_main.py                            → unit/infrastructure/test_main.py
 
 # API Layer
+
 test_api_base.py                        → unit/api/test_base.py
 test_api_players.py                     → unit/api/test_players.py
 test_api_players_integration.py         → integration/api/test_api_players_integration.py
@@ -583,6 +627,7 @@ test_health_models.py                   → unit/models/test_health_models.py
 test_health_service.py                  → unit/services/test_health_service.py
 
 # Commands
+
 test_command_handler.py                 → unit/commands/test_command_handler.py
 test_command_handler_v2.py              → unit/commands/test_command_handler.py (merge)
 test_command_handler_unified.py         → unit/commands/test_command_handler.py (merge)
@@ -593,6 +638,7 @@ test_admin_teleport_integration.py      → integration/commands/test_admin_tele
 test_admin_teleport_security.py         → security/test_admin_teleport_security.py
 
 # Chat/Communication
+
 test_chat_service.py                    → unit/chat/test_chat_service.py
 test_chat_logger.py                     → unit/logging/test_chat_logger.py
 test_whisper_channel.py                 → unit/chat/test_whisper_channel.py
@@ -603,41 +649,47 @@ test_local_channel_logging.py           → unit/logging/test_local_channel_logg
 test_local_channel_nats_integration.py  → integration/nats/test_local_channel_nats.py
 
 # ... (continue for all 204 files)
+
 ```
 
 ## Testing Standards and Best Practices
 
 ### 1. Test Independence
 
-- Each test must be runnable in isolation
+Each test must be runnable in isolation
+
 - No dependencies between test execution order
 - Clean up resources in teardown/fixtures
 - Use fixtures for shared setup
 
 ### 2. Mock Usage
 
-- Mock external dependencies (databases, APIs, file system)
+Mock external dependencies (databases, APIs, file system)
+
 - Use real objects for the system under test
 - Prefer dependency injection over patching
 - Mock at boundaries, not internals
 
 ### 3. Assertion Quality
 
-- One logical assertion per test (can be multiple assert statements for same condition)
+One logical assertion per test (can be multiple assert statements for same condition)
+
 - Use specific assertions (assertEqual vs assertTrue)
 - Provide meaningful failure messages
 - Test both success and failure cases
 
 ### 4. Test Data Management
 
-- Use factories/fixtures for test data
+Use factories/fixtures for test data
+
 - Keep test data minimal and relevant
 - Don't use production data
 - Use randomization judiciously (ensure reproducibility)
 
 ### 5. Performance
 
-- Unit tests should run in milliseconds
+Unit tests should run in milliseconds
+
 - Integration tests in seconds
 - E2E tests in minutes
 - Use markers to categorize slow tests
@@ -657,9 +709,11 @@ python_classes = "Test*"
 python_functions = "test_*"
 
 # Test discovery patterns
+
 norecursedirs = [".git", ".tox", "dist", "build", "*.egg"]
 
 # Markers for test categories
+
 markers = [
     "unit: Unit tests",
     "integration: Integration tests",
@@ -671,6 +725,7 @@ markers = [
 ]
 
 # Coverage settings
+
 addopts = [
     "-ra",
     "--strict-markers",
@@ -682,6 +737,7 @@ addopts = [
 ]
 
 # Async support
+
 asyncio_mode = "auto"
 ```
 
@@ -689,46 +745,50 @@ asyncio_mode = "auto"
 
 ```makefile
 # Run different test categories
+
 .PHONY: test-unit test-integration test-e2e test-security test-performance test-all
 
 test-unit:
-	pytest server/tests/unit -v
+ pytest server/tests/unit -v
 
 test-integration:
-	pytest server/tests/integration -v
+ pytest server/tests/integration -v
 
 test-e2e:
-	pytest server/tests/e2e -v
+ pytest server/tests/e2e -v
 
 test-security:
-	pytest server/tests/security -v
+ pytest server/tests/security -v
 
 test-performance:
-	pytest server/tests/performance -v
+ pytest server/tests/performance -v
 
 test-coverage:
-	pytest server/tests/coverage -v
+ pytest server/tests/coverage -v
 
 test-regression:
-	pytest server/tests/regression -v
+ pytest server/tests/regression -v
 
 test-all:
-	pytest server/tests -v
+ pytest server/tests -v
 
 # Fast tests (unit only)
+
 test-fast:
-	pytest server/tests/unit -v -x
+ pytest server/tests/unit -v -x
 
 # Slow tests
+
 test-slow:
-	pytest server/tests -v -m slow
+ pytest server/tests -v -m slow
 ```
 
 ## Success Criteria
 
 ### Quantitative Metrics
 
-- [ ] All 204 test files successfully migrated
+[ ] All 204 test files successfully migrated
+
 - [ ] Test coverage maintained or improved (currently ~85%)
 - [ ] All tests passing after migration
 - [ ] CI/CD pipeline updated and passing
@@ -736,7 +796,8 @@ test-slow:
 
 ### Qualitative Metrics
 
-- [ ] Clear, logical test organization
+[ ] Clear, logical test organization
+
 - [ ] Easy to locate tests for any feature
 - [ ] Consistent naming conventions
 - [ ] Improved test discoverability
@@ -746,7 +807,8 @@ test-slow:
 
 ### Documentation Deliverables
 
-- [ ] Updated README.md in tests directory
+[ ] Updated README.md in tests directory
+
 - [ ] Test organization guide
 - [ ] Contributor's testing guide
 - [ ] Migration completion report
@@ -778,16 +840,19 @@ test-slow:
 ### 6-Week Timeline
 
 **Week 1: Preparation**
+
 - Day 1-2: Create directory structure
 - Day 3-4: Set up fixtures and utilities
 - Day 5: Update CI/CD configuration
 
 **Week 2: Core Infrastructure**
+
 - Day 1-2: Migrate infrastructure tests
 - Day 3-4: Migrate model tests
 - Day 5: Validation and fixes
 
 **Week 3: Feature Domains**
+
 - Day 1: Player domain
 - Day 2: NPC domain
 - Day 3: World/Room domain
@@ -795,16 +860,19 @@ test-slow:
 - Day 5: Validation and fixes
 
 **Week 4: Integration and Specialized**
+
 - Day 1-2: Integration tests
 - Day 2-3: E2E, security, performance tests
 - Day 5: Validation and fixes
 
 **Week 5: Coverage and Regression**
+
 - Day 1-2: Coverage tests
 - Day 3: Regression tests
 - Day 4-5: Test consolidation and cleanup
 
 **Week 6: Finalization**
+
 - Day 1-2: Final validation
 - Day 3-4: Documentation
 - Day 5: Cleanup and handoff
@@ -816,7 +884,9 @@ test-slow:
 ## Appendix B: Test Categories Reference
 
 ### Unit Test Categories
-- API Layer
+
+API Layer
+
 - Commands
 - Chat/Communication
 - Player Management
@@ -833,7 +903,9 @@ test-slow:
 - Utilities
 
 ### Integration Test Categories
-- API Integration
+
+API Integration
+
 - Command Integration
 - Chat Integration
 - Event Integration
@@ -843,7 +915,9 @@ test-slow:
 - Comprehensive Integration
 
 ### Other Test Categories
-- E2E Tests
+
+E2E Tests
+
 - Performance Tests
 - Security Tests
 - Coverage Tests

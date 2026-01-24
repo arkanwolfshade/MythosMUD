@@ -196,7 +196,7 @@ class NATSConfig(BaseSettings):
 
     @field_validator("tls_cert_file", "tls_key_file", "tls_ca_file")
     @classmethod
-    def validate_tls_files(cls, v: str | None, info) -> str | None:
+    def validate_tls_files(cls, v: str | None, info: Any) -> str | None:
         """Validate TLS file paths exist when TLS is enabled."""
         # Only validate if TLS is enabled and file is provided
         # We can't access other fields in field_validator, so we'll do full validation in model_validator
@@ -325,7 +325,7 @@ class LoggingConfig(BaseSettings):
 
     model_config = {"env_prefix": "LOGGING_", "case_sensitive": False, "extra": "ignore"}
 
-    def to_legacy_dict(self) -> dict:
+    def to_legacy_dict(self) -> dict[str, Any]:
         """
         Convert to legacy logging config dict format for backward compatibility.
 
@@ -364,7 +364,9 @@ class GameConfig(BaseSettings):
 
     # Game mechanics
     dp_regen_rate: int = Field(default=1, description="Determination regeneration rate")
-    combat_tick_interval: int = Field(default=6, description="Combat tick interval in seconds (1 Mythos minute)")
+    combat_tick_interval: int = Field(
+        default=10, description="Combat round interval in seconds (100 ticks = 10 seconds)"
+    )
     server_tick_rate: float = Field(default=0.1, description="Server tick rate in seconds (100ms default)")
     weather_update_interval: int = Field(default=300, description="Weather update interval in seconds")
     save_interval: int = Field(default=60, description="Player save interval in seconds")
@@ -516,21 +518,38 @@ class TimeConfig(BaseSettings):
 
 
 class CORSConfig(BaseSettings):
-    """Cross-origin resource sharing configuration."""
+    """
+    Cross-origin resource sharing configuration.
+
+    Configuration precedence (highest to lowest):
+    1. Environment variables (CORS_* prefix, e.g., CORS_ALLOW_ORIGINS)
+    2. Legacy environment variables (ALLOWED_ORIGINS, ALLOWED_METHODS, etc.)
+    3. Field defaults
+
+    Wildcard origins ("*") are allowed but logged as warnings in production.
+    """
 
     allow_origins: list[str] = Field(
-        default_factory=_default_cors_origins,
-        validation_alias=AliasChoices("allow_origins", "origins", "allowed_origins"),
+        default_factory=lambda: ["http://localhost:5173", "http://127.0.0.1:5173"],
+        validation_alias=AliasChoices(
+            "CORS_ALLOW_ORIGINS",
+            "CORS_ORIGINS",
+            "CORS_ALLOWED_ORIGINS",
+            "ALLOWED_ORIGINS",
+            "allow_origins",
+            "origins",
+            "allowed_origins",
+        ),
         description="Origins permitted to access the MythosMUD API",
     )
     allow_credentials: bool = Field(
         default=True,
-        validation_alias=AliasChoices("allow_credentials", "credentials"),
+        validation_alias=AliasChoices("CORS_ALLOW_CREDENTIALS", "allow_credentials", "credentials"),
         description="Whether credentialed requests are accepted",
     )
     allow_methods: list[str] = Field(
         default_factory=lambda: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-        validation_alias=AliasChoices("allow_methods", "methods"),
+        validation_alias=AliasChoices("CORS_ALLOW_METHODS", "ALLOWED_METHODS", "allow_methods", "methods"),
         description="HTTP methods permitted by CORS responses",
     )
     allow_headers: list[str] = Field(
@@ -541,17 +560,17 @@ class CORSConfig(BaseSettings):
             "Accept",
             "Accept-Language",
         ],
-        validation_alias=AliasChoices("allow_headers", "headers"),
+        validation_alias=AliasChoices("CORS_ALLOW_HEADERS", "ALLOWED_HEADERS", "allow_headers", "headers"),
         description="Request headers permitted by CORS responses",
     )
     expose_headers: list[str] = Field(
         default_factory=list,
-        validation_alias=AliasChoices("expose_headers"),
+        validation_alias=AliasChoices("CORS_EXPOSE_HEADERS", "expose_headers"),
         description="Response headers exposed to browser clients",
     )
     max_age: int = Field(
         default=600,
-        validation_alias=AliasChoices("max_age"),
+        validation_alias=AliasChoices("CORS_MAX_AGE", "max_age"),
         description="Seconds browsers may cache CORS preflight responses",
     )
 
@@ -561,124 +580,24 @@ class CORSConfig(BaseSettings):
         "extra": "ignore",
     }
 
-    def __init__(self, **kwargs: Any) -> None:
-        # Initialize with standard sources
-        super().__init__(**kwargs)
-        # Post-init: ensure environment variables override defaults reliably
-        env_raw = (
-            os.getenv("CORS_ALLOW_ORIGINS")
-            or os.getenv("CORS_ORIGINS")
-            or os.getenv("CORS_ALLOWED_ORIGINS")
-            or os.getenv("ALLOWED_ORIGINS")
-        )
-        if env_raw is not None and str(env_raw).strip():
-            # Override allow_origins with parsed environment value
-            parsed = self._parse_csv(env_raw, allow_empty=False)
-            try:
-                object.__setattr__(self, "allow_origins", parsed)
-            except (AttributeError, TypeError):
-                # Fallback assignment if model is mutable
-                self.allow_origins = parsed
-
     @model_validator(mode="after")
-    def _apply_env_overrides(self) -> "CORSConfig":
-        """As a last step, ensure env-specified origins take precedence."""
-        env_raw = (
-            os.getenv("CORS_ALLOW_ORIGINS")
-            or os.getenv("CORS_ORIGINS")
-            or os.getenv("CORS_ALLOWED_ORIGINS")
-            or os.getenv("ALLOWED_ORIGINS")
-        )
-        if env_raw is not None and str(env_raw).strip():
-            parsed = self._parse_csv(env_raw, allow_empty=False)
-            try:
-                object.__setattr__(self, "allow_origins", parsed)
-            except (AttributeError, TypeError):
-                self.allow_origins = parsed
+    def _validate_and_warn_wildcards(self) -> "CORSConfig":
+        """
+        Validate CORS configuration and warn about wildcard origins.
+
+        This runs after all field validators to ensure we have the final values.
+        """
+        # Check for wildcard origins and warn
+        if "*" in self.allow_origins:
+            logger.warning(
+                "Wildcard origin (*) detected in CORS configuration. "
+                "This allows requests from any origin and should only be used in development.",
+                allow_origins=self.allow_origins,
+            )
+            # In production, we might want to raise an error, but for now just warn
+            # to maintain backward compatibility
+
         return self
-
-    @classmethod
-    def _parse_allow_origins_from_env(cls) -> list[str] | None:
-        """Parse CORS allow origins from environment variables."""
-        cors_env = os.getenv("CORS_ALLOW_ORIGINS") or os.getenv("CORS_ORIGINS") or os.getenv("CORS_ALLOWED_ORIGINS")
-        if cors_env is not None:
-            return cls._parse_csv(cors_env, allow_empty=False)
-
-        legacy = os.getenv("ALLOWED_ORIGINS")
-        if legacy is not None:
-            return cls._parse_csv(legacy, allow_empty=False)
-
-        return None
-
-    @classmethod
-    def _parse_allow_methods_from_env(cls) -> list[str] | None:
-        """Parse CORS allow methods from environment variables."""
-        raw_methods = os.getenv("CORS_ALLOW_METHODS") or os.getenv("ALLOWED_METHODS")
-        if raw_methods is not None:
-            return [m.upper() for m in cls._parse_csv(raw_methods, allow_empty=False)]
-        return None
-
-    @classmethod
-    def _parse_allow_headers_from_env(cls) -> list[str] | None:
-        """Parse CORS allow headers from environment variables."""
-        raw_headers = os.getenv("CORS_ALLOW_HEADERS") or os.getenv("ALLOWED_HEADERS")
-        if raw_headers is not None:
-            return cls._parse_csv(raw_headers, allow_empty=False)
-        return None
-
-    @classmethod
-    def _parse_max_age_from_env(cls) -> int | None:
-        """Parse CORS max age from environment variables."""
-        raw_max_age = os.getenv("CORS_MAX_AGE")
-        if raw_max_age is not None and raw_max_age.isdigit():
-            return int(raw_max_age)
-        return None
-
-    @classmethod
-    def _parse_allow_credentials_from_env(cls) -> bool | None:
-        """Parse CORS allow credentials from environment variables."""
-        raw_creds = os.getenv("CORS_ALLOW_CREDENTIALS")
-        if raw_creds is not None:
-            return str(raw_creds).strip().lower() in {"1", "true", "yes", "on"}
-        return None
-
-    @classmethod
-    def settings_customise_sources(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Pydantic settings customization requires many parameters for configuration sources
-        cls,
-        settings_cls,
-        init_settings,
-        env_settings,
-        dotenv_settings,
-        file_secret_settings,
-        **_kwargs,
-    ):
-        def manual_env_source() -> dict[str, Any]:
-            """Manually parse environment for CORS fields to avoid JSON decoding issues."""
-            state: dict[str, Any] = {}
-
-            allow_origins = cls._parse_allow_origins_from_env()
-            if allow_origins is not None:
-                state["allow_origins"] = allow_origins
-
-            allow_methods = cls._parse_allow_methods_from_env()
-            if allow_methods is not None:
-                state["allow_methods"] = allow_methods
-
-            allow_headers = cls._parse_allow_headers_from_env()
-            if allow_headers is not None:
-                state["allow_headers"] = allow_headers
-
-            max_age = cls._parse_max_age_from_env()
-            if max_age is not None:
-                state["max_age"] = max_age
-
-            allow_credentials = cls._parse_allow_credentials_from_env()
-            if allow_credentials is not None:
-                state["allow_credentials"] = allow_credentials
-
-            return state
-
-        return init_settings, manual_env_source, dotenv_settings, file_secret_settings
 
     @staticmethod
     def _validate_non_empty(cleaned: list[str], allow_empty: bool) -> None:
@@ -741,97 +660,55 @@ class CORSConfig(BaseSettings):
     @field_validator("allow_origins", mode="before")
     @classmethod
     def parse_allow_origins(cls, value: object) -> list[str]:
-        """Parse allowed origins with environment taking precedence over defaults."""
-        # Prefer environment variables first (CORS_* then ALLOWED_ORIGINS)
-        env_raw = (
-            os.getenv("CORS_ALLOW_ORIGINS")
-            or os.getenv("CORS_ORIGINS")
-            or os.getenv("CORS_ALLOWED_ORIGINS")
-            or os.getenv("ALLOWED_ORIGINS")
-        )
-        if env_raw is not None and str(env_raw).strip():
-            return cls._parse_csv(env_raw, allow_empty=False)
+        """
+        Parse allowed origins from various input formats.
 
-        # Fall back to provided value (from init or defaults)
-        if isinstance(value, list):
-            return cls._parse_csv(value, allow_empty=False)
-        if isinstance(value, str) and value.strip():
-            return cls._parse_csv(value, allow_empty=False)
-
-        # Final fallback to the model default
-        field_info = cls.model_fields.get("allow_origins")
-        if field_info is None:
-            raise ValueError("Field 'allow_origins' not found in model fields")
-        default_factory = field_info.default_factory
-        defaults = list(default_factory()) if default_factory else []  # type: ignore[call-arg]  # Reason: Pydantic FieldInfo.default_factory is callable but mypy cannot infer the call signature, this is safe at runtime
-        if not defaults:
-            raise ValueError("At least one CORS origin must be provided")
-        return defaults
+        Supports: list, comma-separated string, JSON array string.
+        Environment variables are handled by Pydantic's validation_alias.
+        """
+        return cls._parse_csv(value, allow_empty=False)
 
     @field_validator("allow_methods", mode="before")
     @classmethod
     def parse_allow_methods(cls, value: object) -> list[str]:
-        """Parse and validate CORS allowed methods.
-
-        Args:
-            value: The value to parse (can be string, list, or other)
-
-        Returns:
-            list[str]: List of uppercase HTTP method names
         """
-        # Prefer explicit env overrides when present to ensure reliable behavior
-        env_methods = os.getenv("CORS_ALLOW_METHODS") or os.getenv("ALLOWED_METHODS")
-        if env_methods:
-            methods = cls._parse_csv(env_methods, allow_empty=False)
-        else:
-            methods = cls._parse_csv(value, allow_empty=False)
+        Parse and validate CORS allowed methods.
+
+        Converts all methods to uppercase for consistency.
+        """
+        methods = cls._parse_csv(value, allow_empty=False)
         return [method.upper() for method in methods]
 
     @field_validator("allow_headers", mode="before")
     @classmethod
     def parse_allow_headers(cls, value: object) -> list[str]:
-        """Parse and validate CORS allowed headers.
-
-        Args:
-            value: The value to parse (can be string, list, or other)
-
-        Returns:
-            list[str]: List of allowed header names
         """
-        env_headers = os.getenv("CORS_ALLOW_HEADERS") or os.getenv("ALLOWED_HEADERS")
-        if env_headers:
-            return cls._parse_csv(env_headers, allow_empty=False)
+        Parse and validate CORS allowed headers.
+        """
         return cls._parse_csv(value, allow_empty=False)
 
     @field_validator("max_age", mode="before")
     @classmethod
     def parse_max_age(cls, value: object) -> int:
-        """Parse and validate CORS max age value.
-
-        Args:
-            value: The value to parse (can be int, string, or other)
+        """
+        Parse and validate CORS max age value.
 
         Returns:
             int: The max age in seconds (defaults to 600 if invalid)
         """
-        env_max_age = os.getenv("CORS_MAX_AGE")
-        if env_max_age is not None and env_max_age:
-            try:
-                return int(env_max_age)
-            except ValueError:
-                pass
-        return int(value) if isinstance(value, int | str) and str(value).isdigit() else 600
+        if isinstance(value, int):
+            return value
+        if isinstance(value, str) and value.isdigit():
+            return int(value)
+        return 600  # Default value
 
     @field_validator("expose_headers", mode="before")
     @classmethod
     def parse_expose_headers(cls, value: object) -> list[str]:
-        """Parse and validate CORS exposed headers.
+        """
+        Parse and validate CORS exposed headers.
 
-        Args:
-            value: The value to parse (can be string, list, or other)
-
-        Returns:
-            list[str]: List of exposed header names
+        Allows empty list (unlike other fields).
         """
         return cls._parse_csv(value, allow_empty=True)
 
@@ -903,7 +780,7 @@ class PlayerStatsConfig(BaseSettings):
 
     model_config = {"env_prefix": "DEFAULT_STATS_", "case_sensitive": False, "extra": "ignore"}
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary format expected by game code."""
         return {
             "strength": self.strength,
@@ -948,7 +825,7 @@ class AppConfig(BaseSettings):
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8", "case_sensitive": False, "extra": "ignore"}
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """Initialize configuration and set environment variables for legacy compatibility."""
         try:
             super().__init__(**kwargs)
@@ -999,7 +876,7 @@ class AppConfig(BaseSettings):
                 os.environ["CORS_ORIGINS"] = serialized
                 os.environ["CORS_ALLOWED_ORIGINS"] = serialized
 
-    def to_legacy_dict(self) -> dict:
+    def to_legacy_dict(self) -> dict[str, Any]:
         """
         Convert to legacy dict format for backward compatibility.
 

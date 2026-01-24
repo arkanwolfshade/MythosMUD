@@ -7,6 +7,7 @@ Handles publishing of combat-related events (attacks, deaths, XP awards, combat 
 # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event publishing requires many parameters for complete event context
 
 from datetime import datetime
+from typing import Any, cast
 from uuid import UUID
 
 from server.events.combat_events import (
@@ -25,7 +26,7 @@ logger = get_logger(__name__)
 class CombatEventHandler:
     """Handles combat event publishing."""
 
-    def __init__(self, combat_service):
+    def __init__(self, combat_service: Any) -> None:
         """
         Initialize the event handler.
 
@@ -148,7 +149,8 @@ class CombatEventHandler:
         player_combat_service = getattr(self._combat_service, "_player_combat_service", None)
         if player_combat_service:
             logger.info("Using PlayerCombatService for XP calculation", npc_id=npc_id)
-            return await player_combat_service.calculate_xp_reward(npc_id)
+            result: int = cast(int, await player_combat_service.calculate_xp_reward(npc_id))
+            return result
         # Fallback to default XP value if no player combat service
         logger.info("Using default XP reward", npc_id=npc_id)
         return 0  # Default XP reward changed to 0 to highlight database lookup issues

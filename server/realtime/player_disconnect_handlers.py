@@ -18,7 +18,7 @@ logger = get_logger(__name__)
 
 async def handle_player_disconnect_broadcast(
     player_id: uuid.UUID,
-    player_name: str,
+    player_name: str | None,
     room_id: str | None,
     manager: Any,  # ConnectionManager - avoiding circular import
 ) -> None:
