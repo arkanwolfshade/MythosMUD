@@ -372,6 +372,7 @@ async def _send_welcome_event(websocket: WebSocket, player_id: uuid.UUID, player
     """
     # Check if WebSocket is still connected before sending welcome event
     from starlette.websockets import WebSocketState
+
     ws_state = getattr(websocket, "application_state", None)
     if ws_state == WebSocketState.DISCONNECTED:
         logger.debug("WebSocket disconnected before welcome event, exiting", player_id=player_id)

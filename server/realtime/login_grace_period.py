@@ -26,10 +26,7 @@ def _remove_from_grace_period_tracking(player_id: uuid.UUID, manager: Any) -> No
     """Remove player from grace period tracking dictionaries."""
     if player_id in manager.login_grace_period_players:
         del manager.login_grace_period_players[player_id]
-    if (
-        hasattr(manager, "login_grace_period_start_times")
-        and player_id in manager.login_grace_period_start_times
-    ):
+    if hasattr(manager, "login_grace_period_start_times") and player_id in manager.login_grace_period_start_times:
         del manager.login_grace_period_start_times[player_id]
 
 
@@ -60,11 +57,15 @@ async def _trigger_room_occupants_update(player_id: uuid.UUID, manager: Any) -> 
                 return
 
             await event_handler.send_room_occupants_update(room_id)
-            logger.info("Triggered room occupants update after grace period expiration", player_id=player_id, room_id=room_id)
+            logger.info(
+                "Triggered room occupants update after grace period expiration", player_id=player_id, room_id=room_id
+            )
         except (AttributeError, TypeError) as app_error:
             logger.debug("Could not access app state container", player_id=player_id, error=str(app_error))
     except (AttributeError, RuntimeError, ValueError, TypeError, KeyError) as e:
-        logger.warning("Could not trigger room occupants update after grace period expiration", player_id=player_id, error=str(e))
+        logger.warning(
+            "Could not trigger room occupants update after grace period expiration", player_id=player_id, error=str(e)
+        )
 
 
 async def _grace_period_expiration_handler(player_id: uuid.UUID, manager: Any) -> None:

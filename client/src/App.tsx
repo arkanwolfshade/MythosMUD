@@ -403,6 +403,27 @@ function App() {
   };
 
   const handleProfessionSelectionError = (error: string) => {
+    // Check if error indicates server unavailability
+    const errorLower = error.toLowerCase();
+    const serverUnavailablePatterns = [
+      'failed to fetch',
+      'network error',
+      'network request failed',
+      'connection refused',
+      'connection reset',
+      'connection closed',
+      'connection timeout',
+      'server is unavailable',
+      'service unavailable',
+      'bad gateway',
+      'gateway timeout',
+    ];
+
+    if (serverUnavailablePatterns.some(pattern => errorLower.includes(pattern))) {
+      returnToLogin();
+      return;
+    }
+
     setError(error);
   };
 
@@ -443,6 +464,12 @@ function App() {
         // Show character selection screen after creation
         setShowCharacterSelection(true);
       } else {
+        // Check if server is unavailable
+        if (isServerUnavailable(null, response)) {
+          returnToLogin();
+          return;
+        }
+
         // Response was not OK - handle as error
         let errorMessage = 'Character created, but failed to refresh character list';
         try {
@@ -469,6 +496,12 @@ function App() {
         setShowCharacterSelection(false);
       }
     } catch (error) {
+      // Check if error is due to server unavailability
+      if (isServerUnavailable(error, null)) {
+        returnToLogin();
+        return;
+      }
+
       // If refresh fails, log error and show error message
       // Don't proceed to character selection if we can't verify characters were created
       console.error('Failed to refresh characters list:', error);
@@ -481,6 +514,28 @@ function App() {
   };
 
   const handleStatsError = (error: string) => {
+    // Check if error indicates server unavailability
+    const errorLower = error.toLowerCase();
+    const serverUnavailablePatterns = [
+      'failed to fetch',
+      'network error',
+      'network request failed',
+      'connection refused',
+      'connection reset',
+      'connection closed',
+      'connection timeout',
+      'server is unavailable',
+      'service unavailable',
+      'bad gateway',
+      'gateway timeout',
+      'failed to connect to server',
+    ];
+
+    if (serverUnavailablePatterns.some(pattern => errorLower.includes(pattern))) {
+      returnToLogin();
+      return;
+    }
+
     setError(error);
     // Don't clear authentication on stats error - allow user to retry
     // Reset character creation state
@@ -490,6 +545,53 @@ function App() {
 
   const handleStatsRollingBack = () => {
     setShowProfessionSelection(true);
+  };
+
+  // Helper function to detect server unavailability
+  const isServerUnavailable = (error: unknown, response: Response | null): boolean => {
+    // Network errors (fetch throws, no response)
+    if (!response) {
+      return true;
+    }
+
+    // 5xx server errors indicate server unavailability
+    if (response.status >= 500 && response.status < 600) {
+      return true;
+    }
+
+    // Check for connection-related errors in error message
+    if (error instanceof Error) {
+      const errorMessage = error.message.toLowerCase();
+      const connectionErrors = [
+        'failed to fetch',
+        'network error',
+        'network request failed',
+        'connection refused',
+        'connection reset',
+        'connection closed',
+        'connection timeout',
+        'err_connection_refused',
+        'err_connection_reset',
+        'err_connection_aborted',
+      ];
+      return connectionErrors.some(err => errorMessage.includes(err));
+    }
+
+    return false;
+  };
+
+  // Helper function to return to login screen
+  const returnToLogin = () => {
+    setIsAuthenticated(false);
+    setCharacters([]);
+    setSelectedCharacterName('');
+    setSelectedCharacterId('');
+    setShowCharacterSelection(false);
+    setShowMotd(false);
+    setShowProfessionSelection(false);
+    setAuthToken('');
+    secureTokenStorage.clearAllTokens();
+    setError('Server is unavailable. Please try again later.');
   };
 
   // MULTI-CHARACTER: Character selection handler
@@ -505,6 +607,12 @@ function App() {
       });
 
       if (!response.ok) {
+        // Check if server is unavailable
+        if (isServerUnavailable(null, response)) {
+          returnToLogin();
+          return;
+        }
+
         let errorMessage = 'Failed to select character';
         try {
           const rawData: unknown = await response.json();
@@ -549,6 +657,12 @@ function App() {
       // Show MOTD screen after character selection
       setShowMotd(true);
     } catch (error) {
+      // Check if error is due to server unavailability
+      if (isServerUnavailable(error, null)) {
+        returnToLogin();
+        return;
+      }
+
       const errorMessage = error instanceof Error ? error.message : 'Failed to select character';
       setError(errorMessage);
     }
@@ -566,6 +680,12 @@ function App() {
       });
 
       if (!response.ok) {
+        // Check if server is unavailable
+        if (isServerUnavailable(null, response)) {
+          returnToLogin();
+          return;
+        }
+
         let errorMessage = 'Failed to delete character';
         try {
           const rawData: unknown = await response.json();
@@ -622,6 +742,12 @@ function App() {
           setSelectedProfession(undefined);
         }
       } else {
+        // Check if server is unavailable
+        if (isServerUnavailable(null, charactersResponse)) {
+          returnToLogin();
+          return;
+        }
+
         // Character was deleted but refresh failed - log error and show message
         let errorMessage = 'Character deleted, but failed to refresh character list';
         try {
@@ -646,6 +772,12 @@ function App() {
         throw new Error(errorMessage);
       }
     } catch (error) {
+      // Check if error is due to server unavailability
+      if (isServerUnavailable(error, null)) {
+        returnToLogin();
+        return;
+      }
+
       const errorMessage = error instanceof Error ? error.message : 'Failed to delete character';
       throw new Error(errorMessage);
     }
@@ -692,6 +824,12 @@ function App() {
         });
 
         if (!response.ok) {
+          // Check if server is unavailable - if so, return to login
+          if (isServerUnavailable(null, response)) {
+            returnToLogin();
+            return;
+          }
+
           // Log error but don't block game entry - grace period is best effort
           try {
             const rawData: unknown = await response.json();
@@ -709,6 +847,12 @@ function App() {
           }
         }
       } catch (error) {
+        // Check if error is due to server unavailability
+        if (isServerUnavailable(error, null)) {
+          returnToLogin();
+          return;
+        }
+
         // Log error but don't block game entry - grace period is best effort
         console.warn('Error starting login grace period:', error);
       }
