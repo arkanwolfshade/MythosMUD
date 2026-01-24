@@ -125,7 +125,7 @@ async def test_handle_game_command_runtime_error_handling(mock_websocket, mock_w
 
 
 @pytest.mark.asyncio
-async def test_process_websocket_command_resolve_connection_manager_from_app():
+async def test_process_websocket_command_resolve_connection_manager_from_app(tmp_path):
     """Test process_websocket_command resolves connection_manager from app when None (lines 549-551)."""
     mock_player = MagicMock()
     mock_player.current_room_id = "room_001"
@@ -140,16 +140,21 @@ async def test_process_websocket_command_resolve_connection_manager_from_app():
     mock_app = MagicMock()
     mock_app.state.container.connection_manager = mock_connection_manager
 
+    aliases_dir = str(tmp_path / "aliases")
     with patch("server.main.app", mock_app):
-        with patch(
-            "server.command_handler_unified.process_command_unified",
-            new_callable=AsyncMock,
-            return_value={"result": "ok"},
-        ):
-            with patch("server.realtime.websocket_handler._resolve_and_setup_app_state_services"):
-                result = await process_websocket_command("look", [], TEST_PLAYER_ID_STR, None)
-                assert isinstance(result, dict)
-                assert "result" in result
+        with patch("server.config.get_config") as mock_get_config:
+            mock_config = MagicMock()
+            mock_config.game.aliases_dir = aliases_dir
+            mock_get_config.return_value = mock_config
+            with patch(
+                "server.command_handler_unified.process_command_unified",
+                new_callable=AsyncMock,
+                return_value={"result": "ok"},
+            ):
+                with patch("server.realtime.websocket_handler._resolve_and_setup_app_state_services"):
+                    result = await process_websocket_command("look", [], TEST_PLAYER_ID_STR, None)
+                    assert isinstance(result, dict)
+                    assert "result" in result
 
 
 @pytest.mark.asyncio

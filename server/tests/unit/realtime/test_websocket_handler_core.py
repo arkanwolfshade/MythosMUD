@@ -279,17 +279,27 @@ async def test_handle_websocket_message_command(mock_websocket):
 
 
 @pytest.mark.asyncio
-async def test_process_websocket_command(mock_ws_connection_manager):
+async def test_process_websocket_command(mock_ws_connection_manager, tmp_path):
     """Test process_websocket_command processes command."""
     mock_player = MagicMock()
     mock_player.current_room_id = "room_001"
     mock_player.name = "TestPlayer"
     mock_ws_connection_manager.get_player = AsyncMock(return_value=mock_player)
-    with patch(
-        "server.command_handler_unified.process_command_unified", new_callable=AsyncMock, return_value={"result": "ok"}
-    ):
-        result = await process_websocket_command("look", [], TEST_PLAYER_ID_STR, mock_ws_connection_manager)
-        assert isinstance(result, dict)
+    mock_app_state = MagicMock()
+    mock_ws_connection_manager.app = MagicMock()
+    mock_ws_connection_manager.app.state = mock_app_state
+    aliases_dir = str(tmp_path / "aliases")
+    with patch("server.config.get_config") as mock_get_config:
+        mock_config = MagicMock()
+        mock_config.game.aliases_dir = aliases_dir
+        mock_get_config.return_value = mock_config
+        with patch(
+            "server.command_handler_unified.process_command_unified",
+            new_callable=AsyncMock,
+            return_value={"result": "ok"},
+        ):
+            result = await process_websocket_command("look", [], TEST_PLAYER_ID_STR, mock_ws_connection_manager)
+            assert isinstance(result, dict)
 
 
 @pytest.mark.asyncio
@@ -330,7 +340,7 @@ async def test_process_websocket_command_no_app_in_connection_manager(mock_ws_co
 
 
 @pytest.mark.asyncio
-async def test_process_websocket_command_type_error(mock_ws_connection_manager):
+async def test_process_websocket_command_type_error(mock_ws_connection_manager, tmp_path):
     """Test process_websocket_command handles TypeError when command handler returns non-dict."""
     mock_player = MagicMock()
     mock_player.current_room_id = "room_001"
@@ -339,15 +349,22 @@ async def test_process_websocket_command_type_error(mock_ws_connection_manager):
     mock_app_state = MagicMock()
     mock_ws_connection_manager.app = MagicMock()
     mock_ws_connection_manager.app.state = mock_app_state
-    with patch(
-        "server.command_handler_unified.process_command_unified", new_callable=AsyncMock, return_value="not a dict"
-    ):
-        with pytest.raises(TypeError, match="Command handler must return a dict"):
-            await process_websocket_command("look", [], TEST_PLAYER_ID_STR, mock_ws_connection_manager)
+    aliases_dir = str(tmp_path / "aliases")
+    with patch("server.config.get_config") as mock_get_config:
+        mock_config = MagicMock()
+        mock_config.game.aliases_dir = aliases_dir
+        mock_get_config.return_value = mock_config
+        with patch(
+            "server.command_handler_unified.process_command_unified",
+            new_callable=AsyncMock,
+            return_value="not a dict",
+        ):
+            with pytest.raises(TypeError, match="Command handler must return a dict"):
+                await process_websocket_command("look", [], TEST_PLAYER_ID_STR, mock_ws_connection_manager)
 
 
 @pytest.mark.asyncio
-async def test_process_websocket_command_no_aliases_dir(mock_ws_connection_manager):
+async def test_process_websocket_command_no_aliases_dir(mock_ws_connection_manager, tmp_path):
     """Test process_websocket_command handles None aliases_dir."""
     mock_player = MagicMock()
     mock_player.current_room_id = "room_001"
@@ -356,17 +373,19 @@ async def test_process_websocket_command_no_aliases_dir(mock_ws_connection_manag
     mock_app_state = MagicMock()
     mock_ws_connection_manager.app = MagicMock()
     mock_ws_connection_manager.app.state = mock_app_state
+    fallback_dir = str(tmp_path / "aliases_fallback")
     with patch("server.config.get_config") as mock_get_config:
         mock_config = MagicMock()
         mock_config.game.aliases_dir = None
         mock_get_config.return_value = mock_config
-        with patch(
-            "server.command_handler_unified.process_command_unified",
-            new_callable=AsyncMock,
-            return_value={"result": "ok"},
-        ):
-            result = await process_websocket_command("look", [], TEST_PLAYER_ID_STR, mock_ws_connection_manager)
-            assert isinstance(result, dict)
+        with patch.dict("os.environ", {"ALIASES_DIR": fallback_dir}, clear=False):
+            with patch(
+                "server.command_handler_unified.process_command_unified",
+                new_callable=AsyncMock,
+                return_value={"result": "ok"},
+            ):
+                result = await process_websocket_command("look", [], TEST_PLAYER_ID_STR, mock_ws_connection_manager)
+                assert isinstance(result, dict)
 
 
 @pytest.mark.asyncio
