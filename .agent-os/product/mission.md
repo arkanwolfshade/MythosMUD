@@ -21,6 +21,7 @@ MythosMUD is a browser-accessible, text-based Multi-User Dungeon (MUD) that help
 **Role:** Project Creator and Primary User
 
 **Context:** Academic background with interest in horror fiction and educational technology
+
 - **Pain Points:** Limited quality family gaming options, need for educational value, desire for collaborative storytelling
 - **Goals:** Create engaging father-son bonding experience, explore Lovecraftian themes, develop technical skills
 
@@ -29,6 +30,7 @@ MythosMUD is a browser-accessible, text-based Multi-User Dungeon (MUD) that help
 **Role:** Primary Gaming Partner
 
 **Context:** Growing interest in gaming and storytelling, learning about technology
+
 - **Pain Points:** Limited multiplayer experiences with family, need for age-appropriate content
 - **Goals:** Explore interactive worlds, learn through gameplay, bond with family
 
@@ -37,6 +39,7 @@ MythosMUD is a browser-accessible, text-based Multi-User Dungeon (MUD) that help
 **Role:** Extended Gaming Community
 
 **Context:** Trusted circle of friends and family invited to participate
+
 - **Pain Points:** Need for secure, private gaming environment
 - **Goals:** Collaborative storytelling, social interaction, shared experiences
 
@@ -76,40 +79,40 @@ Unlike most online games that collect extensive personal data, we provide built-
 
 ### Core Features
 
-**Real-time Multiplayer Interaction:** Seamless cross-player communication and movement in shared virtual spaces
+- **Real-time Multiplayer Interaction:** Seamless cross-player communication and movement in shared virtual spaces
 
-**Character Creation System:** Lovecraftian investigator archetypes with random stats generation and class validation
+- **Character Creation System:** Lovecraftian investigator archetypes with random stats generation and class validation
 
-**World Exploration:** 126+ interconnected rooms with hierarchical zone structure and atmospheric descriptions
+- **World Exploration:** 126+ interconnected rooms with hierarchical zone structure and atmospheric descriptions
 - **Command Processing:** Comprehensive command system with aliases, help system, and input validation
 - **Admin Tools:** Teleportation, player management, and moderation capabilities for game administration
 
 ### Collaboration Features
 
-**Chat System:** Room-based communication with moderation, muting, and rate limiting
+- **Chat System:** Room-based communication with moderation, muting, and rate limiting
 
-**Movement Broadcasting:** Real-time player movement notifications and room transitions
+- **Movement Broadcasting:** Real-time player movement notifications and room transitions
 
-**Player Presence:** Live player tracking and "who" command functionality
+- **Player Presence:** Live player tracking and "who" command functionality
 - **Event System:** Comprehensive event broadcasting for game state changes
 - **Alias System:** Custom command shortcuts for improved user experience
 
 ### Security Features
 
-**COPPA Compliance:** Built-in privacy protection for minor users
+- **COPPA Compliance:** Built-in privacy protection for minor users
 
-**Authentication System:** JWT-based authentication with Argon2 password hashing
+- **Authentication System:** JWT-based authentication with Argon2 password hashing
 
-**Input Validation:** Comprehensive server-side validation and XSS protection
+- **Input Validation:** Comprehensive server-side validation and XSS protection
 - **Rate Limiting:** Per-user and per-endpoint protection against abuse
 - **Audit Logging:** Complete logging of administrative actions and security events
 
 ### Technical Features
 
-**Modern Architecture:** React/TypeScript frontend with Python FastAPI backend
+- **Modern Architecture:** React/TypeScript frontend with Python FastAPI backend
 
-**Real-time Communication:** NATS pub/sub messaging for instant updates
+- **Real-time Communication:** NATS pub/sub messaging for instant updates
 
-**Database Persistence:** SQLite with PostgreSQL migration path
+- **Database Persistence:** SQLite with PostgreSQL migration path
 - **Comprehensive Testing:** 88% code coverage with automated testing
 - **Production Ready:** Docker containerization and CI/CD pipeline support

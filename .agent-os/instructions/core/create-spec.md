@@ -250,7 +250,7 @@ Use the file-creator subagent to create the file: .agent-os/specs/YYYY-MM-DD-spe
   <template>
     ## Out of Scope
 
-    [EXCLUDED_FUNCTIONALITY_1]
+    - [EXCLUDED_FUNCTIONALITY_1]
 
     - [EXCLUDED_FUNCTIONALITY_2]
 

@@ -48,7 +48,7 @@ This prompt guides the systematic remediation of linting errors in the MythosMUD
 
 ## Expected Outcomes
 
-All linting errors resolved
+- All linting errors resolved
 
 - Code quality improved
 - Type safety enhanced
@@ -57,7 +57,7 @@ All linting errors resolved
 
 ## Files to Modify
 
-`server/tests/test_profession_models.py`
+- `server/tests/test_profession_models.py`
 
 - `client/src/components/ProfessionCard.tsx`
 - `client/src/components/ProfessionSelectionScreen.tsx`

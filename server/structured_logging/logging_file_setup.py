@@ -271,15 +271,15 @@ def _setup_async_logging_queue(handlers: list[logging.Handler]) -> None:
 
 
 def _get_handler_class(
-    _WinSafeHandler: type[RotatingFileHandler], _BaseHandler: type[RotatingFileHandler]
-) -> type[RotatingFileHandler]:  # pylint: disable=invalid-name  # Reason: Parameter names match class names for type hints
+    win_safe_handler: type[RotatingFileHandler], base_handler: type[RotatingFileHandler]
+) -> type[RotatingFileHandler]:
     """Get the appropriate handler class (Windows-safe or base)."""
-    handler_class = _BaseHandler
+    handler_class = base_handler
     try:
         if sys.platform == "win32":
             # Windows-safe handler also needs directory safety
             # Create a hybrid class that combines both features
-            class SafeWinHandlerCategory(_WinSafeHandler):  # type: ignore[valid-type,misc]  # mypy: parameter as base class; pylint: disable=too-few-public-methods  # Reason: Handler class with focused responsibility, minimal public interface
+            class SafeWinHandlerCategory(win_safe_handler):  # type: ignore[valid-type,misc]  # mypy: parameter as base class; pylint: disable=too-few-public-methods  # Reason: Handler class with focused responsibility, minimal public interface
                 """Windows-safe rotating file handler with directory safety for categorized logs."""
 
                 def shouldRollover(self, record):  # noqa: N802  # pylint: disable=invalid-name  # Reason: Overrides parent class method, must match parent signature
@@ -299,7 +299,7 @@ def _get_handler_class(
             handler_class = SafeWinHandlerCategory
     except ImportError:
         # Fallback to safe handler on any detection error
-        handler_class = _BaseHandler
+        handler_class = base_handler  # pylint: disable=undefined-variable  # Reason: base_handler is a function parameter, not _BaseHandler
     return handler_class
 
 
@@ -600,7 +600,7 @@ def setup_enhanced_file_logging(  # pylint: disable=too-many-locals  # Reason: F
         log_queue = _get_or_create_log_queue()
 
     # Create handlers for different log categories
-    handler_class = _get_handler_class(_WinSafeHandler, _BaseHandler)
+    handler_class = _get_handler_class(_WinSafeHandler, _BaseHandler)  # pylint: disable=invalid-name  # Reason: Local variable names match imported class names for clarity
     all_file_handlers = _setup_category_handlers(
         log_categories,
         env_log_dir,

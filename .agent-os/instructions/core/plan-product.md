@@ -118,7 +118,7 @@ Use the file-creator subagent to create the file: .agent-os/product/mission.md a
 
     ### Primary Customers
 
-    [CUSTOMER_SEGMENT_1]: [DESCRIPTION]
+    - [CUSTOMER_SEGMENT_1]: [DESCRIPTION]
 
     - [CUSTOMER_SEGMENT_2]: [DESCRIPTION]
 
