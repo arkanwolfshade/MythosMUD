@@ -324,6 +324,72 @@ async def _cleanup_connection(
         logger.error("Error cleaning up mute data", player_id=player_id, error=str(e))
 
 
+async def _setup_initial_connection_state(
+    websocket: WebSocket,
+    player_id: uuid.UUID,
+    player_id_str: str,
+    connection_manager: "ConnectionManager",
+) -> tuple[str | None, bool]:
+    """
+    Set up initial connection state and send initial game state.
+
+    Returns:
+        Tuple of (canonical_room_id, should_exit)
+    """
+    try:
+        canonical_room_id, should_exit = await send_initial_game_state(
+            websocket, player_id, player_id_str, connection_manager
+        )
+        if should_exit:
+            return None, True
+
+        if canonical_room_id:
+            from ..async_persistence import get_async_persistence
+
+            async_persistence = get_async_persistence()
+            if async_persistence:
+                room = async_persistence.get_room_by_id(canonical_room_id)
+                if room:
+                    await check_and_send_death_notification(
+                        websocket, player_id, player_id_str, canonical_room_id, room, connection_manager
+                    )
+                    await send_initial_room_state(
+                        websocket, player_id, player_id_str, canonical_room_id, connection_manager
+                    )
+
+        return canonical_room_id, False
+    except (WebSocketDisconnect, RuntimeError) as e:
+        logger.error("Error in initial connection setup", player_id=player_id, error=str(e), exc_info=True)
+        return None, True
+
+
+async def _send_welcome_event(websocket: WebSocket, player_id: uuid.UUID, player_id_str: str) -> bool:
+    """
+    Send welcome event to the client.
+
+    Returns:
+        True if successful, False if connection was closed
+    """
+    # Check if WebSocket is still connected before sending welcome event
+    from starlette.websockets import WebSocketState
+    ws_state = getattr(websocket, "application_state", None)
+    if ws_state == WebSocketState.DISCONNECTED:
+        logger.debug("WebSocket disconnected before welcome event, exiting", player_id=player_id)
+        return False
+
+    try:
+        welcome_event = build_event("welcome", {"message": "Connected to MythosMUD"}, player_id=player_id_str)
+        await websocket.send_json(welcome_event)
+        return True
+    except (WebSocketDisconnect, RuntimeError) as e:
+        error_message = str(e)
+        if "close message has been sent" in error_message or "Cannot call" in error_message:
+            logger.debug("WebSocket closed before welcome event could be sent", player_id=player_id)
+            return False
+        # Re-raise if it's a different error
+        raise
+
+
 async def handle_websocket_connection(
     websocket: WebSocket,
     player_id: uuid.UUID,
@@ -358,31 +424,12 @@ async def handle_websocket_connection(
     player_id_str = str(player_id)
     await load_player_mute_data(player_id_str)
 
-    try:
-        canonical_room_id, should_exit = await send_initial_game_state(
-            websocket, player_id, player_id_str, connection_manager
-        )
-        if should_exit:
-            return
+    _, should_exit = await _setup_initial_connection_state(websocket, player_id, player_id_str, connection_manager)
+    if should_exit:
+        return
 
-        if canonical_room_id:
-            from ..async_persistence import get_async_persistence
-
-            async_persistence = get_async_persistence()
-            if async_persistence:
-                room = async_persistence.get_room_by_id(canonical_room_id)
-                if room:
-                    await check_and_send_death_notification(
-                        websocket, player_id, player_id_str, canonical_room_id, room, connection_manager
-                    )
-                    await send_initial_room_state(
-                        websocket, player_id, player_id_str, canonical_room_id, connection_manager
-                    )
-    except (WebSocketDisconnect, RuntimeError) as e:
-        logger.error("Error in initial connection setup", player_id=player_id, error=str(e), exc_info=True)
-
-    welcome_event = build_event("welcome", {"message": "Connected to MythosMUD"}, player_id=player_id_str)
-    await websocket.send_json(welcome_event)
+    if not await _send_welcome_event(websocket, player_id, player_id_str):
+        return
 
     try:
         await _handle_websocket_message_loop(websocket, player_id, player_id_str, connection_manager)

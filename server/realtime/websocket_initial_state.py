@@ -10,6 +10,7 @@ import uuid
 from typing import TYPE_CHECKING, Any, cast
 
 from fastapi import WebSocket
+from starlette.websockets import WebSocketDisconnect
 
 from ..structured_logging.enhanced_logging_config import get_logger
 from .envelope import build_event
@@ -62,7 +63,7 @@ async def send_game_state_event_safely(
     try:
         await websocket.send_json(game_state_event)
         return False
-    except RuntimeError as send_err:
+    except (RuntimeError, WebSocketDisconnect) as send_err:
         error_message = str(send_err)
         if "close message has been sent" in error_message or "Cannot call" in error_message:
             logger.warning(
@@ -70,6 +71,10 @@ async def send_game_state_event_safely(
                 player_id=player_id_str,
                 error=error_message,
             )
+            return True
+        # WebSocketDisconnect means connection is closed
+        if isinstance(send_err, WebSocketDisconnect):
+            logger.debug("WebSocket disconnected during game state send", player_id=player_id_str)
             return True
         raise
 
